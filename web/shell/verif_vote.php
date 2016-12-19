@@ -1,7 +1,7 @@
 <?php
-ini_set('include_path', '.:/usr/local/phplib-7.4a/php:/usr/local/php/jpgraph:/usr/local/lib/php:/home/delain/public_html/www/includes:/usr/share/php');
+ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes');
 
-include "../www/includes/delain_header.php";
+include "delain_header.php";
 include "classes.php";
 $db =new base_delain;
 

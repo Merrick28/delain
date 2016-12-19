@@ -19,6 +19,7 @@ if (!function_exists('apc_fetch'))
             case 'img_path':
                 return IMG_PATH;
         }
+        return '';
     }
 }
 
