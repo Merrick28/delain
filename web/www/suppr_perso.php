@@ -3,16 +3,6 @@
 include "includes/classes.php";
 include "ident.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
-/*$vrai_compt_cod = $_SESSION['compt_cod'];
-$compt_cod_passe = $_GET['compt_cod'];
-if ($vrai_compt_cod != $compt_cod_passe)
-	{
-						$req = "insert into triche (triche_perso_cod1,triche_perso_cod2,triche_cas_cod) 
-														values ($vrai_compt_cod,$compt_cod_passe,'4')";
-						$db->query($req);	
-	}
-$db = new base_delain;*/
-
 ?>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">

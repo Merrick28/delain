@@ -26,11 +26,6 @@ if ($db->nf() != 0)
 {
 	$ok = 0;
 	$contenu_page .= '<p>Un autre compte existe déjà avec cette adresse !</p>';
-	$db->next_record();
-	$compt2 = $db->f('compt_cod');
-	$req = "insert into triche(triche_perso_cod1, triche_perso_cod2, triche_cas_cod, triche_date)
-		values($compt_cod, 'Changement d’email pour le compte $compt_cod : adresse déjà utilisée pour le compte $compt2 !', 8, now())";
-	$db->query($req);
 }
 if ($ok == 1)
 {

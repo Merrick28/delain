@@ -286,8 +286,7 @@ if ($droit['controle'] == 'O')
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/rech_compte.php">Recherches sur comptes</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/multi_trace.php">Visu des multi</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/sitting.php">Sittings > 5 j.</a><br>
-	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_interaction_4e.php">Intéractions 4e persos</a><br>
-	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_triche.php">Visu de la triche (bêta)</a><br>';
+	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_interaction_4e.php">Intéractions 4e persos</a><br>';
 }
 else
     $controle = '';
