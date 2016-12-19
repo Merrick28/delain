@@ -22,7 +22,7 @@
 				}
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
-		<script src="https://code.jquery.com/jquery-latest.js"></script>
+		<script src="{URL}/js/jquery.js"></script>
 		<script src="{URL}scripts/ajax2.js" type="text/javascript"></script>
 		<script type='text/javascript'>
 		

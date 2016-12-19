@@ -1,15 +1,15 @@
 <?php
 
-define('G_URL','localhost/delain/');
-define('G_CHE',__DIR__ . '/../');
-define('G_IMAGES','http://localhost/delain_images/');
+define('G_URL','localhost/delain/'); // soit finir par un /
+define('G_CHE',__DIR__ . '/../'); // NE PAS TOUCHER
+define('G_IMAGES','http://localhost/images/');
 define('NOM_COOK','cook_pass');
-define('IMG_PATH','http://localhost/delain_images/');
+define('IMG_PATH','http://localhost/images/');
 
 // connexion base de données
 define('SERVER_PROD',false); // if true, we'll use a service
 define('SERVER_HOST','localhost');
-define('SERVER_USERNAME','delainadm');
+define('SERVER_USERNAME','webdelain');
 define('SERVER_PASSWORD','xxxxxxxxxx');
 define('SERVER_DBNAME','delain');
 
