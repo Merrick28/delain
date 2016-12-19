@@ -31,7 +31,7 @@ input.test {
 	font-size: 13px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	border-color : #CE3100 #9C0000 #9C0000 #CE3100;
-	background : url(images/bouton.jpg);
+	background : url(../images/bouton.jpg);
 }
 .bouton
 {
@@ -46,7 +46,7 @@ input.bouton {
 	font-size: 9px;
 	font-family: Verdana, Helvetica, sans-serif;
 	border-color : #B5955A #9F7F47 #9F7F47 #B5955A;
-	background : url(images/bouton.gif);
+	background : url(../images/bouton.gif);
 	border-width: 2px;
 	padding-right:0pt;
 	padding-left:0pt;
@@ -56,10 +56,10 @@ input.bouton {
 }
 
 table {
-	background : url('http://images.jdr-delain.net/fondparchemin.gif');
+	background : url('../images/fondparchemin.gif');
 }
 .fond2 {
-	background : url('http://images.jdr-delain.net/fondparchemin.gif');
+	background : url('../images/fondparchemin.gif');
 	background-color:#FFFFFF;
 }
 table.vide {
@@ -71,7 +71,7 @@ table.vide2 {
 }
 
 table.resume {
-    background : url('http://images.jdr-delain.net/fondparchemin2.gif');
+    background : url('../images/fondparchemin2.gif');
 	background-color:#FFFFFF;
 }
 
