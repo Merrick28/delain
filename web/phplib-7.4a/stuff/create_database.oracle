@@ -1,0 +1,83 @@
+-- ============================================================
+--   Nom de la base   :  myapp                                 
+--   Nom de SGBD      :  ORACLE Version 7.x                    
+--   Date de cr‚ation :  9/24/98  10:49 AM                     
+-- ============================================================
+-- $Id: create_database.oracle,v 1.1.1.1 2000/04/17 16:40:17 kk Exp $ 
+--
+-- Update: should also work on 8.x 
+
+-- ============================================================
+--   Table : ACTIVE_SESSIONS
+-- ============================================================
+create table ACTIVE_SESSIONS
+(
+    SID       VARCHAR2(32)           not null,
+    NAME      VARCHAR2(32)           not null,
+    VAL       LONG                   null    ,
+    CHANGED   VARCHAR2(14)           not null,
+    constraint PK_ACTIVE_SESSIONS primary key (SID, NAME)
+)
+/
+
+-- ============================================================
+--   Index : CHANGED                                           
+-- ============================================================
+create index CHANGED on ACTIVE_SESSIONS (CHANGED asc)
+/
+
+-- ============================================================
+--   Table : ACTIVE_SESSIONS_SPLIT                                  
+-- ============================================================
+create table ACTIVE_SESSIONS_SPLIT
+(
+    CT_SID       VARCHAR2(32)           not null,
+    CT_NAME      VARCHAR2(32)           not null,
+    CT_POS       VARCHAR2(6)            not null,
+    CT_VAL       LONG                   null    ,
+    CT_CHANGED   VARCHAR2(14)           not null,
+    constraint PK_ACTIVE_SESSIONS_SPLIT primary key (CT_SID, CT_NAME, CT_POS)
+)
+/
+
+-- ============================================================
+--   Index : CHANGED                                           
+-- ============================================================
+create index SCHANGED on ACTIVE_SESSIONS_SPLIT (CT_CHANGED asc)
+/
+
+-- ============================================================
+--   Table : AUTH_USER                                         
+-- ============================================================
+create table AUTH_USER
+(
+    USER_ID   VARCHAR2(32)           not null,
+    USERNAME  VARCHAR2(32)           not null,
+    PASSWORD  VARCHAR2(32)           not null,
+    PERMS     VARCHAR2(255)          null    ,
+    constraint PK_AUTH_USER primary key (USER_ID)
+)
+/
+
+-- ============================================================
+--   Table : AUTH_USER_MD5
+-- ============================================================
+create table AUTH_USER_MD5
+(
+    USER_ID   VARCHAR2(32)           not null,
+    USERNAME  VARCHAR2(32)           not null,
+    PASSWORD  VARCHAR2(32)           not null,
+    PERMS     VARCHAR2(255)          null    ,
+    constraint PK_AUTH_USER_MD5 primary key (USER_ID)
+)
+/
+
+-- ============================================================
+--   Index : K_USERNAME                                        
+-- ============================================================
+create unique index K_USERNAME on AUTH_USER (USERNAME asc)
+/
+
+INSERT INTO auth_user VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','test','admin');
+INSERT INTO auth_user_md5 VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','098f6bcd4621d373cade4e832627b4f6','admin');
+

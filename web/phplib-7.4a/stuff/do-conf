@@ -1,0 +1,16 @@
+# I use this configuration with my CGI PHP -- kk
+#
+# $Id: do-conf,v 1.1.1.1 2000/04/17 16:40:17 kk Exp $
+#
+
+./configure --with-mysql=/opt/GNUmysql \
+	--with-gd=/opt/GNUgd \
+	--with-dbase=yes \
+	--with-config-file-path=/opt/GNUphp3/lib \
+	--with-exec-dir=/opt/bin \
+	--enable-debug=no \
+	--enable-safe-mode=no \
+	--enable-url-fopen-wrapper=yes \
+	--enable-track-vars=yes \
+	--prefix=/opt/GNUphp3 \
+	--with-imap=/work/opt/src/imap-4.1.BETA/c-client

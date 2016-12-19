@@ -1,0 +1,48 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: Acknowledgments</TITLE>
+ <LINK HREF="documentation-5.html" REL=previous>
+ <LINK HREF="documentation.html#toc6" REL=contents>
+</HEAD>
+<BODY>
+Next
+<A HREF="documentation-5.html">Previous</A>
+<A HREF="documentation.html#toc6">Contents</A>
+<HR>
+<H2><A NAME="s6">6.</A> <A HREF="documentation.html#toc6">Acknowledgments</A></H2>
+
+
+<P>The initial idea on how to do serialization was contributed by
+<A HREF="mailto:khwild@wicom.at">KH Wild</A> to the
+php3 mailing list. It was limited to serializing arrays of at
+most three dimensions, though. We worked on his solution,
+improving it to arrays of arbitrary depth and later rewrote the
+function from scratch, turning it upside down. Our new
+serialization code can now handle any first order data type
+available to PHP and is easily extensible. It is also
+encapsulated in a class, keeping the name space clean. While we
+were at it, we made session cookies more secure
+by not using uniquid() directly, but a md5() hash of uniqid().</P>
+<P>Cameron Taggart and Guarneri Carmelo contributed ODBC support.
+Szandor van Verseveld contributed PostgreSQL support. Scott
+McMullan contributed some nice ideas for cleanup and is working
+on Sybase support.</P>
+<P>Sascha Schumann contributed much time developing and extending
+PHPLIB, including but not limited to mSQL/Sybase support, general
+storage container support, shared memory and LDAP support.</P>
+<P>Alexander Aulbach submitted his Tree class. Jay Bloodworth
+contributed his excellent OOH Forms library for form generation
+and input validation.</P>
+<P>A lot of people provided helpful hints and occasionally patches.
+Please see the file CREDITS for a complete list of contributors,
+testers and inspirations.
+</P>
+
+<HR>
+Next
+<A HREF="documentation-5.html">Previous</A>
+<A HREF="documentation.html#toc6">Contents</A>
+</BODY>
+</HTML>

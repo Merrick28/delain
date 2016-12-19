@@ -1,0 +1,178 @@
+
+* {margin: 0; padding: 0;}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%
+}
+
+/*p {
+  margin: 0px 0px 0px 0px;
+  border: 1px solid rgb(0,16,40);
+  font-size: .8em;
+
+} */
+.overlay_dialog {
+	display: block;
+	position: absolute;
+	left:0px;
+	top:0px;
+  width:100%;
+  height:100%;
+  min-height:100%;
+	background-color: #666666;
+	filter:alpha(opacity=60);
+	-moz-opacity: 0.5;
+	opacity: 0.5;
+	z-index:100;
+}
+
+.overlay___invisible__ {
+  background-color: #666666;
+	filter:alpha(opacity=0);
+	-moz-opacity: 0;
+	opacity: 0;
+}
+.ontop {
+   z-index:120;
+}
+.hidden {
+  display:none;
+  visibility:hidden;
+}
+.visible {
+  display:block;
+  visibility:visible;
+}
+
+.debug_log {
+  display: block;
+	position: absolute;
+	left:30px;
+	top:30px;
+	width:200px;
+  height:400px;
+
+}
+.moncadre {
+}
+.moncadre_hg {
+  height: 5px;
+  width: 5px;
+  background-color: #F00;
+}
+.moncadre_hc {
+  height: 5px;
+  background-color: #F80;
+}
+.moncadre_hd {
+  height: 5px;
+  width: 5px;
+  background-color: #FF0;
+}
+.moncadre_g {
+  width: 5px;
+  background-color: #F00;
+}
+.moncadre_d {
+  width: 5px;
+  background-color: #FF0;
+}
+.moncadre_bg {
+  height: 5px;
+  width: 5px;
+  background-color: #F00;
+}
+.moncadre_bc {
+  height: 5px;
+  background-color: #F80;
+}
+.moncadre_bd {
+  height: 5px;
+  width: 5px;
+  background-color: #FF0;
+}
+.centpourcent {
+  width:100%;
+  height:100%;
+}
+.cpc {
+  width:100%;
+  height:100%;
+  min-height:100%;
+}
+.isactive {
+	z-index:120;
+	cursor:pointer;
+}
+.inactive {
+	z-index:0;
+	cursor:pointer;
+}
+
+  .cadre
+{
+	margin: 1px;
+	border: 1px solid rgb(0,16,40);
+}
+.posWin
+{
+	position:absolute;
+	width:800px;
+	height:600px;
+	top:100px;
+	left:100px;
+}
+
+
+.close_win {
+  background: transparent url('../images/interface/close.gif') 0px 0px no-repeat;
+	height:16px;
+	width:16px;
+	position:relative;
+  float:right;
+  cursor:pointer;
+}
+.cadredelain {
+	background: none;
+  background-color: transparent;
+  border-width: 0px;
+  border-style: solid;
+  margin:0px;
+  padding:0px;
+  border-collapse: collapse;
+}
+.cadredelain_hg{
+ background: transparent url('../images/interface/coin_delain.gif') 0px 0px no-repeat;
+	height:10px;
+	width:12px;
+}
+.cadredelain_hd{
+	background:transparent url('../images/interface/coin_delain.gif') -8px 0px no-repeat;
+}
+.cadredelain_bg{
+  background:transparent url('../images/interface/coin_delain.gif') 0px -10px no-repeat;
+}
+.cadredelain_bd{
+  background: transparent url('../images/interface/coin_delain.gif') -8px -10px no-repeat;
+	height:10px;
+	width:12px;
+}
+.cadredelain_g{
+  background: transparent url('../images/interface/cadrev_delain.gif') 0px 0px repeat-y;
+}
+.cadredelain_d{
+  background: transparent url('../images/interface/cadrev_delain.gif') -8px 0px repeat-y;
+}
+.cadredelain_hc{
+  background: transparent url('../images/interface/cadreh_delain.gif') 0px 0px repeat-x;
+}
+.cadredelain_bc{
+  background: transparent url('../images/interface/cadreh_delain.gif') 0px 0px repeat-x;
+}
+.cadredelain_c{
+  background : url('../images/fondparchemin.gif');
+  overflow:auto;
+}
+

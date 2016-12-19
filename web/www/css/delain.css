@@ -1,0 +1,270 @@
+body {
+    background-image:url('http://images.jdr-delain.net/fond5.gif');
+    font-family: verdana,helvetica,sans-serif;
+    font-size: 9pt;
+}
+
+.navbar {
+    border: 0;
+}
+
+.navbar-default {
+    background-image:url('http://images.jdr-delain.net/fond5.gif');
+}
+
+.navbar-default li a:link {
+    text-decoration: underline;
+    color: #4D0505;
+
+}
+
+.navbar-default li a:visited {
+    text-decoration: underline;
+    color: #4D0505;
+
+}
+
+.navbar-default li a:hover {
+    text-decoration: none;
+    color: #4D0505;
+
+}
+
+a:link {
+    text-decoration: underline;
+    color: #4D0505;
+
+}
+
+a:visited {
+    text-decoration: underline;
+    color: #4D0505;
+
+}
+
+a:hover {
+    text-decoration: none;
+    color: #4D0505;
+
+}
+
+.groupdiv {
+    background-image:url('http://images.jdr-delain.net/fondparchemin.gif');
+    border-color: #800000;
+    border-style: solid;
+    border-radius: 10px;
+    height: auto;
+    overflow: auto;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    margin-top:10px;
+    margin-right: 10px;
+    padding:10px;
+    overflow:hidden;
+}
+
+.groupdiv_gauche {
+     margin-right: 0px;
+     margin-left: 0px;
+     padding: 0px;
+}
+
+.groupdiv .titre {
+    background-color: #800000;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    padding: 3px 0px;
+}
+
+/* make sidebar nav vertical */ 
+@media (min-width: 768px) {
+    .sidebar-nav .navbar .navbar-collapse {
+        padding-left: 20px;
+        padding-right: 20px;
+        max-height: none;
+    }
+    .sidebar-nav .navbar ul {
+        float: none;
+    }
+    .sidebar-nav .navbar ul:not {
+        display: block;
+    }
+    .sidebar-nav .navbar li {
+        float: none;
+        display: block;
+    }
+    .sidebar-nav .navbar li a {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    
+    .blockAuthTop ul {
+        float: none;
+    }
+    .blockAuthTop ul:not {
+        display: block;
+    }
+    .blockAuthTop  li {
+        float: none;
+        display: block;
+    }
+    .blockAuthTop li a {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+    
+    
+    
+    
+}
+@media (min-width: 992px) {
+  .navbar {
+    border-radius: 4px;
+  }
+}
+@media (min-width: 992px) {
+  .navbar-header {
+    float: left;
+  }
+}
+.navbar-collapse {
+  padding-right: 15px;
+  padding-left: 15px;
+  overflow-x: visible;
+  -webkit-overflow-scrolling: touch;
+  border-top: 1px solid transparent;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+}
+@media (min-width: 992px) {
+  .navbar-collapse {
+    width: auto;
+    border-top: 0;
+    -webkit-box-shadow: none;
+            box-shadow: none;
+  }
+  .navbar-collapse.collapse {
+    display: block !important;
+    height: auto !important;
+    padding-bottom: 0;
+    overflow: visible !important;
+  }
+  .navbar-collapse.in {
+    overflow-y: visible;
+  }
+  .navbar-fixed-top .navbar-collapse,
+  .navbar-static-top .navbar-collapse,
+  .navbar-fixed-bottom .navbar-collapse {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+.navbar-nav li a {
+    padding-top:0px;
+    padding-bottom:0px;
+}
+
+.navbar-header {
+    background-image:url('http://images.jdr-delain.net/fondparchemin.gif');
+    border-color: #800000;
+    border-style: solid;
+    border-radius: 10px;
+    height: auto;
+    overflow: auto;
+    color: #4D0505;
+}
+
+.navbar-default .navbar-brand {
+    color: #4D0505;
+}
+
+hr {
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+#formLogin {
+    padding:10px;
+}
+
+.formControlDelain {
+    height: 19px;
+    padding-left:10px;
+    padding-top:2px;
+    padding-bottom:2px;
+    font-size: 11px;
+}
+
+.btn-delain {
+    background: url('http://images.jdr-delain.net/bouton.jpg');
+    color: #FFE081;
+    font-size: 13px;
+    height: 21px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.form-group-delain {
+    margin-bottom: 2px;
+}
+
+
+#wrapper.toggled {
+    padding-left: 0;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+    width: 0;
+}
+
+#descJeu{
+    font-style: italic;
+    text-align: center;
+    height: 200px;
+    display: table;
+
+    
+}
+
+#descJeu span {
+     display: table-cell;
+    vertical-align: middle;
+}
+
+#avatarMonstre{
+    max-width: 200px; 
+    max-height: 200px;
+   /* height: 200px;*/
+    text-align: center;
+    line-height:200px;
+    overflow:hidden;
+}
+#avatarMonstre img{
+    height: 100%; 
+    width: 100%; 
+    object-fit: contain;
+    
+}
+
+.imgVertCenter { 
+    vertical-align:middle; 
+    overflow:hidden;
+     width:auto; 
+    max-height: 200px;
+}
+#logoDelainAccueil{
+    max-width: 200px; 
+    max-height: 200px;
+   /* height: 200px;*/
+    text-align: center;
+    line-height:200px;
+    overflow:hidden;
+}
+#logoDelainAccueil img{
+    height: 100%; 
+    width: 100%; 
+    object-fit: contain;
+    
+}

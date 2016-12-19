@@ -1,0 +1,33 @@
+<!-- $Id: 06-ack.sgml,v 1.1.1.1 2000/04/17 16:40:06 kk Exp $ -->
+
+<sect>Acknowledgments
+<p>
+
+The initial idea on how to do serialization was contributed by
+<htmlurl url="mailto:khwild@wicom.at" name="KH Wild"> to the
+php3 mailing list. It was limited to serializing arrays of at
+most three dimensions, though. We worked on his solution,
+improving it to arrays of arbitrary depth and later rewrote the
+function from scratch, turning it upside down. Our new
+serialization code can now handle any first order data type
+available to PHP and is easily extensible. It is also
+encapsulated in a class, keeping the name space clean. While we
+were at it, we made session cookies more secure
+by not using uniquid() directly, but a md5() hash of uniqid().
+
+Cameron Taggart and Guarneri Carmelo contributed ODBC support.
+Szandor van Verseveld contributed PostgreSQL support. Scott
+McMullan contributed some nice ideas for cleanup and is working
+on Sybase support.
+
+Sascha Schumann contributed much time developing and extending
+PHPLIB, including but not limited to mSQL/Sybase support, general
+storage container support, shared memory and LDAP support.
+
+Alexander Aulbach submitted his Tree class. Jay Bloodworth
+contributed his excellent OOH Forms library for form generation
+and input validation.
+
+A lot of people provided helpful hints and occasionally patches.
+Please see the file CREDITS for a complete list of contributors,
+testers and inspirations.

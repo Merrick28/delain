@@ -1,0 +1,88 @@
+A.blanc { text-decoration:none; color:#FFFFFF; }
+A.archive:visited { text-decoration:none; color:#000000; }
+A.archive:active  { text-decoration:none; color:#000000; }
+A.archive:hover   { color:#000000; background-color:#D4BF00; cursor:help; }
+A.archive:link    { text-decoration:none; color:#000000; }
+td {
+font:"Lucida Handwriting";
+	text-align: justify;
+	font-size:18px;
+}
+p,font.txt {
+        font-family:Arial, Helvetica, sans-serif;
+	color:#000000;
+	font-size:12px;
+}
+.transparent {
+color:#FFFFFF;
+}
+.titre {
+	text-align: center;
+	height: 100px;
+	width:720px;
+	top:0px;
+	left:200px;
+	position: absolute;
+	vertical-align:middle;
+}
+
+
+td.ligne_droite, td.ligne_gauche, td.coin_hg, td.coin_hd, td.coin_bg, td.coin_bd, img.del { width:10px; }
+td.ligne_haut,   td.ligne_bas,    td.coin_hg, td.coin_hd, td.coin_bg, td.coin_bd, img.del { height:8px; }
+td.intercolonnes,td.ecartement { width:10px;}
+td.colonne       { width:230px; }
+td.dualcolonne   { width:510px; }
+td.trialcolonne  { width:790px; }
+td.quadricolonne { width:1070px; }
+
+body.fond1,td.fond1,td.intercolonnes { background-image:url(../img_delain/fond5.gif); }
+
+td.ligne_droite { background-image:url(../img_delain/ligne_droite.gif); }
+td.ligne_gauche { background-image:url(../img_delain/ligne_gauche.gif); }
+td.ligne_bas    { background-image:url(../img_delain/ligne_bas.gif);    }
+td.ligne_haut   { background-image:url(../img_delain/ligne_haut.gif);   }
+
+td.coin_hg { background-image:url(../img_delain/coin_hg.gif); }
+td.coin_hd { background-image:url(../img_delain/coin_hd.gif); }
+td.coin_bg { background-image:url(../img_delain/coin_bg.gif); }
+td.coin_bd { background-image:url(../img_delain/coin_bd.gif); }
+
+.fond3 { background-image:url(../img_delain/fondparchemin.gif) }
+
+
+th	{
+  font-family: "Book Antiqua", "Palatino Linotype", Palatino, Times, serif; 
+  font-weight: bold; 
+	color: #C0C0C0;
+	font-size: 16px;
+	font-weight : bold;
+	height: 25px;
+  background-image:url(../img_archives/cellpic3.gif);
+}
+@font-face {
+  font-family: Book Antiqua;
+  src: url(CSS\BOOKANT0.eot);
+}
+@font-face {
+  font-family: Palatino Linotype;
+  src: url(CSS\PALATIN0.eot);
+}
+@font-face {
+  font-family:Cardinal;
+  src:url(CSS/CARDINA0.eot);
+}
+
+table.fond2 { background-image:url(../img_delain/fondparchemin.gif); height:100%; width:100%; }
+
+.fond                     { border:0; position:absolute; height:1469px; width:1130px; top:0px;    left:0px;  }
+.Edito                    { border:0; position:absolute; height:585px;  width:270px;  top:200px;  left:5px;  }
+.InterviewBarde           { border:0; position:absolute; height:1535px; width:830px;  top:200px;  left:290px;}
+.PlacePublique            { border:0; position:absolute; height:935px;  width:270px;  top:800px;  left:5px;  }
+.ServerMaster             { border:0; position:absolute; height:100px;  width:1110px; top:1750px; left:5px;  }
+.ReportageChateauMorbelin { border:0; position:absolute; height:1145px; width:550px;  top:1865px; left:5px;  }
+.Niouzes                  { border:0; position:absolute; height:1390px; width:550px;  top:1865px; left:570px;}
+.PA_1                     { border:0; position:absolute; height:230px;  width:550px;  top:3025px; left:5px;  }
+.Blagues                  { border:0; position:absolute; height:510px;  width:270px;  top:3270px; left:5px;  } 
+.Albert                   { border:0; position:absolute; height:345px;  width:550px;  top:3270px; left:290px;}
+.pub_TR                   { border:0; position:absolute; height:510px;  width:270px;  top:3270px; left:850px;}
+.DerniereMinute           { border:0; position:absolute; height:150px;  width:550px;  top:3630px; left:290px;}

@@ -1,0 +1,13 @@
+<!-- $Id: 01-license.sgml,v 1.1.1.1 2000/04/17 16:39:58 kk Exp $ -->
+
+<sect1>License
+<p>
+
+PHPLIB consists of the files in this directory and all its
+subdirectories. It is made available as free software under the
+LIBRARY GNU General Public license, as spelled out in the file
+<tt/COPYING/ in this directory. Also, it is distributed in the
+hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the license for more details.
+

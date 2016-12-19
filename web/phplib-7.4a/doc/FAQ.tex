@@ -1,0 +1,31 @@
+\documentclass[12pt,draft,oneside]{book}
+\usepackage{babel,color,graphics}
+\begin{document}
+\pagestyle{headings}
+\frontmatter
+\title{phplib FAQ}
+\author{Ted Rolle\thanks{ted.rolle@usa.net}}
+\date{\today}
+\maketitle
+\tableofcontents
+\chapter{Preface}
+This is the phplib Frequently-Asked Questions document.
+
+It is maintained by Ted Rolle <ted.rolle@usa.net>
+\mainmatter
+\chapter{FAQ}
+
+\centerline{\fbox{\textsc{The Most-Frequently-Asked Question}}}
+\vspace{0.5cm}
+\begin{description}
+\item[setcookie() oops]
+The answer is that \textit{something} -- text or html --
+has been written to the page
+before the call to \verb|page_open()|.
+
+Even newlines or spaces written after \verb|local.inc| or
+\verb|prepend.php3| -- but before \verb|page_open()| -- can do it.
+
+\end{description}
+\backmatter
+\end{document}

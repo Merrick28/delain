@@ -1,0 +1,16 @@
+
+$Id: README,v 1.1.1.1 2000/04/17 16:39:53 kk Exp $
+
+New directory layout: (16-Sep-1998)
+=====================
+
+doc         - all documentation, in Linuxdoc-SGML, HTML and TXT formats.
+
+              READ THE DOCUMENTATION FOR INSTALLATION INSTRUCTIONS.
+
+pages       - this can be copied into the Document Root of your webserver.
+pages/admin - administrative scripts to maintain the databases.
+php         - this should be copied into the PHP Include_Path directory
+              of your PHP.
+stuff       - several scripts and helper files.
+

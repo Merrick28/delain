@@ -1,0 +1,45 @@
+#hg{
+	height:10px;
+	witdh:10px;
+	background : url(images/coin_hg.gif);
+}
+#hd
+{
+	height:10px;
+	witdh:10px;
+	background : url(http://images.jdr-delain.net/coin_hd.gif);
+}
+div.bg{
+	height:10px;
+	witdh:10px;
+	background : url(http://images.jdr-delain.net/coin_bg.gif);
+}
+div.bd
+{
+	height:10px;
+	witdh:10px;
+	background : url(http://images.jdr-delain.net/coin_bd.gif);
+}
+#l_haut
+{
+	height:10px;
+	background-repeat:repeat-y;
+	background: url(http://images.jdr-delain.net/ligne_haut.gif);
+}
+div.l_bas
+{
+	height:10px;
+	background-repeat:repeat-y;
+	background : url(http://images.jdr-delain.net/ligne_bas.gif);
+}
+.contenu
+{
+	background : url(http://images.jdr-delain.net/fondparchemin.gif);
+}
+#conteneur
+ {
+ position: absolute;
+ width: 98%;
+ height:98%;
+ background : url('http://images.jdr-delain.net/fond5.gif');
+ }

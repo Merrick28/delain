@@ -1,0 +1,45 @@
+<!-- $Id: 03-ct_shm.sgml,v 1.1.1.1 2000/04/17 16:40:01 kk Exp $ -->
+
+<sect1>CT_Shm
+<p>
+
+The <tt/Session/ class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <tt/Session/ now makes all storage
+accesses through a container class. To let <tt/Session/ use shared
+memory as container, you use <tt/CT&lowbar;Shm/.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+max&lowbar;sessions<colsep>The maximum number of concurrent sessions supported by this container.<rowsep>
+shm&lowbar;key<colsep>The unique (important!) key of the shared memory&nbsp;
+segment you want to use.<rowsep>
+shm&lowbar;size<colsep>The size of the shared memory segment. The size is&nbsp; 
+set, when the segment is accessed for the first time. If you do not use &nbsp;
+too many session variables, the formula shm&lowbar;size = max&lowbar;sessions * 600&nbsp;
+should be sufficient.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;Shm extends CT&lowbar;Shm {
+	var $classname = "My&lowbar;Shm";
+	var $max&lowbar;sessions = 500;
+	var $shm&lowbar;key = 0x1234232;
+	var $shm&lowbar;size = 64000;
+}
+</code></tscreen>
+
+You can then use My&lowbar;Shm in class Session. Reference it
+by putting "My&lowbar;Shm" in the "that&lowbar;class" variable.
+

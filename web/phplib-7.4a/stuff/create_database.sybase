@@ -1,0 +1,85 @@
+/* ============================================================ */
+/*   Nom de la base   :  myapp                                  */
+/*   Nom de SGBD      :  Sybase System 11                       */
+/*   Date de cr‚ation :  9/24/98  10:50 AM                      */
+/* ============================================================ */
+
+/* $Id: create_database.sybase,v 1.1.1.1 2000/04/17 16:40:17 kk Exp $ */
+
+/* ============================================================ */
+/*   Nom de la base   :  myapp                                  */
+/* ============================================================ */
+create database myapp        
+go
+
+/* ============================================================ */
+/*   Table : ACTIVE_SESSIONS                                    */
+/* ============================================================ */
+create table ACTIVE_SESSIONS
+(
+    SID       varchar(32)            not null,
+    NAME      varchar(32)            not null,
+    VAL       text                   null,
+    CHANGED   varchar(14)            not null,
+    constraint PK_ACTIVE_SESSIONS primary key (SID, NAME)
+)
+go
+
+/* ============================================================ */
+/*   Index : CHANGED                                            */
+/* ============================================================ */
+create index CHANGED on ACTIVE_SESSIONS (CHANGED)
+go
+
+/* ============================================================ */
+/*   Table : ACTIVE_SESSIONS_SPLIT                              */
+/* ============================================================ */
+create table ACTIVE_SESSIONS_SPLIT
+(
+    CT_SID       varchar(32)            not null,
+    CT_NAME      varchar(32)            not null,
+    CT_POS       varchar(6)             not null,
+    CT_VAL       text                   null,
+    CT_CHANGED   varchar(14)            not null,
+    constraint PK_ACTIVE_SESSIONS primary key (CT_SID, CT_NAME, CT_POS)
+)
+go
+
+/* ============================================================ */
+/*   Index : CHANGED                                            */
+/* ============================================================ */
+create index SCHANGED on ACTIVE_SESSIONS_SPLIT (SCHANGED)
+go
+
+/* ============================================================ */
+/*   Table : AUTH_USER                                          */
+/* ============================================================ */
+create table AUTH_USER
+(
+    USER_ID   varchar(32)            not null,
+    USERNAME  varchar(32)            not null,
+    PASSWORD  varchar(32)            not null,
+    PERMS     varchar(255)           null    ,
+    constraint PK_AUTH_USER primary key (USER_ID)
+)
+go
+
+/* ============================================================ */
+/*   Table : AUTH_USER_MD5                                      */
+/* ============================================================ */
+create table AUTH_USER_MD5
+(
+    USER_ID   varchar(32)            not null,
+    USERNAME  varchar(32)            not null,
+    PASSWORD  varchar(32)            not null,
+    PERMS     varchar(255)           null    ,
+    constraint PK_AUTH_USER_MD5 primary key (USER_ID)
+)
+go
+
+/* ============================================================ */
+/*   Index : K_USERNAME                                         */
+/* ============================================================ */
+create unique index K_USERNAME on AUTH_USER (USERNAME)
+go
+

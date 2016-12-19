@@ -1,0 +1,10 @@
+<!-- $Id: 02-installation.sgml,v 1.1.1.1 2000/04/17 16:39:59 kk Exp $ -->
+
+<sect>Overview and Installation
+<p>
+
+The following sections discuss the installation, verification
+and layout of PHPLIB: How to install PHPLIB? Which functionality
+and class definitions are contained in which files? How do you
+layout a web server with PHPLIB installed? Which installation
+options are available and how do these affect performance?

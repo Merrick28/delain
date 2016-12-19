@@ -1,0 +1,1729 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: HTML Widgets Classes</TITLE>
+ <LINK HREF="documentation-6.html" REL=next>
+ <LINK HREF="documentation-4.html" REL=previous>
+ <LINK HREF="documentation.html#toc5" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="documentation-6.html">Next</A>
+<A HREF="documentation-4.html">Previous</A>
+<A HREF="documentation.html#toc5">Contents</A>
+<HR>
+<H2><A NAME="s5">5.</A> <A HREF="documentation.html#toc5">HTML Widgets Classes</A></H2>
+
+<H2><A NAME="ss5.1">5.1</A> <A HREF="documentation.html#toc5.1">Sql_Query</A>
+</H2>
+
+<P>Sql_Query will generate a query form for simple table queries: A
+list of field names, comparision operators and input fields is
+presented. The user may search for any values in any of the
+presented columns using SQL standard operators. Multiple query
+conditions are possible and these conditions can be joined using
+AND and OR operations.</P>
+<P>The number of query conditions can be made variable. If so, the
+user may shrink and grow the query widget using the appropriate
+buttons.</P>
+<P>All button labels and other messages of the interface are
+variable and held in language dictionaries. Currently, <EM>de</EM>
+and <EM>en</EM> dictionaries are provided.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+persistent_slots</TD><TD>Serialization helper: Names of all persistent slots</TD></TR><TR><TD>
+conditions</TD><TD>Number of query conditions</TD></TR><TR><TD>
+input_size</TD><TD>Visible width of input fields</TD></TR><TR><TD>
+input_max</TD><TD>Useable width of input fields</TD></TR><TR><TD>
+method</TD><TD>Form method to GET or POST the form</TD></TR><TR><TD>
+lang</TD><TD>Language dictionary to use</TD></TR><TR><TD>
+translate</TD><TD>Flag: translate column names</TD></TR><TR><TD>
+container</TD><TD>Flag: create a master container</TD></TR><TR><TD>
+variable</TD><TD>Flag: create resize buttons</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+dict</TD><TD>The GUI language dictionary.</TD></TR><TR><TD>
+compare</TD><TD>SQL comparison function dictionary.
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+
+<DT><B>start()</B><DD><P> 
+Initialization function. Currently empty.</P>
+
+<DT><B>form($base, $option, $class, $target)</B><DD>
+<P>The function will generate and return HTML for the SQL Query selection form. All
+variables in the form will start with the prefix <CODE>$base</CODE> and
+have numeric indices appended after an underline character. It
+is possible to have multiple Sql_Query instances on a single
+page, if they use different base characters.</P>
+<P>The function must know the field names of the SQL table that is
+to be queried. <CODE>$option</CODE> can be either a simple array of
+these field names (<CODE>$translate</CODE> set empty) or a hash field
+name to long name (<CODE>$translate</CODE> set to <CODE>on</CODE>).</P>
+<P>All tags in the generated form are tagged with a CSS stylesheet
+class, if <CODE>$class</CODE> is set to a CSS classname. <CODE>$class</CODE> is
+optional and if it is left empty, no class attributes are
+generated. <CODE>$target</CODE> is the URL of the SQL Query form target.
+It is optional and if it is left empty, a self referencing form
+is generated (recommended).</P>
+<P>The function returns a string containing the HTML to render the
+SQL Query selection form.</P>
+
+<DT><B>where($base, $incr)</B><DD>
+<P>When the <CODE>form()</CODE> generated page is submitted, a lot of
+parameters have to be evaluated and transformed into a SQL
+<EM>where</EM> condition matching the user selections. The
+<CODE>where()</CODE> function takes care of all this; it just needs to
+be told which <CODE>$base</CODE> prefix has been used in the <CODE>form()</CODE>
+call.</P>
+<P>The <CODE>$incr</CODE> parameter is optional and determines how many
+query condition rows are added or subtracted when the "More"
+and "Fewer" buttons are used. The default value is 1.</P>
+<P>The function returns a string which can be successfully used
+behind a "where" keyword in a SQL query.</P>
+
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+<P>
+<DL>
+<DT><B>plain_where($base)</B><DD><P>This function does all the work for <CODE>where()</CODE>, but does not
+resize the query condition window.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+
+<P>The <CODE>Sql_Query</CODE> class can be used directly. It is more useful
+when made persistent, so it is recommended that you add the line
+<CODE>require("sqlquery.inc")</CODE> to your <CODE>prepend.php3</CODE> file
+where indicated in that file.</P>
+<P>See the Table class in this section for a nice method to display
+and format query results. See the DB_Sql class (a core class)
+for a nice method to connect to databases.</P>
+<P>The following code fragment is quite large, but contains a
+complete and working example using the Sql_Query, DB_Sql and
+Table classes to query a database table.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  // We require() sqlquery.inc and table.inc in prepend.inc
+  // to make this example work!
+  page_open(array("sess" => "Example_Session"));
+
+  $db = new DB_Example;   // That's a DB_Sql subclass.
+  $t  = new Table;    // For formatting results
+  $t->heading = "on"; // We want table headings..
+?>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Testseite&lt;/title&gt;
+&lt;style type="text/css"&gt;&lt;!--
+h1          { font-family: arial, helvetica, sans-serif; color: #d33e30 }
+table.test  { background-color: #eeeeee }
+th.test     { font-family: arial, helvetica, sans-serif  }
+td.test     { font-family: arial, helvetica, sans-serif }
+table.query { background-color: #cccccc }
+td.query    { font-face: arial, helvetica, sans-serif }
+--&gt;&lt;/style&gt;
+&lt;/head&gt;
+&lt;body bgcolor="#ffffff"&gt;
+&lt;h1&gt;Testpage&lt;/h1&gt;
+&lt;?php
+  // the following fields are selectable
+  $field = array(
+    "username"   => "Login Name",
+    "password"   => "Password",
+    "perms"      => "Permissions"
+  );
+
+  // When we hit this page the first time,
+  // there is no $q.
+  if (!isset($q)) {
+    $q = new Sql_Query;     // We make one
+    $q->conditions = 1;     // ... with a single condition (at first)
+    $q->translate  = "on";  // ... column names are to be translated
+    $q->container  = "on";  // ... with a nice container table
+    $q->variable   = "on";  // ... # of conditions is variable
+    $q->lang       = "en";  // ... in English, please
+
+    $sess->register("q");   // and don't forget this!
+  }
+
+  // When we hit that page a second time, the array named
+  // by $base will be set and we must generate the $query.
+  // Ah, and don't set $base to "q" when $q is your Sql_Query
+  // object... :-)
+  if (isset($x)) {
+    $query = $q->where("x", 1);
+  }
+
+  // In any case we must display that form now. Note that the
+  // "x" here and in the call to $q->where must match.
+  // Tag everything as a CSS "query" class.
+  printf($q->form("x", $field, "query));
+  printf("&lt;hr>");
+
+  // Do we have a valid query string?
+  if ($query) {
+    // Show that condition
+    printf("Query Condition = %s&lt;br>\n", $query);
+
+    // Do that query
+    $db->query("select * from auth_user where ". $query);
+
+    // Dump the results (tagged as CSS class test)
+    printf("Query Results = %s&lt;br>\n", $db->num_rows());
+    $t->show_result($db, "test");
+  }
+
+  page_close();
+?>
+&lt;/body&gt;
+&lt;/html&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<H2><A NAME="ss5.2">5.2</A> <A HREF="documentation.html#toc5.2">Table and CSV_Table</A>
+</H2>
+
+
+<P>The Table class is a neat way to format two-dimensional
+associative arrays of data or the results of a database query
+into a table. Table and its subclasses allow you to simply pass
+them either an array or a query result and they spit out the
+proper HTML for a table containing all the values. Table has
+some primitive filtering capabilities making it useful even without
+subclassing, but for the full power of Table you have to write
+your own subclass.</P>
+
+<P>When used with the check option, it is assumed that the table
+is part of a HTML <CODE>FORM</CODE> element. Code is generated to create
+an <CODE>INPUT TYPE=CHECKBOX</CODE> element before each table row. The
+checkboxes will form an array indexed by row number. The name of
+the array will whatever you set the <CODE>check</CODE> instance variable
+to.</P>
+
+<P>Exactly one of two types of possible column filtering take place
+when each table row is generated. If the <CODE>fields</CODE> instance
+variable is set, only the columns keyed by the named fields in
+that array are shown in that order. That is, if you fill in the
+<CODE>fields</CODE> instance variable with <CODE>array("a", "c", "e")</CODE>,
+only the columns <CODE>a</CODE>, <CODE>c</CODE> and <CODE>e</CODE> become part of the
+generated table.</P>
+
+<P>If <CODE>fields</CODE> has not been set, all data columns are traversed
+with <CODE>each()</CODE> and all columns whose names match the regexp in
+<CODE>filter</CODE> are shown in the table. By default, this regular
+expression lets through all column names that start with an
+alphabetic character and continue with either alphanumeric
+characters or "_" (underscore). This default has been
+chosen, because the DB_Sql database class uses
+<CODE>mysql_fetch_array()</CODE> internally to get data
+from the database and this function returns all columns twice
+with both a numeric index and proper column names. The default
+filter will make all data show up only once and with proper
+column names.</P>
+
+<P>Additionally, the <CODE>map_cols</CODE> instance variable provides column
+name remapping. If <CODE>map_cols</CODE> is set, it will remap the name
+of the found column with a new name.</P>
+
+<P>For instance, a table with the following columns, <CODE>fname</CODE>,
+<CODE>lname</CODE>, and <CODE>mydate</CODE> can be remapped to <CODE>First Name</CODE>,
+<CODE>Last Name</CODE>, and <CODE>Date</CODE> using the following code (where
+$t is your instantiated Table class object):</P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$t->map_cols = array("fname"  => "First Name",
+                     "lname"  => "Last Name",
+                     "mydate" => "Date");
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>The <CODE>map_cols</CODE> instance variable also allows you to map column
+names to different languages using this same technique.</P>
+
+<P>For derived classes, the instance variable <CODE>add_extra</CODE> has been added. 
+If this variable is set, then the functions <CODE>table_heading_row_add_extra()</CODE>
+and <CODE>table_row_add_extra()</CODE> are called. In the Table class, these 
+functions do nothing, but in derived classes override these functions to
+provide additional functionality that may be needed. For instance, hyperlinks
+to provide <CODE>edit</CODE>, <CODE>delete</CODE>, or <CODE>view</CODE> capabilities for that row
+could be easily added into these functions (in your derived Table class) 
+allowing greater customization.</P>
+<P>A subclass of Table, CSV_Table, is being provided to allow to
+create CSV representations of your data with minimal effort. CSV
+(comma separated values) can be imported by MySQL's <CODE>LOAD DATA
+INFILE</CODE> statement and many spreadsheet import functions.</P>
+
+<P>The Table class now provides both high-level, mid-level and low-level 
+functions through modularization. This allows programmers to use either 
+the simplified high-level functionality or, depending on the degree of
+complexity needed, the power of the mid- or low-level functions. Every 
+effort to maintain backwards compatibility has been applied. However, it
+would be a good idea to become familiar with the new functions if you
+use the Table class extensively. Typically, the high- and mid-level
+support functions begin with <CODE>show_</CODE> while the low-level functions
+do not.</P>
+
+
+<H3>Instance variables</H3>
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+check</TD><TD>If set, the check option is active.</TD></TR><TR><TD>
+filter</TD><TD>A regular expression selecting the columns that are shown.</TD></TR><TR><TD>
+fields</TD><TD>A list of colum names that are shown.</TD></TR><TR><TD>
+heading</TD><TD>A flag; if set, a heading is being created.</TD></TR><TR><TD>
+map_cols</TD><TD>A list of colum names that remap (replace) the static column names.</TD></TR><TR><TD>
+add_extra</TD><TD>A flag; if set, the the extra functions for heading and rows are called.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>High-level instance methods</H3>
+
+
+<P>
+<DL>
+
+<DT><B>show($ary, $class = "")</B><DD><P> 
+Will format and print the two dimensional array (or hash)
+<CODE>$ary</CODE> as a table according to the filtering rules explained
+above. If <CODE>$class</CODE> is set, each HTML element will be tagged
+as belonging to the named class; this is useful with cascading
+style sheets.</P>
+
+<DT><B>show_page($ary, $start, $num, $class = "")</B><DD><P>Just as <CODE>show()</CODE>, but will show only <CODE>num</CODE> elements
+starting at <CODE>start</CODE>.</P>
+
+<DT><B>show_result($db, $class = "")</B><DD><P>Will format and print the result set of <CODE>$db</CODE>. <CODE>$db</CODE> is
+exspected to be a subclass of <CODE>DB_Sql</CODE> that has just
+been sent a query. <CODE>Table</CODE> will grab all available results
+from the result set of that query by calling
+<CODE>$db-&gt;next_record()</CODE> repeatedly and format them
+into a table.</P>
+
+<DT><B>show_result_page($db, $start, $num, $class = "")</B><DD>
+<P>Just as <CODE>show_result()</CODE>, but will show only <CODE>num</CODE>
+elements starting at <CODE>start</CODE>.</P>
+
+</DL>
+</P>
+
+<H3>Mid-level instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>show_table_rows($ary, $class="")</B><DD><P>Walks the passed array displaying each row of data as an HTML
+table row.</P>
+
+<DT><B>show_table_rows_result($db, $class="")</B><DD><P>Walks the passed database object displaying each record as an 
+HTML table row.</P>
+
+<DT><B>show_table_page_rows($ary, $start, $num, $class="")</B><DD><P>Walks the passed array displaying each row of data as an HTML
+table row. However, data does not start displaying until
+<CODE>$start</CODE> element and end after <CODE>$num</CODE> rows.</P>
+
+<DT><B>show_table_page_rows_result($db, $start, $num, $class="")</B><DD><P>Walks the passed database object displaying each record as an 
+HTML table row. However, data does not start displaying until
+<CODE>$start</CODE> record and ends after <CODE>$num</CODE> records have been displayed.</P>
+
+<DT><B>show_table_heading_row($ary, $class="")</B><DD><P>Uses the passed array to create an HTML header row.</P>
+
+<DT><B>show_table_heading_row_result($db, $class="")</B><DD><P>Uses the passed database object to create an HTML header row.</P>
+
+<DT><B>show_table_heading_cells($data, $class="")</B><DD><P>Walks the passed array and displays each item in an HTML table
+header cell.</P>
+
+<DT><B>show_table_cells($row, $row_key, $data, $class="")</B><DD><P>Walks the passed array and displays each item in an HTML table cell.</P>
+
+</DL>
+</P>
+
+<H3>Low-level instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>table_open($class = "")</B><DD><P>This function can be overridden by a subclass of Table. It
+is called as the very first step in table creation and
+should output HTML that opens a table (for example
+<CODE>printf("&lt;table%s&gt;\n", $class?" class=$class":"");</CODE>).</P>
+
+<DT><B>table_close()</B><DD><P>This function can be overridden by a subclass of Table. It
+is called as the very last step in table creation and
+should output HTML that closes a table (for example
+<CODE>printf("&lt;</CODE>table&gt;\n");/).</P>
+
+<DT><B>select_colnames($data)</B><DD><P>Internal function to generate a list of column names.</P>
+
+<DT><B>table_heading_row($data, $class = "")</B><DD><P>Internal driver function to generate a table heading row.</P>
+
+<DT><B>table_heading_cell($col, $val, $class)</B><DD><P>This function can be overridden by a subclass of Table. It
+is called each time a table heading cell is to be generated.</P>
+<P><CODE>$col</CODE> is the current column number, <CODE>$val</CODE> is the name
+of the column. <CODE>$class</CODE> is the HTML CSS class of the
+element that is to be generated.</P>
+
+<DT><B>table_heading_cell_open($class="")</B><DD><P>Starts a header cell.</P>
+
+<DT><B>table_heading_cell_close($class="")</B><DD><P>Ends a header cell.</P>
+
+<DT><B>table_heading_row_add_extra($data, $class="")</B><DD><P>Virtual function for derived classes. This function is called 
+after all header cells have been created. It allows the 
+programmer to add additional HTML code to the header row 
+before it is closed.</P>
+
+<DT><B>table_row($data, $class = "")</B><DD><P>Internal driver function to generate a table row.</P>
+
+<DT><B>table_row_open($row, $data, $class = "")</B><DD><P>This function can be overridden by a subclass of Table. It
+is called as the very first step in row creation and
+should output HTML that opens a table row.</P>
+<P><CODE>$row</CODE> is the current row number. <CODE>$data</CODE> is a hash of
+column name/value pairs for that row and <CODE>$class</CODE> is an
+optional HTML CSS class name for all generated elements.</P>
+
+<DT><B>table_row_close()</B><DD><P>This function can be overridden by a subclass of Table. It
+is called as the very last step in row creation and
+should output HTML that closes a table row.</P>
+
+<DT><B>table_cell($row, $cell, $key, $val, $class)</B><DD><P>This function can be overridden by a subclass of Table. It
+is called each time a table cell is to be generated.</P>
+<P><CODE>$row</CODE> is the current row number, <CODE>$cell</CODE> is the
+current cell number. <CODE>$key</CODE> is the current column name,
+<CODE>$val</CODE> is the value of the cell. <CODE>$class</CODE> is the
+HTML CSS class of the element that is to be generated.</P>
+
+<DT><B>table_cell_open($class="")</B><DD><P>Starts a cell.</P>
+
+<DT><B>table_cell_close($class="")</B><DD><P>Ends a cell.</P>
+
+<DT><B>set_checkbox_heading($class="")</B><DD><P>This function creates an empty header cell to coincide with
+the checkbox option for that column.</P>
+
+<DT><B>table_checkbox_cell($row, $row_key, $data, $class="")</B><DD><P>Outputs HTML code to display a checkbox. This function runs
+if the member variable <CODE>$check</CODE> has been set. <CODE>$check</CODE> should be
+set to some key within the <CODE>$data</CODE> array (ex: if <CODE>$data["myKey"]</CODE>,
+then set <CODE>$check="myKey"</CODE>).</P>
+
+<DT><B>set_checkbox($row, $row_key, $data, $class="")</B><DD><P>Creates an HTML checkbox based on the passed data, only if
+the instance variable <CODE>$check</CODE> is set.</P>
+
+</DL>
+</P>
+
+<H3>Example</H3>
+
+<P>Table is not automatically included or prepended into each page.
+Include the table class into the pages that are to use Table.
+Then create an instance of Table:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  // Include Table
+  require("table.inc");
+  
+  // make a Table instance
+  $t = new Table;
+  
+  // We want table headings to be printed.
+  $t-&gt;heading = "on";
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Now create a two dimensional array or prepare a database query
+and have table print it.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  // Create a database object
+  $db = new DB_Session;
+  
+  // create a twodim array called $tab
+  $tab = $db->metadata("active_sessions");
+  
+  // print that array
+  $t-&gt;show($tab, "metadata");
+  
+  // prepare a database query
+  $db-&gt;query("select * from active_sessions");
+  
+  // print that result
+  $t-&gt;show_result($db, "data");
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+</P>
+<H2><A NAME="ss5.3">5.3</A> <A HREF="documentation.html#toc5.3">Menu</A>
+</H2>
+
+<P>Menu will generate a hierarchical menu of clickable items
+suitable as a navigation bar. Menu takes a tree definition of
+items as the basis for this navigation bar and knows which
+subtrees to fold, depending on the current position in the menu
+tree. Menu uses the current URL as presented in
+<CODE>PHP_SELF</CODE> to determine the current position in the
+menu tree automatically.</P>
+<P>Menu does not depend on a hierarchical organisation of files in
+URL-space to generate a menu hierarchy. The organisation of menu
+items and the organisation of files in URL-space are in fact
+completely independent and Menu uses a mapping hash to derive a
+menu position from an URL. In the following class documentation
+we'll say URL when we mean files the latter and menustring when
+we mean the former. In the context of the Menu class, URLs are
+always relative URLs starting at the root of the local servers
+URL space, as we'll see them in PHP_SELF. They may look
+like <CODE>/menu/index.php3</CODE>. A menustring is usually numeric
+and all components have the same length, if necessary with
+leading zeroes. It may look like <CODE>/001/007</CODE>, denoting an
+item in main menu 1, submenu 7.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+$urlmap</TD><TD>Hash. Maps a relative URL as seenin PHP_SELF to a menustring.</TD></TR><TR><TD>
+$map</TD><TD>Menustring. Current position in menu.</TD></TR><TR><TD>
+$item</TD><TD>Hash of Hashes. The <CODE>item</CODE> hash is indexed bymenustring. For each menustring, an arbitrary number of itemattributes is stored. Menu does not use the <CODE>item</CODE> array,only <CODE>Menu::get_cell()</CODE> does, which you implement. Eachmenu item will automatically get an attribute <CODE>url</CODE> through<CODE>urlmap</CODE> inversion from the class constructor and the name ofthe menu item should be stored as the <CODE>title</CODE> attribute. Youmay add other attributes such as <CODE>textcolor</CODE> and <CODE>bgcolor</CODE>and use them in your <CODE>Menu::get_cell()</CODE>implementation.</TD></TR><TR><TD>
+$nomain</TD><TD>Boolean. If set, the first menu item will neverbe shown. This menu item is always the menu root, adding anextra level of indentation.</TD></TR><TR><TD>
+$title</TD><TD>String. After calling <CODE>get_title()</CODE>, thisvariable contains the title of the page based on it's location inthe menu hierarchy.</TD></TR><TR><TD>
+$title_delim</TD><TD>String. Used to delimit (i.e., separate)components in the page title built by <CODE>get_title()</CODE>.Default is <CODE>" : "</CODE></TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+$children</TD><TD>Hash of arrays. The <CODE>children</CODE> is indexed bymenustring. For each menustring, an array of childrenmenustrings is stored. This array is generated from <CODE>urlmap</CODE>in the class constructor and is used to determine which submenusare visible from the current <CODE>map</CODE> position.</TD></TR><TR><TD>
+$visible</TD><TD>Array of menustrings. The <CODE>visible</CODE> arraycontains the menustrings visible from the current <CODE>map</CODE>position. It is calculated by the <CODE>Menu::get()</CODE> and<CODE>Menu::show()</CODE> functions.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>Menu()</B><DD><P>Constructor. Calls <CODE>Menu::setup()</CODE> internally.</P>
+
+<DT><B>show()</B><DD><P>A shorthand notation for <CODE>print $this->get()</CODE>.</P>
+
+<DT><B>get()</B><DD><P>This function will calculate the menu items visible from the
+current <CODE>map</CODE> position. The menu will be constructed by
+calling <CODE>Menu::start_menu()</CODE> first. For each visible
+menu item, Menu will check the current indentation level and the
+indentation level of the current menu cell. If the indentation
+level increases, <CODE>Menu::shift_in($oldlevel, $level)</CODE> 
+is called once, if it decreases,
+<CODE>Menu:shift_out($oldlevel, $level)</CODE> is called once.</P>
+<P>After that, <CODE>Menu::get_cell($number, $level)</CODE> is
+called once. The number is an index into the <CODE>visible</CODE> array.</P>
+<P>After all menu cells have been drawn,
+<CODE>Menu::end_menu()</CODE> will be called once.</P>
+
+<DT><B>get_cell($n, $level)</B><DD>
+<P>You are expected to implement this function yourself. It should
+render a single menu item. You may use the <CODE>visible</CODE> and
+<CODE>item</CODE> arrays for that purpose: <CODE>$m = $this->visible[$n]</CODE>
+will return a menu string and <CODE>$attr = $this->item[$m]</CODE> is a
+hash of attributes for that menu string. <CODE>$hilite =
+($this->visible[$n] == $this->map)</CODE> is true for the current
+menu item, which should be rendered in way to stand out from the
+rest of the menu items.</P>
+
+<DT><B>get_title()</B><DD>
+<P>This function will calculate the title of the current page based
+on the position of the current page in the menu hierarchy. This
+function uses <CODE>$this->title_delim</CODE> to separate the components
+of the title. This function sets <CODE>$this>title</CODE> to the calculated
+title and returns the title as a string.</P>
+
+<DT><B>get_sitemap()</B><DD>
+<P>This function is identical to <CODE>print $this->get()</CODE> except that
+all menu items are shown, not just the ones visible from the current page.</P>
+
+<DT><B>show_sitemap()</B><DD><P>A shorthand notation for <CODE>print $this->get_sitemap()</CODE>.</P>
+
+<DT><B>setup()</B><DD><P> 
+This function initializes the internal arrays of Menu and should
+be called once from the constructor. It actually is the
+constructor, but language stupidity has it that PHP3 constructor
+names vary with class names, which means that you have to write
+a new constructor for each subclass and call this function
+manually.</P>
+
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+<P>
+<DL>
+<DT><B>normalize_pos($pos)</B><DD><P>This function looks at the current URL in <CODE>$PHP_SELF</CODE>
+and tried to translate this into a menustring. If the URL
+matches a menustring directly, this is easy.</P>
+<P>If not, the current URL will be sequentially shortened by
+applying the <CODE>dirname</CODE> PHP function to it until it matches.
+This allows you to create a single menu item for all files in a
+directory.</P>
+
+<DT><B>split_path($p)</B><DD><P>This function is used in the construction of the set of visible
+menu items. Given a menustring or a pathname, it constructs
+a series of pathnames which converge elementwise against the
+given pathname. That is, given the menustring <CODE>/3/2</CODE>,
+this function will return an array with the elements <CODE>""</CODE>
+(the empty string), <CODE>/3</CODE> and <CODE>/3/2</CODE>.</P>
+
+<DT><B>find_visible($r)</B><DD><P>This function calculates the actual set of visible URLs given a
+series of converging pathnames. It will include the set of
+children of each of these pathnames in the visible set, then
+sort this set numerically.</P>
+
+</DL>
+</P>
+
+<H3>Example</H3>
+
+
+<P>To use <CODE>Menu</CODE>, you must enable the require statement for
+<CODE>menu.inc</CODE> in <CODE>prepend.php3</CODE>. To use
+<CODE>Menu_Button</CODE>, you must enable the require statement
+for <CODE>menu.inc</CODE> and <CODE>menu_button.inc</CODE> in <CODE>prepend.php3</CODE>.</P>
+<P>Use a subclass of either <CODE>Menu</CODE> or <CODE>Menu_Button</CODE> to
+create a menu. Define a class <CODE>Example_Menu</CODE> in your
+<CODE>local.inc</CODE> file with a number of menu items in it. Do not
+forget to build a constructor.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class Example_Menu extends Menu {
+  # Map of PHP_SELF URL strings to menu positions
+  var $urlmap = array(
+    "/menu/index.php3"   =&gt; "",
+    "/menu/item1.php3"   =&gt; "/1",
+    "/menu/item11.php3"  =&gt; "/1/1",
+    "/menu/item12.php3"  =&gt; "/1/2",
+    "/menu/item13.php3"  =&gt; "/1/3",
+    "/menu/item2.php3"   =&gt; "/2",
+    "/menu/item21.php3"  =&gt; "/2/1",
+    "/menu/item22.php3"  =&gt; "/2/2",
+    "/menu/item221.php3" =&gt; "/2/2/1",
+    "/menu/item222.php3" =&gt; "/2/2/2",
+    "/menu/item23.php3"  =&gt; "/2/3",
+    "/menu/item24.php3"  =&gt; "/2/4"
+  );
+
+  # Information about each menu item
+  var $item = array(
+    ""      =&gt; array("title" =&gt; "Main"),
+    "/1"    =&gt; array("title" =&gt; "Text 1"),
+    "/1/1"  =&gt; array("title" =&gt; "Text 1.1"),
+    "/1/2"  =&gt; array("title" =&gt; "Text 1.2"),
+    "/1/3"  =&gt; array("title" =&gt; "Text 1.3"),
+    "/2"    =&gt; array("title" =&gt; "Text 2"),
+    "/2/1"  =&gt; array("title" =&gt; "Text 2.1"),
+    "/2/2"  =&gt; array("title" =&gt; "Text 2.2"),
+    "/2/2/1"=&gt; array("title" =&gt; "Text 2.2.1"),
+    "/2/2/2"=&gt; array("title" =&gt; "Text 2.2.2"),
+    "/2/3"  =&gt; array("title" =&gt; "Text 2.3"),
+    "/2/4"  =&gt; array("title" =&gt; "Text 2.4")
+  );
+
+  function Example_Menu() {
+    $this-&gt;setup();
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>In each of your files mentioned in the above <CODE>urlmap</CODE>, create
+an instance of <CODE>Example_Menu</CODE> and call the <CODE>show()</CODE>
+method of that instance.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  $m = new Example_Menu;
+ ?&gt;&lt;html&gt;
+&lt;head&gt;
+ &lt;title&gt;&lt;?php $m-&gt;get_menu() ?&gt;&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#ffffff"&gt;
+&lt;table border=1 bgcolor="#eeeeee" cellspacing=0 cellpadding=4&gt;
+  &lt;tr&gt;
+   &lt;td colspan=2 valign=top align=center&gt;
+    &lt;h1&gt;&lt;?php print $m-&gt;title ?&gt;&lt;/h1&gt;
+   &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td align=left valign=top&gt;&lt;?php $m-&gt;show() ?&gt;&lt;/td&gt;
+   &lt;td align=left valign=top&gt;Content&lt;/td&gt;
+  &lt;/tr&gt;
+ &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+</P>
+
+<H2><A NAME="ss5.4">5.4</A> <A HREF="documentation.html#toc5.4">Form</A>
+</H2>
+
+<P>The form class (sometimes called OOH Forms) is a convenience
+library for dealing with html forms.  It provides Javascript and
+server-side form validation, and is customizable and extensible.</P>
+
+<H3>Using OOH Forms</H3>
+
+<P>The OOH Forms library consists of five files: <CODE>oohforms.inc
+of_checkbox.inc of_radio.inc of_select.inc
+of_text.inc of_textarea.inc</CODE>.  <CODE>oohforms.inc</CODE>
+automatically includes the others.  You may wish to modify this so you
+can manually include the files for just the form elements you use.  Or
+you may wish to cut and paste the contents of the element files into
+<CODE>oohforms.inc</CODE> to save the overhead of multiple includes.
+Determining the appropriate configuration of the files for your site
+is left an exercise for the reader; for most purposes
+<CODE>require("oohforms.inc")</CODE> will suffice.</P>
+
+<P>In general, the structure of a page that uses oohforms is as
+follows:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+require("oohforms.inc");         // include the library
+
+$f = new form;                   // create a form object
+
+$f->add_element(...);     // set up form elements
+$f->add_element(...);    
+$f->add_element(...);    
+
+if ($submitname)                 // Is there data to process?
+  if ($err = $f->validate()) {   // Is the data valid?
+    echo $err;                   // No; Display error
+    $f->load_defaults();  // Load form with submitted data
+  else {
+    /* Process data */           // Data ok; Do something with it
+  }
+
+$f->start(...);                  // Start displaying form
+$f->show_element(...);    // Show elements
+$f->show_element(...);
+$f->show_element(...);
+$->finish();                     // Finish form
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>There are obviously many variations on this theme, but that covers
+the basics.  Specific methods are documented below.</P>
+<P>
+<DL>
+
+<DT><B>start($jvsname,$method,$action, $target)</B><DD><P>Outputs the initial <CODE>&lt;form&gt;</CODE> tag and sets up some initial
+state needed by the class.  All of the arguments are optional, though
+you'll usually want to use at least one in order to get Javascript
+validation.  <CODE>$jvsname</CODE> is an arbitrary string used to link the
+Javascript to the form; if it is empty (the default), no Javascript
+validation is provided.  <CODE>$method</CODE> is the HTTP method used to submit the 
+form; default is <CODE>"POST"</CODE>.  <CODE>$action</CODE> is the URL that receives
+the form submission; default is <CODE>$PHP_SELF</CODE>.  <CODE>$target</CODE> is the
+frame target for the form results; default is <CODE>_self</CODE>.</P>
+
+<DT><B>finish($after,$before)</B><DD><P>Outputs the any hidden fields that were added to the form, the
+final <CODE>&lt;/form&gt;</CODE> tag, then the Javascript validation
+function (if necessary).  <CODE>$after</CODE> and <CODE>$before</CODE> are both
+optional; if either is a nonempty string it is output as additional
+Javascript to be run on submission of the form, either before or after 
+the validation code.  Though the order of the arguments may seem
+counterintuitive, it makes the common case easier to type; in general
+you'll want to wait until after the validation has taken place to do
+anything fancy with Javascript.  Note that unlike with validation, OOH 
+Forms has no way of giving you server side functionality equivalent to 
+the Javascript you use here.</P>
+
+<DT><B>add_element($element)</B><DD><P><CODE>add_element</CODE> is used to define the attributes of a
+particular form element so that the other class methods can use and
+manipulate it properly.  <CODE>add_element</CODE> takes exactly one
+argument: an associate array whose key value pairs are used to
+define the form element type and it's various attributes.  Some of
+these attributes correspond to html attributes, while others are
+needed for the value added features of oohforms.  The attributes and
+the syntax and semantics of the values they take are documented below; 
+note that not all element types use all of the attributes</P>
+<P>
+<DL>
+
+<DT><B>type</B><DD><P>The type of element this is; can be <CODE>"submit"</CODE>, <CODE>"hidden"</CODE>,
+<CODE>"text"</CODE>, <CODE>"textarea"</CODE>, <CODE>"select"</CODE>, <CODE>"radio"</CODE>, 
+<CODE>"checkbox"</CODE>, or <CODE>"file"</CODE>.</P>
+
+<DT><B>name</B><DD><P>A string naming this element.  This name will be used as an
+argument to other methods and will be the <CODE>name=""</CODE> value in the
+generated html (and hence the variable name in PHP).  <B>Do not</B>
+append <CODE>[]</CODE> to the name if you want an array valued element; set
+the <CODE>multiple</CODE> attribute instead.</P>
+
+<DT><B>value</B><DD><P>The default value of this form element.  If the form element has
+the <CODE>multiple</CODE> attribute set, <CODE>value</CODE> can be an array.  If the
+this is a <CODE>select</CODE> element, <CODE>value</CODE> can refer to either the
+textual name (<CODE>label</CODE> in the <CODE>options</CODE> array) or the submission
+value (<CODE>value</CODE> in <CODE>options</CODE>).</P>
+
+<DT><B>multiple</B><DD><P>A flag to tell oohforms to assume this element is array valued.
+The use of this flag is most straightforward with <CODE>select</CODE> elements, 
+but it can be use with <CODE>text</CODE> and <CODE>checkbox</CODE> elements as well.
+See the <CODE>show_element</CODE> documentation for more information
+about how oohforms deals with such elements.</P>
+
+<DT><B>extrahtml</B><DD><P>Extra html code that is inserted verbatim into the opening form
+tag.  For <CODE>select</CODE> elements, the extra html goes into the
+<CODE>select</CODE> tag, not the <CODE>option</CODE> tags.</P>
+
+<DT><B>size</B><DD><P>For <CODE>text</CODE> elements, used to set the html size attribute that
+gives the width in characters of the text entry box.  For <CODE>select</CODE>
+elements, the size (number of options visible at once) of the
+selection box.  Validation is only performed on <CODE>select</CODE> elements
+if <CODE>size</CODE> is set to 1, since <CODE>select</CODE> validation doesn't make
+much sense if you can see multiple options at once.  For <CODE>file</CODE>
+elements, the maximum size file upload to accept.</P>
+
+<DT><B>pass</B><DD><P>If set for a <CODE>text</CODE> element, renders the html as a password
+element, i.e. entry displays as asterisks.</P>
+
+<DT><B>src</B><DD><P>If set for a <CODE>submit</CODE> element, convert to an image element and
+use the value of <CODE>src</CODE> as the source URL for the image.</P>
+
+<DT><B>maxlength</B><DD><P>Used verbatim as the maxlength html attribute in <CODE>text</CODE>
+elements.</P>
+
+<DT><B>minlength</B><DD><P>If <CODE>length_e</CODE> is set, this is the minimum length
+<CODE>text</CODE> element entry accepted by the validator.</P>
+
+<DT><B>length_e</B><DD><P>If set, validate the <CODE>text</CODE> element to assure it has at least
+<CODE>minlength</CODE> characters.  The value of <CODE>length_e</CODE> is the
+error string to be used in the event of failed validation.</P>
+
+<DT><B>valid_e</B><DD><P>If set, perform validation on a <CODE>text</CODE>, <CODE>radio</CODE>, or
+<CODE>select</CODE> element.  For a <CODE>text</CODE> element, validation assures a
+match with <CODE>valid_</CODE> regex.  <CODE>radio</CODE> element validation
+assures that one of the options in the group has been chosen.
+<CODE>select</CODE> validation only works for <CODE>select</CODE> elements with
+<CODE>multiple</CODE> unset and <CODE>size</CODE> equal to 1; the validator will not
+accept the first option of accept menu, assuming that it is some sort
+of prompt (e.g. "Please select an item").  In all cases, the value of
+<CODE>valid_e</CODE> is the error string used for failed validations.</P>
+
+<DT><B>valid_regex</B><DD><P>Regular expression used to validate entry into a test field if
+<CODE>valid_e</CODE> is set.  Note that if you must use ^...$ if you
+want the regex to match the whole entry.</P>
+
+<DT><B>icase</B><DD><P>If set, regex matching is case insensitive.</P>
+
+<DT><B>checked</B><DD><P>Only used for a <CODE>checkbox</CODE> element that does not have
+<CODE>multiple</CODE> set.  If <CODE>checked</CODE> is set, the element will display
+as checked.</P>
+
+<DT><B>rows</B><DD><P>Used verbatim as the <CODE>rows=</CODE> element in a <CODE>textarea</CODE> element.</P>
+
+<DT><B>cols</B><DD><P>Used verbatim as the <CODE>cols=</CODE> element in a <CODE>textarea</CODE> element.</P>
+
+<DT><B>wrap</B><DD><P>Used verbatim as the <CODE>wrap=</CODE> element in a <CODE>textarea</CODE> element.</P>
+
+<DT><B>options</B><DD><P>Array of options to be displayed in a <CODE>select</CODE> element.  If the
+elements of the array are simple values (strings or numbers), they are 
+simply displayed verbatim and used as the value for that particular
+option.  The elements may themselves be associate arrays with keys
+<CODE>"label"</CODE> and <CODE>"value"</CODE>.  In that case, the value of
+<CODE>"label"</CODE> is displayed and the value of <CODE>"value"</CODE> is used on
+submission.</P>
+
+</DL>
+</P>
+
+<P>Examples:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$f->add_element(array("type"=>"text",
+                             "name"=>"foo",
+                             "valid_regex"=>"^[a-z]*$",
+                             "valid_e"=>"Letters only",
+                             "icase"=>1,
+                             "value"=>"bar"));
+$f->add_element(array("type"=>"checkbox",
+                             "name"=>"compress",
+                             "multiple"=>1));
+$f->add_element(array("type"=>"textarea",
+                             "name"=>"comment",
+                             "rows"=>6,
+                             "cols"=>40,
+                             "value"=>""));
+$o = array(array("label"=>"Please Select","value"=>0),
+           array("label"=>"Apple","value"=>1),
+           array("label"=>"Orange","value"=>2),
+           array("label"=>"Pear","value"=>3),
+           array("label"=>"Grape","value"=>4));
+$f->add_element(array("type"=>"select",
+                             "name"=>"menu",
+                             "options"=>$o,
+                             "size"=>1,
+                             "valid_e"=>"Please select a fruit",
+                             "value"=>"apple"));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>show_element($name,$value)</B><DD><P>Outputs the form element named <CODE>$name</CODE>.  Usually, the second
+argument is not used.  It is always necessary for <CODE>radio</CODE> elements
+and <CODE>checkbox</CODE> elements with the <CODE>multiple</CODE> attribute set, since 
+many of these may have the same name.  It also must be used for
+<CODE>submit</CODE> elements to label the submission button; the <CODE>value</CODE>
+attribute is not used for <CODE>submit</CODE> elements.  For other elements
+that may be array valued (notably <CODE>text</CODE> elements) multiple calls
+to show_element will show successive values.</P>
+
+<DT><B>load_defaults($element_list)</B><DD><P>Sets the default value of form elements to the value of the PHP
+variables with the same name.  This is generally used to redisplay a
+form with the same values which were submitted.  The argument is
+optional; if given it is an array of element names; only these
+elements ares affected.</P>
+
+<DT><B>validate($result,$element_list)</B><DD><P>Validates a form submission.  If all of the elements are valid,
+return <CODE>$result</CODE>, otherwise return the relevant error message (the
+<CODE>valid_e</CODE> or length_e attribute of some form
+element).  <CODE>$result</CODE> defaults to <CODE>false</CODE>.  The second argument
+is also optional; it is an array of names of elements to validate.</P>
+
+<DT><B>freeze($element_list)</B><DD><P>Freezes the form elements whose names are given in the array passed 
+as the argument.  If no argument is given, freeze all of the
+elements.  Frozen elements are rendered as plain, static html rather
+than form widgets.  This static rendering is accompanied by
+appropriate hidden elements to simulate the affect of using the
+unfrozen version of the element.</P>
+
+</DL>
+</P>
+
+<H3>Customizing OOH Forms</H3>
+
+<P>Since OOH Forms is object oriented, it can be easily customized by
+extending the classes that define the element types.  In general, you
+must make sure your derived class has a constructor and you may
+override any of the self_* functions of
+<CODE>of_element</CODE>.  The source for the existing elements is the
+best documentation for how to do this properly, but a few general
+notes follow.</P>
+<P>
+<DL>
+
+<DT><B>self_show($val,$which)</B><DD><P>Display an instance of this element unfrozen.  <CODE>$val</CODE> is the
+<CODE>$value</CODE> argument of <CODE>show_element</CODE> if there was one;
+<CODE>$which</CODE> can be used as an index for array valued elements; it is
+equal to the number of times <CODE>show_element</CODE> has been called
+for this element previously.  This function must return the number of
+hidden tags output.</P>
+
+<DT><B>self_show_frozen($val,$which)</B><DD><P>Display an instance of this element frozen.  In addition to the
+html to show the frozen element, you must output tags for hidden
+fields to duplicate the effect of submitting an unfrozen element of
+this type.  The function must return the number of hidden tags output;</P>
+
+<DT><B>self_validate($val)</B><DD><P>Validate <CODE>$val</CODE> for this element.  If it is valid, return <CODE>false</CODE>, 
+otherwise return the relevant error string.</P>
+
+<DT><B>self_print_js($ndx_array)</B><DD><P>Print out Javascript code to validate this element.
+<CODE>$ndx_array</CODE> is an array of the indices of the elements to
+be validated as used in the Javascript form.element[] array.  This is
+needed since the extra <CODE>[]</CODE> in array valued element names confuses
+Javascript.</P>
+
+<DT><B>self_load_defaults($val)</B><DD><P>Set the default value for this element to <CODE>$val</CODE>.  Usually the
+default definition of this function, which just copies <CODE>$val</CODE> to
+<CODE>$this-&gt;value</CODE> is all that is needed, but there may be special
+cases that need to do something else.  See the implementation of the
+checkbox element for an example.</P>
+
+</DL>
+
+</P>
+<H2><A NAME="ss5.5">5.5</A> <A HREF="documentation.html#toc5.5">tpl_form</A>
+</H2>
+
+<P> The <CODE>tpl_form</CODE> class is intended to provide a general framework for
+HTML form deployment. It heavily depends on <CODE>OOH Forms</CODE> library, so it
+is required that you read and understand the relative documentation.</P>
+
+<P>The main idea is that you create a black box by sub-classing 
+<CODE>tpl_form</CODE>, provide some HTML code mixed with <CODE>OOH Forms</CODE> calls
+to actually render the form itself. Your application will then use 
+that black box to obtain some input from the user. Your application
+doesn't have to know how to handle user input, nor how to validate
+input data, since internal methods will take care of that.</P>
+
+<P>This approach is very similar (I think) to <CODE>OOH Forms</CODE> one, only
+at a higher level. <CODE>OOH Forms</CODE> elements have no way to communicate
+with each other, and are only able to perform &quot;simple&quot; checks
+on data integrity, while <CODE>tpl_form</CODE> adds a consistent interface for
+complex data evaluation and processing.</P>
+
+<P>Furthermore, the <CODE>get_default_values</CODE> and <CODE>set_default_values</CODE>
+methods can be used to maintain user input between sessions, without
+worrying about serialization of form variables (a BAD THING(tm)), using
+an hash array containing field names and values.</P>
+
+<P>You'll note that an array is used to share data with the application.
+You may object this is kinda futile, since all user input data may be
+found in global vars and <CODE>HTTP_POST</CODE> or <CODE>HTTP_GET</CODE> global hashes.
+This is true, and in the general case you'll pass back and forth an
+empty array. The <CODE>values</CODE> variable is intended for use in very
+complex data-entry setup, where a form behaviour may depend on previous
+data entered by the user. In this case, if all forms cooperate reading
+and writing to <CODE>values</CODE> hash array, final result may be constructed
+step by step across multiple HTML pages. </P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Name of the class. Used for serialization AND in <CODE>display</CODE> to determine the filename of template containing HTML/php code needed to actually render the form.</TD></TR><TR><TD>
+error</TD><TD>Contains error messages generated by <CODE>validate</CODE> and <CODE>validate_input</CODE> methods.</TD></TR><TR><TD>
+values</TD><TD>This is a sort of &quot;shared memory area&quot; between the form and the application. Is read in <CODE>init</CODE> method and passed back in <CODE>get_values</CODE> method.</TD></TR><TR><TD>
+form&thinsp;data</TD><TD>Holds form info (<CODE>Form</CODE> object).</TD></TR><TR><TD>
+has&thinsp;defaults</TD><TD>Flag, form default values were passed via <CODE>set_default_values</CODE> method. Should not be tampered with by the user.
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>init($values)</B><DD><P>This is a sort of a constructor for the class. $values is an hash array
+intended to store form values to be passed back to the application via
+<CODE>get_values</CODE> method.</P>
+
+<DT><B>get_default_values()</B><DD><P>Returns an array containing all data submitted by the user for the
+form. This array is intended to be passed to <CODE>set_defaults_values</CODE>
+some time later.</P>
+
+<DT><B>set_default_values($fv)</B><DD><P>Restore form defaults from an array as returned by <CODE>get_default_values</CODE>. </P>
+
+<DT><B>display()</B><DD><P>Actually display form fields. This method should not be overridden in
+descendants. User should instead provide a file named as the derived
+class and with &quot;.ihtml&quot; extension which will be automatically
+included.</P>
+
+<DT><B>get_values()</B><DD><P>This method should not be overridden. It is intended as the main
+interface between the application and the form. Once the form has
+been properly derived to suit designer's needs, application calls
+<CODE>get_values</CODE> and receives back the array passed to <CODE>init</CODE>, 
+eventually modified by <CODE>process_input</CODE> method, or <CODE>false</CODE>
+if user input is invalid. In that latter case, the application should
+call <CODE>display</CODE> to (re)present the form to the user, eventually
+filled with proper default values.</P>
+
+<DT><B>clear()</B><DD><P>Sort of a &quot;destructor&quot;. There should no real need to call it,
+except maybe freeing some memory. May be called from the application,
+otherwise is not executed. Returns <CODE>true</CODE>.</P>
+
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+<P>
+<DL>
+<DT><B>setup()</B><DD><P>Init the <CODE>Form</CODE> object, which will contain all fields info. The hidden
+field <CODE>form_name</CODE>, automatically added by this routine, is used by other
+methods to determine if form has already been submitted by the
+user. You shouldn't override this in descendants, use <CODE>setup_fields</CODE>
+instead. Returns <CODE>true</CODE>.</P>
+
+<DT><B>setup_fields()</B><DD><P>Override this method in order to provide form fields definition that
+suit your needs.</P>
+
+<DT><B>validate()</B><DD><P>Validates user input. This method should not be overridden in
+descendants. See <CODE>validate_input</CODE> instead. Returns false on error
+and sets <CODE>error</CODE> variable accordingly.</P>
+
+<DT><B>validate_input()</B><DD><P>This method should be overridden in descendants, in order to provided
+complex validation methods (i.e. field2 should not be empty IF
+field1 == &quot;other&quot;).  Should return <CODE>false</CODE> on error and set
+<CODE>error</CODE> variable with a sensible error message.</P>
+
+<DT><B>process()</B><DD><P>Process user data. This method should not be overridden by descendants.
+See <CODE>process_input</CODE> and <CODE>process_default</CODE> instead. Returns <CODE>true</CODE>
+on success, <CODE>false</CODE> otherwise.</P>
+
+<DT><B>process_input()</B><DD><P>This method should be overridden in descendants. It is executed after
+validation has taken place. The data passed to the form could be
+used to fill <CODE>values</CODE> array.</P>
+
+<DT><B>process_default()</B><DD><P>This method should be overridden in descendants. It is executed
+when form validation fails or before presenting the form for the
+first time. Should be used to bypass form displaying if data can
+be extracted from previous actions, divination, penguin fly watching
+or whatever.</P>
+
+</DL>
+</P>
+
+<H3>Example</H3>
+
+<P>Suppose you have a form that the user should fill with her (eheh) name
+and e-mail. You want to check wether this e-mail is valid, or your blind
+date setup is lost. A... er... simple regular expression for validating
+syntactically the e-mail is presented in the example code below.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+ $this-&gt;form_data-&gt;add_element(array(
+  &quot;type&quot;=&gt;&quot;text&quot;,
+  &quot;name&quot;=&gt;&quot;email&quot;,
+  &quot;valid_e&quot;=&gt;&quot;Syntax error in E-Mail address.&quot;,
+  &quot;valid_regex&quot;=&gt;&quot;^([-a-zA-Z0-9.]+@[-a-zA-Z0-9]+(\.[-a-zA-Z0-9]+)+)*$&quot;
+ ));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>Now, this piece of code should do the job, but since you're feeling
+very paranoid today, you'd also like to validate the host name part of the
+address with DNS. So, you put together some code which takes an hostname
+in input and reports <CODE>true</CODE> on valid hostname, <CODE>false</CODE> otherwise
+(HINT: on 
+<A HREF="http://px.sklar.com/">PHP Code Exchange</A>
+you should find a procedure for &quot;active&quot; email validation).</P>
+
+<P>Now that you have your shining new code, you can check the address.
+The user fills out the form, you parse user input, no syntax errors,
+time to call your <CODE>mycheckhost</CODE> from the application. If the function
+is ok update your database, else load defaults into the form, display
+again, close the page, goodbye.</P>
+
+
+<P>I've done something similar for MANY forms, some of them with very
+complex validation procedures, and I found that was too easy producing
+very bad and unreadable code (well, I actually realized that the first
+time I had to change some logic in data validation...).</P>
+
+
+<P><CODE>tpl_form</CODE> should provide a solid framework to build your forms
+with, and all the code will be self-contained and separated from main
+application logic. Hope you'll like it.</P>
+
+<P>Time to see some code. First of all, class declaration, sub-classing
+<CODE>tpl_form</CODE>:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class myform extends tpl_form {
+  var $classname = &quot;myform&quot;;
+  
+  function setup_fields() {
+    $this-&gt;form_data-&gt;add_element(array(
+     &quot;name&quot;=&gt;&quot;email&quot;,
+     ..., // See previous code snippet
+    ));
+    $this-&gt;form_data-&gt;add_element(array(
+     &quot;name&quot;=&gt;&quot;submit&quot;,
+     &quot;type&quot;=&gt;&quot;submit&quot;,
+     &quot;value&quot;=&gt;&quot;submit&quot;
+    ));
+  }
+  
+  function validate_input() {
+    global $email;
+    list($uname, $hostname) = split(&quot;@&quot;, $email);
+    if (! mycheckhost($hostname)) {
+      $this-&gt;error = sprintf(&quot;Sorry, unknown host %s, try again.&quot;, $hostname);
+      return false;
+    }
+    // Additional checks here...
+    return true;
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>You shuld provide a file <CODE>myform.ihtml</CODE> with HTML and php code to
+render the form. Minimalistic example:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;html&gt;
+&lt;body&gt;
+&lt;?php
+ $this-&gt;form_data-&gt;start_form($this-&gt;classname, &quot;POST&quot;, $sess-&gt;self_url(), &quot;&quot;);
+ printf(&quot;%s&lt;br&gt;\n&quot;, $this-&gt;error);
+ $this-&gt;form_data-&gt;show_element(&quot;email&quot;);
+ printf(&quot;&lt;br&gt;\n&quot;);
+ $this-&gt;form_data-&gt;show_element(&quot;submit&quot;);
+ $this-&gt;form_data-&gt;finish();
+?&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>Your <CODE>tpl_form</CODE> class is complete, and will only need a little
+work on the artistic side... 8-) To use your brand new class, include
+class definition code into your application, then...</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$mf = new myform;
+$mf-&gt;init(array()); // This is not strictly required, AT PRESENT,
+                    // but I recommend it
+if ($rv = $mf-&gt;getdata()) {
+  $mf-&gt;clear(); // This is not strictly required, anyway it should free
+                // some memory...
+  global $email;
+  // process your data at will
+} else {
+  $mf-&gt;display();
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>Hope this very little example does help in understanding the
+real power of <CODE>tpl_form</CODE> class, at least in terms of 
+rapid designing and code partitioning.
+</P>
+
+<H2><A NAME="ss5.6">5.6</A> <A HREF="documentation.html#toc5.6">Tree</A>
+</H2>
+
+<P>The Tree class can render tree structures such as directory hierarchies
+and menu structures as HTML. The structure must be given to Tree as an
+nested array of arrays of arbitrary depth.</P>
+<P>The idea of Tree is, that there are several mathematical models a tree could
+be viewed: One model is a data structure like nested arrays or a pointer
+structure from where you can print multidimensional graphics and can do
+other neat things like deleting one part of the tree or inserting a whole
+subtree. But you can also imagine a tree as a one dimensional string or as a
+sequence of function calls (which is nearly the same in the mathematical
+sense).</P>
+<P>To generate HTML-code from a tree-structure it is like this: You need at the
+end a one-dimensional string, which tells the browser what to do. The
+Tree class assists you in generating this string in this way, that it will go
+through the whole tree and call several functions on every stage trough the
+way. It will be your task to change the functions, so that a nice layout will
+be generated.</P>
+
+<H3>Instance variables</H3>
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+delimiter</TD><TD>a char for truncating the &quot;path&quot;</TD></TR><TR><TD>
+tree</TD><TD>an array of an array of an array</TD></TR><TR><TD>
+outp</TD><TD>the "output"</TD></TR><TR><TD>
+prfx, sufx, flag</TD><TD>internal - some helpers to create outp
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+<H3>Accessible instance methods</H3>
+
+<P>
+<DL>
+<DT><B>build_tree()</B><DD><P>This function is completely user driven! You have to create an
+array with the structure described below. See the example 
+for details.</P>
+<P>Don't be shy to create some own functions which are called by
+<CODE>build_tree()</CODE> - e.g. for recursive calls.</P>
+
+<DT><B>go_trough_tree($key="",$path="",$depth=0,$lcount=0,$pcount=0)</B><DD>
+<P>This is the most important function of this class. It will call the output
+functions in the right order with the correct parameters.</P>
+<P>All variables are optional. The parameters are perhaps useful, if you
+want to display only partial trees, but this is not supported now.</P>
+
+<DT><B>path_to_index (&amp;$path,$key="")</B><DD>
+<P>This function is mostly used internally, but could be useful
+for you to generate <CODE>$this-&gt;tree</CODE>. This function generates
+a PHP3 associate array-index string from a path, which is also
+a string but truncated by <CODE>$this-&gt;delimiter</CODE>. If <CODE>$key</CODE>
+is given, it will be added to <CODE>$path</CODE> (minds empty path and
+so on).</P>
+
+<P>Example:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $t->delimiter="/";
+  $path= "usr/local/lib";
+  ## $path must be given as a var, because it is called by reference!
+  $bla = $t->path_to_index($path,"etc");
+
+  ## $path is now "usr/local/lib/etc"
+  ## $bla is now ["usr"]["local"]["lib"]["etc"]
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>path_to_parent (&amp;$path)</B><DD><P>This function isn't used internally, but could be useful
+for you during generating the output tree. It will remove
+one from the depth of the path.</P>
+<P>Example:
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $t->delimiter="/";
+  $path= "usr/local/lib";
+  $bla = $t->path_to_parent($path);
+
+  ## $path is now "usr/local"
+  ## $bla is now ["usr"]["local"]
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<DT><B>path_add ($path,$key)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<CODE>path_to_index</CODE>. It will add the $key to
+the path and return it.</P>
+
+<DT><B>path_sub ($path)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<CODE>path_to_parent</CODE>. It will find the
+parent of path and return it.</P>
+
+<DT><B>path_index ($path)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<CODE>path_to_index()</CODE>. It will return the
+associate key to the tree described by path.</P>
+
+<DT><B>starttree ()</B><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
+at the beginning of the output of a tree.</P>
+<P>All <CODE>*tree</CODE>-functions are called by <CODE>go_trough_tree()</CODE>,
+but it's your turn, to give them a nice layout. I think it is possible
+to generate nearly every kind of tree-layout with this. Have a look at
+the variables: E.g. <CODE>$depth</CODE> makes it possible to handle every
+&quot;level&quot; in another manner.</P>
+
+<DT><B>growtree ($key,$value,$path,$depth,$count,$pcount)</B><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
+at the beginning of the output of a tree.</P>
+<P>It is called every time, when <CODE>go_trough_tree()</CODE>
+will call itself recursively. You could also say it is called, when
+the current item has a successor.</P>
+
+
+<DT><B>leaftree ($key,$value,$path,$depth,$count,$pcount)</B><DD><P>This function is called, when the current item has <EM>no</EM> successor.</P>
+
+<DT><B>shrinktree ($key,$depth)</B><DD><P>This function is the &quot;opposite&quot; of <CODE>growtree()</CODE>. It is
+called every time, when the current item was the last item in this
+sub-list.</P>
+
+<DT><B>endtree()</B><DD><P>Called when leaving tree.</P>
+
+</DL>
+</P>
+
+<H3>The Tree Array </H3>
+
+<P>As said above, before you call <CODE>go_trough_tree()</CODE>,
+first <CODE>$tree</CODE> must be generated.</P>
+<P><CODE>$tree</CODE> consists of nested arrays of arbitrary depth. An example:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$t= new Tree;
+$t->tree = array(
+                "usr" => array(
+                  0       => "allowed",
+                  "lib"   => "forbidden",
+                  "local" => "allowed",
+                  "bin"   => "forbidden",
+                  "etc"   => array(
+                     0       => "allowed",
+                    "hosts"  => "forbidden",
+                    "mailcap"=> "allowed"
+                  ),
+                  "var"   => "allowed",
+                  "tmp"   => "allowed"
+                ),
+                "root" =>"forbidden"
+              );
+$t->go_through_tree();
+print $t->outp;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>This is a completely recursive structure and I think, it is clear, how
+to create it with a recursive call of a function. If not, see the
+example below.</P>
+<P>One little quirk has to be explained, because it is a little
+bit confusing: the array name 0 (zero) is used for the value of the
+parent element. As shown in the example, an element with children
+(for example "etc") cannot have attributes (such as "allowed").
+Instead the value of this element is stored in a pseudo-child
+named 0. If this element is not present, it will have the value
+"Array" (perhaps something that should be changed).</P>
+<P>The output of this example if you don't change the output-functions will
+look like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+/
+^---- usr->'allowed' : 'usr' (1) [1/2]
+|    ^---- lib->'forbidden' : 'usr^lib' (2) [2/7]
+|    O---- local->'allowed' : 'usr^local' (2) [3/7]
+|    O---- bin->'forbidden' : 'usr^bin' (2) [4/7]
+|    O---- etc->'allowed' : 'usr^etc' (2) [5/7]
+|    |    ^---- hosts->'forbidden' : 'usr^etc^hosts' (3) [2/3]
+|    |     \--- mailcap->'allowed' : 'usr^etc^mailcap' (3) [3/3]
+|    O---- var->'allowed' : 'usr^var' (2) [6/7]
+|     \--- tmp->'allowed' : 'usr^tmp' (2) [7/7]
+ \--- root->'forbidden' : 'root' (1) [2/2]
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Looks a bit confusing. From left to right the fields are
+<UL>
+<LI>The <EM>index-name</EM> of the current field</LI>
+<LI>The <EM>value</EM> of this field</LI>
+<LI>The <EM>full path</EM> to this field (see
+<CODE>path_to_*</CODE>-functions)</LI>
+<LI>The current <EM>depth</EM> or <EM>level</EM></LI>
+<LI>The current <EM>element number</EM>. See below to understand, why
+it will begin sometimes with "2" in this example!</LI>
+<LI>The <EM>number of elements</EM> in the subtree at this depth</LI>
+</UL>
+</P>
+
+
+<H3>Example</H3>
+
+<P>This example recursively reads in the directory structure of your hard disk.
+It allows you to flap in and out whole subdirectory trees. 
+The $flap_out array must be persistent, so we use sessions and 
+register it as a session variable.</P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?
+// Uncomment these includes if necessary
+// include("prepend.php3");
+// include "tree.inc";
+
+// Session handling straight out of the demo
+page_open(array("sess" =&gt; "Example_Session"));
+
+if (!isset($flap_out)) { $flap_out=array(); };
+$sess-&gt;register("flap_out");
+
+class dir_Tree extends Tree {
+     var $classname = "dir_Tree";
+     var $delimiter="/";
+
+     var $tdat;
+
+     function build_tree ($path=".") {
+         $this-&gt;tree=$this-&gt;recurs_dir($path,0);
+     }
+
+     ## This example code can read and output 1000 directory entries with
+     ## many subdirs in about 20 seconds on my system (P200, 64 MB);
+     ## 220 dir entries with a maximum depth of 4 are read in 2 seconds.
+     ## This is ok. :)
+
+     function recurs_dir ($path,$depth) {
+     GLOBAL $flap_out;
+         $d=opendir($path);
+
+         while ( $name=readdir($d) ) {
+             $pathname=$path . $this-&gt;delimiter . $name;
+             if (is_dir($pathname) &amp;&amp; !ereg("\\.\\.?",$pathname)) {
+                 if (isset($flap_out[$pathname])) {
+                     $array[$name]=$this-&gt;recurs_dir($pathname,$depth+1);
+                 }
+                 # ATTENTION: It is IMPORTANT fill the [0] array
+                 # *after* filling the rest of the array!
+                 $array[$name][0]=$pathname;
+             } else {
+                 $array[$name]=$pathname;
+             }
+         }
+         closedir($d);
+         return($array);
+
+     }
+
+     #################################################
+     ## FLAPPING IN and OUT
+     ## This is used to create an array which includes
+     ## all sub-paths which should be shown
+     ##
+
+     function flapping ($path) {
+     GLOBAL $flap_out;
+         if ($path) {
+             if (is_dir($path)) {
+                 if (isset($flap_out[$path])) {
+                     unset($flap_out[$path]);
+                 } else {
+                     $flap_out[$path]="";
+                 }
+             }
+         }
+     }
+}
+
+$t= new dir_Tree;
+$t-&gt;flapping($val); ## $val is given by GET-method, see *tree()-functions
+$t-&gt;build_tree();
+$t-&gt;go_through_tree();
+print $t-&gt;outp;
+
+page_close()
+
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>With this code it is very easy to flap in and out whole
+parts of the tree. Send the path via GET-method and put
+this path in <CODE>flapping()</CODE>. The whole <CODE>$flap_out</CODE>-array must be
+persistent (e.g. via <EM>session</EM>). Perhaps you can program a garbage
+collection, which will look into <CODE>$flap_out</CODE> and check for paths that
+already exist?</P>
+
+<H3>Known Bugs / Tips</H3>
+
+<P>There is one known bug: If a name of a subpath contains the
+<CODE>$delimiter</CODE>-string. This cannot be solved correctly and you have
+to look for it when you create the tree.</P>
+<P>The same thing is with the value [0] (zero) of a sub-array. This element
+is always used as the attribute of the parent element.</P>
+<P>A good tip: when you
+build your tree recursively then the [0]-index must be filled <EM>after</EM>
+the subtree is returned from recursive call. See in the example above what I
+mean. I think it's a PHP3 specialty.</P>
+<P>Also it is possible that not every name could be inserted into the
+associate index-field (Control-chars etc.), but this is untested.
+</P>
+
+<H2><A NAME="ss5.7">5.7</A> <A HREF="documentation.html#toc5.7">STRINGS2 function set</A>
+</H2>
+
+<P>This is a set of functions, which are used very often by me.</P>
+<P>They are so easy, that I now stop describing and simply insert the code.
+Perhaps the next revision of this set I will replace it with a better
+description:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+##
+## Strings2-Functions
+##
+## Copyright (c) 1998-2000 Alex 'SSilk' Aulbach
+##
+## These Functions are very practical and if I could program
+## C a little bit better it will be placed directly in PHP3.
+## But I can't... :-}
+##
+
+
+##
+## Have you ever worried about such constructs like
+##    echo ($faxnumber) ? sprintf("Fax: %s",$faxnumber) : "";
+##
+## This functionset could help you to replace those constructs by
+##    p_iftrue($faxnumber,"Fax: %s");
+## which is nearly the half of typing and looks more clear and solves
+## an error if $faxnumber is unset.
+##
+function o_iftrue ($val,$str) {
+        if (isset($val) &amp;&amp; $val) {
+                return(sprintf($str,$val));
+        }
+}
+function p_iftrue ($val,$str) {
+        print o_iftrue($val,$str);
+}
+
+##
+## Output "One or More"
+##
+## This function is good if you want to differ a output by number:
+##  e.g.  o_1or2($q->num_rows(),
+##               "Found only one matching record",
+##               "Found %s records");
+## Will output if num_rows() is 1:  "Found only one matching record"
+##                            200:  "Found 200 records"
+##
+## if $val is empty() or "" a blank string will be returned!
+##
+function o_1or2 ($val,$str1,$str2) {
+        if (isset($val) &amp;&amp; $val) {
+                if (1==$val) {
+                        return(sprintf($str1,$val));
+                } else {
+                        return(sprintf($str2,$val));
+                }
+        } else {
+                return(false);
+        }
+}
+function p_1or2 ($val,$str1,$str2) {
+        print o_1or2 ($val,$str1,$str2);
+}
+
+
+##
+## This is for the case, that you want to output something
+## if $val is false e.g.
+##
+## p_0or1($faxnumber,"THERE IS NO FAXNUMBER","Faxnumber: %s");
+## 
+function o_0or1 ($val,$str1,$str2) {
+        if (empty($val) || !$val) {
+                if (isset($val)) {
+                        return(sprintf($str1,$val));
+                } else {
+                        return($str1);
+                }
+        } else {
+                return(sprintf($str2,$val));
+        }
+}
+function p_0or1 ($val,$str1,$str2) {
+        print o_0or1 ($val,$str1,$str2);
+}
+
+##
+## Replaces all blank-chars with &nbsp;
+## This function is used, when you are not willing to let the browser
+## break your lines an can be used instead of &lt;NOBR>-Tag
+## as very compatible replacement
+##
+## &nbsp; can also be replaced by a true whitespace which has in
+## ISO-latin-1 the code 160
+##
+function o_nonbsp ($val) {
+        return(ereg_replace("[[:blank:]\n\r]","&nbsp;",$val));
+}
+function p_nonbsp ($val) {
+        print o_nonbsp($val);
+}
+?>
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<HR>
+<A HREF="documentation-6.html">Next</A>
+<A HREF="documentation-4.html">Previous</A>
+<A HREF="documentation.html#toc5">Contents</A>
+</BODY>
+</HTML>

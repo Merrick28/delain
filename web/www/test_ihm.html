@@ -1,0 +1,35 @@
+<html>
+<head>
+	<link rel="stylesheet" type="text/css" href="test_ihm.css" />
+	<script type="text/javascript" src="test_ihm.js"></script>
+</head>
+<body>
+	<div style='position:absolute; top:0px; left:0px; border-radius: 15px; border: solid 3px #800000; z-index:1;'>
+		<div style='padding:5px; background-color: #800000; font-weight: bold; color: white; text-align: center;'>Les souterrains de Delain</div>
+		<!--<img src='http://img4.hostingpics.net/pics/941185mine.png' />-->
+		<img src='http://img15.hostingpics.net/pics/294835untest.png' />
+		
+		<div style='top:150px;' class='fenetre_select'>
+			<div class='titre_fenetre' onclick='fenetre_inventaire.fermer();'>Inventaire</div>
+		</div>
+		<div style='top:200px;' class='fenetre_select'>
+			<div class='titre_fenetre' onclick='fenetre_perso.fermer();'>Fiche de perso</div>
+		</div>
+		
+		<div style='top:150px;' id='fenetre_inventaire' class='fenetre'>
+			<div class='titre_fenetre' onclick='fenetre_inventaire.ouvrir();'>Inventaire</div>
+			<p>Épée trop belle +10</p>
+			<p>Armure sexy +5</p>
+			<p>Bottes en cuir +2</p>
+			<div class='bas_fenetre' onclick='fenetre_inventaire.fermer();'>Fermer</div>
+		</div>
+		<div style='top:200px;' id='fenetre_perso' class='fenetre'>
+			<div class='titre_fenetre' onclick='fenetre_perso.ouvrir();'>Fiche de perso</div>
+			<p>Intelligence : 21</p>
+			<p>Charisme : 15</p>
+			<p>Force : 8</p>
+			<div class='bas_fenetre' onclick='fenetre_perso.fermer();'>Fermer</div>
+		</div>
+	</div>
+</body>
+</html>

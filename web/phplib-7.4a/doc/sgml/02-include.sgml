@@ -1,0 +1,19 @@
+<!-- $Id: 02-include.sgml,v 1.1.1.1 2000/04/17 16:39:59 kk Exp $ -->
+
+<sect1>Using <tt/include()/ instead of <tt/auto&lowbar;prepend&lowbar;file=/
+<p>If you do not want to use <tt/auto&lowbar;prepend&lowbar;file/ to load the
+PHPLIB core functionality, you can load the class definitions
+for the core manually on each page that requires them.
+
+You will have to define a valid
+<tt/include&lowbar;path=/-statement in your <tt/php3.ini/ file
+as outlined previously to reflect the location of the <tt/*.inc/
+files. Then, all core functionality can be loaded with
+<tt/include("prepend.php3")/ as the first statement at the top
+of each page.
+
+To further optimize performance, you can minimize the contents
+of the prepend file, if you do not need all core functionality.
+You <em/may/ leave out <tt/auth.inc/, <tt/perm.inc/ and
+<tt/user.inc/, if you do not require these features (note that
+there are dependencies among these classes!).

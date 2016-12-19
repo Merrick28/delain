@@ -1,0 +1,157 @@
+<pre>
+&lt;?php
+/**
+* includes/class.{{TABLE}}.php
+ */
+ 
+/**
+* Class {{TABLE}}
+*
+ * Gère les objets BDD de la table {{TABLE}}
+ */
+class {{TABLE}}
+{
+    {% for ligne in CHAMPS %}
+    var ${{ligne.name}}{% if ligne.default != '' and ligne.name != PK %} = {{ ligne.default }}{% endif %};
+    {% endfor %}
+
+    function __construct()
+{   
+    {% if CHAMPDATE| length > 0 %}
+        
+        {% for ligne in CHAMPDATE %}
+        $this->{{ ligne }} = date('Y-m-d H:i:s');
+        {% endfor %}
+    {% endif %}
+}
+  
+    /**
+     * Charge dans la classe un enregistrement de {{TABLE}}
+     * @global bdd_mysql ${{CONN_NAME}}
+     * @param integer $code => PK
+     * @return boolean => false si non trouvé
+     */   
+    function charge($code)
+    {
+        ${{CONN_NAME}} = new {{ CONNECTOR }};
+        $req = "select * from {{TABLE}} where {{ PK }} = ?";
+        $stmt = ${{CONN_NAME}}->prepare($req);
+        $stmt = ${{CONN_NAME}}->execute(array($code),$stmt);
+        if(!$result = $stmt->fetch())
+        {
+                return false;
+        }
+    {% for ligne in CHAMPS %}
+        $this->{{ligne.name}} = $result['{{ligne.name}}'];
+    {% endfor %}
+        return true;
+    }
+ 
+    /**
+     * Stocke l'enregistrement courant dans la BDD
+     * @global bdd_mysql ${{CONN_NAME}}
+     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     */
+     function stocke($new = false)
+     {
+        ${{CONN_NAME}} = new {{ CONNECTOR }};
+        if($new)
+        {
+                $req = "insert into {{ TABLE }} (
+    {% for ligne in HORSPK %}
+        {{ ligne }}{% if not loop.last %},{{EOL}}{% endif %}
+    {% endfor %}
+                    )
+                    values
+                    (
+    {% for ligne in HORSPK %}
+                    :{{ ligne }}{% if not loop.last %},{{EOL}}{% endif %}
+    {% endfor %}
+                    )
+    {% if BDTYPE == 'pgsql' %}returning {{ PK }} as id{% endif %}";
+                $stmt = ${{CONN_NAME}}->prepare($req);
+                $stmt = ${{CONN_NAME}}->execute(array(
+    {% for ligne in HORSPK %}
+                    ":{{ ligne }}" => $this->{{ ligne }},
+    {% endfor %}
+                    ),$stmt);
+    {% if BDTYPE == 'sqlsrv' %}
+                $req = "select @@IDENTITY  as id";
+                $stmt = ${{CONN_NAME}}->query($req);
+    {% endif %}
+
+                
+                $temp = $stmt->fetch();
+                $this->charge($temp['id']);
+        }
+        else
+        {
+                $req = "update {{ TABLE }}
+                    set
+    {% for ligne in HORSPK %}
+        {{ ligne }} = :{{ ligne}}{% if not loop.last %},{{EOL}}{% endif %}
+    {% endfor %}
+                    where {{ PK }} = :{{PK}} ";
+                $stmt = ${{CONN_NAME}}->prepare($req);
+                $stmt = ${{CONN_NAME}}->execute(array(
+    {% for ligne in CHAMPS %}
+                    ":{{ ligne.name }}" => $this->{{ ligne.name }},
+    {% endfor %}
+                    ),$stmt);
+        }
+    }
+    /**
+     * Retourne un tableau de tous les enregistrements
+     * @global bdd_mysql ${{CONN_NAME}}
+     * @return \{{TABLE}}
+     */
+    function  getAll()
+    {
+        $retour = array();
+        ${{CONN_NAME}} = new {{ CONNECTOR }};
+        $req = "select {{ PK }}  from {{ TABLE }} order by {{ PK }}";
+        $stmt = ${{CONN_NAME}}->query($req);
+        while($result = $stmt->fetch())
+        {
+                $temp = new {{ TABLE }};
+                $temp->charge($result["{{ PK }}"]);
+                $retour[] = $temp;
+                unset($temp);
+        }
+        return $retour;
+    }
+           
+    public function __call($name, $arguments){
+        switch(substr($name, 0, 6)){
+            case 'getBy_':
+                if(property_exists($this, substr($name, 6)))
+                {
+                    $retour = array();
+                    ${{CONN_NAME}} = new {{ CONNECTOR }};
+                    $req = "select {{ PK }}  from {{ TABLE }} where " . substr($name, 6) . " = ? order by {{ PK }}";
+                   $stmt = ${{CONN_NAME}}->prepare($req);
+                    $stmt = ${{CONN_NAME}}->execute(array($arguments[0]),$stmt);
+                    while($result = $stmt->fetch())
+                    {
+                            $temp = new {{ TABLE }};
+                           $temp->charge($result["{{ PK }}"]);
+                            $retour[] = $temp;
+                            unset($temp);
+                    }
+                    if(count($retour) == 0)     
+                    {
+                        return false;
+                    }
+                    return $retour;
+                }
+                else
+                {
+                    die('Unknown variable.');
+                }
+            break;
+           
+            default:
+                die('Unknown method.');
+        }
+    }
+}

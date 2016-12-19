@@ -1,0 +1,219 @@
+<!-- $Id: 02-files.sgml,v 1.1.1.1 2000/04/17 16:39:58 kk Exp $ -->
+
+<sect1>Files, classes and functions
+<p>
+
+PHPLIB contains a set of core classes and functions that offer
+session tracking, per-session and per-user persistent variables,
+user authentication and permission checking. Building upon this
+core functionality, PHPLIB offers a set of commonly needed
+"background" classes and a set of "HTML widgets", classes that
+allow you to quickly generate HTML based user interfaces.
+
+All PHPLIB definitions are designed that you don't need to
+change any of these files. Your customization of PHPLIB can be
+contained in two or three files, depending on the setup:
+<tt/local.inc/, <tt/setup.inc/ and, in some cases,
+<tt/prepend.php3/. You <em/NEVER/ need to change any other file
+with PHPLIB. Details are outlined below.
+
+<sect2>Customization
+<p>
+The following three files are the only files from PHPLIB that
+require changes in normal PHPLIB applications. 
+
+<descrip>
+<tag>Application configuration in <tt/local.inc/:</tag>
+<p>Your application will almost certainly not work with the
+   default values supplied by the above classes. You are supposed
+   to extend the classes described below as you see fit.
+
+<p>In your subclasses, you only have to specify what is different
+   in your application. These are things like database host names,
+   database names, table names and username/password
+   combinations. You need to provide login screen definitions
+   (HTML) and user validation functions (SQL) to make the
+   example work.
+
+<p>The distribution provides a <tt/local.inc/ to illustrate
+   a typical setup. These definitions are also needed to get
+   the administration and testing scripts provided with the
+   distribution to run.
+
+<p>The file is required and you must change it for your setup.
+
+<tag>Application setup in <tt/setup.inc/:</tag>
+<p>The <tt/Session/ class provides the ability to execute
+   initialization code at session setup. See the class
+   description for instructions on how to set this up.
+
+   Per convention, we store such code in <tt/setup.inc/
+   in the include directory. The code is being executed
+   whenever a new user connection to out application and
+   a new session is started.
+
+<p>The file is optional. No default is provided.
+
+<tag>Selection of automatically loaded classes in <tt/prepend.php3/</tag>
+<p>The file <tt/prepend.php3/ determines which code is being
+   loaded for all PHP3 interpreted pages. Normally, we include
+   the class definitions for all core classes in this file:
+   <tt/db&lowbar;mysql.inc/, <tt/session.inc/, <tt/auth.inc/,
+   <tt/perm.inc/, <tt/user.inc/, then your local customizations
+   from <tt/local.inc/ and the page management functions from
+   <tt/page.inc/.
+
+   You must change <tt/prepend.php3/ to reflect the database
+   interface that you are using: Change the <tt/require/
+   statement for <tt/db&lowbar;mysql.inc/ appropriately.
+
+   If you are not using some core features from PHPLIB in your
+   application or if you want some other features to be present
+   on all your pages, you can delete or add <tt/require/
+   statements for their respective include files here.
+
+<p>The file is required. You must change it for your setup,
+   unless you are using MySQL.
+</descrip>
+
+<sect2>Core functionality
+<p>
+
+The following files are included from <tt/prepend.php3/ and
+provide definitions for the core classes of PHPLIB. We recommend
+that you always include all of them, as they are a tightly
+integrated set of classes with many dependencies among them.
+
+<descrip>
+<tag>Class <tt/DB&lowbar;Sql/ defined in exactly one of
+<tt/db&lowbar;mysql.inc/, <tt/db&lowbar;msql.inc/, <tt/db&lowbar;pgsql.inc/, 
+<tt/db&lowbar;odbc.inc/, <tt/db&lowbar;sybase.inc/, <tt/db&lowbar;mssql.inc/,
+<tt/db&lowbar;oracle.inc/ or <tt/db&lowbar;oci8.inc/:</tag>
+
+<p>A database access class for your database server. PHPLIB
+   depends on the presence of a SQL database server. Depending
+   on the type of your database server, you have to select the
+   appropriate include file. The file contains the definition of
+   a class <tt/DB&lowbar;Sql/ suitable for your database server.
+
+<p>The class manages a database connection (connection setup is
+   implicit) and result memory is managed automatically.
+
+<p>An independent class.
+
+<tag>Class <tt/Session/ defined in <tt/session.inc/:</tag>
+<p>Manages an arbitrary amount of arbitrarily named session
+   variables of scalar, array and object types (Object support
+   requires that you implement two instance variables in your
+   classes). Tracks sessions via cookies or a <tt/get/-variable
+   appended to each URL.
+
+<p>Depends on <tt/DB&lowbar;Sql/.
+
+<tag>Class <tt/Auth/ defined in <tt/auth.inc/:</tag>
+<p>Manages session authentication. Sessions are authenticated
+   against usernames and passwords in a database. Authentication
+   can be time limited.
+
+<p>Depends on <tt/Session/ and <tt/DB&lowbar;Sql/.
+
+<tag>Class <tt/Perm/ defined in <tt/perm.inc/:</tag>
+<p>Manages permission checks on authenticated session pages.
+   Protected pages are only accessible to users with the
+   specified rights.
+
+<p>Depends on <tt/Auth/, <tt/Session/ and <tt/DB&lowbar;Sql/.
+
+<tag>Class <tt/User/ defined in <tt/user.inc/:</tag>
+<p>Manages user dependent variables. Unlike session variables
+   these are bound to a user id, not to a session id. They are
+   persistent over multiple sessions, but are only available
+   after a user has been authenticated.
+
+<p>Depends on <tt/Auth/, <tt/Session/ and <tt/DB&lowbar;Sql/,
+   extension of <tt/Session/.
+
+<tag>functions <tt/page&lowbar;open()/ and <tt/page&lowbar;close()/
+defined in <tt/page.inc/:</tag>
+<p>Setup and Shutdown functions, must be present on any session page.
+
+<p>Depend on <tt/Session/.
+</descrip>
+
+<sect2>Extended functionality
+<p>
+
+The extended functionality classes offer GUI-less background
+features that are commonly needed in HTML-applications. They
+may make use of core functionality (indicated for each class
+below).
+
+<descrip>
+
+<tag><tt/Cart/ in <tt/cart.inc/:</tag>
+<p>Manages a simple shopping cart. Items can be put into the
+   cart, taken out of the cart and the carts contents can be
+   enumerated.
+
+<p>Depends on <tt/Session/ to be useful. Requires that you add the
+   statement <tt/require("cart.inc")/ to <tt/prepend.php3/.
+
+<tag><tt/Template/ in <tt/template.inc/:</tag>
+<p>Manages templates and variable replacement. Templates can be
+   stored in files. They are loaded on demand and variables are
+   replaced in these files.
+
+<p>An independent class. Requires that you add the statement
+   <tt/require("template.inc")/ to <tt/prepend.php3/ or that
+   you include it manually on each page where you want to use it.
+</descrip>
+
+<sect2>HTML widgets
+<p>
+
+HTML widgets are classes that generate some HTML-code (often
+forms or tables) to display GUI-elements. We try to provide
+functionality commonly used in applications, in a way that the
+actual look of the GUI-elements can be easily customized.
+
+<descrip>
+<tag><tt/CSV&lowbar;Table/ in <tt/csv&lowbar;table.inc/:</tag>
+<p>Creates a dump of a two dimensional array or a query result
+   in CSV format, suitable for loading into a database or a
+   spreadsheet program.
+
+<p>Depends on <tt/Table/, extension of <tt/Table/.
+
+<tag><tt/Sql&lowbar;Query/ in <tt/sql&lowbar;query.inc/:</tag>
+<p>Create a selection widget that allows a user to choose
+   arbitrary conditions on one or more table columns. SQL is
+   being created from these selections that can be used in the
+   where-clause of a larger SQL select statement.
+
+<p>Depends on <tt/Session/ and <tt/DB&lowbar;Sql/. Requires that
+   you add the statement <tt/require("sqlquery.inc")/ to
+   <tt/prepend.php3/.
+
+<tag><tt/Table/ in <tt/table.inc/:</tag>
+<p>Creates HTML tables from two dimensional arrays or from
+   database query results. The class can either filter out the
+   desired columns from an array or you can explicitly name
+   which columns to show. A heading can be turned on if desired.
+   All generated HTML elements are tagged with a classname
+   you specify for stylesheet support, if needed. When used in a
+   form tag, each table row can be prefixed with a checkbox
+   input element to allow for row selection.
+
+<p>An independent class.
+
+<tag><tt/Form/ in <tt/oohforms.inc/:</tag>
+<p>Creates HTML forms from feature&rarr;value arrays.  This provides a
+single syntax for creating all of the different types of form
+elements.  The class provides easy access to Javascript and server
+side validation, and supports 'freezing' some or all of the form
+elements to display static data.  In addition, the library relies on
+object oriented implementations for the various form elements and
+these can easily be extended and customized.
+
+<p>An independent class.
+</descrip>

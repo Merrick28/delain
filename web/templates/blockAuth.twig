@@ -1,0 +1,46 @@
+<div class="groupdiv {{ origineBlockAuth }}">
+    <div class="titre">Delain</div>
+    {% if ISAUTH  %}
+        <ul class="nav navbar-nav ">
+            <li>
+                <a href="validation_login2.php"><img src="{{ URL_IMAGES }}/attaquer.gif" title="Jouer" />&nbsp;Jouer</a>
+            </li>
+            <li>
+                <a href="logout.php"><img src="{{ URL_IMAGES }}/deconnection.gif" title="Se déconnecter" />&nbsp;Se déconnecter</a>
+            </li>
+        </ul>
+
+    {% else %}
+        <ul class="nav navbar-nav {{ styleUl }}">
+            <li>
+                <a href="formu_cree_compte.php">Créer un compte</a>
+            </li>
+        </ul>
+        <div id="formLogin">
+            <form method="post" action="index.php">
+                <div class="form-group form-group-delain">
+                    <label for="username">Login</label>
+                    <input type="text" class="form-control formControlDelain" id="username" name="username">
+                </div>  
+                <div class="form-group form-group-delain">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control formControlDelain" id="password" name="password">
+                </div>  
+                <button type="submit" class="btn btn-default btn-delain" value="Valider">Valider</button>
+
+
+            </form>
+
+        </div>
+        <ul class="nav navbar-nav  {{ styleUl }}">
+            <li>
+                <a href="renvoi_mdp.php" target="droite">Mot de passe oublié ? </a>
+            </li>
+            <li>
+                <a href="/index.php?login">Login with Google</a>
+            </li>
+        </ul>
+
+    {% endif %}
+
+</div>

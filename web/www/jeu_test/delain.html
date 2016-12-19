@@ -1,0 +1,366 @@
+<html>
+  <head>
+
+	<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8" />
+	<script type="text/javascript" src="javascripts/prototype.js"> </script>
+	<script type="text/javascript" src="javascripts/effects.js"> </script>
+	<script type="text/javascript" src="javascripts/window.js"> </script>
+	<script type="text/javascript" src="javascripts/window_effects.js"> </script>
+	<script type="text/javascript" src="javascripts/debug.js"> </script>
+	<link href="themes/default.css" rel="stylesheet" type="text/css"/>
+	<link href="themes/nuncio.css" rel="stylesheet" type="text/css"/>
+
+
+<script type="text/javascript"> 
+
+var windowList = [];
+
+function newProtoWindow(numero, nom, html, url, largeur, hauteur, posX, posY)
+{
+
+			
+		//if (windowList[numero] == null) {
+		if (true) {
+
+			var effect = new PopupEffect(html, {className: "popup_effect1"});
+		  var win = new Window({className: "nuncio", title: nom, width:largeur, height:hauteur, showEffect:effect.show.bind(effect), hideEffect:effect.hide.bind(effect)}); 
+		  win.setContent(url);
+		  win.setLocation(posX, posY);
+		  win.setDestroyOnClose();
+		  win.show();
+		  
+		  windowList[numero] = win;
+
+		}
+		else {
+			// Close?
+			windowList[numero].close();
+		}
+
+}
+
+
+</script>
+<style>
+body {
+  background-image:url("img/overlay3.png");
+}
+
+#hiddenDiv {
+  width:1px;
+  height:1px;
+  border: 1px solid #000;
+  overflow:hidden;
+  
+}
+
+#divVue {
+  position:absolute;
+  top:30px;
+  left:50px;
+  width:900px;
+  height:700px;
+  border: 0px solid #000;
+  overflow:hidden;
+  
+}
+
+#innerVue {
+  position:absolute;
+  top:0px;
+  left:0px;
+  width:700px;
+  height:600px;
+  overflow:hidden;
+  background:#CCCCCC;
+  z-index:0;
+}  
+
+#divHautDroit {
+  position:absolute;
+  top:500px;
+  left:180px;
+  width:80px;
+  height:80px;
+  border: 0px solid #000;
+  overflow:hidden;
+  
+}  
+
+#divHautGauche {
+  position:absolute;
+  top:25px;
+  left:20px;
+  width:220px;
+  height:88px;
+  border: 5px ridge #333333;
+  overflow:hidden;
+}
+
+#divHautGauche2 {
+  position:absolute;
+  top:60px;
+  left:255px;
+  width:40px;
+  height:40px;
+  overflow:hidden;
+}
+
+#divBasDroit {
+  position:absolute;
+  top:500px;
+  left:110px;
+  width:80px;
+  height:80px;
+  border: 0px solid #000;
+  overflow:hidden;
+}  
+
+#divBasGauche {
+  position:absolute;
+  top:500px;
+  left:30px;
+  width:80px;
+  height:80px;
+  border: 0px solid #000;
+  overflow:hidden;
+}
+  
+#menuBoutons1 {
+  background-image:url("img/fond5.gif");
+  position:absolute;
+  top:490px;
+  left:18px;
+  width:210px;
+  height:53px;
+  border: 5px ridge #666666;
+  padding: 0px;
+
+}
+
+
+#menuBoutons2 {
+  position:absolute;
+  top:495px;
+  left:615px;
+  width:140px;
+  height:60px;
+  
+}
+
+#menuBoutons3 {
+  position:absolute;
+  top:40px;
+  left:680px;
+  width:50px;
+  height:50px;
+
+}
+
+</style>
+
+<style type="text/css">
+    .popup_effect1 {
+      background:#11455A;
+      opacity: 0.2;
+    }
+    .popup_effect2 {
+      background:#FF0041;
+      border: 3px dashed #000;
+    }
+    
+    table.menu td {
+    	width:100;
+    	text-align:center;    	
+    }
+    
+  </style>	
+
+</head>
+<body background="img/fond5.gif">
+
+<div id="menuBoutons1">
+
+</div>
+
+<div id="menuBoutons2">
+  <table>
+    <tr>
+      <td width=50 >
+        <img src="img/aventurier.png"/>
+      </td>
+      <td width=50>
+        <img src="img/monstre.png"/>
+      </td>
+      <td width=50>
+        <img src="img/temple.png"/>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div id="menuBoutons3">
+       <img src="img/refresh.png"/>
+</div>
+
+<div id="divVue" class="divVue">
+  <table>
+    <tr>
+      <td align=center>
+      <img src="img/carte2.png"/>
+      </td>
+    </tr>
+  </table>
+  
+</div>
+
+<div id="divHautGauche">
+  <a onclick="newProtoWindow(1, 'Gestion de l\'aventurier', this, 'menuAventurier', 230, 250 , 150 ,280)"><img src="img/bannerperso.png"/></a>
+</div>
+<div id="divHautGauche2">
+  <a onclick="newProtoWindow(5, 'Selection du personnage', this, 'selectionPerso', 1040, 540 , 20 ,20)"><img src="img/other.png"/></a>
+</div>
+<div id="divBasGauche">
+  <a onclick="newProtoWindow(2, 'Actions', this, 'menuAction', 420, 200 , 170 ,190)"><img src="img/action.jpg"/></a>
+</div>
+<div id="divHautDroit">
+  <a onclick="newProtoWindow(3, 'Système', this, 'menuSysteme', 220, 200 , 170 ,300)"><img src="img/systeme.jpg"/></a>
+</div>
+<div id="divBasDroit">
+  <a onclick="newProtoWindow(4, 'Social', this, 'menuSocial', 320, 200 , 170 ,250)"><img src="img/social.jpg"/></a>
+</div>
+
+
+<!-- Zone où on case toutes les div "menu" qui ne nécéssitent aucun load de données -->
+<div id="hiddenDiv" class="hiddenDiv">
+	<div id="menuSocial">
+		<table class="menu">
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(41, 'Messagerie', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/messagerie.jpg"/></a>
+				<br>Messagerie
+			</td>
+			<td>
+				<a onclick="newProtoWindow(42, 'Concours de Barde', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/barde.jpg"/></a>
+				<br>Barde & Cie
+			</td>
+			<td>
+				<a onclick="newProtoWindow(43, 'Transaction', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/transaction.jpg"/></a>
+				<br>Transaction
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(44, 'Guilde', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/guilde.jpg"/></a>
+				<br>Guilde
+			</td>						
+			<td>
+				<a onclick="newProtoWindow(45, 'Coterie', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/coterie.jpg"/></a>
+				<br>Coterie
+			</td>		
+		</tr>
+		</table>
+	</div>
+
+	<div id="menuSysteme">
+		<table class="menu">
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(31, 'Gestion de compte', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/gestioncompte.jpg"/></a>
+				<br>Gestion de compte
+			</td>
+			<td>
+				<a onclick="newProtoWindow(32, 'Deconnexion', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/deconnexion.jpg"/></a>
+				<br>Deconnexion
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(33, 'Forum', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/forum.jpg"/></a>
+				<br>Forum
+			</td>						
+			<td>
+				<a onclick="newProtoWindow(34, 'Wiki', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/wiki.jpg"/></a>
+				<br>Wiki
+			</td>		
+		</tr>
+		</table>
+	</div>
+	
+		<div id="menuAventurier">
+		<table class="menu">
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(11, 'Fiche de perso', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/ficheperso.jpg"/></a>
+				<br>Fiche de perso
+			</td>
+			<td>
+				<a onclick="newProtoWindow(12, 'Deconnexion', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/event.jpg"/></a>
+				<br>Evenements
+			</td>
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(13, 'Inventaire', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/inventaire.jpg"/></a>
+				<br>Inventaire
+			</td>						
+			<td>
+				<a onclick="newProtoWindow(13, 'Changement de niveau!', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/levelup.jpg"/></a>
+				<br>Changement de niveau! (6PA)
+			</td>									
+		</tr>
+		</table>
+	</div>
+
+	<div id="menuAction">
+		<table class="menu">
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(21, 'Combat', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/combat.jpg"/></a>
+				<br>Combat
+			</td>
+			<td>
+				<a onclick="newProtoWindow(22, 'Magie', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/magie.jpg"/></a>
+				<br>Magie
+			</td>
+			<td>
+				<a onclick="newProtoWindow(23, 'Lieu', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/lieu.jpg"/></a>
+				<br>Lieu
+			</td>
+			<td>
+				<a onclick="newProtoWindow(24, 'Concentration', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/concentration.jpg"/></a>
+				<br>Concentration
+			</td>			
+		</tr>
+		<tr><td>&nbsp;</td></tr>
+		<tr>
+			<td>
+				<a onclick="newProtoWindow(25, 'Guilde', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/ramasser.jpg"/></a>
+				<br>Ramasser
+			</td>						
+			<td>
+				<a onclick="newProtoWindow(26, 'Coterie', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/Creuser.jpg"/></a>
+				<br>Creuser
+			</td>		
+			<td>
+				<a onclick="newProtoWindow(27, 'Coterie', this, 'testUrl', 200, 200 , 200 ,200)"><img src="img/metier.jpg"/></a>
+				<br>Metier
+			</td>			
+		</tr>
+		</table>
+	</div>
+	
+	<div id="selectionPerso">
+	 <img src="img/selection.png"/>
+	</div>
+	
+</div>
+
+</body></html>

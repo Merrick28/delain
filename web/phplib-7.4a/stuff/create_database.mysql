@@ -1,0 +1,74 @@
+# MySQL dump 4.0
+#
+# I use this database configuration with MySQL.
+#
+# Command:
+# $  mysql -h host database_name <create_database.mysql
+#
+# $Id: create_database.mysql,v 1.1.1.1 2000/04/17 16:40:17 kk Exp $
+#
+# Host: localhost    Database: kris
+#--------------------------------------------------------
+
+#
+# Table structure for table 'active_sessions'
+#
+
+CREATE TABLE active_sessions (
+   sid varchar(32) NOT NULL,
+   name varchar(32) NOT NULL,
+   val text,
+   changed varchar(14) DEFAULT '' NOT NULL,
+   PRIMARY KEY (name, sid),
+   KEY changed (changed)
+);
+
+CREATE TABLE active_sessions_split (
+  ct_sid varchar(32) DEFAULT '' NOT NULL,
+  ct_name varchar(32) DEFAULT '' NOT NULL,
+  ct_pos varchar(6) DEFAULT '' NOT NULL,
+  ct_val text,
+  ct_changed varchar(14) DEFAULT '' NOT NULL,
+  PRIMARY KEY (ct_name,ct_sid,ct_pos),
+  KEY ct_changed (ct_changed)
+);
+
+#
+# Table structure for table 'auth_user'
+#
+CREATE TABLE auth_user (
+  user_id varchar(32) DEFAULT '' NOT NULL,
+  username varchar(32) DEFAULT '' NOT NULL,
+  password varchar(32) DEFAULT '' NOT NULL,
+  perms varchar(255),
+  PRIMARY KEY (user_id),
+  UNIQUE k_username (username)
+);
+
+#
+# Table structure for table 'auth_user_md5'
+#
+CREATE TABLE auth_user_md5 (
+  user_id varchar(32) DEFAULT '' NOT NULL,
+  username varchar(32) DEFAULT '' NOT NULL,
+  password varchar(32) DEFAULT '' NOT NULL,
+  perms varchar(255),
+  PRIMARY KEY (user_id),
+  UNIQUE k_username (username)
+);
+
+#
+# Dumping data for table 'auth_user'
+#
+
+INSERT INTO auth_user VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','test','admin');
+INSERT INTO auth_user_md5 VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','098f6bcd4621d373cade4e832627b4f6','admin');
+
+#
+# Table structure for table 'db_sequence'
+#
+CREATE TABLE db_sequence (
+  seq_name varchar(127) DEFAULT '' NOT NULL,
+  nextid int(10) unsigned DEFAULT '0' NOT NULL,
+  PRIMARY KEY (seq_name)
+);

@@ -1,0 +1,332 @@
+<!-- $Id: tree.sgml,v 1.1.1.1 2000/04/17 16:40:06 kk Exp $ -->
+
+<sect1>Tree
+<p>
+The Tree class can render tree structures such as directory hierarchies
+and menu structures as HTML. The structure must be given to Tree as an
+nested array of arrays of arbitrary depth.
+
+<p>
+
+The idea of Tree is, that there are several mathematical models a tree could
+be viewed: One model is a data structure like nested arrays or a pointer
+structure from where you can print multidimensional graphics and can do
+other neat things like deleting one part of the tree or inserting a whole
+subtree. But you can also imagine a tree as a one dimensional string or as a
+sequence of function calls (which is nearly the same in the mathematical
+sense).
+
+<p>
+
+To generate HTML-code from a tree-structure it is like this: You need at the
+end a one-dimensional string, which tells the browser what to do. The
+Tree class assists you in generating this string in this way, that it will go
+through the whole tree and call several functions on every stage trough the
+way. It will be your task to change the functions, so that a nice layout will
+be generated.
+
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+delimiter<colsep>a char for truncating the &quot;path&quot;<rowsep>
+tree<colsep>an array of an array of an array<rowsep>
+outp<colsep>the "output"<rowsep>
+prfx, sufx, flag<colsep>internal - some helpers to create outp
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>build&lowbar;tree()</tag>
+<p>This function is completely user driven! You have to create an
+   array with the structure described below. See the example 
+   for details.
+
+   Don't be shy to create some own functions which are called by
+   <tt/build&lowbar;tree()/ - e.g. for recursive calls.
+   
+<tag>go&lowbar;trough&lowbar;tree($key="",$path="",$depth=0,$lcount=0,$pcount=0)</tag>
+<p>
+
+This is the most important function of this class. It will call the output
+functions in the right order with the correct parameters.
+
+All variables are optional. The parameters are perhaps useful, if you
+want to display only partial trees, but this is not supported now.
+
+<tag>path&lowbar;to&lowbar;index (&amp;$path,$key="")</tag>
+<P>
+This function is mostly used internally, but could be useful
+for you to generate <tt/$this-&gt;tree/. This function generates
+a PHP3 associate array-index string from a path, which is also
+a string but truncated by <tt/$this-&gt;delimiter/. If <tt/$key/
+is given, it will be added to <tt/$path/ (minds empty path and
+so on).
+
+<p>
+Example:
+
+<tscreen><code>
+  $t->delimiter="/";
+  $path= "usr/local/lib";
+  ## $path must be given as a var, because it is called by reference!
+  $bla = $t->path_to_index($path,"etc");
+
+  ## $path is now "usr/local/lib/etc"
+  ## $bla is now ["usr"]["local"]["lib"]["etc"]
+</code></tscreen>
+
+<tag>path&lowbar;to&lowbar;parent (&amp;$path)</tag>
+<P>
+This function isn't used internally, but could be useful
+for you during generating the output tree. It will remove
+one from the depth of the path.
+<P>
+Example:
+<tscreen><code>
+  $t->delimiter="/";
+  $path= "usr/local/lib";
+  $bla = $t->path_to_parent($path);
+
+  ## $path is now "usr/local"
+  ## $bla is now ["usr"]["local"]
+</code></tscreen>
+
+
+<tag>path&lowbar;add ($path,$key)</tag>
+<P>
+This function is the 'non-call-by-reference-version' of
+<tt/path&lowbar;to&lowbar;index/. It will add the $key to
+the path and return it.
+
+<tag>path&lowbar;sub ($path)</tag>
+<P>
+This function is the 'non-call-by-reference-version' of
+<tt/path&lowbar;to&lowbar;parent/. It will find the
+parent of path and return it.
+
+<tag>path&lowbar;index ($path)</tag>
+<P>
+This function is the 'non-call-by-reference-version' of
+<tt/path&lowbar;to&lowbar;index()/. It will return the
+associate key to the tree described by path.
+
+
+
+<tag>starttree ()</tag>
+<p>
+This function is called by <tt/go&lowbar;trough&lowbar;tree()/
+at the beginning of the output of a tree.
+<p>
+All <tt/*tree/-functions are called by <tt/go&lowbar;trough&lowbar;tree()/,
+but it's your turn, to give them a nice layout. I think it is possible
+to generate nearly every kind of tree-layout with this. Have a look at
+the variables: E.g. <tt/$depth/ makes it possible to handle every
+&quot;level&quot; in another manner.
+
+<tag>growtree ($key,$value,$path,$depth,$count,$pcount)</tag>
+<p>
+This function is called by <tt/go&lowbar;trough&lowbar;tree()/
+at the beginning of the output of a tree.
+
+It is called every time, when <tt/go&lowbar;trough&lowbar;tree()/
+will call itself recursively. You could also say it is called, when
+the current item has a successor.
+
+
+<tag>leaftree ($key,$value,$path,$depth,$count,$pcount)</tag>
+<p>
+This function is called, when the current item has <em/no/ successor.
+
+<tag>shrinktree ($key,$depth)</tag>
+<p>
+This function is the &quot;opposite&quot; of <tt/growtree()/. It is
+called every time, when the current item was the last item in this
+sub-list.
+
+<tag>endtree()</tag>
+<p>
+Called when leaving tree.
+
+
+</descrip>
+
+<sect2>The Tree Array 
+<p>
+As said above, before you call <tt/go&lowbar;trough&lowbar;tree()/,
+first <tt/$tree/ must be generated.
+<p>
+<tt/$tree/ consists of nested arrays of arbitrary depth. An example:
+
+<tscreen><code>
+$t= new Tree;
+$t->tree = array(
+                "usr" => array(
+                  0       => "allowed",
+                  "lib"   => "forbidden",
+                  "local" => "allowed",
+                  "bin"   => "forbidden",
+                  "etc"   => array(
+                     0       => "allowed",
+                    "hosts"  => "forbidden",
+                    "mailcap"=> "allowed"
+                  ),
+                  "var"   => "allowed",
+                  "tmp"   => "allowed"
+                ),
+                "root" =>"forbidden"
+              );
+$t->go_through_tree();
+print $t->outp;
+</code></tscreen>
+
+This is a completely recursive structure and I think, it is clear, how
+to create it with a recursive call of a function. If not, see the
+example below.
+<p>
+
+One little quirk has to be explained, because it is a little
+bit confusing: the array name 0 (zero) is used for the value of the
+parent element. As shown in the example, an element with children
+(for example "etc") cannot have attributes (such as "allowed").
+Instead the value of this element is stored in a pseudo-child
+named 0. If this element is not present, it will have the value
+"Array" (perhaps something that should be changed).
+
+<P>
+The output of this example if you don't change the output-functions will
+look like this:
+
+<tscreen><code>
+/
+^---- usr->'allowed' : 'usr' (1) [1/2]
+|    ^---- lib->'forbidden' : 'usr^lib' (2) [2/7]
+|    O---- local->'allowed' : 'usr^local' (2) [3/7]
+|    O---- bin->'forbidden' : 'usr^bin' (2) [4/7]
+|    O---- etc->'allowed' : 'usr^etc' (2) [5/7]
+|    |    ^---- hosts->'forbidden' : 'usr^etc^hosts' (3) [2/3]
+|    |     \--- mailcap->'allowed' : 'usr^etc^mailcap' (3) [3/3]
+|    O---- var->'allowed' : 'usr^var' (2) [6/7]
+|     \--- tmp->'allowed' : 'usr^tmp' (2) [7/7]
+ \--- root->'forbidden' : 'root' (1) [2/2]
+</code></tscreen>
+
+Looks a bit confusing. From left to right the fields are
+<itemize>
+<item>The <em/index-name/ of the current field
+<item>The <em/value/ of this field
+<item>The <em/full path/ to this field (see
+      <tt/path&lowbar;to&lowbar;*/-functions)
+<item>The current <em/depth/ or <em/level/
+<item>The current <em/element number/. See below to understand, why
+      it will begin sometimes with "2" in this example!
+<item>The <em/number of elements/ in the subtree at this depth
+</itemize>
+
+
+<sect2>Example
+<p>
+
+My example is just going trough the directory structure of your hard disk.
+<p>
+
+The following code could read it:
+
+<tscreen><code>
+class dir_Tree extends Tree {
+     var $classname = "dir_Tree";
+     var $delimiter="/";
+
+     var $tdat;
+
+     function build_tree ($path=".") {
+         $this->tree=$this->recurs_dir($path,0);
+     }
+
+     ## This example code can read and output 1000 directory entries with
+     ## many subdirs in about 20 seconds on my system (P200, 64 MB);
+     ## 220 dir entries with a maximum depth of 4 are read in 2 seconds.
+     ## This is ok. :)
+
+     function recurs_dir ($path,$depth) {
+     GLOBAL $flap_out;
+         $d=opendir($path);
+
+         while ( $name=readdir($d) ) {
+             $pathname=$path . $this->delimiter . $name;
+             if (is_dir($pathname) && !ereg("\.\.?",$pathname)) {
+                 if (isset($flap_out[$pathname])) {
+                     $array[$name]=$this->recurs_dir($pathname,$depth+1);
+                 }
+                 # ATTENTION: It is IMPORTANT fill the [0] array 
+                 # *after* filling the rest of the array!
+                 $array[$name][0]=$pathname;
+             } else {
+                 $array[$name]=$pathname;
+             }
+         }
+         closedir($d);
+         return($array);
+
+     }
+
+     #################################################
+     ## FLAPPING IN and OUT
+     ## This is used to create an array which includes
+     ## all sub-paths which should be showed
+     ## 
+
+     function flapping ($path) {
+     GLOBAL $flap&lowbar;out;
+         if ($path) {
+             if (is&lowbar;dir($path)) {
+                 if (isset($flap&lowbar;out[$path])) {
+                     unset($flap&lowbar;out[$path]);
+                 } else {
+                     $flap&lowbar;out[$path]=$name;
+                 }
+             }
+         }
+     }
+}
+
+$t= new dir_Tree;
+$t->flapping($val); ## $val is given by GET-method, see *tree()-functions 
+$t->build_tree();
+$t->go_through_tree();
+print $t->outp;
+</code></tscreen>
+
+With this code it is very easy to flap in and out whole
+parts of the tree. Send the path via GET-method and put
+ this path in <tt/flapping()/. The whole <tt/$flap&lowbar;out/-array must be
+persistent (e.g. via <em/session/). Perhaps you can program a garbage
+collection, which will look into <tt/$flap_out/ and check for paths that
+already exist?
+
+<sect2>Known Bugs / Tips
+<P>
+There is one known bug: If a name of a subpath contains the
+<tt/$delimiter/-string. This cannot be solved correctly and you have
+to look for it when you create the tree.
+<P>
+The same thing is with the value [0] (zero) of a sub-array. This element
+is always used as the attribute of the parent element.
+<P>
+A good tip: when you
+build your tree recursively then the [0]-index must be filled <em/after/
+the subtree is returned from recursive call. See in the example above what I
+mean. I think it's a PHP3 specialty.
+<P>
+Also it is possible that not every name could be inserted into the
+associate index-field (Control-chars etc.), but this is untested.

@@ -1,0 +1,12 @@
+@charset "iso-8859-1";
+/* AUTEUR: SMESO */
+/* DATE DE CREATION: 09/06/99 */
+/* Sp�cif FOW */
+td.test1
+{
+	background-image:url('images/fond5.gif');
+}
+td.test2
+{
+	background-image:url('images/bandelain.gif');
+}

@@ -1,0 +1,89 @@
+<!doctype linuxdoc system>
+<!-- $Id: blob.sgml,v 1.1.1.1 2000/04/17 16:40:06 kk Exp $ -->
+
+<article>
+<title>BLOBs for PHPLIB
+<author>Sascha Schumann, <htmlurl url="mailto:sascha@schumann.cx" name="sascha@schumann.cx">
+<date>$Date: 2000/04/17 16:40:06 $, $Revision: 1.1.1.1 $
+
+<abstract>
+RFD on a BLOB API for PHPLIB
+</abstract>
+
+<sect>BLOB (Binary Large OBjects)
+
+<p>
+This chapter is intended to give you a quick introduction to BLOBs, 
+their interface as proposed for PHPLIB.
+
+<sect1>Defining the problem
+
+<p>
+Achieving the goal of creating portable applications is hindered by
+the fact that no portable way of storing large amount of data
+exists.
+
+Every database vendor defines his own application programming
+interface (API) to access binary large objects, or uses other, 
+non-standard ways to enable the use of BLOBs.
+
+Enhancing the existing vendor neutral support for databases in
+PHPLIB to also include BLOB support could be a short-term solution
+to the problem.
+
+<sect1>Proposed extension API
+
+<p>
+
+An overview over the function calls follows.
+
+<descrip>
+<tag>blob&lowbar;create()</tag>
+
+<p>
+This will create a new BLOB and return its ID. If it is impossible
+to create a new BLOB, this function will <tt/halt()/ the execution
+and generate an error message.
+
+<tag>blob&lowbar;open($ID)</tag>
+
+<p>
+Opens the specified BLOB for reading and writing and returns true or false
+on success or failure, respectively.
+
+<tag>blob&lowbar;close($ID)</tag>
+
+<p>
+Closes the referenced BLOB. Do not forget this - it might be necessary
+for some databases or you might face data loss.
+
+<tag>blob&lowbar;delete($ID)</tag>
+
+<p>
+Deletes the specified BLOB. All associated resources are freed.
+The BLOB must not be referenced at a later time.
+
+<tag>blob&lowbar;read($ID)</tag>
+
+<p>
+Reads the entire data of BLOB and returns it.
+
+<tag>blob&lowbar;write($ID, $DATA)</tag>
+
+<p>
+Overwrites the whole BLOB with $DATA. 
+
+</descrip>
+
+<sect1>Design notes
+
+<p>
+The goal was to create a vendor neutral API which could be implemented
+easily with most databases. Eventually, it should provide a
+"fallback" mode enabling the user to utilize BLOBs even if the
+database does not support BLOBs natively. Keep in mind that it
+should be able to cover as many databases as possible and therefore
+only implements a subset of functionality provided by modern
+databases.
+
+</article>

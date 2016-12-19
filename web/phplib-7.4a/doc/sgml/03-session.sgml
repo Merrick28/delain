@@ -1,0 +1,565 @@
+<!-- $Id: 03-session.sgml,v 1.3 2001/08/18 02:41:49 richardarcher Exp $ -->
+
+<sect1>Session
+<p>
+
+The session class keeps a list of global variable names and
+provides a set of functions to load and save these variables
+from and to a data storage container (we will call it container
+for shortness). The named variables may be scalar
+variables (strings, integers and floats) or arrays. Objects are
+handled as well, provided they implement two instance variables
+naming their class and enumerating their (persistent) slots.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+magic<colsep>A secret string used in ID creation. Change it!<rowsep>
+mode     <colsep>Mode of Session ID propagation. Either <tt/cookie/ or <tt/get/.<rowsep>
+fallback&lowbar;mode<colsep>Mode of Session ID propagation should <tt/$mode/ not work. Set <tt/$mode/ to <tt/cookie/ and <tt/$fallback&lowbar;mode/ to <tt/get/.<rowsep>
+lifetime <colsep>Lifetime of the session cookie in minutes or 0 to use session cookies.<rowsep>
+gc&lowbar;time<colsep>Garbage collection tuning parameter, see below.<rowsep>
+gc&lowbar;probability<colsep>Garbage collection tuning parameter, see below.<rowsep>
+allowcache<colsep>Control caching of session pages. If set to <tt/passive/ (also the default), no cache-control headers are being sent. If set to <tt/no/, the page is not cached under HTTP/1.1 or HTTP/1.0; if set to <tt/public/ , the page is publically cached under HTTP/1.1 and HTTP/1.0; if set to <tt/private/ , the page is privately cached under HTTP/1.1 and not cached under HTTP/1.0<rowsep>
+allowcache&lowbar;expire<colsep>When caching is allowed, the pages can be cached for this many minutes.<rowsep>
+that&lowbar;class<colsep>A classname. Session uses this class to store and retrieve data.<rowsep>
+auto&lowbar;init<colsep>The file to be loaded on session establishment.<rowsep>
+secure&lowbar;auto&lowbar;init<colsep>Set to 0, if all pages always call
+page&lowbar;close() (This is never the case!).<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+pt<colsep>Internal array of names of persistent variables.<rowsep>
+in<colsep>Flag: If set, auto&lowbar;init has been executed.<rowsep>
+name<colsep>A tag (name) for the session type.<rowsep>
+id<colsep>Id of the current session.<rowsep>
+that<colsep>Container object instance.<rowsep>
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>register($varname)</tag>
+<p>Registers a global variable name as a session variable. The
+   name may identify a scalar variable, an array or an object.
+   If an object is to be made persistent, it must have two
+   instance variables:
+  
+   <descrip>
+   <tag>classname</tag>
+   <p>A string with the name of the objects class.
+   <tag> persistent&lowbar;slots</tag>
+   <p>An array with the names of all object slots to save.
+   </descrip>
+
+<tag>unregister($varname)</tag>
+<p>Unregisters a global variable name as a session variable.
+   The variable is not deleted, but its value will be lost
+   at the end of a page. It is no longer saved to the database.
+
+<tag>is_registered($varname)</tag>
+<p>Returns true if the variable named $varname is registered
+   with the session, false otherwise.
+
+<tag>delete()</tag>
+<p>Destroy the current session and put&lowbar;id() the current session
+   id.
+
+   After <tt/delete()/ has been executed, all session data has
+   been removed from the database. Also, the session object is
+   unusable on this page. Consequently, <tt/page&lowbar;close()/ may
+   not be called for this session. Session variables are still
+   available on this page, even after the <tt/delete()/, but
+   will be lost on the following pages.
+
+   In cookie mode, it is possible to <tt/page&lowbar;open()/ a new
+   session after <tt/delete()/ has been called, if no HTML has
+   been output so far so that the new cookie can be set. If you
+   do this, you can also re-register some of the previous
+   session variables and can call <tt/page&lowbar;close()/ for the new
+   session.  This allows you to change the session on the fly
+   and selectively carry over session data from the previous
+   session.
+   
+<tag>url($url)</tag>
+<p>
+Return an URL referencing the current session. If in <tt/get/
+mode, the current session id is attached to this URL, else the
+URL is returned unmodified.
+
+<tag>purl($url)</tag>
+<p>
+A shorthand for <tt/print $this-&gt;url($url);/
+
+<tag>self&lowbar;url()</tag>
+<p>
+Return an URL referencing the current page, including
+<tt/PHP&lowbar;SELF/ and <tt/QUERY&lowbar;STRING/ information.
+If in <tt/get/ mode, the session id is included.
+
+<tag>pself&lowbar;url()</tag>
+<p>
+A shorthand for <tt/print $this-&gt;self&lowbar;url()/.
+
+<tag>hidden&lowbar;session()</tag>
+<p>
+Adds a hidden form element containing the session name and id.
+
+<tag>add&lowbar;query($qarray)</tag>
+<p>
+
+Return string to be appended to the current URL for parameters
+in GET query format. Intended usage is like this:
+
+<tscreen><code>
+
+&lt;a href="<&lt;?
+$sess->pself_url().$sess-&gt;padd_query(array("again"=&gt;"yes"))
+?&gt;"&gt; Reload&lt;/a&gt; and log in?
+
+</code></tscreen>
+
+<tag>padd&lowbar;query($qarray)</tag>
+<p>
+
+A shorthand for <tt/print $this-&gt; add&lowbar;query($qarray)/.
+
+<tag>reimport&lowbar;get&lowbar;vars()</tag>
+<p>
+
+When a <tt/FORM/ variable is made persistent, that form variable is
+imported into PHP, then page&lowbar;open() is being called and
+the new variable value is overwritten from the database. The
+<tt/FORM/ value is lost.
+<p>
+
+If you had enabled <tt/track&lowbar;vars/ and were accessing
+<tt/HTTP&lowbar;GET&lowbar;VARS/ directly, which is recommended,
+this were not a problem. Some legacy scripts rely on persistent
+<tt/FORM/ input variables, though.
+<p>
+
+These scripts may call the appropriate
+<tt/reimport/&lowbar;x&lowbar;<tt/vars()/ functions. These
+functions will re-read the tracked variable arrays and
+reinitialize the appropriate global variables after session
+variables have been restored.
+<p>
+
+Use of this function is discouraged.
+
+<tag>reimport&lowbar;post&lowbar;vars()</tag>
+<p>
+See <tt/reimport&lowbar;get&lowbar;vars()/.
+
+<tag>reimport&lowbar;cookie&lowbar;vars()</tag>
+<p>
+See <tt/reimport&lowbar;get&lowbar;vars()/.
+
+<tag>set&lowbar;container()</tag>
+<p>
+You shall not call this function directly. It is called back by the
+<tt/start()/ function of <tt/Session()/ during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <tt/Session/ if you know what you are doing.
+
+This function creates and starts the container class used by
+this instance of session.
+
+<tag>set&lowbar;tokenname()</tag>
+<p>
+You shall not call this function directly. It is called back by the
+<tt/start()/ function of <tt/Session()/ during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <tt/Session/ if you know what you are doing.
+
+This function determines and sets the internal session name.
+
+<tag>release&lowbar;token()</tag>
+<p>
+You shall not call this function directly. It is called back by the
+<tt/start()/ function of <tt/Session()/ during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <tt/Session/ if you know what you are doing.
+
+This function determines the current method of session
+propagation and determines if a new session token has to be
+generated.
+
+<tag>put&lowbar;headers()</tag>
+<p>
+You shall not call this function directly. It is called back by the
+<tt/start()/ function of <tt/Session()/ during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <tt/Session/ if you know what you are doing.
+
+This function determines which header lines are to be generated
+by the session, including cache control headers.
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+
+<descrip>
+<tag>get&lowbar;id()</tag>
+<p>
+See <tt/get&lowbar;id()/.
+
+<tag>get&lowbar;id($id&lowbar;to&lowbar;use)</tag>
+<p>get&lowbar;id() is used internally to determine a session
+   identifier.  Currently, a session identifier is a hex number
+   of 32 characters (128 bits) and it is generated by
+   md5(uniqid($this->magic)) to make it hard to guess.
+  
+   get&lowbar;id() may be called with an optional session id to use as
+   a parameter. This is useful if you want to change a session
+   id without breaking the session (taking over an old, left
+   over session).
+  
+   get&lowbar;id() can be overwritten by a subclass, if you want a
+   different system to create session ids. For example, some
+   applications want to use a constant session id that is not
+   propagated to the client to use a shared pool of persistent
+   variables (a guestbook for example). These applications need
+   locking (to be implemented soon).
+
+<tag>put&lowbar;id()</tag>
+<p>put&lowbar;id() is used internally to "unuse" a session it. At the
+   moment it deletes the client side cookie and deletes
+   $HTTP&lowbar;COOKIE&lowbar;VAR[$this->name] for that cookie. The variable
+   ${$this->name} is <em/not/ deleted.
+
+<tag>serialize($var, &$str)</tag>
+<p>serialize() is used internally to append to str all PHP
+   code needed to reconstruct the variable named in var.
+
+<tag>freeze()</tag>
+<p>freeze() serializes all register()ed variables and writes
+   the resulting code into the database, tagged with the
+   current session id and the current session name.
+
+<tag>thaw()</tag>
+<p>thaw() loads a set of freeze()ed variables for the current
+   session id and session name out of the database and
+   recreates them.
+
+<tag>gc()</tag>
+<p>The <tt/active&lowbar;sessions/ table contains one row for
+   each session. That row is uniquely identified by the <tt/sid/
+   and <tt/name/ values (<tt/name/ is the name of the session
+   class that has written the row). Each time that row is written,
+   the column <tt/changed/ is updated with the current time.
+   
+   The gc() function deletes all rows that are older than
+   <tt/gc&lowbar;time/ minutes and have a matching <tt/name/ 
+   field. For speed reasons, gc() is not not called every time
+   an update to <tt/active&lowbar;sessions/ is being made.
+   Instead it is called randomly with a probability of
+   <tt/gc&lowbar;probability/.
+
+<tag>reimport&lowbar;any&lowbar;vars($arrayname)</tag>
+<p>Used to implement the three official reimport functions.
+
+<tag>start()</tag>
+<p>Initialization function, to be called after object
+   instantiation. Calls get&lowbar;id() to get the current session id,
+   creates a database connection, then calls thaw() to load all
+   session variables. Randomly activates gc(). Checks <tt/allowcache/
+   to send proper headers to control browser caching.
+
+</descrip>
+<p>
+
+<sect2>Example
+<p>
+Use a subclass to provide the appropriate parameters to your
+session. Usually your subclass looks like this:
+
+<tscreen><code>
+class My&lowbar;Session extends Session {
+  var $classname = "My&lowbar;Session"; ## Persistence support
+  
+  var $mode      = "cookie";
+  var $lifetime  = 0;            ## use session cookies
+  
+  ## which container to use
+  var $that&lowbar;class = "Session&lowbar;sql";
+}
+</code></tscreen>
+
+Remember that you have to provide a <tt/DB&lowbar;Sql/ subclass
+with the parameters needed to access your database.
+
+Use the page management functions (see above) to use your
+session subclass. The feature name for session management is
+<tt/sess/; provide the name of your session subclass as a
+parameter to the sess feature:
+
+<tscreen><code>
+  page&lowbar;open(array("sess" =&gt; "My&lowbar;Session"));
+</code></tscreen>
+
+Use the <tt/register()/ instance method to register variables as
+persistent. If <tt/$sess/ is your session object, use
+
+<tscreen><code>
+$sess-&gt;register("s");
+</code></tscreen>
+
+to make the global variable <tt/$s/ persistent. <tt/$s/ may be a
+scalar value, an array or an object with persistence support
+slots.
+
+Do not use the instance methods <tt/freeze()/ and <tt/thaw()/
+directly, but use the page management functions instead.
+
+To have some pages cached and others not cached, use multiple
+instances of the session object. For example, for those pages
+that should be cached, use a session object instance like
+
+<tscreen><code>
+class My&lowbar;Cached&lowbar;Session extends My&lowbar;Session {
+  ## pages that use this session instance are cached.
+  var $allowcache = "private";
+}
+</code></tscreen>
+
+Be careful when using the <tt/public/ cache option. Publically cached pages
+may be accessible to unauthenticated users. The <tt/private/ cache option
+prevents unauthenticated access, but is only functional in HTTP/1.1 browsers.
+
+<sect2>Using "auto&lowbar;init"
+<p>
+
+You may define <tt/$sess->auto&lowbar;init/ to the name of an include
+file in your extension of session. Per convention, the name
+<tt/setup.inc/ is being used.
+
+<tscreen><code>
+class My&lowbar;Session extends Session {
+  var $classname = "My&lowbar;Session";
+  var $magic     = "Calvin+Hobbes";
+  var $mode      = "cookie";
+  var $gc&lowbar;probability = 5;
+
+  var $auto&lowbar;init = "setup.inc";   // name of auto&lowbar;init file.
+}
+</code></tscreen>
+
+Whenever a new session is established, that is, a user without a
+session id connects to your application, the auto&lowbar;init file is
+included and executed exactly once. The file is executed from
+within the context of the <tt/page&lowbar;open()/ function, that is,
+<em/not/ within a global context. To define or access global
+variables from the auto&lowbar;init file, you have to <tt/global/ them.
+
+When auto&lowbar;init is being executed, all features of your page
+already exist and are available globally.
+That is, you can safely rely on
+the existence of the <tt/$sess/, <tt/$auth/, <tt/$perm/ and
+<tt/$user/ variables, if your application specifies them.
+<em/Note/ that you cannot in general know which particular page
+triggered the execution of auto&lowbar;init, though. If you have some
+pages that request authentication and others that don't, you
+cannot rely on the presence of the <tt/$auth/ object in general,
+but have to test for it with <tt/is&lowbar;object($auth)/ before
+accessing it.
+
+The auto&lowbar;init file is the appropriate place to initialize and
+register all your session variables. A sample <tt/setup.inc/ may
+look like this:
+
+<tscreen><code>
+&lt;?php
+global $lang;   // application language
+$lang = "de";   // german by default
+$sess-&gt;register("lang");
+
+global $cur;   // application currency
+$cur = "EUR";   // Euro by default
+$sess-&gt;register("cur");
+
+global $cart;
+$cart = new Shop&lowbar;Cart;      // Create a shopping cart object as defined in local.inc
+$sess-&gt;register("cart"); // register it.
+?&gt;
+</code></tscreen>
+
+<em/Note:/ If you don't use a fallback&lowbar;mode and you get users
+that turn off cookies, these users will force a new session each
+time they hit any page of your application. Of course this will
+force inclusion and execution of <tt/setup.inc/ for each page
+they visit, too. Nothing can be done about this.
+
+<sect2>Unregistering variables and deleting sessions
+<p>
+To get rid of a persistent variable, call
+<tt/$sess-&gt;unregister()/ with the name of that variable. The
+value of the formerly registered variable is still available
+after the call to unregister, but the variable is no longer
+persistent and will be lost at the end of the current page.
+
+To get rid of all session related data including the session
+record in the database, the current session id and the session
+cookie in the users browser, call <tt/$sess-&gt;delete()/. In
+shopping applications this is commonly done when the user
+commits his order to get rid of the current shopping cart and
+everything else. You may want to remember selected information
+about that user, though, as shown below.
+
+<tscreen><code>
+&lt;?php
+  page&lowbar;open(array("sess" =&gt; "Shop&lowbar;Session"));
+
+  // send order as mail
+  mail&lowbar;order($shopowner, $user, $cart);
+
+  // delete the current session
+  $sess->delete();
+
+  // now get a new session id, but retain the users
+  // address and name:
+  page&lowbar;open(array("sess" =&gt; "Shop&lowbar;Session")); // will force auto&lowbar;init again!
+  $sess->register("user");  // could be done in auto&lowbar;init as well
+
+?&gt;
+</code></tscreen>
+
+<sect2>Reading and understanding session data for debugging
+<p>
+When debugging PHPLIB applications, it is often useful to be
+able to read and understand the contents of the active&lowbar;sessions
+table. Each session is represented by a single line in this
+table. The primary key to this table is the pair <tt/name/ and
+<tt/sid/. <tt/name/ is the content of <tt/$this-&gt;name/ and
+is usually the classname of your session class. <tt/sid/ is the
+content of <tt/$this-&gt;id/ and is usually the MD5 hash of a
+uniqid and some magic string.
+
+By choosing a pair, it is possible for PHPLIB to have more than
+one session type (for example, session and user data, see the
+<tt/User/ class below) per application and store all this data
+in a single table. If you are debugging a session class, for
+example <tt/Example&lowbar;Session/, only records where <tt/name =
+"Example&lowbar;Session"/ are of interest to you. Determine the current
+session id of your <tt/Example&lowbar;Session/ by printing <tt/$sess->id/
+and select the record with that <tt/name/ and <tt/sid/ from the
+database.
+
+The <tt/changed/ field indicates when this record has been
+updated the last time. It is a 14 character (Y2K compliant)
+string of the format YYYYMMDDhhmmss. Ordering by <tt/changed/
+desc will show you the most current session records first (the
+MySQL "limit" clause may come in handy here).
+
+The <tt/val/ column of a session record contains a PHP program
+that can be safely fed to <tt/stripslashes()/ first and
+<tt/eval()/ after that. The PHP program consists entirely of
+assignments and contains all instructions necessary to recreate
+the persistent variables. The structure and order of
+instructions within this program is always the same.
+
+First item is always an assignment to <tt/$this-&gt;in/. If set
+to 1, auto&lowbar;init has been executed by this session. If
+<em/not/ set to 1, auto&lowbar;init has not been executed, yet.
+This may be because no auto&lowbar;init file is defined for
+that session.
+
+After that comes code like this: <tt/$this-&gt;pt = array();/
+followed by a bunch of assignments like
+<tt/$this-&gt;pt["somestring"] = 1;/. Each somestring is the
+name of a registered variable. Variable registrations are
+persistent themselves and are saved with the <tt/$this-&gt;pt/
+array. Even if the variable in question is not set, it may be
+registered and stays so until it is unregistered or the session
+is deleted. Check the contents of the pt array is you want to
+see which variables are currently registered with your session.
+
+Finally, the actual contents of your variables are saved. This
+is always done by accessing the $GLOBALS array and always by
+enumerating the scalar values that make up the persistent
+variable. For a scalar, you will see code like
+<tt/$GLOBALS&lsqb;somevar&rsqb; = "value";/. 
+
+For an array, first <tt/$GLOBALS&lsqb;someary&rsqb; = array();/
+is generated. Then the scalars that make up the array, if any,
+are written out, generating code that looks like
+<tt/$GLOBALS&lsqb;someary&rsqb;&lsqb;index&rsqb; = "value"/.
+
+And for objects, code to create an object instance is saved:
+<tt/$GLOBALS&lsqb;someobj&rsqb; = new Classname;/. "Classname"
+is taken from the objects <tt/$classname/ slot, which <em/must/
+be present and accurate. Then the scalars that are to be saved
+are written out, according to the contents of the objects
+<tt/persistent&lowbar;slots/ array:
+<tt/$GLOBALS&lsqb;someobj&rsqb;-&gt;slot = "value";/ is written.
+
+If you want to see what values have been saved to the
+database, you just have to look at the <tt/$GLOBALS/ assignments
+for that session.
+
+<sect2>How "serialize()" operates
+<p>
+
+The following information is applicable only to library
+developers, that is, programmers that want to change the
+internal workings of PHPLIB. You may safely skip this section;
+some information here requires advanced understanding of the PHP
+language.
+
+The heart of the session class is the <tt/serialize()/ internal
+function. This function takes an expression called var and
+generates PHP code that will assign the value of that expression
+to the expression when executed. For example, if the expression
+is <tt/$GLOBALS&lsqb;"a"&rsqb;/ and the global variable <tt/$a/
+has the value <tt/17/, then serialize will create the PHP
+program <tt/$GLOBALS&lsqb;"a"&rsqb; = "17";/. To save memory,
+<tt/serialize()/ operates on a reference parameter <tt/$str/,
+where is will append the code generated.
+
+First thing <tt/serialize()/ does is to determine the type of
+the current expression using the PHP <tt/gettype()/ function.
+The current type is stored in <tt/$t/. The type of the
+expression may indicate either a scalar value (integer number,
+float number or string), an array or an object.
+
+Scalar values are the easiest to handle: <tt/serialize()/ just
+evaluates the current expression and remembers the result value
+in <tt/$l/. An assignment is generated that will assign the
+current value to the current expression. Since the current value
+may be a string and that string may contain bad characters (any
+of backslash, double quotes or dollar sign), these characters
+are backslashed. We are done, <tt/serialize()/ ends here for
+scalars.
+
+In the case of <tt/$t/ indicating an array, code is generated to
+create an empty array (<tt/expression = array();/). Then the
+keys of current expression are enumerated and for each key
+<tt/serialize()/ is called recursively with the current key
+appended to the expression. That will append code for each array
+slot.
+
+Should <tt/$t/ indicate an object, code is generated to create
+that object (<tt/expression = new Classname;/). Since one cannot
+find out the name of the class of an object for arbitrary
+objects in PHP, objects handled by <tt/serialize()/ must have a
+slot named <tt/classname/. The object handler will then
+enumerate the contents of the objects slot <tt/persistent&lowbar;slots/
+and call <tt/serialize()/ recursively for each of these slots
+with the appropriate var.
+
+Since many of the expressions used in <tt/serialize()/ require
+variable variable names or even variable code, <tt/eval()/ is
+used liberally. Unfortunately, this makes the code hard to read.

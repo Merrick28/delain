@@ -1,0 +1,198 @@
+$Id: README_session4_custom,v 1.1 2002/01/05 15:47:37 nhruby Exp $
+
+session4_custom.inc installation an use.
+
+The session4_custom.inc file contains the implementation of PHPLIB
+Session class using native PHP4 sessions engine. This README covers
+differencies between old Session and the new one, installation and use 
+of the Session class from session4_custom.inc through version 1.6.
+
+Preface. Why the damn thing is happened.
+
+Many people say that we do not need PHPLib session interface anymore 
+since session support is now built in PHP4. 
+I have some objections. 
+
+The first is that many many applications was written using PHPLib, so 
+the rewrite should be done. 
+
+The second is that the Session class is really very convenient way to 
+manage sessions. And it, of course, could be used as a framework for 
+session management, while using new PHP4 session API, that, of course, 
+is much more fast than the old PHPLib Session API. 
+Moreover, there is a lot of stuff in the PHP session module that could 
+be tweaked. You can tweak it using php.ini directives. You can also tweak 
+it using session api functions. There are many of them. I doubt that it is 
+convenient to call them explicitly on every page. PHPLib Session class can 
+do it for you using user-supplied values, and one $sess->start() call can do 
+all custom tweaking and start the session with the parameters you want. 
+
+The third is that PHPlib has always had session data storage abstraction. Native 
+PHP4 session module gives you a choice to use either files or shared memory as 
+the storage for session data. If you want to store the data anywhere else, you 
+should supply your custom functions. PHPLib has had this functions for years - 
+they are in CT_* classes. Why not use them as our custom storage containers? 
+
+So, given this arguments, we could talk about something that I call the 
+'session abstraction', similar to the DB abstraction. Using this class you can 
+tweak almost every session parameter - cookie headers, cache management, session 
+name, storage mechanism, url rewriting .... from one place - your 
+custom Session subclass declaration. Of course, there would be some overhead 
+compared to using PHP4 session functions explicitly. But I estimate that overhead 
+as negligible, while the benefits are too lucrative :).
+
+
+1. How it works.
+
+The new Session object is written as a wrapper over native PHP4 session 
+handling functions. It was written with compatibility in mind, while some 
+of the compatibility somewhere was sacrificed in favor of performance. 
+The class can use either native PHP4 session storage (currently 'files'
+and 'mm' modules) or PHPLib custom storage containers, implemented in
+CT_* classes, that currently can store data in a SQL database, DBM files, 
+LDAP directories, and anything else, if you provide necessary CT_Something class.
+
+1.1. Storage.
+The storage mechanism is set by the $module property (that is missing from the 
+old Session). The $module could take 'user', 'files' or 'mm' value. If the value is
+'files' or 'mm', the Session will set its storage module to a respective native 
+PHP4 session storage module. If you use 'files' module you can set $save_path property 
+to a value of the directory where you intend to store session data. Otherwise 
+default value from php.ini will be used.
+If $module is set to 'user', the PHPLib's custom CT_* container will be used. To 
+define which custom container will bw used, set $that_class in your Session subclass, 
+like you do with the old Session. I suppose that your subclass that works with the 
+old Session, will work with the new one.
+If the custom storage is used, session_set_save_handler() will be called during 
+session startup. If you use PHP version earlier then 4.0.4, use version 1.3 of the 
+session4_custom.inc from CVS. Since version 4.0.4 the session_set_save_handler() can
+take array ($class, 'method') arguments, and this behavior is used in session4_custom.inc 
+after version 1.3, but it is not compatible with previous versions of PHP. I'd recommend 
+you to upgrade, since version 1.3 of session4_custom.inc lacks many features that are 
+present in the current version.
+
+1.2. Cookies and cache.
+The class does some session tweaking using supplied values. It modifies session 
+cookie header using $cookie_path, $cookiename, $lifetime and $cookie_domain properties. 
+the behaviour is similar to the old classs'. Caching behaviour is managed by $allowcache 
+and $allowcache_expire methods, similar to the old class.
+
+1.3. Url rewriting.
+PHPlib Session has url() and friends to append session_name=session_id pair to an url if 
+the session cookies are not used. This class has similar functionality, but has some 
+changes as well. First, $mode and $fallback_mode are not necessary - their handling is 
+done automatically, since PHP4 session engine will always try to set a session cookie, if 
+session.use_cookies in the php.ini is set to true. If you don't like session cookies, set 
+this parameter in the php.ini to 0, false or Off. There is currently no possibility to 
+change this parameter from within the script.
+Another change is that now url() and friends respect the $trans_sid_used property settings.
+Set $trans_sid_used to true if you are ABSOLUTELY sure that trans_sid feature works 
+in your setup. There is a session.use_trans_sid parameter in php.ini, but it shows me 1 
+even when i don't compile PHP with --enable-trans-sid option. So, if you are sure, 
+set $trans_sid_used property to true value, and url() and friends won't append anything 
+to your urls, get_hidden_session() will return nothing, and all this will be done by 
+trans_sid feature.
+
+1.4. Session id.
+get_id() now does not respect any value passed to it, actually it is now get_id(void). 
+This is done because native PHP4 session mechanism now determines the session id itself.
+
+
+All the things above configured by default in a manner that they don't break existing 
+PHPLib-based applications. The default storage method is 'user', that will cause using 
+PHPLib's custom storage containers. The $trans_sid_used method is not set to true. Cache 
+and cookies parameters are the same, as in the Session class from PHPLib ver. 7.2c.
+
+2. The main differences.
+
+The main differences from previous PHPLib Session are the auto_init file use, session data 
+format, serialize() and thaw(), use of page_close() and use of the User class.
+
+2.1. Serialize(), thaw(), register(), and the new data format.
+The new Session the serialize() behavior is changed. Now serialize() is the wrapper over 
+native session_encode(), that returns session data in a native serialize() format or WDDX 
+format, corresponding to the php.ini's session.serialize_handler. It much more faster, then 
+using the old serialize(), that, using recursive calls, produced plain PHP code that should 
+be feed to eval() in thaw() then. 
+The $persistent_slots in objects that should be registered in a session are no longer 
+respected - all the class properties are now saved with the session.
+Thaw() is used as the custom session read handler now. It does not actually 'microwave' 
+frozen variables, it just pass serialized session data to the session engine. To reimport 
+session data use unserialize() (which is a wrapper over the session_decode() itself).
+Register() does not fill $pt array, it uses native session_register() instead. The session 
+data is actually a serialized representation of $HTTP_SESSION_VARS array. So, you can not 
+register any class property without registering the class itself. Register() can register 
+only global variables. E.g. the old Session registers $sess->in property as a marker,  
+whether auto_init file was used or not. That is not possible with the new register(). 
+(Auto_init issues will be covered shortly).
+And, as you could see, the new session data format is uncompatible with the old one. But 
+I suppose this should not affect any PHPlib-based applications.
+
+2.2. Auto_init issues.
+The auto_init file was called if $sess->in is false. $sess->in was registered as the session 
+variable, and if the auto_init file was called (at session initialization), it was set to 
+true, and the auto_init file was not called in subsequent requests. But, as it was explained 
+before, $sess->in can not be respected now, since it won't be saved as the session variable. 
+Auto_init file will be called at every request. So, you'll need to modify your auto_init 
+file so it could check, if the things that should be initialized only once have been 
+already initialized. E.g.:
+
+#setup.inc - the default auto_init file
+<?php
+if (!$sess->is_registered('cart')) {
+    $cart = new Cart;
+    $cart->start();
+}
+?>
+
+2.3. Page_close() use.
+The native PHP4 session engine automatically saves the session data at script shutdown. To 
+prevent multiple attempts to save the session data you should disable call to $sess->freeze() 
+in page_close() (see page.inc, the example in the current CVS). Actually, if you don't use 
+the User class, you don't need page_close() at all anymore. The bad side that you can not 
+currently manage read-only sessions. In a framed page you could call page_close() only in 
+one frame, while other frames used the session read-only. Otherwise there are chances 
+that frames will spoil your application by attempting to write session state at the same 
+time, causing DB errors, or rewriting the data registered in a neighbor frame. The feature 
+request for read-only session possibility is sent to the PHP Group, so the situation can 
+change shortly.
+
+2.4. User class.
+The User class had been designed as an extension of the Session class. It had worked ok 
+with the previous Session classes. But The new Session class is incompatible with the old 
+User, since many methods in the current Session are the wrappers over native session 
+functions, and they can not be used in the User class. I supplied a User class that should 
+work with this Session variant - see user4.inc. It is no more extended the Session, while, 
+of course, has the same API functions as earlier. It now uses native serialize(), which 
+is much faster, as it said before, and $persistent_slots in objects are not respected 
+anymore. That is also apply to the $classname properties, as serialize() now determines 
+the names of serialized classes automatically.
+The data format of the saved user data, of course, also has changed. 
+
+A simpliest program to convert old user data to the new format:
+(Call it with the *OLD* user class.)
+
+<?php
+$db = new DB_Sql;
+$query = "select sid from active_sessions "
+       . "where name = 'Your_user_class' ";
+while ($db->next_record()) {
+ $user = new Your_User_Class;
+ $user->start($db->f('sid'));
+ $PHPLIB_USER_VARS = array();
+ while (list ($key) = each ($user->pt)) {
+   $PHPLIB_USER_VARS[$key] = $$key;
+ }
+ $value = serialize($PHPLIB_USER_VARS);
+ $user->that->ac_store($user->id, $user->name, $value);
+ // don't call page_close()
+}
+?>
+This should convert all the user data in the table to the new format (I guess :)).
+
+	
+Good luck!
+Maxim Derkachev <kot@books.ru>
+
+P.S. Maybe I missed something. If you want to add something here, feel free to contact me.
+P.P.S. Sorry for my poor English :)

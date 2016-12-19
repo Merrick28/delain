@@ -1,0 +1,101 @@
+<!doctype linuxdoc system [
+  <!ENTITY f01quickstart   SYSTEM "01-quickstart.sgml">
+  <!ENTITY f01license      SYSTEM "01-license.sgml">
+  <!ENTITY f01prereq       SYSTEM "01-prereq.sgml">
+  <!ENTITY f01qinstgui     SYSTEM "01-qinstgui.sgml">
+  <!ENTITY f01usingcore    SYSTEM "01-usingcore.sgml">
+  <!ENTITY f01insttest     SYSTEM "01-insttest.sgml">
+
+  <!ENTITY f02installation SYSTEM "02-installation.sgml">
+  <!ENTITY f02files        SYSTEM "02-files.sgml">
+  <!ENTITY f02download     SYSTEM "02-download.sgml">
+  <!ENTITY f02requirements SYSTEM "02-requirements.sgml">
+  <!ENTITY f02procedure    SYSTEM "02-procedure.sgml">
+  <!ENTITY f02include      SYSTEM "02-include.sgml">
+  <!ENTITY f02modphp       SYSTEM "02-mod_php.sgml">
+
+  <!ENTITY f03core         SYSTEM "03-core.sgml">
+  <!ENTITY f03dbsql        SYSTEM "03-db_sql.sgml">
+  <!ENTITY f03page         SYSTEM "03-page.sgml">
+  <!ENTITY f03ctsql        SYSTEM "03-ct_sql.sgml">
+  <!ENTITY f03ctsplitsql   SYSTEM "03-ct_split_sql.sgml">
+  <!ENTITY f03ctshm        SYSTEM "03-ct_shm.sgml">
+  <!ENTITY f03ctdbm        SYSTEM "03-ct_dbm.sgml">
+  <!ENTITY f03ctfile       SYSTEM "03-ct_file.sgml">
+  <!ENTITY f03ctldap       SYSTEM "03-ct_ldap.sgml">
+  <!ENTITY f03session      SYSTEM "03-session.sgml">
+  <!ENTITY f03auth         SYSTEM "03-auth.sgml">
+  <!ENTITY f03perm         SYSTEM "03-perm.sgml">
+  <!ENTITY f03user         SYSTEM "03-user.sgml">
+
+  <!ENTITY f04extended     SYSTEM "04-extended.sgml">
+  <!ENTITY f04cart         SYSTEM "04-cart.sgml">
+  <!ENTITY f04template     SYSTEM "04-template.sgml">
+
+  <!ENTITY f05widget       SYSTEM "05-widget.sgml">
+  <!ENTITY f05sqlquery     SYSTEM "05-sql_query.sgml">
+  <!ENTITY f05table        SYSTEM "05-table.sgml">
+  <!ENTITY f05menu         SYSTEM "05-menu.sgml">
+  <!ENTITY f05form         SYSTEM "05-form.sgml">
+  <!ENTITY f05tplform      SYSTEM "05-tpl_form.sgml">
+  <!ENTITY f05tree         SYSTEM "05-tree.sgml">
+  <!ENTITY f05strings2     SYSTEM "05-strings2.sgml">
+
+  <!ENTITY f06ack          SYSTEM "06-ack.sgml">
+]>
+<!-- $Id: documentation.sgml,v 1.1 2001/08/13 12:30:06 richardarcher Exp $ -->
+
+<article>
+<title>PHP Base Library Documentation, Release phplib_7_2
+
+<author>Boris Erdmann, boris@erdmann.com, 
+        Kristian Koehntopp, kk@netuse.de 
+    and Sascha Schumann, sascha@schumann.cx
+<date>$Id: documentation.sgml,v 1.1 2001/08/13 12:30:06 richardarcher Exp $
+
+<toc>
+
+&f01quickstart;
+&f01license;
+&f01prereq;
+&f01qinstgui;
+&f01usingcore;
+&f01insttest;
+
+&f02installation;
+&f02files;
+&f02download;
+&f02requirements;
+&f02procedure;
+&f02include;
+&f02modphp;
+
+&f03core;
+&f03dbsql;
+&f03page;
+&f03ctsql;
+&f03ctsplitsql;
+&f03ctshm;
+&f03ctdbm;
+&f03ctldap;
+&f03session;
+&f03auth;
+&f03perm;
+&f03user;
+
+&f04extended;
+&f04cart;
+&f04template;
+
+&f05widget;
+&f05sqlquery;
+&f05table;
+&f05menu;
+&f05form;
+&f05tplform;
+&f05tree;
+&f05strings2;
+
+&f06ack;
+
+</article>

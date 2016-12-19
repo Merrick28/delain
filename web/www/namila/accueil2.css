@@ -1,0 +1,149 @@
+body
+{
+   width: 800px;
+   margin: auto;
+   margin-bottom: 20px;    
+   background-image: url("fond_page.png");
+}
+
+/* La bannière */
+
+#banniere
+{
+   width: 800px;
+   height: 250px;
+}
+
+
+/* Le menu */
+
+#menu
+{
+   float: left;
+   width: 140px;
+   background-image: url("fond.png");
+}
+
+.element_menu
+{
+  /* background-color: #626262; */
+   background-image: url("o.png");
+   background-repeat: repeat-x;
+   
+   border: 2px solid black;
+   
+   
+}
+
+
+/* Quelques effets sur les menus */
+
+
+.element_menu h3
+{    
+   color: #000000;
+   font-family: Arial, "Arial Black", "Times New Roman", Times, serif;
+   text-align: center;
+}
+
+.element_menu ul
+{
+   list-style-image: url("images/puce.png");
+   padding: 0px;
+   padding-left: 20px;
+   margin: 0px;
+   margin-bottom: 5px;
+}
+
+.element_menu a
+{
+   color: #000000;
+}
+
+.element_menu a:hover
+{
+   background-color: #FFDD11;
+   color: black;
+}
+
+
+/* Le corps de la page */
+
+#corps
+{
+   margin-left: 140px;
+   margin-bottom: 20px;
+   padding: 5px;
+   
+   color: #000000;
+   background-image: url("fond.png");
+   background-repeat: repeat-x-y;
+   
+   border: 2px solid black;
+}
+
+#corps h1
+{
+   color: #000000;
+   text-align: center;
+   font-family: Arial, "Arial Black", "Times New Roman", Times, serif;
+}
+
+#corps h2
+{
+   height: 30px;
+
+   background-image: url("o.png");
+   background-repeat: no-repeat;
+   
+   padding-left: 30px;
+   color: #B3B3B3;
+   text-align: left;
+}
+
+/* Les news */
+
+#news
+{
+   margin-left: 140px;
+   margin-bottom: 20px;
+   padding: 5px;
+   
+   color: #000000;
+   background-image: url("fond.png");
+   background-repeat: repeat-x-y;
+   
+   border: 2px solid black;
+}
+
+#news h1
+{
+   color: #000000;
+   text-align: center;
+   font-family: Arial, "Arial Black", "Times New Roman", Times, serif;
+}
+
+#news h2
+{
+   height: 30px;
+   
+   padding-left: 30px;
+   color: #000000;
+   text-align: left;
+}
+/* Le pied de page (qui se trouve tout en bas, en général pour les copyrights) */
+
+#pied_de_page
+{
+   padding: 5px;
+   clear: both;
+
+   text-align: center;
+
+   color: #000000;
+   background-color: #626262;
+   background-image: url("o.png");
+   background-repeat: repeat-x;
+   
+   border: 2px solid black;
+}

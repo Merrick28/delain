@@ -1,0 +1,432 @@
+<!-- $Id: 04-cart.sgml,v 1.1.1.1 2000/04/17 16:40:03 kk Exp $ -->
+
+<sect1>Cart
+<p>
+
+The Cart class is programmatically independent, but makes sense
+only if its instances are made persistent in some way. The Cart
+class automatically registers itself as a session variable in
+its <tt/start()/ function.
+
+Cart implements a shopping cart. At the moment, items within the
+shopping cart are independent of each other; the cart can only
+hold simple things. Support for compound articles that require
+other articles to function and provide a base for dependent
+articles is to be added at a future time.
+
+An example of a simple article is any article with no options,
+for example an apple or a book. Common examples for compound
+articles are a pizza (which requires a foundation in either
+American or Italian style, a selection of toppings, and cheese,
+to function correctly) and a computer system (which requires a
+housing, a motherboard, RAM, a video card, etc to function
+correctly).
+
+<em/Note:/ <tt/Cart/ was a core class up to <em/release-5/. If
+your applications uses the <tt/Cart/ class, you <em/must/
+manually add the statement <tt/include("cart.inc")/ to your
+<tt/prepend.php3/ file where indicated in that file.
+
+<em/Note:/ The page management functions do no longer support
+the feature <tt/cart/ to set up and start the cart class. It is
+recommended that you use <tt/Session/'s <tt/auto&lowbar;init/ feature
+instead to start your cart automatically or that you manually
+set up your cart.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+persistent&lowbar;slots<colsep>Serialization helper: The names of all persistent slots.<rowsep>
+
+item<colsep>Multidimensional array of items in the cart.<rowsep>
+currentItem<colsep>A counter for item positions.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+
+<tag>check($art)</tag> 
+<p> 
+Checks that an item with the given article number <tt/$art/ is
+in the cart. Returns an array of a boolean value and an integer
+number. If the boolean is true, there are number many articles
+of that article number in the cart.
+
+<tag>reset()</tag> 
+<p> 
+Deletes all items in current cart, resetting $this->currentItem to
+1. Always returns true.
+
+<tag>num&lowbar;items()</tag>
+<p>
+Returns the number of articles in the current shopping cart, or
+false if cart is empty. For compatibility reasons, this function
+is available as <tt/tot&lowbar;arts/ as well (but will print
+a warning if used by this name).
+
+<tag>add&lowbar;item($art, $num)</tag>
+<p>
+Add <tt/$num/ many articles of article number <tt/$art/ to the current
+shopping cart. Returns the position number of <tt/$art/ in the
+shopping cart.
+
+<tag>remove&lowbar;item</tag>
+<p>
+Remove <tt/$num/ many articles of article number <tt/$art/ from the
+shopping cart, if there are at least that many articles in the
+cart. Returns the position number of <tt/$art/ in the shopping cart
+or false, if there weren't enough <tt/$art/ to remove them from the
+cart. If the function does return false, the cart has not been
+modified.
+
+<tag>set&lowbar;item</tag>
+<p>
+Set the quantity of article number <tt/$art/ in the shopping cart to 
+exactly <tt/$num/. If <tt/$num/ is set to zero, article is removed from
+cart. Returns the position number of <tt/$art/ in the shopping cart.
+
+<tag>show&lowbar;all()</tag>
+<p>
+If the shopping cart is empty, it will call
+<tt/show&lowbar;empty&lowbar;cart()/ once and then return.
+
+Calls <tt/show&lowbar;item&lowbar;open()/ once at the beginning of a shopping
+cart listing. Then calls <tt/show&lowbar;item()/ once for each item in
+the shopping cart. Calls <tt/show&lowbar;item&lowbar;close()/ once at the end
+of a shopping cart listing.
+
+<tag>show&lowbar;item($art, $num)</tag>
+<p>
+This function should be provided by the user. It renders the
+HTML to display a single item from the cart. <tt/$art/ is the
+article number of the item and there are <tt/$num/ of these in
+the cart.
+
+<tag>show&lowbar;cart&lowbar;open()</tag>
+<p>
+This function should be provided by the user. It renders the
+prologue HTML to display a shopping cart listing.
+
+<tag>show&lowbar;cart&lowbar;close()</tag>
+<p>
+This function should be provided by the user. It renders the
+epilogue HTML to display a shopping cart listing.
+
+<tag>show&lowbar;empty&lowbar;cart</tag>
+<p>
+This function should be provided by the user. It should render
+an appropriate message to symolize an empty cart.
+</descrip>
+
+<sect2>Example
+<p>
+
+Use a subclass of <tt/Cart/ to provide an implementation of
+<tt/show&lowbar;item()/.
+
+<tscreen><code>
+class My&lowbar;Cart extends Cart {
+  var $classname = "My&lowbar;Cart";
+
+  // Look up article numbers...
+  var $database&lowbar;class = "DB&lowbar;Article";
+  var $database&lowbar;table = "articles";
+  var $db;
+  
+  var $sum = 0;
+
+  function show&lowbar;cart&lowbar;open() {
+    printf("&lt;table class=cart&lowbar;table&gt;\n");
+    $this-&gt;sum = 0;
+  }
+  
+  function show&lowbar;cart&lowbar;close() {
+    printf("&lt;/table&gt;\n");
+    printf("That's a total of %s.\n", $this-&gt;sum);
+  }
+
+  function show&lowbar;item($art, $num) {
+    if (!is_object($this-&gt;db)) {
+      $class    = $this-&gt;database&lowbar;class;
+      $this-&gt;db = new $class;
+    }
+    
+    $query = sprintf("select * from %s where artid = '%s'",
+      $this-&gt;database&lowbar;table,
+      $art);
+    $this-&gt;db-&gt;query($query);
+
+    while($this-&gt;db-&gt;next&lowbar;record()) {
+      printf(" &lt;tr class=cart&lowbar;row&gt;\n  &lt;td class=cart&lowbar;cell&gt;%s&lt;/td&gt;\n",
+        $this-&gt;db-&gt;Record["name"]);
+      printf("  &lt;td class=cart&lowbar;cell&gt;%s&lt;/td&gt;\n", 
+        $this-&gt;db-&gt;Record["price"]);
+      printf("  &lt;td class=cart&lowbar;cell&gt;%s&lt;/td&gt;\n",
+        $num);
+      $rowsum = $num * $this-&gt;db-&gt;Record["price"];
+      $this-&gt;sum += $rowsum;
+      printf("  &lt;td class=cart&lowbar;cell&gt;%s&lt;/td&gt;\n",
+        $rowsum);
+      printf(" &lt;/tr&gt;\n");
+    }
+  }
+}
+</code></tscreen>
+
+To use a cart, create an instance of your <tt/Cart/ subclass and
+call <tt/start()/. This will automatically register <tt/cart/.
+
+It is recommended that you set in your <tt/Session/ subclass
+in <tt/local.inc/ the slot <tt/$auto&lowbar;init/ to the value
+<tt/setup.inc/ and create an include file of that name which
+contains the following code:
+
+<tscreen><code>
+  global $cart;               ## $cart is a global variable.
+  $cart = new My&lowbar;Cart; ## Make a My&lowbar;Cart instance named $cart
+  $cart-&gt;start();          ## and have it register itself.
+</code></tscreen>
+
+Use <tt/add&lowbar;item()/ and <tt/remove&lowbar;item/ to work with your Cart:
+
+<tscreen><code>
+  $cart-&gt;add&lowbar;item("101", 2);    ## Add two pieces of "101"
+  $cart-&gt;remove&lowbar;item("101", 1); ## Drop one piece of "101"
+</code></tscreen>
+
+Use <tt/show&lowbar;all()/ to display the contents of your cart.
+
+<tscreen><code>
+  $cart-&gt;show&lowbar;all();    ## What's in a cart, anyway?
+</code></tscreen>
+
+<sect2>On using Cart
+<p>
+To make use of the Cart class, you need to define a new table
+in your database that lists all articles you shop should sell.
+With PHPLIB and MySQL we recommend that you create a new
+instance of PHPLIB for each virtual web server and a new database
+for each customer. This database should hold the
+active_sessions and auth_user tables as well as all
+application specific tables like for example the article
+list. In other words, with MySQL we strongly discourage
+that you use PHPLIB and the MySQL directive <tt/use/
+<em/database_name/ together. There is no support
+if you do (there is no support if you do as we say, too,
+because PHPLIB is an open source product you are using on your
+own risk, but ...).
+
+So let us assume you define a very simple new table <tt/articles/
+with a structure like this:
+
+<tscreen><code>
+#
+# Table structure for table 'articles'
+#
+CREATE TABLE articles (
+  name text,
+  price float(8,2),
+  artid int(11) DEFAULT '0' NOT NULL auto_increment,
+  PRIMARY KEY (artid)
+);
+</code></tscreen>
+
+This table has an article number called <tt/artid/, and for each
+<tt/artid/  there is an article description <tt/name/ and a <tt/price/. You
+may extend this minimal definition for your purposes by adding
+article groups, BLOBs with article images and more, but this will
+suffice for our example purposes.
+
+Populate this table with some products that suit your taste.
+
+The next step is to teach PHPLIB about the cart class. Three
+steps are necessary to do so:
+
+<itemize>
+<item>the <tt/Cart/ class has to be included on every page. Even on
+that pages that do not make use of the <tt/Cart/ class.
+
+On that pages that use <tt/Cart/, a cart subclass is instantiated and
+saved. On all subsequent pages, that <tt/Cart/ object is recreated and
+to be able to recreate the <tt/Cart/ object, PHP must know what a <tt/Cart/
+object is. Since you cannot know which pages a user loads after
+he has put the first item into the <tt/Cart/, we need to have a
+definition for <tt/Cart/ on <em/all/ pages.
+
+The proper place to include the <tt/Cart/ definition from <tt/cart.inc/ is
+consequently <tt/prepend.php3/. Edit <tt/prepend.php3/ and
+<tt/require("cart.inc")/ as indicated by the comments in that file.
+
+<item>a subclass of <tt/Cart/ has to be created to suit your tastes.
+
+Your subclass of <tt/Cart/ will be called <tt/Example&lowbar;Cart/ in this example.
+You may actually name it as you like, but you have to be
+consistent.
+
+The definition of <tt/Example&lowbar;Cart/ goes into <tt/local.inc/ anywhere below
+your definition for <tt/Example&lowbar;Session/. It looks like this
+
+<tscreen><code>
+class Example_Cart extends Cart {
+  var $classname = "Example_Cart";
+
+}
+</code></tscreen>
+
+and we will add additional code later in this example. That
+additional code will teach your shopping cart about the database
+table that holds your articles and so on.
+
+<item>finally, you need to create an instance of your shopping cart
+class so that you have an object that actually holds the articles
+selected by the user.
+
+We will use a very nifty feature of PHPLIB to create that object
+instance: If you set up PHPLIB properly, it is able to load and
+execute an include file every time a session is being created. We
+call this feature <tt/auto&lowbar;init/, after the instance variable of
+Session that controls it.
+
+Go into <tt/local.inc/ and edit your subclass of <tt/Session/. You will
+have some code like
+
+<tscreen><code>
+class Example_Session extends Session {
+  var $classname = "Example_Session";
+
+...
+}
+</code></tscreen>
+
+in your <tt/local.inc/. Add
+a line like
+
+<tscreen><code>
+  var $auto_init = "setup.inc",
+</code></tscreen>
+
+to your definition of <tt/Example&lowbar;Session/ and create a file
+<tt/setup.inc/ in the same directory that holds your local.inc.
+Whatever code is in this file will be executed every time we
+create a new session. The code is being executed after your
+<tt/$sess/, <tt/$auth/ and <tt/$perm/ objects are loaded and
+initialized, but does run from within a function context. You
+have to <tt/global/ everything you define to export it from that
+function context.
+
+In <tt/setup.inc/, create a global instance of
+<tt/Example&lowbar;Cart/ named <tt/$cart/ and register that variable
+with PHPLIB:
+
+<tscreen><code>
+&lt;?php
+  global $cart;
+  $cart = new Example_Cart;
+
+  // $sess is already global
+  $sess->register("cart");
+ ?&gt;
+</code></tscreen>
+</itemize>
+
+Now you have a <tt/$cart/ object available by default on every
+page that uses PHPLIB. That object is created automatically at
+session startup, is carried from page to page by PHPLIBs session
+management and is destroyed by the garbage collection that reaps
+session records. You do not have to worry anymore about that
+cart, but simply use it anytime between <tt/page&lowbar;open()/
+and <tt/page&lowbar;close()/. PHPLIB does the rest for you.
+
+The <tt/Cart/ class is actually dead stupid. It maintains an array
+<tt/$cart-&gt;item[]/ that holds records about what the user bought. Each
+<tt/$cart-&gt;item[$x]/ consists of a
+<tt/$cart-&gt;item[$x]["art"]/, which is
+the article number of an item the user wants to buy and of a
+<tt/$cart-&gt;item[$x]["num"]/, which is the # of items with that article
+number that are wanted. <tt/$cart-&gt;currentItem/ is the next $x to use
+for articles added to <tt/$cart-&gt;item[]/.
+
+You add articles to the shopping cart with
+
+<tscreen><code>
+$x = $cart->add_item($art, $num)
+</code></tscreen>
+
+This will add <tt/$num/ items with the article number <tt/$art/
+to your cart contents. If you already have an item with that
+article number in your cart, the count for that article is
+increased by <tt/$num/. Otherwise a new article entry is being
+created and set to <tt/$num/. The function does return the
+<tt/$x/ index into the <tt/$cart-&gt;item[]/ array for that article.
+
+To remove an item from the shopping cart, code
+
+<tscreen><code>
+$x = $cart->remove_item($art, $num)
+</code></tscreen>
+
+This will remove <tt/$num/ items with the article number
+<tt/$art/ from your cart, if there are that many items in your
+shopping cart. If you do not have the <tt/$art/ in your cart or
+there are not <tt/$num/ many <tt/$art/ in your cart, the
+function will return false and not remove anything from the
+cart. Otherwise, <tt/$num/ articles with article number
+<tt/$art/ are taken out of the cart and if the count for that
+article drops to zero while doing this, we even unset the array
+element.
+
+You may check how many articles with a given article number are
+in the cart:
+
+<tscreen><code>
+list($have, $num) = $cart->check($art)
+</code></tscreen>
+
+The check function does return a two-element array. The first
+element <tt/$have/ is true, if we have the wanted article in the cart.
+If <tt/$have/ is true, <tt/$num/ holds the number of articles with that
+number in the cart, otherwise <tt/$num/ is undefined (actually, it is
+0, but you must not rely on that).
+
+Finally, we have a function
+
+<tscreen><code>
+$cart->show_all()
+</code></tscreen>
+
+which you may call to walk your shopping cart and have
+Example_Cart to generate a list of articles in your cart. That
+function will first call <tt/$cart-&gt;show_cart_open()/, for which you
+may provide code in your subclass. It will then call
+<tt/$cart-&gt;show_item($art, $num)/ for each item in the cart. We have a
+stupid default implementation for that function in Cart, but you
+may provide more sophisticated code in <tt/Example&lowbar;Cart/ for that, too.
+Finally, at the end of your cart listing,
+<tt/$cart-&gt;show_cart_close()/ is being called, which again may be code
+of yours.
+
+The example in the previous section shows a more
+sophisticated implementation of a Cart subclass. That
+implementation uses show_cart_open() to create an opening 
+table tag (formatted with a CSS class) and sets a counter
+<tt/$cart-&gt;sum/ to
+zero.
+
+In show_cart_close(), the table is being closed and the
+<tt/$cart-&gt;sum/ counter is printed.
+
+As you might have guessed, <tt/show_item($art, $num)/ queries the
+database for each article number, retrieves the article
+description and prices and finally sums up all prices, taking the
+number of articles per article into consideration. It also
+generates table rows, printing a nice receipt for the customer.

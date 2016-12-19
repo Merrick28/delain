@@ -1,0 +1,77 @@
+  BLOBs for PHPLIB
+  Sascha Schumann, sascha@schumann.cx
+  $Date: 2000/04/17 16:40:06 $, $Revision: 1.1.1.1 $
+
+  RFD on a BLOB API for PHPLIB
+
+  [1m1.  BLOB (Binary Large OBjects)[0m
+
+  This chapter is intended to give you a quick introduction to BLOBs,
+  their interface as proposed for PHPLIB.
+
+
+  [1m1.1.  Defining the problem[0m
+
+  Achieving the goal of creating portable applications is hindered by
+  the fact that no portable way of storing large amount of data exists.
+
+  Every database vendor defines his own application programming
+  interface (API) to access binary large objects, or uses other, non-
+  standard ways to enable the use of BLOBs.
+
+  Enhancing the existing vendor neutral support for databases in PHPLIB
+  to also include BLOB support could be a short-term solution to the
+  problem.
+
+
+  [1m1.2.  Proposed extension API[0m
+
+
+  An overview over the function calls follows.
+
+
+     [1mblob_create()[0m
+
+        This will create a new BLOB and return its ID. If it is
+        impossible to create a new BLOB, this function will halt() the
+        execution and generate an error message.
+
+
+     [1mblob_open($ID)[0m
+
+        Opens the specified BLOB for reading and writing and returns
+        true or false on success or failure, respectively.
+
+
+     [1mblob_close($ID)[0m
+
+        Closes the referenced BLOB. Do not forget this - it might be
+        necessary for some databases or you might face data loss.
+
+
+     [1mblob_delete($ID)[0m
+
+        Deletes the specified BLOB. All associated resources are freed.
+        The BLOB must not be referenced at a later time.
+
+
+     [1mblob_read($ID)[0m
+
+        Reads the entire data of BLOB and returns it.
+
+
+     [1mblob_write($ID, $DATA)[0m
+
+        Overwrites the whole BLOB with $DATA.
+
+  [1m1.3.  Design notes[0m
+
+  The goal was to create a vendor neutral API which could be implemented
+  easily with most databases. Eventually, it should provide a "fallback"
+  mode enabling the user to utilize BLOBs even if the database does not
+  support BLOBs natively. Keep in mind that it should be able to cover
+  as many databases as possible and therefore only implements a subset
+  of functionality provided by modern databases.
+
+
+

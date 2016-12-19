@@ -1,0 +1,62 @@
+{% extends 'page.twig' %}
+
+{% block corps %}
+
+    <div class="groupdiv">
+        <link rel="stylesheet" type="text/css" href="{{ HTTPS }}{{ URL }}/js/pwdwidget.css">
+        <script src="{{ HTTPS }}{{ URL }}/js/pwdwidget.js"></script>
+        <form method="post" id="formGenerePass" action="valide_genere_mdp.php">
+            <input type="hidden" name="compt_cod" value="{{ COMPTE.compt_cod }}">
+            <input type="hidden" name="token" value="{{ COMPTE.compt_validation }}">
+            <table>
+
+
+                <tr>
+                    <td><label for="nouveau1">Nouveau mot de passe</label></td>
+                    <td>
+                        <div class="pwdwidgetdiv" id="divpassword"></div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label for="nouveau2">Nouveau mot de passe (confirmation) : </label></td>
+                    <td><input type="password" name="nouveau2" id="nouveau2"></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2"><p style="text-aligne:center">
+                            <input type="submit" class="test" value="Valider les changements !"></p>
+                    </td>
+                </tr>
+            </table>
+
+
+        </form>
+    </div>
+    <script>
+        var pwdwidget = new PasswordWidget('divpassword', 'nouveau1');
+        pwdwidget.enableGenerate = false;
+        pwdwidget.enableShowStrength = true;
+        pwdwidget.MakePWDWidget();
+        $("#formGenerePass").validate({
+            rules: {
+                nouveau1_id: {
+                    required: true,
+                },
+                nouveau2: {
+                    required: true,
+                    equalTo: "#nouveau1_id"
+                }
+            },
+            messages: {
+                nouveau1_id: 'Entrez votre mot de passe',
+                nouveau2: {
+                    required: 'Confirmez le mot de passe',
+                    equalTo: 'Les mots de passe ne correspondent pas'
+                }
+            }
+
+        });
+    </script>
+{% endblock %}
+

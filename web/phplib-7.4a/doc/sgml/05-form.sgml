@@ -1,0 +1,304 @@
+<!-- $Id: 05-form.sgml,v 1.1.1.1 2000/04/17 16:40:04 kk Exp $ -->
+
+<sect1>Form
+
+<p>The form class (sometimes called OOH Forms) is a convenience
+library for dealing with html forms.  It provides Javascript and
+server-side form validation, and is customizable and extensible.
+
+<sect2>Using OOH Forms
+
+<p>The OOH Forms library consists of five files: <tt/oohforms.inc
+of_checkbox.inc of&lowbar;radio.inc of&lowbar;select.inc
+of&lowbar;text.inc of&lowbar;textarea.inc/.  <tt/oohforms.inc/
+automatically includes the others.  You may wish to modify this so you
+can manually include the files for just the form elements you use.  Or
+you may wish to cut and paste the contents of the element files into
+<tt/oohforms.inc/ to save the overhead of multiple includes.
+Determining the appropriate configuration of the files for your site
+is left an exercise for the reader; for most purposes
+<tt/require("oohforms.inc")/ will suffice.
+
+<p>In general, the structure of a page that uses oohforms is as
+follows:
+
+<tscreen><code>
+require("oohforms.inc");         // include the library
+
+$f = new form;                   // create a form object
+
+$f->add&lowbar;element(...);     // set up form elements
+$f->add&lowbar;element(...);    
+$f->add&lowbar;element(...);    
+
+if ($submitname)                 // Is there data to process?
+  if ($err = $f->validate()) {   // Is the data valid?
+    echo $err;                   // No; Display error
+    $f->load&lowbar;defaults();  // Load form with submitted data
+  else {
+    /* Process data */           // Data ok; Do something with it
+  }
+
+$f->start(...);                  // Start displaying form
+$f->show&lowbar;element(...);    // Show elements
+$f->show&lowbar;element(...);
+$f->show&lowbar;element(...);
+$->finish();                     // Finish form
+</code></tscreen>
+
+<p>There are obviously many variations on this theme, but that covers
+the basics.  Specific methods are documented below.
+
+<descrip>
+
+<tag>start($jvsname,$method,$action, $target)</tag>
+<p>Outputs the initial <tt/&lt;form&gt;/ tag and sets up some initial
+state needed by the class.  All of the arguments are optional, though
+you'll usually want to use at least one in order to get Javascript
+validation.  <tt/$jvsname/ is an arbitrary string used to link the
+Javascript to the form; if it is empty (the default), no Javascript
+validation is provided.  <tt/$method/ is the HTTP method used to submit the 
+form; default is <tt/"POST"/.  <tt/$action/ is the URL that receives
+the form submission; default is <tt/$PHP_SELF/.  <tt/$target/ is the
+frame target for the form results; default is <tt/&lowbar;self/.
+
+<tag>finish($after,$before)</tag> 
+<p>Outputs the any hidden fields that were added to the form, the
+final <tt>&lt;/form&gt;</tt> tag, then the Javascript validation
+function (if necessary).  <tt/$after/ and <tt/$before/ are both
+optional; if either is a nonempty string it is output as additional
+Javascript to be run on submission of the form, either before or after 
+the validation code.  Though the order of the arguments may seem
+counterintuitive, it makes the common case easier to type; in general
+you'll want to wait until after the validation has taken place to do
+anything fancy with Javascript.  Note that unlike with validation, OOH 
+Forms has no way of giving you server side functionality equivalent to 
+the Javascript you use here.
+
+<tag>add&lowbar;element($element)</tag>
+<p><tt/add&lowbar;element/ is used to define the attributes of a
+particular form element so that the other class methods can use and
+manipulate it properly.  <tt/add&lowbar;element/ takes exactly one
+argument: an associate array whose key value pairs are used to
+define the form element type and it's various attributes.  Some of
+these attributes correspond to html attributes, while others are
+needed for the value added features of oohforms.  The attributes and
+the syntax and semantics of the values they take are documented below; 
+note that not all element types use all of the attributes
+
+<descrip>
+
+<tag>type</tag> 
+<p>The type of element this is; can be <tt/"submit"/, <tt/"hidden"/,
+<tt/"text"/, <tt/"textarea"/, <tt/"select"/, <tt/"radio"/, 
+<tt/"checkbox"/, or <tt/"file"/.
+
+<tag>name</tag>
+<p>A string naming this element.  This name will be used as an
+argument to other methods and will be the <tt/name=""/ value in the
+generated html (and hence the variable name in PHP).  <bf/Do not/
+append <tt/[]/ to the name if you want an array valued element; set
+the <tt/multiple/ attribute instead.
+
+<tag>value</tag>
+<p>The default value of this form element.  If the form element has
+the <tt/multiple/ attribute set, <tt/value/ can be an array.  If the
+this is a <tt/select/ element, <tt/value/ can refer to either the
+textual name (<tt/label/ in the <tt/options/ array) or the submission
+value (<tt/value/ in <tt/options/).
+
+<tag>multiple</tag>
+<p>A flag to tell oohforms to assume this element is array valued.
+The use of this flag is most straightforward with <tt/select/ elements, 
+but it can be use with <tt/text/ and <tt/checkbox/ elements as well.
+See the <tt/show&lowbar;element/ documentation for more information
+about how oohforms deals with such elements.
+
+<tag>extrahtml</tag>
+<p>Extra html code that is inserted verbatim into the opening form
+tag.  For <tt/select/ elements, the extra html goes into the
+<tt/select/ tag, not the <tt/option/ tags.
+
+<tag>size</tag>
+<p>For <tt/text/ elements, used to set the html size attribute that
+gives the width in characters of the text entry box.  For <tt/select/
+elements, the size (number of options visible at once) of the
+selection box.  Validation is only performed on <tt/select/ elements
+if <tt/size/ is set to 1, since <tt/select/ validation doesn't make
+much sense if you can see multiple options at once.  For <tt/file/
+elements, the maximum size file upload to accept.
+
+<tag>pass</tag>
+<p>If set for a <tt/text/ element, renders the html as a password
+element, i.e. entry displays as asterisks.
+
+<tag>src</tag>
+<p>If set for a <tt/submit/ element, convert to an image element and
+use the value of <tt/src/ as the source URL for the image.
+
+<tag>maxlength</tag>
+<p>Used verbatim as the maxlength html attribute in <tt/text/
+elements.
+
+<tag>minlength</tag>
+<p>If <tt/length&lowbar;e/ is set, this is the minimum length
+<tt/text/ element entry accepted by the validator.
+
+<tag>length&lowbar;e</tag>
+<p>If set, validate the <tt/text/ element to assure it has at least
+<tt/minlength/ characters.  The value of <tt/length&lowbar;e/ is the
+error string to be used in the event of failed validation.
+
+<tag>valid&lowbar;e</tag>
+<p>If set, perform validation on a <tt/text/, <tt/radio/, or
+<tt/select/ element.  For a <tt/text/ element, validation assures a
+match with <tt/valid&lowbar;/ regex.  <tt/radio/ element validation
+assures that one of the options in the group has been chosen.
+<tt/select/ validation only works for <tt/select/ elements with
+<tt/multiple/ unset and <tt/size/ equal to 1; the validator will not
+accept the first option of accept menu, assuming that it is some sort
+of prompt (e.g. "Please select an item").  In all cases, the value of
+<tt/valid&lowbar;e/ is the error string used for failed validations.
+
+<tag>valid&lowbar;regex</tag>
+<p>Regular expression used to validate entry into a test field if
+<tt/valid&lowbar;e/ is set.  Note that if you must use ^...$ if you
+want the regex to match the whole entry.
+
+<tag>icase</tag>
+<p>If set, regex matching is case insensitive.
+
+<tag>checked</tag>
+<p>Only used for a <tt/checkbox/ element that does not have
+<tt/multiple/ set.  If <tt/checked/ is set, the element will display
+as checked.
+
+<tag>rows</tag>
+<p>Used verbatim as the <tt/rows=/ element in a <tt/textarea/ element.
+
+<tag>cols</tag>
+<p>Used verbatim as the <tt/cols=/ element in a <tt/textarea/ element.
+
+<tag>wrap</tag>
+<p>Used verbatim as the <tt/wrap=/ element in a <tt/textarea/ element.
+
+<tag>options</tag>
+<p>Array of options to be displayed in a <tt/select/ element.  If the
+elements of the array are simple values (strings or numbers), they are 
+simply displayed verbatim and used as the value for that particular
+option.  The elements may themselves be associate arrays with keys
+<tt/"label"/ and <tt/"value"/.  In that case, the value of
+<tt/"label"/ is displayed and the value of <tt/"value"/ is used on
+submission.
+
+</descrip>
+
+<p>Examples:
+
+<tscreen><code>
+$f->add&lowbar;element(array("type"=>"text",
+                             "name"=>"foo",
+                             "valid&lowbar;regex"=>"^[a-z]*$",
+                             "valid&lowbar;e"=>"Letters only",
+                             "icase"=>1,
+                             "value"=>"bar"));
+$f->add&lowbar;element(array("type"=>"checkbox",
+                             "name"=>"compress",
+                             "multiple"=>1));
+$f->add&lowbar;element(array("type"=>"textarea",
+                             "name"=>"comment",
+                             "rows"=>6,
+                             "cols"=>40,
+                             "value"=>""));
+$o = array(array("label"=>"Please Select","value"=>0),
+           array("label"=>"Apple","value"=>1),
+           array("label"=>"Orange","value"=>2),
+           array("label"=>"Pear","value"=>3),
+           array("label"=>"Grape","value"=>4));
+$f->add&lowbar;element(array("type"=>"select",
+                             "name"=>"menu",
+                             "options"=>$o,
+                             "size"=>1,
+                             "valid&lowbar;e"=>"Please select a fruit",
+                             "value"=>"apple"));
+</code></tscreen>
+
+<tag>show&lowbar;element($name,$value)</tag>
+<p>Outputs the form element named <tt/$name/.  Usually, the second
+argument is not used.  It is always necessary for <tt/radio/ elements
+and <tt/checkbox/ elements with the <tt/multiple/ attribute set, since 
+many of these may have the same name.  It also must be used for
+<tt/submit/ elements to label the submission button; the <tt/value/
+attribute is not used for <tt/submit/ elements.  For other elements
+that may be array valued (notably <tt/text/ elements) multiple calls
+to show&lowbar;element will show successive values.
+
+<tag>load&lowbar;defaults($element&lowbar;list)</tag>
+<p>Sets the default value of form elements to the value of the PHP
+variables with the same name.  This is generally used to redisplay a
+form with the same values which were submitted.  The argument is
+optional; if given it is an array of element names; only these
+elements ares affected.
+
+<tag>validate($result,$element&lowbar;list)</tag>
+<p>Validates a form submission.  If all of the elements are valid,
+return <tt/$result/, otherwise return the relevant error message (the
+<tt/valid&lowbar;e/ or length&lowbar;e attribute of some form
+element).  <tt/$result/ defaults to <tt/false/.  The second argument
+is also optional; it is an array of names of elements to validate.
+
+<tag>freeze($element&lowbar;list)</tag>
+<p>Freezes the form elements whose names are given in the array passed 
+as the argument.  If no argument is given, freeze all of the
+elements.  Frozen elements are rendered as plain, static html rather
+than form widgets.  This static rendering is accompanied by
+appropriate hidden elements to simulate the affect of using the
+unfrozen version of the element.
+
+</descrip>
+
+<sect2>Customizing OOH Forms
+
+<p>Since OOH Forms is object oriented, it can be easily customized by
+extending the classes that define the element types.  In general, you
+must make sure your derived class has a constructor and you may
+override any of the self&lowbar;* functions of
+<tt/of&lowbar;element/.  The source for the existing elements is the
+best documentation for how to do this properly, but a few general
+notes follow.
+
+<descrip>
+
+<tag>self&lowbar;show($val,$which)</tag>
+<p>Display an instance of this element unfrozen.  <tt/$val/ is the
+<tt/$value/ argument of <tt/show&lowbar;element/ if there was one;
+<tt/$which/ can be used as an index for array valued elements; it is
+equal to the number of times <tt/show&lowbar;element/ has been called
+for this element previously.  This function must return the number of
+hidden tags output.
+
+<tag>self&lowbar;show&lowbar;frozen($val,$which)</tag>
+<p>Display an instance of this element frozen.  In addition to the
+html to show the frozen element, you must output tags for hidden
+fields to duplicate the effect of submitting an unfrozen element of
+this type.  The function must return the number of hidden tags output;
+
+<tag>self&lowbar;validate($val)</tag>
+<p>Validate <tt/$val/ for this element.  If it is valid, return <tt/false/, 
+otherwise return the relevant error string.
+
+<tag>self&lowbar;print&lowbar;js($ndx_array)</tag>
+<p>Print out Javascript code to validate this element.
+<tt/$ndx&lowbar;array/ is an array of the indices of the elements to
+be validated as used in the Javascript form.element[] array.  This is
+needed since the extra <tt/[]/ in array valued element names confuses
+Javascript.
+
+<tag>self&lowbar;load&lowbar;defaults($val)</tag>
+<p>Set the default value for this element to <tt/$val/.  Usually the
+default definition of this function, which just copies <tt/$val/ to
+<tt/$this&rarr;value/ is all that is needed, but there may be special
+cases that need to do something else.  See the implementation of the
+checkbox element for an example.
+
+</descrip>

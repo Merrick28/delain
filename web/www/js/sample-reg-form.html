@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<title>Registration Form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+body, label,a 
+{
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 12px; 
+}
+.formcontainer
+{
+text-align:left;
+width:330px;
+border-top: 1px solid;
+border-bottom: 1px solid;
+padding:10px;
+margin: auto;
+}
+.para
+{
+margin-bottom: 10px;
+}
+</style>
+<link rel="STYLESHEET" type="text/css" href="pwdwidget.css" />
+<script src="pwdwidget.js" type="text/javascript"></script>
+
+</head>
+
+<body >
+<div class='formcontainer'>
+<h1>Register</h1>
+<form method="post"  action="">
+	<div class='para'>
+		<label for='name'>Name: </label><br />
+		<input type="text" id='name' name="name"/>
+	</div>
+	<div class='para'>
+		<label for='email'>Email:</label><br />
+		<input type="text" id='email' name="email"/>
+	</div>
+	<div class='para'>
+		<label for='regpwd'>Password:</label> <br />
+		<div class='pwdwidgetdiv' id='thepwddiv'></div>
+		<script  type="text/javascript" >
+		var pwdwidget = new PasswordWidget('thepwddiv','regpwd');
+		pwdwidget.MakePWDWidget();
+		</script>
+		<noscript>
+		<div><input type='password' id='regpwd' name='regpwd' /></div>		
+		</noscript>
+	</div>
+	<div class='para'><br /><br />
+	<input type="submit" name='submit' value="submit" />
+	</div>
+</form>
+</div>
+
+</body>
+</html>

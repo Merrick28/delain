@@ -1,0 +1,51 @@
+<!-- $Id: 03-ct_split_sql.sgml,v 1.1.1.1 2000/04/17 16:40:01 kk Exp $ -->
+
+<sect1>CT&lowbar;Split&lowbar;Sql
+<p>
+
+The <tt/Session/ class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <tt/Session/ now makes all storage
+accesses through a container class. The
+<tt/CT&lowbar;split&lowbar;sql/ container is very similar to
+<tt/CT&lowbar;Sql/ container, with the difference that if
+serialized data exceeds a specified amount of bytes, multiple
+rows will be used to memorized the entire field.
+
+This class is NOT compatible with <tt/CT&lowbar;Sql/ class, since
+table layout is different and column names are different in order to
+avoid reserved words in various database implementation. This uses a
+<tt/DB&lowbar;Sql/ like class so you can access all supported databases
+with this container.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+database&lowbar;table<colsep>The name of the database table which should be used<rowsep>
+database&lowbar;class<colsep>A classname. CT&lowbar;Sql uses this class to store and retrieve data<rowsep>
+split&lowbar;length<colsep>A number. This specifies the maximum amount of bytes 
+saved in each row of the table.
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;Sql extends CT&lowbar;Split&lowbar;Sql {
+	var $classname = "My&lowbar;Sql";
+	var $database&lowbar;table = "active&lowbar;sessions&lowbar;split";
+	var $database&lowbar;class = "DB&lowbar;Session";
+	var $split&lowbar;length = 4096;
+}
+</code></tscreen>
+
+You can then use My&lowbar;Sql in class Session. Reference it
+by putting "My&lowbar;Sql" in the "that&lowbar;class" variable.
+

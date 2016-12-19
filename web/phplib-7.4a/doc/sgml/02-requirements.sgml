@@ -1,0 +1,140 @@
+<!-- $Id: 02-requirements.sgml,v 1.1.1.1 2000/04/17 16:39:59 kk Exp $ -->
+
+<sect1>Requirements and things to check for
+
+<sect2>Interpreter requirements
+<p>
+
+The PHP base library requires a working web server with CGI
+capability and the CGI version of PHP 3.0.12 or higher
+installed. Alternatively mod&lowbar;php can be used. Lower
+versions of PHP do not work at all: The session class uses the
+<tt/base64&lowbar;encode()/ and <tt/base64&lowbar;decode()/
+functions which are known to be buggy in lower versions (up to
+3.0.7) of the library. Also, the OOH Forms classes are using
+constructor syntax, which has been introduced into the PHP
+language in 3.0.5 and later versions. An issue with the
+$PHP&lowbar;SELF variable and CGI PHP has been resolved with
+version 3.0.5 and later. Perl regular expression functions are
+being used in the <tt/Template/ class and these are not really
+avilable up to 3.0.12.
+
+<em/Note:/ If you are using CGI PHP, it <em/must/ have been
+compiled with the <tt/--enable-force-cgi-redirect/ switch for
+$PHP&lowbar;SELF to have the correct value.
+
+Basically, if PHP&lowbar;SELF is the exact local part of your
+$URL, all is well. If it instead contains the modified URL with
+/your cgi-bin/php prefixed, you have a buggy version of CGI PHP.
+Either upgrade your version of PHP or replace all occurrences of
+$PHP&lowbar;SELF with $PATH&lowbar;INFO in PHPLIB.
+
+<em/Note:/ PHPLIB requires that you have <tt/track&lowbar;vars/
+compiled in and enabled.
+
+<em/Note:/ PHPLIB does not require
+<tt/short&lowbar;open&lowbar;tag/ to be enabled. The library
+always uses <tt>&lt;?php</tt> as the PHP command introducer.
+
+<em/Note:/ PHPLIB does not require
+<tt/magic&lowbar;quotes&lowbar;gpc/ to be enabled. The library
+always uses <tt>addslashes()</tt> when necessary.
+
+<sect2>Database requirements 
+
+<p>The PHP base library requires a database connection in the
+default setup for storage of session variables, but this can be
+circumvented by selection another storage container type at
+installation time. Currently, storage containers are available
+for SQL databases (the default), SQL databases with limited
+string length (ct&lowbar;split&lowbar;sql.inc), System V shared
+memory (requires a PHP interpreter with SYSVSHM and SYSVSEM
+support), LDAP servers (requires a PHP interpreter with LDAP
+support), flat files, and DBM files.
+
+Using SQL, currently MySQL is fully supported and PostgreSQL,
+mSQL, Sybase, Microsoft SQL Server, ODBC and Oracle have limited
+support (the limitation is only relevant if you intend to access
+metadata information, i.e. table definitions and the like).
+Database interfaces are not difficult to write and you can
+easily write your own interface.
+
+You need a database server connection with <tt/select/,
+<tt/insert/, <tt/update/ and <tt/delete/ privileges from your
+CGI environment. You need <tt/create/ and <tt/drop/ privileges
+from an administrative account outside your CGI environment as
+well.
+
+PHPLIB core functionality requires two tables as part of your
+application table name space: <tt/active&lowbar;sessions/ (select,
+insert, update and delete privilege required for the application
+user) and <tt/auth&lowbar;user/ (select privilege required for the
+application user. insert, update and delete privilege required
+for the application user if user management is to be done from
+within the application).
+
+Extended functionality may require additional tables.
+
+<sect2>Name space requirements
+<p>
+
+PHPLIB tries to be as name space neutral as possible with its
+core features. Is issues no HTML by default and it occupies only
+few names in the global name space. These are the class names
+for the classes defined: <tt/DB&lowbar;Sql/, <tt/DB&lowbar;SAM/,
+<tt/CT&lowbar;Sql/, <tt/Session/, <tt/Auth/, <tt/Perm/,
+<tt/User/. Additionally, the classnames <tt/DB&lowbar;Example/,
+<tt/Example&lowbar;CT&lowbar;Sql/, <tt/Example&lowbar;Session/,
+<tt/Example&lowbar;Auth/,
+<tt/Example&lowbar;Challenge&lowbar;Auth/,
+<tt/Example&lowbar;Perm/ and <tt/Example&lowbar;User/ are
+defined by the sample setup in <tt/local.inc/, but these names
+can and shall be customized by the application developer. PHPLIB
+defines the function names <tt/page&lowbar;open()/,
+<tt/page&lowbar;close/, <tt/sess&lowbar;load()/ and
+<tt/sess&lowbar;save()/ for the page management functions. The
+global variable $&lowbar;PHPLIB (a hash) is taken. Only if
+<tt/page&lowbar;open()/ is being used, globals are defined by
+the library by default, but one global for each "feature"
+requested in the <tt/page&lowbar;open()/ statement is taken.
+These are at most <tt/$sess/, <tt/$user/, <tt/$auth/ and
+<tt/$perm/.
+
+Including extension functionality or HTML widgets may occupy
+additional classnames, function names or variables in the global
+name space.
+
+<sect2>Year 2000 compliance statement
+<p>
+
+PHPLIB uses date fields within the column <tt/changed/ in the
+table <tt/active&lowbar;sessions/ in your database.  The
+<tt/changed/ field is used in garbage collection, that is, to
+clean out abandoned sessions. The date field is a 14 character
+field of the format <tt/YYYYMMDDhhmmss/, that is, the date field
+has four digit years and will cope properly with the new
+millennium.
+
+PHPLIB sets cookies in the client browser. These cookies by
+default have session lifetime, that is, they do not expire but
+are not written to disk. Date calculations are not involved.
+
+It is possible to have PHPLIB set cookies with a limited
+lifetime by defining the $lifetime slot of the Session class.
+If this is done, it depends on the date handling of the client
+browser and client operating system, if the result is Y2K
+compliant. There are known issues with longterm cookies and any
+browser on MS-DOS/Windows 3.11 systems.
+
+PHPLIB does some date arithmetic internally that involves
+mktime() and date() functions of the PHP3 language and Unix
+time&lowbar;t data types. The signed 32 bit Unix time&lowbar;t
+data type counts seconds since 01-Jan-1970 Midnight GMT and will
+overflow sometime in the year 2038.
+
+PHPLIB itself will function up to 2038 and longer, if the Unix
+time&lowbar;t is being extended in time. PHPLIB does not protect
+you from date and Y2K issues in your PHPLIB application, the
+PHP3 interpreter, the server operating system oder server
+software, the client browser, the client operating system or
+other parts of your installation.

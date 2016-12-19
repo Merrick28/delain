@@ -1,0 +1,204 @@
+<!-- $Id: 05-sql_query.sgml,v 1.1.1.1 2000/04/17 16:40:05 kk Exp $ -->
+
+<sect1>Sql&lowbar;Query
+<p>
+Sql_Query will generate a query form for simple table queries: A
+list of field names, comparision operators and input fields is
+presented. The user may search for any values in any of the
+presented columns using SQL standard operators. Multiple query
+conditions are possible and these conditions can be joined using
+AND and OR operations.
+
+The number of query conditions can be made variable. If so, the
+user may shrink and grow the query widget using the appropriate
+buttons.
+
+All button labels and other messages of the interface are
+variable and held in language dictionaries. Currently, <em/de/
+and <em/en/ dictionaries are provided.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+persistent&lowbar;slots<colsep>Serialization helper: Names of all persistent slots<rowsep>
+
+conditions<colsep>Number of query conditions<rowsep>
+input&lowbar;size<colsep>Visible width of input fields<rowsep>
+input&lowbar;max<colsep>Useable width of input fields<rowsep>
+method<colsep>Form method to GET or POST the form<rowsep>
+lang<colsep>Language dictionary to use<rowsep>
+translate<colsep>Flag: translate column names<rowsep>
+container<colsep>Flag: create a master container<rowsep>
+variable<colsep>Flag: create resize buttons<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+dict<colsep>The GUI language dictionary.<rowsep>
+compare<colsep>SQL comparison function dictionary.
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+
+<tag>start()</tag>
+<p> 
+Initialization function. Currently empty.
+
+<tag>form($base, $option, $class, $target)</tag>
+<p>
+
+The function will generate and return HTML for the SQL Query selection form. All
+variables in the form will start with the prefix <tt/$base/ and
+have numeric indices appended after an underline character. It
+is possible to have multiple Sql_Query instances on a single
+page, if they use different base characters.
+
+The function must know the field names of the SQL table that is
+to be queried. <tt/$option/ can be either a simple array of
+these field names (<tt/$translate/ set empty) or a hash field
+name to long name (<tt/$translate/ set to <tt/on/).
+
+All tags in the generated form are tagged with a CSS stylesheet
+class, if <tt/$class/ is set to a CSS classname. <tt/$class/ is
+optional and if it is left empty, no class attributes are
+generated. <tt/$target/ is the URL of the SQL Query form target.
+It is optional and if it is left empty, a self referencing form
+is generated (recommended).
+
+The function returns a string containing the HTML to render the
+SQL Query selection form.
+
+<tag>where($base, $incr)</tag>
+<p>
+
+When the <tt/form()/ generated page is submitted, a lot of
+parameters have to be evaluated and transformed into a SQL
+<em/where/ condition matching the user selections. The
+<tt/where()/ function takes care of all this; it just needs to
+be told which <tt/$base/ prefix has been used in the <tt/form()/
+call.
+
+The <tt/$incr/ parameter is optional and determines how many
+query condition rows are added or subtracted when the "More"
+and "Fewer" buttons are used. The default value is 1.
+
+The function returns a string which can be successfully used
+behind a "where" keyword in a SQL query.
+
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+<descrip>
+<tag>plain&lowbar;where($base)</tag>
+<p>
+This function does all the work for <tt/where()/, but does not
+resize the query condition window.
+</descrip>
+
+<sect2>Example
+<p>
+
+The <tt/Sql_Query/ class can be used directly. It is more useful
+when made persistent, so it is recommended that you add the line
+<tt/require("sqlquery.inc")/ to your <tt/prepend.php3/ file
+where indicated in that file.
+
+See the Table class in this section for a nice method to display
+and format query results. See the DB_Sql class (a core class)
+for a nice method to connect to databases.
+
+The following code fragment is quite large, but contains a
+complete and working example using the Sql_Query, DB_Sql and
+Table classes to query a database table.
+
+<tscreen><code>
+<?php
+  // We require() sqlquery.inc and table.inc in prepend.inc
+  // to make this example work!
+  page_open(array("sess" => "Example_Session"));
+
+  $db = new DB_Example;   // That's a DB_Sql subclass.
+  $t  = new Table;    // For formatting results
+  $t->heading = "on"; // We want table headings..
+?>
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Testseite&lt;/title&gt;
+&lt;style type="text/css"&gt;&lt;!--
+h1          { font-family: arial, helvetica, sans-serif; color: #d33e30 }
+table.test  { background-color: #eeeeee }
+th.test     { font-family: arial, helvetica, sans-serif  }
+td.test     { font-family: arial, helvetica, sans-serif }
+table.query { background-color: #cccccc }
+td.query    { font-face: arial, helvetica, sans-serif }
+--&gt;&lt;/style&gt;
+&lt;/head&gt;
+&lt;body bgcolor="#ffffff"&gt;
+&lt;h1&gt;Testpage&lt;/h1&gt;
+<?php
+  // the following fields are selectable
+  $field = array(
+    "username"   => "Login Name",
+    "password"   => "Password",
+    "perms"      => "Permissions"
+  );
+
+  // When we hit this page the first time,
+  // there is no $q.
+  if (!isset($q)) {
+    $q = new Sql_Query;     // We make one
+    $q->conditions = 1;     // ... with a single condition (at first)
+    $q->translate  = "on";  // ... column names are to be translated
+    $q->container  = "on";  // ... with a nice container table
+    $q->variable   = "on";  // ... # of conditions is variable
+    $q->lang       = "en";  // ... in English, please
+
+    $sess->register("q");   // and don't forget this!
+  }
+
+  // When we hit that page a second time, the array named
+  // by $base will be set and we must generate the $query.
+  // Ah, and don't set $base to "q" when $q is your Sql_Query
+  // object... :-)
+  if (isset($x)) {
+    $query = $q->where("x", 1);
+  }
+
+  // In any case we must display that form now. Note that the
+  // "x" here and in the call to $q->where must match.
+  // Tag everything as a CSS "query" class.
+  printf($q->form("x", $field, "query));
+  printf("<hr>");
+
+  // Do we have a valid query string?
+  if ($query) {
+    // Show that condition
+    printf("Query Condition = %s<br>\n", $query);
+
+    // Do that query
+    $db->query("select * from auth&lowbar;user where ". $query);
+
+    // Dump the results (tagged as CSS class test)
+    printf("Query Results = %s<br>\n", $db->num_rows());
+    $t->show_result($db, "test");
+  }
+
+  page_close();
+?>
+&lt;/body&gt;
+&lt;/html&gt;
+</code></tscreen>
+

@@ -1,0 +1,36 @@
+<!-- $Id: 03-ct_dbm.sgml,v 1.1.1.1 2000/04/17 16:40:00 kk Exp $ -->
+
+<sect1>CT_Dbm
+<p>
+
+The <tt/Session/ class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <tt/Session/ now makes all storage
+accesses through a container class. To let <tt/Session/ use a DBM
+database file as a container, you use <tt/CT&lowbar;Dbm/.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+dbm&lowbar;file<colsep>The path to the dbm file (must exist already AND must be writable by the server process)<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;Dbm extends CT&lowbar;Dbm {
+	var $dbm&lowbar;file = "data/session.dbm";
+}
+</code></tscreen>
+
+You can then use My&lowbar;Dbm in class Session. Reference it
+by putting "My&lowbar;Dbm" in the "that&lowbar;class" variable.
+

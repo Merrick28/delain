@@ -1,0 +1,517 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: Quick Start</TITLE>
+ <LINK HREF="documentation-2.html" REL=next>
+
+ <LINK HREF="documentation.html#toc1" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="documentation-2.html">Next</A>
+Previous
+<A HREF="documentation.html#toc1">Contents</A>
+<HR>
+<H2><A NAME="s1">1.</A> <A HREF="documentation.html#toc1">Quick Start</A></H2>
+
+<P>The Quick Start chapter tries to give you a ten-minute introduction to
+PHPLIB installation, outlines a few simple testing procedures and closes
+with an overview of PHPLIB features.
+</P>
+
+<H2><A NAME="ss1.1">1.1</A> <A HREF="documentation.html#toc1.1">License</A>
+</H2>
+
+
+<P>PHPLIB consists of the files in this directory and all its
+subdirectories. It is made available as free software under the
+LIBRARY GNU General Public license, as spelled out in the file
+<CODE>COPYING</CODE> in this directory. Also, it is distributed in the
+hope that it will be useful, but WITHOUT ANY WARRANTY; without
+even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE.  See the license for more details.</P>
+
+
+<H2><A NAME="ss1.2">1.2</A> <A HREF="documentation.html#toc1.2">Target Group and Prerequisites</A>
+</H2>
+
+
+<P>PHPLIB targets the PHP application developer. You need to have
+good knowledge of the PHP language, at least basic SQL database
+knowhow and at least basic knowledge on how to operate your
+web server to be able to use the library.</P>
+<P>The library will help you to write medium to large sized
+data-driven web applications. "Medium to large sized
+applications" are applications that consist of multiple database
+queries, have to generate tables from database data, need a user
+interface that generates SQL queries or need a comfortable and
+user-friendly way to protect pages or functionality on pages.
+"Data-driven" applications are applications that make use of a
+supported SQL-database to create HTML content and that use HTML
+forms to drive database transactions.</P>
+<P>To make use of the library you obviously need access to a web
+server with a working installation of a current PHP interpreter
+(we recommend 3.0.12 or newer for this release of the library)
+and access to a supported SQL database (currently, PHPLIB
+supports MySQL, PostgreSQL, mSQL, Oracle 7 and Oracle 8, Sybase,
+Microsoft SQL Server and ODBC databases). You need to be able to
+create and drop database tables in that database and your web
+server must be able to execute <CODE>SELECT</CODE>, <CODE>INSERT</CODE>,
+<CODE>UPDATE</CODE> and <CODE>DELETE</CODE> statements on these tables.</P>
+<P>Throughout this manual, we assume that you are using the MySQL
+database server. PHPLIB will run with any supported SQL server,
+but we are using MySQL in the development of PHPLIB.</P>
+<P>PHPLIB can be used in conjunction with the CGI version of PHP and
+with <CODE>mod_php</CODE>, integrated into Apache. Usage of the CGI
+version has an impact on overall speed, because you cannot take
+advantage of persistent database connection. We recommend
+the Apache module over the CGI version, although we personally
+use the CGI version for various reasons (easier to update and
+can be run with Apache <CODE>suexec</CODE>).</P>
+<P>PHP 4 is still in beta. We do not support deployment of this
+library with beta software.
+</P>
+
+<H2><A NAME="ss1.3">1.3</A> <A HREF="documentation.html#toc1.3">Quick Guide to Installation</A>
+</H2>
+
+
+<P>These instructions apply to PHPLIB running with CGI PHP. Most of
+them are valid for mod_php as well, though. <EM>VERY
+IMPORTANT NOTE:</EM> This is a quick installation guide to get
+you started if you have an installation where you control the
+web server, PHP interpreter and database server completely. They
+are not suitable for a web hosting setup where you have only
+limited to no control over the installation. Refer to Chapter 2
+of this documentation for the complete installation instructions
+and troubleshooting information.</P>
+<P>Before installing PHPLIB, get your web server up and running and
+have it executing files with the extension .php3. Check that
+with a simple <CODE>&lt;?php phpinfo() ?&gt;</CODE> script. Make sure
+the web server accepts <CODE>index.php3</CODE> as well as <CODE>index.html</CODE>
+as a default file for URLs ending in "/" (Apache:
+<CODE>DirectoryIndex index.html index.php3</CODE>).</P>
+<P>Get your MySQL database server up an running. Create an empty
+database for your application and make sure the owner of your
+web server processes can access this database with <CODE>SELECT</CODE>,
+<CODE>INSERT</CODE>, <CODE>UPDATE</CODE> and <CODE>DELETE</CODE> access. Don't forget
+the <CODE>mysqladmin reload</CODE> after changing the user and db tables.</P>
+<P>
+<DL>
+<DT><B>Step 1</B><DD><P>Create an include directory named <CODE>php</CODE> parallel to your
+web servers document root directory. Do not put the include
+directory below your web servers document root.</P>
+
+<DT><B>Step 2</B><DD><P>Unpack your PHPLIB distribution. Move the contents of the
+<CODE>php</CODE> distribution directory into the <CODE>php</CODE> directory
+you just created.</P>
+
+<DT><B>Step 3</B><DD><P>Get to the <CODE>php3.ini</CODE> file for your web servers PHP
+interpreter and update the <CODE>include_path</CODE> statement so
+that it points to that <CODE>php</CODE> directory. Update the
+<CODE>auto_prepend_file</CODE> statement so that it points to the
+<CODE>prepend.php3</CODE> file in that include directory.</P>
+<P>If you do not have control over your php3.ini file, you did not
+read the <EM>VERY IMPORTANT NOTE</EM> above.</P>
+
+<DT><B>Step 4</B><DD><P>Also check that <CODE>track_vars</CODE> are enabled and that you have
+enabled <CODE>magic_quotes_gpc</CODE>. While you are at it, you might
+want to check <CODE>sendmail_path</CODE>, if you plan to send mail from
+your application. It has to be set to <CODE>/usr/lib/sendmail -t</CODE>
+on most UNIX systems to work.</P>
+<P>If you do not have control over your php3.ini file, you did
+not read the <EM>VERY IMPORTANT NOTE</EM> above.</P>
+
+<DT><B>Step 5</B><DD><P>cd into the <CODE>php</CODE> include directory. Edit <CODE>local.inc</CODE>.
+In <CODE>class DB_Example</CODE> supply the appropriate parameters for
+your database connection.</P>
+
+<DT><B>Step 6</B><DD><P>For this database, run <CODE>create_database.mysql</CODE> from the
+distribution to create <CODE>active_sessions</CODE> and
+<CODE>auth_user</CODE>.  <CODE>auth_user</CODE> will be populated with a
+sample user named <CODE>kris</CODE> with a password <CODE>test</CODE>.</P>
+
+<DT><B>Step 7</B><DD><P>Move the contents of the <CODE>pages</CODE> directory and all its
+subdirectories into your document root directory.</P>
+
+<DT><B>Step 8</B><DD><P>Access the "/" URL of your web server with cookies enabled. If
+no <CODE>index.html</CODE> is present, <CODE>index.php3</CODE> will be displayed.
+If you reload that page, the number shown must increment.
+Access your database with the mysql command client and <CODE>select
+* from active_sessions</CODE>. Check that there is a single session
+record for your browser and see how the text in <CODE>val</CODE>
+changes when you reload the page and <CODE>select * from
+active_sessions</CODE> again. If this works, the session class is
+functional with cookie mode.</P>
+
+<DT><B>Step 9</B><DD><P>Now access <CODE>showoff.php3</CODE>. Try to login as <CODE>kris</CODE>,
+password <CODE>test</CODE>. Check <CODE>active_sessions</CODE> again. You now
+should have a <CODE>Example_Session</CODE> entry (see the <CODE>name</CODE>
+column) and a <CODE>Example_User</CODE> entry in your table. Both should
+increment on reload.</P>
+
+<DT><B>Step 10</B><DD><P>Try again with cookies disabled. You should get a new session
+(the cookie is lost) and you should be able to see your
+session id as the get parameter part of your URL.</P>
+</DL>
+
+</P>
+
+<H2><A NAME="ss1.4">1.4</A> <A HREF="documentation.html#toc1.4">Using core features of PHPLIB</A>
+</H2>
+
+<P>Many applications don't use PHPLIB's advanced features, but
+see PHPLIB as a convenient way to protect pages or
+functionality with passwords. This section covers such
+core functionality usage of PHPLIB.</P>
+<P>
+<DL>
+<DT><B>Customizing the login screen</B><DD><P>Edit <CODE>loginform.ihtml</CODE> in the include directory to suit
+your needs.</P>
+
+<DT><B>Customizing the permission levels</B><DD><P>Edit <CODE>local.inc</CODE> and change the class <CODE>Example_Perm</CODE> to
+enumerate your permissions. Your users in <CODE>auth_user</CODE> must
+have one or more comma separated permission names from that
+list. Edit <CODE>perminvalid.ihtml</CODE> for a suitable error message.</P>
+
+<DT><B>Creating New Users</B><DD><P>Use <CODE>new_user.php3</CODE> from the <CODE>pages/admin</CODE> directory
+of the distribution. If you followed the installation
+instructions, it should be available under the
+<CODE>/admin</CODE> URL of your web server.</P>
+<P>To manually create a user, run <CODE>print md5(uniqid("some magic
+string")</CODE> to get a user id. <CODE>insert into auth_user values (
+"that userid", "username", "password", "permissions");</CODE>.</P>
+
+<DT><B>Creating an unprotected session page</B><DD><P>Begin that page with </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php page_open(array("sess" =&gt; "Example_Session")); ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>End that page with </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php page_close(); ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>Creating a protected session page</B><DD><P>Begin that page with</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  page_open(
+    array("sess" =&gt; "Example_Session",
+          "auth" =&gt; "Example_Auth",
+          "perm" =&gt; "Example_Perm"));
+  $perm->check("desired protection");
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>and end that page with</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php page_close(); ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>Creating protected functionality</B><DD><P>Begin that page with</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  page_open(
+    array("sess" =&gt; "Example_Session",
+          "auth" =&gt; "Example_Auth",
+          "perm" =&gt; "Example_Perm"));
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>and end that page with</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php page_close(); ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Enclose the protected functionality in</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  if ($perm-&gt;have_perm("desired protection")):
+?&gt;
+Put protected HTML or PHP here
+&lt;?php
+  endif
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P><EM>Note:</EM> <CODE>desired protection</CODE> is any combination of
+permissions from <CODE>Example_Perm</CODE>. Using the default values from
+Example_Perm, "<CODE>user</CODE>", "<CODE>user,author</CODE>" or "<CODE>admin</CODE>" are all
+valid sample values. A user can access a page, if that user has
+all permissions that are being requested in a
+$perm-&gt;check() or $perm-&gt;have_perm() call.</P>
+<P><EM>Note:</EM> Users can have multiple permission in their perms
+column of <CODE>auth_user</CODE>. A user with perms
+"<CODE>user,author,editor</CODE>" can access all pages requesting any
+combination of these permissions.</P>
+<P><EM>Note:</EM> Don't use spaces. "<CODE>user,author,editor</CODE>" works.
+"<CODE>user, author, editor</CODE>" does not.</P>
+<P><EM>Note:</EM> If <CODE>$auth-&gt;auth["uid"]</CODE> is set on a protected
+page <EM>and</EM> if <CODE>(time &lt; auth-&gt;auth["exp"])</CODE>, then and
+only then the authentication is valid. You may then use
+<CODE>$auth-&gt;auth["uname"]</CODE> as the user name,
+<CODE>$auth-&gt;auth["uid"]</CODE> as a unique user id and
+<CODE>$auth-&gt;auth["perm"]</CODE> for the current permissions of that
+user. Actually, you never want to touch
+<CODE>$auth-&gt;auth["perm"]</CODE> manually, but use
+<CODE>$perm-&gt;have_perm("...")</CODE> for that.</P>
+
+<DT><B>Getting a grip on PHPLIB</B><DD><P>Read on. Then read the source. Read it again -
+Session-&gt;serialize() and Auth-&gt;start() are ugly. Get a CVS
+account. Contribute. Become famous. Buy a ferrari.</P>
+<P><EM>Note:</EM> You want to understand what registered variables are.
+You want to understand in what order form variables and session
+variables are imported into your page. You want to understand
+how to copy values from form values into session values without
+killing yourself. You do not want to make form variables
+persistent, ever. Then you will live happily thereafter...</P>
+</DL>
+</P>
+
+
+<H2><A NAME="ss1.5">1.5</A> <A HREF="documentation.html#toc1.5">Testing</A>
+</H2>
+
+
+<P>These instructions apply to PHPLIB running with CGI PHP. Most of
+them is valid for mod_php as well, though. This section
+offers an incremental approach to find installation problems,
+should the above installation process fail.</P>
+<P>We do have a support mailing list available under the address
+<CODE>phplib-users@lists.sourceforge.net</CODE>. To subscribe to the 
+list, send a message with <CODE>subscribe</CODE> as the subject to the
+address <CODE>phplib-users-request@lists.sourceforge.net</CODE>.</P>
+<P>
+<DL>
+<DT><B>Checking that the web server is up and running</B><DD><P>Make sure your web server is up and serving the virtual host you
+just set up. To do this, construct a small file <CODE>test1.html</CODE>
+in your DocumentRoot and access <CODE>test1.html</CODE> through your
+web server.</P>
+
+<DT><B>Checking that the web server is executing CGI programs</B><DD><P>Make sure your web server is up and does run CGI. Check the
+current directory, the UID/GID it is running programs under and
+have a look at the environment variables. Install the shell
+script</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+#! /bin/sh --
+ 
+echo "Content-Type: text/plain"
+echo
+id
+echo
+pwd
+echo
+env | sort
+echo
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>in your cgi directory under the name of <CODE>cgi-test</CODE> and in
+your document root under the name of <CODE>cgi-test.cgi</CODE>. Make it
+executable. Try to access
+<CODE>/cgi/cgi-test?par1=one&amp;par2=two</CODE> and
+<CODE>/cgi-test.cgi?par1=one&amp;par2=two</CODE> and check the
+output. What UID/GID are you running under, what is the output
+of <CODE>pwd</CODE> and what environment variables are set? What does
+<CODE>QUERY_STRING</CODE> look like? What does the <CODE>PATH</CODE>
+variable look like, what does the
+<CODE>LD_LIBRARY_PATH</CODE> variable look like and are
+all libraries needed by PHP accessible to PHP running in the CGI
+environment (Check by running the Unix <CODE>ldd</CODE> command on PHP).</P>
+<P>In particular, if you built Oracle support into PHP and linked
+<CODE>libclntsh</CODE> dynamically: Can it be loaded from the CGI environment? If
+not, PHP will not come up later in the next step.</P>
+
+<DT><B>Checking that the PHP interpreter is running (Assuming CGI
+PHP)</B><DD><P>Copy your PHP binary into the cgi binary directory (which should
+NOT be below DocumentRoot!) and make it executable. Copy
+<CODE>php3.ini</CODE> into the same directory. In DocumentRoot, create a
+<CODE>test2.php3</CODE> and put &lt;?php phpinfo() ?&gt; into it.</P>
+<P>Are you running Apache? Add</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+Action       php3-script /cgi/php
+AddHandler   php3-script .php3
+DirectoryIndex index.php3 index.html index.htm
+FancyIndexing on
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>to your config. This will map all requests to files ending in
+<CODE>.php3</CODE> to the <CODE>php3-script</CODE> handler and define
+<CODE>/cgi/php</CODE> as the URL handling <CODE>php3-script</CODE> requests
+internally.</P>
+<P>Request <CODE>/test2.php3</CODE> and see that it is being executed.
+Make changes to your <CODE>php3.ini</CODE> (preferable some color
+definitions) and reload. Are they reflected in the output of
+<CODE>phpinfo()</CODE>? If not, your <CODE>php3.ini</CODE> is not being found
+and your are having a problem. Recompile with proper settings.</P>
+<P>Check the output of <CODE>phpinfo()</CODE> carefully! Is your PHP
+version current (We have tested and developed this release with
+PHP 3.0.12)? Are your database interfaces present in the output
+of <CODE>phpinfo()</CODE>? If not, recompile again.</P>
+<P>Can you access <CODE>/test2.php3</CODE> under the URL
+<CODE>/cgi/php/test2.php3</CODE> as well? If so, you did not compile
+your PHP interpreter with <CODE>--enable-force-cgi-redirect</CODE>.
+PHPLIB will not work with this interpreter. Recompile with the
+switch being set.</P>
+
+<DT><B>PHP interpreter (Assuming mod_php)</B><DD>
+<P>Assuming your server is already correctly setup
+(don't forget to activate the PHP lines in <CODE>srm.conf</CODE>!),
+enter the following file and save it as <CODE>test2.php3</CODE>
+under your DocumentRoot.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;? phpinfo() ?>
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>If you access this using a web browser now, it should spit out
+much info about PHP, Apache and its environment.</P>
+
+<DT><B>Checking PHPLIB inclusion</B><DD><P>Does you PHP include PHPLIB properly? Check your
+<CODE>php3.ini</CODE> file. It must include the following settings:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+include_path = pathname to directory with all the .inc files
+auto_prepend_file = path to prepend.php3
+track_vars = On
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>It should contain the following settings, too:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+magic_quotes_gpc = On
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>If PHPLIB is included properly by your setup, the following page
+will execute without errors:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+$db = new DB_Example;
+print "It works without error messages.&lt;br>\n";
+ ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>Checking database connectivity</B><DD><P>PHPLIB installation requires that you adapt <CODE>local.inc</CODE>
+properly. Particularly, the provided class <CODE>DB_Example</CODE> must be
+customized for your database connection. Test that your
+web server can access the database with the following page:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  include("table.inc"); // requires include_path to be functioning
+
+  $db = new DB_Example;
+  $db->query("select * from auth_user");
+
+  $t = new Table;
+  $t->heading = "on";
+  $t->show_result($db);
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>When executing properly, this page will show you the user entry
+for <CODE>kris</CODE>, password <CODE>test</CODE>, permissions <CODE>admin</CODE> from
+the <CODE>auth_user</CODE> table. If this does not happen, your
+<CODE>DB_Example</CODE> definition in <CODE>local.inc</CODE> is broken.</P>
+
+<DT><B>Checking that sessions work</B><DD><P>Access the page <CODE>/index.php3</CODE> that has been provided
+with the distribution. This page will try to set a cookie in
+your browser. Allow that cookie to be set.</P>
+<P>The page will display a headline with a counter. Reload that
+page. The counter must increment. If not, either your browser
+cannot deal properly with cookies or PHPLIB cannot properly read
+or write the table <CODE>active_sessions</CODE> in your database.  Check
+that the cookie is being set by viewing the output of
+<CODE>phpinfo()</CODE> (the fourth table will report the cookie and
+other per-call data). Check your database permissions with your
+database command line interface.</P>
+
+<DT><B>Checking that Authentication works</B><DD><P>Try loading <CODE>/showoff.php3</CODE> that has been provided
+with the distribution. This page will require a login. Login as
+<CODE>kris</CODE>, using a password of <CODE>test</CODE>. If the login is
+successful, you will see the per-session counter and a per-user
+counter again. Reload that page: The counters must increment.</P>
+<P>If you can't login, you probably have a problem with cookies.
+Check again that your browser accepts and sends session cookies.
+Another problem may be access to the <CODE>auth_user</CODE> table. You
+must be able to <CODE>SELECT</CODE> on that table and there must be at
+an entry for the user you are trying to login.</P>
+</DL>
+
+</P>
+
+
+<HR>
+<A HREF="documentation-2.html">Next</A>
+Previous
+<A HREF="documentation.html#toc1">Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,1950 @@
+@charset "iso-8859-1";
+/* AUTEUR: julien */
+/* DATE DE CREATION: 30/06/2009 */
+/* DATE DE Dern'�re MAJ: 15/04/2010 */
+
+
+/* Postionnement des marges � 0 pour tous les �lements */
+* { margin: 0; padding: 0; }
+
+
+.container2 
+{
+	/*
+	width:85px;
+	height:85px;
+	*/
+	height:70px;
+	width:70px;
+	position:relative;
+}
+
+.container_item
+{
+	height:70px;
+	width:60px;
+	position:relative;
+}
+
+.inside_content
+{
+	padding-top: 10px;
+}
+
+.top_usure_100, .top_usure_90, .top_usure_70, .top_usure_50, .top_usure_35, .top_usure_10
+{
+	position:absolute;
+	width:70px;
+	height:15px;
+	top:0px;
+	left:0px;
+}
+
+.top_usure_100
+{
+	background: transparent url('images/Mini_Usure_100.png') 5px 0px no-repeat;
+}
+
+.top_usure_90
+{
+	background: transparent url('images/Mini_Usure_90.png') 5px 0px no-repeat;
+}
+
+.top_usure_70
+{
+	background: transparent url('images/Mini_Usure_70.png') 5px 0px no-repeat;
+}
+
+.top_usure_50
+{
+	background: transparent url('images/Mini_Usure_50.png') 5px 0px no-repeat;
+}
+
+.top_usure_35
+{
+	background: transparent url('images/Mini_Usure_35.png') 5px 0px no-repeat;
+}
+
+.top_usure_10
+{
+	background: transparent url('images/Mini_Usure_10.png') 5px 0px no-repeat;
+}
+
+.topleft, .topright, .bottomleft, .bottomright{
+	position:absolute;
+	width:15px;
+	height:15px;
+	cursor:pointer;
+}
+
+.topleft100
+{
+	top:0px;
+	left:0px;
+	background: transparent url('images/reparer.png') 0px 0px no-repeat;
+}
+
+.topright{
+	top:0px;
+	right:0px;
+	background: transparent url('images/equiper.png') 0px 0px no-repeat;
+}
+.bottomleft{
+	bottom:0px;
+	left:0px;
+	background: transparent url('images/identifier.png') 0px 0px no-repeat;
+}
+.bottomright{
+	bottom:0px;
+	right:0px;
+	background: transparent url('images/abandonner.png') 0px 0px no-repeat;
+}
+
+
+.petit_identifier
+{
+	height:10px;
+	margin-top:1px;
+	padding-left:25px;
+	width:10px;
+}
+
+
+.action_reparer
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	/*margin-left: 20px;*/
+	cursor: pointer;
+	/*background: transparent url('images/reparer50.png') ;*/
+}
+
+.action_reparer_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_reparer.png') ;
+}
+
+.action_equiper
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	/*margin-left: 20px;*/
+	cursor: pointer;
+	/*background: transparent url('images/equiper50.png');*/
+}
+
+.action_equiper_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_equiper.png') ;
+}
+
+.action_deposer_brouzouf
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	cursor: pointer;
+}
+
+.action_deposer_brouzouf_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_deposer_brouzouf.png');
+}
+
+.action_desequiper
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	cursor: pointer;
+}
+
+.action_desequiper_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_desequiper.png');
+}
+
+.action_identifier
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	/*margin-left: 20px;*/
+	cursor: pointer;
+	/*background: transparent url('images/identifier50.png') */
+}
+
+.action_identifier_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_identifier.png') 
+}
+
+
+.action_abandonner
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	/*margin-left: 20px;*/
+	cursor: pointer;
+	/*background: transparent url('images/abandonner50.png')*/
+}
+
+.action_abandonner_vide
+{
+	width: 50px;
+	height:50px;
+	float: left;
+	margin-left: 20px;
+	background: transparent url('images/desac_abandonner.png') 
+}
+
+
+
+.pointeur
+{
+	cursor: pointer;
+}
+
+
+#resultat_action
+{
+	display: none;
+	width:490px;
+}
+
+/* le design g�n�ral du site */
+.delain
+{
+	font-family:"Trebuchet MS",Arial,sans-serif ;
+	font-size:0.75em;
+	font-size-adjust:none;
+	font-style:normal;
+	font-variant:normal;
+	font-weight:normal;
+	line-height:1.5em;
+	background:url(images/fond5.gif);
+	/*min-width:1120px;*/
+	min-width:1050px;
+}
+
+
+	
+/* Contenant principal */
+.container 
+{
+	margin: 0 auto;
+	text-align: left;
+	padding-top:10px;
+	/*background:url(images/fondparchemin.gif);*/
+}
+
+/* Contenu */
+.contenu 
+{
+	background:url(images/fondparchemin.gif);
+}
+
+/* titre */
+.titre
+{
+	background-color:#800000;
+	color:white;
+	font-weight:bold;
+	padding:3px 0;
+	text-align:center;
+}
+
+.soustitre 
+{
+	background-color:#660033;
+	color:#FFFFFF;
+	font-size:9pt;
+	font-weight:bold;
+	padding-left:5px;
+	padding-right:5px;
+	text-align:center;
+}
+
+.soustitre2 
+{
+	background-color:#BA9C6C;
+	padding-left:2px;
+	padding-right:2px;
+}
+
+.info_titre
+{
+	font-family:georgia;
+	font-size:12px;
+	font-weight:bold;
+	height:11px;
+	padding-bottom:2px;
+	padding-top:2px;
+}
+
+
+/* MENU */
+.menu
+{
+	background:url(images/fondparchemin.gif);	
+}
+
+/* NAVIGATION */
+.navigation 
+{
+	margin: 0 ;
+	padding: 0 ;
+	text-align: center;
+}
+
+/* */
+.navigation ul
+{
+	/* pour ne pas avoir de petit icone decrivant la liste */
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+/* */
+.navigation li 
+{
+	float: left ;
+	width: 130px ;
+	background-color:#BA9C6C;
+}
+
+/* */
+.navigation li a 
+{
+	display: block ;
+	text-decoration:none;
+	font: 14px "Trebuchet MS",Arial,sans-serif ;
+	font-weight:bold;
+	line-height: 1em ;
+	padding: 4px 0 ;
+	text-align: center ;
+	color: black;
+	border-bottom-width:1px;
+}
+
+.navigation_left
+{
+	display: block ;
+	text-decoration:none;
+	font: 14px "Trebuchet MS",Arial,sans-serif ;
+	font-weight:bold;
+	line-height: 1em ;
+	text-align: center ;
+	color: black;
+	border-bottom-width:1px;
+	border-bottom-style: solid;
+	border-left-width:1px;
+	border-left-style: solid;
+}
+
+.navigation_right
+{
+	display: block ;
+	text-decoration:none;
+	font: 14px "Trebuchet MS",Arial,sans-serif ;
+	font-weight:bold;
+	line-height: 1em ;
+	text-align: center ;
+	color: black;
+	border-bottom-width:1px;
+	border-bottom-style: solid;
+	border-right-width:1px;
+	border-right-style: solid;
+}
+	
+/* */
+.navigation li a:hover, .navigation li a:focus, .navigation li a:active  
+{
+	padding-right:2px;
+	padding-left:2px;
+	
+	background:url(images/fondparchemin.gif);
+	border-top-width:1px;
+	border-top-style: solid;
+	border-left-width:1px;
+	border-left-style: solid;
+	border-right-width:1px;
+	border-right-style: solid;
+	border-bottom-width:0px;
+	border-bottom-style: none;
+	font-size:14px;
+	
+	/* pour enlever les pointill�e en dessous des liens selectionn�s */
+	outline-color:-moz-use-text-color;
+	outline-style:none;
+	
+}	
+
+.navigation_non_selectionne
+{
+	border-bottom-style: solid;
+}
+
+.navigation_selectionne
+{
+	padding-right:2px;
+	padding-left:2px;
+	
+	background:url(images/fondparchemin.gif);
+	border-top-width:1px;
+	border-top-style: solid;
+	border-left-width:1px;
+	border-left-style: solid;
+	border-right-width:1px;
+	border-right-style: solid;
+	border-bottom-width:0px;
+	border-bottom-style: none;
+	font-size:14px;
+	
+	/* pour enlever les pointill�e en dessous des liens selectionn�s */
+	outline-color:-moz-use-text-color;
+	outline-style:none;
+	border-bottom-style: none;
+}
+
+
+.navigation_active
+{
+	background:transparent url(images/fondparchemin.gif) repeat scroll 0 0;
+	font-size:14px;
+	font-style:inherit;
+	padding-left:0;
+	padding-right:0;
+	text-decoration:underline;
+}	
+
+.sous_menu
+{
+	padding-top:30px;
+	padding-left: 5px;
+}
+
+
+.ss_menu_navigation ul
+{
+	/* pour ne pas avoir de petit icone decrivant la liste */
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+.ss_menu_navigation li 
+{
+	float: left ;
+	width: 100px ;
+}
+
+.ss_menu_navigation li a
+{
+	display:inline;
+	text-decoration:none;
+	font: 14px "Trebuchet MS",Arial,sans-serif ;
+	font-weight:bold;
+	text-align: center ;
+	border-bottom-width:1px;
+	border-bottom-style: solid;
+}
+
+
+.ss_menu_navigation  li a:hover, .navigation li a:focus, .navigation li a:active  
+{
+	outline-style:none;
+	text-decoration:none;
+	
+}
+
+/* Contenu principal */
+.content 
+{
+	background:url(images/fondparchemin.gif);	
+}
+
+
+/* Panneau droit: DESCRIPTION */
+.desc_panel 
+{
+	float:left;
+	background:url(images/fondparchemin.gif);	
+	padding-left:10px;
+	padding-top:10px;
+	padding-bottom:10px;
+	height:250px;
+	border: 1px;
+	/*width:850px; */
+	/*background: burlywood;*/
+}
+
+
+.fiche_item
+{
+	height:240px;
+	overflow:auto;
+	border:thin double;
+	padding-left:10px;
+	padding-top:10px;
+	width:500px;
+	float:left;
+}
+
+
+
+/* Panneau du milieu: PERSO */
+.middle_panel 
+{
+	background:url(images/fondparchemin.gif);
+	padding-left:5px;
+	float:left;
+	margin-top:-130px;
+}
+
+.tab_equipable 
+{
+	background:url(images/fondparchemin.gif); 
+	float:left;
+	/*margin-left: 350px !important ;*/
+	margin-left: 10px;
+	/*position: relative;*/
+	position:absolute;
+	overflow: auto;
+	width:360px;
+}
+
+.tab_equipable-moz-any-link
+{
+	margin-left: 350px;
+}
+
+
+/* Pied de page */
+.footer 
+{
+	height:35px;
+	background:url(images/fondparchemin.gif);
+	
+	/* Cette d�claration nous assure que le footer se trouvera bien en bas de la page.*/
+	clear: both;
+}
+
+.cols {
+	/* Ces deux d�clarations permettent d'obtenir une �l�gant effet de colonnage pour le texte. */
+	/* La suppression de ces deux lignes affiche l'ensemble du texte dans une colonnne unique, tout simplement */
+	width: 48%;
+	float: left;
+	background:url(images/fondparchemin.gif);	
+}
+
+
+/* Reprise CSS d'origine */
+.barrL
+{
+	background-image:url(images/coin_bg.gif);
+	background-repeat:no-repeat;
+	height:10px;
+}
+
+.barrR
+{
+	background-image:url(images/coin_bd.gif);
+	background-position:right center;
+	background-repeat:no-repeat;
+	height:10px;
+	padding:0 10px;
+}
+
+.barrC
+{
+	background-image:url(images/ligne_haut.gif);
+	background-repeat:repeat-x;
+	font-size:0;
+	height:10px;
+}
+
+.barrLbord 
+{
+	background-image:url(images/ligne_gauche.gif);
+	background-repeat:repeat-y;
+	padding:0 0 0 10px;
+}
+
+.barrRbord 
+{
+	background-image:url(images/ligne_droite.gif);
+	background-position:right center;
+	background-repeat:repeat-y;
+	padding:0 10px 0 0;
+}
+.petit
+{
+	height:0px;
+}
+					/******************************/
+					/****** LISTE DES ITEMS ******/
+					/******************************/
+
+
+.titre_menu
+{
+	font-family:georgia;
+	font-size:22px;
+	font-weight:bold;
+	padding-bottom:10px;
+	padding-left:10px;
+	padding-top:12px;
+	/*background-image:url(images/arabes15_h.png);*/
+	background-image:url(images/arabes15_h.png);
+	background-position:161px;
+	background-repeat:no-repeat;
+}
+
+
+.objets_panel_right
+{
+	float:right;
+	height:285px;
+	margin-left:50px;
+	margin-top:-30px;
+	overflow:auto;
+	width:440px;
+}
+
+.objets_panel
+{
+	/*background-image:url("images/arabes15.png");*/
+	background-image:url("images/arabes15.png");
+	background-position:380px 20px;
+	background-repeat:repeat-y;
+	height:290px;
+	margin-top:-20px;
+}
+
+.titre_objets_panel
+{
+	/*background-image:url("images/arabes15_h.png");*/
+	background-image:url("images/arabes15_h.png");
+	background-position:246px 50%;
+	background-repeat:no-repeat;
+	height:35px;
+}
+
+	
+.list_items
+{
+	padding-left:10px;
+	width:330px;
+	height:405px;
+	/*background-image:url(images/arabes15.png);*/
+	background-image:url(images/arabes15.png);
+	background-repeat: repeat-y;
+	background-position: right 0;
+    /*background-color : #FFFFFF;*/
+	/*background:url(images/fondparchemin.gif);*/
+	
+}
+
+.tresor
+{
+	/*background-image:url(images/tresor.png);
+	background-repeat: no-repeat;
+	background-position: right;
+	*/
+}
+
+.pos_tresor
+{
+	width:150px;
+	height:150px;
+	float:right;
+	margin-top:-100px;
+}
+
+.infos_inventaire_bzs
+{
+	height:55px;
+	padding-left:10px;
+	width:340px;
+}
+
+.list_items ul
+{
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+
+.legende_item
+{
+	font-family:Georgia;
+	font-size:12px;
+	width: 100px;
+	/*margin-top:15px;*/
+	/*height: 150px;*/
+	
+	display: block ;
+	text-decoration:none;
+	
+}
+
+.rien, .rien:hover, .rien:visited
+{
+color:transparent;
+
+}
+
+
+
+.actions
+{
+	padding-top:25px;
+}
+
+.case_img
+{
+	float:left;
+}
+
+.img_item
+{
+	width: 60px;
+	height:60px;
+	cursor: pointer;
+	padding-top:6px;
+	padding-left:5px;
+}
+
+.img_item_usure
+{
+	width: 55px;
+	height:55px;
+	cursor: pointer;
+	padding-top:12px;
+	padding-left:7px;
+}
+
+
+.img_equipement
+{
+	cursor: pointer;
+	height:99px;
+	width:99px;
+}
+
+.img_item_vide
+{
+	width: 60px;
+	height:60px;
+}
+
+
+.img_obj_equipe
+{
+	float:right;
+	width:12px
+}
+
+.desc_tab_item
+{
+	cursor: pointer;
+	height:55px;
+	padding-left:2px;
+	padding-top:3px;
+	width:55px;
+}
+	
+.pointer
+{
+	cursor: pointer;
+}
+
+
+				/********************************/
+				/******* FICHE DES ITEM ********/
+				/*******************************/
+
+/*Nom de l'item*/
+.titre_nom_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	display:inline-table;
+	float:left;
+}
+
+.nom_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_nom_item
+{
+	display: none;
+}
+
+
+/*Descriprion de l'item*/
+.titre_desc_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	display:inline-table;
+	float:left;
+}
+
+.desc_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_desc_item
+{
+	display: none;
+}
+
+
+/*Poids de l'item*/
+.titre_poids_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.poids_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_poids_item
+{
+	display: none;
+}
+
+
+/*Etat de l'item*/
+.titre_etat_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.etat_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_etat_item
+{
+	display: none;
+}
+
+.img_usure
+{	
+	height:20px;
+	padding-right:5px;
+	position:inherit;
+	float: left;
+	
+}
+
+/*PA de l'item*/
+.titre_pa_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.pa_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_pa_item
+{
+	display: none;
+}
+
+
+/*AF de l'item*/
+.titre_af_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.af_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_af_item
+{
+	display: none;
+}
+
+
+/*D�gats de l'item*/
+.titre_degats_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.degats_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_degatss_item
+{
+	display: none;
+}
+
+
+/*Force de l'item*/
+.titre_force_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.force_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_force_item
+{
+	display: none;
+	display:none;
+}
+
+
+/*Agilit� de l'item*/
+.titre_dexterite_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.dexterite_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_dexterite_item
+{
+	display: none;
+}
+
+
+/*Chute de l'item*/
+.titre_chute_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.chute_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_chute_item
+{
+	display: none;
+}
+
+
+/*Armure de l'item*/
+.titre_armure_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.armure_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_armure_item
+{
+	display: none;
+}
+
+
+/*Competence de l'item*/
+.titre_competence_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.competence_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_competence_item
+{
+	display: none;
+}
+
+
+/*Reparation de l'item*/
+.titre_repare_item
+{	
+	font-family:georgia;
+	font-size:15px;
+	font-weight:normal;
+	text-decoration:underline;
+}
+
+#id_repare_item
+{
+	display: none;
+}
+
+
+/*Equipement de l'item*/
+.titre_equipe_item
+{	
+	font-family:georgia;
+	font-size:15px;
+	font-weight:normal;
+	text-decoration:underline;
+	
+}
+
+#id_equipe_item
+{
+	display: none;
+}
+
+
+/*Abandon de l'item*/
+.titre_abandonne_item
+{	
+	font-family:georgia;
+	font-size:15px;
+	font-weight:normal;
+	text-decoration:underline;
+}
+
+#id_abandonne_item
+{
+	display: none;
+}
+
+
+/*propri�t� deposable de l'item*/
+.titre_deposable_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.deposable_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_deposable_item
+{
+	display: none;
+}
+
+
+/*Bonus de vue de l'item*/
+.titre_bonus_vue_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.bonus_vue_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_bonus_vue_item
+{
+	display: none;
+}
+
+
+/*Protection Critique de l'item*/
+.titre_critique_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.critique_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	height:36px;
+	float:left;
+}
+
+#id_critique_item
+{
+	display: none;
+}
+
+
+/*Vampirisme de l'item*/
+.titre_vampirisme_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.vampirisme_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_vampirisme_item
+{
+	display: none;
+}
+
+
+/*Aura de feu de l'item*/
+.titre_aura_de_feu_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.aura_de_feu_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_aura_de_feu_item
+{
+	display: none;
+}
+
+
+/*Regen de l'item*/
+.titre_regen_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.regen_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	height:36px;
+	float:left;
+}
+
+#id_regen_item
+{
+	display: none;
+}
+
+
+/*Poison de l'item*/
+.titre_poison_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.poison_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_poison_item
+{
+	display: none;
+}
+
+/*Poison de l'item*/
+.titre_url_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.url_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_url_item
+{
+	display: none;
+}
+
+/*Propri�t� Enchantable de l'item*/
+.titre_enchantable_item
+{	
+	font-family:georgia;
+	font-size:17px;
+	font-weight:bold;
+	width:200px;
+	float:left;
+}
+
+.enchantable_item
+{	
+	font-size:14px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:250px;
+	float:left;
+}
+
+#id_enchantable_item
+{
+	display: none;
+}
+
+
+
+/* L'item equip� */
+.selection_item
+{
+	float:right;
+}
+
+
+.selected_item
+{
+	/* background: red; */
+}
+
+			
+				/*****************************************/
+				/********* POUR L'IMAGE DU PERSO  *******/
+				/*****************************************/
+
+				
+.fiche_perso
+{	
+	font-size:9pt;
+	background:url(images/fondparchemin.gif);
+	/*padding-left:10px;*/
+	width:300px;
+	float: left;
+	margin-left: 380px;
+	/*padding-top:15px;*/
+	position: absolute;
+}
+
+.titre_fiche_perso
+{
+	display:inline-table;
+	float:left;
+	font-family:georgia;
+	font-size:12px;
+	font-weight:bold;
+	width:180px;
+}
+
+
+.titre_fiche_perso2
+{
+	display:inline-table;
+	float:left;
+	font-family:georgia;
+	font-size:12px;
+	font-weight:bold;
+	width:110px;
+}
+
+.titre_fiche_perso3
+{
+	display:inline-table;
+	float:left;
+	font-family:georgia;
+	font-size:12px;
+	font-weight:bold;
+	width:130px;
+}
+
+.info_fiche_perso
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:155px;
+}
+
+.info_fiche_perso2
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:100px;
+}
+
+.info_fiche_perso3
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	width:160px;
+}
+
+.info_fiche_perso_gras
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	font-weight:bold;
+	width:150px;
+}
+
+.info_fiche_perso_gras2
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	font-weight:bold;
+	width:50px;
+}
+
+.info_fiche_perso_gras3
+{
+	float:left;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+	font-weight:bold;
+	width:20px;
+}
+
+.avatar_perso
+{
+	float: left;
+	background:url(images/fondparchemin.gif);
+	/*position: absolute;*/
+	/*padding-left:90px;*/
+}
+
+.partie_gauche
+{	
+	float:left;
+}
+
+.ombreElfeM
+{	
+	background:transparent url(images/elfeM.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.ombreElfeF
+{	
+	background:transparent url(images/elfeF.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.ombreHomme
+{	
+	background:transparent url(images/homme.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.ombreFemme
+{	
+	background:transparent url(images/femme.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.ombreNaine
+{	
+	background:transparent url(images/naine.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.ombreNain
+{	
+	background:transparent url(images/nain.png) no-repeat scroll center center;
+	color:White;
+	font-family:cursive;
+	font-size:17px;
+	height:300px;
+	width:150px;
+	float:left;
+	padding-top:20px;
+}
+
+.equipement
+{
+	float:left;
+	/* height:360px; */
+	/*padding-left:20px;*/
+	/*padding-top:20px;*/
+	/*width:200px;*/
+	font-size:14px;
+	font-style:normal;
+	font-weight:bold;
+}
+
+
+.img_ombre
+{
+	padding-top:15px;
+}
+
+.tete_ombre
+{
+	padding-top:5px;
+	text-align:center;
+}
+
+.corps_ombre
+{
+	padding-top:20px;
+	text-align:center;
+}
+
+.bras_ombre
+{
+	padding-top:20px;
+	text-align:center;
+	width:200px;
+}
+
+.bras_gauche_ombre
+{
+	float:left;
+}
+
+.bras_droit_ombre
+{
+	float:right;
+}
+
+/* Pour le tableau des runes */
+.liste_runes
+{
+	width:400px;
+}
+
+.img_rune
+{
+	float:right;
+	height:25px;
+	width:25px;
+}
+
+.nom_rune
+{
+	float:left;
+	width:150px;
+}
+
+
+/* Pour le tableau des objets */
+/*.liste_objets
+{
+	width:400px;
+}
+*/
+
+.liste_objets
+{
+	height:447px;
+	/*overflow-y:scroll;*/
+	overflow-y:auto;
+	min-width: 310px;
+	clear:both;
+}
+
+.img_objet
+{
+	float:right;
+	height:25px;
+	width:25px;
+}
+
+.nom_objet
+{
+	float:left;
+	width:150px;
+}
+
+
+.petit_tab_0
+{
+	text-align:center;
+	width:16px;
+}
+
+.petit_tab_1
+{
+	text-indent:2px;
+	width:62px;
+}
+
+.petit_tab_2
+{
+	text-indent:2px;
+	width:53px;
+}
+
+.petit_tab_3
+{
+	text-indent:2px;
+	width:32px;
+}
+
+.petit_tab_4
+{
+	width:138px;
+}
+
+.petit_tab_5
+{
+	width:20px;
+}
+
+.resultat_formulaire
+{
+	font-family:Georgia;
+	font-size:14px;
+	font-style:italic;
+	text-indent:15px;
+	width:480px;
+}
+
+#expand div.arrow 
+{ 
+	background:transparent url(images/arrows.png) no-repeat scroll 0px -16px; 
+	width:16px; 
+	height:16px; 
+	display:block;
+}
+
+#expand div.up 
+{ 
+	background-position:0px 0px;
+}
+		
+
+/* Pour le tableau des artefacts */
+.liste_artefacts
+{
+	width:400px;
+}
+
+.img_artefact
+{
+	float:right;
+	height:25px;
+	width:25px;
+}
+
+.nom_artefact
+{
+	float:left;
+	width:150px;
+}
+
+
+/* Pour le tableau des runes */
+.liste_armes
+{
+	width:400px;
+}
+
+/* Pour le tableau des runes */
+.liste_armures
+{
+	width:300px;
+}
+
+.liste_equipable
+{
+	width:300px;
+}
+
+/* Pour le tableau des runes */
+.liste_casques
+{
+	width:400px;
+}
+
+
+.active_analyse
+{
+	font-family:georgia;
+	font-size:12px;
+	font-weight:normal;
+	text-decoration:underline;
+	cursor: pointer;
+}
+
+
+.depot_or
+{
+	width: 280px;
+	display: none;
+}
+
+.champ_depot_or
+{
+	width: 280px;
+	font-size:11px;
+	font-style:italic;
+	font-weight:normal;
+	text-decoration:none;
+	text-transform:none;
+}
+
+
+/* Pour nettoyer les propri�t�s float */
+.clear
+{
+	clear:both;
+}
+
+
+/* Sortable tables */
+table.sortable thead {
+    background-color:#800000;
+    color:white;
+    font-weight: bold;
+    cursor: default;
+}
+
+.ligneTab-1
+{
+	color: black;
+}
+.ligneTab-2
+{
+	background-color:#BA9C6C;
+	color: black;
+}
+
+.c-centre
+{
+	text-align: center;
+}
+
+.c-droit
+{
+	text-align: right;
+}
+
+.c-centre
+{
+	text-align: left;
+}
+
+
+.nb
+{
+	width: 20px;
+	background-color:transparent;
+}
+
+.nb_grand
+{
+	background-color:transparent;
+}
+
+.bouton
+{
+	background-color:transparent;
+	font-family:Georgia;
+}
+	
+
+					/*****************************/
+					/****** BAS DE PAGE **********/
+					/*****************************/
+
+
+.infos_bas_page
+{
+	text-align:center;
+}
+
+.copyright
+{
+	font-style:italic;
+	margin-right:20px;
+	text-align:right;
+}
+
+
+
+
+a:visited {
+color:#800000;
+}
+
+a:hover {
+color:#B60000;
+text-decoration:none;
+}
+
+a {
+color:#4D0505;
+text-decoration:underline;
+}
+
+

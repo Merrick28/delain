@@ -1,0 +1,2417 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: Core Functionality</TITLE>
+ <LINK HREF="documentation-4.html" REL=next>
+ <LINK HREF="documentation-2.html" REL=previous>
+ <LINK HREF="documentation.html#toc3" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="documentation-4.html">Next</A>
+<A HREF="documentation-2.html">Previous</A>
+<A HREF="documentation.html#toc3">Contents</A>
+<HR>
+<H2><A NAME="s3">3.</A> <A HREF="documentation.html#toc3">Core Functionality</A></H2>
+
+<P>Each class contains instance variables and instance methods. Some of these
+variables and methods are available for customization, some are internal to
+the classes themselves. All are documented, but tampering with internal
+variables and methods is not supported. Internal interfaces are subject to
+change without notice from one version of the library to another.</P>
+
+<P>This section covers PHPLIB core functionality in reference form.
+Classes are presented in order of dependency, though, because
+the core structure is easier understood in this order. You will
+need to understand the complete core structure to successfully
+use all of PHPLIB's features.
+</P>
+
+<H2><A NAME="ss3.1">3.1</A> <A HREF="documentation.html#toc3.1">DB_Sql</A>
+</H2>
+
+<P><CODE>DB_Sql</CODE> is used by <CODE>CT_Sql</CODE> and <CODE>Auth</CODE> to access a
+SQL database. You are encouraged to use it directly, too.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+Host </TD><TD>Host where your SQL server is running on.</TD></TR><TR><TD>
+Database</TD><TD>Name of database or instance to use on that server.</TD></TR><TR><TD>
+User </TD><TD>The username used in connections attempts.</TD></TR><TR><TD>
+Password</TD><TD>The password used in connection attempts.</TD></TR><TR><TD>
+Row </TD><TD>Number of the current result row starting at 0.</TD></TR><TR><TD>
+Errno </TD><TD>Integer: error number of last database operation.</TD></TR><TR><TD>
+Error </TD><TD>String: error message of last database operation.</TD></TR><TR><TD>
+Halt_On_Error</TD><TD>One of "yes", "no", "report". If set to"yes" (the default), the database interface will report any errors and haltthe program. If set to "report", the database interface will still reportany errors, but continue reporting "false" back to the application, withErrno and Error set appropriately. If set to "no", the database interfacewill not report any errors, but silently report "false" back to application,with Errno and Error set appropriately.</TD></TR><TR><TD>
+Auto_Free</TD><TD>Boolean: In some DB interfaces a flag for earlyresult memory release.</TD></TR><TR><TD>
+Debug </TD><TD>Boolean: If set, the database class will output all queriesand additional diagnostic output.</TD></TR><TR><TD>
+type </TD><TD>Contant string: The name of the database interface, e.g."mysql" or "oracle"</TD></TR><TR><TD>
+revision</TD><TD>Contant version string: The version of the database API(e.g. 1.2), NOT the CVS revision of the file implementing the API.</TD></TR><TR><TD>
+Sql_Table</TD><TD>string: The name of the table used by the<CODE>nextid()</CODE> API function.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+Record </TD><TD>In some DB interfaces a hash of the current table result row.</TD></TR><TR><TD>
+Link_ID </TD><TD>SQL Link ID.</TD></TR><TR><TD>
+Query_ID</TD><TD>SQL Result ID.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>DB_Sql($query = "")</B><DD><P>Constructor. When creating an instance, you may optionally supply 
+a query string.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$db = new DB_Sql_Subclass("select * from mytable");)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>query($query_string)</B><DD><P><CODE>query_string</CODE> is a SQL statement that is sent to the database.
+After sending the statement, <CODE>Error</CODE> and <CODE>Errno</CODE> are updated.
+If the query is syntactically incorrect (no valid result id is
+being produced), <CODE>halt()</CODE> is called with a meaningful error
+message.</P>
+<P>If there is no active link to the database, a <CODE>pconnect()</CODE> is
+made using the information from the <CODE>Host</CODE>, <CODE>Database</CODE>,
+<CODE>User</CODE> and <CODE>Password</CODE> instance variables.</P>
+<P>Returns the result of the <CODE>query()</CODE> statement, which is
+guaranteed to be a valid result id (or false, if
+Halt_On_Error isn't "yes").</P>
+
+<DT><B>next_record()</B><DD><P><CODE>next_record()</CODE> advances the cursor through the
+current query result and updates the <CODE>Record</CODE>, <CODE>Row</CODE>,
+<CODE>Errno</CODE> and <CODE>Error</CODE> instance variables.</P>
+<P>Returns true, if there is a new result record. Returns false, if
+done with the current result set.  If <CODE>Auto_Free</CODE> is true,
+<CODE>free_result()</CODE> is called automatically before false
+is returned.</P>
+
+<DT><B>num_rows(), nf()</B><DD><P>Returns the number of rows returned by the current SELECT query.</P>
+<P><EM>Note:</EM> This information is not available in all database
+interfaces. Some of the more advanced databases begin to return
+query results asynchronously while the backend is still
+appending result rows. In such environments the complete size of
+the result set is never known. </P>
+<P>You should duplicate your WHERE clause of the query in such
+environments and ask for the COUNT(*). This will be less
+inefficient as it seems as the query path and query result have
+been cached by the database.</P>
+
+<DT><B>affected_rows()</B><DD><P>Returns the number of rows affected by the current INSERT,
+UPDATE or DELETE query.</P>
+
+<DT><B>num_fields()</B><DD><P>Returns the number of columns returned by the current query.</P>
+
+<DT><B>np()</B><DD><P>Prints the number of rows returned by the current query.</P>
+
+<DT><B>f($field)</B><DD><P>Identical to accessing <CODE>Record[$field]</CODE>.</P>
+
+<DT><B>p($field)</B><DD><P>Identical to printing Record[$field].</P>
+
+<DT><B>haltmsg($msg)</B><DD><P>This function is called by <CODE>halt()</CODE> and will actually print
+the database error message. You may override this method in your
+subclass of <CODE>DB_Sql</CODE> and format the error message to
+be consistent with the layout of the rest of your application.
+You may also add additional error handling such as informing the
+application operator by mail that a database error has occured.</P>
+
+<DT><B>seek($pos)</B><DD><P>Positions the <CODE>Row</CODE> pointer within the result set. Useful for
+reading the same result set twice or otherwise jumping around
+within the result. <CODE>$pos</CODE> is not checked in any way for
+validity.</P>
+<P><EM>Note:</EM> If <CODE>Auto_Free</CODE> is true, <CODE>seek()</CODE> may not be
+useable, because the result set has already been free'ed when
+<CODE>next_record()</CODE> when behind the last record of the result
+set.</P>
+<P><EM>Note:</EM> Not all database interfaces provide a cursor that is
+capable of seeking. This function will be unavailable in such
+environments.</P>
+
+<DT><B>lock($table, $mode = "write")</B><DD><P>In some DB interfaces locks one or more tables using the mode(s)
+specified. <CODE>$table</CODE> can be a single table, a comma separated
+list of tables, or an array of mode/table (or table list) pairs.</P>
+
+<DT><B>unlock()</B><DD><P>In some DB interfaces releases all table locks.</P>
+
+<DT><B>link_id()</B><DD><P>This function will return the current link ID, as returned by
+the <CODE>pconnect()</CODE> executed internally by the database class.</P>
+<P>You should not need this information.</P>
+
+<DT><B>query_id()</B><DD><P>This function will return the current result ID, as returned by
+the <CODE>query()</CODE> executed internally by the database class.</P>
+<P>You should not need this information.</P>
+
+<DT><B>metadata($table = "", $full = false)</B><DD><P><CODE>$table</CODE> is a SQL table name in the current database. The
+function returns an array of hashes indexed on the (0 based)
+column number of <CODE>$table</CODE>. Each hash is indexed by <CODE>table</CODE>
+(table of which this column is part of), <CODE>name</CODE> (name of this
+column), <CODE>type</CODE> (column data type), <CODE>len</CODE> (column width)
+and <CODE>flags</CODE> (database specific column flags, if applicable)
+with one row per table column. Each row describes a column in
+your table.</P>
+<P>The data returned by <CODE>metadata()</CODE> is suitable for passing
+it to the Table class. If you specify the <CODE>full</CODE> parameter,
+an additional column <CODE>meta</CODE> is added, which is indexed by
+field name and returns the field number of that name. Also, a
+column <CODE>num_fields</CODE> is added, containing the width
+of the table.</P>
+<P>If <CODE>$table</CODE> is omitted, the function returns metadata on the result
+of the last executed query.  <EM>Note:</EM> This is currently implemented only
+for the MySQL interface.  You are encouraged to implement this feature
+for other interfaces.</P>
+<P><EM>NOTE:</EM> At the moment, the PostgreSQL and ODBC interface only report
+the <CODE>table</CODE>, <CODE>name</CODE> and <CODE>type</CODE> data reliably. You are
+encouraged to fix this.</P>
+
+<DT><B>table_names()</B><DD><P>Returns an array with table name and tablespace name.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+table name      : $return[$i]["table_name"]
+tablespace_name : $return[$i]["tablespace_name"]
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Tables are from $i=0 to last table;</P>
+<P>Implemented in db_oracle.inc,db_oci8.inc,db_mysql.inc,db_pgsql.inc</P>
+
+<DT><B>nextid($sequence_name)</B><DD><P>This function will return a sequence number from the sequence
+named by <CODE>$sequence_name</CODE>. This number is guaranteed
+to be obtained in an atomic manner and can be used as a primary
+key.</P>
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>connect()</B><DD><P>Used internally to generate a <CODE>Link_ID</CODE>, if necessary. Link
+creation is implicit, there is no need to call <CODE>connect()</CODE>
+manually, ever.</P>
+
+<DT><B>halt($msg)</B><DD><P>Used by <CODE>query()</CODE> if the initial database connection cannot
+be made or the target database does not exist. Depending on
+the setting of <CODE>Halt_On_Error</CODE>, this method
+will call <CODE>haltmsg()</CODE> to report the error.</P>
+
+<DT><B>free()</B><DD><P>Used internally by <CODE>next_record()</CODE> to free the result
+set, if so configured.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+<P>Use a subclass to provide the appropriate parameters for a
+database connect. You may overwrite <CODE>halt()</CODE> to customize the
+error message, although a sensible default is provided.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class DB_Article extends DB_Sql {
+  var $classname = "DB_Article";
+
+  var $Host     = "sales.doma.in";
+  var $Database = "shop_project";
+  var $User     = "webuser";
+  var $Password = "";
+
+  function haltmsg($msg) {
+    printf("&lt;/td&gt;&lt;/table&gt;&lt;b&gt;Database error:&lt;/b&gt; %s&lt;br&gt;\n", $msg);
+    printf("&lt;b&gt;MySQL Error&lt;/b&gt;: %s (%s)&lt;br&gt;\n",
+      $this-&gt;Errno, $this-&gt;Error);
+    printf("Please contact shopmaster@doma.in and report the ");
+    printf("exact error message.&lt;br&gt;\n");
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use an instance of the subclass to manage your queries:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$q = new DB_Article;
+
+$query = sprintf("select * from articles where article like '%%%s%%'",
+              $searchword);
+$q-&gt;query($query);
+
+while($q-&gt;next_record()) {
+  printf("&lt;tr&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;/tr&gt;\n",
+    $q-&gt;f("art_id"),
+    $q-&gt;f("article"));
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>Additional information about database connections</H3>
+
+
+<P>PHP reuses connections, if possible. When a connection is being
+made to the same Host with the same Username and Password as an
+existing connection, no second connection is being made by PHP.
+Instead the existing connection is returned to the caller. This
+is true for both, the *_connect() and *_pconnect() calls of all
+PHP database interfaces.</P>
+<P>This has implications for MySQL users: Never use the MySQL "use"
+command to change the current database. If you do, session
+management will fail to operate properly. Instead, create
+all PHPLIB tables as part of your application.</P>
+<P>Some databases (for example Oracle) have very expensive connect()
+operations. For these databases, performance is dramatically improved
+if you switch from CGI PHP to mod_php. This is because, for
+these database, PHPLIB uses the persistent connection methods (e.g.
+*plogon() or *_pconnect()) to connect to your database. In
+mod_php, the database connection is kept around by the web
+server process after the page has been processed and is reused if a
+further connect requires a connection with the same
+Host/Username/Password pattern.</P>
+<P>This means that there will be at most "number of web server
+processes" times "number of Host/Username/Password-combinations"
+many simultaneous connections to your database server. Keep that in
+mind when planning licenses and server load. Using CGI PHP and/or
+non-persistent connections will probably reduce the number of
+concurrent connects to your database server at the expense of
+connection setup time. For database servers where connection setup
+time is negligible (MySQL for example) this is the default solution;
+just don't try it with Oracle.</P>
+<P><EM>Note:</EM> PHPLib now uses (as of 7.4) non-persistent connections by
+default in the non-Oracle db interfaces. The majority of PHPLib users
+are operating in a virtual hosting environment where persistent
+connections eat up memory at a horrifying rate. For web servers that
+only connect to one Host/Username/Password, the persistent connections
+can be enabled by setting the <CODE>$PConnect</CODE> variable in local.inc's
+database extension class.</P>
+<P><EM>Note:</EM> When using persistent connections with MySQL, the 
+<CODE>wait_timeout</CODE> value should be lowered in the MySQL server
+(safe_mysqld). A recommended value of 120 and 180 seconds is 
+much better suited to use with PHP than MySQL's default value of 
+28800 seconds (8 hours).</P>
+
+<H3>Using <CODE>nextid()</CODE></H3>
+
+
+<P>The <CODE>nextid()</CODE> function can be used to obtain a sequence
+number which can be used as a primary key. The function manages
+an arbitrary number of named sequences, you have to provide the
+name of a sequence upon call.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$db = new DB_Article;
+
+$artnr = $db-&gt;nextid("article_sequence");
+$query = sprintf("insert into articles ( artnr, ...) values ('%s', ...)", 
+   $artnr, ...);
+$db-&gt;query($query);
+
+reset($articles);
+while(list($itemnr, $itemdesc) = each($articles)) {
+  $itemnr = $db-&gt;nextid("item_sequence");
+  $query = sprintf("insert into items (artnr, itemnr, ...) values ('%s', '%s', ...)",
+    $artnr, $itemnr, ...);
+  $db-&gt;query($query);
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+</P>
+
+<H2><A NAME="ss3.2">3.2</A> <A HREF="documentation.html#toc3.2">Page Management</A>
+</H2>
+
+
+
+<H3>Accessible Functions</H3>
+
+
+<P>Page Management currently consists a collection of functions:</P>
+<P>
+<DL>
+<DT><B>page_open(array("feature" => "classname"))</B><DD><P>This function is to be called with an array of page
+features/classname pairs. Valid features are at the moment:</P>
+<P>
+<DL>
+<DT><B>sess</B><DD><P>This page makes use of session variables.</P>
+
+<DT><B>auth</B><DD><P>This page uses session authentication. If you
+specify the <CODE>auth</CODE> feature, you MUST specify
+the <CODE>sess</CODE> feature, also.</P>
+
+<DT><B>perm</B><DD><P>This page is protected by permissions and only
+accessible to authenticated users with matching rights.
+If you specify the <CODE>perm</CODE> feature, you MUST specify
+the <CODE>auth</CODE> and <CODE>sess</CODE> features, also.</P>
+
+<DT><B>user</B><DD><P>This page makes use of user variables. If you specify
+the <CODE>user</CODE> feature, you MUST specify the <CODE>auth</CODE> and
+<CODE>sess</CODE> features, also.</P>
+</DL>
+</P>
+<P>Each feature specifies the name of the class that implements that feature,
+for example</P>
+<P>
+<HR>
+<PRE>
+  page_open(array("sess" =&gt; "Shop_Session"));
+</PRE>
+<HR>
+</P>
+<P>The function creates an instance of <CODE>Shop_Session</CODE> as
+<CODE>$sess</CODE> and initializes it. It also checks feature
+dependencies. Note that you are expected to provide an
+implementation of the class <CODE>Shop_Session</CODE>. This is
+usually done in <CODE>local.inc</CODE> and usually you do so by
+extending the provided <CODE>Session</CODE> class.</P>
+<P>Examples on how to do this is given in the documentation below
+when the classes are introduced.</P>
+
+<DT><B>page_close()</B><DD>
+<P>At the end of your page (after all results have been calculated)
+you have to call <CODE>page_close()</CODE>. This will save all
+page state, session and user variables into database. Changes to
+session or user variables after <CODE>page_close()</CODE> has
+been called are not recorded. Currently it is allowed to call
+<CODE>page_close()</CODE> multiple times on a single page (not
+guaranteed for future versions!). Each time session state will be
+saved.</P>
+<P><EM>Note:</EM> This is going to change. When we introduce record
+locking, it is important that you call <CODE>page_close()</CODE> only
+once per page, because that will implicitly unlock your session
+record. Also, it is important that you call <CODE>page_close()</CODE> as
+early as possible on a page so that the locking time is kept
+minimal.</P>
+
+<DT><B>sess_load(array("var" => "classname")</B><DD><P> </P>
+<P><EM>Advanced feature</EM>. Some applications have need to manually
+load data belonging to one or multiple session classes. @@TODO</P>
+
+<DT><B>sess_save(array("var" => "classname"))</B><DD><P><EM>Advanced feature</EM>. @@TODO</P>
+
+</DL>
+</P>
+
+<H3>Example</H3>
+
+
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  page_open(array("sess" =&gt; "Shop_Session"));
+  $sess-&gt;register("s");  // See "Session" below for explanation.
+ ?&gt;
+&lt;html&gt;
+&lt;h1&gt;&lt;?php print ++$s ?&gt;&lt;/h1&gt;
+&lt;/html&gt;
+&lt;?php page_close(); ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>The "cart" feature is gone</H3>
+
+<P> 
+There used to be a feature "cart" for <CODE>page_open()</CODE> in
+versions of PHPLIB up to release-5. The cart has been removed
+from the core functionality of PHPLIB to keep the library small,
+maintainable and structured. Consequently the "cart" feature is
+gone.</P>
+<P>The <CODE>Cart</CODE> class is still present and exists as an extended
+feature. You have to include and instantiate your cart manually
+on that pages that use it, though. See the <CODE>Cart</CODE> class for
+more information.</P>
+
+
+<H2><A NAME="ss3.3">3.3</A> <A HREF="documentation.html#toc3.3">CT_Sql</A>
+</H2>
+
+
+<P>The <CODE>Session</CODE> class used to contain a bit of SQL to read
+and write session data from and to a database. To make sessions
+database independent, this SQL has been isolated and put in
+a separate class, <CODE>CT_Sql</CODE>. <CODE>Session</CODE> now makes
+all storage accesses through a container class, which may or
+may not be an SQL container.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+database_table</TD><TD>The name of the database table which should be used</TD></TR><TR><TD>
+database_class</TD><TD>A classname. CT_Sql uses this class to store and retrieve data</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Sql extends CT_Sql {
+        var $classname = "My_Sql";
+        var $database_table = "active_sessions";
+        var $database_class = "DB_Session";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>You can then use My_Sql in class Session. Reference it
+by putting "My_Sql" in the "that_class" variable.</P>
+
+
+<H2><A NAME="ss3.4">3.4</A> <A HREF="documentation.html#toc3.4">CT_Split_Sql</A>
+</H2>
+
+
+<P>The <CODE>Session</CODE> class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <CODE>Session</CODE> now makes all storage
+accesses through a container class. The
+<CODE>CT_split_sql</CODE> container is very similar to
+<CODE>CT_Sql</CODE> container, with the difference that if
+serialized data exceeds a specified amount of bytes, multiple
+rows will be used to memorized the entire field.</P>
+<P>This class is NOT compatible with <CODE>CT_Sql</CODE> class, since
+table layout is different and column names are different in order to
+avoid reserved words in various database implementation. This uses a
+<CODE>DB_Sql</CODE> like class so you can access all supported databases
+with this container.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+database_table</TD><TD>The name of the database table which should be used</TD></TR><TR><TD>
+database_class</TD><TD>A classname. CT_Sql uses this class to store and retrieve data</TD></TR><TR><TD>
+split_length</TD><TD>A number. This specifies the maximum amount of bytessaved in each row of the table.
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Sql extends CT_Split_Sql {
+        var $classname = "My_Sql";
+        var $database_table = "active_sessions_split";
+        var $database_class = "DB_Session";
+        var $split_length = 4096;
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>You can then use My_Sql in class Session. Reference it
+by putting "My_Sql" in the "that_class" variable.</P>
+
+
+<H2><A NAME="ss3.5">3.5</A> <A HREF="documentation.html#toc3.5">CT_Shm</A>
+</H2>
+
+
+<P>The <CODE>Session</CODE> class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <CODE>Session</CODE> now makes all storage
+accesses through a container class. To let <CODE>Session</CODE> use shared
+memory as container, you use <CODE>CT_Shm</CODE>.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+max_sessions</TD><TD>The maximum number of concurrent sessions supported by this container.</TD></TR><TR><TD>
+shm_key</TD><TD>The unique (important!) key of the shared memory&nbsp;segment you want to use.</TD></TR><TR><TD>
+shm_size</TD><TD>The size of the shared memory segment. The size is&nbsp;set, when the segment is accessed for the first time. If you do not use &nbsp;too many session variables, the formula shm_size = max_sessions * 600&nbsp;should be sufficient.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Shm extends CT_Shm {
+        var $classname = "My_Shm";
+        var $max_sessions = 500;
+        var $shm_key = 0x1234232;
+        var $shm_size = 64000;
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>You can then use My_Shm in class Session. Reference it
+by putting "My_Shm" in the "that_class" variable.</P>
+
+
+<H2><A NAME="ss3.6">3.6</A> <A HREF="documentation.html#toc3.6">CT_Dbm</A>
+</H2>
+
+
+<P>The <CODE>Session</CODE> class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <CODE>Session</CODE> now makes all storage
+accesses through a container class. To let <CODE>Session</CODE> use a DBM
+database file as a container, you use <CODE>CT_Dbm</CODE>.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+dbm_file</TD><TD>The path to the dbm file (must exist already AND must be writable by the server process)</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Dbm extends CT_Dbm {
+        var $dbm_file = "data/session.dbm";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>You can then use My_Dbm in class Session. Reference it
+by putting "My_Dbm" in the "that_class" variable.</P>
+
+
+<H2><A NAME="ss3.7">3.7</A> <A HREF="documentation.html#toc3.7">CT_Ldap</A>
+</H2>
+
+
+<P>The <CODE>Session</CODE> class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <CODE>Session</CODE> now makes all storage
+accesses through a container class. To let <CODE>Session</CODE> use a
+LDAP database as a container, you use <CODE>CT_Ldap</CODE>.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+ldap_host</TD><TD>This is the hostname of the LDAP server to connect to</TD></TR><TR><TD>
+ldap_port</TD><TD>And this is its port (LDAP default is 389)</TD></TR><TR><TD>
+basedn</TD><TD>This is the basedn</TD></TR><TR><TD>
+rootdn</TD><TD>This is the rootdn which is required to modify the database</TD></TR><TR><TD>
+rootpw</TD><TD>The respective password for rootdn</TD></TR><TR><TD>
+objclass</TD><TD>The objectclass for PHPLIB's data</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Ldap extends CT_Ldap {
+        var $classname = "My_Ldap";
+        var $ldap_host = "localhost";
+        var $ldap_port = 389;
+        var $basedn = "dc=your-domain, dc=com";
+        var $rootdn = "cn=root, dc=your-domain, dc=com";
+        var $rootpw = "secret";
+        var $objclass = "phplibdata";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>You can then use My_Ldap in class Session. Reference it
+by putting "My_Ldap" in the "that_class" variable.</P>
+
+
+<H2><A NAME="ss3.8">3.8</A> <A HREF="documentation.html#toc3.8">Session</A>
+</H2>
+
+
+<P>The session class keeps a list of global variable names and
+provides a set of functions to load and save these variables
+from and to a data storage container (we will call it container
+for shortness). The named variables may be scalar
+variables (strings, integers and floats) or arrays. Objects are
+handled as well, provided they implement two instance variables
+naming their class and enumerating their (persistent) slots.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+magic</TD><TD>A secret string used in ID creation. Change it!</TD></TR><TR><TD>
+mode </TD><TD>Mode of Session ID propagation. Either <CODE>cookie</CODE> or <CODE>get</CODE>.</TD></TR><TR><TD>
+fallback_mode</TD><TD>Mode of Session ID propagation should <CODE>$mode</CODE> not work. Set <CODE>$mode</CODE> to <CODE>cookie</CODE> and <CODE>$fallback_mode</CODE> to <CODE>get</CODE>.</TD></TR><TR><TD>
+lifetime </TD><TD>Lifetime of the session cookie in minutes or 0 to use session cookies.</TD></TR><TR><TD>
+gc_time</TD><TD>Garbage collection tuning parameter, see below.</TD></TR><TR><TD>
+gc_probability</TD><TD>Garbage collection tuning parameter, see below.</TD></TR><TR><TD>
+allowcache</TD><TD>Control caching of session pages. If set to <CODE>passive</CODE> (also the default), no cache-control headers are being sent. If set to <CODE>no</CODE>, the page is not cached under HTTP/1.1 or HTTP/1.0; if set to <CODE>public</CODE> , the page is publically cached under HTTP/1.1 and HTTP/1.0; if set to <CODE>private</CODE> , the page is privately cached under HTTP/1.1 and not cached under HTTP/1.0</TD></TR><TR><TD>
+allowcache_expire</TD><TD>When caching is allowed, the pages can be cached for this many minutes.</TD></TR><TR><TD>
+that_class</TD><TD>A classname. Session uses this class to store and retrieve data.</TD></TR><TR><TD>
+auto_init</TD><TD>The file to be loaded on session establishment.</TD></TR><TR><TD>
+secure_auto_init</TD><TD>Set to 0, if all pages always callpage_close() (This is never the case!).</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+pt</TD><TD>Internal array of names of persistent variables.</TD></TR><TR><TD>
+in</TD><TD>Flag: If set, auto_init has been executed.</TD></TR><TR><TD>
+name</TD><TD>A tag (name) for the session type.</TD></TR><TR><TD>
+id</TD><TD>Id of the current session.</TD></TR><TR><TD>
+that</TD><TD>Container object instance.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>register($varname)</B><DD><P>Registers a global variable name as a session variable. The
+name may identify a scalar variable, an array or an object.
+If an object is to be made persistent, it must have two
+instance variables:</P>
+<P>
+<DL>
+<DT><B>classname</B><DD><P>A string with the name of the objects class.</P>
+<DT><B> persistent_slots</B><DD><P>An array with the names of all object slots to save.</P>
+</DL>
+</P>
+
+<DT><B>unregister($varname)</B><DD><P>Unregisters a global variable name as a session variable.
+The variable is not deleted, but its value will be lost
+at the end of a page. It is no longer saved to the database.</P>
+
+<DT><B>is_registered($varname)</B><DD><P>Returns true if the variable named $varname is registered
+with the session, false otherwise.</P>
+
+<DT><B>delete()</B><DD><P>Destroy the current session and put_id() the current session
+id.</P>
+<P>After <CODE>delete()</CODE> has been executed, all session data has
+been removed from the database. Also, the session object is
+unusable on this page. Consequently, <CODE>page_close()</CODE> may
+not be called for this session. Session variables are still
+available on this page, even after the <CODE>delete()</CODE>, but
+will be lost on the following pages.</P>
+<P>In cookie mode, it is possible to <CODE>page_open()</CODE> a new
+session after <CODE>delete()</CODE> has been called, if no HTML has
+been output so far so that the new cookie can be set. If you
+do this, you can also re-register some of the previous
+session variables and can call <CODE>page_close()</CODE> for the new
+session.  This allows you to change the session on the fly
+and selectively carry over session data from the previous
+session.</P>
+
+<DT><B>url($url)</B><DD><P>Return an URL referencing the current session. If in <CODE>get</CODE>
+mode, the current session id is attached to this URL, else the
+URL is returned unmodified.</P>
+
+<DT><B>purl($url)</B><DD><P>A shorthand for <CODE>print $this-&gt;url($url);</CODE></P>
+
+<DT><B>self_url()</B><DD><P>Return an URL referencing the current page, including
+<CODE>PHP_SELF</CODE> and <CODE>QUERY_STRING</CODE> information.
+If in <CODE>get</CODE> mode, the session id is included.</P>
+
+<DT><B>pself_url()</B><DD><P>A shorthand for <CODE>print $this-&gt;self_url()</CODE>.</P>
+
+<DT><B>hidden_session()</B><DD><P>Adds a hidden form element containing the session name and id.</P>
+
+<DT><B>add_query($qarray)</B><DD>
+<P>Return string to be appended to the current URL for parameters
+in GET query format. Intended usage is like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+
+&lt;a href="&lt;&lt;?
+$sess->pself_url().$sess-&gt;padd_query(array("again"=&gt;"yes"))
+?&gt;"&gt; Reload&lt;/a&gt; and log in?
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<DT><B>padd_query($qarray)</B><DD>
+<P>A shorthand for <CODE>print $this-&gt; add_query($qarray)</CODE>.</P>
+
+<DT><B>reimport_get_vars()</B><DD>
+<P>When a <CODE>FORM</CODE> variable is made persistent, that form variable is
+imported into PHP, then page_open() is being called and
+the new variable value is overwritten from the database. The
+<CODE>FORM</CODE> value is lost.</P>
+
+<P>If you had enabled <CODE>track_vars</CODE> and were accessing
+<CODE>HTTP_GET_VARS</CODE> directly, which is recommended,
+this were not a problem. Some legacy scripts rely on persistent
+<CODE>FORM</CODE> input variables, though.</P>
+
+<P>These scripts may call the appropriate
+<CODE>reimport</CODE>_x_<CODE>vars()</CODE> functions. These
+functions will re-read the tracked variable arrays and
+reinitialize the appropriate global variables after session
+variables have been restored.</P>
+
+<P>Use of this function is discouraged.</P>
+
+<DT><B>reimport_post_vars()</B><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
+
+<DT><B>reimport_cookie_vars()</B><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
+
+<DT><B>set_container()</B><DD><P>You shall not call this function directly. It is called back by the
+<CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
+<P>This function creates and starts the container class used by
+this instance of session.</P>
+
+<DT><B>set_tokenname()</B><DD><P>You shall not call this function directly. It is called back by the
+<CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
+<P>This function determines and sets the internal session name.</P>
+
+<DT><B>release_token()</B><DD><P>You shall not call this function directly. It is called back by the
+<CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
+<P>This function determines the current method of session
+propagation and determines if a new session token has to be
+generated.</P>
+
+<DT><B>put_headers()</B><DD><P>You shall not call this function directly. It is called back by the
+<CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
+It is documented so that you can override its implementation in
+your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
+<P>This function determines which header lines are to be generated
+by the session, including cache control headers.</P>
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>get_id()</B><DD><P>See <CODE>get_id()</CODE>.</P>
+
+<DT><B>get_id($id_to_use)</B><DD><P>get_id() is used internally to determine a session
+identifier.  Currently, a session identifier is a hex number
+of 32 characters (128 bits) and it is generated by
+md5(uniqid($this->magic)) to make it hard to guess.</P>
+<P>get_id() may be called with an optional session id to use as
+a parameter. This is useful if you want to change a session
+id without breaking the session (taking over an old, left
+over session).</P>
+<P>get_id() can be overwritten by a subclass, if you want a
+different system to create session ids. For example, some
+applications want to use a constant session id that is not
+propagated to the client to use a shared pool of persistent
+variables (a guestbook for example). These applications need
+locking (to be implemented soon).</P>
+
+<DT><B>put_id()</B><DD><P>put_id() is used internally to "unuse" a session it. At the
+moment it deletes the client side cookie and deletes
+$HTTP_COOKIE_VAR[$this->name] for that cookie. The variable
+${$this->name} is <EM>not</EM> deleted.</P>
+
+<DT><B>serialize($var, &amp;$str)</B><DD><P>serialize() is used internally to append to str all PHP
+code needed to reconstruct the variable named in var.</P>
+
+<DT><B>freeze()</B><DD><P>freeze() serializes all register()ed variables and writes
+the resulting code into the database, tagged with the
+current session id and the current session name.</P>
+
+<DT><B>thaw()</B><DD><P>thaw() loads a set of freeze()ed variables for the current
+session id and session name out of the database and
+recreates them.</P>
+
+<DT><B>gc()</B><DD><P>The <CODE>active_sessions</CODE> table contains one row for
+each session. That row is uniquely identified by the <CODE>sid</CODE>
+and <CODE>name</CODE> values (<CODE>name</CODE> is the name of the session
+class that has written the row). Each time that row is written,
+the column <CODE>changed</CODE> is updated with the current time.</P>
+<P>The gc() function deletes all rows that are older than
+<CODE>gc_time</CODE> minutes and have a matching <CODE>name</CODE> 
+field. For speed reasons, gc() is not not called every time
+an update to <CODE>active_sessions</CODE> is being made.
+Instead it is called randomly with a probability of
+<CODE>gc_probability</CODE>.</P>
+
+<DT><B>reimport_any_vars($arrayname)</B><DD><P>Used to implement the three official reimport functions.</P>
+
+<DT><B>start()</B><DD><P>Initialization function, to be called after object
+instantiation. Calls get_id() to get the current session id,
+creates a database connection, then calls thaw() to load all
+session variables. Randomly activates gc(). Checks <CODE>allowcache</CODE>
+to send proper headers to control browser caching.</P>
+
+</DL>
+</P>
+
+
+<H3>Example</H3>
+
+<P>Use a subclass to provide the appropriate parameters to your
+session. Usually your subclass looks like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Session extends Session {
+  var $classname = "My_Session"; ## Persistence support
+  
+  var $mode      = "cookie";
+  var $lifetime  = 0;            ## use session cookies
+  
+  ## which container to use
+  var $that_class = "Session_sql";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Remember that you have to provide a <CODE>DB_Sql</CODE> subclass
+with the parameters needed to access your database.</P>
+<P>Use the page management functions (see above) to use your
+session subclass. The feature name for session management is
+<CODE>sess</CODE>; provide the name of your session subclass as a
+parameter to the sess feature:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  page_open(array("sess" =&gt; "My_Session"));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use the <CODE>register()</CODE> instance method to register variables as
+persistent. If <CODE>$sess</CODE> is your session object, use</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$sess-&gt;register("s");
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>to make the global variable <CODE>$s</CODE> persistent. <CODE>$s</CODE> may be a
+scalar value, an array or an object with persistence support
+slots.</P>
+<P>Do not use the instance methods <CODE>freeze()</CODE> and <CODE>thaw()</CODE>
+directly, but use the page management functions instead.</P>
+<P>To have some pages cached and others not cached, use multiple
+instances of the session object. For example, for those pages
+that should be cached, use a session object instance like</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Cached_Session extends My_Session {
+  ## pages that use this session instance are cached.
+  var $allowcache = "private";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Be careful when using the <CODE>public</CODE> cache option. Publically cached pages
+may be accessible to unauthenticated users. The <CODE>private</CODE> cache option
+prevents unauthenticated access, but is only functional in HTTP/1.1 browsers.</P>
+
+<H3>Using "auto_init"</H3>
+
+
+<P>You may define <CODE>$sess->auto_init</CODE> to the name of an include
+file in your extension of session. Per convention, the name
+<CODE>setup.inc</CODE> is being used.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Session extends Session {
+  var $classname = "My_Session";
+  var $magic     = "Calvin+Hobbes";
+  var $mode      = "cookie";
+  var $gc_probability = 5;
+
+  var $auto_init = "setup.inc";   // name of auto_init file.
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Whenever a new session is established, that is, a user without a
+session id connects to your application, the auto_init file is
+included and executed exactly once. The file is executed from
+within the context of the <CODE>page_open()</CODE> function, that is,
+<EM>not</EM> within a global context. To define or access global
+variables from the auto_init file, you have to <CODE>global</CODE> them.</P>
+<P>When auto_init is being executed, all features of your page
+already exist and are available globally.
+That is, you can safely rely on
+the existence of the <CODE>$sess</CODE>, <CODE>$auth</CODE>, <CODE>$perm</CODE> and
+<CODE>$user</CODE> variables, if your application specifies them.
+<EM>Note</EM> that you cannot in general know which particular page
+triggered the execution of auto_init, though. If you have some
+pages that request authentication and others that don't, you
+cannot rely on the presence of the <CODE>$auth</CODE> object in general,
+but have to test for it with <CODE>is_object($auth)</CODE> before
+accessing it.</P>
+<P>The auto_init file is the appropriate place to initialize and
+register all your session variables. A sample <CODE>setup.inc</CODE> may
+look like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+global $lang;   // application language
+$lang = "de";   // german by default
+$sess-&gt;register("lang");
+
+global $cur;   // application currency
+$cur = "EUR";   // Euro by default
+$sess-&gt;register("cur");
+
+global $cart;
+$cart = new Shop_Cart;      // Create a shopping cart object as defined in local.inc
+$sess-&gt;register("cart"); // register it.
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P><EM>Note:</EM> If you don't use a fallback_mode and you get users
+that turn off cookies, these users will force a new session each
+time they hit any page of your application. Of course this will
+force inclusion and execution of <CODE>setup.inc</CODE> for each page
+they visit, too. Nothing can be done about this.</P>
+
+<H3>Unregistering variables and deleting sessions</H3>
+
+<P>To get rid of a persistent variable, call
+<CODE>$sess-&gt;unregister()</CODE> with the name of that variable. The
+value of the formerly registered variable is still available
+after the call to unregister, but the variable is no longer
+persistent and will be lost at the end of the current page.</P>
+<P>To get rid of all session related data including the session
+record in the database, the current session id and the session
+cookie in the users browser, call <CODE>$sess-&gt;delete()</CODE>. In
+shopping applications this is commonly done when the user
+commits his order to get rid of the current shopping cart and
+everything else. You may want to remember selected information
+about that user, though, as shown below.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  page_open(array("sess" =&gt; "Shop_Session"));
+
+  // send order as mail
+  mail_order($shopowner, $user, $cart);
+
+  // delete the current session
+  $sess->delete();
+
+  // now get a new session id, but retain the users
+  // address and name:
+  page_open(array("sess" =&gt; "Shop_Session")); // will force auto_init again!
+  $sess->register("user");  // could be done in auto_init as well
+
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>Reading and understanding session data for debugging</H3>
+
+<P>When debugging PHPLIB applications, it is often useful to be
+able to read and understand the contents of the active_sessions
+table. Each session is represented by a single line in this
+table. The primary key to this table is the pair <CODE>name</CODE> and
+<CODE>sid</CODE>. <CODE>name</CODE> is the content of <CODE>$this-&gt;name</CODE> and
+is usually the classname of your session class. <CODE>sid</CODE> is the
+content of <CODE>$this-&gt;id</CODE> and is usually the MD5 hash of a
+uniqid and some magic string.</P>
+<P>By choosing a pair, it is possible for PHPLIB to have more than
+one session type (for example, session and user data, see the
+<CODE>User</CODE> class below) per application and store all this data
+in a single table. If you are debugging a session class, for
+example <CODE>Example_Session</CODE>, only records where <CODE>name =
+"Example_Session"</CODE> are of interest to you. Determine the current
+session id of your <CODE>Example_Session</CODE> by printing <CODE>$sess->id</CODE>
+and select the record with that <CODE>name</CODE> and <CODE>sid</CODE> from the
+database.</P>
+<P>The <CODE>changed</CODE> field indicates when this record has been
+updated the last time. It is a 14 character (Y2K compliant)
+string of the format YYYYMMDDhhmmss. Ordering by <CODE>changed</CODE>
+desc will show you the most current session records first (the
+MySQL "limit" clause may come in handy here).</P>
+<P>The <CODE>val</CODE> column of a session record contains a PHP program
+that can be safely fed to <CODE>stripslashes()</CODE> first and
+<CODE>eval()</CODE> after that. The PHP program consists entirely of
+assignments and contains all instructions necessary to recreate
+the persistent variables. The structure and order of
+instructions within this program is always the same.</P>
+<P>First item is always an assignment to <CODE>$this-&gt;in</CODE>. If set
+to 1, auto_init has been executed by this session. If
+<EM>not</EM> set to 1, auto_init has not been executed, yet.
+This may be because no auto_init file is defined for
+that session.</P>
+<P>After that comes code like this: <CODE>$this-&gt;pt = array();</CODE>
+followed by a bunch of assignments like
+<CODE>$this-&gt;pt["somestring"] = 1;</CODE>. Each somestring is the
+name of a registered variable. Variable registrations are
+persistent themselves and are saved with the <CODE>$this-&gt;pt</CODE>
+array. Even if the variable in question is not set, it may be
+registered and stays so until it is unregistered or the session
+is deleted. Check the contents of the pt array is you want to
+see which variables are currently registered with your session.</P>
+<P>Finally, the actual contents of your variables are saved. This
+is always done by accessing the $GLOBALS array and always by
+enumerating the scalar values that make up the persistent
+variable. For a scalar, you will see code like
+<CODE>$GLOBALS[somevar] = "value";</CODE>. </P>
+<P>For an array, first <CODE>$GLOBALS[someary] = array();</CODE>
+is generated. Then the scalars that make up the array, if any,
+are written out, generating code that looks like
+<CODE>$GLOBALS[someary][index] = "value"</CODE>.</P>
+<P>And for objects, code to create an object instance is saved:
+<CODE>$GLOBALS[someobj] = new Classname;</CODE>. "Classname"
+is taken from the objects <CODE>$classname</CODE> slot, which <EM>must</EM>
+be present and accurate. Then the scalars that are to be saved
+are written out, according to the contents of the objects
+<CODE>persistent_slots</CODE> array:
+<CODE>$GLOBALS[someobj]-&gt;slot = "value";</CODE> is written.</P>
+<P>If you want to see what values have been saved to the
+database, you just have to look at the <CODE>$GLOBALS</CODE> assignments
+for that session.</P>
+
+<H3>How "serialize()" operates</H3>
+
+
+<P>The following information is applicable only to library
+developers, that is, programmers that want to change the
+internal workings of PHPLIB. You may safely skip this section;
+some information here requires advanced understanding of the PHP
+language.</P>
+<P>The heart of the session class is the <CODE>serialize()</CODE> internal
+function. This function takes an expression called var and
+generates PHP code that will assign the value of that expression
+to the expression when executed. For example, if the expression
+is <CODE>$GLOBALS["a"]</CODE> and the global variable <CODE>$a</CODE>
+has the value <CODE>17</CODE>, then serialize will create the PHP
+program <CODE>$GLOBALS["a"] = "17";</CODE>. To save memory,
+<CODE>serialize()</CODE> operates on a reference parameter <CODE>$str</CODE>,
+where is will append the code generated.</P>
+<P>First thing <CODE>serialize()</CODE> does is to determine the type of
+the current expression using the PHP <CODE>gettype()</CODE> function.
+The current type is stored in <CODE>$t</CODE>. The type of the
+expression may indicate either a scalar value (integer number,
+float number or string), an array or an object.</P>
+<P>Scalar values are the easiest to handle: <CODE>serialize()</CODE> just
+evaluates the current expression and remembers the result value
+in <CODE>$l</CODE>. An assignment is generated that will assign the
+current value to the current expression. Since the current value
+may be a string and that string may contain bad characters (any
+of backslash, double quotes or dollar sign), these characters
+are backslashed. We are done, <CODE>serialize()</CODE> ends here for
+scalars.</P>
+<P>In the case of <CODE>$t</CODE> indicating an array, code is generated to
+create an empty array (<CODE>expression = array();</CODE>). Then the
+keys of current expression are enumerated and for each key
+<CODE>serialize()</CODE> is called recursively with the current key
+appended to the expression. That will append code for each array
+slot.</P>
+<P>Should <CODE>$t</CODE> indicate an object, code is generated to create
+that object (<CODE>expression = new Classname;</CODE>). Since one cannot
+find out the name of the class of an object for arbitrary
+objects in PHP, objects handled by <CODE>serialize()</CODE> must have a
+slot named <CODE>classname</CODE>. The object handler will then
+enumerate the contents of the objects slot <CODE>persistent_slots</CODE>
+and call <CODE>serialize()</CODE> recursively for each of these slots
+with the appropriate var.</P>
+<P>Since many of the expressions used in <CODE>serialize()</CODE> require
+variable variable names or even variable code, <CODE>eval()</CODE> is
+used liberally. Unfortunately, this makes the code hard to read.
+</P>
+
+<H2><A NAME="ss3.9">3.9</A> <A HREF="documentation.html#toc3.9">Auth</A>
+</H2>
+
+
+<P>Authentication management can be used to authenticate a session,
+that is, to identify the user at the client side of the session.</P>
+<P>Authentication is done inline, with HTML forms, <EM>not</EM> with
+HTTP authentication (that's the browser popup you get when you
+hit a page protected with htaccess). Inline authentication has
+several advantages over HTTP authentication:</P>
+<P>
+<UL>
+<LI>It can be undone: A session can be un-authenticated, the
+user can "log out".</LI>
+<LI>It can expire: A session can automatically be
+un-authenticated after a given idle time.</LI>
+<LI>It can be customized: You are not limited to user/password
+pairs. Instead you could use a customer number, operator id
+and a password to log in. Also, you have full control over
+the login screen, which is a normal HTML page with logos,
+help and forms as you see fit.</LI>
+<LI>It is database based. Authentication is being done against
+a database of your design, not a htpasswd text file.</LI>
+<LI>It is per page. You decide on a per-page basis which pages
+are authenticated and which aren't.</LI>
+<LI>It can be user authenticating and optionally self
+registering. In <EM>registration</EM> mode, a user without a valid login is
+encouraged to register and an account is created for this
+user.</LI>
+<LI>It works with CGI PHP. HTTP authentication is available
+only in mod_php.</LI>
+<LI>It is integrated with a permission checking scheme.</LI>
+</UL>
+</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+persistent_slots</TD><TD>Serialization helper: The names of all persistent slots.</TD></TR><TR><TD>
+lifetime</TD><TD>Maximum allowed idle time before the authentication expires. If set to 0, The authentication never expires (as long as the session remains active).</TD></TR><TR><TD>
+refresh</TD><TD>Maximum allowed time before the authentication info (perms and alike) are re-read from the database calling <CODE>auth_refreshlogin()</CODE> method. If set to 0 authentication info are read only at the login stage.</TD></TR><TR><TD>
+mode</TD><TD>Authentication mode: <CODE>log</CODE> or <CODE>reg</CODE> (see below).</TD></TR><TR><TD>
+database_class</TD><TD>A classname. Auth uses this class to make a database connection.</TD></TR><TR><TD>
+database_table</TD><TD>Database table used to keep the session variables.</TD></TR><TR><TD>
+magic</TD><TD>An arbitrary value used in uniqid generation.</TD></TR><TR><TD>
+nobody</TD><TD>Flag: If true, we use default authentication.</TD></TR><TR><TD>
+cancel&thinsp;login</TD><TD>The name of a button that can be used to cancel a login form</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+db</TD><TD>Internal: The database connection object instance.</TD></TR><TR><TD>
+auth</TD><TD>Internal: User authentication information, see below.</TD></TR><TR><TD>
+in</TD><TD>Internal: Used in default authentication mode.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>url()</B><DD><P>  
+A function that can be used in <CODE>auth_loginform()</CODE>a and
+<CODE>auth_registerform</CODE>. It returns the appropriate "action="
+attribute to the form tag.</P>
+
+<DT><B>purl()</B><DD><P>  
+A function that can be used in <CODE>auth_loginform()</CODE>a and
+<CODE>auth_registerform</CODE>. It prints the appropriate "action="
+attribute to the form tag.</P>
+
+<DT><B>login_if($t)</B><DD><P>A function that can be used to change the current user
+identity. 
+See the section and example on using default authentication
+below.</P>
+
+<DT><B>unauth($nobody = false)</B><DD><P>This function destroys the authentication information in
+<CODE>$this-&gt;auth</CODE>, forcing the user to relogin the next time
+a protected page is being loaded.</P>
+<P><CODE>$this-&gt;auth["uname"]</CODE> is being kept, so that the
+correct username is available as a default.</P>
+<P>Since V6: To give the user the credentials of `nobody', pass
+true as the first parameter to unauth. This will also change
+<CODE>$this-&gt;auth["uname"]</CODE>.</P>
+<P>Since V7.2: Passing $nobody to this method is deprecated.</P>
+
+<DT><B>logout($nobody = $this-&gt;nobody)</B><DD><P>This function destroy all authentication information
+in  <CODE>$this-&gt;auth</CODE>, forcing the user to relogin
+the next time a protected page is being loaded.</P>
+<P>Most applications want to use <CODE>$this-&gt;unauth()</CODE>
+instead.</P>
+<P>Since V6: To give the user the credentials of `nobody', pass
+true as the first parameter to logout. This defaults to the 
+value you set in the class definition (<CODE>$nobody</CODE>).
+<CODE>logout()</CODE> will call <CODE>unauth()</CODE> (passing <CODE>$nobody</CODE>),
+so the behaviour is identical (except <CODE>logout()</CODE> will always
+clear <CODE>$this-&gt;auth["uname"]</CODE> and unregister the auth class).</P>
+<P>Since V7.2: Passing $nobody to this method is deprecated.</P>
+
+<DT><B>is_authenticated()</B><DD><P>Will return false, if the current authentication is
+invalid or expired. Will return the authenticated uid
+otherwise.</P>
+
+<DT><B>auth_preauth()</B><DD><P>This function can be overridden in a subclass to Auth. It
+is being called as the very first step in the authentication
+process and has the opportunity to authenticate the user
+without a loginform being displayed (by deriving all necessary
+information telepathically, or by using cookies, or divining
+the user identities from the incestines of a dead squirrel).</P>
+<P>If it returns a UID value, the user is authenticated and neither
+auth_loginform() nor auth_validatelogin() are
+called. If it returns false, all goes on as usual.</P>
+
+<DT><B>auth_loginform()</B><DD><P>  
+This function must be overridden by a subclass to Auth. It
+should output HTML that creates a login screen for the user.
+We recommend that you use an <CODE>include()</CODE> statement to include
+your HTML file.</P>
+
+<DT><B>auth_validatelogin()</B><DD><P>This function is called when the user submits the login form
+created by <CODE>auth_loginform()</CODE>. It must validate the user input.</P>
+<P>If the user authenticated successfully, it must set up
+several fields within the <CODE>$auth[]</CODE> instance variable:</P>
+<P>
+<DL>
+<DT><B>"uid"</B><DD><P>must contain the user id associated with that user.</P>
+<DT><B>"uname"</B><DD><P>must contain the user name as entered by the user.</P>
+<DT><B>"exp"</B><DD><P>must not be tampered with (field is maintained by
+<CODE>start()</CODE>, contains the time when the login expires).</P>
+<DT><B>"perm"</B><DD><P>if you want to use the permission feature, you
+must store the permissions of the validated user here.
+(Hint: due to a name conflict with sybase, "perm" is called "perms"
+in all the databases tables. Look for this small difference!)</P>
+</DL>
+</P>
+<P>See the example below for more information.</P>
+
+<DT><B>auth_refreshlogin()</B><DD><P>This function is called every <CODE>refresh</CODE> minutes. It must refresh
+the authentication informations stored in <CODE>auth</CODE> array by
+<CODE>auth_validatelogin()</CODE> method. It is not called if the
+user is logged in as nobody.</P>
+<P>It must return true on success, false otherwise (i.e.: the userid
+is no longer valid).</P>
+
+<DT><B>auth_registerform()</B><DD><P>See auth_doregister().</P>
+
+<DT><B>auth_doregister()</B><DD><P>These functions mirror <CODE>auth_loginform()</CODE> and
+<CODE>auth_validatelogin()</CODE> in registration mode.</P>
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>start()</B><DD>
+<P>Initialization function, does the authentication. If we are
+in <CODE>log</CODE> (login) mode, <CODE>auth_loginform()</CODE> is
+called to draw a login screen. When the login screen is
+submitted back, <CODE>auth_validatelogin()</CODE> is called to
+validate the login. If the validation was successful, the
+actual page content is shown, otherwise we're back at
+<CODE>auth_loginform()</CODE>.</P>
+<P>In <CODE>reg</CODE> mode, <CODE>auth_registerform()</CODE> is called to draw a
+registration form. When the registration form is submitted
+back, <CODE>auth_doregister()</CODE> is called to register the user and
+to validate the session. If registration was successful, the
+actual page content is shown, otherwise we're back at
+<CODE>auth_registerform()</CODE>.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+<P>Use a subclass of <CODE>Auth</CODE> to provide parameters for your
+authentication class and to implement your own <CODE>auth_*</CODE> functions.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Auth extends Auth {
+  var $classname        = "My_Auth"; # Object serialization support
+
+  var $lifetime         =  15;
+  
+  ## DB_Sql subclass and database table to use
+  var $database_class = "DB_Session";
+  var $database_table = "auth_user";
+
+  ## Some magic value to make our uids harder to guess.
+  var $magic = "Abracadabra";
+
+  ## Use an own login form
+  function auth_loginform() {
+    global $sess;
+    include("loginform.ihtml");
+  }
+  
+  function auth_validatelogin() {
+    global $username, $password;    ## form variables from loginform.ihtml
+    
+    ## If authentication fails, loginform.html will
+    ## find $this-&gt;auth["uname"] set and use it.
+    $this-&gt;auth["uname"]=$username;
+    
+    ## Value to return in case auth fails.
+    $uid   = false;
+    
+    ## Check the database for this user and password pair.
+    $query = sprintf(
+      "select * from %s where username = '%s' and password = '%s'",
+      $this-&gt;database_table,
+      addslashes($username),
+      addslashes($password)
+    );
+    $this-&gt;db-&gt;query($query);
+    
+    ## If we found a matching user, grab the uid and permissions...
+    while($this-&gt;db-&gt;next_record()) {
+      ## Required.
+      $uid = $this-&gt;db-&gt;f("uid");
+      
+      ## Optional, for the perm feature.
+      $this-&gt;auth["perm"] = $this-&gt;db-&gt;f("perms");
+      ## if you use perm feature be aware, that the db-field in our
+      ## example table is called "perms" due to a name conflict with sybase
+    }
+    
+    return $uid;
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Your <CODE>loginform.ihtml</CODE> contains HTML and PHP code to draw a login
+form. <CODE>$this-&gt;auth["uname"]</CODE> will be empty on the first login
+attempt and set on all further login attempts. You can use this
+to detect repeated login attempts and display an appropriate
+error message. You must print the result of <CODE>$this-&gt;url()</CODE> to
+create your forms action attribute.</P>
+<P>See the provided <CODE>loginform.ihtml</CODE> for an example.</P>
+<P>Use the page management functions (see above) to use your
+authentication subclass. The feature name for authentication
+management is <CODE>auth</CODE>; provide the name of your <CODE>Auth</CODE> subclass as
+a parameter to the <CODE>auth</CODE> feature. The <CODE>auth</CODE> feature requires the
+<CODE>sess</CODE> feature:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  page_open(array("sess" =&gt; "My_Session", "auth" =&gt; "My_Auth"));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>Using default authentication</H3>
+
+<P>Many applications want to use <CODE>$auth</CODE> and <CODE>$perm</CODE>
+objects to protect functionality on a page, but do want to
+make the unprotected part of this page available to users
+with no account. This presents a kind of dilemma, because you
+need <CODE>$auth</CODE> and <CODE>$perm</CODE> objects to protect
+functionality on a page, but you don't want a login screen to
+appear by default.</P>
+<P>Default authentication solves this dilemma by providing a
+special uid and uname "nobody", which is guaranteed to fail
+every permission check. If you set the <CODE>nobody</CODE> flag,
+<CODE>$auth</CODE> will not create a login screen to force a user to
+authenticate, but will authenticate the user silently as
+<CODE>nobody</CODE>. The application must offer a login button or
+other facility for users with accounts to change from that
+id to their real user id.</P>
+<P>To use default authentication, create a subclass of <CODE>My_Auth</CODE>
+as shown above with the <CODE>nobody</CODE> flag set (<EM>Note:</EM> No need
+to extend in two steps. The only important thing here is that
+the <CODE>nobody</CODE> flag is set.)</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Default_Auth extends My_Auth {
+  var $classname = "My_Default_Auth";
+
+  var $nobody = true;
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>To create a page that uses default authentication, use the page
+management functions. Check for relogin requests with the
+<CODE>login_if()</CODE> function. Create a relogin link on your page.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  // using Default Authentication
+  page_open(array("sess" =&gt; "My_Session", "auth" =&gt; "My_Default_Auth"));
+  $auth-&gt;login_if($again);
+
+  if ($auth-&gt;auth["uid"] == "nobody"):
+?&gt;
+  &lt;A HREF="&lt;?php $sess-&gt;purl("$PHP_SELF?again=yes") ?&gt;"&gt;Relogin&lt;/A&gt;
+  to this page.
+&lt;?php endif ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>Using Challenge-Response Authentication</H3>
+
+<P>As distributed, <CODE>local.inc</CODE> contains an example class
+named <CODE>Example_Challenge_Auth</CODE>, which uses a
+Challenge-Response authentication scheme. If the client
+browser supports Javascript, this login screen does not
+transmit passwords in clear over the network. If the client
+does not support Javascript, login is still possible, but
+passwords are transmitted in clear, as regular <CODE>Example_Auth</CODE>
+always does.</P>
+<P><CODE>Example_Challenge_Auth</CODE> is there to demonstrate advanced
+usage of PHP and Javascript and to show off the flexibility
+of the library base classes: The Challenge-Response
+authentication scheme has been implemented completely and
+naturally in local.inc by subclassing <CODE>Auth</CODE> with no
+alteration of library code.</P>
+<P><CODE>Example_Challenge_Auth</CODE> includes <CODE>crloginform.ihtml</CODE>. It
+also requires that the file <CODE>md5.js</CODE> is present in the
+document root directory of your web server. That file contains
+an implementation of the MD5 message digest algorithm done by
+Henri Torgemane. The basic idea behind this authentication
+scheme is simple: <CODE>$auth-&gt;auth_loginform()</CODE> creates a
+challenge value which is incorporated into this form. When
+the user tries to submit the form,
+MD5("username:password:challenge") is calculated and filled
+into the reply field. The password field is erased. The
+server can calculate the expected reply from the username
+received, the password in the database and the challenge,
+which it knows. It can compare the expected reply to the
+actual reply value. If they match, the user is authenticated.</P>
+<P>If the reply field is empty and password is set, the server
+knows that the client cannot do Javascript. The user can still be
+authenticated, but the password is visible on the network.    </P>
+<P>The class is a dropin-replacement for <CODE>Example_Auth</CODE>.</P>
+
+<H3>The complete guide to authentication and user variables</H3>
+
+
+<P>This feature has originally been written for the PHPLIB mailing
+list by Kristian Koehntopp and was included into the
+documentation later.</P>
+
+<H3>How is the <CODE>Auth</CODE> class used usually?</H3>
+
+
+<P>Usually, you write code like this into the top of the page you
+want to protect:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+page_open(array(
+    "sess" =&gt; "My_Session", 
+    "auth" =&gt; "My_Auth"));
+?&gt;
+
+&lt;!-- your code here --&gt;
+
+&lt;?php
+page_close()
+?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>How does <CODE>$auth</CODE> work internally?</H3>
+
+
+<P>When you access this page, the call <CODE>to page_open()</CODE> is being
+made as the first thing on that page. <CODE>page_open()</CODE> creates
+an instance of <CODE>My_Auth</CODE> named <CODE>$auth</CODE> and starts it.
+<CODE>$auth</CODE> then detects that you are not authenticated (how it
+does, I will explain below) and displays <CODE>loginform.ihtml</CODE>.
+$auth then exits the interpreter, so that &lt;!-- your code here
+--&gt; is never being executed or displayed.</P>
+<P>The user now sits in front of a <CODE>loginform.ihtml</CODE> screen,
+which is shown under the URL of the page the user originally
+tried to access. The loginform has an action URL, which just
+points back to itself.</P>
+<P>When the user filled out the loginform and submits it, the very
+same URL is requested and the above <CODE>page_open()</CODE> is
+reexecuted, but this time a username and a password are
+submitted. When the <CODE>$auth</CODE> object is created and started, it
+detects these parameters and validates them, resulting in either
+a NULL value or a valid user id. If the validation failed,
+creating an empty user id, the loginform is displayed again and
+the interpreter exits. Again &lt;!-- your code here --&gt; is not
+executed.</P>
+<P>If a UID is returned, that UID and a timestamp are being made
+persistent in that session and <CODE>$auth</CODE> returns control to
+<CODE>page_open()</CODE>. When <CODE>page_open()</CODE> finishes, which it may
+or may not do, depending on the presence and result of an
+optional <CODE>$perm</CODE> check, &lt;!-- your code here --&gt; is being
+executed or shown.</P>
+<P>Later calls to other pages or the same page check for the
+presence of the UID and the timestamp in the sessions data. If
+the UID is present and the timestamp is still valid, the UID is
+retained and the timestamp is refreshed. On <CODE>page_close()</CODE>
+both are written back to the user database (Note: Authenticated
+pages REQUIRE that you <CODE>page_close()</CODE> them, even when you
+access them read-only or the timestamp will not be refreshed).</P>
+<P>If the UID is not present (<CODE>$auth-&gt;logout()</CODE> or
+<CODE>$auth-&gt;unauth()</CODE> have been called, for example) or the
+timestamp has expired, <CODE>$auth</CODE> will again intercept page
+display and draw the loginform.</P>
+<P>The only way to get into a page with an <CODE>$auth</CODE> object on it
+is to have a UID and a valid timestamp in your session data
+(Note: This is true even for default authentication. These
+create a dummy UID and timestamp in your session data).</P>
+
+<H3>How do $sess and $auth interact?</H3>
+
+
+<P>Your browser has a session cookie, named after your session
+class. This is the only thing that is ever shipped between your
+browser and PHPLIB, as far as core functionality is concerned.
+The session cookie value is used as a reference into
+<CODE>active_sessions</CODE>, to retrieve PHPLIB generated PHP code,
+which is then <CODE>eval()</CODE>ed and recreates your session variables
+within <CODE>page_open()</CODE>.</P>
+<P>Part of the <CODE>$auth</CODE> object now makes itself persistent and is
+retrieved when the <CODE>$sess</CODE> part of <CODE>page_open()</CODE> is being
+executed. This is just before the <CODE>$auth</CODE> part of
+<CODE>page_open()</CODE> gets its turn, so that <CODE>$auth</CODE> can rely on its
+persistent data being present when it is being called.</P>
+<P>From the PHPLIB source you all know that <CODE>$auth</CODE> has only one
+persistent slot, called <CODE>$auth-&gt;auth[]</CODE>, of type hash. This
+hash contains the slots <CODE>uid</CODE>, <CODE>exp</CODE> and <CODE>uname</CODE>.
+<CODE>$auth-&gt;auth["uid"]</CODE> is the currently authenticated user id,
+<CODE>$auth-&gt;auth["exp"]</CODE> is the currently active expiration
+timestamp (Unix time_t format) for that uid.
+<CODE>$auth-&gt;auth["uname"]</CODE> is completely irrelevant as far as the
+regular PHPLIB <CODE>Auth</CODE> class is concerned. It is relevant in
+the context of the supplied default <CODE>Auth</CODE> subclass
+<CODE>Example_Auth</CODE>, though.</P>
+<P>So a session is authenticated, if it contains <CODE>$auth-&gt;auth["uid"] !=
+false</CODE> and <CODE>time() &lt; $auth-&gt;auth["exp"]</CODE>.</P>
+
+<H3>Where is the beef?</H3>
+
+
+<P>The original <CODE>Auth</CODE> class as included in PHPLIB makes no
+assumptions at all on how a loginform looks or how and where
+uids come from. There is no code at all in <CODE>Auth</CODE> that ever
+checks anything but the above two conditions. It is your
+responsibility to modifiy a subclass of Auth in a way that these
+conditions can ever be met.</P>
+<P>Auth helps you in doing this by calling its own function
+<CODE>$auth-&gt;auth_loginform()</CODE> when it wants to draw a loginform.
+Unfortunately this function is empty in Auth itself, so you have
+to provide an implementation for that. The suggested standard
+implementation in <CODE>local.inc</CODE>s <CODE>Auth</CODE> subclass
+<CODE>Example_Auth</CODE> is</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+function auth_loginform() {
+  include("loginform.ihtml");
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>and you put your code into that file. We also provide sample
+code for that file, but you are not limited to that code and may
+write a <CODE>loginform.ihtml</CODE> as it meets your needs.</P>
+<P>When the loginform has been filled in and submitted back by the
+user, <CODE>Auth</CODE> calls <CODE>$auth-&gt;auth_validatelogin()</CODE>. Again,
+this function is empty in <CODE>Auth</CODE> itself and so <CODE>Auth</CODE> by
+itself will never function correctly. You have to subclass
+<CODE>Auth</CODE> and provide your own implementation of
+<CODE>$auth-&gt;auth_validatelogin()</CODE> in <CODE>local.inc</CODE> to make it
+work.</P>
+<P>What you actually do in that function is completely irrelevant
+to <CODE>Auth</CODE> itself. It only exspects that you either return
+false, if the user-supplied authentication data was invalid, or
+a user id, if the user could be validated. <CODE>Auth</CODE> then takes
+care to create the appropriate entries (<CODE>$auth-&gt;auth["uid"]</CODE>
+and <CODE>$auth-&gt;auth["exp"]</CODE>) in the session record.</P>
+
+<H3>I still do not understand! What am I supposed to code?</H3>
+
+
+
+<P>You write your code into <CODE>local.inc</CODE>, after you have removed
+the classes <CODE>Example_Auth</CODE>, <CODE>Example_Default_Auth</CODE> and
+<CODE>Example_Challenge_Auth</CODE> from that file (keep a copy around, just
+for reference).</P>
+<P>You code a class called <CODE>My_Auth</CODE> and you use that name later
+in your calls to <CODE>page_open</CODE> as an argument to the <CODE>auth</CODE>
+feature, as show at the start of this message. Follow the
+standard rules for deriving persistent classes in PHPLIB when
+you create your code, that is, do it like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+
+class My_Auth extends Auth {
+var $classname = "My_Auth";
+// we inherit $persistent_slots and do not need to modify it.
+
+// later code is inserted here
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Now configure the lifetime of the authentication, that is, how
+many minutes in the future shall the current value of
+<CODE>$auth-&gt;auth["exp"]</CODE> be? Also, name a database connector
+class and name the table that you will be using to check
+usernames and passwords.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  // insert this code as indicated above.
+  var $lifetime = 15;
+  var $database_class = "DB_Example";
+  var $database_table = "my_special_user_table";
+
+  // later code is inserted here
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Okay, now we have a basic implementation of <CODE>My_Auth</CODE>
+that is only lacking the required functions
+<CODE>auth_loginform()</CODE> and
+<CODE>auth_validatelogin()</CODE>. Our implementation of
+<CODE>auth_loginform()</CODE> will have access to all <CODE>$sess</CODE>
+variables by globaling <CODE>$sess</CODE> into our context (because
+these can come in handy) and to all <CODE>$auth</CODE> variables (via
+<CODE>$this</CODE>).</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+
+function auth_loginform() {
+  global $sess;
+  include("loginform.ihtml");
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The loginform is free to do whatever it damn well pleases to
+create a form for the user to supply the needed values for
+authentication. It has access to anything <CODE>$sess</CODE> and
+anything <CODE>$this</CODE> related.</P>
+<P>The loginform will display some input fields for the user, for
+example a given name, a surname and a password. When the form is
+submitted back, <CODE>auth_validatelogin()</CODE> is being called. The
+form values are global variables (or <CODE>$HTTP_x_VARS[]</CODE>) and
+must be imported into <CODE>$auth-&gt;auth_validatelogin()</CODE>. Then,
+<CODE>$auth-&gt;auth_validatelogin()</CODE> is free to do whatever it must
+do to produce a unique identifier for that user (or return
+false).</P>
+<P>Suppose you created input fields named given_name, surname and
+password. So go ahead, global <CODE>$given_name</CODE>, <CODE>$surname</CODE>
+and <CODE>$password</CODE> and set <CODE>$uid</CODE> to false. Then create the
+SQL needed to access you user table and retrieve the user record
+from your database as indicated by <CODE>$given_name</CODE> and
+<CODE>$surname</CODE> and <CODE>$password</CODE>.</P>
+<P>The query may succeed, if a record with matching
+<CODE>$given_name</CODE>, <CODE>$surname</CODE> and <CODE>$password</CODE> is present.
+In that case return the uid, which uniquely identifies exactly
+that (given_name, surname) pair. Else return false.</P>
+<P>In code:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+
+function auth_validatelogin() {
+  // import authentication data
+  global $given_name, $surname, $password;
+
+  $uid = false;
+
+  $query = sprintf("select uid
+                      from %s
+                     where given_name = '%s'
+                       and surname = '%s'
+                       and password = '%s'",
+             $this-&gt;database_table,
+             $given_name, $surname, $password);
+  // we really should use addslashes() here,
+  // or have magic_quotes active.
+
+  // $auth-&gt;db is our DB_Example database connection
+  $this-&gt;db-&gt;query($query);
+
+  // now check for any results
+  while($this-&gt;db-&gt;next_record()) {
+    $uid = $this-&gt;db-&gt;f("uid");
+  }
+
+  // either $uid is false now (no results)
+  // or set to the last retrieved value from the uid
+  // column.
+
+  // Anyway we are set now and can return control
+  return $uid;
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Okay, that's all and useable now. There is room for some
+improvements, though: First we did not retrieve permission data,
+so this will not work, if we want to use the perm feature as
+well.</P>
+<P>This is easily changed: Modify the query to <CODE>select uid,
+perms</CODE> instead of <CODE>select uid</CODE> alone. Of course, you may call
+your perm column whatever you like, just adapt the SQL
+accordingly. Also, add a line after the
+<CODE>$uid</CODE> assignment so that the code looks like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $uid = $this-&gt;db-&gt;f("uid");
+  $this-&gt;auth["perm"] = $this-&gt;db-&gt;f("perms");
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This will store the retrived <CODE>perms</CODE> value under the key
+<CODE>perm</CODE> within the <CODE>$auth-&gt;auth[]</CODE> array. It will be kept
+around in that place in case <CODE>$perm</CODE> is called and starts
+looking for the current permissions of that user.</P>
+<P>Another possible improvement becomes apparent when you try to
+login and fail to do so correctly: <CODE>auth_validatelogin()</CODE>
+returns false and you hit the loginform again. Empty loginform
+that is, because we did not remember what you typed into the
+<CODE>given_name</CODE> and <CODE>surname</CODE> fields before. If we remembered
+what you typed, we could easily supply these values back to you
+so that you can correct them. We would also be able to detect if
+this is a second, third, ... attempt to login and display an
+appropriate error message somewhere in that loginform to inform
+the user of his or her typo. A convenient place to store these
+values is the <CODE>$auth-&gt;auth</CODE> array, which is persistent
+anyway. </P>
+<P>Standard <CODE>Example_Auth</CODE> uses the field <CODE>$auth-&gt;auth["uname"]</CODE>
+to store that value, but you may use any field and as many
+fields as you like as long as you make sure not to clash with
+any of the three officially used fields, <CODE>uid</CODE>, <CODE>exp</CODE>, and
+<CODE>perm</CODE>.</P>
+<P>Do not try to turn the global variables <CODE>$given_name</CODE> and
+<CODE>$surname</CODE> into persistent variables by calling
+<CODE>$sess-&gt;register("given_name")</CODE> and
+<CODE>$sess-&gt;register("surname")</CODE>! Remember: These are form
+variables! Never ever make form variables persistent and never
+ever trust unvalidated user supplied from the Internet!</P>
+<P>So add the folling code just below the "global" line:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $this-&gt;auth["gname"] = $given_name;
+  $this-&gt;auth["sname"] = $surname;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>and check for these two variables in loginform.ihtml at the
+appropriate places.</P>
+
+<H3>Ok, I did that and it works. I even understood it. Now, what exactly is that uid used for?</H3>
+
+
+<P>It is simply a token to indicate that the user is authenticated.
+We use a different token for each user, so that we can decide
+which user we are currently dealing with. You can think of the
+uid as a primary key for your <CODE>auth_user</CODE> table (or whatever
+it is being called in your current application). The (
+given_name, surname ) tuple would also be a possible primary
+key, albeit a compound one. It is the external, human-readable
+(and probably sometimes very long) representation of the
+internal uid. The password field is functionally dependent on
+either of both key candidates.</P>
+<P>The internal user id should never be presented to the user; the (
+given_name, surname ) pair is much more natural to handle for the user
+and easier to remember (A user who does not remember his or her name
+would probably not be in a state of mind to operate the rest of the
+application anyway :-).</P>
+<P>The internal user id should always be used to identify a user
+internally within an application, though. That is, because the
+uid is of a fixed length and has a known form and structure, so
+you can make assumptions. A given_name or surname may be of any
+length and may contain about any character, so you probably do
+not want to use this as a user-reference internally.</P>
+
+<H3>But is the uid used internally by PHPLIB?</H3>
+
+
+<P>Yes, if you make use of the <CODE>user</CODE> feature of
+<CODE>page_open()</CODE>, that is, if you create user variables.</P>
+<P>The <CODE>User</CODE> class is actually a subclass of <CODE>Session</CODE>. That
+is, user variables are just like session variables. They are
+even stored in <CODE>active_sessions</CODE>. The only difference is that
+the session has a different name (it is called <CODE>Example_User</CODE>
+instead of <CODE>Example_Session</CODE>, if you use the classes and names
+supplied in <CODE>local.inc</CODE>).</P>
+<P>And in <CODE>Example_User</CODE>, the user id of the authenticated user
+becomes the session id in the <CODE>active_sessions</CODE> table. That
+is the reason why we recommend <CODE>md5(uniqid("abracadabra"))</CODE>
+style uids.
+</P>
+
+<H2><A NAME="ss3.10">3.10</A> <A HREF="documentation.html#toc3.10">Perm</A>
+</H2>
+
+
+<P>Permission management relies on an authenticated session. It
+associates a set of required permissions with a page. The actual
+page content is only visible to users with ALL matching
+permissions; all other users are shown a screen of your design.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+permissions</TD><TD>A hash of (name, permission bit) pairs.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>check($required)</B><DD><P>Checks that the currently authenticated user has all the
+rights that are specified in <CODE>required</CODE>. If not,
+<CODE>perm_invalid()</CODE> is called.</P>
+<P>If one or more of the required rights or user rights are
+invalid (not to be found in the permissions hash),
+<CODE>perm_invalid()</CODE> is called as well.</P>
+
+<DT><B>have_perm($required)</B><DD><P>Similar to <CODE>check()</CODE> in usage, only that it doesn't halt the
+session if the user doesn't have the appropriate rights: This
+function returns true, if the user has the required rights,
+false otherwise.</P>
+
+<DT><B>perm_sel($name, $current = "", $class = "")</B><DD><P>This function returns a <CODE>SELECT</CODE>-tag with the given
+<CODE>name</CODE>. Within this tag, all available permission values from
+<CODE>$perm->permissions</CODE> are contained as <CODE>OPTION</CODE> tags.</P>
+
+<P>If you supply a value for <CODE>current</CODE>, the permission value
+that matches <CODE>current</CODE> is <CODE>SELECTED</CODE>. If you supply a
+value for <CODE>class</CODE>, the tags are marked with that CSS
+stylesheet class.</P>
+
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+<P>   </P>
+<P>
+<DL>
+<DT><B>permsum($rights)</B><DD><P>Logically or's all the rights and returns a pair <CODE>(valid,
+or_result)</CODE>. If valid is true, an <CODE>or_result</CODE>
+is provided. If valid is false, the <CODE>or_result</CODE> is
+undefined and one or more of the rights do not exist at all.
+This is a severe error and the application should be halted at
+once.</P>
+
+<DT><B>perm_invalid($does_have, $must_have)</B><DD><P>Called in case of an access violation. <CODE>does_have</CODE> is a string
+listing the rights the user actually has. <CODE>must_have</CODE> are the
+rights the page requires.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass of <CODE>Perm</CODE> to provide parameters for your
+permission class and to implement your own <CODE>perm_invalid</CODE>
+function.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Perm extends Perm {
+  var $classname = "My_Perm";
+  
+  var $permissions = array (
+    "user"          =&gt; 1,
+    "author"        =&gt; 2,
+    "editor"        =&gt; 4,
+    "moderator"     =&gt; 8,
+    "admin"         =&gt; 16
+  );
+  
+  function perm_invalid($does_have, $must_have) {
+    global $perm, $auth, $sess;
+    
+    include("perminvalid.ihtml");
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use the page management functions (see above) to use your
+permission subclass. The feature name for permission
+management is <CODE>perm</CODE>; provide the name of your <CODE>Perm</CODE> subclass as
+a parameter to the <CODE>perm</CODE> feature. The <CODE>perm</CODE> feature requires the
+<CODE>sess</CODE> feature and the <CODE>auth</CODE> feature:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  page_open(array("sess" =&gt; "My_Session", "auth" =&gt; "My_Auth", "perm" =&gt; "My_Perm"));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use the <CODE>check()</CODE> instance method to protect your page:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $perm-&gt;check("admin");  ## This page is for users with admin rights only.
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use <CODE>have_perm()</CODE> to create protected functionality on a
+page:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  if ($perm-&gt;have_perm("admin")):
+ ?&gt;
+  &lt;h1&gt;Admin only functionality&lt;/h1&gt;
+&lt;?php
+  endif;
+ ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>How permissions work </H3>
+
+<P> </P>
+<P>Your subclass of <CODE>Perm</CODE> defines an array <CODE>$permissions</CODE>,
+which translates permission names into bit patterns. For
+example, the definition of <CODE>Example_Perm</CODE> in the distributed
+<CODE>local.inc</CODE> defines the names <CODE>user</CODE>, <CODE>author</CODE>,
+<CODE>editor</CODE>, <CODE>supervisor</CODE> and <CODE>admin</CODE>, all of which
+translate into a bit pattern with a single bit set.</P>
+<P>A user may be assigned any number of permissions as a comma
+separated list of permission names (no spaces!) in the
+<CODE>perms</CODE> column of the <CODE>auth_user</CODE> table. The effective
+permissions of the user are determined by logically OR'ing the
+bit patterns of these permissions.</P>
+<P>A page may require any permissions as a comma separated list of
+permission names (again no spaces!) with the
+<CODE>$perm-&gt;check()</CODE> function. The required permissions are
+again determined by logically OR'ing the bit patterns of these
+permissions. Similarly, a page function may be protected by
+requiring permissions with <CODE>$perm-&gt;check()</CODE>.</P>
+<P>Access is granted to a protected page or a protected page
+function, if the effective permissions of the authenticated user
+have all the required bits set, that is: If the effective
+permissions of the user logically AND'ed with the required
+permissions are equal to the required permissions.</P>
+<P>With the permission names as defined in <CODE>Example_Perm</CODE> from the
+distribution, a user <CODE>kris</CODE> may be defined with <CODE>admin</CODE>
+permission in the <CODE>auth_user</CODE> table. A page that requires
+<CODE>admin,user</CODE> permission with
+<CODE>$perm-&gt;check("user,admin")</CODE> is inaccessible to this user.
+This is how it is calculated:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+Effective Permissions of User: admin
+              translates into:    16
+
+Required Permissions of Page : user,admin
+              translates into:    1 OR 16 == 17
+
+Permission Check: 
+        Effective Permissions 16 
+AND     Required Permissions  17
+ARE     16 &amp; 17 =             16
+
+MUST BE Required Permissions  17 -> access denied
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The example permissions as defined in <CODE>Example_Perm</CODE> from the
+distribution are called <EM>atomic</EM> permissions, because each of
+them has only a single bit set. Atomic permissions are the
+simplest of all schemes, because they allow for easy permission
+checks: To access a page protected with <CODE>user,admin</CODE>, you
+need to have at least <CODE>user,admin</CODE> rights in your
+<CODE>auth_user</CODE> table.</P>
+<P>Another common scheme used in permission definitions are
+<CODE>inclusive permissions</CODE>. In this scheme, each permission
+definition has all bits of its predecessor set plus one addition
+bit. For example</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class Inclusive_Perm extends Perm {
+  var $classname = "Inclusive_Perm";
+
+  var $permissions = array(
+                            "user"       => 1,
+                            "author"     => 3,
+                            "editor"     => 7,
+                            "supervisor" => 15,
+                            "admin"      => 31
+                     );
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>defines a set of inclusive permissions. In this example, a user
+<CODE>kris</CODE> with <CODE>admin</CODE> permissions can easily access a page
+protected with <CODE>editor</CODE> permissions. This is how it is
+calculated:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+Effective Permissions of User: admin
+              translates into:    31
+
+Required Permissions of Page : editor
+              translates into:     7
+
+Permission Check:
+        Effective Permissions 31
+AND     Required Permissions   7
+ARE     31 &amp; 7 =               7
+
+MUST BE Required Permissions   7 -> access granted
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Inclusive Permissions are easy to deal with, too, because a user
+with a <EM>higher</EM> access level may access all pages or page
+functions with a <EM>lower</EM> access level.</P>
+<P>Due to limitations of your machines integer size you can only
+define up to 31 permission levels.</P>
+
+
+<H2><A NAME="ss3.11">3.11</A> <A HREF="documentation.html#toc3.11">User</A>
+</H2>
+
+
+<P>The user class is an extension (a subclass) of the Session
+class. It keeps a list of global variable names and provides a
+set of functions to load and save these variables from and to a
+database. The same restrictions as for session variables apply
+to user variables.</P>
+<P>Unlike session variables, user variables are not lost when the
+user stops and restarts the browser or moves to a different
+workplace (the session id is then lost and consequently all
+session variables are lost, since they are bound to the session
+id).</P>
+<P>User variables require that the user logs in, because they
+depend on the availability of a User id to bind variables to
+this id. Thus, User is dependent on Auth.</P>
+<P>The User class is an extension of the Session class. It has all
+instance variables and instance methods of Session, only that
+some are implemented different. This documentation only
+describes these differences.</P>
+<P>Note that Session and User can successfully share a single
+<CODE>active_sessions</CODE> table in a database due to the
+different values in the <CODE>name</CODE> column.</P>
+
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.magic</TD><TD>Not meaningful for User.</TD></TR><TR><TD>
+mode</TD><TD>Not meaningful for User.</TD></TR><TR><TD>
+fallback_mode</TD><TD>Not meaningful for User.</TD></TR><TR><TD>
+lifetime </TD><TD>Not meaningful for User; see authentication lifetime in Auth instead.</TD></TR><TR><TD>
+gc_time</TD><TD>Functional, but probably not useful in User.</TD></TR><TR><TD>
+gc_probability</TD><TD>Functional, but should be set to 0 in User.</TD></TR><TR><TD>
+that_class</TD><TD>A classname. User uses this class to store and retrieve data.</TD></TR><TR><TD>
+auto_init</TD><TD>Not meaningful for User.</TD></TR><TR><TD>
+secure_auto_init</TD><TD>Not meaningful for User.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+pt</TD><TD>Internal array of names of persistent variables.</TD></TR><TR><TD>
+name</TD><TD>A tag (name) for the session type.</TD></TR><TR><TD>
+id</TD><TD>Id of the current session.</TD></TR><TR><TD>
+that</TD><TD>Container object instance.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>register($varname)</B><DD><P>Works as expected.</P>
+
+<DT><B>unregister($varname)</B><DD><P>Works as expected.</P>
+
+<DT><B>delete()</B><DD><P>Works as expected.</P>
+
+<DT><B>url($url)</B><DD><P>Not useful with User.</P>
+
+<DT><B>purl($url)</B><DD><P>Not useful with User.</P>
+
+<DT><B>self_url()</B><DD><P>Not useful with User.</P>
+
+<DT><B>pself_url()</B><DD><P>Not useful with User.</P>
+
+<DT><B>reimport_get_vars()</B><DD><P>Works as expected.</P>
+
+<DT><B>reimport_post_vars()</B><DD><P>Works as expected.</P>
+
+<DT><B>reimport_cookie_vars()</B><DD><P>Works as expected.</P>
+
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>get_id()</B><DD><P>This is only a stub implementation that depends on
+the user id provided by the page management functions.
+The page management functions will use
+<CODE>$auth-&gt;auth["uid"]</CODE>, which is set up by <CODE>Auth</CODE>.</P>
+
+<DT><B>put_id()</B><DD><P>Empty. Not useful with User.</P>
+
+<DT><B>serialize($var, &amp;$str)</B><DD><P>Works as expected.</P>
+
+<DT><B>freeze()</B><DD><P>Works as expected.</P>
+
+<DT><B>thaw()</B><DD><P>Works as expected.</P>
+
+<DT><B>gc()</B><DD><P>Works as expected. You do not want to use it, though.</P>
+
+<DT><B>reimport_any_vars($arrayname)</B><DD><P>Works as expected.</P>
+
+<DT><B>start()</B><DD><P>Initialization function, to be called after object
+instantiation. Calls get_id() to get the current session id,
+creates a database connection, then calls thaw() to load all
+session variables. <EM>Note:</EM> gc() activation  is commented out!
+Remove the comments if you really want gc with User variables.</P>
+
+</DL>
+</P>
+
+
+<H3>Example</H3>
+
+<P>Use a subclass to provide the appropriate parameters to your
+user variables. Usually your subclass looks like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_User extends User {
+  var $classname = "My_User"; ## Persistence support
+  
+  var $that_class = "CT_Sql";
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Remember that you have to provide a <CODE>DB_Sql</CODE> subclass with the
+parameters needed to access your database.</P>
+<P>Use the page management functions (see above) to use your
+User subclass. The feature name for user variables is
+<CODE>user</CODE>; provide the name of your User subclass as a parameter
+to the user feature:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  page_open(array("sess" =&gt; "My_Session", "auth" =&gt; "My_Auth", "user" =&gt; "My_User"));
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use the <CODE>register()</CODE> instance method to register variables as
+persistent. If <CODE>$user</CODE> is your user object, use</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$user-&gt;register("u");
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>to make the global variable <CODE>$u</CODE> persistent. <CODE>$u</CODE> may be a
+scalar value, an array or an object with persistence support
+slots.</P>
+<P>Do not use the instance methods <CODE>freeze()</CODE> and <CODE>thaw()</CODE>
+directly, but use the page management functions instead.</P>
+<P><EM>Note:</EM> Using default authentication and user variables is
+going to be a problem, because currently <CODE>User</CODE> does not do
+any locking. This is, because the <CODE>DB_Sql</CODE> has currently no
+portable locking mechanism.
+</P>
+
+
+<HR>
+<A HREF="documentation-4.html">Next</A>
+<A HREF="documentation-2.html">Previous</A>
+<A HREF="documentation.html#toc3">Contents</A>
+</BODY>
+</HTML>

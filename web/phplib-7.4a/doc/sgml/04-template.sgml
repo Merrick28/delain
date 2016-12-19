@@ -1,0 +1,336 @@
+<!-- $Id: 04-template.sgml,v 1.4 2002/07/11 22:38:12 richardarcher Exp $ -->
+<sect1>Template
+<p>
+<em/Note:/ If you think that this is like FastTemplates, read
+carefully. It isn't.
+
+<p> 
+The template class allows you to keep your HTML code in some
+external files which are completely free of PHP code, but
+contain replacement fields. The class provides you with
+functions which can fill in the replacement fields with
+arbitrary strings. These strings can become very large, e.g.
+entire tables.
+
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>String. Serialization helper: The name of this class.<rowsep>
+
+debug<colsep>Boolean: if set to true, the class will emit
+debugging output.<rowsep>
+
+unknowns<colsep>One of "keep", "comment", "remove" (Default).
+Determines how to handle unresolved variable names in
+templates upon output. If set to "keep", those are left
+untouched. If set to "comment", unresolved variable names are
+transformed into HTML comments reporting the error. If set to
+"remove", unresolved variable names are silently removed (the
+default).<rowsep>
+
+halt&lowbar;on&lowbar;error = "yes"<colsep>One of "yes"
+(Default), "report", "no". Determines how Template handles
+error conditions. If set to "yes" (the Default), the error is
+reported, then execution is halted. If set to "report", the
+error is reported, then execution continues by returning
+"false". If set to "no", errors are silently ignored, and
+execution resumes reporting "false".<rowsep>
+
+last&lowbar;error = ""<colsep>The last error message is
+kept in this variable.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+file<colsep>Hash of strings. A translation table which
+translates variable names into filenames.<rowsep>
+
+root<colsep>String (Pathname). The base directory from which
+template files are being loaded.<rowsep>
+
+varkeys<colsep>Hash of strings. A translation table which
+translates variable names into regular expressions for
+themselves.<rowsep>
+
+varvals<colsep>Hash of strings. A translation table which
+translates variable names into replacement values for their
+respective varkeys.<rowsep>
+
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>Template($root = ".", $unknowns = "remove")</tag>
+<p>
+Constructor. May be called with two optional parameters. The
+first parameter sets the template directory (see
+<tt/set&lowbar;root()/, the second parameter sets the policy
+regarding handling of unknown variables.
+
+<tag>set&lowbar;root($root)</tag>
+<p>
+The function checks that $root is a valid directory and sets
+this directory as the base directory where templates are being
+stored.
+
+<tag>set&lowbar;unknowns($unknowns = "keep")</tag>
+<p>
+The function sets the policy for dealing with unresolved
+variable names. Must be either "remove", "comment" or "keep". If
+set to "keep", those are left untouched. If set to "comment",
+unresolved variable names are transformed into HTML comments
+reporting the error. If set to "remove", unresolved variable
+names are silently removed (the default).
+
+<tag>set&lowbar;file($varname, $filename = "")</tag>
+<p>
+The function defines a filename for the initial value of a
+variable. It may be called with either a $varname/$filename pair
+or with a hash of $varname/$filename pairs. The files are not
+referenced yet, but only when needed.
+
+<tag>set&lowbar;block($parent, $varname, $name = "")</tag>
+<p>
+A variable $parent may contain a variable block named by
+$varname. The function removes that block from $parent and
+replaces it with a variable reference named $name. If $name is
+omitted, it is assumed to be the same as $varname.
+
+<tag>set&lowbar;var($varname, $value = "")</tag>
+<p>
+The functions sets the inital value of a variable. It may be
+called with either a $varname/$value pair or with a hash of
+$varname/$value pairs.
+
+<tag>clear&lowbar;var($varname)</tag>
+<p>
+The functions clears the value of a variable. It may be
+called with either a $varname string or with an array of
+$varname strings.
+
+<tag>unset&lowbar;var($varname)</tag>
+<p>
+The functions unsets a variable. It may be
+called with either a $varname string or with an array of
+$varname strings.
+
+<tag>subst($varname)</tag>
+<p>
+The function returns the value of the variable named $varname,
+with all defined variable values filled in. The resulting string
+is not "finished", that is, the unresolved variable name policy
+has not been applied yet.
+
+<tag>psubst($varname)</tag>
+<p>
+This is a shorthand for <tt/print $this->subst($varname)/.
+
+<tag>parse($target, $varname, $append = false)</tag>
+<p>
+The function substitutes the values of all defined variables in
+the variable named $varname and stores or appends the result in
+the variable named $target.
+
+If $varname is an array of variable names, $append is ignored.
+The variables named by $varname are being sequentially
+substituted and the result of each substitution step is stored
+in $target. The resulting substitution is available in the
+variable named by $target, as is each intermediate step for the
+next $varname in sequence.
+
+<tag>pparse($target, $varname, $append = false)</tag>
+<p>
+A shorthand for <tt/print $this->parse(...)/.
+
+<tag>get&lowbar;vars()</tag>
+<p>
+Returns a hash of all defined values, keyed by their names.
+
+<tag>get&lowbar;var($varname)</tag>
+<p>
+Returns the value of the variable named by $varname. If $varname
+references a file and that file has not been loaded, yet, the
+variable will be reported as empty.
+
+When called with an array of variable names, an hash of values,
+keyed by their names, will be returned.
+
+<tag>get&lowbar;undefined($varname)</tag>
+<p>
+The function will return a hash of unresolved variable names in
+$varname, keyed by their names (that is, the hash has the form
+$a[$name] = $name).
+
+<tag>finish($str)</tag>
+<p>
+The function will returned the finished version of $str, that
+is, the policy regarding unresolved variable names will be
+applied to $str.
+
+<tag>p($varname)</tag>
+<p>
+The function will print the finished version of the value of the
+variable named by $varname.
+
+<tag>get($varname)</tag>
+<p>
+The function will return the finished version of the value of
+the variable named by $varname.
+
+<tag>haltmsg($msg)</tag>
+<p>
+This function can be overridden by your subclass of Template. It
+will be called with an error message to print.
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+<descrip>
+<tag>filename($filename)</tag>
+<p>
+When called with a relative pathname, this function will return
+the pathname with $this->root prepended. Absolute pathnames are
+taken unchanged.
+
+The resulting filename must exist, or an error is generated.
+
+<tag>varname($varname)</tag>
+<p>
+The function will construct a variable name regexp for a given
+variable name.
+
+<tag>loadfile($varname)</tag>
+<p>
+If a variable is undefined or empty and is backed by a filename,
+the backing file will be loaded and the files contents will be
+assigned as the variables value.
+
+<tag>halt($msg)</tag>
+<p>
+This function is called whenever an error occurs and will handle
+the error according to the policy defined in
+$this->halt&lowbar;on&lowbar;error.
+</descrip>
+
+<sect2>Example
+<p>
+The class manages a set of variables which are text strings.
+These strings may contain references to other variables in the
+form of "{variable}". When parsed or substituted, a variable
+reference is being replaced by the value of that variable.
+
+A variable value may be defined manually by calling
+<tt/set&lowbar;var("name", "value");/ or it may be defined from
+a file by calling <tt/set&lowbar;file("name",
+"filename.ihtml");/. In the latter case, the contents of the
+file are being loaded when needed (as late as possible) and set
+as the value of that variable.
+
+A third way to define a variable value is to call
+<tt/set&lowbar;block("parent", "block", "name");/. In this case,
+the variable named <tt/parent/ is being searched for a block
+that starts with <tt>&lt;!-- BEGIN block --&gt;</tt> and ends
+with <tt>&lt;!-- END block --&gt;</tt>. This string is removed
+from the variable <tt/parent/ and assigned to the variable named
+<tt/block/. In <tt/parent/, a variable reference to <tt/name/ is
+placed instead. If the optional parameter <tt/"name"/ is left
+out, <tt/"block"/ is being used instead.
+
+Use <tt/Template/ direcly or define a subclass of <tt/Template/
+as needed.
+
+Define a template file named page.ihtml as follows:
+
+<tscreen><code>
+&lt;html&gt;
+ &lt;head&gt;&lt;title&gt;{PAGETITLE}&lt;/title&gt;&lt;/head&gt;
+ &lt;body bgcolor="#ffffff"&gt;
+ &lt;table border=1 cellpadding=4 cellspacing=0 bgcolor="#eeeeee"&gt;
+  &lt;tr&gt;
+   &lt;td colspan=2&gt;&lt;h1&gt;{PAGETITLE}&lt;/h1&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;{OUT}&lt;/td&gt;
+   &lt;td&gt;Content&lt;/td&gt;
+  &lt;/tr&gt;
+ &lt;/table&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</code></tscreen>
+
+This file contains a reference to the variable <tt/pagetitle/
+and a reference to the variable named <tt/out/. Another template 
+file, named box.ihtml, contains a block named row with three
+variable references {TITLE}, {NUM} and {BIGNUM}:
+
+<tscreen><code>
+&lt;!-- start box.ihtml --&gt;
+&lt;table border=1 bgcolor="#cccccc" cellpadding=4 cellspacing=0&gt;
+ &lt;tr&gt;
+  &lt;td colspan=2&gt;&lt;b&gt;{TITLE}&lt;/b&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+  &lt;!-- BEGIN row --&gt;
+  &lt;tr&gt;
+   &lt;td&gt;{NUM}&lt;/td&gt;
+   &lt;td&gt;{BIGNUM}
+  &lt;/tr&gt;
+  &lt;!-- END row --&gt;
+&lt;/table&gt;
+&lt;!-- end box.ihtml --&gt;
+</code></tscreen>
+
+The following php3 file demonstrates how to use these templates:
+
+<tscreen><code>
+&lt;?php
+  include("./template.inc");
+
+  # create Template instance called $t  
+  $t = new Template("/page/to/webserver/template", "keep");
+
+  # define variables named page and box, referencing files
+  $t-&gt;set_file(array(
+     "page" =&gt; "page.ihtml",
+     "box"  =&gt; "box.ihtml"));
+
+  # extract the block named "row" from "box", creating a
+  # reference to {rows} in "box".
+  $t-&gt;set_block("box", "row", "rows");
+
+  # define the variables TITLE and PAGETITLE
+  $t-&gt;set_var(array("TITLE"     =&gt; "Testpage",
+                    "PAGETITLE" =&gt; "hugo"));
+
+  # define NUM and BIGNUM, then append "row" to "rows"...
+  for ($i=1; $i&lt;=3; $i++) {
+    $n  = $i;
+    $nn = $i*10;
+    $t-&gt;set_var(array("NUM" =&gt; $n, "BIGNUM" =&gt; $nn));
+    $t-&gt;parse("rows", "row", true);
+  }
+
+  # build out from box, then build out from page...
+  $t-&gt;parse("OUT", array("box", "page"));
+
+  # finish out and print it.
+  $t-&gt;p("OUT");
+?&gt;
+&lt;hr&gt;
+&lt;?php
+  # report leftover variables, if any.
+  print implode(", ", $t-&gt;get_undefined("rows"));
+ ?&gt;
+
+</code></tscreen>

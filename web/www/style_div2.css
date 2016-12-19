@@ -1,0 +1,85 @@
+img			{ border: 0; } /* Plus besoin de mettre border="0" dans les <img>*/
+#sep
+{
+	background-image: url(images/sep_ligne.gif);
+	 background-position: center;
+	 background-repeat:repeat-x;
+	 line-height: 5pt; /* Espace entre chaque ligne */
+	width: 100%;
+	height: 5pt;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+}
+#menu
+{
+	background-image: url(images/fondparchemin.gif);
+	line-height: 10pt; /* Espace entre chaque ligne */
+	width: 100%;
+	padding-left: 3px;
+	padding-right: 0px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+#menu_jeu_img
+{
+	background-image: url(images/fondparchemin.gif);
+	line-height: 7pt; /* Espace entre chaque ligne */
+	width: 100%;
+	text-align: center;
+	font-family:verdana,helvetica,sans-serif;
+	font-size:9pt;
+	padding-left: 3px;
+	padding-right: 0px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+#menu_jeu
+{
+	background-image: url(images/fondparchemin.gif);
+	line-height: 10pt; /* Espace entre chaque ligne */
+	width: 100%;
+	text-align: left;
+	font-family:verdana,helvetica,sans-serif;
+	font-size:9pt;
+	padding-left: 3px;
+	padding-right: 0px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+#titre_rouge
+{
+	background-color: #800000;
+	color: white;
+	font: bold;
+	width: 100%;
+	text-align: center;
+	color:#FFFFFF;
+	font-size:10pt;
+	text-align:center;
+	font-weight:bold;
+	padding-bottom: 2px;
+	padding-top: 2px;
+}
+#cadre_gauche
+{
+	background-image: url(images/ligne_gauche#gif); background-repeat: repeat-y;
+	float: left;
+	width: 10px; /* Ne pas effacer */
+	padding-left: 2mm;
+	height: 742px; /* Hauteur de ligne_droite#gif : pas propre du tout car le background-repeat ne fonctionne pas */
+}
+#cadre_droite
+{
+	background-image: url(images/ligne_droite#gif);
+	float: left;
+	width: 10px; /* Largeur de ligne_droite#gif */
+	height: 742px; /* Hauteur de ligne_droite#gif : pas propre du tout car le background-repeat ne fonctionne pas */
+}
+#cadre_bas
+{
+	background-image: url(images/ligne_gauche#gif); background-repeat:no-repeat;
+	clear: both;
+	width: 160px;
+}

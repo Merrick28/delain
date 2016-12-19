@@ -1,0 +1,44 @@
+<!-- $Id: 01-prereq.sgml,v 1.1.1.1 2000/04/17 16:39:58 kk Exp $ -->
+
+<sect1>Target Group and Prerequisites
+<p>
+
+PHPLIB targets the PHP application developer. You need to have
+good knowledge of the PHP language, at least basic SQL database
+knowhow and at least basic knowledge on how to operate your
+web server to be able to use the library.
+
+The library will help you to write medium to large sized
+data-driven web applications. "Medium to large sized
+applications" are applications that consist of multiple database
+queries, have to generate tables from database data, need a user
+interface that generates SQL queries or need a comfortable and
+user-friendly way to protect pages or functionality on pages.
+"Data-driven" applications are applications that make use of a
+supported SQL-database to create HTML content and that use HTML
+forms to drive database transactions.
+
+To make use of the library you obviously need access to a web
+server with a working installation of a current PHP interpreter
+(we recommend 3.0.12 or newer for this release of the library)
+and access to a supported SQL database (currently, PHPLIB
+supports MySQL, PostgreSQL, mSQL, Oracle 7 and Oracle 8, Sybase,
+Microsoft SQL Server and ODBC databases). You need to be able to
+create and drop database tables in that database and your web
+server must be able to execute <tt/SELECT/, <tt/INSERT/,
+<tt/UPDATE/ and <tt/DELETE/ statements on these tables.
+
+Throughout this manual, we assume that you are using the MySQL
+database server. PHPLIB will run with any supported SQL server,
+but we are using MySQL in the development of PHPLIB.
+
+PHPLIB can be used in conjunction with the CGI version of PHP and
+with <tt/mod_php/, integrated into Apache. Usage of the CGI
+version has an impact on overall speed, because you cannot take
+advantage of persistent database connection. We recommend
+the Apache module over the CGI version, although we personally
+use the CGI version for various reasons (easier to update and
+can be run with Apache <tt/suexec/).
+
+PHP 4 is still in beta. We do not support deployment of this
+library with beta software.

@@ -1,0 +1,239 @@
+<!-- $Id: 03-perm.sgml,v 1.1.1.1 2000/04/17 16:40:02 kk Exp $ -->
+
+<sect1>Perm
+<p>
+
+Permission management relies on an authenticated session. It
+associates a set of required permissions with a page. The actual
+page content is only visible to users with ALL matching
+permissions; all other users are shown a screen of your design.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+permissions<colsep>A hash of (name, permission bit) pairs.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>check($required)</tag>
+<p>Checks that the currently authenticated user has all the
+   rights that are specified in <tt/required/. If not,
+   <tt/perm&lowbar;invalid()/ is called.
+    
+   If one or more of the required rights or user rights are
+   invalid (not to be found in the permissions hash),
+   <tt/perm&lowbar;invalid()/ is called as well.
+
+<tag>have&lowbar;perm($required)</tag>
+<p>
+Similar to <tt/check()/ in usage, only that it doesn't halt the
+session if the user doesn't have the appropriate rights: This
+function returns true, if the user has the required rights,
+false otherwise.
+
+<tag>perm&lowbar;sel($name, $current = "", $class = "")</tag>
+<p>
+This function returns a <tt/SELECT/-tag with the given
+<tt/name/. Within this tag, all available permission values from
+<tt/$perm->permissions/ are contained as <tt/OPTION/ tags.
+
+<p>
+If you supply a value for <tt/current/, the permission value
+that matches <tt/current/ is <tt/SELECTED/. If you supply a
+value for <tt/class/, the tags are marked with that CSS
+stylesheet class.
+
+</descrip>
+
+<sect3>Internal instance methods
+<p>   
+
+<descrip>  
+<tag>permsum($rights)</tag>
+<p>
+Logically or's all the rights and returns a pair <tt/(valid,
+or&lowbar;result)/. If valid is true, an <tt/or&lowbar;result/
+is provided. If valid is false, the <tt/or&lowbar;result/ is
+undefined and one or more of the rights do not exist at all.
+This is a severe error and the application should be halted at
+once.
+
+<tag>perm&lowbar;invalid($does&lowbar;have, $must&lowbar;have)</tag>
+<p>
+Called in case of an access violation. <tt/does&lowbar;have/ is a string
+listing the rights the user actually has. <tt/must&lowbar;have/ are the
+rights the page requires.
+</descrip>
+
+<sect2>Example
+<p>
+
+Use a subclass of <tt/Perm/ to provide parameters for your
+permission class and to implement your own <tt/perm&lowbar;invalid/
+function.
+
+<tscreen><code>
+class My&lowbar;Perm extends Perm {
+  var $classname = "My&lowbar;Perm";
+  
+  var $permissions = array (
+    "user"          =&gt; 1,
+    "author"        =&gt; 2,
+    "editor"        =&gt; 4,
+    "moderator"     =&gt; 8,
+    "admin"         =&gt; 16
+  );
+  
+  function perm&lowbar;invalid($does&lowbar;have, $must&lowbar;have) {
+    global $perm, $auth, $sess;
+    
+    include("perminvalid.ihtml");
+  }
+}
+</code></tscreen>
+
+Use the page management functions (see above) to use your
+permission subclass. The feature name for permission
+management is <tt/perm/; provide the name of your <tt/Perm/ subclass as
+a parameter to the <tt/perm/ feature. The <tt/perm/ feature requires the
+<tt/sess/ feature and the <tt/auth/ feature:
+
+<tscreen><code>
+  page&lowbar;open(array("sess" =&gt; "My&lowbar;Session", "auth" =&gt; "My&lowbar;Auth", "perm" =&gt; "My&lowbar;Perm"));
+</code></tscreen>
+
+Use the <tt/check()/ instance method to protect your page:
+
+<tscreen><code>
+  $perm-&gt;check("admin");  ## This page is for users with admin rights only.
+</code></tscreen>
+
+Use <tt/have&lowbar;perm()/ to create protected functionality on a
+page:
+
+<tscreen><code>
+&lt;?php
+  if ($perm-&gt;have&lowbar;perm("admin")):
+ ?&gt;
+  &lt;h1&gt;Admin only functionality&lt;/h1&gt;
+&lt;?php
+  endif;
+ ?&gt;
+</code></tscreen>
+
+<sect2>How permissions work 
+<p> 
+
+Your subclass of <tt/Perm/ defines an array <tt/$permissions/,
+which translates permission names into bit patterns. For
+example, the definition of <tt/Example&lowbar;Perm/ in the distributed
+<tt/local.inc/ defines the names <tt/user/, <tt/author/,
+<tt/editor/, <tt/supervisor/ and <tt/admin/, all of which
+translate into a bit pattern with a single bit set.
+
+A user may be assigned any number of permissions as a comma
+separated list of permission names (no spaces!) in the
+<tt/perms/ column of the <tt/auth&lowbar;user/ table. The effective
+permissions of the user are determined by logically OR'ing the
+bit patterns of these permissions.
+
+A page may require any permissions as a comma separated list of
+permission names (again no spaces!) with the
+<tt/$perm-&gt;check()/ function. The required permissions are
+again determined by logically OR'ing the bit patterns of these
+permissions. Similarly, a page function may be protected by
+requiring permissions with <tt/$perm-&gt;check()/.
+
+Access is granted to a protected page or a protected page
+function, if the effective permissions of the authenticated user
+have all the required bits set, that is: If the effective
+permissions of the user logically AND'ed with the required
+permissions are equal to the required permissions.
+
+With the permission names as defined in <tt/Example&lowbar;Perm/ from the
+distribution, a user <tt/kris/ may be defined with <tt/admin/
+permission in the <tt/auth&lowbar;user/ table. A page that requires
+<tt/admin,user/ permission with
+<tt/$perm-&gt;check("user,admin")/ is inaccessible to this user.
+This is how it is calculated:
+
+<tscreen><code>
+Effective Permissions of User: admin
+              translates into:    16
+
+Required Permissions of Page : user,admin
+              translates into:    1 OR 16 == 17
+
+Permission Check: 
+        Effective Permissions 16 
+AND     Required Permissions  17
+ARE     16 & 17 =             16
+
+MUST BE Required Permissions  17 -> access denied
+</code></tscreen>
+
+The example permissions as defined in <tt/Example&lowbar;Perm/ from the
+distribution are called <em/atomic/ permissions, because each of
+them has only a single bit set. Atomic permissions are the
+simplest of all schemes, because they allow for easy permission
+checks: To access a page protected with <tt/user,admin/, you
+need to have at least <tt/user,admin/ rights in your
+<tt/auth&lowbar;user/ table.
+
+Another common scheme used in permission definitions are
+<tt/inclusive permissions/. In this scheme, each permission
+definition has all bits of its predecessor set plus one addition
+bit. For example
+
+<tscreen><code>
+class Inclusive&lowbar;Perm extends Perm {
+  var $classname = "Inclusive&lowbar;Perm";
+
+  var $permissions = array(
+                            "user"       => 1,
+                            "author"     => 3,
+                            "editor"     => 7,
+                            "supervisor" => 15,
+                            "admin"      => 31
+                     );
+}
+</code></tscreen>
+
+defines a set of inclusive permissions. In this example, a user
+<tt/kris/ with <tt/admin/ permissions can easily access a page
+protected with <tt/editor/ permissions. This is how it is
+calculated:
+
+<tscreen><code>
+Effective Permissions of User: admin
+              translates into:    31
+
+Required Permissions of Page : editor
+              translates into:     7
+
+Permission Check:
+        Effective Permissions 31
+AND     Required Permissions   7
+ARE     31 & 7 =               7
+
+MUST BE Required Permissions   7 -> access granted
+</code></tscreen>
+
+Inclusive Permissions are easy to deal with, too, because a user
+with a <em/higher/ access level may access all pages or page
+functions with a <em/lower/ access level.
+
+Due to limitations of your machines integer size you can only
+define up to 31 permission levels.
+

@@ -1,0 +1,40 @@
+<!-- $Id: 03-ct_sql.sgml,v 1.1.1.1 2000/04/17 16:40:01 kk Exp $ -->
+
+<sect1>CT_Sql
+<p>
+
+The <tt/Session/ class used to contain a bit of SQL to read
+and write session data from and to a database. To make sessions
+database independent, this SQL has been isolated and put in
+a separate class, <tt/CT&lowbar;Sql/. <tt/Session/ now makes
+all storage accesses through a container class, which may or
+may not be an SQL container.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+database&lowbar;table<colsep>The name of the database table which should be used<rowsep>
+database&lowbar;class<colsep>A classname. CT&lowbar;Sql uses this class to store and retrieve data<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;Sql extends CT&lowbar;Sql {
+	var $classname = "My&lowbar;Sql";
+	var $database&lowbar;table = "active&lowbar;sessions";
+	var $database&lowbar;class = "DB&lowbar;Session";
+}
+</code></tscreen>
+
+You can then use My&lowbar;Sql in class Session. Reference it
+by putting "My&lowbar;Sql" in the "that&lowbar;class" variable.
+

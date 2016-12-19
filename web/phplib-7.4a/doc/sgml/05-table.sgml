@@ -1,0 +1,311 @@
+<!-- $Id: 05-table.sgml,v 1.1.1.1 2000/04/17 16:40:05 kk Exp $ -->
+
+<sect1>Table and CSV&lowbar;Table
+<p>
+
+The Table class is a neat way to format two-dimensional
+associative arrays of data or the results of a database query
+into a table. Table and its subclasses allow you to simply pass
+them either an array or a query result and they spit out the
+proper HTML for a table containing all the values. Table has
+some primitive filtering capabilities making it useful even without
+subclassing, but for the full power of Table you have to write
+your own subclass.
+<p>
+
+When used with the check option, it is assumed that the table
+is part of a HTML <tt/FORM/ element. Code is generated to create
+an <tt/INPUT TYPE=CHECKBOX/ element before each table row. The
+checkboxes will form an array indexed by row number. The name of
+the array will whatever you set the <tt/check/ instance variable
+to.
+<p>
+
+Exactly one of two types of possible column filtering take place
+when each table row is generated. If the <tt/fields/ instance
+variable is set, only the columns keyed by the named fields in
+that array are shown in that order. That is, if you fill in the
+<tt/fields/ instance variable with <tt/array("a", "c", "e")/,
+only the columns <tt/a/, <tt/c/ and <tt/e/ become part of the
+generated table.
+<p>
+
+If <tt/fields/ has not been set, all data columns are traversed
+with <tt/each()/ and all columns whose names match the regexp in
+<tt/filter/ are shown in the table. By default, this regular
+expression lets through all column names that start with an
+alphabetic character and continue with either alphanumeric
+characters or "&lowbar;" (underscore). This default has been
+chosen, because the DB&lowbar;Sql database class uses
+<tt/mysql&lowbar;fetch&lowbar;array()/ internally to get data
+from the database and this function returns all columns twice
+with both a numeric index and proper column names. The default
+filter will make all data show up only once and with proper
+column names.
+<p>
+
+Additionally, the <tt/map_cols/ instance variable provides column
+name remapping. If <tt/map_cols/ is set, it will remap the name
+of the found column with a new name.
+<p>
+
+For instance, a table with the following columns, <tt/fname/,
+<tt/lname/, and <tt/mydate/ can be remapped to <tt/First Name/,
+<tt/Last Name/, and <tt/Date/ using the following code (where
+$t is your instantiated Table class object):
+<p>
+
+<tscreen><code>
+$t->map_cols = array("fname"  => "First Name",
+                     "lname"  => "Last Name",
+                     "mydate" => "Date");
+</code></tscreen>
+<p>
+
+The <tt/map_cols/ instance variable also allows you to map column
+names to different languages using this same technique.
+<p>
+
+For derived classes, the instance variable <tt/add&lowbar;extra/ has been added. 
+If this variable is set, then the functions <tt/table_heading_row_add_extra()/
+and <tt/table_row_add_extra()/ are called. In the Table class, these 
+functions do nothing, but in derived classes override these functions to
+provide additional functionality that may be needed. For instance, hyperlinks
+to provide <tt/edit/, <tt/delete/, or <tt/view/ capabilities for that row
+could be easily added into these functions (in your derived Table class) 
+allowing greater customization.
+
+A subclass of Table, CSV&lowbar;Table, is being provided to allow to
+create CSV representations of your data with minimal effort. CSV
+(comma separated values) can be imported by MySQL's <tt/LOAD DATA
+INFILE/ statement and many spreadsheet import functions.
+<p>
+
+The Table class now provides both high-level, mid-level and low-level 
+functions through modularization. This allows programmers to use either 
+the simplified high-level functionality or, depending on the degree of
+complexity needed, the power of the mid- or low-level functions. Every 
+effort to maintain backwards compatibility has been applied. However, it
+would be a good idea to become familiar with the new functions if you
+use the Table class extensively. Typically, the high- and mid-level
+support functions begin with <tt/show&lowbar;/ while the low-level functions
+do not.
+<p>
+
+<sect2>Instance variables
+<p>
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+check<colsep>If set, the check option is active.<rowsep>
+filter<colsep>A regular expression selecting the columns that are shown.<rowsep>
+fields<colsep>A list of colum names that are shown.<rowsep>
+heading<colsep>A flag; if set, a heading is being created.<rowsep>
+map&lowbar;cols<colsep>A list of colum names that remap (replace) the static column names.<rowsep>
+add&lowbar;extra<colsep>A flag; if set, the the extra functions for heading and rows are called.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>High-level instance methods
+<p>
+
+<descrip>
+
+<tag>show($ary, $class = "")</tag> 
+<p> 
+Will format and print the two dimensional array (or hash)
+<tt/$ary/ as a table according to the filtering rules explained
+above. If <tt/$class/ is set, each HTML element will be tagged
+as belonging to the named class; this is useful with cascading
+style sheets.
+
+<tag>show&lowbar;page($ary, $start, $num, $class = "")</tag>
+<p>
+Just as <tt/show()/, but will show only <tt/num/ elements
+starting at <tt/start/.
+
+<tag>show&lowbar;result($db, $class = "")</tag>
+<p>
+Will format and print the result set of <tt/$db/. <tt/$db/ is
+exspected to be a subclass of <tt/DB&lowbar;Sql/ that has just
+been sent a query. <tt/Table/ will grab all available results
+from the result set of that query by calling
+<tt/$db-&gt;next&lowbar;record()/ repeatedly and format them
+into a table.
+
+<tag>show&lowbar;result&lowbar;page($db, $start, $num, $class = "")</tag>
+<p>
+
+Just as <tt/show&lowbar;result()/, but will show only <tt/num/
+elements starting at <tt/start/.
+
+</descrip>
+
+<sect3>Mid-level instance methods
+<p>
+
+<descrip>
+<tag>show&lowbar;table&lowbar;rows($ary, $class="")</tag>
+<p>Walks the passed array displaying each row of data as an HTML
+   table row.
+
+<tag>show&lowbar;table&lowbar;rows&lowbar;result($db, $class="")</tag>
+<p>Walks the passed database object displaying each record as an 
+   HTML table row.
+
+<tag>show&lowbar;table&lowbar;page&lowbar;rows($ary, $start, $num, $class="")</tag>
+<p>Walks the passed array displaying each row of data as an HTML
+   table row. However, data does not start displaying until
+   <tt/$start/ element and end after <tt/$num/ rows.
+
+<tag>show&lowbar;table&lowbar;page&lowbar;rows&lowbar;result($db, $start, $num, $class="")</tag>
+<p>Walks the passed database object displaying each record as an 
+   HTML table row. However, data does not start displaying until
+   <tt/$start/ record and ends after <tt/$num/ records have been displayed.
+
+<tag>show&lowbar;table&lowbar;heading&lowbar;row($ary, $class="")</tag>
+<p>Uses the passed array to create an HTML header row.
+
+<tag>show&lowbar;table&lowbar;heading&lowbar;row&lowbar;result($db, $class="")</tag>
+<p>Uses the passed database object to create an HTML header row.
+
+<tag>show&lowbar;table&lowbar;heading&lowbar;cells($data, $class="")</tag>
+<p>Walks the passed array and displays each item in an HTML table
+   header cell.
+
+<tag>show&lowbar;table&lowbar;cells($row, $row_key, $data, $class="")</tag>
+<p>Walks the passed array and displays each item in an HTML table cell.
+
+</descrip>
+
+<sect3>Low-level instance methods
+<p>
+
+<descrip>
+<tag>table&lowbar;open($class = "")</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called as the very first step in table creation and
+   should output HTML that opens a table (for example
+   <tt/printf("&lt;table%s&gt;\n", $class?" class=$class":"");/).
+
+<tag>table&lowbar;close()</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called as the very last step in table creation and
+   should output HTML that closes a table (for example
+   <tt/printf("&lt;/table&gt;\n");/).
+
+<tag>select&lowbar;colnames($data)</tag>
+<p>Internal function to generate a list of column names.
+
+<tag>table&lowbar;heading&lowbar;row($data, $class = "")</tag>
+<p>Internal driver function to generate a table heading row.
+
+<tag>table&lowbar;heading&lowbar;cell($col, $val, $class)</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called each time a table heading cell is to be generated.
+   
+   <tt/$col/ is the current column number, <tt/$val/ is the name
+   of the column. <tt/$class/ is the HTML CSS class of the
+   element that is to be generated.
+
+<tag>table_heading_cell_open($class="")</tag>
+<p>Starts a header cell.
+
+<tag>table_heading_cell_close($class="")</tag>
+<p>Ends a header cell.
+
+<tag>table_heading_row_add_extra($data, $class="")</tag>
+<p>Virtual function for derived classes. This function is called 
+   after all header cells have been created. It allows the 
+   programmer to add additional HTML code to the header row 
+   before it is closed.
+
+<tag>table&lowbar;row($data, $class = "")</tag>
+<p>Internal driver function to generate a table row.
+
+<tag>table&lowbar;row&lowbar;open($row, $data, $class = "")</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called as the very first step in row creation and
+   should output HTML that opens a table row.
+
+   <tt/$row/ is the current row number. <tt/$data/ is a hash of
+   column name/value pairs for that row and <tt/$class/ is an
+   optional HTML CSS class name for all generated elements.
+
+<tag>table&lowbar;row&lowbar;close()</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called as the very last step in row creation and
+   should output HTML that closes a table row.
+
+<tag>table&lowbar;cell($row, $cell, $key, $val, $class)</tag>
+<p>This function can be overridden by a subclass of Table. It
+   is called each time a table cell is to be generated.
+   
+   <tt/$row/ is the current row number, <tt/$cell/ is the
+   current cell number. <tt/$key/ is the current column name,
+   <tt/$val/ is the value of the cell. <tt/$class/ is the
+   HTML CSS class of the element that is to be generated.
+
+<tag>table_cell_open($class="")</tag>
+<p>Starts a cell.
+
+<tag>table_cell_close($class="")</tag>
+<p>Ends a cell.
+
+<tag>set_checkbox_heading($class="")</tag>
+<p>This function creates an empty header cell to coincide with
+   the checkbox option for that column.
+
+<tag>table_checkbox_cell($row, $row_key, $data, $class="")</tag>
+<p>Outputs HTML code to display a checkbox. This function runs
+   if the member variable <tt/$check/ has been set. <tt/$check/ should be
+   set to some key within the <tt/$data/ array (ex: if <tt/$data["myKey"]/,
+   then set <tt/$check="myKey"/).
+
+<tag>set_checkbox($row, $row_key, $data, $class="")</tag>
+<p>Creates an HTML checkbox based on the passed data, only if
+   the instance variable <tt/$check/ is set.
+
+</descrip>
+
+<sect2>Example
+<p>
+Table is not automatically included or prepended into each page.
+Include the table class into the pages that are to use Table.
+Then create an instance of Table:
+
+<tscreen><code>
+<?php
+  // Include Table
+  require("table.inc");
+  
+  // make a Table instance
+  $t = new Table;
+  
+  // We want table headings to be printed.
+  $t-&gt;heading = "on";
+</code></tscreen>
+
+Now create a two dimensional array or prepare a database query
+and have table print it.
+
+<tscreen><code>
+  // Create a database object
+  $db = new DB&lowbar;Session;
+  
+  // create a twodim array called $tab
+  $tab = $db->metadata("active&lowbar;sessions");
+  
+  // print that array
+  $t-&gt;show($tab, "metadata");
+  
+  // prepare a database query
+  $db-&gt;query("select * from active&lowbar;sessions");
+  
+  // print that result
+  $t-&gt;show&lowbar;result($db, "data");
+</code></tscreen>

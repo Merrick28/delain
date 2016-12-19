@@ -1,0 +1,16 @@
+<!-- $Id: 03-core.sgml,v 1.1.1.1 2000/04/17 16:40:00 kk Exp $ -->
+
+<sect>Core Functionality
+<p>
+Each class contains instance variables and instance methods. Some of these
+variables and methods are available for customization, some are internal to
+the classes themselves. All are documented, but tampering with internal
+variables and methods is not supported. Internal interfaces are subject to
+change without notice from one version of the library to another.
+
+<p>
+This section covers PHPLIB core functionality in reference form.
+Classes are presented in order of dependency, though, because
+the core structure is easier understood in this order. You will
+need to understand the complete core structure to successfully
+use all of PHPLIB's features.

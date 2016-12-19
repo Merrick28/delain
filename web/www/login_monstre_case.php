@@ -1,0 +1,129 @@
+<?php 
+require G_CHE . "ident.php";
+include G_CHE . "/includes/classes_monstre.php";
+$db2 = new base_delain;
+?>
+<html>
+<link rel="stylesheet" type="text/css" href="style.css" title="essai">
+<head>
+</head>
+<body background="images/fond5.gif">
+<form name="login" method="post" action="validation_login_monstre.php" target="_top">
+<table width ="90%" bgcolor="#EBE7E7" border="0" cellpadding="0" cellspacing="0">
+
+<tr>
+<td width="10" background="images/coin_hg.gif"><img src="images/del.gif" height="8" width="10"></td>
+<td background="images/ligne_haut.gif"><img src="images/del.gif" height="8" width="10"></td>
+<td width="10" background="images/coin_hd.gif"><img src="images/del.gif" height="8" width="10"></td>
+</tr>
+
+<tr>
+<td width="10" background="images/ligne_gauche.gif">&nbsp;</td>
+<td class="titre">
+<p class="titre">Monstres dont la DLT n'est pas encore passée</p></td>
+<td width="10" background="images/ligne_droite.gif">&nbsp;</td>
+</tr>
+
+<tr>
+<td width="10" background="images/ligne_gauche.gif">&nbsp;</td>
+<td>
+
+<?php 
+$db = new base_delain;
+$req_monstre = "select dlt_passee(perso_cod) as dlt_passee,etat_perso(perso_cod) as etat,perso_cod,perso_nom,perso_pa,perso_pv,perso_pv_max,to_char(perso_dlt,'DD/MM/YYYY HH24:mi:ss') as dlt,pos_x,pos_y,pos_etage,(select count(dmsg_cod) from messages_dest where dmsg_perso_cod = perso_cod and dmsg_lu = 'N') as messages  ";
+$req_monstre = $req_monstre . ",perso_dirige_admin, perso_pnj ";
+$req_monstre = $req_monstre . "from perso,perso_position,positions ";
+$req_monstre = $req_monstre . "where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' ";
+$req_monstre = $req_monstre . "and ppos_perso_cod = perso_cod ";
+$req_monstre = $req_monstre . "and ppos_pos_cod = $position ";
+$req_monstre = $req_monstre . "and ppos_pos_cod = pos_cod ";
+$req_monstre = $req_monstre . "order by pos_x,pos_y,perso_nom ";
+$db->query($req_monstre);
+$nb_monstre = $db->nf();
+if ($nb_monstre == 0)
+{
+	echo("<p>Tous les monstres ont passé leur DLT");
+}
+else
+{
+	echo("<table>");
+	while($db->next_record())
+	{
+		if ($db->f("perso_dirige_admin") == 'O')
+		{
+			$ia = "<b>Hors IA</b>";
+		}
+        if ($db->f("perso_pnj") == 1)
+        {
+            $ia = "<b>PNJ</b>";
+        }
+		else
+		{
+			$ia = "IA";
+		}
+		echo("<tr>");
+		echo "<td class=\"soustitre2\"><p><a href=\"validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . "</a></td>";
+		echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
+		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pa") , "</td>";
+		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pv") , " PV sur " , $db->f("perso_pv_max");
+		if ($db->f("etat") != "indemne")
+		{
+			echo " - (<b>" , $db->f("etat") , "</b>)";
+		}
+		echo "</td>";
+		echo "<td class=\"soustitre2\"><p>";
+		if ($db->f("messages") != 0)
+		{
+			echo "<b>";
+		}
+		echo $db->f("messages") . " msg non lus.";
+		if ($db->f("messages") != 0)
+		{
+			echo "</b>";
+		}
+		echo "</td>";
+		echo "<td class=\"soustitre2\"><p>";
+		if ($db->f("dlt_passee") == 1)
+		{
+			echo("<b>");
+		}
+		echo $db->f("dlt");
+		if ($db->f("dlt_passee") == 1)
+		{
+			echo("</b>");
+		}
+		echo "</td>";
+		echo "<td class=\"soustitre2\"><p>X=" , $db->f("pos_x") , ", Y=" , $db->f("pos_y") , ", E=" , $db->f("pos_etage") , "</td>";
+		$req = "select compt_nom from perso_compte,compte where pcompt_perso_cod = " . $db->f("perso_cod") .
+			" and pcompt_compt_cod = compt_cod and compt_monstre = 'O' ";
+		$db2->query($req);
+		if ($db2->nf() != 0)
+		{
+			$db2->next_record();
+			echo "<td class=\"soustitre2\">Joué par <b>" , $db2->f("compt_nom") , "</b></td>";
+		}
+		else
+			echo "<td></td>";
+		echo("</tr>");
+	}
+
+	echo("</table>");
+}
+?>
+</td>
+<td width="10" background="images/ligne_droite.gif">&nbsp;</td>
+</tr>
+
+
+<tr>
+<td width="10" background="images/coin_bg.gif"><img src="images/del.gif" height="10" width="10"></td>
+<td background="images/ligne_bas.gif"><img src="images/del.gif" height="10" width="10"></td>
+<td width="10" background="images/coin_bd.gif"><img src="images/del.gif" height="10" width="10"></td>
+</tr>
+
+</table>
+</form>
+
+
+</body>
+</html>

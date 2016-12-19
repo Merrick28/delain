@@ -1,0 +1,54 @@
+.fenetre_select
+{
+	position:absolute;
+	left:400px;
+	overflow:hidden;
+	z-index:2;
+	max-width:120px;
+	max-height:19px;
+	min-width:120px;
+	min-height:19px;
+	border-radius: 10px;
+	border: solid 3px #f00000;
+}
+
+.fenetre
+{
+	position:absolute;
+	left:400px;
+	overflow:hidden;
+	z-index:3;
+	max-width:120px;
+	max-height:19px;
+	min-width:120px;
+	min-height:19px;
+	border-radius: 10px;
+	border: solid 3px #d00000;
+	background: url('http://images.jdr-delain.net/fondparchemin.gif') repeat;
+	transition: max-width 200ms,
+		max-height 200ms,
+		min-width 200ms,
+		max-height 200ms,
+		top 200ms,
+		left 200ms;
+}
+
+.titre_fenetre
+{
+	padding:0px;
+	background-color: #d00000;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+}
+
+.bas_fenetre
+{
+	padding:0px;
+	background-color: #d00000;
+	font-weight: bold;
+	color: white;
+	text-align: center;
+	position:relative;
+	bottom:0px;
+}

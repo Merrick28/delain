@@ -1,0 +1,25 @@
+<!-- $Id: 02-download.sgml,v 1.2 2001/08/13 12:30:05 richardarcher Exp $ -->
+
+<sect1>Downloading and unpacking the distribution
+
+<p>The base library is available from <htmlurl
+url="http://phplib.sourceforge.net/" name="the PHP Base Library
+download location">. Two different formats are provided: A
+tar.gz version and a shar version.
+
+If you are on a windows system, you can use phplib.tar.gz, if
+you have WinZIP installed. Current versions of WinZIP know how
+to handle compressed tar archives. The uncompressed files may be
+installed on your windows system or transferred to your Unix
+system.
+
+If you can't handle binary files, you may download phplib.shar.
+This is a pure ASCII file containing a self extracting shell
+script. Just save the file, make it executable and feed it to
+your Unix shell (for example, by typing <tt/sh phplib.shar/).
+
+The <htmlurl url="mailto:phplib-users@lists.sourceforge.net" name="PHPLIB
+support mailing list"> is available should you run into problems
+with the library. To subscribe to the list, send a message with
+<tt/subscribe/ as the subject to the address
+<tt/phplib-users-request@lists.sourceforge.net/.

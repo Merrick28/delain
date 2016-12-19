@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:dcterms="http://purl.org/dc/terms/"
+  xmlns:label="http://www.w3.org/2004/12/q/contentlabel#"
+  xmlns:icra="http://www.icra.org/rdfs/vocabularyv03#">
+
+  <rdf:Description rdf:about="">
+    <dc:creator rdf:resource="http://www.icra.org" />
+    <dcterms:issued>2006-2-10</dcterms:issued>
+    <label:authorityFor>http://www.icra.org/rdfs/vocabularyv03#</label:authorityFor>
+  </rdf:Description>
+
+  <label:Ruleset>
+    <label:hasHostRestrictions>
+      <label:Hosts>
+        <label:hostRestriction>jdr-delain.net</label:hostRestriction>
+      </label:Hosts>
+    </label:hasHostRestrictions>
+    <label:hasDefaultLabel rdf:resource="#label_1" />
+  </label:Ruleset>
+
+  <label:ContentLabel rdf:ID="label_1">
+    <rdfs:comment>Etiquette pour tout/la plupart du site Web</rdfs:comment>
+    <icra:nz>1</icra:nz>
+    <icra:sz>1</icra:sz>
+    <icra:vd>1</icra:vd>
+    <icra:vj>1</icra:vj>
+    <icra:lc>1</icra:lc>
+    <icra:oz>1</icra:oz>
+    <icra:cb>1</icra:cb>
+    <label:hasModifier><icra:xe /></label:hasModifier>
+    <rdfs:label>Aucune nudité; Aucun contenu à caractère sexuel; Personnages imaginaires blessés (dont personnages d'animation); Torture ou mise à mort de personnages imaginaires (dont personnages d'animation); Exclamations de nature modérée; Aucune activité potentiellement dangereuse; Contenu généré par l'utilisateur, comme des forums de discussion ou des tableaux de messageries (non modéré); Ce contenu apparaît dans un contexte lié à l'information; </rdfs:label>
+  </label:ContentLabel>
+
+</rdf:RDF>

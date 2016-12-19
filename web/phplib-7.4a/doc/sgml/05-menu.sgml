@@ -1,0 +1,264 @@
+<!-- $Id: 05-menu.sgml,v 1.2 2001/08/20 06:36:14 richardarcher Exp $ -->
+<sect1>Menu
+<p>
+Menu will generate a hierarchical menu of clickable items
+suitable as a navigation bar. Menu takes a tree definition of
+items as the basis for this navigation bar and knows which
+subtrees to fold, depending on the current position in the menu
+tree. Menu uses the current URL as presented in
+<tt/PHP&lowbar;SELF/ to determine the current position in the
+menu tree automatically.
+
+Menu does not depend on a hierarchical organisation of files in
+URL-space to generate a menu hierarchy. The organisation of menu
+items and the organisation of files in URL-space are in fact
+completely independent and Menu uses a mapping hash to derive a
+menu position from an URL. In the following class documentation
+we'll say URL when we mean files the latter and menustring when
+we mean the former. In the context of the Menu class, URLs are
+always relative URLs starting at the root of the local servers
+URL space, as we'll see them in PHP&lowbar;SELF. They may look
+like <tt>/menu/index.php3</tt>. A menustring is usually numeric
+and all components have the same length, if necessary with
+leading zeroes. It may look like <tt>/001/007</tt>, denoting an
+item in main menu 1, submenu 7.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+$urlmap<colsep>Hash. Maps a relative URL as seen
+in PHP&lowbar;SELF to a menustring.<rowsep>
+
+$map<colsep>Menustring. Current position in menu.<rowsep>
+
+$item<colsep>Hash of Hashes. The <tt/item/ hash is indexed by
+menustring. For each menustring, an arbitrary number of item
+attributes is stored. Menu does not use the <tt/item/ array,
+only <tt/Menu::get&lowbar;cell()/ does, which you implement. Each
+menu item will automatically get an attribute <tt/url/ through
+<tt/urlmap/ inversion from the class constructor and the name of
+the menu item should be stored as the <tt/title/ attribute. You
+may add other attributes such as <tt/textcolor/ and <tt/bgcolor/
+and use them in your <tt/Menu::get&lowbar;cell()/
+implementation.<rowsep>
+
+$nomain<colsep>Boolean. If set, the first menu item will never
+be shown. This menu item is always the menu root, adding an
+extra level of indentation.<rowsep>
+
+$title<colsep>String. After calling <tt/get&lowbar;title()/, this 
+variable contains the title of the page based on it's location in 
+the menu hierarchy.<rowsep>
+
+$title&lowbar;delim<colsep>String. Used to delimit (i.e., separate) 
+components in the page title built by <tt/get&lowbar;title()/. 
+Default is <tt>" : "</tt><rowsep>
+
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+$children<colsep>Hash of arrays. The <tt/children/ is indexed by
+menustring. For each menustring, an array of children
+menustrings is stored. This array is generated from <tt/urlmap/
+in the class constructor and is used to determine which submenus
+are visible from the current <tt/map/ position.<rowsep>
+
+$visible<colsep>Array of menustrings. The <tt/visible/ array
+contains the menustrings visible from the current <tt/map/
+position. It is calculated by the <tt/Menu::get()/ and
+<tt/Menu::show()/ functions.<rowsep>
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>Menu()</tag>
+<p>
+Constructor. Calls <tt/Menu::setup()/ internally.
+
+<tag>show()</tag>
+<p>
+A shorthand notation for <tt/print $this->get()/.
+
+<tag>get()</tag>
+<p>
+This function will calculate the menu items visible from the
+current <tt/map/ position. The menu will be constructed by
+calling <tt/Menu::start&lowbar;menu()/ first. For each visible
+menu item, Menu will check the current indentation level and the
+indentation level of the current menu cell. If the indentation
+level increases, <tt/Menu::shift&lowbar;in($oldlevel, $level)/ 
+is called once, if it decreases,
+<tt/Menu:shift&lowbar;out($oldlevel, $level)/ is called once.
+
+After that, <tt/Menu::get&lowbar;cell($number, $level)/ is
+called once. The number is an index into the <tt/visible/ array.
+
+After all menu cells have been drawn,
+<tt/Menu::end&lowbar;menu()/ will be called once.
+
+<tag>get&lowbar;cell($n, $level)</tag>
+<p>
+
+You are expected to implement this function yourself. It should
+render a single menu item. You may use the <tt/visible/ and
+<tt/item/ arrays for that purpose: <tt/$m = $this->visible[$n]/
+will return a menu string and <tt/$attr = $this->item[$m]/ is a
+hash of attributes for that menu string. <tt/$hilite =
+($this->visible[$n] == $this->map)/ is true for the current
+menu item, which should be rendered in way to stand out from the
+rest of the menu items.
+
+<tag>get&lowbar;title()</tag>
+<p>
+
+This function will calculate the title of the current page based
+on the position of the current page in the menu hierarchy. This
+function uses <tt/$this->title&lowbar;delim/ to separate the components
+of the title. This function sets <tt/$this>title/ to the calculated
+title and returns the title as a string.
+
+<tag>get&lowbar;sitemap()</tag>
+<p>
+
+This function is identical to <tt/print $this->get()/ except that
+all menu items are shown, not just the ones visible from the current page.
+
+<tag>show&lowbar;sitemap()</tag>
+<p>
+A shorthand notation for <tt/print $this->get&lowbar;sitemap()/.
+
+<tag>setup()</tag> 
+<p> 
+This function initializes the internal arrays of Menu and should
+be called once from the constructor. It actually is the
+constructor, but language stupidity has it that PHP3 constructor
+names vary with class names, which means that you have to write
+a new constructor for each subclass and call this function
+manually.
+
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+<descrip>
+<tag>normalize&lowbar;pos($pos)</tag>
+<p>
+This function looks at the current URL in <tt/$PHP&lowbar;SELF/
+and tried to translate this into a menustring. If the URL
+matches a menustring directly, this is easy.
+
+If not, the current URL will be sequentially shortened by
+applying the <tt/dirname/ PHP function to it until it matches.
+This allows you to create a single menu item for all files in a
+directory.
+
+<tag>split&lowbar;path($p)</tag>
+<p>
+This function is used in the construction of the set of visible
+menu items. Given a menustring or a pathname, it constructs
+a series of pathnames which converge elementwise against the
+given pathname. That is, given the menustring <tt>/3/2</tt>,
+this function will return an array with the elements <tt>""</tt>
+(the empty string), <tt>/3</tt> and <tt>/3/2</tt>.
+
+<tag>find&lowbar;visible($r)</tag>
+<p>
+This function calculates the actual set of visible URLs given a
+series of converging pathnames. It will include the set of
+children of each of these pathnames in the visible set, then
+sort this set numerically.
+
+</descrip>
+
+<sect2>Example
+<p>
+
+To use <tt/Menu/, you must enable the require statement for
+<tt/menu.inc/ in <tt/prepend.php3/. To use
+<tt/Menu&lowbar;Button/, you must enable the require statement
+for <tt/menu.inc/ and <tt/menu&lowbar;button.inc/ in <tt/prepend.php3/.
+
+Use a subclass of either <tt/Menu/ or <tt/Menu&lowbar;Button/ to
+create a menu. Define a class <tt/Example&lowbar;Menu/ in your
+<tt/local.inc/ file with a number of menu items in it. Do not
+forget to build a constructor.
+
+<tscreen><code>
+class Example&lowbar;Menu extends Menu {
+  # Map of PHP&lowbar;SELF URL strings to menu positions
+  var $urlmap = array(
+    "/menu/index.php3"   =&gt; "",
+    "/menu/item1.php3"   =&gt; "/1",
+    "/menu/item11.php3"  =&gt; "/1/1",
+    "/menu/item12.php3"  =&gt; "/1/2",
+    "/menu/item13.php3"  =&gt; "/1/3",
+    "/menu/item2.php3"   =&gt; "/2",
+    "/menu/item21.php3"  =&gt; "/2/1",
+    "/menu/item22.php3"  =&gt; "/2/2",
+    "/menu/item221.php3" =&gt; "/2/2/1",
+    "/menu/item222.php3" =&gt; "/2/2/2",
+    "/menu/item23.php3"  =&gt; "/2/3",
+    "/menu/item24.php3"  =&gt; "/2/4"
+  );
+
+  # Information about each menu item
+  var $item = array(
+    ""      =&gt; array("title" =&gt; "Main"),
+    "/1"    =&gt; array("title" =&gt; "Text 1"),
+    "/1/1"  =&gt; array("title" =&gt; "Text 1.1"),
+    "/1/2"  =&gt; array("title" =&gt; "Text 1.2"),
+    "/1/3"  =&gt; array("title" =&gt; "Text 1.3"),
+    "/2"    =&gt; array("title" =&gt; "Text 2"),
+    "/2/1"  =&gt; array("title" =&gt; "Text 2.1"),
+    "/2/2"  =&gt; array("title" =&gt; "Text 2.2"),
+    "/2/2/1"=&gt; array("title" =&gt; "Text 2.2.1"),
+    "/2/2/2"=&gt; array("title" =&gt; "Text 2.2.2"),
+    "/2/3"  =&gt; array("title" =&gt; "Text 2.3"),
+    "/2/4"  =&gt; array("title" =&gt; "Text 2.4")
+  );
+
+  function Example&lowbar;Menu() {
+    $this-&gt;setup();
+  }
+}
+</code></tscreen>
+
+In each of your files mentioned in the above <tt/urlmap/, create
+an instance of <tt/Example&lowbar;Menu/ and call the <tt/show()/
+method of that instance.
+
+<tscreen><code>
+&lt;?php
+  $m = new Example&lowbar;Menu;
+ ?&gt;&lt;html&gt;
+&lt;head&gt;
+ &lt;title&gt;&lt;?php $m-&gt;get&lowbar;menu() ?&gt;&lt;/title&gt;
+&lt;/head&gt;
+
+&lt;body bgcolor="#ffffff"&gt;
+&lt;table border=1 bgcolor="#eeeeee" cellspacing=0 cellpadding=4&gt;
+  &lt;tr&gt;
+   &lt;td colspan=2 valign=top align=center&gt;
+    &lt;h1&gt;&lt;?php print $m-&gt;title ?&gt;&lt;/h1&gt;
+   &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td align=left valign=top&gt;&lt;?php $m-&gt;show() ?&gt;&lt;/td&gt;
+   &lt;td align=left valign=top&gt;Content&lt;/td&gt;
+  &lt;/tr&gt;
+ &lt;/table&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></tscreen>

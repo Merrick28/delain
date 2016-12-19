@@ -1,0 +1,115 @@
+<!-- $Id: 03-page.sgml,v 1.1.1.1 2000/04/17 16:40:01 kk Exp $ -->
+
+<sect1>Page Management
+<p>
+
+<sect2>Accessible Functions
+<p>
+
+Page Management currently consists a collection of functions:
+
+<descrip>
+<tag>page&lowbar;open(array("feature" => "classname"))</tag>
+This function is to be called with an array of page
+features/classname pairs. Valid features are at the moment:
+
+<descrip>
+<tag>sess</tag>
+<p>
+This page makes use of session variables.
+
+<tag>auth</tag>
+<p>
+This page uses session authentication. If you
+specify the <tt/auth/ feature, you MUST specify
+the <tt/sess/ feature, also.
+
+<tag>perm</tag>
+<p>
+This page is protected by permissions and only
+accessible to authenticated users with matching rights.
+If you specify the <tt/perm/ feature, you MUST specify
+the <tt/auth/ and <tt/sess/ features, also.
+
+<tag>user</tag>
+<p>
+This page makes use of user variables. If you specify
+the <tt/user/ feature, you MUST specify the <tt/auth/ and
+<tt/sess/ features, also.
+</descrip>
+
+Each feature specifies the name of the class that implements that feature,
+for example
+
+<code>
+  page&lowbar;open(array("sess" =&gt; "Shop&lowbar;Session"));
+</code>
+
+The function creates an instance of <tt/Shop&lowbar;Session/ as
+<tt/$sess/ and initializes it. It also checks feature
+dependencies. Note that you are expected to provide an
+implementation of the class <tt/Shop&lowbar;Session/. This is
+usually done in <tt/local.inc/ and usually you do so by
+extending the provided <tt/Session/ class.
+
+Examples on how to do this is given in the documentation below
+when the classes are introduced.
+
+<tag>page&lowbar;close()</tag>
+<p>
+
+At the end of your page (after all results have been calculated)
+you have to call <tt/page&lowbar;close()/. This will save all
+page state, session and user variables into database. Changes to
+session or user variables after <tt/page&lowbar;close()/ has
+been called are not recorded. Currently it is allowed to call
+<tt/page&lowbar;close()/ multiple times on a single page (not
+guaranteed for future versions!). Each time session state will be
+saved.
+
+<em/Note:/ This is going to change. When we introduce record
+locking, it is important that you call <tt/page&lowbar;close()/ only
+once per page, because that will implicitly unlock your session
+record. Also, it is important that you call <tt/page&lowbar;close()/ as
+early as possible on a page so that the locking time is kept
+minimal.
+
+<tag>sess&lowbar;load(array("var" => "classname")</tag>
+<p> 
+
+<em/Advanced feature/. Some applications have need to manually
+load data belonging to one or multiple session classes. @@TODO
+
+<tag>sess&lowbar;save(array("var" => "classname"))</tag>
+
+<em/Advanced feature/. @@TODO
+
+</descrip>
+
+<sect2>Example
+<p>
+
+<tscreen><code>
+&lt;?php
+  page&lowbar;open(array("sess" =&gt; "Shop&lowbar;Session"));
+  $sess-&gt;register("s");  // See "Session" below for explanation.
+ ?&gt;
+&lt;html&gt;
+&lt;h1&gt;&lt;?php print ++$s ?&gt;&lt;/h1&gt;
+&lt;/html&gt;
+&lt;?php page&lowbar;close(); ?&gt;
+</code></tscreen>
+
+<sect2>The "cart" feature is gone
+<p> 
+There used to be a feature "cart" for <tt/page&lowbar;open()/ in
+versions of PHPLIB up to release-5. The cart has been removed
+from the core functionality of PHPLIB to keep the library small,
+maintainable and structured. Consequently the "cart" feature is
+gone.
+
+The <tt/Cart/ class is still present and exists as an extended
+feature. You have to include and instantiate your cart manually
+on that pages that use it, though. See the <tt/Cart/ class for
+more information.
+

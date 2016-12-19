@@ -1,0 +1,48 @@
+<!-- $Id: -->
+<sect1>Class documentation template
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+
+<tag>fn()</tag>
+<p> 
+
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+<descrip>
+<tag>fn()</tag>
+<p>
+</descrip>
+
+<sect2>Example
+<p>
+
+Use 
+
+<tscreen><code>
+
+</code></tscreen>

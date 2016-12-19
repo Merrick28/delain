@@ -1,0 +1,40 @@
+#
+# This should work for mSQL 2.x
+#
+# $Id: create_database.msql,v 1.1.1.1 2000/04/17 16:40:17 kk Exp $
+
+CREATE TABLE active_sessions (
+  sid char(32),
+  name char(32),
+  val text(300),
+  changed char(14),
+) \g
+
+CREATE TABLE active_sessions_split (
+  ct_sid char(32),
+  ct_name char(32),
+  ct_pos char(6),
+  ct_val text(300),
+  ct_changed char(14)
+) \g
+
+CREATE TABLE auth_user (
+  user_id char(32),
+  username char(32),
+  password char(32),
+  perms char(255)
+) \g
+
+CREATE TABLE auth_user_md5 (
+  user_id char(32),
+  username char(32),
+  password char(32),
+  perms char(255)
+) \g
+
+CREATE UNIQUE INDEX session_index ON active_sessions (sid,name) \g
+CREATE UNIQUE INDEX split_session_index ON active_sessions_split (ct_sid,ct_name,ct_pos) \g
+CREATE UNIQUE INDEX user_index ON auth_user (user_id) \g
+
+INSERT INTO auth_user VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','test','admin') \g
+INSERT INTO auth_user_md5 VALUES ('c14cbf141ab1b7cd009356f555b607dc','kris','098f6bcd4621d373cade4e832627b4f6','admin') \g

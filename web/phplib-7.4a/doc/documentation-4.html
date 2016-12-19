@@ -1,0 +1,767 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: Extended functionality</TITLE>
+ <LINK HREF="documentation-5.html" REL=next>
+ <LINK HREF="documentation-3.html" REL=previous>
+ <LINK HREF="documentation.html#toc4" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="documentation-5.html">Next</A>
+<A HREF="documentation-3.html">Previous</A>
+<A HREF="documentation.html#toc4">Contents</A>
+<HR>
+<H2><A NAME="s4">4.</A> <A HREF="documentation.html#toc4">Extended functionality</A></H2>
+
+
+<P>The section on extended functionality covers non-GUI classes
+that provide often needed application functions without a user
+interface. Some extended classes depend on core functionality,
+some contain independent classes.</P>
+<P>Extended classes are treated differently from core classes in
+that their code is not automatically included by
+<CODE>prepend.php3</CODE>. You have to include the class definition
+manually where needed or you modify <CODE>prepend.php3</CODE>.
+</P>
+
+<H2><A NAME="ss4.1">4.1</A> <A HREF="documentation.html#toc4.1">Cart</A>
+</H2>
+
+
+<P>The Cart class is programmatically independent, but makes sense
+only if its instances are made persistent in some way. The Cart
+class automatically registers itself as a session variable in
+its <CODE>start()</CODE> function.</P>
+<P>Cart implements a shopping cart. At the moment, items within the
+shopping cart are independent of each other; the cart can only
+hold simple things. Support for compound articles that require
+other articles to function and provide a base for dependent
+articles is to be added at a future time.</P>
+<P>An example of a simple article is any article with no options,
+for example an apple or a book. Common examples for compound
+articles are a pizza (which requires a foundation in either
+American or Italian style, a selection of toppings, and cheese,
+to function correctly) and a computer system (which requires a
+housing, a motherboard, RAM, a video card, etc to function
+correctly).</P>
+<P><EM>Note:</EM> <CODE>Cart</CODE> was a core class up to <EM>release-5</EM>. If
+your applications uses the <CODE>Cart</CODE> class, you <EM>must</EM>
+manually add the statement <CODE>include("cart.inc")</CODE> to your
+<CODE>prepend.php3</CODE> file where indicated in that file.</P>
+<P><EM>Note:</EM> The page management functions do no longer support
+the feature <CODE>cart</CODE> to set up and start the cart class. It is
+recommended that you use <CODE>Session</CODE>'s <CODE>auto_init</CODE> feature
+instead to start your cart automatically or that you manually
+set up your cart.</P>
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>Serialization helper: The name of this class.</TD></TR><TR><TD>
+persistent_slots</TD><TD>Serialization helper: The names of all persistent slots.</TD></TR><TR><TD>
+item</TD><TD>Multidimensional array of items in the cart.</TD></TR><TR><TD>
+currentItem</TD><TD>A counter for item positions.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+
+<DT><B>check($art)</B><DD><P> 
+Checks that an item with the given article number <CODE>$art</CODE> is
+in the cart. Returns an array of a boolean value and an integer
+number. If the boolean is true, there are number many articles
+of that article number in the cart.</P>
+
+<DT><B>reset()</B><DD><P> 
+Deletes all items in current cart, resetting $this->currentItem to
+1. Always returns true.</P>
+
+<DT><B>num_items()</B><DD><P>Returns the number of articles in the current shopping cart, or
+false if cart is empty. For compatibility reasons, this function
+is available as <CODE>tot_arts</CODE> as well (but will print
+a warning if used by this name).</P>
+
+<DT><B>add_item($art, $num)</B><DD><P>Add <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> to the current
+shopping cart. Returns the position number of <CODE>$art</CODE> in the
+shopping cart.</P>
+
+<DT><B>remove_item</B><DD><P>Remove <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> from the
+shopping cart, if there are at least that many articles in the
+cart. Returns the position number of <CODE>$art</CODE> in the shopping cart
+or false, if there weren't enough <CODE>$art</CODE> to remove them from the
+cart. If the function does return false, the cart has not been
+modified.</P>
+
+<DT><B>set_item</B><DD><P>Set the quantity of article number <CODE>$art</CODE> in the shopping cart to 
+exactly <CODE>$num</CODE>. If <CODE>$num</CODE> is set to zero, article is removed from
+cart. Returns the position number of <CODE>$art</CODE> in the shopping cart.</P>
+
+<DT><B>show_all()</B><DD><P>If the shopping cart is empty, it will call
+<CODE>show_empty_cart()</CODE> once and then return.</P>
+<P>Calls <CODE>show_item_open()</CODE> once at the beginning of a shopping
+cart listing. Then calls <CODE>show_item()</CODE> once for each item in
+the shopping cart. Calls <CODE>show_item_close()</CODE> once at the end
+of a shopping cart listing.</P>
+
+<DT><B>show_item($art, $num)</B><DD><P>This function should be provided by the user. It renders the
+HTML to display a single item from the cart. <CODE>$art</CODE> is the
+article number of the item and there are <CODE>$num</CODE> of these in
+the cart.</P>
+
+<DT><B>show_cart_open()</B><DD><P>This function should be provided by the user. It renders the
+prologue HTML to display a shopping cart listing.</P>
+
+<DT><B>show_cart_close()</B><DD><P>This function should be provided by the user. It renders the
+epilogue HTML to display a shopping cart listing.</P>
+
+<DT><B>show_empty_cart</B><DD><P>This function should be provided by the user. It should render
+an appropriate message to symolize an empty cart.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+
+<P>Use a subclass of <CODE>Cart</CODE> to provide an implementation of
+<CODE>show_item()</CODE>.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class My_Cart extends Cart {
+  var $classname = "My_Cart";
+
+  // Look up article numbers...
+  var $database_class = "DB_Article";
+  var $database_table = "articles";
+  var $db;
+  
+  var $sum = 0;
+
+  function show_cart_open() {
+    printf("&lt;table class=cart_table&gt;\n");
+    $this-&gt;sum = 0;
+  }
+  
+  function show_cart_close() {
+    printf("&lt;/table&gt;\n");
+    printf("That's a total of %s.\n", $this-&gt;sum);
+  }
+
+  function show_item($art, $num) {
+    if (!is_object($this-&gt;db)) {
+      $class    = $this-&gt;database_class;
+      $this-&gt;db = new $class;
+    }
+    
+    $query = sprintf("select * from %s where artid = '%s'",
+      $this-&gt;database_table,
+      $art);
+    $this-&gt;db-&gt;query($query);
+
+    while($this-&gt;db-&gt;next_record()) {
+      printf(" &lt;tr class=cart_row&gt;\n  &lt;td class=cart_cell&gt;%s&lt;/td&gt;\n",
+        $this-&gt;db-&gt;Record["name"]);
+      printf("  &lt;td class=cart_cell&gt;%s&lt;/td&gt;\n", 
+        $this-&gt;db-&gt;Record["price"]);
+      printf("  &lt;td class=cart_cell&gt;%s&lt;/td&gt;\n",
+        $num);
+      $rowsum = $num * $this-&gt;db-&gt;Record["price"];
+      $this-&gt;sum += $rowsum;
+      printf("  &lt;td class=cart_cell&gt;%s&lt;/td&gt;\n",
+        $rowsum);
+      printf(" &lt;/tr&gt;\n");
+    }
+  }
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>To use a cart, create an instance of your <CODE>Cart</CODE> subclass and
+call <CODE>start()</CODE>. This will automatically register <CODE>cart</CODE>.</P>
+<P>It is recommended that you set in your <CODE>Session</CODE> subclass
+in <CODE>local.inc</CODE> the slot <CODE>$auto_init</CODE> to the value
+<CODE>setup.inc</CODE> and create an include file of that name which
+contains the following code:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  global $cart;               ## $cart is a global variable.
+  $cart = new My_Cart; ## Make a My_Cart instance named $cart
+  $cart-&gt;start();          ## and have it register itself.
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use <CODE>add_item()</CODE> and <CODE>remove_item</CODE> to work with your Cart:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $cart-&gt;add_item("101", 2);    ## Add two pieces of "101"
+  $cart-&gt;remove_item("101", 1); ## Drop one piece of "101"
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Use <CODE>show_all()</CODE> to display the contents of your cart.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  $cart-&gt;show_all();    ## What's in a cart, anyway?
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3>On using Cart</H3>
+
+<P>To make use of the Cart class, you need to define a new table
+in your database that lists all articles you shop should sell.
+With PHPLIB and MySQL we recommend that you create a new
+instance of PHPLIB for each virtual web server and a new database
+for each customer. This database should hold the
+active_sessions and auth_user tables as well as all
+application specific tables like for example the article
+list. In other words, with MySQL we strongly discourage
+that you use PHPLIB and the MySQL directive <CODE>use</CODE>
+<EM>database_name</EM> together. There is no support
+if you do (there is no support if you do as we say, too,
+because PHPLIB is an open source product you are using on your
+own risk, but ...).</P>
+<P>So let us assume you define a very simple new table <CODE>articles</CODE>
+with a structure like this:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+#
+# Table structure for table 'articles'
+#
+CREATE TABLE articles (
+  name text,
+  price float(8,2),
+  artid int(11) DEFAULT '0' NOT NULL auto_increment,
+  PRIMARY KEY (artid)
+);
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This table has an article number called <CODE>artid</CODE>, and for each
+<CODE>artid</CODE>  there is an article description <CODE>name</CODE> and a <CODE>price</CODE>. You
+may extend this minimal definition for your purposes by adding
+article groups, BLOBs with article images and more, but this will
+suffice for our example purposes.</P>
+<P>Populate this table with some products that suit your taste.</P>
+<P>The next step is to teach PHPLIB about the cart class. Three
+steps are necessary to do so:</P>
+<P>
+<UL>
+<LI>the <CODE>Cart</CODE> class has to be included on every page. Even on
+that pages that do not make use of the <CODE>Cart</CODE> class.
+
+On that pages that use <CODE>Cart</CODE>, a cart subclass is instantiated and
+saved. On all subsequent pages, that <CODE>Cart</CODE> object is recreated and
+to be able to recreate the <CODE>Cart</CODE> object, PHP must know what a <CODE>Cart</CODE>
+object is. Since you cannot know which pages a user loads after
+he has put the first item into the <CODE>Cart</CODE>, we need to have a
+definition for <CODE>Cart</CODE> on <EM>all</EM> pages.
+
+The proper place to include the <CODE>Cart</CODE> definition from <CODE>cart.inc</CODE> is
+consequently <CODE>prepend.php3</CODE>. Edit <CODE>prepend.php3</CODE> and
+<CODE>require("cart.inc")</CODE> as indicated by the comments in that file.
+</LI>
+<LI>a subclass of <CODE>Cart</CODE> has to be created to suit your tastes.
+
+Your subclass of <CODE>Cart</CODE> will be called <CODE>Example_Cart</CODE> in this example.
+You may actually name it as you like, but you have to be
+consistent.
+
+The definition of <CODE>Example_Cart</CODE> goes into <CODE>local.inc</CODE> anywhere below
+your definition for <CODE>Example_Session</CODE>. It looks like this
+
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class Example_Cart extends Cart {
+  var $classname = "Example_Cart";
+
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+
+and we will add additional code later in this example. That
+additional code will teach your shopping cart about the database
+table that holds your articles and so on.
+</LI>
+<LI>finally, you need to create an instance of your shopping cart
+class so that you have an object that actually holds the articles
+selected by the user.
+
+We will use a very nifty feature of PHPLIB to create that object
+instance: If you set up PHPLIB properly, it is able to load and
+execute an include file every time a session is being created. We
+call this feature <CODE>auto_init</CODE>, after the instance variable of
+Session that controls it.
+
+Go into <CODE>local.inc</CODE> and edit your subclass of <CODE>Session</CODE>. You will
+have some code like
+
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+class Example_Session extends Session {
+  var $classname = "Example_Session";
+
+...
+}
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+
+in your <CODE>local.inc</CODE>. Add
+a line like
+
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+  var $auto_init = "setup.inc",
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+
+to your definition of <CODE>Example_Session</CODE> and create a file
+<CODE>setup.inc</CODE> in the same directory that holds your local.inc.
+Whatever code is in this file will be executed every time we
+create a new session. The code is being executed after your
+<CODE>$sess</CODE>, <CODE>$auth</CODE> and <CODE>$perm</CODE> objects are loaded and
+initialized, but does run from within a function context. You
+have to <CODE>global</CODE> everything you define to export it from that
+function context.
+
+In <CODE>setup.inc</CODE>, create a global instance of
+<CODE>Example_Cart</CODE> named <CODE>$cart</CODE> and register that variable
+with PHPLIB:
+
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  global $cart;
+  $cart = new Example_Cart;
+
+  // $sess is already global
+  $sess->register("cart");
+ ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</LI>
+</UL>
+</P>
+<P>Now you have a <CODE>$cart</CODE> object available by default on every
+page that uses PHPLIB. That object is created automatically at
+session startup, is carried from page to page by PHPLIBs session
+management and is destroyed by the garbage collection that reaps
+session records. You do not have to worry anymore about that
+cart, but simply use it anytime between <CODE>page_open()</CODE>
+and <CODE>page_close()</CODE>. PHPLIB does the rest for you.</P>
+<P>The <CODE>Cart</CODE> class is actually dead stupid. It maintains an array
+<CODE>$cart-&gt;item[]</CODE> that holds records about what the user bought. Each
+<CODE>$cart-&gt;item[$x]</CODE> consists of a
+<CODE>$cart-&gt;item[$x]["art"]</CODE>, which is
+the article number of an item the user wants to buy and of a
+<CODE>$cart-&gt;item[$x]["num"]</CODE>, which is the # of items with that article
+number that are wanted. <CODE>$cart-&gt;currentItem</CODE> is the next $x to use
+for articles added to <CODE>$cart-&gt;item[]</CODE>.</P>
+<P>You add articles to the shopping cart with</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$x = $cart->add_item($art, $num)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This will add <CODE>$num</CODE> items with the article number <CODE>$art</CODE>
+to your cart contents. If you already have an item with that
+article number in your cart, the count for that article is
+increased by <CODE>$num</CODE>. Otherwise a new article entry is being
+created and set to <CODE>$num</CODE>. The function does return the
+<CODE>$x</CODE> index into the <CODE>$cart-&gt;item[]</CODE> array for that article.</P>
+<P>To remove an item from the shopping cart, code</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$x = $cart->remove_item($art, $num)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This will remove <CODE>$num</CODE> items with the article number
+<CODE>$art</CODE> from your cart, if there are that many items in your
+shopping cart. If you do not have the <CODE>$art</CODE> in your cart or
+there are not <CODE>$num</CODE> many <CODE>$art</CODE> in your cart, the
+function will return false and not remove anything from the
+cart. Otherwise, <CODE>$num</CODE> articles with article number
+<CODE>$art</CODE> are taken out of the cart and if the count for that
+article drops to zero while doing this, we even unset the array
+element.</P>
+<P>You may check how many articles with a given article number are
+in the cart:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+list($have, $num) = $cart->check($art)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The check function does return a two-element array. The first
+element <CODE>$have</CODE> is true, if we have the wanted article in the cart.
+If <CODE>$have</CODE> is true, <CODE>$num</CODE> holds the number of articles with that
+number in the cart, otherwise <CODE>$num</CODE> is undefined (actually, it is
+0, but you must not rely on that).</P>
+<P>Finally, we have a function</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+$cart->show_all()
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>which you may call to walk your shopping cart and have
+Example_Cart to generate a list of articles in your cart. That
+function will first call <CODE>$cart-&gt;show_cart_open()</CODE>, for which you
+may provide code in your subclass. It will then call
+<CODE>$cart-&gt;show_item($art, $num)</CODE> for each item in the cart. We have a
+stupid default implementation for that function in Cart, but you
+may provide more sophisticated code in <CODE>Example_Cart</CODE> for that, too.
+Finally, at the end of your cart listing,
+<CODE>$cart-&gt;show_cart_close()</CODE> is being called, which again may be code
+of yours.</P>
+<P>The example in the previous section shows a more
+sophisticated implementation of a Cart subclass. That
+implementation uses show_cart_open() to create an opening 
+table tag (formatted with a CSS class) and sets a counter
+<CODE>$cart-&gt;sum</CODE> to
+zero.</P>
+<P>In show_cart_close(), the table is being closed and the
+<CODE>$cart-&gt;sum</CODE> counter is printed.</P>
+<P>As you might have guessed, <CODE>show_item($art, $num)</CODE> queries the
+database for each article number, retrieves the article
+description and prices and finally sums up all prices, taking the
+number of articles per article into consideration. It also
+generates table rows, printing a nice receipt for the customer.
+</P>
+<H2><A NAME="ss4.2">4.2</A> <A HREF="documentation.html#toc4.2">Template</A>
+</H2>
+
+<P><EM>Note:</EM> If you think that this is like FastTemplates, read
+carefully. It isn't.</P>
+
+<P> 
+The template class allows you to keep your HTML code in some
+external files which are completely free of PHP code, but
+contain replacement fields. The class provides you with
+functions which can fill in the replacement fields with
+arbitrary strings. These strings can become very large, e.g.
+entire tables.</P>
+
+
+<H3>Instance variables</H3>
+
+
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+classname</TD><TD>String. Serialization helper: The name of this class.</TD></TR><TR><TD>
+debug</TD><TD>Boolean: if set to true, the class will emitdebugging output.</TD></TR><TR><TD>
+unknowns</TD><TD>One of "keep", "comment", "remove" (Default).Determines how to handle unresolved variable names intemplates upon output. If set to "keep", those are leftuntouched. If set to "comment", unresolved variable names aretransformed into HTML comments reporting the error. If set to"remove", unresolved variable names are silently removed (thedefault).</TD></TR><TR><TD>
+halt_on_error = "yes"</TD><TD>One of "yes"(Default), "report", "no". Determines how Template handleserror conditions. If set to "yes" (the Default), the error isreported, then execution is halted. If set to "report", theerror is reported, then execution continues by returning"false". If set to "no", errors are silently ignored, andexecution resumes reporting "false".</TD></TR><TR><TD>
+last_error = ""</TD><TD>The last error message iskept in this variable.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Accessible instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+<P>
+<BR><CENTER>
+<TABLE BORDER><TR><TD>
+file</TD><TD>Hash of strings. A translation table whichtranslates variable names into filenames.</TD></TR><TR><TD>
+root</TD><TD>String (Pathname). The base directory from whichtemplate files are being loaded.</TD></TR><TR><TD>
+varkeys</TD><TD>Hash of strings. A translation table whichtranslates variable names into regular expressions forthemselves.</TD></TR><TR><TD>
+varvals</TD><TD>Hash of strings. A translation table whichtranslates variable names into replacement values for theirrespective varkeys.</TD></TR><TR><TD>
+</TD></TR></TABLE>
+<CAPTION>Internal instance variables.</CAPTION>
+</CENTER><BR>
+</P>
+
+<H3>Instance methods</H3>
+
+
+
+<H3>Accessible instance methods</H3>
+
+
+<P>
+<DL>
+<DT><B>Template($root = ".", $unknowns = "remove")</B><DD><P>Constructor. May be called with two optional parameters. The
+first parameter sets the template directory (see
+<CODE>set_root()</CODE>, the second parameter sets the policy
+regarding handling of unknown variables.</P>
+
+<DT><B>set_root($root)</B><DD><P>The function checks that $root is a valid directory and sets
+this directory as the base directory where templates are being
+stored.</P>
+
+<DT><B>set_unknowns($unknowns = "keep")</B><DD><P>The function sets the policy for dealing with unresolved
+variable names. Must be either "remove", "comment" or "keep". If
+set to "keep", those are left untouched. If set to "comment",
+unresolved variable names are transformed into HTML comments
+reporting the error. If set to "remove", unresolved variable
+names are silently removed (the default).</P>
+
+<DT><B>set_file($varname, $filename = "")</B><DD><P>The function defines a filename for the initial value of a
+variable. It may be called with either a $varname/$filename pair
+or with a hash of $varname/$filename pairs. The files are not
+referenced yet, but only when needed.</P>
+
+<DT><B>set_block($parent, $varname, $name = "")</B><DD><P>A variable $parent may contain a variable block named by
+$varname. The function removes that block from $parent and
+replaces it with a variable reference named $name. If $name is
+omitted, it is assumed to be the same as $varname.</P>
+
+<DT><B>set_var($varname, $value = "")</B><DD><P>The functions sets the inital value of a variable. It may be
+called with either a $varname/$value pair or with a hash of
+$varname/$value pairs.</P>
+
+<DT><B>clear_var($varname)</B><DD><P>The functions clears the value of a variable. It may be
+called with either a $varname string or with an array of
+$varname strings.</P>
+
+<DT><B>unset_var($varname)</B><DD><P>The functions unsets a variable. It may be
+called with either a $varname string or with an array of
+$varname strings.</P>
+
+<DT><B>subst($varname)</B><DD><P>The function returns the value of the variable named $varname,
+with all defined variable values filled in. The resulting string
+is not "finished", that is, the unresolved variable name policy
+has not been applied yet.</P>
+
+<DT><B>psubst($varname)</B><DD><P>This is a shorthand for <CODE>print $this->subst($varname)</CODE>.</P>
+
+<DT><B>parse($target, $varname, $append = false)</B><DD><P>The function substitutes the values of all defined variables in
+the variable named $varname and stores or appends the result in
+the variable named $target.</P>
+<P>If $varname is an array of variable names, $append is ignored.
+The variables named by $varname are being sequentially
+substituted and the result of each substitution step is stored
+in $target. The resulting substitution is available in the
+variable named by $target, as is each intermediate step for the
+next $varname in sequence.</P>
+
+<DT><B>pparse($target, $varname, $append = false)</B><DD><P>A shorthand for <CODE>print $this->parse(...)</CODE>.</P>
+
+<DT><B>get_vars()</B><DD><P>Returns a hash of all defined values, keyed by their names.</P>
+
+<DT><B>get_var($varname)</B><DD><P>Returns the value of the variable named by $varname. If $varname
+references a file and that file has not been loaded, yet, the
+variable will be reported as empty.</P>
+<P>When called with an array of variable names, an hash of values,
+keyed by their names, will be returned.</P>
+
+<DT><B>get_undefined($varname)</B><DD><P>The function will return a hash of unresolved variable names in
+$varname, keyed by their names (that is, the hash has the form
+$a[$name] = $name).</P>
+
+<DT><B>finish($str)</B><DD><P>The function will returned the finished version of $str, that
+is, the policy regarding unresolved variable names will be
+applied to $str.</P>
+
+<DT><B>p($varname)</B><DD><P>The function will print the finished version of the value of the
+variable named by $varname.</P>
+
+<DT><B>get($varname)</B><DD><P>The function will return the finished version of the value of
+the variable named by $varname.</P>
+
+<DT><B>haltmsg($msg)</B><DD><P>This function can be overridden by your subclass of Template. It
+will be called with an error message to print.</P>
+</DL>
+</P>
+
+<H3>Internal instance methods</H3>
+
+<P>
+<DL>
+<DT><B>filename($filename)</B><DD><P>When called with a relative pathname, this function will return
+the pathname with $this->root prepended. Absolute pathnames are
+taken unchanged.</P>
+<P>The resulting filename must exist, or an error is generated.</P>
+
+<DT><B>varname($varname)</B><DD><P>The function will construct a variable name regexp for a given
+variable name.</P>
+
+<DT><B>loadfile($varname)</B><DD><P>If a variable is undefined or empty and is backed by a filename,
+the backing file will be loaded and the files contents will be
+assigned as the variables value.</P>
+
+<DT><B>halt($msg)</B><DD><P>This function is called whenever an error occurs and will handle
+the error according to the policy defined in
+$this->halt_on_error.</P>
+</DL>
+</P>
+
+<H3>Example</H3>
+
+<P>The class manages a set of variables which are text strings.
+These strings may contain references to other variables in the
+form of "{variable}". When parsed or substituted, a variable
+reference is being replaced by the value of that variable.</P>
+<P>A variable value may be defined manually by calling
+<CODE>set_var("name", "value");</CODE> or it may be defined from
+a file by calling <CODE>set_file("name",
+"filename.ihtml");</CODE>. In the latter case, the contents of the
+file are being loaded when needed (as late as possible) and set
+as the value of that variable.</P>
+<P>A third way to define a variable value is to call
+<CODE>set_block("parent", "block", "name");</CODE>. In this case,
+the variable named <CODE>parent</CODE> is being searched for a block
+that starts with <CODE>&lt;!-- BEGIN block --&gt;</CODE> and ends
+with <CODE>&lt;!-- END block --&gt;</CODE>. This string is removed
+from the variable <CODE>parent</CODE> and assigned to the variable named
+<CODE>block</CODE>. In <CODE>parent</CODE>, a variable reference to <CODE>name</CODE> is
+placed instead. If the optional parameter <CODE>"name"</CODE> is left
+out, <CODE>"block"</CODE> is being used instead.</P>
+<P>Use <CODE>Template</CODE> direcly or define a subclass of <CODE>Template</CODE>
+as needed.</P>
+<P>Define a template file named page.ihtml as follows:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;html&gt;
+ &lt;head&gt;&lt;title&gt;{PAGETITLE}&lt;/title&gt;&lt;/head&gt;
+ &lt;body bgcolor="#ffffff"&gt;
+ &lt;table border=1 cellpadding=4 cellspacing=0 bgcolor="#eeeeee"&gt;
+  &lt;tr&gt;
+   &lt;td colspan=2&gt;&lt;h1&gt;{PAGETITLE}&lt;/h1&gt;&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td&gt;{OUT}&lt;/td&gt;
+   &lt;td&gt;Content&lt;/td&gt;
+  &lt;/tr&gt;
+ &lt;/table&gt;
+ &lt;/body&gt;
+&lt;/html&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This file contains a reference to the variable <CODE>pagetitle</CODE>
+and a reference to the variable named <CODE>out</CODE>. Another template 
+file, named box.ihtml, contains a block named row with three
+variable references {TITLE}, {NUM} and {BIGNUM}:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;!-- start box.ihtml --&gt;
+&lt;table border=1 bgcolor="#cccccc" cellpadding=4 cellspacing=0&gt;
+ &lt;tr&gt;
+  &lt;td colspan=2&gt;&lt;b&gt;{TITLE}&lt;/b&gt;&lt;/td&gt;
+ &lt;/tr&gt;
+  &lt;!-- BEGIN row --&gt;
+  &lt;tr&gt;
+   &lt;td&gt;{NUM}&lt;/td&gt;
+   &lt;td&gt;{BIGNUM}
+  &lt;/tr&gt;
+  &lt;!-- END row --&gt;
+&lt;/table&gt;
+&lt;!-- end box.ihtml --&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The following php3 file demonstrates how to use these templates:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;?php
+  include("./template.inc");
+
+  # create Template instance called $t  
+  $t = new Template("/page/to/webserver/template", "keep");
+
+  # define variables named page and box, referencing files
+  $t-&gt;set_file(array(
+     "page" =&gt; "page.ihtml",
+     "box"  =&gt; "box.ihtml"));
+
+  # extract the block named "row" from "box", creating a
+  # reference to {rows} in "box".
+  $t-&gt;set_block("box", "row", "rows");
+
+  # define the variables TITLE and PAGETITLE
+  $t-&gt;set_var(array("TITLE"     =&gt; "Testpage",
+                    "PAGETITLE" =&gt; "hugo"));
+
+  # define NUM and BIGNUM, then append "row" to "rows"...
+  for ($i=1; $i&lt;=3; $i++) {
+    $n  = $i;
+    $nn = $i*10;
+    $t-&gt;set_var(array("NUM" =&gt; $n, "BIGNUM" =&gt; $nn));
+    $t-&gt;parse("rows", "row", true);
+  }
+
+  # build out from box, then build out from page...
+  $t-&gt;parse("OUT", array("box", "page"));
+
+  # finish out and print it.
+  $t-&gt;p("OUT");
+?&gt;
+&lt;hr&gt;
+&lt;?php
+  # report leftover variables, if any.
+  print implode(", ", $t-&gt;get_undefined("rows"));
+ ?&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+
+</P>
+
+
+<HR>
+<A HREF="documentation-5.html">Next</A>
+<A HREF="documentation-3.html">Previous</A>
+<A HREF="documentation.html#toc4">Contents</A>
+</BODY>
+</HTML>

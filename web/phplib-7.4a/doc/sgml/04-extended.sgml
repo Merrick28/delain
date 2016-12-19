@@ -1,0 +1,14 @@
+<!-- $Id: 04-extended.sgml,v 1.1.1.1 2000/04/17 16:40:03 kk Exp $ -->
+
+<sect>Extended functionality
+<p>
+
+The section on extended functionality covers non-GUI classes
+that provide often needed application functions without a user
+interface. Some extended classes depend on core functionality,
+some contain independent classes.
+
+Extended classes are treated differently from core classes in
+that their code is not automatically included by
+<tt/prepend.php3/. You have to include the class definition
+manually where needed or you modify <tt/prepend.php3/.

@@ -1,0 +1,116 @@
+<!-- $Id: 02-procedure.sgml,v 1.2 2001/08/13 12:30:06 richardarcher Exp $ -->
+
+<sect1>Installation procedure 
+
+<p><tt/mod&lowbar;php/ note: The following instructions apply
+to the CGI version of PHP as well as to the module version. If
+you are working with <tt/mod&lowbar;php/, you must restart your
+web server to force a reload of the <tt/php3.ini/ file, though.
+
+If you are using <tt/mod&lowbar;php/, you have additional
+configuration options: See the section below on using PHPLIB
+mit <tt/mod&lowbar;php/.
+
+<descrip>
+
+<tag>Library Setup</tag>
+
+Create a directory php next to your cgi:
+
+<tscreen><code>
+/home/www/servers/www.example.com/pages   &lt;- document root
+                                  cgi     &lt;- php binary
+                                  php     &lt;- includes and prepends
+</code></tscreen>
+
+Make this php directory your php include directory: Put
+<tt>include&lowbar;path = /home/www/servers/www.example.com/php</tt>
+into <tt>cgi/php3.ini</tt>. If you already have an include path
+defined in your setup, add the PHPLIB include path to the
+existing include path using the separator character applicable
+for your operating system (":" on UNIX, ";" on Windows).
+Defining an include path will not actually include code on your
+pages; it only tells the PHP interpreter in which directories to
+look for files referenced in <tt/require()/ and <tt/include()/
+statements.
+
+Into the <tt/php/ directory go all the files from the <tt/php/
+directory of the distribution. Into documentroot, put all the
+files and directories from the <tt/pages/ directory of the
+distribution.
+
+Have <tt/documentation.txt/ handy and read it.
+
+<tag>Database access with MySQL</tag>
+
+The following information applies to MySQL only. No information
+is provided for other database servers as of now. You are
+encouraged to copy this section, adapt it for your database
+server and submit it to the authors. It will be included in
+further releases of PHPLIB.
+
+Edit <tt/prepend.php3/. Change the first <tt/require()/
+statement to <tt/require("db&lowbar;mysql.inc");/. This will
+include the MySQL database interface (Interfaces for other
+databases are provided in
+<tt/db&lowbar;&lt;databasename&gt;.inc/. The <tt/require()/
+statement has to be adapted to reflect this).
+
+Assuming your database server is named <tt/database.example.com/
+and your CGI user is <tt/webuser/ and you are accessing the
+database <tt/myapp/, do
+
+<tscreen><code>
+mysql -h database -u webuser myapp
+</code></tscreen>
+
+If it does not work, connect your database as administrator and
+create the proper mysql access permissions. Adapt and run
+<tt/create&lowbar;database.mysql/ from the <tt/stuff/
+subdirectory of the distribution to create the databases
+<tt/active&lowbar;sessions/ and <tt/auth&lowbar;user/ as well as
+the sample user <tt/kris/ with password <tt/test/. Try again to
+connect like shown above. Can you do <tt/select * from
+active&lowbar;sessions/? and <tt/insert into
+active&lowbar;sessions values ("1", "2", "3", "")/ as well as
+<tt/delete from active&lowbar;sessions/? Can you <tt/select *
+from auth&lowbar;user/?
+
+<em/Note:/ Additional database creation scripts are provided for
+several different databases in the <tt/stuff/ directory of the
+distribution.
+
+<tag>Merging the library with your PHP files</tag>
+
+Decide if you want to use <tt/include/ or
+<tt/auto&lowbar;prepend&lowbar;file/. We do use
+<tt/auto&lowbar;prepend&lowbar;file/
+here and we add the statement
+<tt>auto&lowbar;prepend&lowbar;file =
+/home/www/servers/www.example.com/php/prepend.php3</tt> to our
+<tt/php3.ini/.
+
+Not all classes are included/required by <tt/prepend.php3/, only
+core functionality files are: <tt/db&lowbar;xxx.inc/,
+<tt/ct&lowbar;sql.inc/, <tt/session.inc/,
+<tt/auth.inc/, <tt/perm.inc/, <tt/user.inc/, <tt/local.inc/ and
+<tt/page.inc/. The library provides other, less essential
+classes that can be included manually on a page-by-page basis.
+Some classes make themselves persistent, if used. These classes
+require that you include their definitions in the
+<tt/prepend.php3/ file where indicated to function correctly.
+See the usage instructions for these classes for details.
+
+Having done this, access <tt>/index.php3</tt>. The counter
+should increment when that page is being reloaded. Also, checking
+<tt/active&lowbar;sessions/ in the database should reflect that
+session.
+
+<tag>Subscribe for support</tag>
+
+The <htmlurl url="mailto:phplib-users@lists.sourceforge.net" name="PHPLIB
+support mailing list"> is available should you run into problems
+with the library. To subscribe to the list, send a message with
+<tt/subscribe/ as the subject to the address
+<tt/phplib-users-request@lists.sourceforge.net/.
+</descrip>

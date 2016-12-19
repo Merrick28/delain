@@ -1,0 +1,97 @@
+<!-- $Id: 01-qinstgui.sgml,v 1.1.1.1 2000/04/17 16:39:58 kk Exp $ -->
+
+<sect1>Quick Guide to Installation
+<p>
+
+These instructions apply to PHPLIB running with CGI PHP. Most of
+them are valid for mod&lowbar;php as well, though. <em>VERY
+IMPORTANT NOTE:</em> This is a quick installation guide to get
+you started if you have an installation where you control the
+web server, PHP interpreter and database server completely. They
+are not suitable for a web hosting setup where you have only
+limited to no control over the installation. Refer to Chapter 2
+of this documentation for the complete installation instructions
+and troubleshooting information.
+
+Before installing PHPLIB, get your web server up and running and
+have it executing files with the extension .php3. Check that
+with a simple <tt/&lt;?php phpinfo() ?&gt;/ script. Make sure
+the web server accepts <tt/index.php3/ as well as <tt/index.html/
+as a default file for URLs ending in "/" (Apache:
+<tt/DirectoryIndex index.html index.php3/).
+
+Get your MySQL database server up an running. Create an empty
+database for your application and make sure the owner of your
+web server processes can access this database with <tt/SELECT/,
+<tt/INSERT/, <tt/UPDATE/ and <tt/DELETE/ access. Don't forget
+the <tt/mysqladmin reload/ after changing the user and db tables.
+
+<descrip>
+<tag>Step 1</tag>
+<p>Create an include directory named <tt/php/ parallel to your
+   web servers document root directory. Do not put the include
+   directory below your web servers document root.
+
+<tag>Step 2</tag>
+<p>Unpack your PHPLIB distribution. Move the contents of the
+   <tt/php/ distribution directory into the <tt/php/ directory
+   you just created.
+
+<tag>Step 3</tag>
+<p>Get to the <tt/php3.ini/ file for your web servers PHP
+   interpreter and update the <tt/include&lowbar;path/ statement so
+   that it points to that <tt/php/ directory. Update the
+   <tt/auto&lowbar;prepend&lowbar;file/ statement so that it points to the
+   <tt/prepend.php3/ file in that include directory.
+
+   If you do not have control over your php3.ini file, you did not
+   read the <em>VERY IMPORTANT NOTE</em> above.
+
+<tag>Step 4</tag>
+<p>Also check that <tt/track&lowbar;vars/ are enabled and that you have
+   enabled <tt/magic&lowbar;quotes&lowbar;gpc/. While you are at it, you might
+   want to check <tt/sendmail&lowbar;path/, if you plan to send mail from
+   your application. It has to be set to <tt>/usr/lib/sendmail -t</tt>
+   on most UNIX systems to work.
+
+   If you do not have control over your php3.ini file, you did
+   not read the <em>VERY IMPORTANT NOTE</em> above.
+
+<tag>Step 5</tag>
+<p>cd into the <tt/php/ include directory. Edit <tt/local.inc/.
+   In <tt/class DB&lowbar;Example/ supply the appropriate parameters for
+   your database connection.
+
+<tag>Step 6</tag>
+<p>For this database, run <tt/create&lowbar;database.mysql/ from the
+   distribution to create <tt/active&lowbar;sessions/ and
+   <tt/auth&lowbar;user/.  <tt/auth&lowbar;user/ will be populated with a
+   sample user named <tt/kris/ with a password <tt/test/.
+
+<tag>Step 7</tag>
+<p>Move the contents of the <tt/pages/ directory and all its
+   subdirectories into your document root directory.
+
+<tag>Step 8</tag>
+<p>Access the "/" URL of your web server with cookies enabled. If
+   no <tt/index.html/ is present, <tt/index.php3/ will be displayed.
+   If you reload that page, the number shown must increment.
+   Access your database with the mysql command client and <tt/select
+   * from active&lowbar;sessions/. Check that there is a single session
+   record for your browser and see how the text in <tt/val/
+   changes when you reload the page and <tt/select * from
+   active&lowbar;sessions/ again. If this works, the session class is
+   functional with cookie mode.
+
+<tag>Step 9</tag>
+<p>Now access <tt/showoff.php3/. Try to login as <tt/kris/,
+   password <tt/test/. Check <tt/active&lowbar;sessions/ again. You now
+   should have a <tt/Example&lowbar;Session/ entry (see the <tt/name/
+   column) and a <tt/Example&lowbar;User/ entry in your table. Both should
+   increment on reload.
+
+<tag>Step 10</tag>
+<p>Try again with cookies disabled. You should get a new session
+   (the cookie is lost) and you should be able to see your
+   session id as the get parameter part of your URL.
+</descrip>

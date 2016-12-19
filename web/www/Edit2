@@ -1,0 +1,57 @@
+$req_position_actuelle = "select pos_cod,pos_x,pos_y,perso_pa,pos_etage from perso_position,positions,perso ";
+				$req_position_actuelle = $req_position_actuelle . "where ppos_perso_cod = $perso_cod ";
+				$req_position_actuelle = $req_position_actuelle . "and ppos_pos_cod = pos_cod ";
+				$req_position_actuelle = $req_position_actuelle . "and perso_cod = $perso_cod";
+				$db->query($req_position_actuelle);
+				$db->next_record();
+				$x[1] = $db->f("pos_x");
+				$y[1] = $db->f("pos_y");
+				$x[0] = $x[1] - 1;
+				$x[2] = $x[1] + 1;
+				$y[0] = $y[1] - 1;
+				$y[2] = $y[1] + 1;
+				$etage = $db->f("pos_etage");
+				$position_actuelle = $db->f("pos_cod");
+				?>
+				<form name="deplacement" method="post" action="action.php">
+				<input type="hidden" name="methode" value="deplacement">
+				<table width="90%">
+				<?
+			
+				for($cpty=2;$cpty>=0;$cpty--)
+				{
+					?>
+					<tr>
+					<?
+					for($cptx=0;$cptx<3;$cptx++)
+					{
+						$req_pos = "select pos_cod,pos_x,pos_y from positions ";
+						$req_pos = $req_pos . "where pos_x = $x[$cptx] ";
+						$req_pos = $req_pos . "and pos_y = $y[$cpty] ";
+						$req_pos = $req_pos . "and pos_etage = $etage ";
+						$req_pos = $req_pos . "and not exists (select 1 from murs where mur_pos_cod = pos_cod) ";
+						$db->query($req_pos);
+						$num_pos = $db->nf();
+						echo("<td>");
+						if ($num_pos != 0)
+						{
+							$db->next_record();
+							if ($db->f("pos_cod") != $position_actuelle)
+							{
+								printf("<input type=\"radio\" name=\"position\" value=\"%s\" ",$db->f("pos_cod"));
+								if ($db->f("pos_cod") == $position)
+								{
+									echo("checked ");
+								}
+								echo(">");
+							}
+						}
+						echo("</td>");
+					}
+					echo("</tr>");
+				}
+				?>
+				<tr>
+				<td colspan="4"><center><input type="submit" class="test" value="Bouger !!"></center></td></tr>
+				</table>
+				</form>

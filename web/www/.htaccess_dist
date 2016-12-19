@@ -1,0 +1,8 @@
+php_flag register_globals on
+php_value error_log /home/delain/public_html/www/debug/php.log
+php_value include_path .:/usr/local/phplib-7.4a/php:/usr/local/php/jpgraph:/usr/local/lib/php:/home/delain/public_html/www/includes:/usr/share/php
+php_value auto_prepend_file /home/delain/public_html/www/includes/delain_header.php
+php_value auto_append_file /home/delain/public_html/www/includes/delain_footer.php
+#RewriteEngine On 
+#RewriteCond %{SERVER_PORT} 80 
+#RewriteRule ^(.*)$ https://www.jdr-delain.net/$1 [R,L]

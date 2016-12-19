@@ -1,0 +1,75 @@
+<!-- $Id: 02-mod_php.sgml,v 1.2 2001/08/13 12:30:06 richardarcher Exp $ -->
+
+<sect1>PHPLIB with mod&lowbar;php (Apache module)
+<p>
+
+Installing PHPLIB onto a web server that has PHP3 as a module
+(actually Apache) mainly differs in where you can set up runtime
+settings for PHP3 itself.  PHP3 can be compiled with a wealth of
+parameters (see the PHP section in <tt/phpinfo()/), most of which can
+get overridden by the <tt/php3.ini/ file. The location of this
+file is shows as part of the output of <tt/phpinfo()/.
+
+With PHP3 as a module you have a wider choice on placing these
+settings: they are overridden, in this order, by what is defined
+in <tt/httpd.conf/ and in your per-directory <tt/.htaccess/
+file. Directives in these files are identical to their
+<tt/php3.ini/ brothers, but are prefixed with <tt/php&lowbar;/
+to avoid clashes with Apache configuration keywords. Also, as
+they are Apache configuration keywords, they have no equals
+("=") sign in them. If <tt/x=y/ is a configuration directive
+from <tt/php3.ini/, you should be using <tt/php3&lowbar;x y/
+within the Apache configuration instead. That is, you should
+prepend <tt/php3&lowbar;/ to the keyword and omit the equals
+sign. If you misspell a configuration directive, you will get an
+error 500 from your webserver and find more details about the
+error in the logfile you configured with <tt/ErrorLog/ in your
+webserver setup.
+
+<em/Example:/ If below we talk about setting in your
+<tt/php3.ini/ the configuration
+
+<tscreen><code>
+include_path = "/bla"
+</code></tscreen>
+
+<tt/mod&lowbar;php/ users may alternatively configure in their
+<tt/httpd.conf/ the following:
+
+<tscreen><code>
+&lt;Directory /home/www/servers/www.example.com/pages&gt;
+php3_include_path "/bla"
+&lt;/Directory&gt;
+</code></tscreen>
+
+Of special interest to PHPLIB users are the following
+directives:
+
+<tscreen><code>
+;;;;;;;;;;;;;;;;;
+; Data Handling ;
+;;;;;;;;;;;;;;;;;
+magic_quotes_gpc = Off    ; magic quotes for incoming 
+                          ; GET/POST/Cookie data
+magic_quotes_runtime = Off; magic quotes for runtime-generated data,
+                          ; e.g. data from SQL, from exec(), etc.
+magic_quotes_sybase = Off ; Use Sybase-style magic quotes 
+                          ; (escape ' with '' instead of \')
+track_vars = On           ; enable $PHP_GET_VARS[], $PHP_POST_VARS[] 
+                          ; and $PHP_COOKIE_VARS[] arrays
+
+; automatically add files before or after any PHP 3.0 document
+auto_prepend_file = (add path to prepend.php3 here)
+auto_append_file  =
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Paths and Directories ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+include_path      = (add path to the directory with all .inc files)
+
+</code></tscreen>
+
+All of this comes very handy when you have multiple virtual
+hosts (e.g. you are an ISP). In this case you can comfortably
+place the php3 directives in the <tt/&lt;VirtualHost&gt;/ block
+or in an <tt/.htaccess/ file in the client directory.

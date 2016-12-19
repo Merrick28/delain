@@ -1,0 +1,751 @@
+<!-- $Id: 03-auth.sgml,v 1.2 2001/08/13 12:30:06 richardarcher Exp $ -->
+
+<sect1>Auth
+<p>
+
+Authentication management can be used to authenticate a session,
+that is, to identify the user at the client side of the session.
+
+Authentication is done inline, with HTML forms, <em/not/ with
+HTTP authentication (that's the browser popup you get when you
+hit a page protected with htaccess). Inline authentication has
+several advantages over HTTP authentication:
+
+<itemize>
+<item>It can be undone: A session can be un-authenticated, the
+user can "log out".
+<item>It can expire: A session can automatically be
+un-authenticated after a given idle time.
+<item>It can be customized: You are not limited to user/password
+pairs. Instead you could use a customer number, operator id
+and a password to log in. Also, you have full control over
+the login screen, which is a normal HTML page with logos,
+help and forms as you see fit.
+<item>It is database based. Authentication is being done against
+a database of your design, not a htpasswd text file.
+<item>It is per page. You decide on a per-page basis which pages
+are authenticated and which aren't.
+<item>It can be user authenticating and optionally self
+registering. In <em/registration/ mode, a user without a valid login is
+encouraged to register and an account is created for this
+user.
+<item>It works with CGI PHP. HTTP authentication is available
+only in mod&lowbar;php.
+<item>It is integrated with a permission checking scheme.
+</itemize>
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.<rowsep>
+persistent&lowbar;slots<colsep>Serialization helper: The names of all persistent slots.<rowsep>
+
+lifetime<colsep>Maximum allowed idle time before the authentication expires. If set to 0, The authentication never expires (as long as the session remains active).<rowsep>
+refresh<colsep>Maximum allowed time before the authentication info (perms and alike) are re-read from the database calling <tt/auth&lowbar;refreshlogin()/ method. If set to 0 authentication info are read only at the login stage.<rowsep>
+mode<colsep>Authentication mode: <tt/log/ or <tt/reg/ (see below).<rowsep>
+database&lowbar;class<colsep>A classname. Auth uses this class to make a database connection.<rowsep>
+database&lowbar;table<colsep>Database table used to keep the session variables.<rowsep>
+magic<colsep>An arbitrary value used in uniqid generation.<rowsep>
+nobody<colsep>Flag: If true, we use default authentication.<rowsep>
+cancel_login<colsep>The name of a button that can be used to cancel a login form<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+db<colsep>Internal: The database connection object instance.<rowsep>
+auth<colsep>Internal: User authentication information, see below.<rowsep>
+in<colsep>Internal: Used in default authentication mode.<rowsep>
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>url()</tag>
+<p>  
+    A function that can be used in <tt/auth&lowbar;loginform()/a and
+    <tt/auth&lowbar;registerform/. It returns the appropriate "action="
+    attribute to the form tag.
+
+<tag>purl()</tag>
+<p>  
+    A function that can be used in <tt/auth&lowbar;loginform()/a and
+    <tt/auth&lowbar;registerform/. It prints the appropriate "action="
+    attribute to the form tag.
+
+<tag>login&lowbar;if($t)</tag>
+<p>
+    A function that can be used to change the current user
+    identity. 
+    See the section and example on using default authentication
+    below.
+
+<tag>unauth($nobody = false)</tag>
+<p>
+    This function destroys the authentication information in
+    <tt/$this-&gt;auth/, forcing the user to relogin the next time
+    a protected page is being loaded.
+
+    <tt/$this-&gt;auth["uname"]/ is being kept, so that the
+    correct username is available as a default.
+
+	Since V6: To give the user the credentials of `nobody', pass
+	true as the first parameter to unauth. This will also change
+	<tt/$this-&gt;auth["uname"]/.
+
+	Since V7.2: Passing $nobody to this method is deprecated.
+
+<tag>logout($nobody = $this-&gt;nobody)</tag>
+<p>
+    This function destroy all authentication information
+    in  <tt/$this-&gt;auth/, forcing the user to relogin
+    the next time a protected page is being loaded.
+
+    Most applications want to use <tt/$this-&gt;unauth()/
+    instead.
+
+	Since V6: To give the user the credentials of `nobody', pass
+	true as the first parameter to logout. This defaults to the 
+	value you set in the class definition (<tt/$nobody/).
+	<tt/logout()/ will call <tt/unauth()/ (passing <tt/$nobody/),
+	so the behaviour is identical (except <tt/logout()/ will always
+	clear <tt/$this-&gt;auth["uname"]/ and unregister the auth class).
+
+	Since V7.2: Passing $nobody to this method is deprecated.
+
+<tag>is&lowbar;authenticated()</tag>
+<p>
+    Will return false, if the current authentication is
+    invalid or expired. Will return the authenticated uid
+    otherwise.
+
+<tag>auth&lowbar;preauth()</tag>
+<p>
+    This function can be overridden in a subclass to Auth. It
+    is being called as the very first step in the authentication
+    process and has the opportunity to authenticate the user
+    without a loginform being displayed (by deriving all necessary
+    information telepathically, or by using cookies, or divining
+    the user identities from the incestines of a dead squirrel).
+<p>
+    If it returns a UID value, the user is authenticated and neither
+    auth&lowbar;loginform() nor auth&lowbar;validatelogin() are
+    called. If it returns false, all goes on as usual.
+
+<tag>auth&lowbar;loginform()</tag>
+<p>  
+    This function must be overridden by a subclass to Auth. It
+    should output HTML that creates a login screen for the user.
+    We recommend that you use an <tt/include()/ statement to include
+    your HTML file.
+
+<tag>auth&lowbar;validatelogin()</tag>
+  
+    This function is called when the user submits the login form
+    created by <tt/auth&lowbar;loginform()/. It must validate the user input.
+    
+    If the user authenticated successfully, it must set up
+    several fields within the <tt/$auth&lsqb;&rsqb;/ instance variable:
+
+    <descrip>
+    <tag>"uid"</tag><p>must contain the user id associated with that user.
+    <tag>"uname"</tag><p>must contain the user name as entered by the user.
+    <tag>"exp"</tag><p>must not be tampered with (field is maintained by
+         <tt/start()/, contains the time when the login expires).
+    <tag>"perm"</tag>if you want to use the permission feature, you
+         must store the permissions of the validated user here.
+         (Hint: due to a name conflict with sybase, "perm" is called "perms"
+         in all the databases tables. Look for this small difference!)
+    </descrip>
+    
+    See the example below for more information.
+
+<tag>auth&lowbar;refreshlogin()</tag>
+
+    This function is called every <tt/refresh/ minutes. It must refresh
+    the authentication informations stored in <tt/auth/ array by
+    <tt/auth&lowbar;validatelogin()/ method. It is not called if the
+    user is logged in as nobody.
+
+    It must return true on success, false otherwise (i.e.: the userid
+    is no longer valid).
+
+<tag>auth&lowbar;registerform()</tag>
+<p>See auth&lowbar;doregister().
+
+<tag>auth&lowbar;doregister()</tag>
+<p>These functions mirror <tt/auth&lowbar;loginform()/ and
+   <tt/auth&lowbar;validatelogin()/ in registration mode.
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+
+<descrip>
+<tag>start()</tag>
+<p>
+
+   Initialization function, does the authentication. If we are
+   in <tt/log/ (login) mode, <tt/auth&lowbar;loginform()/ is
+   called to draw a login screen. When the login screen is
+   submitted back, <tt/auth&lowbar;validatelogin()/ is called to
+   validate the login. If the validation was successful, the
+   actual page content is shown, otherwise we're back at
+   <tt/auth&lowbar;loginform()/.
+    
+   In <tt/reg/ mode, <tt/auth&lowbar;registerform()/ is called to draw a
+   registration form. When the registration form is submitted
+   back, <tt/auth&lowbar;doregister()/ is called to register the user and
+   to validate the session. If registration was successful, the
+   actual page content is shown, otherwise we're back at
+   <tt/auth&lowbar;registerform()/.
+</descrip>
+    
+<sect2>Example
+<p>
+Use a subclass of <tt/Auth/ to provide parameters for your
+authentication class and to implement your own <tt/auth&lowbar;*/ functions.
+
+<tscreen><code>
+class My&lowbar;Auth extends Auth {
+  var $classname        = "My&lowbar;Auth"; # Object serialization support
+
+  var $lifetime         =  15;
+  
+  ## DB&lowbar;Sql subclass and database table to use
+  var $database&lowbar;class = "DB&lowbar;Session";
+  var $database&lowbar;table = "auth&lowbar;user";
+
+  ## Some magic value to make our uids harder to guess.
+  var $magic = "Abracadabra";
+
+  ## Use an own login form
+  function auth&lowbar;loginform() {
+    global $sess;
+    include("loginform.ihtml");
+  }
+  
+  function auth&lowbar;validatelogin() {
+    global $username, $password;    ## form variables from loginform.ihtml
+    
+    ## If authentication fails, loginform.html will
+    ## find $this-&gt;auth&lsqb;"uname"&rsqb; set and use it.
+    $this-&gt;auth&lsqb;"uname"&rsqb;=$username;
+    
+    ## Value to return in case auth fails.
+    $uid   = false;
+    
+    ## Check the database for this user and password pair.
+    $query = sprintf(
+      "select * from %s where username = '%s' and password = '%s'",
+      $this-&gt;database&lowbar;table,
+      addslashes($username),
+      addslashes($password)
+    );
+    $this-&gt;db-&gt;query($query);
+    
+    ## If we found a matching user, grab the uid and permissions...
+    while($this-&gt;db-&gt;next&lowbar;record()) {
+      ## Required.
+      $uid = $this-&gt;db-&gt;f("uid");
+      
+      ## Optional, for the perm feature.
+      $this-&gt;auth&lsqb;"perm"&rsqb; = $this-&gt;db-&gt;f("perms");
+      ## if you use perm feature be aware, that the db-field in our
+      ## example table is called "perms" due to a name conflict with sybase
+    }
+    
+    return $uid;
+  }
+}
+</code></tscreen>
+
+Your <tt/loginform.ihtml/ contains HTML and PHP code to draw a login
+form. <tt/$this-&gt;auth&lsqb;"uname"&rsqb;/ will be empty on the first login
+attempt and set on all further login attempts. You can use this
+to detect repeated login attempts and display an appropriate
+error message. You must print the result of <tt/$this-&gt;url()/ to
+create your forms action attribute.
+
+See the provided <tt/loginform.ihtml/ for an example.
+
+Use the page management functions (see above) to use your
+authentication subclass. The feature name for authentication
+management is <tt/auth/; provide the name of your <tt/Auth/ subclass as
+a parameter to the <tt/auth/ feature. The <tt/auth/ feature requires the
+<tt/sess/ feature:
+
+<tscreen><code>
+  page&lowbar;open(array("sess" =&gt; "My&lowbar;Session", "auth" =&gt; "My&lowbar;Auth"));
+</code></tscreen>
+
+<sect2>Using default authentication
+<p>
+   Many applications want to use <tt/$auth/ and <tt/$perm/
+   objects to protect functionality on a page, but do want to
+   make the unprotected part of this page available to users
+   with no account. This presents a kind of dilemma, because you
+   need <tt/$auth/ and <tt/$perm/ objects to protect
+   functionality on a page, but you don't want a login screen to
+   appear by default.
+
+   Default authentication solves this dilemma by providing a
+   special uid and uname "nobody", which is guaranteed to fail
+   every permission check. If you set the <tt/nobody/ flag,
+   <tt/$auth/ will not create a login screen to force a user to
+   authenticate, but will authenticate the user silently as
+   <tt/nobody/. The application must offer a login button or
+   other facility for users with accounts to change from that
+   id to their real user id.
+
+To use default authentication, create a subclass of <tt/My&lowbar;Auth/
+as shown above with the <tt/nobody/ flag set (<em/Note:/ No need
+to extend in two steps. The only important thing here is that
+the <tt/nobody/ flag is set.)
+
+<tscreen><code>
+class My&lowbar;Default&lowbar;Auth extends My&lowbar;Auth {
+  var $classname = "My&lowbar;Default&lowbar;Auth";
+
+  var $nobody = true;
+}
+</code></tscreen>
+
+To create a page that uses default authentication, use the page
+management functions. Check for relogin requests with the
+<tt/login&lowbar;if()/ function. Create a relogin link on your page.
+
+<tscreen><code>
+&lt;?php
+  // using Default Authentication
+  page&lowbar;open(array("sess" =&gt; "My&lowbar;Session", "auth" =&gt; "My&lowbar;Default&lowbar;Auth"));
+  $auth-&gt;login&lowbar;if($again);
+
+  if ($auth-&gt;auth["uid"] == "nobody"):
+?&gt;
+  &lt;A HREF="&lt;?php $sess-&gt;purl("$PHP_SELF?again=yes") ?&gt;"&gt;Relogin&lt;/A&gt;
+  to this page.
+&lt;?php endif ?&gt;
+</code></tscreen>
+
+<sect2>Using Challenge-Response Authentication
+<p>
+   As distributed, <tt/local.inc/ contains an example class
+   named <tt/Example&lowbar;Challenge&lowbar;Auth/, which uses a
+   Challenge-Response authentication scheme. If the client
+   browser supports Javascript, this login screen does not
+   transmit passwords in clear over the network. If the client
+   does not support Javascript, login is still possible, but
+   passwords are transmitted in clear, as regular <tt/Example&lowbar;Auth/
+   always does.
+
+   <tt/Example&lowbar;Challenge&lowbar;Auth/ is there to demonstrate advanced
+   usage of PHP and Javascript and to show off the flexibility
+   of the library base classes: The Challenge-Response
+   authentication scheme has been implemented completely and
+   naturally in local.inc by subclassing <tt/Auth/ with no
+   alteration of library code.
+
+   <tt/Example&lowbar;Challenge&lowbar;Auth/ includes <tt/crloginform.ihtml/. It
+   also requires that the file <tt/md5.js/ is present in the
+   document root directory of your web server. That file contains
+   an implementation of the MD5 message digest algorithm done by
+   Henri Torgemane. The basic idea behind this authentication
+   scheme is simple: <tt/$auth-&gt;auth&lowbar;loginform()/ creates a
+   challenge value which is incorporated into this form. When
+   the user tries to submit the form,
+   MD5("username:password:challenge") is calculated and filled
+   into the reply field. The password field is erased. The
+   server can calculate the expected reply from the username
+   received, the password in the database and the challenge,
+   which it knows. It can compare the expected reply to the
+   actual reply value. If they match, the user is authenticated.
+
+   If the reply field is empty and password is set, the server
+   knows that the client cannot do Javascript. The user can still be
+   authenticated, but the password is visible on the network.    
+
+   The class is a dropin-replacement for <tt/Example&lowbar;Auth/.
+
+<sect2>The complete guide to authentication and user variables
+<p>
+
+This feature has originally been written for the PHPLIB mailing
+list by Kristian Koehntopp and was included into the
+documentation later.
+
+<sect3>How is the <tt/Auth/ class used usually?
+<p>
+
+Usually, you write code like this into the top of the page you
+want to protect:
+
+<tscreen><code>
+<?php
+page&lowbar;open(array(
+    "sess" =&gt; "My&lowbar;Session", 
+    "auth" =&gt; "My&lowbar;Auth"));
+?&gt;
+
+&lt;!-- your code here --&gt;
+
+&lt;?php
+page&lowbar;close()
+?&gt;
+</code></tscreen>
+
+<sect3>How does <tt/$auth/ work internally?
+<p>
+
+When you access this page, the call <tt/to page&lowbar;open()/ is being
+made as the first thing on that page. <tt/page&lowbar;open()/ creates
+an instance of <tt/My&lowbar;Auth/ named <tt/$auth/ and starts it.
+<tt/$auth/ then detects that you are not authenticated (how it
+does, I will explain below) and displays <tt/loginform.ihtml/.
+$auth then exits the interpreter, so that &lt;!-- your code here
+--&gt; is never being executed or displayed.
+
+The user now sits in front of a <tt/loginform.ihtml/ screen,
+which is shown under the URL of the page the user originally
+tried to access. The loginform has an action URL, which just
+points back to itself.
+
+When the user filled out the loginform and submits it, the very
+same URL is requested and the above <tt/page&lowbar;open()/ is
+reexecuted, but this time a username and a password are
+submitted. When the <tt/$auth/ object is created and started, it
+detects these parameters and validates them, resulting in either
+a NULL value or a valid user id. If the validation failed,
+creating an empty user id, the loginform is displayed again and
+the interpreter exits. Again &lt;!-- your code here --&gt; is not
+executed.
+
+If a UID is returned, that UID and a timestamp are being made
+persistent in that session and <tt/$auth/ returns control to
+<tt/page&lowbar;open()/. When <tt/page&lowbar;open()/ finishes, which it may
+or may not do, depending on the presence and result of an
+optional <tt/$perm/ check, &lt;!-- your code here --&gt; is being
+executed or shown.
+
+Later calls to other pages or the same page check for the
+presence of the UID and the timestamp in the sessions data. If
+the UID is present and the timestamp is still valid, the UID is
+retained and the timestamp is refreshed. On <tt/page&lowbar;close()/
+both are written back to the user database (Note: Authenticated
+pages REQUIRE that you <tt/page&lowbar;close()/ them, even when you
+access them read-only or the timestamp will not be refreshed).
+
+If the UID is not present (<tt/$auth-&gt;logout()/ or
+<tt/$auth-&gt;unauth()/ have been called, for example) or the
+timestamp has expired, <tt/$auth/ will again intercept page
+display and draw the loginform.
+
+The only way to get into a page with an <tt/$auth/ object on it
+is to have a UID and a valid timestamp in your session data
+(Note: This is true even for default authentication. These
+create a dummy UID and timestamp in your session data).
+
+<sect3>How do $sess and $auth interact?
+<p>
+
+Your browser has a session cookie, named after your session
+class. This is the only thing that is ever shipped between your
+browser and PHPLIB, as far as core functionality is concerned.
+The session cookie value is used as a reference into
+<tt/active&lowbar;sessions/, to retrieve PHPLIB generated PHP code,
+which is then <tt/eval()/ed and recreates your session variables
+within <tt/page&lowbar;open()/.
+
+Part of the <tt/$auth/ object now makes itself persistent and is
+retrieved when the <tt/$sess/ part of <tt/page&lowbar;open()/ is being
+executed. This is just before the <tt/$auth/ part of
+<tt/page&lowbar;open()/ gets its turn, so that <tt/$auth/ can rely on its
+persistent data being present when it is being called.
+
+From the PHPLIB source you all know that <tt/$auth/ has only one
+persistent slot, called <tt/$auth-&gt;auth[]/, of type hash. This
+hash contains the slots <tt/uid/, <tt/exp/ and <tt/uname/.
+<tt/$auth-&gt;auth["uid"]/ is the currently authenticated user id,
+<tt/$auth-&gt;auth["exp"]/ is the currently active expiration
+timestamp (Unix time&lowbar;t format) for that uid.
+<tt/$auth-&gt;auth["uname"]/ is completely irrelevant as far as the
+regular PHPLIB <tt/Auth/ class is concerned. It is relevant in
+the context of the supplied default <tt/Auth/ subclass
+<tt/Example&lowbar;Auth/, though.
+
+So a session is authenticated, if it contains <tt/$auth-&gt;auth["uid"] !=
+false/ and <tt/time() < $auth-&gt;auth["exp"]/.
+
+<sect3>Where is the beef?
+<p>
+
+The original <tt/Auth/ class as included in PHPLIB makes no
+assumptions at all on how a loginform looks or how and where
+uids come from. There is no code at all in <tt/Auth/ that ever
+checks anything but the above two conditions. It is your
+responsibility to modifiy a subclass of Auth in a way that these
+conditions can ever be met.
+
+Auth helps you in doing this by calling its own function
+<tt/$auth-&gt;auth&lowbar;loginform()/ when it wants to draw a loginform.
+Unfortunately this function is empty in Auth itself, so you have
+to provide an implementation for that. The suggested standard
+implementation in <tt/local.inc/s <tt/Auth/ subclass
+<tt/Example&lowbar;Auth/ is
+
+<tscreen><code>
+function auth&lowbar;loginform() {
+  include("loginform.ihtml");
+}
+</code></tscreen>
+
+and you put your code into that file. We also provide sample
+code for that file, but you are not limited to that code and may
+write a <tt/loginform.ihtml/ as it meets your needs.
+
+When the loginform has been filled in and submitted back by the
+user, <tt/Auth/ calls <tt/$auth-&gt;auth&lowbar;validatelogin()/. Again,
+this function is empty in <tt/Auth/ itself and so <tt/Auth/ by
+itself will never function correctly. You have to subclass
+<tt/Auth/ and provide your own implementation of
+<tt/$auth-&gt;auth&lowbar;validatelogin()/ in <tt/local.inc/ to make it
+work.
+
+What you actually do in that function is completely irrelevant
+to <tt/Auth/ itself. It only exspects that you either return
+false, if the user-supplied authentication data was invalid, or
+a user id, if the user could be validated. <tt/Auth/ then takes
+care to create the appropriate entries (<tt/$auth-&gt;auth["uid"]/
+and <tt/$auth-&gt;auth["exp"]/) in the session record.
+
+<sect3>I still do not understand! What am I supposed to code?
+<p>
+
+
+You write your code into <tt/local.inc/, after you have removed
+the classes <tt/Example&lowbar;Auth/, <tt/Example&lowbar;Default&lowbar;Auth/ and
+<tt/Example&lowbar;Challenge&lowbar;Auth/ from that file (keep a copy around, just
+for reference).
+
+You code a class called <tt/My&lowbar;Auth/ and you use that name later
+in your calls to <tt/page&lowbar;open/ as an argument to the <tt/auth/
+feature, as show at the start of this message. Follow the
+standard rules for deriving persistent classes in PHPLIB when
+you create your code, that is, do it like this:
+
+<tscreen><code>
+
+class My&lowbar;Auth extends Auth {
+var $classname = "My&lowbar;Auth";
+// we inherit $persistent&lowbar;slots and do not need to modify it.
+
+// later code is inserted here
+}
+</code></tscreen>
+
+Now configure the lifetime of the authentication, that is, how
+many minutes in the future shall the current value of
+<tt/$auth-&gt;auth["exp"]/ be? Also, name a database connector
+class and name the table that you will be using to check
+usernames and passwords.
+
+<tscreen><code>
+  // insert this code as indicated above.
+  var $lifetime = 15;
+  var $database&lowbar;class = "DB&lowbar;Example";
+  var $database&lowbar;table = "my&lowbar;special&lowbar;user&lowbar;table";
+
+  // later code is inserted here
+</code></tscreen>
+
+Okay, now we have a basic implementation of <tt/My&lowbar;Auth/
+that is only lacking the required functions
+<tt/auth&lowbar;loginform()/ and
+<tt/auth&lowbar;validatelogin()/. Our implementation of
+<tt/auth&lowbar;loginform()/ will have access to all <tt/$sess/
+variables by globaling <tt/$sess/ into our context (because
+these can come in handy) and to all <tt/$auth/ variables (via
+<tt/$this/).
+
+<tscreen><code>
+
+function auth&lowbar;loginform() {
+  global $sess;
+  include("loginform.ihtml");
+}
+
+</code></tscreen>
+
+The loginform is free to do whatever it damn well pleases to
+create a form for the user to supply the needed values for
+authentication. It has access to anything <tt/$sess/ and
+anything <tt/$this/ related.
+
+The loginform will display some input fields for the user, for
+example a given name, a surname and a password. When the form is
+submitted back, <tt/auth&lowbar;validatelogin()/ is being called. The
+form values are global variables (or <tt/$HTTP&lowbar;x&lowbar;VARS[]/) and
+must be imported into <tt/$auth-&gt;auth&lowbar;validatelogin()/. Then,
+<tt/$auth-&gt;auth&lowbar;validatelogin()/ is free to do whatever it must
+do to produce a unique identifier for that user (or return
+false).
+
+Suppose you created input fields named given&lowbar;name, surname and
+password. So go ahead, global <tt/$given&lowbar;name/, <tt/$surname/
+and <tt/$password/ and set <tt/$uid/ to false. Then create the
+SQL needed to access you user table and retrieve the user record
+from your database as indicated by <tt/$given&lowbar;name/ and
+<tt/$surname/ and <tt/$password/.
+
+The query may succeed, if a record with matching
+<tt/$given&lowbar;name/, <tt/$surname/ and <tt/$password/ is present.
+In that case return the uid, which uniquely identifies exactly
+that (given&lowbar;name, surname) pair. Else return false.
+
+In code:
+
+<tscreen><code>
+
+function auth&lowbar;validatelogin() {
+  // import authentication data
+  global $given&lowbar;name, $surname, $password;
+
+  $uid = false;
+
+  $query = sprintf("select uid
+                      from %s
+                     where given&lowbar;name = '%s'
+                       and surname = '%s'
+                       and password = '%s'",
+             $this-&gt;database&lowbar;table,
+             $given&lowbar;name, $surname, $password);
+  // we really should use addslashes() here,
+  // or have magic&lowbar;quotes active.
+
+  // $auth-&gt;db is our DB&lowbar;Example database connection
+  $this-&gt;db-&gt;query($query);
+
+  // now check for any results
+  while($this-&gt;db-&gt;next&lowbar;record()) {
+    $uid = $this-&gt;db-&gt;f("uid");
+  }
+
+  // either $uid is false now (no results)
+  // or set to the last retrieved value from the uid
+  // column.
+
+  // Anyway we are set now and can return control
+  return $uid;
+}
+</code></tscreen>
+
+Okay, that's all and useable now. There is room for some
+improvements, though: First we did not retrieve permission data,
+so this will not work, if we want to use the perm feature as
+well.
+
+This is easily changed: Modify the query to <tt/select uid,
+perms/ instead of <tt/select uid/ alone. Of course, you may call
+your perm column whatever you like, just adapt the SQL
+accordingly. Also, add a line after the
+<tt/$uid/ assignment so that the code looks like this:
+
+<tscreen><code>
+  $uid = $this-&gt;db-&gt;f("uid");
+  $this-&gt;auth["perm"] = $this-&gt;db-&gt;f("perms");
+</code></tscreen>
+
+This will store the retrived <tt/perms/ value under the key
+<tt/perm/ within the <tt/$auth-&gt;auth[]/ array. It will be kept
+around in that place in case <tt/$perm/ is called and starts
+looking for the current permissions of that user.
+
+Another possible improvement becomes apparent when you try to
+login and fail to do so correctly: <tt/auth&lowbar;validatelogin()/
+returns false and you hit the loginform again. Empty loginform
+that is, because we did not remember what you typed into the
+<tt/given&lowbar;name/ and <tt/surname/ fields before. If we remembered
+what you typed, we could easily supply these values back to you
+so that you can correct them. We would also be able to detect if
+this is a second, third, ... attempt to login and display an
+appropriate error message somewhere in that loginform to inform
+the user of his or her typo. A convenient place to store these
+values is the <tt/$auth-&gt;auth/ array, which is persistent
+anyway. 
+
+Standard <tt/Example&lowbar;Auth/ uses the field <tt/$auth-&gt;auth["uname"]/
+to store that value, but you may use any field and as many
+fields as you like as long as you make sure not to clash with
+any of the three officially used fields, <tt/uid/, <tt/exp/, and
+<tt/perm/.
+
+Do not try to turn the global variables <tt/$given&lowbar;name/ and
+<tt/$surname/ into persistent variables by calling
+<tt/$sess-&gt;register("given&lowbar;name")/ and
+<tt/$sess-&gt;register("surname")/! Remember: These are form
+variables! Never ever make form variables persistent and never
+ever trust unvalidated user supplied from the Internet!
+
+So add the folling code just below the "global" line:
+
+<tscreen><code>
+  $this-&gt;auth["gname"] = $given&lowbar;name;
+  $this-&gt;auth["sname"] = $surname;
+</code></tscreen>
+
+and check for these two variables in loginform.ihtml at the
+appropriate places.
+
+<sect3>Ok, I did that and it works. I even understood it. Now, what exactly is that uid used for?
+<p>
+
+It is simply a token to indicate that the user is authenticated.
+We use a different token for each user, so that we can decide
+which user we are currently dealing with. You can think of the
+uid as a primary key for your <tt/auth&lowbar;user/ table (or whatever
+it is being called in your current application). The (
+given&lowbar;name, surname ) tuple would also be a possible primary
+key, albeit a compound one. It is the external, human-readable
+(and probably sometimes very long) representation of the
+internal uid. The password field is functionally dependent on
+either of both key candidates.
+
+The internal user id should never be presented to the user; the (
+given&lowbar;name, surname ) pair is much more natural to handle for the user
+and easier to remember (A user who does not remember his or her name
+would probably not be in a state of mind to operate the rest of the
+application anyway :-).
+
+The internal user id should always be used to identify a user
+internally within an application, though. That is, because the
+uid is of a fixed length and has a known form and structure, so
+you can make assumptions. A given&lowbar;name or surname may be of any
+length and may contain about any character, so you probably do
+not want to use this as a user-reference internally.
+
+<sect3>But is the uid used internally by PHPLIB?
+<p>
+
+Yes, if you make use of the <tt/user/ feature of
+<tt/page&lowbar;open()/, that is, if you create user variables.
+
+The <tt/User/ class is actually a subclass of <tt/Session/. That
+is, user variables are just like session variables. They are
+even stored in <tt/active&lowbar;sessions/. The only difference is that
+the session has a different name (it is called <tt/Example&lowbar;User/
+instead of <tt/Example&lowbar;Session/, if you use the classes and names
+supplied in <tt/local.inc/).
+
+And in <tt/Example&lowbar;User/, the user id of the authenticated user
+becomes the session id in the <tt/active&lowbar;sessions/ table. That
+is the reason why we recommend <tt/md5(uniqid("abracadabra"))/
+style uids.

@@ -1,0 +1,191 @@
+<!-- $Id: 01-insttest.sgml,v 1.2 2001/08/13 12:30:05 richardarcher Exp $ -->
+
+<sect1>Testing
+<p>
+
+These instructions apply to PHPLIB running with CGI PHP. Most of
+them is valid for mod&lowbar;php as well, though. This section
+offers an incremental approach to find installation problems,
+should the above installation process fail.
+
+We do have a support mailing list available under the address
+<tt/phplib-users@lists.sourceforge.net/. To subscribe to the 
+list, send a message with <tt/subscribe/ as the subject to the
+address <tt/phplib-users-request@lists.sourceforge.net/.
+
+<descrip>
+<tag>Checking that the web server is up and running</tag>
+
+Make sure your web server is up and serving the virtual host you
+just set up. To do this, construct a small file <tt/test1.html/
+in your DocumentRoot and access <tt/test1.html/ through your
+web server.
+
+<tag>Checking that the web server is executing CGI programs</tag>
+
+Make sure your web server is up and does run CGI. Check the
+current directory, the UID/GID it is running programs under and
+have a look at the environment variables. Install the shell
+script
+
+<tscreen><code>
+#! /bin/sh --
+ 
+echo "Content-Type: text/plain"
+echo
+id
+echo
+pwd
+echo
+env | sort
+echo
+</code></tscreen>
+
+in your cgi directory under the name of <tt/cgi-test/ and in
+your document root under the name of <tt/cgi-test.cgi/. Make it
+executable. Try to access
+<tt>/cgi/cgi-test?par1=one&amp;par2=two</tt> and
+<tt>/cgi-test.cgi?par1=one&amp;par2=two</tt> and check the
+output. What UID/GID are you running under, what is the output
+of <tt/pwd/ and what environment variables are set? What does
+<tt/QUERY&lowbar;STRING/ look like? What does the <tt/PATH/
+variable look like, what does the
+<tt/LD&lowbar;LIBRARY&lowbar;PATH/ variable look like and are
+all libraries needed by PHP accessible to PHP running in the CGI
+environment (Check by running the Unix <tt/ldd/ command on PHP).
+
+In particular, if you built Oracle support into PHP and linked
+<tt/libclntsh/ dynamically: Can it be loaded from the CGI environment? If
+not, PHP will not come up later in the next step.
+
+<tag>Checking that the PHP interpreter is running (Assuming CGI
+PHP)</tag>
+
+Copy your PHP binary into the cgi binary directory (which should
+NOT be below DocumentRoot!) and make it executable. Copy
+<tt/php3.ini/ into the same directory. In DocumentRoot, create a
+<tt/test2.php3/ and put &lt;?php phpinfo() ?&gt; into it.
+
+Are you running Apache? Add
+
+<tscreen><code>
+Action       php3-script /cgi/php
+AddHandler   php3-script .php3
+DirectoryIndex index.php3 index.html index.htm
+FancyIndexing on
+</code></tscreen>
+
+to your config. This will map all requests to files ending in
+<tt/.php3/ to the <tt/php3-script/ handler and define
+<tt>/cgi/php</tt> as the URL handling <tt/php3-script/ requests
+internally.
+
+Request <tt>/test2.php3</tt> and see that it is being executed.
+Make changes to your <tt/php3.ini/ (preferable some color
+definitions) and reload. Are they reflected in the output of
+<tt/phpinfo()/? If not, your <tt/php3.ini/ is not being found
+and your are having a problem. Recompile with proper settings.
+
+Check the output of <tt/phpinfo()/ carefully! Is your PHP
+version current (We have tested and developed this release with
+PHP 3.0.12)? Are your database interfaces present in the output
+of <tt/phpinfo()/? If not, recompile again.
+
+Can you access <tt>/test2.php3</tt> under the URL
+<tt>/cgi/php/test2.php3</tt> as well? If so, you did not compile
+your PHP interpreter with <tt/--enable-force-cgi-redirect/.
+PHPLIB will not work with this interpreter. Recompile with the
+switch being set.
+
+<tag>PHP interpreter (Assuming mod&lowbar;php)</tag>
+<p>
+
+Assuming your server is already correctly setup
+(don't forget to activate the PHP lines in <tt/srm.conf/!),
+enter the following file and save it as <tt/test2.php3/
+under your DocumentRoot.
+
+<tscreen><code>
+<? phpinfo() ?>
+</code></tscreen>
+
+If you access this using a web browser now, it should spit out
+much info about PHP, Apache and its environment.
+
+<tag>Checking PHPLIB inclusion</tag>
+<p>Does you PHP include PHPLIB properly? Check your
+<tt/php3.ini/ file. It must include the following settings:
+
+<tscreen><code>
+include&lowbar;path = pathname to directory with all the .inc files
+auto&lowbar;prepend&lowbar;file = path to prepend.php3
+track&lowbar;vars = On
+</code></tscreen>
+
+It should contain the following settings, too:
+
+<tscreen><code>
+magic&lowbar;quotes&lowbar;gpc = On
+</code></tscreen>
+
+If PHPLIB is included properly by your setup, the following page
+will execute without errors:
+
+<tscreen><code>
+&lt;?php
+$db = new DB&lowbar;Example;
+print "It works without error messages.<br>\n";
+ ?&gt;
+</code></tscreen>
+
+<tag>Checking database connectivity</tag>
+<p>PHPLIB installation requires that you adapt <tt/local.inc/
+properly. Particularly, the provided class <tt/DB&lowbar;Example/ must be
+customized for your database connection. Test that your
+web server can access the database with the following page:
+
+<tscreen><code>
+&lt;?php
+  include("table.inc"); // requires include&lowbar;path to be functioning
+
+  $db = new DB&lowbar;Example;
+  $db->query("select * from auth&lowbar;user");
+
+  $t = new Table;
+  $t->heading = "on";
+  $t->show&lowbar;result($db);
+?&gt;
+</code></tscreen>
+
+When executing properly, this page will show you the user entry
+for <tt/kris/, password <tt/test/, permissions <tt/admin/ from
+the <tt/auth&lowbar;user/ table. If this does not happen, your
+<tt/DB&lowbar;Example/ definition in <tt/local.inc/ is broken.
+
+<tag>Checking that sessions work</tag>
+<p>Access the page <tt>/index.php3</tt> that has been provided
+with the distribution. This page will try to set a cookie in
+your browser. Allow that cookie to be set.
+
+The page will display a headline with a counter. Reload that
+page. The counter must increment. If not, either your browser
+cannot deal properly with cookies or PHPLIB cannot properly read
+or write the table <tt/active&lowbar;sessions/ in your database.  Check
+that the cookie is being set by viewing the output of
+<tt/phpinfo()/ (the fourth table will report the cookie and
+other per-call data). Check your database permissions with your
+database command line interface.
+
+<tag>Checking that Authentication works</tag>
+<p>Try loading <tt>/showoff.php3</tt> that has been provided
+with the distribution. This page will require a login. Login as
+<tt/kris/, using a password of <tt/test/. If the login is
+successful, you will see the per-session counter and a per-user
+counter again. Reload that page: The counters must increment.
+
+If you can't login, you probably have a problem with cookies.
+Check again that your browser accepts and sends session cookies.
+Another problem may be access to the <tt/auth&lowbar;user/ table. You
+must be able to <tt/SELECT/ on that table and there must be at
+an entry for the user you are trying to login.
+</descrip>

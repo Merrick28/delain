@@ -1,0 +1,13 @@
+
+$Id: TODO,v 1.9 2001/08/12 23:24:20 richardarcher Exp $
+
+Things To Do for Release 7.2e:
+
+1. Fix known bugs. See the phplib bug tracker on SourceForge:
+http://sourceforge.net/tracker/?group_id=31885&atid=403611
+
+2. Certify correct for use with both PHP3 and PHP4.
+
+3. Optionally, include use of PHP4 sessions.
+
+4. Modularize the sqlquery class, add an option to sort the query results (?)

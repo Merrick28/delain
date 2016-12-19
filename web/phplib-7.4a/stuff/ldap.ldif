@@ -1,0 +1,15 @@
+dn: dc=phplib
+dc: phplib
+objectclass: organization
+
+dn: cn=root, dc=phplib
+cn: root
+objectclass: account
+
+dn: cn=Kristian Koehntopp, dc=phplib
+username: kris
+password: 098f6bcd4621d373cade4e832627b4f6
+mail: kk@shonline.de
+uid: c14cbf141ab1b7cd009356f555b607dc
+perms: admin
+objectclass: user

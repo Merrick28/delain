@@ -1,0 +1,785 @@
+$Id: CHANGES,v 1.35 2006/02/23 10:30:07 richardarcher Exp $
+
+23-Feb-2006 richardarcher
+  - security fix to prevent possible remote code execution.
+    Thanks to GulfTech Research And Development http://www.gulftech.org/
+
+06-Aug-2005 layne_weathers
+  - Fixed session.inc - get_hidden_id() now returns get_hidden_session()
+    rather than hidden_session() (this prints the output)
+
+19-Feb-2005 layne_weathers
+  - ct_sql.inc
+    - name count column in query, $db->f("count") instead of $db->f(0)
+  - db_mysql.inc
+    - suppress error messages on connection (if connection fails,
+      we'll use connect_failed())
+  - db_oci8.inc
+    - added var $Port for using $full_connection_string to connect on port
+      other than 1521
+  - of_text.inc
+    - fix $this->icase to $this->valid_icase
+  - oohforms.inc
+    - fixed warning notices by better checking of variables
+    - remove use of non-existent $this->method
+  - Thanks to Frank Bax for pointing out the of_text and oohforms problems
+
+17-Aug-2004 layne_weathers
+  - db_oci8.inc - added optional shortcut var $Host: if set, will build full db
+    connect string placing $Host and $Database into $full_connection_string
+    keeping a minimalistic and more legible sub-class configuration
+
+23-Jul-2004 layne_weathers
+  - all db classes
+    - don't call query() from constructor with an empty $query string
+    - implement Halt_On_Error setting from MySQL class
+    - output errors wrapped in <p> - previous table-closing behavior assumed 
+      too much
+    - use function connect_failed() for printing connection failure notice
+      allows for customizable connection error handling in extension classes
+      (e.g. display a page that matches the site design). The default
+      connection error messages have been standardized across all db classes.
+    - primary class names are derived from database name allowing multiple 
+      database classes in one script. If no DB_Sql class exists (or if using
+      PHP 3 which cannot find classes), a DB_Sql extension class is created
+      for backwords compatibility.
+  - db_oci8.inc
+    - allow forcing of shared database connections within scripts
+      (reuse Link_ID) - default off
+    - remove constants (OCI_COMMIT_ON_SUCCESS, OCI_DEFAULT) from quotes
+    - quote strings used as indexes
+    - start Record with empty array on each next_record(), previous behaviour
+      allowed Record with values from multiple queries
+    - load object columns on next_record instead of waiting for f()
+  - template.inc
+    - allow for loose or strict template variable regex. Loose is the default,
+      matching any set of curly braces with no whitespace between (this will
+      also match portions of certain JavaScript regular expressions). Strict
+      follows the PHP variable naming rules (may not start with a numeral and
+      may only contain numerals, letters, and underscores).
+
+31-Dec-2003 layne_weathers
+  - template.inc - enabled output of filename comments as proposed on users list.
+
+27-Oct-2003 layne_weathers
+  - session.inc
+    - initialize cookiename to "" as expected by get_id() (was undeclared).
+    - enable modification of cookie_path (was limited to /).
+  - session4.inc
+    - initialize cookiename to "" as expected by id() (was only declared).
+
+09-Sep-2003 Chris Johnson
+  - Released:  phplib 7.4
+
+14-Jan-2003 joestewart
+  - Released:  phplib 7.4-pre2.
+
+08-Nov-2002 joestewart
+  - session4.inc - changed foreach to while in freeze() for compatibility with 
+    some php versions. changed source of return value in self_url for wider
+    http server compatibility.
+
+04-Oct-2002 joestewart
+  - auth4.inc, page4.inc, local4.inc, prepend.php - Giancarlo's changes for 
+    auth's persistent slots with Session4.
+
+01-Oct-2002 joestewart
+  - session4.inc, session4_custom.inc - changes required for register_globals off.
+  - added prepend.php and local4.inc to use php4 sessions.
+
+01-Oct-2002 joestewart
+  - moved session4.inc from php-lib tree.
+  - moved session4_custom.inc and user4.inc from unsup/ directory.
+
+07-Aug-2002 layne_weathers
+  - Fixed [ #542808 ] nextid()'s lock() in db_mysql.inc
+  - Fixed [ #542811 ] nextid() uses mysql_query
+  - in layout_html.inc removed an overlooked calltime pass by reference;
+    all other calls to defval() were correct
+
+03-June-2002 Giancarlo Pinerolo
+    - session.inc fallback_mode only applies when cookies are disabled. 
+      Session in URL cannot force fallback mode anymore when cookies are
+      avail. There no switch for that. If needed use a dedicated subclass 
+      with mode=get in affected scripts or trusted environs.
+    - session.inc now has the block_alien_sid = true/false switch. It
+      blocks the creation of a new session by a sid provided by the user.
+
+03-Apr-2002 layne_weathers
+  - in auth.inc, allow cancel_login to come from GET as well as POST
+    - was set to POST from global variable yesterday
+
+02-Apr-2002 layne_weathers
+  - Responded to [ #455856 ] PHPLib fails with register_globals off
+    - replaced global post vars in auth (auth.inc, *loginform.ihtml, local.inc)
+    - replaced $GLOBALS["PHP_SELF"] with getenv("PHP_SELF") in tree.inc
+    - did not audit all classes - problems may likely exist in other files
+
+19-Mar-2002 layne_weathers
+  - Fixed [ #446455 ] Failures with register_globals off
+  - Fixed [ #474472 ] db_mssql.inc metadata() contains bugs
+  - Added [ #474476 ] stuff/create_database.mssql7 attached
+  - Removed unrelated file pages/probe.php3
+
+18-Mar-2002 layne_weathers
+  - Fixed [ #482372 ] problem in page.inc
+    - changed isset($sess|$user) to is_object($sess|$user)
+
+14-Mar-2002 layne_weathers
+  - Modified lock() in db_mysql.inc to allow lists of tables
+  - Modified connect() in msql, mssql, mysql, odbc, pgsql and 
+    sybase setting *_connect() as default and allowing the use of 
+    *_pconnect()
+  - Thanks to Giancarlo Pinerolo for the wait_timeout advice
+
+26-Feb-2002 richardarcher
+  - fixed [ #480851 ] "call by reference" warning in user.inc
+
+06 JAN 2002 9:58AM EST nathan r. hruby <nathan@dstatement.com>
+  - Fixed wrong year in my last serveral CHANGES entries :)
+  - Fixed [ #500160 ] Invalid use of (php)header function
+    - By adding "false" flag to header() calls that send the same header.
+    - Thanks to Huib Kleinhout <knouf@users.sourceforge.net>
+
+05 JAN 2002 11:06AM EST nathan r. hruby <nathan@dstatement.com>
+  - Fixed wrong pathname in prepend.php3
+
+05 JAN 2002 10:30AM EST nathan r. hruby <nathan@dstatement.com>
+  - Added Max's php4 native session stuff to unsup/ for a twirl :)
+  - Upped version to 7.4-pre1, packaged and released as such
+
+29 Aug 2001 richardarcher
+  - Fixed possible cross-site scripting attack by making sess->url()
+    return a urlencoded string (reported by Daniel Naber 
+    <daniel.naber@t-online.de>)
+
+13 Dec 2000 negro
+  - Added $this->Debug functionality to db_pgsl.inc for consistency 
+    with docu and db_mysql class. (courtesy of Matteo Sgalaberni
+    <root@sgala.com>)
+
+02 Jul 2000 kir
+  - Fixed bug with empty query in all db_*sql.inc (PHP4 issue)
+  - Added constructor with $query to all db_*sql.inc files
+
+30-Jun-2000 athompso
+  - Added null-query special case handling to db_pgsql.inc
+    (reported by Tony Cabot (toby@h00a0244c7066.ne.mediaone.net)
+
+28-Jun-2000 athompso
+  - Fixed typo in session.inc that prevent cookie_domain from working
+    properly.  Thanks to M. Brian Akins (bakins@stsi.net) for pointing
+    it out.
+
+03-May-2000 athompso
+  - Added workaround to ct_sql.inc for case where MySQL UPDATE statements
+    return affected_rows()==0 if the UPDATE didn't actually change any
+    data but matched a row nonetheless.
+    Thanks to Massimo Santoli <saint@zero.it> for providing suggestion.
+
+22-Apr-2000 kk
+  - Tracked changes to template.inc and cart.inc from master repository.
+  - Tracked change to db_pgsql.inc.
+
+17-Apr-2000 kk
+  - Added allowcache mode "passive".
+
+23-Mar-2000 kk
+  - VERSION is 7.2b
+  - escape characters fixed in session.inc
+  - added pre-check and post-check headers in session.inc to
+    better support MSIE 5.x
+  - fixed broken comments in template.inc.
+
+25-Oct-1999 negro
+  - auth.inc code and documentation should be more in sync, now.
+    PLEASE DOUBLE CHECK MY SPELLING!
+
+24-Oct-1999 kk
+  - Documentation update, prepare for armageddon
+  - Reviewed unsup/auth_v2.inc, removed all reference to
+    ct_sql.inc, as there is no code dependent on that class
+    in Auth (there may be such code in an Auth subclass, but
+    that is outside the scope of the library).
+  - Took Massimilianos auth code, because it is cleaner and
+    straighter that what we had before.
+  - db_mssql.inc: Auto_Free spelling fix.
+  - Template class documented.
+  - Changes to db_oracle.inc by kir accepted.
+  - Fix to Table, regarding bug reported by Mark Nold.
+  - removed stuff/patch.odbc as UID column name is long since gone.
+
+22-Oct-1999 kk
+  - New method is_registered() for Session class.
+  - Untested code added to Session, as suggested by Giancarlo Pinerolo
+    on the list, to split up the start method. Please report your
+    experiences or better yet, commit changes.
+  - Added db_mssql.inc as contributed by Cameron Just.
+
+21-Oct-1999 kk
+  - A first shot at a Template class. Dynamic templates are still
+    missing, but will be added shortly. This is not FastTemplates,
+    as I cannot include the FastTemplate source in my distribution
+    and as I want to do several things differently. 
+
+    The Template class requires that you have preg support in your
+    system. I will not port it down to ereg and I will not support
+    anyone who does; in fact I will undo any ereg support someone
+    might add to PHPLIB Templates. If you want ereg Templates,
+    use the FastTemplate class instead.
+
+19-Oct-1999 negro
+  - Added a check in oof_forms finish() method which provides
+    a proper hidden field with session id if session is in "get"
+    mode. This should avoid most problems with forms handled
+    via "GET" method and maybe also via "POST" method.
+    In my experience, this is the safer method for propagating
+    session id when forms are involved.
+
+14-Oct-1999 kk
+  - Removed trailing "\n" in ooh_forms elements rendering.
+    Minimal change in validate_self() for radio elements.
+
+14-Oct-1999 kk
+  - Include files fixed (using $_PHPLIB["libdir"] everywhere).
+
+01-Oct-1999 negro
+  - Modified the regexp used in ooh_forms to convert from foo[int]
+    to foo{int} to use "old" ereg() function instead of preg_match.
+    This should prevent problems with Windows php3 implementation
+    AND does not require latest php3 to run.
+
+01-Oct-1999 uw
+  - Patch to oohforms, accept elementnames like foo[int]. foo[int] is 
+    converted to foo{int} in add_element/get_element so that it can't 
+    cause any harm in the internal array $this->elments in oohforms.inc.
+    
+28-Sep-1999 negro
+  - Commit test, also tested by kk
+
+26-Sep-1999 sasha
+  - Patch to db_mysql.inc metadata function to return metadata on 
+    a db query result vs. a static table.  Same functionality for 
+    other db interfaces yet to be implemented.
+
+17-Sep-1999 negro
+  - Corrected a minimal problem in of_text.inc, which lead to an error
+    when default value contains a ' (single quote).
+
+11-Sep-1999 kk
+  - A rather large patch to the OOH Forms facility, converting it from
+    outputting the form data to returning that data as a string. This
+    will allow for a much easier marriage of OOH Forms and FastTemplates.
+
+    I would like to receive feedback on this.
+
+11-Sep-1999 kk
+  - Minor changes in several database adaptors.
+
+29-Aug-1999 kk
+  - Serializing variables that contain dollar signs does not
+    work, because we generate code with "" around the assignments.
+    This patch should fix that, I want you to try it.
+
+27-Aug-1999 ot
+  - Added new class to store session data in files.
+    This might be faster as to store the data in databases.
+
+26-Aug-1999 kk
+  - Reverted back to old database structure for the active_sessions
+    table and backed out the statistics code out of ct_sql.inc.
+    Used a new table and an auto_init file instead to achieve the
+    same effect. This should provide better backward compatibility
+    and be easier to extend.
+
+25-Aug-1999 hroth
+  - fixed error on line 144 in ct_sql
+  - mysql database definition was buggy
+
+25-Aug-1999 kk
+  - Killed all occurences of uid as a database field, I hope.
+  - Changed column START to START_TIME in database, because of
+    reserved word problems (with Oracle, again).
+  - Added statistics to active_sessions as suggested by Heiko
+    Roth (but in a cleaner way). Also fixed source layout
+    in ct_sql.inc.
+
+    TODO: These changed have to be duplicated for ct_split_sql.inc.
+
+21-Aug-1999 negro
+  - Added htmlspecialchars quoting in of_text and of_textarea, when
+    setting value for an input field. This should avoid problems 
+    when the user inputs a string that contains double quotes.
+  
+20-Aug-1999 negro
+  - Changed a multiline string in example local.inc (method 
+    auth_validatelogin) using concatenation. This should minimize
+    problems when the file is saved using \r\n as line terminator.
+
+07-Aug-1999 negro
+  - Corrected a grave bug in serialization regexp, which caused very
+    bad behaviours when serializing data containing \ or " chars.
+
+05-Aug-1999 athompso
+  - Added ability to specifiy the scope of the session cookie (i.e., what
+    domains the cookie is valid for) by setting sess->cookie_domain to
+    a non-FQDN.  Usage: 
+      class MySession extends Session {
+        $sess->cookie_domain = ".netuse.de";
+      };
+    whereupon that cookie (and, by implication, the session, auth, user,
+    etc...) will be valid for any host in the .netuse.de domain.  Note that
+    this REQUIRES that all the hosts running PHPLIB within that domain
+    have the SAME back-end active_sessions table!!
+    Thanks to "Caffeinate The World <mochaexpress@yahoo.com>" for the 
+    suggestion.
+    Note that I don't have a working SGMLtools.  Can someone paste this
+    into the Session documentation, please?
+
+31-Jul-1999 negro
+  - Added a new class tpl_form. The class may help the user build complex
+    data entry forms. Relies on OOH Forms.
+  
+29-Jul-1999 negro
+  - Bugfix of metadata() in db_pgsql.inc as per suggestion in maling list.
+    Tnx to "Zot O'Connor" <zot@ZotConsulting.com>
+  - Added a perl script (doc/classdoctpl.pl) which should produce a
+    workable documentation template from a php3 file containing class
+    definition.
+  - Removed experimental (and undocumented) method ac_get_auth() from
+    ct_sql.inc. Checked with Sascha.
+
+28-Jul-1999 negro
+  - Bugfix of create_database.mysql as per suggestion in mailing list.
+    Tnx to Caffeinate The World <mochaexpress@yahoo.com>
+
+27-Jul-1999 jeffrey
+  - Modularized table.inc code to adhere more closely to OOP practices.
+    The code is now broken down into high-, mid-, and low-level functions.
+    This allows developers to use the high-level function as previous, or 
+    have more control over the flow of control using the mid- or low-level
+    functions.
+  - New functions include:
+    - show_table_rows, show_table_rows_result, show_table_page_rows,
+      show_table_page_rows_result, show_table_heading_row, 
+      show_table_heading_row_result, show_table_heading_cells,
+      show_table_cells, table_heading_cell_open, table_heading_cell_close,
+      table_cell_open, table_cell_close, set_checkbox_heading, 
+      table_checkbox_cell, set_checkbox.
+  - Added new instance variable $map_cols. This allows you to remap table
+    column names to new names using an array.
+  - Added new instance variable $add_extra. If set, the code then calls
+    two new functions: table_heading_row_add_extra and table_row_add_extra.
+    These functions do nothing in the Table class, but are there for 
+    derived classes. Override these functions in your derived classes and
+    set $add_extra so they are called. You can then added extra cells to
+    the row. Examples might be links to "edit", "delete", or "view" for 
+    that row of data.
+
+26-Jul-1999 ssilk
+  - Removed query_mysql.inc, you should be able to totaly replace it with
+    query_sql.inc.
+  - Included a mechanism to truncate string in query_sql.inc like mySQL.
+    This is needed for other databases like oracle etc.
+  - Included a little bit better escaping by using AddSlashes() and
+    str_replace()
+
+22-Jul-1999 negro
+  - Sketch implementation for a blob container class. be_null.inc and 
+    be_sql.inc
+  - vim settings implementing COMMIT rules (stuff/phplib.vim)
+
+20-Jul-1999 negro
+  - New class CT_Split_Sql, very similar to CT_Sql but with the ability to
+    save and restore data > 4k using multiple db rows. Useful when you
+    have to serialize large quantities of vars.
+
+14-Jul-1999 kk
+  - Werner Stuerenburg <ws@art-quarter.com> suggested a functionality
+    like translated_plain_where in SQL_Query. Discarded his code,
+    but implemented the idea.
+  - Fixed table headings in table.inc.
+  - Fixed db_mysql.inc to handle returns from halt().
+  - Changed Auth to include an auth_preauth() function.
+  - Several small improvements to the shopping cart.
+
+13-Jul-1999 sas
+  - Released 7.0
+
+10-Jul-1999 negro
+  - Implemented table_names() method in db_pgsql.inc
+
+07-Jul 199 sts
+  - Implemented table_names() method in db_oracle.inc,db_oci8.inc,db_mysql.inc
+
+07-Jul-1999 kk
+  - The CVS change reports have been improved to include proper
+    sender information. Please do keep the CHANGES file up to
+    date anyway.
+
+22-Jun-1999 kk
+  - The CVS now generates change reports to the mailing list,
+    phplib-dev@lists.netuse.de.
+
+21-Jun-1999 negro
+  - Made db_pgsql honour $Auto_Free directive.
+  - Some documentation updates (relating magic_quotes_gpc Apache
+    directive)
+      
+02-Jun-1999 negro
+  - Corrected textarea (oohforms) behaviour when showing default
+    value (2 newlines were added every time the widget was showed).
+    
+18-May-1999 negro
+  - modified table.inc in order to check for a non empty result set by
+    checking against $db->num_rows() instead of issuing a
+    $db->next_record() and then seeking back one step.
+
+13-May-1999 sas
+  - commit a patch to table.inc
+    contributed by Alex Vorobiev <sasha@forum.swarthmore.edu>
+
+30-Apr-1999 kk
+  - Changes all occurences of _Poe and Poe_ to _Example and Example_,
+    do make it clearer what these classes are. Changes are per
+    discussion on the mailing list.
+
+18-Apr-1999 padraic
+  - Changed form function in Sql_Query class to return HTML form
+    as results of function instead of sending directly via printf.
+
+02-Apr-1999 negro
+  - Added reset() to cart class
+
+31-Mar-1999 negro
+  - Added set_item($art, $num) to cart class
+  - Added tot_arts() to cart class
+
+30-Mar-1999 negro
+  - Syntax error in php/db_pgsql.inc (line 80, missing double quote).
+
+22-Mar-1999 kk
+  - Extended Cart documentation.
+
+20-Feb-1999 sas
+  - Alex has added his query_mysql class
+  - Added parameter $UseODBCCursor to db_odbc
+
+06-Feb-1999 sas
+  - add new parameter to form->start()
+	suggested by Jesse Swensen et al
+  - add null (dummy, skeleton) container
+
+03-Feb-1999 sas
+  - security updates for ct_shm.inc
+  - add DBM container and documentation
+    Contributed by Daniel Lashua <daniel.lashua@gte.com>
+  - LDAP example files
+
+01-Feb-1999 sas
+  - finalize support for containers
+  - add SQL/LDAP/SHM containers
+  - update documentation
+
+30-Jan-1999 sas
+  - add support for MD5 encrypted passwords
+    Contributed by Jim Zajkowski <jamesez@umich.edu>
+  - commit support for seperated data storage containers
+
+08-Jan-1999 padraic
+  - added additional cache control functionality to the session object.
+    see documentation under allowcache and allowcache_expire in the session
+    object. by default, pages are not cached.
+
+08-Jan-1999 kk
+  - I have reworked db_mysql.inc, using some ideas from the Muze
+    database abstraction (http://www.muze.nl/software/db). We have
+    superior functionality and error checking, but they have a certain
+    beauty (see our metadata() and nextid() to understand how our 
+    heavyweight model sucks).
+
+    Anyway: We now have
+      - no more "count" field in metadata(), no more field name to field
+        index projection in metadata(). metadata() result should be useable
+        with table, but "count"&co break it.
+      - lock() and unlock() functions.
+      - a nextid() function that can produce unique sequence numbers,
+        featuring locking. We need a new table for this.
+
+    Still missing is the sas blob support.
+
+05-Jan-1999 sas
+  - A happy new year and `official' mSQL support (requires PHP 3.0.6+)
+
+27-Dec-1998 cg
+  - Added files tmpl_table.inc, db_usql.inc.
+  - tmpl_table is an extension of the table class, I created
+    the files new_user_alt.php3, u_row.ihmtl, u_head.ihtml, 
+	u_foot.ihtml to demonstrate its purpose.
+  - db_usql is an extension of the DB_Sql class with three function
+    I am often using.
+	import_record_var a function to import record values in global variable.
+	dump_table and dump_query two helper function I use to dump a database
+	in form of a php3 script to export values from one database to another.
+
+27-Dec-1998 kk
+  - Added allowcache_expires to Session, changes cache control behaviour
+    as suggested by Padraic Renaghan.
+
+21-Dec-1998 kk
+  - Added http://www.shonline.de/list-archive/phplib/0755.html patch.
+  - Added locking to the database abstraction in MySQL, Oracle and Postgres.
+    Do not know how to do this in ODBC and Sybase - somebody help, please.
+  - Changes the license from GPL to LGPL as planned.
+  - Added several suggestions to the docs and Session by Lindsay Haisley.
+  - Added PHPLIB + mod_php tutorial by Giancarlo Pinerolo.
+  - Added Auth tutorial to documentation chapter 3.
+  - Reworked some aspects of default authentication: Expiration time
+    for default authentication is now 0x7fffffff.
+
+16-Dec-1998 kk
+  - Introduced the global $_PHPLIB[] hash. This is intended to hold
+    generic PHPLIB runtime configuration. Currently it holds only some
+    "libdir" value that is prepended to all include statements for
+    some obscure configurations. I still do not know if this is a 
+    Really Good Invention [tm].
+  - I finally switched to base64_encode() and base64_decode() for
+    the active_sessions table. This will end the magic_quotes and
+    stripslashed() woes we have been experiencing. You will need
+    a sufficiently new PHP interpreter (3.0.5 at least) and a
+    cleaned active_sessions table to be able to install this.
+
+24-Nov-1998 kk
+  - Minor documentation fixes.
+
+22-Nov-1998 sas
+  - Added CVS Id tags to all files that did not already have them.
+
+21-Nov-1998 sas
+  - Release 6.1
+  
+20-Nov-1998 Carmelo
+  - Autofree support added to db_odbc.inc 
+
+14-Nov-1998 sas
+  - Release 6.0
+  
+13-Nov-1998 sas
+  - Sybase-ct support added
+    (metadata contributed by Adelino Monteiro <adelino@infologia.pt>)
+  - Makefile for easier distribution file creation
+  - unsup directory contains some files 
+    (PHP patch for mSQL 2 and sybase-ct support)
+
+08-Nov-1998 sas
+  - Allow arbitrary names for cookies/query names by setting
+    $sess->cookiename (normally $sess->classname was used)
+  - Allow `soft' caching of pages by setting $sess->allowcache
+  - More flexible use of PostgreSQL connect() options
+	
+06-Nov-1998 sas
+  - Updated create_database.pgsql (tested against PostgreSQL 6.3.2)
+  - Updated db_odbc.inc to handle row names case insensitively
+
+18-Oct-1998 kk
+  - Documentation split and Makefile for documentation generation created.
+    We no longer have html and txt documentation in the CVS do save on
+    update times and do prevent further confusion around not-updated txt
+    and html files.
+
+    You must install linuxdoc sgml, if you use CVS and want accurate
+    documentation. The release will ship with ready made documentation
+    files.
+
+14-Oct-1998 kk
+  - Patches sent in by Andrey Nikiforov have been added.
+
+13-Oct-1998 kk
+  - Documentation update #2
+
+06-Oct-1998 kk
+  - Gone through documentation for Tree class, fixed wording and
+    spelling a little. Documentation now runs through sgtml2html
+    without warnings.
+
+04-Oct-1998 kk
+  - Tree class submitted by Alexander Aulbach.
+
+04-Oct-1998
+  - Junk update, merge conflicts in documentation.sgml.
+
+27-Sep-1998
+  - Stage 1 documentation update, more to follow.
+
+26-Sep-1998
+  - Introduced a split into core classes (DB_Sql, Session, Auth,
+    Perm and User), extended functionality classes (Cart) and
+    HTML widget classes (Table, CSV_Table, Sql_Query).
+
+    Incompatible change: "cart" is no longer a "feature" of
+    page_open(). You must manually manage "cart" instantiation
+    and setup.
+
+25-Sep-1998
+  - Carmelo commited a query display class with paging
+    functionality.  These classes relied on DB_Sql extensions
+    which had functionality that is already present in regular
+    DB_SQL in the metadata() and num_fields() functions. Thus,
+    the files specific.inc and myspecific.inc have been removed.
+
+    The files query.inc and query_impl.inc contained Table class
+    functionality with additional support for paging functionality
+    (do display only parts of a database query result). I added
+    the paging functionality to Table and cleaned up the Table
+    code. Also added an Autofree flag to DB_Sql: If set, the
+    query result is automatically freed at the end of a next_record()
+    query (default: unset). showoff.php3 demonstrates the paging
+    capabilities of Table->show_result_page().
+
+24-Sep-1998 kk
+  - db_pgsql.inc fix: login now uses username and password.
+
+23-Sep-1998 be
+  - Implemented a first version of the default authentication code.
+    Set $auth->nobody to true and you will be logged in as "nobody"
+    on any auth protected page. "nobody" has no permissions at all.
+
+    You have to call $auth->login_if($var) to force a login screen.
+
+    Example pages are under construction and will follow shortly.
+
+23-Sep-1998 kk
+  - Moved the auto_init code into page_open(). Now the auto_init file
+    is executed with a completely set up session. You still have to
+    global your way out of the auto_init file...
+
+22-Sep-1998 kk
+  - Fixed a problem in Session->delete().
+  - Fixed a problem with the new auth_init feature in Session.
+    auto_init disabled by default in local.inc.
+
+19-Sep-1998 kk
+  - Added a new class Sql_Query. The class can generate a where clause
+    for SQL Queries from user input (salvaged from DeTeCSM Seminarmanangement
+    Project and generalized). Documentation is still missing.
+  - Added experimental support for a "global.asa" style "global.inc" file.
+    "global.inc" is being executed from within the Session class exactly
+    once when the session is being set up the first time. It can register
+    all persistent variables of this session; it cannot access auth, perm,
+    cart or user features at all, because we are still early in session
+    setup (this should be changed). You must reference $this->register,
+    because $sess does not yet exist. You must global everything to get
+    out of Session's context.
+
+16-Sep-1998 kk
+  - Added create_database scripts contributed by Guarneri Carmelo.
+  - Subtle change in behavior of Table.
+  - Changed stuff/create_database.mysql. Order is important when you define
+    a compound primary key.
+  - ODBC driver update by Guarneri Carmelo.
+  - Changed pages/admin/new_user.php3, allows now for admin and normal
+    unprivileged usage. Added pages/admin/view_sessions.php3.
+  - Added $perm->perm_sel() & documentation update.
+  - Switched to the new publicly accessible CVS structure, reorganized
+    all files.
+
+14-Sep-1998 kk
+  - Changes and contributions from users integrated.
+  - create_tables.sql delete, specialized versions for different databases
+    created.
+
+09-Sep-1998 kk                                      release-5
+  - release-5 is out.
+
+  - Documentation updates (finally!).
+  - Fixed reimport_any_var() function.
+  - Added halt on invalid sql in db_mysql.inc and db_pgsql.inc.
+  - Fixed gc(): We are doing all time calculation in PHP now and
+    changed is a varchar(14) column. This should be portable.
+  - Added class CSV_Table as a subclass of table. This will export
+    a query result as a comma separated list (ready for excel import
+    or similar stunts).
+  - Fixes to db_mysql.inc, db_pgsql.inc and db_odbc.inc:
+    - new metadata function
+    - new num_fields function
+    - added Row instance variable
+    - new seek function
+
+08-Sep-1998 kk
+  - Incorporating changes and feedback from the list:
+    - gc() functions corrected: Now the classname is taken into account.
+    - changed Table to use a more usefull default table_cell()
+      function. Added heading attribute and changed table_row_open()
+      to create headings if needed. Also fixed some bugs in calls
+      to table_open() in show() and show_result(): $class was not
+      propagated.
+    - changed auth_users field name "perm" to "perms", because
+      "perm" is a reserved word in Sybase. Changes in create_database.sql
+      and in two locations in local.inc.
+    - created the functions reimport_any_vars(), reimport_get_vars(),
+      reimport_post_vars() and reimport_cookie_vars() to kludge
+      around variable precedence problems that can easily be
+      avoided by accessing track vars directly. Use of these
+      functions is discouraged - write proper programs instead.
+    - created a new user.inc and a new feature "user". We have now
+      per user variables.
+    - Discontinued any use of $PATH_INFO, using $PHP_SELF instead.
+      NOTE: If you are using a version of CGI PHP with redirection
+      checking enabled and your PHP interpreter refuses to execute
+      pages using the "auth" feature, you have to change this
+      back: Replace all occurences of $PHP_SELF with $PATH_INFO.
+    - simplified index.php3 and created a new, complex showoff.php3.
+
+18-Aug-1998 kk
+  - Busy, but trying to get a release-4 out of the door. Some
+    minor cleanup and removed unfinished code from the release.
+
+03-Aug-1998 kk
+  - Documentation changed to SGML/Linuxdoc. Created HTL version of
+    documentation.
+
+02-Aug-1998 kk
+  - Some documentation glitches fixed.
+  - Changes row handling in Table.
+  - Added garbage collect to Session.
+
+30-Jul-1998 kk
+  - Added function metatdata to db_mysql.inc. The function
+    does return an array describing a given table.
+  - Added class Table (experimental).
+  - Added class Menu (design study, not even experimental).
+
+25-Jul-1998 kk
+  - Session pages are not uncacheable, I hope.
+
+22-Jul-1998 kk
+  - Added have_perm() to class Perm,
+    changed check(). Feature request
+    "Andre Anneck" <anneck@tse-online.de>
+  - Fixed "cookie set after header has been sent" with
+    sample index.php3.
+
+15-Jul-1998 be
+  - Added auto fallback from cookie mode to
+    get mode in the session class: Set mode to
+    "cookie" and fallback_mode to "get" to
+    see it work.
+
+15-Jul-1998 kk
+  - Added Challenge/Response authentication as 
+    suggested by Stefan Powell (see local.inc for
+    an example).
+
+14-Jul-1998 be
+  - Started to implement session mode "get" to complement the
+    "cookie" mode. Changes in classes Session and Auth.
+  - Began to fix locking to enable true shared sessions.
+
+14-Jul-1998 kk
+  - page_open() and page_close() are now used everywhere instead
+    of the outdated page_behin() and page_end().
+  - Early adopters report bugs; track and fix.
+  - Documentation updates.
+
+10-Jul-1998 kk
+  - Initial Release in CVS

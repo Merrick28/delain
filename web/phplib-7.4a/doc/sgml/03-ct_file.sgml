@@ -1,0 +1,33 @@
+<!-- $Id: 03-ct_file.sgml,v 1.2 2001/08/13 12:30:06 richardarcher Exp $ -->
+
+<sect1>CT_File
+<p>
+
+To let Session use a file as a container, you use
+CT_File. 
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+file&lowbar;path<colsep>The path of the directory where to write the files (must exist already AND must be writable by the server process)<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;File extends CT&lowbar;File {
+	var $file&lowbar;path = "/tmp/";
+}
+</code></tscreen>
+
+You can then use My&lowbar;File in class Session. Reference it
+by putting "My&lowbar;File" in the "that&lowbar;class" variable.
+

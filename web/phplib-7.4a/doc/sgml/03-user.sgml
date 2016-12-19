@@ -1,0 +1,180 @@
+<!-- $Id: 03-user.sgml,v 1.2 2001/08/18 02:41:49 richardarcher Exp $ -->
+
+<sect1>User
+<p>
+
+The user class is an extension (a subclass) of the Session
+class. It keeps a list of global variable names and provides a
+set of functions to load and save these variables from and to a
+database. The same restrictions as for session variables apply
+to user variables.
+
+Unlike session variables, user variables are not lost when the
+user stops and restarts the browser or moves to a different
+workplace (the session id is then lost and consequently all
+session variables are lost, since they are bound to the session
+id).
+
+User variables require that the user logs in, because they
+depend on the availability of a User id to bind variables to
+this id. Thus, User is dependent on Auth.
+
+The User class is an extension of the Session class. It has all
+instance variables and instance methods of Session, only that
+some are implemented different. This documentation only
+describes these differences.
+
+Note that Session and User can successfully share a single
+<tt/active&lowbar;sessions/ table in a database due to the
+different values in the <tt/name/ column.
+
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+classname<colsep>Serialization helper: The name of this class.
+magic<colsep>Not meaningful for User.<rowsep>
+mode<colsep>Not meaningful for User.<rowsep>
+fallback&lowbar;mode<colsep>Not meaningful for User.<rowsep>
+lifetime <colsep>Not meaningful for User; see authentication lifetime in Auth instead.<rowsep>
+gc&lowbar;time<colsep>Functional, but probably not useful in User.<rowsep>
+gc&lowbar;probability<colsep>Functional, but should be set to 0 in User.<rowsep>
+that&lowbar;class<colsep>A classname. User uses this class to store and retrieve data.<rowsep>
+auto&lowbar;init<colsep>Not meaningful for User.<rowsep>
+secure&lowbar;auto&lowbar;init<colsep>Not meaningful for User.<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+pt<colsep>Internal array of names of persistent variables.<rowsep>
+name<colsep>A tag (name) for the session type.<rowsep>
+id<colsep>Id of the current session.<rowsep>
+that<colsep>Container object instance.<rowsep>
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>register($varname)</tag>
+<p>Works as expected.
+
+<tag>unregister($varname)</tag>
+<p>Works as expected.
+
+<tag>delete()</tag>
+<p>Works as expected.
+   
+<tag>url($url)</tag>
+<p>Not useful with User.
+
+<tag>purl($url)</tag>
+<p>Not useful with User.
+
+<tag>self&lowbar;url()</tag>
+<p>Not useful with User.
+
+<tag>pself&lowbar;url()</tag>
+<p>Not useful with User.
+
+<tag>reimport&lowbar;get&lowbar;vars()</tag>
+<p>Works as expected.
+
+<tag>reimport&lowbar;post&lowbar;vars()</tag>
+<p>Works as expected.
+
+<tag>reimport&lowbar;cookie&lowbar;vars()</tag>
+<p>Works as expected.
+
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+
+<descrip>
+<tag>get&lowbar;id()</tag>
+<p>This is only a stub implementation that depends on
+   the user id provided by the page management functions.
+   The page management functions will use
+   <tt/$auth-&gt;auth["uid"]/, which is set up by <tt/Auth/.
+   
+<tag>put&lowbar;id()</tag>
+<p>Empty. Not useful with User.
+
+<tag>serialize($var, &$str)</tag>
+<p>Works as expected.
+
+<tag>freeze()</tag>
+<p>Works as expected.
+
+<tag>thaw()</tag>
+<p>Works as expected.
+
+<tag>gc()</tag>
+<p>Works as expected. You do not want to use it, though.
+
+<tag>reimport&lowbar;any&lowbar;vars($arrayname)</tag>
+<p>Works as expected.
+
+<tag>start()</tag>
+<p>Initialization function, to be called after object
+   instantiation. Calls get&lowbar;id() to get the current session id,
+   creates a database connection, then calls thaw() to load all
+   session variables. <em/Note:/ gc() activation  is commented out!
+   Remove the comments if you really want gc with User variables.
+
+</descrip>
+<p>
+
+<sect2>Example
+<p>
+Use a subclass to provide the appropriate parameters to your
+user variables. Usually your subclass looks like this:
+
+<tscreen><code>
+class My&lowbar;User extends User {
+  var $classname = "My&lowbar;User"; ## Persistence support
+  
+  var $that&lowbar;class = "CT&lowbar;Sql";
+}
+</code></tscreen>
+
+Remember that you have to provide a <tt/DB&lowbar;Sql/ subclass with the
+parameters needed to access your database.
+
+Use the page management functions (see above) to use your
+User subclass. The feature name for user variables is
+<tt/user/; provide the name of your User subclass as a parameter
+to the user feature:
+
+<tscreen><code>
+  page&lowbar;open(array("sess" =&gt; "My&lowbar;Session", "auth" =&gt; "My&lowbar;Auth", "user" =&gt; "My&lowbar;User"));
+</code></tscreen>
+
+Use the <tt/register()/ instance method to register variables as
+persistent. If <tt/$user/ is your user object, use
+
+<tscreen><code>
+$user-&gt;register("u");
+</code></tscreen>
+
+to make the global variable <tt/$u/ persistent. <tt/$u/ may be a
+scalar value, an array or an object with persistence support
+slots.
+
+Do not use the instance methods <tt/freeze()/ and <tt/thaw()/
+directly, but use the page management functions instead.
+
+<em/Note:/ Using default authentication and user variables is
+going to be a problem, because currently <tt/User/ does not do
+any locking. This is, because the <tt/DB&lowbar;Sql/ has currently no
+portable locking mechanism.

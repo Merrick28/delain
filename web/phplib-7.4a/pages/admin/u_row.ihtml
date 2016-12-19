@@ -1,0 +1,35 @@
+ <!-- existing user -->
+<?php global $sess, $perm ?>
+ <form method="post" action="<?php $sess->pself_url() ?>">
+ <tr valign=middle align=left><?php
+  if ($perm->have_perm("admin")):
+ ?>
+
+  <td><input type="text" name="username" size=12 maxlength=32 value="<?php echo $username?>"></td>
+  <td><input type="text" name="password" size=12 maxlength=32 value="<?php echo $password?>"></td>
+  <td><?php print $perm->perm_sel("perms", $perms) ?></td>
+
+  <td align=right>
+   <input type="hidden" name="u_id"   value="<?php echo $uid?>">
+   <input type="submit" name="u_kill" value="Kill">
+   <input type="submit" name="u_edit" value="Change">
+  </td><?php
+  elseif ($auth->auth["uname"] == $username):
+ ?>
+  <td><?php echo $username ?></td>
+  <td><input type="text" name="password" size=12 maxlength=32 value="<?php echo $password?>"></td>
+  <td><?php echo $perms ?></td>
+  <td align=right>
+   <input type="hidden" name="u_id"   value="<?php echo $uid?>">
+   <input type="submit" name="u_edit" value="Change">
+  </td>
+ <?php else: ?>
+  <td><?php echo $username ?></td>
+  <td>**********</td>
+  <td><?php echo $perms ?></td>
+  <td align=right>&nbsp;</td>
+<?php
+ endif;
+ ?>
+ </tr>
+ </form>

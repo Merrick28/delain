@@ -1,0 +1,129 @@
+<!-- $Id: 01-usingcore.sgml,v 1.1.1.1 2000/04/17 16:39:58 kk Exp $ -->
+
+<sect1>Using core features of PHPLIB
+<p>Many applications don't use PHPLIB's advanced features, but
+   see PHPLIB as a convenient way to protect pages or
+   functionality with passwords. This section covers such
+   core functionality usage of PHPLIB.
+
+<descrip>
+<tag>Customizing the login screen</tag>
+<p>Edit <tt/loginform.ihtml/ in the include directory to suit
+your needs.
+
+<tag>Customizing the permission levels</tag>
+Edit <tt/local.inc/ and change the class <tt/Example&lowbar;Perm/ to
+enumerate your permissions. Your users in <tt/auth&lowbar;user/ must
+have one or more comma separated permission names from that
+list. Edit <tt/perminvalid.ihtml/ for a suitable error message.
+
+<tag>Creating New Users</tag>
+<p>Use <tt/new&lowbar;user.php3/ from the <tt>pages/admin</tt> directory
+   of the distribution. If you followed the installation
+   instructions, it should be available under the
+   <tt>/admin</tt> URL of your web server.
+
+To manually create a user, run <tt/print md5(uniqid("some magic
+string")/ to get a user id. <tt/insert into auth&lowbar;user values (
+"that userid", "username", "password", "permissions");/.
+
+<tag>Creating an unprotected session page</tag>
+<p>Begin that page with 
+
+<tscreen><code>
+&lt;?php page&lowbar;open(array("sess" =&gt; "Example&lowbar;Session")); ?&gt;
+</code></tscreen>
+
+End that page with 
+
+<tscreen><code>
+&lt;?php page&lowbar;close(); ?&gt;
+</code></tscreen>
+
+<tag>Creating a protected session page</tag>
+<p>Begin that page with
+
+<tscreen><code>
+&lt;?php
+  page&lowbar;open(
+    array("sess" =&gt; "Example&lowbar;Session",
+          "auth" =&gt; "Example&lowbar;Auth",
+          "perm" =&gt; "Example&lowbar;Perm"));
+  $perm->check("desired protection");
+?&gt;
+</code></tscreen>
+
+and end that page with
+
+<tscreen><code>
+&lt;?php page&lowbar;close(); ?&gt;
+</code></tscreen>
+
+<tag>Creating protected functionality</tag>
+<p>Begin that page with
+
+<tscreen><code>
+&lt;?php
+  page&lowbar;open(
+    array("sess" =&gt; "Example&lowbar;Session",
+          "auth" =&gt; "Example&lowbar;Auth",
+          "perm" =&gt; "Example&lowbar;Perm"));
+?&gt;
+</code></tscreen>
+
+and end that page with
+
+<tscreen><code>
+&lt;?php page&lowbar;close(); ?&gt;
+</code></tscreen>
+
+Enclose the protected functionality in
+
+<tscreen><code>
+&lt;?php
+  if ($perm-&gt;have&lowbar;perm("desired protection")):
+?&gt;
+Put protected HTML or PHP here
+&lt;?php
+  endif
+?&gt;
+</code></tscreen>
+
+<em/Note:/ <tt/desired protection/ is any combination of
+permissions from <tt/Example&lowbar;Perm/. Using the default values from
+Example&lowbar;Perm, "<tt/user/", "<tt/user,author/" or "<tt/admin/" are all
+valid sample values. A user can access a page, if that user has
+all permissions that are being requested in a
+$perm-&gt;check() or $perm-&gt;have&lowbar;perm() call.
+
+<em/Note:/ Users can have multiple permission in their perms
+column of <tt/auth&lowbar;user/. A user with perms
+"<tt/user,author,editor/" can access all pages requesting any
+combination of these permissions.
+
+<em/Note:/ Don't use spaces. "<tt/user,author,editor/" works.
+"<tt/user, author, editor/" does not.
+
+<em/Note:/ If <tt/$auth-&gt;auth["uid"]/ is set on a protected
+page <em/and/ if <tt/(time &lt; auth-&gt;auth["exp"])/, then and
+only then the authentication is valid. You may then use
+<tt/$auth-&gt;auth["uname"]/ as the user name,
+<tt/$auth-&gt;auth["uid"]/ as a unique user id and
+<tt/$auth-&gt;auth["perm"]/ for the current permissions of that
+user. Actually, you never want to touch
+<tt/$auth-&gt;auth["perm"]/ manually, but use
+<tt/$perm-&gt;have&lowbar;perm("...")/ for that.
+
+<tag>Getting a grip on PHPLIB</tag>
+<p>Read on. Then read the source. Read it again -
+Session-&gt;serialize() and Auth-&gt;start() are ugly. Get a CVS
+account. Contribute. Become famous. Buy a ferrari.
+
+<em/Note:/ You want to understand what registered variables are.
+You want to understand in what order form variables and session
+variables are imported into your page. You want to understand
+how to copy values from form values into session values without
+killing yourself. You do not want to make form variables
+persistent, ever. Then you will live happily thereafter...
+</descrip>
+

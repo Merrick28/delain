@@ -1,0 +1,24 @@
+<table border=0 bgcolor="#eeeeee" align="center" cellspacing=2 cellpadding=4 width=540>
+ <tr valign=top align=left>
+  <th>Username</th>
+  <th>Password</th>
+  <th>Level</th>
+  <th align=right>Action</th>
+ </tr>
+<?php 
+  global $perm;
+  if ($perm->have_perm("admin")): 
+  global $sess, $username, $password;  
+ ?> <tr valign=middle align=left>
+ <form method="post" action="<?php $sess->pself_url() ?>">
+  <td><input type="text" name="username" size=12 maxlength=32 value="<?php print $username?>"></td>
+  <td><input type="test" name="password" size=12 maxlength=32 value="<?php print $password?>"></td>
+  <td><?php print $perm->perm_sel("perms","user");?></td>
+  <td align=right><input type="submit" name="create" value="Create User"></td>
+ </form>
+ </tr>
+<?php
+
+  endif;
+
+?>

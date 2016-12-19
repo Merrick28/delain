@@ -1,0 +1,212 @@
+/* 
+Author: Jaroslaw Zabiello, 
+webmaster@watchtower.org.pl, 2001-10-24 
+Generated from server MS-SQL7 SP3 by Enterprise 
+Manager 
+*/ 
+/****** Object: Table [dbo].[active_sessions] 
+Script Date: 2001-10-23 23:14:28 ******/ 
+if exists (select * from sysobjects where id = 
+object_id(N'[dbo].[active_sessions]') and 
+OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+drop table [dbo].[active_sessions] 
+GO 
+
+/****** Object: Table [dbo]. 
+[active_sessions_split] Script Date: 2001-10-23 
+23:14:28 ******/ 
+if exists (select * from sysobjects where id = 
+object_id(N'[dbo].[active_sessions_split]') and 
+OBJECTPROPERTY(id, N'IsUserTable') = 1) 
+drop table [dbo].[active_sessions_split] 
+GO 
+
+/****** Object: Table [dbo].[auth_user] Script 
+Date: 2001-10-23 23:14:28 ******/ 
+if exists (select * from sysobjects where id = 
+object_id(N'[dbo].[auth_user]') and OBJECTPROPERTY(id, 
+N'IsUserTable') = 1) 
+drop table [dbo].[auth_user] 
+GO 
+
+/****** Object: Table [dbo].[auth_user_md5] Script 
+Date: 2001-10-23 23:14:28 ******/ 
+if exists (select * from sysobjects where id = 
+object_id(N'[dbo].[auth_user_md5]') and OBJECTPROPERTY 
+(id, N'IsUserTable') = 1) 
+drop table [dbo].[auth_user_md5] 
+GO 
+
+/****** Object: Table [dbo].[db_sequence] Script 
+Date: 2001-10-23 23:14:28 ******/ 
+if exists (select * from sysobjects where id = 
+object_id(N'[dbo].[db_sequence]') and OBJECTPROPERTY 
+(id, N'IsUserTable') = 1) 
+drop table [dbo].[db_sequence] 
+GO 
+
+/****** Object: User dbo Script Date: 2001-10-23 
+23:14:28 ******/ 
+/****** Object: Table [dbo].[active_sessions] 
+Script Date: 2001-10-23 23:14:29 ******/ 
+CREATE TABLE [dbo].[active_sessions] ( 
+[sid] [varchar] (32) NOT NULL , 
+[name] [varchar] (32) NOT NULL , 
+[val] [text] NULL , 
+[changed] [varchar] (14) NOT NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] 
+GO 
+
+/****** Object: Table [dbo]. 
+[active_sessions_split] Script Date: 2001-10-23 
+23:14:29 ******/ 
+CREATE TABLE [dbo].[active_sessions_split] ( 
+[ct_sid] [varchar] (32) NOT NULL , 
+[ct_name] [varchar] (32) NOT NULL , 
+[ct_pos] [varchar] (6) NOT NULL , 
+[ct_val] [text] NULL , 
+[ct_changed] [varchar] (14) NOT NULL 
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY] 
+GO 
+
+/****** Object: Table [dbo].[auth_user] Script 
+Date: 2001-10-23 23:14:30 ******/ 
+CREATE TABLE [dbo].[auth_user] ( 
+[user_id] [varchar] (32) NOT NULL , 
+[username] [varchar] (32) NOT NULL , 
+[password] [varchar] (32) NOT NULL , 
+[perms] [varchar] (255) NULL 
+) ON [PRIMARY] 
+GO 
+
+/****** Object: Table [dbo].[auth_user_md5] Script 
+Date: 2001-10-23 23:14:30 ******/ 
+CREATE TABLE [dbo].[auth_user_md5] ( 
+[user_id] [varchar] (32) NOT NULL , 
+[username] [varchar] (32) NOT NULL , 
+[password] [varchar] (32) NOT NULL , 
+[perms] [varchar] (255) NULL 
+) ON [PRIMARY] 
+GO 
+
+/****** Object: Table [dbo].[db_sequence] Script 
+Date: 2001-10-23 23:14:30 ******/ 
+CREATE TABLE [dbo].[db_sequence] ( 
+[seq_name] [varchar] (127) NOT NULL , 
+[nextid] [int] NOT NULL 
+) ON [PRIMARY] 
+GO 
+
+ALTER TABLE [dbo].[active_sessions] WITH NOCHECK ADD 
+CONSTRAINT [DF_active_sessions_changed] 
+DEFAULT ('') FOR [changed], 
+CONSTRAINT [PK_active_sessions] PRIMARY KEY 
+NONCLUSTERED 
+( 
+[name], 
+[sid] 
+) ON [PRIMARY] 
+GO 
+
+ALTER TABLE [dbo].[active_sessions_split] WITH NOCHECK 
+ADD 
+CONSTRAINT [DF_active_sessions_split_ct_sid] 
+DEFAULT ('') FOR [ct_sid], 
+CONSTRAINT [DF_active_sessions_split_ct_name] 
+DEFAULT ('') FOR [ct_name], 
+CONSTRAINT [DF_active_sessions_split_ct_pos] 
+DEFAULT ('') FOR [ct_pos], 
+CONSTRAINT 
+[DF_active_sessions_split_ct_changed] DEFAULT ('') FOR 
+[ct_changed], 
+CONSTRAINT [PK_active_sessions_split] PRIMARY 
+KEY NONCLUSTERED 
+( 
+[ct_name], 
+[ct_sid], 
+[ct_pos] 
+) ON [PRIMARY] 
+GO 
+
+ALTER TABLE [dbo].[auth_user] WITH NOCHECK ADD 
+CONSTRAINT [DF_auth_user_user_id] DEFAULT ('') 
+FOR [user_id], 
+CONSTRAINT [DF_auth_user_username] DEFAULT 
+('') FOR [username], 
+CONSTRAINT [DF_auth_user_password] DEFAULT 
+('') FOR [password], 
+CONSTRAINT [PK_auth_user] PRIMARY KEY 
+NONCLUSTERED 
+( 
+[user_id] 
+) ON [PRIMARY] 
+GO 
+
+ALTER TABLE [dbo].[auth_user_md5] WITH NOCHECK ADD 
+CONSTRAINT [DF_auth_user_md5_user_id] DEFAULT 
+('') FOR [user_id], 
+CONSTRAINT [DF_auth_user_md5_username] DEFAULT 
+('') FOR [username], 
+CONSTRAINT [DF_auth_user_md5_password] DEFAULT 
+('') FOR [password], 
+CONSTRAINT [PK_auth_user_md5] PRIMARY KEY 
+NONCLUSTERED 
+( 
+[user_id] 
+) ON [PRIMARY] 
+GO 
+
+ALTER TABLE [dbo].[db_sequence] WITH NOCHECK ADD 
+CONSTRAINT [DF_db_sequence_seq_name] DEFAULT 
+('') FOR [seq_name], 
+CONSTRAINT [DF_db_sequence_nextid] DEFAULT (0) 
+FOR [nextid], 
+CONSTRAINT [PK_db_sequence] PRIMARY KEY 
+NONCLUSTERED 
+( 
+[seq_name] 
+) ON [PRIMARY] 
+GO 
+
+CREATE INDEX [IX_active_sessions] ON [dbo]. 
+[active_sessions]([changed]) ON [PRIMARY] 
+GO 
+
+CREATE INDEX [IX_active_sessions_split] ON [dbo]. 
+[active_sessions_split]([ct_changed]) ON [PRIMARY] 
+GO 
+
+CREATE UNIQUE INDEX [IX_auth_user] ON [dbo]. 
+[auth_user]([username]) ON [PRIMARY] 
+GO 
+
+CREATE UNIQUE INDEX [IX_auth_user_md5] ON [dbo]. 
+[auth_user_md5]([username]) ON [PRIMARY] 
+GO 
+
+GRANT SELECT , UPDATE , INSERT , DELETE ON [dbo]. 
+[active_sessions] TO [public] 
+GO 
+
+GRANT SELECT , UPDATE , INSERT , DELETE ON [dbo]. 
+[active_sessions_split] TO [public] 
+GO 
+
+GRANT SELECT , UPDATE , INSERT , DELETE ON [dbo]. 
+[auth_user] TO [public] 
+GO 
+
+GRANT SELECT , UPDATE , INSERT , DELETE ON [dbo]. 
+[auth_user_md5] TO [public] 
+GO 
+
+GRANT SELECT , UPDATE , INSERT , DELETE ON [dbo]. 
+[db_sequence] TO [public] 
+GO 
+
+INSERT INTO dbo.auth_user VALUES 
+('c14cbf141ab1b7cd009356f555b607dc','kris','test','admi 
+n'); 
+INSERT INTO dbo.auth_user_md5 VALUES 
+('c14cbf141ab1b7cd009356f555b607dc','kris','098f6bcd462 
+1d373cade4e832627b4f6','admin'); 

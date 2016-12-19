@@ -1,0 +1,57 @@
+
+ 
+<html> 
+<head> 
+<link rel="stylesheet" type="text/css" href="http://www.jdr-delain.net/style.css" title="essai"> 
+<link rel="meta" href="http://www.jdr-delain.net/labels.rdf" type="application/rdf+xml" title="ICRA labels"> 
+<link rel="shortcut icon" href="http://www.jdr-delain.net/drake_head_red.ico" type="image/gif"> 
+<SCRIPT LANGUAGE="Javascript" SRC="http://www.jdr-delain.net/scripts/retourmenu.js"> </SCRIPT> 
+<SCRIPT LANGUAGE="Javascript" SRC="http://www.jdr-delain.net/scripts/retourmenuxml.js"> </SCRIPT> 
+</head> 
+ 
+<body background="http://images.jdr-delain.net/fond5.gif"> 
+<table width="100%" bgcolor="#EBE7E7" border="0" cellpadding="0" cellspacing="0"> 
+	<tr> 
+		<td width="10" background="http://images.jdr-delain.net/coin_hg.gif"><img src="http://images.jdr-delain.net/del.gif" height="8" width="10"></td> 
+		<td background="http://images.jdr-delain.net/ligne_haut.gif"><img src="http://images.jdr-delain.net/del.gif" height="8" width="10"></td> 
+		<td width="10" background="http://images.jdr-delain.net/coin_hd.gif"><img src="http://images.jdr-delain.net/del.gif" height="8" width="10"></td> 
+		</tr> 
+		<tr> 
+		<td width="10" background="http://images.jdr-delain.net/ligne_gauche.gif">&nbsp;</td> 
+		<td> 
+		<!-- Debut du contenu --> 
+		<p class="titre">Le chaos</p> 
+<a href="http://forum.jdr-delain.net/viewtopic.php?f=8&t=921&p=231285#p231281" target="_blank">Tous les signes étaient bien présents</a>, mais personne n'a voulu y croire. Tant d'années de tranquilité, impossible que cela arrive de nouveau. Et pourtant...
+<br /> 
+<br /> 
+Tout est arrivé très vite. Une autre secousse, un peu de poussière qui tombe, quelques secondes de répit... et le chaos. Indescriptible, redoutable. Chacun est pris dans le feu du tremblement, malmené, emporté on ne sait où. Les groupes sont séparés, les individus sont seuls maintenant.
+Ce n'est plus de la poussière, mais un mur compact, palpable. On ne distingue pas à plus de quelques centimètres. 
+<br /> 
+<br /> 
+L'air manque, les pierres tombent du plafond, et pourtant cela continue, encore. Que trouverez vous quand le tremblement de terre aura cessé ?
+ 
+		<!-- Fin du contenu --> 
+		</td> 
+		<td width="10" background="http://images.jdr-delain.net/ligne_droite.gif">&nbsp;</td> 
+	</tr> 
+	<tr> 
+		<td height="10" width="10" background="http://images.jdr-delain.net/coin_bg.gif"><img src="http://images.jdr-delain.net/del.gif" height="2"></td> 
+		<td height="10" background="http://images.jdr-delain.net/ligne_bas.gif"></td> 
+		<td height="10" width="10" background="http://images.jdr-delain.net/coin_bd.gif"></td> 
+	</tr> 
+</table> 
+</body> 
+</html> 
+<script type="text/javascript"> 
+ 
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19006140-3']);
+  _gaq.push(['_trackPageview']);
+ 
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+ 
+</script> 

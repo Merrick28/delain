@@ -1,0 +1,24 @@
+
+$Id: COMMIT,v 1.1.1.1 2000/04/17 16:39:51 kk Exp $
+
+Some rules for CVS committers:
+
+- All changes to classes must be matched by changes to
+  the SGML documentation source. I will reject all commits
+  that do not keep the docs up to date.
+
+- All changes to class behaviour must be logged in the
+  CHANGES file, at the top.
+
+- The source is indented using spaces and a indentation
+  level of 4. There are no tabs in the source.
+
+- Keep your changes compatible.
+
+- Try to avoid things that slow the lib extremely. We
+  are prepended to almost all pages on a site, we need
+  to stay small.
+
+- Use meaningful log messages. They are collected and mailed
+  out to the mailing list, phplib-dev@lists.netuse.de.
+

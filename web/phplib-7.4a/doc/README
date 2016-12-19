@@ -1,0 +1,16 @@
+To build the HTML/TXT files from the source, you need the older
+distribution of sgml-tools available from
+
+	http://www.sgmltools.org/
+
+The never versions (2.x) cannot be used. After you have installed
+them correctly, a single
+
+	make
+
+is enough to build the complete documentation.
+
+If you want to add a class documentation to PHPLIB, use template.sgml
+in this directory.
+
+$Id: README,v 1.1.1.1 2000/04/17 16:39:57 kk Exp $

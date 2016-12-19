@@ -1,0 +1,45 @@
+/* CSS Document */
+body.fond1,td.fond1   { background-image:url(../img_journal/fondblanc.gif); }
+td.intercolonnes      { background-image:url(../img_journal/ligne_interne.gif); }
+td.intercolonnes_haut { background-image:url(../img_journal/ligne_interne_haut.gif); }
+td.intercolonnes_bas  { background-image:url(../img_journal/ligne_interne_bas.gif); }
+td.ligne_droite       { background-image:url(../img_journal/ligne_droite.gif); }
+td.ligne_gauche       { background-image:url(../img_journal/ligne_gauche.gif); }
+td.ligne_droite_i     { background-image:url(../img_journal/fondblanc.gif); }
+td.ligne_gauche_i     { background-image:url(../img_journal/fondblanc.gif); }
+td.ligne_bas          { background-image:url(../img_journal/ligne_bas.gif);    }
+td.ligne_haut         { background-image:url(../img_journal/ligne_haut.gif);   }
+td.coin_hg            { background-image:url(../img_journal/coin_hg.gif); }
+td.coin_hd            { background-image:url(../img_journal/coin_hd.gif); }
+td.coin_hgi           { background-image:url(../img_journal/coin_hi.gif); }
+td.coin_hdi           { background-image:url(../img_journal/coin_hi.gif); }
+td.coin_bgi           { background-image:url(../img_journal/coin_bi.gif); }
+td.coin_bdi           { background-image:url(../img_journal/coin_bi.gif); }
+td.coin_bg            { background-image:url(../img_journal/coin_bg.gif); }
+td.coin_bd            { background-image:url(../img_journal/coin_bd.gif); }
+.fond3                { background-image:url(../img_journal/fondblanc.gif) }
+
+
+th	{
+  font-family: "Book Antiqua", "Palatino Linotype", Palatino, Times, serif; 
+  font-weight: bold; 
+  color: #0C0C0C;
+  font-size: 16px;
+  font-weight : bold;
+  height: 25px;
+  background-image:url(../img_journal/cellpic3.gif);
+}
+@font-face {
+  font-family: Book Antiqua;
+  src: url(CSS\BOOKANT0.eot);
+}
+@font-face {
+  font-family: Palatino Linotype;
+  src: url(CSS\PALATIN0.eot);
+}
+@font-face {
+  font-family:Cardinal;
+  src:url(CSS/CARDINA0.eot);
+}
+
+table.fond2 { background-image:url(../img_journal/fondblanc.gif); height:100%; width:100%; }

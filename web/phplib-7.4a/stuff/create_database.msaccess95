@@ -1,0 +1,211 @@
+' ============================================================
+'   Nom de la base   :  myapp                                 
+'   Nom de SGBD      :  Microsoft Access 95                   
+'   Date de creation :  9/24/98  10:48 AM                     
+' ============================================================
+' $Id: create_database.msaccess95,v 1.2 2001/08/30 13:04:27 richardarcher Exp $
+
+
+    ' ============================================================
+    '   Table : ACTIVE_SESSIONS                                   
+    ' ============================================================
+    Begin Table  ACTIVE_SESSIONS
+       Name            = active_sessions
+       Begin Column SID
+          Name            = sid
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 1
+       End Column
+       Begin Column NAME
+          Name            = name
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 2
+       End Column
+       Begin Column VAL
+          Name            = val
+          DataType        = Memo
+          Length          = 4096
+          OrdinalNumber   = 3
+       End Column
+       Begin Column CHANGED
+          Name            = changed
+          DataType        = Text(14)
+          Length          = 14
+          Mandatory       = YES
+          OrdinalNumber   = 5
+       End Column
+    End Table
+
+    ' ============================================================
+    '   Index : ACTIVE_SESSIONS_PK                                
+    ' ============================================================
+    Begin Index ACTIVE_SESSIONS_PK
+       Table   = ACTIVE_SESSIONS
+       Primary = primarykey
+    
+       Field = SID
+       Field = NAME
+    End Index
+
+    ' ============================================================
+    '   Index : CHANGED                                           
+    ' ============================================================
+    Begin Index CHANGED
+       Table   = ACTIVE_SESSIONS
+    
+       Field = CHANGED
+    End Index
+
+    ' ============================================================
+    '   Table : ACTIVE_SESSIONS_SPLIT                                   
+    ' ============================================================
+    Begin Table  ACTIVE_SESSIONS_SPLIT
+       Name            = active_sessions
+       Begin Column CT_SID
+          Name            = ct_sid
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 1
+       End Column
+       Begin Column CT_NAME
+          Name            = ct_name
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 2
+       End Column
+       Begin Column CT_POS
+          Name            = ct_pos
+          DataType        = Text(6)
+          Length          = 6
+          Mandatory       = YES
+          OrdinalNumber   = 3
+       End Column
+       Begin Column CT_VAL
+          Name            = ct_val
+          DataType        = Memo
+          Length          = 4096
+          OrdinalNumber   = 4
+       End Column
+       Begin Column CT_CHANGED
+          Name            = ct_changed
+          DataType        = Text(14)
+          Length          = 14
+          Mandatory       = YES
+          OrdinalNumber   = 5
+       End Column
+    End Table
+
+    ' ============================================================
+    '   Index : ACTIVE_SESSIONS_SPLIT_PK                                
+    ' ============================================================
+    Begin Index ACTIVE_SESSIONS_SPLIT_PK
+       Table   = ACTIVE_SESSIONS_SPLIT
+       Primary = primarykey
+    
+       Field = CT_SID
+       Field = CT_NAME
+       Field = CT_POS
+    End Index
+
+    ' ============================================================
+    '   Index : CHANGED                                           
+    ' ============================================================
+    Begin Index CHANGED
+       Table   = ACTIVE_SESSIONS_SPLIT
+    
+       Field = CT_CHANGED
+    End Index
+
+    ' ============================================================
+    '   Table : AUTH_USER                                         
+    ' ============================================================
+    Begin Table  AUTH_USER
+       Name            = auth_user
+       Begin Column USER_ID
+          Name            = user_id
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 1
+       End Column
+       Begin Column USERNAME
+          Name            = username
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 2
+       End Column
+       Begin Column PASSWORD
+          Name            = password
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 3
+       End Column
+       Begin Column PERMS
+          Name            = perms
+          DataType        = Text(255)
+          Length          = 255
+          OrdinalNumber   = 4
+       End Column
+    End Table
+
+    ' ============================================================
+    '   Table : AUTH_USER_MD5                                         
+    ' ============================================================
+    Begin Table  AUTH_USER_MD5
+       Name            = auth_user_md5
+       Begin Column USER_ID
+          Name            = user_id
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 1
+       End Column
+       Begin Column USERNAME
+          Name            = username
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 2
+       End Column
+       Begin Column PASSWORD
+          Name            = password
+          DataType        = Text(32)
+          Length          = 32
+          Mandatory       = YES
+          OrdinalNumber   = 3
+       End Column
+       Begin Column PERMS
+          Name            = perms
+          DataType        = Text(255)
+          Length          = 255
+          OrdinalNumber   = 4
+       End Column
+    End Table
+
+    ' ============================================================
+    '   Index : AUTH_USER_PK                                      
+    ' ============================================================
+    Begin Index AUTH_USER_PK
+       Table   = AUTH_USER
+       Primary = primarykey
+    
+       Field = USER_ID
+    End Index
+
+    ' ============================================================
+    '   Index : K_USERNAME                                        
+    ' ============================================================
+    Begin Index K_USERNAME
+       Table   = AUTH_USER
+    
+       Field = USERNAME
+    End Index
+

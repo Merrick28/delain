@@ -1,0 +1,48 @@
+$Id: README.migrate_V7,v 1.1.1.1 2000/04/17 16:39:57 kk Exp $
+This is a short introduction for people already familiar with PHPLIB v6
+or prior. 
+
+What has changed?
+
+Many things. The most obvious change is the introduction of storage
+containers. If you had written for V6
+
+----------------------------------------
+class my_session extends Session {
+	$name = "my_session";
+	...
+	$database_class = "class";
+	$database_table = "table";
+};
+----------------------------------------
+
+you wil have to rewrite it the following way now to make it work with V7.
+
+----------------------------------------
+class my_sql extends CT_Sql {
+	$database_class = "class";
+	$database_table = "table";
+};
+
+class my_session extends Session {
+	$name = "my_session";
+	...
+	$that_class = "my_sql";
+};
+----------------------------------------
+
+Don't forget to add ``require "ct_sql.inc";'' to your prepend.php3. 
+
+Sascha
+
+-- Sql_Query class change --
+The form function of the Sql_Query class has been changed to return the
+HTML form as a result of the function instead of sending the HTML
+directly via printf. This gives you more control over how/when the
+HTML is displayed.
+
+Previously you would code the following to display the HTML form:
+  $q->form("x", $field, "query");
+
+In this release, you should change that to:
+  echo $q->form("x", $field, "query");

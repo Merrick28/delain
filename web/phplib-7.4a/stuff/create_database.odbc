@@ -1,0 +1,50 @@
+create table ACTIVE_SESSIONS
+(
+    SID       VARCHAR(32)           not null,
+    NAME      VARCHAR(32)           not null,
+    VAL       LONG VARCHAR                  ,
+    CHANGED   VARCHAR(14)           not null,
+    primary key (SID, NAME)
+);
+
+create unique index ACTIVE_SESSIONS_PK on ACTIVE_SESSIONS (SID asc, NAME asc);
+
+create index CHANGED on ACTIVE_SESSIONS (CHANGED asc);
+
+create table ACTIVE_SESSIONS_SPLIT
+(
+    CT_SID       VARCHAR(32)           not null,
+    CT_NAME      VARCHAR(32)           not null,
+    CT_POS       VARCHAR(6)            not null,
+    CT_VAL       LONG VARCHAR                  ,
+    CT_CHANGED   VARCHAR(14)           not null,
+    primary key (CT_SID, CT_NAME, CT_POS)
+);
+
+create unique index ACTIVE_SESSIONS_SPLIT_PK on ACTIVE_SESSIONS (CT_SID asc, CT_NAME asc, CT_POS asc);
+
+create index SCHANGED on ACTIVE_SESSIONS_SPLIT (CT_CHANGED asc);
+
+create table AUTH_USER
+(
+    USER_ID   VARCHAR(32)           not null,
+    USERNAME  VARCHAR(32)           not null,
+    PASSWORD  VARCHAR(32)           not null,
+    PERMS     VARCHAR(255)                  ,
+    primary key (USER_ID)
+);
+
+create table AUTH_USER_MD5
+(
+    USER_ID   VARCHAR(32)           not null,
+    USERNAME  VARCHAR(32)           not null,
+    PASSWORD  VARCHAR(32)           not null,
+    PERMS     VARCHAR(255)                  ,
+    primary key (USER_ID)
+);
+
+create unique index AUTH_USER_PK on AUTH_USER (USER_ID asc);
+create unique index AUTH_USER_MD5_PK on AUTH_USER_MD5 (USER_ID asc);
+
+create unique index K_USERNAME on AUTH_USER (USERNAME asc);
+

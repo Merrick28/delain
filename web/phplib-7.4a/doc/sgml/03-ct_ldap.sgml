@@ -1,0 +1,47 @@
+<!-- $Id: 03-ct_ldap.sgml,v 1.1.1.1 2000/04/17 16:40:01 kk Exp $ -->
+
+<sect1>CT_Ldap
+<p>
+
+The <tt/Session/ class used to contain a bit of SQL to read and
+write session data from and to a database. To make sessions
+database independent, <tt/Session/ now makes all storage
+accesses through a container class. To let <tt/Session/ use a
+LDAP database as a container, you use <tt/CT&lowbar;Ldap/.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+ldap&lowbar;host<colsep>This is the hostname of the LDAP server to connect to<rowsep>
+ldap&lowbar;port<colsep>And this is its port (LDAP default is 389)<rowsep>
+basedn<colsep>This is the basedn<rowsep>
+rootdn<colsep>This is the rootdn which is required to modify the database<rowsep>
+rootpw<colsep>The respective password for rootdn<rowsep>
+objclass<colsep>The objectclass for PHPLIB's data<rowsep>
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<sect2>Example
+<p>
+
+Use a subclass to provide the appropriate parameters 
+to your container. Usually your subclass looks like this: 
+
+<tscreen><code>
+class My&lowbar;Ldap extends CT&lowbar;Ldap {
+	var $classname = "My&lowbar;Ldap";
+	var $ldap&lowbar;host = "localhost";
+	var $ldap&lowbar;port = 389;
+	var $basedn = "dc=your-domain, dc=com";
+	var $rootdn = "cn=root, dc=your-domain, dc=com";
+	var $rootpw = "secret";
+	var $objclass = "phplibdata";
+}
+</code></tscreen>
+
+You can then use My&lowbar;Ldap in class Session. Reference it
+by putting "My&lowbar;Ldap" in the "that&lowbar;class" variable.
+

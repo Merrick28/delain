@@ -1,0 +1,599 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+ <META NAME="GENERATOR" CONTENT="LinuxDoc-Tools 0.9.21">
+ <TITLE>PHP Base Library Documentation, Release phplib_7_2: Overview and Installation</TITLE>
+ <LINK HREF="documentation-3.html" REL=next>
+ <LINK HREF="documentation-1.html" REL=previous>
+ <LINK HREF="documentation.html#toc2" REL=contents>
+</HEAD>
+<BODY>
+<A HREF="documentation-3.html">Next</A>
+<A HREF="documentation-1.html">Previous</A>
+<A HREF="documentation.html#toc2">Contents</A>
+<HR>
+<H2><A NAME="s2">2.</A> <A HREF="documentation.html#toc2">Overview and Installation</A></H2>
+
+
+<P>The following sections discuss the installation, verification
+and layout of PHPLIB: How to install PHPLIB? Which functionality
+and class definitions are contained in which files? How do you
+layout a web server with PHPLIB installed? Which installation
+options are available and how do these affect performance?
+</P>
+
+<H2><A NAME="ss2.1">2.1</A> <A HREF="documentation.html#toc2.1">Files, classes and functions</A>
+</H2>
+
+
+<P>PHPLIB contains a set of core classes and functions that offer
+session tracking, per-session and per-user persistent variables,
+user authentication and permission checking. Building upon this
+core functionality, PHPLIB offers a set of commonly needed
+"background" classes and a set of "HTML widgets", classes that
+allow you to quickly generate HTML based user interfaces.</P>
+<P>All PHPLIB definitions are designed that you don't need to
+change any of these files. Your customization of PHPLIB can be
+contained in two or three files, depending on the setup:
+<CODE>local.inc</CODE>, <CODE>setup.inc</CODE> and, in some cases,
+<CODE>prepend.php3</CODE>. You <EM>NEVER</EM> need to change any other file
+with PHPLIB. Details are outlined below.</P>
+
+<H3>Customization</H3>
+
+<P>The following three files are the only files from PHPLIB that
+require changes in normal PHPLIB applications. </P>
+<P>
+<DL>
+<DT><B>Application configuration in <CODE>local.inc</CODE>:</B><DD><P>Your application will almost certainly not work with the
+default values supplied by the above classes. You are supposed
+to extend the classes described below as you see fit.</P>
+
+<P>In your subclasses, you only have to specify what is different
+in your application. These are things like database host names,
+database names, table names and username/password
+combinations. You need to provide login screen definitions
+(HTML) and user validation functions (SQL) to make the
+example work.</P>
+
+<P>The distribution provides a <CODE>local.inc</CODE> to illustrate
+a typical setup. These definitions are also needed to get
+the administration and testing scripts provided with the
+distribution to run.</P>
+
+<P>The file is required and you must change it for your setup.</P>
+
+<DT><B>Application setup in <CODE>setup.inc</CODE>:</B><DD><P>The <CODE>Session</CODE> class provides the ability to execute
+initialization code at session setup. See the class
+description for instructions on how to set this up.</P>
+<P>Per convention, we store such code in <CODE>setup.inc</CODE>
+in the include directory. The code is being executed
+whenever a new user connection to out application and
+a new session is started.</P>
+
+<P>The file is optional. No default is provided.</P>
+
+<DT><B>Selection of automatically loaded classes in <CODE>prepend.php3</CODE></B><DD><P>The file <CODE>prepend.php3</CODE> determines which code is being
+loaded for all PHP3 interpreted pages. Normally, we include
+the class definitions for all core classes in this file:
+<CODE>db_mysql.inc</CODE>, <CODE>session.inc</CODE>, <CODE>auth.inc</CODE>,
+<CODE>perm.inc</CODE>, <CODE>user.inc</CODE>, then your local customizations
+from <CODE>local.inc</CODE> and the page management functions from
+<CODE>page.inc</CODE>.</P>
+<P>You must change <CODE>prepend.php3</CODE> to reflect the database
+interface that you are using: Change the <CODE>require</CODE>
+statement for <CODE>db_mysql.inc</CODE> appropriately.</P>
+<P>If you are not using some core features from PHPLIB in your
+application or if you want some other features to be present
+on all your pages, you can delete or add <CODE>require</CODE>
+statements for their respective include files here.</P>
+
+<P>The file is required. You must change it for your setup,
+unless you are using MySQL.</P>
+</DL>
+</P>
+
+<H3>Core functionality</H3>
+
+
+<P>The following files are included from <CODE>prepend.php3</CODE> and
+provide definitions for the core classes of PHPLIB. We recommend
+that you always include all of them, as they are a tightly
+integrated set of classes with many dependencies among them.</P>
+<P>
+<DL>
+<DT><B>Class <CODE>DB_Sql</CODE> defined in exactly one of
+<CODE>db_mysql.inc</CODE>, <CODE>db_msql.inc</CODE>, <CODE>db_pgsql.inc</CODE>, 
+<CODE>db_odbc.inc</CODE>, <CODE>db_sybase.inc</CODE>, <CODE>db_mssql.inc</CODE>,
+<CODE>db_oracle.inc</CODE> or <CODE>db_oci8.inc</CODE>:</B><DD>
+<P>A database access class for your database server. PHPLIB
+depends on the presence of a SQL database server. Depending
+on the type of your database server, you have to select the
+appropriate include file. The file contains the definition of
+a class <CODE>DB_Sql</CODE> suitable for your database server.</P>
+
+<P>The class manages a database connection (connection setup is
+implicit) and result memory is managed automatically.</P>
+
+<P>An independent class.</P>
+
+<DT><B>Class <CODE>Session</CODE> defined in <CODE>session.inc</CODE>:</B><DD><P>Manages an arbitrary amount of arbitrarily named session
+variables of scalar, array and object types (Object support
+requires that you implement two instance variables in your
+classes). Tracks sessions via cookies or a <CODE>get</CODE>-variable
+appended to each URL.</P>
+
+<P>Depends on <CODE>DB_Sql</CODE>.</P>
+
+<DT><B>Class <CODE>Auth</CODE> defined in <CODE>auth.inc</CODE>:</B><DD><P>Manages session authentication. Sessions are authenticated
+against usernames and passwords in a database. Authentication
+can be time limited.</P>
+
+<P>Depends on <CODE>Session</CODE> and <CODE>DB_Sql</CODE>.</P>
+
+<DT><B>Class <CODE>Perm</CODE> defined in <CODE>perm.inc</CODE>:</B><DD><P>Manages permission checks on authenticated session pages.
+Protected pages are only accessible to users with the
+specified rights.</P>
+
+<P>Depends on <CODE>Auth</CODE>, <CODE>Session</CODE> and <CODE>DB_Sql</CODE>.</P>
+
+<DT><B>Class <CODE>User</CODE> defined in <CODE>user.inc</CODE>:</B><DD><P>Manages user dependent variables. Unlike session variables
+these are bound to a user id, not to a session id. They are
+persistent over multiple sessions, but are only available
+after a user has been authenticated.</P>
+
+<P>Depends on <CODE>Auth</CODE>, <CODE>Session</CODE> and <CODE>DB_Sql</CODE>,
+extension of <CODE>Session</CODE>.</P>
+
+<DT><B>functions <CODE>page_open()</CODE> and <CODE>page_close()</CODE>
+defined in <CODE>page.inc</CODE>:</B><DD><P>Setup and Shutdown functions, must be present on any session page.</P>
+
+<P>Depend on <CODE>Session</CODE>.</P>
+</DL>
+</P>
+
+<H3>Extended functionality</H3>
+
+
+<P>The extended functionality classes offer GUI-less background
+features that are commonly needed in HTML-applications. They
+may make use of core functionality (indicated for each class
+below).</P>
+<P>
+<DL>
+
+<DT><B><CODE>Cart</CODE> in <CODE>cart.inc</CODE>:</B><DD><P>Manages a simple shopping cart. Items can be put into the
+cart, taken out of the cart and the carts contents can be
+enumerated.</P>
+
+<P>Depends on <CODE>Session</CODE> to be useful. Requires that you add the
+statement <CODE>require("cart.inc")</CODE> to <CODE>prepend.php3</CODE>.</P>
+
+<DT><B><CODE>Template</CODE> in <CODE>template.inc</CODE>:</B><DD><P>Manages templates and variable replacement. Templates can be
+stored in files. They are loaded on demand and variables are
+replaced in these files.</P>
+
+<P>An independent class. Requires that you add the statement
+<CODE>require("template.inc")</CODE> to <CODE>prepend.php3</CODE> or that
+you include it manually on each page where you want to use it.</P>
+</DL>
+</P>
+
+<H3>HTML widgets</H3>
+
+
+<P>HTML widgets are classes that generate some HTML-code (often
+forms or tables) to display GUI-elements. We try to provide
+functionality commonly used in applications, in a way that the
+actual look of the GUI-elements can be easily customized.</P>
+<P>
+<DL>
+<DT><B><CODE>CSV_Table</CODE> in <CODE>csv_table.inc</CODE>:</B><DD><P>Creates a dump of a two dimensional array or a query result
+in CSV format, suitable for loading into a database or a
+spreadsheet program.</P>
+
+<P>Depends on <CODE>Table</CODE>, extension of <CODE>Table</CODE>.</P>
+
+<DT><B><CODE>Sql_Query</CODE> in <CODE>sql_query.inc</CODE>:</B><DD><P>Create a selection widget that allows a user to choose
+arbitrary conditions on one or more table columns. SQL is
+being created from these selections that can be used in the
+where-clause of a larger SQL select statement.</P>
+
+<P>Depends on <CODE>Session</CODE> and <CODE>DB_Sql</CODE>. Requires that
+you add the statement <CODE>require("sqlquery.inc")</CODE> to
+<CODE>prepend.php3</CODE>.</P>
+
+<DT><B><CODE>Table</CODE> in <CODE>table.inc</CODE>:</B><DD><P>Creates HTML tables from two dimensional arrays or from
+database query results. The class can either filter out the
+desired columns from an array or you can explicitly name
+which columns to show. A heading can be turned on if desired.
+All generated HTML elements are tagged with a classname
+you specify for stylesheet support, if needed. When used in a
+form tag, each table row can be prefixed with a checkbox
+input element to allow for row selection.</P>
+
+<P>An independent class.</P>
+
+<DT><B><CODE>Form</CODE> in <CODE>oohforms.inc</CODE>:</B><DD><P>Creates HTML forms from feature-&gt;value arrays.  This provides a
+single syntax for creating all of the different types of form
+elements.  The class provides easy access to Javascript and server
+side validation, and supports 'freezing' some or all of the form
+elements to display static data.  In addition, the library relies on
+object oriented implementations for the various form elements and
+these can easily be extended and customized.</P>
+
+<P>An independent class.</P>
+</DL>
+
+</P>
+
+<H2><A NAME="ss2.2">2.2</A> <A HREF="documentation.html#toc2.2">Downloading and unpacking the distribution</A>
+</H2>
+
+<P>The base library is available from 
+<A HREF="http://phplib.sourceforge.net/">the PHP Base Library download location</A>. Two different formats are provided: A
+tar.gz version and a shar version.</P>
+<P>If you are on a windows system, you can use phplib.tar.gz, if
+you have WinZIP installed. Current versions of WinZIP know how
+to handle compressed tar archives. The uncompressed files may be
+installed on your windows system or transferred to your Unix
+system.</P>
+<P>If you can't handle binary files, you may download phplib.shar.
+This is a pure ASCII file containing a self extracting shell
+script. Just save the file, make it executable and feed it to
+your Unix shell (for example, by typing <CODE>sh phplib.shar</CODE>).</P>
+<P>The 
+<A HREF="mailto:phplib-users@lists.sourceforge.net">PHPLIB support mailing list</A> is available should you run into problems
+with the library. To subscribe to the list, send a message with
+<CODE>subscribe</CODE> as the subject to the address
+<CODE>phplib-users-request@lists.sourceforge.net</CODE>.
+</P>
+
+<H2><A NAME="ss2.3">2.3</A> <A HREF="documentation.html#toc2.3">Requirements and things to check for</A>
+</H2>
+
+<H3>Interpreter requirements</H3>
+
+
+<P>The PHP base library requires a working web server with CGI
+capability and the CGI version of PHP 3.0.12 or higher
+installed. Alternatively mod_php can be used. Lower
+versions of PHP do not work at all: The session class uses the
+<CODE>base64_encode()</CODE> and <CODE>base64_decode()</CODE>
+functions which are known to be buggy in lower versions (up to
+3.0.7) of the library. Also, the OOH Forms classes are using
+constructor syntax, which has been introduced into the PHP
+language in 3.0.5 and later versions. An issue with the
+$PHP_SELF variable and CGI PHP has been resolved with
+version 3.0.5 and later. Perl regular expression functions are
+being used in the <CODE>Template</CODE> class and these are not really
+avilable up to 3.0.12.</P>
+<P><EM>Note:</EM> If you are using CGI PHP, it <EM>must</EM> have been
+compiled with the <CODE>--enable-force-cgi-redirect</CODE> switch for
+$PHP_SELF to have the correct value.</P>
+<P>Basically, if PHP_SELF is the exact local part of your
+$URL, all is well. If it instead contains the modified URL with
+/your cgi-bin/php prefixed, you have a buggy version of CGI PHP.
+Either upgrade your version of PHP or replace all occurrences of
+$PHP_SELF with $PATH_INFO in PHPLIB.</P>
+<P><EM>Note:</EM> PHPLIB requires that you have <CODE>track_vars</CODE>
+compiled in and enabled.</P>
+<P><EM>Note:</EM> PHPLIB does not require
+<CODE>short_open_tag</CODE> to be enabled. The library
+always uses <CODE>&lt;?php</CODE> as the PHP command introducer.</P>
+<P><EM>Note:</EM> PHPLIB does not require
+<CODE>magic_quotes_gpc</CODE> to be enabled. The library
+always uses <CODE>addslashes()</CODE> when necessary.</P>
+
+<H3>Database requirements </H3>
+
+<P>The PHP base library requires a database connection in the
+default setup for storage of session variables, but this can be
+circumvented by selection another storage container type at
+installation time. Currently, storage containers are available
+for SQL databases (the default), SQL databases with limited
+string length (ct_split_sql.inc), System V shared
+memory (requires a PHP interpreter with SYSVSHM and SYSVSEM
+support), LDAP servers (requires a PHP interpreter with LDAP
+support), flat files, and DBM files.</P>
+<P>Using SQL, currently MySQL is fully supported and PostgreSQL,
+mSQL, Sybase, Microsoft SQL Server, ODBC and Oracle have limited
+support (the limitation is only relevant if you intend to access
+metadata information, i.e. table definitions and the like).
+Database interfaces are not difficult to write and you can
+easily write your own interface.</P>
+<P>You need a database server connection with <CODE>select</CODE>,
+<CODE>insert</CODE>, <CODE>update</CODE> and <CODE>delete</CODE> privileges from your
+CGI environment. You need <CODE>create</CODE> and <CODE>drop</CODE> privileges
+from an administrative account outside your CGI environment as
+well.</P>
+<P>PHPLIB core functionality requires two tables as part of your
+application table name space: <CODE>active_sessions</CODE> (select,
+insert, update and delete privilege required for the application
+user) and <CODE>auth_user</CODE> (select privilege required for the
+application user. insert, update and delete privilege required
+for the application user if user management is to be done from
+within the application).</P>
+<P>Extended functionality may require additional tables.</P>
+
+<H3>Name space requirements</H3>
+
+
+<P>PHPLIB tries to be as name space neutral as possible with its
+core features. Is issues no HTML by default and it occupies only
+few names in the global name space. These are the class names
+for the classes defined: <CODE>DB_Sql</CODE>, <CODE>DB_SAM</CODE>,
+<CODE>CT_Sql</CODE>, <CODE>Session</CODE>, <CODE>Auth</CODE>, <CODE>Perm</CODE>,
+<CODE>User</CODE>. Additionally, the classnames <CODE>DB_Example</CODE>,
+<CODE>Example_CT_Sql</CODE>, <CODE>Example_Session</CODE>,
+<CODE>Example_Auth</CODE>,
+<CODE>Example_Challenge_Auth</CODE>,
+<CODE>Example_Perm</CODE> and <CODE>Example_User</CODE> are
+defined by the sample setup in <CODE>local.inc</CODE>, but these names
+can and shall be customized by the application developer. PHPLIB
+defines the function names <CODE>page_open()</CODE>,
+<CODE>page_close</CODE>, <CODE>sess_load()</CODE> and
+<CODE>sess_save()</CODE> for the page management functions. The
+global variable $_PHPLIB (a hash) is taken. Only if
+<CODE>page_open()</CODE> is being used, globals are defined by
+the library by default, but one global for each "feature"
+requested in the <CODE>page_open()</CODE> statement is taken.
+These are at most <CODE>$sess</CODE>, <CODE>$user</CODE>, <CODE>$auth</CODE> and
+<CODE>$perm</CODE>.</P>
+<P>Including extension functionality or HTML widgets may occupy
+additional classnames, function names or variables in the global
+name space.</P>
+
+<H3>Year 2000 compliance statement</H3>
+
+
+<P>PHPLIB uses date fields within the column <CODE>changed</CODE> in the
+table <CODE>active_sessions</CODE> in your database.  The
+<CODE>changed</CODE> field is used in garbage collection, that is, to
+clean out abandoned sessions. The date field is a 14 character
+field of the format <CODE>YYYYMMDDhhmmss</CODE>, that is, the date field
+has four digit years and will cope properly with the new
+millennium.</P>
+<P>PHPLIB sets cookies in the client browser. These cookies by
+default have session lifetime, that is, they do not expire but
+are not written to disk. Date calculations are not involved.</P>
+<P>It is possible to have PHPLIB set cookies with a limited
+lifetime by defining the $lifetime slot of the Session class.
+If this is done, it depends on the date handling of the client
+browser and client operating system, if the result is Y2K
+compliant. There are known issues with longterm cookies and any
+browser on MS-DOS/Windows 3.11 systems.</P>
+<P>PHPLIB does some date arithmetic internally that involves
+mktime() and date() functions of the PHP3 language and Unix
+time_t data types. The signed 32 bit Unix time_t
+data type counts seconds since 01-Jan-1970 Midnight GMT and will
+overflow sometime in the year 2038.</P>
+<P>PHPLIB itself will function up to 2038 and longer, if the Unix
+time_t is being extended in time. PHPLIB does not protect
+you from date and Y2K issues in your PHPLIB application, the
+PHP3 interpreter, the server operating system oder server
+software, the client browser, the client operating system or
+other parts of your installation.
+</P>
+
+<H2><A NAME="ss2.4">2.4</A> <A HREF="documentation.html#toc2.4">Installation procedure </A>
+</H2>
+
+<P><CODE>mod_php</CODE> note: The following instructions apply
+to the CGI version of PHP as well as to the module version. If
+you are working with <CODE>mod_php</CODE>, you must restart your
+web server to force a reload of the <CODE>php3.ini</CODE> file, though.</P>
+<P>If you are using <CODE>mod_php</CODE>, you have additional
+configuration options: See the section below on using PHPLIB
+mit <CODE>mod_php</CODE>.</P>
+<P>
+<DL>
+
+<DT><B>Library Setup</B><DD><P>Create a directory php next to your cgi:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+/home/www/servers/www.example.com/pages   &lt;- document root
+                                  cgi     &lt;- php binary
+                                  php     &lt;- includes and prepends
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Make this php directory your php include directory: Put
+<CODE>include_path = /home/www/servers/www.example.com/php</CODE>
+into <CODE>cgi/php3.ini</CODE>. If you already have an include path
+defined in your setup, add the PHPLIB include path to the
+existing include path using the separator character applicable
+for your operating system (":" on UNIX, ";" on Windows).
+Defining an include path will not actually include code on your
+pages; it only tells the PHP interpreter in which directories to
+look for files referenced in <CODE>require()</CODE> and <CODE>include()</CODE>
+statements.</P>
+<P>Into the <CODE>php</CODE> directory go all the files from the <CODE>php</CODE>
+directory of the distribution. Into documentroot, put all the
+files and directories from the <CODE>pages</CODE> directory of the
+distribution.</P>
+<P>Have <CODE>documentation.txt</CODE> handy and read it.</P>
+
+<DT><B>Database access with MySQL</B><DD><P>The following information applies to MySQL only. No information
+is provided for other database servers as of now. You are
+encouraged to copy this section, adapt it for your database
+server and submit it to the authors. It will be included in
+further releases of PHPLIB.</P>
+<P>Edit <CODE>prepend.php3</CODE>. Change the first <CODE>require()</CODE>
+statement to <CODE>require("db_mysql.inc");</CODE>. This will
+include the MySQL database interface (Interfaces for other
+databases are provided in
+<CODE>db_&lt;databasename&gt;.inc</CODE>. The <CODE>require()</CODE>
+statement has to be adapted to reflect this).</P>
+<P>Assuming your database server is named <CODE>database.example.com</CODE>
+and your CGI user is <CODE>webuser</CODE> and you are accessing the
+database <CODE>myapp</CODE>, do</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+mysql -h database -u webuser myapp
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>If it does not work, connect your database as administrator and
+create the proper mysql access permissions. Adapt and run
+<CODE>create_database.mysql</CODE> from the <CODE>stuff</CODE>
+subdirectory of the distribution to create the databases
+<CODE>active_sessions</CODE> and <CODE>auth_user</CODE> as well as
+the sample user <CODE>kris</CODE> with password <CODE>test</CODE>. Try again to
+connect like shown above. Can you do <CODE>select * from
+active_sessions</CODE>? and <CODE>insert into
+active_sessions values ("1", "2", "3", "")</CODE> as well as
+<CODE>delete from active_sessions</CODE>? Can you <CODE>select *
+from auth_user</CODE>?</P>
+<P><EM>Note:</EM> Additional database creation scripts are provided for
+several different databases in the <CODE>stuff</CODE> directory of the
+distribution.</P>
+
+<DT><B>Merging the library with your PHP files</B><DD><P>Decide if you want to use <CODE>include</CODE> or
+<CODE>auto_prepend_file</CODE>. We do use
+<CODE>auto_prepend_file</CODE>
+here and we add the statement
+<CODE>auto_prepend_file =
+/home/www/servers/www.example.com/php/prepend.php3</CODE> to our
+<CODE>php3.ini</CODE>.</P>
+<P>Not all classes are included/required by <CODE>prepend.php3</CODE>, only
+core functionality files are: <CODE>db_xxx.inc</CODE>,
+<CODE>ct_sql.inc</CODE>, <CODE>session.inc</CODE>,
+<CODE>auth.inc</CODE>, <CODE>perm.inc</CODE>, <CODE>user.inc</CODE>, <CODE>local.inc</CODE> and
+<CODE>page.inc</CODE>. The library provides other, less essential
+classes that can be included manually on a page-by-page basis.
+Some classes make themselves persistent, if used. These classes
+require that you include their definitions in the
+<CODE>prepend.php3</CODE> file where indicated to function correctly.
+See the usage instructions for these classes for details.</P>
+<P>Having done this, access <CODE>/index.php3</CODE>. The counter
+should increment when that page is being reloaded. Also, checking
+<CODE>active_sessions</CODE> in the database should reflect that
+session.</P>
+
+<DT><B>Subscribe for support</B><DD><P>The 
+<A HREF="mailto:phplib-users@lists.sourceforge.net">PHPLIB support mailing list</A> is available should you run into problems
+with the library. To subscribe to the list, send a message with
+<CODE>subscribe</CODE> as the subject to the address
+<CODE>phplib-users-request@lists.sourceforge.net</CODE>.</P>
+</DL>
+
+</P>
+
+<H2><A NAME="ss2.5">2.5</A> <A HREF="documentation.html#toc2.5">Using <CODE>include()</CODE> instead of <CODE>auto_prepend_file=</CODE></A>
+</H2>
+
+<P>If you do not want to use <CODE>auto_prepend_file</CODE> to load the
+PHPLIB core functionality, you can load the class definitions
+for the core manually on each page that requires them.</P>
+<P>You will have to define a valid
+<CODE>include_path=</CODE>-statement in your <CODE>php3.ini</CODE> file
+as outlined previously to reflect the location of the <CODE>*.inc</CODE>
+files. Then, all core functionality can be loaded with
+<CODE>include("prepend.php3")</CODE> as the first statement at the top
+of each page.</P>
+<P>To further optimize performance, you can minimize the contents
+of the prepend file, if you do not need all core functionality.
+You <EM>may</EM> leave out <CODE>auth.inc</CODE>, <CODE>perm.inc</CODE> and
+<CODE>user.inc</CODE>, if you do not require these features (note that
+there are dependencies among these classes!).
+</P>
+
+<H2><A NAME="ss2.6">2.6</A> <A HREF="documentation.html#toc2.6">PHPLIB with mod_php (Apache module)</A>
+</H2>
+
+
+<P>Installing PHPLIB onto a web server that has PHP3 as a module
+(actually Apache) mainly differs in where you can set up runtime
+settings for PHP3 itself.  PHP3 can be compiled with a wealth of
+parameters (see the PHP section in <CODE>phpinfo()</CODE>), most of which can
+get overridden by the <CODE>php3.ini</CODE> file. The location of this
+file is shows as part of the output of <CODE>phpinfo()</CODE>.</P>
+<P>With PHP3 as a module you have a wider choice on placing these
+settings: they are overridden, in this order, by what is defined
+in <CODE>httpd.conf</CODE> and in your per-directory <CODE>.htaccess</CODE>
+file. Directives in these files are identical to their
+<CODE>php3.ini</CODE> brothers, but are prefixed with <CODE>php_</CODE>
+to avoid clashes with Apache configuration keywords. Also, as
+they are Apache configuration keywords, they have no equals
+("=") sign in them. If <CODE>x=y</CODE> is a configuration directive
+from <CODE>php3.ini</CODE>, you should be using <CODE>php3_x y</CODE>
+within the Apache configuration instead. That is, you should
+prepend <CODE>php3_</CODE> to the keyword and omit the equals
+sign. If you misspell a configuration directive, you will get an
+error 500 from your webserver and find more details about the
+error in the logfile you configured with <CODE>ErrorLog</CODE> in your
+webserver setup.</P>
+<P><EM>Example:</EM> If below we talk about setting in your
+<CODE>php3.ini</CODE> the configuration</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+include_path = "/bla"
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P><CODE>mod_php</CODE> users may alternatively configure in their
+<CODE>httpd.conf</CODE> the following:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+&lt;Directory /home/www/servers/www.example.com/pages&gt;
+php3_include_path "/bla"
+&lt;/Directory&gt;
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Of special interest to PHPLIB users are the following
+directives:</P>
+<P>
+<BLOCKQUOTE><CODE>
+<HR>
+<PRE>
+;;;;;;;;;;;;;;;;;
+; Data Handling ;
+;;;;;;;;;;;;;;;;;
+magic_quotes_gpc = Off    ; magic quotes for incoming 
+                          ; GET/POST/Cookie data
+magic_quotes_runtime = Off; magic quotes for runtime-generated data,
+                          ; e.g. data from SQL, from exec(), etc.
+magic_quotes_sybase = Off ; Use Sybase-style magic quotes 
+                          ; (escape ' with '' instead of \')
+track_vars = On           ; enable $PHP_GET_VARS[], $PHP_POST_VARS[] 
+                          ; and $PHP_COOKIE_VARS[] arrays
+
+; automatically add files before or after any PHP 3.0 document
+auto_prepend_file = (add path to prepend.php3 here)
+auto_append_file  =
+
+;;;;;;;;;;;;;;;;;;;;;;;;;
+; Paths and Directories ;
+;;;;;;;;;;;;;;;;;;;;;;;;;
+include_path      = (add path to the directory with all .inc files)
+</PRE>
+<HR>
+</CODE></BLOCKQUOTE>
+</P>
+<P>All of this comes very handy when you have multiple virtual
+hosts (e.g. you are an ISP). In this case you can comfortably
+place the php3 directives in the <CODE>&lt;VirtualHost&gt;</CODE> block
+or in an <CODE>.htaccess</CODE> file in the client directory.
+</P>
+
+
+<HR>
+<A HREF="documentation-3.html">Next</A>
+<A HREF="documentation-1.html">Previous</A>
+<A HREF="documentation.html#toc2">Contents</A>
+</BODY>
+</HTML>

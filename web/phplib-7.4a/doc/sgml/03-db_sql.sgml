@@ -1,0 +1,371 @@
+<!-- $Id: 03-db_sql.sgml,v 1.3 2002/03/14 20:36:43 layne_weathers Exp $ -->
+
+<sect1>DB&lowbar;Sql
+
+<p>
+<tt/DB&lowbar;Sql/ is used by <tt/CT_Sql/ and <tt/Auth/ to access a
+SQL database. You are encouraged to use it directly, too.
+
+<sect2>Instance variables
+<p>
+
+<table>
+<tabular ca="">
+Host    <colsep>Host where your SQL server is running on.<rowsep>
+Database<colsep>Name of database or instance to use on that server.<rowsep>
+User    <colsep>The username used in connections attempts.<rowsep>
+Password<colsep>The password used in connection attempts.<rowsep>
+
+Row     <colsep>Number of the current result row starting at 0.<rowsep>
+Errno   <colsep>Integer: error number of last database operation.<rowsep>
+Error   <colsep>String: error message of last database operation.<rowsep>
+
+Halt&lowbar;On&lowbar;Error<colsep>One of "yes", "no", "report". If set to
+"yes" (the default), the database interface will report any errors and halt
+the program. If set to "report", the database interface will still report
+any errors, but continue reporting "false" back to the application, with
+Errno and Error set appropriately. If set to "no", the database interface
+will not report any errors, but silently report "false" back to application,
+with Errno and Error set appropriately.<rowsep>
+
+Auto&lowbar;Free<colsep>Boolean: In some DB interfaces a flag for early
+result memory release.<rowsep>
+
+Debug   <colsep>Boolean: If set, the database class will output all queries
+and additional diagnostic output.<rowsep>
+
+type    <colsep>Contant string: The name of the database interface, e.g.
+"mysql" or "oracle"<rowsep> 
+
+revision<colsep>Contant version string: The version of the database API
+(e.g. 1.2), NOT the CVS revision of the file implementing the API.<rowsep>
+
+Sql&lowbar;Table<colsep>string: The name of the table used by the
+<tt/nextid()/ API function.<rowsep>
+
+</tabular>
+<caption>Accessible instance variables.</caption>
+</table>
+
+<table>
+<tabular ca="">
+Record  <colsep>In some DB interfaces a hash of the current table result row.<rowsep>
+Link&lowbar;ID <colsep>SQL Link ID.<rowsep>
+Query&lowbar;ID<colsep>SQL Result ID.<rowsep>
+</tabular>
+<caption>Internal instance variables.</caption>
+</table>
+
+<sect2>Instance methods
+<p>
+
+<sect3>Accessible instance methods
+<p>
+
+<descrip>
+<tag>DB&lowbar;Sql($query = "")</tag>
+<p>
+Constructor. When creating an instance, you may optionally supply 
+a query string.
+
+<tscreen><code>
+$db = new DB_Sql_Subclass("select * from mytable");)
+</code></tscreen>
+
+<tag>query($query&lowbar;string)</tag>
+<p>
+<tt/query&lowbar;string/ is a SQL statement that is sent to the database.
+After sending the statement, <tt/Error/ and <tt/Errno/ are updated.
+If the query is syntactically incorrect (no valid result id is
+being produced), <tt/halt()/ is called with a meaningful error
+message.
+
+If there is no active link to the database, a <tt/pconnect()/ is
+made using the information from the <tt/Host/, <tt/Database/,
+<tt/User/ and <tt/Password/ instance variables.
+
+Returns the result of the <tt/query()/ statement, which is
+guaranteed to be a valid result id (or false, if
+Halt&lowbar;On&lowbar;Error isn't "yes").
+
+<tag>next&lowbar;record()</tag>
+<p>
+<tt/next&lowbar;record()/ advances the cursor through the
+current query result and updates the <tt/Record/, <tt/Row/,
+<tt/Errno/ and <tt/Error/ instance variables.
+
+Returns true, if there is a new result record. Returns false, if
+done with the current result set.  If <tt/Auto&lowbar;Free/ is true,
+<tt/free&lowbar;result()/ is called automatically before false
+is returned.
+
+<tag>num&lowbar;rows(), nf()</tag>
+<p>
+Returns the number of rows returned by the current SELECT query.
+
+<em/Note:/ This information is not available in all database
+interfaces. Some of the more advanced databases begin to return
+query results asynchronously while the backend is still
+appending result rows. In such environments the complete size of
+the result set is never known. 
+
+You should duplicate your WHERE clause of the query in such
+environments and ask for the COUNT(*). This will be less
+inefficient as it seems as the query path and query result have
+been cached by the database.
+
+<tag>affected&lowbar;rows()</tag>
+<p>
+Returns the number of rows affected by the current INSERT,
+UPDATE or DELETE query.
+
+<tag>num&lowbar;fields()</tag>
+<p>
+Returns the number of columns returned by the current query.
+
+<tag>np()</tag>
+<p>
+Prints the number of rows returned by the current query.
+
+<tag>f($field)</tag>
+Identical to accessing <tt/Record&lsqb;$field&rsqb;/.
+
+<tag>p($field)</tag>
+<p>
+Identical to printing Record&lsqb;$field&rsqb;.
+
+<tag>haltmsg($msg)</tag>
+<p>
+This function is called by <tt/halt()/ and will actually print
+the database error message. You may override this method in your
+subclass of <tt/DB&lowbar;Sql/ and format the error message to
+be consistent with the layout of the rest of your application.
+You may also add additional error handling such as informing the
+application operator by mail that a database error has occured.
+
+<tag>seek($pos)</tag>
+<p>
+Positions the <tt/Row/ pointer within the result set. Useful for
+reading the same result set twice or otherwise jumping around
+within the result. <tt/$pos/ is not checked in any way for
+validity.
+
+<em/Note:/ If <tt/Auto&lowbar;Free/ is true, <tt/seek()/ may not be
+useable, because the result set has already been free'ed when
+<tt/next&lowbar;record()/ when behind the last record of the result
+set.
+
+<em/Note:/ Not all database interfaces provide a cursor that is
+capable of seeking. This function will be unavailable in such
+environments.
+
+<tag>lock($table, $mode = "write")</tag>
+<p>
+In some DB interfaces locks one or more tables using the mode(s)
+specified. <tt/$table/ can be a single table, a comma separated
+list of tables, or an array of mode/table (or table list) pairs.
+
+<tag>unlock()</tag>
+<p>
+In some DB interfaces releases all table locks.
+
+<tag>link&lowbar;id()</tag>
+<p>
+This function will return the current link ID, as returned by
+the <tt/pconnect()/ executed internally by the database class.
+
+You should not need this information.
+
+<tag>query&lowbar;id()</tag>
+<p>
+This function will return the current result ID, as returned by
+the <tt/query()/ executed internally by the database class.
+
+You should not need this information.
+
+<tag>metadata($table = "", $full = false)</tag>
+<p>
+<tt/$table/ is a SQL table name in the current database. The
+function returns an array of hashes indexed on the (0 based)
+column number of <tt/$table/. Each hash is indexed by <tt/table/
+(table of which this column is part of), <tt/name/ (name of this
+column), <tt/type/ (column data type), <tt/len/ (column width)
+and <tt/flags/ (database specific column flags, if applicable)
+with one row per table column. Each row describes a column in
+your table.
+
+The data returned by <tt/metadata()/ is suitable for passing
+it to the Table class. If you specify the <tt/full/ parameter,
+an additional column <tt/meta/ is added, which is indexed by
+field name and returns the field number of that name. Also, a
+column <tt/num&lowbar;fields/ is added, containing the width
+of the table.
+
+If <tt/$table/ is omitted, the function returns metadata on the result
+of the last executed query.  <em/Note:/ This is currently implemented only
+for the MySQL interface.  You are encouraged to implement this feature
+for other interfaces.
+
+<em/NOTE:/ At the moment, the PostgreSQL and ODBC interface only report
+the <tt/table/, <tt/name/ and <tt/type/ data reliably. You are
+encouraged to fix this.
+
+<tag>table_names()</tag>
+<p>
+Returns an array with table name and tablespace name.
+
+<tscreen><code>
+table name      : $return[$i]["table_name"]
+tablespace_name : $return[$i]["tablespace_name"]
+</code></tscreen>
+
+Tables are from $i=0 to last table;
+
+Implemented in db_oracle.inc,db_oci8.inc,db_mysql.inc,db_pgsql.inc
+
+<tag>nextid($sequence&lowbar;name)</tag>
+<p>
+This function will return a sequence number from the sequence
+named by <tt/$sequence&lowbar;name/. This number is guaranteed
+to be obtained in an atomic manner and can be used as a primary
+key.
+</descrip>
+
+<sect3>Internal instance methods
+<p>
+
+<descrip>
+<tag>connect()</tag>
+<p>
+Used internally to generate a <tt/Link&lowbar;ID/, if necessary. Link
+creation is implicit, there is no need to call <tt/connect()/
+manually, ever.
+
+<tag>halt($msg)</tag>
+<p>
+Used by <tt/query()/ if the initial database connection cannot
+be made or the target database does not exist. Depending on
+the setting of <tt/Halt&lowbar;On&lowbar;Error/, this method
+will call <tt/haltmsg()/ to report the error.
+
+<tag>free()</tag>
+<p>
+Used internally by <tt/next&lowbar;record()/ to free the result
+set, if so configured.
+</descrip>
+
+<sect2>Example
+<p>
+Use a subclass to provide the appropriate parameters for a
+database connect. You may overwrite <tt/halt()/ to customize the
+error message, although a sensible default is provided.
+
+<tscreen><code>
+class DB&lowbar;Article extends DB&lowbar;Sql {
+  var $classname = "DB&lowbar;Article";
+
+  var $Host     = "sales.doma.in";
+  var $Database = "shop&lowbar;project";
+  var $User     = "webuser";
+  var $Password = "";
+
+  function haltmsg($msg) {
+    printf("&lt;/td&gt;&lt;/table&gt;&lt;b&gt;Database error:&lt;/b&gt; %s&lt;br&gt;\n", $msg);
+    printf("&lt;b&gt;MySQL Error&lt;/b&gt;: %s (%s)&lt;br&gt;\n",
+      $this-&gt;Errno, $this-&gt;Error);
+    printf("Please contact shopmaster@doma.in and report the ");
+    printf("exact error message.&lt;br&gt;\n");
+  }
+}
+</code></tscreen>
+
+Use an instance of the subclass to manage your queries:
+
+<tscreen><code>
+$q = new DB&lowbar;Article;
+
+$query = sprintf("select * from articles where article like '%%%s%%'",
+              $searchword);
+$q-&gt;query($query);
+
+while($q-&gt;next&lowbar;record()) {
+  printf("&lt;tr&gt;&lt;td&gt;%s&lt;/td&gt;&lt;td&gt;%s&lt;/td&gt;&lt;/tr&gt;\n",
+    $q-&gt;f("art&lowbar;id"),
+    $q-&gt;f("article"));
+}
+</code></tscreen>
+
+<sect2>Additional information about database connections
+<p>
+
+PHP reuses connections, if possible. When a connection is being
+made to the same Host with the same Username and Password as an
+existing connection, no second connection is being made by PHP.
+Instead the existing connection is returned to the caller. This
+is true for both, the *&lowbar;connect() and *&lowbar;pconnect() calls of all
+PHP database interfaces.
+
+This has implications for MySQL users: Never use the MySQL "use"
+command to change the current database. If you do, session
+management will fail to operate properly. Instead, create
+all PHPLIB tables as part of your application.
+
+Some databases (for example Oracle) have very expensive connect()
+operations. For these databases, performance is dramatically improved
+if you switch from CGI PHP to mod&lowbar;php. This is because, for
+these database, PHPLIB uses the persistent connection methods (e.g.
+*plogon() or *&lowbar;pconnect()) to connect to your database. In
+mod&lowbar;php, the database connection is kept around by the web
+server process after the page has been processed and is reused if a
+further connect requires a connection with the same
+Host/Username/Password pattern.
+
+This means that there will be at most "number of web server
+processes" times "number of Host/Username/Password-combinations"
+many simultaneous connections to your database server. Keep that in
+mind when planning licenses and server load. Using CGI PHP and/or
+non-persistent connections will probably reduce the number of
+concurrent connects to your database server at the expense of
+connection setup time. For database servers where connection setup
+time is negligible (MySQL for example) this is the default solution;
+just don't try it with Oracle.
+
+<em/Note:/ PHPLib now uses (as of 7.4) non-persistent connections by
+default in the non-Oracle db interfaces. The majority of PHPLib users
+are operating in a virtual hosting environment where persistent
+connections eat up memory at a horrifying rate. For web servers that
+only connect to one Host/Username/Password, the persistent connections
+can be enabled by setting the <tt/$PConnect/ variable in local.inc's
+database extension class.
+
+<em/Note:/ When using persistent connections with MySQL, the 
+<tt/wait&lowbar;timeout/ value should be lowered in the MySQL server
+(safe&lowbar;mysqld). A recommended value of 120 and 180 seconds is 
+much better suited to use with PHP than MySQL's default value of 
+28800 seconds (8 hours).
+
+<sect2>Using <tt/nextid()/
+<p>
+
+The <tt/nextid()/ function can be used to obtain a sequence
+number which can be used as a primary key. The function manages
+an arbitrary number of named sequences, you have to provide the
+name of a sequence upon call.
+
+<tscreen><code>
+$db = new DB&lowbar;Article;
+
+$artnr = $db-&gt;nextid("article&lowbar;sequence");
+$query = sprintf("insert into articles ( artnr, ...) values ('%s', ...)", 
+   $artnr, ...);
+$db-&gt;query($query);
+
+reset($articles);
+while(list($itemnr, $itemdesc) = each($articles)) {
+  $itemnr = $db-&gt;nextid("item&lowbar;sequence");
+  $query = sprintf("insert into items (artnr, itemnr, ...) values ('%s', '%s', ...)",
+    $artnr, $itemnr, ...);
+  $db-&gt;query($query);
+}
+
+</code></tscreen>
