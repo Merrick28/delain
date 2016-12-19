@@ -1,5 +1,5 @@
 body {
-    background-image:url('http://images.jdr-delain.net/fond5.gif');
+    background-image:url('../../images/fond5.gif');
     font-family: verdana,helvetica,sans-serif;
     font-size: 9pt;
 }
@@ -9,7 +9,7 @@ body {
 }
 
 .navbar-default {
-    background-image:url('http://images.jdr-delain.net/fond5.gif');
+    background-image:url('../../images/fond5.gif');
 }
 
 .navbar-default li a:link {
@@ -49,7 +49,7 @@ a:hover {
 }
 
 .groupdiv {
-    background-image:url('http://images.jdr-delain.net/fondparchemin.gif');
+    background-image:url('../../images/fondparchemin.gif');
     border-color: #800000;
     border-style: solid;
     border-radius: 10px;
@@ -167,7 +167,7 @@ a:hover {
 }
 
 .navbar-header {
-    background-image:url('http://images.jdr-delain.net/fondparchemin.gif');
+    background-image:url('../../images/fondparchemin.gif');
     border-color: #800000;
     border-style: solid;
     border-radius: 10px;
@@ -198,7 +198,7 @@ hr {
 }
 
 .btn-delain {
-    background: url('http://images.jdr-delain.net/bouton.jpg');
+    background: url('../../images/bouton.jpg');
     color: #FFE081;
     font-size: 13px;
     height: 21px;
