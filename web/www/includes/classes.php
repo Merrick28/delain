@@ -21,11 +21,7 @@ if (isset($ip_bad))
             }
             else
             {
-                die('Redemerrage prévu ce soir entre 20h et 21h pour les joueurs.<br />Merrick.<br /><br />
-                En attendant, je vous rappelle que le jeu a besoin d’argent pour vivre, et compte sur les dons que
-                vous pourrez faire pour l’aider a subsister. Pour ce faire, tous les details sont <a href="http://www.jdr-delain.net/soutenir.php">ici.</a><br />
-                <br />Retour probable à la normale dimanche 24 mai au soir. Vos persos sont en hibernation jusqu’à votre connexion,
-                et les monstres ne joueront pas avant un ou deux jours après ouverture. Pour toute discussion, le forum est encore actif.');
+                die('Redemerrage prévu ce soir entre 20h et 21h pour les joueurs.<br />Merrick.<br /><br />');
             }
         }
     }
