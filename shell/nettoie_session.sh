@@ -1,6 +1,6 @@
 #!/bin/bash
 source `dirname $0`/env
-$psql -A -t  -q -d delain -U delainadm << EOF | grep -v '^$' >> $logdir/nettoie_session.log 2>&1
+$psql -A -t  -q -d delain -U webdelain << EOF | grep -v '^$' >> $logdir/nettoie_session.log 2>&1
 select to_char(now(),'YYYY-MM-DD HH24:MI:SS')||' ['||query||']'
  from pg_stat_activity
 	where usename = 'webdelain'
