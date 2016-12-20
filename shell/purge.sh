@@ -1,5 +1,6 @@
-logdir=/home/delain/logs
-/usr/bin/psql -t -d delain -U delainadm << EOF >> $logdir/purge.log 2>&1
+#!/bin/bash
+source `dirname $0`/env
+$psql -t -d delain -U webdelain << EOF >> $logdir/purge.log 2>&1
 select purge_evenements(0);
 select purge_mes(0);
 --select joueur_inactif(0);

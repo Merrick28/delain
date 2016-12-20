@@ -1,0 +1,8 @@
+# Répertoire de logs
+export logdir=/home/delain/delain/logs
+# Chemin de psql
+export psql=/usr/bin/psql
+# Racine web
+export webroot=/home/delain/delain/web/www
+# Racine shell
+export shellroot=/home/delain/delain/shell

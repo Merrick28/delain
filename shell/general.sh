@@ -1,5 +1,8 @@
-/home/delain/public_html/www/envois_mails.sh >> /home/delain/logs/envois_mails.log 2>&1
-/usr/bin/psql -t -d delain -U delainadm << EOF | grep -v '^[ ]*$' >> /home/delain/logs/general.log 2>&1
+#!/bin/bash
+# TODO : commenter chaque ligne pour expliquer le but
+source `dirname $0`/env
+$shellroot/envois_mails.sh >> $logdir/envois_mails.log 2>&1
+$psql -t -d delain -U webdelain << EOF | grep -v '^[ ]*$' >> $logdir/general.log 2>&1
 select '------------------------------';
 select to_char(now(),'DD/MM/YYYY hh24:mi:ss');
 update lieu

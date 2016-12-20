@@ -1,4 +1,6 @@
-/usr/bin/psql -A -F ' ' -t -d delain -U delainadm << EOF > tmp_owner.txt
+#!/bin/bash
+source `dirname $0`/env
+$psql -A -F ' ' -t -d delain -U webdelain << EOF > tmp_owner.txt
 select schemaname,tablename from pg_tables
 where schemaname not in  ('pg_catalog','information_schema','ftp')
 and tableowner != 'delain'

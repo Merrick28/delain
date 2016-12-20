@@ -1,3 +1,5 @@
-/usr/local/pgsql/bin/psql -q -t << EOF 
+#!/bin/bash
+source `dirname $0`/env
+$psql -q -t << EOF
 select init_1_avril();
 EOF

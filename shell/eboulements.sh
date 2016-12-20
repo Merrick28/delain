@@ -1,6 +1,8 @@
-#!/bin/sh
-date >> /home/delain/logs/eboulements.log
-/usr/bin/psql -t -d delain -U delainadm << EOF >> /home/delain/logs/eboulements.log 2>&1
+#!/bin/bash
+# TODO : commenter chaque ligne pour expliquer le but
+source `dirname $0`/env
+date >> $logdir/eboulements.log
+$psql -t -d delain -U webdelain << EOF >> $logdir/eboulements.log 2>&1
 select entretien_mines();
 EOF
 

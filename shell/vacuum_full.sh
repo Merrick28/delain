@@ -1,6 +1,7 @@
-#!/bin/sh
-echo "Nettoyage approfondi de la base en cours" >> /home/delain/public_html/stop_jeu
-/usr/bin/psql -U delainadm -q -t -d delain << EOF >> /home/delain/logs/result_vacuum.log 2>&1
+#!/bin/bash
+source `dirname $0`/env
+echo "Nettoyage approfondi de la base en cours" >> $webroot/stop_jeu
+$psql -U delainadm -q -t -d delain << EOF >> $logdir/result_vacuum.log 2>&1
 vacuum full;
 EOF
-rm -f /home/delain/public_html/stop_jeu
+rm -f $webroot/stop_jeu
