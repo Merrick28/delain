@@ -1,4 +1,5 @@
 #!/bin/bash
+##############
 source `dirname $0`/env
 echo "Nettoyage de la base en cours" >> $webroot/stop_jeu
 date >> $logdir/result_vacuum.log
