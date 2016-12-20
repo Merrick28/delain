@@ -9,3 +9,4 @@ liv_date 	timestamp with time zone
     Browse Select Insert Empty Drop Add column Alter
 
     ----
+    ----
