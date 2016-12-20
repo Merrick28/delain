@@ -6,3 +6,5 @@ export psql=/usr/bin/psql
 export webroot=/home/delain/delain/web/www
 # Racine shell
 export shellroot=/home/delain/delain/shell
+# Racine des livraisons
+export livroot=/home/delain/delain/sql
