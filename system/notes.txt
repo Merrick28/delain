@@ -1,0 +1,9 @@
+Etat des livraisons sql
+Column 	Type 	Not Null 	Default 	Constraints 	Actions 	Comment
+liv_fichier 	character varying(255)
+NOT NULL
+		[pk] 	Browse 	Alter 	Privileges 	Drop
+liv_date 	timestamp with time zone
+	now() 		Browse 	Alter 	Privileges 	Drop
+
+    Browse Select Insert Empty Drop Add column Alter
