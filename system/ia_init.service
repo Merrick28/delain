@@ -1,0 +1,11 @@
+[Unit]
+Description=IA Auto pour Delain
+After=postgresql.service
+
+[Service]
+Type=simple
+User=delain
+Group=delain
+ExecStart=/home/delain/shell/ia_demon.sh
+Restart=always
+WorkingDirectory=/home/delain/shell

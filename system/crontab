@@ -1,0 +1,42 @@
+#########################################
+# Changement de signature forum
+00 00 * * * /home/delain/public_html/www/sign.sh >> /dev/null
+59 * * * * /home/delain/public_html/www/verif_vote.sh >> /dev/null
+#########################################
+# Elements du jeu
+#########################################
+# Elements techniques
+# ---------------------------------------
+# Nettoyage des sessions
+* * * * * /home/delain/shell/nettoie_session.sh >> /dev/null
+# vacuum analyze
+30 02 * * * /home/delain/shell/vacuum.sh >> /dev/null
+30 03 * * 0 /home/delain/shell/vacuum_full.sh >> /dev/null
+03 00 * * * /home/delain/shell/update_git.sh 
+# Purge (évènements, joueurs inactifs, etc...)
+10 01 * * * /home/delain/shell/purge.sh >> /dev/null
+# envoi des mails pour les joueurs inactifs
+05 01 * * * /home/delain/public_html/www/mails_inactifs.sh >> /dev/null 2>&1
+#########################################
+# Elements gameplay
+#----------------------------------------
+# Création auto de monstres
+30 * * * * /home/delain/shell/cree_monstre_auto.sh >> /dev/null
+# General	
+*/5 * * * * /home/delain/shell/general.sh >> /dev/null
+# passage jour et nuit
+00 08 * * * /home/delain/shell/jour.sh >> /dev/null
+00 20 * * * /home/delain/shell/nuit.sh >> /dev/null
+# Dissipation magique
+00 00,04,08,12,16,20 * * * /home/delain/shell/dissipation.sh >> /dev/null
+# Solde pour la milice
+00 00 1 * * /home/delain/shell/solde.sh >> /dev/null
+# RAZ des compteurs
+00 00 * * * /home/delain/shell/compteur.sh >> /dev/null
+# Création de la page des champions
+30 01 * * * /home/delain/public_html/www/mk_champ.sh >> /dev/null
+# Entretien des mines
+01 02 * * * /home/delain/shell/eboulements.sh >> /dev/null
+# Recyclage des monstres
+15 13 * * * /home/delain/shell/recycle_monstres.sh >> /dev/null
+
