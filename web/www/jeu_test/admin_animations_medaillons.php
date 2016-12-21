@@ -61,5 +61,3 @@ while ($db->next_record())
 		</form></td></tr>';
 }
 echo '</table></div>';
-
-?>

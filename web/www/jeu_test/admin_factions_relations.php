@@ -118,4 +118,3 @@ foreach ($factions as $id_sujet => $nom_sujet)
 echo '</table>';
 
 echo "<input type='submit' class='test' value='Modifier les relations !' /></form>";
-?>

@@ -90,4 +90,3 @@ $tab_avatar = array(
 $nb_sign = sizeof($tab_avatar);
 $nb_sign = rand(1,$nb_sign);
 $aff_avat = $tab_avatar[$nb_sign];
-?>

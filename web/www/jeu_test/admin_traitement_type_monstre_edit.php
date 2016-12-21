@@ -443,4 +443,3 @@ switch ($methode) {
 		echo nl2br($message);
 	break;
 }
-?> 

@@ -332,4 +332,3 @@ case 'supprime_etape':
 default:
     echo 'Méthode inconnue: [' , $methode , ']';
 }
-?>

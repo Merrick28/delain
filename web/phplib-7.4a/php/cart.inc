@@ -187,4 +187,3 @@ class Cart {
     printf("Your shopping cart is empty.<br>\n");
   }
 }
-?>

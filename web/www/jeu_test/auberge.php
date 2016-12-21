@@ -331,4 +331,3 @@ if ($erreur == 0)
 			break;
 	}
 }
-?>

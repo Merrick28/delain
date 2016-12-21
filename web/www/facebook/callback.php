@@ -80,4 +80,3 @@ if ($isLoggedOnTwitter) {
 else {
 	echo "Ident avec twitter";
 }
-?>

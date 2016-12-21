@@ -296,4 +296,3 @@ if ($typeRenommee != '')
 
 echo '</table></div>';
 
-?>

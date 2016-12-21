@@ -161,4 +161,3 @@ echo "<form action='#' method='POST'><tr>
 	<td class='soustitre2'><input type='hidden' value='faction_ajout' name='methode' />
 		<input type='submit' class='test' value='Ajouter' /></td></tr></form>";
 echo '</table></div>';
-?>

@@ -152,4 +152,3 @@ if ($fac_cod > -1)
 			<input type='submit' class='test' value='Ajouter' /></td></tr></form>";
 	echo '</table></div>';
 }
-?>

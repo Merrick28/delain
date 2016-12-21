@@ -129,5 +129,3 @@ while ($db->next_record())
 }
 echo '</ul>';
 echo '</div>';
-
-?>

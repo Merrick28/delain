@@ -159,5 +159,3 @@ while ($db->next_record())
 		</td></form></tr>";
 }
 echo '</table></div>';
-
-?>

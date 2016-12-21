@@ -935,4 +935,3 @@ switch ($methode)
 		echo "<div class='bordiv'><pre>" . nl2br($message) . "</pre></div>";
 	break;
 }
-?>

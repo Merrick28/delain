@@ -118,4 +118,3 @@ function choix_pub_index()
     return $prefix . $publicite;
 }
 
-?>

@@ -11,7 +11,7 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 //
 ob_start();
 include G_CHE . "ident.php";
-$ident = montre_formulaire_connexion($verif_auth, ob_get_contents());
+$ident = montre_formulaire_connexion($verif_auth);
 ob_end_clean();
 $t->set_var("IDENT",$ident);
 

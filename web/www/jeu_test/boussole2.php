@@ -87,4 +87,3 @@ $output = rotationPng($img, $angle);
 // On affiche l'image de destination
 imagepng($output);
 imagedestroy($output);
-?>

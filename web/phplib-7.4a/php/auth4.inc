@@ -324,4 +324,3 @@ class Auth {
 
   function auth_doregister() { ; }
 }
-?>

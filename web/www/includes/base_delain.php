@@ -968,6 +968,3 @@ function writelog_class_sql($textline,$namefile = 'sql.log')
     }
 }
 
-
-
-?>

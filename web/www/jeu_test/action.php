@@ -1106,4 +1106,3 @@ if (!$inc_vue)
     $t->parse('Sortie', 'FileRef');
     $t->p('Sortie');
 }
-?>
