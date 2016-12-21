@@ -101,7 +101,7 @@ else
 	if (!is_file($nom_fichier))
 	{
 		$verification = '<?php
-			if(!DEFINED("APPEL"))
+			if(!defined("APPEL"))
 				die("Erreur d’appel de page !");
 			?>
 			';

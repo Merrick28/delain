@@ -1,7 +1,7 @@
 <?php 
 // gestion des quêtes sur les dispensaires.
 
-if(!DEFINED("APPEL"))
+if(!defined("APPEL"))
 	die("Erreur d’appel de page !");
 
 if(!isset($methode2))

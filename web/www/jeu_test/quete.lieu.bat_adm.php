@@ -1,7 +1,7 @@
 <?php 
 // gestion des quêtes sur les bâtiments administratifs.
 
-if(!DEFINED("APPEL"))
+if(!defined("APPEL"))
 	die("Erreur d’appel de page !");
 
 echo "<hr><br>";

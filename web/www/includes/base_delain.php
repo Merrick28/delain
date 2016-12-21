@@ -54,7 +54,7 @@ class base_delain extends DB_Sql
     {
         if ($this->transaction)
         {
-            $this->begin = pg_Exec($this->Link_ID, 'begin;');
+            $this->begin = pg_exec($this->Link_ID, 'begin;');
         }
     }
 
@@ -62,7 +62,7 @@ class base_delain extends DB_Sql
     {
         if ($this->transaction)
         {
-            $this->commit = pg_Exec($this->Link_ID, 'commit;');
+            $this->commit = pg_exec($this->Link_ID, 'commit;');
         }
     }
 
@@ -136,11 +136,11 @@ class base_delain extends DB_Sql
         if ($this->Debug)
             echo '<br>Debug: query = ', $Query_String, '<br>', chr(10);
 
-        $this->Query_ID = pg_Exec($this->Link_ID, $Query_String);
+        $this->Query_ID = pg_exec($this->Link_ID, $Query_String);
         $retour         = $this->Query_ID;
         $this->Row      = 0;
 
-        $this->Error = pg_ErrorMessage($this->Link_ID);
+        $this->Error = pg_errormessage($this->Link_ID);
         $this->Errno = ($this->Error == '') ? 0 : 1;
 
         if (!$this->Query_ID)

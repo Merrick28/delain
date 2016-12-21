@@ -1,4 +1,4 @@
-<?php if(!DEFINED("APPEL"))
+<?php if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include_once "verif_connexion.php";
@@ -33,7 +33,7 @@ switch($type_appel)
 {
 	case 0:
 		$erreur = 0;
-		if(!DEFINED("APPEL"))
+		if(!defined("APPEL"))
 			die("Erreur d'appel de page !");
 		if (!$db->is_lieu($perso_cod))
 		{

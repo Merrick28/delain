@@ -1,6 +1,6 @@
 <?php // gestion des quêtes sur les centres de maîtrise magique.
 
-if(!DEFINED("APPEL"))
+if(!defined("APPEL"))
 	die("Erreur d’appel de page !");
 
 if(!isset($methode2))

@@ -1,5 +1,5 @@
 <?php
-if (!DEFINED("APPEL"))
+if (!defined("APPEL"))
     die("Erreur d'appel de page !");
 if (!isset($db))
     include "verif_connexion.php";

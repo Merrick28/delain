@@ -1,12 +1,12 @@
 <?php 
-if(!DEFINED("APPEL"))
+if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include "verif_connexion.php";
 
 define("OBJET_PIOCHE_ID",332);
 	
-// Vérifie si le perso a la competence requise.
+// Vï¿½rifie si le perso a la competence requise.
 function perso_has_objet($perso_id,$object_id) {
   global $db;
   $req_matos = "select perobj_obj_cod from perso_objets,objets

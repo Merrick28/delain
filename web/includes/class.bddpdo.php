@@ -125,7 +125,7 @@ class bddpdo
     {
         if (strpos(strtoupper($sql), "SELECT") == 0)
         {
-            return $this->pdo->Query($sql);
+            return $this->pdo->query($sql);
         }
         else
         {

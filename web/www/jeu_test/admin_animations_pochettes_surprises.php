@@ -1,5 +1,5 @@
 <?php 
-if(!DEFINED("APPEL"))
+if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
