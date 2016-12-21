@@ -43,5 +43,3 @@ $im     = imagecreatefrompng($image);
 //image_colorize($im,$color);
 imagepng($im);
 imagedestroy($im);
-
-?>

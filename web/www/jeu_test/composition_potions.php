@@ -222,4 +222,3 @@ switch($methode)
 		}
 	break;
 }
-?>

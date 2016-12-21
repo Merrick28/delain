@@ -29,4 +29,3 @@ $t->set_var("vue_bas",$vue_bas);
 
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

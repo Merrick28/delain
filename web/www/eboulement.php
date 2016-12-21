@@ -24,4 +24,3 @@ L\'air manque, les pierres tombent du plafond, et pourtant cela continue, encore
 $t->set_var("contenu_page",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

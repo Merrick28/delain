@@ -219,5 +219,3 @@ function afficheLegende()
 	
 	return $resultat;
 }
-
-?>

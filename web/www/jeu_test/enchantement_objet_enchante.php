@@ -159,4 +159,3 @@ switch($methode)
 		}
 	break;
 }
-?>

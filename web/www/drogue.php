@@ -68,4 +68,3 @@ Toutefois, afin de ne pas provoquer un sevrage trop intense, les souterrains ouv
 $t->set_var("contenu_page",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

@@ -87,4 +87,3 @@ if(!apc_exists('cle_connec'))
 // on commence la temporisation de sortie
 ob_start();
 trigger_error('hend');
-?>

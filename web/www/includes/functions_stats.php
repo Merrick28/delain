@@ -379,5 +379,3 @@ function module_auth_check($module_data, $userdata)
 
 	return (false);
 }
-
-?>

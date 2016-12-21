@@ -77,4 +77,3 @@ class courriel_delain
 
 }
 
-?>

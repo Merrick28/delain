@@ -28,4 +28,3 @@ $etat[5] = 'Déplorable';
 
 $palbable['O'] = '';
 $palbable['N'] = '<i> - (impalpable)</i>';
-?>

@@ -547,5 +547,3 @@ class Results
 $statistics = new Statistics;
 $stat_db = new StatisticsDB;
 $result_cache = new Results;
-
-?>

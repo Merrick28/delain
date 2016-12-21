@@ -1,18 +1,18 @@
-<?php 
-	include_once "verif_connexion.php";
-	include '../includes/template.inc';
-	$t = new template;
-	$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-	// chemins
-	$t->set_var('URL',$type_flux.G_URL);
-	$t->set_var('URL_IMAGES',G_IMAGES);
-	// on va maintenant charger toutes les variables liées au menu
-	include('variables_menu.php');
+<?php
+include_once "verif_connexion.php";
+include '../includes/template.inc';
+$t = new template;
+$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
+// chemins
+$t->set_var('URL', $type_flux . G_URL);
+$t->set_var('URL_IMAGES', G_IMAGES);
+// on va maintenant charger toutes les variables liées au menu
+include('variables_menu.php');
 
-	//
-	//Contenu de la div de droite
-	//
-	$contenu_page = '
+//
+//Contenu de la div de droite
+//
+$contenu_page = '
 		<p class="titre">La religion dans Delain</p>
 		<p>Vous êtes entrés dans un temple, et vous ne savez que faire ? Voici les grandes lignes pour vous permettre de comprendre comment se passe la religion dans les souterrains.
 		</p>
@@ -41,7 +41,6 @@
 		À partir de ce rang, on peut prier son dieu même en extérieur afin de lui redonner de la puissance.<br>
 		Il existe d’autres grades plus élevés, à vous de les découvrir.</p>';
 
-	$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-	$t->parse("Sortie","FileRef");
-	$t->p("Sortie");
-?>
+$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
+$t->parse("Sortie", "FileRef");
+$t->p("Sortie");

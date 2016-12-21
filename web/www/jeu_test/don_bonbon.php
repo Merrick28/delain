@@ -89,4 +89,3 @@ else
 $t->set_var("contenu_page",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

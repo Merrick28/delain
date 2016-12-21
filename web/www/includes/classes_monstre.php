@@ -881,4 +881,3 @@ class temps
    }
   }
 $db = new base_delain;
-?>

@@ -27,4 +27,3 @@ elseif ($perso_fam == false) { // Soit un perso, soit un monstre (pour les admin
 	else
 		echo '<p>'.$dieu_nom.' a confiance en vous, il vous autorise à <a href="action.php?methode=passage">entrer dans la cathédrale ('.$db->getparm_n(13).' PA)</a>.</p>';
 }
-?>

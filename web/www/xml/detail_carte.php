@@ -16,7 +16,7 @@ $req = "select compt_cod,compt_hibernation from compte,perso_compte,perso
 	and perso_actif != 'N'";
 $db->query($req);
 if($db->nf() == 0)
-	echo "Infos persos non trouvées ou compte en hibernation";
+	echo "Infos persos non trouvï¿½es ou compte en hibernation";
 else
 {
 	$req = "select tablename from pg_tables where tablename like 'perso_vue_pos%'";
@@ -44,7 +44,7 @@ else
 		while($db->next_record())
 		{
 			//
-			// on boucle maintenant sur les positions connues de l'étage
+			// on boucle maintenant sur les positions connues de l'ï¿½tage
 			//
 			// les murs
 			$req2 = "select mur_type from murs
@@ -82,6 +82,4 @@ else
 	}
 	echo $code_retour;
 }
-?>
-
 

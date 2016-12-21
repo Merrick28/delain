@@ -4,7 +4,7 @@ if(!DEFINED("APPEL"))
 if(!isset($db))
 	include "verif_connexion.php";
 
-// Vérifie si le perso a les composants suffisants pour une formule.
+// Vï¿½rifie si le perso a les composants suffisants pour une formule.
 function perso_has_formule_composants($perso_id, $formule_id) {
   global $db;
   $req_formule = "select 1 from formule_composant frco
@@ -33,7 +33,7 @@ function perso_formules_disponibles($perso_id) {
    return $res;
 }
 
-// Sélection de tous les objets de l'inventaire pouvant être des composants
+// Sï¿½lection de tous les objets de l'inventaire pouvant ï¿½tre des composants
 function perso_composants_disponibles($perso_id) {
   global $db;
 
@@ -50,34 +50,34 @@ function perso_composants_disponibles($perso_id) {
   return $res;
 }
 
-// Réalisation de formule directe (sans tenir compte du cout en temps )
+// Rï¿½alisation de formule directe (sans tenir compte du cout en temps )
 function perso_realiser_formule($perso_id,$formule_id){
 
-   // Prérequis
+   // Prï¿½requis
    perso_prerequis_formule($perso_id,$formule_id);
 
    // Ajout produits
 }
-// debute une formule, ajoute l'objet inachevé dans l'inventaire
+// debute une formule, ajoute l'objet inachevï¿½ dans l'inventaire
 function perso_debuter_formule($perso_id,$formule_id){
 
-   // Prérequis
+   // Prï¿½requis
    perso_prerequis_formule($perso_id,$formule_id);
    
-   // Ajout Objet inachevé
+   // Ajout Objet inachevï¿½
    
 }
-// Améliore l'état d'un objet inachevé
+// Amï¿½liore l'ï¿½tat d'un objet inachevï¿½
 function perso_travailler_objet($perso_id,$objet_id){
 
 }
-// Finalise un objet inachevé
+// Finalise un objet inachevï¿½
 function perso_terminer_formule($perso_id,$objet_id){
 
 }
-// Début commun pour commencer une formule
+// Dï¿½but commun pour commencer une formule
 function perso_prerequis_formule($perso_id,$formule_id){
-   // Check compétence
+   // Check compï¿½tence
 
    // Check outil
 
@@ -90,4 +90,3 @@ function perso_prerequis_formule($perso_id,$formule_id){
    // Retrait composants
 
 }
-?>

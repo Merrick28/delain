@@ -149,6 +149,3 @@ function perso_amelioration_competence($perso_id, $competenceid, $retour)
     }
     return $retour;
 }
-
-
-?>

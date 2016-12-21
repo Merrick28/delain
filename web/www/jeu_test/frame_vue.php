@@ -36,4 +36,3 @@ $t->set_var('VUE_BAS',$vue_bas);
 // affichage de la page
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
-?>

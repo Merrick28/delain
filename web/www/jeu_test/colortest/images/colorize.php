@@ -96,4 +96,3 @@ imagepng($image1) ; // Finalisation de l'image.
 imagedestroy($image1) ;
 imagedestroy($image2) ;
 imagedestroy($image3) ;
-?>

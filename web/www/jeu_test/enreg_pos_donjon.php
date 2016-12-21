@@ -30,4 +30,3 @@ if ($erreur == 0)
 	echo("<p>Vous voyez un vieux registre poussiéreux.");
 	echo("<p><a href=\"action.php?methode=enreg_pos_donjon\">Inscrire votre nom sur le registre?</a></p>");
 }
-?>

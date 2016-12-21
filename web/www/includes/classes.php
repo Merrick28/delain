@@ -147,4 +147,3 @@ class temps
 		return $time;
 	}
 }
-?>
