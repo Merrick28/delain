@@ -52,7 +52,7 @@ if ($boule==true)
 // TEST PORTEUR = FAMILIER
 if ($boule)
 {
-	if ($tobj = 269)
+	if ($tobj == 269)
 	{
 		$is_familier = false;
 		$req_familier = "select 1 from perso where perso_cod = $perso_cod and perso_type_perso = 3";
@@ -68,7 +68,7 @@ if ($boule)
 // TEST PORTEUR A UN FAMILIER
 if ($boule)
 {
-	if ($tobj = 269)
+	if ($tobj == 269)
 	{
 		$has_familier = false;
 		$req_familier = "select pfam_familier_cod from perso_familier,perso where pfam_perso_cod = $perso_cod and pfam_familier_cod = perso_cod and perso_actif = 'O'";

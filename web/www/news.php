@@ -177,11 +177,5 @@ else
 <?php 
 Bordure_Tab();
 ?>
-<!--
- <div class="barrLbord"><div class="barrRbord">
-        <p class="texteNorm" style="text-align:right;">
-Conception et hébergement par <a href="http://www.sdewitte.net" target="_blank">sdewitte.net</a>
-</p></div></div>
--->
 </body>
 </html>

@@ -11,10 +11,6 @@ class base_delain extends DB_Sql
     var $parm_n_cache = array();
     var $parm_t_cache = array();
 
-    /* var $User     = 'sdewitte';
-      var $Password = 'talwsatgig';
-      var $service = 'delain'; */
-
     function connect()
     {
         if (0 == $this->Link_ID)

@@ -106,7 +106,6 @@ function affiche_perso($perso_cod)
 	//
 	// Partie permier avril
 	//
-	include '/home/sdewitte/public_html/avravat.php';
 	$avatar = $type_flux.G_URL . "avatars/" . $aff_avat;
 	//
 	// fin 1er avril

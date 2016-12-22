@@ -55,9 +55,6 @@ var $commit;
 var $transaction = true;
 var $classname = 'base_delain';
 var $Database = 'sdewitte';
-/*var $User     = 'sdewitte';
-var $Password = 'talwsatgig';
-var $service = 'delain';*/
 
 function connect() {
     if ( 0 == $this->Link_ID ) {

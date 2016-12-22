@@ -32,7 +32,6 @@ else
 //
 // 1er avril
 //
-include '/home/sdewitte/public_html/avravat.php';
 $avatar = $chemin . $aff_avat;
 //
 // fin 1er avril

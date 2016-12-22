@@ -100,7 +100,6 @@ function affiche_perso($perso_cod)
 	//
 	// Partie permier avril
 	//
-	//include '/home/sdewitte/public_html/avravat.php';
 	//$avatar = G_URL . "avatars/" . $aff_avat;
 	$annee_en_cours = date('Y');
 	$debut_1avril = mktime(0, 0, 1, 4, 1, $annee_en_cours);
