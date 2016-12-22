@@ -105,9 +105,10 @@ case "change":
         break;
         case "valide_change":
             $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
-            $req = "update parametres set parm_valeur_texte = '$resultat' where parm_cod = 71 ";
-            $param->getparm(71,true);
-            $db->query($req);
+
+            $param->charge(71);
+            $param->parm_valeur_texte = $resultat;
+            $param->stocke();
             echo "<p>Le mot de passe a été modifié.";
             break;
 
