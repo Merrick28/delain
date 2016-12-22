@@ -1,5 +1,6 @@
 <?php 
 include_once 'sjoueur.php';
+$param = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences
 	where pcomp_perso_cod = $perso_cod
 		and pcomp_pcomp_cod in (91,92,93)";
@@ -9,7 +10,7 @@ $pa2 = 0;
 if($db->next_record())
 {
 	$niveau = $db->f("pcomp_pcomp_cod");
-	$pa = $db->getparm_n(117);
+	$pa = $param->getparm(117);
 	/*if ($niveau == 92 or $niveau == 93)
 	{
 		$pa = $db->getparm_n(117) -1;

@@ -18,7 +18,13 @@ $dbconnect = pg_connect("service=delain") or die("En cours de maintenance");;
 /* fonctions génériques */
 function getparm_n($parm)
 {
-	$dbconnect = pg_connect("service=delain") or die("On cherche pourquoi on arrive pas à se connecter");
+    /**
+     * NE PLUS UTILISER CETTE FONCTION !!
+     *
+     * * $param = new parametres;
+     * $param->getparm(64);
+     */
+    $dbconnect = pg_connect("service=delain") or die("On cherche pourquoi on arrive pas à se connecter");
 	$req_parm = "select parm_valeur from parametres where parm_cod = $parm";
 	$res_parm = pg_exec($dbconnect,$req_parm);
 	$nb_parm = pg_numrows($res_parm);
@@ -59,7 +65,13 @@ function distance($pos1,$pos2)
 }
 function getparm_t($parm)
 {
-	$dbconnect = pg_connect("service=delain") or die("On cherche pourquoi on arrive pas à se connecter");
+    /**
+     * NE PLUS UTILISER CETTE FONCTION !!
+     *
+     * * $param = new parametres;
+     * $param->getparm(64);
+     */
+    $dbconnect = pg_connect("service=delain") or die("On cherche pourquoi on arrive pas à se connecter");
 	$req_parm = "select parm_valeur_texte from parametres where parm_cod = $parm";
 	$res_parm = pg_exec($dbconnect,$req_parm);
 	$nb_parm = pg_numrows($res_parm);

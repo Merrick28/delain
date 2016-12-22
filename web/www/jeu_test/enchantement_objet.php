@@ -1,6 +1,7 @@
 <?php
 $db2 = new base_delain;
 $db3 = new base_delain;
+$param = new parametres();
 //Interface pour rendre un objet enchantable. Risque de détruire l'objet
 if (!isset($methode)) {
     $methode = "debut";
@@ -57,7 +58,7 @@ switch ($methode) {
                 if ($compt == 0) {
                     $contenu_page .= '<td class="titre">Objet</td><td class="titre">Chances de rendre <br>l\'objet enchantable : </td>
 													<td class="titre">Action</td>
-													<td><i><b>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $db->getparm_n(115) . 'PA</b></i></td>';
+													<td><i><b>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</b></i></td>';
                 }
                 $chance = $db3->f("gobj_chance_enchant");
                 if ($chance == 0) {
@@ -133,7 +134,7 @@ switch ($methode) {
         $pa = $db->f("perso_pa");
 
         //On vérifie les pa
-        if ($pa < $db->getparm_n(115)) {
+        if ($pa < $param->getparm(115)) {
             $contenu_page .= '<b>Vous ne possédez pas suffisamment de PA pour réaliser cette opération !</b><br>';
             break;
         }
@@ -145,12 +146,12 @@ switch ($methode) {
         $db->next_record();
         $position = $db->f("pos_cod");
         $puissance_case = $db->f("pos_magie");
-        if ($puissance_case < $db->getparm_n(114)) {
+        if ($puissance_case < $param->getparm(114)) {
             $contenu_page .= '<b>La puissance magique à cet endroit n\'est pas suffisante pour tenter de rendre enchantable un objet à cet endroit !
 													<br>Rien ne se produit</b><br>';
             break;
         }
-        $perte_pa = $db->getparm_n(115);
+        $perte_pa = $param->getparm(115);
         $energie_necessaire = 50;
         //On va regarder si l'énergie du perso est compatible avec celle de la pierre
         if ($energie_necessaire > $perso_energie) {
@@ -176,7 +177,7 @@ switch ($methode) {
         }
         $px_gagne = 0;
         $de = rand(1, 100);
-        $limite_comp = $db->getparm_n(1);
+        $limite_comp = $param->getparm(1);
         $chance = $chance_enchant + (floor($forgeamage_pourcent / 10) * $competence_facteur) + $concentration;
         $contenu_page .= '<br>Vos chances de réussite modifiées sont de <b>' . $chance . '</b>, tenant compte de la difficulté de cette opération et de l\'objet concerné. Votre lancer de dé est de <b>' . $de . '</b>.<br>';
         if ($de <= 5) {

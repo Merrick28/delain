@@ -6,13 +6,13 @@ $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
 $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
-
+$param = new parametres();
 //
 //Contenu de la div de droite
 //
 $contenu_page = '';
 ob_start();
-$limite_exp = $db->getparm_n(1);
+$limite_exp = $param->getparm(1);
 $req_identifier = "select identifier_objet($perso_cod,$objet) as identifie";
 $db->query($req_identifier);
 $db->next_record();

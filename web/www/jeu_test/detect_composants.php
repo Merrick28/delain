@@ -1,5 +1,5 @@
 <?php 
-
+$param = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences 
 										where pcomp_perso_cod = $perso_cod 
 										and pcomp_pcomp_cod in (97,100,101)";
@@ -9,11 +9,11 @@ if($db->next_record())
 	$niveau = $db->f("pcomp_pcomp_cod");
 	if ($niveau == 100 or $niveau == 101)
 	{
-		$pa = $db->getparm_n(107);
+		$pa = $param->getparm(107);
 	}
 	else
 	{
-		$pa = $db->getparm_n(108);
+		$pa = $param->getparm(108);
 	}
 	if(!isset($methode))
 	{

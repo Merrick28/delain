@@ -347,16 +347,17 @@ if ($is_locked)
 // ramasser
 $objet_case = 0;
 $pa_ramasse = 0;
+$param = new parametres();
 if (($db->nb_obj_sur_case($perso_cod) != 0) || ($db->nb_or_sur_case($perso_cod)))
 {
     $objet_case = 1;
     if ($is_intangible)
     {
-        $pa_ramasse = $db->getparm_n(42);
+        $pa_ramasse = $param->getparm(42);
     }
     else
     {
-        $pa_ramasse = $db->getparm_n(41);
+        $pa_ramasse = $param->getparm(41);
     }
 }
 $req_tran = "select * from transaction where (tran_vendeur = $perso_cod or tran_acheteur = $perso_cod)";

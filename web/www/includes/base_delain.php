@@ -269,6 +269,17 @@ class base_delain extends DB_Sql
         }
     }
 
+    /**
+     * @deprecated
+     * ATTENTION n'utilisez plus cette fonction pour les devs
+     *
+     * $param = new parametres;
+     * $param->getparm(64);
+     *
+     * @param $parm
+     * @param bool $utilise_cache
+     * @return int|mixed|string
+     */
     function getparm_n($parm, $utilise_cache = true)
     {
         $retour = -1;

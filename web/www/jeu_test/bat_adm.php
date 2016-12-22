@@ -4,6 +4,7 @@ if(!defined("APPEL"))
 include_once "../includes/constantes.php";
 include_once "verif_connexion.php";
 
+$param = new parametres();
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
@@ -155,7 +156,7 @@ if ($erreur == 0)
 		else
 		{
 			?>
-			<a href="cree_guilde.php">Créer une guilde </a>(<?php  printf("%s",$db->getparm_n(27)); ?> PA - <?php  printf("%s",$db->getparm_n(28)); ?> brouzoufs)
+			<a href="cree_guilde.php">Créer une guilde </a>(<?php  printf("%s",$param->getparm(27)); ?> PA - <?php  printf("%s",$param->getparm(28)); ?> brouzoufs)
 			<?php 
 		}
 		$nb_queue_rat = $db->compte_objet($perso_cod,91);

@@ -8,6 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
+$param = new parametres();
 ob_start();
 ?>
 <script language="javascript">
@@ -97,7 +98,7 @@ if ($erreur == 0)
 	echo "Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a>";
 	echo "<br>";
 
-	if ($db->getparm_n(56) == 1)
+	if ($param->getparm(56) == 1)
 	{
 		include "include_tab_attaque3.php";
 	}

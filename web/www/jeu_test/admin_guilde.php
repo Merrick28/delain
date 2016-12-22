@@ -8,6 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
+$param = new parametres();
 
 //
 //Contenu de la div de droite
@@ -32,7 +33,7 @@ if ($db->is_admin_guilde($perso_cod))
 	$perso_meta_caravane = $db->f("pguilde_meta_caravane");
 
 	printf("<table><tr><td class=\"titre\"><p class=\"titre\">Administration de la guilde %s</td></tr></table>",$db->f("guilde_nom"));
-	if ($db->getparm_n(74) == 1)
+	if ($param->getparm(74) == 1)
 	{
 		if ($meta_noir == 'O')
 		{

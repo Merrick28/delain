@@ -8,6 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
+$param = new parametres();
 
 //
 //Contenu de la div de droite
@@ -103,9 +104,9 @@ while($db->next_record()){
 }
 ?>
 </select>
-<input type="button" value="Voler ! (<?php  echo $db->getparm_n(95)?>PA)" onClick="document.form_vol.submit();">
+<input type="button" value="Voler ! (<?php  echo $param->getparm(95)?>PA)" onClick="document.form_vol.submit();">
 <?php if($num_comp == 86){?>
-<input type="button" value="Voler un objet ! (<?php  echo $db->getparm_n(95)?>PA)" onClick="document.form_vol.methode.value='voler_objet';document.form_vol.submit();">
+<input type="button" value="Voler un objet ! (<?php  echo $param->getparm(95)?>PA)" onClick="document.form_vol.methode.value='voler_objet';document.form_vol.submit();">
 <?php  } ?>
 </form>
 <br>

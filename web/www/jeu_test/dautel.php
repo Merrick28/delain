@@ -1,7 +1,7 @@
 <?php if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 include_once "verif_connexion.php";
-
+$param = new parametres();
 //
 //Contenu de la div de droite
 //
@@ -91,11 +91,11 @@ if ($erreur == 0)
 					echo "<p>Vous êtes " , $db->f("dniv_libelle") , " de ce dieu";
 					$points = $db->f("dper_points");
 					$niveau_actu = $db->f("dper_niveau");
-					$cout_pa = $db->getparm_n(55);
+					$cout_pa = $param->getparm(55);
 					
 					// Bénédiction
 					if($niveau_actu >= 2)
-						echo '<p><a href="' . $PH_SELF . '?methode=benediction">Demander une bénédiction (' . $db->getparm_n(110) . ' PA) </a>';
+						echo '<p><a href="' . $PH_SELF . '?methode=benediction">Demander une bénédiction (' . $param->getparm(110) . ' PA) </a>';
 				}
 				else
 				{
@@ -113,7 +113,7 @@ if ($erreur == 0)
 			else
 			{
 				?>
-				<p><a href="<?php echo $PHP_SELF;?>?methode=prie1">- Je voudrais me recueillir pour prier <?php echo $dieu_nom; ?></a> (<?php  echo $db->getparm_n(48); ?> PA)</p>
+				<p><a href="<?php echo $PHP_SELF;?>?methode=prie1">- Je voudrais me recueillir pour prier <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(48); ?> PA)</p>
 				<?php 
 			}
 			break;
@@ -173,7 +173,7 @@ if ($erreur == 0)
 				$db->query($req);
 				$db->next_record();
 				$pa = $db->f('perso_pa');
-				if($pa < $db->getparm_n(110))
+				if($pa < $param->getparm(110))
 				{
 					echo "<p>Vous n'avez pas assez de PA pour cette action.";
 					break;

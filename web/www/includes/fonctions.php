@@ -49,6 +49,9 @@ function log_debug($textline)
 
 function getparm_n($parm)
 {
+    /**
+     * NE PLUS UTILISER !
+     */
     $db       = new base_delain;
     $req_parm = "select parm_valeur from parametres where parm_cod = $parm";
     $db->query($req_parm);

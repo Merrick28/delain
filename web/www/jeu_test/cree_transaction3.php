@@ -2,6 +2,7 @@
 //include "../connexion.php";
 include "verif_connexion.php";
 include "../includes/fonctions.php";
+$param = new parametres();
 if (!isset($methode))
 {
 	$methode = "debut";
@@ -257,7 +258,7 @@ switch($methode)
 									$db->next_record();
 									$num_tran = $db->f("numero");
 									$req_ins = "insert into transaction (tran_cod,tran_obj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie)
-																					values ($num_tran,$key,$perso_cod,$perso," . $db->getparm_n(7) . ",$prix_obj,'$si_identifie')";
+																					values ($num_tran,$key,$perso_cod,$perso," . $param->getparm(7) . ",$prix_obj,'$si_identifie')";
 									$db->query($req_ins);
 									echo("<p>La transaction est enregistrée. L'acheteur a deux tours pour valider cette transaction, faute de quoi elle sera annulée.<br />");
 									echo("Elle sera également annulée si vous abandonnez l'objet (volontairement ou non), si vous l'équipez, ou si vous vous déplacez.");

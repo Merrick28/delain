@@ -1,6 +1,8 @@
 <?php 
 include_once "verif_connexion.php";
+
 include '../includes/template.inc';
+$param = new parametres();
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -103,7 +105,7 @@ if ($db->f("perso_test") == 1)
 <tr><td class="titre"><p class="titre">Blocages de combat</p></td></tr>
 <tr><td>
 <?php 
-$cout_des = $db->getparm_n(60);
+$cout_des = $param->getparm(60);
 echo("<p><b>En tant que cible :</b>");
 $req_at = "select lock_attaquant,lock_nb_tours,perso_nom from perso,lock_combat ";
 $req_at = $req_at . "where lock_cible = $perso_cod ";
@@ -169,8 +171,10 @@ else
 		echo "<td><p><a href=\"action.php?methode=desengagement&cible=" , $db->f("lock_cible") , "&valide=O\">Se désengager ? ($cout_des PA)</a></td>";
 		echo "</tr>";
 	}
-	echo("</table>");
-	echo("</form>");
+	?>
+	</table>
+	</form>
+<?php
 }
 ?>
 </table></td><td valign="top">
@@ -241,8 +245,10 @@ else
 		echo "<td><p style=\"text-align:center;\">" . $db->f("riposte_nb_tours") . "</td>";
 		echo "</tr>";
 	}
-	echo("</table>");
-	echo("</form>");
+	?>
+	</table>
+	</form>
+<?php
 }
 ?>
 </table></td></tr>
@@ -293,7 +299,7 @@ else
 	echo "<td><p style=\"text-align:center;\">" . $db->f("pos_y") . "</td>";
 	echo "<td><p style=\"text-align:center;\">" . $db->f("etage_libelle") . "</td>";
 	$chance = $db->f("ptemple_nombre");
-	$chance = 100 - ($chance * $db->getparm_n(32));
+	$chance = 100 - ($chance * $param->getparm(32));
 	echo "<td><p>" . $chance . " %</td>";
 	echo "</tr>";
 	echo "</table>";
