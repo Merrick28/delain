@@ -58,12 +58,11 @@ class mymemcached
         return $retour;
     }
 
+    /**
+     * Vide tout :)
+     */
     function delete_all()
     {
-        $listKeys = $this->m->getAllKeys();
-        foreach($listKeys as $key => $val)
-        {
-            echo $key . " => " . $val;
-        }
+        $this->m->flush();
     }
 }
