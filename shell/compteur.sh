@@ -8,4 +8,6 @@ select cron_dissip_monstre();
 select cron_comptes_temp();
 select cron_repousse_composants();
 EOF
+# TODO : vider les compteurs memcached
+
 

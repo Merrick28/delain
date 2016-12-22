@@ -57,4 +57,13 @@ class mymemcached
         }
         return $retour;
     }
+
+    function delete_all()
+    {
+        $listKeys = $this->m->getAllKeys();
+        foreach($listKeys as $key => $val)
+        {
+            echo $key . " => " . $val;
+        }
+    }
 }
