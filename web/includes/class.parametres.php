@@ -90,13 +90,8 @@ class parametres
             // on peut prendre la varaible du cache si besoin
             if(!$retour = $m->get('parm_' . $code))
             {
-                error_log('Variable ' . $code . ' pas en memcached');
                 // on n'a pas la variable en memcached
                 $retour = $this->detail_getparm($code);
-            }
-            else
-            {
-                error_log('Variable ' . $code . ' en memcached');
             }
             return $retour;
         }
