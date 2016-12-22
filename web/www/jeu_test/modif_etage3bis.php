@@ -79,7 +79,6 @@ else
 if ($droit['carte'] != 'O')
 {
 	die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
-	$erreur = 1;
 }
 
 $db2 = new base_delain;

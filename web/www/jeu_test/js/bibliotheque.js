@@ -4,7 +4,7 @@
 * pour le site http://www.jdr-delain.net
 *
 *@author: Julien - www.genformbd.fr
-*@notice: à placer apres l'insertion de la bibliothèque JQuery
+*@notice: ï¿½ placer apres l'insertion de la bibliothï¿½que JQuery
 */
 
 			
@@ -19,7 +19,7 @@
 **/
 function isExist(lObjet)
 {
-	/* if typeof... => pour vérifier que l'objet existe, */
+	/* if typeof... => pour vï¿½rifier que l'objet existe, */
 	if (typeof lObjet != "undefined") 
 		return 1;
 	else return 0;
@@ -79,19 +79,19 @@ function affiche_fiche_equipement($elem)
 	var $titre_etat="Etat";
 	var $titre_pa="PA / Attaque";
 	var $titre_af="Att. Foudroyante";
-	var $titre_degats="Dégats";
-	var $titre_dexterite="Dextérité";
+	var $titre_degats="Dï¿½gats";
+	var $titre_dexterite="Dextï¿½ritï¿½";
 	var $titre_force="Force";
 	var $titre_chute="Chute";
 	var $titre_armure="Armure";
-	var $titre_competence="Compétence";
+	var $titre_competence="Compï¿½tence";
 	
-	var $titre_critique="Protection contre les critique/spéciaux";
+	var $titre_critique="Protection contre les critique/spï¿½ciaux";
 	var $titre_bonus_vue="Modificateur de vue";
 	var $titre_vampirisme="Vampirisme";
 	var $titre_aura_de_feu="Aura de feu";
-	var $titre_regen="Bonus à la régénération";
-	var $titre_poison="Dégâts infligés par poison";
+	var $titre_regen="Bonus ï¿½ la rï¿½gï¿½nï¿½ration";
+	var $titre_poison="Dï¿½gï¿½ts infligï¿½s par poison";
 	
 	var $Champ_idObjet=$('#idObjet');
 	var $Champ_methode=$('#methode');
@@ -104,7 +104,7 @@ function affiche_fiche_equipement($elem)
 	
 	/*
 	var $titre_enchantable="Objet enchantable !";
-	var $titre_deposable="Non déposable !";
+	var $titre_deposable="Non dï¿½posable !";
 	*/
 	
 	/* id de l'objet */
@@ -117,7 +117,7 @@ function affiche_fiche_equipement($elem)
 	else $Champ_idObjet.val(-1);
 	
 	
-	/* if typeof... => pour vérifier que l'objet existe, */
+	/* if typeof... => pour vï¿½rifier que l'objet existe, */
 	if ( isExist($($elem).attr('title')) ) 
 	{
 		$title = $($elem).attr('title');
@@ -313,7 +313,7 @@ function affiche_fiche_equipement($elem)
 	
 	if ( isExist($($elem).attr('regen')) ) 
 	{
-		$regen = $($elem).attr('regen')+" à l'initialisation de DLT";
+		$regen = $($elem).attr('regen')+" ï¿½ l'initialisation de DLT";
 		$('.titre_regen_item').text(unescape($titre_regen));
 	}
 	else 
@@ -411,7 +411,7 @@ function affiche_fiche_equipement($elem)
 	
 	
 	if ( isExist($($elem).attr('deposable')) ) 
-		$deposable = ($($elem).attr('deposable')==1)?"Non Déposable!":"";
+		$deposable = ($($elem).attr('deposable')==1)?"Non Dï¿½posable!":"";
 	else $deposable = "";
 
 			
@@ -473,8 +473,8 @@ function affiche_desc_item($elem)
 	var $titre_bonus_vue="Modificateur de vue";
 	var $titre_vampirisme="Vampirisme";
 	var $titre_aura_de_feu="Aura de feu";
-	var $titre_regen="Bonus à la régénération";
-	var $titre_poison="Dégâts infligés par poison";
+	var $titre_regen="Bonus ï¿½ la rï¿½gï¿½nï¿½ration";
+	var $titre_poison="Dï¿½gï¿½ts infligï¿½s par poison";
 
 	var $Champ_idObjet=$('#idObjet');
 	var $Champ_methode=$('#methode');
@@ -569,7 +569,7 @@ function affiche_desc_item($elem)
 	
 	if ( isExist($($elem).attr('regen')) ) 
 	{
-		$regen = $($elem).attr('regen')+" à l'initialisation de DLT";
+		$regen = $($elem).attr('regen')+" ï¿½ l'initialisation de DLT";
 		$('.titre_regen_item').text(unescape($titre_regen));
 	}
 	else 
@@ -658,7 +658,7 @@ function affiche_desc_item($elem)
 	//$Champ_methode.val($method);
 	
 	if ( isExist($($elem).attr('deposable')) ) 
-		$deposable = ($($elem).attr('deposable')==1)?"Non Déposable!":"";
+		$deposable = ($($elem).attr('deposable')==1)?"Non Dï¿½posable!":"";
 	else $deposable = "";
 
 	
@@ -692,7 +692,7 @@ function affiche_desc_item($elem)
 /** 
 * Fonction afficheFicheItem
 * 
-* Affiche la fiche de l'item que l'on a selectionné
+* Affiche la fiche de l'item que l'on a selectionnï¿½
 * 
 **/
 function afficheFicheItem()
@@ -846,7 +846,7 @@ function gere_formulaire_equipement($elem, $method)
 * Fonction gereFormulaire
 * 
 * Modifie les elements du formulaire de validation 
-* (gestion de Abandon, Identifier, Réparer)
+* (gestion de Abandon, Identifier, Rï¿½parer)
 * 
 **/
 function gereFormulaire()
@@ -902,7 +902,7 @@ function gereFormulaire()
 * Fonction gereToggle
 * 
 * Modifie les elements du formulaire de validation 
-* (gestion de Abandon, Identifier, Réparer)
+* (gestion de Abandon, Identifier, Rï¿½parer)
 * 
 **/
 function gereToggle()
@@ -910,7 +910,7 @@ function gereToggle()
 	$("#expand tr.even").hide();
 		
 	/* Lorsqu'on clique sur un objet html de id  expand */
-	$("#expand tr.odd td.td_arrow").click(
+	$("#expand").find("tr.odd td.td_arrow").click(
 		function() 
 		{
 			$(this).parent().next("tr").find(".even").parent().parent().toggle();

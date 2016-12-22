@@ -38,7 +38,6 @@ else
 if ($droit['modif_perso'] != 'O')
 {
 	die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
-	$erreur = 1;
 }
 if (!isset($methode))
 {

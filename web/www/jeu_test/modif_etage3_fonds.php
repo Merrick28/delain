@@ -32,7 +32,6 @@ else
 if ($droit['carte'] != 'O')
 {
 	die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
-	$erreur = 1;
 }
 if ($erreur == 0)
 {

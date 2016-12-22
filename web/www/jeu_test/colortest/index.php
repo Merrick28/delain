@@ -73,7 +73,7 @@ $("ul, li").disableSelection();
 			tolerance:'fit',
 			drop: function(event, ui) {
 				//$(this).addClass('ui-state-highlight').find('p').html('Dropped!');
-				$("#tete_ul li").appendTo("#inventaire_ul"); 
+				$("#tete_ul").find("li").appendTo("#inventaire_ul");
 				ui.draggable.appendTo("#tete_ul"); 
 			}
 		});
@@ -83,7 +83,7 @@ $("ul, li").disableSelection();
 			hoverClass: 'ui-state-active',
 			tolerance:'fit',
 			drop: function(event, ui) {
-				$("#corps_ul li").appendTo("#inventaire_ul"); 
+				$("#corps_ul li").appendTo("#inventaire_ul");
 				ui.draggable.appendTo("#corps_ul"); 
 				//$(this).addClass('ui-state-highlight').find('p').html('Dropped!');
 			}
