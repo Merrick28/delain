@@ -71,12 +71,12 @@ function unregister_globals()
 }
 
 register_globals();
-$filename = '/home/delain/public_html/stop_jeu';
+$filename = G_CHE . 'stop_jeu';
 //require '/home/delain/public_html/www/includes/filtrage_ip.php';
 if (file_exists($filename) && $_SERVER["REMOTE_ADDR"] != '195.37.61.152')
 {
     //echo "Le jeu est actuellement arrêté pour quelques minutes. <hr>";
-    include '/home/delain/public_html/stop_jeu';
+    include G_CHE . 'stop_jeu';
     die();
 }
 require 'prepend.php';
