@@ -1,11 +1,10 @@
 <?php
-//echo "ok";
-//echo "Migration du serveur OK, import de la base postgres du jeu OK, optimisations base du jeu en cours.";
-//die('');
 $nouvelle_version = 1;
+
+// TODO : memcached pour params
+
 // par défaut, on n'est pas authentifié
 $verif_auth = false;
-
 include G_CHE . "ident.php";
 
 include "classes.php";
