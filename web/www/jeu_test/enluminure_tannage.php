@@ -11,14 +11,6 @@ if($db->next_record())
 {
 	$niveau = $db->f("pcomp_pcomp_cod");
 	$pa = $param->getparm(117);
-	/*if ($niveau == 92 or $niveau == 93)
-	{
-		$pa = $db->getparm_n(117) -1;
-	}
-	else
-	{
-		$pa = $db->getparm_n(117);
-	}*/
 	if(!isset($methode))
 	{
 	$methode = "debut";

@@ -3,7 +3,7 @@ if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include "verif_connexion.php";
-
+$param = new parametres();
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 if (!$db->is_lieu($perso_cod))
@@ -43,6 +43,6 @@ if ($erreur == 0)
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
 	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
-	echo("<p><a href=\"action.php?methode=passage\">Prendre cet escalier ! (" . $db->getparm_n(13) . " PA)</a></p>");
+	echo("<p><a href=\"action.php?methode=passage\">Prendre cet escalier ! (" . $param->getparm(13) . " PA)</a></p>");
 }
 

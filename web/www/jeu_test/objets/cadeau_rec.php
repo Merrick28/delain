@@ -2,7 +2,7 @@
 //include "../connexion.php";
 include "../verif_connexion.php";
 include '../../includes/template.inc';
-
+$param = new parametres();
 $t = new template('..');
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -26,7 +26,7 @@ else
 	$contenu_page .= '<p>Vous tenez dans les mains une grande boite enveloppée d’un papier doré sur lequel de petits dragons céladon s’enroulent autour d’un bouclier carmin marqué d’une inscription.
 		Un ruban vermeil assorti aux petits boucliers ferme la boite. Ce cadeau est superbe !<br />
 		Cependant, vous constatez que des épines de sapin sont enfichées à la jointure de papier ! Ces maudits sapins enragés auraient-ils trafiqué le cadeau ?<br /><br />
-		<a href="../action.php?methode=ouvre_cadeau">Ouvrir le cadeau(' . $db->getparm_n(98) . ' PA) ?</a>
+		<a href="../action.php?methode=ouvre_cadeau">Ouvrir le cadeau(' . $param->getparm(98) . ' PA) ?</a>
 		</p>';
 
 	// On recherche la présence d’un lutin rouge sur la case.
@@ -40,7 +40,7 @@ else
 	$nombre = $bd->f('nb');
 	if($nombre > 0)
 	{
-		$cout_pa = $bd->getparm_n(99);
+		$cout_pa = $param->getparm(99);
 		$cout10 = 10 * $cout_pa;
 		$contenu_page .= '<hr /><p>Tiens donc ! Voilà un lutin rouge qui a l’air bien intéressé par votre chargement !</p>
 			<p>« Messire ! Mam’zelle ! Enfin, peu importe... Vous avez des cadeaux du Père Léno ! Je suis venu les racheter, il faut qu’on les nettoie pour pouvoir les refourguer l’an prochain...<br />

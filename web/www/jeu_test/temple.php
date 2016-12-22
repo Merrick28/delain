@@ -3,7 +3,7 @@ if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include_once "verif_connexion.php";
-
+$param = new parametres();
 // on regarde si le joueur est bien sur un dispensaire
 $erreur = 0;
 if (!$db->is_lieu($perso_cod))
@@ -58,7 +58,7 @@ L’humain si bien musclé se place juste devant vous, et baisse son visage aux 
         <p><input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps : « Pouvez-vous me soigner ? » - 20 brouzoufs.<br />
         <input type="radio" name="soins" value="2">Vous dévoilez une large plaie qui vous fait souffrir : « Pouvez-vous soigner cette blessure ? » - 35 brouzoufs.<br />
         <input type="radio" name="soins" value="3">Dans un souffle, vous murmurez « J’agonise... sauvez-moi... »  - 60 brouzoufs.<br />
-        <p><input type="submit" value="Valider !" class="test">
+    <p><input type="submit" value="Valider !" class="test"></p>
     </form>
 	<hr />
 <?php 		}
@@ -84,7 +84,8 @@ Arrivée à côté de vous, la sublime jeune femme plonge dans votre regard ses 
         <p><input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps : « Pouvez-vous me soigner ? » - 20 brouzoufs.<br />
         <input type="radio" name="soins" value="2">Vous dévoilez une large plaie qui vous fait souffrir : « Pouvez-vous soigner cette blessure ? » - 35 brouzoufs.<br />
         <input type="radio" name="soins" value="3">Dans un souffle, vous murmurez « J’agonise... sauvez-moi... »  - 60 brouzoufs.<br />
-        <p><input type="submit" value="Valider !" class="test">
+        <p><input type="submit" value="Valider !" class="test"></p>
+
     </form>
 	<hr />
 	<?php 
@@ -99,7 +100,7 @@ Arrivée à côté de vous, la sublime jeune femme plonge dans votre regard ses 
 	if ($num_etage < 0)
 		{$etage = abs($num_etage) + 1;}
 	else {$etage = 5;}
-	$prix = ($etage * $db->getparm_n(30)) + ($nb_mort * $db->getparm_n(31));
+	$prix = ($etage * $param->getparm(30)) + ($nb_mort * $param->getparm(31));
 
 	echo("<p>« - J’aimerai m’inscrire à ce dispensaire.»
 <p> <a href=\"choix_temple.php\">faire de ce dispensaire votre dispensaire par défaut ($prix

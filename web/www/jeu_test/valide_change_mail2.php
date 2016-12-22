@@ -8,13 +8,13 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$param = new parametres();
 //
 //Contenu de la div de droite
 //
 $contenu_page = '';
 $adresse = $_POST['mail1'];
-$from = $db->getparm_t(16);
+$from = $param->getparm(16);
 $contenu_page = '<p class="titre">Changement d’adresse électronique</p>
 <p style="text-align:center;"><b>Changement effectué !</b></p>';
 // changment d'adresse

@@ -1,4 +1,5 @@
 <?php 
+$param = new parametres();
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;
@@ -23,7 +24,7 @@ $req = "select perso_pa from perso where perso_cod = $perso_cod ";
 $db->query($req);
 $db->next_record();
 $nb_pa = $db->f("perso_pa");
-if ($nb_pa < $db->getparm_n(38))
+if ($nb_pa < $param->getparm(38))
 {
 	echo "<p>Vous n'avez pas assez de PA pour regrouper les tas de brouzoufs sur cette case !";
 	$erreur = 1;
@@ -64,7 +65,7 @@ if ($erreur == 0)
 	$req_ins_evt = "select insere_evenement($perso_cod, $perso_cod, 22, '[attaquant] a regroupé les brouzoufs sur sa case', 'O', '[pos_cod, qte]=$position,$qte') ";
 	$db->query($req_ins_evt);
 	
-	$req = "update perso set perso_pa = perso_pa - ". $db->getparm_n(38) ." where perso_cod = $perso_cod ";
+	$req = "update perso set perso_pa = perso_pa - ". $param->getparm(38) ." where perso_cod = $perso_cod ";
 	$db->query($req);
 	if ($farfa == 0)
 	{

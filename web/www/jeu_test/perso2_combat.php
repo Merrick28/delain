@@ -1,4 +1,5 @@
 <?php 
+$param = new parametres();
 $contenu_page .= '<div style="padding:10px; text-align:left;">';
 $req = "select obj_nom,to_char(perobj_dfin,'DD/MM/YYYY à hh24:mi:ss') as dfin
 	from objets,perso_objets
@@ -38,7 +39,7 @@ $contenu_page .= '
 <table width="100%" border="1"><tr><td valign="top"><table width="100%">
 <tr><td class="titre">Blocages de combat</td></tr>
 <tr><td><b>En tant que cible :</b>';
-$cout_des = $db->getparm_n(60);
+$cout_des = $param->getparm(60);
 $req_at = "select lock_attaquant,lock_nb_tours,perso_nom from perso,lock_combat 
 	where lock_cible = $perso_cod 
 	and lock_attaquant = perso_cod 

@@ -3,7 +3,7 @@ if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include_once "verif_connexion.php";
-
+$param = new parametres();
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 if (!$db->is_lieu($perso_cod))
@@ -66,7 +66,7 @@ if ($erreur == 0)
 			$db->next_record();
 			//if ($db->f("noir") == 1)
 			//{
-				$seq = $db->getparm_t(71);
+				$seq = $param->getparm(71);
 				//echo "<hr><p style=\"text-align:center;\">Le mot de passe actuel est : <br>";
         echo "<hr><p style=\"text-align:center;\">Apparement quelqu'un a griffonné le code juste à coté de la porte. : <br>";
         for($cpt=1;$cpt<=6;$cpt++)
@@ -140,7 +140,7 @@ if ($erreur == 0)
 			if ($db->f("perso_pa") >= 4)
 			{
 			$resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
-			if ($resultat == $db->getparm_t(71))
+			if ($resultat == $param->getparm(71))
 			{
 				$req = "select perso_type_perso from perso where perso_cod = $perso_cod ";
 				$db->query($req);

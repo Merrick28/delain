@@ -11,6 +11,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 ob_start();
 include "../includes/fonctions.php";
+$parm = new parametres();
 //
 //log_debug('Debut de page inventaire');
 //
@@ -18,7 +19,7 @@ include "../includes/fonctions.php";
 $req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
 $db->query($req_or);
 $qte_or = ($db->next_record()) ? $db->f("pbank_or") : 0;
-$cout_repar = $db->getparm_n(40);
+$cout_repar = $parm->getparm(40);
 
 $req_perso = "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso from perso where perso_cod = $perso_cod ";
 $db->query($req_perso);

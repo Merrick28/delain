@@ -3,7 +3,7 @@ if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include "verif_connexion.php";
-
+$param = new parametres();
 // on regarde si le joueur est bien sur une passage
 $erreur = 0;
 if (!$db->is_lieu($perso_cod))
@@ -69,11 +69,11 @@ switch ($ppos['etage']) {
 			break;
 		
 		default :
-			$cout = $db->getparm_n(88);
+			$cout = $param->getparm(88);
 		break;
 }
 /* Fin modif */
-$cout_pa = $db->getparm_n(13);
+$cout_pa = $param->getparm(13);
 	
 // TRAITEMENT DES ACTIONS
 if(isset($_GET['methode'])){
