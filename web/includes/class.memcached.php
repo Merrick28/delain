@@ -2,6 +2,12 @@
 
 /**
  * Created by PhpStorm.
+ *
+ * Le but de cette classe est de stocker des objets dans memcached
+ * afin d'accélérer les traitements.
+ * On commence par y stocker les paramètres (table parametres en bdd)
+ *
+ *
  * User: NG38DCD
  * Date: 22/12/2016
  * Time: 13:24

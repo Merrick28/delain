@@ -53,6 +53,7 @@ class parametres
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
+
         }
         else
         {
@@ -71,6 +72,8 @@ class parametres
                 ":parm_valeur_texte" => $this->parm_valeur_texte,
             ), $stmt);
         }
+        // on va maintenant stocker ça dans memcached
+        $this->getparm($this->parm_cod,true);
     }
 
     /**
@@ -87,8 +90,13 @@ class parametres
             // on peut prendre la varaible du cache si besoin
             if(!$retour = $m->get('parm_' . $code))
             {
+                error_log('Variable ' . $code . ' pas en memcached');
                 // on n'a pas la variable en memcached
                 $retour = $this->detail_getparm($code);
+            }
+            else
+            {
+                error_log('Variable ' . $code . ' en memcached');
             }
             return $retour;
         }
