@@ -41,5 +41,4 @@ while($db->next_record())
 	}
 }
 $contenu_page .= '</table>';
-?>
-			
+

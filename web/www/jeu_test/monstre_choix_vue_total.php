@@ -6,7 +6,7 @@ $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
 $t->set_var('URL',$type_flux.apc_fetch('g_url'));
 $t->set_var('URL_IMAGES',apc_fetch('img_path'));
-// on va maintenant charger toutes les variables liées au menu
+// on va maintenant charger toutes les variables liï¿½es au menu
 include('variables_menu.php');
 
 //
@@ -19,7 +19,7 @@ $req = "select dcompt_etage from compt_droit where dcompt_compt_cod = $compt_cod
 $db->query($req);
 if ($db->nf() == 0)
 {
-	die("Erreur sur les étages possibles !");
+	die("Erreur sur les ï¿½tages possibles !");
 }
 else
 {
@@ -51,4 +51,3 @@ ob_end_clean();
 $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
 $t->parse('Sortie', 'FileRef');
 $t->p('Sortie');
-?>

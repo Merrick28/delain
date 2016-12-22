@@ -1,7 +1,7 @@
 <?php 
 /************************************************************/
 /* infos.php                                                */
-/* génère un fichier xml avec des infos, récupérables       */
+/* gï¿½nï¿½re un fichier xml avec des infos, rï¿½cupï¿½rables       */
 /*  par divers outils                                       */
 /************************************************************/
 header ('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
@@ -20,7 +20,7 @@ $req = 'select compt_cod,compt_hibernation from compte
 $db->query($req);
 if($db->nf() == 0)
 {
-	echo '<information>Compte non trouvé </information></delain>';
+	echo '<information>Compte non trouvï¿½ </information></delain>';
 	die();
 }
 else
@@ -108,4 +108,3 @@ else
 }
 echo $texte;
 echo '</delain>';
-?>

@@ -229,4 +229,3 @@ switch($methode2)
 	break;
 }
 echo $sortie_quete;
-?>

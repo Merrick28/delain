@@ -189,4 +189,4 @@ else
 	$contenu_page .= '</table>';
 }
 $contenu_page .= '</td></tr></table>';
-?>
+

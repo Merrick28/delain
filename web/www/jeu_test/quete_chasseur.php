@@ -330,4 +330,3 @@ if ($erreur == 0)
 	}
 }
 echo $contenu_page4;
-?>

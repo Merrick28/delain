@@ -81,4 +81,3 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

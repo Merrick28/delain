@@ -228,4 +228,3 @@ switch($methode2)
 		$sortie_quete .= $db->f('resultat');
 	break;
 }
-?>

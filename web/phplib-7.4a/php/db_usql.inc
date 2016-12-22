@@ -72,5 +72,3 @@ class DB_USql extends DB_Sql {
 	echo "\$db->query(\"$insert\");\n";
   }
   };
-
-?>

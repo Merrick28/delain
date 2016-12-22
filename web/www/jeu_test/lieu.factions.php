@@ -33,4 +33,3 @@ if ($mode_sortie == 'echo')
 	echo $contenu_page;
 	$contenu_page = '';
 }
-?>

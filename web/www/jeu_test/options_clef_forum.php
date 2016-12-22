@@ -42,4 +42,3 @@ $contenu_page .= "<br /><br /><p><a href='?methode=clef'>Générer une nouvelle 
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

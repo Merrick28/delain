@@ -25,4 +25,3 @@ if ($erreur == 0)
 		default: break;
 	}
 }
-?>

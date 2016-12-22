@@ -738,8 +738,3 @@ switch($methode)
 			$contenu_page .= 'Vous venez de quitter ce groupe<br>';
 	break;
 }
-/*
-$t->set_var("contenu_page",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");*/
-?>

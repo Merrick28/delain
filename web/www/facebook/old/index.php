@@ -79,5 +79,3 @@ if($_SESSION['loggedin'])
 		print_r($response['body']);
 	}
 }
-
-?>

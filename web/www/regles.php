@@ -54,5 +54,4 @@ $contenu_page .= "<b>".$tab[0]."</b><br>".$tab[1];
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
-?>
 

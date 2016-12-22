@@ -364,4 +364,3 @@ if ($db->nf() != 0)
 	$contenu_page .= "</table><p>Monstre achevé en solo = 1 seul bénéficiaire au partage d'XP</p>";
 }
 
-?>

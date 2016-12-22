@@ -30,4 +30,3 @@ if ($erreur == 0)
 	echo("<p>Vous voyez la sortie de ce donjon.");
 	echo("<p><a href=\"action.php?methode=sortir_donjon\">Prendre la sortie ! (4PA)</a></p>");
 }
-?>

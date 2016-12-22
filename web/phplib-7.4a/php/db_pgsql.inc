@@ -268,4 +268,3 @@ if((4 > $_php_major_version) or !class_exists("DB_Sql"))
 		}
 	}
 unset($_php_major_version);
-?>

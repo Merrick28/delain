@@ -135,4 +135,3 @@ $contenu_page .= '</td></tr>';
 
 $contenu_page .= '</table>
 </form>';
-?>

@@ -110,4 +110,3 @@ switch($detail)
 		</form>';
 	break;
 }
-?>

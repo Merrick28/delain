@@ -47,4 +47,3 @@ $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 include('variables_menu.php');
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
-?>

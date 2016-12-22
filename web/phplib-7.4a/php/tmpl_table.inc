@@ -92,4 +92,3 @@ Class Template_Table extends Table {
 
 }
 
-?>

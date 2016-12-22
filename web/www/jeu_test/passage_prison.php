@@ -45,5 +45,3 @@ if ($erreur == 0)
 	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
 	echo("<p><a href=\"action.php?methode=passage_prison\">Prendre cet escalier ! (" . $db->getparm_n(13) . " PA)</a></p>");
 }
-
-?>

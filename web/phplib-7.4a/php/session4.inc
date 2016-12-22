@@ -644,5 +644,4 @@ class Session {
   } // end func reimport_any_vars
 
 
-} // end func session
-?>
+}

@@ -111,4 +111,3 @@ class Perm {
     printf("Access denied.\n"); 
   }
 }
-?>

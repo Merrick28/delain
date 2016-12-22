@@ -79,4 +79,3 @@ class User extends Session {
     if (!$r) $this->that->ac_halt("Session: freeze() failed.");
   }
 }
-?>

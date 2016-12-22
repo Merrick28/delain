@@ -204,13 +204,3 @@ if ((!$db->is_admin_monstre($compt_cod)) && (!$db->is_admin($compt_cod)))
 
 page_close();
 $nom_template = 'general';
-/* if (!retour())
-  {
-  echo '<script language=\'JavaScript\'>
-  function retour()
-  {
-  parent.gauche.location.href="menu.php";
-  }
-  </script>';
-  } */
-?>

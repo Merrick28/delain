@@ -58,4 +58,4 @@ for($cpt=1;$cpt<=$nb_pages;$cpt++)
 $contenu_page .= '</td></tr>';
 // fin listing des pages
 $contenu_page .= '</table>';
-?>
+

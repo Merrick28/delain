@@ -25,5 +25,3 @@ $bgcolor = "#D4D4D4";                               // Couleur du fond... (backg
 $bgcart = "#2D8BC4";                                // Couleur de fond des cartouches où il y a un titre.
 $bgcont = "#FFFFFF";                                // Couleur de fond des autres cartouches (Conseil : laisser en blanc car les smileys sont à fond blanc.)
 $border = "#000000";                                // Couleur de la bordure fine du tableau.
-
-?>

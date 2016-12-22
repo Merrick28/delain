@@ -739,4 +739,3 @@ class Query extends DB_Sql {
 
 }
 
-?>

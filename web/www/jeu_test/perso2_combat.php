@@ -170,4 +170,4 @@ else
 	$contenu_page .= '</table></form>';
 }
 $contenu_page .= '</table></td></tr></table></div>';
-?>
+

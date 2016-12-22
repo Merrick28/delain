@@ -209,5 +209,4 @@ if (!$db->is_admin($compt_cod)
 else
 {
 	$contenu_page .= 'Vous n\'êtes pas autorisé à écrire un nouveau message en tant qu\'admin !';
-}	
-?>
+}

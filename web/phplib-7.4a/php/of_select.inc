@@ -114,6 +114,4 @@ class of_select extends of_element {
     return false;
   }
 
-} // end SELECT
-
-?>
+}

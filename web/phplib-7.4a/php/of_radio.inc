@@ -74,6 +74,4 @@ class of_radio extends of_element {
     return false;
   }
 
-} // end RADIO
-
-?>
+}

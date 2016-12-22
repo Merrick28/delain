@@ -842,4 +842,3 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 	if ($existe_defis) $resultat .= '</table>';
 	return $resultat;
 }
-?>

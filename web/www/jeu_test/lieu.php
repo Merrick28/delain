@@ -47,4 +47,3 @@ include('variables_menu.php');
 
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

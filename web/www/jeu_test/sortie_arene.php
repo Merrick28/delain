@@ -30,4 +30,3 @@ if ($erreur == 0)
 	echo("<p>Vous voyez la sortie de cette arène.");
 	echo("<p><a href=\"action.php?methode=sortie_arene\">Prendre la sortie ! (" . $db->getparm_n(13) . " PA)</a></p>");
 }
-?>

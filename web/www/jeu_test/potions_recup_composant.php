@@ -235,8 +235,4 @@ switch($methode)
 		}
 	break;
 }
-	
-/*$temp->set_var("contenu_page",$contenu_page);
-$temp->parse("Sortie","FileRef");
-$temp->p("Sortie");*/
-?>
+

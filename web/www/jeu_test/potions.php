@@ -70,4 +70,3 @@ switch($methode)
 			}
 			break;
 }
-?>

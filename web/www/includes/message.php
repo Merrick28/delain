@@ -82,4 +82,3 @@ class message
 		return true;
 	}
 }
-?>

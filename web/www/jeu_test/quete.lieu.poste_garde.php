@@ -90,4 +90,3 @@ switch($methode2)
 	break;
 }
 $sortie_quete;
-?>

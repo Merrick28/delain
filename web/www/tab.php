@@ -12,4 +12,3 @@ while($db->next_record())
 	$test_var = $db->f('rguilde_admin');
 	echo "REsultat " , $test_var , " - " , $test[$test_var] , "<br>";
 }
-?>

@@ -241,4 +241,3 @@ switch($typesort)
 		break;
 }	
 
-?>

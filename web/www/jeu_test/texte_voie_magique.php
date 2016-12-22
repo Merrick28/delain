@@ -53,4 +53,3 @@ else
     $contenu_page .= 'Mauvaise idée. C\'est pas joli tout ça...';
 }
 
-?>

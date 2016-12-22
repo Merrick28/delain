@@ -487,4 +487,3 @@ $req = "update phpbb_users set user_sig = E'$aff_sign' where user_id = 2";
 echo "<p> $req";
 pg_exec($dbconnect,$req);
 echo "<p>OK";
-?>

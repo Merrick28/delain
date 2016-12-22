@@ -87,4 +87,3 @@ class CT_Shm {
 		return urldecode($dat[2]);
 	}
 }
-?>

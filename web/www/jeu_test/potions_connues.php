@@ -185,5 +185,4 @@ if($db->next_record())
 			}
 		break;
 	}
-}	
-?>
+}

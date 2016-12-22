@@ -31,5 +31,3 @@ require($_PHPLIB["libdir"] . "ct_sql.inc");    /* Change this to match your data
 //require($_PHPLIB["libdir"] . "local4.inc");     /* Required, contains your local configuration. */
 
 require($_PHPLIB["libdir"] . "page4.inc");      /* Required, contains the page management functions. */
-
-?>

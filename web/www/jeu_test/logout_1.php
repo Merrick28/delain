@@ -5,5 +5,3 @@ if($normal_auth)
 	$auth->logout();
 session_destroy();
 header('Location: ' . $type_flux.G_URL);
-?>
-

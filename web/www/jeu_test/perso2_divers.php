@@ -179,8 +179,3 @@ if($nv5 > 0 && $mem > 5)
 	include "texte_voie_magique.php";
 }
 
-//
-// Fin voie magique
-//
-
-?>

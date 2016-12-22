@@ -191,4 +191,3 @@ limit 50 ';*/
 	echo $sortie;
 }
 die('');
-?>

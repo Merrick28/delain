@@ -250,4 +250,3 @@ switch($methode)
 
 	break;
 }
-?>

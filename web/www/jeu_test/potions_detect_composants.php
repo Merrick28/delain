@@ -481,5 +481,4 @@ else
 {
 	$contenu_page .= "<p>Vous ne possédez pas la compétence nécessaire</p>";
 }
-//echo $contenu_page;
-?>
+

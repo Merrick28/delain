@@ -84,4 +84,3 @@ echo '<hr>Aux heures de sommeil de server master mortes pour la cause, la nation
 	25 et 26/11/2005<br>
 	31/01/2006<br>
 	Et tant d’autres dont on a perdu le compte...';
-?>

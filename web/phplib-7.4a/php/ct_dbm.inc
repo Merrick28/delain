@@ -70,4 +70,3 @@ class CT_DBM {
     return urldecode($dat[0]);
   }
 }
-?>

@@ -88,6 +88,4 @@ class of_checkbox extends of_element {
     }
   }
 
-} // end CHECKBOX
-
-?>
+}

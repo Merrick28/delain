@@ -983,4 +983,3 @@ class Table {
   function table_row_add_extra($row, $row_key, $data, $class="") {
   }
 }
-?>

@@ -1527,4 +1527,3 @@ class phpmailer
     }
 }
 
-?>

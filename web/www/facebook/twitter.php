@@ -36,5 +36,3 @@ switch ($connection->http_code) {
     echo 'Impossible de se connecter à twitter ... Merci de renouveler votre demande plus tard.';
     break;
 }
-?>
-

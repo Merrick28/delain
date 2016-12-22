@@ -44,5 +44,4 @@ while($db->next_record())
 $ls_return.= '</channel>';
 $ls_return.= '</rss>';
 echo $ls_return;
-?>
 

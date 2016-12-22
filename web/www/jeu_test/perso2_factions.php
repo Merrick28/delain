@@ -117,4 +117,3 @@ if ($db->nf() > 0)
 	}
 	$contenu_page .= '</td></tr></table><br /><br />';
 }
-?>

@@ -57,4 +57,4 @@ switch($tab_vue)
         break;
 }
 echo "<script type='text/javascript'>tailleCadre();</script>";
-?>
+

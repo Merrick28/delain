@@ -343,4 +343,3 @@ $perso_type_perso[2] = 'monstre';
 
 $nom_sexe['M'] = 'Messire';
 $nom_sexe['F'] = 'Damoiselle';
-?>

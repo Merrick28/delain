@@ -204,4 +204,3 @@ class tpl_form {
     return true;
   }
 }
-?>

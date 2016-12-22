@@ -287,5 +287,3 @@ $phrase_indice[285] = "En direction du Sud-Est, Les égouts, vous pourrez trouve
 $phrase_indice[286] = "En direction du Nord-Ouest, Les égouts, vous pourrez trouver Un Temple répondant aussi au nom de 'Temple d'Apiera'";
 $phrase_indice[287] = "En direction du Sud-Ouest, Les égouts, vous pourrez trouver Un Temple répondant aussi au nom de 'Temple du Kopesh'";
 $phrase_indice[288] = "En direction du Sud-Ouest, Sous-bassements et découvertes, vous pourrez trouver Un Temple répondant aussi au nom de 'Bienfaits d'Apiéra'";
-
-?>

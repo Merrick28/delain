@@ -239,4 +239,3 @@ $contenu_page .= '<hr /><p style="text-align:center;"><a href="groupe.php">Retou
 $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

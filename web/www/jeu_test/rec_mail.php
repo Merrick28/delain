@@ -53,4 +53,3 @@ $contenu_page .= '<p>Fréquence d’envoi des courriels</p>
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 $t->parse("Sortie","FileRef");
 $t->p("Sortie");
-?>

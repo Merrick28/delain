@@ -49,4 +49,3 @@ include_once('variables_menu.php');
 $t->set_var('CONTENU_COLONNE_DROITE',$contenu_page2);
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
-?>

@@ -126,5 +126,4 @@ switch($extension)
 		$smarty->display('gen_json.tpl');
 		break;
 }	
-//require '/home/delain/public_html/www/includes/delain_footer.php';
-?>
+

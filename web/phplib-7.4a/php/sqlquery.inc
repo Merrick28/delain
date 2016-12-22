@@ -32,9 +32,9 @@ class Sql_Query {
       "searchfor" => "Suchen nach:",
       "and"       => "und",
       "or"        => "oder",
-      "like"      => "enthält",
+      "like"      => "enthï¿½lt",
       "reset"     => "Neu",
-      "submit"    => "Ausführen",
+      "submit"    => "Ausfï¿½hren",
       "less"      => "Weniger",
       "more"      => "Mehr"
     ),
@@ -319,4 +319,3 @@ class Sql_Query {
     return $this->plain_where($base);
   }
 }
-?>

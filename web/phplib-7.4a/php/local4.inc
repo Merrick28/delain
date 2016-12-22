@@ -368,4 +368,3 @@ class Example_Perm extends Perm {
 #   }
 # }
 
-?>

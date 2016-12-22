@@ -407,5 +407,3 @@ include($_PHPLIB["libdir"] . "of_radio.inc");
 include($_PHPLIB["libdir"] . "of_checkbox.inc");
 include($_PHPLIB["libdir"] . "of_textarea.inc");
 include($_PHPLIB["libdir"] . "of_file.inc");
-
-?>

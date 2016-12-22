@@ -166,4 +166,3 @@ class CT_Sql {
     $this->db->halt($s);
   }
 }
-?>

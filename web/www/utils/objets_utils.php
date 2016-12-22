@@ -26,4 +26,3 @@ function perso_has_objet_equipe($perso_id,$object_id) {
   $db->query($req_matos);
   return $db->next_record();
 }
-?>

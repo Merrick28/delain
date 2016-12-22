@@ -112,6 +112,4 @@ class of_text extends of_element {
     return false;
   }
 
-} // end TEXT
-
-?>
+}

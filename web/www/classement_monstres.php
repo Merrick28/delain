@@ -238,4 +238,3 @@ $contenu_page .= "<p><a href=\"classement_v2.php\">Classement des aventuriers</a
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
-?>

@@ -46,4 +46,3 @@ class CT_Null {
 		return "";
 	}
 }
-?>

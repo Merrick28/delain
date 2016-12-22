@@ -84,4 +84,3 @@ function sess_save($session) {
     $GLOBALS[$v]->freeze();
   }
 }
-?>

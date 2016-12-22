@@ -49,4 +49,3 @@ $query = sprintf("insert into %s ( name,  sid, start_time, referer, addr, user_a
   $_SERVER["HTTP_USER_AGENT"]);
 
 $db->query($query);
-?>

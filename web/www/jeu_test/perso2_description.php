@@ -230,5 +230,4 @@ if ($db->nf() != 0)
 $contenu_page .= '</td></tr>';
 $contenu_page .= $desc2.'</table>';
 
-?>
 

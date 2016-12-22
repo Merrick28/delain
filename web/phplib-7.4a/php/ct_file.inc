@@ -75,4 +75,3 @@ class CT_File {
             return '';
     }
 }
-?>

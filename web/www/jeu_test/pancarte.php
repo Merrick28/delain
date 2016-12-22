@@ -8,5 +8,3 @@ if(!isset($db))
 $tab_lieu = $db->get_lieu($perso_cod);
 echo "<p>Vous voyez une pancarte qui indique : ";
 echo "<p><b><i>" . $tab_lieu['description'] . "</i></b>";
-
-?>

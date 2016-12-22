@@ -297,5 +297,4 @@ function validateEmail ($email)
 
     // return the array for the user to test against 
     return $return; 
-} 
-?> 
+}

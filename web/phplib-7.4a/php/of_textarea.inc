@@ -47,6 +47,4 @@ class of_textarea extends of_element {
     return $str;
   }
 
-} // end TEXTAREA
-
-?>
+}

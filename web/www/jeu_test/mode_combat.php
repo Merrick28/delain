@@ -39,4 +39,3 @@ else
     }
     $contenu_include .= '</select>.&nbsp;<input type="submit" class="test" value="Changer !" title="Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, hormis le jour de création du personnage où la modification est illimitée."> (Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, excepté le jour de création du personnage.)</form>';
 }
-?>

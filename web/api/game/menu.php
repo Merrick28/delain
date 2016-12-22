@@ -461,5 +461,3 @@ switch ($typesort)
         break;
 }
 
-//require '/home/delain/public_html/www/includes/delain_footer.php';
-?>

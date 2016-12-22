@@ -56,5 +56,3 @@ if ($erreur == 0)
   
   echo '<p>'.$tab_lieu['description'].'</p>'.$htmlout;
 }
-
-?>

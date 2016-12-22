@@ -74,6 +74,5 @@ $nb_msg=$db->f("nombre");
 if($nb_msg!=0)
 	$page="messagerie2.php";
 header('Location: ' . $page);
-?>
 
 

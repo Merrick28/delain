@@ -36,4 +36,3 @@ if ($erreur == 0)
 	}
 	echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $cout_pa . " PA)</a></p>");
 }
-?>

@@ -185,4 +185,4 @@ $phrase[183] = "Chasseur d'humain, c'est un titre ça ?<br>Je sais pas, demande 
 $phrase[184] = "C'est qu'il aurait presque l'air grand sur sa chaise ce nain.";
 $phrase[185] = "Eclair au chocolat, c'est même pas dans ton grimoire ça ?";
 $phrase[186] = "Moi j'vous dit que quand il sera mort, c'est qu'on l'aura tué";
-?>
+

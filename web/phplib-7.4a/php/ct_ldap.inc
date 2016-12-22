@@ -89,4 +89,3 @@ class CT_Ldap {
 		return array();
 	}
 };
-?>

@@ -93,4 +93,3 @@ function o_nonbsp ($val) {
 function p_nonbsp ($val) {
 	print o_nonbsp($val);
 }
-?>

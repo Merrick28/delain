@@ -978,4 +978,3 @@ class Template
   }
 
 }
-?>

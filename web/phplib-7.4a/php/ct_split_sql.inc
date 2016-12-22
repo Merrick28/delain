@@ -123,4 +123,3 @@ class CT_Split_Sql {
         $this->db->halt($s);
     }
 }
-?>

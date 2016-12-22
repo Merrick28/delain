@@ -46,5 +46,3 @@ if ($erreur == 0)
 	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
 	echo("<p><a href=\"valide_grand_escalier_a.php\">Prendre cet escalier ! (" . $db->getparm_n(43) . " PA)</a></p>");
 }
-
-?>

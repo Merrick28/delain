@@ -96,4 +96,3 @@ class html
         return "<option value='$o' $sel_o>Oui</option><option value='$n' $sel_n>Non</option>";
     }
 }
-?>

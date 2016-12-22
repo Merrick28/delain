@@ -7,5 +7,3 @@ if(!isset($db))
 $tab_lieu = $db->get_lieu($perso_cod);
 echo "<p><b>" . $tab_lieu['nom'] . "</b> - " . $tab_lieu['libelle'];
 echo "<p><i>" . $tab_lieu['description'];
-
-?>

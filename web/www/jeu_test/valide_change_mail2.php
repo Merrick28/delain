@@ -49,4 +49,3 @@ $t->p("Sortie");
 $sess->unregister(compt_cod);
 $sess->delete();
 $auth->logout();
-?>

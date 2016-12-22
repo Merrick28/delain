@@ -222,5 +222,4 @@ class Session_Custom extends Session {
   } // end func release_lock
 
   
-} // end class Session4_Custom
-?>
+}
