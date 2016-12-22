@@ -83,7 +83,7 @@ class parametres
      */
     function getparm($code,$refresh = false)
     {
-        $m = new memcached();
+        $m = new mymemcached();
         if(!$refresh)
         {
             // on n'est pas en refresh
@@ -114,7 +114,7 @@ class parametres
      */
     function detail_getparm($code)
     {
-        $m = new memcached();
+        $m = new mymemcached();
         $this->charge($code);
         if(empty($this->parm_valeur_texte))
         {

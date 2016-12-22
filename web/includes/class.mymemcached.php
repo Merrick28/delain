@@ -12,7 +12,7 @@
  * Date: 22/12/2016
  * Time: 13:24
  */
-class memcached
+class mymemcached
 {
     var $m;
 
