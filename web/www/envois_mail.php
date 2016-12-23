@@ -1,7 +1,7 @@
-<?php require_once '/usr/local/phplib-7.4a/php/prepend.php';
+<?php require_once '/home/delain/delain/web/phplib-7.4a/php/prepend.php';
 #require '/home/delain/public_html/www/includes/delain_header.php';
-require_once '/home/delain/public_html/www/includes/classes.php';
-require_once '/home/delain/public_html/www/includes/class.smtp.inc';
+require_once '/home/delain/delain/web/www/includes/classes.php';
+require_once '/home/delain/delain/web/www/includes/class.smtp.inc';
 require_once('Mail.php');
 require_once('Mail/mime.php');
 $db = new base_delain;
