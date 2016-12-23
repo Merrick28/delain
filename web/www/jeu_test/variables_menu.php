@@ -26,17 +26,13 @@ $is_refuge     = $mymenu->is_refuge;
 $is_milice     = $mymenu->is_milice;
 $is_fam        = $mymenu->is_fam;
 $is_intangible = $mymenu->is_intangible;
+$gerant        = $mymenu->gerant;
+$admin_dieu    = $mymenu->admin_dieu;
+$fidele_gerant = $mymenu->fidele_gerant;
+$pa            = $mymenu->pa;
+$nom_perso     = $mymenu->nom_perso;
 
 
-
-
-
-
-$gerant             = $result_perso['gerant'];
-$admin_dieu         = $result_perso['admin_dieu'];
-$fidele_gerant      = $result_perso['fidele_gerant'];
-$pa                 = $result_perso['pa'];
-$nom_perso          = $result_perso['nom'];
 $admin_echoppe      = $result_perso['admin_echoppe'];
 $admin_echoppe_noir = $result_perso['admin_echoppe_noir'];
 $is_vampire         = $result_perso['is_vampire'];

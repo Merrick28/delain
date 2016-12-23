@@ -889,6 +889,31 @@ class perso
         return false;
     }
 
+    function is_admin_dieu()
+    {
+        $dp = new dieu_perso();
+        $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
+        foreach($tab as $ddp)
+        {
+            if($ddp->dper_niveau > 3)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function is_fidele_gerant()
+    {
+        $tf = new temple_fidele();
+        $tab = $tf->getBy_tfid_perso_cod($this->perso_cod);
+        if(count($tab) > 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

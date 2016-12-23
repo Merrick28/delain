@@ -16,6 +16,11 @@ class mymenu
     var $is_milice;
     var $is_fam;
     var $is_intangible;
+    var $gerant = 'N';
+    var $admin_dieu;
+    var $fidele_gerant;
+    var $pa;
+    var $nom_perso;
 
     function __construct($perso_cod)
     {
@@ -36,6 +41,17 @@ class mymenu
         $this->is_milice     = $perso->is_milice();
         $this->is_fam        = $perso->is_fam();
         $this->is_intangible = $perso->isIntangible();
+        $this->admin_dieu    = $perso->is_admin_dieu();
+        $this->fidele_gerant = $perso->is_fidele_gerant();
+        //
+        $this->pa        = $perso->perso_pa;
+        $this->nom_perso = $perso->perso_nom;
+        //
+        $mg = new magasin_gerant();
+        if ($mg->getByPersoCod($this->perso_cod))
+        {
+            $this->gerant = 'O';
+        }
 
 
     }
