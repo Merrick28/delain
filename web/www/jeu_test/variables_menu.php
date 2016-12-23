@@ -272,7 +272,7 @@ $t->set_var('TEXTE_DEP', $texte_dep);
 $ramasser = '';
 if (($perso->nb_obj_case() != 0) || ($perso->nb_or_case() != 0))
 {
-    $ramasser   = '<img src="' . G_IMAGES . 'ramasser.gif" alt=""> ';
+    $ramasser = '<img src="' . G_IMAGES . 'ramasser.gif" alt=""> ';
     if ($perso->perso_pa >= $pa_ramasse)
     {
         $ramasser .= "<a href=\"$chemin/ramasser.php\">";
@@ -533,32 +533,28 @@ $commandement = '';
 $enseignement = '';
 $creuser      = '';
 $vol          = '';
-$req          = "select pcomp_pcomp_cod from perso_competences where pcomp_pcomp_cod IN(80,81,82,83,84,85,86) and pcomp_perso_cod = $perso_cod";
-$db->query($req);
-while ($db->next_record())
+$pcomp        = new perso_competences();
+if ($pcomp->getByPersoComp($perso->perso_cod, 80))
 {
-    $comp = $db->f("pcomp_pcomp_cod");
-    switch ($comp)
-    {
-        case 80 :
-            $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
-            break;
-        case 81 :
-            $enseignement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_enseignement.php">Enseignement</a><br>';
-            break;
-        case 83 :
-            $creuser = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/objets/pioche.php">Creuser</a><br>';
-            break;
-        case 84 :
-        case 85 :
-        case 86 :
-            $vol = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_vol.php">Vol</a><br>';
-            break;
-    }
+    $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
 }
-$req = "select perso_superieur_cod from perso_commandement where $perso_cod = perso_subalterne_cod";
-$db->query($req);
-if ($db->next_record())
+if ($pcomp->getByPersoComp($perso->perso_cod, 81))
+{
+    $enseignement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_enseignement.php">Enseignement</a><br>';
+}
+if ($pcomp->getByPersoComp($perso->perso_cod, 83))
+{
+    $creuser = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/objets/pioche.php">Creuser</a><br>';
+}
+if ($pcomp->getByPersoComp($perso->perso_cod, 86))
+{
+    $vol = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_vol.php">Vol</a><br>';
+}
+
+
+$pc  = new perso_commandement();
+$tab = $pc->getBy_perso_subalterne_cod($perso->perso_cod);
+if (count($tab) > 0)
 {
     $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
 }
@@ -654,53 +650,29 @@ if ($is_vampire != 0)
     <?php
 }
 
+//
 // gestion des vote
 // 
-
+$cv           = new compte_vote();
 $totalXpGagne = 0;
-try
+$tab          = $cv->getBy_compte_vote_compte_cod($compte->compt_cod);
+if (count($tab) > 0)
 {
-    $req_Vote = "SELECT compte_vote_cod, compte_vote_total_px_gagner, compte_vote_nbr, 
-                    compte_vote_compte_cod
-               FROM public.compte_vote  where compte_vote_compte_cod=" . $compt_cod;
-    $db->query($req_Vote);
-
-    if ($db->next_record())
-    {
-        $totalXpGagne = $db->f('compte_vote_total_px_gagner');
-    }
-} catch (Exception $e)
-{
-    $totalXpGagne = 0;
+    $totalXpGagne = $tab[0]->compte_vote_total_px_gagner;
 }
 
 
-$req_NbrVote = "SELECT count(*)as compte_vote_nbr
-               FROM public.compte_vote_ip  where compte_vote_compte_cod=" . $compt_cod . "and compte_vote_pour_delain = true";
-$db->query($req_NbrVote);
-$db->next_record();
-$nbrVote = $db->f('compte_vote_nbr');
-
-$req_NbrVote_mois = "SELECT count(*)as compte_vote_nbr_mois
-               FROM public.compte_vote_ip  where compte_vote_compte_cod=" . $compt_cod . "and compte_vote_pour_delain = true  and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
-$db->query($req_NbrVote_mois);
-$db->next_record();
-$nbrVoteMois = $db->f('compte_vote_nbr_mois');
+$cvip    = new compte_vote_ip();
+$tab     = $cvip->getByCompteTrue($compte->compt_cod);
+$nbrVote = count($tab);
 
 
-$req_vote_a_valid = "SELECT count(*) as voteavalider
-  FROM public.compte_vote_ip where compte_vote_verifier=false and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm') and compte_vote_compte_cod=" . $compt_cod;
-$db->query($req_vote_a_valid);
-$db->next_record();
-$VoteAValider = $db->f('voteavalider');
+$tab         = $cvip->getByCompteTrueMois($compte->compt_cod);
+$nbrVoteMois = count($tab);
 
+$tab          = $cvip->getVoteAValider($compte->compt_cod);
+$VoteAValider = count($tab);
 
-$req_vote_refu = "SELECT count(*) as refus
-  FROM public.compte_vote_ip where compte_vote_pour_delain=false
-            and compte_vote_verifier  = true
-            and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')  
-            and compte_vote_compte_cod=" . $compt_cod;
-$db->query($req_vote_refu);
-$db->next_record();
-$votesRefusee = $db->f('refus');
+$tab          = $cvip->getVoteRefus($compte->compt_cod);
+$votesRefusee = count($tab);
 ?>
