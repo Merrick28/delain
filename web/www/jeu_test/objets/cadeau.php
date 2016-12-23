@@ -2,7 +2,7 @@
 //include "../connexion.php";
 include "../verif_connexion.php";
 include '../../includes/template.inc';
-
+$param = new parametres();
 $t = new template('..');
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -30,7 +30,7 @@ else
 		<br>
 		-	Allez-vous, gentil paladin bisounours que vous êtes, le confier à un lutin rouge afin que le Père Noël triomphe ?<br>
 		<br>
-		-	Allez-vous, monstre d\'égoïsme que vous êtes, <a href="../action.php?methode=ouvre_cadeau">le garder pour vous et l\'ouvrir (' . $db->getparm_n(98) . ' PA) ?</a>
+		-	Allez-vous, monstre d\'égoïsme que vous êtes, <a href="../action.php?methode=ouvre_cadeau">le garder pour vous et l\'ouvrir (' . $param->getparm(98) . ' PA) ?</a>
 		</p>';
 }
 

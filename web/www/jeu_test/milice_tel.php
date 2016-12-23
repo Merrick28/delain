@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$parm = new parametres();
 //
 //Contenu de la div de droite
 //
@@ -37,7 +37,7 @@ if ($erreur == 0)
    	echo "<p>Erreur ! Le lieu sur lequel vous vous trouvez ne permet pas cette action !";
    	$suite = 0;
 	}
-	$etage_min = $db->getparm_n(67);
+	$etage_min = $parm->getparm(67);
 	$req = "select pos_etage from positions,perso_position ";
 	$req = $req . "where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
 	$db->query($req);
@@ -53,7 +53,7 @@ if ($erreur == 0)
 		$db->query($req);
 		$db->next_record();
 		$pos_actu = $db->f("ppos_pos_cod");
-		echo "<p>Liste des destinations possibles (cliquez sur un lieu pour vous y rendre - ", $db->getparm_n(68) , " PA):";
+		echo "<p>Liste des destinations possibles (cliquez sur un lieu pour vous y rendre - ", $parm->getparm(68) , " PA):";
 		echo "<table>";
 		$req = "select pos_cod,lieu_nom,pos_x,pos_y,etage_libelle,pos_etage ";
 		$req = $req . "from lieu,lieu_position,positions,etage ";

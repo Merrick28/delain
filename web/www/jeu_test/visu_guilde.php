@@ -1,6 +1,7 @@
 <?php 
 include_once "verif_connexion.php";
 include '../includes/template.inc';
+$param = new parametres();
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -53,7 +54,7 @@ $meta_noir = $db->f("guilde_meta_noir");
 $meta_caravane = $db->f("guilde_meta_caravane");
 $guilde_nom = $db->f("guilde_nom");
 echo "<p class=\"titre\">" . $guilde_nom;
-if ($db->getparm_n(74) == 1)
+if ($param->getparm(74) == 1)
 {
 	if ($is_guilde)
 	{

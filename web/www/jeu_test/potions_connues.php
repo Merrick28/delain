@@ -6,6 +6,7 @@ if(!defined("APPEL"))
 // Sélection des formules de potions connues
 //
 $db2 = new base_delain;
+$param = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences 
 	where pcomp_perso_cod = $perso_cod 
 		and pcomp_pcomp_cod in (97,100,101)";
@@ -15,15 +16,15 @@ if($db->next_record())
 	$niveau = $db->f("pcomp_pcomp_cod");
 	if ($niveau == 97)
 	{
-		$pa = $db->getparm_n(109);
+		$pa = $param->getparm(109);
 	}
 	else if ($niveau == 100)
 	{
-		$pa = $db->getparm_n(109) - 1;
+		$pa = $param->getparm(109) - 1;
 	}
 	else
 	{
-		$pa = $db->getparm_n(109) - 2 ;
+		$pa = $param->getparm(109) - 2 ;
 	}
 	$req = "select valeur_bonus($perso_cod, 'HOR') as nombre";
 	$db->query($req);

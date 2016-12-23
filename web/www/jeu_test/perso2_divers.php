@@ -1,6 +1,6 @@
 <?php 
 //CETTE PAGE REGROUPE LES DONNÉES DIVERSES
-
+$param = new parametres();
 $db2 = new base_delain;
 //
 // données tutorat
@@ -112,7 +112,7 @@ else
 		<td><p style="text-align:center;">' . $db->f("pos_y") . '</td>
 		<td><p style="text-align:center;">' . $db->f("etage_libelle") . '</td>';
 	$chance = $db->f("ptemple_nombre");
-	$chance = 100 - ($chance * $db->getparm_n(32));
+	$chance = 100 - ($chance * $param->getparm(32));
 	$contenu_page .= '<td><p>' . $chance . ' %</td></tr>
 		</table>
 		<a href="action.php?methode=abtemp">Abandonner ce dispensaire ?</a> (vous n’aurez plus de dispensaire spécifique pour vous ramener en cas de mort)';

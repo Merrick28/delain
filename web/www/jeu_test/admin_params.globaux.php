@@ -62,9 +62,15 @@ switch ($methode)
 
 			$champ_valeur = ($parm_type == 'integer') ? 'parm_valeur' : 'parm_valeur_texte';
 
-			$req_upd = "update parametres set parm_type = '$parm_type', $champ_valeur = '$parm_valeur', parm_desc = '$parm_desc'
-				where parm_cod = $parm_cod";
-			$db->query($req_upd);
+			// on update memcached
+			$param = new parametres();
+
+
+			$param->charge($parm_cod);
+			$param->parm_type = $parm_type;
+			$param->$champ_valeur = $parm_valeur;
+			$param->parm_desc = $parm_desc;
+			$param->stocke();
 		}
 	break;
 

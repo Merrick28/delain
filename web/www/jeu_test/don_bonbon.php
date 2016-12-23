@@ -2,6 +2,7 @@
 include "verif_connexion.php";
 include "img_pack.php";
 include "template.inc";
+$param = new parametres();
 // definition des variables de template
 $t = new template;
 $t->set_file("FileRef","../template/classic/general.tpl");
@@ -50,12 +51,12 @@ $t->set_var("img_path",G_IMAGES);
 $contenu_page = "";
 if (!$db->is_admin($compt_cod))
 {
-	$limite_bonbon = $db->getparm_n(103);
+	$limite_bonbon = $param->getparm(103);
 	if ($db->compte_objet($perso_cod,448) < $limite_bonbon)
 		$contenu_page = 'Vous devez avoir au moins ' . $limite_bonbon . ' bonbons pour pouvoir les donner.';
 	else
 	{
-	$pa = $db->getparm_n(102);
+	$pa = $param->getparm(102);
 	$req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
 	$db->query($req);
 	$db->next_record();

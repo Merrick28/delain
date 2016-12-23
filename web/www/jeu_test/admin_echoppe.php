@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$param = new parametres();
 //
 //Contenu de la div de droite
 //
@@ -214,12 +214,12 @@ if ($erreur == 0)
 			}
 			break;
 		case "stats_biere":
-			echo "<p>Futs vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $db->getparm_n(77) , "/" , $db->getparm_n(76) , "</b>";
-			echo "<p>Futs vendus par les aventuriers (ce mois-ci/total) : <b>" , $db->getparm_n(79) , "/" , $db->getparm_n(78) , "</b>";
+			echo "<p>Futs vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $param->getparm(77) , "/" , $param->getparm(76) , "</b>";
+			echo "<p>Futs vendus par les aventuriers (ce mois-ci/total) : <b>" , $param->getparm(79) , "/" , $param->getparm(78) , "</b>";
 			break;
 		case "stats_paq":
-			echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $db->getparm_n(81) , "/" , $db->getparm_n(80) , "</b>";
-			echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <b>" , $db->getparm_n(84) , "/" , $db->getparm_n(83) , "</b>";
+			echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $param->getparm(81) , "/" , $param->getparm(80) , "</b>";
+			echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <b>" , $param->getparm(84) , "/" , $param->getparm(83) , "</b>";
 			break;
 		case "mag_aut":
 			if ($lieu_cod != "")

@@ -10,6 +10,7 @@ $req2 = "select count(sid) as nombre from sessions_active where changed >= to_ch
 $db->query($req2);
 $db->next_record();
 $nombre = $db->f("nombre");
+$param = new parametres();
 ?>
 <html>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">
@@ -43,7 +44,7 @@ $nombre = $db->f("nombre");
 <tr> 
 <tr>
 <td width="10" background="<?php  echo G_IMAGES; ?>ligne_gauche.gif">&nbsp;</td>
-<td><p>Aujourdhui, dans les souterrains, <?php echo $db->getparm_n(64);?> aventuriers, <?php echo $db->getparm_n(65);?> monstres et <?php echo $db->getparm_n(66);?> familiers sont morts au combat. Etes-vous sûr de vouloir vous connecter quand même ?
+<td><p>Aujourdhui, dans les souterrains, <?php echo $param->getparm(64);?> aventuriers, <?php echo $param->getparm(65);?> monstres et <?php echo $param->getparm(66);?> familiers sont morts au combat. Etes-vous sûr de vouloir vous connecter quand même ?
 <hr>
 <table><td>En attendant de vous connecter, vous pouvez aller voir la <a href="champions.php"><b>page des champions !</b></a></td>
 <td>

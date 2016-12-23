@@ -1,9 +1,10 @@
 <?php 
+$param = new parametres();
 $contenu_page .= '<p class="titre">Défis d’aventuriers</p><p></p>';
 $dialogue = '';
 $erreur = false;
 $message_erreur = '<b>Une erreur est survenue !</b><br />';
-$delai_acceptation_defi = $db->getparm_n(125);
+$delai_acceptation_defi = $param->getparm(125);
 
 $defi_regles = "
 	<script type='text/javascript'>

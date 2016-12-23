@@ -1,4 +1,5 @@
 <?php 
+$param = new parametres();
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;
@@ -58,7 +59,7 @@ if ($erreur == 0)
 			{
 				echo "<a href=\"religion.php?methode=renegat\">Voir la liste des renégats</a><br>";
 			}
-			echo "<br><p><a href=\"action.php?methode=prie_ext&dieu=" , $dieu_cod , "\">Prier votre dieu ?</> (" , $db->getparm_n(48) , " PA)</p>";
+			echo "<br><p><a href=\"action.php?methode=prie_ext&dieu=" , $dieu_cod , "\">Prier votre dieu ?</> (" , $param->getparm(48) , " PA)</p>";
 			break;
 		case 'renegat':
 			echo "<p>Liste des renégats :<br>";

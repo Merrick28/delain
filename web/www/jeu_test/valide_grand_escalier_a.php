@@ -1,6 +1,7 @@
 <?php 
 include_once "verif_connexion.php";
 include '../includes/template.inc';
+$param = new parametres();
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -60,7 +61,7 @@ if ($db->compte_objet($perso_cod,88) != 0)
 	echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.</p>";
 	$erreur = 1;
 }
-if ($pa_perso < $db->getparm_n(43))
+if ($pa_perso < $param->getparm(43))
 {
 	echo("<p>Vous n’avez pas assez de PA !!!!</p>");
 	$erreur = 1;
@@ -85,7 +86,7 @@ if ($db->is_locked($perso_cod))
 if ($erreur == 0)
 {
 	$tab_lieu = $db->get_lieu($perso_cod);
-	$pa = "update perso set perso_pa = max(perso_pa - ". $db->getparm_n(43) .",0) where perso_cod = $perso_cod ";
+	$pa = "update perso set perso_pa = max(perso_pa - ". $param->getparm(43) .",0) where perso_cod = $perso_cod ";
 	$db->query($pa);
 	
 	$req_pos = "select ppos_pos_cod,pos_x,pos_y,pos_etage 

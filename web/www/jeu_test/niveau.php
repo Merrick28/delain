@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$param = new parametres();
 //
 //Contenu de la div de droite
 //
@@ -24,7 +24,7 @@ if ($db->f("perso_px") < $db->f("limite"))
 	$erreur = 1;
 }
 $niveau = $db->f("perso_niveau");
-$limite_pa = $db->getparm_n(8);
+$limite_pa = $param->getparm(8);
 
 
 $req_pa = "select perso_race_cod,perso_for,perso_dex,perso_int,perso_con,perso_nb_amel_comp,perso_niveau_vampire,perso_vampirisme,perso_pa,perso_amelioration_vue,perso_amelioration_regen,perso_des_regen,perso_valeur_regen,";

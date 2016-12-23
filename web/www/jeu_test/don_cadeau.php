@@ -2,6 +2,7 @@
 include "verif_connexion.php";
 include "../includes/img_pack.php";
 include "../includes/template.inc";
+$param = new parametres();
 // definition des variables de template
 $t = new template;
 $t->set_file("FileRef","../template/classic/general.tpl");
@@ -60,14 +61,14 @@ if (!$db->is_admin($compt_cod))
 		and ppos_pos_cod = $pos ";
 	$db->query($req);
 	if ($db->nf() != 0)
-		$contenu_page .= '<p>Vous rencontrez un lutin rouge. Vous pouvez <a href="action.php?methode=don_cadeau_rouge">lui donner un cadeau (' . $db->getparm_n(99) . ' PA)</a>.';
+		$contenu_page .= '<p>Vous rencontrez un lutin rouge. Vous pouvez <a href="action.php?methode=don_cadeau_rouge">lui donner un cadeau (' . $param->getparm(99) . ' PA)</a>.';
 	$req = "select perso_cod  from perso,perso_position
 		where perso_race_cod = 54
 		and perso_cod = ppos_perso_cod
 		and ppos_pos_cod = $pos ";
 	$db->query($req);
 	if ($db->nf() != 0)
-		$contenu_page .= '<p>Vous rencontrez un lutin noir. Vous pouvez <a href="action.php?methode=don_cadeau_noir">lui donner un cadeau (' . $db->getparm_n(99) . ' PA)</a>.';
+		$contenu_page .= '<p>Vous rencontrez un lutin noir. Vous pouvez <a href="action.php?methode=don_cadeau_noir">lui donner un cadeau (' . $param->getparm(99) . ' PA)</a>.';
 }
 else
 {

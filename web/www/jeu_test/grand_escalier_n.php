@@ -3,7 +3,7 @@ if(!defined("APPEL"))
 	die("Erreur d’appel de page !");
 if(!isset($db))
 	include_once "verif_connexion.php";
-
+$param = new parametres();
 $erreur = 0;
 // on regarde si le joueur est bien sur un escalier
 if (!$db->is_lieu($perso_cod))
@@ -72,7 +72,7 @@ if ($erreur == 0)
 		}
 		if ($erreur == 0)
 		{
-			echo("<p><a href=\"valide_grand_escalier_a.php\">Prendre cet escalier ! (" . $db->getparm_n(43) . " PA)</a></p>");
+			echo("<p><a href=\"valide_grand_escalier_a.php\">Prendre cet escalier ! (" . $param->getparm(43) . " PA)</a></p>");
 		}
 	}
 }

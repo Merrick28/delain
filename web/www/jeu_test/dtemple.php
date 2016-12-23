@@ -2,7 +2,7 @@
 	die("Erreur d'appel de page !");
 if(!isset($db))
 	include "verif_connexion.php";
-
+$param = new parametres();
 //
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
@@ -168,11 +168,11 @@ if ($erreur == 0)
 					echo "<p>Vous êtes " . $db->f("dniv_libelle") . " de ce dieu</p>";
 					$points = $db->f("dper_points");
 					$niveau_actu = $db->f("dper_niveau");
-					$cout_pa = $db->getparm_n(55);
+					$cout_pa = $param->getparm(55);
 					switch($niveau_actu)
 					{
 						case 0:
-							if ($points > $db->getparm_n(51))
+							if ($points > $param->getparm(51))
 							{
 								$req = "select dniv_libelle from dieu_niveau ";
 								$req = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = 1 ";
@@ -182,7 +182,7 @@ if ($erreur == 0)
 							}
 							break;
 						case 1:
-							if ($points > $db->getparm_n(52))
+							if ($points > $param->getparm(52))
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 2 ";
@@ -192,7 +192,7 @@ if ($erreur == 0)
 							}
 							break;
 						case 2:
-							if ($points > $db->getparm_n(53))
+							if ($points > $param->getparm(53))
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 3 ";
@@ -202,7 +202,7 @@ if ($erreur == 0)
 							}
 							break;
 						case 3:
-							if ($points > $db->getparm_n(54))
+							if ($points > $param->getparm(54))
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 4 ";
@@ -214,7 +214,7 @@ if ($erreur == 0)
 					}
 					if($niveau_actu >= 2)
 					{
-						echo '<p><a href="?methode=benediction">Demander une bénédiction (' . $db->getparm_n(110) . ' PA) </a></p>';
+						echo '<p><a href="?methode=benediction">Demander une bénédiction (' . $param->getparm(110) . ' PA) </a></p>';
 						$texte_reliquaire .= '<p>Votre rang vous autorise à exécuter une cérémonie pour <a href="?methode=relique">bénir et déposer une relique (6 PA)</a></p>';
 					}
 				}
@@ -238,18 +238,18 @@ if ($erreur == 0)
 				<input type="hidden" class="vide" name="dieu_desc" value="<?php echo $dieu_cod;?>">
 
 				<p><a href="<?php echo $PHP_SELF;?>?methode=prie1">- Je voudrais me recueillir pour prier <?php echo $dieu_nom; ?>
-				</a> (<?php  echo $db->getparm_n(48); ?> PA)
+				</a> (<?php  echo $param->getparm(48); ?> PA)
 				<p><a href="<?php echo $PHP_SELF;?>?methode=ceremonie">- J’aimerais organiser une <?php echo $dieu_ceremonie; ?> en l’honneur de <?php echo $dieu_nom; ?>
-					</a> (<?php  echo $db->getparm_n(49), " PA, ", $db->getparm_n(50) , " brouzoufs )"; ?>
+					</a> (<?php  echo $param->getparm(49), " PA, ", $param->getparm(50) , " brouzoufs )"; ?>
 				<p><a href="<?php echo $PHP_SELF;?>?methode=infos&javascript:document.dieu_desc.submit();">- Pouvez-vous m’en dire plus sur <?php echo $dieu_nom; ?> ?</a>
 				<p><a href="expl_dieu.php">- Pouvez-vous m’apprendre ce que vous savez sur les dieux ?</a>
 				</form>
 				<?php 
-				$cout_or = $db->getparm_n(50) * 2;
+				$cout_or = $param->getparm(50) * 2;
 				if ($dieu_perso == $dieu_cod and $niveau_actu >= 3 and $dieu_pouvoir > 150)
 				{
 					?>
-					<p><a href="<?php echo $PHP_SELF;?>?methode=invoc">- Invoquer un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $db->getparm_n(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
+					<p><a href="<?php echo $PHP_SELF;?>?methode=invoc">- Invoquer un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
 						<br><i>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire sous votre contrôle.
 						<br><b>Il disparaîtra ensuite avec toutes ses possessions.</b>
 						<br>N’oubliez pas que cette action <b>éprouve fortement</b> le pouvoir de votre Dieu</i><br>
@@ -259,7 +259,7 @@ if ($erreur == 0)
 				if ($dieu_perso == $dieu_cod and $niveau_actu >= 3)
 				{
 						?>
-						<p><a href="<?php echo $PHP_SELF;?>?methode=tel1">Se téléporter vers un autre temple ?</a> (<?php  echo $db->getparm_n(100); ?> PA)
+						<p><a href="<?php echo $PHP_SELF;?>?methode=tel1">Se téléporter vers un autre temple ?</a> (<?php  echo $param->getparm(100); ?> PA)
 						<?php 
 				}
 			}
@@ -445,8 +445,8 @@ if ($erreur == 0)
 			$db->next_record();
 			$pa = $db->f("perso_pa");
 			$or = $db->f("perso_po");
-			$cout_pa = $db->getparm_n(100);
-			$cout_or = $db->getparm_n(50) * 2;
+			$cout_pa = $param->getparm(100);
+			$cout_or = $param->getparm(50) * 2;
 			if ($pa < $cout_pa)
 			{
 					echo "<br><b><p>Vous n’avez pas suffisamment de PA pour cette action</b><br><br>";
@@ -612,7 +612,7 @@ if ($erreur == 0)
 
 		case "tel1":
 			// liste des temples visités
-			$cout_pa = $db->getparm_n(100);
+			$cout_pa = $param->getparm(100);
 			$req = 'select * from choix_temple_vus(' . $perso_cod . ')';
 			$db->query($req);
 			$db2 = new base_delain;
@@ -680,7 +680,7 @@ if ($erreur == 0)
 				$db->query($req);
 				$db->next_record();
 				$pa = $db->f('perso_pa');
-				if($pa < $db->getparm_n(110))
+				if($pa < $param->getparm(110))
 				{
 					echo "<p>Vous n’avez pas assez de PA pour cette action.";
 					break;

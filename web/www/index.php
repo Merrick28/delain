@@ -1,12 +1,14 @@
 <?php
-//echo "ok";
-//echo "Migration du serveur OK, import de la base postgres du jeu OK, optimisations base du jeu en cours.";
-//die('');
 $nouvelle_version = 1;
+
+// TODO : memcached pour params
+
 // par défaut, on n'est pas authentifié
 $verif_auth = false;
-
 include G_CHE . "ident.php";
+
+// parametres
+$param = new parametres;
 
 include "classes.php";
 $db        = new base_delain;
@@ -49,9 +51,9 @@ $options_twig = array(
    'URL_IMAGES' => G_IMAGES,
    'HTTPS' => $type_flux,
    'ISAUTH' => $verif_auth,
-   'AVENTURIERS_MORTS' => $db->getparm_n(64),
-   'MONSTRES_MORTS' => $db->getparm_n(65),
-   'FAMILIERS_MORTS' => $db->getparm_n(66),
+   'AVENTURIERS_MORTS' => $param->getparm(64),
+   'MONSTRES_MORTS' => $param->getparm(65),
+   'FAMILIERS_MORTS' => $param->getparm(66),
    'GMON' => $gmon,
    'TABNEWS' => $tabNews,
    'START_NEWS' => $start_news,

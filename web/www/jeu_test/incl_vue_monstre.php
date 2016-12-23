@@ -5,6 +5,7 @@
 <table width="100%" cellspacing="2" cellapdding="2" id="tableMonstres">
 
 <?php 
+$parm = new parametres();
 $marquerQuatriemes = $db->is_admin_monstre($compt_cod);
 $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
 $db->query($req_malus_desorientation);
@@ -13,7 +14,7 @@ if ($db->f("desorientation") == 0)
 	$desorientation = false;
 else
 	$desorientation = true;
-$combat_groupe = $db->getparm_n(56);
+$combat_groupe = $parm->getparm(56);
 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
 $db->query($req);
 $db->next_record();

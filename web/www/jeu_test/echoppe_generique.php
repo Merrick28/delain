@@ -7,7 +7,7 @@ if (!isset($db))
 {
     include "verif_connexion.php";
 }
-
+$param = new parametres();
 
 // test sur le type de lieu
 $erreur = 0;
@@ -516,7 +516,7 @@ where mstock_lieu_cod = $lieu_cod
     break;
 case "vendre":
 $db2 = new base_delain;
-$taux_rachat = $db->getparm_n(47);
+$taux_rachat = $param->getparm(47);
 $lieu_cod = $tab_lieu['lieu_cod'];
 echo "<HR /><p class=\"titre\">Vente d'équipement</p>";
 $req = "select obj_cod,obj_etat,obj_nom as nom,f_prix_obj_perso_v($perso_cod,$lieu_cod,obj_cod) as valeur,tobj_libelle ";

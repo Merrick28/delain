@@ -3,6 +3,7 @@
 //Contenu de la div de droite
 //
 $contenu_page = '';
+$param = new parametres();
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 if (!$db->is_lieu($perso_cod))
@@ -61,7 +62,7 @@ if ($erreur == 0)
 
 			// Pour les fidèles de Tonto, les auberges sont comme des autels de prière
 			if ($tonto) {
-				$priere_pa = $db->getparm_n(48);
+				$priere_pa = $param->getparm(48);
 				$contenu_page .= '<a href="' . $PHP_SELF . '?methode=prier">Prier votre dieu Tonto ? ('.$priere_pa.' PA)</a><br>';
 			}
 			
@@ -274,7 +275,7 @@ if ($erreur == 0)
 			}
 			break;
 		case "rumeur":
-			$contenu_page .= '<p>Vous pouvez ici lancer une rumeur. Cette rumeur existera pendant ' . $db->getparm_n(44) . ' jours.<br>
+			$contenu_page .= '<p>Vous pouvez ici lancer une rumeur. Cette rumeur existera pendant ' . $param->getparm(44) . ' jours.<br>
 			Pendant ce temps, les personnes qui viennent prendre un verre à l\'auberge auront une chance de l\'entendre. Toutefois, ils n\'auront aucun moyen de savoir qui l\'a lancée.<br>
 			Afin d\'augmenter les chances que l\'on connaisse votre rumeur, vous pouvez soudoyer le barman. Plus vous lui donnez d\'argent, plus votre rumeur à des chances d\'être connue.<br>';
 			$req = "select perso_po from perso where perso_cod = $perso_cod ";
