@@ -30,7 +30,7 @@
 # Solde pour la milice
 00 00 1 * * /home/delain/delain/shell/solde.sh >> /dev/null
 # RAZ des compteurs
-00 00 * * * /home/delain/shell/compteur.sh >> /dev/null
+00 00 * * * /home/delain/delain/shell/compteur.sh >> /dev/null
 # Création de la page des champions
 30 01 * * * /home/delain/delain/shell/mk_champ.sh >> /dev/null
 # Entretien des mines
