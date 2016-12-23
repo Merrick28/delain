@@ -3,8 +3,6 @@ ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/
 
 include "delain_header.php";
 include "base_delain.php";
-require_once('Mail.php');
-require_once('Mail/mime.php');
 $db = new base_delain;
 //
 // Etate 1 : on regarde tous les mail en instance
