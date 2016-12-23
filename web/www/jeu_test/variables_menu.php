@@ -2,6 +2,7 @@
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
+$mymenu = new mymenu($perso_cod);
 
 
 $get_compte = '';
@@ -15,47 +16,20 @@ $t->set_var('URL_RELATIVE', $chemin . '/');
 // on va récupérer le tableau json d'une api externe
 echo "<!-- " . URL_API . 'game/menu.php?type_auth=programme' . $get_compte . '&ext_perso_cod=' . $perso_cod . '&typesort=json&cle_connect=' . apc_fetch('cle_connec') . ' -->';
 $tabtemp = file_get_contents(URL_API . '/game/menu.php?type_auth=programme' . $get_compte . '&ext_perso_cod=' . $perso_cod . '&typesort=json&cle_connect=' . apc_fetch('cle_connec'));
-
-
 // tout est maintenant dans $result_perso
 $result_perso = json_decode($tabtemp, true);
 
 
-$is_enchanteur = false;
-if ($result_perso['enchanteur'] == 1)
-{
-    $is_enchanteur = true;
-}
+$is_enchanteur = $mymenu->is_enchanteur;
+$is_enlumineur = $mymenu->is_enlumineur;
+$is_refuge     = $mymenu->is_refuge;
+$is_milice     = $mymenu->is_milice;
+$is_fam        = $mymenu->is_fam;
+$is_intangible = $mymenu->is_intangible;
 
-$is_enlumineur = false;
-if ($result_perso['enlumineur'] == 1)
-{
-    $is_enlumineur = true;
-}
 
-$is_refuge = false;
-if ($result_perso['refuge'] == 1)
-{
-    $is_refuge = true;
-}
 
-$is_milice = false;
-if ($result_perso['milice'] == 1)
-{
-    $is_milice = true;
-}
 
-$is_fam = false;
-if ($result_perso['is_fam'] == 1)
-{
-    $is_fam = true;
-}
-
-$is_intangible = false;
-if ($result_perso['intangible'] == 1)
-{
-    $is_intangible = true;
-}
 
 
 $gerant             = $result_perso['gerant'];
@@ -114,17 +88,21 @@ $t->set_var('PERSO_NOM', $nom_perso);
 
 //intangible
 if ($is_intangible)
+{
     $intangible = "<i>Perso impalpable !</i><br><br>";
+}
 else
+{
     $intangible = '';
+}
 $t->set_var('INTANGIBLE', $intangible);
 
 // niveau
 $req_niveau = "select perso_pv,perso_pv_max,limite_niveau_actuel($perso_cod) as limite,perso_energie from perso where perso_cod = $perso_cod";
 $db->query($req_niveau);
 $db->next_record();
-$px_actuel  = $result_perso['perso_px'];
-$px_limite  = $result_perso['prochain_niveau'];
+$px_actuel = $result_perso['perso_px'];
+$px_limite = $result_perso['prochain_niveau'];
 
 
 // pa
@@ -156,7 +134,9 @@ if ($result_perso['is_fam_divin'] == 1)
     $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $result_perso['barre_divine'] . ".png\" title=\"Énergie divine : " . $result_perso['energie_divine'] . "\" alt=\"Énergie divine : " . $result_perso['energie_divine'] . "\">";
 }
 else
+{
     $fam_divin = '';
+}
 $t->set_var('FAM_DIVIN', $fam_divin);
 
 // PX
@@ -176,16 +156,24 @@ $t->set_var('PERSO_ETAGE', $result_perso['etage']);
 // passage niveau
 
 if ($result_perso['perso_px'] >= $result_perso['prochain_niveau'])
+{
     $passage_niveau = '<a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a><br><hr />';
+}
 else
+{
     $passage_niveau = '';
+}
 $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 
 // Quête avec perso
 if ($result_perso['quete'] == 1)
+{
     $perso_quete = "<a href=\"$chemin/quete_perso.php\"><b>Quête</b></a><hr />";
+}
 else
+{
     $perso_quete = '';
+}
 $t->set_var('PERSO_QUETE', $perso_quete);
 
 // lieux
@@ -203,11 +191,15 @@ if ($result_perso['lieu'] == 1)
 $t->set_var('PERSO_LIEU', $perso_lieu);
 
 //messagerie
-$nb_msg           = $result_perso['nb_mess'];
+$nb_msg = $result_perso['nb_mess'];
 if ($nb_msg != 0)
+{
     $perso_messagerie = "<b>Messagerie (" . $nb_msg . ")</b>";
+}
 else
+{
     $perso_messagerie = "Messagerie";
+}
 $t->set_var('PERSO_MESSAGERIE', $perso_messagerie);
 
 // deplacement
@@ -248,7 +240,9 @@ if (($db->nb_obj_sur_case($perso_cod) != 0) || ($db->nb_or_sur_case($perso_cod))
     $pa_ramasse = $result_perso['pa_ramasse'];
     $ramasser   = '<img src="' . G_IMAGES . 'ramasser.gif" alt=""> ';
     if ($result_perso['pa'] >= $pa_ramasse)
+    {
         $ramasser .= "<a href=\"$chemin/ramasser.php\">";
+    }
     $ramasser .= "Ramasser (" . $pa_ramasse . "PA)";
     if ($result_perso['pa'] >= $pa_ramasse)
     {
@@ -259,9 +253,13 @@ $t->set_var('RAMASSER', $ramasser);
 
 // Transactions
 if ($transaction > 0)
+{
     $perso_transactions = "<b>Transactions (" . $transaction . ")</b>";
+}
 else
+{
     $perso_transactions = "Transactions";
+}
 $t->set_var('TRANSACTIONS', $perso_transactions);
 
 // wiki
@@ -289,32 +287,50 @@ if ($droit['controle'] == 'O')
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_interaction_4e.php">Intéractions 4e persos</a><br>';
 }
 else
+{
     $controle = '';
+}
 
 // Modif perso
 if ($droit['modif_perso'] == 'O')
+{
     $modif_perso = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_perso_edit.php">Modif. perso</a><br>';
+}
 else
+{
     $modif_perso = '';
+}
 
 // modif monstre
 if ($droit['modif_gmon'] == 'O')
+{
     $modif_monstre = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_type_monstre_edit.php">Modif. types monstre</a><br>
 		<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_repartition_monstres.php">Modif. répart. monstres</a><br>';
+}
 else
+{
     $modif_monstre = '';
+}
 
 // modif carte
 if ($droit['carte'] == 'O')
+{
     $droit_carte = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_etage.php">Modif. étages</a><br>';
+}
 else
+{
     $droit_carte = '';
+}
 
 // controle admin
 if ($droit['controle_admin'] == 'O')
+{
     $controle_admin = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_admins.php">Controle admins</a><br>';
+}
 else
+{
     $controle_admin = '';
+}
 
 // gestion_droits
 if ($droit['droits'] == 'O')
@@ -323,13 +339,19 @@ if ($droit['droits'] == 'O')
     $gestion_droits .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_params.php">Gestion des paramètres</a><br>';
 }
 else
+{
     $gestion_droits = '';
+}
 
 // modif objets
 if ($droit['objet'] == 'O')
+{
     $modif_objets = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_objet_generique_edit.php">Gestion objets generiques</a><br>';
+}
 else
+{
     $modif_objets = '';
+}
 
 // enchantements
 if ($droit['enchantements'] == 'O')
@@ -340,90 +362,140 @@ if ($droit['enchantements'] == 'O')
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_bonusmalus.php">Modif. bonus/malus</a><br>';
 }
 else
+{
     $droit_enchantement = '';
+}
 
 // potions
 if ($droit['potions'] == 'O')
+{
     $droit_potion = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_potions.php">Création de potions</a><br>';
+}
 else
+{
     $droit_potion = '';
+}
 
 // acces logs
 if ($droit['acces_log'] == 'O')
+{
     $droit_logs = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_visu_logs.php">Voir les logs</a><br>';
+}
 else
+{
     $droit_logs = '';
+}
 
 // modif perso
 if ($droit['modif_perso'] == 'O')
+{
     $quete_auto = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_quete_auto_edit.php">Quetes auto</a><br>';
+}
 else
+{
     $quete_auto = '';
+}
 
 // news
 if ($droit['news'] == 'O')
+{
     $news = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_news.php">Lancer une news</a><br>';
+}
 else
+{
     $news = '';
+}
 
 // animations
 if ($droit['animations'] == 'O')
+{
     $animations = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_animations.php">Animations</a><br>';
+}
 else
+{
     $animations = '';
+}
 
 // factions
 if ($droit['factions'] == 'O')
+{
     $factions = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_factions.php">Factions</a><br>';
+}
 else
+{
     $factions = '';
+}
 
 // admin_echoppe
 if ($admin_echoppe == 'O')
+{
     $echoppe = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/admin_echoppe.php">Admin. échoppes</a><br>';
+}
 else
+{
     $echoppe = '';
+}
 
 // gerant
 if ($gerant == 'O')
+{
     $gerant = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/gere_echoppe.php">Gestion échoppes</a><br>';
+}
 else
+{
     $gerant = '';
+}
 
 // voie magique
-$req          = 'select count (1) as nv5 from perso, perso_nb_sorts_total, sorts where perso_cod = pnbst_perso_cod and pnbst_sort_cod = sort_cod and sort_niveau >= 5 and pnbst_nombre > 0 and perso_voie_magique = 0 and perso_cod = ' . $perso_cod;
+$req = 'select count (1) as nv5 from perso, perso_nb_sorts_total, sorts where perso_cod = pnbst_perso_cod and pnbst_sort_cod = sort_cod and sort_niveau >= 5 and pnbst_nombre > 0 and perso_voie_magique = 0 and perso_cod = ' . $perso_cod;
 $db->query($req);
 $db->next_record();
-$nv5          = $db->f('nv5');
-$req          = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
+$nv5 = $db->f('nv5');
+$req = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
 $db->query($req);
 $db->next_record();
-$mem          = $db->f('mem');
+$mem = $db->f('mem');
 if ($nv5 > 0 && $mem > 5)
+{
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
+}
 else
+{
     $voie_magique = '';
+}
 $t->set_var('VOIE_MAGIQUE', $voie_magique);
 
 //Enluminure
 if ($is_enlumineur)
+{
     $enlumineur = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enluminure_general.php">Enluminure</a><br>';
+}
 else
+{
     $enlumineur = '';
+}
 $t->set_var('ENLUMINEUR', $enlumineur);
 
 // potions
 if ($potions == 1)
+{
     $potion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/comp_potions.php">Alchimie</a><br>';
+}
 else
+{
     $potion = '';
+}
 $t->set_var('POTION', $potion);
 
 //religion
 if ($religion == 1 || $fidele_gerant == 'O' || $admin_dieu == 'O')
+{
     $religion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/religion.php">Religion</a><br>';
+}
 else
+{
     $religion = '';
+}
 $t->set_var('RELIGION', $religion);
 
 // Compétences spéciales
@@ -445,12 +517,12 @@ while ($db->next_record())
             $enseignement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_enseignement.php">Enseignement</a><br>';
             break;
         case 83 :
-            $creuser      = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/objets/pioche.php">Creuser</a><br>';
+            $creuser = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/objets/pioche.php">Creuser</a><br>';
             break;
         case 84 :
         case 85 :
         case 86 :
-            $vol          = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_vol.php">Vol</a><br>';
+            $vol = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_vol.php">Vol</a><br>';
             break;
     }
 }
@@ -466,46 +538,52 @@ $t->set_var('VOL', $vol);
 
 // Section administration
 if ($controle . $controle_admin . $droit_logs . $gestion_droits != '' &&
-   $modif_perso . $modif_monstre . $modif_objets .
-   $droit_carte . $droit_enchantement . $droit_potion .
-   $quete_auto . $factions . $news . $animations .
-   $echoppe . $gerant .
-   $option_monstre . $commandement != '')
+    $modif_perso . $modif_monstre . $modif_objets .
+    $droit_carte . $droit_enchantement . $droit_potion .
+    $quete_auto . $factions . $news . $animations .
+    $echoppe . $gerant .
+    $option_monstre . $commandement != ''
+)
 {
     $gestion_droits .= '<hr />';
 }
 if ($modif_perso . $modif_monstre . $modif_objets != '' &&
-   $droit_carte . $droit_enchantement . $droit_potion .
-   $quete_auto . $factions . $news . $animations .
-   $echoppe . $gerant .
-   $option_monstre . $commandement != '')
+    $droit_carte . $droit_enchantement . $droit_potion .
+    $quete_auto . $factions . $news . $animations .
+    $echoppe . $gerant .
+    $option_monstre . $commandement != ''
+)
 {
     $modif_objets .= '<hr />';
 }
 if ($droit_carte . $droit_enchantement . $droit_potion != '' &&
-   $quete_auto . $factions . $news . $animations .
-   $echoppe . $gerant .
-   $option_monstre . $commandement != '')
+    $quete_auto . $factions . $news . $animations .
+    $echoppe . $gerant .
+    $option_monstre . $commandement != ''
+)
 {
     $droit_potion .= '<hr />';
 }
 if ($quete_auto . $factions . $news . $animations != '' &&
-   $echoppe . $gerant .
-   $option_monstre . $commandement != '')
+    $echoppe . $gerant .
+    $option_monstre . $commandement != ''
+)
 {
     $animations .= '<hr />';
 }
 if ($echoppe . $gerant != '' &&
-   $option_monstre . $commandement != '')
+    $option_monstre . $commandement != ''
+)
 {
     $gerant .= '<hr />';
 }
 if ($controle . $controle_admin . $droit_logs . $gestion_droits .
-   $modif_perso . $modif_monstre . $modif_objets .
-   $droit_carte . $droit_enchantement . $droit_potion .
-   $quete_auto . $factions . $news . $animations .
-   $echoppe . $gerant .
-   $option_monstre . $commandement != '')
+    $modif_perso . $modif_monstre . $modif_objets .
+    $droit_carte . $droit_enchantement . $droit_potion .
+    $quete_auto . $factions . $news . $animations .
+    $echoppe . $gerant .
+    $option_monstre . $commandement != ''
+)
 {
     $option_monstre .= '<hr />';
 }
@@ -530,14 +608,19 @@ $t->set_var('MODIF_PERSO', $modif_perso);
 $t->set_var('CONTROLE_ADMIN', $controle_admin);
 
 if ($is_milice == 1)
+{
     $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""><a href="' . $chemin . '/milice.php">Milice</a><br>';
+}
 else
+{
     $milice = '';
+}
 
 if ($is_vampire != 0)
 {
     ?>
-    <img src="<?php echo G_IMAGES; ?>magie.gif" alt=""> <a href="<?php echo $chemin; ?>/vampirisme.php">Vampirisme</a><br>
+    <img src="<?php echo G_IMAGES; ?>magie.gif" alt=""> <a href="<?php echo $chemin; ?>/vampirisme.php">Vampirisme</a>
+    <br>
     <?php
 }
 
@@ -545,49 +628,48 @@ if ($is_vampire != 0)
 // 
 
 $totalXpGagne = 0;
-try {
-    $req_Vote= "SELECT compte_vote_cod, compte_vote_total_px_gagner, compte_vote_nbr, 
+try
+{
+    $req_Vote = "SELECT compte_vote_cod, compte_vote_total_px_gagner, compte_vote_nbr, 
                     compte_vote_compte_cod
-               FROM public.compte_vote  where compte_vote_compte_cod=".$compt_cod;
+               FROM public.compte_vote  where compte_vote_compte_cod=" . $compt_cod;
     $db->query($req_Vote);
 
-    if($db->next_record())
+    if ($db->next_record())
     {
         $totalXpGagne = $db->f('compte_vote_total_px_gagner');
     }
-} catch (Exception $e) {
+} catch (Exception $e)
+{
     $totalXpGagne = 0;
 }
 
 
-
-$req_NbrVote= "SELECT count(*)as compte_vote_nbr
-               FROM public.compte_vote_ip  where compte_vote_compte_cod=".$compt_cod."and compte_vote_pour_delain = true";
+$req_NbrVote = "SELECT count(*)as compte_vote_nbr
+               FROM public.compte_vote_ip  where compte_vote_compte_cod=" . $compt_cod . "and compte_vote_pour_delain = true";
 $db->query($req_NbrVote);
 $db->next_record();
 $nbrVote = $db->f('compte_vote_nbr');
 
-$req_NbrVote_mois= "SELECT count(*)as compte_vote_nbr_mois
-               FROM public.compte_vote_ip  where compte_vote_compte_cod=".$compt_cod."and compte_vote_pour_delain = true  and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
+$req_NbrVote_mois = "SELECT count(*)as compte_vote_nbr_mois
+               FROM public.compte_vote_ip  where compte_vote_compte_cod=" . $compt_cod . "and compte_vote_pour_delain = true  and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
 $db->query($req_NbrVote_mois);
 $db->next_record();
 $nbrVoteMois = $db->f('compte_vote_nbr_mois');
 
 
 $req_vote_a_valid = "SELECT count(*) as voteavalider
-  FROM public.compte_vote_ip where compte_vote_verifier=false and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm') and compte_vote_compte_cod=".$compt_cod;
+  FROM public.compte_vote_ip where compte_vote_verifier=false and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm') and compte_vote_compte_cod=" . $compt_cod;
 $db->query($req_vote_a_valid);
 $db->next_record();
-$VoteAValider= $db->f('voteavalider');
-
-
+$VoteAValider = $db->f('voteavalider');
 
 
 $req_vote_refu = "SELECT count(*) as refus
   FROM public.compte_vote_ip where compte_vote_pour_delain=false
             and compte_vote_verifier  = true
             and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')  
-            and compte_vote_compte_cod=".$compt_cod;
+            and compte_vote_compte_cod=" . $compt_cod;
 $db->query($req_vote_refu);
 $db->next_record();
 $votesRefusee = $db->f('refus');

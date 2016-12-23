@@ -816,6 +816,79 @@ class perso
         return $this->charge($compte->compt_der_perso_cod);
     }
 
+    function get_pa_dep()
+    {
+        $pdo = new bddpdo;
+        $req = 'select get_pa_dep(?) as pa';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['pa'];
+    }
+
+    function is_milice()
+    {
+        $pdo = new bddpdo;
+        $req = 'select is_milice(?) as ismilice';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['ismilice'];
+    }
+
+    function isIntangible()
+    {
+        return $this->perso_tangible != 'O';
+    }
+
+    function existe_competence($comp_cod)
+    {
+        $comp = new perso_competences();
+        return $comp->getByPersoComp($this->perso_cod,$comp);
+    }
+
+    function is_enchanteur()
+    {
+        $enchanteur1 = $this->existe_competence('88');
+        $enchanteur2 = $this->existe_competence('102');
+        $enchanteur3 = $this->existe_competence('103');
+        return ($enchanteur1 || $enchanteur2 || $enchanteur3);
+    }
+
+    function is_enlumineur()
+    {
+        $enchanteur1 = $this->existe_competence('91');
+        $enchanteur2 = $this->existe_competence('92');
+        $enchanteur3 = $this->existe_competence('93');
+        return ($enchanteur1 || $enchanteur2 || $enchanteur3);
+    }
+
+    function is_refuge()
+    {
+        $ppos = new perso_position();
+        $ppos->getByPerso($this->perso_cod);
+        $lpos = new lieu_position();
+        $lpos->getByPos($ppos->ppos_pos_cod);
+        $lieu = new lieu;
+        if($lieu->charge($lpos->lpos_lieu_cod))
+        {
+            if($lieu->lieu_refuge == 'O')
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function is_fam()
+    {
+        if ($this->perso_type_perso == 3)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
