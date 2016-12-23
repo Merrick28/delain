@@ -124,7 +124,7 @@ Fin Méthode MailMime*/
 		** passed to the smtp::connect() call.
 		***************************************/
 		$params['host'] = 'localhost';				// The smtp server host/ip
-		$params['port'] = 25;						// The smtp server port
+		//$params['port'] = 25;						// The smtp server port
 		$params['helo'] = 'jdr-delain.net';			// What to use when sending the helo command. Typically, your domain/hostname
 		$params['auth'] = false;						// Whether to use basic authentication or not
 		$params['user'] = 'testuser';				// Username for authentication
