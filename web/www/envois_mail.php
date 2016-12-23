@@ -81,13 +81,12 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
 
         $mail = new phpmailer();
         $mail->CharSet = 'UTF-8';
-        $mail->From = "noreply@jdr-delain.net";
+        $mail->setFrom('noreply@jdr-delain.net', 'Robot des souterrains');
+        $mail->IsHTML(false);
 //$mail->FromName = $header;
-        $mail->FromName = "Robot des souterrains";
-        $mail->AddAddress($adr_mail);
+        $mail->addAddress($adr_mail);
         $mail->Subject = 'Événements dans les souterrains de Delain' . $compl_sujet;
         $mail->Body = $texte_mail;
-        $mail->WordWrap = 50;
         if (!$mail->Send())
         {
             echo 'Anomalie sur l’adresse ' . $adr_mail;
@@ -96,6 +95,7 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
             //print_r($smtp->errors);
             $req = 'update envois_mail set menv_anomalie = 1 where menv_compt_cod = ' . $val;
             $db->query($req);
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
         }
         else
         {
