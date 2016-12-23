@@ -1,5 +1,5 @@
 <?php
-ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes');
+ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes:/usr/share/php');
 
 include "delain_header.php";
 require_once('Mail.php');
