@@ -97,6 +97,19 @@ class dieu_perso
         return true;
     }
 
+    function getByPersoCod($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select dper_cod from dieu_perso where dper_perso_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['dper_cod']);
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo

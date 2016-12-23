@@ -2,8 +2,11 @@
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
-$mymenu = new mymenu($perso_cod);
+$compte = new compte;
+$compte->charge($compt_cod);
 
+$perso = new perso;
+$perso->charge($perso_cod);
 
 $get_compte = '';
 //if ($db->is_admin_monstre($compt_cod) || $db->is_admin($compt_cod))
@@ -19,65 +22,87 @@ $tabtemp = file_get_contents(URL_API . '/game/menu.php?type_auth=programme' . $g
 // tout est maintenant dans $result_perso
 $result_perso = json_decode($tabtemp, true);
 
+// variables du perso
+$is_enchanteur = $perso->is_enchanteur();
+$is_enlumineur = $perso->is_enlumineur();
+$is_refuge     = $perso->is_refuge();
+$is_milice     = $perso->is_milice();
+$is_fam        = $perso->is_fam();
+$is_intangible = $perso->isIntangible();
 
-$is_enchanteur = $mymenu->is_enchanteur;
-$is_enlumineur = $mymenu->is_enlumineur;
-$is_refuge     = $mymenu->is_refuge;
-$is_milice     = $mymenu->is_milice;
-$is_fam        = $mymenu->is_fam;
-$is_intangible = $mymenu->is_intangible;
-$gerant        = $mymenu->gerant;
-$admin_dieu    = $mymenu->admin_dieu;
-$fidele_gerant = $mymenu->fidele_gerant;
-$pa            = $mymenu->pa;
-$nom_perso     = $mymenu->nom_perso;
+$gerant = 'N';
+$mg     = new magasin_gerant();
+if ($mg->getByPersoCod($perso->perso_cod))
+{
+    $gerant = 'O';
+}
+
+$admin_dieu         = $perso->is_admin_dieu();
+$fidele_gerant      = $perso->is_fidele_gerant();
+$pa                 = $perso->perso_pa;
+$nom_perso          = $perso->perso_nom;
+$admin_echoppe      = $perso->perso_admin_echoppe;
+$admin_echoppe_noir = $perso->perso_admin_echoppe_noir;
+$is_vampire         = $perso->perso_niveau_vampire;
+$potions            = $perso->is_potions();
+$religion           = $perso->is_religion();
+$transaction        = $perso->transactions();
+$px_actuel          = $perso->perso_px;
+$px_limite          = $perso->prochain_niveau;
+$barre_energie      = $perso->barre_energie();
+$is_fam_divin       = $perso->is_fam_divin();
+if ($is_fam_divin == 1)
+{
+    $barre_divine   = $perso->barre_divin();
+    $energie_divine = $perso->energie_divine();
+}
 
 
-$admin_echoppe      = $result_perso['admin_echoppe'];
-$admin_echoppe_noir = $result_perso['admin_echoppe_noir'];
-$is_vampire         = $result_perso['is_vampire'];
-$potions            = $result_perso['potions'];
-$religion           = $result_perso['religion'];
-$transaction        = $result_perso['transaction'];
+//HP
+$barre_hp = $perso->barre_hp();
 
 // Gestion des droits
-$req = "select * from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
+// par défaut, on met tout à NON
+$droit['modif_perso']    = 'N';
+$droit['modif_gmon']     = 'N';
+$droit['controle']       = 'N';
+$droit['acces_log']      = 'N';
+$droit['droits']         = 'N';
+$droit['carte']          = 'N';
+$droit['controle_admin'] = 'N';
+$droit['objet']          = 'N';
+$droit['enchantements']  = 'N';
+$droit['potions']        = 'N';
+$droit['news']           = 'N';
+$droit['animations']     = 'N';
+$droit['factions']       = 'N';
+$cd                      = new compt_droit();
+if ($cd->charge($compt_cod))
 {
-    $droit['modif_perso']    = 'N';
-    $droit['modif_gmon']     = 'N';
-    $droit['controle']       = 'N';
-    $droit['acces_log']      = 'N';
-    $droit['droits']         = 'N';
-    $droit['carte']          = 'N';
-    $droit['controle_admin'] = 'N';
-    $droit['objet']          = 'N';
-    $droit['enchantements']  = 'N';
-    $droit['potions']        = 'N';
-    $droit['news']           = 'N';
-    $droit['animations']     = 'N';
-    $droit['factions']       = 'N';
+    $droit['modif_perso']    = $cd->dcompt_modif_perso;
+    $droit['modif_gmon']     = $cd->dcompt_modif_gmon;
+    $droit['controle']       = $cd->dcompt_controle;
+    $droit['acces_log']      = $cd->dcompt_acces_log;
+    $droit['droits']         = $cd->dcompt_gere_droits;
+    $droit['carte']          = $cd->dcompt_modif_carte;
+    $droit['controle_admin'] = $cd->dcompt_controle_admin;
+    $droit['objet']          = $cd->dcompt_objet;
+    $droit['enchantements']  = $cd->dcompt_enchantements;
+    $droit['potions']        = $cd->dcompt_potions;
+    $droit['news']           = $cd->dcompt_news;
+    $droit['animations']     = $cd->dcompt_animations;
+    $droit['factions']       = $cd->dcompt_factions;
 }
-else
-{
-    $db->next_record();
-    $droit['modif_perso']    = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon']     = $db->f("dcompt_modif_gmon");
-    $droit['controle']       = $db->f("dcompt_controle");
-    $droit['acces_log']      = $db->f("dcompt_acces_log");
-    $droit['droits']         = $db->f("dcompt_gere_droits");
-    $droit['carte']          = $db->f("dcompt_modif_carte");
-    $droit['controle_admin'] = $db->f("dcompt_controle_admin");
-    $droit['objet']          = $db->f("dcompt_objet");
-    $droit['enchantements']  = $db->f("dcompt_enchantements");
-    $droit['potions']        = $db->f("dcompt_potions");
-    $droit['news']           = $db->f("dcompt_news");
-    $droit['animations']     = $db->f("dcompt_animations");
-    $droit['factions']       = $db->f("dcompt_factions");
-}
-$is_admin         = $db->is_admin($compt_cod);
-$is_admin_monstre = $db->is_admin_monstre($compt_cod);
+
+// variables du compte
+$is_admin         = $compte->is_admin();
+$is_admin_monstre = $compte->is_admin_monstre();
+
+/***********************************************/
+/* Normalement, ici, on a toutes les variables */
+/* Reste à passer à la mise en forme           */
+/***********************************************/
+
 
 // nom du perso
 $t->set_var('PERSO_NOM', $nom_perso);
@@ -93,26 +118,18 @@ else
 }
 $t->set_var('INTANGIBLE', $intangible);
 
-// niveau
-$req_niveau = "select perso_pv,perso_pv_max,limite_niveau_actuel($perso_cod) as limite,perso_energie from perso where perso_cod = $perso_cod";
-$db->query($req_niveau);
-$db->next_record();
-$px_actuel = $result_perso['perso_px'];
-$px_limite = $result_perso['prochain_niveau'];
-
-
 // pa
-$t->set_var('PERSO_PA', $result_perso['pa']);
+$t->set_var('PERSO_PA', $pa);
 
 // hp
-$t->set_var('PERSO_BARRE_VIE', $result_perso['barre_hp']);
-$t->set_var('PERSO_PV', $result_perso['pv']);
-$t->set_var('PERSO_PV_MAX', $result_perso['pv_max']);
+$t->set_var('PERSO_BARRE_VIE', $barre_hp);
+$t->set_var('PERSO_PV', $perso->perso_pv);
+$t->set_var('PERSO_PV_MAX', $perso->perso_pv_max);
 
 // Barre d'énergie enchanteur
 if ($is_enchanteur)
 {
-    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $result_perso['barre_energie'] . ".png\" title=\"" . $result_perso['perso_energie'] . "/100 énergie\" alt=\"" . $result_perso['perso_energie'] . "/100 énergie\">";
+    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_energie . ".png\" title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\">";
     $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
 }
 else
@@ -125,9 +142,9 @@ $t->set_var('ENCHANTEUR', $enchanteur);
 $t->set_var('FORGE', $forge);
 
 // Barre d'énergie pour familiers divins
-if ($result_perso['is_fam_divin'] == 1)
+if ($is_fam_divin == 1)
 {
-    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $result_perso['barre_divine'] . ".png\" title=\"Énergie divine : " . $result_perso['energie_divine'] . "\" alt=\"Énergie divine : " . $result_perso['energie_divine'] . "\">";
+    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_divine . ".png\" title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\">";
 }
 else
 {

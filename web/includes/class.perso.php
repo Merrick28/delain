@@ -849,18 +849,26 @@ class perso
 
     function is_enchanteur()
     {
-        $enchanteur1 = $this->existe_competence('88');
-        $enchanteur2 = $this->existe_competence('102');
-        $enchanteur3 = $this->existe_competence('103');
-        return ($enchanteur1 || $enchanteur2 || $enchanteur3);
+        $test1 = $this->existe_competence('88');
+        $test2 = $this->existe_competence('102');
+        $test3 = $this->existe_competence('103');
+        return ($test1 || $test2 || $test3);
     }
 
     function is_enlumineur()
     {
-        $enchanteur1 = $this->existe_competence('91');
-        $enchanteur2 = $this->existe_competence('92');
-        $enchanteur3 = $this->existe_competence('93');
-        return ($enchanteur1 || $enchanteur2 || $enchanteur3);
+        $test1 = $this->existe_competence('91');
+        $test2 = $this->existe_competence('92');
+        $test3 = $this->existe_competence('93');
+        return ($test1 || $test2 || $test3);
+    }
+
+    function is_potions()
+    {
+        $test1 = $this->existe_competence('97');
+        $test2 = $this->existe_competence('100');
+        $test3 = $this->existe_competence('101');
+        return ($test1 || $test2 || $test3);
     }
 
     function is_refuge()
@@ -903,6 +911,20 @@ class perso
         return false;
     }
 
+    function is_religion()
+    {
+        $dp = new dieu_perso();
+        $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
+        foreach($tab as $ddp)
+        {
+            if($ddp->dper_niveau >= 2)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function is_fidele_gerant()
     {
         $tf = new temple_fidele();
@@ -910,6 +932,157 @@ class perso
         if(count($tab) > 0)
         {
             return true;
+        }
+        return false;
+    }
+
+    function transactions()
+    {
+        $tran = new transaction();
+        $tabv = $tran->getBy_tran_vendeur($this->perso_cod);
+        $taba = $tran->getBy_tran_acheteur($this->perso_cod);
+        return (count(taba)+count(tabv));
+    }
+
+    function barre_hp()
+    {
+        if ($this->perso_pv_max == 0)
+        {
+            $hp = 0;
+        }
+        else
+        {
+            $hp = $this->perso_pv / $this->perso_pv_max;
+        }
+        $barre_hp = '0';
+        if ($hp >= 0.1)
+        {
+            $barre_hp = 10;
+        }
+        if ($hp >= 0.2)
+        {
+            $barre_hp = 20;
+        }
+        if ($hp >= 0.3)
+        {
+            $barre_hp = 30;
+        }
+        if ($hp >= 0.4)
+        {
+            $barre_hp = 40;
+        }
+        if ($hp >= 0.5)
+        {
+            $barre_hp = 50;
+        }
+        if ($hp >= 0.6)
+        {
+            $barre_hp = 60;
+        }
+        if ($hp >= 0.7)
+        {
+            $barre_hp = 70;
+        }
+        if ($hp >= 0.8)
+        {
+            $barre_hp = 80;
+        }
+        if ($hp >= 0.9)
+        {
+            $barre_hp = 90;
+        }
+        if ($hp == 1)
+        {
+            $barre_hp = 100;
+        }
+        return $barre_hp;
+    }
+
+    function barre_energie()
+    {
+        if($this->is_enchanteur())
+        {
+            $energie = $this->perso_energie;
+            $hp = $energie / 100;
+            $barre_energie = '0';
+            if ($hp >= 0.1)
+            {
+                $barre_energie = 10;
+            }
+            if ($hp >= 0.2)
+            {
+                $barre_energie = 20;
+            }
+            if ($hp >= 0.3)
+            {
+                $barre_energie = 30;
+            }
+            if ($hp >= 0.4)
+            {
+                $barre_energie = 40;
+            }
+            if ($hp >= 0.5)
+            {
+                $barre_energie = 50;
+            }
+            if ($hp >= 0.6)
+            {
+                $barre_energie = 60;
+            }
+            if ($hp >= 0.7)
+            {
+                $barre_energie = 70;
+            }
+            if ($hp >= 0.8)
+            {
+                $barre_energie = 80;
+            }
+            if ($hp >= 0.9)
+            {
+                $barre_energie = 90;
+            }
+            if ($hp == 1)
+            {
+                $barre_energie = 100;
+            }
+            return $barre_energie;
+        }
+        return false;
+    }
+
+    function is_fam_divin()
+    {
+        $is_fam_divin = 0;
+        if ($this->perso_gmon_cod == 441)
+        {
+            $is_fam_divin = 1;
+        }
+        return $is_fam_divin;
+    }
+
+    function barre_divin()
+    {
+        if($this->is_fam_divin() == 1)
+        {
+            $energie_divine = $this->energie_divine();
+            $barre_divine = floor(($energie_divine / 200) * 10) * 10;
+            if ($barre_divine >= 100)
+            {
+                $barre_divine = 100;
+            }
+            return $barre_divine;
+        }
+        return false;
+    }
+
+    function energie_divine()
+    {
+        if($this->is_fam_divin() == 1)
+        {
+            $dp = new dieu_perso;
+            $dp->getByPersoCod($this->perso_cod);
+            $energie_divine = $dp->dper_points;
+            return $energie_divine;
         }
         return false;
     }
