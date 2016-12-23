@@ -8,9 +8,9 @@ if (isset($orig))
     }
 }
 
-if (isset($perso))
+if (isset($_REQUEST['perso']))
 {
-    $change_perso = $perso;
+    $change_perso = $_REQUEST['perso'];
 }
 
 include_once "ident.php";
@@ -50,12 +50,12 @@ else
             echo '<div class="bordiv">';
         }
         $num_resultat = 0;
-        if (isset($perso) && $perso != '')
+        if (isset($_REQUEST['perso']) && $_REQUEST['perso'] != '')
         {
             $db           = new base_delain;
             $requete      = "select perso_cod, perso_nom, coalesce(perso_mortel, 'N') as perso_mortel, 
 			perso_dlt, to_char(now(), 'DD/MM/YYYY hh24:mi:ss') as maintenant
-		from perso where perso_cod = $perso ";
+		from perso where perso_cod = " . $_REQUEST['perso'];
             $db->query($requete);
             $num_resultat = $db->nf();
         }
@@ -294,12 +294,12 @@ else
                     echo "<input type=\"hidden\" name=\"changed_frameless\" id='hidframeless' value=\"0\" />";
                     /*
                       echo "<input type=\"checkbox\" name=\"frameless\" id='frameless' value=\"O\" $checked
-                     
+
 				onchange='document.getElementById(\"hidframeless\").value=\"1\";
 					if (this.checked) document.forms[\"ok\"].action=\"jeu_test/index.php\";
 					else document.forms[\"ok\"].action=\"jouer.php\";'/>
 				<label for='frameless'>Utiliser la version frameless par défaut</label></center>";
-                     * 
+                     *
                      */
                 }
                 else
