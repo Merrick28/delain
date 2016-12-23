@@ -1087,6 +1087,194 @@ class perso
         return false;
     }
 
+    function px_limite()
+    {
+        $pdo = new bddpdo;
+        $req = "select limite_niveau(?) as limite_niveau";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['limite_niveau'];
+    }
+
+    function degats_perso()
+    {
+        $pdo = new bddpdo;
+        $req = "select degats_perso(?) as degats_perso";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['degats_perso'];
+    }
+
+    function armure()
+    {
+        $pdo = new bddpdo;
+        $req = "select f_armure_perso(?) as armure";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['armure'];
+    }
+
+    function is_perso_quete()
+    {
+        $pdo = new bddpo;
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+
+        $req = 'select count(perso_cod) as nombre from perso,perso_position
+			where ppos_pos_cod = ?
+				and perso_quete in (\'quete_ratier.php\',\'enchanteur.php\',\'quete_alchimiste.php\',\'quete_chasseur.php\',\'quete_dispensaire.php\',\'quete_dame_cygne.php\',\'quete_forgeron.php\',\'quete_groquik.php\')
+				and perso_cod = ppos_perso_cod';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($ppos->ppos_pos_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['nombre'] != 0;
+    }
+
+    function is_lieu()
+    {
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+        $lpos = new lieu_position();
+        if(!$lpos->getByPos($ppos->ppos_pos_cod))
+        {
+            return false;
+        }
+        return true;
+    }
+
+    function get_lieu()
+    {
+        if($this->is_lieu())
+        {
+            $ppos = new perso_position;
+            $ppos->getByPerso($this->perso_cod);
+            $lpos = new lieu_position();
+            $lpos->getByPos($ppos->ppos_pos_cod);
+            $lieu = new lieu;
+            $lieu->charge($lpos->lpos_lieu_cod);
+            $lt = new lieu_type();
+            $lt->charge($lieu->lieu_tlieu_cod);
+            $detail['lieu'] = $lieu;
+            $detail['lieu_type'] = $lt;
+            return $detail;
+        }
+        return false;
+    }
+
+    function barre_xp()
+    {
+        $barre_xp = '0';
+        $niveau_xp = ($this->perso_px - $this->px_limite());
+        if ($niveau_xp < 0)
+        {
+            $barre_xp = 'negative';
+        }
+        if ($niveau_xp >= 0.1)
+        {
+            $barre_xp = '10';
+        }
+        if ($niveau_xp >= 0.2)
+        {
+            $barre_xp = '20';
+        }
+        if ($niveau_xp >= 0.3)
+        {
+            $barre_xp = '30';
+        }
+        if ($niveau_xp >= 0.4)
+        {
+            $barre_xp = '40';
+        }
+        if ($niveau_xp >= 0.5)
+        {
+            $barre_xp = '50';
+        }
+        if ($niveau_xp >= 0.6)
+        {
+            $barre_xp = '60';
+        }
+        if ($niveau_xp >= 0.7)
+        {
+            $barre_xp = '70';
+        }
+        if ($niveau_xp >= 0.8)
+        {
+            $barre_xp = '80';
+        }
+        if ($niveau_xp >= 0.9)
+        {
+            $barre_xp = '90';
+        }
+        if ($niveau_xp >= 1)
+        {
+            $barre_xp = '100';
+        }
+        return $barre_xp;
+    }
+
+    function is_locked()
+    {
+        $lc = new lock_combat();
+        $tab = $lc->getBy_lock_cible($this->perso_cod);
+        if(count($tab) != 0)
+        {
+            return true;
+        }
+        $tab = $lc->getBy_lock_attaquant($this->perso_cod);
+        if(count($tab) != 0)
+        {
+            return true;
+        }
+    }
+
+    function nb_obj_case()
+    {
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+        $opos = new objet_position();
+        $tab = $opos->getBy_posbj_pos_cod($ppos->ppos_pos_cod);
+        return count($tab);
+    }
+
+    function nb_or_case()
+    {
+        $ppos = new perso_position;
+        $ppos->getByPerso($this->perso_cod);
+        $por = new or_position();
+        $tab = $por->getBy_por_pos_cod($ppos->ppos_pos_cod);
+        return count($tab);
+    }
+
+    function sort_lvl5()
+    {
+        $pdo = new bddpo;
+        $req = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts 
+            where perso_cod = pnbst_perso_cod 
+            and pnbst_sort_cod = sort_cod 
+            and sort_niveau >= 5 
+            and pnbst_nombre > 0 
+            and perso_voie_magique = 0 
+            and perso_cod = ?';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['nv5'];
+    }
+
+    /**
+     * Retourne la liste des sorts mémorisés
+     * @return [perso_sorts]
+     */
+    function sort_memo()
+    {
+        $ps = new perso_sorts();
+        $tab = $ps->getBy_psort_perso_cod($this->perso_cod);
+        return $tab;
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

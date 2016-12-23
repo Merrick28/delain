@@ -2,6 +2,8 @@
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
+$param = new parametres();
+
 $compte = new compte;
 $compte->charge($compt_cod);
 
@@ -29,6 +31,17 @@ $is_refuge     = $perso->is_refuge();
 $is_milice     = $perso->is_milice();
 $is_fam        = $perso->is_fam();
 $is_intangible = $perso->isIntangible();
+if ($is_intangible)
+{
+    $pa_ramasse = $param->getparm(42);
+}
+else
+{
+    $pa_ramasse = $param->getparm(41);
+}
+$degats_perso    = $perso->degats_perso();
+$det_deg         = explode(";", $degats_perso);
+$prochain_niveau = $perso->px_limite();
 
 $gerant = 'N';
 $mg     = new magasin_gerant();
@@ -51,6 +64,7 @@ $px_actuel          = $perso->perso_px;
 $px_limite          = $perso->prochain_niveau;
 $barre_energie      = $perso->barre_energie();
 $is_fam_divin       = $perso->is_fam_divin();
+$pa_dep             = $perso->get_pa_dep();
 if ($is_fam_divin == 1)
 {
     $barre_divine   = $perso->barre_divin();
@@ -153,22 +167,29 @@ else
 $t->set_var('FAM_DIVIN', $fam_divin);
 
 // PX
-$t->set_var('PERSO_BARRE_XP', $result_perso['barre_xp']);
-$t->set_var('PERSO_PX', $result_perso['perso_px']);
-$t->set_var('PERSO_PROCHAIN_NIVEAU', $result_perso['prochain_niveau']);
+$t->set_var('PERSO_BARRE_XP', $perso->barre_xp());
+$t->set_var('PERSO_PX', $perso->perso_px);
+$t->set_var('PERSO_PROCHAIN_NIVEAU', $prochain_niveau);
 
 // affichage dégats et armure
-$t->set_var('PERSO_DEGATS', $result_perso['degats']);
-$t->set_var('PERSO_ARMURE', $result_perso['armure']);
+$t->set_var('PERSO_DEGATS', $det_deg[0] . '-' . $det_deg[1]);
+$t->set_var('PERSO_ARMURE', $perso->armure());
 
 // position
-$t->set_var('PERSO_POS_X', $result_perso['posx']);
-$t->set_var('PERSO_POS_Y', $result_perso['posy']);
-$t->set_var('PERSO_ETAGE', $result_perso['etage']);
+$ppos = new perso_position();
+$ppos->getByPerso($perso->perso_cod);
+$pos = new positions();
+$pos->charge($ppos->ppos_pos_cod);
+$etage = new etage();
+$etage->charge($pos->pos_etage);
+
+$t->set_var('PERSO_POS_X', $pos->pos_x);
+$t->set_var('PERSO_POS_Y', $pos->pos_y);
+$t->set_var('PERSO_ETAGE', $etage->etage_libelle);
 
 // passage niveau
 
-if ($result_perso['perso_px'] >= $result_perso['prochain_niveau'])
+if ($perso->perso_px >= $prochain_niveau)
 {
     $passage_niveau = '<a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a><br><hr />';
 }
@@ -179,7 +200,7 @@ else
 $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 
 // Quête avec perso
-if ($result_perso['quete'] == 1)
+if ($perso->is_perso_quete())
 {
     $perso_quete = "<a href=\"$chemin/quete_perso.php\"><b>Quête</b></a><hr />";
 }
@@ -191,20 +212,22 @@ $t->set_var('PERSO_QUETE', $perso_quete);
 
 // lieux
 $perso_lieu = "";
-if ($result_perso['lieu'] == 1)
+if ($perso->is_lieu())
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['url'] != null && !empty($tab_lieu['url']))
+    $tab_lieu = $perso->get_lieu();
+    if (!empty($tab_lieu['lieu']['url']))
     {
-        $nom_lieu   = $result_perso['nom_lieu'];
-        $libelle    = $result_perso['desc_lieu'];
-        $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $result_perso['nom_lieu'] . "</b> (" . $result_perso['desc_lieu'] . ")</a><hr />";
+        $nom_lieu   = $tab_lieu['lieu']['nom_lieu'];
+        $libelle    = $tab_lieu['lieu']['desc_lieu'];
+        $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $tab_lieu['lieu']['nom_lieu'] . "</b> (" . $tab_lieu['lieu']['desc_lieu'] . ")</a><hr />";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
 
 //messagerie
-$nb_msg = $result_perso['nb_mess'];
+$mdest  = new messages_dest();
+$tab    = $mdest->getByPersoNonLu($perso->perso_cod);
+$nb_msg = count($tab);
 if ($nb_msg != 0)
 {
     $perso_messagerie = "<b>Messagerie (" . $nb_msg . ")</b>";
@@ -219,25 +242,24 @@ $t->set_var('PERSO_MESSAGERIE', $perso_messagerie);
 $texte_dep = '';
 if (!$is_fam)
 {
-    $is_locked = $db->is_locked($perso_cod);
+    $is_locked = $perso->is_locked();
     if ((!$is_locked) && ($droit['controle'] != 'O'))
     {
         $texte_dep .= "<img src=\"" . G_IMAGES . "deplacement.gif\" alt=\"\"> ";
-        //$pa_n = $db->get_pa_dep($perso_cod);
         $texte_dep .= "<a href=\"$chemin/deplacement.php\">";
-        $texte_dep .= "Déplacement (" . $result_perso['pa_dep'] . " PA)";
+        $texte_dep .= "Déplacement (" . $pa_dep . " PA)";
         $texte_dep .= "</a>";
         $texte_dep .= "<br>";
     }
     if (($is_locked) && ($droit['controle'] != 'O'))
     {
         $texte_dep .= "<img src=\"" . G_IMAGES . "fuite.gif\" alt=\"\"> ";
-        if ($result_perso['pa'] >= $result_perso['pa_dep'])
+        if ($perso->perso_pa >= $pa_dep)
         {
             $texte_dep .= "<a href=\"$chemin/deplacement.php\">";
         }
-        $texte_dep .= "Fuite (" . $result_perso['pa_dep'] . " PA)";
-        if ($result_perso['pa'] >= $result_perso['pa_dep'])
+        $texte_dep .= "Fuite (" . $pa_dep . " PA)";
+        if ($perso->perso_pa >= $pa_dep)
         {
             $texte_dep .= "</a>";
         }
@@ -248,16 +270,15 @@ $t->set_var('TEXTE_DEP', $texte_dep);
 
 // ramasser
 $ramasser = '';
-if (($db->nb_obj_sur_case($perso_cod) != 0) || ($db->nb_or_sur_case($perso_cod)))
+if (($perso->nb_obj_case() != 0) || ($perso->nb_or_case() != 0))
 {
-    $pa_ramasse = $result_perso['pa_ramasse'];
     $ramasser   = '<img src="' . G_IMAGES . 'ramasser.gif" alt=""> ';
-    if ($result_perso['pa'] >= $pa_ramasse)
+    if ($perso->perso_pa >= $pa_ramasse)
     {
         $ramasser .= "<a href=\"$chemin/ramasser.php\">";
     }
     $ramasser .= "Ramasser (" . $pa_ramasse . "PA)";
-    if ($result_perso['pa'] >= $pa_ramasse)
+    if ($perso->perso_pa >= $pa_ramasse)
     {
         $ramasser .= "</a>";
     }
@@ -460,14 +481,10 @@ else
 }
 
 // voie magique
-$req = 'select count (1) as nv5 from perso, perso_nb_sorts_total, sorts where perso_cod = pnbst_perso_cod and pnbst_sort_cod = sort_cod and sort_niveau >= 5 and pnbst_nombre > 0 and perso_voie_magique = 0 and perso_cod = ' . $perso_cod;
-$db->query($req);
-$db->next_record();
-$nv5 = $db->f('nv5');
+$nv5 = $perso->sort_lvl5();
+
 $req = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
-$db->query($req);
-$db->next_record();
-$mem = $db->f('mem');
+$mem = $perso->sort_memo();
 if ($nv5 > 0 && $mem > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
