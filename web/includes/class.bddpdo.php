@@ -293,6 +293,11 @@ class bddpdo
     {
         if (empty($stmt))
         {
+            echo "<hr><h1>Erreur sql</h1></hr><pre>";
+            print_r($stmt->errorInfo());
+            print_r($stmt);
+            print_r($stmt->debugDumpParams());
+            echo "</pre><hr>";
             return $this->pdo->errorInfo();
         }
         else
