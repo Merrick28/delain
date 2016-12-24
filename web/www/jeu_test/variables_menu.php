@@ -181,7 +181,7 @@ $ppos->getByPerso($perso->perso_cod);
 $pos = new positions();
 $pos->charge($ppos->ppos_pos_cod);
 $etage = new etage();
-$etage->charge($pos->pos_etage);
+$etage->getByNumero($pos->pos_etage);
 
 $t->set_var('PERSO_POS_X', $pos->pos_x);
 $t->set_var('PERSO_POS_Y', $pos->pos_y);
@@ -215,11 +215,12 @@ $perso_lieu = "";
 if ($perso->is_lieu())
 {
     $tab_lieu = $perso->get_lieu();
-    if (!empty($tab_lieu->lieu->url))
+    $temp = $tab_lieu['lieu'];
+    if (!empty($tab_lieu['lieu']->lieu_url))
     {
-        $nom_lieu   = $tab_lieu['lieu']->nom_lieu;
-        $libelle    = $tab_lieu['lieu']->desc_lieu;
-        $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $tab_lieu['lieu']['nom_lieu'] . "</b> (" . $tab_lieu['lieu']['desc_lieu'] . ")</a><hr />";
+        $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
+        $libelle    = $tab_lieu['lieu']->lieu_description;
+        $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a><hr />";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
