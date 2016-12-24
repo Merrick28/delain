@@ -18,11 +18,6 @@ $get_compte = "&compt_cod=$compt_cod";
 $chemin = $t->root;
 $t->set_var('URL_RELATIVE', $chemin . '/');
 
-// on va récupérer le tableau json d'une api externe
-echo "<!-- " . URL_API . 'game/menu.php?type_auth=programme' . $get_compte . '&ext_perso_cod=' . $perso_cod . '&typesort=json&cle_connect=' . apc_fetch('cle_connec') . ' -->';
-$tabtemp = file_get_contents(URL_API . '/game/menu.php?type_auth=programme' . $get_compte . '&ext_perso_cod=' . $perso_cod . '&typesort=json&cle_connect=' . apc_fetch('cle_connec'));
-// tout est maintenant dans $result_perso
-$result_perso = json_decode($tabtemp, true);
 
 // variables du perso
 $is_enchanteur = $perso->is_enchanteur();
