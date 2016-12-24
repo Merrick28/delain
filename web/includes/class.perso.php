@@ -901,6 +901,10 @@ class perso
     {
         $dp = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
+        if($tab === false)
+        {
+            return $false;
+        }
         foreach($tab as $ddp)
         {
             if($ddp->dper_niveau > 3)
@@ -915,6 +919,10 @@ class perso
     {
         $dp = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
+        if($tab === false)
+        {
+            return false;
+        }
         foreach($tab as $ddp)
         {
             if($ddp->dper_niveau >= 2)
@@ -929,6 +937,10 @@ class perso
     {
         $tf = new temple_fidele();
         $tab = $tf->getBy_tfid_perso_cod($this->perso_cod);
+        if($tab === false)
+        {
+            return false;
+        }
         if(count($tab) > 0)
         {
             return true;

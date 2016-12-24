@@ -519,7 +519,7 @@ else
 $t->set_var('POTION', $potion);
 
 //religion
-if ($religion == 1 || $fidele_gerant == 'O' || $admin_dieu == 'O')
+if ($religion || $fidele_gerant || $admin_dieu )
 {
     $religion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/religion.php">Religion</a><br>';
 }
@@ -555,10 +555,11 @@ if ($pcomp->getByPersoComp($perso->perso_cod, 86))
 
 $pc  = new perso_commandement();
 $tab = $pc->getBy_perso_subalterne_cod($perso->perso_cod);
-if (count($tab) > 0)
+if($tab !== false)
 {
     $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
 }
+
 $t->set_var('ENSEIGNEMENT', $enseignement);
 $t->set_var('CREUSER', $creuser);
 $t->set_var('VOL', $vol);
