@@ -844,7 +844,7 @@ class perso
     function existe_competence($comp_cod)
     {
         $comp = new perso_competences();
-        return $comp->getByPersoComp($this->perso_cod,$comp);
+        return $comp->getByPersoComp($this->perso_cod,$comp_cod);
     }
 
     function is_enchanteur()
@@ -939,9 +939,20 @@ class perso
     function transactions()
     {
         $tran = new transaction();
+        $total = 0;
         $tabv = $tran->getBy_tran_vendeur($this->perso_cod);
+        if($tabv !== false)
+        {
+            $total += count($tabv);
+        }
+
+
         $taba = $tran->getBy_tran_acheteur($this->perso_cod);
-        return (count(taba)+count(tabv));
+        if($taba !== false)
+        {
+            $total += count($taba);
+        }
+        return $total;
     }
 
     function barre_hp()
@@ -1097,6 +1108,16 @@ class perso
         return $result['limite_niveau'];
     }
 
+    function px_limite_actuel()
+    {
+        $pdo = new bddpdo;
+        $req = "select limite_niveau_actuel(?) as limite_niveau";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['limite_niveau'];
+    }
+
     function degats_perso()
     {
         $pdo = new bddpdo;
@@ -1119,7 +1140,7 @@ class perso
 
     function is_perso_quete()
     {
-        $pdo = new bddpo;
+        $pdo = new bddpdo;
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
 
@@ -1167,50 +1188,22 @@ class perso
     function barre_xp()
     {
         $barre_xp = '0';
-        $niveau_xp = ($this->perso_px - $this->px_limite());
-        if ($niveau_xp < 0)
+        $limite = $this->px_limite();
+        $limite_actu = $this->px_limite_actuel();
+
+        if (($this->perso_px - $limite_actu) < 0)
         {
-            $barre_xp = 'negative';
+            return 'negative';
         }
-        if ($niveau_xp >= 0.1)
+        $niveau_xp = ($this->perso_px - $limite_actu);
+        $div_xp = ($limite - $limite_actu);
+
+        $niveau_xp = (floor(($niveau_xp / $div_xp)*10))/10;
+
+        $barre_xp = round($niveau_xp,1)*100;
+        if ($barre_xp >= 100)
         {
-            $barre_xp = '10';
-        }
-        if ($niveau_xp >= 0.2)
-        {
-            $barre_xp = '20';
-        }
-        if ($niveau_xp >= 0.3)
-        {
-            $barre_xp = '30';
-        }
-        if ($niveau_xp >= 0.4)
-        {
-            $barre_xp = '40';
-        }
-        if ($niveau_xp >= 0.5)
-        {
-            $barre_xp = '50';
-        }
-        if ($niveau_xp >= 0.6)
-        {
-            $barre_xp = '60';
-        }
-        if ($niveau_xp >= 0.7)
-        {
-            $barre_xp = '70';
-        }
-        if ($niveau_xp >= 0.8)
-        {
-            $barre_xp = '80';
-        }
-        if ($niveau_xp >= 0.9)
-        {
-            $barre_xp = '90';
-        }
-        if ($niveau_xp >= 1)
-        {
-            $barre_xp = '100';
+            $barre_xp = 100;
         }
         return $barre_xp;
     }
@@ -1235,7 +1228,7 @@ class perso
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
         $opos = new objet_position();
-        $tab = $opos->getBy_posbj_pos_cod($ppos->ppos_pos_cod);
+        $tab = $opos->getBy_pobj_pos_cod($ppos->ppos_pos_cod);
         return count($tab);
     }
 
@@ -1250,7 +1243,7 @@ class perso
 
     function sort_lvl5()
     {
-        $pdo = new bddpo;
+        $pdo = new bddpdo;
         $req = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts 
             where perso_cod = pnbst_perso_cod 
             and pnbst_sort_cod = sort_cod 
@@ -1302,7 +1295,7 @@ class perso
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 

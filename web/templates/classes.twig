@@ -146,7 +146,7 @@ class {{TABLE}}
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name, 6) . ' in table {{  TABLE }}');
                 }
             break;
            

@@ -140,7 +140,7 @@ class objet_position
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 

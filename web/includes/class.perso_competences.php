@@ -93,7 +93,7 @@ class perso_competences
     function getByPersoComp($perso, $comp)
     {
         $pdo = new bddpdo;
-        $req = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_comp_cod = ?";
+        $req = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_pcomp_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso,$comp), $stmt);
         if (!$result = $stmt->fetch())
@@ -152,7 +152,7 @@ class perso_competences
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 

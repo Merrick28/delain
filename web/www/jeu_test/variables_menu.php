@@ -60,7 +60,7 @@ $is_vampire         = $perso->perso_niveau_vampire;
 $potions            = $perso->is_potions();
 $religion           = $perso->is_religion();
 $transaction        = $perso->transactions();
-$px_actuel          = $perso->perso_px;
+$px_actuel          = round($perso->perso_px);
 $px_limite          = $perso->prochain_niveau;
 $barre_energie      = $perso->barre_energie();
 $is_fam_divin       = $perso->is_fam_divin();
@@ -168,7 +168,7 @@ $t->set_var('FAM_DIVIN', $fam_divin);
 
 // PX
 $t->set_var('PERSO_BARRE_XP', $perso->barre_xp());
-$t->set_var('PERSO_PX', $perso->perso_px);
+$t->set_var('PERSO_PX', $px_actuel);
 $t->set_var('PERSO_PROCHAIN_NIVEAU', $prochain_niveau);
 
 // affichage dégats et armure
@@ -189,7 +189,7 @@ $t->set_var('PERSO_ETAGE', $etage->etage_libelle);
 
 // passage niveau
 
-if ($perso->perso_px >= $prochain_niveau)
+if ($px_actuel >= $prochain_niveau)
 {
     $passage_niveau = '<a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a><br><hr />';
 }
@@ -215,10 +215,10 @@ $perso_lieu = "";
 if ($perso->is_lieu())
 {
     $tab_lieu = $perso->get_lieu();
-    if (!empty($tab_lieu['lieu']['url']))
+    if (!empty($tab_lieu->lieu->url))
     {
-        $nom_lieu   = $tab_lieu['lieu']['nom_lieu'];
-        $libelle    = $tab_lieu['lieu']['desc_lieu'];
+        $nom_lieu   = $tab_lieu['lieu']->nom_lieu;
+        $libelle    = $tab_lieu['lieu']->desc_lieu;
         $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $tab_lieu['lieu']['nom_lieu'] . "</b> (" . $tab_lieu['lieu']['desc_lieu'] . ")</a><hr />";
     }
 }

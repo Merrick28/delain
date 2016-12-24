@@ -124,7 +124,7 @@ class temple_fidele
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 

@@ -222,7 +222,7 @@ class compte_vote_ip
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 

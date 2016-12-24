@@ -145,7 +145,7 @@ class perso_nb_sorts_total
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 
