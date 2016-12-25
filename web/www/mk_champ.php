@@ -233,7 +233,7 @@ if ($db->nf() != 0)
 include "jeu_test/tab_bas.php";
 
 // Nettoyage des champions de coterie
-$lesFichiers = array();
+/**$lesFichiers = array();
 $fichiersExclus = array();
 $fichiersExclus[] = '.';
 $fichiersExclus[] = '..';
@@ -258,7 +258,7 @@ foreach ($lesFichiers as $key => $unFichier)
 		$rep = opendir('.');
 		while (false !== ($fichier = readdir($rep)))
 			echo "<!-- " . $rep . '/' . $fichier . " -->";
-
+**/
 ?>
 </body>
 </html>
