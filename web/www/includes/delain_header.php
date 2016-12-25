@@ -123,23 +123,23 @@ else
 // modif par SD : on tente les variables par apc ?
 if (!apc_exists('g_url'))
 {
-    apc_store('g_url', 'www.jdr-delain.net/');
+    apc_store('g_url', G_URL);
 }
 if (!apc_exists('g_che'))
 {
-    apc_store('g_che', '/home/delain/public_html/www/');
+    apc_store('g_che', G_CHE);
 }
 if (!apc_exists('g_images'))
 {
-    apc_store('g_images', 'http://images.jdr-delain.net/');
+    apc_store('g_images', G_IMAGES);
 }
 if (!apc_exists('nom_cook'))
 {
-    apc_store('nom_cook', 'cook_pass');
+    apc_store('nom_cook', NOM_COOK);
 }
 if (!apc_exists('img_path'))
 {
-    apc_store('img_path', 'http://images.jdr-delain.net/');
+    apc_store('img_path', IMG_PATH);
 }
 // clé de connection
 $init             = rand(1, 10000);
