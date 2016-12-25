@@ -125,7 +125,7 @@ class perso
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
+     * @global bddpdo $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      */
     function stocke($new = false)
@@ -903,7 +903,7 @@ class perso
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
         if($tab === false)
         {
-            return $false;
+            return false;
         }
         foreach($tab as $ddp)
         {
@@ -941,11 +941,7 @@ class perso
         {
             return false;
         }
-        if(count($tab) > 0)
-        {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     function transactions()
