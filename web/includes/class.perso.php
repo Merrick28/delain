@@ -1224,12 +1224,12 @@ class perso
     {
         $lc = new lock_combat();
         $tab = $lc->getBy_lock_cible($this->perso_cod);
-        if(count($tab) != 0)
+        if($tab !== false)
         {
             return true;
         }
         $tab = $lc->getBy_lock_attaquant($this->perso_cod);
-        if(count($tab) != 0)
+        if($tab !== false)
         {
             return true;
         }
