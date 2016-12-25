@@ -1,7 +1,8 @@
-<?php 
-require_once '/usr/local/phplib-7.4a/php/prepend.php';
-#require '/home/delain/public_html/www/includes/delain_header.php';
-require '/home/delain/public_html/www/includes/classes.php';
+<?php
+ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes');
+
+include "delain_header.php";
+include "classes.php";
 $db = new base_delain;
 $db2 = new base_delain;
 $db3 = new base_delain;
