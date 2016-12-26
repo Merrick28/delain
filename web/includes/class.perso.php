@@ -1192,6 +1192,21 @@ class perso
         }
         return false;
     }
+    function missions()
+    {
+        $pdo = new bddpdo;
+        $req = "select missions_verifie(?) as missions";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['missions'];
+    }
+
+    function getEvtNonLu()
+    {
+        $levt = new ligne_evt();
+        return $levt->getByPersoNonLu($this->perso_cod);
+    }
 
     function barre_xp()
     {

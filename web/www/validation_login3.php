@@ -181,18 +181,17 @@ if ($autorise == 1)
         echo "<br>Il vous reste " . $perso->perso_pa . " points d’action.";
 
         // on vérifie si une mission n’est pas validée
-        // TODO : mettre la requête de missions dans la classe perso
-        $req_missions = "select missions_verifie($numero_perso) as missions";
-        $db->query($req_missions);
-        $db->next_record();
-        $missions = $db->f('missions');
+        $missions = $perso->missions();
         if ($missions !== '')
         {
             echo "<hr /><b>Évaluation de vos missions en cours</b><br />$missions<hr />";
         }
 
+
+
         // recherche des evts non lus
         // TODO: mettre les evts en crud
+        $liste_evt = $perso->getEvtNonLu();
         $req_evt
             = "select to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as date_evt,tevt_libelle,levt_texte,tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible 
 				from ligne_evt,type_evt 
@@ -202,57 +201,41 @@ if ($autorise == 1)
 				order by levt_cod desc";
         $db->query($req_evt);
         $nb_evt = $db->nf();
-        if ($nb_evt != 0)
+        // TODO : mettre des evts bidon pour tester
+        if (count($liste_evt) != 0)
         {
             echo "<p style='margin-top:10px;'><b>Vos derniers événements importants :</b></p>";
             echo "<p>";
             $db_evt = new base_delain;
-            while ($db->next_record())
+            foreach($liste_evt as $detail_evt)
             {
-                $num2        = $db->f("levt_perso_cod1");
+                $num2        = $detail_evt->levt_perso_cod1;
                 $req_nom_evt = "select perso1.perso_nom as nom1";
-                if ($db->f("levt_attaquant") != '')
+                if (!empty($liste_evt->levt_attaquant != ''))
                 {
-                    $req_nom_evt = $req_nom_evt . ",attaquant.perso_nom as nom2";
+                    $perso_secondaire = new perso;
+                    $perso_secondaire->charge($levt->levt_attaquant);
                 }
                 if ($db->f("levt_cible") != '')
                 {
-                    $req_nom_evt = $req_nom_evt . ",cible.perso_nom as nom3 ";
+                    $perso_secondaire = new perso;
+                    $perso_secondaire->charge($levt->levt_cible);
                 }
-                $req_nom_evt = $req_nom_evt . " from perso perso1";
-                if ($db->f("levt_attaquant") != '')
-                {
-                    $req_nom_evt = $req_nom_evt . ",perso attaquant";
-                }
-                if ($db->f("levt_cible") != '')
-                {
-                    $req_nom_evt = $req_nom_evt . ",perso cible";
-                }
-                $req_nom_evt = $req_nom_evt . " where perso1.perso_cod = $num2";
-                if ($db->f("levt_attaquant") != '')
-                {
-                    $req_nom_evt = $req_nom_evt . " and attaquant.perso_cod = " . $db->f("levt_attaquant") . " ";
-                }
-                if ($db->f("levt_cible") != '')
-                {
-                    $req_nom_evt = $req_nom_evt . " and cible.perso_cod = " . $db->f("levt_cible") . " ";
-                }
-                $db_evt->query($req_nom_evt);
-                $db_evt->next_record();
+
                 //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-                $texte_evt = str_replace('[perso_cod1]', "<b>" . $db_evt->f("nom1") . "</b>", $db->f("levt_texte"));
-                if ($db->f("levt_attaquant") != '')
+                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso->perso_nom . "</b>", $levt->levt_texte);
+                if ($levt->levt_attaquant != '')
                 {
-                    $texte_evt = str_replace('[attaquant]', "<b>" . $db_evt->f("nom2") . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[attaquant]', "<b>" . $perso_secondaire->perso_nom . "</b>", $texte_evt);
                 }
-                if ($db->f("levt_cible") != '')
+                if ($levt->levt_cible != '')
                 {
-                    $texte_evt = str_replace('[cible]', "<b>" . $db_evt->f("nom3") . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[cible]', "<b>" . $perso_secondaire->perso_nom . "</b>", $texte_evt);
                 }
-                echo $db->f("date_evt") . " : " . $texte_evt . " (" . $db->f("tevt_libelle") . ")<br />";
+                echo $levt->date_evt . " : " . $texte_evt . " (" . $levt->tevt->tevt_libelle . ")<br />";
             }
-            $req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
-            $db->query($req_raz_evt);
+            //$req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
+            //$db->query($req_raz_evt);
         }
         $premier_perso = false;
     }
