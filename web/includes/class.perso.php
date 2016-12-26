@@ -1284,6 +1284,22 @@ class perso
         return $tab;
     }
 
+    function calcul_dlt()
+    {
+        $date = new DateTime();
+        $this->perso_mail_inactif_envoye = 0;
+        $this->perso_der_connex = $date->format('Y-m-d H:i:s');
+        $pdo = new bddpdo();
+        $req = "select calcul_dlt2(?) as dlt";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        // beaucoup de choses ont pu changer suite à la requête précédente
+        // du coup, on recharge tout
+        $this->charge($this->perso_cod);
+        $result = $stmt->fetch();
+        return $result['dlt'];
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

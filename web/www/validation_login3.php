@@ -114,25 +114,41 @@ if ($autorise == 1)
     $tableau_noms      = array();
     if (isset($activeTout) && $activeTout == 1)
     {
-        $req_persos
-            = "select perso_cod, perso_nom
-				from perso
-				inner join perso_compte on pcompt_perso_cod = perso_cod
-				where pcompt_compt_cod = $compt_cod
-					and perso_actif = 'O'
-				union all
-				select perso_cod, perso_nom
-				from perso, perso_compte, perso_familier
-				where pcompt_compt_cod = $compt_cod
-					and pcompt_perso_cod = pfam_perso_cod
-					and pfam_familier_cod = perso_cod
-					and perso_actif = 'O'
-				order by perso_cod";
-        $db->query($req_persos);
-        while ($db->next_record())
+        $pcompt = new perso_compte();
+        // on prend tous les perso_compte du compte
+        $tab_compte = $pcompt->getBy_pcompt_compt_cod($compte->compt_cod);
+        foreach($tab_compte as $dcompte)
         {
-            $tableau_numeros[] = $db->f('perso_cod');
-            $tableau_noms[]    = $db->f('perso_nom');
+            $temp_perso = new perso;
+            if($temp_perso->charge($dcompte->pcompt_perso_cod))
+            {
+                // on charge le perso
+                if($temp_perso->perso_actif == 'O')
+                {
+                    // il est actif, on l'ajoute au tableau
+                    $tableau_numeros[] = $temp_perso->perso_cod;
+                    $tableau_noms[] = $temp_perso->perso_nom;
+                    // on regarde s'il y a un familier associé
+                    $temp_fam = new perso_familier();
+                    // on regarde si ce perso a un familier
+                    $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
+                    if($tab_fam !== false)
+                    {
+                        // il a un familier, on le charge
+                        $perso_fam = new perso;
+                        if($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
+                        {
+                            if($perso_fam->perso_actif == 'O')
+                            {
+                                // il est actif, on l'ajoute
+                                $tableau_numeros[] = $perso_fam->perso_cod;
+                                $tableau_noms[] = $perso_fam->perso_nom;
+                            }
+                        }
+                    }
+                }
+
+            }
         }
     }
     else
@@ -154,24 +170,15 @@ if ($autorise == 1)
         {
             echo "<p><b>Pour " . $tableau_noms[$key] . " :</b></p>";
         }
-        // avant toute autre chose, on renseigne la date de dernier login !
-        $req_maj_date = "update perso set perso_der_connex = now(),perso_mail_inactif_envoye = 0 where perso_cod = $numero_perso";
-        $db->query($req_maj_date);
 
         // on passe la dlt
-        $req_maj_dlt = "select calcul_dlt2($numero_perso) as dlt";
-        $db->query($req_maj_dlt);
-        $db->next_record();
-        $dlt = $db->f("dlt");
+        $dlt = $perso->calcul_dlt();
+        $dlt = new DateTime($perso->perso_dlt);
 
-        $req_dlt = "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt,perso_pa from perso where perso_cod = $numero_perso";
-        $db->query($req_dlt);
-        $db->next_record();
-        echo $dlt;
-        echo "<br>Votre nouvelle date limite de tour est : <b>" . $db->f("dlt") . "</b>";
+        echo "<br>Votre nouvelle date limite de tour est : <b>" . $dlt->format('d/m/Y H:i:s') . "</b>";
 
         // on affichage le solde des points d'action
-        echo "<br>Il vous reste " . $db->f("perso_pa") . " points d’action.";
+        echo "<br>Il vous reste " . $perso->perso_pa . " points d’action.";
 
         // on vérifie si une mission n’est pas validée
         $req_missions = "select missions_verifie($numero_perso) as missions";
