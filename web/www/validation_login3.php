@@ -61,7 +61,7 @@ if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
         }
     }
 }
-if ($type_perso == 3)
+elseif ($type_perso == 3)
 {
     $pfam = new perso_familier();
     $pcompt = new perso_compte();
@@ -90,31 +90,16 @@ if ($autorise != 1)
 {
     if ($type_perso == 1)
     {
-        $req
-            = "select csit_compte_sitteur from perso_compte,compte_sitting
-				where pcompt_perso_cod = $perso_cod 
-				and pcompt_compt_cod = csit_compte_sitte
-				and csit_ddeb <= now()
-				and csit_dfin >= now() ";
-        $db->query($req);
-        $db->next_record();
-        if ($db->f("csit_compte_sitteur") == $compt_cod)
+        $cs = new compte_sitting();
+        if($cs->isSittingValide($compt->compt_cod,$perso->perso_cod))
         {
             $autorise = 1;
         }
     }
-    if ($type_perso == 3)
+    elseif ($type_perso == 3)
     {
-        $req
-            = "select csit_compte_sitteur from perso_compte,perso_familier,compte_sitting
-				where pcompt_perso_cod = pfam_perso_cod
-				and pfam_familier_cod = $perso_cod
-				and pcompt_compt_cod = csit_compte_sitte
-				and csit_ddeb <= now()
-				and csit_dfin >= now() ";
-        $db->query($req);
-        $db->next_record();
-        if ($db->f("csit_compte_sitteur") == $compt_cod)
+        $cs = new compte_sitting();
+        if($cs->isSittingFamilierValide($compt->compt_cod,$perso->perso_cod))
         {
             $autorise = 1;
         }
