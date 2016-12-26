@@ -1237,6 +1237,10 @@ class perso
         $ppos->getByPerso($this->perso_cod);
         $opos = new objet_position();
         $tab = $opos->getBy_pobj_pos_cod($ppos->ppos_pos_cod);
+        if($tab === false)
+        {
+            return 0;
+        }
         return count($tab);
     }
 
@@ -1246,6 +1250,10 @@ class perso
         $ppos->getByPerso($this->perso_cod);
         $por = new or_position();
         $tab = $por->getBy_por_pos_cod($ppos->ppos_pos_cod);
+        if($tab === false)
+        {
+            return 0;
+        }
         return count($tab);
     }
 
