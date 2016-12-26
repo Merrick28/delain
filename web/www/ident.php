@@ -7,9 +7,7 @@ if (!isset($type_auth))
     $type_auth = 'normal';
 }
 $dsn = 'pgsql://' . SERVER_USERNAME . ':' . SERVER_PASSWORD . '@' . SERVER_HOST . '/' . SERVER_DBNAME;
-//require_once('PEAR.php');
-//require_once('MDB2.php');
-//erquire_once('Auth/Auth.php');
+
 
 //
 // fonction d'affichage du formulaire de login si pas authentifié
@@ -48,13 +46,7 @@ function montre_formulaire_connexion($isAuthOk)
 $pdo = new bddpdo;
 
 $compte = new compte;
-
-/* * ***************** */
-/* FONCTIONS GOOGLE */
-/* * ***************** */
-$google_auth = false;
-$google_temp = false;
-
+$perso = new perso;
 
 if (!isset($type_auth))
 {
@@ -87,9 +79,8 @@ switch ($type_auth)
                     // est-ce qu'on change de perso ?
                     if (isset($change_perso))
                     {
-                        $req = "update compte set compt_der_perso_cod = ? where compt_cod = ?";
-                        $stmt = $pdo->prepare($req);
-                        $stmt = $pdo->execute(array($change_perso, $compt_cod), $stmt);
+                        $compte->compt_der_perso_cod = $change_perso;
+                        $compte->stocke();
                     }
                     //-----------------------------------------------------------------------------------//
                     // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
@@ -107,16 +98,10 @@ switch ($type_auth)
                         $type_perso = 'admin';
                         $is_admin = true;
                     }
-                    // TODO, passer ça en crud
-                    $req = "select perso_nom,perso_cod from perso,compte
-					where perso_cod = compt_der_perso_cod
-					and compt_cod = ?";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array($compt_cod), $stmt);
-                    $row = $stmt->fetch();
+                    $perso->getByComptDerPerso($compte->compt_cod);
 
-                    $perso_nom = $row['perso_nom'];
-                    $perso_cod = $row['perso_cod'];
+                    $perso_nom = $perso->perso_nom;
+                    $perso_cod = $perso->perso_cod;
 
                     $myAuth->perso_cod = $perso_cod;
                     $myAuth->compt_cod = $compt_cod;
@@ -139,9 +124,8 @@ switch ($type_auth)
             // est-ce qu'on change de perso ?
             if (isset($change_perso))
             {
-                $req = "update compte set compt_der_perso_cod = ? where compt_cod = ?";
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array($change_perso, $compt_cod), $stmt);
+                $compte->compt_der_perso_cod = $change_perso;
+                $compte->stocke();
             }
             //-----------------------------------------------------------------------------------//
             // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
@@ -160,15 +144,10 @@ switch ($type_auth)
                 $type_perso = 'admin';
                 $is_admin = true;
             }
-            $req = "select perso_nom,perso_cod from perso,compte
-					where perso_cod = compt_der_perso_cod
-					and compt_cod = ?";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($compt_cod), $stmt);
-            $row = $stmt->fetch();
+            $perso->getByComptDerPerso($compte->compt_cod);
 
-            $perso_nom = $row['perso_nom'];
-            $perso_cod = $row['perso_cod'];
+            $perso_nom = $perso->perso_nom;
+            $perso_cod = $perso->perso_cod;
 
             $myAuth->perso_cod = $perso_cod;
             $myAuth->compt_cod = $compt_cod;
@@ -232,7 +211,7 @@ switch ($type_auth)
                 $compt_cod = $row['pcompt_compt_cod'];
                 break;
             default:
-                // on ne peut pas diriger d'autre type de perso 
+                // on ne peut pas diriger d'autre type de perso
                 die("Mauvais type de perso");
                 break;
         }
@@ -240,67 +219,6 @@ switch ($type_auth)
         $compt_cod = $row['pcompt_compt_cod'];
         $perso_nom = $row['perso_nom'];
         $perso_cod = $ext_perso_cod;
-        break;
-    case "externe":
-        // cette authentification doit passer les variables suivantes :
-        // $type_auth = 'externe'
-        // $ext_appli = num_appli
-        // $ext_perso_cod = perso_cod
-        // $ext_session_id = num_ de_session
-        $verif_auth = false;  // par défaut, cette variable est false si pas authentifé, true si ok
-        $mdb2 = &MDB2::connect($dsn);
-        // on regarde le type de perso choisi
-        $req = "select perso_type_perso from perso where perso_cod = ?";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($ext_perso_cod), $stmt);
-        $row = $stmt->fetch();
-        $type_perso = $row['perso_type_perso'];
-        // on va d'abord regarder dans la base si on a tout ce qu'il faut
-        switch ($type_perso)
-        {
-            case 1:
-                $req = "select sess_key ,pcompt_compt_cod ,perso_nom
-					from auth.session,auth.demande_temp,perso_compte,perso
-					where sess_dtemp_cod = dtemp_cod
-					and dtemp_appli_cod = ? 
-					and dtemp_compt_cod = pcompt_compt_cod
-					and pcompt_perso_cod = ?
-					and perso_cod = pcompt_perso_cod ";
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array($ext_appli, $ext_perso_cod), $stmt);
-
-                $row = $stmt->fetch();
-                $sess_id = $row['sess_key'];
-                break;
-            case 3:
-                $req = "select sess_key,pcompt_compt_cod ,perso_nom
-					from auth.session,auth.demande_temp,perso_compte,perso_familier,perso
-					where sess_dtemp_cod = dtemp_cod
-					and dtemp_appli_cod = :appli 
-					and dtemp_compt_cod = pcompt_compt_cod
-					and pcompt_perso_cod = pfam_perso_cod 
-					and pfam_familier_cod = :perso_cod
-					and perso_cod = :perso_cod ";
-                $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(":appli" => $ext_appli, ":perso_cod" => $ext_perso_cod), $stmt);
-
-                $row = $stmt->fetch();
-                $sess_id = $row['sess_key'];
-                break;
-            default:
-                // on ne peut pas diriger d'autre type de perso 
-                die("Mauvais type de perso");
-                break;
-        }
-        $mdb2->disconnect();
-        if ($sess_id == $ext_session_id)
-        {
-            // L'auth a marché
-            $verif_auth = true;
-            $compt_cod = $row['pcompt_compt_cod'];
-            $perso_nom = $row['perso_nom'];
-            $perso_cod = $ext_perso_cod;
-        }
         break;
 }
 montre_formulaire_connexion($verif_auth);

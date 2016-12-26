@@ -366,6 +366,16 @@ class compte
         }
     }
 
+    function is_admin()
+    {
+        return $this->compt_admin  == 'O';
+    }
+
+    function is_admin_monstre()
+    {
+        return $this->compt_monstre  == 'O';
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
@@ -414,7 +424,7 @@ class compte
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 

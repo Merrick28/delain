@@ -49,6 +49,23 @@ class messages_dest
         return true;
     }
 
+    function getByPersoNonLu($perso)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest where dmsg_perso_cod = ? and dmsg_lu = 'N' and dmsg_archive = 'N'";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp     = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo
@@ -155,7 +172,7 @@ class messages_dest
                 }
                 else
                 {
-                    die('Unknown variable.');
+                    die('Unknown variable ' . substr($name,6));
                 }
                 break;
 
