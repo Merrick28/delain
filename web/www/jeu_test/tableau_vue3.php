@@ -115,7 +115,10 @@ if ($lieu_nom != '')
 $size = round(100/$nb);
 
 echo "<tr>";
-
+echo "<!-- DEBUG VUE 
+NB = " . $nb . "
+VUETAB = " . print_r($vuetab,true) . "
+-->";
 for($cpt = 0; $cpt < $nb; $cpt++)
 {
 	$id = 'onglet_vue_' . $cpt;
