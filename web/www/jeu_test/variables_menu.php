@@ -214,7 +214,7 @@ if ($perso->is_lieu())
     if (!empty($tab_lieu['lieu']->lieu_url))
     {
         $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
-        $libelle    = $tab_lieu['lieu']->lieu_description;
+        $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
         $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a><hr />";
     }
 }
