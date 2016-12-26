@@ -141,16 +141,6 @@ if (!apc_exists('img_path'))
 {
     apc_store('img_path', IMG_PATH);
 }
-// clé de connection
-$init             = rand(1, 10000);
-if ($init <= 10)
-{
-    apc_delete('cle_connec');
-}
-if (!apc_exists('cle_connec'))
-{
-    apc_store('cle_connec', uniqid('', true));
-}
 
 /**
  * Autochargement des classes manquantes
