@@ -26,12 +26,12 @@ $lieu_refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
 //
 // choix de l'affichage */
 //
-$tab[0] = 'Aventuriers';
-$tab[1] = 'Monstres';
-$tab[2] = 'Objets';
-$tab[3] = 'Lieux';
-$tab[4] = 'Tout voir';
-$nb = count($tab);
+$vuetab[0] = 'Aventuriers';
+$vuetab[1] = 'Monstres';
+$vuetab[2] = 'Objets';
+$vuetab[3] = 'Lieux';
+$vuetab[4] = 'Tout voir';
+$nb        = count($vuetab);
 if (!isset($tab_vue))
 {
 	$tab_vue = -1;
@@ -131,7 +131,7 @@ for($cpt = 0; $cpt < $nb; $cpt++)
 		$lien = '<a href="javascript:void(0);" onclick="changeOnglet(' . $cpt . '); ">';
 		$f_lien = '</a>';
 	}
-	echo '<td width="' . $size . ' %" class="' . $style .'" id="' . $id . '"><p style="text-align:center">' . $lien . $tab[$cpt] . $f_lien . '</p></td>';
+	echo '<td width="' . $size . ' %" class="' . $style .'" id="' . $id . '"><p style="text-align:center">' . $lien . $vuetab[$cpt] . $f_lien . '</p></td>';
 }
 echo '</tr>';
 ?>
