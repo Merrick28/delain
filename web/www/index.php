@@ -1,17 +1,12 @@
 <?php
 $nouvelle_version = 1;
 
-// TODO : memcached pour params
-
 // par défaut, on n'est pas authentifié
 $verif_auth = false;
 include G_CHE . "ident.php";
 
 // parametres
 $param = new parametres;
-
-include "classes.php";
-$db        = new base_delain;
 
 // monstre générique
 $gmon = new monstre_generique;
