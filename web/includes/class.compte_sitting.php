@@ -141,7 +141,7 @@ class compte_sitting
 				AND csit_dfin >= now() ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod, $compt_cod), $stmt);
-        if ($stmt->fetch())
+        if ($result = $stmt->fetch())
         {
             return true;
         }

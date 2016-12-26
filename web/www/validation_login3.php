@@ -91,7 +91,7 @@ if ($autorise != 1)
     if ($type_perso == 1)
     {
         $cs = new compte_sitting();
-        if($cs->isSittingValide($compt->compt_cod,$perso->perso_cod))
+        if($cs->isSittingValide($compte->compt_cod,$perso->perso_cod))
         {
             $autorise = 1;
         }
@@ -99,7 +99,7 @@ if ($autorise != 1)
     elseif ($type_perso == 3)
     {
         $cs = new compte_sitting();
-        if($cs->isSittingFamilierValide($compt->compt_cod,$perso->perso_cod))
+        if($cs->isSittingFamilierValide($compte->compt_cod,$perso->perso_cod))
         {
             $autorise = 1;
         }
@@ -181,6 +181,7 @@ if ($autorise == 1)
         echo "<br>Il vous reste " . $perso->perso_pa . " points d’action.";
 
         // on vérifie si une mission n’est pas validée
+        // TODO : mettre la requête de missions dans la classe perso
         $req_missions = "select missions_verifie($numero_perso) as missions";
         $db->query($req_missions);
         $db->next_record();
@@ -191,6 +192,7 @@ if ($autorise == 1)
         }
 
         // recherche des evts non lus
+        // TODO: mettre les evts en crud
         $req_evt
             = "select to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as date_evt,tevt_libelle,levt_texte,tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible 
 				from ligne_evt,type_evt 
@@ -266,15 +268,6 @@ if ($autorise == 1)
         echo "<center><input type=\"submit\" value=\"Jouer !!\" class=\"test\"><br />";
         $checked = ($frameless) ? 'checked="checked"' : '';
         echo "<input type=\"hidden\" name=\"changed_frameless\" id='hidframeless' value=\"0\" />";
-        /*
-          echo "<input type=\"checkbox\" name=\"frameless\" id='frameless' value=\"O\" $checked
-
-    onchange='document.getElementById(\"hidframeless\").value=\"1\";
-        if (this.checked) document.forms[\"ok\"].action=\"jeu_test/index.php\";
-        else document.forms[\"ok\"].action=\"jouer.php\";'/>
-    <label for='frameless'>Utiliser la version frameless par défaut</label></center>";
-         *
-         */
     }
     else
     {
@@ -290,7 +283,6 @@ else
 }
 
 echo '</div>';
-//print_r($_SESSION);
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
