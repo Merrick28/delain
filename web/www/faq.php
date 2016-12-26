@@ -1,4 +1,6 @@
-<?php include '/home/delain/public_html/www/includes/classes.php'?>
+<?php
+include "classes.php";
+include G_CHE . 'includes/classes.php'?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="style.php">
