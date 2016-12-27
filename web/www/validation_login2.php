@@ -361,11 +361,9 @@ if ($verif_auth)
 						echo("</table>");
 						echo("</form>");
 					}
-					$req = "select to_char(now(),'DD/MM/YYYY hh24:mi:ss') as maintenant ";
-					$db->query($req);
-					$db->next_record();
+
 					echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><b>se déconnecter</b></a></p>";
-					echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : " , $db->f("maintenant") , "</i></p>";
+					echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') .  "</i></p>";
 				}
 			}
 			echo '</div></body></html>';
