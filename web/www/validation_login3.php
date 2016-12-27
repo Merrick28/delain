@@ -192,15 +192,7 @@ if ($autorise == 1)
         // recherche des evts non lus
         // TODO: mettre les evts en crud
         $liste_evt = $perso->getEvtNonLu();
-        $req_evt
-            = "select to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as date_evt,tevt_libelle,levt_texte,tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible 
-				from ligne_evt,type_evt 
-				where levt_perso_cod1 = $numero_perso 
-				and levt_tevt_cod = tevt_cod 
-				and levt_lu = 'N' 
-				order by levt_cod desc";
-        $db->query($req_evt);
-        $nb_evt = $db->nf();
+
         // TODO : mettre des evts bidon pour tester
         if (count($liste_evt) != 0)
         {
@@ -211,29 +203,31 @@ if ($autorise == 1)
             {
                 $num2        = $detail_evt->levt_perso_cod1;
                 $req_nom_evt = "select perso1.perso_nom as nom1";
-                if (!empty($liste_evt->levt_attaquant != ''))
+                if (!empty($detail_evt->levt_attaquant != ''))
                 {
-                    $perso_secondaire = new perso;
-                    $perso_secondaire->charge($levt->levt_attaquant);
+                    $perso_attaquant = new perso;
+                    $perso_attaquant->charge($detail_evt->levt_attaquant);
                 }
-                if ($db->f("levt_cible") != '')
+                if (!empty($detail_evt->levt_cible != ''))
                 {
-                    $perso_secondaire = new perso;
-                    $perso_secondaire->charge($levt->levt_cible);
+                    $perso_cible = new perso;
+                    $perso_cible->charge($detail_evt->levt_cible);
                 }
 
                 //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso->perso_nom . "</b>", $levt->levt_texte);
-                if ($levt->levt_attaquant != '')
+                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso->perso_nom . "</b>", $detail_evt->levt_texte);
+                if ($detail_evt->levt_attaquant != '')
                 {
-                    $texte_evt = str_replace('[attaquant]', "<b>" . $perso_secondaire->perso_nom . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[attaquant]', "<b>" . $perso_attaquant->perso_nom . "</b>", $texte_evt);
                 }
-                if ($levt->levt_cible != '')
+                if ($detail_evt->levt_cible != '')
                 {
-                    $texte_evt = str_replace('[cible]', "<b>" . $perso_secondaire->perso_nom . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[cible]', "<b>" . $perso_cible->perso_nom . "</b>", $texte_evt);
                 }
-                echo $levt->date_evt . " : " . $texte_evt . " (" . $levt->tevt->tevt_libelle . ")<br />";
+                $date_evt = new DateTime($detail_evt->levt_date);
+                echo $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
             }
+            $perso->marqueEvtLus();
             //$req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
             //$db->query($req_raz_evt);
         }

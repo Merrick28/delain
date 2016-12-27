@@ -193,7 +193,7 @@ class ligne_evt
                 = "SELECT levt_cod  FROM ligne_evt 
           WHERE levt_perso_cod1 = ?
           AND levt_lu = 'N'
-          ORDER BY levt_cod";
+          ORDER BY levt_cod DESC";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -207,6 +207,15 @@ class ligne_evt
             unset($temp);
         }
         return $retour;
+    }
+
+    function marquePersoLu($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "UPDATE ligne_evt SET levt_lu = 'O' WHERE levt_perso_cod1 = ? AND levt_lu = 'N'";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array($perso_cod), $stmt);
+        return true;
     }
 
     public function __call($name, $arguments)

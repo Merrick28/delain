@@ -1208,6 +1208,12 @@ class perso
         return $levt->getByPersoNonLu($this->perso_cod);
     }
 
+    function marqueEvtLus()
+    {
+        $levt = new ligne_evt();
+        return $levt->marquePersoLu($this->perso_cod);
+    }
+
     function barre_xp()
     {
         $barre_xp = '0';
