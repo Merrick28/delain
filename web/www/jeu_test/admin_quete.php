@@ -1,4 +1,5 @@
 <?php 
+$perso = $_REQUEST['perso'];
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;

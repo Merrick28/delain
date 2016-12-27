@@ -1192,6 +1192,27 @@ class perso
         }
         return false;
     }
+    function missions()
+    {
+        $pdo = new bddpdo;
+        $req = "select missions_verifie(?) as missions";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        $result = $stmt->fetch();
+        return $result['missions'];
+    }
+
+    function getEvtNonLu()
+    {
+        $levt = new ligne_evt();
+        return $levt->getByPersoNonLu($this->perso_cod);
+    }
+
+    function marqueEvtLus()
+    {
+        $levt = new ligne_evt();
+        return $levt->marquePersoLu($this->perso_cod);
+    }
 
     function barre_xp()
     {
@@ -1282,6 +1303,22 @@ class perso
         $ps = new perso_sorts();
         $tab = $ps->getBy_psort_perso_cod($this->perso_cod);
         return $tab;
+    }
+
+    function calcul_dlt()
+    {
+        $date = new DateTime();
+        $this->perso_mail_inactif_envoye = 0;
+        $this->perso_der_connex = $date->format('Y-m-d H:i:s');
+        $pdo = new bddpdo();
+        $req = "select calcul_dlt2(?) as dlt";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
+        // beaucoup de choses ont pu changer suite à la requête précédente
+        // du coup, on recharge tout
+        $this->charge($this->perso_cod);
+        $result = $stmt->fetch();
+        return $result['dlt'];
     }
 
     public function __call($name, $arguments)
