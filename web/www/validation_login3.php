@@ -134,17 +134,32 @@ if ($autorise == 1)
                     $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
                     if($tab_fam !== false)
                     {
+                        echo "<!-- DEBUG FAMILIER : familier-->";
                         // il a un familier, on le charge
                         $perso_fam = new perso;
                         if($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
                         {
+                            echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " chargé -->";
                             if($perso_fam->perso_actif == 'O')
                             {
+                                echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " actif -->";
                                 // il est actif, on l'ajoute
                                 $tableau_numeros[] = $perso_fam->perso_cod;
                                 $tableau_noms[] = $perso_fam->perso_nom;
                             }
+                            else
+                            {
+                                echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non actif -->";
+                            }
                         }
+                        else
+                        {
+                            echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non chargé -->";
+                        }
+                    }
+                    else
+                    {
+                        echo "<!-- DEBUG FAMILIER : pas familier-->";
                     }
                 }
 
