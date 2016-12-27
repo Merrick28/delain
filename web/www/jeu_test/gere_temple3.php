@@ -35,7 +35,7 @@ ELOG_DEBIT
 
 
 */
-//include "../connexion.php";
+
 
 include_once "verif_connexion.php";
 include '../includes/template.inc';
@@ -220,7 +220,7 @@ currentPane = 'pane<?php echo $select_pane?>';
 	<input type="hidden" name="mag" value="<?php echo $mag?>">
 	<input type="hidden" name="methode" value="nom">
 	</form>
-	<p style=text-align:center><b><a href="javascript:document.description.submit();">Changer le nom et la description</a></b>
+    <p style=text-align:center><b><a href="javascript:document.description.submit();">Changer le nom et la description</a></b></p>
 
 
 	</form>

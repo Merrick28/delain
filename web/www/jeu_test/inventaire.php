@@ -1,5 +1,5 @@
 ﻿<?php 
-//include "../connexion.php";
+
 if(!isset($methode))
 	$methode = '';
 include_once "verif_connexion.php";

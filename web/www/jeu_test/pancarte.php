@@ -1,5 +1,5 @@
 <?php 
-//include "../connexion.php";
+
 if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
 if(!isset($db))

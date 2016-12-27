@@ -1,5 +1,4 @@
 <?php 
-//include "../connexion.php";
 include "../verif_connexion.php";
 include '../../includes/template.inc';
 $param = new parametres();

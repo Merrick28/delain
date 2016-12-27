@@ -1,6 +1,5 @@
 <html>
     <?php
-//include "connexion.php";
     include "includes/classes.php";
     include "includes/incl_mail.php";
     $compte = new compte;

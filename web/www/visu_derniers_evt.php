@@ -5,18 +5,7 @@ if (!@include "includes/classes.php")
 require "ident.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 $db = new base_delain;
-//$type_perso = $auth->auth["type_perso"];
-//$password = $_SESSION['password'];
-//$perso_cod = $_SESSION['perso_cod'];
-/*if ($is_log == 1)
-{	
-	$compt_cod = $_SESSION['compt_cod'];
-}
-if ($is_log == 0)
-{
-	$compt_cod = $_COOKIE['nvcompte'];
-}*/
-//include "connexion.php";
+
 ?>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">
 <head>
