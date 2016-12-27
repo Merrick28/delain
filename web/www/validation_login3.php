@@ -27,6 +27,13 @@ $t->set_file('FileRef', '../template/delain/general_jeu.tpl');
 $t->set_var('URL', $type_flux . G_URL);
 $t->set_var('URL_IMAGES', G_IMAGES);
 ob_start();
+?>
+    <script>
+        function debug(str) {
+            console.log(str)
+        }
+    </script>
+<?php
 
 
 $num_resultat = 0;
@@ -45,13 +52,13 @@ $perso_mortel = $perso->perso_mortel;
 $num_perso    = $perso->perso_cod;
 $perso_cod    = $num_perso;
 $autorise     = 0;
-$type_perso = $perso->perso_type_perso;
+$type_perso   = $perso->perso_type_perso;
 if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
 {
     // on va quand même charger le perso_compte
     $pcompt = new perso_compte();
-    $tab = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
-    if($tab !== false)
+    $tab    = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
+    if ($tab !== false)
     {
         // On a trouvé un perso_compte pour ce perso
         if ($tab[0]->pcompt_compt_cod == $compte->compt_cod)
@@ -63,15 +70,15 @@ if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
 }
 elseif ($type_perso == 3)
 {
-    $pfam = new perso_familier();
-    $pcompt = new perso_compte();
+    $pfam    = new perso_familier();
+    $pcompt  = new perso_compte();
     $tab_fam = $pfam->getBy_pfam_familier_cod($perso->perso_cod);
-    if($tab_fam !== false)
+    if ($tab_fam !== false)
     {
         // on est bien dans la table familiers
         $tab_pcompt = $pcompt->getBy_pcompt_perso_cod($tab_fam[0]->pfam_perso_cod);
         {
-            if($tab_pcompt !== false)
+            if ($tab_pcompt !== false)
             {
                 // on est bien dabs la table pcompte
                 if ($tab_pcompt[0]->pcompt_compt_cod == $compte->compt_cod)
@@ -91,7 +98,7 @@ if ($autorise != 1)
     if ($type_perso == 1)
     {
         $cs = new compte_sitting();
-        if($cs->isSittingValide($compte->compt_cod,$perso->perso_cod))
+        if ($cs->isSittingValide($compte->compt_cod, $perso->perso_cod))
         {
             $autorise = 1;
         }
@@ -99,7 +106,7 @@ if ($autorise != 1)
     elseif ($type_perso == 3)
     {
         $cs = new compte_sitting();
-        if($cs->isSittingFamilierValide($compte->compt_cod,$perso->perso_cod))
+        if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod))
         {
             $autorise = 1;
         }
@@ -117,48 +124,54 @@ if ($autorise == 1)
         $pcompt = new perso_compte();
         // on prend tous les perso_compte du compte
         $tab_compte = $pcompt->getBy_pcompt_compt_cod($compte->compt_cod);
-        foreach($tab_compte as $dcompte)
+        foreach ($tab_compte as $dcompte)
         {
             $temp_perso = new perso;
-            if($temp_perso->charge($dcompte->pcompt_perso_cod))
+            if ($temp_perso->charge($dcompte->pcompt_perso_cod))
             {
                 // on charge le perso
-                if($temp_perso->perso_actif == 'O')
+                if ($temp_perso->perso_actif == 'O')
                 {
                     // il est actif, on l'ajoute au tableau
                     $tableau_numeros[] = $temp_perso->perso_cod;
-                    $tableau_noms[] = $temp_perso->perso_nom;
+                    $tableau_noms[]    = $temp_perso->perso_nom;
                     // on regarde s'il y a un familier associé
                     $temp_fam = new perso_familier();
                     // on regarde si ce perso a un familier
                     $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
-                    if($tab_fam !== false)
+                    if ($tab_fam !== false)
                     {
+                        echo "<script>debug('DEBUG FAMILIER perso " . $temp_perso->perso_cod . ": familier')</script>";
                         echo "<!-- DEBUG FAMILIER perso " . $temp_perso->perso_cod . " : familier-->";
                         // il a un familier, on le charge
                         $perso_fam = new perso;
-                        if($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
+                        if ($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
                         {
+                            echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " chargé')</script>";
                             echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " chargé -->";
-                            if($perso_fam->perso_actif == 'O')
+                            if ($perso_fam->perso_actif == 'O')
                             {
+                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " actif')</script>";
                                 echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " actif -->";
                                 // il est actif, on l'ajoute
                                 $tableau_numeros[] = $perso_fam->perso_cod;
-                                $tableau_noms[] = $perso_fam->perso_nom;
+                                $tableau_noms[]    = $perso_fam->perso_nom;
                             }
                             else
                             {
+                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non actif')</script>";
                                 echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non actif -->";
                             }
                         }
                         else
                         {
+                            echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " NON chargé')</script>";
                             echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non chargé -->";
                         }
                     }
                     else
                     {
+                        echo "<script>debug('DEBUG FAMILIER perso " . $temp_perso->perso_cod . ": PAS familier')</script>";
                         echo "<!-- DEBUG FAMILIER perso " . $temp_perso->perso_cod . " : pas familier-->";
                     }
                 }
@@ -205,7 +218,6 @@ if ($autorise == 1)
         }
 
 
-
         // recherche des evts non lus
         // TODO: mettre les evts en crud
         $liste_evt = $perso_dlt->getEvtNonLu();
@@ -216,7 +228,7 @@ if ($autorise == 1)
             echo "<p style='margin-top:10px;'><b>Vos derniers événements importants :</b></p>";
             echo "<p>";
             $db_evt = new base_delain;
-            foreach($liste_evt as $detail_evt)
+            foreach ($liste_evt as $detail_evt)
             {
                 $num2        = $detail_evt->levt_perso_cod1;
                 $req_nom_evt = "select perso1.perso_nom as nom1";
@@ -277,6 +289,10 @@ else
 }
 
 echo '</div>';
+?>
+
+<?php
+
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
