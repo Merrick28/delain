@@ -213,11 +213,8 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 	</table>
 	</form>
 
-	<?php 
-	$req = "select to_char(now(),'DD/MM/YYYY hh24:mi:ss') as maintenant ";
-$db->query($req);
-$db->next_record();
-echo "<div style=\"text-align:center;\"><br /><i>Date et heure serveur : " , $db->f("maintenant") , "</i></div>";
+	<?php
+echo "<div style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') . "</i></div>";
 	}
 }
 
