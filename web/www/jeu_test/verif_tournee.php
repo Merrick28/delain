@@ -35,7 +35,7 @@ switch($methode)
 	case "verif":
 		$req = "select paub_nombre,lieu_nom,pos_x,pos_y,etage_libelle ";
 		$req = $req . "from perso_auberge,lieu,positions,etage,lieu_position ";
-		$req = $req . "where paub_perso_cod = $perso ";
+		$req = $req . "where paub_perso_cod = $perso_cible ";
 		$req = $req . "and paub_lieu_cod = lieu_cod ";
 		$req = $req . "and lpos_lieu_cod = lieu_cod ";
 		$req = $req . "and lpos_pos_cod = pos_cod ";

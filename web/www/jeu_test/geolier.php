@@ -70,7 +70,7 @@ if ($erreur == 0)
 			break;
 		case "ouvrir":
 			// nom
-			$req = "select ouvrir_prison($perso,$perso_cod) as resultat ";
+			$req = "select ouvrir_prison($perso_cible,$perso_cod) as resultat ";
 			$db->query($req);
 			$db->next_record();
 			echo $db->f("resultat");

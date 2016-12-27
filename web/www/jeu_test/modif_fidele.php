@@ -69,7 +69,7 @@ if ($erreur == 0)
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
 			break;
 		case "ajout2":
-			$req = "insert into temple_fidele (tfid_perso_cod,tfid_lieu_cod) values ($perso,$lieu) ";
+			$req = "insert into temple_fidele (tfid_perso_cod,tfid_lieu_cod) values ($perso_cible,$lieu) ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";
@@ -112,7 +112,7 @@ if ($erreur == 0)
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
 			break;
 		case "modif2":
-			$req = "update temple_fidele set tfid_perso_cod = $perso where tfid_lieu_cod = $lieu ";
+			$req = "update temple_fidele set tfid_perso_cod = $perso_cible where tfid_lieu_cod = $lieu ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";

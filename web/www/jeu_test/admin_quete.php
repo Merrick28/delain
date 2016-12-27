@@ -399,7 +399,7 @@ if ($erreur == 0)
 						$db->query($req_ins_mes);
 						// enregistrement de l'expéditeur
 						$req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-						$req_ins_exp = $req_ins_exp . "values (nextval('seq_emsg_cod'),$num_mes,$perso,'N')";
+						$req_ins_exp = $req_ins_exp . "values (nextval('seq_emsg_cod'),$num_mes,$perso_cible,'N')";
 						$db->query($req_ins_exp);
 						// enregistrement des destinataires
 						// recherche de la position

@@ -5,6 +5,7 @@ include "jeu_test/verif_connexion.php";
 require_once G_CHE . "/includes/base_delain.php";
 $db = new base_delain;
 $db2 = new base_delain;
+$perso_cible = $_REQUEST['perso'];
 ?>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
@@ -13,7 +14,7 @@ $db2 = new base_delain;
 <body background="../images/fond5.gif">
 <?php include "jeu_test/tab_haut.php";
 $erreur = 0;
-$req = 'select (perso_dcreat + \'24 hours\'::interval) > now() as test, perso_type_perso from perso where perso_cod = '  . $perso;
+$req = 'select (perso_dcreat + \'24 hours\'::interval) > now() as test, perso_type_perso from perso where perso_cod = '  . $perso_cible;
 $db->query($req);
 $db->next_record();
 if ($db->f('test') == 't')
@@ -24,7 +25,7 @@ $type_perso = $db->f("perso_type_perso");
 
 if ($type_perso == 3)
 {
-    $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso and pfam_perso_cod = pcompt_perso_cod";
+    $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cible and pfam_perso_cod = pcompt_perso_cod";
     $db->query($req);
     $db->next_record();
     $compt_fam = $db->f("pcompt_compt_cod");
@@ -32,7 +33,7 @@ if ($type_perso == 3)
 else
     $compt_fam = -1;
 
-$req = "select pcompt_perso_cod, perso_type_perso from perso_compte, perso where pcompt_perso_cod = $perso and pcompt_compt_cod = $compt_cod and pcompt_perso_cod = perso_cod";
+$req = "select pcompt_perso_cod, perso_type_perso from perso_compte, perso where pcompt_perso_cod = $perso_cible and pcompt_compt_cod = $compt_cod and pcompt_perso_cod = perso_cod";
 $db->query($req);
 if($db->nf() == 0 and $type_perso != 3) // Non rattaché au compte, pas un familier.
 {
@@ -52,7 +53,7 @@ else if ($type_perso == 2) // Cas d’un monstre contrôlé par le compte. Pas d
 	$req1 = "select case when (now() - pcompt_date_attachement) < '1 day'::interval then 1 else 0 end as trop_recent, perso_actif
 		from perso
 		inner join perso_compte on pcompt_perso_cod = perso_cod
-		where perso_cod = $perso";
+		where perso_cod = $perso_cible";
 	$db->query($req1);
 	$db->next_record();
 	$trop_recent = $db->f('trop_recent');
@@ -63,7 +64,7 @@ else if ($type_perso == 2) // Cas d’un monstre contrôlé par le compte. Pas d
 	}
 	else
 	{
-		$req1 = "select relache_monstre_4e_perso($perso, 2::smallint) as resultat";
+		$req1 = "select relache_monstre_4e_perso($perso_cible, 2::smallint) as resultat";
 		$db->query($req1);
 		$db->next_record();
 		echo '<p>' . $db->f("resultat") . '</p>';
@@ -71,28 +72,28 @@ else if ($type_perso == 2) // Cas d’un monstre contrôlé par le compte. Pas d
 }
 else
 {
-    $req1 = "update perso set perso_nom = perso_nom||'_inactif' where perso_cod = $perso ";
+    $req1 = "update perso set perso_nom = perso_nom||'_inactif' where perso_cod = $perso_cible ";
     $db->query($req1);
-    $req1 = "delete from lock_combat where lock_cible = $perso ";
+    $req1 = "delete from lock_combat where lock_cible = $perso_cible ";
     $db->query($req1);
-    $req1 = "delete from lock_combat where lock_attaquant = $perso ";
+    $req1 = "delete from lock_combat where lock_attaquant = $perso_cible ";
     $db->query($req1);
-    $req1 = "delete from perso_familier where pfam_familier_cod = $perso ";
+    $req1 = "delete from perso_familier where pfam_familier_cod = $perso_cible ";
     $db->query($req1);
-    $req1 = "select pfam_familier_cod from perso_familier where pfam_perso_cod = $perso ";
+    $req1 = "select pfam_familier_cod from perso_familier where pfam_perso_cod = $perso_cible ";
     $db->query($req1);
     if ($db->nf() != 0)
     {
     	$req = "update perso set perso_type_perso = 2 where perso_cod in ";
-    	$req = $req . "(select pfam_familier_cod from perso_familier where pfam_perso_cod = $perso) ";
+    	$req = $req . "(select pfam_familier_cod from perso_familier where pfam_perso_cod = $perso_cible) ";
     	$db->query($req);	
     }
     
     $req = "insert into ligne_evt (levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
-    $req = $req . "values (23,now(),1,$perso,'Le personnage a été supprimé !','O','O') ";
+    $req = $req . "values (23,now(),1,$perso_cible,'Le personnage a été supprimé !','O','O') ";
     $db->query($req);
     
-    $req2 = "update perso set perso_actif = 'N' where perso_cod = $perso ";
+    $req2 = "update perso set perso_actif = 'N' where perso_cod = $perso_cible ";
     $db->query($req2);
     echo("<p>Votre perso a été supprimé !");
 }
