@@ -120,14 +120,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 	<a href="rec_mail.php">Réception des comptes rendus par mail</a><br />
 	<a href="declare_sitting.php">Déclarer un sitting</a><br />
 	<?php 
-	$req = "select * from auth.demande_temp
-		where dtemp_compt_cod = " . $compt_cod . "
-		and not dtemp_valide";
-	$db->query($req);
-	if($db->nf() != 0)
-	{
-		echo '<a href="gestion_api.php">Gestion des programmes externes</a><br />';
-	}
+
 	
 	echo "<a href=\"../suppr_perso.php?compt_cod=$compt_cod\">Supprimer un perso ! </A><br>";
 	?>
