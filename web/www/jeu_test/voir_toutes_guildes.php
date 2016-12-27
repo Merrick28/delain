@@ -1,5 +1,4 @@
 <?php 
-//include "../connexion.php";
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;

@@ -161,6 +161,8 @@ if ($autorise == 1)
 
     foreach ($tableau_numeros as $key => $numero_perso)
     {
+        $perso_dlt = new perso;
+        $perso_dlt->charge($numero_perso);
         if (!$premier_perso)
         {
             echo '<hr />';
@@ -172,16 +174,16 @@ if ($autorise == 1)
         }
 
         // on passe la dlt
-        $dlt = $perso->calcul_dlt();
-        $dlt = new DateTime($perso->perso_dlt);
+        $dlt = $perso_dlt->calcul_dlt();
+        $dlt = new DateTime($perso_dlt->perso_dlt);
 
         echo "<br>Votre nouvelle date limite de tour est : <b>" . $dlt->format('d/m/Y H:i:s') . "</b>";
 
         // on affichage le solde des points d'action
-        echo "<br>Il vous reste " . $perso->perso_pa . " points d’action.";
+        echo "<br>Il vous reste " . $perso_dlt->perso_pa . " points d’action.";
 
         // on vérifie si une mission n’est pas validée
-        $missions = $perso->missions();
+        $missions = $perso_dlt->missions();
         if ($missions !== '')
         {
             echo "<hr /><b>Évaluation de vos missions en cours</b><br />$missions<hr />";
@@ -191,7 +193,7 @@ if ($autorise == 1)
 
         // recherche des evts non lus
         // TODO: mettre les evts en crud
-        $liste_evt = $perso->getEvtNonLu();
+        $liste_evt = $perso_dlt->getEvtNonLu();
 
         // TODO : mettre des evts bidon pour tester
         if (count($liste_evt) != 0)
@@ -215,7 +217,7 @@ if ($autorise == 1)
                 }
 
                 //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso->perso_nom . "</b>", $detail_evt->levt_texte);
+                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso_dlt->perso_nom . "</b>", $detail_evt->levt_texte);
                 if ($detail_evt->levt_attaquant != '')
                 {
                     $texte_evt = str_replace('[attaquant]', "<b>" . $perso_attaquant->perso_nom . "</b>", $texte_evt);
@@ -227,7 +229,7 @@ if ($autorise == 1)
                 $date_evt = new DateTime($detail_evt->levt_date);
                 echo $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
             }
-            $perso->marqueEvtLus();
+            $perso_dlt->marqueEvtLus();
             //$req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
             //$db->query($req_raz_evt);
         }

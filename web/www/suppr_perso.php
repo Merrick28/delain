@@ -1,5 +1,4 @@
 <?php 
-//include "connexion.php";
 include "includes/classes.php";
 include "ident.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));

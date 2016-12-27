@@ -1,5 +1,4 @@
 <?php 
-//include "connexion.php";
 include "includes/classes.php";
 include "ident.php";
 $db = new base_delain;

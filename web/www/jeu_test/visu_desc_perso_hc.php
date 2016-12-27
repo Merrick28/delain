@@ -1,5 +1,4 @@
 <?php 
-//include "../connexion.php";
 include "../includes/classes.php";
 ?>
 <html>
