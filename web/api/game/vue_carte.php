@@ -1,5 +1,4 @@
 <?php
-//require '/home/delain/public_html/www/includes/delain_header.php';
 define('NOGOOGLE',1);
 //require_once G_CHE . "jeu/verif_connexion.php";
 include 'classes.php';

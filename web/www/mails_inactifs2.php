@@ -1,6 +1,5 @@
 <?php 
 require '/usr/local/phplib-7.4a/php/prepend.php';
-#require '/home/delain/public_html/www/includes/delain_header.php';
 require '/home/delain/public_html/www/includes/classes.php';
 require '/home/delain/public_html/www/includes/class.smtp.inc';
 require('Mail.php');

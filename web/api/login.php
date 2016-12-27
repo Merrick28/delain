@@ -1,8 +1,6 @@
 <?
 define('NOGOOGLE',1);
 echo $var1;
-// on fait le require qui va bien
-//require '/home/delain/public_html/www/includes/delain_header.php';
 // on a en entrée : $numappli,$numcompte,$id,$cle,$extension
 require "classes.php";
 // a partir d'ici, on peut commencer à requêter
