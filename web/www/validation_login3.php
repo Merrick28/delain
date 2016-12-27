@@ -134,7 +134,7 @@ if ($autorise == 1)
                     $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
                     if($tab_fam !== false)
                     {
-                        echo "<!-- DEBUG FAMILIER : familier-->";
+                        echo "<!-- DEBUG FAMILIER perso " . $temp_perso->perso_cod . " : familier-->";
                         // il a un familier, on le charge
                         $perso_fam = new perso;
                         if($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
@@ -159,7 +159,7 @@ if ($autorise == 1)
                     }
                     else
                     {
-                        echo "<!-- DEBUG FAMILIER : pas familier-->";
+                        echo "<!-- DEBUG FAMILIER perso " . $temp_perso->perso_cod . " : pas familier-->";
                     }
                 }
 
