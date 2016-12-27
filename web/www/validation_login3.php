@@ -143,31 +143,35 @@ if ($autorise == 1)
                     {
                         echo "<script>debug('DEBUG FAMILIER perso " . $temp_perso->perso_cod . ": familier')</script>";
                         echo "<!-- DEBUG FAMILIER perso " . $temp_perso->perso_cod . " : familier-->";
-                        // il a un familier, on le charge
-                        $perso_fam = new perso;
-                        if ($perso_fam->charge($tab_fam[0]->pfam_familier_cod))
+                        // il a au moins un familier, on boucle
+                        foreach ($tab_fam as $detail_fam)
                         {
-                            echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " chargé')</script>";
-                            echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " chargé -->";
-                            if ($perso_fam->perso_actif == 'O')
+                            $perso_fam = new perso;
+                            if ($perso_fam->charge($detail_fam->pfam_familier_cod))
                             {
-                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " actif')</script>";
-                                echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " actif -->";
-                                // il est actif, on l'ajoute
-                                $tableau_numeros[] = $perso_fam->perso_cod;
-                                $tableau_noms[]    = $perso_fam->perso_nom;
+                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " chargé')</script>";
+                                echo "<!-- DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " chargé -->";
+                                if ($perso_fam->perso_actif == 'O')
+                                {
+                                    echo "<script>debug('DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " actif')</script>";
+                                    echo "<!-- DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " actif -->";
+                                    // il est actif, on l'ajoute
+                                    $tableau_numeros[] = $perso_fam->perso_cod;
+                                    $tableau_noms[]    = $perso_fam->perso_nom;
+                                }
+                                else
+                                {
+                                    echo "<script>debug('DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " non actif')</script>";
+                                    echo "<!-- DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " non actif -->";
+                                }
                             }
                             else
                             {
-                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non actif')</script>";
-                                echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non actif -->";
+                                echo "<script>debug('DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " NON chargé')</script>";
+                                echo "<!-- DEBUG FAMILIER : perso_fam " . $detail_fam->pfam_familier_cod . " non chargé -->";
                             }
                         }
-                        else
-                        {
-                            echo "<script>debug('DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " NON chargé')</script>";
-                            echo "<!-- DEBUG FAMILIER : perso_fam " . $tab_fam[0]->pfam_familier_cod . " non chargé -->";
-                        }
+
                     }
                     else
                     {
