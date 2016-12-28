@@ -24,12 +24,12 @@ class perso_familier
      * @param integer $code => PK
      * @return boolean => false si non trouvé
      */
-    function charge($code)
+    function charge($code,$pfam_familier_cod)
     {
         $pdo  = new bddpdo;
-        $req  = "SELECT * FROM perso_familier WHERE pfam_perso_cod = ?";
+        $req  = "SELECT * FROM perso_familier WHERE pfam_perso_cod = ? and pfam_familier_cod = ?";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($code), $stmt);
+        $stmt = $pdo->execute(array($code,$pfam_familier_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -94,12 +94,12 @@ class perso_familier
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "SELECT pfam_perso_cod  FROM perso_familier ORDER BY pfam_perso_cod";
+        $req    = "SELECT pfam_perso_cod,pfam_familier_cod  FROM perso_familier ORDER BY pfam_perso_cod";
         $stmt   = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
             $temp = new perso_familier;
-            $temp->charge($result["pfam_perso_cod"]);
+            $temp->charge($result["pfam_perso_cod"],$result['pfam_familier_cod']);
             $retour[] = $temp;
             unset($temp);
         }
@@ -115,13 +115,13 @@ class perso_familier
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "SELECT pfam_perso_cod  FROM perso_familier WHERE " . substr($name, 6) . " = ? ORDER BY pfam_perso_cod";
+                    $req    = "SELECT pfam_perso_cod,pfam_familier_cod  FROM perso_familier WHERE " . substr($name, 6) . " = ? ORDER BY pfam_perso_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
                         $temp = new perso_familier;
-                        $temp->charge($result["pfam_perso_cod"]);
+                        $temp->charge($result["pfam_perso_cod"],$result['pfam_familier_cod']);
                         $retour[] = $temp;
                         unset($temp);
                     }
