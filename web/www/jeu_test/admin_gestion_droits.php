@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 
 function writelog($textline){
-	$filename= G_CHE . "../logs/droit_edit.log"; // or whatever your path and filename
+	$filename= G_CHE . "../../logs/droit_edit.log"; // or whatever your path and filename
 	if (is_writable($filename)) {
 		if (!$handle = fopen($filename, 'a')) {
 			echo "Cannot open file ($filename)";
