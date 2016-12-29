@@ -26,7 +26,7 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_gen
 						left outer join perso_identifie_objet ON pio_obj_cod = obj_cod and pio_perso_cod = $perso_cod
 						where pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
 							and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
-							and pos_etage = $new_etage
+							and pos_etage = $etage
 						order by distance, tobj_libelle, pos_x, pos_y";
 $db->query($req_vue_joueur);
 $nb_joueur_en_vue = $db->nf();
