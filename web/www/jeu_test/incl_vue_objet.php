@@ -93,7 +93,7 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj,por_qte,por_
 $req_vue_joueur = $req_vue_joueur . "from or_position,positions ";
 $req_vue_joueur = $req_vue_joueur . "where pos_x between ($x-$distance_vue) and ($x+$distance_vue) ";
 $req_vue_joueur = $req_vue_joueur . "and pos_y between ($y-$distance_vue) and ($y+$distance_vue) ";
-$req_vue_joueur = $req_vue_joueur . "and pos_etage = $new_etage ";
+$req_vue_joueur = $req_vue_joueur . "and pos_etage = $etage ";
 $req_vue_joueur = $req_vue_joueur . "and pos_cod = por_pos_cod ";
 $req_vue_joueur = $req_vue_joueur . "order by distance,pos_x,pos_y";
 $db->query($req_vue_joueur);
