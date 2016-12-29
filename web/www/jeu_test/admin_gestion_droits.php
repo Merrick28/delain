@@ -426,7 +426,7 @@ if ($erreur == 0)
 					dcompt_animations = '$anims',
 					dcompt_magie = '$magie',
 					dcompt_factions = '$factions'
-				where dcompt_compt_cod = $compte";
+				where dcompt_compt_cod = $compt_cod";
 			$db->query($req);
 			$log = $log . "dcompt_modif_perso = '$modif_perso',
 				dcompt_creer_monstre = '$creer_monstre',
