@@ -48,7 +48,7 @@ $db->query($req);
 		{
 			$reference = ($db->f("etage_numero") == $db->f("etage_reference"));
 			$etage_num = $db->f("etage_numero");
-			$selected = ($new_etage == $etage_num) ? "selected='selected'" : '';
+			$selected = ($etage == $etage_num) ? "selected='selected'" : '';
 			echo "<OPTION value='$etage_num' $selected>" . ($reference?'':' |-- ') . $db->f("etage_libelle") . "</OPTION>\n";
 		}
 	?>
@@ -73,7 +73,7 @@ $req_monstre = $req_monstre . "inner join positions on pos_cod = ppos_pos_cod ";
 $req_monstre = $req_monstre . "left outer join perso_compte on pcompt_perso_cod = perso_cod ";
 $req_monstre = $req_monstre . "left outer join compte on compt_cod = pcompt_compt_cod ";
 $req_monstre = $req_monstre . "where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' ";
-$req_monstre = $req_monstre . "and pos_etage = $new_etage ";
+$req_monstre = $req_monstre . "and pos_etage = $etage ";
 $req_monstre = $req_monstre . "order by pos_x,pos_y,perso_nom ";
 $db->query($req_monstre);
 $nb_monstre = $db->nf();
@@ -144,7 +144,7 @@ else
 
 }
 
-if ($new_etage == -100)
+if ($etage == -100)
 {
 ?>    Suppression de monstres<br />
     <i>Entrez les numéros séparés par des ";"</i><br />

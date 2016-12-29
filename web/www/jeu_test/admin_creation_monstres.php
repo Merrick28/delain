@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$etage = $_REQUEST['etage'];
 //
 //Contenu de la div de droite
 //
@@ -97,7 +97,7 @@ if ($erreur == 0)
 					{
 						if($utiliser_test == "OUI")
 						{
-							$req = "select cree_monstre_test($gmon_cod,$new_etage) as num_mons ";
+							$req = "select cree_monstre_test($gmon_cod,$etage) as num_mons ";
 							$db->query($req);
 							$db->next_record();
 							$mon_cod = $db->f("num_mons");
@@ -139,13 +139,13 @@ if ($erreur == 0)
 						$pmons_mod_nom = $gmon_nom;
 						$perso_nom = 'Perso: '.$perso_cod;
 					}
-					writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $new_etage\n");
+					writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n");
 				}
 			break;
 
 			case "deposer_armée":
 				$err_depl = 0;
-				$req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $new_etage ";
+				$req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
 				$db->query($req);
 				if ($db->nf() == 0)
 				{
@@ -225,8 +225,8 @@ if ($erreur == 0)
 								$pmons_mod_nom = $gmon_nom;
 								$perso_nom = 'Perso : '.$perso_cod;
 							}
-							echo "Création de $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $new_etage<br />";
-							writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $new_etage\n");
+							echo "Création de $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage<br />";
+							writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n");
 						}
 					}
 					
@@ -294,7 +294,7 @@ if ($erreur == 0)
 	Y : <input type="text" name="pos_y" maxlength="5" size="5" value="<?php echo $pos_y?>"> -
 	Étage : <select name="etage">
 	<?php 
-		echo $html->etage_select($new_etage);
+		echo $html->etage_select($etage);
 	?>
 	</select><br>
 	Monstre : <select name="gmon_cod">
@@ -333,7 +333,7 @@ if ($erreur == 0)
 	Y : <input type="text" name="pos_y" maxlength="5" size="5" value="<?php echo $pos_y?>"> -
 	Étage : <select name="etage">
 	<?php 
-		echo $html->etage_select($new_etage);
+		echo $html->etage_select($etage);
 	?>
 	</select><br>
 	<label for='commandant'>Définir un commandant ? <input type='checkbox' id='commandant' name='commandant' checked='checked' /> (celui-ci sera choisi dans le premier groupe de monstres créés ci-dessous) </label>
