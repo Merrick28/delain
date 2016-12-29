@@ -45,6 +45,7 @@ $contenu_page = '';
 $erreur = 0;
 $req = "select dcompt_gere_droits from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
+$compte = $_REQUEST['compte'];
 
 if ($db->nf() == 0)
 {
