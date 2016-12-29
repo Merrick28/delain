@@ -35,7 +35,7 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
 		LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 		LEFT OUTER JOIN lock_combat l1 ON l1.lock_cible = perso_cod AND l1.lock_attaquant = $perso_cod
 		LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
-		WHERE pos_etage = $new_etage 
+		WHERE pos_etage = $etage 
 			and perso_type_perso = 1 
 			and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
 			and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
