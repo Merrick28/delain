@@ -495,11 +495,12 @@ switch ($methode)
 	break;
 
 	case "move_perso":
-		$err_depl = 0;
-		$req = "select pos_cod, etage_arene,
+	    $new_etage = $_REQUEST['etage'];
+		$err_depl  = 0;
+		$req       = "select pos_cod, etage_arene,
 				pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position from positions
 			inner join etage on etage_numero = pos_etage
-			where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
+			where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $new_etage ";
 		$db->query($req);
 		if ($db->nf() == 0)
 		{
@@ -554,13 +555,13 @@ switch ($methode)
 					$req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
 					$db->query($req);
 					$req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
-						values($mod_perso_cod, $etage, $anc_pos_cod, now()) ";
+						values($mod_perso_cod, $new_etage, $anc_pos_cod, now()) ";
 					$db->query($req);
 					$log .= "\nCette position est en arène : le personnage en ressortira à sa position d’origine.";
 				break;
 
 				case 'OO':	// D’une arène vers une autre
-					$req = "update perso_arene set parene_etage_numero = $etage where parene_perso_cod = $mod_perso_cod";
+					$req = "update perso_arene set parene_etage_numero = $new_etage where parene_perso_cod = $mod_perso_cod";
 					$db->query($req);
 					$log .= "\nCette position est en arène, le perso était déjà dans une arène : il ressortira à la position d’où il est rentré dans la première arène.";
 				break;

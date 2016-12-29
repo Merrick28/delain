@@ -47,7 +47,7 @@ $req_monstre = $req_monstre . "from perso,perso_position,positions ";
 $req_monstre = $req_monstre . "where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' ";
 $req_monstre = $req_monstre . "and ppos_perso_cod = perso_cod ";
 $req_monstre = $req_monstre . "and ppos_pos_cod = pos_cod ";
-$req_monstre = $req_monstre . "and pos_etage = $etage ";
+$req_monstre = $req_monstre . "and pos_etage = $new_etage ";
 $req_monstre = $req_monstre . "order by pos_x,pos_y,perso_nom ";
 $db->query($req_monstre);
 $nb_monstre = $db->nf();
@@ -136,7 +136,7 @@ else
 </table>
 </form>
 
-<?php if ($etage == -100)
+<?php if ($new_etage == -100)
 {
 ?>    Suppression de monstres<br />
     <i>Entrez les numéros séparés par des ";"</i><br />

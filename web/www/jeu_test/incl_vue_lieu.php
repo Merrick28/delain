@@ -3,7 +3,7 @@ $req_vue_joueur = "select lieu_nom,tlieu_libelle,distance(pos_cod,$pos_cod) as d
 $req_vue_joueur = $req_vue_joueur . "from lieu,lieu_type,lieu_position,positions ";
 $req_vue_joueur = $req_vue_joueur . "where pos_x between ($x-$distance_vue) and ($x+$distance_vue) ";
 $req_vue_joueur = $req_vue_joueur . "and pos_y between ($y-$distance_vue) and ($y+$distance_vue) ";
-$req_vue_joueur = $req_vue_joueur . "and pos_etage = $etage ";
+$req_vue_joueur = $req_vue_joueur . "and pos_etage = $new_etage ";
 $req_vue_joueur = $req_vue_joueur . "and lpos_pos_cod = pos_cod ";
 $req_vue_joueur = $req_vue_joueur . "and lpos_lieu_cod = lieu_cod ";
 $req_vue_joueur = $req_vue_joueur . "and lieu_tlieu_cod = tlieu_cod ";

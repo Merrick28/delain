@@ -35,10 +35,11 @@ if (!isset($methode))
 {
 	$methode = 'debut';
 }
+$admin_etage = $_REQUEST['etage'];
 
-if(!isset($etage) && $methode == 'debut')
+if(!isset($admin_etage) && $methode == 'debut')
 {
-	$etage = 0;
+	$admin_etage = 0;
 }
 
 ?>
@@ -47,7 +48,7 @@ if(!isset($etage) && $methode == 'debut')
 	<form method='post' action='$PHP_SELF'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
-	$html->etage_select($etage) .
+	$html->etage_select($admin_etage) .
 	"</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
 	<p><b>Autres outils</b><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
@@ -61,11 +62,11 @@ switch($methode)
 
 	case "dessine":
 	?>
-		<link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php  echo $etage; ?>&source=fichiers" title="essai">
+		<link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php  echo $admin_etage; ?>&source=fichiers" title="essai">
 		<script type="text/javascript" src="../scripts/admin_etage_code.js"></script>
 		<script type="text/javascript" src="../scripts/admin_etage_pinceau.js"></script>
 		<script type="text/javascript" src="../scripts/manip_css.js"></script>
-		<script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php  echo $etage; ?>"></script>
+		<script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php  echo $admin_etage; ?>"></script>
 		<div class="bordiv">
 			<table>
 				<tr><td><b>Pinceau</b></td><td><b>Fonds</b></td><td><b>Décors</b></td><td><b>Murs</b></td><td><b>Décors superposés</b></td><td><b>Spécial</b></td></tr>
@@ -118,7 +119,7 @@ switch($methode)
 			Etage.Dessine();
 		</script>
 		<form name="plateau" method="POST" action="<?php  echo $PHP_SELF; ?>" onsubmit="Etage.ecrireModifs();">
-			<input type="hidden" name="etage" value="<?php  echo $etage; ?>" />
+			<input type="hidden" name="etage" value="<?php  echo $admin_etage; ?>" />
 			<input type="hidden" name="methode" value="valide" />
 			<input type="hidden" name="modifs" value="" />
 			<center><input type="submit" class="test" value="Modifier !"></center>
@@ -127,7 +128,7 @@ switch($methode)
 
 	case "valide":
 		$erreur = false;
-		if (!isset($etage) || $etage === '')
+		if (!isset($admin_etage) || $admin_etage === '')
 		{
 			echo "<p>Erreur ! Étage non défini.</p>";
 			$erreur = true;
@@ -164,7 +165,7 @@ switch($methode)
 				if ($case == "") continue;
 				$req_case = "select pos_type_aff, coalesce(mur_type, -1) as mur_type, pos_decor, pos_decor_dessus
 					from positions left outer join murs on mur_pos_cod = pos_cod
-					where pos_cod = $case AND pos_etage = $etage";
+					where pos_cod = $case AND pos_etage = $admin_etage";
 				if ($db->get_one_record($req_case))
 				{
 					$mur_ancien = $db->f('mur_type');
@@ -249,7 +250,7 @@ switch($methode)
 				$cpt_tan murs tangibles modifiés<br />
 				$cpt_erreur erreurs détectées<br /></p>";
 
-			$req = "select init_automap($etage) ";
+			$req = "select init_automap($admin_etage) ";
 			$db->query($req);
 			echo "<p>Changements validés dans les automaps.</p>";
 		}

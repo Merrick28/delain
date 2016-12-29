@@ -34,7 +34,7 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangi
 	LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
 	LEFT OUTER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 	LEFT OUTER JOIN compte ON compt_cod = pcompt_compt_cod 
-	WHERE pos_etage = $etage
+	WHERE pos_etage = $new_etage
 		and perso_type_perso in (2,3)
 		and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
 		and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 

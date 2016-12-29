@@ -38,15 +38,15 @@ if ($droit['modif_perso'] != 'O')
 	$erreur2 = 1;
 }
 $contenu_page .= '';
-
+$monstre_etage                     = $_REQUEST['etage'];
 if (!isset($monstre))
     $monstre = '';
 if (!isset($pos_x))
     $pos_x = '';
 if (!isset($pos_y))
     $pos_y = '';
-if (!isset($etage))
-    $etage = '';
+if (!isset($monstre_etage))
+    $monstre_etage = '';
 //
 // initialisation tableau
 //
@@ -87,7 +87,7 @@ if ($erreur2 != 1)
 			<b>Position Y : </b><input type="text" name="pos_y" size="5" value="'. $pos_y .'">
 			<b>Étage : </b><select name="etage">';
 
-	$contenu_page .= $html->etage_select($etage);
+	$contenu_page .= $html->etage_select($monstre_etage);
 
 	$contenu_page .= '</select><br></p></td>
 		</tr>
@@ -156,7 +156,7 @@ if ($erreur2 != 1)
 			else
 			{
 				$req = "select pos_cod from positions 
-					where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage "; 
+					where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $monstre_etage ";
 				$db->query($req); 
 				if ($db->nf() == 0) 
 				{ 
@@ -239,7 +239,7 @@ if ($erreur2 != 1)
 									<b>Y : </b><input type="text" name="y['. $code .']" size="5" value="'. $pos_y .'">
 									<b>Étage : </b><select name="etage_monstre['. $code .']">';
 
-							$contenu_page .= $html->etage_select($etage);
+							$contenu_page .= $html->etage_select($monstre_etage);
 
 							$contenu_page .= '</select></td>';
 							//On indique le type de statisme dans le cas d’un monstre, avec possibilité de le changer
@@ -323,7 +323,7 @@ if ($erreur2 != 1)
 					$liste_monstre .= $key;
 					$pos_x1 = $x[$key];
 					$pos_y1 = $y[$key];
-					$etage = $etage_monstre[$key];
+					$monstre_etage = $etage_monstre[$key];
 
 					$gestion_ia = isset($perso_sta_combat) && isset($perso_sta_combat[$key]);
 					if ($gestion_ia)
@@ -338,7 +338,7 @@ if ($erreur2 != 1)
 						inner join etage on etage_numero = pos_etage
 						where pos_x = $pos_x1 
 							and pos_y = $pos_y1
-							and pos_etage = $etage ";
+							and pos_etage = $monstre_etage ";
 					$db->query($req);
 					if ($db->nf() == 0) 
 					{ 
@@ -376,13 +376,13 @@ if ($erreur2 != 1)
 								$req = "delete from perso_arene where parene_perso_cod = $key ";
 								$db2->query($req);
 								$req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
-									values($key, $etage, $position_depart, now()) ";
+									values($key, $monstre_etage, $position_depart, now()) ";
 								$db2->query($req);
 								$liste_monstre .= " vers une arène : position d’origine = position de sortie d’arène.";
 							break;
 
 							case 'OO':	// D’une arène vers une autre
-								$req = "update perso_arene set parene_etage_numero = $etage where parene_perso_cod = $key";
+								$req = "update perso_arene set parene_etage_numero = $monstre_etage where parene_perso_cod = $key";
 								$db2->query($req);
 								$liste_monstre .= " d’une arène vers une arène : première position d’entrée = position de sortie d’arène.";
 							break;

@@ -172,7 +172,7 @@ function toutCocher2(formulaire,nom){
 
 		case "recup_positions":
 				$contenu_page .= '<table border="1">';
-				$req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = ". $etage ." and pos_etage = etage_numero order by random() limit 1";
+				$req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = ". $new_etage ." and pos_etage = etage_numero order by random() limit 1";
 				$db->query($req_position);
 				$db->next_record();
 				$position_x = $db->f("x");
@@ -190,7 +190,7 @@ function toutCocher2(formulaire,nom){
 						if(($y*$y + $x*$x) < $variation)
 						{
 							$req_position = "select pos_cod,pos_x,pos_y from positions where
-													 pos_etage = $etage
+													 pos_etage = $new_etage
 													 and pos_x = $position_x + $x
 													 and pos_y = $position_y - $y";
 							$db->query($req_position);
@@ -268,7 +268,7 @@ function toutCocher2(formulaire,nom){
 				$requete_sql .= '<b>Liste des requêtes à lancer</b><br>';
 			  foreach ($composant as $i => $valeur)
 			  {
-					$req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = ". $etage ." and pos_etage = etage_numero order by random() limit 1";
+					$req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = ". $new_etage ." and pos_etage = etage_numero order by random() limit 1";
 					$db->query($req_position);
 					$db->next_record();
 					$position_x = $db->f("x");
@@ -285,7 +285,7 @@ function toutCocher2(formulaire,nom){
 								if(($y*$y + $x*$x) < $variation)
 								{
 									$req_position = "select pos_cod,pos_x,pos_y from positions where
-															 pos_etage = $etage
+															 pos_etage = $new_etage
 															 and pos_x = $position_x + $x
 															 and pos_y = $position_y - $y";
 									$db->query($req_position);
@@ -351,10 +351,10 @@ function toutCocher2(formulaire,nom){
 
 		case "effacer":
 				$req_efface = "delete from ingredient_position where
-															ingrpos_pos_cod in (select pos_cod from positions,etage where pos_etage = $etage and pos_etage = etage_numero)";
+															ingrpos_pos_cod in (select pos_cod from positions,etage where pos_etage = $new_etage and pos_etage = etage_numero)";
 				$db->query($req_efface);
 				$db->next_record();
-				$req_position = "select etage_libelle from etage where etage_numero = ". $etage;
+				$req_position = "select etage_libelle from etage where etage_numero = ". $new_etage;
 				$db->query($req_position);
 				$db->next_record();
 				$etage2 = $db->f("etage_libelle");
