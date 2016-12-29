@@ -426,7 +426,7 @@ if ($erreur == 0)
 					dcompt_animations = '$anims',
 					dcompt_magie = '$magie',
 					dcompt_factions = '$factions'
-				where dcompt_compt_cod = $compt_cod";
+				where dcompt_compt_cod = $vcompte";
 			$db->query($req);
 			$log = $log . "dcompt_modif_perso = '$modif_perso',
 				dcompt_creer_monstre = '$creer_monstre',
@@ -453,7 +453,7 @@ if ($erreur == 0)
 		break;
 
 		case "cree":
-			$req = "insert into compt_droit (dcompt_compt_cod) values ($compte) ";
+			$req = "insert into compt_droit (dcompt_compt_cod) values ($vcompte) ";
 			$db->query($req);
 		?>
 			<p>Les droits ont bien été créés !<br>
