@@ -39,7 +39,7 @@ Les souterrains de Delain est un jeu ancien, écrit par des amateurs, en fonctio
 A cause de cela, il est possible d'y trouver des failles de sécurité. Il est demandé de les signaler (ou mieux, de les corriger) plutôt que de les exploiter.
 
 ## Installation et documentation
-La procédure d'installation se trouve dans le ["wiki"](/wiki) associé au projet
+La procédure d'installation se trouve dans le [wiki](../..//wiki) associé au projet
 
 
 
