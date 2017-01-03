@@ -1,6 +1,9 @@
 <?php 
 include "includes/classes.php";
 include "ident.php";
+// à partir d'ici, la variable $compte est déjà définie dans ident.php
+
+
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 echo '<html>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">

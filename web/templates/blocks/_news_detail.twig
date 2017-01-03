@@ -1,0 +1,12 @@
+<p class="titre">{{ news.news_titre }}</p>
+<p class="texteNorm" style="text-align:right;">{{ news.date_news|date('d/m/Y') }}</p>
+<p class="texteNorm">
+    {{ news.news_texte }}
+</p>
+<p class="texteNorm" style="text-align:right;">
+    {% if news.news_mail_auteur is empty %}
+        {{ news.news_auteur }}
+    {% else %}
+        <a href="mailto:{{ news.news_mail_auteur }}">{{ news.news_auteur }}</a>
+    {% endif %}
+</p>

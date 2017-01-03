@@ -1,0 +1,56 @@
+{% extends 'index.twig' %}
+
+{% block contenu %}
+    {% if ISAUTH %}
+        {% if TYPE_PERSO == 'joueur' %}
+            {% if COMPTE.compt_hibernation == 'O' %}
+                {#
+                On est en hibernation
+                #}
+                Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}.<br/>
+                Vous ne pouvez pas vous connecter d’ici là.
+            {% else %}
+                {% if NV_MONSTRE %}
+                    {#
+                    Un nouveau monstre a été affecté
+                    #}
+                    <p class="titre">Nouveau monstre !</p>
+                    <p class="texteNorm">
+                        Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
+                    </p>
+                    {% if EVT_MONSTRE|length > 0 %}
+                        {% for ligne_evt_monstre in EVT_MONSTRE %}
+                            {{ ligne_evt_monstre }}<br/>
+                        {% endfor %}
+                    {% else %}
+                        <p>Aucun événement depuis votre dernière DLT</p>
+                    {% endif %}
+                {% endif %}
+
+                {% if AFFICHE_NEWS|length > 0 %}
+                    {% for news in AFFICHE_NEWS %}
+                        {% include 'blocks/_news_detail.twig' %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if PERSOS_ACTIFS|length == 0 %}
+                    <p>Aucun joueur dirigé.</p>
+                    <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
+                {% else %}
+                    <table background="images/fondparchemin.gif" border="0">
+                        <form name="login" method="post" action="validation_login3.php">
+                            <input type="hidden" name="perso">
+                            <input type="hidden" name="activeTout" value="0">
+                            TATATA
+                        </form>
+                    </table>
+                {% endif %}
+
+
+            {% endif %}
+
+        {% endif %}
+    {% else %}
+        Authentification échouée ou expirée.
+    {% endif %}
+{% endblock %}
