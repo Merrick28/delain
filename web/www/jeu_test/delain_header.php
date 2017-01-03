@@ -57,43 +57,10 @@ if (file_exists($filename) && $_SERVER["REMOTE_ADDR"] != '195.37.61.152') {
 }
 require 'prepend.php';
 // chemins du jeu
-/*$g_url = 'http://www.jdr-delain.net/';
-$g_che = '/home/delain/public_html/www/';
-$g_images = 'http://images.jdr-delain.net/';
-$nom_cook = 'cook_pass';*/
-//$img_path='http://images.jdr-delain.net/';
 if(isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
 	$type_flux = 'https://';
 else
 	$type_flux = 'http://';
-// modif par SD : on tente les variables par apc ?
-if (!apc_exists('g_url'))
-{
-    apc_store('g_url', G_URL);
-}
-if (!apc_exists('g_che'))
-{
-    apc_store('g_che', G_CHE);
-}
-if (!apc_exists('g_images'))
-{
-    apc_store('g_images', G_IMAGES);
-}
-if (!apc_exists('nom_cook'))
-{
-    apc_store('nom_cook', NOM_COOK);
-}
-if (!apc_exists('img_path'))
-{
-    apc_store('img_path', IMG_PATH);
-}
-// clé de connection
-$init = rand(1,10000);
-if($init <= 10 )
-	apc_delete('cle_connec');
-if(!apc_exists('cle_connec'))
-	apc_store('cle_connec',uniqid('',true));
 
 // on commence la temporisation de sortie
 ob_start();
-trigger_error('hend');

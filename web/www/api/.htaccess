@@ -1,8 +1,0 @@
-php_value error_log /home/delain/delain/web/www/debug/php.log
-php_value include_path .:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes
-php_value auto_prepend_file  /home/delain/delain/web/www/includes/delain_header.php
-php_value auto_append_file /home/delain/delain/web/www/includes/delain_footer.php
-RewriteRule ^linkrequest-([0-9]+)/([0-9]+).([a-z]+)$  /linkrequest.php?numappli=$1&numcompte=$2&extension=$3 [L]
-RewriteRule ^getkey-([0-9]+)/([0-9]+).([a-z]+)$  /getkey.php?numappli=$1&numcompte=$2&extension=$3 [L]
-RewriteRule ^login-([0-9]+)/([0-9]+)/([a-z0-9]+)/([a-z0-9]+).([a-z]+)$  /login.php?numappli=$1&numcompte=$2&id=$3&cle=$4&extension=$5 [L]
-RewriteRule ^game/([a-z0-9]+)-([0-9]+)-([0-9]+)/([a-z0-9]+).([a-z]+)$  /game/$1.php?type_auth=externe&ext_appli=2&ext_perso_cod=$3&ext_session_id=$4&extension=$5 [L]
