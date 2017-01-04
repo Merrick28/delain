@@ -1368,7 +1368,7 @@ class perso
     function get_guilde()
     {
         $pdo = new bddpdo();
-        $req = "select pguilde_guilde_cod where pguilde_perso_cod = ?
+        $req = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
             and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod),$stmt);
