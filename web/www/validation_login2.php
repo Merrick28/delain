@@ -213,6 +213,20 @@ if ($verif_auth)
         {
             if($perso_actif->perso_type_perso == 1)
             {
+                $position = $perso_actif->get_position();
+                $guilde = $perso_actif->get_guilde();
+
+                global $type_flux;
+                global $is_log;
+
+                if ($perso_actif->perso_avatar == '')
+                {
+                    $perso_actif->avatar = G_IMAGES . $tab_perso->perso_race_cod . "_" . $tab_perso->perso_sex . ".png";
+                }
+                else
+                {
+                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $tab_perso->perso_avatar;
+                }
                 $perso_joueur[] = $perso_actif;
             }
             if($perso_actif->perso_type_perso == 2)
