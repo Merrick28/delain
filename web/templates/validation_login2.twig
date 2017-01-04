@@ -43,16 +43,23 @@
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
-                                    <tr>
-                                        {% for PERSO in PERSOS_JOUEURS %}
+                                {% for TEMP_PERSO in PERSOS_ACTIFS %}
+                                {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
+                                {% if loop.index == 1 %}
+                                <tr>
+                                    {% endif %}
+                                    {% if LOOP.index is divisible by(TAILLE) %}
+                                </tr>
+                                <tr>
+                                    {% endif %}
+                                    {% endfor %}
 
-                                            <td valign="top" width="{{ TAILLE }}%">
-                                                {% include 'blocks/_single_perso_switch.twig' %}
-                                            </td>
+
+                                    <td valign="top" width="{{ TAILLE }}%">
+                                        {% include 'blocks/_single_perso_switch.twig' %}
+                                    </td>
 
 
-                                        {% endfor %}
-                                    </tr>
                             </form>
                         </table>
                     {% endif %}
