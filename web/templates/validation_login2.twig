@@ -42,7 +42,11 @@
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
-                                TATATA
+
+
+                                {% for PERSO in PERSOS_JOUEURS %}
+                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                {% endfor %}
                             </form>
                         </table>
                     {% endif %}

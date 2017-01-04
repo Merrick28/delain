@@ -82,6 +82,21 @@ class compte
         return $result['autorise_monstre'];
     }
 
+    function autorise_4e_perso()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select autorise_4e_perso(?, ?) as autorise_4e_perso ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
+        $result = $stmt->fetch();
+        return $result['autorise_4e_perso'];
+    }
+
+    function autorise_4e_global()
+    {
+        return $this->autorise_4e_monstre()||$this->autorise_4e_perso();
+    }
+
     function attribue_monstre_4e_perso()
     {
         $pdo    = new bddpdo;
@@ -108,7 +123,7 @@ class compte
         $pdo    = new bddpdo;
         $req    = "SELECT pcompt_perso_cod, perso_nom FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
-						WHERE pcompt_compt_cod = ? AND perso_actif = 'O'";
+						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' order by pcompt_perso_cod";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
         while($result = $stmt->fetch())
@@ -119,6 +134,13 @@ class compte
             unset($temp);
         }
         return $retour;
+    }
+
+    function getQuatrieme()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+
     }
 
     /**

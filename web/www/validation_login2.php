@@ -17,6 +17,7 @@ if ($verif_auth)
 {
     $compte->compt_der_connex = date('Y-m-d H:i:s');
     $compte->stocke();
+    $evt_monstre = array();
     if ($is_admin_monstre === true)
     {
         // TODO : mettre en template
@@ -143,7 +144,7 @@ if ($verif_auth)
 
         if ($compte->compt_der_news < $news_cod)
         {
-            $affiche_news = $news->getNewsSup($compte->compt_der_news);
+            $affiche_news           = $news->getNewsSup($compte->compt_der_news);
             $compte->compt_der_news = $news_cod;
         }
         if ($nv_monstre)
@@ -153,7 +154,7 @@ if ($verif_auth)
             if ($monstre_cod > 0)
             {
                 // on récupère les événements du monstre pour les afficher.
-                $evt_monstre    = array();
+
                 $ancien_monstre = new perso;
                 $ancien_monstre->charge($monstre_cod);
                 $liste_evt = $ancien_monstre->getEvtNonLu();
@@ -196,43 +197,31 @@ if ($verif_auth)
 
         $persos_actifs = $compte->getPersosActifs();
 
-        $req_perso = "SELECT pcompt_perso_cod, perso_nom FROM perso
-						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
-						WHERE pcompt_compt_cod = $compt_cod AND perso_actif = 'O'";
-        $db        = new base_delain;
-        $db->query($req_perso);
-        $nb_perso = $db->nf();
-        ob_start();
-        if ($nb_perso == 0)
+        //include "tab_switch.php";
+        // on est dans le futur ancien tab_switch
+        // il y a pas mal d'actions qu'il va falloir checker
+        $nb_perso_max   = $compte->compt_ligne_perso * 3;
+        $nb_perso_ligne = 3;
+        if ($compte->autorise_4e_global())
         {
-            echo("<p>Aucun joueur dirigé.</p>");
-            echo("<form name=\"nouveau\" method=\"post\">");
-            echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
-
-            echo("<a href=\"javascript:document.nouveau.action='cree_perso_compte.php';document.nouveau.submit();\">Créer un nouveau personnage !</a>");
-            echo("</form>");
+            $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
+            $nb_perso_ligne = 4;
         }
-        else
+        $taille = 100 / $nb_perso_ligne;
+        $type_4 = $compte->compt_type_quatrieme;
+        foreach($persos_actifs as $perso_actif)
         {
-            echo("<table background=\"images/fondparchemin.gif\" border=\"0\">");
-            echo("<form name=\"login\" method=\"post\" action=\"validation_login3.php\">");
-            echo("<input type=\"hidden\" name=\"perso\">");
-            echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
-            //echo("<input type=\"hidden\" name=\"password\" value=\"$pass\">");
-            echo("<input type=\"hidden\" name=\"activeTout\" value=\"0\">");
-
-            //include "tab_switch.php";
-
-            echo("</table>");
-            echo("</form>");
+            if($perso_actif->perso_type_perso == 1)
+            {
+                $perso_joueur[] = $perso_actif;
+            }
+            if($perso_actif->perso_type_perso == 2)
+            {
+                $perso_quatrieme[] = $perso_actif;
+            }
         }
 
-        echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><b>se déconnecter</b></a></p>";
-        echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') . "</i></p>";
 
-
-        echo '</div></body></html>';
-        ob_clean();
     }
 
 }
@@ -249,7 +238,9 @@ $options_twig = array(
     'NV_MONSTRE' => $nv_monstre,
     'EVT_MONSTRE' => $evt_monstre,
     'AFFICHE_NEWS' => $affiche_news,
-    'PERSOS_ACTIFS' => $persos_actifs
+    'PERSOS_ACTIFS' => $persos_actifs,
+    'PERSOS_JOUEURS' => $perso_joueur,
+    'PERSOS_QUATRIEME' => $perso_quatrieme
 );
 echo $template->render($options_twig);
 
