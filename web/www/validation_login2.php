@@ -136,7 +136,7 @@ if ($verif_auth)
         {
             $monstre_temp = new perso;
             $monstre_temp->charge($monstre_joueur);
-            $monstre_cod = $monstre_joueur->perso_cod;
+            $monstre_cod = $monstre_temp->perso_cod;
         }
 
         $nv_monstre = $compte->attribue_monstre_4e_perso();
