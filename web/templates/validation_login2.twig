@@ -42,11 +42,17 @@
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
-
+                                <table>
 
                                 {% for PERSO in PERSOS_JOUEURS %}
-                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                    <tr>
+                                        <td valign="top" width="{{  TAILLE }}%">
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </td>
+                                    </tr>
+
                                 {% endfor %}
+                                </table>
                             </form>
                         </table>
                     {% endif %}

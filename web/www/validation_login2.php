@@ -254,7 +254,8 @@ $options_twig = array(
     'AFFICHE_NEWS' => $affiche_news,
     'PERSOS_ACTIFS' => $persos_actifs,
     'PERSOS_JOUEURS' => $perso_joueur,
-    'PERSOS_QUATRIEME' => $perso_quatrieme
+    'PERSOS_QUATRIEME' => $perso_quatrieme,
+    'TAILLE' => $taille
 );
 echo $template->render($options_twig);
 
