@@ -43,15 +43,16 @@
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
                                 <table>
-
-                                {% for PERSO in PERSOS_JOUEURS %}
                                     <tr>
-                                        <td valign="top" width="{{  TAILLE }}%">
-                                            {% include 'blocks/_single_perso_switch.twig' %}
-                                        </td>
-                                    </tr>
+                                        {% for PERSO in PERSOS_JOUEURS %}
 
-                                {% endfor %}
+                                            <td valign="top" width="{{ TAILLE }}%">
+                                                {% include 'blocks/_single_perso_switch.twig' %}
+                                            </td>
+
+
+                                        {% endfor %}
+                                    </tr>
                                 </table>
                             </form>
                         </table>
