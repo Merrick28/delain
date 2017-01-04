@@ -256,7 +256,8 @@ $options_twig = array(
     'PERSOS_ACTIFS' => $persos_actifs,
     'PERSOS_JOUEURS' => $perso_joueur,
     'PERSOS_QUATRIEME' => $perso_quatrieme,
-    'TAILLE' => $taille
+    'TAILLE' => $taille,
+    'PERSO_PAR_LIGNE' => $nb_perso_ligne
 );
 echo $template->render($options_twig);
 

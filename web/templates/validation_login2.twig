@@ -45,24 +45,28 @@
                                 <input type="hidden" name="activeTout" value="0">
                                 {% set CURRENT_LINE = 0 %}
                                 {% for TEMP_PERSO in PERSOS_ACTIFS %}
-                                {% set CURRENT_LINE = CURRENT_LINE + 1 %}
-                                <!-- Perso {{ loop.index }} , TAILLE {{ TAILLE }} -->
-                                {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
-                                {% if loop.index == 1 %}
-                                <tr><!-- première ligne -->
+                                    {% set CURRENT_LINE = CURRENT_LINE + 1 %}
+                                    <!-- Perso {{ loop.index }} , TAILLE {{ TAILLE }} -->
+                                    {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
+                                    {% if loop.index == 1 %}
+                                        <tr><!-- première ligne -->
                                     {% endif %}
-                                    {% if CURRENT_LINE == TAILLE %}
-                                    {% set CURRENT_LINE = 0 %}
-                                    <!-- On dépasse la taille, retour à la ligne -->
-                                </tr>
-                                <tr>
+                                    {% if CURRENT_LINE == PERSO_PAR_LIGNE AND NOT loop.last %}
+                                        {% set CURRENT_LINE = 0 %}
+                                        <!-- On dépasse la taille, retour à la ligne -->
+                                        </tr>
+                                        <tr>
+                                    {% endif %}
+                                    {% if loop.last %}
+                                        <!-- Dernière ligne -->
+                                        </tr>
                                     {% endif %}
 
 
                                     <td valign="top" width="{{ TAILLE }}%">
                                         {% include 'blocks/_single_perso_switch.twig' %}
                                     </td>
-                                    {% endfor %}
+                                {% endfor %}
 
                             </form>
                         </table>
