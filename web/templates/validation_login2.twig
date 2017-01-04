@@ -43,13 +43,16 @@
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
+                                {% set CURRENT_LINE = 0 %}
                                 {% for TEMP_PERSO in PERSOS_ACTIFS %}
-                                <!-- Perso {{  loop.index }} -->
+                                {% set CURRENT_LINE = CURRENT_LINE + 1 %}
+                                <!-- Perso {{ loop.index }} , TAILLE {{ TAILLE }} -->
                                 {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
                                 {% if loop.index == 1 %}
                                 <tr><!-- première ligne -->
                                     {% endif %}
-                                    {% if LOOP.index is divisible by(TAILLE) %}
+                                    {% if CURRENT_LINE == TAILLE %}
+                                    {% set CURRENT_LINE = 0 %}
                                     <!-- On dépasse la taille, retour à la ligne -->
                                 </tr>
                                 <tr>
