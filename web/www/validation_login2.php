@@ -221,11 +221,11 @@ if ($verif_auth)
 
                 if ($perso_actif->perso_avatar == '')
                 {
-                    $perso_actif->avatar = G_IMAGES . $tab_perso->perso_race_cod . "_" . $tab_perso->perso_sex . ".png";
+                    $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
                 }
                 else
                 {
-                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $tab_perso->perso_avatar;
+                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
                 }
                 $perso_joueur[] = $perso_actif;
             }
