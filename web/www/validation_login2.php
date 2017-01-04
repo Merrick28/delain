@@ -231,7 +231,6 @@ if ($verif_auth)
 
         echo '</div></body></html>';
         ob_clean();
-        die('');
     }
 
 }
