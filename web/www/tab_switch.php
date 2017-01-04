@@ -163,7 +163,7 @@ function affiche_perso($perso_cod)
         $energie_divine = $db_divin->f("dper_points");
         $barre_divine   = barre_divine($energie_divine);
     }
-
+    ob_start();
     echo '<table width="100%" border="0">
 		<tr>
 		<td colspan="2" class="titre" valign="top"><div class="titre">' . $db->f("perso_nom") . '</div></td></tr>
@@ -274,6 +274,7 @@ function affiche_perso($perso_cod)
     }
     echo '</td></tr></table>';
     echo '</td></tr></table>';
+    ob_clean();
 }
 
 function affiche_case_perso_vide()

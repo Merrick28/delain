@@ -200,6 +200,7 @@ if ($verif_auth)
         $db        = new base_delain;
         $db->query($req_perso);
         $nb_perso = $db->nf();
+        ob_start();
         if ($nb_perso == 0)
         {
             echo("<p>Aucun joueur dirigé.</p>");
@@ -229,6 +230,7 @@ if ($verif_auth)
 
 
         echo '</div></body></html>';
+        ob_clean();
         die('');
     }
 
