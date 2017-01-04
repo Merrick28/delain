@@ -227,6 +227,7 @@ if ($verif_auth)
                 {
                     $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
                 }
+                $perso_actif->position = $perso_actif->get_position();
                 $perso_joueur[] = $perso_actif;
             }
             if($perso_actif->perso_type_perso == 2)

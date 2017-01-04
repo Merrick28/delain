@@ -11,14 +11,14 @@
     </tr>
     <tr>
         <td class="soustitre2" colspan="2">
-            <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt }}</span>
-            <br/><i>Puis ± {{ PERSO.prochaine_dlt }}</i>
+            <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</span>
+            <br/><i>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</i>
             <br/>
         </td>
     </tr>
     <tr>
-        <td class="soustitre2" colspan="2">Position : X={{ POSITION.pos.pos_x }}; Y={{ POSITION.pos.pos_y }}
-            ; {{ POSITION.etage.etage_libelle }}
+        <td class="soustitre2" colspan="2">Position : X={{ PERSO.position.pos.pos_x }}; Y={{ PERSO.position.pos.pos_y }}
+            ; {{ PERSO.position.etage.etage_libelle }}
         </td>
     </tr>
     <tr>
