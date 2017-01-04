@@ -134,6 +134,8 @@ if ($verif_auth)
         $monstre_joueur = $compte->getMonstreJoueur();
         if ($monstre_joueur !== false)
         {
+            $monstre_joueur = new perso;
+            $monstre_joueur->charge($monstre_joueur);
             $monstre_cod = $monstre_joueur->perso_cod;
         }
 

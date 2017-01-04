@@ -138,8 +138,7 @@ class compte
         {
             return false;
         }
-        $persoMonstre = new perso;
-        return $persoMonstre->charge($result['perso_cod']);
+        return $result['perso_cod'];
     }
 
     /**
