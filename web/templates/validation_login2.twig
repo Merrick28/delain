@@ -44,11 +44,13 @@
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
                                 {% for TEMP_PERSO in PERSOS_ACTIFS %}
+                                <!-- Perso {{  loop.index }} -->
                                 {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
                                 {% if loop.index == 1 %}
-                                <tr>
+                                <tr><!-- première ligne -->
                                     {% endif %}
                                     {% if LOOP.index is divisible by(TAILLE) %}
+                                    <!-- On dépasse la taille, retour à la ligne -->
                                 </tr>
                                 <tr>
                                     {% endif %}
