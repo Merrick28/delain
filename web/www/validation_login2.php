@@ -134,8 +134,8 @@ if ($verif_auth)
         $monstre_joueur = $compte->getMonstreJoueur();
         if ($monstre_joueur !== false)
         {
-            $monstre_joueur = new perso;
-            $monstre_joueur->charge($monstre_joueur);
+            $monstre_temp = new perso;
+            $monstre_temp->charge($monstre_joueur);
             $monstre_cod = $monstre_joueur->perso_cod;
         }
 
@@ -221,7 +221,7 @@ if ($verif_auth)
             //echo("<input type=\"hidden\" name=\"password\" value=\"$pass\">");
             echo("<input type=\"hidden\" name=\"activeTout\" value=\"0\">");
 
-            include "tab_switch.php";
+            //include "tab_switch.php";
 
             echo("</table>");
             echo("</form>");
