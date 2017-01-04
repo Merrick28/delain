@@ -51,21 +51,22 @@
                                     {% if loop.index == 1 %}
                                         <tr><!-- première ligne -->
                                     {% endif %}
-                                    {% if (CURRENT_LINE == PERSO_PAR_LIGNE) AND (not loop.last) %}
+                                    {% if (CURRENT_LINE == PERSO_PAR_LIGNE) and (not loop.last) %}
                                         {% set CURRENT_LINE = 0 %}
                                         <!-- On dépasse la taille, retour à la ligne -->
                                         </tr>
                                         <tr>
                                     {% endif %}
-                                    {% if  loop.last %}
-                                        <!-- Dernière ligne -->
-                                        </tr>
-                                    {% endif %}
+
 
 
                                     <td valign="top" width="{{ TAILLE }}%">
                                         {% include 'blocks/_single_perso_switch.twig' %}
                                     </td>
+                                    {% if  loop.last %}
+                                        <!-- Dernière ligne -->
+                                        </tr>
+                                    {% endif %}
                                 {% endfor %}
 
                             </form>
