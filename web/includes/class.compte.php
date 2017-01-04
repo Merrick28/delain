@@ -133,7 +133,7 @@ class compte
 				where pcompt_compt_cod = ? and perso_type_perso = 2
 				order by pcompt_date_attachement desc limit 1";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(aray($this->compt_cod), $stmt);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
