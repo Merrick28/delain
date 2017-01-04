@@ -66,7 +66,7 @@ function barre_divine($perso_divine)
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
 {
-    $tab_perso = new perso;
+    /*$tab_perso = new perso;
     $tab_perso->charge($perso_cod);
     $position = $tab_perso->get_position();
     $guilde = $tab_perso->get_guilde();
@@ -98,7 +98,7 @@ function affiche_perso($perso_cod)
         'GUILDE' => $guilde,
         'IS_LOG' => $is_log
     );
-    echo $template->render($options_twig);
+    echo $template->render($options_twig);*/
 
 
 
@@ -163,7 +163,6 @@ function affiche_perso($perso_cod)
         $energie_divine = $db_divin->f("dper_points");
         $barre_divine   = barre_divine($energie_divine);
     }
-    ob_start();
     echo '<table width="100%" border="0">
 		<tr>
 		<td colspan="2" class="titre" valign="top"><div class="titre">' . $db->f("perso_nom") . '</div></td></tr>
@@ -274,7 +273,6 @@ function affiche_perso($perso_cod)
     }
     echo '</td></tr></table>';
     echo '</td></tr></table>';
-    ob_clean();
 }
 
 function affiche_case_perso_vide()
