@@ -51,13 +51,13 @@
                                     {% if loop.index == 1 %}
                                         <tr><!-- première ligne -->
                                     {% endif %}
-                                    {% if CURRENT_LINE == PERSO_PAR_LIGNE AND NOT loop.last %}
+                                    {% if (CURRENT_LINE == PERSO_PAR_LIGNE) AND (not loop.last) %}
                                         {% set CURRENT_LINE = 0 %}
                                         <!-- On dépasse la taille, retour à la ligne -->
                                         </tr>
                                         <tr>
                                     {% endif %}
-                                    {% if loop.last %}
+                                    {% if  loop.last %}
                                         <!-- Dernière ligne -->
                                         </tr>
                                     {% endif %}
