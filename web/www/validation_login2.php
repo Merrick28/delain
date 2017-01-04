@@ -146,6 +146,7 @@ if ($verif_auth)
         {
             $affiche_news           = $news->getNewsSup($compte->compt_der_news);
             $compte->compt_der_news = $news_cod;
+            $compte->stocke();
         }
         if ($nv_monstre)
         {
