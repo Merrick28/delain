@@ -82,7 +82,7 @@ if ($verif_auth)
                 background-color: #fff;
                 display: block;
                 overflow: auto;
-                margin-left: 200;
+                margin-left: 200px;
                 padding: 0;
                 position: absolute;
                 width: 400px;
@@ -148,6 +148,7 @@ if ($verif_auth)
         $nv_monstre = $compte->attribue_monstre_4e_perso();
         if ($nv_monstre)
         {
+            $attribue_nouveau_monstre = false;
             // on a un monstre_cod > 0, donc il y avait un monstre, mais il a été remplacé
             // puisque nv_monstre == true
             if ($monstre_cod > 0)
@@ -185,6 +186,7 @@ if ($verif_auth)
                 // On relâche le monstre du compte du joueur
                 $ancien_monstre->relache_monstre_4e_perso();
                 $ancien_monstre->marqueEvtLus();
+                $attribue_nouveau_monstre = true;
             }
         }
 
@@ -194,7 +196,7 @@ if ($verif_auth)
             $compte->fin_hibernation();
         }
 
-        $persos_actifs = $compte->getPersosActifs();
+        $persos_actifs             = $compte->getPersosActifs();
 
         //include "tab_switch.php";
         // on est dans le futur ancien tab_switch
@@ -213,7 +215,6 @@ if ($verif_auth)
             // on prend toutes les infos nécessaires du perso
             $perso_actif->position     = $perso_actif->get_position();
             $perso_actif->guilde = $perso_actif->get_guilde();
-
 
             if ($perso_actif->perso_avatar == '')
             {
@@ -298,7 +299,8 @@ $options_twig = array(
     'PERSOS_QUATRIEME' => $perso_quatrieme,
     'PERSO_PAR_LIGNE' => $nb_perso_ligne,
     'NB_PERSO_MAX' => $nb_perso_max,
-    'JOUEUR_A_AFFICHER' => $joueur_a_afficher
+    'JOUEUR_A_AFFICHER' => $joueur_a_afficher,
+    'ATTRIBUE_NOUVEAU_MONSTRE' => $attribue_nouveau_monstre
 );
 echo $template->render($options_twig);
 

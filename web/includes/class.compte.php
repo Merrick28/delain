@@ -117,6 +117,10 @@ class compte
         return $result['fin_hibernation'];
     }
 
+    /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
     function getPersosActifs()
     {
         $retour = array();
@@ -136,15 +140,8 @@ class compte
         return $retour;
     }
 
-    function getQuatrieme()
-    {
-        $retour = array();
-        $pdo    = new bddpdo;
-
-    }
-
     /**
-     * Retourne le monstre joué par le compte s'il exists
+     * Retourne le monstre joué par le compte s'il existe
      * false si rien
      * @return bool|perso
      */
