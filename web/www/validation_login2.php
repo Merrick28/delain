@@ -130,6 +130,12 @@ if ($verif_auth)
         $tab_last_news = $news->getNews(0);
         $last_news     = $tab_last_news[0];
         $news_cod      = $last_news->news_cod;
+        if ($compte->compt_der_news < $news_cod)
+        {
+            $affiche_news           = $news->getNewsSup($compte->compt_der_news);
+            $compte->compt_der_news = $news_cod;
+            $compte->stocke();
+        }
 
         // Récupération du numéro du monstre actuel, s'il existe.
         $monstre_joueur = $compte->getMonstreJoueur();
@@ -139,15 +145,7 @@ if ($verif_auth)
             $monstre_temp->charge($monstre_joueur);
             $monstre_cod = $monstre_temp->perso_cod;
         }
-
         $nv_monstre = $compte->attribue_monstre_4e_perso();
-
-        if ($compte->compt_der_news < $news_cod)
-        {
-            $affiche_news           = $news->getNewsSup($compte->compt_der_news);
-            $compte->compt_der_news = $news_cod;
-            $compte->stocke();
-        }
         if ($nv_monstre)
         {
             // on a un monstre_cod > 0, donc il y avait un monstre, mais il a été remplacé
@@ -203,22 +201,22 @@ if ($verif_auth)
         // il y a pas mal d'actions qu'il va falloir checker
         $nb_perso_max   = $compte->compt_ligne_perso * 3;
         $nb_perso_ligne = 3;
-        if ($compte->autorise_4e_global())
+        $ok_4           = $compte->autorise_4e_global();
+        if ($ok_4)
         {
             $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
             $nb_perso_ligne = 4;
         }
-        $taille = 100 / $nb_perso_ligne;
         $type_4 = $compte->compt_type_quatrieme;
-        foreach($persos_actifs as $perso_actif)
+        foreach ($persos_actifs as $perso_actif)
         {
-            if($perso_actif->perso_type_perso == 1)
+            if ($perso_actif->perso_type_perso == 1)
             {
-                $position = $perso_actif->get_position();
-                $guilde = $perso_actif->get_guilde();
+                // on est sur un perso normal
+                $position            = $perso_actif->get_position();
+                $perso_actif->guilde = $perso_actif->get_guilde();
 
-                global $type_flux;
-                global $is_log;
+
 
                 if ($perso_actif->perso_avatar == '')
                 {
@@ -229,12 +227,54 @@ if ($verif_auth)
                     $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
                 }
                 $perso_actif->position = $perso_actif->get_position();
-                $perso_joueur[] = $perso_actif;
+                $perso_joueur[]        = $perso_actif;
             }
-            if($perso_actif->perso_type_perso == 2)
+            if ($perso_actif->perso_type_perso == 2)
             {
+                // on est sur un 4e, monstre ou perso
                 $perso_quatrieme[] = $perso_actif;
             }
+        }
+        // on construit un tableau dans l'ordre des persos à afficher
+        $cpt_normaux    = 0;
+        $cpt_quatriemes = 0;
+        $joueur_a_afficher = array();
+        $cpt              = 0;
+        while ($cpt_normaux < sizeof($perso_joueur) || $cpt_quatriemes < sizeof($perso_quatrieme))
+        {
+            $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
+            if (!$case_quatrieme)
+            {
+                // On a un perso à afficher
+                if (!empty($perso_joueur[$cpt_normaux]))
+                {
+                    $joueur_a_afficher[] = $perso_joueur[$cpt_normaux];
+                }
+                else
+                {
+                    $joueur_a_afficher[] = array();
+                }
+                $cpt_normaux++;
+            }
+            if ($case_quatrieme)
+            {
+                if (!empty($perso_quatrieme[$cpt_quatriemes]))
+                {
+                    $joueur_a_afficher[] = $perso_quatrieme[$cpt_quatriemes];
+                }
+                elseif ($type_4 != 2)
+                {
+                    $joueur_a_afficher[] = array();
+                }
+                else
+                {
+                    $joueur_a_afficher[] = array();
+                }
+
+                $cpt_quatriemes++;
+            }
+            $cpt++;
+
         }
 
 
@@ -257,8 +297,9 @@ $options_twig = array(
     'PERSOS_ACTIFS' => $persos_actifs,
     'PERSOS_JOUEURS' => $perso_joueur,
     'PERSOS_QUATRIEME' => $perso_quatrieme,
-    'TAILLE' => $taille,
-    'PERSO_PAR_LIGNE' => $nb_perso_ligne
+    'PERSO_PAR_LIGNE' => $nb_perso_ligne,
+    'NB_PERSO_MAX' => $nb_perso_max,
+    'JOUEUR_A_AFFICHER' => $joueur_a_afficher
 );
 echo $template->render($options_twig);
 

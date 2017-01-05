@@ -39,38 +39,30 @@
                         <p>Aucun joueur dirigé.</p>
                         <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
                     {% else %}
-                        <table background="images/fondparchemin.gif" border="0">
+                        <div class="container-fluid">
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
                                 {% set CURRENT_LINE = 0 %}
-                                {% for TEMP_PERSO in PERSOS_ACTIFS %}
-                                    {% set CURRENT_LINE = CURRENT_LINE + 1 %}
-                                    <!-- Perso {{ loop.index }} , TAILLE {{ TAILLE }} -->
-                                    {% set PERSO = PERSOS_JOUEURS[loop.index0] %}
-                                    {% if loop.index == 1 %}
-                                        <tr><!-- première ligne -->
-                                    {% endif %}
-                                    {% if (CURRENT_LINE == PERSO_PAR_LIGNE) and (not loop.last) %}
-                                        {% set CURRENT_LINE = 0 %}
-                                        <!-- On dépasse la taille, retour à la ligne -->
-                                        </tr>
-                                        <tr>
-                                    {% endif %}
+                                <div class="row">
+                                    {% for PERSO in JOUEUR_A_AFFICHER %}
 
 
 
-                                    <td valign="top" width="{{ TAILLE }}%" style="padding:1px;">
-                                        {% include 'blocks/_single_perso_switch.twig' %}
-                                    </td>
-                                    {% if  loop.last %}
+
+                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </div>
+
                                         <!-- Dernière ligne -->
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
+
+
+                                    {% endfor %}
+                                </div>
 
                             </form>
-                        </table>
+                        </div>
                     {% endif %}
 
 

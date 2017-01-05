@@ -1377,7 +1377,12 @@ class perso
             return false;
         }
         $guilde = new guilde();
-        return $guilde->charge($result['pguilde_guilde_cod']);
+        if(!$guilde->charge($result['pguilde_guilde_cod']))
+        {
+            return false;
+        }
+        return $guilde;
+
 
     }
 

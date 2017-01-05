@@ -1,14 +1,16 @@
-<table width="100%" border="0">
+<table width="100%" border="0" class="tableau_perso">
     <tr>
         <td colspan="2" class="titre" valign="top">
             <div class="titre">{{ PERSO.perso_nom }}</div>
         </td>
     </tr>
+    {%  if PERSO.perso_description is not empty %}
     <tr>
         <td colspan="2" class="soustitre2">
             <div style="text-align:center;font-size:7pt;">{{ PERSO.perso_description|nl2br }}</div>
         </td>
     </tr>
+    {%  endif %}
     <tr>
         <td class="soustitre2" colspan="2">
             <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</span>
@@ -23,10 +25,10 @@
     </tr>
     <tr>
         <td class="soustitre2" colspan="2">
-            {% if GUILDE == false %}
+            {% if PERSO.guilde == false %}
                 Pas de guilde
             {% else %}
-                Guilde : {{ GUILDE.guilde_nom }}
+                Guilde : {{ PERSO.guilde.guilde_nom }}
             {% endif %}
         </td>
     </tr>
