@@ -210,51 +210,35 @@ if ($verif_auth)
         $type_4 = $compte->compt_type_quatrieme;
         foreach ($persos_actifs as $perso_actif)
         {
+            // on prend toutes les infos nécessaires du perso
+            $perso_actif->position     = $perso_actif->get_position();
+            $perso_actif->guilde = $perso_actif->get_guilde();
+
+
+            if ($perso_actif->perso_avatar == '')
+            {
+                $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
+            }
+            else
+            {
+                $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
+            }
             if ($perso_actif->perso_type_perso == 1)
             {
                 // on est sur un perso normal
-                $position            = $perso_actif->get_position();
-                $perso_actif->guilde = $perso_actif->get_guilde();
-
-
-
-                if ($perso_actif->perso_avatar == '')
-                {
-                    $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
-                }
-                else
-                {
-                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
-                }
-                $perso_actif->position = $perso_actif->get_position();
-                $perso_joueur[]        = $perso_actif;
+                $perso_joueur[] = $perso_actif;
             }
             if ($perso_actif->perso_type_perso == 2)
             {
                 // on est sur un 4e, monstre ou perso
                 $perso_quatrieme[] = $perso_actif;
-                // on est sur un perso normal
-                $position            = $perso_actif->get_position();
-                $perso_actif->guilde = $perso_actif->get_guilde();
-
-
-
-                if ($perso_actif->perso_avatar == '')
-                {
-                    $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
-                }
-                else
-                {
-                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
-                }
-                $perso_actif->position = $perso_actif->get_position();
             }
         }
         // on construit un tableau dans l'ordre des persos à afficher
-        $cpt_normaux    = 0;
-        $cpt_quatriemes = 0;
+        $cpt_normaux       = 0;
+        $cpt_quatriemes    = 0;
         $joueur_a_afficher = array();
-        $cpt              = 0;
+        $cpt               = 0;
         while ($cpt_normaux < sizeof($perso_joueur) || $cpt_quatriemes < sizeof($perso_quatrieme))
         {
             $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
