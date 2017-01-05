@@ -233,6 +233,21 @@ if ($verif_auth)
             {
                 // on est sur un 4e, monstre ou perso
                 $perso_quatrieme[] = $perso_actif;
+                // on est sur un perso normal
+                $position            = $perso_actif->get_position();
+                $perso_actif->guilde = $perso_actif->get_guilde();
+
+
+
+                if ($perso_actif->perso_avatar == '')
+                {
+                    $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
+                }
+                else
+                {
+                    $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
+                }
+                $perso_actif->position = $perso_actif->get_position();
             }
         }
         // on construit un tableau dans l'ordre des persos à afficher
