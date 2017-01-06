@@ -146,7 +146,7 @@ if ($verif_auth)
             $monstre_cod = $monstre_temp->perso_cod;
         }
         $nv_monstre = $compte->attribue_monstre_4e_perso();
-        if ($nv_monstre)
+        if ($nv_monstre != -1)
         {
             $attribue_nouveau_monstre = false;
             // on a un monstre_cod > 0, donc il y avait un monstre, mais il a été remplacé
@@ -196,7 +196,7 @@ if ($verif_auth)
             $compte->fin_hibernation();
         }
 
-        $persos_actifs             = $compte->getPersosActifs();
+        $persos_actifs = $compte->getPersosActifs();
 
         //include "tab_switch.php";
         // on est dans le futur ancien tab_switch
@@ -213,17 +213,7 @@ if ($verif_auth)
         foreach ($persos_actifs as $perso_actif)
         {
             // on prend toutes les infos nécessaires du perso
-            $perso_actif->position     = $perso_actif->get_position();
-            $perso_actif->guilde = $perso_actif->get_guilde();
-
-            if ($perso_actif->perso_avatar == '')
-            {
-                $perso_actif->avatar = G_IMAGES . $perso_actif->perso_race_cod . "_" . $perso_actif->perso_sex . ".png";
-            }
-            else
-            {
-                $perso_actif->avatar = $type_flux . G_URL . "avatars/" . $perso_actif->perso_avatar;
-            }
+            $perso_actif->prepare_for_tab_switch();
             if ($perso_actif->perso_type_perso == 1)
             {
                 // on est sur un perso normal
@@ -233,6 +223,11 @@ if ($verif_auth)
             {
                 // on est sur un 4e, monstre ou perso
                 $perso_quatrieme[] = $perso_actif;
+            }
+            if ($perso_actif->perso_type_perso == 3)
+            {
+                // familiers
+                $familiers[] = $perso_actif;
             }
         }
         // on construit un tableau dans l'ordre des persos à afficher
@@ -284,23 +279,25 @@ if ($verif_auth)
 
 // affichage de la page
 $options_twig = array(
-    'URL' => G_URL,
-    'URL_IMAGES' => G_IMAGES,
-    'HTTPS' => $type_flux,
-    'ISAUTH' => $verif_auth,
-    'IS_ADMIN_MONSTRE' => $is_admin_monstre,
-    'COMPTE' => $compte,
-    'TYPE_PERSO' => $type_perso,
-    'NV_MONSTRE' => $nv_monstre,
-    'EVT_MONSTRE' => $evt_monstre,
-    'AFFICHE_NEWS' => $affiche_news,
-    'PERSOS_ACTIFS' => $persos_actifs,
-    'PERSOS_JOUEURS' => $perso_joueur,
-    'PERSOS_QUATRIEME' => $perso_quatrieme,
-    'PERSO_PAR_LIGNE' => $nb_perso_ligne,
-    'NB_PERSO_MAX' => $nb_perso_max,
-    'JOUEUR_A_AFFICHER' => $joueur_a_afficher,
-    'ATTRIBUE_NOUVEAU_MONSTRE' => $attribue_nouveau_monstre
+    'URL'                      => G_URL,
+    'URL_IMAGES'               => G_IMAGES,
+    'HTTPS'                    => $type_flux,
+    'ISAUTH'                   => $verif_auth,
+    'IS_ADMIN_MONSTRE'         => $is_admin_monstre,
+    'COMPTE'                   => $compte,
+    'TYPE_PERSO'               => $type_perso,
+    'NV_MONSTRE'               => $nv_monstre,
+    'EVT_MONSTRE'              => $evt_monstre,
+    'AFFICHE_NEWS'             => $affiche_news,
+    'PERSOS_ACTIFS'            => $persos_actifs,
+    'PERSOS_JOUEURS'           => $perso_joueur,
+    'PERSOS_QUATRIEME'         => $perso_quatrieme,
+    'PERSO_PAR_LIGNE'          => $nb_perso_ligne,
+    'NB_PERSO_MAX'             => $nb_perso_max,
+    'JOUEUR_A_AFFICHER'        => $joueur_a_afficher,
+    'ATTRIBUE_NOUVEAU_MONSTRE' => $attribue_nouveau_monstre,
+    'OK_4'                     => $ok_4,
+    'FAMILIERS'                => $familiers
 );
 echo $template->render($options_twig);
 

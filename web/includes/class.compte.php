@@ -125,7 +125,7 @@ class compte
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "SELECT pcompt_perso_cod, perso_nom FROM perso
+        $req    = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' order by pcompt_perso_cod";
         $stmt   = $pdo->prepare($req);
@@ -137,6 +137,22 @@ class compte
             $retour[] = $temp;
             unset($temp);
         }
+        // familiers
+        $req = "select pfam_familier_cod from perso_familier,perso,perso_compte
+          where pcompt_compt_cod = ? 
+          and pcompt_perso_cod = pfam_perso_cod 
+          and pfam_familier_cod = perso_cod 
+          and perso_actif = 'O'";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pfam_familier_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
         return $retour;
     }
 

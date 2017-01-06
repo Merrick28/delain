@@ -277,3 +277,16 @@ hr {
 .tableau_perso td {
     padding:2px;
 }
+
+.nopadding {
+    padding:0
+}
+
+img.imgFit {
+    max-width: 100%;
+    height: auto;
+}
+
+.space_between_div {
+    padding:2px;
+}

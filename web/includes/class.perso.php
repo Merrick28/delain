@@ -113,6 +113,10 @@ class perso
     var $perso_monstre_attaque_monstre;
     var $perso_mortel = NULL;
     var $alterego = 0;
+    //
+    var $position;
+    var $guilde;
+    var $avatar;
 
     function __construct()
     {
@@ -1384,6 +1388,22 @@ class perso
         return $guilde;
 
 
+    }
+
+    function prepare_for_tab_switch()
+    {
+        global $type_flux;
+        $this->position = $this->get_position();
+        $this->guilde   = $this->get_guilde();
+
+        if ($this->perso_avatar == '')
+        {
+            $this->avatar = G_IMAGES . $this->perso_race_cod . "_" . $this->perso_sex . ".png";
+        }
+        else
+        {
+            $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
+        }
     }
 
     public function __call($name, $arguments)

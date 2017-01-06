@@ -43,23 +43,50 @@
                             <form name="login" method="post" action="validation_login3.php">
                                 <input type="hidden" name="perso">
                                 <input type="hidden" name="activeTout" value="0">
-                                {% set CURRENT_LINE = 0 %}
                                 <div class="row">
-                                    {% for PERSO in JOUEUR_A_AFFICHER %}
-
-
-
-
-                                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-
-                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                    {% if OK_4 %}
+                                        <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 bordiv">
+                                            <div class="titre">Joueurs</div>
+                                            <div class="row">
+                                                {% for PERSO in PERSOS_JOUEURS %}
+                                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                        {% include 'blocks/_single_perso_switch.twig' %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
                                         </div>
-
-                                        <!-- Dernière ligne -->
-
-
-                                    {% endfor %}
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 bordiv">
+                                            <div class="titre">Quatrième</div>
+                                            <div class="row">
+                                                {% for PERSO in PERSOS_QUATRIEME %}
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                        {% include 'blocks/_single_perso_switch.twig' %}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="bordiv">
+                                            <div class="titre">Joueurs</div>
+                                            {% for PERSO in PERSOS_JOUEURS %}
+                                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
+                                {% if FAMILIERS|length > 0 %}
+                                    <div class="bordiv row">
+                                        <div class="titre">Familiers</div>
+                                        {% for PERSO in FAMILIERS %}
+                                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                {% include 'blocks/_single_perso_switch.twig' %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
 
                             </form>
                         </div>
