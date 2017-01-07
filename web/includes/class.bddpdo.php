@@ -343,6 +343,8 @@ class bddpdo
         $texte_log = chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
 	IP : ' . $ip . '
 	Message : [' . $message . ']
+	Erreur :  
+	Libelle : [ ]
 	Compte = ' . ((isset($auth)) ? $auth->compt_cod : '0') . '
 	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');
 
