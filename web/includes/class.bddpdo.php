@@ -68,8 +68,11 @@ class bddpdo
     function prepare($sql)
     {
         $test = $this->pdo->prepare($sql);
-        if (!$test)
+        if ($test === false)
+        {
             $this->erreur('');
+            die('Erreur SQL, impossible de continuer');
+        }
         return $test;
     }
 
@@ -87,17 +90,17 @@ class bddpdo
             // Si le tableau des parametre est vide on execute la requête preparé sans paramètre
             if (empty($varArray))
             {
-                $stmt->execute();
+                $ret = $stmt->execute();
                 // Sinon on execute la requête préparée avec les paramètres
             }
             else
             {
                 $ret = $stmt->execute($varArray);
-                if (!$ret)
-                {
-                    // gestion d'erreurs
-                    $this->erreur($stmt);
-                }
+            }
+            if($ret === false)
+            {
+                $this->erreur($stmt);
+                die('Erreur SQL, impossible de continuer');
             }
             return $stmt;
         }
@@ -293,30 +296,25 @@ class bddpdo
     {
         if (empty($stmt))
         {
-            echo "<hr><h1>Erreur sql</h1></hr><pre>";
-            print_r($stmt->errorInfo());
-            print_r($stmt);
-            print_r($stmt->debugDumpParams());
-            echo "</pre><hr>";
-
             $msg = print_r($stmt->errorInfo(),true);
-            $msg .= print_r($stmt,true);
-            $msg .=  print_r($stmt->debugDumpParams(),true);
+            ob_flush();
+            ob_start();
+            $stmt->debugDumpParams();
+            $msg .= ob_get_contents();
             $this->log_message($msg);
             return $this->pdo->errorInfo();
         }
         else
         {
-            echo "<hr><h1>Erreur sql</h1></hr><pre>";
-            print_r($stmt->errorInfo());
-            print_r($stmt);
-            print_r($stmt->debugDumpParams());
-
             $msg = print_r($stmt->errorInfo(),true);
             $msg .= print_r($stmt,true);
-            $msg .=  print_r($stmt->debugDumpParams(),true);
+            // on efface ce qui a pu être envoyé
+            ob_flush();
+            ob_start();
+            $stmt->debugDumpParams();
+            $msg .= ob_get_contents();
+
             $this->log_message($msg);
-            echo "</pre><hr>";
         }
     }
 
