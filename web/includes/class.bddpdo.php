@@ -294,14 +294,27 @@ class bddpdo
 
     public function erreur($stmt = '')
     {
+        if(defined('DEBUG'))
+        {
+            $debug = DEBUG;
+        }
+        else
+        {
+            $debug = false;
+        }
         if (empty($stmt))
         {
             $msg = print_r($stmt->errorInfo(),true);
             ob_flush();
             ob_start();
             $stmt->debugDumpParams();
-            $msg .= ob_get_contents();
+            $msg .= ob_get_flush();
+            ob_clean();
             $this->log_message($msg);
+            if($debug)
+            {
+                echo '<pre>' . $msg . '</pre>';
+            }
             return $this->pdo->errorInfo();
         }
         else
@@ -312,8 +325,12 @@ class bddpdo
             ob_flush();
             ob_start();
             $stmt->debugDumpParams();
-            $msg .= ob_get_contents();
-
+            $msg .= ob_get_flush();
+            ob_clean();
+            if($debug)
+            {
+                echo '<pre>' . $msg . '</pre>';
+            }
             $this->log_message($msg);
         }
     }
