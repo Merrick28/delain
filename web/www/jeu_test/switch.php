@@ -136,14 +136,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 	$time = rand(1,100);
 	?>
 	
-	<?php 
-	//if(($_SERVER["REMOTE_ADDR"] == '217.109.103.1') || ($_SERVER["REMOTE_ADDR"] == '2a01:e35:2f10:3150:21e:64ff:fe41:d2c8') || ($_SERVER["REMOTE_ADDR"] == '82.241.3.21'))
-	//{
-		echo '<div style="text-align:center">
-		<a href="autres_auth.php">Autres authentifications</a>
-		</div>';
-	//}
-	?></td>
+	</td>
         <td colspan="2">
                     <table>
                         <tr>
