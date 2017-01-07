@@ -134,7 +134,7 @@ function perso_amelioration_competence($perso_id, $competenceid, $retour)
     $db->query($req_comp);
     if ($db->next_record()) {
         $amel_retour = $db->f("amel_retour");
-        $amel_res = split(';', $amel_retour);
+        $amel_res = explode(';', $amel_retour);
         $jet = $amel_res[0];
         $succes = $amel_res[1];
         $new_val = $amel_res[2];

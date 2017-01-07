@@ -74,7 +74,7 @@ $perso_pos_cod = $db->f("pos_cod");
 	if(isset($_POST['methode'])){
 		switch ($methode) {
 		case "aj_non_cr":
-      $list = split(";", $_POST['pos_codes']);
+      $list = explode(";", $_POST['pos_codes']);
       for($i=0;$i<count($list);$i++)
       {
         $temp_pos_cod = $list[$i];
@@ -89,7 +89,7 @@ $perso_pos_cod = $db->f("pos_cod");
 			}
 			break;
 		case "aj_cr":
-		$list = split(";", $_POST['pos_codes']);
+		$list = explode(";", $_POST['pos_codes']);
       for($i=0;$i<count($list);$i++)
       {
         $temp_pos_cod = $list[$i];
@@ -104,7 +104,7 @@ $perso_pos_cod = $db->f("pos_cod");
 			}
 			break;
 		case "suppr":
-      $list = split(";", $_POST['pos_codes']);
+      $list = explode(";", $_POST['pos_codes']);
       for($i=0;$i<count($list);$i++)
       {
         $temp_pos_cod = $list[$i];
@@ -116,7 +116,7 @@ $perso_pos_cod = $db->f("pos_cod");
 			  }
       }
 		case "modif_passage":
-      $list = split(";", $_POST['pos_codes']);
+      $list = explode(";", $_POST['pos_codes']);
       for($i=0;$i<count($list);$i++)
       {
         $temp_pos_cod = $list[$i];

@@ -297,11 +297,11 @@ if ($erreur == 0)
 						</form><br><br>';
 			break;
 			case "modif_aut":
-				$list = split(";", $_POST['aut_add']);
+				$list = explode(";", $_POST['aut_add']);
 	      for($i=0;$i<count($list);$i++)
 	      {
 	        $temp_aut = $list[$i];
-	        $temp_aut_add = split("#", $temp_aut);
+	        $temp_aut_add = explode("#", $temp_aut);
 	        $lieu = $temp_aut_add[1];
 	        $objet = $temp_aut_add[0];
 	        if($temp_aut)
@@ -316,11 +316,11 @@ if ($erreur == 0)
 						}
 	        }
 				}			
-				$list = split(";", $_POST['aut_sup']);
+				$list = explode(";", $_POST['aut_sup']);
 	      for($i=0;$i<count($list);$i++)
 	      {
 	        $temp_aut = $list[$i];
-	        $temp_aut_add = split("#", $temp_aut);
+	        $temp_aut_add = explode("#", $temp_aut);
 	        $lieu = $temp_aut_add[1];
 	        $objet = $temp_aut_add[0];
 	        if($temp_aut){
