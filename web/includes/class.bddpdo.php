@@ -298,6 +298,11 @@ class bddpdo
             print_r($stmt);
             print_r($stmt->debugDumpParams());
             echo "</pre><hr>";
+
+            $msg = print_r($stmt->errorInfo(),true);
+            $msg .= print_r($stmt,true);
+            $msg .=  print_r($stmt->debugDumpParams(),true);
+            $this->log_message($msg);
             return $this->pdo->errorInfo();
         }
         else
@@ -306,8 +311,32 @@ class bddpdo
             print_r($stmt->errorInfo());
             print_r($stmt);
             print_r($stmt->debugDumpParams());
+
+            $msg = print_r($stmt->errorInfo(),true);
+            $msg .= print_r($stmt,true);
+            $msg .=  print_r($stmt->debugDumpParams(),true);
+            $this->log_message($msg);
             echo "</pre><hr>";
         }
     }
+
+    function log_message($msg)
+    {
+        global $auth;
+        $ip        = getenv('REMOTE_ADDR');
+        $message   = $msg;
+        $texte_log = chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
+	IP : ' . $ip . '
+	Message : [' . $message . ']
+	Compte = ' . ((isset($auth)) ? $auth->compt_cod : '0') . '
+	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');
+
+        $e         = new Exception;
+        $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . ']';
+        $logfile = new logfile();
+        $logfile->writelog_class_sql($texte_log . $pileAppel);
+
+    }
+
 
 }
