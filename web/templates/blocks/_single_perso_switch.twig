@@ -1,0 +1,104 @@
+<div class="space_between_div">
+    <div class="titre">
+        {{ PERSO.perso_nom }}
+    </div>
+
+    {% if PERSO.perso_description is not empty %}
+        <div style="text-align:center;">{{ PERSO.perso_description|nl2br }}</div>
+    {% endif %}
+    <div class="soustitre2">
+        <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</span>
+        <br/><i>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</i>
+        <br/>
+    </div>
+
+    <div>Position : X={{ PERSO.position.pos.pos_x }}; Y={{ PERSO.position.pos.pos_y }}
+        ; {{ PERSO.position.etage.etage_libelle }}
+    </div>
+
+    <div class="soustitre2">
+        {% if PERSO.guilde == false %}
+            Pas de guilde
+        {% else %}
+            Guilde : {{ PERSO.guilde.guilde_nom }}
+        {% endif %}
+    </div>
+
+    <div>
+        Niveau {{ PERSO.perso_niveau }}</b>
+        {% if PERSO.perso_tangible == 'N' %}
+            <br/><i>Impalpable ({{ PERSO.perso_nb_tour_intangible }}
+            tour{% if PERSO.perso_nb_tour_intangible >1 %}s{% endif %})</i>
+
+        {% endif %}
+    </div>
+    <hr/>
+
+    <div class="row">
+        <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <a href="#"
+               onClick="javascript:document.login.perso.value={{ PERSO.perso_cod }};document.login.submit();"><img
+                        src="{{ PERSO.avatar }}?{{ PERSO.perso_avatar_version }}" alt="Jouer {{ PERSO.perso_nom }}
+                "></a>
+            {% if PERSO.getEvtNonLu|length >0 %}
+                <input type="button" class="bouton"
+                       onClick="javascript:window.open('{{ G_URL }}/visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                       title='Cliquez ici pour voir vos événements importants depuis votre dernière connexion'
+                       value="Événements"/>
+            {% endif %}
+        </div>
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <img src="{{ URL_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
+                 alt="{{ PERSO.perso_pa }}PA" width="108" height="18" class="imgFit">
+            <br/><img src="{{ URL_IMAGES }}coeur.gif" alt=""> <img
+                    src="{{ URL_IMAGES }}hp{{ PERSO.barre_hp }}.gif" title="{{ PERSO.perso_pv }}PV
+                            sur {{ PERSO.perso_pv_max }}" alt="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}"
+                    class="imgFit">
+            {% if PERSO.is_enchanteur %}
+                <br/><img src="{{ URL_IMAGES }}energi10.png" alt=""> <img
+                    src="{{ URL_IMAGES }}nrj{{ PERSO.barre_energie }}.png"
+                    title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur
+                                        100" class="imgFit">
+            {% endif %}
+            <br/>
+            <img src="{{ URL_IMAGES }}iconexp.gif" alt=""> <img
+                    src="{{ URL_IMAGES }}xp{{ PERSO.barre_xp }}.gif"
+                    title="{{ PERSO.perso_px }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                    alt="{{ PERSO.perso_px }} PX sur {{ PERSO.px_limite }}" class="imgFit">
+        </div>
+
+
+    </div>
+</div>
+
+{#
+
+    <tr>
+        <td valign="top">
+
+
+            {% endif %}
+        </td>
+        <td>
+            <table>
+
+                <tr>
+                    <td class="nopadding">
+                        <div class="image"><img src="{{ URL_IMAGES }}iconexp.gif" alt=""> <img
+                                    src="{{ URL_IMAGES }}xp{{ PERSO.barre_xp }}.gif"
+                                    title="{{ PERSO.perso_px }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                                    alt="{{ PERSO.perso_px }} PX sur {{ PERSO.px_limite }}" class="imgFit">
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        Messages/transactions
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+#}
