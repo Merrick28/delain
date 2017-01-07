@@ -1,6 +1,6 @@
 #########################################
 # Verif votes
-59 * * * * /home/delain/delain/web/www/verif_vote.sh >> /dev/null
+59 * * * * /home/delain/delain/shell/verif_vote.sh >> /dev/null
 #########################################
 # Elements du jeu
 #########################################

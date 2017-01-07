@@ -31,7 +31,11 @@ if (!$db->is_admin($compt_cod)
 			$db->query($req_msg);
 			$db->next_record();
 			$mess_old = str_replace(chr(127),';',$db->f('msg_corps'));
-			//$mess_old = eregi_replace('<br[[:space:]]*/?[[:space:]]*>','',$mess_old);
+
+            $breaks = array("<br />","<br>","<br/>");
+            $mess_old = str_ireplace($breaks, "", $mess_old);
+
+            //$mess_old = eregi_replace('<br[[:space:]]*/?[[:space:]]*>','',$mess_old);
 			preg_match("/.*?(_{1,}\[.*\]_{1,}.*_{12,16}).*/s", $mess_old, $mess_olds); // Dernier ajout
 			if (count($mess_olds)==0) { // S'il n'y a qu'un précédent message
 				$n_message = '__['.$db->f('perso_nom')."]__\n".trim($mess_old)."\n________________\n";

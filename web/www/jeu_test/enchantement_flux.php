@@ -182,6 +182,7 @@ else
 function afficheVents($magie, $x, $y)
 {
 	global $db;
+	$param = new parametres();
 	$image = '';
 	$resultat = '';
 	$position = ' Position : X = ' . $x . ' / Y = ' . $y;

@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
-
+$etage = $_REQUEST['etage'];
 //
 //Contenu de la div de droite
 //
@@ -72,7 +72,7 @@ if ($erreur == 0)
 		switch ($methode) {
 			case "deposer_monstre":
 				$err_depl = 0;
-				$req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
+				$req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = " . $_REQUEST['etage'];
 				$db->query($req);
 				if ($db->nf() == 0)
 				{

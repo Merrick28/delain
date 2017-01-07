@@ -2,6 +2,7 @@
 include "includes/classes.php";
 include "ident.php";
 $db = new base_delain;
+$perso_cible = $_REQUEST['perso'];
 ?>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
@@ -11,8 +12,8 @@ $db = new base_delain;
 <?php $db = new base_delain;
 include "jeu_test/tab_haut.php";
 echo("<form name=\"suppr_pers\" method=\"post\" action=\"valide_suppr_perso2.php\">");
-echo("<input type=\"hidden\" name=\"perso\" value=\"$perso\">");
-$req = "select perso_nom from perso where perso_cod = $perso";
+echo("<input type=\"hidden\" name=\"perso\" value=\"$perso_cible\">");
+$req = "select perso_nom from perso where perso_cod = $perso_cible";
 $db->query($req);
 $db->next_record();
 $tab[0] = $db->f("perso_nom");

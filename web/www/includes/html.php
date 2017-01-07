@@ -14,7 +14,12 @@ class html
 	// Gère un cache permettant de générer plusieurs résultats identiques sans repasser par la base à chaque fois.
 	function select_from_query($req, $champ_code, $champ_texte, $selected = '', $optgroup = '')
 	{
-		$retour = '';
+		if(isset($_REQUEST['etage']))
+        {
+            $etage = $_REQUEST['etage'];
+        }
+
+	    $retour = '';
 		// crc32 est plus rapide que md5, même si le risque de collisions est plus élevé.
 		// On ne met pas en cache le selected, car il ne change pas la requête effectuée.
 		// on va plutôt mettre à jour après coup le résultat. Ça évite de trop nombreux appels à la base.
@@ -64,7 +69,11 @@ class html
 	// Sélectionne un élément dans un <select> pré-généré (typiquement, en cache)
 	function pre_selectionne($select, $value, $quotes = '')
 	{
-		$resultat = $select;
+        if(isset($_REQUEST['etage']))
+        {
+            $etage = $_REQUEST['etage'];
+        }
+	    $resultat = $select;
 		if ($quotes != '')
 			$resultat = str_replace(" value=$quotes" . $value . $quotes, " value=$quotes" . $value . $quotes . " selected='selected'", $resultat);
 		else
@@ -77,7 +86,11 @@ class html
 
 	function etage_select($selected = 9999, $restriction = '')
 	{
-		$req = "select case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle, etage_numero
+        if(isset($_REQUEST['etage']))
+        {
+            $etage = $_REQUEST['etage'];
+        }
+	    $req = "select case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle, etage_numero
 			from etage
 			$restriction
 			order by etage_reference desc, etage_numero";
@@ -89,6 +102,10 @@ class html
     // L’argument $O_N indique si les valeurs du menu sont O et N, ou 1 et 0.
     function oui_non_select($selected, $O_N = true)
     {
+        if(isset($_REQUEST['etage']))
+        {
+            $etage = $_REQUEST['etage'];
+        }
         $o = ($O_N) ? 'O' : '1';
         $n = ($O_N) ? 'N' : '0';
         $sel_o = ($selected == $o) ? 'selected="selected"' : '';

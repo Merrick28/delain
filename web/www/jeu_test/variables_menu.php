@@ -171,16 +171,16 @@ $t->set_var('PERSO_DEGATS', $det_deg[0] . '-' . $det_deg[1]);
 $t->set_var('PERSO_ARMURE', $perso->armure());
 
 // position
-$ppos = new perso_position();
-$ppos->getByPerso($perso->perso_cod);
-$pos = new positions();
-$pos->charge($ppos->ppos_pos_cod);
-$etage = new etage();
-$etage->getByNumero($pos->pos_etage);
+$var_menu_ppos = new perso_position();
+$var_menu_ppos->getByPerso($perso->perso_cod);
+$var_menu_pos = new positions();
+$var_menu_pos->charge($var_menu_ppos->ppos_pos_cod);
+$var_menu_etage = new etage();
+$var_menu_etage->getByNumero($var_menu_pos->pos_etage);
 
-$t->set_var('PERSO_POS_X', $pos->pos_x);
-$t->set_var('PERSO_POS_Y', $pos->pos_y);
-$t->set_var('PERSO_ETAGE', $etage->etage_libelle);
+$t->set_var('PERSO_POS_X', $var_menu_pos->pos_x);
+$t->set_var('PERSO_POS_Y', $var_menu_pos->pos_y);
+$t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 
 // passage niveau
 
@@ -214,7 +214,7 @@ if ($perso->is_lieu())
     if (!empty($tab_lieu['lieu']->lieu_url))
     {
         $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
-        $libelle    = $tab_lieu['lieu']->lieu_description;
+        $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
         $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a><hr />";
     }
 }

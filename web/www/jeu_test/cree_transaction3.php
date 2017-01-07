@@ -60,7 +60,7 @@ switch($methode)
 			echo "<p class=\"titre\">Sélection des objets à vendre</p>";
 			echo "<form name=\"tran\" method=\"post\" action=\"cree_transaction3.php\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"e3\">";
-			echo "<input type=\"hidden\" name=\"perso\" value=\"$perso\">";
+			echo "<input type=\"hidden\" name=\"perso\" value=\"$perso_cible\">";
 			$req_objet = "select obj_etat,gobj_tobj_cod,obj_cod,obj_nom,obj_nom_generique,tobj_libelle,perobj_identifie
 														from objet_generique,type_objet,perso_objets,objets
 														where perobj_perso_cod = $perso_cod
@@ -114,7 +114,7 @@ switch($methode)
 			{
 				echo "<p style=\"text-align:center\">Fixez un prix pour chacun des objets : ";
 				echo "<form name=\"tran\" method=\"post\" action=\"cree_transaction3.php\">";
-				echo "<input type=\"hidden\" name=\"perso\" value=\"$perso\">";
+				echo "<input type=\"hidden\" name=\"perso\" value=\"$perso_cible\">";
 				echo "<input type=\"hidden\" name=\"methode\" value=\"e3\">";
 				echo "<center><table>";
 				foreach($obj as $key=>$val)
@@ -192,7 +192,7 @@ switch($methode)
 						//Analyse des cas de triche
 						$tab = $db->get_pos($perso_cod);
 						$pos_perso1 = $tab['pos_cod'];
-						$tab = $db->get_pos($perso);
+						$tab = $db->get_pos($perso_cible);
 						$pos_perso2 = $tab['pos_cod'];
 						$distance = $db->distance($pos_perso1,$pos_perso2);
 						$is_lieu = $db->is_lieu($perso_cod);
@@ -220,19 +220,19 @@ switch($methode)
 						{
 							$compt1 = '';
 						}
-						$req = "select perso_type_perso from perso where perso_cod = $perso";
+						$req = "select perso_type_perso from perso where perso_cod = $perso_cible";
 						$db->query($req);
 						$db->next_record();
 						if ($db->f("perso_type_perso") == 1)
 						{
-							$req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso";
+							$req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cible";
 							$db->query($req);
 							$db->next_record();
 							$compt2 = $db->f("pcompt_compt_cod");
 						}
 						else if ($db->f("perso_type_perso") == 3)
 						{
-							$req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso and pfam_perso_cod = pcompt_perso_cod";
+							$req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cible and pfam_perso_cod = pcompt_perso_cod";
 							$db->query($req);
 							$db->next_record();
 							$compt2 = $db->f("pcompt_compt_cod");
@@ -257,18 +257,18 @@ switch($methode)
 									$db->next_record();
 									$num_tran = $db->f("numero");
 									$req_ins = "insert into transaction (tran_cod,tran_obj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie)
-																					values ($num_tran,$key,$perso_cod,$perso," . $param->getparm(7) . ",$prix_obj,'$si_identifie')";
+																					values ($num_tran,$key,$perso_cod,$perso_cible," . $param->getparm(7) . ",$prix_obj,'$si_identifie')";
 									$db->query($req_ins);
 									echo("<p>La transaction est enregistrée. L'acheteur a deux tours pour valider cette transaction, faute de quoi elle sera annulée.<br />");
 									echo("Elle sera également annulée si vous abandonnez l'objet (volontairement ou non), si vous l'équipez, ou si vous vous déplacez.");
 				
 									$texte = "[attaquant] a proposé un objet à la vente à [cible]";
 									$req_evt = "insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-																					values (nextval('seq_levt_cod'),17,now(),1,$perso_cod,'$texte','O','N',$perso_cod,$perso)";
+																					values (nextval('seq_levt_cod'),17,now(),1,$perso_cod,'$texte','O','N',$perso_cod,$perso_cible)";
 									$db->query($req_evt);
 					
 									$req_evt = "insert into ligne_evt (levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-																					values (nextval('seq_levt_cod'),17,now(),1,$perso,'$texte','N','N',$perso_cod,$perso)";
+																					values (nextval('seq_levt_cod'),17,now(),1,$perso_cible,'$texte','N','N',$perso_cod,$perso_cible)";
 									$db->query($req_evt);
 									if ($compt1 == $compt2 and $prix_obj == 0)
 											{

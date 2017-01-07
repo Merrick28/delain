@@ -73,7 +73,7 @@ include "ident.php";
 </head>
 <body background="images/fond5.gif">
 <?php 
-if (!isset($compt_cod))
+if (!$verif_auth)
 {
 	echo "<p>Erreur sur le passage de compte !";
 	exit;

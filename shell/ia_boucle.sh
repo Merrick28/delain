@@ -25,7 +25,7 @@ EOF
 while read monstre
 do
 echo "Lancement de $monstre"
-if [ ! -f /home/delain/public_html/stop_jeu ] 
+if [ ! -f /home/delain/delain/web/www/stop_jeu ]
 then
 if [ 8 -le `cat /proc/loadavg | awk '{print $1}' | awk -F "." '{print $1}'` ]
 then

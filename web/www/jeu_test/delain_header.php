@@ -48,42 +48,19 @@ function unregister_globals() {
 	}
 }
 register_globals();
-$filename = '/home/delain/public_html/stop_jeu';
+$filename = G_CHE . 'stop_jeu';
 //require '/home/delain/public_html/www/includes/filtrage_ip.php';
 if (file_exists($filename) && $_SERVER["REMOTE_ADDR"] != '195.37.61.152') {
 	//echo "Le jeu est actuellement arrêté pour quelques minutes. <hr>";
-	include '/home/delain/public_html/stop_jeu';
+	include G_CHE . 'stop_jeu';
 	die();
 }
 require 'prepend.php';
 // chemins du jeu
-/*$g_url = 'http://www.jdr-delain.net/';
-$g_che = '/home/delain/public_html/www/';
-$g_images = 'http://images.jdr-delain.net/';
-$nom_cook = 'cook_pass';*/
-//$img_path='http://images.jdr-delain.net/';
 if(isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
 	$type_flux = 'https://';
 else
 	$type_flux = 'http://';
-// modif par SD : on tente les variables par apc ?
-if(!apc_exists('g_url'))
-	apc_store('g_url','www.jdr-delain.net/');
-if(!apc_exists('g_che'))
-	apc_store('g_che','/home/delain/public_html/www/');
-if(!apc_exists('g_images'))
-	apc_store('g_images','http://images.jdr-delain.net/');
-if(!apc_exists('nom_cook'))
-	apc_store('nom_cook','cook_pass');
-if(!apc_exists('img_path'))
-	apc_store('img_path','http://images.jdr-delain.net/');
-// clé de connection
-$init = rand(1,10000);
-if($init <= 10 )
-	apc_delete('cle_connec');
-if(!apc_exists('cle_connec'))
-	apc_store('cle_connec',uniqid('',true));
 
 // on commence la temporisation de sortie
 ob_start();
-trigger_error('hend');

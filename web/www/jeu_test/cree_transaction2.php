@@ -10,6 +10,9 @@ $t->set_var('URL_IMAGES', G_IMAGES);
 $param = new parametres();
 ob_start();
 
+// TODO A Supprimer :
+$perso = $_REQUEST['perso'];
+
 echo '<script type="text/javascript" src="../scripts/cocheCase.js"></script>';
 echo '<script type="text/javascript">
 	function vendreNombre(gobj_cod, nombre)
@@ -207,7 +210,7 @@ switch ($methode)
         //Analyse des cas d’erreurs
         $tab = $db->get_pos($perso_cod);
         $pos_perso1 = $tab['pos_cod'];
-        $tab = $db->get_pos($perso);
+        $tab = $db->get_pos($_REQUEST['perso']);
         $pos_perso2 = $tab['pos_cod'];
         $distance = $db->distance($pos_perso1, $pos_perso2);
         $is_lieu = $db->is_lieu($perso_cod);
@@ -252,12 +255,12 @@ switch ($methode)
                 $compt1 = '';
             }
         }
-        $req = "select perso_type_perso from perso where perso_cod = $perso";
+        $req = "select perso_type_perso from perso where perso_cod = " . $_REQUEST['perso'];
         $db->query($req);
         $db->next_record();
         if ($db->f("perso_type_perso") == 1)
         {
-            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso";
+            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = " . $_REQUEST['perso'];
             $db->query($req);
             $db->next_record();
             $compt2 = $db->f("pcompt_compt_cod");
@@ -266,7 +269,7 @@ switch ($methode)
         {
             if ($db->f("perso_type_perso") == 3)
             {
-                $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso and pfam_perso_cod = pcompt_perso_cod";
+                $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = " . $_REQUEST['perso'] . " and pfam_perso_cod = pcompt_perso_cod";
                 $db->query($req);
                 $db->next_record();
                 $compt2 = $db->f("pcompt_compt_cod");
@@ -308,7 +311,7 @@ switch ($methode)
                 if ($erreur == 0)
                 {
                     $req_ins = "insert into transaction (tran_obj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie)
-						values ($key, $perso_cod, $perso, " . $param->getparm(7) . ", $prix_obj, '$si_identifie')
+						values ($key, $perso_cod, " . $_REQUEST['perso'] . ", " . $param->getparm(7) . ", $prix_obj, '$si_identifie')
 						RETURNING tran_cod";
                     $db->query($req_ins);
                     $db->next_record();
@@ -409,7 +412,7 @@ switch ($methode)
                         {
                             $obj_cod = $db2->f('obj_cod');
                             $req_ins = "insert into transaction (tran_obj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie)
-								values ($obj_cod, $perso_cod, $perso, " . $param->getparm(7) . ", $prix_obj, 'O')
+								values ($obj_cod, $perso_cod, " . $_REQUEST['perso'] . ", " . $param->getparm(7) . ", $prix_obj, 'O')
 								RETURNING tran_cod";
                             $db3->query($req_ins);
                             $db3->next_record();
@@ -478,7 +481,7 @@ switch ($methode)
 
         if ($compteur_accept > 0)
         {
-            $req_evt = "select insere_evenement($perso_cod, $perso, 17, '$texte_evt', 'N', NULL)";
+            $req_evt = "select insere_evenement($perso_cod, " . $_REQUEST['perso'] . ", 17, '$texte_evt', 'N', NULL)";
             $db->query($req_evt);
 
             echo $texte_man . $texte_auto;

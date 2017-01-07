@@ -8,7 +8,7 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 
 function writelog($textline){
-	$filename="../logs/droit_edit.log"; // or whatever your path and filename
+	$filename= G_CHE . "../../logs/droit_edit.log"; // or whatever your path and filename
 	if (is_writable($filename)) {
 		if (!$handle = fopen($filename, 'a')) {
 			echo "Cannot open file ($filename)";
@@ -45,6 +45,7 @@ $contenu_page = '';
 $erreur = 0;
 $req = "select dcompt_gere_droits from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
+$compte = $_REQUEST['compte'];
 
 if ($db->nf() == 0)
 {
@@ -425,7 +426,7 @@ if ($erreur == 0)
 					dcompt_animations = '$anims',
 					dcompt_magie = '$magie',
 					dcompt_factions = '$factions'
-				where dcompt_compt_cod = $compte";
+				where dcompt_compt_cod = $vcompte";
 			$db->query($req);
 			$log = $log . "dcompt_modif_perso = '$modif_perso',
 				dcompt_creer_monstre = '$creer_monstre',
@@ -452,7 +453,7 @@ if ($erreur == 0)
 		break;
 
 		case "cree":
-			$req = "insert into compt_droit (dcompt_compt_cod) values ($compte) ";
+			$req = "insert into compt_droit (dcompt_compt_cod) values ($vcompte) ";
 			$db->query($req);
 		?>
 			<p>Les droits ont bien été créés !<br>
