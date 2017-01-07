@@ -4,8 +4,8 @@ include '../includes/template.inc';
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
-$t->set_var('URL',$type_flux.apc_fetch('g_url'));
-$t->set_var('URL_IMAGES',apc_fetch('img_path'));
+$t->set_var('URL',$type_flux.G_URL);
+$t->set_var('URL_IMAGES',IMG_PATH);
 // on va maintenant charger toutes les variables li�es au menu
 include('variables_menu.php');
 

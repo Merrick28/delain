@@ -80,35 +80,6 @@ if (file_exists($filename) && $_SERVER["REMOTE_ADDR"] != '195.37.61.152')
 }
 require 'prepend.php';
 // chemins du jeu
-// on triche pour les fonctions apc
-if (!function_exists('apc_exists'))
-{
-
-    function apc_exists()
-    {
-        return true;
-    }
-
-}
-if (!function_exists('apc_fetch'))
-{
-    function apc_fetch($arg)
-    {
-        switch ($arg)
-        {
-            case 'g_url':
-                return G_URL;
-            case 'g_che':
-                return G_CHE;
-            case 'g_images':
-                return G_IMAGES;
-            case 'nom_cook':
-                return NOM_COOK;
-            case 'img_path':
-                return IMG_PATH;
-        }
-    }
-}
 
 define('CHEMIN',G_CHE);
 if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
@@ -119,28 +90,6 @@ else
 {
     $type_flux = 'http://';
 }
-// modif par SD : on tente les variables par apc ?
-if (!apc_exists('g_url'))
-{
-    apc_store('g_url', G_URL);
-}
-if (!apc_exists('g_che'))
-{
-    apc_store('g_che', G_CHE);
-}
-if (!apc_exists('g_images'))
-{
-    apc_store('g_images', G_IMAGES);
-}
-if (!apc_exists('nom_cook'))
-{
-    apc_store('nom_cook', NOM_COOK);
-}
-if (!apc_exists('img_path'))
-{
-    apc_store('img_path', IMG_PATH);
-}
-
 /**
  * Autochargement des classes manquantes
  */

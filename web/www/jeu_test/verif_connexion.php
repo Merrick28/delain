@@ -109,23 +109,6 @@ if ((!$db->is_admin_monstre($compt_cod)) && (!$db->is_admin($compt_cod)))
 			if ($type_auth == "normal")
             {
                 $err_mdp = 0;
-                /*if (!isset($_COOKIE[apc_fetch('nom_cook')]))
-                {
-                    $phrase = 'Anomalie ! Les cookies nécessaires à la session ne sont pas stockés. Vérifiez que votre navigateur accepte bien les cookies (ceux ci sont indispensables au fonctionnement du jeu) et que l’horloge de votre poste est à jour (y compris le fuseau horaire).';
-                    header('Location:' . $type_flux . G_URL . 'jeu_test/fin_session2.php?motif=' . $phrase);
-                    die();
-                }
-                else
-                {
-                    if ($_COOKIE[apc_fetch('nom_cook')] == '')
-                    {
-                        $phrase = 'Anomalie ! Les cookies nécessaires à la session ne sont pas stockés. Vérifiez que votre navigateur accepte bien les cookies (ceux ci sont indispensables au fonctionnement du jeu) et que l’horloge de votre poste est à jour (y compris le fuseau horaire).';
-                        header('Location:' . $type_flux . G_URL . 'jeu_test/fin_session2.php?motif=' . $phrase);
-                        die();
-                    }
-                }*/
-
-
                 if ($err_mdp == 1)
                 {
                     //
