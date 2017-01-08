@@ -2,20 +2,21 @@
 
 {% block contenu %}
     <link rel="stylesheet" type="text/css" href="{{ HTTPS }}{{ URL }}style.css">
-    <div class="groupdiv">
-        {% if ISAUTH %}
-            {% if TYPE_PERSO == 'joueur' %}
-                {% if COMPTE.compt_hibernation == 'O' %}
+
+    {% if ISAUTH %}
+        {% if TYPE_PERSO == 'joueur' %}
+            {% if COMPTE.compt_hibernation == 'O' %}
+                {#
+                On est en hibernation
+                #}
+                Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}.<br/>
+                Vous ne pouvez pas vous connecter d’ici là.
+            {% else %}
+                {% if ATTRIBUE_NOUVEAU_MONSTRE %}
                     {#
-                    On est en hibernation
+                    Un nouveau monstre a été affecté
                     #}
-                    Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}.<br/>
-                    Vous ne pouvez pas vous connecter d’ici là.
-                {% else %}
-                    {% if ATTRIBUE_NOUVEAU_MONSTRE %}
-                        {#
-                        Un nouveau monstre a été affecté
-                        #}
+                    <div class="groupdiv">
                         <p class="titre">Nouveau monstre !</p>
                         <p class="texteNorm">
                             Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
@@ -27,77 +28,80 @@
                         {% else %}
                             <p>Aucun événement depuis votre dernière DLT</p>
                         {% endif %}
-                    {% endif %}
+                    </div>
+                {% endif %}
 
-                    {% if AFFICHE_NEWS|length > 0 %}
+                {% if AFFICHE_NEWS|length > 0 %}
+                    <div class="groupdiv">
                         {% for news in AFFICHE_NEWS %}
                             {% include 'blocks/_news_detail.twig' %}
                         {% endfor %}
-                    {% endif %}
+                    </div>
+                {% endif %}
 
-                    {% if PERSOS_ACTIFS|length == 0 %}
-                        <p>Aucun joueur dirigé.</p>
-                        <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
-                    {% else %}
-                        <div class="container-fluid">
-                            <form name="login" method="post" action="validation_login3.php">
-                                <input type="hidden" name="perso">
-                                <input type="hidden" name="activeTout" value="0">
-                                <div class="row">
-                                    {% if OK_4 %}
-                                        <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12 bordiv">
-                                            <div class="titre">Joueurs</div>
-                                            <div class="row">
-                                                {% for PERSO in PERSOS_JOUEURS %}
-                                                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
-                                                        {% include 'blocks/_single_perso_switch.twig' %}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 bordiv">
-                                            <div class="titre">Quatrième</div>
-                                            <div class="row">
-                                                {% for PERSO in PERSOS_QUATRIEME %}
-                                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                                        {% include 'blocks/_single_perso_switch.twig' %}
-                                                    </div>
-                                                {% endfor %}
-                                            </div>
-                                        </div>
-                                    {% else %}
-                                        <div class="bordiv">
-                                            <div class="titre">Joueurs</div>
+                {% if PERSOS_ACTIFS|length == 0 %}
+                    <p>Aucun joueur dirigé.</p>
+                    <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
+                {% else %}
+                    <div class="container-fluid">
+                        <form name="login" method="post" action="validation_login3.php">
+                            <input type="hidden" name="perso">
+                            <input type="hidden" name="activeTout" value="0">
+                            <div class="row">
+                                {% if OK_4 %}
+                                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 bordiv">
+                                        <div class="titre">Joueurs</div>
+                                        <div class="row">
                                             {% for PERSO in PERSOS_JOUEURS %}
                                                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                                                     {% include 'blocks/_single_perso_switch.twig' %}
                                                 </div>
                                             {% endfor %}
                                         </div>
-                                    {% endif %}
-                                </div>
-                                {% if FAMILIERS|length > 0 %}
-                                    <div class="bordiv row">
-                                        <div class="titre">Familiers</div>
-                                        {% for PERSO in FAMILIERS %}
+                                    </div>
+                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 bordiv">
+                                        <div class="titre">Quatrième</div>
+                                        <div class="row">
+                                            {% for PERSO in PERSOS_QUATRIEME %}
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="bordiv">
+                                        <div class="titre">Joueurs</div>
+                                        {% for PERSO in PERSOS_JOUEURS %}
                                             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                                                 {% include 'blocks/_single_perso_switch.twig' %}
                                             </div>
                                         {% endfor %}
                                     </div>
                                 {% endif %}
+                            </div>
+                            {% if FAMILIERS|length > 0 %}
+                                <div class="bordiv row">
+                                    <div class="titre">Familiers</div>
+                                    {% for PERSO in FAMILIERS %}
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
 
 
-                            </form>
-                        </div>
-                    {% endif %}
-
-
+                        </form>
+                    </div>
                 {% endif %}
 
+
             {% endif %}
-        {% else %}
-            Authentification échouée ou expirée.
+
         {% endif %}
-    </div>
+    {% else %}
+        Authentification échouée ou expirée.
+    {% endif %}
+
 {% endblock %}
