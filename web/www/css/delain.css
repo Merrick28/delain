@@ -285,6 +285,7 @@ hr {
 img.imgFit {
     max-width: 100%;
     height: auto;
+    max-width:200px;
 }
 
 .space_between_div {
