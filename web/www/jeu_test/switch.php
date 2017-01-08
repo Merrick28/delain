@@ -116,7 +116,6 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 	<hr /><div style="text-align:center">
 	Numéro de compte : <?php echo  $compt_cod; ?><br /><a href="change_pass.php">Changer de mot de passe !</a><br />
 	<a href="change_mail.php">Changer d’adresse e-mail !</a><br />
-	<a href="options_clef_forum.php">Demander une clef d’accès au forum</a><br />
 	<a href="rec_mail.php">Réception des comptes rendus par mail</a><br />
 	<a href="declare_sitting.php">Déclarer un sitting</a><br />
 	<?php 
