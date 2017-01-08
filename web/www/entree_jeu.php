@@ -190,6 +190,8 @@ if ($verif_auth)
             }
         }
 
+        $ok_4 = $compte->autorise_4e_global();
+
         // on efface l'hibernation si il en reste
         if ($compte->compt_hibernation == 'T')
         {
