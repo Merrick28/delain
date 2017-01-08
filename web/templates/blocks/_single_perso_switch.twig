@@ -82,7 +82,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
 
         </div>
         {% if PERSO.msg_non_lu|length > 0 %}
-            <div>
+            <div class="row">
                 <span class="bouton">
 			<input type="button" class="bouton"
                    onClick="javascript:window.open('visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
@@ -92,7 +92,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
             </div>
         {% endif %}
         {% if PERSO.transactions > 0 %}
-            <div class="soustitre2">
+            <div class="soustitre2 row">
                 {{ PERSO.transactions }} transactions en attente.<br>
             </div>
         {% endif %}
