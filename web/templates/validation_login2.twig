@@ -60,16 +60,7 @@
                                             {% endfor %}
 
                                         </div>
-                                        <span class='bouton'><input type="button" class="bouton"
-                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
-                                                                    title="Voir les derniers événements de tous les personnages"
-                                                                    value="Voir tous les événements"
-                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
-                                        <span class='bouton'><input type='button' class='bouton'
-                                                                    onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
-                                                                    title='Activer toutes les DLT'
-                                                                    value='Activer toutes les DLT'
-                                                                    style='width:200px;'/></span>
+
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 bordiv">
                                         <div class="titre">Quatrième</div>
@@ -80,15 +71,29 @@
                                                 </div>
                                             {% endfor %}
                                         </div>
+                                        <div>
+                                        <span class='bouton'><input type="button" class="bouton"
+                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                                                    title="Voir les derniers événements de tous les personnages"
+                                                                    value="Voir tous les événements"
+                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
+                                            <span class='bouton'><input type='button' class='bouton'
+                                                                        onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                                        title='Activer toutes les DLT'
+                                                                        value='Activer toutes les DLT'
+                                                                        style='width:200px;'/></span>
+                                        </div>
                                     </div>
                                 {% else %}
                                     <div class="bordiv">
                                         <div class="titre">Joueurs</div>
-                                        {% for PERSO in PERSOS_JOUEURS %}
-                                            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
-                                                {% include 'blocks/_single_perso_switch.twig' %}
-                                            </div>
-                                        {% endfor %}
+                                        <div class="row">
+                                            {% for PERSO in PERSOS_JOUEURS %}
+                                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
                                         <div>
                                         <span class='bouton'><input type="button" class="bouton"
                                                                     onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
@@ -103,7 +108,9 @@
                                         </div>
                                     </div>
                                 {% endif %}
+
                             </div>
+
                             {% if FAMILIERS|length > 0 %}
                                 <div class="bordiv row">
                                     <div class="titre">Familiers</div>

@@ -198,17 +198,8 @@ if ($verif_auth)
 
         $persos_actifs = $compte->getPersosActifs();
 
-        //include "tab_switch.php";
-        // on est dans le futur ancien tab_switch
-        // il y a pas mal d'actions qu'il va falloir checker
-        $nb_perso_max   = $compte->compt_ligne_perso * 3;
-        $nb_perso_ligne = 3;
-        $ok_4           = $compte->autorise_4e_global();
-        if ($ok_4)
-        {
-            $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
-            $nb_perso_ligne = 4;
-        }
+        $nb_perso_max = $compte->compt_ligne_perso * 3;
+
         $type_4        = $compte->compt_type_quatrieme;
         $premier_perso = $persos_actifs[0]->perso_cod;
         foreach ($persos_actifs as $perso_actif)
@@ -231,6 +222,15 @@ if ($verif_auth)
                 $familiers[] = $perso_actif;
             }
         }
+        // on regarde s'il faut afficher des cases vides
+        $cases_vides = $nb_perso_max - count($perso_joueur);
+        for($i = 0;$i < $cases_vides; $i++)
+        {
+            $perso_vide = new perso;
+            $perso_vide->perso_vide = true;
+            $perso_joueur[] = $perso_vide;
+        }
+
         // on regarde s'il y a des comptes sittés
         $persos_sittes = $compte->getPersosSittes();
         foreach ($persos_sittes as $perso_sitte)

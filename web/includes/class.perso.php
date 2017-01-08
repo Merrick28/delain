@@ -117,6 +117,8 @@ class perso
     var $position;
     var $guilde;
     var $avatar;
+    var $perso_vide = false;
+    var $msg_non_lu;
 
     function __construct()
     {
@@ -1407,6 +1409,18 @@ class perso
         {
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
         }
+
+        $this->msg_non_lu = $this->getMsgNonLu();
+    }
+
+    /**
+     * @return messages_dest[]
+     */
+    function getMsgNonLu()
+    {
+        $msg_dest = new messages_dest();
+        return $msg_dest->getByPersoNonLu($this->perso_cod);
+
     }
 
     public function __call($name, $arguments)
