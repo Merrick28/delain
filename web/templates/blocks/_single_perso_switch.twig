@@ -54,7 +54,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
                 " width="{{ PERSO.avatar_largeur }}" class="imgFit"></a>
                 {% if PERSO.getEvtNonLu|length >0 %}
                     <input type="button" class="bouton"
-                           onClick="javascript:window.open('{{ URL }}/visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                           onClick="javascript:window.open('{{ HTTPS }}{{ URL }}/visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
                            title='Cliquez ici pour voir vos événements importants depuis votre dernière connexion'
                            value="Événements"/>
                 {% endif %}
@@ -85,7 +85,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
             <div class="row">
                 <span class="bouton">
 			<input type="button" class="bouton"
-                   onClick="javascript:window.open('visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
+                   onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
                    title='Cliquez ici pour lire vos 10 derniers messages'
                    value="{{ PERSO.msg_non_lu|length }} messages non lus."/>
 			</span>
