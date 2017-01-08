@@ -119,6 +119,8 @@ class perso
     var $avatar;
     var $perso_vide = false;
     var $msg_non_lu;
+    var $avatar_largeur;
+    var $avatar_hauteur;
 
     function __construct()
     {
@@ -1408,6 +1410,13 @@ class perso
         else
         {
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
+        }
+
+        $size = getimagesize($this->avatar);
+        if($size !== false)
+        {
+            $this->avatar_largeur = $size[0];
+            $this->avatar_hauteur = $size[1];
         }
 
         $this->msg_non_lu = $this->getMsgNonLu();

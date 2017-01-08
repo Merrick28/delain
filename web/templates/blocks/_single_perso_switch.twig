@@ -51,7 +51,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
                 <a href="#"
                    onClick="javascript:document.login.perso.value={{ PERSO.perso_cod }};document.login.submit();"><img
                             src="{{ PERSO.avatar }}?{{ PERSO.perso_avatar_version }}" alt="Jouer {{ PERSO.perso_nom }}
-                " class="imgFit"></a>
+                " width="{{ PERSO.avatar_largeur }}" class="imgFit"></a>
                 {% if PERSO.getEvtNonLu|length >0 %}
                     <input type="button" class="bouton"
                            onClick="javascript:window.open('{{ URL }}/visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
