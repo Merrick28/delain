@@ -209,7 +209,8 @@ if ($verif_auth)
             $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
             $nb_perso_ligne = 4;
         }
-        $type_4 = $compte->compt_type_quatrieme;
+        $type_4        = $compte->compt_type_quatrieme;
+        $premier_perso = $persos_actifs[0]->perso_cod;
         foreach ($persos_actifs as $perso_actif)
         {
             // on prend toutes les infos nécessaires du perso
@@ -263,7 +264,8 @@ $options_twig = array(
     'ATTRIBUE_NOUVEAU_MONSTRE' => $attribue_nouveau_monstre,
     'OK_4'                     => $ok_4,
     'FAMILIERS'                => $familiers,
-    'PERSOS_SITTES'            => $persos_sittes
+    'PERSOS_SITTES'            => $persos_sittes,
+    'PREMIER_PERSO'            => $premier_perso,
 
 );
 echo $template->render($options_twig);

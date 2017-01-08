@@ -58,7 +58,18 @@
                                                     {% include 'blocks/_single_perso_switch.twig' %}
                                                 </div>
                                             {% endfor %}
+
                                         </div>
+                                        <span class='bouton'><input type="button" class="bouton"
+                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                                                    title="Voir les derniers événements de tous les personnages"
+                                                                    value="Voir tous les événements"
+                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
+                                        <span class='bouton'><input type='button' class='bouton'
+                                                                    onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                                    title='Activer toutes les DLT'
+                                                                    value='Activer toutes les DLT'
+                                                                    style='width:200px;'/></span>
                                     </div>
                                     <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 bordiv">
                                         <div class="titre">Quatrième</div>
@@ -78,6 +89,18 @@
                                                 {% include 'blocks/_single_perso_switch.twig' %}
                                             </div>
                                         {% endfor %}
+                                        <div>
+                                        <span class='bouton'><input type="button" class="bouton"
+                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                                                    title="Voir les derniers événements de tous les personnages"
+                                                                    value="Voir tous les événements"
+                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
+                                            <span class='bouton'><input type='button' class='bouton'
+                                                                        onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                                        title='Activer toutes les DLT'
+                                                                        value='Activer toutes les DLT'
+                                                                        style='width:200px;'/></span>
+                                        </div>
                                     </div>
                                 {% endif %}
                             </div>
@@ -104,6 +127,7 @@
                         </form>
                     </div>
                 {% endif %}
+
             {% endif %}
         {% endif %}
     {% else %}
