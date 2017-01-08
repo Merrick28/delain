@@ -1210,6 +1210,9 @@ class perso
         return $result['missions'];
     }
 
+    /**
+     * @return ligne_evt[]
+     */
     function getEvtNonLu()
     {
         $levt = new ligne_evt();

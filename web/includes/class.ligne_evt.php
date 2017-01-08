@@ -185,6 +185,10 @@ class ligne_evt
         return $retour;
     }
 
+    /**
+     * @param $perso_cod
+     * @return ligne_evt[]
+     */
     function getByPersoNonLu($perso_cod)
     {
         $retour = array();
