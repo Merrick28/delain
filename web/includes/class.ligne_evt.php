@@ -185,6 +185,10 @@ class ligne_evt
         return $retour;
     }
 
+    /**
+     * @param $perso_cod
+     * @return ligne_evt[]
+     */
     function getByPersoNonLu($perso_cod)
     {
         $retour = array();
@@ -203,6 +207,20 @@ class ligne_evt
             $tevt = new type_evt();
             $tevt->charge($temp->levt_tevt_cod);
             $temp->tevt = $tevt;
+            // on prend les evts liés
+            if (!empty($this->levt_attaquant != ''))
+            {
+                $perso_attaquant = new perso;
+                $perso_attaquant->charge($this->levt_attaquant);
+                $temp->perso_attaquant = $perso_attaquant;
+            }
+            if (!empty($this->levt_cible != ''))
+            {
+                $perso_cible = new perso;
+                $perso_cible->charge($this->levt_cible);
+                $temp->perso_cible = $perso_cible;
+            }
+
             $retour[]   = $temp;
             unset($temp);
         }

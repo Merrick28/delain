@@ -62,6 +62,174 @@ class compte
         $this->compt_envoi_mail_dernier = date('Y-m-d H:i:s');
     }
 
+    function is_admin()
+    {
+        return $this->compt_admin == 'O';
+    }
+
+    function is_admin_monstre()
+    {
+        return $this->compt_monstre == 'O';
+    }
+
+    function autorise_4e_monstre()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select autorise_4e_monstre(?, ?) as autorise_monstre ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
+        $result = $stmt->fetch();
+        return $result['autorise_monstre'];
+    }
+
+    function autorise_4e_perso()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select autorise_4e_perso(?, ?) as autorise_4e_perso ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
+        $result = $stmt->fetch();
+        return $result['autorise_4e_perso'];
+    }
+
+    function autorise_4e_global()
+    {
+        return $this->autorise_4e_monstre() || $this->autorise_4e_perso();
+    }
+
+    function attribue_monstre_4e_perso()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select attribue_monstre_4e_perso(?) as attribue_monstre_4e_perso ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['attribue_monstre_4e_perso'];
+    }
+
+    function fin_hibernation()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select fin_hibernation(?) as fin_hibernation ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['fin_hibernation'];
+    }
+
+    /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
+    function getPersosActifs()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req
+                = "SELECT pcompt_perso_cod FROM perso
+						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pcompt_perso_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        // familiers
+        $req
+              = "SELECT pfam_familier_cod FROM perso_familier,perso,perso_compte
+          WHERE pcompt_compt_cod = ? 
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pfam_familier_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
+        return $retour;
+    }
+
+    /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
+    function getPersosSittes()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req
+                = "select pcompt_perso_cod
+            from perso,perso_compte,compte_sitting
+            where csit_compte_sitteur = ?
+            and csit_compte_sitte = pcompt_compt_cod
+            and csit_ddeb <= now()
+            and csit_dfin >= now()
+            and pcompt_perso_cod = perso_cod
+            and perso_actif = 'O'
+            and perso_type_perso = 1
+            order by perso_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pcompt_perso_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+    }
+
+    /**
+     * Retourne le monstre joué par le compte s'il existe
+     * false si rien
+     * @return bool|perso
+     */
+    function getMonstreJoueur()
+    {
+        $pdo  = new bddpdo;
+        $req
+              = "SELECT perso_cod FROM perso INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+				WHERE pcompt_compt_cod = ? AND perso_type_perso = 2
+				ORDER BY pcompt_date_attachement DESC LIMIT 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $result['perso_cod'];
+    }
+
+    /**
+     * Retourne un tableau de tous les enregistrements
+     * @global bdd_mysql $pdo
+     * @return \compte
+     */
+    function getAll()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "SELECT compt_cod  FROM compte ORDER BY compt_cod";
+        $stmt   = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new compte;
+            $temp->charge($result["compt_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     /**
      * Charge dans la classe un enregistrement de compte
      * @global bdd_mysql $pdo
@@ -122,6 +290,97 @@ class compte
         $this->compt_clef_reinit_mdp      = $result['compt_clef_reinit_mdp'];
         $this->compt_passwd_hash          = $result['compt_passwd_hash'];
         return true;
+    }
+
+    public function __call($name, $arguments)
+    {
+        switch (substr($name, 0, 6))
+        {
+            case 'getBy_':
+                if (property_exists($this, substr($name, 6)))
+                {
+                    $retour = array();
+                    $pdo    = new bddpdo;
+                    $req    = "SELECT compt_cod  FROM compte WHERE " . substr($name, 6) . " = ? ORDER BY compt_cod";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    while ($result = $stmt->fetch())
+                    {
+                        $temp = new compte;
+                        $temp->charge($result["compt_cod"]);
+                        $retour[] = $temp;
+                        unset($temp);
+                    }
+                    if (count($retour) == 0)
+                    {
+                        return false;
+                    }
+                    return $retour;
+                }
+                else
+                {
+                    die('Unknown variable ' . substr($name, 6));
+                }
+                break;
+
+            default:
+                die('Unknown method.');
+        }
+    }
+
+    /**
+     * Si authentification correcte, on retourne true
+     * après avoir hydraté l'objet
+     * Donc dans notre page, l'objet $compte contiendra
+     * l'obet bdd attendu
+     *
+     * @param text $login
+     * @param text $password
+     * @return boolean
+     */
+    function getByLoginPassword($login, $password)
+    {
+        if (!$retour = $this->getBy_compt_nom($login))
+        {
+            return false;
+        }
+        $this->charge($retour[0]->compt_cod);
+        if (empty($this->compt_password) || ($this->compt_password == NULL))
+        {
+            // password normal vide
+            // on est sur du crypté
+            if (crypt($password, $this->compt_passwd_hash) == $this->compt_passwd_hash)
+            {
+                $this->updateDateLogin();
+                return true;
+            }
+            // on n'a pas fait de retour, on n'est donc pas bien authentifié
+            return false;
+        }
+        else
+        {
+            // password normal non vide
+            // on est pas encore sur du crypté
+            if ($this->compt_password == $password)
+            {
+                // on se met à jour pour utiliser le crypté pour la fois suivante
+                $this->compt_passwd_hash = crypt($this->compt_password);
+                $this->compt_password    = '';
+                $this->stocke();
+
+                $this->updateDateLogin();
+                return true;
+            }
+            // on n'a pas fait de retour, on n'est donc pas bien authentifié
+
+            return false;
+        }
+    }
+
+    function updateDateLogin()
+    {
+        $this->compt_der_connex = date('Y-m-d H:i:s');
+        $this->stocke();
     }
 
     /**
@@ -366,138 +625,6 @@ class compte
                 ":compt_passwd_hash"          => $this->compt_passwd_hash,
             ), $stmt);
         }
-    }
-
-    function is_admin()
-    {
-        return $this->compt_admin == 'O';
-    }
-
-    function is_admin_monstre()
-    {
-        return $this->compt_monstre == 'O';
-    }
-
-    function autorise_4e_monstre()
-    {
-        $pdo  = new bddpdo;
-        $req  = "select autorise_4e_monstre(?, ?) as autorise_monstre ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_quatre_perso,$this->compt_dcreat),$stmt);
-        $result = $stmt->fetch();
-        return $result['autorise_monstre'];
-    }
-
-    /**
-     * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
-     * @return \compte
-     */
-    function getAll()
-    {
-        $retour = array();
-        $pdo    = new bddpdo;
-        $req    = "SELECT compt_cod  FROM compte ORDER BY compt_cod";
-        $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new compte;
-            $temp->charge($result["compt_cod"]);
-            $retour[] = $temp;
-            unset($temp);
-        }
-        return $retour;
-    }
-
-    public function __call($name, $arguments)
-    {
-        switch (substr($name, 0, 6))
-        {
-            case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
-                    $retour = array();
-                    $pdo    = new bddpdo;
-                    $req    = "SELECT compt_cod  FROM compte WHERE " . substr($name, 6) . " = ? ORDER BY compt_cod";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
-                        $temp = new compte;
-                        $temp->charge($result["compt_cod"]);
-                        $retour[] = $temp;
-                        unset($temp);
-                    }
-                    if (count($retour) == 0)
-                    {
-                        return false;
-                    }
-                    return $retour;
-                }
-                else
-                {
-                    die('Unknown variable ' . substr($name, 6));
-                }
-                break;
-
-            default:
-                die('Unknown method.');
-        }
-    }
-
-    /**
-     * Si authentification correcte, on retourne true
-     * après avoir hydraté l'objet
-     * Donc dans notre page, l'objet $compte contiendra
-     * l'obet bdd attendu
-     *
-     * @param text $login
-     * @param text $password
-     * @return boolean
-     */
-    function getByLoginPassword($login, $password)
-    {
-        if (!$retour = $this->getBy_compt_nom($login))
-        {
-            return false;
-        }
-        $this->charge($retour[0]->compt_cod);
-        if (empty($this->compt_password) || ($this->compt_password == NULL))
-        {
-            // password normal vide
-            // on est sur du crypté
-            if (crypt($password, $this->compt_passwd_hash) == $this->compt_passwd_hash)
-            {
-                $this->updateDateLogin();
-                return true;
-            }
-            // on n'a pas fait de retour, on n'est donc pas bien authentifié
-            return false;
-        }
-        else
-        {
-            // password normal non vide
-            // on est pas encore sur du crypté
-            if ($this->compt_password == $password)
-            {
-                // on se met à jour pour utiliser le crypté pour la fois suivante
-                $this->compt_passwd_hash = crypt($this->compt_password);
-                $this->compt_password    = '';
-                $this->stocke();
-
-                $this->updateDateLogin();
-                return true;
-            }
-            // on n'a pas fait de retour, on n'est donc pas bien authentifié
-
-            return false;
-        }
-    }
-
-    function updateDateLogin()
-    {
-        $this->compt_der_connex = date('Y-m-d H:i:s');
-        $this->stocke();
     }
 
 }

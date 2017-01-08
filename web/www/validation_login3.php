@@ -216,8 +216,6 @@ if ($autorise == 1)
             $db_evt = new base_delain;
             foreach ($liste_evt as $detail_evt)
             {
-                $num2        = $detail_evt->levt_perso_cod1;
-                $req_nom_evt = "select perso1.perso_nom as nom1";
                 if (!empty($detail_evt->levt_attaquant != ''))
                 {
                     $perso_attaquant = new perso;

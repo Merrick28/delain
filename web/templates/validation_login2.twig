@@ -1,0 +1,144 @@
+{% extends 'index.twig' %}
+
+{% block contenu %}
+    <link rel="stylesheet" type="text/css" href="{{ HTTPS }}{{ URL }}style.css">
+
+    {% if ISAUTH %}
+        {% if TYPE_PERSO == 'joueur' %}
+            {% if COMPTE.compt_hibernation == 'O' %}
+                {#
+                On est en hibernation
+                #}
+                Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}.<br/>
+                Vous ne pouvez pas vous connecter d’ici là.
+            {% else %}
+                {% if ATTRIBUE_NOUVEAU_MONSTRE %}
+                    {#
+                    Un nouveau monstre a été affecté
+                    #}
+                    <div class="groupdiv">
+                        <p class="titre">Nouveau monstre !</p>
+                        <p class="texteNorm">
+                            Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
+                        </p>
+                        {% if EVT_MONSTRE|length > 0 %}
+                            {% set PERSO = ANCIEN_MONSTRE %}
+                            {% for LEVT in EVT_MONSTRE %}
+                                {% include 'blocks/_ligne_evt_sans_lien.twig' %}<br/>
+                            {% endfor %}
+                        {% else %}
+                            <p>Aucun événement depuis votre dernière DLT</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if AFFICHE_NEWS|length > 0 %}
+                    <div class="groupdiv">
+                        {% for news in AFFICHE_NEWS %}
+                            {% include 'blocks/_news_detail.twig' %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if PERSOS_ACTIFS|length == 0 %}
+                    <p>Aucun joueur dirigé.</p>
+                    <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
+                {% else %}
+                    <div class="container-fluid">
+                        <form name="login" method="post" action="validation_login3.php">
+                            <input type="hidden" name="perso">
+                            <input type="hidden" name="activeTout" value="0">
+                            <div class="row">
+                                {% if OK_4 %}
+                                    <div class="col-lg-8 col-md-12 col-sm-12 col-xs-12 bordiv">
+                                        <div class="titre">Joueurs</div>
+                                        <div class="row">
+                                            {% for PERSO in PERSOS_JOUEURS %}
+                                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12 bordiv">
+                                        <div class="titre">Quatrième</div>
+                                        <div class="row">
+                                            {% for PERSO in PERSOS_QUATRIEME %}
+                                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div>
+                                        <span class='bouton'><input type="button" class="bouton"
+                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                                                    title="Voir les derniers événements de tous les personnages"
+                                                                    value="Voir tous les événements"
+                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
+                                            <span class='bouton'><input type='button' class='bouton'
+                                                                        onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                                        title='Activer toutes les DLT'
+                                                                        value='Activer toutes les DLT'
+                                                                        style='width:200px;'/></span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="bordiv">
+                                        <div class="titre">Joueurs</div>
+                                        <div class="row">
+                                            {% for PERSO in PERSOS_JOUEURS %}
+                                                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                                    {% include 'blocks/_single_perso_switch.twig' %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                        <div>
+                                        <span class='bouton'><input type="button" class="bouton"
+                                                                    onClick="javascript:window.open('{{ HTTPS }}{{ URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                                                    title="Voir les derniers événements de tous les personnages"
+                                                                    value="Voir tous les événements"
+                                                                    style="width:200px;"/></span>&nbsp;&nbsp;
+                                            <span class='bouton'><input type='button' class='bouton'
+                                                                        onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                                        title='Activer toutes les DLT'
+                                                                        value='Activer toutes les DLT'
+                                                                        style='width:200px;'/></span>
+                                        </div>
+                                    </div>
+                                {% endif %}
+
+                            </div>
+
+                            {% if FAMILIERS|length > 0 %}
+                                <div class="bordiv row">
+                                    <div class="titre">Familiers</div>
+                                    {% for PERSO in FAMILIERS %}
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if PERSOS_SITTES|length > 0 %}
+                                <div class="bordiv row">
+                                    <div class="titre">Persos en sitting</div>
+                                    {% for PERSO in PERSOS_SITTES %}
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                {% endif %}
+
+            {% endif %}
+        {% endif %}
+    {% else %}
+        Authentification échouée ou expirée.
+    {% endif %}
+
+{% endblock %}

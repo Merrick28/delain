@@ -20,6 +20,56 @@ class perso_compte
     }
 
     /**
+     * Stocke l'enregistrement courant dans la BDD
+     * @global bdd_mysql $pdo
+     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     */
+    function stocke($new = false)
+    {
+        $pdo = new bddpdo;
+        if ($new)
+        {
+            $req
+                  = "INSERT INTO perso_compte (
+            pcompt_compt_cod,
+            pcompt_perso_cod,
+            pcompt_date_attachement                        )
+                    VALUES
+                    (
+                        :pcompt_compt_cod,
+                        :pcompt_perso_cod,
+                        :pcompt_date_attachement                        )
+    RETURNING pcompt_cod AS id";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":pcompt_compt_cod" => $this->pcompt_compt_cod,
+                ":pcompt_perso_cod" => $this->pcompt_perso_cod,
+                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
+            ), $stmt);
+
+
+            $temp = $stmt->fetch();
+            $this->charge($temp['id']);
+        }
+        else
+        {
+            $req
+                  = "UPDATE perso_compte
+                    SET
+            pcompt_compt_cod = :pcompt_compt_cod,
+            pcompt_perso_cod = :pcompt_perso_cod,
+            pcompt_date_attachement = :pcompt_date_attachement                        WHERE pcompt_cod = :pcompt_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":pcompt_cod" => $this->pcompt_cod,
+                ":pcompt_compt_cod" => $this->pcompt_compt_cod,
+                ":pcompt_perso_cod" => $this->pcompt_perso_cod,
+                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
+            ), $stmt);
+        }
+    }
+
+    /**
      * Charge dans la classe un enregistrement de perso_compte
      * @global bdd_mysql $pdo
      * @param integer $code => PK
@@ -43,56 +93,6 @@ class perso_compte
     }
 
     /**
-     * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
-     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
-     */
-    function stocke($new = false)
-    {
-        $pdo = new bddpdo;
-        if ($new)
-        {
-            $req
-                  = "INSERT INTO perso_compte (
-            pcompt_compt_cod,
-            pcompt_perso_cod,
-            pcompt_date_attachement                        )
-                    VALUES
-                    (
-                        :pcompt_compt_cod,
-                        :pcompt_perso_cod,
-                        :pcompt_date_attachement                        )
-    RETURNING pcompt_cod AS id";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(
-                ":pcompt_compt_cod"        => $this->pcompt_compt_cod,
-                ":pcompt_perso_cod"        => $this->pcompt_perso_cod,
-                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
-            ), $stmt);
-
-
-            $temp = $stmt->fetch();
-            $this->charge($temp['id']);
-        }
-        else
-        {
-            $req
-                  = "UPDATE perso_compte
-                    SET
-            pcompt_compt_cod = :pcompt_compt_cod,
-            pcompt_perso_cod = :pcompt_perso_cod,
-            pcompt_date_attachement = :pcompt_date_attachement                        WHERE pcompt_cod = :pcompt_cod ";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(
-                ":pcompt_cod"              => $this->pcompt_cod,
-                ":pcompt_compt_cod"        => $this->pcompt_compt_cod,
-                ":pcompt_perso_cod"        => $this->pcompt_perso_cod,
-                ":pcompt_date_attachement" => $this->pcompt_date_attachement,
-            ), $stmt);
-        }
-    }
-
-    /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
      * @return \perso_compte
@@ -112,6 +112,8 @@ class perso_compte
         }
         return $retour;
     }
+
+
 
     public function __call($name, $arguments)
     {
