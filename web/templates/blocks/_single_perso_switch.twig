@@ -47,11 +47,11 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
         <hr/>
 
         <div class="row">
-            <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                 <a href="#"
                    onClick="javascript:document.login.perso.value={{ PERSO.perso_cod }};document.login.submit();"><img
                             src="{{ PERSO.avatar }}?{{ PERSO.perso_avatar_version }}" alt="Jouer {{ PERSO.perso_nom }}
-                "></a>
+                " class="imgFit"></a>
                 {% if PERSO.getEvtNonLu|length >0 %}
                     <input type="button" class="bouton"
                            onClick="javascript:window.open('{{ URL }}/visu_derniers_evt.php?visu_perso={{ PERSO.perso_cod }}&is_log={{ IS_LOG }}','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
@@ -59,7 +59,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
                            value="Événements"/>
                 {% endif %}
             </div>
-            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+            <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
                 <img src="{{ URL_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
                      alt="{{ PERSO.perso_pa }}PA" width="108" height="18" class="imgFit">
                 <br/><img src="{{ URL_IMAGES }}coeur.gif" alt=""> <img
