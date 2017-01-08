@@ -17,41 +17,41 @@ class compte
     var $compt_password;
     var $compt_mail;
     var $compt_validation;
-    var $compt_actif = 'O';
+    var $compt_actif                = 'O';
     var $compt_habilitation;
     var $compt_dcreat;
     var $compt_der_connex;
     var $compt_ip;
     var $compt_commentaire;
     var $compt_renvoye;
-    var $compt_monstre = 'N';
+    var $compt_monstre              = 'N';
     var $compt_testeur;
-    var $compt_admin = 'N';
+    var $compt_admin                = 'N';
     var $compt_hibernation;
     var $compt_dfin_hiber;
     var $compt_acc_charte;
-    var $compt_confiance = 'N';
+    var $compt_confiance            = 'N';
     var $compt_ddeb_hiber;
-    var $compt_quete = 'N';
-    var $compt_envoi_mail = 0;
-    var $compt_envoi_mail_message = 0;
-    var $compt_der_news = 1;
-    var $compt_vue_desc = 0;
-    var $compt_ligne_perso = 1;
+    var $compt_quete                = 'N';
+    var $compt_envoi_mail           = 0;
+    var $compt_envoi_mail_message   = 0;
+    var $compt_der_news             = 1;
+    var $compt_vue_desc             = 0;
+    var $compt_ligne_perso          = 1;
     var $compt_wikidev;
     var $compt_compte_lie;
-    var $compt_quatre_perso = 'O';
+    var $compt_quatre_perso         = 'O';
     var $compt_der_perso_cod;
     var $compt_fb;
     var $compt_twitter;
     var $compt_google;
-    var $compt_frameless = 'O';
+    var $compt_frameless            = 'O';
     var $compt_envoi_mail_frequence = 5;
     var $compt_envoi_mail_dernier;
     var $compt_type_quatrieme;
-    var $compt_clef_forum = NULL;
+    var $compt_clef_forum           = NULL;
     var $compt_validite_clef_forum;
-    var $compt_nombre_clef_forum = 0;
+    var $compt_nombre_clef_forum    = 0;
     var $compt_phashword;
     var $compt_clef_reinit_mdp;
     var $compt_passwd_hash;
@@ -94,7 +94,7 @@ class compte
 
     function autorise_4e_global()
     {
-        return $this->autorise_4e_monstre()||$this->autorise_4e_perso();
+        return $this->autorise_4e_monstre() || $this->autorise_4e_perso();
     }
 
     function attribue_monstre_4e_perso()
@@ -125,12 +125,13 @@ class compte
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "SELECT pcompt_perso_cod FROM perso
+        $req
+                = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
-						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' order by pcompt_perso_cod";
+						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
-        while($result = $stmt->fetch())
+        while ($result = $stmt->fetch())
         {
             $temp = new perso;
             $temp->charge($result['pcompt_perso_cod']);
@@ -138,14 +139,15 @@ class compte
             unset($temp);
         }
         // familiers
-        $req = "select pfam_familier_cod from perso_familier,perso,perso_compte
-          where pcompt_compt_cod = ? 
-          and pcompt_perso_cod = pfam_perso_cod 
-          and pfam_familier_cod = perso_cod 
-          and perso_actif = 'O'";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
-        while($result = $stmt->fetch())
+        $req
+              = "SELECT pfam_familier_cod FROM perso_familier,perso,perso_compte
+          WHERE pcompt_compt_cod = ? 
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
         {
             $temp = new perso;
             $temp->charge($result['pfam_familier_cod']);
@@ -157,6 +159,36 @@ class compte
     }
 
     /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
+    function getPersosSittes()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req
+                = "select pcompt_perso_cod
+            from perso,perso_compte,compte_sitting
+            where csit_compte_sitteur = ?
+            and csit_compte_sitte = pcompt_compt_cod
+            and csit_ddeb <= now()
+            and csit_dfin >= now()
+            and pcompt_perso_cod = perso_cod
+            and perso_actif = 'O'
+            and perso_type_perso = 1
+            order by perso_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pcompt_perso_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+    }
+
+    /**
      * Retourne le monstre joué par le compte s'il existe
      * false si rien
      * @return bool|perso
@@ -164,9 +196,10 @@ class compte
     function getMonstreJoueur()
     {
         $pdo  = new bddpdo;
-        $req  = "select perso_cod from perso inner join perso_compte on pcompt_perso_cod = perso_cod
-				where pcompt_compt_cod = ? and perso_type_perso = 2
-				order by pcompt_date_attachement desc limit 1";
+        $req
+              = "SELECT perso_cod FROM perso INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+				WHERE pcompt_compt_cod = ? AND perso_type_perso = 2
+				ORDER BY pcompt_date_attachement DESC LIMIT 1";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         if (!$result = $stmt->fetch())
@@ -451,48 +484,48 @@ class compte
                     RETURNING compt_cod AS id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":compt_nom" => $this->compt_nom,
-                ":compt_password" => $this->compt_password,
-                ":compt_mail" => $this->compt_mail,
-                ":compt_validation" => $this->compt_validation,
-                ":compt_actif" => $this->compt_actif,
-                ":compt_habilitation" => $this->compt_habilitation,
-                ":compt_dcreat" => $this->compt_dcreat,
-                ":compt_der_connex" => $this->compt_der_connex,
-                ":compt_ip" => $this->compt_ip,
-                ":compt_commentaire" => $this->compt_commentaire,
-                ":compt_renvoye" => $this->compt_renvoye,
-                ":compt_monstre" => $this->compt_monstre,
-                ":compt_testeur" => $this->compt_testeur,
-                ":compt_admin" => $this->compt_admin,
-                ":compt_hibernation" => $this->compt_hibernation,
-                ":compt_dfin_hiber" => $this->compt_dfin_hiber,
-                ":compt_acc_charte" => $this->compt_acc_charte,
-                ":compt_confiance" => $this->compt_confiance,
-                ":compt_ddeb_hiber" => $this->compt_ddeb_hiber,
-                ":compt_quete" => $this->compt_quete,
-                ":compt_envoi_mail" => $this->compt_envoi_mail,
-                ":compt_envoi_mail_message" => $this->compt_envoi_mail_message,
-                ":compt_der_news" => $this->compt_der_news,
-                ":compt_vue_desc" => $this->compt_vue_desc,
-                ":compt_ligne_perso" => $this->compt_ligne_perso,
-                ":compt_wikidev" => $this->compt_wikidev,
-                ":compt_compte_lie" => $this->compt_compte_lie,
-                ":compt_quatre_perso" => $this->compt_quatre_perso,
-                ":compt_der_perso_cod" => $this->compt_der_perso_cod,
-                ":compt_fb" => $this->compt_fb,
-                ":compt_twitter" => $this->compt_twitter,
-                ":compt_google" => $this->compt_google,
-                ":compt_frameless" => $this->compt_frameless,
+                ":compt_nom"                  => $this->compt_nom,
+                ":compt_password"             => $this->compt_password,
+                ":compt_mail"                 => $this->compt_mail,
+                ":compt_validation"           => $this->compt_validation,
+                ":compt_actif"                => $this->compt_actif,
+                ":compt_habilitation"         => $this->compt_habilitation,
+                ":compt_dcreat"               => $this->compt_dcreat,
+                ":compt_der_connex"           => $this->compt_der_connex,
+                ":compt_ip"                   => $this->compt_ip,
+                ":compt_commentaire"          => $this->compt_commentaire,
+                ":compt_renvoye"              => $this->compt_renvoye,
+                ":compt_monstre"              => $this->compt_monstre,
+                ":compt_testeur"              => $this->compt_testeur,
+                ":compt_admin"                => $this->compt_admin,
+                ":compt_hibernation"          => $this->compt_hibernation,
+                ":compt_dfin_hiber"           => $this->compt_dfin_hiber,
+                ":compt_acc_charte"           => $this->compt_acc_charte,
+                ":compt_confiance"            => $this->compt_confiance,
+                ":compt_ddeb_hiber"           => $this->compt_ddeb_hiber,
+                ":compt_quete"                => $this->compt_quete,
+                ":compt_envoi_mail"           => $this->compt_envoi_mail,
+                ":compt_envoi_mail_message"   => $this->compt_envoi_mail_message,
+                ":compt_der_news"             => $this->compt_der_news,
+                ":compt_vue_desc"             => $this->compt_vue_desc,
+                ":compt_ligne_perso"          => $this->compt_ligne_perso,
+                ":compt_wikidev"              => $this->compt_wikidev,
+                ":compt_compte_lie"           => $this->compt_compte_lie,
+                ":compt_quatre_perso"         => $this->compt_quatre_perso,
+                ":compt_der_perso_cod"        => $this->compt_der_perso_cod,
+                ":compt_fb"                   => $this->compt_fb,
+                ":compt_twitter"              => $this->compt_twitter,
+                ":compt_google"               => $this->compt_google,
+                ":compt_frameless"            => $this->compt_frameless,
                 ":compt_envoi_mail_frequence" => $this->compt_envoi_mail_frequence,
-                ":compt_envoi_mail_dernier" => $this->compt_envoi_mail_dernier,
-                ":compt_type_quatrieme" => $this->compt_type_quatrieme,
-                ":compt_clef_forum" => $this->compt_clef_forum,
-                ":compt_validite_clef_forum" => $this->compt_validite_clef_forum,
-                ":compt_nombre_clef_forum" => $this->compt_nombre_clef_forum,
-                ":compt_phashword" => $this->compt_phashword,
-                ":compt_clef_reinit_mdp" => $this->compt_clef_reinit_mdp,
-                ":compt_passwd_hash" => $this->compt_passwd_hash,
+                ":compt_envoi_mail_dernier"   => $this->compt_envoi_mail_dernier,
+                ":compt_type_quatrieme"       => $this->compt_type_quatrieme,
+                ":compt_clef_forum"           => $this->compt_clef_forum,
+                ":compt_validite_clef_forum"  => $this->compt_validite_clef_forum,
+                ":compt_nombre_clef_forum"    => $this->compt_nombre_clef_forum,
+                ":compt_phashword"            => $this->compt_phashword,
+                ":compt_clef_reinit_mdp"      => $this->compt_clef_reinit_mdp,
+                ":compt_passwd_hash"          => $this->compt_passwd_hash,
             ), $stmt);
 
             $temp = $stmt->fetch();
@@ -547,49 +580,49 @@ class compte
                                         compt_passwd_hash = :compt_passwd_hash                                        WHERE compt_cod = :compt_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":compt_cod" => $this->compt_cod,
-                ":compt_nom" => $this->compt_nom,
-                ":compt_password" => $this->compt_password,
-                ":compt_mail" => $this->compt_mail,
-                ":compt_validation" => $this->compt_validation,
-                ":compt_actif" => $this->compt_actif,
-                ":compt_habilitation" => $this->compt_habilitation,
-                ":compt_dcreat" => $this->compt_dcreat,
-                ":compt_der_connex" => $this->compt_der_connex,
-                ":compt_ip" => $this->compt_ip,
-                ":compt_commentaire" => $this->compt_commentaire,
-                ":compt_renvoye" => $this->compt_renvoye,
-                ":compt_monstre" => $this->compt_monstre,
-                ":compt_testeur" => $this->compt_testeur,
-                ":compt_admin" => $this->compt_admin,
-                ":compt_hibernation" => $this->compt_hibernation,
-                ":compt_dfin_hiber" => $this->compt_dfin_hiber,
-                ":compt_acc_charte" => $this->compt_acc_charte,
-                ":compt_confiance" => $this->compt_confiance,
-                ":compt_ddeb_hiber" => $this->compt_ddeb_hiber,
-                ":compt_quete" => $this->compt_quete,
-                ":compt_envoi_mail" => $this->compt_envoi_mail,
-                ":compt_envoi_mail_message" => $this->compt_envoi_mail_message,
-                ":compt_der_news" => $this->compt_der_news,
-                ":compt_vue_desc" => $this->compt_vue_desc,
-                ":compt_ligne_perso" => $this->compt_ligne_perso,
-                ":compt_wikidev" => $this->compt_wikidev,
-                ":compt_compte_lie" => $this->compt_compte_lie,
-                ":compt_quatre_perso" => $this->compt_quatre_perso,
-                ":compt_der_perso_cod" => $this->compt_der_perso_cod,
-                ":compt_fb" => $this->compt_fb,
-                ":compt_twitter" => $this->compt_twitter,
-                ":compt_google" => $this->compt_google,
-                ":compt_frameless" => $this->compt_frameless,
+                ":compt_cod"                  => $this->compt_cod,
+                ":compt_nom"                  => $this->compt_nom,
+                ":compt_password"             => $this->compt_password,
+                ":compt_mail"                 => $this->compt_mail,
+                ":compt_validation"           => $this->compt_validation,
+                ":compt_actif"                => $this->compt_actif,
+                ":compt_habilitation"         => $this->compt_habilitation,
+                ":compt_dcreat"               => $this->compt_dcreat,
+                ":compt_der_connex"           => $this->compt_der_connex,
+                ":compt_ip"                   => $this->compt_ip,
+                ":compt_commentaire"          => $this->compt_commentaire,
+                ":compt_renvoye"              => $this->compt_renvoye,
+                ":compt_monstre"              => $this->compt_monstre,
+                ":compt_testeur"              => $this->compt_testeur,
+                ":compt_admin"                => $this->compt_admin,
+                ":compt_hibernation"          => $this->compt_hibernation,
+                ":compt_dfin_hiber"           => $this->compt_dfin_hiber,
+                ":compt_acc_charte"           => $this->compt_acc_charte,
+                ":compt_confiance"            => $this->compt_confiance,
+                ":compt_ddeb_hiber"           => $this->compt_ddeb_hiber,
+                ":compt_quete"                => $this->compt_quete,
+                ":compt_envoi_mail"           => $this->compt_envoi_mail,
+                ":compt_envoi_mail_message"   => $this->compt_envoi_mail_message,
+                ":compt_der_news"             => $this->compt_der_news,
+                ":compt_vue_desc"             => $this->compt_vue_desc,
+                ":compt_ligne_perso"          => $this->compt_ligne_perso,
+                ":compt_wikidev"              => $this->compt_wikidev,
+                ":compt_compte_lie"           => $this->compt_compte_lie,
+                ":compt_quatre_perso"         => $this->compt_quatre_perso,
+                ":compt_der_perso_cod"        => $this->compt_der_perso_cod,
+                ":compt_fb"                   => $this->compt_fb,
+                ":compt_twitter"              => $this->compt_twitter,
+                ":compt_google"               => $this->compt_google,
+                ":compt_frameless"            => $this->compt_frameless,
                 ":compt_envoi_mail_frequence" => $this->compt_envoi_mail_frequence,
-                ":compt_envoi_mail_dernier" => $this->compt_envoi_mail_dernier,
-                ":compt_type_quatrieme" => $this->compt_type_quatrieme,
-                ":compt_clef_forum" => $this->compt_clef_forum,
-                ":compt_validite_clef_forum" => $this->compt_validite_clef_forum,
-                ":compt_nombre_clef_forum" => $this->compt_nombre_clef_forum,
-                ":compt_phashword" => $this->compt_phashword,
-                ":compt_clef_reinit_mdp" => $this->compt_clef_reinit_mdp,
-                ":compt_passwd_hash" => $this->compt_passwd_hash,
+                ":compt_envoi_mail_dernier"   => $this->compt_envoi_mail_dernier,
+                ":compt_type_quatrieme"       => $this->compt_type_quatrieme,
+                ":compt_clef_forum"           => $this->compt_clef_forum,
+                ":compt_validite_clef_forum"  => $this->compt_validite_clef_forum,
+                ":compt_nombre_clef_forum"    => $this->compt_nombre_clef_forum,
+                ":compt_phashword"            => $this->compt_phashword,
+                ":compt_clef_reinit_mdp"      => $this->compt_clef_reinit_mdp,
+                ":compt_passwd_hash"          => $this->compt_passwd_hash,
             ), $stmt);
         }
     }

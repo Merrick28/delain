@@ -230,46 +230,11 @@ if ($verif_auth)
                 $familiers[] = $perso_actif;
             }
         }
-        // on construit un tableau dans l'ordre des persos à afficher
-        $cpt_normaux       = 0;
-        $cpt_quatriemes    = 0;
-        $joueur_a_afficher = array();
-        $cpt               = 0;
-        while ($cpt_normaux < sizeof($perso_joueur) || $cpt_quatriemes < sizeof($perso_quatrieme))
+        // on regarde s'il y a des comptes sittés
+        $persos_sittes = $compte->getPersosSittes();
+        foreach ($persos_sittes as $perso_sitte)
         {
-            $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
-            if (!$case_quatrieme)
-            {
-                // On a un perso à afficher
-                if (!empty($perso_joueur[$cpt_normaux]))
-                {
-                    $joueur_a_afficher[] = $perso_joueur[$cpt_normaux];
-                }
-                else
-                {
-                    $joueur_a_afficher[] = array();
-                }
-                $cpt_normaux++;
-            }
-            if ($case_quatrieme)
-            {
-                if (!empty($perso_quatrieme[$cpt_quatriemes]))
-                {
-                    $joueur_a_afficher[] = $perso_quatrieme[$cpt_quatriemes];
-                }
-                elseif ($type_4 != 2)
-                {
-                    $joueur_a_afficher[] = array();
-                }
-                else
-                {
-                    $joueur_a_afficher[] = array();
-                }
-
-                $cpt_quatriemes++;
-            }
-            $cpt++;
-
+            $perso_sitte->prepare_for_tab_switch();
         }
 
 
@@ -287,6 +252,7 @@ $options_twig = array(
     'COMPTE'                   => $compte,
     'TYPE_PERSO'               => $type_perso,
     'NV_MONSTRE'               => $nv_monstre,
+    'ANCIEN_MONSTRE'           => $monstre_cod,
     'EVT_MONSTRE'              => $evt_monstre,
     'AFFICHE_NEWS'             => $affiche_news,
     'PERSOS_ACTIFS'            => $persos_actifs,
@@ -294,10 +260,11 @@ $options_twig = array(
     'PERSOS_QUATRIEME'         => $perso_quatrieme,
     'PERSO_PAR_LIGNE'          => $nb_perso_ligne,
     'NB_PERSO_MAX'             => $nb_perso_max,
-    'JOUEUR_A_AFFICHER'        => $joueur_a_afficher,
     'ATTRIBUE_NOUVEAU_MONSTRE' => $attribue_nouveau_monstre,
     'OK_4'                     => $ok_4,
-    'FAMILIERS'                => $familiers
+    'FAMILIERS'                => $familiers,
+    'PERSOS_SITTES'            => $persos_sittes
+
 );
 echo $template->render($options_twig);
 

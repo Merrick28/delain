@@ -22,8 +22,9 @@
                             Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
                         </p>
                         {% if EVT_MONSTRE|length > 0 %}
-                            {% for ligne_evt_monstre in EVT_MONSTRE %}
-                                {{ ligne_evt_monstre }}<br/>
+                            {% set PERSO = ANCIEN_MONSTRE %}
+                            {% for LEVT in EVT_MONSTRE %}
+                                {% include 'blocks/_ligne_evt_sans_lien.twig' %}<br/>
                             {% endfor %}
                         {% else %}
                             <p>Aucun événement depuis votre dernière DLT</p>
@@ -84,6 +85,16 @@
                                 <div class="bordiv row">
                                     <div class="titre">Familiers</div>
                                     {% for PERSO in FAMILIERS %}
+                                        <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
+                                            {% include 'blocks/_single_perso_switch.twig' %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            {% if PERSOS_SITTES|length > 0 %}
+                                <div class="bordiv row">
+                                    <div class="titre">Persos en sitting</div>
+                                    {% for PERSO in PERSOS_SITTES %}
                                         <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 ">
                                             {% include 'blocks/_single_perso_switch.twig' %}
                                         </div>

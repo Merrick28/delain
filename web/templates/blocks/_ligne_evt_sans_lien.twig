@@ -1,1 +1,6 @@
+{#
+Pour fonctionner :
+PERSO doit être égal au perso dont on traite les évènement
+LEVT : une ligne d'enregistrement
+#}
 {{ LEVT.levt_texte|replace({'[perso_cod1]': PERSO.perso_nom,'[attaquant]': LEVT.perso_attaquant.perso_nom,'[cible]', LEVT.perso_cible.perso_nom)  }}
