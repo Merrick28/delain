@@ -652,7 +652,7 @@ if ($is_vampire != 0)
 $cv           = new compte_vote();
 $totalXpGagne = 0;
 $tab          = $cv->getBy_compte_vote_compte_cod($compte->compt_cod);
-if (count($tab) > 0)
+if ($tab !== false)
 {
     $totalXpGagne = $tab[0]->compte_vote_total_px_gagner;
 }
