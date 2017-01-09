@@ -45,11 +45,14 @@ $lieu = $tab_lieu['lieu_cod'];
 $controle_gerant = '';
 $req = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
 $db->query($req);
-$db->next_record();
-if ($db->f("mger_perso_cod") == $perso_cod)
+if($db->next_record())
 {
-    $controle_gerant = 'OK';
+    if ($db->f("mger_perso_cod") == $perso_cod)
+    {
+        $controle_gerant = 'OK';
+    }
 }
+
 $req = "select mod_vente($perso_cod,$lieu) as modificateur ";
 $db->query($req);
 $db->next_record();
