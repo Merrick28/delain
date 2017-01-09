@@ -140,11 +140,11 @@ class compte
         }
         // familiers
         $req
-              = "SELECT pfam_familier_cod FROM perso_familier,perso,perso_compte
+              = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
-          AND perso_actif = 'O'";
+          AND perso_actif = 'O' order by pfam_perso_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         while ($result = $stmt->fetch())

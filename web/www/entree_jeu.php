@@ -130,6 +130,7 @@ if ($verif_auth)
         $tab_last_news = $news->getNews(0);
         $last_news     = $tab_last_news[0];
         $news_cod      = $last_news->news_cod;
+        $ok_4 = $compte->autorise_4e_global();
         if ($compte->compt_der_news < $news_cod)
         {
             $affiche_news           = $news->getNewsSup($compte->compt_der_news);
@@ -206,12 +207,12 @@ if ($verif_auth)
         {
             // on prend toutes les infos nécessaires du perso
             $perso_actif->prepare_for_tab_switch();
-            if ($perso_actif->perso_type_perso == 1)
+            if ($perso_actif->perso_type_perso == 1 && $perso_actif->perso_pnj != 2)
             {
                 // on est sur un perso normal
                 $perso_joueur[] = $perso_actif;
             }
-            if ($perso_actif->perso_type_perso == 2)
+            if ($perso_actif->perso_type_perso == 2 || $perso_actif->perso_pnj == 2)
             {
                 // on est sur un 4e, monstre ou perso
                 $perso_quatrieme[] = $perso_actif;
