@@ -20,7 +20,7 @@ if (empty($perso_cod))
     die();
 }
 
-if ($db->f('compt_hibernation') == 'O')
+if ($compte->compt_hibernation == 'O')
 {
     $phrase = 'Votre compte est en hibernation ! ';
     header('Location:' . $type_flux . G_URL . 'jeu_test/fin_session2.php?motif=' . $phrase);
