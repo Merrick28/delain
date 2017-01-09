@@ -11,7 +11,11 @@ $param = new parametres();
 ob_start();
 
 // TODO A Supprimer :
-$perso = $_REQUEST['perso'];
+if(isset($_REQUEST['perso']))
+{
+    $perso = $_REQUEST['perso'];
+}
+
 
 echo '<script type="text/javascript" src="../scripts/cocheCase.js"></script>';
 echo '<script type="text/javascript">
