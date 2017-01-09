@@ -130,8 +130,8 @@ if ($verif_auth)
         $tab_last_news = $news->getNews(0);
         $last_news     = $tab_last_news[0];
         $news_cod      = $last_news->news_cod;
-        $ok_4 = $compte->autorise_4e_global();
-        $affiche_news = array();
+        $ok_4          = $compte->autorise_4e_global();
+        $affiche_news  = array();
         if ($compte->compt_der_news < $news_cod)
         {
             $affiche_news           = $news->getNewsSup($compte->compt_der_news);
@@ -140,7 +140,7 @@ if ($verif_auth)
         }
 
         // Récupération du numéro du monstre actuel, s'il existe.
-        $monstre_cod = 0;
+        $monstre_cod    = 0;
         $monstre_joueur = $compte->getMonstreJoueur();
         if ($monstre_joueur !== false)
         {
@@ -207,6 +207,10 @@ if ($verif_auth)
 
         $type_4        = $compte->compt_type_quatrieme;
         $premier_perso = $persos_actifs[0]->perso_cod;
+
+        $perso_quatrieme = array();
+        $perso_joueur    = array();
+        $familiers       = array();
         foreach ($persos_actifs as $perso_actif)
         {
             // on prend toutes les infos nécessaires du perso
@@ -229,18 +233,21 @@ if ($verif_auth)
         }
         // on regarde s'il faut afficher des cases vides
         $cases_vides = $nb_perso_max - count($perso_joueur);
-        for($i = 0;$i < $cases_vides; $i++)
+        for ($i = 0; $i < $cases_vides; $i++)
         {
-            $perso_vide = new perso;
+            $perso_vide             = new perso;
             $perso_vide->perso_vide = true;
-            $perso_joueur[] = $perso_vide;
+            $perso_joueur[]         = $perso_vide;
         }
 
         // on regarde s'il y a des comptes sittés
         $persos_sittes = $compte->getPersosSittes();
-        foreach ($persos_sittes as $perso_sitte)
+        if (count($persos_sittes) != 0)
         {
-            $perso_sitte->prepare_for_tab_switch();
+            foreach ($persos_sittes as $perso_sitte)
+            {
+                $perso_sitte->prepare_for_tab_switch();
+            }
         }
 
 
