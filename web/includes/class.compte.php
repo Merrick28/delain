@@ -117,6 +117,77 @@ class compte
         return $result['fin_hibernation'];
     }
 
+    function autoriseJouePerso($perso_cod)
+    {
+        // cas particulier, les admins ont tous les droits
+        if($this->is_admin())
+        {
+            return true;
+        }
+        // admin monstres
+        if($this->is_admin_monstre())
+        {
+            $perso = new perso;
+            if($perso->charge($perso_cod))
+            {
+                if($perso->perso_type_perso == 2)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        $pdo    = new bddpdo;
+        // on regarde pour les joueurs
+        $req
+            = "SELECT pcompt_perso_cod FROM perso
+						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+						WHERE pcompt_compt_cod = ? 
+						AND perso_actif = 'O'
+						AND perso_cod = ? 
+						ORDER BY pcompt_perso_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
+        if($stmt->fetch())
+        {
+            return true;
+        }
+        // pas trouvé, on regarde dans les familiers
+        $req
+            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+          WHERE pcompt_compt_cod = ? 
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O' 
+          and pfam_familier_cod = ?";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
+        if($stmt->fetch())
+        {
+            return true;
+        }
+        // pas trouvé, on regarde dans les sittings
+        $req
+            = "select pcompt_perso_cod
+            from perso,perso_compte,compte_sitting
+            where csit_compte_sitteur = ?
+            and csit_compte_sitte = pcompt_compt_cod
+            and csit_ddeb <= now()
+            and csit_dfin >= now()
+            and pcompt_perso_cod = perso_cod
+            and perso_actif = 'O'
+            and perso_type_perso = 1
+            and perso_cod = ? ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
+        if($stmt->fetch())
+        {
+            return true;
+        }
+        return false;
+
+    }
+
     /**
      * Retourne les persos actifs d'un compte (y comris les 4e)
      * @return perso[]
@@ -159,7 +230,7 @@ class compte
     }
 
     /**
-     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * Retourne les persos sittés d'un compte
      * @return perso[]
      */
     function getPersosSittes()

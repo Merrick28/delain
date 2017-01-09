@@ -2,11 +2,6 @@
 
 session_start();
 
-if (!isset($type_auth))
-{
-    $type_auth = 'normal';
-}
-
 //
 // fonction d'affichage du formulaire de login si pas authentifié
 //
@@ -44,14 +39,14 @@ function montre_formulaire_connexion($isAuthOk)
 $pdo = new bddpdo;
 
 $compte = new compte;
-$perso = new perso;
+$perso  = new perso;
 
 // si on change perso, il faut le faire tout de suite !
 // on passe par du pg_query standard pour ne pas bousculer les classes
 
 
 $normal_auth = false;
-$myAuth = new myauth;
+$myAuth      = new myauth;
 $myAuth->start();
 if (!$myAuth->verif_auth)
 {
@@ -63,33 +58,42 @@ if (!$myAuth->verif_auth)
         {
             // le check est bien passé, on stocke la session
             $myAuth->stocke($compte->compt_cod);
-            $verif_auth = true;
+            $verif_auth  = true;
             $normal_auth = true;
-            $compt_nom = $compte->compt_nom;
-            $compt_cod = $compte->compt_cod;
+            $compt_nom   = $compte->compt_nom;
+            $compt_cod   = $compte->compt_cod;
             // est-ce qu'on change de perso ?
             if (isset($change_perso))
             {
-                $compte->compt_der_perso_cod = $change_perso;
-                $compte->stocke();
+                // TODO, quelques vérifications à faire quand même...
+                if ($compte->autoriseJouePerso($change_perso))
+                {
+                    $compte->compt_der_perso_cod = $change_perso;
+                    $compte->stocke();
+                }
+                else
+                {
+                    die('Accès interdit à ce perso');
+                }
+
             }
             //-----------------------------------------------------------------------------------//
             // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
             //-----------------------------------------------------------------------------------//
-            $type_perso = 'joueur';
+            $type_perso       = 'joueur';
             $is_admin_monstre = false;
-            $is_admin = false;
+            $is_admin         = false;
             if ($compte->compt_monstre == 'O')
             {
-                $type_perso = 'monstre';
+                $type_perso       = 'monstre';
                 $is_admin_monstre = true;
             }
             if ($compte->compt_admin == 'O')
             {
                 $type_perso = 'admin';
-                $is_admin = true;
+                $is_admin   = true;
             }
-            if(!$perso->getByComptDerPerso($compte->compt_cod))
+            if (!$perso->getByComptDerPerso($compte->compt_cod))
             {
                 echo 'Authentification échouée, erreur sur le chargement de perso';
                 $verif_auth = false;
@@ -113,42 +117,69 @@ if (!$myAuth->verif_auth)
 else
 {
     // on est déjà authentifié !
-    $verif_auth = true;
-    $normal_auth = true;
+
     $compt_cod = $myAuth->id;
-    $compte = new compte;
-    $compte->charge($compt_cod);
-    $compt_nom = $compte->compt_nom;
-    // est-ce qu'on change de perso ?
-    if (isset($change_perso))
+    $compte    = new compte;
+    if ($compte->charge($compt_cod))
     {
-        $compte->compt_der_perso_cod = $change_perso;
-        $compte->stocke();
-    }
-    //-----------------------------------------------------------------------------------//
-    // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
-    //-----------------------------------------------------------------------------------//
-    // compte
-    $type_perso = 'joueur';
-    $is_admin_monstre = false;
-    $is_admin = false;
-    if ($compte->compt_monstre == 'O')
-    {
-        $type_perso = 'monstre';
-        $is_admin_monstre = true;
-    }
-    if ($compte->compt_admin == 'O')
-    {
-        $type_perso = 'admin';
-        $is_admin = true;
-    }
-    $perso->getByComptDerPerso($compte->compt_cod);
+        $verif_auth  = true;
+        $normal_auth = true;
+        $compt_nom   = $compte->compt_nom;
+        // est-ce qu'on change de perso ?
+        if (isset($change_perso))
+        {
+            if ($compte->autoriseJouePerso($change_perso))
+            {
+                $compte->compt_der_perso_cod = $change_perso;
+                $compte->stocke();
+            }
+            else
+            {
+                die('Accès interdit à ce perso');
+            }
+        }
 
-    $perso_nom = $perso->perso_nom;
-    $perso_cod = $perso->perso_cod;
+        //-----------------------------------------------------------------------------------//
+        // à partir d'ici, on va initialiser les variables nécessaires à la poursuite du jeu //
+        //-----------------------------------------------------------------------------------//
+        // compte
+        $type_perso       = 'joueur';
+        $is_admin_monstre = false;
+        $is_admin         = false;
+        if ($compte->compt_monstre == 'O')
+        {
+            $type_perso       = 'monstre';
+            $is_admin_monstre = true;
+        }
+        if ($compte->compt_admin == 'O')
+        {
+            $type_perso = 'admin';
+            $is_admin   = true;
+        }
+        $perso->getByComptDerPerso($compte->compt_cod);
 
-    $myAuth->perso_cod = $perso_cod;
-    $myAuth->compt_cod = $compt_cod;
+        $perso_nom = $perso->perso_nom;
+        $perso_cod = $perso->perso_cod;
+
+        $myAuth->perso_cod = $perso_cod;
+        $myAuth->compt_cod = $compt_cod;
+    }
+    else
+    {
+        $verif_auth = false;
+    }
+
 }
+if($verif_auth)
+{
+    // on vérifie qu'on a bien accès au bon perso
+    if (!$compte->autoriseJouePerso($perso->perso_cod))
+    {
+        die('Accès interdit à ce perso');
+    }
+}
+
+
+
 
 montre_formulaire_connexion($verif_auth);
