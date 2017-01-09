@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+$verif_auth = false;
 
 //
 // fonction d'affichage du formulaire de login si pas authentifié
@@ -163,11 +164,6 @@ else
         $myAuth->perso_cod = $perso_cod;
         $myAuth->compt_cod = $compt_cod;
     }
-    else
-    {
-        $verif_auth = false;
-    }
-
 }
 if($verif_auth)
 {
@@ -177,8 +173,4 @@ if($verif_auth)
         die('Accès interdit à ce perso');
     }
 }
-
-
-
-
 montre_formulaire_connexion($verif_auth);

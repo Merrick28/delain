@@ -135,7 +135,7 @@ class myauth
            ), $stmt);
         session_unset();
         session_destroy();
-        setcookie("passsession", "", time() - 36000, "/", URLTOPDOMAIN);
-        setcookie("passhash", "", time() - 36000, "/", URLTOPDOMAIN);
+        setcookie("passsession", "", time() - 36000, "/", G_URL);
+        setcookie("passhash", "", time() - 36000, "/", G_URL);
     }
 }

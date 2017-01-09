@@ -56,7 +56,6 @@ $potions            = $perso->is_potions();
 $religion           = $perso->is_religion();
 $transaction        = $perso->transactions();
 $px_actuel          = round($perso->perso_px);
-$px_limite          = $perso->prochain_niveau;
 $barre_energie      = $perso->barre_energie();
 $is_fam_divin       = $perso->is_fam_divin();
 $pa_dep             = $perso->get_pa_dep();

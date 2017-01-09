@@ -117,6 +117,10 @@ class compte
         return $result['fin_hibernation'];
     }
 
+    /**
+     * @param $perso_cod
+     * @return bool
+     */
     function autoriseJouePerso($perso_cod)
     {
         // cas particulier, les admins ont tous les droits
