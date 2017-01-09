@@ -116,34 +116,3 @@ class DB_Article_CT extends CT_Sql
 		return $ret;
 	}
 }
-
-// Erstellen der neuen Klasse
-class temps
-{
-	// Festlegen der von der Klasse intern genutzten Variablen
-	var $starttime;
-	var $endtime;
-
-	// Erstellen der Funktion start()
-	function start()
-	{
-		// Microsekunden und sekundenn in Variablen speichern
-		list($usec, $sec) = explode(' ',microtime());
-		// Speichern des Ergebnisses in der internen Variable $starttime
-		$this->starttime = ((float)$usec + (float)$sec);
-	}
-
-	function end()
-	{
-		list($usec, $sec) = explode(' ',microtime());
-		$this->endtime = ((float)$usec + (float)$sec);
-	}
-
-	function sortie()
-	{
-		// Endzeit - Startzeit = gebrauchte ladezeit
-		$time = $this->endtime - $this->starttime;
-		// Ausgabe des Ergebnisses
-		return $time;
-	}
-}
