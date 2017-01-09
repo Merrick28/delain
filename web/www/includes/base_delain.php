@@ -87,19 +87,10 @@ class base_delain extends DB_Sql
 	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');
 
         $e         = new Exception;
-        $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . ']';
+        $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . chr(10) . '  ]';
 
         writelog_class_sql($texte_log . $pileAppel);
-        // on fait un appel plus lisible par logstash
-        $message = date('Y-m-d H:i:s') . ' - ' .  $_SERVER['PHP_SELF'] . ' - ' . $message . ' - ';
-        $message .= $ip . ' - [' . $requete . '] - [' . $libelle . '] - ' . ((isset($auth)) ? $auth->compt_cod : '0');
-        $message .= ' - ' . ((isset($auth)) ? $auth->perso_cod : '0');
-        $trace = $e->getTrace();
-        foreach ($trace as $val)
-        {
-            $message .= chr(10) . '  ' . print_r($trace,true);
-        }
-        //writelog_class_sql($message,'sql_kibana.log');
+
     }
 
     function query($Query_String)
