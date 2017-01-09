@@ -127,15 +127,7 @@ class compte
         // admin monstres
         if($this->is_admin_monstre())
         {
-            $perso = new perso;
-            if($perso->charge($perso_cod))
-            {
-                if($perso->perso_type_perso == 2)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return true;
         }
         $pdo    = new bddpdo;
         // on regarde pour les joueurs
