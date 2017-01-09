@@ -126,12 +126,13 @@ if ($verif_auth)
     if ($type_perso == 'joueur')
     {
         // on calcule la dernière news
-        $news          = new news();
-        $tab_last_news = $news->getNews(0);
-        $last_news     = $tab_last_news[0];
-        $news_cod      = $last_news->news_cod;
-        $ok_4          = $compte->autorise_4e_global();
-        $affiche_news  = array();
+        $news                     = new news();
+        $tab_last_news            = $news->getNews(0);
+        $last_news                = $tab_last_news[0];
+        $news_cod                 = $last_news->news_cod;
+        $ok_4                     = $compte->autorise_4e_global();
+        $attribue_nouveau_monstre = false;
+        $affiche_news             = array();
         if ($compte->compt_der_news < $news_cod)
         {
             $affiche_news           = $news->getNewsSup($compte->compt_der_news);
@@ -151,7 +152,7 @@ if ($verif_auth)
         $nv_monstre = $compte->attribue_monstre_4e_perso();
         if ($nv_monstre != -1)
         {
-            $attribue_nouveau_monstre = false;
+
             // on a un monstre_cod > 0, donc il y avait un monstre, mais il a été remplacé
             // puisque nv_monstre == true
             if ($monstre_cod > 0)
