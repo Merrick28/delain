@@ -46,6 +46,8 @@ function barre_energie($perso_energie,$barre_energie_max)
 function affiche_perso($perso_cod)
 {
 	include "img_pack.php";
+	global $type_flux;
+	global $is_log;
 	$db = new base_delain;
 	$req = "select perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt,perso_energie
 		perso_pv,perso_pv_max,dlt_passee(perso_cod) as dlt_passee,to_char(prochaine_dlt(perso_cod),'DD/MM hh24:mi') as prochaine_dlt,perso_pa,perso_race_cod,perso_sex,
