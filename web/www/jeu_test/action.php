@@ -416,12 +416,6 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
 
 //Fin ajout
 
-            $lieu_protege = $tab_lieu['lieu_refuge'];
-            if ($lieu_protege == 'O')
-            {
-                $contenu_page .= '<p>Vous ne pouvez pas lancer de sort en étant sur un lieu protégé !';
-                break;
-            }
             if ($db->is_intangible($perso_cod))
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
