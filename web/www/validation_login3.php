@@ -40,7 +40,7 @@ $num_resultat = 0;
 $db           = new base_delain;
 $requete
               = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel, 
-			perso_dlt, to_char(now(), 'DD/MM/YYYY hh24:mi:ss') AS maintenant
+			perso_dlt
 		FROM perso WHERE perso_cod = " . $perso_cod;
 $db->query($requete);
 $num_resultat = $db->nf();
