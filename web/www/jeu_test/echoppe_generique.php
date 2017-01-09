@@ -274,7 +274,8 @@ if (!isset($affichage))
 {
 $req = "select perso_nom from perso,magasin_gerant where mger_lieu_cod = $lieu and mger_perso_cod = perso_cod ";
 $db->query($req);
-$db->next_record();
+if($db->next_record())
+{
 ?>
     <form name="message" method="post" action="messagerie2.php">
         <input type="hidden" name="m" value="2">
@@ -283,7 +284,9 @@ $db->next_record();
     </form>
 <p> Cette échoppe est gérée par <b><?php echo $db->f("perso_nom") ?></b> (<a
             href="javascript:document.message.submit();">Envoyer un message</a>)
-    <?php }
+    <?php
+    }
+}
     if ($controle_gerant == 'OK')
     {
         echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <b>un familier mûle</b> dans votre échoppe ?</a>  <i>(Attention, ceci est une action définitive)</i>';
