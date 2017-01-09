@@ -65,7 +65,6 @@ if (!$myAuth->verif_auth)
             // est-ce qu'on change de perso ?
             if (isset($change_perso))
             {
-                // TODO, quelques vérifications à faire quand même...
                 if ($compte->autoriseJouePerso($change_perso))
                 {
                     $compte->compt_der_perso_cod = $change_perso;

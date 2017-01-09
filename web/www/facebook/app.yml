@@ -1,7 +1,0 @@
-all:
-  facebook:
-    app_id: 170554013031708
-    api_key: *******************************************
-    secret85e3fed40daf9dcea8817d326042f143
-    base_url: http://www.jdr-delain.net/facebook/
-    app_url: http://apps.facebook.com/souterrains_delain
