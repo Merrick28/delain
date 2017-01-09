@@ -66,44 +66,9 @@ function barre_divine($perso_divine)
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
 {
-    /*$tab_perso = new perso;
-    $tab_perso->charge($perso_cod);
-    $position = $tab_perso->get_position();
-    $guilde = $tab_perso->get_guilde();
-
+    include "img_pack.php";
     global $type_flux;
     global $is_log;
-
-    if ($tab_perso->perso_avatar == '')
-    {
-        $tab_perso->avatar = G_IMAGES . $tab_perso->perso_race_cod . "_" . $tab_perso->perso_sex . ".png";
-    }
-    else
-    {
-        $tab_perso->avatar = $type_flux . G_URL . "avatars/" . $tab_perso->perso_avatar;
-    }
-
-    require_once CHEMIN . '../includes/Twig/Autoloader.php';
-    Twig_Autoloader::register();
-    $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
-
-    $twig     = new Twig_Environment($loader, array());
-    $template = $twig->loadTemplate('blocks/_single_perso_switch.twig');
-
-    $options_twig = array(
-        'URL' => G_URL,
-        'URL_IMAGES' => G_IMAGES,
-        'PERSO' => $tab_perso,
-        'POSITION' => $position,
-        'GUILDE' => $guilde,
-        'IS_LOG' => $is_log
-    );
-    echo $template->render($options_twig);*/
-
-
-
-
-    include "img_pack.php";
     $db  = new base_delain;
     $req = "select perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt,perso_energie,
 		perso_pv,perso_pv_max,dlt_passee(perso_cod) as dlt_passee,to_char(prochaine_dlt(perso_cod),'DD/MM hh24:mi') as prochaine_dlt,perso_pa,perso_race_cod,perso_sex,
