@@ -134,6 +134,7 @@ class compte
             $perso = new perso;
             if($perso->charge($perso_cod))
             {
+
                 if($perso->perso_type_perso == 2)
                 {
                     return true;
