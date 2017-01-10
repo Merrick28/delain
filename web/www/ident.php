@@ -93,11 +93,11 @@ if (!$myAuth->verif_auth)
                 $type_perso = 'admin';
                 $is_admin   = true;
             }
-            if (!$perso->getByComptDerPerso($compte->compt_cod))
+            /*if (!$perso->getByComptDerPerso($compte->compt_cod))
             {
                 echo 'Authentification échouée, erreur sur le chargement de perso';
                 $verif_auth = false;
-            }
+            }*/
 
             $perso_nom = $perso->perso_nom;
             $perso_cod = $perso->perso_cod;
