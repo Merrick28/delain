@@ -87,7 +87,7 @@ class base_delain extends DB_Sql
 	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');
 
         $e         = new Exception;
-        $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . chr(10) . '  ]';
+        $pileAppel = chr(10) . '    Context : [' . chr(10) . $e->getTraceAsString() . '  ]';
 
         writelog_class_sql($texte_log . $pileAppel);
 
