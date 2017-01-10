@@ -41,8 +41,10 @@
                 {% endif %}
 
                 {% if PERSOS_ACTIFS|length == 0 %}
-                    <p>Aucun joueur dirigé.</p>
-                    <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
+                    <div class="bordiv">
+                        <p>Aucun joueur dirigé.</p>
+                        <a href="cree_perso_compte.php">Créer un nouveau personnage !</a>
+                    </div>
                 {% else %}
                     <div class="container-fluid">
                         <form name="login" method="post" action="validation_login3.php">
