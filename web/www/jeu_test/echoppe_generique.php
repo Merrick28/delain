@@ -40,12 +40,12 @@ if ($erreur == 0)
 
 if ($erreur == 0)
 {
-$tab_lieu = $db->get_lieu($perso_cod);
-$lieu = $tab_lieu['lieu_cod'];
+$tab_lieu        = $db->get_lieu($perso_cod);
+$lieu            = $tab_lieu['lieu_cod'];
 $controle_gerant = '';
-$req = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
+$req             = "SELECT mger_perso_cod FROM magasin_gerant WHERE mger_lieu_cod = " . $lieu;
 $db->query($req);
-if($db->next_record())
+if ($db->next_record())
 {
     if ($db->f("mger_perso_cod") == $perso_cod)
     {
@@ -73,10 +73,11 @@ if (isset($methode))
                 break;
             }
             /* on regarde s’il n’y a pas déjà un familier*/
-            $req = "select pfam_familier_cod from perso_familier,perso
-					where  pfam_familier_cod = perso_cod
-						and perso_actif in ('O','H')
-						and pfam_perso_cod = " . $perso_cod;
+            $req
+                = "SELECT pfam_familier_cod FROM perso_familier,perso
+					WHERE  pfam_familier_cod = perso_cod
+						AND perso_actif IN ('O','H')
+						AND pfam_perso_cod = " . $perso_cod;
             $db->query($req);
             if ($db->nf() != 0)
             {
@@ -142,12 +143,12 @@ if (isset($methode))
             }
             else
             {
-                $objet_cod = $db->f("tran_gobj_cod");
-                $vendeur = $db->f("tran_vendeur");
-                $acheteur = $db->f("tran_acheteur");
-                $prix = $db->f("tran_prix");
-                $quantite = $db->f("tran_quantite");
-                $tran_type = $db->f("tran_type");
+                $objet_cod    = $db->f("tran_gobj_cod");
+                $vendeur      = $db->f("tran_vendeur");
+                $acheteur     = $db->f("tran_acheteur");
+                $prix         = $db->f("tran_prix");
+                $quantite     = $db->f("tran_quantite");
+                $tran_type    = $db->f("tran_type");
                 $obj_gobj_cod = $db->f("tran_gobj_cod");
                 // VERIFICATIONS
                 $erreur = 0;
@@ -172,7 +173,8 @@ if (isset($methode))
                 }
                 else
                 {
-                    $req_verif = "select gobj_valeur*$quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
+                    $req_verif
+                        = "select gobj_valeur*$quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
 						where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $vendeur
 						and gobj_cod = $objet_cod";
                     $db->query($req_verif);
@@ -243,7 +245,8 @@ if (isset($methode))
                         $db->query($req_tran);
                         // Ajout de la ligne de Log
                         echo $obj_gobj_cod;
-                        $req_tran = "insert into mag_tran_generique
+                        $req_tran
+                            = "insert into mag_tran_generique
 								(mgtra_lieu_cod,mgtra_perso_cod,mgtra_gobj_cod,mgtra_sens,mgtra_montant,mgtra_nombre)
 								values ($lieu,$perso_cod,$obj_gobj_cod,4,$prix,1)";
                         $db->query($req_tran);
@@ -277,7 +280,7 @@ if (!isset($affichage))
 {
 $req = "select perso_nom from perso,magasin_gerant where mger_lieu_cod = $lieu and mger_perso_cod = perso_cod ";
 $db->query($req);
-if($db->next_record())
+if ($db->next_record())
 {
 ?>
     <form name="message" method="post" action="messagerie2.php">
@@ -289,7 +292,7 @@ if($db->next_record())
             href="javascript:document.message.submit();">Envoyer un message</a>)
     <?php
     }
-}
+    }
     if ($controle_gerant == 'OK')
     {
         echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <b>un familier mûle</b> dans votre échoppe ?</a>  <i>(Attention, ceci est une action définitive)</i>';
@@ -313,7 +316,8 @@ if($db->next_record())
     <li><a href="javascript:document.echoppe.affichage.value='repare';document.echoppe.submit()">Faire réparer de
             l'équipement ?</a>
         <?php
-        $req_stock = "select count(tran_cod) as num
+        $req_stock
+            = "select count(tran_cod) as num
 		  from transaction_echoppe
 		where
 		tran_acheteur = $perso_cod
@@ -368,10 +372,11 @@ case "acheter":
     <td></td>
     </tr>
     <?php
-    $po = $db->f("perso_po");
+    $po       = $db->f("perso_po");
     $lieu_cod = $tab_lieu['lieu_cod'];
 
-    $req = "select gobj_cod,gobj_nom,gobj_bonus_cod,tobj_libelle,gobj_tobj_cod,gobj_valeur,mgstock_nombre,f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur_achat,comp_libelle
+    $req
+        = "select gobj_cod,gobj_nom,gobj_bonus_cod,tobj_libelle,gobj_tobj_cod,gobj_valeur,mgstock_nombre,f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur_achat,comp_libelle
 						      from objet_generique,stock_magasin_generique,type_objet,competences
 						      where gobj_cod = mgstock_gobj_cod
 						      and mgstock_lieu_cod = $lieu_cod
@@ -397,21 +402,25 @@ case "acheter":
     {
         while ($db->next_record())
         {
-            $bonus = "";
+            $bonus    = "";
             $prix_bon = 0;
-            $url_bon = "";
+            $url_bon  = "";
 
             if (TYPE_ECHOPPE != "MAGIE" && $db->f("gobj_bonus_cod"))
             {
-                $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets ";
+                $req = "SELECT obon_cod,obon_libelle,obon_prix FROM bonus_objets ";
                 $req = $req . "where obon_cod = " . $db->f("gobj_bonus_cod");
                 $db2->query($req);
                 if ($db2->nf() != 0)
                 {
                     $db2->next_record();
-                    $bonus = " (" . $db2->f("obon_libelle") . ")";
+                    if (!empty($db2->f("obon_libelle")))
+                    {
+                        $bonus = " (" . $db2->f("obon_libelle") . ")";
+                    }
+
                     $prix_bon = $db2->f("obon_prix");
-                    $url_bon = "&bon=" . $db2->f("obon_cod");
+                    $url_bon  = "&bon=" . $db2->f("obon_cod");
                 }
             }
             $comp = '';
@@ -444,7 +453,8 @@ case "acheter":
         <!-- ARTICLES EN RESERVE-->
         <?php
     }
-    $req = "select gobj_cod,gobj_nom,gobj_bonus_cod,tobj_libelle,gobj_tobj_cod,gobj_valeur,mgstock_nombre,f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur_achat,comp_libelle
+    $req
+        = "select gobj_cod,gobj_nom,gobj_bonus_cod,tobj_libelle,gobj_tobj_cod,gobj_valeur,mgstock_nombre,f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur_achat,comp_libelle
 						      from objet_generique,stock_magasin_generique,type_objet,competences
 						      where gobj_cod = mgstock_gobj_cod
 						      and mgstock_lieu_cod = $lieu_cod
@@ -496,7 +506,8 @@ case "acheter":
     <center>
         <table>
             <?php
-            $req_stock = "select obj_cod,obj_nom,gobj_cod
+            $req_stock
+                = "select obj_cod,obj_nom,gobj_cod
 from objets,objet_generique,stock_magasin
 where mstock_lieu_cod = $lieu_cod
 				and mstock_obj_cod = obj_cod
@@ -521,9 +532,9 @@ where mstock_lieu_cod = $lieu_cod
     <?php
     break;
 case "vendre":
-$db2 = new base_delain;
+$db2         = new base_delain;
 $taux_rachat = $param->getparm(47);
-$lieu_cod = $tab_lieu['lieu_cod'];
+$lieu_cod    = $tab_lieu['lieu_cod'];
 echo "<HR /><p class=\"titre\">Vente d'équipement</p>";
 $req = "select obj_cod,obj_etat,obj_nom as nom,f_prix_obj_perso_v($perso_cod,$lieu_cod,obj_cod) as valeur,tobj_libelle ";
 $req = $req . "from objet_generique,objets,perso_objets,type_objet ";
@@ -582,21 +593,21 @@ else
                 <?php
                 while ($db->next_record())
                 {
-                    $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
+                    $req = "SELECT obon_cod,obon_libelle,obon_prix FROM bonus_objets,objets ";
                     $req = $req . "where obj_cod = " . $db->f("obj_cod") . " and obj_obon_cod = obon_cod ";
                     $db2->query($req);
                     if ($db2->nf() != 0)
                     {
                         $db2->next_record();
-                        $bonus = " (" . $db2->f("obon_libelle") . ")";
+                        $bonus    = " (" . $db2->f("obon_libelle") . ")";
                         $prix_bon = $db2->f("obon_prix");
-                        $url_bon = "&bon=" . $db2->f("obon_cod");
+                        $url_bon  = "&bon=" . $db2->f("obon_cod");
                     }
                     else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $prix = $db->f("valeur") + $prix_bon;
                     echo "<tr>";
@@ -645,7 +656,8 @@ else
                             <td class="soustitre2">Refuser</td>
                         </tr>
                         <?php
-                        $req_stock = "select tran_cod,gobj_nom,tran_quantite,tran_prix
+                        $req_stock
+                            = "select tran_cod,gobj_nom,tran_quantite,tran_prix
   from transaction_echoppe,objet_generique
 where
 tran_acheteur = $perso_cod
@@ -669,7 +681,8 @@ and gobj_cod = tran_gobj_cod
                             </tr>
                             <?php
                         }
-                        $req_stock = "select tran_cod,obj_nom,tran_quantite,tran_prix
+                        $req_stock
+                            = "select tran_cod,obj_nom,tran_quantite,tran_prix
   from transaction_echoppe,objets
 where
 tran_acheteur = $perso_cod
@@ -709,13 +722,13 @@ and obj_cod = tran_gobj_cod
                     $db->query($req);
                     $db->next_record();
                     $prix = $db->f("lieu_marge") + 100;
-                    $req = "select obj_cod,gobj_nom_generique,tobj_libelle ";
-                    $req = $req . "from objet_generique,objets,perso_objets,type_objet ";
-                    $req = $req . "where perobj_perso_cod = $perso_cod ";
-                    $req = $req . "and perobj_obj_cod = obj_cod ";
-                    $req = $req . "and perobj_identifie != 'O' ";
-                    $req = $req . "and obj_gobj_cod = gobj_cod ";
-                    $req = $req . "and gobj_tobj_cod = tobj_cod ";
+                    $req  = "select obj_cod,gobj_nom_generique,tobj_libelle ";
+                    $req  = $req . "from objet_generique,objets,perso_objets,type_objet ";
+                    $req  = $req . "where perobj_perso_cod = $perso_cod ";
+                    $req  = $req . "and perobj_obj_cod = obj_cod ";
+                    $req  = $req . "and perobj_identifie != 'O' ";
+                    $req  = $req . "and obj_gobj_cod = gobj_cod ";
+                    $req  = $req . "and gobj_tobj_cod = tobj_cod ";
                     $db->query($req);
                     if ($db->nf() == 0)
                     {
@@ -750,7 +763,7 @@ and obj_cod = tran_gobj_cod
                     }
                     break;
                 case "repare":
-                    $db2 = new base_delain;
+                    $db2      = new base_delain;
                     $lieu_cod = $tab_lieu['lieu_cod'];
                     echo "<p class=\"titre\">Réparation d'équipement</p>";
                     $req = "select perso_po from perso where perso_cod = $perso_cod ";
@@ -786,21 +799,21 @@ and obj_cod = tran_gobj_cod
                         echo "<td></td>";
                         while ($db->next_record())
                         {
-                            $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
+                            $req = "SELECT obon_cod,obon_libelle,obon_prix FROM bonus_objets,objets ";
                             $req = $req . "where obj_cod = " . $db->f("obj_cod") . " and obj_obon_cod = obon_cod ";
                             $db2->query($req);
                             if ($db2->nf() != 0)
                             {
                                 $db2->next_record();
-                                $bonus = " (" . $db2->f("obon_libelle") . ")";
+                                $bonus    = " (" . $db2->f("obon_libelle") . ")";
                                 $prix_bon = $db2->f("obon_prix");
-                                $url_bon = "&bon=" . $db2->f("obon_cod");
+                                $url_bon  = "&bon=" . $db2->f("obon_cod");
                             }
                             else
                             {
-                                $bonus = "";
+                                $bonus    = "";
                                 $prix_bon = 0;
-                                $url_bon = "";
+                                $url_bon  = "";
                             }
                             $etat = $db->f("obj_etat");
                             echo "<tr>";
