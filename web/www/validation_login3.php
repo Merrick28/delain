@@ -188,10 +188,10 @@ if ($autorise == 1)
         }
 
         // on passe la dlt
-        $dlt = $perso_dlt->calcul_dlt();
-        $dlt = new DateTime($perso_dlt->perso_dlt);
+        echo $perso_dlt->calcul_dlt();
+        $date_dlt = new DateTime($perso_dlt->perso_dlt);
 
-        echo "<br>Votre nouvelle date limite de tour est : <b>" . $dlt->format('d/m/Y H:i:s') . "</b>";
+        echo "<br>Votre nouvelle date limite de tour est : <b>" . $date_dlt->format('d/m/Y H:i:s') . "</b>";
 
         // on affichage le solde des points d'action
         echo "<br>Il vous reste " . $perso_dlt->perso_pa . " points d’action.";
