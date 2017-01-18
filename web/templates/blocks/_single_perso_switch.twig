@@ -63,14 +63,19 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
                 <img src="{{ URL_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
                      alt="{{ PERSO.perso_pa }}PA" width="108" height="18" class="imgFit">
                 <br/><img src="{{ URL_IMAGES }}coeur.gif" alt=""> <img
-                        src="{{ URL_IMAGES }}hp{{ PERSO.barre_hp }}.gif" title="{{ PERSO.perso_pv }}PV
-                            sur {{ PERSO.perso_pv_max }}" alt="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}"
+                        src="{{ URL_IMAGES }}hp{{ PERSO.barre_hp }}.gif" title="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}" alt="{{ PERSO.perso_pv }}PV sur {{ PERSO.perso_pv_max }}"
                         class="imgFit">
                 {% if PERSO.is_enchanteur %}
                     <br/><img src="{{ URL_IMAGES }}energi10.png" alt=""> <img
                         src="{{ URL_IMAGES }}nrj{{ PERSO.barre_energie }}.png"
-                        title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur
-                                        100" class="imgFit">
+                        title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100" class="imgFit">
+                {% endif %}
+
+                {% if PERSO.barre_divine != -1 %}
+                    <br/><img src="{{ URL_IMAGES }}magie.gif" alt=""> <img
+                        src="{{ URL_IMAGES }}nrj{{ PERSO.barre_divine }}.png"
+                        title="Énergie divine : ' {{ PERSO.barre_divine }} sur 100"
+                        alt="Énergie divine : ' {{ PERSO.barre_divine }} sur 100" class="imgFit">
                 {% endif %}
                 <br/>
                 <img src="{{ URL_IMAGES }}iconexp.gif" alt=""> <img

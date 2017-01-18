@@ -121,6 +121,7 @@ class perso
     var $msg_non_lu;
     var $avatar_largeur;
     var $avatar_hauteur;
+    var $barre_divine;
 
     function __construct()
     {
@@ -1417,6 +1418,16 @@ class perso
         {
             $this->avatar_largeur = $size[0];
             $this->avatar_hauteur = $size[1];
+        }
+        $this->barre_divine = -1;
+        if($this->perso_gmon_cod == 441)
+        {
+            $barre_divine = floor(($this->energie_divine() / 200) * 10) * 10;
+            if ($barre_divine >= 100)
+            {
+                $barre_divine = 100;
+            }
+            $this->barre_divine = $barre_divine;
         }
 
         $this->msg_non_lu = $this->getMsgNonLu();
