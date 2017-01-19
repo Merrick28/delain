@@ -77,6 +77,22 @@ a:hover {
     padding: 3px 0px;
 }
 
+.groupdiv_nopadding {
+    background-image:url('../../images/fondparchemin.gif');
+    border-color: #800000;
+    border-style: solid;
+    border-radius: 10px;
+    height: auto;
+    overflow: auto;
+    margin-bottom: 1px;
+    padding-bottom: 1px;
+    margin-top:1px;
+    overflow:hidden;
+    margin-right: -15px;
+    margin-left: -15px;
+    padding: 0px;
+}
+
 /* make sidebar nav vertical */ 
 @media (min-width: 768px) {
     .sidebar-nav .navbar .navbar-collapse {
