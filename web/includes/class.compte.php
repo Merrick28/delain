@@ -124,72 +124,90 @@ class compte
     function autoriseJouePerso($perso_cod)
     {
         // cas particulier, les admins ont tous les droits
-        if($this->is_admin())
+        if ($this->is_admin())
         {
             return true;
         }
         // admin monstres
-        if($this->is_admin_monstre())
+        if ($this->is_admin_monstre())
         {
             $perso = new perso;
-            if($perso->charge($perso_cod))
+            if ($perso->charge($perso_cod))
             {
 
-                if($perso->perso_type_perso == 2)
+                if ($perso->perso_type_perso == 2)
                 {
                     return true;
                 }
-                if($perso->perso_pnj == 1)
+                if ($perso->perso_pnj == 1)
                 {
                     return true;
                 }
             }
             return false;
         }
-        $pdo    = new bddpdo;
+        $pdo = new bddpdo;
         // on regarde pour les joueurs
         $req
-            = "SELECT pcompt_perso_cod FROM perso
+              = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = ? 
 						AND perso_actif = 'O'
 						AND perso_cod = ? 
 						ORDER BY pcompt_perso_cod";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
-        if($stmt->fetch())
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+        if ($stmt->fetch())
         {
             return true;
         }
         // pas trouvé, on regarde dans les familiers
         $req
-            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+              = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
           AND perso_actif = 'O' 
-          and pfam_familier_cod = ?";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
-        if($stmt->fetch())
+          AND pfam_familier_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+        if ($stmt->fetch())
         {
             return true;
         }
         // pas trouvé, on regarde dans les sittings
         $req
-            = "select pcompt_perso_cod
-            from perso,perso_compte,compte_sitting
-            where csit_compte_sitteur = ?
-            and csit_compte_sitte = pcompt_compt_cod
-            and csit_ddeb <= now()
-            and csit_dfin >= now()
-            and pcompt_perso_cod = perso_cod
-            and perso_actif = 'O'
-            and perso_type_perso = 1
-            and perso_cod = ? ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod,$perso_cod), $stmt);
-        if($stmt->fetch())
+              = "SELECT pcompt_perso_cod
+            FROM perso,perso_compte,compte_sitting
+            WHERE csit_compte_sitteur = ?
+            AND csit_compte_sitte = pcompt_compt_cod
+            AND csit_ddeb <= now()
+            AND csit_dfin >= now()
+            AND pcompt_perso_cod = perso_cod
+            AND perso_actif = 'O'
+            AND perso_type_perso = 1
+            AND perso_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+        if ($stmt->fetch())
+        {
+            return true;
+        }
+        // toujours pas trouvé, on regarde dans les familiers sittés
+        $req
+              = "SELECT pfam_familier_cod,pfam_perso_cod 
+          FROM perso_familier,perso,perso_compte,compte_sitting
+          WHERE csit_compte_sitteur = ?
+          AND csit_compte_sitte = pcompt_compt_cod
+           AND csit_ddeb <= now()
+            AND csit_dfin >= now()
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O' 
+          AND pfam_familier_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod, $perso_cod), $stmt);
+        if ($stmt->fetch())
         {
             return true;
         }
@@ -224,7 +242,7 @@ class compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
-          AND perso_actif = 'O' order by pfam_perso_cod";
+          AND perso_actif = 'O' ORDER BY pfam_perso_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -247,18 +265,18 @@ class compte
         $retour = array();
         $pdo    = new bddpdo;
         $req
-                = "select pcompt_perso_cod
-            from perso,perso_compte,compte_sitting
-            where csit_compte_sitteur = ?
-            and csit_compte_sitte = pcompt_compt_cod
-            and csit_ddeb <= now()
-            and csit_dfin >= now()
-            and pcompt_perso_cod = perso_cod
-            and perso_actif = 'O'
-            and perso_type_perso = 1
-            order by perso_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+                = "SELECT pcompt_perso_cod
+            FROM perso,perso_compte,compte_sitting
+            WHERE csit_compte_sitteur = ?
+            AND csit_compte_sitte = pcompt_compt_cod
+            AND csit_ddeb <= now()
+            AND csit_dfin >= now()
+            AND pcompt_perso_cod = perso_cod
+            AND perso_actif = 'O'
+            AND perso_type_perso = 1
+            ORDER BY perso_cod ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso;
