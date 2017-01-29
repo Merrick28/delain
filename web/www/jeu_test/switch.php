@@ -18,7 +18,7 @@ $is_log = 1;
 
     function AddNewVote() {
         var php_var = "<?php echo $compt_cod; ?>".trim();
-        var compte = "7014";
+        var compte = "21703";
 
         if (php_var == compte) {
             alert('récupération de l\'ip');
