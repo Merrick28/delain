@@ -103,7 +103,6 @@
 			<a href="irc_v2.php">Le chat de Delain</a><br>
 			<hr />
 			<a href="news_rss.php">Flux des news</a>&nbsp;&nbsp;<a href="news_rss.php"><img src="images/rss.gif" border="0" alt="Flux des news" /></a><br>
-			<a href="presse.php">Ils en ont parlé...</a><br>
 			<g:plusone href="http://www.jdr-delain.net/"></g:plusone>
 			<a href="https://plus.google.com/107447277968158531530/?prsrc=3" style="text-decoration: none; color: #333;" target="_blank"><div style="display: inline-block;"><span style="float: left; font: bold 13px/16px arial,sans-serif; margin-right: 4px;">Suivez nous </span><span style="float: left; font: 13px/16px arial,sans-serif; margin-right: 11px;">sur</span><div style="float: left;"><img src="https://ssl.gstatic.com/images/icons/gplus-16.png" width="16" height="16" style="border: 0;"/></div><div style="clear: both"></div></div></a>
 			<hr />
