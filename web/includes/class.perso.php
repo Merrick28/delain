@@ -1413,12 +1413,20 @@ class perso
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
         }
 
-        $size = getimagesize($this->avatar);
-        if($size !== false)
+        try
         {
-            $this->avatar_largeur = $size[0];
-            $this->avatar_hauteur = $size[1];
+            $size = getimagesize($this->avatar);
+            if($size !== false)
+            {
+                $this->avatar_largeur = $size[0];
+                $this->avatar_hauteur = $size[1];
+            }
         }
+        catch (Exception $e)
+        {
+            unset($e);
+        }
+
         $this->barre_divine = -1;
         if($this->perso_gmon_cod == 441)
         {
