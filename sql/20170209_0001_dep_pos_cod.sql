@@ -125,7 +125,7 @@ CREATE OR REPLACE FUNCTION public.dep_pos_cod(integer,integer,integer)
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
-ALTER FUNCTION public.dep_pos_cod(integer)
+ALTER FUNCTION public.dep_pos_cod(integer,integer,integer)
 OWNER TO delain;
-GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer) TO delain;
-GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer) TO public;
+GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer,integer,integer) TO delain;
+GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer,integer,integer) TO public;
