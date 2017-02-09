@@ -12,7 +12,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
 {% else %}
     <div class="space_between_div">
         <div class="titre">
-            {{ PERSO.perso_nom }}
+            {{ PERSO.perso_nom }}{{  type }}
         </div>
 
         {% if PERSO.perso_description is not empty %}
