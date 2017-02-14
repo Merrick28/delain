@@ -1,0 +1,57 @@
+{% extends 'index.twig' %}
+
+{% block contenu %}
+    <div class="groupdiv">
+        <table class="table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th></th>
+            </tr>
+            </thead>
+            {% for ligne in TABFIN %}
+                <form method="post" action="saisie_finances.php">
+                    <input type="hidden" name="methode" value="existant">
+                    <input type="hidden" name="id" value="{{ ligne.fin_cod }}">
+                    <tr>
+                        <td>
+                            <input type="text" name="desc" class="form-control" value="{{ ligne.fin_desc }}">
+                        </td>
+                        <td>
+                            <input type="text" name="date" class="form-control"
+                                   value="{{ ligne.fin_date|date('d/m/Y') }}">
+                        </td>
+                        <td>
+                            <input type="text" name="montant" class="form-control" value="{{ ligne.fin_montant }}">
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-default" value="OK"/>
+                        </td>
+                    </tr>
+                </form>
+            {% endfor %}
+
+            <hr/>
+
+            <form method="post" action="saisie_finances.php">
+                <input type="hidden" name="methode" value="nouveau">
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="desc">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="date">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="montant"
+                    </td>
+                    <td>
+                        <input type="submit" class="btn btn-default" value="OK"/>
+                    </td>
+                </tr>
+            </form>
+        </table>
+    </div>
+{% endblock %}
