@@ -45,7 +45,7 @@ if (!isset($_REQUEST['change_date']))
 else
 {
     $workDate  = explode('-', $_REQUEST['change_date']);
-    $workMonth = $wokDate[1];
+    $workMonth = $workDate[1];
     $workYear  = $workDate[0];
 }
 
@@ -60,11 +60,15 @@ $twig     = new Twig_Environment($loader, array());
 $template = $twig->loadTemplate('saisie_finances.twig');
 
 $options_twig = array(
-    'URL'        => G_URL,
-    'URL_IMAGES' => G_IMAGES,
-    'HTTPS'      => $type_flux,
-    'ISAUTH'     => $verif_auth,
-    'TABFIN'     => $TableauFinances,
+    'URL'          => G_URL,
+    'URL_IMAGES'   => G_IMAGES,
+    'HTTPS'        => $type_flux,
+    'ISAUTH'       => $verif_auth,
+    'TABFIN'       => $TableauFinances,
+    'MIN_YEAR'     => $minYear,
+    'CURRENT_YEAR' => $currentYear,
+    'WORK_MONTH'   => $workMonth,
+    'WORK_YEAR'    => $workYear
 );
 echo $template->render($options_twig);
 
