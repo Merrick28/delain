@@ -33,6 +33,7 @@ $TableauFinances = $finances->getSyntheseByDate($workMonth, $workYear);
 $total           = $finances->getTotalByDate($workMonth, $workYear);
 $date_maj        = $finances->getDateUpdate();
 
+
 require_once CHEMIN . '../includes/Twig/Autoloader.php';
 Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
@@ -41,17 +42,19 @@ $twig     = new Twig_Environment($loader, array());
 $template = $twig->loadTemplate('finances.twig');
 
 $options_twig = array(
-    'URL'          => G_URL,
-    'URL_IMAGES'   => G_IMAGES,
-    'HTTPS'        => $type_flux,
-    'ISAUTH'       => $verif_auth,
-    'TABFIN'       => $TableauFinances,
-    'MIN_YEAR'     => $minYear,
-    'CURRENT_YEAR' => $currentYear,
-    'WORK_MONTH'   => $workMonth,
-    'WORK_YEAR'    => $workYear,
-    'TOTAL'        => $total,
-    'DATE_MAJ'     => $date_maj
+    'URL'              => G_URL,
+    'URL_IMAGES'       => G_IMAGES,
+    'HTTPS'            => $type_flux,
+    'ISAUTH'           => $verif_auth,
+    'PERCENT_FINANCES' => $percent_finances,
+    'TABFIN'           => $TableauFinances,
+    'MIN_YEAR'         => $minYear,
+    'CURRENT_YEAR'     => $currentYear,
+    'WORK_MONTH'       => $workMonth,
+    'WORK_YEAR'        => $workYear,
+    'TOTAL'            => $total,
+    'DATE_MAJ'         => $date_maj,
+    'PERCENT'          => $percent
 );
 echo $template->render($options_twig);
 

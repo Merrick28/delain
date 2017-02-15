@@ -136,6 +136,7 @@ class finances
                                         $date_max), $stmt);
         while ($result = $stmt->fetch())
         {
+
             $temp['montant'] = $result['fin_montant'];
             $temp['desc']    = $result['fin_desc'];
             $retour[]        = $temp;
@@ -143,15 +144,30 @@ class finances
         return $retour;
     }
 
-    function getTotalByDate($month, $year)
+    function getTotalByDate($month, $year, $sens = 0)
     {
         $retour   = array();
         $total    = 0;
         $date_min = $year . '-' . $month . '-01';
         $date_max = date('Y-m-d', (strtotime('+1 month', strtotime($date_min)) - 1));
         $pdo      = new bddpdo;
-        $req
-                  = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? ";
+        if($sens == 0)
+        {
+            $req
+                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? ";
+        }
+        if($sens == -1)
+        {
+            $req
+                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
+                    and fin_montant < 0";
+        }
+        if($sens == 1)
+        {
+            $req
+                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
+                    and fin_montant >= 0";
+        }
         $stmt     = $pdo->prepare($req);
         $stmt     = $pdo->execute(array($date_min,
                                         $date_max), $stmt);

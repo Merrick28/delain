@@ -13,7 +13,7 @@ $gmon = new monstre_generique;
 $gmon->getRandom();
 
 // chargement des news
-$news = new news;
+$news       = new news;
 $numberNews = $news->getNumber();
 
 if (!isset($_REQUEST['start_news']))
@@ -24,7 +24,7 @@ else
 {
     $start_news = $_REQUEST['start_news'];
 }
-if($start_news < 0)
+if ($start_news < 0)
 {
     $start_news = 0;
 }
@@ -42,19 +42,20 @@ $twig     = new Twig_Environment($loader, array());
 $template = $twig->loadTemplate('index.twig');
 
 $options_twig = array(
-   'URL'        => G_URL,
-   'URL_IMAGES' => G_IMAGES,
-   'HTTPS' => $type_flux,
-   'ISAUTH' => $verif_auth,
-   'AVENTURIERS_MORTS' => $param->getparm(64),
-   'MONSTRES_MORTS' => $param->getparm(65),
-   'FAMILIERS_MORTS' => $param->getparm(66),
-   'GMON' => $gmon,
-   'TABNEWS' => $tabNews,
-   'START_NEWS' => $start_news,
-   'NB_NEWS' => $numberNews,
-   'PUB' => $pub
-   
+    'URL'               => G_URL,
+    'URL_IMAGES'        => G_IMAGES,
+    'HTTPS'             => $type_flux,
+    'ISAUTH'            => $verif_auth,
+    'PERCENT_FINANCES'  => $percent_finances,
+    'AVENTURIERS_MORTS' => $param->getparm(64),
+    'MONSTRES_MORTS'    => $param->getparm(65),
+    'FAMILIERS_MORTS'   => $param->getparm(66),
+    'GMON'              => $gmon,
+    'TABNEWS'           => $tabNews,
+    'START_NEWS'        => $start_news,
+    'NB_NEWS'           => $numberNews,
+    'PUB'               => $pub,
+
 
 );
 echo $template->render($options_twig);
