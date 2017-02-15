@@ -54,7 +54,6 @@ $options_twig = array(
     'WORK_YEAR'        => $workYear,
     'TOTAL'            => $total,
     'DATE_MAJ'         => $date_maj,
-    'PERCENT'          => $percent,
     'COMPTE'           => $compte
 );
 echo $template->render($options_twig);
