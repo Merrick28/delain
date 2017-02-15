@@ -174,3 +174,18 @@ else
     }
 }*/
 montre_formulaire_connexion($verif_auth);
+
+// Bon, je sais, c'est mal de mettre ça ici, mais je suis sur
+// que c'est appelé tout le temps...
+$finances = new finances();
+$workYear  = date('Y');
+$workMonth = date('m');
+
+$negatif = abs($finances->getTotalByDate($workMonth, $workYear, -1));
+$positif = $finances->getTotalByDate($workMonth, $workYear, 1);
+
+$percent_finances = ($positif * 100) / $negatif;
+if($percent_finances > 100)
+{
+    $percent_finances = 100;
+}

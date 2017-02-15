@@ -1,0 +1,77 @@
+{% extends 'index.twig' %}
+
+{% block contenu %}
+
+
+
+    <div class="groupdiv">
+
+        <form method="post" action="saisie_finances.php" class="form-inline">
+            <select name="change_date" class="form-control">
+                {% for year in MIN_YEAR..CURRENT_YEAR %}
+                    {% for month in 1..12 %}
+                        <option value="{{ year }}-{{ month }}"
+                                {% if month == WORK_MONTH and year == WORK_YEAR %}
+                                    selected
+                                {% endif %}
+                        >{{ month }}/{{ year }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <input type="submit" class="btn btn-default" value="OK">
+        </form>
+        <table class="table table-condensed table-hover">
+            <thead>
+            <tr>
+                <th>Libellé</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th></th>
+            </tr>
+            </thead>
+            {% for ligne in TABFIN %}
+                <form method="post" action="saisie_finances.php">
+                    <input type="hidden" name="methode" value="existant">
+                    <input type="hidden" name="change_date" value="{{ WORK_YEAR }}-{{ WORK_MONTH }}">
+                    <input type="hidden" name="id" value="{{ ligne.fin_cod }}">
+                    <tr>
+                        <td>
+                            <input type="text" name="desc" class="form-control" value="{{ ligne.fin_desc }}">
+                        </td>
+                        <td>
+                            <input type="text" name="date" class="form-control"
+                                   value="{{ ligne.fin_date|date('d/m/Y') }}">
+                        </td>
+                        <td>
+                            <input type="text" name="montant" class="form-control" value="{{ ligne.fin_montant }}">
+                        </td>
+                        <td>
+                            <input type="submit" class="btn btn-default" value="OK"/>
+                        </td>
+                    </tr>
+                </form>
+            {% endfor %}
+
+            <hr/>
+
+            <form method="post" action="saisie_finances.php">
+                <input type="hidden" name="methode" value="nouveau">
+                <input type="hidden" name="change_date" value="{{ WORK_YEAR }}-{{ WORK_MONTH }}">
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="desc">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="date">
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="montant">
+                    </td>
+                    <td>
+                        <input type="submit" class="btn btn-default" value="OK"/>
+                    </td>
+                </tr>
+            </form>
+        </table>
+    </div>
+{% endblock %}
