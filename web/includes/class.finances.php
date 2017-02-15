@@ -94,22 +94,23 @@ class finances
 
     function getMinDate()
     {
-        $pdo = new bddpdo;
-        $req = "select min(fin_date) as fin_date from finances";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(),$stmt);
+        $pdo    = new bddpdo;
+        $req    = "SELECT min(fin_date) AS fin_date FROM finances";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(), $stmt);
         $result = $stmt->fetch();
         return $result['fin_date'];
     }
 
-    function getByDate($month,$year)
+    function getByDate($month, $year)
     {
         $date_min = $year . '-' . $month . '-01';
-        $date_max = date('Y-m-d',(strtotime('+1 month',strtotime($date_min))-1));
-        $pdo = new bddpdo;
-        $req    = "SELECT fin_cod  FROM finances WHERE fin_date >= ?  and fin_date <= ? ORDER BY fin_date";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($date_min,$date_max), $stmt);
+        $date_max = date('Y-m-d', (strtotime('+1 month', strtotime($date_min)) - 1));
+        $pdo      = new bddpdo;
+        $req      = "SELECT fin_cod  FROM finances WHERE fin_date >= ?  AND fin_date <= ? ORDER BY fin_date";
+        $stmt     = $pdo->prepare($req);
+        $stmt     = $pdo->execute(array($date_min,
+                                        $date_max), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new finances;
@@ -118,6 +119,56 @@ class finances
             unset($temp);
         }
         return $retour;
+    }
+
+    function getSyntheseByDate($month, $year)
+    {
+        $retour   = array();
+        $total    = 0;
+        $date_min = $year . '-' . $month . '-01';
+        $date_max = date('Y-m-d', (strtotime('+1 month', strtotime($date_min)) - 1));
+        $pdo      = new bddpdo;
+        $req
+                  = "SELECT fin_desc,sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
+          GROUP BY fin_desc";
+        $stmt     = $pdo->prepare($req);
+        $stmt     = $pdo->execute(array($date_min,
+                                        $date_max), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp['montant'] = $result['fin_montant'];
+            $temp['desc']    = $result['fin_desc'];
+            $retour[]        = $temp;
+        }
+        return $retour;
+    }
+
+    function getTotalByDate($month, $year)
+    {
+        $retour   = array();
+        $total    = 0;
+        $date_min = $year . '-' . $month . '-01';
+        $date_max = date('Y-m-d', (strtotime('+1 month', strtotime($date_min)) - 1));
+        $pdo      = new bddpdo;
+        $req
+                  = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? ";
+        $stmt     = $pdo->prepare($req);
+        $stmt     = $pdo->execute(array($date_min,
+                                        $date_max), $stmt);
+        $result   = $stmt->fetch();
+        return $result['fin_montant'];
+
+    }
+
+    function getDateUpdate()
+    {
+        $pdo    = new bddpdo;
+        $req
+                = "SELECT max(fin_date) AS fin_date FROM finances ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(), $stmt);
+        $result = $stmt->fetch();
+        return $result['fin_date'];
     }
 
     /**

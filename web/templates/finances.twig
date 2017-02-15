@@ -1,0 +1,59 @@
+{% extends 'index.twig' %}
+
+{% block contenu %}
+
+
+
+    <div class="groupdiv">
+
+        <form method="post" action="finances.php" class="form-inline">
+            Voir un autre mois : <select name="change_date">
+                {% for year in MIN_YEAR..CURRENT_YEAR %}
+                    {% for month in 1..12 %}
+                        <option value="{{ year }}-{{ month }}"
+                                {% if month == WORK_MONTH and year == WORK_YEAR %}
+                                    selected
+                                {% endif %}
+                        >{{ month }}/{{ year }}</option>
+                    {% endfor %}
+                {% endfor %}
+            </select>
+            <input type="submit" value="OK">
+        </form>
+        {% if TABFIN|length > 0 %}
+            <table class="table table-condensed">
+                <thead>
+                <tr>
+                    <th>Libellé</th>
+                    <th>Montant</th>
+                </tr>
+                </thead>
+                {% for ligne in TABFIN %}
+                    <tr>
+                        <td>
+                            {{ ligne.desc }}
+                        </td>
+                        <td>
+                            {{ ligne.montant }} €
+                        </td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td><b>Total</b></td>
+                    <td><b>{{ TOTAL }} €</b></td>
+                </tr>
+            </table>
+        {% else %}
+            Aucune donnée n'a été saisie pour cette période
+            <hr/>
+        {% endif %}
+        Les dépenses comprennent :
+        <ul>
+            <li>Le coût de location du serveur</li>
+            <li>Les coûts de storage complémentaires pour les backups (google storage)</li>
+            <li>Le coût du nom de domaine</li>
+        </ul>
+        <hr />
+        Dernière mise à jour le {{ DATE_MAJ|date('d/m/Y') }}
+    </div>
+{% endblock %}
