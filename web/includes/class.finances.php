@@ -154,18 +154,18 @@ class finances
         if($sens == 0)
         {
             $req
-                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? ";
+                = "SELECT coalesce(sum(fin_montant),0) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? ";
         }
         if($sens == -1)
         {
             $req
-                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
+                = "SELECT coalesce(sum(fin_montant),0) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
                     and fin_montant < 0";
         }
         if($sens == 1)
         {
             $req
-                = "SELECT sum(fin_montant) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
+                = "SELECT coalesce(sum(fin_montant),0) AS fin_montant FROM finances WHERE fin_date >= ?  AND fin_date <= ? 
                     and fin_montant >= 0";
         }
         $stmt     = $pdo->prepare($req);
