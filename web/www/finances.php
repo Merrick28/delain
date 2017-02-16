@@ -34,7 +34,6 @@ $total           = $finances->getTotalByDate($workMonth, $workYear);
 $date_maj        = $finances->getDateUpdate();
 
 
-require_once CHEMIN . '../includes/Twig/Autoloader.php';
 Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
