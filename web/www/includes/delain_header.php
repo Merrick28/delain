@@ -1,6 +1,6 @@
 <?php
 require __DIR__ . '/conf.php';
-require CHEMIN . '../vendor/autoload.php';
+require G_CHE . '../vendor/autoload.php';
 
 header('Content-type: text/html; charset=utf-8');
 

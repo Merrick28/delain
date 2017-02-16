@@ -64,7 +64,6 @@ $db = new base_delain;
                     $compte->stocke();
 
                     // on charge la classe des templates
-                    Twig_Autoloader::register();
                     $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
                     $twig     = new Twig_Environment($loader, array());

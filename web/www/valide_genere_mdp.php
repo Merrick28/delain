@@ -15,7 +15,7 @@ if ($compte->compt_validation != $_POST['token'])
     die('Code de validation non correct');
 }
 
-Twig_Autoloader::register();
+
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 // on efface le password "normal", au cas où

@@ -52,7 +52,6 @@ else
 // on prend les datas existantes s'il y en a
 $TableauFinances = $finances->getByDate($workMonth, $workYear);
 
-Twig_Autoloader::register();
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());

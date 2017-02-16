@@ -446,7 +446,7 @@ function genereClasse($table)
         }
     }
 
-    Twig_Autoloader::register();
+
     $loader = new Twig_Loader_Filesystem(G_CHE . '/../templates');
 
     $twig     = new Twig_Environment($loader, array(

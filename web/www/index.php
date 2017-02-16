@@ -34,7 +34,7 @@ $tabNews = $news->getNews($start_news);
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
 
-Twig_Autoloader::register();
+
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());

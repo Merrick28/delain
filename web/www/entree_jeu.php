@@ -6,7 +6,7 @@ include G_CHE . "ident.php";
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
 
-Twig_Autoloader::register();
+
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());
