@@ -52,15 +52,10 @@ else
 // on prend les datas existantes s'il y en a
 $TableauFinances = $finances->getByDate($workMonth, $workYear);
 
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
-$twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('saisie_finances.twig');
+$template = $twig->load('saisie_finances.twig');
 
 $options_twig = array(
-    'URL'          => G_URL,
-    'URL_IMAGES'   => G_IMAGES,
-    'HTTPS'        => $type_flux,
     'ISAUTH'       => $verif_auth,
     'TABFIN'       => $TableauFinances,
     'MIN_YEAR'     => $minYear,
@@ -68,6 +63,6 @@ $options_twig = array(
     'WORK_MONTH'   => $workMonth,
     'WORK_YEAR'    => $workYear
 );
-echo $template->render($options_twig);
+echo $template->render(array_merge($options_twig_defaut,$options_twig));
 
 

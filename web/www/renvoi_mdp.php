@@ -64,16 +64,13 @@ $db = new base_delain;
                     $compte->stocke();
 
                     // on charge la classe des templates
-                    $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
-                    $twig     = new Twig_Environment($loader, array());
-                    $template = $twig->loadTemplate('mails/renvoi_mdp1.twig');
+                    $template = $twig->load('mails/renvoi_mdp1.twig');
 
                     $options_twig = array(
-                       'COMPTE' => $compte,
-                       'URL'    => G_URL
+                       'COMPTE' => $compte
                     );
-                    $corps_mail   = $template->render($options_twig);
+                    $corps_mail   = $template->render(array_merge($options_twig_defaut,$options_twig));
                     //echo $corps_mail;
                     // on charge la classe mail
                     $mail       = new PHPMailer;

@@ -7,10 +7,7 @@ include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
 
 
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
-
-$twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('validation_login2.twig');
+$template = $twig->load('validation_login2.twig');
 
 if ($verif_auth)
 {
@@ -257,9 +254,6 @@ if ($verif_auth)
 
 // affichage de la page
 $options_twig = array(
-    'URL'                      => G_URL,
-    'URL_IMAGES'               => G_IMAGES,
-    'HTTPS'                    => $type_flux,
     'ISAUTH'                   => $verif_auth,
     'IS_ADMIN_MONSTRE'         => $is_admin_monstre,
     'COMPTE'                   => $compte,
@@ -279,5 +273,5 @@ $options_twig = array(
     'PREMIER_PERSO'            => $premier_perso,
 
 );
-echo $template->render($options_twig);
+echo $template->render(array_merge($options_twig_defaut,$options_twig));
 

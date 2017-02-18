@@ -34,16 +34,9 @@ $total           = $finances->getTotalByDate($workMonth, $workYear);
 $date_maj        = $finances->getDateUpdate();
 
 
-
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
-
-$twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('finances.twig');
+$template = $twig->load('finances.twig');
 
 $options_twig = array(
-    'URL'              => G_URL,
-    'URL_IMAGES'       => G_IMAGES,
-    'HTTPS'            => $type_flux,
     'ISAUTH'           => $verif_auth,
     'PERCENT_FINANCES' => $percent_finances,
     'TABFIN'           => $TableauFinances,
@@ -55,6 +48,6 @@ $options_twig = array(
     'DATE_MAJ'         => $date_maj,
     'COMPTE'           => $compte
 );
-echo $template->render($options_twig);
+echo $template->render(array_merge($options_twig_defaut,$options_twig));
 
 

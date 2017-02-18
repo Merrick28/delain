@@ -25,11 +25,7 @@ $compte->compt_passwd_hash = crypt($nouveau1);
 // on enregistre
 $compte->stocke();
 
-$twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('valide_genere_mdp.twig');
+$template = $twig->load('valide_genere_mdp.twig');
 
-$options_twig = array(
-   'URL'        => G_URL,
-   'URL_IMAGES' => G_IMAGES
-);
-echo $template->render($options_twig);
+$options_twig = array();
+echo $template->render(array_merge($options_twig_defaut,$options_twig));

@@ -16,17 +16,12 @@ if ($compte->compt_validation != $_GET['token'])
 }
 
 
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
-$twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('genere_mdp.twig');
+$template = $twig->load('genere_mdp.twig');
 
 $options_twig = array(
-   'URL'        => G_URL,
-   'URL_IMAGES' => G_IMAGES,
    'COMPTE' => $compte,
-   'HTTPS' => $type_flux
 );
-echo $template->render($options_twig);
+echo $template->render(array_merge($options_twig_defaut,$options_twig));
 
 
