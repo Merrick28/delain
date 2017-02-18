@@ -56,7 +56,6 @@ $TableauFinances = $finances->getByDate($workMonth, $workYear);
 $template = $twig->load('saisie_finances.twig');
 
 $options_twig = array(
-    'ISAUTH'       => $verif_auth,
     'TABFIN'       => $TableauFinances,
     'MIN_YEAR'     => $minYear,
     'CURRENT_YEAR' => $currentYear,

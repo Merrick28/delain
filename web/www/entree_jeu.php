@@ -254,7 +254,6 @@ if ($verif_auth)
 
 // affichage de la page
 $options_twig = array(
-    'ISAUTH'                   => $verif_auth,
     'IS_ADMIN_MONSTRE'         => $is_admin_monstre,
     'COMPTE'                   => $compte,
     'TYPE_PERSO'               => $type_perso,

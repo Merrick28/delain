@@ -38,7 +38,6 @@ $pub = choix_pub_index();
 
 $template = $twig->load('index.twig');
 $options_twig = array(
-    'ISAUTH'            => $verif_auth,
     'PERCENT_FINANCES'  => $percent_finances,
     'AVENTURIERS_MORTS' => $param->getparm(64),
     'MONSTRES_MORTS'    => $param->getparm(65),

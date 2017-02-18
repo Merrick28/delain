@@ -168,6 +168,10 @@ else
 
 montre_formulaire_connexion($verif_auth);
 
+// on met la variable ISAUTH dans options_tiwg_defaut
+// ca permettra de la passer automatiquement au template
+$temp_array = array('ISAUTH' => $verif_auth);
+$options_twig_defaut = array_merge($options_twig_defaut,$temp_array);
 // Bon, je sais, c'est mal de mettre ça ici, mais je suis sur
 // que c'est appelé tout le temps...
 $finances  = new finances();

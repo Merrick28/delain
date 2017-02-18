@@ -37,7 +37,6 @@ $date_maj        = $finances->getDateUpdate();
 $template = $twig->load('finances.twig');
 
 $options_twig = array(
-    'ISAUTH'           => $verif_auth,
     'PERCENT_FINANCES' => $percent_finances,
     'TABFIN'           => $TableauFinances,
     'MIN_YEAR'         => $minYear,
