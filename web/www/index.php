@@ -38,7 +38,7 @@ $pub = choix_pub_index();
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('index.twig');
+$template = $twig->load('index.twig');
 
 $options_twig = array(
     'URL'               => G_URL,
