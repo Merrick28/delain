@@ -1,0 +1,7 @@
+{
+  "web": {
+    "client_id": "1026980825831-222v0sur98v9nkfr129gk8kab0nr78tm.apps.googleusercontent.com",
+    "client_secret": "RDfDUCVuxXUQDqbGbi5n_lL-",
+    "redirect_uris": ["http://localdelain.com/test_api_google.php"]
+  }
+}

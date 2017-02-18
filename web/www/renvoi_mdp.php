@@ -64,8 +64,6 @@ $db = new base_delain;
                     $compte->stocke();
 
                     // on charge la classe des templates
-                    require_once CHEMIN . '../includes/Twig/Autoloader.php';
-                    Twig_Autoloader::register();
                     $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
                     $twig     = new Twig_Environment($loader, array());
@@ -78,7 +76,6 @@ $db = new base_delain;
                     $corps_mail   = $template->render($options_twig);
                     //echo $corps_mail;
                     // on charge la classe mail
-                    require_once G_CHE . '/../includes/phpmailer/class.phpmailer.php';
                     $mail       = new PHPMailer;
                     // smtp
                     $mail->Host = SMTP_HOST;

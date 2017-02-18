@@ -15,8 +15,7 @@ if ($compte->compt_validation != $_GET['token'])
     die('Code de validation non correct');
 }
 
-require_once CHEMIN . '../includes/Twig/Autoloader.php';
-Twig_Autoloader::register();
+
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());

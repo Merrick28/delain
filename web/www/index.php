@@ -34,12 +34,11 @@ $tabNews = $news->getNews($start_news);
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
 
-require_once CHEMIN . '../includes/Twig/Autoloader.php';
-Twig_Autoloader::register();
+
 $loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 $twig     = new Twig_Environment($loader, array());
-$template = $twig->loadTemplate('index.twig');
+$template = $twig->load('index.twig');
 
 $options_twig = array(
     'URL'               => G_URL,
