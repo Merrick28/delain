@@ -165,14 +165,7 @@ else
         $myAuth->compt_cod = $compt_cod;
     }
 }
-/*if($verif_auth)
-{
-    // on vérifie qu'on a bien accès au bon perso
-    if (!$compte->autoriseJouePerso($perso->perso_cod))
-    {
-        die('Accès interdit à ce perso');
-    }
-}*/
+
 montre_formulaire_connexion($verif_auth);
 
 // Bon, je sais, c'est mal de mettre ça ici, mais je suis sur
