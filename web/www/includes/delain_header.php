@@ -106,6 +106,33 @@ function my_autoloader($class) {
 }
 spl_autoload_register('my_autoloader');
 
+// on prépare ce qu'il faut pour twig
+$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
+if(defined('TWIG_CACHE'))
+{
+    if(TWIG_CACHE)
+    {
+        $twig     = new Twig_Environment($loader, array(
+            'cache' => CHEMIN . '/../../cache',
+        ));
+    }
+    else
+    {
+        $twig     = new Twig_Environment($loader, array());
+    }
+}
+else
+{
+    $twig     = new Twig_Environment($loader, array());
+}
+
+
+$options_twig_defaut = array(
+    'URL'               => G_URL,
+    'URL_IMAGES'        => G_IMAGES,
+    'HTTPS'             => $type_flux,
+);
+
 // on commence la temporisation de sortie
 ob_start();
 

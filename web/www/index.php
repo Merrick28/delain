@@ -35,15 +35,9 @@ require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
 
 
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
-$twig     = new Twig_Environment($loader, array());
 $template = $twig->load('index.twig');
-
 $options_twig = array(
-    'URL'               => G_URL,
-    'URL_IMAGES'        => G_IMAGES,
-    'HTTPS'             => $type_flux,
     'ISAUTH'            => $verif_auth,
     'PERCENT_FINANCES'  => $percent_finances,
     'AVENTURIERS_MORTS' => $param->getparm(64),
@@ -57,4 +51,4 @@ $options_twig = array(
 
 
 );
-echo $template->render($options_twig);
+echo $template->render(array_merge($options_twig_defaut,$options_twig));
