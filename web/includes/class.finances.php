@@ -180,7 +180,7 @@ class finances
     {
         $pdo    = new bddpdo;
         $req
-                = "SELECT max(fin_date) AS fin_date FROM finances ";
+                = "SELECT max(fin_date) AS fin_date FROM finances where fin_date <= now() ";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(), $stmt);
         $result = $stmt->fetch();
