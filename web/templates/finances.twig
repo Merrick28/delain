@@ -34,13 +34,13 @@
                             {{ ligne.desc }}
                         </td>
                         <td>
-                            {{ ligne.montant }} €
+                            {{ ligne.montant|number_format(2, ',', ' ') }} €
                         </td>
                     </tr>
                 {% endfor %}
                 <tr>
                     <td><b>Total</b></td>
-                    <td><b>{{ TOTAL }} €</b></td>
+                    <td><b>{{ TOTAL|number_format(2, ',', ' ') }} €</b></td>
                 </tr>
             </table>
         {% else %}
