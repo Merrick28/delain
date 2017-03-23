@@ -213,6 +213,7 @@ body
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   ga('create', 'UA-1534416-3', 'auto');
+  ga('require', 'GTM-M2VTQQW');
   ga('send', 'pageview');
 
 </script>
