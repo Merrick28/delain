@@ -77,7 +77,7 @@ Voici les derniers événements qui ont impactés vos personnages dans les soute
 (Attention, ce courriel est envoyé par un robot, inutile d’y répondre. En cas de problème, merci de signaler l’anomalie sur le forum ( http://forum.jdr-delain.net/ ))
 Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en augmenter la fréquence, en configurant votre compte sur le jeu.\r\n";
 
-        $mail = new phpmailer();
+        $mail = new PHPMailer;
         $mail->CharSet = 'UTF-8';
         $mail->setFrom('noreply@jdr-delain.net', 'Robot des souterrains');
         $mail->IsHTML(false);
