@@ -42,6 +42,7 @@ while($db->next_record())
                 and perso_type_perso = 1
     			and perso_actif = 'O'
     			and perso_pnj != 1
+			and perso_test != 'O'
             order by pcomp_modificateur desc
 			limit 10";
 		$db3->query($req);
@@ -82,7 +83,7 @@ while($db->next_record())
 <hr><br><b><u>Richesse des souterrains :</u></b><br><br>
 
 <?php 
-$req = "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso != 2 and perso_pnj != 1";
+$req = "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso != 2 and perso_pnj != 1 and perso_test != 'O'";
 $db->query($req);
 $db->next_record();
 $po_global = $db->f("po");
