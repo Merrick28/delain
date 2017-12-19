@@ -37,7 +37,7 @@ if ($erreur == 0)
 	switch($methode)
 	{
 		case "ajout":
-			$req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso_cible,$lieu) ";
+			$req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso->perso_cod,$lieu) ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";
