@@ -48,7 +48,7 @@ if ($erreur == 0)
 			}
 			break;
 		case "modif":
-			$req = "update magasin_gerant set mger_perso_cod = $perso_cible where mger_lieu_cod = $lieu ";
+			$req = "update magasin_gerant set mger_perso_cod = $perso->perso_cod where mger_lieu_cod = $lieu ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";
