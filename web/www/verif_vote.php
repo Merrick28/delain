@@ -1,7 +1,7 @@
-<?php
+<?php 
 ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes');
 
-include "delain_header.php";
+include_once "delain_header.php";
 include "classes.php";
 $db = new base_delain;
 
@@ -12,7 +12,7 @@ $IpReq1 = "SELECT icompt_compt_ip,  compte_vote_compte_cod,compte_vote_cod,compt
 $IpReq2 = "SELECT icompt_compt_ip,  compte_vote_compte_cod,compte_vote_cod,compte_vote_ip_compte
             FROM public.compte_ip
             INNER JOIN public.compte_vote_ip ON public.compte_ip.icompt_cod = public.compte_vote_ip.compte_vote_icompt_cod where  public.compte_vote_ip.compte_vote_verifier = FALSE 
-            and public.compte_vote_ip.compte_vote_date = (current_date - 1)  FETCH NEXT 100 ROWS ONLY ) ";
+            and public.compte_vote_ip.compte_vote_date = (current_date - 1)  FETCH NEXT 100 ROWS ONLY";
 
 $ips = array();
 $Compte_code_ips = array();
@@ -120,7 +120,7 @@ $db->query($reqVoteList);
 if (!$db->next_record())
 {
 
-    // on commence par mettre a jours
+    // on commence par mettre a jour (#LAG pour eviter une multiple distribution)
     $repUpdateVoteList = " INSERT INTO public.vote_list(vote_list_date) VALUES ('" . $dateDuJour . "'::date)";
     $db->query($reqVoteList);
     // puis on récupere tous les personnes qui ont voté ce mois ci et on fonction du nombre de vote on donne les xp correspondants.
@@ -145,7 +145,7 @@ if (!$db->next_record())
         $ReqGainXp = "select vote_xp_gain_xp from public.vote_xp where vote_xp_nombre_vote=" . $nbrVote;
         $db2->query($ReqGainXp);
         $db2->next_record();
-        $GainXp = $db2->f('vote_xp_gain_xp');
+        $GainXp = 1 * $db2->f('vote_xp_gain_xp');
         echo 'gain: ' . $GainXp;
         // pour chacun des perso du comptes, on rajoute  l'xp gagné
         $reqPerso = "select pcompt_perso_cod from public.perso_compte where pcompt_compt_cod=" . $compteCod;
@@ -187,11 +187,12 @@ if (!$db->next_record())
 
 
     }
-    // on cree à la bonne date
-    $ReqCreationVoteList = "INSERT INTO public.vote_list(
-             vote_list_date)
-                 VALUES ( '" . $dateDuJour . "'::date)";
-    $db->query($ReqCreationVoteList);
+	//#LAG Déjà fait avant la boucle
+    //// on cree à la bonne date
+    //$ReqCreationVoteList = "INSERT INTO public.vote_list(
+    //         vote_list_date)
+    //             VALUES ( '" . $dateDuJour . "'::date)";
+    //$db->query($ReqCreationVoteList);
 
 }
 
