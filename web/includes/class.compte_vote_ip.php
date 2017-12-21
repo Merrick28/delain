@@ -119,11 +119,21 @@ class compte_vote_ip
         $req  = "select compte_vote_cod from compte_vote_ip where compte_vote_compte_cod = ? and compte_vote_pour_delain = true";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
+        //if (!$result = $stmt->fetch())
+        //{
+        //    return false;
+        //}
+        //return $this->charge($result['compte_vote_cod']);
+       //#LAG => la focntion retournait seulement le premier element, il peut y en avoir plusieurs
+        $retour = array();
+        while ($result = $stmt->fetch())
         {
-            return false;
+            $temp = new compte_vote_ip;
+            $temp->charge($result["compte_vote_cod"]);
+            $retour[] = $temp;
+            unset($temp);
         }
-        return $this->charge($result['compte_vote_cod']);
+        return $retour;                
     }
 
     function getByCompteTrueMois($code)
@@ -135,11 +145,21 @@ class compte_vote_ip
           and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
+        //if (!$result = $stmt->fetch())
+        //{
+        //    return false;
+        //}
+        //return $this->charge($result['compte_vote_cod']);
+        //#LAG => la focntion retournait seulement le premier element, il peut y en avoir plusieurs
+        $retour = array();
+        while ($result = $stmt->fetch())
         {
-            return false;
+            $temp = new compte_vote_ip;
+            $temp->charge($result["compte_vote_cod"]);
+            $retour[] = $temp;
+            unset($temp);
         }
-        return $this->charge($result['compte_vote_cod']);
+        return $retour;         
     }
 
     function getVoteAValider($code)
@@ -151,11 +171,21 @@ class compte_vote_ip
           and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
+        //if (!$result = $stmt->fetch())
+        //{
+        //   return false;
+        //}
+        //return $this->charge($result['compte_vote_cod']);
+        //#LAG => la focntion retournait seulement le premier element, il peut y en avoir plusieurs
+        $retour = array();
+        while ($result = $stmt->fetch())
         {
-            return false;
+            $temp = new compte_vote_ip;
+            $temp->charge($result["compte_vote_cod"]);
+            $retour[] = $temp;
+            unset($temp);
         }
-        return $this->charge($result['compte_vote_cod']);
+        return $retour;        
     }
 
     function getVoteRefus($code)
@@ -167,11 +197,21 @@ class compte_vote_ip
           and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
+        //if (!$result = $stmt->fetch())
+        //{
+        //    return false;
+        //}
+        //return $this->charge($result['compte_vote_cod']);
+        //#LAG => la focntion retournait seulement le premier element, il peut y en avoir plusieurs
+        $retour = array();
+        while ($result = $stmt->fetch())
         {
-            return false;
+            $temp = new compte_vote_ip;
+            $temp->charge($result["compte_vote_cod"]);
+            $retour[] = $temp;
+            unset($temp);
         }
-        return $this->charge($result['compte_vote_cod']);
+        return $retour;          
     }
 
     /**

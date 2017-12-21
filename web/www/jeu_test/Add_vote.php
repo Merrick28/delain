@@ -15,7 +15,7 @@ if ($compt_cod != null)
     {
         // get client IP
 
-        $IpReq = "SELECT icompt_cod FROM public.compte_ip WHERE icompt_compt_cod = " . $compt_cod . " ORDER BY icompt_compt_date DESC;";
+        $IpReq = "SELECT icompt_cod FROM public.compte_ip WHERE icompt_compt_cod = " . $compt_cod . " ORDER BY icompt_compt_date DESC LIMIT 1;"; // rechercher la dernière connexion.
         $db->query($IpReq);
         $db->next_record();
         $Code_ip_table = $db->f('icompt_cod');
