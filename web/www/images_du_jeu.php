@@ -87,5 +87,5 @@ $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
 $t->parse('Sortie','FileRef');
 $t->p('Sortie');
 
-//test
+
 
