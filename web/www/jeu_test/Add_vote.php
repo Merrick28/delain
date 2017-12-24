@@ -20,13 +20,16 @@ if ($compt_cod != null)
         $db->next_record();
         $Code_ip_table = $db->f('icompt_cod');
 
-
+        $pdo = new bddpdo;  //#LAG ici, pdo est préférable pour protéger de l'injection sql 
         $add
             = "INSERT INTO public.compte_vote_ip(
                 compte_vote_icompt_cod,compte_vote_compte_cod,compte_vote_ip_compte)
-                VALUES (" . $Code_ip_table . "," . $compt_cod . ",'" . $IP . "');";
+                VALUES (" . $Code_ip_table . "," . $compt_cod . ",:ip_address);";
         //error_log('Insertion vote requete:'.$add);
-        $db->query($add);
+        //$db->query($add);         //#LAG: Injection SQL possible, il vaut mieux utiliser pdo (car $IP = $_POST['IP'] on ne peut pas faire confiance à son contenu)      
+        $stmt = $pdo->prepare($add);
+        $stmt = $pdo->execute(array(":ip_address" => $IP ), $stmt);
+                
         echo "Tout c'est bien passé!";
     }
     else
