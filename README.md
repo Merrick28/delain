@@ -1,7 +1,5 @@
 # Les souterrains de Delain
 
-[![Build Status](https://jenkins.sdewitte.net/buildStatus/icon?job=Delain)](https://jenkins.sdewitte.net/job/Delain/)
-
 ## Projet
 Après plus de dix ans d'existence, le jeu de rôle en ligne ["Les souterrains de Delain"](https://www.jdr-delain.net) devient opensource. 
 
