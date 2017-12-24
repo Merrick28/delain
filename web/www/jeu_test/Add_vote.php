@@ -12,7 +12,6 @@ if ($compt_cod != null)
     $IP = $_POST['IP'];
     //error_log('vote, ip client :'.$IP);
     if ($db->verification_vote($compt_cod))
-    if (true)
     {
         // get client IP
 
