@@ -59,18 +59,21 @@ $db->next_record();
 		$lieu_refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
 		echo "$lieu_nom ($tlieu_libelle - $lieu_refuge)<br />";
 	}
-?>
-
-<table border="0" cellspacing="2" cellpadding="2">
-	<tr>
-		<td class="soustitre2" valign="top"><b><?php echo $db->nf();?> persos.</b></br>
-<?php 
+	
+//#LAG: rechercher la liste de perso sur la case	
 $req = "select lower(perso_nom) as minusc,etat_perso(perso_cod) as bless,perso_nom from perso,perso_position where ppos_pos_cod = $position
 		and ppos_perso_cod = perso_cod
 		and perso_actif = 'O'
 		and perso_type_perso = 1
 		order by minusc";
 $db->query($req);
+?>
+
+<table border="0" cellspacing="2" cellpadding="2">
+	<tr>
+		<td class="soustitre2" valign="top"><b><?php echo $db->nf();?> persos.</b></br>
+<?php 
+
 if ($db->nf() != 0)
 {
 	while ($db->next_record())
