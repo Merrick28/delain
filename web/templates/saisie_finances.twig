@@ -8,7 +8,7 @@
 
         <form method="post" action="saisie_finances.php" class="form-inline">
             <select name="change_date" class="form-control">
-                {% for year in MIN_YEAR..CURRENT_YEAR %}
+                {% for year in MIN_YEAR..MAX_YEAR %}
                     {% for month in 1..12 %}
                         <option value="{{ year }}-{{ month }}"
                                 {% if month == WORK_MONTH and year == WORK_YEAR %}
