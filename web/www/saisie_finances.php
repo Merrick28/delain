@@ -34,8 +34,11 @@ $minMonth = date('m', strtotime($minDate));
 
 $maxDate = $finances->getMaxDate();
 
-$currentYear  = date('Y', strtotime($maxDate));
-$currentMonth = date('m', strtotime($maxDate));
+$maxYear  = date('Y', strtotime($maxDate));
+$maxMonth = date('m', strtotime($maxDate));
+
+$currentYear  = date('Y');
+$currentMonth = date('m');
 
 // on regarde si on travaille sur la date du jour
 // ou sur une autre date
@@ -52,7 +55,7 @@ else
 }
 
 // on prend les datas existantes s'il y en a
-$TableauFinances = $finances->getByDate($workMonth, $workYear);
+$TableauFinances = $finances->getByDate($maxMonth, $maxYear);
 
 
 $template = $twig->load('saisie_finances.twig');
