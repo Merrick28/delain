@@ -102,6 +102,16 @@ class finances
         return $result['fin_date'];
     }
 
+    function getMaxDate()
+    {
+        $pdo    = new bddpdo;
+        $req    = "SELECT max(fin_date) AS fin_date FROM finances";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(), $stmt);
+        $result = $stmt->fetch();
+        return $result['fin_date'];
+    }
+
     function getByDate($month, $year)
     {
         $date_min = $year . '-' . $month . '-01';

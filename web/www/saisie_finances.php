@@ -32,8 +32,10 @@ $minDate  = $finances->getMinDate();
 $minYear  = date('Y', strtotime($minDate));
 $minMonth = date('m', strtotime($minDate));
 
-$currentYear  = date('Y');
-$currentMonth = date('m');
+$maxDate = $finances->getMaxDate();
+
+$currentYear  = date('Y', strtotime($maxDate));
+$currentMonth = date('m', strtotime($maxDate));
 
 // on regarde si on travaille sur la date du jour
 // ou sur une autre date
