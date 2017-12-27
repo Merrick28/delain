@@ -30,12 +30,12 @@ if($compte->getByNom($_GET['nom']))
     }
     else
     {
-        error_validation();
+        error_validation("mauvais code validation");
     }
 }
 else
 {
-    error_validation();
+    error_validation('Compte non trouvé');
 }
 ?>
 
