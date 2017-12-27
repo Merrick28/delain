@@ -1,6 +1,8 @@
 {% extends 'index.twig' %}
 {% block contenu %}
-
+{%  for faq in FAQ %}
+<br /><b>{{ faq.tfaq_libelle }}</b>
+{% endfor %}
 {% endblock %}
 {% block postscripts %}
 
