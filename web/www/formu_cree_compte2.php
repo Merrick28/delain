@@ -45,7 +45,7 @@ if (!isset($regles) || $regles != 1)
 {
     $template = $twig->load('formu_cree_compte.twig');
     $options_twig = array(
-        'ERROR_MESSAGE' => "Vous devez accepeter la charte des joueurs pour continuer"
+        'ERROR_MESSAGE' => "Vous devez accepter la charte des joueurs pour continuer"
     );
     echo $template->render(array_merge($options_twig_defaut, $options_twig));
     die('');
