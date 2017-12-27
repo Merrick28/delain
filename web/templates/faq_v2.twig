@@ -1,8 +1,13 @@
 {% extends 'index.twig' %}
 {% block contenu %}
-{%  for faq in FAQ %}
-<br /><b>{{ faq.tfaq_libelle }}</b>
-{% endfor %}
+    <div class="groupdiv">
+        {% for faq in FAQ %}
+            <br/><b>{{ faq.tfaq_libelle }}</b>
+            {% for detail in faq.detail %}
+                <br/>{{ detail.faq_question }}
+            {% endfor %}
+        {% endfor %}
+    </div>
 {% endblock %}
 {% block postscripts %}
 
