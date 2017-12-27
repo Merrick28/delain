@@ -86,7 +86,7 @@
 			<a href="index.php">Accueil</a><br>
 			<a href="http://forum.jdr-delain.net" target="_blank">Forum</a><br>
 			<hr />
-			<a href="http://www.jdr-delain.net/wiki/index.php/Histoire" target="droite">L’histoire</a><br>
+			<a href="http://wiki.jdr-delain.net/index.php/Histoire" target="droite">L’histoire</a><br>
 			<a href="http://www.chez.com/delain/" target="_blank">le commencement</a><br>
 			<a href="http://www.jdr-delain.net/voix/" target="_blank">La Gazette</a><br>
 			<hr />
