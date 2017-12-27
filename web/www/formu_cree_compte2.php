@@ -8,13 +8,8 @@ if (!isset($_POST['nom']) || !isset($_POST['mail']))
     echo $template->render(array_merge($options_twig_defaut, $options_twig));
     die('');
 }
-
-
-$recherche = "SELECT f_cherche_compte('$nom') as recherche";
-$db->query($recherche);
-$db->next_record();
-$tab_nom[0] = $db->f("recherche");
-if ($tab_nom[0] != -1)
+$compte = new compte;
+if($compte->getByNom($nom))
 {
     $template = $twig->load('formu_cree_compte.twig');
     $options_twig = array(
