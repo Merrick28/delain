@@ -393,7 +393,7 @@ class compte
     function getByNom($nom)
     {
         $pdo = new bddpdo;
-        $req = "select f_cherche_compte(:nom) as nom";
+        $req = "select compt_cod from compte where compt_nom = :nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(
             array(
