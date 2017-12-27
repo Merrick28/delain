@@ -51,10 +51,7 @@ if (!isset($regles) || $regles != 1)
     die('');
 }
 
-$recherche = "select  lancer_des(1, 10000) as des";
-$db->query($recherche);
-$db->next_record();
-$validation = $db->f("des");
+$validation = rand(1000,9999);
 // calcul du nombre aléatoire pour validation
 $compte->compt_nom = $nom;
 $compte->compt_mail = strtolower($mail);
