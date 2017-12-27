@@ -11,7 +11,7 @@
                             <h5 class="mb-0">
                                 <a data-toggle="collapse" href="#collapse{{ detail.faq_cod }}" aria-expanded="true"
                                    aria-controls="collapse{{ detail.faq_cod }}">
-                                    {{ detail.faq_question }}
+                                    {{ detail.faq_question|raw }}
                                 </a>
                             </h5>
                         </div>
@@ -19,7 +19,7 @@
                     </div>
                     <div id="collapse{{ detail.faq_cod }}" class="collapse" role="tabpanel" aria-labelledby="heading{{ detail.faq_cod }}" data-parent="#accordion{{ faq.tfaq_cod }}">
                         <div class="card-body">
-                            {{ detail.faq_reponse }}
+                            {{ detail.faq_reponse|raw }}
                         </div>
                     </div>
                 {% endfor %}
