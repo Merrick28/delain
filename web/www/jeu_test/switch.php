@@ -163,23 +163,23 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                             <tr>
                                 <td>
 
-                                    Nombres total de votes: <?php echo $nbrVote ?>
+                                    Total de votes pour delain: <?php echo $nbrVote ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
 
-                                    Nombres de votes du mois: <?php echo $nbrVoteMois ?>
+                                    Votes pour delain du mois: <?php echo $nbrVoteMois ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Votes non validés du mois : <?php echo $votesRefusee ?>
+                                    Votes refusés du mois : <?php echo $votesRefusee ?>
                                 </td>
                             </tr>
                             <tr>
                                 <td>
-                                    Votes à valider : <?php echo $VoteAValider ?>
+                                    Votes en attente validation : <?php echo $VoteAValider ?>
                                 </td>
                             </tr>
 
