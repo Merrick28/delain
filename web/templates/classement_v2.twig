@@ -1,0 +1,43 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+<div class="groupdiv">
+    <table id="classement_joueur" class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Renommée</th>
+            <th>Renommée magique</th>
+            <th>Renommée artisanale</th>
+            <th>Karma</th>
+            <th>Nombre de monstres tués</th>
+            <th>Nombre d'aventuriers tués</th>
+            <th>Nombre de morts</th>
+            <th>Nombre d'aventuriers tués en arène</th>
+            <th>Nombre de morts en arène</th>
+        </tr>
+        </thead>
+        {% for ligne in TAB_JOUEUR %}
+            <tr>
+                <td>{{ ligne.perso_nom }}</td>
+                <td><span style="display: none">{{ ligne.perso_renommee }}</span>{{ ligne.renommee }}</td>
+                <td><span style="display: none">{{ ligne.perso_renommee_magie }}</span>{{ ligne.grenommee }}</td>
+                <td><span style="display: none">{{ ligne.perso_renommee_artisanat }}</span>{{ ligne.renart }}</td>
+                <td><span style="display: none">{{ ligne.perso_kharma }}</span>{{ ligne.karma }}</td>
+                <td>{{  ligne.perso_nb_monstre_tue }}</td>
+                <td>{{ ligne.perso_nb_joueur_tue }}</td>
+                <td>{{  ligne.perso_nb_mort }}</td>
+                <td>{{ ligne.perso_nb_joueur_tue_arene }}</td>
+                <td>{{ ligne.perso_nb_mort_arene }}</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+</div>
+        {% endblock %}
+        {% block postscripts %}
+            <script>
+                $(document).ready(function () {
+                    $('#classement_joueur').DataTable();
+                });
+            </script>
+        {% endblock %}

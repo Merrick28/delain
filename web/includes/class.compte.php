@@ -17,48 +17,48 @@ class compte
     var $compt_password;
     var $compt_mail;
     var $compt_validation;
-    var $compt_actif                = 'O';
+    var $compt_actif = 'O';
     var $compt_habilitation;
     var $compt_dcreat;
     var $compt_der_connex;
     var $compt_ip;
     var $compt_commentaire;
     var $compt_renvoye;
-    var $compt_monstre              = 'N';
+    var $compt_monstre = 'N';
     var $compt_testeur;
-    var $compt_admin                = 'N';
+    var $compt_admin = 'N';
     var $compt_hibernation;
     var $compt_dfin_hiber;
     var $compt_acc_charte;
-    var $compt_confiance            = 'N';
+    var $compt_confiance = 'N';
     var $compt_ddeb_hiber;
-    var $compt_quete                = 'N';
-    var $compt_envoi_mail           = 0;
-    var $compt_envoi_mail_message   = 0;
-    var $compt_der_news             = 1;
-    var $compt_vue_desc             = 0;
-    var $compt_ligne_perso          = 1;
+    var $compt_quete = 'N';
+    var $compt_envoi_mail = 0;
+    var $compt_envoi_mail_message = 0;
+    var $compt_der_news = 1;
+    var $compt_vue_desc = 0;
+    var $compt_ligne_perso = 1;
     var $compt_wikidev;
     var $compt_compte_lie;
-    var $compt_quatre_perso         = 'O';
+    var $compt_quatre_perso = 'O';
     var $compt_der_perso_cod;
     var $compt_fb;
     var $compt_twitter;
     var $compt_google;
-    var $compt_frameless            = 'O';
+    var $compt_frameless = 'O';
     var $compt_envoi_mail_frequence = 5;
     var $compt_envoi_mail_dernier;
     var $compt_type_quatrieme;
-    var $compt_clef_forum           = NULL;
+    var $compt_clef_forum = NULL;
     var $compt_validite_clef_forum;
-    var $compt_nombre_clef_forum    = 0;
+    var $compt_nombre_clef_forum = 0;
     var $compt_phashword;
     var $compt_clef_reinit_mdp;
     var $compt_passwd_hash;
 
     function __construct()
     {
-        $this->compt_der_connex         = date('Y-m-d H:i:s');
+        $this->compt_der_connex = date('Y-m-d H:i:s');
         $this->compt_envoi_mail_dernier = date('Y-m-d H:i:s');
     }
 
@@ -74,20 +74,20 @@ class compte
 
     function autorise_4e_monstre()
     {
-        $pdo    = new bddpdo;
-        $req    = "select autorise_4e_monstre(?, ?) as autorise_monstre ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
+        $pdo = new bddpdo;
+        $req = "select autorise_4e_monstre(?, ?) as autorise_monstre ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
         $result = $stmt->fetch();
         return $result['autorise_monstre'];
     }
 
     function autorise_4e_perso()
     {
-        $pdo    = new bddpdo;
-        $req    = "select autorise_4e_perso(?, ?) as autorise_4e_perso ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
+        $pdo = new bddpdo;
+        $req = "select autorise_4e_perso(?, ?) as autorise_4e_perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_quatre_perso, $this->compt_dcreat), $stmt);
         $result = $stmt->fetch();
         return $result['autorise_4e_perso'];
     }
@@ -99,20 +99,20 @@ class compte
 
     function attribue_monstre_4e_perso()
     {
-        $pdo    = new bddpdo;
-        $req    = "select attribue_monstre_4e_perso(?) as attribue_monstre_4e_perso ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $pdo = new bddpdo;
+        $req = "select attribue_monstre_4e_perso(?) as attribue_monstre_4e_perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         $result = $stmt->fetch();
         return $result['attribue_monstre_4e_perso'];
     }
 
     function fin_hibernation()
     {
-        $pdo    = new bddpdo;
-        $req    = "select fin_hibernation(?) as fin_hibernation ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $pdo = new bddpdo;
+        $req = "select fin_hibernation(?) as fin_hibernation ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         $result = $stmt->fetch();
         return $result['fin_hibernation'];
     }
@@ -149,7 +149,7 @@ class compte
         $pdo = new bddpdo;
         // on regarde pour les joueurs
         $req
-              = "SELECT pcompt_perso_cod FROM perso
+            = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = ? 
 						AND perso_actif = 'O'
@@ -163,7 +163,7 @@ class compte
         }
         // pas trouvé, on regarde dans les familiers
         $req
-              = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
@@ -177,7 +177,7 @@ class compte
         }
         // pas trouvé, on regarde dans les sittings
         $req
-              = "SELECT pcompt_perso_cod
+            = "SELECT pcompt_perso_cod
             FROM perso,perso_compte,compte_sitting
             WHERE csit_compte_sitteur = ?
             AND csit_compte_sitte = pcompt_compt_cod
@@ -195,7 +195,7 @@ class compte
         }
         // toujours pas trouvé, on regarde dans les familiers sittés
         $req
-              = "SELECT pfam_familier_cod,pfam_perso_cod 
+            = "SELECT pfam_familier_cod,pfam_perso_cod 
           FROM perso_familier,perso,perso_compte,compte_sitting
           WHERE csit_compte_sitteur = ?
           AND csit_compte_sitte = pcompt_compt_cod
@@ -222,13 +222,13 @@ class compte
     function getPersosActifs()
     {
         $retour = array();
-        $pdo    = new bddpdo;
+        $pdo = new bddpdo;
         $req
-                = "SELECT pcompt_perso_cod FROM perso
+            = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso;
@@ -238,7 +238,7 @@ class compte
         }
         // familiers
         $req
-              = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
@@ -263,9 +263,9 @@ class compte
     function getPersosSittes()
     {
         $retour = array();
-        $pdo    = new bddpdo;
+        $pdo = new bddpdo;
         $req
-                = "SELECT pcompt_perso_cod
+            = "SELECT pcompt_perso_cod
             FROM perso,perso_compte,compte_sitting
             WHERE csit_compte_sitteur = ?
             AND csit_compte_sitte = pcompt_compt_cod
@@ -275,8 +275,8 @@ class compte
             AND perso_actif = 'O'
             AND perso_type_perso = 1
             ORDER BY perso_cod ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($this->compt_cod), $stmt);
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso;
@@ -293,9 +293,9 @@ class compte
      */
     function getMonstreJoueur()
     {
-        $pdo  = new bddpdo;
+        $pdo = new bddpdo;
         $req
-              = "SELECT perso_cod FROM perso INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+            = "SELECT perso_cod FROM perso INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 				WHERE pcompt_compt_cod = ? AND perso_type_perso = 2
 				ORDER BY pcompt_date_attachement DESC LIMIT 1";
         $stmt = $pdo->prepare($req);
@@ -315,9 +315,9 @@ class compte
     function getAll()
     {
         $retour = array();
-        $pdo    = new bddpdo;
-        $req    = "SELECT compt_cod  FROM compte ORDER BY compt_cod";
-        $stmt   = $pdo->query($req);
+        $pdo = new bddpdo;
+        $req = "SELECT compt_cod  FROM compte ORDER BY compt_cod";
+        $stmt = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
             $temp = new compte;
@@ -336,58 +336,79 @@ class compte
      */
     function charge($code)
     {
-        $pdo  = new bddpdo;
-        $req  = "SELECT * FROM compte WHERE compt_cod = ?";
+        $pdo = new bddpdo;
+        $req = "SELECT * FROM compte WHERE compt_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
         }
-        $this->compt_cod                  = $result['compt_cod'];
-        $this->compt_nom                  = $result['compt_nom'];
-        $this->compt_password             = $result['compt_password'];
-        $this->compt_mail                 = $result['compt_mail'];
-        $this->compt_validation           = $result['compt_validation'];
-        $this->compt_actif                = $result['compt_actif'];
-        $this->compt_habilitation         = $result['compt_habilitation'];
-        $this->compt_dcreat               = $result['compt_dcreat'];
-        $this->compt_der_connex           = $result['compt_der_connex'];
-        $this->compt_ip                   = $result['compt_ip'];
-        $this->compt_commentaire          = $result['compt_commentaire'];
-        $this->compt_renvoye              = $result['compt_renvoye'];
-        $this->compt_monstre              = $result['compt_monstre'];
-        $this->compt_testeur              = $result['compt_testeur'];
-        $this->compt_admin                = $result['compt_admin'];
-        $this->compt_hibernation          = $result['compt_hibernation'];
-        $this->compt_dfin_hiber           = $result['compt_dfin_hiber'];
-        $this->compt_acc_charte           = $result['compt_acc_charte'];
-        $this->compt_confiance            = $result['compt_confiance'];
-        $this->compt_ddeb_hiber           = $result['compt_ddeb_hiber'];
-        $this->compt_quete                = $result['compt_quete'];
-        $this->compt_envoi_mail           = $result['compt_envoi_mail'];
-        $this->compt_envoi_mail_message   = $result['compt_envoi_mail_message'];
-        $this->compt_der_news             = $result['compt_der_news'];
-        $this->compt_vue_desc             = $result['compt_vue_desc'];
-        $this->compt_ligne_perso          = $result['compt_ligne_perso'];
-        $this->compt_wikidev              = $result['compt_wikidev'];
-        $this->compt_compte_lie           = $result['compt_compte_lie'];
-        $this->compt_quatre_perso         = $result['compt_quatre_perso'];
-        $this->compt_der_perso_cod        = $result['compt_der_perso_cod'];
-        $this->compt_fb                   = $result['compt_fb'];
-        $this->compt_twitter              = $result['compt_twitter'];
-        $this->compt_google               = $result['compt_google'];
-        $this->compt_frameless            = $result['compt_frameless'];
+        $this->compt_cod = $result['compt_cod'];
+        $this->compt_nom = $result['compt_nom'];
+        $this->compt_password = $result['compt_password'];
+        $this->compt_mail = $result['compt_mail'];
+        $this->compt_validation = $result['compt_validation'];
+        $this->compt_actif = $result['compt_actif'];
+        $this->compt_habilitation = $result['compt_habilitation'];
+        $this->compt_dcreat = $result['compt_dcreat'];
+        $this->compt_der_connex = $result['compt_der_connex'];
+        $this->compt_ip = $result['compt_ip'];
+        $this->compt_commentaire = $result['compt_commentaire'];
+        $this->compt_renvoye = $result['compt_renvoye'];
+        $this->compt_monstre = $result['compt_monstre'];
+        $this->compt_testeur = $result['compt_testeur'];
+        $this->compt_admin = $result['compt_admin'];
+        $this->compt_hibernation = $result['compt_hibernation'];
+        $this->compt_dfin_hiber = $result['compt_dfin_hiber'];
+        $this->compt_acc_charte = $result['compt_acc_charte'];
+        $this->compt_confiance = $result['compt_confiance'];
+        $this->compt_ddeb_hiber = $result['compt_ddeb_hiber'];
+        $this->compt_quete = $result['compt_quete'];
+        $this->compt_envoi_mail = $result['compt_envoi_mail'];
+        $this->compt_envoi_mail_message = $result['compt_envoi_mail_message'];
+        $this->compt_der_news = $result['compt_der_news'];
+        $this->compt_vue_desc = $result['compt_vue_desc'];
+        $this->compt_ligne_perso = $result['compt_ligne_perso'];
+        $this->compt_wikidev = $result['compt_wikidev'];
+        $this->compt_compte_lie = $result['compt_compte_lie'];
+        $this->compt_quatre_perso = $result['compt_quatre_perso'];
+        $this->compt_der_perso_cod = $result['compt_der_perso_cod'];
+        $this->compt_fb = $result['compt_fb'];
+        $this->compt_twitter = $result['compt_twitter'];
+        $this->compt_google = $result['compt_google'];
+        $this->compt_frameless = $result['compt_frameless'];
         $this->compt_envoi_mail_frequence = $result['compt_envoi_mail_frequence'];
-        $this->compt_envoi_mail_dernier   = $result['compt_envoi_mail_dernier'];
-        $this->compt_type_quatrieme       = $result['compt_type_quatrieme'];
-        $this->compt_clef_forum           = $result['compt_clef_forum'];
-        $this->compt_validite_clef_forum  = $result['compt_validite_clef_forum'];
-        $this->compt_nombre_clef_forum    = $result['compt_nombre_clef_forum'];
-        $this->compt_phashword            = $result['compt_phashword'];
-        $this->compt_clef_reinit_mdp      = $result['compt_clef_reinit_mdp'];
-        $this->compt_passwd_hash          = $result['compt_passwd_hash'];
+        $this->compt_envoi_mail_dernier = $result['compt_envoi_mail_dernier'];
+        $this->compt_type_quatrieme = $result['compt_type_quatrieme'];
+        $this->compt_clef_forum = $result['compt_clef_forum'];
+        $this->compt_validite_clef_forum = $result['compt_validite_clef_forum'];
+        $this->compt_nombre_clef_forum = $result['compt_nombre_clef_forum'];
+        $this->compt_phashword = $result['compt_phashword'];
+        $this->compt_clef_reinit_mdp = $result['compt_clef_reinit_mdp'];
+        $this->compt_passwd_hash = $result['compt_passwd_hash'];
         return true;
+    }
+
+    function getByNom($nom)
+    {
+        $pdo = new bddpdo;
+        $req = "select compt_cod from compte where lower(compt_nom) = :nom";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(
+            array(
+                ":nom" => strtolower($nom)
+            ), $stmt
+        );
+        if(!$temp = $stmt->fetch())
+        {
+            return false;
+        }
+        else
+        {
+            return $this->charge($temp['compt_cod']);
+        }
+
     }
 
     public function __call($name, $arguments)
@@ -398,10 +419,10 @@ class compte
                 if (property_exists($this, substr($name, 6)))
                 {
                     $retour = array();
-                    $pdo    = new bddpdo;
-                    $req    = "SELECT compt_cod  FROM compte WHERE " . substr($name, 6) . " = ? ORDER BY compt_cod";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    $pdo = new bddpdo;
+                    $req = "SELECT compt_cod  FROM compte WHERE " . substr($name, 6) . " = ? ORDER BY compt_cod";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
                         $temp = new compte;
@@ -414,8 +435,7 @@ class compte
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6));
                 }
@@ -454,8 +474,7 @@ class compte
             }
             // on n'a pas fait de retour, on n'est donc pas bien authentifié
             return false;
-        }
-        else
+        } else
         {
             // password normal non vide
             // on est pas encore sur du crypté
@@ -463,7 +482,7 @@ class compte
             {
                 // on se met à jour pour utiliser le crypté pour la fois suivante
                 $this->compt_passwd_hash = crypt($this->compt_password);
-                $this->compt_password    = '';
+                $this->compt_password = '';
                 $this->stocke();
 
                 $this->updateDateLogin();
@@ -492,7 +511,7 @@ class compte
         if ($new)
         {
             $req
-                  = "INSERT INTO compte (
+                = "INSERT INTO compte (
                                         compt_nom,
                                         compt_password,
                                         compt_mail,
@@ -628,11 +647,10 @@ class compte
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req
-                  = "UPDATE compte
+                = "UPDATE compte
                     SET
                                 compt_nom = :compt_nom,
                                         compt_password = :compt_password,

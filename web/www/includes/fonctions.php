@@ -446,7 +446,7 @@ function genereClasse($table)
         }
     }
 
-
+    global $twig;
 
     $template = $twig->load('classes.twig');
 

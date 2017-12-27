@@ -19,6 +19,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="{{ HTTPS }}{{ URL }}/css/bootstrap.css" rel="stylesheet">
+    <link href="{{ HTTPS }}{{ URL }}/css/datatables.min.css" rel="stylesheet">
 
     {#<!-- Custom CSS -->
     <link href="{{ HTTPS }}{{ URL }}/css/simple-sidebar.css" rel="stylesheet">#}
@@ -292,7 +293,11 @@
 <script src="js/bootstrap.min.js"></script>
 
 <script src="js/advert.js"></script>
-
+<script src="js/jquery.validate.min.js"></script>
+<script src="js/additional-methods.js"></script>
+<script src="js/localization/messages_fr.js"></script>
+<script src="js/datatables.min.js"></script>
+{%  block postscripts %}
 
 <script>
     if (document.getElementById("tester") == undefined) {
@@ -304,6 +309,8 @@ Je sais à quel point la pub sur Internet peut être pénible, mais nous nous ef
 
 
 </script>
+
+{%  endblock %}
 
 
 </body>
