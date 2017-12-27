@@ -1213,6 +1213,9 @@ class perso
         {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
+            $renommee = new renommee();
+            $renommee->charge_by_valeur($temp->perso_renommee);
+            $temp->renommee = $renommee->renommee_libelle;
             $retour[] = $temp;
             unset($temp);
         }
