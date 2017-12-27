@@ -1223,6 +1223,10 @@ class perso
             $grenommee = new renommee_magie();
             $grenommee->charge_by_valeur($temp->perso_renommee_magie);
             $temp->grenommee = $grenommee->grenommee_libelle;
+            //
+            $renart = new renommee_artisanat();
+            $renart->charge_by_valeur($temp->perso_renommee_artisanat);
+            $temp->renart = $renart->renart_libelle;
             unset($temp);
         }
         return $retour;

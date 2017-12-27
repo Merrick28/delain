@@ -21,7 +21,7 @@
                 <td>{{ ligne.perso_nom }}</td>
                 <td>{{ ligne.renommee }}</td>
                 <td>{{ ligne.grenommee }}</td>
-                <td>Renommée artisanale</td>
+                <td>{{ ligne.renart }}</td>
                 <td>Karma</td>
                 <td>Nombre de monstres tués</td>
                 <td>Nombre d'aventuriers tués</td>
@@ -33,11 +33,11 @@
 
     </table>
     <div class="groupdiv">
-{% endblock %}
-{% block postscripts %}
-    <script>
-        $(document).ready(function () {
-            $('#classement_joueur').DataTable();
-        });
-    </script>
-{% endblock %}
+        {% endblock %}
+        {% block postscripts %}
+            <script>
+                $(document).ready(function () {
+                    $('#classement_joueur').DataTable();
+                });
+            </script>
+        {% endblock %}

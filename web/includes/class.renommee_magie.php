@@ -95,6 +95,10 @@ class renommee_magie
         }
     }
 
+    /**
+     * @param $valeur
+     * @throws Exception
+     */
     function charge_by_valeur($valeur)
     {
         $pdo = new bddpdo();
