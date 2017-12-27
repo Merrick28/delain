@@ -1,0 +1,42 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    <table id="classement_joueur" class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Renommée</th>
+            <th>Renommée magique</th>
+            <th>Renommée artisanale</th>
+            <th>Karma</th>
+            <th>Nombre de monstres tués</th>
+            <th>Nombre d'aventuriers tués</th>
+            <th>Nombre de morts</th>
+            <th>Nombre d'aventuriers tués en arène</th>
+            <th>Nombre de morts en arène</th>
+        </tr>
+        </thead>
+        {% for ligne in TAB_JOUEUR %}
+            <tr>
+                <td>{{ ligne.perso_nom }}</td>
+                <td>Renommée</td>
+                <td>Renommée magique</td>
+                <td>Renommée artisanale</td>
+                <td>Karma</td>
+                <td>Nombre de monstres tués</td>
+                <td>Nombre d'aventuriers tués</td>
+                <td>Nombre de morts</td>
+                <td>Nombre d'aventuriers tués en arène</td>
+                <td>Nombre de morts en arène</td>
+            </tr>
+        {% endfor %}
+
+    </table>
+
+{% endblock %}
+{% block postscripts %}
+    <script>
+        $(document).ready(function () {
+            $('#classement_joueur').DataTable();
+        });
+    </script>
+{% endblock %}

@@ -21,23 +21,23 @@ class perso
     var $perso_con_init;
     var $perso_sex;
     var $perso_race_cod;
-    var $perso_pv = 0;
+    var $perso_pv                   = 0;
     var $perso_pv_max;
     var $perso_dlt;
     var $perso_temps_tour;
     var $perso_email;
     var $perso_dcreat;
     var $perso_validation;
-    var $perso_actif = 'N';
-    var $perso_pa = 12;
+    var $perso_actif                = 'N';
+    var $perso_pa                   = 12;
     var $perso_der_connex;
-    var $perso_des_regen = 1;
-    var $perso_valeur_regen = 3;
-    var $perso_vue = 3;
-    var $perso_po = 0;
+    var $perso_des_regen            = 1;
+    var $perso_valeur_regen         = 3;
+    var $perso_vue                  = 3;
+    var $perso_po                   = 0;
     var $perso_nb_esquive;
-    var $perso_niveau = 1;
-    var $perso_type_perso = 1;
+    var $perso_niveau               = 1;
+    var $perso_type_perso           = 1;
     var $perso_amelioration_vue;
     var $perso_amelioration_regen;
     var $perso_amelioration_degats;
@@ -50,7 +50,7 @@ class perso
     var $perso_nb_mort;
     var $perso_nb_monstre_tue;
     var $perso_nb_joueur_tue;
-    var $perso_reputation = 0;
+    var $perso_reputation           = 0;
     var $perso_avatar;
     var $perso_kharma;
     var $perso_amel_deg_dex;
@@ -61,58 +61,58 @@ class perso
     var $perso_lower_perso_nom;
     var $perso_sta_combat;
     var $perso_sta_hors_combat;
-    var $perso_utl_pa_rest = 1;
-    var $perso_tangible = 'O';
-    var $perso_nb_tour_intangible = 0;
+    var $perso_utl_pa_rest          = 1;
+    var $perso_tangible             = 'O';
+    var $perso_nb_tour_intangible   = 0;
     var $perso_capa_repar;
-    var $perso_nb_amel_repar = 0;
+    var $perso_nb_amel_repar        = 0;
     var $perso_amelioration_nb_sort = 0;
-    var $perso_renommee_magie = 0;
-    var $perso_vampirisme = 0;
-    var $perso_niveau_vampire = 0;
+    var $perso_renommee_magie       = 0;
+    var $perso_vampirisme           = 0;
+    var $perso_niveau_vampire       = 0;
     var $perso_admin_echoppe;
-    var $perso_nb_amel_comp = 0;
-    var $perso_nb_receptacle = 0;
-    var $perso_nb_amel_chance_memo = 0;
-    var $perso_priere = 0;
+    var $perso_nb_amel_comp         = 0;
+    var $perso_nb_receptacle        = 0;
+    var $perso_nb_amel_chance_memo  = 0;
+    var $perso_priere               = 0;
     var $perso_dfin;
-    var $perso_px = 0;
-    var $perso_taille = 3;
-    var $perso_admin_echoppe_noir = 'N';
-    var $perso_use_repart_auto = 1;
-    var $perso_pnj = 0;
-    var $perso_redispatch = 'N';
-    var $perso_nb_redist = 0;
-    var $perso_mcom_cod = 0;
-    var $perso_nb_ch_mcom = 0;
-    var $perso_piq_rap_env = 1;
+    var $perso_px                   = 0;
+    var $perso_taille               = 3;
+    var $perso_admin_echoppe_noir   = 'N';
+    var $perso_use_repart_auto      = 1;
+    var $perso_pnj                  = 0;
+    var $perso_redispatch           = 'N';
+    var $perso_nb_redist            = 0;
+    var $perso_mcom_cod             = 0;
+    var $perso_nb_ch_mcom           = 0;
+    var $perso_piq_rap_env          = 1;
     var $perso_ancien_avatar;
-    var $perso_nb_crap = 0;
-    var $perso_nb_embr = 0;
-    var $perso_crapaud = 0;
+    var $perso_nb_crap              = 0;
+    var $perso_nb_embr              = 0;
+    var $perso_crapaud              = 0;
     var $perso_dchange_mcom;
-    var $perso_prestige = 0;
-    var $perso_av_mod = 0;
+    var $perso_prestige             = 0;
+    var $perso_av_mod               = 0;
     var $perso_mail_inactif_envoye;
     var $perso_test;
-    var $perso_nb_spe = 1;
-    var $perso_compt_pvp = 0;
+    var $perso_nb_spe               = 1;
+    var $perso_compt_pvp            = 0;
     var $perso_dmodif_compt_pvp;
-    var $perso_effets_auto = 1;
+    var $perso_effets_auto          = 1;
     var $perso_quete;
-    var $perso_tuteur = false;
-    var $perso_voie_magique = 0;
-    var $perso_energie = 0;
+    var $perso_tuteur               = false;
+    var $perso_voie_magique         = 0;
+    var $perso_energie              = 0;
     var $perso_desc_long;
-    var $perso_nb_mort_arene = 0;
-    var $perso_nb_joueur_tue_arene = 0;
+    var $perso_nb_mort_arene        = 0;
+    var $perso_nb_joueur_tue_arene  = 0;
     var $perso_dfin_tangible;
-    var $perso_renommee_artisanat = 0;
-    var $perso_avatar_version = 0;
+    var $perso_renommee_artisanat   = 0;
+    var $perso_avatar_version       = 0;
     var $perso_etage_origine;
     var $perso_monstre_attaque_monstre;
-    var $perso_mortel = NULL;
-    var $alterego = 0;
+    var $perso_mortel               = NULL;
+    var $alterego                   = 0;
     //
     var $position;
     var $guilde;
@@ -142,7 +142,8 @@ class perso
         $pdo = new bddpdo;
         if ($new)
         {
-            $req  = "insert into perso (
+            $req
+                  = "insert into perso (
             perso_for,
             perso_dex,
             perso_int,
@@ -352,117 +353,117 @@ class perso
     returning perso_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perso_for" => $this->perso_for,
-                ":perso_dex" => $this->perso_dex,
-                ":perso_int" => $this->perso_int,
-                ":perso_con" => $this->perso_con,
-                ":perso_for_init" => $this->perso_for_init,
-                ":perso_dex_init" => $this->perso_dex_init,
-                ":perso_int_init" => $this->perso_int_init,
-                ":perso_con_init" => $this->perso_con_init,
-                ":perso_sex" => $this->perso_sex,
-                ":perso_race_cod" => $this->perso_race_cod,
-                ":perso_pv" => $this->perso_pv,
-                ":perso_pv_max" => $this->perso_pv_max,
-                ":perso_dlt" => $this->perso_dlt,
-                ":perso_temps_tour" => $this->perso_temps_tour,
-                ":perso_email" => $this->perso_email,
-                ":perso_dcreat" => $this->perso_dcreat,
-                ":perso_validation" => $this->perso_validation,
-                ":perso_actif" => $this->perso_actif,
-                ":perso_pa" => $this->perso_pa,
-                ":perso_der_connex" => $this->perso_der_connex,
-                ":perso_des_regen" => $this->perso_des_regen,
-                ":perso_valeur_regen" => $this->perso_valeur_regen,
-                ":perso_vue" => $this->perso_vue,
-                ":perso_po" => $this->perso_po,
-                ":perso_nb_esquive" => $this->perso_nb_esquive,
-                ":perso_niveau" => $this->perso_niveau,
-                ":perso_type_perso" => $this->perso_type_perso,
-                ":perso_amelioration_vue" => $this->perso_amelioration_vue,
-                ":perso_amelioration_regen" => $this->perso_amelioration_regen,
-                ":perso_amelioration_degats" => $this->perso_amelioration_degats,
-                ":perso_amelioration_armure" => $this->perso_amelioration_armure,
-                ":perso_nb_des_degats" => $this->perso_nb_des_degats,
-                ":perso_val_des_degats" => $this->perso_val_des_degats,
-                ":perso_cible" => $this->perso_cible,
-                ":perso_enc_max" => $this->perso_enc_max,
-                ":perso_description" => $this->perso_description,
-                ":perso_nb_mort" => $this->perso_nb_mort,
-                ":perso_nb_monstre_tue" => $this->perso_nb_monstre_tue,
-                ":perso_nb_joueur_tue" => $this->perso_nb_joueur_tue,
-                ":perso_reputation" => $this->perso_reputation,
-                ":perso_avatar" => $this->perso_avatar,
-                ":perso_kharma" => $this->perso_kharma,
-                ":perso_amel_deg_dex" => $this->perso_amel_deg_dex,
-                ":perso_nom" => $this->perso_nom,
-                ":perso_gmon_cod" => $this->perso_gmon_cod,
-                ":perso_renommee" => $this->perso_renommee,
-                ":perso_dirige_admin" => $this->perso_dirige_admin,
-                ":perso_lower_perso_nom" => $this->perso_lower_perso_nom,
-                ":perso_sta_combat" => $this->perso_sta_combat,
-                ":perso_sta_hors_combat" => $this->perso_sta_hors_combat,
-                ":perso_utl_pa_rest" => $this->perso_utl_pa_rest,
-                ":perso_tangible" => $this->perso_tangible,
-                ":perso_nb_tour_intangible" => $this->perso_nb_tour_intangible,
-                ":perso_capa_repar" => $this->perso_capa_repar,
-                ":perso_nb_amel_repar" => $this->perso_nb_amel_repar,
-                ":perso_amelioration_nb_sort" => $this->perso_amelioration_nb_sort,
-                ":perso_renommee_magie" => $this->perso_renommee_magie,
-                ":perso_vampirisme" => $this->perso_vampirisme,
-                ":perso_niveau_vampire" => $this->perso_niveau_vampire,
-                ":perso_admin_echoppe" => $this->perso_admin_echoppe,
-                ":perso_nb_amel_comp" => $this->perso_nb_amel_comp,
-                ":perso_nb_receptacle" => $this->perso_nb_receptacle,
-                ":perso_nb_amel_chance_memo" => $this->perso_nb_amel_chance_memo,
-                ":perso_priere" => $this->perso_priere,
-                ":perso_dfin" => $this->perso_dfin,
-                ":perso_px" => $this->perso_px,
-                ":perso_taille" => $this->perso_taille,
-                ":perso_admin_echoppe_noir" => $this->perso_admin_echoppe_noir,
-                ":perso_use_repart_auto" => $this->perso_use_repart_auto,
-                ":perso_pnj" => $this->perso_pnj,
-                ":perso_redispatch" => $this->perso_redispatch,
-                ":perso_nb_redist" => $this->perso_nb_redist,
-                ":perso_mcom_cod" => $this->perso_mcom_cod,
-                ":perso_nb_ch_mcom" => $this->perso_nb_ch_mcom,
-                ":perso_piq_rap_env" => $this->perso_piq_rap_env,
-                ":perso_ancien_avatar" => $this->perso_ancien_avatar,
-                ":perso_nb_crap" => $this->perso_nb_crap,
-                ":perso_nb_embr" => $this->perso_nb_embr,
-                ":perso_crapaud" => $this->perso_crapaud,
-                ":perso_dchange_mcom" => $this->perso_dchange_mcom,
-                ":perso_prestige" => $this->perso_prestige,
-                ":perso_av_mod" => $this->perso_av_mod,
-                ":perso_mail_inactif_envoye" => $this->perso_mail_inactif_envoye,
-                ":perso_test" => $this->perso_test,
-                ":perso_nb_spe" => $this->perso_nb_spe,
-                ":perso_compt_pvp" => $this->perso_compt_pvp,
-                ":perso_dmodif_compt_pvp" => $this->perso_dmodif_compt_pvp,
-                ":perso_effets_auto" => $this->perso_effets_auto,
-                ":perso_quete" => $this->perso_quete,
-                ":perso_tuteur" => $this->perso_tuteur,
-                ":perso_voie_magique" => $this->perso_voie_magique,
-                ":perso_energie" => $this->perso_energie,
-                ":perso_desc_long" => $this->perso_desc_long,
-                ":perso_nb_mort_arene" => $this->perso_nb_mort_arene,
-                ":perso_nb_joueur_tue_arene" => $this->perso_nb_joueur_tue_arene,
-                ":perso_dfin_tangible" => $this->perso_dfin_tangible,
-                ":perso_renommee_artisanat" => $this->perso_renommee_artisanat,
-                ":perso_avatar_version" => $this->perso_avatar_version,
-                ":perso_etage_origine" => $this->perso_etage_origine,
+                ":perso_for"                     => $this->perso_for,
+                ":perso_dex"                     => $this->perso_dex,
+                ":perso_int"                     => $this->perso_int,
+                ":perso_con"                     => $this->perso_con,
+                ":perso_for_init"                => $this->perso_for_init,
+                ":perso_dex_init"                => $this->perso_dex_init,
+                ":perso_int_init"                => $this->perso_int_init,
+                ":perso_con_init"                => $this->perso_con_init,
+                ":perso_sex"                     => $this->perso_sex,
+                ":perso_race_cod"                => $this->perso_race_cod,
+                ":perso_pv"                      => $this->perso_pv,
+                ":perso_pv_max"                  => $this->perso_pv_max,
+                ":perso_dlt"                     => $this->perso_dlt,
+                ":perso_temps_tour"              => $this->perso_temps_tour,
+                ":perso_email"                   => $this->perso_email,
+                ":perso_dcreat"                  => $this->perso_dcreat,
+                ":perso_validation"              => $this->perso_validation,
+                ":perso_actif"                   => $this->perso_actif,
+                ":perso_pa"                      => $this->perso_pa,
+                ":perso_der_connex"              => $this->perso_der_connex,
+                ":perso_des_regen"               => $this->perso_des_regen,
+                ":perso_valeur_regen"            => $this->perso_valeur_regen,
+                ":perso_vue"                     => $this->perso_vue,
+                ":perso_po"                      => $this->perso_po,
+                ":perso_nb_esquive"              => $this->perso_nb_esquive,
+                ":perso_niveau"                  => $this->perso_niveau,
+                ":perso_type_perso"              => $this->perso_type_perso,
+                ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
+                ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
+                ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
+                ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
+                ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
+                ":perso_val_des_degats"          => $this->perso_val_des_degats,
+                ":perso_cible"                   => $this->perso_cible,
+                ":perso_enc_max"                 => $this->perso_enc_max,
+                ":perso_description"             => $this->perso_description,
+                ":perso_nb_mort"                 => $this->perso_nb_mort,
+                ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
+                ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
+                ":perso_reputation"              => $this->perso_reputation,
+                ":perso_avatar"                  => $this->perso_avatar,
+                ":perso_kharma"                  => $this->perso_kharma,
+                ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
+                ":perso_nom"                     => $this->perso_nom,
+                ":perso_gmon_cod"                => $this->perso_gmon_cod,
+                ":perso_renommee"                => $this->perso_renommee,
+                ":perso_dirige_admin"            => $this->perso_dirige_admin,
+                ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
+                ":perso_sta_combat"              => $this->perso_sta_combat,
+                ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
+                ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
+                ":perso_tangible"                => $this->perso_tangible,
+                ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
+                ":perso_capa_repar"              => $this->perso_capa_repar,
+                ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
+                ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
+                ":perso_renommee_magie"          => $this->perso_renommee_magie,
+                ":perso_vampirisme"              => $this->perso_vampirisme,
+                ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
+                ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
+                ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
+                ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
+                ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
+                ":perso_priere"                  => $this->perso_priere,
+                ":perso_dfin"                    => $this->perso_dfin,
+                ":perso_px"                      => $this->perso_px,
+                ":perso_taille"                  => $this->perso_taille,
+                ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
+                ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
+                ":perso_pnj"                     => $this->perso_pnj,
+                ":perso_redispatch"              => $this->perso_redispatch,
+                ":perso_nb_redist"               => $this->perso_nb_redist,
+                ":perso_mcom_cod"                => $this->perso_mcom_cod,
+                ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
+                ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
+                ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
+                ":perso_nb_crap"                 => $this->perso_nb_crap,
+                ":perso_nb_embr"                 => $this->perso_nb_embr,
+                ":perso_crapaud"                 => $this->perso_crapaud,
+                ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
+                ":perso_prestige"                => $this->perso_prestige,
+                ":perso_av_mod"                  => $this->perso_av_mod,
+                ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
+                ":perso_test"                    => $this->perso_test,
+                ":perso_nb_spe"                  => $this->perso_nb_spe,
+                ":perso_compt_pvp"               => $this->perso_compt_pvp,
+                ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
+                ":perso_effets_auto"             => $this->perso_effets_auto,
+                ":perso_quete"                   => $this->perso_quete,
+                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_voie_magique"            => $this->perso_voie_magique,
+                ":perso_energie"                 => $this->perso_energie,
+                ":perso_desc_long"               => $this->perso_desc_long,
+                ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
+                ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
+                ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
+                ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
+                ":perso_avatar_version"          => $this->perso_avatar_version,
+                ":perso_etage_origine"           => $this->perso_etage_origine,
                 ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
-                ":perso_mortel" => $this->perso_mortel,
-                ":alterego" => $this->alterego,
+                ":perso_mortel"                  => $this->perso_mortel,
+                ":alterego"                      => $this->alterego,
             ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
-            $req  = "update perso
+            $req
+                  = "update perso
                     set
             perso_for = :perso_for,
             perso_dex = :perso_dex,
@@ -568,109 +569,109 @@ class perso
             alterego = :alterego                        where perso_cod = :perso_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perso_cod" => $this->perso_cod,
-                ":perso_for" => $this->perso_for,
-                ":perso_dex" => $this->perso_dex,
-                ":perso_int" => $this->perso_int,
-                ":perso_con" => $this->perso_con,
-                ":perso_for_init" => $this->perso_for_init,
-                ":perso_dex_init" => $this->perso_dex_init,
-                ":perso_int_init" => $this->perso_int_init,
-                ":perso_con_init" => $this->perso_con_init,
-                ":perso_sex" => $this->perso_sex,
-                ":perso_race_cod" => $this->perso_race_cod,
-                ":perso_pv" => $this->perso_pv,
-                ":perso_pv_max" => $this->perso_pv_max,
-                ":perso_dlt" => $this->perso_dlt,
-                ":perso_temps_tour" => $this->perso_temps_tour,
-                ":perso_email" => $this->perso_email,
-                ":perso_dcreat" => $this->perso_dcreat,
-                ":perso_validation" => $this->perso_validation,
-                ":perso_actif" => $this->perso_actif,
-                ":perso_pa" => $this->perso_pa,
-                ":perso_der_connex" => $this->perso_der_connex,
-                ":perso_des_regen" => $this->perso_des_regen,
-                ":perso_valeur_regen" => $this->perso_valeur_regen,
-                ":perso_vue" => $this->perso_vue,
-                ":perso_po" => $this->perso_po,
-                ":perso_nb_esquive" => $this->perso_nb_esquive,
-                ":perso_niveau" => $this->perso_niveau,
-                ":perso_type_perso" => $this->perso_type_perso,
-                ":perso_amelioration_vue" => $this->perso_amelioration_vue,
-                ":perso_amelioration_regen" => $this->perso_amelioration_regen,
-                ":perso_amelioration_degats" => $this->perso_amelioration_degats,
-                ":perso_amelioration_armure" => $this->perso_amelioration_armure,
-                ":perso_nb_des_degats" => $this->perso_nb_des_degats,
-                ":perso_val_des_degats" => $this->perso_val_des_degats,
-                ":perso_cible" => $this->perso_cible,
-                ":perso_enc_max" => $this->perso_enc_max,
-                ":perso_description" => $this->perso_description,
-                ":perso_nb_mort" => $this->perso_nb_mort,
-                ":perso_nb_monstre_tue" => $this->perso_nb_monstre_tue,
-                ":perso_nb_joueur_tue" => $this->perso_nb_joueur_tue,
-                ":perso_reputation" => $this->perso_reputation,
-                ":perso_avatar" => $this->perso_avatar,
-                ":perso_kharma" => $this->perso_kharma,
-                ":perso_amel_deg_dex" => $this->perso_amel_deg_dex,
-                ":perso_nom" => $this->perso_nom,
-                ":perso_gmon_cod" => $this->perso_gmon_cod,
-                ":perso_renommee" => $this->perso_renommee,
-                ":perso_dirige_admin" => $this->perso_dirige_admin,
-                ":perso_lower_perso_nom" => $this->perso_lower_perso_nom,
-                ":perso_sta_combat" => $this->perso_sta_combat,
-                ":perso_sta_hors_combat" => $this->perso_sta_hors_combat,
-                ":perso_utl_pa_rest" => $this->perso_utl_pa_rest,
-                ":perso_tangible" => $this->perso_tangible,
-                ":perso_nb_tour_intangible" => $this->perso_nb_tour_intangible,
-                ":perso_capa_repar" => $this->perso_capa_repar,
-                ":perso_nb_amel_repar" => $this->perso_nb_amel_repar,
-                ":perso_amelioration_nb_sort" => $this->perso_amelioration_nb_sort,
-                ":perso_renommee_magie" => $this->perso_renommee_magie,
-                ":perso_vampirisme" => $this->perso_vampirisme,
-                ":perso_niveau_vampire" => $this->perso_niveau_vampire,
-                ":perso_admin_echoppe" => $this->perso_admin_echoppe,
-                ":perso_nb_amel_comp" => $this->perso_nb_amel_comp,
-                ":perso_nb_receptacle" => $this->perso_nb_receptacle,
-                ":perso_nb_amel_chance_memo" => $this->perso_nb_amel_chance_memo,
-                ":perso_priere" => $this->perso_priere,
-                ":perso_dfin" => $this->perso_dfin,
-                ":perso_px" => $this->perso_px,
-                ":perso_taille" => $this->perso_taille,
-                ":perso_admin_echoppe_noir" => $this->perso_admin_echoppe_noir,
-                ":perso_use_repart_auto" => $this->perso_use_repart_auto,
-                ":perso_pnj" => $this->perso_pnj,
-                ":perso_redispatch" => $this->perso_redispatch,
-                ":perso_nb_redist" => $this->perso_nb_redist,
-                ":perso_mcom_cod" => $this->perso_mcom_cod,
-                ":perso_nb_ch_mcom" => $this->perso_nb_ch_mcom,
-                ":perso_piq_rap_env" => $this->perso_piq_rap_env,
-                ":perso_ancien_avatar" => $this->perso_ancien_avatar,
-                ":perso_nb_crap" => $this->perso_nb_crap,
-                ":perso_nb_embr" => $this->perso_nb_embr,
-                ":perso_crapaud" => $this->perso_crapaud,
-                ":perso_dchange_mcom" => $this->perso_dchange_mcom,
-                ":perso_prestige" => $this->perso_prestige,
-                ":perso_av_mod" => $this->perso_av_mod,
-                ":perso_mail_inactif_envoye" => $this->perso_mail_inactif_envoye,
-                ":perso_test" => $this->perso_test,
-                ":perso_nb_spe" => $this->perso_nb_spe,
-                ":perso_compt_pvp" => $this->perso_compt_pvp,
-                ":perso_dmodif_compt_pvp" => $this->perso_dmodif_compt_pvp,
-                ":perso_effets_auto" => $this->perso_effets_auto,
-                ":perso_quete" => $this->perso_quete,
-                ":perso_tuteur" => $this->perso_tuteur,
-                ":perso_voie_magique" => $this->perso_voie_magique,
-                ":perso_energie" => $this->perso_energie,
-                ":perso_desc_long" => $this->perso_desc_long,
-                ":perso_nb_mort_arene" => $this->perso_nb_mort_arene,
-                ":perso_nb_joueur_tue_arene" => $this->perso_nb_joueur_tue_arene,
-                ":perso_dfin_tangible" => $this->perso_dfin_tangible,
-                ":perso_renommee_artisanat" => $this->perso_renommee_artisanat,
-                ":perso_avatar_version" => $this->perso_avatar_version,
-                ":perso_etage_origine" => $this->perso_etage_origine,
+                ":perso_cod"                     => $this->perso_cod,
+                ":perso_for"                     => $this->perso_for,
+                ":perso_dex"                     => $this->perso_dex,
+                ":perso_int"                     => $this->perso_int,
+                ":perso_con"                     => $this->perso_con,
+                ":perso_for_init"                => $this->perso_for_init,
+                ":perso_dex_init"                => $this->perso_dex_init,
+                ":perso_int_init"                => $this->perso_int_init,
+                ":perso_con_init"                => $this->perso_con_init,
+                ":perso_sex"                     => $this->perso_sex,
+                ":perso_race_cod"                => $this->perso_race_cod,
+                ":perso_pv"                      => $this->perso_pv,
+                ":perso_pv_max"                  => $this->perso_pv_max,
+                ":perso_dlt"                     => $this->perso_dlt,
+                ":perso_temps_tour"              => $this->perso_temps_tour,
+                ":perso_email"                   => $this->perso_email,
+                ":perso_dcreat"                  => $this->perso_dcreat,
+                ":perso_validation"              => $this->perso_validation,
+                ":perso_actif"                   => $this->perso_actif,
+                ":perso_pa"                      => $this->perso_pa,
+                ":perso_der_connex"              => $this->perso_der_connex,
+                ":perso_des_regen"               => $this->perso_des_regen,
+                ":perso_valeur_regen"            => $this->perso_valeur_regen,
+                ":perso_vue"                     => $this->perso_vue,
+                ":perso_po"                      => $this->perso_po,
+                ":perso_nb_esquive"              => $this->perso_nb_esquive,
+                ":perso_niveau"                  => $this->perso_niveau,
+                ":perso_type_perso"              => $this->perso_type_perso,
+                ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
+                ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
+                ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
+                ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
+                ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
+                ":perso_val_des_degats"          => $this->perso_val_des_degats,
+                ":perso_cible"                   => $this->perso_cible,
+                ":perso_enc_max"                 => $this->perso_enc_max,
+                ":perso_description"             => $this->perso_description,
+                ":perso_nb_mort"                 => $this->perso_nb_mort,
+                ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
+                ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
+                ":perso_reputation"              => $this->perso_reputation,
+                ":perso_avatar"                  => $this->perso_avatar,
+                ":perso_kharma"                  => $this->perso_kharma,
+                ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
+                ":perso_nom"                     => $this->perso_nom,
+                ":perso_gmon_cod"                => $this->perso_gmon_cod,
+                ":perso_renommee"                => $this->perso_renommee,
+                ":perso_dirige_admin"            => $this->perso_dirige_admin,
+                ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
+                ":perso_sta_combat"              => $this->perso_sta_combat,
+                ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
+                ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
+                ":perso_tangible"                => $this->perso_tangible,
+                ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
+                ":perso_capa_repar"              => $this->perso_capa_repar,
+                ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
+                ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
+                ":perso_renommee_magie"          => $this->perso_renommee_magie,
+                ":perso_vampirisme"              => $this->perso_vampirisme,
+                ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
+                ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
+                ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
+                ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
+                ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
+                ":perso_priere"                  => $this->perso_priere,
+                ":perso_dfin"                    => $this->perso_dfin,
+                ":perso_px"                      => $this->perso_px,
+                ":perso_taille"                  => $this->perso_taille,
+                ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
+                ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
+                ":perso_pnj"                     => $this->perso_pnj,
+                ":perso_redispatch"              => $this->perso_redispatch,
+                ":perso_nb_redist"               => $this->perso_nb_redist,
+                ":perso_mcom_cod"                => $this->perso_mcom_cod,
+                ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
+                ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
+                ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
+                ":perso_nb_crap"                 => $this->perso_nb_crap,
+                ":perso_nb_embr"                 => $this->perso_nb_embr,
+                ":perso_crapaud"                 => $this->perso_crapaud,
+                ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
+                ":perso_prestige"                => $this->perso_prestige,
+                ":perso_av_mod"                  => $this->perso_av_mod,
+                ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
+                ":perso_test"                    => $this->perso_test,
+                ":perso_nb_spe"                  => $this->perso_nb_spe,
+                ":perso_compt_pvp"               => $this->perso_compt_pvp,
+                ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
+                ":perso_effets_auto"             => $this->perso_effets_auto,
+                ":perso_quete"                   => $this->perso_quete,
+                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_voie_magique"            => $this->perso_voie_magique,
+                ":perso_energie"                 => $this->perso_energie,
+                ":perso_desc_long"               => $this->perso_desc_long,
+                ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
+                ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
+                ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
+                ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
+                ":perso_avatar_version"          => $this->perso_avatar_version,
+                ":perso_etage_origine"           => $this->perso_etage_origine,
                 ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
-                ":perso_mortel" => $this->perso_mortel,
-                ":alterego" => $this->alterego,
+                ":perso_mortel"                  => $this->perso_mortel,
+                ":alterego"                      => $this->alterego,
             ), $stmt);
         }
     }
@@ -897,7 +898,7 @@ class perso
         $pos->charge($ppos->ppos_pos_cod);
         $etage = new etage();
         $etage->getByNumero($pos->pos_etage);
-        $retour['pos'] = $pos;
+        $retour['pos']   = $pos;
         $retour['etage'] = $etage;
         return $retour;
     }
@@ -982,8 +983,7 @@ class perso
         if ($this->perso_pv_max == 0)
         {
             $hp = 0;
-        }
-        else
+        } else
         {
             $hp = $this->perso_pv / $this->perso_pv_max;
         }
@@ -1164,7 +1164,8 @@ class perso
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
 
-        $req    = 'select count(perso_cod) as nombre from perso,perso_position
+        $req
+                = 'select count(perso_cod) as nombre from perso,perso_position
 			where ppos_pos_cod = ?
 				and perso_quete in (\'quete_ratier.php\',\'enchanteur.php\',\'quete_alchimiste.php\',\'quete_chasseur.php\',\'quete_dispensaire.php\',\'quete_dame_cygne.php\',\'quete_forgeron.php\',\'quete_groquik.php\')
 				and perso_cod = ppos_perso_cod';
@@ -1191,6 +1192,31 @@ class perso
             return $detail;
         }
         return false;
+    }
+
+    function getPersosActifs($type_joueur = 1)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        //$req_joueur = "select lower(perso_nom) as minusc,perso_cod,perso_nom,perso_nb_joueur_tue,perso_nb_monstre_tue,perso_nb_mort,get_renommee(perso_renommee) as renommee,get_karma(perso_kharma)as karma,perso_renommee,perso_kharma,get_renommee_magie(perso_renommee_magie) as renommee_magie,perso_renommee_magie,perso_nb_joueur_tue_arene,perso_nb_mort_arene, get_renommee_artisanat(perso_renommee_artisanat) as renommee_artisanat ";
+        $req
+              = "select perso_cod
+          from perso 
+          where perso_actif = 'O' 
+          and perso_type_perso = :type_joueur 
+          and perso_cod not in (1,2,3) and perso_pnj != 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":type_jouer" => $type_joueur
+        ), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result["perso_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
     }
 
     function is_lieu()
@@ -1337,7 +1363,8 @@ class perso
     function sort_lvl5()
     {
         $pdo    = new bddpdo;
-        $req    = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts 
+        $req
+                = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts 
             where perso_cod = pnbst_perso_cod 
             and pnbst_sort_cod = sort_cod 
             and sort_niveau >= 5 
@@ -1379,17 +1406,18 @@ class perso
 
     function get_guilde()
     {
-        $pdo = new bddpdo();
-        $req = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
+        $pdo  = new bddpdo();
+        $req
+              = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
             and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->perso_cod),$stmt);
-        if(!$result = $stmt->fetch())
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch())
         {
             return false;
         }
         $guilde = new guilde();
-        if(!$guilde->charge($result['pguilde_guilde_cod']))
+        if (!$guilde->charge($result['pguilde_guilde_cod']))
         {
             return false;
         }
@@ -1407,8 +1435,7 @@ class perso
         if ($this->perso_avatar == '')
         {
             $this->avatar = G_IMAGES . $this->perso_race_cod . "_" . $this->perso_sex . ".png";
-        }
-        else
+        } else
         {
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
         }
@@ -1416,19 +1443,18 @@ class perso
         try
         {
             $size = getimagesize($this->avatar);
-            if($size !== false)
+            if ($size !== false)
             {
                 $this->avatar_largeur = $size[0];
                 $this->avatar_hauteur = $size[1];
             }
-        }
-        catch (Exception $e)
+        } catch (Exception $e)
         {
             unset($e);
         }
 
         $this->barre_divine = -1;
-        if($this->perso_gmon_cod == 441)
+        if ($this->perso_gmon_cod == 441)
         {
             $barre_divine = floor(($this->energie_divine() / 200) * 10) * 10;
             if ($barre_divine >= 100)
@@ -1475,8 +1501,7 @@ class perso
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6));
                 }
