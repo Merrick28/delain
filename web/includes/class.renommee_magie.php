@@ -28,7 +28,7 @@ class renommee_magie
     function charge($code)
     {
         $pdo  = new bddpdo;
-        $req  = "select * from renommee_magie where  = ?";
+        $req  = "select * from renommee_magie where grenommee_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
@@ -64,7 +64,7 @@ class renommee_magie
                         :grenommee_min,
                         :grenommee_max,
                         :grenommee_libelle                        )
-    returning  as id";
+    returning grenommee_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":grenommee_cod"     => $this->grenommee_cod,
