@@ -3,6 +3,7 @@
 function error_validation($message='Compte non trouvé ou code inccorect')
 {
     global $twig;
+    global $options_twig_defaut;
     $template = $twig->load('validation_compte2.twig');
     $options_twig = array(
         'ERROR_MESSAGE' => $message
