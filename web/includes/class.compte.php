@@ -393,11 +393,11 @@ class compte
     function getByNom($nom)
     {
         $pdo = new bddpdo;
-        $req = "select compt_cod from compte where compt_nom = :nom";
+        $req = "select compt_cod from compte where lower(compt_nom) = :nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(
             array(
-                ":nom" => $nom
+                ":nom" => strtolower($nom)
             ), $stmt
         );
         if(!$temp = $stmt->fetch())
