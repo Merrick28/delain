@@ -120,7 +120,7 @@ class renommee
           and renommee_max > :valeur";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":valeur" => $valeur
+            ":valeur" => floor($valeur)
         ),$stmt);
         $result = $stmt->fetch();
         $this->charge($result['renommee_cod']);
