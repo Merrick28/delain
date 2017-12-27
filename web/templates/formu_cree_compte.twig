@@ -1,7 +1,12 @@
 {% extends 'index.twig' %}
 {% block contenu %}
+    {% if ERROR_MESSAGE is defined %}
+        <div class="alert alert-danger">
+            {%  ERROR_MESSAGE %}
+        </div>
+    {% endif %}
     <div class="groupdiv">
-        <FORM method="post" action="formu_cree_compte2.php" id="formuperso1" OnSubmit="return verifform()">
+        <FORM method="post" action="formu_cree_compte2.php" id="formuperso1">
             <div class="form-group row form-group-delain">
                 <label for="mail" class="col-sm-2 col-form-label">Adresse e-mail</label>
                 <div class="col-sm-10">
@@ -37,7 +42,8 @@
                 <div class="col-sm-10">
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input class="form-check-input" type="checkbox" name="regles" id="regles" required> Je
+                            <input class="form-check-input" type="checkbox" name="regles" id="regles" value="1"
+                                   required> Je
                             certifie avoir lu la <a href="charte.php" target="_blank">charte des joueurs</a> et
                             l'accepter.
                         </label>

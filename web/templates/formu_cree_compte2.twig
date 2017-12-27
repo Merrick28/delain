@@ -1,0 +1,14 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    {% if ERROR_MESSAGE is defined %}
+        <div class="alert alert-danger">
+            {%  ERROR_MESSAGE %}
+        </div>
+
+    {%  else %}
+        Un mail vous a été adressé à l’adresse {{ MAIL }} pour validation
+    {% endif %}
+
+{% endblock %}
+{% block postscripts %}
+{% endblock %}
