@@ -19,15 +19,15 @@
         {% for ligne in TAB_JOUEUR %}
             <tr>
                 <td>{{ ligne.perso_nom }}</td>
-                <td>{{ ligne.renommee }}</td>
-                <td>{{ ligne.grenommee }}</td>
-                <td>{{ ligne.renart }}</td>
-                <td>Karma</td>
-                <td>Nombre de monstres tués</td>
-                <td>Nombre d'aventuriers tués</td>
-                <td>Nombre de morts</td>
-                <td>Nombre d'aventuriers tués en arène</td>
-                <td>Nombre de morts en arène</td>
+                <td><span style="display: none">{{ ligne.perso_renommee }}</span>{{ ligne.renommee }}</td>
+                <td><span style="display: none">{{ ligne.perso_renommee_magie }}</span>{{ ligne.grenommee }}</td>
+                <td><span style="display: none">{{ ligne.perso_renommee_artisanat }}</span>{{ ligne.renart }}</td>
+                <td><span style="display: none">{{ ligne.perso_kharma }}</span>{{ ligne.karma }}</td>
+                <td>{{  ligne.perso_nb_monstre_tue }}</td>
+                <td>{{ ligne.perso_nb_joueur_tue }}</td>
+                <td>{{  ligne.perso_nb_mort }}</td>
+                <td>{{ ligne.perso_nb_joueur_tue_arene }}</td>
+                <td>{{ ligne.perso_nb_mort_arene }}</td>
             </tr>
         {% endfor %}
 
