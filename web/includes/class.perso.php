@@ -1207,7 +1207,7 @@ class perso
           and perso_cod not in (1,2,3) and perso_pnj != 1";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":type_jouer" => $type_joueur
+            ":type_joueur" => $type_joueur
         ), $stmt);
         while ($result = $stmt->fetch())
         {
