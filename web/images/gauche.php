@@ -9,13 +9,13 @@
 
 	</head>
 	<body>
-	<!--Code à insérer CibleClick : 100%CPM --><script language="JavaScript" src="http://www.cibleclick.com/cibles/banniere/script.cfm/script.js?site_id=232040510&friend_id=443102863&banniere_id=12195"></script><!-- fin du Code à insérer CibleClick : 100%CPM -->
+	<!--Code ï¿½ insï¿½rer CibleClick : 100%CPM --><script language="JavaScript" src="http://www.cibleclick.com/cibles/banniere/script.cfm/script.js?site_id=232040510&friend_id=443102863&banniere_id=12195"></script><!-- fin du Code ï¿½ insï¿½rer CibleClick : 100%CPM -->
 <?
 $aff_pub = 0;
 if ($aff_pub == 1)
 {
 	?>
-<!--Code à insérer CibleClick : Casino Tropez --><script language="JavaScript" src="http://www.cibleclick.com/cibles/banniere/script.cfm/script.js?site_id=949563284&friend_id=443102863&banniere_id=16611"></script><!-- fin du Code à insérer CibleClick : Casino Tropez -->	</form>
+<!--Code ï¿½ insï¿½rer CibleClick : Casino Tropez --><script language="JavaScript" src="http://www.cibleclick.com/cibles/banniere/script.cfm/script.js?site_id=949563284&friend_id=443102863&banniere_id=16611"></script><!-- fin du Code ï¿½ insï¿½rer CibleClick : Casino Tropez -->	</form>
 	<?
 }
 ?>
@@ -31,31 +31,31 @@ if ($aff_pub == 1)
 			<a href="faq.php">FAQ</a>
 		</p>
 		<p class="texteMenu">
-			<a href="formu_cree_compte.php">Créer un compte</a><br>
+			<a href="formu_cree_compte.php">Crï¿½er un compte</a><br>
 			<a href="login2.php">Identification</a><br>
-			<a href="doc/aide.php">Comment débuter ?</a>
+			<a href="doc/aide.php">Comment dï¿½buter ?</a>
 		</p>
 		<p class="texteMenu">
 			<a href="histoire.php">L'histoire</a><br>
-			<a href="regles/regles.php">Les règles</a><br>
+			<a href="regles/regles.php">Les rï¿½gles</a><br>
 			<a href="pack.php">Le pack graphique</a><br>
 			<a href="news_rss.php"><img src="images/rss.gif" border="0"></a>
 		</p>
 		<p class="texteMenu">
 			<a href="statistiques.php">Statistiques</a><br>
-			<a href="geo.php">Où êtes vous ?</a><br>
+			<a href="geo.php">Oï¿½ ï¿½tes vous ?</a><br>
 			<a href="classement.php">Classement Joueurs</a>
 		</p>
 		<p class="texteMenu">
 			<a href="association.php"><b>L'Assoc' !!</b></a><br>
-			<a href="ze_team.php">L'équipe !!</a>
+			<a href="ze_team.php">L'ï¿½quipe !!</a>
 		</p>
 		<p class="texteMenu">
 			<a href="liste_dif.php">Liste de diffusion</a><br>
 			<a href="irc.php">Le chat de Delain</a><br>
 			<a href="soutenir.php">Soutenir le jeu</a><br>
 			<a href="http://www.jdr-delain.net/voix/">La Gazette</a><br>
-			<a href="presse.php">Ils en ont parlé...</a>
+			<a href="presse.php">Ils en ont parlï¿½...</a>
 		</p>
 		<p class="texteMenu">
 			<a href="fow.php"><span style="font-size:8pt">Le projet Fog of War</span></a>
@@ -67,7 +67,7 @@ if ($aff_pub == 1)
 			<br>
 			<a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=83639&amp;t=65"><img border="0" alt="Get Firefox!" title="Get Firefox!" src="http://sfx-images.mozilla.org/affiliates/Buttons/110x32/safer.gif"/></a><br>
 			
-			<a href="http://www.jouer.org" target="_blank"><img src="http://www.jouer.org/pub9030.gif" border="0" alt="jouer . org" title="enregistré sur jouer.org"></a>
+			<a href="http://www.jouer.org" target="_blank"><img src="http://www.jouer.org/pub9030.gif" border="0" alt="jouer . org" title="enregistrï¿½ sur jouer.org"></a>
 		</p>
 	</div></div>
 	<?Bordure_Tab()?>

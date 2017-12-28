@@ -15,7 +15,7 @@ var humanMsg = {
 
 		// The text on the Log tab
 		if (logName == undefined)
-			logName = "Résultats d'Analyses";
+			logName = "Rï¿½sultats d'Analyses";
 
 		// Opacity of the message
 		humanMsg.msgOpacity = .7;

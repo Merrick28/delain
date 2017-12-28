@@ -8,7 +8,7 @@ if( position == currentCaseId){
 	   xhr_object = new XMLHttpRequest();
 	else if(window.ActiveXObject) // Internet Explorer
 	   xhr_object = new ActiveXObject("Microsoft.XMLHTTP");
-	else { // XMLHttpRequest non supporté par le navigateur
+	else { // XMLHttpRequest non supportï¿½ par le navigateur
 	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 	   return;
 	}

@@ -2,7 +2,7 @@
 	CONSTANTES
 */
 /*
-// const uniquement géré par Moz :-(
+// const uniquement gï¿½rï¿½ par Moz :-(
 
 const STICKY = "sticky";
 
@@ -45,9 +45,9 @@ function DjResizeable(aSrcDiv) {
 	this.srcDiv.onmouseout   = unsetCursorResize;
 	this.srcDiv.onmousedown  = startResizing;
 	this.sticky = divHasClass(this.srcDiv, STICKY);
-	// Lorsque les positions sont définies dans class et pas style il faut les initialiser
+	// Lorsque les positions sont dï¿½finies dans class et pas style il faut les initialiser
 	initStylePositionFromClassPosition(this.srcDiv);
-	// Propriétés utilisées pour les sticky
+	// Propriï¿½tï¿½s utilisï¿½es pour les sticky
 	if(this.sticky) {
 		this.jointures = new Array();
 	}
@@ -79,7 +79,7 @@ function setCursorResize(event) {
 	if(resizer.isResizing){
 		return;
 	}
-	// determination du curseur à afficher
+	// determination du curseur ï¿½ afficher
 	var xPos = getCursorPosXLayer(event);
 	var yPos = getCursorPosYLayer(event);
 

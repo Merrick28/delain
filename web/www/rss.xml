@@ -34,7 +34,7 @@ while($db->next_record())
 	$texte_auteur .= $db->f("news_mail_auteur");
 	if ($db->f("news_mail_auteur") != "")
 		$texte_auteur .= '</a>';
-	$texte_auteur .= '<br />Posté le : ' . $db->f("date_news") . '<br />------<br />';
+	$texte_auteur .= '<br />Postï¿½ le : ' . $db->f("date_news") . '<br />------<br />';
 	$texte_auteur = htmlspecialchars($texte_auteur);	
 	$ls_return.= '	<description>'.$texte_auteur.htmlspecialchars($db->f("news_texte")).'</description>
 		</item>  ';  

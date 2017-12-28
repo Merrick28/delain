@@ -1,7 +1,7 @@
 //D'autres scripts sur http://www.toutjavascript.com
 //Si vous utilisez ce script, merci de m'avertir !  < webmaster@toutjavascript.com >
 //Auteur original :Olivier Hondermarck  <webmaster@toutjavascript.com>
-//Modifs compatibilité Netscape 6/Mozilla : Cédric Lamalle 09/2001 <cedric@cpac.embrapa.br>
+//Modifs compatibilitï¿½ Netscape 6/Mozilla : Cï¿½dric Lamalle 09/2001 <cedric@cpac.embrapa.br>
 //Correction Mac IE5 (Merci Fred)
 
 var IB=new Object;
@@ -35,7 +35,7 @@ function AffBulle(texte) {
 }
 function getMousePos(e) {
   if (document.all) {
-  posX=event.x+document.body.scrollLeft; //modifs CL 09/2001 - IE : regrouper l'évènement
+  posX=event.x+document.body.scrollLeft; //modifs CL 09/2001 - IE : regrouper l'ï¿½vï¿½nement
   posY=event.y+document.body.scrollTop;
   }
   else {

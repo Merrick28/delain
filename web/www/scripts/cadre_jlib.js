@@ -10,7 +10,7 @@ function encadrer(div){
   table.border = '0px';
   table.cellSpacing = '0px';
   table.cellPadding = '0px';
-  //héritage des dimentions
+  //hï¿½ritage des dimentions
   table.style.width = getElementCssValue(div,'width');
   table.style.height = getElementCssValue(div,'height');
   //printDebug('PARENT HEIGHT('+div.id+')='+getElementCssValue(div,'height')+'--'+div.style.height);

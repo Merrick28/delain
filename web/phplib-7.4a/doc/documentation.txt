@@ -2549,30 +2549,30 @@
   over HTTP authentication:
 
 
-  ·  It can be undone: A session can be un-authenticated, the user can
+  ï¿½  It can be undone: A session can be un-authenticated, the user can
      "log out".
 
-  ·  It can expire: A session can automatically be un-authenticated
+  ï¿½  It can expire: A session can automatically be un-authenticated
      after a given idle time.
-  ·  It can be customized: You are not limited to user/password pairs.
+  ï¿½  It can be customized: You are not limited to user/password pairs.
      Instead you could use a customer number, operator id and a password
      to log in. Also, you have full control over the login screen, which
      is a normal HTML page with logos, help and forms as you see fit.
 
-  ·  It is database based. Authentication is being done against a
+  ï¿½  It is database based. Authentication is being done against a
      database of your design, not a htpasswd text file.
 
-  ·  It is per page. You decide on a per-page basis which pages are
+  ï¿½  It is per page. You decide on a per-page basis which pages are
      authenticated and which aren't.
 
-  ·  It can be user authenticating and optionally self registering. In
+  ï¿½  It can be user authenticating and optionally self registering. In
      [4mregistration[24m mode, a user without a valid login is encouraged to
      register and an account is created for this user.
 
-  ·  It works with CGI PHP. HTTP authentication is available only in
+  ï¿½  It works with CGI PHP. HTTP authentication is available only in
      mod_php.
 
-  ·  It is integrated with a permission checking scheme.
+  ï¿½  It is integrated with a permission checking scheme.
 
 
   [1m3.9.1.  Instance variables[0m
@@ -3997,7 +3997,7 @@
   necessary to do so:
 
 
-  ·  the Cart class has to be included on every page. Even on that pages
+  ï¿½  the Cart class has to be included on every page. Even on that pages
      that do not make use of the Cart class.
 
      On that pages that use Cart, a cart subclass is instantiated and
@@ -4011,7 +4011,7 @@
      consequently prepend.php3. Edit prepend.php3 and
      require("cart.inc") as indicated by the comments in that file.
 
-  ·  a subclass of Cart has to be created to suit your tastes.
+  ï¿½  a subclass of Cart has to be created to suit your tastes.
 
      Your subclass of Cart will be called Example_Cart in this example.
      You may actually name it as you like, but you have to be
@@ -4035,7 +4035,7 @@
   code will teach your shopping cart about the database table that holds
   your articles and so on.
 
-  ·  finally, you need to create an instance of your shopping cart class
+  ï¿½  finally, you need to create an instance of your shopping cart class
      so that you have an object that actually holds the articles
      selected by the user.
 
@@ -6061,18 +6061,18 @@
 
   Looks a bit confusing. From left to right the fields are
 
-  ·  The [4mindex-name[24m of the current field
+  ï¿½  The [4mindex-name[24m of the current field
 
-  ·  The [4mvalue[24m of this field
+  ï¿½  The [4mvalue[24m of this field
 
-  ·  The [4mfull[24m [4mpath[24m to this field (see path_to_*-functions)
+  ï¿½  The [4mfull[24m [4mpath[24m to this field (see path_to_*-functions)
 
-  ·  The current [4mdepth[24m or [4mlevel[0m
+  ï¿½  The current [4mdepth[24m or [4mlevel[0m
 
-  ·  The current [4melement[24m [4mnumber[24m. See below to understand, why it will
+  ï¿½  The current [4melement[24m [4mnumber[24m. See below to understand, why it will
      begin sometimes with "2" in this example!
 
-  ·  The [4mnumber[24m [4mof[24m [4melements[24m in the subtree at this depth
+  ï¿½  The [4mnumber[24m [4mof[24m [4melements[24m in the subtree at this depth
 
 
 
