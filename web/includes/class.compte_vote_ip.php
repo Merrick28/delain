@@ -194,6 +194,7 @@ class compte_vote_ip
         $req  = "select compte_vote_cod from compte_vote_ip 
           where compte_vote_compte_cod = ? 
           and compte_vote_verifier  = true
+		  and compte_vote_pour_delain = false
           and to_char(compte_vote_date, 'yyyy-mm') = to_char(current_date, 'yyyy-mm')";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
