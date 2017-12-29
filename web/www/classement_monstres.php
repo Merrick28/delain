@@ -16,7 +16,7 @@ ob_end_clean();
 $t->set_var("IDENT",$ident);
 
 
-//
+// test
 //Contenu de la div de droite
 //
 $contenu_page = '';
