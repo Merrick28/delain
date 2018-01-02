@@ -122,7 +122,7 @@ if (!$db->next_record())
 
     // on commence par mettre a jour (#LAG pour eviter une multiple distribution)
     $repUpdateVoteList = " INSERT INTO public.vote_list(vote_list_date) VALUES ('" . $dateDuJour . "'::date)";
-    $db->query($reqVoteList);
+    $db->query($repUpdateVoteList);
     // puis on récupere tous les personnes qui ont voté ce mois ci et on fonction du nombre de vote on donne les xp correspondants.
     $requGetCompteVote = "select compte_vote_compte_cod FROM public.compte_vote";
     $db->query($requGetCompteVote);
