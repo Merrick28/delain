@@ -18,7 +18,7 @@
         </thead>
         {% for ligne in TAB_JOUEUR %}
             <tr>
-                <td>{{ ligne.perso_nom }}</td>
+                <td><a href="visu_desc_perso_hc.php?visu={{ ligne.perso_cod }}">{{ ligne.perso_nom }}</a></td>
                 <td><span style="display: none">{{ ligne.perso_renommee }}</span>{{ ligne.renommee }}</td>
                 <td><span style="display: none">{{ ligne.perso_renommee_magie }}</span>{{ ligne.grenommee }}</td>
                 <td><span style="display: none">{{ ligne.perso_renommee_artisanat }}</span>{{ ligne.renart }}</td>

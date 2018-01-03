@@ -1,0 +1,60 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    <div class="groupdiv">
+        <table class="table table-sm">
+            <tr>
+                <td colspan="3" class="titre">
+                    <p class="titre">Fiche de {{ PERSO.perso_nom }}</p>
+                </td>
+            </tr>
+            {% if PERSO.perso_description != '' %}
+                <tr>
+                    <td colspan="3" class="soustitre2">
+                        <p>{{ PERSO.perso_description }}</p>
+                    </td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td rowspan="9">
+                    <img src="{% if PERSO.perso_avatar != '' %}{{ URL }}/avatars/{{ PERSO.perso_avatar }}{% else %}../images/{{ PERSO.perso_race_cod }}_{{ PERSO.perso_sex }}.gif{% endif %}">
+                </td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Race :</td>
+                <td>{{ RACE.race_nom }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Sexe :</td>
+                <td>{{ PERSO.perso_sex }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Renommée :</td>
+                <td>{{ RENOMMEE.renommee_libelle }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Karma :</td>
+                <td>{{ KARMA.karma_libelle }}</td>
+            </tr>
+
+            <tr>
+                <td class="soustitre2"><p>Décès :</td>
+                <td>{{ PERSO.perso_nb_mort }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Nombre de monstres tués :</td>
+                <td>{{ PERSO.perso_nb_joueur_tue }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Nombre de persos tués :</td>
+                <td>{{ PERSO.perso_nb_monstre_tue }}</td>
+            </tr>
+            <tr>
+                <td class="soustitre2"><p>Guilde :</td>
+                <td>{% if NOGUILDE %}Pas de guilde{% else %}{{ GUILDE.guilde_nom }} ({{ GUILDE_RANG.rguilde_libelle_rang }}{% if GUILDE_RANG.rguilde_admin == 'O' %}, Administrateur{% endif %}){% endif %}</td>
+            </tr>
+        </table>
+    </div>
+{% endblock %}
+{% block postscripts %}
+
+{% endblock %}
