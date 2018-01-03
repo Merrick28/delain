@@ -16,7 +16,7 @@
             {% endif %}
             <tr>
                 <td rowspan="9">
-                    <img src="{% if PERSO.perso_avatar != '' %}{{ URL }}/avatars/{{ PERSO.perso_avatar }}{% else %}../images/{{ PERSO.perso_race_cod }}_{{ PERSO.perso_sex }}.gif{% endif %}">
+                    <img src="{% if PERSO.perso_avatar != '' %}avatars/{{ PERSO.perso_avatar }}{% else %}../images/{{ PERSO.perso_race_cod }}_{{ PERSO.perso_sex }}.gif{% endif %}">
                 </td>
             </tr>
             <tr>
