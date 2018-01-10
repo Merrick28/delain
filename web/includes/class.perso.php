@@ -442,7 +442,7 @@ class perso
                 ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
                 ":perso_effets_auto"             => $this->perso_effets_auto,
                 ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
                 ":perso_voie_magique"            => $this->perso_voie_magique,
                 ":perso_energie"                 => $this->perso_energie,
                 ":perso_desc_long"               => $this->perso_desc_long,
@@ -659,7 +659,7 @@ class perso
                 ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
                 ":perso_effets_auto"             => $this->perso_effets_auto,
                 ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
                 ":perso_voie_magique"            => $this->perso_voie_magique,
                 ":perso_energie"                 => $this->perso_energie,
                 ":perso_desc_long"               => $this->perso_desc_long,
@@ -1236,6 +1236,34 @@ class perso
         return $retour;
     }
 
+ 	function getPersosByNameLike($perso_nom, $type_joueur = 1)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req
+              = "select perso_cod
+          from perso 
+          where perso_actif = 'O' 
+          and perso_nom ILIKE :perso_nom 
+          and perso_type_perso = :type_joueur 
+          --and perso_cod not in (1,2,3) 
+		  and perso_pnj != 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso_nom" => '%'.$perso_nom.'%',
+            ":type_joueur" => 1
+        ), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result["perso_cod"]);
+
+            $retour[] = $temp;
+        }
+        return $retour;
+    }
+
+	
     function is_lieu()
     {
         $ppos = new perso_position;
