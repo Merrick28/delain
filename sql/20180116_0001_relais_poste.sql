@@ -43,11 +43,3 @@ INSERT INTO type_evt (  tevt_libelle , tevt_texte )  VALUES
 ('Transaction', '[perso_cod1] a déposé un objet au relais de la poste.'),
 ('Transaction', '[perso_cod1] a retiré un objet au relais de la poste.'),
 ('Transaction', 'Un objet de [perso_cod1] a été consfisqué par le relais de la poste.');
-
-INSERT INTO public.lieu_type (tlieu_libelle, tlieu_url)  VALUES ( 'Relais de la poste', 'relais_poste.php');
-
-
-INSERT INTO public.type_evt (  tevt_libelle , tevt_texte )  VALUES
-('Relais poste', '[perso_cod1] a déposé un objet au relais de la poste.'),
-('Relais poste', '[perso_cod1] a retiré un objet au relais de la poste.'),
-('Relais poste', 'Un objet de [perso_cod1] a été consfisqué par le relais de la poste.');
