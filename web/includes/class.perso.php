@@ -442,7 +442,7 @@ class perso
                 ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
                 ":perso_effets_auto"             => $this->perso_effets_auto,
                 ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
                 ":perso_voie_magique"            => $this->perso_voie_magique,
                 ":perso_energie"                 => $this->perso_energie,
                 ":perso_desc_long"               => $this->perso_desc_long,
@@ -659,7 +659,7 @@ class perso
                 ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
                 ":perso_effets_auto"             => $this->perso_effets_auto,
                 ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => $this->perso_tuteur,
+                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
                 ":perso_voie_magique"            => $this->perso_voie_magique,
                 ":perso_energie"                 => $this->perso_energie,
                 ":perso_desc_long"               => $this->perso_desc_long,
@@ -906,6 +906,24 @@ class perso
     function is_fam()
     {
         if ($this->perso_type_perso == 3)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function is_monstre()
+    {
+        if ($this->perso_type_perso == 2)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function is_4eme_perso()
+    {
+        if ($this->perso_pnj == 2)
         {
             return true;
         }
@@ -1236,6 +1254,58 @@ class perso
         return $retour;
     }
 
+	/* Retourne un tableau de 1 perso si le nom fourni est identique à $perso_nom, 
+	   sinon retourne un tableau de perso dont le nom contien la chaine $perso_nom
+	   valeur possible pour $type_perso :
+				du type entier exemple: 1 (type perso)
+				du type array exemple: array(1,3) pour un recherche sur les perso et leurs familiers
+	*/
+ 	function getPersosByNameLike($perso_nom, $type_perso = 1)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+		
+		// Si on a pas un array on converti pour avoir un seul traitement
+		if (!is_array($type_perso)) 
+		{
+			$type_perso = array($type_perso);
+		}
+		
+		if (count($type_perso)==0)
+		{
+			return $retour;
+		}
+
+		$list_types = array();
+ 		foreach($type_perso as $k => $type)
+		{
+    		$list_types[':type'.$k] = intval($type);
+		}
+		
+		// Recherche d'abord avec un nom exacte
+        $req = "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)),$list_types), $stmt);
+		
+		// Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
+		if ($stmt->rowCount()==0) 
+		{
+			$req = "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+			$stmt = $pdo->prepare($req);
+			$stmt = $pdo->execute(array_merge(array(":perso_nom" => '%'.$perso_nom.'%'),$list_types), $stmt);
+		}
+		
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result["perso_cod"]);
+
+            $retour[] = $temp;
+        }
+        return $retour;
+    }
+
+	
     function is_lieu()
     {
         $ppos = new perso_position;
