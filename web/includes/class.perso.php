@@ -912,6 +912,24 @@ class perso
         return false;
     }
 
+    function is_monstre()
+    {
+        if ($this->perso_type_perso == 2)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function is_4eme_perso()
+    {
+        if ($this->perso_pnj == 2)
+        {
+            return true;
+        }
+        return false;
+    }
+
     function is_admin_dieu()
     {
         $dp  = new dieu_perso();
@@ -1236,23 +1254,47 @@ class perso
         return $retour;
     }
 
- 	function getPersosByNameLike($perso_nom, $type_joueur = 1)
+	/* Retourne un tableau de 1 perso si le nom fourni est identique à $perso_nom, 
+	   sinon retourne un tableau de perso dont le nom contien la chaine $perso_nom
+	   valeur possible pour $type_perso :
+				du type entier exemple: 1 (type perso)
+				du type array exemple: array(1,3) pour un recherche sur les perso et leurs familiers
+	*/
+ 	function getPersosByNameLike($perso_nom, $type_perso = 1)
     {
         $pdo    = new bddpdo;
         $retour = array();
-        $req
-              = "select perso_cod
-          from perso 
-          where perso_actif = 'O' 
-          and perso_nom ILIKE :perso_nom 
-          and perso_type_perso = :type_joueur 
-          --and perso_cod not in (1,2,3) 
-		  and perso_pnj != 1";
+		
+		// Si on a pas un array on converti pour avoir un seul traitement
+		if (!is_array($type_perso)) 
+		{
+			$type_perso = array($type_perso);
+		}
+		
+		if (count($type_perso)==0)
+		{
+			return $retour;
+		}
+
+		$list_types = array();
+ 		foreach($type_perso as $k => $type)
+		{
+    		$list_types[':type'.$k] = intval($type);
+		}
+		
+		// Recherche d'abord avec un nom exacte
+        $req = "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
-            ":perso_nom" => '%'.$perso_nom.'%',
-            ":type_joueur" => 1
-        ), $stmt);
+        $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)),$list_types), $stmt);
+		
+		// Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
+		if ($stmt->rowCount()==0) 
+		{
+			$req = "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+			$stmt = $pdo->prepare($req);
+			$stmt = $pdo->execute(array_merge(array(":perso_nom" => '%'.$perso_nom.'%'),$list_types), $stmt);
+		}
+		
         while ($result = $stmt->fetch())
         {
             $temp = new perso;

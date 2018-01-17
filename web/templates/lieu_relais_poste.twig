@@ -3,17 +3,30 @@
 {% block corps %}
 
 {#------------------------ ENTETE ------------------------#}
-RELAIS de la Poste
+<div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding-top:8px; border-radius:10px 10px 0 0; border:solid black 2px;">
+	<center><img src="/images/lieu-relais-de-la-poste.png"></center>
+	&nbsp;&nbsp;&nbsp;Vous avez <b>{{ perso_po }}</b> brouzoufs<br>
+</div>
+<br>
 
+{#------------------------ RESTRICTIONS ------------------------#}
+{% if INTERDIT %}
 
-{#------------------- OBJET A LA POSTE -------------------#}
+<center>
+	<br><br><b>Votre statut (<i>{{INTERDIT}}<i>) ne vous permet pas d'utiliser les Relais de la Poste</b><br><br>
+</center>
+
+{% else %}
+{#------------------- RETRAIT 0 -------------------#}
 {% if (objets_poste_emet or objets_poste_dest) and action=="poste1" %}
 
+<form name="retraitposte" method="post" action="">
 <table width="100%">
 {% if objets_poste_emet %}
-<tr width="100%"><td class="soustitre2" colspan="7"><br>Liste des objets que vous avez envoyés</td></tr>
+<tr width="100%"><td class="soustitre2" colspan="8"><br>Liste des objets que vous avez envoyés</td></tr>
 
 <tr>
+  <td class="soustitre2" width="20px"></td>
   <td class="soustitre2"><b>Date d'envoi</b></td>
   <td class="soustitre2"><b>Date livraison</b></td>
   <td class="soustitre2"><b>Destinataire</b></td>
@@ -25,8 +38,9 @@ RELAIS de la Poste
 	
 {% for objet in objets_poste_emet %}
 <tr>
+  <td class="soustitre2"></td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{{ objet.date_livraison|date("d/m/Y H:i") }}</td>
+  <td class="soustitre2">{% if objet.est_livrable  %}<b>{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if objet.est_livrable  %}</b>{% endif %}</td>
   <td class="soustitre2">{{ objet.perso_nom_dest }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
@@ -37,8 +51,9 @@ RELAIS de la Poste
 {% endif %}	
 	
 {% if objets_poste_dest %}
-<tr width="100%"><td class="soustitre2" colspan="7"><br>Liste des objets que l'on vous a envoyés</td></tr>
+<tr width="100%"><td class="soustitre2" colspan="8"><br>Liste des objets que l'on vous a envoyés</td></tr>
 <tr>
+  <td class="soustitre2" width="20px"></td>
   <td class="soustitre2"><b>Date d'envoi</b></td>
   <td class="soustitre2"><b>Date livraison</b></td>
   <td class="soustitre2"><b>Envoyeur</b></td>
@@ -49,18 +64,33 @@ RELAIS de la Poste
 </tr>	
 {% for objet in objets_poste_dest %}
 <tr>
+  <td class="soustitre2">
+    {% if objet.est_livrable  %}
+      <input type="checkbox" class="vide" name="r_obj[{{ objet.obj_cod }}]" value="{{ objet.obj_cod }}">
+    {% endif %}
+  </td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{{ objet.date_livraison|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{{ objet.perso_nom_dest }}</td>
+  <td class="soustitre2">{% if objet.est_livrable  %}<b>{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if objet.est_livrable  %}</b>{% endif %}</td>
+  <td class="soustitre2">{{ objet.perso_nom_emet }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
 </tr>	
 {% endfor %}
+<tr><td class="soustitre2" colspan="8">
+ <center><input class="test" type="submit" name="next" value="Récupérer mes objets"><input type="hidden" name="action" value="retrait0"></center>
+  {% if message_retrait  %}
+<center>
+	<b>{{message_retrait}}</b>
+</center>
+{% endif %}
+</td></tr>
+
 {% endif %}	
 	
 </table>	
+</form>
 
 <br>
 {% endif %}
@@ -75,40 +105,46 @@ RELAIS de la Poste
 {#------------------------ POSTE 1 ------------------------#}
 {% if action=="poste1" %}
 
-<form name="relaisposte" method="post" action="">
-<input type="hidden" name="action" value="poste2">
-<center>
-<table>
-<tr>
-  <td class="soustitre2"><b>&nbsp;</b></td>
-  <td class="soustitre2"><b>Type</b></td>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix demandé</b></td>
-</tr>	
+	{% if objets|length > 0 %}
+	<form name="relaisposte" method="post" action="">
+	<input type="hidden" name="action" value="poste2">
+	<center>
+	<table>
+	<tr>
+	  <td class="soustitre2"><b>&nbsp;</b></td>
+	  <td class="soustitre2"><b>Type</b></td>
+	  <td class="soustitre2"><b>Objet</b></td>
+	  <td class="soustitre2"><b>Poids</b></td>
+	  <td class="soustitre2"><b>Prix demandé</b></td>
+	</tr>	
 
-{% for objet in objets %}
-<tr>
-  <td class="soustitre2"><input type="radio" class="vide" name="obj" value="{{ objet.obj_cod }}">
-  <td class="soustitre2">{{ objet.tobj_libelle }}</td>
-  <td class="soustitre2">{{ objet.obj_nom }}</td>
-  <td class="soustitre2">{{ objet.obj_poids }}</td>
-  <td class="soustitre2"><input name="prix[{{ objet.obj_cod }}]" size="6" value="0" type="text"> brouzoufs</td>
-</tr>	
-{% endfor %}
+	{% for objet in objets %}
+	<tr>
+	  <td class="soustitre2"><input type="radio" class="vide" name="obj" value="{{ objet.obj_cod }}">
+	  <td class="soustitre2">{{ objet.tobj_libelle }}</td>
+	  <td class="soustitre2">{{ objet.obj_nom }}</td>
+	  <td class="soustitre2">{{ objet.obj_poids }}</td>
+	  <td class="soustitre2"><input name="prix[{{ objet.obj_cod }}]" size="6" value="0" type="text"> brouzoufs</td>
+	</tr>	
+	{% endfor %}
 
-</table>	
-</center>	
+	</table>	
+	</center>	
 
-<center>
-{% if message  %}
-    <br>
-	<b>{{message}}</b><br>
-{% endif %}	
-	
-<input class="test" type="submit" name="next" value="Passer à la suite">
-</center>
-</form>
+	<center>
+	{% if message  %}
+		<br>
+		<b>{{message}}</b><br>
+	{% endif %}	
+
+	<input class="test" type="submit" name="next" value="Passer à la suite">
+	</center>
+	</form>
+
+	{% else %}
+	<center><br>Désolé, vous ne disposez pas d'objet qu'il est possible d'envoyer par les services des relais de la poste.</center>
+	{% endif %}
+
 {% endif %}
 
 {#------------------------ POSTE 2 ------------------------#}
@@ -197,11 +233,11 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 	
 {% if date_livraison and  date_confiscation  %}
 <br>Le colis sera disponible pour le destinataire dans tous les relais poste des souterrains à partir du <b>{{ date_livraison }}</b>
-	<br>Il pourra le retirer à partir de cette date jusqu'au <b>{{ date_confiscation }}</b>
+	<br>Il pourra le récupérer à partir de cette date jusqu'au <b>{{ date_confiscation }}</b>
 	{% if prix_demande>0  %}
 	pour la somme de <b>{{ prix_demande }} brouzoufs</b> qui sera reversée directement <u>sur votre compte en banque</u> au moment du retrait
 	{% endif %}	
-	.<br><br>Au delà du <b>{{ date_confiscation }}</b>, si le colis n'a pas été retiré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste. 
+	.<br><br>Au delà du <b>{{ date_confiscation }}</b>, si le colis n'a pas été récupéré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste. 
 {% endif %}	
 	
 {% if message  %}
@@ -246,5 +282,98 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 </form>
 {% endif %}
 
+
+{#------------------------ RETRAIT 1 ------------------------#}
+{% if action=="retrait1" %}
+
+<form name="relaisposte" method="post" action="">
+<input type="hidden" name="action" value="retrait1">
+<center>
+<table>
+<tr>
+  <td class="soustitre2"><b>Objet</b></td>
+  <td class="soustitre2"><b>Poids</b></td>
+  <td class="soustitre2"><b>Prix à payer</b></td>
+</tr>	
+
+{% for objet in objets %}
+<tr>
+  <td class="soustitre2">{{ objet.obj_nom }}</td>
+  <td class="soustitre2">{{ objet.obj_poids }}</td>
+  <td class="soustitre2">{{ objet.prix_demande }} brouzoufs
+    <input type=hidden name="r_obj[{{ objet.obj_cod }}]" value="{{ objet.obj_cod }}">
+  </td>
+</tr>	
+{% endfor %}
+
+</table>	
+</center>	
+
+<center>
+<br><b>Poids total du colis</b>: {{ poids }}
+<br><b>Prix total à payer  </b>: {{ prix_retrait }} brouzoufs
+<br><br>
+	
+{% if message  %}
+    <br><br>
+	<b>{{message}}</b><br>
+{% endif %}	
+
+<br><br>	
+	
+<input class="test" type="submit" name="cancel" value="Annuler">&nbsp;&nbsp;
+{% if not message  %}
+<input class="test" type="submit" name="next" value="Payer et Récupérer">
+{% endif %}		
+</center>
+</form>
+{% endif %}
+
+
+{#------------------------ RETRAIT 2 ------------------------#}
+{% if action=="retrait2" %}
+
+<form name="relaisposte" method="post" action="">
+<input type="hidden" name="action" value="">
+<center>
+<table>
+<tr>
+  <td class="soustitre2"><b>Objet</b></td>
+  <td class="soustitre2"><b>Poids</b></td>
+  <td class="soustitre2"><b>Prix à payer</b></td>
+</tr>	
+
+{% for objet in objets %}
+<tr>
+  <td class="soustitre2">{{ objet.obj_nom }}</td>
+  <td class="soustitre2">{{ objet.obj_poids }}</td>
+  <td class="soustitre2">{{ objet.prix_demande }} brouzoufs
+    <input type=hidden name="r_obj[{{ objet.obj_cod }}]" value="{{ objet.obj_cod }}">
+  </td>
+</tr>	
+{% endfor %}
+
+</table>	
+</center>	
+
+<center>
+<br><b>Poids total du colis</b>: {{ poids }}
+<br><b>Prix payé </b>: {{ prix_retrait }} brouzoufs
+<br><br>
+	
+{% if message  %}
+    <br><br>
+	<b>{{message}}</b><br>
+{% endif %}	
+
+<br><br>	
+	
+<input class="test" type="submit" name="next" value="Terminer">
+
+</center>
+</form>
+{% endif %}
+
+{% endif %}
 {#------------------------ BAS DE PAGE ------------------------#}
 {% endblock %}
