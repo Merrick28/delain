@@ -277,7 +277,7 @@ if ($erreur == 0)
 		echo("<tr>");
 		echo("<td class=\"soustitre2\"><p>Temps de tour </td>");
 		echo "<td><p>" . $db->f("perso_temps_tour") . " minutes</td>";
-        if ( $nv_temps > 360 )
+        if ( $nv_temps >= 360 )
         {
             echo "<td class=\"soustitre2\"><p>$nv_temps minutes</td>";
             echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"1\"></td>";
