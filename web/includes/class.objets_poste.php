@@ -14,9 +14,9 @@
 class objets_poste
 {
 	//-------------- Constante de l'objet objets_poste
-	private $frais_de_port_par_kilo = 100 ;
-	private $delai_livraison = "5 DAYS" ;				
-	private $delai_confiscation = "2 MONTHS" ;				
+	private $frais_de_port_par_kilo = null ;		//si null, le parametre global 129 est utilisé (anciennement  100)
+	private $delai_livraison = null ;				//si null, le parametre global 130 est utilisé (anciennement "5 DAYS")	
+	private $delai_confiscation = null ;			//si null, le parametre global 131 est utilisé (anciennement "2 MONTHS")			
   
 	//-------------- Données de l'objet récupérer/sauvegarder en DB
     var $opost_cod ;
@@ -203,6 +203,21 @@ class objets_poste
     }
 	
 	//----------------------------------------
+	//fonction interne pour récupérer les frais de port dans les paramètres globaux
+	function _frais_de_port_par_kilo()
+	{
+		if ($this->frais_de_port_par_kilo == null)
+		{
+			//recupération du parametre global du jeux
+			$param = new parametres();
+			$this->frais_de_port_par_kilo = $param->getparm(129);		//Parametre 129
+			
+		}
+		return $this->frais_de_port_par_kilo;
+			
+	}
+
+	//----------------------------------------
     /**
      * Retourne les frais de port en fonction du poids d'un objet
      * @param integer $poids => poids de l'objet	 
@@ -211,9 +226,23 @@ class objets_poste
      */
     function getFraisDePort($poids)
     {
-		return $poids * $this->frais_de_port_par_kilo ;             
+		return $poids * $this->_frais_de_port_par_kilo() ;             
     }	
 
+	//----------------------------------------
+	//fonction interne pour récupérer les delais de livraison dans les paramètres globaux
+	function _delai_livraison()
+	{
+		if ($this->delai_livraison == null)
+		{
+			//recupération du parametre global du jeux
+			$param = new parametres();
+			$this->delai_livraison = $param->getparm(130);		//Parametre 130
+			
+		}
+		return $this->delai_livraison;	
+	}
+	
 	//----------------------------------------
     /**
      * Retourne la date de livraison d'un objet 
@@ -222,7 +251,7 @@ class objets_poste
      */
     function getDateLivraison()
     {
-		return date('Y-m-d H:i:s', strtotime($this->opost_date_poste.' '. $this->delai_livraison));       
+		return date('Y-m-d H:i:s', strtotime($this->opost_date_poste.' '. $this->_delai_livraison()));       
     }	
 
 	//----------------------------------------
@@ -235,7 +264,23 @@ class objets_poste
     {
 		return date('Y-m-d H:i:s') >= $this->getDateLivraison() ;       
     }	
-	
+
+	//----------------------------------------
+	//fonction interne pour récupérer les delais de livraison dans les paramètres globaux
+	function _delai_confiscation()
+	{
+		if ($this->delai_confiscation == null)
+		{
+			//recupération du parametre global du jeux
+			$param = new parametres();
+			$delai_confiscation = $param->getparm(131);					// Parametre 131
+			if (1*$delai_confiscation<=0) $delai_confiscation=1;		// 1 mois minimum (pour éviter la confiscation immédiate après un depot)
+			$this->delai_confiscation = $delai_confiscation." MONTHS";  // String pour strtotime
+			
+		}
+		return $this->delai_confiscation;	
+	}
+		
 	//----------------------------------------
     /**
      * Retourne la date de confiscation d'un objet 
@@ -244,7 +289,7 @@ class objets_poste
      */
     function getDateConfiscation()
     {
-		return date('Y-m-d H:i:s', strtotime($this->opost_date_poste.' '. $this->delai_confiscation));       
+		return date('Y-m-d H:i:s', strtotime($this->opost_date_poste.' '. $this->_delai_confiscation()));       
     }			
 
 	//----------------------------------------
@@ -271,7 +316,7 @@ class objets_poste
 		{
 			return false;
 		}
-		
+
 	    $pdo    = new bddpdo;	
 
 		/********************************************************************/
@@ -287,20 +332,20 @@ class objets_poste
 		$nom_objet = $result["obj_nom_generique"] ; 
 		
 
-		//$this->supprime();		//supression de l'objet dans la base avant l'objet lui même (car il possèdes des clés étrangères)
+		$this->supprime();		//supression de l'objet dans la base avant l'objet lui même (car il possèdes des clés étrangères)
 
 		/********************************************************************/
 		// On supprime l'objet de la base identification et objets
 		$req    = "DELETE FROM perso_identifie_objet WHERE pio_obj_cod = :opost_obj_cod;";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":opost_obj_cod" => $this->opost_obj_cod), $stmt);	
-		
+	
 		/********************************************************************/
 		// On supprime l'objet et de la base des objets		
 		$req    = "DELETE FROM objets WHERE obj_cod = :opost_obj_cod;";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":opost_obj_cod" => $this->opost_obj_cod), $stmt);		
-		
+
 		/********************************************************************/
 		// Préparation de l'objet pour gérer les lignes d'évènements (une par perso)
 		/********************************************************************/
@@ -323,6 +368,8 @@ class objets_poste
 			$ligne_evt->levt_texte = "L’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") envoyé par [cible] pour [perso_cod1] a été consfisqué par le relais de la poste.";
 			$ligne_evt->stocke(true);		// Nouvel évènement	
 		}
+		
+		return true; // objet a été confisqué!
     }	
 
 	
@@ -346,6 +393,7 @@ class objets_poste
 	               WHERE perobj_perso_cod = :perobj_perso_cod
 	               AND perobj_equipe = 'N'
 	               AND perobj_identifie = 'O'
+	               AND gobj_deposable = 'O'
 	               AND gobj_tobj_cod not in (5,11,14,22,28,30,34)
 	               ORDER BY tobj_libelle,gobj_nom ";
 
