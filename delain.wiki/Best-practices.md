@@ -1,2 +1,0 @@
-* [PDO](PDO)
-* [CRUD](CRUD)
