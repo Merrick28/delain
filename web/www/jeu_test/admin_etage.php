@@ -53,6 +53,7 @@ if(!isset($admin_etage) && $methode == 'debut')
 	<p><b>Autres outils</b><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
+	<a href='modif_etage3ter.php'>Creation multiple de lieux</a><br />
 	<a href='modif_etage.php'>Autres outils</a></td></tr></table>";
 
 switch($methode)
