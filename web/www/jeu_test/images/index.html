@@ -11,10 +11,10 @@
 <div class="barrL"><div class="barrR"><p class="barrC"></p></div></div>
 <div class="barrLbord"><div class="barrRbord">
 <p class="texteNorm">
-Il semble que le page sur laquelle vous essayez d'accéder n'existe plus.<br>
+Il semble que le page sur laquelle vous essayez d'accï¿½der n'existe plus.<br>
 
-Si vous le souhaitez, vous pouvez prévenir le <a href="mailto:merrick@jdr-delain.net?SUBJECT=Erreur de lien&BODY=La page  tente d'acc&eacute;der à la page /jeu/d.">webmaster</a>.<br><br>
-<center><a href="javascript:history.go(-1)">Retour à la page précédente</a></center>
+Si vous le souhaitez, vous pouvez prï¿½venir le <a href="mailto:merrick@jdr-delain.net?SUBJECT=Erreur de lien&BODY=La page  tente d'acc&eacute;der ï¿½ la page /jeu/d.">webmaster</a>.<br><br>
+<center><a href="javascript:history.go(-1)">Retour ï¿½ la page prï¿½cï¿½dente</a></center>
 </p>
 </div></div>
 <div class="barrL"><div class="barrR"><p class="barrC"></p></div></div>

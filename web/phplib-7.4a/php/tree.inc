@@ -2,7 +2,7 @@
 /*
  * Tree generation and output for PHP3
  *
- * © 1998 Alex Aulbach
+ * ï¿½ 1998 Alex Aulbach
  *
  * $Id: tree.inc,v 1.3 2002/04/02 23:23:12 layne_weathers Exp $
  *

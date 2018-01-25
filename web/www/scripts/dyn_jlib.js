@@ -1,4 +1,4 @@
-// TODO : Browser à remplacer par du code maison.
+// TODO : Browser ï¿½ remplacer par du code maison.
 
 function Browser() {
 
@@ -38,7 +38,7 @@ function Browser() {
 var browser = new Browser();
 /*
 *
-* Objet box: utilisé pour redimentionner ou déplacer des divs
+* Objet box: utilisï¿½ pour redimentionner ou dï¿½placer des divs
 *
 */
 function AjBox(aSrcDiv){
@@ -69,7 +69,7 @@ function hideDiv(srcDiv){
 }
 /*
 
-Fonction pour écrire une ligne de débug.
+Fonction pour ï¿½crire une ligne de dï¿½bug.
 
 */
 
@@ -227,7 +227,7 @@ function getStyleBySelector( selector )
        /* look through stylesheets in reverse order that
           they appear in the document */
        var ruleType;
-       // ça ne marche pas cette fois ????
+       // ï¿½a ne marche pas cette fois ????
        /*if(CSSRule) {
 	       // NETSCAPE
 	       ruleType = CSSRule.STYLE_RULE

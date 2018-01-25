@@ -1,43 +1,65 @@
 {% extends 'index.twig' %}
 {% block contenu %}
-<div class="groupdiv">
-    <table id="classement_joueur" class="table">
-        <thead>
-        <tr>
-            <th>Nom</th>
-            <th>Renommée</th>
-            <th>Renommée magique</th>
-            <th>Renommée artisanale</th>
-            <th>Karma</th>
-            <th>Nombre de monstres tués</th>
-            <th>Nombre d'aventuriers tués</th>
-            <th>Nombre de morts</th>
-            <th>Nombre d'aventuriers tués en arène</th>
-            <th>Nombre de morts en arène</th>
-        </tr>
-        </thead>
-        {% for ligne in TAB_JOUEUR %}
+    <div class="groupdiv">
+        <table id="classement_joueur" class="table">
+            <thead>
             <tr>
-                <td>{{ ligne.perso_nom }}</td>
-                <td><span style="display: none">{{ ligne.perso_renommee }}</span>{{ ligne.renommee }}</td>
-                <td><span style="display: none">{{ ligne.perso_renommee_magie }}</span>{{ ligne.grenommee }}</td>
-                <td><span style="display: none">{{ ligne.perso_renommee_artisanat }}</span>{{ ligne.renart }}</td>
-                <td><span style="display: none">{{ ligne.perso_kharma }}</span>{{ ligne.karma }}</td>
-                <td>{{  ligne.perso_nb_monstre_tue }}</td>
-                <td>{{ ligne.perso_nb_joueur_tue }}</td>
-                <td>{{  ligne.perso_nb_mort }}</td>
-                <td>{{ ligne.perso_nb_joueur_tue_arene }}</td>
-                <td>{{ ligne.perso_nb_mort_arene }}</td>
+                <th>Nom</th>
+                <th>Renommée</th>
+                <th>Renommée magique</th>
+                <th>Renommée artisanale</th>
+                <th>Karma</th>
+                <th>Nombre de monstres tués</th>
+                <th>Nombre d'aventuriers tués</th>
+                <th>Nombre de morts</th>
+                <th>Nombre d'aventuriers tués en arène</th>
+                <th>Nombre de morts en arène</th>
             </tr>
-        {% endfor %}
+            </thead>
+            {% for ligne in TAB_JOUEUR %}
+                <tr>
+                    <td><a href="visu_desc_perso_hc.php?visu={{ ligne.perso_cod }}">{{ ligne.perso_nom }}</a></td>
+                    <td><span style="display: none">{{ ligne.perso_renommee }}</span>{{ ligne.renommee }}</td>
+                    <td><span style="display: none">{{ ligne.perso_renommee_magie }}</span>{{ ligne.grenommee }}</td>
+                    <td><span style="display: none">{{ ligne.perso_renommee_artisanat }}</span>{{ ligne.renart }}</td>
+                    <td><span style="display: none">{{ ligne.perso_kharma }}</span>{{ ligne.karma }}</td>
+                    <td>{{ ligne.perso_nb_monstre_tue }}</td>
+                    <td>{{ ligne.perso_nb_joueur_tue }}</td>
+                    <td>{{ ligne.perso_nb_mort }}</td>
+                    <td>{{ ligne.perso_nb_joueur_tue_arene }}</td>
+                    <td>{{ ligne.perso_nb_mort_arene }}</td>
+                </tr>
+            {% endfor %}
 
-    </table>
-</div>
-        {% endblock %}
-        {% block postscripts %}
-            <script>
-                $(document).ready(function () {
-                    $('#classement_joueur').DataTable();
-                });
-            </script>
-        {% endblock %}
+        </table>
+    </div>
+{% endblock %}
+{% block postscripts %}
+
+    <script>
+        jQuery.extend(jQuery.fn.dataTableExt.oSort, {
+            "num-html-pre": function (a) {
+                var x = String(a).replace(/<[\s\S]*?>/g, "");
+                return parseFloat(x);
+            },
+
+            "num-html-asc": function (a, b) {
+                return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+            },
+
+            "num-html-desc": function (a, b) {
+                return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+            }
+        });
+        $(document).ready(function () {
+            $('#classement_joueur').DataTable({
+                columnDefs: [
+                    {type: 'num-html', targets: 1},
+                    {type: 'num-html', targets: 2},
+                    {type: 'num-html', targets: 3},
+                    {type: 'num-html', targets: 4}
+                ]
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,5 +1,6 @@
 <html>
-<?php 
+<?php
+//test
 if (!@include "includes/classes.php")
      include "includes/classes.php";
 require "ident.php";

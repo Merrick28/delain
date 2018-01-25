@@ -14,38 +14,38 @@
 	
 	<div style="contenu">Bienvenue dans les souterrains
 
-Aventurier, baladin, réfugié, bandit de grand chemin, te voici arrivé sur les terres du royaume de Delain… Ou plutôt devrait-on dire… sous les terres.
-Là où s’éveille depuis peu un mal très ancien ; dans les ténèbres de ces cavernes au plus profond desquelles Malkiar le Rouge reprend lentement ses forces et envoie ses hordes démoniaques à l’assaut des extérieurs… Sauras-tu surmonter les mille épreuves qui se dresseront devant toi, affronter les dangers de cette vie souterraine ? Pourras-tu protéger les contrées extérieures de ce mal grandissant ? Entre, et trouve par toi-même les réponses à ces questions. Les souterrains de Delain est un jeu de rôles en ligne, où vous pouvez incarner jusqu'à 3 aventuriers. Il se déroule en tour par tour, et les seuls outils nécessaires pour y jouer sont une connexion internet, un navigateur, et une adresse mail. Pour plus d'infos : comment débuter, les règles, et la faq.
+Aventurier, baladin, rï¿½fugiï¿½, bandit de grand chemin, te voici arrivï¿½ sur les terres du royaume de Delainï¿½ Ou plutï¿½t devrait-on direï¿½ sous les terres.
+Lï¿½ oï¿½ sï¿½ï¿½veille depuis peu un mal trï¿½s ancien ; dans les tï¿½nï¿½bres de ces cavernes au plus profond desquelles Malkiar le Rouge reprend lentement ses forces et envoie ses hordes dï¿½moniaques ï¿½ lï¿½assaut des extï¿½rieursï¿½ Sauras-tu surmonter les mille ï¿½preuves qui se dresseront devant toi, affronter les dangers de cette vie souterraine ? Pourras-tu protï¿½ger les contrï¿½es extï¿½rieures de ce mal grandissant ? Entre, et trouve par toi-mï¿½me les rï¿½ponses ï¿½ ces questions. Les souterrains de Delain est un jeu de rï¿½les en ligne, oï¿½ vous pouvez incarner jusqu'ï¿½ 3 aventuriers. Il se dï¿½roule en tour par tour, et les seuls outils nï¿½cessaires pour y jouer sont une connexion internet, un navigateur, et une adresse mail. Pour plus d'infos : comment dï¿½buter, les rï¿½gles, et la faq.
 
 
 
-Coteries et autres joyeusetés...
+Coteries et autres joyeusetï¿½s...
 
 18/05/2006
 
 Les coteries sont apparues dans Delain.
 
-Deux autres fonctions ont été mises en place, dont nous vous laissons la surprise lors de vos explorations. Attention où vous mettez les pieds !
+Deux autres fonctions ont ï¿½tï¿½ mises en place, dont nous vous laissons la surprise lors de vos explorations. Attention oï¿½ vous mettez les pieds !
 
 Merrick
 
-Les souterrains de Delain sont hébergés par la société Pyrenet
+Les souterrains de Delain sont hï¿½bergï¿½s par la sociï¿½tï¿½ Pyrenet
 
-Delain à 3 ans !
+Delain ï¿½ 3 ans !
 
 24/04/2006
 
-Eh oui, 3 ans déjà !
-Pour cela, 10 px sont offerts à tous !
-Vos réactions sur le forum
+Eh oui, 3 ans dï¿½jï¿½ !
+Pour cela, 10 px sont offerts ï¿½ tous !
+Vos rï¿½actions sur le forum
 
 Merrick
 
-Collection 2006 : les monstres se mettent à la mode
+Collection 2006 : les monstres se mettent ï¿½ la mode
 
 15/04/2006
 
-Afin de diversifier un peu les monstres, voici qu'ils ont décidé de ne plus s'habiller tous de la même façon. A vous de découvrir ==> le Forum
+Afin de diversifier un peu les monstres, voici qu'ils ont dï¿½cidï¿½ de ne plus s'habiller tous de la mï¿½me faï¿½on. A vous de dï¿½couvrir ==> le Forum
 
 Blade
 
@@ -53,7 +53,7 @@ Nouvelle charte : comment vous situez vous ?
 
 12/04/2006
 
-Une nouvelle charte va voir le jour prochainement, l’ancienne traitant principalement des abus sur le partage des points d’expériences. Lors de la rédaction de la nouvelle charte, un point important est soulevé ==> Votre avis
+Une nouvelle charte va voir le jour prochainement, lï¿½ancienne traitant principalement des abus sur le partage des points dï¿½expï¿½riences. Lors de la rï¿½daction de la nouvelle charte, un point important est soulevï¿½ ==> Votre avis
 
 Blade
 
@@ -61,7 +61,7 @@ Pack graphique
 
 24/03/2006
 
-Le pack graphique a été mis à jour ce matin. Pour ceux qui l'utilisent déjà, je vous conseille fortement de le mettre à jour.
+Le pack graphique a ï¿½tï¿½ mis ï¿½ jour ce matin. Pour ceux qui l'utilisent dï¿½jï¿½, je vous conseille fortement de le mettre ï¿½ jour.
 Pour les autres, je ne saurai que trop vous conseiller de l'utiliser ;)
 
 Merrick

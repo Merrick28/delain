@@ -3,7 +3,7 @@
 <H4>DB Admin</H4>
 <?
 /*
- * DB Admin. Small webbased acces to SQL databeses if you don´t have native
+ * DB Admin. Small webbased acces to SQL databeses if you donï¿½t have native
  * access to db.
  * Warning ! THIS IS UNSUPPORTED,DIRTY SOFTWARE !
  * 
