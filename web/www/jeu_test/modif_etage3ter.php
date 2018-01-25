@@ -1,5 +1,5 @@
 <?php 
-/* Création, modification des lieux */
+/* #LAG - Création, modification des lieux */
 
 include_once "verif_connexion.php";
 include_once '../includes/template.inc';
