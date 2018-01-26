@@ -83,7 +83,7 @@ switch($methode)
 		$req_vue_joueur = $req_vue_joueur . "and pobj_obj_cod = obj_cod ";
 		$req_vue_joueur = $req_vue_joueur . "and obj_gobj_cod = gobj_cod ";
 		$req_vue_joueur = $req_vue_joueur . "and gobj_tobj_cod = tobj_cod ";
-		$req_vue_joueur = $req_vue_joueur . "order by tobj_libelle ";
+		$req_vue_joueur = $req_vue_joueur . "order by tobj_libelle, obj_nom_generique, obj_cod ";
 		$db->query($req_vue_joueur);
 		
 		// on affiche la ligne d'en tête objets
