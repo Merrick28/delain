@@ -9,6 +9,9 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
+//#LAG Outils en JS
+echo '<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>';
+
 //
 //Contenu de la div de droite
 //
@@ -42,9 +45,13 @@ if ($droit['objet'] != 'O')
 }
 else
 {
-	
+	if (($methode=="mod3" && ISSET($_POST["cancel"])) || ($methode=="cre2" && ISSET($_POST["cancel"])))
+    {
+        $methode = "mod" ;
+    }
+
 	if(!isset($methode))
-		$methode = "debut";
+		$methode = "mod";
 	switch($methode)
 	{
 		case "debut":
@@ -202,7 +209,7 @@ else
 				<td><input type="text" name="gobj_stabilite"></td>
 			</tr>
 			<tr>
-				<td colspan="2"><center><input type="submit" class="test" value="Valider !"></center></td>
+				<td colspan="2"><center><input type="submit" class="test" name="cancel" value="Annuler">&nbsp;&nbsp;<input type="submit" class="test" value="Valider !"></center></td>
 			</tr>
 			
 			</table></center>
@@ -210,36 +217,61 @@ else
 			<?php 
 			break;
 		case "mod": // modification d'un objet existant
-			?>
-			Choisissez l’objet à modifier :<br>
-			<form name="mod" action="<?php echo $PHP_SELF;?>" method="post">
-			<input type="hidden" name="methode" value="mod2">
-			<select name="gobj_cod">
 
-		<option value="">---------------</option>';
-			<?php 
-		$req = 'select tobj_libelle,gobj_cod,gobj_nom from objet_generique,type_objet
-												where gobj_tobj_cod not in (3,5,9,10) 
-												and gobj_tobj_cod = tobj_cod 
-												order by gobj_tobj_cod,gobj_nom';
-		$db->query($req);
-		$ch = '';
-		while($db->next_record())
-		{
-				if ($db->f('tobj_libelle') != $type_objet)
-				{
-					$ch .= '</optgroup><optgroup label="Type d’objet : ' . $db->f('tobj_libelle') . '">';
-					$type_objet = $db->f('tobj_libelle');
-				}
-				$ch .= '<option value="' . $db->f('gobj_cod') . ';">' . $db->f('gobj_nom') . '</option>';
-		}
-			$ch = substr($ch,11);	
-			echo $ch;			
-			?>
-			</select><br>
-			<input type="submit" value="Valider" class="test">
-			</form>
-			<?php 
+            echo '<br><a href="'.$PHP_SELF.'?methode=cre">Création d’un nouvel objet ?</a><br><br><b>Modification d’un objet existant:</b><br><br>';
+
+            // LISTE DES OBJETS POSSIBLES
+            echo '<SCRIPT language="javascript"> var listeBase = new Array();';
+            $nb_tobj = 0;
+            $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
+                    inner join type_objet on tobj_cod = gobj_tobj_cod where gobj_tobj_cod not in (3,5,9,10) 
+                    order by tobj_libelle, gobj_nom";
+            $db->query($req_tobj);
+            while($db->next_record())
+            {
+                $gobj_nom = $db->f("gobj_nom");
+                $gobj_nom = str_replace("\"", "", $gobj_nom);
+                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                $gobj_valeur = $db->f("gobj_valeur");
+                echo("listeBase[$nb_tobj] = new Array(0); \n");
+                echo("listeBase[$nb_tobj][0] = \"".$db->f("gobj_cod")."\"; \n");
+                echo("listeBase[$nb_tobj][1] = \"".$gobj_nom."\"; \n");
+                echo("listeBase[$nb_tobj][2] = \"".$tobj_libelle."\"; \n");
+                echo("listeBase[$nb_tobj][3] = \"".$gobj_valeur."\"; \n");
+                $nb_tobj++;
+            }
+            echo '</SCRIPT>			
+            <form name="mod" action="'.$PHP_SELF.'" method="post">
+            <select style="width: 280px;" name="selecttype" onchange="cleanOption(document.mod.gobj_cod); addOptionArray(document.mod.gobj_cod, listeBase, this.value, document.mod.selectvaleur.value);"><option value="">Tous types d’objets</option>';
+
+            $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
+            $db->query($req_tobj);
+            while($db->next_record())
+            {
+                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
+            }
+
+            echo '
+            </select><br />
+            <select style="width: 280px;" name="selectvaleur" onchange="cleanOption(document.mod.gobj_cod); addOptionArray(document.mod.gobj_cod, listeBase, document.mod.selecttype.value, this.value);">
+                <option value="">Valeur indéfinie</option>
+                <option value="0;1000">Moins de 1 000 brouzoufs</option>
+                <option value="1000;5000">Entre 1 000 et 5 000 brouzoufs</option>
+                <option value="5000;10000">Entre 5 000 et 10 000 brouzoufs</option>
+                <option value="10000;20000">Entre 10 000 et 20 000 brouzoufs</option>
+                <option value="20000;50000">Entre 20 000 et 50 000 brouzoufs</option>
+                <option value="50000;100000">Entre 50 000 et 100 000 brouzoufs</option>
+                <option value="100000;100000000">Plus de 100 000 brouzoufs</option>
+            </select><br /><br>Choisissez l’objet à modifier :<br>
+            <input type="hidden" name="methode" value="mod2">
+            <select name="gobj_cod" style="width:280px;"></select>
+            <input type="submit" value="Valider" class="test">
+            </form>
+            <SCRIPT>
+            addOptionArray(document.mod.gobj_cod, listeBase, "", "");
+            </SCRIPT>';
+
 			break;
 		case "mod2":
 			$db2 = new base_delain;
@@ -457,7 +489,7 @@ else
 				<td><input type="text" name="gobj_stabilite" value="<?php echo $db->f("gobj_stabilite");?>"></td>
 			</tr>
 			<tr>
-				<td colspan="2"><center><input type="submit" class="test" value="Valider !"></center></td>
+				<td colspan="2"><center><input type="submit" class="test" name="cancel" value="Annuler">&nbsp;&nbsp;<input type="submit" class="test" value="Valider !"></center></td>
 			</tr>
 			
 			</table></center>
@@ -534,7 +566,7 @@ else
 				"," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] .
 				"," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
 			$db->query($req);
-			echo "<p>L'insertion s'est bien déroulée.";
+			echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"".$PHP_SELF."?methode=mod\">Créer/Modifier d'autres objets</a>";
 			break;
 		case "mod3":
 			// détermination du obcar_cod
@@ -611,7 +643,7 @@ else
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
 			where obj_gobj_cod = $objet and obj_modifie = 0";
 			$db->query($req);
-			echo "<p><br>La mise à jour des anciens objets aussi";
+			echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"".$PHP_SELF."?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
 			break;
 
 	}
