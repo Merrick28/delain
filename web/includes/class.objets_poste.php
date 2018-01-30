@@ -220,8 +220,7 @@ class objets_poste
 	//----------------------------------------
     /**
      * Retourne les frais de port en fonction du poids d'un objet
-     * @param integer $poids => poids de l'objet	 
-     * @global bdd_mysql $pdo
+     * @param integer $poids => poids de l'objet
      * @return numeric
      */
     function getFraisDePort($poids)
@@ -245,8 +244,7 @@ class objets_poste
 	
 	//----------------------------------------
     /**
-     * Retourne la date de livraison d'un objet 
-     * @global bdd_mysql $pdo
+     * Retourne la date de livraison d'un objet
      * @return date
      */
     function getDateLivraison()
@@ -283,8 +281,7 @@ class objets_poste
 		
 	//----------------------------------------
     /**
-     * Retourne la date de confiscation d'un objet 
-     * @global bdd_mysql $pdo
+     * Retourne la date de confiscation d'un objet
      * @return date
      */
     function getDateConfiscation()
@@ -294,8 +291,7 @@ class objets_poste
 
 	//----------------------------------------
     /**
-     * Retourne vrai si l'objet doit-être confisqué par la poste 
-     * @global bdd_mysql $pdo
+     * Retourne vrai si l'objet doit-être confisqué par la poste
      * @return boolean
      */
     function estConfiscable()
@@ -306,7 +302,6 @@ class objets_poste
 	//----------------------------------------
     /**
      * Supprime l'objet de la poste ainsi que l'objet lui-meme si il est confiscable
-     * @global bdd_mysql $pdo
      * @param integer $perso_cod => le perso qui est à l'origine de la confiscation (emmeteur ou destinataire)		 
      * @return boolean : true si l'objet a été bien confisqué
      */
@@ -375,11 +370,9 @@ class objets_poste
 	
     /**
      * Retourne un tableau du matos qu'un perso peut envoyer par les relais de la poste
-     * @global bdd_mysql $pdo
      * @param $perso_cod : chercher dans l'inventaire de ce perso 
 	 * @return array
      */
-	 
     function getObjetsDeposableRelaisPoste($perso_cod)
     { 
 	    $retour = array();
@@ -394,8 +387,25 @@ class objets_poste
 	               AND perobj_equipe = 'N'
 	               AND perobj_identifie = 'O'
 	               AND gobj_deposable = 'O'
-	               AND gobj_tobj_cod not in (5,11,14,22,28,30,34)
+	               AND gobj_tobj_cod not in (5,11,17,18,19,21,22,28,30,34,26,35,31,7,14)
 	               ORDER BY tobj_libelle,gobj_nom ";
+
+                    //$types_ventes_gros = "(5, 11, 17, 18, 19, 21, 22, 28, 30, 34)";
+                    // Objets interdits dans les relais: (vente en gros+ qq elements specifiques)
+                    // 5;"Rune"
+                    // 7;"Relique"
+                    // 11;"Objet de quête"
+                    // 14;"Poisson"
+                    // 17;"Minerai"
+                    // 19;"Pierre précieuse"
+                    // 21;"Potion"
+                    // 22;"Plantes"
+                    // 26;"Glyphe"
+                    // 28;"Espèce Minérale"
+                    // 30;"Ingrédient magique"
+                    // 31;"Quiddités"
+                    // 34;"Gemme"
+                    // 35;"Clé"
 
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perobj_perso_cod" => $perso_cod), $stmt);
@@ -414,7 +424,6 @@ class objets_poste
 	 *   - suppression de l'objet de l'inventaire
 	 *   - Ajout d'une ligne d'évenement
 	 *   - sauvegarde le present objet
-     * @global bdd_mysql $pdo
 	 * @return boolean
      */
 	 
@@ -485,8 +494,7 @@ class objets_poste
 	 * Cette fonction réalise les actions nécéssaires dans l'inventaire du perso destinataire pour ajouter un objet qui vient d'être retiré:
 	 *   - ajout de l'objet de l'inventaire	 
 	 *   - Ajout d'une ligne d'évenement
-	 *   - supression du présent objet de la base 
-     * @global bdd_mysql $pdo
+	 *   - supression du présent objet de la base
 	 * @return boolean
      */
 	 
