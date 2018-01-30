@@ -1,4 +1,13 @@
-<?php 
+<?php
+//#LAG Il y a un gros risques d'injection SQL ou de fuites d'information
+// Par protection je désactive ce code, il pourra être supprimé par la suite si personne ne se manifeste.
+// Fait le 30/01/2018
+//== Pour des raisons de sécurités====================================================
+echo "case[0]=',,,,,,,,Impossible de consulter les informations présentées ordinairement ici.
+Si ces infos vous manquent faite une requête sur le forum.;'";
+die();
+//=====================================================================================
+
 include "classes.php";
 // initialisation des variables
 $i = 0;
