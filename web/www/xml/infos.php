@@ -1,4 +1,8 @@
-<?php 
+<?php
+//#LAG Il y a un gros risques d'injection SQL ou de fuites d'information
+// Par protection je désactive ce code, il pourra être supprimé par la suite si personne ne se manifeste.
+// Fait le 30/01/2018
+
 /************************************************************/
 /* infos.php                                                */
 /* g�n�re un fichier xml avec des infos, r�cup�rables       */
@@ -8,6 +12,13 @@ header ('Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT');
 header ('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 header ('Content-Type: text/xml');
 echo '<?xml version="1.0" encoding="iso-8859-1"?><delain>';
+
+//== Pour des raisons de sécurités====================================================
+echo "<information>Il n'est plus possible de consulter les informations présentées ordinairement ici.
+Si ces infos vous manquent faite une requête sur le forum.</information></delain>";
+die();
+//=====================================================================================
+
 include 'classes.php';
 $db = new base_delain;
 //
