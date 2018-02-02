@@ -25,6 +25,8 @@ $BODY$/*****************************************************************/
 /* Créé le 29/08/2006                                            */
 /* Liste des modifications :                                     */
 /*    2018-02-02 - LAG - correction du bug sur le decalage dlt   */
+/*		+ Ajout du controle que l'attaquant possède la compétence*/
+/*		+ Modification des degats du Balayage					 */
 /*****************************************************************/
 declare
 	--------------------------------------------------------------------------------
@@ -95,10 +97,29 @@ declare
 	presence_mur integer;          --Détermine la présence d’un mur sur la trajectoire (attaque de lancement)
 	decalage_dlt integer;          --Variable contenant le décalage de temps pour le balayage                                                                                                                                tempo integer;--integer pour le calcul de la fonction min du garde manger
 	compt integer;                 --fourre tout
+	num_comp_spe integer;          --code de la compétence pour vérifier que l'attaquant la possède
 
 begin
 	code_retour := '';
 
+	/********************************************************************************/
+	/* DEBUT : Déterminer le type d'attaque                                         */
+	/********************************************************************************/
+	if v_type_attaque = 16 then
+		num_comp_spe := 89;			---code du balayage
+	elsif v_type_attaque = 17 then
+		num_comp_spe := 94;			---code du garde manger
+	elsif v_type_attaque = 18 then
+		num_comp_spe := 95;			---code de l'Hydre à neuf têtes
+	elsif v_type_attaque = 19 then
+		num_comp_spe := 96;			---code du Jeu de Trolls
+	else
+		code_retour := '<p>Erreur ! Cette compétence est inconnue des attaques speciales!';
+		return code_retour;
+	end if;
+
+
+	/********************************************************************************/
 	-- Récupération des données de l’arme de l’attaquant
 	select into comp_attaque, nb_des_attaque, valeur_des_attaque, bonus_attaque, nom_arme
 		pcomp_modificateur, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_nom_generique
@@ -128,6 +149,24 @@ begin
 	where perso_cod = v_attaquant
 		and ppos_perso_cod = v_attaquant
 		and ppos_pos_cod = pos_cod;
+
+
+	/********************************************************************************/
+	/* DEBUT : Vérifier que l'attaquant possède la compétence                       */
+	/********************************************************************************/
+	select into comp_attaque
+		pcomp_modificateur
+		from perso_competences
+		where pcomp_perso_cod = v_attaquant
+		and pcomp_pcomp_cod = num_comp_spe;
+	if not found then
+		code_retour := '<p>Erreur ! Vous n’avez la compétence requise pour ce type d’attaque !<br>';
+		return code_retour;
+	end if;
+	/********************************************************************************/
+	/* FIN   :  Vérifier que l'attaquant possède la compétence                      */
+	/********************************************************************************/
+
 
 	/********************************************************************************/
 	/*           On détermine dans quel type d’attaque on se trouve.                */
@@ -247,9 +286,9 @@ begin
 				/* DEBUT : calcul des dégâts portés          */
 				armure_cible := f_armure_perso_physique(ligne.perso_cod);
 				if armure_cible < 11 then
-					impact_armure := (armure_cible / 10) + 2;
+					impact_armure := ((10-armure_cible) / 10) + 6;
 				else
-					impact_armure := 3;
+					impact_armure := 6;
 				end if;
 
 				degats_portes := floor(ligne.perso_con * impact_armure); --Calcul des dégâts
