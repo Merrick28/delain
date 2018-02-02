@@ -305,7 +305,7 @@ begin
 
 					/* on décale la dlt de x minutes */
 					decalage_dlt := round((armure_cible * armure_cible + 5) / 2);
-					update perso set perso_dlt = perso_dlt + 'decalage_dlt'::interval
+					update perso set perso_dlt = perso_dlt + (decalage_dlt::text || ' minutes')::interval
 					where perso_cod = ligne.perso_cod;
 					/***************Code d’analyse**********/
 					code_retour := code_retour || '<br>Décalage Dlt : ' || to_char(coalesce(decalage_dlt, 0), '999999999');
