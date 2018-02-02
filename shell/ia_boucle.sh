@@ -32,7 +32,7 @@ then
 num_skip=`expr $num_skip + 1` 
 else
 num_traite=`expr $num_traite + 1` 
-$psql -U webdelain -d delain << EOF >> $logdir/ia_auto.log 2>&1
+$psql -U webdelain -d delain << EOF >> $logdir/ia_auto.log 2>$logfir/ia_auto_error.log
 \timing
 select ia_monstre($monstre);
 EOF
