@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION public.dep_pos_cod(integer,integer,integer)
-  RETURNS text AS
+  RETURNS void AS
 $BODY$
 /*****************************************************************/
 /* function dep_pos_cod					 																 */
