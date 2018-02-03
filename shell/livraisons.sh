@@ -3,9 +3,9 @@ source `dirname $0`/env
 for f in `find $livroot -type f| grep -v "initial_import.sql"|sort`; do
   livexist=`$shellroot/livraison_exists.sh $(basename $f)`
   if [ "$livexist" -eq "0" ];then
-      echo "LIVRAIONS A TRAITER : $f"
-      $psql -A -q -t -d delain -U webdelain -f $f
-      $psql -A -q -t -d delain -U webdelain << EOF
+      echo "LIVRAISONS A TRAITER : $f"
+      $psql -A -q -t -d delain -U webdelain -f $f >> `dirname $0`/livraison.log
+      $psql -A -q -t -d delain -U webdelain << EOF >> `dirname $0`/livraison.log
 insert into livraisons (liv_fichier) values ('$(basename $f)');
 EOF
   else
@@ -14,6 +14,6 @@ EOF
 done
 # livraison des fonctions
 for f in `find $livfunc -type f| sort`; do
-      echo "LIVRAIONS A TRAITER : $f"
-      $psql -A -q -t -d delain -U webdelain -f $f
+      echo "LIVRAISONS A TRAITER : $f"
+      $psql -A -q -t -d delain -U webdelain -f $f >> `dirname $0`/livraison.log
 done
