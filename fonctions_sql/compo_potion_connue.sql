@@ -1,4 +1,4 @@
-CREATE FUNCTION compo_potion_connue(integer, integer) RETURNS text
+CREATE or replace FUNCTION compo_potion_connue(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*********************************************************/
 /* function compo_potions_connue                         */

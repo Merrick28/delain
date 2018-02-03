@@ -2,7 +2,7 @@
 -- Name: compo_potions(integer, integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE FUNCTION compo_potions(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION compo_potions(integer, integer, integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function compo_potions                                */
