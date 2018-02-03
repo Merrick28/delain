@@ -45,4 +45,4 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION potions.pot_enchanteur(integer) OWNER TO postgres;
+ALTER FUNCTION potions.pot_enchanteur(integer) OWNER TO delain;

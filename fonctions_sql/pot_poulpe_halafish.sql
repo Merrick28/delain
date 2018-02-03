@@ -2,7 +2,7 @@
 -- Name: pot_poulpe_halafish(integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE FUNCTION potions.pot_poulpe_halafish(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_poulpe_halafish(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_poulpe_halafish                          */

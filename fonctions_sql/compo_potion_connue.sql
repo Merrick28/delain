@@ -2,7 +2,7 @@
 -- Name: compo_potion_connue(integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION compo_potion_connue(integer, integer) RETURNS text
+CREATE or replace FUNCTION potions.compo_potion_connue(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*********************************************************/
 /* function compo_potions_connue                         */
@@ -305,4 +305,4 @@ ALTER FUNCTION potions.compo_potion_connue(integer, integer) OWNER TO delain;
 -- Name: FUNCTION compo_potion_connue(integer, integer); Type: COMMENT; Schema: potions; Owner: delain
 --
 
-COMMENT ON FUNCTION compo_potion_connue(integer, integer) IS 'Création d’une potion connue.';
+COMMENT ON FUNCTION potions.compo_potion_connue(integer, integer) IS 'Création d’une potion connue.';

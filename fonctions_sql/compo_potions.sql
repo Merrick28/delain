@@ -2,7 +2,7 @@
 -- Name: compo_potions(integer, integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION compo_potions(integer, integer, integer) RETURNS text
+CREATE or replace FUNCTION potions.compo_potions(integer, integer, integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function compo_potions                                */
@@ -205,5 +205,5 @@ ALTER FUNCTION potions.compo_potions(integer, integer, integer) OWNER TO delain;
 -- Name: FUNCTION compo_potions(integer, integer, integer); Type: COMMENT; Schema: potions; Owner: delain
 --
 
-COMMENT ON FUNCTION compo_potions(integer, integer, integer) IS 'Ajout d’un ingrédient à une potion.';
+COMMENT ON FUNCTION potions.compo_potions(integer, integer, integer) IS 'Ajout d’un ingrédient à une potion.';
 

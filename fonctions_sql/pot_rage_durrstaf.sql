@@ -2,7 +2,7 @@
 -- Name: pot_rage_durrstaf(integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE FUNCTION potions.pot_rage_durrstaf(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_rage_durrstaf(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_rage_durrstaf                            */
