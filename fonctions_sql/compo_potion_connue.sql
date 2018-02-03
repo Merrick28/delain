@@ -1,3 +1,7 @@
+--
+-- Name: compo_potion_connue(integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
 CREATE or replace FUNCTION compo_potion_connue(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*********************************************************/

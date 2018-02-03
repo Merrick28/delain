@@ -1,12 +1,11 @@
-
 --
--- Name: pot_bloque_magie_forte(integer); Type: FUNCTION; Schema: potions; Owner: delain
+-- Name: pot_bloque_magie_moyen(integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION potions.pot_bloque_magie_forte(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_bloque_magie_moyen(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
-/* function pot_bloque_magie_forte                       */
+/* function pot_bloque_magie_moyen                      */
 /* parametres :                                          */
 /*  $1 = personnage qui boit la potion                   */
 /* Sortie :                                              */
@@ -30,7 +29,7 @@ begin
   /*********************************************************/
   /*        I N I T I A L I S A T I O N S                  */
   /*********************************************************/
-  v_gobj_cod := 693;
+  v_gobj_cod := 692;
   code_retour := '';
   /*Partie générique pour toutes les potions*/
   select into code_retour potions.potion_generique(personnage,v_gobj_cod);
@@ -46,14 +45,11 @@ begin
     perform ajoute_bonus(personnage, 'BLM', 3, 40);
     code_retour := code_retour||'Vous vous sentez un peu plus ... nain ... ';
     -- les chances de toucher
-    perform ajoute_bonus(personnage, 'TOU', 3, -30);
-    code_retour := code_retour||'<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 30% de chances de toucher au combat.';
-    -- l'esquive
-    perform ajoute_bonus(personnage, 'ESQ', 3, -20);
-    code_retour := code_retour||'<br>Le nain est lourd, il a du mal à éviter les coups. Vous gagnez un malus de 20% de chances d''esquiver les coups.';
+    perform ajoute_bonus(personnage, 'TOU', 3, -10);
+    code_retour := code_retour||'<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 10% de chances de toucher au combat.';
   end if;
   return code_retour;
 end;	$_$;
 
 
-ALTER FUNCTION potions.pot_bloque_magie_forte(integer) OWNER TO delain;
+ALTER FUNCTION potions.pot_bloque_magie_moyen(integer) OWNER TO delain;

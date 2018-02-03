@@ -2,7 +2,7 @@
 -- Name: pot_bip(integer); Type: FUNCTION; Schema: potions; Owner: postgres
 --
 
-CREATE or replace FUNCTION pot_bip(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_bip(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_bip						                           */

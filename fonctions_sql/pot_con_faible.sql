@@ -1,37 +1,33 @@
 
-
 --
--- Name: pot_bloque_magie_faible(integer); Type: FUNCTION; Schema: potions; Owner: delain
+-- Name: pot_con_faible(integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION potions.pot_bloque_magie_faible(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_con_faible(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
-/* function pot_bloque_magie_faible                      */
+/* function pot_force_faible	                         */
 /* parametres :                                          */
 /*  $1 = personnage qui boit la potion                   */
 /* Sortie :                                              */
 /*  code_retour = texte exploitable par php              */
 /*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
 declare
   personnage alias for $1;	-- perso_cod
   code_retour text;				-- code retour
-  --
   v_gobj_cod integer;			-- code de l'objet générique
-  v_obj_cod integer;			-- obj_cod de la potion
-  v_nom_potion text;			-- nom de la potion
-  v_pa integer;					-- PA de l'utilisateur
-  v_stabilite integer;			-- stabilite de la potion
-  v_des_stabilite integer;	-- lancer de dés sur la stabilité
-  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
-  v_bonus_existant integer;	-- bonus existant ?
-  v_bonus integer;	-- bonus final calculé
+  duree integer;
+
+
 
 begin
   /*********************************************************/
   /*        I N I T I A L I S A T I O N S                  */
   /*********************************************************/
-  v_gobj_cod := 691;
+  v_gobj_cod := 530;
   code_retour := '';
   /*Partie générique pour toutes les potions*/
   select into code_retour potions.potion_generique(personnage,v_gobj_cod);
@@ -42,13 +38,12 @@ begin
   /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
   else
     code_retour := split_part(code_retour,';',2);
-    -- on a les effets normaux de la potion maintenant.
-    -- le bloque magie
-    perform ajoute_bonus(personnage, 'BLM', 3, 20);
-    code_retour := code_retour||'Vous vous sentez un peu plus ... nain ... ';
+    duree := lancer_des(1,10) + 20;
+    perform f_modif_carac(personnage,'CON',duree,1);
+    code_retour := code_retour||'<br>Vous n''auriez pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
   end if;
   return code_retour;
 end;	$_$;
 
 
-ALTER FUNCTION potions.pot_bloque_magie_faible(integer) OWNER TO delain;
+ALTER FUNCTION potions.pot_con_faible(integer) OWNER TO delain;

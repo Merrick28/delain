@@ -3,7 +3,7 @@
 -- Name: pot_bibliothequaire(integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION pot_bibliothequaire(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_bibliothequaire(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_bibliothequaire                          */
