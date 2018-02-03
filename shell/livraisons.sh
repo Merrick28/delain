@@ -13,7 +13,7 @@ EOF
   fi
 done
 # livraison des fonctions
-for f in `find livfunc -type f| sort`; do
+for f in `find $livfunc -type f| sort`; do
       echo "LIVRAIONS A TRAITER : $f"
       $psql -A -q -t -d delain -U webdelain -f $f
 done
