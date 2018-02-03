@@ -8,3 +8,5 @@ export webroot=/home/delain/delain/web/www
 export shellroot=/home/delain/delain/shell
 # Racine des livraisons
 export livroot=/home/delain/delain/sql
+# Racine des fonctions sql
+export livfunc=/home/delain/delain/fonctions_sql
