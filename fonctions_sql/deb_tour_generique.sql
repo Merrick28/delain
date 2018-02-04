@@ -2,7 +2,7 @@
 -- Name: deb_tour_generique(integer, text, text, text, text, numeric, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, text) RETURNS text
+create or replace function deb_tour_generique(integer, text, text, text, text, numeric, text) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
 /* deb_tour_generique                             */
@@ -253,7 +253,7 @@ COMMENT ON FUNCTION deb_tour_generique(integer, text, text, text, text, numeric,
 -- Name: deb_tour_generique(integer, text, text, text, text, numeric, integer, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, integer, text) RETURNS text
+create or replace function deb_tour_generique(integer, text, text, text, text, numeric, integer, text) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
 /* deb_tour_generique                             */
@@ -476,7 +476,7 @@ COMMENT ON FUNCTION deb_tour_generique(integer, text, text, text, text, numeric,
 -- Name: deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text) RETURNS text
+create or replace function deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
 /* deb_tour_generique                             */
@@ -657,7 +657,7 @@ COMMENT ON FUNCTION deb_tour_generique(integer, text, text, integer, character, 
 -- Name: deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer) RETURNS text
+create or replace function deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/**************************************************/
 /* deb_tour_generique                             */
