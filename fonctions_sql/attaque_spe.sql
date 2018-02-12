@@ -39,7 +39,8 @@ declare
   pos_attaquant integer;
   v_attaquant_dex integer;
   v_attaquant_for integer;
-  comp_attaque integer;
+  comp_attaque integer;       -- niveau de réussite de la compétence calculé avec les carac de la cible
+  comp_modificateur integer;  -- niveau de compétence de l'attaquant
   nb_des_attaque integer;
   valeur_des_attaque integer;
   bonus_attaque integer;
@@ -150,7 +151,7 @@ begin
   /********************************************************************************/
   /* DEBUT : Vérifier que l'attaquant possède la compétence                       */
   /********************************************************************************/
-  select into comp_attaque
+  select into comp_modificateur
     pcomp_modificateur
   from perso_competences
   where pcomp_perso_cod = v_attaquant
@@ -222,6 +223,7 @@ begin
       --Détermination pour chaque cible si elle est touchée
       --------------------------------------------------------------------------------
       /* la chance de réussite sur une cible, donc son esquive, est uniquement déterminée par la dextérité de la cible*/
+      /* Ici la réussite de la compétence dépend de la cible, le niveau de competence de l'attaquant va influencer sur les dégats */
       comp_attaque := 100 - round((ligne.perso_dex * ligne.perso_dex * ligne.perso_dex) / 120);
 
       if comp_attaque < 10 then
@@ -287,7 +289,7 @@ begin
           impact_armure := 6;
         end if;
 
-        degats_portes := floor(ligne.perso_con * impact_armure); --Calcul des dégâts
+        degats_portes := floor(ligne.perso_con * impact_armure * comp_modificateur /100 ); --Calcul des dégâts
         /***************Code d’analyse**********/
         code_retour := code_retour || '<br>Impact armure : ' || to_char(coalesce(impact_armure, 0), '999999999') || ',
 					dégâts portés : ' || to_char(coalesce(degats_portes, 0), '999999999') || ',
