@@ -2,7 +2,7 @@
 include "includes/classes.php";
 include "ident.php";
 $db = new base_delain;
-$perso_cible = $_REQUEST['perso'];
+$perso_cible = 1*$_REQUEST['perso'];
 ?>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
