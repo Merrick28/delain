@@ -323,7 +323,7 @@ DLT : <?php echo $db->f("dlt");?></TD>
 <?php // LISTE DES COMPETENCES
 	$req_comp = "select comp_cod,comp_libelle,pcomp_modificateur from perso_competences,competences ";
 	$req_comp = $req_comp . "where pcomp_perso_cod = $mod_perso_cod ";
-	$req_comp = $req_comp . "and pcomp_modificateur != 0 ";
+	//$req_comp = $req_comp . "and pcomp_modificateur != 0 ";
 	$req_comp = $req_comp . "and pcomp_pcomp_cod = comp_cod ";
 	$req_comp = $req_comp . "order by comp_libelle ";
 	//ECHO $req_comp;
