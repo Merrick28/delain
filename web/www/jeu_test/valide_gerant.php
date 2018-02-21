@@ -1,4 +1,4 @@
-<?php 
+<?php
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;
@@ -25,6 +25,10 @@ if ($db->f("perso_admin_echoppe") != 'O')
 }
 if ($erreur == 0)
 {
+    // Conversion en numeric pour minimiser l'injection sql
+    $perso_cible = 1*$perso_cible;
+    $lieu = 1*$lieu ;
+
 	// pour vérif, on récupère les coordonnées du magasin
 	$req = "select pos_x,pos_y,etage_libelle ";
 	$req = $req . "from lieu_position,positions,etage ";
@@ -37,7 +41,7 @@ if ($erreur == 0)
 	switch($methode)
 	{
 		case "ajout":
-			$req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso->perso_cod,$lieu) ";
+			$req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso_cible,$lieu) ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";
@@ -48,7 +52,7 @@ if ($erreur == 0)
 			}
 			break;
 		case "modif":
-			$req = "update magasin_gerant set mger_perso_cod = $perso->perso_cod where mger_lieu_cod = $lieu ";
+			$req = "update magasin_gerant set mger_perso_cod = $perso_cible where mger_lieu_cod = $lieu ";
 			if ($db->query($req))
 			{
 				echo "<p>Modif effectuée !";
