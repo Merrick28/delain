@@ -81,7 +81,7 @@ $req = "select perso_cod,perso_nom ";
 			$req = $req . "and pguilde_perso_cod = perso_cod ";
 			$req = $req . "order by perso_nom ";*/
 			$db->query($req);
-			echo "<select name=\"perso\">";
+			echo "<select name=\"perso_cible\">";
 			while ($db->next_record())
 			{
 				echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_nom") . "</option>";	
@@ -129,7 +129,7 @@ $req = "select perso_cod,perso_nom ";
 			$req = $req . "and pguilde_perso_cod = perso_cod ";
 			$req = $req . "order by perso_nom ";*/
 			$db->query($req);
-			echo "<select name=\"perso\">";
+			echo "<select name=\"perso_cible\">";
 			while ($db->next_record())
 			{
 				echo "<option value=\"" . $db->f("perso_cod") . "\"";
