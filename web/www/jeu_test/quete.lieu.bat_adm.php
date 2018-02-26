@@ -353,7 +353,7 @@ switch($methode2)
 			{
 				$rune_code1 = 26 + rand(1, 20);
 				$rune_code2 = 26 + rand(1, 20);
-				$req = "select cree_objet_perso_nombre($rune_code1, $perso_cod, 1)
+				$req = "select cree_objet_perso_nombre($rune_code1, $perso_cod, 1),
 					cree_objet_perso_nombre($rune_code2, $perso_cod, 1)";
 				$db->query($req);
 				$texte = "<b>trois runes</b>, qui ont été rajoutées à votre inventaire.";
