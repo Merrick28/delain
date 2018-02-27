@@ -55,7 +55,7 @@ $is_vampire         = $perso->perso_niveau_vampire;
 $potions            = $perso->is_potions();
 $religion           = $perso->is_religion();
 $transaction        = $perso->transactions();
-$px_actuel          = round($perso->perso_px);
+$px_actuel          = floor($perso->perso_px);
 $barre_energie      = $perso->barre_energie();
 $is_fam_divin       = $perso->is_fam_divin();
 $pa_dep             = $perso->get_pa_dep();
@@ -137,7 +137,8 @@ $t->set_var('PERSO_PV_MAX', $perso->perso_pv_max);
 // Barre d'énergie enchanteur
 if ($is_enchanteur)
 {
-    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_energie . ".png\" title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\">";
+    //$enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_energie . ".png\" title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\">";
+    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:". $barre_energie."%\"></div></div>";
     $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
 }
 else
@@ -152,7 +153,7 @@ $t->set_var('FORGE', $forge);
 // Barre d'énergie pour familiers divins
 if ($is_fam_divin == 1)
 {
-    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_divine . ".png\" title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\">";
+    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:". $barre_divine."%\"></div></div>";
 }
 else
 {
