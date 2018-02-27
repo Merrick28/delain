@@ -137,7 +137,6 @@ $t->set_var('PERSO_PV_MAX', $perso->perso_pv_max);
 // Barre d'énergie enchanteur
 if ($is_enchanteur)
 {
-    //$enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <img src=\"" . G_IMAGES . "nrj" . $barre_energie . ".png\" title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\">";
     $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:". $barre_energie."%\"></div></div>";
     $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
 }

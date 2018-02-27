@@ -1004,7 +1004,7 @@ class perso
         } else
         {
             // LAG: Affichage au % près.
-            $barre_hp = floor(100*$this->perso_pv/$this->perso_pv_max);
+            $barre_hp = round(100*$this->perso_pv/$this->perso_pv_max);
             if ($barre_hp >= 100)
             {
                 $barre_hp = 100;
