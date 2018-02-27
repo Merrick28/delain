@@ -23,10 +23,20 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
 	$tab_lieu = $db->get_lieu($perso_cod);
-	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
 	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
+
+    // Recherche d'une inscription dans les registres pour retour rapide en arene
+    $req = "select preg_date_inscription from perso_registre where preg_perso_cod=$perso_cod ";
+    $db->query($req);
+    $db->next_record();
+    $date_inscription = $db->f("preg_date_inscription");
+    if ($date_inscription!='')
+    {
+        echo "<br>Vous vous êtes déjà inscrit(e) dans nos registres à la date du ".date("d/m/Y à H:i:s", strtotime($date_inscription))." <br><br>";
+    }
+
 	echo("<p>Vous voyez un vieux registre poussiéreux.");
 	echo("<p><a href=\"action.php?methode=enreg_pos_donjon\">Inscrire votre nom sur le registre?</a></p>");
 }

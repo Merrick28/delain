@@ -45,20 +45,32 @@ if ($erreur == 0)
 	$pos_cod = $db->f("pos_cod");
 	switch($methode)
 	{
-	    case "entrer_arene":
+	case "entrer_arene":
 	    
 	    $req = "select entrer_arene(".$perso_cod.",".$etage_num.",".$pos_cod.") as res";
 		$db->query($req);
 	    $db->next_record();
-	    
+
 	    $res = $db->f("res");
 	    $libelle = explode(";", $res);
 		echo $libelle[1];
-	    
+
 		$break = 'O';
-		
-		break;
-		
+	    break;
+
+    case "entrer_registre":
+
+        $req = "select entrer_registre(".$perso_cod.") as res";
+        $db->query($req);
+        $db->next_record();
+
+        $res = $db->f("res");
+        $libelle = explode(";", $res);
+        echo $libelle[1];
+
+        $break = 'O';
+        break;
+
 		case "debut":
 		?>
 		<p><img src="../images/batadmin.gif"><b><?php  echo($tab_lieu['nom']. '</b> - '. $tab_lieu['description']  ); ?>
@@ -125,8 +137,24 @@ if ($erreur == 0)
 		echo "</select>";
 		echo "<input type=\"submit\" value=\"Entrer (4 PA)\" />";
 		echo "</form>";
-		
+
 		echo "<hr>";
+
+		// Recherche d'une inscription dans les registres pour retour rapide en arene
+        $req = "select count(*) est_inscrit from perso_registre where preg_perso_cod=$perso_cod ";
+        $db->query($req);
+        $db->next_record();
+        if ($db->f("est_inscrit")>0)
+        {
+            echo "<form name=\"ea\" method=\"post\" action=".$PHP_SELF.">";
+            echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_registre\">";
+            echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaité, retourner directement dans l'arène au bureau d'inscription.<br>";
+            echo "Même pas peur: <input class=\"test\" type=\"submit\" value=\"J'y retourne !\" /><br><br>";
+            echo "</form>";
+            echo "<hr>";
+        }
+
+
 		if ($lieu_cod == 1470)
 		{
 			if ($db->is_milice($perso_cod) != 0)
