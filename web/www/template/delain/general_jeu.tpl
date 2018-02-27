@@ -3,7 +3,7 @@
 	<head>
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180227" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 		<style>
 			div#colonne1 {

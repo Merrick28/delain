@@ -425,7 +425,7 @@ img {border:none}
 
 .invalide { background-color: red; }
 
-/* class pour kes barre de pv, xp, etc.... */
+/* class pour les barres de pv, xp, etc.... */
 .container-hp {
 	 display: inline-block;
 	 width: 80px;
