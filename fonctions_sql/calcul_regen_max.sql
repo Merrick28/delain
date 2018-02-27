@@ -45,4 +45,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION public.calcul_regen_max(integer) OWNER TO postgres;
+ALTER FUNCTION public.calcul_regen_max(integer) OWNER TO delain;
