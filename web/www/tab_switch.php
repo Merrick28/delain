@@ -18,7 +18,6 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
     }
     $niveau_xp = ($perso_px - $limite_niveau_actuel);
     $div_xp    = ($limite_niveau - $limite_niveau_actuel);
-    $niveau_xp = $niveau_xp / $div_xp ;
 
     $barre_xp = round(100 * $niveau_xp / $div_xp) ;
     if(($barre_xp>=98) && ($niveau_xp<$div_xp))
