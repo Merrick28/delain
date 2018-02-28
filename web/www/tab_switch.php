@@ -33,7 +33,7 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
 function barre_hp($perso_pv, $perso_pv_max)
 {
     //$barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;        // Gestion de la barre au % pres
-    $barre_hp = round(($perso_pv/$perso_pv_max),1)*100;
+    $barre_hp = round(($perso_pv/$perso_pv_max)*100);
     if ($barre_hp >= 100)
     {
         $barre_hp = 100;
