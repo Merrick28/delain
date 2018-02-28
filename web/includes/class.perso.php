@@ -1003,9 +1003,18 @@ class perso
             $barre_hp = 0;
         } else
         {
-            // LAG: Affichage au % près.
+            // LAG: Affichage au % près (avec des bornes  >2% et <98% pour la lisibilité)
             $barre_hp = round(100*$this->perso_pv/$this->perso_pv_max);
-            if ($barre_hp >= 100)
+            if(($barre_hp>=98) && ($this->perso_pv<$this->perso_pv_max))
+            {
+                $barre_hp = 98;
+            } else if (($barre_hp <= 2) && ($this->perso_pv>0))
+            {
+                $barre_hp = 2;
+            } else if ($barre_hp < 0)
+            {
+                $barre_hp = 0;
+            } else if ($barre_hp >= 100)
             {
                 $barre_hp = 100;
             }
@@ -1017,13 +1026,19 @@ class perso
     {
         if ($this->is_enchanteur())
         {
-            $barre_energie   = $this->perso_energie;
+            $barre_energie   = round($this->perso_energie);
             if ( $barre_energie <= 0)
             {
                 $barre_energie = 0;
             } else if ( $barre_energie >=100)
             {
                 $barre_energie = 100;
+            } else if($barre_energie>=98)
+            {
+                $barre_energie = 98;
+            } else if ($barre_energie <= 2)
+            {
+                $barre_energie = 2;
             }
             return $barre_energie;
         }
@@ -1044,9 +1059,18 @@ class perso
         {
             $energie_divine = $this->energie_divine();
             $barre_divine   = round(100 * $energie_divine / 200) ;
-            if ($barre_divine >= 100)
+            if ( $barre_divine <= 0)
+            {
+                $barre_divine = 0;
+            } else if ( $barre_divine >=100)
             {
                 $barre_divine = 100;
+            } else if($barre_divine>=98)
+            {
+                $barre_divine = 98;
+            } else if ($barre_divine <= 2)
+            {
+                $barre_divine = 2;
             }
             return $barre_divine;
         }
@@ -1286,7 +1310,19 @@ class perso
         $div_xp    = ($limite - $limite_actu);
 
         $barre_xp = round(100 * $niveau_xp / $div_xp) ;
-        if ($barre_xp >= 100)
+        if(($barre_xp>=98) && ($niveau_xp<$div_xp))
+        {
+            $barre_xp = 98;
+        }
+        else if (($barre_xp <= 2)&& ($niveau_xp>0))
+        {
+            $barre_xp = 2;
+        }
+        else if ($barre_xp < 0)
+        {
+            $barre_xp = 0;
+        }
+        else if ($barre_xp >= 100)
         {
             $barre_xp = 100;
         }
