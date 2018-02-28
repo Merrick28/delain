@@ -24,7 +24,6 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
 	$tab_lieu = $db->get_lieu($perso_cod);
-	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
 	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
