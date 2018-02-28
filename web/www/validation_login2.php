@@ -26,7 +26,7 @@ if ($verif_auth)
 		?>
 		<html>
 		<head>
-		<link rel="stylesheet" type="text/css" href="style.css" title="essai">
+		<link rel="stylesheet" type="text/css" href="style.css?v20180227" title="essai">
 		</head>
 		<body background="images/fond5.gif">
 		<div class="bordiv">

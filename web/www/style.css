@@ -424,3 +424,44 @@ img {border:none}
 }
 
 .invalide { background-color: red; }
+
+/* class pour les barres de pv, xp, etc.... */
+.container-hp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/hp0.gif');
+ }
+.barre-hp {
+	height: 10px;
+	background-image: url('../images/hp01.png');
+	background-repeat:repeat-x;
+}
+.container-xp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/xp0.gif');
+ }
+.barre-xp {
+	height: 10px;
+	background-image: url('../images/xp01.png');
+	background-repeat:repeat-x;
+}
+.container-nrj {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/nrj0.png');
+}
+.barre-nrj {
+	height: 10px;
+	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}

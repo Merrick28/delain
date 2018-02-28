@@ -1000,51 +1000,15 @@ class perso
     {
         if ($this->perso_pv_max == 0)
         {
-            $hp = 0;
+            $barre_hp = 0;
         } else
         {
-            $hp = $this->perso_pv / $this->perso_pv_max;
-        }
-        $barre_hp = '0';
-        if ($hp >= 0.1)
-        {
-            $barre_hp = 10;
-        }
-        if ($hp >= 0.2)
-        {
-            $barre_hp = 20;
-        }
-        if ($hp >= 0.3)
-        {
-            $barre_hp = 30;
-        }
-        if ($hp >= 0.4)
-        {
-            $barre_hp = 40;
-        }
-        if ($hp >= 0.5)
-        {
-            $barre_hp = 50;
-        }
-        if ($hp >= 0.6)
-        {
-            $barre_hp = 60;
-        }
-        if ($hp >= 0.7)
-        {
-            $barre_hp = 70;
-        }
-        if ($hp >= 0.8)
-        {
-            $barre_hp = 80;
-        }
-        if ($hp >= 0.9)
-        {
-            $barre_hp = 90;
-        }
-        if ($hp == 1)
-        {
-            $barre_hp = 100;
+            // LAG: Affichage au % près.
+            $barre_hp = round(100*$this->perso_pv/$this->perso_pv_max);
+            if ($barre_hp >= 100)
+            {
+                $barre_hp = 100;
+            }
         }
         return $barre_hp;
     }
@@ -1053,46 +1017,11 @@ class perso
     {
         if ($this->is_enchanteur())
         {
-            $energie       = $this->perso_energie;
-            $hp            = $energie / 100;
-            $barre_energie = '0';
-            if ($hp >= 0.1)
+            $barre_energie   = $this->perso_energie;
+            if ( $barre_energie <= 0)
             {
-                $barre_energie = 10;
-            }
-            if ($hp >= 0.2)
-            {
-                $barre_energie = 20;
-            }
-            if ($hp >= 0.3)
-            {
-                $barre_energie = 30;
-            }
-            if ($hp >= 0.4)
-            {
-                $barre_energie = 40;
-            }
-            if ($hp >= 0.5)
-            {
-                $barre_energie = 50;
-            }
-            if ($hp >= 0.6)
-            {
-                $barre_energie = 60;
-            }
-            if ($hp >= 0.7)
-            {
-                $barre_energie = 70;
-            }
-            if ($hp >= 0.8)
-            {
-                $barre_energie = 80;
-            }
-            if ($hp >= 0.9)
-            {
-                $barre_energie = 90;
-            }
-            if ($hp == 1)
+                $barre_energie = 0;
+            } else if ( $barre_energie >=100)
             {
                 $barre_energie = 100;
             }
@@ -1114,7 +1043,7 @@ class perso
         if ($this->is_fam_divin() == 1)
         {
             $energie_divine = $this->energie_divine();
-            $barre_divine   = floor(($energie_divine / 200) * 10) * 10;
+            $barre_divine   = round(100 * $energie_divine / 200) ;
             if ($barre_divine >= 100)
             {
                 $barre_divine = 100;
@@ -1351,14 +1280,12 @@ class perso
 
         if (($this->perso_px - $limite_actu) < 0)
         {
-            return 'negative';
+            return 0;
         }
         $niveau_xp = ($this->perso_px - $limite_actu);
         $div_xp    = ($limite - $limite_actu);
 
-        $niveau_xp = (floor(($niveau_xp / $div_xp) * 10)) / 10;
-
-        $barre_xp = round($niveau_xp, 1) * 100;
+        $barre_xp = round(100 * $niveau_xp / $div_xp) ;
         if ($barre_xp >= 100)
         {
             $barre_xp = 100;

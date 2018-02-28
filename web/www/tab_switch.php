@@ -13,12 +13,12 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
     $barre_xp = '0';
     if (($perso_px - $limite_niveau_actuel) < 0)
     {
-        $barre_xp = 'negative';
+        //$barre_xp = 'negative';   // Gestion de la barre au % pres
         return $barre_xp;
     }
     $niveau_xp = ($perso_px - $limite_niveau_actuel);
     $div_xp    = ($limite_niveau - $limite_niveau_actuel);
-    $niveau_xp = (floor(($niveau_xp / $div_xp) * 10)) / 10;
+    $niveau_xp = $niveau_xp / $div_xp ;
 
     $barre_xp = round($niveau_xp, 1) * 100;
     //$barre_xp =floor($niveau_xp);
@@ -32,8 +32,8 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
 // barre de sante
 function barre_hp($perso_pv, $perso_pv_max)
 {
-    $barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;
-    //$barre_hp = round(($perso_pv/$perso_pv_max),1)*100;
+    //$barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;        // Gestion de la barre au % pres
+    $barre_hp = round(($perso_pv/$perso_pv_max),1)*100;
     if ($barre_hp >= 100)
     {
         $barre_hp = 100;
@@ -44,7 +44,8 @@ function barre_hp($perso_pv, $perso_pv_max)
 // barre d'énergie
 function barre_energie($perso_energie)
 {
-    $barre_energie = floor(($perso_energie / 100) * 10) * 10;
+    //$barre_energie = floor(($perso_energie / 100) * 10) * 10;       // Gestion de la barre au % pres
+    $barre_energie = round($perso_energie) ;
     if ($barre_energie >= 100)
     {
         $barre_energie = 100;
@@ -55,7 +56,7 @@ function barre_energie($perso_energie)
 // barre d'énergie divine (pour familiers divins uniquement)
 function barre_divine($perso_divine)
 {
-    $barre_divine = floor(($perso_divine / 200) * 10) * 10;
+    $barre_divine = round(($perso_divine / 200) * 100) ;
     if ($barre_divine >= 100)
     {
         $barre_divine = 100;
@@ -188,24 +189,24 @@ function affiche_perso($perso_cod)
 		<div class="image"><img src="' . G_IMAGES . 'barrepa_' . $pa . '.gif" alt="' . $pa . 'PA">
 		</div></td></tr>
 		<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'coeur.gif" alt=""> <img src="' . G_IMAGES . 'hp' . $barre_hp . '.gif" title="' . $db->f("perso_pv") . 'PV sur ' . $db->f("perso_pv_max") . '" alt="' . $db->f("perso_pv") . 'PV sur ' . $db->f("perso_pv_max") . '">
+		<div class="image"><img src="' . G_IMAGES . 'coeur.gif" alt=""> <div title="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" alt="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" class="container-hp"><div class="barre-hp" style="width:'. $barre_hp.'%"></div></div> 
 		</div></td></tr>';
 
     $is_enchanteur = $db->is_enchanteur($perso_cod);
     if ($is_enchanteur)
     {
         echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'energi10.png" alt=""> <img src="' . G_IMAGES . 'nrj' . $barre_energie . '.png" title="' . $energie . ' sur 100" alt="' . $energie . ' sur 100">
+			<div class="image"><img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $energie . ' sur 100" alt="' . $energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_energie.'%"></div></div>
 			</div></td></tr>';
     }
     echo '	<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <img src="' . G_IMAGES . 'xp' . $barre_xp . '.gif" title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '">
+		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:'. $barre_xp.'%"></div></div> 
 		</div></td></tr>';
 
     if ($energie_divine > 0)
     {
         echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <img src="' . G_IMAGES . 'nrj' . $barre_divine . '.png" title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '">
+			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_divine .'%"></div></div> 
 			</div></td></tr>';
     }
 
