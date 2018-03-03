@@ -126,6 +126,10 @@ begin
   select into v_cible, v_date_dernier, v_statut_dernier
     pia_parametre, pia_date_dernier_msg, pia_msg_statut
   from perso_ia where pia_perso_cod = v_monstre;
+  if not FOUND
+  THEN
+    RETURN 'Cible not found ?';
+  END IF;
   select into pos_dest ppos_pos_cod from perso_position where ppos_perso_cod = v_cible;
 
   if (distance(v_pos_cod, pos_dest) > v_vue OR trajectoire_vue_murs(v_pos_cod, pos_dest) <> 1)
@@ -156,6 +160,7 @@ begin
     v_msg_lien := 'ia_suivre_gestion.php?perso=' || v_monstre::text || '&methode=stop';
     v_msg_corps := v_msg_corps || '<hr /><a href="' || v_msg_lien || '">Arrêtez de me suivre !!</a><br />';
 
+    -- test
     -- Envoi du message
     insert into messages (msg_titre, msg_corps)
     values (v_msg_titre, v_msg_corps)
