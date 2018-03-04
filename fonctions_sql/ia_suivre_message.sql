@@ -162,6 +162,10 @@ begin
 
     -- test
     -- Envoi du message
+    if v_cible is NULL
+      THEN
+      return 'Destinataire NULL';
+    END IF;
     insert into messages (msg_titre, msg_corps)
     values (v_msg_titre, v_msg_corps)
     RETURNING msg_cod into v_msg;
