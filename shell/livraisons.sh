@@ -14,6 +14,6 @@ EOF
 done
 # livraison des fonctions
 for f in `find $livfunc -type f| sort`; do
-      echo "LIVRAISONS A TRAITER : $f" >> `dirname $0`/livraison.log 2>&1
+      echo "LIVRAISONS A TRAITER : $f" >> /dev/null 2>`dirname $0`/livraison.log
       $psql -A -q -t -d delain -U webdelain -f $f >> `dirname $0`/livraison.log 2>&1
 done
