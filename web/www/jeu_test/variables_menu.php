@@ -152,7 +152,7 @@ $t->set_var('FORGE', $forge);
 // Barre d'énergie pour familiers divins
 if ($is_fam_divin == 1)
 {
-    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:". $barre_divine."%\"></div></div>";
+    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-div\"><div class=\"barre-div\" style=\"width:". $barre_divine."%\"></div></div>";
 }
 else
 {

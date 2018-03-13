@@ -465,6 +465,19 @@ img {border:none}
 	background-image: url('../images/nrj01.png');
 	background-repeat:repeat-x;
 }
+.container-div {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
+	background-repeat:repeat-x;
+}
 
 /* class pour les barres de pv, xp, etc pour version responsive .... */
 .mob-barre-inline {
@@ -507,5 +520,18 @@ img {border:none}
 .mob-barre-nrj {
 	height: 10px;
 	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-div {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.mob-barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
 	background-repeat:repeat-x;
 }
