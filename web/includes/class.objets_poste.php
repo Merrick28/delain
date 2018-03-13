@@ -363,7 +363,17 @@ class objets_poste
 			$ligne_evt->levt_texte = "L’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") envoyé par [cible] pour [perso_cod1] a été consfisqué par le relais de la poste.";
 			$ligne_evt->stocke(true);		// Nouvel évènement	
 		}
-		
+
+        /********************************************************************/
+        // mettre dans le fichier de log pour un suivi
+        /********************************************************************/
+        $p1 =  new Perso;
+        $p1->charge($this->opost_dest_perso_cod);
+        $p2 =  new Perso;
+        $p2->charge($this->opost_emet_perso_cod);
+        $textline= "L’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") envoyé par ".$p2->perso_nom."(" . (1*$this->opost_emet_perso_cod) . ") pour ".$p1->perso_nom."(" . (1*$this->opost_dest_perso_cod) . ") a été consfisqué.";
+        $this->writelog($textline);
+
 		return true; // objet a été confisqué!
     }	
 
@@ -387,7 +397,8 @@ class objets_poste
 	               AND perobj_equipe = 'N'
 	               AND perobj_identifie = 'O'
 	               AND gobj_deposable = 'O'
-	               AND gobj_tobj_cod not in (5,11,17,18,19,21,22,28,30,34,26,35,31,7,14)
+	               AND gobj_postable = 'O'
+	               AND obj_enchantable != 2
 	               ORDER BY tobj_libelle,gobj_nom ";
 
                     //$types_ventes_gros = "(5, 11, 17, 18, 19, 21, 22, 28, 30, 34)";
@@ -406,6 +417,8 @@ class objets_poste
                     // 31;"Quiddités"
                     // 34;"Gemme"
                     // 35;"Clé"
+                    // 24;"peau magique"
+                    // 20;"parchemin"
 
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perobj_perso_cod" => $perso_cod), $stmt);
@@ -485,7 +498,17 @@ class objets_poste
 		$ligne_evt->levt_lu = 'N';
 		$ligne_evt->levt_visible = 'O';
 		$ligne_evt->stocke(true);		// Nouvel évènement	
-		
+
+        /********************************************************************/
+        // mettre dans le fichier de log pour un suivi
+        /********************************************************************/
+        $p1 =  new Perso;
+        $p1->charge($this->opost_emet_perso_cod);
+        $p2 =  new Perso;
+        $p2->charge($this->opost_dest_perso_cod);
+        $textline=$p1->perso_nom."(" . (1*$this->opost_emet_perso_cod) . ") a déposé l’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") pour ".$p2->perso_nom."(" . (1*$this->opost_dest_perso_cod) . ").";
+        $this->writelog($textline);
+
 		return true;
 	}
 		
@@ -553,8 +576,28 @@ class objets_poste
 		$ligne_evt->levt_cible = $this->opost_emet_perso_cod ;			
 		$ligne_evt->levt_lu = 'N';
 		$ligne_evt->levt_visible = 'O';
-		$ligne_evt->stocke(true);		// Nouvel évènement	
-		
+		$ligne_evt->stocke(true);		// Nouvel évènement
+
+        /********************************************************************/
+        // mettre dans le fichier de log pour un suivi
+        /********************************************************************/
+        $p1 =  new Perso;
+        $p1->charge($this->opost_dest_perso_cod);
+        $p2 =  new Perso;
+        $p2->charge($this->opost_emet_perso_cod);
+        $textline=$p1->perso_nom."(" . (1*$this->opost_dest_perso_cod) . ") a retiré l’objet « " . $nom_objet . " » (" . (1*$this->opost_obj_cod) . ") envoyé par ".$p2->perso_nom."(" . (1*$this->opost_emet_perso_cod) . ").";
+        $this->writelog($textline);
+
 		return true;	
-	}	
+	}
+    /**
+     * Retourne true si l'opération c'est bien déroulée
+     * Cette fonction log dans dans le fichier dédié
+     * @param $textline : ligne à logguer
+     */
+    function writelog($textline)
+    {
+        $file = __DIR__ . "/../www/logs/relais_poste.log";
+        @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
+    }
 }
