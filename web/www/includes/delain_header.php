@@ -14,7 +14,7 @@ function calculeHash($compte, $clef)
 
 function writelog($textline,$filename='undefined')
 {
-    $file = __DIR__ . "/../www/logs/" . $filename . ".log";
+    $file = __DIR__ . "/../web/logs/" . $filename . ".log";
     if(!file_exists($file))
     {
         if (is_writable($file)) {
