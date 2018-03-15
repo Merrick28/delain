@@ -27,6 +27,10 @@ $log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) modifie
 
 function writelog($textline){
 	$filename="../logs/perso_edit.log";
+	if(!file_exists($filename))
+    {
+        touch($filename);
+    }
 	if (is_writable($filename)) {
 		if (!$handle = fopen($filename, 'a')) {
 			echo "Cannot open file ($filename)";
