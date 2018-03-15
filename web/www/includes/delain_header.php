@@ -12,7 +12,7 @@ function calculeHash($compte, $clef)
     return hash('sha256', md5($compte) . $clef);
 }
 
-function writelog($textline,$filename='undefined')
+function writelog($textline,$filename='undefined',$verbose=true)
 {
     $file = __DIR__ . "/../logs/" . $filename . ".log";
     if(!file_exists($file))
@@ -22,7 +22,10 @@ function writelog($textline,$filename='undefined')
         }
         else
         {
-            echo "Cannot write to file ($file)";
+            if($verbose)
+            {
+                echo "Cannot write to file ($file)";
+            }
         }
     }
     else
