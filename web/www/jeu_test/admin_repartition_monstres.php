@@ -42,27 +42,6 @@ if ($erreur == 0)
 {
 	include "admin_edition_header.php";
 
-	function writelog($textline)
-	{
-		$filename = "../logs/monstre_edit.log"; // or whatever your path and filename
-		if (is_writable($filename))
-		{
-			if (!$handle = fopen($filename, 'a'))
-			{
-				echo "Cannot open file ($filename)";
-				exit;
-			}
-			if (fwrite($handle, $textline) === FALSE)
-			{
-				echo "Cannot write to file ($filename)";
-				exit;
-			}
-			fclose($handle);
-		}
-		else
-			echo "The file $filename is not writable";
-	}
-
 	// TRAITEMENT DE FORMULAIRE
 	if(isset($_POST['methode']))
 	{

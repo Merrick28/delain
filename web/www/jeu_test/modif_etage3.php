@@ -12,27 +12,6 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 include_once('variables_menu.php');
 
 
-function writelog($textline)
-{
-	$filename = "../logs/lieux_etages.log";
-	if (is_writable($filename))
-	{
-		if (!$handle = fopen($filename, 'a'))
-		{
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE)
-		{
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	}
-	else
-		echo "The file $filename is not writable";
-}
-
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 {
 	global $db, $compt_cod;
@@ -54,7 +33,7 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 		$en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
 		echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
 		if ($loguer)
-			writelog($en_tete . $texte . $sql);
+			writelog($en_tete . $texte . $sql,'lieux_etages');
 	}
 }
 

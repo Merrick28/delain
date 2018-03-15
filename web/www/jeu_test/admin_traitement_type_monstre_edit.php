@@ -58,7 +58,7 @@ switch ($methode) {
 				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie)";
 			$db_cre_mon->query($req_cre_gmon);
 		}
-		writelog($log."Nouveau type de monstre : $gmon_nom \n");
+		writelog($log."Nouveau type de monstre : $gmon_nom \n",'monstre_edit');
 		echo "Nouveau modèle<br>";
 	break;
 
@@ -116,7 +116,7 @@ switch ($methode) {
 			}
 		}
 	
-		writelog($log);
+		writelog($log,'monstre_edit');
 	
 		if(!isset($_POST['gmon_vampirisme']) or $gmon_vampirisme == "")
 			$gmon_vampirisme = "null";
@@ -142,7 +142,7 @@ switch ($methode) {
 		$req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Suppression d'un sort : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n");
+		writelog($log."Suppression d'un sort : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n",'monstre_edit');
 	
 		$req_upd_mon =  "delete from sorts_monstre_generique where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = $sort_cod";
 		//echo $req_upd_mon;
@@ -155,7 +155,7 @@ switch ($methode) {
 		$req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d'un sort : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n");
+		writelog($log."Ajout d'un sort : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n",'monstre_edit');
 	
 		$req_upd_mon =  "insert into sorts_monstre_generique (sgmon_gmon_cod,sgmon_sort_cod) values ($gmon_cod,$sort_cod)";
 		//echo $req_upd_mon;
@@ -168,7 +168,7 @@ switch ($methode) {
 		$req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Suppression d'une immunité : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n");
+		writelog($log."Suppression d'une immunité : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n",'monstre_edit');
 	
 		$req_upd_mon =  "delete from monstre_generique_immunite where immun_gmon_cod  = $gmon_cod and immun_sort_cod = $sort_cod";
 		//echo $req_upd_mon;
@@ -181,7 +181,7 @@ switch ($methode) {
 		$req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d'une immunité : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n");
+		writelog($log."Ajout d'une immunité : $sort_cod - ".$db_upd_mon->f("sort_nom")."\n",'monstre_edit');
 		$immun_rune = (isset($_POST['immun_rune'])) ? 'O' : 'N';
 	
 		$req_upd_mon =  "insert into monstre_generique_immunite (immun_sort_cod, immun_gmon_cod, immun_valeur, immun_runes) values ($sort_cod, $gmon_cod, $immun_valeur, '$immun_rune')";
@@ -195,7 +195,7 @@ switch ($methode) {
 		$req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d'un type de competences : $typc_cod - ".$db_upd_mon->f("typc_libelle")." Valeur: $valeur\n");
+		writelog($log."Ajout d'un type de competences : $typc_cod - ".$db_upd_mon->f("typc_libelle")." Valeur: $valeur\n",'monstre_edit');
 	
 		$req_upd_mon =  "insert into gmon_type_comp (gtypc_gmon_cod,gtypc_typc_cod,gtypc_valeur) values ($gmon_cod,$typc_cod,$valeur)";
 		//echo $req_upd_mon;
@@ -208,7 +208,7 @@ switch ($methode) {
 		$req_upd_mon = "select typc_libelle,gtypc_valeur from gmon_type_comp,type_competences where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod and typc_cod = $typc_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Modification d’une compétence : $typc_cod - ".$db_upd_mon->f("typc_libelle")." Chances: ".$db_upd_mon->f("gtypc_valeur")." -> $valeur\n");
+		writelog($log."Modification d’une compétence : $typc_cod - ".$db_upd_mon->f("typc_libelle")." Chances: ".$db_upd_mon->f("gtypc_valeur")." -> $valeur\n",'monstre_edit');
 	
 		$req_upd_mon =  "update gmon_type_comp set gtypc_valeur = $valeur where gtypc_gmon_cod = $gmon_cod and gtypc_typc_cod = $typc_cod";
 		//echo $req_upd_mon;
@@ -225,7 +225,7 @@ switch ($methode) {
 		$req_upd_mon = "select typc_libelle from type_competences where typc_cod = $typc_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Supression d’un type de compétences : $typc_cod - ".$db_upd_mon->f("typc_libelle")."\n");	
+		writelog($log."Supression d’un type de compétences : $typc_cod - ".$db_upd_mon->f("typc_libelle")."\n",'monstre_edit');
 		echo "Suppression d’une competence";
 	break;
 
@@ -234,7 +234,7 @@ switch ($methode) {
 		$req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d'une competence : $typc_cod - ".$db_upd_mon->f("comp_libelle"));
+		writelog($log."Ajout d'une competence : $typc_cod - ".$db_upd_mon->f("comp_libelle"),'monstre_edit');
 	
 		$req_upd_mon =  "insert into monstre_generique_comp (gmoncomp_gmon_cod,gmoncomp_comp_cod,gmoncomp_valeur,gmoncomp_chance) values ($gmon_cod,$typc_cod,$valeur,$chance)";
 		//echo $req_upd_mon;
@@ -247,7 +247,7 @@ switch ($methode) {
 		$req_upd_mon = "select comp_libelle from competences where comp_cod = $typc_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Supression d'une competence : $typc_cod - ".$db_upd_mon->f("comp_libelle"));
+		writelog($log."Supression d'une competence : $typc_cod - ".$db_upd_mon->f("comp_libelle"),'monstre_edit');
 	
 		$req_upd_mon =  "delete from monstre_generique_comp where gmoncomp_gmon_cod = $gmon_cod and gmoncomp_comp_cod = $typc_cod";
 		//echo $req_upd_mon;
@@ -261,7 +261,7 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur\n");
+		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur\n",'monstre_edit');
 	
 		$req_upd_mon =  "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance) values ($gmon_cod,$gobj_cod,$valeur)";
 		//echo $req_upd_mon;
@@ -275,7 +275,7 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom,ogmon_chance from objets_monstre_generique,objet_generique where gobj_cod = $gobj_cod and ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur\n");
+		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur\n",'monstre_edit');
 		
 		$req_upd_mon = "update objets_monstre_generique set ogmon_chance = $valeur where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		//echo $req_upd_mon;	
@@ -293,7 +293,7 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Suppression d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")."\n");
+		writelog($log."Suppression d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")."\n",'monstre_edit');
 		echo "Suppression d’un drop";
 	break;
 
@@ -439,7 +439,7 @@ switch ($methode) {
 			}
 		}
 	
-		writelog($log . $message);
+		writelog($log . $message,'monstre_edit');
 		echo nl2br($message);
 	break;
 }

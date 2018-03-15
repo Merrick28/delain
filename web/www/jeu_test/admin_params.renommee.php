@@ -180,7 +180,7 @@ switch ($methode)
 if (!$erreur && $log != '')
 {
 	echo "<div class='bordiv'><b>Mise à jour de $log_renommee.</b><br /><pre>$log</pre></div>";
-	writelog($log);
+	writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {

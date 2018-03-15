@@ -25,27 +25,6 @@ if($db_pers->next_record()){
 }
 $log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) modifie le ".$perso_mod_type." ".$perso_mod_nom.", numero : $mod_perso_cod\n";
 
-/*function writelog($textline){
-	$filename="../logs/perso_edit.log";
-	if(!file_exists($filename))
-    {
-        touch($filename);
-    }
-	if (is_writable($filename)) {
-		if (!$handle = fopen($filename, 'a')) {
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE) {
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	} else {
-		echo "The file $filename is not writable";
-	}
-}*/
-
 switch ($methode)
 {
 	case "update_perso":
