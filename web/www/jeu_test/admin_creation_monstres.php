@@ -45,27 +45,6 @@ if ($erreur == 0)
 
 	echo '<h1>Création de monstre</h1>';
 
-	function writelog($textline)
-	{
-		$filename = "../logs/monstre_edit.log"; // or whatever your path and filename
-		if (is_writable($filename))
-		{
-			if (!$handle = fopen($filename, 'a'))
-			{
-				echo "Cannot open file ($filename)";
-				exit;
-			}
-			if (fwrite($handle, $textline) === FALSE)
-			{
-				echo "Cannot write to file ($filename)";
-				exit;
-			}
-			fclose($handle);
-		}
-		else
-			echo "The file $filename is not writable";
-	}
-
 	// TRAITEMENT DE FORMULAIRE
 	if(isset($_POST['methode']))
 	{
@@ -139,7 +118,7 @@ if ($erreur == 0)
 						$pmons_mod_nom = $gmon_nom;
 						$perso_nom = 'Perso: '.$perso_cod;
 					}
-					writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n");
+					writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n",'monstre_edit');
 				}
 			break;
 
@@ -226,7 +205,7 @@ if ($erreur == 0)
 								$perso_nom = 'Perso : '.$perso_cod;
 							}
 							echo "Création de $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage<br />";
-							writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n");
+							writelog( date("d/m/y - H:i")."$perso_nom - $compt_nom (compte $compt_cod) depose $nombre_mons $pmons_mod_nom ($gmon_cod) en $pos_x, $pos_y, $etage\n",'monstre_edit');
 						}
 					}
 					

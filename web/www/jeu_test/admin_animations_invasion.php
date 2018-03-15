@@ -79,7 +79,7 @@ switch ($methode)
 		$db->query($req);
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod a généré une $texte\n";
-		writelog($log);
+		writelog($log,'animation_invasion');
 	break;
 }
 echo '<form name="cree_invasion" method="POST" action="#" onsubmit="return confirm(\'Êtes-vous sûr de vouloir lancer cette invasion ?\');">

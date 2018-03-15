@@ -9,27 +9,6 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
-function writelog($textline)
-{
-	$filename="../logs/animations.log";
-	if (is_writable($filename))
-	{
-		if (!$handle = fopen($filename, 'a'))
-		{
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE)
-		{
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	}
-	else
-		echo "The file $filename is not writable";
-}
-
 //
 //Contenu de la div de droite
 //
