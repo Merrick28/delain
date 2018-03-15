@@ -12,6 +12,26 @@ function calculeHash($compte, $clef)
     return hash('sha256', md5($compte) . $clef);
 }
 
+function writelog($textline,$filename='undefined')
+{
+    $file = __DIR__ . "/../www/logs/" . $filename . ".log";
+    if(!file_exists($file))
+    {
+        if (is_writable($file)) {
+            @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
+        }
+        else
+        {
+            echo "Cannot write to file ($file)";
+        }
+    }
+    else
+    {
+        @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
+    }
+
+}
+
 function register_globals($order = 'egpcs')
 {
     // define a subroutine
