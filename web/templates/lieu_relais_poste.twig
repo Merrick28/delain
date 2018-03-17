@@ -4,8 +4,9 @@
 
 {#------------------------ ENTETE ------------------------#}
 <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding-top:8px; border-radius:10px 10px 0 0; border:solid black 2px;">
-	<center><img src="/images/lieu-relais-de-la-poste.png"></center>
-	&nbsp;&nbsp;&nbsp;Vous avez <b>{{ perso_po }}</b> brouzoufs<br>
+    &nbsp; &nbsp;<i>Zone de couverture de ce relai</i>: <b><FONT color="#8b0000">{{ zone_couverture }}</FONT></b><br>
+    <center><img src="/images/lieu-relais-de-la-poste.png"></center>
+        &nbsp;&nbsp;&nbsp;Vous avez <b>{{ perso_po }}</b> brouzoufs<br>
 </div>
 <br>
 
@@ -23,7 +24,7 @@
 <form name="retraitposte" method="post" action="">
 <table width="100%">
 {% if objets_poste_emet %}
-<tr width="100%"><td class="soustitre2" colspan="8"><br>Liste des objets que vous avez envoyés</td></tr>
+<tr width="100%"><td class="soustitre2" colspan="9"><br>Liste des objets que vous avez envoyés</td></tr>
 
 <tr>
   <td class="soustitre2" width="20px"></td>
@@ -34,7 +35,8 @@
   <td class="soustitre2"><b>Poids</b></td>
   <td class="soustitre2"><b>Prix demandé</b></td>
   <td class="soustitre2"><b>Date confiscation</b></td>
-</tr>	
+  <td class="soustitre2"><b>Zone de livraison</b></td>
+</tr>
 	
 {% for objet in objets_poste_emet %}
 <tr>
@@ -46,12 +48,13 @@
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
-</tr>	
+  <td class="soustitre2">{{ objet.zone_livraison }}</td>
+</tr>
 {% endfor %}
 {% endif %}	
 	
 {% if objets_poste_dest %}
-<tr width="100%"><td class="soustitre2" colspan="8"><br>Liste des objets que l'on vous a envoyés</td></tr>
+<tr width="100%"><td class="soustitre2" colspan="9"><br>Liste des objets que l'on vous a envoyés</td></tr>
 <tr>
   <td class="soustitre2" width="20px"></td>
   <td class="soustitre2"><b>Date d'envoi</b></td>
@@ -61,6 +64,7 @@
   <td class="soustitre2"><b>Poids</b></td>
   <td class="soustitre2"><b>Prix demandé</b></td>
   <td class="soustitre2"><b>Date confiscation</b></td>
+  <td class="soustitre2"><b>Zone de livraison</b></td>
 </tr>	
 {% for objet in objets_poste_dest %}
 <tr>
@@ -76,9 +80,10 @@
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
+  <td class="soustitre2">{{ objet.zone_livraison }}</td>
 </tr>	
 {% endfor %}
-<tr><td class="soustitre2" colspan="8">
+<tr><td class="soustitre2" colspan="9">
  <center><input class="test" type="submit" name="next" value="Récupérer mes objets"><input type="hidden" name="action" value="retrait0"></center>
   {% if message_retrait  %}
 <center>
@@ -232,12 +237,13 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <input type=hidden name="destinataire" value="{{ destinataire }}">
 	
 {% if date_livraison and  date_confiscation  %}
-<br>Le colis sera disponible pour le destinataire dans tous les relais poste des souterrains à partir du <b>{{ date_livraison }}</b>
+    <br>Le colis sera disponible pour le destinataire dans les relais de la poste des <u><b>{{ zone_couverture }}</b></u>
+    <br>à partir du <b>{{ date_livraison }}</b>
 	<br>Il pourra le récupérer à partir de cette date jusqu'au <b>{{ date_confiscation }}</b>
 	{% if prix_demande>0  %}
 	pour la somme de <b>{{ prix_demande }} brouzoufs</b> qui sera reversée directement <u>sur votre compte en banque</u> au moment du retrait
 	{% endif %}	
-	.<br><br>Au delà du <b>{{ date_confiscation }}</b>, si le colis n'a pas été récupéré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste. 
+	.<br><br>Au delà du <b>{{ date_confiscation }}</b>, si le colis n'a pas été récupéré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste.
 {% endif %}	
 	
 {% if message  %}

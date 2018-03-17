@@ -23,7 +23,8 @@ class objets_poste
     var $opost_colis_cod ;
     var $opost_obj_cod ;
     var $opost_emet_perso_cod ;
-    var $opost_dest_perso_cod ;    
+    var $opost_emet_pos_cod ;
+    var $opost_dest_perso_cod ;
     var $opost_date_poste ;   
     var $opost_prix_demande ;   
 	  
@@ -53,6 +54,7 @@ class objets_poste
         $this->opost_colis_cod         = $result['opost_colis_cod'];
         $this->opost_obj_cod           = $result['opost_obj_cod'];
         $this->opost_emet_perso_cod    = $result['opost_emet_perso_cod'];
+        $this->opost_emet_pos_cod      = $result['opost_emet_pos_cod'];
         $this->opost_dest_perso_cod    = $result['opost_dest_perso_cod'];
         $this->opost_date_poste        = $result['opost_date_poste'];
         $this->opost_prix_demande      = $result['opost_prix_demande'];
@@ -73,6 +75,7 @@ class objets_poste
                          opost_colis_cod,
                          opost_obj_cod,
                          opost_emet_perso_cod,
+                         opost_emet_pos_cod,
                          opost_dest_perso_cod,
                          opost_date_poste,
 						 opost_prix_demande)
@@ -81,6 +84,7 @@ class objets_poste
                         :opost_colis_cod,
                         :opost_obj_cod,
                         :opost_emet_perso_cod,
+                        :opost_emet_pos_cod,
                         :opost_dest_perso_cod,
                         :opost_date_poste,
                         :opost_prix_demande
@@ -91,6 +95,7 @@ class objets_poste
                ":opost_colis_cod"          => $this->opost_colis_cod,
                ":opost_obj_cod"            => $this->opost_obj_cod,
                ":opost_emet_perso_cod"     => $this->opost_emet_perso_cod,
+               ":opost_emet_pos_cod"       => $this->opost_emet_pos_cod,
                ":opost_dest_perso_cod"     => $this->opost_dest_perso_cod,
                ":opost_date_poste"         => $this->opost_date_poste,
                ":opost_prix_demande"       => $this->opost_prix_demande
@@ -107,6 +112,7 @@ class objets_poste
                 opost_colis_cod =       :opost_colis_cod,
                 opost_obj_cod =         :opost_obj_cod,
                 opost_emet_perso_cod =  :opost_emet_perso_cod,
+                opost_emet_pos_cod =    :opost_emet_pos_cod,
                 opost_dest_perso_cod =  :opost_dest_perso_cod,
                 opost_date_poste =      :opost_date_poste,
                 opost_prix_demande =    :opost_prix_demande
@@ -117,6 +123,7 @@ class objets_poste
                ":opost_colis_cod"       => $this->opost_colis_cod,
                ":opost_obj_cod"         => $this->opost_obj_cod,
                ":opost_emet_perso_cod"  => $this->opost_emet_perso_cod,
+               ":opost_emet_pos_cod"    => $this->opost_emet_pos_cod,
                ":opost_dest_perso_cod"  => $this->opost_dest_perso_cod,
                ":opost_date_poste"      => $this->opost_date_poste,
                ":opost_prix_demande"    => $this->opost_prix_demande
@@ -201,7 +208,44 @@ class objets_poste
                 die('Unknown method.');
         }
     }
-	
+
+    //----------------------------------------
+    /**
+     * Retourne un texte avec la zone d'étage désservies
+     * @param integer $pos_cod => position du dépot
+     * @param boolean $short => si vrai, texte court
+     * @return text
+     */
+    function getTexteZoneCouverture($pos_cod, $short=false)
+    {
+        // position du relai de -- livraison --
+        $pos = new positions();
+        $pos->charge($pos_cod);
+
+        if ($short)
+        {
+            if ($pos->pos_etage>=-5)
+            {
+                return "du 0 au -5";
+            }
+            else
+            {
+                return "du -6 et au dessous";
+            }
+        }
+        else
+        {
+            if ($pos->pos_etage>=-5)
+            {
+                return "étages de la surface au -5";
+            }
+            else
+            {
+                return "étages du -6 et au dessous";
+            }
+        }
+    }
+
 	//----------------------------------------
 	//fonction interne pour récupérer les frais de port dans les paramètres globaux
 	function _frais_de_port_par_kilo()
@@ -254,12 +298,25 @@ class objets_poste
 
 	//----------------------------------------
     /**
-     * Retourne vrai sil l'objet peut être retirer de la poste 
-     * @global bdd_mysql $pdo
+     * Retourne vrai si l'objet peut être retiré de la poste
+     * @param integer $etage_numero => étage de reception
      * @return boolean
      */
-    function estLivrable()
+    function estLivrable($pos_cod)
     {
+        // position du relai de -- livraison --
+        $pos1 = new positions();
+        $pos1->charge($this->opost_emet_pos_cod);
+
+        // position du relai de -- reception --
+        $pos2 = new positions();
+        $pos2->charge($pos_cod);
+
+        if ((($pos1->pos_etage<=-5)&&($pos2->pos_etage>-5)) || (($pos1->pos_etage>-5)&&($pos2->pos_etage<=-5)))
+        {
+            return false;   // le receptionneur n'est pas dans la zone de couverture du relais de livraison
+        }
+
 		return date('Y-m-d H:i:s') >= $this->getDateLivraison() ;       
     }	
 
