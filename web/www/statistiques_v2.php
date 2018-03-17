@@ -32,7 +32,7 @@ $req_nb_compte = "select count(compt_cod) as nb from compte where compt_actif !=
 $db->query($req_nb_compte);
 $db->next_record();
 $nb_compte = $db->f("nb");
-$req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 1 and perso_actif != 'N' and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL";
+$req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 1 and perso_actif != 'N' and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
 $db->query($req_joueur);
 $db->next_record();
 $nb_joueur = $db->f("nb");
@@ -51,7 +51,7 @@ $contenu_page .= '<br /><i>Statistiques sur les 30 derniers jours seulement</i>'
 $contenu_page .= '<div class="titre">Statistiques des personnages</div>';			
 // classement par niveau
 $req_niveau = "select perso_niveau,count(perso_cod) as nb from perso ";
-$req_niveau = $req_niveau . "where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL";
+$req_niveau = $req_niveau . "where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
 $req_niveau = $req_niveau . "group by perso_niveau ";
 $req_niveau = $req_niveau . "order by perso_niveau desc ";
 $db->query($req_niveau);
