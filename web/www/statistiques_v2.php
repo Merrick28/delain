@@ -32,7 +32,7 @@ $req_nb_compte = "select count(compt_cod) as nb from compte where compt_actif !=
 $db->query($req_nb_compte);
 $db->next_record();
 $nb_compte = $db->f("nb");
-$req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 1 and perso_actif != 'N' and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
+$req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 1 and perso_actif != 'N' and perso_pnj != 1 and perso_dlt >= now() - '30 days'::INTERVAL ";
 $db->query($req_joueur);
 $db->next_record();
 $nb_joueur = $db->f("nb");
@@ -51,7 +51,7 @@ $contenu_page .= '<br /><i>Statistiques sur les 30 derniers jours seulement</i>'
 $contenu_page .= '<div class="titre">Statistiques des personnages</div>';			
 // classement par niveau
 $req_niveau = "select perso_niveau,count(perso_cod) as nb from perso ";
-$req_niveau = $req_niveau . "where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
+$req_niveau = $req_niveau . "where perso_actif != 'N' and perso_type_perso = 1 and perso_pnj != 1 and perso_dlt >= now() - '30 days'::INTERVAL ";
 $req_niveau = $req_niveau . "group by perso_niveau ";
 $req_niveau = $req_niveau . "order by perso_niveau desc ";
 $db->query($req_niveau);
@@ -66,8 +66,8 @@ $contenu_page .=("</table>");
 $contenu_page .=("<hr />");
 
 	// classement par joueur et par sexe
-	$req = "select race_nom,(select count(perso_cod) from perso where perso_actif != 'N' and perso_type_perso = 1 and perso_race_cod = race_cod and perso_sex = 'M' and perso_der_connex >= now() - '30 days'::INTERVAL) as m, ";
-	$req = $req . "(select count(perso_cod) from perso where perso_actif != 'N' and perso_type_perso = 1 and perso_race_cod = race_cod and perso_sex = 'F' and perso_der_connex >= now() - '30 days'::INTERVAL) as f ";
+	$req = "select race_nom,(select count(perso_cod) from perso where perso_actif != 'N' and perso_type_perso = 1 and perso_race_cod = race_cod and perso_sex = 'M' and perso_dlt >= now() - '30 days'::INTERVAL) as m, ";
+	$req = $req . "(select count(perso_cod) from perso where perso_actif != 'N' and perso_type_perso = 1 and perso_race_cod = race_cod and perso_sex = 'F' and perso_dlt >= now() - '30 days'::INTERVAL) as f ";
 	$req = $req . "from race where race_cod in (1,2,3,33) ";
 	$db->query($req);
 	$contenu_page .=("<table cellspacing=\"2\" cellpadding=\"2\">");
@@ -93,13 +93,13 @@ $contenu_page .=("<hr />");
 			$req = $req . "where pos_etage = etage_numero ";
 			$req = $req . "and ppos_pos_cod = pos_cod ";
 			$req = $req . "and ppos_perso_cod = perso_cod ";
-			$req = $req . "and perso_type_perso = 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
+			$req = $req . "and perso_type_perso = 1 and perso_dlt >= now() - '30 days'::INTERVAL ";
 			$req = $req . "and perso_actif != 'N' and perso_pnj != 1) as joueur, ";
 			$req = $req . "(select sum(perso_niveau) from perso,perso_position,positions ";
 			$req = $req . "where pos_etage = etage_numero ";
 			$req = $req . "and ppos_pos_cod = pos_cod ";
 			$req = $req . "and ppos_perso_cod = perso_cod ";
-			$req = $req . "and perso_type_perso = 1 and perso_der_connex >= now() - '30 days'::INTERVAL ";
+			$req = $req . "and perso_type_perso = 1 and perso_dlt >= now() - '30 days'::INTERVAL ";
 			$req = $req . "and perso_actif != 'N' and perso_pnj != 1) as jnv, ";
 			$req = $req . "(select count(perso_cod) from perso,perso_position,positions ";
 			$req = $req . "where pos_etage = etage_numero ";
