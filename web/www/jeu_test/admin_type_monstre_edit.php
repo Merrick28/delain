@@ -163,11 +163,14 @@ if ($erreur == 0)
 			{
 				$sens = 'asc';
 			}
-			$autresens = $_POST['autresens'];
-			if (!isset($autresens))
+			if (!isset($_POST['autresens']))
 			{
 				$autresens = 'desc';
 			}
+			else
+            {
+                $autresens = $_POST['autresens'];
+            }
 			if (($sens != 'desc') && ($sens != 'asc'))
 			{
 				echo "<p>Anomalie sur sens !";

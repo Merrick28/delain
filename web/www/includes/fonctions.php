@@ -47,6 +47,7 @@ function log_debug($textline)
     }
 }
 
+
 function getparm_n($parm)
 {
     /**

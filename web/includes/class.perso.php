@@ -1443,6 +1443,7 @@ class perso
         $date                            = new DateTime();
         $this->perso_mail_inactif_envoye = 0;
         $this->perso_der_connex          = $date->format('Y-m-d H:i:s');
+        $this->stocke();
         $pdo                             = new bddpdo();
         $req                             = "select calcul_dlt2(?) as dlt";
         $stmt                            = $pdo->prepare($req);

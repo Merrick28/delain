@@ -25,23 +25,6 @@ if($db_pers->next_record()){
 }
 $log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) modifie le ".$perso_mod_type." ".$perso_mod_nom.", numero : $mod_perso_cod\n";
 
-function writelog($textline){
-	$filename="../logs/perso_edit.log";
-	if (is_writable($filename)) {
-		if (!$handle = fopen($filename, 'a')) {
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE) {
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	} else {
-		echo "The file $filename is not writable";
-	}
-}
-
 switch ($methode)
 {
 	case "update_perso":
@@ -174,7 +157,7 @@ switch ($methode)
 		$db_perso->query($req_upd_perso);
 
 		echo "<div class='bordiv'>MAJ du perso<br /><pre>$log</pre></div>";
-		writelog($log);
+		writelog($log,'perso_edit');
 	break;
 
 	case "update_competences":
@@ -201,7 +184,7 @@ switch ($methode)
 			}
 		}
 		echo "<div class='bordiv'>MAJ des compétences<br /><pre>$log</pre></div>";
-		writelog($log);
+		writelog($log,'perso_edit');
 	break;
 
 	case "add_competence":
@@ -213,7 +196,7 @@ switch ($methode)
 		$db_upd_comp->query($req_comp);
 		$db_upd_comp->next_record();
 		$log .= "Ajout d’une compétence : $comp_cod - ".$db_upd_comp->f("comp_libelle")."\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'>Ajout d’une compétence<br /><pre>$log</pre></div>";
 	break;
 
@@ -227,7 +210,7 @@ switch ($methode)
 			$db_upd_comp->query($req_comp);
 			$db_upd_comp->next_record();
 			$log .= "Suppression d’une competence : $comp_cod - ".$db_upd_comp->f("comp_libelle")."\n";
-			writelog($log);
+			writelog($log,'perso_edit');
 			echo "<div class='bordiv'>Suppression d’une competence<br /><pre>$log</pre></div>";
 		}
 	break;
@@ -266,7 +249,7 @@ switch ($methode)
 			}
 		}
 		echo "<div class='bordiv'>MAJ des bonus / malus<br /><pre>$log</pre></div>";
-		writelog($log);
+		writelog($log,'perso_edit');
 	break;
 
 	case "add_bonmal":
@@ -278,7 +261,7 @@ switch ($methode)
 		$db_upd_bm->query($req_bm);
 		$db_upd_bm->next_record();
 		$log .= "Ajout d’un bonus/malus « " . $db_upd_bm->f("tonbus_libelle") . " » : { $bonmal_valeur / $bonmal_duree tours }\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'>Ajout d’un bonus/malus<br /><pre>$log</pre></div>";
 	break;
 
@@ -297,7 +280,7 @@ switch ($methode)
 			$db_upd_bm->query($req_bm);
 			$db_upd_bm->next_record();
 			$log .= "Suppression du bonus/malus « " . $db_upd_bm->f("tonbus_libelle") . " »\n";
-			writelog($log);
+			writelog($log,'perso_edit');
 			echo "<div class='bordiv'>Suppression de bonus/malus<br /><pre>$log</pre></div>";
 		}
 	break;
@@ -400,7 +383,7 @@ switch ($methode)
 			}
 		}
 		if($log != ''){
-			writelog($log);
+			writelog($log,'perso_edit');
 		}
 		echo "<div class='bordiv'>Modification d’inventaire : <br /><pre>$log</pre></div>";
 	break;
@@ -419,7 +402,7 @@ switch ($methode)
 				$db_sort_suppr->query($req_sm);
 				$db_sort_suppr->next_record();
 				$log .= "Suppression d’un sort : $sort_cod - ".$db_sort_suppr->f("sort_nom")."\n";
-				writelog($log);
+				writelog($log,'perso_edit');
 
 				$req_suppr_sort = "delete from perso_sorts where psort_perso_cod = $mod_perso_cod and psort_sort_cod= $sort_cod";
 				$db_sort_suppr->query($req_suppr_sort);
@@ -443,7 +426,7 @@ switch ($methode)
 					$db_sort->query($req_sm);
 					$db_sort->next_record();
 					$log .= "Ajout d’un sort : $sort_cod - ".$db_sort->f("sort_nom")."\n";
-					writelog($log);
+					writelog($log,'perso_edit');
 				}
 			}
 		}
@@ -460,7 +443,7 @@ switch ($methode)
 			$db_upd_titr->query($req_upd_titr);
 			$log .= "Ajout d’un titre: \"$ptitre_titre\" \n";
 			echo "<div class='bordiv'><pre>$log</pre></div>";
-			writelog($log);
+			writelog($log,'perso_edit');
 		}
 	break;
 
@@ -471,7 +454,7 @@ switch ($methode)
 			$db_upd_titre->query($req_upd_titre);
 			$db_upd_titre->next_record();
 			$log .= "Modification du titre : ".$db_upd_titre->f("ptitre_titre")." -> $ptitre_titre\n";
-			writelog($log);
+			writelog($log,'perso_edit');
 
 			$ptitre_titre = str_replace("’","\'",$ptitre_titre);
 			$req_upd_titre = "update perso_titre set "
@@ -488,7 +471,7 @@ switch ($methode)
 		$db_upd_titre->query($req_upd_titre);
 		$db_upd_titre->next_record();
 		$log .= "Suppression du titre : ".$db_upd_titre->f("ptitre_titre")."\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		$req_upd_titre =  "delete from perso_titre where ptitre_cod  = $ptitre_cod";
 		$db_upd_titre->query($req_upd_titre);
 		echo "<div class='bordiv'><pre>$log</pre></div>";
@@ -578,7 +561,7 @@ switch ($methode)
 				break;
 			}
 
-			writelog($log);
+			writelog($log,'perso_edit');
 			echo "<div class='bordiv'><pre>$log</pre></div>";
 		}
 	break;
@@ -606,7 +589,7 @@ switch ($methode)
 		$db->query($req);
 		
 		$log .= "Création d’un nouvel objet, $nom_objet, dans l’inventaire.";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'><pre>$log</pre></div>";
 	break;
 
@@ -615,7 +598,7 @@ switch ($methode)
 		$req_upd_rel =  "update dieu_perso set dper_dieu_cod = $dper_dieu_cod,dper_niveau = $dper_niveau, dper_points= $dper_points where dper_perso_cod = $mod_perso_cod";
 		$db_upd_rel->query($req_upd_rel);
 		$log .= "Modification de la religion\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'><pre>$log</pre></div>";
 	break;
 
@@ -625,7 +608,7 @@ switch ($methode)
 			."values ($mod_perso_cod,$dper_dieu_cod,$dper_niveau,$dper_points)";
 		$db_upd_rel->query($req_upd_rel);
 		$log .= "Ajout de la religion\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'><pre>$log</pre></div>";
 	break;
 
@@ -634,7 +617,7 @@ switch ($methode)
 		$req_upd_rel =  "delete from dieu_perso where dper_perso_cod  = $mod_perso_cod";
 		$db_upd_rel->query($req_upd_rel);
 		$log .= "Suppression de la religion\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'><pre>$log</pre></div>";
 	break;
 
@@ -649,7 +632,7 @@ switch ($methode)
 			$req =  "update perso_familier set pfam_duree_vie = $fam_duree_vie where pfam_perso_cod = $mod_perso_cod";
 			$db_fm->query($req);
 			$log .= "Modification du familier ; durée de vie : $anc_duree => $fam_duree_vie tour(s)\n";
-			writelog($log);
+			writelog($log,'perso_edit');
 		}
 		else
 		{
@@ -756,7 +739,7 @@ switch ($methode)
 			$db_fm->query($req);
 
 			$log .= "Ajout du familier $fam_nom ($fam_cod)\n";
-			writelog($log);
+			writelog($log,'perso_edit');
 		}
 		else
 			$log .= $txt_erreur;
@@ -777,7 +760,7 @@ switch ($methode)
 			$db_fm->query($req);
 		}
 		$log .= "Détachement du familier.\n";
-		writelog($log);
+		writelog($log,'perso_edit');
 		echo "<div class='bordiv'><pre>$log</pre></div>";
 	break;
 

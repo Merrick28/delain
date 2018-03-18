@@ -15,22 +15,7 @@ include('variables_menu.php');
 $contenu_page = '';
 ob_start();
 //$mod_perso_cod = 2;
-function writelog($textline){
-	$filename="../logs/objet_edit.log"; // or whatever your path and filename
-	if (is_writable($filename)) {
-		if (!$handle = fopen($filename, 'a')) {
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE) {
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	} else {
-		echo "The file $filename is not writable";
-	}
-}
+
 
 $erreur = 0;
 $req = "select compt_nom from compte where compt_cod = $compt_cod";
@@ -396,7 +381,7 @@ if ($erreur == 0)
 			if ($modifie == 1)
 			{
 				$db->query('update objets set obj_modifie = 1 where obj_cod = ' . $num_objet);
-				writelog($log);
+				writelog($log,'objet_edit');
 				echo "Modification effectuée : <br /><pre>$log</pre>";
 			}
 			else

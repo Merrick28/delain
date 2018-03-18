@@ -205,7 +205,7 @@ switch ($methode)
 		$db->query($req);
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod a généré une $texte\n";
-		writelog($log);
+		writelog($log,'animation_distributions');
 	break;
 }
 echo '<form name="distribution_creation" method="POST" action="#" onsubmit="return confirm(\'Êtes-vous sûr de vouloir lancer cette distribution ?\');">

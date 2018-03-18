@@ -62,35 +62,6 @@ if ($erreur == 0)
 
 
 
-function writelog($textline){
-	$filename="../logs/change_refuge.log"; // or whatever your path and filename
-if (is_writable($filename)) {
-
-   // In our example we're opening $filename in append mode.
-   // The file pointer is at the bottom of the file hence
-   // that's where $somecontent will go when we fwrite() it.
-   if (!$handle = fopen($filename, 'a')) {
-         echo "Cannot open file ($filename)";
-         exit;
-   }
-
-   // Write $somecontent to our opened file.
-   if (fwrite($handle, $textline) === FALSE) {
-       echo "Cannot write to file ($filename)";
-       exit;
-   }
-  
-   //echo "Success, wrote ($textline) to file ($filename)";
-  
-   fclose($handle);
-
-} else {
-   echo "The file $filename is not writable";
-}
-}
-
-
-
 if ($erreur == 0)
 {
 	if (!isset($methode))
@@ -453,7 +424,7 @@ if ($erreur == 0)
 				echo "<p>La modification a été effectuée.";
 			}
 			$log = $log."Modification de la marge ancienne marge : $ancienne_marge / nouvelle marge : $qte \n";
-			writelog($log);
+			writelog($log,'change_refuge');
 			break;
 		case "statut";
 			$req = "select lieu_prelev,lieu_marge ";
@@ -495,7 +466,7 @@ if ($erreur == 0)
 				echo "<p>La modification a été effectuée.";
 				$log = $log."Modification du statut pour passer en refuge\n";
 			}
-			writelog($log);
+			writelog($log,'change_refuge');
 			break;
 		case "nom";	
 			echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4.php\">";

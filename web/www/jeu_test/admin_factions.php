@@ -9,27 +9,6 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
-function writelog($textline)
-{
-    $filename="../logs/factions.log";
-	if (is_writable($filename))
-	{
-		if (!$handle = fopen($filename, 'a'))
-		{
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE)
-		{
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	}
-	else
-		echo "The file $filename is not writable";
-}
-
 function ecrireResultatEtLoguer($texte, $sql = '')
 {
 	global $db, $compt_cod;
@@ -50,7 +29,7 @@ function ecrireResultatEtLoguer($texte, $sql = '')
 
 		$en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
 		echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-		writelog($en_tete . $texte . $sql);
+		writelog($en_tete . $texte . $sql,'factions');
 	}
 }
 

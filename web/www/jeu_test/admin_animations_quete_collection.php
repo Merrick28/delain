@@ -42,7 +42,7 @@ switch ($methode)
 		$methode = 'collection_visu';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod modifie le concours de collection $form_titre (id = $form_cod).\n";
-		writelog($log);
+		writelog($log,'animation_collection');
 	break;
 	case 'collection_creation':	// Création d’un concours
 		$form_titre = "'" . pg_escape_string(htmlspecialchars(str_replace('\'', '’', $_POST['form_titre']))) . "',";
@@ -59,7 +59,7 @@ switch ($methode)
 		$methode = 'debut';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod crée le concours de collection $form_titre.\n";
-		writelog($log);
+		writelog($log,'animation_collection');
 	break;
 	default:
 	break;

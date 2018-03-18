@@ -13,7 +13,7 @@ switch ($methode)
 		echo '<p>Suppression des pochettes effectuée. ' . $db->nf() . ' pochettes supprimées.</p>';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod a supprimé toutes les pochettes surprises.\n";
-		writelog($log);
+		writelog($log,'animation_pochettes');
 	break;
 	case 'pochette_distribution':	// Réinitialisation des compteurs et distribution de nouvelles pochettes
 		$req = 'select cree_pochette_surprise() as resultat';
@@ -25,7 +25,7 @@ switch ($methode)
 		$db->query($req);
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod a distribué des pochettes surprises à tous les aventuriers à l’occasion de $texte.\n";
-		writelog($log);
+		writelog($log,'animation_pochettes');
 	break;
 }
 

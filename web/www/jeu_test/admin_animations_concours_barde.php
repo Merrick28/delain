@@ -44,7 +44,7 @@ switch ($methode)
 		$methode = 'barde_visu';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod modifie le concours de bardes $form_saison (id = $form_cod).\n";
-		writelog($log);
+		writelog($log,'animation_concours_barde');
 	break;
 	case 'barde_creation':	// Création d’un concours
 		$form_saison = "'" . pg_escape_string(htmlspecialchars(str_replace('\'', '’', $_POST['form_saison']))) . "',";
@@ -72,7 +72,7 @@ switch ($methode)
 		$methode = 'barde_visu';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod crée le concours de bardes $form_saison.\n";
-		writelog($log);
+		writelog($log,'animation_concours_barde');
 	break;
 	default:
 	break;

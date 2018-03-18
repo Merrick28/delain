@@ -40,7 +40,7 @@ switch ($methode)
 		echo '<p>Redistribution effectuée pour le médaillon ' . $nom_medaillon . '</p>';
 
 		$log = date("d/m/y - H:i") . "\tCompte $compt_cod a redistribué le médaillon $nom_medaillon.\n";
-		writelog($log);
+		writelog($log,'admin_animations_medaillons');
 	break;
 }
 

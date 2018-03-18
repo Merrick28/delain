@@ -16,7 +16,7 @@ if (!$verif_auth)
 }
 // normalement, les objets $compte et $perso sont déjà chargés par la page ident.php
 
-$frameless        = ($compte->compt_frameless == 'O');
+$frameless = ($compte->compt_frameless == 'O');
 $autorise_monstre = ($compte->autorise_4e_monstre() == 't');
 
 
@@ -37,27 +37,27 @@ ob_start();
 
 
 $num_resultat = 0;
-$db           = new base_delain;
+$db = new base_delain;
 $requete
-              = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel, 
+    = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel, 
 			perso_dlt
 		FROM perso WHERE perso_cod = " . $perso_cod;
 $db->query($requete);
 $num_resultat = $db->nf();
 
-$nom          = $perso->perso_nom;
-$perso_nom    = str_replace(chr(39), " ", $nom);
-$maintenant   = date("d/m/Y H:i:s");
+$nom = $perso->perso_nom;
+$perso_nom = str_replace(chr(39), " ", $nom);
+$maintenant = date("d/m/Y H:i:s");
 $perso_mortel = $perso->perso_mortel;
-$num_perso    = $perso->perso_cod;
-$perso_cod    = $num_perso;
-$autorise     = 0;
-$type_perso   = $perso->perso_type_perso;
+$num_perso = $perso->perso_cod;
+$perso_cod = $num_perso;
+$autorise = 0;
+$type_perso = $perso->perso_type_perso;
 if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
 {
     // on va quand même charger le perso_compte
     $pcompt = new perso_compte();
-    $tab    = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
+    $tab = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
     if ($tab !== false)
     {
         // On a trouvé un perso_compte pour ce perso
@@ -67,11 +67,10 @@ if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
             $autorise = 1;
         }
     }
-}
-elseif ($type_perso == 3)
+} elseif ($type_perso == 3)
 {
-    $pfam    = new perso_familier();
-    $pcompt  = new perso_compte();
+    $pfam = new perso_familier();
+    $pcompt = new perso_compte();
     $tab_fam = $pfam->getBy_pfam_familier_cod($perso->perso_cod);
     if ($tab_fam !== false)
     {
@@ -102,8 +101,7 @@ if ($autorise != 1)
         {
             $autorise = 1;
         }
-    }
-    elseif ($type_perso == 3)
+    } elseif ($type_perso == 3)
     {
         $cs = new compte_sitting();
         if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod))
@@ -117,8 +115,8 @@ if ($autorise == 1)
     $myAuth = new myauth;
     $myAuth->start();
     $myAuth->perso_cod = $num_perso;
-    $tableau_numeros   = array();
-    $tableau_noms      = array();
+    $tableau_numeros = array();
+    $tableau_noms = array();
     if (isset($activeTout) && $activeTout == 1)
     {
         $pcompt = new perso_compte();
@@ -134,14 +132,14 @@ if ($autorise == 1)
                 {
                     // il est actif, on l'ajoute au tableau
                     $tableau_numeros[] = $temp_perso->perso_cod;
-                    $tableau_noms[]    = $temp_perso->perso_nom;
+                    $tableau_noms[] = $temp_perso->perso_nom;
                     // on regarde s'il y a un familier associé
                     $temp_fam = new perso_familier();
                     // on regarde si ce perso a un familier
                     $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
                     if ($tab_fam !== false)
                     {
-                         // il a au moins un familier, on boucle
+                        // il a au moins un familier, on boucle
                         foreach ($tab_fam as $detail_fam)
                         {
                             $perso_fam = new perso;
@@ -151,7 +149,7 @@ if ($autorise == 1)
                                 {
                                     // il est actif, on l'ajoute
                                     $tableau_numeros[] = $perso_fam->perso_cod;
-                                    $tableau_noms[]    = $perso_fam->perso_nom;
+                                    $tableau_noms[] = $perso_fam->perso_nom;
                                 }
 
                             }
@@ -164,8 +162,7 @@ if ($autorise == 1)
 
             }
         }
-    }
-    else
+    } else
     {
         $tableau_numeros[] = $num_perso;
     }
@@ -258,16 +255,14 @@ if ($autorise == 1)
         echo "<center><input type=\"submit\" value=\"Jouer !!\" class=\"test\"><br />";
         $checked = ($frameless) ? 'checked="checked"' : '';
         echo "<input type=\"hidden\" name=\"changed_frameless\" id='hidframeless' value=\"0\" />";
-    }
-    else
+    } else
     {
         echo "<center><a href='validation_login2.php'>La vie continue... Retrouver mes autres persos !</a></center><br />";
     }
     echo "</form>";
 
     echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : $maintenant</i></p>";
-}
-else
+} else
 {
     echo "Accès refusé !";
 }
