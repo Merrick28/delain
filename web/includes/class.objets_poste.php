@@ -218,7 +218,7 @@ class objets_poste
      */
     function getTexteZoneCouverture($pos_cod, $short=false)
     {
-        // position du relai de -- livraison --
+        // position du relais de -- livraison --
         $pos = new positions();
         $pos->charge($pos_cod);
 
@@ -304,11 +304,11 @@ class objets_poste
      */
     function estLivrable($pos_cod)
     {
-        // position du relai de -- livraison --
+        // position du relais de -- livraison --
         $pos1 = new positions();
         $pos1->charge($this->opost_emet_pos_cod);
 
-        // position du relai de -- reception --
+        // position du relais de -- reception --
         $pos2 = new positions();
         $pos2->charge($pos_cod);
 
@@ -648,7 +648,6 @@ class objets_poste
 		return true;	
 	}
     /**
-     * Retourne true si l'opération c'est bien déroulée
      * Cette fonction log dans dans le fichier dédié
      * @param $textline : ligne à logguer
      */
