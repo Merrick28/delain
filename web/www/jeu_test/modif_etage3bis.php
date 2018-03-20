@@ -242,6 +242,14 @@ if ($erreur == 0)
 				$req = "select init_automap_pos(".$lieu_pos_cod.")";
 				$db->query($req);
 
+				if ($lieu_pos_cod != $pos_cod_avant)
+                {
+                    // Marlyza 2018-03-20: Si un lieu change de place, il faut aussi mettre l'automap de sa position précédente à jour.
+                    $req = "select init_automap_pos(".$pos_cod_avant.")";
+                    $db->query($req);
+                }
+
+
 				$req = "select tlieu_libelle from lieu_type where tlieu_cod = " . pg_escape_string($tlieu_cod);
 				$db->query($req);
 				$db->next_record();
