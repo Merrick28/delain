@@ -533,7 +533,7 @@ begin
             and pos_etage = e_attaquant
             and perso_cod != v_attaquant
             and perso_type_perso != 2 --------enlevé pour test
-            and not exists (select 1 from lieu_position, lieu
+            and not exists (select 1 from lieu_position inner join lieu on lpos_lieu_cod=lieu_cod
       where lpos_pos_cod = pos_cod
             and lieu_refuge = 'O')
       order by num limit 1
@@ -690,7 +690,7 @@ begin
                 if v_obj_deposable = 'N' then
                   compt := f_del_objet(v_obj);
                   code_retour := code_retour || '<p>L’arme de votre cible a été détruite !<br>';
-                  texte_evt := texte_evt || ' La victime a aussi été <b>désarmée. </b> !';
+                  texte_evt := texte_evt || ' La victime a aussi été <b><font color="red">désarmée</font>. </b> !';
                 else
                   delete from perso_objets
                   where perobj_perso_cod = ligne.perso_cod
@@ -698,7 +698,7 @@ begin
                   insert into objet_position (pobj_pos_cod, pobj_obj_cod)
                   values (ligne.ppos_pos_cod, v_obj);
                   code_retour := code_retour || '<p>L’arme de votre adversaire est tombée au sol !<br>';
-                  texte_evt := texte_evt || ' La victime a aussi été <b>désarmée. </b> !';
+                  texte_evt := texte_evt || ' La victime a aussi été <b><font color="red">désarmée</font>. </b> !';
                 end if;
               end if;
             end if;
