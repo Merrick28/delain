@@ -13,28 +13,6 @@ if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
 }
 $log = date("d/m/y - H:i")."$perso_nom (compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: $gmon_cod\n";
 
-function writelog($textline){
-	$filename="../logs/monstre_edit.log"; // or whatever your path and filename
-	if (is_writable($filename))
-	{
-		if (!$handle = fopen($filename, 'a'))
-		{
-			echo "Cannot open file ($filename)";
-			exit;
-		}
-		if (fwrite($handle, $textline) === FALSE)
-		{
-			echo "Cannot write to file ($filename)";
-			exit;
-		}
-		fclose($handle);
-	}
-	else
-		echo "The file $filename is not writable";
-}
-
-
-
 switch ($methode) {
 	case "create_mon":
 		$req_cre_mon_cod =  "select nextval('seq_gmon_cod') as cod";
@@ -132,7 +110,7 @@ switch ($methode) {
 			. ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
 			. ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
 			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie where gmon_cod = $gmon_cod";
-		echo $req_cre_gmon;
+		//echo $req_cre_gmon;
 		$db_cre_mon->query($req_cre_gmon);
 		echo "MAJ modèle<br>";
 	break;
