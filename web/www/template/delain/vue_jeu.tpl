@@ -2,7 +2,7 @@
 	<head>
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180228" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180313" title="essai">
 		
 		<style>
 			div#colonne1 {
@@ -116,8 +116,8 @@
 		<div id="pa" style="padding:2px"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif" title="{PERSO_PA} PA " alt="{PERSO_PA} PA "></div>
 		<div id="hp" style="padding:0px"><img src="{URL_IMAGES}coeur.gif" alt=""> <div title="{PERSO_PV}/{PERSO_PV_MAX}PV" alt="{PERSO_PV}/{PERSO_PV_MAX}PV" class="container-hp"><div class="barre-hp" style="width:{PERSO_BARRE_VIE}%"></div></div></div>
 		<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
-		<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
 		<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
+		<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
 		<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
 		<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
 	</div>

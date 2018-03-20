@@ -236,16 +236,17 @@ function affiche_perso($perso_cod)
 			<div class="image"><img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $energie . ' sur 100" alt="' . $energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_energie.'%"></div></div>
 			</div></td></tr>';
     }
-    echo '	<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:'. $barre_xp.'%"></div></div> 
-		</div></td></tr>';
 
     if ($energie_divine > 0)
     {
         echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_divine .'%"></div></div> 
+			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '" class="container-div"><div class="barre-div" style="width:'. $barre_divine .'%"></div></div> 
 			</div></td></tr>';
     }
+
+    echo '	<tr><td>
+		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:'. $barre_xp.'%"></div></div> 
+		</div></td></tr>';
 
     echo '<tr><td>';
     //

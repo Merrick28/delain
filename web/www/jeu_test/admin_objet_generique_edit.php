@@ -154,6 +154,10 @@ else
 				<td><select name="gobj_echoppe"><option value="O">Oui</option><option value="N">Non</option></select></td>
 			</tr>
 			<tr>
+				<td class="soustitre2">Postable dans les relais poste?</td>
+				<td><select name="gobj_postable"><option value="O">Oui</option><option selected value="N">Non</option></select></td>
+			</tr>
+			<tr>
 				<td class="soustitre2">Vampirisme (armes uniquement) en numérique (ex : 0.2 pour 20%)</td>
 				<td><input type="text" name="gobj_vampire"></td>
 			</tr>
@@ -430,6 +434,20 @@ else
 				?>
 				>Non</option></select></td>
 			</tr>
+            <tr>
+                <td class="soustitre2">Objet postable dans les relais poste ?</td>
+                <td><select name="gobj_postable"><option value="O"
+                            <?php
+                            if ($db->f("gobj_postable") == 'O')
+                                echo " selected" ;
+                            ?>
+                        >Oui</option><option value="N"
+                            <?php
+                            if ($db->f("gobj_postable") == 'N')
+                                echo " selected" ;
+                            ?>
+                        >Non</option></select></td>
+            </tr>
 			<tr>
 				<td class="soustitre2">Vampirisme (armes uniquement) en numérique (ex : 0.2 pour 20%)</td>
 				<td><input type="text" name="gobj_vampire" value="<?php echo $db->f("gobj_vampire");?>"></td>
@@ -555,13 +573,13 @@ else
 			// insertion dans objets_generique
 			$req = "insert into objet_generique
 				(gobj_obcar_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_distance,gobj_portee,gobj_comp_cod,gobj_poids,
-				gobj_pa_normal,gobj_pa_eclair,gobj_description,gobj_deposable,gobj_usure,gobj_echoppe,gobj_vampire,
+				gobj_pa_normal,gobj_pa_eclair,gobj_description,gobj_deposable,gobj_postable,gobj_usure,gobj_echoppe,gobj_vampire,
 				gobj_seuil_force,gobj_seuil_dex,gobj_nb_mains,gobj_regen,gobj_aura_feu,gobj_bonus_vue,gobj_critique,gobj_bonus_armure,
 				gobj_chance_drop,gobj_chance_enchant,gobj_desequipable,gobj_stabilite, gobj_niveau_min)
 				values
 				($obcar_cod,e'" . pg_escape_string($gobj_nom) . "',e'" . pg_escape_string($gobj_nom_generique) . "'," . $_POST['gobj_tobj_cod'] . "," . $_POST['gobj_valeur'] .
 				",'$gobj_distance'," . $_POST['gobj_portee'] . "," .$_POST['gobj_comp_cod'] . "," . $_POST['gobj_poids'] . "," . $_POST['gobj_pa_normal'] . "," . 
-				$_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," . 
+				$_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
 				$_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] . 
 				"," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] .
 				"," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
@@ -624,7 +642,7 @@ else
 				gobj_obcar_cod = $obcar_cod, gobj_valeur = " . $_POST['gobj_valeur'] . ", gobj_distance='$gobj_distance',gobj_portee = " . $_POST['gobj_portee'] . ",
 				gobj_comp_cod = " . $_POST['gobj_comp_cod'] .", gobj_poids = " . $_POST['gobj_poids'] . ",
 				gobj_pa_normal = " . $_POST['gobj_pa_normal'] . ",gobj_pa_eclair = " . $_POST['gobj_pa_eclair'] . ",gobj_description=e'" . pg_escape_string($gobj_description) . "',
-				gobj_deposable = '$gobj_deposable',gobj_usure = " . $_POST['gobj_usure'] . ",gobj_echoppe = '$gobj_echoppe',
+				gobj_deposable = '$gobj_deposable', gobj_postable = '" . $_POST['gobj_postable'] . "',gobj_usure = " . $_POST['gobj_usure'] . ",gobj_echoppe = '$gobj_echoppe',
 				gobj_vampire = " . $_POST['gobj_vampire'] . ",gobj_seuil_force = " . $_POST['gobj_seuil_force'] . ",gobj_seuil_dex = " . $_POST['gobj_seuil_dex'] . ",
 				gobj_nb_mains = " . $_POST['gobj_nb_mains'] . ",gobj_regen = " . $_POST['gobj_regen'] . ",gobj_aura_feu = " . $_POST['gobj_aura_feu'] . ",
 				gobj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",gobj_critique = " . $_POST['gobj_critique'] . ",gobj_bonus_armure = " . $_POST['gobj_bonus_armure'] .",

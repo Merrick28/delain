@@ -57,6 +57,7 @@ if ($erreur == 0)
 // details du perso
 $perso = new perso;
 $perso->charge($perso_cod);
+$perso_pos_cod = $perso->get_position()['pos']->pos_cod ;
 
 //===========================================================================================
 // ----- Traitement du lieu ---------------------------------------------
@@ -90,10 +91,13 @@ else
 	$options_twig = array() ; // on affiche rien par defaut!
 	
 	//===========================================================================================
-	// On commence par regarder s'il y a déjà des objets envoyés --------------------------------
-	$options_twig_colis = array("perso_po" => $perso->perso_po);	//la fortune dont on dispose
-	
-	$objets_poste_emet = $objets_poste->getBy_opost_emet_perso_cod($perso_cod);
+    $zone_couverture = $objets_poste->getTexteZoneCouverture($perso_pos_cod);
+    $options_twig_colis = array(
+            "perso_po" => $perso->perso_po,
+            "zone_couverture" => $zone_couverture);	//la fortune dont on dispose
+
+    // On commence par regarder s'il y a déjà des objets envoyés --------------------------------
+    $objets_poste_emet = $objets_poste->getBy_opost_emet_perso_cod($perso_cod);
 	if ($objets_poste_emet)
 	{
 		$objets_emet = array();
@@ -102,7 +106,7 @@ else
 		foreach ($objets_poste_emet as $k => $objet)
 		{
 			if (!$objet->Confisque($perso_cod)) 
-			{	
+			{
 				// Si l'objet n'a pas été confisqué! (à cause d'un retrait trop long)
 				$objet_desc->charge($objet->opost_obj_cod);
 				$perso_desc->charge($objet->opost_dest_perso_cod);
@@ -110,7 +114,10 @@ else
 						'opost_cod' => $objet->opost_cod, 				
 						'obj_cod' => $objet->opost_obj_cod, 				
 						'date_poste' => $objet->opost_date_poste, 
-						'est_livrable' => $objet->estLivrable(), 				
+						'est_livrable' => $objet->estLivrable($perso_pos_cod),
+						'est_date_livrable' => $objet->estDateLivrable(),
+						'est_lieu_livrable' => $objet->estLieuLivrable($perso_pos_cod),
+                        'zone_livraison' => $objet->getTexteZoneCouverture($objet->opost_emet_pos_cod, true),
 						'date_livraison' => $objet->getDateLivraison(), 
 						'date_confiscation' => $objet->getDateConfiscation(), 
 						'perso_cod_dest' => $objet->opost_dest_perso_cod,
@@ -145,10 +152,13 @@ else
 				$objets_dest[] = array(
 						'opost_cod' => $objet->opost_cod, 
 						'obj_cod' => $objet->opost_obj_cod, 
-						'date_poste' => $objet->opost_date_poste, 
-						'est_livrable' => $objet->estLivrable(), 
-						'date_livraison' => $objet->getDateLivraison(), 
-						'date_confiscation' => $objet->getDateConfiscation(), 
+						'date_poste' => $objet->opost_date_poste,
+                        'est_livrable' => $objet->estLivrable($perso_pos_cod),
+                        'est_date_livrable' => $objet->estDateLivrable(),
+                        'est_lieu_livrable' => $objet->estLieuLivrable($perso_pos_cod),
+						'zone_livraison' => $objet->getTexteZoneCouverture($objet->opost_emet_pos_cod, true),
+						'date_livraison' => $objet->getDateLivraison(),
+						'date_confiscation' => $objet->getDateConfiscation(),
 						'perso_cod_emet' => $objet->opost_emet_perso_cod, 
 						'perso_nom_emet' => $perso_desc->perso_nom, 
 						'obj_nom' => $objet_desc->obj_nom, 
@@ -359,9 +369,10 @@ else
 		    $objets_poste->opost_obj_cod           = $colis[0]['obj_cod'];
 		    $objets_poste->opost_prix_demande      = 1*$colis[0]['prix_demande'];			
 		    $objets_poste->opost_emet_perso_cod    = $perso_cod;
+		    $objets_poste->opost_emet_pos_cod      = $perso->get_position()['pos']->pos_cod;
 		    $objets_poste->opost_dest_perso_cod    = $destinataire_list[0]->perso_cod;
-			
-		    //faire le paiement
+
+            //faire le paiement
 		    $perso->perso_po = $perso->perso_po - $frais_port ;
 		    $perso->stocke();
 			

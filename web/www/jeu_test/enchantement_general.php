@@ -191,7 +191,7 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 			if($controle == 1)
 			{
 				$contenu_page .= '<span align="center"><b>Les objets enchantables</b></span>
-				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>
+				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>    
 					<div id="aide2" class="tableau2"  style="display:none;">
 					<p><b>Rendre un objet enchantable :</b>
 					<br>A la base, aucun objet n\'est enchantable. Chaque objet est une matière inerte, sans aucune propriété.
