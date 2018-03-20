@@ -42,7 +42,7 @@
 <tr>
   <td class="soustitre2"></td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if objet.est_livrable  %}<b>{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if objet.est_livrable  %}</b>{% endif %}</td>
+  <td class="soustitre2">{{ objet.date_livraison|date("d/m/Y H:i") }}</td>
   <td class="soustitre2">{{ objet.perso_nom_dest }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
@@ -74,14 +74,14 @@
     {% endif %}
   </td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if objet.est_livrable  %}<b>{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if objet.est_livrable  %}</b>{% endif %}</td>
+  <td class="soustitre2">{% if not objet.est_date_livrable  %}<b><font color="#8b0000>">{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if not objet.est_date_livrable  %}</b><font color="#8b0000>">{% endif %}</td>
   <td class="soustitre2">{{ objet.perso_nom_emet }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{{ objet.zone_livraison }}</td>
-</tr>	
+  <td class="soustitre2">{% if not objet.est_lieu_livrable  %}<b><font color="#8b0000>">{% endif %}{{ objet.zone_livraison }}{% if not objet.est_date_livrable  %}</b><font color="#8b0000>">{% endif %}</td>
+</tr>
 {% endfor %}
 <tr><td class="soustitre2" colspan="9">
  <center><input class="test" type="submit" name="next" value="Récupérer mes objets"><input type="hidden" name="action" value="retrait0"></center>

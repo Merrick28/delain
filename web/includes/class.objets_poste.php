@@ -304,6 +304,32 @@ class objets_poste
      */
     function estLivrable($pos_cod)
     {
+        // On vérifie d'abord la date
+        if (!$this->estDateLivrable())
+        {
+            return false;
+        }
+        return $this->estLieuLivrable($pos_cod);
+    }
+
+    //----------------------------------------
+    /**
+     * Retourne vrai si l'objet a passé la date de livraion
+     * @return boolean
+     */
+    function estDateLivrable()
+    {
+        return date('Y-m-d H:i:s') >= $this->getDateLivraison() ;
+    }
+
+    //----------------------------------------
+    /**
+     * Retourne vrai si l'objet peut être retiré de la poste
+     * @param integer $etage_numero => étage de reception
+     * @return boolean
+     */
+    function estLieuLivrable($pos_cod)
+    {
         // position du relais de -- livraison --
         $pos1 = new positions();
         $pos1->charge($this->opost_emet_pos_cod);
@@ -317,10 +343,10 @@ class objets_poste
             return false;   // le receptionneur n'est pas dans la zone de couverture du relais de livraison
         }
 
-		return date('Y-m-d H:i:s') >= $this->getDateLivraison() ;       
-    }	
+        return true ;
+    }
 
-	//----------------------------------------
+    //----------------------------------------
 	//fonction interne pour récupérer les delais de livraison dans les paramètres globaux
 	function _delai_confiscation()
 	{
