@@ -89,7 +89,7 @@ if ($erreur == 0)
             // Caractéristiques
 			$req = 'select obj_nom,obj_nom_generique,tobj_libelle,tobj_cod,gobj_pa_normal,gobj_pa_eclair,obj_nom_porte,
 				obj_description,obj_valeur,obj_etat,obj_des_degats,obj_val_des_degats,obj_bonus_degats,obj_armure,
-				obj_distance,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,
+				obj_distance,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,obj_bonus_vue,obj_critique,
 				obj_critique,obj_seuil_force,obj_seuil_dex,obj_chance_drop,obj_enchantable,obj_desequipable, trouve_objet(obj_cod) as obj_position,
 				obj_niveau_min
 				from objets,objet_generique,type_objet
@@ -192,6 +192,14 @@ if ($erreur == 0)
 					<td class="soustitre2">Aura de feu : </td>
 					<td><input type="text" size="5" name="obj_aura_feu" value="<?php echo $db->f('obj_aura_feu');?>"></td>
 				</tr>
+                <tr>
+                    <td class="soustitre2">Bonus/malus à la vue</td>
+                    <td><input type="text" name="obj_bonus_vue" value="<?php echo $db->f('obj_bonus_vue');?>"></td>
+                </tr>
+                <tr>
+                    <td class="soustitre2">Protection contre les critiques (en %)</td>
+                    <td><input type="text" name="obj_critique" value="<?php echo $db->f('obj_critique');?>"></td>
+                </tr>
 				<tr>
 					<td class="soustitre2">Chance de drop à la mort (en %) : </td>
 					<td><input type="text" size="5" name="obj_chance_drop" value="<?php echo $db->f('obj_chance_drop');?>"></td>
@@ -292,6 +300,8 @@ if ($erreur == 0)
 				'obj_regen',
 				'obj_vampire',
 				'obj_aura_feu',
+				'obj_bonus_vue',
+				'obj_critique',
 				'obj_seuil_dex',
 				'obj_seuil_force',
 				'obj_chance_drop',
@@ -328,6 +338,8 @@ if ($erreur == 0)
 					'obj_regen',
 					'obj_vampire',
 					'obj_aura_feu',
+					'obj_bonus_vue',
+					'obj_critique',
 					'obj_seuil_dex',
 					'obj_seuil_force',
 					'obj_chance_drop',
