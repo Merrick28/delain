@@ -97,8 +97,20 @@ else
 
 	if (!is_dir('statiques'))
 		mkdir('statiques', 0777);
-	
-	if (!is_file($nom_fichier))
+
+	$isRefreshRequired = false ;
+    if (!is_file($nom_fichier))
+    {
+        // Le fichier n'existe pas, il faut donc le créer
+        $isRefreshRequired = true ;
+    }
+    else if (date( "Y-m-d H:i:s",strtotime('+1 MONTH', filectime ( $nom_fichier ))) <date("Y-m-d H:i:s"))
+    {
+        // Le fichier existe, mais il a été créé il y a plus d'un mois, il faut le refaire
+        $isRefreshRequired = true ;
+    }
+
+	if ($isRefreshRequired)
 	{
 		$verification = '<?php
 			if(!defined("APPEL"))
