@@ -216,10 +216,6 @@ if ($autorise == 1)
             $nv_monstre->perso_renommee = 1600 ;
             $nv_monstre->perso_renommee_magie = 4600 ;
             $nv_monstre->perso_renommee_artisanat = 550 ;
-            $nv_monstre->perso_description = 'Un grand démon de feu entouré d’ombre.  
-Balrog signifie en elfique "démon de puissance". 
-
-Est ce que je leur met un épée de feu et un fouet ardent ????';
             $nv_monstre->perso_avatar = "balrog-".(mt_rand(0,9)).".jpg" ;   // 10 images différentes du monstre
             $nv_monstre->stocke();
 
