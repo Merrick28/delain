@@ -195,7 +195,7 @@ if ($autorise == 1)
         if  (($perso_dlt->perso_type_perso==1 || $perso_dlt->perso_type_perso==2)
             && ($dlt1!=$dlt2)
             && (date("Y-m-d")=="2018-03-31")
-            && ($perso_dlt->perso_cod==589672 || $perso_dlt->perso_cod==589674 || $perso_dlt->perso_cod==589675))
+            && ($perso_dlt->perso_cod==589672 || $perso_dlt->perso_cod==589675 || $perso_dlt->perso_cod==589676))
         {
             // Il y a eu une activation de DLT
             $pdo  = new bddpdo();
