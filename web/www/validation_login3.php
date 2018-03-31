@@ -184,9 +184,39 @@ if ($autorise == 1)
             echo "<p><b>Pour " . $tableau_noms[$key] . " :</b></p>";
         }
 
+        $dlt1 = $perso_dlt->perso_dlt;      // memo de la dlt avant calcul
+
         // on passe la dlt
         echo $perso_dlt->calcul_dlt();
         $date_dlt = new DateTime($perso_dlt->perso_dlt);
+
+        // activation spéciale le permier avril 2018 !
+        $dlt2 = $perso_dlt->perso_dlt;      // dlt actuelle
+        if  (($perso_dlt->perso_type_perso==1 || $perso_dlt->perso_type_perso==2)
+            && ($dlt1!=$dlt2)
+            && (date("Y-m-d")=="2018-03-31")
+            && ($perso_dlt->perso_cod==589672 || $perso_dlt->perso_cod==589674 || $perso_dlt->perso_cod==589675))
+        {
+            // Il y a eu une activation de DLT
+            $pdo  = new bddpdo();
+            $req  = "select cree_monstre_pos(194,?) as perso_cod";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($perso_dlt->get_position()["pos"]->pos_cod), $stmt);
+            $invocation = $stmt->fetch();
+            $monstre_perso_cod = $invocation["perso_cod"] ;
+
+            // Un peu de carac!
+            $nv_monstre = new perso;
+            $nv_monstre->charge($monstre_perso_cod);
+            $nv_monstre->perso_nb_joueur_tue = mt_rand(20,100) ;
+            $nv_monstre->perso_dirige_admin = 'O' ;                 // faudrait pas que l'ia en prenne le controle ;-)
+            $nv_monstre->perso_kharma = -5000 ;
+            $nv_monstre->perso_renommee = 1600 ;
+            $nv_monstre->perso_renommee_magie = 4600 ;
+            $nv_monstre->perso_renommee_artisanat = 550 ;
+            $nv_monstre->perso_avatar = "balrog-".(mt_rand(0,9)).".jpg" ;   // 10 images différentes du monstre
+            $nv_monstre->stocke();
+        }
 
         echo "<br>Votre nouvelle date limite de tour est : <b>" . $date_dlt->format('d/m/Y H:i:s') . "</b>";
 
