@@ -104,7 +104,7 @@ else
         // Le fichier n'existe pas, il faut donc le créer
         $isRefreshRequired = true ;
     }
-    else if (date( "Y-m-d H:i:s",strtotime('+1 DAY', filectime ( $nom_fichier ))) <date("Y-m-d H:i:s"))
+    else if (date( "Y-m-d H:i:s",strtotime('+7 DAY', filectime ( $nom_fichier ))) <date("Y-m-d H:i:s"))
     {
         // Le fichier existe, mais il a été créé il y a plus d'un mois, il faut le refaire
         $isRefreshRequired = true ;
