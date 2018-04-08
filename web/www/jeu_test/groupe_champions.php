@@ -97,8 +97,20 @@ else
 
 	if (!is_dir('statiques'))
 		mkdir('statiques', 0777);
-	
+
+    $isRefreshRequired = false ;
     if (!is_file($nom_fichier))
+    {
+        // Le fichier n'existe pas, il faut donc le créer
+        $isRefreshRequired = true ;
+    }
+    else if (date( "Y-m-d H:i:s",strtotime('+7 DAY', filectime ( $nom_fichier ))) <date("Y-m-d H:i:s"))
+    {
+        // Le fichier existe, mais il a été créé il y a plus d'un mois, il faut le refaire
+        $isRefreshRequired = true ;
+    }
+
+    if ($isRefreshRequired)
 	{
 		$verification = '<?php
 			if(!defined("APPEL"))
@@ -109,28 +121,29 @@ else
 		$contenu_statique .= '<p>Page générée ' . date('\l\e d/m/Y \à H:i') . '</p>';
 		$contenu_statique .= '<center><table>';
 
-		$req_comp = 'select typc_libelle, comp_libelle, pcomp_modificateur, perso_nom
-			from perso_competences
-			inner join competences on comp_cod = pcomp_pcomp_cod
-			inner join type_competences on typc_cod = comp_typc_cod
-			inner join perso on perso_cod = pcomp_perso_cod
-			inner join groupe_perso on pgroupe_perso_cod = pcomp_perso_cod
-			where pgroupe_groupe_cod = ' . $groupe_cod . '
-				and pgroupe_champions = 1
-				and pgroupe_statut > 0
-				and comp_cod != 29
-			order by typc_libelle, pcomp_pcomp_cod, pcomp_modificateur desc, perso_nom';
+        # 2018-04-03 - Marlyza - Refonte de toutes les requetes pour rapidité d'éxecution
+        $req_comp = "select distinct typc_libelle, comp_libelle, pcomp_modificateur, perso_nom,pcomp_pcomp_cod
+            from groupe_perso
+            inner join perso on perso_cod = pgroupe_perso_cod
+                and perso_actif = 'O'
+                and pgroupe_groupe_cod = " . $groupe_cod . "
+                and pgroupe_champions = 1
+                and pgroupe_statut > 0
+            inner join perso_competences on pcomp_perso_cod = perso_cod
+            inner join competences on comp_cod = pcomp_pcomp_cod and comp_cod != 29
+            inner join type_competences on typc_cod = comp_typc_cod
+            order by typc_libelle, pcomp_pcomp_cod, pcomp_modificateur desc, perso_nom";
 
 		$db->query($req_comp);
 		$contenu_statique .= gereAffichage($db, 'pcomp_modificateur', '%', 'typc_libelle', 'comp_libelle', 'perso_nom');
 		
 		$req_caracs = "WITH t as (
-				select perso_for, perso_int, perso_con, perso_dex, perso_nom, perso_po, coalesce(pbank_or, 0) as banque, perso_pv_max from perso
-				inner join groupe_perso on pgroupe_perso_cod = perso_cod
-				left outer join perso_banque on pbank_perso_cod = perso_cod
-				where pgroupe_champions = 1
-					and pgroupe_statut > 0
-					and pgroupe_groupe_cod = $groupe_cod
+				select perso_for, perso_int, perso_con, perso_dex, perso_nom, perso_pv_max from groupe_perso 
+				inner join perso on perso_cod = pgroupe_perso_cod  
+				            and pgroupe_groupe_cod = $groupe_cod  
+				            and perso_actif = 'O'
+                            and pgroupe_champions = 1
+					        and pgroupe_statut > 0				            
 			)
 			select 'Caractéristiques' as titre, 'Force' as carac, perso_for as valeur, perso_nom as nom
 			from
@@ -166,12 +179,13 @@ else
 		$contenu_statique .= gereAffichage($db, 'valeur', '', 'titre', 'carac', 'nom');
 		
 		$req_caracs = "WITH t as (
-				select perso_nom, perso_po, coalesce(pbank_or, 0) as banque from perso
-				inner join groupe_perso on pgroupe_perso_cod = perso_cod
+				select perso_nom, perso_po, coalesce(pbank_or, 0) as banque from groupe_perso 
+				inner join perso on perso_cod = pgroupe_perso_cod  
+				            and pgroupe_groupe_cod = $groupe_cod  
+				            and perso_actif = 'O'
+                            and pgroupe_champions = 1
+					        and pgroupe_statut > 0	
 				left outer join perso_banque on pbank_perso_cod = perso_cod
-				where pgroupe_champions = 1
-					and pgroupe_statut > 0
-					and pgroupe_groupe_cod = $groupe_cod
 			)
 			select 'Richesses' as titre, 'Porte-monnaie' as carac, perso_po as valeur, perso_nom as nom
 			from
@@ -188,32 +202,34 @@ else
 		$db->query($req_caracs);
 		$contenu_statique .= gereAffichage($db, 'valeur', ' bzf', 'titre', 'carac', 'nom');
 		
-		$req_chasse = 'select \'Palmarès de chasse\' as libelle, race_nom, sum(ptab_total * gmon_niveau * gmon_niveau) as total, perso_nom
-			from perso_tableau_chasse
-			inner join monstre_generique on gmon_cod = ptab_gmon_cod
-			inner join race on race_cod = gmon_race_cod
-			inner join perso on perso_cod = ptab_perso_cod
-			inner join groupe_perso on pgroupe_perso_cod = perso_cod
-			where pgroupe_groupe_cod = ' . $groupe_cod . '
-				and pgroupe_champions = 1
-				and pgroupe_statut > 0
-			group by race_nom, perso_nom
-			order by race_nom, total desc, perso_nom';
+		$req_chasse = "select 'Palmarès de chasse' as libelle, race_nom, sum(ptab_total * gmon_niveau * gmon_niveau) as total, perso_nom
+            from groupe_perso
+            inner join perso on perso_cod = pgroupe_perso_cod
+                and pgroupe_groupe_cod = $groupe_cod 
+                and perso_actif = 'O'
+                and pgroupe_champions = 1
+                and pgroupe_statut > 0	
+            inner join perso_tableau_chasse on ptab_perso_cod=perso_cod
+            inner join monstre_generique on gmon_cod = ptab_gmon_cod
+            inner join race on race_cod = gmon_race_cod
+            group by race_nom, perso_nom
+            order by race_nom, total desc, perso_nom ";
 
 		$db->query($req_chasse);
 		$contenu_statique .= gereAffichage($db, 'total', ' points', 'libelle', 'race_nom', 'perso_nom');
 		
-		$req_chasse = 'select \'Palmarès Solo (classé par niveau du monstre)\' as libelle, gmon_nom, sum(ptab_solo) as total, perso_nom
-			from perso_tableau_chasse
-			inner join monstre_generique on gmon_cod = ptab_gmon_cod
-			inner join perso on perso_cod = ptab_perso_cod
-			inner join groupe_perso on pgroupe_perso_cod = perso_cod
-			where pgroupe_groupe_cod = ' . $groupe_cod . '
-				and pgroupe_champions = 1
-				and pgroupe_statut > 0
-				and ptab_solo = 1
-			group by gmon_niveau, gmon_nom, perso_nom
-			order by gmon_niveau desc, gmon_nom, total desc, perso_nom';
+		$req_chasse = "select 'Palmarès Solo (classé par niveau du monstre)' as libelle, gmon_nom, sum(ptab_solo) as total, perso_nom
+            from groupe_perso
+            inner join perso on perso_cod = pgroupe_perso_cod
+                and pgroupe_groupe_cod =  $groupe_cod 
+                and perso_actif = 'O'
+                and pgroupe_champions = 1
+                and pgroupe_statut > 0	
+            inner join perso_tableau_chasse on ptab_perso_cod=perso_cod
+            inner join monstre_generique on gmon_cod = ptab_gmon_cod and ptab_solo = 1
+            inner join race on race_cod = gmon_race_cod
+            group by gmon_niveau, gmon_nom, perso_nom
+            order by gmon_niveau desc, gmon_nom, total desc, perso_nom";
 
 		$db->query($req_chasse);
 		$contenu_statique .= gereAffichage($db, 'total', '', 'libelle', 'gmon_nom', 'perso_nom');

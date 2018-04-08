@@ -142,7 +142,7 @@ function affiche_perso($perso_cod)
     $annee_en_cours = date('Y');
     $debut_1avril   = mktime(0, 0, 1, 4, 1, $annee_en_cours);
     $fin_1avril     = mktime(0, 0, 1, 4, 2, $annee_en_cours);
-    $is1avril       = time() > $debut_1avril && time() < $fin_1avril;
+    $is1avril       = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
     //
     // fin 1er avril
     //
