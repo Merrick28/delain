@@ -475,6 +475,23 @@ else
     $gerant = '';
 }
 
+// Gestion des favoris
+$arr_favoris = $perso->get_favoris();
+if (count($arr_favoris)==0)
+{
+    $favoris='<div id="barre-favoris" style="display:none;"><hr /></div>';
+}
+else
+{
+    $favoris='<div id="barre-favoris"><hr />';
+    foreach ($arr_favoris as $key => $fav)
+    {
+        $favoris.='<div id="fav-link-' . $fav["pfav_cod"] . '"><img src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . $fav["nom"] . '</a></div>';
+    }
+     $favoris.='</div>';
+}
+$t->set_var('FAVORIS', $favoris);
+
 // voie magique
 $nv5 = $perso->sort_lvl5();
 

@@ -1,0 +1,114 @@
+/**
+ * ============================ divers outils en Js/jquery ============================
+ *
+ * Créé le 10/4/2018 par Marlyza
+ *
+ *      - Fonction ajax pour facilité les echange front/back (sans recharment de page)
+ *      - Fonction pour poster une url avec des données
+ *      - Fonction liées à l'ajout/suppression de favoris dans la barre de menu à gauche.
+ */
+
+
+function runAsync(service, callback, context) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
+    // préparation des parametres
+
+    var request = service.request;						// Parametre mandatory !
+    var ws = "/jeu_test/ajax_request.php";				// type de webservice par defaut
+    var response_type = "json";							// type de données attendues par défaut
+
+    // Gestion des paramètres d'entrée
+    if (service.ws) ws=service.ws;				                    // WS spécifique
+    if (service.response_type) response_type=service.response_type;	// type de données en reponse spécifique
+
+    if (!service.data)
+    {   // préparation sans données additionnelles
+        var ajax_data={request:request};
+        var method = "GET";
+    }
+    else
+    {	// sinon ajouter les data au bout de la request et poster!
+        var ajax_data=$.extend( {request:request}, service.data );
+        var method = "POST";
+    }
+
+    if (service.type_data=='json')
+    {	// Poster des données au format json
+        ajax_data=JSON.stringify(ajax_data);
+        method = "POST";
+    }
+
+    return $.ajax({
+        url: ws,		// appel du ws
+        root: 'data',
+        dataType: response_type,
+        method: method,
+        async: true,
+        data: ajax_data,
+        cache:false,
+        success: function (data) {
+            if (callback) {
+                callback(data, context); 						// on appele de la callback avec le context
+            }
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            console.log("runAsync: Ajax Error Status=> " + textStatus);
+            console.log("runAsync: Ajax Error=> " + errorThrown);
+        }
+    });
+}
+
+function post(path, params, values)
+{
+
+    var form = document.createElement("form");
+    form.setAttribute("method", "post");
+    form.setAttribute("action", path);
+
+    for(var key in params)
+    {
+            var hiddenField = document.createElement("input");
+            hiddenField.setAttribute("type", "hidden");
+            hiddenField.setAttribute("name", params[key]);
+            hiddenField.setAttribute("value", values[key]);
+            form.appendChild(hiddenField);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function popRequestStatus(r, context)
+{
+    if (r.resultat==0)
+    {
+        $.nok({ message: r.data.message, type: "success", stay: 3, sticky: false });
+        // si le resultat est conforme on switch les icones, et on met a jour le menu de gauche
+        if (context.action=="add")
+        {
+            $("#fav-add-"+context.type+"-"+context.misc_cod).css("display","none");
+            $("#fav-del-"+context.type+"-"+context.misc_cod).css("display","block");
+            $("#barre-favoris").css("display","block");  // au cas où c'est le premier element
+            $("#barre-favoris").append('<div id="fav-link-' + r.data.pfav_cod + '"><img src="/images/favoris.png" alt=""> <a href="' + r.data.link + '">' + r.data.nom + '</a></div>');
+        }
+        else
+        {
+            $("#fav-add-"+context.type+"-"+context.misc_cod).css("display","block");
+            $("#fav-del-"+context.type+"-"+context.misc_cod).css("display","none");
+            $("#fav-link-"+r.data.pfav_cod).remove();
+        }
+    }
+    else
+    {
+        $.nok({ message: r.message, type: "info", stay: 5, sticky: false });
+    }
+}
+
+function addSortFavoris(type, sort_cod)
+{
+    runAsync({request: "add_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
+}
+
+function delSortFavoris(type, sort_cod)
+{
+    runAsync({request: "del_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"del", type:"sort", misc_cod:sort_cod})
+}

@@ -231,12 +231,16 @@ if ($erreur == 0)
 		$niveau = $db->f("dper_niveau");
 		$niveau_dieu = $niveau;
 		$req = 'select sort_nom,sort_cod,sort_cout,
-		cout_pa_magie(' . $perso_cod . ',sort_cod,3) as cout from sorts, dieu_sorts
+		    cout_pa_magie(' . $perso_cod . ',sort_cod,3) as cout,
+		    case when pfav_cod is null then false else true end::text as is_fav
+		    from sorts 
+		    inner join dieu_sorts on dsort_sort_cod = sort_cod 
+		    left join perso_favoris on pfav_perso_cod =' . $perso_cod . ' and pfav_misc_cod = sort_cod
 			where dsort_dieu_cod = ' . $dieu_cod . '
-			and dsort_niveau <= ' . $niveau . '
-			and dsort_sort_cod = sort_cod ';
+			and dsort_niveau <= ' . $niveau ;
 		$db->query($req);
-		$contenu_page .= '
+
+        $contenu_page .= '
 		<tr>
 		<td class="titre">
 		<span class="titre">Magie divine : <a class="titre" href="javascript:montre(\'div\')">(Montrer/Cacher)</a></span>
@@ -250,11 +254,20 @@ if ($erreur == 0)
 		<table id="div" style="display:;">';
 		while($db->next_record())
 		{
+            $sort_cod = $db->f("sort_cod");
+            $fav_add_style = ($db->f("is_fav")=="false") ? '' : 'style="display:none;"';
+            $fav_del_style = ($db->f("is_fav")=="true")  ? '' : 'style="display:none;"';
+            $favoris ='<a '.$fav_add_style.' id="fav-add-sort-' . $sort_cod . '" href="javascript:addSortFavoris(3,' . $sort_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
+            $favoris.='<a '.$fav_del_style.' id="fav-del-sort-' . $sort_cod . '" href="javascript:delSortFavoris(3,' . $sort_cod . ');"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+
 			$cout_pa = $db->f("cout");
-			$contenu_page .= '<tr><td class="soustitre2"><a href="javascript:document.sort_div.sort.value=' . $db->f("sort_cod") . ';document.sort_div.submit();">' . $db->f("sort_nom") . '</a> (' . $cout_pa . ' PA)
+			$contenu_page .= '<tr>
+			<td class="soustitre2">'.$favoris.'</td>
+            <td class="soustitre2">
+                <a href="javascript:document.sort_div.sort.value=' . $sort_cod . ';document.sort_div.submit();">' . $db->f("sort_nom") . '</a> (' . $cout_pa . ' PA)
 			</td>
 			<td>
-			<a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
+			<a href="visu_desc_sort.php?sort_cod=' . $sort_cod . '">Description du sort</a>
 			</td>
 			</tr>';
 		}
@@ -294,9 +307,12 @@ if ($erreur == 0)
 		</tr>';
 
 		$req_sm = 'select liste_rune_sort(sort_cod) as liste_rune,sort_cod,sort_nom,sort_cout,
-		cout_pa_magie(' . $perso_cod . ',sort_cod,1) as cout from sorts,perso_sorts
+		        cout_pa_magie(' . $perso_cod . ',sort_cod,1) as cout,
+		 	    case when pfav_cod is null then false else true end::text as is_fav
+            from sorts
+		    inner join perso_sorts on psort_sort_cod = sort_cod
+	        left join perso_favoris on pfav_perso_cod =' . $perso_cod . ' and pfav_misc_cod = sort_cod
 			where psort_perso_cod = ' . $perso_cod . '
-			and psort_sort_cod = sort_cod
 			order by sort_cout,sort_nom';
 		$db->query($req_sm);
 		$nb_sm = $db->nf();
@@ -316,10 +332,17 @@ if ($erreur == 0)
 			<table id="sm" style="display:;">';
 			while($db->next_record())
 			{
-				$cout_pa = $db->f("cout");
+                $sort_cod = $db->f("sort_cod");
+                $fav_add_style = ($db->f("is_fav")=="false") ? '' : 'style="display:none;"';
+                $fav_del_style = ($db->f("is_fav")=="true")  ? '' : 'style="display:none;"';
+                $favoris ='<a '.$fav_add_style.' id="fav-add-sort-' . $sort_cod . '" href="javascript:addSortFavoris(1,' . $sort_cod . ');"><img height="14px" src="' . G_IMAGES . 'add-fav-16.png" title="Ajouter dans mes favoris"></a>';
+                $favoris.='<a '.$fav_del_style.' id="fav-del-sort-' . $sort_cod . '" href="javascript:delSortFavoris(1,' . $sort_cod . ');"><img height="14px" src="' . G_IMAGES . 'del-fav-16.png" title="Supprimer de mes favoris"></a>';
+
+                $cout_pa = $db->f("cout");
 				$contenu_page .= '<tr>
+			    <td class="soustitre2">'.$favoris.'</td>
 				<td class="soustitre2">
-				<a href="javascript:document.sort_m.sort.value=' . $db->f("sort_cod") . ';document.sort_m.submit();"><b>' . $db->f("sort_nom") . '</a></b> (' . $cout_pa . ' PA)
+				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><b>' . $db->f("sort_nom") . '</a></b> (' . $cout_pa . ' PA)
 				</td>
 				<td><i>' . $db->f("liste_rune") . '</i></td>
 				<td>
