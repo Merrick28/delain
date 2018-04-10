@@ -113,17 +113,15 @@ function addSortFavoris(type, sort_cod)
     $(document).click(function (event) {
         if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
         {
+            $(document).unbind("click");
             $('#spop-sort').remove();
         }
         else if (event.target.id == "spop-sort-valid")
         {
             var nom = $("#spop-sort-nom").val();
-            if (nom && nom!="")
-            {
-                runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
-            }
-            $('#spop-sort').remove();
+            runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
             $(document).unbind("click");
+            $('#spop-sort').remove();
             event.stopPropagation();
         }
         else

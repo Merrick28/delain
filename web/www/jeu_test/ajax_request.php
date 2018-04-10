@@ -47,7 +47,8 @@ switch($_REQUEST["request"])
     //==============================================================================================
         $type = $_REQUEST["type"];
         $misc_cod = 1*$_REQUEST["misc_cod"];
-        $nom = $_REQUEST["nom"];
+        // on épure le nom des caractèred interdits (sinon c'est interprété par le template twig
+        $nom = str_replace('{', '',str_replace('}', '',$_REQUEST["nom"]));
         $list_function_cout_pa = array(
             "sort1" =>   "cout_pa_magie($perso_cod,$misc_cod,1)",
             "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)"
@@ -56,6 +57,8 @@ switch($_REQUEST["request"])
             "sort1" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,1])",
             "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])"
         );
+
+        if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris san nom."}');
 
         $req  = "SELECT count(*) count from perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod AND pfav_type=:pfav_type AND pfav_misc_cod=:pfav_misc_cod";
         $stmt = $pdo->prepare($req);
@@ -92,7 +95,7 @@ switch($_REQUEST["request"])
         if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur l\'ajout du favoris"}');
 
         $resultat["pfav_cod"] =  $result["pfav_cod"] ;
-        $resultat["nom"] =  $nom . " (". $cout_pa . " PA)";
+        $resultat["nom"] =  htmlspecialchars($nom). " (". $cout_pa . " PA)";
         $resultat["link"] =  $list_link[$type] ;
         $resultat["message"] = "Le sort \"$nom\" a bien été ajouté à vos favoris." ;
         break;
