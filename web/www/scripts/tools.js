@@ -105,8 +105,35 @@ function popRequestStatus(r, context)
 
 function addSortFavoris(type, sort_cod)
 {
-    runAsync({request: "add_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
-}
+    var nom = $.trim($("#fav-add-sort-" + sort_cod).parent().next().text());
+    nom = nom.substring(0, nom.indexOf(" ("));
+
+    $("#fav-add-sort-" + sort_cod).parent().prepend('<div id="spop-sort" class="spop-overlay"><i>Nom du favoris:</i><input id="spop-sort-nom" style="margin:4px;" type="text" value="' + nom + '"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+
+    $(document).click(function (event) {
+        if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
+        {
+            $('#spop-sort').remove();
+        }
+        else if (event.target.id == "spop-sort-valid")
+        {
+            var nom = $("#spop-sort-nom").val();
+            if (nom && nom!="")
+            {
+                runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
+            }
+            $('#spop-sort').remove();
+            $(document).unbind("click");
+            event.stopPropagation();
+        }
+        else
+        {
+            event.stopPropagation();
+        }
+    });
+
+ }
+
 
 function delSortFavoris(type, sort_cod)
 {

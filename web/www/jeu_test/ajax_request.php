@@ -47,6 +47,7 @@ switch($_REQUEST["request"])
     //==============================================================================================
         $type = $_REQUEST["type"];
         $misc_cod = 1*$_REQUEST["misc_cod"];
+        $nom = $_REQUEST["nom"];
         $list_function_cout_pa = array(
             "sort1" =>   "cout_pa_magie($perso_cod,$misc_cod,1)",
             "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)"
@@ -74,7 +75,7 @@ switch($_REQUEST["request"])
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":sort_cod" => $misc_cod), $stmt);
         if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur le nom du favoris"}');
-        $nom = $result["nom"] ;
+        //$nom = $result["nom"] ;   # vrai nom du sort versus le nom du favoris
         $cout_pa = $result["cout_pa"] ;
 
         $req   = "INSERT INTO public.perso_favoris(pfav_perso_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link) 

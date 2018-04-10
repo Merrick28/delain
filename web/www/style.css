@@ -568,3 +568,18 @@ img {border:none}
 #nok .nok_error{
 	background:red;
 }
+
+
+.spop-overlay {
+	z-index: 999;
+	float: right;
+	position:absolute;
+	margin-top:-2px;
+	margin-left:18px;
+	border-color: black;
+	border-width: thin;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: #BA9C6C;
+	padding: 5px;
+}
