@@ -903,6 +903,26 @@ class perso
         return $retour;
     }
 
+    function get_favoris()
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+
+        $req  = "SELECT pfav_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $req  = "SELECT ".$result["pfav_function_cout_pa"]." as cout_pa ";
+            $stmt2 = $pdo->prepare($req);
+            $stmt2 = $pdo->execute(array(),$stmt2);
+            $result2 = $stmt2->fetch();
+
+            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2[cout_pa]." PA)", "link" => $result["pfav_link"] );
+        }
+        return $retour;
+    }
+
     function is_fam()
     {
         if ($this->perso_type_perso == 3)

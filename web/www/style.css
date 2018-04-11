@@ -535,3 +535,51 @@ img {border:none}
 	background-image: url('../images/div01.png');
 	background-repeat:repeat-x;
 }
+
+/* class pour les toasts nok (voir vendor nok.js .... */
+#nok{
+	position:fixed;
+	z-index:999;
+	top:10px;
+	right:0
+}
+#nok .nok{
+	display:block;
+	position:relative;
+	overflow:hidden;
+	margin-top:10px;
+	margin-right:10px;
+	padding:20px;
+	width:240px;
+	border-radius:10px;
+	color:white;
+	right:-300px
+}
+#nok .nok_info{
+	background:#3c3b3b
+}
+#nok .nok_success{
+	border-color: black;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: #BA9C6C;
+	padding: 10px;
+}
+#nok .nok_error{
+	background:red;
+}
+
+
+.spop-overlay {
+	z-index: 999;
+	float: right;
+	position:absolute;
+	margin-top:-2px;
+	margin-left:18px;
+	border-color: black;
+	border-width: thin;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: #BA9C6C;
+	padding: 5px;
+}

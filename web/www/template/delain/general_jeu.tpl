@@ -3,7 +3,7 @@
 	<head>
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180313" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180410" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 		<style>
 			div#colonne1 {
@@ -26,6 +26,9 @@
 				margin-left: 205px;
 				}
 		</style>
+		<script src="{URL}js/jquery.js"></script>
+		<script src="{URL}scripts/tools.js" type="text/javascript"></script>
+		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
     <script>
@@ -68,6 +71,7 @@
 		<div id="deplacement">{TEXTE_DEP}</div>
 		<img src="{URL_IMAGES}attaquer.gif" alt=""> <b><a href="{URL_RELATIVE}combat.php">Combat !</a></b><br>
 		<img src="{URL_IMAGES}magie.gif" alt=""> <b><a href="{URL_RELATIVE}magie.php">Magie !</a></b><br>
+		{FAVORIS}
 		{VOIE_MAGIQUE}
 		<hr />
 		{FORGE}
