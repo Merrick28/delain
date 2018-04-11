@@ -71,8 +71,8 @@
 		<div id="deplacement">{TEXTE_DEP}</div>
 		<img src="{URL_IMAGES}attaquer.gif" alt=""> <b><a href="{URL_RELATIVE}combat.php">Combat !</a></b><br>
 		<img src="{URL_IMAGES}magie.gif" alt=""> <b><a href="{URL_RELATIVE}magie.php">Magie !</a></b><br>
-		{FAVORIS}
 		{VOIE_MAGIQUE}
+	    {FAVORIS}
 		<hr />
 		{FORGE}
 		{CREUSER}
