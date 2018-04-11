@@ -14,7 +14,7 @@ CREATE TABLE public.perso_favoris
   pfav_link text NOT NULL,
   CONSTRAINT fk_pfav_perso_cod FOREIGN KEY (pfav_perso_cod)
       REFERENCES public.perso (perso_cod) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE RESTRICT
+      ON UPDATE CASCADE ON DELETE CASCADE
 )
 WITH (
   OIDS=TRUE
