@@ -99,8 +99,8 @@ if ($erreur == 0)
 			$req = $req . "and carene_ouverte = 'O' ";
 			if ($quatrieme)
 				$req = $req . "and etage_quatrieme_perso = 'O' ";
-			else
-				$req = $req . "and etage_quatrieme_perso = 'N' ";
+			//else
+			//	$req = $req . "and etage_quatrieme_perso = 'N' ";
 			$db->query($req);
 			
 			while ($db->next_record())
