@@ -28,7 +28,7 @@ $style = $db->get_value($req_style, 'etage_affichage');
 Etage.style = "<?php echo $style; ?>";
 
 <?php // Détail des cases
-$req_cases = "select pos_decor, pos_cod, pos_x, pos_y, pos_type_aff, coalesce(mur_type, 0) as mur_type, pos_decor_dessus, pos_passage_autorise, pos_pvp,
+$req_cases = "select pos_decor, pos_cod, pos_x, pos_y, pos_type_aff, coalesce(mur_type, 0) as mur_type, pos_decor_dessus, pos_passage_autorise, pos_pvp, pos_entree_arene,
         coalesce(mur_tangible, 'N') as mur_tangible, coalesce(mur_creusable, 'N') as mur_creusable
 	from positions
 	left outer join murs on mur_pos_cod = pos_cod
@@ -46,10 +46,11 @@ while ($db->next_record())
 	$pos_decor_dessus = $db->f('pos_decor_dessus');
 	$pos_passage_autorise = ($db->f('pos_passage_autorise') == 1) ? 'true' : 'false';
 	$pos_pvp = ($db->f('pos_pvp') == 'O') ? 'true' : 'false';
+	$entree_arene = ($db->f('pos_entree_arene') == 'O') ? 'true' : 'false';
 	$mur_tangible = ($db->f('mur_tangible') == 'O') ? 'true' : 'false';
 	$mur_creusable = ($db->f('mur_creusable') == 'O') ? 'true' : 'false';
 	$pos_type_aff = $db->f('pos_type_aff');
-	echo "Etage.Cases[$i] = { id: $pos_cod, x: $pos_x, y: $pos_y, mur: $mur_type, decor: $pos_decor, decor_dessus: $pos_decor_dessus, fond: $pos_type_aff, passage: $pos_passage_autorise, pvp: $pos_pvp, tangible: $mur_tangible, creusable: $mur_creusable };\n";
+	echo "Etage.Cases[$i] = { id: $pos_cod, x: $pos_x, y: $pos_y, mur: $mur_type, decor: $pos_decor, decor_dessus: $pos_decor_dessus, fond: $pos_type_aff, passage: $pos_passage_autorise, pvp: $pos_pvp, entree_arene: $entree_arene, tangible: $mur_tangible, creusable: $mur_creusable };\n";
 	$i++;
 }
 

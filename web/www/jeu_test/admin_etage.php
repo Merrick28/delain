@@ -99,6 +99,9 @@ switch($methode)
 						<span title="Un mur non tangible permet de voir / tirer au travers, mais empêche de passer">Mur tangible (*)</span>
 						<label><input name="special" value="tangibleOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />oui</label>
 						<label><input name="special" value="tangibleNOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />non.</label><br />
+						<span title="Position d'entrée pour les etage du type arène.">Entrée d'arène</span>
+						<label><input name="special" value="areneOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />oui</label>
+						<label><input name="special" value="areneNOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />non.</label><br />
 					</td></tr>
 			</table>
 			<i>Notes :<br /> - L’ordre de superposition des couches graphiques est le suivant : fond < décor < mur < décor superposé.</i><br />
@@ -156,6 +159,7 @@ switch($methode)
 			$cpt_pvp = 0;
 			$cpt_pas = 0;
 			$cpt_tan = 0;
+			$cpt_arn = 0;
 			$cpt_cre = 0;
 			$cpt_erreur = 0;
 			// Parcours de toutes les cases modifiées
@@ -202,6 +206,10 @@ switch($methode)
 								$set_case[] = "pos_pvp = '" . (($valeur) ? 'O' : 'N') . "'";
 								$cpt_pvp++;
 							break;
+							case 'a': // entree arène
+								$set_case[] = "pos_entree_arene = '" . (($valeur) ? 'O' : 'N') . "'";
+								$cpt_arn++;
+							break;
 							case 'm': // murs
 								$req = '';
 								if ($valeur == 0)	// suppression de mur
@@ -228,7 +236,7 @@ switch($methode)
 					if ($set_req !== "")
 					{
 						$req = "update positions set $set_req where pos_cod = $case";
-						$db->query($req);
+						$db->query($req); 
 					}
 					$set_req = implode(',', $set_mur);
 					if ($set_req !== "")
@@ -247,6 +255,7 @@ switch($methode)
 				$cpt_des décors superposés modifiés<br />
 				$cpt_pas passages autorisés modifiés<br />
 				$cpt_pvp pvp autorisés modifiés<br />
+				$cpt_arn entrées d'arènes modifiées<br />
 				$cpt_cre murs creusables modifiés<br />
 				$cpt_tan murs tangibles modifiés<br />
 				$cpt_erreur erreurs détectées<br /></p>";

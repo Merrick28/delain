@@ -92,15 +92,19 @@ if ($erreur == 0)
 			$req = $req . " where parene_etage_numero = etage_numero) as joueur,";
 			$req = $req . "(select sum(perso_niveau) from perso, perso_arene ";
 			$req = $req . "where parene_etage_numero = etage_numero ";
-			$req = $req . "and parene_perso_cod = perso_cod ) as jnv ";
-			$req = $req . "from etage, carac_arene ";
+			$req = $req . "and parene_perso_cod = perso_cod ) as jnv, ";
+			$req = $req . "filtre_entree_arene.nb_entree as nb_entree_arene ";
+			$req = $req . "from etage, carac_arene, ";
+			$req = $req . "(select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene ";
 			$req = $req . "where etage_arene = 'O' ";
 			$req = $req . "and etage_numero = carene_etage_numero ";
 			$req = $req . "and carene_ouverte = 'O' ";
+			$req = $req . "and filtre_entree_arene.pos_etage= carene_etage_numero ";
 			if ($quatrieme)
 				$req = $req . "and etage_quatrieme_perso = 'O' ";
 			//else
 			//	$req = $req . "and etage_quatrieme_perso = 'N' ";
+            $req = $req . "order by etage_libelle ";
 			$db->query($req);
 			
 			while ($db->next_record())
@@ -124,11 +128,13 @@ if ($erreur == 0)
 		echo "<select name=\"etage_num\">";
 		$req = "select etage_numero, etage_libelle from etage
 			inner join carac_arene on carene_etage_numero = etage_numero
+			inner join (select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene on filtre_entree_arene.pos_etage= etage_numero
 			where etage_arene = 'O' and carene_ouverte = 'O' ";
 		if ($quatrieme)
 			$req = $req . "and etage_quatrieme_perso = 'O' ";
 		//else
 		//	$req = $req . "and etage_quatrieme_perso = 'N' ";
+        $req = $req . "order by etage_libelle ";
 		$db->query($req);
 		
 		while ($db->next_record()) {

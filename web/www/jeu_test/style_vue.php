@@ -72,7 +72,7 @@ else
 }
 .murSimple { background: black; }
 .pasMurSimple { background: lightgreen; }
-.pinceauOnOffJoli { opacity: 0.5; }
+.pinceauOnOffJoli { opacity: 0.85; }
 .pinceauOn { background: lightgreen; }
 .pinceauOff { background: pink; }
 .pinceauOn.murSimple { background: darkgreen; }
