@@ -50,6 +50,8 @@ Speciaux.donnees = [
 	{id: 'creusableNOK', valeur: false, nom: 'Mur non creusable', type: 'creusable', url: '', css: 'pinceauOff'},
 	{id: 'tangibleOK', valeur: true, nom: 'Mur tangible', type: 'tangible', url: '', css: 'pinceauOn'},
 	{id: 'tangibleNOK', valeur: false, nom: 'Mur intangible', type: 'tangible', url: '', css: 'pinceauOff'},
+	{id: 'areneOK', valeur: true, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOn'},
+	{id: 'areneNOK', valeur: false, nom: 'Entrée arène', type: 'entree_arene', url: '', css: 'pinceauOff'},
 ];
 Speciaux.isDefaut = function (id) { return false; };
 Speciaux.getUrl = function (id) { var idx = Speciaux.getIdxFromId(id); return (idx > -1) ? cheminImages + Speciaux.donnees[idx].url : defautImageUrl; };
@@ -127,11 +129,11 @@ Pinceau.appliqueCase = function (idx) {
 	var idxModif = (ancienneCase.modifiee) ? Etage.TrouveCaseModifieeParId(ancienneCase.id) : -1;
 	if (idxModif > -1) {	// Case déjà modifiée
 		var caseModif = Etage.CasesModifiees[idxModif];
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: caseModif.mur, decor: caseModif.decor, decor_dessus: caseModif.decor_dessus, fond: caseModif.fond, passage: caseModif.passage, pvp: caseModif.pvp, creusable: caseModif.creusable, tangible: caseModif.tangible };
+		nvlleCase = { idx: idx, id: ancienneCase.id, mur: caseModif.mur, decor: caseModif.decor, decor_dessus: caseModif.decor_dessus, fond: caseModif.fond, passage: caseModif.passage, pvp: caseModif.pvp, creusable: caseModif.creusable, tangible: caseModif.tangible, entree_arene: caseModif.entree_arene };
 		Etage.CasesModifiees.splice(idxModif, 1);
 	}
 	else			// Case pas encore modifiée
-		nvlleCase = { idx: idx, id: ancienneCase.id, mur: ancienneCase.mur, decor: ancienneCase.decor, decor_dessus: ancienneCase.decor_dessus, fond: ancienneCase.fond, passage: ancienneCase.passage, pvp: ancienneCase.pvp, creusable: ancienneCase.creusable, tangible: ancienneCase.tangible };
+		nvlleCase = { idx: idx, id: ancienneCase.id, mur: ancienneCase.mur, decor: ancienneCase.decor, decor_dessus: ancienneCase.decor_dessus, fond: ancienneCase.fond, passage: ancienneCase.passage, pvp: ancienneCase.pvp, creusable: ancienneCase.creusable, tangible: ancienneCase.tangible, entree_arene: ancienneCase.entree_arene };
 
 	// récupération et mise à jour des données
 	switch (Pinceau.type) {
@@ -159,6 +161,7 @@ Pinceau.appliqueCase = function (idx) {
 				case 'pvp': nvlleCase.pvp = pinceauSpecial.valeur; break;
 				case 'creusable': nvlleCase.creusable = pinceauSpecial.valeur; break;
 				case 'tangible': nvlleCase.tangible = pinceauSpecial.valeur; break;
+				case 'entree_arene': nvlleCase.entree_arene = pinceauSpecial.valeur; break;
 			}
 		break;
 	}
@@ -186,6 +189,7 @@ Pinceau.annuleCase = function (idx) {
 		Etage.changeCase (Speciaux, idx, (caseDebut.pvp) ? 'pvpOK' : 'pvpNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.creusable) ? 'creusableOK' : 'creusableNOK');
 		Etage.changeCase (Speciaux, idx, (caseDebut.tangible) ? 'tangibleOK' : 'tangibleNOK');
+		Etage.changeCase (Speciaux, idx, (caseDebut.entree_arene) ? 'areneOK' : 'areneNOK');
 
 		// On supprime la case de la liste des modifs
 		Etage.CasesModifiees.splice(idxModif, 1);

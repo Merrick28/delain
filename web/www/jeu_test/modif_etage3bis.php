@@ -75,6 +75,12 @@ if ($erreur == 0)
 	if (!isset($methode))
 		$methode = 'début';
 
+    // recupération d'info sur l'étage en cours.
+    $req="select etage_cod, etage_libelle, etage_arene from etage where etage_numero=".(1*$pos_etage);
+    $db->query($req);
+    $db->next_record();
+    $etage_arene = $db->f("etage_arene");   // type donjon/arene de l'étage édité
+
 	// Traitements des commandes
 	switch ($methode)
 	{
@@ -323,7 +329,7 @@ if ($erreur == 0)
 					Étage :
 					<select name="pos_etage">
 			<?php 
-				echo $html->etage_select($db->f("pos_etage"));
+				echo $html->etage_select($db->f("pos_etage"), "WHERE etage_arene='$etage_arene'");
 			?>
 					</select><br />
 					Dieu (pour les temples et autels)
@@ -357,7 +363,7 @@ if ($erreur == 0)
 					Étage :
 					<select name="dest_pos_etage">
 			<?php 
-				echo $html->etage_select($dest_pos_etage);
+				echo $html->etage_select($dest_pos_etage,"WHERE etage_arene='$etage_arene'");
 			?>
 					</select><br />
 					Refuge :
@@ -405,7 +411,7 @@ if ($erreur == 0)
 				Y <input type="text" name="dest_pos_y" value="">
 				Étage : <select name="dest_pos_etage">
 		<?php 
-			echo $html->etage_select($pos_etage);
+			echo $html->etage_select($pos_etage, "WHERE etage_arene='$etage_arene'");
 		?>
 				</select><br />
 				Refuge : <select name="refuge">
@@ -418,7 +424,8 @@ if ($erreur == 0)
 				</select>
 				Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa" value="0">
 
-				<input type="submit" class='test' value="créer !" />
+				<input type="submit" class='test' value="créer !" /><br>
+				<i><u>Nota</i></u>: &nbsp;<i><font color="#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</font></i>
 			</form>
 		</div>
 		<?php 		break;

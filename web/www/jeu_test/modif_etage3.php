@@ -405,7 +405,8 @@ if ($erreur == 0)
 		$req = "select etage_cod, etage_numero, etage_libelle, etage_reference, etage_description,
 				etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel, etage_mort, etage_retour_rune_monstre,
 				etage_mine, etage_mine_type, etage_mine_richesse,
-				coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte
+				coalesce(carene_level_max, 0) as carene_level_max, coalesce(carene_ouverte, 'O') as carene_ouverte,
+				(select count(*) from positions where pos_etage=93 and pos_entree_arene='O') as nb_entree_arene
 			from etage
 			left outer join carac_arene on carene_etage_numero = etage_numero
 			where etage_numero = $pos_etage";
@@ -425,6 +426,7 @@ if ($erreur == 0)
 		$etage_mine_richesse = $db->f('etage_mine_richesse');
 		$carene_level_max = $db->f('carene_level_max');
 		$carene_ouverte = $db->f('carene_ouverte');
+		$nb_entree_arene = $db->f('nb_entree_arene');
 ?>
 	<p>Modifier l’étage <?php echo  $etage_libelle; ?></p>
 	<div id="etage" class="tableau2">
@@ -453,11 +455,26 @@ if ($erreur == 0)
 		$sel_4_N = ($etage_quatrieme_perso == 'N') ? 'selected="selected"' : '';
 		$sel_4M_O = ($etage_quatrieme_mortel == 'O') ? 'selected="selected"' : '';
 		$sel_4M_N = ($etage_quatrieme_mortel == 'N') ? 'selected="selected"' : '';
+
+        $arene_info = "" ;
+        if ($carene_ouverte == 'O')
+        {
+            if ($nb_entree_arene>0)
+            {
+                $arene_info = "L'arène dispose de $nb_entree_arene entrée(s).<br />";
+            }
+            else
+            {
+                $arene_info = "<font color=\"#8b0000\"><b><u>ATTENTION</u></b>: L'arène ne dispose pas encore d'entrée, elle ne sera pas accessible par les batiments administratifs.</font><br />";
+            }
+        }
+
 	?>
 			L’étage est-il une arène ? <select name="etage_arene"><option value='N' <?php echo  $sel_arene_N; ?>>Non</option><option value='O' <?php echo  $sel_arene_O; ?>>Oui</option></select>
 			-- Si oui : niveau maximal pour y accéder ? <input type="text" name="carene_level_max" value="<?php echo  $carene_level_max; ?>" size="4"/> (0 = aucune limite)
 			-- Arène accessible librement ? <select name="carene_ouverte"><option value='O' <?php echo  $sel_carene_O; ?>>Oui</option><option value='N' <?php echo  $sel_carene_N; ?>>Non</option></select> (Non = pour animation uniquement)
 			<br />
+			<?php echo $arene_info; ?>
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N' <?php echo  $sel_4_N; ?>>Non</option><option value='O' <?php echo  $sel_4_O; ?>>Oui</option></select><br />
 			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N' <?php echo  $sel_4M_N; ?>>Non</option><option value='O' <?php echo  $sel_4M_O; ?>>Oui</option></select><br /><br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
