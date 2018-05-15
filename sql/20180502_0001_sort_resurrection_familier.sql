@@ -1,3 +1,9 @@
+INSERT INTO public.parametres(parm_type, parm_desc, parm_valeur, parm_valeur_texte) VALUES
+( 'Integer', 'Nombre de tour d’intangibilité d''un familier à la mort de son maitre', 10, null),
+( 'Integer', 'Perte en 1/10 de niveau de PX d''un familier à la mort de son maitre (ex: 10 = perte de 1 niveau d''xp)', 10, null);
+
+ALTER TABLE public.perso_familier
+  ADD CONSTRAINT perso_familier_pfam_familier_cod_key UNIQUE(pfam_familier_cod);
 
 INSERT INTO public.sorts (sort_combinaison, sort_nom, sort_fonction, sort_cout, 
 		sort_comp_cod, sort_distance, sort_description, sort_aggressif, 

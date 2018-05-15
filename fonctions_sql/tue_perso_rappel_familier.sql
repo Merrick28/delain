@@ -27,24 +27,18 @@ declare
 	v_mes integer;              -- Numéro du message de coterie
 	v_corps text;               -- Contenu du message
 	v_titre text;
-	v_imp_F integer;             -- durée impalpabilité d'un familier dans l'étage
-  v_imp_P integer;             -- durée impalpabilité d'un personnage dans l'étage
-  v_taux_xp integer;           -- taux de perte d'xps de l'étage
+	nb_tour_intangible integer;  -- durée impalpabilité d'un familier à la mort de son maitre
+  px_perdus integer;           --  perte de px d'un familier à la mort de son maitre
 begin
-  code_retour := 'Suite a votre décès votre familier vous rejoint, mais il est sonné par le choc.';
+  code_retour := 'Le familier rejoint sont maitre.';
 
-  -- recuperation des caratéristiques dépendant de l'etage
- select into v_imp_F, v_imp_P, v_taux_xp
-   etage_duree_imp_f, etage_duree_imp_p, etage_perte_xp
-   from perso
-   inner join perso_position on ppos_perso_cod = perso_cod
-   inner join positions on pos_cod = ppos_pos_cod
-   inner join etage on etage_numero = pos_etage
-   where perso_cod = v_cible ;
+  -- recuperation des caratéristiques du rappel dans les paramètres globaux (paramètre 132 et 133)
+ select into nb_tour_intangible, px_perdus
+   getparm_n(132), (limite_niveau(v_familier)-limite_niveau_actuel(v_familier)) * getparm_n(133)/10 ;
 
  	/**************************************************/
 	/* le familier laisse tomber des objets au sol    */
-	/* (obligatioire sinon si le maitre se sent       */
+	/* (obligatoire sinon si le maitre se sent        */
 	/* en danger, il pourrait donner à son familier   */
 	/* pour sauver son matos)                         */
 	/**************************************************/
@@ -66,9 +60,13 @@ begin
   values (v_mes, v_familier, 'N', 'N');
 
  	/**************************************************/
-	/* le familier devient intangible                 */
+	/* le familier devient intangible  et perd des PX */
 	/**************************************************/
-	update perso	set perso_tangible = 'N', perso_nb_tour_intangible = v_imp_F where perso_cod = v_familier;
+	update perso	set perso_tangible = 'N', perso_nb_tour_intangible = nb_tour_intangible, perso_px=greatest(0,perso_px-px_perdus) where perso_cod = v_familier;
+
+	texte_evt := 'Le traumatisme de la mort de son maitre, fait perdre ' || trim(to_char(px_perdus, '9999999')) || ' px à [cible].';
+	insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+		values(nextval('seq_levt_cod'), 10, now(), 1, v_familier, texte_evt, 'N', 'N', v_cible, v_familier);
 
   texte_evt := '[attaquant] a retrouvé son maitre [cible].';
   insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)

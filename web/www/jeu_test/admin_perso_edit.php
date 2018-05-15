@@ -704,8 +704,8 @@ compileAccumulatorCounter(document.formInventaire.select1, document.formInventai
 <hr />
 <p id='p_fam'>FAMILIER (<a href="#p_haut">Retour en haut</a>)</p>
 <?php 	$req_fam = "select pfam_familier_cod, perso_nom, coalesce(pfam_duree_vie, 0) as pfam_duree_vie from perso_familier
-	inner join perso on perso_cod = pfam_familier_cod
-	where pfam_perso_cod = $mod_perso_cod";
+	inner join perso on perso_cod = pfam_familier_cod AND  perso_actif='O' 
+	where pfam_perso_cod = $mod_perso_cod order by pfam_familier_cod desc";
 	$db->query($req_fam);
 	if($db->next_record())
 	{
@@ -728,7 +728,7 @@ else
 <form method="post" action="#">
 	<input type="hidden" name="methode" value="ajout_familier">
 	<input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod?>">
-	Le perso n’a aucun familier.<br>
+	Le perso n’a aucun familier actif.<br>
 	Rattacher un monstre en tant que familier ? Attention, le monstre doit se trouver sur la même case que le perso !<br><br>
 	Numéro du monstre à rattacher : <input type='text' name='fam_cod' value=''/><br />
 	Durée de vie (en nombre de DLTs du maître) : <input type='text' name='fam_duree_vie' size='4' value='0'/>. (0 = aucune limite).<br />
