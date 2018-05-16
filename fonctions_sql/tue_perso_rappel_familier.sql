@@ -70,11 +70,11 @@ begin
 
   texte_evt := '[attaquant] a retrouvé son maitre [cible].';
   insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-    values(nextval('seq_levt_cod'), 54, now(), 1, v_cible, texte_evt, 'O', 'O', v_familier, v_cible);
+    values(nextval('seq_levt_cod'), 54, now(), 1, v_cible, texte_evt, 'N', 'O', v_familier, v_cible);
 
   texte_evt := '[cible] a retrouvé son maitre [attaquant].';
   insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-    values(nextval('seq_levt_cod'), 54, now(), 1, v_familier, texte_evt, 'O', 'O', v_cible, v_familier);
+    values(nextval('seq_levt_cod'), 54, now(), 1, v_familier, texte_evt, 'N', 'O', v_cible, v_familier);
 
   return code_retour;
 end;$_$;

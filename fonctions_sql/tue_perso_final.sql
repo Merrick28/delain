@@ -372,7 +372,7 @@ end if;
 	/********************************/
 	/* FIN  : CHUTE DES EQUIPEMENTS */
 	/********************************/
-	-- etape 6.1 en cas de forte gravité on execute automatiquement un sort de resurection afin que la cible reste sur place
+	-- etape 6.1 en cas de forte gravité on execute automatiquement un sort de resurrection afin que la cible reste sur place
 	-- etape 6.2 : la cible est tuée, on la replace
 	en_prison := 0;
 	if type_cible = 1 then

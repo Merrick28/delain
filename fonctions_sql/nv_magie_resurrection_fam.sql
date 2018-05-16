@@ -50,7 +50,7 @@ declare
   familier_perso_cod integer; -- perso_cod du familer à réssuciter
   familier_perso_nom text;    -- nom du familier résuccité
   taux_perte_xp numeric;      -- taux de perte d'xp à la résurrection (dépendant de la voie magique)
-  px_perdus numeric;				    -- PX perdus par la resurection
+  px_perdus numeric;				    -- PX perdus par la resurrection
   v_imp_F integer;            -- nombre de tour d'impalpabilité lié à l'étage de résurrection
 
 -------------------------------------------------------------
@@ -173,7 +173,7 @@ begin
 	code_retour := code_retour||'<br>Vous gagnez '||px_gagne||' PX pour cette action.<br>';
 	texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] ';
       insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
-     	values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'O','O',lanceur,cible);
+     	values(nextval('seq_levt_cod'),14,now(),1,lanceur,texte_evt,'N','O',lanceur,cible);
    if (lanceur != cible) then
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
      	values(nextval('seq_levt_cod'),14,now(),1,cible,texte_evt,'N','O',lanceur,cible);
@@ -185,11 +185,11 @@ begin
 
   texte_evt := '[cible] a ramené [attaquant] du plan des morts.';
   insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-    values(nextval('seq_levt_cod'), 54, now(), 1, lanceur, texte_evt, 'O', 'O', familier_perso_cod, lanceur);
+    values(nextval('seq_levt_cod'), 54, now(), 1, lanceur, texte_evt, 'N', 'O', familier_perso_cod, lanceur);
 
   texte_evt := '[cible] a été ramené par [attaquant] du plan des morts.';
   insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-    values(nextval('seq_levt_cod'), 54, now(), 1, familier_perso_cod, texte_evt, 'O', 'O', lanceur, familier_perso_cod);
+    values(nextval('seq_levt_cod'), 54, now(), 1, familier_perso_cod, texte_evt, 'N', 'O', lanceur, familier_perso_cod);
 
 	return code_retour;
 
