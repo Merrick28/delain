@@ -138,8 +138,6 @@ declare
 	v_comp3 integer;
 	v_etage_arene text;         -- variable four tout pour ce calcul
 	v_defi record;              -- données sur l’éventuel défi en cours
-
-	 v_etage_reference integer;   -- pour TEST de la fonction tue_perso_rappel_familier (limité la fonction de rappel au proving ground)
 begin
 	code_retour := '';
 	text_retour := '';
@@ -162,8 +160,8 @@ end if;
 	/* Etape 1 : on récupère les infos de la cible    */
 	/**************************************************/
 	texte_prison := '';
-	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_etage_arene, v_perso_mortel, v_type_arene, v_etage_reference
-		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, etage_arene, perso_mortel, etage_type_arene, etage_reference
+	select into pos_cible, type_cible, cible_pv_max, niveau_cible, px_cible, nom_cible, kharma_cible, v_gmon_cod, v_etage_arene, v_perso_mortel, v_type_arene
+		ppos_pos_cod, perso_type_perso, perso_pv_max, perso_niveau, perso_px, perso_nom, perso_kharma, perso_gmon_cod, etage_arene, perso_mortel, etage_type_arene
 	from perso_position, perso, positions, etage
 	where ppos_perso_cod = v_cible
 		and perso_cod = v_cible
@@ -383,13 +381,12 @@ end if;
 			from perso_familier inner join perso on perso_cod = pfam_familier_cod   -- Marlyza - 2018-05-16 --  il peut-y avoir plusieurs rattachement, on doit prendre l'actif!
 			where pfam_perso_cod = v_cible and perso_actif = 'O';
 			if found then
-			  if v_etage_reference = - 100 then   -- limiter le rappel de fam au proving ground
+			    --  Marlyza - 2018-05-19 - ancien code avec le décès du familier
+          --update perso set perso_type_perso = 2 where perso_cod = v_familier;
+          --delete from perso_familier where pfam_perso_cod = v_cible;
+
 		      -- Marlyza - 2018-05-02 -- Désormais le familier survi à la mort de son maitre (avec perte objets/px/impalpabilité)
           text_retour := text_retour || tue_perso_rappel_familier(v_cible, v_familier);
-        else
-          update perso set perso_type_perso = 2 where perso_cod = v_familier;
-          delete from perso_familier where pfam_perso_cod = v_cible;
-			  end if;
 			end if;
 		end if;
 		if getparm_n(69) = 1 then

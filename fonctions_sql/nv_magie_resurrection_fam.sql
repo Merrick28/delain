@@ -66,22 +66,7 @@ declare
 	des integer;					-- lancer de dés
 	compt integer;					-- fourre tout
 
-	v_etage_reference integer ;   -- pour limiter l'usage au proving ground
 begin
--------------------------------------------------------------
--- Etape 0 : Limitation de l'usage au étage de test!
--------------------------------------------------------------
-	select into v_etage_reference
-      etage_reference
-	  from perso
-	  inner join perso_position on ppos_perso_cod = perso_cod
-	  inner join positions on pos_cod = ppos_pos_cod
-	  inner join etage on etage_numero = pos_etage
-	  where perso_cod = lanceur ;
-    if not found or v_etage_reference<>-100 then
-      code_retour := '<p>Le sort est en phase de test, l''usage est limité au proving ground!</p>';
-      return code_retour;
-    end if;
 -------------------------------------------------------------
 -- Etape 1 : intialisation des variables
 -------------------------------------------------------------
