@@ -102,7 +102,7 @@ switch($_REQUEST["request"])
 
     //==============================================================================================
     case "del_favoris":
-        //==============================================================================================
+    //==============================================================================================
         $type = $_REQUEST["type"];
         $misc_cod = 1*$_REQUEST["misc_cod"];
 
@@ -122,6 +122,44 @@ switch($_REQUEST["request"])
         break;
 
     //==============================================================================================
+    case "admin_info_style_fonds":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod, "dcompt_modif_carte");      // Droit modification etage requis ! !! droit ne doit pas provenir de l'extérieur
+
+        $style = $_REQUEST["style"];
+        $fond_id = 1*$_REQUEST["fond_id"];
+
+        $req = "select count(*) from positions inner join etage on etage_numero = pos_etage where pos_type_aff=? and etage_affichage=? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($fond_id,$style), $stmt);
+        $row = $stmt->fetch();
+        $usage = $row['count'];
+        if ($usage>0)
+            $resultat["message"] = "<font color='#006400'>Le fond $fond_id pour le style $style est pas utilisé <b>$usage</b> fois</font>" ;
+        else
+            $resultat["message"] = "<font color='#191970'>Le fond $fond_id pour le style $style, n'est pas utilisé</font>" ;
+        break;
+
+    //==============================================================================================
+    case "admin_info_style_murs":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod, "dcompt_modif_carte");      // Droit modification etage requis ! !! droit ne doit pas provenir de l'extérieur
+
+        $style = $_REQUEST["style"];
+        $mur_id = 1*$_REQUEST["mur_id"];
+
+        $req = "select count(*) from murs inner join positions on pos_cod = mur_pos_cod inner join etage on etage_numero = pos_etage where mur_type=? and etage_affichage=? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($mur_id,$style), $stmt);
+        $row = $stmt->fetch();
+        $usage = $row['count'];
+        if ($usage>0)
+            $resultat["message"] = "<font color='#006400'>Le mur $mur_id pour le style $style est pas utilisé <b>$usage</b> fois</font>" ;
+        else
+            $resultat["message"] = "<font color='#191970'>Le mur $mur_id pour le style $style, n'est pas utilisé</font>" ;
+        break;
+
+    //==============================================================================================
     default:
     //==============================================================================================
     die('{"resultat":-1, "message":"demande inconne"}');
@@ -130,4 +168,17 @@ switch($_REQUEST["request"])
 //==============================================================================================
 // Output si réussi!
 die('{"resultat":0, "data":'.json_encode($resultat ).'}');
+
+function verif_admin($pdo, $compt_cod, $droit)
+{
+    // Attention la variable $droit peut-être injectée dans le code sql sans risque SI elle est toujours fourni en interne
+    // NE JAMAIS PRENDRE UNE VALEUR FOURNIE PAR $_GET, $_POST ou $_REQUEST
+    $req = "select count(*) count from compt_droit where dcompt_compt_cod =? and $droit = 'O'";
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array( $compt_cod ), $stmt);
+    $row = $stmt->fetch();
+    $count = 1*$row['count'];
+
+    if ( $count<=0 ) die('{"resultat":-1, "message":"Vous devez disposer de droit admin pour ça!"}');
+}
 ?>

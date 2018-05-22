@@ -9,7 +9,7 @@
  */
 
 
-function runAsync(service, callback, context) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
+function runAsync(service, callback, context=null) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
     // préparation des parametres
 
     var request = service.request;						// Parametre mandatory !

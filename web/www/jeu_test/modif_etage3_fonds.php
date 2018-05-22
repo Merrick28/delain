@@ -35,6 +35,9 @@ if ($droit['carte'] != 'O')
 }
 if ($erreur == 0)
 {
+
+    $pdo    = new bddpdo;            // 2018-05-22 - Marlyza - pour traiter les requêtes secondaires
+
 	// Récupération des images existantes
 	// On y va à la bourrin : on parcourt tous les fichiers du répertoire images.
 	$patron_fond = '/^f_(?P<affichage>[0-9a-zA-Z]+)_(?P<type>\d+)\.png$/';
@@ -44,15 +47,18 @@ if ($erreur == 0)
 	$tableau_styles = array();
 	$js_tab_fonds = "\nvar tab_fonds = new Array();";
 	$js_tab_murs = "\nvar tab_murs = new Array();";
+	$js_usage = "\nvar tab_usage = new Array();";
 
 	$rep = opendir($chemin);
 	while (false !== ($fichier = readdir($rep)))
 	{
 		$correspondances = array();
+		$flagNouveauStyle = "" ;
 		if (1 === preg_match($patron_fond, $fichier, $correspondances))
 		{
 			if (!isset($tableau_styles[$correspondances['affichage']]))
 			{
+                $flagNouveauStyle = $correspondances['affichage'];
 				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
 				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
 				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
@@ -64,17 +70,31 @@ if ($erreur == 0)
 		{
 			if (!isset($tableau_styles[$correspondances['affichage']]))
 			{
+                $flagNouveauStyle = $correspondances['affichage'];
 				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
 				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
 				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
 			}
 			$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
 		}
+
+		if  ($flagNouveauStyle!="")
+        {
+            // Pour chque nouveau style on calcul ne nombre d'étage l'utilisant.
+            $req_style = "select count(distinct etage_numero) count from etage where etage_affichage = ?;";
+            $stmt = $pdo->prepare($req_style);
+            $stmt = $pdo->execute(array($flagNouveauStyle), $stmt);
+            $row = $stmt->fetch();
+            $style_usage = $row['count'];
+            $js_usage .= "\ntab_usage['" . $flagNouveauStyle . "'] = " .$style_usage . ";";
+        }
+
 	}
 
 	echo "<script type='text/javascript'>
 		$js_tab_fonds
 		$js_tab_murs
+		$js_usage
 		function afficherStyles()
 		{
 			var div_images = document.getElementById('images');
@@ -82,7 +102,9 @@ if ($erreur == 0)
 
 			for (var style in tab_fonds)
 			{
-				chaine_contenu += '<p><b>Style ' + style + '</b></p>\\n';
+                chaine_contenu +='<p><a href=\"modif_etage3_styles.php?&style='+style+'\"><input type=\"submit\" value=\"Editer\" class=\"test\"></a>&nbsp&nbsp';
+				chaine_contenu += '<b>Style ' + style + '</b>&nbsp&nbsp';
+				chaine_contenu +='<i>Nombre d\'étage l\'utilisant:</i>&nbsp;<b>'+tab_usage[style]+'</b></p>\\n';
 				chaine_contenu += '<p>Fonds :</p>';
 				chaine_contenu += '\\n	<div style=\"width:600px; overflow:auto\" class=\"bordiv\">';
 				
