@@ -81,13 +81,16 @@ $menus = "<p>Choisissez l’étage à modifier :</p>
 	"</select>&nbsp;<input type='submit' value='Valider' class='test'/></form>
 
 	<p><b>Pour l’étage sélectionné :</b></p>
-	<p><a href='modif_etage.php?methode=fond&etage=$etage'>Modifier les fonds.</a><br />
+	<p>
+
+	<a href='modif_etage.php?methode=fond&etage=$etage'>Modifier les fonds.</a><br />
 	<a href='modif_etage.php?methode=decor&etage=$etage'>Modifier les décors.</a><br />
 	<a href='modif_etage.php?methode=a_mur&etage=$etage'>Ajouter/supprimer des murs.</a><br />
 	<a href='modif_etage.php?methode=valide&etage=$etage'>Valider les changements ?</a> (Met à jour les automaps ; à faire si on a enlevé ou rajouté des murs, des lieux...)<br />
 	<a href='vue_etage.php?num_etage=$etage'>Visualiser les changements ? </a><br /></p>
 	<hr />
 	<p><b>Autres outils</b><br />
+	<a href='modif_etage3_styles.php'>Modifier les styles.</a><br />	
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
 	<hr />
