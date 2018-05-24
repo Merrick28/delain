@@ -159,7 +159,7 @@ if ($erreur == 0)
     {
         $js_tab_fonds .= "\ntab_fonds['" . $style . "'] = new Array();";
         $js_tab_murs .= "\ntab_murs['" . $style . "'] = new Array();";
-        $js_tab_murs .= "\ntab_figs['" . $style . "'] = new Array();";
+        $js_tab_figs .= "\ntab_figs['" . $style . "'] = new Array();";
     }
 
     // Traitement des erreurs actions ========================================================
