@@ -65,7 +65,7 @@ if ($erreur == 0)
     $pdo    = new bddpdo;            // 2018-05-22 - Marlyza - pour traiter les requêtes secondaires
 
     //$style ne doit comporter que des caractères: [0-9a-zA-Z] ---> filter tout autre caractère!
-    $style = preg_replace('/[^0-9a-zA-Z]/', '', $_REQUEST['style']);
+    $style = substr( preg_replace('/[^0-9a-zA-Z]/', '', $_REQUEST['style']), 0, 10);
 
     $is_style_exists = false ;
 
@@ -362,9 +362,10 @@ if ($erreur == 0)
     // Traitement de l'affichage ===============================================================
 
     echo '<div class="barrTitle">Edition des styles</div><br>
-            <form method="POST">Créer un nouveau Style: <input type="text" name="style">&nbsp;&nbsp;
+             <form method="POST">Créer un nouveau Style: <input type="text" name="style">&nbsp;&nbsp;
                 <input type="submit" class="test" name="nouveau_style" value="Créer">
             </form><br>';
+    if(($style!=$_REQUEST['style']) && ($_REQUEST['style']!="")) echo "<u>ATTENTION</u>: le nom ne style saisi (<i>".$_REQUEST['style']."</i>) n'était pas conforme, il a été adapté: <b>$style</b>.<br>";
 	echo '<hr /><b>Edition du style</b> : <select name="style" onChange="changeStyle(this.value)"><option value=\'--\'>Choisir un style...</option>';
     if (!$is_style_exists && $style!='') echo "<option value='$style' selected>$style</option>";
 	foreach ($tableau_styles as $unStyle) echo "<option value='$unStyle'" . (($unStyle == $style) ? 'selected="selected"' : '') . ">$unStyle</option>";
