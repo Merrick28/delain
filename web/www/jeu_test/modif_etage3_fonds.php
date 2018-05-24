@@ -46,6 +46,7 @@ if ($erreur == 0)
 	$chemin = '../../images/';
 
 	$tableau_styles = array();
+    $tableau_figs = array();
 	$js_tab_fonds = "\nvar tab_fonds = new Array();";
 	$js_tab_murs = "\nvar tab_murs = new Array();";
 	$js_tab_figs = "\nvar tab_figs = new Array();";
@@ -64,7 +65,11 @@ if ($erreur == 0)
 				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
 				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
 				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
-                $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
+                if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
+                {
+                    $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
+                    $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
+                }
 			}
 			$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
 		}
@@ -78,7 +83,11 @@ if ($erreur == 0)
 				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
 				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
 				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
-                $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
+                if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
+                {
+                    $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
+                    $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
+                }
 			}
 			$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
 		}
@@ -86,13 +95,13 @@ if ($erreur == 0)
 		$correspondances = array();
 		if (1 === preg_match($patron_fig, $fichier, $correspondances))
 		{
-			if (!isset($tableau_styles[$correspondances['affichage']]))
-			{
-				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
-				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
+            if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
+            {
+                $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
                 $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
-			}
+            }
             $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "']['" . $correspondances['type'] . "'] = '" . $correspondances['type'] . "';";
+            $tableau_figs[$correspondances['affichage']][$correspondances['type']] =  $correspondances['type'];
 		}
 
 		if  ($flagNouveauStyle!="")

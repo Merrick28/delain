@@ -91,6 +91,7 @@ $menus = "<p>Choisissez l’étage à modifier :</p>
 	<hr />
 	<p><b>Autres outils</b><br />
 	<a href='modif_etage3_styles.php'>Modifier les styles.</a><br />	
+	<a href='modif_etage3_decors.php'>Modifier les décors.</a><br />	
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
 	<hr />

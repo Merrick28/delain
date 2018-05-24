@@ -133,7 +133,7 @@ if ($erreur == 0)
             if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
             {
                 $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
-                $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array(); //me";
+                $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
             }
             $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "']['" . $correspondances['type'] . "'] = '" . $correspondances['type'] . "';";
             $tableau_figs[$correspondances['affichage']][$correspondances['type']] =  $correspondances['type'];
