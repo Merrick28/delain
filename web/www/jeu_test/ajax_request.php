@@ -160,6 +160,24 @@ switch($_REQUEST["request"])
         break;
 
     //==============================================================================================
+    case "admin_info_decors":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod, "dcompt_modif_carte");      // Droit modification etage requis ! !! droit ne doit pas provenir de l'extérieur
+
+        $decor_id = 1*$_REQUEST["decor_id"];
+
+        $req = "select count(*) from positions where pos_decor=? or pos_decor_dessus=? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($decor_id,$decor_id), $stmt);
+        $row = $stmt->fetch();
+        $usage = $row['count'];
+        if ($usage>0)
+            $resultat["message"] = "<font color='#006400'>Le décor $decor_id est pas utilisé <b>$usage</b> fois</font>" ;
+        else
+            $resultat["message"] = "<font color='#191970'>Le décor $decor_id n'est pas utilisé</font>" ;
+        break;
+
+    //==============================================================================================
     default:
     //==============================================================================================
     die('{"resultat":-1, "message":"demande inconne"}');
