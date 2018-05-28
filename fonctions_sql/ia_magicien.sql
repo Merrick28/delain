@@ -3,7 +3,7 @@
 -- Name: ia_magicien(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION ia_magicien(integer) RETURNS text
+CREATE OR REPLACE FUNCTION ia_magicien(integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************/
 /* fonction ia_magicien                              */
