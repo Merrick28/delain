@@ -172,7 +172,7 @@ switch($_REQUEST["request"])
         $row = $stmt->fetch();
         $usage = $row['count'];
         if ($usage>0)
-            $resultat["message"] = "<font color='#006400'>Le décor $decor_id est pas utilisé <b>$usage</b> fois</font>" ;
+            $resultat["message"] = "<font color='#006400'>Le décor $decor_id est utilisé <b>$usage</b> fois</font>" ;
         else
             $resultat["message"] = "<font color='#191970'>Le décor $decor_id n'est pas utilisé</font>" ;
         break;
