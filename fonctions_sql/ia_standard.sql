@@ -3,7 +3,7 @@
 -- Name: ia_standard(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION ia_standard(integer) RETURNS text
+CREATE OR REPLACE FUNCTION ia_standard(integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************/
 /* fonction ia_standard                              */
