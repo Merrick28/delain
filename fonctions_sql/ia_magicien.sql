@@ -432,6 +432,7 @@ begin
 						and psort_sort_cod = sort_cod
 						and sort_soutien = 'O';
 					/* On sélectionne d’abord une cible qui est à distance de sort */
+					--- Marlysa 2018-05-28: perso_monstre_attaque_monstre peux être NULL => COALESCE
 					select into nb_monstre_a_distance count(perso_cod)
 					from perso, perso_position, positions
 					where pos_x between (v_x - distance_limite) and (v_x + distance_limite)
@@ -439,7 +440,7 @@ begin
 						and pos_etage = v_etage
 						and ppos_perso_cod = perso_cod
 						and perso_type_perso = 2
-						and perso_monstre_attaque_monstre < v_seuil_cible_monstre
+						and COALESCE(perso_monstre_attaque_monstre,0) < v_seuil_cible_monstre
 						and perso_actif = 'O'
 						and perso_tangible = 'O'
 						and ppos_pos_cod = pos_cod
@@ -461,7 +462,7 @@ begin
 							and pos_etage = v_etage
 							and ppos_pos_cod = pos_cod
 							and perso_type_perso = 2
-							and perso_monstre_attaque_monstre < v_seuil_cible_monstre
+							and COALESCE(perso_monstre_attaque_monstre,0) < v_seuil_cible_monstre
 							and perso_actif = 'O'
 							and perso_tangible = 'O'
 							and not exists
@@ -495,7 +496,7 @@ begin
 							and pos_etage = v_etage
 							and ppos_perso_cod = perso_cod
 							and perso_type_perso = 2
-							and perso_monstre_attaque_monstre < v_seuil_cible_monstre
+							and COALESCE(perso_monstre_attaque_monstre,0) < v_seuil_cible_monstre
 							and perso_actif = 'O'
 							and perso_tangible = 'O'
 							and ppos_pos_cod = pos_cod

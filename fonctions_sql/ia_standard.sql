@@ -22,6 +22,7 @@ CREATE FUNCTION ia_standard(integer) RETURNS text
 /* 05/07/2004 : IA non obligatoirement jouée         */
 /* 17/07/2006 : rajout de l'utilisation des          */
 /*              compétences de combat                */
+/* 28/05/2018 : Marlysa: correction mage de soutien  */
 /*****************************************************/
 declare
 -------------------------------------------------------
@@ -430,6 +431,7 @@ begin
 			if v_soutien = 'N' then
 				cible_soutien := v_monstre;
 			else
+			  --- Marlysa 2018-05-28: perso_monstre_attaque_monstre peux être NULL => COALESCE
 				select into nb_joueur_en_vue count(perso_cod)
 					from perso,perso_position,positions
 					where pos_x between (v_x - v_vue) and (v_x + v_vue)
@@ -437,7 +439,7 @@ begin
 					and pos_etage = v_etage
 					and ppos_perso_cod = perso_cod
 					and perso_type_perso = 2
-					and perso_monstre_attaque_monstre < v_seuil_cible_monstre
+					and COALESCE(perso_monstre_attaque_monstre,0) < v_seuil_cible_monstre
 					and perso_actif = 'O'
 					and perso_tangible = 'O'
 					and ppos_pos_cod = pos_cod;
@@ -453,7 +455,7 @@ begin
 						and pos_etage = v_etage
 						and ppos_perso_cod = perso_cod
 						and perso_type_perso = 2
-						and perso_monstre_attaque_monstre < v_seuil_cible_monstre
+						and COALESCE(perso_monstre_attaque_monstre,0) < v_seuil_cible_monstre
 						and perso_actif = 'O'
 						and perso_tangible = 'O'
 						and ppos_pos_cod = pos_cod
