@@ -15,23 +15,23 @@ function calculeHash($compte, $clef)
 function writelog($textline,$filename='undefined',$verbose=true)
 {
     $file = __DIR__ . "/../logs/" . $filename . ".log";
-    if(!file_exists($file))
-    {
-        if (is_writable($file)) {
-            @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
-        }
-        else
-        {
-            if($verbose)
-            {
-                echo "Cannot write to file ($file)";
-            }
-        }
-    }
-    else
-    {
+    //if(!file_exists($file))
+    //{
+    //    if (is_writable($file)) {
+    //        @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
+    //    }
+    //    else
+    //    {
+    //        if($verbose)
+    //        {
+    //            echo "Cannot write to file ($file)";
+    //        }
+    //    }
+    //}
+    //else
+    //{
         @file_put_contents($file, date("Y-m-d H:i:s")." : ".$textline."\n",  FILE_APPEND);
-    }
+    //}
 
 }
 

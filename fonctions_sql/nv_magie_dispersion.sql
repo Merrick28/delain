@@ -171,8 +171,8 @@ code_retour := code_retour||'votre connaissance magique vous permet d''accroitre
 		delete from lock_combat where lock_cible =cible;
 		delete from lock_combat where lock_attaquant = cible;
 
-		select into lien_perso_fam pfam_familier_cod from perso_familier
-								where pfam_perso_cod =cible;
+		select into lien_perso_fam max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
+								and pfam_perso_cod =cible;
 		if found then
 				update perso_position	set ppos_pos_cod = position_arrivee2
 															where ppos_perso_cod = lien_perso_fam;

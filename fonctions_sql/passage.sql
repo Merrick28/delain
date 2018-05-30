@@ -235,7 +235,7 @@ begin
 			values (nextval('seq_levt_cod'),17,'now()',1,personnage,texte,'O','N');
 	end if;
 
-	select into familier pfam_familier_cod from perso_familier where pfam_perso_cod = personnage;
+	select into familier max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O' and pfam_perso_cod = personnage;
 	delete from transaction
 		where tran_vendeur = familier;
 	get diagnostics temp = row_count;

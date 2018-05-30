@@ -224,7 +224,7 @@ begin
 ---------------------------
 -- on enlève les transactions
 ---------------------------
-	select into familier pfam_familier_cod from perso_familier where pfam_perso_cod = num_perso;
+	select into familier max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O' and pfam_perso_cod = num_perso;
 
 	delete from transaction
 	where tran_vendeur = familier;
