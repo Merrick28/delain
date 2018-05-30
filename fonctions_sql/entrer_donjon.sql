@@ -116,10 +116,10 @@ where etage_cod = v_etage;
 
 -- si familier inactif alors on le passe intangible
 if v_fam_actif = 0 then
-     select into v_familier max(pfam_familier_cod) from perso_familier
-     where pfam_perso_cod = v_perso;
+     select into v_familier max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
+     and pfam_perso_cod = v_perso;
 
-     if found and v_familier != 2201872 then
+     if found and v_familier != getparm_n(111) then
           update perso set perso_tangible = 'N', perso_nb_tour_intangible = 9999
 	  where perso_cod = v_familier;
      end if;

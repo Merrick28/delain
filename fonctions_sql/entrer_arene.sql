@@ -100,10 +100,10 @@ end if;
 
 -- on regarde si le perso a un familier. Si oui, on le met impalpale
 
-select into v_familier max(pfam_familier_cod) from perso_familier
-where pfam_perso_cod = v_perso;
+select into v_familier max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
+and pfam_perso_cod = v_perso;
 
-if found and v_familier != 2201872 then
+if found and v_familier != getparm_n(111) then    -- code de kinga
         select into fam_actif etage_familier_actif from etage where etage_cod = v_etage;
         if fam_actif < 1 then
              	update perso set perso_tangible = 'N', perso_nb_tour_intangible = 9999

@@ -66,8 +66,8 @@ where perso_cod = v_perso;
 
 -- on remet l eventuel familier palpable
 
-select into v_familier max(pfam_familier_cod) from perso_familier
-where pfam_perso_cod = v_perso;
+select into v_familier max(pfam_familier_cod) from perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE perso_actif='O'
+and pfam_perso_cod = v_perso;
 
 if found then
      	update perso set perso_tangible = 'O', perso_nb_tour_intangible = 0
