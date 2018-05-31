@@ -108,7 +108,8 @@ begin
 						statique_combat,
 						statique_hors_combat,
 						v_dlt,
-						v_temps_tour
+						v_temps_tour,
+						v_soutien
 					limite_niveau(v_monstre),
 					perso_px,
 					perso_pa,
@@ -125,11 +126,17 @@ begin
 					perso_sta_combat,
 					perso_sta_hors_combat,
 					perso_dlt,
-					perso_temps_tour
-		from perso,perso_position,positions
+					perso_temps_tour,
+					gmon_soutien
+		from perso,perso_position,positions,monstre_generique
 		where perso_cod = v_monstre
 		and ppos_perso_cod = v_monstre
-		and ppos_pos_cod = pos_cod;
+		and ppos_pos_cod = pos_cod
+		and perso_gmon_cod = gmon_cod ;
+
+  /* Ajout d'info sur le monstre pour débuggage */
+  code_retour := code_retour||' actif='||actif||', Soutien='||v_soutien||E'\n';
+
 	if actif != 'O' then
 		return 'inactif !';
 	end if;
