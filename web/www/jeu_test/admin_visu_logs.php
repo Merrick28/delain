@@ -41,14 +41,28 @@ else
 	{
 		echo "<p><b>Visualisation du fichier de log " . $liste_logs[$visu][1] . "</b> - <a href='?visu=liste'>Retour au début</a></p>";
 		echo "<div class='bordiv' style='max-height: 800px; overflow: auto;'><pre>";
-		include ('../logs/' . $liste_logs[$visu][0]);
+        if(file_exists('../logs/' . $liste_logs[$visu][0]))
+        {
+		    include ('../logs/' . $liste_logs[$visu][0]);
+        }
+        else
+        {
+            echo "Il n'y a acun evènements.";
+        }
 		echo "</pre></div>";
 		echo '<p style="text-align:center"><a href="?visu=liste">Retour au début</a></p>';
 	}
 	if (isset($liste_logs[$visu]) && $mode == "texte")
 	{
 		header ('Content-Type: text/plain; charset=utf-8');
-		include ('../logs/' . $liste_logs[$visu][0]);
+        if(file_exists('../logs/' . $liste_logs[$visu][0]))
+        {
+		    include ('../logs/' . $liste_logs[$visu][0]);
+        }
+        else
+        {
+            echo "Il n'y a acun evènements.";
+        }
 		die();
 	}
 	if (!isset($liste_logs[$visu]))
