@@ -56,7 +56,7 @@ begin
 	where pfam_perso_cod = cible
 		and perso_actif = 'O';
 	if found then
-		code_retour := '<p>Malgré la réussite de votre invocation rien ne se passe. Il est impossible de rappeler un familier alors que vous en avez déjà un.</p>';
+		code_retour := '<p>Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p>';
 		return '1;' || code_retour;
 	end if;
 
