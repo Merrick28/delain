@@ -569,7 +569,6 @@ img {border:none}
 	background:red;
 }
 
-
 .spop-overlay {
 	z-index: 999;
 	float: right;
@@ -582,4 +581,26 @@ img {border:none}
 	border-radius: 10px;
 	background-color: #BA9C6C;
 	padding: 5px;
+}
+
+/* class pour la barre de switch rapide. */
+.button-switch	{
+	background-color: #CE6300;
+	color: #FFE081;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background: url(../images/bouton.jpg);
+	width:100%;
+	white-space: nowrap;
+	overflow:hidden;
+}
+.disabled-switch	{
+	background-color: darkgrey;
+	color: #FFE081;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-style: italic;
+	width:100%;
+	white-space: nowrap;
+	overflow:hidden;
 }

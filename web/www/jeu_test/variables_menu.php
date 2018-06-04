@@ -688,4 +688,83 @@ $VoteAValider = count($tab);
 
 $tab          = $cvip->getVoteRefus($compte->compt_cod);
 $votesRefusee = count($tab);
+
+//
+// gestion de la barre de switch rapide (seulement sur des pages spécifiques)
+//
+$barre_switch_rapide='';
+if (in_array( $_SERVER["PHP_SELF"] , array(
+            "/jeu_test/perso2.php",
+            "/jeu_test/frame_vue.php",
+            "/jeu_test/evenements.php",
+            "/jeu_test/inventaire.php",
+            "/jeu_test/transactions2.php",
+            "/jeu_test/deplacement.php",
+            "/jeu_test/combat.php",
+            "/jeu_test/magie.php",
+            "/jeu_test/choix_voie_magique.php",
+            "/jeu_test/enchantement_general.php",
+            "/jeu_test/objets/pioche.php",
+            "/jeu_test/enluminure_general.php",
+            "/jeu_test/concentration.php",
+            "/jeu_test/messagerie2.php",
+            "/jeu_test/guilde.php",
+            "/jeu_test/groupe.php"
+        )))
+{
+    $pdo    = new bddpdo;
+    $req    = "  
+                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 1 as type, perso_cod ordre 
+                from compte  
+                join perso_compte on pcompt_compt_cod=compt_cod 
+                join perso on perso_cod=pcompt_perso_cod 
+                where compt_cod=? and perso_actif='O'
+                
+                union
+                
+                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 2 as type, pfam_perso_cod ordre 
+                from compte  
+                join perso_compte on pcompt_compt_cod=compt_cod 
+                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                join perso on perso_cod=pfam_familier_cod where compt_cod=? and perso_actif='O'
+                
+                union 
+                
+                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 3 as type, perso_cod ordre 
+                from compte_sitting
+                join perso_compte on pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso on perso_cod=pcompt_perso_cod 
+                where csit_compte_sitteur=? and perso_actif='O'
+                
+                union
+                
+                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 4 as type, pfam_perso_cod ordre 
+                from compte_sitting  
+                join perso_compte on pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                join perso on perso_cod=pfam_familier_cod where csit_compte_sitteur=? and perso_actif='O'
+                
+                order by type, ordre ";
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
+
+    $liste_boutons = "" ;
+    while ($result = $stmt->fetch())
+    {
+        if ($result["dlt_passee"]==0)
+        {
+            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch">'.$result["perso_nom"].'</button></div>';
+        }
+        else
+        {
+            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button disabled class="disabled-switch">'.$result["perso_nom"].'</button></div>';
+        }
+    }
+
+    if ($liste_boutons!='')
+    {
+        $barre_switch_rapide='<div id="colonne0"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
+    }
+}
+$t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 ?>
