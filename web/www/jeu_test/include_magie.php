@@ -21,7 +21,7 @@ if ($db->next_record())
 	$coterie_perso_lanceur = $db->f("pgroupe_groupe_cod");
 
 // on cherche la position du perso
-$req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, dper_dieu_cod
+$req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod)
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
@@ -37,6 +37,7 @@ $pos_cod = $db->f("ppos_pos_cod");
 $distance_vue = $db->f("distance_vue");
 $perso_nom = $db->f("perso_nom");
 $dieu_perso = $db->f("dper_dieu_cod");
+$perso_bonus = $db->f("perso_bonus");
 
 $pv = $db->f("perso_pv");
 $pv_max = $db->f("perso_pv_max");
@@ -73,6 +74,7 @@ if ($distance_vue > $dist_sort)
 <td class="soustitre2"><p><b>X</b></p></td>
 <td class="soustitre2"><p><b>Y</b></p></td>
 <td class="soustitre2"><p><b>Distance</b></p></td>
+<td class="soustitre2"><p><b>Bonus/Malus</b></p></td>
 </tr>
 <?php 
 if ($soi_meme == 'O')
@@ -84,6 +86,7 @@ if ($soi_meme == 'O')
 			<td style=\"text-align:center;\">" . $x . "</td>
 			<td style=\"text-align:center;\">" . $y . "</td>
 			<td style=\"text-align:center;\">0</td>
+			<td style=\"text-align:left;\">$perso_bonus</td>
 		</tr>";
 }
 $add_dieu = "";
@@ -97,13 +100,18 @@ if ($soi_meme == 'O' and $dieu_perso != NULL and $sort_dieu == 'mg' and $sort_jo
 
 $req_vue_joueur = "select  trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom, pos_x, pos_y, pos_etage, race_nom,
 		distance($position, pos_cod) as distance, pos_cod, perso_cod, perso_type_perso, perso_pv, perso_pv_max,
-		coalesce(meme_coterie, 0) as meme_coterie
+		coalesce(meme_coterie, 0) as meme_coterie,
+        case when (meme_coterie=1 and pgroupe_montre_bonus=1 and is_visible_groupe=1) OR (perso_cod in (
+            select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
+            union
+            select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
+        )) then perso_bonus(perso_cod) else NULL end perso_bonus
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
 	inner join race on race_cod = perso_race_cod
 	left outer join (
-		select 1 as meme_coterie, pgroupe_perso_cod from groupe_perso
+		select 1 as meme_coterie, pgroupe_perso_cod, pgroupe_montre_bonus, is_visible_groupe(pgroupe_groupe_cod, pgroupe_perso_cod) is_visible_groupe from groupe_perso
 		where pgroupe_statut = 1 and pgroupe_groupe_cod = $coterie_perso_lanceur
 	) coterie on coterie.pgroupe_perso_cod = perso_cod
 	where pos_x between ($x-$distance_vue) and ($x+$distance_vue)
@@ -163,6 +171,7 @@ while ($db->next_record())
 				<td style=\"text-align:center;\">" . $db->f("pos_x") . "</td>
 				<td style=\"text-align:center;\">" . $db->f("pos_y") . "</td>
 				<td style=\"text-align:center;\">" . $db->f("distance") ."</td>
+				<td style=\"text-align:left;\">" . $db->f("perso_bonus") ."</td>
 			</tr>";
 	}
 }
