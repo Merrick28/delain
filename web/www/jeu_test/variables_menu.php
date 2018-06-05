@@ -693,24 +693,8 @@ $votesRefusee = count($tab);
 // gestion de la barre de switch rapide (seulement sur des pages spécifiques)
 //
 $barre_switch_rapide='';
-if (in_array( $_SERVER["PHP_SELF"] , array(
-            "/jeu_test/perso2.php",
-            "/jeu_test/frame_vue.php",
-            "/jeu_test/evenements.php",
-            "/jeu_test/inventaire.php",
-            "/jeu_test/transactions2.php",
-            "/jeu_test/deplacement.php",
-            "/jeu_test/combat.php",
-            "/jeu_test/magie.php",
-            "/jeu_test/choix_voie_magique.php",
-            "/jeu_test/enchantement_general.php",
-            "/jeu_test/objets/pioche.php",
-            "/jeu_test/enluminure_general.php",
-            "/jeu_test/concentration.php",
-            "/jeu_test/messagerie2.php",
-            "/jeu_test/guilde.php",
-            "/jeu_test/groupe.php"
-        )))
+
+if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_rapide.php" )))
 {
     $pdo    = new bddpdo;
     $req    = "  
@@ -751,13 +735,17 @@ if (in_array( $_SERVER["PHP_SELF"] , array(
     $liste_boutons = "" ;
     while ($result = $stmt->fetch())
     {
-        if ($result["dlt_passee"]==0)
+        if ($result["dlt_passee"]!=0)
         {
-            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch">'.$result["perso_nom"].'</button></div>';
+            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$result["perso_nom"].'</button></div>';
+        }
+        else if ($result["perso_cod"]==$perso_cod)
+        {
+            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch-act">'.$result["perso_nom"].'</button></div>';
         }
         else
         {
-            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button disabled class="disabled-switch">'.$result["perso_nom"].'</button></div>';
+            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch">'.$result["perso_nom"].'</button></div>';
         }
     }
 

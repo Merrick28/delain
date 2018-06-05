@@ -594,12 +594,23 @@ img {border:none}
 	white-space: nowrap;
 	overflow:hidden;
 }
-.disabled-switch	{
-	background-color: darkgrey;
-	color: #FFE081;
+.button-switch-act	{
+	background-color: #CE6300;
+	color: white;
 	font-size: 11px;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-style: italic;
+	font-weight: bold;
+	background: url(../images/bouton.jpg);
+	width:100%;
+	white-space: nowrap;
+	overflow:hidden;
+}
+.button-switch-dlt	{
+	background-color: gold;
+	color: black;
+	font-size: 11px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-weight: bold;
 	width:100%;
 	white-space: nowrap;
 	overflow:hidden;

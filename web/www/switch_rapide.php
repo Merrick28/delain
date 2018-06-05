@@ -102,7 +102,7 @@ if ($autorise != 1)
     }
 }
 
-if (($autorise != 1) || ($perso_dlt_passee != 0))
+if ($autorise != 1)
 {
     //
     // perso non authorisé et n'est pas sitté.... pas de switch rapide => sortie d'érreur comme validation_login3.php
@@ -141,7 +141,42 @@ if (($autorise != 1) || ($perso_dlt_passee != 0))
     die();                  // Ne pas continuer en cas d'erreur
 }
 
-// retourner sur l'url en cours de consultation avant le quick-switch
-header("Location: ".$_REQUEST["url"]);
+// Récupération de la racine du site
+$root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] ;
+if ($perso_dlt_passee != 0)
+{
+    // Le quick-switch ne marche pas, il faut d'abord activer la DLT!
+    header("Location: /validation_login3.php");
+}
+else if (!in_array( substr($_REQUEST["url"], strlen($root)) , array(
+        "/jeu_test/perso2.php",
+        "/jeu_test/frame_vue.php",
+        "/jeu_test/evenements.php",
+        "/jeu_test/inventaire.php",
+        "/jeu_test/ramasser.php",
+        "/jeu_test/transactions2.php",
+        "/jeu_test/deplacement.php",
+        "/jeu_test/combat.php",
+        "/jeu_test/magie.php",
+        "/jeu_test/choix_voie_magique.php",
+        "/jeu_test/enchantement_general.php",
+        "/jeu_test/objets/pioche.php",
+        "/jeu_test/enluminure_general.php",
+        "/jeu_test/concentration.php",
+        "/jeu_test/messagerie2.php",
+        "/jeu_test/guilde.php",
+        "/jeu_test/groupe.php"
+    )))
+{
+     // par sécurité, on switch sur la vue.
+   // // echo "<pre>"; print_r($root); echo "</pre>";
+   // die($_SERVER["HTTP_ORIGIN"]." => ".substr($_REQUEST["url"], strlen($_SERVER["HTTP_ORIGIN"])));
+    header("Location: /jeu_test/frame_vue.php");
+}
+else
+{
+     // retourner sur l'url en cours de consultation avant le quick-switch
+    header("Location: ".$_REQUEST["url"]);
+}
 
 ?>
