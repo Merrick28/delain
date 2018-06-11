@@ -150,7 +150,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                                 <td>
                                     <a href="http://www.jeux-alternatifs.com/Les-Souterrains-de-Delain-jeu715_hit-parade_1_1.html"
                                        onclick="AddNewVote()" target="_blank"><img
-                                                src="http://www.jeux-alternatifs.com/im/bandeau/hitP_88x31_v1.gif"
+                                                src="https://www.jeux-alternatifs.com/im/bandeau/hitP_88x31_v1.gif"
                                                 border="0"/></a>
                                 </td>
                             </tr>
