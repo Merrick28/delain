@@ -101,17 +101,21 @@ if ($soi_meme == 'O' and $dieu_perso != NULL and $sort_dieu == 'mg' and $sort_jo
 $req_vue_joueur = "select  trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom, pos_x, pos_y, pos_etage, race_nom,
 		distance($position, pos_cod) as distance, pos_cod, perso_cod, perso_type_perso, perso_pv, perso_pv_max,
 		coalesce(meme_coterie, 0) as meme_coterie,
-        case when (meme_coterie=1 and pgroupe_montre_bonus=1 and is_visible_groupe=1) OR (perso_cod in (
-            select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
-            union
-            select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
-        )) then perso_bonus(perso_cod) else NULL end perso_bonus
+        case when (meme_coterie=1 and pgroupe_montre_bonus=1) then perso_bonus(perso_cod)
+             when ( perso_cod in   (
+                                          select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
+                                          union
+                                          select perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
+                                        )
+                       ) then perso_bonus(perso_cod) 
+            when (meme_coterie=1 and pgroupe_montre_bonus=0) then 'masqué'
+            else NULL end perso_bonus
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
 	inner join race on race_cod = perso_race_cod
 	left outer join (
-		select 1 as meme_coterie, pgroupe_perso_cod, pgroupe_montre_bonus, is_visible_groupe(pgroupe_groupe_cod, pgroupe_perso_cod) is_visible_groupe from groupe_perso
+		select 1 as meme_coterie, pgroupe_perso_cod, pgroupe_montre_bonus from groupe_perso
 		where pgroupe_statut = 1 and pgroupe_groupe_cod = $coterie_perso_lanceur
 	) coterie on coterie.pgroupe_perso_cod = perso_cod
 	where pos_x between ($x-$distance_vue) and ($x+$distance_vue)

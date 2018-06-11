@@ -19,9 +19,18 @@
     width: 970px;
   }
 }
+
 @media (min-width: 1200px) {
   .container {
     width: 1170px;
+  }
+}
+@media (min-width:1200px) { /* spécificité pour grille de 8 colonnes au lieu de 6 sur grands ecrans */
+  .col-lg-2-8 {
+    width: 12.5%!important;
+  }
+  .col-lg-2-7 {
+    width: 14.2857%!important;
   }
 }
 .container-fluid {

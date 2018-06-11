@@ -23,7 +23,7 @@ $pa_n = $db->get_pa_attaque($perso_cod);
 
 
 // On recherche les autres joueurs en vue
-$req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, pcompt_compt_cod, perso_tangible, perso_nom, pos_x, pos_y, 
+$req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangible, perso_nom, pos_x, pos_y, 
 				pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_sex, perso_cod, perso_pv, perso_pv_max, perso_description,
 				perso_desc_long, pos_cod,
 				case when pgroupe_montre_pv = 1 or triplette_perso_cod is not null then etat_perso(perso_cod) else 'masqué' end as perso_pv,
@@ -36,8 +36,7 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
 		INNER JOIN perso_position ON ppos_perso_cod = perso_cod
 		INNER JOIN positions ON pos_cod = ppos_pos_cod
 		INNER JOIN race ON perso_race_cod = race_cod
-		INNER JOIN perso_compte ON perso_cod = pcompt_perso_cod
-		LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 and is_visible_groupe(pgroupe_groupe_cod, pgroupe_perso_cod) =1
+		LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 
 		LEFT OUTER JOIN lock_combat l1 ON l1.lock_cible = perso_cod AND l1.lock_attaquant = $perso_cod
 		LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
 		LEFT OUTER JOIN (
@@ -46,13 +45,13 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
                         select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
                     ) as triplette on triplette_perso_cod = perso_cod
 		WHERE pos_etage = $etage 
-			and perso_type_perso = 1 
+			and perso_type_perso in  (1,3)
 			and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
 			and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
 			and perso_actif = 'O'
-			and perso_cod != $perso_cod 
+			--and perso_cod != $perso_cod 
 			and (pgroupe_groupe_cod is not NULL or triplette_perso_cod is not NULL) 
-		order by distance,pos_x,pos_y,perso_nom ";
+		order by distance,pos_x,pos_y,perso_type_perso,perso_nom ";
 
 $db->query($req_vue_joueur);
 $nb_joueur_en_vue = $db->nf();
@@ -106,6 +105,8 @@ $nb_joueur_en_vue = $db->nf();
                 $meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://images.jdr-delain.net/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
 
                 $is_tangible = $db->f("perso_tangible");
+                $aff_tangible = $palbable[$is_tangible];
+
                 $niveau_blessures = '';
                 $pv = $db->f("perso_pv");
                 $num_perso = $db->f("perso_cod");
@@ -180,7 +181,8 @@ $nb_joueur_en_vue = $db->nf();
                 {
                     echo '<td ' . $ch_style . '><div style="text-align:center;">' . $quatrieme . $mortel . '</div></td>';
                 }
-                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>' . $religion . $niveau_blessures . '</b>' . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
+                $nom_perso =  ($db->f("perso_cod") != $perso_cod) ? $nom : '<span style="color:black;">' . $nom . '</span></a>';
+                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom_perso . '</a>' . $religion . $niveau_blessures . '</b>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
 				</td>
 				<td ' . $ch_style . '>' . $perso_dlt . '</td>
 				<td ' . $ch_style . '>' .$perso_pa . '</td>

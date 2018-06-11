@@ -731,22 +731,37 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 order by type, ordre ";
     $stmt   = $pdo->prepare($req);
     $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
+    $count = 1*$stmt->rowCount();
 
     $liste_boutons = "" ;
+    $class8 = ($count==7 || $count==14) ? " col-lg-2-7" : (($count>7) ? " col-lg-2-8" : "" ) ;     // CLass spécial pour grands ecrans avec 7 ou 8+ persos.
     while ($result = $stmt->fetch())
     {
-        if ($result["dlt_passee"]!=0)
-        {
-            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$result["perso_nom"].'</button></div>';
-        }
-        else if ($result["perso_cod"]==$perso_cod)
-        {
-            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch-act">'.$result["perso_nom"].'</button></div>';
-        }
-        else
-        {
-            $liste_boutons.= '<div class="col-lg-2 col-md-4"><button id='.$result["perso_cod"].' class="button-switch">'.$result["perso_nom"].'</button></div>';
-        }
+            // Raccourcir les nom en retirant les tags superflux
+            $nom = $result["perso_nom"] ;
+            if (substr($nom, 0, 12)=="Familier de ")
+            {
+                $nom = "Fam. de ".substr($nom, 12);
+                $pesprit = strpos($nom,  "(esprit de ");
+                if ($pesprit>0) $nom = substr($nom, 0, $pesprit)."(".substr($nom, $pesprit+11);
+            }
+            else
+            {
+                $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
+            }
+
+            if ($result["dlt_passee"]!=0)
+            {
+                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
+            }
+            else if ($result["perso_cod"]==$perso_cod)
+            {
+                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
+            }
+            else
+            {
+                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
+            }
     }
 
     if ($liste_boutons!='')
