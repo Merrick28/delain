@@ -3,13 +3,10 @@
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180410" title="essai">
-		<!-- Bootstrap custom CSS -->
-		<link href="https://delain/css/container-fluid.css" rel="stylesheet">
+		
 		<style>
 			div#colonne1 {
-				position: absolute;
-				top : 15px;
-				left : 15px;
+				float: left;
 				width: 175px;
 				height : 100%;
 				background-image:url({URL_IMAGES}fondparchemin.gif);
@@ -23,14 +20,6 @@
 				padding:10px;
 				margin-left: 205px;
 				}
-			div#colonne0 {
-				border-radius: 10px;
-				padding:2px;
-				border-color:#800000;
-				background-image:url({URL_IMAGES}fondparchemin.gif);
-				border-style:solid;
-				margin-left: 205px;
-				margin
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
@@ -110,8 +99,7 @@
 		</script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);" onload="tailleCadre()">
-<script>//# sourceURL=general_jeu.js
-    $( document ).ready(function() { $("button[class^='button-switch']").click( function (){ switch_perso(this.id); });});
+    <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -204,7 +192,7 @@
         </form>
 	</div>
 </div>
-{BARRE_SWITCH_RAPIDE}
+
 <div id="colonne2">
 	<form name="visu_evt2" method="post" action="visu_evt_perso.php"> 
 		<input type="hidden" name="visu" />

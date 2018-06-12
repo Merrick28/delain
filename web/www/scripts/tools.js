@@ -77,8 +77,6 @@ function post(path, params, values)
     form.submit();
 }
 
-//------------------------------------------------------------------------------------------------------------------
-//--- gestion des favoris
 function popRequestStatus(r, context)
 {
     if (r.resultat==0)
@@ -138,11 +136,4 @@ function addSortFavoris(type, sort_cod)
 function delSortFavoris(type, sort_cod)
 {
     runAsync({request: "del_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"del", type:"sort", misc_cod:sort_cod})
-}
-
-//------------------------------------------------------------------------------------------------------------------
-//--- gestion du switch de perso rapide
-function switch_perso(perso)
-{
-    post("/switch_rapide.php", ["url","perso"], [window.location.href, perso]);
 }

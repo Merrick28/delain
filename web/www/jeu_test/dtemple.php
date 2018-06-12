@@ -246,36 +246,8 @@ if ($erreur == 0)
 				</form>
 				<?php 
 				$cout_or = $param->getparm(50) * 2;
-                // On regarde si le perso possède déjà un familier/esprit
-                $req = "SELECT count(*) count FROM perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE pfam_perso_cod = {$perso_cod} AND perso_actif='O' ";
-                $db->query($req);
-                $db->next_record();
-                $count_familier_actif = $db->f("count") ;
-
-				if ($count_familier_actif == 0 and $dieu_perso == $dieu_cod and $niveau_actu >= 3 and $dieu_pouvoir > 150)
+				if ($dieu_perso == $dieu_cod and $niveau_actu >= 3 and $dieu_pouvoir > 150)
 				{
-                    // On regarde si le perso possède déjà un familier/esprit décédé, proposer une résu
-                    // le familier doit être de la même foi (même dieu) et avoir encore des point de foi (ne pas être décédé à cause sa foi)
-                    $req = "SELECT count(*) count 
-                            FROM perso_familier 
-                            INNER JOIN perso fam on fam.perso_cod=pfam_familier_cod
-                            INNER JOIN dieu_perso dieu_fam on dieu_fam.dper_perso_cod=pfam_familier_cod
-                            INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
-                            INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
-                            WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
-                    $db->query($req);
-                    $db->next_record();
-                    $count_familier_mort = $db->f("count") ;
-                    if ($count_familier_mort > 0 )
-                    {
-                        ?>
-                        <p><a href="<?php echo $PHP_SELF;?>?methode=resu">- Ressusciter un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
-                        <br><i>Ceci rapellera du plan des morts le familier de <?php echo $dieu_nom; ?> qui agira sous votre contrôle comme cela l'était avant sa mort.
-                        <br>N’oubliez pas que cette action <b>éprouve fortement</b> le pouvoir de votre Dieu</i><br>
-
-                        <?php
-                    }
-
 					?>
 					<p><a href="<?php echo $PHP_SELF;?>?methode=invoc">- Invoquer un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
 						<br><i>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire sous votre contrôle.
@@ -440,94 +412,6 @@ if ($erreur == 0)
 			echo '<hr /><a href="lieu.php">Retour au temple</a>';
 		break;
 
-		case 'resu':
-			if($dieu_perso != $dieu_cod)
-			{
-				echo "Vous ne pouvez lancer des invocations que dans le temple de votre divinité.";
-				break;
-			}
-			if ($niveau_actu >= 3 and $dieu_pouvoir > 150)
-			{
-				echo "Votre Dieu entend votre demande.<br>";
-			}
-			else
-			{
-				echo "Vous n’êtes pas d’un niveau suffisant ou votre Dieu ne possède pas assez de pouvoir.<br>";
-				break;
-			}
-			/* on regarde s'il n'y a pas déjà un familier*/
-			$req = "select pfam_familier_cod from perso_familier,perso
-				where  pfam_familier_cod = perso_cod
-					and perso_actif in ('O','H')
-					and pfam_perso_cod = ". $perso_cod;
-			$db->query($req);
-			if ($db->nf() != 0)
-			{
-				echo "<br><b><p>Vous ne pouvez pas ressuciter un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></b><br>";
-				break;
-			}
-
-            /* on regarde s'il n'y a bien un familier à ressuciter (du même dieu, on ne ressuscite pas les impies) */
-            $req = "SELECT count(*) count 
-                    FROM perso_familier 
-                    INNER JOIN perso fam on fam.perso_cod=pfam_familier_cod
-                    INNER JOIN dieu_perso dieu_fam on dieu_fam.dper_perso_cod=pfam_familier_cod
-                    INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
-                    INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
-                    WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
-            $db->query($req);
-            $db->next_record();
-            $count_familier_mort = $db->f("count") ;
-            if ($count_familier_mort == 0)
-            {
-                echo "<br><b><p>la résurection n'est pas possible, l'ame de votre familier n'a pas été retrouvée.</p></b><br>";
-                break;
-            }
-
-			/* contrôle sur les pa disponible*/
-			$req = "select perso_pa,perso_po from perso
-				where perso_cod = ". $perso_cod;
-			$db->query($req);
-			$db->next_record();
-			$pa = $db->f("perso_pa");
-			$or = $db->f("perso_po");
-			$cout_pa = $param->getparm(100);
-			$cout_or = $param->getparm(50) * 2;
-			if ($pa < $cout_pa)
-			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de PA pour cette action</b><br><br>";
-					break;
-			}
-			else if ($or < $cout_or)
-			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de brouzoufs pour cette action</b><br><br>";
-					break;
-			}
-			else
-			{
-				$req = "update perso set perso_pa = perso_pa - ". $cout_pa .",perso_po = perso_po -  ". $cout_or ."
-						where perso_cod = ". $perso_cod;
-				$db->query($req);
-			}
-			/* on ressucite le familier*/
-			$req = "select ressuscite_familier_divin($perso_cod) as resultat";
-			$db->query($req);
-			$db->next_record();
-			$resultat = explode(';', $db->f('resultat'));
-			if ($resultat[0] == '1')
-			{
-				echo '<p>' . $resultat[1] . '</p>';
-			}
-			else
-			{
-				echo "<br>Vous avez retrouvé votre familier <b>esprit de $dieu_nom</b>.
-					Sa longévité tiendra à votre foi : quand son énergie divine tombera à 0, il sera renvoyé au royaume de $dieu_nom.";
-			}
-			/* On diminue le compteur de la religion*/
-			$req = "update dieu set dieu_pouvoir = dieu_pouvoir - 150 where dieu_cod = ". $dieu_cod;
-			$db->query($req);
-		break;
-		
 		case 'invoc':
 			if($dieu_perso != $dieu_cod)
 			{
