@@ -27,10 +27,11 @@ $lieu_refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
 // choix de l'affichage */
 //
 $vuetab[0] = 'Aventuriers';
-$vuetab[1] = 'Monstres';
-$vuetab[2] = 'Objets';
-$vuetab[3] = 'Lieux';
-$vuetab[4] = 'Tout voir';
+$vuetab[1] = 'Partisans';
+$vuetab[2] = 'Monstres';
+$vuetab[3] = 'Objets';
+$vuetab[4] = 'Lieux';
+$vuetab[5] = 'Tout voir';
 $nb        = count($vuetab);
 if (!isset($tab_vue))
 {
