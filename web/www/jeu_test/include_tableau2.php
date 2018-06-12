@@ -39,20 +39,16 @@ switch($tab_vue)
 		include "incl_vue_joueur.php";
 		break;
 	case "1":
-		include "incl_vue_partisan.php";
-		break;
-	case "2":
 		include "incl_vue_monstre.php";
 		break;
-	case "4":
+	case "3":
 		include "incl_vue_lieu.php";
 		break;
-	case "3":
+	case "2":
 		include "incl_vue_objet.php";
 		break;
-	case "5":
+	case "4":
 		include "incl_vue_joueur.php";
-		include "incl_vue_partisan.php";
 		include "incl_vue_monstre.php";
 		include "incl_vue_objet.php";
 		include "incl_vue_lieu.php";
