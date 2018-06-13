@@ -142,13 +142,13 @@ if ($autorise != 1)
 }
 
 // Récupération de la racine du site
-$root = (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] ;
+$root = 'https://' . $_SERVER['HTTP_HOST'] ;
 if ($perso_dlt_passee != 0)
 {
     // Le quick-switch ne marche pas, il faut d'abord activer la DLT!
     header("Location: /validation_login3.php");
 }
-else if (!in_array( substr($_REQUEST["url"], strlen($root)) , array(
+else if (!in_array( substr(str_replace("http://", "https://", $_REQUEST["url"]), strlen($root)) , array(
         "/jeu_test/perso2.php",
         "/jeu_test/frame_vue.php",
         "/jeu_test/evenements.php",
