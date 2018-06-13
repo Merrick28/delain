@@ -1,13 +1,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180410" title="essai">
+		<!-- Bootstrap custom CSS -->
+		<link href="https://delain/css/container-fluid.css" rel="stylesheet">
+		<!-- Custom delain CSS -->
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 		<style>
 			div#colonne1 {
-				float: left;
+				position: absolute;
+				top : 15px;
+				left : 15px;
 				width: 175px;
 				height : 100%;
 				background-image:url({URL_IMAGES}fondparchemin.gif);
@@ -25,13 +31,23 @@
 				border-style:solid;
 				margin-left: 205px;
 				}
+			div#colonne0 {
+				border-radius: 10px;
+				padding:2px;
+				border-color:#800000;
+				background-image:url({URL_IMAGES}fondparchemin.gif);
+				border-style:solid;
+				margin-left: 205px;
+				margin-bottom: 5px;
+				}
 		</style>
 		<script src="{URL}js/jquery.js"></script>
-		<script src="{URL}scripts/tools.js" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
-    <script>
+    <script>//# sourceURL=general_jeu.js
+        $( document ).ready(function() { $("button[class^='button-switch']").click( function (){ switch_perso(this.id); });});
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -42,6 +58,8 @@
   ga('send', 'pageview');
 
 </script>
+{BARRE_SWITCH_RAPIDE}
+
 <div id="colonne1">
 	<div id="nom" style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
 	<div style="text-align:center;padding:5px">
@@ -58,7 +76,7 @@
 		<div id="passageniveau">{PASSAGE_NIVEAU}</div>
 		<div id="quete">{PERSO_QUETE}</div>
 		<div id="lieu">{PERSO_LIEU}</div>
-		
+
 		<img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
 		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
@@ -109,7 +127,7 @@
 		<hr />
 		<img src="{URL_IMAGES}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a> - <a href="https://forum.jdr-delain.net/app.php/chat/popup" target="_blank">Chat</a> -{WIKI}<br>
 		<img src="{URL_IMAGES}deconnection.gif" alt=""> <a href="{URL}" target="_top">Accueil</a><br />
-		
+
 		<hr />
 		<img src="{URL_IMAGES}deconnection.gif" alt=""> <a href="{URL}logout.php" target="_top">Se déconnecter</a>
 		<hr />

@@ -688,4 +688,86 @@ $VoteAValider = count($tab);
 
 $tab          = $cvip->getVoteRefus($compte->compt_cod);
 $votesRefusee = count($tab);
+
+//
+// gestion de la barre de switch rapide (seulement sur des pages spécifiques)
+//
+$barre_switch_rapide='';
+
+if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_rapide.php" )))
+{
+    $pdo    = new bddpdo;
+    $req    = "  
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre 
+                from compte  
+                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                join perso on perso_cod=pcompt_perso_cod 
+                where perso_actif='O'
+                
+                union
+                
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre 
+                from compte  
+                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
+                
+                union 
+                
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 3 as type, perso_cod ordre 
+                from compte_sitting
+                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso on perso_cod=pcompt_perso_cod 
+                where perso_actif='O'
+                
+                union
+                
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 4 as type, pfam_perso_cod ordre 
+                from compte_sitting  
+                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
+                
+                order by type, ordre ";
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
+    $count = 1*$stmt->rowCount();
+
+    $liste_boutons = "" ;
+    $class8 = ($count==7 || $count==14) ? " col-md-2-7" : (($count>7) ? " col-md-2-8" : "" ) ;     // CLass spécial pour grands ecrans avec 7 ou 8+ persos.
+    while ($result = $stmt->fetch())
+    {
+            // Raccourcir les nom en retirant les tags superflux
+            $nom = $result["perso_nom"] ;
+            if (substr($nom, 0, 12)=="Familier de ")
+            {
+                $nom = "Fam. de ".substr($nom, 12);
+                $pesprit = strpos($nom,  "(esprit de ");
+                if ($pesprit>0) $nom = substr($nom, 0, $pesprit)."(".substr($nom, $pesprit+11);
+            }
+            else
+            {
+                $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
+            }
+
+            if ($result["dlt_passee"]!=0)
+            {
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
+            }
+            else if ($result["perso_cod"]==$perso_cod)
+            {
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
+            }
+            else
+            {
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
+            }
+    }
+
+    if ($liste_boutons!='')
+    {
+        $barre_switch_rapide='<div id="colonne0"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
+    }
+}
+$t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 ?>

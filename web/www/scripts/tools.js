@@ -9,9 +9,9 @@
  */
 
 
-function runAsync(service, callback, context=null) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
+function runAsync(service, callback, context) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
     // préparation des parametres
-
+    if (!context) context=null;
     var request = service.request;						// Parametre mandatory !
     var ws = "/jeu_test/ajax_request.php";				// type de webservice par defaut
     var response_type = "json";							// type de données attendues par défaut
@@ -77,6 +77,8 @@ function post(path, params, values)
     form.submit();
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//--- gestion des favoris
 function popRequestStatus(r, context)
 {
     if (r.resultat==0)
@@ -136,4 +138,11 @@ function addSortFavoris(type, sort_cod)
 function delSortFavoris(type, sort_cod)
 {
     runAsync({request: "del_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"del", type:"sort", misc_cod:sort_cod})
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//--- gestion du switch de perso rapide
+function switch_perso(perso)
+{
+    post("/switch_rapide.php", ["url","perso"], [window.location.href, perso]);
 }
