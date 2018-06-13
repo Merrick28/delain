@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Les souterrains de Delain</title>
-		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
+		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<!-- Bootstrap custom CSS -->
 		<link href="{URL}css/container-fluid.css" rel="stylesheet">
 		<!-- Custom delain CSS -->
