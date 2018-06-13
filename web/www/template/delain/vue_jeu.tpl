@@ -5,7 +5,7 @@
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
 		<!-- Bootstrap custom CSS -->
-		<link href="https://delain/css/container-fluid.css?v20180613" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20180613" rel="stylesheet">
 		<style>
 			div#colonne1 {
 				position: absolute;
