@@ -9,9 +9,9 @@
  */
 
 
-function runAsync(service, callback, context=null) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
+function runAsync(service, callback, context) { // service = {request: request, ws:ws, type_data:type_data, data:data, response_type:response_type}
     // préparation des parametres
-
+    if (!context) context=null;
     var request = service.request;						// Parametre mandatory !
     var ws = "/jeu_test/ajax_request.php";				// type de webservice par defaut
     var response_type = "json";							// type de données attendues par défaut

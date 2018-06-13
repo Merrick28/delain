@@ -1,12 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
 		<!-- Bootstrap custom CSS -->
 		<link href="https://delain/css/container-fluid.css" rel="stylesheet">
 		<!-- Custom delain CSS -->
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180605" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 		<style>
 			div#colonne1 {
@@ -41,7 +42,7 @@
 				}
 		</style>
 		<script src="{URL}js/jquery.js"></script>
-		<script src="{URL}scripts/tools.js" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
@@ -75,7 +76,7 @@
 		<div id="passageniveau">{PASSAGE_NIVEAU}</div>
 		<div id="quete">{PERSO_QUETE}</div>
 		<div id="lieu">{PERSO_LIEU}</div>
-		
+
 		<img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
 		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
@@ -126,7 +127,7 @@
 		<hr />
 		<img src="{URL_IMAGES}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a> - <a href="https://forum.jdr-delain.net/app.php/chat/popup" target="_blank">Chat</a> -{WIKI}<br>
 		<img src="{URL_IMAGES}deconnection.gif" alt=""> <a href="{URL}" target="_top">Accueil</a><br />
-		
+
 		<hr />
 		<img src="{URL_IMAGES}deconnection.gif" alt=""> <a href="{URL}logout.php" target="_top">Se déconnecter</a>
 		<hr />

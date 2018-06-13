@@ -698,35 +698,35 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
 {
     $pdo    = new bddpdo;
     $req    = "  
-                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 1 as type, perso_cod ordre 
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre 
                 from compte  
-                join perso_compte on pcompt_compt_cod=compt_cod 
+                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
                 join perso on perso_cod=pcompt_perso_cod 
-                where compt_cod=? and perso_actif='O'
+                where perso_actif='O'
                 
                 union
                 
-                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 2 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre 
                 from compte  
-                join perso_compte on pcompt_compt_cod=compt_cod 
+                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
-                join perso on perso_cod=pfam_familier_cod where compt_cod=? and perso_actif='O'
+                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
                 
                 union 
                 
-                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 3 as type, perso_cod ordre 
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 3 as type, perso_cod ordre 
                 from compte_sitting
-                join perso_compte on pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso on perso_cod=pcompt_perso_cod 
-                where csit_compte_sitteur=? and perso_actif='O'
+                where perso_actif='O'
                 
                 union
                 
-                select perso_cod,perso_nom,dlt_passee(perso_cod) dlt_passee, 4 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 4 as type, pfam_perso_cod ordre 
                 from compte_sitting  
-                join perso_compte on pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
-                join perso on perso_cod=pfam_familier_cod where csit_compte_sitteur=? and perso_actif='O'
+                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
                 
                 order by type, ordre ";
     $stmt   = $pdo->prepare($req);
@@ -734,7 +734,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
     $count = 1*$stmt->rowCount();
 
     $liste_boutons = "" ;
-    $class8 = ($count==7 || $count==14) ? " col-lg-2-7" : (($count>7) ? " col-lg-2-8" : "" ) ;     // CLass spécial pour grands ecrans avec 7 ou 8+ persos.
+    $class8 = ($count==7 || $count==14) ? " col-md-2-7" : (($count>7) ? " col-md-2-8" : "" ) ;     // CLass spécial pour grands ecrans avec 7 ou 8+ persos.
     while ($result = $stmt->fetch())
     {
             // Raccourcir les nom en retirant les tags superflux
@@ -752,15 +752,15 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
 
             if ($result["dlt_passee"]!=0)
             {
-                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
             }
             else if ($result["perso_cod"]==$perso_cod)
             {
-                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
             }
             else
             {
-                $liste_boutons.= '<div class="col-lg-2 col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
             }
     }
 
