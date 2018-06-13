@@ -1,12 +1,16 @@
 <html>
 	<head>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180410" title="essai">
-		
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
+		<!-- Bootstrap custom CSS -->
+		<link href="https://delain/css/container-fluid.css?v20180613" rel="stylesheet">
 		<style>
 			div#colonne1 {
-				float: left;
+				position: absolute;
+				top : 15px;
+				left : 15px;
 				width: 175px;
 				height : 100%;
 				background-image:url({URL_IMAGES}fondparchemin.gif);
@@ -20,17 +24,25 @@
 				padding:10px;
 				margin-left: 205px;
 				}
+			div#colonne0 {
+				border-radius: 10px;
+				padding:2px;
+				border-color:#800000;
+				background-image:url({URL_IMAGES}fondparchemin.gif);
+				border-style:solid;
+				margin-left: 205px;
+				margin
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
 		<script src="{URL}scripts/ajax2.js" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 		<script type='text/javascript'>
-		
+
 			// Indique si le cadre du bas de la vue doit être étendu. Par défaut, non.
 			var etendreVue = 0;
-			
+
 			// Fonction appelée à l'ouverture de la vue, déterminant s'il y a lieu d'étendre le cadre du bas ou non.
 			function tailleCadre()
 			{
@@ -48,7 +60,7 @@
 				if (etendreVue == 0)
 					reduireCadre();
 			}
-			
+
 			// Permet de permutter entre l'état étendu ou l'état réduit du cadre du bas.
 			function modifierCadre()
 			{
@@ -59,12 +71,12 @@
 					aggrandirCadre();
 				//return false;
 			}
-			
+
 			// Augmente le cadre du bas
 			function aggrandirCadre()
 			{
 				document.getElementById("vue_bas").style.maxHeight = "";
-				
+
 				// Mise en place d’un cookie pour se souvenir de ce choix
 				var maintenant = new Date();
 				var danslongtemps = maintenant.getTime() + (5 * 365 * 24 * 60 * 60 * 1000); // 5 ans
@@ -72,7 +84,7 @@
 				echeance.setTime(danslongtemps);
 				document.cookie = "etendrevue=1; expires=" + echeance.toGMTString();
 			}
-			
+
 			// réduit le cadre du bas
 			function reduireCadre()
 			{
@@ -88,7 +100,7 @@
 				var resteEcran = hauteurEcran - hauteurVueHaut - 100;
 				var hauteurVueBas = Math.max(resteEcran, 200);
 				document.getElementById("vue_bas").style.maxHeight = "" + (hauteurVueBas) + "px";
-				
+
 				// Mise en place d’un cookie pour se souvenir de ce choix
 				var maintenant = new Date();
 				var danslongtemps = maintenant.getTime() + (5 * 365 * 24 * 60 * 60 * 1000); // 5 ans
@@ -99,7 +111,8 @@
 		</script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);" onload="tailleCadre()">
-    <script>
+<script>//# sourceURL=general_jeu.js
+    $( document ).ready(function() { $("button[class^='button-switch']").click( function (){ switch_perso(this.id); });});
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -127,7 +140,7 @@
 		<div id="passageniveau">{PASSAGE_NIVEAU}</div>
 		<div id="quete">{PERSO_QUETE}</div>
 		<div id="lieu">{PERSO_LIEU}</div>
-		
+
 		<img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
 		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
@@ -192,7 +205,7 @@
         </form>
 	</div>
 </div>
-
+{BARRE_SWITCH_RAPIDE}
 <div id="colonne2">
 	<form name="visu_evt2" method="post" action="visu_evt_perso.php"> 
 		<input type="hidden" name="visu" />

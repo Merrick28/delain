@@ -26,7 +26,7 @@ if ($verif_auth)
 		?>
 		<html>
 		<head>
-		<link rel="stylesheet" type="text/css" href="style.css?v20180313" title="essai">
+		<link rel="stylesheet" type="text/css" href="style.css?v20180613" title="essai">
 		</head>
 		<body background="images/fond5.gif">
 		<div class="bordiv">
@@ -83,7 +83,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180313" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180613" title="essai">
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
@@ -100,7 +100,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180313" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180613" title="essai">
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
@@ -187,7 +187,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180313" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180613" title="essai">
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';

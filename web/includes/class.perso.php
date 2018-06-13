@@ -1513,7 +1513,7 @@ class perso
 
         try
         {
-            $size = getimagesize($this->avatar);
+            $size = @getimagesize($this->avatar);
             if ($size !== false)
             {
                 $this->avatar_largeur = $size[0];
