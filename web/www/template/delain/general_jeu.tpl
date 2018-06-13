@@ -5,7 +5,7 @@
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="{{ URL }}/drake_head_red.ico" type="image/gif">
 		<!-- Bootstrap custom CSS -->
-		<link href="https://delain/css/container-fluid.css" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css" rel="stylesheet">
 		<!-- Custom delain CSS -->
 		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
