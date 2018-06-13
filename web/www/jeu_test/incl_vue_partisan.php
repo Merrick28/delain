@@ -62,7 +62,7 @@ $nb_joueur_en_vue = $db->nf();
 
     <tr>
         <td colspan="9" class="soustitre">
-            <div class="soustitre">Aventuriers</div>
+            <div class="soustitre">Partisans</div>
         </td>
     </tr>
     <?php if ($marquerQuatriemes)
