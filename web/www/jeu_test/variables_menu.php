@@ -698,7 +698,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
 {
     $pdo    = new bddpdo;
     $req    = "  
-                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre 
                 from compte  
                 join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
                 join perso on perso_cod=pcompt_perso_cod 
@@ -706,7 +706,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 
                 union
                 
-                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre 
                 from compte  
                 join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
@@ -714,7 +714,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 
                 union 
                 
-                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 3 as type, perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 3 as type, perso_cod ordre 
                 from compte_sitting
                 join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso on perso_cod=pcompt_perso_cod 
@@ -722,7 +722,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 
                 union
                 
-                select perso_cod, perso_nom, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 4 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 4 as type, pfam_perso_cod ordre 
                 from compte_sitting  
                 join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
@@ -750,6 +750,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
             }
 
+            //$nom.="<br><span style=\"color:lightgreen; font-size:9px ;\"'>". $result["perso_pv"]." / ". $result["perso_pv_max"]." - ". $result["perso_pa"]." PA</span>";
             if ($result["dlt_passee"]!=0)
             {
                 $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';

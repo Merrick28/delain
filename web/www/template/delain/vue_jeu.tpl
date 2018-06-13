@@ -35,7 +35,7 @@
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
-		<script src="{URL}scripts/ajax2.js?v20180613" type="text/javascript"></script>
+		<script src="{URL}scripts/ajax2.js?v2018061321" type="text/javascript"></script>
 		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 		<script type='text/javascript'>
