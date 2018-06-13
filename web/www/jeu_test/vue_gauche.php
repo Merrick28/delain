@@ -18,7 +18,7 @@ if ($db->nf())
 }
 ?>
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php echo $etage_actuel ?>" title="essai">
-<script type="text/javascript">	
+<script type="text/javascript">	//# sourceURL=vue_gauche.js
 	function vue_clic(pos_cod, distance)
 	{
 		document.getElementsByName('position').value = pos_cod;
