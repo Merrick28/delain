@@ -20,6 +20,9 @@ $etage = $db->f("pos_etage");
 $position_actuelle = $db->f("pos_cod");
 ?>
 <center><table width="100">
+<form name="ong_dep" id="ong_dep" method="post" action="action.php">
+<input type="hidden" name="methode" value="deplacement">
+
 <?php 
 
 for($cpty=2;$cpty>=0;$cpty--)
@@ -66,6 +69,7 @@ for($cpty=2;$cpty>=0;$cpty--)
 ?>
 <tr>
 <td colspan="4"><center><input type="submit" class="test" value="Bouger !!"></center></td></tr>
+</form>
 </table></center>
 
 

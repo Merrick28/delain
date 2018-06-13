@@ -1,5 +1,5 @@
 function voirList(el,what,where) {  
-    var str = $("form").serialize();
+    var str = $(el).serialize();
     //alert(str);
     var xhr;
     try { xhr = new XMLHttpRequest(); }
