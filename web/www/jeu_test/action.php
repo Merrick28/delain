@@ -182,6 +182,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             if ($db->f('perso_type_perso') == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
+                if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
             if (isset($_POST['position']))
@@ -191,6 +192,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             if (!isset($position) || $position === '')
             {
                 $contenu_page .= '<p>Erreur ! Position non définie !</p>';
+                if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
             $req_deplace = 'select deplace_code(?,?) as deplace';
