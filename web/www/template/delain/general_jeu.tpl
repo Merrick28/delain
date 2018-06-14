@@ -7,7 +7,7 @@
 		<!-- Bootstrap custom CSS -->
 		<link href="{URL}css/container-fluid.css" rel="stylesheet">
 		<!-- Custom delain CSS -->
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180614" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 		<style>
 			div#colonne1 {
@@ -42,7 +42,7 @@
 				}
 		</style>
 		<script src="{URL}js/jquery.js"></script>
-		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180614" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
