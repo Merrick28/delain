@@ -109,7 +109,8 @@ $req_vue_joueur = "select  trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom
                                         )
                        ) then perso_bonus(perso_cod) 
             when (meme_coterie=1 and pgroupe_montre_bonus=0) then 'masqué'
-            else NULL end perso_bonus
+            else NULL end perso_bonus,
+            CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
@@ -168,14 +169,14 @@ while ($db->next_record())
 		$script_choix = "javascript:document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();";
 		if ($aggressif == 'O' && $db->f("meme_coterie") == 1)
 			$script_choix = "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();}";
-			
+        $perso_bonus = $db->f("dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
 		echo "<tr>
 				<td class=\"soustitre2\"><b><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></b> <i>(" . $perso_type_perso[$type_perso] . "<b>" . $niveau_blessures . "</b>)</i></td>
 				<td>" . $db->f("race_nom") . "</td>
 				<td style=\"text-align:center;\">" . $db->f("pos_x") . "</td>
 				<td style=\"text-align:center;\">" . $db->f("pos_y") . "</td>
 				<td style=\"text-align:center;\">" . $db->f("distance") ."</td>
-				<td style=\"text-align:left;\">" . $db->f("perso_bonus") ."</td>
+				<td style=\"text-align:left;\">" . $perso_bonus ."</td>
 			</tr>";
 	}
 }

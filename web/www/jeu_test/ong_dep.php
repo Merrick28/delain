@@ -19,10 +19,10 @@ $nom = $db->f("perso_nom");
 $etage = $db->f("pos_etage");
 $position_actuelle = $db->f("pos_cod");
 ?>
-<center><table width="100">
+<center>
 <form name="ong_dep" id="ong_dep" method="post" action="action.php">
 <input type="hidden" name="methode" value="deplacement">
-
+<table width="100">
 <?php 
 
 for($cpty=2;$cpty>=0;$cpty--)
@@ -69,8 +69,9 @@ for($cpty=2;$cpty>=0;$cpty--)
 ?>
 <tr>
 <td colspan="4"><center><input type="submit" class="test" value="Bouger !!"></center></td></tr>
+</table>
 </form>
-</table></center>
+</center>
 
 
 <?php }?>

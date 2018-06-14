@@ -3,9 +3,9 @@
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180613" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180614" title="essai">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20180613" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20180614" rel="stylesheet">
 		<style>
 			div#colonne1 {
 				position: absolute;
@@ -35,8 +35,8 @@
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
-		<script src="{URL}scripts/ajax2.js?v2018061321" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js?v20180613" type="text/javascript"></script>
+		<script src="{URL}scripts/ajax2.js?v20180614" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180614" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 		<script type='text/javascript'>
 
