@@ -21,7 +21,7 @@ $db->next_record();
 $pa = $db->f("perso_pa");
 $pa_n = $db->get_pa_attaque($perso_cod);
 
-
+$coterie = 1*$coterie;  // Convertion en entier et mise à zero sir vide!
 // On recherche les autres joueurs en vue
 $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangible, perso_nom, pos_x, pos_y, 
 				pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_sex, perso_cod, perso_pv, perso_pv_max, perso_description,
