@@ -169,7 +169,7 @@ while ($db->next_record())
 		$script_choix = "javascript:document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();";
 		if ($aggressif == 'O' && $db->f("meme_coterie") == 1)
 			$script_choix = "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();}";
-        $perso_bonus = $db->f("dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
+        $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
 		echo "<tr>
 				<td class=\"soustitre2\"><b><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></b> <i>(" . $perso_type_perso[$type_perso] . "<b>" . $niveau_blessures . "</b>)</i></td>
 				<td>" . $db->f("race_nom") . "</td>
