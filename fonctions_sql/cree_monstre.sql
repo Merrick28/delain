@@ -9,7 +9,6 @@ RETURNS integer
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE 
-    ROWS 0
 AS $BODY$
  /*****************************************************************/
 /* function cree_monstre :Procédure de création de monstre en    */
