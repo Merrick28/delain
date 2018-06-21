@@ -759,9 +759,9 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
             }
 
             // C'était sympa, mais demande non approuvée!
-            //$blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
-            //$perso_pv = $blessure>50 ? $result["perso_pv"] : ( $blessure>25 ? '<font color="#ffd700">'.$result["perso_pv"].'</font>' : '<font color="#ff69b4">'.$result["perso_pv"].'</font>' );
-            //$nom.="<br><span style=\"color:lightgreen; font-size:9px ;\"'>". $perso_pv ." / ". $result["perso_pv_max"]." - ". $result["perso_pa"]." PA</span>";
+            $blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
+            $perso_pv = $blessure>50 ? $result["perso_pv"] : ( $blessure>25 ? '<span style="color:#ffd700;font-size:9px">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px">'.$result["perso_pv"].'</span>' );
+            $nom.="<br><span style=\"color:lightgreen; font-size:9px ;\"'>". $perso_pv ." / ". $result["perso_pv_max"]." - ". $result["perso_pa"]." PA</span>";
             if ($result["dlt_passee"]!=0)
             {
                 $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
