@@ -11,6 +11,11 @@ include "sjoueur.php";
 	<script type="text/javascript" src="javascripts/window.js"> </script>
 	<script type="text/javascript" src="javascripts/window_effects.js"> </script>
 	<script type="text/javascript" src="javascripts/debug.js"> </script>
+	<!-- 
+	    Marlyza - 21/06/2018 - un des scripts ci-dessus redéfini la fonction $ de jquery
+	    Comme je ne sais pas ce qui est vraiment utilisé pour cette page, je préfère recharger un jquery.js complet
+	-->
+	<script type="text/javascript" src="/js/jquery.js"></script>
 	<link href="themes/default.css" rel="stylesheet" type="text/css"/>
 	<link href="themes/nuncio.css" rel="stylesheet" type="text/css"/>
 

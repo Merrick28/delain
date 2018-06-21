@@ -44,25 +44,6 @@ img {border:none}
 .barrLbord {padding:0 0 0 10px;background-image:url(http://images.jdr-delain.net/ligne_gauche.gif);background-repeat:repeat-y}
 .vide {background-image:url(http://images.jdr-delain.net/fond5.gif);}
 
-div#colonne1 {
-	float: left;
-	width: 175px;
-	height : 100%;
-	background-image:url(http://images.jdr-delain.net/fondparchemin.gif);
-	border-color:#800000;
-	border-style:solid;
-	border-radius: 10px;
-	height:auto;
-	overflow:auto;
-}
-div#colonne2 {
-	border-radius: 10px;
-	padding:10px;
-	border-color:#800000;
-	background-image:url(http://images.jdr-delain.net/fondparchemin.gif);
-	border-style:solid;
-	margin-left: 205px;
-}
 
 dl, dd, ul {
 margin: 0;

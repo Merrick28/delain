@@ -12,6 +12,7 @@
 		<style>
 			/* css custom pour version mobile */
 			div#colonne1 {
+				float: left;
 				width: 175px;
 				height : 100%;
 				background-image:url({URL_IMAGES}fondparchemin.gif);
@@ -42,14 +43,14 @@
 			.dropdown-content {
 				display: none;
 			}
-			div#colonne1:hover .dropdown-content {display: block;}
+			/*div#colonne1:hover .dropdown-content {display: block;}
 
 			div#colonne1:hover   {
 				position: absolute;
 				top : 15px;
 				left : 15px;
 				width: 175px;
-			}
+			}*/
 
 			/* css pour version Standard */
 			@media (min-width: 768px) {
@@ -70,11 +71,15 @@
 		</style>
 		<script src="{URL}js/jquery.js"></script>
 		<script src="{URL}scripts/tools.js?v20180614" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v20180614" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
     <script>//# sourceURL=general_jeu.js
-        $( document ).ready(function() { $("button[class^='button-switch']").click( function (){ switch_perso(this.id); });});
+        $( document ).ready(function() {
+            $("div#dropdown-box").click( function (event){ switch_menu(event); });
+        	$("button[class^='button-switch']").click( function (){ switch_perso(this.id); });
+		});
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -87,19 +92,20 @@
 </script>
 
 <div id="colonne1">
-	<div id="nom" style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
-	<div style="text-align:center;padding:5px">
-		<div id="intangible" style="padding:2px">{INTANGIBLE}</div>
-		<div id="pa" style="padding:2px; height:18px;"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif" title="{PERSO_PA} PA " alt="{PERSO_PA} PA "></div>
-		<div id="hp" style="padding:0px"><img src="{URL_IMAGES}coeur.gif" alt=""> <div title="{PERSO_PV}/{PERSO_PV_MAX}PV" alt="{PERSO_PV}/{PERSO_PV_MAX}PV" class="container-hp"><div class="barre-hp" style="width:{PERSO_BARRE_VIE}%"></div></div></div>
-		<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
-		<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
-		<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
-		<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
-		<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
+	<div id="dropdown-box">
+		<div id="nom" style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
+		<div style="text-align:center;padding:5px">
+			<div id="intangible" style="padding:2px">{INTANGIBLE}</div>
+			<div id="pa" style="padding:2px; height:18px;"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif" title="{PERSO_PA} PA " alt="{PERSO_PA} PA "></div>
+			<div id="hp" style="padding:0px"><img src="{URL_IMAGES}coeur.gif" alt=""> <div title="{PERSO_PV}/{PERSO_PV_MAX}PV" alt="{PERSO_PV}/{PERSO_PV_MAX}PV" class="container-hp"><div class="barre-hp" style="width:{PERSO_BARRE_VIE}%"></div></div></div>
+			<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
+			<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
+			<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
+			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
+			<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
 		</div>
-
-<div style="padding:10px;" class="dropdown-content">
+	</div>
+<div id="dropdown-menu" style="padding:10px;" class="dropdown-content">
 		<div id="passageniveau">{PASSAGE_NIVEAU}</div>
 		<div id="quete">{PERSO_QUETE}</div>
 		<div id="lieu">{PERSO_LIEU}</div>
