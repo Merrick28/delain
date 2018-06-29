@@ -44,7 +44,6 @@ img {border:none}
 .barrLbord {padding:0 0 0 10px;background-image:url(http://images.jdr-delain.net/ligne_gauche.gif);background-repeat:repeat-y}
 .vide {background-image:url(http://images.jdr-delain.net/fond5.gif);}
 
-
 dl, dd, ul {
 margin: 0;
 padding: 0;

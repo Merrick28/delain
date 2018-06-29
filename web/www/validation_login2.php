@@ -84,6 +84,7 @@ if ($verif_auth)
 			echo ("<html><head>");
 			?>
 			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
@@ -101,6 +102,7 @@ if ($verif_auth)
 			echo ("<html><head>");
 			?>
 			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
@@ -188,6 +190,7 @@ if ($verif_auth)
 			echo ("<html><head>");
 			?>
 			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
@@ -349,16 +352,18 @@ if ($verif_auth)
 					}
 					else
 					{
-						echo("<table background=\"images/fondparchemin.gif\" border=\"0\">");
+						//echo("<table background=\"images/fondparchemin.gif\" border=\"0\">");
 						echo("<form name=\"login\" method=\"post\" action=\"validation_login3.php\">");
 						echo("<input type=\"hidden\" name=\"perso\">");
 						echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
 						//echo("<input type=\"hidden\" name=\"password\" value=\"$pass\">");
 						echo("<input type=\"hidden\" name=\"activeTout\" value=\"0\">");
-						
-						include "tab_switch.php";
-						
-						echo("</table>");
+
+						echo '<div class="container-fluid">';
+                        include "tab_switch.php";
+                        echo '</div>';
+
+						//echo("</table>");
 						echo("</form>");
 					}
 

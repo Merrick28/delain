@@ -1,67 +1,13 @@
 <html>
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=0.75">
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180614" title="essai">
 		<!-- Bootstrap custom CSS -->
 		<link href="{URL}css/container-fluid.css?v20180614" rel="stylesheet">
-		<style>
-			/* css custom pour version mobile */
-			div#colonne1 {
-				float: left;
-				width: 175px;
-				height : 100%;
-				background-image:url({URL_IMAGES}fondparchemin.gif);
-				border-color:#800000;
-				border-style:solid;
-				border-radius: 10px;
-				height:auto;
-				overflow:auto;
-			}
-			div#colonne2 {
-				padding:10px;
-				margin-left: 2px;
-			}
-			div#colonne0 {
-				border-radius: 10px;
-				padding:2px;
-				border-color:#800000;
-				background-image:url({URL_IMAGES}fondparchemin.gif);
-				border-style:solid;
-				margin-left: 205px;
-				margin-bottom: 5px;
-			}
 
-			.dropdown-content {
-				display: none;
-			}
-			/*div#colonne1:hover .dropdown-content {display: block;}
-
-			div#colonne1:hover   {
-				position: absolute;
-				top : 15px;
-				left : 15px;
-				width: 175px;
-			}*/
-
-			/* css pour version Standard */
-			@media (min-width: 768px) {
-				div#colonne1 {
-					position: absolute;
-					top : 15px;
-					left : 15px;
-				}
-				div#colonne2 {
-					margin-left: 205px;
-				}
-				.dropdown-content {
-					display: block;
-				}
-			}
-
-
-		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
 		<script src="{URL}scripts/ajax2.js?v20180614" type="text/javascript"></script>
@@ -100,13 +46,16 @@
 			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
 			<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
 		</div>
+        <div  style="padding:0 10 0 10px; text-align:center;">
+            <div id="passageniveau">{PASSAGE_NIVEAU}</div>
+            <div id="quete">{PERSO_QUETE}</div>
+            <div id="lieu">{PERSO_LIEU}</div>
+        </div>
+        <div id="dropdown-button">&or;</div>
 	</div>
-	<div id="dropdown-menu" style="padding:10px;" class="dropdown-content">
-		<div id="passageniveau">{PASSAGE_NIVEAU}</div>
-		<div id="quete">{PERSO_QUETE}</div>
-		<div id="lieu">{PERSO_LIEU}</div>
+	<div id="dropdown-menu"class="dropdown-content">
 
-		<img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
+        <hr><img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
 		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
 		<hr />

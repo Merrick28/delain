@@ -362,6 +362,7 @@ if ($premier_perso == -1)
     $premier_perso = (isset($quatriemes[0])) ? $quatriemes[0] : -1;
 }
 
+echo '<div class="row row-eq-height">';     //Debut ligne des persos
 $numero_quatrieme = -1;
 $cpt              = 0;
 while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes))
@@ -370,13 +371,14 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
 
     // Début de ligne
-    if (fmod($cpt, $nb_perso_ligne) == 0)
-    {
-        echo '<tr>';
-    }
+    //if (fmod($cpt, $nb_perso_ligne) == 0)
+    //{
+    //    echo '<tr>';
+    //}
 
     // Début de case
-    echo '<td valign="top" width="' . $taille . '%">';
+    //echo '<td valign="top" width="' . $taille . '%">';
+    echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
 
     // Une case normale
     if (!$case_quatrieme)
@@ -414,17 +416,25 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
         $cpt_quatriemes++;
     }
 
-    echo '</td>';
-    if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-    {
-        echo '</tr>';
-    }
+    echo '</div>';      // fin de case!
+    //echo '</td>';
+    //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
+    //{
+    //    echo '</tr>';
+    //}
     $cpt++;
 }
+echo '</div>';               //Fin de ligne des persos
 
-echo "<tr><td colspan='$nb_perso_ligne' style='text-align:center'><span class='bouton'>";
+
+echo '<div class="row"><div class="col-lg-12">';
+echo '<center><table>';
+echo "<tr><td colspan='$nb_perso_ligne' ><span class='bouton'>";
 echo '<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $premier_perso . '&is_log=' . $is_log . '&voir_tous=1\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title="Voir les derniers événements de tous les personnages" value="Voir tous les événements" style="width:200px;"/></span>&nbsp;&nbsp;';
 echo "<span class='bouton'><input type='button' class='bouton' onClick='javascript:document.login.perso.value=$premier_perso; document.login.activeTout.value=1; document.login.submit();' title='Activer toutes les DLT' value='Activer toutes les DLT' style='width:200px;'/></span></td></tr>";
+echo "</table></center>";
+echo '</div></div>';
+
 
 /*************/
 /* Familiers */
@@ -440,16 +450,20 @@ $req_perso = "select pfam_familier_cod,perso_cod
 $db->query($req_perso);
 if ($db->nf() != 0)
 {
-    echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
+    //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
+    echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Familiers : </div></div>';
+
+    echo '<div class="row row-eq-height">';   //Debut ligne des familiers
     $nb_perso    = $db->nf();
     $alias_perso = 0;
     for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
     {
-        if (fmod($cpt, $nb_perso_ligne) == 0)
-        {
-            echo '<tr>';
-        }
-        echo '<td valign="top" width="' . $taille . '%">';
+        //if (fmod($cpt, $nb_perso_ligne) == 0)
+        //{
+        //    echo '<tr>';
+        //}
+        //echo '<td valign="top" width="' . $taille . '%">';
+        echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
 
         //tableau intérieur
         if ($cpt < $nb_perso)
@@ -458,14 +472,17 @@ if ($db->nf() != 0)
             affiche_perso($db->f('perso_cod'));
         }
         //fin tableau intérieur
+        echo '</div>';
 
-        echo '</td>';
-        if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        {
-            echo '</tr>';
-        }
+        //echo '</td>';
+        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
+        //{
+        //    echo '</tr>';
+        //}
     }
+    echo '</div>';   //Fin ligne des familiers
 }
+
 /******************************************/
 /* Comptes sittés ?					   */
 /******************************************/
@@ -485,7 +502,12 @@ if ($db->nf() != 0)
     //
     // là on a des persos sittés, donc, on va quand même regarder ce qui se passe
     //
-    echo '<tr><td colspan="3"><hr><div class="titre">Persos sittés : </div></td></tr>';
+    //echo '<tr><td colspan="3"><hr><div class="titre">Persos sittés : </div></td></tr>';
+
+    echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Persos sittés : </div></div>';
+
+    echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
+
     $nb_perso_max = $db->nf();
     $nb_perso     = $nb_perso_max;
     for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
@@ -494,11 +516,13 @@ if ($db->nf() != 0)
         {
             $db->next_record();
         }
-        if (fmod($cpt, $nb_perso_ligne) == 0)
-        {
-            echo '<tr>';
-        }
-        echo '<td valign="top" width="' . $taille . '%">';
+        //if (fmod($cpt, $nb_perso_ligne) == 0)
+        //{
+        //    echo '<tr>';
+        //}
+        //echo '<td valign="top" width="' . $taille . '%">';
+
+        echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
 
         //tableau intérieur
         if ($cpt >= $nb_perso)
@@ -521,11 +545,12 @@ if ($db->nf() != 0)
         }
         //fin tableau intérieur
 
-        echo '</td>';
-        if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        {
-            echo '</tr>';
-        }
+        echo '</div>';
+        //echo '</td>';
+        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
+        //{
+        //    echo '</tr>';
+        //}
     }
     //
     // bon, on sait qu'on a sitté des persos, maintenant, on va quand même voir s'il y a des familiers
@@ -554,24 +579,29 @@ if ($db->nf() != 0)
             {
                 $db->next_record();
             }
-            if (fmod($cpt, $nb_perso_ligne) == 0)
-            {
-                echo '<tr>';
-            }
-            echo '<td valign="top" width="' . $taille . '%">';
-            echo '<!--' . $cpt . '-' . $nb_perso_max . '-' . $nb_perso . '-->';
+            //if (fmod($cpt, $nb_perso_ligne) == 0)
+            //{
+            //    echo '<tr>';
+            //}
+            //echo '<td valign="top" width="' . $taille . '%">';
+            //echo '<!--' . $cpt . '-' . $nb_perso_max . '-' . $nb_perso . '-->';
+
+            echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
+
             //tableau intérieur
             if ($cpt < $nb_perso)
             {
                 affiche_perso($db->f('perso_cod'));
             }
             //fin tableau intérieur
+            echo '</div>';
 
-            echo '</td>';
-            if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-            {
-                echo '</tr>';
-            }
+            //echo '</td>';
+            //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
+            //{
+            //    echo '</tr>';
+            //}
         }
     }
+    echo '</div>';               //Fin de ligne des persos+familiers sittés
 }
