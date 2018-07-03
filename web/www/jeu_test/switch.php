@@ -105,9 +105,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                 echo '</form>';
 
                 ?>
-                <div class="container-fluid"><div class="row"><center><table border="0">
-                <tr>
-                    <td colspan="2">
+                <div class="container-fluid"><div class="row"><div class="col-md-8 col-sm-6 col-xs-12"><center>
                         <?php // Bonus XP pour les 10 ans du jeu (Maverick)
                         if ((int)date('Y') == 2014 && (int)date('m') < 2)
                         {
@@ -140,8 +138,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                             $time = rand(1, 100);
                             ?>
 
-                    </td>
-                    <td colspan="2">
+                        </center></div><div class="col-md-4 col-sm-6 col-xs-12"><center>
                         <table>
                             <tr>
                                 <td>
@@ -190,17 +187,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 
 
                         </table>
-                    </td>
-                    <?php if ($time < 20)
-                    { ?>
-
-                        <td colspan="2">
-
-                        </td>
-                    <?php } ?>
-
-                </tr>
-                </table></center></div></div>
+                   </center></div></div></div>
 
         <?php
         echo "<div style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') . "</i></div>";

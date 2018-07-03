@@ -790,11 +790,12 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
             }
 
-            // C'était sympa, mais demande non approuvée!
+            // ajout d'info PA, PV et DLT
             $blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
-            $perso_pv = $blessure>50 ? $result["perso_pv"] : ( $blessure>25 ? '<span style="color:#ffd700;font-size:9px">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px">'.$result["perso_pv"].'</span>' );
+            $perso_pv = $blessure>50 ? ($blessure==100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>')  : ( $blessure>25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' );
+            $perso_pa = $result["perso_pa"]==0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pa"].'</span>';
             $dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
-            $nom.="<br><span style=\"color:lightgreen; font-size:9px; font-weight: normal ;\"'>". $perso_pv ." / ". $result["perso_pv_max"]." - ". $result["perso_pa"]." PA".$dlt."</span>";
+            $nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $perso_pv ."/". $result["perso_pv_max"]." - ". $perso_pa ."PA".$dlt."</span>";
 
             if ($result["dlt_passee"]!=0)
             {

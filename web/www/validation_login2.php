@@ -26,7 +26,7 @@ if ($verif_auth)
 		?>
 		<html>
 		<head>
-		<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+		<link rel="stylesheet" type="text/css" href="style.css?v20180703" title="essai">
 		</head>
 		<body background="images/fond5.gif">
 		<div class="bordiv">
@@ -83,7 +83,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180703" title="essai">
             <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
@@ -101,7 +101,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180703" title="essai">
             <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
@@ -189,7 +189,7 @@ if ($verif_auth)
 		
 			echo ("<html><head>");
 			?>
-			<link rel="stylesheet" type="text/css" href="style.css?v20180614" title="essai">
+			<link rel="stylesheet" type="text/css" href="style.css?v20180703" title="essai">
             <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
 			<?php 
 			echo ("</head>");
