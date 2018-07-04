@@ -84,7 +84,7 @@ if ($verif_auth)
 			echo ("<html><head>");
 			?>
 			<link rel="stylesheet" type="text/css" href="style.css?v20180703" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css" >
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20180703" >
 			<?php 
 			echo ("</head>");
 			echo '<body background="images/fond5.gif" onload="retour();">';
