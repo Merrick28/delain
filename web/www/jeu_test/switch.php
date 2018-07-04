@@ -91,18 +91,21 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
     else
     {
         ?>
-        <table border="0">
+        <!--table border="0"-->
             <form name="login" method="post" action="../validation_login3.php">
                 <input type="hidden" name="perso"/>
                 <input type="hidden" name="change_perso"/>
                 <input type="hidden" name="activeTout" value="0"/>
                 <?php
                 echo("<input type=\"hidden\" name=\"compte\" value=\"$compt_cod\"/>");
-                include "../tab_switch.php";
-                ?>
-                <tr>
 
-                    <td colspan="2">
+                echo '<div class="container-fluid">';
+                include "../tab_switch.php";
+                echo '</div>';
+                echo '</form>';
+
+                ?>
+                <div class="container-fluid"><div class="row"><div class="col-md-8 col-sm-6 col-xs-12"><center>
                         <?php // Bonus XP pour les 10 ans du jeu (Maverick)
                         if ((int)date('Y') == 2014 && (int)date('m') < 2)
                         {
@@ -135,8 +138,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                             $time = rand(1, 100);
                             ?>
 
-                    </td>
-                    <td colspan="2">
+                        </center></div><div class="col-md-4 col-sm-6 col-xs-12"><center>
                         <table>
                             <tr>
                                 <td>
@@ -185,25 +187,16 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 
 
                         </table>
-                    </td>
-                    <?php if ($time < 20)
-                    { ?>
-
-                        <td colspan="2">
-
-                        </td>
-                    <?php } ?>
-
-                </tr>
-
-        </table>
-        </form>
+                   </center></div></div></div>
 
         <?php
         echo "<div style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') . "</i></div>";
     }
 }
 
+
+$barre_switch_rapide='<div id="colonne0"><div class="container-fluid" ><div class="row" style="text-align:center;"><b>Sélectionner le personnage à jouer</b></div></div></div>';
+$t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

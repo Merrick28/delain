@@ -591,7 +591,9 @@ img {border:none}
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	background: url(../images/bouton.jpg);
 	width:100%;
+	min-width: 150px;
 	white-space: nowrap;
+	height:34px;
 	overflow:hidden;
 }
 .button-switch-act	{
@@ -601,7 +603,9 @@ img {border:none}
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-weight: bold;
 	width:100%;
+	min-width: 150px;
 	white-space: nowrap;
+	height:34px;
 	overflow:hidden;
 }
 .button-switch-dlt	{
@@ -612,6 +616,86 @@ img {border:none}
 	font-weight: bold;
 	background: url(../images/bouton.jpg);
 	width:100%;
+	min-width: 150px;
 	white-space: nowrap;
+	height:34px;
 	overflow:hidden;
+}
+
+/* css custom pour version mobile */
+div#colonne1 {
+	float: left;
+	width: 175px;
+	height : 100%;
+	background-image:url(../images/fondparchemin.gif);
+	border-color:#800000;
+	border-style:solid;
+	border-radius: 10px;
+	height:auto;
+	overflow:auto;
+}
+div#colonne2 {
+	padding:10px;
+	margin-left: 2px;
+}
+
+div#colonne2.fond-delain {
+	border-radius: 10px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+}
+
+div#colonne0 {
+	border-radius: 10px;
+	padding:2px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+	margin-left: 185px;
+	margin-bottom: 5px;
+}
+
+.dropdown-content {
+	padding:0 10px 10px 10px;
+	display: none;
+}
+
+#dropdown-button {
+	background-color:#800000;
+	color:white;
+	font-weight:bold;
+	text-align:center;
+	padding:3px 0 3px 0;
+	display: block;
+}
+
+
+/*div#colonne1:hover .dropdown-content {display: block;}
+
+div#colonne1:hover   {
+    position: absolute;
+    top : 15px;
+    left : 15px;
+    width: 175px;
+}*/
+
+/* css pour version Standard */
+@media (min-width: 768px) {
+	div#colonne1 {
+		position: absolute;
+		top : 12px;
+		left : 12px;
+	}
+	div#colonne2 {
+		margin-left: 185px;
+	}
+	.dropdown-content {
+		display: block;
+	}
+
+	#dropdown-button {
+		display: none;
+	}
+
 }

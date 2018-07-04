@@ -9,6 +9,13 @@
   margin-right: auto;
   margin-left: auto;
 }
+
+.row-eq-height {
+  display: flex;
+  display: -webkit-flex;
+  flex-wrap: wrap;
+}
+
 @media (min-width: 768px) {
   .container {
     width: 750px;
@@ -704,3 +711,4 @@
 {
   clear: both;
 }
+

@@ -6,6 +6,7 @@
  *      - Fonction ajax pour facilité les echange front/back (sans recharment de page)
  *      - Fonction pour poster une url avec des données
  *      - Fonction liées à l'ajout/suppression de favoris dans la barre de menu à gauche.
+ *      - Fonction pour gestion barre switch et gestion du menu (dropdowns)
  */
 
 
@@ -145,4 +146,26 @@ function delSortFavoris(type, sort_cod)
 function switch_perso(perso)
 {
     post("/switch_rapide.php", ["url","perso"], [window.location.href, perso]);
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//--- gestion du menu  on/off (en version mobile)
+function switch_menu(e)
+{
+  if (e.target.nodeName!="DIV") return;   // ne pas switcher si clic sur un lien.
+
+  if ($("#dropdown-menu").css("display")=="none")
+  {
+      $("#dropdown-menu").css("display","block");
+      $("#dropdown-button").css("display","none");
+      $("#colonne1").css({"position": "absolute", "top" : "12px",  "left" : "12px" });
+      $("#colonne2").css({"margin-left": "185px" });
+  }
+  else
+  {
+      $("#dropdown-menu").css("display","none");
+      $("#dropdown-button").css("display","block");
+      $("#colonne1").css({"position": "relative", "top" : "0px",  "left" : "0px" });
+      $("#colonne2").css({"margin-left": "0px" });
+  }
 }

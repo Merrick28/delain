@@ -185,7 +185,7 @@ $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 
 if ($px_actuel >= $prochain_niveau)
 {
-    $passage_niveau = '<a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a><br><hr />';
+    $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a>';
 }
 else
 {
@@ -196,7 +196,7 @@ $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 // Quête avec perso
 if ($perso->is_perso_quete())
 {
-    $perso_quete = "<a href=\"$chemin/quete_perso.php\"><b>Quête</b></a><hr />";
+    $perso_quete = "<hr /><a href=\"$chemin/quete_perso.php\"><b>Quête</b></a>";
 }
 else
 {
@@ -214,7 +214,7 @@ if ($perso->is_lieu())
     {
         $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
         $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
-        $perso_lieu = "<a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a><hr />";
+        $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a>";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
@@ -698,23 +698,23 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
 {
     $pdo    = new bddpdo;
     $req    = "  
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
                 from compte  
                 join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
-                join perso on perso_cod=pcompt_perso_cod 
+                join perso on perso_cod=pcompt_perso_cod
                 where perso_actif='O'
                 
                 union
                 
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, pfam_perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
                 from compte  
                 join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
-                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
+                join perso on perso_cod=pfam_familier_cod where perso_actif='O' 
                 
                 union 
                 
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 3 as type, perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
                 from compte_sitting
                 join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso on perso_cod=pcompt_perso_cod 
@@ -722,21 +722,53 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 
                 union
                 
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 4 as type, pfam_perso_cod ordre 
+                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
                 from compte_sitting  
                 join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
                 join perso_familier on pfam_perso_cod=pcompt_perso_cod 
                 join perso on perso_cod=pfam_familier_cod where perso_actif='O'
                 
-                order by type, ordre ";
+                order by type, ordre, perso_type_perso";
     $stmt   = $pdo->prepare($req);
     $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
     $count = 1*$stmt->rowCount();
+    $rows = $stmt->fetchAll();
+
+    // pour optimiser l'affichage on compte le nombre de perso et de fam
+    $nb_perso = 0;
+    $nb_familier = 0;
+    foreach($rows as $result)
+    {
+        if ((1*$result["perso_type_perso"])==3)
+            $nb_familier++;
+        else
+            $nb_perso++;
+    }
 
     $liste_boutons = "" ;
-    $class8 = ($count==7 || $count==14) ? " col-md-2-7" : (($count>7) ? " col-md-2-8" : "" ) ;     // CLass spécial pour grands ecrans avec 7 ou 8+ persos.
-    while ($result = $stmt->fetch())
+    $col = 0 ;
+    if ($nb_familier>0)
+        $col_class = 'col-md-12  col-lg-6';                         // perso + fam on préparera regroupemet par 2
+    else if ($nb_perso>3)
+        $col_class = 'col-xs-12 col-sm-6 col-md-3 col-lg-3';        //pas de fam juste 4 persos
+    else
+        $col_class = 'col-xs-12 col-sm-6 col-md-4 col-lg-4';        // pas de fam juste 3 persos ou moins
+    foreach($rows as $result)
     {
+            if (($col %2 == 1) && ((1*$result["perso_type_perso"])!=3) && ($nb_familier>0))
+            {
+                // le dernier perso n'avait pas de fam, on padd
+                $liste_boutons.= '<div class="col-md-12  col-lg-6"><button class="button-switch">&nbsp;</button></div></div>';
+                $col++;
+            }
+            if (($col %2 == 0) && ($nb_familier>0))
+            {
+                // regroupement des cases par paire (le perso et son fam) seulement s'il y a des familiers
+                if ($nb_perso>3)
+                    $liste_boutons.= '<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">';
+                else
+                    $liste_boutons.= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">';
+            }
             // Raccourcir les nom en retirant les tags superflux
             $nom = $result["perso_nom"] ;
             if (substr($nom, 0, 12)=="Familier de ")
@@ -758,22 +790,40 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                 $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
             }
 
-            // C'était sympa, mais demande non approuvée!
-            //$blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
-            //$perso_pv = $blessure>50 ? $result["perso_pv"] : ( $blessure>25 ? '<font color="#ffd700">'.$result["perso_pv"].'</font>' : '<font color="#ff69b4">'.$result["perso_pv"].'</font>' );
-            //$nom.="<br><span style=\"color:lightgreen; font-size:9px ;\"'>". $perso_pv ." / ". $result["perso_pv_max"]." - ". $result["perso_pa"]." PA</span>";
+            // ajout d'info PA, PV et DLT
+            $blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
+            $perso_pv = $blessure>50 ? ($blessure==100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>')  : ( $blessure>25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' );
+            $perso_pa = $result["perso_pa"]==0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pa"].'</span>';
+            $dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
+            $nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $perso_pv ."/". $result["perso_pv_max"]." - ". $perso_pa ."PA".$dlt."</span>";
+
             if ($result["dlt_passee"]!=0)
             {
-                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
             }
             else if ($result["perso_cod"]==$perso_cod)
             {
-                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
             }
             else
             {
-                $liste_boutons.= '<div class="col-md-2  col-sm-3'.$class8.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
             }
+
+            if (($col %2 == 1) && ($nb_familier>0))
+            {
+                // regroupement des cases par paire (le perso et son fam)
+                $liste_boutons.= '</div>';
+            }
+
+            $col++ ; // colonne suivante
+    }
+
+    if (($col %2 == 1) && ($nb_familier>0))
+    {
+        // le dernier perso n'avait pas de fam, on padd
+        $liste_boutons.= '<div class="col-md-12  col-lg-6"><button class="button-switch">&nbsp;</button></div></div>';
+        $col++;
     }
 
     if ($liste_boutons!='')
