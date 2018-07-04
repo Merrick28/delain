@@ -282,7 +282,7 @@ function affiche_perso($perso_cod)
 function affiche_case_perso_vide()
 {
     global $type_flux, $compt_cod;
-    echo '<table width="100%" height="100%" border="0">
+    echo '<table width="100%" border="0">
 		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
 		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
 		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
@@ -292,7 +292,7 @@ function affiche_case_perso_vide()
 
 function affiche_case_monstre_vide()
 {
-    echo '<table width="100%" height="100%" border="0">
+    echo '<table width="100%" border="0">
 		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas encore de monstre !<br></td></tr>
 		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
 		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
