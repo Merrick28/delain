@@ -770,44 +770,44 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                     $liste_boutons.= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">';
             }
             // Raccourcir les nom en retirant les tags superflux
-            $nom = $result["perso_nom"] ;
-            if (substr($nom, 0, 12)=="Familier de ")
+            $_aff_nom = $result["perso_nom"] ;
+            if (substr($_aff_nom, 0, 12)=="Familier de ")
             {
-                $nom = "Fam. de ".substr($nom, 12);
-                $pesprit = strpos($nom,  "(esprit de ");
-                if ($pesprit>0) $nom = substr($nom, 0, $pesprit)."(".substr($nom, $pesprit+11);
+                $_aff_nom = "Fam. de ".substr($_aff_nom, 12);
+                $pesprit = strpos($_aff_nom,  "(esprit de ");
+                if ($pesprit>0) $_aff_nom = substr($_aff_nom, 0, $pesprit)."(".substr($_aff_nom, $pesprit+11);
             }
-            else if (substr($nom, 0, 31)=="Image démoniaque, Familier de ")
+            else if (substr($_aff_nom, 0, 31)=="Image démoniaque, Familier de ")
             {
-                $nom = "Kirga de ".substr($nom, 31);
+                $_aff_nom = "Kirga de ".substr($_aff_nom, 31);
             }
-            else if (substr($nom, 0, 27)=="Kirga-Uh-Kmot, Familier de ")
+            else if (substr($_aff_nom, 0, 27)=="Kirga-Uh-Kmot, Familier de ")
             {
-                $nom = "Kirga de ".substr($nom, 27);
+                $_aff_nom = "Kirga de ".substr($_aff_nom, 27);
             }
             else
             {
-                $nom = preg_replace("/ \(n° (\d+)\)$/", "", $nom);
+                $_aff_nom = preg_replace("/ \(n° (\d+)\)$/", "", $_aff_nom);
             }
 
             // ajout d'info PA, PV et DLT
-            $blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
-            $perso_pv = $blessure>50 ? ($blessure==100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>')  : ( $blessure>25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' );
-            $perso_pa = $result["perso_pa"]==0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pa"].'</span>';
-            $dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
-            $nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $perso_pv ."/". $result["perso_pv_max"]." - ". $perso_pa ."PA".$dlt."</span>";
+            $_blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
+            $_aff_perso_pv = $_blessure>50 ? ($_blessure==100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>')  : ( $_blessure>25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' );
+            $_aff_perso_pa = $result["perso_pa"]==0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pa"].'</span>';
+            $_aff_dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
+            $_aff_nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $_aff_perso_pv ."/". $result["perso_pv_max"]." - ". $_aff_perso_pa ."PA".$_aff_dlt."</span>";
 
             if ($result["dlt_passee"]!=0)
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$_aff_nom.'</button></div>';
             }
             else if ($result["perso_cod"]==$perso_cod)
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$_aff_nom.'</button></div>';
             }
             else
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch">'.$nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch">'.$_aff_nom.'</button></div>';
             }
 
             if (($col %2 == 1) && ($nb_familier>0))
