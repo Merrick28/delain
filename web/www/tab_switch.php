@@ -212,7 +212,7 @@ function affiche_perso($perso_cod)
     }
 
     echo '</td></tr>
-		<tr><td valign="top"><center><a href="#" onClick="javascript:document.login.perso.value=' . $num_perso . ';document.login.submit();"><img width="130px" src="' . $avatar . '?' . $db->f("perso_avatar_version") . '" alt="Jouer ' . $db->f("perso_nom") . '"/></a>
+		<tr><td valign="top"><center><a href="#" onClick="javascript:document.login.perso.value=' . $num_perso . ';document.login.submit();"><img width="110px" src="' . $avatar . '?' . $db->f("perso_avatar_version") . '" alt="Jouer ' . $db->f("perso_nom") . '"/></a>
 		', ($db->f('events') == 'f' ? '' : '<table><tr><td class="bouton" height="1" width="1"><span class="bouton">
 		<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $num_perso . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" /></span></td></tr></table>'), '
 		</center>
@@ -378,7 +378,7 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
 
     // Début de case
     //echo '<td valign="top" width="' . $taille . '%">';
-    echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
+    echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
     // Une case normale
     if (!$case_quatrieme)
@@ -463,7 +463,7 @@ if ($db->nf() != 0)
         //    echo '<tr>';
         //}
         //echo '<td valign="top" width="' . $taille . '%">';
-        echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
+        echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
         //tableau intérieur
         if ($cpt < $nb_perso)
@@ -522,7 +522,7 @@ if ($db->nf() != 0)
         //}
         //echo '<td valign="top" width="' . $taille . '%">';
 
-        echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
+        echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
         //tableau intérieur
         if ($cpt >= $nb_perso)
@@ -586,7 +586,7 @@ if ($db->nf() != 0)
             //echo '<td valign="top" width="' . $taille . '%">';
             //echo '<!--' . $cpt . '-' . $nb_perso_max . '-' . $nb_perso . '-->';
 
-            echo '<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">';
+            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
             //tableau intérieur
             if ($cpt < $nb_perso)
