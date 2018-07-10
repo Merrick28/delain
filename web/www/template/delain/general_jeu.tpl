@@ -6,14 +6,14 @@
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20180703" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20180706" rel="stylesheet">
 		<!-- Custom delain CSS -->
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180703" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180706" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 
 		<script src="{URL}js/jquery.js"></script>
-		<script src="{URL}scripts/tools.js?v20180703" type="text/javascript"></script>
-		<script src="{URL}scripts/delain.js?v20180703" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20180706" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v20180706" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
@@ -45,6 +45,7 @@
 			<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
 			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
 			<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
+			<!--a href="frame_vue.php"><img src="{URL_IMAGES}eye.png"></a>&nbsp;<a href="combat.php"><img src="{URL_IMAGES}war.png"></a>&nbsp;<a href="magie.php"><img src="{URL_IMAGES}book.png"></a-->
 		</div>
 		<div  style="padding:0 10 0 10px; text-align:center;">
 			<div id="passageniveau">{PASSAGE_NIVEAU}</div>

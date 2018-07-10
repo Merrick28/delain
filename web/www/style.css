@@ -656,6 +656,10 @@ div#colonne0 {
 	margin-bottom: 5px;
 }
 
+div#colonne0-hide {
+	margin-bottom: 5px;
+}
+
 .dropdown-content {
 	padding:0 10px 10px 10px;
 	display: none;
@@ -666,7 +670,7 @@ div#colonne0 {
 	color:white;
 	font-weight:bold;
 	text-align:center;
-	padding:3px 0 3px 0;
+	padding:10px 0 10px 0;
 	display: block;
 }
 

@@ -145,6 +145,7 @@ function delSortFavoris(type, sort_cod)
 //--- gestion du switch de perso rapide
 function switch_perso(perso)
 {
+    if (!perso || perso=="" || perso==0) return;       // pour les bouton vide
     post("/switch_rapide.php", ["url","perso"], [window.location.href, perso]);
 }
 

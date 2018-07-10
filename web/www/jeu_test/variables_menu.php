@@ -748,7 +748,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
     $liste_boutons = "" ;
     $col = 0 ;
     if ($nb_familier>0)
-        $col_class = 'col-md-12  col-lg-6';                         // perso + fam on préparera regroupemet par 2
+        $col_class = 'col-xs-12  col-sm-6';                         // perso + fam on préparera regroupemet par 2
     else if ($nb_perso>3)
         $col_class = 'col-xs-12 col-sm-6 col-md-3 col-lg-3';        //pas de fam juste 4 persos
     else
@@ -758,7 +758,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
             if (($col %2 == 1) && ((1*$result["perso_type_perso"])!=3) && ($nb_familier>0))
             {
                 // le dernier perso n'avait pas de fam, on padd
-                $liste_boutons.= '<div class="col-md-12  col-lg-6"><button class="button-switch">&nbsp;</button></div></div>';
+                $liste_boutons.= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
                 $col++;
             }
             if (($col %2 == 0) && ($nb_familier>0))
@@ -822,7 +822,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
     if (($col %2 == 1) && ($nb_familier>0))
     {
         // le dernier perso n'avait pas de fam, on padd
-        $liste_boutons.= '<div class="col-md-12  col-lg-6"><button class="button-switch">&nbsp;</button></div></div>';
+        $liste_boutons.= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
         $col++;
     }
 
