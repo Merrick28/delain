@@ -843,7 +843,7 @@ $barre_menu_icone='
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/combat.php"><img src="' . G_IMAGES . 'war.png"></a></div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/magie.php"><img src="' . G_IMAGES . 'book.png"></a></div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/messagerie2.php"><img src="' . G_IMAGES . 'mail.png"></a>'.($nb_msg<=0 ? '' : '<span class="badge">'.$nb_msg.'</span>').'</div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/switch.php"><img src="' . G_IMAGES . 'castle.png"></a>'.($transaction<=0 ? '' : '<span class="badge">'.$transaction.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/switch.php"><img src="' . G_IMAGES . 'castle.png"></a></div>
 </center></div>';
 //$barre_menu_icone='';
 $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
