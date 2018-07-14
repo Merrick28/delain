@@ -103,7 +103,7 @@ $nom = $db->f('perso_nom');
 	
 	<script language="Javascript" src="../scripts/ajax.js"></script>
 	<script src="<?php $type_flux.G_URL; ?>/js/jquery.js"></script>
-	<script src="../scripts/ajax2.js" type="text/javascript"></script>
+	<script src="../scripts/ajax2.js?v20180711" type="text/javascript"></script>
 	<div style="float:left;" class="bordiv"><?php  echo $vue ?></div>
 <?php if ($db->f("perso_pa") >= $db->get_pa_dep($perso_cod))
 { 

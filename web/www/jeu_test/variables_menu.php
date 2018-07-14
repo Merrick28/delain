@@ -59,6 +59,7 @@ $px_actuel          = floor($perso->perso_px);
 $barre_energie      = $perso->barre_energie();
 $is_fam_divin       = $perso->is_fam_divin();
 $pa_dep             = $perso->get_pa_dep();
+$nb_evt_non_lu      = sizeof($perso->getEvtNonLu());
 if ($is_fam_divin == 1)
 {
     $barre_divine   = $perso->barre_divin();
@@ -832,4 +833,19 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
     }
 }
 $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
+
+$barre_menu_icone='
+<div id="colonne0-icons"><center>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/frame_vue.php"><img src="' . G_IMAGES . 'eye.png"></a></div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/evenements.php"><img src="' . G_IMAGES . 'events.png"></a>'.($nb_evt_non_lu<=0 ? '' : '<span class="badge">'.$nb_evt_non_lu.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/inventaire.php"><img src="' . G_IMAGES . 'chest.png"></a></div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/transactions2.php"><img src="' . G_IMAGES . 'transac.png"></a>'.($transaction<=0 ? '' : '<span class="badge">'.$transaction.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/combat.php"><img src="' . G_IMAGES . 'war.png"></a></div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/magie.php"><img src="' . G_IMAGES . 'book.png"></a></div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/messagerie2.php"><img src="' . G_IMAGES . 'mail.png"></a>'.($nb_msg<=0 ? '' : '<span class="badge">'.$nb_msg.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/switch.php"><img src="' . G_IMAGES . 'castle.png"></a>'.($transaction<=0 ? '' : '<span class="badge">'.$transaction.'</span>').'</div>
+</center></div>';
+//$barre_menu_icone='';
+$t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
+
 ?>

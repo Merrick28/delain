@@ -159,6 +159,7 @@ function switch_menu(e)
   {
       $("#dropdown-menu").css("display","block");
       $("#dropdown-button").css("display","none");
+      $("#colonne0-icons").css("display","none");
       $("#colonne1").css({"position": "absolute", "top" : "12px",  "left" : "12px" });
       $("#colonne2").css({"margin-left": "185px" });
   }
@@ -166,6 +167,7 @@ function switch_menu(e)
   {
       $("#dropdown-menu").css("display","none");
       $("#dropdown-button").css("display","block");
+      $("#colonne0-icons").css("display","block");
       $("#colonne1").css({"position": "relative", "top" : "0px",  "left" : "0px" });
       $("#colonne2").css({"margin-left": "0px" });
   }

@@ -660,6 +660,19 @@ div#colonne0-hide {
 	margin-bottom: 5px;
 }
 
+div#colonne0-icons {
+	margin-bottom: 5px;
+	padding-top: 2px;
+	margin-left: 2px;
+	border-radius: 10px;
+	border-color:#800000;
+	background-image:url(../images/fondparchemin.gif);
+	border-style:solid;
+	display: block;
+	width: 100%;
+	height: 34px;
+}
+
 .dropdown-content {
 	padding:0 10px 10px 10px;
 	display: none;
@@ -686,6 +699,10 @@ div#colonne1:hover   {
 
 /* css pour version Standard */
 @media (min-width: 768px) {
+	div#colonne0-icons {
+		display: none;
+	}
+
 	div#colonne1 {
 		position: absolute;
 		top : 12px;
@@ -702,4 +719,16 @@ div#colonne1:hover   {
 		display: none;
 	}
 
+}
+
+/* d'affichage menu icone */
+.badge {
+	border-radius: 10px;
+	background-color: #F00000;
+	color: #ffffff;
+	position: absolute;
+	font-size: 10px;
+	padding: 0px 3px 0px 3px;
+	margin: 0px 0px 0px -16px;
+	height: 14px;
 }
