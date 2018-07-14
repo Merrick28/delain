@@ -15,6 +15,8 @@ function voirList(el,what,where) {
                 if (where=='le_tout')
                 {
                     // si toute la page a été rechargée, il faut réarmer les boutons
+                    $("div#dropdown-box").unbind('click');
+                    $("div#dropdown-box").click( function (event){ switch_menu(event); });
                     $("button[class^='button-switch']").unbind('click');
                     $("button[class^='button-switch']").click( function (){ switch_perso(this.id); });
                 }
