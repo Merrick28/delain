@@ -60,6 +60,7 @@ declare
   -------------------------------------------------------
   pos_dest integer;       -- destination
 
+
 begin
   doit_jouer := 0;
   code_retour := 'IA standard<br>Monstre ' || trim(to_char(v_monstre, '999999999999'))||'<br>';
@@ -166,6 +167,13 @@ begin
       THEN
       return 'Destinataire NULL';
     END IF;
+    select perso_cod into temp from perso
+           where perso_cod = v_cible
+           and perso_actif = 1;
+    if not found 
+           then
+      return 'Destinataire non existant';
+    END IF;   
     insert into messages (msg_titre, msg_corps)
     values (v_msg_titre, v_msg_corps)
     RETURNING msg_cod into v_msg;
