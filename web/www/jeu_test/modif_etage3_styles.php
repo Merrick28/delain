@@ -163,13 +163,82 @@ if ($erreur == 0)
     }
 
     // Traitement des erreurs actions ========================================================
-    if (($style=="") && (isset($_REQUEST["supprimer_fond"]) || isset($_REQUEST["nouveau_fond"]) || isset($_REQUEST["supprimer_mur"]) || isset($_REQUEST["nouveau_fig"])))
+    if (($style=="") && (isset($_REQUEST["supprimer_style"]) || isset($_REQUEST["supprimer_fond"]) || isset($_REQUEST["nouveau_fond"]) || isset($_REQUEST["supprimer_mur"]) || isset($_REQUEST["nouveau_fig"])))
     {
         echo '<div class="barrTitle">Modification du style</div><br>';
         echo "<b>Action impossible, vous devez d'abord choisir style ou en créer un nouveau.</b><br><br>";
     }
     
     // Traitement des actions ===============================================================
+    // supression d'un style complet
+    if (isset($_REQUEST["supprimer_style"]) && ($style!=""))
+    {
+        echo '<div class="barrTitle">Suppression complète du style '.$style.'</div><br>';
+        // Vérification avant supression
+        $req_style = "select count(distinct etage_numero) count from etage where etage_affichage = ?;";
+        $stmt = $pdo->prepare($req_style);
+        $stmt = $pdo->execute(array($style), $stmt);
+        $row = $stmt->fetch();
+        $nb_style = 1*$row['count'];
+
+        if ($nb_style>0)
+        {
+            echo "<b>Impossible de supprimer le style, il est utilisé par certains étages.</b><br><br>";
+        }
+        else
+        {
+            $rep = opendir($chemin);
+            while (false !== ($fichier = readdir($rep)))
+            {
+                $correspondances = array();
+                if (1 === preg_match($patron_fond, $fichier, $correspondances))
+                {
+                    if ($correspondances['affichage']==$style)
+                    {
+                        $fond_id = $correspondances['type'] ;
+                        $filename = "f_{$style}_{$fond_id}.png" ;
+                        //echo "Supression du fond id=<b>{$fond_id}</b> (<i>fichier {$filename}</i>)<br>";
+                        unlink ( $chemin.$filename );
+                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
+                        //supprimer pour l'affichage
+                        $js_tab_fonds .= "\ndelete tab_fonds['" . $style . "'][" . $fond_id . "] ;";
+                    }
+                }
+
+                $correspondances = array();
+                if (1 === preg_match($patron_mur, $fichier, $correspondances))
+                {
+                    if ($correspondances['affichage']==$style)
+                    {
+                        $mur_id = $correspondances['type'] ;
+                        $filename = "t_{$style}_mur_{$mur_id}.png" ;
+                        //echo "Supression du mur id=<b>{$mur_id}</b> (<i>fichier {$filename}</i>)<br>";
+                        unlink ( $chemin.$filename );
+                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
+                        //supprimer pour l'affichage
+                        $js_tab_murs .= "\ndelete tab_murs['" . $style . "'][" . $mur_id . "] ;";
+                    }
+                }
+
+                $correspondances = array();
+                if (1 === preg_match($patron_fig, $fichier, $correspondances))
+                {
+                    if ($correspondances['affichage']==$style)
+                    {
+                        $fig_id = $correspondances['type'] ;
+                        $filename = "t_{$style}_{$fig_id}.png" ;
+                        //echo "Supression de la figurine id=<b>{$fig_id}</b> (<i>fichier {$filename}</i>)<br>";
+                        unlink ( $chemin.$filename );
+                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style pour le type $fig_id", true);
+                        //ajouter les pour l'affichage
+                        $js_tab_figs .= "\ndelete tab_figs['" . $style . "']['" . $fig_id . "'] = '" . $fig_id . "';";
+                    }
+                }
+
+            }
+        }
+    }
+
     // --- Action de suppression d'un fond -------
     if (isset($_REQUEST["supprimer_fond"]) && ($style!=""))
     {
@@ -366,11 +435,16 @@ if ($erreur == 0)
                 <input type="submit" class="test" name="nouveau_style" value="Créer">
             </form><br>';
     if(($style!=$_REQUEST['style']) && ($_REQUEST['style']!="")) echo "<u>ATTENTION</u>: le nom ne style saisi (<i>".$_REQUEST['style']."</i>) n'était pas conforme, il a été adapté: <b>$style</b>.<br>";
-	echo '<hr /><b>Edition du style</b> : <select name="style" onChange="changeStyle(this.value)"><option value=\'--\'>Choisir un style...</option>';
+	echo '<hr /><b>Edition du style</b> : <select style="margin-bottom:5px;" name="style" onChange="changeStyle(this.value)"><option value=\'--\'>Choisir un style...</option>';
     if (!$is_style_exists && $style!='') echo "<option value='$style' selected>$style</option>";
 	foreach ($tableau_styles as $unStyle) echo "<option value='$unStyle'" . (($unStyle == $style) ? 'selected="selected"' : '') . ">$unStyle</option>";
 	echo '</select>&nbsp;&nbsp;&nbsp;<a href="modif_etage3_fonds.php">Voir tous les styles</a>
-    <br><i>Nombre d\'étage utilisant ce style </i>: <b><span id="id-usage">0</span></b>
+    <br>
+    <form method="post" enctype="multipart/form-data">
+        <input id="id-style-style" type="hidden" name="style" value="'.$style.'">
+        <i>Nombre d\'étage utilisant ce style </i>: <b><span id="id-usage">0</span></b>
+        <input id="id-supprimer-style" type="submit" class="test" name="supprimer_style" value="Supprimer le style">
+    </form>
     ';
 
 
@@ -396,7 +470,9 @@ if ($erreur == 0)
 		    $('#id-style-fonds').val(style);
 		    $('#id-style-murs').val(style);
 		    $('#id-style-figs').val(style);
+		    $('#id-style-style').val(style);
 		    $('#id-usage').text(tab_usage[style] ? tab_usage[style] : 0);
+		    $('#id-supprimer-style').css( 'display', tab_usage[style] ? 'none' : '' ); 
 		    
 			var div_mur = document.getElementById('visu_murs');
 			var div_fond = document.getElementById('visu_fonds');
