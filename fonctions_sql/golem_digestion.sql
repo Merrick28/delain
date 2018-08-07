@@ -1,4 +1,4 @@
-CREATE FUNCTION golem_digestion(integer) RETURNS text
+CREATE OR REPLACE FUNCTION golem_digestion(integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************/
 /* fonction golem_digestion                          */
