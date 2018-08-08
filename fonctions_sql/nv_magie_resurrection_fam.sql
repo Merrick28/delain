@@ -117,9 +117,9 @@ begin
 
   -- test sur la voie du guerrisseur
   if voie_magique = 1 then
-    taux_perte_xp := 0.25 ;        -- perte de 25% des PX  actuels (pour les guérriseurs)
+    taux_perte_xp := 0.12 ;        -- perte de 25% des PX  actuels (pour les guérriseurs) @demande le 8/8/2018 phenix passage de 0.25 => 0.12
   else
-    taux_perte_xp := 0.5 ;          -- perte de 50% des XP actuels
+    taux_perte_xp := 0.25 ;        -- perte de 50% des XP actuels @demande le 8/8/2018 phenix passage de 0.5 => 0.25
   end if;
 
   -- récupération du délai d'impalpabilité lié à l'étage
