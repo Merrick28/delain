@@ -1,10 +1,8 @@
---
--- Name: calcul_regen_max(integer); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-create or replace function calcul_regen_max(integer) RETURNS integer
-    LANGUAGE plpgsql STRICT
-    AS $_$-- Calcule la régénération maximale du perso
+CREATE OR REPLACE FUNCTION public.calcul_regen_max(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+ STRICT
+AS $function$-- Calcule la régénération maximale du perso
 
 declare
     code_retour integer;
@@ -42,7 +40,5 @@ begin
 
     return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.calcul_regen_max(integer) OWNER TO delain;

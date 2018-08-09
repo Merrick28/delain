@@ -1,10 +1,7 @@
---
--- Name: bonus_art_vue(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bonus_art_vue(integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/*******************************************/
+CREATE OR REPLACE FUNCTION public.bonus_art_vue(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/*******************************************/
 /* bonus_art_vue                           */
 /*  params : $1 = perso_cod                */
 /*******************************************/
@@ -27,7 +24,5 @@ begin
     -- fin boucle
   end loop;
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.bonus_art_vue(integer) OWNER TO delain;

@@ -1,6 +1,7 @@
-CREATE OR REPLACE FUNCTION golem_digestion(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************/
+CREATE OR REPLACE FUNCTION public.golem_digestion(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************/
 /* fonction golem_digestion                          */
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
@@ -128,8 +129,5 @@ begin
 		-- A faire
 	end if;
 	return code_retour;
-end;$_$;
+end;$function$
 
-ALTER FUNCTION public.golem_digestion(integer) OWNER TO delain;
-
-COMMENT ON FUNCTION golem_digestion(integer) IS 'Cette fonction effectue la digestion d’objets hors enchantement.';

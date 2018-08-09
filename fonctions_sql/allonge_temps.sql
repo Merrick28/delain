@@ -1,10 +1,7 @@
---
--- Name: allonge_temps(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function allonge_temps(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.allonge_temps(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* Fonction allonge_temps : calcule l augmentation du temps de   */
 /*   tour en fonction des blessures                              */
 /* On passe en paramètres :                                      */
@@ -34,7 +31,5 @@ begin
   code_retour := calcul_temps(temp2);
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.allonge_temps(integer) OWNER TO delain;

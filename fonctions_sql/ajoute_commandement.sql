@@ -1,10 +1,7 @@
---
--- Name: ajoute_commandement(integer, integer, boolean); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajoute_commandement(integer, integer, boolean) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.ajoute_commandement(integer, integer, boolean)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function ajoute_commandement :                                */
 /*      Procédure utilisée pour ajouter un monstre à l’armée     */
 /*  d’un commandant                                              */
@@ -81,14 +78,5 @@ begin
   code_retour := nom_troufion || ' ajouté sous le commandement de ' || nom_commandant || '. ' || code_retour;
 
   return code_retour;
-end;$_$;
-
-
-ALTER FUNCTION public.ajoute_commandement(integer, integer, boolean) OWNER TO delain;
-
---
--- Name: FUNCTION ajoute_commandement(integer, integer, boolean); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ajoute_commandement(integer, integer, boolean) IS 'Permet d’ajouter un monstre au commandement d’un autre. Gère également la création, si nécessaire et possible, d’une coterie commune.';
+end;$function$
 

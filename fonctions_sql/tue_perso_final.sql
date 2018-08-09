@@ -1,11 +1,7 @@
-
---
--- Name: tue_perso_final(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION tue_perso_final(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************************************/
+CREATE OR REPLACE FUNCTION public.tue_perso_final(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction tue_perso_final                                  */
 /*   accomplit les actions consécutives à la mort d’un perso */
 /*   on passe en paramètres :                                */
@@ -932,13 +928,5 @@ end if;
 
 	code_retour := code_retour || texte_partage_px || ';' || texte_prison || ';' || text_retour || ';' ;
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.tue_perso_final(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION tue_perso_final(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION tue_perso_final(integer, integer) IS 'Fonction gérant l’ensemble des actions à faire pour la mort d’un personnage ou monstre.';

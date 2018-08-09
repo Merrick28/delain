@@ -1,11 +1,7 @@
-
---
--- Name: tue_perso_rappel_familier(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION tue_perso_rappel_familier(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************************************/
+CREATE OR REPLACE FUNCTION public.tue_perso_rappel_familier(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction tue_perso_rappel_familier                        */
 /*   accomplit les actions de rattachement d'un familier     */
 /*   à la mort de son maitre                                 */
@@ -77,13 +73,5 @@ begin
     values(nextval('seq_levt_cod'), 54, now(), 1, v_familier, texte_evt, 'N', 'O', v_cible, v_familier);
 
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.tue_perso_rappel_familier(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION tue_perso_rappel_familier(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION tue_perso_rappel_familier(integer, integer) IS 'Fonction gérant le rattachement du familier à la mort de son maitre.';

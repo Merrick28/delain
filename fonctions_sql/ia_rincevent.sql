@@ -1,10 +1,7 @@
---
--- Name: ia_rincevent(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION ia_rincevent(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************/
+CREATE OR REPLACE FUNCTION public.ia_rincevent(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************/
 /* fonction ia_rincevent                                 */
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
@@ -557,7 +554,5 @@ begin
   /* Etape 8 : tout semble fini                    */
   /*************************************************/
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ia_rincevent(integer) OWNER TO delain;

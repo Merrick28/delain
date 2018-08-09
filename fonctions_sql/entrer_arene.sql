@@ -1,10 +1,7 @@
---
--- Name: entrer_arene(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION entrer_arene(integer, integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/* fonction entrer_arene                                     */
+CREATE OR REPLACE FUNCTION public.entrer_arene(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/* fonction entrer_arene                                     */
 /*                                                           */
 /*   on passe en paramètres :                                */
 /*   $1 = perso_cod                                          */
@@ -164,7 +161,5 @@ else
 return '0;' || texte_fuite || 'Vous entrez dans une arène de combat : ici, pas de réforme pvp, pas de drop ni de calcul de kharma. Les gains d''expérience sont doublés.';
 
 end if;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.entrer_arene(integer, integer, integer) OWNER TO delain;

@@ -1,10 +1,7 @@
---
--- Name: accepte_invitation(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION accepte_invitation(integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/***********************************************/
+CREATE OR REPLACE FUNCTION public.accepte_invitation(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/***********************************************/
 /* accepte_invitation                          */
 /*  $1 = perso_cod                             */
 /*  $2 = groupe_cod                            */
@@ -66,7 +63,5 @@ begin
   insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive)
   values (v_num_mes,v_chef,'N','N');
   return 'Vous faites maintenant partie d’une coterie.';
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.accepte_invitation(integer, integer) OWNER TO delain;

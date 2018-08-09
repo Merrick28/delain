@@ -1,15 +1,7 @@
--- FUNCTION: public.cree_monstre(integer, integer)
-
--- DROP FUNCTION public.cree_monstre(integer, integer);
-
-CREATE OR REPLACE FUNCTION public.cree_monstre(
-	integer,
-	integer)
-RETURNS integer
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE 
-AS $BODY$
+CREATE OR REPLACE FUNCTION public.cree_monstre(integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
  /*****************************************************************/
 /* function cree_monstre :Procédure de création de monstre en    */
 /*   position aleatoire                                          */
@@ -306,11 +298,5 @@ begin
 end;
  
 
-$BODY$;
+$function$
 
-ALTER FUNCTION public.cree_monstre(integer, integer)
-    OWNER TO delain;
-
-GRANT EXECUTE ON FUNCTION public.cree_monstre(integer, integer) TO delain;
-
-GRANT EXECUTE ON FUNCTION public.cree_monstre(integer, integer) TO PUBLIC;

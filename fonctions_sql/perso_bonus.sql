@@ -1,10 +1,7 @@
--- Function: public.perso_bonus(integer)
-
--- DROP FUNCTION public.perso_bonus(integer);
-
 CREATE OR REPLACE FUNCTION public.perso_bonus(integer)
-  RETURNS text AS
-$BODY$/***********************************/
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/***********************************/
 /* perso_bonus                     */
 /* $1 = perso_cod                  */
 /***********************************/
@@ -65,8 +62,5 @@ begin
 	end loop;
 	return substr(code_retour,5);
 end;
-	$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.perso_bonus(integer)
-  OWNER TO delain;
+	$function$
+

@@ -1,10 +1,7 @@
---
--- Name: ceremonie_dieu(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ceremonie_dieu(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*******************************************************/
+CREATE OR REPLACE FUNCTION public.ceremonie_dieu(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*******************************************************/
 /* fonction ceremonie_dieu                             */
 /*  on passe en params                                 */
 /*  $1 = perso_cod                                     */
@@ -185,13 +182,5 @@ begin
 	code_retour := code_retour || ' il a gagné en puissance.<br>Vous gagnez 1 PX.';
 
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ceremonie_dieu(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION ceremonie_dieu(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ceremonie_dieu(integer, integer) IS 'Le personnage donné effectue une cérémonie, en temple, à l’adresse du dieu donné.';

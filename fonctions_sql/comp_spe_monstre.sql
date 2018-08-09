@@ -1,10 +1,7 @@
---
--- Name: comp_spe_monstre(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION comp_spe_monstre(integer, integer) RETURNS void
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.comp_spe_monstre(integer, integer)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* Fonction comp_spe_monstre : Permet l'utilisation des comp spe */
 /*                             des monstres par les IA           */
 /* On passe en paramètres                                        */
@@ -128,13 +125,5 @@ begin
       end loop;
     end if;
   end if;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.comp_spe_monstre(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION comp_spe_monstre(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION comp_spe_monstre(integer, integer) IS 'Fonction appelée par les IA pour déclencher les compétences spéciales des monstres';

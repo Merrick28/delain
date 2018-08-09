@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.attribue_monstre_4e_perso(integer)
-  RETURNS integer AS
-$BODY$/**************************************************************/
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/**************************************************************/
 /* function attribue_monstre_4e_perso                         */
 /* Sélectionne un monstre, et l’attribue à un compte en guise */
 /* de 4e perso.                                               */
@@ -190,9 +191,5 @@ begin
   delete from etages_autorises;
   delete from etages_interdits;
   return code_monstre;
-end;$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
-ALTER FUNCTION public.attribue_monstre_4e_perso(integer)
-OWNER TO webdelain;
-COMMENT ON FUNCTION public.attribue_monstre_4e_perso(integer) IS 'Donne un monstre à jouer à un compte, en tant que 4e personnage, suivant certaines règles restrictives.';
+end;$function$
+

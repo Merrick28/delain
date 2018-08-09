@@ -1,10 +1,7 @@
---
--- Name: annule_sort(integer, integer, integer, numeric); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function annule_sort(integer, integer, integer, numeric) RETURNS text
-LANGUAGE plpgsql
-AS $_$/****************************************************/
+CREATE OR REPLACE FUNCTION public.annule_sort(integer, integer, integer, numeric)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/****************************************************/
 /* annule_sort                                      */
 /*  $1 = perso_cod du lanceur                       */
 /*  $2 = sort_cod                                   */
@@ -63,18 +60,12 @@ begin
     values (lanceur,num_sort);
   end if;
   return 'OK';
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.annule_sort(integer, integer, integer, numeric) OWNER TO delain;
-
---
--- Name: annule_sort(integer, integer, integer, text); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function annule_sort(integer, integer, integer, text) RETURNS text
-LANGUAGE plpgsql
-AS $_$/****************************************************/
+CREATE OR REPLACE FUNCTION public.annule_sort(integer, integer, integer, text)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/****************************************************/
 /* annule_sort                                      */
 /*  $1 = perso_cod du lanceur                       */
 /*  $2 = sort_cod                                   */
@@ -133,7 +124,5 @@ begin
     values (lanceur,num_sort);
   end if;
   return 'OK';
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.annule_sort(integer, integer, integer, text) OWNER TO delain;

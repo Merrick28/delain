@@ -1,10 +1,7 @@
---
--- Name: nv_magie_dispersion(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION nv_magie_dispersion(integer, integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.nv_magie_dispersion(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function lancement : Dispersion                               */
 /*  magique                                                      */
 /* On passe en paramètres                                        */
@@ -338,7 +335,5 @@ end loop;
 		-----------      Fin du bloc pour le jeu de troll   -------------------
 end if;
 return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.nv_magie_dispersion(integer, integer, integer) OWNER TO delain;

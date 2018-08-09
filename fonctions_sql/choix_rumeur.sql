@@ -1,10 +1,7 @@
---
--- Name: choix_rumeur(); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION choix_rumeur() RETURNS text
-LANGUAGE plpgsql
-AS $$/*********************************************************/
+CREATE OR REPLACE FUNCTION public.choix_rumeur()
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*********************************************************/
 /* fonction choix_rumeur : retourne une rumeur           */
 /*********************************************************/
 declare
@@ -26,7 +23,5 @@ begin
     end if;
   end loop;
   return code_retour;
-end;$$;
+end;$function$
 
-
-ALTER FUNCTION public.choix_rumeur() OWNER TO delain;

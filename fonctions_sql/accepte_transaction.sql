@@ -1,10 +1,7 @@
---
--- Name: accepte_transaction(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION accepte_transaction(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**********************************************/
+CREATE OR REPLACE FUNCTION public.accepte_transaction(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**********************************************/
 /* fonction accepte_transaction               */
 /*   accepte la transaction passée en $1      */
 /* retourne un texte séparé par ;             */
@@ -161,14 +158,5 @@ begin
 
   code_retour := '0';
   return code_retour ;
-end;$_$;
-
-
-ALTER FUNCTION public.accepte_transaction(integer) OWNER TO delain;
-
---
--- Name: FUNCTION accepte_transaction(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION accepte_transaction(integer) IS 'Accepte une transaction (noooon, sans blague...)';
+end;$function$
 

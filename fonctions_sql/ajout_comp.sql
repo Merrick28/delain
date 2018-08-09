@@ -1,10 +1,7 @@
---
--- Name: ajout_comp(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajout_comp(integer) RETURNS integer
-LANGUAGE plpgsql
-AS $$
+CREATE OR REPLACE FUNCTION public.ajout_comp(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$
 declare
   ligne_perso record;
   test_perso integer;
@@ -31,7 +28,5 @@ end;
 
 
 
-$$;
+$function$
 
-
-ALTER FUNCTION public.ajout_comp(integer) OWNER TO delain;

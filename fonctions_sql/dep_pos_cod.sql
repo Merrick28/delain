@@ -1,6 +1,7 @@
-CREATE OR REPLACE FUNCTION public.dep_pos_cod(integer,integer,integer)
-  RETURNS void AS
-$BODY$
+CREATE OR REPLACE FUNCTION public.dep_pos_cod(integer, integer, integer)
+ RETURNS void
+ LANGUAGE plpgsql
+AS $function$
 /*****************************************************************/
 /* function dep_pos_cod					 																 */
 /*         								                                       */
@@ -122,10 +123,5 @@ begin
     compt := v_temp;
   end loop;
 end;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
-ALTER FUNCTION public.dep_pos_cod(integer,integer,integer)
-OWNER TO delain;
-GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer,integer,integer) TO delain;
-GRANT EXECUTE ON FUNCTION public.dep_pos_cod(integer,integer,integer) TO public;
+$function$
+

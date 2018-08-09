@@ -1,10 +1,7 @@
---
--- Name: accepte_vampire(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function accepte_vampire(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*******************************************************/
+CREATE OR REPLACE FUNCTION public.accepte_vampire(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*******************************************************/
 /* fonction accepte_vampire                            */
 /*  params :                                           */
 /*  $1 = fils                                          */
@@ -100,7 +97,5 @@ begin
   code_retour := '<p>Le rituel est accompli. Vous faites maintenant partie de la famille des vampires.<br>';
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.accepte_vampire(integer) OWNER TO delain;

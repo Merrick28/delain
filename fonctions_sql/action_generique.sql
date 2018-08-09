@@ -1,10 +1,7 @@
---
--- Name: action_generique(); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function action_generique() RETURNS text
-LANGUAGE plpgsql
-AS $$declare
+CREATE OR REPLACE FUNCTION public.action_generique()
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$declare
   ligne record;
   code_retour text;
   compt integer;
@@ -64,13 +61,5 @@ begin
   end loop;
 
   return 'ok';
-end$$;
+end$function$
 
-
-ALTER FUNCTION public.action_generique() OWNER TO delain;
-
---
--- Name: FUNCTION action_generique(); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION action_generique() IS 'Diverses actions récurrentes de nettoyage (cron)';

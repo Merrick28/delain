@@ -1,10 +1,7 @@
---
--- Name: ajoute_bonus(integer, text, integer, numeric); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajoute_bonus(integer, text, integer, numeric) RETURNS integer
-LANGUAGE plpgsql
-AS $_$-- Rajoute un bonus à un perso
+CREATE OR REPLACE FUNCTION public.ajoute_bonus(integer, text, integer, numeric)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$-- Rajoute un bonus à un perso
 -- $1 = Le code du perso en question
 -- $2 = Le type de bonus
 -- $3 = La durée (DLT) du bonus
@@ -42,18 +39,12 @@ begin
   values (v_perso,         v_type,            v_duree,        v_valeur);
 
   return v_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ajoute_bonus(integer, text, integer, numeric) OWNER TO delain;
-
---
--- Name: ajoute_bonus(integer, text, integer, numeric, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajoute_bonus(integer, text, integer, numeric, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$-- Rajoute un bonus à un perso
+CREATE OR REPLACE FUNCTION public.ajoute_bonus(integer, text, integer, numeric, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$-- Rajoute un bonus à un perso
 -- $1 = Le code du perso en question
 -- $2 = Le type de bonus
 -- $3 = La durée (DLT) du bonus
@@ -76,13 +67,5 @@ begin
         and bonus_valeur = v_valeur;
 
   return v_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ajoute_bonus(integer, text, integer, numeric, integer) OWNER TO delain;
-
---
--- Name: FUNCTION ajoute_bonus(integer, text, integer, numeric, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ajoute_bonus(integer, text, integer, numeric, integer) IS 'Comme ajoute_bonus(int, text, int, num), mais rajoute une notion de croissance (ou décroissance) du bonus à chaque DLT.';

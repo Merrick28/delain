@@ -1,10 +1,7 @@
---
--- Name: cible_aleatoire(integer, integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION cible_aleatoire(integer, integer, integer, integer, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/****************************************************/
+CREATE OR REPLACE FUNCTION public.cible_aleatoire(integer, integer, integer, integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/****************************************************/
 /* fonction cible_aleatoire : permet à un monstre   */
 /*   de choisir une cible dans sa vue               */
 /* on passe en paramètres :                         */
@@ -96,13 +93,5 @@ begin
   code_retour := v_cible;
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.cible_aleatoire(integer, integer, integer, integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION cible_aleatoire(integer, integer, integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION cible_aleatoire(integer, integer, integer, integer, integer) IS 'Permet à un monstre de choisir une cible dans sa vue.';

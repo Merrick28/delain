@@ -1,11 +1,7 @@
-
---
--- Name: choix_temple_vus(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION choix_temple_vus(integer) RETURNS SETOF integer
-LANGUAGE plpgsql
-AS $_$declare
+CREATE OR REPLACE FUNCTION public.choix_temple_vus(integer)
+ RETURNS SETOF integer
+ LANGUAGE plpgsql
+AS $function$declare
   code_retour text;
   personnage alias for $1;
   v_dieu integer;
@@ -51,7 +47,5 @@ begin
 
   return;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.choix_temple_vus(integer) OWNER TO delain;

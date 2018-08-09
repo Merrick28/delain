@@ -1,11 +1,7 @@
-
---
--- Name: deplace_code(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION deplace_code(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.deplace_code(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function deplace_code : idem que deplace sauf qu’un cod_pos   */
 /*    est passé en paramètre à la place des coordonnées          */
 /* On passe en paramètres                                        */
@@ -295,13 +291,5 @@ begin
 	end if;
 	code_retour := trim(to_char(force_affichage,'9')) || '#' || code_retour;
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.deplace_code(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION deplace_code(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION deplace_code(integer, integer) IS 'Gère le déplacement d’un perso.';

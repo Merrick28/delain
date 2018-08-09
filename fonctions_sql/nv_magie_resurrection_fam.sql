@@ -1,11 +1,7 @@
-﻿
---
--- Name: nv_magie_resurrection_fam(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION nv_magie_resurrection_fam(integer, integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.nv_magie_resurrection_fam(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function transfert_pouvoir : résurrection  de familier        */
 /* On passe en paramètres                                        */
 /*   $1 = lanceur                                                */
@@ -117,9 +113,9 @@ begin
 
   -- test sur la voie du guerrisseur
   if voie_magique = 1 then
-    taux_perte_xp := 0.12 ;        -- perte de 25% des PX  actuels (pour les guérriseurs) @demande le 8/8/2018 phenix passage de 0.25 => 0.12
+    taux_perte_xp := 0.25 ;        -- perte de 25% des PX  actuels (pour les guérriseurs)
   else
-    taux_perte_xp := 0.25 ;        -- perte de 50% des XP actuels @demande le 8/8/2018 phenix passage de 0.5 => 0.25
+    taux_perte_xp := 0.5 ;          -- perte de 50% des XP actuels
   end if;
 
   -- récupération du délai d'impalpabilité lié à l'étage
@@ -179,7 +175,5 @@ begin
 	return code_retour;
 
 	end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.nv_magie_resurrection_fam(integer, integer, integer) OWNER TO delain;

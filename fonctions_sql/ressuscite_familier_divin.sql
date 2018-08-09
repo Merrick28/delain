@@ -1,10 +1,7 @@
--- Function: public.ressuscite_familier_divin(integer)
-
--- DROP FUNCTION public.ressuscite_familier_divin(integer);
-
 CREATE OR REPLACE FUNCTION public.ressuscite_familier_divin(integer)
-  RETURNS text AS
-$BODY$/*****************************************************************/
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function ressuscite_familier_divin :                          */
 /*    Procédure utilisée pour résuciter un familier divin        */
 /* On passe en paramètres                                        */
@@ -111,9 +108,5 @@ begin
     values(nextval('seq_levt_cod'), 54, now(), 1, familier_perso_cod, texte_evt, 'N', 'O', familier_perso_cod, familier_perso_cod);
 
   return '0;' || code_retour::text;
-end;$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.ressuscite_familier_divin(integer)
-  OWNER TO delain;
-COMMENT ON FUNCTION public.ressuscite_familier_divin(integer) IS 'Réssucscite un familier divin, sauf si celui si est mort à cause de son manque de foi.';
+end;$function$
+

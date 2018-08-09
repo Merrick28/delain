@@ -1,10 +1,7 @@
---
--- Name: cherche_multi(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function cherche_multi(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************/
+CREATE OR REPLACE FUNCTION public.cherche_multi(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************/
 /* fonction cherche_multi(integer)   */
 /*************************************/
 declare
@@ -47,7 +44,5 @@ order by nombre desc
 		code_retour := code_retour||trim(to_char(ligne.cpt1,'999999999'))||';'||trim(to_char(ligne.cpt2,'999999999'))||';'||trim(to_char(ligne.nombre,'999999999'))||'#';
 	end loop;
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.cherche_multi(integer) OWNER TO delain;

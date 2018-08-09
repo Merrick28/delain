@@ -1,10 +1,7 @@
---
--- Name: change_grade(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function change_grade(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*********************************************************/
+CREATE OR REPLACE FUNCTION public.change_grade(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*********************************************************/
 /* change_grade : fait un passage de grade               */
 /*   on passe en params                                  */
 /*   $1 = perso_cod                                      */
@@ -109,7 +106,5 @@ begin
 -- on génère le code retour
 	code_retour := '<p>Vous êtes à présent <b>'||v_nom_grade||'</b>.<br>';
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.change_grade(integer, integer) OWNER TO delain;

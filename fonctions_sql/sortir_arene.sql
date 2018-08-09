@@ -1,10 +1,7 @@
--- Function: public.sortir_arene(integer)
-
--- DROP FUNCTION public.sortir_arene(integer);
-
 CREATE OR REPLACE FUNCTION public.sortir_arene(integer)
-  RETURNS text AS
-$BODY$/*************************************************************/
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction sortir_arene                                     */
 /*                                                           */
 /*   on passe en paramètres :                                */
@@ -96,8 +93,5 @@ update perso
 
 return '0;Vous sortez vivant de l''arène';
 
-end;$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.sortir_arene(integer)
-  OWNER TO delain;
+end;$function$
+

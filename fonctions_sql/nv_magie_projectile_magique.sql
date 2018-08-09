@@ -1,13 +1,7 @@
-﻿-- Function: public.nv_magie_projectile_magique(integer, integer, integer)
-
--- DROP FUNCTION public.nv_magie_projectile_magique(integer, integer, integer);
-
-CREATE OR REPLACE FUNCTION public.nv_magie_projectile_magique(
-    integer,
-    integer,
-    integer)
-  RETURNS text AS
-$BODY$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.nv_magie_projectile_magique(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function magie_projectile_magique : lance le sort projectile  */
 /*  magique                                                      */
 /* On passe en paramètres                                        */
@@ -191,10 +185,5 @@ if pv_cible > total_degats then
 		code_retour := code_retour||'<hr><br>Vous gagnez '||trim(to_char(px_gagne,'9999990D99'))||' PX pour cette action.<br>';	end if;
 	return code_retour;
 end;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.nv_magie_projectile_magique(integer, integer, integer)
-  OWNER TO delain;
-GRANT EXECUTE ON FUNCTION public.nv_magie_projectile_magique(integer, integer, integer) TO delain;
-GRANT EXECUTE ON FUNCTION public.nv_magie_projectile_magique(integer, integer, integer) TO public;
+$function$
+

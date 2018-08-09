@@ -1,10 +1,7 @@
---
--- Name: achete_objet(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function achete_objet(integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/************************************************/
+CREATE OR REPLACE FUNCTION public.achete_objet(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/************************************************/
 /* fonction vend_objet                          */
 /* cette fonction a pour but de vendre un objet */
 /* venu des postes de garde                     */
@@ -96,7 +93,5 @@ begin
   return code_retour;
 end;
 
-$_$;
+$function$
 
-
-ALTER FUNCTION public.achete_objet(integer, integer) OWNER TO delain;

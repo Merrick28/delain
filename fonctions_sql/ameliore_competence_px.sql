@@ -1,11 +1,7 @@
-
---
--- Name: ameliore_competence_px(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ameliore_competence_px(integer, integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.ameliore_competence_px(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function ameliore_competence : essaie d ameliorer une comp    */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod                                             */
@@ -98,7 +94,5 @@ begin
     return code_retour;
   end if;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.ameliore_competence_px(integer, integer, integer) OWNER TO delain;

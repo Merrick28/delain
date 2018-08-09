@@ -1,10 +1,7 @@
---
--- Name: action_immediate(integer, text, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function action_immediate(integer, text, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/************************************************/
+CREATE OR REPLACE FUNCTION public.action_immediate(integer, text, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/************************************************/
 /* action_immediate				                      */
 /* Détermine le résultat d'une action immédiate */
 /* lors de l'activation d'une DLT, ou en deb de */
@@ -173,7 +170,5 @@ begin
     end if;
   end if;
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.action_immediate(integer, text, integer) OWNER TO delain;
