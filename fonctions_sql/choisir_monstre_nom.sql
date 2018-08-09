@@ -1,10 +1,7 @@
---
--- Name: choisir_monstre_nom(integer, text); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function choisir_monstre_nom(integer, text) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.choisir_monstre_nom(integer, text)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function choisir_monstre_nom : retourne un nom en fonction    */
 /* d'un type de monstre générique et d'un genre                  */
 /* On passe en paramètres                                        */
@@ -89,7 +86,5 @@ begin
 		code_retour := code_retour||'- '||v_nom;
 	end if;
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.choisir_monstre_nom(integer, text) OWNER TO delain;

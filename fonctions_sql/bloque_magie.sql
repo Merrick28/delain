@@ -1,10 +1,7 @@
---
--- Name: bloque_magie(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bloque_magie(integer, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.bloque_magie(integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function bloque_magie : tente une resistance                  */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod                                             */
@@ -98,18 +95,12 @@ begin
     return code_retour;
   end if; -- des > esquive
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.bloque_magie(integer, integer) OWNER TO delain;
-
---
--- Name: bloque_magie(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bloque_magie(integer, integer, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.bloque_magie(integer, integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function bloque_magie : tente une resistance                  */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod                                             */
@@ -210,7 +201,5 @@ begin
   end if; -- des > esquive
 
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.bloque_magie(integer, integer, integer) OWNER TO delain;

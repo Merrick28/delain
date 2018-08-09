@@ -1,10 +1,7 @@
---
--- Name: cadeau_mj(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function cadeau_mj(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$declare
+CREATE OR REPLACE FUNCTION public.cadeau_mj(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$declare
   code_retour text;
   personnage alias for $1;
   temp integer;
@@ -23,7 +20,5 @@ Vous avez aidé Jack comme de braves petits chiens rapportant fidèlement. Afin 
 end;
 
 
-$_$;
+$function$
 
-
-ALTER FUNCTION public.cadeau_mj(integer) OWNER TO delain;

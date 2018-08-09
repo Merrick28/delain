@@ -1,10 +1,7 @@
---
--- Name: ajout_tableau_chasse(integer, integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajout_tableau_chasse(integer, integer, integer, integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************************************/
+CREATE OR REPLACE FUNCTION public.ajout_tableau_chasse(integer, integer, integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************************************/
 /* fonction ajout_tableau_chasse                                          */
 /* On passe en paramètres :                                               */
 /*   $1 = perso_cod                                                       */
@@ -41,5 +38,5 @@ insert into perso_tableau_chasse
 
    return code_retour;
 end;
-$_$;
-ALTER FUNCTION public.ajout_tableau_chasse(integer, integer, integer, integer, integer) OWNER TO delain;
+$function$
+

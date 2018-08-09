@@ -1,10 +1,7 @@
---
--- Name: bonus_art_aura_feu(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bonus_art_aura_feu(integer) RETURNS numeric
-LANGUAGE plpgsql
-AS $_$/*******************************************/
+CREATE OR REPLACE FUNCTION public.bonus_art_aura_feu(integer)
+ RETURNS numeric
+ LANGUAGE plpgsql
+AS $function$/*******************************************/
 /* bonus_art_aura_feu                      */
 /*  params : $1 = perso_cod                */
 /*******************************************/
@@ -28,7 +25,5 @@ begin
     -- fin boucle
   end loop;
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.bonus_art_aura_feu(integer) OWNER TO delain;

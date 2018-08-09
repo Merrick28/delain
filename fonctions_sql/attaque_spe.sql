@@ -1,9 +1,7 @@
-CREATE OR REPLACE FUNCTION public.attaque_spe(
-    integer,
-    integer,
-    integer)
-  RETURNS text AS
-$BODY$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.attaque_spe(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* fonction attaque_spe : provoque une attaque spéciale provenant*/
 /*                d’un monstre uniquement, fonction              */
 /*                appelée par l’IA                               */
@@ -948,6 +946,5 @@ begin
 			valeur de position_arrivee : ' || to_char(coalesce(position_arrivee, 0), '999999999') || ',
 			valeur de position_arrivee2 : ' || to_char(coalesce(position_arrivee2, 0), '999999999');
     return code_retour;
-end;$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
+end;$function$
+

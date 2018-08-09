@@ -1,10 +1,7 @@
---
--- Name: replace_mort(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION replace_mort(integer, integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*************************************************/
+CREATE OR REPLACE FUNCTION public.replace_mort(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************/
 /* replace_mort                                  */
 /*************************************************/
 declare
@@ -245,13 +242,5 @@ begin
   code_retour := 'OK';
   code_retour := to_char(nouvelle_position, '99999999');
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.replace_mort(integer, integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION replace_mort(integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION replace_mort(integer, integer, integer) IS 'Replace un personnage suite à sa mort.';

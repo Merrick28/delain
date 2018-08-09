@@ -1,10 +1,7 @@
---
--- Name: bouge_portail(); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bouge_portail() RETURNS text
-LANGUAGE plpgsql
-AS $$declare
+CREATE OR REPLACE FUNCTION public.bouge_portail()
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$declare
   ligne record;
   etage integer;
   code_retour text;
@@ -42,18 +39,12 @@ begin
 end;
 
 
-$$;
+$function$
 
-
-ALTER FUNCTION public.bouge_portail() OWNER TO delain;
-
---
--- Name: bouge_portail(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bouge_portail(integer, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $$declare
+CREATE OR REPLACE FUNCTION public.bouge_portail(integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$declare
   ligne record;
   etage integer;
   temp_automap integer;
@@ -72,7 +63,5 @@ begin
   temp_automap := init_automap();
   return 0;
 end;
-$$;
+$function$
 
-
-ALTER FUNCTION public.bouge_portail(integer, integer) OWNER TO delain;

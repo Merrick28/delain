@@ -1,10 +1,7 @@
---
--- Name: attaque_test(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function attaque_test(integer, integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.attaque_test(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function attaque : provoque une attaque                       */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod attaquant                                   */
@@ -1631,9 +1628,5 @@ begin
   /* FIN   : coup porté : cible pas morte  */
   /*****************************************/
   end if;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.attaque_test(integer, integer, integer) OWNER TO delain;
-
---

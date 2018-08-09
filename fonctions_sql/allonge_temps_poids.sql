@@ -1,10 +1,7 @@
---
--- Name: allonge_temps_poids(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function allonge_temps_poids(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.allonge_temps_poids(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* Fonction allonge_temps_poids : calcule l augmentation du      */
 /*   temps de tour en fonction du poids                          */
 /* On passe en paramètres :                                      */
@@ -38,7 +35,5 @@ begin
   code_retour := calcul_temps(temp_ajout_temps);
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.allonge_temps_poids(integer) OWNER TO delain;

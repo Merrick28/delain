@@ -1,10 +1,7 @@
---
--- Name: ajouter_comp_mon(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajouter_comp_mon(integer, integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.ajouter_comp_mon(integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function ajouter_comp_mon : Ajouter les competences           */
 /* à partir de monstre_generique_comp                            */
 /*                                                               */
@@ -39,7 +36,5 @@ begin
 
   return code_erreur;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.ajouter_comp_mon(integer, integer) OWNER TO delain;

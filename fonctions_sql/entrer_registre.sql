@@ -1,11 +1,7 @@
--- Function: public.entrer_registre(integer)
-
--- DROP FUNCTION public.entrer_registre(integer);
-
-CREATE OR REPLACE FUNCTION public.entrer_registre(
-    integer)
-  RETURNS text AS
-$BODY$/* fonction entrer_registre                            */
+CREATE OR REPLACE FUNCTION public.entrer_registre(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/* fonction entrer_registre                            */
 /*                                                           */
 /*   on passe en paramètres :                                */
 /*   $1 = perso_cod                                          */
@@ -124,8 +120,5 @@ where perso_cod = v_perso;*/
 
 return '0;' || texte_fuite || 'Le préposé a retrouvé votre nom dans les registres, vous êtes renvoyé au batiment d''inscription.';
 
-end;$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.entrer_arene(integer, integer, integer)
-  OWNER TO delain;
+end;$function$
+

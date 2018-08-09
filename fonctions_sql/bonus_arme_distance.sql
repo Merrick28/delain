@@ -1,10 +1,7 @@
---
--- Name: bonus_arme_distance(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bonus_arme_distance(integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/**********************************************************/
+CREATE OR REPLACE FUNCTION public.bonus_arme_distance(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/**********************************************************/
 /* fonction bonus_arme_distance : donne le bonus          */
 /*   pour utiliser une arme à distance                    */
 /* on passe en paramètres :                               */
@@ -21,7 +18,5 @@ begin
   code_retour := (dext - 11)*3;
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.bonus_arme_distance(integer) OWNER TO delain;

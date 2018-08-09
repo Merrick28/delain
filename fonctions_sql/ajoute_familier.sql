@@ -1,10 +1,7 @@
---
--- Name: ajoute_familier(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ajoute_familier(integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.ajoute_familier(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function ajoute_familier :                                    */
 /*    Procédure utilisée pour créer un familier et le rattacher  */
 /*  à son maître                                                 */
@@ -115,14 +112,5 @@ begin
   values (maitre, familier);
 
   return '0;' || familier::text;
-end;$_$;
-
-
-ALTER FUNCTION public.ajoute_familier(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION ajoute_familier(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ajoute_familier(integer, integer) IS 'Ajoute un familier du type donné au personnage donné, à l’exception du familier démon qui est trop spécifique.';
+end;$function$
 

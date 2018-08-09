@@ -1,11 +1,7 @@
-
---
--- Name: tue_perso(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION tue_perso(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************************************/
+CREATE OR REPLACE FUNCTION public.tue_perso(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction tue_perso                                        */
 /*   accomplit les actions consécutives à la mort d un perso */
 /*   on passe en paramètres :                                */
@@ -447,13 +443,5 @@ select into pos_cible,type_cible,v_or,cible_pv_max,niveau_cible,px_cible,v_race,
 	/*delete from action where act_tact_cod in (1,2)
 		and act_perso2 = v_cible;*/
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.tue_perso(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION tue_perso(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION tue_perso(integer, integer) IS 'ATTENTION : vieille fonction plus utilisée NORMALEMENT !';

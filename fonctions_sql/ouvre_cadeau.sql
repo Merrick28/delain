@@ -1,6 +1,7 @@
-CREATE OR REPLACE FUNCTION ouvre_cadeau(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************/
+CREATE OR REPLACE FUNCTION public.ouvre_cadeau(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************/
 /* ouvre cadeau                                   */
 /**************************************************/
 declare
@@ -140,13 +141,5 @@ begin
   ----------------------------------------------------
   -- FIN   ouverture cadeau, fonction principale
   ----------------------------------------------------
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ouvre_cadeau(integer) OWNER TO delain;
-
---
--- Name: FUNCTION ouvre_cadeau(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ouvre_cadeau(integer) IS 'Gère l’ouverture d’un cadeau';

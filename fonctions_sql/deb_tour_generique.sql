@@ -1,10 +1,7 @@
---
--- Name: deb_tour_generique(integer, text, text, text, text, numeric, text); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function deb_tour_generique(integer, text, text, text, text, numeric, text) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************/
+CREATE OR REPLACE FUNCTION public.deb_tour_generique(integer, text, text, text, text, numeric, text)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************/
 /* deb_tour_generique                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
@@ -237,25 +234,12 @@ begin
   end loop;
 
   return 'OK ' || code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.deb_tour_generique(integer, text, text, text, text, numeric, text) OWNER TO delain;
-
---
--- Name: FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, text); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, text) IS '(OBSOLÈTE)';
-
-
---
--- Name: deb_tour_generique(integer, text, text, text, text, numeric, integer, text); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function deb_tour_generique(integer, text, text, text, text, numeric, integer, text) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************/
+CREATE OR REPLACE FUNCTION public.deb_tour_generique(integer, text, text, text, text, numeric, integer, text)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************/
 /* deb_tour_generique                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
@@ -460,25 +444,12 @@ begin
   end loop;
 
   return 'OK ' || code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.deb_tour_generique(integer, text, text, text, text, numeric, integer, text) OWNER TO delain;
-
---
--- Name: FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, integer, text); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION deb_tour_generique(integer, text, text, text, text, numeric, integer, text) IS '(OBSOLÈTE) Ajoute des Bonus / Malus standards en fonction des paramètres donnés.';
-
-
---
--- Name: deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************/
+CREATE OR REPLACE FUNCTION public.deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************/
 /* deb_tour_generique                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
@@ -641,25 +612,12 @@ begin
   end if;
 
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text) OWNER TO delain;
-
---
--- Name: FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text) IS '(OBSOLÈTE) Ajoute des Bonus / Malus standards en fonction des paramètres donnés.';
-
-
---
--- Name: deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/**************************************************/
+CREATE OR REPLACE FUNCTION public.deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/**************************************************/
 /* deb_tour_generique                             */
 /* Applique les bonus et effectue les actions     */
 /* spécifiées lors de l’activation d’une DLT.     */
@@ -828,14 +786,5 @@ begin
   end if;
 
   return code_retour;
-end;$_$;
-
-
-ALTER FUNCTION public.deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer) OWNER TO delain;
-
---
--- Name: FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION deb_tour_generique(integer, text, text, integer, character, text, numeric, integer, text, integer) IS 'Ajoute des Bonus / Malus standards en fonction des paramètres donnés.';
+end;$function$
 

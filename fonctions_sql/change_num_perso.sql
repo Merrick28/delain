@@ -1,10 +1,7 @@
---
--- Name: change_num_perso(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function change_num_perso(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$-- Change le numero de perso de $1 vers $2
+CREATE OR REPLACE FUNCTION public.change_num_perso(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$-- Change le numero de perso de $1 vers $2
 
 declare
   num_orig alias for $1;
@@ -160,13 +157,5 @@ begin
   update quetes.perso_quete_automatique_etape set eqaperso_perso_cod = $2 where eqaperso_perso_cod = $1;
 
   return 'Modification du numero terminée';
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.change_num_perso(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION change_num_perso(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION change_num_perso(integer, integer) IS 'Change le numero de perso de $1 vers $2';

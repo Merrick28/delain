@@ -1,10 +1,7 @@
---
--- Name: ia_suivre_message(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ia_suivre_message(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************/
+CREATE OR REPLACE FUNCTION public.ia_suivre_message(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************/
 /* fonction ia_suivre_message                        */
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
@@ -197,14 +194,5 @@ begin
   /* Etape 5 : tout semble fini                    */
   /*************************************************/
   return code_retour;
-end;$_$;
-
-
-ALTER FUNCTION public.ia_suivre_message(integer) OWNER TO delain;
-
---
--- Name: FUNCTION ia_suivre_message(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ia_suivre_message(integer) IS 'Gère une IA qui suit un aventurier / monstre... et lui envoie un message s’il le perd de vue !';
+end;$function$
 

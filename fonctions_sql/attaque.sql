@@ -1,10 +1,7 @@
---
--- Name: attaque(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function attaque(integer, integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.attaque(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function attaque : provoque une attaque                       */
 /* On passe en paramètres                                        */
 /*    $1 = perso_cod attaquant                                   */
@@ -1607,13 +1604,5 @@ begin
   /* FIN   : coup porté : cible pas morte  */
   /*****************************************/
   end if;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.attaque(integer, integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION attaque(integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION attaque(integer, integer, integer) IS 'Fonction gérant les attaques, hors attaques très spéciales';

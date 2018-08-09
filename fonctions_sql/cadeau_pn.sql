@@ -1,10 +1,7 @@
---
--- Name: cadeau_pn(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function cadeau_pn(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$declare
+CREATE OR REPLACE FUNCTION public.cadeau_pn(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$declare
   code_retour text;
   personnage alias for $1;
   temp integer;
@@ -23,7 +20,5 @@ Le Père Noël a été très satifsait de vous cette année. Vos petits souliers
 end;
 
 
-$_$;
+$function$
 
-
-ALTER FUNCTION public.cadeau_pn(integer) OWNER TO delain;

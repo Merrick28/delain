@@ -1,11 +1,7 @@
-
---
--- Name: ia_standard(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION ia_standard(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************/
+CREATE OR REPLACE FUNCTION public.ia_standard(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************/
 /* fonction ia_standard                              */
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
@@ -84,7 +80,9 @@ declare
 
 begin
 	doit_jouer := 0;
-	code_retour := E'IA standard\nMonstre '||trim(to_char(v_monstre,'999999999999'))||E'\n';
+	code_retour := E'IA standard\
+Monstre '||trim(to_char(v_monstre,'999999999999'))||E'\
+';
 	limite_surcharge := 1;
 	v_seuil_cible_monstre := getparm_n(124);
 /***********************************/
@@ -135,7 +133,8 @@ begin
 		and perso_gmon_cod = gmon_cod ;
 
   /* Ajout d'info sur le monstre pour débuggage */
-  code_retour := code_retour||' actif='||actif||', Soutien='||v_soutien||E'\n';
+  code_retour := code_retour||' actif='||actif||', Soutien='||v_soutien||E'\
+';
 
 	if actif != 'O' then
 		return 'inactif !';
@@ -169,7 +168,8 @@ begin
 		temp_niveau := lancer_des(1,6);
 		temp_txt := f_passe_niveau(v_monstre,temp_niveau);
 		select into v_pa perso_pa from perso where perso_cod = v_monstre;
-		code_retour := code_retour||E'Passage niveau.\n';
+		code_retour := code_retour||E'Passage niveau.\
+';
 		if (code_retour is null) then
 			return 'code retour null 2';
 		end if;
@@ -221,7 +221,8 @@ begin
 			and is_surcharge(perso_cod,v_monstre) < limite_surcharge
 			and trajectoire_vue_murs(pos_actuelle,pos_cod) = 1; -- Ceux qui attaquent à 0 ou 1 case n’ont pas d’intérêt pour les personnes derrière les murs
 	end if;
-	code_retour := code_retour||'Nombre de persos en vue : '||trim(to_char(nb_joueur_en_vue,'9999999999'))||E'\n';
+	code_retour := code_retour||'Nombre de persos en vue : '||trim(to_char(nb_joueur_en_vue,'9999999999'))||E'\
+';
 -- si personne, on sort.....
 	compt_loop := 0;
 	if nb_joueur_en_vue = 0 then
@@ -239,7 +240,8 @@ begin
 					where perso_cod = v_monstre;
 			end loop;
 		end if;
-		code_retour := code_retour||'Aucun joueur en vue, déplacement aléatoire - boucle arrêtée a '||trim(to_char(compt_loop,'9999999'))||E'\n';
+		code_retour := code_retour||'Aucun joueur en vue, déplacement aléatoire - boucle arrêtée a '||trim(to_char(compt_loop,'9999999'))||E'\
+';
 		if (code_retour is null) then
 			return 'code retour null 4';
 		end if;
@@ -257,7 +259,8 @@ begin
 			if lancer_des(1,100) > chance_mercu then
 				fonction_sort := 'select nv_magie_mercurochrome('||trim(to_char(v_monstre,'999999999'))||','||trim(to_char(v_monstre,'9999999999'))||',1)';
 				execute fonction_sort;
-				code_retour := code_retour||E'Lancement mercurochrome.\n';
+				code_retour := code_retour||E'Lancement mercurochrome.\
+';
 				if (code_retour is null) then
 			return 'code retour null 5';
 		end if;
@@ -265,12 +268,14 @@ begin
 		end if;
 	end if;
 	if v_cible is null then
-		code_retour := code_retour||E'Pas de cible départ.\n';
+		code_retour := code_retour||E'Pas de cible départ.\
+';
 		if (code_retour is null) then
 			return 'code retour null 6';
 		end if;
 	else
-		code_retour := code_retour||'Cible départ : '||trim(to_char(v_cible,'9999999999999'))||E'\n';
+		code_retour := code_retour||'Cible départ : '||trim(to_char(v_cible,'9999999999999'))||E'\
+';
 		if (code_retour is null) then
 			return 'code retour null 7';
 		end if;
@@ -300,7 +305,8 @@ begin
 			or (lock_cible = perso_cod and lock_attaquant = v_monstre)
 			offset temp_cible
 			limit 1;
-		code_retour := code_retour||'Changement de cible suite à lock, nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\n';
+		code_retour := code_retour||'Changement de cible suite à lock, nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\
+';
 		if (code_retour is null) then
 			return 'code retour null 8';
 		end if;
@@ -327,7 +333,8 @@ begin
 		and trajectoire_vue(pos_actuelle,pos_cod) = 1;
 -- si cible pas sur la case, on en choisit une autre
 	if nb_cible_en_vue = 0 then
-		code_retour := code_retour||E'La cible choisie n''est pas en vue.\n';
+		code_retour := code_retour||E'La cible choisie n''est pas en vue.\
+';
 		if (code_retour is null) then
 			return 'code retour null 9';
 		end if;
@@ -343,7 +350,8 @@ begin
 		--if statique_combat = 'O' then
 		--	v_cible := choix_cible_case(v_monstre,pos_actuelle,v_etage,nb_joueur_en_vue,v_vue);
 		--end if;
-		code_retour := code_retour||'Nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\n';
+		code_retour := code_retour||'Nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\
+';
 		if (code_retour is null) then
 			return 'code retour null 10';
 		end if;
@@ -357,7 +365,8 @@ begin
 /* Etape 5 : on se déplace vers la cible */
 /*****************************************/
 	if (distance(pos_actuelle,pos_cible) >= distance_limite) then
-		code_retour := code_retour||E'Déplacement vers la cible.\n';
+		code_retour := code_retour||E'Déplacement vers la cible.\
+';
 		if (code_retour is null) then
 			return 'code retour null 11';
 		end if;
@@ -399,7 +408,8 @@ begin
 			chance_sort := 80;
 		end if;
 		if (lancer_des(1,100) <= chance_sort) then
-		code_retour := code_retour||E'Lancement de sort offensif.\n';
+		code_retour := code_retour||E'Lancement de sort offensif.\
+';
 		if (code_retour is null) then
 			return 'code retour null 12';
 		end if;
@@ -504,7 +514,8 @@ begin
 				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'9999999999'))||','||trim(to_char(cible_soutien,'999999999'))||',1)';
 	-- on lance le sort proprement dit
 				execute fonction_sort;
-				code_retour := code_retour||'Lancement de sort de soutien sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
+				code_retour := code_retour||'Lancement de sort de soutien sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\
+';
 				if (code_retour is null) then
 			return 'code retour null 13';
 		end if;
@@ -525,7 +536,8 @@ begin
 			select into pos_cible ppos_pos_cod from perso_position
 				where ppos_perso_cod = v_cible;
 		end loop;
-		code_retour := code_retour||E'Attaque cible.\n';
+		code_retour := code_retour||E'Attaque cible.\
+';
 		if (code_retour is null) then
 			return 'code retour null 14';
 		end if;
@@ -539,7 +551,5 @@ begin
 /*************************************************/
 	return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.ia_standard(integer) OWNER TO delain;

@@ -1,10 +1,7 @@
---
--- Name: autorise_4e_perso(character, timestamp with time zone); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function autorise_4e_perso(character, timestamp with time zone) RETURNS boolean
-LANGUAGE plpgsql
-AS $_$/********************************************************/
+CREATE OR REPLACE FUNCTION public.autorise_4e_perso(character, timestamp with time zone)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$/********************************************************/
 /* function autorise_4e_perso                                 */
 /* Indique si le compte donné a droit à un quatrième perso    */
 /* Cette fonction permet de centraliser le test.              */
@@ -31,13 +28,5 @@ begin
   /*             E X É C U T I O N                         */
   /*********************************************************/
   return (compt_quatre_perso = 'O' AND (now() - delai > compt_dcreat));
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.autorise_4e_perso(character, timestamp with time zone) OWNER TO delain;
-
---
--- Name: FUNCTION autorise_4e_perso(character, timestamp with time zone); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION autorise_4e_perso(character, timestamp with time zone) IS 'Centralise le test sur l’autorisation de créer un 4e perso.';

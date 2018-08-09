@@ -1,11 +1,7 @@
-
---
--- Name: ia_magicien(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION ia_magicien(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************/
+CREATE OR REPLACE FUNCTION public.ia_magicien(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************/
 /* fonction ia_magicien                              */
 /*    reçoit en arguments :                          */
 /* $1 = perso_cod du monstre                         */
@@ -89,7 +85,9 @@ declare
 begin
 	compt_loop := 0;
 	doit_jouer := 0;
-	code_retour := E'IA magicien\nMonstre ' || trim(to_char(v_monstre, '999999999999')) || E'\n';
+	code_retour := E'IA magicien\
+Monstre ' || trim(to_char(v_monstre, '999999999999')) || E'\
+';
 	v_seuil_cible_monstre := getparm_n(124);
 /***********************************/
 /* Etape 1 : on récupère les infos */
@@ -158,7 +156,8 @@ begin
 		temp_niveau := lancer_des(1, 6);
 		temp_txt := f_passe_niveau(v_monstre, temp_niveau);
 		select into v_pa perso_pa from perso where perso_cod = v_monstre;
-		code_retour := code_retour || E'Passage niveau.\n';
+		code_retour := code_retour || E'Passage niveau.\
+';
 	end if;
 
 	/* on se soigne */
@@ -176,7 +175,8 @@ begin
 			if lancer_des(1, 100) > chance_mercu then
 				fonction_sort := 'select nv_' || temp_txt || '(' || trim(to_char(v_monstre, '9999999999')) || ', ' || trim(to_char(v_monstre, '9999999999')) || ', 1)';
 				execute fonction_sort;
-				code_retour := code_retour || E'Lancement ' || temp_txt || '.\n';
+				code_retour := code_retour || E'Lancement ' || temp_txt || '.\
+';
 				select into v_pa perso_pa from perso where perso_cod = v_monstre;
 			end if;
 		end if;
@@ -203,13 +203,15 @@ begin
 				and lpos_lieu_cod = lieu_cod
 				and lieu_refuge = 'O')
 		and trajectoire_vue_murs(pos_actuelle, pos_cod) = 1;
-	code_retour := code_retour || 'Nombre de persos en vue : ' || trim(to_char(nb_joueur_en_vue, '9999999999')) || E'\n';
+	code_retour := code_retour || 'Nombre de persos en vue : ' || trim(to_char(nb_joueur_en_vue, '9999999999')) || E'\
+';
 
 /* si personne, on sort..... ==> le monstre bouge */
 -- modif Reivax 15/11/2012 : on remplit ses réceptacles, puis on regarde s’il n’y a pas des runes à ramasser, avant de bouger au hasard.
 	if nb_joueur_en_vue = 0 then
 		update perso set perso_cible = null where perso_cod = v_monstre;
-		code_retour := code_retour || 'Aucun joueur en vue...<br />\n';
+		code_retour := code_retour || 'Aucun joueur en vue...<br />\
+';
 
 		-- remplissage d’un réceptacle
 		select into nb_receptacles_vides perso_nb_receptacle - coalesce(rec_nombre, 0)
@@ -234,7 +236,8 @@ begin
 			-- on construit la chaine de lancement du sort et on lance le sort
 			if found then
 				temp_txt := cree_receptacle(v_monstre, num_sort, 1);
-				code_retour := code_retour || 'On remplit un réceptacle...<br />\n';
+				code_retour := code_retour || 'On remplit un réceptacle...<br />\
+';
 			end if;
 		end if;
 
@@ -270,9 +273,11 @@ begin
 	end if;
 /* sinon, on reste....*/
 	if v_cible is null then
-		code_retour := code_retour || E'Pas de cible offensive de départ.\n';
+		code_retour := code_retour || E'Pas de cible offensive de départ.\
+';
 	else
-		code_retour := code_retour || 'Cible offensive départ : ' || trim(to_char(v_cible, '9999999999999')) || E'\n';
+		code_retour := code_retour || 'Cible offensive départ : ' || trim(to_char(v_cible, '9999999999999')) || E'\
+';
 	end if;
 
 /*************************************************************/
@@ -304,7 +309,8 @@ begin
 			and psort_sort_cod = sort_cod
 			and sort_aggressif = 'O';
 		if (des <= chance_sort) and nb_sort_aggressif != 0 then
-			code_retour := code_retour || E'Lancement de sort offensif.\n';
+			code_retour := code_retour || E'Lancement de sort offensif.\
+';
 			/* Calcul de la distance limite max par rapport aux sorts offensifs */
 			/* initialisation de la variable */
 			distance_limite := 0;
@@ -337,15 +343,18 @@ begin
 					and trajectoire_vue_murs(pos_actuelle, pos_cod) = 1;
 	/* si cible initiale pas à distance ou pas de cible, on en choisit une autre */
 				if nb_cible_en_vue = 0 then
-					code_retour := code_retour || E'Pas de cible initiale ou la cible choisie n’est pas à portée.\n';
+					code_retour := code_retour || E'Pas de cible initiale ou la cible choisie n’est pas à portée.\
+';
 	/*Choix d’une cible*/
 					v_cible := choix_cible(v_monstre, pos_actuelle, v_etage, nb_joueur_en_vue, v_vue);
-					code_retour := code_retour || 'Nouvelle cible : ' || trim(to_char(v_cible, '9999999999999')) || E'\n';
+					code_retour := code_retour || 'Nouvelle cible : ' || trim(to_char(v_cible, '9999999999999')) || E'\
+';
 				end if;
 			/* Sinon on conserve la cible initiale et dans 50% des cas, changement de cible*/
 			else
 				v_cible := choix_cible(v_monstre, pos_actuelle, v_etage, nb_joueur_en_vue, v_vue);
-				code_retour := code_retour || 'Nouvelle cible : ' || trim(to_char(v_cible, '9999999999999')) || E'\n';
+				code_retour := code_retour || 'Nouvelle cible : ' || trim(to_char(v_cible, '9999999999999')) || E'\
+';
 			end if;
 	/******************************************************/
 	/* On récupère la position de la nouvelle cible cible */
@@ -356,7 +365,8 @@ begin
 	/* On se déplace vers la cible si celle ci n’est pas à distance */
 	/****************************************************************/
 			if (distance(pos_actuelle, pos_cible) > distance_limite) then
-				code_retour := code_retour || E'Déplacement vers la cible.\n';
+				code_retour := code_retour || E'Déplacement vers la cible.\
+';
 				if statique_combat = 'N' then
 					pos_actuelle := ia_include_deplacement_vers_portee(v_monstre, pos_actuelle, pos_cible, distance_limite);
 					select into v_pa perso_pa from perso where perso_cod = v_monstre;
@@ -376,7 +386,8 @@ begin
 					and sort_aggressif = 'O'
 					and sort_distance >= distance_cible;
 				if nb_sort_aggressif != 0 then
-					code_retour := code_retour || E'Lancement de sort offensif.\n';
+					code_retour := code_retour || E'Lancement de sort offensif.\
+';
 		/* on commence par choisir le sort qu’on va lancer */
 					temp := lancer_des(1, nb_sort_aggressif);
 					temp := temp - 1;
@@ -409,7 +420,8 @@ begin
 		/*Fin de lancement d’un sort offensif */
 		else
 		/* Lancement d’un sort de soutien à 50% de chances avec un sort offensif */
-			code_retour := code_retour || E'Lancement de sort de soutien.\n';
+			code_retour := code_retour || E'Lancement de sort de soutien.\
+';
 	/*on choisit la cible du sort de soutien ==> Si il s’agit d’un monstre de soutien, */
 	/* il va lancer un sort sur un autre monstre, sinon sur lui même                   */
 			select into v_soutien gmon_soutien
@@ -418,11 +430,13 @@ begin
 				and perso_gmon_cod = gmon_cod;
 			if not found then
 				cible_soutien := v_monstre;
-				code_retour := code_retour || E'v_soutien pas trouvé\n';
+				code_retour := code_retour || E'v_soutien pas trouvé\
+';
 			else
 				if v_soutien = 'N' then
 					cible_soutien := v_monstre;
-					code_retour := code_retour || E'pas un monstre de soutien\n';
+					code_retour := code_retour || E'pas un monstre de soutien\
+';
 				else
 					/* On est dans le cas d’un soutien à un autre monstre, initialisation de variable */
 					distance_limite := 0;
@@ -445,7 +459,8 @@ begin
 						and perso_tangible = 'O'
 						and ppos_pos_cod = pos_cod
 						and trajectoire_vue_murs(pos_actuelle, pos_cod) = 1;
-					code_retour := code_retour || 'Nombre de cibles à distance pour soutien: ' || trim(to_char(nb_monstre_a_distance, '9999999999')) || E'\n';
+					code_retour := code_retour || 'Nombre de cibles à distance pour soutien: ' || trim(to_char(nb_monstre_a_distance, '9999999999')) || E'\
+';
 
 					/* Si pas de monstre à distance sélection d’un nouveau monstre cible */
 					if nb_monstre_a_distance = 0 then
@@ -474,12 +489,14 @@ begin
 						limit 1
 						offset nb_cible_en_vue;
 						update perso set perso_cible = cible_soutien where perso_cod = v_monstre;
-						code_retour := code_retour || 'Nouvelle cible pour soutien : ' || trim(to_char(cible_soutien, '9999999999999')) || E'\n';
+						code_retour := code_retour || 'Nouvelle cible pour soutien : ' || trim(to_char(cible_soutien, '9999999999999')) || E'\
+';
 
 	/****************************************************************/
 	/* On se déplace vers la cible si celle ci n’est pas à distance */
 	/****************************************************************/
-						code_retour := code_retour || E'Déplacement vers la cible.\n';
+						code_retour := code_retour || E'Déplacement vers la cible.\
+';
 						if statique_combat = 'N' then
 							pos_actuelle := ia_include_deplacement_vers_portee(v_monstre, pos_actuelle, pos_cible, distance_limite);
 							select into v_pa perso_pa from perso where perso_cod = v_monstre;
@@ -503,11 +520,13 @@ begin
 							and trajectoire_vue_murs(pos_actuelle, pos_cod) = 1
 						limit 1
 						offset nb_monstre_a_distance;
-						code_retour := code_retour || 'Nouvelle cible2 de soutien : ' || trim(to_char(cible_soutien, '9999999999999')) || E'\n';
+						code_retour := code_retour || 'Nouvelle cible2 de soutien : ' || trim(to_char(cible_soutien, '9999999999999')) || E'\
+';
 					/* Si vraiment pas d’autre monstre, il se soutient tout seul */
 						if cible_soutien is null then
 							cible_soutien := v_monstre;
-							code_retour := code_retour || E'Pas d’autre monstre à soutenir.\n';
+							code_retour := code_retour || E'Pas d’autre monstre à soutenir.\
+';
 						end if;
 					end if;
 				end if;
@@ -522,7 +541,8 @@ begin
 				and psort_sort_cod = sort_cod
 				and sort_soutien = 'O'
 				and sort_distance >= distance_cible;
-			code_retour := code_retour || 'Nombre de sorts de soutien: ' || trim(to_char(nb_sort_soutien, '9999999999')) || E'\n';
+			code_retour := code_retour || 'Nombre de sorts de soutien: ' || trim(to_char(nb_sort_soutien, '9999999999')) || E'\
+';
 			if nb_sort_soutien != 0 then
 				/* on commence par choisir le sort qu’on va lancer */
 				temp := lancer_des(1, nb_sort_soutien);
@@ -551,7 +571,8 @@ begin
 				end if;
 				/* on lance le sort proprement dit */
 				execute fonction_sort;
-				code_retour := code_retour || 'Lancement de sort de soutien sur ' || trim(to_char(cible_soutien, '9999999999999')) || E'.\n';
+				code_retour := code_retour || 'Lancement de sort de soutien sur ' || trim(to_char(cible_soutien, '9999999999999')) || E'.\
+';
 	/* Fin des sorts de soutien */
 			end if;
 		end if;
@@ -559,13 +580,5 @@ begin
 		select into v_pa perso_pa from perso where perso_cod = v_monstre;
 	end loop;
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.ia_magicien(integer) OWNER TO delain;
-
---
--- Name: FUNCTION ia_magicien(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION ia_magicien(integer) IS 'Gère l’IA pour les monstres magiciens (soutien ou agressifs, suivant les sorts qu’ils ont)';

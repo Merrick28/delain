@@ -1,10 +1,7 @@
---
--- Name: compter_perso_amelioration(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION compter_perso_amelioration(integer) RETURNS integer
-    LANGUAGE plpgsql
-    AS $_$/************************************/
+CREATE OR REPLACE FUNCTION public.compter_perso_amelioration(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/************************************/
 /* $1 = personnage                  */
 /* retour = niveau du perso         */
 /* anos =                           */
@@ -39,7 +36,7 @@ begin
 		coalesce(perso_amelioration_armure, 0) +
 		coalesce(perso_amel_deg_dex, 0) +
 		coalesce(perso_nb_amel_repar, 0) +
-		coalesce(perso_nb_receptacle, 0)+
+		coalesce(perso_nb_receptacle, 0)+ 
 		(select count(pcomp_cod) from perso_competences where pcomp_perso_cod = perso_cod and pcomp_pcomp_cod IN (25,63,66,72,75)) +
 		2 * (select count(pcomp_cod) from perso_competences where pcomp_perso_cod = perso_cod and pcomp_pcomp_cod IN (61,64,67,73,76)) +
 		3 * (select count(pcomp_cod) from perso_competences where pcomp_perso_cod = perso_cod and pcomp_pcomp_cod IN (62,65,68,74,77)) +
@@ -62,7 +59,5 @@ begin
 
 	res := res + temp;
 	return res;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.compter_perso_amelioration(integer) OWNER TO delain;

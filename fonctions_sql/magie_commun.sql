@@ -1,11 +1,7 @@
-﻿
---
--- Name: magie_commun(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION magie_commun(integer, integer, integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.magie_commun(integer, integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function magie_commun : part commune à tous les sorts         */
 /* On passe en paramètres                                        */
 /*   $1 = lanceur                                                */
@@ -562,13 +558,5 @@ begin
 	end if;
 	code_retour := code_retour||';'||trim(to_char(px_gagne,'999999990.99'))||';'||trim(to_char(facteur_reussite,'99999999999'));
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.magie_commun(integer, integer, integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION magie_commun(integer, integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION magie_commun(integer, integer, integer, integer) IS 'Gère les parties communes à la magie (jets de compétence, quelques vérifications d’usage, runes...)';

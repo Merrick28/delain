@@ -1,10 +1,7 @@
---
--- Name: ch_automap(); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function ch_automap() RETURNS integer
-    LANGUAGE plpgsql
-    AS $$declare
+CREATE OR REPLACE FUNCTION public.ch_automap()
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$declare
 	ligne record;
 	v_etage integer;
 	v_query text;
@@ -38,7 +35,5 @@ begin
 		and pvue_pos_cod = ligne.pvue_pos_cod;
 	end loop;
 	return 99;
-end;$$;
+end;$function$
 
-
-ALTER FUNCTION public.ch_automap() OWNER TO delain;

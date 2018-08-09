@@ -1,10 +1,7 @@
---
--- Name: change_cible_attaque(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function change_cible_attaque(integer, integer) RETURNS integer
-    LANGUAGE plpgsql
-    AS $_$/*******************************************************/
+CREATE OR REPLACE FUNCTION public.change_cible_attaque(integer, integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/*******************************************************/
 /* change_cible_attaque                                */
 /*  Détermine si le monstre doit changer de cible      */
 /*  suite à une attaque de perso                       */
@@ -58,7 +55,5 @@ begin
 		end if;
 	end if;
 	return 0;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.change_cible_attaque(integer, integer) OWNER TO delain;

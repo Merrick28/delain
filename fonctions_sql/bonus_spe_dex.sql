@@ -1,10 +1,7 @@
---
--- Name: bonus_spe_dex(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bonus_spe_dex(integer) RETURNS numeric
-LANGUAGE plpgsql
-AS $_$/***************************************/
+CREATE OR REPLACE FUNCTION public.bonus_spe_dex(integer)
+ RETURNS numeric
+ LANGUAGE plpgsql
+AS $function$/***************************************/
 /* bonus_spe_dex                       */
 /***************************************/
 declare
@@ -24,7 +21,5 @@ begin
   else
     return v_bonus;
   end if;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.bonus_spe_dex(integer) OWNER TO delain;

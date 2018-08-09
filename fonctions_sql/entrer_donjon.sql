@@ -1,11 +1,7 @@
-
---
--- Name: entrer_donjon(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION entrer_donjon(integer, integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/* fonction entrer_donjon                                    */
+CREATE OR REPLACE FUNCTION public.entrer_donjon(integer, integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/* fonction entrer_donjon                                    */
 /*                                                           */
 /*   on passe en paramètres :                                */
 /*   $1 = perso_cod                                          */
@@ -141,13 +137,5 @@ update perso set perso_pa = v_pa - 4 where perso_cod = v_perso;
 
 return '1;Entrée en donjon effectuee';
 
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.entrer_donjon(integer, integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION entrer_donjon(integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION entrer_donjon(integer, integer, integer) IS 'Gère l entrée dans un donjon';

@@ -1,10 +1,7 @@
--- Function: public.enregistre_avancee_donjon(integer)
-
--- DROP FUNCTION public.enregistre_avancee_donjon(integer);
-
 CREATE OR REPLACE FUNCTION public.enregistre_avancee_donjon(integer)
-  RETURNS text AS
-$BODY$/* fonction enregistre_avancee_donjon                                    */
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/* fonction enregistre_avancee_donjon                                    */
 /*                                                           */
 /*   on passe en paramètres :                                */
 /*   $1 = perso_cod                                          */
@@ -62,9 +59,5 @@ end if;
 
 return '1;Enregistrement du point de passage en donjon effectué.';
 
-end;$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-ALTER FUNCTION public.enregistre_avancee_donjon(integer)
-  OWNER TO delain;
-COMMENT ON FUNCTION public.enregistre_avancee_donjon(integer) IS 'Enregistre la position du joueur comme point de retour du batiment admin en cas de mort en arene';
+end;$function$
+

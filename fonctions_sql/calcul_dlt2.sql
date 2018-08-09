@@ -1,10 +1,7 @@
---
--- Name: calcul_dlt2(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function calcul_dlt2(integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.calcul_dlt2(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* Fonction calcul_dlt2 : procédure de recalcul de la dlt        */
 /* On passe en paramètres :                                      */
 /*    1 : 1 pour un joueur, 2 pour un monstre                    */
@@ -753,13 +750,5 @@ begin
     update perso set perso_actif = 'N', perso_pa = 0 where perso_cod = personnage;
   end if;
   return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.calcul_dlt2(integer) OWNER TO delain;
-
---
--- Name: FUNCTION calcul_dlt2(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION calcul_dlt2(integer) IS 'C’est LA fonction appelée lors de l’activation d’une DLT.';

@@ -1,10 +1,7 @@
---
--- Name: bonus_degats_melee(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function bonus_degats_melee(integer) RETURNS integer
-LANGUAGE plpgsql
-AS $_$/**********************************************************/
+CREATE OR REPLACE FUNCTION public.bonus_degats_melee(integer)
+ RETURNS integer
+ LANGUAGE plpgsql
+AS $function$/**********************************************************/
 /* fonction bonus_degats_melee : donne le bonus en degats */
 /*   pour le corps à corps pour un perso                  */
 /* on passe en paramètres :                               */
@@ -24,7 +21,5 @@ begin
   end if;
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.bonus_degats_melee(integer) OWNER TO delain;

@@ -1,6 +1,7 @@
 CREATE OR REPLACE FUNCTION public.ia_monstre(integer)
-  RETURNS text AS
-$BODY$
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
 declare
   cur refcursor;
   req text;
@@ -63,16 +64,12 @@ begin
   select into v_pa perso_pa
   from perso
   where perso_cod = v_monstre;
-  sortie := sortie||E'\n'||trim(to_char(v_pa,'99'))||' pa restants';
+  sortie := sortie||E'\
+'||trim(to_char(v_pa,'99'))||' pa restants';
   truncate table liste_ouverte;
   truncate table liste_fermee;
   delete from temp_monstres where code_monstre = v_monstre;
   return sortie;
 end;
-$BODY$
-LANGUAGE plpgsql VOLATILE
-COST 100;
-ALTER FUNCTION public.ia_monstre(integer)
-OWNER TO delain;
-GRANT EXECUTE ON FUNCTION public.ia_monstre(integer) TO delain;
-GRANT EXECUTE ON FUNCTION public.ia_monstre(integer) TO public;
+$function$
+

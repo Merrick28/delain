@@ -1,10 +1,7 @@
---
--- Name: compte_nombre_perso(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION compte_nombre_perso(integer) RETURNS smallint
-    LANGUAGE plpgsql
-    AS $_$/********************************************************/
+CREATE OR REPLACE FUNCTION public.compte_nombre_perso(integer)
+ RETURNS smallint
+ LANGUAGE plpgsql
+AS $function$/********************************************************/
 /* function  compte_nombre_perso                              */
 /* Donne le nombre de perso actifs du compte                  */
 /*  $1 = compt_cod du compte à tester                         */
@@ -29,7 +26,5 @@ begin
 		and perso_actif = 'O';
 
 	return coalesce(resultat, 0);
-end;		$_$;
+end;		$function$
 
-
-ALTER FUNCTION public.compte_nombre_perso(integer) OWNER TO delain;

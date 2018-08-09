@@ -1,11 +1,7 @@
-
---
--- Name: tue_perso_perd_objets(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION tue_perso_perd_objets(integer, integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************************************/
+CREATE OR REPLACE FUNCTION public.tue_perso_perd_objets(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction tue_perso_perd_objets                            */
 /*   accomplit la perte d’objets consécutive à la mort       */
 /*   d’un perso                                              */
@@ -141,13 +137,5 @@ begin
 		end if; -- fin or
 	end if; -- end type de mort
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.tue_perso_perd_objets(integer, integer) OWNER TO delain;
-
---
--- Name: FUNCTION tue_perso_perd_objets(integer, integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION tue_perso_perd_objets(integer, integer) IS 'Gère la perte d’objets à la mort';

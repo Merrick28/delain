@@ -1,10 +1,8 @@
---
--- Name: cache_inventaires(); Type: FUNCTION; Schema: public; Owner: delain
---
-
-create or replace function cache_inventaires() RETURNS integer
-LANGUAGE plpgsql STRICT
-AS $$-- Fonction cache_inventaires: Cache les inventaires des joueurs dans une autre table
+CREATE OR REPLACE FUNCTION public.cache_inventaires()
+ RETURNS integer
+ LANGUAGE plpgsql
+ STRICT
+AS $function$-- Fonction cache_inventaires: Cache les inventaires des joueurs dans une autre table
 
 declare
   ligne_inventaire record;
@@ -24,7 +22,5 @@ begin
 
   -- delete from perso_objets where perobj_perso_cod = 2926870; -- TODO Supprimer clause WHERE
   return 0;
-end;$$;
+end;$function$
 
-
-ALTER FUNCTION public.cache_inventaires() OWNER TO delain;

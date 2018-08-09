@@ -1,10 +1,7 @@
---
--- Name: choix_perso_position_vus(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or REPLACE FUNCTION choix_perso_position_vus(integer) RETURNS SETOF integer
-LANGUAGE plpgsql
-AS $_$declare
+CREATE OR REPLACE FUNCTION public.choix_perso_position_vus(integer)
+ RETURNS SETOF integer
+ LANGUAGE plpgsql
+AS $function$declare
   code_retour text;
   v_pos alias for $1;
   personnage integer;
@@ -32,13 +29,5 @@ begin
   end loop;
   close curs2;
   return;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.choix_perso_position_vus(integer) OWNER TO delain;
-
---
--- Name: FUNCTION choix_perso_position_vus(integer); Type: COMMENT; Schema: public; Owner: delain
---
-
-COMMENT ON FUNCTION choix_perso_position_vus(integer) IS 'Permet de récupérer tous les num de persos qui ont vu une position (donc un lieu)';

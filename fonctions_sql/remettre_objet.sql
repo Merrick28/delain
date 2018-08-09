@@ -1,10 +1,7 @@
---
--- Name: remettre_objet(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION remettre_objet(integer, integer) RETURNS text
-LANGUAGE plpgsql
-AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.remettre_objet(integer, integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function equipe_objet : remet un objet identifie              */
 /*          dand l inventaire                                    */
 /* On passe en paramètres                                        */
@@ -100,7 +97,5 @@ begin
   perform update_automap(personnage);
   return code_retour;
 end;
-$_$;
+$function$
 
-
-ALTER FUNCTION public.remettre_objet(integer, integer) OWNER TO delain;

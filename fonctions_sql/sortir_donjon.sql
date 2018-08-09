@@ -1,10 +1,7 @@
---
--- Name: sortir_donjon(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION sortir_donjon(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*************************************************************/
+CREATE OR REPLACE FUNCTION public.sortir_donjon(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*************************************************************/
 /* fonction sortir_donjon                                    */
 /*                                                           */
 /*   on passe en paramètres :                                */
@@ -81,13 +78,5 @@ end if;
 
 return '0;Vous sortez vivant de ce donjon';
 
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.sortir_donjon(integer) OWNER TO delain;
-
---
--- Name: FUNCTION sortir_donjon(integer); Type: COMMENT; Schema: public; Owner: postgres
---
-
-COMMENT ON FUNCTION sortir_donjon(integer) IS 'Sortie d''un donjon';

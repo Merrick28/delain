@@ -1,10 +1,7 @@
---
--- Name: compte_inactif(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE or replace FUNCTION compte_inactif(integer) RETURNS text
-LANGUAGE plpgsql
-AS $$/********************************************/
+CREATE OR REPLACE FUNCTION public.compte_inactif(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/********************************************/
 /* Fonction joueur_inactif                  */
 /*   transforme les joueurs inactifs en     */
 /*   monstres                               */
@@ -246,7 +243,5 @@ begin
   code_retour := code_retour||trim(to_char(compt,'999999'))||' persos supprimés.';
   return code_retour;
 
-end;$$;
+end;$function$
 
-
-ALTER FUNCTION public.compte_inactif(integer) OWNER TO delain;

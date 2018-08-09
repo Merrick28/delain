@@ -1,11 +1,7 @@
-
---
--- Name: passage(integer); Type: FUNCTION; Schema: public; Owner: delain
---
-
-CREATE OR REPLACE FUNCTION passage(integer) RETURNS text
-    LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+CREATE OR REPLACE FUNCTION public.passage(integer)
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$/*****************************************************************/
 /* function passage : permet de prendre un passage (escalier ou  */
 /*     autre).                                                   */
 /*    est passé en paramètre                                     */
@@ -286,7 +282,5 @@ begin
 ---------------------------
 	code_retour := code_retour||'#0#';
 	return code_retour;
-end;$_$;
+end;$function$
 
-
-ALTER FUNCTION public.passage(integer) OWNER TO delain;
