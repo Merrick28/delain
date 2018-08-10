@@ -1,4 +1,9 @@
-<?php 
+<?php
+
+//echo "<pre>"; print_r($_REQUEST); echo "</pre>";
+//echo "<pre>"; print_r($_FILES); echo "</pre>";
+//die();
+
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 $t = new template;
@@ -8,6 +13,20 @@ $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
+
+
+//	Préparer la liste des images d'avatar déjà présete sur le serveur.
+$baseimage = "../images/avatars";
+$rep = opendir($baseimage);
+$images_list="";
+$img=0;
+while (false !== ($filename = readdir($rep))) {
+    $imagesize = getimagesize($baseimage.'/'.$filename) ;
+    if (($imagesize[0] > 28) && ($imagesize[1] > 28)) {     // on ne prend que des images de taille raisonnable
+        $images_list.="<div style=\"margin-left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img});\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
+        $img++;
+    }
+}
 
 //
 //Contenu de la div de droite
@@ -19,7 +38,7 @@ ob_start();
 <script language="javascript" src="../scripts/validation.js"></script>
 <script language="javascript" src="../scripts/manip_css.js"></script>
 <script language="javascript" src="../scripts/admin_effets_auto.js"></script>
-<script language="javascript">
+<script language="javascript">//# sourceURL=admin_type_monstre_edit.js
 	function updatePv()
 	{
 		objet = document.getElementById("ChampPvCalcul");
@@ -27,6 +46,40 @@ ob_start();
 		niveau = parseInt(document.getElementById("niveau").value);
 		objet.innerHTML = parseInt(2 * constit + (niveau - 1) * (constit + 12) / 8);
 	}
+
+    function preview_image(event)
+    {
+        var reader = new FileReader();
+        reader.onload = function()
+        {
+            var output = document.getElementById('output_image');
+            output.src = reader.result;
+            $("#type-img-avatar").val("upload");
+            $("#id-gmon_avatar").val("defaut.png");     // en cas de mauvais upload de l'image
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function open_imglist()
+    {
+        if ($("#images-container").css("display")=="none") {
+            $("#images-container").css("width",$("#images-container").parent().width());
+            $("#images-container").css("white-space","nowrap");
+            $("#images-container").css("display","");
+        } else {
+            $("#images-container").css("display","none");
+        }
+    }
+
+    function select_imglist(img)
+    {
+        $("#output_image")[0].src=$("#img-serveur-"+img)[0].src;
+        $("#images-container").css("display","none");
+        $("#type-img-avatar").val("server");
+        var path_image = $("#img-serveur-"+img)[0].src.split("/");
+        var file_image = path_image[path_image.length - 1];
+        $("#id-gmon_avatar").val(file_image);
+    }
 </script>
 <?php $erreur = 0;
 $req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
@@ -284,7 +337,7 @@ if ($erreur == 0)
 			if($sel_method == "edit" or $sel_method == "new_from")
 			{
 				$req_gmon = "select gmon_cod,gmon_nom"
-					.",gmon_for,gmon_dex,gmon_int,gmon_con"
+					.",gmon_for,gmon_dex,gmon_int,gmon_con,gmon_avatar"
 					.",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
 					.",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
 					.",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
@@ -296,10 +349,11 @@ if ($erreur == 0)
 				$db->query($req_gmon);
 				$db->next_record();
 				$gmon_nom = $db->f("gmon_nom");
+                $gmon_avatar = $db->f("gmon_avatar");
 				$race = $db->f("gmon_race_cod");
 			?>
 		<br>
-		<form name="modif_monstre" method="post">
+		<form name="modif_monstre" method="post" enctype="multipart/form-data">
 
 			<?php 				if($sel_method == "edit")
 				{
@@ -320,18 +374,33 @@ if ($erreur == 0)
 			<?php 				if($sel_method == "edit")
 				{
 			?>
-					<TD colspan="4">Type de monstre n°<?php echo $gmon_cod?>. Nom : <input type="text" name="gmon_nom" value="<?php echo $gmon_nom?>"><BR>
+					<TD colspan="2">Type de monstre n°<?php echo $gmon_cod?>. Nom : <input type="text" name="gmon_nom" value="<?php echo $gmon_nom?>"></TD>
+					<TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/<?php echo $gmon_avatar?>">
+
+					<div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
+                        <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
 			<?php 				}
 				else
 				{
 			?>
-					<TD colspan="4">Original : <?php echo $gmon_nom?>. Nom de la copie : <input type="text" name="gmon_nom" value="<?php echo $gmon_nom?> Bis"><BR>
+					<TD colspan="2">Original : <?php echo $gmon_nom?>. Nom de la copie : <input type="text" name="gmon_nom" value="<?php echo $gmon_nom?> Bis"><BR>
+                    <TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/<?php echo $gmon_avatar?>">
+
+                    <div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
+                    <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
 			<?php 				}
 			?>
-
 					</TD>
+
 				</TR>
-				<TR>
+                <TR>
+                    <TD colspan="4">
+                        <input id="type-img-avatar" type="hidden" name="type-img-avatar" value="">
+                        <input id="id-gmon_avatar" type="hidden" name="gmon_avatar" value="<?php echo $gmon_avatar?>">
+                        <div id="images-container" style="display:none; height:80px; width: 100%; overflow-x:scroll;"><?php echo $images_list;?></div>
+                    </TD>
+                    <TR>
+                <TR>
 					<TH width="25%">CHAMP</TH><TH width="25%">VALEUR</TH><TH width="25%">CHAMP</TH><TH width="25%">VALEUR</TH>
 				</TR>
 				<TR>
@@ -894,15 +963,28 @@ if ($erreur == 0)
 			{
 
 		// NOUVEAU MONSTRE GENERIQUE ?>
-		<form method="post">
+		<form method="post" enctype="multipart/form-data">
 			<input type="hidden" name="methode2" value="edit">
 			<input type="hidden" name="methode" value="create_mon">
 
 			<TABLE width="80%" align="center">
 				<TR>
-					<TD colspan="4">Perso N&deg;<?php echo $gmon_cod?> Nom:<input type="text" name="gmon_nom" value=""><BR>
+					<TD colspan="2">Perso N&deg;<?php echo $gmon_cod?> Nom:<input type="text" name="gmon_nom" value=""><BR>
 					</TD>
+                    <TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/defaut.png">
+
+                        <div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
+                            <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
+
 				</TR>
+                <TR>
+                    <TD colspan="4">
+                        <input id="type-img-avatar" type="hidden" name="type-img-avatar" value="">
+                        <input id="id-gmon_avatar" type="hidden" name="gmon_avatar" value="<?php echo $gmon_avatar?>">
+                        <div id="images-container" style="display:none; height:80px; width: 100%; overflow-x:scroll;"><?php echo $images_list;?></div>
+                    </TD>
+                <TR>
+                <TR>
 				<TR>
 					<TH width="25%">CHAMP</TH><TH width="25%">VALEUR</TH><TH width="25%">CHAMP</TH><TH width="25%">VALEUR</TH>
 				</TR>

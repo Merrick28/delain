@@ -296,7 +296,7 @@ if ($erreur == 0)
         {
             $filename = "f_{$style}_{$fond_id}.png" ;
             $imagesize = @getimagesize($_FILES["fond_file"]["tmp_name"]) ;
-            if (($imagesize[0] != 28) || ($imagesize[0] != 28))
+            if (($imagesize[0] != 28) || ($imagesize[1] != 28))
             {
                 echo "<b>Impossible d'ajouter ce fond, l'image n'est pas aux dimensions de 28x28 pixels.</b><br><br>";
             }
@@ -367,7 +367,7 @@ if ($erreur == 0)
         {
             $filename = "t_{$style}_mur_{$mur_id}.png" ;
             $imagesize = @getimagesize($_FILES["mur_file"]["tmp_name"]) ;
-            if (($imagesize[0] != 28) || ($imagesize[0] != 28))
+            if (($imagesize[0] != 28) || ($imagesize[1] != 28))
             {
                 echo "<b>Impossible d'ajouter ce mur, l'image n'est pas aux dimensions de 28x28 pixels.</b><br><br>";
             }
@@ -414,7 +414,7 @@ if ($erreur == 0)
         {
             $filename = "t_{$style}_{$fig_id}.png" ;
             $imagesize = @getimagesize($_FILES["fig_file"]["tmp_name"]) ;
-            if (($imagesize[0] != 28) || ($imagesize[0] != 28))
+            if (($imagesize[0] != 28) || ($imagesize[1] != 28))
             {
                 echo "<b>Impossible d'ajouter cette figurine, l'image n'est pas aux dimensions de 28x28 pixels.</b><br><br>";
             }

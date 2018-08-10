@@ -13,6 +13,33 @@ if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
 }
 $log = date("d/m/y - H:i")."$perso_nom (compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: $gmon_cod\n";
 
+// On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
+if ($_POST["type-img-avatar"] == "upload")
+{
+    $filename = $_FILES["avatar_file"]["name"] ;
+    $imagesize = @getimagesize($_FILES["avatar_file"]["tmp_name"]) ;
+    if (($imagesize[0] <= 28) || ($imagesize[1] <= 28))
+    {
+        echo "<b>Impossible d'ajouter l'image du monstre, elle est trop petite.</b><br>";
+        $_POST["gmon_avatar"] = "defaut.png" ;
+        $gmon_avatar = "defaut.png" ;
+    }
+    else if ( file_exists ( $baseimage.'/'.$filename ) )
+    {
+        echo "<b>Impossible d'ajouter l'image du monstre, le nom existe déjà sur le serveur.</b><br>";
+        $_POST["gmon_avatar"] = "defaut.png" ;
+        $gmon_avatar = "defaut.png" ;
+    }
+    else
+    {
+        $baseimage = "../images/avatars";
+        move_uploaded_file ( $_FILES["avatar_file"]["tmp_name"] , $baseimage.'/'.$filename );
+        $log = $log."Ajout/Modification de l'image sur le serveur : /images/avatars/".$filename."\n";
+        $_POST["gmon_avatar"] = $filename ;
+        $gmon_avatar = $filename ;
+    }
+}
+
 switch ($methode) {
 	case "create_mon":
 		$req_cre_mon_cod =  "select nextval('seq_gmon_cod') as cod";
@@ -21,6 +48,7 @@ switch ($methode) {
 		if ($gmon_duree_vie == '') $gmon_duree_vie = 0;
 		$gmon_nom = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_nom)));
 		$gmon_description = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_description)));
+		$gmon_avatar = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_avatar)));
 		if($db_cre_mon->next_record()){
 			$gmon_cod = $db_cre_mon->f("cod");
 			$req_cre_gmon = "insert into monstre_generique (gmon_cod,gmon_nom"
@@ -28,12 +56,13 @@ switch ($methode) {
 				.",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
 				.",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
 				.",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
-				.",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie) values ($gmon_cod, e'$gmon_nom'"
+				.",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar) values ($gmon_cod, e'$gmon_nom'"
 				.",$gmon_for,$gmon_dex,$gmon_int,$gmon_con"
 				.",$gmon_race_cod,$gmon_temps_tour,$gmon_des_regen,$gmon_valeur_regen,$gmon_vue"
 				.",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
 				.",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
-				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie)";
+				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar')";
+            echo $req_cre_gmon;
 			$db_cre_mon->query($req_cre_gmon);
 		}
 		writelog($log."Nouveau type de monstre : $gmon_nom \n",'monstre_edit');
@@ -42,7 +71,8 @@ switch ($methode) {
 
 	case "update_mon":
 		$db_cre_mon = new base_delain;
-		
+
+
 		if ($gmon_duree_vie == '') $gmon_duree_vie = 0;
 			
 		$fields = array("gmon_nom",
@@ -77,7 +107,8 @@ switch ($methode) {
 			"gmon_type_ia",
 			"gmon_description",
 			"gmon_quete",
-			"gmon_duree_vie");
+			"gmon_duree_vie",
+            "gmon_avatar");
 		// SELECT POUR LES VALEURS PRECEDENTES
 		$req_sel_mon = "select gmon_cod";
 		foreach ($fields as $i => $value) {
@@ -109,7 +140,7 @@ switch ($methode) {
 			. ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
 			. ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
 			. ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
-			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie where gmon_cod = $gmon_cod";
+			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) ."' where gmon_cod = $gmon_cod";
 		//echo $req_cre_gmon;
 		$db_cre_mon->query($req_cre_gmon);
 		echo "MAJ modèle<br>";
