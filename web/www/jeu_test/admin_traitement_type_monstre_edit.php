@@ -14,7 +14,7 @@ if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
 $log = date("d/m/y - H:i")."$perso_nom (compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: $gmon_cod\n";
 
 // On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
-if ($_POST["type-img-avatar"] == "upload")
+if (($_POST["type-img-avatar"] == "upload") && ($_FILES["avatar_file"]["tmp_name"]!=""))
 {
     $filename = $_FILES["avatar_file"]["name"] ;
     $imagesize = @getimagesize($_FILES["avatar_file"]["tmp_name"]) ;
