@@ -149,22 +149,26 @@ if ($db->f("perso_sta_combat") == 'N')
 }
 echo ">Non</option>";
 echo "</td></tr>";
-//$req = "select ia_type,ia_nom from type_ia,perso_ia
-//	where pia_perso_cod = $perso_cod
-//	and pia_ia_type = ia_type";
-// Marlyza - 2018-08-14 - Si le monstre n'est pas dans la table de définition des type d'IA, proposer sa valeur d'IA en monstre générique
-$req = "SELECT ia_type,ia_nom FROM (
-	select ia_type,ia_nom from type_ia,perso_ia where pia_perso_cod = $perso_cod and pia_ia_type = ia_type
-UNION
-	select ia_type,ia_nom from type_ia,perso,monstre_generique where perso_cod = $perso_cod and perso_gmon_cod = gmon_cod and gmon_type_ia = ia_type
-) req LIMIT 1";
+// Marlyza - 2018-08-14 - Trouver l'IA du monstre en générqiue
+$req = "select ia_type,ia_nom from type_ia,perso,monstre_generique where perso_cod = $perso_cod and perso_gmon_cod = gmon_cod and gmon_type_ia = ia_type";
+$db->query($req);
+$nom_ia_generique = "" ;
+if($db->nf() > 0)
+{
+    $db->next_record();
+    $nom_ia_generique = " (".$db->f("ia_nom").")";
+}
+
+$req = "select ia_type,ia_nom from type_ia,perso_ia
+	where pia_perso_cod = $perso_cod
+	and pia_ia_type = ia_type";
 $db->query($req);
 if($db->nf() == 0)
 	$tia = 0;
 else
 {
 	$db->next_record();
-	$tia = $db->f("ia_type");	
+	$tia = $db->f("ia_type");
 }	
 echo "<tr>";
 echo "<td class=\"soustitre2\"><p>Type IA</td>";
@@ -174,7 +178,7 @@ if ($tia == 0)
 {
 	echo " selected";
 }
-echo ">Standard</option>";
+echo ">Standard/Générique{$nom_ia_generique}</option>";
 $req = "select ia_type,ia_nom from type_ia order by ia_type";
 $db->query($req);
 while($db->next_record())
