@@ -342,7 +342,7 @@ if ($erreur == 0)
 					.",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
 					.",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description"
 					.",gmon_pv,gmon_pourcentage_aleatoire,gmon_serie_arme_cod,gmon_serie_armure_cod"
-					.",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie"
+					.",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique"
 					." from monstre_generique where gmon_cod = $gmon_cod";
 				$db = new base_delain;
 				$db->query($req_gmon);
@@ -586,6 +586,23 @@ if ($erreur == 0)
 					$ia_cod = $db_ia->f("ia_type");
 					$sel = ($ia_cod == $ia) ? "selected" : "";
 					echo "<OPTION value=\"$ia_cod\" ". $sel .">".$db_ia->f("ia_nom")."</OPTION>\n";
+				}
+			?>
+						</SELECT>
+					</TD>
+					<TD>Voie magique</TD><TD>
+						<SELECT name="gmon_voie_magique">
+							<option value="null">aucune</option>
+			<?php 				// LISTE DES IA possibles
+				$voie = $db->f("gmon_voie_magique");
+				$req_voie = "select mvoie_cod,mvoie_libelle from voie_magique order by mvoie_libelle";
+				$db_voie = new base_delain;
+                $db_voie->query($req_voie);
+				while($db_voie->next_record())
+				{
+                    $mvoie_cod = $db_voie->f("mvoie_cod");
+					$sel = ($mvoie_cod == $voie) ? "selected" : "";
+					echo "<OPTION value=\"$mvoie_cod\" ". $sel .">".$db_voie->f("mvoie_libelle")."</OPTION>\n";
 				}
 			?>
 						</SELECT>

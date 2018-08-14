@@ -108,7 +108,8 @@ switch ($methode) {
 			"gmon_description",
 			"gmon_quete",
 			"gmon_duree_vie",
-            "gmon_avatar");
+            "gmon_avatar",
+            "gmon_voie_magique");
 		// SELECT POUR LES VALEURS PRECEDENTES
 		$req_sel_mon = "select gmon_cod";
 		foreach ($fields as $i => $value) {
@@ -140,7 +141,7 @@ switch ($methode) {
 			. ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
 			. ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
 			. ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
-			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) ."' where gmon_cod = $gmon_cod";
+			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) ."', gmon_voie_magique=$gmon_voie_magique where gmon_cod = $gmon_cod";
 		//echo $req_cre_gmon;
 		$db_cre_mon->query($req_cre_gmon);
 		echo "MAJ modèle<br>";
