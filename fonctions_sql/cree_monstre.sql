@@ -57,7 +57,8 @@ declare
 	v_dist integer;
 	v_vampirisme numeric;
 	v_pv integer;
-    v_nb_recep integer;
+  v_nb_recep integer;
+  v_voie_magique integer;   --Marlyza - 2018-08-14 - ajout de la voie magique sur les mosntres generique
 -- variables globales
 	compt integer;
 	v_code_perso integer;
@@ -124,10 +125,10 @@ begin
 	end if;
 	select into 	v_nom,v_for,v_dex,v_int,v_con,v_race,v_temps_tour,v_des_regen,
 						v_valeur_regen,v_vue,v_niveau,v_amelioration_vue,v_amelioration_regen,v_amelioration_degats,v_amelioration_armure,v_nb_des_degats,v_val_des_degats,
-						v_or,v_arme,v_armure,v_dist,v_vampirisme,v_nb_recep,v_code_arme_serie,v_code_armure_serie
+						v_or,v_arme,v_armure,v_dist,v_vampirisme,v_nb_recep,v_code_arme_serie,v_code_armure_serie, v_voie_magique
 		gmon_nom,gmon_for,gmon_dex,gmon_int,gmon_con,gmon_race_cod,gmon_temps_tour,gmon_des_regen,
 		gmon_valeur_regen,gmon_vue,gmon_niveau,gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure,gmon_nb_des_degats,gmon_val_des_degats,
-		coalesce(gmon_or,0),gmon_arme,gmon_armure,gmon_amel_deg_dist,gmon_vampirisme,gmon_nb_receptacle,gmon_serie_arme_cod,gmon_serie_armure_cod
+		coalesce(gmon_or,0),gmon_arme,gmon_armure,gmon_amel_deg_dist,gmon_vampirisme,gmon_nb_receptacle,gmon_serie_arme_cod,gmon_serie_armure_cod,gmon_voie_magique
 		from monstre_generique
 		where gmon_cod = v_gmon;
 		-- genre
@@ -201,7 +202,8 @@ begin
 		perso_description = (select gmon_description from monstre_generique where gmon_cod = v_gmon),
 		perso_po = lancer_des(1,v_or),
 		perso_taille = (select gmon_taille from monstre_generique where gmon_cod = v_gmon),
-		perso_nb_receptacle = v_nb_recep
+		perso_nb_receptacle = v_nb_recep,
+		perso_voie_magique = v_voie_magique
 		where perso_cod = v_code_perso;
 	update perso set perso_px = limite_niveau_actuel(v_code_perso),perso_dlt = perso_dlt - '12 hours'::interval where perso_cod = v_code_perso;
 /*****************************************/
