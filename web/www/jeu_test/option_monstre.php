@@ -149,9 +149,15 @@ if ($db->f("perso_sta_combat") == 'N')
 }
 echo ">Non</option>";
 echo "</td></tr>";
-$req = "select ia_type,ia_nom from type_ia,perso_ia
-	where pia_perso_cod = $perso_cod
-	and pia_ia_type = ia_type";
+//$req = "select ia_type,ia_nom from type_ia,perso_ia
+//	where pia_perso_cod = $perso_cod
+//	and pia_ia_type = ia_type";
+// Marlyza - 2018-08-14 - Si le monstre n'est pas dans la table de définition des type d'IA, proposer sa valeur d'IA en monstre générique
+$req = "SELECT ia_type,ia_nom FROM (
+	select ia_type,ia_nom from type_ia,perso_ia where pia_perso_cod = $perso_cod and pia_ia_type = ia_type
+UNION
+	select ia_type,ia_nom from type_ia,perso,monstre_generique where perso_cod = $perso_cod and perso_gmon_cod = gmon_cod and gmon_type_ia = ia_type
+) req LIMIT 1";
 $db->query($req);
 if($db->nf() == 0)
 	$tia = 0;
