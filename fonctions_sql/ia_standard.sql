@@ -143,14 +143,15 @@ begin
 	i_temps_tour := trim(to_char(v_temps_tour,'99999999999'))||' minutes';
 	if v_dlt + i_temps_tour - '10 minutes'::interval >= now() then
 		doit_jouer := 1;
+		code_retour := code_retour||E'DLT dans 10 minutes, le perso doit jouer.\n';
 	end if;
 	temp := lancer_des(1,100);
 	if temp > 50 then
 		if doit_jouer = 0 then
 			code_retour := code_retour||'Perso non joué.';
 			if (code_retour is null) then
-			return 'code retour null 1';
-		end if;
+			    return 'code retour null 1';
+		  end if;
 			return code_retour;
 		end if;
 	end if;
@@ -259,8 +260,8 @@ begin
 				execute fonction_sort;
 				code_retour := code_retour||E'Lancement mercurochrome.\n';
 				if (code_retour is null) then
-			return 'code retour null 5';
-		end if;
+			    return 'code retour null 5';
+		    end if;
 			end if;
 		end if;
 	end if;
@@ -287,23 +288,23 @@ begin
 			(select lock_attaquant from lock_combat where lock_cible = v_monstre
 				union
 			select lock_cible from lock_combat where lock_attaquant = v_monstre) then
-		select into temp_cible count(distinct(perso_cod))
-			from perso,lock_combat
-			where (lock_cible = v_monstre and lock_attaquant = perso_cod)
-			or (lock_cible = perso_cod and lock_attaquant = v_monstre);
-		temp_cible := lancer_des(1,temp_cible);
-		temp_cible := temp_cible - 1;
-		select into v_cible
-			distinct perso_cod
-			from perso,lock_combat
-			where (lock_cible = v_monstre and lock_attaquant = perso_cod)
-			or (lock_cible = perso_cod and lock_attaquant = v_monstre)
-			offset temp_cible
-			limit 1;
-		code_retour := code_retour||'Changement de cible suite à lock, nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\n';
-		if (code_retour is null) then
-			return 'code retour null 8';
-		end if;
+		  select into temp_cible count(distinct(perso_cod))
+		  	from perso,lock_combat
+		  	where (lock_cible = v_monstre and lock_attaquant = perso_cod)
+		  	or (lock_cible = perso_cod and lock_attaquant = v_monstre);
+		  temp_cible := lancer_des(1,temp_cible);
+		  temp_cible := temp_cible - 1;
+		  select into v_cible
+		  	distinct perso_cod
+		  	from perso,lock_combat
+		  	where (lock_cible = v_monstre and lock_attaquant = perso_cod)
+		  	or (lock_cible = perso_cod and lock_attaquant = v_monstre)
+		  	offset temp_cible
+		  	limit 1;
+		  code_retour := code_retour||'Changement de cible suite à lock, nouvelle cible : '||trim(to_char(v_cible,'9999999999999'))||E'\n';
+		  if (code_retour is null) then
+		  	return 'code retour null 8';
+		  end if;
 		end if;
 	end if;
 	select into	nb_cible_en_vue count(perso_cod)
@@ -428,15 +429,18 @@ begin
 		where lock_cible = v_monstre;
 	if not found then
 -- on choisit la cible du sort de soutien
+    code_retour := code_retour||E'Recherche une cible pour sort de soutien.\n';
 		select into v_soutien gmon_soutien
 			from monstre_generique,perso
 			where perso_cod = v_monstre
 			and perso_gmon_cod = gmon_cod;
 		if not found then
 			cible_soutien := v_monstre;
+			code_retour := code_retour||E'Se cible lui-même (N/A).\n';
 		else
 			if v_soutien = 'N' then
 				cible_soutien := v_monstre;
+				code_retour := code_retour||E'Se cible lui-même (N).\n';
 			else
 			  --- Marlysa 2018-05-28: perso_monstre_attaque_monstre peux être NULL => COALESCE
 				select into nb_joueur_en_vue count(perso_cod)
@@ -452,6 +456,7 @@ begin
 					and ppos_pos_cod = pos_cod;
 				if nb_joueur_en_vue = 0 then
 					cible_soutien := v_monstre;
+				  code_retour := code_retour||E'Se cible lui-même (0).\n';
 				else
 					nb_joueur_en_vue := lancer_des(1,nb_joueur_en_vue);
 					nb_joueur_en_vue := nb_joueur_en_vue - 1;
@@ -470,6 +475,7 @@ begin
 						offset nb_joueur_en_vue;
 					if cible_soutien is null then
 						cible_soutien := v_monstre;
+				    code_retour := code_retour||E'Se cible lui-même (null).\n';
 					end if;
 				end if;
 			end if;
@@ -504,12 +510,16 @@ begin
 				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'9999999999'))||','||trim(to_char(cible_soutien,'999999999'))||',1)';
 	-- on lance le sort proprement dit
 				execute fonction_sort;
-				code_retour := code_retour||'Lancement de sort de soutien sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
+				code_retour := code_retour||'Lancement de sort de soutien standard sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
 				if (code_retour is null) then
-			return 'code retour null 13';
-		end if;
+          return 'code retour null 13';
+        end if;
 			end if;
+		else
+		  code_retour := code_retour||E'Pas de sort de soutien trouvé pour soutenir : '||trim(to_char(cible_soutien,'999999999'))||'.\n';
 		end if;
+	else
+    code_retour := code_retour||E'Des locks de combat empêche le soutien.\n';
 	end if;
 -- on attaque avec les compétences spéciales
 	perform comp_spe_monstre(v_monstre,v_cible);
