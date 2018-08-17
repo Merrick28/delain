@@ -519,7 +519,7 @@ begin
 		  code_retour := code_retour||E'Pas de sort de soutien trouvé pour soutenir : '||trim(to_char(cible_soutien,'999999999'))||'.\n';
 		end if;
 	else
-    code_retour := code_retour||E'Des locks de combat empêche le soutien.\n';
+    code_retour := code_retour||E'Des locks de combat empêchent le soutien.\n';
 	end if;
 -- on attaque avec les compétences spéciales
 	perform comp_spe_monstre(v_monstre,v_cible);
