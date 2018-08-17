@@ -80,7 +80,7 @@ declare
 
 begin
   doit_jouer := 0;
-  code_retour := 'IA lache<br>Monstre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
+  code_retour := 'IA rincevent<br>Monstre '||trim(to_char(v_monstre,'999999999999'))||'<br>';
   limite_surcharge := 1;
   /***********************************/
   /* Etape 1 : on récupère les infos */
