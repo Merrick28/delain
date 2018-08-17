@@ -63,7 +63,7 @@ declare
 
 begin
   doit_jouer := 0;
-  code_retour := 'IA standard<br>Monstre ' || trim(to_char(v_monstre, '999999999999'))||'<br>';
+  code_retour := 'IA suivre_message<br>Monstre ' || trim(to_char(v_monstre, '999999999999'))||'<br>';
   /***********************************/
   /* Etape 1 : on récupère les infos */
   /* du monstre                      */
