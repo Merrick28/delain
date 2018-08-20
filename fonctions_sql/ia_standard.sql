@@ -510,13 +510,13 @@ begin
 				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'9999999999'))||','||trim(to_char(cible_soutien,'999999999'))||',1)';
 	-- on lance le sort proprement dit
 				execute fonction_sort;
-				code_retour := code_retour||'Lancement de sort de soutien standard sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
+				code_retour := code_retour||'Lancement de sort de soutien ('||fonction_sort||') standard sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
 				if (code_retour is null) then
           return 'code retour null 13';
         end if;
 			end if;
 		else
-		  code_retour := code_retour||E'Pas de sort de soutien trouvé pour soutenir : '||trim(to_char(cible_soutien,'999999999'))||'.\n';
+		  code_retour := code_retour||E'Pas de sort de soutien trouvé pour soutenir : '||trim(to_char(cible_soutien,'999999999'))||E'.\n';
 		end if;
 	else
     code_retour := code_retour||E'Des locks de combat empêchent le soutien.\n';
