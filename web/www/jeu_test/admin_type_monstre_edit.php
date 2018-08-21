@@ -19,7 +19,7 @@ $img=0;
 while (false !== ($filename = readdir($rep))) {
     $avatar_perso_cod = 1* substr($filename, 0, -4);
     if ($avatar_perso_cod==0) {   // si le pattern correspond, c'est une image de perso (pas de monstre) on ne l'affiche pas!
-        $imagesize = getimagesize($baseimage.'/'.$filename) ;
+        $imagesize = @getimagesize($baseimage.'/'.$filename) ;
         if (($imagesize[0] > 28) && ($imagesize[1] > 28)) {     // on ne prend que des images de taille raisonnable
             $images_list.="<div style=\"margin-left:5px; display:inline-block;\"><img onclick=\"select_imglist({$img});\" height=\"60px\" id=\"img-serveur-{$img}\" src=\"{$baseimage}/{$filename}\"></div>";
             $img++;
@@ -320,7 +320,7 @@ if ($erreur == 0)
 					"</TD><TD>",$db_gmon->f("gmon_des_regen"),"D",$db_gmon->f("gmon_valeur_regen"),"(+",$db_gmon->f("gmon_amelioration_regen"),")",
 					"</TD><TD>",$db_gmon->f("gmon_vue"),
 					"</TD><TD>",$db_gmon->f("gmon_temps_tour"),
-					"</TD><TD>",$db_gmon->f("objets2.obcar_armure"),"(+",$db_gmon->f("gmon_amelioration_armure"),")",
+					"</TD><TD>",$db_gmon->f("obcar_armure")*1,"(+",$db_gmon->f("gmon_amelioration_armure"),")",
 					"</TD><TD>",$arme,
 					"</TD><TD>",$armure,"
 					</TD><TD>",$db_gmon->f("gmon_nb_receptacle"),
