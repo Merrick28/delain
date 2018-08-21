@@ -61,6 +61,10 @@ if ($erreur == 0)
 		</form>
 		<hr />
 		ou <b><a href="?methode=nouveau">créer un nouveau compte admin</a>.</b>
+		<br><br>ou <b><a href="?methode=lister&filtre_actif=O">lister les comptes admin actifs</a>.</b>
+		<br>ou <b><a href="?methode=lister&filtre_actif=N">lister les comptes admin inactifs</a>.</b>
+		<br>ou <b><a href="?methode=phpPgAdmin">lister les comptes phpPgAdmin</a>.</b>
+        <br><br>
 	</div>
 	<script type="text/javascript" src="../scripts/manip_css.js"></script>
 	<script>
@@ -123,7 +127,91 @@ if ($erreur == 0)
 	{
 		case "debut":
 		break;
-		
+
+		case "phpPgAdmin":
+            echo "<p class=\"titre\">Liste des comptes phpPgAdmin </p>";
+            echo "<table class=\"soustitre2\ cellspacing=\"2\" cellpadding=\"2\">";
+            echo "<tr>";
+            echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Id</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Droits</b></p></td>";
+            echo "<tr>";
+
+            $req_pers = "SELECT u.usename ,u.usesysid ,
+                                   CASE WHEN u.usesuper AND u.usecreatedb THEN 'superuser, create database'::text
+                                   WHEN u.usesuper THEN 'superuser'::text
+                                   WHEN u.usecreatedb THEN 'create database'::text
+                                   ELSE ''::text
+                                   END AS attributes
+                           FROM pg_catalog.pg_user u ORDER BY usename;";
+            $db->query($req_pers);
+            while($db->next_record()){
+                echo "<tr>";
+                echo "<td class=\"soustitre2\"><b>".$db->f("usename")."</b></td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("usesysid")."</td>";
+                echo "<td class=\"soustitre2\">".$db->f("attributes")."</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+		break;
+
+		case "lister":
+
+            echo "<p class=\"titre\">Liste des comptes admin. ".($filtre_actif=='O' ? "actifs" : "inactifs")." </p>";
+            echo "<table class=\"soustitre2\ cellspacing=\"2\" cellpadding=\"2\">";
+            echo "<tr>";
+            echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Perso</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Monstres</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Monstre<br>Gen.</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Contrôle</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Logs</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Automap</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Cartes<br>AM</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Étages</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Obj<br>Gen.</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Droits</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Cartes</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Logs AM</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Enchant.</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Potions</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Sondages</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>News</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Anim.</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Anim.</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><b>Magie</b></p></td>";
+            echo "</tr>";
+
+            $req_pers = "select compt_cod, compt_nom, compt_mail, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
+            $db->query($req_pers);
+            while($db->next_record()){
+                echo "<tr>";
+                echo "<td class=\"soustitre2\"><span title=\"".$db->f("compt_mail")."\"><a href=\"admin_gestion_droits.php?methode=et3&vcompte=".$db->f("compt_cod")."\">".$db->f("compt_nom")."</a></span></td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_modif_perso")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_creer_monstre")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_modif_gmon")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_controle")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_acces_log")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_monstre_automap")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_monstre_carte")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_etage")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_objet")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_gere_droits")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_modif_carte")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_controle_admin")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_enchantements")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_potions")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_sondage")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_news")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_animations")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_magie")."</td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_factions")."</td>";
+                echo "</tr>";
+            }
+            echo "</table>";
+
+		break;
+
 		case "nouveau":
 		?>
 			<form method="post">
