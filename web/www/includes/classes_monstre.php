@@ -4,7 +4,8 @@
 
 function writelog_class_sql($textline)
 {
-	$filename='/home/sdewitte/public_html/debug/sql.log'; // or whatever your path and filename
+	//$filename='/home/sdewitte/public_html/debug/sql.log'; // or whatever your path and filename
+	$filename= __DIR__ .'/../debug/sql.log'; // or whatever your path and filename
 	if (!file_exists($filename))
 	{
 		echo '<!-- creation -->';
