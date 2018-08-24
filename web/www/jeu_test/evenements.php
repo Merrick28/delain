@@ -57,7 +57,7 @@ att.perso_nom as attaquant, def.perso_nom as cible, soi.perso_nom as soimeme
 	left outer join perso def ON levt_cible = def.perso_cod
 	where levt_perso_cod1 = $perso_cod
 	$restr
-	order by levt_date desc,levt_cod desc
+	order by levt_cod desc
 	limit 20
 	offset $evt_start ";
 $db->query($req_evt);
