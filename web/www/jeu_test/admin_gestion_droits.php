@@ -161,6 +161,7 @@ if ($erreur == 0)
             echo "<table class=\"soustitre2\ cellspacing=\"2\" cellpadding=\"2\">";
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></p></td>";
+            echo "<td class=\"soustitre2\" style=\"min-width: 60px;\"><p><b>Der. Connex.</b></p></td>";
             echo "<td class=\"soustitre2\"><p><b>Perso</b></p></td>";
             echo "<td class=\"soustitre2\"><p><b>Monstres</b></p></td>";
             echo "<td class=\"soustitre2\"><p><b>Monstre<br>Gen.</b></p></td>";
@@ -182,11 +183,12 @@ if ($erreur == 0)
             echo "<td class=\"soustitre2\"><p><b>Magie</b></p></td>";
             echo "</tr>";
 
-            $req_pers = "select compt_cod, compt_nom, compt_mail, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
+            $req_pers = "select compt_cod, compt_nom, compt_mail, TO_CHAR(compt_der_connex, 'YY-MM-DD HH:MI') compt_der_connex, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
             $db->query($req_pers);
             while($db->next_record()){
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><span title=\"".$db->f("compt_mail")."\"><a href=\"admin_gestion_droits.php?methode=et3&vcompte=".$db->f("compt_cod")."\">".$db->f("compt_nom")."</a></span></td>";
+                echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("compt_der_connex")."</td>";
                 echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_modif_perso")."</td>";
                 echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_creer_monstre")."</td>";
                 echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("dcompt_modif_gmon")."</td>";
