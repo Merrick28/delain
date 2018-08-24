@@ -169,7 +169,7 @@ begin
     END IF;
     select perso_cod into temp from perso
            where perso_cod = v_cible
-           and perso_actif = 1;
+           and perso_actif = 'O';
     if not found 
            then
       return 'Destinataire non existant';
