@@ -33,6 +33,7 @@ else
 		"animations" => array("animations.log", "Lancement des animations."),
 		"lieux" => array("lieux_etages.log", "Modification sur les étages et lieux."),
 		"poste" => array("relais_poste.log", "Transactions via les relais de la poste."),
+		"comptes" => array("compte_creation.log", "Creation de compte de joueur."),
 	);
 	$visu = (isset($visu)) ? $visu : "début";
 	$mode = (isset($mode)) ? $mode : "web";
