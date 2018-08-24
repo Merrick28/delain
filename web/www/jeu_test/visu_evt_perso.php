@@ -93,7 +93,7 @@ if ($db->is_admin($compt_cod))
 		left outer join perso p1 ON p1.perso_cod = levt_attaquant
 		left outer join perso p2 ON p2.perso_cod = levt_cible
 		where levt_perso_cod1 = ' . $visu . '
-		order by levt_date desc,levt_cod desc
+		order by levt_cod desc
 		limit 20
 		offset ' . $pevt_start;
 
@@ -136,7 +136,7 @@ else
 		left outer join perso p2 ON p2.perso_cod = levt_cible
 		where levt_perso_cod1 = ' . $visu . '
 			and levt_visible = \'O\'
-		order by levt_date desc,levt_cod desc
+		order by levt_cod desc
 		limit 20
 		offset ' . $pevt_start;
 
