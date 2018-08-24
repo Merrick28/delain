@@ -26,6 +26,10 @@ if($compte->getByNom($_GET['nom']))
         $template = $twig->load('validation_compte2.twig');
         $options_twig = array();
         echo $template->render(array_merge($options_twig_defaut, $options_twig));
+
+        // ajout de la creation du compte dans un fihier de log pour suivi dans la partie admin
+        $log = "Activation du compte  <a href=\"/jeu_test/detail_compte.php?vcompte={$compte->compt_cod}\">{$compte->compt_nom}</a> pour <a href=\"mailto:{$compte->compt_mail}\">{$compte->compt_mail}</a>";
+        writelog($log,'compte_creation');
         die('');
     }
     else
