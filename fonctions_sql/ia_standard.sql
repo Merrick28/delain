@@ -65,6 +65,7 @@ declare
 	i_temps_tour interval;		-- temps du tour en intervalle
 	temp_niveau integer;			-- random pour passage niveau
 	limite_surcharge integer;
+	v_gmon_nom text;     -- nom du monstre générique pour débuggage
 -------------------------------------------------------
 -- variables temporaires ou de calcul
 -------------------------------------------------------
@@ -109,7 +110,8 @@ begin
 						statique_hors_combat,
 						v_dlt,
 						v_temps_tour,
-						v_soutien
+						v_soutien,
+						v_gmon_nom
 					limite_niveau(v_monstre),
 					perso_px,
 					perso_pa,
@@ -127,7 +129,8 @@ begin
 					perso_sta_hors_combat,
 					perso_dlt,
 					perso_temps_tour,
-					gmon_soutien
+					gmon_soutien,
+					gmon_nom
 		from perso,perso_position,positions,monstre_generique
 		where perso_cod = v_monstre
 		and ppos_perso_cod = v_monstre
@@ -135,7 +138,7 @@ begin
 		and perso_gmon_cod = gmon_cod ;
 
   /* Ajout d'info sur le monstre pour débuggage */
-  code_retour := code_retour||' actif='||actif||', Soutien='||v_soutien||E'\n';
+  code_retour := code_retour||v_gmon_nom||': actif='||actif||', Soutien='||v_soutien||E'\n';
 
 	if actif != 'O' then
 		return 'inactif !';
@@ -510,7 +513,7 @@ begin
 				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'9999999999'))||','||trim(to_char(cible_soutien,'999999999'))||',1)';
 	-- on lance le sort proprement dit
 				execute fonction_sort;
-				code_retour := code_retour||'Lancement de sort de soutien ('||fonction_sort||') standard sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
+				code_retour := code_retour||'Lancement de sort de soutien standard ('||fonction_sort||') sur '||trim(to_char(cible_soutien,'9999999999999'))||E'.\n';
 				if (code_retour is null) then
           return 'code retour null 13';
         end if;
