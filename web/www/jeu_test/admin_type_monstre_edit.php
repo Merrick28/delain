@@ -335,7 +335,14 @@ if ($erreur == 0)
 		case "edit":// MODIFICATION DE MONSTRE GENERIQUE EXISTANT
 			if($sel_method == "edit" or $sel_method == "new_from")
 			{
-				$req_gmon = "select gmon_cod,gmon_nom"
+                // Calcul du nombre de sorts de soutien, pour informer l'admin s'il doit en ajouter
+                $db = new base_delain;
+                $req_gmon = "SELECT count(*) nb_sort_soutien FROM sorts_monstre_generique JOIN sorts ON sort_cod=sgmon_sort_cod and sort_soutien = 'O' WHERE sgmon_gmon_cod = $gmon_cod";
+                $db->query($req_gmon);
+                $db->next_record();
+                $nb_sort_soutien = $db->f("nb_sort_soutien");
+
+                $req_gmon = "select gmon_cod,gmon_nom"
 					.",gmon_for,gmon_dex,gmon_int,gmon_con,gmon_avatar"
 					.",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
 					.",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
@@ -344,12 +351,12 @@ if ($erreur == 0)
 					.",gmon_pv,gmon_pourcentage_aleatoire,gmon_serie_arme_cod,gmon_serie_armure_cod"
 					.",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique"
 					." from monstre_generique where gmon_cod = $gmon_cod";
-				$db = new base_delain;
 				$db->query($req_gmon);
 				$db->next_record();
 				$gmon_nom = $db->f("gmon_nom");
                 $gmon_avatar = $db->f("gmon_avatar");
 				$race = $db->f("gmon_race_cod");
+
 			?>
 		<br>
 		<form name="modif_monstre" method="post" enctype="multipart/form-data">
@@ -502,7 +509,7 @@ if ($erreur == 0)
 				</TR>
 
 				<TR>
-					<TD>Soutien</TD><TD><INPUT type="text" name="gmon_soutien" value="<?php echo $db->f("gmon_soutien");?>"></TD>
+					<TD>Soutien (<?php echo $nb_sort_soutien==0 ? "pas de " : $nb_sort_soutien ;?> sorts)</TD><TD><INPUT type="text" name="gmon_soutien" value="<?php echo $db->f("gmon_soutien");?>"></TD>
 					<TD>Vampirisme</TD><TD><INPUT type="text" name="gmon_vampirisme" value="<?php echo $db->f("gmon_vampirisme");?>"></TD>
 				</TR>
 
@@ -621,16 +628,17 @@ if ($erreur == 0)
 		SORTS
 		<TABLE width="80%" align="center">
 			<tr><th>Sort</th><th>--</th></tr>
-			<?php 					$req_m_sorts = "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod";
+			<?php 					$req_m_sorts = "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod";
 					$db_m_sorts = new base_delain;
 					$db_m_sorts->query($req_m_sorts);
 					while($db_m_sorts->next_record())
 					{
 						$sort_nom = $db_m_sorts->f("sort_nom");
 						$sgmon_chance = $db_m_sorts->f("sgmon_chance");
+                        $sort_nom_advance = $db_m_sorts->f("sort_aggressif")=='O' ? ' <i>(agressif)</i>' : ($db_m_sorts->f("sort_soutien")=='O' ? ' <i>(soutien)</i>' : '') ;
 			?>
 			<TR>
-				<TD><?php echo $sort_nom;?></TD>
+				<TD><?php echo $sort_nom.$sort_nom_advance;?></TD>
 				<TD>
 					<form method="post">
 						<input type="hidden" name="methode2" value="edit">
@@ -652,7 +660,11 @@ if ($erreur == 0)
 					<input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod?>">
 					<TD>Ajouter le sort:
 						<select name="sort_cod">
-			<?php 					$req_m_sorts = "select sort_cod,sort_nom from sorts where not exists(select 1 from sorts_monstre_generique where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod) order by sort_nom";
+			<?php 					$req_m_sorts = "select sort_cod,
+                                                              CASE WHEN sort_aggressif='O' THEN  sort_nom || ' (agressif)'
+                                                                   WHEN sort_soutien='O' THEN  sort_nom || ' (soutien)'
+                                                                   ELSE sort_nom END AS sort_nom
+                                                    from sorts where not exists(select 1 from sorts_monstre_generique where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod) order by sort_nom";
 					$db_m_sorts->query($req_m_sorts);
 					while($db_m_sorts->next_record())
 					{
