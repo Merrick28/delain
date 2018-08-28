@@ -38,7 +38,7 @@ if ($nouveau1 != $nouveau2)
 if ($erreur == 0)
 {
     $compte->compt_passwd_hash = crypt($nouveau1);
-    $compte->sotcke();
+    $compte->stocke();
    
 
     echo("<p>Le mot de passe a été changé avec succès !");
