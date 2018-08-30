@@ -55,6 +55,10 @@ if (!$erreur)
 
 	// Choix de l’onglet
 	$lesMethodes = array(
+		'messagerie' => array(
+			'mess_add',
+			'mess_del'
+		),
 		'globaux' => array(
 			'glob_modif',
 			'glob_creation'
@@ -78,6 +82,7 @@ if (!$erreur)
 	$onglet = 'aucun';
 	$onglet = (in_array($methode, $lesMethodes['globaux'])) ? 'globaux' : $onglet;
 	$onglet = (in_array($methode, $lesMethodes['renommee'])) ? 'renommee' : $onglet;
+	$onglet = (in_array($methode, $lesMethodes['messagerie'])) ? 'messagerie' : $onglet;
 
 	if ($onglet == 'aucun' && isset($_GET['onglet']))
 		$onglet = $_GET['onglet'];
@@ -93,11 +98,17 @@ if (!$erreur)
 			$page_include = 'admin_params.renommee.php';
 			$style_renom = 'style="font-weight:bold;"';
 		break;
+
+		case 'messagerie':   // Modifs de renommées
+			$page_include = 'admin_params.messagerie.php';
+            $style_messagerie = 'style="font-weight:bold;"';
+		break;
 	}
 
 	echo "<h1><b><big>Gestion des paramètres</big></b></h1><div>
 			<a href='?onglet=globaux' $style_glob>Paramètres globaux</a>
-			 - <a href='?onglet=renommee' $style_renom>Renommées / karma</a></div></div><br />";
+			 - <a href='?onglet=renommee' $style_renom>Renommées / karma</a>
+			 - <a href='?onglet=messagerie' $style_messagerie>Messagerie</a></div></div><br />";
 
 	if ($page_include != '')
 		include_once $page_include;

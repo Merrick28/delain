@@ -452,8 +452,22 @@ Le <a href="http://www.jdr-delain.net/forum/index.php" target="_blank">forum</a>
 
 <?php 
 include "jeu_test/tab_bas.php";
+
 /***************************************************************************/
-/* Envoi du message                                                        */
+/* Marlyza - 2018-08-30 - Envoi d'un message à l'attention des admins      */
+/***************************************************************************/
+$titre = "Nouvel aventurier dans les souterrains...";
+$corps = "Chers amis,<br>
+Je vous informe qu'un nouvel aventurier viens de pénétrer dans les souterrains de delain.<br>
+Il s'agit du perso n° {$num_perso} ayant pour nom: {$nom}<br> 
+Amicalement,<br> 
+Gildwen.
+";
+$mess_admin = new messagerie_admin();
+$mess_admin->send_message($titre, $corps, 'gildwen');
+
+/***************************************************************************/
+/* Envoi du message au joueur                                              */
 /***************************************************************************/
 $req = "select nextval('seq_msg_cod') as numero";
 $db->query($req);
