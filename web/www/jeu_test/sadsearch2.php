@@ -8,7 +8,7 @@
 		$db = new base_delain;
      if(!empty($_REQUEST["foo"]))
      {
-     		$req = "select compt_nom,compt_cod from compte where compt_cod like '" . $foo . "%'";
+     		$req = "select compt_nom,compt_cod from compte where compt_cod like '" . (1*$foo) . "%'";
      		$db->query($req);
      		$xml = "<resultats nb=\"" .  $db->nf() . "\">";
      		if($db->nf()!= 0)

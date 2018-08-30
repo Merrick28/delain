@@ -8,7 +8,7 @@
 	   if(!empty($_REQUEST["foo"]))
      {
      		$req = "select mgroupe_perso_cod,perso_nom,mgroupe_statut from quetes.mission_groupe,perso 
-     		where mgroupe_groupe_cod =".$foo." 
+     		where mgroupe_groupe_cod =".(1*$foo)." 
      		and mgroupe_perso_cod = perso_cod
      		and mgroupe_statut != 'E'";
      		$db->query($req);

@@ -1,5 +1,5 @@
 
-<?php 
+<?php
      header("Pragma: no-cache");
      header("Expires: 0");
      header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -9,7 +9,7 @@
 		$db = new base_delain;
      if(!empty($_REQUEST["foo"]))
      {
-     		$req = "select creappro_gobj_cod,gobj_nom from cachette_reappro,objet_generique where creappro_gobj_cod = gobj_cod and creappro_cache_liste_respawn = '" . $foo . "' order by gobj_cod";
+     		$req = "select creappro_gobj_cod,gobj_nom from cachette_reappro,objet_generique where creappro_gobj_cod = gobj_cod and creappro_cache_liste_respawn = '" . (1*$foo) . "' order by gobj_cod";
      		$db->query($req);
 				$nb_tobj = 0;
      		$xml = "";
