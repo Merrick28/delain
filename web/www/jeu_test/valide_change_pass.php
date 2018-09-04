@@ -37,7 +37,7 @@ if ($nouveau1 != $nouveau2)
 
 if ($erreur == 0)
 {
-    $compte->compt_passwd_hash = crypt($nou veau1);
+    $compte->compt_passwd_hash = crypt($nouveau1);
     $compte->stocke();
    
 
