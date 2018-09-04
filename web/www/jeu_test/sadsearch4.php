@@ -7,7 +7,8 @@
 		$db2 = new base_delain;
 	   if(!empty($_REQUEST["foo"]))
      {
-     	$perso = $_REQUEST["perso_cod"];
+            $foo = 1*$_REQUEST["foo"];              // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
+     	    $perso = 1*$_REQUEST["perso_cod"];      // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
      		$req = "select frm_nom,frm_temps_travail,frmco_gobj_cod,frmpr_gobj_cod,frmpr_num,frm_comp_cod 
      		from formule_produit,formule_composant,formule,perso_competences
 								where frmpr_frm_cod = frm_cod 

@@ -245,7 +245,7 @@ begin
 			-- on construit la chaine de lancement du sort et on lance le sort
 			if found then
 				temp_txt := cree_receptacle(v_monstre, num_sort, 1);
-				code_retour := code_retour || 'On remplit un réceptacle...<br />\n';
+				code_retour := code_retour || 'On remplit un réceptacle...<br />' || E'\n';
 			end if;
 		end if;
 

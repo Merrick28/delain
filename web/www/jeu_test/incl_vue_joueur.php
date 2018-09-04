@@ -31,7 +31,7 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
 		INNER JOIN perso_position ON ppos_perso_cod = perso_cod
 		INNER JOIN positions ON pos_cod = ppos_pos_cod
 		INNER JOIN race ON perso_race_cod = race_cod
-		INNER JOIN perso_compte ON perso_cod = pcompt_perso_cod
+		LEFT JOIN perso_compte ON perso_cod = pcompt_perso_cod
 		LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 		LEFT OUTER JOIN lock_combat l1 ON l1.lock_cible = perso_cod AND l1.lock_attaquant = $perso_cod
 		LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod

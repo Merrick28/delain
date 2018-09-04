@@ -1,5 +1,5 @@
 
-<script type="text/javascript">
+<script type="text/javascript">//# sourceURL=sadmin.js
 // + --------------------------------------------------------------------------------------
 // + XHRConnection
 // + V1.3
