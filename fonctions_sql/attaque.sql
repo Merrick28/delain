@@ -203,6 +203,7 @@ declare
   malus integer;
   v_pos_pvp character;                          -- Si la cible est en zone de droit
   v_atq_gmon_cod integer;                       -- Type de monstre attaquant. Pour interdire les attaques aux golems
+  v_desorientation integer;                       -- 0 = pas de désorientation ou 1 = désorientation
 
   --------------------------------------------------------------------------------
   -- variables évènements
@@ -320,6 +321,28 @@ begin
   /***********************************************/
   /* FIN : Vérfications liées à l’attaquant      */
   /***********************************************/
+
+  /*********************************************/
+  /* DEBUT : spécificités sur Désorientation   */
+  /*         Conséquence de Morsure du Soleil  */
+  /*********************************************/
+  /* 2018-09-06 - Marlyza - on réalise ici un eventuel changement de cible */
+  v_desorientation := 0  ; -- par défaut pas de désorientation
+  if valeur_bonus(v_attaquant, 'DES') != 0 then
+
+    v_cible := choix_cible_aleatoire(v_attaquant, 0) ;
+    if (v_cible>0 and v_cible<>nv_cible) then
+      v_desorientation := 1 ;   -- pour message plus loin
+      nv_cible := v_cible;       -- nouvelle cible !!!
+    else
+       v_cible := nv_cible;       -- au cas ou  choix_cible_aleatoire renvoi 0 !!!
+    end if;
+
+  end if;
+  /*********************************************/
+  /* FIN   : spécificités sur Désorientation   */
+  /*********************************************/
+
   --
   /*********************************************/
   /* DEBUT : vérification liées à la cible     */
@@ -1117,7 +1140,7 @@ begin
             and perso_actif = 'O'
       order by random()
       limit 1;
-      code_retour := code_retour || 'Vous êtes sous le coup de la folie d’Ecatis et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque. ';
+      code_retour := code_retour || 'Vous êtes sous le coup de la folie d’Ecatis et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque.<br> ';
       /* evts pour coups portes */
       texte_evt := 'L’attaque de [attaquant] n’a pas touché la cible prévue.';
       perform insere_evenement(v_attaquant, nv_cible, 35, texte_evt, 'O', NULL);
@@ -1127,13 +1150,14 @@ begin
   /*********************************************/
   /* FIN   : spécificités sur Folie Ecatis     */
   /*********************************************/
-  --
+
   /*********************************************/
   /* DEBUT : spécificités sur Désorientation   */
   /*         Conséquence de Morsure du Soleil  */
   /*********************************************/
-  if valeur_bonus(v_attaquant, 'DES') != 0 then
-    code_retour := code_retour || 'Vous êtes désorienté par une morsure du Soleil et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque. ';
+  /* 2018-09-06 - Marlyza - on insere maintenant l'évenement de désorrientation et que s'il y a eu lieu */
+  if v_desorientation = 1 then
+    code_retour := code_retour || 'Vous êtes désorienté et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque.<br> ';
     /* evts pour coups portes */
     texte_evt := 'L’attaque de [attaquant] n’a pas touché la cible prévue.';
     perform insere_evenement(v_attaquant, nv_cible, 35, texte_evt, 'O', NULL);

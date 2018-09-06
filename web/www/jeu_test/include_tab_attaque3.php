@@ -62,9 +62,11 @@ if (($compt_cod != 'monstre') && ($compt_cod != 'admin'))
 	$req_vue_joueur = $req_vue_joueur . "(select 1 from perso_compte ";
 	$req_vue_joueur = $req_vue_joueur . "where pcompt_compt_cod = $compt_cod ";
 	$req_vue_joueur = $req_vue_joueur . "and pcompt_perso_cod = perso_cod) ";
-/*Rajout pour ne pas pouvoir attaquer un perso d'un compte sitté*/
+/*Rajout pour ne pas pouvoir attaquer un perso d'un compte sitté + 2018-09-06 - Marlyza - ne pas attaquer les fam du compte */
 	$req_vue_joueur = $req_vue_joueur . "	and perso_cod not in";
-	$req_vue_joueur = $req_vue_joueur . "((select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = $compt_cod and csit_dfin > now() and csit_ddeb < now())";
+    $req_vue_joueur = $req_vue_joueur . "((select pfam_familier_cod from perso_compte join perso_familier on pfam_perso_cod=pcompt_perso_cod join perso on perso_cod=pfam_familier_cod  where pcompt_compt_cod = $compt_cod and perso_actif='O')";
+    $req_vue_joueur = $req_vue_joueur . "	union";
+	$req_vue_joueur = $req_vue_joueur . "(select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = $compt_cod and csit_dfin > now() and csit_ddeb < now())";
 	$req_vue_joueur = $req_vue_joueur . "	union";
 	$req_vue_joueur = $req_vue_joueur . "(select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitte and csit_compte_sitteur = $compt_cod and csit_dfin > now() and csit_ddeb < now())";
 	$req_vue_joueur = $req_vue_joueur . "	union";
@@ -231,40 +233,6 @@ if ($nb_joueur_en_vue != 0)
 		}
 	}
 
-// on regarde si la cible ne subit pas un malus de désorientation (sort Morsure du soleil)
-	$req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-	$db->query($req_malus_desorientation);
-	$db->next_record();
-	
-	
-	if ($db->f("desorientation") > 0) {
-	
-	// cible désorientée : va prendre une cible de façon aléatoire
-	$indexCible = rand(1,$jAttaquable);
-	$perso_cible = $listePersoAttaquable[$indexCible];
-	
-	
-	
-	?>
-
-	var i;
-	for (i=0; i<liste.length; i++)
-	{
-		document.write('<tr>');
-		document.write('<td><input type="radio" name="cible_" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>');
-		document.write('<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + '"><label for="bouton' + liste[i][0] + '"><b>' + liste[i][1] + '</b> (' + liste[i][2] + '<b>' + liste[i][8] + '</b>)</label></td>');
-		document.write('<td>' + liste[i][3] + '</td>');
-		document.write('<td>' + liste[i][4] + '</td>');
-		document.write('<td>' + liste[i][5] + '</td>');
-		document.write('<td>' + liste[i][6] + '</td>');
-		document.write('</tr>');
-	}
-	</script>
-	</table>
-
-    <?php 
-    echo("<input type=\"hidden\" name=\"cible\" value=\"$perso_cible\"/>");
-	} else {
 		?>
 	var i;
 	for (i=0; i<liste.length; i++)
@@ -281,8 +249,16 @@ if ($nb_joueur_en_vue != 0)
 	</script>
 	</table>
 
-<?php 
-	}
+<?php
+
+    // on regarde si la cible ne subit pas un malus de désorientation (sort Morsure du soleil) pour message de prévention !!!
+    $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
+    $db->query($req_malus_desorientation);
+    $db->next_record();
+    if ($db->f("desorientation") > 0) {
+        echo "<b>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</b><br>";
+    }
+
 
 }
 else
