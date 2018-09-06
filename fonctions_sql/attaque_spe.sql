@@ -495,7 +495,12 @@ begin
   -- Attaque Hydre à neuf têtes --
   elsif v_type_attaque = 18 then
     /*Détermination du nombre de cibles potentielles*/
-    nb_cibles := least(round((((v_pv_attaquant + 120) / v_pvmax_attaquant::numeric ) * 9), 0), 9);
+    if (v_pvmax_attaquant > 1000) then
+      /* Les hydres de plus de 1000pv (cas de omega hydre), sont des hydres accomplies, même blessées elles restent dangeureuses */
+      nb_cibles := 9 ;
+    else
+      nb_cibles := least(round((((v_pv_attaquant + 120) / v_pvmax_attaquant::numeric ) * 9), 0), 9);
+    end if;
     code_retour := code_retour || '<b> Nombre de cibles maximum = ' || nb_cibles::text || '</b><br>';
     select into nombre_cible count(perso_cod)
     from perso, perso_position, positions
