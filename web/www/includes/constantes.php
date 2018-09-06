@@ -1,6 +1,7 @@
-<?php 
+<?php
 // fichier de déclaration des constantes
-$racine_url = "http://www.jdr-delain.net/";
+//$racine_url = "http://www.jdr-delain.net/";
+$racine_url = ((isset($_SERVER['HTTPS'])||isset($_SERVER['SSL_PROTOCOL'])) ? "https://" : "http://").$_SERVER['HTTP_HOST']."/";
 $racine_unix = "/home/delain/public_html/";
 
 $classes = $racine_unix . "classes/";
