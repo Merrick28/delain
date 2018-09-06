@@ -86,6 +86,9 @@ begin
 			union
 				(select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = v_compt_cod and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod))
 		order by random() limit 1 ;
+		        if not found then
+		          code_retour := 0;
+		        end if;
         end if;
 
 	return code_retour;
