@@ -203,7 +203,8 @@ declare
   malus integer;
   v_pos_pvp character;                          -- Si la cible est en zone de droit
   v_atq_gmon_cod integer;                       -- Type de monstre attaquant. Pour interdire les attaques aux golems
-  v_desorientation integer;                       -- 0 = pas de désorientation ou 1 = désorientation
+  v_desorientation integer;                     -- Malus de désorientation
+  texte_desorientation text;                    -- message de désorientation
 
   --------------------------------------------------------------------------------
   -- variables évènements
@@ -327,17 +328,46 @@ begin
   /*         Conséquence de Morsure du Soleil  */
   /*********************************************/
   /* 2018-09-06 - Marlyza - on réalise ici un eventuel changement de cible */
-  v_desorientation := 0  ; -- par défaut pas de désorientation
-  if valeur_bonus(v_attaquant, 'DES') != 0 then
+  texte_desorientation := '' ;    -- pour un affichage ultérieur quand on aura des infos sur la cible
+  v_desorientation := valeur_bonus(v_attaquant, 'DES')  ; -- récupération du malus de désorientation
+  if v_desorientation <> 0 then
 
-    v_cible := choix_cible_aleatoire(v_attaquant, 0) ;
-    if (v_cible>0 and v_cible<>nv_cible) then
-      v_desorientation := 1 ;   -- pour message plus loin
-      nv_cible := v_cible;       -- nouvelle cible !!!
+    /* Convertion de la valeur en % */
+    if v_desorientation=1 then
+      v_desorientation := 33 ;
+    elsif v_desorientation=2 then
+       v_desorientation := 66 ;
     else
-       v_cible := nv_cible;       -- au cas ou  choix_cible_aleatoire renvoi 0 !!!
+       v_desorientation := 100 ;
     end if;
 
+    des := lancer_des(1, 100);
+
+    /* % de changement de cible en fonction de la valeur de désorientation est +1: 33%, +2:66% et autre valeur :100% */
+    if des<=v_desorientation then
+
+      v_cible := choix_cible_aleatoire(v_attaquant, 0) ;
+
+      if (v_cible>0 and v_cible<>nv_cible) then
+
+        texte_desorientation := 'Vous êtes désorienté (<b>' || v_desorientation::text || '</b>% de chance de rater:' || des::text || ') et votre bras dévie au dernier moment ' ;
+        nv_cible := v_cible ;       -- nouvelle cible !!!
+
+      else
+
+        texte_desorientation := 'Vous êtes désorienté mais vous êtes chanceux, votre bras n''a pas dévié ' ;
+        v_desorientation := 0 ;    -- Finalement l'attaquant à eu de la chance, il n'a pas été désorienté (pas d'évent)
+        v_cible := nv_cible ;      -- au cas ou  choix_cible_aleatoire renvoi 0 !!!
+
+      end if;
+
+    else
+
+      /* pas de changement de cible, car pas de désorientation */
+      texte_desorientation := 'Vous êtes désorienté (<b>' || v_desorientation::text || '</b>% de chance de rater:' || des::text || '), heureusement votre bras n''a pas dévié ' ;
+      v_desorientation := 0 ;    -- Finalement l'attaquant à eu de la chance, il n'a pas été désorienté (pas d'évent)
+
+    end if;
   end if;
   /*********************************************/
   /* FIN   : spécificités sur Désorientation   */
@@ -1156,12 +1186,16 @@ begin
   /*         Conséquence de Morsure du Soleil  */
   /*********************************************/
   /* 2018-09-06 - Marlyza - on insere maintenant l'évenement de désorrientation et que s'il y a eu lieu */
-  if v_desorientation = 1 then
-    code_retour := code_retour || 'Vous êtes désorienté et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque.<br> ';
-    /* evts pour coups portes */
-    texte_evt := 'L’attaque de [attaquant] n’a pas touché la cible prévue.';
-    perform insere_evenement(v_attaquant, nv_cible, 35, texte_evt, 'O', NULL);
-    var_gain := 0;
+  if texte_desorientation != '' then
+    code_retour := code_retour || texte_desorientation || nom_per2 || ' reçoit votre attaque.<br> ';
+
+    /* evts pour coups portes et annulation du gain de px: seulement s'il y a eu désorientation */
+    if v_desorientation != 0 then
+      texte_evt := 'L’attaque de [attaquant] n’a pas touché la cible prévue.';
+      perform insere_evenement(v_attaquant, nv_cible, 35, texte_evt, 'O', NULL);
+      var_gain := 0;
+    end if;
+
   end if;
   /*********************************************/
   /* FIN   : spécificités sur Désorientation   */
