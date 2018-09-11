@@ -58,7 +58,7 @@ begin
   if v_pa < getparm_n(104) then
     return '1;Erreur ! Vous n''avez pas assez de PA pour effectuer cette action';
   end if;
-  texte_evt := '[perso_cod1] a bu une ' || v_nom_potion;
+  texte_evt := '[perso_cod1] a bu une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
   -- controles sur la stabilité de la potion
   select into v_stabilite
     gobj_stabilite
