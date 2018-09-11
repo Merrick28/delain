@@ -71,11 +71,8 @@ if ($erreur == 0)
     echo '<b>Caractéristique de la Quête</b>';
 
     // La quête elle-même
-    $reqQuete = 'select aquete_nom from quetes.aquete where aquete_cod = ' . (1*$mod_quete_cod);
-    $db->query($reqQuete);
-    $quete_nom = '';
-    if ($db->next_record())  $quete_nom = $db->f('aquete_nom');
-
+    $quete = new aquete;
+    $quete->charge(1*$mod_quete_cod);
 
     echo '  <br>
             <form  method="post">
@@ -83,11 +80,27 @@ if ($erreur == 0)
             <input type="hidden" name="mod_quete_cod" value="{$mod_quete_cod}" />
             <table width="80%" align="center">';
 
-    echo '<tr><td>Nom de la quête :<input type="text" name="aquete_nom" value="{$quete_nom}"></td></tr>';
-    echo '<tr><td><input type="submit" value="Modifier la quête" /></td></tr></table></form>';
+    echo '<tr><td>Nom de la quête :</td><td><input type="text" name="aquete_nom" value="{$quete->aquete_nom}"></td></tr>';
+    echo '<tr><td>Description :</td><td><input type="text" size=80 name="aquete_nom" value="{$quete->aquete_description}"></td></tr>';
+    echo '<tr><td>Type de déclenchement :</td><td>'.create_selectbox("aquete_trigger_type", array("perso","position","lieux"), $quete->aquete_trigger_type, 'onChange="alert(\'test\')";').'</td></tr>';
+    echo '<tr><td>Perso déclencheur :</td><td><input id="aquete_trigger_cod" onClick=\'getPersoCod("aquete_trigger_cod");\' type="text" size="3" name="aquete_trigger_cod" value="{$quete->aquete_trigger_cod}"></td></tr>';
+    echo '<tr><td colspan="2"><input type="submit" value="Créer/Modifier la quête" /></td></tr></table></form>';
 
 }
 
+/* Fonctions */
+function create_selectbox($name, $data, $default='', $param=''){
+    $out='<select name="'.$name.'"'. (!empty($param)?' '.$param:'') .">\n";
+
+    foreach($data as $key=>$val) {
+        $out.='<option value="' .$key. '"'. ($default==$key?' selected="selected"':'') .'>';
+        $out.=$val;
+        $out.="</option>\n";
+    }
+    $out.="</select>\n";
+
+    return $out;
+}#-# create_selectbox()
 ?>
 <p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();

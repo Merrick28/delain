@@ -25,21 +25,6 @@ class aquete
     var $aquete_nb_max_participant = 1;
     var $aquete_nb_max_rejouable = 1;
     var $aquete_nb_max_quete;
-    var $aquete_cod;
-    var $aquete_nom = '';
-    var $aquete_description = '';
-    var $aquete_trigger_type = 0;
-    var $aquete_trigger_cod = 0;
-    var $aquete_mission_cod = 0;
-    var $aquete_actif = 'O';
-    var $aquete_date_debut;
-    var $aquete_date_fin;
-    var $aquete_etage_haut = 0;
-    var $aquete_etage_bas;
-    var $aquete_nb_max_instance = 1;
-    var $aquete_nb_max_participant = 1;
-    var $aquete_nb_max_rejouable = 1;
-    var $aquete_nb_max_quete;
 
     function __construct()
     {
@@ -124,38 +109,10 @@ class aquete
                         aquete_nb_max_instance,
                         aquete_nb_max_participant,
                         aquete_nb_max_rejouable,
-                        aquete_nb_max_quete,
-                        aquete_nom,
-                        aquete_description,
-                        aquete_trigger_type,
-                        aquete_trigger_cod,
-                        aquete_mission_cod,
-                        aquete_actif,
-                        aquete_date_debut,
-                        aquete_date_fin,
-                        aquete_etage_haut,
-                        aquete_etage_bas,
-                        aquete_nb_max_instance,
-                        aquete_nb_max_participant,
-                        aquete_nb_max_rejouable,
                         aquete_nb_max_quete
                     )
                     values
                     (
-                        :aquete_nom,
-                        :aquete_description,
-                        :aquete_trigger_type,
-                        :aquete_trigger_cod,
-                        :aquete_mission_cod,
-                        :aquete_actif,
-                        :aquete_date_debut,
-                        :aquete_date_fin,
-                        :aquete_etage_haut,
-                        :aquete_etage_bas,
-                        :aquete_nb_max_instance,
-                        :aquete_nb_max_participant,
-                        :aquete_nb_max_rejouable,
-                        :aquete_nb_max_quete,
                         :aquete_nom,
                         :aquete_description,
                         :aquete_trigger_type,
@@ -187,21 +144,7 @@ class aquete
                     ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
                     ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
                     ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
-                    ":aquete_nom" => $this->aquete_nom,
-                    ":aquete_description" => $this->aquete_description,
-                    ":aquete_trigger_type" => $this->aquete_trigger_type,
-                    ":aquete_trigger_cod" => $this->aquete_trigger_cod,
-                    ":aquete_mission_cod" => $this->aquete_mission_cod,
-                    ":aquete_actif" => $this->aquete_actif,
-                    ":aquete_date_debut" => $this->aquete_date_debut,
-                    ":aquete_date_fin" => $this->aquete_date_fin,
-                    ":aquete_etage_haut" => $this->aquete_etage_haut,
-                    ":aquete_etage_bas" => $this->aquete_etage_bas,
-                    ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
-                    ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
-                    ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
+                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete
             ),$stmt);
 
             $temp = $stmt->fetch();
@@ -224,21 +167,7 @@ class aquete
             aquete_nb_max_instance = :aquete_nb_max_instance,
             aquete_nb_max_participant = :aquete_nb_max_participant,
             aquete_nb_max_rejouable = :aquete_nb_max_rejouable,
-            aquete_nb_max_quete = :aquete_nb_max_quete,
-            aquete_nom = :aquete_nom,
-            aquete_description = :aquete_description,
-            aquete_trigger_type = :aquete_trigger_type,
-            aquete_trigger_cod = :aquete_trigger_cod,
-            aquete_mission_cod = :aquete_mission_cod,
-            aquete_actif = :aquete_actif,
-            aquete_date_debut = :aquete_date_debut,
-            aquete_date_fin = :aquete_date_fin,
-            aquete_etage_haut = :aquete_etage_haut,
-            aquete_etage_bas = :aquete_etage_bas,
-            aquete_nb_max_instance = :aquete_nb_max_instance,
-            aquete_nb_max_participant = :aquete_nb_max_participant,
-            aquete_nb_max_rejouable = :aquete_nb_max_rejouable,
-            aquete_nb_max_quete = :aquete_nb_max_quete                        
+            aquete_nb_max_quete = :aquete_nb_max_quete                     
             where aquete_cod = :aquete_cod ";
 
             $stmt = $pdo->prepare($req);
@@ -257,22 +186,7 @@ class aquete
                 ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
                 ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
                 ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
-                ":aquete_cod" => $this->aquete_cod,
-                ":aquete_nom" => $this->aquete_nom,
-                ":aquete_description" => $this->aquete_description,
-                ":aquete_trigger_type" => $this->aquete_trigger_type,
-                ":aquete_trigger_cod" => $this->aquete_trigger_cod,
-                ":aquete_mission_cod" => $this->aquete_mission_cod,
-                ":aquete_actif" => $this->aquete_actif,
-                ":aquete_date_debut" => $this->aquete_date_debut,
-                ":aquete_date_fin" => $this->aquete_date_fin,
-                ":aquete_etage_haut" => $this->aquete_etage_haut,
-                ":aquete_etage_bas" => $this->aquete_etage_bas,
-                ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
-                ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
-                ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
+                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete
             ),$stmt);
         }
     }
