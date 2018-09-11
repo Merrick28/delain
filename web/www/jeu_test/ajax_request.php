@@ -176,6 +176,14 @@ switch($_REQUEST["request"])
         else
             $resultat["message"] = "<font color='#191970'>Le décor $decor_id n'est pas utilisé</font>" ;
         break;
+    //================
+    //==============================================================================
+    case "get_table_cod":
+        //==============================================================================================
+        $recherche = $_REQUEST["recherche"];
+        $table = $_REQUEST["table"];
+        $resultat = array($recherche, $table);
+        break;
 
     //==============================================================================================
     default:

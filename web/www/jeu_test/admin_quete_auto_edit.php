@@ -83,7 +83,7 @@ if ($erreur == 0)
     echo '<tr><td>Nom de la quête :</td><td><input type="text" name="aquete_nom" value="{$quete->aquete_nom}"></td></tr>';
     echo '<tr><td>Description :</td><td><input type="text" size=80 name="aquete_nom" value="{$quete->aquete_description}"></td></tr>';
     echo '<tr><td>Type de déclenchement :</td><td>'.create_selectbox("aquete_trigger_type", array("perso","position","lieux"), $quete->aquete_trigger_type, 'onChange="alert(\'test\')";').'</td></tr>';
-    echo '<tr><td>Perso déclencheur :</td><td><input id="aquete_trigger_cod" onClick=\'getPersoCod("aquete_trigger_cod");\' type="text" size="3" name="aquete_trigger_cod" value="{$quete->aquete_trigger_cod}"></td></tr>';
+    echo '<tr><td>Perso déclencheur :</td><td><input id="aquete_trigger_cod" onClick=\'getTableCod("aquete_trigger_cod","perso");\' type="text" size="3" name="aquete_trigger_cod" value="{$quete->aquete_trigger_cod}"></td></tr>';
     echo '<tr><td colspan="2"><input type="submit" value="Créer/Modifier la quête" /></td></tr></table></form>';
 
 }

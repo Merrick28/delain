@@ -176,29 +176,38 @@ function switch_menu(e)
 
 //------------------------------------------------------------------------------------------------------------------
 //--- Outil d'aide à la selection d'un perso
-function getPersoCod(divname)
+function getTableCod(divname, table)
 {
 
-    $("#" + divname).parent().prepend('<div id="spop-sort" class="spop-overlay"><i>Nom du favoris:</i><input id="spop-sort-nom" style="margin:4px;" type="text" value="coucou"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+    $("#" + divname).parent().prepend('<div id="spop-tablecod" class="spop-overlay"><center>Titre</center>' +
+                        '<i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
+                        '<center><input id="spop-tablecod-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;' +
+                         '<input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
 
-    $(document).click(function (event) {
-        if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
-        {
-            $(document).unbind("click");
-            $('#spop-sort').remove();
-        }
-        else if (event.target.id == "spop-sort-valid")
-        {
-            var nom = $("#spop-sort-nom").val();
-            runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
-            $(document).unbind("click");
-            $('#spop-sort').remove();
-            event.stopPropagation();
-        }
-        //else
-        //{
-        //    event.stopPropagation();
-        //}
+    $("#spop-tablecod-cherche").keyup(function() {
+        runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:table}}, function(d){alert(d);})
     });
+
+
+
+    //$(document).click(function (event) {
+    //    if ((event.target.id == "spop-tablecod-cancel") || (event.target.closest("div").id != "spop-tablecod"))
+    //    {
+    //        $(document).unbind("click");
+    //        $('#spop-sort').remove();
+    //    }
+    //    else if (event.target.id == "spop-tablecod-valid")
+    //    {
+    //        var nom = $("#spop-sort-nom").val();
+    //        runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
+    //        $(document).unbind("click");
+    //        $('#spop-sort').remove();
+    //        event.stopPropagation();
+    //    }
+    //    //else
+    //    //{
+    //    //    event.stopPropagation();
+    //    //}
+    //});
     event.stopPropagation();
 }
