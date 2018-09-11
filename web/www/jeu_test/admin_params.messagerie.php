@@ -104,7 +104,7 @@ echo "<tr><form name='login2' method='POST' action='#'>
   $parm_valeur = $param->parm_valeur_texte ;
   $list_cod = implode(",", array_map(function($cod){return 1*$cod;}, explode(",",$parm_valeur)));
 
-  $req = "select perso_cod, perso_nom from perso where perso_cod in ({$list_cod}) git order by perso_cod";
+  $req = "select perso_cod, perso_nom from perso where perso_cod in ({$list_cod}) order by perso_cod";
   //die($req);
   $db->query($req);
 
