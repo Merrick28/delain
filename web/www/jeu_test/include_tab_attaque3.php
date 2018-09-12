@@ -252,14 +252,13 @@ if ($nb_joueur_en_vue != 0)
 <?php
 
     // on regarde si la cible ne subit pas un malus de désorientation (sort Morsure du soleil) pour message de prévention !!!
-    //$req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-    //$db->query($req_malus_desorientation);
-    //$db->next_record();
-    //if ($db->f("desorientation") > 0) {
-    //    echo "<b>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</b><br>";
-    //}
-
-
+    $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
+    $db->query($req_malus_desorientation);
+    $db->next_record();
+    if ($db->f("desorientation") > 0) {
+        echo "<b>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</b><br>";
+    }
+    
 }
 else
 {
