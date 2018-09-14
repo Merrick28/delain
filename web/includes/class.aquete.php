@@ -28,11 +28,7 @@ class aquete
 
     function __construct()
     {
-
         $this->aquete_date_debut = date('Y-m-d H:i:s');
-        $this->aquete_date_fin = date('Y-m-d H:i:s');
-        $this->aquete_date_debut = date('Y-m-d H:i:s');
-        $this->aquete_date_fin = date('Y-m-d H:i:s');
     }
 
     /**
@@ -51,21 +47,6 @@ class aquete
         {
             return false;
         }
-        $this->aquete_cod = $result['aquete_cod'];
-        $this->aquete_nom = $result['aquete_nom'];
-        $this->aquete_description = $result['aquete_description'];
-        $this->aquete_trigger_type = $result['aquete_trigger_type'];
-        $this->aquete_trigger_cod = $result['aquete_trigger_cod'];
-        $this->aquete_mission_cod = $result['aquete_mission_cod'];
-        $this->aquete_actif = $result['aquete_actif'];
-        $this->aquete_date_debut = $result['aquete_date_debut'];
-        $this->aquete_date_fin = $result['aquete_date_fin'];
-        $this->aquete_etage_haut = $result['aquete_etage_haut'];
-        $this->aquete_etage_bas = $result['aquete_etage_bas'];
-        $this->aquete_nb_max_instance = $result['aquete_nb_max_instance'];
-        $this->aquete_nb_max_participant = $result['aquete_nb_max_participant'];
-        $this->aquete_nb_max_rejouable = $result['aquete_nb_max_rejouable'];
-        $this->aquete_nb_max_quete = $result['aquete_nb_max_quete'];
         $this->aquete_cod = $result['aquete_cod'];
         $this->aquete_nom = $result['aquete_nom'];
         $this->aquete_description = $result['aquete_description'];

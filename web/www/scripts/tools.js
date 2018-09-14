@@ -175,39 +175,68 @@ function switch_menu(e)
 
 
 //------------------------------------------------------------------------------------------------------------------
-//--- Outil d'aide à la selection d'un perso
-function getTableCod(divname, table)
+//--- Outil d'aide à la selection d'un perso, lieu, monstre generique, etc....
+function getTableCod_update() { // fonction de mise à jour de la liste (voir jeu_test\ajax_request.php)
+    // recupe des paramètres
+    var params= {} ;
+    if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
+
+    //executer le service asynchrone
+    runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
+        // Ici on récupère le nombre d'entrée et la liste de nom recherché (max 10) => affichage dans le popup
+        if (d.resultat == -1) {
+            $("#spop-serchlist").html("<b>Erreur:</b> "+d.message);
+        } else if (!d.data || !d.data.count) {
+            $("#spop-serchlist").html("<b>Aucun élément ne correspond à la recherche.</b>");
+        } else {
+            var data = d.data.data ;
+            var content = "";
+            for (i in data) {
+                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')<br>';
+            }
+            if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</i>';
+            $("#spop-serchlist").html(content);
+        }
+    });
+}
+
+function getTableCod(divname, table, titre, params={})
 {
+    var options = "" ;
+    if (table=="perso"){
+        options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
+        options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
+        options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
+    }
 
-    $("#" + divname).parent().prepend('<div id="spop-tablecod" class="spop-overlay"><center>Titre</center>' +
-                        '<i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
-                        '<center><input id="spop-tablecod-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;' +
-                         '<input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+    $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
+                        '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
+                        '<div style="width:100%; background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">'+titre+'</div>' +
+                        '<br><div id="spop-serchlist" style="width: 350px; height: 160px;">Faites une recherche.</div>' +
+                        '<br><i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
+                         options+
+                        '<br><center><input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
 
-    $("#spop-tablecod-cherche").keyup(function() {
-        runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:table}}, function(d){alert(d);})
+    $("#spop-tablecod-cherche").focus();
+    $("#spop-tablecod-cherche").keyup(getTableCod_update);
+
+
+    $(document).click(function (event) {
+        if (event.target.id == "spop-tablecod-cancel")
+        {
+            $(document).unbind("click");
+            $('#spop-tablecod').remove();
+        }
+        else if ( event.target.id.substr(0, 21) == "spop-tablecod-select-")
+        {
+            var element = $("#"+event.target.id);
+            $("#" + divname+"_cod").val (element.attr("data-spop-cod") );
+            $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
+            $(document).unbind("click");
+            $('#spop-tablecod').remove();
+        }
     });
 
-
-
-    //$(document).click(function (event) {
-    //    if ((event.target.id == "spop-tablecod-cancel") || (event.target.closest("div").id != "spop-tablecod"))
-    //    {
-    //        $(document).unbind("click");
-    //        $('#spop-sort').remove();
-    //    }
-    //    else if (event.target.id == "spop-tablecod-valid")
-    //    {
-    //        var nom = $("#spop-sort-nom").val();
-    //        runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
-    //        $(document).unbind("click");
-    //        $('#spop-sort').remove();
-    //        event.stopPropagation();
-    //    }
-    //    //else
-    //    //{
-    //    //    event.stopPropagation();
-    //    //}
-    //});
-    event.stopPropagation();
 }

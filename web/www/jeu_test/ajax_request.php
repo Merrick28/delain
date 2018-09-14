@@ -182,7 +182,33 @@ switch($_REQUEST["request"])
         //==============================================================================================
         $recherche = $_REQUEST["recherche"];
         $table = $_REQUEST["table"];
-        $resultat = array($recherche, $table);
+        $params = $_REQUEST["params"];
+
+        switch ($table) {
+        case 'perso':
+            $filter = "";
+            if ($params["perso_pnj"]=="true") $filter .= "and perso_pnj=1 ";
+            if ($params["perso_monstre"]!="true") $filter .= "and perso_type_perso<>2 ";
+            if ($params["perso_fam"]!="true") $filter .= "and perso_type_perso<>3 ";
+
+            // requete de comptage
+            $req = "select count(*) from perso where perso_nom ilike ? and perso_actif='O' {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select perso_cod cod, perso_nom nom from perso where perso_nom ilike ? and perso_actif='O' {$filter} ORDER BY perso_cod LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+         default:
+             die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
+        }
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchall
+        $resultat = array("count" => $count, "data" => $result);
         break;
 
     //==============================================================================================
