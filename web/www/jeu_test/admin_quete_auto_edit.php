@@ -79,6 +79,7 @@ if ($erreur == 0)
             <form  method="post">
             <input type="hidden" name="methode" value="update_quete" />
             <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
+            <input type="hidden" name="aquete_etape_cod" value="'.$quete->aquete_etape_cod.'" />
             <table width="80%" align="center">';
 
     echo '<tr><td>Nom de la quête :</td><td><input type="text" name="aquete_nom" value="'.$quete->aquete_nom.'"></td></tr>';
