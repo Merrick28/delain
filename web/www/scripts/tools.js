@@ -240,3 +240,14 @@ function getTableCod(divname, table, titre, params={})
     });
 
 }
+
+
+function  addQueteAutoParamRow(elem)
+{
+    var row = elem[0].id ;
+    var s = row.split('-') ;
+    var r = (1+1*s[2]);
+    var new_row = s[0]+'-'+s[1]+'-'+r+'-';
+    var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+    $(new_elem).insertAfter(elem);
+}

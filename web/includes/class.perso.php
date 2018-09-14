@@ -918,7 +918,7 @@ class perso
             $stmt2 = $pdo->execute(array(),$stmt2);
             $result2 = $stmt2->fetch();
 
-            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2[cout_pa]." PA)", "link" => $result["pfav_link"] );
+            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2["cout_pa"]." PA)", "link" => $result["pfav_link"] );
         }
         return $retour;
     }

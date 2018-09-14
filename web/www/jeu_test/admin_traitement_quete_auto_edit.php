@@ -24,7 +24,7 @@ case "update_quete":
     $quete->aquete_nb_max_quete = $_REQUEST["aquete_nb_max_quete"] == "" ? NULL : $_REQUEST["aquete_nb_max_quete"];
 
     $quete->stocke($new);
-
+    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
 
 break;
 default:

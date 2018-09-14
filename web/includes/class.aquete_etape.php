@@ -11,7 +11,9 @@
 class aquete_etape
 {
     var $aqetape_cod;
+    var $aqetape_nom;
     var $aqetape_aquete_cod;
+    var $aqetape_aqetaptemp_cod;
     var $aqetape_parametres;
     var $aqetape_texte;
 
@@ -28,7 +30,7 @@ class aquete_etape
     function charge($code)
     {
         $pdo = new bddpdo;
-        $req = "select * from aquete_etape where aqetape_cod = ?";
+        $req = "select * from quetes.aquete_etape where aqetape_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code),$stmt);
         if(!$result = $stmt->fetch())
@@ -36,7 +38,9 @@ class aquete_etape
             return false;
         }
         $this->aqetape_cod = $result['aqetape_cod'];
+        $this->aqetape_nom = $result['aqetape_nom'];
         $this->aqetape_aquete_cod = $result['aqetape_aquete_cod'];
+        $this->aqetape_aqetaptemp_cod = $result['aqetape_aqetaptemp_cod'];
         $this->aqetape_parametres = $result['aqetape_parametres'];
         $this->aqetape_texte = $result['aqetape_texte'];
         return true;
@@ -52,19 +56,25 @@ class aquete_etape
         $pdo = new bddpdo;
         if($new)
         {
-            $req = "insert into aquete_etape (
+            $req = "insert into quetes.aquete_etape (
+            aqetape_nom,
             aqetape_aquete_cod,
+            aqetape_aqetaptemp_cod,
             aqetape_parametres,
             aqetape_texte                        )
                     values
                     (
+                        :aqetape_nom,
                         :aqetape_aquete_cod,
+                        :aqetape_aqetaptemp_cod,
                         :aqetape_parametres,
                         :aqetape_texte                        )
     returning aqetape_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
+                ":aqetape_nom" => $this->aqetape_nom,
                 ":aqetape_aquete_cod" => $this->aqetape_aquete_cod,
+                ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
             ),$stmt);
@@ -75,15 +85,19 @@ class aquete_etape
         }
         else
         {
-            $req = "update aquete_etape
+            $req = "update quetes.aquete_etape
                     set
+            aqetape_nom = :aqetape_nom,
             aqetape_aquete_cod = :aqetape_aquete_cod,
+            aqetape_aqetaptemp_cod = :aqetape_aqetaptemp_cod,
             aqetape_parametres = :aqetape_parametres,
             aqetape_texte = :aqetape_texte                        where aqetape_cod = :aqetape_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
+                ":aqetape_nom" => $this->aqetape_nom,
                 ":aqetape_cod" => $this->aqetape_cod,
                 ":aqetape_aquete_cod" => $this->aqetape_aquete_cod,
+                ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
             ),$stmt);
@@ -98,7 +112,7 @@ class aquete_etape
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqetape_cod  from aquete_etape order by aqetape_cod";
+        $req = "select aqetape_cod  from quetes.aquete_etape order by aqetape_cod";
         $stmt = $pdo->query($req);
         while($result = $stmt->fetch())
         {
@@ -117,7 +131,7 @@ class aquete_etape
                 {
                     $retour = array();
                     $pdo = new bddpdo;
-                    $req = "select aqetape_cod  from aquete_etape where " . substr($name, 6) . " = ? order by aqetape_cod";
+                    $req = "select aqetape_cod  from quetes.aquete_etape where " . substr($name, 6) . " = ? order by aqetape_cod";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())

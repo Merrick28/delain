@@ -30,7 +30,7 @@ class aquete_etape_template
     function charge($code)
     {
         $pdo = new bddpdo;
-        $req = "select * from aquete_etape_template where aqetaptemp_cod = ?";
+        $req = "select * from quetes.aquete_etape_template where aqetaptemp_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code),$stmt);
         if(!$result = $stmt->fetch())
@@ -56,7 +56,7 @@ class aquete_etape_template
         $pdo = new bddpdo;
         if($new)
         {
-            $req = "insert into aquete_etape_template (
+            $req = "insert into quetes.aquete_etape_template (
             aqetaptemp_tag,
             aqetaptemp_nom,
             aqetaptemp_description,
@@ -85,7 +85,7 @@ class aquete_etape_template
         }
         else
         {
-            $req = "update aquete_etape_template
+            $req = "update quetes.aquete_etape_template
                     set
             aqetaptemp_tag = :aqetaptemp_tag,
             aqetaptemp_nom = :aqetaptemp_nom,
@@ -103,6 +103,49 @@ class aquete_etape_template
             ),$stmt);
         }
     }
+
+
+    function get_liste_parametres()
+    {
+
+        $retour = array();
+
+        $l = explode(',', $this->aqetaptemp_parametres);
+        foreach ($l as $k => $param)
+        {
+            // Format de param=> [id:type|n%M] avec %M et |n%M  factultatif
+            $t = explode(':', str_replace("]","", str_replace("[","", $param)));
+            $id = 1*$t[0];
+            $n = 1 ;        // Par défaut
+            $M = 1;         // Par défaut
+
+            if (strpos($t[1],'|') !== false)
+            {
+                // il y a des paramètres facultatifs
+                $t = explode('|', $t[1]);
+                $type = $t[0];
+                if (strpos($t[1], '%') !== false)
+                {
+                    $t = explode('%', $t[1]);
+                    $n = $t[0];
+                    $M = $t[1];
+                }
+                else
+                {
+                    $n = $t[1] ;
+                }
+            }
+            else
+            {
+                // il n'y a pas de paramètres facultatifs retoruner les valeurs par defaut
+                $type = $t[1];
+            }
+
+            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'raw' => $param, 'texte' => "$n $type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max.")) );
+        }
+        return $retour;
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
@@ -112,7 +155,7 @@ class aquete_etape_template
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqetaptemp_cod  from aquete_etape_template order by aqetaptemp_cod";
+        $req = "select aqetaptemp_cod  from quetes.aquete_etape_template order by aqetaptemp_cod";
         $stmt = $pdo->query($req);
         while($result = $stmt->fetch())
         {
@@ -131,7 +174,7 @@ class aquete_etape_template
                 {
                     $retour = array();
                     $pdo = new bddpdo;
-                    $req = "select aqetaptemp_cod  from aquete_etape_template where " . substr($name, 6) . " = ? order by aqetaptemp_cod";
+                    $req = "select aqetaptemp_cod  from quetes.aquete_etape_template where " . substr($name, 6) . " = ? order by aqetaptemp_cod";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())

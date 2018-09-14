@@ -30,7 +30,7 @@ class aquete_element
     function charge($code)
     {
         $pdo = new bddpdo;
-        $req = "select * from aquete_element where aqelem_cod = ?";
+        $req = "select * from quetes.aquete_element where aqelem_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code),$stmt);
         if(!$result = $stmt->fetch())
@@ -56,7 +56,7 @@ class aquete_element
         $pdo = new bddpdo;
         if($new)
         {
-            $req = "insert into aquete_element (
+            $req = "insert into quetes.aquete_element (
             aqelem_type,
             aqelem_link_cod,
             aqelem_param_1,
@@ -85,7 +85,7 @@ class aquete_element
         }
         else
         {
-            $req = "update aquete_element
+            $req = "update quetes.aquete_element
                     set
             aqelem_type = :aqelem_type,
             aqelem_link_cod = :aqelem_link_cod,
@@ -112,7 +112,7 @@ class aquete_element
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqelem_cod  from aquete_element order by aqelem_cod";
+        $req = "select aqelem_cod  from quetes.aquete_element order by aqelem_cod";
         $stmt = $pdo->query($req);
         while($result = $stmt->fetch())
         {
@@ -131,7 +131,7 @@ class aquete_element
                 {
                     $retour = array();
                     $pdo = new bddpdo;
-                    $req = "select aqelem_cod  from aquete_element where " . substr($name, 6) . " = ? order by aqelem_cod";
+                    $req = "select aqelem_cod  from quetes.aquete_element where " . substr($name, 6) . " = ? order by aqelem_cod";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())

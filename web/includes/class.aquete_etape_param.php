@@ -32,7 +32,7 @@ class aquete_etape_param
     function charge($code)
     {
         $pdo = new bddpdo;
-        $req = "select * from aquete_etape_param where aqetapparm_cod = ?";
+        $req = "select * from quetes.aquete_etape_param where aqetapparm_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code),$stmt);
         if(!$result = $stmt->fetch())
@@ -60,7 +60,7 @@ class aquete_etape_param
         $pdo = new bddpdo;
         if($new)
         {
-            $req = "insert into aquete_etape_param (
+            $req = "insert into quetes.aquete_etape_param (
             aqetapparm_aqetape_cod,
             aqetapparm_id,
             aqetapparm_type,
@@ -95,7 +95,7 @@ class aquete_etape_param
         }
         else
         {
-            $req = "update aquete_etape_param
+            $req = "update quetes.aquete_etape_param
                     set
             aqetapparm_aqetape_cod = :aqetapparm_aqetape_cod,
             aqetapparm_id = :aqetapparm_id,
@@ -126,7 +126,7 @@ class aquete_etape_param
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqetapparm_cod  from aquete_etape_param order by aqetapparm_cod";
+        $req = "select aqetapparm_cod  from quetes.aquete_etape_param order by aqetapparm_cod";
         $stmt = $pdo->query($req);
         while($result = $stmt->fetch())
         {
@@ -145,7 +145,7 @@ class aquete_etape_param
                 {
                     $retour = array();
                     $pdo = new bddpdo;
-                    $req = "select aqetapparm_cod  from aquete_etape_param where " . substr($name, 6) . " = ? order by aqetapparm_cod";
+                    $req = "select aqetapparm_cod  from quetes.aquete_etape_param where " . substr($name, 6) . " = ? order by aqetapparm_cod";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())

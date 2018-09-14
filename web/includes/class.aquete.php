@@ -143,6 +143,15 @@ class aquete
             ),$stmt);
         }
     }
+
+    function get_nb_etape()
+    {
+        $etape = new aquete_etape;
+        $etapes = $etape->getBy_aqetape_aquete_cod($this->aquete_cod);
+        return !$etapes ? 0: sizof($etapes);
+    }
+
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
