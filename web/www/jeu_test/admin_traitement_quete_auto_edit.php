@@ -32,6 +32,7 @@ break;
 
 case "sauve_etape":
     //récupérer les paramètres
+    //echo "<pre>"; print_r($_REQUEST);echo "</pre>"; die();
 
     $quete = new aquete;                                // la quete de référence
     $quete->charge($_REQUEST["aquete_cod"]);
@@ -52,6 +53,39 @@ case "sauve_etape":
     $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
     $etape->stocke($new);
 
+    // Boucle sur les elements de l'etape à sauvegarder
+    foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
+    {
+        // chaque paramètres définir plusieurs élements
+        foreach ($types as $e => $type)
+        {
+            echo "<pre>"; print_r($element);echo "</pre>";
+            $element = new aquete_element;
+            $new = true ;
+            $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
+            if ( $aqelem_cod != 0 ) {
+                $new = false ;
+                $element->charge($aqelem_cod);
+            }
+
+            $element->aqelem_aquete_cod = $quete->aquete_cod ;
+            $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
+            $element->aqelem_param_id = $param_id  ;
+            $element->aqelem_type = $type ;
+            $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
+            $element->aqelem_param_num_1 = 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e];
+            $element->aqelem_param_num_2 = 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e];
+            $element->aqelem_param_num_3 = 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e];
+            $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
+            $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
+            $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
+
+            //echo "<pre>"; print_r($element);echo "</pre>";
+            $element->stocke($new);
+        }
+    }
+
+
     echo "<font color='blue'>LOG => sauve_etape</font><br><hr>";
 
     $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
@@ -62,7 +96,7 @@ break;
 case "supprime_etape":
 
     $etape = new aquete_etape;
-    $quete->supprime($_REQUEST["aquete_cod"]);
+    $etape->supprime($_REQUEST["aqetape_cod"]);
 
     echo "<font color='blue'>LOG => supprime_etape</font><br><hr>";
 

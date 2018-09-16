@@ -179,36 +179,62 @@ if ($erreur == 0)
         echo '</table>';
 
 
-
         $param_liste = $etape_template->get_liste_parametres();
-        foreach ($param_liste as $id => $param)
+
+        foreach ($param_liste as $param_id => $param)
         {
-            echo '<br><br><b>Edition du paramètre ['.$id.']</b>: <i>('.$param['texte'].')</i><br>';
+            echo '<br><br><b>Edition du paramètre ['.$param_id.']</b>: <i>('.$param['texte'].')</i><br>';
             echo $param['desc'].'</i><br><br>';
             echo '<table width="80%" align="center">';
-            echo '<input type="hidden" id="max-param-'.$id.'" value="'.$param['M'].'">';
+            echo '<input type="hidden" id="max-param-'.$param_id.'" value="'.$param['M'].'">';
 
-            $row = 0;
-            $row_id = "row-$id-$row-";
-            switch ($param['type'])
+            $element = new aquete_element;
+            $elements = $element->getBy_etape_param_id($aqetape_cod, $param_id) ;
+            if (!$elements) $elements = array();
+            $elements[] =  new aquete_element;
+            //echo "$param_id => <pre>"; print_r($elements);echo "</pre>";
+
+            foreach($elements as $row => $element)
             {
-                case 'perso':
-                    echo   '<tr id="'.$row_id.'"><td>Perso :
-                            <input name="aqetape_aqelem_cod['.$id.'][]" id="'.$row_id.'aqetape_aqelem_cod" type="text" size="5" value="" onChange="$(\'#'.$row_id.'aqetape_aqelem_nom\').text(\'\');">
-                            &nbsp;<i></i><span id="'.$row_id.'aqetape_aqelem_nom"></span></i>
-                            &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqetape_aqelem","perso","Rechercher un perso");\'> 
-                            </td></tr>';
-                break;
-                case 'lieu':
-                    echo   '<tr id="'.$row_id.'"><td>Lieu :
-                            <input name="aqetape_aqelem_cod['.$id.'][]" id="'.$row_id.'aqetape_aqelem_cod" type="text" size="5" value="" onChange="$(\'#'.$row_id.'aqetape_aqelem_nom\').text(\'\');">
-                            &nbsp;<i></i><span id="'.$row_id.'aqetape_aqelem_nom"></span></i>
-                            &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqetape_aqelem","perso","Rechercher un perso");\'> 
-                            </td></tr>';
-                break;
-                default:
-                    echo '<tr id="'.$row_id.'"><td>Type de paramètre inconnu</td></tr>';
-                break;
+                $row_id = "row-$param_id-$row-";
+                switch ($param['type'])
+                {
+                    case 'perso':
+                            $aqelem_misc_nom = "" ;
+                            if (1*$element->aqelem_misc_cod != 0)
+                            {
+                                $perso = new perso ;
+                                $perso->charge( $element->aqelem_misc_cod );
+                                $aqelem_misc_nom = $perso->perso_nom ;
+                            }
+                            echo   '<tr id="'.$row_id.'"><td>Perso :
+                                    <input name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="$(\'#'.$row_id.'aqelem_misc_nom\').text(\'\');">
+                                    &nbsp;<i></i><span id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso");\'> 
+                                    </td></tr>';
+
+                    break;
+                    case 'lieu':
+                        //if (1*$element->aqelem_misc_cod != 0)
+                        //{
+                        //    $perso = new perso ;
+                        //    $perso->charge( $element->aqelem_misc_cod );
+                        //    $aqelem_misc_nom = $perso->perso_nom ;
+                        //}
+                        echo   '<tr id="'.$row_id.'"><td>Lieu :
+                                    <input name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="$(\'#'.$row_id.'aqelem_misc_nom\').text(\'\');">
+                                    &nbsp;<i></i><span id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu","Rechercher un type de lieu");\'> 
+                                    </td></tr>';
+                    break;
+                    default:
+                        echo '<tr id="'.$row_id.'"><td>Type de paramètre inconnu</td></tr>';
+                    break;
+                }
             }
             echo '<tr><td> <input type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev());"> </td></tr>';
             echo '</table>';

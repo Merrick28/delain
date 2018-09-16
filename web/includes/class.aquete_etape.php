@@ -116,9 +116,8 @@ class aquete_etape
         if ($code=="") $code = $this->aqetape_cod;
 
         // On doit supprimer les éléments qui ont été préparé pour cette étape.
-        //$etape = new aquete_etape;
-        //$etape->charge($code);
-
+        $element = new aquete_element;
+        $element->deleteBy_aqetape_cod($code) ;
 
         $pdo    = new bddpdo;
         $req    = "DELETE from quetes.aquete_etape where aqetape_cod = ?";
