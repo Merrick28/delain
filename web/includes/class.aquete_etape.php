@@ -103,6 +103,35 @@ class aquete_etape
             ),$stmt);
         }
     }
+
+    /**
+     * supprime l'enregistrement
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
+     * @return boolean => false pas réussi a supprimer
+     */
+    function supprime($code="")
+    {
+        // Si un code est fourni, on doit charger l'élément
+        if ($code=="") $code = $this->aqetape_cod;
+
+        // On doit supprimer les éléments qui ont été préparé pour cette étape.
+        //$etape = new aquete_etape;
+        //$etape->charge($code);
+
+
+        $pdo    = new bddpdo;
+        $req    = "DELETE from quetes.aquete_etape where aqetape_cod = ?";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($code), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo

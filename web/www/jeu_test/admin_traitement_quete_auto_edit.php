@@ -4,7 +4,7 @@ if(!defined("APPEL")) die("Erreur d’appel de page !");
 
 switch ($methode)
 {
-case "update_quete":
+case "sauve_quete":
     //récupérer les paramètres
     $quete = new aquete;
     $new = true ;
@@ -26,9 +26,11 @@ case "update_quete":
     $quete->stocke($new);
     $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
 
+    echo "<font color='blue'>LOG => sauve_quete</font><br><hr>";
+    $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde retour à l'édition de la quete
 break;
 
-case "update_etape":
+case "sauve_etape":
     //récupérer les paramètres
 
     $quete = new aquete;                                // la quete de référence
@@ -50,9 +52,28 @@ case "update_etape":
     $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
     $etape->stocke($new);
 
-    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
+    echo "<font color='blue'>LOG => sauve_etape</font><br><hr>";
 
+    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
+    $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde d'une etape, retour à l'édition de la quete
 break;
+
+
+case "supprime_etape":
+
+    $etape = new aquete_etape;
+    $quete->supprime($_REQUEST["aquete_cod"]);
+
+    echo "<font color='blue'>LOG => supprime_etape</font><br><hr>";
+
+    $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
+break;
+
+case "edite_quete":
+case "edite_etape":
+case "ajoute_etape":
+    // Rien à faire , la page de modification sera présentée en page pricipale
+    break;
 
 default:
     echo 'Méthode inconnue: [' , $methode , ']';

@@ -46,12 +46,12 @@ if ($erreur == 0)
         define("APPEL",1);
         include ("admin_traitement_quete_auto_edit.php");
     }
-print_r($_REQUEST);
+    print_r($_REQUEST);
 
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
-    if((!isset($_REQUEST['ajout_etape']))&&(!isset($_REQUEST['modif_etape']))) {
+    if(!isset($_REQUEST['methode']) || ($_REQUEST['methode']=='edite_quete')) {
 
         // Liste des quetes existantes
         echo '  <TABLE width="80%" align="center">
@@ -81,7 +81,7 @@ print_r($_REQUEST);
         $quete->charge($aquete_cod);
 
         echo '  <br>
-                <form  method="post"><input type="hidden" name="methode" value="update_quete" />
+                <form  method="post"><input type="hidden" name="methode" value="sauve_quete" />
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <table width="80%" align="center">';
 
@@ -109,6 +109,7 @@ print_r($_REQUEST);
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetaptemp_tag='START'" : "where aqetaptemp_tag<>'START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
             echo '</table>';
+            echo '</form>';
             echo '<hr>';
 
             if ( $etapes)
@@ -118,25 +119,28 @@ print_r($_REQUEST);
                     $etape_template = new aquete_etape_template;
                     $etape_template->charge($etape->aqetape_aqetaptemp_cod);    // On charge le modele de l'étape.
 
-                    echo '<form  method="post"><input type="hidden" name="methode" value="modif_etape"/>';
+                    echo '<form  method="post"><input type="hidden" id="etape-methode-'.$k.'" name="methode" value=""/>';
                     echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
                     echo '<input type="hidden" name="aqetape_cod" value="'.$etape->aqetape_cod.'" />';
                     echo '<input type="hidden" name="aqetaptemp_cod" value="'.$etape->aqetape_aqetaptemp_cod.'" />';
                     echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_template->aqetaptemp_nom}</b>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_template->aqetaptemp_description} <br>";
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: {$etape->aqetape_texte}<br>";
-                    echo '<input class="test" type="submit" name="modif_etape" value="Editer l\'étape">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="delete_etape" value="Supprimer l\'étape">';
+                    echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
+                    echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     echo '</form>';
                     echo '<hr>';
 
                 }
             }
 
+            echo '<form  method="post"><input type="hidden" name="methode" value="ajoute_etape"/>';
+            echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
             echo '<table width="80%" align="center">';
-            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetaptemp_cod", "select aqetaptemp_cod, aqetaptemp_nom from quetes.aquete_etape_template {$filter} order by aqetaptemp_nom").' et <input class="test" type="submit" name="ajout_etape" value="ajouter une étape"" /></td></tr>';
+            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetaptemp_cod", "select aqetaptemp_cod, aqetaptemp_nom from quetes.aquete_etape_template {$filter} order by aqetaptemp_nom").' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
             echo '</table>';
+            echo '</form>';
         }
-        echo '</form>';
 
         // Fin saisie  ----------------------------------------------------------------------
         echo '<hr>';
@@ -144,7 +148,7 @@ print_r($_REQUEST);
     //=======================================================================================
     //-- Section dédiée aux étapes (ajout/modif)
     //---------------------------------------------------------------------------------------
-    else
+    else if ( ( $_REQUEST['methode'] == "edite_etape" ) || ( $_REQUEST['methode'] == "ajoute_etape" ) )
     {
         $quete = new aquete;
         $quete->charge($aquete_cod);    // On charge la quete
@@ -162,7 +166,7 @@ print_r($_REQUEST);
 
         // Mise en forme de l'étape pour la saisie des infos.
         echo '  <br>
-                <form  method="post"><input type="hidden" name="methode" value="update_etape" />
+                <form  method="post"><input type="hidden" id="etape-methode" name="methode" value="sauve_etape" />
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <input type="hidden" name="aqetape_cod" value="'.$aqetape_cod.'" />
                 <input type="hidden" name="aqetaptemp_cod" value="'.$aqetaptemp_cod.'" />
@@ -211,7 +215,7 @@ print_r($_REQUEST);
         }
 
         echo '<table width="80%" align="center">';
-        echo '<tr><td colspan="2"><br><input class="test" type="submit" value="Sauvegarder l\'étape" /></td></tr>';
+        echo '<tr><td colspan="2"><br><input class="test" type="submit" value="Annuler" onclick="$(\'#etape-methode\').val(\'edite_quete\');"/>&nbsp;&nbsp;&nbsp;<input class="test" type="submit" value="Sauvegarder l\'étape" /></td></tr>';
         echo '</table>';
 
         echo '</form>';
