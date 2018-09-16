@@ -15,6 +15,7 @@ class aquete_etape_template
     var $aqetaptemp_nom;
     var $aqetaptemp_description;
     var $aqetaptemp_parametres;
+    var $aqetaptemp_param_desc;
     var $aqetaptemp_template;
 
     function __construct()
@@ -42,6 +43,7 @@ class aquete_etape_template
         $this->aqetaptemp_nom = $result['aqetaptemp_nom'];
         $this->aqetaptemp_description = $result['aqetaptemp_description'];
         $this->aqetaptemp_parametres = $result['aqetaptemp_parametres'];
+        $this->aqetaptemp_param_desc = $result['aqetaptemp_param_desc'];
         $this->aqetaptemp_template = $result['aqetaptemp_template'];
         return true;
     }
@@ -61,6 +63,7 @@ class aquete_etape_template
             aqetaptemp_nom,
             aqetaptemp_description,
             aqetaptemp_parametres,
+            aqetaptemp_param_desc,
             aqetaptemp_template                   )
                     values
                     (
@@ -68,6 +71,7 @@ class aquete_etape_template
                         :aqetaptemp_nom,
                         :aqetaptemp_description,
                         :aqetaptemp_parametres,
+                        :aqetaptemp_param_desc,
                         :aqetaptemp_template                      )
     returning aqetaptemp_cod as id";
             $stmt = $pdo->prepare($req);
@@ -76,6 +80,7 @@ class aquete_etape_template
                 ":aqetaptemp_nom" => $this->aqetaptemp_nom,
                 ":aqetaptemp_description" => $this->aqetaptemp_description,
                 ":aqetaptemp_parametres" => $this->aqetaptemp_parametres,
+                ":aqetaptemp_param_desc" => $this->aqetaptemp_param_desc,
                 ":aqetaptemp_template" => $this->aqetaptemp_template,
             ),$stmt);
 
@@ -91,6 +96,7 @@ class aquete_etape_template
             aqetaptemp_nom = :aqetaptemp_nom,
             aqetaptemp_description = :aqetaptemp_description,
             aqetaptemp_parametres = :aqetaptemp_parametres,
+            aqetaptemp_param_desc = :aqetaptemp_param_desc,
             aqetaptemp_template = :aqetaptemp_template                        where aqetaptemp_cod = :aqetaptemp_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -99,6 +105,7 @@ class aquete_etape_template
                 ":aqetaptemp_nom" => $this->aqetaptemp_nom,
                 ":aqetaptemp_description" => $this->aqetaptemp_description,
                 ":aqetaptemp_parametres" => $this->aqetaptemp_parametres,
+                ":aqetaptemp_param_desc" => $this->aqetaptemp_param_desc,
                 ":aqetaptemp_template" => $this->aqetaptemp_template,
             ),$stmt);
         }
@@ -111,6 +118,7 @@ class aquete_etape_template
         $retour = array();
 
         $l = explode(',', $this->aqetaptemp_parametres);
+        $desc = explode('|', $this->aqetaptemp_param_desc);
         foreach ($l as $k => $param)
         {
             // Format de param=> [id:type|n%M] avec %M et |n%M  factultatif
@@ -141,7 +149,7 @@ class aquete_etape_template
                 $type = $t[1];
             }
 
-            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'raw' => $param, 'texte' => "$n $type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max.")) );
+            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => "$n $type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max.")) );
         }
         return $retour;
     }

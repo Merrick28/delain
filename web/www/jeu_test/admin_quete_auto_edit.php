@@ -46,19 +46,19 @@ if ($erreur == 0)
         define("APPEL",1);
         include ("admin_traitement_quete_auto_edit.php");
     }
-
+print_r($_REQUEST);
 
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
-    if(!isset($_REQUEST['ajout_etape'])) {
+    if((!isset($_REQUEST['ajout_etape']))&&(!isset($_REQUEST['modif_etape']))) {
 
         // Liste des quetes existantes
         echo '  <TABLE width="80%" align="center">
                 <TR>
                 <TD>
                 <form method="post">
-                Modifier la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
+                Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
         $db->query('select aquete_nom, aquete_cod from quetes.aquete order by aquete_nom');
         while ($db->next_record())
@@ -88,8 +88,8 @@ if ($erreur == 0)
         echo '<tr><td><b>Nom de la quête </b>:</td><td><input type="text" name="aquete_nom" value="'.$quete->aquete_nom.'"></td></tr>';
         echo '<tr><td><b>Description </b>:</td><td><input type="text" size=80 name="aquete_description" value="'.$quete->aquete_description.'"></td></tr>';
         echo '<tr><td><b>Quête ouverte </b>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <i>activation/désactivation général</i></td></tr>';
-        echo '<tr><td><b></b>Début </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <i>elle ne peut pas être commencée avant cette date (pas de limite si vide)</i></td></tr>';
-        echo '<tr><td><b></b>Fin </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <i>elle ne peut plus être commencée après cette date (pas de limite si vide)</i></td></tr>';
+        echo '<tr><td><b>Début </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <i>elle ne peut pas être commencée avant cette date (pas de limite si vide)</i></td></tr>';
+        echo '<tr><td><b>Fin </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <i>elle ne peut plus être commencée après cette date (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Nb. quête simultanée</b>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <i>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b></b><del>Nb. participants max</del></b>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><i>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></i></td></tr>';
         echo '<tr><td><b>Nb. rejouabilité</b>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <i>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</i></td></tr>';
@@ -102,33 +102,42 @@ if ($erreur == 0)
         }
         else
         {
+            // Lister les étapes déjà créées
+            $etapes = $quete->get_etapes() ;
+
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
-            $filter = ($quete->get_nb_etape()==0) ? "where aqetaptemp_tag='START'" : "" ;
-            echo '<tr><td colspan="2"><input type="submit" value="Modifier la quête" /></td></tr>';
+            $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetaptemp_tag='START'" : "where aqetaptemp_tag<>'START'" ;
+            echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
             echo '</table>';
             echo '<hr>';
+
+            if ( $etapes)
+            {
+                foreach ($etapes as $k => $etape)
+                {
+                    $etape_template = new aquete_etape_template;
+                    $etape_template->charge($etape->aqetape_aqetaptemp_cod);    // On charge le modele de l'étape.
+
+                    echo '<form  method="post"><input type="hidden" name="methode" value="modif_etape"/>';
+                    echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
+                    echo '<input type="hidden" name="aqetape_cod" value="'.$etape->aqetape_cod.'" />';
+                    echo '<input type="hidden" name="aqetaptemp_cod" value="'.$etape->aqetape_aqetaptemp_cod.'" />';
+                    echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_template->aqetaptemp_nom}</b>:<br>";
+                    echo "&nbsp;&nbsp;&nbsp;{$etape_template->aqetaptemp_description} <br>";
+                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: {$etape->aqetape_texte}<br>";
+                    echo '<input class="test" type="submit" name="modif_etape" value="Editer l\'étape">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="delete_etape" value="Supprimer l\'étape">';
+                    echo '</form>';
+                    echo '<hr>';
+
+                }
+            }
+
             echo '<table width="80%" align="center">';
-            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetaptemp_cod", "select aqetaptemp_cod, aqetaptemp_nom from quetes.aquete_etape_template {$filter} order by aqetaptemp_nom").' et <input type="submit" name="ajout_etape" value="ajouter une étape"" /></td></tr>';
+            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetaptemp_cod", "select aqetaptemp_cod, aqetaptemp_nom from quetes.aquete_etape_template {$filter} order by aqetaptemp_nom").' et <input class="test" type="submit" name="ajout_etape" value="ajouter une étape"" /></td></tr>';
             echo '</table>';
         }
         echo '</form>';
 
-        // Etape 1 ----------------------------------------------------------------------
-        // Seulement si la quete a été créée
-        if (1*$aquete_cod > 0)
-        {
-            echo '<hr>';
-            echo '  <form  method="post">
-                    <input type="hidden" name="methode" value="update_etape_1" />
-                    <input type="hidden" name="mod_quete_cod" value="{$mod_quete_cod}" />
-                    <table width="80%" align="center">';
-            echo '<tr><td>Perso déclencheur :</td><td>
-                                            <input id="aquete_trigger_cod" type="text" size="5" name="aquete_trigger_cod" value="{$quete->aquete_trigger_cod}" onChange="$(\'#aquete_trigger_nom\').text(\'\');">
-                                            &nbsp;<i></i><span id="aquete_trigger_nom"></span></i>
-                                            &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("aquete_trigger","perso","Rechercher un perso");\'> 
-                                            </td></tr>';
-            echo '<tr><td colspan="2"><input type="submit" value="Modifier" /></td></tr></table></form>';
-        }
         // Fin saisie  ----------------------------------------------------------------------
         echo '<hr>';
     }
@@ -146,7 +155,7 @@ if ($erreur == 0)
 
         $aqetape_cod = 1*$_REQUEST["aqetape_cod"] ;
         $etape = new aquete_etape;
-        $etape->charge($aqetape_cod);    // On charge l'étape elle.
+        $etape->charge($aqetape_cod);    // On charge l'étape elle-même.
 
         echo '<b>Quête</b> #'.$aquete_cod.' - '.$quete->aquete_nom.'<br><hr>';
         echo '<b>Caractéristiques de l\'étape</b>'. ($aqetape_cod>0 ? " #$aqetape_cod" : "");
@@ -159,9 +168,8 @@ if ($erreur == 0)
                 <input type="hidden" name="aqetaptemp_cod" value="'.$aqetaptemp_cod.'" />
                 <table width="80%" align="center">';
 
-        echo '<tr><td colspan="2">'.$etape_template->aqetaptemp_description.'<br><br></td></tr>';
-        echo '<tr><td><b>Paramètres </b>:</td><td>'.$etape_template->aqetaptemp_parametres.'</td></tr>';
-        echo '<tr><td><b>Exemple </b>:</td><td>'.$etape_template->aqetaptemp_template.'</td></tr>';
+        echo '<tr><td colspan="2">'.$etape_template->aqetaptemp_description.'</td></tr>';
+        echo '<tr><td><b>Exemple </b>:</td><td>'.$etape_template->aqetaptemp_template.'<br><br></td></tr>';
         echo '<tr><td><b>Nom de l\'étape </b>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.$etape->aqetape_nom.'"></td></tr>';
         echo '<tr><td><b>Texte de l\'étape </b>:</td><td><textarea style="min-height: 80px; min-width: 500px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_template->aqetaptemp_template).'</textarea></td></tr>';
         echo '</table>';
@@ -171,7 +179,8 @@ if ($erreur == 0)
         $param_liste = $etape_template->get_liste_parametres();
         foreach ($param_liste as $id => $param)
         {
-            echo '<br><br><b>Edition du paramètre #'.$id.'</b>: <i>('.$param['raw'].' => '.$param['texte'].')</i><br>';
+            echo '<br><br><b>Edition du paramètre ['.$id.']</b>: <i>('.$param['texte'].')</i><br>';
+            echo $param['desc'].'</i><br><br>';
             echo '<table width="80%" align="center">';
             echo '<input type="hidden" id="max-param-'.$id.'" value="'.$param['M'].'">';
 
@@ -181,7 +190,14 @@ if ($erreur == 0)
             {
                 case 'perso':
                     echo   '<tr id="'.$row_id.'"><td>Perso :
-                            <input id="'.$row_id.'aqetape_aqelem_cod" type="text" size="5" value="" onChange="$(\'#'.$row_id.'aqetape_aqelem_nom\').text(\'\');">
+                            <input name="aqetape_aqelem_cod['.$id.'][]" id="'.$row_id.'aqetape_aqelem_cod" type="text" size="5" value="" onChange="$(\'#'.$row_id.'aqetape_aqelem_nom\').text(\'\');">
+                            &nbsp;<i></i><span id="'.$row_id.'aqetape_aqelem_nom"></span></i>
+                            &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqetape_aqelem","perso","Rechercher un perso");\'> 
+                            </td></tr>';
+                break;
+                case 'lieu':
+                    echo   '<tr id="'.$row_id.'"><td>Lieu :
+                            <input name="aqetape_aqelem_cod['.$id.'][]" id="'.$row_id.'aqetape_aqelem_cod" type="text" size="5" value="" onChange="$(\'#'.$row_id.'aqetape_aqelem_nom\').text(\'\');">
                             &nbsp;<i></i><span id="'.$row_id.'aqetape_aqelem_nom"></span></i>
                             &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqetape_aqelem","perso","Rechercher un perso");\'> 
                             </td></tr>';
@@ -194,7 +210,9 @@ if ($erreur == 0)
             echo '</table>';
         }
 
-        //Boucle sur les paramètres
+        echo '<table width="80%" align="center">';
+        echo '<tr><td colspan="2"><br><input class="test" type="submit" value="Sauvegarder l\'étape" /></td></tr>';
+        echo '</table>';
 
         echo '</form>';
         echo '<hr>';

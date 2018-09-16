@@ -27,6 +27,33 @@ case "update_quete":
     $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
 
 break;
+
+case "update_etape":
+    //récupérer les paramètres
+
+    $quete = new aquete;                                // la quete de référence
+    $quete->charge($_REQUEST["aquete_cod"]);
+
+    $etape_template = new aquete_etape_template;       // etpape basée sur ce template
+    $etape_template->charge($_REQUEST["aqetaptemp_cod"]);
+
+    // récupérer les paramètres de l'étape pour mise à jour
+    $etape = new aquete_etape;
+    $new = true ;
+    if ( $_REQUEST["aqetape_cod"]*1!=0 ) {
+        $new = false ;
+        $etape->charge($_REQUEST["aqetape_cod"]);
+    }
+    $etape->aqetape_nom = $_REQUEST['aqetape_nom'];
+    $etape->aqetape_aquete_cod = $_REQUEST["aquete_cod"];
+    $etape->aqetape_aqetaptemp_cod = $_REQUEST["aqetaptemp_cod"];
+    $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
+    $etape->stocke($new);
+
+    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
+
+break;
+
 default:
     echo 'Méthode inconnue: [' , $methode , ']';
 }

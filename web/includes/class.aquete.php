@@ -144,11 +144,11 @@ class aquete
         }
     }
 
-    function get_nb_etape()
+    function get_etapes()
     {
         $etape = new aquete_etape;
         $etapes = $etape->getBy_aqetape_aquete_cod($this->aquete_cod);
-        return !$etapes ? 0: sizof($etapes);
+        return $etapes;
     }
 
 
