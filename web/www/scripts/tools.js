@@ -242,12 +242,47 @@ function getTableCod(divname, table, titre, params={})
 }
 
 
-function  addQueteAutoParamRow(elem)
+function  addQueteAutoParamRow(elem, M)
 {
-    var row = elem[0].id ;
-    var s = row.split('-') ;
-    var r = (1+1*s[2]);
-    var new_row = s[0]+'-'+s[1]+'-'+r+'-';
-    var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
-    $(new_elem).insertAfter(elem);
+    if ((elem.parent().find("tr").length<=M) || (M == 0))
+    {
+
+        var row = elem[0].id ;
+        var s = row.split('-') ;
+        var r = (1+1*s[2]);
+        var new_row = s[0]+'-'+s[1]+'-'+r+'-';
+        var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+        $(new_elem).insertAfter(elem);
+
+        //Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
+        $('*[id^="'+new_row+'"]').each(function( index ) {
+            if ($( this ).attr("data-entry"))
+            {
+                if ($( this ).attr("data-entry") == "val")
+                {
+                    $( this ).val("");
+                }
+                else if ($( this ).attr("data-entry") == "text")
+                {
+                    $( this ).text("");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert('Il ne doit pas y avoir plus de '+M+' valeurs pour ce paramètre!')
+    }
+}
+
+function  delQueteAutoParamRow(elem)
+{
+    if (elem.parent().find("tr").length>2)
+    {
+        elem.remove();
+    }
+    else
+    {
+        alert('Il doit rester au moins une valeur pour ce paramètre!')
+    }
 }

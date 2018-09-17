@@ -165,6 +165,29 @@ class aquete_element
         return true;
     }
 
+    /**
+     * supprime tous les éléments d'une étapes qui ne sont pas dans la liste des elements
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas réussi a supprimer
+     */
+    function clean($aqetape_cod, $element_list)
+    {print_r($element_list);
+        $where = "";
+        if (sizeof($element_list)>0)
+        {
+            foreach ($element_list as $k => $e) $where .= (1*$e)."," ;
+            $where = " and aqelem_cod not in (". substr($where, 0, -1) .") ";
+        }
+        
+        $pdo    = new bddpdo;
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? $where ";
+        echo "$aqetape_cod =>$req<br>";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
+
+        return true;
+    }
+
 
     /**
      * recherche les éléments d'une étapes par son n°
