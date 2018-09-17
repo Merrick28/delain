@@ -171,7 +171,7 @@ class aquete_element
      * @return boolean => false pas réussi a supprimer
      */
     function clean($aqetape_cod, $element_list)
-    {print_r($element_list);
+    {
         $where = "";
         if (sizeof($element_list)>0)
         {

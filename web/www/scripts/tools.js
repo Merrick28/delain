@@ -178,19 +178,25 @@ function switch_menu(e)
 //--- Outil d'aide à la selection d'un perso, lieu, monstre generique, etc....
 function getTableCod_update() { // fonction de mise à jour de la liste (voir jeu_test\ajax_request.php)
     // recupe des paramètres
-    var params= {} ;
+    var params = {} ;
     if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
 
     //executer le service asynchrone
     runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
         // Ici on récupère le nombre d'entrée et la liste de nom recherché (max 10) => affichage dans le popup
-        if (d.resultat == -1) {
+        if (d.resultat == -1)
+        {
             $("#spop-serchlist").html("<b>Erreur:</b> "+d.message);
-        } else if (!d.data || !d.data.count) {
+        }
+        else if (!d.data || !d.data.count)
+        {
             $("#spop-serchlist").html("<b>Aucun élément ne correspond à la recherche.</b>");
-        } else {
+        }
+        else
+        {
             var data = d.data.data ;
             var content = "";
             for (i in data) {
@@ -202,13 +208,16 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     });
 }
 
-function getTableCod(divname, table, titre, params={})
+function getTableCod(divname, table, titre, params)
 {
+    console.log(params);
     var options = "" ;
     if (table=="perso"){
         options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
         options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
         options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
+    } else if (table=="etape"){
+        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
     }
 
     $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
@@ -239,8 +248,20 @@ function getTableCod(divname, table, titre, params={})
         }
     });
 
+    getTableCod_update(); // Faire un premier chargement (pour avoir au moins 10 lignes
+
 }
 
+function setNomByTableCod(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
+    //executer le service asynchrone
+    $("#"+divname).text("");
+    runAsync({request: "get_table_nom", data:{table:table, cod:cod}}, function(d){
+        if ((d.resultat == 0)&&(d.data)&&(d.data.nom))
+        {
+            $("#"+divname).text(d.data.nom);
+        }
+    });
+}
 
 function  addQueteAutoParamRow(elem, M)
 {

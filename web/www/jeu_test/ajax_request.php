@@ -176,10 +176,10 @@ switch($_REQUEST["request"])
         else
             $resultat["message"] = "<font color='#191970'>Le décor $decor_id n'est pas utilisé</font>" ;
         break;
-    //================
+
     //==============================================================================
     case "get_table_cod":
-        //==============================================================================================
+    //==============================================================================================
         $recherche = $_REQUEST["recherche"];
         $table = $_REQUEST["table"];
         $params = $_REQUEST["params"];
@@ -203,12 +203,51 @@ switch($_REQUEST["request"])
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
+
+        case 'etape':
+            $filter = "";
+            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
+
+            // requete de comptage
+            $req = "select count(*) from quetes.aquete_etape where aqetape_nom ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select aqetape_cod cod, aqetape_nom nom from quetes.aquete_etape where aqetape_nom ilike ? {$filter} ORDER BY aqetape_cod LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
          default:
              die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
         }
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchall
-        $resultat = array("count" => $count, "data" => $result);
+        $resultat = array("count" => $count, "data" => $result, "filter" =>$params);
+        break;
+
+    //==============================================================================
+    case "get_table_nom":
+    //==============================================================================================
+        $cod = $_REQUEST["cod"];
+        $table = $_REQUEST["table"];
+
+        switch ($table) {
+            case 'perso':
+                $req = "select perso_nom nom from perso where perso_cod = ? ";
+                break;
+            case 'etape':
+                $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
+                break;
+            default:
+                die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
+        }
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($cod), $stmt);
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
         break;
 
     //==============================================================================================
