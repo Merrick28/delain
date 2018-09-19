@@ -19,7 +19,7 @@ ob_start();
 <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
 <script language="javascript" src="../scripts/validation.js"></script>
 <script language="javascript" src="../scripts/manip_css.js"></script>
-<script language="javascript" src="../scripts/admin_effets_auto.js"></script>
+<script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
 <?php 
 $erreur = 0;
 $req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";

@@ -36,7 +36,7 @@ ob_start();
 <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
 <script language="javascript" src="../scripts/validation.js"></script>
 <script language="javascript" src="../scripts/manip_css.js"></script>
-<script language="javascript" src="../scripts/admin_effets_auto.js"></script>
+<script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
 <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
 	function updatePv()
 	{
