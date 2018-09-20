@@ -199,7 +199,39 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select perso_cod cod, perso_nom nom from perso where perso_nom ilike ? and perso_actif='O' {$filter} ORDER BY perso_cod LIMIT 10";
+            $req = "select perso_cod cod, perso_nom nom from perso where perso_nom ilike ? and perso_actif='O' {$filter} ORDER BY perso_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'lieu':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from lieu where lieu_nom ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select lieu_cod cod, lieu_nom nom from lieu where lieu_nom ilike ?  {$filter} ORDER BY lieu_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'lieu_type':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from lieu_type where tlieu_libelle ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
@@ -216,7 +248,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select aqetape_cod cod, aqetape_nom nom from quetes.aquete_etape where aqetape_nom ilike ? {$filter} ORDER BY aqetape_cod LIMIT 10";
+            $req = "select aqetape_cod cod, aqetape_nom nom from quetes.aquete_etape where aqetape_nom ilike ? {$filter} ORDER BY aqetape_nom LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
@@ -238,8 +270,14 @@ switch($_REQUEST["request"])
             case 'perso':
                 $req = "select perso_nom nom from perso where perso_cod = ? ";
                 break;
+            case 'lieu':
+                $req = "select lieu_nom nom from lieu where lieu_cod = ? ";
+                break;
             case 'etape':
                 $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
+                break;
+            case 'lieu_type':
+                $req = "select tlieu_libelle nom from lieu_type where tlieu_cod = ? ";
                 break;
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');

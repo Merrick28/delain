@@ -292,18 +292,18 @@ function  addQueteAutoParamRow(elem, M)
     }
     else
     {
-        alert('Il ne doit pas y avoir plus de '+M+' valeurs pour ce paramètre!')
+        alert('Il ne doit pas y avoir plus de '+M+' valeur(s) pour ce paramètre!')
     }
 }
 
-function  delQueteAutoParamRow(elem)
+function  delQueteAutoParamRow(elem, n)
 {
-    if (elem.parent().find("tr").length>2)
+    if (elem.parent().find("tr").length>(n+1))
     {
         elem.remove();
     }
     else
     {
-        alert('Il doit rester au moins une valeur pour ce paramètre!')
+        alert('Il doit rester au moins '+n+' valeur(s) pour ce paramètre!')
     }
 }
