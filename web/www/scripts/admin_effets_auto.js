@@ -297,7 +297,7 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	html += '<option value="A" ' + ((valeur == 'A') ? 'selected="selected"' : '' ) + '>Les Amis (Familier / Aventurier vs Monstre)</option>';
 	html += '<option value="E" ' + ((valeur == 'E') ? 'selected="selected"' : '' ) + '>Les Ennemis (Familier / Aventurier vs Monstre)</option>';
 	html += '<option value="R" ' + ((valeur == 'R') ? 'selected="selected"' : '' ) + '>Même Race</option>';
-	html += '<option value="P" ' + ((valeur == 'P') ? 'selected="selected"' : '' ) + '>Aventuriers et Familiers</option>';
+	html += '<option value="P" ' + ((valeur == 'P') ? 'selected="selected"' : '' ) + '>Aventuriers et Familiers (y compris sur un refuge)</option>';
 	html += '<option value="C" ' + ((valeur == 'C') ? 'selected="selected"' : '' ) + '>La cible actuelle du monstre</option>';
 	html += '<option value="O" ' + ((valeur == 'O') ? 'selected="selected"' : '' ) + '>Le protagoniste (tueur, tué, attaquant...)</option>';
 	html += '<option value="T" ' + ((valeur == 'T') ? 'selected="selected"' : '' ) + '>Tout le monde</option></select></label>';

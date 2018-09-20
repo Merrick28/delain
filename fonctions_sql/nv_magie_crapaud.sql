@@ -64,10 +64,11 @@ begin
 	select into nom_cible, type_cible perso_nom, perso_type_perso from perso where perso_cod = cible;
 	select into nom_sort sort_nom from sorts where sort_cod = num_sort;
 
-  -- 2018/09/17 - Malryza - Interdire ce sort sur les familiers. (control suplémentaire en amont
+  -- 2018/09/19 - Marlyza - Si le sort cible un familiers, cibler le maitre à la place.
 	if type_cible = 3 then
-		code_retour := '<p>Erreur : ce sort ne peut être lancé que sur un familier !</p>';
-		return code_retour;
+		select into cible,nom_cible pfam_perso_cod, perso_nom from perso_familier
+		  inner join perso on  perso_cod = pfam_perso_cod
+		  where pfam_familier_cod = cible ;
 	end if;
 
 	magie_commun_txt := magie_commun(lanceur, cible, type_lancer, num_sort);
@@ -80,6 +81,7 @@ begin
 
 	code_retour := split_part(magie_commun_txt, ';', 3);
 	px_gagne := split_part(magie_commun_txt, ';', 4);
+
 
 	-- Résolution du sort : on téléporte la cible sur la case du lanceur.
 	select into v_pos_lanceur ppos_pos_cod from perso_position where ppos_perso_cod = lanceur;

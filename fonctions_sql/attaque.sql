@@ -1168,6 +1168,11 @@ begin
       where ppos_pos_cod = pos_per2
             and ppos_perso_cod = perso_cod
             and perso_actif = 'O'
+            and not exists
+              (select 1 from lieu,lieu_position
+              where lpos_pos_cod = ppos_pos_cod
+              and lpos_lieu_cod = lieu_cod
+              and lieu_refuge = 'O')
       order by random()
       limit 1;
       code_retour := code_retour || 'Vous êtes sous le coup de la folie d’Ecatis et votre bras dévie au dernier moment. ' || nom_per2 || ' reçoit votre attaque.<br> ';
