@@ -49,6 +49,11 @@ if ($erreur == 0)
     print_r($_REQUEST);
 
     //=======================================================================================
+    // == Constantes quete_auto
+    //=======================================================================================
+    $request_select_etage = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
+
+    //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
     if(!isset($_REQUEST['methode']) || ($_REQUEST['methode']=='edite_quete')) {
@@ -127,7 +132,11 @@ if ($erreur == 0)
                     echo "&nbsp;&nbsp;&nbsp;{$etape_template->aqetaptemp_description} <br>";
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: {$etape->aqetape_texte}<br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
-                    echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                    // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
+                    if ($k!=0 || sizeof($etapes)==1)
+                    {
+                        echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                    }
                     echo '</form>';
                     echo '<hr>';
 
@@ -246,7 +255,10 @@ if ($erreur == 0)
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'lieu_type\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                     &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu_type","Rechercher un type de lieu");\'> 
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu_type","Rechercher un type de lieu");\'>
+                                    <br>Situé en dessous de&nbsp;:'.create_selectbox_from_req("aqelem_param_num_1[$param_id][]", $request_select_etage, $element->aqelem_param_num_1,     array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 150px;"')).'
+                                    et situé au dessus de:'.create_selectbox_from_req("aqelem_param_num_2[$param_id][]", $request_select_etage, $element->aqelem_param_num_2,     array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 150px;"')).'
+                                    
                                     </td>';
                     break;
 
@@ -287,11 +299,12 @@ if ($erreur == 0)
     }
 }
 
+
 //=======================================================================================
 // == Fonction
 //=======================================================================================
-function create_selectbox($name, $data, $default='', $param=''){
-    $out='<select name="'.$name.'"'. (!empty($param)?' '.$param:'') .">\n";
+function create_selectbox($name, $data, $default='', $param=array()){
+    $out='<select ' .( $param["style"]=='' ? '' : 'id="'.$param["id"].'"' ). ' name="' .$name. '" ' .$param["style"] .">\n";
 
     foreach($data as $key=>$val) {
         $out.='<option value="' .$key. '"'. ($default==$key?' selected="selected"':'') .'>';
@@ -304,7 +317,8 @@ function create_selectbox($name, $data, $default='', $param=''){
 }#-# create_selectbox()
 
 //=======================================================================================
-function create_selectbox_from_req($name, $req, $default='', $param=''){
+function create_selectbox_from_req($name, $req, $default='', $param=array()){
+
     $pdo = new bddpdo;
     $stmt = $pdo->query($req);
     $data = array();

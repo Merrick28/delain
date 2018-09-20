@@ -16,6 +16,7 @@ class aquete_etape
     var $aqetape_aqetaptemp_cod;
     var $aqetape_parametres;
     var $aqetape_texte;
+    var $aqetape_etape_cod;
 
     function __construct()
     {
@@ -43,6 +44,7 @@ class aquete_etape
         $this->aqetape_aqetaptemp_cod = $result['aqetape_aqetaptemp_cod'];
         $this->aqetape_parametres = $result['aqetape_parametres'];
         $this->aqetape_texte = $result['aqetape_texte'];
+        $this->aqetape_etape_cod = $result['aqetape_etape_cod'];
         return true;
     }
 
@@ -61,14 +63,16 @@ class aquete_etape
             aqetape_aquete_cod,
             aqetape_aqetaptemp_cod,
             aqetape_parametres,
-            aqetape_texte                        )
+            aqetape_texte,
+            aqetape_etape_cod                        )
                     values
                     (
                         :aqetape_nom,
                         :aqetape_aquete_cod,
                         :aqetape_aqetaptemp_cod,
                         :aqetape_parametres,
-                        :aqetape_texte                        )
+                        :aqetape_texte ,
+                        :aqetape_etape_cod                        )
     returning aqetape_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -77,6 +81,7 @@ class aquete_etape
                 ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
+                ":aqetape_etape_cod" => $this->aqetape_etape_cod,
             ),$stmt);
 
 
@@ -91,7 +96,8 @@ class aquete_etape
             aqetape_aquete_cod = :aqetape_aquete_cod,
             aqetape_aqetaptemp_cod = :aqetape_aqetaptemp_cod,
             aqetape_parametres = :aqetape_parametres,
-            aqetape_texte = :aqetape_texte                        where aqetape_cod = :aqetape_cod ";
+            aqetape_texte = :aqetape_texte,
+            aqetape_etape_cod = :aqetape_etape_cod                        where aqetape_cod = :aqetape_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqetape_nom" => $this->aqetape_nom,
@@ -100,6 +106,7 @@ class aquete_etape
                 ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
+                ":aqetape_etape_cod" => $this->aqetape_etape_cod,
             ),$stmt);
         }
     }
@@ -112,14 +119,33 @@ class aquete_etape
      */
     function supprime($code="")
     {
-        // Si un code est fourni, on doit charger l'élément
-        if ($code=="") $code = $this->aqetape_cod;
+        $pdo    = new bddpdo;
 
-        // On doit supprimer les éléments qui ont été préparé pour cette étape.
+        // Si un code est fourni, on doit charger l'élément
+        if ($code=="")
+        {
+            $code = $this->aqetape_cod;
+        }
+        else
+        {
+           $this->charge($code);    // oui, on le charge avant de le supprimer car on a besoin d'info pour le chemin
+        }
+
+        // On commence par supprimer les éléments qui ont été préparé pour cette étape.
         $element = new aquete_element;
         $element->deleteBy_aqetape_cod($code) ;
 
-        $pdo    = new bddpdo;
+        //on fait pointer toutes les étapes qui pointaient sur celle-ci vers sa prochaine étape à la place.
+        $req    = "UPDATE quetes.aquete_etape set aqetape_etape_cod = ? where aqetape_etape_cod = ? ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(1*$this->aqetape_etape_cod, 1*$this->aqetape_cod), $stmt);
+
+        //idem pour la quete s'il s'agissait de la première étape
+        $req    = "UPDATE quetes.aquete set aquete_etape_cod = ? where aquete_etape_cod = ? ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(1*$this->aqetape_etape_cod, 1*$this->aqetape_cod), $stmt);
+
+
         $req    = "DELETE from quetes.aquete_etape where aqetape_cod = ?";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($code), $stmt);
@@ -129,6 +155,46 @@ class aquete_etape
         }
 
         return true;
+    }
+
+    /**
+     * retourne toutes les etapes de la quete dans l'ordre chronologique !
+     * @global bdd_mysql $pdo
+     * @param integer $quete => quete dont on veut les etapes
+     * @param integer $etape => Commencer à cette étape, si 0 commencer au debut
+     * @return boolean => false pas trouvé d'étape
+     */
+    function get_quete_etapes($quete_cod=0, $etape_cod=0)
+    {
+        if ($etape_cod==0)
+        {
+            // La première etape est celle fournie par la quete
+            $quete = new aquete;
+            $quete->charge( $quete_cod==0 ? $this->aqetape_aquete_cod : $quete_cod ) ;     // Si un code est fourni, on doit charger l'élément sinon prendre celui déjà chargé
+
+            if ( 1*$quete->aquete_etape_cod == 0 ) return array();            // La quete ne dispose encore d'aucune étape
+
+            $etape = new aquete_etape;
+            $etape->charge( $quete->aquete_etape_cod ) ;                // Charger la première etape
+
+            if ( 1*$etape->aqetape_etape_cod == 0 ) return array($etape) ;    // La quete ne dispose que de cette étape
+
+            // retourner la première etape et toutes les autres
+            return array_merge( array($etape), $this->get_quete_etapes($quete_cod, $etape->aqetape_etape_cod)) ;
+
+        }
+        else
+        {
+            // Charger l'étape demandé, et passer à la suivante
+            $etape = new aquete_etape;
+            $etape->charge( $etape_cod ) ;
+
+            if ( 1*$etape->aqetape_etape_cod == 0 ) return  array($etape) ;    // il s'agissait de la dernière etape
+
+            // Retourner cette étape et les vuivantes
+            return array_merge( array($etape), $this->get_quete_etapes($quete_cod, $etape->aqetape_etape_cod)) ;
+        }
+
     }
 
     /**

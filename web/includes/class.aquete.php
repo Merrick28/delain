@@ -147,10 +147,18 @@ class aquete
     function get_etapes()
     {
         $etape = new aquete_etape;
-        $etapes = $etape->getBy_aqetape_aquete_cod($this->aquete_cod);
+        $etapes = $etape->get_quete_etapes($this->aquete_cod);        // toutes les etapes de la quete dans l'ordre chronologique !
         return $etapes;
     }
 
+    function get_derniere_etape()
+    {
+        $etapes = $this->get_etapes();
+        if (sizeof($etapes)<=0)
+            return false;
+        else
+            return $etapes[sizeof($etapes)-1]; // Retourner la dernière
+    }
 
     /**
      * Retourne un tableau de tous les enregistrements

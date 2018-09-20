@@ -49,9 +49,9 @@ class aquete_element
         $this->aqelem_param_id = $result['aqelem_param_id'];
         $this->aqelem_type = $result['aqelem_type'];
         $this->aqelem_misc_cod = $result['aqelem_misc_cod'];
-        $this->aqelem_param_txt_1 = $result['aqelem_param_num_1'];
-        $this->aqelem_param_txt_2 = $result['aqelem_param_num_2'];
-        $this->aqelem_param_txt_3 = $result['aqelem_param_num_3'];
+        $this->aqelem_param_num_1 = $result['aqelem_param_num_1'];
+        $this->aqelem_param_num_2 = $result['aqelem_param_num_2'];
+        $this->aqelem_param_num_3 = $result['aqelem_param_num_3'];
         $this->aqelem_param_txt_1 = $result['aqelem_param_txt_1'];
         $this->aqelem_param_txt_2 = $result['aqelem_param_txt_2'];
         $this->aqelem_param_txt_3 = $result['aqelem_param_txt_3'];
@@ -180,8 +180,7 @@ class aquete_element
         }
         
         $pdo    = new bddpdo;
-        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? $where ";
-        echo "$aqetape_cod =>$req<br>";
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? $where ";;
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
 

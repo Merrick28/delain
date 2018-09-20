@@ -53,7 +53,28 @@ case "sauve_etape":
     $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
     $etape->stocke($new);
 
-    //
+    // Agencement entre les étapes (chemin par defaut)
+    // Si c'est la première etape, il faut mettre à jour la quête sinon la dernière étape avant celle-ci
+    $deniere_etape = $quete->get_derniere_etape();
+    if ($etape_template->aqetaptemp_tag == "#START")
+    {
+        // C'est la première etape, mettre à jour la quete
+        $quete->aquete_etape_cod = $etape->aqetape_cod ;
+        $quete->stocke();
+    }
+    else
+    {
+        $deniere_etape = $quete->get_derniere_etape();
+        if ($deniere_etape->aqetape_cod != $etape->aqetape_cod )
+        {
+            // On vient juste d'ajouter une etape, il faut mettre à jour la précédente avec le N° de celle-ci
+            $deniere_etape->aqetape_etape_cod = $etape->aqetape_cod ;
+            $deniere_etape->stocke();
+        }
+    }
+
+
+    // Sauvegarde des elements créés pour l'étape
     $element_list = array();        // Liste des élement de l'etape, pour supprimer ceux qui ne son tplus utilisés
     // Boucle sur les elements de l'etape à sauvegarder
     foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
