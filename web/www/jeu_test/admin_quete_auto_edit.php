@@ -15,18 +15,18 @@ include('variables_menu.php');
 $contenu_page = '';
 
 $erreur = 0;
-$req = 'select dcompt_modif_perso from compt_droit where dcompt_compt_cod = ' . $compt_cod;
+$req = 'select dcompt_animations from compt_droit where dcompt_compt_cod = ' . $compt_cod;
 $db->query($req);
 if ($db->nf() == 0)
 {
-    $droit['modif_perso'] = 'N';
+    $droit['modif_animations'] = 'N';
 }
 else
 {
     $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
+    $droit['modif_animations'] = $db->f("dcompt_animations");
 }
-if ($droit['modif_perso'] != 'O')
+if ($droit['modif_animations'] != 'O')
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page $compt_cod !";
     $erreur = 1;
@@ -263,20 +263,28 @@ if ($erreur == 0)
                     break;
 
                     case 'choix':
-                        if (1*$element->aqelem_misc_cod != 0)
+                        if (1*$element->aqelem_misc_cod < 0)
+                        {
+                            $aqelem_misc_nom = "Quitter/Abandonner" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == 0)
+                        {
+                            $aqelem_misc_nom = "Etape suivante" ;
+                        }
+                        else
                         {
                             $aquete_etape = new aquete_etape ;
                             $aquete_etape->charge( $element->aqelem_misc_cod );
                             $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
                         }
                         echo   '<td>Choix  :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.$element->aqelem_param_txt_1.'"> <br>Etape si choisi:
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.']);\'> 
-                                    </td>';
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.$element->aqelem_param_txt_1.'"> <br>Etape si choisi:
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.']);\'> 
+                                </td>';
                         break;
 
                     default:

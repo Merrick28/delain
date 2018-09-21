@@ -210,14 +210,16 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
 
 function getTableCod(divname, table, titre, params)
 {
-    console.log(params);
     var options = "" ;
     if (table=="perso"){
         options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
         options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
         options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
     } else if (table=="etape"){
-        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
+        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'"><u><i>Etapes spéciales</u></i>:<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
+
     }
 
     $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +

@@ -180,6 +180,8 @@ switch($_REQUEST["request"])
     //==============================================================================
     case "get_table_cod":
     //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
+
         $recherche = $_REQUEST["recherche"];
         $table = $_REQUEST["table"];
         $params = $_REQUEST["params"];
@@ -263,6 +265,7 @@ switch($_REQUEST["request"])
     //==============================================================================
     case "get_table_nom":
     //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
         $cod = $_REQUEST["cod"];
         $table = $_REQUEST["table"];
 
@@ -274,7 +277,12 @@ switch($_REQUEST["request"])
                 $req = "select lieu_nom nom from lieu where lieu_cod = ? ";
                 break;
             case 'etape':
-                $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
+                if ($cod==0)
+                    $req = "select 'Etape suivante' nom where ?=0 ";
+                else if ($cod==-1)
+                    $req = "select 'Quitter/Abandonner' nom where ?=-1 ";
+                else
+                    $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
                 break;
             case 'lieu_type':
                 $req = "select tlieu_libelle nom from lieu_type where tlieu_cod = ? ";
@@ -298,11 +306,19 @@ switch($_REQUEST["request"])
 // Output si réussi!
 die('{"resultat":0, "data":'.json_encode($resultat ).'}');
 
-function verif_admin($pdo, $compt_cod, $droit)
+function verif_admin($pdo, $compt_cod, $droit="")
 {
     // Attention la variable $droit peut-être injectée dans le code sql sans risque SI elle est toujours fourni en interne
     // NE JAMAIS PRENDRE UNE VALEUR FOURNIE PAR $_GET, $_POST ou $_REQUEST
-    $req = "select count(*) count from compt_droit where dcompt_compt_cod =? and $droit = 'O'";
+    // Si droit n'est pas fourni, on verifi un droit admin ou monstre
+    if ($droit != "")
+    {
+        $req = "select count(*) count from compt_droit where dcompt_compt_cod =? and $droit = 'O'";
+    }
+    else
+    {
+        $req = "select count(*) count from compte where compt_cod =? and (compt_admin='O' OR compt_monstre='O') ";
+    }
     $stmt = $pdo->prepare($req);
     $stmt = $pdo->execute(array( $compt_cod ), $stmt);
     $row = $stmt->fetch();
