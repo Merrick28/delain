@@ -197,7 +197,55 @@ class aquete_etape
 
     }
 
-    /**
+    // Fonction pour mettre en forme le texte d'une étape alors que l'étape n'a pas encore démarrée.
+    // Les éléments de l'étapes n'ont pas encore été instanciés, on se base sur le template
+    // Param1 => Element déclencheur, Param2 => Choix
+    function get_initial_texte( $trigger_nom )
+    {
+        $hydrate_texte = "" ;
+        $textes = explode("[", $this->aqetape_texte);
+
+        $hydrate_texte.= $textes[0];        // Le début de la description
+        foreach ($textes as $k => $v)
+        {
+            if (($v!="") && ($k>0))
+            {
+                $params = explode("]", $v);
+
+                //// Pour l'instant les parmètres sont limités à ceux de l'étape, mais on pourrait envisager des paramètes de la forme [etape.param]
+                //$etape_temp = new aquete_etape_template();
+                //$element = new aquete_element();
+                //$etape_temp->charge($this->aqetape_aqetaptemp_cod);      // pour avoir la définition des paramètre
+                //$param_def = $etape_temp->get_liste_parametres() ;
+                // ON traite le cas particulier de la première etape non instanciée, alors on on a: Param1 => Element déclencheur, Param2 => Choix
+                $param_num = 1*$params[0] ;
+                if ($param_num == 1)
+                {
+                    $hydrate_texte.= $trigger_nom;
+                }
+                else if ($param_num == 2)
+                {
+                    $hydrate_texte .= "<br>";
+                    $element = new aquete_element();
+                    $elements = $element->getBy_etape_param_id($this->aqetape_cod, $param_num);
+                    foreach ($elements as $i => $e)
+                    {
+                        if ($e->aqelem_misc_cod==-1)
+                            $link = "/jeu_test/frame_vue.php" ;
+                        else
+                            $link = "/jeu_test/quete_auto.php?methode=start&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod ;
+                        $hydrate_texte .= '<br><a href="'.$link.'" style="margin:50px;">'.$e->aqelem_param_txt_1.'</a>';
+                    }
+                }
+                $hydrate_texte.= $params[1];
+            }
+        }
+
+        return $hydrate_texte ;
+    }
+
+
+        /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
      * @return \aquete_etape

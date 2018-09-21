@@ -51,7 +51,8 @@ if ($erreur == 0)
     //=======================================================================================
     // == Constantes quete_auto
     //=======================================================================================
-    $request_select_etage = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
+    //$request_select_etage = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
+    $request_select_etage = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
 
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)

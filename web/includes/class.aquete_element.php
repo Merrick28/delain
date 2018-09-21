@@ -14,6 +14,7 @@ class aquete_element
     var $aqelem_aquete_cod;
     var $aqelem_aqetape_cod;
     var $aqelem_param_id;
+    var $aqelem_param_ordre;
     var $aqelem_type;
     var $aqelem_misc_cod;
     var $aqelem_param_num_1;
@@ -47,6 +48,7 @@ class aquete_element
         $this->aqelem_aquete_cod = $result['aqelem_aquete_cod'];
         $this->aqelem_aqetape_cod = $result['aqelem_aqetape_cod'];
         $this->aqelem_param_id = $result['aqelem_param_id'];
+        $this->aqelem_param_ordre = $result['aqelem_param_ordre'];
         $this->aqelem_type = $result['aqelem_type'];
         $this->aqelem_misc_cod = $result['aqelem_misc_cod'];
         $this->aqelem_param_num_1 = $result['aqelem_param_num_1'];
@@ -72,6 +74,7 @@ class aquete_element
             aqelem_aquete_cod,
             aqelem_aqetape_cod,
             aqelem_param_id,
+            aqelem_param_ordre,
             aqelem_type,
             aqelem_misc_cod,
             aqelem_param_num_1,
@@ -85,6 +88,7 @@ class aquete_element
                         :aqelem_aquete_cod,
                         :aqelem_aqetape_cod,
                         :aqelem_param_id,
+                        :aqelem_param_ordre,
                         :aqelem_type,
                         :aqelem_misc_cod,
                         :aqelem_param_num_1,
@@ -99,6 +103,7 @@ class aquete_element
                 ":aqelem_aquete_cod" => $this->aqelem_aquete_cod,
                 ":aqelem_aqetape_cod" => $this->aqelem_aqetape_cod,
                 ":aqelem_param_id" => $this->aqelem_param_id,
+                ":aqelem_param_ordre" => $this->aqelem_param_ordre,
                 ":aqelem_type" => $this->aqelem_type,
                 ":aqelem_misc_cod" => $this->aqelem_misc_cod,
                 ":aqelem_param_num_1" => $this->aqelem_param_num_1,
@@ -120,6 +125,7 @@ class aquete_element
             aqelem_aquete_cod = :aqelem_aquete_cod,
             aqelem_aqetape_cod = :aqelem_aqetape_cod,
             aqelem_param_id = :aqelem_param_id,
+            aqelem_param_ordre = :aqelem_param_ordre,
             aqelem_type = :aqelem_type,
             aqelem_misc_cod = :aqelem_misc_cod,
             aqelem_param_num_1 = :aqelem_param_num_1,
@@ -134,6 +140,7 @@ class aquete_element
                 ":aqelem_aqetape_cod" => $this->aqelem_aqetape_cod,
                 ":aqelem_aquete_cod" => $this->aqelem_aquete_cod,
                 ":aqelem_param_id" => $this->aqelem_param_id,
+                ":aqelem_param_ordre" => $this->aqelem_param_ordre,
                 ":aqelem_type" => $this->aqelem_type,
                 ":aqelem_misc_cod" => $this->aqelem_misc_cod,
                 ":aqelem_param_num_1" => $this->aqelem_param_num_1,
@@ -147,7 +154,7 @@ class aquete_element
     }
 
     /**
-     * supprime tous les éléments d'une étapes
+     * supprime tous les éléments d'une étapes (attention supprime aussi les élément généré pour les perso ayant fait la quete).
      * @global bdd_mysql $pdo
      * @return boolean => false pas réussi a supprimer
      */
@@ -180,7 +187,7 @@ class aquete_element
         }
         
         $pdo    = new bddpdo;
-        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? $where ";;
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and not aqelem_est_perso $where ";;
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
 
@@ -197,7 +204,7 @@ class aquete_element
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqelem_cod  from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_param_id = ? order by aqelem_cod";
+        $req = "select aqelem_cod  from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_param_id = ? and not aqelem_est_perso order by aqelem_param_ordre,aqelem_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($aqetape_cod, $param_id),$stmt);
         while($result = $stmt->fetch())

@@ -1163,7 +1163,13 @@ class perso
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
         $result = $stmt->fetch();
-        return $result['nombre'] != 0;
+
+        if ($result['nombre'] != 0) return true;        // il y a des quetes traditionnelles
+
+        // Verification quete auto
+        $quete = new aquete;
+        $tab_quete = $quete->get_debut_quete($this->perso_cod);
+        return sizeof($tab_quete["quetes"])>0;
     }
 
     function get_lieu()

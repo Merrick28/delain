@@ -93,6 +93,7 @@ case "sauve_etape":
             $element->aqelem_aquete_cod = $quete->aquete_cod ;
             $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
             $element->aqelem_param_id = $param_id  ;
+            $element->aqelem_param_ordre = $e  ;
             $element->aqelem_type = $type ;
             $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
             $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;

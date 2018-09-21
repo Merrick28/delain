@@ -144,6 +144,29 @@ class aquete
         }
     }
 
+    //Comptage tous persos confondus
+    function get_nb_total()
+    {
+        $pdo = new bddpdo;
+        $req = "select count(*) as count from aquete_perso where aqperso_aquete_cod=?  ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
+        $result = $stmt->fetch();
+        return 1*$result['count'];
+    }
+
+    //Comptage tous persos confondus
+    function get_nb_en_cours()
+    {
+        $pdo = new bddpdo;
+        $req = "select count(*) as count from aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
+        $result = $stmt->fetch();
+        return 1*$result['count'];
+    }
+
+    //Recherche de la liste des etapes de la quete
     function get_etapes()
     {
         $etape = new aquete_etape;
@@ -151,6 +174,7 @@ class aquete
         return $etapes;
     }
 
+    //Recherche de la dernière étape de la quete
     function get_derniere_etape()
     {
         $etapes = $this->get_etapes();
@@ -158,6 +182,60 @@ class aquete
             return false;
         else
             return $etapes[sizeof($etapes)-1]; // Retourner la dernière
+    }
+
+    //Liste des quete qu'un perso à la possibilité de démarrer
+    function get_debut_quete($perso_cod)
+    {
+        $quetes = array();
+        $triggers = array();
+
+        $pdo = new bddpdo;
+        $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom from perso
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join
+                (   -- liste des démarrages de quete sur un lieu specifique
+                    select aquete_cod, aqelem_misc_cod, aqelem_type, lpos_pos_cod as pos_cod, lieu_nom as nom from quetes.aquete
+                    join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
+                    join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu'
+                    join lieu_position on lpos_lieu_cod=aqelem_misc_cod
+                    join lieu on lieu_cod=lpos_lieu_cod
+                
+                    UNION 
+                    
+                     -- liste des démarrages de quete sur un perso specifique
+                    select aquete_cod, aqelem_misc_cod, aqelem_type, ppos_pos_cod pos_cod, perso_nom as nom from quetes.aquete
+                    join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
+                    join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='perso'
+                    join perso_position on ppos_perso_cod=aqelem_misc_cod
+                    join perso on perso_cod=ppos_perso_cod
+                
+                    UNION
+                
+                    -- liste des démarrages de quete sur un type de lieu
+                    select aquete_cod, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  from quetes.aquete
+                    join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
+                    join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu_type'
+                    join lieu on lieu.lieu_tlieu_cod=aqelem_misc_cod
+                    join lieu_position on lpos_lieu_cod=lieu_cod                  
+                    join positions on pos_cod=lpos_pos_cod 
+                    join etage on etage_numero=pos_etage and etage_reference<=aqelem_param_num_1 and etage_reference>=aqelem_param_num_2
+                ) as quete on quete.pos_cod=ppos_pos_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new aquete;
+            $temp->charge($result["aquete_cod"]);
+
+            // Pour chaque quête trouvée, on vérifie si le perso ne l'a pas déjà prise ou en cours par un autre
+            // A FAIRE !!!
+            $quetes[] = $temp;
+            $triggers[] = $result;
+
+            unset($temp);
+        }
+        return array("quetes"=>$quetes, "triggers"=>$triggers);
     }
 
     /**
