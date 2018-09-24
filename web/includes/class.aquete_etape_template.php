@@ -117,6 +117,8 @@ class aquete_etape_template
 
         $retour = array();
 
+        if ($this->aqetaptemp_parametres=="") return $retour;
+
         $l = explode(',', $this->aqetaptemp_parametres);
         $desc = explode('|', $this->aqetaptemp_param_desc);
         foreach ($l as $k => $param)

@@ -1,0 +1,166 @@
+<?php
+/**
+ * includes/class.aquete_perso_journal.php
+ */
+
+/**
+ * Class aquete_perso_journal
+ *
+ * Gère les objets BDD de la table aquete_perso_journal
+ */
+class aquete_perso_journal
+{
+    var $aqpersoj_cod;
+    var $aqpersoj_aqperso_cod;
+    var $aqpersoj_quete_step = 0;
+    var $aqpersoj_texte;
+
+    function __construct()
+    {
+    }
+
+    /**
+     * Charge dans la classe un enregistrement de aquete_perso_journal
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK
+     * @return boolean => false si non trouvé
+     */
+    function charge($code)
+    {
+        $pdo = new bddpdo;
+        $req = "select * from quetes.aquete_perso_journal where aqpersoj_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code),$stmt);
+        if(!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $this->aqpersoj_cod = $result['aqpersoj_cod'];
+        $this->aqpersoj_aqperso_cod = $result['aqpersoj_aqperso_cod'];
+        $this->aqpersoj_quete_step = $result['aqpersoj_quete_step'];
+        $this->aqpersoj_texte = $result['aqpersoj_texte'];
+        return true;
+    }
+
+    /**
+     * Stocke l'enregistrement courant dans la BDD
+     * @global bdd_mysql $pdo
+     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     */
+    function stocke($new = false)
+    {
+        $pdo = new bddpdo;
+        if($new)
+        {
+            $req = "insert into quetes.aquete_perso_journal (
+            aqpersoj_aqperso_cod,
+            aqpersoj_quete_step,
+            aqpersoj_texte                        )
+                    values
+                    (
+                        :aqpersoj_aqperso_cod,
+                        :aqpersoj_quete_step,
+                        :aqpersoj_texte                        )
+    returning aqpersoj_cod as id";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
+                ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
+                ":aqpersoj_texte" => $this->aqpersoj_texte,
+            ),$stmt);
+
+
+            $temp = $stmt->fetch();
+            $this->charge($temp['id']);
+        }
+        else
+        {
+            $req = "update quetes.aquete_perso_journal
+                    set
+            aqpersoj_aqperso_cod = :aqpersoj_aqperso_cod,
+            aqpersoj_quete_step = :aqpersoj_quete_step,
+            aqpersoj_texte = :aqpersoj_texte                        where aqpersoj_cod = :aqpersoj_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":aqpersoj_cod" => $this->aqpersoj_cod,
+                ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
+                ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
+                ":aqpersoj_texte" => $this->aqpersoj_texte,
+            ),$stmt);
+        }
+    }
+
+    // retourne les journaux d'une quete trié par step
+    function  getBy_aqperso_cod($aqperso_cod)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select aqpersoj_cod  from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ? order by aqpersoj_quete_step ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso_cod),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new aquete_perso_journal;
+            $temp->charge($result["aqpersoj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+
+    /**
+     * Retourne un tableau de tous les enregistrements
+     * @global bdd_mysql $pdo
+     * @return \aquete_perso_journal
+     */
+    function  getAll()
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select aqpersoj_cod  from quetes.aquete_perso_journal order by aqpersoj_cod";
+        $stmt = $pdo->query($req);
+        while($result = $stmt->fetch())
+        {
+            $temp = new aquete_perso_journal;
+            $temp->charge($result["aqpersoj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function __call($name, $arguments){
+        switch(substr($name, 0, 6)){
+            case 'getBy_':
+                if(property_exists($this, substr($name, 6)))
+                {
+                    $retour = array();
+                    $pdo = new bddpdo;
+                    $req = "select aqpersoj_cod  from quetes.aquete_perso_journal where " . substr($name, 6) . " = ? order by aqpersoj_cod";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array($arguments[0]),$stmt);
+                    while($result = $stmt->fetch())
+                    {
+                        $temp = new aquete_perso_journal;
+                        $temp->charge($result["aqpersoj_cod"]);
+                        $retour[] = $temp;
+                        unset($temp);
+                    }
+                    if(count($retour) == 0)
+                    {
+                        return false;
+                    }
+                    return $retour;
+                }
+                else
+                {
+                    die('Unknown variable ' . substr($name, 6) . ' in table aquete_perso_journal');
+                }
+                break;
+
+            default:
+                die('Unknown method.');
+        }
+    }
+}

@@ -1,6 +1,7 @@
 <?php 
 include_once "verif_connexion.php";
 include '../includes/template.inc';
+include_once '../includes/tools.php';
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
@@ -308,32 +309,6 @@ if ($erreur == 0)
     }
 }
 
-
-//=======================================================================================
-// == Fonction
-//=======================================================================================
-function create_selectbox($name, $data, $default='', $param=array()){
-    $out='<select ' .( $param["style"]=='' ? '' : 'id="'.$param["id"].'"' ). ' name="' .$name. '" ' .$param["style"] .">\n";
-
-    foreach($data as $key=>$val) {
-        $out.='<option value="' .$key. '"'. ($default==$key?' selected="selected"':'') .'>';
-        $out.=$val;
-        $out.="</option>\n";
-    }
-    $out.="</select>\n";
-
-    return $out;
-}#-# create_selectbox()
-
-//=======================================================================================
-function create_selectbox_from_req($name, $req, $default='', $param=array()){
-
-    $pdo = new bddpdo;
-    $stmt = $pdo->query($req);
-    $data = array();
-    while($result = $stmt->fetch(PDO::FETCH_NUM )) $data[$result[0]] = $result[1] ;
-    return create_selectbox($name, $data, $default, $param);
-}#-# create_selectbox_from_table()
 
 //=======================================================================================
 // == Footer

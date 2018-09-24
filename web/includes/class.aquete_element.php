@@ -12,7 +12,9 @@ class aquete_element
 {
     var $aqelem_cod;
     var $aqelem_aquete_cod;
+    var $aqelem_quete_step;
     var $aqelem_aqetape_cod;
+    var $aqelem_nom;
     var $aqelem_param_id;
     var $aqelem_param_ordre;
     var $aqelem_type;
@@ -23,6 +25,7 @@ class aquete_element
     var $aqelem_param_txt_1;
     var $aqelem_param_txt_2;
     var $aqelem_param_txt_3;
+    var $aqelem_aqperso_cod;
 
     function __construct()
     {
@@ -46,7 +49,9 @@ class aquete_element
         }
         $this->aqelem_cod = $result['aqelem_cod'];
         $this->aqelem_aquete_cod = $result['aqelem_aquete_cod'];
+        $this->aqelem_quete_step = $result['aqelem_quete_step'];
         $this->aqelem_aqetape_cod = $result['aqelem_aqetape_cod'];
+        $this->aqelem_nom = $result['aqelem_nom'];
         $this->aqelem_param_id = $result['aqelem_param_id'];
         $this->aqelem_param_ordre = $result['aqelem_param_ordre'];
         $this->aqelem_type = $result['aqelem_type'];
@@ -57,6 +62,7 @@ class aquete_element
         $this->aqelem_param_txt_1 = $result['aqelem_param_txt_1'];
         $this->aqelem_param_txt_2 = $result['aqelem_param_txt_2'];
         $this->aqelem_param_txt_3 = $result['aqelem_param_txt_3'];
+        $this->aqelem_aqperso_cod = $result['aqelem_aqperso_cod'];
         return true;
     }
 
@@ -72,7 +78,9 @@ class aquete_element
         {
             $req = "insert into quetes.aquete_element (
             aqelem_aquete_cod,
+            aqelem_quete_step,
             aqelem_aqetape_cod,
+            aqelem_nom,
             aqelem_param_id,
             aqelem_param_ordre,
             aqelem_type,
@@ -82,11 +90,14 @@ class aquete_element
             aqelem_param_num_3,
             aqelem_param_txt_1,
             aqelem_param_txt_2,
-            aqelem_param_txt_3                        )
+            aqelem_param_txt_3 ,
+            aqelem_aqperso_cod                        )
                     values
                     (
                         :aqelem_aquete_cod,
+                        :aqelem_quete_step,
                         :aqelem_aqetape_cod,
+                        :aqelem_nom,
                         :aqelem_param_id,
                         :aqelem_param_ordre,
                         :aqelem_type,
@@ -96,12 +107,15 @@ class aquete_element
                         :aqelem_param_num_3,
                         :aqelem_param_txt_1,
                         :aqelem_param_txt_2,
-                        :aqelem_param_txt_3                        )
+                        :aqelem_param_txt_3,
+                        :aqelem_aqperso_cod                        )
     returning aqelem_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqelem_aquete_cod" => $this->aqelem_aquete_cod,
+                ":aqelem_quete_step" => $this->aqelem_quete_step,
                 ":aqelem_aqetape_cod" => $this->aqelem_aqetape_cod,
+                ":aqelem_nom" => $this->aqelem_nom,
                 ":aqelem_param_id" => $this->aqelem_param_id,
                 ":aqelem_param_ordre" => $this->aqelem_param_ordre,
                 ":aqelem_type" => $this->aqelem_type,
@@ -112,6 +126,7 @@ class aquete_element
                 ":aqelem_param_txt_1" => $this->aqelem_param_txt_1,
                 ":aqelem_param_txt_2" => $this->aqelem_param_txt_2,
                 ":aqelem_param_txt_3" => $this->aqelem_param_txt_3,
+                ":aqelem_aqperso_cod" => $this->aqelem_aqperso_cod,
             ),$stmt);
 
 
@@ -123,7 +138,9 @@ class aquete_element
             $req = "update quetes.aquete_element
                     set
             aqelem_aquete_cod = :aqelem_aquete_cod,
+            aqelem_quete_step = :aqelem_quete_step,
             aqelem_aqetape_cod = :aqelem_aqetape_cod,
+            aqelem_nom = :aqelem_nom,
             aqelem_param_id = :aqelem_param_id,
             aqelem_param_ordre = :aqelem_param_ordre,
             aqelem_type = :aqelem_type,
@@ -133,12 +150,15 @@ class aquete_element
             aqelem_param_num_3 = :aqelem_param_num_3,
             aqelem_param_txt_1 = :aqelem_param_txt_1,
             aqelem_param_txt_2 = :aqelem_param_txt_2,
-            aqelem_param_txt_3 = :aqelem_param_txt_3                        where aqelem_cod = :aqelem_cod ";
+            aqelem_param_txt_3 = :aqelem_param_txt_3,
+            aqelem_aqperso_cod = :aqelem_aqperso_cod                        where aqelem_cod = :aqelem_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqelem_cod" => $this->aqelem_cod,
                 ":aqelem_aqetape_cod" => $this->aqelem_aqetape_cod,
+                ":aqelem_nom" => $this->aqelem_nom,
                 ":aqelem_aquete_cod" => $this->aqelem_aquete_cod,
+                ":aqelem_quete_step" => $this->aqelem_quete_step,
                 ":aqelem_param_id" => $this->aqelem_param_id,
                 ":aqelem_param_ordre" => $this->aqelem_param_ordre,
                 ":aqelem_type" => $this->aqelem_type,
@@ -149,6 +169,7 @@ class aquete_element
                 ":aqelem_param_txt_1" => $this->aqelem_param_txt_1,
                 ":aqelem_param_txt_2" => $this->aqelem_param_txt_2,
                 ":aqelem_param_txt_3" => $this->aqelem_param_txt_3,
+                ":aqelem_aqperso_cod" => $this->aqelem_aqperso_cod,
             ),$stmt);
         }
     }
@@ -187,13 +208,12 @@ class aquete_element
         }
         
         $pdo    = new bddpdo;
-        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and not aqelem_est_perso $where ";;
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";;
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
 
         return true;
     }
-
 
     /**
      * recherche les éléments d'une étapes par son n°
@@ -204,7 +224,7 @@ class aquete_element
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqelem_cod  from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_param_id = ? and not aqelem_est_perso order by aqelem_param_ordre,aqelem_cod ";
+        $req = "select aqelem_cod  from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_param_id = ? and aqelem_aqperso_cod is null order by aqelem_param_ordre,aqelem_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($aqetape_cod, $param_id),$stmt);
         while($result = $stmt->fetch())
@@ -220,6 +240,36 @@ class aquete_element
         }
         return $retour;
     }
+
+    /**
+     * retourne un texte en français pour l'élément
+     * @global bdd_mysql $pdo
+     */
+    function get_element_texte($aqelem_cod=0)
+    {
+        $element_texte = "" ;
+
+        // Si le cod est fourni c'est que l'élément n' pas été chargé
+        if ($aqelem_cod!=0)
+        {
+            $this->charge($aqelem_cod);
+        }
+
+        switch ($this->aqelem_type)
+        {
+            case 'perso':
+            case 'lieu':
+                $element_texte = "<b><i>".$this->aqelem_nom."</i></b>";
+            break;
+
+            case 'choix':
+                $element_texte =  "<br>&nbsp;&nbsp;&nbsp;Vous : <i>".$this->aqelem_param_txt_1 ."</i>";
+                break;
+        }
+
+        return $element_texte ;
+    }
+
 
     /**
      * Retourne un tableau de tous les enregistrements

@@ -40,7 +40,11 @@ if ($erreur == 0)
         $etape->charge($quete->aquete_etape_cod);
 
         $contenu_page2 .= "<!-- début $key => $quete->aquete_etape_cod -->";
-        $contenu_page2 .= "<b>{$quete->aquete_nom}</b><br><br>";
+        //$contenu_page2 .= "<b>{$quete->aquete_nom}</b><br><br>";
+
+        $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>{$quete->aquete_nom}</b></center></div>" ;
+        $contenu_page2 .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
+
         $contenu_page2 .= $etape->get_initial_texte($tab_quete["triggers"][$k]["nom"]);
         $contenu_page2 .= "<br><br><hr><!-- fin $key => $val -->";
 

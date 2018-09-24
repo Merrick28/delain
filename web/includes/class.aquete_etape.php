@@ -212,12 +212,7 @@ class aquete_etape
             {
                 $params = explode("]", $v);
 
-                //// Pour l'instant les parmètres sont limités à ceux de l'étape, mais on pourrait envisager des paramètes de la forme [etape.param]
-                //$etape_temp = new aquete_etape_template();
-                //$element = new aquete_element();
-                //$etape_temp->charge($this->aqetape_aqetaptemp_cod);      // pour avoir la définition des paramètre
-                //$param_def = $etape_temp->get_liste_parametres() ;
-                // ON traite le cas particulier de la première etape non instanciée, alors on on a: Param1 => Element déclencheur, Param2 => Choix
+                // On traite le cas particulier de la première etape non instanciée, alors on on a: Param1 => Element déclencheur, Param2 => Choix
                 $param_num = 1*$params[0] ;
                 if ($param_num == 1)
                 {
@@ -244,6 +239,29 @@ class aquete_etape
         return $hydrate_texte ;
     }
 
+    // Fonction pour mettre en forme le texte d'une étape du type choix
+    function get_texte_choix()
+    {
+        $hydrate_texte = "" ;
+
+        $element = new aquete_element();
+        $elements = $element->getBy_etape_param_id($this->aqetape_cod, 1);
+        foreach ($elements as $i => $e)
+        {
+            if ($e->aqelem_misc_cod==-1)
+                $link = "/jeu_test/quete_auto.php?methode=stop&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod ;
+            else
+                $link = "/jeu_test/quete_auto.php?methode=choix&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod ;
+            $hydrate_texte .= '<br><a href="'.$link.'" style="margin:50px;">'.$e->aqelem_param_txt_1.'</a>';
+        }
+
+        if (strpos($this->aqetape_texte, "[1]") !== false)
+            $hydrate_texte = str_replace("[1]", $hydrate_texte, $this->aqetape_texte);
+        else
+            $hydrate_texte = $this->aqetape_texte.$hydrate_texte;  // Le début de la description
+
+        return $hydrate_texte ;
+    }
 
         /**
      * Retourne un tableau de tous les enregistrements

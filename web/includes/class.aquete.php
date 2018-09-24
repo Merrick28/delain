@@ -148,7 +148,7 @@ class aquete
     function get_nb_total()
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from aquete_perso where aqperso_aquete_cod=?  ";
+        $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
         $result = $stmt->fetch();
@@ -159,7 +159,7 @@ class aquete
     function get_nb_en_cours()
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+        $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
         $result = $stmt->fetch();
@@ -184,7 +184,7 @@ class aquete
             return $etapes[sizeof($etapes)-1]; // Retourner la dernière
     }
 
-    //Liste des quete qu'un perso à la possibilité de démarrer
+    //Liste des quetes qu'un perso à la possibilité de démarrer en fonction de sa position (sur une lieu, un pnj etc...)
     function get_debut_quete($perso_cod)
     {
         $quetes = array();
@@ -212,7 +212,7 @@ class aquete
                 
                     UNION
                 
-                    -- liste des démarrages de quete sur un type de lieu
+                    -- liste des démarrages de quete sur un type de lieu => transforation du type de lieu en lieu réel!
                     select aquete_cod, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu_type'
@@ -293,3 +293,4 @@ class aquete
         }
     }
 }
+
