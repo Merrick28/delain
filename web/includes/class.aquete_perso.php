@@ -325,7 +325,6 @@ class aquete_perso
     // On reprend à partir de l'étape en cours, on regarde si elle est terminée et ainsi de suite
     function run()
     {
-
         $perso_journal = new aquete_perso_journal();
         $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
 
@@ -352,6 +351,15 @@ class aquete_perso
             }
         } while ($loop);
 
+        if ($this->aqperso_etape_cod=="")
+        {
+            $quete =  new aquete();
+            $quete->charge($this->aqperso_aquete_cod);
+            $this->aqperso_etape_cod = $quete->aquete_etape_cod ; // dernière etape c'est la première !
+            $this->aqperso_actif = 'N';
+            $this->aqperso_date_fin = date('Y-m-d H:i:s');
+        }
+
         $this->stocke();    // Mettre à jours les infos
     }
 
@@ -372,6 +380,66 @@ class aquete_perso
         }
 
         return "";
+    }
+
+    // Injection du choix utilisateur dans l'étape courante
+    function set_choix_aventurier($perso_cod, $aquete_cod, $aqelem_cod)
+    {
+        // le n° de quete vient de l'utilisateur, il faut s'en méfier et le verifier
+        if ( ! $this->get_perso_quete($perso_cod, $aquete_cod) ) return;
+
+        // vérifier que l'on est bien en attente à cette étape !
+
+        $etape = new aquete_etape();
+        $etape->charge($this->aqperso_etape_cod);
+        $etape_temp = new aquete_etape_template();
+        $etape_temp->charge($etape->aqetape_aqetaptemp_cod);
+
+        if ($etape_temp->aqetaptemp_tag != "#CHOIX") return;    // pas de choix à cette etape!
+
+        $element = new aquete_element();
+        $element->charge($aqelem_cod);
+
+        // le choix vient de l'utilisateur, il faut s'en méfier et le verifier
+        if (($element->aqelem_aqetape_cod != $this->aqperso_etape_cod) || ($element->aqelem_aqetape_cod != $this->aqperso_etape_cod)) return;
+
+        // Ok, bon perso, bonne quete, etape qui demande un choix, alors traiter le choix
+        if ($element->aqelem_misc_cod<0) return "";     // la gestion du choix quitter est traité en amont, on ne devrait pas sortir ici
+
+        // L'étape en cours est considérée comme terminée
+        if ($element->aqelem_misc_cod==0)
+            $this->aqperso_etape_cod = $etape->aqetape_etape_cod ;       // on passe à l'étape suivante
+        else
+            $this->aqperso_etape_cod = $element->aqelem_misc_cod ;       // on passe à l'étape demandée !
+
+        // Il reste à générer les éléments de cette quête dédiés au perso (l'élément du type choix) !!!
+        $element->aqelem_aqperso_cod = $this->aqperso_cod ;              // le nouvelle élément est dédié au perso
+        $element->aqelem_quete_step = $this->aqperso_quete_step ;        // step en cours
+        $element->stocke(true);                                     // stocke new va dupliquer l'élément
+
+        // ajouter une ligne dans le journal
+        $texte = $this->hydrate($this->aqperso_cod, $this->aqperso_quete_step);
+        if ($texte != '')
+        {
+            // Journaliser le texte pour eviter de le repréparer à chaque consultation
+            $perso_journal = new aquete_perso_journal();
+            $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
+            $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
+            $perso_journal->aqpersoj_texte = $texte ;
+            $perso_journal->stocke(true);
+        }
+
+
+        // cas où il n'y a pas d'autre étape à suivre, la quête est immédiatement terminée!!!
+        if ($this->aqperso_etape_cod=="")
+        {
+            $this->aqperso_etape_cod = $quete->aquete_etape_cod ; // dernière etape c'est la première !
+            $this->aqperso_actif = 'N';
+            $this->aqperso_date_fin = date('Y-m-d H:i:s');
+        }
+        $this->aqperso_quete_step++ ;
+        $this->stocke();                // Mettre à jour l'avcenement
+
     }
 
     // retourne le journal de la quete du perso jusqu'a l'étape en cours.

@@ -101,6 +101,14 @@ case 'stop2' :
         $contenu_page2 .= "<br><br>";
     }
 break;
+
+case 'choix' :
+
+    $quete_perso = new aquete_perso() ;
+    $quete_perso->set_choix_aventurier($perso_cod, 1*$_REQUEST["quete"], 1*$_REQUEST["choix"]);
+    $methode = "" ;     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+
+break;
 }
 
 if ($methode=="")
