@@ -37,8 +37,8 @@ case "sauve_etape":
     $quete = new aquete;                                // la quete de référence
     $quete->charge($_REQUEST["aquete_cod"]);
 
-    $etape_template = new aquete_etape_template;       // etpape basée sur ce template
-    $etape_template->charge($_REQUEST["aqetaptemp_cod"]);
+    $etape_modele = new aquete_etape_modele;       // etpape basée sur ce template
+    $etape_modele->charge($_REQUEST["aqetapmodel_cod"]);
 
     // récupérer les paramètres de l'étape pour mise à jour
     $etape = new aquete_etape;
@@ -49,11 +49,11 @@ case "sauve_etape":
     }
     $etape->aqetape_nom = $_REQUEST['aqetape_nom'];
     $etape->aqetape_aquete_cod = $_REQUEST["aquete_cod"];
-    $etape->aqetape_aqetaptemp_cod = $_REQUEST["aqetaptemp_cod"];
+    $etape->aqetape_aqetapmodel_cod = $_REQUEST["aqetapmodel_cod"];
     $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
 
     // Cas particulier sur les étape choix, il faut obligatoirement un paramètre [1]
-    if (($etape_template->aqetaptemp_tag == "#CHOIX")&& (strpos($etape->aqetape_texte, "[1]")===false))
+    if (($etape_modele->aqetapmodel_tag == "#CHOIX")&& (strpos($etape->aqetape_texte, "[1]")===false))
     {
             $etape->aqetape_texte.= "[1]";
     }
@@ -62,7 +62,7 @@ case "sauve_etape":
     // Agencement entre les étapes (chemin par defaut)
     // Si c'est la première etape, il faut mettre à jour la quête sinon la dernière étape avant celle-ci
     $deniere_etape = $quete->get_derniere_etape();
-    if ($etape_template->aqetaptemp_tag == "#START")
+    if ($etape_modele->aqetapmodel_tag == "#START")
     {
         // C'est la première etape, mettre à jour la quete
         $quete->aquete_etape_cod = $etape->aqetape_cod ;

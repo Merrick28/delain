@@ -205,10 +205,11 @@ else
 }
 $t->set_var('PERSO_QUETE', $perso_quete);
 
-// Menu pour gérer les quetes perso en cours
-if ($perso->is_perso_auto_quete())
+// Menu pour gérer les quetes perso en cours ou terminée
+$nb_quete_auto=$perso->perso_nb_auto_quete();
+if ($nb_quete_auto["nb_total"]*1>0)
 {
-    $perso_auto_quete = "<img src=\"". G_IMAGES . "favoris.png\"> <a href=\"$chemin/quete_auto.php\">Quêtes en cours</a><br>";
+    $perso_auto_quete = "<img src=\"". G_IMAGES . "favoris.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes ".( 1*$nb_quete_auto["nb_encours"]>0 ? "(".$nb_quete_auto["nb_encours"].")" : "")."</a><br>";
 }
 else
 {

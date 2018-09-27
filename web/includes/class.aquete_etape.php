@@ -13,7 +13,7 @@ class aquete_etape
     var $aqetape_cod;
     var $aqetape_nom;
     var $aqetape_aquete_cod;
-    var $aqetape_aqetaptemp_cod;
+    var $aqetape_aqetapmodel_cod;
     var $aqetape_parametres;
     var $aqetape_texte;
     var $aqetape_etape_cod;
@@ -41,7 +41,7 @@ class aquete_etape
         $this->aqetape_cod = $result['aqetape_cod'];
         $this->aqetape_nom = $result['aqetape_nom'];
         $this->aqetape_aquete_cod = $result['aqetape_aquete_cod'];
-        $this->aqetape_aqetaptemp_cod = $result['aqetape_aqetaptemp_cod'];
+        $this->aqetape_aqetapmodel_cod = $result['aqetape_aqetapmodel_cod'];
         $this->aqetape_parametres = $result['aqetape_parametres'];
         $this->aqetape_texte = $result['aqetape_texte'];
         $this->aqetape_etape_cod = $result['aqetape_etape_cod'];
@@ -61,7 +61,7 @@ class aquete_etape
             $req = "insert into quetes.aquete_etape (
             aqetape_nom,
             aqetape_aquete_cod,
-            aqetape_aqetaptemp_cod,
+            aqetape_aqetapmodel_cod,
             aqetape_parametres,
             aqetape_texte,
             aqetape_etape_cod                        )
@@ -69,7 +69,7 @@ class aquete_etape
                     (
                         :aqetape_nom,
                         :aqetape_aquete_cod,
-                        :aqetape_aqetaptemp_cod,
+                        :aqetape_aqetapmodel_cod,
                         :aqetape_parametres,
                         :aqetape_texte ,
                         :aqetape_etape_cod                        )
@@ -78,7 +78,7 @@ class aquete_etape
             $stmt = $pdo->execute(array(
                 ":aqetape_nom" => $this->aqetape_nom,
                 ":aqetape_aquete_cod" => $this->aqetape_aquete_cod,
-                ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
+                ":aqetape_aqetapmodel_cod" => $this->aqetape_aqetapmodel_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
                 ":aqetape_etape_cod" => $this->aqetape_etape_cod,
@@ -94,7 +94,7 @@ class aquete_etape
                     set
             aqetape_nom = :aqetape_nom,
             aqetape_aquete_cod = :aqetape_aquete_cod,
-            aqetape_aqetaptemp_cod = :aqetape_aqetaptemp_cod,
+            aqetape_aqetapmodel_cod = :aqetape_aqetapmodel_cod,
             aqetape_parametres = :aqetape_parametres,
             aqetape_texte = :aqetape_texte,
             aqetape_etape_cod = :aqetape_etape_cod                        where aqetape_cod = :aqetape_cod ";
@@ -103,7 +103,7 @@ class aquete_etape
                 ":aqetape_nom" => $this->aqetape_nom,
                 ":aqetape_cod" => $this->aqetape_cod,
                 ":aqetape_aquete_cod" => $this->aqetape_aquete_cod,
-                ":aqetape_aqetaptemp_cod" => $this->aqetape_aqetaptemp_cod,
+                ":aqetape_aqetapmodel_cod" => $this->aqetape_aqetapmodel_cod,
                 ":aqetape_parametres" => $this->aqetape_parametres,
                 ":aqetape_texte" => $this->aqetape_texte,
                 ":aqetape_etape_cod" => $this->aqetape_etape_cod,

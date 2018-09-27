@@ -1,29 +1,29 @@
 <?php
 /**
- * includes/class.aquete_etape_template.php
+ * includes/class.aquete_etape_modele.php
  */
 
 /**
- * Class aquete_etape_template
+ * Class aquete_etape_modele
  *
- * Gère les objets BDD de la table aquete_etape_template
+ * Gère les objets BDD de la table aquete_etape_modele
  */
-class aquete_etape_template
+class aquete_etape_modele
 {
-    var $aqetaptemp_cod;
-    var $aqetaptemp_tag;
-    var $aqetaptemp_nom;
-    var $aqetaptemp_description;
-    var $aqetaptemp_parametres;
-    var $aqetaptemp_param_desc;
-    var $aqetaptemp_template;
+    var $aqetapmodel_cod;
+    var $aqetapmodel_tag;
+    var $aqetapmodel_nom;
+    var $aqetapmodel_description;
+    var $aqetapmodel_parametres;
+    var $aqetapmodel_param_desc;
+    var $aqetapmodel_modele;
 
     function __construct()
     {
     }
 
     /**
-     * Charge dans la classe un enregistrement de aquete_etape_template
+     * Charge dans la classe un enregistrement de aquete_etape_modele
      * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
@@ -31,20 +31,20 @@ class aquete_etape_template
     function charge($code)
     {
         $pdo = new bddpdo;
-        $req = "select * from quetes.aquete_etape_template where aqetaptemp_cod = ?";
+        $req = "select * from quetes.aquete_etape_modele where aqetapmodel_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code),$stmt);
         if(!$result = $stmt->fetch())
         {
             return false;
         }
-        $this->aqetaptemp_cod = $result['aqetaptemp_cod'];
-        $this->aqetaptemp_tag = $result['aqetaptemp_tag'];
-        $this->aqetaptemp_nom = $result['aqetaptemp_nom'];
-        $this->aqetaptemp_description = $result['aqetaptemp_description'];
-        $this->aqetaptemp_parametres = $result['aqetaptemp_parametres'];
-        $this->aqetaptemp_param_desc = $result['aqetaptemp_param_desc'];
-        $this->aqetaptemp_template = $result['aqetaptemp_template'];
+        $this->aqetapmodel_cod = $result['aqetapmodel_cod'];
+        $this->aqetapmodel_tag = $result['aqetapmodel_tag'];
+        $this->aqetapmodel_nom = $result['aqetapmodel_nom'];
+        $this->aqetapmodel_description = $result['aqetapmodel_description'];
+        $this->aqetapmodel_parametres = $result['aqetapmodel_parametres'];
+        $this->aqetapmodel_param_desc = $result['aqetapmodel_param_desc'];
+        $this->aqetapmodel_modele = $result['aqetapmodel_modele'];
         return true;
     }
 
@@ -58,30 +58,30 @@ class aquete_etape_template
         $pdo = new bddpdo;
         if($new)
         {
-            $req = "insert into quetes.aquete_etape_template (
-            aqetaptemp_tag,
-            aqetaptemp_nom,
-            aqetaptemp_description,
-            aqetaptemp_parametres,
-            aqetaptemp_param_desc,
-            aqetaptemp_template                   )
+            $req = "insert into quetes.aquete_etape_modele (
+            aqetapmodel_tag,
+            aqetapmodel_nom,
+            aqetapmodel_description,
+            aqetapmodel_parametres,
+            aqetapmodel_param_desc,
+            aqetapmodel_modele                   )
                     values
                     (
-                        :aqetaptemp_tag,
-                        :aqetaptemp_nom,
-                        :aqetaptemp_description,
-                        :aqetaptemp_parametres,
-                        :aqetaptemp_param_desc,
-                        :aqetaptemp_template                      )
-    returning aqetaptemp_cod as id";
+                        :aqetapmodel_tag,
+                        :aqetapmodel_nom,
+                        :aqetapmodel_description,
+                        :aqetapmodel_parametres,
+                        :aqetapmodel_param_desc,
+                        :aqetapmodel_modele                      )
+    returning aqetapmodel_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":aqetaptemp_tag" => $this->aqetaptemp_tag,
-                ":aqetaptemp_nom" => $this->aqetaptemp_nom,
-                ":aqetaptemp_description" => $this->aqetaptemp_description,
-                ":aqetaptemp_parametres" => $this->aqetaptemp_parametres,
-                ":aqetaptemp_param_desc" => $this->aqetaptemp_param_desc,
-                ":aqetaptemp_template" => $this->aqetaptemp_template,
+                ":aqetapmodel_tag" => $this->aqetapmodel_tag,
+                ":aqetapmodel_nom" => $this->aqetapmodel_nom,
+                ":aqetapmodel_description" => $this->aqetapmodel_description,
+                ":aqetapmodel_parametres" => $this->aqetapmodel_parametres,
+                ":aqetapmodel_param_desc" => $this->aqetapmodel_param_desc,
+                ":aqetapmodel_modele" => $this->aqetapmodel_modele,
             ),$stmt);
 
 
@@ -90,23 +90,23 @@ class aquete_etape_template
         }
         else
         {
-            $req = "update quetes.aquete_etape_template
+            $req = "update quetes.aquete_etape_modele
                     set
-            aqetaptemp_tag = :aqetaptemp_tag,
-            aqetaptemp_nom = :aqetaptemp_nom,
-            aqetaptemp_description = :aqetaptemp_description,
-            aqetaptemp_parametres = :aqetaptemp_parametres,
-            aqetaptemp_param_desc = :aqetaptemp_param_desc,
-            aqetaptemp_template = :aqetaptemp_template                        where aqetaptemp_cod = :aqetaptemp_cod ";
+            aqetapmodel_tag = :aqetapmodel_tag,
+            aqetapmodel_nom = :aqetapmodel_nom,
+            aqetapmodel_description = :aqetapmodel_description,
+            aqetapmodel_parametres = :aqetapmodel_parametres,
+            aqetapmodel_param_desc = :aqetapmodel_param_desc,
+            aqetapmodel_modele = :aqetapmodel_modele                        where aqetapmodel_cod = :aqetapmodel_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":aqetaptemp_cod" => $this->aqetaptemp_cod,
-                ":aqetaptemp_tag" => $this->aqetaptemp_tag,
-                ":aqetaptemp_nom" => $this->aqetaptemp_nom,
-                ":aqetaptemp_description" => $this->aqetaptemp_description,
-                ":aqetaptemp_parametres" => $this->aqetaptemp_parametres,
-                ":aqetaptemp_param_desc" => $this->aqetaptemp_param_desc,
-                ":aqetaptemp_template" => $this->aqetaptemp_template,
+                ":aqetapmodel_cod" => $this->aqetapmodel_cod,
+                ":aqetapmodel_tag" => $this->aqetapmodel_tag,
+                ":aqetapmodel_nom" => $this->aqetapmodel_nom,
+                ":aqetapmodel_description" => $this->aqetapmodel_description,
+                ":aqetapmodel_parametres" => $this->aqetapmodel_parametres,
+                ":aqetapmodel_param_desc" => $this->aqetapmodel_param_desc,
+                ":aqetapmodel_modele" => $this->aqetapmodel_modele,
             ),$stmt);
         }
     }
@@ -117,10 +117,10 @@ class aquete_etape_template
 
         $retour = array();
 
-        if ($this->aqetaptemp_parametres=="") return $retour;
+        if ($this->aqetapmodel_parametres=="") return $retour;
 
-        $l = explode(',', $this->aqetaptemp_parametres);
-        $desc = explode('|', $this->aqetaptemp_param_desc);
+        $l = explode(',', $this->aqetapmodel_parametres);
+        $desc = explode('|', $this->aqetapmodel_param_desc);
         foreach ($l as $k => $param)
         {
             // Format de param=> [id:type|n%M] avec %M et |n%M  factultatif
@@ -159,18 +159,18 @@ class aquete_etape_template
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \aquete_etape_template
+     * @return \aquete_etape_modele
      */
     function  getAll()
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqetaptemp_cod  from quetes.aquete_etape_template order by aqetaptemp_cod";
+        $req = "select aqetapmodel_cod  from quetes.aquete_etape_modele order by aqetapmodel_cod";
         $stmt = $pdo->query($req);
         while($result = $stmt->fetch())
         {
-            $temp = new aquete_etape_template;
-            $temp->charge($result["aqetaptemp_cod"]);
+            $temp = new aquete_etape_modele;
+            $temp->charge($result["aqetapmodel_cod"]);
             $retour[] = $temp;
             unset($temp);
         }
@@ -184,13 +184,13 @@ class aquete_etape_template
                 {
                     $retour = array();
                     $pdo = new bddpdo;
-                    $req = "select aqetaptemp_cod  from quetes.aquete_etape_template where " . substr($name, 6) . " = ? order by aqetaptemp_cod";
+                    $req = "select aqetapmodel_cod  from quetes.aquete_etape_modele where " . substr($name, 6) . " = ? order by aqetapmodel_cod";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())
                     {
-                        $temp = new aquete_etape_template;
-                        $temp->charge($result["aqetaptemp_cod"]);
+                        $temp = new aquete_etape_modele;
+                        $temp->charge($result["aqetapmodel_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
@@ -202,7 +202,7 @@ class aquete_etape_template
                 }
                 else
                 {
-                    die('Unknown variable ' . substr($name, 6) . ' in table aquete_etape_template');
+                    die('Unknown variable ' . substr($name, 6) . ' in table aquete_etape_modele');
                 }
                 break;
 

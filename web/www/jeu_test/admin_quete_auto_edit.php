@@ -113,7 +113,7 @@ if ($erreur == 0)
             $etapes = $quete->get_etapes() ;
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
-            $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetaptemp_tag='#START'" : "where aqetaptemp_tag<>'#START'" ;
+            $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
             echo '</table>';
             echo '</form>';
@@ -123,15 +123,15 @@ if ($erreur == 0)
             {
                 foreach ($etapes as $k => $etape)
                 {
-                    $etape_template = new aquete_etape_template;
-                    $etape_template->charge($etape->aqetape_aqetaptemp_cod);    // On charge le modele de l'étape.
+                    $etape_modele = new aquete_etape_modele;
+                    $etape_modele->charge($etape->aqetape_aqetapmodel_cod);    // On charge le modele de l'étape.
 
                     echo '<form  method="post"><input type="hidden" id="etape-methode-'.$k.'" name="methode" value=""/>';
                     echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
                     echo '<input type="hidden" name="aqetape_cod" value="'.$etape->aqetape_cod.'" />';
-                    echo '<input type="hidden" name="aqetaptemp_cod" value="'.$etape->aqetape_aqetaptemp_cod.'" />';
-                    echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_template->aqetaptemp_nom}</b>:<br>";
-                    echo "&nbsp;&nbsp;&nbsp;{$etape_template->aqetaptemp_description} <br>";
+                    echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
+                    echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_modele->aqetapmodel_nom}</b>:<br>";
+                    echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: {$etape->aqetape_texte}<br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
@@ -148,7 +148,7 @@ if ($erreur == 0)
             echo '<form  method="post"><input type="hidden" name="methode" value="ajoute_etape"/>';
             echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
             echo '<table width="80%" align="center">';
-            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetaptemp_cod", "select aqetaptemp_cod, aqetaptemp_nom from quetes.aquete_etape_template {$filter} order by aqetaptemp_nom").' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
+            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetapmodel_cod", "select aqetapmodel_cod, aqetapmodel_nom from quetes.aquete_etape_modele {$filter} order by aqetapmodel_nom").' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
             echo '</table>';
             echo '</form>';
         }
@@ -164,9 +164,9 @@ if ($erreur == 0)
         $quete = new aquete;
         $quete->charge($aquete_cod);    // On charge la quete
 
-        $aqetaptemp_cod = 1*$_REQUEST["aqetaptemp_cod"] ;
-        $etape_template = new aquete_etape_template;
-        $etape_template->charge($aqetaptemp_cod);    // On charge le modele de l'étape.
+        $aqetapmodel_cod = 1*$_REQUEST["aqetapmodel_cod"] ;
+        $etape_modele = new aquete_etape_modele;
+        $etape_modele->charge($aqetapmodel_cod);    // On charge le modele de l'étape.
 
         $aqetape_cod = 1*$_REQUEST["aqetape_cod"] ;
         $etape = new aquete_etape;
@@ -180,17 +180,17 @@ if ($erreur == 0)
                 <form  method="post"><input type="hidden" id="etape-methode" name="methode" value="sauve_etape" />
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <input type="hidden" name="aqetape_cod" value="'.$aqetape_cod.'" />
-                <input type="hidden" name="aqetaptemp_cod" value="'.$aqetaptemp_cod.'" />
+                <input type="hidden" name="aqetapmodel_cod" value="'.$aqetapmodel_cod.'" />
                 <table width="80%" align="center">';
 
-        echo '<tr><td colspan="2">'.$etape_template->aqetaptemp_description.'</td></tr>';
-        echo '<tr><td><b>Exemple </b>:</td><td>'.$etape_template->aqetaptemp_template.'<br><br></td></tr>';
+        echo '<tr><td colspan="2">'.$etape_modele->aqetapmodel_description.'</td></tr>';
+        echo '<tr><td><b>Exemple </b>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><b>Nom de l\'étape </b>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.$etape->aqetape_nom.'"></td></tr>';
-        echo '<tr><td><b>Texte de l\'étape </b>:</td><td><textarea style="min-height: 80px; min-width: 500px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_template->aqetaptemp_template).'</textarea></td></tr>';
+        echo '<tr><td><b>Texte de l\'étape </b>:</td><td><textarea style="min-height: 80px; min-width: 500px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
         echo '</table>';
 
 
-        $param_liste = $etape_template->get_liste_parametres();
+        $param_liste = $etape_modele->get_liste_parametres();
 
         foreach ($param_liste as $param_id => $param)
         {

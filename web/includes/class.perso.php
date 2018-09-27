@@ -1173,11 +1173,11 @@ class perso
         return sizeof($tab_quete["quetes"])>0;
     }
 
-    // Retourne vrai si le perso a au moins une quete auto en cours de réalisation.
-    function is_perso_auto_quete()
+    // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
+    function perso_nb_auto_quete()
     {
         $quete = new aquete_perso;
-        return ($quete->get_perso_nb_en_cours($this->perso_cod)>0) ;
+        return ($quete->get_perso_nb_quete($this->perso_cod)) ;       // retourn un tableau nb_encours,nb_total
     }
 
     function get_lieu()

@@ -10,7 +10,7 @@
 function create_selectbox($name, $data, $default='', $param=array())
 {
 
-    $out='<select ' .( $param["id"]=='' ? '' : 'id="'.$param["id"].'"' ). ' name="' .$name. '" ' .$param["style"] .">\n";
+    $out='<select ' .( isset($param["id"]) ? 'id="'.$param["id"].'"' : ''). ' name="' .$name. '" ' . (isset($param["style"]) ? $param["style"] :'') .">\n";
 
     foreach($data as $key=>$val) {
         $out.='<option value="' .$key. '"'. ($default==$key?' selected="selected"':'') .'>';

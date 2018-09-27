@@ -12,6 +12,7 @@ class aquete_perso_journal
 {
     var $aqpersoj_cod;
     var $aqpersoj_aqperso_cod;
+    var $aqpersoj_realisation;
     var $aqpersoj_quete_step = 0;
     var $aqpersoj_texte;
 
@@ -37,6 +38,7 @@ class aquete_perso_journal
         }
         $this->aqpersoj_cod = $result['aqpersoj_cod'];
         $this->aqpersoj_aqperso_cod = $result['aqpersoj_aqperso_cod'];
+        $this->aqpersoj_realisation = $result['aqpersoj_realisation'];
         $this->aqpersoj_quete_step = $result['aqpersoj_quete_step'];
         $this->aqpersoj_texte = $result['aqpersoj_texte'];
         return true;
@@ -54,17 +56,20 @@ class aquete_perso_journal
         {
             $req = "insert into quetes.aquete_perso_journal (
             aqpersoj_aqperso_cod,
+            aqpersoj_realisation,
             aqpersoj_quete_step,
             aqpersoj_texte                        )
                     values
                     (
                         :aqpersoj_aqperso_cod,
+                        :aqpersoj_realisation,
                         :aqpersoj_quete_step,
                         :aqpersoj_texte                        )
     returning aqpersoj_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
+                ":aqpersoj_realisation" => $this->aqpersoj_realisation,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
             ),$stmt);
@@ -78,12 +83,14 @@ class aquete_perso_journal
             $req = "update quetes.aquete_perso_journal
                     set
             aqpersoj_aqperso_cod = :aqpersoj_aqperso_cod,
+            aqpersoj_realisation = :aqpersoj_realisation,
             aqpersoj_quete_step = :aqpersoj_quete_step,
             aqpersoj_texte = :aqpersoj_texte                        where aqpersoj_cod = :aqpersoj_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqpersoj_cod" => $this->aqpersoj_cod,
                 ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
+                ":aqpersoj_realisation" => $this->aqpersoj_realisation,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
             ),$stmt);
@@ -91,13 +98,13 @@ class aquete_perso_journal
     }
 
     // retourne les journaux d'une quete trié par step
-    function  getBy_aqperso_cod($aqperso_cod)
+    function  getBy_perso_realisation($perso_cod, $realisation)
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqpersoj_cod  from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ? order by aqpersoj_quete_step ";
+        $req = "select aqpersoj_cod from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ? and aqpersoj_realisation = ? order by aqpersoj_quete_step ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($aqperso_cod),$stmt);
+        $stmt = $pdo->execute(array($perso_cod, $realisation),$stmt);
         while($result = $stmt->fetch())
         {
             $temp = new aquete_perso_journal;
