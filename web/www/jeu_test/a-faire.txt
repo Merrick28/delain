@@ -1,0 +1,2 @@
+aquete_perso => sur démarrage de quete vérifier le type choix
+trouver un icone pour quete

@@ -274,7 +274,7 @@ function  addQueteAutoParamRow(elem, M)
         var s = row.split('-') ;
         var r = (1+1*s[2]);
         var new_row = s[0]+'-'+s[1]+'-'+r+'-';
-        var new_elem = '<tr id="'+new_row+'">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+        var new_elem = '<tr id="'+new_row+'" style="display: block;">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
         $(new_elem).insertAfter(elem);
 
         //Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
@@ -307,5 +307,26 @@ function  delQueteAutoParamRow(elem, n)
     else
     {
         alert('Il doit rester au moins '+n+' valeur(s) pour ce paramètre!')
+    }
+}
+
+function  switchQueteAutoParamRow(param, type)
+{
+    var t= $("#alt-type-"+param).val();
+    if (t=="element")
+    {
+        // switcher vers perso/obj, lieu/, etc...
+        $('tr[id^="alt-'+param+'"]').css("display","none");
+        $('tr[id^="row-'+param+'-"]').css("display","block");
+        $('tr[id^="add-row-'+param+'-"]').css("display","block");
+        $("#alt-type-"+param).val(type);
+    }
+    else
+    {
+        // switcher vers element.
+        $('tr[id^="alt-'+param+'"]').css("display","block");
+        $('tr[id^="row-'+param+'-"]').css("display","none");
+        $('tr[id^="add-row-'+param+'-"]').css("display","none");
+        $("#alt-type-"+param).val("element");
     }
 }

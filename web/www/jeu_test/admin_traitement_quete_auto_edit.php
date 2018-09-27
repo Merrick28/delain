@@ -89,30 +89,34 @@ case "sauve_etape":
         // chaque paramètres définir plusieurs élements
         foreach ($types as $e => $type)
         {
-            $element = new aquete_element;
-            $new = true ;
-            $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
-            if ( $aqelem_cod != 0 ) {
-                $new = false ;
-                $element->charge($aqelem_cod);
+            // Il y a certain element qui sont définit 2x en fonction du type, on ne garde qu'un seul type
+            if ((!isset($_REQUEST["element_type"][$param_id])) || ($_REQUEST["element_type"][$param_id]==$type))
+            {
+                $element = new aquete_element;
+                $new = true ;
+                $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
+                if ( $aqelem_cod != 0 ) {
+                    $new = false ;
+                    $element->charge($aqelem_cod);
+                }
+
+                $element->aqelem_aquete_cod = $quete->aquete_cod ;
+                $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
+                $element->aqelem_param_id = $param_id  ;
+                $element->aqelem_param_ordre = $e  ;
+                $element->aqelem_type = $type ;
+                $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
+                $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;
+                $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL ;
+                $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL ;
+                $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
+                $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
+                $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
+
+                //echo "<pre>"; print_r($element);echo "</pre>";
+                $element->stocke($new);
+                $element_list[] = $element->aqelem_cod ;
             }
-
-            $element->aqelem_aquete_cod = $quete->aquete_cod ;
-            $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
-            $element->aqelem_param_id = $param_id  ;
-            $element->aqelem_param_ordre = $e  ;
-            $element->aqelem_type = $type ;
-            $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
-            $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;
-            $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL ;
-            $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL ;
-            $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
-            $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
-            $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
-
-            //echo "<pre>"; print_r($element);echo "</pre>";
-            $element->stocke($new);
-            $element_list[] = $element->aqelem_cod ;
         }
     }
 
