@@ -183,6 +183,9 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-element-aqetape_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aqelem_type" ).length ) params.aqelem_type = $( "#spop-tablecod-element-aqelem_type" ).val() ;
 
     //executer le service asynchrone
     runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
@@ -200,7 +203,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
             var data = d.data.data ;
             var content = "";
             for (i in data) {
-                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')<br>';
+                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')<br>';
             }
             if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</i>';
             $("#spop-serchlist").html(content);
@@ -219,8 +222,11 @@ function getTableCod(divname, table, titre, params)
         options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'"><u><i>Etapes spéciales</u></i>:<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
-
-    }
+    } else if (table=="element") {
+        options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
+        options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
+        options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
+   }
 
     $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
                         '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
@@ -245,6 +251,7 @@ function getTableCod(divname, table, titre, params)
             var element = $("#"+event.target.id);
             $("#" + divname+"_cod").val (element.attr("data-spop-cod") );
             $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
+            $("#" + divname+"_num_1").val (element.attr("data-spop-num1") );
             $(document).unbind("click");
             $('#spop-tablecod').remove();
         }

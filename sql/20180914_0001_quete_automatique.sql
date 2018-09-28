@@ -153,6 +153,7 @@ COMMENT ON COLUMN quetes.aquete_perso.aqperso_date_fin IS 'Derniere date de fin 
 CREATE TABLE quetes.aquete_perso_journal
 (
   aqpersoj_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aqpersoj_cod'::text)::regclass),
+  aqpersoj_date timestamp with time zone DEFAULT now(), -- La date de l'evenement
   aqpersoj_aqperso_cod integer NOT NULL, -- La quete du perso
   aqpersoj_realisation integer NOT NULL, -- N° de realisation (la même quete peut être est faite plusieurs fois)
   aqpersoj_quete_step integer NOT NULL DEFAULT 0, -- le step
@@ -164,10 +165,13 @@ WITH (
 );
 ALTER TABLE quetes.aquete_perso_journal
   OWNER TO webdelain;
+COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_date IS 'La date de l''evenement';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_aqperso_cod IS 'La quete du perso';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_realisation IS 'N° de realisation (la même quete peut être est faite plusieurs fois)';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_quete_step IS 'le step';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_texte IS 'le texte dans le journal';
+
+
 
 
 

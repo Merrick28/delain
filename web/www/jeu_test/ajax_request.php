@@ -254,6 +254,42 @@ switch($_REQUEST["request"])
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
+
+        case 'element':
+            // On va utiliser ce paramètre sans le passer par le pdo, il faut s'assurer qu'il fait bien partie des valeurs attendue)
+            // Il y aurait un risque d'injection de coe sql si on ne le faisait pas.;
+            $aquete_cod = 1*$params["aquete_cod"] ;
+            $aqetape_cod = 1*$params["aqetape_cod"] ;
+            $aqelem_type = $params["aqelem_type"] ;
+            if (!in_array($params["aqelem_type"], array("perso", "lieu", "type_lieu")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
+
+            // requete de comptage
+            $req = "SELECT count(*) FROM (
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' paramètre #' || aqelem_param_id::text as nom 
+                        from quetes.aquete_element 
+                        join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and aqelem_type='{$aqelem_type}' and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom
+                    ) as filter WHERE  nom ilike ?
+            ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "SELECT * FROM (
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom 
+                        from quetes.aquete_element 
+                        join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and aqelem_type='{$aqelem_type}' and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom
+                    ) as filter WHERE  nom ilike ?
+            ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
          default:
              die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
         }
@@ -286,6 +322,9 @@ switch($_REQUEST["request"])
                 break;
             case 'lieu_type':
                 $req = "select tlieu_libelle nom from lieu_type where tlieu_cod = ? ";
+                break;
+            case 'element':
+                $req = "select aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom from quetes.aquete_element join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod where aqelem_cod = ? ";
                 break;
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
