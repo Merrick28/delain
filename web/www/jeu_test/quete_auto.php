@@ -165,12 +165,13 @@ if ($methode=="")
             }
             $quete_id_list=substr($quete_id_list, 0,-1);
 
-            if (!isset($aquete_cod) || $aquete_cod*1==0) $aquete_cod = 1*($quetes_perso[0]->aqperso_aquete_cod);      // Si on a pas choisi une quete particulière, prendre la première
+            if (isset($_REQUEST["quete"])) $aquete_cod = 1*$_REQUEST["quete"];
+            if ($aquete_cod==0) $aquete_cod = 1*($quetes_perso[0]->aqperso_aquete_cod);      // Si on a pas choisi une quete particulière, prendre la première
 
             // Affichage de la boite de selection
             $contenu_page2 .= '<form method="post">';
             if (isset($_REQUEST["onglet"])) $contenu_page2 .= '<input type="hidden" name="onglet" value="terminees">';
-            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox_from_req("aquete_cod", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
+            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox_from_req("quete", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
             $contenu_page2 .= '</form><hr>';
 
             $quete_perso->charge($recherche_quete[$aquete_cod]);
@@ -222,12 +223,13 @@ if ($methode=="")
             }
             $quete_id_list=substr($quete_id_list, 0,-1);
 
-            if (!isset($aquete_cod) || $aquete_cod*1==0) $aquete_cod = 1*($quetes_perso[0]->aqperso_aquete_cod);      // Si on a pas choisi une quete particulière, prendre la première
+            if (isset($_REQUEST["quete"])) $aquete_cod = 1*$_REQUEST["quete"];
+            if ($aquete_cod==0) $aquete_cod = 1*($quetes_perso[0]->aqperso_aquete_cod);      // Si on a pas choisi une quete particulière, prendre la première
 
             // Affichage de la boite de selection
             $contenu_page2 .= '<form method="post">';
             if (isset($_REQUEST["onglet"])) $contenu_page2 .= '<input type="hidden" name="onglet" value="terminees">';
-            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox_from_req("aquete_cod", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
+            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox_from_req("quete", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
             $contenu_page2 .= '</form><hr>';
 
             $quete_perso->charge($recherche_quete[$aquete_cod]);
