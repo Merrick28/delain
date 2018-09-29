@@ -106,13 +106,13 @@ class aquete_perso_journal
     }
 
     // retourne les journaux d'une quete trié par step
-    function  getBy_perso_realisation($perso_cod, $realisation)
+    function  getBy_perso_realisation($aqperso_cod, $realisation)
     {
         $retour = array();
         $pdo = new bddpdo;
         $req = "select aqpersoj_cod from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ? and aqpersoj_realisation = ? order by aqpersoj_quete_step ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($perso_cod, $realisation),$stmt);
+        $stmt = $pdo->execute(array($aqperso_cod, $realisation),$stmt);
         while($result = $stmt->fetch())
         {
             $temp = new aquete_perso_journal;

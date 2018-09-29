@@ -132,7 +132,7 @@ if ($erreur == 0)
                     echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
                     echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_modele->aqetapmodel_nom}</b>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
-                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: {$etape->aqetape_texte}<br>";
+                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: darkgreen'>{$etape->aqetape_texte}</i><br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     if ($k!=0 || sizeof($etapes)==1)

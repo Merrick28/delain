@@ -214,28 +214,40 @@ if ($methode=="")
         }
         else
         {
-            $quete_id_list = "";        // S'il n'y a rien de commencé!
-            $recherche_quete = array();     // recherche inversé
-            foreach ($quetes_perso as $k => $q)
+            $aq_select = array();
+            foreach ($quetes_perso as $k => $qp)
             {
-                $recherche_quete[(1*$q->aqperso_aquete_cod)] = (1*$q->aqperso_cod) ;
-                $quete_id_list.=(1*$q->aqperso_aquete_cod).",";
+                $quete = new aquete() ;
+                $quete->charge($qp->aqperso_aquete_cod);
+                $nb_realisation = $qp->aqperso_actif == 'O' ?  $qp->aqperso_nb_realisation-1 : $qp->aqperso_nb_realisation ;
+                for ($i=0; $i<$nb_realisation; $i++)
+                {
+                    $r = $i+1;
+                    $aq_select[$qp->aqperso_cod.'*'.$r] = $quete->aquete_nom." ($r)";
+                }
             }
-            $quete_id_list=substr($quete_id_list, 0,-1);
-
-            if (isset($_REQUEST["quete"])) $aquete_cod = 1*$_REQUEST["quete"];
-            if ($aquete_cod==0) $aquete_cod = 1*($quetes_perso[0]->aqperso_aquete_cod);      // Si on a pas choisi une quete particulière, prendre la première
-
             // Affichage de la boite de selection
             $contenu_page2 .= '<form method="post">';
             if (isset($_REQUEST["onglet"])) $contenu_page2 .= '<input type="hidden" name="onglet" value="terminees">';
-            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox_from_req("quete", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
+            $contenu_page2 .= "<br>Sélectionner la quête : ". create_selectbox("quete_nb", $aq_select, $_REQUEST["quete_nb"], array('style'=>'style="width:300px;" onchange="this.parentNode.submit();"'));
             $contenu_page2 .= '</form><hr>';
 
-            $quete_perso->charge($recherche_quete[$aquete_cod]);
-            $quete = $quete_perso->get_quete() ;
+            if (!isset($_REQUEST["quete_nb"])) $_REQUEST["quete_nb"] = array_keys($aq_select)[0];
+            $q = explode("*", $_REQUEST["quete_nb"] );
+            $quete_perso->charge($q[0]);
+            $realisation = 1*$q[1];
 
-            $contenu_page2 .= "<br><br>";
+            $perso_journal = new aquete_perso_journal();
+            $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
+
+            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) ."<br>" ;
+            $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ." (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
+
+            foreach ($journal_pages as $k => $jpages)
+            {
+                $contenu_page2 .= $jpages->aqpersoj_texte."<br><br>"; ;
+            }
+
         }
     }
     $contenu_page2 .= "</td></tr></table>";     // Fin des onglets!!

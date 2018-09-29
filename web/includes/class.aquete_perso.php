@@ -207,12 +207,14 @@ class aquete_perso
         }
         return $retour;
     }
+
+
     //Retourne la liste des quetes terminée pour un perso
     function get_perso_quete_terminee($perso_cod)
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and (aqperso_actif='N' OR (aqperso_actif='O' and aqperso_nb_realisation>1)) order by aqperso_cod";
+        $req = "select aqperso_cod from quetes.aquete_perso  where aqperso_perso_cod=? and (aqperso_actif='N' OR (aqperso_actif='O' and aqperso_nb_realisation>1)) order by aqperso_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
         while($result = $stmt->fetch())
@@ -458,7 +460,7 @@ class aquete_perso
             // Journaliser le texte pour eviter de le repréparer à chaque consultation
             $perso_journal = new aquete_perso_journal();
             $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
-            $perso_journal->aqpersoj_realisation = $this->aqperso_nb_termine;
+            $perso_journal->aqpersoj_realisation = $this->aqperso_nb_realisation;
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
             $perso_journal->aqpersoj_texte = $texte ;
             $perso_journal->stocke(true);
@@ -469,13 +471,13 @@ class aquete_perso
     }
 
     // retourne le journal de la quete du perso jusqu'a l'étape en cours.
-    function journal()
+    function journal($realisation=-1)
     {
         $journal_quete = "" ;
 
         $pdo = new bddpdo;
         $perso_journal = new aquete_perso_journal() ;
-        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
+        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $realisation>=0 ? $realisation :$this->aqperso_nb_realisation);
 
         foreach ($perso_journaux as $k => $journal) $journal_quete.=$journal->aqpersoj_texte."<br><br>";
 
