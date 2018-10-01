@@ -202,7 +202,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE_PERSO', 'Déplacement vers perso', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
+    VALUES ('#MOVE_PERSO', 'Déplacement vers PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
            '[1:perso|1%0]',
            'C''est le PNJ à que l''aventurier doit aller voir',
            'Allez donner de mes nouvelles à mon ami [1].');
@@ -210,7 +210,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE_LIEU', 'Déplacement vers lieu', 'Dans cette étape on demande à l''aventurier d''aller voir un lieu.',
+    VALUES ('#MOVE_LIEU', 'Déplacement vers LIEU', 'Dans cette étape on demande à l''aventurier d''aller voir un lieu.',
            '[1:lieu|1%0]',
            'C''est le lieu à que l''aventurier doit aller voir',
            'Rendez-vous à [1].');
@@ -218,7 +218,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#TEXTE', 'Texte', 'Cette étape est automatiquement validée, elle sert à jouter du contenu texte dans le déroulement de la quête. (il n''y a pas de paramètre)',
+    VALUES ('#TEXTE', 'Afficher du TEXTE', 'Cette étape est automatiquement validée, elle sert à jouter du contenu texte dans le déroulement de la quête. (il n''y a pas de paramètre)',
            NULL,
            NULL,
            NULL);
@@ -227,7 +227,32 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#CHOIX', 'Choix', 'Dans cette étape on demande à l''aventurier de faire un choix, l''étape suivante dépend alors du choix.',
+    VALUES ('#CHOIX', 'Faire un CHOIX', 'Dans cette étape on demande à l''aventurier de faire un choix, l''étape suivante dépend alors du choix.',
            '[1:choix|0%0]',
            'Ce sont les choix fait à l''aventurier, il faut assossier chaque choix à une étape pour pousuivre la quête.',
            'Faite votre choix?');
+
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#END #OK', 'Fin de la quête avec SUCCES', 'Cette étape doit être utilisée pour mettre fin à la quête sur une réussite.',
+            NULL,
+            NULL,
+            'Bravo, vous avez terminé cette quête avec succès.');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#END #KO', 'Fin de la quête sur ECHEC', 'Cette étape doit être utilisée pour mettre fin à la quête sur un échec.',
+            NULL,
+            NULL,
+            'Dommage, vous n''avez pas réussie cette quête.');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#SAUT', 'Aller à l''ETAPE', 'Cette étape sert faire un saut sans condition vers une autre étape, il n''est pas necessaire de mettre du texte d''étape',
+           '[1:etape|1%1]',
+           'C''est l''étape de destination souhaitée.',
+            NULL);

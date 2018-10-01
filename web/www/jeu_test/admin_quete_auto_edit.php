@@ -130,7 +130,7 @@ if ($erreur == 0)
                     echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
                     echo '<input type="hidden" name="aqetape_cod" value="'.$etape->aqetape_cod.'" />';
                     echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
-                    echo "Etape #{$etape->aqetape_cod}: <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_modele->aqetapmodel_nom}</b>:<br>";
+                    echo "<font color='blue'>Etape #{$etape->aqetape_cod}:</font> <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_modele->aqetapmodel_nom}</b>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: darkgreen'>{$etape->aqetape_texte}</i><br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
@@ -140,7 +140,39 @@ if ($erreur == 0)
                         echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     }
                     echo '</form>';
-                    echo '<hr>';
+
+                    if (($etape_modele->aqetapmodel_tag=="#CHOIX")||($etape_modele->aqetapmodel_tag=="#SAUT"))
+                    {
+                        $type_saut = $etape_modele->aqetapmodel_tag=="#CHOIX" ? "conditionnel" : "inconditionnel" ;
+                        $element = new aquete_element;
+                        $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
+                        foreach ($elements as $k => $element)
+                        {
+                            if ($element->aqelem_misc_cod>0)
+                            {
+                                $e = new aquete_etape;
+                                if (!$e->charge($element->aqelem_misc_cod))    // on charge l'étape pour récupérer le nom!
+                                {
+                                    echo "<b style='color: red'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</b> <i style='color: red'>(étape inexistante)</i><br>";
+                                }
+                                else
+                                {
+                                    echo "<b style='color: blue'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</b> <i>({$e->aqetape_nom})</i><br>";
+                                }
+                            }
+                            else if ($etape_modele->aqetapmodel_tag=="#SAUT")
+                            {
+                                echo "<b style='color: blue'>&rArr; Fin de la quête</b> <br>";
+                            }
+                        }
+                    }
+
+                    if ($etape_modele->aqetapmodel_tag=="#END #OK")
+                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête avec Succès</b>&nbsp;&nbsp;</div>';
+                    else if ($etape_modele->aqetapmodel_tag=="#END #KO")
+                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête sur un Echec</b>&nbsp;&nbsp;</div>';
+                    else
+                        echo '<hr>';
 
                 }
             }
@@ -195,8 +227,8 @@ if ($erreur == 0)
         foreach ($param_liste as $param_id => $param)
         {
 
-            // Certain paramètre peuvent être remplacé par un paramètre d'étape déjà saisi précédement
-            if (( in_array($param['type'], array("perso", "lieu", "type_lieus" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
+            // Certains paramètres peuvent être remplacé par un paramètre d'étape déjà saisi précédement
+            if (( in_array($param['type'], array("perso", "lieu", "type_lieu" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
 
             echo '<br><br><b>Edition du paramètre ['.$param_id.']</b>: <i>('.$param['texte'].')</i><br>';
             echo $param['desc'].'</i><br><br>';
@@ -301,9 +333,17 @@ if ($erreur == 0)
                     break;
 
                     case 'choix':
-                        if (1*$element->aqelem_misc_cod < 0)
+                        if (1*$element->aqelem_misc_cod == -1)
                         {
                             $aqelem_misc_nom = "Quitter/Abandonner" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == -2)
+                        {
+                            $aqelem_misc_nom = "Terminer avec succès" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == -3)
+                        {
+                            $aqelem_misc_nom = "Echec de la quête" ;
                         }
                         else if (1*$element->aqelem_misc_cod == 0)
                         {
@@ -321,7 +361,39 @@ if ($erreur == 0)
                                 <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.$element->aqelem_param_txt_1.'"> <br>Etape si choisi:
                                 <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                 &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.']);\'> 
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                                </td>';
+                        break;
+
+                    case 'etape':
+                        if (1*$element->aqelem_misc_cod == -1)
+                        {
+                            $aqelem_misc_nom = "Quitter/Abandonner" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == -2)
+                        {
+                            $aqelem_misc_nom = "Terminer avec succès" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == -3)
+                        {
+                            $aqelem_misc_nom = "Echec de la quête" ;
+                        }
+                        else if (1*$element->aqelem_misc_cod == 0)
+                        {
+                            $aqelem_misc_nom = "Etape suivante" ;
+                        }
+                        else
+                        {
+                            $aquete_etape = new aquete_etape ;
+                            $aquete_etape->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
+                        }
+                        echo   '<td>Etape  :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
                                 </td>';
                         break;
 

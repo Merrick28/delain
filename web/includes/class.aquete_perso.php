@@ -15,7 +15,7 @@ class aquete_perso
     var $aqperso_aquete_cod;
     var $aqperso_quete_step;
     var $aqperso_etape_cod = 0;
-    var $aqperso_actif = 'O';
+    var $aqperso_actif = 'O';               // ETAT: O Actif, S=Actif attente cloture sur Succès, E=Actif attente cloture sur Echec,  N=Non-Active.
     var $aqperso_nb_realisation = 0;
     var $aqperso_nb_termine = 0;
     var $aqperso_date_debut;
@@ -168,7 +168,7 @@ class aquete_perso
     function get_perso_nb_quete($perso_cod)
     {
         $pdo = new bddpdo;
-        $req = "select sum(case when aqperso_actif='O' then 1 else 0 end) nb_encours, count(*) as nb_total from quetes.aquete_perso where aqperso_perso_cod=?";
+        $req = "select sum(case when aqperso_actif<>'N' then 1 else 0 end) nb_encours, count(*) as nb_total from quetes.aquete_perso where aqperso_perso_cod=?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -179,7 +179,7 @@ class aquete_perso
     function get_perso_nb_en_cours($perso_cod)
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif='O' ";
+        $req = "select count(*) as count from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
         $result = $stmt->fetch();
@@ -191,7 +191,7 @@ class aquete_perso
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif='O' order by aqperso_cod";
+        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
         while($result = $stmt->fetch())
@@ -214,7 +214,7 @@ class aquete_perso
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso  where aqperso_perso_cod=? and (aqperso_actif='N' OR (aqperso_actif='O' and aqperso_nb_realisation>1)) order by aqperso_cod";
+        $req = "select aqperso_cod from quetes.aquete_perso  where aqperso_perso_cod=? and (aqperso_actif='N' OR (aqperso_actif<>'N' and aqperso_nb_realisation>1)) order by aqperso_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
         while($result = $stmt->fetch())
@@ -265,7 +265,7 @@ class aquete_perso
             // La quete a déjà été faite, on vérifié si on peut la refaire
             $new = false ;
             $this->charge($result["aqperso_cod"]);
-            if ($this->aqperso_actif=='O') return "Vous avez déjà démarré cette quête, vous ne pouvez la recommencer sans terminer la précédente";
+            if ($this->aqperso_actif<>'N') return "Vous avez déjà démarré cette quête, vous ne pouvez la recommencer sans terminer la précédente";
             if ($this->aqperso_nb_realisation>=$quete->aquete_nb_max_rejouable) return "Vous avez déjà terminé cette quête {$this->aqperso_nb_realisation} fois, il ne vous est plus possible de la refaire une fois de plus";
             if ($quete->get_nb_en_cours()>=$quete->aquete_nb_max_instance) return "Il n'est pas possible de commencer cette quête actuellement.";
             if ($quete->get_nb_total()>=$quete->aquete_nb_max_quete && 1*$quete->aquete_nb_max_quete>0) return "Cette quête est maintenant fermé.";
@@ -402,6 +402,50 @@ class aquete_perso
                     $this->aqperso_quete_step ++ ;
                     $loop = true ; // Etape terminé, on boucle à l'étape suivante
                 break;
+
+                case "#SAUT":
+                    // cette etape sert à faire un saut vers une autre, elle est toujours réussie.
+                    $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+                    $perso_journal->aqpersoj_texte = $etape->aqetape_texte ;
+                    $perso_journal->stocke(true);
+
+                    // Récupérer le n° d'Etape suivante:
+                    $element = new aquete_element;
+                    $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
+                    $etape_cod = 1*$elements[0]->aqelem_misc_cod ;
+
+                    if ($etape_cod<0)
+                    {
+                        $this->aqperso_actif = ($etape_cod== -2) ? 'S' : 'E' ;   // Etape terminée avec Succes ou sur une Echec.
+                        $this->aqperso_etape_cod = 0 ;                          // Fin de quête!
+                    }
+                    else if ($etape_cod==0)
+                    {
+                        // Stupide, on a mis un saut d'étape pour sauter à l'étape suivante !
+                        $this->aqperso_etape_cod = 1*$etape->aqetape_etape_cod ;     // saut à l'étape suivante comme etape du type TEXTE
+                    }
+                    else
+                    {
+                        $this->aqperso_etape_cod = $etape_cod ;
+                    }
+
+                    $this->aqperso_quete_step ++ ;
+                    $loop = true ; // Etape terminé, on boucle à l'étape suivante
+                break;
+
+                case "#END #OK":
+                case "#END #KO":
+                    // cette etape sert à mettre fin à la quête avec ou sans succès.
+                    $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+                    $perso_journal->aqpersoj_texte = $etape->aqetape_texte ;
+                    $perso_journal->stocke(true);
+
+                    // Etape suivante:
+                    $this->aqperso_actif = ($etape_modele->aqetapmodel_tag == '#END #KO') ? 'E' : 'S' ;   // Etape terminée avec Succes ou sur une Echec.
+                    $this->aqperso_etape_cod = 0 ;      // Fin de quête!
+                    $this->aqperso_quete_step ++ ;
+                    $loop = false ; // Etape terminée, on boucle ne boucle plus.
+                break;
             }
         } while ($loop && $this->aqperso_etape_cod>0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
@@ -439,15 +483,26 @@ class aquete_perso
         // le choix vient de l'utilisateur, il faut s'en méfier et le verifier
         if (($element->aqelem_aqetape_cod != $this->aqperso_etape_cod) || ($element->aqelem_aqetape_cod != $this->aqperso_etape_cod)) return;
 
-        // Ok, bon perso, bonne quete, etape qui demande un choix, alors traiter le choix
-        if ($element->aqelem_misc_cod<0) return "";     // la gestion du choix quitter est traité en amont, on ne devrait pas sortir ici
+        // Ici, tout est Ok: bon perso, bonne quete, etape qui demande un choix, alors traiter le choix
 
         // L'étape en cours est considérée comme terminée
-        if ($element->aqelem_misc_cod==0)
+        if ($element->aqelem_misc_cod<0)
+        {
+            // si le code est négatif, c'est une fin parce que l'admin n'a pas mis de vrai étape de fin dans sa quete
+            // -1 => Quitter sur demande utilisateur
+            // -2 => Quête terminée avec succès
+            // -3 => Quête terminée avec échec
+            $this->aqperso_actif = ($element->aqelem_misc_cod == -2) ? 'S' : 'E' ;   // Succès ou Echec
+            $this->aqperso_etape_cod = 0 ;
+        }
+        else if ($element->aqelem_misc_cod==0)
+        {
             $this->aqperso_etape_cod = 1*$etape->aqetape_etape_cod ;       // on passe à l'étape suivante
+        }
         else
+        {
             $this->aqperso_etape_cod = 1*$element->aqelem_misc_cod ;       // on passe à l'étape demandée !
-
+        }
         // Il reste à générer les éléments de cette quête dédiés au perso (l'élément du type choix) !!!
         $element->aqelem_aqperso_cod = $this->aqperso_cod ;              // le nouvelle élément est dédié au perso
         $element->aqelem_quete_step = $this->aqperso_quete_step ;        // step en cours

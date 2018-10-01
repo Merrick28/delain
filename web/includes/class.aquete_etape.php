@@ -225,7 +225,7 @@ class aquete_etape
                     $elements = $element->getBy_etape_param_id($this->aqetape_cod, $param_num);
                     foreach ($elements as $i => $e)
                     {
-                        if ($e->aqelem_misc_cod==-1)
+                        if ($e->aqelem_misc_cod<0)
                             $link = "/jeu_test/frame_vue.php" ;
                         else
                             $link = "/jeu_test/quete_auto.php?methode=start&quete=".$this->aqetape_aquete_cod."&choix=".$e->aqelem_cod ;

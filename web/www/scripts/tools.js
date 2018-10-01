@@ -183,6 +183,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
+    if ( $( "#spop-tablecod-etape-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-etape-aqetape_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-element-aqetape_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aqelem_type" ).length ) params.aqelem_type = $( "#spop-tablecod-element-aqelem_type" ).val() ;
@@ -219,9 +220,12 @@ function getTableCod(divname, table, titre, params)
         options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
         options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
     } else if (table=="etape"){
-        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'"><u><i>Etapes spéciales</u></i>:<br>';
+        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
+        options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</a> (-3)<br>';
     } else if (table=="element") {
         options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';

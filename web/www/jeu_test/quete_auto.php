@@ -111,12 +111,17 @@ case 'terminer' :
     $quete_perso = new aquete_perso() ;
     if ($quete_perso->chargeBy_perso_quete($perso_cod, $quete->aquete_cod))
     {
-        $quete_perso->aqperso_nb_termine ++ ;
+        // Fin sur un succès (ou s'il manque l'étape de fin dans la définition de la quête)
+        if ($quete_perso->aqperso_actif =="O" || $quete_perso->aqperso_actif == 'S')
+        {
+            $contenu_page2 .= "<br>Félicitation, vous avez réussie cette quête!";
+            $quete_perso->aqperso_nb_termine ++ ;
+        }
         $quete_perso->aqperso_actif = 'N';
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
         $quete_perso->stocke();
 
-        $contenu_page2 .= "<br>Voila, la quête <b>{$quete->aquete_nom}</b> est termninée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        $contenu_page2 .= "<br>Voila, la quête <b>{$quete->aquete_nom}</b> est maintenant terminée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
         $contenu_page2 .= "<br><br>";
     }
 break;

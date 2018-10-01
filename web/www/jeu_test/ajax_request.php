@@ -241,6 +241,7 @@ switch($_REQUEST["request"])
         case 'etape':
             $filter = "";
             if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
+            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"]);
 
             // requete de comptage
             $req = "select count(*) from quetes.aquete_etape where aqetape_nom ilike ? {$filter}";
@@ -317,6 +318,10 @@ switch($_REQUEST["request"])
                     $req = "select 'Etape suivante' nom where ?=0 ";
                 else if ($cod==-1)
                     $req = "select 'Quitter/Abandonner' nom where ?=-1 ";
+                else if ($cod==-2)
+                    $req = "select 'Terminer avec succès' nom where ?=-2 ";
+                else if ($cod==-3)
+                    $req = "select 'Echec de la quête' nom where ?=-3 ";
                 else
                     $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
                 break;
