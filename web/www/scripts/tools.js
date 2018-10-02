@@ -278,7 +278,7 @@ function setNomByTableCod(divname, table, cod) { // fonction de mise à jour d'u
 
 function  addQueteAutoParamRow(elem, M)
 {
-    if ((elem.parent().find("tr").length<=M) || (M == 0))
+    if ((elem.parent().find("tr[id^='row-']").length<M) || (M == 0))
     {
 
         var row = elem[0].id ;
@@ -311,7 +311,7 @@ function  addQueteAutoParamRow(elem, M)
 
 function  delQueteAutoParamRow(elem, n)
 {
-    if (elem.parent().find("tr").length>(n+1))
+    if (elem.parent().find("tr[id^='row-']").length>n)
     {
         elem.remove();
     }

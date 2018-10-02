@@ -98,9 +98,10 @@ if ($erreur == 0)
         echo '<tr><td><b>Début </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <i>elle ne peut pas être commencée avant cette date (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Fin </b><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</i>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <i>elle ne peut plus être commencée après cette date (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Nb. quête simultanée</b>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <i>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</i></td></tr>';
-        echo '<tr><td><b></b><del>Nb. participants max</del></b>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><i>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></i></td></tr>';
+        echo '<tr style="display:none;"><td><b></b><del>Nb. participants max</del></b>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><i>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></i></td></tr>';
         echo '<tr><td><b>Nb. rejouabilité</b>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <i>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Nb. de quête</b>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="'.$quete->aquete_nb_max_quete.'"> <i>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</i></td></tr>';
+        echo '<tr><td><b>Délai max. </b><i style="font-size: 7pt;">(en jours)</i>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <i>délai max alloué pour la quête (pas de limite si vide)</i></td></tr>';
         if ($aquete_cod==0)
         {
             // cas d'une nouvelle quete
@@ -237,6 +238,7 @@ if ($erreur == 0)
             $elements = $element->getBy_etape_param_id($aqetape_cod, $param_id) ;
             if (!$elements) $elements[] =  new aquete_element;
             while ( sizeof($elements) < (1*$param['n']) )   $elements[] =  new aquete_element;
+            $add_buttons = (1*$param['M']==1*$param['n'] && 1*$param['M']>0) ? false : true;
 
             // Gestion du type "element" alternatif
             if ($alternate_type)
@@ -278,7 +280,7 @@ if ($erreur == 0)
             {
                 $row_id = "row-$param_id-$row-";
                 $aqelem_misc_nom = "" ;
-                echo   '<tr id="'.$row_id.'" style="'.$style_tr.'"><td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), '.$param['n'].');"></td>';
+                if ($add_buttons) echo   '<tr id="'.$row_id.'" style="'.$style_tr.'"><td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), '.$param['n'].');"></td>';
                 switch ($param['type'])
                 {
                     case 'perso':
@@ -333,28 +335,10 @@ if ($erreur == 0)
                     break;
 
                     case 'choix':
-                        if (1*$element->aqelem_misc_cod == -1)
-                        {
-                            $aqelem_misc_nom = "Quitter/Abandonner" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == -2)
-                        {
-                            $aqelem_misc_nom = "Terminer avec succès" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == -3)
-                        {
-                            $aqelem_misc_nom = "Echec de la quête" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == 0)
-                        {
-                            $aqelem_misc_nom = "Etape suivante" ;
-                        }
-                        else
-                        {
-                            $aquete_etape = new aquete_etape ;
-                            $aquete_etape->charge( $element->aqelem_misc_cod );
-                            $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
-                        }
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
                         echo   '<td>Choix  :
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
@@ -365,30 +349,27 @@ if ($erreur == 0)
                                 </td>';
                         break;
 
+                    case 'delai':
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
+                        echo   '<td>Délai (<i>en jours</i>) :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'"> (laisser à 0 si illimité), Etape si délai écoulé:
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                                </td>';
+                        break;
+
                     case 'etape':
-                        if (1*$element->aqelem_misc_cod == -1)
-                        {
-                            $aqelem_misc_nom = "Quitter/Abandonner" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == -2)
-                        {
-                            $aqelem_misc_nom = "Terminer avec succès" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == -3)
-                        {
-                            $aqelem_misc_nom = "Echec de la quête" ;
-                        }
-                        else if (1*$element->aqelem_misc_cod == 0)
-                        {
-                            $aqelem_misc_nom = "Etape suivante" ;
-                        }
-                        else
-                        {
-                            $aquete_etape = new aquete_etape ;
-                            $aquete_etape->charge( $element->aqelem_misc_cod );
-                            $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
-                        }
-                        echo   '<td>Etape  :
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
+                        echo   '<td>Etape : 
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                 <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
@@ -403,7 +384,7 @@ if ($erreur == 0)
                 }
                 echo "</tr>";
             }
-            echo '<tr id="add-'.$row_id.'" style="'.$style_tr.'"><td> <input type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(), '.$param['M'].');"> </td></tr>';
+            if ($add_buttons) echo '<tr id="add-'.$row_id.'" style="'.$style_tr.'"><td> <input type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(), '.$param['M'].');"> </td></tr>';
             echo '</table>';
         }
 

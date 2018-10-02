@@ -21,6 +21,7 @@ class aquete
     var $aquete_nb_max_participant = 1;
     var $aquete_nb_max_rejouable = 1;
     var $aquete_nb_max_quete;
+    var $aquete_max_delai;
 
     function __construct()
     {
@@ -54,6 +55,7 @@ class aquete
         $this->aquete_nb_max_participant = $result['aquete_nb_max_participant'];
         $this->aquete_nb_max_rejouable = $result['aquete_nb_max_rejouable'];
         $this->aquete_nb_max_quete = $result['aquete_nb_max_quete'];
+        $this->aquete_max_delai = $result['aquete_max_delai'];
         return true;
     }
 
@@ -78,7 +80,8 @@ class aquete
                         aquete_nb_max_instance,
                         aquete_nb_max_participant,
                         aquete_nb_max_rejouable,
-                        aquete_nb_max_quete
+                        aquete_nb_max_quete,
+                        aquete_max_delai
                     )
                     values
                     (
@@ -91,7 +94,8 @@ class aquete
                         :aquete_nb_max_instance,
                         :aquete_nb_max_participant,
                         :aquete_nb_max_rejouable,
-                        :aquete_nb_max_quete
+                        :aquete_nb_max_quete,
+                        :aquete_max_delai
                     )
                     returning aquete_cod as id";
             $stmt = $pdo->prepare($req);
@@ -105,7 +109,8 @@ class aquete
                     ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
                     ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
                     ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete
+                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
+                    ":aquete_max_delai" => $this->aquete_max_delai
             ),$stmt);
 
             $temp = $stmt->fetch();
@@ -124,7 +129,8 @@ class aquete
             aquete_nb_max_instance = :aquete_nb_max_instance,
             aquete_nb_max_participant = :aquete_nb_max_participant,
             aquete_nb_max_rejouable = :aquete_nb_max_rejouable,
-            aquete_nb_max_quete = :aquete_nb_max_quete                     
+            aquete_nb_max_quete = :aquete_nb_max_quete,
+            aquete_max_delai = :aquete_max_delai                     
             where aquete_cod = :aquete_cod ";
 
             $stmt = $pdo->prepare($req);
@@ -139,7 +145,8 @@ class aquete
                 ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
                 ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
                 ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete
+                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
+                ":aquete_max_delai" => $this->aquete_max_delai
             ),$stmt);
         }
     }
@@ -223,7 +230,7 @@ class aquete
                 ) as quete on quete.pos_cod=ppos_pos_cod
                 where not exists(select 1 from quetes.aquete_perso where aqperso_perso_cod=perso_cod and aqperso_aquete_cod=aquete_cod and aqperso_actif='O')
                 and not exists(select 1 from quetes.aquete_perso where aqperso_perso_cod=perso_cod and aqperso_aquete_cod=aquete_cod and aqperso_actif='N' and aquete_nb_max_rejouable>0 and aqperso_nb_realisation>=aquete_nb_max_rejouable)
-                and not exists(select count(*) from quetes.aquete_perso where aqperso_aquete_cod=aquete_cod and aqperso_actif='O' and aquete_nb_max_instance>0 having count(*)>=aquete_nb_max_instance)
+                and not exists(select count(*) from quetes.aquete_perso where aqperso_aquete_cod=aquete_cod and aqperso_actif<>'N' and aquete_nb_max_instance>0 having count(*)>=aquete_nb_max_instance)
                 and not exists(select count(*) from quetes.aquete_perso where aqperso_aquete_cod=aquete_cod and aquete_nb_max_quete>0 having count(*)>=aquete_nb_max_quete)
                 ";
 

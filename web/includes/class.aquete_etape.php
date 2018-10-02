@@ -263,6 +263,37 @@ class aquete_etape
         return $hydrate_texte ;
     }
 
+    function  getNom($aqetape_cod)
+    {
+        if ($aqetape_cod<-3) return "Erreur n° etape";
+
+        $nom = "" ;
+        switch($aqetape_cod)
+        {
+            case 0:
+                $nom = "Etape suivante" ;
+            break;
+
+            case -1:
+                $nom = "Quitter/Abandonner" ;
+            break;
+
+            case -2:
+                $nom = "Terminer avec succès" ;
+            break;
+
+            case -3:
+                $nom = "Echec de la quête" ;
+            break;
+
+            default:
+                $aquete_etape = new aquete_etape ;
+                $aquete_etape->charge( $aqetape_cod );
+                $nom = $aquete_etape->aqetape_nom ;
+        }
+
+        return $nom ;
+    }
         /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo

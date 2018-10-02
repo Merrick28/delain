@@ -11,6 +11,7 @@ CREATE TABLE quetes.aquete
   aquete_nb_max_participant integer DEFAULT 1, -- Nombre maximum de perso pouvant réaliser la quête ensemble (pas de limite si null)
   aquete_nb_max_rejouable integer DEFAULT 1, -- Nombre de fois où la quête peut-être jouer par un même perso (pas de limite si null)
   aquete_nb_max_quete integer, -- Nombre de fois où la quête peut-être rejouer tous persos confondus (pas de limite si null)
+  aquete_max_delai integer, -- Délai maximum alloué (en jours) pour réaliser la quête, au delà de ce délai elle sera terminée en échec (pas de limite si null)
   CONSTRAINT aquete_pkey PRIMARY KEY (aquete_cod)
 )
 WITH (
@@ -28,6 +29,7 @@ COMMENT ON COLUMN quetes.aquete.aquete_nb_max_instance IS 'Nombre maximum de foi
 COMMENT ON COLUMN quetes.aquete.aquete_nb_max_participant IS 'Nombre maximum de perso pouvant réaliser la quête ensemble (pas de limite si null)';
 COMMENT ON COLUMN quetes.aquete.aquete_nb_max_rejouable IS 'Nombre de fois où la quête peut-être jouer par un même perso (pas de limite si null)';
 COMMENT ON COLUMN quetes.aquete.aquete_nb_max_quete IS 'Nombre de fois où la quête peut-être rejouer tous persos confondus (pas de limite si null)';
+COMMENT ON COLUMN quetes.aquete.aquete_max_delai IS 'Délai maximum alloué (en jours) pour réaliser la quête, au delà de ce délai elle sera terminée en échec (pas de limite si null)';
 
 
 CREATE TABLE quetes.aquete_element
@@ -203,9 +205,9 @@ INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
     VALUES ('#MOVE_PERSO', 'Déplacement vers PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
-           '[1:perso|1%0]',
-           'C''est le PNJ à que l''aventurier doit aller voir',
-           'Allez donner de mes nouvelles à mon ami [1].');
+           '[1:delai|1%1],[2:perso|1%0]',
+           'Délai alloué pour cette étape.|C''est le PNJ à que l''aventurier doit aller voir',
+           'Allez donner de mes nouvelles à mon ami [2].');
 
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,

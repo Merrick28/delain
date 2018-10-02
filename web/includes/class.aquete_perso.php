@@ -82,6 +82,11 @@ class aquete_perso
         $this->aqperso_nb_termine = $result['aqperso_nb_termine'];
         $this->aqperso_date_debut = $result['aqperso_date_debut'];
         $this->aqperso_date_fin = $result['aqperso_date_fin'];
+        // Raz des objets liés
+        $this->quete = new aquete();
+        $this->etape = new aquete_etape();
+        $this->etape_modele = new aquete_etape_modele();
+
         return true;
     }
 
@@ -266,8 +271,8 @@ class aquete_perso
             $new = false ;
             $this->charge($result["aqperso_cod"]);
             if ($this->aqperso_actif<>'N') return "Vous avez déjà démarré cette quête, vous ne pouvez la recommencer sans terminer la précédente";
-            if ($this->aqperso_nb_realisation>=$quete->aquete_nb_max_rejouable) return "Vous avez déjà terminé cette quête {$this->aqperso_nb_realisation} fois, il ne vous est plus possible de la refaire une fois de plus";
-            if ($quete->get_nb_en_cours()>=$quete->aquete_nb_max_instance) return "Il n'est pas possible de commencer cette quête actuellement.";
+            if ($this->aqperso_nb_realisation>=$quete->aquete_nb_max_rejouable && 1*$quete->aquete_nb_max_rejouable>0) return "Vous avez déjà terminé cette quête {$this->aqperso_nb_realisation} fois, il ne vous est plus possible de la refaire une fois de plus";
+            if ($quete->get_nb_en_cours()>=$quete->aquete_nb_max_instance && 1*$quete->aquete_nb_max_instance>0) return "Il n'est pas possible de commencer cette quête actuellement.";
             if ($quete->get_nb_total()>=$quete->aquete_nb_max_quete && 1*$quete->aquete_nb_max_quete>0) return "Cette quête est maintenant fermé.";
         }
         // On charge l'étape 1 !
@@ -381,6 +386,22 @@ class aquete_perso
         $perso_journal = new aquete_perso_journal();
         $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
         $perso_journal->aqpersoj_realisation = $this->aqperso_nb_realisation;
+
+        // Vérification du délai global
+        $quete = $this->get_quete() ;
+        if ((1*$quete->aquete_max_delai>0) && (date("Y-m-d H:i:s")> date("Y-m-d H:i:s", strtotime($this->aqperso_date_debut." +".$quete->aquete_max_delai." DAYS"))))
+        {
+            // On indique dans le journal que la quete c'est terminé sur un échec de délai!
+            $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+            $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$quete->aquete_max_delai} jours</b> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminé dans les temps, c'est trop tard!<br> ";
+            $perso_journal->stocke(true);
+
+            $this->aqperso_actif = 'E'  ;       // Etape terminée sur un Echec.
+            $this->aqperso_etape_cod = 0 ;      // Fin de quête!
+            $this->aqperso_quete_step ++ ;
+            $this->stocke();                    // Mettre à jours les infos
+            return;
+        }
 
         do
         {
