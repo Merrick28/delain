@@ -62,7 +62,6 @@ switch ($methode) {
 				.",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
 				.",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
 				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar')";
-            echo $req_cre_gmon;
 			$db_cre_mon->query($req_cre_gmon);
 		}
 		writelog($log."Nouveau type de monstre : $gmon_nom \n",'monstre_edit');

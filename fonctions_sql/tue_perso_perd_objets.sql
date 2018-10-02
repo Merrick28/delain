@@ -45,13 +45,14 @@ begin
 	-- Mort définitive : on perd tout ce qui est déposable, et tout l’or.
 	if mort_definitive = 1 then
 		for ligne_objet in
-			select perobj_cod, perobj_obj_cod, gobj_deposable, perobj_equipe, obj_nom, tobj_libelle from perso_objets
+			select perobj_cod, perobj_obj_cod, gobj_deposable, perobj_equipe, obj_nom, tobj_libelle, lancer_des(1,100)<=COALESCE(gobj_chance_drop_monstre,100) as drop_monstre from perso_objets
 			inner join objets on obj_cod = perobj_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			where perobj_perso_cod = v_cible
 		loop
-			if ligne_objet.gobj_deposable = 'N' then
+			-- ajout 02-10-2018 - marlyza - Il y a maintenant un taux de drop sur les objets de monstre, si c'est pas droppé alors c'est détruit (comme les objets indroppables)
+			if ligne_objet.gobj_deposable = 'N' or (type_cible=2 and not ligne_objet.drop_monstre) then
 			  -- ajout 16-05-2018 - marlyza - le familier ne perd pas son equipement non déposable s'il est équipé (c'est son equipement de base: griffes, etc...)
 			  -- il doit le garder, même s'il decéde car un sort de réssurection pourrait le ramener à la vie.
 			  if type_cible!=3 or ligne_objet.perobj_equipe!='O' then
@@ -62,7 +63,6 @@ begin
 			else
 				insert into objet_position (pobj_cod, pobj_obj_cod, pobj_pos_cod)
 				values (nextval('seq_pobj_cod'), ligne_objet.perobj_obj_cod, pos_cible);
-
 				delete from perso_objets where perobj_cod = ligne_objet.perobj_cod;
 				code_retour := code_retour || '<br><b>' || ligne_objet.obj_nom || '</b> <i>(' || ligne_objet.tobj_libelle || ')</i>';
 			end if;
