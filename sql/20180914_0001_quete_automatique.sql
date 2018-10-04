@@ -204,7 +204,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE_PERSO', 'Déplacement vers PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
+    VALUES ('#MOVE #PERSO', 'Déplacement vers PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
            '[1:delai|1%1],[2:perso|1%0]',
            'Délai alloué pour cette étape.|C''est le PNJ à que l''aventurier doit aller voir',
            'Allez donner de mes nouvelles à mon ami [2].');
@@ -212,7 +212,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE_LIEU', 'Déplacement vers LIEU', 'Dans cette étape on demande à l''aventurier d''aller voir un lieu.',
+    VALUES ('#MOVE #LIEU', 'Déplacement vers LIEU', 'Dans cette étape on demande à l''aventurier d''aller voir un lieu.',
            '[1:lieu|1%0]',
            'C''est le lieu à que l''aventurier doit aller voir',
            'Rendez-vous à [1].');
@@ -258,3 +258,19 @@ INSERT INTO quetes.aquete_etape_modele(
            '[1:etape|1%1]',
            'C''est l''étape de destination souhaitée.',
             NULL);
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#GAIN #PX', 'Recompense PX/PO', 'Cette étape sert à attribuer des récompenses en PX/PO  au personnage réalisant la quête.',
+           '[1:valeur|1%1|px],[2:valeur|1%1|po]',
+           'Gain de PX|Gain de Brouzoufs',
+            'En récompenses de vos efforts, vous recevez [1]px et [2] brouzoufs.');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#GAIN #TITRE', 'Recompense Titre', 'Cette étape sert à attribuer un titre au personnage réalisant la quête',
+           '[1:texte|1%1|Titre]',
+           'C''est le titre qui sera donné au joueur en récompense.',
+            'En récompenses de vos efforts, vous recevez le titre de:<br>  [1].');

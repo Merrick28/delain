@@ -123,6 +123,31 @@ class aquete_perso_journal
         return $retour;
     }
 
+    // Charge le dernier step du journal (ou prepare la premièere page)
+    function  chargeDernierePage($aqperso_cod, $realisation)
+    {
+        $pdo = new bddpdo;
+        $req = "select aqpersoj_cod
+                from quetes.aquete_perso_journal
+                join (
+                    select aqpersoj_aqperso_cod perso_cod, aqpersoj_realisation realisation, max(aqpersoj_quete_step) quete_step from quetes.aquete_perso_journal group by aqpersoj_aqperso_cod, aqpersoj_realisation
+                ) page  on aqpersoj_aqperso_cod=perso_cod and aqpersoj_realisation=realisation and aqpersoj_quete_step=quete_step
+                where aqpersoj_aqperso_cod=? and aqpersoj_realisation=? order by aqpersoj_cod desc ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso_cod, $realisation),$stmt);
+        if ( $result = $stmt->fetch() )
+        {
+            $this->charge($result["aqpersoj_cod"]);
+        }
+        else
+        {
+            // Prépare avec le peu d'information que l'on a
+            $this->aqpersoj_aqperso_cod = $aqperso_cod;
+            $this->aqpersoj_realisation = $realisation;
+            $this->quete_step = 0 ;
+        }
+    }
+
 
     /**
      * Retourne un tableau de tous les enregistrements

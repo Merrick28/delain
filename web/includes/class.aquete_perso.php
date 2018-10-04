@@ -20,15 +20,18 @@ class aquete_perso
     var $aqperso_nb_termine = 0;
     var $aqperso_date_debut;
     var $aqperso_date_fin;
+    var $aqperso_date_debut_etape;
     var $quete;         // définition de la quete
     var $etape;         // définition de l'étape en cours
     var $etape_modele;  // définition du modele d'étape en cours
+    var $action;        // pour la réalisation des actions de la quête
 
     function __construct()
     {
         $this->quete = new aquete();
         $this->etape = new aquete_etape();
         $this->etape_modele = new aquete_etape_modele();
+        $this->action = new aquete_action();
         $this->aqperso_date_debut = date('Y-m-d H:i:s');
     }
 
@@ -82,10 +85,12 @@ class aquete_perso
         $this->aqperso_nb_termine = $result['aqperso_nb_termine'];
         $this->aqperso_date_debut = $result['aqperso_date_debut'];
         $this->aqperso_date_fin = $result['aqperso_date_fin'];
+        $this->aqperso_date_debut_etape = $result['aqperso_date_debut_etape'];
         // Raz des objets liés
         $this->quete = new aquete();
         $this->etape = new aquete_etape();
         $this->etape_modele = new aquete_etape_modele();
+        $this->action->set_perso_cod($this->aqperso_perso_cod) ;
 
         return true;
     }
@@ -109,7 +114,8 @@ class aquete_perso
             aqperso_nb_realisation,
             aqperso_nb_termine,
             aqperso_date_debut,
-            aqperso_date_fin                        )
+            aqperso_date_fin ,
+            aqperso_date_debut_etape                        )
                     values
                     (
                         :aqperso_perso_cod,
@@ -120,7 +126,8 @@ class aquete_perso
                         :aqperso_nb_realisation,
                         :aqperso_nb_termine,
                         :aqperso_date_debut,
-                        :aqperso_date_fin                        )
+                        :aqperso_date_fin,
+                        :aqperso_date_debut_etape                        )
     returning aqperso_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -134,6 +141,7 @@ class aquete_perso
                 ":aqperso_nb_termine" => $this->aqperso_nb_termine,
                 ":aqperso_date_debut" => $this->aqperso_date_debut,
                 ":aqperso_date_fin" => $this->aqperso_date_fin,
+                ":aqperso_date_debut_etape" => $this->aqperso_date_debut_etape,
             ),$stmt);
 
 
@@ -152,7 +160,8 @@ class aquete_perso
             aqperso_nb_realisation = :aqperso_nb_realisation,
             aqperso_nb_termine = :aqperso_nb_termine,
             aqperso_date_debut = :aqperso_date_debut,
-            aqperso_date_fin = :aqperso_date_fin                        where aqperso_cod = :aqperso_cod ";
+            aqperso_date_fin = :aqperso_date_fin,
+            aqperso_date_debut_etape = :aqperso_date_debut_etape                        where aqperso_cod = :aqperso_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqperso_cod" => $this->aqperso_cod,
@@ -165,6 +174,7 @@ class aquete_perso
                 ":aqperso_nb_termine" => $this->aqperso_nb_termine,
                 ":aqperso_date_debut" => $this->aqperso_date_debut,
                 ":aqperso_date_fin" => $this->aqperso_date_fin,
+                ":aqperso_date_debut_etape" => $this->aqperso_date_debut_etape,
             ),$stmt);
         }
     }
@@ -297,6 +307,7 @@ class aquete_perso
         $this->aqperso_date_debut = date('Y-m-d H:i:s');
         $this->aqperso_actif = 'O';
         $this->aqperso_date_fin = NULL;
+        $this->aqperso_date_debut_etape = $this->aqperso_date_debut ;
         $this->stocke($new) ;
 
         // Il reste à générer les éléments de cette quête dédiés au perso (juste le choix et le déclencheur) !!!
@@ -341,41 +352,75 @@ class aquete_perso
     // Une fonction privée qui met en forme une étape avec les éléments de cette étape
     function hydrate()
     {
-        $aqperso_cod = $this->aqperso_cod ;
-        $quete_step = $this->aqperso_quete_step ;
-        $element = new aquete_element;      // pour utilisation des fonctions de cette classe
-        $pdo = new bddpdo;
-        $req = "select aqelem_cod, aqelem_param_id, aqetape_texte from quetes.aquete_perso
-                join quetes.aquete_element on aqelem_aqperso_cod=aqperso_cod
-                join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
-                where aqperso_cod = ? and aqelem_quete_step = ?
-                order by aqelem_param_id,aqelem_cod ";
-        $stmt = $pdo->prepare($req);
+        $element = new aquete_element;          // pour utilisation des fonctions de cette classe
+        $etape = $this->get_quete();            // Pour obtenir le texte brut de l'étape
 
-        $stmt = $pdo->execute(array($aqperso_cod, $quete_step),$stmt);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
-        if(count($result) == 0) return "";                  // si rien trouvé !
+        // S'il n'y a pas de variazble on retourne directement le texte brut!
+        if (!preg_match_all ('#\[(.+)\]#isU', $etape->aqetape_texte, $matches)) return $etape->aqetape_texte;
 
-        // Préparation d'une table pour la recherche inversée
-        $param_id = array() ;
-        foreach ($result as $k=> $v) $param_id[$v["aqelem_param_id"]] = $k;
-
-        $hydrate_texte = "" ;
-        $textes = explode("[", $result[0]["aqetape_texte"]);
-        $hydrate_texte.= $textes[0];        // Le début de la description
-        foreach ($textes as $k => $v)
+        $search = array();
+        $replace = array();
+        // Boucle sur les éléments à remplacer
+        foreach ($matches[1] as $k => $v)
         {
-            if (($v!="") && ($k>0))
+            // Ne faire que les nouveaux
+            if (!in_array("[$v]", $search))
             {
-                $params = explode("]", $v);
-                $param_num = 1*$params[0] ; // N° du paramètre dans le texte de l'étape
-                $aqelem_cod = $result[$param_id[$param_num]]["aqelem_cod"] ;  // le code de l'élément rattaché au paramètre
-                $hydrate_texte.= $element->get_element_texte($aqelem_cod);
-                $hydrate_texte.= $params[1];
+                $search[] = "[$v]";
+                $replace[] = $element->get_element_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
             }
         }
 
-       return $hydrate_texte;
+        return str_replace($search, $replace, $etape->aqetape_texte);
+    }
+
+    // Une fonction privée qui recherche un element en fonction du paramètre
+    function get_element_texte($param_id)
+    {
+        $pdo = new bddpdo;
+
+        $aqperso_cod = $this->aqperso_cod ;
+        $quete_step = $this->aqperso_quete_step ;
+        $etape_cod = $this->etape->aqetape_cod ;
+
+        $element = new aquete_element;      // pour utilisation des fonctions de cette classe
+
+        // D'abord on cherche pour le perso!
+        $req = "select aqelem_cod from quetes.aquete_perso
+                join quetes.aquete_element on aqelem_aqperso_cod=aqperso_cod
+                join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                where aqperso_cod = ? and aqelem_quete_step = ? and aqelem_param_id = ?
+                order by aqelem_param_id,aqelem_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso_cod, $quete_step, $param_id),$stmt);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+
+        if(count($result) == 0) return "";                  // si rien on prend le modèle !
+        {
+            // Si on a rien pour le perso on prend le modele
+            $req = "select aqelem_cod from quetes.aquete_etape 
+                left join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
+                where aqetape_cod = ? and aqelem_param_id = ?
+                order by aqelem_param_id,aqelem_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($etape_cod, $param_id),$stmt);
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+        }
+        if(count($result) == 0) return "";                  // si toujours rien trouvé !
+
+
+        // Préparation d'une table pour la recherche inversée
+        $element_texte = "";
+        foreach ($result as $k=> $v)
+        {
+            if ( $k == 0 )
+                $element_texte .= $element-->$element_texte( $v["aqelem_cod"] );
+            else if ( $k <count($result)-1 )
+                $element_texte .= ", ".$element-->$element_texte( $v["aqelem_cod"] );
+            else
+                $element_texte .= " et ".$element-->$element_texte( $v["aqelem_cod"] );
+        }
+        return $element_texte;
     }
 
     // On reprend à partir de l'étape en cours, on regarde si elle est terminée et ainsi de suite
@@ -384,8 +429,7 @@ class aquete_perso
         if ($this->aqperso_etape_cod==0) return;    // on a déjà fini la quete, il reste au joueur à la valider.
 
         $perso_journal = new aquete_perso_journal();
-        $perso_journal->aqpersoj_aqperso_cod = $this->aqperso_cod;
-        $perso_journal->aqpersoj_realisation = $this->aqperso_nb_realisation;
+        $perso_journal->chargeDernierePage($this->aqperso_cod, $this->aqperso_nb_realisation);
 
         // Vérification du délai global
         $quete = $this->get_quete() ;
@@ -393,7 +437,7 @@ class aquete_perso
         {
             // On indique dans le journal que la quete c'est terminé sur un échec de délai!
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-            $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$quete->aquete_max_delai} jours</b> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminé dans les temps, c'est trop tard!<br> ";
+            $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$quete->aquete_max_delai} jours</b> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
             $perso_journal->stocke(true);
 
             $this->aqperso_actif = 'E'  ;       // Etape terminée sur un Echec.
@@ -405,69 +449,125 @@ class aquete_perso
 
         do
         {
-            $loop = false;   // par défaut on sort, sauf si une etape est validée, alors il faut continuer
-            $etape = new aquete_etape();
-            $etape->charge($this->aqperso_etape_cod);
-            $etape_modele = new aquete_etape_modele();
-            $etape_modele->charge($etape->aqetape_aqetapmodel_cod);
-            switch($etape_modele->aqetapmodel_tag)
+            $loop = false;   // par défaut on sort, sauf si une etape est validée, alors il faudra continuer
+            $this->etape->charge($this->aqperso_etape_cod);
+            $this->etape_modele->charge($this->etape->aqetape_aqetapmodel_cod);
+
+            // On charge le 1er élements de l'étape
+            $element = new aquete_element;
+            $elements = $element->getBy_etape_param_id($this->etape->aqetape_cod, 1) ;
+
+            // La première fois que l'on arrive à l'étape, on le note dans le journal
+            if (    ( $this->etape->aqetape_texte != "" )
+                 && ( $perso_journal->aqpersoj_quete_step != $this->aqperso_quete_step )
+                 && (  !in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX")) )
+               )
             {
-                case "#TEXTE":
-                    // cette etape sert à mettre du contexte dans le journal, l'ètape est autovalidé et n'a pas de paramètre.
-                    $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-                    $perso_journal->aqpersoj_texte = $etape->aqetape_texte ;
-                    $perso_journal->stocke(true);
+                $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+                $perso_journal->aqpersoj_texte =  $this->hydrate() ;
+                $perso_journal->stocke(true);       // Nouvelle page !
+            }
 
-                    // Etape suivante:
-                    $this->aqperso_etape_cod = 1*$etape->aqetape_etape_cod ;
-                    $this->aqperso_quete_step ++ ;
-                    $loop = true ; // Etape terminé, on boucle à l'étape suivante
-                break;
+            //---------------------------------------------------------------------------------
+            // ---------------- Le gros moteur de traitment des actions -----------------------
+            $status_etape = 0 ;     // 0=> on est bloqué en attente, 1 => ok etape suivante (vers $next_etape_cod), -1=> Etape Fin OK, -2 => Etape KO
+            $next_etape_cod = 1*$this->etape->aqetape_etape_cod ;
+            $model_tag = $this->etape_modele->aqetapmodel_tag ;
 
+            // Vérification du délai d'étape, seuelement pour certaine etape, ce délai s'il existe est TOUJOURS le 1er paramètre--------------
+            if (count($elements)==1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
+            {
+                if ((date("Y-m-d H:i:s")> date("Y-m-d H:i:s", strtotime($this->aqperso_date_debut_etape." +".$elements[0]->aqelem_param_num_1." DAYS"))))
+                {
+                    // On indique dans le journal que la quete c'est terminé sur un échec de délai! (si c'est pas géré par une autre étape)
+                    if (1*$elements[0]->aqelem_misc_cod <0)
+                    {
+                        $this->aqperso_quete_step ++ ; // L'étape était déjà commencée, il y a déjà une entrée dans le journal pour celle-ci on passe un step !
+                        $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+                        $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$elements[0]->aqelem_param_num_1} jours</b> que vous avez commencé cette étape.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+                        $perso_journal->stocke(true);
+                    }
+                    // le "timeout d'étape" se comporte comme une étape du type SAUT, le aqelem_misc_cod contient la prochaine étape !
+                    $model_tag = "#SAUT" ;
+                }
+            }
+
+            switch($model_tag)
+            {
                 case "#SAUT":
                     // cette etape sert à faire un saut vers une autre, elle est toujours réussie.
-                    $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-                    $perso_journal->aqpersoj_texte = $etape->aqetape_texte ;
-                    $perso_journal->stocke(true);
-
                     // Récupérer le n° d'Etape suivante:
-                    $element = new aquete_element;
-                    $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
                     $etape_cod = 1*$elements[0]->aqelem_misc_cod ;
 
                     if ($etape_cod<0)
                     {
                         $this->aqperso_actif = ($etape_cod== -2) ? 'S' : 'E' ;   // Etape terminée avec Succes ou sur une Echec.
-                        $this->aqperso_etape_cod = 0 ;                          // Fin de quête!
+                        $next_etape_cod = 0 ;                          // Fin de quête!
                     }
                     else if ($etape_cod==0)
                     {
-                        // Stupide, on a mis un saut d'étape pour sauter à l'étape suivante !
-                        $this->aqperso_etape_cod = 1*$etape->aqetape_etape_cod ;     // saut à l'étape suivante comme etape du type TEXTE
+                        // Stupide, on a mit un saut d'étape pour sauter à l'étape suivante ! (peut-être une étape automatiquement réussi en cas de délai trop long :-) )
+                        $next_etape_cod = 1*$this->etape->aqetape_etape_cod ;     // saut à l'étape suivante comme etape du type TEXTE
                     }
                     else
                     {
-                        $this->aqperso_etape_cod = $etape_cod ;
+                        $next_etape_cod = $etape_cod ;
                     }
 
-                    $this->aqperso_quete_step ++ ;
-                    $loop = true ; // Etape terminé, on boucle à l'étape suivante
+                    $status_etape = 1;      // 1 => ok etape suivante,
                 break;
 
                 case "#END #OK":
                 case "#END #KO":
                     // cette etape sert à mettre fin à la quête avec ou sans succès.
-                    $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-                    $perso_journal->aqpersoj_texte = $etape->aqetape_texte ;
-                    $perso_journal->stocke(true);
+                    $status_etape = ($model_tag == '#END #KO') ? -2 : -1 ;   // Etape terminée avec Succes ou sur une Echec.
+                break;
 
-                    // Etape suivante:
-                    $this->aqperso_actif = ($etape_modele->aqetapmodel_tag == '#END #KO') ? 'E' : 'S' ;   // Etape terminée avec Succes ou sur une Echec.
-                    $this->aqperso_etape_cod = 0 ;      // Fin de quête!
-                    $this->aqperso_quete_step ++ ;
-                    $loop = false ; // Etape terminée, on boucle ne boucle plus.
+                case "#TEXTE":
+                    // cette etape sert à mettre du contexte dans le journal, l'ètape est autovalidé et n'a pas de paramètre.
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
+                case "#GAIN #PX":
+                    // On distribution PO et PX
+                    $this->action->gain_po_px($this->etape);
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                break;
+
+                case "#MOVE #PERSO":
+                    // Le joueur doit rejoindre un perso
+                    if ($this->action->move_perso($this->etape))
+                    {
+                        // Le perso est à l'endroit attendu, // étape suivante:
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
                 break;
             }
+
+            //------- traitement du status d'étape------------------------------
+            if ($status_etape == 1)
+            {
+                $this->aqperso_etape_cod = $next_etape_cod ;
+                $this->aqperso_quete_step ++ ;
+                $this->aqperso_date_debut_etape = date('Y-m-d H:i:s');  // Début de la nouvelle étape !
+                $loop = true ; // Etape terminé, on boucle à l'étape suivante
+            }
+            else if ($status_etape == -1)
+            {
+                $this->aqperso_actif = 'S' ;        // Etape terminée avec Succes ou sur une Echec.
+                $this->aqperso_etape_cod = 0 ;      // Fin de quête!
+                $this->aqperso_quete_step ++ ;
+                $loop = false ;                     // Etape terminée, on boucle ne boucle plus.
+            }
+            else if ($status_etape == -2)
+            {
+                $this->aqperso_actif = 'E' ;        // Etape terminée sur un Echec.
+                $this->aqperso_etape_cod = 0 ;      // Fin de quête!
+                $this->aqperso_quete_step ++ ;
+                $loop = false ;                     // Etape terminée, on boucle ne boucle plus.
+            }
+
+
         } while ($loop && $this->aqperso_etape_cod>0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
         $this->stocke();    // Mettre à jours les infos
@@ -553,7 +653,7 @@ class aquete_perso
 
         $pdo = new bddpdo;
         $perso_journal = new aquete_perso_journal() ;
-        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $realisation>=0 ? $realisation :$this->aqperso_nb_realisation);
+        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $realisation>=0 ? $realisation : $this->aqperso_nb_realisation);
 
         foreach ($perso_journaux as $k => $journal) $journal_quete.=$journal->aqpersoj_texte."<br><br>";
 

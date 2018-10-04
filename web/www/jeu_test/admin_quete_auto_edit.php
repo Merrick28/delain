@@ -364,6 +364,30 @@ if ($erreur == 0)
                                 </td>';
                         break;
 
+                    case 'valeur':
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
+                        echo   '<td>Valeur :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'">
+                                </td>';
+                        break;
+
+                    case 'texte':
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
+                        echo   '<td>Texte :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.$element->aqelem_param_txt_1.'">
+                                </td>';
+                        break;
+
                     case 'etape':
 
                         $aquete_etape = new aquete_etape ;

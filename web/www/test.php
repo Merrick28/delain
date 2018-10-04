@@ -1,3 +1,18 @@
+<?php
+
+
+ $texte = "[3][5]Vous [5] abordez [1.1], après quelques échanges de courtoisie, il vous propose: [1.2] , blala[4]"; 
+ echo "$texte <br>";
+ preg_match_all ('#\[(.+)\]#isU', 
+		$texte,
+		$matches);
+echo "<pre>"; print_r($matches); echo "</pre>"; 
+
+print_r( count(explode(".", "11")) );
+die();
+?>
+
+
 <html>
 <head>
 

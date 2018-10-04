@@ -58,6 +58,10 @@ case "sauve_etape":
     {
             $etape->aqetape_texte.= "[1]";
     }
+    else if (($etape_modele->aqetapmodel_tag == "#START")&& (strpos($etape->aqetape_texte, "[2]")===false))
+    {
+            $etape->aqetape_texte.= "[2]";
+    }
     $etape->stocke($new);
 
     // Agencement entre les étapes (chemin par defaut)
