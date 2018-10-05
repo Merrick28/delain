@@ -194,6 +194,25 @@ class aquete_element
     }
 
     /**
+     * supprime tous les éléments d'une quete pour un perso.
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas réussi a supprimer
+     */
+    function deleteBy_aqperso_cod($aqperso_cod)
+    {
+        $pdo    = new bddpdo;
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqperso_cod = ?";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso_cod), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * supprime tous les éléments d'une étapes qui ne sont pas dans la liste des elements
      * @global bdd_mysql $pdo
      * @return boolean => false pas réussi a supprimer
@@ -216,7 +235,7 @@ class aquete_element
     }
 
     /**
-     * recherche les éléments d'une étapes par son n°
+     * recherche les éléments d'une étapes par son n° et le n° de paramètre
      * @global bdd_mysql $pdo
      * @return boolean => false pas trouvé
      */
@@ -242,6 +261,61 @@ class aquete_element
     }
 
     /**
+     * recherche les éléments d'un perso pour une étapes pour un id de paramètre
+     * La recherche est étendue aux éléments du modele si le perso n'en possède pas nativement
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas trouvé
+     */
+    function getBy_aqperso_param_id(aquete_perso $aqperso, $param_id)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+
+        $aqperso_cod = $aqperso->aqperso_cod ;
+        $quete_step = $aqperso->aqperso_quete_step ;
+        $etape_cod = $aqperso->etape->aqetape_cod ;
+
+        // D'abord on cherche pour le perso!
+        $req = "select aqelem_cod from quetes.aquete_perso
+                join quetes.aquete_element on aqelem_aqperso_cod=aqperso_cod
+                join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                where aqperso_cod = ? and aqelem_quete_step = ? and aqelem_param_id = ?
+                order by aqelem_param_id,aqelem_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso_cod, $quete_step, $param_id),$stmt);
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+
+        if(count($result) == 0)                 // si rien on prend le modèle !
+        {
+            // Si on a rien pour le perso on prend le modele
+            $req = "select aqelem_cod from quetes.aquete_etape 
+                left join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
+                where aqetape_cod = ? and aqelem_param_id = ?
+                order by aqelem_param_id,aqelem_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($etape_cod, $param_id),$stmt);
+
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+        }
+
+        if(count($result) == 0)
+        {
+            return false;
+        }
+
+        foreach ($result as $k=> $v)
+        {
+            $temp = new aquete_element;
+            $temp->charge($v["aqelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+
+    }
+
+    /**
      * retourne un texte en français pour l'élément
      * @global bdd_mysql $pdo
      */
@@ -258,8 +332,15 @@ class aquete_element
         switch ($this->aqelem_type)
         {
             case 'perso':
+                $perso = new perso();
+                $perso->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$perso->perso_nom."</i></b>";
+                break;
+
             case 'lieu':
-                $element_texte = "<b><i>".$this->aqelem_nom."</i></b>";
+                $lieu = new lieu();
+                $lieu->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
             break;
 
             case 'choix':

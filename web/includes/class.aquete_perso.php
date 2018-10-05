@@ -90,7 +90,7 @@ class aquete_perso
         $this->quete = new aquete();
         $this->etape = new aquete_etape();
         $this->etape_modele = new aquete_etape_modele();
-        $this->action->set_perso_cod($this->aqperso_perso_cod) ;
+        $this->action = new aquete_action();
 
         return true;
     }
@@ -296,7 +296,11 @@ class aquete_perso
         if ($element->aqelem_misc_cod<0) return "Le choix pour démarrer la quête n'est pas valide!";
         // A FAIRE: --> vérifier aussi que c'est bien un element de type choix
 
-        $seconde_etape_cod = ($element->aqelem_misc_cod==0) ? 1*$etape->aqetape_etape_cod : 1*$element->aqelem_misc_cod ;      // on commence par le choix demandé ou a l'téape suivante!
+        // On commence par purger tous les éléments qui pourraient avoir été créé par une précédente réalisation de cette quete.
+        $element->deleteBy_aqperso_cod( $this->aqperso_cod );
+
+        // on commence par le choix demandé ou a l'étape suivante!
+        $seconde_etape_cod = ($element->aqelem_misc_cod==0) ? 1*$etape->aqetape_etape_cod : 1*$element->aqelem_misc_cod ;
 
         // La quête a peut-être déjà été réalisée dans le passé, on redémarre à zero -------------------------------------
         $this->aqperso_perso_cod = $perso_cod;      // dans le cas d'une première instanciation
@@ -353,7 +357,7 @@ class aquete_perso
     function hydrate()
     {
         $element = new aquete_element;          // pour utilisation des fonctions de cette classe
-        $etape = $this->get_quete();            // Pour obtenir le texte brut de l'étape
+        $etape = $this->get_etape();            // Pour obtenir le texte brut de l'étape
 
         // S'il n'y a pas de variazble on retourne directement le texte brut!
         if (!preg_match_all ('#\[(.+)\]#isU', $etape->aqetape_texte, $matches)) return $etape->aqetape_texte;
@@ -367,10 +371,12 @@ class aquete_perso
             if (!in_array("[$v]", $search))
             {
                 $search[] = "[$v]";
-                $replace[] = $element->get_element_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                $replace[] = $this->get_element_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
             }
         }
-
+        //echo "<pre>"; print_r($search); echo "</pre>";
+        //echo "<pre>"; print_r($replace); echo "</pre>";
+        //print_r($etape->aqetape_texte);
         return str_replace($search, $replace, $etape->aqetape_texte);
     }
 
@@ -379,47 +385,26 @@ class aquete_perso
     {
         $pdo = new bddpdo;
 
-        $aqperso_cod = $this->aqperso_cod ;
-        $quete_step = $this->aqperso_quete_step ;
-        $etape_cod = $this->etape->aqetape_cod ;
+        $element = new aquete_element();
+        $elements = $element ->getBy_aqperso_param_id($this, $param_id);
 
-        $element = new aquete_element;      // pour utilisation des fonctions de cette classe
-
-        // D'abord on cherche pour le perso!
-        $req = "select aqelem_cod from quetes.aquete_perso
-                join quetes.aquete_element on aqelem_aqperso_cod=aqperso_cod
-                join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
-                where aqperso_cod = ? and aqelem_quete_step = ? and aqelem_param_id = ?
-                order by aqelem_param_id,aqelem_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($aqperso_cod, $quete_step, $param_id),$stmt);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
-
-        if(count($result) == 0) return "";                  // si rien on prend le modèle !
+        if(count($elements) == 0)
         {
-            // Si on a rien pour le perso on prend le modele
-            $req = "select aqelem_cod from quetes.aquete_etape 
-                left join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
-                where aqetape_cod = ? and aqelem_param_id = ?
-                order by aqelem_param_id,aqelem_cod ";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($etape_cod, $param_id),$stmt);
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+            return "";                  // si rien trouvé !
         }
-        if(count($result) == 0) return "";                  // si toujours rien trouvé !
-
 
         // Préparation d'une table pour la recherche inversée
         $element_texte = "";
-        foreach ($result as $k=> $v)
+        foreach ($elements as $k=> $elem)
         {
             if ( $k == 0 )
-                $element_texte .= $element-->$element_texte( $v["aqelem_cod"] );
+                $element_texte .= $elem->get_element_texte();
             else if ( $k <count($result)-1 )
-                $element_texte .= ", ".$element-->$element_texte( $v["aqelem_cod"] );
+                $element_texte .= ", ".$elem->get_element_texte();
             else
-                $element_texte .= " et ".$element-->$element_texte( $v["aqelem_cod"] );
+                $element_texte .= " et ".$elem->get_element_texte();
         }
+
         return $element_texte;
     }
 
@@ -530,15 +515,15 @@ class aquete_perso
 
                 case "#GAIN #PX":
                     // On distribution PO et PX
-                    $this->action->gain_po_px($this->etape);
+                    $this->action->gain_po_px($this);
                     $status_etape = 1;      // 1 => ok etape suivante,
                 break;
 
                 case "#MOVE #PERSO":
                     // Le joueur doit rejoindre un perso
-                    if ($this->action->move_perso($this->etape))
+                    if ($this->action->move_perso($this))
                     {
-                        // Le perso est à l'endroit attendu, // étape suivante:
+                        // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
                 break;
