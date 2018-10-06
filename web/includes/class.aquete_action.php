@@ -9,7 +9,7 @@
  * Gère les actions qui peuvent être réalisées par les quetes autos.
  * La classe ne traite pas la mécanique d'avcancement dans la quete, mais réalise uniquement les actions demandées
  * Le pilotage se fait par aquete_perso
- * Ici, on est vraiment dans une couche basse de l'outil
+ * Ici, on est vraiment dans une couche basse de l'outil, chaque action ne devrait utiliser que les éléments de son step.
  */
 class aquete_action
 {
@@ -47,13 +47,7 @@ class aquete_action
        }
 
        $result = $stmt->fetch();
-       // Ajouter un nouvel élément dédié au perso
-       $element = new aquete_element;
-       $element->charge($result["aqelem_cod"]);
-
-       $element->aqelem_aqperso_cod = $aqperso->aqperso_cod ;              // le nouvel élément est dédié au perso
-       $element->aqelem_quete_step = $aqperso->aqperso_quete_step ;        // pour le step en cours
-       $element->stocke(true);                                       // stocke new va dupliquer l'élément
+        // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le paramètre trouvé!
 
        return true;
     }

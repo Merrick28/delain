@@ -371,7 +371,7 @@ class aquete_perso
             if (!in_array("[$v]", $search))
             {
                 $search[] = "[$v]";
-                $replace[] = $this->get_element_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                $replace[] = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
             }
         }
         //echo "<pre>"; print_r($search); echo "</pre>";
@@ -380,8 +380,9 @@ class aquete_perso
         return str_replace($search, $replace, $etape->aqetape_texte);
     }
 
-    // Une fonction privée qui recherche un element en fonction du paramètre
-    function get_element_texte($param_id)
+    // Une fonction privée qui recherche des elements en fonction du paramètre
+    // et en retourne un chaine de caractère.
+    function get_elements_texte($param_id)
     {
         $pdo = new bddpdo;
 
@@ -438,9 +439,16 @@ class aquete_perso
             $this->etape->charge($this->aqperso_etape_cod);
             $this->etape_modele->charge($this->etape->aqetape_aqetapmodel_cod);
 
-            // On charge le 1er élements de l'étape
+            // On charge le 1er élements de l'étape (pour vérifier si c'est un élément delai, et vérifier si le délai n'est pas ecoulé)
             $element = new aquete_element;
             $elements = $element->getBy_etape_param_id($this->etape->aqetape_cod, 1) ;
+
+            // Si c'est un nouveau step, il faut en générer ses éléments, ils seront utilisés par les actions
+            // Sauf les éléments de type choix qui ne sont pas géré par les actions
+            if ( !in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX")) )
+            {
+                $element->setInstance_perso_step($this) ;
+            }
 
             // La première fois que l'on arrive à l'étape, on le note dans le journal
             if (    ( $this->etape->aqetape_texte != "" )

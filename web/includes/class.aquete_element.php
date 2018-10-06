@@ -227,7 +227,7 @@ class aquete_element
         }
         
         $pdo    = new bddpdo;
-        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";;
+        $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
 
@@ -271,10 +271,6 @@ class aquete_element
         $retour = array();
         $pdo = new bddpdo;
 
-        $aqperso_cod = $aqperso->aqperso_cod ;
-        $quete_step = $aqperso->aqperso_quete_step ;
-        $etape_cod = $aqperso->etape->aqetape_cod ;
-
         // D'abord on cherche pour le perso!
         $req = "select aqelem_cod from quetes.aquete_perso
                 join quetes.aquete_element on aqelem_aqperso_cod=aqperso_cod
@@ -282,19 +278,19 @@ class aquete_element
                 where aqperso_cod = ? and aqelem_quete_step = ? and aqelem_param_id = ?
                 order by aqelem_param_id,aqelem_cod ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($aqperso_cod, $quete_step, $param_id),$stmt);
+        $stmt = $pdo->execute(array($aqperso->aqperso_cod, $aqperso->aqperso_quete_step, $param_id),$stmt);
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
 
-        if(count($result) == 0)                 // si rien on prend le modèle !
+        if(count($result) == 0)                 // si trouve rien on prend le modèle !
         {
             // Si on a rien pour le perso on prend le modele
             $req = "select aqelem_cod from quetes.aquete_etape 
-                left join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
+                join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
                 where aqetape_cod = ? and aqelem_param_id = ?
                 order by aqelem_param_id,aqelem_cod ";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($etape_cod, $param_id),$stmt);
+            $stmt = $pdo->execute(array($aqperso->etape->aqetape_cod, $param_id),$stmt);
 
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
         }
@@ -312,6 +308,77 @@ class aquete_element
             unset($temp);
         }
         return $retour;
+
+    }
+
+    /**
+     * insitancie les éléments d'un perso pour une étape
+     * @global bdd_mysql $pdo
+     */
+    function setInstance_perso_step(aquete_perso $aqperso)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+
+        // D'abord on cherche si cela n'a pas déjà été fait
+        $req = "select count(*) as count from quetes.aquete_element where aqelem_aqperso_cod = ? and aqelem_quete_step = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso->aqperso_cod, $aqperso->aqperso_quete_step),$stmt);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result["count"]>0)
+        {
+            return ;        // ça a déjà été fait
+        }
+
+        //----------------------------------------------------------------------------
+        // Maintenant on prend élément par élément depuis le modele
+        $req = "select aqelem_cod from quetes.aquete_etape 
+            join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
+            where aqetape_cod = ?
+            order by aqelem_param_id, aqelem_param_ordre, aqelem_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqperso->aqperso_etape_cod ),$stmt);
+
+        $element = new aquete_element;
+        while($result = $stmt->fetch())
+        {
+            $element->charge($result["aqelem_cod"]);        // là on a l'élément du modele,
+
+            // Cas particulier du type "element", car il fait référence à un élément d'une étape précédente
+            if ( $element->aqelem_type != 'element')
+            {
+                // on va le customiszer pour en sauvegarder un exemplaire dédié au perso
+                $element->aqelem_quete_step = $aqperso->aqperso_quete_step ;    // Elément du Step en cours
+                $element->aqelem_aqperso_cod = $aqperso->aqperso_cod ;          // élément dédié au perso
+                $element->stocke(true);                                   // stocke new va dupliquer l'élément
+            }
+            else
+            {
+                // On va instancier les valeurs pointées plutôt que le pointeur
+                $req = "select aqelem_cod from quetes.aquete_element 
+                        where aqelem_aqetape_cod=? and aqelem_aqperso_cod = ? and aqelem_param_id=? 
+                        and aqelem_quete_step = (
+                                  select max(aqelem_quete_step) 
+                                  from quetes.aquete_element 
+                                  where aqelem_aqetape_cod=? and aqelem_aqperso_cod = ? and aqelem_param_id=? 
+                                )
+                        order by aqelem_cod ";
+                $stmte = $pdo->prepare($req);
+                $stmte = $pdo->execute(array(   $element->aqelem_misc_cod,
+                                                $aqperso->aqperso_cod,
+                                                $element->aqelem_param_num_1,
+                                                $aqperso->aqperso_cod,
+                                                $element->aqelem_param_num_1 ),$stmte);
+                while($result = $stmte->fetch())
+                {
+                    $element->charge($result["aqelem_cod"]);        // là on a l'élément du modele,
+                    $element->aqelem_quete_step = $aqperso->aqperso_quete_step ;    // Elément du Step en cours
+                    $element->aqelem_aqperso_cod = $aqperso->aqperso_cod ;          // élément dédié au perso
+                    $element->stocke(true);                                   // stocke new va dupliquer l'élément
+                }
+            }
+        }
 
     }
 
