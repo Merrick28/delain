@@ -189,7 +189,7 @@ if ($methode=="")
             $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."<br>" ;
             $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ."<br><br><div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
 
-            $contenu_page2 .= $quete_perso->journal();      // Texte avec l'historique de la quete jusqu'a l'étape en cours.
+            $contenu_page2 .= $quete_perso->journal('O');      // Texte avec l'historique de la quete jusqu'a l'étape en cours.
 
             //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
             $contenu_page2 .= $quete_perso->get_texte_etape_courante();

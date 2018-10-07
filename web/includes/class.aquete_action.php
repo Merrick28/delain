@@ -45,9 +45,11 @@ class aquete_action
        {
            return false;
        }
-
        $result = $stmt->fetch();
+
         // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le paramètre trouvé!
+        $element = new aquete_element();
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 1, array(0=>$result["aqelem_cod"]));
 
        return true;
     }

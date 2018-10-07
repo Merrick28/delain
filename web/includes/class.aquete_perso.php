@@ -445,10 +445,10 @@ class aquete_perso
 
             // Si c'est un nouveau step, il faut en générer ses éléments, ils seront utilisés par les actions
             // Sauf les éléments de type choix qui ne sont pas géré par les actions
-            if ( !in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX")) )
-            {
+            //if ( !in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX")) )
+            //{
                 $element->setInstance_perso_step($this) ;
-            }
+            //}
 
             // La première fois que l'on arrive à l'étape, on le note dans le journal
             if (    ( $this->etape->aqetape_texte != "" )
@@ -560,26 +560,28 @@ class aquete_perso
                 $loop = false ;                     // Etape terminée, on boucle ne boucle plus.
             }
 
+            $this->stocke();    // Mettre à jours les infos (car celles-ci peuvent être utilisée dans les étapes d'actions)
 
         } while ($loop && $this->aqperso_etape_cod>0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
-        $this->stocke();    // Mettre à jours les infos
     }
 
 
     // retourne un texte pour l'étape courante (pour faire un choix par exemple)
     function get_texte_etape_courante()
     {
+        $texte_etape = "";
         $etape_modele = $this->get_etape_modele();
         $etape = $this->get_etape();
         switch($etape_modele->aqetapmodel_tag)
         {
             case "#CHOIX":
-                return  $etape->get_texte_choix();
+                $texte_etape = $etape->get_texte_choix($this);
                 break;
         }
 
-        return "";
+        if ($texte_etape=="") return;
+        return "<div style='background-color: #BA9C6C;'>{$texte_etape}<br><br></div>";
     }
 
     // Injection du choix utilisateur dans l'étape courante
@@ -598,6 +600,9 @@ class aquete_perso
         if (($element->aqelem_aqetape_cod != $this->aqperso_etape_cod) || ($element->aqelem_aqetape_cod != $this->aqperso_etape_cod)) return;
 
         // Ici, tout est Ok: bon perso, bonne quete, etape qui demande un choix, alors traiter le choix
+
+        // On supprime tous les choix qui n'ont pas été choisis
+        $element->clean_perso_step($this->aqperso_etape_cod, $this->aqperso_cod, $this->aqperso_quete_step, 1, array($element->aqelem_cod))    ;
 
         // L'étape en cours est considérée comme terminée
         if ($element->aqelem_misc_cod<0)
@@ -618,9 +623,9 @@ class aquete_perso
             $this->aqperso_etape_cod = 1*$element->aqelem_misc_cod ;       // on passe à l'étape demandée !
         }
         // Il reste à générer les éléments de cette quête dédiés au perso (l'élément du type choix) !!!
-        $element->aqelem_aqperso_cod = $this->aqperso_cod ;              // le nouvelle élément est dédié au perso
-        $element->aqelem_quete_step = $this->aqperso_quete_step ;        // step en cours
-        $element->stocke(true);                                     // stocke new va dupliquer l'élément
+        //$element->aqelem_aqperso_cod = $this->aqperso_cod ;              // le nouvelle élément est dédié au perso
+        //$element->aqelem_quete_step = $this->aqperso_quete_step ;        // step en cours
+        //$element->stocke(true);                                     // stocke new va dupliquer l'élément
 
         // ajouter une ligne dans le journal
         $texte = $this->hydrate();
@@ -639,8 +644,8 @@ class aquete_perso
         $this->stocke();                // Mettre à jour l'avcenement
     }
 
-    // retourne le journal de la quete du perso jusqu'a l'étape en cours.
-    function journal($realisation=-1)
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
+    function journal($lu='N', $realisation=-1)
     {
         $journal_quete = "" ;
 
@@ -648,7 +653,24 @@ class aquete_perso
         $perso_journal = new aquete_perso_journal() ;
         $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $realisation>=0 ? $realisation : $this->aqperso_nb_realisation);
 
-        foreach ($perso_journaux as $k => $journal) $journal_quete.=$journal->aqpersoj_texte."<br><br>";
+        foreach ($perso_journaux as $k => $journal)
+        {
+            // Mise en forme en fonction de l'état de lecture
+            if ($journal->aqpersoj_lu=='N')
+            {
+                $journal_quete.="<div style='background-color: #BA9C6C;'>".$journal->aqpersoj_texte."<br><br></div>";
+            }
+            else
+            {
+                $journal_quete.=$journal->aqpersoj_texte."<br><br>";
+            }
+
+            if ($lu=='O' && $journal->aqpersoj_lu=='N')
+            {
+                $journal->aqpersoj_lu = 'O' ;
+                $journal->stocke() ;
+            }
+        }
 
         return $journal_quete;
     }

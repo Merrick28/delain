@@ -240,12 +240,13 @@ class aquete_etape
     }
 
     // Fonction pour mettre en forme le texte d'une étape du type choix
-    function get_texte_choix()
+    function get_texte_choix(aquete_perso $aqperso)
     {
         $hydrate_texte = "" ;
 
         $element = new aquete_element();
-        $elements = $element->getBy_etape_param_id($this->aqetape_cod, 1);
+        //$elements = $element->getBy_etape_param_id($this->aqetape_cod, 1);
+        $elements = $element->getBy_aqperso_param_id ( $aqperso,1) ;
         foreach ($elements as $i => $e)
         {
             if ($e->aqelem_misc_cod==-1)

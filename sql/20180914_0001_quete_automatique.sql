@@ -73,6 +73,7 @@ COMMENT ON COLUMN quetes.aquete_element.aqelem_aqperso_cod IS 'C''est la quete d
 COMMENT ON COLUMN quetes.aquete_element.aqelem_quete_step IS 'Une même étape peut être realisée plusieurs fois, step est le nombre d''''étape faite';
 COMMENT ON COLUMN quetes.aquete_element.aqelem_nom IS 'Nom de l''élément pour une utilisation texte';
 
+
 CREATE TABLE quetes.aquete_etape
 (
   aqetape_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aqetape_cod'::text)::regclass),
@@ -135,6 +136,7 @@ CREATE TABLE quetes.aquete_perso
   aqperso_nb_termine integer NOT NULL DEFAULT 0, -- Nombre  de fois où la quête a été terminée avec succes
   aqperso_date_debut timestamp with time zone DEFAULT now(), -- Derniere date de démarrage de la quête
   aqperso_date_fin timestamp with time zone, -- Derniere date de fin de la quête
+  aqperso_date_debut_etape timestamp with time zone DEFAULT now(),
   CONSTRAINT aquete_perso_pkey PRIMARY KEY (aqperso_cod)
 )
 WITH (
@@ -160,6 +162,7 @@ CREATE TABLE quetes.aquete_perso_journal
   aqpersoj_realisation integer NOT NULL, -- N° de realisation (la même quete peut être est faite plusieurs fois)
   aqpersoj_quete_step integer NOT NULL DEFAULT 0, -- le step
   aqpersoj_texte text, -- le texte dans le journal
+  aqpersoj_lu character varying(1) NOT NULL DEFAULT 'N'::character varying, -- Est-ce que cette page du journal a été lu (O ou N)  ?
   CONSTRAINT aquete_perso_journal_pkey PRIMARY KEY (aqpersoj_cod)
 )
 WITH (
@@ -172,8 +175,7 @@ COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_aqperso_cod IS 'La quete 
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_realisation IS 'N° de realisation (la même quete peut être est faite plusieurs fois)';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_quete_step IS 'le step';
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_texte IS 'le texte dans le journal';
-
-
+COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_lu IS 'Est-ce que cette page du journal a été lu (O ou N)  ?';
 
 
 

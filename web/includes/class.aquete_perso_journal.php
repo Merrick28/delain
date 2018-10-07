@@ -16,6 +16,7 @@ class aquete_perso_journal
     var $aqpersoj_realisation;
     var $aqpersoj_quete_step = 0;
     var $aqpersoj_texte;
+    var $aqpersoj_lu = 'N' ;
 
     function __construct()
     {
@@ -44,6 +45,7 @@ class aquete_perso_journal
         $this->aqpersoj_realisation = $result['aqpersoj_realisation'];
         $this->aqpersoj_quete_step = $result['aqpersoj_quete_step'];
         $this->aqpersoj_texte = $result['aqpersoj_texte'];
+        $this->aqpersoj_lu = $result['aqpersoj_lu'];
         return true;
     }
 
@@ -62,14 +64,16 @@ class aquete_perso_journal
             aqpersoj_aqperso_cod,
             aqpersoj_realisation,
             aqpersoj_quete_step,
-            aqpersoj_texte                        )
+            aqpersoj_texte,
+            aqpersoj_lu                        )
                     values
                     (
                         :aqpersoj_date,
                         :aqpersoj_aqperso_cod,
                         :aqpersoj_realisation,
                         :aqpersoj_quete_step,
-                        :aqpersoj_texte                        )
+                        :aqpersoj_texte,
+                        :aqpersoj_lu                        )
     returning aqpersoj_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -78,6 +82,7 @@ class aquete_perso_journal
                 ":aqpersoj_realisation" => $this->aqpersoj_realisation,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
+                ":aqpersoj_lu" => $this->aqpersoj_lu,
             ),$stmt);
 
 
@@ -92,7 +97,8 @@ class aquete_perso_journal
             aqpersoj_aqperso_cod = :aqpersoj_aqperso_cod,
             aqpersoj_realisation = :aqpersoj_realisation,
             aqpersoj_quete_step = :aqpersoj_quete_step,
-            aqpersoj_texte = :aqpersoj_texte                        where aqpersoj_cod = :aqpersoj_cod ";
+            aqpersoj_texte = :aqpersoj_texte,
+            aqpersoj_lu = :aqpersoj_lu                        where aqpersoj_cod = :aqpersoj_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqpersoj_cod" => $this->aqpersoj_cod,
@@ -101,6 +107,7 @@ class aquete_perso_journal
                 ":aqpersoj_realisation" => $this->aqpersoj_realisation,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
+                ":aqpersoj_lu" => $this->aqpersoj_lu,
             ),$stmt);
         }
     }
