@@ -264,15 +264,23 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#GAIN #PX', 'Recompense PX/PO', 'Cette étape sert à attribuer des récompenses en PX/PO  au personnage réalisant la quête.',
-           '[1:valeur|1%1|px],[2:valeur|1%1|po]',
-           'Gain de PX|Gain de Brouzoufs',
-            'En récompenses de vos efforts, vous recevez [1]px et [2] brouzoufs.');
+    VALUES ('#RECEVOIR #PX', 'Recevoir PX/PO', 'Cette étape sert à attribuer des récompenses en PX/PO  au personnage réalisant la quête.',
+           '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]',
+           'Gain de PX|Gain de Brouzoufs|Ce paramètre est facultatif, s''il est défini, les dons de PO/PX seront de sa part.',
+            '[3] vous récompenses de vos efforts, vous recevez [1] PX et [2] Brouzoufs.');
 
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#GAIN #TITRE', 'Recompense Titre', 'Cette étape sert à attribuer un titre au personnage réalisant la quête',
+    VALUES ('#RECEVOIR #TITRE', 'Recevoir un Titre', 'Cette étape sert à attribuer un titre au personnage réalisant la quête',
            '[1:texte|1%1|Titre]',
            'C''est le titre qui sera donné au joueur en récompense.',
             'En récompenses de vos efforts, vous recevez le titre de:<br>  [1].');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#RECEVOIR #OBJET', 'Recevoir un objet (depuis un générique)', 'Cette étape sert à récuperer des objets de la part d''un perso (pnj). Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
+           '[1:delai|1%1],[2:perso|1%1],[3:objet_generique|1%0]',
+           'Délai alloué pour cette étape.|C''est le perso (pnj) qui donne l''objet|C''est le générique qui servira de modèle à l''objet qui sera donné.',
+            '[2] vous donne quelque chose: [3].');

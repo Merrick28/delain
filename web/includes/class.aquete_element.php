@@ -256,7 +256,7 @@ class aquete_element
     }
 
     /**
-     * recherche les éléments d'une étapes par son n° et le n° de paramètre
+     * recherche les éléments (pour un emodele) d'une étapes par son n° et le n° de paramètre
      * @global bdd_mysql $pdo
      * @return boolean => false pas trouvé
      */
@@ -283,7 +283,6 @@ class aquete_element
 
     /**
      * recherche les éléments d'un perso pour une étapes pour un id de paramètre
-     * La recherche est étendue aux éléments du modele si le perso n'en possède pas nativement
      * @global bdd_mysql $pdo
      * @return boolean => false pas trouvé
      */
@@ -303,18 +302,19 @@ class aquete_element
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
 
-        if(count($result) == 0)                 // si trouve rien on prend le modèle !
-        {
-            // Si on a rien pour le perso on prend le modele
-            $req = "select aqelem_cod from quetes.aquete_etape 
-                join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
-                where aqetape_cod = ? and aqelem_param_id = ?
-                order by aqelem_param_id,aqelem_cod ";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($aqperso->etape->aqetape_cod, $param_id),$stmt);
-
-            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
-        }
+        //* La recherche n'est plus étendue aux éléments du modele le perso DOIT posseder les éléments
+        //if(count($result) == 0)                 // si trouve rien on prend le modèle !
+        //{
+        //    // Si on a rien pour le perso on prend le modele
+        //    $req = "select aqelem_cod from quetes.aquete_etape
+        //        join quetes.aquete_element on aqelem_aqetape_cod=aqetape_cod and aqelem_aqperso_cod is NULL
+        //        where aqetape_cod = ? and aqelem_param_id = ?
+        //        order by aqelem_param_id,aqelem_cod ";
+        //    $stmt = $pdo->prepare($req);
+        //    $stmt = $pdo->execute(array($aqperso->etape->aqetape_cod, $param_id),$stmt);
+//
+        //    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);        // Lire tout...
+        //}
 
         if(count($result) == 0)
         {
@@ -331,6 +331,44 @@ class aquete_element
         return $retour;
 
     }
+
+    /**
+     * recherche les éléments d'un perso pour une étapes pour un id de paramètre
+     * La recherche s'appui sur getBy_aqperso_param_id mais réalise des controles sur les valeurs attendues
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas trouvé
+     */
+    function get_aqperso_element(aquete_perso $aqperso, $param_id, $type="", $nb_element=1)
+    {
+        if (!$result = $this-> getBy_aqperso_param_id( $aqperso, $param_id))
+        {
+            return false;       // Paramètre non trouvé
+        }
+
+        if ((count($result) != $nb_element) && ($nb_element>0))
+        {
+            return false;       // Nombre d'élement incompatible avec ce qui est attendu
+        }
+
+        if ($type!="")
+        {
+            foreach ($result as $k => $element)
+            {
+                if ($element->aqelem_type != $type)
+                {
+                    return false;       // Nombre d'élement incompatible avec ce qui est attendu
+                }
+            }
+        }
+
+        if ($nb_element==1)
+        {
+            return $result[0];      // Si un seul élément, on revoi directement l'objet!
+        }
+
+        return $result ;
+    }
+
 
     /**
      * insitancie les éléments d'un perso pour une étape
@@ -389,14 +427,18 @@ class aquete_element
                 $stmte = $pdo->execute(array(   $element->aqelem_misc_cod,
                                                 $aqperso->aqperso_cod,
                                                 $element->aqelem_param_num_1,
+                                                $element->aqelem_misc_cod,
                                                 $aqperso->aqperso_cod,
                                                 $element->aqelem_param_num_1 ),$stmte);
                 while($result = $stmte->fetch())
                 {
-                    $element->charge($result["aqelem_cod"]);        // là on a l'élément du modele,
-                    $element->aqelem_quete_step = $aqperso->aqperso_quete_step ;    // Elément du Step en cours
-                    $element->aqelem_aqperso_cod = $aqperso->aqperso_cod ;          // élément dédié au perso
-                    $element->stocke(true);                                   // stocke new va dupliquer l'élément
+                    $elem = new aquete_element;
+                    $elem->charge($result["aqelem_cod"]);                        // là on a l'élément du modele,
+                    $elem->aqelem_aqetape_cod = $aqperso->aqperso_etape_cod ;    // Copie de l'Elément pour l'étape en cours
+                    $elem->aqelem_param_id  = $element->aqelem_param_id ;        // Copie de l'Elément prent la place du paramètre
+                    $elem->aqelem_quete_step = $aqperso->aqperso_quete_step ;    // Copie de l'Elément pour le step en cours
+                    $elem->aqelem_aqperso_cod = $aqperso->aqperso_cod ;          // élément dédié au perso
+                    $elem->stocke(true);                                   // stocke new va dupliquer l'élément
                 }
             }
         }
@@ -429,6 +471,14 @@ class aquete_element
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
                 $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+            break;
+
+            case 'valeur':
+                $element_texte = "<b><i>".$this->aqelem_param_num_1."</i></b>";
+            break;
+
+            case 'texte':
+                $element_texte = "<b><i>".$this->aqelem_param_txt_1."</i></b>";
             break;
 
             case 'choix':

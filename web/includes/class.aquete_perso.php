@@ -521,10 +521,25 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
-                case "#GAIN #PX":
+                case "#RECEVOIR #PX":
                     // On distribution PO et PX
-                    $this->action->gain_po_px($this);
-                    $status_etape = 1;      // 1 => ok etape suivante,
+                    $this->action->recevoir_po_px($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (même si la distribution c'est mal déroulée)
+                break;
+
+                case "#RECEVOIR #TITRE":
+                    // Attribution d'un titre
+                    $this->action->recevoir_titre($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même si l'attribution c'est mal déroulée)
+                break;
+
+                case "#RECEVOIR #OBJET":
+                    // Pour recevoir les/les objets le joueur doit être sur la même case que le donnateur
+                    if ($this->action->recevoir_objet($this))
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
                 break;
 
                 case "#MOVE #PERSO":
@@ -534,7 +549,7 @@ class aquete_perso
                         // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
-                break;
+                    break;
             }
 
             //------- traitement du status d'étape------------------------------
