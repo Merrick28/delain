@@ -180,6 +180,10 @@ class aquete_perso
     }
 
     //Comptage des quetes en cours d'un perso (toutes quetes confondues)
+    /**
+     * @param $perso_cod
+     * @return mixed
+     */
     function get_perso_nb_quete($perso_cod)
     {
         $pdo = new bddpdo;
@@ -191,6 +195,10 @@ class aquete_perso
     }
 
     //Comptage des quetes en cours d'un perso (toutes quetes confondues)
+    /**
+     * @param $perso_cod
+     * @return float|int
+     */
     function get_perso_nb_en_cours($perso_cod)
     {
         $pdo = new bddpdo;
@@ -202,6 +210,10 @@ class aquete_perso
     }
 
     //Retourne la liste des quetes en cours pour un perso
+    /**
+     * @param $perso_cod
+     * @return array|bool
+     */
     function get_perso_quete_en_cours($perso_cod)
     {
         $retour = array();
@@ -225,6 +237,10 @@ class aquete_perso
 
 
     //Retourne la liste des quetes terminée pour un perso
+    /**
+     * @param $perso_cod
+     * @return array|bool
+     */
     function get_perso_quete_terminee($perso_cod)
     {
         $retour = array();
@@ -247,6 +263,11 @@ class aquete_perso
     }
 
     //Charge la quete du perso
+    /**
+     * @param $perso_cod
+     * @param $aquete_cod
+     * @return bool
+     */
     function chargeBy_perso_quete($perso_cod, $aquete_cod)
     {
 
@@ -262,6 +283,12 @@ class aquete_perso
     // Créé une nouvelle instance de la quete #$aquete_cod pour le $perso_cod
     // $trigger est un tableau qui contient les elements déclencheurs de la quete
     // Rreourne rien si tout c'est bien passé, sinon un message d'erreur
+    /**
+     * @param $perso_cod
+     * @param $aquete_cod
+     * @param $trigger
+     * @return string
+     */
     function demarre_quete($perso_cod, $aquete_cod, $trigger)
     {
         $pdo = new bddpdo;
@@ -354,6 +381,9 @@ class aquete_perso
 
 
     // Une fonction privée qui met en forme une étape avec les éléments de cette étape
+    /**
+     * @return mixed
+     */
     function hydrate()
     {
         $element = new aquete_element;          // pour utilisation des fonctions de cette classe
@@ -382,6 +412,10 @@ class aquete_perso
 
     // Une fonction privée qui recherche des elements en fonction du paramètre
     // et en retourne un chaine de caractère.
+    /**
+     * @param $param_id
+     * @return string
+     */
     function get_elements_texte($param_id)
     {
         $pdo = new bddpdo;
@@ -583,6 +617,9 @@ class aquete_perso
 
 
     // retourne un texte pour l'étape courante (pour faire un choix par exemple)
+    /**
+     * @return string
+     */
     function get_texte_etape_courante()
     {
         $texte_etape = "";
@@ -595,11 +632,14 @@ class aquete_perso
                 break;
         }
 
-        if ($texte_etape=="") return;
+        if ($texte_etape=="") return "" ;
         return "<div style='background-color: #BA9C6C;'>{$texte_etape}<br><br></div>";
     }
 
     // Injection du choix utilisateur dans l'étape courante
+    /**
+     * @param $aqelem_cod
+     */
     function set_choix_aventurier($aqelem_cod)
     {
 
@@ -659,19 +699,23 @@ class aquete_perso
         $this->stocke();                // Mettre à jour l'avcenement
     }
 
-    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
-    function journal($lu='N', $realisation=-1)
+    /**
+     * @param string $lire : O si les pages doivent-être lu
+     * @param int $residu : nombre de page à laisser avec la css "non-lu"
+     * @return string
+     */
+    function journal($lire='N', $residu=0)
     {
         $journal_quete = "" ;
 
         $pdo = new bddpdo;
         $perso_journal = new aquete_perso_journal() ;
-        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $realisation>=0 ? $realisation : $this->aqperso_nb_realisation);
+        $perso_journaux =  $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
 
         foreach ($perso_journaux as $k => $journal)
         {
             // Mise en forme en fonction de l'état de lecture
-            if ($journal->aqpersoj_lu=='N')
+            if ( ( $journal->aqpersoj_lu == 'N' ) || ( $k >= (count($perso_journaux)-$residu) ) )
             {
                 $journal_quete.="<div style='background-color: #BA9C6C;'>".$journal->aqpersoj_texte."<br><br></div>";
             }
@@ -680,7 +724,7 @@ class aquete_perso
                 $journal_quete.=$journal->aqpersoj_texte."<br><br>";
             }
 
-            if ($lu=='O' && $journal->aqpersoj_lu=='N')
+            if ($lire=='O' && $journal->aqpersoj_lu=='N')
             {
                 $journal->aqpersoj_lu = 'O' ;
                 $journal->stocke() ;
@@ -689,8 +733,12 @@ class aquete_perso
 
         return $journal_quete;
     }
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
 
     //Vrai si la quete est finie
+    /**
+     * @return bool
+     */
     function est_finie()
     {
         return ( $this->aqperso_etape_cod == 0 );

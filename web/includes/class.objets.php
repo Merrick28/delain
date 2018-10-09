@@ -327,6 +327,22 @@ class objets
                         ),$stmt);
         }
     }
+
+    /**
+     * Retourne une chaine de caractère qui est le libelle correspondant au type de l'objet
+     * @return string
+     */
+    function get_type_libelle()
+    {
+        $pdo = new bddpdo;
+        $req = "select tobj_libelle from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where gobj_cod = :obj_gobj_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->obj_gobj_cod),$stmt);
+        if (!$result = $stmt->fetch()) return "" ;
+
+        return $result["tobj_libelle"];
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
@@ -356,7 +372,7 @@ class objets
                     $retour = array();
                     $pdo = new bddpdo;
                     $req = "select obj_cod  from objets where " . substr($name, 6) . " = ? order by obj_cod";
-                   $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())
                     {

@@ -15,7 +15,11 @@ class aquete_action
 {
 
     //==================================================================================================================
-    // Distribution en PX PO => '[1:texte|1%1|Titre]'
+    /**
+     * Distribution en PX PO => '[1:texte|1%1|Titre]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
     function recevoir_titre(aquete_perso $aqperso)
     {
         $element = new aquete_element();
@@ -32,7 +36,11 @@ class aquete_action
         return true;
     }
     //==================================================================================================================
-    // Distribution en PX PO => '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]'
+    /**
+     *Distribution en PX PO => '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]'
+    * @param aquete_perso $aqperso
+    * @return bool
+    */
     function recevoir_po_px(aquete_perso $aqperso)
     {
         $element = new aquete_element();
@@ -100,40 +108,66 @@ class aquete_action
     }
 
     //==================================================================================================================
-    // On verifie si le perso est sur la case du donateur =>  '[1:delai|1%1],[2:perso|1%0]'
-    // Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+    /**
+    * On verifie si le perso est sur la case du donateur =>  '[1:delai|1%1],[2:perso|1%1],[3:objet_generique|0%0]'
+    * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+    * @param aquete_perso $aqperso
+    * @return bool
+    */
     function recevoir_objet(aquete_perso $aqperso)
     {
-       // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
-       $pdo = new bddpdo;
-       $req = " select aqelem_cod from perso
-                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
-                join 
-                ( 
-                    select aqelem_cod, ppos_pos_cod as pos_cod
-                    from quetes.aquete_perso 
-                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='perso'  
-                    join perso_position on ppos_perso_cod=aqelem_misc_cod
-                    join perso on perso_cod=ppos_perso_cod
-                    where aqperso_cod=?
-                ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
-       $stmt   = $pdo->prepare($req);
-       $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
-       if ($stmt->rowCount()==0)
-       {
-           return false;
-       }
-       $result = $stmt->fetch();
+        $pdo = new bddpdo;
 
-        // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le paramètre trouvé!
         $element = new aquete_element();
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array(0=>$result["aqelem_cod"]));
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                             // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 3, 'objet_generique', 0)) return false ;      // Problème lecture des paramètres
 
-       return true;
+        $mecene = new perso();
+        $mecene->charge($p1->aqelem_misc_cod);
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        // Vérification de la position!
+        if ( $perso->get_position()["pos"]->pos_cod != $mecene->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son mecene
+
+        // on fait l'échange, on généer les objets à partir du générique
+        // et ils sont directement mis dans l'inventaire du joueur
+        foreach ($p2 as $k => $elem)
+        {
+            $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                $objet = new objets();
+                $objet->charge(1*$result["obj_cod"]);
+
+                $texte_evt = '[cible] a donné un objet à [attaquant] <i>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</i>';
+                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                          values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                                                ":texte_evt"=> $texte_evt,
+                                                ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
+                                                ":levt_cible" => $mecene->perso_cod ,
+                                                ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+                // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                $elem->aqelem_type = 'objet';
+                $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                $elem->stocke();
+            }
+        }
+
+        return true;
     }
+
     //==================================================================================================================
-    // On verifie si le perso est sur la case d'un autre (un parmi plusieurs) =>  '[1:delai|1%1],[2:perso|1%0]'
-    // Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+    /**
+    * On verifie si le perso est sur la case d'un autre (un parmi plusieurs) =>  '[1:delai|1%1],[2:perso|1%0]'
+    * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+    * @param aquete_perso $aqperso
+    * @return bool
+    */
     function move_perso(aquete_perso $aqperso)
     {
        // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
@@ -165,7 +199,4 @@ class aquete_action
     }
 
     //==================================================================================================================
-
-
-
 }

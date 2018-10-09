@@ -220,6 +220,7 @@ if ($erreur == 0)
         echo '<tr><td><b>Exemple </b>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><b>Nom de l\'étape </b>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.$etape->aqetape_nom.'"></td></tr>';
         echo '<tr><td><b>Texte de l\'étape </b>:</td><td><textarea style="min-height: 80px; min-width: 500px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
+        echo '<tr><td></td><td><i style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</i></td></tr>';
         echo '</table>';
 
 
@@ -280,7 +281,8 @@ if ($erreur == 0)
             {
                 $row_id = "row-$param_id-$row-";
                 $aqelem_misc_nom = "" ;
-                if ($add_buttons) echo   '<tr id="'.$row_id.'" style="'.$style_tr.'"><td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), '.$param['n'].');"></td>';
+                echo   '<tr id="'.$row_id.'" style="'.$style_tr.'">';
+                if ($add_buttons) echo   '<td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), '.$param['n'].');"></td>';
                 switch ($param['type'])
                 {
                     case 'perso':

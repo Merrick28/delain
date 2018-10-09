@@ -311,13 +311,14 @@ function  addQueteAutoParamRow(elem, M)
 
 function  delQueteAutoParamRow(elem, n)
 {
-    if (elem.parent().find("tr[id^='row-']").length>n)
+    var min = (n>0 ? n : 1) ;
+    if ( elem.parent().find("tr[id^='row-']").length > min  )
     {
         elem.remove();
     }
     else
     {
-        alert('Il doit rester au moins '+n+' valeur(s) pour ce paramètre!')
+        alert('Il doit rester au moins '+min+' valeur(s) pour ce paramètre!')
     }
 }
 

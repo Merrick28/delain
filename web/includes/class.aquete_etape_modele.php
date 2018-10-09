@@ -111,7 +111,10 @@ class aquete_etape_modele
         }
     }
 
-
+    /**
+     * Retourne avec les champs du parametre mais "décompatés"
+     * @return array
+     */
     function get_liste_parametres()
     {
 

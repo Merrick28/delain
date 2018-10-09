@@ -356,7 +356,7 @@ class aquete_element
             {
                 if ($element->aqelem_type != $type)
                 {
-                    return false;       // Nombre d'élement incompatible avec ce qui est attendu
+                    return false;       // Type d'élement incompatible avec ce qui est attendu
                 }
             }
         }

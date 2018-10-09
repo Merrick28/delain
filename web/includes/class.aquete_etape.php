@@ -197,9 +197,14 @@ class aquete_etape
 
     }
 
-    // Fonction pour mettre en forme le texte d'une étape alors que l'étape n'a pas encore démarrée.
-    // Les éléments de l'étapes n'ont pas encore été instanciés, on se base sur le template
-    // Param1 => Element déclencheur, Param2 => Choix
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape alors que l'étape n'a pas encore démarrée.
+     * Les éléments de l'étapes n'ont pas encore été instanciés, on se base sur le template
+     * Param1 => Element déclencheur, Param2 => Choix
+     * @param $trigger_nom
+     * @return string
+     */
     function get_initial_texte( $trigger_nom )
     {
         $hydrate_texte = "" ;
@@ -239,7 +244,11 @@ class aquete_etape
         return $hydrate_texte ;
     }
 
-    // Fonction pour mettre en forme le texte d'une étape du type choix
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
     function get_texte_choix(aquete_perso $aqperso)
     {
         $hydrate_texte = "" ;
@@ -264,6 +273,11 @@ class aquete_etape
         return $hydrate_texte ;
     }
 
+    /**
+     * Fonction pour connaitre le "nom humain" des codes d'étape négatifs
+     * @param $aqetape_cod
+     * @return string
+     */
     function  getNom($aqetape_cod)
     {
         if ($aqetape_cod<-3) return "Erreur n° etape";

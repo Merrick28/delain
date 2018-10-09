@@ -283,4 +283,4 @@ INSERT INTO quetes.aquete_etape_modele(
     VALUES ('#RECEVOIR #OBJET', 'Recevoir un objet (depuis un générique)', 'Cette étape sert à récuperer des objets de la part d''un perso (pnj). Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
            '[1:delai|1%1],[2:perso|1%1],[3:objet_generique|1%0]',
            'Délai alloué pour cette étape.|C''est le perso (pnj) qui donne l''objet|C''est le générique qui servira de modèle à l''objet qui sera donné.',
-            '[2] vous donne quelque chose: [3].');
+            '[2] souhaite vous donner quelque chose: [3].');
