@@ -336,7 +336,7 @@ class aquete_element
      * recherche les éléments d'un perso pour une étapes pour un id de paramètre
      * La recherche s'appui sur getBy_aqperso_param_id mais réalise des controles sur les valeurs attendues
      * @global bdd_mysql $pdo
-     * @return boolean => false pas trouvé
+     * @return boolean => false pas trouvé, l'élément ou un tableau d'élément
      */
     function get_aqperso_element(aquete_perso $aqperso, $param_id, $type="", $nb_element=1)
     {
@@ -350,7 +350,18 @@ class aquete_element
             return false;       // Nombre d'élement incompatible avec ce qui est attendu
         }
 
-        if ($type!="")
+        // il est possible de passer un tableau contenant les types
+        if (is_array($type))
+        {
+            foreach ($result as $k => $element)
+            {
+                if (!in_array($element->aqelem_type , $type))
+                {
+                    return false;       // Type d'élement incompatible avec ce qui est attendu
+                }
+            }
+        }
+        else if ($type!="")
         {
             foreach ($result as $k => $element)
             {
@@ -471,6 +482,18 @@ class aquete_element
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
                 $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+            break;
+
+            case 'objet_generique':
+                $objet_generique = new objet_generique();
+                $objet_generique->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$objet_generique->gobj_nom."</i></b>";
+            break;
+
+            case 'objet':
+                $objet = new objets();
+                $objet->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$objet->obj_nom."</i></b>";
             break;
 
             case 'valeur':

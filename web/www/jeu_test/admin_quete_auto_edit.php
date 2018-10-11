@@ -230,7 +230,7 @@ if ($erreur == 0)
         {
 
             // Certains paramètres peuvent être remplacé par un paramètre d'étape déjà saisi précédement
-            if (( in_array($param['type'], array("perso", "lieu", "type_lieu" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
+            if (( in_array($param['type'], array("perso", "lieu", "type_lieu", "objet_generique" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
 
             echo '<br><br><b>Edition du paramètre ['.$param_id.']</b>: <i>('.$param['texte'].')</i><br>';
             echo $param['desc'].'</i><br><br>';

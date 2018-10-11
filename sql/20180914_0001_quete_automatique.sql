@@ -280,7 +280,19 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#RECEVOIR #OBJET', 'Recevoir un objet (depuis un générique)', 'Cette étape sert à récuperer des objets de la part d''un perso (pnj). Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
-           '[1:delai|1%1],[2:perso|1%1],[3:objet_generique|1%0]',
-           'Délai alloué pour cette étape.|C''est le perso (pnj) qui donne l''objet|C''est le générique qui servira de modèle à l''objet qui sera donné.',
-            '[2] souhaite vous donner quelque chose: [3].');
+    VALUES ('#RECEVOIR #OBJET', 'Recevoir un objet (depuis un générique)', 'Cette étape sert à récuperer des objets de la part d''un PNJ. Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
+           '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]',
+           'Délai alloué pour cette étape.|C''est le PNJ qui donne les objets|C''est le nombre d''objet à donner, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors le joueur recevra au moins un exemplaire de chaque puis un complément aléatoire pour atteidre le nombre prévu.|Ce sont les génériques qui serviront de modèle aux objets qui seront donné.',
+            '[2] souhaite vous donner [3] objets parmi: [4].');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#REMETTRE #OBJET', 'Remettre un objet', 'Cette étape sert à donner un objet à un PNJ (nota: les objets doivent être donnés sous forme de transaction avec un prix de vente à 0 bz).',
+           '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]',
+           'Délai alloué pour cette étape.|C''est le PNJ à qui l''aventurier doit remettre l''objet|C''est le nombre d''objet attendu, si le nombre est superieur au nombre de générique alors le joueur devra donner autant d''objet mais avec au moins un exemplaire de chaque. |Ce sont les génériques des objets que le PNJ s''attend à recevoir.',
+            '[2] attend que vous lui remettiez [3] objets parmi: [4].');
+
+truncate table quetes.aquete_perso;
+truncate table quetes.aquete_perso_journal;
+delete from quetes.aquete_element where aqelem_aqperso_cod is not null;

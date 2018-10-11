@@ -574,6 +574,14 @@ class aquete_perso
                         // Les objets ont été donné
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
+
+                case "#REMETTRE #OBJET":
+                    // Pour donner les/les objets le joueur doit être sur la même case que le PNJ et démarrer la transaction
+                    if ($this->action->remettre_objet($this))
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
                 break;
 
                 case "#MOVE #PERSO":

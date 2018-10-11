@@ -344,6 +344,26 @@ class objets
     }
 
     /**
+     * supprime l'enregistrement de objets
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
+     * @return boolean => false pas réussi a supprimer
+     */
+    function supprime($code="")
+    {
+        if ($code=="") $code = $this->obj_cod;
+        $code = 1 * $code ; // on en prepare pas la requete, on s'assure quand même que code est un entier !
+        if ($code==0) return false;
+
+        $pdo    = new bddpdo;
+        $req    = "select f_del_objet(:obj_cod); ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $code),$stmt);
+        return true;
+    }
+
+
+    /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
      * @return \objets
