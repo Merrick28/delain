@@ -204,7 +204,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
             var data = d.data.data ;
             var content = "";
             for (i in data) {
-                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')<br>';
+                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</i>' : '' )+'<br>';
             }
             if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</i>';
             $("#spop-serchlist").html(content);
@@ -235,7 +235,7 @@ function getTableCod(divname, table, titre, params)
     $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
                         '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
                         '<div style="width:100%; background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">'+titre+'</div>' +
-                        '<br><div id="spop-serchlist" style="width: 350px; height: 160px;">Faites une recherche.</div>' +
+                        '<br><div id="spop-serchlist" style="width:450px; height:180px; overflow:hidden; white-space:nowrap;">Faites une recherche.</div>' +
                         '<br><i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
                          options+
                         '<br><center><input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');

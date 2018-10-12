@@ -223,7 +223,7 @@ class aquete
                     select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu_type' and aqelem_aqperso_cod is null
-                    join lieu on lieu.lieu_tlieu_cod=aqelem_misc_cod
+                    join lieu on lieu_tlieu_cod=aqelem_misc_cod
                     join lieu_position on lpos_lieu_cod=lieu_cod                  
                     join positions on pos_cod=lpos_pos_cod 
                     join etage on etage_numero=pos_etage and etage_reference<=aqelem_param_num_1 and etage_reference>=aqelem_param_num_2

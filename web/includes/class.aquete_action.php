@@ -13,6 +13,37 @@
  */
 class aquete_action
 {
+    //==================================================================================================================
+    /**
+     * On suppriel tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function nettoyage(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "", 0)) return false ;      // Problème lecture des paramètres
+
+        foreach($p1 as $k => $element)
+        {
+            if ($element->aqelem_type == 'objet')
+            {
+                // supression de l'objet
+                $objet = new objets();
+                $objet->supprime($element->aqelem_misc_cod);        // On supprime l'objet !
+            }
+            else if ($element->aqelem_type == 'perso')
+            {
+                // désactivation du perso
+                $perso = new perso();
+                $perso->charge($element->aqelem_misc_cod);          // On charge le perso
+                $perso->perso_actif = 'N';                          // pour le perso on ne va pas supprimer mais seulement le désactiver
+                $perso->stocke();
+            }
+        }
+    }
 
     //==================================================================================================================
     /**
@@ -146,6 +177,88 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * On verifie si le perso est sur la case d'un lieu (un parmi plusieurs) =>  '[1:delai|1%1],[2:lieu|1%0]'
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function move_lieu(aquete_perso $aqperso)
+    {
+
+        // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
+        $pdo = new bddpdo;
+        $req = " select aqelem_cod from perso
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join 
+                ( 
+                    select aqelem_cod, lpos_pos_cod as pos_cod
+                    from quetes.aquete_perso
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='lieu'
+                    join lieu_position on lpos_lieu_cod=aqelem_misc_cod
+                    join perso on perso_cod=lpos_pos_cod
+                    where aqperso_cod=?
+                ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
+
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+        $result = $stmt->fetch();
+
+        // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le lieu sur lequel il c'est rendu!
+        $element = new aquete_element();
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array(0=>$result["aqelem_cod"]));
+
+        return true;
+    }
+    //==================================================================================================================
+    /**
+     * On verifie si le perso est sur la case d'un lieu (un parmi plusieurs) =>  '[1:delai|1%1],[2:lieu|1%0]'
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function move_typelieu(aquete_perso $aqperso)
+    {
+
+        // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
+        $pdo = new bddpdo;
+        $req = " select aqelem_cod, lieu_cod from perso
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join 
+                ( 
+                    select aqelem_cod, lpos_pos_cod as pos_cod, lieu_cod
+                    from quetes.aquete_perso
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='lieu_type'
+                    join lieu on lieu_tlieu_cod=aqelem_misc_cod
+                    join lieu_position on lpos_lieu_cod=lieu_cod
+                    join positions on pos_cod=lpos_pos_cod                     
+                    join etage on etage_numero=pos_etage and etage_reference<=aqelem_param_num_1 and etage_reference>=aqelem_param_num_2
+                    join perso on perso_cod=lpos_pos_cod
+                    where aqperso_cod=?
+                ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+        $result = $stmt->fetch();
+
+        // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le lieu sur lequel il c'est rendu!
+        $element = new aquete_element();
+        $element->charge($result["aqelem_cod"]);    // on charge avant de tout supprimer
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array());
+        $element->aqelem_type = 'lieu';
+        $element->aqelem_misc_cod =  1*$result["lieu_cod"] ;   // Transforme l'élément type de lieu en lieu avec le code du lieu
+        $element->stocke(true);                                // sauvegarde d'un nouvel élément
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
     * On verifie si le perso est sur la case du donateur =>  '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]'
     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
     * @param aquete_perso $aqperso
@@ -160,7 +273,6 @@ class aquete_action
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;       // Problème lecture des paramètres
 
-        if ($p4 instanceof aquete_element)  $p4 = array($p4);       // On s'attend à un tableau d'élément, et pas à un élément directement
         shuffle($p4);                                       // ordre aléatoire pour les objets
 
         $pnj = new perso();
@@ -269,7 +381,6 @@ class aquete_action
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
 
-        if ($p4 instanceof aquete_element)  $p4 = array($p4);       // On s'attend à un tableau d'élément, et pas à un élément directement
         shuffle($p4);                                       // ordre aléatoire pour les objets
 
         $pnj = new perso();
@@ -333,6 +444,7 @@ class aquete_action
                         $liste_transaction[$t] = $result ;
                         $liste_transaction[$t]["element"] = clone $elem ;   // garder une trace de l'élément corespondant
                         $t ++ ;
+                        $tran_quantite -- ;
                         $flag = true ;          // tant qu'on trouve on cherche
                         break;
                     }
@@ -343,7 +455,6 @@ class aquete_action
         // Si on demande plus d'objet qu'il y a de générique, il faut vérifier si on a un exemplaire de chaque
         if (($nbobj > $nbgenerique) && (count($exemplaires)>0)) return false;        // on a pas un exemplaire de chaque objet!
         if (count($liste_transaction)<$nbobj) return false;                          // tous les objets attendus ne sont pas là!
-
 
         // Il faut maintenant prendre les objets
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
@@ -367,13 +478,15 @@ class aquete_action
             $param_ordre ++ ;
             $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
 
-            // l'objet ne sert plus on le supprime
-            //$objet->supprime();
+            // si l'objet ne sert plus on le supprime //$objet->supprime();
         }
 
         return true;
     }
 
-
     //==================================================================================================================
+/*
+echo "<pre>"; print_r($p1); echo "</pre>";
+die();
+ */
 }

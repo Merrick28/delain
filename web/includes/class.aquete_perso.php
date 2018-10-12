@@ -555,6 +555,12 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+                case "#NETTOYAGE":
+                    // cette etape sert à faire du menage dans la base en supprimants les objets qui ne serviront plus, l'ètape est autovalidé .
+                    $this->action->nettoyage($this);
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
                 case "#RECEVOIR #PX":
                     // On distribution PO et PX
                     $this->action->recevoir_po_px($this);
@@ -587,6 +593,24 @@ class aquete_perso
                 case "#MOVE #PERSO":
                     // Le joueur doit rejoindre un perso
                     if ($this->action->move_perso($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
+                case "#MOVE #LIEU":
+                    // Le joueur doit rejoindre un perso
+                    if ($this->action->move_lieu($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
+                case "#MOVE #TYPELIEU":
+                    // Le joueur doit rejoindre un perso
+                    if ($this->action->move_typelieu($this))
                     {
                         // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,

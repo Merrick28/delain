@@ -420,6 +420,22 @@ if ($erreur == 0)
                                 </td>';
                         break;
 
+                    case 'element':
+
+                        $aquete_etape = new aquete_etape ;
+                        $aquete_etape->charge( $element->aqelem_misc_cod ); ;
+                        $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
+
+                        echo   '<td>Element : 
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_cod : '').'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
+                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "" ]);\'> 
+                                </td>';
+                        break;
+
                     default:
                         echo '<td>Type de paramètre inconnu</td>';
                     break;

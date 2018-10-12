@@ -287,15 +287,15 @@ switch($_REQUEST["request"])
             $aquete_cod = 1*$params["aquete_cod"] ;
             $aqetape_cod = 1*$params["aqetape_cod"] ;
             $aqelem_type = $params["aqelem_type"] ;
-            if (!in_array($params["aqelem_type"], array("perso", "lieu", "type_lieu", "objet_generique")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
+            if ($aqelem_type!="" and !in_array($aqelem_type, array("perso", "lieu", "type_lieu", "objet_generique")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
 
             // requete de comptage
             $req = "SELECT count(*) FROM (
-                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' paramètre #' || aqelem_param_id::text as nom 
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' paramètre #' || aqelem_param_id::text as nom, aqelem_type as info
                         from quetes.aquete_element 
                         join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
-                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and aqelem_type='{$aqelem_type}' and aqelem_aqetape_cod<>{$aqetape_cod}
-                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and (aqelem_type='{$aqelem_type}' OR '{$aqelem_type}'='') and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom, aqelem_type
                     ) as filter WHERE  nom ilike ?
             ";
             $stmt = $pdo->prepare($req);
@@ -305,11 +305,11 @@ switch($_REQUEST["request"])
 
             // requete de recherche
             $req = "SELECT * FROM (
-                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom 
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom, aqelem_type as info 
                         from quetes.aquete_element 
                         join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
-                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and aqelem_type='{$aqelem_type}' and aqelem_aqetape_cod<>{$aqetape_cod}
-                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and (aqelem_type='{$aqelem_type}' OR '{$aqelem_type}'='') and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom, aqelem_type
                     ) as filter WHERE  nom ilike ?
             ";
             $stmt = $pdo->prepare($req);

@@ -462,6 +462,7 @@ class aquete_element
      */
     function get_element_texte($aqelem_cod=0)
     {
+        $pdo = new bddpdo;
         $element_texte = "" ;
 
         // Si le cod est fourni c'est que l'élément n' pas été chargé
@@ -482,6 +483,19 @@ class aquete_element
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
                 $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+            break;
+
+            case 'lieu_type':
+                $tlieu = new lieu_type();
+                $tlieu->charge($this->aqelem_misc_cod);
+                $req = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero and etage_numero in (?,?) order by etage_numero desc";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array( $this->aqelem_param_num_1, $this->aqelem_param_num_2),$stmt);
+                $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                if ($this->aqelem_param_num_1 == $this->aqelem_param_num_2)
+                    $element_texte = "<b><i>{$tlieu->tlieu_libelle}</i></b> de l'étage <b>{$result[0]["etage_numero"]}</b> (<i>{$result[0]["etage_libelle"]}</i>)";
+                else
+                    $element_texte = "<b><i>{$tlieu->tlieu_libelle}</i></b>  des étages <b>{$result[0]["etage_numero"]}</b> à <b>{$result[1]["etage_numero"]}</b> (<i>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</i>)";
             break;
 
             case 'objet_generique':

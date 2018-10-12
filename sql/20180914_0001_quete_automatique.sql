@@ -182,7 +182,7 @@ COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_lu IS 'Est-ce que cette p
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#START', 'Déclenchement sur perso', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quel personnage va déclencher la quête.',
+    VALUES ('#START', 'Quête - Déclenchement sur perso', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quel personnage va déclencher la quête.',
             '[1:perso|1%0],[2:choix|2%2]',
             'Liste des persos (pnj) qui permettent de démarrer la quête.|Liste de deux choix pour soit accepter (saisir 0 comme n° d''étape) la quête, soit la refuser (saisir -1).',
             'Vous abordez [1], après quelques échanges de courtoisie, il vous propose: [2]');
@@ -190,7 +190,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#START', 'Déclenchement sur lieu', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quels lieux vont déclencher la quête.',
+    VALUES ('#START', 'Quête - Déclenchement sur lieu', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quels lieux vont déclencher la quête.',
             '[1:lieu|1%0],[2:choix|2%2]',
             'Liste des lieux qui permettent de démarrer la quête.|Liste de deux choix pour soit accepter (saisir 0 comme n° d''étape) la quête, soit la refuser (saisir -1).',
             'Cet établissement recherche les services d''un aventurier pour une mission, l''acceptez vous? [2]');
@@ -198,7 +198,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#START', 'Déclenchement sur type de lieu', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quels type de lieux vont déclencher la quête.',
+    VALUES ('#START', 'Quête - Déclenchement sur type de lieu', 'Cette étape ne doit être utilisée qu''en tant que 1ère étape d''une quête. Elle permet de déterminer quels type de lieux vont déclencher la quête.',
             '[1:lieu_type|1%0],[2:choix|2%2]',
             'Liste des lieux qui permettent de démarrer la quête.|Liste de deux choix pour soit accepter (saisir 0 comme n° d''étape) la quête, soit la refuser (saisir -1).',
             'Cet établissement recherche les services d''un aventurier pour une mission, l''acceptez vous? [2]');
@@ -206,7 +206,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE #PERSO', 'Déplacement vers PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
+    VALUES ('#MOVE #PERSO', 'Déplacement - Vers un PERSO', 'Dans cette étape on demande à l''aventurier d''aller voir un PNJ.',
            '[1:delai|1%1],[2:perso|1%0]',
            'Délai alloué pour cette étape.|C''est le PNJ à que l''aventurier doit aller voir',
            'Allez donner de mes nouvelles à mon ami [2].');
@@ -214,24 +214,31 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MOVE #LIEU', 'Déplacement vers LIEU', 'Dans cette étape on demande à l''aventurier d''aller voir un lieu.',
-           '[1:lieu|1%0]',
-           'C''est le lieu à que l''aventurier doit aller voir',
-           'Rendez-vous à [1].');
+    VALUES ('#MOVE #LIEU', 'Déplacement - Vers un LIEU', 'Dans cette étape on demande à l''aventurier de se rendre dans un lieu.',
+           '[1:delai|1%1],[2:lieu|1%0]',
+           'Délai alloué pour cette étape.|C''est le lieu que l''aventurier doit aller voir',
+           'Rendez-vous à [2].');
+
+ INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#MOVE #TYPELIEU', 'Déplacement - Vers un Type de LIEU', 'Dans cette étape on demande à l''aventurier de se rendre dans un type de lieu.',
+           '[1:delai|1%1],[2:lieu_type|1%0]',
+           'Délai alloué pour cette étape.|C''est le type de lieu dans lequel l''aventurier doit se rendre',
+           'Rendez-vous à [2].');
 
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#TEXTE', 'Afficher du TEXTE', 'Cette étape est automatiquement validée, elle sert à jouter du contenu texte dans le déroulement de la quête. (il n''y a pas de paramètre)',
+    VALUES ('#TEXTE', 'Quête - Afficher du TEXTE (RP)', 'Cette étape est automatiquement validée, elle sert à jouter du contenu texte dans le déroulement de la quête. (il n''y a pas de paramètre)',
            NULL,
            NULL,
            NULL);
 
-
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#CHOIX', 'Faire un CHOIX', 'Dans cette étape on demande à l''aventurier de faire un choix, l''étape suivante dépend alors du choix.',
+    VALUES ('#CHOIX', 'Quête - Faire un CHOIX', 'Dans cette étape on demande à l''aventurier de faire un choix, l''étape suivante dépend alors du choix.',
            '[1:choix|0%0]',
            'Ce sont les choix fait à l''aventurier, il faut assossier chaque choix à une étape pour pousuivre la quête.',
            'Faite votre choix?');
@@ -240,7 +247,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#END #OK', 'Fin de la quête avec SUCCES', 'Cette étape doit être utilisée pour mettre fin à la quête sur une réussite.',
+    VALUES ('#END #OK', 'Quête - Fin de la quête avec SUCCES', 'Cette étape doit être utilisée pour mettre fin à la quête sur une réussite.',
             NULL,
             NULL,
             'Bravo, vous avez terminé cette quête avec succès.');
@@ -248,7 +255,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#END #KO', 'Fin de la quête sur ECHEC', 'Cette étape doit être utilisée pour mettre fin à la quête sur un échec.',
+    VALUES ('#END #KO', 'Quête - Fin de la quête sur ECHEC', 'Cette étape doit être utilisée pour mettre fin à la quête sur un échec.',
             NULL,
             NULL,
             'Dommage, vous n''avez pas réussie cette quête.');
@@ -256,7 +263,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#SAUT', 'Aller à l''ETAPE', 'Cette étape sert faire un saut sans condition vers une autre étape, il n''est pas necessaire de mettre du texte d''étape',
+    VALUES ('#SAUT', 'Quête - Aller à l''ETAPE', 'Cette étape sert faire un saut sans condition vers une autre étape, il n''est pas necessaire de mettre du texte d''étape',
            '[1:etape|1%1]',
            'C''est l''étape de destination souhaitée.',
             NULL);
@@ -264,7 +271,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#RECEVOIR #PX', 'Recevoir PX/PO', 'Cette étape sert à attribuer des récompenses en PX/PO  au personnage réalisant la quête.',
+    VALUES ('#RECEVOIR #PX', 'Gain - Recevoir PX/PO', 'Cette étape sert à attribuer des récompenses en PX/PO  au personnage réalisant la quête.',
            '[1:valeur|1%1|px],[2:valeur|1%1|po],[3:perso|0%1]',
            'Gain de PX|Gain de Brouzoufs|Ce paramètre est facultatif, s''il est défini, les dons de PO/PX seront de sa part.',
             '[3] vous récompenses de vos efforts, vous recevez [1] PX et [2] Brouzoufs.');
@@ -272,7 +279,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#RECEVOIR #TITRE', 'Recevoir un Titre', 'Cette étape sert à attribuer un titre au personnage réalisant la quête',
+    VALUES ('#RECEVOIR #TITRE', 'Gain - Recevoir un TITRE', 'Cette étape sert à attribuer un titre au personnage réalisant la quête',
            '[1:texte|1%1|Titre]',
            'C''est le titre qui sera donné au joueur en récompense.',
             'En récompenses de vos efforts, vous recevez le titre de:<br>  [1].');
@@ -280,7 +287,7 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#RECEVOIR #OBJET', 'Recevoir un objet (depuis un générique)', 'Cette étape sert à récuperer des objets de la part d''un PNJ. Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
+    VALUES ('#RECEVOIR #OBJET', 'Objets - Recevoir un objet d''un PNJ', 'Cette étape sert à récuperer des objets de la part d''un PNJ. Cela peut-être des cadeaux que le joueur pourra garder, ou quelque chose qu''il devra utiliser dans une autre etape de la quête',
            '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]',
            'Délai alloué pour cette étape.|C''est le PNJ qui donne les objets|C''est le nombre d''objet à donner, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors le joueur recevra au moins un exemplaire de chaque puis un complément aléatoire pour atteidre le nombre prévu.|Ce sont les génériques qui serviront de modèle aux objets qui seront donné.',
             '[2] souhaite vous donner [3] objets parmi: [4].');
@@ -288,10 +295,52 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#REMETTRE #OBJET', 'Remettre un objet', 'Cette étape sert à donner un objet à un PNJ (nota: les objets doivent être donnés sous forme de transaction avec un prix de vente à 0 bz).',
+    VALUES ('#REMETTRE #OBJET', 'Objets - Remettre un objet à un PNJ ', 'Cette étape sert à donner un objet à un PNJ (nota: les objets doivent être donnés sous forme de transaction avec un prix de vente à 0 bz).',
            '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]',
            'Délai alloué pour cette étape.|C''est le PNJ à qui l''aventurier doit remettre l''objet|C''est le nombre d''objet attendu, si le nombre est superieur au nombre de générique alors le joueur devra donner autant d''objet mais avec au moins un exemplaire de chaque. |Ce sont les génériques des objets que le PNJ s''attend à recevoir.',
-            '[2] attend que vous lui remettiez [3] objets parmi: [4].');
+           '[2] attend que vous lui remettiez [3] objets parmi: [4].');
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#NETTOYAGE', 'Quête - Nettoyer la quête', 'Cette étape sert à supprimer des éléments qui ont été utilisés pendant la quête et qui ne reserviront plus. Si une quête peut-être réalisée plusieurs fois par plusieurs aventuriers différents, pour ne pas laisser les objets créé s''accumuler, on fait le nettoyage. Nota: cette étape est automatiquement réussie, aussi vous pouvez laisser le texte d''étape vide.',
+           '[1:element|0%0]',
+           'C''est la liste des élements qui ont été utilisés pendant la quête et qui ne doivent plus servir. Ces objets, pnj ou monstres seront supprimés de la base de données',
+           NULL);
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#MONSTRE #POSITION', 'Monstres - Invoquer des Monstres ou PNJ sur une position', 'Cette étape sert à invoquer des monstres, un Boss ou simplement un PNJ à proximité d''une position donnée.',
+           '[1:valeur|1%1],[2:position|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
+           'C''est le nombre de monstre à invoquer, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors il y aura une invocation de chaque puis un complément aléatoire pour atteidre le nombre prévu.' ||
+           '|C''est la position centrale où seront invoqué les monstres.' ||
+           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
+           '|Ce sont les génériques des monstres à invoquer.',
+           NULL);
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#MONSTRE #ARMEE', 'Monstres - Invoquer des Monstres ou PNJ sur un perso', 'Cette étape sert à invoquer des monstres, un Boss ou simplement un PNJ à proximité d''un perso.',
+           '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
+           'C''est le nombre de monstre à invoquer, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors il y aura une invocation de chaque puis un complément aléatoire pour atteidre le nombre prévu.' ||
+           '|C''est le perso autour duquel  les monstres seront invoqués, laisser à zéro pour faire l''invocation autour du perso qui fait la quête.' ||
+           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
+           '|Ce sont les génériques des monstres à invoquer.',
+           NULL);
+
+
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#ARMEE #PERSO', 'Monstres - Invoquer une armée de Monstres', 'Cette étape sert à invoquer une armée de monstre à proximité d''un perso, le type de monstre invoqué sera pris en suivant la répartition spécifique de l''étage',
+           '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1]',
+           'C''est le nombre de monstre à invoquer.' ||
+           '|C''est le perso autour duquel  les monstres seront invoqués, laisser à zéro pour faire l''invocation autour du perso qui fait la quête.' ||
+           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.',
+           NULL);
+
 
 truncate table quetes.aquete_perso;
 truncate table quetes.aquete_perso_journal;
