@@ -247,6 +247,31 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute($search_string, $stmt);
             break;
 
+        case 'monstre_generique':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(gmon_nom ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from monstre_generique where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
         case 'lieu_type':
             $filter = "";
 
@@ -356,6 +381,9 @@ switch($_REQUEST["request"])
             case 'objet_generique':
                 $req = "select gobj_nom nom from objet_generique where gobj_cod = ? ";
                 break;
+            case 'monstre_generique':
+                $req = "select gmon_nom nom from monstre_generique where gmon_cod = ? ";
+                break;
             case 'element':
                 $req = "select aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom from quetes.aquete_element join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod where aqelem_cod = ? ";
                 break;
@@ -365,6 +393,26 @@ switch($_REQUEST["request"])
 
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($cod), $stmt);
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+        break;
+
+    //==============================================================================
+    case "get_table_info":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
+        $info = $_REQUEST["info"];
+
+        switch ($info) {
+            case 'pos_cod':
+                //$req = "select pos_cod from positions left outer join murs on mur_pos_cod = pos_cod where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $req = "select pos_cod from positions where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                break;
+            default:
+                die('{"resultat":-1, "message":"table inconne dans get_table_info"}');
+        }
+
         $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
         break;
 

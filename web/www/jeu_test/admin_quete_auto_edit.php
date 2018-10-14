@@ -52,9 +52,10 @@ if ($erreur == 0)
     //=======================================================================================
     // == Constantes quete_auto
     //=======================================================================================
-    //$request_select_etage = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
-    $request_select_etage = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
-
+    //$request_select_etage_ref = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
+    $request_select_etage_ref = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
+    $request_select_etage = "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
+			
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
@@ -346,11 +347,50 @@ if ($erreur == 0)
                                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'lieu_type\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                     &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu_type","Rechercher un type de lieu");\'>
-                                    <br>Situé en dessous de&nbsp;:'.create_selectbox_from_req("aqelem_param_num_1[$param_id][]", $request_select_etage, $element->aqelem_param_num_1,     array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 150px;"')).'
-                                    et situé au dessus de:'.create_selectbox_from_req("aqelem_param_num_2[$param_id][]", $request_select_etage, $element->aqelem_param_num_2,     array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 150px;"')).'
+                                    <br>Situé en dessous de&nbsp;:'.create_selectbox_from_req("aqelem_param_num_1[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_1,     array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 150px;" data-entry="val"')).'
+                                    et situé au dessus de:'.create_selectbox_from_req("aqelem_param_num_2[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_2,     array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 150px;" data-entry="val"')).'
                                     
                                     </td>';
                     break;
+
+                    case 'position':
+                            if (1*$element->aqelem_misc_cod != 0)
+                            {
+                                $position = new positions() ;
+                                $position->charge( $element->aqelem_misc_cod );
+                                $element->aqelem_param_num_1 = $position->pos_x ;
+                                $element->aqelem_param_num_2 = $position->pos_y ;
+                                $element->aqelem_param_num_3 = $position->pos_etage ;
+                            }
+                            echo   '<td>Position :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="hidden" size="5" value="'.$element->aqelem_misc_cod.'">
+                                    &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                    X = <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
+                                    Y = <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
+                                    Etage&nbsp;:'.create_selectbox_from_req("aqelem_param_num_3[$param_id][]", $request_select_etage, $element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 350px;" data-entry="val" onChange="setQuetePositionCod(\''.$row_id.'\');"')).'                                   
+                                    </td>';
+                    break;
+
+                    case 'monstre_generique':
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gmon = new monstre_generique() ;
+                            $gmon->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $gmon->gmon_nom ;
+                        }
+                        echo   '<td>Monstre générique :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'monstre_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","monstre_generique","Rechercher un monstre générique");\'> 
+                                     <br>Mode d\'invocation &rArr;&nbsp;'.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Monstre","1"=>"Perso"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     &nbsp;'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Palpable","1"=>"Impalpable"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     &nbsp;'.create_selectbox("aqelem_param_num_3[$param_id][]", array("0"=>"Standard","1"=>"Type PNJ"), 1*$element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                   </td>';
+                        break;
 
                     case 'choix':
 

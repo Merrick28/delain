@@ -342,3 +342,17 @@ function  switchQueteAutoParamRow(param, type)
         $("#alt-type-"+param).val("element");
     }
 }
+
+function  setQuetePositionCod(rowid)
+{
+    var pos_x = 1*$('#'+rowid+'aqelem_param_num_1').val();
+    var pos_y = 1*$('#'+rowid+'aqelem_param_num_2').val();
+    var pos_etage = 1*$('#'+rowid+'aqelem_param_num_3').val();
+    runAsync({request: "get_table_info", data:{info:"pos_cod", pos_x:pos_x, pos_y:pos_y, pos_etage:pos_etage}}, function(d){
+        if ((d.resultat == 0)&&(d.data)&&(d.data.pos_cod))
+        {
+            $('#'+rowid+'aqelem_misc_cod').val(d.data.pos_cod);
+        }
+    });
+
+}

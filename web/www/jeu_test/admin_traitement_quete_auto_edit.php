@@ -64,6 +64,14 @@ case "sauve_etape":
     }
     $etape->stocke($new);
 
+    // AJouter un nom à l'étape avec le code si le nom n'a pas été fournie
+    if ($etape->aqetape_nom=="")
+    {
+        $etape->aqetape_nom =  "#" . $etape->aqetape_cod . ": " . $etape_modele->aqetapmodel_nom ;
+        $etape->stocke();
+    }
+
+
     // Agencement entre les étapes (chemin par defaut)
     // Si c'est la première etape, il faut mettre à jour la quête sinon la dernière étape avant celle-ci
     $deniere_etape = $quete->get_derniere_etape();
