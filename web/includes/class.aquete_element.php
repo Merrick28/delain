@@ -31,6 +31,11 @@ class aquete_element
     {
     }
 
+    public function __clone()
+    {
+        $this->aqelem_cod = null;      // En cas de clonage, le clone de doit pas avoir le même code
+    }
+
     /**
      * Charge dans la classe un enregistrement de aquete_element
      * @global bdd_mysql $pdo

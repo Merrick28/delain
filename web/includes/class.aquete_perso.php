@@ -616,6 +616,21 @@ class aquete_perso
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
                     break;
+
+                case "#MONSTRE #POSITION":
+                    $this->action->monstre_position($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
+                    break;
+
+                case "#MONSTRE #PERSO":
+                    $this->action->monstre_perso($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
+                    break;
+
+                case "#MONSTRE #ARMEE":
+                    $this->action->monstre_armee($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
+                    break;
             }
 
             //------- traitement du status d'étape------------------------------

@@ -231,7 +231,7 @@ if ($erreur == 0)
         {
 
             // Certains paramètres peuvent être remplacé par un paramètre d'étape déjà saisi précédement
-            if (( in_array($param['type'], array("perso", "lieu", "type_lieu", "objet_generique" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
+            if (( in_array($param['type'], array("perso", "lieu", "type_lieu", "objet_generique", "monstre_generique", "position" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
 
             echo '<br><br><b>Edition du paramètre ['.$param_id.']</b>: <i>('.$param['texte'].')</i><br>';
             echo $param['desc'].'</i><br><br>';
@@ -266,11 +266,17 @@ if ($erreur == 0)
                 }
 
                 $row_id = "row-$param_id-x-"; // paramètre en x pour ne pas parasiter avec les autres et pouvoir la distinguer !!
+                // Il faut aussi utilisé tous les champs num_2, num_3, etc.. même s'il ne son tpas utilisé pour ne pas avoir de déclage d'indice sur l'élément réel.
                 echo   '<tr style="'.($elements[0]->aqelem_type=='element' ? "display: block;" : "display: none;").'" id="alt-'.$param_id.'"><td colspan="2">Element d\'une autre étape :
                                         <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_cod : '').'"> 
                                         <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
                                         <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                          #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
+                                         <input name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
                                         &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
                                         &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "'.$param['type'].'" ]);\'> 
                                         </td>';
@@ -354,7 +360,7 @@ if ($erreur == 0)
                     break;
 
                     case 'position':
-                            if (1*$element->aqelem_misc_cod != 0)
+                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {
                                 $position = new positions() ;
                                 $position->charge( $element->aqelem_misc_cod );
@@ -387,7 +393,7 @@ if ($erreur == 0)
                                     &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","monstre_generique","Rechercher un monstre générique");\'> 
                                      <br>Mode d\'invocation &rArr;&nbsp;'.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Monstre","1"=>"Perso"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
-                                     &nbsp;'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Palpable","1"=>"Impalpable"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     &nbsp;'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Tangible","1"=>"Intangible"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                      &nbsp;'.create_selectbox("aqelem_param_num_3[$param_id][]", array("0"=>"Standard","1"=>"Type PNJ"), 1*$element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                    </td>';
                         break;

@@ -13,6 +13,38 @@
  */
 class aquete_action
 {
+
+    //==================================================================================================================
+    /**
+     * Function qui sert à préparer une liste d'éléments
+     * si $nbelement est inférieur au nombre d'élément on retour la liste des $nbelement premiers éléments.
+     * si $nbelement est superieur alors il y aura un exemplaire de chaque puis un complément aléatoire pour atteidre le nombre prévu.
+     * @param $nbelement    nombre d'élément à choisir
+     * @param $elements     tableau des elements
+     * @return mixed        liste d'élément choisis
+     */
+    private function get_liste_element($nbelement, $elements)
+    {
+        $liste = array() ;
+        $nbgenerique = count ($elements) ;
+
+        if ($nbelement <= $nbgenerique)
+        {
+            // On donne les objets dans la limite demandé (aléatoirement)
+            for ($i=0; $i<$nbelement; $i++) $liste[$i] = clone $elements[$i];
+        }
+        else
+        {
+            for ($i=0; $i<$nbgenerique; $i++) $liste[$i] = clone $elements[$i];        // Chaque objet au moins 1x
+            for ($i=$nbgenerique; $i<$nbelement; $i++)
+            {
+                $liste[$i] = clone $elements[rand(0,($nbgenerique-1))];                    // Le reste est aléatoire
+            }
+        }
+
+        return $liste;
+    }
+
     //==================================================================================================================
     /**
      * On suppriel tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
@@ -479,6 +511,209 @@ class aquete_action
             $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
 
             // si l'objet ne sert plus on le supprime //$objet->supprime();
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * Va générer des monstres/perso autour d'une position donnée =>  '[1:valeur|1%1],[2:position|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
+     * p1=nb_monstre, p2=position, p3=dispersion, p4=liste des monstres
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function monstre_position(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                                // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'position')) return false ;                              // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'monstre_generique', 0)) return false ;       // Problème lecture des paramètres
+
+        shuffle($p4);                                       // ordre aléatoire pour les monstres
+
+        $nbmonstre = $p1->aqelem_param_num_1 ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbmonstre <= 0) return true;       // etape bizarre !! on ne créé aucun monstre
+
+        // Préparation de la liste des mosntres générer en fonction du nombre de générique et du nombre demandé
+        $liste_monstre = $this->get_liste_element($nbmonstre, $p4);
+
+        // on génère les monstre à partir du générique (la liste contient tout ce qui doit-être généré)
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer (on a des éléments génériques on aura des id de persos)
+        $param_ordre = 0 ;
+        foreach ($liste_monstre as $k => $elem)
+        {
+            $req = "select cree_monstre_pos(:gmon_cod,pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(  ":gmon_cod" => $elem->aqelem_misc_cod ,
+                                            ":pos_cod" => $p2->aqelem_misc_cod ,
+                                            ":dispersion" => $p3->aqelem_param_num_1 ), $stmt);
+
+            if ($result = $stmt->fetch())
+            {
+                if (1*$result["perso_cod"]>0)
+                {
+                    $perso = new perso();
+                    $perso->charge(1*$result["perso_cod"]);
+
+                    // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
+                    if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
+                    if ($elem->aqelem_param_num_2>0) { $perso->perso_tangible = 'N'; $perso->perso_nb_tour_intangible = 999999 ;  }         // conversion en impalpable
+                    if ($elem->aqelem_param_num_3>0) $perso->perso_pnj = 1 ;                                                                // conversion en pnj
+                    if (($elem->aqelem_param_num_1>0) || ($elem->aqelem_param_num_2>0) || ($elem->aqelem_param_num_3>0)) $perso->stocke();  // sauvegarde du perso (seulement en cas de changement)
+
+                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                    $elem->aqelem_type = 'perso';
+                    $elem->aqelem_misc_cod =  $perso->perso_cod ;
+                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $param_ordre ++ ;
+                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                }
+            }
+        }
+
+        return true;
+    }
+    //==================================================================================================================
+    /**
+     * Va générer des monstres/perso autour d'un perso donnée =>  '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
+     * p1=nb_monstre, p2=perso ciblé (0=le perso de la quete), p3=dispersion, p4=liste des monstres
+     * @param aquete_perso $aqperso
+     * @return bool
+     **/
+    function monstre_perso(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                                // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                              // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'monstre_generique', 0)) return false ;       // Problème lecture des paramètres
+
+        shuffle($p4);                                       // ordre aléatoire pour les monstres
+
+        $nbmonstre = $p1->aqelem_param_num_1 ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbmonstre <= 0) return true;       // etape bizarre !! on ne créé aucun monstre
+
+        // Préparation de la liste des mosntres générer en fonction du nombre de générique et du nombre demandé
+        $liste_monstre = $this->get_liste_element($nbmonstre, $p4);
+
+        // Le perso ciblé (pour récupérer sa position) !
+        $perso = new perso();
+        $perso->charge( $p2->aqelem_misc_cod==0 ? $aqperso->aqperso_perso_cod : $p2->aqelem_misc_cod);
+        $pos_cod = $perso->get_position()["pos"]->pos_cod ;
+
+        // on génère les monstre à partir du générique (la liste contient tout ce qui doit-être généré)
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer (on a des éléments génériques on aura des id de persos)
+        $param_ordre = 0 ;
+        foreach ($liste_monstre as $k => $elem)
+        {
+            $req = "select cree_monstre_pos(:gmon_cod,pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(  ":gmon_cod" => $elem->aqelem_misc_cod ,
+                                            ":pos_cod" => $pos_cod ,
+                                            ":dispersion" => $p3->aqelem_param_num_1 ), $stmt);
+
+            if ($result = $stmt->fetch())
+            {
+                if (1*$result["perso_cod"]>0)
+                {
+                    $perso = new perso();
+                    $perso->charge(1*$result["perso_cod"]);
+
+                    // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
+                    if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
+                    if ($elem->aqelem_param_num_2>0) { $perso->perso_tangible = 'N'; $perso->perso_nb_tour_intangible = 999999 ;  }         // conversion en impalpable
+                    if ($elem->aqelem_param_num_3>0) $perso->perso_pnj = 1 ;                                                                // conversion en pnj
+                    if (($elem->aqelem_param_num_1>0) || ($elem->aqelem_param_num_2>0) || ($elem->aqelem_param_num_3>0)) $perso->stocke();  // sauvegarde du perso (seulement en cas de changement)
+
+                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                    $elem->aqelem_type = 'perso';
+                    $elem->aqelem_misc_cod =  $perso->perso_cod ;
+                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $param_ordre ++ ;
+                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                }
+            }
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * Va générer des monstres/perso autour d'un perso donnée =>  '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1]',
+     * p1=nb_monstre, p2=perso ciblé (0=le perso de la quete), p3=dispersion
+     * à la différence de "monstre_perso", le type de monstre sera pris en fonction des caracs de l'étage
+     * @param aquete_perso $aqperso
+     * @return bool
+     **/
+    function monstre_armee(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                                // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                              // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                // Problème lecture des paramètres
+
+        shuffle($p4);                                       // ordre aléatoire pour les monstres
+
+        $nbmonstre = $p1->aqelem_param_num_1 ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbmonstre <= 0) return true;       // etape bizarre !! on ne créé aucun monstre
+
+        // Préparation de la liste des mosntres générer en fonction du nombre de générique et du nombre demandé
+        $liste_monstre = $this->get_liste_element($nbmonstre, $p4);
+
+        //!!!!! A FAIRE => PREPARER la $liste_monstre avec les génériques des monstres de l'étage !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // Le perso ciblé (pour récupérer sa position) !
+        $perso = new perso();
+        $perso->charge( $p2->aqelem_misc_cod==0 ? $aqperso->aqperso_perso_cod : $p2->aqelem_misc_cod);
+        $pos_cod = $perso->get_position()["pos"]->pos_cod ;
+
+        // on génère les monstre à partir du générique (la liste contient tout ce qui doit-être généré)
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer (on a des éléments génériques on aura des id de persos)
+        $param_ordre = 0 ;
+        foreach ($liste_monstre as $k => $elem)
+        {
+            $req = "select cree_monstre_pos(:gmon_cod,pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(  ":gmon_cod" => $elem->aqelem_misc_cod ,
+                ":pos_cod" => $pos_cod ,
+                ":dispersion" => $p3->aqelem_param_num_1 ), $stmt);
+
+            if ($result = $stmt->fetch())
+            {
+                if (1*$result["perso_cod"]>0)
+                {
+                    $perso = new perso();
+                    $perso->charge(1*$result["perso_cod"]);
+
+                    // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
+                    if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
+                    if ($elem->aqelem_param_num_2>0) { $perso->perso_tangible = 'N'; $perso->perso_nb_tour_intangible = 999999 ;  }         // conversion en impalpable
+                    if ($elem->aqelem_param_num_3>0) $perso->perso_pnj = 1 ;                                                                // conversion en pnj
+                    if (($elem->aqelem_param_num_1>0) || ($elem->aqelem_param_num_2>0) || ($elem->aqelem_param_num_3>0)) $perso->stocke();  // sauvegarde du perso (seulement en cas de changement)
+
+                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                    $elem->aqelem_type = 'perso';
+                    $elem->aqelem_misc_cod =  $perso->perso_cod ;
+                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $param_ordre ++ ;
+                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                }
+            }
         }
 
         return true;

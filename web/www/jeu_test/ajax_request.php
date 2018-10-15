@@ -312,7 +312,7 @@ switch($_REQUEST["request"])
             $aquete_cod = 1*$params["aquete_cod"] ;
             $aqetape_cod = 1*$params["aqetape_cod"] ;
             $aqelem_type = $params["aqelem_type"] ;
-            if ($aqelem_type!="" and !in_array($aqelem_type, array("perso", "lieu", "type_lieu", "objet_generique")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
+            if ($aqelem_type!="" and !in_array($aqelem_type, array("perso", "lieu", "type_lieu", "objet_generique", "monstre_generique", "position")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
 
             // requete de comptage
             $req = "SELECT count(*) FROM (

@@ -93,7 +93,6 @@ case "sauve_etape":
         }
     }
 
-
     // Sauvegarde des elements créés pour l'étape
     $element_list = array();        // Liste des élement de l'etape, pour supprimer ceux qui ne son tplus utilisés
     // Boucle sur les elements de l'etape à sauvegarder

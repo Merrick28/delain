@@ -315,18 +315,18 @@ INSERT INTO quetes.aquete_etape_modele(
            '[1:valeur|1%1],[2:position|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
            'C''est le nombre de monstre à invoquer, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors il y aura une invocation de chaque puis un complément aléatoire pour atteidre le nombre prévu.' ||
            '|C''est la position centrale où seront invoqué les monstres.' ||
-           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
+           '|C''est la dispersion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
            '|Ce sont les génériques des monstres à invoquer.',
            NULL);
 
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#MONSTRE #ARMEE', 'Monstres - Invoquer des Monstres ou PNJ sur un perso', 'Cette étape sert à invoquer des monstres, un Boss ou simplement un PNJ à proximité d''un perso.',
+    VALUES ('#MONSTRE #PERSO', 'Monstres - Invoquer des Monstres ou PNJ sur un perso', 'Cette étape sert à invoquer des monstres, un Boss ou simplement un PNJ à proximité d''un perso.',
            '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1],[4:monstre_generique|0%0]',
            'C''est le nombre de monstre à invoquer, si ce nombre est inférieur au nombre de générique alors un tirage aléatoire sera effectué, s''il est superieur alors il y aura une invocation de chaque puis un complément aléatoire pour atteidre le nombre prévu.' ||
            '|C''est le perso autour duquel  les monstres seront invoqués, laisser à zéro pour faire l''invocation autour du perso qui fait la quête.' ||
-           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
+           '|C''est la dispersion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
            '|Ce sont les génériques des monstres à invoquer.',
            NULL);
 
@@ -334,11 +334,11 @@ INSERT INTO quetes.aquete_etape_modele(
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
-    VALUES ('#ARMEE #PERSO', 'Monstres - Invoquer une armée de Monstres', 'Cette étape sert à invoquer une armée de monstre à proximité d''un perso, le type de monstre invoqué sera pris en suivant la répartition spécifique de l''étage',
+    VALUES ('#MONSTRE #ARMEE', 'Monstres - Invoquer une armée de Monstres', 'Cette étape sert à invoquer une armée de monstre à proximité d''un perso, le type de monstre invoqué sera pris en suivant la répartition spécifique de l''étage',
            '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1]',
            'C''est le nombre de monstre à invoquer.' ||
            '|C''est le perso autour duquel  les monstres seront invoqués, laisser à zéro pour faire l''invocation autour du perso qui fait la quête.' ||
-           '|C''est la dispertion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.',
+           '|C''est la dispersion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.',
            NULL);
 
 
