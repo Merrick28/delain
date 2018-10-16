@@ -114,8 +114,12 @@ case 'terminer' :
         // Fin sur un succès (ou s'il manque l'étape de fin dans la définition de la quête)
         if ($quete_perso->aqperso_actif =="O" || $quete_perso->aqperso_actif == 'S')
         {
-            $contenu_page2 .= "<br>Félicitation, vous avez réussie cette quête!";
+            $contenu_page2 .= "<br>Félicitation, vous avez réussi cette quête!";
             $quete_perso->aqperso_nb_termine ++ ;
+        }
+        else if ($quete_perso->aqperso_actif == 'E')
+        {
+            $contenu_page2 .= "<br>Malheureusement, vous n'avez pas réussi cette quête!";
         }
         $quete_perso->aqperso_actif = 'N';
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');

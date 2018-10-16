@@ -236,6 +236,15 @@ if ($erreur == 0)
             echo '<br><br><b>Edition du paramètre ['.$param_id.']</b>: <i>('.$param['texte'].')</i><br>';
             echo $param['desc'].'</i><br><br>';
 
+            if (1*$param['n']<0)
+            {
+                // Pour les paramètre non-éditable on prépare juste une coquille vide
+                $row_id = "row-$param_id-0-";
+                echo   '<input id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$elements[0]->aqelem_cod.'"> 
+                        <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> ';
+                continue;       // paramètre suivant!
+            }
+
             $element = new aquete_element;
             $elements = $element->getBy_etape_param_id($aqetape_cod, $param_id) ;
             if (!$elements) $elements[] =  new aquete_element;

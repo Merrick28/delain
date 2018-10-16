@@ -547,7 +547,7 @@ class aquete_perso
                 case "#END #OK":
                 case "#END #KO":
                     // cette etape sert à mettre fin à la quête avec ou sans succès.
-                    $status_etape = ($model_tag == '#END #KO') ? -2 : -1 ;   // Etape terminée avec Succes ou sur une Echec.
+                    $status_etape = ($model_tag == '#END #KO') ? -3 : -2 ;   // Etape terminée avec Succes ou sur une Echec.
                 break;
 
                 case "#TEXTE":
@@ -600,7 +600,7 @@ class aquete_perso
                     break;
 
                 case "#MOVE #LIEU":
-                    // Le joueur doit rejoindre un perso
+                    // Le joueur doit rejoindre un lieu
                     if ($this->action->move_lieu($this))
                     {
                         // Le perso est à l'endroit attendu
@@ -609,7 +609,7 @@ class aquete_perso
                     break;
 
                 case "#MOVE #TYPELIEU":
-                    // Le joueur doit rejoindre un perso
+                    // Le joueur doit rejoindre un type de lieu
                     if ($this->action->move_typelieu($this))
                     {
                         // Le perso est à l'endroit attendu
@@ -618,18 +618,39 @@ class aquete_perso
                     break;
 
                 case "#MONSTRE #POSITION":
+                    // Génération de monstre sur une position
                     $this->action->monstre_position($this);
                     $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
                     break;
 
                 case "#MONSTRE #PERSO":
+                    // Génération de monstre sur un perso
                     $this->action->monstre_perso($this);
                     $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
                     break;
 
                 case "#MONSTRE #ARMEE":
+                    // Génération de monstre selon le critère d'tage sur un perso
                     $this->action->monstre_armee($this);
                     $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
+                    break;
+
+                case "#TUER #PERSO":
+                    // Le joueur doit tuer des persos.
+                    $result = $this->action->tuer_perso($this) ;
+                    if ($result->status)
+                    {
+                        //L'étape est terminée, mais elle peu echouer
+                        if ($result->etape<0)
+                        {
+                            $status_etape = $result->etape ;          // fin de la quete sur succes ou echec
+                        }
+                        else
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                            $next_etape_cod = $result->etape ;        // vers une etape specifique !
+                        }
+                    }
                     break;
             }
 
@@ -641,14 +662,14 @@ class aquete_perso
                 $this->aqperso_date_debut_etape = date('Y-m-d H:i:s');  // Début de la nouvelle étape !
                 $loop = true ; // Etape terminé, on boucle à l'étape suivante
             }
-            else if ($status_etape == -1)
+            else if ($status_etape == -2)
             {
-                $this->aqperso_actif = 'S' ;        // Etape terminée avec Succes ou sur une Echec.
+                $this->aqperso_actif = 'S' ;        // Etape terminée avec Succes
                 $this->aqperso_etape_cod = 0 ;      // Fin de quête!
                 $this->aqperso_quete_step ++ ;
                 $loop = false ;                     // Etape terminée, on boucle ne boucle plus.
             }
-            else if ($status_etape == -2)
+            else if ($status_etape == -3)
             {
                 $this->aqperso_actif = 'E' ;        // Etape terminée sur un Echec.
                 $this->aqperso_etape_cod = 0 ;      // Fin de quête!
@@ -659,6 +680,18 @@ class aquete_perso
             $this->stocke();    // Mettre à jours les infos (car celles-ci peuvent être utilisée dans les étapes d'actions)
 
         } while ($loop && $this->aqperso_etape_cod>0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
+
+        /// Jouraliser la fin de quete
+        if ($this->aqperso_etape_cod == 0)
+        {
+            $this->aqperso_quete_step ++ ; // L'étape était déjà commencée, il y a déjà une entrée dans le journal pour celle-ci on passe un step !
+            $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
+            if ($this->aqperso_actif == 'E')
+                $perso_journal->aqpersoj_texte = "Malheureusement, vous n'avez pas réussi cette quête!<br> ";
+            else if ($this->aqperso_actif == "O" || $this->aqperso_actif == 'S')
+                $perso_journal->aqpersoj_texte = "Félicitation, vous avez réussi cette quête!<br> ";
+            $perso_journal->stocke(true);
+        }
 
     }
 

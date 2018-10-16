@@ -330,17 +330,27 @@ INSERT INTO quetes.aquete_etape_modele(
            '|Ce sont les génériques des monstres à invoquer.',
            NULL);
 
-
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
             aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
     VALUES ('#MONSTRE #ARMEE', 'Monstres - Invoquer une armée de Monstres', 'Cette étape sert à invoquer une armée de monstre à proximité d''un perso, le type de monstre invoqué sera pris en suivant la répartition spécifique de l''étage',
-           '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1]',
+           '[1:valeur|1%1],[2:perso|1%1],[3:valeur|1%1],[4:perso]',
            'C''est le nombre de monstre à invoquer.' ||
            '|C''est le perso autour duquel  les monstres seront invoqués, laisser à zéro pour faire l''invocation autour du perso qui fait la quête.' ||
-           '|C''est la dispersion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.',
+           '|C''est la dispersion. Les monstres seront invoqués autour du point ciblé, dans un rayon inférieur à cette valeur.' ||
+           '|Ce paramètre n''est pas éditable mais mais il peut être utilisé dans le reste de la quête par référence, il contiendra la liste des monstres qui auront été invoqués.',
            NULL);
 
+INSERT INTO quetes.aquete_etape_modele(
+            aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
+            aqetapmodel_parametres, aqetapmodel_param_desc, aqetapmodel_modele)
+    VALUES ('#TUER #PERSO', 'Tuer - Tuer des Monstres ou PNJ', 'Dans cette étape on demande au joueur de tuer un ou plusieurs persos.',
+           '[1:delai|1%1],[2:perso|0%0],[3:valeur|1%1],[4:etape|1%1]',
+           'Délai alloué pour cette étape.' ||
+           '|C''est la liste du ou des persos à tuer.' ||
+           '|Vous pouvez choisir si le joueur doit être le tueur lui-même, ou si la mort par d''autres aventurier est suffisante. Indiquez ici, le nombre de montre que le joueur doit avoir achevé par lui-même.' ||
+           '|C''est l''étape vers laquelle sera envoyée le joueur si celle-ci echoue. En fonction des paramètres, l''étape actuelle peut échouer si le joueur n''a pas pas achevé son nombre cible prevue (vous pouvez saisir -3, pour mettre fin à la quête sur un echec). En cas de réussite, la quête passera à l''étape suivante.',
+           'Liberez nous du joug de [2], achevez-en au moins [3] monstres par vous même.');
 
 truncate table quetes.aquete_perso;
 truncate table quetes.aquete_perso_journal;

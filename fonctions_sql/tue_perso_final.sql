@@ -266,7 +266,9 @@ end if;
 	if type_cible = 2 then
 		-- Gestion de la perte des objets (1 == mort définitive)
 		v_corps := tue_perso_perd_objets(v_cible, 1);
-                update perso set perso_actif = 'N' WHERE perso_cod = v_cible;
+
+		/* Marlyza: On garde dans perso_cible la trace de son tueur, ça peut servir pour les quêtes auto (à la place de fouiller dans les events) */
+    update perso set perso_actif = 'N', perso_cible=v_attaquant WHERE perso_cod = v_cible;
 
 		/*******************************************************/
 		/* DEBUT : GESTION DES FONCTIONS DES MORTS DE MONSTRES */

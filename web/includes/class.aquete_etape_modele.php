@@ -129,8 +129,8 @@ class aquete_etape_modele
             // Format de param=> [id:type|n%M] avec %M et |n%M  factultatif
             $t = explode(':', str_replace("]","", str_replace("[","", $param)));
             $id = 1*$t[0];
-            $n = 1 ;        // Par défaut
-            $M = 1;         // Par défaut
+            $n = -1 ;        // Par défaut
+            $M = -1;         // Par défaut
 
             if (strpos($t[1],'|') !== false)
             {
@@ -154,7 +154,7 @@ class aquete_etape_modele
                 $type = $t[1];
             }
 
-            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max.")) );
+            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => ( $n<0 ? "liste de $type non editable" : ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max."))) );
         }
         return $retour;
     }

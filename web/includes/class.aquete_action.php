@@ -672,26 +672,23 @@ class aquete_action
         // Vérification sur le nombre d'objet
         if ($nbmonstre <= 0) return true;       // etape bizarre !! on ne créé aucun monstre
 
-        // Préparation de la liste des mosntres générer en fonction du nombre de générique et du nombre demandé
-        $liste_monstre = $this->get_liste_element($nbmonstre, $p4);
-
-        //!!!!! A FAIRE => PREPARER la $liste_monstre avec les génériques des monstres de l'étage !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         // Le perso ciblé (pour récupérer sa position) !
         $perso = new perso();
         $perso->charge( $p2->aqelem_misc_cod==0 ? $aqperso->aqperso_perso_cod : $p2->aqelem_misc_cod);
-        $pos_cod = $perso->get_position()["pos"]->pos_cod ;
+        $position = $perso->get_position();
+        $pos_cod = $position["pos"]->pos_cod ;
+        $etage_numero = $position["etage"]->etage_numero ;
 
         // on génère les monstre à partir du générique (la liste contient tout ce qui doit-être généré)
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer (on a des éléments génériques on aura des id de persos)
         $param_ordre = 0 ;
-        foreach ($liste_monstre as $k => $elem)
+        for ($k=0; $k<$nbmonstre ; $k++)
         {
-            $req = "select cree_monstre_pos(:gmon_cod,pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
+            $req = "select cree_monstre_pos(choix_monstre_etage(:etage_numero),pos_alentour(:pos_cod, :dispersion)) as perso_cod ";
             $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(  ":gmon_cod" => $elem->aqelem_misc_cod ,
-                ":pos_cod" => $pos_cod ,
-                ":dispersion" => $p3->aqelem_param_num_1 ), $stmt);
+            $stmt   = $pdo->execute(array(  ":etage_numero" => $etage_numero ,
+                                            ":pos_cod" => $pos_cod ,
+                                            ":dispersion" => $p3->aqelem_param_num_1 ), $stmt);
 
             if ($result = $stmt->fetch())
             {
@@ -700,23 +697,74 @@ class aquete_action
                     $perso = new perso();
                     $perso->charge(1*$result["perso_cod"]);
 
-                    // Appliquer les paramètres spécifiques (type_perso, palpable, pnj) le perso est par défaut créé en tant que monstre palpable non pnj
-                    if ($elem->aqelem_param_num_1>0) $perso->perso_type_perso = 1 ;                                                         // conversion en humain
-                    if ($elem->aqelem_param_num_2>0) { $perso->perso_tangible = 'N'; $perso->perso_nb_tour_intangible = 999999 ;  }         // conversion en impalpable
-                    if ($elem->aqelem_param_num_3>0) $perso->perso_pnj = 1 ;                                                                // conversion en pnj
-                    if (($elem->aqelem_param_num_1>0) || ($elem->aqelem_param_num_2>0) || ($elem->aqelem_param_num_3>0)) $perso->stocke();  // sauvegarde du perso (seulement en cas de changement)
-
                     // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
-                    $elem->aqelem_type = 'perso';
-                    $elem->aqelem_misc_cod =  $perso->perso_cod ;
-                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $element->aqelem_aquete_cod = $aqperso->aqperso_aquete_cod;
+                    $element->aqelem_aqetape_cod = $aqperso->aqperso_etape_cod;
+                    $element->aqelem_aqperso_cod = $aqperso->aqperso_cod;
+                    $element->aqelem_quete_step = $aqperso->aqperso_quete_step;
+                    $element->aqelem_param_id = 4;
+                    $element->aqelem_type = 'perso';
+                    $element->aqelem_misc_cod =  $perso->perso_cod ;
+                    $element->aqelem_param_ordre =  $param_ordre ;              // On ordone correctement !
                     $param_ordre ++ ;
-                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                    $element->stocke(true);                                // sauvegarde forcément un nouveau monstre
                 }
             }
         }
 
         return true;
+    }
+
+    //==================================================================================================================
+    /**
+     * Le joueur doit tuer des persos  =>  '[1:delai|1%1],[2:perso|0%0],[3:valeur|1%1],[4:etape|1%1]',
+     * p2=persos cibles p3=nombre de kill p4=etape si echec
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_perso(aquete_perso $aqperso)
+    {
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return $retour ;                             // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'etape')) return $retour ;                              // Problème lecture des paramètres
+
+        // On réalise directement un requete de comptage !
+        $req = "select count(*) nb_cible, sum(case when perso.perso_actif='N' then 1 else 0 end) as nb_dead, sum(case when coalesce(perso.perso_cible,0)=aqperso_perso_cod then 1 else 0 end) as nb_kill
+                from quetes.aquete_perso
+                join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='perso'
+                join perso on perso_cod=aqelem_misc_cod
+                where aqperso_cod=?";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_cod), $stmt);
+
+        if (!$result = $stmt->fetch())  return $retour;     // On arrive pas à lire la DB ?
+
+
+        $nb_contrat = $p3->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
+        $nb_cible = 1*$result["nb_cible"] ;           // Nombre de cible initial
+        $nb_dead = 1*$result["nb_dead"] ;             // Nombre de cible déjà achevé
+        $nb_kill = 1*$result["nb_kill"] ;             // Nombre de cible achevé par le joueur
+
+        if ( $nb_contrat > $nb_kill + ($nb_cible - $nb_dead) )
+        {
+            // Echec, il ne reste pas assez de monstre pour terminer le contrat avec succes
+            $retour->status = true ;
+            $retour->etape = $p4->aqelem_misc_cod ;     // vers l'étape d'echec !
+        }
+        else if ( ($nb_contrat <= $nb_kill) && ( ($nb_cible - $nb_dead)==0 ) )
+        {
+            // C'est un success !! passage à l'étape suivante (voir plus tard pour tagger les monstres tuer par le joueur)
+            $retour->status = true ;
+        }
+        //echo "<pre>"; print_r($retour); echo "</pre>"; die();
+        // renvoyer l'état
+        return $retour;
     }
 
     //==================================================================================================================
