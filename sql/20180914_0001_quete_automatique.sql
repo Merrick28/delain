@@ -1,3 +1,7 @@
+-- Table: quetes.aquete
+
+-- DROP TABLE quetes.aquete;
+
 CREATE TABLE quetes.aquete
 (
   aquete_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aquete_cod'::text)::regclass),
@@ -31,6 +35,9 @@ COMMENT ON COLUMN quetes.aquete.aquete_nb_max_rejouable IS 'Nombre de fois où l
 COMMENT ON COLUMN quetes.aquete.aquete_nb_max_quete IS 'Nombre de fois où la quête peut-être rejouer tous persos confondus (pas de limite si null)';
 COMMENT ON COLUMN quetes.aquete.aquete_max_delai IS 'Délai maximum alloué (en jours) pour réaliser la quête, au delà de ce délai elle sera terminée en échec (pas de limite si null)';
 
+-- Table: quetes.aquete_element
+
+-- DROP TABLE quetes.aquete_element;
 
 CREATE TABLE quetes.aquete_element
 (
@@ -73,32 +80,9 @@ COMMENT ON COLUMN quetes.aquete_element.aqelem_aqperso_cod IS 'C''est la quete d
 COMMENT ON COLUMN quetes.aquete_element.aqelem_quete_step IS 'Une même étape peut être realisée plusieurs fois, step est le nombre d''''étape faite';
 COMMENT ON COLUMN quetes.aquete_element.aqelem_nom IS 'Nom de l''élément pour une utilisation texte';
 
+-- Table: quetes.aquete_etape_modele
 
-CREATE TABLE quetes.aquete_etape
-(
-  aqetape_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aqetape_cod'::text)::regclass),
-  aqetape_nom text, -- Nom de l'étape
-  aqetape_aquete_cod integer, -- De quelle quête cette étape fait partie
-  aqetape_aqetapmodel_cod integer, -- Modele de base de l'étape
-  aqetape_parametres text, -- Définition des paramètres utilisés pour aqetape_texte
-  aqetape_texte text, -- Le texte sera complété avec les paramètres puis sera fourni au perso faisant la quête
-  aqetape_etape_cod integer, -- Etape suivante (par défaut), null si dernière etape
-  CONSTRAINT aqetape_pkey PRIMARY KEY (aqetape_cod),
-  CONSTRAINT fk_aqetape_aquete_cod FOREIGN KEY (aqetape_aquete_cod)
-      REFERENCES quetes.aquete (aquete_cod) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE CASCADE
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE quetes.aquete_etape
-  OWNER TO delain;
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_nom IS 'Nom de l''étape';
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_aquete_cod IS 'De quelle quête cette étape fait partie';
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_aqetapmodel_cod IS 'Modele de base de l''étape';
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_parametres IS 'Définition des paramètres utilisés pour aqetape_texte';
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_texte IS 'Le texte sera complété avec les paramètres puis sera fourni au perso faisant la quête';
-COMMENT ON COLUMN quetes.aquete_etape.aqetape_etape_cod IS 'Etape suivante (par défaut), null si dernière etape';
+-- DROP TABLE quetes.aquete_etape_modele;
 
 CREATE TABLE quetes.aquete_etape_modele
 (
@@ -123,6 +107,42 @@ COMMENT ON COLUMN quetes.aquete_etape_modele.aqetapmodel_parametres IS 'Liste de
 COMMENT ON COLUMN quetes.aquete_etape_modele.aqetapmodel_param_desc IS 'Définition des paramètres séparés par des |';
 COMMENT ON COLUMN quetes.aquete_etape_modele.aqetapmodel_modele IS 'Suggestion de texte pour l''étape';
 
+-- Table: quetes.aquete_etape
+
+-- DROP TABLE quetes.aquete_etape;
+
+CREATE TABLE quetes.aquete_etape
+(
+  aqetape_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aqetape_cod'::text)::regclass),
+  aqetape_nom text, -- Nom de l'étape
+  aqetape_aquete_cod integer, -- De quelle quête cette étape fait partie
+  aqetape_aqetapmodel_cod integer, -- Modele de base de l'étape
+  aqetape_parametres text, -- Définition des paramètres utilisés pour aqetape_texte
+  aqetape_texte text, -- Le texte sera complété avec les paramètres puis sera fourni au perso faisant la quête
+  aqetape_etape_cod integer, -- Etape suivante (par défaut), null si dernière etape
+  CONSTRAINT aqetape_pkey PRIMARY KEY (aqetape_cod),
+  CONSTRAINT fk_aqetape_aqetapmodel_cod FOREIGN KEY (aqetape_aqetapmodel_cod)
+      REFERENCES quetes.aquete_etape_modele (aqetapmodel_cod) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_aqetape_aquete_cod FOREIGN KEY (aqetape_aquete_cod)
+      REFERENCES quetes.aquete (aquete_cod) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE quetes.aquete_etape
+  OWNER TO delain;
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_nom IS 'Nom de l''étape';
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_aquete_cod IS 'De quelle quête cette étape fait partie';
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_aqetapmodel_cod IS 'Modele de base de l''étape';
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_parametres IS 'Définition des paramètres utilisés pour aqetape_texte';
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_texte IS 'Le texte sera complété avec les paramètres puis sera fourni au perso faisant la quête';
+COMMENT ON COLUMN quetes.aquete_etape.aqetape_etape_cod IS 'Etape suivante (par défaut), null si dernière etape';
+
+-- Table: quetes.aquete_perso
+
+-- DROP TABLE quetes.aquete_perso;
 
 CREATE TABLE quetes.aquete_perso
 (
@@ -137,7 +157,13 @@ CREATE TABLE quetes.aquete_perso
   aqperso_date_debut timestamp with time zone DEFAULT now(), -- Derniere date de démarrage de la quête
   aqperso_date_fin timestamp with time zone, -- Derniere date de fin de la quête
   aqperso_date_debut_etape timestamp with time zone DEFAULT now(),
-  CONSTRAINT aquete_perso_pkey PRIMARY KEY (aqperso_cod)
+  CONSTRAINT aquete_perso_pkey PRIMARY KEY (aqperso_cod),
+  CONSTRAINT aqperso_perso_cod FOREIGN KEY (aqperso_perso_cod)
+      REFERENCES public.perso (perso_cod) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT fk_aqperso_aquete_cod FOREIGN KEY (aqperso_aquete_cod)
+      REFERENCES quetes.aquete (aquete_cod) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
 )
 WITH (
   OIDS=FALSE
@@ -154,6 +180,20 @@ COMMENT ON COLUMN quetes.aquete_perso.aqperso_nb_termine IS 'Nombre  de fois où
 COMMENT ON COLUMN quetes.aquete_perso.aqperso_date_debut IS 'Derniere date de démarrage de la quête';
 COMMENT ON COLUMN quetes.aquete_perso.aqperso_date_fin IS 'Derniere date de fin de la quête';
 
+
+-- Index: quetes.fki_aqperso_perso_cod
+
+-- DROP INDEX quetes.fki_aqperso_perso_cod;
+
+CREATE INDEX fki_aqperso_perso_cod
+  ON quetes.aquete_perso
+  USING btree
+  (aqperso_perso_cod);
+
+-- Table: quetes.aquete_perso_journal
+
+-- DROP TABLE quetes.aquete_perso_journal;
+
 CREATE TABLE quetes.aquete_perso_journal
 (
   aqpersoj_cod integer NOT NULL DEFAULT nextval(('quetes.seq_aqpersoj_cod'::text)::regclass),
@@ -163,7 +203,10 @@ CREATE TABLE quetes.aquete_perso_journal
   aqpersoj_quete_step integer NOT NULL DEFAULT 0, -- le step
   aqpersoj_texte text, -- le texte dans le journal
   aqpersoj_lu character varying(1) NOT NULL DEFAULT 'N'::character varying, -- Est-ce que cette page du journal a été lu (O ou N)  ?
-  CONSTRAINT aquete_perso_journal_pkey PRIMARY KEY (aqpersoj_cod)
+  CONSTRAINT aquete_perso_journal_pkey PRIMARY KEY (aqpersoj_cod),
+  CONSTRAINT fk_aqpersoj_aqperso_cod FOREIGN KEY (aqpersoj_aqperso_cod)
+      REFERENCES quetes.aquete_perso (aqperso_cod) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
 )
 WITH (
   OIDS=FALSE
@@ -178,6 +221,60 @@ COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_texte IS 'le texte dans l
 COMMENT ON COLUMN quetes.aquete_perso_journal.aqpersoj_lu IS 'Est-ce que cette page du journal a été lu (O ou N)  ?';
 
 
+CREATE SEQUENCE quetes.seq_aquete_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aquete_cod
+  OWNER TO webdelain;
+
+CREATE SEQUENCE quetes.seq_aqelem_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aqelem_cod
+  OWNER TO webdelain;
+
+CREATE SEQUENCE quetes.seq_aqetape_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aqetape_cod
+  OWNER TO webdelain;
+
+
+CREATE SEQUENCE quetes.seq_aqetapmodel_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aqetapmodel_cod
+  OWNER TO webdelain;
+
+CREATE SEQUENCE quetes.seq_aqperso_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aqperso_cod
+  OWNER TO webdelain;
+
+CREATE SEQUENCE quetes.seq_aqpersoj_cod
+  INCREMENT 1
+  MINVALUE 1
+  MAXVALUE 9223372036854775807
+  START 1
+  CACHE 1;
+ALTER TABLE quetes.seq_aqpersoj_cod
+  OWNER TO webdelain;
 
 INSERT INTO quetes.aquete_etape_modele(
             aqetapmodel_tag, aqetapmodel_nom, aqetapmodel_description,
@@ -352,6 +449,11 @@ INSERT INTO quetes.aquete_etape_modele(
            '|C''est l''étape vers laquelle sera envoyée le joueur si celle-ci echoue. En fonction des paramètres, l''étape actuelle peut échouer si le joueur n''a pas pas achevé son nombre cible prevue (vous pouvez saisir -3, pour mettre fin à la quête sur un echec). En cas de réussite, la quête passera à l''étape suivante.',
            'Liberez nous du joug de [2], achevez-en au moins [3] monstres par vous même.');
 
-truncate table quetes.aquete_perso;
-truncate table quetes.aquete_perso_journal;
-delete from quetes.aquete_element where aqelem_aqperso_cod is not null;
+
+-- update perso_position set ppos_pos_cod = 62450 where ppos_perso_cod = 7842876;
+-- update perso_position set ppos_pos_cod = 62480 where ppos_perso_cod = 7842877;
+
+
+update perso_position set ppos_pos_cod = 62450 where ppos_perso_cod=2909
+update perso_position set ppos_pos_cod = 62480 where ppos_perso_cod = 2910;
+
