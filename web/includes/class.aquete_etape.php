@@ -309,7 +309,27 @@ class aquete_etape
 
         return $nom ;
     }
-        /**
+
+    /**
+     * charge l'élément en fonction de aqetape_etape_cod
+     * @global bdd_mysql $pdo
+     * @param int $aqetape_etape_cod
+     * @return $this|bool
+     */
+    function  chargeBy_aqetape_etape_cod(int $aqetape_etape_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select aqetape_cod  from quetes.aquete_etape where aqetape_etape_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($aqetape_etape_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        $this->charge($result["aqetape_cod"]);
+
+        return $this;
+    }
+
+    /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
      * @return \aquete_etape

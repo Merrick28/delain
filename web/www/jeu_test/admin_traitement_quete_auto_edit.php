@@ -158,6 +158,50 @@ case "ajoute_etape":
     // Rien à faire , la page de modification sera présentée en page pricipale
     break;
 
+case "deplace_etape":
+    $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
+    $etape1 = new aquete_etape;
+    $etape2 = new aquete_etape;
+    $etape3 = new aquete_etape;
+    if ( $_REQUEST["aqetape_cod"]*1!=0 )
+    {
+        if ($_REQUEST["move"]=="down")
+        {
+            $etape2->charge($_REQUEST["aqetape_cod"]*1 );
+            if ( $etape2->aqetape_etape_cod>0 )
+            {
+                $etape1->chargeBy_aqetape_etape_cod($etape2->aqetape_cod);
+                $etape3->charge($etape2->aqetape_etape_cod);
+
+                if ($etape3->aqetape_cod>0 && $etape1->aqetape_cod)
+                {
+                    $etape1->aqetape_etape_cod = $etape2->aqetape_etape_cod ;
+                    $etape2->aqetape_etape_cod = $etape3->aqetape_etape_cod ;
+                    $etape3->aqetape_etape_cod = $etape2->aqetape_cod ;
+                    $etape1->stocke();
+                    $etape2->stocke();
+                    $etape3->stocke();
+                }
+            }
+        }
+        else if ($_REQUEST["move"]=="up")
+        {
+            $etape3->charge($_REQUEST["aqetape_cod"]*1);
+            if ($etape2->chargeBy_aqetape_etape_cod($etape3->aqetape_cod))
+            {
+                if ($etape1->chargeBy_aqetape_etape_cod($etape2->aqetape_cod))
+                {
+                    $etape1->aqetape_etape_cod = $etape2->aqetape_etape_cod ;
+                    $etape2->aqetape_etape_cod = $etape3->aqetape_etape_cod ;
+                    $etape3->aqetape_etape_cod = $etape2->aqetape_cod ;
+                    $etape1->stocke();
+                    $etape2->stocke();
+                    $etape3->stocke();
+                }
+            }
+        }
+    }
+    break;
 default:
     echo 'Méthode inconnue: [' , $methode , ']';
 }

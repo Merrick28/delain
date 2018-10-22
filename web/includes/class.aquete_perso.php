@@ -630,7 +630,7 @@ class aquete_perso
                     break;
 
                 case "#MONSTRE #ARMEE":
-                    // Génération de monstre selon le critère d'tage sur un perso
+                    // Génération de monstre selon le critère d'étage sur un perso
                     $this->action->monstre_armee($this);
                     $status_etape = 1;      // 1 => ok etape suivante (etape auto-validé)
                     break;
@@ -638,10 +638,15 @@ class aquete_perso
                 case "#TUER #PERSO":
                     // Le joueur doit tuer des persos.
                     $result = $this->action->tuer_perso($this) ;
+                    echo "<pre>"; print_r($result); echo "</pre>";
                     if ($result->status)
                     {
                         //L'étape est terminée, mais elle peu echouer
-                        if ($result->etape<0)
+                        if ($result->etape==0)
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                        }
+                        else if ($result->etape<0)
                         {
                             $status_etape = $result->etape ;          // fin de la quete sur succes ou echec
                         }

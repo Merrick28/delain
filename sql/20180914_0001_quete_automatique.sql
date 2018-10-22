@@ -449,11 +449,3 @@ INSERT INTO quetes.aquete_etape_modele(
            '|C''est l''étape vers laquelle sera envoyée le joueur si celle-ci echoue. En fonction des paramètres, l''étape actuelle peut échouer si le joueur n''a pas pas achevé son nombre cible prevue (vous pouvez saisir -3, pour mettre fin à la quête sur un echec). En cas de réussite, la quête passera à l''étape suivante.',
            'Liberez nous du joug de [2], achevez-en au moins [3] monstres par vous même.');
 
-
--- update perso_position set ppos_pos_cod = 62450 where ppos_perso_cod = 7842876;
--- update perso_position set ppos_pos_cod = 62480 where ppos_perso_cod = 7842877;
-
-
-update perso_position set ppos_pos_cod = 62450 where ppos_perso_cod=2909
-update perso_position set ppos_pos_cod = 62480 where ppos_perso_cod = 2910;
-

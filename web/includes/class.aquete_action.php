@@ -665,8 +665,6 @@ class aquete_action
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                              // Problème lecture des paramètres
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                // Problème lecture des paramètres
 
-        shuffle($p4);                                       // ordre aléatoire pour les monstres
-
         $nbmonstre = $p1->aqelem_param_num_1 ;
 
         // Vérification sur le nombre d'objet

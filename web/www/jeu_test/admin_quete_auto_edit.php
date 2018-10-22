@@ -123,10 +123,19 @@ if ($erreur == 0)
 
             if ( $etapes)
             {
+                $tag=date("mdHis");
                 foreach ($etapes as $k => $etape)
                 {
                     $etape_modele = new aquete_etape_modele;
                     $etape_modele->charge($etape->aqetape_aqetapmodel_cod);    // On charge le modele de l'étape.
+
+
+                    echo '<div id="etape-'.$etape->aqetape_cod.'" style="display: flex;"><div style="width: 30px;">';
+                    if ($k>1)
+                        echo '<a href="?methode=deplace_etape&tag='.$tag.'&move=up&aquete_cod='.$aquete_cod.'&aqetape_cod='.$etape->aqetape_cod.'#etape-'.$etape->aqetape_cod.'"><img src="/images/up-24.png"></a><br><br>';
+                    if(($etape->aqetape_etape_cod!=0) && ($k>0))
+                        echo '<a href="?methode=deplace_etape&tag='.$tag.'&move=down&aquete_cod='.$aquete_cod.'&aqetape_cod='.$etape->aqetape_cod.'#etape-'.$etape->aqetape_cod.'"><img src="/images/down-24.png"></a>';
+                    echo '</div><div>';
 
                     echo '<form  method="post"><input type="hidden" id="etape-methode-'.$k.'" name="methode" value=""/>';
                     echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
@@ -134,7 +143,7 @@ if ($erreur == 0)
                     echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
                     echo "<font color='blue'>Etape #{$etape->aqetape_cod}:</font> <b>{$etape->aqetape_nom}</b> basée sur le modèle <b>{$etape_modele->aqetapmodel_nom}</b>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
-                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: darkgreen'>{$etape->aqetape_texte}</i><br>";
+                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: white'>{$etape->aqetape_texte}</i><br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     if ($k!=0 || sizeof($etapes)==1)
@@ -142,6 +151,7 @@ if ($erreur == 0)
                         echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     }
                     echo '</form>';
+                    echo '</div></div>';
 
                     if (($etape_modele->aqetapmodel_tag=="#CHOIX")||($etape_modele->aqetapmodel_tag=="#SAUT"))
                     {
@@ -169,13 +179,13 @@ if ($erreur == 0)
                         }
                     }
 
-                    if ($etape_modele->aqetapmodel_tag=="#END #OK")
-                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête avec Succès</b>&nbsp;&nbsp;</div>';
-                    else if ($etape_modele->aqetapmodel_tag=="#END #KO")
+
+                    if ($etape_modele->aqetapmodel_tag=="#END #KO")
                         echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête sur un Echec</b>&nbsp;&nbsp;</div>';
+                    else if ( ($etape_modele->aqetapmodel_tag=="#END #OK") || ($k == count($etapes)-1))
+                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête avec Succès</b>&nbsp;&nbsp;</div>';
                     else
                         echo '<hr>';
-
                 }
             }
 
