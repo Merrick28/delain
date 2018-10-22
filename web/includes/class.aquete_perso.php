@@ -638,7 +638,6 @@ class aquete_perso
                 case "#TUER #PERSO":
                     // Le joueur doit tuer des persos.
                     $result = $this->action->tuer_perso($this) ;
-                    echo "<pre>"; print_r($result); echo "</pre>";
                     if ($result->status)
                     {
                         //L'étape est terminée, mais elle peu echouer

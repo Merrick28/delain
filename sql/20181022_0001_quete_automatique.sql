@@ -91,3 +91,7 @@ COPY aquete_etape (aqetape_cod, aqetape_nom, aqetape_aquete_cod, aqetape_aqetapm
 14	#14: Gain - Recevoir un TITRE	1	13	\N	Vous recevez le titre de "Tueur du Seigneur Orgre"	15
 13	#13: Déplacement - Vers un PERSO	1	4	\N	Félicitation, vous avez libéré la zone de du seigneur ogre et de son armée.\r\nRetournez voir l'elfe noir.	14
 \.
+
+
+ALTER SEQUENCE quetes.seq_aqelem_cod RESTART WITH 241 ;
+ALTER SEQUENCE quetes.seq_aqetape_cod RESTART WITH 20 ;
