@@ -199,7 +199,7 @@ class aquete
 
         $pdo = new bddpdo;
         $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom from perso
-                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=? and perso_type_perso=1
                 join
                 (   -- liste des démarrages de quete sur un lieu specifique
                     select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod as pos_cod, lieu_nom as nom from quetes.aquete
