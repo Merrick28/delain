@@ -95,3 +95,4 @@ COPY aquete_etape (aqetape_cod, aqetape_nom, aqetape_aquete_cod, aqetape_aqetapm
 
 ALTER SEQUENCE quetes.seq_aqelem_cod RESTART WITH 241 ;
 ALTER SEQUENCE quetes.seq_aqetape_cod RESTART WITH 20 ;
+ALTER SEQUENCE quetes.seq_aqelem_cod RESTART WITH 2 ;
