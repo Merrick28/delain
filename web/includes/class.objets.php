@@ -327,6 +327,42 @@ class objets
                         ),$stmt);
         }
     }
+
+    /**
+     * Retourne une chaine de caractère qui est le libelle correspondant au type de l'objet
+     * @return string
+     */
+    function get_type_libelle()
+    {
+        $pdo = new bddpdo;
+        $req = "select tobj_libelle from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where gobj_cod = :obj_gobj_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->obj_gobj_cod),$stmt);
+        if (!$result = $stmt->fetch()) return "" ;
+
+        return $result["tobj_libelle"];
+    }
+
+    /**
+     * supprime l'enregistrement de objets
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
+     * @return boolean => false pas réussi a supprimer
+     */
+    function supprime($code="")
+    {
+        if ($code=="") $code = $this->obj_cod;
+        $code = 1 * $code ; // on en prepare pas la requete, on s'assure quand même que code est un entier !
+        if ($code==0) return false;
+
+        $pdo    = new bddpdo;
+        $req    = "select f_del_objet(:obj_cod); ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $code),$stmt);
+        return true;
+    }
+
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
@@ -356,7 +392,7 @@ class objets
                     $retour = array();
                     $pdo = new bddpdo;
                     $req = "select obj_cod  from objets where " . substr($name, 6) . " = ? order by obj_cod";
-                   $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array($arguments[0]),$stmt);
                     while($result = $stmt->fetch())
                     {

@@ -732,3 +732,23 @@ div#colonne1:hover   {
 	margin: 0px 0px 0px -16px;
 	height: 14px;
 }
+
+/* affichage specifique quete */
+.hr {
+	display: flex;
+	align-items: center;
+	margin: 1em 0;
+}
+.hr::before, .hr::after {
+	content: '';
+	flex: 1;
+	display: block;
+	unicode-bidi: isolate;
+	margin-block-start: 0.5em;
+	margin-block-end: 0.5em;
+	margin-inline-start: auto;
+	margin-inline-end: auto;
+	overflow: hidden;
+	border-style: inset;
+	border-width: 1px;
+}

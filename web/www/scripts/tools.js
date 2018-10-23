@@ -172,3 +172,187 @@ function switch_menu(e)
       $("#colonne2").css({"margin-left": "0px" });
   }
 }
+
+
+//------------------------------------------------------------------------------------------------------------------
+//--- Outil d'aide à la selection d'un perso, lieu, monstre generique, etc....
+function getTableCod_update() { // fonction de mise à jour de la liste (voir jeu_test\ajax_request.php)
+    // recupe des paramètres
+    var params = {} ;
+    if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-etape-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-etape-aquete_cod" ).val() ;
+    if ( $( "#spop-tablecod-etape-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-etape-aqetape_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-element-aqetape_cod" ).val() ;
+    if ( $( "#spop-tablecod-element-aqelem_type" ).length ) params.aqelem_type = $( "#spop-tablecod-element-aqelem_type" ).val() ;
+
+    //executer le service asynchrone
+    runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
+        // Ici on récupère le nombre d'entrée et la liste de nom recherché (max 10) => affichage dans le popup
+        if (d.resultat == -1)
+        {
+            $("#spop-serchlist").html("<b>Erreur:</b> "+d.message);
+        }
+        else if (!d.data || !d.data.count)
+        {
+            $("#spop-serchlist").html("<b>Aucun élément ne correspond à la recherche.</b>");
+        }
+        else
+        {
+            var data = d.data.data ;
+            var content = "";
+            for (i in data) {
+                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</i>' : '' )+'<br>';
+            }
+            if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</i>';
+            $("#spop-serchlist").html(content);
+        }
+    });
+}
+
+function getTableCod(divname, table, titre, params)
+{
+    var options = "" ;
+    if (table=="perso"){
+        options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
+        options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
+        options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
+    } else if (table=="etape"){
+        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
+        options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
+        options += '<a style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</a> (-3)<br>';
+    } else if (table=="element") {
+        options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
+        options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
+        options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
+   }
+
+    $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
+                        '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
+                        '<div style="width:100%; background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">'+titre+'</div>' +
+                        '<br><div id="spop-serchlist" style="width:450px; height:180px; overflow:hidden; white-space:nowrap;">Faites une recherche.</div>' +
+                        '<br><i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
+                         options+
+                        '<br><center><input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+
+    $("#spop-tablecod-cherche").focus();
+    $("#spop-tablecod-cherche").keyup(getTableCod_update);
+
+
+    $(document).click(function (event) {
+        if (event.target.id == "spop-tablecod-cancel")
+        {
+            $(document).unbind("click");
+            $('#spop-tablecod').remove();
+        }
+        else if ( event.target.id.substr(0, 21) == "spop-tablecod-select-")
+        {
+            var element = $("#"+event.target.id);
+            $("#" + divname+"_cod").val (element.attr("data-spop-cod") );
+            $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
+            $("#" + divname+"_num_1").val (element.attr("data-spop-num1") );
+            $(document).unbind("click");
+            $('#spop-tablecod').remove();
+        }
+    });
+
+    getTableCod_update(); // Faire un premier chargement (pour avoir au moins 10 lignes
+
+}
+
+function setNomByTableCod(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
+    //executer le service asynchrone
+    $("#"+divname).text("");
+    runAsync({request: "get_table_nom", data:{table:table, cod:cod}}, function(d){
+        if ((d.resultat == 0)&&(d.data)&&(d.data.nom))
+        {
+            $("#"+divname).text(d.data.nom);
+        }
+    });
+}
+
+function  addQueteAutoParamRow(elem, M)
+{
+    if ((elem.parent().find("tr[id^='row-']").length<M) || (M == 0))
+    {
+
+        var row = elem[0].id ;
+        var s = row.split('-') ;
+        var r = (1+1*s[2]);
+        var new_row = s[0]+'-'+s[1]+'-'+r+'-';
+        var new_elem = '<tr id="'+new_row+'" style="display: block;">'+elem.html().replace(new RegExp(row,'g'), new_row)+'</tr>';
+        $(new_elem).insertAfter(elem);
+
+        //Maintenant que l'élément est inséré, on raz les valeurs parasites qui ont été dupliquées de la précédente entrée
+        $('*[id^="'+new_row+'"]').each(function( index ) {
+            if ($( this ).attr("data-entry"))
+            {
+                if ($( this ).attr("data-entry") == "val")
+                {
+                    $( this ).val("");
+                }
+                else if ($( this ).attr("data-entry") == "text")
+                {
+                    $( this ).text("");
+                }
+            }
+        });
+    }
+    else
+    {
+        alert('Il ne doit pas y avoir plus de '+M+' valeur(s) pour ce paramètre!')
+    }
+}
+
+function  delQueteAutoParamRow(elem, n)
+{
+    var min = (n>0 ? n : 1) ;
+    if ( elem.parent().find("tr[id^='row-']").length > min  )
+    {
+        elem.remove();
+    }
+    else
+    {
+        alert('Il doit rester au moins '+min+' valeur(s) pour ce paramètre!')
+    }
+}
+
+function  switchQueteAutoParamRow(param, type)
+{
+    var t= $("#alt-type-"+param).val();
+    if (t=="element")
+    {
+        // switcher vers perso/obj, lieu/, etc...
+        $('tr[id^="alt-'+param+'"]').css("display","none");
+        $('tr[id^="row-'+param+'-"]').css("display","block");
+        $('tr[id^="add-row-'+param+'-"]').css("display","block");
+        $("#alt-type-"+param).val(type);
+    }
+    else
+    {
+        // switcher vers element.
+        $('tr[id^="alt-'+param+'"]').css("display","block");
+        $('tr[id^="row-'+param+'-"]').css("display","none");
+        $('tr[id^="add-row-'+param+'-"]').css("display","none");
+        $("#alt-type-"+param).val("element");
+    }
+}
+
+function  setQuetePositionCod(rowid)
+{
+    var pos_x = 1*$('#'+rowid+'aqelem_param_num_1').val();
+    var pos_y = 1*$('#'+rowid+'aqelem_param_num_2').val();
+    var pos_etage = 1*$('#'+rowid+'aqelem_param_num_3').val();
+    runAsync({request: "get_table_info", data:{info:"pos_cod", pos_x:pos_x, pos_y:pos_y, pos_etage:pos_etage}}, function(d){
+        if ((d.resultat == 0)&&(d.data)&&(d.data.pos_cod))
+        {
+            $('#'+rowid+'aqelem_misc_cod').val(d.data.pos_cod);
+        }
+    });
+
+}

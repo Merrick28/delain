@@ -177,6 +177,250 @@ switch($_REQUEST["request"])
             $resultat["message"] = "<font color='#191970'>Le décor $decor_id n'est pas utilisé</font>" ;
         break;
 
+    //==============================================================================
+    case "get_table_cod":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
+
+        $recherche = $_REQUEST["recherche"];
+        $table = $_REQUEST["table"];
+        $params = $_REQUEST["params"];
+
+        switch ($table) {
+        case 'perso':
+            $filter = "";
+            if ($params["perso_pnj"]=="true") $filter .= "and perso_pnj=1 ";
+            if ($params["perso_monstre"]!="true") $filter .= "and perso_type_perso<>2 ";
+            if ($params["perso_fam"]!="true") $filter .= "and perso_type_perso<>3 ";
+
+            // requete de comptage
+            $req = "select count(*) from perso where perso_nom ilike ? and perso_actif='O' {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select perso_cod cod, perso_nom nom from perso where perso_nom ilike ? and perso_actif='O' {$filter} ORDER BY perso_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'lieu':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from lieu where lieu_nom ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select lieu_cod cod, lieu_nom nom from lieu where lieu_nom ilike ?  {$filter} ORDER BY lieu_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'objet_generique':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(tobj_libelle || ' ' || gobj_nom ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select gobj_cod cod, gobj_nom || ' (' || tobj_libelle || ')' nom from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ORDER BY gobj_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
+        case 'monstre_generique':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(gmon_nom ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from monstre_generique where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
+        case 'lieu_type':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from lieu_type where tlieu_libelle ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'etape':
+            $filter = "";
+            if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
+            if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"]);
+
+            // requete de comptage
+            $req = "select count(*) from quetes.aquete_etape where aqetape_nom ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select aqetape_cod cod, aqetape_nom nom from quetes.aquete_etape where aqetape_nom ilike ? {$filter} ORDER BY aqetape_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'element':
+            // On va utiliser ce paramètre sans le passer par le pdo, il faut s'assurer qu'il fait bien partie des valeurs attendue)
+            // Il y aurait un risque d'injection de coe sql si on ne le faisait pas.;
+            $aquete_cod = 1*$params["aquete_cod"] ;
+            $aqetape_cod = 1*$params["aqetape_cod"] ;
+            $aqelem_type = $params["aqelem_type"] ;
+            if ($aqelem_type!="" and !in_array($aqelem_type, array("perso", "lieu", "type_lieu", "objet_generique", "monstre_generique", "position")))  die('{"resultat":-1, "message":"aqelem_type type non supporté dans get_table_cod"}');
+
+            if ($aqelem_type=="perso")  // cas particulier, le monstre generique est aussi un perso!
+                $filter_type =  "aqelem_type in ('perso','monstre_generique')";
+            else
+                $filter_type =  "(aqelem_type='{$aqelem_type}' OR '{$aqelem_type}'='')" ;
+
+            // requete de comptage
+            $req = "SELECT count(*) FROM (
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' paramètre #' || aqelem_param_id::text as nom, aqelem_type as info
+                        from quetes.aquete_element 
+                        join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and {$filter_type} and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom, aqelem_type
+                    ) as filter WHERE  nom ilike ?
+            ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "SELECT * FROM (
+                        select aqelem_aqetape_cod cod , aqelem_param_id num1, aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom, aqelem_type as info 
+                        from quetes.aquete_element 
+                        join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod
+                        where aqelem_aquete_cod={$aquete_cod} and aqelem_aqperso_cod is null and {$filter_type} and aqelem_aqetape_cod<>{$aqetape_cod}
+                        group by aqelem_aqetape_cod, aqelem_param_id, aqetape_nom, aqelem_type
+                    ) as filter WHERE  nom ilike ?
+            ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+         default:
+             die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
+        }
+
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchall
+        $resultat = array("count" => $count, "data" => $result, "filter" =>$params);
+        break;
+
+    //==============================================================================
+    case "get_table_nom":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
+        $cod = $_REQUEST["cod"];
+        $table = $_REQUEST["table"];
+
+        switch ($table) {
+            case 'perso':
+                $req = "select perso_nom nom from perso where perso_cod = ? ";
+                break;
+            case 'lieu':
+                $req = "select lieu_nom nom from lieu where lieu_cod = ? ";
+                break;
+            case 'etape':
+                if ($cod==0)
+                    $req = "select 'Etape suivante' nom where ?=0 ";
+                else if ($cod==-1)
+                    $req = "select 'Quitter/Abandonner' nom where ?=-1 ";
+                else if ($cod==-2)
+                    $req = "select 'Terminer avec succès' nom where ?=-2 ";
+                else if ($cod==-3)
+                    $req = "select 'Echec de la quête' nom where ?=-3 ";
+                else
+                    $req = "select aqetape_nom nom from quetes.aquete_etape where aqetape_cod = ? ";
+                break;
+            case 'lieu_type':
+                $req = "select tlieu_libelle nom from lieu_type where tlieu_cod = ? ";
+                break;
+            case 'objet_generique':
+                $req = "select gobj_nom nom from objet_generique where gobj_cod = ? ";
+                break;
+            case 'monstre_generique':
+                $req = "select gmon_nom nom from monstre_generique where gmon_cod = ? ";
+                break;
+            case 'element':
+                $req = "select aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom from quetes.aquete_element join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod where aqelem_cod = ? ";
+                break;
+            default:
+                die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
+        }
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($cod), $stmt);
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+        break;
+
+    //==============================================================================
+    case "get_table_info":
+    //==============================================================================================
+        verif_admin($pdo, $compt_cod);      // Droit admin/monstre requis !
+        $info = $_REQUEST["info"];
+
+        switch ($info) {
+            case 'pos_cod':
+                //$req = "select pos_cod from positions left outer join murs on mur_pos_cod = pos_cod where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $req = "select pos_cod from positions where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                break;
+            default:
+                die('{"resultat":-1, "message":"table inconne dans get_table_info"}');
+        }
+
+        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+        break;
+
     //==============================================================================================
     default:
     //==============================================================================================
@@ -187,11 +431,19 @@ switch($_REQUEST["request"])
 // Output si réussi!
 die('{"resultat":0, "data":'.json_encode($resultat ).'}');
 
-function verif_admin($pdo, $compt_cod, $droit)
+function verif_admin($pdo, $compt_cod, $droit="")
 {
     // Attention la variable $droit peut-être injectée dans le code sql sans risque SI elle est toujours fourni en interne
     // NE JAMAIS PRENDRE UNE VALEUR FOURNIE PAR $_GET, $_POST ou $_REQUEST
-    $req = "select count(*) count from compt_droit where dcompt_compt_cod =? and $droit = 'O'";
+    // Si droit n'est pas fourni, on verifi un droit admin ou monstre
+    if ($droit != "")
+    {
+        $req = "select count(*) count from compt_droit where dcompt_compt_cod =? and $droit = 'O'";
+    }
+    else
+    {
+        $req = "select count(*) count from compte where compt_cod =? and (compt_admin='O' OR compt_monstre='O') ";
+    }
     $stmt = $pdo->prepare($req);
     $stmt = $pdo->execute(array( $compt_cod ), $stmt);
     $row = $stmt->fetch();

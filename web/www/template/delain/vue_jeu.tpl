@@ -4,15 +4,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20180711" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20181022" title="essai">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20180711" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20181022" rel="stylesheet">
 
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
-		<script src="{URL}scripts/ajax2.js?v20180711" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js?v20180711" type="text/javascript"></script>
-		<script src="{URL}scripts/delain.js?v20180711" type="text/javascript"></script>
+		<script src="{URL}scripts/ajax2.js?v20181022" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20181022" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v20181022" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 
 	</head>
@@ -59,6 +59,7 @@
         <hr><img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
 		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
+        {PERSO_AUTO_QUETE}
 		<hr />
 
 		<img src="{URL_IMAGES}inventaire.gif" alt=""> <a href="{URL_RELATIVE}inventaire.php">Inventaire</a><br>

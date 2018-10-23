@@ -918,7 +918,7 @@ class perso
             $stmt2 = $pdo->execute(array(),$stmt2);
             $result2 = $stmt2->fetch();
 
-            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2[cout_pa]." PA)", "link" => $result["pfav_link"] );
+            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2["cout_pa"]." PA)", "link" => $result["pfav_link"] );
         }
         return $retour;
     }
@@ -1149,6 +1149,7 @@ class perso
         return $result['armure'];
     }
 
+    // Retourne vrai si le perso est sur un endroit permettant le démarrage d'une nouvelle quête (quete auto ou standard)
     function is_perso_quete()
     {
         $pdo  = new bddpdo;
@@ -1163,7 +1164,20 @@ class perso
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
         $result = $stmt->fetch();
-        return $result['nombre'] != 0;
+
+        if ($result['nombre'] != 0) return true;        // il y a des quetes traditionnelles
+
+        // Verification quete auto
+        $quete = new aquete;
+        $tab_quete = $quete->get_debut_quete($this->perso_cod);
+        return sizeof($tab_quete["quetes"])>0;
+    }
+
+    // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
+    function perso_nb_auto_quete()
+    {
+        $quete = new aquete_perso;
+        return ($quete->get_perso_nb_quete($this->perso_cod)) ;       // retourn un tableau nb_encours,nb_total
     }
 
     function get_lieu()

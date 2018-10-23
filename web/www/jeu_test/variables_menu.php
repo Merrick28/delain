@@ -205,6 +205,18 @@ else
 }
 $t->set_var('PERSO_QUETE', $perso_quete);
 
+// Menu pour gérer les quetes perso en cours ou terminée
+$nb_quete_auto=$perso->perso_nb_auto_quete();
+if ($nb_quete_auto["nb_total"]*1>0)
+{
+    $perso_auto_quete = "<img src=\"". G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes ".( 1*$nb_quete_auto["nb_encours"]>0 ? "(".$nb_quete_auto["nb_encours"].")" : "")."</a><br>";
+}
+else
+{
+    $perso_auto_quete = '';
+}
+$t->set_var('PERSO_AUTO_QUETE', $perso_auto_quete);
+
 // lieux
 $perso_lieu = "";
 if ($perso->is_lieu())

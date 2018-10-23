@@ -1,333 +1,206 @@
-<?php function readNumber($in)
-{
-    $ret = sprintf('%d' , $in);
-    if (empty($ret)) $ret = 0;
-    return $ret;
-}
+<?php
+// Un minimum de sécurité la page admin_traitement_quete_auto_edit.php pourrait être appelée en directe (sans vérification de compte)
+if(!defined("APPEL")) die("Erreur d’appel de page !");
 
 switch ($methode)
 {
-case 'update_quete': // cod==0 ou duplicata -> nouvelle
-    if (0 == $mod_quete_cod)
-    {
-        if (!isset($_POST['aquete_nom']) || $_POST['aquete_nom'] == '')
-        {
-            echo ' ERREUR: Pas de nom spécifié pour la quête';
-            break;
-        }
-        $aquete_nom = pg_escape_string(str_replace("''","\'",$_POST['aquete_nom']));
-        echo 'Création de la quête : ' , $aquete_nom ;
-        // Créer une étape finale
-        $eIdx = 1;
-        $db->query('select etape_cod from quetes.etape
-            order by etape_cod desc limit 1');
-        if ($db->next_record())
-        {
-            $eIdx = $db->f('etape_cod') + 1;
-        }
-        $db->query('insert into quetes.etape
-            (etape_cod, etape_nom)
-            values (' . $eIdx . ' , e\'FIN - ' . $aquete_nom . '\')');
-        // Créer une quête
-        $qIdx = 1;
-        $db->query('select aquete_cod from quetes.quete_automatique
-            order by aquete_cod desc limit 1');
-        if ($db->next_record())
-        {
-            $qIdx = $db->f('aquete_cod') + 1;
-        }
-        $db->query('insert into quetes.quete_automatique
-            (aquete_cod, aquete_nom, aquete_etape_cod)
-            values (' . $qIdx . ' , e\'' . $aquete_nom . '\' , ' . $eIdx . ')');
-        // Associer les deux
-        $aIdx = 1;
-        $db->query('select equete_cod from quetes.quete_automatique_etape
-            order by equete_cod desc limit 1');
-        if ($db->next_record())
-        {
-            $aIdx = $db->f('equete_cod') + 1;
-        }
-        $db->query('insert into quetes.quete_automatique_etape
-            (equete_cod , equete_aquete_cod , equete_etape_cod)
-            values (' . $aIdx . ' , ' . $qIdx . ' , ' . $eIdx . ')');
+case "sauve_quete":
+    //récupérer les paramètres
+    $quete = new aquete;
+    $new = true ;
+    if ( $_REQUEST["aquete_cod"]*1!=0 ) {
+        $new = false ;
+        $quete->charge($_REQUEST["aquete_cod"]);
     }
-    else if ($_POST['duplicata'] == 'duplicata')
+
+    $quete->aquete_nom = $_REQUEST["aquete_nom"];
+    $quete->aquete_description = $_REQUEST["aquete_description"];
+    $quete->aquete_actif = $_REQUEST["aquete_actif"];
+    $quete->aquete_date_debut = $_REQUEST["aquete_date_debut"] == "" ? NULL : $_REQUEST["aquete_date_debut"];
+    $quete->aquete_date_fin = $_REQUEST["aquete_date_fin"] == "" ? NULL : $_REQUEST["aquete_date_fin"];
+    $quete->aquete_nb_max_instance = $_REQUEST["aquete_nb_max_instance"] == "" ? NULL : $_REQUEST["aquete_nb_max_instance"];
+    $quete->aquete_nb_max_participant = $_REQUEST["aquete_nb_max_participant"] == "" ? NULL : $_REQUEST["aquete_nb_max_participant"];
+    $quete->aquete_nb_max_rejouable = $_REQUEST["aquete_nb_max_rejouable"] == "" ? NULL : $_REQUEST["aquete_nb_max_rejouable"];
+    $quete->aquete_nb_max_quete = $_REQUEST["aquete_nb_max_quete"] == "" ? NULL : $_REQUEST["aquete_nb_max_quete"];
+    $quete->aquete_max_delai = $_REQUEST["aquete_max_delai"] == "" ? NULL : $_REQUEST["aquete_max_delai"];
+
+    $quete->stocke($new);
+    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
+
+    echo "<font color='blue'>LOG => sauve_quete</font><br><hr>";
+    $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde retour à l'édition de la quete
+break;
+
+case "sauve_etape":
+    //récupérer les paramètres
+    //echo "<pre>"; print_r($_REQUEST);echo "</pre>"; die();
+
+    $quete = new aquete;                                // la quete de référence
+    $quete->charge($_REQUEST["aquete_cod"]);
+
+    $etape_modele = new aquete_etape_modele;       // etpape basée sur ce template
+    $etape_modele->charge($_REQUEST["aqetapmodel_cod"]);
+
+    // récupérer les paramètres de l'étape pour mise à jour
+    $etape = new aquete_etape;
+    $new = true ;
+    if ( $_REQUEST["aqetape_cod"]*1!=0 ) {
+        $new = false ;
+        $etape->charge($_REQUEST["aqetape_cod"]);
+    }
+    $etape->aqetape_nom = $_REQUEST['aqetape_nom'];
+    $etape->aqetape_aquete_cod = $_REQUEST["aquete_cod"];
+    $etape->aqetape_aqetapmodel_cod = $_REQUEST["aqetapmodel_cod"];
+    $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
+
+    // Cas particulier sur les étape choix, il faut obligatoirement un paramètre [1]
+    if (($etape_modele->aqetapmodel_tag == "#CHOIX")&& (strpos($etape->aqetape_texte, "[1]")===false))
     {
-        echo '[INVALIDE] Création de la quête :' , $_POST['aquete_nom'] ,
-            ' sur la base de la quête ' , $mod_quete_cod;
+            $etape->aqetape_texte.= "[1]";
+    }
+    else if (($etape_modele->aqetapmodel_tag == "#START")&& (strpos($etape->aqetape_texte, "[2]")===false))
+    {
+            $etape->aqetape_texte.= "[2]";
+    }
+    $etape->stocke($new);
+
+    // AJouter un nom à l'étape avec le code si le nom n'a pas été fournie
+    if ($etape->aqetape_nom=="")
+    {
+        $etape->aqetape_nom =  "#" . $etape->aqetape_cod . ": " . $etape_modele->aqetapmodel_nom ;
+        $etape->stocke();
+    }
+
+
+    // Agencement entre les étapes (chemin par defaut)
+    // Si c'est la première etape, il faut mettre à jour la quête sinon la dernière étape avant celle-ci
+    $deniere_etape = $quete->get_derniere_etape();
+    if ($etape_modele->aqetapmodel_tag == "#START")
+    {
+        // C'est la première etape, mettre à jour la quete
+        $quete->aquete_etape_cod = $etape->aqetape_cod ;
+        $quete->stocke();
     }
     else
     {
-        if (isset($_POST['aquete_nom']) && $_POST['aquete_nom'] != '')
-        {
-            echo 'Modification de la quête - Nouveau nom : ' , $_POST['aquete_nom'];
-            $req = 'update quetes.quete_automatique set aquete_nom = e\'' .
-                pg_escape_string(str_replace("''","\'",$_POST['aquete_nom'])) .
-                '\' where aquete_cod = ' . $mod_quete_cod;
-            $db->query($req);
-            $req = 'update quetes.etape set etape_nom = e\'FIN - ' .
-                pg_escape_string(str_replace("''","\'",$_POST['aquete_nom'])) .
-                '\' where etape_cod in (select etape_cod from quetes.etape,
-                quetes.quete_automatique_etape where equete_etape_cod = etape_cod
-                and etape_type_etape_cod = 0
-                and equete_aquete_cod = ' . $mod_quete_cod . ')';
-            $db->query($req);
-        }
-        else
-        {
-            echo 'Nouveau nom non défini !';
+        $deniere_etape = $quete->get_derniere_etape();
+
+        if (($deniere_etape->aqetape_cod != $etape->aqetape_cod ) && ($etape->aqetape_etape_cod == ''))
+    {
+            // On vient juste d'ajouter une etape, il faut mettre à jour la précédente avec le N° de celle-ci
+            $deniere_etape->aqetape_etape_cod = $etape->aqetape_cod ;
+            $deniere_etape->stocke();
         }
     }
+
+    // Sauvegarde des elements créés pour l'étape
+    $element_list = array();        // Liste des élement de l'etape, pour supprimer ceux qui ne son tplus utilisés
+    // Boucle sur les elements de l'etape à sauvegarder
+    foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
+    {
+        // chaque paramètres définir plusieurs élements
+        foreach ($types as $e => $type)
+        {
+            // Il y a certain element qui sont définit 2x en fonction du type, on ne garde qu'un seul type
+            if ((!isset($_REQUEST["element_type"][$param_id])) || ($_REQUEST["element_type"][$param_id]==$type))
+            {
+                $element = new aquete_element;
+                $new = true ;
+                $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
+                if ( $aqelem_cod != 0 ) {
+                    $new = false ;
+                    $element->charge($aqelem_cod);
+                }
+
+                $element->aqelem_aquete_cod = $quete->aquete_cod ;
+                $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
+                $element->aqelem_param_id = $param_id  ;
+                $element->aqelem_param_ordre = $e  ;
+                $element->aqelem_type = $type ;
+                $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
+                $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;
+                $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL ;
+                $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL ;
+                $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
+                $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
+                $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
+
+                //echo "<pre>"; print_r($element);echo "</pre>";
+                $element->stocke($new);
+                $element_list[] = $element->aqelem_cod ;
+            }
+        }
+    }
+
+    $element = new aquete_element;
+    $element->clean( $_REQUEST["aqetape_cod"], $element_list);        // supprimer tous les elements qui ne sont pas dans la liste.
+
+    echo "<font color='blue'>LOG => sauve_etape</font><br><hr>";
+
+    $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
+    $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde d'une etape, retour à l'édition de la quete
+break;
+
+
+case "supprime_etape":
+
+    $etape = new aquete_etape;
+    $etape->supprime($_REQUEST["aqetape_cod"]);
+
+    echo "<font color='blue'>LOG => supprime_etape</font><br><hr>";
+
+    $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
+break;
+
+case "edite_quete":
+case "edite_etape":
+case "ajoute_etape":
+    // Rien à faire , la page de modification sera présentée en page pricipale
     break;
-case 'cree_etape':
-    if ($mod_quete_cod == 0)
-    {
-        echo 'ERREUR: Aucune quête définie pour y rattacher l\'étape';
-        break;
-    }
-    // Crée l'étape
-    if (!isset($_POST['etape_nom']) || $_POST['etape_nom'] == '')
-    {
-        echo 'ERREUR: Nom de l\'étape non mentionné';
-        break;
-    }
-    if (!isset($_POST['etape_description']) || $_POST['etape_description'] == '')
-    {
-        echo 'ERREUR: Description de l\'étape non mentionnée';
-        break;
-    }
-    $etape_nom = pg_escape_string(str_replace("''","\'",$_POST['etape_nom']));
-    $etape_description = pg_escape_string(str_replace("''","\'",$_POST['etape_description']));
-    $eIdx = 1;
-    $db->query('select etape_cod from quetes.etape
-        order by etape_cod desc limit 1');
-    if ($db->next_record())
-    {
-        $eIdx = $db->f('etape_cod') + 1;
-    }
-    $db->query('insert into quetes.etape
-        (etape_cod, etape_nom, etape_description, etape_type_etape_cod)
-        values (' . $eIdx . ' , e\'' . $etape_nom . '\' ,
-            e\'' . $etape_description . '\' , ' . $_POST['etape_type_etape'] . ')');
-    
-    // On insère après la dernière étape
-    $reqEtapes = 'select quetes.liste_etapes_quete(' . $mod_quete_cod . ') as etapes';
-    $db->query($reqEtapes);
-    $db->next_record();
-    $etapes = explode(' ' , $db->f('etapes'));
-    $nEtapes = sizeof($etapes);
-    if ($nEtapes < 3)
-    {
-        // Première vraie étape. On accroche entre la quête et la fin.
-        $db->query('update quetes.quete_automatique
-            set aquete_etape_cod = ' . $eIdx .
-            ' where aquete_cod = ' . $mod_quete_cod);
-    }
-    else
-    {
-        // Sinon, on reroute la dernière vraie étape
-        $db->query('update quetes.quete_automatique_etape
-            set equete_etape_suivante = ' . $eIdx .
-            ' where equete_aquete_cod = ' . $mod_quete_cod .
-            ' and equete_etape_cod = ' . $etapes[$nEtapes - 3]);
-    }
 
-    // L'attache à la fin
-    $aIdx = 1;
-    $db->query('select equete_cod from quetes.quete_automatique_etape
-        order by equete_cod desc limit 1');
-    if ($db->next_record())
+case "deplace_etape":
+    $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
+    $etape1 = new aquete_etape;
+    $etape2 = new aquete_etape;
+    $etape3 = new aquete_etape;
+    if ( $_REQUEST["aqetape_cod"]*1!=0 )
     {
-        $aIdx = $db->f('equete_cod') + 1;
-    }
-    $db->query('insert into quetes.quete_automatique_etape
-        (equete_cod , equete_aquete_cod , equete_etape_cod , equete_etape_suivante)
-        values (' . $aIdx . ' , ' . $mod_quete_cod . ' , ' .
-            $eIdx . ' , ' . $etapes[$nEtapes - 2] . ')');
-    echo 'Étape ajoutée en fin de quête.';
-    break;
-case 'insere_etape': // Insère en fin, avant l'étape finQuete
-    echo '[INVALIDE] Pas encore disponible.';
-    break;
-case 'modif_etape':
-    $etape_nom = pg_escape_string(str_replace("''","\'",$_POST['etape_nom']));
-    $etape_description = pg_escape_string(str_replace("''","\'",$_POST['etape_description']));
-    $etape_cod = $_POST['etape_cod'];
-    $etape_type_etape_cod = $_POST['etape_type_etape'];
-    $etape_parametres = pg_escape_string(str_replace("''","\'",$_POST['etape_parametres']));
-    $recompense_cod = $_POST['recompense_cod'];
-    $recompense_pp = readNumber($_POST['recompense_pp']);
-    $recompense_br = readNumber($_POST['recompense_br']);
-    $recompense_px = readNumber($_POST['recompense_px']);
-    $recompense_objets = pg_escape_string(str_replace("''","\'",$_POST['recompense_objets']));
+        if ($_REQUEST["move"]=="down")
+        {
+            $etape2->charge($_REQUEST["aqetape_cod"]*1 );
+            if ( $etape2->aqetape_etape_cod>0 )
+            {
+                $etape1->chargeBy_aqetape_etape_cod($etape2->aqetape_cod);
+                $etape3->charge($etape2->aqetape_etape_cod);
 
-    if ($recompense_cod == 0)
-    {
-        $recompense_cod = 1;
-        $db->query('select recompense_cod from quetes.recompense
-            order by recompense_cod desc limit 1');
-        if ($db->next_record())
-            $recompense_cod = $db->f('recompense_cod') + 1;
-        $db->query('insert into quetes.recompense
-            (recompense_cod, recompense_pp, recompense_brouzoufs, recompense_px,
-             recompense_objets)
-             values (' . $recompense_cod . ' , ' . $recompense_pp . ' , ' .
-                $recompense_br . ' , ' . $recompense_px . ' , e\'' . $recompense_objets . '\')');
+                if ($etape3->aqetape_cod>0 && $etape1->aqetape_cod)
+                {
+                    $etape1->aqetape_etape_cod = $etape2->aqetape_etape_cod ;
+                    $etape2->aqetape_etape_cod = $etape3->aqetape_etape_cod ;
+                    $etape3->aqetape_etape_cod = $etape2->aqetape_cod ;
+                    $etape1->stocke();
+                    $etape2->stocke();
+                    $etape3->stocke();
+                }
+            }
+        }
+        else if ($_REQUEST["move"]=="up")
+        {
+            $etape3->charge($_REQUEST["aqetape_cod"]*1);
+            if ($etape2->chargeBy_aqetape_etape_cod($etape3->aqetape_cod))
+            {
+                if ($etape1->chargeBy_aqetape_etape_cod($etape2->aqetape_cod))
+                {
+                    $etape1->aqetape_etape_cod = $etape2->aqetape_etape_cod ;
+                    $etape2->aqetape_etape_cod = $etape3->aqetape_etape_cod ;
+                    $etape3->aqetape_etape_cod = $etape2->aqetape_cod ;
+                    $etape1->stocke();
+                    $etape2->stocke();
+                    $etape3->stocke();
+                }
+            }
+        }
     }
-    else
-    {
-        $db->query('update quetes.recompense set
-            recompense_pp = ' . $recompense_pp . ' ,
-            recompense_brouzoufs = ' . $recompense_br . ' ,
-            recompense_px = ' . $recompense_px . ' ,
-            recompense_objets = e\'' . $recompense_objets . '\'
-            where recompense_cod = ' . $recompense_cod);
-    }
-    $db->query('update quetes.etape set
-        etape_nom = e\'' . $etape_nom . '\' ,
-        etape_description = e\'' . $etape_description . '\' ,
-        etape_type_etape_cod = ' . $etape_type_etape_cod . ' ,
-        etape_parametres = e\'' . $etape_parametres. '\' ,
-        etape_recompense_cod = ' . $recompense_cod . '
-        where etape_cod = ' . $etape_cod);
-    echo 'Étape mise à jour.';
-    break;
-case 'monte_etape':
-    $etape_cod = $_GET['etape'];
-    $quete_cod = $_GET['quete'];
-    // Schema initial: p2->p1->cod->suiv
-    // Schema final: p2->cod->p1->suiv
-
-    // Première précédente
-    $req = 'select equete_etape_cod from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_suivante = ' . $etape_cod;
-    $db->query($req);
-    if (!$db->next_record())
-    {   // Pas de quete précédente
-        echo 'Erreur: Impossible de déplacer cette étape.';
-        break;
-    }
-    $etape_p1 = $db->f('equete_etape_cod'); // Première précédente, change de place
-
-    // Suivante
-    $req = 'select equete_etape_suivante from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_cod = ' . $etape_cod;
-    $db->query($req);
-    if (!$db->next_record() || $db->f('equete_etape_suivante') == 0)
-    {   // Pas de quete suivante
-        echo 'Erreur: La dernière étape doit rester en fin !';
-        break;
-    }
-    $etape_suiv = $db->f('equete_etape_suivante'); // Nouvelle destination de p1
-
-    // Seconde précédente
-    $req = 'select equete_etape_cod from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_suivante = ' . $etape_p1;
-    $db->query($req);
-    $change_tete = false;
-    $etape_p2 = 0;
-    if (!$db->next_record())
-    {
-        // La seconde précédente est la tête de liste
-        $change_tete = true;
-    }
-    else
-    {
-        $etape_p2 = $db->f('equete_etape_cod');
-    }
-
-    // On sort etape_cod de la liste, en faisant pointer p1 sur suiv
-    $db->query('update quetes.quete_automatique_etape
-        set equete_etape_suivante = ' . $etape_suiv . '
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_cod = ' . $etape_p1);
-
-    // On fait maintenant pointer etape_cod sur p1, toujours hors liste
-    $db->query('update quetes.quete_automatique_etape
-        set equete_etape_suivante = ' . $etape_p1 . '
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_cod = ' . $etape_cod);
-
-    // Enfin, on fait pointer p2 sur cod, pour finir la réinsertion
-    if ($change_tete)
-    {
-        $db->query('update quetes.quete_automatique
-            set aquete_etape_cod = ' . $etape_cod . '
-            where aquete_cod = ' . $quete_cod);
-    }
-    else
-    {
-        $db->query('update quetes.quete_automatique_etape
-            set equete_etape_suivante = ' . $etape_cod . '
-            where equete_aquete_cod = ' . $quete_cod . '
-            and equete_etape_cod = ' . $etape_p2);
-    }
-    echo 'Étape déplacee';
-    break;
-case 'supprime_etape':
-    $etape_cod = $_GET['etape'];
-    $quete_cod = $_GET['quete'];
-    // Schema initial: p2->p1->cod->suiv
-    // Schema final: p2->p1->suiv
-
-    // Suivante
-    $req = 'select equete_etape_suivante from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_cod = ' . $etape_cod;
-    $db->query($req);
-    if (!$db->next_record())
-    {   // Pas dans la quete
-        echo 'Erreur: Cette étape n\'est pas dans la quête choisie.';
-        break;
-    }
-    else if ($db->f('equete_etape_suivante') == 0)
-    {   // Pas de quete suivante
-        echo 'Erreur: La dernière étape ne peut être supprimée !';
-        break;
-    }
-    $etape_suiv = $db->f('equete_etape_suivante'); // Nouvelle destination de p1
-
-    // Étape précédente
-    $req = 'select equete_etape_cod from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_suivante = ' . $etape_cod;
-    $db->query($req);
-    $change_tete = false;
-    $etape_p1 = 0;
-    if (!$db->next_record())
-    {
-        // La précédente est la tête de liste
-        $change_tete = true;
-    }
-    else
-    {
-        $etape_p1 = $db->f('equete_etape_cod');
-    }
-
-    // On fait pointer p1 sur suiv
-    if ($change_tete)
-    {
-        $db->query('update quetes.quete_automatique
-            set aquete_etape_cod = ' . $etape_suiv . '
-            where aquete_cod = ' . $quete_cod);
-    }
-    else
-    {
-        $db->query('update quetes.quete_automatique_etape
-            set equete_etape_suivante = ' . $etape_suiv . '
-            where equete_aquete_cod = ' . $quete_cod . '
-            and equete_etape_cod = ' . $etape_p1);
-    }
-
-    // On sort etape_cod de la quete
-    $db->query('delete from quetes.quete_automatique_etape
-        where equete_aquete_cod = ' . $quete_cod . '
-        and equete_etape_cod = ' . $etape_cod);
-
-    echo 'Étape supprimée';
     break;
 default:
     echo 'Méthode inconnue: [' , $methode , ']';
