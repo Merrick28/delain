@@ -1,6 +1,0 @@
-
-  function verifform()
-  {
-	if(document.formuperso1.nom.value == "")
-    {
-    	alert("Etes vous sur de na pas vouloir donner de nom 

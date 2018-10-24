@@ -2,6 +2,27 @@
 // Un minimum de sécurité la page admin_traitement_quete_auto_edit.php pourrait être appelée en directe (sans vérification de compte)
 if(!defined("APPEL")) die("Erreur d’appel de page !");
 
+
+// Préparation du log
+$log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) ";
+
+// retourne les diference entre 2 objets pour mettre dans le log
+function obj_diff($obj1, $obj2, $texte="")
+{
+    $class_vars = get_class_vars(get_class($obj1));
+    $diff = "" ;
+    // la premère variable est la PK (primary key) on s'en passe
+    $is_pk = true ;
+    foreach ($class_vars as $name => $value) {
+        if ((!$is_pk) && ($obj1->$name!=$obj2->$name)) $diff.= "      {$name} : {$obj1->$name} => {$obj2->$name}\n";
+        $is_pk = false ;
+    }
+    if ($diff!="") $diff = $texte.$diff ;
+    return $diff;
+}
+
+//==================================================================================================================
+// Traitement de données en focntion de la methode
 switch ($methode)
 {
 case "sauve_quete":
@@ -12,6 +33,7 @@ case "sauve_quete":
         $new = false ;
         $quete->charge($_REQUEST["aquete_cod"]);
     }
+    $clone_q = clone $quete;
 
     $quete->aquete_nom = $_REQUEST["aquete_nom"];
     $quete->aquete_description = $_REQUEST["aquete_description"];
@@ -27,7 +49,11 @@ case "sauve_quete":
     $quete->stocke($new);
     $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
 
-    echo "<font color='blue'>LOG => sauve_quete</font><br><hr>";
+    // Logger les infos pour suivi admin
+    $log.="ajoute/modifie la quete auto #".$quete->aquete_cod."\n".obj_diff($clone_q, $quete);
+    writelog($log,'quete_auto');
+    echo "<div class='bordiv'><pre>$log</pre></div>";
+
     $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde retour à l'édition de la quete
 break;
 
@@ -48,6 +74,8 @@ case "sauve_etape":
         $new = false ;
         $etape->charge($_REQUEST["aqetape_cod"]);
     }
+    $clone_e = clone $etape ;     /// pour le log
+
     $etape->aqetape_nom = $_REQUEST['aqetape_nom'];
     $etape->aqetape_aquete_cod = $_REQUEST["aquete_cod"];
     $etape->aqetape_aqetapmodel_cod = $_REQUEST["aqetapmodel_cod"];
@@ -94,48 +122,64 @@ case "sauve_etape":
     }
 
     // Sauvegarde des elements créés pour l'étape
+    $log_elements = ""; // pour loger la différence sur les éléments
     $element_list = array();        // Liste des élement de l'etape, pour supprimer ceux qui ne son tplus utilisés
     // Boucle sur les elements de l'etape à sauvegarder
-    foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
+    if (is_array($_REQUEST['aqelem_type']))
     {
-        // chaque paramètres définir plusieurs élements
-        foreach ($types as $e => $type)
+        foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
         {
-            // Il y a certain element qui sont définit 2x en fonction du type, on ne garde qu'un seul type
-            if ((!isset($_REQUEST["element_type"][$param_id])) || ($_REQUEST["element_type"][$param_id]==$type))
+            // chaque paramètres définir plusieurs élements
+            foreach ($types as $e => $type)
             {
-                $element = new aquete_element;
-                $new = true ;
-                $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
-                if ( $aqelem_cod != 0 ) {
-                    $new = false ;
-                    $element->charge($aqelem_cod);
+                // Il y a certain element qui sont définit 2x en fonction du type, on ne garde qu'un seul type
+                if ((!isset($_REQUEST["element_type"][$param_id])) || ($_REQUEST["element_type"][$param_id]==$type))
+                {
+                    $element = new aquete_element;
+                    $new = true ;
+                    $aqelem_cod = 1*( $_REQUEST["aqelem_cod"][$param_id][$e] ) ;
+                    if ( $aqelem_cod != 0 ) {
+                        $new = false ;
+                        $element->charge($aqelem_cod);
+                    }
+                    $clone_elem = clone $element ;
+
+                    $element->aqelem_aquete_cod = $quete->aquete_cod ;
+                    $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
+                    $element->aqelem_param_id = $param_id  ;
+                    $element->aqelem_param_ordre = $e  ;
+                    $element->aqelem_type = $type ;
+                    $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
+                    $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;
+                    $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL ;
+                    $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL ;
+                    $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
+                    $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
+                    $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
+
+                    //echo "<pre>"; print_r($element);echo "</pre>";
+                    $element->stocke($new);
+                    $element_list[] = $element->aqelem_cod ;
+                    $log_elements .= obj_diff($clone_elem,$element, "Ajout/Modification element #".$element->aqelem_cod."\n");
                 }
-
-                $element->aqelem_aquete_cod = $quete->aquete_cod ;
-                $element->aqelem_aqetape_cod = $etape->aqetape_cod ;
-                $element->aqelem_param_id = $param_id  ;
-                $element->aqelem_param_ordre = $e  ;
-                $element->aqelem_type = $type ;
-                $element->aqelem_misc_cod = 1*$_REQUEST["aqelem_misc_cod"][$param_id][$e];
-                $element->aqelem_param_num_1 = isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]) ? 1*$_REQUEST["aqelem_param_num_1"][$param_id][$e] : NULL ;
-                $element->aqelem_param_num_2 = isset($_REQUEST["aqelem_param_num_2"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_2'][$param_id][$e] : NULL ;
-                $element->aqelem_param_num_3 = isset($_REQUEST["aqelem_param_num_3"][$param_id][$e]) ? 1*$_REQUEST['aqelem_param_num_3'][$param_id][$e] : NULL ;
-                $element->aqelem_param_txt_1 = $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
-                $element->aqelem_param_txt_2 = $_REQUEST['aqelem_param_txt_2'][$param_id][$e];
-                $element->aqelem_param_txt_3 = $_REQUEST['aqelem_param_txt_3'][$param_id][$e];
-
-                //echo "<pre>"; print_r($element);echo "</pre>";
-                $element->stocke($new);
-                $element_list[] = $element->aqelem_cod ;
             }
         }
     }
 
     $element = new aquete_element;
-    $element->clean( $_REQUEST["aqetape_cod"], $element_list);        // supprimer tous les elements qui ne sont pas dans la liste.
+    if ($result = $element->clean( $_REQUEST["aqetape_cod"], $element_list))        // supprimer tous les elements qui ne sont pas dans la liste.
+    {
+        // Logguer les supressions
+        foreach ($result as $k => $e)
+        {
+            $log_elements.="Suppression element #".$e->aqelem_cod."\n".obj_diff($element, $e);
+        }
+    }
 
-    echo "<font color='blue'>LOG => sauve_etape</font><br><hr>";
+    // Logger les infos pour suivi admin
+    $log.="ajoute/modifie l'étape #".$etape->aqetape_cod." de la quete auto #".$quete->aquete_cod."\n".obj_diff($clone_e, $etape).$log_elements;
+    writelog($log,'quete_auto');
+    echo "<div class='bordiv'><pre>$log</pre></div>";
 
     $aquete_cod = $quete->aquete_cod ;  // rerendre l'id (pour le cas de la création)
     $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde d'une etape, retour à l'édition de la quete
@@ -147,7 +191,10 @@ case "supprime_etape":
     $etape = new aquete_etape;
     $etape->supprime($_REQUEST["aqetape_cod"]);
 
-    echo "<font color='blue'>LOG => supprime_etape</font><br><hr>";
+    // Logger les infos pour suivi admin
+    $log.="supprime l'étape #".$etape->aqetape_cod." de la quete auto #".$etape->aqetape_aquete_cod."\n".obj_diff(new aquete_etape, $etape);
+    writelog($log,'quete_auto');
+    echo "<div class='bordiv'><pre>$log</pre></div>";
 
     $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
 break;
