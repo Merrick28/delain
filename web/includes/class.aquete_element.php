@@ -232,11 +232,23 @@ class aquete_element
         }
         
         $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "SELECT * from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new aquete_element;
+            $temp->charge($result["aqelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
         $req    = "DELETE from quetes.aquete_element where aqelem_aqetape_cod = ? and aqelem_aqperso_cod is null $where ";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($aqetape_cod), $stmt);
 
-        return true;
+        return (count($retour) == 0) ?  false : $retour ;
     }
 
     /**
