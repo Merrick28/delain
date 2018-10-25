@@ -155,20 +155,29 @@ class aquete
     function get_nb_total()
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
+        $req = "select sum(aqperso_nb_realisation) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
         $result = $stmt->fetch();
         return 1*$result['count'];
     }
 
-    //Comptage tous persos confondus
-    function get_nb_en_cours()
+    //Comptage tous persos confondus (si etape est fourni, on retourne le nombre de quete en cours a cette étape)
+    function get_nb_en_cours($aqetape_cod=0)
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
+        if ($aqetape_cod==0)
+        {
+            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
+        }
+        else
+        {
+            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_etape_cod=? and aqperso_actif='O'";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->aquete_cod, $aqetape_cod),$stmt);
+        }
         $result = $stmt->fetch();
         return 1*$result['count'];
     }
