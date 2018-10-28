@@ -188,22 +188,30 @@ switch($_REQUEST["request"])
 
         switch ($table) {
         case 'perso':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
             $filter = "";
+            foreach ($words as $k => $w)
+            {
+                $filter.= "AND (perso_nom ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
             if ($params["perso_pnj"]=="true") $filter .= "and perso_pnj=1 ";
             if ($params["perso_monstre"]!="true") $filter .= "and perso_type_perso<>2 ";
             if ($params["perso_fam"]!="true") $filter .= "and perso_type_perso<>3 ";
 
             // requete de comptage
-            $req = "select count(*) from perso where perso_nom ilike ? and perso_actif='O' {$filter}";
+            $req = "select count(*) from perso where perso_actif='O' {$filter}";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $stmt = $pdo->execute($search_string, $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select perso_cod cod, perso_nom nom from perso where perso_nom ilike ? and perso_actif='O' {$filter} ORDER BY perso_nom LIMIT 10";
+            $req = "select perso_cod cod, perso_nom nom from perso where perso_actif='O' {$filter} ORDER BY perso_nom LIMIT 10";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $stmt = $pdo->execute($search_string, $stmt);
             break;
 
         case 'lieu':
@@ -408,11 +416,22 @@ switch($_REQUEST["request"])
         $info = $_REQUEST["info"];
 
         switch ($info) {
-            case 'pos_cod':
+            case 'pos_cod':     // pos_cod à partir x,y,etage
                 //$req = "select pos_cod from positions left outer join murs on mur_pos_cod = pos_cod where pos_x = ? and pos_y = ? and pos_etage = ? ";
                 $req = "select pos_cod from positions where pos_x = ? and pos_y = ? and pos_etage = ? ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                break;
+
+            case 'perso_pos':     // nom du perso et sa position à partir perso_cod
+                //$req = "select pos_cod from positions left outer join murs on mur_pos_cod = pos_cod where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $req = "select perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where perso_cod = ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["perso_cod"]), $stmt);
                 break;
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_info"}');

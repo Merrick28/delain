@@ -337,6 +337,7 @@ else
 if ($droit['modif_perso'] == 'O')
 {
     $modif_perso = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_perso_edit.php">Modif. perso</a><br>';
+    $modif_perso.= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_teleportation.php">Téléportation</a><br>';
 }
 else
 {
