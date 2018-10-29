@@ -421,23 +421,62 @@ switch($_REQUEST["request"])
                 $req = "select pos_cod from positions where pos_x = ? and pos_y = ? and pos_etage = ? ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 
             case 'perso_pos':     // nom du perso et sa position à partir perso_cod
-                //$req = "select pos_cod from positions left outer join murs on mur_pos_cod = pos_cod where pos_x = ? and pos_y = ? and pos_etage = ? ";
                 $req = "select perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
                         join perso_position on ppos_perso_cod=perso_cod 
                         join positions on pos_cod=ppos_pos_cod
                         join etage on etage_numero=pos_etage
                         where perso_cod = ? ";
                 $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array($_REQUEST["perso_cod"]), $stmt);
+                $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
+
+            case 'perso_coterie_pos':     // nom des persos de la même coterie que perso_cod avec leur position
+                $req = "select perso_cod, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                        join groupe_perso coterie on coterie.pgroupe_perso_cod=?
+                        join groupe_perso on groupe_perso.pgroupe_perso_cod=perso_cod and groupe_perso.pgroupe_groupe_cod=coterie.pgroupe_groupe_cod
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where perso_type_perso=1 order by perso_nom "; // que des perso et et pas le perso lui-même
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
+            case 'perso_zone_pos':     // nom des persos sur la même position que perso_cod avec leur position
+                $req = "select perso_cod, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                        join perso_position zone on zone.ppos_perso_cod = ?
+                        join perso_position on perso_position.ppos_pos_cod = zone.ppos_pos_cod and perso_position.ppos_perso_cod=perso_cod
+                        join positions on pos_cod=perso_position.ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where perso_type_perso=1 order by perso_nom "; // sauf les familier et perso lui-même
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
+            case 'position_description':     // une description de la position passée par pos_x, pos_y, et pos_etage
+                //$req = "select pos_cod, COALESCE(CASE WHEN mur_pos_cod IS NOT NULL THEN 'Un mur' ELSE NULL end, lieu_nom || COALESCE('(' || lieu_description || ')', '') ) as position_desc
+                $req = "select pos_cod, COALESCE(CASE WHEN mur_pos_cod IS NOT NULL THEN 'Un mur' ELSE NULL end, lieu_nom  ) as position_desc 
+                        from positions 
+                        left join  murs on mur_pos_cod=pos_cod
+                        left join  lieu_position on lpos_pos_cod=pos_cod
+                        left join  lieu on lieu_cod=lpos_lieu_cod
+                        where pos_x = ? and pos_y = ? and pos_etage = ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_info"}');
         }
 
-        $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
         break;
 
     //==============================================================================================

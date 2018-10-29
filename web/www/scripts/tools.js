@@ -253,7 +253,7 @@ function getTableCod(divname, table, titre, params)
         else if ( event.target.id.substr(0, 21) == "spop-tablecod-select-")
         {
             var element = $("#"+event.target.id);
-            $("#" + divname+"_cod").val (element.attr("data-spop-cod") ).trigger('change');     
+            $("#" + divname+"_cod").val (element.attr("data-spop-cod") ).trigger('change');
             $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
             $("#" + divname+"_num_1").val (element.attr("data-spop-num1") );
             $(document).unbind("click");
