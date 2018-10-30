@@ -168,7 +168,7 @@ include('variables_menu.php');
             alert("Vous devez sélectionner des persos à téléporter!");
             return false;
         }
-        return confirm("Etes-vous sûr de vouloir téléporter "+nb_perso+" perso(s) en X="+$("#pos_x").val()+" Y="+$("#pos_y").val()+" "+$("#pos_etage option:selected").text()+"?");
+        return true; //confirm("Etes-vous sûr de vouloir téléporter "+nb_perso+" perso(s) en X="+$("#pos_x").val()+" Y="+$("#pos_y").val()+" "+$("#pos_etage option:selected").text()+"?");
     }
 
 </script>
@@ -382,6 +382,9 @@ if ($erreur == 0)
     echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur('.$perso_cod.');"><br><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
+
+    echo "<script> listControleur({$perso_cod}); </script>"; // Injection javascript => perso par défaut.
+
 }
 ?>
 <p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>
