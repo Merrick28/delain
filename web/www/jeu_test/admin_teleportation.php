@@ -37,7 +37,10 @@ include('variables_menu.php');
         runAsync({request: "get_table_info", data:{info:"perso_pos", perso_cod:cod}}, function(d){
             if ((d.resultat == 0)&&(d.data)&&(d.data.perso_nom))
             {
-                $("#"+divname).html(d.data.perso_nom+' <i style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</i>');
+                if (s_option=="monstre" && d.data.perso_type_perso!=2)
+                $("#"+divname).html('Vous n\'avez pas les droits pour téléporter ce perso.');
+                else
+                    $("#"+divname).html(d.data.perso_nom+' <i style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</i>');
             }
         });
     }
@@ -46,45 +49,85 @@ include('variables_menu.php');
         $("#liste-ajout-rapide").html("");
         runAsync({request: "get_table_info", data:{info:"perso_coterie_pos", perso_cod:cod}}, function(d){
             var content = "" ;
+            var nb_perso = 0 ;
+            var nb_monstre = 0 ;
             if ((d.resultat == 0)&&(d.data)&&(d.data.length>0))
             {
                 for(k in d.data)
                 {
                     var data = d.data[k];
-                    if (!isInTeleportationtList(data.perso_cod))     // si pas déjà dans la list
+                    if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                        if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
                     }
                 }
-                if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll()">'
+                if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';
                 $("#liste-ajout-rapide").html(content);
             }
             if (content=="") $("#liste-ajout-rapide").html("Rien trouvé (de nouveau) dans sa coterie...");
         });
     }
+
     function listSurZone(cod) {
         $("#liste-ajout-rapide").html("");
         runAsync({request: "get_table_info", data:{info:"perso_zone_pos", perso_cod:cod}}, function(d){
             var content = "" ;
+            var nb_perso = 0 ;
+            var nb_monstre = 0 ;
             if ((d.resultat == 0)&&(d.data)&&(d.data.length>0))
             {
                 for(k in d.data)
                 {
                     var data = d.data[k];
-                    if (!isInTeleportationtList(data.perso_cod))     // si pas déjà dans la list
+                    if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                        if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
                     }
                 }
-                if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll()">'
+                if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';
                 $("#liste-ajout-rapide").html(content);
             }
             if (content=="") $("#liste-ajout-rapide").html("Rien trouvé (de nouveau) sur sa position...");
         });
     }
 
-    function addFromSearchListAll(k) {
-        $('div[id^="s-list-"]').each(function(){ addFromSearchList(this.id.substr(7)) });
+    function listControleur(cod) {
+        $("#liste-ajout-rapide").html("");
+        runAsync({request: "get_table_info", data:{info:"perso_compte_pos", perso_cod:cod}}, function(d){
+            var content = "" ;
+            var nb_perso = 0 ;
+            var nb_monstre = 0 ;
+            if ((d.resultat == 0)&&(d.data)&&(d.data.length>0))
+            {
+                for(k in d.data)
+                {
+                    var data = d.data[k];
+                    if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
+                    {
+                        if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                    }
+                }
+                if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
+                if (nb_perso>0 && nb_monstre>0) content+= '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';
+                $("#liste-ajout-rapide").html(content);
+            }
+            if (content=="") $("#liste-ajout-rapide").html("Rien trouvé (de nouveau) pour ce controleur...");
+        });
+    }
+
+    function addFromSearchListAll(type) {
+        $('div[id^="s-list-"]').each(function(){
+            var type_perso = $('#s-list-'+this.id.substr(7)).attr("data-type_perso");
+            if (type==0 || type==type_perso) addFromSearchList(this.id.substr(7))
+        });
     }
 
     function addFromSearchList(k) {
@@ -100,6 +143,10 @@ include('variables_menu.php');
         var isInList = false ;
         $('tr[id^="row-0-"]').each( function() { if ($('#'+this.id+'aqelem_misc_cod').val()==cod) isInList = true ; }  );
         return isInList;
+    }
+
+    function isAuthorized(type_perso) { // l'admin monstre ne peut téléporter que les monstres et on ne téléporte aucun familier
+        if (type_perso==3) return false; else if (s_option=="monstre" && type_perso!=2) return false; else return true ;
     }
 
     function countTeleportationtList() {
@@ -154,13 +201,16 @@ else
 	$droit['controle'] = $db->f("dcompt_controle");
 	$droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
 }
-if ($droit['modif_perso'] != 'O')
+if (($droit['modif_perso'] != 'O') && !$db->is_admin_monstre($compt_cod))
 {
 	echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
 	$erreur = 1;
 }
 if ($erreur == 0)
 {
+    $s_option = ($droit['modif_perso'] == 'N') ? "monstre" : "" ;                               // droit de tp de monstre uniquement
+    echo "<script> var s_option='{$s_option}'; </script>"; // Injection javascript
+
     //=======================================================================================
     // == Main
     //=======================================================================================
@@ -203,73 +253,82 @@ if ($erreur == 0)
             {
                 foreach ($_REQUEST["aqelem_misc_cod"][0] as $k => $mod_perso_cod)
                     if ($mod_perso_cod>0)
-                {
-                    // Position de départ
-                    $req_perso = "select perso_nom from perso where perso_cod = $mod_perso_cod ";
-                    $db->query($req_perso);
-                    $db->next_record();
-                    $mod_perso_nom = $db->f('perso_nom');
-                    $log.= "Téléportation du perso {$mod_perso_nom} ({$mod_perso_cod}) : ";
-
-                    // insertion dun évènement
-                    $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-                    $req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
-                    $req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-                    $db->query($req);
-                    // effacement des locks
-                    $req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
-                    $db->query($req);
-                    $req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
-                    $db->query($req);
-
-                    // Position de départ
-                    $req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
-                            etage_arene
-                        from perso_position
-                        inner join positions on pos_cod = ppos_pos_cod
-                        inner join etage on etage_numero = pos_etage
-                        where ppos_perso_cod = $mod_perso_cod ";
-                    $db->query($req_position);
-                    $db->next_record();
-                    $anc_pos_cod = $db->f('pos_cod');
-                    $anc_arene = $db->f('etage_arene');
-                    $anc_position = $db->f('position');
-                    $log .= "Déplacement de $anc_position vers $nv_position.";
-
-                    // déplacement
-                    $req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $mod_perso_cod ";
-                    $db->query($req);
-
-                    switch ($anc_arene . $arene)
                     {
-                        case 'NO':	// D’un étage normal vers une arène
-                            $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
-                            $db->query($req);
-                            $req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
-                                values($mod_perso_cod, $new_etage, $anc_pos_cod, now()) ";
-                            $db->query($req);
-                            $log .= "\nCette position est en arène : le personnage en ressortira à sa position d’origine.";
-                            break;
+                        // Position de départ
+                        $req_perso = "select perso_nom, perso_type_perso from perso where perso_cod = $mod_perso_cod ";
+                        $db->query($req_perso);
+                        $db->next_record();
+                        $mod_perso_nom = $db->f('perso_nom');
+                        $mod_perso_type_perso = $db->f('perso_type_perso');
+                        $log.= "Téléportation du perso {$mod_perso_nom} ({$mod_perso_cod}) : ";
 
-                        case 'OO':	// D’une arène vers une autre
-                            $req = "update perso_arene set parene_etage_numero = $new_etage where parene_perso_cod = $mod_perso_cod";
+                        if ($mod_perso_type_perso!=2 && $s_option=="monstre")
+                        {
+                            // Un admin monstre qui force le passage pour ajouter un perso!!!
+                            $log .= "vous n'avez pas les droits suffisants pour ce perso!";
+                        }
+                        else
+                        {
+                            // insertion dun évènement
+                            $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
+                            $req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
+                            $req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
                             $db->query($req);
-                            $log .= "\nCette position est en arène, le perso était déjà dans une arène : il ressortira à la position d’où il est rentré dans la première arène.";
-                            break;
-
-                        case 'ON':	// D’une arène vers un étage normal
-                            $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
+                            // effacement des locks
+                            $req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
                             $db->query($req);
-                            $log .= "\nAttention ! Le perso était en arène : sa position d’entrée dans l’arène est perdue !";
-                            // Si on ne le supprimait pas, on empêcherait le perso de rentrer à nouveau en arène...
-                            break;
+                            $req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
+                            $db->query($req);
 
-                        case 'NN':	// D’un étage normal vers un étage normal
-                            // Rien à faire
-                            break;
+                            // Position de départ
+                            $req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
+                                    etage_arene
+                                from perso_position
+                                inner join positions on pos_cod = ppos_pos_cod
+                                inner join etage on etage_numero = pos_etage
+                                where ppos_perso_cod = $mod_perso_cod ";
+                            $db->query($req_position);
+                            $db->next_record();
+                            $anc_pos_cod = $db->f('pos_cod');
+                            $anc_arene = $db->f('etage_arene');
+                            $anc_position = $db->f('position');
+                            $log .= "Déplacement de $anc_position vers $nv_position.";
+
+                            // déplacement
+                            $req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $mod_perso_cod ";
+                            $db->query($req);
+
+                            switch ($anc_arene . $arene)
+                            {
+                                case 'NO':	// D’un étage normal vers une arène
+                                    $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
+                                    $db->query($req);
+                                    $req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
+                                        values($mod_perso_cod, $new_etage, $anc_pos_cod, now()) ";
+                                    $db->query($req);
+                                    $log .= "\nCette position est en arène : le personnage en ressortira à sa position d’origine.";
+                                    break;
+
+                                case 'OO':	// D’une arène vers une autre
+                                    $req = "update perso_arene set parene_etage_numero = $new_etage where parene_perso_cod = $mod_perso_cod";
+                                    $db->query($req);
+                                    $log .= "\nCette position est en arène, le perso était déjà dans une arène : il ressortira à la position d’où il est rentré dans la première arène.";
+                                    break;
+
+                                case 'ON':	// D’une arène vers un étage normal
+                                    $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
+                                    $db->query($req);
+                                    $log .= "\nAttention ! Le perso était en arène : sa position d’entrée dans l’arène est perdue !";
+                                    // Si on ne le supprimait pas, on empêcherait le perso de rentrer à nouveau en arène...
+                                    break;
+
+                                case 'NN':	// D’un étage normal vers un étage normal
+                                    // Rien à faire
+                                    break;
+                            }
+                        }
+                        $log.="\n";
                     }
-                    $log.="\n";
-                }
                 writelog($log,'perso_edit');
                 echo "<div class='bordiv'><pre>$log</pre></div>";
             }
@@ -297,15 +356,16 @@ if ($erreur == 0)
     $row_id = "row-$param_id-$row-";
     $aqelem_misc_nom = "" ;
     echo   '<tr id="'.$row_id.'" style="'.$style_tr.'">';
-    echo   '<td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
+    echo   '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
     echo   '<td>Perso :
                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="">
                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="">
                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomAndPosPerso(\''.$row_id.'aqelem_misc_nom\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                     &nbsp;<i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
-                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso");\'>
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso", "'.$s_option.'");\'>
                     &nbsp;<input type="button" class="" value="sa coterie" onClick=\'listCoterie($("#'.$row_id.'aqelem_misc_cod").val());\'>
                     &nbsp;<input type="button" class="" value="sa position" onClick=\'listSurZone($("#'.$row_id.'aqelem_misc_cod").val());\'>
+                    &nbsp;<input type="button" class="" value="controleur" onClick=\'listControleur($("#'.$row_id.'aqelem_misc_cod").val());\'>
                     </td>';
     echo '<tr id="add-'.$row_id.'" style="'.$style_tr.'"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
@@ -318,8 +378,10 @@ if ($erreur == 0)
     echo '<input class="test" type="submit" value="Téléporter les persos" />';
     echo '</form>';
 
-    echo '<hr>Section de recherche de persos liés:<br><br>';
-    echo '<div id="liste-ajout-rapide"></div><hr>';
+    echo '<hr>Section de recherche de persos liés:';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur('.$perso_cod.');"><br><br>';
+    echo '<div id="liste-ajout-rapide"></div>';
+    echo '<hr>';
 }
 ?>
 <p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>

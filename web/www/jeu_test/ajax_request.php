@@ -197,9 +197,15 @@ switch($_REQUEST["request"])
                 $filter.= "AND (perso_nom ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
-            if ($params["perso_pnj"]=="true") $filter .= "and perso_pnj=1 ";
-            if ($params["perso_monstre"]!="true") $filter .= "and perso_type_perso<>2 ";
-            if ($params["perso_fam"]!="true") $filter .= "and perso_type_perso<>3 ";
+            if ($params["perso_perso"]=="false")
+            {      // limitation aux monstres
+                $filter .= "and perso_type_perso=2 ";
+            }
+            else
+            {
+                if ($params["perso_monstre"]!="true") $filter .= "and perso_type_perso<>2 ";
+                if ($params["perso_fam"]!="true") $filter .= "and perso_type_perso<>3 ";
+            }
 
             // requete de comptage
             $req = "select count(*) from perso where perso_actif='O' {$filter}";
@@ -425,7 +431,7 @@ switch($_REQUEST["request"])
                 break;
 
             case 'perso_pos':     // nom du perso et sa position à partir perso_cod
-                $req = "select perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                $req = "select perso_nom, perso_type_perso, pos_x, pos_y, pos_etage,etage_libelle from perso 
                         join perso_position on ppos_perso_cod=perso_cod 
                         join positions on pos_cod=ppos_pos_cod
                         join etage on etage_numero=pos_etage
@@ -436,25 +442,38 @@ switch($_REQUEST["request"])
                 break;
 
             case 'perso_coterie_pos':     // nom des persos de la même coterie que perso_cod avec leur position
-                $req = "select perso_cod, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                $req = "select perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
                         join groupe_perso coterie on coterie.pgroupe_perso_cod=?
                         join groupe_perso on groupe_perso.pgroupe_perso_cod=perso_cod and groupe_perso.pgroupe_groupe_cod=coterie.pgroupe_groupe_cod
                         join perso_position on ppos_perso_cod=perso_cod 
                         join positions on pos_cod=ppos_pos_cod
                         join etage on etage_numero=pos_etage
-                        where perso_type_perso=1 order by perso_nom "; // que des perso et et pas le perso lui-même
+                        where perso_actif='O' order by perso_nom ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
                 $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 break;
 
             case 'perso_zone_pos':     // nom des persos sur la même position que perso_cod avec leur position
-                $req = "select perso_cod, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                $req = "select perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
                         join perso_position zone on zone.ppos_perso_cod = ?
                         join perso_position on perso_position.ppos_pos_cod = zone.ppos_pos_cod and perso_position.ppos_perso_cod=perso_cod
                         join positions on pos_cod=perso_position.ppos_pos_cod
                         join etage on etage_numero=pos_etage
-                        where perso_type_perso=1 order by perso_nom "; // sauf les familier et perso lui-même
+                        where perso_actif='O' order by perso_nom ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
+            case 'perso_compte_pos':     // nom des persos controllé par le même joueur que perso_cod avec leur position
+                $req = "select perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                        join perso_compte controleur on controleur.pcompt_perso_cod = ?
+                        join perso_compte on perso_compte.pcompt_compt_cod = controleur.pcompt_compt_cod and perso_compte.pcompt_perso_cod=perso_cod
+                        join perso_position on ppos_perso_cod=perso_cod
+                        join positions on pos_cod=perso_position.ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where perso_actif='O' order by perso_nom ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
                 $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
