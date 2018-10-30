@@ -315,6 +315,13 @@ else
     $wiki           = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
     $option_monstre = '';
 }
+
+// 2018-10-30 - Marlyza - Ajout menu téléportation
+if ($is_admin_monstre || ($droit['modif_perso'] == 'O'))
+{
+    $option_monstre.= ($option_monstre=="" ? "" : "<br>").'<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_teleportation.php">Téléportation</a><br>';
+}
+
 $t->set_var('WIKI', $wiki);
 
 //controle	
@@ -353,6 +360,7 @@ else
 {
     $modif_monstre = '';
 }
+
 
 // modif carte
 if ($droit['carte'] == 'O')
@@ -639,6 +647,7 @@ if ($controle . $controle_admin . $droit_logs . $gestion_droits .
 {
     $option_monstre .= '<hr />';
 }
+
 
 $t->set_var('COMMANDEMENT', $commandement);
 $t->set_var('GERANT', $gerant);
