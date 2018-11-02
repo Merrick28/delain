@@ -11,7 +11,8 @@ export livroot=/home/delain/delain/sql
 # Racine des fonctions sql
 export livfunc=/home/delain/delain/fonctions_sql
 # serveur BDD
-export PGHOST=`grep SERVER_HOST ../web/www/includes/conf.php |awk -F"'" '{print $4}'`
+
+export PGHOST=`grep SERVER_HOST /home/delain/delain/web/www/includes/conf.php |awk -F"'" '{print $4}'`
 if [ $PGHOST = "localhost" ]; then
   unset PGHOST
 fi
