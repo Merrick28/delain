@@ -56,7 +56,7 @@ if ($type_lance == 0) // runes
 }
 if ($type_lance == 1) // mémorisé
 {
-	$sort_cod = $_POST['sort'];
+	$sort_cod = $_REQUEST['sort'];
 	if ($sort_cod == '')
 	{
 		echo "<p>Erreur sur le sort lancé !";
@@ -70,7 +70,7 @@ if ($type_lance == 1) // mémorisé
 }
 if ($type_lance == 2) // mémorisé
 {
-	$sort_cod = $_POST['sort'];
+	$sort_cod = $_REQUEST['sort'];
 	if ($sort_cod == '')
 	{
 		echo "<p>Erreur sur le sort lancé !";
@@ -84,7 +84,7 @@ if ($type_lance == 2) // mémorisé
 }
 if ($type_lance == 3) // divin
 {
-	$sort_cod = $_POST['sort'];
+	$sort_cod = $_REQUEST['sort'];
 	if ($sort_cod == '')
 	{
 		echo "<p>Erreur sur le sort lancé !";
@@ -98,7 +98,7 @@ if ($type_lance == 3) // divin
 }
 if ($type_lance == 4) // parchemin
 {
-	$sort_cod = $_POST['sort'];
+	$sort_cod = $_REQUEST['sort'];
 	if ($sort_cod == '')
 	{
 		echo "<p>Erreur sur le sort lancé !";
