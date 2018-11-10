@@ -656,6 +656,15 @@ class aquete_perso
                         }
                     }
                     break;
+
+                case "#TUER #RACE":
+                    // Le joueur doit tuer des persos.
+                    if ($this->action->tuer_race($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
             }
 
             //------- traitement du status d'étape------------------------------

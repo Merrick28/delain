@@ -766,6 +766,85 @@ class aquete_action
     }
 
     //==================================================================================================================
+    /**
+     * Le joueur doit tuer un certains nombre de représentant de race de monstre  =>  '[1:delai|1%1],[2:race|0%0],[3:valeur|1%1]',
+     * p2=persos cibles p3=nombre de kill p4=etape si echec
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_race(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'race', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        // le compteur initial de race va être stocké dans l'élément du type race (P2) dans aqelem_param_num_1
+        // on se base sur les statistiques du "Tableau de chasse"
+        foreach ($p2 as $k => $elem)
+        {
+           // au premier passage (compteur null) initalisation du compteur.
+           if ($elem->aqelem_param_num_1 == null)
+           {
+                $req = "select race_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                        from perso_tableau_chasse
+                        inner join monstre_generique on ptab_gmon_cod = gmon_cod
+                        inner join race on race_cod = gmon_race_cod
+                        where ptab_perso_cod = ? and race_cod = ?
+                        group by race_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+                if (!$result = $stmt->fetch())
+                {
+                    $elem->aqelem_param_num_1 = 0;
+                }
+                else
+                {
+                    $elem->aqelem_param_num_1 = 1*$result["total"];
+                }
+                $elem->stocke();
+           }
+        }
+
+        $nb_contrat = $p3->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
+
+        // Comptage des kills
+        $nb_kill = 0;
+        $nb_race = 0;
+        foreach ($p2 as $k => $elem)
+        {
+            if ($elem->aqelem_param_num_1 == null) return false; // compteur non initialisé
+
+            $req = "select race_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                    from perso_tableau_chasse
+                    inner join monstre_generique on ptab_gmon_cod = gmon_cod
+                    inner join race on race_cod = gmon_race_cod
+                    where ptab_perso_cod = ? and race_cod = ?
+                    group by race_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                // Il y a eu des kill de cette race dans le tableau, vérification par rapport au début du contrat
+                $kill_race = 1*$result["total"];
+                if ($kill_race>$elem->aqelem_param_num_1)
+                {
+                    $nb_kill += $kill_race - $elem->aqelem_param_num_1;
+                    $nb_race++;
+                }
+            }
+        }
+
+        // si le compteur de kill atteind le contrat et au moins un de chaque race si compteur supérieur au nombre de race
+        if (($nb_kill>=$nb_contrat) && (($nb_contrat<count($p2)) || ($nb_race==count($p2)))) return true;
+
+        // le contrat n'est pas encore rempli
+        return false;
+    }
+
+    //==================================================================================================================
 /*
 echo "<pre>"; print_r($p1); echo "</pre>";
 die();
