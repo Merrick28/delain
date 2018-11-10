@@ -1,5 +1,5 @@
-var defautImageUrl = "http://images.jdr-delain.net/del.gif";
-var cheminImages = "http://images.jdr-delain.net/";
+var defautImageUrl = "http://www.jdr-delain.net/images/del.gif";
+var cheminImages = "http://www.jdr-delain.net/images/";
 var Fonds = {};
 Fonds.donnees = new Array();
 Fonds.isDefaut = function (id) { return false; };

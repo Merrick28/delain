@@ -63,7 +63,7 @@ table {
 	background-color:#FFFFFF;
 }
 table.vide {
-	background : url('http://images.jdr-delain.net/mp_fondcarte.gif');
+	background : url('http://www.jdr-delain.net/images/mp_fondcarte.gif');
 	background-color:#FFFFFF;
 }
 table.vide2 {
@@ -192,7 +192,7 @@ input.vide {
 	border: none;
 	font-size: 11px;
 	color: black;
-	background : url('http://images.jdr-delain.net/fondparchemin.gif');
+	background : url('http://www.jdr-delain.net/images/fondparchemin.gif');
 }
 textarea {
 	border: black 1px solid;

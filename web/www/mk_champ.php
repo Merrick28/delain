@@ -11,7 +11,7 @@ $db3 = new base_delain;
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
 </head>
-<body background="http://images.jdr-delain.net/fond5.gif">
+<body background="http://www.jdr-delain.net/images/fond5.gif">
 <?php include "jeu_test/tab_haut.php";
 ?>
 <p class="titre">Les champions de Delain !</p><hr>
