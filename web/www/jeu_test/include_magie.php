@@ -84,15 +84,15 @@ if ($distance_vue > $dist_sort)
 if ($soi_meme == 'O')
 {
 	echo "<tr>
-			<td class=\"soustitre2\" style=\"background-color:#CCC;\" colspan=\"2\"><b>
+			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><b>
 			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
 			". $perso_nom . "</a></b><i> (vous-même <b>" . $niveau_blessures . "</b>)</i></td>
-			<td style=\"background-color:#CCC; text-align:center;\">" . $x . "</td>
-			<td style=\"background-color:#CCC; text-align:center;\">" . $y . "</td>
-			<td style=\"background-color:#CCC; text-align:center;\">0</td>
-			<td style=\"background-color:#CCC; text-align:left;\">$perso_bonus</td>
-			<td style=\"background-color:#CCC; text-align:left;\">$perso_pa</td>
-			<td style=\"background-color:#CCC; text-align:left;\">$perso_dlt</td>
+			<td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
+			<td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
+			<td style=\"background-color:darkseagreen; text-align:center;\">0</td>
+			<td style=\"background-color:darkseagreen; text-align:left;\">$perso_bonus</td>
+			<td style=\"background-color:darkseagreen; text-align:left;\">$perso_pa</td>
+			<td style=\"background-color:darkseagreen; text-align:left;\">$perso_dlt</td>
 		</tr>";
 }
 $add_dieu = "";
