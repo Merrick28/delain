@@ -128,10 +128,12 @@ if ($erreur == 0)
         {
             // Lister les étapes déjà créées
             $etapes = $quete->get_etapes() ;
+            $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
+            if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><b>ATTENTION</b></u>: il y a déjà <b>'.$nb_quete_en_cours.'</b> perso(s) en cours de réalisation de cette quête.</td></tr>';
             echo '</table>';
             echo '</form>';
             echo '<hr>';
@@ -163,7 +165,11 @@ if ($erreur == 0)
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     if ($k!=0 || sizeof($etapes)==1)
                     {
-                        echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                        $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
+                        if ($nb_quete_en_cours>0)
+                            echo 'Il y a <b>'.$nb_quete_en_cours.'</b> persos en cours à cette étape (<i style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</i>)';
+                        else
+                            echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     }
                     echo '</form>';
                     echo '</div></div>';

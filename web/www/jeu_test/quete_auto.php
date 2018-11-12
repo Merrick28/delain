@@ -15,6 +15,19 @@ $contenu_page = '';
 $contenu_page2 = '';
 if (!isset($methode)) $methode = "" ;
 define("APPEL",1);
+
+// Détection des droits admin, pour ajouter de l'info suplémentaire dans l'écran
+$isAdminAnimation = false ;
+$req = 'select dcompt_animations from compt_droit where dcompt_compt_cod = ' . $compt_cod;
+$db->query($req);
+if ($db->nf() > 0)
+{
+    $db->next_record();
+    if ($db->f("dcompt_animations") == 'O') $isAdminAnimation = true;
+}
+
+
+
 switch ($methode) {
 
 case 'start' :
@@ -93,9 +106,19 @@ case 'stop2' :
     $quete_perso = new aquete_perso() ;
     if ($quete_perso->chargeBy_perso_quete($perso_cod, $quete->aquete_cod))
     {
+        $quete_perso->aqperso_quete_step ++ ; // Step suivant pour le journal
+
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->aqpersoj_aqperso_cod = $quete_perso->aqperso_cod ;
+        $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation ;
+        $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step ;
+        $perso_journal->aqpersoj_texte = "Vous avez choisi d'abandonner cette quête!<br> ";
+        $perso_journal->stocke(true);
+
         $quete_perso->aqperso_actif = 'N';
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
         $quete_perso->stocke();
+
 
         $contenu_page2 .= "La quête <b>{$quete->aquete_nom}</b> s'est termniné par un abandon, malgré tout vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
         $contenu_page2 .= "<br><br>";
@@ -190,10 +213,33 @@ if ($methode=="")
             $quete_perso->run();
 
             //$contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>{$quete->aquete_nom}</b></center></div>" ;
-            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."<br>" ;
-            $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ."<br><br><div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
+            $link = "/jeu_test/quete_auto.php?methode=stop&quete={$aquete_cod}" ;
+            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."&nbsp;&nbsp;(<i style=\"font-size:9px;\"><a href={$link}>Arrêter cette quête</a></i>)<br>" ;
+            $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ."<br>";
 
-            $contenu_page2 .= $quete_perso->journal('O', 1);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
+
+          /*  $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<b>Options admin</b>&nbsp;&nbsp;</div><br>" ;
+            $req = " SELECT aqpersoj_cod, 'Step #'||aqpersoj_quete_step::text || COALESCE (' Etape '||aqetape_cod::text||' '||aqetape_nom, '') as nom
+                              FROM quetes.aquete_perso_journal
+                              JOIN quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod and aqperso_nb_realisation=aqpersoj_realisation
+                              LEFT JOIN quetes.aquete_etape on aqetape_cod=aqpersoj_etape_cod
+                              WHERE aqperso_perso_cod={$perso_cod} AND aqperso_aquete_cod={$aquete_cod} ORDER BY aqpersoj_quete_step";*/
+
+
+            if ($isAdminAnimation)
+            {
+                $contenu_page2 .= "<br><b style=\"color:#800000\"><u>Options d'admin</u></b>&nbsp;&nbsp;:<br>" ;
+                $req = "SELECT aqpersoj_cod, 'Step #'||aqpersoj_quete_step::text||COALESCE(' Etape #'||aqetape_cod::text||' - '||aqetape_nom, '') as nom 
+                                FROM quetes.aquete_perso_journal 
+                                JOIN quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod and aqperso_nb_realisation=aqpersoj_realisation 
+                                LEFT JOIN quetes.aquete_etape on aqetape_cod=aqpersoj_etape_cod
+                                where aqperso_perso_cod={$perso_cod} AND aqperso_aquete_cod={$aquete_cod} ORDER BY aqpersoj_quete_step";
+                $contenu_page2 .= "Retourner au : ". create_selectbox_from_req("admin-step", $req, 0, array('style'=>'style="width:500px;" onchange="this.parentNode.submit();"'));
+                $contenu_page2 .= '<br><u>ATTENTION</u>: Après le retour au step choisi, tous les éléments de la quête pour ce perso seront supprimés comme s\'il n\'avaient jamais eu lieu.<br>';
+            }
+
+            $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
+            $contenu_page2 .= $quete_perso->journal('O', 1, $isAdminAnimation);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
 
             //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
             $contenu_page2 .= $quete_perso->get_texte_etape_courante();
@@ -249,7 +295,7 @@ if ($methode=="")
             $perso_journal = new aquete_perso_journal();
             $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
 
-            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) ."<br>" ;
+            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) ." et terminée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[count($journal_pages)-1]->aqpersoj_date)) ."<br>" ;
             $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ." (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
 
             foreach ($journal_pages as $k => $jpages)

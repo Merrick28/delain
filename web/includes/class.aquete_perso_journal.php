@@ -14,6 +14,7 @@ class aquete_perso_journal
     var $aqpersoj_date;
     var $aqpersoj_aqperso_cod;
     var $aqpersoj_realisation;
+    var $aqpersoj_etape_cod = 0;
     var $aqpersoj_quete_step = 0;
     var $aqpersoj_texte;
     var $aqpersoj_lu = 'N' ;
@@ -43,6 +44,7 @@ class aquete_perso_journal
         $this->aqpersoj_date = $result['aqpersoj_date'];
         $this->aqpersoj_aqperso_cod = $result['aqpersoj_aqperso_cod'];
         $this->aqpersoj_realisation = $result['aqpersoj_realisation'];
+        $this->aqpersoj_etape_cod = $result['aqpersoj_etape_cod'];
         $this->aqpersoj_quete_step = $result['aqpersoj_quete_step'];
         $this->aqpersoj_texte = $result['aqpersoj_texte'];
         $this->aqpersoj_lu = $result['aqpersoj_lu'];
@@ -63,6 +65,7 @@ class aquete_perso_journal
             aqpersoj_date,
             aqpersoj_aqperso_cod,
             aqpersoj_realisation,
+            aqpersoj_etape_cod,
             aqpersoj_quete_step,
             aqpersoj_texte,
             aqpersoj_lu                        )
@@ -71,6 +74,7 @@ class aquete_perso_journal
                         :aqpersoj_date,
                         :aqpersoj_aqperso_cod,
                         :aqpersoj_realisation,
+                        :aqpersoj_etape_cod,
                         :aqpersoj_quete_step,
                         :aqpersoj_texte,
                         :aqpersoj_lu                        )
@@ -80,6 +84,7 @@ class aquete_perso_journal
                 ":aqpersoj_date" => $this->aqpersoj_date,
                 ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
                 ":aqpersoj_realisation" => $this->aqpersoj_realisation,
+                ":aqpersoj_etape_cod" => $this->aqpersoj_etape_cod,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
                 ":aqpersoj_lu" => $this->aqpersoj_lu,
@@ -96,6 +101,7 @@ class aquete_perso_journal
             aqpersoj_date = :aqpersoj_date,
             aqpersoj_aqperso_cod = :aqpersoj_aqperso_cod,
             aqpersoj_realisation = :aqpersoj_realisation,
+            aqpersoj_etape_cod = :aqpersoj_etape_cod,
             aqpersoj_quete_step = :aqpersoj_quete_step,
             aqpersoj_texte = :aqpersoj_texte,
             aqpersoj_lu = :aqpersoj_lu                        where aqpersoj_cod = :aqpersoj_cod ";
@@ -105,6 +111,7 @@ class aquete_perso_journal
                 ":aqpersoj_date" => $this->aqpersoj_date,
                 ":aqpersoj_aqperso_cod" => $this->aqpersoj_aqperso_cod,
                 ":aqpersoj_realisation" => $this->aqpersoj_realisation,
+                ":aqpersoj_etape_cod" => $this->aqpersoj_etape_cod,
                 ":aqpersoj_quete_step" => $this->aqpersoj_quete_step,
                 ":aqpersoj_texte" => $this->aqpersoj_texte,
                 ":aqpersoj_lu" => $this->aqpersoj_lu,

@@ -9,3 +9,4 @@ INSERT INTO quetes.aquete_etape_modele(
            '|C''est le nombre total de monstre à tuer, si ce nombre est supérieur au nombre de race alors au moins un représentant de chaque race devra être tué.',
            'Les [2] ont infestés les environs, tuez au moins [3] représentants de cette/ces races.');
 
+ALTER TABLE quetes.aquete_perso_journal ADD COLUMN aqpersoj_etape_cod integer;
