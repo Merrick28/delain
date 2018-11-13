@@ -228,13 +228,17 @@ if ($methode=="")
 
             if ($isAdminAnimation)
             {
-                $contenu_page2 .= "<br><b style=\"color:#800000\"><u>Options d'admin</u></b>&nbsp;&nbsp;:<br>" ;
+                $contenu_page2 .= '<br><b style="color:#800000"><u>Options d\'admin</u></b>&nbsp;&nbsp;:<br>';
+                $contenu_page2 .= '<form action="admin_quete_auto_edit.php" method="post">' ;
+                $contenu_page2 .= '<input type="hidden" name="methode" value="perso_step">' ;
+                $contenu_page2 .= '<input type="hidden" name="aqperso_cod" value="'.$quete_perso->aqperso_cod.'">' ;
+                $contenu_page2 .= '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'">' ;
                 $req = "SELECT aqpersoj_cod, 'Step #'||aqpersoj_quete_step::text||COALESCE(' Etape #'||aqetape_cod::text||' - '||aqetape_nom, '') as nom 
                                 FROM quetes.aquete_perso_journal 
                                 JOIN quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod and aqperso_nb_realisation=aqpersoj_realisation 
                                 LEFT JOIN quetes.aquete_etape on aqetape_cod=aqpersoj_etape_cod
-                                where aqperso_perso_cod={$perso_cod} AND aqperso_aquete_cod={$aquete_cod} ORDER BY aqpersoj_quete_step";
-                $contenu_page2 .= "Retourner au : ". create_selectbox_from_req("admin-step", $req, 0, array('style'=>'style="width:500px;" onchange="this.parentNode.submit();"'));
+                                where aqperso_perso_cod={$perso_cod} AND aqperso_aquete_cod={$aquete_cod} and aqpersoj_quete_step!={$quete_perso->aqperso_quete_step} ORDER BY aqpersoj_quete_step";
+                $contenu_page2 .= "Retourner à la fin de : ". create_selectbox_from_req("aqpersoj_cod", $req, 0, array('style'=>'style="width:500px;"'))."&nbsp;<input class='test' type=\"submit\" value=\"Retourner à cet état\" />";
                 $contenu_page2 .= '<br><u>ATTENTION</u>: Après le retour au step choisi, tous les éléments de la quête pour ce perso seront supprimés comme s\'il n\'avaient jamais eu lieu.<br>';
             }
 

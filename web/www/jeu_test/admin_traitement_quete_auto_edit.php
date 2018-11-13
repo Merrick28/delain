@@ -249,6 +249,24 @@ case "deplace_etape":
         }
     }
     break;
+
+case 'perso_step':
+
+    $quete_perso = new aquete_perso();
+    $quete_perso->charge(1*$_REQUEST["aqperso_cod"]);                           // la quete du perso
+    if ($quete_perso->cut_perso_quete(1*$_REQUEST["aqpersoj_cod"]))          // retour au step choisi
+    {
+        $log.="La quête auto #".$quete_perso->aqperso_aquete_cod." pour le perso ".$quete_perso->aqperso_perso_cod." a été tronquée au step #".$quete_perso->aqperso_quete_step.".";
+        writelog($log,'quete_auto');
+        echo "<div class='bordiv'><pre>$log</pre></div>";
+    }
+    else
+    {
+        echo "<div class='bordiv'><pre>Impossible de retourner à ce step</pre></div>";
+    }
+
+    break;
+
 default:
     echo 'Méthode inconnue: [' , $methode , ']';
 }

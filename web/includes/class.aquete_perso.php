@@ -492,6 +492,7 @@ class aquete_perso
                  && (  !in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX")) )
                )
             {
+                $perso_journal->aqpersoj_date = date("Y-m-d H:i:s") ;
                 $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod ;
                 $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
                 $perso_journal->aqpersoj_texte =  $this->hydrate() ;
@@ -505,7 +506,7 @@ class aquete_perso
             $model_tag = $this->etape_modele->aqetapmodel_tag ;
 
             // Vérification du délai d'étape, seuelement pour certaine etape, ce délai s'il existe est TOUJOURS le 1er paramètre--------------
-            if (count($elements)==1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
+            if (count($elements)>=1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
             {
                 if ((date("Y-m-d H:i:s")> date("Y-m-d H:i:s", strtotime($this->aqperso_date_debut_etape." +".$elements[0]->aqelem_param_num_1." DAYS"))))
                 {
@@ -801,6 +802,7 @@ class aquete_perso
     /**
      * @param string $lire : O si les pages doivent-être lu
      * @param int $residu : nombre de page à laisser avec la css "non-lu"
+     * @param int $step : si vrai des infos additionnelles sur l'heure de chaque "step/etape" est ajouté
      * @return string
      */
     function journal($lire='N', $residu=0, $step=false)
@@ -855,6 +857,40 @@ class aquete_perso
     {
         return ( $this->aqperso_etape_cod == 0 );
     }
+
+    /**
+     * @param $aqpersoj_cod     // page du journal à la fin de laquelle il faure reourner
+     */
+    function cut_perso_quete($aqpersoj_cod)
+    {
+        $pdo = new bddpdo;
+
+        $perso_journal = new aquete_perso_journal() ;
+        $perso_journal->charge($aqpersoj_cod);
+
+        // trouver l'étape suivante
+        $req = "SELECT aqpersoj_etape_cod, aqpersoj_quete_step from quetes.aquete_perso_journal where aqpersoj_aqperso_cod=? and aqpersoj_realisation=? and aqpersoj_quete_step>? ORDER BY aqpersoj_quete_step LIMIT 1";
+        $stmt = $pdo->prepare($req);
+
+        $stmt = $pdo->execute(array($this->aqperso_cod, $this->aqperso_nb_realisation, $perso_journal->aqpersoj_quete_step),$stmt);
+        if (!$result = $stmt->fetch()) return false ; // il n'y a pas d'étape suivnate
+
+        $this->aqperso_quete_step = $result["aqpersoj_quete_step"];
+        $this->aqperso_etape_cod = $result["aqpersoj_etape_cod"];
+
+        $this->stocke();
+
+        $req = "DELETE from quetes.aquete_element where aqelem_aqperso_cod=? and aqelem_quete_step>=?";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array($this->aqperso_cod, $this->aqperso_quete_step),$stmt);
+
+        $req = "DELETE from quetes.aquete_perso_journal where aqpersoj_aqperso_cod=? and aqpersoj_realisation=? and aqpersoj_quete_step>=?";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array($this->aqperso_cod, $this->aqperso_nb_realisation, $this->aqperso_quete_step),$stmt);
+
+        return true;
+    }
+
 
     /**
      * Retourne un tableau de tous les enregistrements

@@ -336,38 +336,52 @@ class aquete_action
             }
         }
 
+
         // on fait l'échange, on génère les objets à partir du générique (la liste contient tout ce qui doit-être donné)
         // et ils sont directement mis dans l'inventaire du joueur
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
         $param_ordre = 0 ;
         foreach ($liste_objet as $k => $elem)
         {
+            $isExchanged = false ;  // par defaut l'objet n'est pas echangé!
             if ($elem->aqelem_type == 'objet_generique')
             {
                 // Si c'est un objet générique alors l'instancier
                 $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+                $isExchanged = true ;   // l'objet n'a pas vraiment été échangé, il a été créé directement pour le perso mais on fait comme si.
             }
             else
             {
-                // on retire l'objet du donneur
-                $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
+                // on s'assure que le pnj dispose bien de l'objet
+                $req = "select count(*) count from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod), $stmt);
-
-                // on l'ajoute dans l'inventaire de l'aventurier
-                $req = "select count(*) count from perso_identifie_objet where pio_obj_cod=:pio_obj_cod and pio_perso_cod=:pio_perso_cod  ";
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":pio_perso_cod" => $aqperso->aqperso_perso_cod, ":pio_obj_cod" => $elem->aqelem_misc_cod), $stmt);
                 $result = $stmt->fetch();
 
-                // on l'ajoute dans l'inventaire de l'aventurier
-                $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, :perobj_identifie) returning perobj_obj_cod as obj_cod  ";
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => (1*$result["count"] > 0 ? 'O' : 'N') ), $stmt);
+                if (1*$result["count"]>0)
+                {
+                    // on retire l'objet du donneur
+                    $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod), $stmt);
+
+                    // on l'ajoute dans l'inventaire de l'aventurier
+                    $req = "select count(*) count from perso_identifie_objet where pio_obj_cod=:pio_obj_cod and pio_perso_cod=:pio_perso_cod  ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":pio_perso_cod" => $aqperso->aqperso_perso_cod, ":pio_obj_cod" => $elem->aqelem_misc_cod), $stmt);
+                    $result = $stmt->fetch();
+
+                    // on l'ajoute dans l'inventaire de l'aventurier
+                    $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, :perobj_identifie) returning perobj_obj_cod as obj_cod  ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => (1*$result["count"] > 0 ? 'O' : 'N') ), $stmt);
+
+                    $isExchanged = true ;
+                }
             }
-            if ($result = $stmt->fetch())
+            if ($isExchanged && $result = $stmt->fetch())
             {
                 if (1*$result["obj_cod"]>0)
                 {
