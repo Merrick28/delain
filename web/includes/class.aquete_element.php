@@ -521,6 +521,12 @@ class aquete_element
                 $element_texte = "<b><i>".$objet_generique->gobj_nom."</i></b>";
             break;
 
+            case 'race':
+                $race = new race();
+                $race->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$race->race_nom."</i></b>";
+            break;
+
             case 'objet':
                 $objet = new objets();
                 $objet->charge($this->aqelem_misc_cod);

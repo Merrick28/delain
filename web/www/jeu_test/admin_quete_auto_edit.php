@@ -129,10 +129,12 @@ if ($erreur == 0)
         {
             // Lister les étapes déjà créées
             $etapes = $quete->get_etapes() ;
+            $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
+            //if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><b>ATTENTION</b></u>: il y a déjà <b>'.$nb_quete_en_cours.'</b> perso(s) en cours de réalisation de cette quête.</td></tr>';
             echo '</table>';
             echo '</form>';
             echo '<hr>';
@@ -165,7 +167,11 @@ if ($erreur == 0)
                     $nb_encours_etape = $quete->get_nb_en_cours($etape->aqetape_cod);
                     if (($k!=0 || sizeof($etapes)==1) && ($nb_encours_etape==0))
                     {
-                        echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                        $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
+                        if ($nb_quete_en_cours>0)
+                            echo 'Il y a <b>'.$nb_quete_en_cours.'</b> persos en cours à cette étape (<i style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</i>)';
+                        else
+                            echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     }
                     else if ($nb_encours_etape>0)
                     {
@@ -377,6 +383,22 @@ if ($erreur == 0)
                                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                     &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
                                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                                    </td>';
+                    break;
+
+                    case 'race':
+                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                            {
+                                $gobj = new objet_generique ;
+                                $gobj->charge( $element->aqelem_misc_cod );
+                                $aqelem_misc_nom = $gobj->gobj_nom ;
+                            }
+                            echo   '<td>Race :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'race\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","race","Rechercher une race de monstre");\'> 
                                     </td>';
                     break;
 

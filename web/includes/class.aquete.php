@@ -162,7 +162,8 @@ class aquete
         return 1*$result['count'];
     }
 
-    //Comptage tous persos confondus (si etape est fourni, on retourne le nombre de quete en cours a cette étape)
+
+    //Comptage tous persos confondus, si une étape est passé en paramètre on compte le nombre de persos à cette étape
     function get_nb_en_cours($aqetape_cod=0)
     {
         $pdo = new bddpdo;
@@ -174,7 +175,7 @@ class aquete
         }
         else
         {
-            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_etape_cod=? and aqperso_actif='O'";
+            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_etape_cod = ? and aqperso_actif='O' ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array($this->aquete_cod, $aqetape_cod),$stmt);
         }

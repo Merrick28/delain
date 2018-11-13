@@ -260,8 +260,7 @@ switch($_REQUEST["request"])
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
-
-        case 'monstre_generique':
+        case 'objet_generique':
             $words = explode(" ", $recherche);
             $search_string = array();
 
@@ -269,19 +268,44 @@ switch($_REQUEST["request"])
             foreach ($words as $k => $w)
             {
                 if ($k>0)  $filter.= "AND ";
-                $filter.= "(gmon_nom ilike :search$k) ";
+                $filter.= "(tobj_libelle || ' ' || gobj_nom ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
 
             // requete de comptage
-            $req = "select count(*) from monstre_generique where {$filter} ";
+            $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT 10";
+            $req = "select gobj_cod cod, gobj_nom || ' (' || tobj_libelle || ')' nom from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ORDER BY gobj_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
+        case 'race':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(race_nom ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from race where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select race_cod cod, race_nom nom from race where {$filter} ORDER BY race_nom LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -399,6 +423,9 @@ switch($_REQUEST["request"])
                 break;
             case 'objet_generique':
                 $req = "select gobj_nom nom from objet_generique where gobj_cod = ? ";
+                break;
+            case 'race':
+                $req = "select race_nom nom from race where race_cod = ? ";
                 break;
             case 'monstre_generique':
                 $req = "select gmon_nom nom from monstre_generique where gmon_cod = ? ";

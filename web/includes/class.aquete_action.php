@@ -336,38 +336,53 @@ class aquete_action
             }
         }
 
+
         // on fait l'échange, on génère les objets à partir du générique (la liste contient tout ce qui doit-être donné)
         // et ils sont directement mis dans l'inventaire du joueur
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
         $param_ordre = 0 ;
         foreach ($liste_objet as $k => $elem)
         {
+            $isExchanged = false ;  // par defaut l'objet n'est pas echangé!
             if ($elem->aqelem_type == 'objet_generique')
             {
                 // Si c'est un objet générique alors l'instancier
                 $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+                $isExchanged = true ;   // l'objet n'a pas vraiment été échangé, il a été créé directement pour le perso mais on fait comme si.
             }
             else
             {
-                // on retire l'objet du donneur
-                $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
+                // on s'assure que le pnj dispose bien de l'objet
+                $req = "select count(*) count from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod), $stmt);
 
-                // on vérifie si déjà identifié
-                $req = "select count(*) count from perso_identifie_objet where pio_obj_cod=:pio_obj_cod and pio_perso_cod=:pio_perso_cod  ";
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":pio_perso_cod" => $aqperso->aqperso_perso_cod, ":pio_obj_cod" => $elem->aqelem_misc_cod), $stmt);
                 $result = $stmt->fetch();
 
-                // on l'ajoute dans l'inventaire de l'aventurier
-                $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, :perobj_identifie) returning perobj_obj_cod as obj_cod  ";
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => (1*$result["count"] > 0 ? 'O' : 'N') ), $stmt);
+                if (1*$result["count"]>0)
+                {
+                    // on retire l'objet du donneur
+                    $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod), $stmt);
+
+                    // on l'ajoute dans l'inventaire de l'aventurier
+                    $req = "select count(*) count from perso_identifie_objet where pio_obj_cod=:pio_obj_cod and pio_perso_cod=:pio_perso_cod  ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":pio_perso_cod" => $aqperso->aqperso_perso_cod, ":pio_obj_cod" => $elem->aqelem_misc_cod), $stmt);
+                    $result = $stmt->fetch();
+
+                    // on l'ajoute dans l'inventaire de l'aventurier
+                    $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, :perobj_identifie) returning perobj_obj_cod as obj_cod  ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod, ":perobj_identifie" => (1*$result["count"] > 0 ? 'O' : 'N') ), $stmt);
+
+                    $isExchanged = true ;
+                }
             }
-            if ($result = $stmt->fetch())
+            if ($isExchanged && $result = $stmt->fetch())
             {
                 if (1*$result["obj_cod"]>0)
                 {
@@ -894,6 +909,85 @@ class aquete_action
         //echo "<pre>"; print_r($retour); echo "</pre>"; die();
         // renvoyer l'état
         return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * Le joueur doit tuer un certains nombre de représentant de race de monstre  =>  '[1:delai|1%1],[2:race|0%0],[3:valeur|1%1]',
+     * p2=persos cibles p3=nombre de kill p4=etape si echec
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_race(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'race', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        // le compteur initial de race va être stocké dans l'élément du type race (P2) dans aqelem_param_num_1
+        // on se base sur les statistiques du "Tableau de chasse"
+        foreach ($p2 as $k => $elem)
+        {
+           // au premier passage (compteur null) initalisation du compteur.
+           if ($elem->aqelem_param_num_1 == null)
+           {
+                $req = "select race_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                        from perso_tableau_chasse
+                        inner join monstre_generique on ptab_gmon_cod = gmon_cod
+                        inner join race on race_cod = gmon_race_cod
+                        where ptab_perso_cod = ? and race_cod = ?
+                        group by race_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+                if (!$result = $stmt->fetch())
+                {
+                    $elem->aqelem_param_num_1 = 0;
+                }
+                else
+                {
+                    $elem->aqelem_param_num_1 = 1*$result["total"];
+                }
+                $elem->stocke();
+           }
+        }
+
+        $nb_contrat = $p3->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
+
+        // Comptage des kills
+        $nb_kill = 0;
+        $nb_race = 0;
+        foreach ($p2 as $k => $elem)
+        {
+            if ($elem->aqelem_param_num_1 == null) return false; // compteur non initialisé
+
+            $req = "select race_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                    from perso_tableau_chasse
+                    inner join monstre_generique on ptab_gmon_cod = gmon_cod
+                    inner join race on race_cod = gmon_race_cod
+                    where ptab_perso_cod = ? and race_cod = ?
+                    group by race_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                // Il y a eu des kill de cette race dans le tableau, vérification par rapport au début du contrat
+                $kill_race = 1*$result["total"];
+                if ($kill_race>$elem->aqelem_param_num_1)
+                {
+                    $nb_kill += $kill_race - $elem->aqelem_param_num_1;
+                    $nb_race++;
+                }
+            }
+        }
+
+        // si le compteur de kill atteind le contrat et au moins un de chaque race si compteur supérieur au nombre de race
+        if (($nb_kill>=$nb_contrat) && (($nb_contrat<count($p2)) || ($nb_race==count($p2)))) return true;
+
+        // le contrat n'est pas encore rempli
+        return false;
     }
 
     //==================================================================================================================
