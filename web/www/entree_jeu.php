@@ -19,7 +19,7 @@ if ($verif_auth)
         // TODO : mettre en template
         echo("<html><head>");
         ?>
-        <link rel="stylesheet" type="text/css" href="style.css?v20181111" title="essai">
+        <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
         <?php
         echo("</head>");
         echo '<body background="images/fond5.gif" onload="retour();">';
@@ -36,7 +36,7 @@ if ($verif_auth)
         // TODO : mettre en template
         echo("<html><head>");
         ?>
-        <link rel="stylesheet" type="text/css" href="style.css?v20181111" title="essai">
+        <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
         <?php
         echo("</head>");
         echo '<body background="images/fond5.gif" onload="retour();">';
