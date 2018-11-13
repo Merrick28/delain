@@ -2,6 +2,7 @@
 -- Name: deb_tour_invocation(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
+
 CREATE OR REPLACE FUNCTION deb_tour_invocation(integer, integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/************************************************/
