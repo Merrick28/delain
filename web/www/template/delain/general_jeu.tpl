@@ -6,14 +6,14 @@
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20181111" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
 		<!-- Custom delain CSS -->
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20181111" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 
 		<script src="{URL}js/jquery.js"></script>
-		<script src="{URL}scripts/tools.js?v20181111" type="text/javascript"></script>
-		<script src="{URL}scripts/delain.js?v20181111" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
