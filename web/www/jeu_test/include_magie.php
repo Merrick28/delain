@@ -21,7 +21,7 @@ if ($db->next_record())
 	$coterie_perso_lanceur = $db->f("pgroupe_groupe_cod");
 
 // on cherche la position du perso
-$req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as dlt_passee 
+$req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
@@ -39,7 +39,7 @@ $perso_nom = $db->f("perso_nom");
 $dieu_perso = $db->f("dper_dieu_cod");
 $perso_bonus = $db->f("perso_bonus");
 $perso_pa = $db->f("perso_pa");
-$perso_dlt = $db->f("perso_dlt_passe")==1 ? "<b>{$db->f("perso_dlt")}</b>" : $db->f("perso_dlt");
+$perso_dlt = $db->f("perso_dlt_passee")==1 ? "<b>{$db->f("perso_dlt")}</b>" : $db->f("perso_dlt");
 
 $pv = $db->f("perso_pv");
 $pv_max = $db->f("perso_pv_max");
@@ -184,7 +184,7 @@ while ($db->next_record())
         $perso_dlt = $db->f('perso_dlt');
         if(($db->f('perso_dlt_passee') == 1) && ($perso_dlt!="") && ($perso_dlt!="masqué")) $perso_dlt= "<b>{$perso_dlt}</b>";
 
-        $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
+        $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
         $perso_style = $perso_bonus==NULL ? "" : ($db->f("triplette") == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;") ;
 		echo "<tr>
 				<td class=\"soustitre2\" style=\"{$perso_style}\"><b><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></b> <i>(" . $perso_type_perso[$type_perso] . "<b>" . $niveau_blessures . "</b>)</i></td>
