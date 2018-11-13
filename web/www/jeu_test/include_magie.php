@@ -39,7 +39,7 @@ $perso_nom = $db->f("perso_nom");
 $dieu_perso = $db->f("dper_dieu_cod");
 $perso_bonus = $db->f("perso_bonus");
 $perso_pa = $db->f("perso_pa");
-$perso_dlt = $db->f("perso_dlt_passe")==1 ? "<b>{$db->f("perso_dlt")}</b>" : $db->f("perso_dlt");
+$perso_dlt = $db->f("perso_dlt_passee")==1 ? "<b>{$db->f("perso_dlt")}</b>" : $db->f("perso_dlt");
 
 $pv = $db->f("perso_pv");
 $pv_max = $db->f("perso_pv_max");
