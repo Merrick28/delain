@@ -47,7 +47,7 @@ else
 $db->query($req_objets);
 
 // Boucle d’affichage des objets
-$path = 'http://images.jdr-delain.net';
+$path = 'http://www.jdr-delain.net/images';
 while ($db->next_record())
 {
 	$img = $db->f('gobj_image');
@@ -73,7 +73,7 @@ else
 $db->query($req_monstres);
 
 // Boucle d’affichage des monstres
-$path = 'http://images.jdr-delain.net/avatars';
+$path = 'http://www.jdr-delain.net/images/avatars';
 while ($db->next_record())
 {
 	$img = $db->f('gmon_avatar');

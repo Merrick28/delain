@@ -36,7 +36,7 @@ ob_start();
 <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
 <script language="javascript" src="../scripts/validation.js"></script>
 <script language="javascript" src="../scripts/manip_css.js"></script>
-<script language="javascript" src="../scripts/admin_effets_auto.js"></script>
+<script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
 <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
 	function updatePv()
 	{
@@ -926,8 +926,8 @@ if ($erreur == 0)
 		<hr />
 		OBJETS
 		<TABLE width="80%" align="center">
-			<tr><th>Objet</th><th>Chance de drop (SUR 10.000 !!!)</th></tr>
-			<?php 					$req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_chance from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
+			<tr><th>Objet</th><th>Chance de posséder (SUR 10.000 !!!)</th><th style="text-align: center">Chance de drop <i style="font-size: 10px;">(si possédé)</i></th></tr>
+			<?php 					$req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
 					$db_drops = new base_delain;
 					$db_drops->query($req_drops);
 					//echo $req_drops;
@@ -949,7 +949,9 @@ if ($erreur == 0)
 						<INPUT type="text" name="valeur" value="<?php echo $db_drops->f("ogmon_chance");?>">
 						<input type="submit" value="Modifier">
 					</form>
-				</td><td>
+				</td>
+				<td style="text-align: center"><a target="_blank" href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $db_drops->f("ogmon_gobj_cod");?>"><?php echo $db_drops->f("gobj_chance_drop_monstre").'</a> %';?></td>
+				<td>
 					<form method="post">
 						<input type="hidden" name="methode2" value="edit">
 						<input type="hidden" name="sel_method" value="edit">
@@ -981,11 +983,11 @@ if ($erreur == 0)
 					</TD>
 					<TD>
 						<INPUT type="text" name="valeur" value="0">
-						<input type="submit" value="Ajouter"></TD>
+						<input type="submit" value="Ajouter"></TD><td colspan="2"></td>
 				</form>
 			</tr>
 		</TABLE>
-			<?php 				}
+ 			<?php 				}
 			}
 			else
 			{

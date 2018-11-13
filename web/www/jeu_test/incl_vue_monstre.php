@@ -75,8 +75,8 @@ if ($nb_joueur_en_vue != 0)
             if ($db->f("compt_cod") == -1)
                 $type_controle = '';
 
-			$lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://images.jdr-delain.net/attaquer.gif" title="Vous êtes en combat avec ce monstre." /> ' : '';
-			$meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://images.jdr-delain.net/guilde.gif" title="Ce monstre appartient à la même coterie que vous." /> ' : '';
+			$lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec ce monstre." /> ' : '';
+			$meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Ce monstre appartient à la même coterie que vous." /> ' : '';
 			$is_tangible = $db->f("perso_tangible");
 			$aff_tangible = $palbable[$is_tangible];
 			$niveau_blessures = '';

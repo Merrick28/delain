@@ -595,6 +595,15 @@ class aquete_perso
                     }
                 break;
 
+                case "#REMETTRE #OBJET #QUETE":
+                    // le joueur doit être sur la même case que le PNJ, le PNJ prendra les/les objets directement depuis l'invetaire
+                    if ($this->action->remettre_objet_quete($this))
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                break;
+
                 case "#MOVE #PERSO":
                     // Le joueur doit rejoindre un perso
                     if ($this->action->move_perso($this))

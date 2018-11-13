@@ -118,6 +118,7 @@ if ($erreur == 0)
         echo '<tr><td><b>Nb. rejouabilité</b>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <i>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Nb. de quête</b>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="'.$quete->aquete_nb_max_quete.'"> <i>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</i></td></tr>';
         echo '<tr><td><b>Délai max. </b><i style="font-size: 7pt;">(en jours)</i>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <i>délai max alloué pour la quête (pas de limite si vide)</i></td></tr>';
+        echo '<tr><td><b>Info sur Nb. Réalisation</b>:</td><td style="color:#800000">Il y a <b>'.$quete->get_nb_en_cours().'</b> quête en cours sur <b>'.$quete->get_nb_total().'</b> au total <i>(tous persos confondus)</i></td></tr>';
         if ($aquete_cod==0)
         {
             // cas d'une nouvelle quete
@@ -133,7 +134,7 @@ if ($erreur == 0)
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
-            if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><b>ATTENTION</b></u>: il y a déjà <b>'.$nb_quete_en_cours.'</b> perso(s) en cours de réalisation de cette quête.</td></tr>';
+            //if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><b>ATTENTION</b></u>: il y a déjà <b>'.$nb_quete_en_cours.'</b> perso(s) en cours de réalisation de cette quête.</td></tr>';
             echo '</table>';
             echo '</form>';
             echo '<hr>';
@@ -163,13 +164,18 @@ if ($erreur == 0)
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: white'>{$etape->aqetape_texte}</i><br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
-                    if ($k!=0 || sizeof($etapes)==1)
+                    $nb_encours_etape = $quete->get_nb_en_cours($etape->aqetape_cod);
+                    if (($k!=0 || sizeof($etapes)==1) && ($nb_encours_etape==0))
                     {
                         $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
                         if ($nb_quete_en_cours>0)
                             echo 'Il y a <b>'.$nb_quete_en_cours.'</b> persos en cours à cette étape (<i style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</i>)';
                         else
                             echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                    }
+                    else if ($nb_encours_etape>0)
+                    {
+                        echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><b>ATTENTION</b></u>: il y a <b>'.$nb_encours_etape.'</b> quête en cours de réalisation à cette etape. (<i style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</i>)</span>';
                     }
                     echo '</form>';
                     echo '</div></div>';

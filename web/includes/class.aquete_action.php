@@ -358,6 +358,7 @@ class aquete_action
                 $req = "select count(*) count from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $elem->aqelem_misc_cod), $stmt);
+
                 $result = $stmt->fetch();
 
                 if (1*$result["count"]>0)
@@ -525,6 +526,137 @@ class aquete_action
             $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
 
             // si l'objet ne sert plus on le supprime //$objet->supprime();
+        }
+
+        return true;
+    }
+
+    //==================================================================================================================
+    /**
+    * On verifie si les objets sont là =>  '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]'
+    * Attention à la place des objet générique il peut y avoir des objets réelement instanciés (on vérifiera les cod)
+    * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+    * @param aquete_perso $aqperso
+    * @return bool
+    */
+    function remettre_objet_quete(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'perso')) return false ;                                         // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                                        // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
+
+        shuffle($p4);                                       // ordre aléatoire pour les objets
+
+        $pnj = new perso();
+        $pnj->charge($p2->aqelem_misc_cod);
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+        $nbobj = $p3->aqelem_param_num_1 ;
+        $nbgenerique = count ($p4) ;
+
+        // Vérification de la position!
+        if ( $perso->get_position()["pos"]->pos_cod != $pnj->get_position()["pos"]->pos_cod ) return false ;      // le perso n'est pas avec son pnj
+
+        // Vérification sur le nombre d'objet
+        if ($nbobj <= 0) return true;       // etape bizarre !! on n'attend aucun objet
+
+
+        // Préparation de la liste des objets prendre en fonction du nombre de générique et du nombre d'objet à donner
+        $liste_echange = array() ;
+        $liste_objet ="" ;
+        $liste_generique ="" ;
+
+        // On commence par chercher un exeplaire de chaque.
+        foreach ($p4 as $k => $elem)
+        {
+            if ($elem->aqelem_type == "objet")
+            {
+                $req = "select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_cod = ? order by random()";
+            }
+            else
+            {
+                $req = "select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod = ? order by random() limit 1";
+                $liste_generique .= $elem->aqelem_misc_cod . ",";
+            }
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $liste_objet .= $result["obj_cod"] . "," ;
+                $liste_echange[] = 1*$result["obj_cod"];
+            }
+            if (count($liste_echange)==$nbobj) break;   // On en a assez!
+        }
+
+        // S'il y a plus de demande que de générique (et qu'il y a des generique) , il faut en prendre encore un peu
+        if (($nbobj > $nbgenerique) && ($liste_generique!="") && ($liste_objet!=""))
+        {
+            $nb = ($nbobj-$nbgenerique);                                         // nombre restant à prendre parmis les génériques
+            $liste_generique = substr($liste_generique,0,-1);       // On retire les vigules finales
+            $liste_objet = substr($liste_objet,0,-1);               // On retire les vigules finales
+            $req = "select obj_cod 
+                    from perso_objets 
+                    join objets on obj_cod = perobj_obj_cod 
+                    where perobj_perso_cod = ? 
+                    and obj_gobj_cod in ({$liste_generique}) 
+                    and obj_cod not in ({$liste_objet}) 
+                    order by random() limit {$nb}";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
+            while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $liste_echange[] = 1*$result["obj_cod"];
+            }
+        }
+
+        if (count($liste_echange)<$nbobj) return false;       //il en manque !
+
+        // Il faut maintenant prendre les objets
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
+        $param_ordre = 0 ;
+        foreach ($liste_echange as $k => $obj_cod)
+        {
+            // Gestion de la transaction (fare l'échange et ajouter evenement)
+            $objet = new objets();
+            if ($objet->charge($obj_cod))
+            {
+
+                // on retire l'objet du donneur (joueur)
+                $req = "delete from perso_objets where perobj_perso_cod=:perobj_perso_cod and perobj_obj_cod=:perobj_obj_cod ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":perobj_perso_cod" => $aqperso->aqperso_perso_cod, ":perobj_obj_cod" => $objet->obj_cod), $stmt);
+
+                // on l'ajoute dans l'inventaire du pnj (directement identifié pour lui)
+                $req = "insert into perso_objets (perobj_perso_cod, perobj_obj_cod, perobj_identifie) values (:perobj_perso_cod, :perobj_obj_cod, 'O') returning perobj_obj_cod as obj_cod  ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $objet->obj_cod ), $stmt);
+
+                $texte_evt = '[attaquant] a pris un objet à [cible] <i>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</i>';
+                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                                  values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                    ":texte_evt"=> $texte_evt,
+                    ":levt_attaquant" => $pnj->perso_cod,
+                    ":levt_cible" => $aqperso->aqperso_perso_cod,
+                    ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+
+                // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
+                $elem = new aquete_element();
+                $elem->aqelem_aquete_cod = $aqperso->aqperso_aquete_cod;
+                $elem->aqelem_aqetape_cod = $aqperso->aqperso_etape_cod;
+                $elem->aqelem_aqperso_cod = $aqperso->aqperso_cod;
+                $elem->aqelem_quete_step = $aqperso->aqperso_quete_step;
+                $elem->aqelem_param_id = 4;
+                $elem->aqelem_type = 'objet';
+                $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                $elem->aqelem_param_ordre =  $param_ordre ;         // On ordonne correctement !
+                $param_ordre ++ ;
+                $elem->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
+            }
         }
 
         return true;

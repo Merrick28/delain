@@ -198,8 +198,12 @@ else
 				<td><input type="text" name="gobj_bonus_armure"></td>
 			</tr>
 			<tr>
-				<td class="soustitre2">Chance de drop à la mort (en %)</td>
+				<td class="soustitre2">Chance de drop à la mort du joueur (en %)</td>
 				<td><input type="text" name="gobj_chance_drop"></td>
+			</tr>
+			<tr>
+				<td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
+				<td><input type="text" name="gobj_chance_drop_monstre">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
 			</tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>
@@ -491,9 +495,13 @@ else
 				<td><input type="text" name="gobj_bonus_armure" value="<?php echo $db->f("gobj_bonus_armure");?>"></td>
 			</tr>
 			<tr>
-				<td class="soustitre2">Chance de drop à la mort (en %)</td>
+				<td class="soustitre2">Chance de drop à la mort du joueur (en %)</td>
 				<td><input type="text" name="gobj_chance_drop" value="<?php echo $db->f("gobj_chance_drop");?>"></td>
 			</tr>
+            <tr>
+                <td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
+                <td><input type="text" name="gobj_chance_drop_monstre" value="<?php echo $db->f("gobj_chance_drop_monstre");?>">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
+            </tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>
 				<td><input type="text" name="gobj_chance_enchant" value="<?php echo $db->f("gobj_chance_enchant");?>"></td>
@@ -543,6 +551,17 @@ else
 				values
 				(" . $obcar_cod . "," . $_POST['obcar_des_degats'] . "," . $_POST['obcar_val_des_degats'] . "," . $_POST['obcar_bonus_degats'] . "," . $_POST['obcar_chute'] . "," . $_POST['obcar_armure'] . ")";
 			$db->query($req);
+
+            // mise à NULL des valeurs vides pour objets_generique
+            $fields = array(
+                'gobj_chance_drop_monstre',
+            );
+            foreach ($fields as $i => $value)
+            {
+                if($_POST[$fields[$i]] == '')
+                    $_POST[$fields[$i]] = "NULL";
+            }
+
 			// mise à 0 des valeurs vides pour objets_generique
 			$fields = array(
 				'gobj_valeur',
@@ -575,13 +594,13 @@ else
 				(gobj_obcar_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_distance,gobj_portee,gobj_comp_cod,gobj_poids,
 				gobj_pa_normal,gobj_pa_eclair,gobj_description,gobj_deposable,gobj_postable,gobj_usure,gobj_echoppe,gobj_vampire,
 				gobj_seuil_force,gobj_seuil_dex,gobj_nb_mains,gobj_regen,gobj_aura_feu,gobj_bonus_vue,gobj_critique,gobj_bonus_armure,
-				gobj_chance_drop,gobj_chance_enchant,gobj_desequipable,gobj_stabilite, gobj_niveau_min)
+				gobj_chance_drop,gobj_chance_drop_monstre,gobj_chance_enchant,gobj_desequipable,gobj_stabilite, gobj_niveau_min)
 				values
 				($obcar_cod,e'" . pg_escape_string($gobj_nom) . "',e'" . pg_escape_string($gobj_nom_generique) . "'," . $_POST['gobj_tobj_cod'] . "," . $_POST['gobj_valeur'] .
 				",'$gobj_distance'," . $_POST['gobj_portee'] . "," .$_POST['gobj_comp_cod'] . "," . $_POST['gobj_poids'] . "," . $_POST['gobj_pa_normal'] . "," . 
 				$_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
 				$_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] . 
-				"," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] .
+				"," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
 				"," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
 			$db->query($req);
 			echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"".$PHP_SELF."?methode=mod\">Créer/Modifier d'autres objets</a>";
@@ -607,7 +626,18 @@ else
 				set obcar_des_degats = " . $_POST['obcar_des_degats'] . ",obcar_val_des_degats = " . $_POST['obcar_val_des_degats'] . ",
 				obcar_bonus_degats = " . $_POST['obcar_bonus_degats'] . ",obcar_chute = " . $_POST['obcar_chute'] . ",obcar_armure = " . $_POST['obcar_armure'] . "
 				where obcar_cod = $obcar_cod";
-			$db->query($req);			
+			$db->query($req);
+
+            // mise à NULL des valeurs vides pour objets_generique
+            $fields = array(
+                'gobj_chance_drop_monstre',
+            );
+            foreach ($fields as $i => $value)
+            {
+                if($_POST[$fields[$i]] == '')
+                    $_POST[$fields[$i]] = "NULL";
+            }
+
 			// mise à 0 des valeurs vides pour objets_generique
 			$fields = array(
 				'gobj_valeur',
@@ -635,7 +665,8 @@ else
 			{
 				if($_POST[$fields[$i]] == '')
 					$_POST[$fields[$i]] = 0;
-			}			
+			}
+
 			// insertion dans objets_generique
 			$req = "update objet_generique
 				set gobj_nom = e'" . pg_escape_string($gobj_nom) . "',gobj_nom_generique = e'" . pg_escape_string($gobj_nom_generique) . "',gobj_tobj_cod = " . $_POST['gobj_tobj_cod'] . ",
@@ -646,7 +677,7 @@ else
 				gobj_vampire = " . $_POST['gobj_vampire'] . ",gobj_seuil_force = " . $_POST['gobj_seuil_force'] . ",gobj_seuil_dex = " . $_POST['gobj_seuil_dex'] . ",
 				gobj_nb_mains = " . $_POST['gobj_nb_mains'] . ",gobj_regen = " . $_POST['gobj_regen'] . ",gobj_aura_feu = " . $_POST['gobj_aura_feu'] . ",
 				gobj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",gobj_critique = " . $_POST['gobj_critique'] . ",gobj_bonus_armure = " . $_POST['gobj_bonus_armure'] .",
-				gobj_chance_drop = " . $_POST['gobj_chance_drop'] . ", gobj_chance_enchant = " . $_POST['gobj_chance_enchant'] . ", gobj_desequipable = '$gobj_desequipable', gobj_stabilite = " . $_POST['gobj_stabilite'] . ", 
+				gobj_chance_drop = " . $_POST['gobj_chance_drop'] . ", gobj_chance_drop_monstre = " . $_POST['gobj_chance_drop_monstre'] . ", gobj_chance_enchant = " . $_POST['gobj_chance_enchant'] . ", gobj_desequipable = '$gobj_desequipable', gobj_stabilite = " . $_POST['gobj_stabilite'] . ", 
 				gobj_niveau_min = " . $_POST['gobj_niveau_min'] . " where gobj_cod = $objet ";
 			$db->query($req);
 			echo "<p>L’insertion s’est bien déroulée.";

@@ -21,14 +21,15 @@ $db->query($req_or);
 $qte_or = ($db->next_record()) ? $db->f("pbank_or") : 0;
 $cout_repar = $parm->getparm(40);
 
-$req_perso = "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso from perso where perso_cod = $perso_cod ";
+$req_perso = "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso, gmon_type_ia from perso left join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = $perso_cod ";
 $db->query($req_perso);
 $db->next_record();
 $poids_total = $db->f("perso_enc_max");
 $perso_po = $db->f("perso_po");
 $perso_gmon_cod = $db->f("perso_gmon_cod");
-$is_golem_brz = $perso_gmon_cod == 531;
-$is_golem_arm = $perso_gmon_cod == 535;
+$gmon_type_ia = $db->f("gmon_type_ia");
+$is_golem_brz = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
+$is_golem_arm = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
 $is_golem = $is_golem_brz || $is_golem_arm;
 $pa = $db->f("perso_pa");
 $perso_type_perso = $db->f("perso_type_perso");

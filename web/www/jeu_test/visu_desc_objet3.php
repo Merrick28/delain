@@ -70,7 +70,7 @@ if ($autorise == 1)
 		$enchantable = $db->f("obj_enchantable");
 		$niveau_min = $db->f("obj_niveau_min");
 		$Recup_image = $db->f("gobj_image");
-		$image = 'http://images.jdr-delain.net/'.$Recup_image;
+		$image = 'http://www.jdr-delain.net/images/'.$Recup_image;
 		$t_etat = 0;
 		$comp = $db->f("gobj_comp_cod");
 		$desc = $db->f("obj_description");

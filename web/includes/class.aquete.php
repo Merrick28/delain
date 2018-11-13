@@ -155,12 +155,13 @@ class aquete
     function get_nb_total()
     {
         $pdo = new bddpdo;
-        $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
+        $req = "select sum(aqperso_nb_realisation) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
         $result = $stmt->fetch();
         return 1*$result['count'];
     }
+
 
     //Comptage tous persos confondus, si une étape est passé en paramètre on compte le nombre de persos à cette étape
     function get_nb_en_cours($aqetape_cod=0)

@@ -25,8 +25,9 @@ switch ($methode)
             $param = new parametres();
             $param->charge($parm_cod);
             $parm_valeur = $param->parm_valeur_texte ;
+            $list_cod = implode(",", array_map(function($cod){return 1*$cod;}, explode(",",$parm_valeur)));
 
-            $req = "select perso_cod, perso_nom from perso where perso_cod={$num_perso} OR perso_cod in (".(pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $parm_valeur))))).") order by perso_cod";
+            $req = "select perso_cod, perso_nom from perso where perso_cod={$num_perso} OR perso_cod in ({$list_cod}) order by perso_cod";
 
             $db->query($req);
             $perso_cod_list = "";
@@ -55,8 +56,9 @@ switch ($methode)
             $param = new parametres();
             $param->charge($parm_cod);
             $parm_valeur = $param->parm_valeur_texte ;
+            $list_cod = implode(",", array_map(function($cod){return 1*$cod;}, explode(",",$parm_valeur)));
 
-            $req = "select perso_cod, perso_nom from perso where perso_cod<>{$num_perso} AND perso_cod in (".(pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $parm_valeur))))).") order by perso_cod";
+            $req = "select perso_cod, perso_nom from perso where perso_cod<>{$num_perso} AND perso_cod in ({$list_cod}) order by perso_cod";
 
             $db->query($req);
             $perso_cod_list = "";
@@ -100,7 +102,9 @@ echo "<tr><form name='login2' method='POST' action='#'>
   $param = new parametres();
   $param->charge($parm_cod);
   $parm_valeur = $param->parm_valeur_texte ;
-  $req = "select perso_cod, perso_nom from perso where perso_cod in (".(pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $parm_valeur))))).")  order by perso_cod";
+  $list_cod = implode(",", array_map(function($cod){return 1*$cod;}, explode(",",$parm_valeur)));
+
+  $req = "select perso_cod, perso_nom from perso where perso_cod in ({$list_cod}) order by perso_cod";
   //die($req);
   $db->query($req);
 

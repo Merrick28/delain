@@ -315,6 +315,13 @@ else
     $wiki           = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
     $option_monstre = '';
 }
+
+// 2018-10-30 - Marlyza - Ajout menu téléportation
+if ($is_admin_monstre || ($droit['modif_perso'] == 'O'))
+{
+    $option_monstre.= ($option_monstre=="" ? "" : "<br>").'<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_teleportation.php">Téléportation</a><br>';
+}
+
 $t->set_var('WIKI', $wiki);
 
 //controle	
@@ -353,6 +360,7 @@ else
 {
     $modif_monstre = '';
 }
+
 
 // modif carte
 if ($droit['carte'] == 'O')
@@ -640,6 +648,7 @@ if ($controle . $controle_admin . $droit_logs . $gestion_droits .
     $option_monstre .= '<hr />';
 }
 
+
 $t->set_var('COMMANDEMENT', $commandement);
 $t->set_var('GERANT', $gerant);
 $t->set_var('ECHOPPE', $echoppe);
@@ -710,38 +719,50 @@ $barre_switch_rapide='';
 if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_rapide.php" )))
 {
     $pdo    = new bddpdo;
-    $req    = "  
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
-                from compte  
-                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
-                join perso on perso_cod=pcompt_perso_cod
-                where perso_actif='O'
-                
-                union
-                
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 1 as type, pfam_perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
-                from compte  
-                join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
-                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
-                join perso on perso_cod=pfam_familier_cod where perso_actif='O' 
-                
-                union 
-                
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
-                from compte_sitting
-                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
-                join perso on perso_cod=pcompt_perso_cod 
-                where perso_actif='O'
-                
-                union
-                
-                select perso_cod, perso_nom, perso_pv, perso_pv_max, perso_pa, CASE WHEN perso_dlt<NOW() THEN 1 ELSE 0 END dlt_passee, 2 as type, pfam_perso_cod ordre, perso_type_perso, CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h')  END dlt 
-                from compte_sitting  
-                join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
-                join perso_familier on pfam_perso_cod=pcompt_perso_cod 
-                join perso on perso_cod=pfam_familier_cod where perso_actif='O'
-                
-                order by type, ordre, perso_type_perso";
+    $req    = "SELECT perso_cod, 
+                      perso_nom, 
+                      perso_pv, 
+                      perso_pv_max, 
+                      perso_pa, 
+                      dlt_passee(perso_cod) dlt_passee, 
+                      perso_type_perso, 
+                      CASE WHEN perso_dlt<NOW() THEN '' ELSE replace(substr((perso_dlt-now())::text,1,5),':','h') END dlt, 
+                      type, 
+                      ordre,
+                      (select count(*) from messages_dest where dmsg_perso_cod = perso_cod and dmsg_lu = 'N' and dmsg_archive = 'N') as nb_msg_non_lu
+               FROM perso 
+               JOIN (
+                    select perso_cod as p_perso_cod, 1 as type, perso_cod ordre
+                    from compte  
+                    join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                    join perso on perso_cod=pcompt_perso_cod
+                    where perso_actif='O'
+                    
+                    union
+                    
+                    select perso_cod as p_perso_cod, 1 as type, pfam_perso_cod ordre 
+                    from compte  
+                    join perso_compte on compt_cod=? and pcompt_compt_cod=compt_cod 
+                    join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                    join perso on perso_cod=pfam_familier_cod where perso_actif='O' 
+                    
+                    union 
+                    
+                    select perso_cod as p_perso_cod, 2 as type, perso_cod ordre 
+                    from compte_sitting
+                    join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                    join perso on perso_cod=pcompt_perso_cod 
+                    where perso_actif='O'
+                    
+                    union
+                    
+                    select perso_cod as p_perso_cod, 2 as type, pfam_perso_cod ordre 
+                    from compte_sitting  
+                    join perso_compte on csit_compte_sitteur=? and pcompt_compt_cod=csit_compte_sitte and csit_ddeb <= now() and csit_dfin >= now()
+                    join perso_familier on pfam_perso_cod=pcompt_perso_cod 
+                    join perso on perso_cod=pfam_familier_cod where perso_actif='O'
+                ) as p on p_perso_cod = perso_cod
+                ORDER BY type, ordre, perso_type_perso ";
     $stmt   = $pdo->prepare($req);
     $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
     $count = 1*$stmt->rowCount();
@@ -810,17 +831,20 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
             $_aff_dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
             $_aff_nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $_aff_perso_pv ."/". $result["perso_pv_max"]." - ". $_aff_perso_pa ."PA".$_aff_dlt."</span>";
 
+            $_aff_msg = "" ;
+            if( 1*$result["nb_msg_non_lu"]>0) $_aff_msg = '<span class="badge-btn">'.$result["nb_msg_non_lu"].'</span>';
+
             if ($result["dlt_passee"]!=0)
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-dlt">'.$_aff_nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch-dlt">'.$_aff_nom.'</button></div>';
             }
             else if ($result["perso_cod"]==$perso_cod)
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch-act">'.$_aff_nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch-act">'.$_aff_nom.'</button></div>';
             }
             else
             {
-                $liste_boutons.= '<div class="'. $col_class.'"><button id='.$result["perso_cod"].' class="button-switch">'.$_aff_nom.'</button></div>';
+                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch">'.$_aff_nom.'</button></div>';
             }
 
             if (($col %2 == 1) && ($nb_familier>0))

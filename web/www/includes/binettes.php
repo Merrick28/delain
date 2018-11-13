@@ -19,7 +19,7 @@ function binettes($binette)
 {
 require("params.php");
 
-$bin_path = 'http://images.jdr-delain.net/smilies/';
+$bin_path = 'http://www.jdr-delain.net/images/smilies/';
 
 // Very happy
 $binette = str_replace(":D"," <img src='" . $bin_path . "icon_biggrin.gif' border='0'> ","$binette");

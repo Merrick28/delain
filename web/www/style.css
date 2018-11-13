@@ -63,7 +63,7 @@ table {
 	background-color:#FFFFFF;
 }
 table.vide {
-	background : url('http://images.jdr-delain.net/mp_fondcarte.gif');
+	background : url('http://www.jdr-delain.net/images/mp_fondcarte.gif');
 	background-color:#FFFFFF;
 }
 table.vide2 {
@@ -192,7 +192,7 @@ input.vide {
 	border: none;
 	font-size: 11px;
 	color: black;
-	background : url('http://images.jdr-delain.net/fondparchemin.gif');
+	background : url('http://www.jdr-delain.net/images/fondparchemin.gif');
 }
 textarea {
 	border: black 1px solid;
@@ -730,6 +730,18 @@ div#colonne1:hover   {
 	font-size: 10px;
 	padding: 0px 3px 0px 3px;
 	margin: 0px 0px 0px -16px;
+	height: 14px;
+}
+
+/* d'affichage bouton switch perso */
+.badge-btn {
+	border-radius: 10px;
+	background-color: #F00000;
+	color: #ffffff;
+	position: absolute;
+	font-size: 10px;
+	padding: 0px 3px 0px 3px;
+	margin: 0px 0px 0px 7px;
 	height: 14px;
 }
 
