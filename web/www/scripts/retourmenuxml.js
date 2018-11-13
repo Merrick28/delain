@@ -20,14 +20,14 @@ function request(callback)
               {
                	var tab = callback(xhr.responseXML);
                	parent.gauche.document.getElementById("nom").innerHTML = tab['nom'];
-               	parent.gauche.document.getElementById("pa").innerHTML = '<img src="http://images.jdr-delain.net/barrepa_' + tab['pa'] + '.gif" title="' +  tab['pa'] + ' PA " alt="' +  tab['pa'] + ' PA ">';
-               	parent.gauche.document.getElementById("hp").innerHTML = '<img src="http://images.jdr-delain.net/coeur.gif" alt=""> <img src="http://images.jdr-delain.net/hp' + tab['barre_hp'] + '.gif" title="' + tab['pv'] + '/' + tab['pv_max'] + 'PV" alt="' + tab['pv'] + '/' + tab['pv_max'] + 'PV"><br><br>';
-               	parent.gauche.document.getElementById("xp").innerHTML = '<img src="http://images.jdr-delain.net/iconexp.gif" alt="">  <img src="http://images.jdr-delain.net/xp' + tab['barre_xp'] + '.gif" title="' + tab['perso_px'] + ' PX, prochain niveau à ' + tab['prochain_niveau'] + '" alt="' + tab['perso_px'] + '/' + tab['prochain_niveau'] + ' PX"><br><br>';
-               	parent.gauche.document.getElementById("degats").innerHTML = '<img src="http://images.jdr-delain.net/att.gif" title="fourchette de dégats" alt="Att"> <b>' + tab['degats'] + '</b><img src="http://images.jdr-delain.net/del.gif" height="8" width="16" alt=" "><img src="http://images.jdr-delain.net/def.gif" title="Armure" alt="Def"> <b>' + tab['armure'] + '</b>';
-               	parent.gauche.document.getElementById("position").innerHTML = '<span style="line-height:100%;"><br>X : <b>'+ tab['posx'] +'</b> Y : <b>' + tab['posy']  + '</b><br><b><a href="desc_etage.php" target="droite"><img alt="" src="http://images.jdr-delain.net/iconmap.gif" style="height:12px;border:0px;">' + tab['etage']  + '</a></b><br><br></span>';
+               	parent.gauche.document.getElementById("pa").innerHTML = '<img src="http://www.jdr-delain.net/images/barrepa_' + tab['pa'] + '.gif" title="' +  tab['pa'] + ' PA " alt="' +  tab['pa'] + ' PA ">';
+               	parent.gauche.document.getElementById("hp").innerHTML = '<img src="http://www.jdr-delain.net/images/coeur.gif" alt=""> <img src="http://www.jdr-delain.net/images/hp' + tab['barre_hp'] + '.gif" title="' + tab['pv'] + '/' + tab['pv_max'] + 'PV" alt="' + tab['pv'] + '/' + tab['pv_max'] + 'PV"><br><br>';
+               	parent.gauche.document.getElementById("xp").innerHTML = '<img src="http://www.jdr-delain.net/images/iconexp.gif" alt="">  <img src="http://www.jdr-delain.net/images/xp' + tab['barre_xp'] + '.gif" title="' + tab['perso_px'] + ' PX, prochain niveau à ' + tab['prochain_niveau'] + '" alt="' + tab['perso_px'] + '/' + tab['prochain_niveau'] + ' PX"><br><br>';
+               	parent.gauche.document.getElementById("degats").innerHTML = '<img src="http://www.jdr-delain.net/images/att.gif" title="fourchette de dégats" alt="Att"> <b>' + tab['degats'] + '</b><img src="http://www.jdr-delain.net/images/del.gif" height="8" width="16" alt=" "><img src="http://www.jdr-delain.net/images/def.gif" title="Armure" alt="Def"> <b>' + tab['armure'] + '</b>';
+               	parent.gauche.document.getElementById("position").innerHTML = '<span style="line-height:100%;"><br>X : <b>'+ tab['posx'] +'</b> Y : <b>' + tab['posy']  + '</b><br><b><a href="desc_etage.php" target="droite"><img alt="" src="http://www.jdr-delain.net/images/iconmap.gif" style="height:12px;border:0px;">' + tab['etage']  + '</a></b><br><br></span>';
 
 						//messagerie
-               	var texte_mess = '<p class="texteMenu"><img src="http://images.jdr-delain.net/messagerie.gif" alt=""> <a href="messagerie2.php" target="droite">';
+               	var texte_mess = '<p class="texteMenu"><img src="http://www.jdr-delain.net/images/messagerie.gif" alt=""> <a href="messagerie2.php" target="droite">';
                	if(tab['nb_mess'] != 0)
                		texte_mess += '<b>';
                	texte_mess += 'Messagerie';
@@ -43,18 +43,18 @@ function request(callback)
                		if(tab['lock'] == 0)
                		{
                			// dep normal
-               			texte_dep += '<img src="http://images.jdr-delain.net/deplacement.gif" alt=""> <a href="deplacement.php" target="droite">D&eacute;placement (' + tab['pa_dep'] + ' PA)</a><br></p';
+               			texte_dep += '<img src="http://www.jdr-delain.net/images/deplacement.gif" alt=""> <a href="deplacement.php" target="droite">D&eacute;placement (' + tab['pa_dep'] + ' PA)</a><br></p';
                		}
                		else
                		{
                			//fuite
-               			texte_dep += '<img src="http://images.jdr-delain.net/fuite.gif" alt=""> <a href="deplacement.php" target="droite">Fuite (' + tab['pa_dep'] + ' PA)</a><br></p';
+               			texte_dep += '<img src="http://www.jdr-delain.net/images/fuite.gif" alt=""> <a href="deplacement.php" target="droite">Fuite (' + tab['pa_dep'] + ' PA)</a><br></p';
                		}
                	}
                	parent.gauche.document.getElementById("deplacement").innerHTML = texte_dep;
 
                	if(tab['objet_case'] != 0)
-               		parent.gauche.document.getElementById("ramasser").innerHTML = '<p class="texteMenu"><img  src="http://images.jdr-delain.net/ramasser.gif" alt=""> <a href="ramasser.php" target="droite">Ramasser (' + tab['pa_ramasse'] + 'PA)</a></p>';
+               		parent.gauche.document.getElementById("ramasser").innerHTML = '<p class="texteMenu"><img  src="http://www.jdr-delain.net/images/ramasser.gif" alt=""> <a href="ramasser.php" target="droite">Ramasser (' + tab['pa_ramasse'] + 'PA)</a></p>';
                	else
                		parent.gauche.document.getElementById("ramasser").innerHTML = '';
 
@@ -64,12 +64,12 @@ function request(callback)
                		parent.gauche.document.getElementById("intangible").innerHTML = '';
 
 						if(tab['enchanteur'] == 1)
-							parent.gauche.document.getElementById("enchanteur").innerHTML =  '<img src="http://images.jdr-delain.net/energi10.png" alt="" /> <img src="http://images.jdr-delain.net/nrj' + tab['barre_energie'] + '.png" title="' + tab['perso_energie'] + '/100 énergie" alt="' + tab['perso_energie'] + '/100 énergie" /><br><br>';
+							parent.gauche.document.getElementById("enchanteur").innerHTML =  '<img src="http://www.jdr-delain.net/images/energi10.png" alt="" /> <img src="http://www.jdr-delain.net/images/nrj' + tab['barre_energie'] + '.png" title="' + tab['perso_energie'] + '/100 énergie" alt="' + tab['perso_energie'] + '/100 énergie" /><br><br>';
 						else
 							parent.gauche.document.getElementById("enchanteur").innerHTML = '';
 
 						if(tab['is_fam_divin'] == 1)
-							parent.gauche.document.getElementById("divin").innerHTML =  '<img src="http://images.jdr-delain.net/magie.gif" alt=""> <img src="http://images.jdr-delain.net/nrj' + tab['barre_divine'] + '.png" title="Énergie divine : ' + tab['energie_divine'] + '" alt="Énergie divine : ' + tab['energie_divine'] + '"><br><br>';
+							parent.gauche.document.getElementById("divin").innerHTML =  '<img src="http://www.jdr-delain.net/images/magie.gif" alt=""> <img src="http://www.jdr-delain.net/images/nrj' + tab['barre_divine'] + '.png" title="Énergie divine : ' + tab['energie_divine'] + '" alt="Énergie divine : ' + tab['energie_divine'] + '"><br><br>';
 						else
 							parent.gauche.document.getElementById("divin").innerHTML = '';
 
@@ -89,12 +89,12 @@ function request(callback)
 							parent.gauche.document.getElementById("lieu").innerHTML = '';
 
 						if(tab['transaction'] == 0)
-							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://images.jdr-delain.net/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\">Transactions</a>';
+							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://www.jdr-delain.net/images/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\">Transactions</a>';
 						else
-							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://images.jdr-delain.net/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\"><b> Transactions (' + tab['transaction']  + ')</a></b>';
+							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://www.jdr-delain.net/images/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\"><b> Transactions (' + tab['transaction']  + ')</a></b>';
                }
               else
-                 parent.gauche.document.getElementById("nom").innerHTML = '<a href="javascript:request(readData);"><img src="http://images.jdr-delain.net/refresh.png" border="0" alt="Rafraîchir"> Rafraichir</a>';
+                 parent.gauche.document.getElementById("nom").innerHTML = '<a href="javascript:request(readData);"><img src="http://www.jdr-delain.net/images/refresh.png" border="0" alt="Rafraîchir"> Rafraichir</a>';
          }
     };
 

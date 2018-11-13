@@ -1,5 +1,5 @@
 <?php 
-$chemin = "http://images.jdr-delain.net/avatars/";
+$chemin = "http://www.jdr-delain.net/images/avatars/";
 $req_visu = "select perso_type_perso, perso_cod, perso_nom, race_nom, perso_sex, perso_description, perso_desc_long, perso_nb_mort,
 		perso_nb_joueur_tue, perso_nb_monstre_tue, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma, race_cod,
 		perso_avatar, get_renommee(perso_renommee) as renom, get_renommee_magie(perso_renommee_magie) as renom_magie, perso_nb_mort_arene, 

@@ -101,8 +101,8 @@ $nb_joueur_en_vue = $db->nf();
                 $quatrieme = ($db->f("perso_pnj") == 2) ? 'O' : 'N';
                 $mortel = ($db->f("perso_mortel") == 'O') ? ' *' : '';
 
-                $lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://images.jdr-delain.net/attaquer.gif" title="Vous êtes en combat avec cet aventurier." /> ' : '';
-                $meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://images.jdr-delain.net/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
+                $lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec cet aventurier." /> ' : '';
+                $meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
 
                 $is_tangible = $db->f("perso_tangible");
                 $aff_tangible = $palbable[$is_tangible];

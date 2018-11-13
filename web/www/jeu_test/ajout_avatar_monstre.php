@@ -71,7 +71,7 @@ if ($droit['controle_admin'] == 'O')
 					?>
 					<tr>
 					<td><?php echo $db->f("gmon_nom");?></td>
-					<td class="soustitre2"><img src=http://images.jdr-delain.net/avatars/<?php echo $db->f("gmon_avatar");?>></td>
+					<td class="soustitre2"><img src=http://www.jdr-delain.net/images/avatars/<?php echo $db->f("gmon_avatar");?>></td>
 					</tr>
 					<?php 
 				}

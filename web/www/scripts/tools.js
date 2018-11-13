@@ -179,6 +179,7 @@ function switch_menu(e)
 function getTableCod_update() { // fonction de mise à jour de la liste (voir jeu_test\ajax_request.php)
     // recupe des paramètres
     var params = {} ;
+    if ( $( "#spop-tablecod-perso-perso" ).length ) params.perso_perso = false; else params.perso_perso = true ;
     if ( $( "#spop-tablecod-perso-pnj" ).length ) params.perso_pnj = $( "#spop-tablecod-perso-pnj" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-monstre" ).length ) params.perso_monstre = $( "#spop-tablecod-perso-monstre" ).prop( "checked" ) ? true : false ;
     if ( $( "#spop-tablecod-perso-fam" ).length ) params.perso_fam = $( "#spop-tablecod-perso-fam" ).prop( "checked" ) ? true : false ;
@@ -216,9 +217,16 @@ function getTableCod(divname, table, titre, params)
 {
     var options = "" ;
     if (table=="perso"){
-        options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
-        options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
-        options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
+        if (params=="monstre")
+        {
+            options += '<input id="spop-tablecod-perso-perso" type="hidden" value="false">';
+        }
+        else
+        {
+            options += 'avec les monstres: <input type="checkbox" id="spop-tablecod-perso-monstre" onClick="getTableCod_update();">';
+            options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
+            options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
+        }
     } else if (table=="etape"){
         options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
@@ -253,7 +261,7 @@ function getTableCod(divname, table, titre, params)
         else if ( event.target.id.substr(0, 21) == "spop-tablecod-select-")
         {
             var element = $("#"+event.target.id);
-            $("#" + divname+"_cod").val (element.attr("data-spop-cod") );
+            $("#" + divname+"_cod").val (element.attr("data-spop-cod") ).trigger('change');
             $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
             $("#" + divname+"_num_1").val (element.attr("data-spop-num1") );
             $(document).unbind("click");

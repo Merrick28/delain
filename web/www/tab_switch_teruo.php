@@ -114,12 +114,12 @@ function affiche_perso($perso_cod)
 	}
 	else
 	{			
-			$avatar = "https://images.jdr-delain.net/avatars/" . $db->f("perso_avatar");
+			$avatar = "https://www.jdr-delain.net/images/avatars/" . $db->f("perso_avatar");
 	}
 	}	
 	else
 	{			
-			$avatar = "https://images.jdr-delain.net/avatars/" . $db->f("perso_avatar");
+			$avatar = "https://www.jdr-delain.net/images/avatars/" . $db->f("perso_avatar");
 	}
 	//
 	// Partie permier avril
