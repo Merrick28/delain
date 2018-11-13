@@ -450,6 +450,21 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
+
+            // Bouton de relance
+            $req = 'select perso_pa, cout_pa_magie(perso_cod,' . $sort_cod . ',' . $type_lance . ') as sort_pa 
+                    from perso 
+                    join perso_nb_sorts on pnbs_perso_cod=perso_cod and pnbs_sort_cod=' . $sort_cod . '
+                    where perso_cod = '.$perso_cod.' and pnbs_nombre<2 ';
+            $db->query($req);
+            $db->next_record();
+            if ($db->nf() != 0)
+            {
+                if ($db->f('perso_pa')>=$db->f('sort_pa'))
+                {
+                    $contenu_page .='<br><br><center><a href="choix_sort.php?&sort='.$sort_cod.'&type_lance='.$type_lance.'">Relancer ('.$db->f('sort_pa').' PA)</a></center>';
+                }
+            }
             break;
 
         case 'magie_case':
