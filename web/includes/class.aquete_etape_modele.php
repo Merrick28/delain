@@ -154,7 +154,7 @@ class aquete_etape_modele
                 $type = $t[1];
             }
 
-            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => ( $n<0 ? "liste de $type non editable" : ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max."))) );
+            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => ( $n<0 ? "liste de $type non-éditable" : ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max."))) );
         }
         return $retour;
     }

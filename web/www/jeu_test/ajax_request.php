@@ -221,22 +221,6 @@ switch($_REQUEST["request"])
             break;
 
         case 'lieu':
-            $filter = "";
-
-            // requete de comptage
-            $req = "select count(*) from lieu where lieu_nom ilike ? {$filter}";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
-            $row = $stmt->fetch();
-            $count = $row['count'];
-
-            // requete de recherche
-            $req = "select lieu_cod cod, lieu_nom nom from lieu where lieu_nom ilike ?  {$filter} ORDER BY lieu_nom LIMIT 10";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
-            break;
-
-        case 'objet_generique':
             $words = explode(" ", $recherche);
             $search_string = array();
 
@@ -244,22 +228,58 @@ switch($_REQUEST["request"])
             foreach ($words as $k => $w)
             {
                 if ($k>0)  $filter.= "AND ";
-                $filter.= "(tobj_libelle || ' ' || gobj_nom ilike :search$k) ";
+                $filter.= "(lieu_nom||' '||pos_x::text||' '||pos_y::text||' '||etage_libelle ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
 
             // requete de comptage
-            $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
+            $req = "select count(*) 
+                    from lieu 
+                    inner join lieu_position on lpos_lieu_cod=lieu_cod 
+                    inner join positions on pos_cod=lpos_pos_cod
+                    inner join etage on etage_numero=pos_etage
+                    where {$filter}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select gobj_cod cod, gobj_nom || ' (' || tobj_libelle || ')' nom from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ORDER BY gobj_nom LIMIT 10";
+            $req = "select lieu_cod cod, lieu_nom||' ('||pos_x::text||','||pos_y::text||' - '||etage_libelle||')' as nom from lieu 
+                    inner join lieu_position on lpos_lieu_cod=lieu_cod 
+                    inner join positions on pos_cod=lpos_pos_cod
+                    inner join etage on etage_numero=pos_etage
+                    where {$filter}
+                    ORDER BY lieu_nom, etage_libelle LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
+
+            case 'monstre_generique':
+                $words = explode(" ", $recherche);
+                $search_string = array();
+
+                $filter = "";
+                foreach ($words as $k => $w)
+                {
+                    if ($k>0)  $filter.= "AND ";
+                    $filter.= "(gmon_nom ilike :search$k) ";
+                    $search_string[":search$k"] = "%{$w}%" ;
+                }
+
+                // requete de comptage
+                $req = "select count(*) from monstre_generique where {$filter} ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute($search_string, $stmt);
+                $row = $stmt->fetch();
+                $count = $row['count'];
+
+                // requete de recherche
+                $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT 10";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute($search_string, $stmt);
+                break;
+
         case 'objet_generique':
             $words = explode(" ", $recherche);
             $search_string = array();
