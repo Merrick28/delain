@@ -21,6 +21,16 @@
         $( document ).ready(function() {
             $("div#dropdown-box").click( function (event){ switch_menu(event); });
         	$("button[class^='button-switch']").click( function (){ switch_perso(this.id); });
+
+            // Auto-hide/show the switches buttons (sur barre autohide)
+            if ($('#colonne0').data("switch-bar")=="autohide")
+            {
+                $('body').on('mousemove', function(event) {
+                    if(10 - event.clientY >= 0) {
+                        $('#colonne0').slideDown();
+                    }
+                });
+			}
 		});
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
