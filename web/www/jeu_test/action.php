@@ -452,17 +452,20 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= $db->f('resultat');
 
             // Bouton de relance
-            $req = 'select perso_pa, cout_pa_magie(perso_cod,' . $sort_cod . ',' . $type_lance . ') as sort_pa 
+            $req = 'select perso_pa, cout_pa_magie(perso_cod,' . $sort_cod . ',' . $type_lance . ') as sort_pa, sort_combinaison
                     from perso 
-                    join perso_nb_sorts on pnbs_perso_cod=perso_cod and pnbs_sort_cod=' . $sort_cod . '
-                    where perso_cod = '.$perso_cod.' and pnbs_nombre<2 ';
+                    join sorts on sort_cod=' . $sort_cod . '
+                    left join perso_nb_sorts on pnbs_perso_cod=perso_cod and pnbs_sort_cod=' . $sort_cod . '
+                    where perso_cod = '.$perso_cod.' and (pnbs_nombre<2 or pnbs_nombre is null) ';
             $db->query($req);
             $db->next_record();
             if ($db->nf() != 0)
             {
                 if ($db->f('perso_pa')>=$db->f('sort_pa'))
                 {
-                    $contenu_page .='<br><br><center><a href="choix_sort.php?&sort='.$sort_cod.'&type_lance='.$type_lance.'">Relancer ('.$db->f('sort_pa').' PA)</a></center>';
+                    // ajouter les runes utilisé dans le cas d'un lancé de ce type
+                    $runes = ($type_lance != 0) ? "" :   "&fam_1=".(1*substr($db->f('sort_combinaison'),0,1))."&fam_2=".(1*substr($db->f('sort_combinaison'),1,1))."&fam_3=".(1*substr($db->f('sort_combinaison'),2,1))."&fam_4=".(1*substr($db->f('sort_combinaison'),3,1))."&fam_5=".(1*substr($db->f('sort_combinaison'),4,1))."&fam_6=".(1*substr($db->f('sort_combinaison'),5,1));
+                    $contenu_page .='<br><br><center><a href="choix_sort.php?&sort='.$sort_cod.'&type_lance='.$type_lance.$runes.'">Relancer ('.$db->f('sort_pa').' PA)</a></center>';
                 }
             }
             break;
