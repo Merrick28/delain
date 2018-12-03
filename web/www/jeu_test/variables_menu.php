@@ -771,6 +771,7 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
     // pour optimiser l'affichage on compte le nombre de perso et de fam
     $nb_perso = 0;
     $nb_familier = 0;
+    $nb_button = sizeof($rows);
     foreach($rows as $result)
     {
         if ((1*$result["perso_type_perso"])==3)
@@ -863,9 +864,14 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
         $col++;
     }
 
-    if ($liste_boutons!='')
+    if (($liste_boutons!='') && ($nb_button<=16))
     {
-        $barre_switch_rapide='<div id="colonne0"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
+        $barre_switch_rapide='<div id="colonne0" data-switch-bar="standard" style="display:block"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
+    }
+    else
+    {
+        // Au dessus de 16 persos, il doit s'agir d'un admin monstres, on cache la barre par défaut (sera affiché si la souris passe en haut de l'écran
+        $barre_switch_rapide='<div id="colonne0" data-switch-bar="autohide" style="display:none"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
     }
 }
 $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
