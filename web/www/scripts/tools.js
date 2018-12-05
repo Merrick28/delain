@@ -188,6 +188,10 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-element-aquete_cod" ).length ) params.aquete_cod = $( "#spop-tablecod-element-aquete_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aqetape_cod" ).length ) params.aqetape_cod = $( "#spop-tablecod-element-aqetape_cod" ).val() ;
     if ( $( "#spop-tablecod-element-aqelem_type" ).length ) params.aqelem_type = $( "#spop-tablecod-element-aqelem_type" ).val() ;
+    if ( $( "#spop-tablecod-position-lieu" ).length ) params.position_lieu = $( "#spop-tablecod-position-lieu" ).prop( "checked" ) ? true : false ;
+    if ( $( "#spop-tablecod-position-etage" ).length ) params.position_etage = $( "#spop-tablecod-position-etage" ).val() ;
+    if ( $( "#spop-tablecod-position-x" ).length ) params.position_x = $( "#spop-tablecod-position-x" ).val() ;
+    if ( $( "#spop-tablecod-position-y" ).length ) params.position_y = $( "#spop-tablecod-position-y" ).val() ;
 
     //executer le service asynchrone
     runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
@@ -227,6 +231,12 @@ function getTableCod(divname, table, titre, params)
             options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
             options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
         }
+    } else if (table=="position"){
+        options += 'Etage: <input type="text" size=3 id="spop-tablecod-position-etage" value="'+params[0]+'" onChange="getTableCod_update();"> ';
+        options += 'X = <input type="text" size=3 id="spop-tablecod-position-x" value="'+params[1]+'" onChange="getTableCod_update();"> ';
+        options += 'Y = <input type="text" size=3 id="spop-tablecod-position-y" value="'+params[2]+'" onChange="getTableCod_update();"> ';
+        options += 'Limiter aux lieux: <input type="checkbox" id="spop-tablecod-position-lieu" onClick="getTableCod_update();">';
+        options += '<br><i style="font-size: 9px">Nota: Si ni l\'étage, la position X ou Y ne sont pas définis, la recherche est limitées aux lieux</i>';
     } else if (table=="etape"){
         options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
