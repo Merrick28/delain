@@ -11,7 +11,7 @@
 		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
 		<link rel="stylesheet" type="text/css" href="{URL}style.php">
 
-		<script src="{URL}js/jquery.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>

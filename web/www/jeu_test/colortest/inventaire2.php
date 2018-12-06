@@ -4,7 +4,7 @@
 <html>
 <head>
 <link rel="stylesheet" href="js/jquery/css/ui-lightness/jquery-ui-1.8rc1.custom.css" type="text/css" media="all" />
-<script src="js/jquery/jquery-1.4.1.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script src="js/jquery/jquery-ui-1.8rc1.custom.min.js" type="text/javascript"></script>
 
 <style type="text/css">

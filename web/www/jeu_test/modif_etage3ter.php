@@ -11,7 +11,7 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 // on va maintenant charger toutes les variables liées au menu
 include_once('variables_menu.php');
 
-echo '<script src="./js/jquery.js"></script>'; 							//Facilité le developpement avec du jquery
+echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>'; 							//Facilité le developpement avec du jquery
 echo '<script src="../scripts/admin_etage_modif3.js"></script>';	 // Scripts des traitements des clics dans la map
 								
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')

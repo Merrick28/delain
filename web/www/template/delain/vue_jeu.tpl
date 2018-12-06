@@ -9,7 +9,7 @@
 		<link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
 
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
-		<script src="{URL}/js/jquery.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{URL}scripts/ajax2.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>

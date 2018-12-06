@@ -22,7 +22,7 @@
 				}
 		</style>
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
-		<script src="{URL}/js/jquery.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 		<script src="{URL}scripts/ajax2.js" type="text/javascript"></script>
 		<script type='text/javascript'>
 			function tailleCadre()

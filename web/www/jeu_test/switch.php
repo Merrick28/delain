@@ -13,7 +13,7 @@ ob_start();
 $is_log = 1;
 
 ?>
-<script src="../scripts/jquery.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script language="javascript">
 
     function AddNewVote() {
