@@ -32,7 +32,7 @@ final class Twig_TokenParser_Extends extends Twig_TokenParser
         }
         $this->parser->setParent($this->parser->getExpressionParser()->parseExpression());
 
-        $stream->expect(Twig_Token::BLOCK_END_TYPE);
+        $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
     }
 
     public function getTag()
@@ -40,3 +40,5 @@ final class Twig_TokenParser_Extends extends Twig_TokenParser
         return 'extends';
     }
 }
+
+class_alias('Twig_TokenParser_Extends', 'Twig\TokenParser\ExtendsTokenParser', false);

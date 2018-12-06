@@ -32,7 +32,12 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
             if ($this->isSpecial()) {
                 $compiler->repr(true);
             } else {
-                $compiler->raw('array_key_exists(')->repr($name)->raw(', $context)');
+                $compiler
+                    ->raw('(isset($context[')
+                    ->string($name)
+                    ->raw(']) || array_key_exists(')
+                    ->string($name)
+                    ->raw(', $context))');
             }
         } elseif ($this->isSpecial()) {
             $compiler->raw($this->specialVars[$name]);
@@ -61,7 +66,7 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
                     ->string($name)
                     ->raw(' does not exist.\', ')
                     ->repr($this->lineno)
-                    ->raw(', $this->getSourceContext()); })()')
+                    ->raw(', $this->source); })()')
                     ->raw(')')
                 ;
             }
@@ -78,3 +83,5 @@ class Twig_Node_Expression_Name extends Twig_Node_Expression
         return !$this->isSpecial() && !$this->getAttribute('is_defined_test');
     }
 }
+
+class_alias('Twig_Node_Expression_Name', 'Twig\Node\Expression\NameExpression', false);
