@@ -131,6 +131,11 @@ if ($erreur == 0)
 	// -------------------------
 	// réceptacles
 	// -------------------------
+	$req_r = 'select perso_nb_receptacle from perso where perso_cod= ' . $perso_cod;
+	$db->query($req_r);
+	$db->next_record();
+	$nb_recep = $db->f("perso_nb_receptacle");
+	
 	$req = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
 		cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
 		where recsort_perso_cod = ' . $perso_cod . '
@@ -142,7 +147,7 @@ if ($erreur == 0)
 		$contenu_page .= '
 		<tr>
 		<td class="titre">
-		<span class="titre">Réceptacles magiques :<a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
+		<span class="titre">Réceptacles magiques (' . $db->nf() . '/' . $nb_recep . ')<a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
 		</td>
 		</tr>
 		
