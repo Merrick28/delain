@@ -209,25 +209,23 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On verifie si le perso est sur la case d'un lieu (un parmi plusieurs) =>  '[1:delai|1%1],[2:lieu|1%0]'
+     * On verifie si le perso est sur une position (un parmi plusieurs) =>  '[1:delai|1%1],[2:position|1%0]'
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
      * @return bool
      */
-    function move_lieu(aquete_perso $aqperso)
+    function move_position(aquete_perso $aqperso)
     {
 
-        // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
+        // Il peut y avoir une liste de position possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
         $pdo = new bddpdo;
         $req = " select aqelem_cod from perso
                 join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
                 join 
                 ( 
-                    select aqelem_cod, lpos_pos_cod as pos_cod
+                    select aqelem_cod, aqelem_misc_cod as pos_cod
                     from quetes.aquete_perso
-                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='lieu'
-                    join lieu_position on lpos_lieu_cod=aqelem_misc_cod
-                    join perso on perso_cod=lpos_pos_cod
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='position'
                     where aqperso_cod=?
                 ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
 

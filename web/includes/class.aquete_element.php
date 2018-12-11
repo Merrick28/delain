@@ -502,6 +502,28 @@ class aquete_element
                 $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
             break;
 
+            case 'position':
+
+                $pos = new positions();
+                $pos->charge($this->aqelem_misc_cod);
+                $lieu = new lieu();
+                $lieu->charge($this->aqelem_misc_cod);
+                $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+
+                $position = new positions() ;
+                $position->charge( $this->aqelem_misc_cod );
+                $etage = new etage();
+                $etage->getByNumero($position->pos_etage);
+                $element_texte = 'Etage:'.$etage->etage_reference.': X='.$position->pos_x.',Y='.$position->pos_y.' - '.$etage->etage_libelle ;
+                $lpos = new lieu_position();
+                if ($lpos->getByPos( $this->aqelem_misc_cod ))
+                {
+                    $lieu = new lieu();
+                    $lieu->charge($lpos->lpos_lieu_cod);
+                    $element_texte = $lieu->lieu_nom." (".$element_texte.")";
+                }
+            break;
+
             case 'lieu_type':
                 $tlieu = new lieu_type();
                 $tlieu->charge($this->aqelem_misc_cod);
