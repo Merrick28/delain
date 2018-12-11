@@ -255,6 +255,46 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute($search_string, $stmt);
             break;
 
+        case 'position':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(pos_cod::text||' '||etage_reference::text||': X='||pos_x::text||',Y='||pos_y::text||' - '||etage_libelle::text ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+            if ($params["position_etage"]!="") { $filter .= "and etage_reference = :etage_reference ";  $search_string[":etage_reference"] = 1*$params["position_etage"]; }
+            if ($params["position_x"]!="") { $filter .= "and pos_x = :pos_x ";  $search_string[":pos_x"] = 1*$params["position_x"]; }
+            if ($params["position_y"]!="") { $filter .= "and pos_y = :pos_y ";  $search_string[":pos_y"] = 1*$params["position_y"]; }
+            if (($params["position_lieu"]=="true")||(($params["position_etage"]=="")&&($params["position_x"]=="")&&($params["position_x"]==""))) $filter .= "and lieu_cod is not null ";
+
+            // requete de comptage
+            $req = "select count(*) 
+                    from positions 
+                    inner join etage on etage_numero=pos_etage
+                    left join lieu_position on lpos_pos_cod=pos_cod 
+                    left join lieu on lpos_lieu_cod=lieu_cod 
+                    where {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select pos_cod cod, 'Etage:'||etage_reference::text||': X='||pos_x::text||',Y='||pos_y::text||' - '||etage_libelle::text||COALESCE(' ('||lieu_nom||')','') as nom  
+                    from positions 
+                    inner join etage on etage_numero=pos_etage
+                    left join lieu_position on lpos_pos_cod=pos_cod 
+                    left join lieu on lpos_lieu_cod=lieu_cod 
+                    where {$filter}
+                    ORDER BY lieu_nom, etage_libelle LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
             case 'monstre_generique':
                 $words = explode(" ", $recherche);
                 $search_string = array();

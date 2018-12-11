@@ -211,17 +211,22 @@ class aquete
         $req = "select aquete_cod, aqelem_misc_cod, aqelem_type, nom from perso
                 join perso_position on ppos_perso_cod=perso_cod and perso_cod=? and perso_type_perso=1
                 join
-                (   -- liste des démarrages de quete sur un lieu specifique
-                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod as pos_cod, lieu_nom as nom from quetes.aquete
+                (   -- liste des démarrages de quete sur un lieu ou une position specifique
+                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, aqelem_misc_cod as pos_cod, 
+                    COALESCE (lieu_nom, pos_x::text||','||pos_Y::text||' '||etage_libelle::text) as nom 
+                    from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
-                    join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu' and aqelem_aqperso_cod is null
-                    join lieu_position on lpos_lieu_cod=aqelem_misc_cod
-                    join lieu on lieu_cod=lpos_lieu_cod
-                
+                    join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='position' and aqelem_aqperso_cod is null
+                    join positions on pos_cod=aqelem_misc_cod 
+                    join etage on etage_numero=pos_etage
+                    left join lieu_position on lpos_pos_cod=aqelem_misc_cod   
+                    left join lieu on lieu_cod=lpos_lieu_cod
+                                   
                     UNION 
                     
                      -- liste des démarrages de quete sur un perso specifique
-                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, ppos_pos_cod pos_cod, perso_nom as nom from quetes.aquete
+                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, ppos_pos_cod pos_cod, perso_nom as nom 
+                    from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='perso' and aqelem_aqperso_cod is null
                     join perso_position on ppos_perso_cod=aqelem_misc_cod
@@ -230,7 +235,8 @@ class aquete
                     UNION
                 
                     -- liste des démarrages de quete sur un type de lieu => transforation du type de lieu en lieu réel!
-                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  from quetes.aquete
+                    select aquete_cod, aquete_nb_max_rejouable, aquete_nb_max_instance, aquete_nb_max_quete, aqelem_misc_cod, aqelem_type, lpos_pos_cod, lieu_nom as nom  
+                    from quetes.aquete
                     join quetes.aquete_etape on aqetape_cod=aquete_etape_cod and aquete_actif='O' and (now()>=aquete_date_debut or aquete_date_debut is NULL )and (now()<=aquete_date_fin or aquete_date_fin is NULL)
                     join quetes.aquete_element on aqelem_aquete_cod=aquete_cod and aqelem_aqetape_cod=aquete_etape_cod and aqelem_type='lieu_type' and aqelem_aqperso_cod is null
                     join lieu on lieu_tlieu_cod=aqelem_misc_cod

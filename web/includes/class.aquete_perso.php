@@ -613,9 +613,9 @@ class aquete_perso
                     }
                     break;
 
-                case "#MOVE #LIEU":
+                case "#MOVE #POSITION":
                     // Le joueur doit rejoindre un lieu
-                    if ($this->action->move_lieu($this))
+                    if ($this->action->move_position($this))
                     {
                         // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,
