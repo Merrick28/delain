@@ -53,8 +53,6 @@ class aquete_action
      */
     function nettoyage(aquete_perso $aqperso)
     {
-        $pdo = new bddpdo;
-
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "", 0)) return false ;      // Problème lecture des paramètres
 

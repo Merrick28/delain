@@ -11,7 +11,7 @@
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="{URL}/js/jquery.js"></script>
 		<script src="{URL}scripts/ajax2.js?v20181113" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20181113_1" type="text/javascript"></script>
 		<script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 
