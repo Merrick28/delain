@@ -697,19 +697,15 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 
             /* fin du tableau secondaire */
 
+
+            /* fin du tableau de résultat */
+            $req_compte = "insert into perso_compte (pcompt_cod,pcompt_compt_cod,pcompt_perso_cod) ";
+            $req_compte = $req_compte . "values (nextval('seq_pcompt_cod'),$compt_cod,$num_perso) ";
+            $db->query($req_compte);
             ?>
+            <p>Votre aventurier a été créé.<br/>
+                <a href="validation_login2.php">Retour !</a></p>
         </div>
-        <?php
-
-
-        /* fin du tableau de résultat */
-        $req_compte = "insert into perso_compte (pcompt_cod,pcompt_compt_cod,pcompt_perso_cod) ";
-        $req_compte = $req_compte . "values (nextval('seq_pcompt_cod'),$compt_cod,$num_perso) ";
-        $db->query($req_compte);
-        ?>
-        <p>Votre aventurier a été créé.<br/>
-            <a href="validation_login2.php">Retour !</a></p>
-
 
         <?php
     }
