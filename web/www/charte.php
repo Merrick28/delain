@@ -102,7 +102,7 @@ Elle est susceptible d'être modifiée par les gestionnaires du jeu.
 <br>Tout comportement semblant enfreindre cette charte peut être rapporté par mail aux controleurs : <a href="controleurs@jdr-delain.net">controleurs@jdr-delain.net</a>
 <br><br><br><strong>L'équipe de gestion</strong>
 
-<br><br><i>Cette charte est librement inspirée, avec l'aimable accord de son rédacteur, de celle du jeu MountyHall.</i>
+<br><br><em>Cette charte est librement inspirée, avec l'aimable accord de son rédacteur, de celle du jeu MountyHall.</em>
 
 </div></div>
 <div class="barrL"><div class="barrR"><p class="barrC">&nbsp;</p></div></div>
