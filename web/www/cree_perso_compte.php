@@ -3,6 +3,7 @@ include "includes/classes.php";
 include "ident.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 ?>
+<!DOCTYPE html>
 <html>
 <!-- Date de création: 06/02/2003 -->
 <head>
@@ -101,7 +102,7 @@ $creation_possible = false;
 $creation_4e = false;
 if (!isset($compt_cod))
 {
-	echo "<p><b>Numéro de compte non défini ! </b>Merci de contacter Merrick (page cree_perso_compte.php)!";
+	echo "<p><strong>Numéro de compte non défini ! </strong>Merci de contacter Merrick (page cree_perso_compte.php)!";
 }
 else
 {
@@ -131,15 +132,15 @@ if ($creation_possible)
 			<!-- début tableau Secondaire -->
 				<FORM method="post" action="cree_perso_compte2.php" name="formuperso1" OnSubmit="return verifform()">
 				<input type="hidden" name="compt_cod" value="<?php echo $compt_cod;?>">
-				<center><table background="images/fondparchemin.gif" width="80%" bgcolor="#EBE7E7" border="0" cellpadding="2" cellspacing="2">
+				<div class="centrer"><table background="images/fondparchemin.gif" width="80%" bgcolor="#EBE7E7" border="0" cellpadding="2" cellspacing="2">
 <?php     if ($creation_4e)
     {
 ?>
 <tr><td colspan="3">
                 Vous avez la possibilité de créer ce personnage car vous êtes présent sur le jeu depuis plus de deux ans.<br />
-<b>Ceci n’est pas considéré comme un droit mais comme une responsabilité.</b> Il aura la vocation de pouvoir aider d’autres nouveaux joueurs, ou de pouvoir faire de nouvelles rencontres, ou tester des nouveautés à un plus petit niveau/
+<strong>Ceci n’est pas considéré comme un droit mais comme une responsabilité.</strong> Il aura la vocation de pouvoir aider d’autres nouveaux joueurs, ou de pouvoir faire de nouvelles rencontres, ou tester des nouveautés à un plus petit niveau/
 En effet, ce personnage sera volontairement limité.<br />
-<b>Il ne pourra pas se rendre en dessous du -1. Ce qui correspond à l’heure actuelle aux étages 0, -1, -1 bis et sous bassements et découvertes ainsi que le passage sous la rivière.</b>
+<strong>Il ne pourra pas se rendre en dessous du -1. Ce qui correspond à l’heure actuelle aux étages 0, -1, -1 bis et sous bassements et découvertes ainsi que le passage sous la rivière.</strong>
 De plus, il est fort possible qu’il soit aussi limité en terme de niveau d’expérience.<br />
 Si ces règles ne vous conviennent pas, ne gardez surtout pas ce personnage, car ne pas les respecter sera forcément sanctionné !<br />
 <br />
@@ -147,11 +148,11 @@ Comprenez aussi que ce personnage n’est pas là pour vous fournir un avantage 
 Dans le cas où nous aurions à gérer la moindre plainte (accaparement de matériel, menaces, 4° personnage d’une triplette ...), la sanction sera immédiate et ne touchera pas que ce personnage.
 Nous comptons sur votre fair play et que cela vous permette de découvrir une nouvelle dimension du jeu. <br />
 <br />
-<b>Pour une expérience de jeu encore différente, il est également possible de contrôler un monstre !</b> Pour activer cette option, rendez-vous dans les options de votre compte, et cherchez le lien adéquat en bas de la page.<br />
+<strong>Pour une expérience de jeu encore différente, il est également possible de contrôler un monstre !</strong> Pour activer cette option, rendez-vous dans les options de votre compte, et cherchez le lien adéquat en bas de la page.<br />
                 <hr></td></tr>
 <?php     }
 ?>
-                <tr><td colspan="3"><b>Avant de créer votre personnage, nous vous invitons à consulter les <a href="http://www.jdr-delain.net/wiki/index.php/R%C3%A8gles">règles</a> qui vous donneront tout un tas d’informations utiles sur les fiches de personnage, ainsi que le <a href="http://www.jdr-delain.net/wiki/index.php">wiki</a> en général, qui contient de très nombreuses informations.<br>De plus <a href="http://www.jdr-delain.net/doc/aide.php">une aide à la création des personnages</a> est disponible. N’hésitez pas à consulter tous ces éléments fort utiles !</b>
+                <tr><td colspan="3"><strong>Avant de créer votre personnage, nous vous invitons à consulter les <a href="http://www.jdr-delain.net/wiki/index.php/R%C3%A8gles">règles</a> qui vous donneront tout un tas d’informations utiles sur les fiches de personnage, ainsi que le <a href="http://www.jdr-delain.net/wiki/index.php">wiki</a> en général, qui contient de très nombreuses informations.<br>De plus <a href="http://www.jdr-delain.net/doc/aide.php">une aide à la création des personnages</a> est disponible. N’hésitez pas à consulter tous ces éléments fort utiles !</strong>
 					<hr></td></tr>
 					<tr>
 						<td><p>Nom de l'aventurier : </p></td>
@@ -246,7 +247,7 @@ while($db->next_record())
 	<td colspan="2"><input type="submit" class="test" value="Valider et continuer"></td>
 </tr>    	
 <tr><td colspan="3"><hr></td></tr>
-<tr><td colspan="3"><br><b>INFORMATION IMPORTANTE :</b>
+<tr><td colspan="3"><br><strong>INFORMATION IMPORTANTE :</strong>
 <br>Dans l’univers que vous allez aborder, les interactions entre joueurs sont très nombreuses. Elles sont souvent le fait de l’histoire de ce monde, mais aussi des rencontres et des péripéties qui s’y sont créées et que les aventuriers ont créées par leur Role Play (et voilà, si ce terme barbare ne se trouve pas dans ton lexique, c’est que tu n’as pas lu suffisamment bien les règles. N’hésites pas à retourner les consulter). Parfois ces interactions sont violentes et se finissent dans des combats entre aventuriers.<br>
 <br>
 Dans notre monde sans pitié, le roi de ces contrées, Hormandre III, a mandaté une milice pour faire régner l’ordre, mais de nombreux troubles perturbent encore le secteur. Cette milice a pris en charge une partie des deux premiers niveaux uniquement, et impose la loi d’Hormandre, par tous les moyens. Faites attention, la loi est la loi.<br>
@@ -257,7 +258,7 @@ Vous qui rentrez dans ces souterrains, vous aurez votre destin entre vos mains. 
 Sur les terres d’Hormandre, la milice jouera son rôle, alors que dans le secteur de Sal'Morv, la loi du plus fort s’imposera.<br>
 <br>
 Maintenant, n’ayez pas peur, même si au fond, il fait noir... </td></tr>
-</table></center>
+</table></div>
 
 <?php 
 }
