@@ -4,10 +4,14 @@
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
 <?php
-
-if(isset($_REQUEST['position']))
+if(isset($_POST['position']))
 {
-    $position = 1 * $_REQUEST['position'];
+    $position = 1 * $_POST['position'];
+}
+
+if(isset($_GET['position']))    // Le $_REQUEST n'est ps utilisable, car il y a des données en POST et d'autres en_GET dans la même requete.
+{
+    $position = 1 * $_GET['position'];
 }
 
 if(!isset($db))
