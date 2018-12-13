@@ -47,7 +47,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On suppriel tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
+     * On supprime tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
      * @param aquete_perso $aqperso
      * @return bool
      */
@@ -77,6 +77,46 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:quete_etape|0%0],[2:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_etape(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "quete_etape", 0)) return 0 ;    // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape", 1)) return 0 ;          // Problème lecture passage à l'etape suivante
+
+        $filter_string = array() ;
+        $filter = "aqperso_perso_cod=:aqperso_perso_cod AND ( " ;
+        $filter_string[":aqperso_perso_cod"]= $aqperso->aqperso_perso_cod ;
+        foreach ($p1 as $k => $elem)
+        {
+            if ($k>0)  $filter.= "OR ";
+            $filter.= "(aqpersoj_etape_cod = :etape$k) ";
+            $filter_string[":etape$k"] = $elem->aqelem_misc_cod ;
+        }
+        $filter.=") ";
+
+        // On vérifie le passage par ces étapes
+        $pdo = new bddpdo;
+        $req = "select count(distinct aqpersoj_etape_cod) as count
+                from quetes.aquete_perso_journal 
+                join quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod
+                where {$filter} ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute($filter_string, $stmt);
+        if ($stmt->rowCount()==0) return 0;                 // Les conditions ne sont pas remplies, passage à l'étape suivante
+
+        $result = $stmt->fetch();
+        if (1*$result["count"] != count($p1))  return 0; // Les conditions ne sont pas remplies, passage à l'étape suivante
+
+        // Le perso est passé par autant d'atape que demandé, on valide le saut d'atape à l'étape demandé!
+        return $p2->aqelem_misc_cod ;
+    }
+
+    //==================================================================================================================
+    /**
      * Distribution en PX PO => '[1:texte|1%1|Titre]'
      * @param aquete_perso $aqperso
      * @return bool
@@ -89,10 +129,19 @@ class aquete_action
         if ($p1->aqelem_param_txt_1 != '')
         {
             $pdo = new bddpdo;
-            $req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values (:perso_cod,:titre,now(),8)";
+
+            // On vérifie si le perso n'a pas déjà ce titre
+            $req = "select ptitre_cod from perso_titre where ptitre_perso_cod=:perso_cod and  ptitre_titre=:titre and ptitre_type=8 ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":perso_cod"        => $aqperso->aqperso_perso_cod,
                                         ":titre"            => $p1->aqelem_param_txt_1 ), $stmt);
+            if ($stmt->rowCount()==0)
+            {
+                $req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values (:perso_cod,:titre,now(),8)";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":perso_cod"        => $aqperso->aqperso_perso_cod,
+                                            ":titre"            => $p1->aqelem_param_txt_1 ), $stmt);
+            }
         }
         return true;
     }

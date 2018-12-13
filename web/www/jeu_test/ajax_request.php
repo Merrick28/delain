@@ -388,20 +388,28 @@ switch($_REQUEST["request"])
 
         case 'etape':
             $filter = "";
+            $words = explode(" ", $recherche);
+            $search_string = array();
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(aqetape_cod::text||' '||aqetape_nom||' ['||aquete_nom||']' ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
             if (1*$params["aquete_cod"]>0) $filter .= "and aqetape_aquete_cod = ".(1*$params["aquete_cod"]);
             if (1*$params["aqetape_cod"]>0) $filter .= "and aqetape_cod <> ".(1*$params["aqetape_cod"]);
 
             // requete de comptage
-            $req = "select count(*) from quetes.aquete_etape where aqetape_nom ilike ? {$filter}";
+            $req = "select count(*) from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter}";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $stmt = $pdo->execute($search_string, $stmt);
             $row = $stmt->fetch();
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select aqetape_cod cod, aqetape_nom nom from quetes.aquete_etape where aqetape_nom ilike ? {$filter} ORDER BY aqetape_nom LIMIT 10";
+            $req = "select aqetape_cod cod, aqetape_nom||' ['||aquete_nom||']' nom from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter} ORDER BY aqetape_nom LIMIT 10";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $stmt = $pdo->execute($search_string, $stmt);
             break;
 
         case 'element':

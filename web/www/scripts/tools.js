@@ -231,20 +231,31 @@ function getTableCod(divname, table, titre, params)
             options += 'avec les fam.: <input type="checkbox" id="spop-tablecod-perso-fam" onClick="getTableCod_update();">';
             options += 'Limiter aux PNJ: <input type="checkbox" id="spop-tablecod-perso-pnj" onClick="getTableCod_update();">';
         }
-    } else if (table=="position"){
+    } else if (table=="position")
+    {
         options += 'Etage: <input type="text" size=3 id="spop-tablecod-position-etage" value="'+params[0]+'" onChange="getTableCod_update();"> ';
         options += 'X = <input type="text" size=3 id="spop-tablecod-position-x" value="'+params[1]+'" onChange="getTableCod_update();"> ';
         options += 'Y = <input type="text" size=3 id="spop-tablecod-position-y" value="'+params[2]+'" onChange="getTableCod_update();"> ';
-        options += 'Limiter aux lieux: <input type="checkbox" id="spop-tablecod-position-lieu" onClick="getTableCod_update();">';
-        options += '<br><i style="font-size: 9px">Nota: Si ni l\'étage, la position X ou Y ne sont pas définis, la recherche est limitées aux lieux</em>';
-    } else if (table=="etape"){
-        options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
-        options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><em>Etapes spéciales</u></em>:<br>';
-        options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
-        options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
-        options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
-        options += '<a style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</a> (-3)<br>';
-    } else if (table=="element") {
+        options += 'Limiter aux lieux: <input type="checkbox" id="spop-tablecod-position-lieu" onClick="getTableCod_update();">'
+        options += '<br><i style="font-size: 9px">Nota: Si ni l\'étage, la position X ou Y ne sont pas définis, la recherche est limitées aux lieux</i>';
+    } else if (table=="etape")
+    {
+        if (params)
+        {
+            options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
+            options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
+            options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
+            options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
+            options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
+            options += '<a style="margin-left:20px;" id="spop-tablecod-select--4"  data-spop-cod="-3"  data-spop-nom="Echec de la quête" href="#">Echec de la quête</a> (-3)<br>';
+        }
+        else
+        {
+            options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="0">';
+            options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="0">';
+        }
+    } else if (table=="element")
+    {
         options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
         options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
