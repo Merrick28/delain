@@ -425,7 +425,7 @@ if ($erreur == 0)
 				Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa" value="0">
 
 				<input type="submit" class='test' value="créer !" /><br>
-				<i><u>Nota</i></u>: &nbsp;<i><font color="#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</font></i>
+				<em><u>Nota</em></u>: &nbsp;<em><font color="#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</font></em>
 			</form>
 		</div>
 		<?php 		break;

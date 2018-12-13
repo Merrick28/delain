@@ -188,7 +188,7 @@ switch ($methode)
 		if (!$ferme)
 			echo '<input type="submit" value="Valider" />';
 		if ($ferme)
-			echo '<i>Cette instance est fermée et n’est plus modifiable</i>';
+			echo '<em>Cette instance est fermée et n’est plus modifiable</em>';
 		echo '</form>';
 		echo '<hr />';
 		echo '<table><tr><th class="titre" colspan="2">Classement actuel instantané<br />(récupéré d’après les inventaires)</th></tr>';

@@ -26,7 +26,7 @@ if ($erreur == 0)
 	?>
 	<p><strong>Un homme au visage buriné, marqué par ce qu’il a vu et ce qu’il a vécu vient vers toi : </strong><br><br> 
 
-<p><i>Salut aventurier !  Tu es venu ici afin de faire fortune et de gagner gloire et renommée ?  Tu es au bon endroit !  En ces lieux tu pourras combattre les monstres de malkiar et les vils serviteurs du roi Hormandre corrompu !  <br><br> 
+<p><em>Salut aventurier !  Tu es venu ici afin de faire fortune et de gagner gloire et renommée ?  Tu es au bon endroit !  En ces lieux tu pourras combattre les monstres de malkiar et les vils serviteurs du roi Hormandre corrompu !  <br><br> 
 
 Un grand et fameux destin t'attend, et tu auras l'occasion de prouver ta valeur à moult reprises ! <br><br> 
 

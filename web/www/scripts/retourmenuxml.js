@@ -59,7 +59,7 @@ function request(callback)
                		parent.gauche.document.getElementById("ramasser").innerHTML = '';
 
                	if(tab['intangible'] == 1)
-               		parent.gauche.document.getElementById("intangible").innerHTML = '<i>Perso impalpable !</i><br><br>';
+               		parent.gauche.document.getElementById("intangible").innerHTML = '<em>Perso impalpable !</em><br><br>';
                	else
                		parent.gauche.document.getElementById("intangible").innerHTML = '';
 

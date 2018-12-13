@@ -83,8 +83,8 @@ $db2 = new base_delain;
 					echo("<tr><td colspan=\"3\" class=\"titre\"><p style=\"text-align:center;\">" . $nom . "</p></td></tr>");
 					}
 					?>
-				<td><hr><i> Vous venez de tomber sur une cachette encore inviolée. Réjouissez vous, ou méfiez vous. 
-				Certaines trouvailles ne sont pas toujours bonnes à exploiter ...</i><br>
+				<td><hr><em> Vous venez de tomber sur une cachette encore inviolée. Réjouissez vous, ou méfiez vous. 
+				Certaines trouvailles ne sont pas toujours bonnes à exploiter ...</em><br>
 			
 			<?php 							if ($fonction != '')
 					{

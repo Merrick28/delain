@@ -276,7 +276,7 @@ if ($erreur == 0)
 				<td class="soustitre2">
 				<a href="javascript:document.sort_m.sort.value=' . $db->f("sort_cod") . ';document.sort_m.submit();"><strong>' . $db->f("sort_nom") . '</a></strong> (' . $cout_pa . ' PA)
 				</td>
-				<td><i>' . $db->f("liste_rune") . '</i></td>
+				<td><em>' . $db->f("liste_rune") . '</em></td>
 				<td>
 				<a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 				</td>
@@ -337,7 +337,7 @@ if ($erreur == 0)
             $nom = $db->f("sort_nom") . '</strong>';
             $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></strong> (' . $db->f("cout") . 'PA) ':'</strong>');
             $contenu_page .= '<tr>
-			<td class="soustitre2"><strong>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
+			<td class="soustitre2"><strong>' . $nom . '<em>(' . $db->f("liste_rune") . ')</em></td>
 			<td>' . $db->f("memo") . ' %</td>
 			<td><a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 			</tr>';
@@ -398,7 +398,7 @@ if ($erreur == 0)
 			</td></tr><tr><td>';
 			if ($db_detail->f("nombre") != 0)
 				$contenu_page .= '<input type="radio" class="vide" name="fam_' . $famille . '" value="' . $db->f("gobj_rune_position") . '" id="' . $labelId . '">';
-			$contenu_page .= $db->f("gobj_nom") . ' <i>(' . $db_detail->f("nombre") . ')</i>
+			$contenu_page .= $db->f("gobj_nom") . ' <em>(' . $db_detail->f("nombre") . ')</em>
 				</td>
 				</tr>
 				</table>

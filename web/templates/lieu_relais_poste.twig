@@ -4,7 +4,7 @@
 
 {#------------------------ ENTETE ------------------------#}
 <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding-top:8px; border-radius:10px 10px 0 0; border:solid black 2px;">
-    &nbsp; &nbsp;<i>Zone de couverture de ce relais</i>: <strong><FONT color="#8b0000">{{ zone_couverture }}</FONT></strong><br>
+    &nbsp; &nbsp;<em>Zone de couverture de ce relais</em>: <strong><FONT color="#8b0000">{{ zone_couverture }}</FONT></strong><br>
     <center><img src="/images/lieu-relais-de-la-poste.png"></center>
         &nbsp;&nbsp;&nbsp;Vous avez <strong>{{ perso_po }}</strong> brouzoufs<br>
 </div>
@@ -14,7 +14,7 @@
 {% if INTERDIT %}
 
 <center>
-	<br><br><strong>Votre statut (<i>{{INTERDIT}}<i>) ne vous permet pas d'utiliser les Relais de la Poste</strong><br><br>
+	<br><br><strong>Votre statut (<em>{{INTERDIT}}<em>) ne vous permet pas d'utiliser les Relais de la Poste</strong><br><br>
 </center>
 
 {% else %}

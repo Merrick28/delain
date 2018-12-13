@@ -24,9 +24,9 @@
  */
 function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth = 0, $objects = array())
 {
-    $_replace = array("\n" => '<i>\n</i>',
-                      "\r" => '<i>\r</i>',
-                      "\t" => '<i>\t</i>'
+    $_replace = array("\n" => '<em>\n</em>',
+                      "\r" => '<em>\r</em>',
+                      "\t" => '<em>\t</em>'
     );
     switch (gettype($var)) {
         case 'array' :
@@ -73,7 +73,7 @@ function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth =
             } else {
                 $results = htmlspecialchars((string) $var);
             }
-            $results = '<i>' . $results . '</i>';
+            $results = '<em>' . $results . '</em>';
             break;
 
         case 'integer' :

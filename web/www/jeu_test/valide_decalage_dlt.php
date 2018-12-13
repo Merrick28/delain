@@ -47,7 +47,7 @@ if ($erreur == 0)
                 $nxtdlt = $db->f('nxtdlt');
 				?>
 				Etes vous sûr de vouloir décaler votre dlt de <?php echo $temps_dlt ?> minutes ? <br />
-				Votre prochaine dlt commencera le <strong><?php echo $nvdlt;?></strong> <i>(la suivante le <strong><?php echo $nxtdlt;?></strong>)</i>
+				Votre prochaine dlt commencera le <strong><?php echo $nvdlt;?></strong> <em>(la suivante le <strong><?php echo $nxtdlt;?></strong>)</em>
 				<br><strong><a href="<?php echo $PHP_SELF;?>?methode=validation&temps_dlt=<?php echo $temps_dlt;?>">Oui</a>
 			<br><br><a href="perso.php">Non</a></strong>
 				<?php 

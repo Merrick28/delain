@@ -17,7 +17,7 @@ $db3 = new base_delain;
 <p class="titre">Les champions de Delain !</p><hr>
 <center>
 <?php 
-    echo '<i>Page générée ' . date('\l\e d/m/Y \à H:i') . '</i>';
+    echo '<em>Page générée ' . date('\l\e d/m/Y \à H:i') . '</em>';
 ?>
 <table>
 <?php 
@@ -162,8 +162,8 @@ echo "Les aventuriers possèdent tous ensemble <strong>". number_format($po_glob
 
 ?>
 </table>
-<br><strong><i>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
-<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</i></strong>
+<br><strong><em>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
+<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</em></strong>
 <br>
 <hr>
 
@@ -216,7 +216,7 @@ if ($db->nf() != 0)
 						having sum(ptab_solo) = " . $db2->f('tmax');
 		     	$db3->query($req);
 		     	if($db3->nf() == 0)
-		     		echo '<i>Champion disparu....</i>';
+		     		echo '<em>Champion disparu....</em>';
 					else
 					{
 		     		while($db3->next_record())

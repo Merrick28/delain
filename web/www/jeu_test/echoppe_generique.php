@@ -295,7 +295,7 @@ if ($db->next_record())
     }
     if ($controle_gerant == 'OK')
     {
-        echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <strong>un familier mûle</strong> dans votre échoppe ?</a>  <i>(Attention, ceci est une action définitive)</i>';
+        echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <strong>un familier mûle</strong> dans votre échoppe ?</a>  <em>(Attention, ceci est une action définitive)</em>';
     }
     ?>
 
@@ -345,7 +345,7 @@ switch ($affichage)
 case "entree":
     echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
     $desc = str_replace(chr(127), ";", $tab_lieu['description']);
-    echo "<i>" . $desc . "</i>";
+    echo "<em>" . $desc . "</em>";
     break;
 case "acheter":
     $db2 = new base_delain;
@@ -366,7 +366,7 @@ case "acheter":
                     <tr>
                         <td class="soustitre2"><p><strong>Nom</strong></p></td>
     <td class="soustitre2"><p><strong>Type</strong></p></td>
-    <td class="soustitre2"><p><strong><i>Compétence</i></strong></p></td>
+    <td class="soustitre2"><p><strong><em>Compétence</em></strong></p></td>
     <td class="soustitre2"><p><strong>Prix</strong></p></td>
     <td class="soustitre2"><p><strong>Quantité disponible</strong></p></td>
     <td></td>
@@ -437,7 +437,7 @@ case "acheter":
             echo "</a>";
             echo "</strong></td>";
             echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
-            echo "<td class=\"soustitre2\"><p><i>" . $comp . "</i></td>";
+            echo "<td class=\"soustitre2\"><p><em>" . $comp . "</em></td>";
             echo "<td class=\"soustitre2\"><p>" . $db->f("valeur_achat") . " brouzoufs</td>";
 
             echo "<td><p>", $db->f("mgstock_nombre"), "</td>";
@@ -474,7 +474,7 @@ case "acheter":
                 <tr>
                     <td class="soustitre2"><p><strong>Nom</strong></td>
                     <td class="soustitre2"><p><strong>Type</strong></td>
-                    <td class="soustitre2"><p><strong><i>Compétence</i></strong></td>
+                    <td class="soustitre2"><p><strong><em>Compétence</em></strong></td>
                     <td class="soustitre2"><p><strong>Quantité disponible</strong></td>
                     <td></td>
                 </tr>
@@ -492,7 +492,7 @@ case "acheter":
                     echo "</a>";
                     echo "</strong></td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
-                    echo "<td class=\"soustitre2\"><p><i>" . $comp . "</i></td>";
+                    echo "<td class=\"soustitre2\"><p><em>" . $comp . "</em></td>";
                     echo "<td><p>", $db->f("mgstock_nombre"), "</td>";
                     echo "</tr>\n";
                 } ?>

@@ -30,7 +30,7 @@ if($db->next_record())
 
 				$contenu_page .= '
 				<p align="center"><br>Vous avez la possibilité de détecter des composants. Plusieurs méthodes se présentent à vous :<br>
-				<br><strong><i>Attention, un seul composant par position vous sera présenté, mais en cherchant, vous pourrez parfois en trouver de plusieurs sortes</i></strong>
+				<br><strong><em>Attention, un seul composant par position vous sera présenté, mais en cherchant, vous pourrez parfois en trouver de plusieurs sortes</em></strong>
 				<form method="post" action="' . $PHP_SELF. '">
 				<br><p align="left" class="soustitre2"> <strong>Détection simple.</strong></p>
 				Elle ne vous permettra que de tenter de regarder la présence de composants sur votre propre position<br>	

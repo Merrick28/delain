@@ -125,9 +125,9 @@ PAPOTAGE AVEC NERLASH
       </tr>
       <tr>
         <td colspan="3" class="interview_intro">
-<i>Alors que Bardamu déchaînait sa hargne sur des bestioles menaçantes, une créature sinstalla à ses côtés et participa au combat
+<em>Alors que Bardamu déchaînait sa hargne sur des bestioles menaçantes, une créature sinstalla à ses côtés et participa au combat
 Le nain, accablé par létonnement, baissa les bras, scrutant la bestiole quiQui tabassait les siens !
-Amusé par ce spectacle improbable, il dirigea son regard vers Mishra qui élucida le mystère : lelfette voyageait avec Nerlash, commando morbelin délite, afin de laider dans sa quête. Elle exigea du nain quil considère le commando comme un aventurierLa main du nain, vint alors chatouiller son menton, signe dune réflexion profonde. Puis, il tapota lépaule de Nerlash, lui proposant une interview, là, au milieu du champ de bataille !</i>
+Amusé par ce spectacle improbable, il dirigea son regard vers Mishra qui élucida le mystère : lelfette voyageait avec Nerlash, commando morbelin délite, afin de laider dans sa quête. Elle exigea du nain quil considère le commando comme un aventurierLa main du nain, vint alors chatouiller son menton, signe dune réflexion profonde. Puis, il tapota lépaule de Nerlash, lui proposant une interview, là, au milieu du champ de bataille !</em>
 		</td>
       </tr>
       <tr>

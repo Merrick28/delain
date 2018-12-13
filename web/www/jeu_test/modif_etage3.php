@@ -360,7 +360,7 @@ if ($erreur == 0)
 		echo $html->etage_select('', ' where etage_reference = etage_numero');
 	?>
 			</select><br />
-			Quel style de cases pour l’étage ? <small><i>Voir l’aperçu dessous</i></small>
+			Quel style de cases pour l’étage ? <small><em>Voir l’aperçu dessous</em></small>
 			<select name="etage_affichage" onChange="changeStyle(this.value)">
 				<option value='--'>Choisissez un style...</option>
 			<?php 				foreach ($tableau_styles as $unStyle)
@@ -382,13 +382,13 @@ if ($erreur == 0)
 			Y min : <input type="text" name="y_min"> -
 			Y max : <input type="text" name="y_max"><br /><br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="50" /><br />
-			<small><i>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</i></small><br />
+			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value='999'><br />
-			<small><i>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</i></small><br />
+			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value='1000'><br />
-			<small><i>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</i></small><br /><br />
+			<small><em>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</em></small><br /><br />
 			Taux de retour des runes dans l’inventaire des monstres, de 0 à 100 : <input type="text" name="etage_retour_rune_monstre" value='50' /><br />
-			<small><i>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</i></small><br /><br />
+			<small><em>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</em></small><br /><br />
 			<input type="submit" class='test' value="Créer !">
 		</form>
 	</div>
@@ -435,7 +435,7 @@ if ($erreur == 0)
 			<input type="hidden" name="etage_numero" value="<?php echo  $pos_etage; ?>" />
 			Nom : <input type="text" name="nom" value="<?php echo  $etage_libelle; ?>" /><br>
 			Description : <textarea name="description"><?php echo  $etage_description; ?></textarea><br>
-			Quel style de cases pour l’étage ? <small><i>Voir l’aperçu dessous</i></small>
+			Quel style de cases pour l’étage ? <small><em>Voir l’aperçu dessous</em></small>
 			<select name="etage_affichage" onChange="changeStyle(this.value)">
 			<?php 				foreach ($tableau_styles as $unStyle)
 					echo "<option value='$unStyle' " . (($unStyle == $etage_affichage) ? 'selected="selected"' : '') . ">$unStyle</option>";
@@ -478,13 +478,13 @@ if ($erreur == 0)
 			L’étage est-il ouvert aux 4e persos limités en niveau ? <select name="etage_quatrieme_perso"><option value='N' <?php echo  $sel_4_N; ?>>Non</option><option value='O' <?php echo  $sel_4_O; ?>>Oui</option></select><br />
 			L’étage est-il ouvert aux 4e persos mortels ? <select name="etage_quatrieme_mortel"><option value='N' <?php echo  $sel_4M_N; ?>>Non</option><option value='O' <?php echo  $sel_4M_O; ?>>Oui</option></select><br /><br />
 			Taux d’éboulement, de 0 (aucun) à 1000 (beaucoup) : <input type="text" name="etage_mine" value="<?php echo  $etage_mine; ?>" /><br />
-			<small><i>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</i></small><br />
+			<small><em>Un étage de dédié à la mine à un taux d’environ 300, un étage figé un taux de 5 voire 0</em></small><br />
 			Type d’éboulements : <input type="text" name="etage_mine_type" value="<?php echo  $etage_mine_type; ?>" /><br />
-			<small><i>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</i></small><br />
+			<small><em>Le code du type de mur à créer lors des éboulements (voir styles plus bas)</em></small><br />
 			Richesse des éboulements, de 650 à 1000 : <input type="text" name="etage_mine_richesse" value="<?php echo  $etage_mine_richesse; ?>" /><br />
-			<small><i>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</i></small><br /><br />
+			<small><em>La richesse détermine le type de pierre qu’on peut y trouver. En dessous de 960, on ne peut pas trouver de diamants, etc.</em></small><br /><br />
 			Taux de retour des runes dans l’inventaire des monstres, de 0 à 100 : <input type="text" name="etage_retour_rune_monstre" value="<?php echo  $etage_retour_rune_monstre; ?>" /><br />
-			<small><i>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</i></small><br /><br />
+			<small><em>Hors échoppes, qui gardent leur part de runes. Un taux de 0 signifie que toutes les autres vont au sol. Un taux de 100, qu’elles vont toutes en inventaire.</em></small><br /><br />
 			<input type="submit" class='test' value="Modifier !">
 		</form>
 	</div>

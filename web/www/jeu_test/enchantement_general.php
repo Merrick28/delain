@@ -149,7 +149,7 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 					<div id="aide2" class="tableau2"  style="display:none;">
 					<p><strong>A quoi cela sert-il de comprendre les vents magiques ?</strong>
 					<br>Les vents magiques ou flux magiques sont la base même du forgeamage. En effet, vous en aurez besoin pour créer des composants, créer un objet enchantable ou enchanter un objet.
-					<br><i>Mais que sont-ils ?</i>
+					<br><em>Mais que sont-ils ?</em>
 					<br>Chaque sort lancé produit de la magie visible, mais aussi de la magie invisible. Celle-ci reste en suspension, et ne se dissipe que lentement.
 					<br>Vous pouvez capter cette magie, et l\'enchasser dans des objets. Grâce à elle, vous pourrez aussi transformer une pierre précieuse ou métal précieux en un composant magique, enchasser la magie dans une arme, armure, artéfact ou un casque. Mais aussi mêler les composants entre eux et réaliser cette opération de forgeamage qui rendra votre objet "différent" ...
 					<br>

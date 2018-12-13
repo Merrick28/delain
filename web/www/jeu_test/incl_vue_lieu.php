@@ -28,7 +28,7 @@ if ($nb_lieux_en_vue != 0)
 	while($db->next_record())
 	{
 		$refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
-		$nom = $db->f("lieu_nom") . " <i>($refuge)</i>";
+		$nom = $db->f("lieu_nom") . " <em>($refuge)</em>";
 		$type = $db->f("tlieu_libelle");
 		$style = "soustitre2";
 

@@ -904,8 +904,8 @@ if (isset($_POST['methode']))
                 {
                 ?>
                 <input type="hidden" name="ref" value="o">
-        <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette
-                        fonctionnalité sera dorénavant controlée)</i></a></strong>
+        <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <em>(Cette
+                        fonctionnalité sera dorénavant controlée)</em></a></strong>
             <?php
             }
             }
@@ -916,7 +916,7 @@ if (isset($_POST['methode']))
         <p>Votre magasin est un refuge. Si vous souhaitez abandonner cette fonctionnalité, les prélèvements de
             l'administration passeront automatiquement à 15%.<br>
         <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour
-                cette échoppe ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong></p>
+                cette échoppe ? <em>(Cette fonctionnalité sera dorénavant controlée)</em></a></strong></p>
             <?php
             }
             ?>

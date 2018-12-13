@@ -242,7 +242,7 @@ switch($methode)
 				$db->query($req);
 				$db->next_record();
 				$nombre_groupe = $db->f('nombre');
-				$contenu_page .= '<strong>'.$db2->f('mission_nom').'</strong><br><br>'.$db2->f('mission_desc').'<br><br><i>Cette mission est prévue pour un groupe de '.$db2->f('mission_taille').' aventuriers<br>'.$nombre_groupe_texte;
+				$contenu_page .= '<strong>'.$db2->f('mission_nom').'</strong><br><br>'.$db2->f('mission_desc').'<br><br><em>Cette mission est prévue pour un groupe de '.$db2->f('mission_taille').' aventuriers<br>'.$nombre_groupe_texte;
 				//
 				// on commence par regarder si le perso fait partie d'une mission à cet étage
 				//
@@ -392,7 +392,7 @@ switch($methode)
 										$nombre_perso = '';
 										if ($db3->f('nombre') > 0)
 										{
-											$nombre_perso = '<i> - ('.$db3->f('nombre').' monstres présents)</i>';
+											$nombre_perso = '<em> - ('.$db3->f('nombre').' monstres présents)</em>';
 										}
 										$information = $information.'<br> X : '.$db3->f('pos_x').' / Y : '.$db3->f('pos_y').''. $nombre_perso;
 									}
@@ -532,7 +532,7 @@ switch($methode)
 				<td><strong>Nom du groupe : </strong><input type="text" name="nom_groupe"></td></tr>';
 		}
 				$contenu_page .= '<tr><td>Inviter des membres : <input type="text" name="membre_groupe">
-			<br><i>(Séparer les noms des persos par des points virgules</i></td>
+			<br><em>(Séparer les noms des persos par des points virgules</em></td>
 			<td>Message envoyé aux membres : <textarea name="message_groupe"></textarea>
 			<td><input type="submit" value="Envoyer" class="test"></td>
 			</tr>
@@ -716,7 +716,7 @@ switch($methode)
 				$chef = '';
 				if($db->f('mgroupe_statut') =='O')
 				{
-					$chef = '<i> - chef de mission </i>';
+					$chef = '<em> - chef de mission </em>';
 				}
 				$contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' / Date d\'intégration : '.$db->f('date_int').'</li>';
 			}

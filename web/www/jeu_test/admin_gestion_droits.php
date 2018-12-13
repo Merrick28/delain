@@ -237,8 +237,8 @@ if ($erreur == 0)
 							<option value="--" selected='selected'>Choisissez un étage</option>
 							<option value="A">Tous les étages</option>
 						<?php echo $html->etage_select(); ?>
-						</select><br /><i>A = tous les étages, sinon séparer les étages par des virgules.<br>
-						Ex : -1,-2,0,-3</i></td>
+						</select><br /><em>A = tous les étages, sinon séparer les étages par des virgules.<br>
+						Ex : -1,-2,0,-3</em></td>
 				</tr>
 		<?php 				echo cree_OuiNon('objet', 'N', 'Modification/création des objets générique');
 				echo cree_OuiNon('gere_droits', 'N', 'Gestion des droits');
@@ -436,8 +436,8 @@ if ($erreur == 0)
 							<option value="--" selected='selected'>Choisissez un étage</option>
 							<option value="A">Tous les étages</option>
 						<?php echo $html->etage_select(); ?>
-						</select><br><i>A = tous les étages, sinon séparer les étages par des virgules.<br>
-						Ex : -1,-2,0,-3</i></td>
+						</select><br><em>A = tous les étages, sinon séparer les étages par des virgules.<br>
+						Ex : -1,-2,0,-3</em></td>
 				</tr>
 		<?php 
 				echo cree_OuiNon('objet', $db->f("dcompt_objet"), 'Modification/création des objets générique');

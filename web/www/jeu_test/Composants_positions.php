@@ -64,14 +64,14 @@ function toutCocher2(formulaire,nom){
 				<td><input type="text" name="max_comp" value="5"></td></tr>
 			<tr>
 				<td>Variation possible par case du nombre de composants</td>
-				<td><input type="text" name="delta" value="1"><i>Correspond à plus ou moins 1 autour du max par case</i></td></tr>
+				<td><input type="text" name="delta" value="1"><em>Correspond à plus ou moins 1 autour du max par case</em></td></tr>
 			<tr>
 			<tr>
 				<td>Pourcentage de repousse</td>
-				<td><input type="text" name="pourcentage" value="5"><i>Faire explication</i></td></tr>
+				<td><input type="text" name="pourcentage" value="5"><em>Faire explication</em></td></tr>
 			<tr>
 				<td>Variation autour de la forme </td>
-				<td><input type="text" name="variation" value="8"><i>La forme varie en concept d\'étoile</i></td></td></tr>';
+				<td><input type="text" name="variation" value="8"><em>La forme varie en concept d\'étoile</em></td></td></tr>';
 			$req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';
@@ -113,14 +113,14 @@ function toutCocher2(formulaire,nom){
 													<td><input type="text" name="max_comp" value="5"></td></tr>
 												<tr>
 													<td>Variation possible par case du nombre de composants</td>
-													<td><input type="text" name="delta" value="1"><i>Correspond à plus ou moins 1 autour du max par case</i></td></tr>
+													<td><input type="text" name="delta" value="1"><em>Correspond à plus ou moins 1 autour du max par case</em></td></tr>
 												<tr>
 												<tr>
 													<td>Pourcentage de repousse</td>
-													<td><input type="text" name="pourcentage" value="5"><i>Faire explication</i></td></tr>
+													<td><input type="text" name="pourcentage" value="5"><em>Faire explication</em></td></tr>
 												<tr>
 													<td>Variation autour de la forme </td>
-													<td><input type="text" name="variation" value="8"><i>La forme varie en concept d\'étoile</i></td></td></tr>';
+													<td><input type="text" name="variation" value="8"><em>La forme varie en concept d\'étoile</em></td></td></tr>';
 			$req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';

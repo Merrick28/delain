@@ -243,7 +243,7 @@ $req = "select perso_cod,perso_nom,dper_niveau,dniv_libelle from choix_perso_pos
 			while($db2->next_record())
 			{
 			 $liste_clients .= $db2->f("perso_nom").";";
-        echo  $db2->f("perso_nom")." <i>(". $db2->f("dniv_libelle").")</i><br /> ";
+        echo  $db2->f("perso_nom")." <em>(". $db2->f("dniv_libelle").")</em><br /> ";
 			}
 ?>
 </p><?php 
@@ -270,7 +270,7 @@ startPane($liste_panels,1,$select_pane);
 			 }
 			 else
 			 {
-			 	$religion =  " <i>(". $db->f("dniv_libelle")." de ". $db->f("dieu_nom").")</i>";
+			 	$religion =  " <em>(". $db->f("dniv_libelle")." de ". $db->f("dieu_nom").")</em>";
       	}
         echo  $db->f("perso_nom").$religion ."<br /> ";
 			}
@@ -312,7 +312,7 @@ startPane($liste_panels,1,$select_pane);
 	<input type="hidden" name="dmsg_cod">
 	</form>
 	<p style=text-align:left>
-	<a href="javascript:document.message2.submit();">Envoyer un message aux alentours du temple <i>(i.e. à 3 lieues)</i></a><br><i>Attention, il est prévue que cela consomme de la puissance de votre Dieu</i>
+	<a href="javascript:document.message2.submit();">Envoyer un message aux alentours du temple <em>(i.e. à 3 lieues)</em></a><br><em>Attention, il est prévue que cela consomme de la puissance de votre Dieu</em>
 <?php 
 endPane();
 startPane($liste_panels,2,$select_pane);
@@ -382,7 +382,7 @@ startPane($liste_panels,5,$select_pane);
 				?>
 					<p>Votre temple n'est pas un refuge. Si vous souhaitez le transformer en refuge, ...<br>
 					<input type="hidden" name="ref" value="o">
-					<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong>
+					<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <em>(Cette fonctionnalité sera dorénavant controlée)</em></a></strong>
 					<?php 
 			}
 			else
@@ -390,7 +390,7 @@ startPane($liste_panels,5,$select_pane);
 				?>
 				<input type="hidden" name="ref" value="n">
 				<p>Votre temple est un refuge. Si vous souhaitez abandonner cette fonctionnalité, ...<br>
-				<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour ce temple ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong>
+				<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour ce temple ? <em>(Cette fonctionnalité sera dorénavant controlée)</em></a></strong>
 				<?php 
 			}
 				?><?php 

@@ -155,7 +155,7 @@ if ($db->nf() != 0)
 
 	$contenu_page .= '<table>
 					<tr>
-						<td class="titre"><strong>Liste des auberges visitées </strong><br><i>dans le cadre de la quête des tavernes</i></td>
+						<td class="titre"><strong>Liste des auberges visitées </strong><br><em>dans le cadre de la quête des tavernes</em></td>
 					</tr>';	
 	while($db->next_record())
 	{
@@ -197,7 +197,7 @@ else
 						<tr>
 							<td><strong>Anciens contrats validés</strong></td>
 							<td><strong>Origine</strong></td>
-							<td><strong><i>(Récompense obtenue)</i></strong></td>
+							<td><strong><em>(Récompense obtenue)</em></strong></td>
 						</tr>';
 	while($db->next_record())
 	{
@@ -306,17 +306,17 @@ else
 		{
 			if ($total >= $nombre_quete)
 			{
-				$contenu_page .= '<td class="soustitre2"><i>Vous avez respecté votre engagement pour ce contrat !<br />
-					Il vous faut maintenant aller le valider '.$texte_validation.', pour récupérer la récompense associée.</i></td></tr>';
+				$contenu_page .= '<td class="soustitre2"><em>Vous avez respecté votre engagement pour ce contrat !<br />
+					Il vous faut maintenant aller le valider '.$texte_validation.', pour récupérer la récompense associée.</em></td></tr>';
 			}
 			else
 			{
-				$contenu_page .= '<td class="soustitre2"><i>Ce contrat a été raté. Le quota de la chasse n’a pas été respecté, et elle est échue.</i></td></tr>';
+				$contenu_page .= '<td class="soustitre2"><em>Ce contrat a été raté. Le quota de la chasse n’a pas été respecté, et elle est échue.</em></td></tr>';
 			}
 		}
 		else
 		{
-			$contenu_page .= '<td class="soustitre2"><i>Contrat en cours de réalisation</i></td></tr>';
+			$contenu_page .= '<td class="soustitre2"><em>Contrat en cours de réalisation</em></td></tr>';
 		}
 	}
 	$contenu_page .= "</table><br></p>";

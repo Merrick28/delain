@@ -148,10 +148,10 @@ $contenu_page .= '<table width="70%">
 											<td><strong>- Image lune : </strong></td>
 											<td><strong>- Aide Lunaire : </strong></td>
 										<tr>
-											<td><i>' . NommerPhase($phase) . '</i></strong></td>
+											<td><em>' . NommerPhase($phase) . '</em></strong></td>
 											<td><img src="' . ImgPhase($phase) . '"></td>
-											<td><i>Il reste ' . JoursAvantNL($phase) . ' jours avant la nouvelle lune
-											<br> et ' . JoursAvantPL($phase) . ' jours avant la pleine lune <i></td>
+											<td><em>Il reste ' . JoursAvantNL($phase) . ' jours avant la nouvelle lune
+											<br> et ' . JoursAvantPL($phase) . ' jours avant la pleine lune <em></td>
 										</tr>
 										</table>';
 
@@ -165,10 +165,10 @@ if (!isset($methode))
 switch ($methode)
 {
     case "debut":
-        $contenu_page .= '<br><br><br><i>Vous ne pouvez pas récupérer de composants à n\'importe quel moment. En effet, il ne faut pas que vous soyez en combat pour cela ...
+        $contenu_page .= '<br><br><br><em>Vous ne pouvez pas récupérer de composants à n\'importe quel moment. En effet, il ne faut pas que vous soyez en combat pour cela ...
 			<br>En dehors de cette contrainte, vous pouvez lancer une cueillette quand vous le souhaitez. Vous récupèrerez plusieurs composants. Mais si aucun composant ne se trouve dans la zone vos PA seront perdus.
 			<br>Pour améliorer vos chances, vous pouvez lancer des détections, qui vous indiqueront les coins propices à la présence de composants. Attention, ceci ne signifie pas forcément que des composants seront présents, mais qu\'il y a au moins une chance qu\'il y en ait.
-			<br><br></i>';
+			<br><br></em>';
         $lock = $db->is_locked($perso_cod);
         if ($lock == true)
         {

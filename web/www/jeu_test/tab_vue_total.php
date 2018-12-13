@@ -96,7 +96,7 @@ if ($db->is_admin_monstre($compt_cod))
 		
 		if (carte[i][4] != 0)
 		{
-			comment = comment + carte[i][4] + '&nbsp;monstres<br><i>' + carte[i][14] + '</i>';
+			comment = comment + carte[i][4] + '&nbsp;monstres<br><em>' + carte[i][14] + '</em>';
 			comment_light = comment_light + carte[i][4] + '&nbsp;monstres, ' + carte[i][14];
 			texte = texte + '<div class="monstre">';
 			

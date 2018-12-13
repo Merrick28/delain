@@ -46,7 +46,7 @@ $nb_monstre = $db->f("nb");
 
 $contenu_page .=(" et <strong>$nb_monstre</strong> monstres dans les souterrains qui n'attendent que vous !");
 
-$contenu_page .= '<br /><i>Statistiques sur les 30 derniers jours seulement</i>';
+$contenu_page .= '<br /><em>Statistiques sur les 30 derniers jours seulement</em>';
 
 $contenu_page .= '<div class="titre">Statistiques des personnages</div>';			
 // classement par niveau
@@ -82,7 +82,7 @@ $contenu_page .=("<hr />");
 
 			// classement par étage
 			$contenu_page .=("<table cellspacing=\"2\" cellpadding=\"2\">");
-			$contenu_page .=("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par étage : <br><i>Seuls les étages connus sont visibles. De nombreux antres existent et restent à la découverte des joueurs/personnages</i></td></tr>");
+			$contenu_page .=("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par étage : <br><em>Seuls les étages connus sont visibles. De nombreux antres existent et restent à la découverte des joueurs/personnages</em></td></tr>");
 			$contenu_page .=("<tr><td class=\"soustitre2\">Etage</td>
 			<td class=\"soustitre2\">Personnages</td>
 			<td class=\"soustitre2\">Niveau moyen</td>

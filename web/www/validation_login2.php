@@ -368,7 +368,7 @@ if ($verif_auth)
 					}
 
 					echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><strong>se déconnecter</strong></a></p>";
-					echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') .  "</i></p>";
+					echo "<p style=\"text-align:center;\"><br /><em>Date et heure serveur : " . date('d/m/Y H:i:s') .  "</em></p>";
 				}
 			}
 			echo '</div></body></html>';

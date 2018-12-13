@@ -70,7 +70,7 @@ if(!($bd->next_record())){
 		<p align="center"><br><br><br><br>
 		Un muffin, il a l’air appétissant, même si sa couleur est un peu ... étrange.<br><br>
 		Il est emballé dans du papier listing gribouillé sur lequel on peut lire:<br><br>
-		<strong><i>Muffins recette spéciale Lutin, naturellement chimique.</i></strong> <br><br>
+		<strong><em>Muffins recette spéciale Lutin, naturellement chimique.</em></strong> <br><br>
 		<strong>Ingrédients</strong> : <br><br>
 		-	Un peu de tout : 60%<br><br>
 		-	Un peu de n’importe quoi : 30%<br><br>

@@ -63,7 +63,7 @@ if ($erreur == 0)
 			echo "<select name=\"perso\">";
 			while ($db->next_record())
 			{
-				echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_nom") . " <i>(" . $db->f("dniv_libelle") . ")</i></option>";	
+				echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_nom") . " <em>(" . $db->f("dniv_libelle") . ")</em></option>";	
 			}
 			echo "</select>";
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
@@ -106,7 +106,7 @@ if ($erreur == 0)
 				{
 					echo " selected";
 				}
-				echo ">" . $db->f("perso_nom") . " <i>(" . $db->f("dniv_libelle") . ")</i></option>";	
+				echo ">" . $db->f("perso_nom") . " <em>(" . $db->f("dniv_libelle") . ")</em></option>";	
 			}
 			echo "</select>";
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";

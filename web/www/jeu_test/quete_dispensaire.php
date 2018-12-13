@@ -43,14 +43,14 @@ if ($erreur == 0)
             $contenu_page3 .= 'Ses longs doigts blanchâtres rejouent inlassablement les mêmes gestes, ceux qu’il avait appris lors de ses études de médecine, répétés toute sa vie durant dans ce dispensaire pour soigner les corps meurtris. 
 			<br>Mais il n’y a plus guère que le vent qui se  laisse  saisir par sa vieille carcasse éthérée. Et pourtant, il demeure fidèle à  son poste, comme en attente d’une dernière âme à sauver...
 			<br>Dans un râle, il se tourne vers vous, et vous apostrophe :
-			<br><i>« Souhaitez vous bénéficier du service de rapatriement d’âme ? »</i>
+			<br><em>« Souhaitez vous bénéficier du service de rapatriement d’âme ? »</em>
 													<br><a href="' . $PHP_SELF . '?methode=oui"><strong>Oui</a></strong>
 													<br><a href="' . $PHP_SELF . '?methode=non"><strong>Non</a></strong>';
             break;
         case "oui":
             $req = 'select * from choix_lieu_vus(' . $perso_cod . ',2)';
             $db->query($req);
-            $contenu_page3 .= '<p class="titre"><i>Ainsi, vous avez besoin de mon aide :</i></p>
+            $contenu_page3 .= '<p class="titre"><em>Ainsi, vous avez besoin de mon aide :</em></p>
 			<table>';
             while ($db->next_record())
             {
@@ -74,7 +74,7 @@ if ($erreur == 0)
             $contenu_page3 .= '</table>';
             break;
         case "non":
-            $contenu_page3 .= '<i>Des âmes, je veux des âmes...</i>
+            $contenu_page3 .= '<em>Des âmes, je veux des âmes...</em>
 				<br>Et son corps fantomatique s’éloigne doucement de vous...';
             break;
         case "dispensaire":

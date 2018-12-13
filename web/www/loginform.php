@@ -238,7 +238,7 @@ else
 	<tr><td>	<p style="text-align:center;"><strong>Nom du compte</strong></td>
 	<td><input type="text" name="nom" value="<?php  echo ("$perso_nom") ?>"></td>
 	<td><p><strong>Mot de passe</strong></td>
-	<td><p><input type="password" name="pass" value="<?php  echo ("$password") ?>"> <i><a href="renvoi_mdp.php">Mot de passe oublié ? </a></i></td></td>
+	<td><p><input type="password" name="pass" value="<?php  echo ("$password") ?>"> <em><a href="renvoi_mdp.php">Mot de passe oublié ? </a></em></td></td>
 	</tr>
 	</table></center>
 	

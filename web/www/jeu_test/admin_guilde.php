@@ -213,7 +213,7 @@ if ($db->is_admin_guilde($perso_cod))
            $nom = $db->f("perso_nom");
            if ($nom == null)
            {
-          	 echo  "<TR><TD $style><i>Aventurier aujourd'hui disparu ...</i></TD>";
+          	 echo  "<TR><TD $style><em>Aventurier aujourd'hui disparu ...</em></TD>";
           }
           	else
           	{

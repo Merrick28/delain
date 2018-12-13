@@ -69,7 +69,7 @@ else
 	$pfac_nv_points = $pfac_points;
 	
 	// Afficher introduction de la faction
-	echo "<div><strong>Faction « $faction_nom »</strong><br /><i>$faction_desc</i></div>";
+	echo "<div><strong>Faction « $faction_nom »</strong><br /><em>$faction_desc</em></div>";
 	
 	if (!isset($methode))
 		$methode = 'Début';

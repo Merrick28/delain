@@ -245,12 +245,12 @@ while($db->next_record())
 
 	if ($isJury && $db->f('nbar_note') == null)
 	{
-		echo ' <i>- non noté</i>';
+		echo ' <em>- non noté</em>';
 	}
 	echo '</a></td>';
 
 	echo '<td class="soustitre2">' . $db->f('date') . '</td>
-			<td class="soustitre2">' . $db->f('note') . '/' . ($nbJury * 20) . ' <i>(votes : ' . $db->f('nbvote') . '/' . $nbJury . ')</i></td>
+			<td class="soustitre2">' . $db->f('note') . '/' . ($nbJury * 20) . ' <em>(votes : ' . $db->f('nbvote') . '/' . $nbJury . ')</em></td>
 		</tr>';
 }
 echo '</table>';
@@ -262,8 +262,8 @@ if ($ouvert)
 <p>Pour participer entrez ici le titre et le texte de votre composition originale :</p>
 <form method="post">
 	<input type="hidden" name="methode" value="participer">
-	<p>Titre : <i>(limité à 50 caractères) </i><input type="text" name="titre" value=""></p>
-	<p>Texte : <i>(Pas de taille minimale ou maximale, mais ne penchez pas dans l’excès)</i><br />
+	<p>Titre : <em>(limité à 50 caractères) </em><input type="text" name="titre" value=""></p>
+	<p>Texte : <em>(Pas de taille minimale ou maximale, mais ne penchez pas dans l’excès)</em><br />
 	<textarea name="contenu" cols="100" rows="15"></textarea></p>
 	<input type="submit" value="Participer">
 </form>

@@ -214,7 +214,7 @@ if ($methode=="")
 
             //$contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$quete->aquete_nom}</strong></center></div>" ;
             $link = "/jeu_test/quete_auto.php?methode=stop&quete={$aquete_cod}" ;
-            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."&nbsp;&nbsp;(<i style=\"font-size:9px;\"><a href={$link}>Arrêter cette quête</a></i>)<br>" ;
+            $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."&nbsp;&nbsp;(<i style=\"font-size:9px;\"><a href={$link}>Arrêter cette quête</a></em>)<br>" ;
             $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ."<br>";
 
 

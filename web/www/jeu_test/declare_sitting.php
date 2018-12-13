@@ -37,12 +37,12 @@ switch($methode)
 		
 		<tr>
 		<td><p>Durée du sitting en heure </td>
-		<td align="right"><strong><input type="text" name="duree_heure" value="6"> (<i>Minimum 6 heures !</i>)</strong></td>
+		<td align="right"><strong><input type="text" name="duree_heure" value="6"> (<em>Minimum 6 heures !</em>)</strong></td>
 		</tr>
 		
 		<tr>
 		<td><p>Durée du sitting en jour</td>
-		<td align="right" ><strong><input type="hidden" name="duree_jour" value="5"> (<i>Maximum 5 jours !</i>)</strong></td>
+		<td align="right" ><strong><input type="hidden" name="duree_jour" value="5"> (<em>Maximum 5 jours !</em>)</strong></td>
 		</tr>
 		
 		<tr>
@@ -323,7 +323,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitteur_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><i>Sitting en cours, il ne peut être annulé</i></td>
+				<td class="soustitre2"><em>Sitting en cours, il ne peut être annulé</em></td>
 				</tr>
 				<?php 		
 		}
@@ -349,7 +349,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitteur_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitteur;?>&sit3=<?php echo $compte_sitte;?>&methode=annulation"><i>Annulation de ce sitting</i></a></td>		
+				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitteur;?>&sit3=<?php echo $compte_sitte;?>&methode=annulation"><em>Annulation de ce sitting</em></a></td>		
 				</tr>
 				<?php 		
 		}
@@ -466,7 +466,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitte_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><i>Sitting en cours, il ne peut être annulé</i></td>
+				<td class="soustitre2"><em>Sitting en cours, il ne peut être annulé</em></td>
 				</tr>
 				<?php 		
 		}
@@ -492,7 +492,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitte_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitte;?>&sit3=<?php echo $compte_sitteur;?>&methode=annulation_sitteur"><i>Annulation de ce sitting</i></a></td>		
+				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitte;?>&sit3=<?php echo $compte_sitteur;?>&methode=annulation_sitteur"><em>Annulation de ce sitting</em></a></td>		
 				</tr>
 				<?php 		
 		}
@@ -549,7 +549,7 @@ switch($methode)
 		<br>La liste ci-dessous donne les sittings que vous avez réalisés dans les 3 derniers mois et qui sont échus<br>
 		<br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
 		<table>
-		<tr><td><strong>Anciens comptes Sittés</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td><td><strong>Durée</strong> (<i>jours / heures : minutes)</i></td></tr>	
+		<tr><td><strong>Anciens comptes Sittés</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td><td><strong>Durée</strong> (<em>jours / heures : minutes)</em></td></tr>	
 		<?php 
 		$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,to_char(csit_dfin-csit_ddeb,'  DD / HH24:mi') as duree,csit_compte_sitteur,csit_compte_sitte from compte_sitting
 								where csit_compte_sitteur = $compt_cod

@@ -73,7 +73,7 @@ else
 		<input type="hidden" name="methode" value="liste_cre1">
 		<table>
 			<tr>
-				<td class="soustitre2"><strong>Nom de la liste / <i>Attention indispensable !</i><strong></td>
+				<td class="soustitre2"><strong>Nom de la liste / <em>Attention indispensable !</em><strong></td>
 				<td><input type="text" name="nom_liste" value="à remplir !"></td>
 			</tr>
 			<tr>

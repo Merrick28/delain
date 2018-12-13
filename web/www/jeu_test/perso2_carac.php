@@ -37,7 +37,7 @@ $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_descriptio
 $contenu_page .= '
 <p class="titre">' . $perso_nom . '(' . $db->f('perso_sex') . ' - ' . $db->f('race_nom') . ') - Date de création : '. $db->f("date_cre") . '
 <p class="soustitre">Perso n°' . $perso_cod . '
-<p style="text-align:center;"><i>' . $desc . '</i>';
+<p style="text-align:center;"><em>' . $desc . '</em>';
 
 /*if (($redist == 'P') && !$is_fam)
 	$contenu_page .= '<p style="text-align:center;"><strong><a href="action.php?methode=redist">Redistribuer les améliorations</a></strong><br>
@@ -48,7 +48,7 @@ $contenu_page .= '
 
 <tr>
 <td class="soustitre2">Niveau </td>
-<td>' . $db->f("perso_niveau"). '<i>(prochain niveau à ' . $db->f("limite_niveau") . ' PX)</i></td>
+<td>' . $db->f("perso_niveau"). '<em>(prochain niveau à ' . $db->f("limite_niveau") . ' PX)</em></td>
 <td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
 <td>' . $db->f("dlt") . '</td></tr>
 
@@ -119,7 +119,7 @@ $contenu_page .= '
 <td height="3" colspan="4"><hr /></td>
 </tr>
 <tr>
-<td class="soustitre2">Dégâts <i>(+ amélioration)</i></td>';
+<td class="soustitre2">Dégâts <em>(+ amélioration)</em></td>';
 $req_arme = "select max(obj_des_degats) as obj_des_degats,
 		max(obj_val_des_degats) as obj_val_des_degats,
 		sum(obj_bonus_degats) as obj_bonus_degats,
@@ -147,21 +147,21 @@ else
 $contenu_page .= '<td>' . $nb_des . 'D' . $val_des . '+' . $bonus;
 if (!$arme_distance)
 {
-	$contenu_page .= '<i>(+' . $db->f('perso_amelioration_degats') . ')</i>';
+	$contenu_page .= '<em>(+' . $db->f('perso_amelioration_degats') . ')</em>';
 }
 else
 {
-	$contenu_page .= '<i>(+' . $db->f('perso_amel_deg_dex') . ')</i>';
+	$contenu_page .= '<em>(+' . $db->f('perso_amel_deg_dex') . ')</em>';
 }
 $contenu_page .= '</td>';
 
 if ($db->f("perso_niveau_vampire") == 0)
 {
 	$regAmelTxt = ($db->f('perso_amelioration_regen') != 0 ?
-					'<i>(+ amélioration)</i>' :
+					'<em>(+ amélioration)</em>' :
 					'');
 	$regAmelVal = ($db->f('perso_amelioration_regen') != 0 ?
-					'<i>(+ ' . $db->f('perso_amelioration_regen') . ')</i>' :
+					'<em>(+ ' . $db->f('perso_amelioration_regen') . ')</em>' :
 					'');
 	$bonus_pv_reg = min(25, floor($db->f('perso_des_regen') * $db->f("perso_pv_max") / 100));
 	$contenu_page .= '<td class="soustitre2">Régénération ' . $regAmelTxt . ' </td>
@@ -177,10 +177,10 @@ else
 $armure = $db->f("obj_armure");
 
 $contenu_page .= '<tr>
-<td class="soustitre2">Armure <i>(+ amélioration)</i></td>
-<td>' . $armure . '<i>(+ ' . $db->f('perso_amelioration_armure') . ')</i></td>
-<td class="soustitre2">Vue  <i>(+ amélioration)</i></td>
-<td>' . $db->f('perso_vue') . '<i>(+ ' . $db->f('perso_amelioration_vue') . ')</i></td>
+<td class="soustitre2">Armure <em>(+ amélioration)</em></td>
+<td>' . $armure . '<em>(+ ' . $db->f('perso_amelioration_armure') . ')</em></td>
+<td class="soustitre2">Vue  <em>(+ amélioration)</em></td>
+<td>' . $db->f('perso_vue') . '<em>(+ ' . $db->f('perso_amelioration_vue') . ')</em></td>
 </tr>
 
 <tr>
@@ -200,7 +200,7 @@ $tab_allonge = explode(";",$db->f('allonge_temps_poids'));
 $contenu_page .= '<td>' . $tab_allonge[0] . ' h ' . $tab_allonge[1] . ' m</td>
 </tr>
 <tr>
-<td></td><td></td><td class="soustitre2">Bonus liés aux PA restant <i>(à cet instant précis !)</i></td>';
+<td></td><td></td><td class="soustitre2">Bonus liés aux PA restant <em>(à cet instant précis !)</em></td>';
 if ($db->f("perso_utl_pa_rest") == 1)
 {
 	$tab_diminue = explode(";",$db->f('bonus_pa_temps_tour'));

@@ -57,7 +57,7 @@ if($db->next_record())
 					$detail = $db->f("detail");
 					$comp_peau_min = $db->f("frm_comp_cod");
 					$texte_niveau = ($comp_peau_min <= $niveau) ? "vous vous sentez apte à la tanner." : "son tannage requiert une expertise que vous ne maîtrisez pas encore.";
-					$contenu_page .= "<br><strong>$nombre $nom</strong> / <i>$detail ; $texte_niveau</i>";
+					$contenu_page .= "<br><strong>$nombre $nom</strong> / <em>$detail ; $texte_niveau</em>";
                     
 					if ($comp_peau_min <= $niveau)
 						$liste .= '<option value="'. $db->f("obj_gobj_cod") .'"> '. $db->f("gobj_nom") .'</option>';

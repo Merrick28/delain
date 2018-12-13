@@ -25,7 +25,7 @@ if ($is_enlumineur) {
 						<td><strong>Parchemin en cours de réalisation</strong></td>
 						<td>Date de début de séchage</td>
 						<td border="1" style="border: medium solid #FFFF00"><strong>Date estimée de fin de séchage</strong></td>
-						<td><i>Peau en séchage</i></td>
+						<td><em>Peau en séchage</em></td>
 					</tr>';
                 while ($db->next_record()) {
 
@@ -41,7 +41,7 @@ if ($is_enlumineur) {
 						<td><strong>' . $db->f("gobj_nom_fini") . '</strong></td>
 						<td>' . $db->f("date_deb") . '</td>
 						<td><strong>' . $db2->f("date_fin") . '</strong></td>
-						<td><i>' . $db->f("obj_nom") . '</i></td>
+						<td><em>' . $db->f("obj_nom") . '</em></td>
 					</tr>';
 
                 }

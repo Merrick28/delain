@@ -20,7 +20,7 @@ Titre('L\'histoire')?>
 <br>- Et bien, il suffit d'en invoquer un et de lui demander
 <br><br>Tous les démonologues furent consternés par cette annonce de leur condisciple
 <br><br>- Mais tu n'y penses pas ! L'invocation de démons majeurs n'est pas encore au programme de la 3è année d'étude ! On ne l'apprend qu'à la fin de la 32è année ! fit Klikli, le jeune roux de tout à l'heure
-<br>- Mais c'est pas grave, j'ai espionné Maitre Tralek, j'ai vu comment il a fait, pis je lui ai chourré son livre d'invocation, l'<i>Invocatum Grandum Majestum Demonicus</i>
+<br>- Mais c'est pas grave, j'ai espionné Maitre Tralek, j'ai vu comment il a fait, pis je lui ai chourré son livre d'invocation, l'<em>Invocatum Grandum Majestum Demonicus</em>
 <br>- Comment ? Mais tu n'as pas le droit !
 <br>- Je sais, mais j'ai pris le gauche, et vu que je suis ambidextre, ca gene pas, dit-il à ses condisciples étonnés par tant de désinvolture. D'ailleurs, je l'ai ramené ici. Je l'ai lu, et à mon avis, faut pas être très futé pour y arriver
 <br><br>Ayant réussi à convaincre ses camarades, Gors (puisque c'était son nom) commença l'invocation et...il faut croire qu'il n'était vraiment pas très futé, car, bien évidemment, l'invocation a raté

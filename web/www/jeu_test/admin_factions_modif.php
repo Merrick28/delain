@@ -124,7 +124,7 @@ while($db->next_record())
 	$fac_cod = $db->f('fac_cod');
 	$fac_nom = $db->f('fac_nom');
 	$fac_active = ($db->f('fac_active') == 'O');
-	$txt_active = ($fac_active) ? '' : '<br /><i>(inactive)</i>';
+	$txt_active = ($fac_active) ? '' : '<br /><em>(inactive)</em>';
 	$fac_description = $db->f('fac_description');
 	$fac_introduction = $db->f('fac_introduction');
 	$fmiss_nb = $db->f('fmiss_nb');

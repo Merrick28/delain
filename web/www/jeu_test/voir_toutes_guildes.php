@@ -82,7 +82,7 @@ $db->query($req_guilde);
 if ($is_guilde === false)
 {
 	?>
-	<p><i>Attention ! Toute demande d’affiliation à une guilde supprimera automatiquement les demandes qui sont en attente de validation pour les autres guildes !</i></p>
+	<p><em>Attention ! Toute demande d’affiliation à une guilde supprimera automatiquement les demandes qui sont en attente de validation pour les autres guildes !</em></p>
 	<p align="center"><br><br><strong>AVANT DE POSTULER A UNE GUILDE, MERCI D’EN LIRE SA DESCRIPTION. 
 	<br>Vous risqueriez d’être mal reçu si tel n’était pas le cas ...</strong></p><br><br>
 	

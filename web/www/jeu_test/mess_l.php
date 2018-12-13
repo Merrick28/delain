@@ -13,7 +13,7 @@ if (!isset($msg_start))	// offset des messages
 if ($msg_start < 0)
 	$msg_start = 0;
 
-$disparu = '<i>-- Personnage disparu --</i>';
+$disparu = '<em>-- Personnage disparu --</em>';
 $archive = ($m == 0) ? 'N' : 'O';
 $where_fil = ($m == 0 && $fil != 0) ? " and msg_init = $fil" : '';
 $orderby = ($sort == 0) ? 'msg_cod desc' : 'msg_init desc, msg_cod desc';

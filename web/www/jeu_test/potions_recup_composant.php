@@ -146,10 +146,10 @@ $contenu_page .= '<table width="70%">
 		<td><strong>- Image lune : </strong></td>
 		<td><strong>- Aide Lunaire : </strong></td>
 	<tr>
-		<td><i>'.NommerPhase($phase).'</i></strong></td>
+		<td><em>'.NommerPhase($phase).'</em></strong></td>
 		<td><img src="'.ImgPhase($phase).'"></td>
-		<td><i>Il reste environ '. round(JoursAvantNL($phase),0) .' jours avant la nouvelle lune
-		<br> et environ '. round(JoursAvantPL($phase),0) .' jours avant la pleine lune <i></td>
+		<td><em>Il reste environ '. round(JoursAvantNL($phase),0) .' jours avant la nouvelle lune
+		<br> et environ '. round(JoursAvantPL($phase),0) .' jours avant la pleine lune <em></td>
 	</tr>
 	</table>';
 
@@ -169,13 +169,13 @@ switch($methode)
 		}
 		else
 		{
-            $contenu_page .= '<br><br><br><i>Vous ne pouvez pas récupérer de composants à n’importe quel moment.
+            $contenu_page .= '<br><br><br><em>Vous ne pouvez pas récupérer de composants à n’importe quel moment.
                 En effet, <strong>il ne faut pas que vous soyez en combat pour cela</strong>...
                 <br>En dehors de cette contrainte, vous pouvez lancer une cueillette quand vous le souhaitez.
                 Vous récupèrerez alors plusieurs composants. Mais si aucun composant ne se trouve dans la zone vos PA seront perdus.
                 <br>Pour améliorer vos chances, vous pouvez lancer des détections, qui vous indiqueront les coins propices à la présence de composants.
                 Attention, ceci ne signifie pas forcément que des composants seront présents, mais qu’il y a au moins une chance qu’il y en ait.
-                Il est toujours possible que d’autres soient passés avant vous...<br><br></i>';			
+                Il est toujours possible que d’autres soient passés avant vous...<br><br></em>';			
 		
 			$contenu_page .= '<form name="recup_composant" method="post" action="'. $PHP_SELF .'">
 					<input type="hidden" name="methode" value="recup">

@@ -144,7 +144,7 @@ function affiche_perso($perso_cod)
 	{
 		echo '</strong>';
 	}
-	echo '<br /><i>Puis ± ' , $db->f('prochaine_dlt') . '</i>';
+	echo '<br /><em>Puis ± ' , $db->f('prochaine_dlt') . '</em>';
 	echo '<br></td></tr>
 		<tr><td class="soustitre2" colspan="2">Position : X=' . $db->f("pos_x") . '; Y=' . $db->f("pos_y") . '; ' . $db->f("etage_libelle") . '</td></tr>';
 	$num_perso = $perso_cod;
@@ -160,18 +160,18 @@ function affiche_perso($perso_cod)
 	}
 	$niveau = $db->f("perso_niveau");
 	$tours_impalpable = ($db->f('perso_nb_tour_intangible') > 1) ? ' tours' : ' tour';
-	$impalpable = ($db->f('perso_tangible') == 'N') ? '<br /><i>Impalpable (' . $db->f('perso_nb_tour_intangible') . $tours_impalpable . ')</i>' : '';
+	$impalpable = ($db->f('perso_tangible') == 'N') ? '<br /><em>Impalpable (' . $db->f('perso_nb_tour_intangible') . $tours_impalpable . ')</em>' : '';
 
 	if ($is1avril)
 	{
 		$niveau = mt_rand(1, 10);
-		$impalpable = ' - <i>Impalpable</i>';
+		$impalpable = ' - <em>Impalpable</em>';
 		$dbavril = new base_delain;
 		$dbavril->query('select gmon_nom from monstre_generique where gmon_cod < 50 and gmon_niveau < 5 and gmon_cod <> 7
 			order by random()
 			limit 1');
 		$dbavril->next_record();
-		$impalpable .= '<br /><i>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</i>';
+		$impalpable .= '<br /><em>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</em>';
 		$barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
 	}
 

@@ -69,7 +69,7 @@ $types_ventes_gros = "(5, 11, 17, 18, 19, 21, 22, 28, 30, 34)";
 switch ($methode)
 {
     case "debut":
-        echo "<i><br><strong><p>Les transactions à l’intérieur d’un même compte pour un montant nul seront directement acceptées</i></strong><br><br> ";
+        echo "<em><br><strong><p>Les transactions à l’intérieur d’un même compte pour un montant nul seront directement acceptées</em></strong><br><br> ";
         echo "<div class=\"titre\">Choix du destinataire </div>";
         echo "<form name=\"tran\" method=\"post\" action=\"\">";
         echo "Choisissez le joueur à qui vous voulez vendre des objets : ";

@@ -150,7 +150,7 @@ if ($erreur == 0)
 	$db->query($req);
 	$db->next_record();
 	echo "<p>Vous arrivez dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong></p><br>";
-	echo "<p><i>" . $db->f("etage_description") . "</i></p>";
+	echo "<p><em>" . $db->f("etage_description") . "</em></p>";
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();

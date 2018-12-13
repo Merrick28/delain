@@ -117,7 +117,7 @@ if ($erreur == 0)
 					<td><textarea cols="50" rows="10"  name="nom">Rentrer une description</textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Temps Travail <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="temps" value="0"></td>
 				</tr>
 				<tr>
@@ -125,11 +125,11 @@ if ($erreur == 0)
 					<td><input type="text" name="pot_cout" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<?php 
@@ -153,13 +153,13 @@ if ($erreur == 0)
 							<option value="100" <?php echo  $s2 ?> >Alchimie Niveau 2</option>';
 							<option value="101" <?php echo  $s3 ?> >Alchimie Niveau 3</option>';							
 						</select>
-							<i> <br>Par défaut, cela correspond au niveau de la potion. 
-								<br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></i>
+							<em> <br>Par défaut, cela correspond au niveau de la potion. 
+								<br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
 							
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Potion concernée</i></td>
+					<td class="soustitre2">Potion concernée</em></td>
 					<td>
 					<select name="potion">
 					<?php  
@@ -179,7 +179,7 @@ if ($erreur == 0)
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de potions produites <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de potions produites <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="1"></td>
 				</tr>
 				<tr>
@@ -276,7 +276,7 @@ if ($erreur == 0)
 					<td><textarea cols="50" rows="10"  name="nom"><?php echo $db->f("frm_nom");?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Temps Travail <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="temps" value="<?php echo $db->f("frm_temps_travail");?>"></td>
 				</tr>
 				<tr>
@@ -284,11 +284,11 @@ if ($erreur == 0)
 					<td><input type="text" name="pot_cout" value="<?php echo $db->f("frm_cout");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="<?php echo $db->f("frm_resultat");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<?php  $s = $db->f("frm_comp_cod");
@@ -315,7 +315,7 @@ if ($erreur == 0)
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Potion concernée</i></td>
+					<td class="soustitre2">Potion concernée</em></td>
 					<td>
 					<select name="potion">
 					<?php  
@@ -337,7 +337,7 @@ if ($erreur == 0)
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de potions produites <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de potions produites <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="<?php echo $db->f("frmpr_num");?>"></td>
 				</tr>
 				<tr>

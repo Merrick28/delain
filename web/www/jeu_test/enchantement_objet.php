@@ -22,11 +22,11 @@ switch ($methode) {
         $contenu_page .= '<p align="left"><strong>Les objets suivants sont déjà enchantés :</strong>
 													<table>';
         if ($db->nf() == 0) {
-            $contenu_page .= '<td><i>Aucun objet enchanté à votre disposition</i></td>';
+            $contenu_page .= '<td><em>Aucun objet enchanté à votre disposition</em></td>';
         } else {
             while ($db->next_record())//Cas des objets enchantés
             {
-                $contenu_page .= '<td>' . $db->f("obj_nom") . ' <i>(' . $db->f("obj_nom_generique") . ')</i></td>';
+                $contenu_page .= '<td>' . $db->f("obj_nom") . ' <em>(' . $db->f("obj_nom_generique") . ')</em></td>';
             }
         }
         $contenu_page .= '</table></p>';
@@ -36,11 +36,11 @@ switch ($methode) {
 										order by gobj_tobj_cod,obj_nom desc';
         $db2->query($req1);
         if ($db2->nf() == 0) {
-            $contenu_page .= '<td><i>Aucun objet enchantable à votre disposition</i></td>';
+            $contenu_page .= '<td><em>Aucun objet enchantable à votre disposition</em></td>';
         } else {
             while ($db2->next_record()) //Cas des objets enchantables
             {
-                $contenu_page .= '<td>' . $db2->f("obj_nom") . ' <i>(' . $db2->f("obj_nom_generique") . ')</i></td>';
+                $contenu_page .= '<td>' . $db2->f("obj_nom") . ' <em>(' . $db2->f("obj_nom_generique") . ')</em></td>';
             }
         }
         $contenu_page .= '</table></p>';
@@ -50,7 +50,7 @@ switch ($methode) {
 										order by gobj_tobj_cod,obj_nom desc';
         $db3->query($req4);
         if ($db3->nf() == 0) {
-            $contenu_page .= '<td><i>Aucun objet non enchanté et enchantable à votre disposition</i></td>';
+            $contenu_page .= '<td><em>Aucun objet non enchanté et enchantable à votre disposition</em></td>';
         } else {
             $compt = 0;
             while ($db3->next_record()) //Cas des objets non enchantés et non enchantables pour l'instant
@@ -58,7 +58,7 @@ switch ($methode) {
                 if ($compt == 0) {
                     $contenu_page .= '<td class="titre">Objet</td><td class="titre">Chances de rendre <br>l\'objet enchantable : </td>
 													<td class="titre">Action</td>
-													<td><i><strong>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</strong></i></td>';
+													<td><em><strong>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</strong></em></td>';
                 }
                 $chance = $db3->f("gobj_chance_enchant");
                 if ($chance == 0) {
@@ -72,9 +72,9 @@ switch ($methode) {
                 } else {
                     $chance_indic = "Exceptionnelles";
                 }
-                $contenu_page .= '<tr><td class="soustitre2">' . $db3->f("obj_nom") . ' <i>(' . $db3->f("obj_nom_generique") . ')</i></td>
+                $contenu_page .= '<tr><td class="soustitre2">' . $db3->f("obj_nom") . ' <em>(' . $db3->f("obj_nom_generique") . ')</em></td>
 										<td class="soustitre2" style="text-align:center"><strong>' . $chance_indic . '</strong></td>
-										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db3->f('obj_cod') . '&t_ench=2"><i>Procéder au forgeamage de cet objet</i></a></td></tr>';
+										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db3->f('obj_cod') . '&t_ench=2"><em>Procéder au forgeamage de cet objet</em></a></td></tr>';
                 $compt = $compt + 1;
             }
         }

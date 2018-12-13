@@ -57,7 +57,7 @@ if ($erreur == 0)
 			case "suite":
 			 $contenu_page4 .= "tu trouveras un marteau, posé sur l'enclume.
 			 <br>Et reviens me voir quand tu auras réussi une réparation. Pour cela il te faudra aussi exercer tes talents à identifier ce que tu as sous les yeux.
-			 <br><br><i>Le forgeron vous récompensera lorsque vous aurez réussi au moins un réparation sur l'objet qu'il vous remet.</i><br>";
+			 <br><br><em>Le forgeron vous récompensera lorsque vous aurez réussi au moins un réparation sur l'objet qu'il vous remet.</em><br>";
 				$req = "select cree_objet_perso(832,".$perso_cod.") as arme_cassee";
 				$db->query($req);
 				$db->next_record();

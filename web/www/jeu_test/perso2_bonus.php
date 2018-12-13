@@ -41,7 +41,7 @@ else
 $contenu_page .= '<br /><a href="valide_concentration.php">Se concentrer ! (4 PA)</a>';
 if ($nb_concentration != 0)
 {
-	$contenu_page .= '<br /><i>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</i>';
+	$contenu_page .= '<br /><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</em>';
 }
 //
 /* BONUS PERMANENTS */

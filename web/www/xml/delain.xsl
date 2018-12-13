@@ -25,7 +25,7 @@
 			<tr><td class="titre">Rubrique : <xsl:value-of select="titre_rub"/></td></tr>
 			<xsl:for-each select="lien">
 				<xsl:variable name="url" select="url_lien"/>
-				<tr><td class="soustitre2"><i><a href="{$url}"><xsl:value-of select="nom_lien"/></a></i></td></tr>
+				<tr><td class="soustitre2"><em><a href="{$url}"><xsl:value-of select="nom_lien"/></a></em></td></tr>
 			</xsl:for-each>
 		</xsl:for-each>
 </xsl:template>

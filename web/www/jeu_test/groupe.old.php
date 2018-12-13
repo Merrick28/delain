@@ -166,7 +166,7 @@ switch($methode)
 																	<input type="hidden" name="methode" value="groupe_texte">
 																	<input type="hidden" name="num_groupe" value="' . $num_groupe . '">
 																	<td><textarea name="groupe_texte" cols="80" rows =5>'.$db2->f("groupe_texte").'</textarea></td><td><input type="submit" value="Validation" class="test">
-																	<br><i>Dernière date mise à jour : </i><br>'.$db2->f("date_texte_groupe").'</td>
+																	<br><em>Dernière date mise à jour : </em><br>'.$db2->f("date_texte_groupe").'</td>
 																	</form>';
 						$contenu_page .= '<form name="fsort" method="post" action="groupe.php">
 						<input type="hidden" name="sort">
@@ -246,7 +246,7 @@ switch($methode)
 							}
 							if($db->f('is_visible') == 0)
 							{
-								$contenu_page .= "<tr><td colspan=\"5\"><i>" . $db->f('perso_nom') . " trop lointain</i></td></tr>";
+								$contenu_page .= "<tr><td colspan=\"5\"><em>" . $db->f('perso_nom') . " trop lointain</em></td></tr>";
 							}
 							else
 							{
@@ -254,7 +254,7 @@ switch($methode)
 									<td class=\"soustitre2\"><a href=\"visu_evt_perso.php?visu=" . $db->f('perso_cod') . "\">" . $db->f('perso_nom') . "</a>";
 
 								if($db->f('pgroupe_chef') == 1)
-									$contenu_page .= " <i>(chef de coterie)</i>";
+									$contenu_page .= " <em>(chef de coterie)</em>";
 								$contenu_page .= '</td><td>';
 
 								if ($db->f('perso_dlt') == 'cache')
@@ -322,7 +322,7 @@ switch($methode)
 							}
 							if($db->f('is_visible') == 0)
 							{
-								$contenu_page .= "<tr><td colspan=\"5\"><i><strong>" . $db->f('perso_nom') . " trop lointain</strong></i></td></tr>";
+								$contenu_page .= "<tr><td colspan=\"5\"><em><strong>" . $db->f('perso_nom') . " trop lointain</strong></em></td></tr>";
 							}
 						}
 						$contenu_page .= "</table>
@@ -602,8 +602,8 @@ switch($methode)
 				</tr>';
 			}
 			$contenu_page .= '</table>
-			<i>Attention : un aventurier ne peut faire partie que d\'une coterie à la fois.
-			<i>En acceptant l\'entrée dans une coterie, toutes les valeurs d\'information du personnage seront affichées par défaut. Pour changer, il faudra aller les régler.';
+			<em>Attention : un aventurier ne peut faire partie que d\'une coterie à la fois.
+			<em>En acceptant l\'entrée dans une coterie, toutes les valeurs d\'information du personnage seront affichées par défaut. Pour changer, il faudra aller les régler.';
 		}
 		break;		// fin methode vint
 	//

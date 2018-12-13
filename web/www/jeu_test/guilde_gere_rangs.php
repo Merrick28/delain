@@ -57,7 +57,7 @@ if ($db->is_admin_guilde($perso_cod))
 	 			echo "<td>";
 	 			if ($tab_admin[$radmin] == 'Membre' and $db->f("rguilde_rang_cod") == 1)
 	 			{
-		 			echo "<i>(rang par défaut des nouveaux membres) </i>";
+		 			echo "<em>(rang par défaut des nouveaux membres) </em>";
 	 			}
 	 			if ($db->f("rguilde_rang_cod") > 1)
 	 			{

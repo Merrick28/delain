@@ -80,7 +80,7 @@ if ($db->nf() != 0)
 	{
 		echo $db->f("perso_nom");
 		if (($db->f("bless") != "indemne") && ($db->f("bless") != "égratigné"))
-			echo "<i> - " . $db->f("bless") , "</i>";
+			echo "<em> - " . $db->f("bless") , "</em>";
 		echo "<br>";
 	}
 }
@@ -102,7 +102,7 @@ if ($db->nf() != 0)
 	{
 		echo $db->f("perso_nom");
 		if (($db->f("bless") != "indemne") && ($db->f("bless") != "égratigné"))
-			echo "<i> - " . $db->f("bless") , "</i>";
+			echo "<em> - " . $db->f("bless") , "</em>";
 		echo "<br>";
 	}
 }

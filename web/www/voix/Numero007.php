@@ -143,7 +143,7 @@ function switchDiv(strDivName,bolVisible){
  <tr>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
-  <td class="dualcolonne" colspan="7"><p><i>
+  <td class="dualcolonne" colspan="7"><p><em>
     Deux D&eacute;mons se pos&egrave;rent devant Bardamu, &eacute;ructant quelques grognements barbares, avant de saisir 
     leur victime par la barbe. Ils le tra&icirc;n&egrave;rent, les yeux band&eacute;s, jusqu&rsquo;&agrave; Son antre. 
     L&agrave;, les deux brutes aboy&egrave;rent de nouveau et jet&egrave;rent le nain &agrave; Ses pieds&hellip; La 
@@ -152,7 +152,7 @@ function switchDiv(strDivName,bolVisible){
     per&ccedil;ut que l&rsquo;obscurit&eacute;&hellip; Profonde, glaciale, p&eacute;n&eacute;trante&hellip; Il frissonna, 
     n&rsquo;osant plus remuer ne serait ce que le petit doigt. Il ne sentait que Son souffle l&rsquo;envelopper tout 
     entier&hellip; Si puissant que le nain vacillait &agrave; chacune de Ses respirations&hellip;
-  </i></p></td>
+  </em></p></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" height="10" width="10"></td>
  </tr>
@@ -183,8 +183,8 @@ function switchDiv(strDivName,bolVisible){
     un cloporte que tu es! Tout le monde Me craint, et les larves rampent devant Ma grandeur.<br>
     <strong>Bardamu</strong> : Ah? Malkiar??<br>
 	<br>
-    <i>Bien qu&rsquo;il ait sollicit&eacute; cette interview, la d&eacute;glutition du nain se fit &acirc;pre et 
-    douloureuse. Il ne s&rsquo;attendait pas &agrave; ce que Malkiar se manifeste un jour&hellip; Pas CE jour&hellip;</i><br>
+    <em>Bien qu&rsquo;il ait sollicit&eacute; cette interview, la d&eacute;glutition du nain se fit &acirc;pre et 
+    douloureuse. Il ne s&rsquo;attendait pas &agrave; ce que Malkiar se manifeste un jour&hellip; Pas CE jour&hellip;</em><br>
 	<br>
     Waow&hellip; Ok, attaquons: parmi Tes rejetons, quels sont ceux qui ont ta pr&eacute;f&eacute;rence?<br>
     <strong>Malkiar</strong> : Evidemment les d&eacute;mons sont Mes troupes les plus fid&egrave;les. Les morbelins ne sont que 
@@ -234,8 +234,8 @@ function switchDiv(strDivName,bolVisible){
     <strong>Malkiar</strong> : Voil&agrave; la question stupide de trop. Ingelo, va Me chercher la t&ecirc;te de cette chose que Je 
     go&ucirc;te pour voir si un cerveau pourri a un go&ucirc;t d&eacute;licat pour Mon palais.<br>
     <br>
-    <i>Bien &eacute;videmment, Bardamu &eacute;tait d&eacute;j&agrave; loin lorsque Malkiar aboya sa derni&egrave;re 
-    r&eacute;plique.</i>
+    <em>Bien &eacute;videmment, Bardamu &eacute;tait d&eacute;j&agrave; loin lorsque Malkiar aboya sa derni&egrave;re 
+    r&eacute;plique.</em>
 	</p></td>
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" class="del"></td>
@@ -265,7 +265,7 @@ function switchDiv(strDivName,bolVisible){
  <tr>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
-  <td class="colonne"><p><i>
+  <td class="colonne"><p><em>
     Bardamu se d&eacute;sesp&eacute;rait encore de la l&eacute;thargie des Planctons, lorsque le brouhaha
     d&eacute;versa son lot de rumeurs&hellip;Les micro organismes fr&eacute;tillaient de nouveau!<br>
     L&rsquo;&oelig;il p&eacute;tillant, le nain fouilla les coins et recoins des bas fonds et&hellip; Rien&hellip;
@@ -274,7 +274,7 @@ function switchDiv(strDivName,bolVisible){
     L&rsquo;entremetteuse turquoise, amus&eacute;e et joueuse, promena la fiole de Bardamu &agrave; Traktopel et 
     de Copper-Ado &agrave; Bardamu. Ce dernier, f&eacute;brile, d&eacute;plia le parchemin revenu, et &Ocirc; 
     surprise, les Planctons avaient r&eacute;pondu&hellip;
-  </i></p></td>
+  </em></p></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" height="10" width="10"></td>
  </tr>
@@ -295,22 +295,22 @@ function switchDiv(strDivName,bolVisible){
   <td class="ligne_gauche" ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-    <i>Salutations. Si par miracle, cette missive, confi&eacute;e aux flots, arrivait jusqu&rsquo;&agrave; vous, merci
-    d&rsquo;ins&eacute;rer vos r&eacute;ponses entre les questionsque voici:</i><br>
+    <em>Salutations. Si par miracle, cette missive, confi&eacute;e aux flots, arrivait jusqu&rsquo;&agrave; vous, merci
+    d&rsquo;ins&eacute;rer vos r&eacute;ponses entre les questionsque voici:</em><br>
     <br>
-    <i>- Vous &eacute;tiez parmi les premiers &agrave; p&eacute;n&eacute;trer les profondeurs&hellip; Quels sont les 
-    &eacute;v&eacute;nements qui vous ont le plus touch&eacute;s, terrifi&eacute;s, amus&eacute;s&hellip;?</i><br>
+    <em>- Vous &eacute;tiez parmi les premiers &agrave; p&eacute;n&eacute;trer les profondeurs&hellip; Quels sont les 
+    &eacute;v&eacute;nements qui vous ont le plus touch&eacute;s, terrifi&eacute;s, amus&eacute;s&hellip;?</em><br>
     <font class="planctons">On est descendus entre le Verbe et l&rsquo;Inondation. A l&rsquo;&eacute;poque du siphon du 0/0&hellip; 
     Une fa&ccedil;on romantique de faire connaissance &agrave; grands coups de postillons. C&rsquo;&eacute;tait 
     dr&ocirc;le d&rsquo;&ecirc;tre les uns sur les autres sauf pour ceux d&rsquo;en bas.<br>
     Pour ce qui est des souvenirs, ne compte pas nous passer la brosse &agrave; reluire, nos &eacute;cailles 
     ne mangent pas de ce pain-l&agrave;.</font><br>
-    <i>- Des organismes marins dans les souterrains&hellip;Etrange, non?</i><br>
+    <em>- Des organismes marins dans les souterrains&hellip;Etrange, non?</em><br>
     <font class="planctons">Je peux en dire autant sur les Albatros, les Ph&eacute;nix et les Guerriers de la Savonnette&hellip;</font><br>
-    <i> - Pourquoi vous &ecirc;tre &eacute;gar&eacute;s ici?</i><br>
+    <em> - Pourquoi vous &ecirc;tre &eacute;gar&eacute;s ici?</em><br>
     <font class="planctons">A cause de la grande s&eacute;cheresse&hellip; Ou si tu pr&eacute;f&egrave;res, on conna&icirc;t le pourquoi et on 
     cherche le comment. Et puis on a notre auberge et son personnel&hellip;</font><br>
-    <i> - Vous fuyez le devant de la sc&egrave;ne&hellip;La renomm&eacute;e ne vous tente pas?</i><br>
+    <em> - Vous fuyez le devant de la sc&egrave;ne&hellip;La renomm&eacute;e ne vous tente pas?</em><br>
     <font class="planctons">Rien &agrave; voir. La renomm&eacute;e, c&rsquo;est comme l&rsquo;encre pour les calamars. 
     C&rsquo;est un syst&egrave;me de d&eacute;fense, une fa&ccedil;on de passer entre les gouttes. Tu causes, 
     tu causes, tu causes pour te faire un nom et t&rsquo;&eacute;viter des gnons. Pour garder ton lopin, ta femme, 
@@ -318,61 +318,61 @@ function switchDiv(strDivName,bolVisible){
     lave les mains de la renomm&eacute;e et &agrave; part quelques exceptions, la r&eacute;alit&eacute; est bien 
     diff&eacute;rente des courriers du c&oelig;ur. Faut les voir au r&eacute;veil, tes idoles&hellip; Chez nous, soit 
     t&rsquo;es cool, soit tu coules et on ne mord plus aux hame&ccedil;ons&hellip;</font><br>
-    <i> - Vous brisez les lois de la cha&icirc;ne alimentaire&hellip;Vous devriez servir de repas, or l&agrave;, 
+    <em> - Vous brisez les lois de la cha&icirc;ne alimentaire&hellip;Vous devriez servir de repas, or l&agrave;, 
     c&rsquo;est vous qui d&eacute;vorez de l&rsquo;aventurier! Ne craignez-vous pas d&rsquo;ab&icirc;mer 
-    l&rsquo;harmonie &eacute;tablie pas la Nature?</i><br>
+    l&rsquo;harmonie &eacute;tablie pas la Nature?</em><br>
     <font class="planctons">Les c&eacute;tac&eacute;s et les cachalots, on s&rsquo;en m&eacute;fie&hellip; Les aventuriers? Je vois pas 
     de quoi tu parles&hellip; Et puis l&rsquo;harmonie, les lois de la Nature&hellip; Tu devrais arr&ecirc;ter 
     les infusions de camomille et prendre des bains d&rsquo;orties. Tu bouffes ou t&rsquo;es bouff&eacute;, soit, 
     mais l&rsquo;Harmonie comme tu dis, c&rsquo;est un fantasme de puceau dans une chambre aux volets ferm&eacute;s.</font><br>
-    <i> - Comment r&eacute;agissent les aventuriers qui passent entre vos mains?</i><br>
+    <em> - Comment r&eacute;agissent les aventuriers qui passent entre vos mains?</em><br>
     <font class="planctons">Les aventuriers? Mais de quels aventuriers tu causes&hellip;? Fa&ccedil;on jeux de d&eacute;s dans une auberge 
     avec des litres de bi&egrave;re et des danseuses, des fers aux pieds ? Sois pas na&iuml;f, avec le Balrog ou la 
     fifille &agrave; Nini la d&eacute;esse, ceux qui portent les salopettes travaillent pendant que les autres 
     s&rsquo;engraissent. Malkiar, c&rsquo;est la poutre dans l&rsquo;&oelig;il du Kraken&hellip; Et ici bas, ce 
     sont les gros moines aux mains moites qui font fortune&hellip;</font><br>
-    <i> - Qui sont vos amis&hellip;Et vos ennemis dans les profondeurs?</i><br>
+    <em> - Qui sont vos amis&hellip;Et vos ennemis dans les profondeurs?</em><br>
     <font class="planctons">A force de d&eacute;river, on a crois&eacute; des poussahs, des pousse-toi de l&agrave;, des 
     fils &agrave; papa-ladin qui peut et des p&egrave;res la vertu comme s&rsquo;il en pleuvait. Le 
     b&eacute;b&eacute;-&eacute;puisette, &ccedil;a va encore tant qu&rsquo;il nage pas dans notre bocal. Les guildes 
     font du commerce mais parfois, que ce soit Parflor, Kaali ou le soldat inconnu par exemple, si tu sais aligner 
     trois mots sans dire que des conneries, on peut s&rsquo;entendre. Que tu sois carnivore ou non.</font><br>
-    <i> - Vous &ecirc;tes de gros r&acirc;leurs, non??</i><br>
+    <em> - Vous &ecirc;tes de gros r&acirc;leurs, non??</em><br>
     <font class="planctons">Faut pas nous faire prendre un radeau pour un glorieux trois-m&acirc;ts. Ca fait longtemps 
     qu&rsquo;on assiste aux demi-tours des uns et des autres. L&rsquo;ouverture des sceaux, ta gazette, la prise 
     du ch&acirc;teau ou l&rsquo;antre du Balrog, c&rsquo;est toujours mieux de loin. Nous, on d&eacute;nonce parfois 
     les manipulations et encore, on fait pas trop de vagues.</font><br>
-    <i> - Vous disputez-vous de temps &agrave; autres?</i><br>
+    <em> - Vous disputez-vous de temps &agrave; autres?</em><br>
     <font class="planctons">Souvent. Sur le choix de la bouffe par exemple, certains consid&egrave;rent qu&rsquo;il faut 
     prendre le menu et d&rsquo;autres la carte.</font><br>
-    <i> - Avez-vous des anecdotes &agrave; nous raconter?</i><br>
+    <em> - Avez-vous des anecdotes &agrave; nous raconter?</em><br>
     <font class="planctons">Des anecdotes&hellip; Mais tu ressors la brosse &agrave; reluire&hellip; T&rsquo;as besoin de 
     quelque chose ? T&rsquo;as perdu quelqu&rsquo;un en route?</font><br>
-    <i> - Parlons d&eacute;co : celle des bas-fonds conna&icirc;t certaines &eacute;volutions sous l&rsquo;effet 
+    <em> - Parlons d&eacute;co : celle des bas-fonds conna&icirc;t certaines &eacute;volutions sous l&rsquo;effet 
     de votre enthousiasme&hellip;Les murs changent de couleur, les guerriers stress&eacute;s profitent de vos 
     balan&ccedil;oires con&ccedil;ues avec les tripes de vos victimes, sans oublier les piscines avec plongeoirs 
     que vous creusez &ccedil;a et l&agrave;&hellip;Est-ce votre passion ? Pr&eacute;voyez-vous d&rsquo;autres 
-    am&eacute;nagements?</i><br>
+    am&eacute;nagements?</em><br>
     <font class="planctons">C&rsquo;est d&rsquo;esth&eacute;tique que tu parles et c&rsquo;est un sujet s&eacute;rieux la 
     po&eacute;sie. Quand tu racles la surface, tu trouves du poisson pan&eacute; ou des perles&hellip; La mie ne 
     prot&egrave;ge pas des ar&ecirc;tes, c&rsquo;est une histoire &agrave; dormir debout. Oui, on est sur un projet 
     pour fermer les dispensaires de l&rsquo;antichambre des Enfer&hellip;</font><br>
-    <i> - Comptez-vous agrandir la famille des Planctons?</i><br>
+    <em> - Comptez-vous agrandir la famille des Planctons?</em><br>
     <font class="planctons">On a &eacute;t&eacute; 12 &agrave; une &eacute;poque&hellip; mais la mar&eacute;e bleue est une 
     vraie menace. Quand y a trop de planctons, ca emp&ecirc;che la faune de fauner et la flore de florir.</font><br>
-    <i> - Parlons sentiments&hellip;Copper, j&rsquo;ai ou&iuml; dire que tu avais un certain faible pour les 
-    vampirettes&hellip; Tu me racontes?</i><br>
+    <em> - Parlons sentiments&hellip;Copper, j&rsquo;ai ou&iuml; dire que tu avais un certain faible pour les 
+    vampirettes&hellip; Tu me racontes?</em><br>
     <font class="planctons">C&rsquo;est un secret pour personne, c&rsquo;est &eacute;crit sur les murs du ch&acirc;teau. Et 
     l&agrave;, tu parles de S&eacute;r&eacute;na alors &eacute;vite de glousser et de gazouiller&hellip; Pour 
     S&eacute;r&eacute;na, malheureusement, les autres planctons ont d&ucirc; lui tendre un pi&egrave;ge pour me faire 
     sortir d&rsquo;un cachot. Aux derni&egrave;res nouvelles, elle r&eacute;glait des affaires &agrave; la surface&hellip; 
     Et si r&eacute;pondre pour ta feuille de chou doit bien servir &agrave; quelque chose, c&rsquo;est &agrave; lui 
     rappeler que je l&rsquo;attends longtemps toujours &eacute;ternellement et plus si affinit&eacute;s.</font><br>
-    <i> - Et aujourd&rsquo;hui? O&ugrave; en &ecirc;tes-vous? Amoureux?</i><br>
+    <em> - Et aujourd&rsquo;hui? O&ugrave; en &ecirc;tes-vous? Amoureux?</em><br>
     <font class="planctons">Sans commentaire. Tu sais, on est tous les enfants d&rsquo;un &oelig;uf unique. Le sexe, 
     l&rsquo;identit&eacute;, les sentiments, quand t&rsquo;as des millions de fr&egrave;res et s&oelig;urs, 
     c&rsquo;est pas compliqu&eacute;. Pour pondre, faut pas &ecirc;tre sorcier. </font><br>
-    <i> - Autre chose?</i><br>
+    <em> - Autre chose?</em><br>
     <font class="planctons">Je sais bien que tu vas d&eacute;former nos propos et mettre du sel l&agrave; o&ugrave; ca nous 
     g&ecirc;ne, des guirlandes l&agrave; o&ugrave; ca t&rsquo;arrange, mais regarde autour de toi ce que sont devenus 
     les aventuriers &ndash; comme tu t&rsquo;amuses &agrave; les appeler &ndash;, depuis que les familiers sont 
@@ -382,8 +382,8 @@ function switchDiv(strDivName,bolVisible){
     t&rsquo;expliquer qui a pris le pouvoir ? Qui a du persil dans le nez ? Ou t&rsquo;en es-tu rendu compte tout seul? 
     Sur ce&hellip;</font><br>
     <br>
-    <i> Ainsi le &laquo;guerrier de la savonnette rose&raquo; avait il obtenu satisfaction&hellip;restait plus 
-    qu&rsquo;&agrave; mettre en page cette prose r&eacute;cr&eacute;ative&hellip;</i>
+    <em> Ainsi le &laquo;guerrier de la savonnette rose&raquo; avait il obtenu satisfaction&hellip;restait plus 
+    qu&rsquo;&agrave; mettre en page cette prose r&eacute;cr&eacute;ative&hellip;</em>
 	</p></td>
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" class="del"></td>
@@ -409,14 +409,14 @@ function switchDiv(strDivName,bolVisible){
  <tr>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
-  <td class="dualcolonne" colspan="7"><p><i>
+  <td class="dualcolonne" colspan="7"><p><em>
     Ghanst se promenait dans le cr&acirc;ne&hellip; enfin, promener&hellip; Ghanst atteignit p&eacute;niblement 
     l&rsquo;&eacute;choppe dite du cr&acirc;ne (ou C&amp;A pour les pointilleux) pour tenter de trouver soit un 
     anneau de pouvoir permettant d&rsquo;asservir les morts vivants, soit un artefact de protection de zone contre 
     le mal (port&eacute;e douze lieues au minimum), soit une nouvelle chope pour remplacer celle qui 
     s&rsquo;&eacute;tait bris&eacute;e lors du combat. Apercevant un visage inconnu, une naine rousse, elle 
     s&rsquo;&eacute;tonna&hellip;
-  </i></p></td>
+  </em></p></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" height="10" width="10"></td>
  </tr>
@@ -454,7 +454,7 @@ function switchDiv(strDivName,bolVisible){
   <strong>Ghanst</strong> : J'ai entendu dire, qu'pour faire partie d'la caravane, fallait avoir une grande gueule et la dalle en 
   pente. Ca explique p't&ecirc;tre le d&eacute;clin, non?<br>
   <strong>Khaz&acirc;d</strong> : Bien s&ucirc;r qu'il faut &ecirc;tre tout &ccedil;a (nous sommes des marchands). 
-  <i>* devant l&rsquo;air ahuri de Ghanst, Khaz&acirc;d poursuit *</i><br>
+  <em>* devant l&rsquo;air ahuri de Ghanst, Khaz&acirc;d poursuit *</em><br>
   <strong>Khaz&acirc;d</strong> : Si on ne l'&eacute;tait pas, on aurait vite fait de rater une affaire parce qu'on n&rsquo;aurait 
   pas r&eacute;pondu &agrave; une tentative d'intimidation ou parce qu'on aurait rouler sous la table alors que nous 
   tentions de faire boire nos clients. Et puis ce sont les int&eacute;r&ecirc;ts de Sa Majeste Hormandre III que 
@@ -464,9 +464,9 @@ function switchDiv(strDivName,bolVisible){
   &agrave; droite et &agrave; gauche dans les souterrains suite &agrave;&hellip; hum, enfin tu vois. <br>
   <strong>Khaz&acirc;d</strong> : Bizutage? Je vois pas de quoi tu veux parler. On descend juste quelques f&ucirc;ts de bi&egrave;re 
   afin d'&eacute;prouver un peu les nouveaux, histoire de voir s'ils vont tenir la distance. <br>
-  <strong>Ghanst</strong> : Ah&hellip; <i>* visiblement all&ecirc;ch&eacute;e par le mot bi&egrave;re, mais d&eacute;&ccedil;ue 
-  par ailleurs *</i><br>
-  Moi, c'est Ghanst. <i>* tend une main *</i><br>
+  <strong>Ghanst</strong> : Ah&hellip; <em>* visiblement all&ecirc;ch&eacute;e par le mot bi&egrave;re, mais d&eacute;&ccedil;ue 
+  par ailleurs *</em><br>
+  Moi, c'est Ghanst. <em>* tend une main *</em><br>
   C'est quoi ton nom?<br>
   <strong>Khaz&acirc;d</strong> : Moi c'est Khaz&acirc;d (et non sanguin ne m&rsquo;est encore jamais tomb&eacute; dessus). 
   Et puis, il est pas encore n&eacute; celui qui voudra abuser de moi&hellip; (hips)<br>
@@ -479,7 +479,7 @@ function switchDiv(strDivName,bolVisible){
   C'est &agrave; coup de pied aux fesses qu'on les a fait sortir sinon ils restaient pour la semaine. Le plus navrant,
   c'est qu'apr&egrave;s, ils m'ont suivie et ont commenc&eacute; &agrave; faire la tourn&eacute;e des taverne avec moi, 
   &agrave; commencer par celle des Chevaliers de Justice.<br>
-  <i>* elle &eacute;met un petit rire joyeux &agrave; ce souvenir *</i><br>
+  <em>* elle &eacute;met un petit rire joyeux &agrave; ce souvenir *</em><br>
   <strong>Khaz&acirc;d</strong> : Oli &eacute;tait furieux de cette invasion, surtout qu'ils ont pas eu la main 
   l&eacute;g&egrave;re sur leur cave non plus. Et puis, plus &ccedil;a boit ces bestioles, plus y en a. 
   A croire qu'ils se reproduisent comme des lapins!<br>
@@ -487,9 +487,9 @@ function switchDiv(strDivName,bolVisible){
   mais t'as pas un truc pour les chasser?<br>
   <strong>Khaz&acirc;d</strong> : Ce qui marche le mieux, c'est de dire que c'est tourn&eacute;e g&eacute;n&eacute;rale dans une autre 
   taverne. <br>
-  <i>* r&eacute;fl&eacute;chit deux secondes *</i><br>
+  <em>* r&eacute;fl&eacute;chit deux secondes *</em><br>
   <strong>Khaz&acirc;d</strong> : Pourquoi j'ai jamais indiqu&eacute; celle des contrebandiers? <br>
-  <strong>Ghanst</strong> : <i>* petit regard malicieux *</i><br>
+  <strong>Ghanst</strong> : <em>* petit regard malicieux *</em><br>
   Et vous n'avez jamais essay&eacute; de leurs vendre quelque chose? Des 
   dictionnaires&hellip; des armoires normandes&hellip;<br>
   <strong>Khaz&acirc;d</strong> : Je sais qu'ils aiment bien les grandes lame et les chaises. Mais les chaises, &ccedil;a part trop 
@@ -501,10 +501,10 @@ function switchDiv(strDivName,bolVisible){
   <strong>Khaz&acirc;d</strong> : ces bestioles sont encore plus grippe-sous que nous, alors je vous laisse imaginer. Dis, &ccedil;a 
   fait 5 minutes qu'on cause et je commence d&eacute;j&agrave; &agrave; te tutoyer. Ca te d&eacute;range pas, Ghanst?<br>
   <strong>Ghanst</strong> : Hein, qui &ccedil;a moi? Oh, non, pas du tout. J'te tutoie avec plaisir.<br>
-  <i>* regarde Khaz&acirc;d un instant *</i><br>
+  <em>* regarde Khaz&acirc;d un instant *</em><br>
   On m'a parl&eacute; d'un naine braillarde et rousse qui serait rentr&eacute;e comme une furie dans l'auberge des 
   CdJ en gueulant des exigences&hellip; c'&eacute;tait toi?<br>
-  <strong>Khaz&acirc;d</strong> : <i>* compte sur ses doigts *</i><br>
+  <strong>Khaz&acirc;d</strong> : <em>* compte sur ses doigts *</em><br>
   - une naine? Oui.<br>
   - rousse? Oui.<br>
   - en furie? Oui.<br>
@@ -558,7 +558,7 @@ function switchDiv(strDivName,bolVisible){
   discutant avec eux. Pour un futur Paladin, &ccedil;a promet. En tout cas, il n'en tire rien, je m'en occuperai 
   personnellement.<br>
   <strong>Ghanst</strong> : Bien parl&eacute;.<br>
-  <i>* regarde les &eacute;tag&egrave;res bien garnies *</i><br>
+  <em>* regarde les &eacute;tag&egrave;res bien garnies *</em><br>
   Pffft&hellip; &Ccedil;a donnerait presque envie d'postuler chez vous. S&eacute;curit&eacute; d'emploi, bourse plus jamais 
   vide&hellip;<br>
   <strong>Khaz&acirc;d</strong> : Tout le monde est le bienvenu, mais en ce moment c'est un petit peu tendu &agrave; la caravane.<br>
@@ -578,8 +578,8 @@ function switchDiv(strDivName,bolVisible){
   histoire d'avec Brun&eacute;hilde. <br>
   Pt'&ecirc;t-qu'il pourra enfin gagner sa vie en faisant queque chose d'utile.<br>
   <br>
-  <i>* Ghanst suit alors Khaz&acirc;d vers l'arri&egrave;re boutique pour montrer la seule magie qu&rsquo;elle 
-  ma&icirc;trisait parfaitement : la transformation de bi&egrave;re en&hellip; hum, en rien, en fait *</i>
+  <em>* Ghanst suit alors Khaz&acirc;d vers l'arri&egrave;re boutique pour montrer la seule magie qu&rsquo;elle 
+  ma&icirc;trisait parfaitement : la transformation de bi&egrave;re en&hellip; hum, en rien, en fait *</em>
 	</p></td>
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" class="del"></td>
@@ -905,8 +905,8 @@ présence en ces lieux.
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p><font class="txt">
-    <i>Les boulets ne s&eacute;vissent pas qu&rsquo;en place publique&hellip;Les souterrains aussi profitent de 
-    quelques sp&eacute;cimens&hellip;</i><br>
+    <em>Les boulets ne s&eacute;vissent pas qu&rsquo;en place publique&hellip;Les souterrains aussi profitent de 
+    quelques sp&eacute;cimens&hellip;</em><br>
     <br>
     <strong>La peluche &eacute;nerv&eacute;e</strong> :<br>
     C&rsquo;est l&rsquo;histoire (authentique) d&rsquo;une peluche &eacute;mancip&eacute;e qui erre dans 
@@ -1031,8 +1031,8 @@ vivre. Ecrivez moi pour nous rejoindre : <br>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-    <i>Cette rubrique est destin&eacute;e &agrave; pr&eacute;senter les diverses guildes r&eacute;pertori&eacute;es 
-    dans les registres des souterrains.</i>
+    <em>Cette rubrique est destin&eacute;e &agrave; pr&eacute;senter les diverses guildes r&eacute;pertori&eacute;es 
+    dans les registres des souterrains.</em>
     A la question: qui &ecirc;tes vous? &laquo;, voici ce que les interview&eacute;s r&eacute;pondent:<br>
     <br>
     <strong>Le Clan Bayushi</strong><br>

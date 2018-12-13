@@ -76,7 +76,7 @@ if ($erreur2 != 1)
 			<td class="titre" colspan="2"><p class="titre">Déplacement de monstres en bloc</p></td>
 		</tr>
 		<tr>
-			<td class="soustitre2"><p>Monstres concernés<br><i>(Entrez les numéros de monstres séparés par des ";")</i></p></td>
+			<td class="soustitre2"><p>Monstres concernés<br><em>(Entrez les numéros de monstres séparés par des ";")</em></p></td>
 			<td class="soustitre2"><p>Récupération de numéros de monstres</p></td>
 		</tr>
 		<tr>

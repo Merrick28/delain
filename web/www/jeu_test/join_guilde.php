@@ -122,7 +122,7 @@ if ($sort == 'mort')
 }
 $db->query($req_guilde);
 ?>
-<p><i>Attention ! Toute demande d'affiliation à une guilde supprimera automatiquement les demandes qui sont en attente de validation pour les autres guildes !</i>
+<p><em>Attention ! Toute demande d'affiliation à une guilde supprimera automatiquement les demandes qui sont en attente de validation pour les autres guildes !</em>
 <p>Guildes disponibles : 
 <form name="fsort" method="post" action="join_guilde.php">
 <input type="hidden" name="sort">

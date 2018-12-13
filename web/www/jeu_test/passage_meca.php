@@ -136,14 +136,14 @@ if(isset($_GET['methode'])){
 						{				
 							include "phrase.php";
 							$idx_phrase = rand(1,109);
-							echo("<p><i>$phrase[$idx_phrase]</i><br /><br /></p>");	
+							echo("<p><em>$phrase[$idx_phrase]</em><br /><br /></p>");	
 						}
 						else
 						{
 							$req = "select choix_rumeur() as rumeur ";
 							$db->query($req);
 							$db->next_record();
-							echo "<p><i>Rumeur :</i> ", $db->f("rumeur"), "<br></p>";
+							echo "<p><em>Rumeur :</em> ", $db->f("rumeur"), "<br></p>";
 						}
 					}
 				}
@@ -184,14 +184,14 @@ if(isset($_GET['methode'])){
 						{				
 							include "phrase.php";
 							$idx_phrase = rand(1,109);
-							echo("<p><i>$phrase[$idx_phrase]</i><br /><br /></p>");	
+							echo("<p><em>$phrase[$idx_phrase]</em><br /><br /></p>");	
 						}
 						else
 						{
 							$req = "select choix_rumeur() as rumeur ";
 							$db->query($req);
 							$db->next_record();
-							echo "<p><i>Rumeur :</i> ", $db->f("rumeur"), "<br></p>";
+							echo "<p><em>Rumeur :</em> ", $db->f("rumeur"), "<br></p>";
 						}
 					}
 				}

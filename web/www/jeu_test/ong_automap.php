@@ -320,7 +320,7 @@ switch($methode)
 </tr></table></center>
 <?php 
 		if ($automap_ok)
-			echo "<p style=\"text-align:center;\"><i>$p % de l’étage visité.</i></p>";
+			echo "<p style=\"text-align:center;\"><em>$p % de l’étage visité.</em></p>";
 
 		$req = "select etage_libelle from etage where etage_numero = $etage ";
 		$db->query($req);

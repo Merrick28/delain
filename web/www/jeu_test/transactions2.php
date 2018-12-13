@@ -108,11 +108,11 @@ else
 		printf("<td class=\"soustitre2\">%s</td>",$db->f("perso_nom"));
 		if ($db->f("tran_identifie") == 'O')
 		{
-			$nom_objet = $db->f("obj_nom") . "<i>(identifié)</i>";
+			$nom_objet = $db->f("obj_nom") . "<em>(identifié)</em>";
 		}
 		else
 		{
-			$nom_objet = $db->f("obj_nom_generique") . "<strong><i>(non identifié)</i></strong>";
+			$nom_objet = $db->f("obj_nom_generique") . "<strong><em>(non identifié)</em></strong>";
 		}
 		echo '<td><label for="tran[' . $db->f("tran_cod") . ']">' . $nom_objet . '</td>';	
 		echo "<td>" . $db->f("tran_prix") . " brouzoufs.</td>";

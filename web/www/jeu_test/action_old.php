@@ -221,20 +221,20 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $req = 'select choix_rumeur() as rumeur ';
                     $db->query($req);
                     $db->next_record();
-                    $contenu_page .= '<hr /><p><i>Rumeur :</i> ' . $db->f('rumeur') . '</p>';
+                    $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
                 }
                 else if ($is_phrase < 67)
                 {
                     include 'phrase.php';
                     $idx_phrase = rand(1, sizeof($phrase));
-                    $contenu_page .= '<hr /><p><i>' . $phrase[$idx_phrase] . '</i></p>';
+                    $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
                 }
                 else
                 {
                     $req = "select indice_lieu($position) as indice";
                     $db->query($req);
                     $db->next_record();
-                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><i>' . $db->f('indice') . '</i></p>';
+                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $db->f('indice') . '</em></p>';
                 }
             }
             $contenu_page .= $retour;
@@ -268,20 +268,20 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $req = 'select choix_rumeur() as rumeur ';
                     $db->query($req);
                     $db->next_record();
-                    $contenu_page .= '<hr /><p><i>Rumeur :</i> ' . $db->f('rumeur') . '</p>';
+                    $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
                 }
                 else if ($is_phrase < 67)
                 {
                     include 'phrase.php';
                     $idx_phrase = rand(1, sizeof($phrase));
-                    $contenu_page .= '<hr /><p><i>' . $phrase[$idx_phrase] . '</i></p>';
+                    $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
                 }
                 else
                 {
                     $req = "select indice_lieu(ppos_pos_cod) as indice from perso_position where ppos_perso_cod=$perso_cod";
                     $db->query($req);
                     $db->next_record();
-                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><i>' . $db->f('indice') . '</i></p>';
+                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $db->f('indice') . '</em></p>';
                 }
             }
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
@@ -343,14 +343,14 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     {
                         include 'phrase.php';
                         $idx_phrase = rand(1, 109);
-                        $contenu_page .= '<p><i>' . $phrase[$idx_phrase] . '</i><br /><br />';
+                        $contenu_page .= '<p><em>' . $phrase[$idx_phrase] . '</em><br /><br />';
                     }
                     else
                     {
                         $req = 'select choix_rumeur() as rumeur ';
                         $db->query($req);
                         $db->next_record();
-                        $contenu_page .= '<p><i>Rumeur :</i> ' . $db->f('rumeur') . '<br />';
+                        $contenu_page .= '<p><em>Rumeur :</em> ' . $db->f('rumeur') . '<br />';
                     }
                 }
             }

@@ -38,7 +38,7 @@ if ($erreur == 0)
 														Néanmoins, l\'individu se tourne enfin vers vous et vous adresse un sourire forcé. 
 														C\'est alors que vous remarquez que sa besace et l\'intérieur de sa veste sont couverts de queues de rats, de crochets de serpents et de soies d\'araignées soigneusement disposés en petits paquets séparés.<br><br>
 														
-														<i>- " J\'suis un ratier royal ! " lâche l\'homme d\'un ton neutre en pointant son torse sans grande conviction " Not\' bon roi Hormandre m\'a chargé de nettoyer les crasses que vous, les aventuriers, faites en terrassant les sales créatures du Vilain Rougeaud ! N\'allez pas croire que j\'vous en tiens rigueur, n\'empêche, faut bien que quelqu\'un fasse le ménage ou ça ressemblera bientôt à une décharge ici, non ?"
+														<em>- " J\'suis un ratier royal ! " lâche l\'homme d\'un ton neutre en pointant son torse sans grande conviction " Not\' bon roi Hormandre m\'a chargé de nettoyer les crasses que vous, les aventuriers, faites en terrassant les sales créatures du Vilain Rougeaud ! N\'allez pas croire que j\'vous en tiens rigueur, n\'empêche, faut bien que quelqu\'un fasse le ménage ou ça ressemblera bientôt à une décharge ici, non ?"
 														<br><br>Après vous avoir brièvement inspecté et prit en compte ce que vous avez à lui proposer, le ratier royal vous adresse à nouveau la parole :
 			
 														<br><br>- " Si j\'compte bien, ça nous fait, <strong>'; 
@@ -67,21 +67,21 @@ if ($erreur == 0)
 							$contenu_page3 .= '<br>Fichtre, on peut dire que vous n\'y allez pas de main morte vous ! Bon, à défaut de vous payer aussi grassement que les fonctionnaires des bâtiments administratifs - faut bien que je me paie quand même, c\'est pas vous qui usez vos godillots à arpenter tout le secteur !<br> - je peux vous prendre ';
 										if ($nb_queue_rat >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=91;document.vente.submit();"><strong>10 queues de rats </a></strong><i>(2PA)</i>, ';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=91;document.vente.submit();"><strong>10 queues de rats </a></strong><em>(2PA)</em>, ';
 										}
 												if ($nb_toile >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=92;document.vente.submit();"><strong> 10 soies d\'araignée </a></strong><i>(2PA)</i>,';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=92;document.vente.submit();"><strong> 10 soies d\'araignée </a></strong><em>(2PA)</em>,';
 										}
 												if ($nb_crochet >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=94;document.vente.submit();"><strong> 10 crochets de serpents </a></strong><i>(2PA)</i>,';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=94;document.vente.submit();"><strong> 10 crochets de serpents </a></strong><em>(2PA)</em>,';
 										}		
 							$contenu_page3 .= '</strong>Tope là ?"';
 						}
 						else
 						{
-							$contenu_page3 .= '<br><br>"N\'êtes pas vraiment un vrai chasseur vous, si ? Ou alors, vous ne ramassez pas vos crasses. On ne s\'abaisse pas à ça hein quand on est un graaaaaand aventurier ! "</i> grommelle l\'homme en s\'éloignant de vous en haussant les épaules. ';
+							$contenu_page3 .= '<br><br>"N\'êtes pas vraiment un vrai chasseur vous, si ? Ou alors, vous ne ramassez pas vos crasses. On ne s\'abaisse pas à ça hein quand on est un graaaaaand aventurier ! "</em> grommelle l\'homme en s\'éloignant de vous en haussant les épaules. ';
 						}
 				break;
 		case "vente_perso":

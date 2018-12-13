@@ -94,32 +94,32 @@ ob_start();
 					<td><textarea cols="50" rows="10"  name="nom"><?php echo $db->f("gobj_nom")?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Energie nécessaire <i>(Le coût en énergie sera celui qui fera diminuer la jauge d'énergie)</i></td>
+					<td class="soustitre2">Energie nécessaire <em>(Le coût en énergie sera celui qui fera diminuer la jauge d'énergie)</em></td>
 					<td><input type="text" name="temps" value="40"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Cout en brouzoufs <i>non utilisé</i></td>
+					<td class="soustitre2">Cout en brouzoufs <em>non utilisé</em></td>
 					<td><input type="text" name="pot_cout" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<option value="88">Forgeamage Niveau 1</option>';
 							<option value="102">Forgeamage Niveau 2</option>';
 							<option value="103">Forgeamage Niveau 3</option>';							
 						</select>
-							<i> <br>Cela correspond au niveau de forgeamage nécessaire. 
-								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></i>
+							<em> <br>Cela correspond au niveau de forgeamage nécessaire. 
+								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
 							
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Composant d'enchantement concerné</i></td>
+					<td class="soustitre2">Composant d'enchantement concerné</em></td>
 					<td>
 					<select name="composant">
 					<?php  
@@ -139,7 +139,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de composants produits <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="1"></td>
 				</tr>
 				<tr>
@@ -233,19 +233,19 @@ ob_start();
 					<td><textarea cols="50" rows="10"  name="nom"><?php echo $db->f("frm_nom");?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Energie nécessaire <i></i></td>
+					<td class="soustitre2">Energie nécessaire <em></em></td>
 					<td><input type="text" name="temps" value="<?php echo $db->f("frm_temps_travail");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Cout en brouzoufs <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Cout en brouzoufs <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="pot_cout" value="<?php echo $db->f("frm_cout");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="<?php echo $db->f("frm_resultat");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<?php  $s = $db->f("frm_comp_cod");
@@ -272,7 +272,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Composant d'enchantement concerné</i></td>
+					<td class="soustitre2">Composant d'enchantement concerné</em></td>
 					<td>
 					<select name="potion">
 					<?php  
@@ -294,7 +294,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de composants produits <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="<?php echo $db->f("frmpr_num");?>"></td>
 				</tr>
 				<tr>

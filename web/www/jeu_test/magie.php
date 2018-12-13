@@ -14,7 +14,7 @@ include('variables_menu.php');
 $mess_viderec = '';
 if (isset($_SESSION['redir_viderec']) && $_SESSION['redir_viderec'])
 {
-	$mess_viderec = '<p><i>Le réceptacle a été vidé avec succès.</i></p>';
+	$mess_viderec = '<p><em>Le réceptacle a été vidé avec succès.</em></p>';
 	$_SESSION['redir_viderec'] = false;
 }
 if (isset($_POST['numrec']) && (int)$_POST['numrec']>0) {
@@ -43,8 +43,8 @@ if (isset($_POST['numrec']) && (int)$_POST['numrec']>0) {
 			// Rechargement "propre" de la page
 			$_SESSION['redir_viderec'] = true;
 			header('Location: magie.php');
-		} else $mess_viderec = '<p><i>Erreur de référence du réceptacle.</i></p>';
-	} else $mess_viderec = '<p><i>Vous n’avez pas assez de PA pour vider un réceptacle.</i></p>';
+		} else $mess_viderec = '<p><em>Erreur de référence du réceptacle.</em></p>';
+	} else $mess_viderec = '<p><em>Vous n’avez pas assez de PA pour vider un réceptacle.</em></p>';
 }
 
 //
@@ -344,7 +344,7 @@ if ($erreur == 0)
 				<td class="soustitre2">
 				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><strong>' . $db->f("sort_nom") . '</a></strong> (' . $cout_pa . ' PA)
 				</td>
-				<td><i>' . $db->f("liste_rune") . '</i></td>
+				<td><em>' . $db->f("liste_rune") . '</em></td>
 				<td>
 				<a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 				</td>
@@ -426,7 +426,7 @@ if ($erreur == 0)
             $nom = $db->f("sort_nom") . '</strong>';
             $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></strong> (' . $db->f("cout") . 'PA) ':'</strong>');
             $contenu_page .= '<tr>
-			<td class="soustitre2"><strong>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
+			<td class="soustitre2"><strong>' . $nom . '<em>(' . $db->f("liste_rune") . ')</em></td>
 			<td>' . $db->f("memo") . ' %</td>
 			<td><a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 			</tr>';
@@ -494,7 +494,7 @@ if ($erreur == 0)
 		if ($rune_possedee)
 			$contenu_page .= '<input type="radio" class="vide" name="fam_' . $famille . '" value="'.$db->f("gobj_rune_position").'" id="'.$labelId.'">';
 
-		$contenu_page .= $db->f("gobj_nom") . ' <i>(' . $nombre_runes . ')</i>
+		$contenu_page .= $db->f("gobj_nom") . ' <em>(' . $nombre_runes . ')</em>
 			</td>
 			</tr>
 			</table>

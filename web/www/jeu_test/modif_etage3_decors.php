@@ -202,11 +202,11 @@ if ($erreur == 0)
         <input type="file" name="decor_file">&nbsp;&nbsp;
         <input type="submit" class="test" name="nouveau_decor" value="Ajouter le decor"></form>
         <span id="info-decor-usage"></span><br>
-        <i><font color="#8b0000">L\'image doit être un .gif de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</i>
+        <em><font color="#8b0000">L\'image doit être un .gif de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</em>
 	<div style=\'width:600px; overflow:auto\' class=\'bordiv\' id=\'visu_decors\'></div>
 	
 	
-	<br><div><i><u>Nota</u>: Vous pouvez cliquer sur les images de décors pour saisir automatiquement son id .</i ></div >
+	<br><div><em><u>Nota</u>: Vous pouvez cliquer sur les images de décors pour saisir automatiquement son id .</i ></div >
     <script type="text/javascript">afficheDecor();</script>';
 }
 $contenu_page = ob_get_contents();

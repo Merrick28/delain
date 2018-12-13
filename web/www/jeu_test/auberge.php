@@ -53,7 +53,7 @@ if ($erreur == 0)
 			if ($nb_pa != 0)
 				$contenu_page .= '</a>(' . $nb_pa . 'PA) - ' . $prix . ' brouzoufs.<br />';
 			else
-				$contenu_page .= '<i>(pas assez de PA)</i>';
+				$contenu_page .= '<em>(pas assez de PA)</em>';
 			$contenu_page .= '<br>
 				<a href="' . $PHP_SELF . '?methode=boire">Boire un verre ? (10 brouzoufs - 4 PA)</a><br>
 				<a href="' . $PHP_SELF . '?methode=offre">Offrir un verre ? (10 brouzoufs - 4 PA)</a><br>
@@ -194,7 +194,7 @@ if ($erreur == 0)
 				$db->query($req);
 				$db->next_record();
 				$contenu_page .= '<p>Vous vous asseyez à une table, et sirotez une bière bien fraiche.<br>
-					<p><i>Rumeur :</i> ' . $db->f("rumeur");
+					<p><em>Rumeur :</em> ' . $db->f("rumeur");
 				$texte_evt = "'[attaquant] siroté une petite bière tout seul'";
 				$req = "insert into ligne_evt
 							(levt_tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible,levt_lu,levt_visible,levt_texte)
@@ -271,7 +271,7 @@ if ($erreur == 0)
 				$req = "select choix_rumeur() as rumeur ";
 				$db->query($req);
 				$db->next_record();
-				$contenu_page .= "<p><i>Rumeur :</i> " . $db->f("rumeur");
+				$contenu_page .= "<p><em>Rumeur :</em> " . $db->f("rumeur");
 			}
 			break;
 		case "rumeur":

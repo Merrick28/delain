@@ -40,7 +40,7 @@ include('variables_menu.php');
                 if (s_option=="monstre" && d.data.perso_type_perso!=2)
                 $("#"+divname).html('Vous n\'avez pas les droits pour téléporter ce perso.');
                 else
-                    $("#"+divname).html(d.data.perso_nom+' <i style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</i>');
+                    $("#"+divname).html(d.data.perso_nom+' <i style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</em>');
             }
         });
     }
@@ -59,7 +59,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
@@ -85,7 +85,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
@@ -111,7 +111,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</i></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
@@ -361,7 +361,7 @@ if ($erreur == 0)
                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="">
                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="">
                     <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomAndPosPerso(\''.$row_id.'aqelem_misc_nom\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                    &nbsp;<i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
+                    &nbsp;<em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso", "'.$s_option.'");\'>
                     &nbsp;<input type="button" class="" value="sa coterie" onClick=\'listCoterie($("#'.$row_id.'aqelem_misc_cod").val());\'>
                     &nbsp;<input type="button" class="" value="sa position" onClick=\'listSurZone($("#'.$row_id.'aqelem_misc_cod").val());\'>
@@ -373,7 +373,7 @@ if ($erreur == 0)
                                     X = <input name="pos_x" id="pos_x" type="text" size="5" value="" onChange="setPositionDesc()">&nbsp;
                                     Y = <input name="pos_y" id="pos_y" type="text" size="5" value="" onChange="setPositionDesc()">&nbsp;
                                     Etage&nbsp;:'.create_selectbox_from_req("pos_etage", $request_select_etage, 0, array('id' =>"pos_etage", 'style'=>'style="width: 350px;" onChange="setPositionDesc()"')).'                                   
-                                    &nbsp;<i><span id="position_desc"></span></i>
+                                    &nbsp;<em><span id="position_desc"></span></em>
                                     <br><br>';
     echo '<input class="test" type="submit" value="Téléporter les persos" />';
     echo '</form>';

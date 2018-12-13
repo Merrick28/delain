@@ -181,7 +181,7 @@ Qualité:<input type="text" name="qualite" value="1000">
 <input type="hidden" name="pos_codes">
 Blocs modifiés:<input type="text" name="numpos" value="0" readonly><input type="submit" value="Modifier !">
 <br>Valeur du décor<input type="text" name="decor" value="0">
-Modificateur déplacement<input type="text" name="deplacement" value="0"><i>(positif les déplacements coutent autant de plus, l'inverse en négatif)</i>
+Modificateur déplacement<input type="text" name="deplacement" value="0"><em>(positif les déplacements coutent autant de plus, l'inverse en négatif)</em>
 <input type="submit" value="Modifier !">
 </form>
 (<a href="javascript:blocking('aide');">Aide</a>)<br><br>

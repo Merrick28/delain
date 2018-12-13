@@ -86,7 +86,7 @@ if ($soi_meme == 'O')
 	echo "<tr>
 			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
 			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
-			". $perso_nom . "</a></strong><i> (vous-même <strong>" . $niveau_blessures . "</strong>)</i></td>
+			". $perso_nom . "</a></strong><em> (vous-même <strong>" . $niveau_blessures . "</strong>)</em></td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">0</td>
@@ -187,7 +187,7 @@ while ($db->next_record())
         $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<strong>".$db->f("perso_bonus")."</strong>" ) ;
         $perso_style = $perso_bonus==NULL ? "" : ($db->f("triplette") == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;") ;
 		echo "<tr>
-				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <i>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</i></td>
+				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em></td>
 				<td style=\"{$perso_style}\">" . $db->f("race_nom") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_x") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_y") . "</td>

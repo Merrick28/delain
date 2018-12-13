@@ -493,13 +493,13 @@ class aquete_element
             case 'perso':
                 $perso = new perso();
                 $perso->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$perso->perso_nom."</i></strong>";
+                $element_texte = "<strong><em>".$perso->perso_nom."</em></strong>";
                 break;
 
             case 'lieu':
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$lieu->lieu_nom."</i></strong>";
+                $element_texte = "<strong><em>".$lieu->lieu_nom."</em></strong>";
             break;
 
             case 'position':
@@ -508,7 +508,7 @@ class aquete_element
                 $pos->charge($this->aqelem_misc_cod);
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$lieu->lieu_nom."</i></strong>";
+                $element_texte = "<strong><em>".$lieu->lieu_nom."</em></strong>";
 
                 $position = new positions() ;
                 $position->charge( $this->aqelem_misc_cod );
@@ -532,39 +532,39 @@ class aquete_element
                 $stmt = $pdo->execute(array( $this->aqelem_param_num_1, $this->aqelem_param_num_2),$stmt);
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 if ($this->aqelem_param_num_1 == $this->aqelem_param_num_2)
-                    $element_texte = "<strong><i>{$tlieu->tlieu_libelle}</i></strong> de l'étage <strong>{$result[0]["etage_numero"]}</strong> (<i>{$result[0]["etage_libelle"]}</i>)";
+                    $element_texte = "<strong><em>{$tlieu->tlieu_libelle}</em></strong> de l'étage <strong>{$result[0]["etage_numero"]}</strong> (<em>{$result[0]["etage_libelle"]}</em>)";
                 else
-                    $element_texte = "<strong><i>{$tlieu->tlieu_libelle}</i></strong>  des étages <strong>{$result[0]["etage_numero"]}</strong> à <strong>{$result[1]["etage_numero"]}</strong> (<i>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</i>)";
+                    $element_texte = "<strong><em>{$tlieu->tlieu_libelle}</em></strong>  des étages <strong>{$result[0]["etage_numero"]}</strong> à <strong>{$result[1]["etage_numero"]}</strong> (<em>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</em>)";
             break;
 
             case 'objet_generique':
                 $objet_generique = new objet_generique();
                 $objet_generique->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$objet_generique->gobj_nom."</i></strong>";
+                $element_texte = "<strong><em>".$objet_generique->gobj_nom."</em></strong>";
             break;
 
             case 'race':
                 $race = new race();
                 $race->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$race->race_nom."</i></strong>";
+                $element_texte = "<strong><em>".$race->race_nom."</em></strong>";
             break;
 
             case 'objet':
                 $objet = new objets();
                 $objet->charge($this->aqelem_misc_cod);
-                $element_texte = "<strong><i>".$objet->obj_nom."</i></strong>";
+                $element_texte = "<strong><em>".$objet->obj_nom."</em></strong>";
             break;
 
             case 'valeur':
-                $element_texte = "<strong><i>".$this->aqelem_param_num_1."</i></strong>";
+                $element_texte = "<strong><em>".$this->aqelem_param_num_1."</em></strong>";
             break;
 
             case 'texte':
-                $element_texte = "<strong><i>".$this->aqelem_param_txt_1."</i></strong>";
+                $element_texte = "<strong><em>".$this->aqelem_param_txt_1."</em></strong>";
             break;
 
             case 'choix':
-                $element_texte =  "<br>&nbsp;&nbsp;&nbsp;Vous : <i>".$this->aqelem_param_txt_1 ."</i>";
+                $element_texte =  "<br>&nbsp;&nbsp;&nbsp;Vous : <em>".$this->aqelem_param_txt_1 ."</em>";
                 break;
         }
 

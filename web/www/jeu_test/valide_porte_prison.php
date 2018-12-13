@@ -100,7 +100,7 @@ $lieu = $db->f("lpos_lieu_cod");
 		$db->query($req);
 		$db->next_record();
 		echo "<p>Vous arrivez dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong><br>";
-		echo "<p><i>" . $db->f("etage_description") . "</i>";
+		echo "<p><em>" . $db->f("etage_description") . "</em>";
 		
 		// on remet l'ancien temple si besoin
 		$req = "select ptemple_anc_pos_cod from perso_temple where ptemple_perso_cod = $perso_cod ";

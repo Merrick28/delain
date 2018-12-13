@@ -145,12 +145,12 @@ Quels changements pour les fid&egrave;les de Falis?
 <br><strong>Athalante</strong> : Je suis fascin&eacute;e par ceux qui adorent Ecatis, comment peuvent-ils être si proches de la Justice et si &eacute;loign&eacute;s de ce que j&acute;en conçois ? Je les consid&egrave;re donc de la même façon, &agrave; la fois tr&egrave;s proches de nous et pourtant un gouffre nous s&eacute;pare. Je ne sais pas du tout quelles seront nos relations avec les adeptes d&acute;Ecatis. Ce qui est certain, c&acute;est que nous serons tous li&eacute;s, comme le sont Ecatis et Falis.
 <br><strong>Bardamu</strong> : Et bien sûr: Athalante, où en es-tu avec Korg&acute;?? (pas pu me retenir!!)
 <br><strong>Layos</strong> : bon alors , heu, comment ça c&acute;est pas &agrave; moi de r&eacute;pondre?!? 
-<br><strong>Athalante</strong> : <i>Athalante s&acute;empourpra et baissa la tête. Elle r&eacute;pondit dans un souffle. </i>
+<br><strong>Athalante</strong> : <em>Athalante s&acute;empourpra et baissa la tête. Elle r&eacute;pondit dans un souffle. </em>
 &quot;- Il me manque&quot;
 		</td>
         <td class="interview1_corps" width="194px">
 Interview d&acute;un fid&egrave;les d&acute;Ecatis : <span onMouseOver="switchDiv('korgrim',true);" onMouseOut="switchDiv('korgrim',false);">Korgrim le Valeureux</span>, MDM.
-<div id="korgrim"><i>dit le Chevalier Masqu&eacute;</i></div>
+<div id="korgrim"><em>dit le Chevalier Masqu&eacute;</em></div>
 <br><strong>Bardamu</strong> : Pourquoi ce rassemblement dans le cr&agrave;ne ??
 <br><strong>Korgrim</strong> : Ce rassemblement dans le cr&agrave;ne se veut le rassemblement de ceux qui croient en Ecatis, en sa justice implacable et sa divine sentence. Nul ne pourra y &eacute;chapper, car tout le monde est coupable, il n&acute;y a pas d&acute;innocence, il n&acute;y a que des degr&eacute;s de culpabilit&eacute;.
 <br><strong>Bardamu</strong> : La MDM au grand complet est-elle prête &agrave; s&acute;engager aupr&egrave;s d&acute;Ecatis ?? Pas de rebelles ??

@@ -133,7 +133,7 @@ if ($erreur == 0)
 			// on cherche d'abord le dieu associé.
 			echo "<p><img src=\"../images/temple.png\"><br />
 			Vous êtes sur un temple de <strong>$dieu_nom</strong><br></p>";
-			echo "<br><br><i>" , $lieu_descr, "</i><br>";
+			echo "<br><br><em>" , $lieu_descr, "</em><br>";
 			//on indique le responsable du temple
 			$req = 'select tfid_perso_cod, perso_nom from perso, temple_fidele where tfid_perso_cod = perso_cod and tfid_lieu_cod = '. $lieu;
 			$db->query($req);
@@ -270,17 +270,17 @@ if ($erreur == 0)
                     {
                         ?>
                         <p><a href="<?php echo $PHP_SELF;?>?methode=resu">- Ressusciter un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
-                        <br><i>Ceci rapellera du plan des morts le familier de <?php echo $dieu_nom; ?> qui agira sous votre contrôle comme cela l'était avant sa mort.
-                        <br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</i><br>
+                        <br><em>Ceci rapellera du plan des morts le familier de <?php echo $dieu_nom; ?> qui agira sous votre contrôle comme cela l'était avant sa mort.
+                        <br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</em><br>
 
                         <?php
                     }
 
 					?>
 					<p><a href="<?php echo $PHP_SELF;?>?methode=invoc">- Invoquer un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
-						<br><i>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire sous votre contrôle.
+						<br><em>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire sous votre contrôle.
 						<br><strong>Il disparaîtra ensuite avec toutes ses possessions.</strong>
-						<br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</i><br>
+						<br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</em><br>
 
 					<?php 
 				}
@@ -355,7 +355,7 @@ if ($erreur == 0)
 			{
 				echo '<p><strong>Reliquaire</strong></p><br /><br />';
 				echo '<p>Choisissez l’objet que vous allez confier à votre dieu</p>';
-				echo '<p><strong>Attention !</strong> Cette action est irréversible ! L’objet ne pourra pas être repris au dieu par des moyens conventionnels. Il restera en vitrine <i>ad vitam</i>.</p>';
+				echo '<p><strong>Attention !</strong> Cette action est irréversible ! L’objet ne pourra pas être repris au dieu par des moyens conventionnels. Il restera en vitrine <em>ad vitam</em>.</p>';
 				echo '<form method="POST"><input type="hidden" name="methode" value="valider_relique" />';
 				echo '<select name="relique_cod"><option value="-1">Choisissez l’objet à confier à votre dieu</option>';
 				$req_relique = "select obj_nom, min(obj_cod) as obj_cod from objets
@@ -656,7 +656,7 @@ if ($erreur == 0)
 			$db->query($req);
 			$db->next_record();
 			$dieu_descr = $db->f("dieu_description");
-			echo "<br><i>" , $dieu_descr, "</i><br><br>";
+			echo "<br><em>" , $dieu_descr, "</em><br><br>";
 			echo '<a href="' . $PHP_SELF . '?methode=entree"">Retour</a><br>';
 		break;
 
@@ -694,21 +694,21 @@ if ($erreur == 0)
 					?>
 					<p>Le grade de <?php  echo $db->f("dniv_libelle"); ?> marque un tournant dans la religion. La confiance entre vous et votre dieu est maintenant totalement réciproque. C’est pour cela que votre dieu vous permet à tout moment d’avoir accès à la liste des personnes renégates.<br>
 					Votre dieu attend de vous une obéissance totale et aveugle, ainsi qu’un investissment total. Il vous offre des sorts de plus en plus puissants. Toutefois, du fait de votre charge, chaque tour passé sans prier vous fait oublier de votre divinité. Cet oubli n’est pas suffisant pour vous faire descendre de grade, mais il peut sérieusement retarder votre accession au grade suivant.<br>
-					<br><i>Attention ! Pas encore codé !</i>
+					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
 				break;
 				case 4:
 				//prêtre
 					?>
 					<p>À partir de <?php  echo $db->f("dniv_libelle"); ?>, en cas de mort, le corps n’est plus ramené dans un dispensaire, mais dans un temple de votre dieu, le plus proche de vous.
-					<br><i>Attention ! Pas encore codé !</i>
+					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
 				break;
 				case 5:
 				// grand prêtre
 					?>
 					<p>À partir de <?php  echo $db->f("dniv_libelle"); ?>, votre dieu vous autorise à vous téléporter sur chaque temple qui lui est dévoué (sous réserve qu’il ait assez d’énergie bien sur). Par contre, vous n’avez plus aucun accès à la magie runique.
-					<br><i>Attention ! Pas encore codé !</i>
+					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
 				break;
 			}

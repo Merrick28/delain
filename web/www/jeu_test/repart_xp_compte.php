@@ -36,12 +36,12 @@ if ($nb_perso>0) {
 // Intro
 $contenu_page .= '<p class="titre">Répartition des points bonus d\'expérience</p>
 <p>&nbsp;</p>
-<p>Le jeu <strong><i>Les Souterrains de Delain</i></strong> a eu 10 ans cette année.<p>
+<p>Le jeu <strong><em>Les Souterrains de Delain</em></strong> a eu 10 ans cette année.<p>
 <p>&nbsp;</p>
 <p>Pour vous remercier de votre fidélité, toute l\'équipe est heureuse de pouvoir vous offrir un premier cadeau : <strong>'.$total_xp.' points d\'expérience</strong> !<br />
 Libre à vous de répartir ces points entre vos personnages (hors 4ème et familiers).</p>
 <p>&nbsp;</p>
-<p><i>PS : le nombre d\'XP obtenu depend de l\'ancienneté de votre compte.</i></p>
+<p><em>PS : le nombre d\'XP obtenu depend de l\'ancienneté de votre compte.</em></p>
 <p>&nbsp;</p>';
 
 function crediterPX($perso, $montant)

@@ -263,7 +263,7 @@ if ($erreur == 0)
 					&nbsp;&nbsp;&nbsp;<input type="submit" class="test" value="Suite" />
 					
 				</form>
-				<br><u>Nota</u>: &nbsp;&nbsp;&nbsp;&nbsp;<i>Les lieux utilisant des coordonnées de destination ne sont pas traités</i>.
+				<br><u>Nota</u>: &nbsp;&nbsp;&nbsp;&nbsp;<em>Les lieux utilisant des coordonnées de destination ne sont pas traités</em>.
 			</div>';
 	} 
 	else if($action=="creer_lieux") 

@@ -38,7 +38,7 @@ if ($erreur == 0)
 	echo "<p><strong>" . $tab_lieu['nom'] . "</strong>  - " . $tab_lieu['description'];
 	echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");
 	echo("Il y a un mot gravé sur la pierre ; <br />");
-	echo("<i>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");
+	echo("<em>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");
 	if ($db->has_artefact($perso_cod,636))
 	{
 		echo("<p>Souhaitez vous poser l'amulette sur l'escalier ?<br />");

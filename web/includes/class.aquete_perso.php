@@ -833,7 +833,7 @@ class aquete_perso
                 if ($journal->aqpersoj_etape_cod>0)
                 {
                     $etape->charge($journal->aqpersoj_etape_cod);
-                    $nom_etape = '<i style="font-size: 9px;">('.$etape->aqetape_nom.')</i>' ;
+                    $nom_etape = '<i style="font-size: 9px;">('.$etape->aqetape_nom.')</em>' ;
                 }
                 $journal_quete.="<div style=\"color:#800000\">".date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)).": Step <strong>#".$journal->aqpersoj_quete_step."</strong> - Etape <strong>#".$journal->aqpersoj_etape_cod."</strong> - ".$nom_etape."</div>";
             }

@@ -100,7 +100,7 @@ if (!$db->is_admin($compt_cod)
 		// remplissage de contenu
 		$contenu_page .= '
 		<tr>
-		<td class="soustitre2">Destinataires : <br><i>(Entrez les noms des destinataires séparés par des ";")</i></td>
+		<td class="soustitre2">Destinataires : <br><em>(Entrez les noms des destinataires séparés par des ";")</em></td>
 		<td><input type="text" name="dest" size="80" value="' . $n_dest . '"></td>
 		<td>
 		<select name="joueur" onChange="changeDestinataire(0);">
@@ -186,7 +186,7 @@ if (!$db->is_admin($compt_cod)
 		$contenu_page .= '
 		</tr>
 		<tr>
-			<td colspan="3" class="soustitre2"><i>Rappel : </i>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une clôture du compte sans préavis.</td>
+			<td colspan="3" class="soustitre2"><em>Rappel : </em>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une clôture du compte sans préavis.</td>
 		</tr>
 		<tr>
 			<td class="soustitre2">Corps du message : </td>

@@ -21,7 +21,7 @@ $db->query($req);
 $db->next_record();
 $etage_numero = $db->f("etage_numero");
 $contenu_page .= "<p>Vous êtes dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong><br>";
-$contenu_page .= "<p><i>" . $db->f("etage_description") . "</i>";
+$contenu_page .= "<p><em>" . $db->f("etage_description") . "</em>";
 
 $contenu_page .= "<p style=\"text-align:center;\"><a href=\"frame_vue.php\">Retour à la vue !</a></p>";
 
@@ -30,7 +30,7 @@ $db->query($req);
 
 if ($etage_numero == MARCHE_LENO && $db->next_record() && $db->f("dcompt_modif_perso") == 'O')
 {
-	$contenu_page .= '<hr /><br /><div class="titre">Concours d’alchimie</div><p><i>Attention ! Les résultats visibles ci-dessous ne sont valables que pour ces deux dernières semaines !</i></p>';
+	$contenu_page .= '<hr /><br /><div class="titre">Concours d’alchimie</div><p><em>Attention ! Les résultats visibles ci-dessous ne sont valables que pour ces deux dernières semaines !</em></p>';
 	
 	$perso = (isset($_GET['perso'])) ? $_GET['perso'] : 0;
 

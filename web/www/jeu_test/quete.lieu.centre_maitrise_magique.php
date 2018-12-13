@@ -63,31 +63,31 @@ switch($methode2)
 				// On est déjà face à un enlumineur potentiel, on doit donc vérifier à quel stade il est
 				if ($db->f('pquete_nombre') == 2) // Le perso a bien réalisé sa quête en tuant le monstre
 				{
-					$sortie_quete .= '« <i>Vous voilà de nouveau ? Et je vois que vous revenez victorieux !
+					$sortie_quete .= '« <em>Vous voilà de nouveau ? Et je vois que vous revenez victorieux !
 						J’espère que vous avez remarqué que vous aviez vaincu votre propre peur !
 						<br>Regardons maintenant si vous me rapportez aussi les objets qui me permettront
-						de vous montrer comment réaliser vos propres enluminures...</i> »';
+						de vous montrer comment réaliser vos propres enluminures...</em> »';
 					//On vérifie que le perso possède bien les objets nécessaires
 					if ($nombre1 > 0 && $nombre2 > 0)
 					{
-						$sortie_quete .= '« <i><br>Voilà qui est parfait, vous me ramenez donc tous les éléments
-							pour faire de vous un grand enlumineur !</i>»
+						$sortie_quete .= '« <em><br>Voilà qui est parfait, vous me ramenez donc tous les éléments
+							pour faire de vous un grand enlumineur !</em>»
 							<br><br>Encore ce dernier pas à réaliser avant d’être un bon enlumineur :
 							<a href="' . $PHP_SELF . '?methode2=niv1_conf"><strong>Allez, je me lance !</strong></a><br><br>';';
 							Il vous en coûtera <strong>12 PA</strong>';
 					}
 					else //Pas le bon nombre d’objet
 					{
-						$sortie_quete .= '« <i>Je crois bien que vous n’avez pas compris ce que vous deviez me ramener.
+						$sortie_quete .= '« <em>Je crois bien que vous n’avez pas compris ce que vous deviez me ramener.
 							Il s’agissait d’une plume et d’un papier vierge, mais très spéciaux !
-							Apprenez donc à compter !</i> »';
+							Apprenez donc à compter !</em> »';
 					}
 				}
 				else //Pas encore tué le monstre
 				{
-					$sortie_quete .= '« <i>Vous voilà déjà ? Mais vous n’avez rien réalisé !
+					$sortie_quete .= '« <em>Vous voilà déjà ? Mais vous n’avez rien réalisé !
 						Cherchez donc un peu mieux, et revenez me voir lorsque vous aurez combattu
-						votre âme noire et récupéré les objets nécessaires.</i> »';
+						votre âme noire et récupéré les objets nécessaires.</em> »';
 					// On vérifie que la position de la quête est au même étage.
 					// Sinon on permet au perso d’en reprendre une.
 					$tab = $db->get_pos($perso_cod);
@@ -105,7 +105,7 @@ switch($methode2)
 						$sortie_quete .= '<br />Je vois que malheuseument, vous n’êtes plus à l’étage
 							vous permettant de réaliser cette quête.
 							<br>Voici une nouvelle chance de vous rendre maître dans l’art de l’enluminure.
-							<br><br><i>L’annulation de la quête précédente a été automatiquement faite.</i>';
+							<br><br><em>L’annulation de la quête précédente a été automatiquement faite.</em>';
 						$req_delete = "update positions set pos_fonction_dessus = '' where pos_cod = $position_quete";
 						$db->query($req_delete);
 						$req_delete = "delete from quete_perso
@@ -120,9 +120,9 @@ switch($methode2)
 				$sortie_quete .= '<br>Un magicien présent dans ces lieux vous regarde avec insistance.
 					Il semble vous analyser, provoquant chez vous quelques frissons.
 					<br>D’un coup, il se rapproche de vous et vous aborde : <br>
-					<br>« <i>Voilà un moment que je vous observe, et si vous êtes en ces lieux,
+					<br>« <em>Voilà un moment que je vous observe, et si vous êtes en ces lieux,
 					c’est qu’il doit y avoir une bonne raison et que vous êtes intéressé par les arts magiques.
-					<br><strong>Je peux faire de vous un magicien important, versé dans l’art de l’enluminure !</strong></i> »
+					<br><strong>Je peux faire de vous un magicien important, versé dans l’art de l’enluminure !</strong></em> »
 					<br><br>Hum, voilà quelque chose de tentant !
 					<a href="' . $PHP_SELF . '?methode2=niv1"><strong>Allez, je me lance !</strong></a><br><br>';
 			}
@@ -131,20 +131,20 @@ switch($methode2)
 		{
 			if ($comp_enlumineur_percent < 90) // Pas le niveau comp suffisant
 			{
-				$sortie_quete .= '« <i>Vous revoilà déjà ?
+				$sortie_quete .= '« <em>Vous revoilà déjà ?
 					<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 					Revenez donc lorsque vous serez un peu plus expérimenté.
-					<br>L’enseignement est une chose, la pratique et l’expérience une autre !</i> »
+					<br>L’enseignement est une chose, la pratique et l’expérience une autre !</em> »
 					<br><br>Un niveau minimum de <strong>90%</strong> dans votre compétence d’enlumineur est nécessaire
 					avant de pouvoir passer au niveau 2.<br><br>';
 			}
 			else // La première condition est remplie
 			{
-				$sortie_quete .= '« <i>Ah, je vois que vous avez investi dans l’enseignement que je vous avais donné !
+				$sortie_quete .= '« <em>Ah, je vois que vous avez investi dans l’enseignement que je vous avais donné !
 					C’est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 					<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que
 					vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
-					<br>Donnez moi <strong>10 000 brouzoufs</strong>, et je ferais de vous un enlumineur accompli !</i> »
+					<br>Donnez moi <strong>10 000 brouzoufs</strong>, et je ferais de vous un enlumineur accompli !</em> »
 					<br><br>Hum, voilà quelque chose de tentant !
 					<a href="' . $PHP_SELF . '?methode2=niv2"><strong>Allez, je me lance !</strong></a><br><br>';
 			}
@@ -153,29 +153,29 @@ switch($methode2)
 		{
 			if ($comp_enlumineur_percent < 100)
 			{
-				$sortie_quete .= '« <i>Vous revoilà déjà ?
+				$sortie_quete .= '« <em>Vous revoilà déjà ?
 					<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 					Revenez donc lorsque vous serez un peu plus expérimenté.
-					<br>L’enseignement est une chose, la pratique et l’expérience une autre !</i> »
+					<br>L’enseignement est une chose, la pratique et l’expérience une autre !</em> »
 					<br><br>Un niveau minimum de <strong>100%</strong> dans votre compétence d’enlumineur est nécessaire
 					avant de pouvoir passer au niveau 2<br><br>';
 			}
 			else
 			{
-				$sortie_quete .= '« <i>Ah, je vois que vous avez investi dans l’enseignement que je vous avais donné !
+				$sortie_quete .= '« <em>Ah, je vois que vous avez investi dans l’enseignement que je vous avais donné !
 					C’est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 					<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez
 					quelques brouzoufs pour que puisse acheter des composants.
-					<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enlumineur expérimenté !</i> »
+					<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enlumineur expérimenté !</em> »
 					<br><br>Hum, voilà quelque chose de tentant !
 					<a href="' . $PHP_SELF . '?methode2=niv3"><strong>Allez, je me lance !</strong></a><br><br>';
 			}
 		}
 		else if ($comp_enlumineur == 93) // Le perso est au troisième niveau d’enluminure
 		{
-			$sortie_quete .= '« <i>Cher confrère ! Nous pouvons deviser si vous le souhaitez des meilleurs
+			$sortie_quete .= '« <em>Cher confrère ! Nous pouvons deviser si vous le souhaitez des meilleurs
 				parchemins que vous avez pu trouver !
-				<br>Je suis toujours friand de ces informations qui me permettent de mieux capturer la magie...</i> »
+				<br>Je suis toujours friand de ces informations qui me permettent de mieux capturer la magie...</em> »
 				<br><br>Et l’enlumineur se lance dans des palabres sans fin...<br><br>';
 		}
 	break; //Fin du case début

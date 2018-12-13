@@ -179,7 +179,7 @@ Mur tangible ?<select name="tangible">
 <input type="hidden" name="pos_etage" value="<?php echo $sel_etage?>">
 <input type="hidden" name="pos_codes">
 Blocs modifiés:<input type="text" name="numpos" value="0" readonly>
-<br>Interdication du sort passage<input type="text" name="passage" value="0"><i>0 = sort passage impossible, 1 = possible</i>
+<br>Interdication du sort passage<input type="text" name="passage" value="0"><em>0 = sort passage impossible, 1 = possible</em>
 <input type="submit" value="Modifier !">
 </form>
 <script>

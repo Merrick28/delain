@@ -119,7 +119,7 @@ $t->set_var('PERSO_NOM', $nom_perso);
 //intangible
 if ($is_intangible)
 {
-    $intangible = "<i>Perso impalpable !</i><br><br>";
+    $intangible = "<em>Perso impalpable !</em><br><br>";
 }
 else
 {

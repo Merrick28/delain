@@ -52,7 +52,7 @@
 $arrayBBCode=array(
 		''=>			array('type'=>BBCODE_TYPE_ROOT),
 		'b'=>		array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<strong>', 'close_tag'=>'</strong>'),
-    'i'=>			array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<i>', 'close_tag'=>'</i>'),
+    'i'=>			array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<em>', 'close_tag'=>'</em>'),
 		'u'=>		array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<u>', 'close_tag'=>'</u>'),
     'url'=>	array('type'=>BBCODE_TYPE_OPTARG, 'open_tag'=>'<a target="_blank" href="{PARAM}">', 'close_tag'=>'</a>', 'default_arg'=>'{CONTENT}'),
     'img'=>	array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<img alt="image" style="max-width:200px;max-height:200px;" src="', 'close_tag'=>'" />')

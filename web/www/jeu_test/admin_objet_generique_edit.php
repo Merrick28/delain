@@ -203,7 +203,7 @@ else
 			</tr>
 			<tr>
 				<td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
-				<td><input type="text" name="gobj_chance_drop_monstre">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
+				<td><input type="text" name="gobj_chance_drop_monstre">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</em></td>
 			</tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>
@@ -500,7 +500,7 @@ else
 			</tr>
             <tr>
                 <td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
-                <td><input type="text" name="gobj_chance_drop_monstre" value="<?php echo $db->f("gobj_chance_drop_monstre");?>">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
+                <td><input type="text" name="gobj_chance_drop_monstre" value="<?php echo $db->f("gobj_chance_drop_monstre");?>">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</em></td>
             </tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>

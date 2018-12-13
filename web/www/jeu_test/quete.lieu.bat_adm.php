@@ -126,7 +126,7 @@ switch($methode2)
 			{
 			?>
 				<br>Un fonctionnaire s’approche de vous et vous interpelle
-				<br><i>Allons, soyons sérieux, vous êtes un aventurier. Mesurez-vous à ce qui pourra vous valoir Gloire et Honneur !</i>
+				<br><em>Allons, soyons sérieux, vous êtes un aventurier. Mesurez-vous à ce qui pourra vous valoir Gloire et Honneur !</em>
 				<br>Ce faisant, le fonctionnaire vous tourne le dos, sans vous proposer de contrat.
 				<br><br>Pour rappel, vous êtes niveau <?php echo $perso_level ?>. Une quête vous sera proposée uniquement en adéquation avec votre niveau.
 			<?php 			}
@@ -162,7 +162,7 @@ switch($methode2)
 					echo "<br>Ce type de monstre est facilement reconnaissable.
 						Il ressemble à cela :<br><p\"><img src=\"../avatars/" . $avatar . "\"></p>";
 				}
-				echo "<br>Souhaitez vous répondre à cette annonce ? <i>(Attention, ce choix vous engage pour une certaine durée)</i>";
+				echo "<br>Souhaitez vous répondre à cette annonce ? <em>(Attention, ce choix vous engage pour une certaine durée)</em>";
 			?>
 				<form name="mission" method="post" action="<?php echo $PHP_SELF;?>">
 					<input type="hidden" name="methode2" value="mission">
@@ -233,7 +233,7 @@ switch($methode2)
 				<img name="img" align = "center" src="../avatars/roue.png"></a></td>
 				<td>Vous pouvez participer au grand tirage de la loterie magique.
 				<br>Ce tirage ne peut être fait qu’<strong>une seule fois</strong>, si vous possédez votre pochette surprise.
-				<br><br><br><strong>Faites tourner la roue pour découvrir votre cadeau !</strong> <i>(cliquez dessus)</i></td></table>
+				<br><br><br><strong>Faites tourner la roue pour découvrir votre cadeau !</strong> <em>(cliquez dessus)</em></td></table>
 			</form>
 		<?php 		}
 	break;

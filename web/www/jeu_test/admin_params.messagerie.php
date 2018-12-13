@@ -83,7 +83,7 @@ else if ($erreur && $message_erreur != '')
     echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
-echo '<p>Liste de perso de joueurs à tenir informé par la messagerie interne (<i>équivalent au praramètre global '.$parm_cod.'</i>)</p>
+echo '<p>Liste de perso de joueurs à tenir informé par la messagerie interne (<em>équivalent au praramètre global '.$parm_cod.'</em>)</p>
 	<table><tr>
 		<td class="titre"><strong>Perso_cod</strong></td>
 		<td class="titre"><strong>Perso</strong></td>

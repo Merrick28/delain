@@ -222,9 +222,9 @@ $req = "select plouche_perso_cod from perso_louche where plouche_perso_cod = $vi
 $db->query($req);
 if ($db->nf() != 0)
 {
-	$contenu_page .= '<div style="text-align:center;"><i><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
+	$contenu_page .= '<div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
 	Il transpire abondemment et regarde autour de lui pour voir s\'il est suivi.<br>
-	Le moindre blason de la milice semble le mettre dans un drole d\'état. Il n\'y a pas a dire il est pas net... </i></div>';
+	Le moindre blason de la milice semble le mettre dans un drole d\'état. Il n\'y a pas a dire il est pas net... </em></div>';
 }
 $contenu_page .= '</td></tr>';
 $contenu_page .= $desc2.'</table>';

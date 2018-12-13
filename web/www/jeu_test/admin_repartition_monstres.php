@@ -166,7 +166,7 @@ if($db->next_record())
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
 		<input type="hidden" name="rmon_cod" value="<?php  echo  $db->f("rmon_cod"); ?>">
 		<TR>
-			<TD><?php echo '<strong>' . $db->f("gmon_nom") . '</strong><i> (code = ' . $db->f("gmon_cod") . ')</i>';?></TD>
+			<TD><?php echo '<strong>' . $db->f("gmon_nom") . '</strong><em> (code = ' . $db->f("gmon_cod") . ')</em>';?></TD>
 			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $db->f("rmon_poids"); ?>"> / <?php  echo  $db->f("nombre"); ?></p></TD>
 			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $db->f("rmon_max"); ?>"></p></TD>
 			<TD><p align="center"><input type="submit" value="Modifier"></p></TD>

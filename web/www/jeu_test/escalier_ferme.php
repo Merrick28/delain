@@ -34,7 +34,7 @@ if ($erreur == 0)
 	echo "<form name=\"escalier\" method=\"post\" action=\"valide_escalier_ferme.php\">";
 	echo "<input type=\"hidden\" name=\"objet\">";
 	echo "<p>Cet escalier est fermé par une épaisse plaque de marbre. Dessus est gravé :<br>";
-	echo "<i>Pour m'ouvrir, ramène ici les symboles du loup, du scorpion et du serpent.</i>";
+	echo "<em>Pour m'ouvrir, ramène ici les symboles du loup, du scorpion et du serpent.</em>";
 	// partie du loup
 	// on regarde si le médaillon est déposé
 	$req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 86 ";

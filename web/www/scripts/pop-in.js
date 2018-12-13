@@ -7,7 +7,7 @@ function cacheInfo(contenant)
 function montreInfo(contenant, contenu)
 {
 	contenant.innerHTML = "";
-	contenant.innerHTML = contenu + '<hr /><a href="javascript:cacheInfo(document.getElementById(\'' + contenant.id + '\'));"><i>Fermer</i></a>';
+	contenant.innerHTML = contenu + '<hr /><a href="javascript:cacheInfo(document.getElementById(\'' + contenant.id + '\'));"><em>Fermer</em></a>';
 	contenant.style.left = '' + sourisX + 'px';
 	contenant.style.top = '' + sourisY + 'px';
 	contenant.style.display = "block";

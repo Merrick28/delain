@@ -99,7 +99,7 @@ function affiche_perso($perso_cod)
 	{
 		echo '</strong>';
 	}
-	  echo '<br /><i>Puis ± ' , $db->f('prochaine_dlt') . '</i>';
+	  echo '<br /><em>Puis ± ' , $db->f('prochaine_dlt') . '</em>';
     echo '</div><br />';
 	echo '<div id="position">Position : X=' . $db->f("pos_x") . '; Y=' . $db->f("pos_y") . '; ' . $db->f("etage_libelle") . '</div>';
 	$num_perso = $perso_cod;

@@ -197,7 +197,7 @@ if ($erreur == 0)
                     {
                         $fond_id = $correspondances['type'] ;
                         $filename = "f_{$style}_{$fond_id}.png" ;
-                        //echo "Supression du fond id=<strong>{$fond_id}</strong> (<i>fichier {$filename}</i>)<br>";
+                        //echo "Supression du fond id=<strong>{$fond_id}</strong> (<em>fichier {$filename}</em>)<br>";
                         unlink ( $chemin.$filename );
                         ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
                         //supprimer pour l'affichage
@@ -212,7 +212,7 @@ if ($erreur == 0)
                     {
                         $mur_id = $correspondances['type'] ;
                         $filename = "t_{$style}_mur_{$mur_id}.png" ;
-                        //echo "Supression du mur id=<strong>{$mur_id}</strong> (<i>fichier {$filename}</i>)<br>";
+                        //echo "Supression du mur id=<strong>{$mur_id}</strong> (<em>fichier {$filename}</em>)<br>";
                         unlink ( $chemin.$filename );
                         ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
                         //supprimer pour l'affichage
@@ -227,7 +227,7 @@ if ($erreur == 0)
                     {
                         $fig_id = $correspondances['type'] ;
                         $filename = "t_{$style}_{$fig_id}.png" ;
-                        //echo "Supression de la figurine id=<strong>{$fig_id}</strong> (<i>fichier {$filename}</i>)<br>";
+                        //echo "Supression de la figurine id=<strong>{$fig_id}</strong> (<em>fichier {$filename}</em>)<br>";
                         unlink ( $chemin.$filename );
                         ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style pour le type $fig_id", true);
                         //ajouter les pour l'affichage
@@ -434,7 +434,7 @@ if ($erreur == 0)
              <form method="POST">Créer un nouveau Style: <input type="text" name="style">&nbsp;&nbsp;
                 <input type="submit" class="test" name="nouveau_style" value="Créer">
             </form><br>';
-    if(($style!=$_REQUEST['style']) && ($_REQUEST['style']!="")) echo "<u>ATTENTION</u>: le nom ne style saisi (<i>".$_REQUEST['style']."</i>) n'était pas conforme, il a été adapté: <strong>$style</strong>.<br>";
+    if(($style!=$_REQUEST['style']) && ($_REQUEST['style']!="")) echo "<u>ATTENTION</u>: le nom ne style saisi (<em>".$_REQUEST['style']."</em>) n'était pas conforme, il a été adapté: <strong>$style</strong>.<br>";
 	echo '<hr /><strong>Edition du style</strong> : <select style="margin-bottom:5px;" name="style" onChange="changeStyle(this.value)"><option value=\'--\'>Choisir un style...</option>';
     if (!$is_style_exists && $style!='') echo "<option value='$style' selected>$style</option>";
 	foreach ($tableau_styles as $unStyle) echo "<option value='$unStyle'" . (($unStyle == $style) ? 'selected="selected"' : '') . ">$unStyle</option>";
@@ -442,7 +442,7 @@ if ($erreur == 0)
     <br>
     <form method="post" enctype="multipart/form-data">
         <input id="id-style-style" type="hidden" name="style" value="'.$style.'">
-        <i>Nombre d\'étage utilisant ce style </i>: <strong><span id="id-usage">0</span></strong>
+        <em>Nombre d\'étage utilisant ce style </em>: <strong><span id="id-usage">0</span></strong>
         <input id="id-supprimer-style" type="submit" class="test" name="supprimer_style" value="Supprimer le style">
     </form>
     ';
@@ -531,7 +531,7 @@ if ($erreur == 0)
         <input type="file" name="fond_file">&nbsp;&nbsp;
         <input type="submit" class="test" name="nouveau_fond" value="Ajouter le fond"></form>
         <span id="info-fond-usage"></span><br>
-        <i><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</i>
+        <em><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</em>
 	<div style=\'width:600px; overflow:auto\' class=\'bordiv\' id=\'visu_fonds\'></div>
 	
 	<br><hr /><p><h1>Murs définis pour ce style :</h1></p><form method="post" enctype="multipart/form-data"> 
@@ -541,7 +541,7 @@ if ($erreur == 0)
         <input type="file" name="mur_file">&nbsp;&nbsp;
         <input type="submit" class="test" name="nouveau_mur" value="Ajouter le mur"></form>
         <span id="info-mur-usage"></span><br>
-        <i><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</i>
+        <em><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</em>
 	<div style=\'width:600px; overflow:auto\' class=\'bordiv\' id=\'visu_murs\'></div>
 	
 	<br><hr /><p><h1>Figurines définies pour ce style :</h1></p><form method="post" enctype="multipart/form-data"> 
@@ -552,11 +552,11 @@ if ($erreur == 0)
         <input type="radio" id="figs-id-obj" name="fig_id"  value="obj">obj&nbsp;&nbsp;
         <input type="file" name="fig_file">&nbsp;&nbsp;
         <input type="submit" class="test" name="nouveau_fig" value="Ajouter/Remplacer la figurine"></form>
-        <i><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, vous devez selectionner le type de la figurine</font>.</i>	
+        <em><font color="#8b0000">L\'image doit être un .png de 28x28 pixels, vous devez selectionner le type de la figurine</font>.</em>	
 	<div style=\'width:600px; overflow:auto\' class=\'bordiv\' id=\'visu_figs\'></div>
 	
-	<br><div><i><u>Nota</u>: Vous pouvez cliquer sur les images de fond ou de mur pour saisir automatiquement leurs id .</i ></div >
-	<div><i><u>Nota</u>: Pour qu\'un style soit créé, il faut lui ajouter au moins un fond ou un mur.</i ></div >
+	<br><div><em><u>Nota</u>: Vous pouvez cliquer sur les images de fond ou de mur pour saisir automatiquement leurs id .</i ></div >
+	<div><em><u>Nota</u>: Pour qu\'un style soit créé, il faut lui ajouter au moins un fond ou un mur.</i ></div >
     <script type="text/javascript">changeStyle("'.$style.'");</script>';
 }
 $contenu_page = ob_get_contents();

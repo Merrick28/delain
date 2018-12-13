@@ -111,7 +111,7 @@ function addSortFavoris(type, sort_cod)
     var nom = $.trim($("#fav-add-sort-" + sort_cod).parent().next().text());
     nom = nom.substring(0, nom.indexOf(" ("));
 
-    $("#fav-add-sort-" + sort_cod).parent().prepend('<div id="spop-sort" class="spop-overlay"><i>Nom du favoris:</i><input id="spop-sort-nom" style="margin:4px;" type="text" value="' + nom + '"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+    $("#fav-add-sort-" + sort_cod).parent().prepend('<div id="spop-sort" class="spop-overlay"><em>Nom du favoris:</em><input id="spop-sort-nom" style="margin:4px;" type="text" value="' + nom + '"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
 
     $(document).click(function (event) {
         if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
@@ -209,9 +209,9 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
             var data = d.data.data ;
             var content = "";
             for (i in data) {
-                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</i>' : '' )+'<br>';
+                content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</em>' : '' )+'<br>';
             }
-            if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</i>';
+            if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</em>';
             $("#spop-serchlist").html(content);
         }
     });
@@ -236,10 +236,10 @@ function getTableCod(divname, table, titre, params)
         options += 'X = <input type="text" size=3 id="spop-tablecod-position-x" value="'+params[1]+'" onChange="getTableCod_update();"> ';
         options += 'Y = <input type="text" size=3 id="spop-tablecod-position-y" value="'+params[2]+'" onChange="getTableCod_update();"> ';
         options += 'Limiter aux lieux: <input type="checkbox" id="spop-tablecod-position-lieu" onClick="getTableCod_update();">';
-        options += '<br><i style="font-size: 9px">Nota: Si ni l\'étage, la position X ou Y ne sont pas définis, la recherche est limitées aux lieux</i>';
+        options += '<br><i style="font-size: 9px">Nota: Si ni l\'étage, la position X ou Y ne sont pas définis, la recherche est limitées aux lieux</em>';
     } else if (table=="etape"){
         options += '<input id="spop-tablecod-etape-aquete_cod" type="hidden" value="'+params[0]+'">';
-        options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><i>Etapes spéciales</u></i>:<br>';
+        options += '<input id="spop-tablecod-etape-aqetape_cod" type="hidden" value="'+params[1]+'"><u><em>Etapes spéciales</u></em>:<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--1"  data-spop-cod="0"  data-spop-nom="Etape suivante" href="#">Etape suivante</a> (0)<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--2"  data-spop-cod="-1"  data-spop-nom="Quitter/Abandonner" href="#">Quitter/Abandonner</a> (-1)<br>';
         options += '<a style="margin-left:20px;" id="spop-tablecod-select--3"  data-spop-cod="-2"  data-spop-nom="Terminer avec succès" href="#">Terminer avec succès</a> (-2)<br>';
@@ -254,7 +254,7 @@ function getTableCod(divname, table, titre, params)
                         '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
                         '<div style="width:100%; background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">'+titre+'</div>' +
                         '<br><div id="spop-serchlist" style="width:450px; height:180px; overflow:hidden; white-space:nowrap;">Faites une recherche.</div>' +
-                        '<br><i>Rechercher:</i><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
+                        '<br><em>Rechercher:</em><input id="spop-tablecod-cherche" style="margin:4px;" type="text" value=""><br>' +
                          options+
                         '<br><center><input id="spop-tablecod-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
 

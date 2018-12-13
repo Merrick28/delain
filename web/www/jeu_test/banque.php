@@ -93,8 +93,8 @@ if ($erreur == 0)
 ?>
 </select>
 </p>
-<p><i>(une taxe de <?php  echo $numero; ?> % est prélevée pour chaque dépot à cet étage correspondant à : <input type="text" name="quantite_2" value="0" disabled> Br.
-	<br><input type="text" name="quantite_3" value="0" disabled> Br seront effectivement virés sur le compte de guilde). Attention, la banque applique son pourcentage toujours en premier !</i></p>
+<p><em>(une taxe de <?php  echo $numero; ?> % est prélevée pour chaque dépot à cet étage correspondant à : <input type="text" name="quantite_2" value="0" disabled> Br.
+	<br><input type="text" name="quantite_3" value="0" disabled> Br seront effectivement virés sur le compte de guilde). Attention, la banque applique son pourcentage toujours en premier !</em></p>
 <p><center><input type="submit" value="Valider !" class="test"></center></p>
 </form>
 	     <?php 

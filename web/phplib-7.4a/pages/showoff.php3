@@ -125,7 +125,7 @@ The <strong>val</strong> is where the data associated with a
 <tt>name</tt>/<tt>sid</tt> pair is stored. Data is stored in the form of a
 PHP program that recreates the values stored. The string retrieved from
 <tt>val</tt> is later fed to exec() in PHP. Since <tt>val</tt> can become a
-pretty large string, we use a <i>blob</i> or a similar large datatype to
+pretty large string, we use a <em>blob</em> or a similar large datatype to
 store it.
 <p>
 

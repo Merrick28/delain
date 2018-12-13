@@ -59,7 +59,7 @@ else
 		echo "<p>L'objet identifié est : <strong>" . $db->f("obj_nom") . "</strong>. Vous pouvez maintenant l'utiliser.</p>";
 		if($db->f('obj_enchantable') == 1)
 			echo "<p>De plus, cet objet est <strong>enchantable</strong></p>";
-		echo "<i>" . $db->f('obj_description') . "</i>";
+		echo "<em>" . $db->f('obj_description') . "</em>";
 		echo("<hr>");
 		echo("<p>Vous gagnez $tab_res[7] PX.</p>");
 		echo("<hr>");

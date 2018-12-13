@@ -393,7 +393,7 @@ if ($erreur == 0)
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
 			echo "<input type=\"hidden\" name=\"ancienne_marge\" value=\"$ancienne_marge\">";
 			echo "<p>Mettre la marge à  <input type=\"text\" name=\"qte\" value=\"" . $db->f("lieu_marge") . "\"> % ?";
-			echo "<p><i>nb : vous ne pouvez pas descendre la marge en dessous de " . $db->f("lieu_prelev") . " %.</i>";
+			echo "<p><em>nb : vous ne pouvez pas descendre la marge en dessous de " . $db->f("lieu_prelev") . " %.</em>";
 			
 			echo "<center><input type=\"submit\" class=\"test\" value=\"Valider le changement ?\">";
 			echo "</form>";

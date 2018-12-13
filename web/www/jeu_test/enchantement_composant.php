@@ -37,7 +37,7 @@ switch ($methode)
 						' . $liste . '
 						</select>
 						<input type="submit" value="Valider (' . $nombre_pa . ') PA" class="test">
-						<i>Attention, pas de confirmation ensuite</i></p>
+						<em>Attention, pas de confirmation ensuite</em></p>
 					</form>
 				</table>';
         }

@@ -128,7 +128,7 @@ if ($erreur == 0)
 <p align="center"><br>
 <?php 	
 	echo '<table width="100%">';
-	echo '<tr><td class="soustitre2"><strong>Auteur:</strong></td><td class="soustitre2">' . (($notationComplete) ? $perso_nom : '<i>- Caché -</i>') . '</td></tr>';
+	echo '<tr><td class="soustitre2"><strong>Auteur:</strong></td><td class="soustitre2">' . (($notationComplete) ? $perso_nom : '<em>- Caché -</em>') . '</td></tr>';
 	if (!$notationComplete)
 		echo '<tr><td class="soustitre2" colspan="2"><strong>Tant que tous les membres du jury n’ont pas donné leur évaluation, le candidat reste anonyme.</strong></td></tr>';
 		

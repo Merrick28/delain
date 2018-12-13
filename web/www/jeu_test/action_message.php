@@ -76,7 +76,7 @@ switch ($methode)
         {
             $db2 = new base_delain;
             $db3 = new base_delain;
-            $disparu = '<i>-- Personnage disparu --</i>';
+            $disparu = '<em>-- Personnage disparu --</em>';
 
             //
             // On recherche la guilde
@@ -478,7 +478,7 @@ switch ($methode)
 				<input type="hidden" name="methode" value="nouveau_message">
 				<table cellpadding="2" cellspacing="2">
 					<tr>
-						<td class="soustitre2">Destinataires : <br><i>(Entrez les noms des destinataires séparés par des ";")</i></td>
+						<td class="soustitre2">Destinataires : <br><em>(Entrez les noms des destinataires séparés par des ";")</em></td>
 						<td><input type="text" name="dest" size="40" value="' . $dest . '"></td>
 						<td>
 					<tr>
@@ -486,7 +486,7 @@ switch ($methode)
 						<td colspan="2"><input type="text" name="titre" size="50" MAXLENGTH="50" value="' . $titre . '"></td>
 					</tr>
 					<tr>
-						<td colspan="2" class="soustitre2"><i>Rappel : </i>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une cloture du compte sans préavis.</td>
+						<td colspan="2" class="soustitre2"><em>Rappel : </em>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une cloture du compte sans préavis.</td>
 					</tr>
 					<tr>
 						<td class="soustitre2">Corps du message : </td>

@@ -41,7 +41,7 @@ else
     }
     $options .= '</select>';
 
-    $contenu_page .= '<h2>Choisir une voie:</h2> <i>ATTENTION, il  sera  couteux (mais pas impossible) de changer de voie , réfléchissez-bien</i>';
+    $contenu_page .= '<h2>Choisir une voie:</h2> <em>ATTENTION, il  sera  couteux (mais pas impossible) de changer de voie , réfléchissez-bien</em>';
     $contenu_page .= '<form action="action.php" method="post">
         <input type="hidden" name="methode" value="voie_magique">';
     $contenu_page .= $options;

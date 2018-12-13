@@ -37,7 +37,7 @@ if ($erreur == 0)
 {
 echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
 $desc = str_replace(chr(127), ";", $tab_lieu['description']);
-echo "<i>" . $desc . "</i>";
+echo "<em>" . $desc . "</em>";
 $controle_gerant = '';
 $req = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
 $db->query($req);
@@ -81,7 +81,7 @@ echo "<p>Bonjour aventurier.";
     {
     ?>
     <li><a href="javascript:document.echoppe.methode.value='mule';document.echoppe.submit()">Récupérer un familier mûle
-            dans votre échoppe ?</a> <i>(Attention, ceci est une action définitive)</i>
+            dans votre échoppe ?</a> <em>(Attention, ceci est une action définitive)</em>
         <?php
         }
         break;
@@ -130,7 +130,7 @@ echo "<p>Bonjour aventurier.";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-                echo "<td class=\"soustitre2\"><p><strong><i>Compétence</i></strong></td>";
+                echo "<td class=\"soustitre2\"><p><strong><em>Compétence</em></strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Quantité disponible</strong></td>";
                 echo "<td></td>";

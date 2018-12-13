@@ -124,28 +124,28 @@ if ($erreur == 0)
 			$val_des = 4;
 			$pa = 1;
 		    $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <i>(Prix : '.$prix .' brouzoufs, '. $pa .' PA))</i>';
+				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <em>(Prix : '.$prix .' brouzoufs, '. $pa .' PA))</em>';
 		}
 		else if ($nouvelle_valeur <= 50 )
 		{
 			$val_des = 3;
 			$pa = 1;
 	    	$contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <i>(Prix : '.$prix .' brouzoufs, '. $pa .' PA)</i>';
+				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <em>(Prix : '.$prix .' brouzoufs, '. $pa .' PA)</em>';
 		}
 		else if ($nouvelle_valeur <= 75 )
 		{
 			$val_des = 2;
 			$pa = 2;
 	    	$contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-		    	<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <i>(Prix : '.$prix .' brouzoufs, '. $pa .' PA)</i>';
+		    	<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <em>(Prix : '.$prix .' brouzoufs, '. $pa .' PA)</em>';
 		}
 		else if ($nouvelle_valeur < 85 )
 		{
 			$val_des = 1;
 			$pa = 3;
 		    $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <i>(Prix : '. $prix .' brouzoufs, '. $pa .' PA)</i>';
+				<br><a href="'. $PHP_SELF .'?comp_cod='.$comp_cod.'">Vous entrainer à nouveau ?</a> <em>(Prix : '. $prix .' brouzoufs, '. $pa .' PA)</em>';
 		}
 		else
 		{

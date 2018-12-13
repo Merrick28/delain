@@ -62,7 +62,7 @@ else
 echo("<a href=\"valide_concentration.php\">Se concentrer ! (4 PA)</a>");
 if ($nb_concentration != 0)
 {
-	echo("<p><i>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</i></p>");
+	echo("<p><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</em></p>");
 }
 ?>
 </td></tr>

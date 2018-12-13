@@ -313,7 +313,7 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 	}
 	echo '<form name="login2" method="post" action="'. $PHP_SELF .'">
 		<input type="hidden" name="methode2" value="mise_a_jour">
-		<br>Compte lié : <strong>'. $vcompte_lie_nom .'</strong>     <input type="text" name="foo" id="foo" value="'. $vcompte_lie .'" onkeyup="loadData2();document.getElementById(\'zoneResultats\').style.visibility = \'hidden\'" />          <input type="submit" name="maj" value="Mettre à jour">   <i>indiquer le nouveau compte lié si nécessaire, avec vérification assistée</i>
+		<br>Compte lié : <strong>'. $vcompte_lie_nom .'</strong>     <input type="text" name="foo" id="foo" value="'. $vcompte_lie .'" onkeyup="loadData2();document.getElementById(\'zoneResultats\').style.visibility = \'hidden\'" />          <input type="submit" name="maj" value="Mettre à jour">   <em>indiquer le nouveau compte lié si nécessaire, avec vérification assistée</em>
 		<ul id="zoneResultats" style="visibility: hidden;"></ul>
 
 		</form>';

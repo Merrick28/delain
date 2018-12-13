@@ -215,7 +215,7 @@ $db->query($req_id);
 <td>Encombrement : <?php  echo $poids_porte . "/" . $poids_total; ?></td></tr>
 
 <tr>
-<td >Vous avez <?php  echo $perso_po; ?> brouzoufs <i>(<?php echo $qte_or;?> en banque)</i>-- <a href="deposer_or.php">Déposer des brouzoufs (1 PA)</a>.</td>
+<td >Vous avez <?php  echo $perso_po; ?> brouzoufs <em>(<?php echo $qte_or;?> en banque)</em>-- <a href="deposer_or.php">Déposer des brouzoufs (1 PA)</a>.</td>
 </tr>
 <?php if ($is_golem)
 {

@@ -20,7 +20,7 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
         {% endif %}
         <div class="soustitre2">
             <span {% if PERSO.dlt_passee ==1 %} style="font-weight: bold;"{% endif %}>DLT : {{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</span>
-            <br/><i>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</i>
+            <br/><em>Puis ± {{ PERSO.prochaine_dlt|date('d/m/Y H:i:s') }}</em>
             <br/>
         </div>
 
@@ -39,8 +39,8 @@ C'est une instance de la classe perso qui est passée par la fonction prepare_fo
         <div>
             <strong>Niveau {{ PERSO.perso_niveau }}</strong>
             {% if PERSO.perso_tangible == 'N' %}
-                <br/><i>Impalpable ({{ PERSO.perso_nb_tour_intangible }}
-                tour{% if PERSO.perso_nb_tour_intangible >1 %}s{% endif %})</i>
+                <br/><em>Impalpable ({{ PERSO.perso_nb_tour_intangible }}
+                tour{% if PERSO.perso_nb_tour_intangible >1 %}s{% endif %})</em>
 
             {% endif %}
         </div>

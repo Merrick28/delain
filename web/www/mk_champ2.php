@@ -13,7 +13,7 @@ $db3 = new base_delain;
 <?php include "jeu_test/tab_haut.php";
 ?>
 <p class="titre">Les champions de Delain !</p><hr>
-<center><i>page mise à jour toutes les heures</i></center>
+<center><em>page mise à jour toutes les heures</em></center>
 <center><table>
 <?php 
 //Exclusion de l'enluminure pour l'instant
@@ -50,7 +50,7 @@ while($db->next_record())
 			{
 				echo "<tr>";
 			}
-			echo "<td nowrap class=\"soustitre2\"><p><strong>" . $db2->f("comp_libelle") . "</strong> - <i>(" . $max . " %)</i></p></td>";
+			echo "<td nowrap class=\"soustitre2\"><p><strong>" . $db2->f("comp_libelle") . "</strong> - <em>(" . $max . " %)</em></p></td>";
 			echo "<td>";
 			$req_p = "select lower(perso_nom) as minusc,perso_cod,perso_nom,pcomp_modificateur from perso,perso_competences 
 				where pcomp_pcomp_cod = " . $db2->f("comp_cod") . " 
@@ -157,8 +157,8 @@ echo "Les aventuriers possèdent tous ensemble <strong>". number_format($po_glob
 
 ?>
 </table>
-<br><strong><i>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
-<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</i></strong>
+<br><strong><em>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
+<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</em></strong>
 <br>
 <hr>
 
@@ -198,7 +198,7 @@ if ($db->nf() != 0)
 				having sum(ptab_solo) = " . $db2->f('tmax');
      	$db3->query($req);
      	if($db3->nf() == 0)
-     		echo '<i>Champion disparu....</i>';
+     		echo '<em>Champion disparu....</em>';
 			else
 			{     	
      		while($db3->next_record())

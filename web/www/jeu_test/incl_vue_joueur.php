@@ -62,7 +62,7 @@ $nb_joueur_en_vue = $db->nf();
     </tr>
     <?php if ($marquerQuatriemes)
     {
-        echo '<tr><td colspan="9" class="soustitre2"><i>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
+        echo '<tr><td colspan="9" class="soustitre2"><em>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
     } ?>
     <tr>
         <td class="soustitre2" width="50"><strong>Dist.</strong></td>

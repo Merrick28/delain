@@ -307,7 +307,7 @@ if ($autorise == 1)
     }
     echo "</form>";
 
-    echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : $maintenant</i></p>";
+    echo "<p style=\"text-align:center;\"><br /><em>Date et heure serveur : $maintenant</em></p>";
 } else
 {
     echo "Accès refusé !";

@@ -132,7 +132,7 @@ if ($erreur == 0)
                 {
                     chaine_contenu +='<p><a href=\"modif_etage3_styles.php?&style='+style+'\"><input type=\"submit\" value=\"Editer\" class=\"test\"></a>&nbsp&nbsp';
                     chaine_contenu += '<strong>Style ' + style + '</strong>&nbsp&nbsp';
-                    chaine_contenu +='<i>Nombre d\'étage l\'utilisant:</i>&nbsp;<strong>'+tab_usage[style]+'</strong></p>\\n';
+                    chaine_contenu +='<em>Nombre d\'étage l\'utilisant:</em>&nbsp;<strong>'+tab_usage[style]+'</strong></p>\\n';
                     chaine_contenu += '<p>Fonds :</p>';
                     chaine_contenu += '\\n	<div style=\"width:600px; overflow:auto\" class=\"bordiv\">';
                     

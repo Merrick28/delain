@@ -63,7 +63,7 @@ if($db->next_record())
 				$liste = '<option value="vide"><-- Sélectionner --></option>';
 				while($db->next_record())
 				{	
-					$contenu_page .= '<br><strong>'.$db->f("gobj_nom").'</strong> / <i>'.$db->f("reponse").'</i>';
+					$contenu_page .= '<br><strong>'.$db->f("gobj_nom").'</strong> / <em>'.$db->f("reponse").'</em>';
 					$liste .= '<option value="'. $db->f("obj_gobj_cod") .'"> '. $db->f("gobj_nom") .'</option>';
 				}
 					$contenu_page .= '

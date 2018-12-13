@@ -104,12 +104,12 @@ switch($methode)
 						<label><input name="special" value="areneNOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />non.</label><br />
 					</td></tr>
 			</table>
-			<i>Notes :<br /> - L’ordre de superposition des couches graphiques est le suivant : fond < décor < mur < décor superposé.</i><br />
-			<i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc seul un « décor superposé » peut apparaître par dessus un mur.</i><br />
-			<i> - L’outil « Annulation » replace les éléments sous le pinceau à leur état initial (depuis la dernière sauvegarde)</i><br />
-			<i> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et l’appliquer sur le(s) décor(s) ) enlever.</i><br />
-			<i> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la brosse spéciale dédiée.</i><br />
-			<i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</i><br />
+			<em>Notes :<br /> - L’ordre de superposition des couches graphiques est le suivant : fond < décor < mur < décor superposé.</em><br />
+			<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc seul un « décor superposé » peut apparaître par dessus un mur.</em><br />
+			<em> - L’outil « Annulation » replace les éléments sous le pinceau à leur état initial (depuis la dernière sauvegarde)</em><br />
+			<em> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et l’appliquer sur le(s) décor(s) ) enlever.</em><br />
+			<em> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la brosse spéciale dédiée.</em><br />
+			<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br />
 		</div>
 
 		<div id="vueEtage"></div>

@@ -100,10 +100,10 @@ if ($erreur == 0) {
 				and obj_enchantable = 1 ';
             $db->query($req);
             if ($db->nf() == 0)
-                $contenu_page .= '« <i>Désolé, vous ne possédez aucun objet sur lequel je puisse lancer un enchantement.</i>»';
+                $contenu_page .= '« <em>Désolé, vous ne possédez aucun objet sur lequel je puisse lancer un enchantement.</em>»';
             else {
-                $contenu_page .= '« <i>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
-				Voici les objets sur lesquels je peux intervenir : </i>»<br>';
+                $contenu_page .= '« <em>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
+				Voici les objets sur lesquels je peux intervenir : </em>»<br>';
                 while ($db->next_record())
                     $contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&type_appel=' . $type_appel . '">' . $db->f('obj_nom') . '</a></strong>';
             }
@@ -115,13 +115,13 @@ if ($erreur == 0) {
 											and pquete_perso_cod = " . $perso_cod;
                 $db->query($req);
                 if ($db->nf() == 0) {
-                    $contenu_page .= '« <i>Mais j\'y pense, vous voulez peut-être devenir vous-même un enchanteur de renom ?
-														<br>Si c\'est le cas, dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap, celui d\'apprenti.</i>»
+                    $contenu_page .= '« <em>Mais j\'y pense, vous voulez peut-être devenir vous-même un enchanteur de renom ?
+														<br>Si c\'est le cas, dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap, celui d\'apprenti.</em>»
 														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv1&comp=88"><strong>Allez je me lance !</strong></a><br><br>';
                 } else {
-                    $contenu_page .= '« <i>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
-														<br>Quelle est la solution que vous me proposez ?</i>»<br><br>
-														Notez le code dans le cadre ci-dessous (<i>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</i>).
+                    $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
+														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
+														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
 														<br>Vous devez le proposer en <strong>majuscule</strong>, et cela vous coutera <strong>12PA</strong> en cas de code correct, <strong>6PA</strong> si le code est faux.
 														 <form method="post" action="' . $PHP_SELF . '">
 														<input type="hidden" name="methode" value="code">
@@ -130,45 +130,45 @@ if ($erreur == 0) {
                 }
             } else if ($comp_enchantement == 88) {
                 if ($comp_enchantement_percent < 85) {
-                    $contenu_page .= '« <i>Vous revoilà déjà ?
+                    $contenu_page .= '« <em>Vous revoilà déjà ?
 													<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 													Revenez donc lorsque vous serez un peu plus expérimenté.
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
-													</i>»
+													</em>»
 													<br><br>Un niveau minimum de <strong>85%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2 / Artisan forgeamiste<br><br>';
                 } else {
-                    $contenu_page .= '« <i>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
+                    $contenu_page .= '« <em>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
 													<br>Donnez moi <strong>10000 brouzoufs</strong>, et je ferais de vous un enchanteur accompli !
-													</i>»
+													</em>»
 													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv2&comp=102"><strong>Allez je me lance !</strong></a><br><br>';
                 }
             } else if ($comp_enchantement == 102) {
                 if ($comp_enchantement_percent < 100) {
-                    $contenu_page .= '« <i>Vous revoilà déjà ?
+                    $contenu_page .= '« <em>Vous revoilà déjà ?
 													<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 													Revenez donc lorsque vous serez un peu plus expérimenté.
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
-													</i>»
+													</em>»
 													<br><br>Un niveau minimum de <strong>100%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 3 / Enchanteur<br><br>';
                 } else {
-                    $contenu_page .= '« <i>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
+                    $contenu_page .= '« <em>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
 													<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enchanteur expérimenté !
-													</i>»
+													</em>»
 													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv3&comp=103"><strong>Allez je me lance !</strong></a><br><br>';
                 }
 
             } else if ($comp_enchantement == 103) {
-                $contenu_page .= '« <i>Cher confrère ! Nous pouvons deviser si vous le souhaitez des meilleurs endroits pour lancer nos enchantements !
-													<br>Ces vents magiques sont tellement difficiles à capturer ...</i>»
+                $contenu_page .= '« <em>Cher confrère ! Nous pouvons deviser si vous le souhaitez des meilleurs endroits pour lancer nos enchantements !
+													<br>Ces vents magiques sont tellement difficiles à capturer ...</em>»
 													<br><br>Et l\'enchanteur se lance dans des palabres sans fin ...<br><br>';
             }
             /*else
             {
-                $contenu_page .= '« <i>Mais j\'y pense, vous voulez peut-être devenir vous même un enchanteur de renom ?	</i>»';
+                $contenu_page .= '« <em>Mais j\'y pense, vous voulez peut-être devenir vous même un enchanteur de renom ?	</em>»';
             }			*/
             break;
         case "enc":
@@ -252,9 +252,9 @@ if ($erreur == 0) {
                 $db2->next_record();
                 $contenu_page .= $db2->f('resultat');
             } else {
-                $contenu_page .= '« <i>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
-														<br>Quelle est la solution que vous me proposez ?</i>»<br><br>
-														Notez le code dans le cadre ci-dessous (<i>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</i>).
+                $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
+														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
+														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
 														<br>Vous devez le proposer en <strong>majuscule</strong>, et cela vous coutera <strong>12PA</strong> en cas de code correct, <strong>6PA</strong> si le code est faux.
 														 <form method="post" action="' . $PHP_SELF . '">
 														<input type="hidden" name="methode" value="code">
@@ -296,11 +296,11 @@ if ($erreur == 0) {
                 $req2 = "select enchanteur(" . $perso_cod . ",88) as resultat";
                 $db2->query($req2);
                 $db2->next_record();
-                $contenu_page .= '« <i>' . $db2->f('resultat') . '</i>»<br><br>
+                $contenu_page .= '« <em>' . $db2->f('resultat') . '</em>»<br><br>
 																		<strong>Vous bénéficiez maintenant d\'une nouvelle compétence. Bonne découverte !</strong>';
             } else {
-                $contenu_page .= '« <i>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
-														<br>Prenez un peu de temps pour réfléchir un peu plus ...</i>»<br><br>';
+                $contenu_page .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
+														<br>Prenez un peu de temps pour réfléchir un peu plus ...</em>»<br><br>';
                 $req2 = "update perso set perso_pa = perso_pa - 6 where perso_cod = " . $perso_cod;
                 $db2->query($req2);
                 $db2->next_record();

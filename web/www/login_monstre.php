@@ -139,7 +139,7 @@ else
 <?php if ($etage == -100)
 {
 ?>    Suppression de monstres<br />
-    <i>Entrez les numéros séparés par des ";"</i><br />
+    <em>Entrez les numéros séparés par des ";"</em><br />
     <form name="delete" method="post" action="supprime_monstre.php">
     <input type="text" name="monstres"><br />
     <input type="submit" value="Supprimer"><br />

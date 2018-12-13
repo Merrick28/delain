@@ -52,19 +52,19 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
 				$req = 'select choix_rumeur() as rumeur ';
 				$db->query($req);
 				$db->next_record();
-				$resultat_deplacement .= '<hr /><p><i>Rumeur :</i> '. $db->f('rumeur'). '</p>';
+				$resultat_deplacement .= '<hr /><p><em>Rumeur :</em> '. $db->f('rumeur'). '</p>';
 			}
 			else if ($is_phrase < 67)
 			{
 				include 'phrase.php';
 				$idx_phrase = rand(1, sizeof($phrase));
-				$resultat_deplacement .= '<hr /><p><i>' . $phrase[$idx_phrase] . '</i></p>';
+				$resultat_deplacement .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
 			}
 			else
 			{
 				include 'phrase_indice.php';
 				$idx_phrase2 = rand(1, sizeof($phrase_indice));
-				$resultat_deplacement .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><i>' . $phrase_indice[$idx_phrase2] . '</i></p>';
+				$resultat_deplacement .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $phrase_indice[$idx_phrase2] . '</em></p>';
 			}
 		}
 	}

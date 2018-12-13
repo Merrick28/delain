@@ -104,7 +104,7 @@
 			}
 			
 			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
-			echo "<br>" , ($inactif?'<i>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . " - <strong>(" , $db->f("mess") , " messages)</strong> (" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>" , ($inactif?'</i>':'');
+			echo "<br>" , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . " - <strong>(" , $db->f("mess") , " messages)</strong> (" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>" , ($inactif?'</em>':'');
 		}
 	}
 	echo "<hr>";
@@ -215,7 +215,7 @@
 		{
 			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
 			$image = ($db->f('commandant') > 0) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" /> ' : (($db->f('troupe') >= 0) ? '<img src="' . G_IMAGES . 'commandé.png" title="Troupe" /> ' : '');
-			echo "<br>" , $image , ($inactif?'<i>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") .  "(" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>, " , ($inactif?'</i>':''), $db->f("perso_pa"), " PA, ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), ", ";
+			echo "<br>" , $image , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") .  "(" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>, " , ($inactif?'</em>':''), $db->f("perso_pa"), " PA, ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), ", ";
 			if ($db->f("dlt_passee") == 1)
 			{
 				echo("<strong>");

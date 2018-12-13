@@ -41,7 +41,7 @@ if ($erreur == 0)
 		case "debut":
 			$contenu_page4 .= "Alors que vous vaquiez à vos traditionnelles occupations d'aventurier aguerri, vous sentez subitement une présence toute proche. Une respiration paisible se fait entendre juste derrière vous. Sursautant, vous vous retournez en un bond. Vous faites face à un individu dont la dégaine ne laisse aucun doute : vous ne faites certainement pas face à un marchand grassouillet ou un enchanteur de foire.
 												<br /><br />L'homme est solidement bâti, il arbore une armure solide, tient fermement une lourde arbalète, une épée effilée pend à son côté. Se débarrassant de son capuchon d'un geste vif, il découvre un visage buriné et marqué de nombreuses cicatrices. Une détermination sans faille se lit dans le regard appuyé qu'il vous adresse. Sur l'épaule, il arbore un sigle auquel vous n'aviez jamais été confronté. On peut y voir la silhouette d'un homme dont l'épée longue est fichée dans la poitrine béante d'un basilic terrassé et qui pointe son arbalète comme s'il s'apprêtait à en découdre avec un autre monstre.
-												<br /><br /><i>- « Je fais partie de la Guilde des Traqueurs »</i>, vous dit il simplement.";
+												<br /><br /><em>- « Je fais partie de la Guilde des Traqueurs »</em>, vous dit il simplement.";
 			if ($quete_avancement != 0)
 			{
 				if($quete_avancement == 1)
@@ -56,8 +56,8 @@ if ($erreur == 0)
 				{
 						$titre = "Traqueur aguerri";
 				}
-				$contenu_page4 .= "<br /><i>«  Je vois que vous avez déjà rencontré un de mes collègues, et qu'il vous a jugé apte à être un \"". $titre ."\" !
-													<br />C'est un honneur immense.  » </i><br>";
+				$contenu_page4 .= "<br /><em>«  Je vois que vous avez déjà rencontré un de mes collègues, et qu'il vous a jugé apte à être un \"". $titre ."\" !
+													<br />C'est un honneur immense.  » </em><br>";
 			}
 			$contenu_page4 .= "<a href=\"$PHP_SELF?methode3=suite\">suite ...</a><br /><br />";
 
@@ -103,21 +103,21 @@ if ($erreur == 0)
                                                 $db2->next_record();
                                                 $monstre_nom = $db2->f("gmon_nom");
                                                 $contenu_page4 .= "Le traqueur vous regarde intensément quelques secondes. Il ajuste son fourreau et hausse les épaules :
-																																	<br /><br /><i>- « Votre tête ne m'est pas inconnue » </i> finit il par lâcher platement <i>« Vous semblez déjà avoir une tâche de ce type il me semble ! Ne l'avez-vous donc toujours pas effectuée ? Peut-être me suis-je trompé sur votre personne, moi qui croyais que vous aviez la trempe d'un vrai chasseur de monstres. Ne revenez me voir qu'une fois ces créatures de l'Innommable tuées, vous savez bien, ceux qu'on appelle ". $monstre_nom ." ! </i>»";
+																																	<br /><br /><em>- « Votre tête ne m'est pas inconnue » </em> finit il par lâcher platement <em>« Vous semblez déjà avoir une tâche de ce type il me semble ! Ne l'avez-vous donc toujours pas effectuée ? Peut-être me suis-je trompé sur votre personne, moi qui croyais que vous aviez la trempe d'un vrai chasseur de monstres. Ne revenez me voir qu'une fois ces créatures de l'Innommable tuées, vous savez bien, ceux qu'on appelle ". $monstre_nom ." ! </em>»";
                                             }
                                             else
                                             {
                                             	$contenu_page4 .= "Le traqueur vous regarde intensément ... baisse la tête et fait un signe de négation ...
-                                            	<br /><br /><i>- « Vous ne semblez pas digne de la guilde des traqueurs. Vous avez échoué dans la mission qui vous avait été confiée.</i> »";
+                                            	<br /><br /><em>- « Vous ne semblez pas digne de la guilde des traqueurs. Vous avez échoué dans la mission qui vous avait été confiée.</em> »";
                                             }
 				}
 				else
 				{
-				$contenu_page4 .= "<i>- «  Ah ! Vous, vous avez bien travaillé à ce que je vois ! La guilde des Traqueurs a bien fait de vous accorder sa confiance. N'était-ce pas trop dur ? Non, je suis sur que vous avez mené cette tâche à bien de main de maître  »</i> clame le traqueur à la mine réjouie <i>« Chose promise chose due, voici donc votre prime de chasse ! »</i>";
+				$contenu_page4 .= "<em>- «  Ah ! Vous, vous avez bien travaillé à ce que je vois ! La guilde des Traqueurs a bien fait de vous accorder sa confiance. N'était-ce pas trop dur ? Non, je suis sur que vous avez mené cette tâche à bien de main de maître  »</em> clame le traqueur à la mine réjouie <em>« Chose promise chose due, voici donc votre prime de chasse ! »</em>";
 					if ($quete_avancement == 1) /*On regarde si il est déjà engagé dans la quête des traqueurs, et donc, on change les paramètres*/
 					{
 						$contenu_page4 .= "<br /><br /> Vous recevez 7500 brouzoufs, 15 points d'expérience et 2 points de renommée.
-															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <i>Traqueur</i> vous est officiellement décerné. ";
+															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em>Traqueur</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 7500,perso_px = perso_px + 15,perso_prestige = perso_prestige + 2
 										where perso_cod = $perso_cod";
 						$db->query($req);
@@ -133,7 +133,7 @@ if ($erreur == 0)
 					else if ($quete_avancement == 2)
 					{
 						$contenu_page4 .= "<br /><br /> Vous recevez 10000 brouzoufs, 20 points d'expérience et 3 points de renommée.
-															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <i> Traqueur aguerri</i> vous est officiellement décerné. ";
+															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em> Traqueur aguerri</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 10000,perso_px = perso_px + 20,perso_prestige = perso_prestige + 3
 										where perso_cod = $perso_cod";
 						$db->query($req);
@@ -149,7 +149,7 @@ if ($erreur == 0)
 					else
 					{
 						$contenu_page4 .= "<br /><br /> Vous recevez 5000 brouzoufs, 10 points d'expérience et 1 point de renommée.
-															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre d'<i>Apprenti traqueur</i> vous est officiellement décerné. ";
+															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre d'<em>Apprenti traqueur</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 5000,perso_px = perso_px + 10,perso_prestige = perso_prestige + 1
 										where perso_cod = $perso_cod";
 						$db->query($req);
@@ -189,11 +189,11 @@ if ($erreur == 0)
 				if ($donne_contrat == 'O'  or $perso_cod == '61')		/*Les dates coincident, on va lui donner une mission*/
 				{
 					$input = array ("<br />S'approchant de vous, le traqueur vous glisse quelques mots à l'oreille :
-															<br /><br /><i>- « Avez-vous déjà eu l'occasion de combattre des séides de Malkiar ? Vous m'en avez tout l'air. Mes informateurs m'ont certifié que certaines créatures pullulaient un peu trop. La guilde des Traqueurs est prête à récompenser toute personne acceptant d'en exécuter un certain nombre ! A vous voir, j'ai la certitude qu'il s'agit là d'une tâche que vous serez à même de remplir. Ne tardez pas, fourbissez vos armes et revenez me voir une fois le travail accompli. Vous pourrez aussi voir un de mes confrères traqueur. La guilde des traqueurs saura se montrer généreuse. <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !» ",
+															<br /><br /><em>- « Avez-vous déjà eu l'occasion de combattre des séides de Malkiar ? Vous m'en avez tout l'air. Mes informateurs m'ont certifié que certaines créatures pullulaient un peu trop. La guilde des Traqueurs est prête à récompenser toute personne acceptant d'en exécuter un certain nombre ! A vous voir, j'ai la certitude qu'il s'agit là d'une tâche que vous serez à même de remplir. Ne tardez pas, fourbissez vos armes et revenez me voir une fois le travail accompli. Vous pourrez aussi voir un de mes confrères traqueur. La guilde des traqueurs saura se montrer généreuse. <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !» ",
 													"<br />Posant solennellement sa main sur votre épaule, le traqueur plonge son regard dans le vôtre. Vous sentez sa poigne d'acier s'exercer sur votre bras à mesure qu'il le serre, comme pour en évaluer la force :
-															<br /><br /><i>- « Certaines créatures nous posent actuellement problème. Nos éclaireurs nous affirment qu'ils font un véritable massacre chez les aventuriers. La guilde des Traqueurs ne peut rester inactive face à une telle menace. Vous m'avez tout l'air d'avoir la trempe d'un sacré chasseur vous ! Que diriez vous de nous apporter votre concours, j'ai ici un petit contrat que vous rempliriez sans mal, j'en suis sur ! Il vous suffit d'occire quelques uns de ces monstres et de revenir me voir une fois le travail accompli. Vous pourrez aussi voir un de mes confrères traqueur. Les Traqueurs vous récompenseront, soyez sans crainte ! <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !»",
+															<br /><br /><em>- « Certaines créatures nous posent actuellement problème. Nos éclaireurs nous affirment qu'ils font un véritable massacre chez les aventuriers. La guilde des Traqueurs ne peut rester inactive face à une telle menace. Vous m'avez tout l'air d'avoir la trempe d'un sacré chasseur vous ! Que diriez vous de nous apporter votre concours, j'ai ici un petit contrat que vous rempliriez sans mal, j'en suis sur ! Il vous suffit d'occire quelques uns de ces monstres et de revenir me voir une fois le travail accompli. Vous pourrez aussi voir un de mes confrères traqueur. Les Traqueurs vous récompenseront, soyez sans crainte ! <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !»",
 													"<br />D'un ton jovial, le traqueur commence par vous congratuler sur l'apparente forme physique que vous semblez tenir. Il s'approche de vous, vous adresse une tape virile sur l'épaule et un sourire triomphant :
-															<br /><br /><i>- « On voit que vous n'êtes pas n'importe qui vous ! La guilde des Traqueurs est à la recherche de solides aventuriers afin d'aller trépaner quelques subordonnés du Démon Rouge. Ces saloperies pullulent et mettent à mal bon nombre de vos collègues. Je suis certain que vous n'y êtes pas insensible. Revenez me voir une fois que vous aurez fait comprendre qui commande à ces créatures. Vous pourrez aussi voir un de mes confrères traqueur. La guilde des Traqueurs ne manquera pas de vous signifier sa gratitude ! <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !»
+															<br /><br /><em>- « On voit que vous n'êtes pas n'importe qui vous ! La guilde des Traqueurs est à la recherche de solides aventuriers afin d'aller trépaner quelques subordonnés du Démon Rouge. Ces saloperies pullulent et mettent à mal bon nombre de vos collègues. Je suis certain que vous n'y êtes pas insensible. Revenez me voir une fois que vous aurez fait comprendre qui commande à ces créatures. Vous pourrez aussi voir un de mes confrères traqueur. La guilde des Traqueurs ne manquera pas de vous signifier sa gratitude ! <br /> Rien ne servira d'aller dans un bâtiment administratif, vous connaissez ces gens ! Tous des fonctionnaires d'Hormandre qui ne connaissent rien à la traque de bêtes féroces ! Ils pensent pouvoir mener leurs propres traques, mais ce sont des amateurs !»
 													");
 					$wanted = array_rand ($input, 1);
 					$phrase_wanted = $input[$wanted];
@@ -202,7 +202,7 @@ if ($erreur == 0)
 					$niv_max = 10;
 					if ($quete_avancement == 1) /*On regarde si il est déjà engagé dans la quête des traqueurs, et donc, on change les paramètres*/
 					{
-						$phrase_wanted .= "<br /><i>«  La guilde des Traqueurs a encore besoin de vous. Le combat contre les hordes de Malkiar ne fait que commencer, accepteriez vous un autre contrat ?  » </i>";
+						$phrase_wanted .= "<br /><em>«  La guilde des Traqueurs a encore besoin de vous. Le combat contre les hordes de Malkiar ne fait que commencer, accepteriez vous un autre contrat ?  » </em>";
 						$niv_mini = 5;
 						$niv_max = 15;
 					}
@@ -239,7 +239,7 @@ if ($erreur == 0)
 					$db->query($req);
 					if ($db->nf() == 0) /*Le perso n'a pas le niveau requis pour cet étage pour avoir une mission*/
 					{
-						$contenu_page4 .= '<br><i>Je ne vous vois pas combattre un quelconque monstre à cet étage. Sachez que les Traqueurs sont très exigeants quant aux cibles à chasser !</i><br><br>';
+						$contenu_page4 .= '<br><em>Je ne vous vois pas combattre un quelconque monstre à cet étage. Sachez que les Traqueurs sont très exigeants quant aux cibles à chasser !</em><br><br>';
 					}
 					else
 					{
@@ -257,7 +257,7 @@ if ($erreur == 0)
 						{
 						$contenu_page4 .= "<br>Ce type de monstre est facilement reconnaissable. Il ressemble à cela :<br><p\"><img src=\"../avatars/" . $avatar . "\"></p>";
 						}
-						$contenu_page4 .= "<br><i>Alors, tope là ? »</i><br /><br /> <strong>(Attention, ce choix vous engage pour une certaine durée)</strong>";
+						$contenu_page4 .= "<br><em>Alors, tope là ? »</em><br /><br /> <strong>(Attention, ce choix vous engage pour une certaine durée)</strong>";
 
 						$contenu_page4 .= "<form name=\"mission\" method=\"post\" action=\"$PHP_SELF\">
 										<input type=\"hidden\" name=\"methode3\" value=\"mission\">
@@ -284,7 +284,7 @@ if ($erreur == 0)
 				else //Le perso n'obtiendra pas de quête aujourd'hui
 				{
 						$contenu_page4 .= "<br />Le traqueur semble à peine prêter attention à vous. Finalement, il daigne vous adresser la parole :
-															<br /><br /><i>- « Désolé mais je n'ai rien à vous proposer pour l'instant ! Je suis bien trop occupé à m'occuper de tous les contrats d'autres prétendus chasseurs s'évertuent à ne pas remplir. Qui sait, si nos chemins se recroisent, il en sera peut-être autrement. Pour l'heure, je vous salue ! » </i><br /><br />";
+															<br /><br /><em>- « Désolé mais je n'ai rien à vous proposer pour l'instant ! Je suis bien trop occupé à m'occuper de tous les contrats d'autres prétendus chasseurs s'évertuent à ne pas remplir. Qui sait, si nos chemins se recroisent, il en sera peut-être autrement. Pour l'heure, je vous salue ! » </em><br /><br />";
 				}
 		}
 		break;
@@ -310,8 +310,8 @@ if ($erreur == 0)
 			{
 			$random = rand (1,4);
 			$temps = $random + 4; //Nombre de semaines autorisées pour la mission
-			$contenu_page4 .= "<i>- «  J'étais sur que vous étiez de la trempe de ceux qui ne reculent pas devant le danger »</i> vous fait le traqueur d'un ton amical <i>« Sachez cependant qu'aucun autre contrat ne pourra vous être délivré tant que vous n'aurez pas mené celui-ci à bien ! Montrez-vous inflexible, ces créatures doivent mourir ! partez donc en chasse au $monstre_nom ! Ramenez nous en <strong>$random</strong> pour nous montrer votre courage. <br>Nous vous laissons $temps semaines pour réaliser cette mission, autrement, cela signifiera que vous n'êtes pas digne des vrais traqueurs.
-						<br>La mission pour tuer doit se réaliser dans ce laps de temps, mais vous pourrez ensuite prendre tout le temps que vous souhaitez pour venir chercher votre récompense.»</i> ";
+			$contenu_page4 .= "<em>- «  J'étais sur que vous étiez de la trempe de ceux qui ne reculent pas devant le danger »</em> vous fait le traqueur d'un ton amical <em>« Sachez cependant qu'aucun autre contrat ne pourra vous être délivré tant que vous n'aurez pas mené celui-ci à bien ! Montrez-vous inflexible, ces créatures doivent mourir ! partez donc en chasse au $monstre_nom ! Ramenez nous en <strong>$random</strong> pour nous montrer votre courage. <br>Nous vous laissons $temps semaines pour réaliser cette mission, autrement, cela signifiera que vous n'êtes pas digne des vrais traqueurs.
+						<br>La mission pour tuer doit se réaliser dans ce laps de temps, mais vous pourrez ensuite prendre tout le temps que vous souhaitez pour venir chercher votre récompense.»</em> ";
 			$req = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut,pquete_date_fin,pquete_param)
 																values ('12','$perso_cod','$random',now(),now() + '$temps weeks'::interval,'$monstre')";
 			$db->query($req);
@@ -324,7 +324,7 @@ if ($erreur == 0)
 			/* COOKIES */
 			/***********/
 			setcookie("quete_gmon_cod",$quete_gmon_cod,time()+86400);
-			$contenu_page4 .= "<i>- «  Je me suis sans doute trompé sur vous  »</i> lâche platement le traqueur <i>« Ce n'est pas avec des fainéants comme vous qu'on fera reculer les forces de l'Innommable. Je tiens également à vous préciser que si nous venions à nous recroiser, le même contrat pourrait vous être à nouveau proposé !  » </i>";
+			$contenu_page4 .= "<em>- «  Je me suis sans doute trompé sur vous  »</em> lâche platement le traqueur <em>« Ce n'est pas avec des fainéants comme vous qu'on fera reculer les forces de l'Innommable. Je tiens également à vous préciser que si nous venions à nous recroiser, le même contrat pourrait vous être à nouveau proposé !  » </em>";
 			}
 		break;
 	}

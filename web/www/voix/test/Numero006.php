@@ -157,14 +157,14 @@ switchDiv('Courrier',true);">
  <tr>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
-  <td class="trialcolonne" colspan="13"><p><i>
+  <td class="trialcolonne" colspan="13"><p><em>
     Il &eacute;tait une fois un &eacute;talon noir dont les hennissement sauvages annon&ccedil;aient l'arriv&eacute;e du 
 	fou hiss&eacute; sur son dos L'aventurier passionn&eacute;, amateur de vers et de femmes, &eacute;tait avant tout un 
 	allum&eacute; assoiff&eacute; d'action. Le danger &eacute;tait sa bouff&eacute;e d'oxyg&egrave;ne. Il s'y ruait t&ecirc;te 
 	baiss&eacute;e, l'&oelig;il p&eacute;tillant, le sourire carnassier et &eacute;panoui, provoquant la torpeur de ses ami, 
 	affol&eacute;s par tant d'enthousiasme.<br>
     Bardamu l'ignorait encore, mais de leur rencontre na&icirc;trait une solide amiti&eacute;. 
-  </i></p></td>
+  </em></p></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="10" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" height="10" width="10"></td>
  </tr>
@@ -246,7 +246,7 @@ switchDiv('Courrier',true);">
 	et les Chevaliers de Justice ainsi que les Renards Mercenaires, et les Transfuges de Nordock. Nous avons particip&eacute; 
 	&agrave; plusieurs guerres contre les forces du Mal.<br>
     J'ai aussi c&ocirc;toy&eacute; Kaali pendant un moment qui est une personne particuli&egrave;rement respectable.<br>
-    <strong>Bardamu</strong> : Hein ?? <i>* regard ahuri *</i><br>
+    <strong>Bardamu</strong> : Hein ?? <em>* regard ahuri *</em><br>
     Euh... Sinon... Tu es l'alli&eacute; du Bien... N'as-tu jamais &eacute;prouv&eacute; l'envie de basculer de l'autre 
 	c&ocirc;t&eacute;?<br>
     <strong>Blackrider</strong> : Je suis l'alli&eacute; des gens qui servent le bien, mais les bardes sont plut&ocirc;t neutres. 
@@ -256,14 +256,14 @@ switchDiv('Courrier',true);">
 	dans ce cas nous punissons le sang par le sang. Certains d'entre nous ont d&eacute;j&agrave; sombr&eacute; du c&ocirc;t&eacute; 
 	obscur, je pense &agrave; la belle S&eacute;r&eacute;na, qui depuis a disparu dans les limbes.<br>
     <strong>Bardamu</strong> : Arffffffff... S&eacute;r&eacute;na... Quelle femelle!!!
-    <i>* silence *</i><br>
+    <em>* silence *</em><br>
     Reprenons : Sers-tu un Dieu ?<br>
     <strong>Blackrider</strong> : La plupart des bardes sont ath&eacute;es, pourquoi, me direz vous, et bien parce que nous avons 
 	d&eacute;j&agrave; nos dieux dans notre monde, inutile d'essayer de nous convertir aux cultes de Delain. <br>
     <strong>Bardamu</strong> : Qui ne souhaites-tu pas rencontrer dans les profondeurs ? <br>
     <strong>Blackrider</strong> : Ingeloztamillizan, qui m'a d&eacute;j&agrave; mis KO, en fait ce sont des gel&eacute;es qui m'ont 
 	termin&eacute;, car &agrave; l'&eacute;poque Ingeo n'&eacute;tait pas si puissant et je l'avais m&ecirc;me bless&eacute;. <br>
-    <strong>Bardamu</strong> : mmm... Ingelo... <i>* air nostalgique *</i><br>
+    <strong>Bardamu</strong> : mmm... Ingelo... <em>* air nostalgique *</em><br>
     Bien... As-tu un message &agrave; d&eacute;livrer?<br>
     <strong>Blackrider</strong> : Oui un message aux Nihilistes, Naine Blanche et son &eacute;quipe, qui ont tu&eacute; quatre bardes de 
 	mon &eacute;quipe en se cachant dans un temple et en lan&ccedil;ant une bonne dizaine de boule de feu sur le groupe. <br>
@@ -271,7 +271,7 @@ switchDiv('Courrier',true);">
     <strong>Bardamu</strong> : Dis Blackrider ? Tu veux pas nous composer un petit chant pour La Voix? <br>
     <strong>Blackrider</strong> : Oui, je vais vous improviser &ccedil;a a chaud, une pub pour La Voix<br>
 	<br>
-    <i>Aventuriers, aventuri&egrave;res, <br>
+    <em>Aventuriers, aventuri&egrave;res, <br>
     La gazette va vous conter <br>
     L'histoire extraordinaire <br>
     Qui dans les souterrains s'est pass&eacute;e <br>
@@ -282,9 +282,9 @@ switchDiv('Courrier',true);">
     De ses l&eacute;gions de Morbelins <br>
     De brouzoufs de runes et d'armes magiques, <br>
     De qu&ecirc;tes, de renomm&eacute;e et de destin, <br>
-    Bref de fesses de pouvoir et de fric.</i><br>
+    Bref de fesses de pouvoir et de fric.</em><br>
 	<br>
-    <strong>Bardamu</strong> : <i>* large sourire *</i><br>
+    <strong>Bardamu</strong> : <em>* large sourire *</em><br>
     Merci chevalier. Peut-&ecirc;tre nous croiserons nous bient&ocirc;t...<br>
     <strong>Blackrider</strong> : Ce sera avec un plaisir non dissimul&eacute;, noble chroniqueur.<br>
     <br>
@@ -457,7 +457,7 @@ switchDiv('Courrier',true);">
  <tr>
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"><img src="img_archives/del.gif" height="8" width="10"></td>
-  <td width="500px" colspan="7"><p><i>
+  <td width="500px" colspan="7"><p><em>
   Il existe dans les souterrains quantit&eacute; de monstres lib&eacute;r&eacute;s de l'autorit&eacute; de Malkiar. Parmi eux, maints Morbelins qui se r&eacute;partissent en deux tribus : les Fils d'Huruk et les Marcheurs, tous soumis &agrave; Notrak, Seigneur de la Nation Morbeline Libre.<br>
   D&eacute;sireux de trouver un havre de paix, les Fils d'Huruk, se sont empar&eacute;s du Ch&acirc;teau, situ&eacute; au sixi&egrave;me sous sol.
   Puis, les Marcheurs ont envoy&eacute; Nerlash n&eacute;gocier une alliance avec les Fils d'Huruk.
@@ -466,7 +466,7 @@ switchDiv('Courrier',true);">
   Cependant, l'acc&egrave;s du Ch&acirc;teau reste interdit aux aventuriers, &agrave; moins que ceux ci ne se soumettent &agrave; une taxe s'&eacute;levant &agrave; 3 000 bfzs, qui a pour objectif de financer les travaux de restauration fort on&eacute;reux . <br>
   Cette situation provoque la r&eacute;volte des aventuriers, qui apr&egrave;s avoir entra&icirc;n&eacute; la chute d'Arach n'admettent pas que le Ch&acirc;teau leur reste clos.<br>
   A pr&eacute;sent, quelques questions &agrave; Mishra et Nerlash, qui viennent &agrave; peine de quitter le Ch&acirc;teau 
-  </i></p></td>
+  </em></p></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ligne_droite"><img src="img_archives/del.gif" height="8" width="10"></td>
  </tr>

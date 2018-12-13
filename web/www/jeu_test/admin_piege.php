@@ -243,7 +243,7 @@ else
 					echo '<input type="hidden" name="valide" value="1">';
 					echo '</form>';	
 					echo "<p> Cette case contient déjà un élément <br><strong>" . $pos_fonction_arrive;
-					echo "</strong><br> Souhaitez vous quand même effectuer la mise à jour ? <br><i>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</i>";
+					echo "</strong><br> Souhaitez vous quand même effectuer la mise à jour ? <br><em>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</em>";
 					echo '<br><a href="' . $PHP_SELF. '"?methode=cre">Non ?</a>';
 					echo '<br><a href="javascript:document.piege.submit();">Oui ?</a>';
 				}
@@ -283,7 +283,7 @@ else
 					$db->query($req);
 					echo "<p>L’insertion du piège s’est bien déroulée en ". $_POST['pos_x'] .",". $_POST['pos_y'] ." au ". $_POST['pos_etage'] ." 
 						<br>Le texte affiché sera : ". $_POST['texte_event'] ."
-						<br><i> (si vide, texte standard)</i>";
+						<br><em> (si vide, texte standard)</em>";
 				}
 			}
 		break;//Fin du process de création
@@ -303,7 +303,7 @@ else
 				echo '<br><strong>Piège :</strong>' . $db->f('pos_fonction_arrivee') . '
 				<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
 				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=mod">Modifier la définition de ce piège ?</a><br><br>
-				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer ce piège ? <strong><i>(ATTENTION, action définitive !)</i></strong></a><hr>';
+				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer ce piège ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
 			}
 		break;
 			
@@ -420,7 +420,7 @@ else
 			$db->query($req);
 			echo "<p>Le piège a bien été modifié
 				<br>Le texte affiché sera : ". $_POST['texte_event'] ."
-				<br><i> (si vide, texte standard)</i>
+				<br><em> (si vide, texte standard)</em>
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
 		break;
 			
