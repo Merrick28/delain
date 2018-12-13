@@ -3,9 +3,10 @@ include "verif_connexion.php";
 ?>
 <!DOCTYPE html>
 <html>
-<title>Gestion des échoppes</title>
+
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Gestion des échoppes</title>
 </head>
 <body background="../images/fond5.gif">
 <?php include "tab_haut.php";
