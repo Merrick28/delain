@@ -129,15 +129,15 @@ case "change":
             <input type="hidden" name="met_guilde" value="suite">
             <table>
                 <tr>
-                    <td class="soustitre2"><b>Nom</b></td>
-                    <td class="soustitre2"><b>Autorisée ?</b></td>
-                    <td class="soustitre2"><b>Refusée</b></td>
+                    <td class="soustitre2"><strong>Nom</strong></td>
+                    <td class="soustitre2"><strong>Autorisée ?</strong></td>
+                    <td class="soustitre2"><strong>Refusée</strong></td>
                 </tr>
                 <?php
                 while ($db->next_record())
                 {
                     echo "<tr>";
-                    echo "<td class=\"soustitre2\"><b>", $db->f("guilde_nom"), "</b></td>";
+                    echo "<td class=\"soustitre2\"><strong>", $db->f("guilde_nom"), "</strong></td>";
 
                     if ($db->f($champ) == 'O')
                     {
@@ -202,18 +202,18 @@ case "change":
                                 while ($db->next_record())
                                 {
                                     $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes," . $db->f("pguilde_perso_cod") . ",'N','N') ";
-                                    echo "<p>Le joueur <b>", $db->f("perso_nom"), "</b> a été supprimé du méta guildage.";
+                                    echo "<p>Le joueur <strong>", $db->f("perso_nom"), "</strong> a été supprimé du méta guildage.";
                                     $db2->query($req_dest);
                                 }
 
                             }
                             $req = "update guilde_perso set " . $champ_perso . " = 'N' where pguilde_guilde_cod = $key ";
                             $db->query($req);
-                            echo "<p>La guilde <b>", $db->f("guilde_nom"), "</b> a été supprimée des meta guildages.";
+                            echo "<p>La guilde <strong>", $db->f("guilde_nom"), "</strong> a été supprimée des meta guildages.";
                         }
                         else
                         {
-                            echo "<p>La guilde <b>", $db->f("guilde_nom"), "</b> a été ajoutée aux meta guildages.";
+                            echo "<p>La guilde <strong>", $db->f("guilde_nom"), "</strong> a été ajoutée aux meta guildages.";
                         }
                     }
                 }
@@ -221,7 +221,7 @@ case "change":
             }
             break;
             case "voir_meta":
-                echo "<p><b>Liste des personnes méta guildées :</b><br>";
+                echo "<p><strong>Liste des personnes méta guildées :</strong><br>";
                 $req = "select perso_nom,perso_cod from perso,guilde_perso ";
                 $req = $req . "where pguilde_valide = 'O' ";
                 $req = $req . "and pguilde_meta_noir = 'O' ";
@@ -242,8 +242,8 @@ case "change":
                 }
                 break;
             case "stats_paq":
-                echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>", $param->getparm(81), "/", $param->getparm(80), "</b>";
-                echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <b>", $param->getparm(84), "/", $param->getparm(83), "</b>";
+                echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <strong>", $param->getparm(81), "/", $param->getparm(80), "</strong>";
+                echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <strong>", $param->getparm(84), "/", $param->getparm(83), "</strong>";
                 break;
             }
             }

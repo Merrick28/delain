@@ -90,7 +90,7 @@ for ($i = 0; $i < $nbtest; $i++)
         order by comp_cod";
     $db->query($req_comp);
     
-	echo "Arme utilisée : <b>".$obj_nom."</b>. ";
+	echo "Arme utilisée : <strong>".$obj_nom."</strong>. ";
 	echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
 	echo "<option value=\"0\">Attaque normale (" , $pa_n , " PA)</option>";
     while ($db->next_record())
@@ -119,7 +119,7 @@ for ($i = 0; $i < $nbtest; $i++)
 	<input type="hidden" name="methode" value="attaque2">
 	<?php 
 	$mode = $db->f("mcom_nom");
-	//echo "<br>Attention, vous êtes en mode <b>". $db->f("mcom_nom") . "</b><br><br>";
+	//echo "<br>Attention, vous êtes en mode <strong>". $db->f("mcom_nom") . "</strong><br><br>";
 	
 	// Arme équipée
 	$arme_req = "	SELECT obj_nom
@@ -141,7 +141,7 @@ for ($i = 0; $i < $nbtest; $i++)
 	$pa_f_1 = $pa_n + 3;
 	$pa_f_2 = $pa_n + 1;
 	$pa_f = $db->get_pa_foudre($perso_cod);
-	echo "Arme utilisée : <b>".$obj_nom."</b>.";
+	echo "Arme utilisée : <strong>".$obj_nom."</strong>.";
 	echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
 	echo "<option value=\"0\">Attaque normale (" , $pa_n , " PA)</option>";;
 	if (($db->existe_competence($perso_cod,25)) && !$arme_dist)

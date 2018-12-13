@@ -61,13 +61,13 @@ else
 			include "modif_etage6.php";
 		break;
 		case "cre": // création d’un nouveau piège
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
+			echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
 			?>
 			<form name="cre" method="post" action="<?php echo $PHP_SELF;?>">
 			<br> Pour créer un piège, il suffit d’indiquer les valeurs nécessaires à sa création.
 			<br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
 			<br> Si il y a indiqué "positif", cela signifie que la valeur à rentrer doit être positive, et si "négatif", avec un signe moins devant
-			<br><b>ATTENTION !</b>, Si cela n’est pas respecté, pour certaines valeurs, cela peut poser un vrai problème ensuite ! (exemple du poison)<hr>
+			<br><strong>ATTENTION !</strong>, Si cela n’est pas respecté, pour certaines valeurs, cela peut poser un vrai problème ensuite ! (exemple du poison)<hr>
 			<input type="hidden" name="methode" value="cre1">
 			<center><table>
 			<tr>
@@ -133,7 +133,7 @@ else
 
 			</tr>
 			<tr>
-				<td class="soustitre2">Texte qui s’affichera lorsque le piège sera actionné<br><b>Ne Pas utiliser les caractères # ou % dedans !</b></td>
+				<td class="soustitre2">Texte qui s’affichera lorsque le piège sera actionné<br><strong>Ne Pas utiliser les caractères # ou % dedans !</strong></td>
 				<td><textarea name="texte_event" cols="70" rows="5"></textarea></td>
 			</tr>
 			<tr>
@@ -214,7 +214,7 @@ else
 				<br>Le texte affiché sera : ". $_POST['texte_event'] ."
 				<br> (si vide, texte standard)";
 				?>
-				<br><b><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a></b><br>
+				<br><strong><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a></strong><br>
 				<?php 
 			}
 			else
@@ -242,8 +242,8 @@ else
 					// on rajoute la variable valide, et soit mise à jour, soit annulation
 					echo '<input type="hidden" name="valide" value="1">';
 					echo '</form>';	
-					echo "<p> Cette case contient déjà un élément <br><b>" . $pos_fonction_arrive;
-					echo "</b><br> Souhaitez vous quand même effectuer la mise à jour ? <br><i>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</i>";
+					echo "<p> Cette case contient déjà un élément <br><strong>" . $pos_fonction_arrive;
+					echo "</strong><br> Souhaitez vous quand même effectuer la mise à jour ? <br><em>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</em>";
 					echo '<br><a href="' . $PHP_SELF. '"?methode=cre">Non ?</a>';
 					echo '<br><a href="javascript:document.piege.submit();">Oui ?</a>';
 				}
@@ -283,14 +283,14 @@ else
 					$db->query($req);
 					echo "<p>L’insertion du piège s’est bien déroulée en ". $_POST['pos_x'] .",". $_POST['pos_y'] ." au ". $_POST['pos_etage'] ." 
 						<br>Le texte affiché sera : ". $_POST['texte_event'] ."
-						<br><i> (si vide, texte standard)</i>";
+						<br><em> (si vide, texte standard)</em>";
 				}
 			}
 		break;//Fin du process de création
 			
 		//Liste de l’ensemble des pièges existants
 		case "liste":
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
+			echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
 			$req = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle 
 				from positions,etage 
 				where pos_etage = etage_numero 
@@ -300,10 +300,10 @@ else
 			while($db->next_record())
 			{	
 				$pos_cod = $db->f("pos_cod");
-				echo '<br><b>Piège :</b>' . $db->f('pos_fonction_arrivee') . '
-				<br><b>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </b>' . $db->f('etage_libelle') . '<br>
+				echo '<br><strong>Piège :</strong>' . $db->f('pos_fonction_arrivee') . '
+				<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
 				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=mod">Modifier la définition de ce piège ?</a><br><br>
-				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer ce piège ? <b><i>(ATTENTION, action définitive !)</i></b></a><hr>';
+				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer ce piège ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
 			}
 		break;
 			
@@ -320,14 +320,14 @@ else
 			$fonction = str_replace(array(')','\''), '',$fonction);
 			$fac_piege = explode( ",", $fonction);
 			
-			echo "<br><b><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></b>";
+			echo "<br><strong><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></strong>";
 			?>
 			<form name="mod" method="post" action="<?php echo $PHP_SELF;?>">
 			<br> Pour modifier un piège, il suffit de corriger les valeurs présentes.
 			<br>Un piège ne peut pas être déplacé, il faut le supprimer et le recréer ailleurs.
 			<br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
 			<br> Si il y a indiqué "positif", cela signifie que la valeur à rentrer doit être positive, et si "négatif", avec un signe moins devant
-			<br><b>ATTENTION !</b>, Si cela n'est pas respecté, pour certaines valeurs, cela peut poser un vrai problème ensuite ! (exemple du poison)<br>
+			<br><strong>ATTENTION !</strong>, Si cela n'est pas respecté, pour certaines valeurs, cela peut poser un vrai problème ensuite ! (exemple du poison)<br>
 			<input type="hidden" name="methode" value="mod1">
 			<input type="hidden" name="pos_cod" value="<?php echo $pos_cod?>">
 			<center><table>
@@ -377,7 +377,7 @@ else
 				<td><input name="declenchement" type="text" value="<?php echo $fac_piege[11]?>"></td>
 			</tr>
 			<tr>
-				<td class="soustitre2">Texte qui s’affichera lorsque le piège sera actionné<br><b>Ne Pas utiliser les caractères # ou % dedans !</b></td>
+				<td class="soustitre2">Texte qui s’affichera lorsque le piège sera actionné<br><strong>Ne Pas utiliser les caractères # ou % dedans !</strong></td>
 				<td><textarea name="texte_event" cols="70" rows="5"> <?php echo $fac_piege[12]?></textarea></td>
 			</tr>
 			<tr>
@@ -420,7 +420,7 @@ else
 			$db->query($req);
 			echo "<p>Le piège a bien été modifié
 				<br>Le texte affiché sera : ". $_POST['texte_event'] ."
-				<br><i> (si vide, texte standard)</i>
+				<br><em> (si vide, texte standard)</em>
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
 		break;
 			

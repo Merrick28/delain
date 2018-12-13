@@ -25,7 +25,7 @@ if ($tab_res[0] == -1)
 else
 {
 	echo("<p>Vous avez utilisé la compétence $tab_res[2] ($tab_res[3] %)</p>");
-	echo("<p>Votre lancer de dés est <b>$tab_res[4]</b>, ");
+	echo("<p>Votre lancer de dés est <strong>$tab_res[4]</strong>, ");
 	if ($tab_res[5] == -1)
 	{
 		echo("il s'agit donc d'un échec automatique.");
@@ -36,14 +36,14 @@ else
 		echo("vous avez donc échoué dans cette compétence.<br>");
 		if ($tab_res[3] <= $limite_exp)
 		{
-			echo("Votre compétence est inférieure à $limite_exp %. Votre jet d'amélioration est de <b>$tab_res[6]</b>.<br>");
+			echo("Votre compétence est inférieure à $limite_exp %. Votre jet d'amélioration est de <strong>$tab_res[6]</strong>.<br>");
 			if ($tab_res[7] == 0)
 			{
 				echo("Vous n'avez pas réussi à améliorer cette compétence.");
 			}
 			if ($tab_res[7] == 1)
 			{
-				echo("Vous avez réussi à améliorer cette compétence. Sa nouvelle valeur est <b>$tab_res[8]%</b>");
+				echo("Vous avez réussi à améliorer cette compétence. Sa nouvelle valeur est <strong>$tab_res[8]%</strong>");
 			}
 		}
 		echo '<br /><a href="' . $PHP_SELF . '?objet=' . $objet . '">Réessayer ?<a/>';
@@ -56,10 +56,10 @@ else
 		$db->query($req_objet);
 		$db->next_record();
 		//$tab_objet = pg_fetch_array($res_objet,0);
-		echo "<p>L'objet identifié est : <b>" . $db->f("obj_nom") . "</b>. Vous pouvez maintenant l'utiliser.</p>";
+		echo "<p>L'objet identifié est : <strong>" . $db->f("obj_nom") . "</strong>. Vous pouvez maintenant l'utiliser.</p>";
 		if($db->f('obj_enchantable') == 1)
-			echo "<p>De plus, cet objet est <b>enchantable</b></p>";
-		echo "<i>" . $db->f('obj_description') . "</i>";
+			echo "<p>De plus, cet objet est <strong>enchantable</strong></p>";
+		echo "<em>" . $db->f('obj_description') . "</em>";
 		echo("<hr>");
 		echo("<p>Vous gagnez $tab_res[7] PX.</p>");
 		echo("<hr>");

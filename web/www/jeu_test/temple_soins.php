@@ -38,7 +38,7 @@ if ($erreur == 0)
 	$tab_temple = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_temple['nom'];
 	$type_lieu = $tab_temple['libelle'];
-	echo("<p><img src=\"../images/temple.gif\"><b>$nom_lieu</b> - $type_lieu");
+	echo("<p><img src=\"../images/temple.gif\"><strong>$nom_lieu</strong> - $type_lieu");
 	$pv[1] = 5;
 	$pv[2] = 10;
 	$pv[3] = 20;
@@ -61,7 +61,7 @@ if ($erreur == 0)
 	}
 	else
 	{
-		printf("<p>Une anomalie est survenue : <b>%s</b>",$db->f("soins"));
+		printf("<p>Une anomalie est survenue : <strong>%s</strong>",$db->f("soins"));
 	}
 
 		

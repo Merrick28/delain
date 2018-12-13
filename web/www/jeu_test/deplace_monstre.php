@@ -76,29 +76,29 @@ if ($erreur2 != 1)
 			<td class="titre" colspan="2"><p class="titre">Déplacement de monstres en bloc</p></td>
 		</tr>
 		<tr>
-			<td class="soustitre2"><p>Monstres concernés<br><i>(Entrez les numéros de monstres séparés par des ";")</i></p></td>
+			<td class="soustitre2"><p>Monstres concernés<br><em>(Entrez les numéros de monstres séparés par des ";")</em></p></td>
 			<td class="soustitre2"><p>Récupération de numéros de monstres</p></td>
 		</tr>
 		<tr>
 			<td><p><textarea name="monstre" cols="70" rows="4">' . $monstre . '</textarea></p></td>
-			<td><p><b>Par position</b></p>
-				<p><b>Position X : </b><input type="text" name="recup_x" size="5" />
-				<b>Position Y : </b><input type="text" name="recup_y" size="5" /><br />
-				<b>Étage : </b><select name="recup_etage">';
+			<td><p><strong>Par position</strong></p>
+				<p><strong>Position X : </strong><input type="text" name="recup_x" size="5" />
+				<strong>Position Y : </strong><input type="text" name="recup_y" size="5" /><br />
+				<strong>Étage : </strong><select name="recup_etage">';
 
     $contenu_page .= $html->etage_select();
 
     $contenu_page
         .= '</select></p>
-			<hr /><p><b>Par armée</b></p>
-			<p><b>Numéro du commandant : </b><input type="text" name="recup_commandant" size="10" /></p></td>
+			<hr /><p><strong>Par armée</strong></p>
+			<p><strong>Numéro du commandant : </strong><input type="text" name="recup_commandant" size="10" /></p></td>
 		</tr><tr>
 			<td class="soustitre2"><p>Position de lancement<br></p></td>
 			<td><input type="submit" name="recup" value="Récupérer"></td>
 		</tr>
-		<tr><td><p><b>Position X : </b><input type="text" name="pos_x" size="5" value="' . $pos_x . '">
-			<b>Position Y : </b><input type="text" name="pos_y" size="5" value="' . $pos_y . '">
-			<b>Étage : </b><select name="etage">';
+		<tr><td><p><strong>Position X : </strong><input type="text" name="pos_x" size="5" value="' . $pos_x . '">
+			<strong>Position Y : </strong><input type="text" name="pos_y" size="5" value="' . $pos_y . '">
+			<strong>Étage : </strong><select name="etage">';
 
     $contenu_page .= $html->etage_select($monstre_etage);
 
@@ -139,7 +139,7 @@ if ($erreur2 != 1)
                 {
                     $monstre2 .= $db->f("perso_subalterne_cod") . ';';
                 }
-                $texte = "Liste des monstres sous le commandement de <b>$perso_nom</b>";
+                $texte = "Liste des monstres sous le commandement de <strong>$perso_nom</strong>";
             }
             else
             {
@@ -155,7 +155,7 @@ if ($erreur2 != 1)
                 {
                     $monstre2 .= $db->f("ppos_perso_cod") . ';';
                 }
-                $texte = "Liste des monstres en position <b>X : $recup_x / Y : $recup_y / Étage : $etage_nom</b>";
+                $texte = "Liste des monstres en position <strong>X : $recup_x / Y : $recup_y / Étage : $etage_nom</strong>";
             }
             $contenu_page .= '<table><td class="soustitre2"><p>' . $texte . '</p></td>
 			<tr><td><p><textarea name="monstre2" cols="70" rows="2">' . $monstre2 . '</textarea></p></td></tr></table>';
@@ -165,7 +165,7 @@ if ($erreur2 != 1)
             $err_depl = 0;
             if ($pos_x == null or $pos_y == null)
             {
-                $contenu_page .= '<br><p><b>*********** Attention, aucune position sélectionnée. *************</b><br><br><hr>';
+                $contenu_page .= '<br><p><strong>*********** Attention, aucune position sélectionnée. *************</strong><br><br><hr>';
                 $err_depl = 1;
             }
             else
@@ -176,7 +176,7 @@ if ($erreur2 != 1)
                 $db->query($req);
                 if ($db->nf() == 0)
                 {
-                    $contenu_page .= '<br><p><b>*********** Aucune position trouvée à ces coordonnées. *************</b><br><br><hr>';
+                    $contenu_page .= '<br><p><strong>*********** Aucune position trouvée à ces coordonnées. *************</strong><br><br><hr>';
                     $err_depl = 1;
                 }
                 else
@@ -187,7 +187,7 @@ if ($erreur2 != 1)
                     $db->query($req);
                     if ($db->nf() != 0)
                     {
-                        $contenu_page .= '<br><p><b> ************* impossible de déplacer le perso : un mur en destination. *************</b><br><br><fr>';
+                        $contenu_page .= '<br><p><strong> ************* impossible de déplacer le perso : un mur en destination. *************</strong><br><br><fr>';
                         $err_depl = 1;
                     }
                 }
@@ -205,7 +205,7 @@ if ($erreur2 != 1)
             {
                 if ($err_depl != 1)
                 {
-                    $contenu_page .= '<br><p><b>*********** Position trouvée. Vérifiez bien monstres concernés et position avant de valider définitivement !*************</b><br><br><hr>';
+                    $contenu_page .= '<br><p><strong>*********** Position trouvée. Vérifiez bien monstres concernés et position avant de valider définitivement !*************</strong><br><br><hr>';
                 }
                 $contenu_page .= '<table><form name="deplace" method="post" action="' . $PHP_SELF . '">
 					<tr><td class="titre">Code</td><td class="titre">Nom</td><td class="titre">Type</td><td class="titre">Position de déplacement</td><td class="titre" colspan="2">Paramètres d’IA</td></tr>';
@@ -221,7 +221,7 @@ if ($erreur2 != 1)
                         //On teste si le code existe, sinon danger !
                         if ($db->nf() == 0)
                         {
-                            $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2"><b>Ce code n’existe pas !</b></td></tr>';
+                            $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2"><strong>Ce code n’existe pas !</strong></td></tr>';
                         }
                         else
                         {
@@ -247,14 +247,14 @@ if ($erreur2 != 1)
                             }
                             else
                             {
-                                $type = 'Autre... <b>Attention, risque d’être inconnu !</b>';
+                                $type = 'Autre... <strong>Attention, risque d’être inconnu !</strong>';
                             }
                             //On donne la possibilité de changer la position de manière individuelle
                             //en ayant préalablement récupéré la position générale
                             $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2">' . $nom . '</td><td class="soustitre2">' . $type_nom . '</td>
-								<td class="soustitre2"><p><b>X : </b><input type="text" name="x[' . $code . ']" size="5" value="' . $pos_x . '">
-									<b>Y : </b><input type="text" name="y[' . $code . ']" size="5" value="' . $pos_y . '">
-									<b>Étage : </b><select name="etage_monstre[' . $code . ']">';
+								<td class="soustitre2"><p><strong>X : </strong><input type="text" name="x[' . $code . ']" size="5" value="' . $pos_x . '">
+									<strong>Y : </strong><input type="text" name="y[' . $code . ']" size="5" value="' . $pos_y . '">
+									<strong>Étage : </strong><select name="etage_monstre[' . $code . ']">';
 
                             $contenu_page .= $html->etage_select($monstre_etage);
 
@@ -363,7 +363,7 @@ if ($erreur2 != 1)
                     $db->query($req);
                     if ($db->nf() == 0)
                     {
-                        $liste_monstre .= '<b> ***position inconnue***</b><br>';
+                        $liste_monstre .= '<strong> ***position inconnue***</strong><br>';
                     }
                     else
                     {
@@ -449,7 +449,7 @@ if ($erreur2 != 1)
                     }
                 }
             }
-            $contenu_page .= '<br><b>Les monstres ont bien été déplacés</b><br><br>' . $liste_monstre . '<br>';
+            $contenu_page .= '<br><strong>Les monstres ont bien été déplacés</strong><br><br>' . $liste_monstre . '<br>';
             break;
     }
 }

@@ -95,7 +95,7 @@ if ($erreur == 0)
 
         if (!file_exists($chemin.$filename))
         {
-            echo "<b>Impossible de supprimer le decor pour l'id $decor_id, le fichier  $filename n'a pas été trouvé.</b><br><br>";
+            echo "<strong>Impossible de supprimer le decor pour l'id $decor_id, le fichier  $filename n'a pas été trouvé.</strong><br><br>";
         }
         else
         {
@@ -107,7 +107,7 @@ if ($erreur == 0)
             $decor_usage = $row['count'];
             if ($decor_usage>0)
             {
-                echo "<b>Impossible de supprimer le decor pour l'id $decor_id, il est encore utilisé dans les étages.</b><br><br>";
+                echo "<strong>Impossible de supprimer le decor pour l'id $decor_id, il est encore utilisé dans les étages.</strong><br><br>";
             }
             else
             {
@@ -129,7 +129,7 @@ if ($erreur == 0)
             if (isset($tableau_decors[$decor_id]))
             {
                 $decor_id = "" ;     // => pour ne pas ajouter l'image
-                echo "<b>Impossible d'ajouter ce decor, l'id  $decor_id existe déjà.</b><br><br>";
+                echo "<strong>Impossible d'ajouter ce decor, l'id  $decor_id existe déjà.</strong><br><br>";
             }
         }
         else
@@ -145,7 +145,7 @@ if ($erreur == 0)
             $imagesize = @getimagesize($_FILES["decor_file"]["tmp_name"]) ;
             if (($imagesize[0] != 28) || ($imagesize[0] != 28))
             {
-                echo "<b>Impossible d'ajouter ce decor, l'image n'est pas aux dimensions de 28x28 pixels.</b><br><br>";
+                echo "<strong>Impossible d'ajouter ce decor, l'image n'est pas aux dimensions de 28x28 pixels.</strong><br><br>";
             }
             else
             {
@@ -202,11 +202,11 @@ if ($erreur == 0)
         <input type="file" name="decor_file">&nbsp;&nbsp;
         <input type="submit" class="test" name="nouveau_decor" value="Ajouter le decor"></form>
         <span id="info-decor-usage"></span><br>
-        <i><font color="#8b0000">L\'image doit être un .gif de 28x28 pixels, si vous ne spécifiez pas d\'<b>id</b> il en sera assigné un automatiquement</font>.</i>
+        <em><font color="#8b0000">L\'image doit être un .gif de 28x28 pixels, si vous ne spécifiez pas d\'<strong>id</strong> il en sera assigné un automatiquement</font>.</em>
 	<div style=\'width:600px; overflow:auto\' class=\'bordiv\' id=\'visu_decors\'></div>
 	
 	
-	<br><div><i><u>Nota</u>: Vous pouvez cliquer sur les images de décors pour saisir automatiquement son id .</i ></div >
+	<br><div><em><u>Nota</u>: Vous pouvez cliquer sur les images de décors pour saisir automatiquement son id .</i ></div >
     <script type="text/javascript">afficheDecor();</script>';
 }
 $contenu_page = ob_get_contents();

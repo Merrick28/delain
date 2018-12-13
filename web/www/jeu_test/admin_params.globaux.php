@@ -115,21 +115,21 @@ switch ($methode)
 }
 if (!$erreur && $log != '')
 {
-	echo "<div class='bordiv'><b>Mise à jour des paramètres globaux</b><br /><pre>$log</pre></div>";
+	echo "<div class='bordiv'><strong>Mise à jour des paramètres globaux</strong><br /><pre>$log</pre></div>";
 	writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {
-	echo "<div class='bordiv'><b>Erreur !</b><br /><pre>$message_erreur</pre></div>";
+	echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
 echo '<p>Liste des paramètres globaux du jeu</p>
 	<table><tr>
-		<td class="titre"><b>Id</b></td>
-		<td class="titre"><b>Description</b></td>
-		<td class="titre"><b>Type</b></td>
-		<td class="titre"><b>Valeur</b></td>
-		<td class="titre"><b>Modifier ?</b></td></tr>';
+		<td class="titre"><strong>Id</strong></td>
+		<td class="titre"><strong>Description</strong></td>
+		<td class="titre"><strong>Type</strong></td>
+		<td class="titre"><strong>Valeur</strong></td>
+		<td class="titre"><strong>Modifier ?</strong></td></tr>';
 echo "<tr><form method='POST' action='#'>
 	<td class='titre' style='padding:2px;'></td>
 	<td class='titre' style='padding:2px;'><input name='parm_desc' type='text' size='50' /></td>

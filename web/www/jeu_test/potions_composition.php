@@ -170,7 +170,7 @@ if($db->next_record())
 		break;
 
 		case "detail":
-			$contenu_page .= '<b>Détail de la potion sélectionnée : </b><br><br><table>';
+			$contenu_page .= '<strong>Détail de la potion sélectionnée : </strong><br><br><table>';
 			$req = 'select flaccomp_obj_cod,flaccomp_comp_cod,sum(flaccomp_number) as nombre,gobj_nom from potions.flacon_composants,objet_generique,perso_objets
 				where flaccomp_obj_cod = '. $fiole .'
 					and flaccomp_comp_cod = gobj_cod

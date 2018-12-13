@@ -8,7 +8,7 @@ Nesting a block definition under a non-capturing node in "index.twig" at line 4 
 {% spaceless %}
     {% block content %}
         <h1>
-            <b>Title</b>
+            <strong>Title</strong>
         </h1>
     {% endblock %}
 {% endspaceless %}
@@ -18,5 +18,5 @@ Nesting a block definition under a non-capturing node in "index.twig" at line 4 
 return array()
 --EXPECT--
         <h1>
-            <b>Title</b>
+            <strong>Title</strong>
         </h1>

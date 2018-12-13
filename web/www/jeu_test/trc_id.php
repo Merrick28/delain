@@ -34,7 +34,7 @@ else
 			else
 			{
 				$contenu_page .= '<table>
-					<tr><td class="soustitre2"><b>Compte</b></td><td class="soustitre2"><b>Date</b></td><td class="soustitre2"><b>IP</b></td>';
+					<tr><td class="soustitre2"><strong>Compte</strong></td><td class="soustitre2"><strong>Date</strong></td><td class="soustitre2"><strong>IP</strong></td>';
 				while($db->next_record())
 					$contenu_page .= '<tr><td class="soustitre2"><a href="detail_compte.php?compte=' . $db->f('hlog_compte') . '">' . $db->f('compt_nom') . '</a></td><td>' . $db->f('hlog_date') . '</td><td class="soustitre2">' . $db->f('hlog_ip') . '</td></tr>';
 				$contenu_page .= '</table>';
@@ -53,11 +53,11 @@ else
 			else
 			{
 				$contenu_page .= '<table>
-					<tr><td class="soustitre2"><b>Compte</b></td>
+					<tr><td class="soustitre2"><strong>Compte</strong></td>
 					
-					<td class="soustitre2"><b>Nombre</b></td>
-					<td class="soustitre2"><b>Date Min</b></td>
-					<td class="soustitre2"><b>Date Max</b></td>';
+					<td class="soustitre2"><strong>Nombre</strong></td>
+					<td class="soustitre2"><strong>Date Min</strong></td>
+					<td class="soustitre2"><strong>Date Max</strong></td>';
 				while($db->next_record())
 					$contenu_page .= '<tr><td class="soustitre2"><a href="detail_compte.php?compte=' . $db->f('hlog_compte') . '">' . $db->f('compt_nom') . '</a></td>
 					<td class="soustitre2">' . $db->f('nombre') . '</td>

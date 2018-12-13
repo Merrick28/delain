@@ -28,7 +28,7 @@ if(!($bd->next_record())){
 
 		if ($bd->f("perso_pa") < 4)
 		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
+			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
 		else
 		{
@@ -45,12 +45,12 @@ if(!($bd->next_record())){
                 $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'PAM\',2,1)';
 				$bd->query($req_malus);
 				$contenu_page .= "<p>
-					  Votre Intelligence est de <b>$intel</b>.<br><br>
+					  Votre Intelligence est de <strong>$intel</strong>.<br><br>
 					  C’est très insuffisant pour comprendre ce charabia, vous avez maintenant un très gros mal de crâne...
 					  </p>";
       		} else {
 				$contenu_page .= "<p>
-						  Votre Intelligence est de <b>$intel</b>.<br><br>
+						  Votre Intelligence est de <strong>$intel</strong>.<br><br>
 						  Après avoir parcouru quelques lignes, une intuition (ou peut être un instinct de survie ?) vous pousse à arrêter la lecture : ce manuscrit ne contient rien d’intéressant, en prolonger la lecture ne serait que prendre des risques inutiles pour votre santé mentale.<br>
 						  Votre maman a dû vous le dire : la curiosité est un vilain défaut. <img src='http://www.jdr-delain.net/images/smilies/icon_mrgreen.gif'><br>
 						<br>

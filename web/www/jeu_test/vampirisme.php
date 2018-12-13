@@ -42,7 +42,7 @@ if ($lvl != 0)
 				{
 					echo "<a href=\"visu_desc_perso.php?visu=" , $db->f("vamp_perso_pere") , "\">";
 				}
-				echo "<b>" , $db->f("vamp_nom_ppere") , "</b>";
+				echo "<strong>" , $db->f("vamp_nom_ppere") , "</strong>";
 				if ($db->f("vamp_perso_pere") != '')
 				{
 					echo "</a>";
@@ -69,7 +69,7 @@ if ($lvl != 0)
 						{
 							echo "<a href=\"visu_desc_perso.php?visu=" , $db->f("vamp_perso_fils") , "\">";
 						}
-						echo "<b>" , $db->f("vamp_nom_pfils") , "</b>";
+						echo "<strong>" , $db->f("vamp_nom_pfils") , "</strong>";
 						if ($db->f("vamp_perso_fils") != '')
 						{
 							echo "</a>";
@@ -91,7 +91,7 @@ if ($lvl != 0)
 					while($db->next_record())
 					{
 						echo "<a href=\"visu_desc_perso.php?visu=" , $db->f("tvamp_perso_fils") , "\">";
-						echo "<b>" , $db->f("perso_nom") , "</b>";
+						echo "<strong>" , $db->f("perso_nom") , "</strong>";
 						echo "</a>";
 						echo " (" , $db->f("dvamp") , ")<br>";
 					}

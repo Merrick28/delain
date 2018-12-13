@@ -62,7 +62,7 @@ if ($erreur == 0)
 		$req_repos = $req_repos . "where perso_cod = $perso_cod ";
 		$db->query($req_repos);
 		
-			echo("<p>Vous vous êtes bien reposé. Vous avez regagné <b>$gain_pv</b> PV");
+			echo("<p>Vous vous êtes bien reposé. Vous avez regagné <strong>$gain_pv</strong> PV");
 
 	}
 	echo("<p><a href=\"auberge.php\">Retour</a>");	

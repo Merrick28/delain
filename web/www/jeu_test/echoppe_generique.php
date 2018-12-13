@@ -81,7 +81,7 @@ if (isset($methode))
             $db->query($req);
             if ($db->nf() != 0)
             {
-                echo "<br><b><p>Vous ne pouvez pas récupérer un familier mule ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></b>";
+                echo "<br><strong><p>Vous ne pouvez pas récupérer un familier mule ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></strong>";
                 break;
             }
             /* on créé le familier*/
@@ -288,14 +288,14 @@ if ($db->next_record())
         <input type="hidden" name="n_dest" value="<?php echo $db->f("perso_nom") ?>;">
         <input type="hidden" name="dmsg_cod">
     </form>
-<p> Cette échoppe est gérée par <b><?php echo $db->f("perso_nom") ?></b> (<a
+<p> Cette échoppe est gérée par <strong><?php echo $db->f("perso_nom") ?></strong> (<a
             href="javascript:document.message.submit();">Envoyer un message</a>)
     <?php
     }
     }
     if ($controle_gerant == 'OK')
     {
-        echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <b>un familier mûle</b> dans votre échoppe ?</a>  <i>(Attention, ceci est une action définitive)</i>';
+        echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <strong>un familier mûle</strong> dans votre échoppe ?</a>  <em>(Attention, ceci est une action définitive)</em>';
     }
     ?>
 
@@ -332,7 +332,7 @@ if ($db->next_record())
         <?php
         if ($count > 0)
         {
-            echo "<b> ", $db->f("num"), " Transactions en attente </b>";
+            echo "<strong> ", $db->f("num"), " Transactions en attente </strong>";
         }
         ?><a href="javascript:document.echoppe.affichage.value='view_tran';document.echoppe.submit()">Voir les
             transactions ?</a>
@@ -343,9 +343,9 @@ if ($db->next_record())
 switch ($affichage)
 {
 case "entree":
-    echo "<p><b>" . $tab_lieu['nom'] . "<b><br>";
+    echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
     $desc = str_replace(chr(127), ";", $tab_lieu['description']);
-    echo "<i>" . $desc . "</i>";
+    echo "<em>" . $desc . "</em>";
     break;
 case "acheter":
     $db2 = new base_delain;
@@ -354,7 +354,7 @@ case "acheter":
     $db->next_record();
     ?>
     <HR/><p class="titre">Achat d'équipement</p>
-    <p>Vous avez actuellement <b><?php echo $db->f("perso_po") ?></b> brouzoufs.
+    <p>Vous avez actuellement <strong><?php echo $db->f("perso_po") ?></strong> brouzoufs.
 
         <form name="achat" method="post">
             <input type="hidden" name="methode" value="nv_magasin_achat">
@@ -364,11 +364,11 @@ case "acheter":
             <center>
                 <table>
                     <tr>
-                        <td class="soustitre2"><p><b>Nom</b></p></td>
-    <td class="soustitre2"><p><b>Type</b></p></td>
-    <td class="soustitre2"><p><b><i>Compétence</i></b></p></td>
-    <td class="soustitre2"><p><b>Prix</b></p></td>
-    <td class="soustitre2"><p><b>Quantité disponible</b></p></td>
+                        <td class="soustitre2"><p><strong>Nom</strong></p></td>
+    <td class="soustitre2"><p><strong>Type</strong></p></td>
+    <td class="soustitre2"><p><strong><em>Compétence</em></strong></p></td>
+    <td class="soustitre2"><p><strong>Prix</strong></p></td>
+    <td class="soustitre2"><p><strong>Quantité disponible</strong></p></td>
     <td></td>
     </tr>
     <?php
@@ -431,13 +431,13 @@ case "acheter":
             $prix = $db->f("gobj_valeur") + $prix_bon;
 
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><b>";
+            echo "<td class=\"soustitre2\"><p><strong>";
             echo "<a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=e", $url_bon, "\">";
             echo $db->f("gobj_nom"), $bonus;
             echo "</a>";
-            echo "</b></td>";
+            echo "</strong></td>";
             echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
-            echo "<td class=\"soustitre2\"><p><i>" . $comp . "</i></td>";
+            echo "<td class=\"soustitre2\"><p><em>" . $comp . "</em></td>";
             echo "<td class=\"soustitre2\"><p>" . $db->f("valeur_achat") . " brouzoufs</td>";
 
             echo "<td><p>", $db->f("mgstock_nombre"), "</td>";
@@ -472,10 +472,10 @@ case "acheter":
                 :</p>
             <table>
                 <tr>
-                    <td class="soustitre2"><p><b>Nom</b></td>
-                    <td class="soustitre2"><p><b>Type</b></td>
-                    <td class="soustitre2"><p><b><i>Compétence</i></b></td>
-                    <td class="soustitre2"><p><b>Quantité disponible</b></td>
+                    <td class="soustitre2"><p><strong>Nom</strong></td>
+                    <td class="soustitre2"><p><strong>Type</strong></td>
+                    <td class="soustitre2"><p><strong><em>Compétence</em></strong></td>
+                    <td class="soustitre2"><p><strong>Quantité disponible</strong></td>
                     <td></td>
                 </tr>
                 <?php while ($db->next_record())
@@ -486,13 +486,13 @@ case "acheter":
                         $comp = $db->f("comp_libelle");
                     }
                     echo "<tr>";
-                    echo "<td class=\"soustitre2\"><p><b>";
+                    echo "<td class=\"soustitre2\"><p><strong>";
                     echo "<a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=e", $url_bon, "\">";
                     echo $db->f("gobj_nom"), $bonus;
                     echo "</a>";
-                    echo "</b></td>";
+                    echo "</strong></td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
-                    echo "<td class=\"soustitre2\"><p><i>" . $comp . "</i></td>";
+                    echo "<td class=\"soustitre2\"><p><em>" . $comp . "</em></td>";
                     echo "<td><p>", $db->f("mgstock_nombre"), "</td>";
                     echo "</tr>\n";
                 } ?>
@@ -501,8 +501,8 @@ case "acheter":
         </center>
     <?php } ?>
 
-    <b>Près du comptoir se trouve une vitrine fermée à clé, c'est là qu'on trouve les objets exceptionnels. (Il faut
-        bien sûr s'adresser au gérant pour en savoir un peu plus)</b><BR/>
+    <strong>Près du comptoir se trouve une vitrine fermée à clé, c'est là qu'on trouve les objets exceptionnels. (Il faut
+        bien sûr s'adresser au gérant pour en savoir un peu plus)</strong><BR/>
     <center>
         <table>
             <?php
@@ -523,7 +523,7 @@ where mstock_lieu_cod = $lieu_cod
             {
                 while ($db->next_record())
                 {
-                    echo "<tr><td class=\"soustitre2\"><b>" . $db->f("obj_nom") . "</b></td></tr>";
+                    echo "<tr><td class=\"soustitre2\"><strong>" . $db->f("obj_nom") . "</strong></td></tr>";
                 }
             }
             ?>
@@ -586,9 +586,9 @@ else
     <center>
         <table>
             <tr>
-                <td class="soustitre2"><p><b>Nom</b></td>
-                <td class="soustitre2"><p><b>Type</b></td>
-                <td class="soustitre2"><p><b>Prix</b></td>
+                <td class="soustitre2"><p><strong>Nom</strong></td>
+                <td class="soustitre2"><p><strong>Type</strong></td>
+                <td class="soustitre2"><p><strong>Prix</strong></td>
                 <td></td>
                 <?php
                 while ($db->next_record())
@@ -611,7 +611,7 @@ else
                     }
                     $prix = $db->f("valeur") + $prix_bon;
                     echo "<tr>";
-                    echo "<td class=\"soustitre2\"><p><b>" . $db->f("nom") . "</b></td>";
+                    echo "<td class=\"soustitre2\"><p><strong>" . $db->f("nom") . "</strong></td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("valeur") . " brouzoufs</td>";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
@@ -634,7 +634,7 @@ else
                     $db->next_record();
                     ?>
                     <HR/><p class="titre">Transactions</p> <BR/>
-                    <p>Vous avez actuellement <b><?php echo $db->f("perso_po") ?></b> brouzoufs.
+                    <p>Vous avez actuellement <strong><?php echo $db->f("perso_po") ?></strong> brouzoufs.
                     <p><?php echo $resultat ?></p>
                     Transactions en cours:
                     <form name="cancel_tran" method="post">
@@ -717,7 +717,7 @@ and obj_cod = tran_gobj_cod
                     $req = "select perso_po from perso where perso_cod = $perso_cod ";
                     $db->query($req);
                     $db->next_record();
-                    echo "<p>Vous avez actuellement <b>" . $db->f("perso_po") . "</b> brouzoufs. ";
+                    echo "<p>Vous avez actuellement <strong>" . $db->f("perso_po") . "</strong> brouzoufs. ";
                     $req = "select lieu_marge from lieu where lieu_cod = $lieu_cod ";
                     $db->query($req);
                     $db->next_record();
@@ -743,15 +743,15 @@ and obj_cod = tran_gobj_cod
 
                         echo "<center><table>";
                         echo "<tr>";
-                        echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-                        echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-                        echo "<td class=\"soustitre2\"><p><b>Prix</b></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
                         echo "<td></td>";
                         while ($db->next_record())
                         {
 
                             echo "<tr>";
-                            echo "<td class=\"soustitre2\"><p><b>" . $db->f("gobj_nom_generique") . "</b></td>";
+                            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("gobj_nom_generique") . "</strong></td>";
                             echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
                             echo "<td class=\"soustitre2\"><p>" . $prix . " brouzoufs</td>";
                             echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
@@ -769,7 +769,7 @@ and obj_cod = tran_gobj_cod
                     $req = "select perso_po from perso where perso_cod = $perso_cod ";
                     $db->query($req);
                     $db->next_record();
-                    echo "<p>Vous avez actuellement <b>" . $db->f("perso_po") . "</b> brouzoufs. ";
+                    echo "<p>Vous avez actuellement <strong>" . $db->f("perso_po") . "</strong> brouzoufs. ";
                     $req = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle ";
                     $req = $req . "from objet_generique,objets,perso_objets,type_objet ";
                     $req = $req . "where perobj_perso_cod = $perso_cod ";
@@ -793,9 +793,9 @@ and obj_cod = tran_gobj_cod
                         echo "<input type=\"hidden\" name=\"objet\">";
                         echo "<center><table>";
                         echo "<tr>";
-                        echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-                        echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-                        echo "<td class=\"soustitre2\"><p><b>Prix</b></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+                        echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
                         echo "<td></td>";
                         while ($db->next_record())
                         {
@@ -817,7 +817,7 @@ and obj_cod = tran_gobj_cod
                             }
                             $etat = $db->f("obj_etat");
                             echo "<tr>";
-                            echo "<td class=\"soustitre2\"><p><b>" . $db->f("nom") . "</b></td>";
+                            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("nom") . "</strong></td>";
                             echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
                             $prix = ($db->f("valeur") + $prix_bon) * 0.2 / $modif;
                             $prix = $prix * (100 - $etat);

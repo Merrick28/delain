@@ -123,7 +123,7 @@ while ($db->next_record())
 		$texte_etat = ' (fermée)';
 
 	if ($ccol_cod == $db->f('ccol_cod'))
-		echo "<p><b><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></b></p>";
+		echo "<p><strong><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></strong></p>";
 	else
 		echo "<p><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></p>";
 }
@@ -142,11 +142,11 @@ switch ($methode)
 		echo '<table><tr><td colspan="3" class="titre">Titre ' . $ccol_titre . '</td></tr>';
 		echo '<tr><td colspan="3" class="soustitre2">';
 		if ($ouvert)
-			echo 'Cette session du concours de collections est <b>ouverte</b>';
+			echo 'Cette session du concours de collections est <strong>ouverte</strong>';
 		if ($futur)
-			echo 'Cette session du concours de collections est <b>future</b>';
+			echo 'Cette session du concours de collections est <strong>future</strong>';
 		if ($ferme)
-			echo 'Cette session du concours de collections est <b>fermée</b>';
+			echo 'Cette session du concours de collections est <strong>fermée</strong>';
 		echo '</td></tr>';
 		echo '<tr><td class="soustitre2">Titre</td><td><input type="text" name="form_titre" value="' . $ccol_titre . '" /></td><td>Dénomination du concours (typiquement, « Collections de citrouilles, 2010 »).</td></tr>';
 		echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1);"><option value="-1">Choisissez un type d’objet...</option>';
@@ -188,7 +188,7 @@ switch ($methode)
 		if (!$ferme)
 			echo '<input type="submit" value="Valider" />';
 		if ($ferme)
-			echo '<i>Cette instance est fermée et n’est plus modifiable</i>';
+			echo '<em>Cette instance est fermée et n’est plus modifiable</em>';
 		echo '</form>';
 		echo '<hr />';
 		echo '<table><tr><th class="titre" colspan="2">Classement actuel instantané<br />(récupéré d’après les inventaires)</th></tr>';

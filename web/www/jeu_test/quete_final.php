@@ -50,9 +50,9 @@ if (!$db->is_lieu($perso_cod))
 													?>
 													<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 													<p>En arrivant dans le dispensaire, un guérisseur vous interpelle :
-														<br><i>Je crois que vous possédez un objet qui pourrait intéresser l'un des membres de notre communauté. 
+														<br><em>Je crois que vous possédez un objet qui pourrait intéresser l'un des membres de notre communauté. 
 														Il s'agit d'une <?php  echo $obj_nom; ?> . 
-														<br>Seriez vous prêt à me la céder, pour que je la lui remette ? Dans un tel cas, je vous rétribuerais pour cela.</i>
+														<br>Seriez vous prêt à me la céder, pour que je la lui remette ? Dans un tel cas, je vous rétribuerais pour cela.</em>
 														<br><br>Le guérisseur attend alors votre réponse ...<br>
 															<input type="hidden" name="methode" value="cede_objet1">
 															<table>
@@ -90,7 +90,7 @@ if (!$db->is_lieu($perso_cod))
 																			?>
 																			<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 																			<p>Un soignant en chef du dispensaire s'approche de vous : 
-																			<br><i>Je vois que  vous êtes en possession d'écailles de basilic ! Celles-ci nous sont fort utile pour réaliser certaines de nos préparations. Pourriez vous nous les céder ? Nous vous en prendrons dix.</i>
+																			<br><em>Je vois que  vous êtes en possession d'écailles de basilic ! Celles-ci nous sont fort utile pour réaliser certaines de nos préparations. Pourriez vous nous les céder ? Nous vous en prendrons dix.</em>
 																			<input type="hidden" name="methode" value="cede_objet2">
 																			<table>
 																			<tr>
@@ -112,7 +112,7 @@ if (!$db->is_lieu($perso_cod))
 															}
 															else
 															{
-															echo 'Un guérisseur du dispensaire vous interpelle : <br><i>Je vois que vous possédez des écailles de basilic ! Ceci nous sert parfois pour faire nos préparations pour soigner nos patient. Mais actuellement, nous n\'en avons pas besoin. Revenez un autre jour, nous pourrons surement faire affaire !</i>';
+															echo 'Un guérisseur du dispensaire vous interpelle : <br><em>Je vois que vous possédez des écailles de basilic ! Ceci nous sert parfois pour faire nos préparations pour soigner nos patient. Mais actuellement, nous n\'en avons pas besoin. Revenez un autre jour, nous pourrons surement faire affaire !</em>';
 															}
 														}
 							
@@ -154,7 +154,7 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<br>"Nous vous remercions pour votre geste. Cela nous permettra surement de sauver de nombreux patients
 											<br>Pour marquer votre offrande, nous allons vous offrir un petit quelque chose au regard de nos maigres moyens."
-											<br><i>En regardant à nouveau votre inventaire, vous pouvez voir que deux parchemins s'y sont glissés. Un certain sentiment de fierté pour cette bonne action vous envahit.</i>
+											<br><em>En regardant à nouveau votre inventaire, vous pouvez voir que deux parchemins s'y sont glissés. Un certain sentiment de fierté pour cette bonne action vous envahit.</em>
 											<?php 
 											// On crée deux parchemins différents dans l'inventaire du perso
 											$req = "select lancer_des(1,6) as des ";
@@ -213,14 +213,14 @@ if (!$db->is_lieu($perso_cod))
 								srand ((double) microtime() * 10000000); // pour intialiser le random
 								$input = array (
 								"<br>Alors que vous rentrez dans cette auberge, une sorte d'ivrogne s'approche de vous :
-								<br><i> Et dîtes, ch'vous connais vous ! vous n'seriez pas <? $nom ?> ? Ou alors Graspork ?
+								<br><em> Et dîtes, ch'vous connais vous ! vous n'seriez pas <? $nom ?> ? Ou alors Graspork ?
 								<br>pfff, encore un de ces espèces de %#$£^ù qui cherche la gloire à tous les étages !
 								<br>En plus, j'suis sûr que vous n'connaissez même pas les bons coins	qui font la gloire !
 								<br>allez, si vous m'payez un coup à boire, j'vous diraisz un secret. Il parait qu'il y a une drole de grotte ",
 								"<br>Et vous là, vous avez une tête qui m'revient. A moins que ce ne soit sur une affiche de la Milice que je vous ai vu ...",
 								"<br>Vous surprenez une conversation, plongé dans votre verre :
-								<br><i>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j'suis tombé sur une cachette !
-								<br>J'me souviens plus bien où c'était mais franchement, y'avait un max à se faire !</i>",
+								<br><em>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j'suis tombé sur une cachette !
+								<br>J'me souviens plus bien où c'était mais franchement, y'avait un max à se faire !</em>",
 								"",
 								"",
 								""
@@ -233,7 +233,7 @@ if (!$db->is_lieu($perso_cod))
 								{
 								?>
 								<hr><br>Un homme s'approche de vous, et vous interpelle :
-								<br><i>" Il me semble vous reconnaître ! Ne seriez vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
+								<br><em>" Il me semble vous reconnaître ! Ne seriez vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
 								<br>Vos exploits sont contés deci delà, et nul ne les ignore maintenant. Je m'en vais diffuser la nouvelle de votre venue en cet endroit !
 								<?php 
 								}
@@ -265,9 +265,9 @@ if (!$db->is_lieu($perso_cod))
 													$nb_caisses = $db->compte_objet($perso_cod,380);	
 													?>
 													<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
-													<p><i>Vous voilà bien chargé cher Monsieur. Souhaitez vous faire un dépôt ?
+													<p><em>Vous voilà bien chargé cher Monsieur. Souhaitez vous faire un dépôt ?
 													<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ? (Vous êtes en possession de <?php  echo $nb_caisses; ?> caisses)
-													<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire, qui vous remettra la récompense promise ...</i>
+													<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire, qui vous remettra la récompense promise ...</em>
 															<input type="hidden" name="methode" value="cede_objet1">
 															<table>
 															<tr>
@@ -300,7 +300,7 @@ if (!$db->is_lieu($perso_cod))
 									{
 											?>
 											<br>Nous vous remercions.
-											<br>Votre dépôt sera signalé au propriétaire de ces objets. Une dépêche est partie de votre part (<i>message visible dans votre boîte d'envoi</i>) 
+											<br>Votre dépôt sera signalé au propriétaire de ces objets. Une dépêche est partie de votre part (<em>message visible dans votre boîte d'envoi</em>) 
 											<br>Il vous contactera certainement rapidement pour la récompense.
 											<?php 
 											$req = "select vente_caisses($perso_cod,$obj_gen_quete)"; 
@@ -395,7 +395,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																	{	
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></b>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe, et entendre les paroles de Balgur.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 
@@ -404,7 +404,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete7 == 2)
 																	{
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></b>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 	
@@ -439,7 +439,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment être entré en contact avec Elian lors de leur transe.
 																		<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																		<?php 
@@ -448,7 +448,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete8 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -482,7 +482,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. L'Aveugle offre parfois des paroles à ceux qui atteignent l'état de transe.
 																		<br>Mais cela peut aussi comporter des risques. Certains ont subit des séquelles suite à cette expérience.
 																		<?php 
@@ -491,7 +491,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete10 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -536,8 +536,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</i></b>
+											<br><br><strong><em>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</em></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -585,8 +585,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
-											<br>Mais la tache n'est pas finie. Le plus dur reste à faire. L'Aveugle tu dois convaincre.</i></b>
+											<br><br><strong><em>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
+											<br>Mais la tache n'est pas finie. Le plus dur reste à faire. L'Aveugle tu dois convaincre.</em></strong>
 											<?php 
 											//Mise à jour de l'étape pour finaliser la quête 7
 											$req = "update quete_perso 
@@ -637,8 +637,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</i></b>
+											<br><br><strong><em>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</em></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -680,8 +680,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>La vérité tu trouveras, mais cachée elle sera, et vers d'autres les réponses tu chercheras.</i></b>
+											<br><br><strong><em>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>La vérité tu trouveras, mais cachée elle sera, et vers d'autres les réponses tu chercheras.</em></strong>
 											<?php 
 											//Cloture de cette étape pour ne pas la retrouver ensuite
 											$req = "update quete_perso 
@@ -732,8 +732,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Cherche en direction du  <?php  echo $nom_cachette; ?>.
-											<br>Tu pourras trouver la lumière qui guide l'Aveugle</i></b>
+											<br><br><strong><em>Cherche en direction du  <?php  echo $nom_cachette; ?>.
+											<br>Tu pourras trouver la lumière qui guide l'Aveugle</em></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -782,10 +782,10 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Tu as donc ouvert tes yeux sur le futur.
+											<br><br><strong><em>Tu as donc ouvert tes yeux sur le futur.
 											<br>Tu vas devoir choisir lequel il sera.
 											<br>Pour ça, en XXXXX tu guideras, et le futur tu détermineras.
-											</i></b>
+											</em></strong>
 											<?
 											//Mise à jour de l'étape terminée pour cloturer cette étape
 											$req = "update quete_perso 
@@ -859,7 +859,7 @@ if (!$db->is_lieu($perso_cod))
 																		<br>
 																		<br>Au détour d'un petit monticule, vous êtes brusquement surpris par un ectoplasme, qui semble vous dévisager, si ce n'était ces cavités à la place des yeux.
 																		<br>Il vous observe quelques instants, et commence à vous parler ;
-																		<br><i>Vous portez les stigmates d'une récente épreuve. Je peux le sentir. Vous êtes donc à même de tenter cette nouvelle épreuve. Mais saurez vous m'indiquer ce qui pourra vous faire avancer ?</i>
+																		<br><em>Vous portez les stigmates d'une récente épreuve. Je peux le sentir. Vous êtes donc à même de tenter cette nouvelle épreuve. Mais saurez vous m'indiquer ce qui pourra vous faire avancer ?</em>
 																		<input type="hidden" name="methode" value="password">
 																		<table>
 																		<tr>

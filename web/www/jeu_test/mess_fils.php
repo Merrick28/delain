@@ -71,13 +71,13 @@ switch($detail)
 			$contenu_page .= '<td><div style="white-space:nowrap;">';
 			if ($db->f("dmsg_lu") == "N")
 			{
-				$contenu_page .= '<b>';
+				$contenu_page .= '<strong>';
 			}
 
 			$contenu_page .= '<a  href="messagerie2.php?m=0&fil=' . $db->f('msg_init') . '">' . str_replace(chr(127), ';', $db->f("msg_titre")) . ' (' . $db->f('nb_fil') . ')</a>';
 			if ($db->f("dmsg_lu") == "N")
 			{
-				$contenu_page .= '</b>';
+				$contenu_page .= '</strong>';
 			}
 			$contenu_page .= '</div></td>';
 
@@ -92,7 +92,7 @@ switch($detail)
 			$v_debut = ($cpt-1)*$nb_messages_page;
 			if ($cpt == $page_en_cours)
 			{
-				$contenu_page .= '<font class="soustitre2"><b>' . $page_en_cours . '</b></font> &nbsp;&nbsp;';
+				$contenu_page .= '<font class="soustitre2"><strong>' . $page_en_cours . '</strong></font> &nbsp;&nbsp;';
 			}
 			else
 			{

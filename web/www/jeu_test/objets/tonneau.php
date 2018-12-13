@@ -47,14 +47,14 @@ if(!$test_objet){
 		$bd->next_record();
 		if ($bd->f("perso_pa") < 1)
 		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
+			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 			$erreur = 1;
 		}
 		$req_matos = "select perobj_obj_cod from perso_objets,objets "
       . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 410 ";
 		$bd->query($req_matos);
 		if(!($bd->next_record())){
-		  	$contenu_page .= '<p><b>Vous n’avez pas de chope vide !</b></p>';
+		  	$contenu_page .= '<p><strong>Vous n’avez pas de chope vide !</strong></p>';
 			$erreur = 1;
 		}
 		if($erreur == 0)
@@ -71,7 +71,7 @@ if(!$test_objet){
 			$req_supr_obj = "select  cree_objet_perso(409,$perso_cod)";
 			$bd->query($req_supr_obj);
 
-			$contenu_page .= '<p><b>La chope est maintenant pleine de bière !</b></p>';
+			$contenu_page .= '<p><strong>La chope est maintenant pleine de bière !</strong></p>';
 		}
 	}  else {
 		$contenu_page .= '';

@@ -66,21 +66,21 @@ if ($erreur == 0)
                 switch ($db->f("perso_actif"))
                 {
                     case "N":
-                        echo "Ce perso est <b>Inactif !</b>. Vous ne pouvez pas intervenir dessus !";
+                        echo "Ce perso est <strong>Inactif !</strong>. Vous ne pouvez pas intervenir dessus !";
                         break;
                     case "H":
-                        echo "Ce perso est <b>en hibernation !</b>. Vous ne pouvez pas intervenir dessus !";
+                        echo "Ce perso est <strong>en hibernation !</strong>. Vous ne pouvez pas intervenir dessus !";
                         break;
                 }
             }
             else
             {
-                echo "<p><b>", $db->f("perso_nom"), "</b> se trouve en ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), ".<br>";
-                echo "Sa dlt est à <b>", $db->f("dlt"), ".</br>";
+                echo "<p><strong>", $db->f("perso_nom"), "</strong> se trouve en ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), ".<br>";
+                echo "Sa dlt est à <strong>", $db->f("dlt"), ".</br>";
                 echo "Il est à ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), " PV.";
                 if ($db->is_locked($num_perso2))
                 {
-                    echo "<p><b>Ce perso est locké en combat !</b>";
+                    echo "<p><strong>Ce perso est locké en combat !</strong>";
                 }
                 echo "<p class=\"titre\">Actions possibles : </p>";
                 echo "<p>";
@@ -107,7 +107,7 @@ if ($erreur == 0)
                 case "debut":
                     if ($db->is_locked($num_perso2))
                     {
-                        echo "<p><b>Ce perso est locké en combat !</b> Son déplacement va rompre tous les locks de combat.";
+                        echo "<p><strong>Ce perso est locké en combat !</strong> Son déplacement va rompre tous les locks de combat.";
                     }
                     ?>
                     <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
@@ -188,7 +188,7 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><b>Attention ! </b>Cette procédure n'a pour but que de créer de nouveaux objets (première
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer de nouveaux objets (première
                         apparition dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un objet déjà existant, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet_ex&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
@@ -249,7 +249,7 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><b>Attention ! </b>Cette procédure n'a pour but que de créer des objets existants (pas encore
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
@@ -289,7 +289,7 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><b>Attention ! </b>Cette procédure n'a pour but que de créer des objets existants (pas encore
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci

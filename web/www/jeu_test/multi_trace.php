@@ -47,13 +47,13 @@ $db->query($req_evt);
 </tr>
 <?php 
 echo "<tr>";
-	echo "<td class=\"soustitre3\"><p><b>Date</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Ancien</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Comptes liés</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Nouveau</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Comptes liés</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>IP</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Hôte</b></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Date</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Ancien</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Comptes liés</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Nouveau</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Comptes liés</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>IP</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Hôte</strong></p></td>";
 echo "</tr>";
 ?>
 <form name="visu_evt" method="post" action="multi_trace.php">
@@ -70,9 +70,9 @@ while($db->next_record())
 	echo "<tr>";
 	echo "<td class=\"soustitre3\"><p>" . $db->f("date") . "</p></td>";
 	echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=$compte1\">$compte1_nom</A></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>$compteLie1_nom</b></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>$compteLie1_nom</strong></p></td>";
 	echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=$compte2\">$compte2_nom</A></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>$compteLie2_nom</b></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>$compteLie2_nom</strong></p></td>";
 
 	$ip = $db->f("multi_ip");
 	echo "<td class=\"soustitre3\"><p>" . $ip . "</td>";

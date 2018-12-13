@@ -181,7 +181,7 @@ if ($autorise == 1)
 
         if (isset($tableau_noms[$key]))
         {
-            echo "<p><b>Pour " . $tableau_noms[$key] . " :</b></p>";
+            echo "<p><strong>Pour " . $tableau_noms[$key] . " :</strong></p>";
         }
 
         $dlt1 = $perso_dlt->perso_dlt;      // memo de la dlt avant calcul
@@ -235,7 +235,7 @@ if ($autorise == 1)
 
         }
 
-        echo "<br>Votre nouvelle date limite de tour est : <b>" . $date_dlt->format('d/m/Y H:i:s') . "</b>";
+        echo "<br>Votre nouvelle date limite de tour est : <strong>" . $date_dlt->format('d/m/Y H:i:s') . "</strong>";
 
         // on affichage le solde des points d'action
         echo "<br>Il vous reste " . $perso_dlt->perso_pa . " points d’action.";
@@ -244,7 +244,7 @@ if ($autorise == 1)
         $missions = $perso_dlt->missions();
         if ($missions !== '')
         {
-            echo "<hr /><b>Évaluation de vos missions en cours</b><br />$missions<hr />";
+            echo "<hr /><strong>Évaluation de vos missions en cours</strong><br />$missions<hr />";
         }
 
         // recherche des evts non lus
@@ -254,7 +254,7 @@ if ($autorise == 1)
         // TODO : mettre des evts bidon pour tester
         if (count($liste_evt) != 0)
         {
-            echo "<p style='margin-top:10px;'><b>Vos derniers événements importants :</b></p>";
+            echo "<p style='margin-top:10px;'><strong>Vos derniers événements importants :</strong></p>";
             echo "<p>";
             $db_evt = new base_delain;
             foreach ($liste_evt as $detail_evt)
@@ -271,14 +271,14 @@ if ($autorise == 1)
                 }
 
                 //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-                $texte_evt = str_replace('[perso_cod1]', "<b>" . $perso_dlt->perso_nom . "</b>", $detail_evt->levt_texte);
+                $texte_evt = str_replace('[perso_cod1]', "<strong>" . $perso_dlt->perso_nom . "</strong>", $detail_evt->levt_texte);
                 if ($detail_evt->levt_attaquant != '')
                 {
-                    $texte_evt = str_replace('[attaquant]', "<b>" . $perso_attaquant->perso_nom . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[attaquant]', "<strong>" . $perso_attaquant->perso_nom . "</strong>", $texte_evt);
                 }
                 if ($detail_evt->levt_cible != '')
                 {
-                    $texte_evt = str_replace('[cible]', "<b>" . $perso_cible->perso_nom . "</b>", $texte_evt);
+                    $texte_evt = str_replace('[cible]', "<strong>" . $perso_cible->perso_nom . "</strong>", $texte_evt);
                 }
                 $date_evt = new DateTime($detail_evt->levt_date);
                 echo $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
@@ -307,7 +307,7 @@ if ($autorise == 1)
     }
     echo "</form>";
 
-    echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : $maintenant</i></p>";
+    echo "<p style=\"text-align:center;\"><br /><em>Date et heure serveur : $maintenant</em></p>";
 } else
 {
     echo "Accès refusé !";

@@ -43,7 +43,7 @@ if ($boule==true)
 	$bd->next_record();
 	if ($bd->f("perso_pa") < 4)
 	{
-		$contenu_page .= "<p><b>Vous n’avez pas assez de PA !</b></p>";
+		$contenu_page .= "<p><strong>Vous n’avez pas assez de PA !</strong></p>";
 		$boule = false;
 	}
 }
@@ -95,13 +95,13 @@ if ($boule)
 	switch ($tobj)
 	{
 		case 269:
-			$contenu_page .= "<p><b>Vous réchauffez l’œuf quelques minutes...</b></p>";
+			$contenu_page .= "<p><strong>Vous réchauffez l’œuf quelques minutes...</strong></p>";
 			break;
 		case 640:
-			$contenu_page .= "<p><b>Vous faites un peu de sport pour retrouver la ligne ...</b></p>";
+			$contenu_page .= "<p><strong>Vous faites un peu de sport pour retrouver la ligne ...</strong></p>";
 			break;
 		default:
-			$contenu_page .="<p><b>Vous tentez de détruire cet objet ...</b></p>";	
+			$contenu_page .="<p><strong>Vous tentez de détruire cet objet ...</strong></p>";	
 			break;
 	}
 	
@@ -125,16 +125,16 @@ if ($boule)
 			$choix = mt_rand(0,100);
 			if($choix < 25)
 			{
-				$contenu_page .= "<p><b>Un cobra apparaît ! Il n’a pas l’air amical. </b><br></p>";
+				$contenu_page .= "<p><strong>Un cobra apparaît ! Il n’a pas l’air amical. </strong><br></p>";
 				$req_monstre = "select cree_monstre_pos(16,$perso_position) as num";
 				$bd->query($req_monstre);
 			} else if($choix < 50) {
-				$contenu_page .= "<p><b>Un basilic apparaît ! Il n’a pas l’air amical. </b><br></p>";
+				$contenu_page .= "<p><strong>Un basilic apparaît ! Il n’a pas l’air amical. </strong><br></p>";
 				$req_monstre = "select cree_monstre_pos(13,$perso_position) as num";
 				$bd->query($req_monstre);
 			} else {
 				$typefam = mt_rand(0,1) + 192;	// 192 combat, 193 distance
-				$contenu_page .= "<p><b>Un familier sort de l’œuf, il a l’air de vous apprécier et de vous suivre. </b><br></p>";
+				$contenu_page .= "<p><strong>Un familier sort de l’œuf, il a l’air de vous apprécier et de vous suivre. </strong><br></p>";
 				$req_monstre = "select cree_monstre_pos($typefam, $perso_position) as num";
 				$bd->query($req_monstre);
 				$bd->next_record();
@@ -157,10 +157,10 @@ if ($boule)
 			}
 			break;
 		case 640:
-			$contenu_page .= "<p><b>Ouf !  Les efforts ont porté leurs fruits: vous avez retrouvé la ligne !</b><br></p>";
+			$contenu_page .= "<p><strong>Ouf !  Les efforts ont porté leurs fruits: vous avez retrouvé la ligne !</strong><br></p>";
 			break;
 		default:
-			$contenu_page .= "<p><b>Et cela a marché: l'objet est détruit !</b></p>";
+			$contenu_page .= "<p><strong>Et cela a marché: l'objet est détruit !</strong></p>";
 			break;
 		}
 	} else {			

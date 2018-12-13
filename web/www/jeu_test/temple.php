@@ -27,7 +27,7 @@ if ($erreur == 0)
 	$nom_lieu = $tab_temple['nom'];
 	$type_lieu = $tab_temple['libelle'];
 	?>
-	<p><img src="../images/disp2a.png"><br /><b><?php  echo("$nom_lieu</b> - $type_lieu"); ?>
+	<p><img src="../images/disp2a.png"><br /><strong><?php  echo("$nom_lieu</strong> - $type_lieu"); ?>
 
 <?php 
 $req = "select perso_sex from perso where perso_cod = $perso_cod";
@@ -37,7 +37,7 @@ $sexe = $db->f("perso_sex");
 ?>
 <?php if ($sexe == 'F')
 {?>
-<p> <i>Vous vous trouvez dans une vaste salle entourée d’arcades élégantes. Sous ces arcades se cachent des alcôves contenant des lits. Des aventuriers de tous horizons reposent dans certaines de ces alcôves, les bandages qui entourent leur tête ou leurs membres indiquent qu’ils ont été récemment blessés. Un escalier conduit à une galerie qui fait le tour de la salle, et ouvre sur les portes de chambres particulières.
+<p> <em>Vous vous trouvez dans une vaste salle entourée d’arcades élégantes. Sous ces arcades se cachent des alcôves contenant des lits. Des aventuriers de tous horizons reposent dans certaines de ces alcôves, les bandages qui entourent leur tête ou leurs membres indiquent qu’ils ont été récemment blessés. Un escalier conduit à une galerie qui fait le tour de la salle, et ouvre sur les portes de chambres particulières.
 
 <br>Tout à coup, vos yeux se fixent sur un jeune homme qui s’approche de vous d’une démarche assurée.
 	Les chausses qui habillent ses jambes semblent taillées trop étroitement et moulent le galbe de ses mollets
@@ -47,7 +47,7 @@ $sexe = $db->f("perso_sex");
 	de la forme d’un calice, symbole de sa fonction de guérisseur.
 <br>
 L’humain si bien musclé se place juste devant vous, et baisse son visage aux traits énergiques vers vous. Il plonge son regard dont le bleu océan vous fait chavirer, dans le vôtre. Sa voix grave se fait alors entendre, provoquant de petits frissons au creux de votre nuque :
-</i>
+</em>
 <br>
 <br>« Soyez la bienvenue dans ce dispensaire, Demoiselle. Que puis-je pour vous ? »
 <br>
@@ -65,7 +65,7 @@ L’humain si bien musclé se place juste devant vous, et baisse son visage aux 
 	else
 	{
 ?>
-<p> <i> Vous vous trouvez dans une vaste salle entourée d’arcades élégantes.
+<p> <em> Vous vous trouvez dans une vaste salle entourée d’arcades élégantes.
 	Sous ces arcades se cachent des alcôves contenant des lits. Des aventuriers de tous horizons reposent
 	dans certaines de ces alcôves, les bandages qui entourent leur tête ou leurs membres indiquent qu’ils ont été
 	récemment blessés. Un escalier conduit à une galerie qui fait le tour de la salle, et ouvre sur les portes
@@ -78,7 +78,7 @@ Son corsage étroit épouse les formes voluptueuses de son corps. Dans le creux 
 Vos yeux s’attardant à cet endroit, vous remarquez que le pendentif à la forme d’un calice, symbole de sa fonction de guérisseuse.
 Arrivée à côté de vous, la sublime jeune femme plonge dans votre regard ses yeux azurés, dont la vivacité est tempérée par le rideau de ses cils allongés. La suavité de sa voix s’écoule alors de sa bouche coralline vers vous :
 <br>
-<br>« Soyez le bienvenu dans ce dispensaire, Messire. Que puis-je pour vous ? » </i>
+<br>« Soyez le bienvenu dans ce dispensaire, Messire. Que puis-je pour vous ? » </em>
     <form name="soins" method="post" action="temple_soins.php">
         <input type="hidden" class="vide" name="soin" value="soin_male">
         <p><input type="radio" name="soins" value="1" checked>Vous montrez les menues blessures qui ornent votre corps : « Pouvez-vous me soigner ? » - 20 brouzoufs.<br />

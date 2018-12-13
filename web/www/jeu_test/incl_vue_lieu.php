@@ -17,18 +17,18 @@ if ($nb_lieux_en_vue != 0)
 
 	?>
 	<table width="100%" cellspacing="2" cellapdding="2"><tr><td colspan="5" class="soustitre"><p class="soustitre">Sites</td></tr>
-	<tr><td class="soustitre2" width="50"><p><b>Dist.</b></td>
-	<td class="soustitre2"><p><b>Nom</b></td>
-	<td class="soustitre2"><p><b>Type</b></td>
-	<td class="soustitre2"><p style="text-align:center;"><b>X</b></td>
-	<td class="soustitre2"><p style="text-align:center;"><b>Y</b></td>
+	<tr><td class="soustitre2" width="50"><p><strong>Dist.</strong></td>
+	<td class="soustitre2"><p><strong>Nom</strong></td>
+	<td class="soustitre2"><p><strong>Type</strong></td>
+	<td class="soustitre2"><p style="text-align:center;"><strong>X</strong></td>
+	<td class="soustitre2"><p style="text-align:center;"><strong>Y</strong></td>
 	</tr>
 	<?php 
 	$i = 0;
 	while($db->next_record())
 	{
 		$refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
-		$nom = $db->f("lieu_nom") . " <i>($refuge)</i>";
+		$nom = $db->f("lieu_nom") . " <em>($refuge)</em>";
 		$type = $db->f("tlieu_libelle");
 		$style = "soustitre2";
 

@@ -100,7 +100,7 @@ if ($erreur == 0)
 			writelog($log,'temple');
 			break;
 		case "nom";	
-			echo "<b>Attention !</b> Toute modification est définitive. Les descriptions réalisées pour les temples ont été faites avec soin. Veillez à ne pas tout gacher.<br /><br />";
+			echo "<strong>Attention !</strong> Toute modification est définitive. Les descriptions réalisées pour les temples ont été faites avec soin. Veillez à ne pas tout gacher.<br /><br />";
 			echo "<form name=\"echoppe\" method=\"post\" action=\"gere_temple4.php\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"nom2\">";
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
@@ -131,7 +131,7 @@ if ($erreur == 0)
 		
 			break;
 		case "nom2":
-			echo "<p><b>Aperçu : " . $desc;
+			echo "<p><strong>Aperçu : " . $desc;
 			$desc = str_replace(";",chr(127),$desc);
 			$req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
 			$db->query($req);

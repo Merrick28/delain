@@ -109,7 +109,7 @@ class bddpdo
             // Mode exception
             if ($this->exception)
             {
-                throw new Exception('<pre><b>FATAL ERROR : ' . __METHOD__ . '</b> except first given parameter to be an array</pre>', 0);
+                throw new Exception('<pre><strong>FATAL ERROR : ' . __METHOD__ . '</strong> except first given parameter to be an array</pre>', 0);
             }
             else
             {

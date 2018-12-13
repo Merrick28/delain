@@ -95,7 +95,7 @@ if ($fac_cod > -1)
 	// Tableau des missions
 	echo "<div style='padding:10px;'><div>Voici la liste des lieux dans lesquels on peut trouver des missions pour la faction « $fac_nom ».</div>
 		<div>Les bornes « Étage supérieur » et « Étage inférieur » représentent les limites entre lesquelles on trouve des missions dans ce lieu.<br />Par exemple, si on assigne respectivement « -1 » et « -4 », la faction n’utilisera ce lieu que dans les étages -1, -2, -3, -4 et -5 (et leurs antres).<br />
-		<b>Attention ! Si les bornes sont renseignées à l’envers </b>(-5 puis -1...), <b>aucune mission ne sera jamais délivrée dans ce lieu pour cette faction !</b></div>
+		<strong>Attention ! Si les bornes sont renseignées à l’envers </strong>(-5 puis -1...), <strong>aucune mission ne sera jamais délivrée dans ce lieu pour cette faction !</strong></div>
 		<div>Le « niveau du lieu » est un concept encore peu utilisé dans le jeu, et potentiellement amené à se développer. Il permet un fonctionnement par héritage des lieux : quand un type de lieu gagne un niveau, il a plus de fonctionnalités.<br />
 		Ceci est utilisé dans deux cas : la Cathédrale, une évolution de niveau 2 du temple, et la Dalle Morbeline améliorée (créée pour la faction), de niveau 2 aussi. Donc dans l’immense majorité des cas, on laissera 0 dans cette colonne.</div>";
 	echo '<table>

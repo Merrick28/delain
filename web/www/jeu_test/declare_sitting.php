@@ -37,12 +37,12 @@ switch($methode)
 		
 		<tr>
 		<td><p>Durée du sitting en heure </td>
-		<td align="right"><b><input type="text" name="duree_heure" value="6"> (<i>Minimum 6 heures !</i>)</b></td>
+		<td align="right"><strong><input type="text" name="duree_heure" value="6"> (<em>Minimum 6 heures !</em>)</strong></td>
 		</tr>
 		
 		<tr>
 		<td><p>Durée du sitting en jour</td>
-		<td align="right" ><b><input type="hidden" name="duree_jour" value="5"> (<i>Maximum 5 jours !</i>)</b></td>
+		<td align="right" ><strong><input type="hidden" name="duree_jour" value="5"> (<em>Maximum 5 jours !</em>)</strong></td>
 		</tr>
 		
 		<tr>
@@ -139,38 +139,38 @@ switch($methode)
             //   (Les couples peuvent être sittés, mais ne peuvent sitter
             //   (personne)
             $erreur = 0;
-            $contenu_page .= 'Sittings sur 15 jours glissants: <b>' . $nSittings
-                . '</b><br />';
+            $contenu_page .= 'Sittings sur 15 jours glissants: <strong>' . $nSittings
+                . '</strong><br />';
             if ($nSittings >= 5)
             {
                 // Déjà eu 5 sittings sur les 15 jours précédents.
                 // Impossible d'en rajouter un sixième.
-                $contenu_page .= '<b>Vous ne pouvez déclarer plus de 5 sittings'
+                $contenu_page .= '<strong>Vous ne pouvez déclarer plus de 5 sittings'
                     . ' sur 15 jours glissants. Cette demande ne peut être'
-                    . ' acceptée sans enfreindre la charte.</b><br />';
+                    . ' acceptée sans enfreindre la charte.</strong><br />';
                 $erreur = 1;
             }
             if ($dSittings > 0)
             {
-                $contenu_page .= 'Durée de sitting restante sur 15 jours: <b>'
-                    . $dSittings . '</b><br />';
+                $contenu_page .= 'Durée de sitting restante sur 15 jours: <strong>'
+                    . $dSittings . '</strong><br />';
                 if ($dSittings < 0)
                 {
-                    $contenu_page .= '<b>La durée maximale de sitting sur 15 jours'
+                    $contenu_page .= '<strong>La durée maximale de sitting sur 15 jours'
                         . ' glissants est fixée à 5 jours. Cette demande vous ferait'
                         . ' dépasser la durée autorisée, et ne peut donc être'
-                        . ' acceptée sans enfreindre la charte.</b><br />';
+                        . ' acceptée sans enfreindre la charte.</strong><br />';
                     $erreur = 1;
                 }
             }
             if ($bCumul != 0)
             {
-                $contenu_page .= '<b>Les demandes de sittings ne peuvent être'
+                $contenu_page .= '<strong>Les demandes de sittings ne peuvent être'
                     . ' cumulées à un instant donné, ni chez le sitté, ni chez'
                     . ' le sitteur. Cette demande engendrerait un cumul ou une'
                     . ' chaîne de sittings soit de votre côté, soit du côté du'
                     . ' sitteur, et ne peut donc être acceptée sans enfreindre'
-                    . ' la charte.</b><br />';
+                    . ' la charte.</strong><br />';
 
                 // Tentative de suggestion de plage.
                 $req = 'select csit_ddeb, csit_dfin'
@@ -241,9 +241,9 @@ switch($methode)
                 $db2->query($req);
                 $db2->next_record();
                 $compte_sitteur_nom = $db2->f("compt_nom");
-                echo $contenu_page . "<br>Compte sitteur : <b>" . $compte_sitteur_nom . "</b>";
-                echo "<br>Nombre d'heures du sitting : <b>" . $duree_heure . " heures</b>";
-                echo "<br>Début du sitting : <b>" . $date_deb . "</b>";
+                echo $contenu_page . "<br>Compte sitteur : <strong>" . $compte_sitteur_nom . "</strong>";
+                echo "<br>Nombre d'heures du sitting : <strong>" . $duree_heure . " heures</strong>";
+                echo "<br>Début du sitting : <strong>" . $date_deb . "</strong>";
                 ?>
                 <br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
                 <?php 
@@ -264,9 +264,9 @@ switch($methode)
                                     <br>Vous pouvez annuler cette demande de sitting si elle n'a pas démarrée.
                                     <br>Nous vous rappelons que la règle est de d'abord se mettre en accord avec son sitteur par l'envoi d'un message.
                                     <br><br><br>
-                                    <br>Compte sitteur : <b>$compte_sitteur_nom</b>
-                                    <br>Nombre d'heures du sitting : <b>$duree_heure heures</b>
-                                    <br>Début du sitting : <b>$date_deb";
+                                    <br>Compte sitteur : <strong>$compte_sitteur_nom</strong>
+                                    <br>Nombre d'heures du sitting : <strong>$duree_heure heures</strong>
+                                    <br>Début du sitting : <strong>$date_deb";
                 $corps = pg_escape_string($corps);
                 $titre = "Déclaration de sitting $compte_sitte_nom / $compte_sitteur_nom";
                 $titre = pg_escape_string($titre);
@@ -301,7 +301,7 @@ switch($methode)
 		<br>La liste ci-dessous donne les sittings que vous avez déclarés et qui se réaliseront<br>
 		<br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
 		<table>
-		<tr><td><b>Compte Sitteur</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td><td><b>Annulation d'un sitting</b></td></tr>	
+		<tr><td><strong>Compte Sitteur</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td><td><strong>Annulation d'un sitting</strong></td></tr>	
 		<?php 
 		$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
 								where csit_compte_sitte = $compt_cod
@@ -323,7 +323,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitteur_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><i>Sitting en cours, il ne peut être annulé</i></td>
+				<td class="soustitre2"><em>Sitting en cours, il ne peut être annulé</em></td>
 				</tr>
 				<?php 		
 		}
@@ -349,7 +349,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitteur_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitteur;?>&sit3=<?php echo $compte_sitte;?>&methode=annulation"><i>Annulation de ce sitting</i></a></td>		
+				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitteur;?>&sit3=<?php echo $compte_sitte;?>&methode=annulation"><em>Annulation de ce sitting</em></a></td>		
 				</tr>
 				<?php 		
 		}
@@ -406,7 +406,7 @@ switch($methode)
 		<br>La liste ci-dessous donne les sittings échus, qui ont été réalisés dans les 3 derniers mois<br>
 		<br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
 		<table>
-		<tr><td><b>Anciens comptes Sitteur</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td></tr>	
+		<tr><td><strong>Anciens comptes Sitteur</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td></tr>	
 		<?php 
 		$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
 								where csit_compte_sitte = $compt_cod
@@ -444,7 +444,7 @@ switch($methode)
 		<br>La liste ci-dessous donne les sittings que vous avez en cours sur un autre compte, ou qui vous ont été demandés<br>
 		<br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
 		<table>
-		<tr><td><b>Compte à sitter</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td><td><b>Annulation d'un sitting</b></td></tr>	
+		<tr><td><strong>Compte à sitter</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td><td><strong>Annulation d'un sitting</strong></td></tr>	
 		<?php 
 		$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur,csit_compte_sitte from compte_sitting
 								where csit_compte_sitteur = $compt_cod
@@ -466,7 +466,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitte_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><i>Sitting en cours, il ne peut être annulé</i></td>
+				<td class="soustitre2"><em>Sitting en cours, il ne peut être annulé</em></td>
 				</tr>
 				<?php 		
 		}
@@ -492,7 +492,7 @@ switch($methode)
 				<tr><td class="soustitre2"><?php echo $compte_sitte_nom;?></td>
 				<td class="soustitre2"><?php echo $date_deb;?></td>
 				<td class="soustitre2"><?php echo $date_fin;?></td>
-				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitte;?>&sit3=<?php echo $compte_sitteur;?>&methode=annulation_sitteur"><i>Annulation de ce sitting</i></a></td>		
+				<td class="soustitre2"><a href="<?php echo $PHP_SELF;?>?sit=<?php echo $csit_cod;?>&sit2=<?php echo $compte_sitte;?>&sit3=<?php echo $compte_sitteur;?>&methode=annulation_sitteur"><em>Annulation de ce sitting</em></a></td>		
 				</tr>
 				<?php 		
 		}
@@ -549,7 +549,7 @@ switch($methode)
 		<br>La liste ci-dessous donne les sittings que vous avez réalisés dans les 3 derniers mois et qui sont échus<br>
 		<br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br><hr>
 		<table>
-		<tr><td><b>Anciens comptes Sittés</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td><td><b>Durée</b> (<i>jours / heures : minutes)</i></td></tr>	
+		<tr><td><strong>Anciens comptes Sittés</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td><td><strong>Durée</strong> (<em>jours / heures : minutes)</em></td></tr>	
 		<?php 
 		$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,to_char(csit_dfin-csit_ddeb,'  DD / HH24:mi') as duree,csit_compte_sitteur,csit_compte_sitte from compte_sitting
 								where csit_compte_sitteur = $compt_cod

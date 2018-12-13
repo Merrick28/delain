@@ -150,7 +150,7 @@ if ($fac_cod > -1)
 		$fmiss_rang_min = $db->f('fmiss_rang_min');
 		$fmiss_libelle = $db->f('fmiss_libelle');
 
-		$attention = ($fmiss_rang_min > $rang_max) ? "<b>Attention, le rang minimal défini, $fmiss_rang_min, est<br />supérieur au rang maximal existant pour cette faction !</b><br />" : "";
+		$attention = ($fmiss_rang_min > $rang_max) ? "<strong>Attention, le rang minimal défini, $fmiss_rang_min, est<br />supérieur au rang maximal existant pour cette faction !</strong><br />" : "";
 		$select_rang = "$attention<select name='fmiss_rang_min'><option value='0'>Aucune restriction</option>"
 			. $html->select_from_query($req_rangs, 'rfac_rang', 'rfac_nom', $fmiss_rang_min)
 			. "</select>";

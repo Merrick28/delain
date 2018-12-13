@@ -20,14 +20,14 @@ switch ($methode)
         }
         else
         {
-            $contenu_page .= '<p align="left"><b>Vous êtes en possession de :</b>';
+            $contenu_page .= '<p align="left"><strong>Vous êtes en possession de :</strong>';
             $liste = '<option value="vide"><-- Sélectionner --></option>';
             while ($db->next_record())
             {
                 $contenu_page .= '<br>' . $db->f("gobj_nom");
                 $liste .= '<option value="' . $db->f("obj_gobj_cod") . '"> ' . $db->f("gobj_nom") . '</option>';
             }
-            $contenu_page .= '</p><br><br><p align="center"><b>Sur quelle pierre souhaitez vous réaliser le forgeamage ?</b>
+            $contenu_page .= '</p><br><br><p align="center"><strong>Sur quelle pierre souhaitez vous réaliser le forgeamage ?</strong>
 					<br>
 					<form name="potions" method="post" action="' . $PHP_SELF . '">
 						<input type="hidden" name="methode" value="compo">
@@ -37,7 +37,7 @@ switch ($methode)
 						' . $liste . '
 						</select>
 						<input type="submit" value="Valider (' . $nombre_pa . ') PA" class="test">
-						<i>Attention, pas de confirmation ensuite</i></p>
+						<em>Attention, pas de confirmation ensuite</em></p>
 					</form>
 				</table>';
         }
@@ -58,7 +58,7 @@ switch ($methode)
 
         if ($db->nf() > 0)
         {
-            $contenu_page .= '<p><b>Formules connues :</b></p>';
+            $contenu_page .= '<p><strong>Formules connues :</strong></p>';
             $contenu_page .= '<table><tr><th class="titre">Pierre nécessaire</th><th class="titre">Composant obtenu</th><th class="titre">Coût (énergie)</th></tr>';
             while ($db->next_record())
             {
@@ -75,7 +75,7 @@ switch ($methode)
         //Controle sur la sélection d'une pierre précieuse
         if ($pierre == 'vide')
         {
-            $contenu_page .= '<b>Vous n’avez sélectionné aucune pierre précieuse pour votre forgeamage !</b><br>';
+            $contenu_page .= '<strong>Vous n’avez sélectionné aucune pierre précieuse pour votre forgeamage !</strong><br>';
             break;
         }
 
@@ -86,7 +86,7 @@ switch ($methode)
         $db->query($req_comp);
         if ($db->nf() == 0)
         {
-            $contenu_page .= '<b>Vous ne possédez pas la pierre en question !</b><br>';
+            $contenu_page .= '<strong>Vous ne possédez pas la pierre en question !</strong><br>';
             break;
         }
 
@@ -100,7 +100,7 @@ switch ($methode)
         //On vérifie les pa
         if ($pa < $param->getparm(113))
         {
-            $contenu_page .= '<b>Vous ne possédez pas suffisamment de PA pour réaliser cette opération !</b><br>';
+            $contenu_page .= '<strong>Vous ne possédez pas suffisamment de PA pour réaliser cette opération !</strong><br>';
             break;
         }
 
@@ -113,8 +113,8 @@ switch ($methode)
         $puissance_case = $db->f("pos_magie");
         if ($puissance_case < $param->getparm(114))
         {
-            $contenu_page .= '<b>La puissance magique à cet endroit n’est pas suffisante pour réaliser un composant à cet endroit !
-													<br>Rien ne se produit</b><br>';
+            $contenu_page .= '<strong>La puissance magique à cet endroit n’est pas suffisante pour réaliser un composant à cet endroit !
+													<br>Rien ne se produit</strong><br>';
             break;
         }
 
@@ -156,7 +156,7 @@ switch ($methode)
         $db->query($req);
         if ($db->nf() != 0)
         {
-            $contenu_page .= '<b>Vous vous êtes concentré avant cette action</b><br>';
+            $contenu_page .= '<strong>Vous vous êtes concentré avant cette action</strong><br>';
             $concentration = 20;
             $req = 'delete from concentrations where concentration_perso_cod = ' . $perso_cod;
             $db->query($req);
@@ -167,8 +167,8 @@ switch ($methode)
         $de = rand(1, 100);
         $limite_comp = $param->getparm(1);
         $chance = $forgeamage_pourcent - ($energie_necessaire / 4) + $concentration;
-        $contenu_page .= 'Votre compétence initiale en forgeamage est de <b>' . $forgeamage_pourcent . '</b>
-												<br>Vos chances de réussite modifiées sont de <b>' . $chance . '</b>, tenant compte de la difficulté de ce composant. Votre lancer de dé est de <b>' . $de . '</b><br>';
+        $contenu_page .= 'Votre compétence initiale en forgeamage est de <strong>' . $forgeamage_pourcent . '</strong>
+												<br>Vos chances de réussite modifiées sont de <strong>' . $chance . '</strong>, tenant compte de la difficulté de ce composant. Votre lancer de dé est de <strong>' . $de . '</strong><br>';
         if ($de <= 5)
         {
             $reussite = 1;
@@ -184,7 +184,7 @@ switch ($methode)
             }
             else
             {
-                $contenu_page .= '<b>Vous échouez dans la création de votre composant d’enchantement.</b>
+                $contenu_page .= '<strong>Vous échouez dans la création de votre composant d’enchantement.</strong>
 					<br>Malheureusement, comme vous ne parvenez pas au bout de cette opération, vous ne savez pas non plus ce que vous auriez pu produire !';
                 if ($forgeamage_pourcent <= $limite_comp) //Amélioration si < 40%
                 {
@@ -198,7 +198,7 @@ switch ($methode)
                     $contenu_page .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
                     if ($ameliore == '1')
                     {
-                        $contenu_page .= 'Vous avez donc <b>amélioré</b> cette compétence. <br>';
+                        $contenu_page .= 'Vous avez donc <strong>amélioré</strong> cette compétence. <br>';
                         $contenu_page .= 'Sa nouvelle valeur est ' . $nouvelle_valeur . '<br><br>';
                         $px_gagne = $px_gagne + 1;
                     }
@@ -218,7 +218,7 @@ switch ($methode)
         }
         if ($reussite == 1)
         {
-            $contenu_page .= '<b>Vous parvenez à créer un composant d’enchantement. Il s’agit d’un "' . $nom . '</b>"
+            $contenu_page .= '<strong>Vous parvenez à créer un composant d’enchantement. Il s’agit d’un "' . $nom . '</strong>"
 					<br>Vous devez maintenant regarder si vous pouvez l’associer à d’autres composants pour réaliser un enchantement<br>';
             //On crée le composant
             $req = 'select cree_objet_perso_nombre(' . $composant_cod . ',' . $perso_cod . ',1) as resultat';
@@ -234,7 +234,7 @@ switch ($methode)
             $contenu_page .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
             if ($ameliore == '1')
             {
-                $contenu_page .= 'vous avez donc <b>amélioré</b> cette compétence. <br>';
+                $contenu_page .= 'vous avez donc <strong>amélioré</strong> cette compétence. <br>';
                 $contenu_page .= 'Sa nouvelle valeur est ' . $nouvelle_valeur . '<br><br>';
                 $px_gagne = $px_gagne + 1;
             }

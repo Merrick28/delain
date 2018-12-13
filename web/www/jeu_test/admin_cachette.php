@@ -73,7 +73,7 @@ else
 		<input type="hidden" name="methode" value="liste_cre1">
 		<table>
 			<tr>
-				<td class="soustitre2"><b>Nom de la liste / <i>Attention indispensable !</i><b></td>
+				<td class="soustitre2"><strong>Nom de la liste / <em>Attention indispensable !</em><strong></td>
 				<td><input type="text" name="nom_liste" value="à remplir !"></td>
 			</tr>
 			<tr>
@@ -281,7 +281,7 @@ else
 		case "cre": // création d'une nouvelle cachette
 			?>
 			<form name="cre" method="post" action="<?php echo $PHP_SELF;?>">
-			<br> <b>Première étape :</b> pour créer une cachette, remplir les champs nécessaires
+			<br> <strong>Première étape :</strong> pour créer une cachette, remplir les champs nécessaires
 			<br> Cela va créer la cachette en tant que telle, avec son descriptif. Si certains champs ne doivent pas être remplis, laissez les vides
 			<br>Ces informations sont utilisées par la suite, et si elles sont erronées, elles apparaîtront comme telles aux joueurs
 			<br>Le remplissage de la cachette avec les objets se fait ensuite
@@ -455,8 +455,8 @@ else
 			while($db->next_record())
 			{
 				$cache_cod = $db->f("cache_cod");
-				echo '<br><b>Cachette numéro </b>' . $db->f('cache_cod') . '<br><b>Nom : </b>' . $db->f('cache_nom') . '<br><b>Description : </b>' . $db->f('cache_desc') .
-					'<br><b>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </b>' . $db->f('etage_libelle') . '<br>
+				echo '<br><strong>Cachette numéro </strong>' . $db->f('cache_cod') . '<br><strong>Nom : </strong>' . $db->f('cache_nom') . '<br><strong>Description : </strong>' . $db->f('cache_desc') .
+					'<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
 					<a href="' . $PHP_SELF . '?cache_cod='. $cache_cod .'&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
 			}
 		break;
@@ -482,8 +482,8 @@ else
 			while($db->next_record())
 			{
 				$cache_cod = $db->f("cache_cod");
-				echo '<br><b>Cachette numéro </b>' . $db->f('cache_cod') . '<br><b>Nom : </b>' . $db->f('cache_nom') . '<br><b>Description : </b>' . $db->f('cache_desc') .
-				'<br><b>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </b>' . $db->f('etage_libelle') . '<br>
+				echo '<br><strong>Cachette numéro </strong>' . $db->f('cache_cod') . '<br><strong>Nom : </strong>' . $db->f('cache_nom') . '<br><strong>Description : </strong>' . $db->f('cache_desc') .
+				'<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
 				<a href="' . $PHP_SELF . '?cache_cod='. $cache_cod .'&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
 			}
 		break;

@@ -119,7 +119,7 @@ $t->set_var('PERSO_NOM', $nom_perso);
 //intangible
 if ($is_intangible)
 {
-    $intangible = "<i>Perso impalpable !</i><br><br>";
+    $intangible = "<em>Perso impalpable !</em><br><br>";
 }
 else
 {
@@ -186,7 +186,7 @@ $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 
 if ($px_actuel >= $prochain_niveau)
 {
-    $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><b>Passer au niveau supérieur ! </b>(6 PA)</a>';
+    $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>';
 }
 else
 {
@@ -197,7 +197,7 @@ $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 // Quête avec perso
 if ($perso->is_perso_quete())
 {
-    $perso_quete = "<hr /><a href=\"$chemin/quete_perso.php\"><b>Quête</b></a>";
+    $perso_quete = "<hr /><a href=\"$chemin/quete_perso.php\"><strong>Quête</strong></a>";
 }
 else
 {
@@ -227,7 +227,7 @@ if ($perso->is_lieu())
     {
         $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
         $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
-        $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><b>" . $nom_lieu  . "</b> (" . $libelle . ")</a>";
+        $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><strong>" . $nom_lieu  . "</strong> (" . $libelle . ")</a>";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
@@ -238,7 +238,7 @@ $tab    = $mdest->getByPersoNonLu($perso->perso_cod);
 $nb_msg = count($tab);
 if ($nb_msg != 0)
 {
-    $perso_messagerie = "<b>Messagerie (" . $nb_msg . ")</b>";
+    $perso_messagerie = "<strong>Messagerie (" . $nb_msg . ")</strong>";
 }
 else
 {
@@ -296,7 +296,7 @@ $t->set_var('RAMASSER', $ramasser);
 // Transactions
 if ($transaction > 0)
 {
-    $perso_transactions = "<b>Transactions (" . $transaction . ")</b>";
+    $perso_transactions = "<strong>Transactions (" . $transaction . ")</strong>";
 }
 else
 {

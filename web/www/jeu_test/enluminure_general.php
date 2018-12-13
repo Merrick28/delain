@@ -94,10 +94,10 @@ if($is_enlumineur)
 {
 	$controle = 1;
 }
-$contenu_page .= '<span align="center"><b>Enluminure</b></span>
+$contenu_page .= '<span align="center"><strong>Enluminure</strong></span>
 (<a href="javascript:blocking(\'aide\');">Aide</a>)<br><br>
 	<div id="aide" class="tableau2"  style="display:none;">
-	<p><b>Préambule :</b>
+	<p><strong>Préambule :</strong>
 		<br>L’art de l’enluminure n’est en rien complexe.
 		<br>Cela nécessite simplement de trouver une peau qui pourra ensuite servir de support comme parchemin afin de lancer son sort dessus.
 		<br>La difficulté de cet art est que chaque peau possède intrinsecquement une énergie magique, et que c’est cette énergie qui permet d’en faire un support de qualité.
@@ -147,12 +147,12 @@ switch($tenl)
 	case "0": //Tannage des peaux
 		if($controle == 1)
 		{
-			$contenu_page .= '<span align="center"><b>Tannage des peaux</b></span>
+			$contenu_page .= '<span align="center"><strong>Tannage des peaux</strong></span>
 			(<a href="javascript:blocking(\'aide2\');">Aide sur le tannage</a>)<br><br>
 				<div id="aide2" class="tableau2"  style="display:none;">
-				<p><b>Le tannage des peaux, pourquoi ?</b>
+				<p><strong>Le tannage des peaux, pourquoi ?</strong>
 				<br>Un parchemin n’est pas un simple bout de papier, comme certains pourraient le croire. Il s’agit d’une peau d’un monstre, qui contient déjà une énergie magique. L’opération de tanange consiste à en retirer cette quintessence magique, afin que le parchemin soit ensuite le réceptacle d’un sort.
-				<br><br><b>Comment ?</b>
+				<br><br><strong>Comment ?</strong>
 				<br>Il est nécessaire de sélectionner la peau qui sera tannée, et ensuite, de décider quel niveau de sortilège vous voudrez ensuite pouvoir lancer dessus. Plus vous souhaitez lancer des sortilèges complexes dessus, plus vous avez intérêt à avoir une peau de qualité.
 				<br>Néanmoins, toute peau est capable théroriquement de produire un parchemin de haut niveau. Certaines avec une chance très faible.
 				<br>Dans les faits, il s’avère que certaines peaux ne peuvent pas produire certains résultats, sans que ceci ne soit expliquable par les enlumineurs.

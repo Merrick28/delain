@@ -68,8 +68,8 @@ if ($erreur == 0)
 		case 'entree':
 			// on cherche d'abord le dieu associé.
 			echo "<p><img src=\"../images/temple.png\"><br />
-			Vous êtes devant un autel dédié à <b>" , $dieu_nom, "</b><br>";
-			echo "<br><br><i>" , $lieu_descr, "</i><br>";
+			Vous êtes devant un autel dédié à <strong>" , $dieu_nom, "</strong><br>";
+			echo "<br><br><em>" , $lieu_descr, "</em><br>";
 			
 			// on regarde s'il existe un lien avec le perso
 			$req = 'select dper_dieu_cod,dniv_libelle,dieu_nom,dper_niveau,dper_points
@@ -108,7 +108,7 @@ if ($erreur == 0)
 			if ($db->nf() != 0)
 			{
 				// RENEGAT !!!
-				echo "<p>Vous êtes <b>renégat</b> !! Inutile de s'attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !";
+				echo "<p>Vous êtes <strong>renégat</strong> !! Inutile de s'attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !";
 			}
 			else
 			{
@@ -134,7 +134,7 @@ if ($erreur == 0)
 			if ($attention == 0)
 			{
 				?>
-				<p>Vous vous apprêtez à prier <b><?php echo $dieu_nom ?></b><br>
+				<p>Vous vous apprêtez à prier <strong><?php echo $dieu_nom ?></strong><br>
 				<a href="action.php?methode=prie&dieu=<?php echo $dieu_cod; ?>">Continuer ?</a>
 				<?php 
 			}

@@ -93,8 +93,8 @@ if ($erreur == 0)
 ?>
 </select>
 </p>
-<p><i>(une taxe de <?php  echo $numero; ?> % est prélevée pour chaque dépot à cet étage correspondant à : <input type="text" name="quantite_2" value="0" disabled> Br.
-	<br><input type="text" name="quantite_3" value="0" disabled> Br seront effectivement virés sur le compte de guilde). Attention, la banque applique son pourcentage toujours en premier !</i></p>
+<p><em>(une taxe de <?php  echo $numero; ?> % est prélevée pour chaque dépot à cet étage correspondant à : <input type="text" name="quantite_2" value="0" disabled> Br.
+	<br><input type="text" name="quantite_3" value="0" disabled> Br seront effectivement virés sur le compte de guilde). Attention, la banque applique son pourcentage toujours en premier !</em></p>
 <p><center><input type="submit" value="Valider !" class="test"></center></p>
 </form>
 	     <?php 
@@ -122,11 +122,11 @@ if ($erreur == 0)
 	        //$tab_depot = pg_fetch_array($res_depot,0);
 	        if ($db->f("depot") == 0)
 	        {
-		        echo("<p>Vous venez de déposer <b>$quantite</b> brouzoufs sur votre compte en banque.");
+		        echo("<p>Vous venez de déposer <strong>$quantite</strong> brouzoufs sur votre compte en banque.");
 	        }
 	        else
 	        {
-		        printf("<p>Une anomalie est survenue : <b>%s</b>",$db->f("depot"));
+		        printf("<p>Une anomalie est survenue : <strong>%s</strong>",$db->f("depot"));
 	        }
        break;
        case "valider_retrait" :
@@ -147,13 +147,13 @@ if ($erreur == 0)
             	if ($tab_depot == 0)
             	{
             		?>
-            		<p>Vous venez de retirer <b><?php  echo $quantite; ?></b> brouzoufs de votre compte en banque.</p>
+            		<p>Vous venez de retirer <strong><?php  echo $quantite; ?></strong> brouzoufs de votre compte en banque.</p>
             		<?php 
             	}
             	else
             	{
             		?>
-            		<p>Une anomalie est survenue : <b><?php  echo $tab_depot ?></b></p>
+            		<p>Une anomalie est survenue : <strong><?php  echo $tab_depot ?></strong></p>
             		<?php 
             	}
             }
@@ -194,7 +194,7 @@ if ($erreur == 0)
             	    <?php 
                } else {
                 ?>
-            		<p>Une anomalie est survenue : <b><?php  echo $info ?> </b></p>
+            		<p>Une anomalie est survenue : <strong><?php  echo $info ?> </strong></p>
             		<?php 
                }
 
@@ -251,7 +251,7 @@ if ($erreur == 0)
             	    <?php 
                } else {
                 ?>
-            		<p>Une anomalie est survenue : <b><?php  echo $info ?> </b></p>
+            		<p>Une anomalie est survenue : <strong><?php  echo $info ?> </strong></p>
             		<?php 
                }
          break;
@@ -306,7 +306,7 @@ if ($erreur == 0)
             else
             {
             	?>
-            		<p>Une anomalie est survenue : <b><?php  echo $info ?></b></p>
+            		<p>Une anomalie est survenue : <strong><?php  echo $info ?></strong></p>
             	<?php 
             }
          }
@@ -372,7 +372,7 @@ if ($nb_guilde > 0)
          $gbank_cod = $db->f("gbank_cod");
          $solde = $db->f("gbank_or");
        ?>
-  <p>Votre guilde dispose d'un compte: <b><?php  echo $db->f("gbank_nom");?></b> Solde actuel: <b><?php echo $solde; ?> Br</b> <BR />
+  <p>Votre guilde dispose d'un compte: <strong><?php  echo $db->f("gbank_nom");?></strong> Solde actuel: <strong><?php echo $solde; ?> Br</strong> <BR />
   <p>
       <form name="retrait_guilde" method="post" action="lieu.php">
     <input type="hidden" name="methode" value="view_retrait_guilde">
@@ -380,7 +380,7 @@ if ($nb_guilde > 0)
 	</form>
  </p>
   </p>
-  <p> <b> RELEVE DE COMPTES </b>
+  <p> <strong> RELEVE DE COMPTES </strong>
 <TABLE align="center" width="85%">
 <TR>
 <TD>PERSONNAGE</TD>
@@ -419,7 +419,7 @@ if ($nb_guilde > 0)
 <TD>SOLDE:</TD>
 <TD>--</TD>
 <TD>--</TD>
-<TD><b><?php echo $solde; ?> Br</b></TD>
+<TD><strong><?php echo $solde; ?> Br</strong></TD>
 </TR>
 </TABLE></p>
 <?php } else {

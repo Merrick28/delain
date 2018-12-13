@@ -22,7 +22,7 @@ switch($methode2)
 			srand ((double) microtime() * 10000000); // pour intialiser le random
 			$input = array (
 				"<br>Alors que vous rentrez dans cette auberge, une sorte d’ivrogne s’approche de vous, sentant la bière à plein nez :
-				<br><i> Et dîtes, ch’vous connais vous ! vous n’seriez pas $nom ? Ou alors Graspork ?
+				<br><em> Et dîtes, ch’vous connais vous ! vous n’seriez pas $nom ? Ou alors Graspork ?
 				<br>Pfff, encore un de ces espèces de %#*£^ù qui cherche la gloire à tous les étages !
 				<br>En plus, j’suis sûr que vous n’connaissez même pas les bons coins qui font la gloire !
 				<br>Allez, si vous m’payez un coup à boire, j’vous dirais un secret. Il parait qu’il y a une drôle de grotte,
@@ -30,8 +30,8 @@ switch($methode2)
 				"<br>Et vous là, vous avez une tête qui m’revient.
 				À moins que ce ne soit sur une affiche de la Milice que je vous ai vu...",
 				"<br>Vous surprenez une conversation, plongé dans votre verre :
-				<br><i>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j’suis tombé sur une cachette !
-				<br>J’me souviens plus bien où c’était mais franchement, y’avait un max à se faire !</i>",
+				<br><em>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j’suis tombé sur une cachette !
+				<br>J’me souviens plus bien où c’était mais franchement, y’avait un max à se faire !</em>",
 				"Au pays des farfadets, on raconte qu’il y a plein de recoins avec des planques ! Ce serait les farfadets eux mêmes qui entreposeraient le butin de leurs larcins !",
 				"",
 				""
@@ -45,7 +45,7 @@ switch($methode2)
 		{
 		?>
 			<hr><br>Un homme s’approche de vous, et vous interpelle :
-			<br><i>« Il me semble vous reconnaître ! Ne seriez-vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
+			<br><em>« Il me semble vous reconnaître ! Ne seriez-vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
 			<br>Vos exploits sont contés de-ci de-là, et nul ne les ignore maintenant.
 			Je m’en vais diffuser la nouvelle de votre venue en cet endroit !
 		<?php 		}
@@ -172,7 +172,7 @@ switch($methode2)
 			);
 			$phrase = array_rand ($input, 1);
 			$phrase_boire = $input[$phrase];
-			echo "<i>Un chant est alors entonné gaillardement :</i><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
+			echo "<em>Un chant est alors entonné gaillardement :</em><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
 
 			$req = "update perso set perso_po  = perso_po - 50 where perso_cod = $perso_cod";
 			$db->query($req);

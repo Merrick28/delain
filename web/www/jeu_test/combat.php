@@ -88,7 +88,7 @@ if ($erreur == 0)
 	// Méthode de combat
 	include ('inc_competence_combat.php');
 
-	echo "Arme utilisée : <b>".$obj_nom."</b>. ";
+	echo "Arme utilisée : <strong>".$obj_nom."</strong>. ";
 	echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
 	echo $resultat_inc_competence_combat;
 

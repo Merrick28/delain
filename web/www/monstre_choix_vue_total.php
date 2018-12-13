@@ -34,7 +34,7 @@ $db->query($req);
 			while($db->next_record())
 			{
                 $bold = ($db->f("etage_numero") == $db->f("etage_reference"));
-				echo ($bold?'<p /><b>':'')."<a href=\"jeu/tab_vue_total.php?num_etage=" . $db->f("etage_numero") . "&compt_cod=" . $compt_cod . "\">" . $db->f("etage_libelle") . "</a>".($bold?'</b>':'')."<br />";
+				echo ($bold?'<p /><strong>':'')."<a href=\"jeu/tab_vue_total.php?num_etage=" . $db->f("etage_numero") . "&compt_cod=" . $compt_cod . "\">" . $db->f("etage_libelle") . "</a>".($bold?'</strong>':'')."<br />";
 			}
 include "jeu_test/tab_bas.php";
 ?>

@@ -53,8 +53,8 @@
 		<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
 		<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <img src="{URL_IMAGES}xp{PERSO_BARRE_XP}.gif" title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX"></div>
 		<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
-		<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
-		<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
+		<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <strong>{PERSO_DEGATS}</strong><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong></div>
+		<div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
 	</div>
 	<div style="padding:10px;">
 		<div id="passageniveau">{PASSAGE_NIVEAU}</div>

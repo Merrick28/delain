@@ -242,7 +242,7 @@ switch($methode)
 				$db->query($req);
 				$db->next_record();
 				$nombre_groupe = $db->f('nombre');
-				$contenu_page .= '<b>'.$db2->f('mission_nom').'</b><br><br>'.$db2->f('mission_desc').'<br><br><i>Cette mission est prévue pour un groupe de '.$db2->f('mission_taille').' aventuriers<br>'.$nombre_groupe_texte;
+				$contenu_page .= '<strong>'.$db2->f('mission_nom').'</strong><br><br>'.$db2->f('mission_desc').'<br><br><em>Cette mission est prévue pour un groupe de '.$db2->f('mission_taille').' aventuriers<br>'.$nombre_groupe_texte;
 				//
 				// on commence par regarder si le perso fait partie d'une mission à cet étage
 				//
@@ -276,11 +276,11 @@ switch($methode)
 						//
 							//Faire une liste avec le noms des groupes existants pour cette mission, et avec mise à cour en auto Ajax du nom des persos
 					   	$contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission.<br>
-																Voulez vous <b><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a></b><br>';
+																Voulez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a></strong><br>';
 							if ($nombre_groupe_max == null or $nombre_groupe < $nombre_groupe_max)
 							{
 								$contenu_page .= '<br>nombre de groupe : '.$nombre_groupe.'<br>
-								Souhaitez vous <b><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></b><br>';
+								Souhaitez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
 							}
 							else
 							{
@@ -294,11 +294,11 @@ switch($methode)
 						//
 						// pas dans un groupe, mais invit?						//
 							//Faire une liste avec le noms des groupes existants pour cette mission, et avec mise ?our en auto Ajax du nom des persos
-					   	$contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission,<b> mais vous avez reçu une invitation de la part du chef de groupe.<br>
-																Voulez vous <a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a><br></b>';   	
+					   	$contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission,<strong> mais vous avez reçu une invitation de la part du chef de groupe.<br>
+																Voulez vous <a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a><br></strong>';   	
 							if ($nombre_groupe_max == null or $nombre_groupe < $nombre_groupe_max)
 							{
-								$contenu_page .= 'Souhaitez vous néanmoins <b><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></b><br>';
+								$contenu_page .= 'Souhaitez vous néanmoins <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
 							}
 							else
 							{
@@ -307,15 +307,15 @@ switch($methode)
 					break;
 								
 					case 'oui':
-						$contenu_page .= '<br>Vous appartenez au groupe de mission <b>"'.$db->f('mgroupedef_nom').'</b>"';
+						$contenu_page .= '<br>Vous appartenez au groupe de mission <strong>"'.$db->f('mgroupedef_nom').'</strong>"';
 						if($is_chef == 'Oui')
 						{
 							$contenu_page .= '<br>En tant que chef de ce groupe de mission, vous pouvez inviter d\'autres membres.
-							<br><b><a onclick="newProtoWindowUrl(1, \'Invitation à un groupe de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'&invite_chef=oui\', 600, 250 , 50 ,500)">Oui, je souhaite le faire</a></b>
-							<br><b><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $PHP_SELF . '?methode=delegue&groupe='.$db->f('mgroupe_groupe_cod').'&mission='.$mission.'\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></b>';
+							<br><strong><a onclick="newProtoWindowUrl(1, \'Invitation à un groupe de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'&invite_chef=oui\', 600, 250 , 50 ,500)">Oui, je souhaite le faire</a></strong>
+							<br><strong><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $PHP_SELF . '?methode=delegue&groupe='.$db->f('mgroupe_groupe_cod').'&mission='.$mission.'\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></strong>';
 						}
-						$contenu_page .= '<br><b><a onclick="newProtoWindowUrl(1, \'Membres du groupe de mission\', this, \'' . $PHP_SELF . '?methode=details&mission='.$mission.'\', 600, 250 , 50 ,500)">voir les détails</a></b> de ce groupe de mission (aventuriers engagés dedans) ?<br>';
-						$contenu_page .= '<br><b><a onclick="newProtoWindowUrl(1, \'Quitter ce groupe de mission\', this, \'' . $PHP_SELF . '?methode=quitter&mission='.$mission.'\', 600, 250 , 50 ,500)">Quitter ce groupe ?</a></b><br>';
+						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Membres du groupe de mission\', this, \'' . $PHP_SELF . '?methode=details&mission='.$mission.'\', 600, 250 , 50 ,500)">voir les détails</a></strong> de ce groupe de mission (aventuriers engagés dedans) ?<br>';
+						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Quitter ce groupe de mission\', this, \'' . $PHP_SELF . '?methode=quitter&mission='.$mission.'\', 600, 250 , 50 ,500)">Quitter ce groupe ?</a></strong><br>';
 
 						//On donne les indications de statut de la mission
 						$req_object = "select pos_x,pos_y,t1.perso_nom,t1.mgroupedef_nom,mobject_object_cod,mobject_param_text,mobject_date_deb,mobject_date_prise,mobject_perso_cod,mobject_desc,mobject_pos_cod,mobject_type_object,mobject_statut,mobject_temps,(mobject_date_prise + (mobject_temps::text||' hours')::interval) as date_confirm,now() as maintenant
@@ -338,10 +338,10 @@ switch($methode)
 						$contenu_page .= '<br><br>Cette mission comporte '.$db->nf().' objectif'.$s.'.
 															<br><br><table border="1" width="1000px" height="200px" style="border: medium solid #FFFF00">
 															<tr>
-															<td><b>Description de l\'objectif</b></td>
-															<td width="300px" ><b>Information</b></td>
-															<td><b>Statut</b></td>
-															<td><b>Aventurier / groupe de mission ayant réalisé cet objectif</b></td>
+															<td><strong>Description de l\'objectif</strong></td>
+															<td width="300px" ><strong>Information</strong></td>
+															<td><strong>Statut</strong></td>
+															<td><strong>Aventurier / groupe de mission ayant réalisé cet objectif</strong></td>
 															</tr>';
 						while($db->next_record())
 						{
@@ -392,7 +392,7 @@ switch($methode)
 										$nombre_perso = '';
 										if ($db3->f('nombre') > 0)
 										{
-											$nombre_perso = '<i> - ('.$db3->f('nombre').' monstres présents)</i>';
+											$nombre_perso = '<em> - ('.$db3->f('nombre').' monstres présents)</em>';
 										}
 										$information = $information.'<br> X : '.$db3->f('pos_x').' / Y : '.$db3->f('pos_y').''. $nombre_perso;
 									}
@@ -463,7 +463,7 @@ switch($methode)
 							}
 							else if ($db->f('mobject_type_object') == '5')
 							{
-								$information = '<b>Ces monstres ne doivent pas être tués !</b><ul>';
+								$information = '<strong>Ces monstres ne doivent pas être tués !</strong><ul>';
 									$texte = str_replace(";",",",$db->f("mobject_param_text"));
 									$texte = trim ($texte, ",");
 									$req_monstre = "select perso_nom from perso where perso_cod in (".$texte.")";
@@ -485,7 +485,7 @@ switch($methode)
 							}
 							else if ($db->f('mobject_type_object') == '6')
 							{
-							  $information = '<b>Empêchez les informateurs d\'atteindre cette position :</b>
+							  $information = '<strong>Empêchez les informateurs d\'atteindre cette position :</strong>
                                   <br> X : '.$db->f('pos_x').' / Y : '.$db->f('pos_y');
 								if ($db->f("mobject_param_text") == null or $db->f("mobject_param_text") == '')
 								{
@@ -521,18 +521,18 @@ switch($methode)
 	break;
 	
 	case 'cree':
-		$contenu_page .= '<b>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</b><br><br>
+		$contenu_page .= '<strong>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</strong><br><br>
 			<table><form method="post" action="'.$PHP_SELF.'">
 			<input type="hidden" name="methode" value="cree_groupe">				
 			<input type="hidden" name="mission" value="'.$mission.'">';
 		if($invite_chef !='oui')
 		{
-			$contenu_page .= '<b>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</b><br><br>
+			$contenu_page .= '<strong>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</strong><br><br>
 			<tr><input type="hidden" name="invite_chef" value="non">				
-				<td><b>Nom du groupe : </b><input type="text" name="nom_groupe"></td></tr>';
+				<td><strong>Nom du groupe : </strong><input type="text" name="nom_groupe"></td></tr>';
 		}
 				$contenu_page .= '<tr><td>Inviter des membres : <input type="text" name="membre_groupe">
-			<br><i>(Séparer les noms des persos par des points virgules</i></td>
+			<br><em>(Séparer les noms des persos par des points virgules</em></td>
 			<td>Message envoyé aux membres : <textarea name="message_groupe"></textarea>
 			<td><input type="submit" value="Envoyer" class="test"></td>
 			</tr>
@@ -639,7 +639,7 @@ switch($methode)
 				$chef = '- (invitation non acceptée)';
 				$promote = '';
 	    }
-	    $contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' -------------> <b>'.$promote.'</b></li>';
+	    $contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' -------------> <strong>'.$promote.'</strong></li>';
 	   }
 	   $contenu_page .= '</ul></br>';
 	break;
@@ -710,13 +710,13 @@ switch($methode)
 											and mgroupedef_statut = 'O'
 											and mgroupe_statut != 'E'";
 			$db->query($req);
-			$contenu_page .= '<b>Groupe de mission composé des membres suivants : </b><br><ul>';
+			$contenu_page .= '<strong>Groupe de mission composé des membres suivants : </strong><br><ul>';
 			while($db->next_record())
 			{
 				$chef = '';
 				if($db->f('mgroupe_statut') =='O')
 				{
-					$chef = '<i> - chef de mission </i>';
+					$chef = '<em> - chef de mission </em>';
 				}
 				$contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' / Date d\'intégration : '.$db->f('date_int').'</li>';
 			}
@@ -724,7 +724,7 @@ switch($methode)
 	break;
 
 	case 'quitter':
-		$contenu_page .= '<b>Attention, quitter un groupe est définitif, et seule une nouvelle invitation d\'un chef du groupe vous permettra d\'y revenir.</b><br><br>
+		$contenu_page .= '<strong>Attention, quitter un groupe est définitif, et seule une nouvelle invitation d\'un chef du groupe vous permettra d\'y revenir.</strong><br><br>
 			<form method="post" action="'.$PHP_SELF.'">
 			<input type="hidden" name="methode" value="quitter_confirme">				
 			<input type="hidden" name="mission" value="'.$mission.'">';

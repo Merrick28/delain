@@ -32,7 +32,7 @@ if ($erreur == 0)
 	$desc_lieu = $tab_lieu['description'];
 	$lieu = $tab_lieu['lieu_cod'];
 
-	echo("<p><b>$nom_lieu</b></p><p>$desc_lieu</p>");
+	echo("<p><strong>$nom_lieu</strong></p><p>$desc_lieu</p>");
 
 	// Animation ponctuelle : désactivation du GE du -3 / -8 pour janvier 2013
 	$jour = getdate();

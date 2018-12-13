@@ -53,17 +53,17 @@ if ($erreur == 0)
 	}
 ?>
 	<div>
-		<b>Recherche d’un compte</b>
+		<strong>Recherche d’un compte</strong>
 		<form method="post">
 			<input type="hidden" name="methode" value="et2" />
 			Entrez le nom du compte (caractère % pour générique) : <input type="text" name="nom" />
 			<input type="submit" value="Chercher" class='test'>
 		</form>
 		<hr />
-		ou <b><a href="?methode=nouveau">créer un nouveau compte admin</a>.</b>
-		<br><br>ou <b><a href="?methode=lister&filtre_actif=O">lister les comptes admin actifs</a>.</b>
-		<br>ou <b><a href="?methode=lister&filtre_actif=N">lister les comptes admin inactifs</a>.</b>
-		<br>ou <b><a href="?methode=phpPgAdmin">lister les comptes phpPgAdmin</a>.</b>
+		ou <strong><a href="?methode=nouveau">créer un nouveau compte admin</a>.</strong>
+		<br><br>ou <strong><a href="?methode=lister&filtre_actif=O">lister les comptes admin actifs</a>.</strong>
+		<br>ou <strong><a href="?methode=lister&filtre_actif=N">lister les comptes admin inactifs</a>.</strong>
+		<br>ou <strong><a href="?methode=phpPgAdmin">lister les comptes phpPgAdmin</a>.</strong>
         <br><br>
 	</div>
 	<script type="text/javascript" src="../scripts/manip_css.js"></script>
@@ -132,9 +132,9 @@ if ($erreur == 0)
             echo "<p class=\"titre\">Liste des comptes phpPgAdmin </p>";
             echo "<table class=\"soustitre2\ cellspacing=\"2\" cellpadding=\"2\">";
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Id</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Droits</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Nom du compte</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Id</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Droits</strong></p></td>";
             echo "<tr>";
 
             $req_pers = "SELECT u.usename ,u.usesysid ,
@@ -147,7 +147,7 @@ if ($erreur == 0)
             $db->query($req_pers);
             while($db->next_record()){
                 echo "<tr>";
-                echo "<td class=\"soustitre2\"><b>".$db->f("usename")."</b></td>";
+                echo "<td class=\"soustitre2\"><strong>".$db->f("usename")."</strong></td>";
                 echo "<td style=\"text-align: center;\" class=\"soustitre2\">".$db->f("usesysid")."</td>";
                 echo "<td class=\"soustitre2\">".$db->f("attributes")."</td>";
                 echo "</tr>";
@@ -160,27 +160,27 @@ if ($erreur == 0)
             echo "<p class=\"titre\">Liste des comptes admin. ".($filtre_actif=='O' ? "actifs" : "inactifs")." </p>";
             echo "<table class=\"soustitre2\ cellspacing=\"2\" cellpadding=\"2\">";
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></p></td>";
-            echo "<td class=\"soustitre2\" style=\"min-width: 60px;\"><p><b>Der. Connex.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Perso</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Monstres</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Monstre<br>Gen.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Contrôle</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Logs</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Automap</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Cartes<br>AM</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Étages</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Obj<br>Gen.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Droits</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Cartes</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Logs AM</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Enchant.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Potions</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Sondages</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>News</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Anim.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Anim.</b></p></td>";
-            echo "<td class=\"soustitre2\"><p><b>Magie</b></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Nom du compte</strong></p></td>";
+            echo "<td class=\"soustitre2\" style=\"min-width: 60px;\"><p><strong>Der. Connex.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Perso</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Monstres</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Monstre<br>Gen.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Contrôle</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Logs</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Automap</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Cartes<br>AM</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Étages</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Obj<br>Gen.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Droits</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Cartes</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Logs AM</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Enchant.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Potions</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Sondages</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>News</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Anim.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Anim.</strong></p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Magie</strong></p></td>";
             echo "</tr>";
 
             $req_pers = "select compt_cod, compt_nom, compt_mail, TO_CHAR(compt_der_connex, 'YY-MM-DD HH:MI') compt_der_connex, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
@@ -218,9 +218,9 @@ if ($erreur == 0)
 		?>
 			<form method="post">
 				<input type="hidden" name="methode" value="nouveau_valide" />
-				<b>Nom du compte :</b><input type="text" name="nom" /><select name="type_compte"><option value="M">_monstre</option><option value="C">_controle</option></select><br />
-				<b>Mot de passe :</b><input type="text" name="mdp" /><br />
-				<b>Droits</b><br />
+				<strong>Nom du compte :</strong><input type="text" name="nom" /><select name="type_compte"><option value="M">_monstre</option><option value="C">_controle</option></select><br />
+				<strong>Mot de passe :</strong><input type="text" name="mdp" /><br />
+				<strong>Droits</strong><br />
 				<table>
 		<?php 				echo cree_OuiNon('modif_perso', 'N', 'Modification de perso');
 				echo cree_OuiNon('creer_monstre', 'N', 'Créer des monstres');
@@ -237,8 +237,8 @@ if ($erreur == 0)
 							<option value="--" selected='selected'>Choisissez un étage</option>
 							<option value="A">Tous les étages</option>
 						<?php echo $html->etage_select(); ?>
-						</select><br /><i>A = tous les étages, sinon séparer les étages par des virgules.<br>
-						Ex : -1,-2,0,-3</i></td>
+						</select><br /><em>A = tous les étages, sinon séparer les étages par des virgules.<br>
+						Ex : -1,-2,0,-3</em></td>
 				</tr>
 		<?php 				echo cree_OuiNon('objet', 'N', 'Modification/création des objets générique');
 				echo cree_OuiNon('gere_droits', 'N', 'Gestion des droits');
@@ -436,8 +436,8 @@ if ($erreur == 0)
 							<option value="--" selected='selected'>Choisissez un étage</option>
 							<option value="A">Tous les étages</option>
 						<?php echo $html->etage_select(); ?>
-						</select><br><i>A = tous les étages, sinon séparer les étages par des virgules.<br>
-						Ex : -1,-2,0,-3</i></td>
+						</select><br><em>A = tous les étages, sinon séparer les étages par des virgules.<br>
+						Ex : -1,-2,0,-3</em></td>
 				</tr>
 		<?php 
 				echo cree_OuiNon('objet', $db->f("dcompt_objet"), 'Modification/création des objets générique');

@@ -38,26 +38,26 @@
 {{ var|upper|escape_and_nl2br }}
 
 7. Escape if last filter is not an escaper
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is auto-escaped )
-{{ "<b>%s</b>"|format(var) }}
+{{ "<strong>%s</strong>"|format(var) }}
 
 8. Escape if last filter is not an escaper
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   |raw is redundant,
   the output is auto-escaped )
-{{ "<b>%s</b>"|raw|format(var) }}
+{{ "<strong>%s</strong>"|raw|format(var) }}
 
 9. Don't escape escaper filter output
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is not escaped due to |raw filter at the end )
-{{ "<b>%s</b>"|format(var)|raw }}
+{{ "<strong>%s</strong>"|format(var)|raw }}
 
 10. Don't escape escaper filter output
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is not escaped due to |raw filter at the end,
   the |raw filter on var is redundant )
-{{ "<b>%s</b>"|format(var|raw)|raw }}
+{{ "<strong>%s</strong>"|format(var|raw)|raw }}
 
 {% endautoescape %}
 --DATA--
@@ -105,27 +105,27 @@ TWIG
 TWIG
 
 7. Escape if last filter is not an escaper
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is auto-escaped )
 &lt;b&gt;&lt;Fabien&gt;
 Twig&lt;/b&gt;
 
 8. Escape if last filter is not an escaper
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   |raw is redundant,
   the output is auto-escaped )
 &lt;b&gt;&lt;Fabien&gt;
 Twig&lt;/b&gt;
 
 9. Don't escape escaper filter output
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is not escaped due to |raw filter at the end )
-<b><Fabien>
-Twig</b>
+<strong><Fabien>
+Twig</strong>
 
 10. Don't escape escaper filter output
-( the output of |format is "<b>" ~ var ~ "</b>",
+( the output of |format is "<strong>" ~ var ~ "</strong>",
   the output is not escaped due to |raw filter at the end,
   the |raw filter on var is redundant )
-<b><Fabien>
-Twig</b>
+<strong><Fabien>
+Twig</strong>

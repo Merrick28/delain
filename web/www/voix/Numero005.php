@@ -93,7 +93,7 @@ C&acute;est en effet &agrave; cet &eacute;tage que Falis et Ecatis ont choisi de
       </tr>
       <tr class="interview1_intro">
         <td class="interview1_intro">
-<b>Falis</b>, symbole de la Justice, du Pardon et de l&acute;Honneur d&eacute;die son culte &agrave; la sagesse. Pond&eacute;r&eacute;e dans ses jugements, elle guide ses adorateurs sur le droit chemin.
+<strong>Falis</strong>, symbole de la Justice, du Pardon et de l&acute;Honneur d&eacute;die son culte &agrave; la sagesse. Pond&eacute;r&eacute;e dans ses jugements, elle guide ses adorateurs sur le droit chemin.
 Cependant, sa col&egrave;re peut être d&eacute;vastatrice envers ceux qui bafouent ses principes d&acute;&eacute;quit&eacute;.
 La Justice doit être servie et d&eacute;fendue, mais dans l&acute;Honneur et le respect.
 		</td>
@@ -103,7 +103,7 @@ Elles sont rivales et pourtant si li&eacute;es. L&acute;une ne peut exister sans
 La puissance de l&acute;une d&eacute;pend de la puissance de l&acute;autre.
 		</td>
         <td class="interview1_intro">
-<b>Ecatis</b>, quant &agrave; elle, incarne le r&egrave;gne de la Justice, de la Vengeance, et des Intrigues.
+<strong>Ecatis</strong>, quant &agrave; elle, incarne le r&egrave;gne de la Justice, de la Vengeance, et des Intrigues.
 Pour la &quot;sulfureuse&quot;, peu importe les moyens utilis&eacute;s, seule la finalit&eacute; compte.
 Ecatis est apathique, glaciale autant que s&eacute;ductrice et enjôleuse. Elle ne conna&icirc;t pas le Pardon, et &eacute;crase ceux qui ne se soumettent pas &agrave; sa volont&eacute;.
 		</td>
@@ -116,58 +116,58 @@ Ecatis est apathique, glaciale autant que s&eacute;ductrice et enjôleuse. Elle 
       <tr class="interview1_corps">
         <td class="interview1_corps" width="194px">
 Interview des premiers fid&egrave;les de Falis : les Chevaliers de Justice :
-<!--<br><b>Bardamu</b> : Il y a peu de temps, le premier &eacute;difice d&eacute;di&eacute; &agrave; Falis ouvrait ses portes &agrave; l&acute;&eacute;tage du Masque de mort. Quels changements pour les fid&egrave;les de Falis ? -->
-<br><b>Bardamu</b> : Il y a peu, un &eacute;difice d&eacute;di&eacute; &agrave; Falis ouvrait ses portes au Masque de mort. 
+<!--<br><strong>Bardamu</strong> : Il y a peu de temps, le premier &eacute;difice d&eacute;di&eacute; &agrave; Falis ouvrait ses portes &agrave; l&acute;&eacute;tage du Masque de mort. Quels changements pour les fid&egrave;les de Falis ? -->
+<br><strong>Bardamu</strong> : Il y a peu, un &eacute;difice d&eacute;di&eacute; &agrave; Falis ouvrait ses portes au Masque de mort. 
 Quels changements pour les fid&egrave;les de Falis?
-<br><b>Oli</b> : Falis a prouv&eacute; &agrave; tous qu&acute;elle &eacute;tait pr&eacute;occup&eacute;e par ce qui se passe dans les souterrains, les Chevalier de Justice sont ses plus fid&egrave;les serviteurs et nous pouvons maintenant la c&eacute;l&eacute;brer et être fiers de notre culte. 
-<br><b>Oldarhir Mousse de Chêne</b> : Aujourd&acute;hui chaque homme ou femme quelque soit sa race peu diriger son coeur vers Falis et s&acute;offrir &agrave; notre d&eacute;esse. 
-<br><b>Athalante</b> : Nous avons enfin un temple &agrave; la gloire de notre d&eacute;esse. De plus, le temple permet de prot&eacute;ger la vie de D&eacute;lia. C&acute;est son seul moyen de survie, actuellement.
-<br><b>Bardamu</b> : Comment s&acute;organise votre culte ? 
-<br><b>Oli</b> : Trois ordres ont &eacute;t&eacute;s cr&eacute;&eacute;s. Le coeur de Falis, appel&eacute; Ordre de la Croix Blanche ou les prêtres de la seconde chance, plus int&eacute;ress&eacute;s par l&acute;aspect &quot;Pardon&quot; de la d&eacute;esse, L&acute;Esprit de Falis, appel&eacute; Ordre de la Commanderie des Justes, qui sont les th&eacute;oriciens ! L&acute;honneur est la vertu primordiale pour eux. Enfin Le Bras de Falis, appel&eacute; les Purificateurs de la Dame, regroupe les adorateurs de l&acute;aspect le plus proche de la sanction de la Justice.
-<br><b>Bardamu</b> : Appr&eacute;hendez vous l&acute;arriv&eacute;e d&acute;Ecatis ? 
-<br><b>Siobhan</b> : Non. Son existence est n&eacute;cessaire. Th&eacute;odus avait expliqu&eacute; ça quelque part. Les deux d&eacute;esses sont compl&eacute;mentaires, l&acute;une ne peut exister sans l&acute;autre.
-<br><b>Citation de Th&eacute;odus</b> : Tu comprends donc que tout n&acute;est pas aussi simple que ce qu&acute;on cru les chevaliers de ces souterrains. J&acute;avais besoin de savoir si leur coeur &eacute;tait r&eacute;ellement touch&eacute; par Falis...pour savoir s&acute;ils &eacute;taient prêts &agrave; rencontre sa terrible soeur Ecatis..s&acute;ils &eacute;taient prêts &agrave; comprendre que l&acute;une et l&acute;autre ne peuvent exister seules...que nous pouvons croire en Falis, propager sa lumi&egrave;re mais tout en jetant sur les t&eacute;n&egrave;bres un regard pas uniquement habit&eacute; par la haine.
-<br><b>Oli</b> : Oui, Falis a toujours &eacute;t&eacute; oppos&eacute;e &agrave; sa soeur Ecatis. Leur vision de la justice est totalement oppos&eacute;e, et si l&acute;une ne peux exister sans l&acute;autre, il n&acute;en reste pas moins qu&acute;elles sont en guerre l&acute;une contre l&acute;autre. Les adorateurs d&acute;Ecatis sont d&acute;une violence extrême, violence que nous rejetons tant que faire se peut.
-<br><b>Dorago Von Valentir</b> : Oui, Falis et Ecatis se livrent une bataille sans fin. Que peut devenir la justice entre les mains de personnes mal intentionn&eacute;es ?
-<br><b>Layos</b> : Falis ne pouvant exister sans Ecatis, il est n&eacute;cessaire qu&acute;elle arrive dans les souterrains elle aussi. Maintenant, je suis plutôt curieux de savoir ce que son arriv&eacute;e va provoquer.
-<br><b>Oldarhir Mousse de Chêne</b> : Non, pas le moins du monde. Ce sont deux faces distinctes d&acute;une même pi&egrave;ce, ainsi l&acute;arriv&eacute;e d&acute;Ecatis est-elle n&eacute;cessaire pour notre culte.
+<br><strong>Oli</strong> : Falis a prouv&eacute; &agrave; tous qu&acute;elle &eacute;tait pr&eacute;occup&eacute;e par ce qui se passe dans les souterrains, les Chevalier de Justice sont ses plus fid&egrave;les serviteurs et nous pouvons maintenant la c&eacute;l&eacute;brer et être fiers de notre culte. 
+<br><strong>Oldarhir Mousse de Chêne</strong> : Aujourd&acute;hui chaque homme ou femme quelque soit sa race peu diriger son coeur vers Falis et s&acute;offrir &agrave; notre d&eacute;esse. 
+<br><strong>Athalante</strong> : Nous avons enfin un temple &agrave; la gloire de notre d&eacute;esse. De plus, le temple permet de prot&eacute;ger la vie de D&eacute;lia. C&acute;est son seul moyen de survie, actuellement.
+<br><strong>Bardamu</strong> : Comment s&acute;organise votre culte ? 
+<br><strong>Oli</strong> : Trois ordres ont &eacute;t&eacute;s cr&eacute;&eacute;s. Le coeur de Falis, appel&eacute; Ordre de la Croix Blanche ou les prêtres de la seconde chance, plus int&eacute;ress&eacute;s par l&acute;aspect &quot;Pardon&quot; de la d&eacute;esse, L&acute;Esprit de Falis, appel&eacute; Ordre de la Commanderie des Justes, qui sont les th&eacute;oriciens ! L&acute;honneur est la vertu primordiale pour eux. Enfin Le Bras de Falis, appel&eacute; les Purificateurs de la Dame, regroupe les adorateurs de l&acute;aspect le plus proche de la sanction de la Justice.
+<br><strong>Bardamu</strong> : Appr&eacute;hendez vous l&acute;arriv&eacute;e d&acute;Ecatis ? 
+<br><strong>Siobhan</strong> : Non. Son existence est n&eacute;cessaire. Th&eacute;odus avait expliqu&eacute; ça quelque part. Les deux d&eacute;esses sont compl&eacute;mentaires, l&acute;une ne peut exister sans l&acute;autre.
+<br><strong>Citation de Th&eacute;odus</strong> : Tu comprends donc que tout n&acute;est pas aussi simple que ce qu&acute;on cru les chevaliers de ces souterrains. J&acute;avais besoin de savoir si leur coeur &eacute;tait r&eacute;ellement touch&eacute; par Falis...pour savoir s&acute;ils &eacute;taient prêts &agrave; rencontre sa terrible soeur Ecatis..s&acute;ils &eacute;taient prêts &agrave; comprendre que l&acute;une et l&acute;autre ne peuvent exister seules...que nous pouvons croire en Falis, propager sa lumi&egrave;re mais tout en jetant sur les t&eacute;n&egrave;bres un regard pas uniquement habit&eacute; par la haine.
+<br><strong>Oli</strong> : Oui, Falis a toujours &eacute;t&eacute; oppos&eacute;e &agrave; sa soeur Ecatis. Leur vision de la justice est totalement oppos&eacute;e, et si l&acute;une ne peux exister sans l&acute;autre, il n&acute;en reste pas moins qu&acute;elles sont en guerre l&acute;une contre l&acute;autre. Les adorateurs d&acute;Ecatis sont d&acute;une violence extrême, violence que nous rejetons tant que faire se peut.
+<br><strong>Dorago Von Valentir</strong> : Oui, Falis et Ecatis se livrent une bataille sans fin. Que peut devenir la justice entre les mains de personnes mal intentionn&eacute;es ?
+<br><strong>Layos</strong> : Falis ne pouvant exister sans Ecatis, il est n&eacute;cessaire qu&acute;elle arrive dans les souterrains elle aussi. Maintenant, je suis plutôt curieux de savoir ce que son arriv&eacute;e va provoquer.
+<br><strong>Oldarhir Mousse de Chêne</strong> : Non, pas le moins du monde. Ce sont deux faces distinctes d&acute;une même pi&egrave;ce, ainsi l&acute;arriv&eacute;e d&acute;Ecatis est-elle n&eacute;cessaire pour notre culte.
 		</td>
         <td class="interview1_corps" width="194px">
-<b>Athalante</b> : Au contraire, je l&acute;attends. Notre d&eacute;esse ne pourra pleinement &eacute;tendre ses pouvoirs que lorsque sa jumelle aura atteint le même degr&eacute; de puissance. C&acute;est dans l&acute;&eacute;quilibre qu&acute;elles se r&eacute;v&egrave;leront vraiment.
-<br><b>R&eacute;-Munde Tarazak</b> : Non, aucune appr&eacute;hension ni impatience. Les deux soeurs sont ins&eacute;parables, nous le savons, nous l&acute;acceptons.
-<br><b>Bardamu</b> : Quel regard portez vous sur les Ecatiens ? 
-<br><b>R&eacute;-Munde Tarazak</b>: Dans un sens, ils s&acute;engagent eux-aussi sur la voix de la Justice. Mais j&acute;ai pour l&acute;instant l&acute;impression que beaucoup ne voit chez Ecatis qu&acute;une excuse pour assouvir leur soif de massacre et leur orgueil. &agrave; n&acute;en pas douter, Ecatis doit se r&eacute;jouir de les voir ainsi se d&eacute;battre pour son bon plaisir...mais je ne pense pas que beaucoup ait compris la r&eacute;elle puissance d&acute;Ecatis. Alors que de par son lien avec sa soeur, il s&acute;agit d&acute;une des divinit&eacute;s les plus subtiles &agrave; adorer et &agrave; servir, ces adorateurs actuels semblent peu enclins &agrave; la subtilit&eacute;...Esp&eacute;rons que cela changera avec le temps. Il s&acute;agira selon moi de permettre aux deux cultes de s&acute;&eacute;panouir en maintenant un &eacute;quilibre entre les deux. Tout le monde n&acute;est sans doute pas d&acute;accord avec moi, mais c&acute;est ainsi que je vois la chose.
-<br><b>Siobhan</b> : La haine que jadis les fid&egrave;les de Falis ont vou&eacute;e &agrave; ceux d&acute;Ecatis a entrain&eacute; une guerre qui a men&eacute; &agrave; la chute d&acute;un royaume, et au retrait des d&eacute;esse de cette terre... 
-<br><b>Oli</b> : Les museler serait la meilleur solution, faire en sorte qu&acute;ils ne puissent se d&eacute;velopper et rester des marginaux ne pourrait être que bon pour la lutte que nous menons contre Malkiar.
-<br><b>Dorago Von Valentir</b> : Tr&egrave;s intrigu&eacute;. Autant nous savons qui sont les CdJ et les prêtres de Falis, aussi les adorateur d&acute;Ecatis on su se terr&eacute; dans l&acute;ombre.
-<br><b>Layos</b> : Je suis moi aussi intrigu&eacute; car il est vrai que tout ce qu&acute;il font se fait dans l&acute;ombre. J&acute;attendrais patiemment de voir leurs actes avant de savoir comment r&eacute;agir face &agrave; eux.
-<br><b>Oldarhir Mousse de Chêne</b> : Il existe comme chez notre d&eacute;esse et dans notre culte differents visages pour les adorateurs de la jumelle. Parfois Ennemis, d&acute;autre fois Amis, mais rarement indifferents les uns par rapport aux autres.
-<br><b>Athalante</b> : Je suis fascin&eacute;e par ceux qui adorent Ecatis, comment peuvent-ils être si proches de la Justice et si &eacute;loign&eacute;s de ce que j&acute;en conçois ? Je les consid&egrave;re donc de la même façon, &agrave; la fois tr&egrave;s proches de nous et pourtant un gouffre nous s&eacute;pare. Je ne sais pas du tout quelles seront nos relations avec les adeptes d&acute;Ecatis. Ce qui est certain, c&acute;est que nous serons tous li&eacute;s, comme le sont Ecatis et Falis.
-<br><b>Bardamu</b> : Et bien sûr: Athalante, où en es-tu avec Korg&acute;?? (pas pu me retenir!!)
-<br><b>Layos</b> : bon alors , heu, comment ça c&acute;est pas &agrave; moi de r&eacute;pondre?!? 
-<br><b>Athalante</b> : <i>Athalante s&acute;empourpra et baissa la tête. Elle r&eacute;pondit dans un souffle. </i>
+<strong>Athalante</strong> : Au contraire, je l&acute;attends. Notre d&eacute;esse ne pourra pleinement &eacute;tendre ses pouvoirs que lorsque sa jumelle aura atteint le même degr&eacute; de puissance. C&acute;est dans l&acute;&eacute;quilibre qu&acute;elles se r&eacute;v&egrave;leront vraiment.
+<br><strong>R&eacute;-Munde Tarazak</strong> : Non, aucune appr&eacute;hension ni impatience. Les deux soeurs sont ins&eacute;parables, nous le savons, nous l&acute;acceptons.
+<br><strong>Bardamu</strong> : Quel regard portez vous sur les Ecatiens ? 
+<br><strong>R&eacute;-Munde Tarazak</strong>: Dans un sens, ils s&acute;engagent eux-aussi sur la voix de la Justice. Mais j&acute;ai pour l&acute;instant l&acute;impression que beaucoup ne voit chez Ecatis qu&acute;une excuse pour assouvir leur soif de massacre et leur orgueil. &agrave; n&acute;en pas douter, Ecatis doit se r&eacute;jouir de les voir ainsi se d&eacute;battre pour son bon plaisir...mais je ne pense pas que beaucoup ait compris la r&eacute;elle puissance d&acute;Ecatis. Alors que de par son lien avec sa soeur, il s&acute;agit d&acute;une des divinit&eacute;s les plus subtiles &agrave; adorer et &agrave; servir, ces adorateurs actuels semblent peu enclins &agrave; la subtilit&eacute;...Esp&eacute;rons que cela changera avec le temps. Il s&acute;agira selon moi de permettre aux deux cultes de s&acute;&eacute;panouir en maintenant un &eacute;quilibre entre les deux. Tout le monde n&acute;est sans doute pas d&acute;accord avec moi, mais c&acute;est ainsi que je vois la chose.
+<br><strong>Siobhan</strong> : La haine que jadis les fid&egrave;les de Falis ont vou&eacute;e &agrave; ceux d&acute;Ecatis a entrain&eacute; une guerre qui a men&eacute; &agrave; la chute d&acute;un royaume, et au retrait des d&eacute;esse de cette terre... 
+<br><strong>Oli</strong> : Les museler serait la meilleur solution, faire en sorte qu&acute;ils ne puissent se d&eacute;velopper et rester des marginaux ne pourrait être que bon pour la lutte que nous menons contre Malkiar.
+<br><strong>Dorago Von Valentir</strong> : Tr&egrave;s intrigu&eacute;. Autant nous savons qui sont les CdJ et les prêtres de Falis, aussi les adorateur d&acute;Ecatis on su se terr&eacute; dans l&acute;ombre.
+<br><strong>Layos</strong> : Je suis moi aussi intrigu&eacute; car il est vrai que tout ce qu&acute;il font se fait dans l&acute;ombre. J&acute;attendrais patiemment de voir leurs actes avant de savoir comment r&eacute;agir face &agrave; eux.
+<br><strong>Oldarhir Mousse de Chêne</strong> : Il existe comme chez notre d&eacute;esse et dans notre culte differents visages pour les adorateurs de la jumelle. Parfois Ennemis, d&acute;autre fois Amis, mais rarement indifferents les uns par rapport aux autres.
+<br><strong>Athalante</strong> : Je suis fascin&eacute;e par ceux qui adorent Ecatis, comment peuvent-ils être si proches de la Justice et si &eacute;loign&eacute;s de ce que j&acute;en conçois ? Je les consid&egrave;re donc de la même façon, &agrave; la fois tr&egrave;s proches de nous et pourtant un gouffre nous s&eacute;pare. Je ne sais pas du tout quelles seront nos relations avec les adeptes d&acute;Ecatis. Ce qui est certain, c&acute;est que nous serons tous li&eacute;s, comme le sont Ecatis et Falis.
+<br><strong>Bardamu</strong> : Et bien sûr: Athalante, où en es-tu avec Korg&acute;?? (pas pu me retenir!!)
+<br><strong>Layos</strong> : bon alors , heu, comment ça c&acute;est pas &agrave; moi de r&eacute;pondre?!? 
+<br><strong>Athalante</strong> : <em>Athalante s&acute;empourpra et baissa la tête. Elle r&eacute;pondit dans un souffle. </em>
 &quot;- Il me manque&quot;
 		</td>
         <td class="interview1_corps" width="194px">
 Interview d&acute;un fid&egrave;les d&acute;Ecatis : <span onMouseOver="switchDiv('korgrim',true);" onMouseOut="switchDiv('korgrim',false);">Korgrim le Valeureux</span>, MDM.
-<div id="korgrim"><i>dit le Chevalier Masqu&eacute;</i></div>
-<br><b>Bardamu</b> : Pourquoi ce rassemblement dans le cr&agrave;ne ??
-<br><b>Korgrim</b> : Ce rassemblement dans le cr&agrave;ne se veut le rassemblement de ceux qui croient en Ecatis, en sa justice implacable et sa divine sentence. Nul ne pourra y &eacute;chapper, car tout le monde est coupable, il n&acute;y a pas d&acute;innocence, il n&acute;y a que des degr&eacute;s de culpabilit&eacute;.
-<br><b>Bardamu</b> : La MDM au grand complet est-elle prête &agrave; s&acute;engager aupr&egrave;s d&acute;Ecatis ?? Pas de rebelles ??
-<br><b>Korgrim</b> : Chaque guerrier de la MdM s&acute;engagera comme il le voudra envers Ecatis. L&acute;engagement envers la d&eacute;esse est un engagement personnel, alors que celui envers la Main est diff&eacute;rent et les objectifs de cette derni&egrave;re le sont tout autant. Il ne faut pas faire l&acute;amalgame entre les deux. Les seuls rebelles que nous chasserons seront ceux qui voudront porter atteinte au conseil et &agrave; ses ordres, et les fid&egrave;les d&acute;Ecatis tueront ceux qui seront coupable devant elle.
-<br><b>Bardamu</b> : La MDM semble vouloir prendre ce culte en otage !
-<br><b>Korgrim</b> : C&acute;est totalement faux et tu es bien plac&eacute; pour le savoir...
-<br><b>Bardamu</b> : HumAllez vous finir par entrer en guerre contre les Balguriens, dont le Dieu prive encore l&acute;avatar d&acute;Ecatis de libert&eacute; ??
-<br><b>Korgrim</b> : Les Balguriens dans le cr&agrave;ne ont pay&eacute; pour la mal&eacute;diction que leur dieu inflige &agrave; Ecate, ils ont &eacute;t&eacute; abattus sans piti&eacute;. Ecatis jugera plus tard si d&acute;autres "sanctions" doivent être prises, mais peut-être pourrais tu sugg&eacute;rer cette id&eacute;e aux fid&egrave;les de Falis qui auraient entre leurs mains le livre qui aurait permis de lib&eacute;rer Ecate et D&eacute;lia s&acute;ils l&acute;avaient repris de force aux fid&egrave;les de Balgur dans l&acute;enceinte du temple du cr&agrave;ne.
-<br><b>Bardamu</b> : Quels seront vos objectifs, lorsqu&acute;Ecatiens vous serez ??
-<br><b>Korgrim</b> : Seule Ecatis le sait.Mais les 3 clerg&eacute;s seront assur&egrave;ment repr&eacute;sent&eacute;s.
-<br><b>Bardamu</b> : Korg&acute;...Il n&acute;y a pas si longtemps, tu ne croyais en rien. Pire, tu m&eacute;prisais les croyants !
+<div id="korgrim"><em>dit le Chevalier Masqu&eacute;</em></div>
+<br><strong>Bardamu</strong> : Pourquoi ce rassemblement dans le cr&agrave;ne ??
+<br><strong>Korgrim</strong> : Ce rassemblement dans le cr&agrave;ne se veut le rassemblement de ceux qui croient en Ecatis, en sa justice implacable et sa divine sentence. Nul ne pourra y &eacute;chapper, car tout le monde est coupable, il n&acute;y a pas d&acute;innocence, il n&acute;y a que des degr&eacute;s de culpabilit&eacute;.
+<br><strong>Bardamu</strong> : La MDM au grand complet est-elle prête &agrave; s&acute;engager aupr&egrave;s d&acute;Ecatis ?? Pas de rebelles ??
+<br><strong>Korgrim</strong> : Chaque guerrier de la MdM s&acute;engagera comme il le voudra envers Ecatis. L&acute;engagement envers la d&eacute;esse est un engagement personnel, alors que celui envers la Main est diff&eacute;rent et les objectifs de cette derni&egrave;re le sont tout autant. Il ne faut pas faire l&acute;amalgame entre les deux. Les seuls rebelles que nous chasserons seront ceux qui voudront porter atteinte au conseil et &agrave; ses ordres, et les fid&egrave;les d&acute;Ecatis tueront ceux qui seront coupable devant elle.
+<br><strong>Bardamu</strong> : La MDM semble vouloir prendre ce culte en otage !
+<br><strong>Korgrim</strong> : C&acute;est totalement faux et tu es bien plac&eacute; pour le savoir...
+<br><strong>Bardamu</strong> : HumAllez vous finir par entrer en guerre contre les Balguriens, dont le Dieu prive encore l&acute;avatar d&acute;Ecatis de libert&eacute; ??
+<br><strong>Korgrim</strong> : Les Balguriens dans le cr&agrave;ne ont pay&eacute; pour la mal&eacute;diction que leur dieu inflige &agrave; Ecate, ils ont &eacute;t&eacute; abattus sans piti&eacute;. Ecatis jugera plus tard si d&acute;autres "sanctions" doivent être prises, mais peut-être pourrais tu sugg&eacute;rer cette id&eacute;e aux fid&egrave;les de Falis qui auraient entre leurs mains le livre qui aurait permis de lib&eacute;rer Ecate et D&eacute;lia s&acute;ils l&acute;avaient repris de force aux fid&egrave;les de Balgur dans l&acute;enceinte du temple du cr&agrave;ne.
+<br><strong>Bardamu</strong> : Quels seront vos objectifs, lorsqu&acute;Ecatiens vous serez ??
+<br><strong>Korgrim</strong> : Seule Ecatis le sait.Mais les 3 clerg&eacute;s seront assur&egrave;ment repr&eacute;sent&eacute;s.
+<br><strong>Bardamu</strong> : Korg&acute;...Il n&acute;y a pas si longtemps, tu ne croyais en rien. Pire, tu m&eacute;prisais les croyants !
 Pourquoi avoir r&eacute;form&eacute; ton jugement ??
-<br><b>Korgrim</b> : Je ne croyais pas en rien, tu te trompes lourdement. Je ne croyais qu&acute;en la valeur de la force de l&acute;acier et du feu, je croyais en la force du conseil et en ses objectifs pour les souterrains. Les 6 derniers mois ont &eacute;t&eacute; tr&egrave;s intenses, ils m&acute;ont permis de voir plus clair certaines choses, si servir Ecatis sert les objectifs communs avec la Main et permet de lib&eacute;rer Ecate, alors je ne pouvais que trouver en Ecatis une nouvelle voie &agrave; suivre.
-<br><b>Bardamu</b> : Avec les fid&egrave;les de Falis, comment cela va-t-il se passer, selon toi ??
-<br><b>Korgrim</b> : Je n&acute;en sais rien mais nombre d&acute;entre eux veulent ma mort de par ma place au conseil ou &agrave; cause de mon amour pour Athalante, cela ne me changera pas beaucoup.
-<br><b>Bardamu</b> : Et, pour finir, Avec Athalante. Quel avenir ??
-<br><b>Korgrim</b> : Cela ne te regarde pas.
+<br><strong>Korgrim</strong> : Je ne croyais pas en rien, tu te trompes lourdement. Je ne croyais qu&acute;en la valeur de la force de l&acute;acier et du feu, je croyais en la force du conseil et en ses objectifs pour les souterrains. Les 6 derniers mois ont &eacute;t&eacute; tr&egrave;s intenses, ils m&acute;ont permis de voir plus clair certaines choses, si servir Ecatis sert les objectifs communs avec la Main et permet de lib&eacute;rer Ecate, alors je ne pouvais que trouver en Ecatis une nouvelle voie &agrave; suivre.
+<br><strong>Bardamu</strong> : Avec les fid&egrave;les de Falis, comment cela va-t-il se passer, selon toi ??
+<br><strong>Korgrim</strong> : Je n&acute;en sais rien mais nombre d&acute;entre eux veulent ma mort de par ma place au conseil ou &agrave; cause de mon amour pour Athalante, cela ne me changera pas beaucoup.
+<br><strong>Bardamu</strong> : Et, pour finir, Avec Athalante. Quel avenir ??
+<br><strong>Korgrim</strong> : Cela ne te regarde pas.
         </td>
 	  </tr>
     </table>
@@ -212,16 +212,16 @@ L&acute;un est transparent , l&acute;autre opaque, objet de tous les fantasmes.
       </tr>
       <tr class="interview2_corps">
         <td class="interview2_corps">
-<b>Bardamu</b> : Alors, attaquons par le d&eacute;but: qu&acute;est-ce qu&acute;un contrebandier ? Qui est Salm&acute;orv (Sale morveux !) ?
-<br><b>Aerielle</b> : Les contrebandiers et Salm&acute;o&acute;rv sont deux entit&eacute;s distinctes. Nous sommes li&eacute;s par une relation commerciale, 
+<strong>Bardamu</strong> : Alors, attaquons par le d&eacute;but: qu&acute;est-ce qu&acute;un contrebandier ? Qui est Salm&acute;orv (Sale morveux !) ?
+<br><strong>Aerielle</strong> : Les contrebandiers et Salm&acute;o&acute;rv sont deux entit&eacute;s distinctes. Nous sommes li&eacute;s par une relation commerciale, 
 les serviteurs de Salm&acute;o&acute;rv sont nos fournisseurs. Nous leur fournissons du mat&eacute;riel r&eacute;cup&eacute;r&eacute; dans nos march&eacute;s noirs et en &eacute;change, 
 ils nous permettent de nous approvisionner selon nos besoins et les commandes de nos clients. L&acute;un ne va pas sans l&acute;autre, si les 
 contrebandiers n&acute;existaient pas, Salm&acute;o&acute;rv ne pourrait faire des affaires dans les souterrains et sans Salm&acute;o&acute;rv, nous ne pourrions 
 approvisionner nos march&eacute;s. Nous sommes indissociables mais en aucun cas similaires, si ce n&acute;est par notre volont&eacute; commune de faire 
 des affaires. Nous avons trouv&eacute; l&agrave; un arrangement commun qui nous satisfait tous les deux, (Aerielle sourit) n&acute;est ce pas l&agrave; la base 
 d&acute;une relation commerciale profitable ?
-<br><b>Bardamu</b> : A qui s&acute;adresse votre&hellip; Hum&hellip; Trafic ?
-<br><b>Aerielle</b> : Je pr&eacute;f&egrave;re parler de marchandise, il n&acute;y a aucune forme de trafic. Nous traitons le même mat&eacute;riel que les 
+<br><strong>Bardamu</strong> : A qui s&acute;adresse votre&hellip; Hum&hellip; Trafic ?
+<br><strong>Aerielle</strong> : Je pr&eacute;f&egrave;re parler de marchandise, il n&acute;y a aucune forme de trafic. Nous traitons le même mat&eacute;riel que les 
 Ma&icirc;tres Marchands et la Caravane. En revanche, nous ne demandons aucun trait&eacute;, aucune signature ou aucune forme de protection ou 
 de pacte de non agression en dehors des &eacute;gouts. Nous ne voulons pas empêcher les aventuriers d&acute;agir librement dans les souterrains. 
 Par cons&eacute;quent, tout ceux qui n&acute;ont pas d&eacute;cid&eacute; de signer le trait&eacute; d&acute;Hormandre peuvent nous contacter pour traiter avec nous. 
@@ -229,32 +229,32 @@ Ceux qui se r&eacute;volteraient de ne pouvoir traiter avec nous sont ou des fid
 pris la peine de nous contacter et qui nous consid&egrave;rent comme d&eacute;nu&eacute;s de tout scrupule. Parmi ces derniers, seuls ce titre de 
 contrebandier les rebute, c&acute;est tout &agrave; leur d&eacute;savantage et s&acute;ils ne peuvent passer outre ce petit d&eacute;tail, tant pis pour eux. 
 S&acute;ils pr&eacute;f&egrave;rent se priver de relations commerciales lucratives &agrave; cause de leur pseudo &eacute;thique, ce n&acute;est pas notre probl&egrave;me. 
-<br><b>Bardamu</b> : Où se situent vos &eacute;choppes ?
-<br><b>Aerielle</b> : Nous ne l&acute;avons jamais cach&eacute; : dans les &eacute;gouts. Gr&agrave;ce &agrave; un &eacute;missaire puissant de Salm&acute;o&acute;rv, nous avons pu 
+<br><strong>Bardamu</strong> : Où se situent vos &eacute;choppes ?
+<br><strong>Aerielle</strong> : Nous ne l&acute;avons jamais cach&eacute; : dans les &eacute;gouts. Gr&agrave;ce &agrave; un &eacute;missaire puissant de Salm&acute;o&acute;rv, nous avons pu 
 remettre en &eacute;tat les &eacute;gouts et il nous paraissait logique d&acute;implanter notre 
         </td>
         <td class="interview2_corps">
 commerce en ce lieu. Apr&egrave;s tout, le roi Hormandre voit 
 cette concurrence d&acute;un mauvais oeil, gr&agrave;ce &agrave; ceci nous avons pu monter ce r&eacute;seau commercial sans risquer de voir la Milice ou je ne 
 sais qui r&eacute;quisitionner nos honnêtes lieux de commerce.
-<br><b>Bardamu</b> : Attends&hellip; STOP!!! T&acute;es en train de me dire que tous ceux qui n&acute;ont pas pactis&eacute; avec Homandre peuvent 
+<br><strong>Bardamu</strong> : Attends&hellip; STOP!!! T&acute;es en train de me dire que tous ceux qui n&acute;ont pas pactis&eacute; avec Homandre peuvent 
 s&acute;alimenter chez vous et d&eacute;couvrir les &eacute;gouts ? ? 
-<br><b>Aerielle</b> : C&acute;est exactement ce que je dis. Nous sommes des commerçants, c&acute;est tout. Hormandre se pr&eacute;sente comme le 
+<br><strong>Aerielle</strong> : C&acute;est exactement ce que je dis. Nous sommes des commerçants, c&acute;est tout. Hormandre se pr&eacute;sente comme le 
 souverain des souterrains même s&acute;il ne le reconna&icirc;tra jamais publiquement, les jeux de pouvoir vois tu. D&egrave;s lors, nous qui 
 souhaitons ouvrir un nouveau commerce pour permettre &agrave; tout un chacun de s&acute;&eacute;quiper, nous sommes "hors la loi" pour les lois 
 &eacute;dicter par le faux roi, je me trompe ? C&acute;est pour cela que c&acute;est de la "contrebande", mais ceci n&acute;est qu&acute;un terme. Je te le r&eacute;p&egrave;te, 
 seul nous int&eacute;resse de faire des affaires.
-<br><b>Bardamu</b> : Selon toi, comment r&eacute;agiront ceux qui b&eacute;n&eacute;ficient d&eacute;j&agrave; de ton march&eacute; si tu ouvres la porte des &eacute;gouts &agrave; tous ?
-<br><b>Aerielle</b> : Je m&acute;en moque &eacute;perdument. Nos march&eacute;s sont ouverts &agrave; tout client qui le d&eacute;sire, hormis ceux qui servent 
+<br><strong>Bardamu</strong> : Selon toi, comment r&eacute;agiront ceux qui b&eacute;n&eacute;ficient d&eacute;j&agrave; de ton march&eacute; si tu ouvres la porte des &eacute;gouts &agrave; tous ?
+<br><strong>Aerielle</strong> : Je m&acute;en moque &eacute;perdument. Nos march&eacute;s sont ouverts &agrave; tout client qui le d&eacute;sire, hormis ceux qui servent 
 Hormandre bien entendu. Ils n&acute;ont pas leur mot &agrave; dire sur nos relations commerciales. Et s&acute;ils veulent r&eacute;gler cela entre eux, 
 qu&acute;ils le fassent.
-<br><b>Bardamu</b> : Aerielle&hellip; La rumeur dit que tu es en conflit avec certains de tes clients, il y aurait même un contrat 
+<br><strong>Bardamu</strong> : Aerielle&hellip; La rumeur dit que tu es en conflit avec certains de tes clients, il y aurait même un contrat 
 sur ta tête&hellip;
-<br><b>Aerielle</b> : Ceci ne te regarde pas. Je peux seulement te dire que quelqu&acute;un a pass&eacute; un contrat sur moi et que la tentative 
+<br><strong>Aerielle</strong> : Ceci ne te regarde pas. Je peux seulement te dire que quelqu&acute;un a pass&eacute; un contrat sur moi et que la tentative 
 a &eacute;chou&eacute; mais le commanditaire a bien pris soin de passer un contrat anonyme, par cons&eacute;quent je ne sais pas qui il est. Ce doit être 
 une personne trop l&agrave;che pour assumer ces actes.
-<br><b>Bardamu</b> : Un petit mot sur les Caravaniers ? 
-<br><b>Aerielle</b> : Il n&acute;y a pas grand chose &agrave; dire, ils servent les int&eacute;rêts commerciaux d&acute;Hormandre. Nous servons les nôtres, ce 
+<br><strong>Bardamu</strong> : Un petit mot sur les Caravaniers ? 
+<br><strong>Aerielle</strong> : Il n&acute;y a pas grand chose &agrave; dire, ils servent les int&eacute;rêts commerciaux d&acute;Hormandre. Nous servons les nôtres, ce 
 sont peut-être des gens bien mais nous sommes concurrents et en affaire nous sommes intraitables.
 <br><br>Aventuriers, &agrave; vous de choisir votre fournisseur !
         </td>
@@ -392,7 +392,7 @@ Les De Profundis, toujours &agrave; la pointe de l&acute;innovation, organisent 
       </tr>
       <tr class="pub_corps">
         <td class="pub_corps">
-<center><b>Les Escorteurs</b></center>
+<center><strong>Les Escorteurs</strong></center>
 
 Jeune guilde cherche aventurier(e)s avec peu de PV pour honorer contrat d&acute;entrainnement des morbelins de Monstres & Cie
 <br>Contactez Glicine, ou Songoku, ou n&acute;importe quel "escorteur"
@@ -422,9 +422,9 @@ Jeune guilde cherche aventurier(e)s avec peu de PV pour honorer contrat d&acute;
 		  Mes comp&eacute;tences sont limit&eacute;es mais je suis motiv&eacute; et prêt &agrave; payer de ma personne pour aider. 
 		  Pourriez vous me dire en quoi je pourrais me rendre utile?
  		  <br> 
-		  <br><b>Exirel</b>
+		  <br><strong>Exirel</strong>
           <hr>
-	        <b>La Voix des Souterrains</b> :<br>
+	        <strong>La Voix des Souterrains</strong> :<br>
 			<br>
 			Cher monsieur Exirel,
 			<br>Nous sommes ravis de l&acute;int&eacute;rêt que vous portez &agrave; notre travail, et plus encore que vous souhaitiez nous aider.
@@ -493,7 +493,7 @@ de bi&egrave;re, moi non plus..."
         <td class="musique_corps">
 La Voix lance son premier sondage : 
 <br>LE TOP 10 des guildes les plus originales.
-<br><b> - Selon vous, quelles guildes m&eacute;ritent de rentrer dans ce classement ?</b>
+<br><strong> - Selon vous, quelles guildes m&eacute;ritent de rentrer dans ce classement ?</strong>
 <br>La Voix attend vos avis, et diffusera dans un num&eacute;ro futur le r&eacute;sultat du sondage.
 		</td>
       </tr>

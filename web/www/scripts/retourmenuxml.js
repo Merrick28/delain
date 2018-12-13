@@ -23,16 +23,16 @@ function request(callback)
                	parent.gauche.document.getElementById("pa").innerHTML = '<img src="http://www.jdr-delain.net/images/barrepa_' + tab['pa'] + '.gif" title="' +  tab['pa'] + ' PA " alt="' +  tab['pa'] + ' PA ">';
                	parent.gauche.document.getElementById("hp").innerHTML = '<img src="http://www.jdr-delain.net/images/coeur.gif" alt=""> <img src="http://www.jdr-delain.net/images/hp' + tab['barre_hp'] + '.gif" title="' + tab['pv'] + '/' + tab['pv_max'] + 'PV" alt="' + tab['pv'] + '/' + tab['pv_max'] + 'PV"><br><br>';
                	parent.gauche.document.getElementById("xp").innerHTML = '<img src="http://www.jdr-delain.net/images/iconexp.gif" alt="">  <img src="http://www.jdr-delain.net/images/xp' + tab['barre_xp'] + '.gif" title="' + tab['perso_px'] + ' PX, prochain niveau à ' + tab['prochain_niveau'] + '" alt="' + tab['perso_px'] + '/' + tab['prochain_niveau'] + ' PX"><br><br>';
-               	parent.gauche.document.getElementById("degats").innerHTML = '<img src="http://www.jdr-delain.net/images/att.gif" title="fourchette de dégats" alt="Att"> <b>' + tab['degats'] + '</b><img src="http://www.jdr-delain.net/images/del.gif" height="8" width="16" alt=" "><img src="http://www.jdr-delain.net/images/def.gif" title="Armure" alt="Def"> <b>' + tab['armure'] + '</b>';
-               	parent.gauche.document.getElementById("position").innerHTML = '<span style="line-height:100%;"><br>X : <b>'+ tab['posx'] +'</b> Y : <b>' + tab['posy']  + '</b><br><b><a href="desc_etage.php" target="droite"><img alt="" src="http://www.jdr-delain.net/images/iconmap.gif" style="height:12px;border:0px;">' + tab['etage']  + '</a></b><br><br></span>';
+               	parent.gauche.document.getElementById("degats").innerHTML = '<img src="http://www.jdr-delain.net/images/att.gif" title="fourchette de dégats" alt="Att"> <strong>' + tab['degats'] + '</strong><img src="http://www.jdr-delain.net/images/del.gif" height="8" width="16" alt=" "><img src="http://www.jdr-delain.net/images/def.gif" title="Armure" alt="Def"> <strong>' + tab['armure'] + '</strong>';
+               	parent.gauche.document.getElementById("position").innerHTML = '<span style="line-height:100%;"><br>X : <strong>'+ tab['posx'] +'</strong> Y : <strong>' + tab['posy']  + '</strong><br><strong><a href="desc_etage.php" target="droite"><img alt="" src="http://www.jdr-delain.net/images/iconmap.gif" style="height:12px;border:0px;">' + tab['etage']  + '</a></strong><br><br></span>';
 
 						//messagerie
                	var texte_mess = '<p class="texteMenu"><img src="http://www.jdr-delain.net/images/messagerie.gif" alt=""> <a href="messagerie2.php" target="droite">';
                	if(tab['nb_mess'] != 0)
-               		texte_mess += '<b>';
+               		texte_mess += '<strong>';
                	texte_mess += 'Messagerie';
                	if(tab['nb_mess'] != 0)
-               		texte_mess += ' (' + tab['nb_mess'] + ')</b>';
+               		texte_mess += ' (' + tab['nb_mess'] + ')</strong>';
                	texte_mess += '</a></p>';
                	parent.gauche.document.getElementById("messagerie").innerHTML = texte_mess;
 
@@ -59,7 +59,7 @@ function request(callback)
                		parent.gauche.document.getElementById("ramasser").innerHTML = '';
 
                	if(tab['intangible'] == 1)
-               		parent.gauche.document.getElementById("intangible").innerHTML = '<i>Perso impalpable !</i><br><br>';
+               		parent.gauche.document.getElementById("intangible").innerHTML = '<em>Perso impalpable !</em><br><br>';
                	else
                		parent.gauche.document.getElementById("intangible").innerHTML = '';
 
@@ -74,24 +74,24 @@ function request(callback)
 							parent.gauche.document.getElementById("divin").innerHTML = '';
 
 						if(tab['passage_niveau'] == 1)
-							parent.gauche.document.getElementById("passageniveau").innerHTML = '<p class="texteMenu"><a href="niveau.php" target="droite"><b>Passer au niveau supérieur ! </b>(6 PA)</a><br></p>';
+							parent.gauche.document.getElementById("passageniveau").innerHTML = '<p class="texteMenu"><a href="niveau.php" target="droite"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a><br></p>';
 						else
 							parent.gauche.document.getElementById("passageniveau").innerHTML = '';
 
 						if(tab['quete'] == 1)
-							parent.gauche.document.getElementById("quete").innerHTML = '<p class="texteMenu"><a href="quete_perso.php" target="droite"><b>Quête</b></a></p>';
+							parent.gauche.document.getElementById("quete").innerHTML = '<p class="texteMenu"><a href="quete_perso.php" target="droite"><strong>Quête</strong></a></p>';
 						else
 							parent.gauche.document.getElementById("quete").innerHTML = '';
 
 						if(tab['lieu'] == 1)
-							parent.gauche.document.getElementById("lieu").innerHTML = '<p class="texteMenu"><a href="lieu.php" target="droite"><b>' + tab['nom_lieu'] + '</b><br>(' + tab['desc_lieu'] + ')</a></p>';
+							parent.gauche.document.getElementById("lieu").innerHTML = '<p class="texteMenu"><a href="lieu.php" target="droite"><strong>' + tab['nom_lieu'] + '</strong><br>(' + tab['desc_lieu'] + ')</a></p>';
 						else
 							parent.gauche.document.getElementById("lieu").innerHTML = '';
 
 						if(tab['transaction'] == 0)
 							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://www.jdr-delain.net/images/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\">Transactions</a>';
 						else
-							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://www.jdr-delain.net/images/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\"><b> Transactions (' + tab['transaction']  + ')</a></b>';
+							parent.gauche.document.getElementById("transaction").innerHTML = '<img src=\"http://www.jdr-delain.net/images/transaction.gif\" alt=""> <a href=\"transactions2.php\" target=\"droite\"><strong> Transactions (' + tab['transaction']  + ')</a></strong>';
                }
               else
                  parent.gauche.document.getElementById("nom").innerHTML = '<a href="javascript:request(readData);"><img src="http://www.jdr-delain.net/images/refresh.png" border="0" alt="Rafraîchir"> Rafraichir</a>';

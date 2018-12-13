@@ -36,27 +36,27 @@ to the problem.</P>
 <P>An overview over the function calls follows.</P>
 <P>
 <DL>
-<DT><B>blob_create()</B><DD>
+<DT><strong>blob_create()</strong><DD>
 <P>This will create a new BLOB and return its ID. If it is impossible
 to create a new BLOB, this function will <CODE>halt()</CODE> the execution
 and generate an error message.</P>
 
-<DT><B>blob_open($ID)</B><DD>
+<DT><strong>blob_open($ID)</strong><DD>
 <P>Opens the specified BLOB for reading and writing and returns true or false
 on success or failure, respectively.</P>
 
-<DT><B>blob_close($ID)</B><DD>
+<DT><strong>blob_close($ID)</strong><DD>
 <P>Closes the referenced BLOB. Do not forget this - it might be necessary
 for some databases or you might face data loss.</P>
 
-<DT><B>blob_delete($ID)</B><DD>
+<DT><strong>blob_delete($ID)</strong><DD>
 <P>Deletes the specified BLOB. All associated resources are freed.
 The BLOB must not be referenced at a later time.</P>
 
-<DT><B>blob_read($ID)</B><DD>
+<DT><strong>blob_read($ID)</strong><DD>
 <P>Reads the entire data of BLOB and returns it.</P>
 
-<DT><B>blob_write($ID, $DATA)</B><DD>
+<DT><strong>blob_write($ID, $DATA)</strong><DD>
 <P>Overwrites the whole BLOB with $DATA. </P>
 
 </DL>

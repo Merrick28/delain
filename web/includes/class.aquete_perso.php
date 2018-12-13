@@ -435,7 +435,7 @@ class aquete_perso
         {
             if ( $k == 0 )
                 $element_texte .= $elem->get_element_texte();
-            else if ( $k <count($result)-1 )
+            else if ( $k <count($elements)-1 )
                 $element_texte .= ", ".$elem->get_element_texte();
             else
                 $element_texte .= " et ".$elem->get_element_texte();
@@ -459,7 +459,7 @@ class aquete_perso
             // On indique dans le journal que la quete c'est terminé sur un échec de délai!
             $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod ;
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-            $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$quete->aquete_max_delai} jours</b> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+            $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$quete->aquete_max_delai} jours</strong> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
             $perso_journal->stocke(true);
 
             $this->aqperso_actif = 'E'  ;       // Etape terminée sur un Echec.
@@ -516,7 +516,7 @@ class aquete_perso
                         $this->aqperso_quete_step ++ ; // L'étape était déjà commencée, il y a déjà une entrée dans le journal pour celle-ci on passe un step !
                         $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod ;
                         $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step ;
-                        $perso_journal->aqpersoj_texte = "Cela fait plus de <b>{$elements[0]->aqelem_param_num_1} jours</b> que vous avez commencé cette étape.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+                        $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$elements[0]->aqelem_param_num_1} jours</strong> que vous avez commencé cette étape.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
                         $perso_journal->stocke(true);
                     }
                     // le "timeout d'étape" se comporte comme une étape du type SAUT, le aqelem_misc_cod contient la prochaine étape !
@@ -833,9 +833,9 @@ class aquete_perso
                 if ($journal->aqpersoj_etape_cod>0)
                 {
                     $etape->charge($journal->aqpersoj_etape_cod);
-                    $nom_etape = '<i style="font-size: 9px;">('.$etape->aqetape_nom.')</i>' ;
+                    $nom_etape = '<i style="font-size: 9px;">('.$etape->aqetape_nom.')</em>' ;
                 }
-                $journal_quete.="<div style=\"color:#800000\">".date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)).": Step <b>#".$journal->aqpersoj_quete_step."</b> - Etape <b>#".$journal->aqpersoj_etape_cod."</b> - ".$nom_etape."</div>";
+                $journal_quete.="<div style=\"color:#800000\">".date("d/m/Y H:i:s", strtotime($journal->aqpersoj_date)).": Step <strong>#".$journal->aqpersoj_quete_step."</strong> - Etape <strong>#".$journal->aqpersoj_etape_cod."</strong> - ".$nom_etape."</div>";
             }
 
             if ( ( $journal->aqpersoj_lu == 'N' ) || ( $k >= (count($perso_journaux)-$residu) ) )

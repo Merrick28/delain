@@ -76,7 +76,7 @@ Query_ID</TD><TD>SQL Result ID.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>DB_Sql($query = "")</B><DD><P>Constructor. When creating an instance, you may optionally supply 
+<DT><strong>DB_Sql($query = "")</strong><DD><P>Constructor. When creating an instance, you may optionally supply 
 a query string.</P>
 <P>
 <BLOCKQUOTE><CODE>
@@ -88,7 +88,7 @@ $db = new DB_Sql_Subclass("select * from mytable");)
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>query($query_string)</B><DD><P><CODE>query_string</CODE> is a SQL statement that is sent to the database.
+<DT><strong>query($query_string)</strong><DD><P><CODE>query_string</CODE> is a SQL statement that is sent to the database.
 After sending the statement, <CODE>Error</CODE> and <CODE>Errno</CODE> are updated.
 If the query is syntactically incorrect (no valid result id is
 being produced), <CODE>halt()</CODE> is called with a meaningful error
@@ -100,7 +100,7 @@ made using the information from the <CODE>Host</CODE>, <CODE>Database</CODE>,
 guaranteed to be a valid result id (or false, if
 Halt_On_Error isn't "yes").</P>
 
-<DT><B>next_record()</B><DD><P><CODE>next_record()</CODE> advances the cursor through the
+<DT><strong>next_record()</strong><DD><P><CODE>next_record()</CODE> advances the cursor through the
 current query result and updates the <CODE>Record</CODE>, <CODE>Row</CODE>,
 <CODE>Errno</CODE> and <CODE>Error</CODE> instance variables.</P>
 <P>Returns true, if there is a new result record. Returns false, if
@@ -108,7 +108,7 @@ done with the current result set.  If <CODE>Auto_Free</CODE> is true,
 <CODE>free_result()</CODE> is called automatically before false
 is returned.</P>
 
-<DT><B>num_rows(), nf()</B><DD><P>Returns the number of rows returned by the current SELECT query.</P>
+<DT><strong>num_rows(), nf()</strong><DD><P>Returns the number of rows returned by the current SELECT query.</P>
 <P><EM>Note:</EM> This information is not available in all database
 interfaces. Some of the more advanced databases begin to return
 query results asynchronously while the backend is still
@@ -119,25 +119,25 @@ environments and ask for the COUNT(*). This will be less
 inefficient as it seems as the query path and query result have
 been cached by the database.</P>
 
-<DT><B>affected_rows()</B><DD><P>Returns the number of rows affected by the current INSERT,
+<DT><strong>affected_rows()</strong><DD><P>Returns the number of rows affected by the current INSERT,
 UPDATE or DELETE query.</P>
 
-<DT><B>num_fields()</B><DD><P>Returns the number of columns returned by the current query.</P>
+<DT><strong>num_fields()</strong><DD><P>Returns the number of columns returned by the current query.</P>
 
-<DT><B>np()</B><DD><P>Prints the number of rows returned by the current query.</P>
+<DT><strong>np()</strong><DD><P>Prints the number of rows returned by the current query.</P>
 
-<DT><B>f($field)</B><DD><P>Identical to accessing <CODE>Record[$field]</CODE>.</P>
+<DT><strong>f($field)</strong><DD><P>Identical to accessing <CODE>Record[$field]</CODE>.</P>
 
-<DT><B>p($field)</B><DD><P>Identical to printing Record[$field].</P>
+<DT><strong>p($field)</strong><DD><P>Identical to printing Record[$field].</P>
 
-<DT><B>haltmsg($msg)</B><DD><P>This function is called by <CODE>halt()</CODE> and will actually print
+<DT><strong>haltmsg($msg)</strong><DD><P>This function is called by <CODE>halt()</CODE> and will actually print
 the database error message. You may override this method in your
 subclass of <CODE>DB_Sql</CODE> and format the error message to
 be consistent with the layout of the rest of your application.
 You may also add additional error handling such as informing the
 application operator by mail that a database error has occured.</P>
 
-<DT><B>seek($pos)</B><DD><P>Positions the <CODE>Row</CODE> pointer within the result set. Useful for
+<DT><strong>seek($pos)</strong><DD><P>Positions the <CODE>Row</CODE> pointer within the result set. Useful for
 reading the same result set twice or otherwise jumping around
 within the result. <CODE>$pos</CODE> is not checked in any way for
 validity.</P>
@@ -149,21 +149,21 @@ set.</P>
 capable of seeking. This function will be unavailable in such
 environments.</P>
 
-<DT><B>lock($table, $mode = "write")</B><DD><P>In some DB interfaces locks one or more tables using the mode(s)
+<DT><strong>lock($table, $mode = "write")</strong><DD><P>In some DB interfaces locks one or more tables using the mode(s)
 specified. <CODE>$table</CODE> can be a single table, a comma separated
 list of tables, or an array of mode/table (or table list) pairs.</P>
 
-<DT><B>unlock()</B><DD><P>In some DB interfaces releases all table locks.</P>
+<DT><strong>unlock()</strong><DD><P>In some DB interfaces releases all table locks.</P>
 
-<DT><B>link_id()</B><DD><P>This function will return the current link ID, as returned by
+<DT><strong>link_id()</strong><DD><P>This function will return the current link ID, as returned by
 the <CODE>pconnect()</CODE> executed internally by the database class.</P>
 <P>You should not need this information.</P>
 
-<DT><B>query_id()</B><DD><P>This function will return the current result ID, as returned by
+<DT><strong>query_id()</strong><DD><P>This function will return the current result ID, as returned by
 the <CODE>query()</CODE> executed internally by the database class.</P>
 <P>You should not need this information.</P>
 
-<DT><B>metadata($table = "", $full = false)</B><DD><P><CODE>$table</CODE> is a SQL table name in the current database. The
+<DT><strong>metadata($table = "", $full = false)</strong><DD><P><CODE>$table</CODE> is a SQL table name in the current database. The
 function returns an array of hashes indexed on the (0 based)
 column number of <CODE>$table</CODE>. Each hash is indexed by <CODE>table</CODE>
 (table of which this column is part of), <CODE>name</CODE> (name of this
@@ -185,7 +185,7 @@ for other interfaces.</P>
 the <CODE>table</CODE>, <CODE>name</CODE> and <CODE>type</CODE> data reliably. You are
 encouraged to fix this.</P>
 
-<DT><B>table_names()</B><DD><P>Returns an array with table name and tablespace name.</P>
+<DT><strong>table_names()</strong><DD><P>Returns an array with table name and tablespace name.</P>
 <P>
 <BLOCKQUOTE><CODE>
 <HR>
@@ -199,7 +199,7 @@ tablespace_name : $return[$i]["tablespace_name"]
 <P>Tables are from $i=0 to last table;</P>
 <P>Implemented in db_oracle.inc,db_oci8.inc,db_mysql.inc,db_pgsql.inc</P>
 
-<DT><B>nextid($sequence_name)</B><DD><P>This function will return a sequence number from the sequence
+<DT><strong>nextid($sequence_name)</strong><DD><P>This function will return a sequence number from the sequence
 named by <CODE>$sequence_name</CODE>. This number is guaranteed
 to be obtained in an atomic manner and can be used as a primary
 key.</P>
@@ -211,16 +211,16 @@ key.</P>
 
 <P>
 <DL>
-<DT><B>connect()</B><DD><P>Used internally to generate a <CODE>Link_ID</CODE>, if necessary. Link
+<DT><strong>connect()</strong><DD><P>Used internally to generate a <CODE>Link_ID</CODE>, if necessary. Link
 creation is implicit, there is no need to call <CODE>connect()</CODE>
 manually, ever.</P>
 
-<DT><B>halt($msg)</B><DD><P>Used by <CODE>query()</CODE> if the initial database connection cannot
+<DT><strong>halt($msg)</strong><DD><P>Used by <CODE>query()</CODE> if the initial database connection cannot
 be made or the target database does not exist. Depending on
 the setting of <CODE>Halt_On_Error</CODE>, this method
 will call <CODE>haltmsg()</CODE> to report the error.</P>
 
-<DT><B>free()</B><DD><P>Used internally by <CODE>next_record()</CODE> to free the result
+<DT><strong>free()</strong><DD><P>Used internally by <CODE>next_record()</CODE> to free the result
 set, if so configured.</P>
 </DL>
 </P>
@@ -361,22 +361,22 @@ while(list($itemnr, $itemdesc) = each($articles)) {
 <P>Page Management currently consists a collection of functions:</P>
 <P>
 <DL>
-<DT><B>page_open(array("feature" => "classname"))</B><DD><P>This function is to be called with an array of page
+<DT><strong>page_open(array("feature" => "classname"))</strong><DD><P>This function is to be called with an array of page
 features/classname pairs. Valid features are at the moment:</P>
 <P>
 <DL>
-<DT><B>sess</B><DD><P>This page makes use of session variables.</P>
+<DT><strong>sess</strong><DD><P>This page makes use of session variables.</P>
 
-<DT><B>auth</B><DD><P>This page uses session authentication. If you
+<DT><strong>auth</strong><DD><P>This page uses session authentication. If you
 specify the <CODE>auth</CODE> feature, you MUST specify
 the <CODE>sess</CODE> feature, also.</P>
 
-<DT><B>perm</B><DD><P>This page is protected by permissions and only
+<DT><strong>perm</strong><DD><P>This page is protected by permissions and only
 accessible to authenticated users with matching rights.
 If you specify the <CODE>perm</CODE> feature, you MUST specify
 the <CODE>auth</CODE> and <CODE>sess</CODE> features, also.</P>
 
-<DT><B>user</B><DD><P>This page makes use of user variables. If you specify
+<DT><strong>user</strong><DD><P>This page makes use of user variables. If you specify
 the <CODE>user</CODE> feature, you MUST specify the <CODE>auth</CODE> and
 <CODE>sess</CODE> features, also.</P>
 </DL>
@@ -399,7 +399,7 @@ extending the provided <CODE>Session</CODE> class.</P>
 <P>Examples on how to do this is given in the documentation below
 when the classes are introduced.</P>
 
-<DT><B>page_close()</B><DD>
+<DT><strong>page_close()</strong><DD>
 <P>At the end of your page (after all results have been calculated)
 you have to call <CODE>page_close()</CODE>. This will save all
 page state, session and user variables into database. Changes to
@@ -415,11 +415,11 @@ record. Also, it is important that you call <CODE>page_close()</CODE> as
 early as possible on a page so that the locking time is kept
 minimal.</P>
 
-<DT><B>sess_load(array("var" => "classname")</B><DD><P> </P>
+<DT><strong>sess_load(array("var" => "classname")</strong><DD><P> </P>
 <P><EM>Advanced feature</EM>. Some applications have need to manually
 load data belonging to one or multiple session classes. @@TODO</P>
 
-<DT><B>sess_save(array("var" => "classname"))</B><DD><P><EM>Advanced feature</EM>. @@TODO</P>
+<DT><strong>sess_save(array("var" => "classname"))</strong><DD><P><EM>Advanced feature</EM>. @@TODO</P>
 
 </DL>
 </P>
@@ -757,25 +757,25 @@ that</TD><TD>Container object instance.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>register($varname)</B><DD><P>Registers a global variable name as a session variable. The
+<DT><strong>register($varname)</strong><DD><P>Registers a global variable name as a session variable. The
 name may identify a scalar variable, an array or an object.
 If an object is to be made persistent, it must have two
 instance variables:</P>
 <P>
 <DL>
-<DT><B>classname</B><DD><P>A string with the name of the objects class.</P>
-<DT><B> persistent_slots</B><DD><P>An array with the names of all object slots to save.</P>
+<DT><strong>classname</strong><DD><P>A string with the name of the objects class.</P>
+<DT><strong> persistent_slots</strong><DD><P>An array with the names of all object slots to save.</P>
 </DL>
 </P>
 
-<DT><B>unregister($varname)</B><DD><P>Unregisters a global variable name as a session variable.
+<DT><strong>unregister($varname)</strong><DD><P>Unregisters a global variable name as a session variable.
 The variable is not deleted, but its value will be lost
 at the end of a page. It is no longer saved to the database.</P>
 
-<DT><B>is_registered($varname)</B><DD><P>Returns true if the variable named $varname is registered
+<DT><strong>is_registered($varname)</strong><DD><P>Returns true if the variable named $varname is registered
 with the session, false otherwise.</P>
 
-<DT><B>delete()</B><DD><P>Destroy the current session and put_id() the current session
+<DT><strong>delete()</strong><DD><P>Destroy the current session and put_id() the current session
 id.</P>
 <P>After <CODE>delete()</CODE> has been executed, all session data has
 been removed from the database. Also, the session object is
@@ -792,21 +792,21 @@ session.  This allows you to change the session on the fly
 and selectively carry over session data from the previous
 session.</P>
 
-<DT><B>url($url)</B><DD><P>Return an URL referencing the current session. If in <CODE>get</CODE>
+<DT><strong>url($url)</strong><DD><P>Return an URL referencing the current session. If in <CODE>get</CODE>
 mode, the current session id is attached to this URL, else the
 URL is returned unmodified.</P>
 
-<DT><B>purl($url)</B><DD><P>A shorthand for <CODE>print $this-&gt;url($url);</CODE></P>
+<DT><strong>purl($url)</strong><DD><P>A shorthand for <CODE>print $this-&gt;url($url);</CODE></P>
 
-<DT><B>self_url()</B><DD><P>Return an URL referencing the current page, including
+<DT><strong>self_url()</strong><DD><P>Return an URL referencing the current page, including
 <CODE>PHP_SELF</CODE> and <CODE>QUERY_STRING</CODE> information.
 If in <CODE>get</CODE> mode, the session id is included.</P>
 
-<DT><B>pself_url()</B><DD><P>A shorthand for <CODE>print $this-&gt;self_url()</CODE>.</P>
+<DT><strong>pself_url()</strong><DD><P>A shorthand for <CODE>print $this-&gt;self_url()</CODE>.</P>
 
-<DT><B>hidden_session()</B><DD><P>Adds a hidden form element containing the session name and id.</P>
+<DT><strong>hidden_session()</strong><DD><P>Adds a hidden form element containing the session name and id.</P>
 
-<DT><B>add_query($qarray)</B><DD>
+<DT><strong>add_query($qarray)</strong><DD>
 <P>Return string to be appended to the current URL for parameters
 in GET query format. Intended usage is like this:</P>
 <P>
@@ -822,10 +822,10 @@ $sess->pself_url().$sess-&gt;padd_query(array("again"=&gt;"yes"))
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>padd_query($qarray)</B><DD>
+<DT><strong>padd_query($qarray)</strong><DD>
 <P>A shorthand for <CODE>print $this-&gt; add_query($qarray)</CODE>.</P>
 
-<DT><B>reimport_get_vars()</B><DD>
+<DT><strong>reimport_get_vars()</strong><DD>
 <P>When a <CODE>FORM</CODE> variable is made persistent, that form variable is
 imported into PHP, then page_open() is being called and
 the new variable value is overwritten from the database. The
@@ -844,24 +844,24 @@ variables have been restored.</P>
 
 <P>Use of this function is discouraged.</P>
 
-<DT><B>reimport_post_vars()</B><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
+<DT><strong>reimport_post_vars()</strong><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
 
-<DT><B>reimport_cookie_vars()</B><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
+<DT><strong>reimport_cookie_vars()</strong><DD><P>See <CODE>reimport_get_vars()</CODE>.</P>
 
-<DT><B>set_container()</B><DD><P>You shall not call this function directly. It is called back by the
+<DT><strong>set_container()</strong><DD><P>You shall not call this function directly. It is called back by the
 <CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
 It is documented so that you can override its implementation in
 your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
 <P>This function creates and starts the container class used by
 this instance of session.</P>
 
-<DT><B>set_tokenname()</B><DD><P>You shall not call this function directly. It is called back by the
+<DT><strong>set_tokenname()</strong><DD><P>You shall not call this function directly. It is called back by the
 <CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
 It is documented so that you can override its implementation in
 your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
 <P>This function determines and sets the internal session name.</P>
 
-<DT><B>release_token()</B><DD><P>You shall not call this function directly. It is called back by the
+<DT><strong>release_token()</strong><DD><P>You shall not call this function directly. It is called back by the
 <CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
 It is documented so that you can override its implementation in
 your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
@@ -869,7 +869,7 @@ your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
 propagation and determines if a new session token has to be
 generated.</P>
 
-<DT><B>put_headers()</B><DD><P>You shall not call this function directly. It is called back by the
+<DT><strong>put_headers()</strong><DD><P>You shall not call this function directly. It is called back by the
 <CODE>start()</CODE> function of <CODE>Session()</CODE> during initializiation.
 It is documented so that you can override its implementation in
 your subclass of <CODE>Session</CODE> if you know what you are doing.</P>
@@ -883,9 +883,9 @@ by the session, including cache control headers.</P>
 
 <P>
 <DL>
-<DT><B>get_id()</B><DD><P>See <CODE>get_id()</CODE>.</P>
+<DT><strong>get_id()</strong><DD><P>See <CODE>get_id()</CODE>.</P>
 
-<DT><B>get_id($id_to_use)</B><DD><P>get_id() is used internally to determine a session
+<DT><strong>get_id($id_to_use)</strong><DD><P>get_id() is used internally to determine a session
 identifier.  Currently, a session identifier is a hex number
 of 32 characters (128 bits) and it is generated by
 md5(uniqid($this->magic)) to make it hard to guess.</P>
@@ -900,23 +900,23 @@ propagated to the client to use a shared pool of persistent
 variables (a guestbook for example). These applications need
 locking (to be implemented soon).</P>
 
-<DT><B>put_id()</B><DD><P>put_id() is used internally to "unuse" a session it. At the
+<DT><strong>put_id()</strong><DD><P>put_id() is used internally to "unuse" a session it. At the
 moment it deletes the client side cookie and deletes
 $HTTP_COOKIE_VAR[$this->name] for that cookie. The variable
 ${$this->name} is <EM>not</EM> deleted.</P>
 
-<DT><B>serialize($var, &amp;$str)</B><DD><P>serialize() is used internally to append to str all PHP
+<DT><strong>serialize($var, &amp;$str)</strong><DD><P>serialize() is used internally to append to str all PHP
 code needed to reconstruct the variable named in var.</P>
 
-<DT><B>freeze()</B><DD><P>freeze() serializes all register()ed variables and writes
+<DT><strong>freeze()</strong><DD><P>freeze() serializes all register()ed variables and writes
 the resulting code into the database, tagged with the
 current session id and the current session name.</P>
 
-<DT><B>thaw()</B><DD><P>thaw() loads a set of freeze()ed variables for the current
+<DT><strong>thaw()</strong><DD><P>thaw() loads a set of freeze()ed variables for the current
 session id and session name out of the database and
 recreates them.</P>
 
-<DT><B>gc()</B><DD><P>The <CODE>active_sessions</CODE> table contains one row for
+<DT><strong>gc()</strong><DD><P>The <CODE>active_sessions</CODE> table contains one row for
 each session. That row is uniquely identified by the <CODE>sid</CODE>
 and <CODE>name</CODE> values (<CODE>name</CODE> is the name of the session
 class that has written the row). Each time that row is written,
@@ -928,9 +928,9 @@ an update to <CODE>active_sessions</CODE> is being made.
 Instead it is called randomly with a probability of
 <CODE>gc_probability</CODE>.</P>
 
-<DT><B>reimport_any_vars($arrayname)</B><DD><P>Used to implement the three official reimport functions.</P>
+<DT><strong>reimport_any_vars($arrayname)</strong><DD><P>Used to implement the three official reimport functions.</P>
 
-<DT><B>start()</B><DD><P>Initialization function, to be called after object
+<DT><strong>start()</strong><DD><P>Initialization function, to be called after object
 instantiation. Calls get_id() to get the current session id,
 creates a database connection, then calls thaw() to load all
 session variables. Randomly activates gc(). Checks <CODE>allowcache</CODE>
@@ -1306,22 +1306,22 @@ in</TD><TD>Internal: Used in default authentication mode.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>url()</B><DD><P>  
+<DT><strong>url()</strong><DD><P>  
 A function that can be used in <CODE>auth_loginform()</CODE>a and
 <CODE>auth_registerform</CODE>. It returns the appropriate "action="
 attribute to the form tag.</P>
 
-<DT><B>purl()</B><DD><P>  
+<DT><strong>purl()</strong><DD><P>  
 A function that can be used in <CODE>auth_loginform()</CODE>a and
 <CODE>auth_registerform</CODE>. It prints the appropriate "action="
 attribute to the form tag.</P>
 
-<DT><B>login_if($t)</B><DD><P>A function that can be used to change the current user
+<DT><strong>login_if($t)</strong><DD><P>A function that can be used to change the current user
 identity. 
 See the section and example on using default authentication
 below.</P>
 
-<DT><B>unauth($nobody = false)</B><DD><P>This function destroys the authentication information in
+<DT><strong>unauth($nobody = false)</strong><DD><P>This function destroys the authentication information in
 <CODE>$this-&gt;auth</CODE>, forcing the user to relogin the next time
 a protected page is being loaded.</P>
 <P><CODE>$this-&gt;auth["uname"]</CODE> is being kept, so that the
@@ -1331,7 +1331,7 @@ true as the first parameter to unauth. This will also change
 <CODE>$this-&gt;auth["uname"]</CODE>.</P>
 <P>Since V7.2: Passing $nobody to this method is deprecated.</P>
 
-<DT><B>logout($nobody = $this-&gt;nobody)</B><DD><P>This function destroy all authentication information
+<DT><strong>logout($nobody = $this-&gt;nobody)</strong><DD><P>This function destroy all authentication information
 in  <CODE>$this-&gt;auth</CODE>, forcing the user to relogin
 the next time a protected page is being loaded.</P>
 <P>Most applications want to use <CODE>$this-&gt;unauth()</CODE>
@@ -1344,11 +1344,11 @@ so the behaviour is identical (except <CODE>logout()</CODE> will always
 clear <CODE>$this-&gt;auth["uname"]</CODE> and unregister the auth class).</P>
 <P>Since V7.2: Passing $nobody to this method is deprecated.</P>
 
-<DT><B>is_authenticated()</B><DD><P>Will return false, if the current authentication is
+<DT><strong>is_authenticated()</strong><DD><P>Will return false, if the current authentication is
 invalid or expired. Will return the authenticated uid
 otherwise.</P>
 
-<DT><B>auth_preauth()</B><DD><P>This function can be overridden in a subclass to Auth. It
+<DT><strong>auth_preauth()</strong><DD><P>This function can be overridden in a subclass to Auth. It
 is being called as the very first step in the authentication
 process and has the opportunity to authenticate the user
 without a loginform being displayed (by deriving all necessary
@@ -1358,23 +1358,23 @@ the user identities from the incestines of a dead squirrel).</P>
 auth_loginform() nor auth_validatelogin() are
 called. If it returns false, all goes on as usual.</P>
 
-<DT><B>auth_loginform()</B><DD><P>  
+<DT><strong>auth_loginform()</strong><DD><P>  
 This function must be overridden by a subclass to Auth. It
 should output HTML that creates a login screen for the user.
 We recommend that you use an <CODE>include()</CODE> statement to include
 your HTML file.</P>
 
-<DT><B>auth_validatelogin()</B><DD><P>This function is called when the user submits the login form
+<DT><strong>auth_validatelogin()</strong><DD><P>This function is called when the user submits the login form
 created by <CODE>auth_loginform()</CODE>. It must validate the user input.</P>
 <P>If the user authenticated successfully, it must set up
 several fields within the <CODE>$auth[]</CODE> instance variable:</P>
 <P>
 <DL>
-<DT><B>"uid"</B><DD><P>must contain the user id associated with that user.</P>
-<DT><B>"uname"</B><DD><P>must contain the user name as entered by the user.</P>
-<DT><B>"exp"</B><DD><P>must not be tampered with (field is maintained by
+<DT><strong>"uid"</strong><DD><P>must contain the user id associated with that user.</P>
+<DT><strong>"uname"</strong><DD><P>must contain the user name as entered by the user.</P>
+<DT><strong>"exp"</strong><DD><P>must not be tampered with (field is maintained by
 <CODE>start()</CODE>, contains the time when the login expires).</P>
-<DT><B>"perm"</B><DD><P>if you want to use the permission feature, you
+<DT><strong>"perm"</strong><DD><P>if you want to use the permission feature, you
 must store the permissions of the validated user here.
 (Hint: due to a name conflict with sybase, "perm" is called "perms"
 in all the databases tables. Look for this small difference!)</P>
@@ -1382,16 +1382,16 @@ in all the databases tables. Look for this small difference!)</P>
 </P>
 <P>See the example below for more information.</P>
 
-<DT><B>auth_refreshlogin()</B><DD><P>This function is called every <CODE>refresh</CODE> minutes. It must refresh
+<DT><strong>auth_refreshlogin()</strong><DD><P>This function is called every <CODE>refresh</CODE> minutes. It must refresh
 the authentication informations stored in <CODE>auth</CODE> array by
 <CODE>auth_validatelogin()</CODE> method. It is not called if the
 user is logged in as nobody.</P>
 <P>It must return true on success, false otherwise (i.e.: the userid
 is no longer valid).</P>
 
-<DT><B>auth_registerform()</B><DD><P>See auth_doregister().</P>
+<DT><strong>auth_registerform()</strong><DD><P>See auth_doregister().</P>
 
-<DT><B>auth_doregister()</B><DD><P>These functions mirror <CODE>auth_loginform()</CODE> and
+<DT><strong>auth_doregister()</strong><DD><P>These functions mirror <CODE>auth_loginform()</CODE> and
 <CODE>auth_validatelogin()</CODE> in registration mode.</P>
 </DL>
 </P>
@@ -1401,7 +1401,7 @@ is no longer valid).</P>
 
 <P>
 <DL>
-<DT><B>start()</B><DD>
+<DT><strong>start()</strong><DD>
 <P>Initialization function, does the authentication. If we are
 in <CODE>log</CODE> (login) mode, <CODE>auth_loginform()</CODE> is
 called to draw a login screen. When the login screen is
@@ -2006,19 +2006,19 @@ permissions</TD><TD>A hash of (name, permission bit) pairs.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>check($required)</B><DD><P>Checks that the currently authenticated user has all the
+<DT><strong>check($required)</strong><DD><P>Checks that the currently authenticated user has all the
 rights that are specified in <CODE>required</CODE>. If not,
 <CODE>perm_invalid()</CODE> is called.</P>
 <P>If one or more of the required rights or user rights are
 invalid (not to be found in the permissions hash),
 <CODE>perm_invalid()</CODE> is called as well.</P>
 
-<DT><B>have_perm($required)</B><DD><P>Similar to <CODE>check()</CODE> in usage, only that it doesn't halt the
+<DT><strong>have_perm($required)</strong><DD><P>Similar to <CODE>check()</CODE> in usage, only that it doesn't halt the
 session if the user doesn't have the appropriate rights: This
 function returns true, if the user has the required rights,
 false otherwise.</P>
 
-<DT><B>perm_sel($name, $current = "", $class = "")</B><DD><P>This function returns a <CODE>SELECT</CODE>-tag with the given
+<DT><strong>perm_sel($name, $current = "", $class = "")</strong><DD><P>This function returns a <CODE>SELECT</CODE>-tag with the given
 <CODE>name</CODE>. Within this tag, all available permission values from
 <CODE>$perm->permissions</CODE> are contained as <CODE>OPTION</CODE> tags.</P>
 
@@ -2035,14 +2035,14 @@ stylesheet class.</P>
 <P>   </P>
 <P>
 <DL>
-<DT><B>permsum($rights)</B><DD><P>Logically or's all the rights and returns a pair <CODE>(valid,
+<DT><strong>permsum($rights)</strong><DD><P>Logically or's all the rights and returns a pair <CODE>(valid,
 or_result)</CODE>. If valid is true, an <CODE>or_result</CODE>
 is provided. If valid is false, the <CODE>or_result</CODE> is
 undefined and one or more of the rights do not exist at all.
 This is a severe error and the application should be halted at
 once.</P>
 
-<DT><B>perm_invalid($does_have, $must_have)</B><DD><P>Called in case of an access violation. <CODE>does_have</CODE> is a string
+<DT><strong>perm_invalid($does_have, $must_have)</strong><DD><P>Called in case of an access violation. <CODE>does_have</CODE> is a string
 listing the rights the user actually has. <CODE>must_have</CODE> are the
 rights the page requires.</P>
 </DL>
@@ -2299,25 +2299,25 @@ that</TD><TD>Container object instance.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>register($varname)</B><DD><P>Works as expected.</P>
+<DT><strong>register($varname)</strong><DD><P>Works as expected.</P>
 
-<DT><B>unregister($varname)</B><DD><P>Works as expected.</P>
+<DT><strong>unregister($varname)</strong><DD><P>Works as expected.</P>
 
-<DT><B>delete()</B><DD><P>Works as expected.</P>
+<DT><strong>delete()</strong><DD><P>Works as expected.</P>
 
-<DT><B>url($url)</B><DD><P>Not useful with User.</P>
+<DT><strong>url($url)</strong><DD><P>Not useful with User.</P>
 
-<DT><B>purl($url)</B><DD><P>Not useful with User.</P>
+<DT><strong>purl($url)</strong><DD><P>Not useful with User.</P>
 
-<DT><B>self_url()</B><DD><P>Not useful with User.</P>
+<DT><strong>self_url()</strong><DD><P>Not useful with User.</P>
 
-<DT><B>pself_url()</B><DD><P>Not useful with User.</P>
+<DT><strong>pself_url()</strong><DD><P>Not useful with User.</P>
 
-<DT><B>reimport_get_vars()</B><DD><P>Works as expected.</P>
+<DT><strong>reimport_get_vars()</strong><DD><P>Works as expected.</P>
 
-<DT><B>reimport_post_vars()</B><DD><P>Works as expected.</P>
+<DT><strong>reimport_post_vars()</strong><DD><P>Works as expected.</P>
 
-<DT><B>reimport_cookie_vars()</B><DD><P>Works as expected.</P>
+<DT><strong>reimport_cookie_vars()</strong><DD><P>Works as expected.</P>
 
 </DL>
 </P>
@@ -2327,24 +2327,24 @@ that</TD><TD>Container object instance.</TD></TR><TR><TD>
 
 <P>
 <DL>
-<DT><B>get_id()</B><DD><P>This is only a stub implementation that depends on
+<DT><strong>get_id()</strong><DD><P>This is only a stub implementation that depends on
 the user id provided by the page management functions.
 The page management functions will use
 <CODE>$auth-&gt;auth["uid"]</CODE>, which is set up by <CODE>Auth</CODE>.</P>
 
-<DT><B>put_id()</B><DD><P>Empty. Not useful with User.</P>
+<DT><strong>put_id()</strong><DD><P>Empty. Not useful with User.</P>
 
-<DT><B>serialize($var, &amp;$str)</B><DD><P>Works as expected.</P>
+<DT><strong>serialize($var, &amp;$str)</strong><DD><P>Works as expected.</P>
 
-<DT><B>freeze()</B><DD><P>Works as expected.</P>
+<DT><strong>freeze()</strong><DD><P>Works as expected.</P>
 
-<DT><B>thaw()</B><DD><P>Works as expected.</P>
+<DT><strong>thaw()</strong><DD><P>Works as expected.</P>
 
-<DT><B>gc()</B><DD><P>Works as expected. You do not want to use it, though.</P>
+<DT><strong>gc()</strong><DD><P>Works as expected. You do not want to use it, though.</P>
 
-<DT><B>reimport_any_vars($arrayname)</B><DD><P>Works as expected.</P>
+<DT><strong>reimport_any_vars($arrayname)</strong><DD><P>Works as expected.</P>
 
-<DT><B>start()</B><DD><P>Initialization function, to be called after object
+<DT><strong>start()</strong><DD><P>Initialization function, to be called after object
 instantiation. Calls get_id() to get the current session id,
 creates a database connection, then calls thaw() to load all
 session variables. <EM>Note:</EM> gc() activation  is commented out!

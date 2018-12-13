@@ -119,6 +119,11 @@ color: #222;
 	background-color:#FFFFFF;
 }
 #nom {background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0}
+.centrer {
+text-align: center;
+margin-left: auto;
+margin-right: auto;
+}
 <?php 
 header('Content-Length: ' . ob_get_length());
  // Bleda 2/2/11 dÃ©jÃ  fait en footer. ob_end_flush();

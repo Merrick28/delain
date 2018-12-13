@@ -3,7 +3,7 @@ $param = new parametres();
 $contenu_page .= '<p class="titre">Défis d’aventuriers</p><p></p>';
 $dialogue = '';
 $erreur = false;
-$message_erreur = '<b>Une erreur est survenue !</b><br />';
+$message_erreur = '<strong>Une erreur est survenue !</strong><br />';
 $delai_acceptation_defi = $param->getparm(125);
 
 $defi_regles = "
@@ -17,7 +17,7 @@ $defi_regles = "
 				zone.style.display = 'none';
 		}
 	</script>
-	<a href='javascript:affiche_regles()'><b>Règles</b> (afficher / masquer)</a><div style=\"text-align: left; display:none;\" id='defi_regles'><hr />
+	<a href='javascript:affiche_regles()'><strong>Règles</strong> (afficher / masquer)</a><div style=\"text-align: left; display:none;\" id='defi_regles'><hr />
 	Vous pouvez lancer un défi à condition que vous ne soyez pas engagé dans un combat, à n’importe quel aventurier. Ce dernier a alors $delai_acceptation_defi jours pour répondre.<br />
 	Lorsque le défi est relevé, vous et votre adversaire serez immédiatement téléportés dans une arène dédiée.<br />
 	Vos PAs seront mis à zéro, votre DLT repoussée pour dans 3 heures.<br />
@@ -683,11 +683,11 @@ if ($db->get_one_record($req))
 {
 	$contenu_page .= '<table><tr><td class="titre" colspan="5">Défi en cours</td></tr>
 		<tr>
-		<td class="soustitre2"><b>Adversaire</b></td>
-		<td class="soustitre2"><b>Initié par...</b></td>
-		<td class="soustitre2" title="Date de début des combats ou de lancer du défi suivant le statut"><b>Date</b></td>
-		<td class="soustitre2"><b>Statut</b></td>
-		<td class="soustitre2"><b>Actions</b></td></tr>';
+		<td class="soustitre2"><strong>Adversaire</strong></td>
+		<td class="soustitre2"><strong>Initié par...</strong></td>
+		<td class="soustitre2" title="Date de début des combats ou de lancer du défi suivant le statut"><strong>Date</strong></td>
+		<td class="soustitre2"><strong>Statut</strong></td>
+		<td class="soustitre2"><strong>Actions</strong></td></tr>';
 
 	// Données du défi
 	$adversaire_cod = $db->f('adversaire_cod');
@@ -742,7 +742,7 @@ if ($db->get_one_record($req))
 	}
 
 	$contenu_page .= "<tr>
-		<td class='soustitre2'><a href='visu_desc_perso.php?visu=$adversaire_cod'><b>$adversaire</b></a></td>
+		<td class='soustitre2'><a href='visu_desc_perso.php?visu=$adversaire_cod'><strong>$adversaire</strong></a></td>
 		<td class='soustitre2'>$initiateur</td>
 		<td class='soustitre2'>$defi_date</td>
 		<td class='soustitre2'>$statut_texte</td>
@@ -750,7 +750,7 @@ if ($db->get_one_record($req))
 }
 else
 {
-	$contenu_page .= "<div><div style='text-align: left; width: 600px;'><b>Lancer un défi !</b>
+	$contenu_page .= "<div><div style='text-align: left; width: 600px;'><strong>Lancer un défi !</strong>
 		<form action='#' method='post'>
 			<input type='hidden' value='5' name='m' />
 			Je souhaite défier <input type='text' name='cible_nom' value='' />.
@@ -799,9 +799,9 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 	}
 	else
 	{
-		$resultat = '<table><tr><td class="soustitre2" title="Date de fin, de début des combats ou de lancer du défi suivant le statut"><b>Date</b></td>
-			<td class="soustitre2"><b>Adversaire</b></td>
-			<td class="soustitre2"><b>Statut</b></td></tr>';
+		$resultat = '<table><tr><td class="soustitre2" title="Date de fin, de début des combats ou de lancer du défi suivant le statut"><strong>Date</strong></td>
+			<td class="soustitre2"><strong>Adversaire</strong></td>
+			<td class="soustitre2"><strong>Statut</strong></td></tr>';
 	}
 	
 	while ($db->next_record())
@@ -824,7 +824,7 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 			case 3:
 				$gagne = $is_lanceur && $defi_vainqueur == 'L'
 					|| !$is_lanceur && $defi_vainqueur == 'C';
-				$statut_texte = ($gagne) ? '<b>Gagné par KO</b>' : '<b>Perdu par KO</b>';
+				$statut_texte = ($gagne) ? '<strong>Gagné par KO</strong>' : '<strong>Perdu par KO</strong>';
 			break;
 
 			case 4:
@@ -837,7 +837,7 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 		}
 
 		$resultat .= "<tr><td class='soustitre2'>$defi_date</td>
-			<td class='soustitre2'><a href='visu_desc_perso.php?visu=$adversaire_cod'><b>$adversaire</b></a></td>
+			<td class='soustitre2'><a href='visu_desc_perso.php?visu=$adversaire_cod'><strong>$adversaire</strong></a></td>
 			<td class='soustitre2'>$statut_texte</td></tr>";
 	}
 	if ($existe_defis) $resultat .= '</table>';

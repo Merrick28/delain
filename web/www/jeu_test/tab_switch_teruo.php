@@ -124,14 +124,14 @@ function affiche_perso($perso_cod)
 		<tr><td class="soustitre2" colspan="2"><p>';
 	if ($db->f("dlt_passee") == 1)
 	{
-		echo '<b>';
+		echo '<strong>';
 	}
 	echo 'DLT : ' . $db->f("dlt");
 	if ($db->f("dlt_passee") == 1)
 	{
-		echo '</b>';
+		echo '</strong>';
 	}
-    echo '<br /><i>Puis ± ' , $db->f('prochaine_dlt') . '</i>';
+    echo '<br /><em>Puis ± ' , $db->f('prochaine_dlt') . '</em>';
 	echo '<br></td></tr>
 		<tr><td class="soustitre2" colspan="2"><p>Position : X=' . $db->f("pos_x") . '; Y=' . $db->f("pos_y") . '; ' . $db->f("etage_libelle") . '</td></tr>';
 	$num_perso = $perso_cod;
@@ -154,7 +154,7 @@ function affiche_perso($perso_cod)
 		<td>
 		<table>
 		<tr><td>
-		<p class="image"><b>Niveau ' . $db->f("perso_niveau") . '</b>
+		<p class="image"><strong>Niveau ' . $db->f("perso_niveau") . '</strong>
 		</td></tr>
 		<tr><td>
 		<p class="image"><img src="' . G_IMAGES . 'barrepa_' . $pa . '.gif" alt="' . $pa . 'PA">

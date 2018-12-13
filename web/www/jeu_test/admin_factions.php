@@ -155,7 +155,7 @@ if ($erreur == 0)
         break;
 	}
 
-	echo "<h1><b><big>Gestion des factions</big></b></h1><table width='100%'><tr>
+	echo "<h1><strong><big>Gestion des factions</big></strong></h1><table width='100%'><tr>
 		<td width='16%'><a href='?onglet=faction' $style_faction>Factions</a></td>
 		<td width='17%'><a href='?onglet=mission' $style_mission>Missions</a></td>
 		<td width='17%'><a href='?onglet=faction_mission' $style_faction_mission>Missions disponibles par faction</a></td>

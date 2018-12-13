@@ -187,7 +187,7 @@ if(isset($_POST['methode']))
 	
 ?>
 <p>Commandement: nombre maximal de troupes:<?php  echo $valeur_comp ?> </p>
-<p><b> Donner des ordres: </b></p>
+<p><strong> Donner des ordres: </strong></p>
 		<form method="post" name="troupes" action="comp_commandement.php">
 		<input type="hidden" name="methode" value="">
 		<table  border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -246,12 +246,12 @@ if(isset($_POST['methode']))
 		<?php 
 		if ($db->f("dlt_passee") == 1)
 			{
-				echo("<b>");
+				echo("<strong>");
 			}
 			echo $db->f("dlt");
 			if ($db->f("dlt_passee") == 1)
 			{
-				echo("</b>");
+				echo("</strong>");
 			}?>
 		</td><td <?php  echo $cl;?>>
 		<?php echo $db->f("perso_pa");?> / 12
@@ -391,7 +391,7 @@ while($db->next_record())
 	<br><br>	
 	</form>
 	
-	<p><b> Recrutement: </b></p>
+	<p><strong> Recrutement: </strong></p>
 	<?php 
 	// SI LE NOMBRE MAX N'EST PAS ATTEINT ON PEUT ENGAGER DES TROUPES
 

@@ -105,7 +105,7 @@ if (!$erreur)
 		break;
 	}
 
-	echo "<h1><b><big>Gestion des paramètres</big></b></h1><div>
+	echo "<h1><strong><big>Gestion des paramètres</big></strong></h1><div>
 			<a href='?onglet=globaux' $style_glob>Paramètres globaux</a>
 			 - <a href='?onglet=renommee' $style_renom>Renommées / karma</a>
 			 - <a href='?onglet=messagerie' $style_messagerie>Messagerie</a></div></div><br />";

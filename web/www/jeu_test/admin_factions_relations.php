@@ -8,7 +8,7 @@ echo '<div style="padding:10px"><p>La table doit se lire : la faction A considè
 	<p>Où A se trouve dans la première colonne (faction sujet), et B dans la première ligne (faction objet). X est bien sûr le chiffre donné, de 1 à 10.</p>
 	<p>Cette relation n’est pas nécessairement symétrique ! Certaines factions aiment pouvoir jouer les agents doubles...</p>
 	<p>Une faction A qui n’en aime pas une autre refusera de donner des responsabilités à une personne qui joue sur les deux tableaux.</p>
-	<p>Les cases en rouge sont les cases qui n’ont jamais été déterminées.</p><p></p><p><b>Le note doit aller de 1 à 10</b></p></div><hr />';
+	<p>Les cases en rouge sont les cases qui n’ont jamais été déterminées.</p><p></p><p><strong>Le note doit aller de 1 à 10</strong></p></div><hr />';
 
 $resultat = '';
 

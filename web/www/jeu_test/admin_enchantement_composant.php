@@ -30,7 +30,7 @@ ob_start();
 											order by tobj_libelle,gobj_nom';
 			$db->query($req);
 			echo '<br><hr><td class="titre">Liste des composants d\'enchantement sans formule de création</td><br><br><table>
-						<td><b>Nom du composant</b></td><td><b>Type d\'objet</b></td>';
+						<td><strong>Nom du composant</strong></td><td><strong>Type d\'objet</strong></td>';
 			while ($db->next_record())
 				{
 						echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode2=ajout&pot=' . $db->f('gobj_cod') . '">' . $db->f('gobj_nom') . '</a></td>
@@ -44,7 +44,7 @@ ob_start();
 			$req = 'select 	frmpr_frm_cod,frmpr_gobj_cod,frmpr_num,frm_cod,frm_type,frm_nom,frm_comp_cod,frm_temps_travail from formule_produit,formule where frm_type = 3 and frm_cod = frmpr_frm_cod order by frm_nom ';
 			$db->query($req);
 			echo '<br><table><td class="titre">Liste des Composants déjà reliés à une pierre précieuse :</td><tr><br><br>
-						<td><b>Nom du composant</b></td><td><b>Objet nécessaire et quantités </b></td><td><b>Energie nécessaire</b></td><td><b>Compétence nécessaire</b></td>';
+						<td><strong>Nom du composant</strong></td><td><strong>Objet nécessaire et quantités </strong></td><td><strong>Energie nécessaire</strong></td><td><strong>Compétence nécessaire</strong></td>';
 			while ($db->next_record())
 				{
 						$cod_enchantement = $db->f("frm_cod");
@@ -94,32 +94,32 @@ ob_start();
 					<td><textarea cols="50" rows="10"  name="nom"><?php echo $db->f("gobj_nom")?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Energie nécessaire <i>(Le coût en énergie sera celui qui fera diminuer la jauge d'énergie)</i></td>
+					<td class="soustitre2">Energie nécessaire <em>(Le coût en énergie sera celui qui fera diminuer la jauge d'énergie)</em></td>
 					<td><input type="text" name="temps" value="40"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Cout en brouzoufs <i>non utilisé</i></td>
+					<td class="soustitre2">Cout en brouzoufs <em>non utilisé</em></td>
 					<td><input type="text" name="pot_cout" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="0"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<option value="88">Forgeamage Niveau 1</option>';
 							<option value="102">Forgeamage Niveau 2</option>';
 							<option value="103">Forgeamage Niveau 3</option>';							
 						</select>
-							<i> <br>Cela correspond au niveau de forgeamage nécessaire. 
-								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><b> Pas sûr que cela marche pour l'instant !</b></i>
+							<em> <br>Cela correspond au niveau de forgeamage nécessaire. 
+								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
 							
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Composant d'enchantement concerné</i></td>
+					<td class="soustitre2">Composant d'enchantement concerné</em></td>
 					<td>
 					<select name="composant">
 					<?php  
@@ -139,7 +139,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de composants produits <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="1"></td>
 				</tr>
 				<tr>
@@ -165,7 +165,7 @@ ob_start();
 				echo "<p>La formule de base du composant d'enchantement a bien été insérée !<br>
 				Pensez à inclure la pierre précieuse nécessaire pour ce composant. Autrement, il ne pourra jamais être produit<br>";
 				?><a href="<?php echo $PHP_SELF;?>?methode2=serie_obj&pot=<?php echo $num_form;?>">Modifier la pierre précieuse associée à ce composant</a><br>
-			<b>Règle pour un composant d'enchantement :</b>
+			<strong>Règle pour un composant d'enchantement :</strong>
 			<br>Un composant est produit à partir d'une seule pierre précieuse. Pas d'autre règle pour les objets. L'énergie nécessaire est déterminée à partir de la formule de base (écran précédent)
 			<br><hr>
 			<?php 
@@ -233,19 +233,19 @@ ob_start();
 					<td><textarea cols="50" rows="10"  name="nom"><?php echo $db->f("frm_nom");?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Energie nécessaire <i></i></td>
+					<td class="soustitre2">Energie nécessaire <em></em></td>
 					<td><input type="text" name="temps" value="<?php echo $db->f("frm_temps_travail");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Cout en brouzoufs <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Cout en brouzoufs <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="pot_cout" value="<?php echo $db->f("frm_cout");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Résultat <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="resultat" value="<?php echo $db->f("frm_resultat");?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Compétence</i></td>
+					<td class="soustitre2">Compétence</em></td>
 					<td>
 						<select name="competence">
 							<?php  $s = $db->f("frm_comp_cod");
@@ -272,7 +272,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Composant d'enchantement concerné</i></td>
+					<td class="soustitre2">Composant d'enchantement concerné</em></td>
 					<td>
 					<select name="potion">
 					<?php  
@@ -294,7 +294,7 @@ ob_start();
 					</td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nombre de composants produits <i>(Non utilisé pour l'instant)</i></td>
+					<td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
 					<td><input type="text" name="nombre" value="<?php echo $db->f("frmpr_num");?>"></td>
 				</tr>
 				<tr>
@@ -340,7 +340,7 @@ ob_start();
 			break;
 		case "serie_obj":
 			?>
-			<b>Règle pour un composant d'enchantement :</b>
+			<strong>Règle pour un composant d'enchantement :</strong>
 			<br>Un composant est produit à partir d'une seule pierre précieuse. Pas d'autre règle pour les objets. L'énergie nécessaire est déterminée à partir de la formule de base (écran précédent)
 			<br><hr>
 			<?php 

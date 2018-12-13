@@ -40,9 +40,9 @@ if ($erreur == 0)
         $etape->charge($quete->aquete_etape_cod);
 
         $contenu_page2 .= "<!-- début $k => $quete->aquete_etape_cod -->";
-        //$contenu_page2 .= "<b>{$quete->aquete_nom}</b><br><br>";
+        //$contenu_page2 .= "<strong>{$quete->aquete_nom}</strong><br><br>";
 
-        $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>{$tab_quete["triggers"][$k]["nom"]}</b></center></div>" ;
+        $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$tab_quete["triggers"][$k]["nom"]}</strong></center></div>" ;
         $contenu_page2 .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
 
         $contenu_page2 .= $etape->get_initial_texte($tab_quete["triggers"][$k]["nom"]);
@@ -60,7 +60,7 @@ if ($erreur == 0)
         {
             $contenu_page2 .= "<!-- début $key => $val -->";
             ob_start();
-            $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>".ucfirst(str_replace("quete_", "", str_replace(".php", "", $val)))."</b></center></div>" ;
+            $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>".ucfirst(str_replace("quete_", "", str_replace(".php", "", $val)))."</strong></center></div>" ;
             require_once $val;
             $contenu_page2 .= ob_get_contents();
             ob_end_clean();

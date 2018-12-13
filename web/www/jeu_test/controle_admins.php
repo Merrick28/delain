@@ -73,10 +73,10 @@ if ($droit['controle_admin'] == 'O')
 			<center>
 				<table>
 				<tr>
-					<td class="soustitre2"><b>Numéro de perso</b></td>
-					<td class="soustitre2"><b>Nom de perso</b></td>
-					<td class="soustitre2"><b>Date</b></td>
-					<td class="soustitre2"><b>page vue</b></td>
+					<td class="soustitre2"><strong>Numéro de perso</strong></td>
+					<td class="soustitre2"><strong>Nom de perso</strong></td>
+					<td class="soustitre2"><strong>Date</strong></td>
+					<td class="soustitre2"><strong>page vue</strong></td>
 				</tr>
 
 			<tr><td>

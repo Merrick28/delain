@@ -14,7 +14,7 @@ include('variables_menu.php');
 $mess_viderec = '';
 if (isset($_SESSION['redir_viderec']) && $_SESSION['redir_viderec'])
 {
-	$mess_viderec = '<p><i>Le réceptacle a été vidé avec succès.</i></p>';
+	$mess_viderec = '<p><em>Le réceptacle a été vidé avec succès.</em></p>';
 	$_SESSION['redir_viderec'] = false;
 }
 if (isset($_POST['numrec']) && (int)$_POST['numrec']>0) {
@@ -43,8 +43,8 @@ if (isset($_POST['numrec']) && (int)$_POST['numrec']>0) {
 			// Rechargement "propre" de la page
 			$_SESSION['redir_viderec'] = true;
 			header('Location: magie.php');
-		} else $mess_viderec = '<p><i>Erreur de référence du réceptacle.</i></p>';
-	} else $mess_viderec = '<p><i>Vous n’avez pas assez de PA pour vider un réceptacle.</i></p>';
+		} else $mess_viderec = '<p><em>Erreur de référence du réceptacle.</em></p>';
+	} else $mess_viderec = '<p><em>Vous n’avez pas assez de PA pour vider un réceptacle.</em></p>';
 }
 
 //
@@ -131,11 +131,6 @@ if ($erreur == 0)
 	// -------------------------
 	// réceptacles
 	// -------------------------
-	$req_r = 'select perso_nb_receptacle from perso where perso_cod= ' . $perso_cod;
-	$db->query($req_r);
-	$db->next_record();
-	$nb_recep = $db->f("perso_nb_receptacle");
-	
 	$req = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
 		cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
 		where recsort_perso_cod = ' . $perso_cod . '
@@ -147,7 +142,7 @@ if ($erreur == 0)
 		$contenu_page .= '
 		<tr>
 		<td class="titre">
-		<span class="titre">Réceptacles magiques (' . $db->nf() . '/' . $nb_recep . ')<a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
+		<span class="titre">Réceptacles magiques :<a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
 		</td>
 		</tr>
 		
@@ -347,9 +342,9 @@ if ($erreur == 0)
 				$contenu_page .= '<tr>
 			    <td class="soustitre2">'.$favoris.'</td>
 				<td class="soustitre2">
-				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><b>' . $db->f("sort_nom") . '</a></b> (' . $cout_pa . ' PA)
+				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><strong>' . $db->f("sort_nom") . '</a></strong> (' . $cout_pa . ' PA)
 				</td>
-				<td><i>' . $db->f("liste_rune") . '</i></td>
+				<td><em>' . $db->f("liste_rune") . '</em></td>
 				<td>
 				<a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 				</td>
@@ -428,10 +423,10 @@ if ($erreur == 0)
 			foreach ($runesSort as $rune)
 				$lancer = $lancer && (isset($runes_possedees[$rune]));
 
-            $nom = $db->f("sort_nom") . '</b>';
-            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></b> (' . $db->f("cout") . 'PA) ':'</b>');
+            $nom = $db->f("sort_nom") . '</strong>';
+            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></strong> (' . $db->f("cout") . 'PA) ':'</strong>');
             $contenu_page .= '<tr>
-			<td class="soustitre2"><b>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
+			<td class="soustitre2"><strong>' . $nom . '<em>(' . $db->f("liste_rune") . ')</em></td>
 			<td>' . $db->f("memo") . ' %</td>
 			<td><a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 			</tr>';
@@ -499,7 +494,7 @@ if ($erreur == 0)
 		if ($rune_possedee)
 			$contenu_page .= '<input type="radio" class="vide" name="fam_' . $famille . '" value="'.$db->f("gobj_rune_position").'" id="'.$labelId.'">';
 
-		$contenu_page .= $db->f("gobj_nom") . ' <i>(' . $nombre_runes . ')</i>
+		$contenu_page .= $db->f("gobj_nom") . ' <em>(' . $nombre_runes . ')</em>
 			</td>
 			</tr>
 			</table>

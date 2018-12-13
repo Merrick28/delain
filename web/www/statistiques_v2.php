@@ -37,16 +37,16 @@ $db->query($req_joueur);
 $db->next_record();
 $nb_joueur = $db->f("nb");
 $moyenne = round($nb_joueur/$nb_compte,2);
-$contenu_page .= ("Il y a aujourd'hui <b>$nb_joueur</b> personnages pour <b>$nb_compte</b> comptes (soit une moyenne de $moyenne personnages par joueur),");
+$contenu_page .= ("Il y a aujourd'hui <strong>$nb_joueur</strong> personnages pour <strong>$nb_compte</strong> comptes (soit une moyenne de $moyenne personnages par joueur),");
 
 $req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 2 and perso_actif = 'O' ";
 $db->query($req_joueur);
 $db->next_record();
 $nb_monstre = $db->f("nb");
 
-$contenu_page .=(" et <b>$nb_monstre</b> monstres dans les souterrains qui n'attendent que vous !");
+$contenu_page .=(" et <strong>$nb_monstre</strong> monstres dans les souterrains qui n'attendent que vous !");
 
-$contenu_page .= '<br /><i>Statistiques sur les 30 derniers jours seulement</i>';
+$contenu_page .= '<br /><em>Statistiques sur les 30 derniers jours seulement</em>';
 
 $contenu_page .= '<div class="titre">Statistiques des personnages</div>';			
 // classement par niveau
@@ -82,7 +82,7 @@ $contenu_page .=("<hr />");
 
 			// classement par étage
 			$contenu_page .=("<table cellspacing=\"2\" cellpadding=\"2\">");
-			$contenu_page .=("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par étage : <br><i>Seuls les étages connus sont visibles. De nombreux antres existent et restent à la découverte des joueurs/personnages</i></td></tr>");
+			$contenu_page .=("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par étage : <br><em>Seuls les étages connus sont visibles. De nombreux antres existent et restent à la découverte des joueurs/personnages</em></td></tr>");
 			$contenu_page .=("<tr><td class=\"soustitre2\">Etage</td>
 			<td class=\"soustitre2\">Personnages</td>
 			<td class=\"soustitre2\">Niveau moyen</td>

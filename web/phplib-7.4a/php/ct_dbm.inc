@@ -61,7 +61,7 @@ class CT_DBM {
   }
 
   function ac_halt($s) {
-    echo "<b>$s</b>";
+    echo "<strong>$s</strong>";
     exit;
   }
 

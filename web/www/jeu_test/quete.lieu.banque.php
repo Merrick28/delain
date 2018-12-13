@@ -28,11 +28,11 @@ switch($methode2)
 				$nb_caisses = $db->compte_objet($perso_cod, 380);
 			?>
 				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
-					<p><i>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?
+					<p><em>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?
 					<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ?
 					(Vous êtes en possession de <?php  echo $nb_caisses; ?> caisses)
 					<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire.
-					<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</i>
+					<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</em>
 					<input type="hidden" name="methode2" value="cede_objet1">
 					<table>
 						<tr>
@@ -61,8 +61,8 @@ switch($methode2)
 		?>
 			<br>Nous vous remercions.
 			<br>Votre dépôt a été signalé au propriétaire de ces objets.
-			Une dépêche est partie de votre part (<i>message visible dans votre boîte d’envoi</i>)
-			<br>Nous avons pris la liberté de vous fournir directement la récompense (<i>visible dans votre inventaire</i>).
+			Une dépêche est partie de votre part (<em>message visible dans votre boîte d’envoi</em>)
+			<br>Nous avons pris la liberté de vous fournir directement la récompense (<em>visible dans votre inventaire</em>).
 		<?php 			$req = "select vente_caisses($perso_cod, $obj_gen_quete)";
 			$db->query($req);
 

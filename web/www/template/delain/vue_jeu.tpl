@@ -54,8 +54,8 @@
 			<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
 			<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
 			<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
-			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <b>{PERSO_DEGATS}</b><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <b>{PERSO_ARMURE}</b></div>
-			<div id="position"><br>X : <b>{PERSO_POS_X}</b> Y : <b>{PERSO_POS_Y}</b><br><b><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></b></div>
+			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <strong>{PERSO_DEGATS}</strong><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong></div>
+			<div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
 		</div>
         <div  style="padding:0 10 0 10px; text-align:center;">
             <div id="passageniveau">{PASSAGE_NIVEAU}</div>
@@ -67,7 +67,7 @@
 	<div id="dropdown-menu"class="dropdown-content">
 
         <hr><img src="{URL_IMAGES}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php" >Fiche de perso</a><br>
-		<img src="{URL_IMAGES}vue.gif" alt=""> <b><a href="{URL_RELATIVE}frame_vue.php">Vue</a></b><br>
+		<img src="{URL_IMAGES}vue.gif" alt=""> <strong><a href="{URL_RELATIVE}frame_vue.php">Vue</a></strong><br>
 		<img src="{URL_IMAGES}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
         {PERSO_AUTO_QUETE}
 		<hr />
@@ -77,8 +77,8 @@
 		<div id="transaction"><img src="{URL_IMAGES}transaction.gif" alt=""> <a href="{URL_RELATIVE}transactions2.php">{TRANSACTIONS}</a></br></div>
 		<hr />
 		<div id="deplacement">{TEXTE_DEP}</div>
-		<img src="{URL_IMAGES}attaquer.gif" alt=""> <b><a href="{URL_RELATIVE}combat.php">Combat !</a></b><br>
-		<img src="{URL_IMAGES}magie.gif" alt=""> <b><a href="{URL_RELATIVE}magie.php">Magie !</a></b><br>
+		<img src="{URL_IMAGES}attaquer.gif" alt=""> <strong><a href="{URL_RELATIVE}combat.php">Combat !</a></strong><br>
+		<img src="{URL_IMAGES}magie.gif" alt=""> <strong><a href="{URL_RELATIVE}magie.php">Magie !</a></strong><br>
 		{VOIE_MAGIQUE}
         {FAVORIS}
 		<hr />
@@ -113,7 +113,7 @@
 		{GERANT}
 		{COMMANDEMENT}
 		{OPTION_MONSTRE}
-		<img src="{URL_IMAGES}iconeswitch.gif" alt=""> <a href="{URL_RELATIVE}switch.php"><b>Gestion compte</b></a>
+		<img src="{URL_IMAGES}iconeswitch.gif" alt=""> <a href="{URL_RELATIVE}switch.php"><strong>Gestion compte</strong></a>
 		<hr />
 		<img src="{URL_IMAGES}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a> - {WIKI}<br>
 		<img src="{URL_IMAGES}deconnection.gif" alt=""> <a href="{URL}" target="_top">Accueil</a><br />

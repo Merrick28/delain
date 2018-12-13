@@ -117,7 +117,7 @@ for($i = 0; $i < 5; $i++){
 <input type="hidden" name="rac_nom_race_cod" value="<?php  echo $race_cod;?>">
 <input type="hidden" name="rac_nom_type" value="N">
 <input type="hidden" name="rac_nom_genre" value="M">
-<b>Noms:</b><br>
+<strong>Noms:</strong><br>
 <?php 
 $chance = '';
 $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
@@ -140,7 +140,7 @@ Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>">
 <input type="hidden" name="rac_nom_race_cod" value="<?php  echo $race_cod;?>">
 <input type="hidden" name="rac_nom_type" value="P">
 <input type="hidden" name="rac_nom_genre" value="M">
-<b>Prénoms masculins:</b><br>
+<strong>Prénoms masculins:</strong><br>
 <?php 
 $chance = '';
 $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
@@ -163,7 +163,7 @@ Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>">
 <input type="hidden" name="rac_nom_race_cod" value="<?php  echo $race_cod;?>">
 <input type="hidden" name="rac_nom_type" value="P">
 <input type="hidden" name="rac_nom_genre" value="F">
-<b>Prénoms féminins:</b><br>
+<strong>Prénoms féminins:</strong><br>
 <?php 
 $chance = '';
 $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
@@ -185,7 +185,7 @@ Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>">
 <input type="hidden" name="rac_nom_race_cod" value="<?php  echo $race_cod;?>">
 <input type="hidden" name="rac_nom_type" value="S">
 <input type="hidden" name="rac_nom_genre" value="M">
-<b>Surnoms masculins:</b><br>
+<strong>Surnoms masculins:</strong><br>
 <?php 
 $chance = '';
 $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
@@ -207,7 +207,7 @@ Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>">
 <input type="hidden" name="rac_nom_race_cod" value="<?php  echo $race_cod;?>">
 <input type="hidden" name="rac_nom_type" value="S">
 <input type="hidden" name="rac_nom_genre" value="F">
-<b>Surnoms féminins:</b><br>
+<strong>Surnoms féminins:</strong><br>
 <?php 
 $chance = '';
 $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "

@@ -51,12 +51,12 @@ $nb_colonnes = ($marquerQuatriemes) ? 7 : 6;
 <tr><td colspan="<?php echo  $nb_colonnes; ?>" class="soustitre"><div class="soustitre">Monstres</div></td></tr>
 <tr><td colspan="<?php echo  $nb_colonnes; ?>" class="soustitre2">Afficher/masquer : <span style="cursor:pointer;" onclick="afficheMasque(egal, new Array(2, 'Familier'), 'tableMonstres', afficheFamiliers); afficheFamiliers = !afficheFamiliers;">les familiers</span>, <span style="cursor:pointer;" onclick="afficheMasque(contient, new Array(1, 'guilde.gif'), 'tableMonstres', afficheMonstresCoterie); afficheMonstresCoterie = !afficheMonstresCoterie;">la coterie</span>.</td></tr>
 <tr>
-<td class="soustitre2" width="50"><b>Dist.</b></td>
-<?php  if ($marquerQuatriemes) echo '<td class="soustitre2"><b>Contrôle</b></td>'; ?>
-<td class="soustitre2"><b>Nom</b></td>
-<td class="soustitre2"><b>Race</b></td>
-<td class="soustitre2"><div style="text-align:center;"><b>X</b></div></td>
-<td class="soustitre2"><div style="text-align:center;"><b>Y</b></div></td>
+<td class="soustitre2" width="50"><strong>Dist.</strong></td>
+<?php  if ($marquerQuatriemes) echo '<td class="soustitre2"><strong>Contrôle</strong></td>'; ?>
+<td class="soustitre2"><strong>Nom</strong></td>
+<td class="soustitre2"><strong>Race</strong></td>
+<td class="soustitre2"><div style="text-align:center;"><strong>X</strong></div></td>
+<td class="soustitre2"><div style="text-align:center;"><strong>Y</strong></div></td>
 <td></td>
 </tr>
 <?php 
@@ -85,23 +85,23 @@ if ($nb_joueur_en_vue != 0)
 			$pv_max = $db->f("perso_pv_max");
 			if ($pv/$pv_max < 0.75)
 			{
-				$niveau_blessures = ' - <b>' . $tab_blessures[0] . '</b>';
+				$niveau_blessures = ' - <strong>' . $tab_blessures[0] . '</strong>';
 			}
 			if ($pv/$pv_max < 0.5)
 			{
-				$niveau_blessures = ' - <b>' . $tab_blessures[1] . '</b>';
+				$niveau_blessures = ' - <strong>' . $tab_blessures[1] . '</strong>';
 			}
 			if ($pv/$pv_max < 0.25)
 			{
-				$niveau_blessures = ' - <b>' . $tab_blessures[2] . '</b>';
+				$niveau_blessures = ' - <strong>' . $tab_blessures[2] . '</strong>';
 			}
 			if ($pv/$pv_max < 0.15)
 			{
-				$niveau_blessures = ' - <b>' . $tab_blessures[3] . '</b>';
+				$niveau_blessures = ' - <strong>' . $tab_blessures[3] . '</strong>';
 			}
 			$nom = $db->f("perso_nom");
 			if ($db->f("perso_desc_long") != NULL or $db->f("perso_desc_long") != "")
-				$nom .= '<b> *</b>';
+				$nom .= '<strong> *</strong>';
 			if ($db->f("distance") <= $portee)
 			{
 				$attaquable = 1;
@@ -141,8 +141,8 @@ if ($nb_joueur_en_vue != 0)
     		if ($marquerQuatriemes)
 				echo '<td ' . $ch_style . '><div style="text-align:center;">' . $ia . $type_controle . '</div></td>';
             
-			echo '<td ' . $ch_style . 'id="lmonstre' . $db->f("perso_cod") . '" class="' . $style .'">'.$lock_combat.$meme_coterie.'<b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>
-					</b>' . $aff_tangible . $niveau_blessures . '<br><span style="font-size:8pt">' . $desc . '</span></td>
+			echo '<td ' . $ch_style . 'id="lmonstre' . $db->f("perso_cod") . '" class="' . $style .'">'.$lock_combat.$meme_coterie.'<strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>
+					</strong>' . $aff_tangible . $niveau_blessures . '<br><span style="font-size:8pt">' . $desc . '</span></td>
 				<td ' . $ch_style .  '>' . $db->f("race_nom") . '</td>
 				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $db->f("pos_x") . '</div></td>
 				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $db->f("pos_y") . '</div></td><td>';

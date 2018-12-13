@@ -8,7 +8,7 @@ if (!isset($methode))
 switch($methode)
 {
 	case "debut":
-		$contenu_page .= '<b>Vous regardez les objet enchantables que vous possédez.</b><br>';
+		$contenu_page .= '<strong>Vous regardez les objet enchantables que vous possédez.</strong><br>';
 		//
 		// requête pour voir si on a des objets enchantables
 		//
@@ -26,7 +26,7 @@ switch($methode)
 		{
 			$contenu_page .= 'Voici les objets sur lesquels vous pouvez intervenir : <br>';
 			while($db->next_record())
-				$contenu_page .= '<br><b><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&t_ench=3">' . $db->f('obj_nom') . '</a></b>';
+				$contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&t_ench=3">' . $db->f('obj_nom') . '</a></strong>';
 		}
 		$contenu_page .= '<br><br>';
 	break;
@@ -71,17 +71,17 @@ switch($methode)
 		$enchantements_dispo = '';
 		$premier = true;
 		if($db->nf() == 0)
-			$contenu_page .= 'En analysant votre équipement, vous voyez que vous ne pouvez rien faire avec ce que vous avez en inventaire. Il vous faut <b>trouver d’autres composants ou les créer</b> afin de pouvoir enchanter cet objet.
+			$contenu_page .= 'En analysant votre équipement, vous voyez que vous ne pouvez rien faire avec ce que vous avez en inventaire. Il vous faut <strong>trouver d’autres composants ou les créer</strong> afin de pouvoir enchanter cet objet.
 				<br>Le forgeamage demande certes de l’expertise, mais aussi d’avoir les composants nécessaires pour cela.';
 		else
 		{
 			$contenu_page .= '<p>Voici ce que vous pouvez tenter de faire avec ça : </p>
 			<table>
 				<tr>
-					<td class="soustitre2"><b>Nom</b></td>
-					<td class="soustitre2"><b>Description</b></td>
-					<td class="soustitre2"><b>Coût</b></td>
-					<td class="soustitre2"><b>Nécessite</b></td>
+					<td class="soustitre2"><strong>Nom</strong></td>
+					<td class="soustitre2"><strong>Description</strong></td>
+					<td class="soustitre2"><strong>Coût</strong></td>
+					<td class="soustitre2"><strong>Nécessite</strong></td>
 				</tr>';
 			while($db->next_record())
 			{
@@ -133,10 +133,10 @@ switch($methode)
 			$contenu_page .= '<br /><p>Voici ce que vous savez que vous auriez pu faire, si vous aviez eu les composants nécessaires : </p>
 			<table>
 				<tr>
-					<td class="soustitre2"><b>Nom</b></td>
-					<td class="soustitre2"><b>Description</b></td>
-					<td class="soustitre2"><b>Coût</b></td>
-					<td class="soustitre2"><b>Nécessite</b></td>
+					<td class="soustitre2"><strong>Nom</strong></td>
+					<td class="soustitre2"><strong>Description</strong></td>
+					<td class="soustitre2"><strong>Coût</strong></td>
+					<td class="soustitre2"><strong>Nécessite</strong></td>
 				</tr>';
 			while($db->next_record())
 			{

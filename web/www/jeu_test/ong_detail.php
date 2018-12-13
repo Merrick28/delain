@@ -4,10 +4,16 @@
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
 <?php 
-if(isset($_POST['position']))
-	$position = 1 * $_POST['position'];
-if(isset($_GET['position']))
-	$position = 1 * $_GET['position'];
+if(isset($_POST['position']) && is_integer($_POST['position']))
+{
+    $position = 1 * $_POST['position'];
+}
+
+if(isset($_GET['position']) && is_integer($_GET['position']))
+{
+    $position = 1 * $_GET['position'];
+}
+
 if(!isset($db))
 {
 	include "verif_connexion.php";
@@ -71,7 +77,7 @@ $db->query($req);
 
 <table border="0" cellspacing="2" cellpadding="2">
 	<tr>
-		<td class="soustitre2" valign="top"><b><?php echo $db->nf();?> persos.</b></br>
+		<td class="soustitre2" valign="top"><strong><?php echo $db->nf();?> persos.</strong></br>
 <?php 
 
 if ($db->nf() != 0)
@@ -80,7 +86,7 @@ if ($db->nf() != 0)
 	{
 		echo $db->f("perso_nom");
 		if (($db->f("bless") != "indemne") && ($db->f("bless") != "égratigné"))
-			echo "<i> - " . $db->f("bless") , "</i>";
+			echo "<em> - " . $db->f("bless") , "</em>";
 		echo "<br>";
 	}
 }
@@ -94,7 +100,7 @@ $req = "select lower(perso_nom) as minusc,etat_perso(perso_cod) as bless,perso_n
 		order by minusc";
 $db->query($req);
 ?>
-</td><td class="soustitre2" valign="top"><b><?php echo $db->nf();?> monstres : </b><br>
+</td><td class="soustitre2" valign="top"><strong><?php echo $db->nf();?> monstres : </strong><br>
 <?php 
 if ($db->nf() != 0)
 {
@@ -102,7 +108,7 @@ if ($db->nf() != 0)
 	{
 		echo $db->f("perso_nom");
 		if (($db->f("bless") != "indemne") && ($db->f("bless") != "égratigné"))
-			echo "<i> - " . $db->f("bless") , "</i>";
+			echo "<em> - " . $db->f("bless") , "</em>";
 		echo "<br>";
 	}
 }
@@ -113,7 +119,7 @@ if ($db->nf() != 0)
 $req = "select count(pobj_cod) as nombre from objet_position  where pobj_pos_cod = $position ";
 $db->query($req);
 $db->next_record();
-echo "<b>" , $db->f("nombre") , "&nbsp;objets au sol</b>";
+echo "<strong>" , $db->f("nombre") , "&nbsp;objets au sol</strong>";
 if ($db->f("nombre") != 0)
 {
 	echo "<p class=\"detail\">";
@@ -135,7 +141,7 @@ if ($db->f("nombre") != 0)
 $req = "select count(por_cod) as nombre from or_position  where por_pos_cod = $position ";
 $db->query($req);
 $db->next_record();
-echo "<b>" , $db->f("nombre") , "&nbsp;tas de brouzoufs au sol</b>";
+echo "<strong>" , $db->f("nombre") , "&nbsp;tas de brouzoufs au sol</strong>";
 if ($db->f("nombre") != 0)
 {
 	echo "<br>";

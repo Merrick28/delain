@@ -91,12 +91,12 @@ if(isset($_POST['methode'])){
           if ($nb_or < $cout)
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez d'argent dans votre bourse</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez d'argent dans votre bourse</strong></p><?php 
           }
           if ($nb_pa < $coutpa)
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez de PAs disponibles</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez de PAs disponibles</strong></p><?php 
           }
           if ($erreur == 0)
           {
@@ -116,12 +116,12 @@ if(isset($_POST['methode'])){
           if ($nb_or < ($cout*2))
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez d'argent dans votre bourse</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez d'argent dans votre bourse</strong></p><?php 
           }
           if ($nb_pa < ($coutpa*2))
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez de PAs disponibles</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez de PAs disponibles</strong></p><?php 
           }
           if ($erreur == 0)
           {
@@ -142,12 +142,12 @@ if(isset($_POST['methode'])){
           if ($nb_or < ($cout*3))
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez d'argent dans votre bourse</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez d'argent dans votre bourse</strong></p><?php 
           }
           if ($nb_pa < ($coutpa*3))
           {
             $erreur = 1;
-            ?><p><b>Vous n'avez pas assez de PAs disponibles</b></p><?php 
+            ?><p><strong>Vous n'avez pas assez de PAs disponibles</strong></p><?php 
           }
           if ($erreur == 0)
           {
@@ -170,7 +170,7 @@ if(isset($_POST['methode'])){
 	
 	
 	?>
-	<p><b><?php  echo("$nom_lieu</b> - $type_lieu"); ?> <br>
+	<p><strong><?php  echo("$nom_lieu</strong> - $type_lieu"); ?> <br>
 	
 	Niv 1 = <?php  echo $valeur_comp_niv1?><br>
 	Niv 2 = <?php  echo $valeur_comp_niv2?><br>

@@ -46,7 +46,7 @@ if(!($bd->next_record())){
 		$bd->next_record();
 		if ($bd->f("perso_pa") < 4)
 		{
-			$contenu_page .= "<p><b>Vous n’avez pas assez de PA !</b></p>";
+			$contenu_page .= "<p><strong>Vous n’avez pas assez de PA !</strong></p>";
 		}
 		else
 		{
@@ -61,7 +61,7 @@ if(!($bd->next_record())){
 			     // ON ENLEVE LES PAs
 				$req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
 				$bd->query($req_enl_pa);
-				$contenu_page .= "<p><b>Vous réchauffez l’œuf quelques minutes...</b></p>";
+				$contenu_page .= "<p><strong>Vous réchauffez l’œuf quelques minutes...</strong></p>";
 				
       			// ON DIMINUE 'ETAT
       			$diff_etat = mt_rand(0,25) + 1;
@@ -86,28 +86,28 @@ if(!($bd->next_record())){
 					if($choix < 25){
 						if ($type_oeuf == 1137)
 						{
-							$contenu_page .= "<p><b>Un cobra apparaît ! Il n’a pas l’air amical. </b><br></p>";
+							$contenu_page .= "<p><strong>Un cobra apparaît ! Il n’a pas l’air amical. </strong><br></p>";
 							$req_monstre = "select cree_monstre_pos(533,$perso_position) as num";
 							$bd->query($req_monstre);
 						} else {						
-							$contenu_page .= "<p><b>Un lièvre apparaît ! Il n’a pas l’air apprivoisé. </b><br></p>";
+							$contenu_page .= "<p><strong>Un lièvre apparaît ! Il n’a pas l’air apprivoisé. </strong><br></p>";
 							$req_monstre = "select cree_monstre_pos(16,$perso_position) as num";
 							$bd->query($req_monstre);
 						}
 					} else if($choix < 50){
 						if ($type_oeuf == 1137)
 						{
-							$contenu_page .= "<p><b>Une poule en chocolat apparaît ! Elle vous donne faim. </b><br></p>";
+							$contenu_page .= "<p><strong>Une poule en chocolat apparaît ! Elle vous donne faim. </strong><br></p>";
 							$req_monstre = "select cree_monstre_pos(570,$perso_position) as num";
 							$bd->query($req_monstre);
 						} else {
-							$contenu_page .= "<p><b>Un basilic apparaît ! Il n’a pas l’air amical. </b><br></p>";
+							$contenu_page .= "<p><strong>Un basilic apparaît ! Il n’a pas l’air amical. </strong><br></p>";
 							$req_monstre = "select cree_monstre_pos(13,$perso_position) as num";
 							$bd->query($req_monstre);
 						}
 					} else {
 						$typefam = mt_rand(0,1) + 192;	// 192 combat, 193 distance
-						$contenu_page .= "<p><b>Un familier sort de l’œuf, il a l’air de vous apprécier et de vous suivre. </b><br></p>";
+						$contenu_page .= "<p><strong>Un familier sort de l’œuf, il a l’air de vous apprécier et de vous suivre. </strong><br></p>";
 						$req_monstre = "select cree_monstre_pos($typefam, $perso_position) as num";
 						$bd->query($req_monstre);
 						$bd->next_record();

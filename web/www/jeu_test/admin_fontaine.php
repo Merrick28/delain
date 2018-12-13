@@ -62,7 +62,7 @@ else
 		break;
 
 		case "cre": // Création d’une nouvelle fontaine
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
+			echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
 		?>
 	<form name="cre" method="post" action="<?php echo $PHP_SELF;?>">
 		<br> Pour créer une nouvelle fontaine, il suffit d’indiquer les valeurs nécessaires à sa création.
@@ -166,7 +166,7 @@ else
 				$db->query($req);
 				echo "<p>L’insertion de cette fontaine s’est bien déroulée en ". $_POST['pos_x'] .",". $_POST['pos_y'] ." au ". $_POST['pos_etage'];
 			?>
-	<br><b><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a></b><br>
+	<br><strong><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a></strong><br>
 		<?php 
 			}
 			else
@@ -194,8 +194,8 @@ else
 					// on rajoute la variable valide, et soit mise à jour, soit annulation
 					echo '<input type="hidden" name="valide" value="1">';
 					echo '</form>';
-					echo "<p> Cette case contient déjà un élément <br><b>" . $pos_fonction_arrive;
-					echo "</b><br> Souhaitez vous quand même effectuer la mise à jour ? <br><i>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</i>";
+					echo "<p> Cette case contient déjà un élément <br><strong>" . $pos_fonction_arrive;
+					echo "</strong><br> Souhaitez vous quand même effectuer la mise à jour ? <br><em>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</em>";
 					echo '<br><a href="' . $PHP_SELF. '"?methode=cre">Non ?</a>';
 					echo '<br><a href="javascript:document.piege.submit();">Oui ?</a>';
 				}
@@ -228,7 +228,7 @@ else
 
 		//Liste de l’ensemble des fontaines existantes
 		case "liste":
-			echo '<b><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></b><br>';
+			echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
 			$req = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle
 				from positions,etage
 				where pos_etage = etage_numero
@@ -238,10 +238,10 @@ else
 			while($db->next_record())
 			{
 				$pos_cod = $db->f("pos_cod");
-				echo '<br><b>Fontaine :</b>' . $db->f('pos_fonction_arrivee') . '
-				<br><b>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </b>' . $db->f('etage_libelle') . '<br>
+				echo '<br><strong>Fontaine :</strong>' . $db->f('pos_fonction_arrivee') . '
+				<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
 				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=mod">Modifier la définition de cette fontaine ?</a><br><br>
-				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer cette fontaine ? <b><i>(ATTENTION, action définitive !)</i></b></a><hr>';
+				<a href="' . $PHP_SELF . '?pos_cod='. $pos_cod .'&methode=sup">Supprimer cette fontaine ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
 			}
 		break;
 
@@ -256,7 +256,7 @@ else
 			echo "Fonction d’origine : ". $fonction;
 			$fac_piege = explode( ",", $fonction);
 
-			echo "<br><b><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></b>";
+			echo "<br><strong><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></strong>";
 		?>
 	<form name="mod" method="post" action="<?php echo $PHP_SELF;?>">
 		<br> Pour modifier une fontaine, il suffit de corriger les valeurs présentes.

@@ -86,9 +86,9 @@ function perso_utiliser_competence($perso_id, $competenceid, $bonus)
         $comp_valeur += $bonus;
         $comp_valeur_spe = $comp_valeur / 4;
         $des = rand(1, 100);
-        $retour->log .= "Vous utilisez la comp�tence <b> $comp_libelle </b> <br /><br />";
-        $retour->log .= "Votre chance de r�ussite en tenant compte des modificateurs est de <b> $comp_valeur </b> <br /><br />";
-        $retour->log .= "Votre lancer de d�s est de <b> $des </b> <br /><br />";
+        $retour->log .= "Vous utilisez la comp�tence <strong> $comp_libelle </strong> <br /><br />";
+        $retour->log .= "Votre chance de r�ussite en tenant compte des modificateurs est de <strong> $comp_valeur </strong> <br /><br />";
+        $retour->log .= "Votre lancer de d�s est de <strong> $des </strong> <br /><br />";
         $retour->jet = $des;
         if ($des > 96) {
             $retour->log .= "Il s'agit donc d'un �chec automatique.<br /><br />";
@@ -138,10 +138,10 @@ function perso_amelioration_competence($perso_id, $competenceid, $retour)
         $jet = $amel_res[0];
         $succes = $amel_res[1];
         $new_val = $amel_res[2];
-        $retour->log .= "Votre jet d'am�lioration est de <b> $jet </b> <br /><br />";
+        $retour->log .= "Votre jet d'am�lioration est de <strong> $jet </strong> <br /><br />";
         if ($succes == 1) {
             $retour->log .= "Vous avez donc am�lior� cette comp�tence <br /><br />";
-            $retour->log .= "Sa nouvelle valeur est de <b> $new_val </b> <br /><br />";
+            $retour->log .= "Sa nouvelle valeur est de <strong> $new_val </strong> <br /><br />";
         } else {
             $retour->log .= "Vous n'avez pas am�lior� cette comp�tence <br /><br />";
         }

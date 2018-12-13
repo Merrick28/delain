@@ -67,24 +67,24 @@ $nb_joueur_en_vue = $db->nf();
     </tr>
     <?php if ($marquerQuatriemes)
     {
-        echo '<tr><td colspan="9" class="soustitre2"><i>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
+        echo '<tr><td colspan="9" class="soustitre2"><em>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
     } ?>
     <tr>
-        <td class="soustitre2" width="50"><b>Dist.</b></td>
+        <td class="soustitre2" width="50"><strong>Dist.</strong></td>
         <?php if ($marquerQuatriemes)
         {
-            echo '<td class="soustitre2"><b>4ème</b></td>';
+            echo '<td class="soustitre2"><strong>4ème</strong></td>';
         } ?>
-        <td class="soustitre2"><b>Nom</b></td>
-        <td class="soustitre2"><b>DLT</b></td>
-        <td class="soustitre2"><b>PA</b></td>
-        <td class="soustitre2"><b>Bonus/Malus</b></td>
-        <td class="soustitre2"><b>Santé</b></td>
+        <td class="soustitre2"><strong>Nom</strong></td>
+        <td class="soustitre2"><strong>DLT</strong></td>
+        <td class="soustitre2"><strong>PA</strong></td>
+        <td class="soustitre2"><strong>Bonus/Malus</strong></td>
+        <td class="soustitre2"><strong>Santé</strong></td>
         <td class="soustitre2">
-            <div style="text-align:center;"><b>X</b></div>
+            <div style="text-align:center;"><strong>X</strong></div>
         </td>
         <td class="soustitre2">
-            <div style="text-align:center;"><b>Y</b></div>
+            <div style="text-align:center;"><strong>Y</strong></div>
         </td>
         <td></td>
     </tr>
@@ -112,9 +112,9 @@ $nb_joueur_en_vue = $db->nf();
                 $num_perso = $db->f("perso_cod");
 
                 $perso_dlt = "";
-                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "<b>";
+                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "<strong>";
                 $perso_dlt .= $db->f('perso_dlt');
-                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "</b>";
+                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "</strong>";
 
                 $perso_pa = $db->f('perso_pa');
                 $perso_bonus = $db->f('perso_bonus');
@@ -142,7 +142,7 @@ $nb_joueur_en_vue = $db->nf();
 
                 if ($db->f("perso_desc_long") != NULL or $db->f("perso_desc_long") != "")
                 {
-                    $nom .= '<b> *</b>';
+                    $nom .= '<strong> *</strong>';
                 }
 
                 $req = "select dieu_nom,dniv_libelle from dieu,dieu_perso,dieu_niveau ";
@@ -155,7 +155,7 @@ $nb_joueur_en_vue = $db->nf();
                 if ($db2->nf() != 0)
                 {
                     $db2->next_record();
-                    $religion = " </b>(" . $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<b> ";
+                    $religion = " </strong>(" . $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<strong> ";
                 }
                 else
                 {
@@ -182,7 +182,7 @@ $nb_joueur_en_vue = $db->nf();
                     echo '<td ' . $ch_style . '><div style="text-align:center;">' . $quatrieme . $mortel . '</div></td>';
                 }
                 $nom_perso =  ($db->f("perso_cod") != $perso_cod) ? $nom : '<span style="color:black;">' . $nom . '</span></a>';
-                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom_perso . '</a>' . $religion . $niveau_blessures . '</b>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
+                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom_perso . '</a>' . $religion . $niveau_blessures . '</strong>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
 				</td>
 				<td ' . $ch_style . '>' . $perso_dlt . '</td>
 				<td ' . $ch_style . '>' .$perso_pa . '</td>
@@ -191,13 +191,15 @@ $nb_joueur_en_vue = $db->nf();
 				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_x") . '</div></td>
 				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_y") . '</div></td>
 				<td ' . $ch_style . '><td>';
-                if (!$desorientation)
+                // A priori partie inutile et non atteignable dans les partisans
+                // la variable attaquable n'est jamaius définie
+                /*if (!$desorientation)
                 {
                     if ($attaquable == 1)
                     {
                         echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
                     }
-                }
+                }*/
                 echo '</td></tr>';
             }
         }

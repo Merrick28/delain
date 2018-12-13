@@ -99,7 +99,7 @@
 			<a href="champions.php" target="_blank">Les champions</a><br>
 			<a href="statistiques_v2.php">Statistiques</a><br>
 			<hr />
-			<a href="http://wiki.jdr-delain.net/index.php/L%27association" target="_blank"><b>L’Assoc' !!</b></a><br>
+			<a href="http://wiki.jdr-delain.net/index.php/L%27association" target="_blank"><strong>L’Assoc' !!</strong></a><br>
 			<a href="http://wiki.jdr-delain.net/index.php/L%27equipe" target="_blank">L’équipe !!</a><br>
 			<a href="irc_v2.php">Le chat de Delain</a><br>
 			<hr />
@@ -107,7 +107,7 @@
 			<g:plusone href="http://www.jdr-delain.net/"></g:plusone>
 			<a href="https://plus.google.com/107447277968158531530/?prsrc=3" style="text-decoration: none; color: #333;" target="_blank"><div style="display: inline-block;"><span style="float: left; font: bold 13px/16px arial,sans-serif; margin-right: 4px;">Suivez nous </span><span style="float: left; font: 13px/16px arial,sans-serif; margin-right: 11px;">sur</span><div style="float: left;"><img src="https://ssl.gstatic.com/images/icons/gplus-16.png" width="16" height="16" style="border: 0;"/></div><div style="clear: both"></div></div></a>
 			<hr />
-			<b>Annuaires de jeux</b><br />
+			<strong>Annuaires de jeux</strong><br />
 			<a href="http://www.portaildesjeux.com" target="_blank" title="Jeux"><img src="http://www.portaildesjeux.com/images/portaildesjeux.gif" border="0" alt="jeux gratuits" /></a><br />
 			<a href="http://www.crocastuce.fr" target="_blank" title="Les meilleurs jeux gratuits">Jeux gratuits</a><br />
 			<a href="http://www.jeux-en-ligne-gratuits.net/fiches/strategie/1_21_0.php" title="Jeux de stratégie en ligne">Jeux de stratégie</a><br />

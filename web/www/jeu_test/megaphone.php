@@ -40,7 +40,7 @@ if ($erreur == 0)
 			<td class="titre" colspan="2"><p class="titre">Utilisation du mégaphone</p></td>
 			</tr>
 			<tr>
-			<td colspan="2" class="soustitre2"><p><i>Rappel : </i>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une cloture du compte sans préavis.</p></td>
+			<td colspan="2" class="soustitre2"><p><em>Rappel : </em>Merci de bien vouloir éviter les insultes, et de rester dans le cadre de la courtoisie dans vos messages. Tout abus pourra amener à une cloture du compte sans préavis.</p></td>
 			</tr>
 			
 			<tr>

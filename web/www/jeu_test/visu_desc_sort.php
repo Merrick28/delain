@@ -75,11 +75,11 @@ else
     }
 		
 		$contenu_page .= '<p class="titre">' . $db->f('sort_nom') . '</p>
-			<b>Cout en PA : </b>' . $db->f('sort_cout') . '<br>
-			<b>Compétence utilisée : </b>' . $db->f("comp_libelle") . '<br>
-			<b>Distance max. : </b>' . $db->f('sort_distance') . '<br>
-			<b>Temps min. entre deux lancements : </b>' . $temps . '<br>
-			<b>Cibles possibles : </b>';
+			<strong>Cout en PA : </strong>' . $db->f('sort_cout') . '<br>
+			<strong>Compétence utilisée : </strong>' . $db->f("comp_libelle") . '<br>
+			<strong>Distance max. : </strong>' . $db->f('sort_distance') . '<br>
+			<strong>Temps min. entre deux lancements : </strong>' . $temps . '<br>
+			<strong>Cibles possibles : </strong>';
 		if ($db->f('sort_case') == 'O')
 			$contenu_page .= 'cases.<br>';
 		else
@@ -93,7 +93,7 @@ else
 				$contenu_page .= '<li>Monstres</li>';
 			$contenu_page .= '</ul>';
 		}
-		$contenu_page .= '<b>Description	: </b>' . $db->f("sort_description") . '<br>';
+		$contenu_page .= '<strong>Description	: </strong>' . $db->f("sort_description") . '<br>';
 		$req_rune = "select gobj_nom_generique from objet_generique,sort_rune ";
 		$req_rune = $req_rune . "where srune_sort_cod = $sort_cod ";
 		$req_rune = $req_rune . "and srune_gobj_cod = gobj_cod ";
@@ -105,7 +105,7 @@ else
 			{
 				$texte = $texte .	$db->f("gobj_nom_generique") . ", ";
 			}
-			$contenu_page .= '<p style="text-align:center;"><b>Runes : </b>' . $texte . '</p>';
+			$contenu_page .= '<p style="text-align:center;"><strong>Runes : </strong>' . $texte . '</p>';
 		}
 		
 	}

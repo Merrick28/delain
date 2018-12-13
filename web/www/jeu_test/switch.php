@@ -142,7 +142,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                         <table>
                             <tr>
                                 <td>
-                                    <b>Je vote pour delain!</b>
+                                    <strong>Je vote pour delain!</strong>
                                 </td>
                                 <td>
 
@@ -190,7 +190,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                    </center></div></div></div>
 
         <?php
-        echo "<div style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') . "</i></div>";
+        echo "<div style=\"text-align:center;\"><br /><em>Date et heure serveur : " . date('d/m/Y H:i:s') . "</em></div>";
     }
 }
 

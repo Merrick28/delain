@@ -62,24 +62,24 @@ $nb_joueur_en_vue = $db->nf();
     </tr>
     <?php if ($marquerQuatriemes)
     {
-        echo '<tr><td colspan="9" class="soustitre2"><i>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
+        echo '<tr><td colspan="9" class="soustitre2"><em>Une astérisque * à côté du O de 4ème perso signifie que toute mort sera définitive pour ce personnage</td></tr>';
     } ?>
     <tr>
-        <td class="soustitre2" width="50"><b>Dist.</b></td>
+        <td class="soustitre2" width="50"><strong>Dist.</strong></td>
         <?php if ($marquerQuatriemes)
         {
-            echo '<td class="soustitre2"><b>4ème</b></td>';
+            echo '<td class="soustitre2"><strong>4ème</strong></td>';
         } ?>
-        <td class="soustitre2"><b>Nom</b></td>
-        <td class="soustitre2"><b>Guilde</b></td>
-        <td class="soustitre2"><b>Race</b></td>
-        <td class="soustitre2"><b>Renommée</b></td>
-        <td class="soustitre2"><b>Karma</b></td>
+        <td class="soustitre2"><strong>Nom</strong></td>
+        <td class="soustitre2"><strong>Guilde</strong></td>
+        <td class="soustitre2"><strong>Race</strong></td>
+        <td class="soustitre2"><strong>Renommée</strong></td>
+        <td class="soustitre2"><strong>Karma</strong></td>
         <td class="soustitre2">
-            <div style="text-align:center;"><b>X</b></div>
+            <div style="text-align:center;"><strong>X</strong></div>
         </td>
         <td class="soustitre2">
-            <div style="text-align:center;"><b>Y</b></div>
+            <div style="text-align:center;"><strong>Y</strong></div>
         </td>
         <td></td>
     </tr>
@@ -160,7 +160,7 @@ $nb_joueur_en_vue = $db->nf();
 
                 if ($db->f("perso_desc_long") != NULL or $db->f("perso_desc_long") != "")
                 {
-                    $nom .= '<b> *</b>';
+                    $nom .= '<strong> *</strong>';
                 }
                 if ($db->f("distance") <= $portee)
                 {
@@ -218,7 +218,7 @@ $nb_joueur_en_vue = $db->nf();
                 if ($db2->nf() != 0)
                 {
                     $db2->next_record();
-                    $religion = " </b>(" . $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<b> ";
+                    $religion = " </strong>(" . $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<strong> ";
                 }
                 else
                 {
@@ -244,7 +244,7 @@ $nb_joueur_en_vue = $db->nf();
                 {
                     echo '<td ' . $ch_style . '><div style="text-align:center;">' . $quatrieme . $mortel . '</div></td>';
                 }
-                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>' . $religion . $niveau_blessures . '</b>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
+                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>' . $religion . $niveau_blessures . '</strong>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
 				</td>
 				<td ' . $ch_style . '><a href="visu_guilde.php?num_guilde=' . $code_guilde . '">' . $nom_guilde . '</a></td>
 				<td ' . $ch_style . '>' . $db->f("race_nom") . '&nbsp;(' . $db->f("perso_sex") . ')</td>

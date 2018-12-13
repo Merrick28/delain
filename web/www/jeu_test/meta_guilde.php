@@ -46,10 +46,10 @@ if ($erreur == 0)
 	switch($r)
 	{
 		case "O":
-			$texte = "Vous avez été <b>rattaché</b> à ce meta guildage.";
+			$texte = "Vous avez été <strong>rattaché</strong> à ce meta guildage.";
 			break;
 		case "N":
-			$texte = "Vous avez été <b>supprimé</b> de ce meta guildage.";
+			$texte = "Vous avez été <strong>supprimé</strong> de ce meta guildage.";
 			break;		
 	}	
 	$req = "update guilde_perso set " . $champ_perso . " = '$r' where pguilde_perso_cod = $perso_cod ";

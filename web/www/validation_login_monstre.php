@@ -98,7 +98,7 @@ else
 
 	// recherche des evts non lus
 
-	echo("<p><i>Date et heure serveur : <b>$maintenant</b> </i></p>");
+	echo("<p><em>Date et heure serveur : <strong>$maintenant</strong> </em></p>");
 
 	// formulaire pour passer au jeu
 	if ($frameless)

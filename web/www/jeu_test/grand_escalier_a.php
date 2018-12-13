@@ -43,6 +43,6 @@ if ($erreur == 0)
 	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
-	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
+	echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
 	echo("<p><a href=\"valide_grand_escalier_a.php\">Prendre cet escalier ! (" . $param->getparm(43) . " PA)</a></p>");
 }

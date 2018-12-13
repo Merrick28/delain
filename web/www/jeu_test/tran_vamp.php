@@ -43,14 +43,14 @@ if ($erreur == 0)
 	{
 		case "entree":
 			echo '<p class="titre">Vampirisme</p>';
-			echo "<p><b>", $db->f("perso_nom"), "</b> vous a invité à rejoindre sa famille de vampires.<br>";
+			echo "<p><strong>", $db->f("perso_nom"), "</strong> vous a invité à rejoindre sa famille de vampires.<br>";
 			echo "Cet acte n'est pas anodin. Avant de continuer, voici ce que vous devez savoir sur les vampires :<br>";
 			?>
 			- Une transformation exige un rituel long et complexe. Son cout est de 12 PA (un tour entier).<br>
 			- Lors d'une transformation, vos points de régénération sont convertis en points de vampirisme (voir plus bas), et vous gagnez le sort "drain vampirique". De plus, la race est transformée pour devenir vampire.<br>
 			- Par voie de conséquence, tous les avantages de votre race précédente disparaîtront. Si vous êtes un nain transformé en vampire, le bloque magie sera supprimé ainsi qu'un niveau d'Attaque foudroyante. Dans ce cas et uniquement dans ce cas, le sort attaque vous sera en plus rajouté, et la limite d'apprentissage du nombre de sort (INT/2) disparaîtra.
 			- Vous ne pouvez pas créer de descendance tant qu'un maître vampire ne vous y autorise pas.<br>
-			<br><b>Avantages et inconvénients du vampire</b><br>
+			<br><strong>Avantages et inconvénients du vampire</strong><br>
 			- les vampires ont des points de vampirisme (max 10). Pour chaque attaque à mains nues, chaque point de vampirisme fait que le vampire régénère 0.1 x P x D points de vie, D étant les dégats effectués à l'adversaire, et P le nombre de points de vampirisme.<br>
 			- leur attaque à mains nues est légèrement augmentée (passage de 1D3 à 1D4)<br>
 			- Les vampires ne peuvent pas avoir de karma positif.<br>
@@ -58,7 +58,7 @@ if ($erreur == 0)
 			- à chaque changement de niveau, on peut rajouter un point de vampirisme (max 10, limité à niveau actuel/2)
 			- Le régénération "normale" au calcul de tour ne marche plus.<br><br>
 			Vous avez maintenant toutes les cartes en main pour accepter ou refuser ce marché.
-			<br><b>Attention ! Toute transformation en vampire est irréversible !</b>			
+			<br><strong>Attention ! Toute transformation en vampire est irréversible !</strong>			
 			Souhaitez-vous accepter ou refuser cette offre ?<br>
 			<a href="tran_vamp.php?methode=oui">J'ACCEPTE sans condition ma future condition de vampire (12PA)</a><br><br>
 			<a href="tran_vamp.php?methode=non">JE REFUSE !!</a>

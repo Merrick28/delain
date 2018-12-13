@@ -38,7 +38,7 @@ if ($nb_guilde == 0)
 		$db->next_record();
 	?>
 	<p>Vous n'êtes affilié à aucune guilde !<br />
-	Vous postulez actuellement à la guilde: <b><?php  echo $db->f("guilde_nom") ?></b><br />
+	Vous postulez actuellement à la guilde: <strong><?php  echo $db->f("guilde_nom") ?></strong><br />
 	<a href="voir_toutes_guildes.php">Rejoindre une autre guilde ?</a><br />
 	</p>
 	<?php 	
@@ -47,7 +47,7 @@ if ($nb_guilde == 0)
 else
 {
 	$db->next_record();
-	printf("<p>Vous êtes affilié à la guilde <b>%s</b> en tant que <b>%s</b>",$db->f("guilde_nom"),$db->f("rguilde_libelle_rang"));
+	printf("<p>Vous êtes affilié à la guilde <strong>%s</strong> en tant que <strong>%s</strong>",$db->f("guilde_nom"),$db->f("rguilde_libelle_rang"));
 	if ($db->f("rguilde_admin") == 'O') //admin !!!
 	{
 		?>

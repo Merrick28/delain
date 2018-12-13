@@ -303,7 +303,7 @@ if (!$erreur)
 	?>
 	<h1>Commandement</h1>
 	<p>Nombre maximal de troupes : <?php  echo $valeur_comp ?> </p>
-	<p><b> Donner des ordres : </b></p>
+	<p><strong> Donner des ordres : </strong></p>
 	<form method="post" name="troupes" action="comp_commandement.php">
 		<input type="hidden" name="methode" value="">
 		<table  border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -393,12 +393,12 @@ if (!$erreur)
 	<?php 
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("<b>");
+			echo("<strong>");
 		}
 		echo $db->f("dlt");
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("</b>");
+			echo("</strong>");
 		}?>
 				</td><td <?php  echo $cl;?>>
 					<?php echo $db->f("perso_pa");?> / 12
@@ -412,7 +412,7 @@ if (!$erreur)
 		}
 		else
 		{
-			echo "<b>Hors IA</b>";
+			echo "<strong>Hors IA</strong>";
 		}
 	?>
 				</td>
@@ -530,7 +530,7 @@ if (!$erreur)
 		<br><br>
 	</form>
 
-	<p><b> Recrutement : </b></p>
+	<p><strong> Recrutement : </strong></p>
 	<?php 
 		// SI LE NOMBRE MAX N’EST PAS ATTEINT ON PEUT ENGAGER DES TROUPES
 

@@ -6,7 +6,7 @@ capturing "block" tag
 {% spaceless %}
 {% block bar %}
 <h1>
-    <b>Title</b>
+    <strong>Title</strong>
 </h1>
 {% endblock %}
 {% endspaceless %}
@@ -16,7 +16,7 @@ capturing "block" tag
 return array()
 --EXPECT--
 FOO
-<h1><b>Title</b></h1>
+<h1><strong>Title</strong></h1>
 <h1>
-    <b>Title</b>
+    <strong>Title</strong>
 </h1>

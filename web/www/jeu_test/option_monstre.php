@@ -235,7 +235,7 @@ else
 	else
 	{
 		?>
-		Ce monstre est attribué à <b><?php echo $db->f("compt_nom");?></b>. <a href="<?php echo $PHP_SELF;?>?methode=attrib">Le récupérer ?</a><br>
+		Ce monstre est attribué à <strong><?php echo $db->f("compt_nom");?></strong>. <a href="<?php echo $PHP_SELF;?>?methode=attrib">Le récupérer ?</a><br>
 		<?php 
 	}
 }

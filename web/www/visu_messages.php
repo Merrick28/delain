@@ -59,8 +59,8 @@ if (!$erreur && empty($visu_msg))	// Liste des messages
 		$dmsg_lu = $db->f('dmsg_lu') == 'O';
 		$msg_date = $db->f('msg_date');
 
-		$btitre1 = ($dmsg_lu) ? '' : '<b>';
-		$btitre2 = ($dmsg_lu) ? '' : '</b>';
+		$btitre1 = ($dmsg_lu) ? '' : '<strong>';
+		$btitre2 = ($dmsg_lu) ? '' : '</strong>';
 		$msg_titre = $btitre1 . $db->f('msg_titre') . $btitre2;
 		$lien_titre = "?visu_perso=$visu_perso&visu_msg=$msg_cod";
 

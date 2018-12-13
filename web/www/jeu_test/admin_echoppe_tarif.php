@@ -50,21 +50,21 @@ if ($erreur == 0)
 			$db->query($req);
 			echo "<table>";
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type d'objet</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Valeur</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type d'objet</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
 			echo "<td></td>";
 			while($db->next_record())
 			{
 				echo "<tr>";
-				echo "<td class=\"soustitre2\"><p><b><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=a\">" . $db->f("gobj_nom") . "</a></b></td>";
+				echo "<td class=\"soustitre2\"><p><strong><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=a\">" . $db->f("gobj_nom") . "</a></strong></td>";
 				echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
 				echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_valeur") . "</td>";
 				echo "<td><p><a href=\"admin_echoppe_tarif.php?methode=e1&objet=" . $db->f("gobj_cod") . "\">Modifier !</a></td>";
 				echo "</tr>";
 			}
 			echo "</table>";
-			echo "<p style=\"text-align:center;\"><b><a href=\"admin_echoppe_tarif.php?methode=detail\">Afficher le détail complet (long !)</A></b>";
+			echo "<p style=\"text-align:center;\"><strong><a href=\"admin_echoppe_tarif.php?methode=detail\">Afficher le détail complet (long !)</A></strong>";
 			break;
 		case "detail":
 			$req = "select tobj_libelle,gobj_nom,gobj_valeur,gobj_cod, ";
@@ -81,18 +81,18 @@ if ($erreur == 0)
 			$db->query($req);
 			echo "<table>";
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type d'objet</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Valeur</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Persos/monstres</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Au sol</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Stock échoppes</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Total</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type d'objet</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Persos/monstres</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Au sol</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Stock échoppes</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Total</strong></td>";
 			echo "<td></td>";
 			while($db->next_record())
 			{
 				echo "<tr>";
-				echo "<td class=\"soustitre2\"><p><b><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=a\">" . $db->f("gobj_nom") . "</a></b></td>";
+				echo "<td class=\"soustitre2\"><p><strong><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=a\">" . $db->f("gobj_nom") . "</a></strong></td>";
 				echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
 				echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_valeur") . "</td>";
 				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $db->f("persos") . "</td>";
@@ -106,7 +106,7 @@ if ($erreur == 0)
 			echo "</table>";
 			break;
 		case "e1":
-			echo "<p><b>Attention !</b> Modifier le prix générique d'un objet aura un impact sur TOUTES les échoppes.<br>";
+			echo "<p><strong>Attention !</strong> Modifier le prix générique d'un objet aura un impact sur TOUTES les échoppes.<br>";
 			echo "Si un gérant a fixé un prix spécial pour cet objet dans une échoppe, votre modification sera également appliquée à son tarif.<br>";
 			echo "Exemple : un objet coute 100br, et un gérant l'a fixé à 80 chez lui. Vous changez le prix en 200 br, pour l'échoppe du gérant, cela passera à 160 (règle de 3).";
 			echo "<form name=\"prix\" method=\"post\" action=\"admin_echoppe_tarif.php\">";
@@ -115,7 +115,7 @@ if ($erreur == 0)
 			$req = "select gobj_nom,gobj_valeur from objet_generique where gobj_cod = $objet ";
 			$db->query($req);
 			$db->next_record();
-			echo "<p>Fixer le tarif de <b>" . $db->f("gobj_nom") . "</b> à ";
+			echo "<p>Fixer le tarif de <strong>" . $db->f("gobj_nom") . "</strong> à ";
 			echo "<input type=\"text\" name=\"montant\"value=\"" . $db->f("gobj_valeur") . "\">";
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center>";
 			echo "</form>";

@@ -27,7 +27,7 @@ if(!($bd->next_record())){
 		$bd->next_record();
 		if ($bd->f("perso_pa") < 4)
 		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
+			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
 		else
 		{
@@ -61,7 +61,7 @@ if(!($bd->next_record())){
             $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',' . $codes[$malus_num] . ',' . $malus_tours . ',' . $malus_val . ')';
 			$bd->query($req_malus);
 
-			$contenu_page .= '<p><b>Vous mangez le muffin. Vous vous sentez très bizarre...</b></p>';
+			$contenu_page .= '<p><strong>Vous mangez le muffin. Vous vous sentez très bizarre...</strong></p>';
 		}
 	}
 	else
@@ -70,13 +70,13 @@ if(!($bd->next_record())){
 		<p align="center"><br><br><br><br>
 		Un muffin, il a l’air appétissant, même si sa couleur est un peu ... étrange.<br><br>
 		Il est emballé dans du papier listing gribouillé sur lequel on peut lire:<br><br>
-		<b><i>Muffins recette spéciale Lutin, naturellement chimique.</i></b> <br><br>
-		<b>Ingrédients</b> : <br><br>
+		<strong><em>Muffins recette spéciale Lutin, naturellement chimique.</em></strong> <br><br>
+		<strong>Ingrédients</strong> : <br><br>
 		-	Un peu de tout : 60%<br><br>
 		-	Un peu de n’importe quoi : 30%<br><br>
 		-	Ingrédients Inconnus : 3%<br><br>
 		-	Ingrédients non identifiés 6 %<br><br>
-		<b>Colorants & Conservateurs</b> :';
+		<strong>Colorants & Conservateurs</strong> :';
 	$contenu_page .= "E".rand(1,999);
 	for($i = 0;$i<500;$i++){
 		$contenu_page .= ", E".rand(1,999);

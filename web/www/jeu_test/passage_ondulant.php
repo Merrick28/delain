@@ -28,11 +28,11 @@ if ($erreur == 0)
 	$desc_lieu = $tab_lieu['description'];
 	$cout_pa = $tab_lieu['lieu_prelev'];
 	$type_lieu = $tab_lieu['type_lieu'];
-	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
+	echo("<p><strong>$nom_lieu</strong> - $desc_lieu ");
 	echo("<p>Ce passage a quelque chose d’étrange, il ne semble pas constitué de la même manière que les passages magiques que vous connaissez.");
 	if ($type_lieu == 29)
 	{
-		echo("<p><b>Il semblerait bien que vous ne puissiez pas le prendre en étant tangible.</b> Certainement une propriété de la matière qui pourrait vous empêcher de le prendre.");
+		echo("<p><strong>Il semblerait bien que vous ne puissiez pas le prendre en étant tangible.</strong> Certainement une propriété de la matière qui pourrait vous empêcher de le prendre.");
 	}
 	echo("<p><a href=\"action.php?methode=passage\">Prendre ce passage ! (" . $cout_pa . " PA)</a></p>");
 }

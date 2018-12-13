@@ -349,7 +349,7 @@ class File_ANSI
                                         case 0: // Turn off character attributes
                                             $this->attrs[$this->y][$this->x] = '';
 
-                                            if ($this->bold) $this->attrs[$this->y][$this->x].= '</b>';
+                                            if ($this->bold) $this->attrs[$this->y][$this->x].= '</strong>';
                                             if ($this->underline) $this->attrs[$this->y][$this->x].= '</u>';
                                             if ($this->blink) $this->attrs[$this->y][$this->x].= '</blink>';
                                             if ($this->color) $this->attrs[$this->y][$this->x].= '</span>';
@@ -364,7 +364,7 @@ class File_ANSI
                                             break;
                                         case 1: // Turn bold mode on
                                             if (!$this->bold) {
-                                                $this->attrs[$this->y][$this->x] = '<b>';
+                                                $this->attrs[$this->y][$this->x] = '<strong>';
                                                 $this->bold = true;
                                             }
                                             break;

@@ -50,7 +50,7 @@ switch($methode)
 				//
 
 				$num_groupe = $db->f('groupe_cod');
-				$contenu_page .= 'Vous faites partie de la coterie <b>' . $db->f('groupe_nom') . '</b><br>
+				$contenu_page .= 'Vous faites partie de la coterie <strong>' . $db->f('groupe_nom') . '</strong><br>
 					<a href="' . $PHP_SELF . '?methode=reglage">Gérer les valeurs affichées.</a><br>';
 				if ($is_suspendu)
 				{
@@ -161,12 +161,12 @@ switch($methode)
 						//
 						// on affiche les membres et les infos
 						//
-						$contenu_page .= '<table><td>Liste des membres de ce groupe de combat (<b>'. $nbre_perso .'</b> membres)</td>
+						$contenu_page .= '<table><td>Liste des membres de ce groupe de combat (<strong>'. $nbre_perso .'</strong> membres)</td>
 																	<form method="post" action="' . $PHP_SELF . '">
 																	<input type="hidden" name="methode" value="groupe_texte">
 																	<input type="hidden" name="num_groupe" value="' . $num_groupe . '">
 																	<td><textarea name="groupe_texte" cols="80" rows =5>'.$db2->f("groupe_texte").'</textarea></td><td><input type="submit" value="Validation" class="test">
-																	<br><i>Dernière date mise à jour : </i><br>'.$db2->f("date_texte_groupe").'</td>
+																	<br><em>Dernière date mise à jour : </em><br>'.$db2->f("date_texte_groupe").'</td>
 																	</form>';
 						$contenu_page .= '<form name="fsort" method="post" action="groupe.php">
 						<input type="hidden" name="sort">
@@ -178,61 +178,61 @@ switch($methode)
 						';
 						if ($sort == 'nom')
 						{
-							$contenu_page .= '<b>';
+							$contenu_page .= '<strong>';
 						}
 						$contenu_page .= 'Nom';					
 						if ($sort == 'nom')
 						{
-							$contenu_page .= '</b>';
+							$contenu_page .= '</strong>';
 						}
 						$contenu_page .= '</a></td>
 							<td class="soustitre2" width="15"><p><a href="javascript:document.fsort.sort.value=\'DLT\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">';
 						if ($sort == 'DLT')
 						{
-							$contenu_page .= '<b>';
+							$contenu_page .= '<strong>';
 						}
 						$contenu_page .= 'DLT';
 						if ($sort == 'DLT')
 						{
-							$contenu_page .= '</b>';
+							$contenu_page .= '</strong>';
 						}
 						$contenu_page .= '</a></td>
 							<td class="soustitre2"><p><a href="javascript:document.fsort.sort.value=\'PA\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">
 							';
 						if ($sort == 'PA')
 						{
-							$contenu_page .= '<b>';
+							$contenu_page .= '<strong>';
 						}
 						$contenu_page .= 'PA';
 						if ($sort == 'PA')
 						{
-							$contenu_page .= '</b>';
+							$contenu_page .= '</strong>';
 						}
 						$contenu_page .= '</a></td>
-							<td class="soustitre2"><b>Bonus</b></td>
+							<td class="soustitre2"><strong>Bonus</strong></td>
 							<td class="soustitre2"><p><a href="javascript:document.fsort.sort.value=\'etat\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">
 							';
 						if ($sort == 'etat')
 						{
-							$contenu_page .= '<b>';
+							$contenu_page .= '<strong>';
 						}
 						$contenu_page .= 'Santé';
 						if ($sort == 'etat')
 						{
-							$contenu_page .= '</b>';
+							$contenu_page .= '</strong>';
 						}
 						$contenu_page .= '</a></td>
 							<td class="soustitre2"><p><a href="javascript:document.fsort.sort.value=\'distance\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">
 							';
 						if ($sort == 'distance')
 						{
-							$contenu_page .= '<b>';
+							$contenu_page .= '<strong>';
 						}
 						$contenu_page .= 'Dist';
 					
 						if ($sort == 'distance')
 						{
-							$contenu_page .= '</b>';
+							$contenu_page .= '</strong>';
 						}
 						$contenu_page .= '</a></td>
 							</tr>
@@ -246,7 +246,7 @@ switch($methode)
 							}
 							if($db->f('is_visible') == 0)
 							{
-								$contenu_page .= "<tr><td colspan=\"5\"><i>" . $db->f('perso_nom') . " trop lointain</i></td></tr>";
+								$contenu_page .= "<tr><td colspan=\"5\"><em>" . $db->f('perso_nom') . " trop lointain</em></td></tr>";
 							}
 							else
 							{
@@ -254,7 +254,7 @@ switch($methode)
 									<td class=\"soustitre2\"><a href=\"visu_evt_perso.php?visu=" . $db->f('perso_cod') . "\">" . $db->f('perso_nom') . "</a>";
 
 								if($db->f('pgroupe_chef') == 1)
-									$contenu_page .= " <i>(chef de coterie)</i>";
+									$contenu_page .= " <em>(chef de coterie)</em>";
 								$contenu_page .= '</td><td>';
 
 								if ($db->f('perso_dlt') == 'cache')
@@ -263,11 +263,11 @@ switch($methode)
 								else
 								{
 									if($db->f('perso_dlt_passee') == 1)
-										$contenu_page .= "<b>";
+										$contenu_page .= "<strong>";
 									$contenu_page .= $db->f('perso_dlt');
 
 									if($db->f('perso_dlt_passee') == 1)
-										$contenu_page .= "</b>";
+										$contenu_page .= "</strong>";
 								}
 								$contenu_page .= "</td>
 									<td class=\"soustitre2\">";
@@ -322,7 +322,7 @@ switch($methode)
 							}
 							if($db->f('is_visible') == 0)
 							{
-								$contenu_page .= "<tr><td colspan=\"5\"><i><b>" . $db->f('perso_nom') . " trop lointain</b></i></td></tr>";
+								$contenu_page .= "<tr><td colspan=\"5\"><em><strong>" . $db->f('perso_nom') . " trop lointain</strong></em></td></tr>";
 							}
 						}
 						$contenu_page .= "</table>
@@ -358,7 +358,7 @@ switch($methode)
 					$db->query($req);
 					if ($db->nf() > 0)
 					{
-						$contenu_page .= '<br /><hr /><p><b>Compagnons d’arme morts au combat.</b></p><table><tr><td class="soustitre2">Personnage</td><td class="soustitre2">Jauge de rappel</td><td class="soustitre2">Actions</td></tr>';
+						$contenu_page .= '<br /><hr /><p><strong>Compagnons d’arme morts au combat.</strong></p><table><tr><td class="soustitre2">Personnage</td><td class="soustitre2">Jauge de rappel</td><td class="soustitre2">Actions</td></tr>';
 						while($db->next_record())
 						{
 							$barre = min(floor(($db->f('pgroupe_valeur_rappel')/$db->f('perso_niveau'))*10)*10, 100);
@@ -602,8 +602,8 @@ switch($methode)
 				</tr>';
 			}
 			$contenu_page .= '</table>
-			<i>Attention : un aventurier ne peut faire partie que d\'une coterie à la fois.
-			<i>En acceptant l\'entrée dans une coterie, toutes les valeurs d\'information du personnage seront affichées par défaut. Pour changer, il faudra aller les régler.';
+			<em>Attention : un aventurier ne peut faire partie que d\'une coterie à la fois.
+			<em>En acceptant l\'entrée dans une coterie, toutes les valeurs d\'information du personnage seront affichées par défaut. Pour changer, il faudra aller les régler.';
 		}
 		break;		// fin methode vint
 	//
@@ -799,7 +799,7 @@ switch($methode)
 			$texte2 = pg_escape_string($texte);
 			$req = 'update groupe_perso set pgroupe_texte = \''. $texte2 .'\',pgroupe_texte_maj = now() where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $num_groupe;
 			$db->query($req);
-			$contenu_page .= 'Vous avez mis à jour votre palimpseste avec le texte ci dessous : <br><b>'.$texte.'</b>';
+			$contenu_page .= 'Vous avez mis à jour votre palimpseste avec le texte ci dessous : <br><strong>'.$texte.'</strong>';
 		break;
 		case "groupe_texte":
 			$texte = $_POST['groupe_texte'];
@@ -807,7 +807,7 @@ switch($methode)
 			$texte2 = pg_escape_string($texte);
 			$req = 'update groupe set groupe_texte = \''. $texte2 .'\',groupe_texte_maj = now() where groupe_cod = ' . $num_groupe;
 			$db->query($req);
-			$contenu_page .= 'Vous avez mis à jour le palimpseste de la coterie avec le texte ci dessous : <br><b>'.$texte.'</b>
+			$contenu_page .= 'Vous avez mis à jour le palimpseste de la coterie avec le texte ci dessous : <br><strong>'.$texte.'</strong>
 			<br><hr>';
 			/*include "groupe.php";*/
 		break;		

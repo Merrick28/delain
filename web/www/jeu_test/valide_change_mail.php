@@ -48,7 +48,7 @@ else
 	<form method="post" action="valide_change_mail2.php" name="final">
 	<input type="hidden" name="mail1" value="' . $_POST['mail1'] . '">
 	<p>Le changement est prêt à être effectué.<br>
-	En cliquant sur <b>j’accepte</b>, je valide le changement, et je serai déconnecté du jeu jusqu’à réception du mail.
+	En cliquant sur <strong>j’accepte</strong>, je valide le changement, et je serai déconnecté du jeu jusqu’à réception du mail.
 	<center><input type="submit" class="test" value="J’accepte !"></center>
 	</form>';
 }

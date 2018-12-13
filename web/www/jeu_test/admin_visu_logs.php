@@ -41,7 +41,7 @@ else
 
 	if (isset($liste_logs[$visu]) && $mode == "web")
 	{
-		echo "<p><b>Visualisation du fichier de log " . $liste_logs[$visu][1] . "</b> - <a href='?visu=liste'>Retour au début</a></p>";
+		echo "<p><strong>Visualisation du fichier de log " . $liste_logs[$visu][1] . "</strong> - <a href='?visu=liste'>Retour au début</a></p>";
 		echo "<div class='bordiv' style='max-height: 800px; overflow: auto;'><pre>";
         if(file_exists('../logs/' . $liste_logs[$visu][0]))
         {
@@ -69,7 +69,7 @@ else
 	}
 	if (!isset($liste_logs[$visu]))
 	{
-		echo "<p><b>Liste des fichiers de log</b></p>";
+		echo "<p><strong>Liste des fichiers de log</strong></p>";
 		foreach ($liste_logs as $id => $valeurs)
 		{
 			$nom = $valeurs[1];

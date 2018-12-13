@@ -25,7 +25,7 @@ if ($erreur == 0)
 	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
-	echo("<p><b>$nom_lieu</b> - $desc_lieu ");
+	echo("<p><strong>$nom_lieu</strong> - $desc_lieu ");
 
     // Recherche d'une inscription dans les registres pour retour rapide en arene
     $req = "select preg_date_inscription from perso_registre where preg_perso_cod=$perso_cod ";

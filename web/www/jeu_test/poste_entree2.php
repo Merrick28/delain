@@ -24,15 +24,15 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
 	?>
-	<p><b>Un homme au visage buriné, marqué par ce qu’il a vu et ce qu’il a vécu vient vers toi : </b><br><br> 
+	<p><strong>Un homme au visage buriné, marqué par ce qu’il a vu et ce qu’il a vécu vient vers toi : </strong><br><br> 
 
-<p><i>Salut aventurier !  Tu es venu ici afin de faire fortune et de gagner gloire et renommée ?  Tu es au bon endroit !  En ces lieux tu pourras combattre les monstres de malkiar et les vils serviteurs du roi Hormandre corrompu !  <br><br> 
+<p><em>Salut aventurier !  Tu es venu ici afin de faire fortune et de gagner gloire et renommée ?  Tu es au bon endroit !  En ces lieux tu pourras combattre les monstres de malkiar et les vils serviteurs du roi Hormandre corrompu !  <br><br> 
 
 Un grand et fameux destin t'attend, et tu auras l'occasion de prouver ta valeur à moult reprises ! <br><br> 
 
 Laisse-moi te mettre en garde contre deux dangers particuliers. <br><br> 
 
-Tout d'abord, les <b>portails démoniaques</b>. Ces portails restent un temps à un endroit, puis se déplacent ailleurs. C'est par eux que se déversent les créatures de Malkiar. Plus tu t'en approches, plus le danger est grand, car un nombre inconnu de ces créatures peuvent y apparaître soudainement, à tout moment.<br> <br> 
+Tout d'abord, les <strong>portails démoniaques</strong>. Ces portails restent un temps à un endroit, puis se déplacent ailleurs. C'est par eux que se déversent les créatures de Malkiar. Plus tu t'en approches, plus le danger est grand, car un nombre inconnu de ces créatures peuvent y apparaître soudainement, à tout moment.<br> <br> 
 
 En second lieu, il te faudra te méfier des brigands et des racketteurs qui assaillent les vaillants aventuriers tels que toi !  
 

@@ -69,7 +69,7 @@ $types_ventes_gros = "(5, 11, 17, 18, 19, 21, 22, 28, 30, 34)";
 switch ($methode)
 {
     case "debut":
-        echo "<i><br><b><p>Les transactions à l’intérieur d’un même compte pour un montant nul seront directement acceptées</i></b><br><br> ";
+        echo "<em><br><strong><p>Les transactions à l’intérieur d’un même compte pour un montant nul seront directement acceptées</em></strong><br><br> ";
         echo "<div class=\"titre\">Choix du destinataire </div>";
         echo "<form name=\"tran\" method=\"post\" action=\"\">";
         echo "Choisissez le joueur à qui vous voulez vendre des objets : ";
@@ -137,7 +137,7 @@ switch ($methode)
             echo "<div style=\"text-align:center;\" id='vente_detail'>Vente au détail : cliquez sur les objets que vous souhaitez vendre, et indiquez leurs prix de vente. Les runes et composants d’alchimie se vendent <a href='#vente_gros'>en gros, et sont listés plus bas</a>.</div>";
             echo("<center><table>");
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
-            echo '<tr><td class="soustitre2"></td><td class="soustitre2"><b>Objet</b></td><td class="soustitre2"><b>Prix demandé</b></td></tr>';
+            echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Prix demandé</strong></td></tr>';
             while ($db->next_record())
             {
                 if ($db->f("perobj_identifie") == 'O')
@@ -173,7 +173,7 @@ switch ($methode)
         {
             echo "<div style=\"text-align:center;\" id='vente_detail'>Vente en gros : cliquez sur les objets que vous souhaitez vendre, indiquez-en le nombre puis leurs prix de vente. Les autres objets se vendent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
             echo("<center><table>");
-            echo '<tr><td class="soustitre2" colspan="4"><b>Actions</b></td><td class="soustitre2"><b>Objet</b></td><td class="soustitre2"><b>Quantité à vendre</b></td><td class="soustitre2"><b>Prix demandé (à la pièce !)</b></td></tr>';
+            echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à vendre</strong></td><td class="soustitre2"><strong>Prix demandé (à la pièce !)</strong></td></tr>';
             while ($db->next_record())
             {
                 $nom_objet = $db->f("gobj_nom");
@@ -467,11 +467,11 @@ switch ($methode)
 
         if ($compteur_accept_auto == 1)
         {
-            $texte_auto = "<b>La transaction est enregistrée et directement validée.<br /></b>";
+            $texte_auto = "<strong>La transaction est enregistrée et directement validée.<br /></strong>";
         }
         if ($compteur_accept_auto > 1)
         {
-            $texte_auto = "<b>$compteur_accept_auto transactions enregistrées et directement validées<br /></b>";
+            $texte_auto = "<strong>$compteur_accept_auto transactions enregistrées et directement validées<br /></strong>";
         }
 
         if ($compteur_accept == 1)

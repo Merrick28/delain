@@ -258,9 +258,9 @@ function changeBlockColor(nr,color)
 </script>
 
 
-<b>Sélectionner une case sur la carte pour valider</b>
+<strong>Sélectionner une case sur la carte pour valider</strong>
 <br>
-<br><b>ATTENTION :</b> l'action de suppression supprime tous les types de composants présent sur une case
+<br><strong>ATTENTION :</strong> l'action de suppression supprime tous les types de composants présent sur une case
 <br> Il est possible de positionner des composants sous un mur ... Si mur non creusable ... c'est idiot ... si creusable, les composants seront récupérables après creusage.
 <br> Il faut éviter de mettre trop de types de composants sur une même case, 4 semble être un maximum (lisibilité et pour favoriser la découverte)
 

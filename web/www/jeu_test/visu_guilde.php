@@ -61,7 +61,7 @@ if ($param->getparm(74) == 1)
 		if ($meta_noir == 'O')
 		{
 			echo "<hr>";
-			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <b>envoyés de Salm'o'rv</b>.<br>";
+			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <strong>envoyés de Salm'o'rv</strong>.<br>";
 			if ($perso_meta_noir == 'O')
 			{
 				echo "<p>Vous êtes rattaché à ce meta guildage.<br>";
@@ -77,7 +77,7 @@ if ($param->getparm(74) == 1)
 		if ($meta_caravane == 'O')
 		{
 			echo "<hr>";
-			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <b>Corporation marchande du R.A.D.I.S</b>.<br>";
+			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <strong>Corporation marchande du R.A.D.I.S</strong>.<br>";
 			if ($perso_meta_caravane == 'O')
 			{
 				echo "<p>Vous êtes rattaché à ce meta guildage.<br>";
@@ -100,7 +100,7 @@ if ($is_guilde)
 	if ($db->nf() != 0)
 	{
 		echo "<hr>";
-		echo "<p style=\"text-align:center;\"><b>Révolution en cours !</b><br>";
+		echo "<p style=\"text-align:center;\"><strong>Révolution en cours !</strong><br>";
 		echo "<p style=\"text-align:center;\">Pour en savoir plus, <a href=\"guilde_revolution.php\">cliquez ici !</a>";
 		echo "<hr>";
 	}	
@@ -122,16 +122,16 @@ $req_membre = $req_membre . "order by rguilde_admin desc,perso_nom ";
 
 $db->query($req_membre);
 $nb_membre = $db->nf();
-echo("<p>Il y a <b>$nb_membre</b> inscrits à cette guilde<br />");
+echo("<p>Il y a <strong>$nb_membre</strong> inscrits à cette guilde<br />");
 
-printf(" - Renommee moyenne de la guilde : <b>%s</b><br />",$stat_guilde['renommee']);
-printf(" - Karma moyen de la guilde : <b>%s</b><br />",$stat_guilde['karma']);
+printf(" - Renommee moyenne de la guilde : <strong>%s</strong><br />",$stat_guilde['renommee']);
+printf(" - Karma moyen de la guilde : <strong>%s</strong><br />",$stat_guilde['karma']);
 $moy_perso_tue = round(($stat_guilde['joueur_tue'] / $nb_membre),2);
 $moy_monstre_tue = round(($stat_guilde['monstre_tue'] / $nb_membre),2);
 $moy_mort = round(($stat_guilde['nb_mort'] / $nb_membre),2);
-printf(" - Nombre d'aventuriers tués : <b>%s</b> (moyenne par membre: %s)<br />",$stat_guilde['joueur_tue'],$moy_perso_tue);
-printf(" - Nombre de monstres tués : <b>%s</b> (moyenne par membre: %s)<br />",$stat_guilde['monstre_tue'],$moy_monstre_tue);
-printf(" - Nombre de morts : <b>%s</b> (moyenne par membre: %s)<br /><br />",$stat_guilde['nb_mort'],$moy_mort);
+printf(" - Nombre d'aventuriers tués : <strong>%s</strong> (moyenne par membre: %s)<br />",$stat_guilde['joueur_tue'],$moy_perso_tue);
+printf(" - Nombre de monstres tués : <strong>%s</strong> (moyenne par membre: %s)<br />",$stat_guilde['monstre_tue'],$moy_monstre_tue);
+printf(" - Nombre de morts : <strong>%s</strong> (moyenne par membre: %s)<br /><br />",$stat_guilde['nb_mort'],$moy_mort);
 ?>
 <table><form name="visu_perso" method="post" action="visu_desc_perso.php"><input type="hidden" name="visu">
 <?php 
@@ -174,7 +174,7 @@ while($db->next_record())
 		if ($db2->nf() != 0)
 		{
 			$db2->next_record();
-			$religion = " </b>(". $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<b> ";
+			$religion = " </strong>(". $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<strong> ";
 			echo "<td>$religion</td>";
 		} else {
 			echo "<td></td>";

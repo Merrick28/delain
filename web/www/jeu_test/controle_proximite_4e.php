@@ -17,21 +17,21 @@ ob_start();
 
 ?>
 
-<p><b>Liste des comptes dont les personnages principaux sont proches du quatrième personnage.</b>
+<p><strong>Liste des comptes dont les personnages principaux sont proches du quatrième personnage.</strong>
 	Ce n’est pas nécessairement répréhensible, mais un avertissement spécifique leur est envoyé à la connexion.</p>
 
 
 <table cellspacing="2">
 <tr>
-	<td class="soustitre3" rowspan='2'><p><b>Compte</b></p></td>
-	<td class="soustitre3" colspan='2'><p><b>Personnage principal</b></p></td>
-	<td class="soustitre3" colspan='2'><p><b>Quatrième personnage</b></p></td>
+	<td class="soustitre3" rowspan='2'><p><strong>Compte</strong></p></td>
+	<td class="soustitre3" colspan='2'><p><strong>Personnage principal</strong></p></td>
+	<td class="soustitre3" colspan='2'><p><strong>Quatrième personnage</strong></p></td>
 </tr>
 <tr>
-	<td class="soustitre3"><p><b>Nom</b></p></td>
-	<td class="soustitre3"><p><b>Position</b></p></td>
-	<td class="soustitre3"><p><b>Nom</b></p></td>
-	<td class="soustitre3"><p><b>Position</b></p></td>
+	<td class="soustitre3"><p><strong>Nom</strong></p></td>
+	<td class="soustitre3"><p><strong>Position</strong></p></td>
+	<td class="soustitre3"><p><strong>Nom</strong></p></td>
+	<td class="soustitre3"><p><strong>Position</strong></p></td>
 </tr>
 <?php 
 $req = 'select compt_cod, compt_nom,

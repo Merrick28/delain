@@ -42,7 +42,7 @@ if($db->next_record())
 					<input type="hidden" name="methode" value="compo">
 					<input type="hidden" name="tpot" value="'. $tpot .'">
 					<table width="70%">
-						<tr><td colspan="3"><b>Listes des compositions déjà connues</b></td></tr>';
+						<tr><td colspan="3"><strong>Listes des compositions déjà connues</strong></td></tr>';
 			$req = 'select pfrm_frm_cod, gobj_nom, gobj_cod, frm_comp_cod from objet_generique, perso_formule, formule_produit, formule
 				where pfrm_perso_cod = '. $perso_cod .'
 					and gobj_cod = frmpr_gobj_cod
@@ -66,7 +66,7 @@ if($db->next_record())
 				$db2->query($req);
 				$is_flacon = ($db2->nf() > 0);
 
-				$contenu_page .= '<tr><td><b>Sélectionnez une potion connue </b>(en italique, les composants dont vous manquez) :</td>';
+				$contenu_page .= '<tr><td><strong>Sélectionnez une potion connue </strong>(en italique, les composants dont vous manquez) :</td>';
 				$contenu_page .= '<td colspan="2"><input type="submit" value="Composer la potion choisie ('. $pa .' PA)"  class="test"></td>';
 				while($db->next_record())
 				{
@@ -87,7 +87,7 @@ if($db->next_record())
 					$db2->query($req);
 					if($db2->nf() == 0)
 					{
-						$composants = '<br><i>Erreur, composants inconnus ...</i><br>';
+						$composants = '<br><em>Erreur, composants inconnus ...</em><br>';
 					}
 					else
 					{
@@ -97,8 +97,8 @@ if($db->next_record())
 						{
 							$compo_ok = (intval($db2->f('frmco_num')) <= intval($db2->f('obj_nombre')));
 							$nombre_suffisant = $nombre_suffisant && $compo_ok;
-							$ital1 = ($compo_ok) ? '' : '<i>';
-							$ital2 = ($compo_ok) ? '' : '</i>';
+							$ital1 = ($compo_ok) ? '' : '<em>';
+							$ital2 = ($compo_ok) ? '' : '</em>';
 							$composants .= " $ital1". $db2->f('frmco_num') . ' ' . $db2->f('gobj_nom') . $ital2 . ",";
 						}
 
@@ -111,9 +111,9 @@ if($db->next_record())
 						$contenu_page .= '<tr>
 							<td>';
 						if ($niveau_ok)
-							$contenu_page .= '<b><a href="'. $PHP_SELF .'?&tpot='. $tpot .'&methode=description&potion=' . $db->f('gobj_cod') . '"> ' . $db->f('gobj_nom') .'</b></a> '. $composants .'</td>';
+							$contenu_page .= '<strong><a href="'. $PHP_SELF .'?&tpot='. $tpot .'&methode=description&potion=' . $db->f('gobj_cod') . '"> ' . $db->f('gobj_nom') .'</strong></a> '. $composants .'</td>';
 						else
-							$contenu_page .= '<b><i>Potion trop complexe</i></b> '. $composants .'</td>';
+							$contenu_page .= '<strong><em>Potion trop complexe</em></strong> '. $composants .'</td>';
 							
 						$contenu_page .= '<td><input type="radio" name="potion" value="' . $db->f('gobj_cod') . '" '.$disabled.' /></td><td>Niveau ' . $niveau_frm . '</td></tr>';
 					}
@@ -182,7 +182,7 @@ if($db->next_record())
 			else
 			{
 				$db->next_record();
-				$contenu_page .= '<b>Description : </b><br><br>' . $db->f('gobj_description') .'<br>';
+				$contenu_page .= '<strong>Description : </strong><br><br>' . $db->f('gobj_description') .'<br>';
 			}
 		break;
 	}

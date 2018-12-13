@@ -325,7 +325,7 @@ if ($erreur == 0)
 					</select><br>
 					Nom : <input type="text" name="nom" value="<?php echo  $db->f('lieu_nom'); ?>"><br />
 					Description : <textarea name="description"><?php echo  $db->f("lieu_description"); ?></textarea><br />
-					<b>Position : </b> X : <input type="text" name="pos_x" value="<?php echo  $db->f("pos_x"); ?>"> Y : <input type="text" name="pos_y" value="<?php echo  $db->f("pos_y"); ?>">
+					<strong>Position : </strong> X : <input type="text" name="pos_x" value="<?php echo  $db->f("pos_x"); ?>"> Y : <input type="text" name="pos_y" value="<?php echo  $db->f("pos_y"); ?>">
 					Étage :
 					<select name="pos_etage">
 			<?php 
@@ -357,7 +357,7 @@ if ($erreur == 0)
 				$dest_pos_etage = '';
 			}
 			?>
-					<b>Destination :</b>
+					<strong>Destination :</strong>
 					X : <input type="text" name="dest_pos_x" value="<?php echo  $dest_pos_x ?>">
 					Y : <input type="text" name="dest_pos_y" value="<?php echo  $dest_pos_y ?>">
 					Étage :
@@ -425,7 +425,7 @@ if ($erreur == 0)
 				Coût en pa (pour les passages ondulants uniquement)<input type="text" name="cout_pa" value="0">
 
 				<input type="submit" class='test' value="créer !" /><br>
-				<i><u>Nota</i></u>: &nbsp;<i><font color="#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</font></i>
+				<em><u>Nota</em></u>: &nbsp;<em><font color="#483d8b">Attention de ne pas faire de passage du donjon vers une arène et inversement!</font></em>
 			</form>
 		</div>
 		<?php 		break;

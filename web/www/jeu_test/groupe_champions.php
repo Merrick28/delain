@@ -50,8 +50,8 @@ function gereAffichage($db, $champValeur, $unite, $champTitre, $champComp, $cham
 			{
 				$resultat .= '<tr>';
 			}
-			$resultat .= '<td nowrap class="soustitre2"><b>' . $comp . '</b></td>';
-			$resultat .= '<td><b>' . $db->f($champValeur) . $unite . '</b> ' . $db->f($champNom) . '<br />';
+			$resultat .= '<td nowrap class="soustitre2"><strong>' . $comp . '</strong></td>';
+			$resultat .= '<td><strong>' . $db->f($champValeur) . $unite . '</strong> ' . $db->f($champNom) . '<br />';
 			$afermer = true;
 			$cpt_comp++;
 			$nombre_affiches++;
@@ -59,7 +59,7 @@ function gereAffichage($db, $champValeur, $unite, $champTitre, $champComp, $cham
 		}
 		else if ($nombre_affiches < $nombre_podium || $valeur == $db->f($champValeur))
 		{
-			$resultat .= '<b>' . $db->f($champValeur) . $unite . '</b> ' . $db->f($champNom) . '<br />';
+			$resultat .= '<strong>' . $db->f($champValeur) . $unite . '</strong> ' . $db->f($champNom) . '<br />';
 			$nombre_affiches++;
 			$valeur = $db->f($champValeur);
 		}

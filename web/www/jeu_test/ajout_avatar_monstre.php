@@ -62,8 +62,8 @@ if ($droit['controle_admin'] == 'O')
 			<center>
 				<table>
 				<tr>
-					<td class="soustitre2"><b>Nom du monstre générique</b></td>
-					<td class="soustitre2"><b>Avatar</b></td>
+					<td class="soustitre2"><strong>Nom du monstre générique</strong></td>
+					<td class="soustitre2"><strong>Avatar</strong></td>
 				</tr>
 				<?php 
 				while($db->next_record())

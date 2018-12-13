@@ -5,5 +5,5 @@ if(!isset($db))
 	include_once "verif_connexion.php";
 
 $tab_lieu = $db->get_lieu($perso_cod);
-echo "<p><b>" . $tab_lieu['nom'] . "</b> - " . $tab_lieu['libelle'];
-echo "<p><i>" . $tab_lieu['description'];
+echo "<p><strong>" . $tab_lieu['nom'] . "</strong> - " . $tab_lieu['libelle'];
+echo "<p><em>" . $tab_lieu['description'];

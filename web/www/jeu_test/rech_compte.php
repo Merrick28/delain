@@ -123,26 +123,26 @@ if (!isset($methode2))
 					<?
 					if ($sort == \'compteur\')
 					{?>
-					<b>
+					<strong>
 					<?}?>
 					Nombre de sitting réalisés sur ce compte
 					<?
 					if ($sort == \'compteur\')
 					{?>
-					</b>
+					</strong>
 					<?}?>
 					</a></td>
 				<td class="soustitre2"><p><a href="javascript:document.fsort.sort.value=\'duree\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">
 					<?
 					if ($sort == \'duree\')
 					{?>
-					<b>
+					<strong>
 					<?}?>
 					Durée cumulée de sitting depuis les 15 derniers jours
 					<?
 					if ($sort == \'duree\')
 					{?>
-					</b>
+					</strong>
 					<?}?>
 					</a></td>';
 				while ($db->next_record())
@@ -230,26 +230,26 @@ if (!isset($methode2))
 					<?
 					if ($sort == \'compteur\')
 					{?>
-					<b>
+					<strong>
 					<?}?>
 					Nombre de sitting réalisés par le sitteur
 					<?
 					if ($sort == \'compteur\')
 					{?>
-					</b>
+					</strong>
 					<?}?>
 					</a></td>
 				<td class="soustitre2"><p><a href="javascript:document.fsort.sort.value=\'duree\';document.fsort.sens.value=\''. $sens .'\';document.fsort.submit();">
 					<?
 					if ($sort == \'duree\')
 					{?>
-					<b>
+					<strong>
 					<?}?>
 					Durée cumulée de sitting réalisés par le sitteur depuis les 15 derniers jours
 					<?
 					if ($sort == \'duree\')
 					{?>
-					</b>
+					</strong>
 					<?}?>
 					</a></td>';
 				while ($db->next_record())
@@ -267,9 +267,9 @@ if (!isset($methode2))
 				?>
 				<p>Visualisation des temps cumulés de <a  href="rech_compte.php?methode2=sit">déclarations de sitting sur 15 jours</a>
 				<br><br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br>
-				<br><hr><br>Liste des sittings déclarés par <b><?php echo $sit_nom ?></b>, présent et futurs<br>
+				<br><hr><br>Liste des sittings déclarés par <strong><?php echo $sit_nom ?></strong>, présent et futurs<br>
 				<table>
-				<tr><td><b>Compte Sitteur</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td></tr>	
+				<tr><td><strong>Compte Sitteur</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td></tr>	
 				<?php 
 				$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
 										where csit_compte_sitte = $sit
@@ -301,9 +301,9 @@ if (!isset($methode2))
 				?>
 				<p>Visualisation des temps cumulés <a  href="rech_compte.php?methode2=sit">des sitteurs sur 15 jours</a>
 				<br><br><a href="<?php echo $PHP_SELF;?>?methode=debut">Retour</a><br>
-				<br><hr><br>Liste des sittings réalisés par <b><?php echo $sit_nom ?></b>, présent et futurs<br>
+				<br><hr><br>Liste des sittings réalisés par <strong><?php echo $sit_nom ?></strong>, présent et futurs<br>
 				<table>
-				<tr><td><b>Compte Sitté</b></td><td><b>Date de début</b></td><td><b>Date de fin</b></td></tr>	
+				<tr><td><strong>Compte Sitté</strong></td><td><strong>Date de début</strong></td><td><strong>Date de fin</strong></td></tr>	
 				<?php 
 				$req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitte from compte_sitting
 										where csit_compte_sitteur = $sitteur

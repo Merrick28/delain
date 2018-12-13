@@ -53,7 +53,7 @@ switch($methode)
 		$req = $req . "where contact_cliste_cod = $liste ";
 		$req = $req . "and contact_perso_cod = perso_cod ";
 		$db->query($req);
-		$contenu_page .= "<p><b>Gestion de la liste ".$nom_liste."</b>";
+		$contenu_page .= "<p><strong>Gestion de la liste ".$nom_liste."</strong>";
 		if ($db->nf() == 0)
 		{
 			$contenu_page .= '<p>Aucun contact dans cette liste !';
@@ -162,7 +162,7 @@ switch($methode)
 					$db->query($req);
 					if ($db->nf() != 0)
 					{
-						$contenu_page .= "<p>Le perso ".$valeur." <b> est déjà dans cette liste !</b><br>";
+						$contenu_page .= "<p>Le perso ".$valeur." <strong> est déjà dans cette liste !</strong><br>";
 					}
 					else
 					{
@@ -188,7 +188,7 @@ switch($methode)
 		$db->next_record();
 		$nom = $db->f("cliste_nom");
 		$contenu_page .= '
-		<p>Voulez vous vraiment détruire la liste <b>' . $nom . '</b> ?<br>
+		<p>Voulez vous vraiment détruire la liste <strong>' . $nom . '</strong> ?<br>
 		<a href="' . $PHP_SELF . '?m=' . $m . '&methode=dliste2&liste=' . $liste . '">Oui je le veux !</a><br>
 		<a href="' . $PHP_SELF . '?m=' . $m . '">Non, je souhaite la garder !</a>';
 	break ;
@@ -226,7 +226,7 @@ switch($methode)
 		$req = $req . "where contact_cliste_cod = $liste ";
 		$req = $req . "and contact_perso_cod = perso_cod ";
 		$db->query($req);
-		$contenu_page .= "<p><b>Gestion de la liste ".$nom_liste."</b>";
+		$contenu_page .= "<p><strong>Gestion de la liste ".$nom_liste."</strong>";
 		if ($db->nf() == 0)
 		{
 			$contenu_page .= '<p>Aucun contact dans cette liste !';

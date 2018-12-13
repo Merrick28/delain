@@ -20,11 +20,11 @@ $contenu_page = '
 		<p>Il existe divers dieux dans Delain. Les dieux sont des entités non palpables dotés d’immenses pouvoirs qui peuvent se canaliser au travers de ceux qui croient en eux. Chacune de ces entités tire sa puissance de ses fidèles. Chaque fois que quelqu’un prie un dieu, ce dernier gagne en pouvoir. Plus un dieu a de fidèles, plus sa puissance est grande.</p>
 		<p>Voici une liste de quelque dieux présents dans Delain :</p>
 		<ul>
-			<li><b>Io l’aveugle </b> : Roi de la nuit, de l’obscurité et des rêves </li>
-			<li><b>Balgur </b> : Dieu de la guerre</li>
-			<li><b>Galthée </b> : Déesse de la terre</li>
-			<li><b>Elian </b> : Dieu des chasseurs</li>
-			<li><b>Apiera </b> : Déesse de la Lune, des arts et de l’illusion </li>
+			<li><strong>Io l’aveugle </strong> : Roi de la nuit, de l’obscurité et des rêves </li>
+			<li><strong>Balgur </strong> : Dieu de la guerre</li>
+			<li><strong>Galthée </strong> : Déesse de la terre</li>
+			<li><strong>Elian </strong> : Dieu des chasseurs</li>
+			<li><strong>Apiera </strong> : Déesse de la Lune, des arts et de l’illusion </li>
 		</ul>
 
 		<p>Cette liste n’est bien sur pas exhaustive et peut varier au cours du temps. Certains dieux peuvent apparaître grâce aux prières de fidèles, ou bien disparaître si personne ne les prie plus.</p>

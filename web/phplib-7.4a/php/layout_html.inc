@@ -681,7 +681,7 @@ class Layout {
 
 		if ($showdetails) {
 			$name=ereg_Replace("^.*/","",$SRC);
-			$out="<SMALL>'<B>$name</B>'&nbsp;".
+			$out="<SMALL>'<strong>$name</strong>'&nbsp;".
 			     "$WH[0]x$WH[1]&nbsp;Pixel</SMALL>\n$out";
 		}
 
@@ -845,14 +845,14 @@ $js
 
 	function _debug ($fnname,&$val) {
 		if ($this->Debug) {
-			echo "<B>$fnname</B>:<BR><TT>".
+			echo "<strong>$fnname</strong>:<BR><TT>".
 			     nl2br(HTMLSpecialChars($val)) .
 			     "</TT><BR>";
 		}
 	}
 	function _debug2 ($fnname) {
 		if ($this->Debug) {
-			echo "<B>$fname</B><BR>";
+			echo "<strong>$fname</strong><BR>";
 		}
 	}
 

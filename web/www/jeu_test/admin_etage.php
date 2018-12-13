@@ -44,13 +44,13 @@ if(!isset($admin_etage) && $methode == 'debut')
 
 ?>
 
-<?php echo "<table><tr><td><p><b>Choisissez l’étage à modifier :</b></p>
+<?php echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<form method='post' action='$PHP_SELF'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
 	$html->etage_select($admin_etage) .
 	"</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
-	<p><b>Autres outils</b><br />
+	<p><strong>Autres outils</strong><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
 	<a href='modif_etage3ter.php'>Creation multiple de lieux</a><br />
@@ -70,7 +70,7 @@ switch($methode)
 		<script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php  echo $admin_etage; ?>"></script>
 		<div class="bordiv">
 			<table>
-				<tr><td><b>Pinceau</b></td><td><b>Fonds</b></td><td><b>Décors</b></td><td><b>Murs</b></td><td><b>Décors superposés</b></td><td><b>Spécial</b></td></tr>
+				<tr><td><strong>Pinceau</strong></td><td><strong>Fonds</strong></td><td><strong>Décors</strong></td><td><strong>Murs</strong></td><td><strong>Décors superposés</strong></td><td><strong>Spécial</strong></td></tr>
 				<tr valign="top">
 					<td class="bordiv">
 						Outil sélectionné : <img style="display: inline;" src="" alt="Aucun" title="Aucun" id="imgPinceau">
@@ -104,12 +104,12 @@ switch($methode)
 						<label><input name="special" value="areneNOK" onclick="Pinceau.miseAJour ('Speciaux', this.value)" type="radio" />non.</label><br />
 					</td></tr>
 			</table>
-			<i>Notes :<br /> - L’ordre de superposition des couches graphiques est le suivant : fond < décor < mur < décor superposé.</i><br />
-			<i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc seul un « décor superposé » peut apparaître par dessus un mur.</i><br />
-			<i> - L’outil « Annulation » replace les éléments sous le pinceau à leur état initial (depuis la dernière sauvegarde)</i><br />
-			<i> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et l’appliquer sur le(s) décor(s) ) enlever.</i><br />
-			<i> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la brosse spéciale dédiée.</i><br />
-			<i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</i><br />
+			<em>Notes :<br /> - L’ordre de superposition des couches graphiques est le suivant : fond < décor < mur < décor superposé.</em><br />
+			<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Donc seul un « décor superposé » peut apparaître par dessus un mur.</em><br />
+			<em> - L’outil « Annulation » replace les éléments sous le pinceau à leur état initial (depuis la dernière sauvegarde)</em><br />
+			<em> - Pour enlever un décor (resp. mur), il faut sélectionner le premier décor (resp. mur) de la liste et l’appliquer sur le(s) décor(s) ) enlever.</em><br />
+			<em> - Les outils spéciaux Creusable et Tangibles ne s’appliquent qu’aux murs. Vous pouvez utiliser la brosse spéciale dédiée.</em><br />
+			<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br />
 		</div>
 
 		<div id="vueEtage"></div>

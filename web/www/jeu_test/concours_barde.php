@@ -70,13 +70,13 @@ if(isset($_POST['methode']))
 			$db->next_record();
 			if ($db->nf() != 0)
 			{
-				echo "<p><br><b>Vous avez déjà participé au concours de barde pour la saison en cours !
-					<br>Un barde ne peut pleinement s’exprimer dans un concours qu’une seule fois.</b></p>";
+				echo "<p><br><strong>Vous avez déjà participé au concours de barde pour la saison en cours !
+					<br>Un barde ne peut pleinement s’exprimer dans un concours qu’une seule fois.</strong></p>";
 				$erreur = 1;
 			}
 			else if (strlen($titre) >= 50)
 			{
-				echo "<p><b>Votre titre est trop long, merci de le raccourcir !</b></p>";
+				echo "<p><strong>Votre titre est trop long, merci de le raccourcir !</strong></p>";
 				$erreur = 1;
 			}
 			else
@@ -116,11 +116,11 @@ echo "<h2>Le concours est actuellement $texte_etat !</h2>";
 	Pour gagner, montrez vos meilleurs tours,<br />
 	Le public attend vos œuvres<br />
 	Soyez à l’heure !<br /><br /></p>
-	<p><b>Le thème de la session :</b></p>
+	<p><strong>Le thème de la session :</strong></p>
 <?php 
 echo '<p class="soustitre2">' . nl2br($description) . '</p>';
 ?><br />
-<p><b>Les règles du concours :</b></p>
+<p><strong>Les règles du concours :</strong></p>
 <p>
 	Déclamez vers ou prose, chantez à la guerrière, ou créez une épopée... Tout sera bon, et les jurés récompenseront les meilleures œuvres. Le nom des auteurs restera caché (y compris pour le jury) jusqu’à ce que tout le jury ait fait son évaluation.
 	<br />
@@ -132,13 +132,13 @@ echo '<p class="soustitre2">' . nl2br($description) . '</p>';
 </p>
 <?php 
 if ($ouvert && $fermeture)
-	echo "<p><b>Le concours fermera le $fermeture</b></p>";
+	echo "<p><strong>Le concours fermera le $fermeture</strong></p>";
 if ($introduction && $date_ouverture && !$ouvert)
 {
-	echo "<p><b>Le concours ouvrira le $date_ouverture";
+	echo "<p><strong>Le concours ouvrira le $date_ouverture";
 	if ($fermeture)
 		echo " et fermera le $fermeture";
-	echo "</b></p>";
+	echo "</strong></p>";
 }
 ?>
 <form name="voir_saison" method="post" action="concours_barde.php">
@@ -181,10 +181,10 @@ else
 	</td>
 </tr>
 <tr>
-	<td class="soustitre2"><b>Auteur</b></td>
-	<td class="soustitre2"><b>Titre</b></td>
-	<td class="soustitre2"><b>Date</b></td>
-	<td class="soustitre2"><b>Note</b></td>
+	<td class="soustitre2"><strong>Auteur</strong></td>
+	<td class="soustitre2"><strong>Titre</strong></td>
+	<td class="soustitre2"><strong>Date</strong></td>
+	<td class="soustitre2"><strong>Note</strong></td>
 </tr>
 <?php 
 $req_jury = "SELECT jbar_perso_cod FROM concours_barde_jury WHERE jbar_cbar_cod = $saison_concours AND jbar_perso_cod = $perso_cod";
@@ -245,12 +245,12 @@ while($db->next_record())
 
 	if ($isJury && $db->f('nbar_note') == null)
 	{
-		echo ' <i>- non noté</i>';
+		echo ' <em>- non noté</em>';
 	}
 	echo '</a></td>';
 
 	echo '<td class="soustitre2">' . $db->f('date') . '</td>
-			<td class="soustitre2">' . $db->f('note') . '/' . ($nbJury * 20) . ' <i>(votes : ' . $db->f('nbvote') . '/' . $nbJury . ')</i></td>
+			<td class="soustitre2">' . $db->f('note') . '/' . ($nbJury * 20) . ' <em>(votes : ' . $db->f('nbvote') . '/' . $nbJury . ')</em></td>
 		</tr>';
 }
 echo '</table>';
@@ -262,8 +262,8 @@ if ($ouvert)
 <p>Pour participer entrez ici le titre et le texte de votre composition originale :</p>
 <form method="post">
 	<input type="hidden" name="methode" value="participer">
-	<p>Titre : <i>(limité à 50 caractères) </i><input type="text" name="titre" value=""></p>
-	<p>Texte : <i>(Pas de taille minimale ou maximale, mais ne penchez pas dans l’excès)</i><br />
+	<p>Titre : <em>(limité à 50 caractères) </em><input type="text" name="titre" value=""></p>
+	<p>Texte : <em>(Pas de taille minimale ou maximale, mais ne penchez pas dans l’excès)</em><br />
 	<textarea name="contenu" cols="100" rows="15"></textarea></p>
 	<input type="submit" value="Participer">
 </form>

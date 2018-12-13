@@ -119,7 +119,7 @@ while ($db->next_record())
 		$texte_etat = ' (fermée)';
 
 	if ($ccol_cod == $db->f('ccol_cod'))
-		echo "<p><b><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></b></p>";
+		echo "<p><strong><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></strong></p>";
 	else
 		echo "<p><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></p>";
 }
@@ -139,11 +139,11 @@ switch ($methode)
 		echo '<table><tr><td colspan="3" class="titre">Titre ' . $ccol_titre . '</td></tr>';
 		echo '<tr><td colspan="3" class="soustitre2">';
 		if ($ouvert)
-			echo 'Cette session du concours de collections est <b>ouverte</b>';
+			echo 'Cette session du concours de collections est <strong>ouverte</strong>';
 		if ($futur)
-			echo 'Cette session du concours de collections est <b>future</b>';
+			echo 'Cette session du concours de collections est <strong>future</strong>';
 		if ($ferme)
-			echo 'Cette session du concours de collections est <b>fermée</b>';
+			echo 'Cette session du concours de collections est <strong>fermée</strong>';
 		echo '</td></tr>';
 		echo '<tr><td class="soustitre2">Titre</td><td><input type="text" name="form_titre" value="' . $ccol_titre . '" /></td><td>Dénomination du concours (typiquement, « Collections de citrouilles, 2010 »).</td></tr>';
 		echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1, \'form_objet\', tableauObjetsCollection);"><option value="-1">Choisissez un type d’objet...</option>';
@@ -188,7 +188,7 @@ switch ($methode)
 		if (!$ferme)
 			echo '<input type="submit" value="Valider" />';
 		if ($ferme)
-			echo '<i>Cette instance est fermée et n’est plus modifiable</i>';
+			echo '<em>Cette instance est fermée et n’est plus modifiable</em>';
 		echo '</form>';
 		echo '<hr />';
 		echo '<table><tr><td>';
@@ -246,7 +246,7 @@ switch ($methode)
 			limit 10";
 		$db->query($req);
 		$txt_table = str_replace('#id#', 'Tous aventuriers', $debut_table);
-		$txt_table = str_replace('#g1#Tous aventuriers#g2#', '<b>Tous aventuriers</b>', $txt_table);
+		$txt_table = str_replace('#g1#Tous aventuriers#g2#', '<strong>Tous aventuriers</strong>', $txt_table);
 		$txt_table = str_replace('#g1#', '', $txt_table);
 		$txt_table = str_replace('#g2#', '', $txt_table);
 		echo $txt_table;
@@ -286,7 +286,7 @@ switch ($methode)
 				limit 10";
 			$db->query($req);
 			$txt_table = str_replace('#id#', 'Hors quatrièmes', $debut_table);
-			$txt_table = str_replace('#g1#Hors quatrièmes#g2#', '<b>Hors quatrièmes</b>', $txt_table);
+			$txt_table = str_replace('#g1#Hors quatrièmes#g2#', '<strong>Hors quatrièmes</strong>', $txt_table);
 			$txt_table = str_replace('#g1#', '', $txt_table);
 			$txt_table = str_replace('#g2#', '', $txt_table);
 			echo $txt_table;
@@ -356,7 +356,7 @@ switch ($methode)
 					limit 10";
 				$db->query($req);
 				$txt_table = str_replace('#id#', $texte_tranche, $debut_table);
-				$txt_table = str_replace('#g1#' . $texte_tranche . '#g2#', '<b>' . $texte_tranche . '</b>', $txt_table);
+				$txt_table = str_replace('#g1#' . $texte_tranche . '#g2#', '<strong>' . $texte_tranche . '</strong>', $txt_table);
 				$txt_table = str_replace('#g1#', '', $txt_table);
 				$txt_table = str_replace('#g2#', '', $txt_table);
 				echo $txt_table;
@@ -396,7 +396,7 @@ switch ($methode)
 				if ($division_en_cours != -1)
 					echo $fin_table;
 				$txt_table = str_replace('#id#', $db2->f('ccolres_division'), $debut_table);
-				$txt_table = str_replace('#g1#' . $db2->f('ccolres_division') . '#g2#', '<b>' . $db2->f('ccolres_division') . '</b>', $txt_table);
+				$txt_table = str_replace('#g1#' . $db2->f('ccolres_division') . '#g2#', '<strong>' . $db2->f('ccolres_division') . '</strong>', $txt_table);
 				$txt_table = str_replace('#g1#', '', $txt_table);
 				$txt_table = str_replace('#g2#', '', $txt_table);
 				echo $txt_table;

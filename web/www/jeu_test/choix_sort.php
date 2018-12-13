@@ -167,7 +167,7 @@ if ($erreur == 0)
 	$db->query($req);
 	if ($db->nf()!=0)
 	{
-		echo "<br /><p> Vous vous apprêtez à lancer le sort <b>".$nom_sort."</b>.<br></p>";
+		echo "<br /><p> Vous vous apprêtez à lancer le sort <strong>".$nom_sort."</strong>.<br></p>";
 	}
 	if ($db2->f("sort_case") == 'N')
 	{

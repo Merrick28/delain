@@ -385,7 +385,7 @@ class aquete_action
                     $objet = new objets();
                     $objet->charge(1*$result["obj_cod"]);
 
-                    $texte_evt = '[cible] a donné un objet à [attaquant] <i>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</i>';
+                    $texte_evt = '[cible] a donné un objet à [attaquant] <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                     $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                               values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
                     $stmt   = $pdo->prepare($req);
@@ -630,7 +630,7 @@ class aquete_action
                 $stmt   = $pdo->prepare($req);
                 $stmt   = $pdo->execute(array(":perobj_perso_cod" => $pnj->perso_cod, ":perobj_obj_cod" => $objet->obj_cod ), $stmt);
 
-                $texte_evt = '[attaquant] a pris un objet à [cible] <i>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</i>';
+                $texte_evt = '[attaquant] a pris un objet à [cible] <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                 $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                                   values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
                 $stmt   = $pdo->prepare($req);

@@ -69,8 +69,8 @@ elseif ($mvm == 2)
 	$texte_mvm = "Rififi à prévoir ($mvm)";
 else
 	$texte_mvm = "Baston générale ! ($mvm)";
-echo "<td style='padding-left:10px' class='soustitre2'>Marqueurs MvM :<br />(Indique si des monstres<br />se tapent entre eux)</td><td><b>$texte_mvm</b> - 
-	<a href='?methode=redemption&position=$position'><b>Rédemption générale !</b></a></td></tr></table>";
+echo "<td style='padding-left:10px' class='soustitre2'>Marqueurs MvM :<br />(Indique si des monstres<br />se tapent entre eux)</td><td><strong>$texte_mvm</strong> - 
+	<a href='?methode=redemption&position=$position'><strong>Rédemption générale !</strong></a></td></tr></table>";
 
 echo "<hr /><div class=\"titre\">Monstres jouables en $position_texte</div>";
 $req_monstre = "select dlt_passee(perso_cod) as dlt_passee, etat_perso(perso_cod) as etat, ";
@@ -99,11 +99,11 @@ else
 	{
 		if ($db->f("perso_dirige_admin") == 'O')
 		{
-			$ia = "<b>Hors IA</b>";
+			$ia = "<strong>Hors IA</strong>";
 		}
 		if ($db->f("perso_pnj") == 1)
 		{
-		    $ia = "<b>PNJ</b>";
+		    $ia = "<strong>PNJ</strong>";
 		}
 		else
 		{
@@ -116,35 +116,35 @@ else
 		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pv") , " PV sur " , $db->f("perso_pv_max");
 		if ($db->f("etat") != "indemne")
 		{
-			echo " - (<b>" , $db->f("etat") , "</b>)";
+			echo " - (<strong>" , $db->f("etat") , "</strong>)";
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>";
 		if ($db->f("messages") != 0)
 		{
-			echo "<b>";
+			echo "<strong>";
 		}
 		echo $db->f("messages") . " msg non lus.";
 		if ($db->f("messages") != 0)
 		{
-			echo "</b>";
+			echo "</strong>";
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>";
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("<b>");
+			echo("<strong>");
 		}
 		echo $db->f("dlt");
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("</b>");
+			echo("</strong>");
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>X=" , $db->f("pos_x") , ", Y=" , $db->f("pos_y") , ", E=" , $db->f("pos_etage") , "</td>";
 		if ($db->f('compt_nom') != '')
 		{
-			echo "<td class=\"soustitre2\">Joué par <b>" , $db->f("compt_nom") , "</b></td>";
+			echo "<td class=\"soustitre2\">Joué par <strong>" , $db->f("compt_nom") , "</strong></td>";
 		}
 		else
 			echo "<td></td>";

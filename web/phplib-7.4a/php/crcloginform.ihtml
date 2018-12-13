@@ -83,9 +83,9 @@ Please identify yourself with a username and a password:<br>
  <p>
  <table>
   <tr>
-   <td colspan=2><font color=red><b>Either your username or your password
+   <td colspan=2><font color=red><strong>Either your username or your password
        are invalid.<br>
-       Please try again!</b></font></td>
+       Please try again!</strong></font></td>
   </tr>
  </table>
 

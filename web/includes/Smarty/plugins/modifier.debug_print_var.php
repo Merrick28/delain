@@ -24,19 +24,19 @@
  */
 function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth = 0, $objects = array())
 {
-    $_replace = array("\n" => '<i>\n</i>',
-                      "\r" => '<i>\r</i>',
-                      "\t" => '<i>\t</i>'
+    $_replace = array("\n" => '<em>\n</em>',
+                      "\r" => '<em>\r</em>',
+                      "\t" => '<em>\t</em>'
     );
     switch (gettype($var)) {
         case 'array' :
-            $results = '<b>Array (' . count($var) . ')</b>';
+            $results = '<strong>Array (' . count($var) . ')</strong>';
             if ($depth == $max) {
                 break;
             }
             foreach ($var as $curr_key => $curr_val) {
                 $results .= '<br>' . str_repeat('&nbsp;', $depth * 2)
-                    . '<b>' . strtr($curr_key, $_replace) . '</b> =&gt; '
+                    . '<strong>' . strtr($curr_key, $_replace) . '</strong> =&gt; '
                     . smarty_modifier_debug_print_var($curr_val, $max, $length, ++ $depth, $objects);
                 $depth --;
             }
@@ -44,7 +44,7 @@ function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth =
 
         case 'object' :
             $object_vars = get_object_vars($var);
-            $results = '<b>' . get_class($var) . ' Object (' . count($object_vars) . ')</b>';
+            $results = '<strong>' . get_class($var) . ' Object (' . count($object_vars) . ')</strong>';
             if (in_array($var, $objects)) {
                 $results .= ' called recursive';
                 break;
@@ -55,7 +55,7 @@ function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth =
             $objects[] = $var;
             foreach ($object_vars as $curr_key => $curr_val) {
                 $results .= '<br>' . str_repeat('&nbsp;', $depth * 2)
-                    . '<b> -&gt;' . strtr($curr_key, $_replace) . '</b> = '
+                    . '<strong> -&gt;' . strtr($curr_key, $_replace) . '</strong> = '
                     . smarty_modifier_debug_print_var($curr_val, $max, $length, ++ $depth, $objects);
                 $depth --;
             }
@@ -73,7 +73,7 @@ function smarty_modifier_debug_print_var($var, $max = 10, $length = 40, $depth =
             } else {
                 $results = htmlspecialchars((string) $var);
             }
-            $results = '<i>' . $results . '</i>';
+            $results = '<em>' . $results . '</em>';
             break;
 
         case 'integer' :

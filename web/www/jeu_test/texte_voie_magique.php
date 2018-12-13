@@ -21,8 +21,8 @@ if ($db->nf())
     else
     {
         $db->next_record();
-        $contenu_page .= 'Vous avez choisi la voie magique: <b>' .
-            $db->f('mvoie_libelle') . '</b> dont la description est la suivante:<br />';
+        $contenu_page .= 'Vous avez choisi la voie magique: <strong>' .
+            $db->f('mvoie_libelle') . '</strong> dont la description est la suivante:<br />';
         $contenu_page .= $db->f('mvoie_description');
     }
 }
@@ -30,7 +30,7 @@ if ($db->nf())
 // Proposition de choix de voie
 else
 {
-    $contenu_page .= 'Pour accentuer votre maîtrise de la magie dans certains domaines, vous avez la possibilité de choisir, <b> de manière quasi définitive</b>, une voie de prédilection pour exercer votre art.';
+    $contenu_page .= 'Pour accentuer votre maîtrise de la magie dans certains domaines, vous avez la possibilité de choisir, <strong> de manière quasi définitive</strong>, une voie de prédilection pour exercer votre art.';
     $db->query('select mvoie_cod, mvoie_libelle, mvoie_description from voie_magique order by mvoie_cod');
     $options = '<select name="voie">';
     while ($db->next_record())
@@ -41,7 +41,7 @@ else
     }
     $options .= '</select>';
 
-    $contenu_page .= '<h2>Choisir une voie:</h2> <i>ATTENTION, il  sera  couteux (mais pas impossible) de changer de voie , réfléchissez-bien</i>';
+    $contenu_page .= '<h2>Choisir une voie:</h2> <em>ATTENTION, il  sera  couteux (mais pas impossible) de changer de voie , réfléchissez-bien</em>';
     $contenu_page .= '<form action="action.php" method="post">
         <input type="hidden" name="methode" value="voie_magique">';
     $contenu_page .= $options;

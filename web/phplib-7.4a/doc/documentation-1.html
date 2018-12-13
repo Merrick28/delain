@@ -98,15 +98,15 @@ web server processes can access this database with <CODE>SELECT</CODE>,
 the <CODE>mysqladmin reload</CODE> after changing the user and db tables.</P>
 <P>
 <DL>
-<DT><B>Step 1</B><DD><P>Create an include directory named <CODE>php</CODE> parallel to your
+<DT><strong>Step 1</strong><DD><P>Create an include directory named <CODE>php</CODE> parallel to your
 web servers document root directory. Do not put the include
 directory below your web servers document root.</P>
 
-<DT><B>Step 2</B><DD><P>Unpack your PHPLIB distribution. Move the contents of the
+<DT><strong>Step 2</strong><DD><P>Unpack your PHPLIB distribution. Move the contents of the
 <CODE>php</CODE> distribution directory into the <CODE>php</CODE> directory
 you just created.</P>
 
-<DT><B>Step 3</B><DD><P>Get to the <CODE>php3.ini</CODE> file for your web servers PHP
+<DT><strong>Step 3</strong><DD><P>Get to the <CODE>php3.ini</CODE> file for your web servers PHP
 interpreter and update the <CODE>include_path</CODE> statement so
 that it points to that <CODE>php</CODE> directory. Update the
 <CODE>auto_prepend_file</CODE> statement so that it points to the
@@ -114,7 +114,7 @@ that it points to that <CODE>php</CODE> directory. Update the
 <P>If you do not have control over your php3.ini file, you did not
 read the <EM>VERY IMPORTANT NOTE</EM> above.</P>
 
-<DT><B>Step 4</B><DD><P>Also check that <CODE>track_vars</CODE> are enabled and that you have
+<DT><strong>Step 4</strong><DD><P>Also check that <CODE>track_vars</CODE> are enabled and that you have
 enabled <CODE>magic_quotes_gpc</CODE>. While you are at it, you might
 want to check <CODE>sendmail_path</CODE>, if you plan to send mail from
 your application. It has to be set to <CODE>/usr/lib/sendmail -t</CODE>
@@ -122,19 +122,19 @@ on most UNIX systems to work.</P>
 <P>If you do not have control over your php3.ini file, you did
 not read the <EM>VERY IMPORTANT NOTE</EM> above.</P>
 
-<DT><B>Step 5</B><DD><P>cd into the <CODE>php</CODE> include directory. Edit <CODE>local.inc</CODE>.
+<DT><strong>Step 5</strong><DD><P>cd into the <CODE>php</CODE> include directory. Edit <CODE>local.inc</CODE>.
 In <CODE>class DB_Example</CODE> supply the appropriate parameters for
 your database connection.</P>
 
-<DT><B>Step 6</B><DD><P>For this database, run <CODE>create_database.mysql</CODE> from the
+<DT><strong>Step 6</strong><DD><P>For this database, run <CODE>create_database.mysql</CODE> from the
 distribution to create <CODE>active_sessions</CODE> and
 <CODE>auth_user</CODE>.  <CODE>auth_user</CODE> will be populated with a
 sample user named <CODE>kris</CODE> with a password <CODE>test</CODE>.</P>
 
-<DT><B>Step 7</B><DD><P>Move the contents of the <CODE>pages</CODE> directory and all its
+<DT><strong>Step 7</strong><DD><P>Move the contents of the <CODE>pages</CODE> directory and all its
 subdirectories into your document root directory.</P>
 
-<DT><B>Step 8</B><DD><P>Access the "/" URL of your web server with cookies enabled. If
+<DT><strong>Step 8</strong><DD><P>Access the "/" URL of your web server with cookies enabled. If
 no <CODE>index.html</CODE> is present, <CODE>index.php3</CODE> will be displayed.
 If you reload that page, the number shown must increment.
 Access your database with the mysql command client and <CODE>select
@@ -144,13 +144,13 @@ changes when you reload the page and <CODE>select * from
 active_sessions</CODE> again. If this works, the session class is
 functional with cookie mode.</P>
 
-<DT><B>Step 9</B><DD><P>Now access <CODE>showoff.php3</CODE>. Try to login as <CODE>kris</CODE>,
+<DT><strong>Step 9</strong><DD><P>Now access <CODE>showoff.php3</CODE>. Try to login as <CODE>kris</CODE>,
 password <CODE>test</CODE>. Check <CODE>active_sessions</CODE> again. You now
 should have a <CODE>Example_Session</CODE> entry (see the <CODE>name</CODE>
 column) and a <CODE>Example_User</CODE> entry in your table. Both should
 increment on reload.</P>
 
-<DT><B>Step 10</B><DD><P>Try again with cookies disabled. You should get a new session
+<DT><strong>Step 10</strong><DD><P>Try again with cookies disabled. You should get a new session
 (the cookie is lost) and you should be able to see your
 session id as the get parameter part of your URL.</P>
 </DL>
@@ -166,15 +166,15 @@ functionality with passwords. This section covers such
 core functionality usage of PHPLIB.</P>
 <P>
 <DL>
-<DT><B>Customizing the login screen</B><DD><P>Edit <CODE>loginform.ihtml</CODE> in the include directory to suit
+<DT><strong>Customizing the login screen</strong><DD><P>Edit <CODE>loginform.ihtml</CODE> in the include directory to suit
 your needs.</P>
 
-<DT><B>Customizing the permission levels</B><DD><P>Edit <CODE>local.inc</CODE> and change the class <CODE>Example_Perm</CODE> to
+<DT><strong>Customizing the permission levels</strong><DD><P>Edit <CODE>local.inc</CODE> and change the class <CODE>Example_Perm</CODE> to
 enumerate your permissions. Your users in <CODE>auth_user</CODE> must
 have one or more comma separated permission names from that
 list. Edit <CODE>perminvalid.ihtml</CODE> for a suitable error message.</P>
 
-<DT><B>Creating New Users</B><DD><P>Use <CODE>new_user.php3</CODE> from the <CODE>pages/admin</CODE> directory
+<DT><strong>Creating New Users</strong><DD><P>Use <CODE>new_user.php3</CODE> from the <CODE>pages/admin</CODE> directory
 of the distribution. If you followed the installation
 instructions, it should be available under the
 <CODE>/admin</CODE> URL of your web server.</P>
@@ -182,7 +182,7 @@ instructions, it should be available under the
 string")</CODE> to get a user id. <CODE>insert into auth_user values (
 "that userid", "username", "password", "permissions");</CODE>.</P>
 
-<DT><B>Creating an unprotected session page</B><DD><P>Begin that page with </P>
+<DT><strong>Creating an unprotected session page</strong><DD><P>Begin that page with </P>
 <P>
 <BLOCKQUOTE><CODE>
 <HR>
@@ -203,7 +203,7 @@ string")</CODE> to get a user id. <CODE>insert into auth_user values (
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>Creating a protected session page</B><DD><P>Begin that page with</P>
+<DT><strong>Creating a protected session page</strong><DD><P>Begin that page with</P>
 <P>
 <BLOCKQUOTE><CODE>
 <HR>
@@ -230,7 +230,7 @@ string")</CODE> to get a user id. <CODE>insert into auth_user values (
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>Creating protected functionality</B><DD><P>Begin that page with</P>
+<DT><strong>Creating protected functionality</strong><DD><P>Begin that page with</P>
 <P>
 <BLOCKQUOTE><CODE>
 <HR>
@@ -293,7 +293,7 @@ user. Actually, you never want to touch
 <CODE>$auth-&gt;auth["perm"]</CODE> manually, but use
 <CODE>$perm-&gt;have_perm("...")</CODE> for that.</P>
 
-<DT><B>Getting a grip on PHPLIB</B><DD><P>Read on. Then read the source. Read it again -
+<DT><strong>Getting a grip on PHPLIB</strong><DD><P>Read on. Then read the source. Read it again -
 Session-&gt;serialize() and Auth-&gt;start() are ugly. Get a CVS
 account. Contribute. Become famous. Buy a ferrari.</P>
 <P><EM>Note:</EM> You want to understand what registered variables are.
@@ -320,12 +320,12 @@ list, send a message with <CODE>subscribe</CODE> as the subject to the
 address <CODE>phplib-users-request@lists.sourceforge.net</CODE>.</P>
 <P>
 <DL>
-<DT><B>Checking that the web server is up and running</B><DD><P>Make sure your web server is up and serving the virtual host you
+<DT><strong>Checking that the web server is up and running</strong><DD><P>Make sure your web server is up and serving the virtual host you
 just set up. To do this, construct a small file <CODE>test1.html</CODE>
 in your DocumentRoot and access <CODE>test1.html</CODE> through your
 web server.</P>
 
-<DT><B>Checking that the web server is executing CGI programs</B><DD><P>Make sure your web server is up and does run CGI. Check the
+<DT><strong>Checking that the web server is executing CGI programs</strong><DD><P>Make sure your web server is up and does run CGI. Check the
 current directory, the UID/GID it is running programs under and
 have a look at the environment variables. Install the shell
 script</P>
@@ -363,8 +363,8 @@ environment (Check by running the Unix <CODE>ldd</CODE> command on PHP).</P>
 <CODE>libclntsh</CODE> dynamically: Can it be loaded from the CGI environment? If
 not, PHP will not come up later in the next step.</P>
 
-<DT><B>Checking that the PHP interpreter is running (Assuming CGI
-PHP)</B><DD><P>Copy your PHP binary into the cgi binary directory (which should
+<DT><strong>Checking that the PHP interpreter is running (Assuming CGI
+PHP)</strong><DD><P>Copy your PHP binary into the cgi binary directory (which should
 NOT be below DocumentRoot!) and make it executable. Copy
 <CODE>php3.ini</CODE> into the same directory. In DocumentRoot, create a
 <CODE>test2.php3</CODE> and put &lt;?php phpinfo() ?&gt; into it.</P>
@@ -400,7 +400,7 @@ your PHP interpreter with <CODE>--enable-force-cgi-redirect</CODE>.
 PHPLIB will not work with this interpreter. Recompile with the
 switch being set.</P>
 
-<DT><B>PHP interpreter (Assuming mod_php)</B><DD>
+<DT><strong>PHP interpreter (Assuming mod_php)</strong><DD>
 <P>Assuming your server is already correctly setup
 (don't forget to activate the PHP lines in <CODE>srm.conf</CODE>!),
 enter the following file and save it as <CODE>test2.php3</CODE>
@@ -417,7 +417,7 @@ under your DocumentRoot.</P>
 <P>If you access this using a web browser now, it should spit out
 much info about PHP, Apache and its environment.</P>
 
-<DT><B>Checking PHPLIB inclusion</B><DD><P>Does you PHP include PHPLIB properly? Check your
+<DT><strong>Checking PHPLIB inclusion</strong><DD><P>Does you PHP include PHPLIB properly? Check your
 <CODE>php3.ini</CODE> file. It must include the following settings:</P>
 <P>
 <BLOCKQUOTE><CODE>
@@ -455,7 +455,7 @@ print "It works without error messages.&lt;br>\n";
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>Checking database connectivity</B><DD><P>PHPLIB installation requires that you adapt <CODE>local.inc</CODE>
+<DT><strong>Checking database connectivity</strong><DD><P>PHPLIB installation requires that you adapt <CODE>local.inc</CODE>
 properly. Particularly, the provided class <CODE>DB_Example</CODE> must be
 customized for your database connection. Test that your
 web server can access the database with the following page:</P>
@@ -482,7 +482,7 @@ for <CODE>kris</CODE>, password <CODE>test</CODE>, permissions <CODE>admin</CODE
 the <CODE>auth_user</CODE> table. If this does not happen, your
 <CODE>DB_Example</CODE> definition in <CODE>local.inc</CODE> is broken.</P>
 
-<DT><B>Checking that sessions work</B><DD><P>Access the page <CODE>/index.php3</CODE> that has been provided
+<DT><strong>Checking that sessions work</strong><DD><P>Access the page <CODE>/index.php3</CODE> that has been provided
 with the distribution. This page will try to set a cookie in
 your browser. Allow that cookie to be set.</P>
 <P>The page will display a headline with a counter. Reload that
@@ -494,7 +494,7 @@ that the cookie is being set by viewing the output of
 other per-call data). Check your database permissions with your
 database command line interface.</P>
 
-<DT><B>Checking that Authentication works</B><DD><P>Try loading <CODE>/showoff.php3</CODE> that has been provided
+<DT><strong>Checking that Authentication works</strong><DD><P>Try loading <CODE>/showoff.php3</CODE> that has been provided
 with the distribution. This page will require a login. Login as
 <CODE>kris</CODE>, using a password of <CODE>test</CODE>. If the login is
 successful, you will see the per-session counter and a per-user

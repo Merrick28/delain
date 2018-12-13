@@ -80,55 +80,55 @@ currentItem</TD><TD>A counter for item positions.</TD></TR><TR><TD>
 <P>
 <DL>
 
-<DT><B>check($art)</B><DD><P> 
+<DT><strong>check($art)</strong><DD><P> 
 Checks that an item with the given article number <CODE>$art</CODE> is
 in the cart. Returns an array of a boolean value and an integer
 number. If the boolean is true, there are number many articles
 of that article number in the cart.</P>
 
-<DT><B>reset()</B><DD><P> 
+<DT><strong>reset()</strong><DD><P> 
 Deletes all items in current cart, resetting $this->currentItem to
 1. Always returns true.</P>
 
-<DT><B>num_items()</B><DD><P>Returns the number of articles in the current shopping cart, or
+<DT><strong>num_items()</strong><DD><P>Returns the number of articles in the current shopping cart, or
 false if cart is empty. For compatibility reasons, this function
 is available as <CODE>tot_arts</CODE> as well (but will print
 a warning if used by this name).</P>
 
-<DT><B>add_item($art, $num)</B><DD><P>Add <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> to the current
+<DT><strong>add_item($art, $num)</strong><DD><P>Add <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> to the current
 shopping cart. Returns the position number of <CODE>$art</CODE> in the
 shopping cart.</P>
 
-<DT><B>remove_item</B><DD><P>Remove <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> from the
+<DT><strong>remove_item</strong><DD><P>Remove <CODE>$num</CODE> many articles of article number <CODE>$art</CODE> from the
 shopping cart, if there are at least that many articles in the
 cart. Returns the position number of <CODE>$art</CODE> in the shopping cart
 or false, if there weren't enough <CODE>$art</CODE> to remove them from the
 cart. If the function does return false, the cart has not been
 modified.</P>
 
-<DT><B>set_item</B><DD><P>Set the quantity of article number <CODE>$art</CODE> in the shopping cart to 
+<DT><strong>set_item</strong><DD><P>Set the quantity of article number <CODE>$art</CODE> in the shopping cart to 
 exactly <CODE>$num</CODE>. If <CODE>$num</CODE> is set to zero, article is removed from
 cart. Returns the position number of <CODE>$art</CODE> in the shopping cart.</P>
 
-<DT><B>show_all()</B><DD><P>If the shopping cart is empty, it will call
+<DT><strong>show_all()</strong><DD><P>If the shopping cart is empty, it will call
 <CODE>show_empty_cart()</CODE> once and then return.</P>
 <P>Calls <CODE>show_item_open()</CODE> once at the beginning of a shopping
 cart listing. Then calls <CODE>show_item()</CODE> once for each item in
 the shopping cart. Calls <CODE>show_item_close()</CODE> once at the end
 of a shopping cart listing.</P>
 
-<DT><B>show_item($art, $num)</B><DD><P>This function should be provided by the user. It renders the
+<DT><strong>show_item($art, $num)</strong><DD><P>This function should be provided by the user. It renders the
 HTML to display a single item from the cart. <CODE>$art</CODE> is the
 article number of the item and there are <CODE>$num</CODE> of these in
 the cart.</P>
 
-<DT><B>show_cart_open()</B><DD><P>This function should be provided by the user. It renders the
+<DT><strong>show_cart_open()</strong><DD><P>This function should be provided by the user. It renders the
 prologue HTML to display a shopping cart listing.</P>
 
-<DT><B>show_cart_close()</B><DD><P>This function should be provided by the user. It renders the
+<DT><strong>show_cart_close()</strong><DD><P>This function should be provided by the user. It renders the
 epilogue HTML to display a shopping cart listing.</P>
 
-<DT><B>show_empty_cart</B><DD><P>This function should be provided by the user. It should render
+<DT><strong>show_empty_cart</strong><DD><P>This function should be provided by the user. It should render
 an appropriate message to symolize an empty cart.</P>
 </DL>
 </P>
@@ -532,52 +532,52 @@ varvals</TD><TD>Hash of strings. A translation table whichtranslates variable na
 
 <P>
 <DL>
-<DT><B>Template($root = ".", $unknowns = "remove")</B><DD><P>Constructor. May be called with two optional parameters. The
+<DT><strong>Template($root = ".", $unknowns = "remove")</strong><DD><P>Constructor. May be called with two optional parameters. The
 first parameter sets the template directory (see
 <CODE>set_root()</CODE>, the second parameter sets the policy
 regarding handling of unknown variables.</P>
 
-<DT><B>set_root($root)</B><DD><P>The function checks that $root is a valid directory and sets
+<DT><strong>set_root($root)</strong><DD><P>The function checks that $root is a valid directory and sets
 this directory as the base directory where templates are being
 stored.</P>
 
-<DT><B>set_unknowns($unknowns = "keep")</B><DD><P>The function sets the policy for dealing with unresolved
+<DT><strong>set_unknowns($unknowns = "keep")</strong><DD><P>The function sets the policy for dealing with unresolved
 variable names. Must be either "remove", "comment" or "keep". If
 set to "keep", those are left untouched. If set to "comment",
 unresolved variable names are transformed into HTML comments
 reporting the error. If set to "remove", unresolved variable
 names are silently removed (the default).</P>
 
-<DT><B>set_file($varname, $filename = "")</B><DD><P>The function defines a filename for the initial value of a
+<DT><strong>set_file($varname, $filename = "")</strong><DD><P>The function defines a filename for the initial value of a
 variable. It may be called with either a $varname/$filename pair
 or with a hash of $varname/$filename pairs. The files are not
 referenced yet, but only when needed.</P>
 
-<DT><B>set_block($parent, $varname, $name = "")</B><DD><P>A variable $parent may contain a variable block named by
+<DT><strong>set_block($parent, $varname, $name = "")</strong><DD><P>A variable $parent may contain a variable block named by
 $varname. The function removes that block from $parent and
 replaces it with a variable reference named $name. If $name is
 omitted, it is assumed to be the same as $varname.</P>
 
-<DT><B>set_var($varname, $value = "")</B><DD><P>The functions sets the inital value of a variable. It may be
+<DT><strong>set_var($varname, $value = "")</strong><DD><P>The functions sets the inital value of a variable. It may be
 called with either a $varname/$value pair or with a hash of
 $varname/$value pairs.</P>
 
-<DT><B>clear_var($varname)</B><DD><P>The functions clears the value of a variable. It may be
+<DT><strong>clear_var($varname)</strong><DD><P>The functions clears the value of a variable. It may be
 called with either a $varname string or with an array of
 $varname strings.</P>
 
-<DT><B>unset_var($varname)</B><DD><P>The functions unsets a variable. It may be
+<DT><strong>unset_var($varname)</strong><DD><P>The functions unsets a variable. It may be
 called with either a $varname string or with an array of
 $varname strings.</P>
 
-<DT><B>subst($varname)</B><DD><P>The function returns the value of the variable named $varname,
+<DT><strong>subst($varname)</strong><DD><P>The function returns the value of the variable named $varname,
 with all defined variable values filled in. The resulting string
 is not "finished", that is, the unresolved variable name policy
 has not been applied yet.</P>
 
-<DT><B>psubst($varname)</B><DD><P>This is a shorthand for <CODE>print $this->subst($varname)</CODE>.</P>
+<DT><strong>psubst($varname)</strong><DD><P>This is a shorthand for <CODE>print $this->subst($varname)</CODE>.</P>
 
-<DT><B>parse($target, $varname, $append = false)</B><DD><P>The function substitutes the values of all defined variables in
+<DT><strong>parse($target, $varname, $append = false)</strong><DD><P>The function substitutes the values of all defined variables in
 the variable named $varname and stores or appends the result in
 the variable named $target.</P>
 <P>If $varname is an array of variable names, $append is ignored.
@@ -587,31 +587,31 @@ in $target. The resulting substitution is available in the
 variable named by $target, as is each intermediate step for the
 next $varname in sequence.</P>
 
-<DT><B>pparse($target, $varname, $append = false)</B><DD><P>A shorthand for <CODE>print $this->parse(...)</CODE>.</P>
+<DT><strong>pparse($target, $varname, $append = false)</strong><DD><P>A shorthand for <CODE>print $this->parse(...)</CODE>.</P>
 
-<DT><B>get_vars()</B><DD><P>Returns a hash of all defined values, keyed by their names.</P>
+<DT><strong>get_vars()</strong><DD><P>Returns a hash of all defined values, keyed by their names.</P>
 
-<DT><B>get_var($varname)</B><DD><P>Returns the value of the variable named by $varname. If $varname
+<DT><strong>get_var($varname)</strong><DD><P>Returns the value of the variable named by $varname. If $varname
 references a file and that file has not been loaded, yet, the
 variable will be reported as empty.</P>
 <P>When called with an array of variable names, an hash of values,
 keyed by their names, will be returned.</P>
 
-<DT><B>get_undefined($varname)</B><DD><P>The function will return a hash of unresolved variable names in
+<DT><strong>get_undefined($varname)</strong><DD><P>The function will return a hash of unresolved variable names in
 $varname, keyed by their names (that is, the hash has the form
 $a[$name] = $name).</P>
 
-<DT><B>finish($str)</B><DD><P>The function will returned the finished version of $str, that
+<DT><strong>finish($str)</strong><DD><P>The function will returned the finished version of $str, that
 is, the policy regarding unresolved variable names will be
 applied to $str.</P>
 
-<DT><B>p($varname)</B><DD><P>The function will print the finished version of the value of the
+<DT><strong>p($varname)</strong><DD><P>The function will print the finished version of the value of the
 variable named by $varname.</P>
 
-<DT><B>get($varname)</B><DD><P>The function will return the finished version of the value of
+<DT><strong>get($varname)</strong><DD><P>The function will return the finished version of the value of
 the variable named by $varname.</P>
 
-<DT><B>haltmsg($msg)</B><DD><P>This function can be overridden by your subclass of Template. It
+<DT><strong>haltmsg($msg)</strong><DD><P>This function can be overridden by your subclass of Template. It
 will be called with an error message to print.</P>
 </DL>
 </P>
@@ -620,19 +620,19 @@ will be called with an error message to print.</P>
 
 <P>
 <DL>
-<DT><B>filename($filename)</B><DD><P>When called with a relative pathname, this function will return
+<DT><strong>filename($filename)</strong><DD><P>When called with a relative pathname, this function will return
 the pathname with $this->root prepended. Absolute pathnames are
 taken unchanged.</P>
 <P>The resulting filename must exist, or an error is generated.</P>
 
-<DT><B>varname($varname)</B><DD><P>The function will construct a variable name regexp for a given
+<DT><strong>varname($varname)</strong><DD><P>The function will construct a variable name regexp for a given
 variable name.</P>
 
-<DT><B>loadfile($varname)</B><DD><P>If a variable is undefined or empty and is backed by a filename,
+<DT><strong>loadfile($varname)</strong><DD><P>If a variable is undefined or empty and is backed by a filename,
 the backing file will be loaded and the files contents will be
 assigned as the variables value.</P>
 
-<DT><B>halt($msg)</B><DD><P>This function is called whenever an error occurs and will handle
+<DT><strong>halt($msg)</strong><DD><P>This function is called whenever an error occurs and will handle
 the error according to the policy defined in
 $this->halt_on_error.</P>
 </DL>

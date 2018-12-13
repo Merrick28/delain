@@ -55,13 +55,13 @@ if ($erreur == 0)
 			{
 				echo "<table>";	
 				echo "<tr>";
-				echo "<td class=\"soustitre2\"><b>Nom</b></td>";
+				echo "<td class=\"soustitre2\"><strong>Nom</strong></td>";
 				echo "<td></td>";
 				echo "</tr>";
 				while($db->next_record())
 				{
 					echo "<tr>";
-					echo "<td class=\"soustitre2\"><b>" , $db->f("perso_nom") , "</b></td>";
+					echo "<td class=\"soustitre2\"><strong>" , $db->f("perso_nom") , "</strong></td>";
 					echo "<td><a href=\"" , $PHP_SELF , "?methode=ouvrir&perso=" , $db->f("perso_cod") , "\">Ouvrir la porte ?</a>";
 					echo "</tr>";
 				}

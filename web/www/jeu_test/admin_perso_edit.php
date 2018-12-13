@@ -482,8 +482,8 @@ DLT : <?php echo $db->f("dlt");?></TD>
 	}
 	echo "</script>";
 ?>
-<div id='div_aide_bonus' style='display: none;'>Une valeur <b>positive</b> est <b>bénéfique</b>, et une valeur <b>négative</b> est <b>délétère</b></div>
-<div id='div_aide_malus' style='display: none;'>Une valeur <b>positive</b> est <b>délétère</b>, et une valeur <b>négative</b> est <b>bénéfique</b></div>
+<div id='div_aide_bonus' style='display: none;'>Une valeur <strong>positive</strong> est <strong>bénéfique</strong>, et une valeur <strong>négative</strong> est <strong>délétère</strong></div>
+<div id='div_aide_malus' style='display: none;'>Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong></div>
 </td></tr>
 <tr><td>Puissance : <input type="text" name="bonmal_valeur" size='6'> pendant <input type="text" name="bonmal_duree" size='6'> tours.</td></tr>
 <tr><td><input type="submit" value="Ajouter"/></td></tr>
@@ -864,7 +864,7 @@ Ajouter un titre : <input type="text" name="ptitre_titre">
 	}
 ?>
 <?php 	if ($db->is_locked($mod_perso_cod)) {?>
-<TR><TD colspan="2"><b>Ce perso est locké en combat !</b> Son déplacement va rompre tous les locks de combat.</TD></TR>
+<TR><TD colspan="2"><strong>Ce perso est locké en combat !</strong> Son déplacement va rompre tous les locks de combat.</TD></TR>
 <?php } ?>
 <form method="post" action="#">
 <input type="hidden" name="methode" value="move_perso">
@@ -886,7 +886,7 @@ Ajouter un titre : <input type="text" name="ptitre_titre">
 </TABLE>
 <hr>
 AJOUTER UN OBJET DE QUÊTE QUI N’EXISTE PAS ENCORE.
-<p><b>Attention ! </b>Cette procédure n’a pour but que de créer de nouveaux objets (première apparition dans le jeu) dans l’inventaire d’un perso.</p>
+<p><strong>Attention ! </strong>Cette procédure n’a pour but que de créer de nouveaux objets (première apparition dans le jeu) dans l’inventaire d’un perso.</p>
 
 <form method="post" action="#">
 <input type="hidden" name="methode" value="add_new_object">

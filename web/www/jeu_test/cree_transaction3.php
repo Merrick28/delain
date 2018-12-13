@@ -283,7 +283,7 @@ switch($methode)
 													}
 													else
 													{
-														echo"<p><b>Cette transaction (et seulement celle ci) est directement validée<br /></b>";
+														echo"<p><strong>Cette transaction (et seulement celle ci) est directement validée<br /></strong>";
 													}
 											}
 						}

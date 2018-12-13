@@ -17,7 +17,7 @@ $db3 = new base_delain;
 <p class="titre">Les champions de Delain !</p><hr>
 <center>
 <?php 
-    echo '<i>Page générée ' . date('\l\e d/m/Y \à H:i') . '</i>';
+    echo '<em>Page générée ' . date('\l\e d/m/Y \à H:i') . '</em>';
 ?>
 <table>
 <?php 
@@ -53,7 +53,7 @@ while($db->next_record())
             // début de ligne
             if (fmod($cpt_comp, 2) == 0)
                 echo "<tr>";
-            echo "<td nowrap class=\"soustitre2\"><p><b>" . $db2->f("comp_libelle") . "</b></p></td>";
+            echo "<td nowrap class=\"soustitre2\"><p><strong>" . $db2->f("comp_libelle") . "</strong></p></td>";
             echo "<td>";
             
             while($db3->next_record())
@@ -63,7 +63,7 @@ while($db->next_record())
                 if ($nombre_courant > $nombre_max && $valeur < $comp_courante)
                     break;
                 $comp_courante = $valeur;
-                echo "<b>$valeur %</b> - " . $db3->f("perso_nom") . "<br>";
+                echo "<strong>$valeur %</strong> - " . $db3->f("perso_nom") . "<br>";
             }
             echo "</td>";
             if (fmod($cpt_comp, 2) != 0)
@@ -80,7 +80,7 @@ while($db->next_record())
 }
 ?>
 </table></center>
-<hr><br><b><u>Richesse des souterrains :</u></b><br><br>
+<hr><br><strong><u>Richesse des souterrains :</u></strong><br><br>
 
 <?php 
 $req = "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso != 2 and perso_pnj != 1 and perso_test != 'O'";
@@ -107,8 +107,8 @@ $po_banque = $db->f("po_banque");
 $po_banque_max = $db->f("po_banque_max");
 
 
-echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0, '', ' ') . "</b> brouzoufs<br>Le plus riche possède <b>". number_format($po_max, 0, '', ' ') ."</b> brouzoufs<br><b>". number_format($po_monstre, 0, '', ' ') ."</b> brouzoufs sont portés par les monstres, et seulement <b>". number_format($po_familier, 0, '', ' ') . "</b> par les familiers.<br>Non content de cela, les aventuriers ont thésaurisé en banque <b>". number_format($po_banque, 0, '', ' ') ."</b> de brouzoufs, avec un petit veinard qui détient un petit pactole à l'abris de <b>". number_format($po_banque_max, 0, '', ' ') ."</b> ! Mieux vaut que la banque ne se fasse pas braquer !
-<br><br>En même temps, le plus intelligent possède une intelligence de <b>". $intelligence ."</b> alors que le plus fort a <b>". $force ."</b> en force, la plus grosse dextérité est de <b>". $dexterite ."</b> et la plus grosse constitution est de <b>". $constit ."</b>. Alors comment vous situez vous par rapport à cela ?"  ;
+echo "Les aventuriers possèdent tous ensemble <strong>". number_format($po_global, 0, '', ' ') . "</strong> brouzoufs<br>Le plus riche possède <strong>". number_format($po_max, 0, '', ' ') ."</strong> brouzoufs<br><strong>". number_format($po_monstre, 0, '', ' ') ."</strong> brouzoufs sont portés par les monstres, et seulement <strong>". number_format($po_familier, 0, '', ' ') . "</strong> par les familiers.<br>Non content de cela, les aventuriers ont thésaurisé en banque <strong>". number_format($po_banque, 0, '', ' ') ."</strong> de brouzoufs, avec un petit veinard qui détient un petit pactole à l'abris de <strong>". number_format($po_banque_max, 0, '', ' ') ."</strong> ! Mieux vaut que la banque ne se fasse pas braquer !
+<br><br>En même temps, le plus intelligent possède une intelligence de <strong>". $intelligence ."</strong> alors que le plus fort a <strong>". $force ."</strong> en force, la plus grosse dextérité est de <strong>". $dexterite ."</strong> et la plus grosse constitution est de <strong>". $constit ."</strong>. Alors comment vous situez vous par rapport à cela ?"  ;
 ?>
 <br><br>
 <hr>
@@ -137,7 +137,7 @@ echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0
 			$total_max2 = $db->f("total_max2");
 
 			echo "<tr>";
-			echo "<td nowrap class=\"soustitre2\"><p><b>". $race_nom . "</b></p></td>";
+			echo "<td nowrap class=\"soustitre2\"><p><strong>". $race_nom . "</strong></p></td>";
 			echo "<td>";
 			$req_p = "select total_max2,gmon_race_cod,ptab_perso_cod,perso_nom from (select gmon_race_cod,sum(total_max) as total_max2,ptab_perso_cod from
 						          (select ptab_perso_cod,sum(ptab_total * gmon_niveau * gmon_niveau) as total_max,gmon_race_cod
@@ -162,8 +162,8 @@ echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0
 
 ?>
 </table>
-<br><b><i>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
-<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</i></b>
+<br><strong><em>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
+<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</em></strong>
 <br>
 <hr>
 
@@ -176,7 +176,7 @@ $req = "select distinct ptab_gmon_cod,gmon_niveau, gmon_nom from perso_tableau_c
 $db->query($req);
 if ($db->nf() != 0)
 {
-   echo '<p class="titre">TABLEAU Des plus grands chasseurs en <b>SOLO</b></p><table width="80%">
+   echo '<p class="titre">TABLEAU Des plus grands chasseurs en <strong>SOLO</strong></p><table width="80%">
    				<tr><td class="titre">Monstre</td><td class="titre">Nom</td><td class="titre">Total achevé en solo</td></tr>';
    while($db->next_record())
 	{
@@ -205,7 +205,7 @@ if ($db->nf() != 0)
 			if ($total_max != 0)
 			{
 			   /* On affiche tous les noms qui correspondent à ce total après avoir testé qu'ils existent bien*/
-					echo '<tr><td class="soustitre2"><b>' . $db->f("gmon_nom") . '<!-- ' . $db->f('ptab_gmon_cod') . '--></b></td><td>';
+					echo '<tr><td class="soustitre2"><strong>' . $db->f("gmon_nom") . '<!-- ' . $db->f('ptab_gmon_cod') . '--></strong></td><td>';
 		     	$req = "	select distinct perso_nom,sum(ptab_solo)
 		     		from perso,perso_tableau_chasse
 		     		where ptab_gmon_cod = " . $db->f('ptab_gmon_cod')  . "
@@ -216,7 +216,7 @@ if ($db->nf() != 0)
 						having sum(ptab_solo) = " . $db2->f('tmax');
 		     	$db3->query($req);
 		     	if($db3->nf() == 0)
-		     		echo '<i>Champion disparu....</i>';
+		     		echo '<em>Champion disparu....</em>';
 					else
 					{
 		     		while($db3->next_record())

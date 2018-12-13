@@ -69,7 +69,7 @@ else
 	$pfac_nv_points = $pfac_points;
 	
 	// Afficher introduction de la faction
-	echo "<div><b>Faction « $faction_nom »</b><br /><i>$faction_desc</i></div>";
+	echo "<div><strong>Faction « $faction_nom »</strong><br /><em>$faction_desc</em></div>";
 	
 	if (!isset($methode))
 		$methode = 'Début';
@@ -317,7 +317,7 @@ else
 				// On donne des brouzoufs et des PXs pour cet exploit
 				$brouzoufs = 1000 * $nouveau_rang * ($nouveau_rang - $pfac_rang_numero);
 				$pxs = 20 * $nouveau_rang * ($nouveau_rang - $pfac_rang_numero);
-				$texte_promo = "<p style='margin-top:10px;'><b>Félicitations $rfac_nom ! Vos états de service nous permettent de vous promouvoir au rang de « $rfac_nv_nom » !</b><br /> Pour fêter ça, prenez ces $brouzoufs brouzoufs. Vous gagnez aussi $pxs PX.</p>";
+				$texte_promo = "<p style='margin-top:10px;'><strong>Félicitations $rfac_nom ! Vos états de service nous permettent de vous promouvoir au rang de « $rfac_nv_nom » !</strong><br /> Pour fêter ça, prenez ces $brouzoufs brouzoufs. Vous gagnez aussi $pxs PX.</p>";
 				$req_promo = "update faction_perso set pfac_rang_numero = $nouveau_rang
 					WHERE pfac_fac_cod = $faction AND pfac_perso_cod = $perso_cod";
 				$db->query($req_promo);
@@ -328,7 +328,7 @@ else
 		}
 		
 		if ($rfac_intro == "")
-			$rfac_intro = "<b>$rfac_nom</b>, content de vous revoir ! Il y a toujours du travail pour quelqu’un d’assidu.";
+			$rfac_intro = "<strong>$rfac_nom</strong>, content de vous revoir ! Il y a toujours du travail pour quelqu’un d’assidu.";
 	
 		if ($texte_promo != '')
 			echo $texte_promo;

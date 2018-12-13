@@ -50,9 +50,9 @@ if ($erreur == 0)
 		echo("<p>Choisissez l'amélioration que vous souhaitez :");
 		echo "<table cellspacing=\"2\">";
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b>Amélioration</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Valeur actuelle</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Nouvelle valeur</b></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Amélioration</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Valeur actuelle</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Nouvelle valeur</strong></td>";
 		echo "<td></td>";
 
 		/**********/
@@ -368,21 +368,21 @@ if ($erreur == 0)
 			if (!$af0 && !$af1 && !$af2)
 			{
 				echo "<tr>" ;
-				echo "<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante</a><br /><i>Attention: Uniquement pour les armes au <b>corps à corps</b></i></td>" ;
+				echo "<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante</a><br /><em>Attention: Uniquement pour les armes au <strong>corps à corps</strong></em></td>" ;
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"18\"></td>";
 				echo "</tr>";
 			}
 			if ($af0 && !$af1 && !$af2)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante lvl 2 </a><br /><i>Attention: Uniquement pour les armes au <b>corps à corps</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante lvl 2 </a><br /><em>Attention: Uniquement pour les armes au <strong>corps à corps</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"10\"></td>";
 				echo "</tr>";
 			}
 			if ($af1)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante lvl 3 </a><br /><i>Attention: Uniquement pour les armes au <b>corps à corps</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante lvl 3 </a><br /><em>Attention: Uniquement pour les armes au <strong>corps à corps</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"11\"></td>";
 				echo "</tr>";
 			}
@@ -431,42 +431,42 @@ if ($erreur == 0)
 			if (!$bp0 && !$bp1 && !$bp2)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant</a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant</a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"21\"></td>";
 				echo "</tr>";
 			}
 			if ($bp0 && !$bp2)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant lvl 2 </a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant lvl 2 </a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"22\"></td>";
 				echo "</tr>";
 			}
 			if ($bp1)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant lvl 3 </a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=4\">Bout portant lvl 3 </a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"23\"></td>";
 				echo "</tr>";
 			}
 			if (!$tp0 && !$tp1 && !$tp2)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis</a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis</a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"24\"></td>";
 				echo "</tr>";
 			}
 			if ($tp0 && !$tp2)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis lvl 2 </a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis lvl 2 </a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"25\"></td>";
 				echo "</tr>";
 			}
 			if ($tp1)
 			{
 				echo("<tr>");
-				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis lvl 3 </a><br /><i>Attention: Uniquement pour les armes de <b>distance</b></i></td>");
+				echo("<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=5\">Tir précis lvl 3 </a><br /><em>Attention: Uniquement pour les armes de <strong>distance</strong></em></td>");
 				echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"26\"></td>";
 				echo "</tr>";
 			}

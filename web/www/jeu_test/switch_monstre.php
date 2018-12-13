@@ -35,7 +35,7 @@
 		$restrict2 = 'and pos_etage in (' . $droit['etage'] . ') ';
 	}
 
-    echo '<p><b>Trouver un monstre</b></p>';
+    echo '<p><strong>Trouver un monstre</strong></p>';
 	if ($perso_cod > 0)
 	{
 		$req = "select ppos_pos_cod, pos_etage from perso_position
@@ -95,16 +95,16 @@
 					$style = ' style="background: red;"';
 				}
 				if ($db->f("compt_nom") != '') {
-  				echo "<br><br><b$style> - Attribué à " , $db->f("compt_nom") , "</b>";
+  				echo "<br><br><b$style> - Attribué à " , $db->f("compt_nom") , "</strong>";
   			}
   			else {
-  				echo "<br><b$style> - Non attribué</b>";
+  				echo "<br><b$style> - Non attribué</strong>";
   			}
 			  $prec_admin = $db->f("compt_nom");
 			}
 			
 			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
-			echo "<br>" , ($inactif?'<i>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . " - <b>(" , $db->f("mess") , " messages)</b> (" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>" , ($inactif?'</i>':'');
+			echo "<br>" , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . " - <strong>(" , $db->f("mess") , " messages)</strong> (" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>" , ($inactif?'</em>':'');
 		}
 	}
 	echo "<hr>";
@@ -215,15 +215,15 @@
 		{
 			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
 			$image = ($db->f('commandant') > 0) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" /> ' : (($db->f('troupe') >= 0) ? '<img src="' . G_IMAGES . 'commandé.png" title="Troupe" /> ' : '');
-			echo "<br>" , $image , ($inactif?'<i>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") .  "(" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>, " , ($inactif?'</i>':''), $db->f("perso_pa"), " PA, ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), ", ";
+			echo "<br>" , $image , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") .  "(" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>, " , ($inactif?'</em>':''), $db->f("perso_pa"), " PA, ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), ", ";
 			if ($db->f("dlt_passee") == 1)
 			{
-				echo("<b>");
+				echo("<strong>");
 			}
 			echo $db->f("dlt");
 			if ($db->f("dlt_passee") == 1)
 			{
-				echo("</b>");
+				echo("</strong>");
 			}
 			echo " - <a href='?methode=relache&perso=" . $db->f("perso_cod") . "'>Le relâcher ?</a>";
 			$mvm = $db->f("perso_monstre_attaque_monstre");

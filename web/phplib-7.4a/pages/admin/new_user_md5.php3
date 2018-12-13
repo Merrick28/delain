@@ -104,8 +104,8 @@ if (isset($HTTP_POST_VARS['perms'])) $perms = $HTTP_POST_VARS['perms'];
 <body bgcolor="#ffffff">
 <h1>User Administration</h1>
 <P>
-You are logged in as <b><?php print $auth->auth["uname"] ?></b>
-with admin level <b><?php print $auth->auth["perm"] ?></b>.<BR>
+You are logged in as <strong><?php print $auth->auth["uname"] ?></strong>
+with admin level <strong><?php print $auth->auth["perm"] ?></strong>.<BR>
 Your authentication is valid until
 <?php print date("d M Y, H:i:s", $auth->auth["exp"])?>.
 </P>
@@ -126,7 +126,7 @@ Your authentication is valid until
 
 # Notify the user if a plain text password is received
 if(!empty($password)) {
-  my_error("<b>Warning:</b> plain text password received. Is Javascript enabled?");
+  my_error("<strong>Warning:</strong> plain text password received. Is Javascript enabled?");
 }
 
 ## Get a database connection
@@ -172,7 +172,7 @@ while ( is_array($HTTP_POST_VARS)
     
     ## Do we have all necessary data?
     if (empty($username) || empty($password)) {
-      my_error("Please fill out <B>Username</B> and <B>Password</B>!");
+      my_error("Please fill out <strong>Username</strong> and <strong>Password</strong>!");
       break;
     }
     
@@ -180,7 +180,7 @@ while ( is_array($HTTP_POST_VARS)
     ## NOTE: This should be a transaction, but it isn't...
     $db->query("select * from auth_user_md5 where username='$username'");
     if ($db->nf()>0) {
-      my_error("User <B>$username</B> already exists!");
+      my_error("User <strong>$username</strong> already exists!");
       break;
     }
 
@@ -190,7 +190,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "insert into auth_user_md5 values('$u_id','$username','$password','$permlist')";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     
@@ -208,13 +208,13 @@ while ( is_array($HTTP_POST_VARS)
     ## Handle users changing their own password...
     if (!$perm->have_perm("admin")) {
       if (!$new_password) {
-        my_error("Please fill out a new <b>Password</b> ");
+        my_error("Please fill out a new <strong>Password</strong> ");
         break;
       }
       $query = "update auth_user_md5 set password='$password' where user_id='$u_id'";
       $db->query($query);
       if ($db->affected_rows() == 0) {
-        my_error("<b>Failed:</b> $query");
+        my_error("<strong>Failed:</strong> $query");
         break;
       }
       
@@ -224,7 +224,7 @@ while ( is_array($HTTP_POST_VARS)
     
     ## Do we have all necessary data?
     if (empty($username) || empty($password)) {
-      my_error("Please fill out <B>Username</B> and <B>Password</B>!");
+      my_error("Please fill out <strong>Username</strong> and <strong>Password</strong>!");
       break;
     }
     
@@ -238,7 +238,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "update auth_user_md5 set username='$username', $password_query perms='$permlist' where user_id='$u_id'";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     
@@ -257,7 +257,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "delete from auth_user_md5 where user_id='$u_id' and username='$username'";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     

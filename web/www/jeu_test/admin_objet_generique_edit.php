@@ -203,7 +203,7 @@ else
 			</tr>
 			<tr>
 				<td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
-				<td><input type="text" name="gobj_chance_drop_monstre">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
+				<td><input type="text" name="gobj_chance_drop_monstre">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</em></td>
 			</tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>
@@ -226,7 +226,7 @@ else
 			break;
 		case "mod": // modification d'un objet existant
 
-            echo '<br><a href="'.$PHP_SELF.'?methode=cre">Création d’un nouvel objet ?</a><br><br><b>Modification d’un objet existant:</b><br><br>';
+            echo '<br><a href="'.$PHP_SELF.'?methode=cre">Création d’un nouvel objet ?</a><br><br><strong>Modification d’un objet existant:</strong><br><br>';
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';
@@ -500,7 +500,7 @@ else
 			</tr>
             <tr>
                 <td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
-                <td><input type="text" name="gobj_chance_drop_monstre" value="<?php echo $db->f("gobj_chance_drop_monstre");?>">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</i></td>
+                <td><input type="text" name="gobj_chance_drop_monstre" value="<?php echo $db->f("gobj_chance_drop_monstre");?>">&nbsp; <i style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être possèdé par le monstre</em></td>
             </tr>
 			<tr>
 				<td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>

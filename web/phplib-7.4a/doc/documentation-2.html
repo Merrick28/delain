@@ -45,7 +45,7 @@ with PHPLIB. Details are outlined below.</P>
 require changes in normal PHPLIB applications. </P>
 <P>
 <DL>
-<DT><B>Application configuration in <CODE>local.inc</CODE>:</B><DD><P>Your application will almost certainly not work with the
+<DT><strong>Application configuration in <CODE>local.inc</CODE>:</strong><DD><P>Your application will almost certainly not work with the
 default values supplied by the above classes. You are supposed
 to extend the classes described below as you see fit.</P>
 
@@ -63,7 +63,7 @@ distribution to run.</P>
 
 <P>The file is required and you must change it for your setup.</P>
 
-<DT><B>Application setup in <CODE>setup.inc</CODE>:</B><DD><P>The <CODE>Session</CODE> class provides the ability to execute
+<DT><strong>Application setup in <CODE>setup.inc</CODE>:</strong><DD><P>The <CODE>Session</CODE> class provides the ability to execute
 initialization code at session setup. See the class
 description for instructions on how to set this up.</P>
 <P>Per convention, we store such code in <CODE>setup.inc</CODE>
@@ -73,7 +73,7 @@ a new session is started.</P>
 
 <P>The file is optional. No default is provided.</P>
 
-<DT><B>Selection of automatically loaded classes in <CODE>prepend.php3</CODE></B><DD><P>The file <CODE>prepend.php3</CODE> determines which code is being
+<DT><strong>Selection of automatically loaded classes in <CODE>prepend.php3</CODE></strong><DD><P>The file <CODE>prepend.php3</CODE> determines which code is being
 loaded for all PHP3 interpreted pages. Normally, we include
 the class definitions for all core classes in this file:
 <CODE>db_mysql.inc</CODE>, <CODE>session.inc</CODE>, <CODE>auth.inc</CODE>,
@@ -102,10 +102,10 @@ that you always include all of them, as they are a tightly
 integrated set of classes with many dependencies among them.</P>
 <P>
 <DL>
-<DT><B>Class <CODE>DB_Sql</CODE> defined in exactly one of
+<DT><strong>Class <CODE>DB_Sql</CODE> defined in exactly one of
 <CODE>db_mysql.inc</CODE>, <CODE>db_msql.inc</CODE>, <CODE>db_pgsql.inc</CODE>, 
 <CODE>db_odbc.inc</CODE>, <CODE>db_sybase.inc</CODE>, <CODE>db_mssql.inc</CODE>,
-<CODE>db_oracle.inc</CODE> or <CODE>db_oci8.inc</CODE>:</B><DD>
+<CODE>db_oracle.inc</CODE> or <CODE>db_oci8.inc</CODE>:</strong><DD>
 <P>A database access class for your database server. PHPLIB
 depends on the presence of a SQL database server. Depending
 on the type of your database server, you have to select the
@@ -117,7 +117,7 @@ implicit) and result memory is managed automatically.</P>
 
 <P>An independent class.</P>
 
-<DT><B>Class <CODE>Session</CODE> defined in <CODE>session.inc</CODE>:</B><DD><P>Manages an arbitrary amount of arbitrarily named session
+<DT><strong>Class <CODE>Session</CODE> defined in <CODE>session.inc</CODE>:</strong><DD><P>Manages an arbitrary amount of arbitrarily named session
 variables of scalar, array and object types (Object support
 requires that you implement two instance variables in your
 classes). Tracks sessions via cookies or a <CODE>get</CODE>-variable
@@ -125,19 +125,19 @@ appended to each URL.</P>
 
 <P>Depends on <CODE>DB_Sql</CODE>.</P>
 
-<DT><B>Class <CODE>Auth</CODE> defined in <CODE>auth.inc</CODE>:</B><DD><P>Manages session authentication. Sessions are authenticated
+<DT><strong>Class <CODE>Auth</CODE> defined in <CODE>auth.inc</CODE>:</strong><DD><P>Manages session authentication. Sessions are authenticated
 against usernames and passwords in a database. Authentication
 can be time limited.</P>
 
 <P>Depends on <CODE>Session</CODE> and <CODE>DB_Sql</CODE>.</P>
 
-<DT><B>Class <CODE>Perm</CODE> defined in <CODE>perm.inc</CODE>:</B><DD><P>Manages permission checks on authenticated session pages.
+<DT><strong>Class <CODE>Perm</CODE> defined in <CODE>perm.inc</CODE>:</strong><DD><P>Manages permission checks on authenticated session pages.
 Protected pages are only accessible to users with the
 specified rights.</P>
 
 <P>Depends on <CODE>Auth</CODE>, <CODE>Session</CODE> and <CODE>DB_Sql</CODE>.</P>
 
-<DT><B>Class <CODE>User</CODE> defined in <CODE>user.inc</CODE>:</B><DD><P>Manages user dependent variables. Unlike session variables
+<DT><strong>Class <CODE>User</CODE> defined in <CODE>user.inc</CODE>:</strong><DD><P>Manages user dependent variables. Unlike session variables
 these are bound to a user id, not to a session id. They are
 persistent over multiple sessions, but are only available
 after a user has been authenticated.</P>
@@ -145,8 +145,8 @@ after a user has been authenticated.</P>
 <P>Depends on <CODE>Auth</CODE>, <CODE>Session</CODE> and <CODE>DB_Sql</CODE>,
 extension of <CODE>Session</CODE>.</P>
 
-<DT><B>functions <CODE>page_open()</CODE> and <CODE>page_close()</CODE>
-defined in <CODE>page.inc</CODE>:</B><DD><P>Setup and Shutdown functions, must be present on any session page.</P>
+<DT><strong>functions <CODE>page_open()</CODE> and <CODE>page_close()</CODE>
+defined in <CODE>page.inc</CODE>:</strong><DD><P>Setup and Shutdown functions, must be present on any session page.</P>
 
 <P>Depend on <CODE>Session</CODE>.</P>
 </DL>
@@ -162,14 +162,14 @@ below).</P>
 <P>
 <DL>
 
-<DT><B><CODE>Cart</CODE> in <CODE>cart.inc</CODE>:</B><DD><P>Manages a simple shopping cart. Items can be put into the
+<DT><strong><CODE>Cart</CODE> in <CODE>cart.inc</CODE>:</strong><DD><P>Manages a simple shopping cart. Items can be put into the
 cart, taken out of the cart and the carts contents can be
 enumerated.</P>
 
 <P>Depends on <CODE>Session</CODE> to be useful. Requires that you add the
 statement <CODE>require("cart.inc")</CODE> to <CODE>prepend.php3</CODE>.</P>
 
-<DT><B><CODE>Template</CODE> in <CODE>template.inc</CODE>:</B><DD><P>Manages templates and variable replacement. Templates can be
+<DT><strong><CODE>Template</CODE> in <CODE>template.inc</CODE>:</strong><DD><P>Manages templates and variable replacement. Templates can be
 stored in files. They are loaded on demand and variables are
 replaced in these files.</P>
 
@@ -188,13 +188,13 @@ functionality commonly used in applications, in a way that the
 actual look of the GUI-elements can be easily customized.</P>
 <P>
 <DL>
-<DT><B><CODE>CSV_Table</CODE> in <CODE>csv_table.inc</CODE>:</B><DD><P>Creates a dump of a two dimensional array or a query result
+<DT><strong><CODE>CSV_Table</CODE> in <CODE>csv_table.inc</CODE>:</strong><DD><P>Creates a dump of a two dimensional array or a query result
 in CSV format, suitable for loading into a database or a
 spreadsheet program.</P>
 
 <P>Depends on <CODE>Table</CODE>, extension of <CODE>Table</CODE>.</P>
 
-<DT><B><CODE>Sql_Query</CODE> in <CODE>sql_query.inc</CODE>:</B><DD><P>Create a selection widget that allows a user to choose
+<DT><strong><CODE>Sql_Query</CODE> in <CODE>sql_query.inc</CODE>:</strong><DD><P>Create a selection widget that allows a user to choose
 arbitrary conditions on one or more table columns. SQL is
 being created from these selections that can be used in the
 where-clause of a larger SQL select statement.</P>
@@ -203,7 +203,7 @@ where-clause of a larger SQL select statement.</P>
 you add the statement <CODE>require("sqlquery.inc")</CODE> to
 <CODE>prepend.php3</CODE>.</P>
 
-<DT><B><CODE>Table</CODE> in <CODE>table.inc</CODE>:</B><DD><P>Creates HTML tables from two dimensional arrays or from
+<DT><strong><CODE>Table</CODE> in <CODE>table.inc</CODE>:</strong><DD><P>Creates HTML tables from two dimensional arrays or from
 database query results. The class can either filter out the
 desired columns from an array or you can explicitly name
 which columns to show. A heading can be turned on if desired.
@@ -214,7 +214,7 @@ input element to allow for row selection.</P>
 
 <P>An independent class.</P>
 
-<DT><B><CODE>Form</CODE> in <CODE>oohforms.inc</CODE>:</B><DD><P>Creates HTML forms from feature-&gt;value arrays.  This provides a
+<DT><strong><CODE>Form</CODE> in <CODE>oohforms.inc</CODE>:</strong><DD><P>Creates HTML forms from feature-&gt;value arrays.  This provides a
 single syntax for creating all of the different types of form
 elements.  The class provides easy access to Javascript and server
 side validation, and supports 'freezing' some or all of the form
@@ -389,7 +389,7 @@ mit <CODE>mod_php</CODE>.</P>
 <P>
 <DL>
 
-<DT><B>Library Setup</B><DD><P>Create a directory php next to your cgi:</P>
+<DT><strong>Library Setup</strong><DD><P>Create a directory php next to your cgi:</P>
 <P>
 <BLOCKQUOTE><CODE>
 <HR>
@@ -417,7 +417,7 @@ files and directories from the <CODE>pages</CODE> directory of the
 distribution.</P>
 <P>Have <CODE>documentation.txt</CODE> handy and read it.</P>
 
-<DT><B>Database access with MySQL</B><DD><P>The following information applies to MySQL only. No information
+<DT><strong>Database access with MySQL</strong><DD><P>The following information applies to MySQL only. No information
 is provided for other database servers as of now. You are
 encouraged to copy this section, adapt it for your database
 server and submit it to the authors. It will be included in
@@ -455,7 +455,7 @@ from auth_user</CODE>?</P>
 several different databases in the <CODE>stuff</CODE> directory of the
 distribution.</P>
 
-<DT><B>Merging the library with your PHP files</B><DD><P>Decide if you want to use <CODE>include</CODE> or
+<DT><strong>Merging the library with your PHP files</strong><DD><P>Decide if you want to use <CODE>include</CODE> or
 <CODE>auto_prepend_file</CODE>. We do use
 <CODE>auto_prepend_file</CODE>
 here and we add the statement
@@ -477,7 +477,7 @@ should increment when that page is being reloaded. Also, checking
 <CODE>active_sessions</CODE> in the database should reflect that
 session.</P>
 
-<DT><B>Subscribe for support</B><DD><P>The 
+<DT><strong>Subscribe for support</strong><DD><P>The 
 <A HREF="mailto:phplib-users@lists.sourceforge.net">PHPLIB support mailing list</A> is available should you run into problems
 with the library. To subscribe to the list, send a message with
 <CODE>subscribe</CODE> as the subject to the address

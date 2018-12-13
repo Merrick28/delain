@@ -46,7 +46,7 @@ for($cpt=1;$cpt<=$nb_pages;$cpt++)
 	$v_debut = ($cpt-1)*20;
 	if ($cpt == $page_en_cours)
 	{
-		$contenu_page .= '<font class="soustitre2"><b>' . $page_en_cours . '</b></font> &nbsp;&nbsp;';
+		$contenu_page .= '<font class="soustitre2"><strong>' . $page_en_cours . '</strong></font> &nbsp;&nbsp;';
 	}
 	else
 	{

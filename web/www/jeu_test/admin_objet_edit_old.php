@@ -111,23 +111,23 @@ if ($erreur == 0)
 					<td><input type="text" size="50" name="obj_nom" value="<?php echo $db->f('obj_nom');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nom générique <br><i>(objet non identifié, quand il est au sol. Un @ à la fin du nom signifie qu'il ne sera plus déséquipable): </i></td>
+					<td class="soustitre2">Nom générique <br><em>(objet non identifié, quand il est au sol. Un @ à la fin du nom signifie qu'il ne sera plus déséquipable): </em></td>
 					<td><input type="text" size="50" name="obj_nom_generique" value="<?php echo $db->f('obj_nom_generique');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Nom porté <br><i>(dans la description d’un perso): </i></td>
+					<td class="soustitre2">Nom porté <br><em>(dans la description d’un perso): </em></td>
 					<td><input type="text" size="50" name="obj_nom_porte" value="<?php echo $db->f('obj_nom_porte');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Type d’objet <br><i>(non modifiable) </i></td>
+					<td class="soustitre2">Type d’objet <br><em>(non modifiable) </em></td>
 					<td><?php echo $db->f('tobj_libelle');?></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Cout en PA pour une attaque normale <br><i>(non modifiable, armes seulement) </i></td>
+					<td class="soustitre2">Cout en PA pour une attaque normale <br><em>(non modifiable, armes seulement) </em></td>
 					<td><?php echo $db->f('gobj_pa_normal');?></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Coût en PA pour une attaque foudroyante <br><i>(non modifiable, armes seulement) </i></td>
+					<td class="soustitre2">Coût en PA pour une attaque foudroyante <br><em>(non modifiable, armes seulement) </em></td>
 					<td><?php echo $db->f('gobj_pa_eclair');?></td>
 				</tr>
 				<tr>
@@ -135,7 +135,7 @@ if ($erreur == 0)
 					<td><textarea name="obj_description"><?php echo $db->f('obj_description');?></textarea></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Valeur : <br><i>(référence de prix pour les échoppes)</i></td>
+					<td class="soustitre2">Valeur : <br><em>(référence de prix pour les échoppes)</em></td>
 					<td><input type="text" size="50" name="obj_valeur" value="<?php echo $db->f('obj_valeur');?>"></td>
 				</tr>
 				<tr>
@@ -143,37 +143,37 @@ if ($erreur == 0)
 					<td><input type="text" size="5" name="obj_poids" value="<?php echo $db->f('obj_poids');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">État de l’objet : <br><i>(en %)</i></td>
+					<td class="soustitre2">État de l’objet : <br><em>(en %)</em></td>
 					<td><input type="text" size="50" name="obj_etat" value="<?php echo  round($db->f('obj_etat'),2);?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Dégâts : <br><i>(armes uniquement)</i></td>
+					<td class="soustitre2">Dégâts : <br><em>(armes uniquement)</em></td>
 					<td><input type="text" size="5" name="obj_des_degats" value="<?php echo $db->f('obj_des_degats');?>">D
 						<input type="text" size="5" name="obj_val_des_degats" value="<?php echo $db->f('obj_val_des_degats');?>">+
 						<input type="text" size="5" name="obj_bonus_degats" value="<?php echo $db->f('obj_bonus_degats');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Seuil en dextérité : <br><i>(0 pour pas de seuil)</i></td>
+					<td class="soustitre2">Seuil en dextérité : <br><em>(0 pour pas de seuil)</em></td>
 					<td><input type="text" size="5" name="obj_seuil_dex" value="<?php echo $db->f('obj_seuil_dex');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Seuil en force : <br><i>(0 pour pas de seuil)</i></td>
+					<td class="soustitre2">Seuil en force : <br><em>(0 pour pas de seuil)</em></td>
 					<td><input type="text" size="5" name="obj_seuil_force" value="<?php echo $db->f('obj_seuil_force');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Seuil en niveau : <br><i>(0 pour pas de seuil)</i></td>
+					<td class="soustitre2">Seuil en niveau : <br><em>(0 pour pas de seuil)</em></td>
 					<td><input type="text" size="5" name="obj_niveau_min" value="<?php echo $db->f('obj_niveau_min');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Armure : <br><i>(armures et casques uniquement)</i></td>
+					<td class="soustitre2">Armure : <br><em>(armures et casques uniquement)</em></td>
 					<td><input type="text" size="5" name="obj_armure" value="<?php echo $db->f('obj_armure');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Distance max : <br><i>(armes de distance uniquement)</i></td>
+					<td class="soustitre2">Distance max : <br><em>(armes de distance uniquement)</em></td>
 					<td><input type="text" size="5" name="obj_distance" value="<?php echo $db->f('obj_distance');?>"></td>
 				</tr>
 				<tr>
-					<td class="soustitre2">Chute : <br><i>(armes de distance uniquement)</i></td>
+					<td class="soustitre2">Chute : <br><em>(armes de distance uniquement)</em></td>
 					<td><input type="text" size="5" name="obj_chute" value="<?php echo $db->f('obj_chute');?>"></td>
 				</tr>
 				<tr>

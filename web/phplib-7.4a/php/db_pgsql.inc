@@ -237,8 +237,8 @@ class DB_Pgsql {
   }
   
   function haltmsg($msg) {
-    printf("<p><b>Database error:</b> %s<br>\n", $msg);
-    printf("<b>PostgreSQL Error</b>: %s (%s)</p>\n",
+    printf("<p><strong>Database error:</strong> %s<br>\n", $msg);
+    printf("<strong>PostgreSQL Error</strong>: %s (%s)</p>\n",
       $this->Errno,
       $this->Error);
   }

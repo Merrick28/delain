@@ -171,14 +171,14 @@ if ($verif_auth)
                         $perso_cible = new perso;
                         $perso_cible->charge($detail_evt->levt_cible);
                     }
-                    $texte_evt = str_replace('[perso_cod1]', "<b>" . $ancien_monstre->perso_nom . "</b>", $detail_evt->levt_texte);
+                    $texte_evt = str_replace('[perso_cod1]', "<strong>" . $ancien_monstre->perso_nom . "</strong>", $detail_evt->levt_texte);
                     if ($detail_evt->levt_attaquant != '')
                     {
-                        $texte_evt = str_replace('[attaquant]', "<b>" . $perso_attaquant->perso_nom . "</b>", $texte_evt);
+                        $texte_evt = str_replace('[attaquant]', "<strong>" . $perso_attaquant->perso_nom . "</strong>", $texte_evt);
                     }
                     if ($detail_evt->levt_cible != '')
                     {
-                        $texte_evt = str_replace('[cible]', "<b>" . $perso_cible->perso_nom . "</b>", $texte_evt);
+                        $texte_evt = str_replace('[cible]', "<strong>" . $perso_cible->perso_nom . "</strong>", $texte_evt);
                     }
                     $date_evt      = new DateTime($detail_evt->levt_date);
                     $evt_monstre[] = $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";

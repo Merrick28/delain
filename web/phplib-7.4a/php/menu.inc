@@ -155,9 +155,9 @@ class Menu {
         $dent,
         $this->item[$this->visible[$n]]["url"],
         $class?" class=$class":"",
-        $bold? '<B><FONT COLOR="#990000">[':"",
+        $bold? '<strong><FONT COLOR="#990000">[':"",
         $this->item[$this->visible[$n]]["title"],
-        $bold? "]</FONT></B>":""
+        $bold? "]</FONT></strong>":""
       );
     }
     return $str;

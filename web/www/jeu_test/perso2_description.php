@@ -173,11 +173,11 @@ else
 	}
 	$contenu_page .= ')';
 	if ($db->f("pguilde_meta_noir") == 'O')
-		$contenu_page .= '<br>Meta guildé à <b>envoyés de Salm\'o\'rv</b>';
+		$contenu_page .= '<br>Meta guildé à <strong>envoyés de Salm\'o\'rv</strong>';
 	if ($db->f("pguilde_meta_milice") == 'O')
-		$contenu_page .= '<br>Meta guildé à <b>milice</b>';
+		$contenu_page .= '<br>Meta guildé à <strong>milice</strong>';
 	if ($db->f("pguilde_meta_caravane") == 'O')
-		$contenu_page .= '<br>Meta guildé à <b>Corporation marchande du R.A.D.I.S</b>';
+		$contenu_page .= '<br>Meta guildé à <strong>Corporation marchande du R.A.D.I.S</strong>';
 
 }
 $contenu_page .= '</td></tr>';
@@ -192,7 +192,7 @@ $contenu_page .= '</td></tr>';
 		if ($db->nf() != 0)
 		{
 			$db->next_record();
-			$religion = " </b>(" . $db->f("dniv_libelle") . " de " . $db->f("dieu_nom") . ")<b> ";
+			$religion = " </strong>(" . $db->f("dniv_libelle") . " de " . $db->f("dieu_nom") . ")<strong> ";
 			//$religion = str_replace("'","\'",$religion);
 			$contenu_page .= '<tr>
 			<td></td>
@@ -214,7 +214,7 @@ if ($db->nf() != 0)
 	<tr><td class="soustitre2">Titre</td><td class="soustitre2">Obtenu le</td></tr>';
 	while($db->next_record())
 	{
-		$contenu_page .= '<tr><td><b>' . $db->f("ptitre_titre") . '</b></td><td>' . $db->f("titre_date") . '</td></tr>';
+		$contenu_page .= '<tr><td><strong>' . $db->f("ptitre_titre") . '</strong></td><td>' . $db->f("titre_date") . '</td></tr>';
 	}
 	$contenu_page .= '</table></center><hr>';
 }
@@ -222,9 +222,9 @@ $req = "select plouche_perso_cod from perso_louche where plouche_perso_cod = $vi
 $db->query($req);
 if ($db->nf() != 0)
 {
-	$contenu_page .= '<div style="text-align:center;"><i><b>Note de jeu : </b>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
+	$contenu_page .= '<div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
 	Il transpire abondemment et regarde autour de lui pour voir s\'il est suivi.<br>
-	Le moindre blason de la milice semble le mettre dans un drole d\'état. Il n\'y a pas a dire il est pas net... </i></div>';
+	Le moindre blason de la milice semble le mettre dans un drole d\'état. Il n\'y a pas a dire il est pas net... </em></div>';
 }
 $contenu_page .= '</td></tr>';
 $contenu_page .= $desc2.'</table>';

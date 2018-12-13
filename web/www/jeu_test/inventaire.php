@@ -90,13 +90,13 @@ switch($methode)
 			$db->query($req_remettre);
 			$db->next_record();
 			?>
-		<br><b>L’équipement a été remis dans votre inventaire</b><br>
+		<br><strong>L’équipement a été remis dans votre inventaire</strong><br>
 			<?php 
 		}
 		else
 		{
 			?>
-			<br><b>Vous n’avez pas assez de PA pour effectuer cette action !</b><br>
+			<br><strong>Vous n’avez pas assez de PA pour effectuer cette action !</strong><br>
 			<?php 
 		}
 	break;
@@ -105,12 +105,12 @@ switch($methode)
 		$erreur = 0;
 		if ($pa < 2)
 		{
-			echo("<br><b>Vous n’avez pas assez de PA pour effectuer cette action !</b><br>");
+			echo("<br><strong>Vous n’avez pas assez de PA pour effectuer cette action !</strong><br>");
 			$erreur = 1;
 		}
 		if ($perso_type_perso == 3)
 		{
-			echo "<br><b>Un familier ne peut pas équiper d’objet !</b><br>";
+			echo "<br><strong>Un familier ne peut pas équiper d’objet !</strong><br>";
 			$erreur = 1;
 		}
 		if ($erreur == 0)
@@ -121,13 +121,13 @@ switch($methode)
 			$tab_remettre = $db->f("equipe");
 			if ($tab_remettre == 0)
 			{
-				echo("<br><b>L’objet a été équipé avec succès.</b><br>");
+				echo("<br><strong>L’objet a été équipé avec succès.</strong><br>");
 			}
 			else
 			{
 				$tab_remettre = explode(';', $tab_remettre);
 				$texte = (isset($tab_remettre[1])) ? $tab_remettre[1] : $tab_remettre[0];
-				echo("<br><b>$texte</b><br>");
+				echo("<br><strong>$texte</strong><br>");
 			}
 		}
 	break;
@@ -140,14 +140,14 @@ switch($methode)
 		$db->query($req_defi);
 		if ($db->nf() > 0 && !isset($validerabandon))
 		{
-			echo "<br><b>Vous êtes actuellement en plein défi ! Si vous abandonnez cet objet, vous ne pourrez plus le ramasser à nouveau.
-				<a href='inventaire.php?methode=abandonner&objet=$objet&validerabandon=1'>Abandonner quand même ! (1PA)</a></b>";
+			echo "<br><strong>Vous êtes actuellement en plein défi ! Si vous abandonnez cet objet, vous ne pourrez plus le ramasser à nouveau.
+				<a href='inventaire.php?methode=abandonner&objet=$objet&validerabandon=1'>Abandonner quand même ! (1PA)</a></strong>";
 		}
 		else
 		{
 			$req = 'select depose_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
 			$resultat = $db->get_value($req, 'resultat');
-			echo "<br><b>$resultat</b><br>";
+			echo "<br><strong>$resultat</strong><br>";
 		}
 	break;
 
@@ -164,11 +164,11 @@ switch($methode)
 				$req = "update perso set perso_pa = perso_pa - 6, perso_px = $nv_px where perso_cod = $perso_cod ";
 				$db->query($req);
 				$db->next_record();
-				echo "<br><b>Miam scrountch miom !</b> Cette action vous a redonné des PX, en fonction de la quantité de brouzoufs possédée...<br>";
+				echo "<br><strong>Miam scrountch miom !</strong> Cette action vous a redonné des PX, en fonction de la quantité de brouzoufs possédée...<br>";
 			}
 			else
 			{
-				echo "<br><b>Scrountch ? A pas scrountch :(</b> Vous ne possédez pas assez de brouzoufs pour gagner des PX de cette façon...<br>";
+				echo "<br><strong>Scrountch ? A pas scrountch :(</strong> Vous ne possédez pas assez de brouzoufs pour gagner des PX de cette façon...<br>";
 			}
 		}
 		else if ($is_golem_arm && $pa > 5)
@@ -176,11 +176,11 @@ switch($methode)
 			$req = 'select golem_digestion(' . $perso_cod . ') as resultat ';
 			$db->query($req);
 			$db->next_record();
-			echo "<br><b>Miam scrountch miom !</b> ". $db->f('resultat') ."<br>";
+			echo "<br><strong>Miam scrountch miom !</strong> ". $db->f('resultat') ."<br>";
 		}
 		else
 		{
-			echo "<br><b>Erreur !</b> Seuls les golems savent digérer leur inventaire... Et il leur faut assez de PA !<br>";
+			echo "<br><strong>Erreur !</strong> Seuls les golems savent digérer leur inventaire... Et il leur faut assez de PA !<br>";
 		}
 	break;
 }
@@ -215,7 +215,7 @@ $db->query($req_id);
 <td>Encombrement : <?php  echo $poids_porte . "/" . $poids_total; ?></td></tr>
 
 <tr>
-<td >Vous avez <?php  echo $perso_po; ?> brouzoufs <i>(<?php echo $qte_or;?> en banque)</i>-- <a href="deposer_or.php">Déposer des brouzoufs (1 PA)</a>.</td>
+<td >Vous avez <?php  echo $perso_po; ?> brouzoufs <em>(<?php echo $qte_or;?> en banque)</em>-- <a href="deposer_or.php">Déposer des brouzoufs (1 PA)</a>.</td>
 </tr>
 <?php if ($is_golem)
 {
@@ -525,7 +525,7 @@ if ($dr == 0)
 		while($db->next_record())
 		{
 			echo("<tr>");
-			printf("<td colspan=\"2\" class=\"soustitre2\"><b>%s</b> (%s)</td>",$db->f("obj_nom"),$db->f("frune_desc"));
+			printf("<td colspan=\"2\" class=\"soustitre2\"><strong>%s</strong> (%s)</td>",$db->f("obj_nom"),$db->f("frune_desc"));
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("poids"));
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("nombre"));
 			echo("<td></td><td></td>");
@@ -647,7 +647,7 @@ if ($dq == 0)
 
 			}
 			echo("<tr>");
-			echo "<td colspan=\"2\" class=\"soustitre2\"><b>". $db->f("obj_nom") .$examiner. "</b></td>";
+			echo "<td colspan=\"2\" class=\"soustitre2\"><strong>". $db->f("obj_nom") .$examiner. "</strong></td>";
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("poids"));
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("nombre"));
 			echo("<td></td><td></td>");
@@ -791,7 +791,7 @@ if ($dcompo == 0)
 				$examiner = " (<a href=\"objets/".$db->f("gobj_url")."\">Voir le détail</a>) ";
 			}
 			echo("<tr>");
-			echo "<td colspan=\"2\" class=\"soustitre2\"><b>". $db->f("obj_nom") .$examiner. "</b></td>";
+			echo "<td colspan=\"2\" class=\"soustitre2\"><strong>". $db->f("obj_nom") .$examiner. "</strong></td>";
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("poids"));
 			printf("<td class=\"soustitre2\">%s</td>",$db->f("nombre"));
 			echo("<td></td><td></td>");

@@ -13,7 +13,7 @@ if (!isset($msg_start))	// offset des messages
 if ($msg_start < 0)
 	$msg_start = 0;
 
-$disparu = '<i>-- Personnage disparu --</i>';
+$disparu = '<em>-- Personnage disparu --</em>';
 $archive = ($m == 0) ? 'N' : 'O';
 $where_fil = ($m == 0 && $fil != 0) ? " and msg_init = $fil" : '';
 $orderby = ($sort == 0) ? 'msg_cod desc' : 'msg_init desc, msg_cod desc';
@@ -75,13 +75,13 @@ while($db->next_record())
 	$contenu_page .= '<td><span style="white-space:nowrap;">';
 	if ($db->f("dmsg_lu") == "N")
 	{
-		$contenu_page .= '<b>';
+		$contenu_page .= '<strong>';
 	}
 
 	$contenu_page .= '<a  href="action_message.php?methode=visu_msg&m=' . $m . '&mid=' . $db->f("msg_cod") . '">' . str_replace(chr(127), ';', $db->f("msg_titre") ) . '</a>';
 	if ($db->f("dmsg_lu") == "N")
 	{
-		$contenu_page .= '</b>';
+		$contenu_page .= '</strong>';
 	}
 	$contenu_page .= '</td>';
 	$contenu_page .= '<td width="20">';
@@ -122,7 +122,7 @@ for($cpt = 1; $cpt <= $nb_pages; $cpt++)
 	$v_debut = ($cpt - 1) * $nb_messages_page;
 	if ($cpt == $page_en_cours)
 	{
-		$contenu_page .= '<font class="soustitre2"><b>' . $page_en_cours . '</b></font> &nbsp;&nbsp;';
+		$contenu_page .= '<font class="soustitre2"><strong>' . $page_en_cours . '</strong></font> &nbsp;&nbsp;';
 	}
 	else
 	{

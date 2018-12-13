@@ -32,9 +32,9 @@ switch($methode2)
 			?>
 				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 				<p>En arrivant dans le dispensaire, un guérisseur vous interpelle :
-					<br><i>Je crois que vous possédez un objet qui pourrait intéresser l’un des membres de notre communauté.
+					<br><em>Je crois que vous possédez un objet qui pourrait intéresser l’un des membres de notre communauté.
 					Il s’agit d’une <?php  echo $obj_nom; ?> .
-					<br>Seriez vous prêt à me la céder, pour que je la lui remette ? Dans un tel cas, je vous rétribuerais pour cela.</i>
+					<br>Seriez vous prêt à me la céder, pour que je la lui remette ? Dans un tel cas, je vous rétribuerais pour cela.</em>
 					<br><br>Le guérisseur attend alors votre réponse...<br>
 					<input type="hidden" name="methode2" value="cede_objet1">
 					<table>
@@ -69,9 +69,9 @@ switch($methode2)
 			?>
 				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 					<p>Un soignant en chef du dispensaire s’approche de vous :
-					<br><i>Je vois que vous êtes en possession d’écailles de basilic !
+					<br><em>Je vois que vous êtes en possession d’écailles de basilic !
 					Celles-ci nous sont fort utile pour réaliser certaines de nos préparations.
-					Pourriez-vous nous les céder ? Nous vous en prendrons dix.</i></p>
+					Pourriez-vous nous les céder ? Nous vous en prendrons dix.</em></p>
 					<input type="hidden" name="methode2" value="cede_objet2">
 					<table>
 						<tr>
@@ -92,10 +92,10 @@ switch($methode2)
 			else
 			{
 				echo '<p>Un guérisseur du dispensaire vous interpelle : 
-					<br><i>Je vois que vous possédez des écailles de basilic !
+					<br><em>Je vois que vous possédez des écailles de basilic !
 					Elles nous servent parfois pour faire nos préparations pour soigner nos patients.
 					<br>Mais actuellement, nous n’en avons pas besoin.
-					Revenez un autre jour, nous pourrons sûrement faire affaire !</i></p>';
+					Revenez un autre jour, nous pourrons sûrement faire affaire !</em></p>';
 			}
 		}
 		else
@@ -138,8 +138,8 @@ switch($methode2)
 		?>
 			<br>« Nous vous remercions pour votre geste. Cela nous permettra sûrement de sauver de nombreux patients
 			<br>Pour marquer votre offrande, nous allons vous offrir un petit quelque chose au regard de nos maigres moyens. »
-			<br><i>En regardant à nouveau votre inventaire, vous pouvez voir que deux parchemins s’y sont glissés,
-			ainsi que des brouzoufs. Un certain sentiment de fierté pour cette bonne action vous envahit</i>
+			<br><em>En regardant à nouveau votre inventaire, vous pouvez voir que deux parchemins s’y sont glissés,
+			ainsi que des brouzoufs. Un certain sentiment de fierté pour cette bonne action vous envahit</em>
 			(vous gagnez 20 pxs pour cette action)
 		<?php 
 			// On crée deux parchemins différents dans l’inventaire du perso

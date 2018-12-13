@@ -121,19 +121,19 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 	echo "<p class=\"titre\">Détail du compte " . $db->f("compt_nom") . "</p>";
 	echo "<table cellspacing=\"2\" cellpadding=\"2\">";
 	echo "<tr>";
-	echo "<td class=\"soustitre2\"><p><b>Nom du compte</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Password</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Adresse mail</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Date de création</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Dernière connexion</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Dernière IP</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Hibernation ?</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Date de fin d’hibernation</b></td>";
-	echo "<td class=\"soustitre2\"><p><b>Commentaire <a href=\"modif_detail_compte.php?compte=$vcompte\">(Ajouter ?)</a></b></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Nom du compte</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Password</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Adresse mail</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Date de création</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Dernière connexion</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Dernière IP</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Hibernation ?</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Date de fin d’hibernation</strong></td>";
+	echo "<td class=\"soustitre2\"><p><strong>Commentaire <a href=\"modif_detail_compte.php?compte=$vcompte\">(Ajouter ?)</a></strong></td>";
 	echo "</tr>";
 
 	echo "<tr>";
-	echo "<td class=\"soustitre2\"><p><b>" . $db->f("compt_nom") ."</b></td>";
+	echo "<td class=\"soustitre2\"><p><strong>" . $db->f("compt_nom") ."</strong></td>";
 	if (($vcompte != 4) && ($vcompte != 353))
 	{
 		if($db->f('compt_admin') == 'O')
@@ -183,7 +183,7 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 		echo "<input type=\"hidden\" name=\"num_perso\" value=\"". $db->f("perso_cod") ."\">";
 		echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
 		echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-		echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b> (n° " . $db->f("perso_cod") . ")</p></td>";
+		echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong> (n° " . $db->f("perso_cod") . ")</p></td>";
 		echo "<td class=\"soustitre2\"><p>" . $db->f("perso_px") . " PX</p></td>";
 		echo "<td class=\"soustitre2\"><p>Niveau " . $db->f("perso_niveau") . "</p></td>";
 		echo "<td class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("pos_etage") . " (" . $db->f("etage_libelle") . ")</p></td>";
@@ -219,7 +219,7 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 			echo "<input type=\"hidden\" name=\"num_perso\" value=\"". $db->f("perso_cod") ."\">";
 			echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
 			echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-			echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b> (n° " . $db->f("perso_cod") . ")</p></td>";
+			echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong> (n° " . $db->f("perso_cod") . ")</p></td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("perso_px") . " PX</p></td>";
 			echo "<td class=\"soustitre2\"><p>Niveau " . $db->f("perso_niveau") . "</p></td>";
 			echo "<td class=\"soustitre2\"><p>Créé le " . $db->f("crea") . "</p></td>";
@@ -289,8 +289,8 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 
 	if ($compt_conf == 'N')
 	{
-		echo "<p><a href=\"compt_confiance.php?etat=N&compte=$vcompte\">Passer ce compte en <b>confiant</b> ?</a> (ne plus le faire apparaître dans les multi)";
-		echo "<p><a href=\"compt_confiance.php?etat=S&compte=$vcompte\">Passer ce compte en <b>surveillé</b> ?</a> (Alertes en fins d'hibernation)";
+		echo "<p><a href=\"compt_confiance.php?etat=N&compte=$vcompte\">Passer ce compte en <strong>confiant</strong> ?</a> (ne plus le faire apparaître dans les multi)";
+		echo "<p><a href=\"compt_confiance.php?etat=S&compte=$vcompte\">Passer ce compte en <strong>surveillé</strong> ?</a> (Alertes en fins d'hibernation)";
 	}
 	else
 	{
@@ -313,11 +313,11 @@ if ($droit['controle'] == 'O' && $vcompte != -1)
 	}
 	echo '<form name="login2" method="post" action="'. $PHP_SELF .'">
 		<input type="hidden" name="methode2" value="mise_a_jour">
-		<br>Compte lié : <b>'. $vcompte_lie_nom .'</b>     <input type="text" name="foo" id="foo" value="'. $vcompte_lie .'" onkeyup="loadData2();document.getElementById(\'zoneResultats\').style.visibility = \'hidden\'" />          <input type="submit" name="maj" value="Mettre à jour">   <i>indiquer le nouveau compte lié si nécessaire, avec vérification assistée</i>
+		<br>Compte lié : <strong>'. $vcompte_lie_nom .'</strong>     <input type="text" name="foo" id="foo" value="'. $vcompte_lie .'" onkeyup="loadData2();document.getElementById(\'zoneResultats\').style.visibility = \'hidden\'" />          <input type="submit" name="maj" value="Mettre à jour">   <em>indiquer le nouveau compte lié si nécessaire, avec vérification assistée</em>
 		<ul id="zoneResultats" style="visibility: hidden;"></ul>
 
 		</form>';
-	echo "<p style=\"text-align:center;\"><b><a href=\"invalide_compte.php?compte=$vcompte\">INVALIDER CE COMPTE ???</a><br><br>";
+	echo "<p style=\"text-align:center;\"><strong><a href=\"invalide_compte.php?compte=$vcompte\">INVALIDER CE COMPTE ???</a><br><br>";
 }
 else if ($vcompte == -1)
 {

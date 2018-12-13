@@ -244,6 +244,12 @@ hr {
     
 }
 
+.centrer {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #descJeu span {
      display: table-cell;
     vertical-align: middle;

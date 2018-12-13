@@ -33,7 +33,7 @@ switch($methode2)
 			Celui-ci, vous voyant arriver, vous hèle au passage :
 			<br><br>
 			- Eh ! Toi... Oui toi, la recrue toute fraîche ! Viens voir un peu...
-			<b>Dans ces Extérieurs</b>, j’aimerais que tu me trouves <b>un bâton</b>.
+			<strong>Dans ces Extérieurs</strong>, j’aimerais que tu me trouves <strong>un bâton</strong>.
 			Je n’ai jamais pu m’entraîner avec ce genre d’arme, et j’aimerais vérifier deux-trois choses avec.
 			<br>On m’a raconté que l’on pouvait ainsi frapper à distance son adversaire, ne pas être bloqué
 			par lui au corps à corps... Avec l’âge, je deviens moins souple, et maintenir une distance avec mon

@@ -284,6 +284,7 @@ class compte
             $retour[] = $temp;
             unset($temp);
         }
+        return $retour;
     }
 
     /**

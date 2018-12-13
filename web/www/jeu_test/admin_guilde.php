@@ -38,7 +38,7 @@ if ($db->is_admin_guilde($perso_cod))
 		if ($meta_noir == 'O')
 		{
 			echo "<hr>";
-			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <b>envoyés de Salm'o'rv</b>.<br>";
+			echo "<p>Votre guilde est rattachée en meta guildage à la guilde <strong>envoyés de Salm'o'rv</strong>.<br>";
 			if ($perso_meta_noir == 'O')
 			{
 				echo "<p>Vous êtes rattaché à ce meta guildage.<br>";
@@ -54,7 +54,7 @@ if ($db->is_admin_guilde($perso_cod))
 		if ($meta_caravane == 'O')
 		{
 			echo "<hr>";
-			echo "<p>Votre guilde est rattachée en meta guildage à <b>Corporation marchande du R.A.D.I.S</b>.<br>";
+			echo "<p>Votre guilde est rattachée en meta guildage à <strong>Corporation marchande du R.A.D.I.S</strong>.<br>";
 			if ($perso_meta_caravane == 'O')
 			{
 				echo "<p>Vous êtes rattaché à ce meta guildage.<br>";
@@ -90,7 +90,7 @@ if ($db->is_admin_guilde($perso_cod))
 		}
 		else
 		{
-			echo("<p>Vous avez <b>$nb_non_valide</b> inscription(s) à valider");
+			echo("<p>Vous avez <strong>$nb_non_valide</strong> inscription(s) à valider");
 			echo("<table>");
 			echo("<form name=\"valide\" method=\"post\">");
 			echo("<input type=\"hidden\" name=\"vperso\">");
@@ -153,7 +153,7 @@ if ($db->is_admin_guilde($perso_cod))
 				if ($db2->nf() != 0)
 				{
 					$db2->next_record();
-					$religion = " </b>(". $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<b> ";
+					$religion = " </strong>(". $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<strong> ";
 					echo "<td>$religion</td>";
 				} else {
 					echo "<td></td>";
@@ -187,9 +187,9 @@ if ($db->is_admin_guilde($perso_cod))
          $gbank_cod = $db->f("gbank_cod");
          $solde = $db->f("gbank_or");
        ?>
-  <p>Votre guilde dispose d'un compte: <b><?php  echo $db->f("gbank_nom");?></b> Solde actuel: <b><?php echo $solde; ?> Br</b>
+  <p>Votre guilde dispose d'un compte: <strong><?php  echo $db->f("gbank_nom");?></strong> Solde actuel: <strong><?php echo $solde; ?> Br</strong>
   </p>
-  <p> <b> RELEVE DE COMPTES </b>
+  <p> <strong> RELEVE DE COMPTES </strong>
 <TABLE align="center" width="85%">
 <TR>
 <TD>PERSONNAGE</TD>
@@ -213,7 +213,7 @@ if ($db->is_admin_guilde($perso_cod))
            $nom = $db->f("perso_nom");
            if ($nom == null)
            {
-          	 echo  "<TR><TD $style><i>Aventurier aujourd'hui disparu ...</i></TD>";
+          	 echo  "<TR><TD $style><em>Aventurier aujourd'hui disparu ...</em></TD>";
           }
           	else
           	{
@@ -237,14 +237,14 @@ if ($db->is_admin_guilde($perso_cod))
 <TD>SOLDE:</TD>
 <TD>--</TD>
 <TD>--</TD>
-<TD><b><?php echo $solde; ?> Br</b></TD>
+<TD><strong><?php echo $solde; ?> Br</strong></TD>
 </TR>
 </TABLE></p>
 <?php }
 	}
 	else
 	{
-		echo "<p style=\"text-align:center;\"><b>Révolution en cours !</b>";
+		echo "<p style=\"text-align:center;\"><strong>Révolution en cours !</strong>";
 		echo "<p style=\"text-align:center;\">Pour en savoir plus, <a href=\"guilde_revolution.php\">cliquez ici !</a>";
 		echo '<form name="visu_guilde" method="post" action="visu_guilde.php">';
 		echo "<input type=\"hidden\" name=\"num_guilde\" value=\"" , $num_guilde , "\" />";

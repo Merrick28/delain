@@ -55,19 +55,19 @@ if ($db->is_admin($compt_cod))
 	{
 		$req = "update compte set compt_confiance = 'O' where compt_cod = $compte ";
 		$db->query($req);
-		echo "<p>Le compte <b>" . $nom_compte . "</b> a été passé en compte confiant. Il n’apparaîtra plus dans la liste des multi ";
+		echo "<p>Le compte <strong>" . $nom_compte . "</strong> a été passé en compte confiant. Il n’apparaîtra plus dans la liste des multi ";
 	}
 	if ($etat == 'O')
 	{
 		$req = "update compte set compt_confiance = 'N' where compt_cod = $compte ";
 		$db->query($req);
-		echo "<p>Le compte <b>" . $nom_compte . "</b> a été passé en compte NON confiant. Il apparaîtra dans la liste des multi ";
+		echo "<p>Le compte <strong>" . $nom_compte . "</strong> a été passé en compte NON confiant. Il apparaîtra dans la liste des multi ";
 	}
 	if ($etat == 'S')
 	{
 		$req = "update compte set compt_confiance = 'S' where compt_cod = $compte ";
 		$db->query($req);
-		echo "<p>Le compte <b>" . $nom_compte . "</b> a été passé en compte SURVEILLÉ. Un message sera envoyé aux Contôleurs à son sortir d’hibernation.";
+		echo "<p>Le compte <strong>" . $nom_compte . "</strong> a été passé en compte SURVEILLÉ. Un message sera envoyé aux Contôleurs à son sortir d’hibernation.";
 	}
 }
 else

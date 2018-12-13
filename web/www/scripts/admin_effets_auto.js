@@ -242,7 +242,7 @@ EffetAuto.ChampTexte = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 	
-	return '<label><b>' + parametre.label + '</b>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/></label>';
+	return '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="' + parametre.longueur + '" name="' + nom + '" id="' + nom + '"/></label>';
 }
 
 EffetAuto.ChampValidite = function (parametre, numero, valeur) {
@@ -259,7 +259,7 @@ EffetAuto.ChampValidite = function (parametre, numero, valeur) {
 	var onChange = (parametre.validation) ? " onchange='Validation.ValideParId(this.id);'" : '';
 	var onKeyUp = (parametre.validation) ? " onkeyup='Validation.ValideParId(this.id);'" : '';
 	
-	var resultat = '<label><b>' + parametre.label + '</b>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
+	var resultat = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="text"' + onChange + onKeyUp + ' value="' + valeur + '" size="4" name="' + nom + '" id="' + nom + '"/></label>';
 	resultat += '<select name="' + nom_select + '"><option value="1">minutes</option><option value="60">heures</option><option value="1440">jours</option><option value="43200">mois</option></select>';
 	return resultat;
 }
@@ -271,7 +271,7 @@ EffetAuto.ChampCache = function (parametre, numero, valeur) {
 }
 
 EffetAuto.ChampLecture = function (parametre, valeur) {
-	var resultat = '<b>' + parametre.label + '</b>';
+	var resultat = '<strong>' + parametre.label + '</strong>';
 	if (valeur != '')
 		resultat += ' : ' + valeur;
 	return resultat;
@@ -280,7 +280,7 @@ EffetAuto.ChampLecture = function (parametre, valeur) {
 EffetAuto.ChampChoixRouille = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><b>' + parametre.label + '</b>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="0" ' + ((valeur == 0) ? 'selected="selected"' : '' ) + '>(Par défaut)</option>';
 	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Jet d’acide</option>';
 	html += '<option value="2" ' + ((valeur == 2) ? 'selected="selected"' : '' ) + '>Tentacules perforants</option>';
@@ -292,7 +292,7 @@ EffetAuto.ChampChoixRouille = function (parametre, numero, valeur) {
 EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><b>' + parametre.label + '</b>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += '<option value="S" ' + ((valeur == 'S') ? 'selected="selected"' : '' ) + '>Soi-même</option>';
 	html += '<option value="A" ' + ((valeur == 'A') ? 'selected="selected"' : '' ) + '>Les Amis (Familier / Aventurier vs Monstre)</option>';
 	html += '<option value="E" ' + ((valeur == 'E') ? 'selected="selected"' : '' ) + '>Les Ennemis (Familier / Aventurier vs Monstre)</option>';
@@ -307,7 +307,7 @@ EffetAuto.ChampCible = function (parametre, numero, valeur) {
 EffetAuto.ChampMonstre = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><b>' + parametre.label + '</b>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += EffetAuto.CopieListe ('liste_monstre_modele', valeur);
 	html += '</select></label>';
 	return html;
@@ -316,11 +316,11 @@ EffetAuto.ChampMonstre = function (parametre, numero, valeur) {
 EffetAuto.ChampBM = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
-	var html = '<label><b>' + parametre.label + '</b>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
 	html += EffetAuto.CopieListe ('liste_bm_modele', valeur);
 	html += '</select></label><br />';
-	html += "(+) Une valeur <b>positive</b> est <b>bénéfique</b>, et une valeur <b>négative</b> est <b>délétère</b><br />";
-	html += "(-) Une valeur <b>positive</b> est <b>délétère</b>, et une valeur <b>négative</b> est <b>bénéfique</b>";
+	html += "(+) Une valeur <strong>positive</strong> est <strong>bénéfique</strong>, et une valeur <strong>négative</strong> est <strong>délétère</strong><br />";
+	html += "(-) Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong>";
 	return html;
 }
 

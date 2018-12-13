@@ -48,7 +48,7 @@ if ($erreur == 0)
 	$typeObjet = (isset($_GET["typeObjet"])) ? $_GET["typeObjet"] : -1;
 
 	echo "<hr /><p>Cette page permet d’avoir un aperçu rapide des trésors générés par les monstres, étage par étage.</p>";
-	echo "<p>Le chiffre indiqué dans chaque case du tableau représente <b>la probabilité, à chaque fois qu’on tue un monstre dans l’étage, que l’objet tombe.</b></p>";
+	echo "<p>Le chiffre indiqué dans chaque case du tableau représente <strong>la probabilité, à chaque fois qu’on tue un monstre dans l’étage, que l’objet tombe.</strong></p>";
 	echo "<p>Ce chiffre regroupe donc, pour chaque étage, deux paramètres : les chances d’apparition d’un type de monstre, et les chances que ce monstre porte un type d’objet.</p><hr />";
 
 	// Liste déroulante de choix de type d’objet
@@ -345,17 +345,17 @@ if ($erreur == 0)
 			else
 				echo '<td style="background-color:black">0' . $unite . '</td>';
 		}
-		echo '<td class="soustitre2"><b>' . $somme_etage . $unite . '</b></td>';
+		echo '<td class="soustitre2"><strong>' . $somme_etage . $unite . '</strong></td>';
 		echo "</tr>";
 	}
 	if ($typeObjet >= 0)
 	{
-		echo "<tr><td class='soustitre2'><b>Total</b></td>";
+		echo "<tr><td class='soustitre2'><strong>Total</strong></td>";
 
 		foreach ($lesObjets as $obj_cod => $obj_nom)
 		{
 			if (isset($objetsTousEtages[$obj_cod]) && $objetsTousEtages[$obj_cod] > 0)
-				echo '<td class="soustitre2"><b>' . $objetsTousEtages[$obj_cod] . '</b></td>';
+				echo '<td class="soustitre2"><strong>' . $objetsTousEtages[$obj_cod] . '</strong></td>';
 			else
 				echo '<td class="soustitre2" style="background-color:black">0</td>';
 		}

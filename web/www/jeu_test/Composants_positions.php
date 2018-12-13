@@ -64,19 +64,19 @@ function toutCocher2(formulaire,nom){
 				<td><input type="text" name="max_comp" value="5"></td></tr>
 			<tr>
 				<td>Variation possible par case du nombre de composants</td>
-				<td><input type="text" name="delta" value="1"><i>Correspond à plus ou moins 1 autour du max par case</i></td></tr>
+				<td><input type="text" name="delta" value="1"><em>Correspond à plus ou moins 1 autour du max par case</em></td></tr>
 			<tr>
 			<tr>
 				<td>Pourcentage de repousse</td>
-				<td><input type="text" name="pourcentage" value="5"><i>Faire explication</i></td></tr>
+				<td><input type="text" name="pourcentage" value="5"><em>Faire explication</em></td></tr>
 			<tr>
 				<td>Variation autour de la forme </td>
-				<td><input type="text" name="variation" value="8"><i>La forme varie en concept d\'étoile</i></td></td></tr>';
+				<td><input type="text" name="variation" value="8"><em>La forme varie en concept d\'étoile</em></td></td></tr>';
 			$req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';
 			$db->query($req);
-				$contenu_page .= '<tr><td><b>Composant concerné : </b></td><td><select name="composant">';
+				$contenu_page .= '<tr><td><strong>Composant concerné : </strong></td><td><select name="composant">';
 				while($db->next_record())
 				{
 					$contenu_page .= '<option value="'. $db->f("gobj_cod") .'"> '. $db->f("gobj_nom") .'</option>';
@@ -113,19 +113,19 @@ function toutCocher2(formulaire,nom){
 													<td><input type="text" name="max_comp" value="5"></td></tr>
 												<tr>
 													<td>Variation possible par case du nombre de composants</td>
-													<td><input type="text" name="delta" value="1"><i>Correspond à plus ou moins 1 autour du max par case</i></td></tr>
+													<td><input type="text" name="delta" value="1"><em>Correspond à plus ou moins 1 autour du max par case</em></td></tr>
 												<tr>
 												<tr>
 													<td>Pourcentage de repousse</td>
-													<td><input type="text" name="pourcentage" value="5"><i>Faire explication</i></td></tr>
+													<td><input type="text" name="pourcentage" value="5"><em>Faire explication</em></td></tr>
 												<tr>
 													<td>Variation autour de la forme </td>
-													<td><input type="text" name="variation" value="8"><i>La forme varie en concept d\'étoile</i></td></td></tr>';
+													<td><input type="text" name="variation" value="8"><em>La forme varie en concept d\'étoile</em></td></td></tr>';
 			$req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';
 			$db->query($req);
-				$contenu_page .= '<td><b>Composants concernés : </b><td><tr>';
+				$contenu_page .= '<td><strong>Composants concernés : </strong><td><tr>';
 				$nbs = 1;
 				while($db->next_record())
 				{
@@ -258,14 +258,14 @@ function toutCocher2(formulaire,nom){
 						$contenu_page .= '</tr>';
 					}
 					$contenu_page .= '</tr>
-														</table><b>Rappel : dans le '.$etage2.'</b> ';
+														</table><strong>Rappel : dans le '.$etage2.'</strong> ';
 					$contenu_page .= '<hr><table>'. $increment .'</table>'.$requete_sql;
 					break;
 
 		case "recup_positions2":
 				$contenu_page .= '<table border="1">';
 
-				$requete_sql .= '<b>Liste des requêtes à lancer</b><br>';
+				$requete_sql .= '<strong>Liste des requêtes à lancer</strong><br>';
 			  foreach ($composant as $i => $valeur)
 			  {
 					$req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = ". $etage ." and pos_etage = etage_numero order by random() limit 1";
@@ -276,7 +276,7 @@ function toutCocher2(formulaire,nom){
 					$position = $db->f("pos_cod");
 					$etage2 = $db->f("etage_libelle");
 			  	$composant2 = $valeur;
-			  	/* $requete_sql .= '<b>composant : '.$composant2.' / '.$composant[$i] .'</b><br>'; */
+			  	/* $requete_sql .= '<strong>composant : '.$composant2.' / '.$composant[$i] .'</strong><br>'; */
 						for ($y=-4; $y < 6; $y++)
 						{
 							$contenu_page .= '<TR>';
@@ -345,7 +345,7 @@ function toutCocher2(formulaire,nom){
 								$contenu_page .= '</tr>';
 							}
 				}
-							$contenu_page .= '</table><b>Rappel : dans le '.$etage2.'</b> ';
+							$contenu_page .= '</table><strong>Rappel : dans le '.$etage2.'</strong> ';
 							$contenu_page .= '<hr><table>'. $increment .'</table>'.$requete_sql;
 		break;
 
