@@ -95,10 +95,10 @@
 					$style = ' style="background: red;"';
 				}
 				if ($db->f("compt_nom") != '') {
-  				echo "<br><br><b$style> - Attribué à " , $db->f("compt_nom") , "</strong>";
+  				echo "<br><br><strong $style> - Attribué à " , $db->f("compt_nom") , "</strong>";
   			}
   			else {
-  				echo "<br><b$style> - Non attribué</strong>";
+  				echo "<br><strong $style> - Non attribué</strong>";
   			}
 			  $prec_admin = $db->f("compt_nom");
 			}
