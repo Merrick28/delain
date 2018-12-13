@@ -10,6 +10,10 @@ include "verif_connexion.php";
 </head>
 <body background="../images/fond5.gif">
 <?php include "tab_haut.php";
+
+$debut_tableau_centre = '<div class="centrer"><table>';
+$fin_tableau_centre = '</table></div>';
+
 $erreur = 0;
 if (!isset($mag)) {
     echo "<p>Erreur sur la transmission du lieu_cod ";
@@ -75,7 +79,7 @@ case "debut":
     $req = $req . "where lieu_cod = $mag ";
     $db->query($req);
     $db->next_record();
-    echo "<div class=\"centrer\"><table>";
+    echo $debut_tableau_centre;
 
     echo "<tr>";
     echo "<td colspan=\"2\" class=\"soustitre2\"><p><strong>Financier :</td>";
@@ -141,9 +145,9 @@ case "debut":
     }
 
 
-    echo "</table></div>";
+    echo $fin_tableau_centre;
 
-    echo "<div class=\"centrer\"><table>";
+    echo $debut_tableau_centre;
 
     echo "<tr>";
     echo "<td colspan=\"3\" class=\"soustitre2\"><p><strong>Etat des stocks : </td>";
@@ -170,7 +174,7 @@ case "debut":
         echo "</tr>";
     }
 
-    echo "</table></div>";
+    echo $fin_tableau_centre;
 
     break;
 case "mod":
@@ -180,7 +184,7 @@ case "mod":
     $req = $req . "where lieu_cod = $mag ";
     $db->query($req);
     $db->next_record();
-    echo "<div class=\"centrer\"><table>";
+    echo $debut_tableau_centre;
     echo "<td class=\"soustitre2\"><p>Etat de la caisse</td>";
     echo "<td><p>" . $db->f("lieu_compte") . " brouzoufs</td>";
     echo "<td><p><a href=\"gere_echoppe4.php?mag=$mag&methode=banque\">Faire un retrait ?</a><br>";
@@ -213,7 +217,7 @@ case "mod":
     echo "</tr>";
 
 
-    echo "</table></div>";
+    echo $fin_tableau_centre;
 
     break;
 case "banque":
@@ -479,7 +483,7 @@ case "vente_adm":
     $req = $req . "group by gobj_nom,gobj_cod,gobj_valeur,tobj_libelle ";
     $req = $req . "order by tobj_libelle,gobj_nom ";
     $db->query($req);
-    echo "<div class=\"centrer\"><table>";
+    echo $debut_tableau_centre;
     echo "<tr>";
     echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
     echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -499,7 +503,7 @@ case "vente_adm":
     echo "<tr>";
     echo "<td colspan=\"5\"><div class=\"centrer\"><input type=\"submit\" class=\"test\" value=\"Vendre !\"></div></td>";
     echo "</tr>";
-    echo "</table></div>";
+    echo $fin_tableau_centre;
     echo "</form>";
 
     break;
@@ -595,7 +599,7 @@ case "achat_adm":
     echo "<td colspan=\"5\"><div class=\"centrer\"><input type=\"submit\" value=\"Valider les achats !\" class=\"test\"></div></td>";
     echo "</tr>";
 
-    echo "</table></div>";
+    echo $fin_tableau_centre;
 
 
     echo "</form>";
@@ -666,7 +670,7 @@ case "fix_prix":
     echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4\">";
     echo "<input type=\"hidden\" name=\"methode\" value=\"achat_adm2\">";
     echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-    echo "<div class=\"centrer\"><table>";
+    echo $debut_tableau_centre;
     echo "<tr>";
     echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
     echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -688,7 +692,7 @@ case "fix_prix":
     echo "<td colspan=\"5\"><div class=\"centrer\"><input type=\"submit\" value=\"Valider les achats !\" class=\"test\"></div></td>";
     echo "</tr>";
 
-    echo "</table></div>";
+    echo $fin_tableau_centre;
     break;
 case "fix_prix2":
     $req = "select gobj_nom,gobj_valeur,f_prix_gobj($mag,gobj_cod) from objet_generique ";
