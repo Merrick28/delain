@@ -191,13 +191,15 @@ $nb_joueur_en_vue = $db->nf();
 				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_x") . '</div></td>
 				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_y") . '</div></td>
 				<td ' . $ch_style . '><td>';
-                if (!$desorientation)
+                // A priori partie inutile et non atteignable dans les partisans
+                // la variable attaquable n'est jamaius définie
+                /*if (!$desorientation)
                 {
                     if ($attaquable == 1)
                     {
                         echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
                     }
-                }
+                }*/
                 echo '</td></tr>';
             }
         }
