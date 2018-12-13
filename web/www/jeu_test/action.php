@@ -666,7 +666,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     {
                         while ($db->next_record())
                         {
-                            $contenu_page .= '<p>pour l’objet : <b>' . $db->f('obj_nom') . '</b>';
+                            $contenu_page .= '<p>pour l’objet : <strong>' . $db->f('obj_nom') . '</strong>';
                             $req = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $db->f('obj_cod') . ') as resultat ';
                             $db2->query($req);
                             $db2->next_record();
@@ -683,7 +683,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
               $req = 'select obj_nom from objets where obj_cod = ' . $key;
               $db->query($req);
               $db->next_record();
-              $contenu_page .= '<p>pour l\'objet : <b>' . $db->f('obj_nom') . '</b>';
+              $contenu_page .= '<p>pour l\'objet : <strong>' . $db->f('obj_nom') . '</strong>';
               $req = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
               $db2->query($req);
               $db2->next_record();
@@ -987,7 +987,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 }
                 if ($nb_vrai_dest == 0)
                 {
-                    $contenu_page .= '<br><br><p><b>********* Vous devez renseigner au moins un membre de coterie ! *********</b><br><br>';
+                    $contenu_page .= '<br><br><p><strong>********* Vous devez renseigner au moins un membre de coterie ! *********</strong><br><br>';
                     $erreur = 1;
                 }
                 if ($erreur == 0)

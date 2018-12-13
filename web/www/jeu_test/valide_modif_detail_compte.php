@@ -31,7 +31,7 @@ if ($db->is_admin($compt_cod))
 
 
 			$comment = nl2br($comment);
-			$req = "update compte set compt_commentaire = '<br><b>$maint par $nom </b><br>$comment'||coalesce(compt_commentaire,' ') ";
+			$req = "update compte set compt_commentaire = '<br><strong>$maint par $nom </strong><br>$comment'||coalesce(compt_commentaire,' ') ";
 			$req = $req . "where compt_cod = $compte ";
 			if ($db->query($req))
 			{

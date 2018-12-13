@@ -41,7 +41,7 @@ if ($erreur == 0)
 														<i>- " J\'suis un ratier royal ! " lâche l\'homme d\'un ton neutre en pointant son torse sans grande conviction " Not\' bon roi Hormandre m\'a chargé de nettoyer les crasses que vous, les aventuriers, faites en terrassant les sales créatures du Vilain Rougeaud ! N\'allez pas croire que j\'vous en tiens rigueur, n\'empêche, faut bien que quelqu\'un fasse le ménage ou ça ressemblera bientôt à une décharge ici, non ?"
 														<br><br>Après vous avoir brièvement inspecté et prit en compte ce que vous avez à lui proposer, le ratier royal vous adresse à nouveau la parole :
 			
-														<br><br>- " Si j\'compte bien, ça nous fait, <b>'; 
+														<br><br>- " Si j\'compte bien, ça nous fait, <strong>'; 
 						if ($nb_queue_rat != 0)
 						{
 							$contenu_page3 .= $nb_queue_rat . ' queue(s) de rat, ';
@@ -56,28 +56,28 @@ if ($erreur == 0)
 						}
 						if ($nb_queue_rat != 0 or $nb_toile != 0 or $nb_crochet != 0)
 						{
-						$contenu_page3 .= '</b> dans votre inventaire.';
+						$contenu_page3 .= '</strong> dans votre inventaire.';
 						}
 						else
 						{
-							$contenu_page3 .= ' </b><b>aucun objet intéressant dans votre inventaire</b><br><br>';
+							$contenu_page3 .= ' </strong><strong>aucun objet intéressant dans votre inventaire</strong><br><br>';
 						}
 						if ($nb_queue_rat >=10 or $nb_toile >= 10 or $nb_crochet >= 10)
 						{
 							$contenu_page3 .= '<br>Fichtre, on peut dire que vous n\'y allez pas de main morte vous ! Bon, à défaut de vous payer aussi grassement que les fonctionnaires des bâtiments administratifs - faut bien que je me paie quand même, c\'est pas vous qui usez vos godillots à arpenter tout le secteur !<br> - je peux vous prendre ';
 										if ($nb_queue_rat >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=91;document.vente.submit();"><b>10 queues de rats </a></b><i>(2PA)</i>, ';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=91;document.vente.submit();"><strong>10 queues de rats </a></strong><i>(2PA)</i>, ';
 										}
 												if ($nb_toile >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=92;document.vente.submit();"><b> 10 soies d\'araignée </a></b><i>(2PA)</i>,';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=92;document.vente.submit();"><strong> 10 soies d\'araignée </a></strong><i>(2PA)</i>,';
 										}
 												if ($nb_crochet >= 10)
 										{
-											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=94;document.vente.submit();"><b> 10 crochets de serpents </a></b><i>(2PA)</i>,';
+											$contenu_page3 .= '<a href="javascript:document.vente.objet.value=94;document.vente.submit();"><strong> 10 crochets de serpents </a></strong><i>(2PA)</i>,';
 										}		
-							$contenu_page3 .= '</b>Tope là ?"';
+							$contenu_page3 .= '</strong>Tope là ?"';
 						}
 						else
 						{

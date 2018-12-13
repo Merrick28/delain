@@ -85,7 +85,7 @@ if ($erreur == 0)
 	switch($methode)
 	{
 		case "debut":
-			$contenu_page .= '<b>Un enchanteur vous aborde :</b><br>';
+			$contenu_page .= '<strong>Un enchanteur vous aborde :</strong><br>';
 			//
 			// requête pour voir si on a des objets enchantables
 			//
@@ -103,7 +103,7 @@ if ($erreur == 0)
 				$contenu_page .= '« <i>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
 				Voici les objets sur lesquels je peux intervenir : </i>»<br>';
 				while($db->next_record())
-					$contenu_page .= '<br><b><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&type_appel=' . $type_appel . '">' . $db->f('obj_nom') . '</a></b>';
+					$contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&type_appel=' . $type_appel . '">' . $db->f('obj_nom') . '</a></strong>';
 			}
 			$contenu_page .= '<br><br>';
 			if ($comp_enchantement == 0)
@@ -117,7 +117,7 @@ if ($erreur == 0)
 				{
 				$contenu_page .= '« <i>Mais j\'y pense, vous voulez peut-être devenir vous même un enchanteur de renom ?
 														<br>Si c\'est le cas Dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap.</i>»
-														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv1&comp=88"><b>Allez je me lance !</b></a><br><br>';
+														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv1&comp=88"><strong>Allez je me lance !</strong></a><br><br>';
 				}
 				else
 				{
@@ -138,16 +138,16 @@ if ($erreur == 0)
 													Revenez donc lorsque vous serez un peu plus expérimenté. 
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
 													</i>»
-													<br><br>Un niveau minimum de <b>85%</b> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2<br><br>';
+													<br><br>Un niveau minimum de <strong>85%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2<br><br>';
 				}
 				else
 				{
 					$contenu_page .= '« <i>Ah, je vois que vous avez investi sur l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
-													<br>Donnez moi <b>10000 brouzoufs</b>, et je ferais de vous un enchanteur accompli !
+													<br>Donnez moi <strong>10000 brouzoufs</strong>, et je ferais de vous un enchanteur accompli !
 													</i>»
-													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv2&comp=102"><b>Allez je me lance !</b></a><br><br>';
+													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv2&comp=102"><strong>Allez je me lance !</strong></a><br><br>';
 				}
 			}
 			else if ($comp_enchantement == 102)
@@ -159,16 +159,16 @@ if ($erreur == 0)
 													Revenez donc lorsque vous serez un peu plus expérimenté. 
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
 													</i>»
-													<br><br>Un niveau minimum de <b>100%</b> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2<br><br>';
+													<br><br>Un niveau minimum de <strong>100%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2<br><br>';
 				}
 				else
 				{
 					$contenu_page .= '« <i>Ah, je vois que vous avez investi sur l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
-													<br>Donnez moi <b>20000 brouzoufs</b>, et je ferais de vous un enchanteur expérimenté !
+													<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enchanteur expérimenté !
 													</i>»
-													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv3&comp=103"><b>Allez je me lance !</b></a><br><br>';					
+													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv3&comp=103"><strong>Allez je me lance !</strong></a><br><br>';					
 				}
 
 			}						
@@ -225,10 +225,10 @@ if ($erreur == 0)
 				$contenu_page .= 'Voici ce que nous pouvons tenter de faire avec ça : 
 				<table>
 					<tr>
-						<td class="soustitre2"><b>Nom</b></td>
-						<td class="soustitre2"><b>Description</b></td>
-						<td class="soustitre2"><b>Cout</b></td>
-						<td class="soustitre2"><b>Nécessite</b></td>
+						<td class="soustitre2"><strong>Nom</strong></td>
+						<td class="soustitre2"><strong>Description</strong></td>
+						<td class="soustitre2"><strong>Cout</strong></td>
+						<td class="soustitre2"><strong>Nécessite</strong></td>
 					</tr>';
 				while($db->next_record())
 				{

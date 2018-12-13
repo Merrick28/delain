@@ -122,7 +122,7 @@ class BE_Sql {
 
 
 ##    function halt($s) {
-##        echo "<b>$s</b>";
+##        echo "<strong>$s</strong>";
 ##        exit;
 ##    }
 

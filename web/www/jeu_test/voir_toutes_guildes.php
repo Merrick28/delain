@@ -83,8 +83,8 @@ if ($is_guilde === false)
 {
 	?>
 	<p><i>Attention ! Toute demande d’affiliation à une guilde supprimera automatiquement les demandes qui sont en attente de validation pour les autres guildes !</i></p>
-	<p align="center"><br><br><b>AVANT DE POSTULER A UNE GUILDE, MERCI D’EN LIRE SA DESCRIPTION. 
-	<br>Vous risqueriez d’être mal reçu si tel n’était pas le cas ...</b></p><br><br>
+	<p align="center"><br><br><strong>AVANT DE POSTULER A UNE GUILDE, MERCI D’EN LIRE SA DESCRIPTION. 
+	<br>Vous risqueriez d’être mal reçu si tel n’était pas le cas ...</strong></p><br><br>
 	
 	<p>Guildes disponibles : 
 	<?php 
@@ -100,84 +100,84 @@ if ($is_guilde === false)
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='nom';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 if ($sort == 'nom')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nom");
 if ($sort == 'nom')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='nbre';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'nbre')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre d’inscrits");
 if ($sort == 'nbre')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='renommee';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'renommee')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Renommee");
 if ($sort == 'renommee')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='karma';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'karma')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Karma");
 if ($sort == 'karma')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='monstre';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'monstre')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de monstres tués");
 if ($sort == 'monstre')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='joueur';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'joueur')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de joueurs tués");
 if ($sort == 'joueur')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='mort';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'mort')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de morts");
 if ($sort == 'mort')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("</tr>");
@@ -188,7 +188,7 @@ echo("<input type=\"hidden\" name=\"num_guilde\">");
 while($db->next_record())
 {
 	echo("<tr>");
-	printf("<td class=\"soustitre2\"><p><b><a href=\"javascript:document.guilde.action='visu_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">%s</a></b></p></td>",$db->f("guilde_cod"),$db->f("guilde_nom"));
+	printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.guilde.action='visu_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">%s</a></strong></p></td>",$db->f("guilde_cod"),$db->f("guilde_nom"));
 	printf("<td><p>%s</td>",$db->f("nb_perso"));
 	printf("<td><p>%s</td>",$db->f("renommee"));
 	printf("<td><p>%s</td>",$db->f("karma"));

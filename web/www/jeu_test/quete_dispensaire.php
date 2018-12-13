@@ -44,8 +44,8 @@ if ($erreur == 0)
 			<br>Mais il n’y a plus guère que le vent qui se  laisse  saisir par sa vieille carcasse éthérée. Et pourtant, il demeure fidèle à  son poste, comme en attente d’une dernière âme à sauver...
 			<br>Dans un râle, il se tourne vers vous, et vous apostrophe :
 			<br><i>« Souhaitez vous bénéficier du service de rapatriement d’âme ? »</i>
-													<br><a href="' . $PHP_SELF . '?methode=oui"><b>Oui</a></b>
-													<br><a href="' . $PHP_SELF . '?methode=non"><b>Non</a></b>';
+													<br><a href="' . $PHP_SELF . '?methode=oui"><strong>Oui</a></strong>
+													<br><a href="' . $PHP_SELF . '?methode=non"><strong>Non</a></strong>';
             break;
         case "oui":
             $req = 'select * from choix_lieu_vus(' . $perso_cod . ',2)';

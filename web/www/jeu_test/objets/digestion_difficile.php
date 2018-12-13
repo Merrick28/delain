@@ -32,7 +32,7 @@ if(!($bd->next_record())){
         $bd->next_record();
         if ($bd->f("perso_pa") < 4)
         {
-            $contenu_page .= '<p><b>Vous n\'avez pas assez de PA !</b></p>';
+            $contenu_page .= '<p><strong>Vous n\'avez pas assez de PA !</strong></p>';
         }
         else
         {
@@ -42,13 +42,13 @@ if(!($bd->next_record())){
                 perso_pv = min(perso_pv + 4, perso_pv_max)
                 where perso_cod = $perso_cod";
             $bd->query($req_enl_pa);
-            $contenu_page .= '<p><b>Vous faites un festin et gagnez quelques points de vie... Attention à votre régime.</b></p>';
+            $contenu_page .= '<p><strong>Vous faites un festin et gagnez quelques points de vie... Attention à votre régime.</strong></p>';
             $bd->query('select lancer_des(1,100) as reussite');
             $bd->next_record();
             $reussite = $bd->f('reussite');
             if ($reussite >= 96)
             {
-                $contenu_page .= '<p><b>Votre charisme vient d\'en prendre un coup... Il est temps de vous remettre au sport !</b></p>';
+                $contenu_page .= '<p><strong>Votre charisme vient d\'en prendre un coup... Il est temps de vous remettre au sport !</strong></p>';
                 // On rajoute une bouée disgrâcieuse.
                 $req_cree_bouee = "select cree_objet_perso_equipe(640, $perso_cod), f_del_objet($objet)";
                 $bd->query($req_cree_bouee);

@@ -33,7 +33,7 @@ if(!($bd->next_record()))
 		$bd->next_record();
 		if ($bd->f("perso_pa") < 2)
 		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
+			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
 		else
 		{
@@ -81,7 +81,7 @@ if(!($bd->next_record()))
 				$req_chant = "select insere_evenement($perso_cod, $perso_cod, $code_evt, '$texte_evt', 'O', '[pos_cod]=$position')";
 				$bd->query($req_chant);
 			}
-			$contenu_page .= '<p><b>Une interprétation émouvante, mais encore quelques progrès à faire avant de collectioner les fans.</b></p>';
+			$contenu_page .= '<p><strong>Une interprétation émouvante, mais encore quelques progrès à faire avant de collectioner les fans.</strong></p>';
 		}
 	} else {
 		$contenu_page .= '

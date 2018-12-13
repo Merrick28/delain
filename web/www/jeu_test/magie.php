@@ -342,7 +342,7 @@ if ($erreur == 0)
 				$contenu_page .= '<tr>
 			    <td class="soustitre2">'.$favoris.'</td>
 				<td class="soustitre2">
-				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><b>' . $db->f("sort_nom") . '</a></b> (' . $cout_pa . ' PA)
+				<a href="javascript:document.sort_m.sort.value=' . $sort_cod . ';document.sort_m.submit();"><strong>' . $db->f("sort_nom") . '</a></strong> (' . $cout_pa . ' PA)
 				</td>
 				<td><i>' . $db->f("liste_rune") . '</i></td>
 				<td>
@@ -423,10 +423,10 @@ if ($erreur == 0)
 			foreach ($runesSort as $rune)
 				$lancer = $lancer && (isset($runes_possedees[$rune]));
 
-            $nom = $db->f("sort_nom") . '</b>';
-            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></b> (' . $db->f("cout") . 'PA) ':'</b>');
+            $nom = $db->f("sort_nom") . '</strong>';
+            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></strong> (' . $db->f("cout") . 'PA) ':'</strong>');
             $contenu_page .= '<tr>
-			<td class="soustitre2"><b>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
+			<td class="soustitre2"><strong>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
 			<td>' . $db->f("memo") . ' %</td>
 			<td><a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 			</tr>';

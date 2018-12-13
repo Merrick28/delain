@@ -33,7 +33,7 @@ class CT_Ldap {
 	}
 
 	function ac_halt($msg="") {
-		echo "Session_ldap failed: <b>".htmlentities($msg)."</b><p>\n";
+		echo "Session_ldap failed: <strong>".htmlentities($msg)."</strong><p>\n";
 		exit;
 	}
 

@@ -103,15 +103,15 @@ if ($erreur == 0)
 					<input type="hidden" name="met_guilde" value="suite">
 					<table>
 					<tr>
-						<td class="soustitre2"><b>Nom</b></td>
-						<td class="soustitre2"><b>Autorisée ?</b></td>
-						<td class="soustitre2"><b>Refusée</b></td>
+						<td class="soustitre2"><strong>Nom</strong></td>
+						<td class="soustitre2"><strong>Autorisée ?</strong></td>
+						<td class="soustitre2"><strong>Refusée</strong></td>
 					</tr>
 					<?php 
 					while($db->next_record())
 					{
 						echo "<tr>";
-						echo "<td class=\"soustitre2\"><b>" , $db->f("guilde_nom") , "</b></td>";
+						echo "<td class=\"soustitre2\"><strong>" , $db->f("guilde_nom") , "</strong></td>";
 						
 						if ($db->f($champ) == 'O')
 						{
@@ -174,18 +174,18 @@ if ($erreur == 0)
 									while($db->next_record())
 									{
 										$req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes," . $db->f("pguilde_perso_cod") . ",'N','N') ";
-										echo "<p>Le joueur <b>" , $db->f("perso_nom") , "</b> a été supprimé du méta guildage.";
+										echo "<p>Le joueur <strong>" , $db->f("perso_nom") , "</strong> a été supprimé du méta guildage.";
 										$db2->query($req_dest);
 									}
 									
 								}
 								$req = "update guilde_perso set " . $champ_perso . " = 'N' where pguilde_guilde_cod = $key ";
 								$db->query($req);
-								echo "<p>La guilde <b>" , $db->f("guilde_nom") , "</b> a été supprimée des meta guildages.";
+								echo "<p>La guilde <strong>" , $db->f("guilde_nom") , "</strong> a été supprimée des meta guildages.";
 							}
 							else
 							{
-								echo "<p>La guilde <b>" , $db->f("guilde_nom") , "</b> a été ajoutée aux meta guildages.";
+								echo "<p>La guilde <strong>" , $db->f("guilde_nom") , "</strong> a été ajoutée aux meta guildages.";
 							}
 						}
 					}
@@ -193,7 +193,7 @@ if ($erreur == 0)
 			}
 			break;
 		case "voir_meta":
-			echo "<p><b>Liste des personnes méta guildées :</b><br>";
+			echo "<p><strong>Liste des personnes méta guildées :</strong><br>";
 			$req = "select perso_nom,perso_cod from perso,guilde_perso ";
 			$req = $req . "where pguilde_valide = 'O' ";
 			$req = $req . "and pguilde_meta_caravane = 'O' ";
@@ -214,12 +214,12 @@ if ($erreur == 0)
 			}
 			break;
 		case "stats_biere":
-			echo "<p>Futs vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $param->getparm(77) , "/" , $param->getparm(76) , "</b>";
-			echo "<p>Futs vendus par les aventuriers (ce mois-ci/total) : <b>" , $param->getparm(79) , "/" , $param->getparm(78) , "</b>";
+			echo "<p>Futs vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <strong>" , $param->getparm(77) , "/" , $param->getparm(76) , "</strong>";
+			echo "<p>Futs vendus par les aventuriers (ce mois-ci/total) : <strong>" , $param->getparm(79) , "/" , $param->getparm(78) , "</strong>";
 			break;
 		case "stats_paq":
-			echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <b>" , $param->getparm(81) , "/" , $param->getparm(80) , "</b>";
-			echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <b>" , $param->getparm(84) , "/" , $param->getparm(83) , "</b>";
+			echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <strong>" , $param->getparm(81) , "/" , $param->getparm(80) , "</strong>";
+			echo "<p>Paquets vendus par les aventuriers (ce mois-ci/total) : <strong>" , $param->getparm(84) , "/" , $param->getparm(83) , "</strong>";
 			break;
 		case "mag_aut":
 			if ($lieu_cod != "")
@@ -231,7 +231,7 @@ if ($erreur == 0)
 				$var_lieu = "";
 			}
 			
-			echo "<p><b>Liste des autorisations de ventes pour les différents magasins :</b><br>";
+			echo "<p><strong>Liste des autorisations de ventes pour les différents magasins :</strong><br>";
 			echo '<br>En cliquant sur le nom du magasin, toute la colonne sera sélectionnée (si un objet était déjà sélectionné, cela va le supprimer
 			<br>En cliquant sur un objet, on le rendra disponible en approvisionnement dans tous les magasins (sauf si il était déjà sélectionné et dans ce cas, il deviendra non disponible pour ce magasin)
 			<br><br>methode : '.$methode.' Lieu = '.$var_lieu.' / '.$lieu.' / '.$lieu_cod.'<br>
@@ -253,13 +253,13 @@ if ($erreur == 0)
 			$cpt = 0;
 			while($db->next_record())
 			{
-					$lieu .= '<td class="soustitre2">'.$db->f("etage_libelle").'<br><br><a href="javascript:toutCochercolonne(document.action_aut,\'ID_'.$db->f("lieu_cod").'\')"><b>'.$db->f("lieu_nom").'</b></a></td>';
+					$lieu .= '<td class="soustitre2">'.$db->f("etage_libelle").'<br><br><a href="javascript:toutCochercolonne(document.action_aut,\'ID_'.$db->f("lieu_cod").'\')"><strong>'.$db->f("lieu_nom").'</strong></a></td>';
 			}			
 
 //A revoir pour le onchange ...
 			echo '<br><select name="lieu" onChange="window.location.href=\''.$PHP_SELF.'?methode=mag_aut&lieu_cod=\'+this.value;"> 
 			<option value="">---------------</option>
-			<option value=""><b>Tous les magasins</b></option>';
+			<option value=""><strong>Tous les magasins</strong></option>';
 			echo $ch;			
 			echo '</select><br>';
 
@@ -329,7 +329,7 @@ if ($erreur == 0)
 	        }
 				}
 				echo "<br>modifications bien réalisées<br>
-				<br><a href=\"" , $PHP_SELF , "?methode=mag_aut\"><b>Retour</b></a>";
+				<br><a href=\"" , $PHP_SELF , "?methode=mag_aut\"><strong>Retour</strong></a>";
 			break;
 	}
 }

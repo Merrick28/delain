@@ -250,8 +250,8 @@ if ($erreur == 0)
 			$sens = ($sens == 'desc') ? 'asc' : 'desc';
 			$db_gmon->query($req_gmon);
 
-			$gras[$sort] = '<b>';
-			$fingras[$sort] = '</b>';
+			$gras[$sort] = '<strong>';
+			$fingras[$sort] = '</strong>';
 
 			echo '<form name="fsort" method="post" action="admin_type_monstre_edit.php">
 				<input type="hidden" name="sort">
@@ -384,7 +384,7 @@ if ($erreur == 0)
 					<TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/<?php echo $gmon_avatar?>">
 
 					<div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
-                        <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
+                        <strong>ou</strong><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
 			<?php 				}
 				else
 				{
@@ -393,7 +393,7 @@ if ($erreur == 0)
                     <TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/<?php echo $gmon_avatar?>">
 
                     <div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
-                    <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
+                    <strong>ou</strong><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
 			<?php 				}
 			?>
 					</TD>
@@ -1004,7 +1004,7 @@ if ($erreur == 0)
                     <TD colspan="2"><img onclick="open_imglist();" style="vertical-align:top;" id="output_image" height="60px" src="/images/avatars/defaut.png">
 
                         <div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*" onchange="preview_image(event);"><br>
-                            <b>ou</b><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
+                            <strong>ou</strong><br><input type="button" style="margin-top: 5px;" class="test" name="nouvel_avatar" value="Sélectionner une image existante sur le serveur" onclick="open_imglist();"></div>
 
 				</TR>
                 <TR>

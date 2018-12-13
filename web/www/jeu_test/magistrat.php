@@ -62,12 +62,12 @@ if ($erreur == 0)
 				?>
 				<table>	
 				<tr>
-					<td class="soustitre2"><b>Dossier</b></td>
-					<td class="soustitre2"><b>Accusé</b></td>
-					<td class="soustitre2"><b>Peine</b></td>
-					<td class="soustitre2"><b>Validée par</b></td>
-					<td class="soustitre2"><b>Date de peine</b></td>
-					<td class="soustitre2"><b>Etat de la peine</b></td>
+					<td class="soustitre2"><strong>Dossier</strong></td>
+					<td class="soustitre2"><strong>Accusé</strong></td>
+					<td class="soustitre2"><strong>Peine</strong></td>
+					<td class="soustitre2"><strong>Validée par</strong></td>
+					<td class="soustitre2"><strong>Date de peine</strong></td>
+					<td class="soustitre2"><strong>Etat de la peine</strong></td>
 					<td></td>
 				</tr>
 				<?php 
@@ -77,9 +77,9 @@ if ($erreur == 0)
 					$v_faite = $db->f("peine_faite");
 					echo "<tr>";
 					echo "<td class=\"soustitre2\">" , $db->f("peine_cod") , "</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><b>" , $db->f("n_acc") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><strong>" , $db->f("n_acc") , "</strong></td>";
 					echo "<td>$peine[$v_peine]</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><b>" , $db->f("n_mag") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><strong>" , $db->f("n_mag") , "</strong></td>";
 					echo "<td>" , $db->f("date_peine") , "</td>";
 					echo "<td>$etat[$v_faite]</td>";
 					echo "<td><a href=\"" , $PHP_SELF , "?methode=suppr&peine=" , $db->f("peine_cod") , "&perso=" , $db->f("c_acc") , "\">Retirer la peine ?</a></td>";
@@ -113,13 +113,13 @@ if ($erreur == 0)
 				?>
 				<table>	
 				<tr>
-					<td class="soustitre2"><b>Dossier</b></td>
-					<td class="soustitre2"><b>Accusé</b></td>
-					<td class="soustitre2"><b>Peine</b></td>
-					<td class="soustitre2"><b>Validée par</b></td>
-					<td class="soustitre2"><b>Date de peine</b></td>
-					<td class="soustitre2"><b>Etat de la peine</b></td>
-					<td class="soustitre2"><b>Date d'éxécution</b></td>
+					<td class="soustitre2"><strong>Dossier</strong></td>
+					<td class="soustitre2"><strong>Accusé</strong></td>
+					<td class="soustitre2"><strong>Peine</strong></td>
+					<td class="soustitre2"><strong>Validée par</strong></td>
+					<td class="soustitre2"><strong>Date de peine</strong></td>
+					<td class="soustitre2"><strong>Etat de la peine</strong></td>
+					<td class="soustitre2"><strong>Date d'éxécution</strong></td>
 					<td></td>
 				</tr>
 				<?php 
@@ -129,9 +129,9 @@ if ($erreur == 0)
 					$v_faite = $db->f("peine_faite");
 					echo "<tr>";
 					echo "<td class=\"soustitre2\">" , $db->f("peine_cod") , "</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><b>" , $db->f("n_acc") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><strong>" , $db->f("n_acc") , "</strong></td>";
 					echo "<td>$peine[$v_peine]</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><b>" , $db->f("n_mag") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><strong>" , $db->f("n_mag") , "</strong></td>";
 					echo "<td>" , $db->f("date_peine") , "</td>";
 					echo "<td>$etat[$v_faite]</td>";
 					echo "<td>" , $db->f("dexec") , "</td>";
@@ -219,7 +219,7 @@ if ($erreur == 0)
 				$v_peine = $db->f("peine_type");
 				$v_faite = $db->f("peine_faite");
 				$texte = "Le joueur " . $db->f("perso_nom") .", en tant que Magistrat de la Milice d'Hormandre III, a émis une condamnation contre vous.<br />";
-				$texte = $texte . "La condamnation est : <b>" . $peine[$v_peine] . "</b> et est enrgistrée sous le dossier <b>". $db->f("peine_cod") . "</b>.";
+				$texte = $texte . "La condamnation est : <strong>" . $peine[$v_peine] . "</strong> et est enrgistrée sous le dossier <strong>". $db->f("peine_cod") . "</strong>.";
 				$texte = str_replace("'","\'",$texte);
 				$req_num_mes = "select nextval('seq_msg_cod') as num_mes";
 				$db->query($req_num_mes);

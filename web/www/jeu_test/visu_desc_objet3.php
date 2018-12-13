@@ -86,7 +86,7 @@ if ($autorise == 1)
 		echo "<td>" . $db->f("tobj_libelle");
 		if ($db->f("gobj_deposable") == 'N')
 		{
-			echo " <b>non déposable !</b>";
+			echo " <strong>non déposable !</strong>";
 		}
 		echo "</td>";
 		echo "</tr>";
@@ -217,13 +217,13 @@ if ($autorise == 1)
 		if($enchantable == 1)
 		{
 			echo "<tr>";
-			echo "<td colspan=\"2\" class=\"soustitre2\"><b>Objet enchantable !</b></td>";
+			echo "<td colspan=\"2\" class=\"soustitre2\"><strong>Objet enchantable !</strong></td>";
 			echo "</tr>";
 		}
 		if($enchantable == 2)
 		{
 			echo "<tr>";
-			echo "<td colspan=\"2\" class=\"soustitre2\"><b>Objet enchanté !</b></td>";
+			echo "<td colspan=\"2\" class=\"soustitre2\"><strong>Objet enchanté !</strong></td>";
 			echo "</tr>";
 		}
 		echo "<tr>";

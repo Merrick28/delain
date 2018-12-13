@@ -220,7 +220,7 @@ if ($erreur == 0)
 	echo "</form>";
 	if ($nb_depose == 3)
 	{
-		echo "<p><b>Les 3 médaillons ont été déposés ! </b><a href=\"ouvre_escalier.php\">Ouvrir l'escalier ?</a><br><br>";
+		echo "<p><strong>Les 3 médaillons ont été déposés ! </strong><a href=\"ouvre_escalier.php\">Ouvrir l'escalier ?</a><br><br>";
 	}
 }	
 include "tab_bas.php";

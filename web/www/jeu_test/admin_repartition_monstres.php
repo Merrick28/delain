@@ -112,7 +112,7 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 		group by etage_libelle";
 	$db2->query($req_monstre);
 	$db2->next_record();?>
-<p><b>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $db->f("etage_libelle");?></b> / Nombre de persos présents : <?php  echo $db->f("perso_presents");?> / Nombre de monstres présents : <?php  echo $db2->f("perso_presents");?></p><br>
+<p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $db->f("etage_libelle");?></strong> / Nombre de persos présents : <?php  echo $db->f("perso_presents");?> / Nombre de monstres présents : <?php  echo $db2->f("perso_presents");?></p><br>
 <p>
 <?php 
 $rjmon_repart = 0.0;
@@ -166,7 +166,7 @@ if($db->next_record())
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
 		<input type="hidden" name="rmon_cod" value="<?php  echo  $db->f("rmon_cod"); ?>">
 		<TR>
-			<TD><?php echo '<b>' . $db->f("gmon_nom") . '</b><i> (code = ' . $db->f("gmon_cod") . ')</i>';?></TD>
+			<TD><?php echo '<strong>' . $db->f("gmon_nom") . '</strong><i> (code = ' . $db->f("gmon_cod") . ')</i>';?></TD>
 			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $db->f("rmon_poids"); ?>"> / <?php  echo  $db->f("nombre"); ?></p></TD>
 			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $db->f("rmon_max"); ?>"></p></TD>
 			<TD><p align="center"><input type="submit" value="Modifier"></p></TD>

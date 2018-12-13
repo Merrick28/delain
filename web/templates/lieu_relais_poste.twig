@@ -4,9 +4,9 @@
 
 {#------------------------ ENTETE ------------------------#}
 <div  class="soustitre2" style="margin-left:8px; margin-right:8px; padding-top:8px; border-radius:10px 10px 0 0; border:solid black 2px;">
-    &nbsp; &nbsp;<i>Zone de couverture de ce relais</i>: <b><FONT color="#8b0000">{{ zone_couverture }}</FONT></b><br>
+    &nbsp; &nbsp;<i>Zone de couverture de ce relais</i>: <strong><FONT color="#8b0000">{{ zone_couverture }}</FONT></strong><br>
     <center><img src="/images/lieu-relais-de-la-poste.png"></center>
-        &nbsp;&nbsp;&nbsp;Vous avez <b>{{ perso_po }}</b> brouzoufs<br>
+        &nbsp;&nbsp;&nbsp;Vous avez <strong>{{ perso_po }}</strong> brouzoufs<br>
 </div>
 <br>
 
@@ -14,7 +14,7 @@
 {% if INTERDIT %}
 
 <center>
-	<br><br><b>Votre statut (<i>{{INTERDIT}}<i>) ne vous permet pas d'utiliser les Relais de la Poste</b><br><br>
+	<br><br><strong>Votre statut (<i>{{INTERDIT}}<i>) ne vous permet pas d'utiliser les Relais de la Poste</strong><br><br>
 </center>
 
 {% else %}
@@ -28,14 +28,14 @@
 
 <tr>
   <td class="soustitre2" width="20px"></td>
-  <td class="soustitre2"><b>Date d'envoi</b></td>
-  <td class="soustitre2"><b>Date livraison</b></td>
-  <td class="soustitre2"><b>Destinataire</b></td>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix demandé</b></td>
-  <td class="soustitre2"><b>Date confiscation</b></td>
-  <td class="soustitre2"><b>Zone de livraison</b></td>
+  <td class="soustitre2"><strong>Date d'envoi</strong></td>
+  <td class="soustitre2"><strong>Date livraison</strong></td>
+  <td class="soustitre2"><strong>Destinataire</strong></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix demandé</strong></td>
+  <td class="soustitre2"><strong>Date confiscation</strong></td>
+  <td class="soustitre2"><strong>Zone de livraison</strong></td>
 </tr>
 	
 {% for objet in objets_poste_emet %}
@@ -57,14 +57,14 @@
 <tr width="100%"><td class="soustitre2" colspan="9"><br>Liste des objets que l'on vous a envoyés</td></tr>
 <tr>
   <td class="soustitre2" width="20px"></td>
-  <td class="soustitre2"><b>Date d'envoi</b></td>
-  <td class="soustitre2"><b>Date livraison</b></td>
-  <td class="soustitre2"><b>Envoyeur</b></td>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix demandé</b></td>
-  <td class="soustitre2"><b>Date confiscation</b></td>
-  <td class="soustitre2"><b>Zone de livraison</b></td>
+  <td class="soustitre2"><strong>Date d'envoi</strong></td>
+  <td class="soustitre2"><strong>Date livraison</strong></td>
+  <td class="soustitre2"><strong>Envoyeur</strong></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix demandé</strong></td>
+  <td class="soustitre2"><strong>Date confiscation</strong></td>
+  <td class="soustitre2"><strong>Zone de livraison</strong></td>
 </tr>	
 {% for objet in objets_poste_dest %}
 <tr>
@@ -74,20 +74,20 @@
     {% endif %}
   </td>
   <td class="soustitre2">{{ objet.date_poste|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if not objet.est_date_livrable  %}<b><font color="#8b0000>">{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if not objet.est_date_livrable  %}</b><font color="#8b0000>">{% endif %}</td>
+  <td class="soustitre2">{% if not objet.est_date_livrable  %}<strong><font color="#8b0000>">{% endif %}{{ objet.date_livraison|date("d/m/Y H:i") }}{% if not objet.est_date_livrable  %}</strong><font color="#8b0000>">{% endif %}</td>
   <td class="soustitre2">{{ objet.perso_nom_emet }}</td>
   <td class="soustitre2">{{ objet.obj_nom }}</td>
   <td class="soustitre2">{{ objet.obj_poids }}</td>
   <td class="soustitre2">{{ objet.prix_demande }} brouzoufs</td>
   <td class="soustitre2">{{ objet.date_confiscation|date("d/m/Y H:i") }}</td>
-  <td class="soustitre2">{% if not objet.est_lieu_livrable  %}<b><font color="#8b0000>">{% endif %}{{ objet.zone_livraison }}{% if not objet.est_date_livrable  %}</b><font color="#8b0000>">{% endif %}</td>
+  <td class="soustitre2">{% if not objet.est_lieu_livrable  %}<strong><font color="#8b0000>">{% endif %}{{ objet.zone_livraison }}{% if not objet.est_date_livrable  %}</strong><font color="#8b0000>">{% endif %}</td>
 </tr>
 {% endfor %}
 <tr><td class="soustitre2" colspan="9">
  <center><input class="test" type="submit" name="next" value="Récupérer mes objets"><input type="hidden" name="action" value="retrait0"></center>
   {% if message_retrait  %}
 <center>
-	<b>{{message_retrait}}</b>
+	<strong>{{message_retrait}}</strong>
 </center>
 {% endif %}
 </td></tr>
@@ -103,7 +103,7 @@
 {#------------------- Interface de SAISIE -----------------#}
 {% if titre  %}
 <center>
-	<b>{{titre}}</b>
+	<strong>{{titre}}</strong>
 </center>
 {% endif %}
 
@@ -116,11 +116,11 @@
 	<center>
 	<table>
 	<tr>
-	  <td class="soustitre2"><b>&nbsp;</b></td>
-	  <td class="soustitre2"><b>Type</b></td>
-	  <td class="soustitre2"><b>Objet</b></td>
-	  <td class="soustitre2"><b>Poids</b></td>
-	  <td class="soustitre2"><b>Prix demandé</b></td>
+	  <td class="soustitre2"><strong>&nbsp;</strong></td>
+	  <td class="soustitre2"><strong>Type</strong></td>
+	  <td class="soustitre2"><strong>Objet</strong></td>
+	  <td class="soustitre2"><strong>Poids</strong></td>
+	  <td class="soustitre2"><strong>Prix demandé</strong></td>
 	</tr>	
 
 	{% for objet in objets %}
@@ -139,7 +139,7 @@
 	<center>
 	{% if message  %}
 		<br>
-		<b>{{message}}</b><br>
+		<strong>{{message}}</strong><br>
 	{% endif %}	
 
 	<input class="test" type="submit" name="next" value="Passer à la suite">
@@ -160,10 +160,10 @@
 <center>
 <table>
 <tr>
-  <td class="soustitre2"><b>Type</b></td>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix demandé</b></td>
+  <td class="soustitre2"><strong>Type</strong></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix demandé</strong></td>
 </tr>	
 
 {% for objet in objets %}
@@ -184,11 +184,11 @@
 <center>
 <br>Poids total du colis: {{ poids }}
 <br>Prix total demandé  : {{ prix_demande }} brouzoufs
-<br><b>Frais de port  :</b> {{ frais_port }} brouzoufs
+<br><strong>Frais de port  :</strong> {{ frais_port }} brouzoufs
 <br><br>
 	
 {% if message  %}
-	<b>{{message}}</b><br>
+	<strong>{{message}}</strong><br>
 {% endif %}	
 	
 Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ destinataire }}" type="text">
@@ -207,10 +207,10 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <center>
 <table>
 <tr>
-  <td class="soustitre2"><b>Type</b></td>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix demandé</b></td>
+  <td class="soustitre2"><strong>Type</strong></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix demandé</strong></td>
 </tr>	
 
 {% for objet in objets %}
@@ -231,24 +231,24 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <center>
 <br>Poids total du colis: {{ poids }}
 <br>Prix total demandé  : {{ prix_demande }} brouzoufs
-<br><b>Frais de port  :</b> {{ frais_port }} brouzoufs
+<br><strong>Frais de port  :</strong> {{ frais_port }} brouzoufs
 <br><br>
-<b>Destinataire:</b> {{destinataire}}
+<strong>Destinataire:</strong> {{destinataire}}
 <input type=hidden name="destinataire" value="{{ destinataire }}">
 	
 {% if date_livraison and  date_confiscation  %}
-    <br>Le colis sera disponible pour le destinataire dans les relais de la poste des <u><b>{{ zone_couverture }}</b></u>
-    <br>à partir du <b>{{ date_livraison }}</b>
-	<br>Il pourra le récupérer à partir de cette date jusqu'au <b>{{ date_confiscation }}</b>
+    <br>Le colis sera disponible pour le destinataire dans les relais de la poste des <u><strong>{{ zone_couverture }}</strong></u>
+    <br>à partir du <strong>{{ date_livraison }}</strong>
+	<br>Il pourra le récupérer à partir de cette date jusqu'au <strong>{{ date_confiscation }}</strong>
 	{% if prix_demande>0  %}
-	pour la somme de <b>{{ prix_demande }} brouzoufs</b> qui sera reversée directement <u>sur votre compte en banque</u> au moment du retrait
+	pour la somme de <strong>{{ prix_demande }} brouzoufs</strong> qui sera reversée directement <u>sur votre compte en banque</u> au moment du retrait
 	{% endif %}	
-	.<br><br>Au delà du <b>{{ date_confiscation }}</b>, si le colis n'a pas été récupéré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste.
+	.<br><br>Au delà du <strong>{{ date_confiscation }}</strong>, si le colis n'a pas été récupéré, il sera consfisqué et vendu au profit des oeuvres du relais de la poste.
 {% endif %}	
 	
 {% if message  %}
     <br><br>
-	<b>{{message}}</b><br>
+	<strong>{{message}}</strong><br>
 {% endif %}	
 
 <br><br>	
@@ -268,16 +268,16 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <input type="hidden" name="action" value="">
 
 <center>
-<br><b>Poids total du colis:</b> {{ poids }}
-<br><b>Prix total demandé  :</b> {{ prix_demande }} brouzoufs
-<br><b>Frais de port  :</b> {{ frais_port }} brouzoufs
-<br><b>Destinataire:</b> {{destinataire}}
-<br><b>Date de livraison:</b> {{date_livraison}}
-<br><b>Date de confiscation:</b> {{date_confiscation}}
+<br><strong>Poids total du colis:</strong> {{ poids }}
+<br><strong>Prix total demandé  :</strong> {{ prix_demande }} brouzoufs
+<br><strong>Frais de port  :</strong> {{ frais_port }} brouzoufs
+<br><strong>Destinataire:</strong> {{destinataire}}
+<br><strong>Date de livraison:</strong> {{date_livraison}}
+<br><strong>Date de confiscation:</strong> {{date_confiscation}}
 	
 {% if message  %}
     <br><br>
-	<b>{{message}}</b><br>
+	<strong>{{message}}</strong><br>
 {% endif %}	
 
 <br><br>	
@@ -297,9 +297,9 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <center>
 <table>
 <tr>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix à payer</b></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix à payer</strong></td>
 </tr>	
 
 {% for objet in objets %}
@@ -316,13 +316,13 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 </center>	
 
 <center>
-<br><b>Poids total du colis</b>: {{ poids }}
-<br><b>Prix total à payer  </b>: {{ prix_retrait }} brouzoufs
+<br><strong>Poids total du colis</strong>: {{ poids }}
+<br><strong>Prix total à payer  </strong>: {{ prix_retrait }} brouzoufs
 <br><br>
 	
 {% if message  %}
     <br><br>
-	<b>{{message}}</b><br>
+	<strong>{{message}}</strong><br>
 {% endif %}	
 
 <br><br>	
@@ -344,9 +344,9 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 <center>
 <table>
 <tr>
-  <td class="soustitre2"><b>Objet</b></td>
-  <td class="soustitre2"><b>Poids</b></td>
-  <td class="soustitre2"><b>Prix à payer</b></td>
+  <td class="soustitre2"><strong>Objet</strong></td>
+  <td class="soustitre2"><strong>Poids</strong></td>
+  <td class="soustitre2"><strong>Prix à payer</strong></td>
 </tr>	
 
 {% for objet in objets %}
@@ -363,13 +363,13 @@ Saisir le nom du destinataire: <input name="destinataire" size="20" value="{{ de
 </center>	
 
 <center>
-<br><b>Poids total du colis</b>: {{ poids }}
-<br><b>Prix payé </b>: {{ prix_retrait }} brouzoufs
+<br><strong>Poids total du colis</strong>: {{ poids }}
+<br><strong>Prix payé </strong>: {{ prix_retrait }} brouzoufs
 <br><br>
 	
 {% if message  %}
     <br><br>
-	<b>{{message}}</b><br>
+	<strong>{{message}}</strong><br>
 {% endif %}	
 
 <br><br>	

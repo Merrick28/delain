@@ -131,12 +131,12 @@ while($db->next_record())
 	$rfac_nb = $db->f('rfac_nb');
 	$lfac_nb = $db->f('lfac_nb');
 	
-	$b1miss = ($fmiss_nb > 0) ? '' : '<b>';
-	$b2miss = ($fmiss_nb > 0) ? '' : '</b>';
-	$b1rang = ($rfac_nb > 0) ? '' : '<b>';
-	$b2rang = ($rfac_nb > 0) ? '' : '</b>';
-	$b1lieu = ($lfac_nb > 0) ? '' : '<b>';
-	$b2lieu = ($lfac_nb > 0) ? '' : '</b>';
+	$b1miss = ($fmiss_nb > 0) ? '' : '<strong>';
+	$b2miss = ($fmiss_nb > 0) ? '' : '</strong>';
+	$b1rang = ($rfac_nb > 0) ? '' : '<strong>';
+	$b2rang = ($rfac_nb > 0) ? '' : '</strong>';
+	$b1lieu = ($lfac_nb > 0) ? '' : '<strong>';
+	$b2lieu = ($lfac_nb > 0) ? '' : '</strong>';
 
 	echo "<form action='#' method='POST'><tr>
 		<td class='soustitre2'><input type='text' value='$fac_nom' name='fac_nom' size='30' />$txt_active</td>

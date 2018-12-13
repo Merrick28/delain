@@ -27,7 +27,7 @@ if(!($bd->next_record())){
 		$bd->next_record();
 		if ($bd->f("perso_pa") < 1)
 		{
-			$contenu_page .= '<p><b>Vous n’avez pas assez de PA !</b></p>';
+			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
 		else
 		{
@@ -51,7 +51,7 @@ if(!($bd->next_record())){
                         "values(69,now(),$perso_cod,'	[perso_cod1] a bu une chope de bière.','O','O')";
             $bd->query($req_bonus);
 
-			$contenu_page .= '<p><b>Vous descendez le verre d’un trait, quel délice !</b></p>';
+			$contenu_page .= '<p><strong>Vous descendez le verre d’un trait, quel délice !</strong></p>';
 		}
 	}  else { //Not isset ('methode')
 		$contenu_page .= '<p align="center">

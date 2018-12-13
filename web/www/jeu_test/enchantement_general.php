@@ -93,10 +93,10 @@ $is_enchanteur = $db->is_enchanteur($perso_cod);
 	{
 		$controle = 1;
 	}
-$contenu_page .= '<span align="center"><b>Enchantement</b></span>
+$contenu_page .= '<span align="center"><strong>Enchantement</strong></span>
 (<a href="javascript:blocking(\'aide\');">Aide</a>)<br><br>
 	<div id="aide" class="tableau2"  style="display:none;">
-	<p><b>Préambule :</b>
+	<p><strong>Préambule :</strong>
 		<br>L\'art du forgeamage est un art difficile à maitriser. 
 	</p>
 </div>
@@ -144,10 +144,10 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 		case "0": //Analyse des flux magiques
 			if($controle == 1)
 			{
-				$contenu_page .= '<span align="center"><b>Les flux magiques</b></span>
+				$contenu_page .= '<span align="center"><strong>Les flux magiques</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide sur les vents magiques</a>)<br><br>
 					<div id="aide2" class="tableau2"  style="display:none;">
-					<p><b>A quoi cela sert-il de comprendre les vents magiques ?</b>
+					<p><strong>A quoi cela sert-il de comprendre les vents magiques ?</strong>
 					<br>Les vents magiques ou flux magiques sont la base même du forgeamage. En effet, vous en aurez besoin pour créer des composants, créer un objet enchantable ou enchanter un objet.
 					<br><i>Mais que sont-ils ?</i>
 					<br>Chaque sort lancé produit de la magie visible, mais aussi de la magie invisible. Celle-ci reste en suspension, et ne se dissipe que lentement.
@@ -167,10 +167,10 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 		case "1": //Créer un composant pour Enchanter
 			if($controle == 1)
 			{
-				$contenu_page .= '<span align="center"><b>Les composants</b></span>
+				$contenu_page .= '<span align="center"><strong>Les composants</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>
 					<div id="aide2" class="tableau2"  style="display:none;">
-					<p><b>Création de composants :</b>
+					<p><strong>Création de composants :</strong>
 					<br>Les composants sont créés à partir des pierres précieuses et minerais.
 					<br>Vous devez vous trouver à un endroit où les vents magiques sont suffisants pour pouvoir les emmagasiner dans un composant.
 					<br>Malheureusement, cet art est à la fois dangereux et particulièrement aléatoire.
@@ -190,10 +190,10 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 		case "2": // Créer un objet qui pourra être enchanté
 			if($controle == 1)
 			{
-				$contenu_page .= '<span align="center"><b>Les objets enchantables</b></span>
+				$contenu_page .= '<span align="center"><strong>Les objets enchantables</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>    
 					<div id="aide2" class="tableau2"  style="display:none;">
-					<p><b>Rendre un objet enchantable :</b>
+					<p><strong>Rendre un objet enchantable :</strong>
 					<br>A la base, aucun objet n\'est enchantable. Chaque objet est une matière inerte, sans aucune propriété.
 					<br>L\'art du forgeamage, c\'est justement de pouvoir canaliser les vents magiques, les capturer, les enchasser dans les objets. C\'est cette opération qui permet de transformer les pierres précieuses en d\'autres composants.
 					<br>C\'est aussi cette opération qui est réalisée pour permettre à un objet de devenir enchantable par la suite.
@@ -218,7 +218,7 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 		case "3": // Enchanter un objet
 			if($controle == 1)
 			{
-				$contenu_page .= '<span align="center"><b>Aide pour enchanter un objet</b></span>
+				$contenu_page .= '<span align="center"><strong>Aide pour enchanter un objet</strong></span>
 				(<a href="javascript:blocking(\'aide3\');">Comment enchanter un objet</a>)<br><br>
 				<div id="aide3" class="tableau2"  style="display:none;">
 				<p>Rien de plus simple ... Vous avez besoin des composants qui composent une formule de forgeamage, et hop, l\'enchantement pourra être tenté. 

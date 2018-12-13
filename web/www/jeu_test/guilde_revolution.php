@@ -44,11 +44,11 @@ $db->query($req_lanceur);
 <input type="hidden" name="visu">
 <table>
 <tr>
-<td class="soustitre2"><p><b>Lanceur</b></td>
-<td class="soustitre2"><p><b>Cible</b></td>
-<td class="soustitre2"><p><b>Votes pour le lanceur</b></td>
-<td class="soustitre2"><p><b>Votes contre le lanceur</b></td>
-<td class="soustitre2"><p><b>Date de fin</b></td>
+<td class="soustitre2"><p><strong>Lanceur</strong></td>
+<td class="soustitre2"><p><strong>Cible</strong></td>
+<td class="soustitre2"><p><strong>Votes pour le lanceur</strong></td>
+<td class="soustitre2"><p><strong>Votes contre le lanceur</strong></td>
+<td class="soustitre2"><p><strong>Date de fin</strong></td>
 <td></td>
 </tr>
 <?php 

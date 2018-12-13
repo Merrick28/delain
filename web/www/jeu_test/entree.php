@@ -7,7 +7,7 @@ include "verif_connexion.php";
 </head>
 <body background="../images/fond5.gif">
 <?php $tab_lieu = $db->get_lieu($perso_cod);
-printf("<p><b>%s</b> - %s",$tab_lieu['nom'],$tab_lieu['libelle']);
+printf("<p><strong>%s</strong> - %s",$tab_lieu['nom'],$tab_lieu['libelle']);
 ?>
 </body>
 </html>

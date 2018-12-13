@@ -10,7 +10,7 @@ $t->set_var('URL_IMAGES',G_IMAGES);
 include('variables_menu.php');
 
 $methode = (isset($_GET['methode'])) ? $_GET['methode'] : '';
-$resultat = '<div><b>Les paramètres de votre quatrième personnage ont été mis à jour.</b></div>';
+$resultat = '<div><strong>Les paramètres de votre quatrième personnage ont été mis à jour.</strong></div>';
 switch ($methode)
 {
 	case 'modif':
@@ -134,9 +134,9 @@ if ($quatrieme_possible)
 	$nouveau_type = ($quatrieme_monstre) ? 1 : 2;
 	$type_texte = ($quatrieme_monstre) ? 'monstre' : 'aventurier';
 	$contenu_page = $resultat . '<p class="titre">Options du quatrième personnage</p>';
-	$contenu_page .= '<p><b>Rappel : </b><br />
+	$contenu_page .= '<p><strong>Rappel : </strong><br />
 		Vous avez la possibilité de créer un quatrième personnage car vous êtes présent sur le jeu depuis plus de deux ans.<br />
-		<b>Ceci n’est pas considéré comme un droit mais comme une responsabilité.</b>
+		<strong>Ceci n’est pas considéré comme un droit mais comme une responsabilité.</strong>
 		<br />
 		Monstre ou aventurier, le quatrième personnage est présent pour vous permettre de participer à l’animation du jeu, vous en faire découvrir de
 		nouveaux aspects...<br />
@@ -144,12 +144,12 @@ if ($quatrieme_possible)
 		Si ces règles ne vous conviennent pas, ne gardez surtout pas ce personnage, car ne pas les respecter sera forcément sanctionné !</p>
 		<br /><hr />';
 
-	$contenu_page .= "<p><b>Type de quatrième personnage :</b></p>";
-	$contenu_page .= "<p>Vous pouvez actuellement jouer un quatrième personnage de type <b>$type_texte</b>.</p>";
+	$contenu_page .= "<p><strong>Type de quatrième personnage :</strong></p>";
+	$contenu_page .= "<p>Vous pouvez actuellement jouer un quatrième personnage de type <strong>$type_texte</strong>.</p>";
 	$contenu_page .= "<p><a href='?nouveau_type=$nouveau_type&methode=modif'>Changer ?</a></p>";
 
 	if ($quatrieme_existant)
-		$contenu_page .= '<br /><p><b>Attention</b> : vous avez actuellement un quatrième personnage. Les modifications ne seront effectives
+		$contenu_page .= '<br /><p><strong>Attention</strong> : vous avez actuellement un quatrième personnage. Les modifications ne seront effectives
 			que lors d’un changement de quatrième personnage (mort du monstre ou suppression de l’aventurier)</p>';
 
 	// Le compte possède moins de 3 persos standards, et un quatrième perso : il peut transformer ce dernier en perso standard.
@@ -164,7 +164,7 @@ if ($quatrieme_possible)
 		$db->query($requete);
 		$db->next_record();
 		$nom_du_perso = $db->f('perso_nom');
-		$contenu_page .= "<hr /><p><b>Transformation de personnage : </b><br />
+		$contenu_page .= "<hr /><p><strong>Transformation de personnage : </strong><br />
 			Vous avez un quatrième personnage, $nom_du_perso, mais moins de trois personnages principaux.<br />
 			Vous pouvez transformer votre quatrième personnage en personnage standard, lui enlevant ainsi les restrictions qui sont les siennes.<br />
 			Attention, la manœuvre opposée n’est pas possible ! Cette décision est donc irréversible.</p>
@@ -188,16 +188,16 @@ if ($quatrieme_possible)
 		$texte_mortel = 'indéfini';
 		if ($perso_mortel == 'O') $texte_mortel = 'mortel';
 		if ($perso_mortel == 'N') $texte_mortel = 'bridé';
-		$contenu_page .= "<hr /><p><b>Devenir du 4e personnage : </b><br />
+		$contenu_page .= "<hr /><p><strong>Devenir du 4e personnage : </strong><br />
 			Vous avez un quatrième personnage, $nom_du_perso.<br />
 			Afin d’éviter que ce personnage ne devienne trop puissant et déséquilibre les étages supérieurs, un choix est demandé :<br />
-			- soit votre personnage vivra et mourra de façon classique, mais <b>ses PX seront limités à 1000, et ses compétences à 85</b><br />
-			- soit il ne sera pas limité, mais <b>deviendra mortel, de sorte que sa prochaine mort sera définitive.</b><br />
+			- soit votre personnage vivra et mourra de façon classique, mais <strong>ses PX seront limités à 1000, et ses compétences à 85</strong><br />
+			- soit il ne sera pas limité, mais <strong>deviendra mortel, de sorte que sa prochaine mort sera définitive.</strong><br />
 			
 			Ce choix est obligatoire à partir du moment où le personnage atteint les seuils fixés : le jeu vous empêchera alors de jouer ce personnage
 			dans l’attente de votre décision.<br />
 			Il est réversible à tout moment via cette même page sauf, bien sûr, si votre personnage mourrait en mode « mortel ».<br /><br />
-			<p><b>Attention</b> Si vous êtes de niveau égal ou supérieur à 15, brider signifiera perdre des améliorations de niveau. Le système ne pouvant pas deviner à votre place lesquelles perdre, elle seront toutes réinitialisées et vous devrez repasser vos niveaux.</p><br />
+			<p><strong>Attention</strong> Si vous êtes de niveau égal ou supérieur à 15, brider signifiera perdre des améliorations de niveau. Le système ne pouvant pas deviner à votre place lesquelles perdre, elle seront toutes réinitialisées et vous devrez repasser vos niveaux.</p><br />
 			Pour le moment, il est en mode « $texte_mortel ».<br />
 			Vous souhaitez :<br />
 			<p> - <a href='?methode=limitation&mortel=N'>brider l’évolution de $nom_du_perso.</a></p>

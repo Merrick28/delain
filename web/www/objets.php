@@ -28,11 +28,11 @@
 			<td background="images/ligne_gauche.gif">&nbsp;</td>
 			<td><p>Au cours de vos aventures, vous pourrez trouver et ramasser plusieurs types d'objets :
 			<ul>
-			<li><p><b>Les armes : </b>servent à attaquer vos adversaires.
-			<li><p><b>Les armures : </b>servent à se protéger des coups.
-			<li><p><b>Les casques : </b>même chose que les armures.
-			<li><p><b>Les runes : </b>ce sont des catalyseurs de magie qui, une fois assemblés peuvent vous permettre de lancer un sort. Attention aux mauvaises utilisations !.
-			<li><p><b>Les reliques : </b>comme les runes, mais avec un effet permanent tant qu'elles sont utilisées. Très rare. Très cher.
+			<li><p><strong>Les armes : </strong>servent à attaquer vos adversaires.
+			<li><p><strong>Les armures : </strong>servent à se protéger des coups.
+			<li><p><strong>Les casques : </strong>même chose que les armures.
+			<li><p><strong>Les runes : </strong>ce sont des catalyseurs de magie qui, une fois assemblés peuvent vous permettre de lancer un sort. Attention aux mauvaises utilisations !.
+			<li><p><strong>Les reliques : </strong>comme les runes, mais avec un effet permanent tant qu'elles sont utilisées. Très rare. Très cher.
 			</ul>
 			<p>Il est possible de trouver d'autres types d'objets....<br><br>
 			Dans tous les cas, lorsque vous ramasser un objet, vous devez l'identifier grâce à la compétence correspondante avant de pouvoir 

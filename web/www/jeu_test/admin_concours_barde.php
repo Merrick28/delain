@@ -120,7 +120,7 @@ while ($db->next_record())
 		$texte_etat = ' (fermée)';
 
 	if ($cbar_cod == $db->f('cbar_cod'))
-		echo "<p><b><a href='?methode=barde_visu&cbar_cod=" . $db->f('cbar_cod') . "'>Saison " . $db->f('cbar_saison') . "$texte_etat</a></b></p>";
+		echo "<p><strong><a href='?methode=barde_visu&cbar_cod=" . $db->f('cbar_cod') . "'>Saison " . $db->f('cbar_saison') . "$texte_etat</a></strong></p>";
 	else
 		echo "<p><a href='?methode=barde_visu&cbar_cod=" . $db->f('cbar_cod') . "'>Saison " . $db->f('cbar_saison') . "$texte_etat</a></p>";
 }
@@ -147,13 +147,13 @@ switch ($methode)
 		echo '<table><tr><td colspan="3" class="titre">Saison ' . $cbar_saison . '</td></tr>';
 		echo '<tr><td colspan="3" class="soustitre2">';
 		if ($ouvert)
-			echo 'Cette session du concours de barde est <b>ouverte</b>';
+			echo 'Cette session du concours de barde est <strong>ouverte</strong>';
 		if ($introduction)
-			echo 'Cette session du concours de barde est <b>annoncée</b>';
+			echo 'Cette session du concours de barde est <strong>annoncée</strong>';
 		if ($futur)
-			echo 'Cette session du concours de barde est <b>future</b>';
+			echo 'Cette session du concours de barde est <strong>future</strong>';
 		if ($ferme)
-			echo 'Cette session du concours de barde est <b>fermée</b>';
+			echo 'Cette session du concours de barde est <strong>fermée</strong>';
 		echo '</td></tr>';
 		echo '<tr><td class="soustitre2">Saison</td><td><input type="text" name="form_saison" value="' . $cbar_saison . '" /></td><td>Dénomination de la saison (typiquement, l’année).</td></tr>';
 		echo '<tr><td class="soustitre2">Date d’annonce (aaaa-mm-jj, jour inclus)</td><td><input type="text" name="form_date_teaser" value="' . $cbar_date_teaser . '" /></td><td>La date à laquelle la page du concours devient accessible.</td></tr>';

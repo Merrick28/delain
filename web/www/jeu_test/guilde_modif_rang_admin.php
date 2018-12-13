@@ -86,14 +86,14 @@ if ($db->is_admin_guilde($perso_cod))
                 {
                     if ($db->f("rguilde_admin") != 'O' and $nombre_admin <= 1)
                     {
-                        echo "<p>Erreur ! Le nouveau rang n'est pas un rang <b>administrateur</b>, alors que vous êtes actuellement <b>le seul administrateur</b> de cette guilde !";
+                        echo "<p>Erreur ! Le nouveau rang n'est pas un rang <strong>administrateur</strong>, alors que vous êtes actuellement <strong>le seul administrateur</strong> de cette guilde !";
                     }
                     else if ($db->f("rguilde_admin") != 'O' and $nombre_admin > 1)
                     {
                         $req = "update guilde_perso set pguilde_rang_cod = $rang
 														where pguilde_perso_cod = $vperso ";
                         $db->query($req);
-                        echo "<p>Le rang de l'utilisateur à été modifié. Vous étiez <b>administrateur</b> de cette guilde, et vous êtes redevenu simple <b>membre</b>.";
+                        echo "<p>Le rang de l'utilisateur à été modifié. Vous étiez <strong>administrateur</strong> de cette guilde, et vous êtes redevenu simple <strong>membre</strong>.";
                     }
                     else /* Le nouveau rang est un rang admin */
                     {
@@ -107,7 +107,7 @@ if ($db->is_admin_guilde($perso_cod))
                 {
                     if ($db->f("rguilde_admin") != 'O')
                     {
-                        echo "<p>Erreur ! Le nouveau rang n'est pas un rang <b>administrateur</b>. Vous ne pouvez pas dégrader un administrateur, seul lui peut se changer de rang !";
+                        echo "<p>Erreur ! Le nouveau rang n'est pas un rang <strong>administrateur</strong>. Vous ne pouvez pas dégrader un administrateur, seul lui peut se changer de rang !";
                     }
                     else
                     {

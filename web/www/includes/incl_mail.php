@@ -110,7 +110,7 @@ function validateEmail ($email)
                 for ( $i = 0; $i < count($mxhosts); $i++ ) { 
                     echo "??????o $weight[$i] $mxhosts[$i]<BR>"; 
                 } 
-                echo "<b>".count($mxhosts)." mail-servers found for this domain</b><BR>"; 
+                echo "<strong>".count($mxhosts)." mail-servers found for this domain</strong><BR>"; 
 
             } 
 

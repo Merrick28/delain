@@ -104,16 +104,16 @@ if ($db->is_admin($compt_cod))
 	{
 		$contenu_page .= '<tr>
 			<td class="soustitre3">' . $db->f("evt_date") . '</td>
-			<td class="soustitre3"><b>' . $db->f("tevt_libelle") . '</b></td>';
+			<td class="soustitre3"><strong>' . $db->f("tevt_libelle") . '</strong></td>';
 			
-		$texte_evt = str_replace('[perso_cod1]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db->f("nom1") ."</a></b>",$db->f("levt_texte"));
+		$texte_evt = str_replace('[perso_cod1]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db->f("nom1") ."</a></strong>",$db->f("levt_texte"));
 		if ($db->f("levt_attaquant") != '')
 		{
-			$texte_evt = str_replace('[attaquant]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db->f("nom2")."</A></b>",$texte_evt);
+			$texte_evt = str_replace('[attaquant]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db->f("nom2")."</A></strong>",$texte_evt);
 		}
 		if ($db->f("levt_cible") != '')
 		{
-			$texte_evt = str_replace('[cible]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db->f("nom3")."</a></b>",$texte_evt);
+			$texte_evt = str_replace('[cible]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db->f("nom3")."</a></strong>",$texte_evt);
 		}
 
 		$contenu_page .= '<td>' . $texte_evt . '</td></tr>';
@@ -156,17 +156,17 @@ else
 		$texte = $db->f("tevt_texte");
 		
 		$contenu_page .= '<tr><td class="soustitre3">' .$db->f("evt_date") . '</td>
-			<td class="soustitre3"><b>' . $db->f("tevt_libelle") . '</b></td>';
+			<td class="soustitre3"><strong>' . $db->f("tevt_libelle") . '</strong></td>';
 
 
-		$texte_evt = str_replace('[perso_cod1]',"<b><a href=\"javascript:document.form_visu.visu.value=$num_perso;document.form_visu.submit();\">". $db->f("nom1") ."</a></b>\n",$texte);
+		$texte_evt = str_replace('[perso_cod1]',"<strong><a href=\"javascript:document.form_visu.visu.value=$num_perso;document.form_visu.submit();\">". $db->f("nom1") ."</a></strong>\n",$texte);
 		if ($levt_attaquant != '')
 		{
-			$texte_evt = str_replace('[attaquant]',"<b><a href=\"javascript:document.form_visu.visu.value=$levt_attaquant;document.form_visu.submit();\">" . $db->f("nom2") . "</a></b>\n",$texte_evt);
+			$texte_evt = str_replace('[attaquant]',"<strong><a href=\"javascript:document.form_visu.visu.value=$levt_attaquant;document.form_visu.submit();\">" . $db->f("nom2") . "</a></strong>\n",$texte_evt);
 		}
 		if ($levt_cible != '')
 		{
-			$texte_evt = str_replace('[cible]',"<b><a href=\"javascript:document.form_visu.visu.value=$levt_cible;document.form_visu.submit();\">" . $db->f("nom3") . "</a></b>\n",$texte_evt);
+			$texte_evt = str_replace('[cible]',"<strong><a href=\"javascript:document.form_visu.visu.value=$levt_cible;document.form_visu.submit();\">" . $db->f("nom3") . "</a></strong>\n",$texte_evt);
 		}
 		$contenu_page .= '<td>' . $texte_evt . '</td></tr>';
 	}

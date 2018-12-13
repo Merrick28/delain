@@ -15,10 +15,10 @@
 
   <h1>Logout</h1>
   
-  You have been logged in as <b><?php print $auth->auth["uname"] ?></b> with
-  <b><?php print $auth->auth["perm"] ?></b> permission. Your authentication
-  was valid until <b><?php print date("d. M. Y, H:i:s", $auth->auth["exp"])
-  ?></b>.<p>
+  You have been logged in as <strong><?php print $auth->auth["uname"] ?></strong> with
+  <strong><?php print $auth->auth["perm"] ?></strong> permission. Your authentication
+  was valid until <strong><?php print date("d. M. Y, H:i:s", $auth->auth["exp"])
+  ?></strong>.<p>
   
   This is all over now. You have been logged out.
 </body>

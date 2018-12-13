@@ -78,7 +78,7 @@ if ($autorise == 1)
 		echo "<td><p>" . $db->f("tobj_libelle");
 		if ($db->f("gobj_deposable") == 'N')
 		{
-			echo " <b>non déposable !</b>";
+			echo " <strong>non déposable !</strong>";
 		}
 		echo "</p></td>";
 		echo "</tr>";

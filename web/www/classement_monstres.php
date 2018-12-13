@@ -38,7 +38,7 @@ if (!preg_match('/^[0-9]*$/i', $debut))
 
 function gras($crit1, $crit2, $debut)
 {
-	$resultat = ($debut) ? '<b>' : '</b>';
+	$resultat = ($debut) ? '<strong>' : '</strong>';
 	return ($crit1 == $crit2) ? $resultat : '';
 }
 
@@ -177,8 +177,8 @@ $contenu_page .= "</tr>";
 
 while($db->next_record())
 {
-	$g1 = ($compt_cod == $db->f('cmon_compt_cod')) ? '<b>' : "";
-	$g2 = ($compt_cod == $db->f('cmon_compt_cod')) ? '</b>' : "";
+	$g1 = ($compt_cod == $db->f('cmon_compt_cod')) ? '<strong>' : "";
+	$g2 = ($compt_cod == $db->f('cmon_compt_cod')) ? '</strong>' : "";
 	
 	$contenu_page .= "<tr>";
 	$contenu_page .= "<td class=\"soustitre2\">$g1" . $db->f("cmon_nom") . "$g2</td>";
@@ -217,13 +217,13 @@ for($cpt = 1; $cpt <= $nb_pages; $cpt++)
 		}
 		else
 		{
-			$contenu_page .= "<b>1</b>";
+			$contenu_page .= "<strong>1</strong>";
 		} 	
 		
 	}
 	if (($cpt == $page_en_cours) && ($cpt != 1) && ($cpt != $nb_pages))
 	{
-		$contenu_page .= " ... <b>$page_en_cours</b>";
+		$contenu_page .= " ... <strong>$page_en_cours</strong>";
 	}
 	if (($cpt%10 == 0) && ($cpt != $page_en_cours))
 	{

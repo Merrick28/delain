@@ -65,11 +65,11 @@ $db->query($req_evt);
 </tr>
 <?php 
 echo "<tr>";
-	echo "<td class=\"soustitre3\"><p><b>Date</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Ancien</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Nouveau</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>IP</b></p></td>";
-	echo "<td class=\"soustitre3\"><p><b>Hôte</b></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Date</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Ancien</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Nouveau</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>IP</strong></p></td>";
+	echo "<td class=\"soustitre3\"><p><strong>Hôte</strong></p></td>";
 echo "</tr>";
 ?>
 <form name="visu_evt" method="post" action="multi_trace.php">

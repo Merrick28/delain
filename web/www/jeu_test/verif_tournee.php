@@ -26,7 +26,7 @@ switch($methode)
 		$req = $req . "where pquete_quete_cod = 6 ";
 		$req = $req . "and pquete_perso_cod = perso_cod ";
 		$db->query($req);
-		echo "<p><b>Liste des inscrits :</b></br>";
+		echo "<p><strong>Liste des inscrits :</strong></br>";
 		while ($db->next_record())
 		{
 			echo "<a href=\"verif_tournee.php?methode=verif&perso=", $db->f("perso_cod"), "\">", $db->f("perso_nom"), "</a></br>";
@@ -49,7 +49,7 @@ switch($methode)
 		{
 			while ($db->next_record())
 			{
-				echo "<b>", $db->f("lieu_nom"), "</b> : ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), "(", $db->f("paub_nombre"), " boissons prises).<br>";
+				echo "<strong>", $db->f("lieu_nom"), "</strong> : ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), "(", $db->f("paub_nombre"), " boissons prises).<br>";
 			}		
 		}
 	

@@ -17,17 +17,17 @@ $db->next_record();
 //
 $contenu_page = '<p class="titre">Réception des événements par courriel</p>';
 if ($db->f("compt_envoi_mail") == 1)
-    $contenu_page .= '<p>Vous recevez actuellement les comptes rendus <b>événements</b> par courriel</p>
+    $contenu_page .= '<p>Vous recevez actuellement les comptes rendus <strong>événements</strong> par courriel</p>
 		<p><a href="change_rec_mail.php?type=e&met=n">Ne plus les recevoir ?</a></p>';
 else
-	$contenu_page .= '<p>Vous ne recevez pas les comptes rendus <b>événement</b> par courriel</p>
+	$contenu_page .= '<p>Vous ne recevez pas les comptes rendus <strong>événement</strong> par courriel</p>
 		<p><a href="change_rec_mail.php?type=e&met=o">Les recevoir ?</a></p>';
 $contenu_page .= '<br><br>';
 if ($db->f("compt_envoi_mail_message") == 1)
-	$contenu_page .= '<p>Vous recevez actuellement les <b>avis de messages</b> par courriel</p>
+	$contenu_page .= '<p>Vous recevez actuellement les <strong>avis de messages</strong> par courriel</p>
 		<p><a href="change_rec_mail.php?type=m&met=n">Ne plus les recevoir ?</a></p>';
 else
-	$contenu_page .= '<p>Vous ne recevez pas les <b>avis de messages</b> par courriel</p>
+	$contenu_page .= '<p>Vous ne recevez pas les <strong>avis de messages</strong> par courriel</p>
 		<p><a href="change_rec_mail.php?type=m&met=o">Les recevoir ?</a></p>';
 
 $contenu_page .= '<br><br>';

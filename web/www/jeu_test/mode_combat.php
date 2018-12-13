@@ -23,7 +23,7 @@ $contenu_include = 'Vous êtes actuellement en mode ';
 if ($db->f("depasse") != 'f' && $db->f("date_creation") == 'f')
 {
 	$contenu_include = 'Votre posture de combat est ';
-    $contenu_include .= '<b>' . $db->f("mcom_nom") . '</b>. (Vous ne pourrez la changer qu’à partir de ' . $db->f("dch") . ').';
+    $contenu_include .= '<strong>' . $db->f("mcom_nom") . '</strong>. (Vous ne pourrez la changer qu’à partir de ' . $db->f("dch") . ').';
 }
 else
 {

@@ -44,13 +44,13 @@ if(!isset($admin_etage) && $methode == 'debut')
 
 ?>
 
-<?php echo "<table><tr><td><p><b>Choisissez l’étage à modifier :</b></p>
+<?php echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<form method='post' action='$PHP_SELF'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
 	$html->etage_select($admin_etage) .
 	"</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
-	<p><b>Autres outils</b><br />
+	<p><strong>Autres outils</strong><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
 	<a href='modif_etage3ter.php'>Creation multiple de lieux</a><br />
@@ -70,7 +70,7 @@ switch($methode)
 		<script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php  echo $admin_etage; ?>"></script>
 		<div class="bordiv">
 			<table>
-				<tr><td><b>Pinceau</b></td><td><b>Fonds</b></td><td><b>Décors</b></td><td><b>Murs</b></td><td><b>Décors superposés</b></td><td><b>Spécial</b></td></tr>
+				<tr><td><strong>Pinceau</strong></td><td><strong>Fonds</strong></td><td><strong>Décors</strong></td><td><strong>Murs</strong></td><td><strong>Décors superposés</strong></td><td><strong>Spécial</strong></td></tr>
 				<tr valign="top">
 					<td class="bordiv">
 						Outil sélectionné : <img style="display: inline;" src="" alt="Aucun" title="Aucun" id="imgPinceau">

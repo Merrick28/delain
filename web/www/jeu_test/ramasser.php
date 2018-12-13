@@ -90,8 +90,8 @@ switch($methode)
 		?>
 		<tr>
 		<td class="soustitre2" width="20"></td>
-		<td class="soustitre2"><b>Nom</b></td>
-		<td class="soustitre2"><b>Type objet</b></td>
+		<td class="soustitre2"><strong>Nom</strong></td>
+		<td class="soustitre2"><strong>Type objet</strong></td>
 		</tr>
 		<?php 
 		if ($db->nf() != 0)
@@ -107,11 +107,11 @@ switch($methode)
 				$identifie = $db2->is_identifie_objet($perso_cod,$objet);
 				if ($identifie)
 				{
-					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><b>" . $db->f("obj_nom"). "</b></label></td>";
+					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><strong>" . $db->f("obj_nom"). "</strong></label></td>";
 				}
 				else
 				{
-					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><b>" . $db->f("obj_nom_generique"). "</b></label></td>";
+					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><strong>" . $db->f("obj_nom_generique"). "</strong></label></td>";
 				}
 				echo "<td>" . $db->f("tobj_libelle") . "</td>";
 				
@@ -135,7 +135,7 @@ switch($methode)
 			{
 				echo "<tr>";
 				echo "<td><input type=\"checkbox\" class=\"vide\" name=\"br[" . $db->f("por_cod") . "]\" value=\"0\" id=\"" . $db->f("por_cod") . "\"  onchange='cocheDecoche(this.checked)'></td>";
-				echo "<td class=\"soustitre2\" colspan=\"2\"><label for=\"" . $db->f("por_cod") . "\"><b>" . $db->f("por_qte") . " brouzoufs</b></label></td>";
+				echo "<td class=\"soustitre2\" colspan=\"2\"><label for=\"" . $db->f("por_cod") . "\"><strong>" . $db->f("por_qte") . " brouzoufs</strong></label></td>";
 				
 				echo "</tr>";
 			}

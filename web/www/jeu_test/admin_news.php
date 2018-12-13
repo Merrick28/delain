@@ -193,7 +193,7 @@ if ($erreur == 0)
 			$auteur = str_replace('\'', '’', $auteur);
 			$texte = str_replace('\'', '’', $texte);
 			?>
-			<p><b>Prévisualisation</b></p>
+			<p><strong>Prévisualisation</strong></p>
 			<div class="bordiv" style="margin:2px;text-align:center">
 				<div class="titre"><?php echo $titre?></div>
 				<div class="texteNorm" style="text-align:right;">

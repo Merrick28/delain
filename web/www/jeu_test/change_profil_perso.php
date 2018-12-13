@@ -116,7 +116,7 @@ if ($db->nf() != 0)
 	echo "<tr><td class=\"soustitre2\">Titre</td><td class=\"soustitre2\">Obtenu le</td></tr>";
 	while($db->next_record())
 	{
-		echo "<tr><td><b>" , $db->f("ptitre_titre") , "</b></td><td>" , $db->f("titre_date") , "</td></tr>";	
+		echo "<tr><td><strong>" , $db->f("ptitre_titre") , "</strong></td><td>" , $db->f("titre_date") , "</td></tr>";	
 	}
 	echo "</table></center><hr>";
 }

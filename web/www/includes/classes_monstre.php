@@ -147,7 +147,7 @@ Compte = ' . $_SESSION['compt_cod'] . '
 Perso = ' . $_SESSION['perso_cod'];
 
   	writelog_class_sql($texte_log);
-    echo '<p class="titre"><b>Erreur base de données:</b><br>Votre requète n\'a pas pu être effectuée.</p>';
+    echo '<p class="titre"><strong>Erreur base de données:</strong><br>Votre requète n\'a pas pu être effectuée.</p>';
 
    $envoi = 1;
    if ($message == 'Invalid SQL: select compt_admin from compte where compt_cod =  ')

@@ -25,12 +25,12 @@ $db->query($req);
 $db->next_record();
 if ($db->f("perso_utl_pa_rest") == 1)
 {
-	$util = $db->f("perso_nom") . " <b>utilise</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 0;
 }
 else
 {
-	$util = $db->f("perso_nom") . " <b>n'utilise pas</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>n'utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 1;
 }
 ?>
@@ -91,7 +91,7 @@ if ($db->f("perso_test") == 1)
 	$db->query($req);
 	$db->next_record();
 	?>
-	<tr><td><p style="text-align:center;">Vous êtes en mode <b><?php  echo $db->f("mcom_nom");?></b><br>
+	<tr><td><p style="text-align:center;">Vous êtes en mode <strong><?php  echo $db->f("mcom_nom");?></strong><br>
 	<a href="mode_combat.php">Changer de mode ?</a></td></tr>
 	
 	<?php 
@@ -106,7 +106,7 @@ if ($db->f("perso_test") == 1)
 <tr><td>
 <?php 
 $cout_des = $param->getparm(60);
-echo("<p><b>En tant que cible :</b>");
+echo("<p><strong>En tant que cible :</strong>");
 $req_at = "select lock_attaquant,lock_nb_tours,perso_nom from perso,lock_combat ";
 $req_at = $req_at . "where lock_cible = $perso_cod ";
 $req_at = $req_at . "and lock_attaquant = perso_cod ";
@@ -125,15 +125,15 @@ else
 	<input type="hidden" name="num_guilde">
 	<table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><p><b>Nom</b></td>
-	<td class="soustitre2"><p><b>Tours</b></td>
+	<td class="soustitre2"><p><strong>Nom</strong></td>
+	<td class="soustitre2"><p><strong>Tours</strong></td>
 	<td></td>
 	</tr>
 	<?php 
 	while ($db->next_record())
 	{
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b><a href=\"javascript:document.visu_evt3.visu.value='" . $db->f("lock_attaquant") . "';document.visu_evt3.submit();\">" . $db->f("perso_nom") . "</a></b></td>";
+		echo "<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.visu_evt3.visu.value='" . $db->f("lock_attaquant") . "';document.visu_evt3.submit();\">" . $db->f("perso_nom") . "</a></strong></td>";
 		echo "<td><p style=\"text-align:center;\">" . $db->f("lock_nb_tours") . "</td>";
 		echo "<td><p><a href=\"action.php?methode=desengagement&cible=" , $db->f("lock_attaquant") , "&valide=O\">Se désengager ? ($cout_des PA)</a></td>";
 		echo "</tr>";
@@ -142,7 +142,7 @@ else
 	echo "</form>";
 }
 // 2e partie
-echo("<p><b>En tant qu'attaquant :</b>");
+echo("<p><strong>En tant qu'attaquant :</strong>");
 $req_at = "select lock_cible,lock_nb_tours,perso_nom from perso,lock_combat ";
 $req_at = $req_at . "where lock_attaquant = $perso_cod ";
 $req_at = $req_at . "and lock_cible = perso_cod ";
@@ -158,15 +158,15 @@ else
 	?>
 	<form name="visu_evt4" method="post" action="visu_evt_perso.php"><input type="hidden" name="visu"><input type="hidden" name="num_guilde"><table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><p><b>Nom</b></td>
-	<td class="soustitre2"><p><b>Tours</b></td>
+	<td class="soustitre2"><p><strong>Nom</strong></td>
+	<td class="soustitre2"><p><strong>Tours</strong></td>
 	<td></td>
 	</tr>
 	<?php 
 	while ($db->next_record())
 	{
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b><a href=\"javascript:document.visu_evt4.visu.value='" . $db->f("lock_cible") . "';document.visu_evt4.submit();\">" . $db->f("perso_nom") . "</a></b></td>";
+		echo "<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.visu_evt4.visu.value='" . $db->f("lock_cible") . "';document.visu_evt4.submit();\">" . $db->f("perso_nom") . "</a></strong></td>";
 		echo "<td><p style=\"text-align:center;\">" . $db->f("lock_nb_tours") . "</td>";
 		echo "<td><p><a href=\"action.php?methode=desengagement&cible=" , $db->f("lock_cible") , "&valide=O\">Se désengager ? ($cout_des PA)</a></td>";
 		echo "</tr>";
@@ -182,7 +182,7 @@ else
 <tr><td class="titre"><p class="titre">Légitimes défenses</p></td></tr>
 <tr><td>
 <?php 
-echo("<p><b>En tant que cible :</b>");
+echo("<p><strong>En tant que cible :</strong>");
 $req_at = "select perso_cod,perso_nom,riposte_nb_tours from perso,riposte ";
 $req_at = $req_at . "where riposte_cible = $perso_cod ";
 $req_at = $req_at . "and riposte_attaquant = perso_cod ";
@@ -202,14 +202,14 @@ else
 	<input type="hidden" name="num_guilde">
 	<table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><p><b>Nom</b></td>
-	<td class="soustitre2"><p><b>Tours</b></td>
+	<td class="soustitre2"><p><strong>Nom</strong></td>
+	<td class="soustitre2"><p><strong>Tours</strong></td>
 	</tr>
 	<?php 
 	while ($db->next_record())
 	{
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b><a href=\"javascript:document.visu_evt.visu.value='" . $db->f("perso_cod") . "';document.visu_evt.submit();\">" . $db->f("perso_nom") . "</a></b></td>";
+		echo "<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.visu_evt.visu.value='" . $db->f("perso_cod") . "';document.visu_evt.submit();\">" . $db->f("perso_nom") . "</a></strong></td>";
 		echo "<td><p style=\"text-align:center;\">" . $db->f("riposte_nb_tours") . "</td>";
 		echo "</tr>";
 	}
@@ -217,7 +217,7 @@ else
 	echo "</form>";
 }
 // 2e partie
-echo("<p><b>En tant qu'attaquant :</b>");
+echo("<p><strong>En tant qu'attaquant :</strong>");
 $req_at = "select perso_cod,perso_nom,riposte_nb_tours from perso,riposte ";
 $req_at = $req_at . "where riposte_cible = perso_cod ";
 $req_at = $req_at . "and riposte_attaquant = $perso_cod ";
@@ -234,14 +234,14 @@ else
 	?>
 	<form name="visu_evt2" method="post" action="visu_desc_perso.php"><input type="hidden" name="visu"><input type="hidden" name="num_guilde"><table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><p><b>Nom</b></td>
-	<td class="soustitre2"><p><b>Tours</b></td>
+	<td class="soustitre2"><p><strong>Nom</strong></td>
+	<td class="soustitre2"><p><strong>Tours</strong></td>
 	</tr>
 	<?php 
 	while ($db->next_record())
 	{
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b><a href=\"javascript:document.visu_evt2.visu.value='" . $db->f("perso_cod") . "';document.visu_evt2.submit();\">" . $db->f("perso_nom") . "</a></b></td>";
+		echo "<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.visu_evt2.visu.value='" . $db->f("perso_cod") . "';document.visu_evt2.submit();\">" . $db->f("perso_nom") . "</a></strong></td>";
 		echo "<td><p style=\"text-align:center;\">" . $db->f("riposte_nb_tours") . "</td>";
 		echo "</tr>";
 	}
@@ -293,8 +293,8 @@ else
 	$db->next_record();
 	echo "<tr><td>";
 	echo "<table width=\"100%\">";
-	echo "<tr><td class=\"soustitre2\"><p><b>Nom</b></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><b>X</b></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><b>Y</n></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><b>Etage</b></td><td class=\"soustitre2\"><p>Probabilité de retour</td></tr>";
-	echo "<tr><td class=\"soustitre2\"><p><b>" . $db->f("lieu_nom") . "</b></td>";
+	echo "<tr><td class=\"soustitre2\"><p><strong>Nom</strong></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><strong>X</strong></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><strong>Y</n></td><td class=\"soustitre2\"><p style=\"text-align:center;\"><strong>Etage</strong></td><td class=\"soustitre2\"><p>Probabilité de retour</td></tr>";
+	echo "<tr><td class=\"soustitre2\"><p><strong>" . $db->f("lieu_nom") . "</strong></td>";
 	echo "<td><p style=\"text-align:center;\">" . $db->f("pos_x") . "</td>";
 	echo "<td><p style=\"text-align:center;\">" . $db->f("pos_y") . "</td>";
 	echo "<td><p style=\"text-align:center;\">" . $db->f("etage_libelle") . "</td>";
@@ -312,9 +312,9 @@ $req_bonus = "select bonus_degats_melee($perso_cod) as melee,bonus_arme_distance
 $db->query($req_bonus);
 $db->next_record();
 
-printf("<p>Bonus aux dégats en corps à corps : <b>%s dégat</b><br />",$db->f("melee"));
-printf("Bonus en compétence des armes à distance : <b>%s",$db->f("distance"));
-echo(" %</b>");
+printf("<p>Bonus aux dégats en corps à corps : <strong>%s dégat</strong><br />",$db->f("melee"));
+printf("Bonus en compétence des armes à distance : <strong>%s",$db->f("distance"));
+echo(" %</strong>");
 echo("</td></tr>");
 
 echo("<tr><td class=\"titre\"><p class=\"titre\">Bonus temporaires</p></td></tr>");
@@ -335,15 +335,15 @@ else
 	echo("<table>");
 	
 	echo("<tr>");
-	echo("<td class=\"soustitre2\"><p><b>Bonus</b></td>");
-	echo("<td class=\"soustitre2\"><p><b>Valeur</b></td>");
-	echo("<td class=\"soustitre2\"><p><b>Nombre de tours</b></td>");
+	echo("<td class=\"soustitre2\"><p><strong>Bonus</strong></td>");
+	echo("<td class=\"soustitre2\"><p><strong>Valeur</strong></td>");
+	echo("<td class=\"soustitre2\"><p><strong>Nombre de tours</strong></td>");
 	echo("</tr>");
 	
 	while($db->next_record())
 	{
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b>" . $db->f("tonbus_libelle") . "</b></td>";
+		echo "<td class=\"soustitre2\"><p><strong>" . $db->f("tonbus_libelle") . "</strong></td>";
 		if ($db->f("bonus_valeur") >= 0)
 		{
 			$signe = '+';

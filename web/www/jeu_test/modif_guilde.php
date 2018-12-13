@@ -38,11 +38,11 @@ ob_start();
 		          $desc = pg_escape_string($desc);
 		          $req_modif = "update guilde set guilde_description = e'$desc' where guilde_cod = $num_guilde ";
 		          $db->query($req_modif);
-		          echo "<p><b>La description de la guilde a été modifiée.</b></p>";
+		          echo "<p><strong>La description de la guilde a été modifiée.</strong></p>";
         	}
         	else
         	{
-        			echo "<p><b>Vous n'êtes pas administrateur de cette guilde ! Vous ne pouvez pas modifier la description de cette guilde</b></p>";
+        			echo "<p><strong>Vous n'êtes pas administrateur de cette guilde ! Vous ne pouvez pas modifier la description de cette guilde</strong></p>";
         	}
        break;
       }

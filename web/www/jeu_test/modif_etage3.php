@@ -83,27 +83,27 @@ if ($erreur == 0)
 			$erreur = 0;
 			if(!$nom)
 			{
-				$resultat .= "<p><b>Le nom du nouvel étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>Le nom du nouvel étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$description)
 			{
-				$resultat .= "<p><b>La description du nouvel étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>La description du nouvel étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$x_min || !$x_max || $x_min >= $x_max)
 			{
-				$resultat .= "<p><b>Les limites de l’étage ne sont pas valides</b></p>";
+				$resultat .= "<p><strong>Les limites de l’étage ne sont pas valides</strong></p>";
 				$erreur = 1;
 			}
 			if(!$y_min || !$y_max || $y_min >= $y_max)
 			{
-				$resultat .= "<p><b>Les limites de l’étage ne sont pas valides</b></p>";
+				$resultat .= "<p><strong>Les limites de l’étage ne sont pas valides</strong></p>";
 				$erreur = 1;
 			}
 			if ($etage_arene == 'O' && $etage_ref == '--')
 			{
-				$resultat .= "<p><b>Un étage principal ne peut pas être une arène</b></p>";
+				$resultat .= "<p><strong>Un étage principal ne peut pas être une arène</strong></p>";
 				$erreur = 1;
 			}
 			$etage_numero = 999;
@@ -171,17 +171,17 @@ if ($erreur == 0)
 			$erreur = 0;
 			if(!$etage_numero)
 			{
-				$resultat .= "<p><b>Le numéro de l’étage n’est pas défini !</b></p>";
+				$resultat .= "<p><strong>Le numéro de l’étage n’est pas défini !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$nom)
 			{
-				$resultat .= "<p><b>Le nom de l’étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>Le nom de l’étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if(!$description)
 			{
-				$resultat .= "<p><b>La description de l’étage n’est pas valide !</b></p>";
+				$resultat .= "<p><strong>La description de l’étage n’est pas valide !</strong></p>";
 				$erreur = 1;
 			}
 			if($erreur == 0)
@@ -465,7 +465,7 @@ if ($erreur == 0)
             }
             else
             {
-                $arene_info = "<font color=\"#8b0000\"><b><u>ATTENTION</u></b>: L'arène ne dispose pas encore d'entrée, elle ne sera pas accessible par les batiments administratifs.</font><br />";
+                $arene_info = "<font color=\"#8b0000\"><strong><u>ATTENTION</u></strong>: L'arène ne dispose pas encore d'entrée, elle ne sera pas accessible par les batiments administratifs.</font><br />";
             }
         }
 

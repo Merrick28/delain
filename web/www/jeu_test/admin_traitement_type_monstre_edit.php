@@ -20,13 +20,13 @@ if (($_POST["type-img-avatar"] == "upload") && ($_FILES["avatar_file"]["tmp_name
     $imagesize = @getimagesize($_FILES["avatar_file"]["tmp_name"]) ;
     if (($imagesize[0] <= 28) || ($imagesize[1] <= 28))
     {
-        echo "<b>Impossible d'ajouter l'image du monstre, elle est trop petite.</b><br>";
+        echo "<strong>Impossible d'ajouter l'image du monstre, elle est trop petite.</strong><br>";
         $_POST["gmon_avatar"] = "defaut.png" ;
         $gmon_avatar = "defaut.png" ;
     }
     else if ( file_exists ( $baseimage.'/'.$filename ) )
     {
-        echo "<b>Impossible d'ajouter l'image du monstre, le nom existe déjà sur le serveur.</b><br>";
+        echo "<strong>Impossible d'ajouter l'image du monstre, le nom existe déjà sur le serveur.</strong><br>";
         $_POST["gmon_avatar"] = "defaut.png" ;
         $gmon_avatar = "defaut.png" ;
     }

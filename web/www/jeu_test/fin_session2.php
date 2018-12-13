@@ -9,7 +9,7 @@ if (!isset($motif))
     $motif = 'Erreur technique : pour une raison indéterminée, votre session s’est arrêtée.';
 
 echo "<p>" , $motif , "<br>";
-echo("Pour vous reconnecter, vous pouvez cliquer <a href=\"../index.php\"><b>ICI</b></a>");
+echo("Pour vous reconnecter, vous pouvez cliquer <a href=\"../index.php\"><strong>ICI</strong></a>");
 include "tab_bas.php";
 ?>
 </body>

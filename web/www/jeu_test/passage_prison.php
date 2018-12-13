@@ -42,6 +42,6 @@ if ($erreur == 0)
 	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
-	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
+	echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
 	echo("<p><a href=\"action.php?methode=passage_prison\">Prendre cet escalier ! (" . $param->getparm(13) . " PA)</a></p>");
 }

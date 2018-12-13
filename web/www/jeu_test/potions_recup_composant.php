@@ -45,48 +45,48 @@ function NommerPhase($phase)
 {
 	if($phase >= 0 && $phase < 2.5)
 	{
-		$NomPhase = "<b>Nouvelle Lune
-		</b><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
+		$NomPhase = "<strong>Nouvelle Lune
+		</strong><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
 	}
 	else if($phase >= 2.5 && $phase < 22.5)
 	{
-		$NomPhase = "<b>Premier Croissant
-		</b><br><br>Phase peu fertile, on peut trouver des composants de potion, mais ceux ci sont à trier scrupuleusement, rendant la recherche plus pauvre";
+		$NomPhase = "<strong>Premier Croissant
+		</strong><br><br>Phase peu fertile, on peut trouver des composants de potion, mais ceux ci sont à trier scrupuleusement, rendant la recherche plus pauvre";
 	}
 	else if($phase >= 22.5 && $phase < 27.5)
 	{
-		$NomPhase = "<b>Premier Quartier
-		</b><br><br>A cette période, la recherche est plutôt bonne, un bon chercheur saura toujours s'y retrouver. Moins propice que la nouvelle lune ou pleine lune, cela reste quand même l'une des meilleures phase de récupération d'ingrédients pour les potions.";
+		$NomPhase = "<strong>Premier Quartier
+		</strong><br><br>A cette période, la recherche est plutôt bonne, un bon chercheur saura toujours s'y retrouver. Moins propice que la nouvelle lune ou pleine lune, cela reste quand même l'une des meilleures phase de récupération d'ingrédients pour les potions.";
 	}
 	else if($phase >= 27.5 && $phase < 47.5)
 	{
-		$NomPhase = "<b>Lune gibbeuse
-		</b><br><br>Cette phase lunaire est assez neutre. Certains y trouveront leur compte, mais d'autres la trouveront bien pauvre comparée aux nouvelles lunes et pleines lunes.";
+		$NomPhase = "<strong>Lune gibbeuse
+		</strong><br><br>Cette phase lunaire est assez neutre. Certains y trouveront leur compte, mais d'autres la trouveront bien pauvre comparée aux nouvelles lunes et pleines lunes.";
 	}
 	else if($phase >= 47.5 && $phase < 52.5)
 	{
-		$NomPhase = "<b>Pleine Lune
-		</b><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
+		$NomPhase = "<strong>Pleine Lune
+		</strong><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
 	}
 	else if($phase >= 52.5 && $phase < 73.5)
 	{
-		$NomPhase = "<b>Lune gibbeuse.
-		</b><br><br>Cette phase lunaire est assez neutre. Certains y trouveront leur compte, mais d'autres la trouveront bien pauvre comparée aux nouvelles lunes et pleines lunes.";
+		$NomPhase = "<strong>Lune gibbeuse.
+		</strong><br><br>Cette phase lunaire est assez neutre. Certains y trouveront leur compte, mais d'autres la trouveront bien pauvre comparée aux nouvelles lunes et pleines lunes.";
 	}
 	else if($phase >= 73.5 && $phase < 77.5)
 	{
-		$NomPhase = "<b>Dernier quartier
-		</b><br><br>A cette période, la recherche est plutôt bonne, un bon chercheur saura toujours s'y retrouver. Moins propice que la nouvelle lune ou pleine lune, cela reste quand même l'une des meilleures phase de récupération d'ingrédients pour les potions.";
+		$NomPhase = "<strong>Dernier quartier
+		</strong><br><br>A cette période, la recherche est plutôt bonne, un bon chercheur saura toujours s'y retrouver. Moins propice que la nouvelle lune ou pleine lune, cela reste quand même l'une des meilleures phase de récupération d'ingrédients pour les potions.";
 	}
 	else if($phase >= 77.5 && $phase < 97.5)
 	{
-		$NomPhase = "<b>Dernier croissant
-		</b><br><br>Phase peu fertile, on peut trouver des composants de potion, mais ceux ci sont à trier scrupuleusement, rendant la recherche plus pauvre";
+		$NomPhase = "<strong>Dernier croissant
+		</strong><br><br>Phase peu fertile, on peut trouver des composants de potion, mais ceux ci sont à trier scrupuleusement, rendant la recherche plus pauvre";
 	}
 	else
 	{
-		$NomPhase = "<b>Nouvelle Lune
-		</b><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
+		$NomPhase = "<strong>Nouvelle Lune
+		</strong><br><br>Cette phase est particulièrement propice à la récupération de composants, et notammant les plus rares.";
 	}
 return $NomPhase;
 }
@@ -142,11 +142,11 @@ $temp->set_var("img_path",G_IMAGES);
 
 $phase = CalcPhase();
 $contenu_page .= '<table width="70%">
-		<td><b>- Phase lunaire : </td>
-		<td><b>- Image lune : </b></td>
-		<td><b>- Aide Lunaire : </b></td>
+		<td><strong>- Phase lunaire : </td>
+		<td><strong>- Image lune : </strong></td>
+		<td><strong>- Aide Lunaire : </strong></td>
 	<tr>
-		<td><i>'.NommerPhase($phase).'</i></b></td>
+		<td><i>'.NommerPhase($phase).'</i></strong></td>
 		<td><img src="'.ImgPhase($phase).'"></td>
 		<td><i>Il reste environ '. round(JoursAvantNL($phase),0) .' jours avant la nouvelle lune
 		<br> et environ '. round(JoursAvantPL($phase),0) .' jours avant la pleine lune <i></td>
@@ -164,13 +164,13 @@ switch($methode)
 		$lock = $db->is_locked($perso_cod);
 		if ($lock == true)
 		{
-			$contenu_page .= '<br><br><b>Vous ne pouvez pas réaliser de cueillette, étant donné que vous êtes locké en combat</b><br>';
+			$contenu_page .= '<br><br><strong>Vous ne pouvez pas réaliser de cueillette, étant donné que vous êtes locké en combat</strong><br>';
 			break;
 		}
 		else
 		{
             $contenu_page .= '<br><br><br><i>Vous ne pouvez pas récupérer de composants à n’importe quel moment.
-                En effet, <b>il ne faut pas que vous soyez en combat pour cela</b>...
+                En effet, <strong>il ne faut pas que vous soyez en combat pour cela</strong>...
                 <br>En dehors de cette contrainte, vous pouvez lancer une cueillette quand vous le souhaitez.
                 Vous récupèrerez alors plusieurs composants. Mais si aucun composant ne se trouve dans la zone vos PA seront perdus.
                 <br>Pour améliorer vos chances, vous pouvez lancer des détections, qui vous indiqueront les coins propices à la présence de composants.
@@ -203,7 +203,7 @@ switch($methode)
 		$alchimiste2 = $db->existe_competence($perso_cod,101);
 		if ($alchimiste != true and $alchimiste1 != true and $alchimiste2 != true)
 		{
-			$contenu_page .= '<br>Vous ne pouvez pas réaliser de cueillette, <b>car vous n’êtes pas alchimiste !</b>
+			$contenu_page .= '<br>Vous ne pouvez pas réaliser de cueillette, <strong>car vous n’êtes pas alchimiste !</strong>
                 Ici, il n’y a que de vulgaires plantes pour vous.<br>';
 			$erreur = 1;
 		}		

@@ -28,16 +28,16 @@ if($db->next_record())
 		case "debut":
 			$contenu_page .= '
 				<p align="center"><br>Vous avez la possibilité de détecter des composants. Plusieurs méthodes se présentent à vous :<br>
-				<br><b><i>Attention, un seul composant par position vous sera présenté, mais en cherchant, vous pourrez parfois en trouver de plusieurs sortes</i></b>
+				<br><strong><i>Attention, un seul composant par position vous sera présenté, mais en cherchant, vous pourrez parfois en trouver de plusieurs sortes</i></strong>
 				<form method="post" action="' . $PHP_SELF. '">
-				<br><p align="left" class="soustitre2"> <b>Détection simple.</b></p>
+				<br><p align="left" class="soustitre2"> <strong>Détection simple.</strong></p>
 				Elle ne vous permettra que de tenter de regarder la présence de composants sur votre propre position<br>
 				<input type="hidden" name="methode" value="detecter1">
 				<input type="hidden" name="tpot" value="' . $tpot . '">
 				<br><input type="submit" value="Rechercher (0 PA)"  class="test">
 				</form><br>
 				<form method="post" action="' . $PHP_SELF. '">
-				<br><p align="left" class="soustitre2"> <b>Recherche avancée.</b></p>
+				<br><p align="left" class="soustitre2"> <strong>Recherche avancée.</strong></p>
 				Cette recherche vous permettra de tenter de regarder la présence de composants à une case autour de vous.<br>
 				<input type="hidden" name="methode" value="detecter2">
 				<input type="hidden" name="tpot" value="' . $tpot . '">
@@ -46,7 +46,7 @@ if($db->next_record())
 			if ($niveau == 101)
 			{
 				$contenu_page .= '<form method="post" action="' . $PHP_SELF. '">
-					<br><p align="left" class="soustitre2"> <b>Recherche poussée.</b></p>
+					<br><p align="left" class="soustitre2"> <strong>Recherche poussée.</strong></p>
 					Elle vous permettra de scruter une zone à deux positions ou moins autour de vous.<br>
 					<input type="hidden" name="methode" value="detecter3">
 					<input type="hidden" name="tpot" value="' . $tpot . '">

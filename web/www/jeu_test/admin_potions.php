@@ -55,7 +55,7 @@ if ($erreur == 0)
 											order by gobj_nom';
 			$db->query($req);
 			echo '<br><hr><td class="titre">Liste des potions sans formule</td><br><br><table>
-						<td><b>Nom de la potion</b></td><td><b>Description</b></td>';
+						<td><strong>Nom de la potion</strong></td><td><strong>Description</strong></td>';
 			while ($db->next_record())
 				{
 						echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=ajout&pot=' . $db->f('gobj_cod') . '">' . $db->f('gobj_nom') . '</a></td>
@@ -69,7 +69,7 @@ if ($erreur == 0)
 			$req = 'select 	frmpr_frm_cod,frmpr_gobj_cod,frmpr_num,frm_cod,frm_type,frm_nom,frm_comp_cod from formule_produit,formule where frm_type = 2 and frm_cod = frmpr_frm_cod order by frm_nom ';
 			$db->query($req);
 			echo '<br><table><td class="titre">Potions disponibles :</td><tr><br><br>
-						<td><b>Nom de la potion</b></td><td><b>Objets nécessaires et quantités</b></td><td><b>Description</b></td><td><b>Compétence nécessaire</b></td>';
+						<td><strong>Nom de la potion</strong></td><td><strong>Objets nécessaires et quantités</strong></td><td><strong>Description</strong></td><td><strong>Compétence nécessaire</strong></td>';
 			while ($db->next_record())
 				{
 						$cod_potion = $db->f("frm_cod");
@@ -154,7 +154,7 @@ if ($erreur == 0)
 							<option value="101" <?php echo  $s3 ?> >Alchimie Niveau 3</option>';							
 						</select>
 							<i> <br>Par défaut, cela correspond au niveau de la potion. 
-								<br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences différentes / <br><b> Pas sûr que cela marche pour l'instant !</b></i>
+								<br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></i>
 							
 					</td>
 				</tr>
@@ -205,7 +205,7 @@ if ($erreur == 0)
 				echo "<p>La formule de base de la potion a bien été insérée !<br>
 				Pensez à inclure les composants nécessaires pour cette potion.<br>";
 				?><a href="<?php echo $PHP_SELF;?>?methode=serie_obj&pot=<?php echo $num_form;?>">Modifier la liste des composants de la potion</a><br>
-			<b>Rappel des règles de création des formules :</b>
+			<strong>Rappel des règles de création des formules :</strong>
 			<br>Une potion de niveau 1 contient au moins 4 composants
 			<br>Une potion de niveau 2 contient au moins 5 composants, dont deux identiques (ex : ABBCD ou ABBBB)
 			<br>Une potion de niveau 3 contient au moins 7 composants, dont deux composants au moins en double ( (ex : ABBCDDE ou ABBBDDD)
@@ -384,7 +384,7 @@ if ($erreur == 0)
 			break;
 		case "serie_obj":
 			?>
-			<b>Rappel des règles de création des formules :</b>
+			<strong>Rappel des règles de création des formules :</strong>
 			<br>Une potion de niveau 1 contient au moins 4 composants
 			<br>Une potion de niveau 2 contient au moins 5 composants, dont deux identiques (ex : ABBCD ou ABBBB)
 			<br>Une potion de niveau 3 contient au moins 7 composants, dont deux composants au moins en double ( (ex : ABBCDDE ou ABBBDDD)

@@ -22,18 +22,18 @@ switch($methode)
  
 Un système de répartition automatique des PX est à l'étude mais demande un temps conséquent. Aussi une mise à jour de la présente charte est devenue indispensable malgré les changements du système à venir.<br><br>
  
-Une version de cette même charte est disponible sur le <a href=http://www.jdr-delain.net/forum/viewtopic.php?t=8606&start=0&postdays=0&postorder=asc&highlight=>forum</a> avec les modifications apportées à la première charte en évidence. Toutefois, nous vous encourageons fortement à relire <b>en entier</b> ce document que vous allez accepter.<br><br>
+Une version de cette même charte est disponible sur le <a href=http://www.jdr-delain.net/forum/viewtopic.php?t=8606&start=0&postdays=0&postorder=asc&highlight=>forum</a> avec les modifications apportées à la première charte en évidence. Toutefois, nous vous encourageons fortement à relire <strong>en entier</strong> ce document que vous allez accepter.<br><br>
 			
 			<center><IFRAME name="charte des joueurs" SRC="http://www.jdr-delain.net/charte.php" border=0 frameborder=0 height=350 width="80%"></IFRAME></center><br>
 			<form method="post" action="valide_charte.php">
 			<input type="hidden" name="methode" value="e1">
 			<p>
 			<hr><p>Afin de valider cette charte, rentrez votre nom de compte et password<br>
-			<b>La validation de ce formulaire entraine l'acceptation de la charte !
+			<strong>La validation de ce formulaire entraine l'acceptation de la charte !
 			<center><table>
-			<tr><td>	<p style="text-align:center;"><b>Nom du compte</b></td>
+			<tr><td>	<p style="text-align:center;"><strong>Nom du compte</strong></td>
 			<td><input type="text" name="nom"></td>
-			<td><p><b>Mot de passe</b></td>
+			<td><p><strong>Mot de passe</strong></td>
 			<td><p><input type="password" name="pass"> <i><a href="renvoi_mdp.php">Mot de passe oublié ? </a></i></td></td>
 			</tr>
 			</table>

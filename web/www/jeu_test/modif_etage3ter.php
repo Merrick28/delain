@@ -213,7 +213,7 @@ if ($erreur == 0)
 
 		// Page de selection des options.
 		echo '
-			<p><b>Caractéristiques des lieux à créer: </b></p>
+			<p><strong>Caractéristiques des lieux à créer: </strong></p>
 			<div>
 				<form method="post" action="modif_etage3ter.php">
 					<input type="hidden" name="action" value="creer_lieux">
@@ -342,13 +342,13 @@ if ($erreur == 0)
 		}
 			
 		echo '
-			<p>Traitement étage: <b>'.$nom_etage.' </b></p>
+			<p>Traitement étage: <strong>'.$nom_etage.' </strong></p>
 			<div>
-				Ajout de lieu du type: <b>'.$tlieu_libelle.'</b><br>
-				Nom: <b>'.$def_nom.'</b> Description: <b>'.$def_description.'</b><br>
-				Dieu: <b>'.$dieu_nom.'</b><br>
-				Refuge: <b>'.$def_refuge.'</b> Mobile: <b>'.$def_mobile.'</b> Coût en pa: <b>'.$def_cout_pa.'</b><br>
-				Densité: <b>'.$densite_desc.'</b><br>
+				Ajout de lieu du type: <strong>'.$tlieu_libelle.'</strong><br>
+				Nom: <strong>'.$def_nom.'</strong> Description: <strong>'.$def_description.'</strong><br>
+				Dieu: <strong>'.$dieu_nom.'</strong><br>
+				Refuge: <strong>'.$def_refuge.'</strong> Mobile: <strong>'.$def_mobile.'</strong> Coût en pa: <strong>'.$def_cout_pa.'</strong><br>
+				Densité: <strong>'.$densite_desc.'</strong><br>
 				<form method="post" action="modif_etage3ter.php">
 					<input type="hidden" name="action" value="creer_lieux">
 					<input type="hidden" name="etage_type" value="'.$etage_type.'">
@@ -439,13 +439,13 @@ if ($erreur == 0)
 
 				echo '<div  class="soustitre2" style="margin:8px; margin:8px; padding:8px; border-radius:10px; border:solid #800000 3px;">';
 				echo '<table><tr><td valign="top" style="min-width:200px;">
-							<b><u>Caracteristiques étage	</u>:</b><br>
-							Surface total: <b>'.$nb_case.'</b> case(s)<br>
-							Surface habitable: <b>'.$taux.'%</b> ('.$cases_free.')<br>
-							Nombre de '.$tlieu_libelle.': <b><span id="count-lieu">'.($cases_lieu*1).'</span></b>&nbsp;<img src="' . G_IMAGES . 'automap_1_3.gif"><br>	
-							Suggestion: <b>'.$nb_sug.'</b> lieux max.<br>
+							<strong><u>Caracteristiques étage	</u>:</strong><br>
+							Surface total: <strong>'.$nb_case.'</strong> case(s)<br>
+							Surface habitable: <strong>'.$taux.'%</strong> ('.$cases_free.')<br>
+							Nombre de '.$tlieu_libelle.': <strong><span id="count-lieu">'.($cases_lieu*1).'</span></strong>&nbsp;<img src="' . G_IMAGES . 'automap_1_3.gif"><br>	
+							Suggestion: <strong>'.$nb_sug.'</strong> lieux max.<br>
 							<br>
-							<b><u>Liste des lieux à ajouter</u>:</b><br>
+							<strong><u>Liste des lieux à ajouter</u>:</strong><br>
 							<div id="list-lieux">
 							</div><span style="font-size:9px;">(cliquez sur la carte pour ajouter)</span>
 					  </td><td valign="top" width="100%"><center>';

@@ -70,10 +70,10 @@ compare</TD><TD>SQL comparison function dictionary.
 <P>
 <DL>
 
-<DT><B>start()</B><DD><P> 
+<DT><strong>start()</strong><DD><P> 
 Initialization function. Currently empty.</P>
 
-<DT><B>form($base, $option, $class, $target)</B><DD>
+<DT><strong>form($base, $option, $class, $target)</strong><DD>
 <P>The function will generate and return HTML for the SQL Query selection form. All
 variables in the form will start with the prefix <CODE>$base</CODE> and
 have numeric indices appended after an underline character. It
@@ -92,7 +92,7 @@ is generated (recommended).</P>
 <P>The function returns a string containing the HTML to render the
 SQL Query selection form.</P>
 
-<DT><B>where($base, $incr)</B><DD>
+<DT><strong>where($base, $incr)</strong><DD>
 <P>When the <CODE>form()</CODE> generated page is submitted, a lot of
 parameters have to be evaluated and transformed into a SQL
 <EM>where</EM> condition matching the user selections. The
@@ -112,7 +112,7 @@ behind a "where" keyword in a SQL query.</P>
 
 <P>
 <DL>
-<DT><B>plain_where($base)</B><DD><P>This function does all the work for <CODE>where()</CODE>, but does not
+<DT><strong>plain_where($base)</strong><DD><P>This function does all the work for <CODE>where()</CODE>, but does not
 resize the query condition window.</P>
 </DL>
 </P>
@@ -330,24 +330,24 @@ add_extra</TD><TD>A flag; if set, the the extra functions for heading and rows a
 <P>
 <DL>
 
-<DT><B>show($ary, $class = "")</B><DD><P> 
+<DT><strong>show($ary, $class = "")</strong><DD><P> 
 Will format and print the two dimensional array (or hash)
 <CODE>$ary</CODE> as a table according to the filtering rules explained
 above. If <CODE>$class</CODE> is set, each HTML element will be tagged
 as belonging to the named class; this is useful with cascading
 style sheets.</P>
 
-<DT><B>show_page($ary, $start, $num, $class = "")</B><DD><P>Just as <CODE>show()</CODE>, but will show only <CODE>num</CODE> elements
+<DT><strong>show_page($ary, $start, $num, $class = "")</strong><DD><P>Just as <CODE>show()</CODE>, but will show only <CODE>num</CODE> elements
 starting at <CODE>start</CODE>.</P>
 
-<DT><B>show_result($db, $class = "")</B><DD><P>Will format and print the result set of <CODE>$db</CODE>. <CODE>$db</CODE> is
+<DT><strong>show_result($db, $class = "")</strong><DD><P>Will format and print the result set of <CODE>$db</CODE>. <CODE>$db</CODE> is
 exspected to be a subclass of <CODE>DB_Sql</CODE> that has just
 been sent a query. <CODE>Table</CODE> will grab all available results
 from the result set of that query by calling
 <CODE>$db-&gt;next_record()</CODE> repeatedly and format them
 into a table.</P>
 
-<DT><B>show_result_page($db, $start, $num, $class = "")</B><DD>
+<DT><strong>show_result_page($db, $start, $num, $class = "")</strong><DD>
 <P>Just as <CODE>show_result()</CODE>, but will show only <CODE>num</CODE>
 elements starting at <CODE>start</CODE>.</P>
 
@@ -359,28 +359,28 @@ elements starting at <CODE>start</CODE>.</P>
 
 <P>
 <DL>
-<DT><B>show_table_rows($ary, $class="")</B><DD><P>Walks the passed array displaying each row of data as an HTML
+<DT><strong>show_table_rows($ary, $class="")</strong><DD><P>Walks the passed array displaying each row of data as an HTML
 table row.</P>
 
-<DT><B>show_table_rows_result($db, $class="")</B><DD><P>Walks the passed database object displaying each record as an 
+<DT><strong>show_table_rows_result($db, $class="")</strong><DD><P>Walks the passed database object displaying each record as an 
 HTML table row.</P>
 
-<DT><B>show_table_page_rows($ary, $start, $num, $class="")</B><DD><P>Walks the passed array displaying each row of data as an HTML
+<DT><strong>show_table_page_rows($ary, $start, $num, $class="")</strong><DD><P>Walks the passed array displaying each row of data as an HTML
 table row. However, data does not start displaying until
 <CODE>$start</CODE> element and end after <CODE>$num</CODE> rows.</P>
 
-<DT><B>show_table_page_rows_result($db, $start, $num, $class="")</B><DD><P>Walks the passed database object displaying each record as an 
+<DT><strong>show_table_page_rows_result($db, $start, $num, $class="")</strong><DD><P>Walks the passed database object displaying each record as an 
 HTML table row. However, data does not start displaying until
 <CODE>$start</CODE> record and ends after <CODE>$num</CODE> records have been displayed.</P>
 
-<DT><B>show_table_heading_row($ary, $class="")</B><DD><P>Uses the passed array to create an HTML header row.</P>
+<DT><strong>show_table_heading_row($ary, $class="")</strong><DD><P>Uses the passed array to create an HTML header row.</P>
 
-<DT><B>show_table_heading_row_result($db, $class="")</B><DD><P>Uses the passed database object to create an HTML header row.</P>
+<DT><strong>show_table_heading_row_result($db, $class="")</strong><DD><P>Uses the passed database object to create an HTML header row.</P>
 
-<DT><B>show_table_heading_cells($data, $class="")</B><DD><P>Walks the passed array and displays each item in an HTML table
+<DT><strong>show_table_heading_cells($data, $class="")</strong><DD><P>Walks the passed array and displays each item in an HTML table
 header cell.</P>
 
-<DT><B>show_table_cells($row, $row_key, $data, $class="")</B><DD><P>Walks the passed array and displays each item in an HTML table cell.</P>
+<DT><strong>show_table_cells($row, $row_key, $data, $class="")</strong><DD><P>Walks the passed array and displays each item in an HTML table cell.</P>
 
 </DL>
 </P>
@@ -390,68 +390,68 @@ header cell.</P>
 
 <P>
 <DL>
-<DT><B>table_open($class = "")</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_open($class = "")</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called as the very first step in table creation and
 should output HTML that opens a table (for example
 <CODE>printf("&lt;table%s&gt;\n", $class?" class=$class":"");</CODE>).</P>
 
-<DT><B>table_close()</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_close()</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called as the very last step in table creation and
 should output HTML that closes a table (for example
 <CODE>printf("&lt;</CODE>table&gt;\n");/).</P>
 
-<DT><B>select_colnames($data)</B><DD><P>Internal function to generate a list of column names.</P>
+<DT><strong>select_colnames($data)</strong><DD><P>Internal function to generate a list of column names.</P>
 
-<DT><B>table_heading_row($data, $class = "")</B><DD><P>Internal driver function to generate a table heading row.</P>
+<DT><strong>table_heading_row($data, $class = "")</strong><DD><P>Internal driver function to generate a table heading row.</P>
 
-<DT><B>table_heading_cell($col, $val, $class)</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_heading_cell($col, $val, $class)</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called each time a table heading cell is to be generated.</P>
 <P><CODE>$col</CODE> is the current column number, <CODE>$val</CODE> is the name
 of the column. <CODE>$class</CODE> is the HTML CSS class of the
 element that is to be generated.</P>
 
-<DT><B>table_heading_cell_open($class="")</B><DD><P>Starts a header cell.</P>
+<DT><strong>table_heading_cell_open($class="")</strong><DD><P>Starts a header cell.</P>
 
-<DT><B>table_heading_cell_close($class="")</B><DD><P>Ends a header cell.</P>
+<DT><strong>table_heading_cell_close($class="")</strong><DD><P>Ends a header cell.</P>
 
-<DT><B>table_heading_row_add_extra($data, $class="")</B><DD><P>Virtual function for derived classes. This function is called 
+<DT><strong>table_heading_row_add_extra($data, $class="")</strong><DD><P>Virtual function for derived classes. This function is called 
 after all header cells have been created. It allows the 
 programmer to add additional HTML code to the header row 
 before it is closed.</P>
 
-<DT><B>table_row($data, $class = "")</B><DD><P>Internal driver function to generate a table row.</P>
+<DT><strong>table_row($data, $class = "")</strong><DD><P>Internal driver function to generate a table row.</P>
 
-<DT><B>table_row_open($row, $data, $class = "")</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_row_open($row, $data, $class = "")</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called as the very first step in row creation and
 should output HTML that opens a table row.</P>
 <P><CODE>$row</CODE> is the current row number. <CODE>$data</CODE> is a hash of
 column name/value pairs for that row and <CODE>$class</CODE> is an
 optional HTML CSS class name for all generated elements.</P>
 
-<DT><B>table_row_close()</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_row_close()</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called as the very last step in row creation and
 should output HTML that closes a table row.</P>
 
-<DT><B>table_cell($row, $cell, $key, $val, $class)</B><DD><P>This function can be overridden by a subclass of Table. It
+<DT><strong>table_cell($row, $cell, $key, $val, $class)</strong><DD><P>This function can be overridden by a subclass of Table. It
 is called each time a table cell is to be generated.</P>
 <P><CODE>$row</CODE> is the current row number, <CODE>$cell</CODE> is the
 current cell number. <CODE>$key</CODE> is the current column name,
 <CODE>$val</CODE> is the value of the cell. <CODE>$class</CODE> is the
 HTML CSS class of the element that is to be generated.</P>
 
-<DT><B>table_cell_open($class="")</B><DD><P>Starts a cell.</P>
+<DT><strong>table_cell_open($class="")</strong><DD><P>Starts a cell.</P>
 
-<DT><B>table_cell_close($class="")</B><DD><P>Ends a cell.</P>
+<DT><strong>table_cell_close($class="")</strong><DD><P>Ends a cell.</P>
 
-<DT><B>set_checkbox_heading($class="")</B><DD><P>This function creates an empty header cell to coincide with
+<DT><strong>set_checkbox_heading($class="")</strong><DD><P>This function creates an empty header cell to coincide with
 the checkbox option for that column.</P>
 
-<DT><B>table_checkbox_cell($row, $row_key, $data, $class="")</B><DD><P>Outputs HTML code to display a checkbox. This function runs
+<DT><strong>table_checkbox_cell($row, $row_key, $data, $class="")</strong><DD><P>Outputs HTML code to display a checkbox. This function runs
 if the member variable <CODE>$check</CODE> has been set. <CODE>$check</CODE> should be
 set to some key within the <CODE>$data</CODE> array (ex: if <CODE>$data["myKey"]</CODE>,
 then set <CODE>$check="myKey"</CODE>).</P>
 
-<DT><B>set_checkbox($row, $row_key, $data, $class="")</B><DD><P>Creates an HTML checkbox based on the passed data, only if
+<DT><strong>set_checkbox($row, $row_key, $data, $class="")</strong><DD><P>Creates an HTML checkbox based on the passed data, only if
 the instance variable <CODE>$check</CODE> is set.</P>
 
 </DL>
@@ -563,11 +563,11 @@ $visible</TD><TD>Array of menustrings. The <CODE>visible</CODE> arraycontains th
 
 <P>
 <DL>
-<DT><B>Menu()</B><DD><P>Constructor. Calls <CODE>Menu::setup()</CODE> internally.</P>
+<DT><strong>Menu()</strong><DD><P>Constructor. Calls <CODE>Menu::setup()</CODE> internally.</P>
 
-<DT><B>show()</B><DD><P>A shorthand notation for <CODE>print $this->get()</CODE>.</P>
+<DT><strong>show()</strong><DD><P>A shorthand notation for <CODE>print $this->get()</CODE>.</P>
 
-<DT><B>get()</B><DD><P>This function will calculate the menu items visible from the
+<DT><strong>get()</strong><DD><P>This function will calculate the menu items visible from the
 current <CODE>map</CODE> position. The menu will be constructed by
 calling <CODE>Menu::start_menu()</CODE> first. For each visible
 menu item, Menu will check the current indentation level and the
@@ -580,7 +580,7 @@ called once. The number is an index into the <CODE>visible</CODE> array.</P>
 <P>After all menu cells have been drawn,
 <CODE>Menu::end_menu()</CODE> will be called once.</P>
 
-<DT><B>get_cell($n, $level)</B><DD>
+<DT><strong>get_cell($n, $level)</strong><DD>
 <P>You are expected to implement this function yourself. It should
 render a single menu item. You may use the <CODE>visible</CODE> and
 <CODE>item</CODE> arrays for that purpose: <CODE>$m = $this->visible[$n]</CODE>
@@ -590,20 +590,20 @@ hash of attributes for that menu string. <CODE>$hilite =
 menu item, which should be rendered in way to stand out from the
 rest of the menu items.</P>
 
-<DT><B>get_title()</B><DD>
+<DT><strong>get_title()</strong><DD>
 <P>This function will calculate the title of the current page based
 on the position of the current page in the menu hierarchy. This
 function uses <CODE>$this->title_delim</CODE> to separate the components
 of the title. This function sets <CODE>$this>title</CODE> to the calculated
 title and returns the title as a string.</P>
 
-<DT><B>get_sitemap()</B><DD>
+<DT><strong>get_sitemap()</strong><DD>
 <P>This function is identical to <CODE>print $this->get()</CODE> except that
 all menu items are shown, not just the ones visible from the current page.</P>
 
-<DT><B>show_sitemap()</B><DD><P>A shorthand notation for <CODE>print $this->get_sitemap()</CODE>.</P>
+<DT><strong>show_sitemap()</strong><DD><P>A shorthand notation for <CODE>print $this->get_sitemap()</CODE>.</P>
 
-<DT><B>setup()</B><DD><P> 
+<DT><strong>setup()</strong><DD><P> 
 This function initializes the internal arrays of Menu and should
 be called once from the constructor. It actually is the
 constructor, but language stupidity has it that PHP3 constructor
@@ -618,7 +618,7 @@ manually.</P>
 
 <P>
 <DL>
-<DT><B>normalize_pos($pos)</B><DD><P>This function looks at the current URL in <CODE>$PHP_SELF</CODE>
+<DT><strong>normalize_pos($pos)</strong><DD><P>This function looks at the current URL in <CODE>$PHP_SELF</CODE>
 and tried to translate this into a menustring. If the URL
 matches a menustring directly, this is easy.</P>
 <P>If not, the current URL will be sequentially shortened by
@@ -626,14 +626,14 @@ applying the <CODE>dirname</CODE> PHP function to it until it matches.
 This allows you to create a single menu item for all files in a
 directory.</P>
 
-<DT><B>split_path($p)</B><DD><P>This function is used in the construction of the set of visible
+<DT><strong>split_path($p)</strong><DD><P>This function is used in the construction of the set of visible
 menu items. Given a menustring or a pathname, it constructs
 a series of pathnames which converge elementwise against the
 given pathname. That is, given the menustring <CODE>/3/2</CODE>,
 this function will return an array with the elements <CODE>""</CODE>
 (the empty string), <CODE>/3</CODE> and <CODE>/3/2</CODE>.</P>
 
-<DT><B>find_visible($r)</B><DD><P>This function calculates the actual set of visible URLs given a
+<DT><strong>find_visible($r)</strong><DD><P>This function calculates the actual set of visible URLs given a
 series of converging pathnames. It will include the set of
 children of each of these pathnames in the visible set, then
 sort this set numerically.</P>
@@ -788,7 +788,7 @@ the basics.  Specific methods are documented below.</P>
 <P>
 <DL>
 
-<DT><B>start($jvsname,$method,$action, $target)</B><DD><P>Outputs the initial <CODE>&lt;form&gt;</CODE> tag and sets up some initial
+<DT><strong>start($jvsname,$method,$action, $target)</strong><DD><P>Outputs the initial <CODE>&lt;form&gt;</CODE> tag and sets up some initial
 state needed by the class.  All of the arguments are optional, though
 you'll usually want to use at least one in order to get Javascript
 validation.  <CODE>$jvsname</CODE> is an arbitrary string used to link the
@@ -798,7 +798,7 @@ form; default is <CODE>"POST"</CODE>.  <CODE>$action</CODE> is the URL that rece
 the form submission; default is <CODE>$PHP_SELF</CODE>.  <CODE>$target</CODE> is the
 frame target for the form results; default is <CODE>_self</CODE>.</P>
 
-<DT><B>finish($after,$before)</B><DD><P>Outputs the any hidden fields that were added to the form, the
+<DT><strong>finish($after,$before)</strong><DD><P>Outputs the any hidden fields that were added to the form, the
 final <CODE>&lt;/form&gt;</CODE> tag, then the Javascript validation
 function (if necessary).  <CODE>$after</CODE> and <CODE>$before</CODE> are both
 optional; if either is a nonempty string it is output as additional
@@ -810,7 +810,7 @@ anything fancy with Javascript.  Note that unlike with validation, OOH
 Forms has no way of giving you server side functionality equivalent to 
 the Javascript you use here.</P>
 
-<DT><B>add_element($element)</B><DD><P><CODE>add_element</CODE> is used to define the attributes of a
+<DT><strong>add_element($element)</strong><DD><P><CODE>add_element</CODE> is used to define the attributes of a
 particular form element so that the other class methods can use and
 manipulate it properly.  <CODE>add_element</CODE> takes exactly one
 argument: an associate array whose key value pairs are used to
@@ -822,33 +822,33 @@ note that not all element types use all of the attributes</P>
 <P>
 <DL>
 
-<DT><B>type</B><DD><P>The type of element this is; can be <CODE>"submit"</CODE>, <CODE>"hidden"</CODE>,
+<DT><strong>type</strong><DD><P>The type of element this is; can be <CODE>"submit"</CODE>, <CODE>"hidden"</CODE>,
 <CODE>"text"</CODE>, <CODE>"textarea"</CODE>, <CODE>"select"</CODE>, <CODE>"radio"</CODE>, 
 <CODE>"checkbox"</CODE>, or <CODE>"file"</CODE>.</P>
 
-<DT><B>name</B><DD><P>A string naming this element.  This name will be used as an
+<DT><strong>name</strong><DD><P>A string naming this element.  This name will be used as an
 argument to other methods and will be the <CODE>name=""</CODE> value in the
-generated html (and hence the variable name in PHP).  <B>Do not</B>
+generated html (and hence the variable name in PHP).  <strong>Do not</strong>
 append <CODE>[]</CODE> to the name if you want an array valued element; set
 the <CODE>multiple</CODE> attribute instead.</P>
 
-<DT><B>value</B><DD><P>The default value of this form element.  If the form element has
+<DT><strong>value</strong><DD><P>The default value of this form element.  If the form element has
 the <CODE>multiple</CODE> attribute set, <CODE>value</CODE> can be an array.  If the
 this is a <CODE>select</CODE> element, <CODE>value</CODE> can refer to either the
 textual name (<CODE>label</CODE> in the <CODE>options</CODE> array) or the submission
 value (<CODE>value</CODE> in <CODE>options</CODE>).</P>
 
-<DT><B>multiple</B><DD><P>A flag to tell oohforms to assume this element is array valued.
+<DT><strong>multiple</strong><DD><P>A flag to tell oohforms to assume this element is array valued.
 The use of this flag is most straightforward with <CODE>select</CODE> elements, 
 but it can be use with <CODE>text</CODE> and <CODE>checkbox</CODE> elements as well.
 See the <CODE>show_element</CODE> documentation for more information
 about how oohforms deals with such elements.</P>
 
-<DT><B>extrahtml</B><DD><P>Extra html code that is inserted verbatim into the opening form
+<DT><strong>extrahtml</strong><DD><P>Extra html code that is inserted verbatim into the opening form
 tag.  For <CODE>select</CODE> elements, the extra html goes into the
 <CODE>select</CODE> tag, not the <CODE>option</CODE> tags.</P>
 
-<DT><B>size</B><DD><P>For <CODE>text</CODE> elements, used to set the html size attribute that
+<DT><strong>size</strong><DD><P>For <CODE>text</CODE> elements, used to set the html size attribute that
 gives the width in characters of the text entry box.  For <CODE>select</CODE>
 elements, the size (number of options visible at once) of the
 selection box.  Validation is only performed on <CODE>select</CODE> elements
@@ -856,23 +856,23 @@ if <CODE>size</CODE> is set to 1, since <CODE>select</CODE> validation doesn't m
 much sense if you can see multiple options at once.  For <CODE>file</CODE>
 elements, the maximum size file upload to accept.</P>
 
-<DT><B>pass</B><DD><P>If set for a <CODE>text</CODE> element, renders the html as a password
+<DT><strong>pass</strong><DD><P>If set for a <CODE>text</CODE> element, renders the html as a password
 element, i.e. entry displays as asterisks.</P>
 
-<DT><B>src</B><DD><P>If set for a <CODE>submit</CODE> element, convert to an image element and
+<DT><strong>src</strong><DD><P>If set for a <CODE>submit</CODE> element, convert to an image element and
 use the value of <CODE>src</CODE> as the source URL for the image.</P>
 
-<DT><B>maxlength</B><DD><P>Used verbatim as the maxlength html attribute in <CODE>text</CODE>
+<DT><strong>maxlength</strong><DD><P>Used verbatim as the maxlength html attribute in <CODE>text</CODE>
 elements.</P>
 
-<DT><B>minlength</B><DD><P>If <CODE>length_e</CODE> is set, this is the minimum length
+<DT><strong>minlength</strong><DD><P>If <CODE>length_e</CODE> is set, this is the minimum length
 <CODE>text</CODE> element entry accepted by the validator.</P>
 
-<DT><B>length_e</B><DD><P>If set, validate the <CODE>text</CODE> element to assure it has at least
+<DT><strong>length_e</strong><DD><P>If set, validate the <CODE>text</CODE> element to assure it has at least
 <CODE>minlength</CODE> characters.  The value of <CODE>length_e</CODE> is the
 error string to be used in the event of failed validation.</P>
 
-<DT><B>valid_e</B><DD><P>If set, perform validation on a <CODE>text</CODE>, <CODE>radio</CODE>, or
+<DT><strong>valid_e</strong><DD><P>If set, perform validation on a <CODE>text</CODE>, <CODE>radio</CODE>, or
 <CODE>select</CODE> element.  For a <CODE>text</CODE> element, validation assures a
 match with <CODE>valid_</CODE> regex.  <CODE>radio</CODE> element validation
 assures that one of the options in the group has been chosen.
@@ -882,23 +882,23 @@ accept the first option of accept menu, assuming that it is some sort
 of prompt (e.g. "Please select an item").  In all cases, the value of
 <CODE>valid_e</CODE> is the error string used for failed validations.</P>
 
-<DT><B>valid_regex</B><DD><P>Regular expression used to validate entry into a test field if
+<DT><strong>valid_regex</strong><DD><P>Regular expression used to validate entry into a test field if
 <CODE>valid_e</CODE> is set.  Note that if you must use ^...$ if you
 want the regex to match the whole entry.</P>
 
-<DT><B>icase</B><DD><P>If set, regex matching is case insensitive.</P>
+<DT><strong>icase</strong><DD><P>If set, regex matching is case insensitive.</P>
 
-<DT><B>checked</B><DD><P>Only used for a <CODE>checkbox</CODE> element that does not have
+<DT><strong>checked</strong><DD><P>Only used for a <CODE>checkbox</CODE> element that does not have
 <CODE>multiple</CODE> set.  If <CODE>checked</CODE> is set, the element will display
 as checked.</P>
 
-<DT><B>rows</B><DD><P>Used verbatim as the <CODE>rows=</CODE> element in a <CODE>textarea</CODE> element.</P>
+<DT><strong>rows</strong><DD><P>Used verbatim as the <CODE>rows=</CODE> element in a <CODE>textarea</CODE> element.</P>
 
-<DT><B>cols</B><DD><P>Used verbatim as the <CODE>cols=</CODE> element in a <CODE>textarea</CODE> element.</P>
+<DT><strong>cols</strong><DD><P>Used verbatim as the <CODE>cols=</CODE> element in a <CODE>textarea</CODE> element.</P>
 
-<DT><B>wrap</B><DD><P>Used verbatim as the <CODE>wrap=</CODE> element in a <CODE>textarea</CODE> element.</P>
+<DT><strong>wrap</strong><DD><P>Used verbatim as the <CODE>wrap=</CODE> element in a <CODE>textarea</CODE> element.</P>
 
-<DT><B>options</B><DD><P>Array of options to be displayed in a <CODE>select</CODE> element.  If the
+<DT><strong>options</strong><DD><P>Array of options to be displayed in a <CODE>select</CODE> element.  If the
 elements of the array are simple values (strings or numbers), they are 
 simply displayed verbatim and used as the value for that particular
 option.  The elements may themselves be associate arrays with keys
@@ -944,7 +944,7 @@ $f->add_element(array("type"=>"select",
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>show_element($name,$value)</B><DD><P>Outputs the form element named <CODE>$name</CODE>.  Usually, the second
+<DT><strong>show_element($name,$value)</strong><DD><P>Outputs the form element named <CODE>$name</CODE>.  Usually, the second
 argument is not used.  It is always necessary for <CODE>radio</CODE> elements
 and <CODE>checkbox</CODE> elements with the <CODE>multiple</CODE> attribute set, since 
 many of these may have the same name.  It also must be used for
@@ -953,19 +953,19 @@ attribute is not used for <CODE>submit</CODE> elements.  For other elements
 that may be array valued (notably <CODE>text</CODE> elements) multiple calls
 to show_element will show successive values.</P>
 
-<DT><B>load_defaults($element_list)</B><DD><P>Sets the default value of form elements to the value of the PHP
+<DT><strong>load_defaults($element_list)</strong><DD><P>Sets the default value of form elements to the value of the PHP
 variables with the same name.  This is generally used to redisplay a
 form with the same values which were submitted.  The argument is
 optional; if given it is an array of element names; only these
 elements ares affected.</P>
 
-<DT><B>validate($result,$element_list)</B><DD><P>Validates a form submission.  If all of the elements are valid,
+<DT><strong>validate($result,$element_list)</strong><DD><P>Validates a form submission.  If all of the elements are valid,
 return <CODE>$result</CODE>, otherwise return the relevant error message (the
 <CODE>valid_e</CODE> or length_e attribute of some form
 element).  <CODE>$result</CODE> defaults to <CODE>false</CODE>.  The second argument
 is also optional; it is an array of names of elements to validate.</P>
 
-<DT><B>freeze($element_list)</B><DD><P>Freezes the form elements whose names are given in the array passed 
+<DT><strong>freeze($element_list)</strong><DD><P>Freezes the form elements whose names are given in the array passed 
 as the argument.  If no argument is given, freeze all of the
 elements.  Frozen elements are rendered as plain, static html rather
 than form widgets.  This static rendering is accompanied by
@@ -987,28 +987,28 @@ notes follow.</P>
 <P>
 <DL>
 
-<DT><B>self_show($val,$which)</B><DD><P>Display an instance of this element unfrozen.  <CODE>$val</CODE> is the
+<DT><strong>self_show($val,$which)</strong><DD><P>Display an instance of this element unfrozen.  <CODE>$val</CODE> is the
 <CODE>$value</CODE> argument of <CODE>show_element</CODE> if there was one;
 <CODE>$which</CODE> can be used as an index for array valued elements; it is
 equal to the number of times <CODE>show_element</CODE> has been called
 for this element previously.  This function must return the number of
 hidden tags output.</P>
 
-<DT><B>self_show_frozen($val,$which)</B><DD><P>Display an instance of this element frozen.  In addition to the
+<DT><strong>self_show_frozen($val,$which)</strong><DD><P>Display an instance of this element frozen.  In addition to the
 html to show the frozen element, you must output tags for hidden
 fields to duplicate the effect of submitting an unfrozen element of
 this type.  The function must return the number of hidden tags output;</P>
 
-<DT><B>self_validate($val)</B><DD><P>Validate <CODE>$val</CODE> for this element.  If it is valid, return <CODE>false</CODE>, 
+<DT><strong>self_validate($val)</strong><DD><P>Validate <CODE>$val</CODE> for this element.  If it is valid, return <CODE>false</CODE>, 
 otherwise return the relevant error string.</P>
 
-<DT><B>self_print_js($ndx_array)</B><DD><P>Print out Javascript code to validate this element.
+<DT><strong>self_print_js($ndx_array)</strong><DD><P>Print out Javascript code to validate this element.
 <CODE>$ndx_array</CODE> is an array of the indices of the elements to
 be validated as used in the Javascript form.element[] array.  This is
 needed since the extra <CODE>[]</CODE> in array valued element names confuses
 Javascript.</P>
 
-<DT><B>self_load_defaults($val)</B><DD><P>Set the default value for this element to <CODE>$val</CODE>.  Usually the
+<DT><strong>self_load_defaults($val)</strong><DD><P>Set the default value for this element to <CODE>$val</CODE>.  Usually the
 default definition of this function, which just copies <CODE>$val</CODE> to
 <CODE>$this-&gt;value</CODE> is all that is needed, but there may be special
 cases that need to do something else.  See the implementation of the
@@ -1077,22 +1077,22 @@ has&thinsp;defaults</TD><TD>Flag, form default values were passed via <CODE>set_
 
 <P>
 <DL>
-<DT><B>init($values)</B><DD><P>This is a sort of a constructor for the class. $values is an hash array
+<DT><strong>init($values)</strong><DD><P>This is a sort of a constructor for the class. $values is an hash array
 intended to store form values to be passed back to the application via
 <CODE>get_values</CODE> method.</P>
 
-<DT><B>get_default_values()</B><DD><P>Returns an array containing all data submitted by the user for the
+<DT><strong>get_default_values()</strong><DD><P>Returns an array containing all data submitted by the user for the
 form. This array is intended to be passed to <CODE>set_defaults_values</CODE>
 some time later.</P>
 
-<DT><B>set_default_values($fv)</B><DD><P>Restore form defaults from an array as returned by <CODE>get_default_values</CODE>. </P>
+<DT><strong>set_default_values($fv)</strong><DD><P>Restore form defaults from an array as returned by <CODE>get_default_values</CODE>. </P>
 
-<DT><B>display()</B><DD><P>Actually display form fields. This method should not be overridden in
+<DT><strong>display()</strong><DD><P>Actually display form fields. This method should not be overridden in
 descendants. User should instead provide a file named as the derived
 class and with &quot;.ihtml&quot; extension which will be automatically
 included.</P>
 
-<DT><B>get_values()</B><DD><P>This method should not be overridden. It is intended as the main
+<DT><strong>get_values()</strong><DD><P>This method should not be overridden. It is intended as the main
 interface between the application and the form. Once the form has
 been properly derived to suit designer's needs, application calls
 <CODE>get_values</CODE> and receives back the array passed to <CODE>init</CODE>, 
@@ -1101,7 +1101,7 @@ if user input is invalid. In that latter case, the application should
 call <CODE>display</CODE> to (re)present the form to the user, eventually
 filled with proper default values.</P>
 
-<DT><B>clear()</B><DD><P>Sort of a &quot;destructor&quot;. There should no real need to call it,
+<DT><strong>clear()</strong><DD><P>Sort of a &quot;destructor&quot;. There should no real need to call it,
 except maybe freeing some memory. May be called from the application,
 otherwise is not executed. Returns <CODE>true</CODE>.</P>
 
@@ -1112,33 +1112,33 @@ otherwise is not executed. Returns <CODE>true</CODE>.</P>
 
 <P>
 <DL>
-<DT><B>setup()</B><DD><P>Init the <CODE>Form</CODE> object, which will contain all fields info. The hidden
+<DT><strong>setup()</strong><DD><P>Init the <CODE>Form</CODE> object, which will contain all fields info. The hidden
 field <CODE>form_name</CODE>, automatically added by this routine, is used by other
 methods to determine if form has already been submitted by the
 user. You shouldn't override this in descendants, use <CODE>setup_fields</CODE>
 instead. Returns <CODE>true</CODE>.</P>
 
-<DT><B>setup_fields()</B><DD><P>Override this method in order to provide form fields definition that
+<DT><strong>setup_fields()</strong><DD><P>Override this method in order to provide form fields definition that
 suit your needs.</P>
 
-<DT><B>validate()</B><DD><P>Validates user input. This method should not be overridden in
+<DT><strong>validate()</strong><DD><P>Validates user input. This method should not be overridden in
 descendants. See <CODE>validate_input</CODE> instead. Returns false on error
 and sets <CODE>error</CODE> variable accordingly.</P>
 
-<DT><B>validate_input()</B><DD><P>This method should be overridden in descendants, in order to provided
+<DT><strong>validate_input()</strong><DD><P>This method should be overridden in descendants, in order to provided
 complex validation methods (i.e. field2 should not be empty IF
 field1 == &quot;other&quot;).  Should return <CODE>false</CODE> on error and set
 <CODE>error</CODE> variable with a sensible error message.</P>
 
-<DT><B>process()</B><DD><P>Process user data. This method should not be overridden by descendants.
+<DT><strong>process()</strong><DD><P>Process user data. This method should not be overridden by descendants.
 See <CODE>process_input</CODE> and <CODE>process_default</CODE> instead. Returns <CODE>true</CODE>
 on success, <CODE>false</CODE> otherwise.</P>
 
-<DT><B>process_input()</B><DD><P>This method should be overridden in descendants. It is executed after
+<DT><strong>process_input()</strong><DD><P>This method should be overridden in descendants. It is executed after
 validation has taken place. The data passed to the form could be
 used to fill <CODE>values</CODE> array.</P>
 
-<DT><B>process_default()</B><DD><P>This method should be overridden in descendants. It is executed
+<DT><strong>process_default()</strong><DD><P>This method should be overridden in descendants. It is executed
 when form validation fails or before presenting the form for the
 first time. Should be used to bypass form displaying if data can
 be extracted from previous actions, divination, penguin fly watching
@@ -1322,19 +1322,19 @@ prfx, sufx, flag</TD><TD>internal - some helpers to create outp
 
 <P>
 <DL>
-<DT><B>build_tree()</B><DD><P>This function is completely user driven! You have to create an
+<DT><strong>build_tree()</strong><DD><P>This function is completely user driven! You have to create an
 array with the structure described below. See the example 
 for details.</P>
 <P>Don't be shy to create some own functions which are called by
 <CODE>build_tree()</CODE> - e.g. for recursive calls.</P>
 
-<DT><B>go_trough_tree($key="",$path="",$depth=0,$lcount=0,$pcount=0)</B><DD>
+<DT><strong>go_trough_tree($key="",$path="",$depth=0,$lcount=0,$pcount=0)</strong><DD>
 <P>This is the most important function of this class. It will call the output
 functions in the right order with the correct parameters.</P>
 <P>All variables are optional. The parameters are perhaps useful, if you
 want to display only partial trees, but this is not supported now.</P>
 
-<DT><B>path_to_index (&amp;$path,$key="")</B><DD>
+<DT><strong>path_to_index (&amp;$path,$key="")</strong><DD>
 <P>This function is mostly used internally, but could be useful
 for you to generate <CODE>$this-&gt;tree</CODE>. This function generates
 a PHP3 associate array-index string from a path, which is also
@@ -1359,7 +1359,7 @@ so on).</P>
 </CODE></BLOCKQUOTE>
 </P>
 
-<DT><B>path_to_parent (&amp;$path)</B><DD><P>This function isn't used internally, but could be useful
+<DT><strong>path_to_parent (&amp;$path)</strong><DD><P>This function isn't used internally, but could be useful
 for you during generating the output tree. It will remove
 one from the depth of the path.</P>
 <P>Example:
@@ -1378,19 +1378,19 @@ one from the depth of the path.</P>
 </P>
 
 
-<DT><B>path_add ($path,$key)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<DT><strong>path_add ($path,$key)</strong><DD><P>This function is the 'non-call-by-reference-version' of
 <CODE>path_to_index</CODE>. It will add the $key to
 the path and return it.</P>
 
-<DT><B>path_sub ($path)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<DT><strong>path_sub ($path)</strong><DD><P>This function is the 'non-call-by-reference-version' of
 <CODE>path_to_parent</CODE>. It will find the
 parent of path and return it.</P>
 
-<DT><B>path_index ($path)</B><DD><P>This function is the 'non-call-by-reference-version' of
+<DT><strong>path_index ($path)</strong><DD><P>This function is the 'non-call-by-reference-version' of
 <CODE>path_to_index()</CODE>. It will return the
 associate key to the tree described by path.</P>
 
-<DT><B>starttree ()</B><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
+<DT><strong>starttree ()</strong><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
 at the beginning of the output of a tree.</P>
 <P>All <CODE>*tree</CODE>-functions are called by <CODE>go_trough_tree()</CODE>,
 but it's your turn, to give them a nice layout. I think it is possible
@@ -1398,20 +1398,20 @@ to generate nearly every kind of tree-layout with this. Have a look at
 the variables: E.g. <CODE>$depth</CODE> makes it possible to handle every
 &quot;level&quot; in another manner.</P>
 
-<DT><B>growtree ($key,$value,$path,$depth,$count,$pcount)</B><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
+<DT><strong>growtree ($key,$value,$path,$depth,$count,$pcount)</strong><DD><P>This function is called by <CODE>go_trough_tree()</CODE>
 at the beginning of the output of a tree.</P>
 <P>It is called every time, when <CODE>go_trough_tree()</CODE>
 will call itself recursively. You could also say it is called, when
 the current item has a successor.</P>
 
 
-<DT><B>leaftree ($key,$value,$path,$depth,$count,$pcount)</B><DD><P>This function is called, when the current item has <EM>no</EM> successor.</P>
+<DT><strong>leaftree ($key,$value,$path,$depth,$count,$pcount)</strong><DD><P>This function is called, when the current item has <EM>no</EM> successor.</P>
 
-<DT><B>shrinktree ($key,$depth)</B><DD><P>This function is the &quot;opposite&quot; of <CODE>growtree()</CODE>. It is
+<DT><strong>shrinktree ($key,$depth)</strong><DD><P>This function is the &quot;opposite&quot; of <CODE>growtree()</CODE>. It is
 called every time, when the current item was the last item in this
 sub-list.</P>
 
-<DT><B>endtree()</B><DD><P>Called when leaving tree.</P>
+<DT><strong>endtree()</strong><DD><P>Called when leaving tree.</P>
 
 </DL>
 </P>

@@ -23,9 +23,9 @@ switch ($methode)
 	break;
 }
 
-echo '<table><tr><td class="titre"><b>Fonctionnement générique</b></td>
-			<td class="titre"><b>Historique des distributions</b></td>
-			<td class="titre"><b>Actions</b></td></tr>
+echo '<table><tr><td class="titre"><strong>Fonctionnement générique</strong></td>
+			<td class="titre"><strong>Historique des distributions</strong></td>
+			<td class="titre"><strong>Actions</strong></td></tr>
 		<tr><td style="padding:2px; width:30%"><p>Les pochettes surprises sont des documents donnés à chaque personnage. Les personnages peuvent les apporter dans un bâtiment administratif, où ils leurs seront échangés contre un cadeau, parmi :</p>
 		<ul><li>- Trois runes</li><li>- Une rune et deux composants de forgeamagie</li><li>- Une rune et un œuf de basilic</li><li>- Une rune et deux parchemins</li><li>- Une rune et deux potions</li><li>- Une rune et de 5000 à 9000 brouzoufs</li></ul>
 		<p>Suite à une distribution, un aventurier ne peut ouvrir qu’une seule pochette. Typiquement, les pochettes sont distribuées lors des fêtes de fin d’année (fêtes de Léno dans le jeu).</p></td>';
@@ -54,7 +54,7 @@ else
 		</form></p>
 		<p><form name="pochette_distribution" method="POST" action="#" onsubmit="return confirm('Êtes-vous sûr de vouloir distribuer de nouvelles pochettes ?');">
 			<input type="hidden" name="methode" value="pochette_distribution" />
-			<br /><br /><b>Nouvelle distribution de pochettes</b><br />
+			<br /><br /><strong>Nouvelle distribution de pochettes</strong><br />
 			Nom de l’occasion : <input type="text" name="texte" value="Léno..." /><br />
 			<input type="submit" value="Distribuer les nouvelles pochettes" class="test" />
 		</form></p>

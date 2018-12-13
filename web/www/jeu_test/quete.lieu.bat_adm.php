@@ -232,8 +232,8 @@ switch($methode2)
 					onMouseOut="img.src='../avatars/roue.png' ">
 				<img name="img" align = "center" src="../avatars/roue.png"></a></td>
 				<td>Vous pouvez participer au grand tirage de la loterie magique.
-				<br>Ce tirage ne peut être fait qu’<b>une seule fois</b>, si vous possédez votre pochette surprise.
-				<br><br><br><b>Faites tourner la roue pour découvrir votre cadeau !</b> <i>(cliquez dessus)</i></td></table>
+				<br>Ce tirage ne peut être fait qu’<strong>une seule fois</strong>, si vous possédez votre pochette surprise.
+				<br><br><br><strong>Faites tourner la roue pour découvrir votre cadeau !</strong> <i>(cliquez dessus)</i></td></table>
 			</form>
 		<?php 		}
 	break;
@@ -246,7 +246,7 @@ switch($methode2)
 		{
 			$random = rand (1,4);
 			$temps = $random + 4; //Nombre de semaines autorisées pour la mission
-			echo "Allez, partez donc en chasse au $monstre_nom ! Ramenez-nous en <b>$random</b> pour nous montrer votre courage.
+			echo "Allez, partez donc en chasse au $monstre_nom ! Ramenez-nous en <strong>$random</strong> pour nous montrer votre courage.
 				<br>Nous vous récompenserons alors de 5000 brouzoufs !
 				<br>Vous devez impérativement tuer cette vermine de $monstre_nom vous-même, car c’est la marque des vrais chasseurs.
 				Vous pourrez vous faire aider dans votre entreprise, mais seuls les morts faites de vos mains seront comptabilisées.
@@ -319,7 +319,7 @@ switch($methode2)
 				$brouzoufs = ((rand (1, 5) * 1000) + 4000);
 				$req = "update perso set perso_po = perso_po + $brouzoufs where perso_cod = $perso_cod";
 				$db->query($req);
-				$texte = "une petite somme d’or, de <b>$brouzoufs brouzoufs et une rune</b>.";
+				$texte = "une petite somme d’or, de <strong>$brouzoufs brouzoufs et une rune</strong>.";
 			}
 			else if ($random == 2) // deux potions (différentes)
 			{
@@ -335,7 +335,7 @@ switch($methode2)
 				$req = "select cree_objet_perso_nombre($potion1, $perso_cod, 1),
 					cree_objet_perso_nombre($potion2, $perso_cod, 1)";
 				$db->query($req);
-				$texte = "<b>deux petites potions</b> qui ont été rajoutées à votre inventaire ainsi qu’une rune.";
+				$texte = "<strong>deux petites potions</strong> qui ont été rajoutées à votre inventaire ainsi qu’une rune.";
 			}
 			else if ($random == 3) // Deux parchemins
 			{
@@ -347,7 +347,7 @@ switch($methode2)
 						limit 2)";
 				$db->query($req);
 				$db->next_record();
-				$texte = "<b>deux parchemins</b> qui ont été rajoutés à votre inventaire ainsi qu’une rune.";
+				$texte = "<strong>deux parchemins</strong> qui ont été rajoutés à votre inventaire ainsi qu’une rune.";
 			}
 			else if ($random == 4)  // Deux (autres) runes
 			{
@@ -356,13 +356,13 @@ switch($methode2)
 				$req = "select cree_objet_perso_nombre($rune_code1, $perso_cod, 1),
 					cree_objet_perso_nombre($rune_code2, $perso_cod, 1)";
 				$db->query($req);
-				$texte = "<b>trois runes</b>, qui ont été rajoutées à votre inventaire.";
+				$texte = "<strong>trois runes</strong>, qui ont été rajoutées à votre inventaire.";
 			}
 			else if ($random == 5) // Un œuf de basilic
 			{
 				$req = "select cree_objet_perso_nombre(269, $perso_cod, 1)";
 				$db->query($req);
-				$texte = "<b>un œuf de basilic</b>, qui a été rajouté à votre inventaire et qu’il faudra faire éclore, ainsi qu’une rune.";
+				$texte = "<strong>un œuf de basilic</strong>, qui a été rajouté à votre inventaire et qu’il faudra faire éclore, ainsi qu’une rune.";
 			}
 			else if ($random == 6) // Deux composants de forgeamagie
 			{
@@ -373,11 +373,11 @@ switch($methode2)
 					order by random()
 					limit 2)";
 				$db->query($req);
-				$texte = "<b>deux composants d’enchantement</b> qui ont été rajoutés à votre inventaire, ainsi qu’une rune.";
+				$texte = "<strong>deux composants d’enchantement</strong> qui ont été rajoutés à votre inventaire, ainsi qu’une rune.";
 			}
-			echo "<hr><br><b>La roue a parlé !</b><br>
+			echo "<hr><br><strong>La roue a parlé !</strong><br>
 				<br>Votre pochette surprise s’est transformée. Et pour la peine, vous avez gagné $texte
-				<div align='center'><br><br><br><font size='+2'><b>À tous un joyeux Léno, et de bonnes fêtes !<b></font><br><br></div>";
+				<div align='center'><br><br><br><font size='+2'><strong>À tous un joyeux Léno, et de bonnes fêtes !<strong></font><br><br></div>";
 
 			//On supprime la pochette et on fait augmenter le compteur pour n’avoir cette récompense qu’une seule fois
 			$req = "select f_del_objet($pochette_cod)";

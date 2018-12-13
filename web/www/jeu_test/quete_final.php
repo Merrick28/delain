@@ -395,7 +395,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																	{	
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></b>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe, et entendre les paroles de Balgur.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 
@@ -404,7 +404,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete7 == 2)
 																	{
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></b>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 	
@@ -439,7 +439,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment être entré en contact avec Elian lors de leur transe.
 																		<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																		<?php 
@@ -448,7 +448,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete8 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -482,7 +482,7 @@ if (!$db->is_lieu($perso_cod))
 															if ($db->nf() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. L'Aveugle offre parfois des paroles à ceux qui atteignent l'état de transe.
 																		<br>Mais cela peut aussi comporter des risques. Certains ont subit des séquelles suite à cette expérience.
 																		<?php 
@@ -491,7 +491,7 @@ if (!$db->is_lieu($perso_cod))
 															else if ($quete10 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <b><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></b>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -536,8 +536,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</i></b>
+											<br><br><strong><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</i></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -585,8 +585,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
-											<br>Mais la tache n'est pas finie. Le plus dur reste à faire. L'Aveugle tu dois convaincre.</i></b>
+											<br><br><strong><i>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
+											<br>Mais la tache n'est pas finie. Le plus dur reste à faire. L'Aveugle tu dois convaincre.</i></strong>
 											<?php 
 											//Mise à jour de l'étape pour finaliser la quête 7
 											$req = "update quete_perso 
@@ -637,8 +637,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</i></b>
+											<br><br><strong><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</i></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -680,8 +680,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
-											<br>La vérité tu trouveras, mais cachée elle sera, et vers d'autres les réponses tu chercheras.</i></b>
+											<br><br><strong><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers <?php  echo $nom_cachette; ?>.
+											<br>La vérité tu trouveras, mais cachée elle sera, et vers d'autres les réponses tu chercheras.</i></strong>
 											<?php 
 											//Cloture de cette étape pour ne pas la retrouver ensuite
 											$req = "update quete_perso 
@@ -732,8 +732,8 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Cherche en direction du  <?php  echo $nom_cachette; ?>.
-											<br>Tu pourras trouver la lumière qui guide l'Aveugle</i></b>
+											<br><br><strong><i>Cherche en direction du  <?php  echo $nom_cachette; ?>.
+											<br>Tu pourras trouver la lumière qui guide l'Aveugle</i></strong>
 											<?php 
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
@@ -782,10 +782,10 @@ if (!$db->is_lieu($perso_cod))
 											?>
 											<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 											<br>Calmement, les mots se font plus précis et clairs :
-											<br><br><b><i>Tu as donc ouvert tes yeux sur le futur.
+											<br><br><strong><i>Tu as donc ouvert tes yeux sur le futur.
 											<br>Tu vas devoir choisir lequel il sera.
 											<br>Pour ça, en XXXXX tu guideras, et le futur tu détermineras.
-											</i></b>
+											</i></strong>
 											<?
 											//Mise à jour de l'étape terminée pour cloturer cette étape
 											$req = "update quete_perso 

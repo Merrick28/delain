@@ -16,7 +16,7 @@ $contenu_page = '';
 $adresse = $_POST['mail1'];
 $from = $param->getparm(16);
 $contenu_page = '<p class="titre">Changement d’adresse électronique</p>
-<p style="text-align:center;"><b>Changement effectué !</b></p>';
+<p style="text-align:center;"><strong>Changement effectué !</strong></p>';
 // changment d'adresse
 $req = "update compte set compt_mail = '" . $_POST['mail1'] . "' where compt_cod = $compt_cod ";
 $db->query($req);

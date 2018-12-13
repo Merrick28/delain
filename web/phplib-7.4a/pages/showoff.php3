@@ -104,24 +104,24 @@ td.data        { font-family: arial, helvetica, sans-serif; horizontal-align: le
   $t->show($tab, "metadata");
 ?>
 
-The <b>active_sessions</b> table holds all persistent data for a session, a
+The <strong>active_sessions</strong> table holds all persistent data for a session, a
 user or an application. This is a dump of the structure of that table.
 <p>
 
-The <b>name</b> is an identifier for a namespace. Usually it is the name of
+The <strong>name</strong> is an identifier for a namespace. Usually it is the name of
 the class that creates ids. For example, <tt>Example_Session</tt> is the name of
 the class managing session variables in this example and <tt>Example_User</tt>
 is the name of the class managing user variables in this example.
 <p>
 
-The <b>sid</b> is a unique identifier within a namespace. Both,
+The <strong>sid</strong> is a unique identifier within a namespace. Both,
 <tt>name</tt> and <tt>sid</tt> together can be used as a key into the
 <tt>active_sessions</tt> table. The identifier should be hard to guess and
 not predictable. That is why we use 32 character md5() strings of values
 created by uniqid().
 <p>
 
-The <b>val</b> is where the data associated with a
+The <strong>val</strong> is where the data associated with a
 <tt>name</tt>/<tt>sid</tt> pair is stored. Data is stored in the form of a
 PHP program that recreates the values stored. The string retrieved from
 <tt>val</tt> is later fed to exec() in PHP. Since <tt>val</tt> can become a
@@ -129,7 +129,7 @@ pretty large string, we use a <i>blob</i> or a similar large datatype to
 store it.
 <p>
 
-The <b>changed</b> value indicates when the last write into that particular
+The <strong>changed</strong> value indicates when the last write into that particular
 row of the table has occured. It is used by the gc() functions (garbage
 collection functions) of their respective owner classes. The gc() of a class
 will delete all rows belonging to that class (<tt>name</tt> is being
@@ -155,15 +155,15 @@ gc() is called randomly with an adjustable probability.
   printf("End of your active_sessions data<br>\n");
 ?>
 
-The <b>active_sessions</b> table holds all persistent data for a
+The <strong>active_sessions</strong> table holds all persistent data for a
 session, a user or an application. This is a dump of the
 contents of that table. <p>
 
 You will find two different types of entries in this table,
-distinguished by the value in the <b>name</b> column.
+distinguished by the value in the <strong>name</strong> column.
 <tt>Example_Session</tt> entries belong to per session data.
 <tt>Example_User</tt> entries belong to per user data. The actual
-data is visible in the <b>val</b> column.
+data is visible in the <strong>val</strong> column.
 <p>
 
 Within that <tt>val</tt> column you find an executeable PHP

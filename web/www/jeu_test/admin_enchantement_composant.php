@@ -30,7 +30,7 @@ ob_start();
 											order by tobj_libelle,gobj_nom';
 			$db->query($req);
 			echo '<br><hr><td class="titre">Liste des composants d\'enchantement sans formule de création</td><br><br><table>
-						<td><b>Nom du composant</b></td><td><b>Type d\'objet</b></td>';
+						<td><strong>Nom du composant</strong></td><td><strong>Type d\'objet</strong></td>';
 			while ($db->next_record())
 				{
 						echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode2=ajout&pot=' . $db->f('gobj_cod') . '">' . $db->f('gobj_nom') . '</a></td>
@@ -44,7 +44,7 @@ ob_start();
 			$req = 'select 	frmpr_frm_cod,frmpr_gobj_cod,frmpr_num,frm_cod,frm_type,frm_nom,frm_comp_cod,frm_temps_travail from formule_produit,formule where frm_type = 3 and frm_cod = frmpr_frm_cod order by frm_nom ';
 			$db->query($req);
 			echo '<br><table><td class="titre">Liste des Composants déjà reliés à une pierre précieuse :</td><tr><br><br>
-						<td><b>Nom du composant</b></td><td><b>Objet nécessaire et quantités </b></td><td><b>Energie nécessaire</b></td><td><b>Compétence nécessaire</b></td>';
+						<td><strong>Nom du composant</strong></td><td><strong>Objet nécessaire et quantités </strong></td><td><strong>Energie nécessaire</strong></td><td><strong>Compétence nécessaire</strong></td>';
 			while ($db->next_record())
 				{
 						$cod_enchantement = $db->f("frm_cod");
@@ -114,7 +114,7 @@ ob_start();
 							<option value="103">Forgeamage Niveau 3</option>';							
 						</select>
 							<i> <br>Cela correspond au niveau de forgeamage nécessaire. 
-								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><b> Pas sûr que cela marche pour l'instant !</b></i>
+								<br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></i>
 							
 					</td>
 				</tr>
@@ -165,7 +165,7 @@ ob_start();
 				echo "<p>La formule de base du composant d'enchantement a bien été insérée !<br>
 				Pensez à inclure la pierre précieuse nécessaire pour ce composant. Autrement, il ne pourra jamais être produit<br>";
 				?><a href="<?php echo $PHP_SELF;?>?methode2=serie_obj&pot=<?php echo $num_form;?>">Modifier la pierre précieuse associée à ce composant</a><br>
-			<b>Règle pour un composant d'enchantement :</b>
+			<strong>Règle pour un composant d'enchantement :</strong>
 			<br>Un composant est produit à partir d'une seule pierre précieuse. Pas d'autre règle pour les objets. L'énergie nécessaire est déterminée à partir de la formule de base (écran précédent)
 			<br><hr>
 			<?php 
@@ -340,7 +340,7 @@ ob_start();
 			break;
 		case "serie_obj":
 			?>
-			<b>Règle pour un composant d'enchantement :</b>
+			<strong>Règle pour un composant d'enchantement :</strong>
 			<br>Un composant est produit à partir d'une seule pierre précieuse. Pas d'autre règle pour les objets. L'énergie nécessaire est déterminée à partir de la formule de base (écran précédent)
 			<br><hr>
 			<?php 

@@ -12,7 +12,7 @@ function montre_formulaire_connexion($isAuthOk)
 
     /* if ($erreur !== "")
       {
-      $resultat .= '<b>Erreur !</b> ' . $erreur . '<br />';
+      $resultat .= '<strong>Erreur !</strong> ' . $erreur . '<br />';
       } */
 
     if (!$isAuthOk)
@@ -30,8 +30,8 @@ function montre_formulaire_connexion($isAuthOk)
     else
     {
         global $compt_nom;
-        $resultat .= '<b>' . $compt_nom . '</b><div style="margin:5px">
-			<b><img src="http://www.jdr-delain.net/images/attaquer.gif" title="Jouer" />&nbsp;<a href="validation_login2.php">Jouer</a></b><hr style="margin-left:5px;margin-right:5px"/>
+        $resultat .= '<strong>' . $compt_nom . '</strong><div style="margin:5px">
+			<strong><img src="http://www.jdr-delain.net/images/attaquer.gif" title="Jouer" />&nbsp;<a href="validation_login2.php">Jouer</a></strong><hr style="margin-left:5px;margin-right:5px"/>
 			<img src="http://www.jdr-delain.net/images/deconnection.gif" title="Se déconnecter" />&nbsp;<a href="logout.php" target="_top">Se déconnecter</a></div>';
     }
     return $resultat;

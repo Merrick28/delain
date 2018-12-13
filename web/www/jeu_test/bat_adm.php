@@ -73,7 +73,7 @@ if ($erreur == 0)
 
 		case "debut":
 		?>
-		<p><img src="../images/batadmin.gif"><b><?php  echo($tab_lieu['nom']. '</b> - '. $tab_lieu['description']  ); ?>
+		<p><img src="../images/batadmin.gif"><strong><?php  echo($tab_lieu['nom']. '</strong> - '. $tab_lieu['description']  ); ?>
 		<p>Bonjour,<br>
 		Voici ce que vous pouvez faire ici :<br>
 		<hr><br>

@@ -48,7 +48,7 @@ switch ($methode)
 {
 case "debut":
 ?>
-<p><img src="../images/batadmin.gif"><b><?php echo("$tab_temple[0]</b> - $tab_temple[1]"); ?>
+<p><img src="../images/batadmin.gif"><strong><?php echo("$tab_temple[0]</strong> - $tab_temple[1]"); ?>
 <p>Bonjour,<br>
     Voici ce que vous pouvez faire ici :<br>
     <?php

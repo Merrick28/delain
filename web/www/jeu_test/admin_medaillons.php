@@ -43,9 +43,9 @@ switch ($methode)
 
 echo '<p>Les médaillons permettent, une fois apportés sur un escalier, l’ouverture de tous les escaliers menant au -5. Ces médaillons se trouvent dans les antres du -4 (Serpent, Loup et Scorpion).</p><table>
 		<tr>
-		<td class="titre"><b>Médaillon</b></td>
-        <td class="titre"><b>Localisation</b></td>
-        <td class="titre"><b>Redistribuer ?</b></td></tr>';
+		<td class="titre"><strong>Médaillon</strong></td>
+        <td class="titre"><strong>Localisation</strong></td>
+        <td class="titre"><strong>Redistribuer ?</strong></td></tr>';
 $req = 'select obj_cod, obj_nom, trouve_objet(obj_cod) as emplacement from objets where obj_gobj_cod in (86, 87, 88)';
 $db->query($req);
 while ($db->next_record())

@@ -12,7 +12,7 @@ include "tab_haut.php";
 $temps = $param->getparm(12);
 echo("<p>Votre session a expiré. <br>");
 echo("Pour soulager la charge serveur, les sessions sont limitées à 15 minutes.<br>");
-echo("Pour vous reconnecter, vous pouvez cliquer <a href=\"../index.php\"><b>ICI</b></a>");
+echo("Pour vous reconnecter, vous pouvez cliquer <a href=\"../index.php\"><strong>ICI</strong></a>");
 include "tab_bas.php";
 ?>
 </body>

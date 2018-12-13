@@ -25,7 +25,7 @@ if ($is_lieu)
     	$nom = $tab_lieu['nom'] . ' (' . $tab_lieu['libelle'] . ')';
     	$description = $tab_lieu['description'];
     	
-    	echo "<p><b>$nom</b></p><p>$description</p>";
+    	echo "<p><strong>$nom</strong></p><p>$description</p>";
     }
     else
 		require_once $url;

@@ -240,7 +240,7 @@ function afficherResultats(obj) {
           }
           document.getElementById('zoneResultats').appendChild(sel);
           document.getElementById('zoneResultats').style.display = 'block';  
-          document.getElementById('zonetexte').innerHTML = '<b>Quelle opération de tannage réaliser ?</b>';
+          document.getElementById('zonetexte').innerHTML = '<strong>Quelle opération de tannage réaliser ?</strong>';
      }
      else {
           document.getElementById('zoneResultats').style.display = 'none';

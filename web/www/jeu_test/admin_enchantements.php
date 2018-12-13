@@ -50,7 +50,7 @@ if ($erreur == 0)
 			$db->query($req);
 			echo '<td class="titre">Enchantements disponibles :</td><br><br>
 						<table>
-						<td><b>Nom de l\'enchantement</b></td><td><b>Objets nécessaires et quantités</b></td><td><b>Description</b></td>';
+						<td><strong>Nom de l\'enchantement</strong></td><td><strong>Objets nécessaires et quantités</strong></td><td><strong>Description</strong></td>';
 			while ($db->next_record())
 				{
 						$cod_enchantement = $db->f("enc_cod");

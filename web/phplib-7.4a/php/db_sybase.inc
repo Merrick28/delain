@@ -164,8 +164,8 @@ class DB_Sybase {
   }
   
   function haltmsg($msg) {
-    printf("<p><b>Database error:</b> %s<br>\n", $msg);
-    printf("<b>Sybase Error</b></p>\n", $this->Error);
+    printf("<p><strong>Database error:</strong> %s<br>\n", $msg);
+    printf("<strong>Sybase Error</strong></p>\n", $this->Error);
   }
 }
 $_php_major_version = substr(phpversion(), 0, 1);

@@ -271,12 +271,12 @@ if ($verif_auth)
 										
 									$db_evt->query($req_nom_evt);
 									$db_evt->next_record();
-									$texte_evt = str_replace('[perso_cod1]',"<b>".$db_evt->f("nom1")."</b>",$db->f("levt_texte"));
+									$texte_evt = str_replace('[perso_cod1]',"<strong>".$db_evt->f("nom1")."</strong>",$db->f("levt_texte"));
 									if ($db->f("levt_attaquant") != '')
-										$texte_evt = str_replace('[attaquant]',"<b>".$db_evt->f("nom2")."</b>",$texte_evt);
+										$texte_evt = str_replace('[attaquant]',"<strong>".$db_evt->f("nom2")."</strong>",$texte_evt);
 										
 									if ($db->f("levt_cible") != '')
-										$texte_evt = str_replace('[cible]',"<b>".$db_evt->f("nom3")."</b>",$texte_evt);
+										$texte_evt = str_replace('[cible]',"<strong>".$db_evt->f("nom3")."</strong>",$texte_evt);
 										
 									printf("%s : $texte_evt (%s).</br>",$db->f("date_evt"),$db->f("tevt_libelle"));
 								}
@@ -367,7 +367,7 @@ if ($verif_auth)
 						echo("</form>");
 					}
 
-					echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><b>se déconnecter</b></a></p>";
+					echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><strong>se déconnecter</strong></a></p>";
 					echo "<p style=\"text-align:center;\"><br /><i>Date et heure serveur : " . date('d/m/Y H:i:s') .  "</i></p>";
 				}
 			}

@@ -94,7 +94,7 @@ if ($db->nf() == 0)
 			$or = $db->f("perso_po");
 			?>
 			<p>Vous vous apprêtez à donner au geolier quelques brouzoufs afin de le corrompre.<br>
-			<p>Vous avez actuellement <b><?php echo $or; ?></b> brouzoufs disponibles.
+			<p>Vous avez actuellement <strong><?php echo $or; ?></strong> brouzoufs disponibles.
 			<p>Quelle quantité souhaitez vous lui donner ?<br>
 			<form name="appeler" method="post" action="<?php  echo $PHP_SELF; ?>">
 			<input type="hidden" name="methode" value="corrompre2">	
@@ -118,7 +118,7 @@ else
 	$tab_lieu = $db->get_lieu($perso_cod);
 	$nom_lieu = $tab_lieu['nom'];
 	$desc_lieu = $tab_lieu['description'];
-	echo("<p><b>$nom_lieu</b><br>$desc_lieu ");
+	echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
 	echo("<p><a href=\"valide_porte_prison.php\">Sortir de cette prison ? (4 PA)</a></p>");
 }
 

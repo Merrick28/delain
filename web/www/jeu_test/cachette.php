@@ -125,8 +125,8 @@ $db2 = new base_delain;
 					// on affiche la ligne d'en tête objets
 				?> 
 					<tr>
-					<td class="soustitre2"><p><b>Nom</b></p></td>
-					<td class="soustitre2"><p><b>Type objet</b></p></td>
+					<td class="soustitre2"><p><strong>Nom</strong></p></td>
+					<td class="soustitre2"><p><strong>Type objet</strong></p></td>
 					<td class="soustitre2"></td>
 					</tr>
 			
@@ -140,7 +140,7 @@ $db2 = new base_delain;
 						{
 							echo("<tr>");
 							$objet = $db->f("obj_cod");
-							echo "<td class=\"soustitre2\"><p><b>" . $db->f("obj_nom_generique"). "</b></p></td>";
+							echo "<td class=\"soustitre2\"><p><strong>" . $db->f("obj_nom_generique"). "</strong></p></td>";
 							echo "<td><p>" . $db->f("tobj_libelle") . "</p></td>";
 							echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $db->f("obj_cod") . "]\" value=\"0\"></p></td>";
 							echo "</tr>";

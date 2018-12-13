@@ -47,11 +47,11 @@ if ($erreur == 0)
 	$tab_depot = pg_fetch_array($res_depot,0);
 	if ($db->f("depot") == 0)
 	{
-		echo("<p>Vous venez de déposer <b>$quantite</b> brouzoufs sur votre compte en banque.");
+		echo("<p>Vous venez de déposer <strong>$quantite</strong> brouzoufs sur votre compte en banque.");
 	}
 	else
 	{
-		printf("<p>Une anomalie est survenue : <b>%s</b>",$db->f("depot"));
+		printf("<p>Une anomalie est survenue : <strong>%s</strong>",$db->f("depot"));
 	}
 }
 $contenu_page = ob_get_contents();

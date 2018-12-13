@@ -75,19 +75,19 @@ switch ($methode)
 }
 if (!$erreur && $log != '')
 {
-    echo "<div class='bordiv'><b>Mise à jour des paramètres globaux</b><br /><pre>$log</pre></div>";
+    echo "<div class='bordiv'><strong>Mise à jour des paramètres globaux</strong><br /><pre>$log</pre></div>";
     writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {
-    echo "<div class='bordiv'><b>Erreur !</b><br /><pre>$message_erreur</pre></div>";
+    echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
 echo '<p>Liste de perso de joueurs à tenir informé par la messagerie interne (<i>équivalent au praramètre global '.$parm_cod.'</i>)</p>
 	<table><tr>
-		<td class="titre"><b>Perso_cod</b></td>
-		<td class="titre"><b>Perso</b></td>
-		<td class="titre"><b>Supprimer ?</b></td></tr>';
+		<td class="titre"><strong>Perso_cod</strong></td>
+		<td class="titre"><strong>Perso</strong></td>
+		<td class="titre"><strong>Supprimer ?</strong></td></tr>';
 include 'sadmin.php';
 echo "<tr><form name='login2' method='POST' action='#'>
 	<td class='titre' style='padding:2px;'><input id='num_perso' name='num_perso' type='text' size='10' value=''/></td>

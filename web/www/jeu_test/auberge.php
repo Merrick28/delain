@@ -44,7 +44,7 @@ if ($erreur == 0)
 			$prix = $nb_pa * 2;
 			$tab_temple = $db->get_lieu($perso_cod);
 			$contenu_page .= '<p><img src="../images/auberge.png"><br />
-                <b></b>' . $tab_temple['nom'] . " - " . $tab_temple['description'] .'
+                <strong></strong>' . $tab_temple['nom'] . " - " . $tab_temple['description'] .'
 				<p>Bienvenue dans mon humble auberge, aventurier.
 				<p>Voici les services que nous avons à proposer :';
 			if ($nb_pa != 0)
@@ -101,7 +101,7 @@ if ($erreur == 0)
 			
 			case 'prier':
 			if ($tonto) {
-				echo '<p>Vous vous apprêtez à prier <b>Tonto<br>
+				echo '<p>Vous vous apprêtez à prier <strong>Tonto<br>
   				<a href="action.php?methode=prie&dieu=9">Continuer ?</a>';
 			}
 			else
@@ -139,7 +139,7 @@ if ($erreur == 0)
 					perso_po = perso_po - ' . $prix . '
 					where perso_cod = ' . $perso_cod;
 				$db->query($req_repos);
-				$contenu_page .= '<p>Vous vous êtes bien reposé. Vous avez regagné <b>' . $gain_pv . '</b> PV';
+				$contenu_page .= '<p>Vous vous êtes bien reposé. Vous avez regagné <strong>' . $gain_pv . '</strong> PV';
 
 			}
 			$contenu_page .= '<p><a href="' . $PHP_SELF . '">Retour</a>';
@@ -216,7 +216,7 @@ if ($erreur == 0)
 				$contenu_page .=  '<p>Voici les tavernes dans lesquelles vous avez déjà étanché votre soif : ';
 				while($db->next_record())
 				{
-					$contenu_page .= '<br /><b>' . $db->f('lieu_nom') . '</b> (' . $db->f('pos_x') . ', ' . $db->f('pos_y') . ', ' . $db->f('etage_libelle') . ')';
+					$contenu_page .= '<br /><strong>' . $db->f('lieu_nom') . '</strong> (' . $db->f('pos_x') . ', ' . $db->f('pos_y') . ', ' . $db->f('etage_libelle') . ')';
 				}
 			}
 			break;
@@ -241,7 +241,7 @@ if ($erreur == 0)
 				<table>';
 				while($db->next_record())
 				{
-					$contenu_page .= '<tr><td class="soustitre2"><b><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $db->f("perso_nom") . '</td>
+					$contenu_page .= '<tr><td class="soustitre2"><strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $db->f("perso_nom") . '</td>
 						<td><a href="action.php?methode=offre_boire&cible=' . $db->f("perso_cod") . '">Offrir un verre ?</a></td></tr>';
 				}
 				$contenu_page .= '</table>';
@@ -281,7 +281,7 @@ if ($erreur == 0)
 			$req = "select perso_po from perso where perso_cod = $perso_cod ";
 			$db->query($req);
 			$db->next_record();
-			$contenu_page .=  "<p>Vous disposez de <b>" . $db->f("perso_po") . "</b> brouzoufs.";
+			$contenu_page .=  "<p>Vous disposez de <strong>" . $db->f("perso_po") . "</strong> brouzoufs.";
 			$contenu_page .= '
 			<table>
 			<form name="rumeur" method="post" action="' . $PHP_SELF . '">
@@ -328,7 +328,7 @@ if ($erreur == 0)
 			$req = "select perso_po from perso where perso_cod = $perso_cod ";
 			$db->query($req);
 			$db->next_record();
-			$contenu_page .= "<p>Vous disposez de <b>" . $db->f("perso_po") . "</b> brouzoufs.";
+			$contenu_page .= "<p>Vous disposez de <strong>" . $db->f("perso_po") . "</strong> brouzoufs.";
 			break;
 	}
 }

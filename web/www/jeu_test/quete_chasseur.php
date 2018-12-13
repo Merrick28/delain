@@ -257,7 +257,7 @@ if ($erreur == 0)
 						{
 						$contenu_page4 .= "<br>Ce type de monstre est facilement reconnaissable. Il ressemble à cela :<br><p\"><img src=\"../avatars/" . $avatar . "\"></p>";
 						}
-						$contenu_page4 .= "<br><i>Alors, tope là ? »</i><br /><br /> <b>(Attention, ce choix vous engage pour une certaine durée)</b>";
+						$contenu_page4 .= "<br><i>Alors, tope là ? »</i><br /><br /> <strong>(Attention, ce choix vous engage pour une certaine durée)</strong>";
 
 						$contenu_page4 .= "<form name=\"mission\" method=\"post\" action=\"$PHP_SELF\">
 										<input type=\"hidden\" name=\"methode3\" value=\"mission\">
@@ -310,7 +310,7 @@ if ($erreur == 0)
 			{
 			$random = rand (1,4);
 			$temps = $random + 4; //Nombre de semaines autorisées pour la mission
-			$contenu_page4 .= "<i>- «  J'étais sur que vous étiez de la trempe de ceux qui ne reculent pas devant le danger »</i> vous fait le traqueur d'un ton amical <i>« Sachez cependant qu'aucun autre contrat ne pourra vous être délivré tant que vous n'aurez pas mené celui-ci à bien ! Montrez-vous inflexible, ces créatures doivent mourir ! partez donc en chasse au $monstre_nom ! Ramenez nous en <b>$random</b> pour nous montrer votre courage. <br>Nous vous laissons $temps semaines pour réaliser cette mission, autrement, cela signifiera que vous n'êtes pas digne des vrais traqueurs.
+			$contenu_page4 .= "<i>- «  J'étais sur que vous étiez de la trempe de ceux qui ne reculent pas devant le danger »</i> vous fait le traqueur d'un ton amical <i>« Sachez cependant qu'aucun autre contrat ne pourra vous être délivré tant que vous n'aurez pas mené celui-ci à bien ! Montrez-vous inflexible, ces créatures doivent mourir ! partez donc en chasse au $monstre_nom ! Ramenez nous en <strong>$random</strong> pour nous montrer votre courage. <br>Nous vous laissons $temps semaines pour réaliser cette mission, autrement, cela signifiera que vous n'êtes pas digne des vrais traqueurs.
 						<br>La mission pour tuer doit se réaliser dans ce laps de temps, mais vous pourrez ensuite prendre tout le temps que vous souhaitez pour venir chercher votre récompense.»</i> ";
 			$req = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut,pquete_date_fin,pquete_param)
 																values ('12','$perso_cod','$random',now(),now() + '$temps weeks'::interval,'$monstre')";

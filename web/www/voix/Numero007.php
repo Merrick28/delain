@@ -177,30 +177,30 @@ function switchDiv(strDivName,bolVisible){
   <td class="ligne_gauche" ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-    <b>Bardamu</b> : Hum&hellip; Qui est ce?<br>
-    <b>Grosse Voix</b> : Je suis le ma&icirc;tre de ces souterrains, et tu devrais le savoir! Qui es-tu insignifiante 
+    <strong>Bardamu</strong> : Hum&hellip; Qui est ce?<br>
+    <strong>Grosse Voix</strong> : Je suis le ma&icirc;tre de ces souterrains, et tu devrais le savoir! Qui es-tu insignifiante 
     petite chose pour te permettre de t&rsquo;avancer devant Ma magnificence! Je t&rsquo;&eacute;craserais comme 
     un cloporte que tu es! Tout le monde Me craint, et les larves rampent devant Ma grandeur.<br>
-    <b>Bardamu</b> : Ah? Malkiar??<br>
+    <strong>Bardamu</strong> : Ah? Malkiar??<br>
 	<br>
     <i>Bien qu&rsquo;il ait sollicit&eacute; cette interview, la d&eacute;glutition du nain se fit &acirc;pre et 
     douloureuse. Il ne s&rsquo;attendait pas &agrave; ce que Malkiar se manifeste un jour&hellip; Pas CE jour&hellip;</i><br>
 	<br>
     Waow&hellip; Ok, attaquons: parmi Tes rejetons, quels sont ceux qui ont ta pr&eacute;f&eacute;rence?<br>
-    <b>Malkiar</b> : Evidemment les d&eacute;mons sont Mes troupes les plus fid&egrave;les. Les morbelins ne sont que 
+    <strong>Malkiar</strong> : Evidemment les d&eacute;mons sont Mes troupes les plus fid&egrave;les. Les morbelins ne sont que 
     des rejets, des rebuts d'humains! Mes arm&eacute;es d&rsquo;Orks envahiront ce monde et le mettront &agrave; feu 
     et &agrave; sang! Mais surtout, vous n'&ecirc;tes que peu de choses devant Moi, et vous ne connaissez rien de 
     Mon pouvoir. Tremblez car Mes l&eacute;gions les plus sauvages se d&eacute;verseront sur vos terres, des troupes 
     qui se constituent jour apr&egrave;s jour, et qui prendront vos rejetons comme nourriture.<br>
-    <b>Bardamu</b> : Nourriture?? <br>
+    <strong>Bardamu</strong> : Nourriture?? <br>
     Bref&hellip;Nerlash a pr&eacute;cis&eacute; qu&rsquo;il te &laquo; picherai dechus &raquo; si vos chemins 
     se croisaient&hellip; Une r&eacute;action?<br>
-    <b>Malkiar</b> : Vos questions stupides risquent de vous co&ucirc;ter tr&egrave;s cher. Vous n'&ecirc;tes 
+    <strong>Malkiar</strong> : Vos questions stupides risquent de vous co&ucirc;ter tr&egrave;s cher. Vous n'&ecirc;tes 
     ici que parce que Je le veux bien!<br>
-    <b>Bardamu</b> : Hum&hellip; Oui&hellip; Encha&icirc;nons: R&eacute;gine la Harpie, quant &agrave; elle, 
+    <strong>Bardamu</strong> : Hum&hellip; Oui&hellip; Encha&icirc;nons: R&eacute;gine la Harpie, quant &agrave; elle, 
     plut&ocirc;t que de tuer, berce les guerriers de ses chants m&eacute;lodieux&hellip; Dis? C&rsquo;est un peu le 
     bronx dans tes rangs, non?<br>
-    <b>Malkiar</b> :  Ma patience a des limites que vous &ecirc;tes en train de franchir! Parlez plut&ocirc;t de 
+    <strong>Malkiar</strong> :  Ma patience a des limites que vous &ecirc;tes en train de franchir! Parlez plut&ocirc;t de 
     Mes fid&egrave;les lieutenants qui mettent en place les conditions de Mon grand retour. De vos semblables qui 
     font dans leurs chausses d&egrave;s que Mon fid&egrave;le Ing&eacute;lo se pr&eacute;sente.<br>
     </p></td>
@@ -210,28 +210,28 @@ function switchDiv(strDivName,bolVisible){
   <td class="ligne_gauche_i" ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-    <b>Bardamu</b> : Ah oui! Ingelo&hellip; Celui qui s&rsquo;amuse &agrave; r&eacute;aliser des colliers avec les 
+    <strong>Bardamu</strong> : Ah oui! Ingelo&hellip; Celui qui s&rsquo;amuse &agrave; r&eacute;aliser des colliers avec les 
     t&ecirc;tes de ses victimes en guise de perles&hellip; MA T&Ecirc;TE S&rsquo;EN SOUVIENT ENCORE!! Hum&hellip; 
     D&eacute;sol&eacute;, un moment d&rsquo;&eacute;garement&hellip;<br>
-    <b>Bardamu</b> :  Bien, t&rsquo;arrive-t-il de pactiser avec des aventuriers?<br>
-    <b>Malkiar</b> :  Les aventuriers sont l&agrave; pour Me servir! Bient&ocirc;t ils seront tous &agrave; Mes pieds et formeront 
+    <strong>Bardamu</strong> :  Bien, t&rsquo;arrive-t-il de pactiser avec des aventuriers?<br>
+    <strong>Malkiar</strong> :  Les aventuriers sont l&agrave; pour Me servir! Bient&ocirc;t ils seront tous &agrave; Mes pieds et formeront 
     une autre composante de Mes arm&eacute;es. Tels des pantins, Je les enverrais punir ceux qui pensent diriger ce 
     monde de pitres.<br>
-    <b>Bardamu</b> : En existe-t-il certains que tu hais particuli&egrave;rement ou au contraire, que tu estimes?<br>
-    <b>Malkiar</b> : Aucun ne m&eacute;rite l&rsquo;estime de Malkiar. Tous ne sont que des choses qui servent 
+    <strong>Bardamu</strong> : En existe-t-il certains que tu hais particuli&egrave;rement ou au contraire, que tu estimes?<br>
+    <strong>Malkiar</strong> : Aucun ne m&eacute;rite l&rsquo;estime de Malkiar. Tous ne sont que des choses qui servent 
     Mon dessein. L&agrave; o&ugrave; vous vous tra&icirc;nez de peur, Moi je Me gausse de votre insignifiance.<br>
-    <b>Bardamu</b> : Quel est ton but ultime, Malkiar?<br>
-    <b>Malkiar</b> : Mon retour est annonc&eacute;, et cela devrait te suffire esclave. Mon pouvoir augmente de 
+    <strong>Bardamu</strong> : Quel est ton but ultime, Malkiar?<br>
+    <strong>Malkiar</strong> : Mon retour est annonc&eacute;, et cela devrait te suffire esclave. Mon pouvoir augmente de 
     jour en jour. Implore plut&ocirc;t Ma piti&eacute; et mets toi &agrave; Mon service!<br>
-    <b>Bardamu</b> : A ton service? Te servir?? Non mais, &ccedil;a va pas la t&ecirc;t&hellip; Huuuuuum&hellip;
+    <strong>Bardamu</strong> : A ton service? Te servir?? Non mais, &ccedil;a va pas la t&ecirc;t&hellip; Huuuuuum&hellip;
     Crains-tu quoique ce soit dans ces bas-fonds?<br>
-    <b>Malkiar</b> : Esp&egrave;ce de cloporte, vois tu la peur dans cet endroit. Ah sans doute la tienne!<br>
-    <b>Bardamu</b> : J&rsquo;imagine que tu ne vis pas ici&hellip;O&ugrave; r&eacute;sides-tu?<br>
-    <b>Malkiar</b> : Dans un endroit o&ugrave; feu et sauvagerie sont la normalit&eacute;, endroit que tu vas 
+    <strong>Malkiar</strong> : Esp&egrave;ce de cloporte, vois tu la peur dans cet endroit. Ah sans doute la tienne!<br>
+    <strong>Bardamu</strong> : J&rsquo;imagine que tu ne vis pas ici&hellip;O&ugrave; r&eacute;sides-tu?<br>
+    <strong>Malkiar</strong> : Dans un endroit o&ugrave; feu et sauvagerie sont la normalit&eacute;, endroit que tu vas 
     bient&ocirc;t rejoindre!<br>
-    <b>Bardamu</b> : Attends! J&rsquo;ai pas fini&hellip;<br>
+    <strong>Bardamu</strong> : Attends! J&rsquo;ai pas fini&hellip;<br>
     Y a-t-il une &laquo; Malkiarette &raquo; dans ta vie??<br>
-    <b>Malkiar</b> : Voil&agrave; la question stupide de trop. Ingelo, va Me chercher la t&ecirc;te de cette chose que Je 
+    <strong>Malkiar</strong> : Voil&agrave; la question stupide de trop. Ingelo, va Me chercher la t&ecirc;te de cette chose que Je 
     go&ucirc;te pour voir si un cerveau pourri a un go&ucirc;t d&eacute;licat pour Mon palais.<br>
     <br>
     <i>Bien &eacute;videmment, Bardamu &eacute;tait d&eacute;j&agrave; loin lorsque Malkiar aboya sa derni&egrave;re 
@@ -441,38 +441,38 @@ function switchDiv(strDivName,bolVisible){
   <td class="ligne_gauche" ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-  <b>Ghanst</b> : L&rsquo;est plus l&agrave; le g&eacute;rant habituel? <br>
-  <b>Khaz&acirc;d</b> : Non, mon pr&eacute;d&eacute;cesseur a d&ucirc; partir. Je viens de reprendre son 
+  <strong>Ghanst</strong> : L&rsquo;est plus l&agrave; le g&eacute;rant habituel? <br>
+  <strong>Khaz&acirc;d</strong> : Non, mon pr&eacute;d&eacute;cesseur a d&ucirc; partir. Je viens de reprendre son 
   &eacute;choppe et car j'ai &eacute;t&eacute; nomm&eacute;e par le nouveau responsable de la Caravane, 
   Messire Le Pacifique <br>
-  <b>Ghanst</b> : Le Pacifique? S&rsquo;il m&eacute;rite son surnom, il f'ra pas long feu dans les souterrains.<br>
-  <b>Khaz&acirc;d</b> : Pas long-feu? Son temp&eacute;rament est un peu (trop) volcanique en fait. Il n'en a que le nom, 
+  <strong>Ghanst</strong> : Le Pacifique? S&rsquo;il m&eacute;rite son surnom, il f'ra pas long feu dans les souterrains.<br>
+  <strong>Khaz&acirc;d</strong> : Pas long-feu? Son temp&eacute;rament est un peu (trop) volcanique en fait. Il n'en a que le nom, 
   mais ce n'est pas dans sa nature de se laisser faire. Il serait plut&ocirc;t du genre je-tape-pour-calmer-les-gens 
   Mais c'est peut-&ecirc;tre gr&acirc;ce &agrave; lui que la caravane n'aura pas sombrer cet &eacute;t&eacute;. Il l'a 
   reprise de main de ma&icirc;tre alors que tous les ma&icirc;tres marchands &eacute;taient injoignables, et il 
   &agrave; fait le m&eacute;nage dans chacune d'elles avant de les distribuer aux caravaniers.<br>
-  <b>Ghanst</b> : J'ai entendu dire, qu'pour faire partie d'la caravane, fallait avoir une grande gueule et la dalle en 
+  <strong>Ghanst</strong> : J'ai entendu dire, qu'pour faire partie d'la caravane, fallait avoir une grande gueule et la dalle en 
   pente. Ca explique p't&ecirc;tre le d&eacute;clin, non?<br>
-  <b>Khaz&acirc;d</b> : Bien s&ucirc;r qu'il faut &ecirc;tre tout &ccedil;a (nous sommes des marchands). 
+  <strong>Khaz&acirc;d</strong> : Bien s&ucirc;r qu'il faut &ecirc;tre tout &ccedil;a (nous sommes des marchands). 
   <i>* devant l&rsquo;air ahuri de Ghanst, Khaz&acirc;d poursuit *</i><br>
-  <b>Khaz&acirc;d</b> : Si on ne l'&eacute;tait pas, on aurait vite fait de rater une affaire parce qu'on n&rsquo;aurait 
+  <strong>Khaz&acirc;d</strong> : Si on ne l'&eacute;tait pas, on aurait vite fait de rater une affaire parce qu'on n&rsquo;aurait 
   pas r&eacute;pondu &agrave; une tentative d'intimidation ou parce qu'on aurait rouler sous la table alors que nous 
   tentions de faire boire nos clients. Et puis ce sont les int&eacute;r&ecirc;ts de Sa Majeste Hormandre III que 
   nous d&eacute;fendons : il ne faut pas se laisser faire. <br>
-  <b>Ghanst</b> : De l&agrave; &agrave; vider sa cave&hellip; et puis&hellip; j&rsquo;ai entendu dire que 
+  <strong>Ghanst</strong> : De l&agrave; &agrave; vider sa cave&hellip; et puis&hellip; j&rsquo;ai entendu dire que 
   l&rsquo;bizutage, chez vous, &eacute;tait pas piqu&eacute; des vers. Que de petits sanguinous se balladaient 
   &agrave; droite et &agrave; gauche dans les souterrains suite &agrave;&hellip; hum, enfin tu vois. <br>
-  <b>Khaz&acirc;d</b> : Bizutage? Je vois pas de quoi tu veux parler. On descend juste quelques f&ucirc;ts de bi&egrave;re 
+  <strong>Khaz&acirc;d</strong> : Bizutage? Je vois pas de quoi tu veux parler. On descend juste quelques f&ucirc;ts de bi&egrave;re 
   afin d'&eacute;prouver un peu les nouveaux, histoire de voir s'ils vont tenir la distance. <br>
-  <b>Ghanst</b> : Ah&hellip; <i>* visiblement all&ecirc;ch&eacute;e par le mot bi&egrave;re, mais d&eacute;&ccedil;ue 
+  <strong>Ghanst</strong> : Ah&hellip; <i>* visiblement all&ecirc;ch&eacute;e par le mot bi&egrave;re, mais d&eacute;&ccedil;ue 
   par ailleurs *</i><br>
   Moi, c'est Ghanst. <i>* tend une main *</i><br>
   C'est quoi ton nom?<br>
-  <b>Khaz&acirc;d</b> : Moi c'est Khaz&acirc;d (et non sanguin ne m&rsquo;est encore jamais tomb&eacute; dessus). 
+  <strong>Khaz&acirc;d</strong> : Moi c'est Khaz&acirc;d (et non sanguin ne m&rsquo;est encore jamais tomb&eacute; dessus). 
   Et puis, il est pas encore n&eacute; celui qui voudra abuser de moi&hellip; (hips)<br>
-  <b>Ghanst</b> : Khaz&acirc;d? Ca m&rsquo;dit quelque chose&hellip; vaguement. Aaaah, oui&hellip; On m&rsquo;a 
+  <strong>Ghanst</strong> : Khaz&acirc;d? Ca m&rsquo;dit quelque chose&hellip; vaguement. Aaaah, oui&hellip; On m&rsquo;a 
   parl&eacute; de toi. Des chevaliers de Justice. T&rsquo;es pas une tueuse de farfadets, toi?<br>
-  <b>Khaz&acirc;d</b> : Enfin&hellip; oui je l'avoue, un peu au d&eacute;but. Mais vous savez, quand vous passez plus d'un 
+  <strong>Khaz&acirc;d</strong> : Enfin&hellip; oui je l'avoue, un peu au d&eacute;but. Mais vous savez, quand vous passez plus d'un 
   mois avec ces petites b&ecirc;tes, on s'y attache. Du coup un jour, plut&ocirc;t que de se taper dessus, je leur ai 
   proposer de passer prendre une bi&egrave;re &agrave; la taverne de la Caravane. J'aurais jamais pens&eacute; qu'ils 
   se seraient point&eacute; &agrave; 600. En plus ils ont mis un sacr&eacute; bazar, ils nous ont vid&eacute; la cave. 
@@ -480,31 +480,31 @@ function switchDiv(strDivName,bolVisible){
   c'est qu'apr&egrave;s, ils m'ont suivie et ont commenc&eacute; &agrave; faire la tourn&eacute;e des taverne avec moi, 
   &agrave; commencer par celle des Chevaliers de Justice.<br>
   <i>* elle &eacute;met un petit rire joyeux &agrave; ce souvenir *</i><br>
-  <b>Khaz&acirc;d</b> : Oli &eacute;tait furieux de cette invasion, surtout qu'ils ont pas eu la main 
+  <strong>Khaz&acirc;d</strong> : Oli &eacute;tait furieux de cette invasion, surtout qu'ils ont pas eu la main 
   l&eacute;g&egrave;re sur leur cave non plus. Et puis, plus &ccedil;a boit ces bestioles, plus y en a. 
   A croire qu'ils se reproduisent comme des lapins!<br>
-  <b>Ghanst</b> : Ah, oui&hellip; les farfadets, j'ai connu. Z&rsquo;aiment peut-&ecirc;tre la bi&egrave;re, 
+  <strong>Ghanst</strong> : Ah, oui&hellip; les farfadets, j'ai connu. Z&rsquo;aiment peut-&ecirc;tre la bi&egrave;re, 
   mais t'as pas un truc pour les chasser?<br>
-  <b>Khaz&acirc;d</b> : Ce qui marche le mieux, c'est de dire que c'est tourn&eacute;e g&eacute;n&eacute;rale dans une autre 
+  <strong>Khaz&acirc;d</strong> : Ce qui marche le mieux, c'est de dire que c'est tourn&eacute;e g&eacute;n&eacute;rale dans une autre 
   taverne. <br>
   <i>* r&eacute;fl&eacute;chit deux secondes *</i><br>
-  <b>Khaz&acirc;d</b> : Pourquoi j'ai jamais indiqu&eacute; celle des contrebandiers? <br>
-  <b>Ghanst</b> : <i>* petit regard malicieux *</i><br>
+  <strong>Khaz&acirc;d</strong> : Pourquoi j'ai jamais indiqu&eacute; celle des contrebandiers? <br>
+  <strong>Ghanst</strong> : <i>* petit regard malicieux *</i><br>
   Et vous n'avez jamais essay&eacute; de leurs vendre quelque chose? Des 
   dictionnaires&hellip; des armoires normandes&hellip;<br>
-  <b>Khaz&acirc;d</b> : Je sais qu'ils aiment bien les grandes lame et les chaises. Mais les chaises, &ccedil;a part trop 
+  <strong>Khaz&acirc;d</strong> : Je sais qu'ils aiment bien les grandes lame et les chaises. Mais les chaises, &ccedil;a part trop 
   vite, on peut pas en profiter tr&egrave;s longtemps.<br>
-  <b>Ghanst</b> : Les chaises?<br>
-  <b>Khaz&acirc;d</b> : les chaises de la taverne, ils sont partis avec tout le mobilier et ils ont m&ecirc;me pas 
+  <strong>Ghanst</strong> : Les chaises?<br>
+  <strong>Khaz&acirc;d</strong> : les chaises de la taverne, ils sont partis avec tout le mobilier et ils ont m&ecirc;me pas 
   laiss&eacute; de pourboire.<br>
-  <b>Ghanst</b> : La caravane aurait eu le dessous dans une transaction? C'est une premi&egrave;re, &ccedil;a&hellip;<br>
-  <b>Khaz&acirc;d</b> : ces bestioles sont encore plus grippe-sous que nous, alors je vous laisse imaginer. Dis, &ccedil;a 
+  <strong>Ghanst</strong> : La caravane aurait eu le dessous dans une transaction? C'est une premi&egrave;re, &ccedil;a&hellip;<br>
+  <strong>Khaz&acirc;d</strong> : ces bestioles sont encore plus grippe-sous que nous, alors je vous laisse imaginer. Dis, &ccedil;a 
   fait 5 minutes qu'on cause et je commence d&eacute;j&agrave; &agrave; te tutoyer. Ca te d&eacute;range pas, Ghanst?<br>
-  <b>Ghanst</b> : Hein, qui &ccedil;a moi? Oh, non, pas du tout. J'te tutoie avec plaisir.<br>
+  <strong>Ghanst</strong> : Hein, qui &ccedil;a moi? Oh, non, pas du tout. J'te tutoie avec plaisir.<br>
   <i>* regarde Khaz&acirc;d un instant *</i><br>
   On m'a parl&eacute; d'un naine braillarde et rousse qui serait rentr&eacute;e comme une furie dans l'auberge des 
   CdJ en gueulant des exigences&hellip; c'&eacute;tait toi?<br>
-  <b>Khaz&acirc;d</b> : <i>* compte sur ses doigts *</i><br>
+  <strong>Khaz&acirc;d</strong> : <i>* compte sur ses doigts *</i><br>
   - une naine? Oui.<br>
   - rousse? Oui.<br>
   - en furie? Oui.<br>
@@ -518,62 +518,62 @@ function switchDiv(strDivName,bolVisible){
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
   Quant aux exigences, je pense que tu parles de l'affaire que j'ai avec un des &eacute;cuyers des CdJ?<br>
-  <b>Ghanst</b> : J'ai pas eu beaucoup d'd&eacute;tails, mais j'suppose que oui. Un de ces b&eacute;ni-oui-oui t'as fait des 
+  <strong>Ghanst</strong> : J'ai pas eu beaucoup d'd&eacute;tails, mais j'suppose que oui. Un de ces b&eacute;ni-oui-oui t'as fait des 
   probl&egrave;mes?<br>
-  <b>Khaz&acirc;d</b> : C'est plus grave que &ccedil;a. J'accuse leur &eacute;cuyer Dorago Von Valentir d'avoir enlever la 
+  <strong>Khaz&acirc;d</strong> : C'est plus grave que &ccedil;a. J'accuse leur &eacute;cuyer Dorago Von Valentir d'avoir enlever la 
   fille de mon ancien ma&icirc;tre marchand, Messire Akadie. Avoue que &ccedil;a fout mal d'&ecirc;tre accus&eacute;es 
   d'enl&egrave;vement pour des personnes qui pr&ecirc;chent la justice &agrave; tour de bras. Nous sommes tomb&eacute;s 
   d'un commun accord avec les dirigeant des Chevaliers de Justice d'enqu&ecirc;ter plus en avant car celui-ci 
   pr&eacute;tend &ecirc;tre innocent. De plus, il se trouve que plusieurs personnages importants des souterrains 
   seraient m&ecirc;l&eacute;s &agrave; tout &ccedil;a, notamment 3 personnalit&eacute;s de l'escorte de L'archidiacre 
   Sim&eacute;on.<br>
-  <b>Ghanst</b> : Moi, j'aurais appliqu&eacute; la m&eacute;thode de par chez moi: un coup sur le coin de la gueule. <br>
+  <strong>Ghanst</strong> : Moi, j'aurais appliqu&eacute; la m&eacute;thode de par chez moi: un coup sur le coin de la gueule. <br>
   T'veux un coup d'main?<br>
-  <b>Khaz&acirc;d</b> : le probl&egrave;me n'est pas de lui taper dessus, c'est une v&eacute;ritable crevette, mais c'est de 
+  <strong>Khaz&acirc;d</strong> : le probl&egrave;me n'est pas de lui taper dessus, c'est une v&eacute;ritable crevette, mais c'est de 
   retrouver la fille. En plus, &eacute;tant dans la caravane, je me devais de trouver une solution diplomatique &agrave; 
   tout &ccedil;a vis-&agrave;-vis des CdJ. T'y crois toi une naine en tr&egrave;s de faire de la diplomatie, et 
   pourquoi pas une elfe qui boit de la bi&egrave;re??? (Oups&hellip; Pardon Vard, je ne voulais pas te vexer)<br>
-  <b>Ghanst</b> : Mais pourquoi l'accuses-tu lui? C'est le premier qui t'es tomb&eacute; sous la main quand tu &eacute;tais 
+  <strong>Ghanst</strong> : Mais pourquoi l'accuses-tu lui? C'est le premier qui t'es tomb&eacute; sous la main quand tu &eacute;tais 
   en rogne?<br>
-  <b>Khaz&acirc;d</b> : Il a &eacute;t&eacute; aper&ccedil;u plusieurs fois en train de r&ocirc;der autour de la demeure de mon 
+  <strong>Khaz&acirc;d</strong> : Il a &eacute;t&eacute; aper&ccedil;u plusieurs fois en train de r&ocirc;der autour de la demeure de mon 
   ma&icirc;tre. Pour preuve, j'ai un t&eacute;moin digne de fois, Arkish Drulak, tu sais l'escorteur de l'archidiacre.<br>
-  <b>Ghanst</b> : Hmm&hellip; je ne le connais pas personnellement, mais j'ai d&ucirc; l'apercevoir &agrave; un moment. 
+  <strong>Ghanst</strong> : Hmm&hellip; je ne le connais pas personnellement, mais j'ai d&ucirc; l'apercevoir &agrave; un moment. 
   Accompagn&eacute; de deux efles bizarres, pas franchement sympa.<br>
-  <b>Khaz&acirc;d</b> : je suis d'accord avec toi, plut&ocirc;t belliqueux les frangins Del'Armgo. En plus ils 
+  <strong>Khaz&acirc;d</strong> : je suis d'accord avec toi, plut&ocirc;t belliqueux les frangins Del'Armgo. En plus ils 
   para&icirc;traient que ce sont de v&eacute;ritables elfes noirs. On se demande comment ils sont rentr&eacute;s 
   dans l&rsquo;escorte. En plus Dorago Von Valentir pr&eacute;tend que ce sont eux les coupables mais pour le 
   moment, il n'a toujours pas de preuves.<br>
-  <b>Ghanst</b> : Et, la personne qui avait &eacute;t&eacute; enlev&eacute;e&hellip; elle est enterr&eacute;e o&ugrave;? 
+  <strong>Ghanst</strong> : Et, la personne qui avait &eacute;t&eacute; enlev&eacute;e&hellip; elle est enterr&eacute;e o&ugrave;? 
   Ca m'fait d'la peine c&rsquo;t histoire. J'voudrais m'recuillir sur sa tombe et verser une pt'ite bi&egrave;re 
   dessus en priant Tonto.<br>
-  <b>Khaz&acirc;d</b> : Si elle est morte, son assasin le paiera de sa vie, j'en fais le serment. Mais pour le 
+  <strong>Khaz&acirc;d</strong> : Si elle est morte, son assasin le paiera de sa vie, j'en fais le serment. Mais pour le 
   moment, je pr&eacute;f&egrave;re ne pas penser au pire.<br>
-  <b>Ghanst</b> : Oh? Elle ne s'rait pas morte? Si j'la vois, j'te fais signe. Elle ressemble &agrave; quoi?<br>
-  <b>Khaz&acirc;d</b> : Elle s'appelle Brun&eacute;hilde, c'est une humaine 1.70m, blonde aux yeux bleus. 
+  <strong>Ghanst</strong> : Oh? Elle ne s'rait pas morte? Si j'la vois, j'te fais signe. Elle ressemble &agrave; quoi?<br>
+  <strong>Khaz&acirc;d</strong> : Elle s'appelle Brun&eacute;hilde, c'est une humaine 1.70m, blonde aux yeux bleus. 
   Si vous la croisez, fa&icirc;tes moi signe, je suis preneuse de toutes informations. R&eacute;compense &agrave; 
   la cl&eacute;. Je sais qu'elle a &eacute;t&eacute; enlev&eacute;e &agrave; l'ext&eacute;rieur et cach&eacute;e 
   dans les souterrains apr&egrave;s.<br>
-  <b>Ghanst</b> : Et&hellip; en secouant les elfes noirauds&hellip; on obtiendrait pas quelques infos?<br>
-  <b>Khaz&acirc;d</b> : C'est en cours chez les CdJ. La crevette de Dorago s'est mis en t&ecirc;te de les faire parler en 
+  <strong>Ghanst</strong> : Et&hellip; en secouant les elfes noirauds&hellip; on obtiendrait pas quelques infos?<br>
+  <strong>Khaz&acirc;d</strong> : C'est en cours chez les CdJ. La crevette de Dorago s'est mis en t&ecirc;te de les faire parler en 
   discutant avec eux. Pour un futur Paladin, &ccedil;a promet. En tout cas, il n'en tire rien, je m'en occuperai 
   personnellement.<br>
-  <b>Ghanst</b> : Bien parl&eacute;.<br>
+  <strong>Ghanst</strong> : Bien parl&eacute;.<br>
   <i>* regarde les &eacute;tag&egrave;res bien garnies *</i><br>
   Pffft&hellip; &Ccedil;a donnerait presque envie d'postuler chez vous. S&eacute;curit&eacute; d'emploi, bourse plus jamais 
   vide&hellip;<br>
-  <b>Khaz&acirc;d</b> : Tout le monde est le bienvenu, mais en ce moment c'est un petit peu tendu &agrave; la caravane.<br>
-  <b>Ghanst</b> : J'imagine&hellip; Si les farfadets ont vid&eacute; vot' cav'.<br>
-  <b>Khaz&acirc;d</b> : Non, pas du tout. C'est pour le renouvellement de la concession des &eacute;choppes. Le bail d'un an 
+  <strong>Khaz&acirc;d</strong> : Tout le monde est le bienvenu, mais en ce moment c'est un petit peu tendu &agrave; la caravane.<br>
+  <strong>Ghanst</strong> : J'imagine&hellip; Si les farfadets ont vid&eacute; vot' cav'.<br>
+  <strong>Khaz&acirc;d</strong> : Non, pas du tout. C'est pour le renouvellement de la concession des &eacute;choppes. Le bail d'un an 
   de la Caravane est &agrave; son terme et sa Majest&eacute; ne nous a toujours pas recontact&eacute; pour le renouveler.<br>
-  <b>Ghanst</b> : Ehe&hellip; Et la concession des auberges, c'est le m&ecirc;me terme?<br>
-  <b>Khaz&acirc;d</b> : Euh? Non je crois pas.<br>
-  <b>Ghanst</b> : Bon, c'est pas tout &ccedil;a&hellip; Un anneau de pouvoir ou un art&eacute;fact de protection contre le 
+  <strong>Ghanst</strong> : Ehe&hellip; Et la concession des auberges, c'est le m&ecirc;me terme?<br>
+  <strong>Khaz&acirc;d</strong> : Euh? Non je crois pas.<br>
+  <strong>Ghanst</strong> : Bon, c'est pas tout &ccedil;a&hellip; Un anneau de pouvoir ou un art&eacute;fact de protection contre le 
   mal, tu as?<br>
   Ou une chope neuve?<br>
-  <b>Khaz&acirc;d</b> : D&eacute;sol&eacute;, mon dernier anneau de pouvoir est partie ce matin. Par contre si tu veux, je 
+  <strong>Khaz&acirc;d</strong> : D&eacute;sol&eacute;, mon dernier anneau de pouvoir est partie ce matin. Par contre si tu veux, je 
   t'invite &agrave; boire un coup, un aventurier &agrave; laisser son tonneau dans mon &eacute;choppe. P't-&ecirc;tre 
   trop lourd pour lui?<br>
-  <b>Ghanst</b> : Sans doute&hellip; mais il aurait fallu lui dire qu'il suffisait d'le vider d'abord. Oh, en parlant de 
+  <strong>Ghanst</strong> : Sans doute&hellip; mais il aurait fallu lui dire qu'il suffisait d'le vider d'abord. Oh, en parlant de 
   bons &agrave; riens, j'connais un scribouillards qu'sait m&ecirc;me pas s'battre. J'lui toucherai un mot d'ton 
   histoire d'avec Brun&eacute;hilde. <br>
   Pt'&ecirc;t-qu'il pourra enfin gagner sa vie en faisant queque chose d'utile.<br>
@@ -707,7 +707,7 @@ présence en ces lieux.
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p><font class="txt">
-     <b>La Fin du Morbelin</b><br>
+     <strong>La Fin du Morbelin</strong><br>
      Quelques aventuriers maladroits ont assur&eacute; le tr&eacute;pas de Vigor, Shaman Morbelin lib&eacute;r&eacute;
      du joug de Malkiar. Apr&egrave;s quelques &eacute;changes houleux et quelques fessades, ses protecteurs, 
      m&eacute;chamment &eacute;branl&eacute;s, ont eux, assur&eacute; sa vengeance.<br>
@@ -715,7 +715,7 @@ présence en ces lieux.
      ass&eacute;na le coup fatal &agrave; Vigor) en &eacute;tait sinc&egrave;rement d&eacute;sol&eacute;. Le 
      jeune elfe ignorait en effet tout de la condition du Morbelin&hellip;<br>
      </font><hr><font class="txt">
-     <b>Les Jeux du Balrog</b><br>
+     <strong>Les Jeux du Balrog</strong><br>
      Apr&egrave;s avoir ab&icirc;m&eacute; le plafond du 7 &egrave;me sous sol afin de se hisser aux portes du 
      Ch&acirc;teau, le Balrog ma&icirc;trise enfin l&rsquo;art de monter et descendre des escaliers. Exalt&eacute; 
      par cette d&eacute;couverte, il s&rsquo;est amus&eacute; &agrave; grimper, puis &agrave; d&eacute;gringoler
@@ -723,7 +723,7 @@ présence en ces lieux.
      le tout sous les regards incr&eacute;dules des aventuriers t&eacute;moins de l&rsquo;enthousiasme du colosse 
      &eacute;b&egrave;ne.<br>
      </font><hr><font class="txt">
-     <b>Les Autres Jeux du Balrog</b><br>
+     <strong>Les Autres Jeux du Balrog</strong><br>
      A pr&eacute;sent install&eacute; au qutri&egrave;me sous-sol, la cr&eacute;ature avance d&rsquo;un pas s&ucirc;r 
      parmi les gel&eacute;es, n&rsquo;omettant pas de g&acirc;ter les aventuriers qui croisent son chemin. Certains d'entre eux 
 	 se sont m&ecirc;me jet&eacute;s sur la b&ecirc;te avant d'&ecirc;tre d&eacute;figur&eacute;s.<br>
@@ -732,7 +732,7 @@ présence en ces lieux.
 	 Peut-&ecirc;tre est il tout simplement devenu fou&hellip; <br>
 	 FUYEZ!!!<br>
      </font><hr><font class="txt">
-     <b>Dressage difficile</b><br>
+     <strong>Dressage difficile</strong><br>
      Marsupilamie de la Guilde de Derym en bave avec son Basilic Commun&hellip;<br>
 	 Apr&egrave;s avoir recueilli l&rsquo;&oelig;uf et l&rsquo;avoir couv&eacute;, un b&eacute;b&eacute; Basilic en est sorti. <br>
 	 Depuis, la bestiole teigneuse s&rsquo;obstine &agrave; lac&eacute;rer l&rsquo;elfette de ses griffes et de ses crocs. 
@@ -740,17 +740,17 @@ présence en ces lieux.
      lutte insens&eacute;e qui oppose &laquo;b&eacute;b&eacute;&raquo; &agrave; &laquo;maman&raquo; et qui dure 
      depuis des jours&hellip;<br>
      </font><hr><font class="txt">
-     <b>Les Morbelins tuent le commerce</b><br>
+     <strong>Les Morbelins tuent le commerce</strong><br>
      L&rsquo;auberge &laquo;Au Plancton prisonnier&raquo; souffre de la p&eacute;nurie de voyageurs qui osent 
      s&rsquo;aventurer dans le forteresse du 6 &egrave;me sous sol. Pendant que les Morbelins s&rsquo;engraissent 
      avec une taxe prohibitive (pour rappel: 3000 bzf sont exig&eacute;s pour p&eacute;n&eacute;trer le Ch&acirc;teau), 
      les caisses de la taverne des Planctons se vident&hellip;D&eacute;sesp&eacute;r&eacute;ment&hellip;<br>
      </font><hr><font class="txt">
-     <b>Le myst&egrave;re</b><br>
+     <strong>Le myst&egrave;re</strong><br>
      Les KAA ont un moment disparu de la circulation. Ils auraient &eacute;t&eacute; t&eacute;l&eacute;port&eacute;s 
      &agrave; un &eacute;tage myst&eacute;rieux o&ugrave; s&eacute;viraient des D&eacute;mons Mineurs.<br>
     </font><hr><font class="txt">
-    <b>Le boulet d'or :</b><br>
+    <strong>Le boulet d'or :</strong><br>
 	La Voix tient &agrave; rendre un hommage tout particulier &agrave; Soreclis, qui a l'issue d'une lutte acharn&eacute;e 
 	a remport&eacute; le titre de boulet d'or&hellip; Titre tr&egrave;s largement m&eacute;rit&eacute; par ce farfelu. 
 	Le suspens intense de cette &eacute;lection aura provoqu&eacute; de nombreuses crises de nerfs parmi les votants qui en 
@@ -762,12 +762,12 @@ présence en ces lieux.
   <td class="ligne_gauche_i" ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"   ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p><font class="txt">
-     <b>M&eacute;daillon par ci, m&eacute;daillon par l&agrave;</b><br>
+     <strong>M&eacute;daillon par ci, m&eacute;daillon par l&agrave;</strong><br>
      L&rsquo;ouverture des escaliers qui m&egrave;nent dans l&rsquo;Antichambre s&rsquo;annonce tendue: deux 
      m&eacute;daillons chez les &laquo;gentils&raquo;, et un m&eacute;daillon chez les &laquo;m&eacute;chants&raquo;. 
      Cette affaire va t elle trouver son issue dans la guerre??<br>
      </font><hr><font class="txt">
-     <b>Le Conseil des Sages</b><br>
+     <strong>Le Conseil des Sages</strong><br>
      Les Plopeurs Fous, apr&egrave;s avoir subi de lourdes pertes face au Balrog, ont sollicit&eacute; l&rsquo;aide 
      de Moklar qui occupe le Ch&acirc;teau du 6 &egrave;me sous sol avec ses troupes. Celui ci a r&eacute;uni le 
      conseil des Sages, qui a d&eacute;cid&eacute; d&rsquo;acc&eacute;der &agrave; la demande des Plopeurs. Mais, 
@@ -775,7 +775,7 @@ présence en ces lieux.
      cr&eacute;ature, qui se prom&egrave;ne maintenant dans l&rsquo;Antichambre, regagne les profondeurs pour 
      s&rsquo;y frotter&hellip;<br>
      </font><hr><font class="txt">
-     <b>Le rouge et le noir</b><br>
+     <strong>Le rouge et le noir</strong><br>
      Monsieur Jacques s&eacute;vit de nouveau. Il a l&acirc;ch&eacute; ses lutins turbulents dans les profondeurs. 
      Ces derniers s&egrave;ment ici et l&agrave; des cadeaux. Trois choix sont alors propos&eacute;s aux aventuriers : 
      offrir le cadeau &agrave; un lutin rouge (r&eacute;serv&eacute; aux amateurs du p&egrave;re N&ouml;el), offrir 
@@ -783,7 +783,7 @@ présence en ces lieux.
      ou garder &eacute;go&iuml;stement le cadeau. A vos risques et p&eacute;rils!<br>
      A noter: les lutins feraient aussi les poches des aventuriers&hellip;<br>
     </font><hr><font class="txt">
-    <b>L&acute;ensorcel&eacute;e :</b><br>
+    <strong>L&acute;ensorcel&eacute;e :</strong><br>
     Le Balrog&hellip; Encore&hellip;<br>
     La solution pour en venir à bout se trouve peut être au sixième sous sol, étage où erre Nhyima encore sous linfluence 
 	dun puissant rituel. Il semblerait que deux questions adroitement posées à la jeune femme suffiraient à la libérer, et 
@@ -791,7 +791,7 @@ présence en ces lieux.
     Où court il ainsi?? Poursuit-il un aventurier en particulier??<br>
     Bref, si dans vos poches se trouve un objet susceptible de lintéresser, prenez garde!!
     </font><hr><font class="txt">
-    <b>Au bonheur des Noobs :</b><br>
+    <strong>Au bonheur des Noobs :</strong><br>
 	Une nouvelle guilde vient de faire son apparition. Elle a pour but de former des nouveaux arrivants des souterrains aux 
 	rudiments de la vie p&eacute;rilleuse de nos ch&egrave;res galeries obscures. Elle forme aussi bien les assassins de monstres que les 
 	tueurs d'aventuriers et se veut au plus possible neutre. Bien que l'&eacute;quipe enseignante soit plutot d'origine bisounours,
@@ -799,7 +799,7 @@ présence en ces lieux.
 	leurs cot&eacute;s. Il semblerai que le Directeur de ce Centre de Formation Neutre cherche des alliances avec une quantit&eacute;
 	non n&eacute;gligeable de guildes de tous horizons pour améliorer l'ambiance des classes<br>
     </font><hr><font class="txt">
-    <b>Derni&egrave;re minute :</b><br>
+    <strong>Derni&egrave;re minute :</strong><br>
 	 le Ch&acirc;teau enfin accessible! Les Morbelins n'exigeraient plus aucune taxe et laisseraient les aventuriers entrer et 
 	 sortir gratuitement. Par contre un bruit de couloir laisserait entendre que les monstres devraient eux payer&hellip;<br>
 	 Malikar aurait m&ecirc;me re&ccedil;u une carte d'abonnement.
@@ -835,7 +835,7 @@ présence en ces lieux.
   <td class="colonne"><p><font class="txt">
     Le P'tit Paul &eacute;coute toujours aux portes... Qu'a-t-il bien pu entendre?!?<br>
     <br>
-    <b> Le Nain, la Belle, et les DPs !</b><br>
+    <strong> Le Nain, la Belle, et les DPs !</strong><br>
     Non contente de gagner le concours d&rsquo;embrassade des DPs, Erynmiriel se met &agrave; 
 	&quot;poutouner&quot; du nain. Le dernier en date (Bardamu selon les sources) ayant 
 	interpr&eacute;t&eacute; ce geste comme une chaude invitation, s&rsquo;est jet&eacute; sur Eryn. 
@@ -844,7 +844,7 @@ présence en ces lieux.
 	envie &agrave; satisfaire, je n'irais certainement pas chercher une toute petite bistouquette de 
 	nain !&quot;.<br>
     <br>
-    <b>Faites l'amour, pas la guerre!</b><br>
+    <strong>Faites l'amour, pas la guerre!</strong><br>
     Alors que la guerre se pr&eacute;pare au -4, entre une &quot;petite&quot; coalition de Gilead, 
 	d'Aventurier Aventureux et de Balgurien contre un groupe de Main du Mal, des petites histoires 
 	d'amours semblent s'&eacute;laborer dans les coulisses. <br>
@@ -852,7 +852,7 @@ présence en ces lieux.
 	de la m&ecirc;me guilde, dans un coin de tente... en tout cas, les rumeurs circulent de plus en 
 	plus... <br>
     <br>
-    <b> Loin des yeux&hellip;&nbsp;: </b><br>
+    <strong> Loin des yeux&hellip;&nbsp;: </strong><br>
     &laquo;&nbsp;C&rsquo;est chaud bouillant&nbsp;!&nbsp;&raquo; fut le cri d&rsquo;Athalante en 
 	r&eacute;ponse &agrave; la question&nbsp;: &laquo;&nbsp;T&rsquo;en est o&ugrave; avec le 
 	Valeureux&nbsp;&raquo;. Cependant, la guerri&egrave;re Chevalier de Justice se 
@@ -860,12 +860,12 @@ présence en ces lieux.
 	abandonn&eacute; Korgrim, administrateur de la MDM. Leur love story r&eacute;sistera t il &agrave; 
 	cette s&eacute;paration forc&eacute;e&nbsp;? <br>
     <br>
-    <b>La Belle et la Brute&nbsp;:</b><br>
+    <strong>La Belle et la Brute&nbsp;:</strong><br>
     Aknoth et Wiiip, tous deux Mercenaires F&eacute;&eacute;runiens, et fraichement unis flirtent 
 	avec le bonheur. La larme &agrave; l&rsquo;&oelig;il, Aknoth s&rsquo;&eacute;meut&nbsp;: 
 	&laquo;&nbsp; Et mon espoir, c'est Wiiip&hellip;&nbsp;&raquo;. Que c&rsquo;est mignon&nbsp;!<br>
     <br>
-    <b>Friponneries chez les m&eacute;chants :</b><br>
+    <strong>Friponneries chez les m&eacute;chants :</strong><br>
     Carole, elfette qui jadis courait derri&egrave;re le P&egrave;re Simeon, se serait abandonn&eacute;e deux nuits durant 
 	dans les bras d&rsquo;un KAA. Comment r&eacute;agira l&rsquo;&eacute;poux cocufi&eacute;, le Gilead Claymore, qui comme 
 	attendu, ne fut pas convi&eacute; aux festivit&eacute;s? <br>
@@ -908,7 +908,7 @@ présence en ces lieux.
     <i>Les boulets ne s&eacute;vissent pas qu&rsquo;en place publique&hellip;Les souterrains aussi profitent de 
     quelques sp&eacute;cimens&hellip;</i><br>
     <br>
-    <b>La peluche &eacute;nerv&eacute;e</b> :<br>
+    <strong>La peluche &eacute;nerv&eacute;e</strong> :<br>
     C&rsquo;est l&rsquo;histoire (authentique) d&rsquo;une peluche &eacute;mancip&eacute;e qui erre dans 
     l&rsquo;Antichambre. Elle s&rsquo;ennuie. Lorsqu&rsquo;enfin, elle trouve un jouet pour se distraire: un 
     aventurier emp&ecirc;tr&eacute; dans un combat titanesque. Elle s&rsquo;approche et tabasse (notons 
@@ -923,7 +923,7 @@ présence en ces lieux.
     je viens de crever !<br>
     Fais attention, c'est une brute&hellip;&quot;<br>
     <br>
-    <b>Le rythme dans la peau</b> :<br>
+    <strong>Le rythme dans la peau</strong> :<br>
     Alors que Frankeinstein (une m&eacute;chante brutasse) s&rsquo;amusait avec Blackrider, meneur des Bardes 
     d&rsquo;Anastasia et Soreclis, Boulet DP, les deux aventuriers se sont mis &agrave; entonner quelques:<br>
     &quot;Vas Franky c&rsquo;est bon<br>
@@ -956,7 +956,7 @@ présence en ces lieux.
   <td class="ligne_gauche"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ecartement"  ><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="colonne"><p>
-    <b>4 - Oiseau : animal qui vole mais quon plume</b><br>
+    <strong>4 - Oiseau : animal qui vole mais quon plume</strong><br>
  - C&rsquo;est l&agrave; ? <br>
 - Oui. <br>
 Maintenant qu&rsquo;Albert se trouvait &agrave; la lisi&egrave;re du domaine qui recouvrait les fameux souterrains de Delain, il &eacute;prouvait un soulagement intense &agrave; l&rsquo;id&eacute;e de pouvoir enfin se s&eacute;parer de ce cocher dont il ne partageait pas l&rsquo;humour. <br>
@@ -1035,7 +1035,7 @@ vivre. Ecrivez moi pour nous rejoindre : <br>
     dans les registres des souterrains.</i>
     A la question: qui &ecirc;tes vous? &laquo;, voici ce que les interview&eacute;s r&eacute;pondent:<br>
     <br>
-    <b>Le Clan Bayushi</b><br>
+    <strong>Le Clan Bayushi</strong><br>
     <u>Big boss</u> : Kachiko<br>
     <u>Effectif</u> : 15<br>
     <u>Commentaire</u> : &laquo;Le principal but du Clan Bayushi est pour le moment de faire conna&icirc;tre 
@@ -1050,7 +1050,7 @@ vivre. Ecrivez moi pour nous rejoindre : <br>
     &agrave; nous, aventuriers qui foulons le sol des souterrains chaque jour, de la construire. Et c&rsquo;est 
     ce que j&rsquo;ai commenc&eacute; &agrave; faire, avec le Clan Bayushi.<br>
     Kachiko&raquo;<br>
-    <b>Messages de Kachiko</b> : &laquo;A tous les aventuriers ayant un tant soit peu d&rsquo;honneur, et qui 
+    <strong>Messages de Kachiko</strong> : &laquo;A tous les aventuriers ayant un tant soit peu d&rsquo;honneur, et qui 
     recherche une guilde neutre, active mais ind&eacute;pendante des puissances existantes, le Clan Bayushi vous 
     accueillera &agrave; bras ouverts.<br>
     De plus, en tant que Valsharess des Valkyries, je rappelle &agrave; toutes les femmes des souterrains que notre 

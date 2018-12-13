@@ -97,7 +97,7 @@ if ($erreur == 0)
 			echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>"
       ."<a href=\"gere_echoppe3.php?mag=".$db->f("lieu_cod")."\">".  $db->f("lieu_nom") ."</a> "
       . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-			echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_marge") . " %</td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_prelev") . " %</td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_compte") . " brouzoufs</td>";

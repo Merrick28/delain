@@ -116,7 +116,7 @@ if ($erreur == 0)
 		$texte_evt = '[perso_cod1] a amélioré sa compétence '. $nom_competence .', la passant à '. $nouvelle_valeur .'%.';
 		$req_evt = "select insere_evenement($perso_cod, $perso_cod, 12, '$texte_evt', 'N', NULL)";
 		$db->query($req_evt);	
-		$contenu_page .= "<p>Vous avez amélioré la compétence « $nom_competence » de <b>$des</b> points !";
+		$contenu_page .= "<p>Vous avez amélioré la compétence « $nom_competence » de <strong>$des</strong> points !";
 
 		$prix = $nouvelle_valeur * 4;
 		if ($nouvelle_valeur <= 25)

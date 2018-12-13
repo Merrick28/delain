@@ -1,11 +1,11 @@
 <table width="100%" cellspacing="2" cellapdding="2">
 	<tr><td colspan="6" class="soustitre"><p class="soustitre">Objets</p></td></tr>
 	<tr>
-		<td class="soustitre2" width="50"><p><b>Dist.</b></p></td>
-		<td class="soustitre2"><p><b>Nom</b></p></td>
-		<td class="soustitre2"><p><b>Type objet</b></p></td>
-		<td class="soustitre2"><p style="text-align:center;"><b>X</b></p></td>
-		<td class="soustitre2"><p style="text-align:center;"><b>Y</b></p></td>
+		<td class="soustitre2" width="50"><p><strong>Dist.</strong></p></td>
+		<td class="soustitre2"><p><strong>Nom</strong></p></td>
+		<td class="soustitre2"><p><strong>Type objet</strong></p></td>
+		<td class="soustitre2"><p style="text-align:center;"><strong>X</strong></p></td>
+		<td class="soustitre2"><p style="text-align:center;"><strong>Y</strong></p></td>
 		<td></td>
 	</tr>
 <?php 

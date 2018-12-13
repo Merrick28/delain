@@ -226,7 +226,7 @@ else
 			break;
 		case "mod": // modification d'un objet existant
 
-            echo '<br><a href="'.$PHP_SELF.'?methode=cre">Création d’un nouvel objet ?</a><br><br><b>Modification d’un objet existant:</b><br><br>';
+            echo '<br><a href="'.$PHP_SELF.'?methode=cre">Création d’un nouvel objet ?</a><br><br><strong>Modification d’un objet existant:</strong><br><br>';
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';

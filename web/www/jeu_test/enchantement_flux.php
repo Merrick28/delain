@@ -34,7 +34,7 @@ if($db->next_record())
 			$contenu_page .= '
 				<p align="center"><br>Vous avez la possibilité de tester la puissance des vents magiques. Plusieurs méthodes peuvent se présenter à vous :<br>
 				<form method="post" action="' . $PHP_SELF. '">
-				<br><p align="center" class="soustitre2"><b>Analyse locale</b></p> 
+				<br><p align="center" class="soustitre2"><strong>Analyse locale</strong></p> 
 				Cette recherche vous permettra de tenter de sonder les vents magiques proches de vous.<br>
 				<input type="hidden" name="methode" value="detecter2">
 				<input type="hidden" name="t_ench" value="' . $t_ench . '">
@@ -43,7 +43,7 @@ if($db->next_record())
 			if ($niveau == 102 or $niveau == 103)
 			{
 				$contenu_page .= '<form method="post" action="' . $PHP_SELF. '">
-					<br><p align="left" class="soustitre2"> <b>Recherche poussée.</b></p>
+					<br><p align="left" class="soustitre2"> <strong>Recherche poussée.</strong></p>
 					Elle vous permettra de scruter une zone à quatre positions ou moins autour de vous.<br>	
 					<input type="hidden" name="methode" value="detecter3">
 					<input type="hidden" name="t_ench" value="' . $t_ench . '">
@@ -68,7 +68,7 @@ if($db->next_record())
 				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa where perso_cod = $perso_cod";
 				$db->query($req_enl_pa);
 			}
-			$contenu_page .= '<p><b>Vous levez le nez, et observez les vents magiques autour de vous.</b></p>
+			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
 				<table background="../../images/fond5.gif" border="0" cellspacing="0" cellpadding="0" style="margin:15px;">';
 			// POSITION DU JOUEUR
 			$req_position = "select pos_x, pos_y, pos_etage
@@ -128,7 +128,7 @@ if($db->next_record())
 				$db->query($req_enl_pa);
 			}
 
-			$contenu_page .= '<p><b>Vous levez le nez, et observez les vents magiques autour de vous.</b></p>
+			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
 				<table background="../../images/fond5.gif" border="0" cellspacing="0" cellpadding="0" style="margin:15px;">';
 			// POSITION DU JOUEUR
 			$req_position = "select pos_x,pos_y,pos_etage
@@ -212,7 +212,7 @@ function afficheVents($magie, $x, $y)
 
 function afficheLegende()
 {
-	$resultat = '<div><p><b>Légende</b></p>';
+	$resultat = '<div><p><strong>Légende</strong></p>';
 	$resultat .= '<p><img height="9" src="../../images/automap_1_1.gif" title="Rien ne souffle ici..." /> Rien ne souffle ici...</p>';
 	$resultat .= '<p><img height="9" src="../../images/automap_1_0.gif" title="Les vents magiques sont trop faibles ici ! La magie peut amplifier ces vents, mais qui sait dire de combien..." /> Les vents magiques sont trop faibles ici ! La magie peut amplifier ces vents, mais qui sait dire de combien...</p>';
 	$resultat .= '<p><img height="9" src="../../images/automap13vert.gif" title="Les vents magiques sont très favorables ici. Profitez en avant qu’ils ne faiblissent !" /> Les vents magiques sont très favorables ici. Profitez en avant qu’ils ne faiblissent !</p>';

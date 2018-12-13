@@ -47,7 +47,7 @@ $param = new parametres();
 <td width="10" background="<?php  echo G_IMAGES; ?>ligne_gauche.gif">&nbsp;</td>
 <td><p>Aujourdhui, dans les souterrains, <?php echo $param->getparm(64);?> aventuriers, <?php echo $param->getparm(65);?> monstres et <?php echo $param->getparm(66);?> familiers sont morts au combat. Etes-vous sûr de vouloir vous connecter quand même ?
 <hr>
-<table><td>En attendant de vous connecter, vous pouvez aller voir la <a href="champions.php"><b>page des champions !</b></a></td>
+<table><td>En attendant de vous connecter, vous pouvez aller voir la <a href="champions.php"><strong>page des champions !</strong></a></td>
 <td>
 	</td>
 </table>
@@ -158,8 +158,8 @@ limit 5';
 </tr></table></center>';*/
 ?>
 <hr><center><script language='JavaScript' src='http://www.clicjeux.net/banniere.php?id=390'></script></center><hr>
-<p><b>Puisqu'il faut le rappeler :</b><br>
-	Le multi comptes est <b>strictement</b> interdit ! Le multi comptes est le fait d'avoir plusieurs comptes pour le même joueur.<br>
+<p><strong>Puisqu'il faut le rappeler :</strong><br>
+	Le multi comptes est <strong>strictement</strong> interdit ! Le multi comptes est le fait d'avoir plusieurs comptes pour le même joueur.<br>
 	Cette technique pénalise le serveur et déséquilibre le jeu. Toute personne pratiquant le multi comptes pourra voir ses comptes supprimés.<br>
 	De plus, le sitting de son compte n'est toléré que pour une durée de 5 jours au maximum. Tout sitting de plus de 5 jours sera considéré comme du multi comptes et sanctionné comme tel. <br>
 		<div style="text-align:center;"><a href="http://www.jdr-delain.net/charte.php">La charte complète.</a><hr>
@@ -236,9 +236,9 @@ else
 	<td>
 	
 	<center><table>
-	<tr><td>	<p style="text-align:center;"><b>Nom du compte</b></td>
+	<tr><td>	<p style="text-align:center;"><strong>Nom du compte</strong></td>
 	<td><input type="text" name="username" value="<?php  echo ("$perso_nom") ?>"></td>
-	<td><p><b>Mot de passe</b></td>
+	<td><p><strong>Mot de passe</strong></td>
 	<td><p><input type="password" name="password" value="<?php  echo ("$password") ?>"> <i><a href="renvoi_mdp.php">Mot de passe oublié ? </a></i></td></td>
 	</tr>
 	</table></center>

@@ -142,7 +142,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                         <table>
                             <tr>
                                 <td>
-                                    <b>Je vote pour delain!</b>
+                                    <strong>Je vote pour delain!</strong>
                                 </td>
                                 <td>
 

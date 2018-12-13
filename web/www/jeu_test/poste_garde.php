@@ -5,7 +5,7 @@ if(!isset($db))
 	include_once "verif_connexion.php";
 
 	$tab_temple = $db->get_lieu($perso_cod);
-    echo("<p><b>" . $tab_temple['nom'] . "</b>");
+    echo("<p><strong>" . $tab_temple['nom'] . "</strong>");
 	?>
 	<p>Les gardes semblent bien entrainés, et vous comprenez qu'il est inutile d'essayer de vous battre contre eux.
 	<?php 

@@ -18,10 +18,10 @@ $db->query($req);
 $db->next_record();
 $tab[0] = $db->f("perso_nom");
 ?>
-<p><b>Attention !</b>Toute suppression de personnage est définitive !<br />
-<p>Voulez vous vraiment supprimer le perso <b><?php  echo $tab[0] ?></b> ?
-<p><a href="javascript:document.suppr_pers.submit();"><b>OUI</b>, je le veux !</a>
-<p><a href="jeu/switch.php"><b>NON !</b>, je souhaite garder ce perso !</a>
+<p><strong>Attention !</strong>Toute suppression de personnage est définitive !<br />
+<p>Voulez vous vraiment supprimer le perso <strong><?php  echo $tab[0] ?></strong> ?
+<p><a href="javascript:document.suppr_pers.submit();"><strong>OUI</strong>, je le veux !</a>
+<p><a href="jeu/switch.php"><strong>NON !</strong>, je souhaite garder ce perso !</a>
 <?php 
 include "jeu_test/tab_bas.php";
 ?>

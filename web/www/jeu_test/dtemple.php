@@ -128,11 +128,11 @@ if ($erreur == 0)
 				}
 				echo '</tr></table></div>';
 			}
-			$texte_reliquaire = '<hr /><p><b>Reliquaire</b></p>';
+			$texte_reliquaire = '<hr /><p><strong>Reliquaire</strong></p>';
 
 			// on cherche d'abord le dieu associé.
 			echo "<p><img src=\"../images/temple.png\"><br />
-			Vous êtes sur un temple de <b>$dieu_nom</b><br></p>";
+			Vous êtes sur un temple de <strong>$dieu_nom</strong><br></p>";
 			echo "<br><br><i>" , $lieu_descr, "</i><br>";
 			//on indique le responsable du temple
 			$req = 'select tfid_perso_cod, perso_nom from perso, temple_fidele where tfid_perso_cod = perso_cod and tfid_lieu_cod = '. $lieu;
@@ -145,7 +145,7 @@ if ($erreur == 0)
                     <input type="hidden" name="n_dest" value="<?php echo $db->f("perso_nom")?>;">
                     <input type="hidden" name="dmsg_cod">
                 </form>
-                <p>Ce temple est sous la responsabilité de <b><?php echo $db->f("perso_nom")?></b> (<a href="javascript:document.message.submit();">Envoyer un message</a>)</p><br>
+                <p>Ce temple est sous la responsabilité de <strong><?php echo $db->f("perso_nom")?></strong> (<a href="javascript:document.message.submit();">Envoyer un message</a>)</p><br>
 			<?php 
             }
 			// on regarde s’il existe un lien avec le perso
@@ -178,7 +178,7 @@ if ($erreur == 0)
 								$req = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = 1 ";
 								$db->query($req);
 								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <b>", $db->f("dniv_libelle"), "</b></a> ($cout_pa PA).</p><br>";
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 1:
@@ -188,7 +188,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 2 ";
 								$db->query($req);
 								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <b>", $db->f("dniv_libelle"), "</b></a> ($cout_pa PA).</p><br>";
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 2:
@@ -198,7 +198,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 3 ";
 								$db->query($req);
 								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <b>", $db->f("dniv_libelle"), "</b></a> ($cout_pa PA).</p><br>";
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 3:
@@ -208,7 +208,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 4 ";
 								$db->query($req);
 								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <b>", $db->f("dniv_libelle"), "</b></a> ($cout_pa PA).</p><br>";
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 					}
@@ -229,7 +229,7 @@ if ($erreur == 0)
 			if ($db->nf() != 0)
 			{
 				// RENEGAT !!!
-				echo "<p>Vous êtes <b>renégat</b> !! Inutile de s’attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !</p>";
+				echo "<p>Vous êtes <strong>renégat</strong> !! Inutile de s’attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !</p>";
 			}
 			else
 			{
@@ -271,7 +271,7 @@ if ($erreur == 0)
                         ?>
                         <p><a href="<?php echo $PHP_SELF;?>?methode=resu">- Ressusciter un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
                         <br><i>Ceci rapellera du plan des morts le familier de <?php echo $dieu_nom; ?> qui agira sous votre contrôle comme cela l'était avant sa mort.
-                        <br>N’oubliez pas que cette action <b>éprouve fortement</b> le pouvoir de votre Dieu</i><br>
+                        <br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</i><br>
 
                         <?php
                     }
@@ -279,8 +279,8 @@ if ($erreur == 0)
 					?>
 					<p><a href="<?php echo $PHP_SELF;?>?methode=invoc">- Invoquer un esprit de <?php echo $dieu_nom; ?></a> (<?php  echo $param->getparm(100); ?> PA, <?php  echo $cout_or;?> brouzoufs)
 						<br><i>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire sous votre contrôle.
-						<br><b>Il disparaîtra ensuite avec toutes ses possessions.</b>
-						<br>N’oubliez pas que cette action <b>éprouve fortement</b> le pouvoir de votre Dieu</i><br>
+						<br><strong>Il disparaîtra ensuite avec toutes ses possessions.</strong>
+						<br>N’oubliez pas que cette action <strong>éprouve fortement</strong> le pouvoir de votre Dieu</i><br>
 
 					<?php 
 				}
@@ -330,7 +330,7 @@ if ($erreur == 0)
 					}
 				</script>
 				<?php 				echo '<p>Voici les objets sacrés exposés dans le reliquaire du temple :</p>';
-				echo '<table><tr><th class="titre"><b>Relique</b></th><th class="titre">Description</th></tr>';
+				echo '<table><tr><th class="titre"><strong>Relique</strong></th><th class="titre">Description</th></tr>';
 				while ($db->next_record())
 				{
 					$description_longue = $db->f('obj_description');
@@ -353,9 +353,9 @@ if ($erreur == 0)
 		case 'relique':
 			if($niveau_actu >= 2 && $dieu_perso == $dieu_cod)
 			{
-				echo '<p><b>Reliquaire</b></p><br /><br />';
+				echo '<p><strong>Reliquaire</strong></p><br /><br />';
 				echo '<p>Choisissez l’objet que vous allez confier à votre dieu</p>';
-				echo '<p><b>Attention !</b> Cette action est irréversible ! L’objet ne pourra pas être repris au dieu par des moyens conventionnels. Il restera en vitrine <i>ad vitam</i>.</p>';
+				echo '<p><strong>Attention !</strong> Cette action est irréversible ! L’objet ne pourra pas être repris au dieu par des moyens conventionnels. Il restera en vitrine <i>ad vitam</i>.</p>';
 				echo '<form method="POST"><input type="hidden" name="methode" value="valider_relique" />';
 				echo '<select name="relique_cod"><option value="-1">Choisissez l’objet à confier à votre dieu</option>';
 				$req_relique = "select obj_nom, min(obj_cod) as obj_cod from objets
@@ -463,7 +463,7 @@ if ($erreur == 0)
 			$db->query($req);
 			if ($db->nf() != 0)
 			{
-				echo "<br><b><p>Vous ne pouvez pas ressuciter un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></b><br>";
+				echo "<br><strong><p>Vous ne pouvez pas ressuciter un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></strong><br>";
 				break;
 			}
 
@@ -480,7 +480,7 @@ if ($erreur == 0)
             $count_familier_mort = $db->f("count") ;
             if ($count_familier_mort == 0)
             {
-                echo "<br><b><p>la résurection n'est pas possible, l'ame de votre familier n'a pas été retrouvée.</p></b><br>";
+                echo "<br><strong><p>la résurection n'est pas possible, l'ame de votre familier n'a pas été retrouvée.</p></strong><br>";
                 break;
             }
 
@@ -495,12 +495,12 @@ if ($erreur == 0)
 			$cout_or = $param->getparm(50) * 2;
 			if ($pa < $cout_pa)
 			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de PA pour cette action</b><br><br>";
+					echo "<br><strong><p>Vous n’avez pas suffisamment de PA pour cette action</strong><br><br>";
 					break;
 			}
 			else if ($or < $cout_or)
 			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de brouzoufs pour cette action</b><br><br>";
+					echo "<br><strong><p>Vous n’avez pas suffisamment de brouzoufs pour cette action</strong><br><br>";
 					break;
 			}
 			else
@@ -520,7 +520,7 @@ if ($erreur == 0)
 			}
 			else
 			{
-				echo "<br>Vous avez retrouvé votre familier <b>esprit de $dieu_nom</b>.
+				echo "<br>Vous avez retrouvé votre familier <strong>esprit de $dieu_nom</strong>.
 					Sa longévité tiendra à votre foi : quand son énergie divine tombera à 0, il sera renvoyé au royaume de $dieu_nom.";
 			}
 			/* On diminue le compteur de la religion*/
@@ -551,7 +551,7 @@ if ($erreur == 0)
 			$db->query($req);
 			if ($db->nf() != 0)
 			{
-				echo "<br><b><p>Vous ne pouvez pas récupérer un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></b><br>";
+				echo "<br><strong><p>Vous ne pouvez pas récupérer un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></strong><br>";
 				break;
 			}
 			/* contrôle sur les pa disponible*/
@@ -565,12 +565,12 @@ if ($erreur == 0)
 			$cout_or = $param->getparm(50) * 2;
 			if ($pa < $cout_pa)
 			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de PA pour cette action</b><br><br>";
+					echo "<br><strong><p>Vous n’avez pas suffisamment de PA pour cette action</strong><br><br>";
 					break;
 			}
 			else if ($or < $cout_or)
 			{
-					echo "<br><b><p>Vous n’avez pas suffisamment de brouzoufs pour cette action</b><br><br>";
+					echo "<br><strong><p>Vous n’avez pas suffisamment de brouzoufs pour cette action</strong><br><br>";
 					break;
 			}
 			else
@@ -590,7 +590,7 @@ if ($erreur == 0)
 			}
 			else
 			{
-				echo "<br>Vous êtes maintenant en possession d’un magnifique <b>esprit de $dieu_nom</b>.
+				echo "<br>Vous êtes maintenant en possession d’un magnifique <strong>esprit de $dieu_nom</strong>.
 					Sa longévité tiendra à votre foi : quand son énergie divine tombera à 0, il sera renvoyé au royaume de $dieu_nom.";
 			}
 			/* On diminue le compteur de la religion*/
@@ -613,7 +613,7 @@ if ($erreur == 0)
 			}
 			if ($attention == 0)
 			{
-				echo "<p>Vous vous apprêtez à prier <b>$dieu_nom</b><br>";
+				echo "<p>Vous vous apprêtez à prier <strong>$dieu_nom</strong><br>";
 			}
 			else
 			{
@@ -639,7 +639,7 @@ if ($erreur == 0)
 			}
 			if ($attention == 0)
 			{
-				echo "<p>Vous vous apprêtez à organiser une cémémonie pour <b>$dieu_nom</b><br>";
+				echo "<p>Vous vous apprêtez à organiser une cémémonie pour <strong>$dieu_nom</strong><br>";
 			}
 			else
 			{
@@ -671,7 +671,7 @@ if ($erreur == 0)
 			$req = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = $niveau ";
 			$db->query($req);
 			$db->next_record();
-			echo "<p>Vous vous apprêtez à devenir <b>", $db->f("dniv_libelle") ,"</b><br>";
+			echo "<p>Vous vous apprêtez à devenir <strong>", $db->f("dniv_libelle") ,"</strong><br>";
 			switch($niveau)
 			{
 				case 1:
@@ -713,7 +713,7 @@ if ($erreur == 0)
 				break;
 			}
 			// sorts gagnés
-			echo "<p><b>Sorts disponibles en étant " , $db->f("dniv_libelle") , "</b> :<br>";
+			echo "<p><strong>Sorts disponibles en étant " , $db->f("dniv_libelle") , "</strong> :<br>";
 			$req = "select sort_cod,sort_nom from sorts, dieu_sorts ";
 			$req = $req . "where dsort_dieu_cod = $dieu_cod ";
 			$req = $req . "and dsort_niveau <= $niveau ";

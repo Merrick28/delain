@@ -110,8 +110,8 @@ if ($erreur == 0)
 		{
 			echo "<tr>";
 			echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-      echo "<td class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=".$db->f("lieu_cod")."\"><b>" . $db->f("lieu_nom") . "</b></a></td>";
-			echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b></td>";
+      echo "<td class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=".$db->f("lieu_cod")."\"><strong>" . $db->f("lieu_nom") . "</strong></a></td>";
+			echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_marge") . " %</td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_prelev") . " %</td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_compte") . " brouzoufs</td>";
@@ -155,7 +155,7 @@ if ($erreur == 0)
 				$statut = 'Echoppe Runique';
 			}			
 			echo "<tr>";
-			echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=".$db->f("lieu_cod")."\"><b>". $db->f("lieu_nom")."</b></a></td><td class=\"soustitre2\"> ". $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
+			echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=".$db->f("lieu_cod")."\"><strong>". $db->f("lieu_nom")."</strong></a></td><td class=\"soustitre2\"> ". $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
 			echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=ajout&lieu=" . $db->f("lieu_cod") . "\">Ajouter un gérant</a></td>
 			<td>".$statut."</td>";
 			echo "</tr>";

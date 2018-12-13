@@ -38,7 +38,7 @@ if ($db->nf() != 0)
 	$position = $db->f("pquete_param_texte");
 	$contenu_page .= '<table>
 					<tr>
-						<td class="titre"><b>Quête Enlumineur</b></td>
+						<td class="titre"><strong>Quête Enlumineur</strong></td>
 					</tr>';	
 
 	$date_deb = $db->f("date_deb");
@@ -134,7 +134,7 @@ if ($db->nf() != 0 && $db->f("pquete_nombre") == 1)
 
 	$contenu_page .= '<table>
 					<tr>
-						<td class="titre"><b>Quête alchimiste </b></td>
+						<td class="titre"><strong>Quête alchimiste </strong></td>
 					</tr>';	
 
 	$date_deb = $db->f("date_deb");
@@ -155,7 +155,7 @@ if ($db->nf() != 0)
 
 	$contenu_page .= '<table>
 					<tr>
-						<td class="titre"><b>Liste des auberges visitées </b><br><i>dans le cadre de la quête des tavernes</i></td>
+						<td class="titre"><strong>Liste des auberges visitées </strong><br><i>dans le cadre de la quête des tavernes</i></td>
 					</tr>';	
 	while($db->next_record())
 	{
@@ -195,9 +195,9 @@ else
 	$origine_texte = ''; // Valeur texte de la provenance du contrat
 	$contenu_page .= '<p align="left"><table width="60%">
 						<tr>
-							<td><b>Anciens contrats validés</b></td>
-							<td><b>Origine</b></td>
-							<td><b><i>(Récompense obtenue)</i></b></td>
+							<td><strong>Anciens contrats validés</strong></td>
+							<td><strong>Origine</strong></td>
+							<td><strong><i>(Récompense obtenue)</i></strong></td>
 						</tr>';
 	while($db->next_record())
 	{
@@ -250,12 +250,12 @@ else
 	$origine_texte = ''; // Valeur texte de la provenance du contrat
 	$contenu_page .= '<br><table>
 							<tr>
-							 <td><b>Chasse en cours</b></td>
-							 <td><b>Origine</b></td>
-							 <td><b>Début du contrat <br>de chasse</b></td>
-							 <td><b>À finir avant le</b></td>
-							 <td><b>Nombre de monstres <br>tués pour l’instant</b></td>
-							 <td><b>Réussite possible du contrat</b></td>
+							 <td><strong>Chasse en cours</strong></td>
+							 <td><strong>Origine</strong></td>
+							 <td><strong>Début du contrat <br>de chasse</strong></td>
+							 <td><strong>À finir avant le</strong></td>
+							 <td><strong>Nombre de monstres <br>tués pour l’instant</strong></td>
+							 <td><strong>Réussite possible du contrat</strong></td>
 						 </tr>';
 	while($db->next_record())
 	{
@@ -353,7 +353,7 @@ if ($db->nf() != 0)
 							<a href="?m=5&ordreaff=0">race puis nom</a> - <a href="?m=5&ordreaff=3">race et niveau</a> - 
 							<a href="?m=5&ordreaff=4">total</a> - <a href="?m=5&ordreaff=5">total solo</a></p>';
 	$contenu_page .= '<table width="100%">';
-	$contenu_page .= '<tr><td class="soustitre2"><b>Monstre</b></td><td class="soustitre2"><b>Race</b></td><td class="soustitre2"><b>Total<br />achevé</b></td><td class="soustitre2"><b>Total<br />achevé<br />en solo</b></td></tr>';
+	$contenu_page .= '<tr><td class="soustitre2"><strong>Monstre</strong></td><td class="soustitre2"><strong>Race</strong></td><td class="soustitre2"><strong>Total<br />achevé</strong></td><td class="soustitre2"><strong>Total<br />achevé<br />en solo</strong></td></tr>';
 	while($db->next_record())
 	{
 		$contenu_page .= '<tr><td class="soustitre2">' . $db->f("gmon_nom") . '</td>';

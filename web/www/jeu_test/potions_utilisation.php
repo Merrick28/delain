@@ -24,7 +24,7 @@ switch($methode)
 		$db->query($req);
 		if($db->nf() != 0)
 		{
-			$contenu_page .= '<br /><b>Attention !</b> Votre corps contient encore des restes d’une potion bue précédemment.<br />
+			$contenu_page .= '<br /><strong>Attention !</strong> Votre corps contient encore des restes d’une potion bue précédemment.<br />
 				Boire une autre potion maintenant vous expose à une toxicité qui pourrait avoir des effets regrettables sur votre organisme.<br />';
 		}
 		//
@@ -74,7 +74,7 @@ switch($methode)
 		$db->query($req);
 		if($db->nf() != 0)
 		{
-			$contenu_page .= '<br /><b>Attention !</b> Votre corps contient encore des restes d’une potion bue précédemment.<br />
+			$contenu_page .= '<br /><strong>Attention !</strong> Votre corps contient encore des restes d’une potion bue précédemment.<br />
 				Boire une autre potion maintenant vous expose à une toxicité qui pourrait avoir des effets regrettables sur votre organisme.<br />
 				Souhaitez-vous néanmoins continuer ?<br /><br />
 				<a href="potions_utilisation.php?methode=potions&potion=' . $potion . '">Oui, advienne que pourra !</a><br />

@@ -80,11 +80,11 @@ if ($nb_joueur_en_vue != 0)
 	<tr><td colspan="6" class="soustitre"><p class="soustitre">Cibles</td></tr>
 	<tr>
 	<td></td>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Race</b></td>
-	<td class="soustitre2"><b>X</b></td>
-	<td class="soustitre2"><b>Y</b></td>
-	<td class="soustitre2"><b>Distance</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Race</strong></td>
+	<td class="soustitre2"><strong>X</strong></td>
+	<td class="soustitre2"><strong>Y</strong></td>
+	<td class="soustitre2"><strong>Distance</strong></td>
 	</tr>
 	<script language="JavaScript" type="text/JavaScript">
   	var liste = new Array();
@@ -140,7 +140,7 @@ if ($nb_joueur_en_vue != 0)
 	{ 
 		document.write('<tr>');
 		document.write('<td><input type="radio" name="cible" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)"></td>');
-		document.write('<td id="cell' + liste[i][0] + '" class="soustitre2"><b>' + liste[i][1] + '</b> (' + liste[i][2] + '<b>' + liste[i][8] + '</b>)</td>');
+		document.write('<td id="cell' + liste[i][0] + '" class="soustitre2"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</td>');
 		document.write('<td>' + liste[i][3] + '</td>');
 		document.write('<td>' + liste[i][4] + '</td>');
 		document.write('<td>' + liste[i][5] + '</td>');

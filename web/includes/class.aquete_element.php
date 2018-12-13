@@ -493,13 +493,13 @@ class aquete_element
             case 'perso':
                 $perso = new perso();
                 $perso->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$perso->perso_nom."</i></b>";
+                $element_texte = "<strong><i>".$perso->perso_nom."</i></strong>";
                 break;
 
             case 'lieu':
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+                $element_texte = "<strong><i>".$lieu->lieu_nom."</i></strong>";
             break;
 
             case 'position':
@@ -508,7 +508,7 @@ class aquete_element
                 $pos->charge($this->aqelem_misc_cod);
                 $lieu = new lieu();
                 $lieu->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$lieu->lieu_nom."</i></b>";
+                $element_texte = "<strong><i>".$lieu->lieu_nom."</i></strong>";
 
                 $position = new positions() ;
                 $position->charge( $this->aqelem_misc_cod );
@@ -532,35 +532,35 @@ class aquete_element
                 $stmt = $pdo->execute(array( $this->aqelem_param_num_1, $this->aqelem_param_num_2),$stmt);
                 $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 if ($this->aqelem_param_num_1 == $this->aqelem_param_num_2)
-                    $element_texte = "<b><i>{$tlieu->tlieu_libelle}</i></b> de l'étage <b>{$result[0]["etage_numero"]}</b> (<i>{$result[0]["etage_libelle"]}</i>)";
+                    $element_texte = "<strong><i>{$tlieu->tlieu_libelle}</i></strong> de l'étage <strong>{$result[0]["etage_numero"]}</strong> (<i>{$result[0]["etage_libelle"]}</i>)";
                 else
-                    $element_texte = "<b><i>{$tlieu->tlieu_libelle}</i></b>  des étages <b>{$result[0]["etage_numero"]}</b> à <b>{$result[1]["etage_numero"]}</b> (<i>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</i>)";
+                    $element_texte = "<strong><i>{$tlieu->tlieu_libelle}</i></strong>  des étages <strong>{$result[0]["etage_numero"]}</strong> à <strong>{$result[1]["etage_numero"]}</strong> (<i>{$result[0]["etage_libelle"]} à {$result[1]["etage_libelle"]}</i>)";
             break;
 
             case 'objet_generique':
                 $objet_generique = new objet_generique();
                 $objet_generique->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$objet_generique->gobj_nom."</i></b>";
+                $element_texte = "<strong><i>".$objet_generique->gobj_nom."</i></strong>";
             break;
 
             case 'race':
                 $race = new race();
                 $race->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$race->race_nom."</i></b>";
+                $element_texte = "<strong><i>".$race->race_nom."</i></strong>";
             break;
 
             case 'objet':
                 $objet = new objets();
                 $objet->charge($this->aqelem_misc_cod);
-                $element_texte = "<b><i>".$objet->obj_nom."</i></b>";
+                $element_texte = "<strong><i>".$objet->obj_nom."</i></strong>";
             break;
 
             case 'valeur':
-                $element_texte = "<b><i>".$this->aqelem_param_num_1."</i></b>";
+                $element_texte = "<strong><i>".$this->aqelem_param_num_1."</i></strong>";
             break;
 
             case 'texte':
-                $element_texte = "<b><i>".$this->aqelem_param_txt_1."</i></b>";
+                $element_texte = "<strong><i>".$this->aqelem_param_txt_1."</i></strong>";
             break;
 
             case 'choix':

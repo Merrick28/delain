@@ -97,7 +97,7 @@ if ($erreur == 0)
 		{
 			echo "<tr>";
 			echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-			echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
 			echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=modif&lieu=" . $db->f("lieu_cod") . "\">Modifier</a></td>";
 			echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=supprime&lieu=" . $db->f("lieu_cod") . "\">Supprimer</a></td>";
 			echo "</tr>";

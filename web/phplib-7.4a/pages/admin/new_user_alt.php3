@@ -131,7 +131,7 @@ while ( is_array($HTTP_POST_VARS)
     
     ## Do we have all necessary data?
     if (empty($username) || empty($password)) {
-      my_error("Please fill out <B>Username</B> and <B>Password</B>!");
+      my_error("Please fill out <strong>Username</strong> and <strong>Password</strong>!");
       break;
     }
     
@@ -139,7 +139,7 @@ while ( is_array($HTTP_POST_VARS)
     ## NOTE: This should be a transaction, but it isn't...
     $db->query("select * from auth_user where username='$username'");
     if ($db->nf()>0) {
-      my_error("User <B>$username</B> already exists!");
+      my_error("User <strong>$username</strong> already exists!");
       break;
     }
 
@@ -148,7 +148,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "insert into auth_user values('$u_id','$username','$password','$perms')";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     
@@ -168,7 +168,7 @@ while ( is_array($HTTP_POST_VARS)
       $query = "update auth_user set password='$password' where uid='$u_id'";
       $db->query($query);
       if ($db->affected_rows() == 0) {
-        my_error("<b>Failed:</b> $query");
+        my_error("<strong>Failed:</strong> $query");
         break;
       }
       
@@ -178,7 +178,7 @@ while ( is_array($HTTP_POST_VARS)
     
     ## Do we have all necessary data?
     if (empty($username) || empty($password)) {
-      my_error("Please fill out <B>Username</B> and <B>Password</B>!");
+      my_error("Please fill out <strong>Username</strong> and <strong>Password</strong>!");
       break;
     }
     
@@ -186,7 +186,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "update auth_user set username='$username', password='$password', perms='$perms' where uid='$u_id'";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     
@@ -205,7 +205,7 @@ while ( is_array($HTTP_POST_VARS)
     $query = "delete from auth_user where uid='$u_id' and username='$username'";
     $db->query($query);
     if ($db->affected_rows() == 0) {
-      my_error("<b>Failed:</b> $query");
+      my_error("<strong>Failed:</strong> $query");
       break;
     }
     

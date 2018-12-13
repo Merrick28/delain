@@ -112,7 +112,7 @@ else
 		}
 		else
 		{
-			$nom_objet = $db->f("obj_nom_generique") . "<b><i>(non identifié)</i></b>";
+			$nom_objet = $db->f("obj_nom_generique") . "<strong><i>(non identifié)</i></strong>";
 		}
 		echo '<td><label for="tran[' . $db->f("tran_cod") . ']">' . $nom_objet . '</td>';	
 		echo "<td>" . $db->f("tran_prix") . " brouzoufs.</td>";

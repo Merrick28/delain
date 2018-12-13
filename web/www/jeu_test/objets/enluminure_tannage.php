@@ -63,7 +63,7 @@ if($db->next_record())
 				$liste = '<option value="vide"><-- Sélectionner --></option>';
 				while($db->next_record())
 				{	
-					$contenu_page .= '<br><b>'.$db->f("gobj_nom").'</b> / <i>'.$db->f("reponse").'</i>';
+					$contenu_page .= '<br><strong>'.$db->f("gobj_nom").'</strong> / <i>'.$db->f("reponse").'</i>';
 					$liste .= '<option value="'. $db->f("obj_gobj_cod") .'"> '. $db->f("gobj_nom") .'</option>';
 				}
 					$contenu_page .= '
@@ -74,7 +74,7 @@ if($db->next_record())
 					<input type="hidden" id="parchemin2" name="parchemin3" value="-1">
 					'."
 					<TR>
-					<TD><b>Sur quelle peau souhaitez vous intervenir ?</b></TD>
+					<TD><strong>Sur quelle peau souhaitez vous intervenir ?</strong></TD>
 					<TD><select name='foo' id='foo'  onchange='loadData();'>".$liste .'</select></TD>
 					</TR>';
 					$contenu_page .= '

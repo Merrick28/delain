@@ -156,11 +156,11 @@ if ($nb_joueur_en_vue != 0)
 	<tr><td colspan="6" class="soustitre"><p class="soustitre">Cibles</td></tr>
 	<tr>
 	<td></td>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Race</b></td>
-	<td class="soustitre2"><b>X</b></td>
-	<td class="soustitre2"><b>Y</b></td>
-	<td class="soustitre2"><b>Distance</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Race</strong></td>
+	<td class="soustitre2"><strong>X</strong></td>
+	<td class="soustitre2"><strong>Y</strong></td>
+	<td class="soustitre2"><strong>Distance</strong></td>
 	</tr>
 	<script language="JavaScript" type="text/JavaScript">
   	var liste = new Array();
@@ -239,7 +239,7 @@ if ($nb_joueur_en_vue != 0)
 	{
 		document.write('<tr>');
 		document.write('<td><input type="radio" name="cible" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>');
-		document.write('<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + '"><label for="bouton' + liste[i][0] + '"><b>' + liste[i][1] + '</b> (' + liste[i][2] + '<b>' + liste[i][8] + '</b>)</label></td>');
+		document.write('<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + '"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>');
 		document.write('<td>' + liste[i][3] + '</td>');
 		document.write('<td>' + liste[i][4] + '</td>');
 		document.write('<td>' + liste[i][5] + '</td>');
@@ -256,7 +256,7 @@ if ($nb_joueur_en_vue != 0)
     $db->query($req_malus_desorientation);
     $db->next_record();
     if ($db->f("desorientation") > 0) {
-        echo "<b>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</b><br>";
+        echo "<strong>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</strong><br>";
     }
     
 }

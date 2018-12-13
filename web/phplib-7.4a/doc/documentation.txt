@@ -1542,8 +1542,8 @@
          var $Password = "";
 
          function haltmsg($msg) {
-           printf("</td></table><b>Database error:</b> %s<br>\n", $msg);
-           printf("<b>MySQL Error</b>: %s (%s)<br>\n",
+           printf("</td></table><strong>Database error:</strong> %s<br>\n", $msg);
+           printf("<strong>MySQL Error</strong>: %s (%s)<br>\n",
              $this->Errno, $this->Error);
            printf("Please contact shopmaster@doma.in and report the ");
            printf("exact error message.<br>\n");
@@ -4429,7 +4429,7 @@
   <!-- start box.ihtml -->
   <table border=1 bgcolor="#cccccc" cellpadding=4 cellspacing=0>
    <tr>
-    <td colspan=2><b>{TITLE}</b></td>
+    <td colspan=2><strong>{TITLE}</strong></td>
    </tr>
     <!-- BEGIN row -->
     <tr>

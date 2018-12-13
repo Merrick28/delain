@@ -42,7 +42,7 @@ if($db->next_record()){
 		switch ($methode) {
 			case "voler":
 				if($cible_cod == -1){
-				?><p><b>Vous devez choisir une cible !</b></p><?php 
+				?><p><strong>Vous devez choisir une cible !</strong></p><?php 
 				} else {
 					$req_vol = "select vol($perso_cod,$cible_cod) as resultat";
 					$db->query($req_vol);
@@ -56,7 +56,7 @@ if($db->next_record()){
 				break;
 			case "voler_objet":
 				if($cible_cod == -1){
-				?><p><b>Vous devez choisir une cible !</b></p><?php 
+				?><p><strong>Vous devez choisir une cible !</strong></p><?php 
 				} else {
 					$req_vol = "select vol_objet($perso_cod,$cible_cod) as resultat";
 					$db->query($req_vol);

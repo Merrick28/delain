@@ -107,7 +107,7 @@ if ($erreur == 0)
 				{
 					echo "<tr>";
 					echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-					echo "<td class=\"soustitre2\"><p><b>" . $db->f("perso_nom") . "</b></td>";
+					echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
 					echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_compte") . " brouzoufs</td>";
 					echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"admin_echoppe_stats.php?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
 					echo "</tr>";
@@ -162,10 +162,10 @@ if ($erreur == 0)
 				?>
 				<table>
 				<tr>
-				<td class="soustitre2"><b>Nom</b></td>
-				<td class="soustitre2"><b>Sens</b></td>
-				<td class="soustitre2"><b>Montant global</b></td>
-				<td class="soustitre2"><b>Nombre</b></td>
+				<td class="soustitre2"><strong>Nom</strong></td>
+				<td class="soustitre2"><strong>Sens</strong></td>
+				<td class="soustitre2"><strong>Montant global</strong></td>
+				<td class="soustitre2"><strong>Nombre</strong></td>
 				</tr>
 				<?php 
 				while ($db->next_record())
@@ -204,11 +204,11 @@ if ($erreur == 0)
 				?>
 				<table>
 				<tr>
-				<td class="soustitre2"><b>Objet</b></td>
-				<td class="soustitre2"><b>Perso</b></td>
-				<td class="soustitre2"><b>Sens</b></td>
-				<td class="soustitre2"><b>Montant</b></td>
-				<td class="soustitre2"><b>Date</b></td>
+				<td class="soustitre2"><strong>Objet</strong></td>
+				<td class="soustitre2"><strong>Perso</strong></td>
+				<td class="soustitre2"><strong>Sens</strong></td>
+				<td class="soustitre2"><strong>Montant</strong></td>
+				<td class="soustitre2"><strong>Date</strong></td>
 				</tr>
 				<?php 
 				while ($db->next_record())

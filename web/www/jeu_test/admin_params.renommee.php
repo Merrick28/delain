@@ -179,12 +179,12 @@ switch ($methode)
 }
 if (!$erreur && $log != '')
 {
-	echo "<div class='bordiv'><b>Mise à jour de $log_renommee.</b><br /><pre>$log</pre></div>";
+	echo "<div class='bordiv'><strong>Mise à jour de $log_renommee.</strong><br /><pre>$log</pre></div>";
 	writelog($log,'params');
 }
 else if ($erreur && $message_erreur != '')
 {
-	echo "<div class='bordiv'><b>Erreur !</b><br /><pre>$message_erreur</pre></div>";
+	echo "<div class='bordiv'><strong>Erreur !</strong><br /><pre>$message_erreur</pre></div>";
 }
 
 echo '<p>Liste des renommées / karma du jeu</p>';
@@ -219,12 +219,12 @@ foreach ($lesTypes as $i)
 	$col_lib = $lesColonnes[$i]['lib'];
 	$log_renommee = $lesNoms[$i];
 	echo "<table id='table_renommee_$i'><tr>
-			<td class='titre' colspan='5'><b>$log_renommee</b></td></tr>";
+			<td class='titre' colspan='5'><strong>$log_renommee</strong></td></tr>";
 	echo '<tr>
-			<td class="titre"><b>Titre</b></td>
-			<td class="titre"><b>Intervalle</b></td>
-			<td class="titre" colspan="2"><b>Action</b></td>
-			<td class="titre"><b>Problèmes détectés</b></td></tr>';
+			<td class="titre"><strong>Titre</strong></td>
+			<td class="titre"><strong>Intervalle</strong></td>
+			<td class="titre" colspan="2"><strong>Action</strong></td>
+			<td class="titre"><strong>Problèmes détectés</strong></td></tr>';
 	echo "<tr><form method='POST' action='#'>
 		<td class='titre' style='padding:2px;'><input name='renommee_libelle' type='text' size='25' /></td>
 		<td class='titre' style='padding:2px;'><input name='renommee_min' type='text' size='6' /> / <input name='renommee_max' type='text' size='6' /></td>

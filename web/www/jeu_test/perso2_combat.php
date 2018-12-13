@@ -12,7 +12,7 @@ if ($db->nf() != 0)
 {
 	while($db->next_record())
 	{
-		$contenu_page .= '<div>Vous possédez l’objet <b>' . $db->f("obj_nom") . '</b> jusqu’au <b>' . $db->f("dfin") . '</b></div>';
+		$contenu_page .= '<div>Vous possédez l’objet <strong>' . $db->f("obj_nom") . '</strong> jusqu’au <strong>' . $db->f("dfin") . '</strong></div>';
 	}
 }
 
@@ -38,7 +38,7 @@ $contenu_page .= '
 
 <table width="100%" border="1"><tr><td valign="top"><table width="100%">
 <tr><td class="titre">Blocages de combat</td></tr>
-<tr><td><b>En tant que cible :</b>';
+<tr><td><strong>En tant que cible :</strong>';
 $cout_des = $param->getparm(60);
 $req_at = "select lock_attaquant,lock_nb_tours,perso_nom from perso,lock_combat 
 	where lock_cible = $perso_cod 
@@ -58,22 +58,22 @@ else
 	<input type="hidden" name="num_guilde">
 	<table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Tours</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Tours</strong></td>
 	<td></td>
 	</tr>';
 	
 	while ($db->next_record())
 	{
 		$contenu_page .= '<tr>
-		<td class="soustitre2"><b><a href="javascript:document.visu_evt3.visu.value=' . $db->f("lock_attaquant") . ';document.visu_evt3.submit();">' . $db->f("perso_nom") . '</a></b></td>
+		<td class="soustitre2"><strong><a href="javascript:document.visu_evt3.visu.value=' . $db->f("lock_attaquant") . ';document.visu_evt3.submit();">' . $db->f("perso_nom") . '</a></strong></td>
 		<td style="text-align:center;">' . $db->f("lock_nb_tours") . '</td>
 		<td><a href="action.php?methode=desengagement&cible=' . $db->f("lock_attaquant") . '&valide=O">Se désengager ? (' . $cout_des . 'PA)</a></td>
 		</tr>';
 	}
 	$contenu_page .= '</table></form>';
 }
-$contenu_page .= '<br><b>En tant qu’attaquant :</b>';
+$contenu_page .= '<br><strong>En tant qu’attaquant :</strong>';
 $req_at = "select lock_cible,lock_nb_tours,perso_nom from perso,lock_combat 
 	where lock_attaquant = $perso_cod 
 	and lock_cible = perso_cod 
@@ -89,13 +89,13 @@ else
 	$contenu_page .= '
 	<form name="visu_evt4" method="post" action="visu_evt_perso.php"><input type="hidden" name="visu"><input type="hidden" name="num_guilde"><table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Tours</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Tours</strong></td>
 	<td></td>
 	</tr>';
 	while ($db->next_record())
 	{
-		$contenu_page .= '<tr><td class="soustitre2"><b><a href="javascript:document.visu_evt4.visu.value=' . $db->f("lock_cible") . ';document.visu_evt4.submit();">' . $db->f("perso_nom") . '</a></b></td>
+		$contenu_page .= '<tr><td class="soustitre2"><strong><a href="javascript:document.visu_evt4.visu.value=' . $db->f("lock_cible") . ';document.visu_evt4.submit();">' . $db->f("perso_nom") . '</a></strong></td>
 		<td style="text-align:center;">' . $db->f("lock_nb_tours") . '</td>
 		<td><a href="action.php?methode=desengagement&cible=' . $db->f("lock_cible") . '&valide=O">Se désengager ? (' . $cout_des . ' PA)</a></td>
 		</tr>';
@@ -109,7 +109,7 @@ LEGITIMES DEFENSES
 $contenu_page .= '</table></td><td valign="top">
 <table width="100%">
 <tr><td class="titre">Légitimes défenses</td></tr>
-<tr><td><p><b>En tant que cible :</b>';
+<tr><td><p><strong>En tant que cible :</strong>';
 $req_at = "select perso_cod,perso_nom,riposte_nb_tours from perso,riposte 
 	where riposte_cible = $perso_cod 
 	and riposte_attaquant = perso_cod 
@@ -129,20 +129,20 @@ else
 	<input type="hidden" name="num_guilde">
 	<table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Tours</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Tours</strong></td>
 	</tr>';
 	while ($db->next_record())
 	{
 		$contenu_page .= '<tr>
-		<td class="soustitre2"><b><a href="javascript:document.visu_evt.visu.value=' . $db->f("perso_cod") . ';document.visu_evt.submit();">' . $db->f("perso_nom") . '</a></b></td>
+		<td class="soustitre2"><strong><a href="javascript:document.visu_evt.visu.value=' . $db->f("perso_cod") . ';document.visu_evt.submit();">' . $db->f("perso_nom") . '</a></strong></td>
 		<td><p style="text-align:center;">' . $db->f("riposte_nb_tours") . '</td>
 		</tr>';
 	}
 	$contenu_page .= '</table></form>';
 }
 // 2e partie
-$contenu_page .= '<br><b>En tant qu’attaquant :</b>';
+$contenu_page .= '<br><strong>En tant qu’attaquant :</strong>';
 $req_at = "select perso_cod,perso_nom,riposte_nb_tours from perso,riposte 
 	where riposte_cible = perso_cod 
 	and riposte_attaquant = $perso_cod 
@@ -159,13 +159,13 @@ else
 	$contenu_page .= '
 	<form name="visu_evt2" method="post" action="visu_desc_perso.php"><input type="hidden" name="visu"><input type="hidden" name="num_guilde"><table cellspacing="2" cellpadding="2">
 	<tr>
-	<td class="soustitre2"><b>Nom</b></td>
-	<td class="soustitre2"><b>Tours</b></td>
+	<td class="soustitre2"><strong>Nom</strong></td>
+	<td class="soustitre2"><strong>Tours</strong></td>
 	</tr>';
 	while ($db->next_record())
 	{
 		$contenu_page .= '<tr>
-		<td class="soustitre2"><b><a href="javascript:document.visu_evt2.visu.value=' . $db->f("perso_cod") . ';document.visu_evt2.submit();">' . $db->f("perso_nom") . '</a></b></td>		<td><p style="text-align:center;">' . $db->f("riposte_nb_tours") . '</td>
+		<td class="soustitre2"><strong><a href="javascript:document.visu_evt2.visu.value=' . $db->f("perso_cod") . ';document.visu_evt2.submit();">' . $db->f("perso_nom") . '</a></strong></td>		<td><p style="text-align:center;">' . $db->f("riposte_nb_tours") . '</td>
 		</tr>';
 	}
 	$contenu_page .= '</table></form>';

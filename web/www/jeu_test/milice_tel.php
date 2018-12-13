@@ -69,7 +69,7 @@ if ($erreur == 0)
 		while ($db->next_record())
 		{
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><b><a href=\"action.php?methode=milice_tel&destination=" , $db->f("pos_cod") , "\">" , $db->f("lieu_nom") , "</a><b></td>";
+			echo "<td class=\"soustitre2\"><strong><a href=\"action.php?methode=milice_tel&destination=" , $db->f("pos_cod") , "\">" , $db->f("lieu_nom") , "</a><strong></td>";
 			echo "<td>" , $db->f("pos_x") , "</td>";
 			echo "<td class=\"soustitre2\">" , $db->f("pos_y") , "</td>";
 			echo "<td>" , $db->f("etage_libelle") , "</td>";

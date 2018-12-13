@@ -96,16 +96,16 @@ while($db->next_record())
 {
 	echo("<tr>");
 	printf("<td class=\"soustitre3\" style=\"white-space:nowrap;\">%s</td>",$db->f("evt_date"));
-	printf("<td class=\"soustitre3\"><b>%s</b></td>",$db->f("tevt_libelle"));
+	printf("<td class=\"soustitre3\"><strong>%s</strong></td>",$db->f("tevt_libelle"));
 
-	$texte_evt = str_replace('[perso_cod1]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db->f("soimeme") ."</a></b>",$db->f("levt_texte"));
+	$texte_evt = str_replace('[perso_cod1]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db->f("soimeme") ."</a></strong>",$db->f("levt_texte"));
 	if ($db->f("levt_attaquant") != '')
 	{
-		$texte_evt = str_replace('[attaquant]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db->f("attaquant")."</a></b>",$texte_evt);
+		$texte_evt = str_replace('[attaquant]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db->f("attaquant")."</a></strong>",$texte_evt);
 	}
 	if ($db->f("levt_cible") != '')
 	{
-		$texte_evt = str_replace('[cible]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db->f("cible")."</a></b>",$texte_evt);
+		$texte_evt = str_replace('[cible]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db->f("cible")."</a></strong>",$texte_evt);
 	}
 
 	echo("<td>$texte_evt</td>");

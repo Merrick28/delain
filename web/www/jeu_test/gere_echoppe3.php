@@ -71,7 +71,7 @@ function startPane($tab, $index, $active_index)
     {
         if ($i == $index)
         {
-            echo "<td class=\"activePane\"><b>$vali</b></td>";
+            echo "<td class=\"activePane\"><strong>$vali</strong></td>";
         }
         else
         {
@@ -228,7 +228,7 @@ if ($methode == "visu")
         echo "<td><p>" . $db->f("tobj_libelle");
         if ($db->f("gobj_deposable") == 'N')
         {
-            echo " <b>non déposable !</b>";
+            echo " <strong>non déposable !</strong>";
         }
         echo "</td>";
         echo "</tr>";
@@ -370,7 +370,7 @@ if ($methode == "visu2")
         echo "<td><p>" . $db->f("tobj_libelle");
         if ($db->f("obj_deposable") == 'N')
         {
-            echo " <b>non déposable !</b>";
+            echo " <strong>non déposable !</strong>";
         }
         echo "</td>";
         echo "</tr>";
@@ -820,7 +820,7 @@ if (isset($_POST['methode']))
             break;
 
         case "nom2":
-            echo "<p><b>Aperçu : " . $desc;
+            echo "<p><strong>Aperçu : " . $desc;
             $desc = str_replace(";", chr(127), $desc);
             $req  = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
             $db->query($req);
@@ -843,10 +843,10 @@ if (isset($_POST['methode']))
             va changer, contenir des essais et des idées qui viendront plus ou moins vite (ou pas du tout). Mais vous
             pouvez faire des essais et des remarques si vous voulez. Pour cela contactez Mirreck ou votre admin
             commercial préféré.</p>
-        <p><b>26/02/2006</b> Nouveau stock</p>
-        <p><b>09/08/2006</b> Prêt pour les permiers beta-tests</p>
-        <p><b>31/01/2008</b> Ajout de la fonctionnalité pour changer la description et le nom du magasin</p>
-        <p><b>28/12/2009</b> De nombreuses modifications / Corrections ont été apportées. L'une va vous toucher
+        <p><strong>26/02/2006</strong> Nouveau stock</p>
+        <p><strong>09/08/2006</strong> Prêt pour les permiers beta-tests</p>
+        <p><strong>31/01/2008</strong> Ajout de la fonctionnalité pour changer la description et le nom du magasin</p>
+        <p><strong>28/12/2009</strong> De nombreuses modifications / Corrections ont été apportées. L'une va vous toucher
             directement, avec la limitation des approvisionnements en fonction de l'échoppe. Certains articles ne
             pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré ...</p>
         Clients présents dans l’échoppe:
@@ -880,8 +880,8 @@ if (isset($_POST['methode']))
             <input type="hidden" name="mag" value="<?php echo $mag ?>">
             <input type="hidden" name="methode" value="nom">
         </form>
-        <p style=text-align:center><b><a href="javascript:document.description.submit();">Changer le nom et la
-                    description</a></b>
+        <p style=text-align:center><strong><a href="javascript:document.description.submit();">Changer le nom et la
+                    description</a></strong>
 
             <form name="refuge" method="post" action="gere_echoppe4.php">
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
@@ -904,8 +904,8 @@ if (isset($_POST['methode']))
                 {
                 ?>
                 <input type="hidden" name="ref" value="o">
-        <p style=text-align:left><b><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette
-                        fonctionnalité sera dorénavant controlée)</i></a></b>
+        <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette
+                        fonctionnalité sera dorénavant controlée)</i></a></strong>
             <?php
             }
             }
@@ -915,8 +915,8 @@ if (isset($_POST['methode']))
             <input type="hidden" name="ref" value="n">
         <p>Votre magasin est un refuge. Si vous souhaitez abandonner cette fonctionnalité, les prélèvements de
             l'administration passeront automatiquement à 15%.<br>
-        <p style=text-align:left><b><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour
-                cette échoppe ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></b></p>
+        <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour
+                cette échoppe ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong></p>
             <?php
             }
             ?>
@@ -925,7 +925,7 @@ if (isset($_POST['methode']))
                 <input type="hidden" name="mag" value="<?php echo $mag ?>">
                 <input type="hidden" name="methode" value="marge">
         <p>Votre magasin réalise pour l'instant <?php echo $db->f("lieu_marge") ?>% de marge<br>
-        <p style=text-align:left><b><a href="javascript:document.marge.submit();">Changer cette donnée ?</a></b></p>
+        <p style=text-align:left><strong><a href="javascript:document.marge.submit();">Changer cette donnée ?</a></strong></p>
 
         </form>
 
@@ -937,7 +937,7 @@ if (isset($_POST['methode']))
     ?>
     <p>
 
-        <b>Objets Uniques en vitrine:</b><BR/>
+        <strong>Objets Uniques en vitrine:</strong><BR/>
         <?php
         $req_stock
             = "select obj_cod,obj_nom,gobj_cod
@@ -1252,8 +1252,8 @@ order by  perso_nom
             </select><br><br>
             Quantité :<input type="text" name="tran_quantite" value="1"><br><br>
             Prix total Proposé :<input type="text" name="tran_prix" value="0"><br><br>
-            <font color="red"> <b>Attention: à ce prix sera ajouté 10% sur le montant total pour le transport
-                    !</b></font>
+            <font color="red"> <strong>Attention: à ce prix sera ajouté 10% sur le montant total pour le transport
+                    !</strong></font>
             <input type="submit" value="Valider la transaction !">
         </form>
 
@@ -1381,7 +1381,7 @@ order by  lieu_nom
 
             $date_deb = mktime(0, 0, 0, date("m") + $t_mois, 1, date("Y"));
             $date_fin = mktime(0, 0, 0, date("m") + 1 + $t_mois, 0, date("Y"));
-            echo "Entre le <b>" . date('d/m/Y', $date_deb) . "</b> et le <b>" . date('d/m/Y', $date_fin) . "</b>";
+            echo "Entre le <strong>" . date('d/m/Y', $date_deb) . "</strong> et le <strong>" . date('d/m/Y', $date_fin) . "</strong>";
             ?>
             <a href="javascript:document.refresh_comptes.tran_mois.value=<?php echo $t_mois - 1 ?>;document.refresh_comptes.submit();">
                 &lt;&lt; Mois précédent</a>
@@ -1469,9 +1469,9 @@ order by  lieu_nom
         {
             ?>
             <div class="tableau">
-                <b><?php echo $db->f("frm_nom") ?></b> Temps nécéssaire:
-                <b><?php echo $db->f("frm_temps_travail") ?></b> h <br/>
-                Composants: <b><?php echo $db->f("frm_cout") ?></b> Br<br/>
+                <strong><?php echo $db->f("frm_nom") ?></strong> Temps nécéssaire:
+                <strong><?php echo $db->f("frm_temps_travail") ?></strong> h <br/>
+                Composants: <strong><?php echo $db->f("frm_cout") ?></strong> Br<br/>
                 <?php
                 $req_comp
                     = "SELECT gobj_nom,frmco_num,mgstock_nombre FROM objet_generique,formule_composant 
@@ -1485,7 +1485,7 @@ order by  lieu_nom
                 }
                 ?>
                 <br/>
-                Produits: <b><?php echo $db->f("frm_resultat") ?></b> Br<br/>
+                Produits: <strong><?php echo $db->f("frm_resultat") ?></strong> Br<br/>
                 <?php
                 $req_comp = "SELECT gobj_nom,	frmpr_num FROM  	formule_produit,objet_generique"
                     . " WHERE frmpr_gobj_cod = gobj_cod AND frmpr_frm_cod = " . $db->f("frm_cod")

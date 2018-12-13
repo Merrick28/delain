@@ -19,7 +19,7 @@ switch ($methode) {
         $req2 = $req . ' and obj_enchantable = 2
 										order by gobj_tobj_cod,obj_nom desc';
         $db->query($req2);
-        $contenu_page .= '<p align="left"><b>Les objets suivants sont déjà enchantés :</b>
+        $contenu_page .= '<p align="left"><strong>Les objets suivants sont déjà enchantés :</strong>
 													<table>';
         if ($db->nf() == 0) {
             $contenu_page .= '<td><i>Aucun objet enchanté à votre disposition</i></td>';
@@ -30,7 +30,7 @@ switch ($methode) {
             }
         }
         $contenu_page .= '</table></p>';
-        $contenu_page .= '<p align="left"><b>Les objets suivants sont déjà enchantables :</b>
+        $contenu_page .= '<p align="left"><strong>Les objets suivants sont déjà enchantables :</strong>
 													<table>';
         $req1 = $req . ' and obj_enchantable = 1
 										order by gobj_tobj_cod,obj_nom desc';
@@ -44,7 +44,7 @@ switch ($methode) {
             }
         }
         $contenu_page .= '</table></p>';
-        $contenu_page .= '<p align="left"><b>Liste des objets qui doivent être manipulés pour devenir enchantables : </b>
+        $contenu_page .= '<p align="left"><strong>Liste des objets qui doivent être manipulés pour devenir enchantables : </strong>
 													<table>';
         $req4 = $req . ' and obj_enchantable = 0
 										order by gobj_tobj_cod,obj_nom desc';
@@ -58,7 +58,7 @@ switch ($methode) {
                 if ($compt == 0) {
                     $contenu_page .= '<td class="titre">Objet</td><td class="titre">Chances de rendre <br>l\'objet enchantable : </td>
 													<td class="titre">Action</td>
-													<td><i><b>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</b></i></td>';
+													<td><i><strong>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</strong></i></td>';
                 }
                 $chance = $db3->f("gobj_chance_enchant");
                 if ($chance == 0) {
@@ -73,7 +73,7 @@ switch ($methode) {
                     $chance_indic = "Exceptionnelles";
                 }
                 $contenu_page .= '<tr><td class="soustitre2">' . $db3->f("obj_nom") . ' <i>(' . $db3->f("obj_nom_generique") . ')</i></td>
-										<td class="soustitre2" style="text-align:center"><b>' . $chance_indic . '</b></td>
+										<td class="soustitre2" style="text-align:center"><strong>' . $chance_indic . '</strong></td>
 										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db3->f('obj_cod') . '&t_ench=2"><i>Procéder au forgeamage de cet objet</i></a></td></tr>';
                 $compt = $compt + 1;
             }
@@ -135,7 +135,7 @@ switch ($methode) {
 
         //On vérifie les pa
         if ($pa < $param->getparm(115)) {
-            $contenu_page .= '<b>Vous ne possédez pas suffisamment de PA pour réaliser cette opération !</b><br>';
+            $contenu_page .= '<strong>Vous ne possédez pas suffisamment de PA pour réaliser cette opération !</strong><br>';
             break;
         }
 
@@ -147,8 +147,8 @@ switch ($methode) {
         $position = $db->f("pos_cod");
         $puissance_case = $db->f("pos_magie");
         if ($puissance_case < $param->getparm(114)) {
-            $contenu_page .= '<b>La puissance magique à cet endroit n\'est pas suffisante pour tenter de rendre enchantable un objet à cet endroit !
-													<br>Rien ne se produit</b><br>';
+            $contenu_page .= '<strong>La puissance magique à cet endroit n\'est pas suffisante pour tenter de rendre enchantable un objet à cet endroit !
+													<br>Rien ne se produit</strong><br>';
             break;
         }
         $perte_pa = $param->getparm(115);
@@ -170,7 +170,7 @@ switch ($methode) {
 							where concentration_perso_cod = ' . $perso_cod;
         $db->query($req);
         if ($db->nf() != 0) {
-            $contenu_page .= '<b>Vous vous êtes concentré avant cette action</b><br>';
+            $contenu_page .= '<strong>Vous vous êtes concentré avant cette action</strong><br>';
             $concentration = 20;
             $req = 'delete from concentrations where concentration_perso_cod = ' . $perso_cod;
             $db->query($req);
@@ -179,7 +179,7 @@ switch ($methode) {
         $de = rand(1, 100);
         $limite_comp = $param->getparm(1);
         $chance = $chance_enchant + (floor($forgeamage_pourcent / 10) * $competence_facteur) + $concentration;
-        $contenu_page .= '<br>Vos chances de réussite modifiées sont de <b>' . $chance . '</b>, tenant compte de la difficulté de cette opération et de l\'objet concerné. Votre lancer de dé est de <b>' . $de . '</b>.<br>';
+        $contenu_page .= '<br>Vos chances de réussite modifiées sont de <strong>' . $chance . '</strong>, tenant compte de la difficulté de cette opération et de l\'objet concerné. Votre lancer de dé est de <strong>' . $de . '</strong>.<br>';
         if ($de <= 5) {
             $reussite = 1;
             $contenu_page .= 'Vous avez donc fait une réussite critique !';
@@ -187,7 +187,7 @@ switch ($methode) {
         } else if ($de <= $chance) {
             $reussite = 1;
         } else {
-            $contenu_page .= '<b>Vous échouez dans le forgeamage de cet objet.</b><br>';
+            $contenu_page .= '<strong>Vous échouez dans le forgeamage de cet objet.</strong><br>';
             $reussite = 0;
             if ($forgeamage_pourcent <= $limite_comp) //Amélioration si < 40%
             {
@@ -200,7 +200,7 @@ switch ($methode) {
                 $nouvelle_valeur = $jet_ameliore[2];
                 $contenu_page .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
                 if ($ameliore == '1') {
-                    $contenu_page .= 'vous avez donc <b>amélioré</b> cette compétence. <br>';
+                    $contenu_page .= 'vous avez donc <strong>amélioré</strong> cette compétence. <br>';
                     $contenu_page .= 'Sa nouvelle valeur est ' . $nouvelle_valeur . '<br><br>';
                     $px_gagne = $px_gagne + 1;
                 } else {
@@ -220,7 +220,7 @@ switch ($methode) {
             $contenu_page .= '<br><br>L’objet que vous avez tenté de rendre enchantable a été détérioré par votre manipulation ratée.<br>';
         }
         if ($reussite == 1) {
-            $contenu_page .= '<b>Vous parvenez enchanter votre objet.</b>
+            $contenu_page .= '<strong>Vous parvenez enchanter votre objet.</strong>
 												<br>Vous devez maintenant regarder si vous pouvez l\'associer à des composants pour réaliser un enchantement<br>';
             //On modifie l'objet pour le rendre enchantable
             $req = 'update objets set obj_enchantable = 1 where obj_cod = ' . $obj;
@@ -233,10 +233,10 @@ switch ($methode) {
             $jet = $jet_ameliore[0];
             $ameliore = $jet_ameliore[1];
             $nouvelle_valeur = $jet_ameliore[2];
-            $contenu_page .= '<br>Votre jet d\'amélioration est de <b>' . $jet . '</b><br>'; // pos 7 8 9 10
+            $contenu_page .= '<br>Votre jet d\'amélioration est de <strong>' . $jet . '</strong><br>'; // pos 7 8 9 10
             if ($ameliore == '1') {
-                $contenu_page .= 'vous avez donc <b>amélioré</b> cette compétence. <br>';
-                $contenu_page .= 'Sa nouvelle valeur est <b>' . $nouvelle_valeur . '</b><br><br>';
+                $contenu_page .= 'vous avez donc <strong>amélioré</strong> cette compétence. <br>';
+                $contenu_page .= 'Sa nouvelle valeur est <strong>' . $nouvelle_valeur . '</strong><br><br>';
                 $px_gagne = $px_gagne + 1;
             } else {
                 $contenu_page .= 'vous n\'avez pas amélioré cette compétence.<br><br> ';

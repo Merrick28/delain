@@ -67,13 +67,13 @@ if ($erreur == 0)
 				if (($val < -20) || ($val > 20))
 				{
 					$erreur = 1 ;
-					echo "<p>Anomalie sur la guilde <b>" , $nom_guilde , "</b>, le modificateur doit être compris entre -20 et +20 !</p>";
+					echo "<p>Anomalie sur la guilde <strong>" , $nom_guilde , "</strong>, le modificateur doit être compris entre -20 et +20 !</p>";
 				}
 				if ($erreur == 0)
 				{
 					$req = "update guilde set guilde_modif_noir = $val where guilde_cod = $key ";
 					$db->query($req);
-					echo "La guilde <b>" , $nom_guilde , "</b> a été modifiée ! <br>";
+					echo "La guilde <strong>" , $nom_guilde , "</strong> a été modifiée ! <br>";
 				}	
 			}
 			?>

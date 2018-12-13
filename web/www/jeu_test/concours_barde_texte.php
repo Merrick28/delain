@@ -128,9 +128,9 @@ if ($erreur == 0)
 <p align="center"><br>
 <?php 	
 	echo '<table width="100%">';
-	echo '<tr><td class="soustitre2"><b>Auteur:</b></td><td class="soustitre2">' . (($notationComplete) ? $perso_nom : '<i>- Caché -</i>') . '</td></tr>';
+	echo '<tr><td class="soustitre2"><strong>Auteur:</strong></td><td class="soustitre2">' . (($notationComplete) ? $perso_nom : '<i>- Caché -</i>') . '</td></tr>';
 	if (!$notationComplete)
-		echo '<tr><td class="soustitre2" colspan="2"><b>Tant que tous les membres du jury n’ont pas donné leur évaluation, le candidat reste anonyme.</b></td></tr>';
+		echo '<tr><td class="soustitre2" colspan="2"><strong>Tant que tous les membres du jury n’ont pas donné leur évaluation, le candidat reste anonyme.</strong></td></tr>';
 		
 	echo '<tr><td class="soustitre2" colspan="2" style="text-align:center; font-weight:bold;">Évaluations du jury</td></tr>';
 
@@ -138,26 +138,26 @@ if ($erreur == 0)
 	{
 		if (isset($lesNotes[$i]) && $lesNotes[$i] != null)
 		{
-			echo '<tr><td class="soustitre2">Juré ' . ($i + 1) . ' - <b>Note : </b>' . $lesNotes[$i] . '/20</td>
-				<td class="soustitre2"><b>Commentaire : </b>' . str_replace(chr(127), ";", $lesCommentaires[$i]) . '</td></tr>';
+			echo '<tr><td class="soustitre2">Juré ' . ($i + 1) . ' - <strong>Note : </strong>' . $lesNotes[$i] . '/20</td>
+				<td class="soustitre2"><strong>Commentaire : </strong>' . str_replace(chr(127), ";", $lesCommentaires[$i]) . '</td></tr>';
 		}
 		else if ($jury_cod == $leJury[$i])
 		{
 			echo '<tr><td class="soustitre2">
 					<form method="post">
-						Juré ' . ($i + 1) . ' - Évaluer ce texte. <b>Note : </b>
+						Juré ' . ($i + 1) . ' - Évaluer ce texte. <strong>Note : </strong>
 						<input type="hidden" name="methode" value="noter" />
 						<input type="hidden" name="texte_cod" value="' . $texte_cod . '" />
 						<input type="text" name="note" value="" />(entre 0 et 20)</td><td>
-						<b>Commentaire : </b><textarea rows="3" name="commentaire"></textarea>
+						<strong>Commentaire : </strong><textarea rows="3" name="commentaire"></textarea>
 						<input type="submit" value="Noter !" class="test" />
 					</form>
 				</td></tr>';
 		}
 	}
 	echo '<tr><td class="soustitre2" colspan="2" style="text-align:center; font-weight:bold; font-size:1.1em;">&nbsp;&nbsp;</td></tr>
-		<tr><td class="soustitre2"><b>Date</b></td><td class="soustitre2">' . $date . '</td></tr>
-		<tr><td class="soustitre2"><b>Titre</b></td><td class="soustitre2" style="text-align:center; font-weight:bold; font-size:1.1em;">
+		<tr><td class="soustitre2"><strong>Date</strong></td><td class="soustitre2">' . $date . '</td></tr>
+		<tr><td class="soustitre2"><strong>Titre</strong></td><td class="soustitre2" style="text-align:center; font-weight:bold; font-size:1.1em;">
 			' . str_replace(chr(127), ";", $ebar_titre) . '
 		</td></tr>
 		<tr><td class="soustitre2" colspan="2" style="margin:20px;">

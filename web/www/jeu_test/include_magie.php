@@ -39,7 +39,7 @@ $perso_nom = $db->f("perso_nom");
 $dieu_perso = $db->f("dper_dieu_cod");
 $perso_bonus = $db->f("perso_bonus");
 $perso_pa = $db->f("perso_pa");
-$perso_dlt = $db->f("perso_dlt_passee")==1 ? "<b>{$db->f("perso_dlt")}</b>" : $db->f("perso_dlt");
+$perso_dlt = $db->f("perso_dlt_passee")==1 ? "<strong>{$db->f("perso_dlt")}</strong>" : $db->f("perso_dlt");
 
 $pv = $db->f("perso_pv");
 $pv_max = $db->f("perso_pv_max");
@@ -71,22 +71,22 @@ if ($distance_vue > $dist_sort)
 <p>Choisissez la cible du sort :
 <table>
 <tr>
-<td class="soustitre2"><p><b>Nom</b></p></td>
-<td class="soustitre2"><p><b>Race</b></p></td>
-<td class="soustitre2"><p><b>X</b></p></td>
-<td class="soustitre2"><p><b>Y</b></p></td>
-<td class="soustitre2"><p><b>Distance</b></p></td>
-<td class="soustitre2"><p><b>Bonus/Malus</b></p></td>
-<td class="soustitre2"><p><b>PA</b></p></td>
-<td class="soustitre2"><p><b>DLT</b></p></td>
+<td class="soustitre2"><p><strong>Nom</strong></p></td>
+<td class="soustitre2"><p><strong>Race</strong></p></td>
+<td class="soustitre2"><p><strong>X</strong></p></td>
+<td class="soustitre2"><p><strong>Y</strong></p></td>
+<td class="soustitre2"><p><strong>Distance</strong></p></td>
+<td class="soustitre2"><p><strong>Bonus/Malus</strong></p></td>
+<td class="soustitre2"><p><strong>PA</strong></p></td>
+<td class="soustitre2"><p><strong>DLT</strong></p></td>
 </tr>
 <?php 
 if ($soi_meme == 'O')
 {
 	echo "<tr>
-			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><b>
+			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
 			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
-			". $perso_nom . "</a></b><i> (vous-même <b>" . $niveau_blessures . "</b>)</i></td>
+			". $perso_nom . "</a></strong><i> (vous-même <strong>" . $niveau_blessures . "</strong>)</i></td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">0</td>
@@ -180,14 +180,14 @@ while ($db->next_record())
 		if ($aggressif == 'O' && $db->f("meme_coterie") == 1)
 			$script_choix = "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();}";
         $perso_pa = $db->f('perso_pa');
-        if(($db->f('perso_dlt_passee') == 1) && ($perso_pa!="") && ($perso_pa!="masqué")) $perso_pa= "<b>{$perso_pa}</b>";
+        if(($db->f('perso_dlt_passee') == 1) && ($perso_pa!="") && ($perso_pa!="masqué")) $perso_pa= "<strong>{$perso_pa}</strong>";
         $perso_dlt = $db->f('perso_dlt');
-        if(($db->f('perso_dlt_passee') == 1) && ($perso_dlt!="") && ($perso_dlt!="masqué")) $perso_dlt= "<b>{$perso_dlt}</b>";
+        if(($db->f('perso_dlt_passee') == 1) && ($perso_dlt!="") && ($perso_dlt!="masqué")) $perso_dlt= "<strong>{$perso_dlt}</strong>";
 
-        $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<b>".$db->f("perso_bonus")."</b>" ) ;
+        $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<strong>".$db->f("perso_bonus")."</strong>" ) ;
         $perso_style = $perso_bonus==NULL ? "" : ($db->f("triplette") == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;") ;
 		echo "<tr>
-				<td class=\"soustitre2\" style=\"{$perso_style}\"><b><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></b> <i>(" . $perso_type_perso[$type_perso] . "<b>" . $niveau_blessures . "</b>)</i></td>
+				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <i>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</i></td>
 				<td style=\"{$perso_style}\">" . $db->f("race_nom") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_x") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_y") . "</td>

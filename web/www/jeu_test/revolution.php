@@ -18,7 +18,7 @@ $req = "select perso_nom from perso where perso_cod = $visu ";
 $db->query($req);
 $db->next_record();
 $nom_cible = $db->f("perso_nom");
-$contenu_page .= "<p>Etes-vous sur de vouloir déclencher une révolution contre <b>" . $nom_cible . "</b> ?<br>";
+$contenu_page .= "<p>Etes-vous sur de vouloir déclencher une révolution contre <strong>" . $nom_cible . "</strong> ?<br>";
 $contenu_page .= '
 <form name="revolution" method="post" action="action.php">
 <input type="hidden" name="methode" value="revolution">

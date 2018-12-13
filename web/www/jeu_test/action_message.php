@@ -177,12 +177,12 @@ switch ($methode)
                 $precedent_suivant .= '<a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $db3->f($t_var) . '&methode=' . $methode . '">';
                 if ($db3->f($pref[$m] . 'lu') == 'N')
                 {
-                    $precedent_suivant .= '<b>';
+                    $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= '<== Message plus ancien ';
                 if ($db3->f($pref[$m] . 'lu') == 'N')
                 {
-                    $precedent_suivant .= '</b>';
+                    $precedent_suivant .= '</strong>';
                 }
                 $precedent_suivant .= '</a>';
             }
@@ -200,12 +200,12 @@ switch ($methode)
                 $precedent_suivant .= '<div style="text-align:right;"><a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $db3->f($t_var) . '&methode=' . $methode . '">';
                 if ($db3->f($pref[$m] . 'lu') == 'N')
                 {
-                    $precedent_suivant .= '<b>';
+                    $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= 'Message plus récent ==> ';
                 if ($db3->f($pref[$m] . 'lu') == 'N')
                 {
-                    $precedent_suivant .= '</b>';
+                    $precedent_suivant .= '</strong>';
                 }
                 $precedent_suivant .= '</a>';
             }
@@ -223,7 +223,7 @@ switch ($methode)
 					</tr>
 					<tr>
 						<td class="soustitre2" width="200">Titre : </td>
-						<td><b>' . $titre . '</b></td>
+						<td><strong>' . $titre . '</strong></td>
 					</tr>
 					<tr>
 						<td class="soustitre2" width="200">Expéditeur : </td>
@@ -292,7 +292,7 @@ switch ($methode)
                 }
                 else
                 {
-                    $contenu_page .= '<a href="visu_desc_perso.php?visu=' . $num_dest . '"><b>' . $nom_dest . '</b></a>, ';
+                    $contenu_page .= '<a href="visu_desc_perso.php?visu=' . $num_dest . '"><strong>' . $nom_dest . '</strong></a>, ';
                 }
             }
             $contenu_page .= '</td></tr>';
@@ -433,7 +433,7 @@ switch ($methode)
         $db->next_record();
         if ($db->f('valeur_bonus') > 0)
         {
-            $contenu_page .= '<br><br><b>********* Vous êtes sous l’effet d’un Bernardo, vous ne pouvez pas envoyer de message ! *********</b><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous êtes sous l’effet d’un Bernardo, vous ne pouvez pas envoyer de message ! *********</strong><br><br>';
             $erreur = 1;
         }
         for ($cpt = 0; $cpt < $nb_dest; $cpt++)
@@ -445,22 +445,22 @@ switch ($methode)
         }
         if ($nb_dest > 50)
         {
-            $contenu_page .= '<br><br><b>********* Vous ne pouvez pas envoyer un message à plus de 20 destinataires ! *********</b><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 20 destinataires ! *********</strong><br><br>';
             $erreur = 1;
         }
         if ($nb_vrai_dest == 0)
         {
-            $contenu_page .= '<br><br><b>********* Vous devez renseigner au moins un destinataire ! *********</b><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous devez renseigner au moins un destinataire ! *********</strong><br><br>';
             $erreur = 1;
         }
         if ($titre == '')
         {
-            $contenu_page .= '<br><br><b>********* Vous devez mettre un titre au message !*********</b><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous devez mettre un titre au message !*********</strong><br><br>';
             $erreur = 1;
         }
         if (strlen($titre) >= 50)
         {
-            $contenu_page .= '<br><br><b>********* Votre titre est trop long, merci de le raccourcir ! *********</b><br><br>';
+            $contenu_page .= '<br><br><strong>********* Votre titre est trop long, merci de le raccourcir ! *********</strong><br><br>';
             $erreur = 1;
         }
         if ($erreur == 1)

@@ -582,8 +582,8 @@ The function halt()s if a lock cannot be obtained.
   }
 
   function haltmsg($msg) {
-    printf("<p><b>Database error:</b> %s<br>\n", $msg);
-    printf("<b>ODBC Error</b>: %s (%s)</p>\n",
+    printf("<p><strong>Database error:</strong> %s<br>\n", $msg);
+    printf("<strong>ODBC Error</strong>: %s (%s)</p>\n",
       $this->Errno,
       $this->Error);
   }

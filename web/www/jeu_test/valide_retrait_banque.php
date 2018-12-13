@@ -52,13 +52,13 @@ if ($erreur == 0)
 	if ($tab_depot == 0)
 	{
 		?>
-		<p>Vous venez de retirer <b><?php  echo $quantite; ?></b> brouzoufs de votre compte en banque.
+		<p>Vous venez de retirer <strong><?php  echo $quantite; ?></strong> brouzoufs de votre compte en banque.
 		<?php 
 	}
 	else
 	{
 		?>
-		<p>Une anomalie est survenue : <b><?php  echo $tab_depot ?>
+		<p>Une anomalie est survenue : <strong><?php  echo $tab_depot ?>
 		<?php 
 	}
 }

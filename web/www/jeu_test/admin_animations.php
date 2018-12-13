@@ -139,7 +139,7 @@ if ($erreur == 0)
 		break;
 	}
 
-	echo "<h1><b><big>Gestion des animations</big></b></h1><table width='100%'><tr>
+	echo "<h1><strong><big>Gestion des animations</big></strong></h1><table width='100%'><tr>
 		<td width='16%'><a href='?onglet=barde' $style_barde>Concours de bardes</a></td>
 		<td width='16%'><a href='?onglet=pochettes' $style_pochettes>Pochettes surprise</a></td>
 		<td width='17%'><a href='?onglet=medaillons' $style_medaillons>Quête des médaillons</a></td>

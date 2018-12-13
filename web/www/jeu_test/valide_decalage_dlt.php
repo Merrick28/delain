@@ -47,9 +47,9 @@ if ($erreur == 0)
                 $nxtdlt = $db->f('nxtdlt');
 				?>
 				Etes vous sûr de vouloir décaler votre dlt de <?php echo $temps_dlt ?> minutes ? <br />
-				Votre prochaine dlt commencera le <b><?php echo $nvdlt;?></b> <i>(la suivante le <b><?php echo $nxtdlt;?></b>)</i>
-				<br><b><a href="<?php echo $PHP_SELF;?>?methode=validation&temps_dlt=<?php echo $temps_dlt;?>">Oui</a>
-			<br><br><a href="perso.php">Non</a></b>
+				Votre prochaine dlt commencera le <strong><?php echo $nvdlt;?></strong> <i>(la suivante le <strong><?php echo $nxtdlt;?></strong>)</i>
+				<br><strong><a href="<?php echo $PHP_SELF;?>?methode=validation&temps_dlt=<?php echo $temps_dlt;?>">Oui</a>
+			<br><br><a href="perso.php">Non</a></strong>
 				<?php 
 		break;
 		case "validation":
@@ -61,7 +61,7 @@ if ($erreur == 0)
 				$req2 = "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt from perso where perso_cod = $perso_cod";
 				$db->query($req2);
 				$db->next_record();
-				printf("<p>Votre nouvelle DLT est à <b>%s</b>.",$db->f("dlt"));
+				printf("<p>Votre nouvelle DLT est à <strong>%s</strong>.",$db->f("dlt"));
 		break;
 	}
 }

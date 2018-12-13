@@ -37,14 +37,14 @@ $db->query($req_joueur);
 $db->next_record();
 $nb_joueur = $db->f("nb");
 $moyenne = round($nb_joueur/$nb_compte,2);
-$contenu_page .= ("Il y a aujourd'hui <b>$nb_joueur</b> personnages pour <b>$nb_compte</b> comptes (soit une moyenne de $moyenne personnages par joueur),");
+$contenu_page .= ("Il y a aujourd'hui <strong>$nb_joueur</strong> personnages pour <strong>$nb_compte</strong> comptes (soit une moyenne de $moyenne personnages par joueur),");
 
 $req_joueur = "select count(perso_cod) as nb from perso where perso_type_perso = 2 and perso_actif = 'O' ";
 $db->query($req_joueur);
 $db->next_record();
 $nb_monstre = $db->f("nb");
 
-$contenu_page .=(" et <b>$nb_monstre</b> monstres dans les souterrains qui n'attendent que vous !");
+$contenu_page .=(" et <strong>$nb_monstre</strong> monstres dans les souterrains qui n'attendent que vous !");
 
 $contenu_page .= '<br /><i>Statistiques sur les 30 derniers jours seulement</i>';
 

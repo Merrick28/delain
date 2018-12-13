@@ -84,10 +84,10 @@ case 'stop' :
     $quete_perso = new aquete_perso() ;
     if ($quete_perso->chargeBy_perso_quete($perso_cod, $quete->aquete_cod))
     {
-        $contenu_page2 .= "Vous êtes sur le point d'arrêter la quête <b>{$quete->aquete_nom}</b>, commencée le <b>".date("d/m/Y à H:i:s", strtotime($quete_perso->aqperso_date_debut))."</b> !<br>";
-        if ($quete->aquete_nb_max_rejouable*1>0) $contenu_page2 .= "Cette quête ne peut être réalisée que <b>{$quete->aquete_nb_max_rejouable} fois</b> par aventurier, vous l'avez déjà réalisé <b>{$quete_perso->aqperso_nb_realisation} fois</b>?<br>";
+        $contenu_page2 .= "Vous êtes sur le point d'arrêter la quête <strong>{$quete->aquete_nom}</strong>, commencée le <strong>".date("d/m/Y à H:i:s", strtotime($quete_perso->aqperso_date_debut))."</strong> !<br>";
+        if ($quete->aquete_nb_max_rejouable*1>0) $contenu_page2 .= "Cette quête ne peut être réalisée que <strong>{$quete->aquete_nb_max_rejouable} fois</strong> par aventurier, vous l'avez déjà réalisé <strong>{$quete_perso->aqperso_nb_realisation} fois</strong>?<br>";
         $contenu_page2 .= "Aussi, il n'est pas certain que vous puissiez la recommencer!<br>";
-        $contenu_page2 .= "<b>Etes-vous sûr(e) de vouloir arrêter?</b>";
+        $contenu_page2 .= "<strong>Etes-vous sûr(e) de vouloir arrêter?</strong>";
         $link = "/jeu_test/quete_auto.php?methode=stop2&quete={$aquete_cod}&choix=".$_REQUEST["choix"] ;
         $contenu_page2 .= '<br><br><a href="'.$link.'" style="margin:50px;">Oui, je veux vraiment arrêter là!</a>';
         $link = "/jeu_test/quete_auto.php?quete={$aquete_cod}" ;
@@ -120,7 +120,7 @@ case 'stop2' :
         $quete_perso->stocke();
 
 
-        $contenu_page2 .= "La quête <b>{$quete->aquete_nom}</b> s'est termniné par un abandon, malgré tout vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        $contenu_page2 .= "La quête <strong>{$quete->aquete_nom}</strong> s'est termniné par un abandon, malgré tout vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
         $contenu_page2 .= "<br><br>";
     }
 break;
@@ -148,7 +148,7 @@ case 'terminer' :
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
         $quete_perso->stocke();
 
-        $contenu_page2 .= "<br>Voila, la quête <b>{$quete->aquete_nom}</b> est maintenant terminée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        $contenu_page2 .= "<br>Voila, la quête <strong>{$quete->aquete_nom}</strong> est maintenant terminée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
         $contenu_page2 .= "<br><br>";
     }
 break;
@@ -168,7 +168,7 @@ break;
 if ($methode=="")
 {
     //--------------------------- PAGE DE SUIVI DES QUETES EN COURS ET TERMINEES --------------------------------------
-    $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>Suivi de vos Quêtes</b></center></div><br><br>";
+    $contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>Suivi de vos Quêtes</strong></center></div><br><br>";
     $contenu_page2 .= '<table cellspacing="0" cellpadding="0" width="100%"><tr style="height:25px;">';
     if (!isset($_REQUEST["onglet"]))
     {
@@ -212,13 +212,13 @@ if ($methode=="")
             //** C'est ici que l'on vérifie l'avancement de la quete, (nota il faut que l'on y passe obligatoirement au démarrage après la première étape) **//
             $quete_perso->run();
 
-            //$contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><b>{$quete->aquete_nom}</b></center></div>" ;
+            //$contenu_page2 .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$quete->aquete_nom}</strong></center></div>" ;
             $link = "/jeu_test/quete_auto.php?methode=stop&quete={$aquete_cod}" ;
             $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($quete_perso->aqperso_date_debut)) ."&nbsp;&nbsp;(<i style=\"font-size:9px;\"><a href={$link}>Arrêter cette quête</a></i>)<br>" ;
             $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ."<br>";
 
 
-          /*  $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<b>Options admin</b>&nbsp;&nbsp;</div><br>" ;
+          /*  $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<strong>Options admin</strong>&nbsp;&nbsp;</div><br>" ;
             $req = " SELECT aqpersoj_cod, 'Step #'||aqpersoj_quete_step::text || COALESCE (' Etape '||aqetape_cod::text||' '||aqetape_nom, '') as nom
                               FROM quetes.aquete_perso_journal
                               JOIN quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod and aqperso_nb_realisation=aqpersoj_realisation
@@ -228,7 +228,7 @@ if ($methode=="")
 
             if ($isAdminAnimation)
             {
-                $contenu_page2 .= '<br><b style="color:#800000"><u>Options d\'admin</u></b>&nbsp;&nbsp;:<br>';
+                $contenu_page2 .= '<br><b style="color:#800000"><u>Options d\'admin</u></strong>&nbsp;&nbsp;:<br>';
                 $contenu_page2 .= '<form action="admin_quete_auto_edit.php" method="post">' ;
                 $contenu_page2 .= '<input type="hidden" name="methode" value="perso_step">' ;
                 $contenu_page2 .= '<input type="hidden" name="aqperso_cod" value="'.$quete_perso->aqperso_cod.'">' ;
@@ -242,7 +242,7 @@ if ($methode=="")
                 $contenu_page2 .= '<br><u>ATTENTION</u>: Après le retour au step choisi, tous les éléments de la quête pour ce perso seront supprimés comme s\'il n\'avaient jamais eu lieu.<br>';
             }
 
-            $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
+            $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>" ;
             $contenu_page2 .= $quete_perso->journal('O', 1, $isAdminAnimation);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
 
             //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
@@ -300,7 +300,7 @@ if ($methode=="")
             $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
 
             $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) ." et terminée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[count($journal_pages)-1]->aqpersoj_date)) ."<br>" ;
-            $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ." (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<b>Journal de la quête</b>&nbsp;&nbsp;</div><br>" ;
+            $contenu_page2 .= "<u>Description de la quête</u> : ".$quete->aquete_description ." (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>" ;
 
             foreach ($journal_pages as $k => $jpages)
             {

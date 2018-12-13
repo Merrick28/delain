@@ -65,7 +65,7 @@ switch($methode2)
 				{
 				?>
 					<p><br><br>Vous avez apparemment suffisamment de brouzoufs, et votre statut dans notre religion vous
-						permet de réaliser <b><a href="<?php echo  $url_methode_1; ?>">une dévotion à <?php echo  $dieu_nom; ?>.</a></b>
+						permet de réaliser <strong><a href="<?php echo  $url_methode_1; ?>">une dévotion à <?php echo  $dieu_nom; ?>.</a></strong>
 						<i>(attention, cliquer sur ce lien va vous faire réaliser cette dévotion)</i>
 					<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu
 					des visions en rentrant en transe, et entendre les paroles de <?php echo  $dieu_nom; ?>.
@@ -81,7 +81,7 @@ switch($methode2)
 					{
 					?>
 						<p><br><br>Vous avez apparemment suffisamment de brouzoufs, et votre statut dans votre religion vous
-						permettent de réaliser <b><a href="<?php echo  $url_methode_2; ?>">une dévotion à <?php echo  $dieu_nom; ?>.</a></b>
+						permettent de réaliser <strong><a href="<?php echo  $url_methode_2; ?>">une dévotion à <?php echo  $dieu_nom; ?>.</a></strong>
 						<i>(attention, cliquer sur ce lien va vous faire réaliser cette dévotion)</i>
 						<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu
 						des visions en rentrant en transe.
@@ -132,8 +132,8 @@ switch($methode2)
 				$texte = "<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre
 					les prières des moines présents
 					<br>Calmement, les mots se font plus précis et clairs :
-					<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers $nom_cachette.
-					<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</i></b>";
+					<br><br><strong><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers $nom_cachette.
+					<br>La vérité tu trouveras, mais cachée elle sera. Barrer la route aux imprudents nous devons.</i></strong>";
 			}
 			else if ($methode2 == "dieu4_quete8") // Textes Elian
 			{
@@ -150,8 +150,8 @@ switch($methode2)
 				$texte = "<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas
 					interrompre les prières des moines présents
 					<br>Calmement, les mots se font plus précis et clairs :
-					<br><br><b><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers $nom_cachette.
-					<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</i></b>";
+					<br><br><strong><i>Maintenant tu dois trouver ma parole ailleurs. Cherche ton chemin vers $nom_cachette.
+					<br>Des choix pour le futur seront réalisés. La Justice guidera tes actes.</i></strong>";
 			}
 			else if ($methode2 == "dieu1_quete10") // Textes io
 			{
@@ -165,8 +165,8 @@ switch($methode2)
 				$texte = "<hr>Une voix résonne dans votre tête.
 					Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 					<br>Calmement, les mots se font plus précis et clairs :
-					<br><br><b><i>Cherche en direction du $nom_cachette.
-					<br>Tu pourras trouver la lumière qui guide l’Aveugle</i></b>";
+					<br><br><strong><i>Cherche en direction du $nom_cachette.
+					<br>Tu pourras trouver la lumière qui guide l’Aveugle</i></strong>";
 			}
 
 			echo $texte;
@@ -200,8 +200,8 @@ switch($methode2)
 				?>
 				<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 				<br>Calmement, les mots se font plus précis et clairs :
-				<br><br><b><i>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
-				<br>Mais la tache n’est pas finie. Le plus dur reste à faire. L’Aveugle tu dois convaincre.</i></b>
+				<br><br><strong><i>Tu as poursuivis mon but. Tu es un fidèle parmis les fidèles.
+				<br>Mais la tache n’est pas finie. Le plus dur reste à faire. L’Aveugle tu dois convaincre.</i></strong>
 				<?php 
 				//Mise à jour de l’étape pour finaliser la quête
 				$req = "update quete_perso set pquete_nombre = 3
@@ -217,10 +217,10 @@ switch($methode2)
 			?>
 				<hr>Une voix résonne dans votre tête. Profonde et grave, elle ne semble pas interrompre les prières des moines présents
 				<br>Calmement, les mots se font plus précis et clairs :
-				<br><br><b><i>Tu as donc ouvert tes yeux sur le futur.
+				<br><br><strong><i>Tu as donc ouvert tes yeux sur le futur.
 				<br>Tu vas devoir choisir lequel il sera.
 				<br>Pour ça, en XXXXX tu guideras, et le futur tu détermineras.
-				</i></b>
+				</i></strong>
 			<?php
 				//Mise à jour de l'étape terminée pour cloturer cette étape
 				$req = "update quete_perso set pquete_nombre = 3

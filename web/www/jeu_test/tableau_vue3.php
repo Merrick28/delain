@@ -108,7 +108,7 @@ ns6 = document.getElementById && !document.all;
 
 <table width="100%" cellspacing="0" cellpadding="0">
 <?php 
-echo '<tr><td colspan="' . $nb . '"><p><b>Vous êtes en position ' . $x . ', ' . $y . ', 
+echo '<tr><td colspan="' . $nb . '"><p><strong>Vous êtes en position ' . $x . ', ' . $y . ', 
 	<a href="desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" /> ' . $lib_etage . '</a>.</p></td></tr>';
 if ($lieu_nom != '')
 	echo "<tr><td colspan='$nb'><p>$lieu_nom ($tlieu_libelle - $lieu_refuge)</p></td></tr>";

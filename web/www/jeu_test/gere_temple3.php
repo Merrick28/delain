@@ -67,7 +67,7 @@ function startPane($tab,$index,$active_index){
 	echo "<tr>";
 	foreach ($tab as $i => $vali) {
 		if($i == $index){
-		 	echo "<td class=\"activePane\"><b>$vali</b></td>";
+		 	echo "<td class=\"activePane\"><strong>$vali</strong></td>";
 		} else {
 			echo "<td class=\"inactivePane\"><a href=\"javascript:switchPane('pane$i');\">$vali</a></td>";
 		}
@@ -189,7 +189,7 @@ if ($erreur == 0)
 
 			break;
 		case "nom2":
-			echo "<p><b>Aperçu : " . $desc;
+			echo "<p><strong>Aperçu : " . $desc;
 			$desc = str_replace(";",chr(127),$desc);
 			$req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
 			$db->query($req);
@@ -209,9 +209,9 @@ currentPane = 'pane<?php echo $select_pane?>';
 <p class="titre">Gestion de : <?php  echo $lieu_nom?> - (<?php  echo $pos_x?>, <?php  echo $pos_y ?>, <?php  echo $etage_libelle?>)</p>
 <div align="center">
 <div id="intro" class="tableau2">
-	<p><b>Information aux responsables de temple	</b></p>
+	<p><strong>Information aux responsables de temple	</strong></p>
 	<p>Ceci est une page en cours de développement, ce qui veut principalement dire qu'elle ne fonctionne pas. Elle va changer, contenir des essais et des idées qui viendront plus ou moins vite (ou pas du tout). Mais vous pouvez faire des essais et des remarques si vous voulez.</p>
-  <p><b>31/01/2008</b> On lance le truc, il y a potentiellement beaucoup à faire, et à définir !
+  <p><strong>31/01/2008</strong> On lance le truc, il y a potentiellement beaucoup à faire, et à définir !
   	<br>L'interface est un premier pas, mais ce qu'elle contiendra n'est pas encore bien sec.</p>
 
 <BR />
@@ -220,7 +220,7 @@ currentPane = 'pane<?php echo $select_pane?>';
 	<input type="hidden" name="mag" value="<?php echo $mag?>">
 	<input type="hidden" name="methode" value="nom">
 	</form>
-    <p style=text-align:center><b><a href="javascript:document.description.submit();">Changer le nom et la description</a></b></p>
+    <p style=text-align:center><strong><a href="javascript:document.description.submit();">Changer le nom et la description</a></strong></p>
 
 
 	</form>
@@ -229,7 +229,7 @@ currentPane = 'pane<?php echo $select_pane?>';
 <?php 
 startPane($liste_panels,0,$select_pane);
 ?><p>
-<b>Liste des fidèles de votre Dieu qui connaissent ce temple :<br /></b>
+<strong>Liste des fidèles de votre Dieu qui connaissent ce temple :<br /></strong>
 <?php 
 $req = "select perso_cod,perso_nom,dper_niveau,dniv_libelle from choix_perso_position_vus($pos_actuelle),perso,dieu_perso,dieu_niveau
 						where choix_perso_position_vus = perso_cod
@@ -250,7 +250,7 @@ $req = "select perso_cod,perso_nom,dper_niveau,dniv_libelle from choix_perso_pos
 endPane();
 startPane($liste_panels,1,$select_pane);
 ?>
-	<p style=text-align:left><b>	Aventuriers présents sur le lieu du temple :</b><br />
+	<p style=text-align:left><strong>	Aventuriers présents sur le lieu du temple :</strong><br />
 <?php 
       $liste_clients = "";
 			$req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom,dper_niveau,dieu_nom,dniv_libelle from perso_position
@@ -282,7 +282,7 @@ startPane($liste_panels,1,$select_pane);
 	</form>
 	<p style=text-align:left>
 	<a href="javascript:document.message.submit();">Envoyer un message à tous les aventuriers présents dans le temple !</a><br>
-	<p style=text-align:left><b> Aventuriers présents à 3 lieux du temple</b><br />
+	<p style=text-align:left><strong> Aventuriers présents à 3 lieux du temple</strong><br />
 <?php 
       $liste_clients2 = "";
 			$req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod  and perso_type_perso = 1 and perso_actif = 'O' order by perso_type_perso,minusc";
@@ -382,7 +382,7 @@ startPane($liste_panels,5,$select_pane);
 				?>
 					<p>Votre temple n'est pas un refuge. Si vous souhaitez le transformer en refuge, ...<br>
 					<input type="hidden" name="ref" value="o">
-					<p style=text-align:left><b><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></b>
+					<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode refuge <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong>
 					<?php 
 			}
 			else
@@ -390,7 +390,7 @@ startPane($liste_panels,5,$select_pane);
 				?>
 				<input type="hidden" name="ref" value="n">
 				<p>Votre temple est un refuge. Si vous souhaitez abandonner cette fonctionnalité, ...<br>
-				<p style=text-align:left><b><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour ce temple ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></b>
+				<p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Abandonner le statut de refuge pour ce temple ? <i>(Cette fonctionnalité sera dorénavant controlée)</i></a></strong>
 				<?php 
 			}
 				?><?php 

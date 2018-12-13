@@ -55,7 +55,7 @@ if (!$erreur)
 	}
 }
 
-echo "<p><b>$nom_ia vous répond :</b></p>";
+echo "<p><strong>$nom_ia vous répond :</strong></p>";
 if (!$erreur)
 {
 	$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";

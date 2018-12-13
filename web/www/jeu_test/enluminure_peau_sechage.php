@@ -22,9 +22,9 @@ if ($is_enlumineur) {
                 $contenu_page .= '<p align="left">Vous êtes en possession de ' . $db->nf() . ' peaux tannées, en cours de séchage';
                 $contenu_page .= '<p align="left"><table>
 				<tr>
-						<td><b>Parchemin en cours de réalisation</b></td>
+						<td><strong>Parchemin en cours de réalisation</strong></td>
 						<td>Date de début de séchage</td>
-						<td border="1" style="border: medium solid #FFFF00"><b>Date estimée de fin de séchage</b></td>
+						<td border="1" style="border: medium solid #FFFF00"><strong>Date estimée de fin de séchage</strong></td>
 						<td><i>Peau en séchage</i></td>
 					</tr>';
                 while ($db->next_record()) {
@@ -38,9 +38,9 @@ if ($is_enlumineur) {
                     $db2->next_record();
                     $contenu_page .= '
 					<tr>
-						<td><b>' . $db->f("gobj_nom_fini") . '</b></td>
+						<td><strong>' . $db->f("gobj_nom_fini") . '</strong></td>
 						<td>' . $db->f("date_deb") . '</td>
-						<td><b>' . $db2->f("date_fin") . '</b></td>
+						<td><strong>' . $db2->f("date_fin") . '</strong></td>
 						<td><i>' . $db->f("obj_nom") . '</i></td>
 					</tr>';
 

@@ -51,7 +51,7 @@ if ($erreur == 0)
 				<br>Je mettrais ma main à couper qu'il a voulu suivre la belle aventure avec une des danseuses, le bougre ! 
 				<br>En attendant, me voilà avec tout ce fatras non rangé sur les bras ! Si ça te tente, répare-moi un peu ces objets.
 				<br><br>
-				<a href=\"".$PHP_SELF."?methode3=suite\"><b>J'accepte avec plaisir</b></a>";
+				<a href=\"".$PHP_SELF."?methode3=suite\"><strong>J'accepte avec plaisir</strong></a>";
 			break;
 			
 			case "suite":

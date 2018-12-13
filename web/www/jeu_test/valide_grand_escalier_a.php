@@ -149,7 +149,7 @@ if ($erreur == 0)
 	$req = "select etage_libelle,etage_description from etage,positions where pos_cod = $n_pos and pos_etage = etage_numero ";
 	$db->query($req);
 	$db->next_record();
-	echo "<p>Vous arrivez dans le lieu : <b>" . $db->f("etage_libelle") . "</b></p><br>";
+	echo "<p>Vous arrivez dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong></p><br>";
 	echo "<p><i>" . $db->f("etage_description") . "</i></p>";
 }
 $contenu_page = ob_get_contents();

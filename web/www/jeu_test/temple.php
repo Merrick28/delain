@@ -27,7 +27,7 @@ if ($erreur == 0)
 	$nom_lieu = $tab_temple['nom'];
 	$type_lieu = $tab_temple['libelle'];
 	?>
-	<p><img src="../images/disp2a.png"><br /><b><?php  echo("$nom_lieu</b> - $type_lieu"); ?>
+	<p><img src="../images/disp2a.png"><br /><strong><?php  echo("$nom_lieu</strong> - $type_lieu"); ?>
 
 <?php 
 $req = "select perso_sex from perso where perso_cod = $perso_cod";

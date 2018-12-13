@@ -51,7 +51,7 @@
 <?php /* Intégration du BBcode par Maverick le 18/10/11. *//*
 $arrayBBCode=array(
 		''=>			array('type'=>BBCODE_TYPE_ROOT),
-		'b'=>		array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<b>', 'close_tag'=>'</b>'),
+		'b'=>		array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<strong>', 'close_tag'=>'</strong>'),
     'i'=>			array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<i>', 'close_tag'=>'</i>'),
 		'u'=>		array('type'=>BBCODE_TYPE_NOARG, 'open_tag'=>'<u>', 'close_tag'=>'</u>'),
     'url'=>	array('type'=>BBCODE_TYPE_OPTARG, 'open_tag'=>'<a target="_blank" href="{PARAM}">', 'close_tag'=>'</a>', 'default_arg'=>'{CONTENT}'),
@@ -119,7 +119,7 @@ switch ($methode)
 			echo "Vous ne pouvez pas avoir accès à cette entrée de journal !";
 			break;
 		}
-		print "<p><b>" . $db->f("journal_titre") . "</b><br />";
+		print "<p><strong>" . $db->f("journal_titre") . "</strong><br />";
 		printf("Ecrit le %s</p></td></tr>",$db->f("jour_date"));
 		$texte = str_replace(chr(127),";",$db->f("journal_texte"));
 		$texte = nl2br($texte);
@@ -144,14 +144,14 @@ switch ($methode)
 		if ($perso != $perso_cod)
 		{
 			?>
-      <p><b>Vous ne pouvez pas effacer cette entrée de journal !</b></p>
+      <p><strong>Vous ne pouvez pas effacer cette entrée de journal !</strong></p>
 			<?php 
 			break;
 		}
    	$req_efface = "delete from journal where journal_cod = ".$journal_cod;
       $db->query($req_efface);
       ?>
-		<p><b>L'entrée dans le journal a bien été effacée !</b></p>
+		<p><strong>L'entrée dans le journal a bien été effacée !</strong></p>
 		<?php 
     	break;
    case "ajout1":
@@ -188,14 +188,14 @@ switch ($methode)
       if ((!isset($titre))||($titre == ''))
       {
 	      ?>
-		    <p><b>Vous devez spécifier un titre !</b></p>
+		    <p><strong>Vous devez spécifier un titre !</strong></p>
 		    <?php 
 	       $erreur = 1;
       }
       if ((!isset($contenu))||($contenu == ''))
       {
 	      ?>
-	      <p><b>Vous devez spécifier un contenu !</b></p>
+	      <p><strong>Vous devez spécifier un contenu !</strong></p>
 	      <?php 
         $erreur = 1;
       }
@@ -211,7 +211,7 @@ switch ($methode)
 	      												values ($perso_cod,now(),e'$titre',e'$contenu') ";
 	      $db->query($req_ins);
 	      	?>
-	        <p><b>La nouvelle entrée dans le journal est enregistrée !</b></p>
+	        <p><strong>La nouvelle entrée dans le journal est enregistrée !</strong></p>
 	        <?php 
       }
     break;
@@ -235,7 +235,7 @@ switch ($methode)
 		$texte = str_replace("<br />","\n",$db->f("journal_texte"));
 		?>
 		<tr><td class="soustitre2" colspan="2">
-		<p><b><?php echo $db->f("journal_titre"); ?></b><br />
+		<p><strong><?php echo $db->f("journal_titre"); ?></strong><br />
 		Ecrit le <?php echo $db->f("dj"); ?></p></td></tr>
 		
 		<tr>
@@ -262,7 +262,7 @@ switch ($methode)
       if ((!isset($contenu))||($contenu == ''))
       {
 	?>
-	<p><b>Vous devez spécifier un contenu !</b></p>
+	<p><strong>Vous devez spécifier un contenu !</strong></p>
 	<?php 
 	     $erreur = 1;
       }
@@ -276,7 +276,7 @@ switch ($methode)
 	      $req_upd = $req_upd . "where journal_cod = $journal_cod ";
 	      $db->query($req_upd);
 	      ?>
-		    <p><b>La modification est enregistrée !</b></p>
+		    <p><strong>La modification est enregistrée !</strong></p>
 		    <?php 
       }
     break;

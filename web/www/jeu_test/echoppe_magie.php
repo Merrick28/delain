@@ -65,7 +65,7 @@ echo "<p>Bonjour aventurier.";
         $req = "select perso_po from perso where perso_cod = $perso_cod ";
         $db->query($req);
         $db->next_record();
-        echo "<p>Vous avez actuellement <b>" . $db->f("perso_po") . "</b> brouzoufs. ";
+        echo "<p>Vous avez actuellement <strong>" . $db->f("perso_po") . "</strong> brouzoufs. ";
         $po = $db->f("perso_po");
         $lieu_cod = $tab_lieu['lieu_cod'];
         //
@@ -100,10 +100,10 @@ echo "<p>Bonjour aventurier.";
             echo "<input type=\"hidden\" name=\"objet\">";
             echo "<center><table>";
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-            echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-            echo "<td class=\"soustitre2\"><p><b>Prix</b></td>";
-            echo "<td class=\"soustitre2\"><p><b>Quantité disponible</b></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Quantité disponible</strong></td>";
             echo "<td></td>";
             while ($db->next_record())
             {
@@ -122,11 +122,11 @@ echo "<p>Bonjour aventurier.";
                 $valeur_achat = $db->f('valeur') + $prix_bon;
 
                 echo "<tr>";
-                echo "<td class=\"soustitre2\"><p><b>";
+                echo "<td class=\"soustitre2\"><p><strong>";
                 echo "<a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=e", $url_bon, "\">";
                 echo $db->f("obj_nom"), $bonus;
                 echo "</a>";
-                echo "</b></p></td>";
+                echo "</strong></p></td>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</p></td>";
                 echo "<td class=\"soustitre2\"><p>" . $valeur_achat . " brouzoufs</p></td>";
 
@@ -182,9 +182,9 @@ echo "<p>Bonjour aventurier.";
             echo "<input type=\"hidden\" name=\"objet\">";
             echo "<center><table>";
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-            echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-            echo "<td class=\"soustitre2\"><p><b>Prix</b></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+            echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
             echo "<td></td>";
             while ($db->next_record())
             {
@@ -202,7 +202,7 @@ echo "<p>Bonjour aventurier.";
                 }
                 $prix = $db->f("valeur") + $prix_bon;
                 echo "<tr>";
-                echo "<td class=\"soustitre2\"><p><b>" . $db->f("nom") . "</b></td>";
+                echo "<td class=\"soustitre2\"><p><strong>" . $db->f("nom") . "</strong></td>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("valeur") . " brouzoufs</td>";
                 echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";

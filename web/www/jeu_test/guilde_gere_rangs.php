@@ -42,8 +42,8 @@ if ($db->is_admin_guilde($perso_cod))
 	 		?>
 	 		<table>
 	 		<tr>
-	 		<td class="soustitre2"><b>Nom du rang</b></td>
-	 		<td class="soustitre2"><b>Fonction</b></td>
+	 		<td class="soustitre2"><strong>Nom du rang</strong></td>
+	 		<td class="soustitre2"><strong>Fonction</strong></td>
 	 		<td></td>
 	 		<td></td>
 	 		<?php 
@@ -51,7 +51,7 @@ if ($db->is_admin_guilde($perso_cod))
 	 		{
 		 		$radmin = $db->f("rguilde_admin");
 	 			echo "<tr>";	
-	 			echo "<td class=\"soustitre2\"><b>", $db->f("rguilde_libelle_rang") , "</b></td>";
+	 			echo "<td class=\"soustitre2\"><strong>", $db->f("rguilde_libelle_rang") , "</strong></td>";
 	 			echo "<td>" , $tab_admin[$radmin] , "</td>";
 	 			echo "<td><a href=\"guilde_gere_rangs.php?methode=modif&rang=" , $db->f("rguilde_cod") , "\">Renommer ? </a></td>";
 	 			echo "<td>";
@@ -75,11 +75,11 @@ if ($db->is_admin_guilde($perso_cod))
 	 		<input type="hidden" name="methode" value="ajout2">
 	 		<table>
 	 		<tr>
-	 			<td class="soustitre2"><b>Nom du rang</b></td>
+	 			<td class="soustitre2"><strong>Nom du rang</strong></td>
 	 			<td><input type="text" name="nom"></td>
 	 		</tr>
 	 		<tr>
-	 			<td class="soustitre2"><b>Fonction</b></td>
+	 			<td class="soustitre2"><strong>Fonction</strong></td>
 	 			<td>
 	 			<select name="fonction">
 	 				<option value="N">Membre</option>
@@ -122,7 +122,7 @@ if ($db->is_admin_guilde($perso_cod))
 		 	$db->query($req);
 		 	$db->next_record();
 		 	?>
-		 	Entrez ici le nouveau rang souhaité en remplacement de <b><?php echo $db->f("rguilde_libelle_rang");?></b>
+		 	Entrez ici le nouveau rang souhaité en remplacement de <strong><?php echo $db->f("rguilde_libelle_rang");?></strong>
 		 	<form name="modif" method="post" action="guilde_gere_rangs.php">
 		 	<input type="hidden" name="methode" value="modif2">
 		 	<input type="hidden" name="rang" value="<?php echo $rang;?>">

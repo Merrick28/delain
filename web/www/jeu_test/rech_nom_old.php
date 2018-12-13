@@ -42,20 +42,20 @@ switch($methode)
 		{
 		echo "<table>";
 		echo "<tr>";
-		echo "<td class=\"soustitre2\"><p><b>Numéro</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Nom</b> (cliquez sur le nom pour détails)</td>";
-		echo "<td class=\"soustitre2\"><p><b>Actif</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Mail</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Date création</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Dernière connexion</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>IP</b></td>";
-		echo "<td class=\"soustitre2\"><p><b>Commentaire</b></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Numéro</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Nom</strong> (cliquez sur le nom pour détails)</td>";
+		echo "<td class=\"soustitre2\"><p><strong>Actif</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Mail</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Date création</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Dernière connexion</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>IP</strong></td>";
+		echo "<td class=\"soustitre2\"><p><strong>Commentaire</strong></td>";
 		echo "</tr>";
 		while ($db->next_record())
 		{
 			echo "<tr>";	
 			echo "<td><p>" . $db->f("compt_cod") . "</td>";
-			echo "<td class=\"soustitre2\"><p><b><a href=\"detail_compte.php?vcompte=" . $db->f("compt_cod") . "\">" . $db->f("compt_nom") . "</a></b></td>";
+			echo "<td class=\"soustitre2\"><p><strong><a href=\"detail_compte.php?vcompte=" . $db->f("compt_cod") . "\">" . $db->f("compt_nom") . "</a></strong></td>";
 			echo "<td><p>" . $db->f("compt_actif") . "</td>";
 			echo "<td><p>" . $db->f("compt_mail") . "</td>";
 			echo "<td class=\"soustitre2\"><p>" . $db->f("creation") . "</td>";

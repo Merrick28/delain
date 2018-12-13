@@ -70,12 +70,12 @@ $db->next_record();
 
 if ($db->f("perso_utl_pa_rest") == 1)
 {
-	$util = $db->f("perso_nom") . " <b>utilise</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 0;
 }
 else
 {
-	$util = $db->f("perso_nom") . " <b>n’utilise pas</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 1;
 }
 $contenu_page .= '<p class="titre">Utilisation des PA restants</p><p>' . $util . ' <a href="' . $PHP_SELF . '?m=6&ch_util=' . $ch_util . '">Changer ?</a></p>';
@@ -106,8 +106,8 @@ else
 	$db->next_record();
 	
 	$contenu_page .= '<table width="100%">
-		<tr><td class="soustitre2"><p><b>Nom</b></td><td class="soustitre2"><p style="text-align:center;"><b>X</b></td><td class="soustitre2"><p style="text-align:center;"><b>Y</n></td><td class="soustitre2"><p style="text-align:center;"><b>Etage</b></td><td class="soustitre2"><p>Probabilité de retour</td></tr>
-		<tr><td class="soustitre2"><p><b>' . $db->f("lieu_nom") . '</b></td>
+		<tr><td class="soustitre2"><p><strong>Nom</strong></td><td class="soustitre2"><p style="text-align:center;"><strong>X</strong></td><td class="soustitre2"><p style="text-align:center;"><strong>Y</n></td><td class="soustitre2"><p style="text-align:center;"><strong>Etage</strong></td><td class="soustitre2"><p>Probabilité de retour</td></tr>
+		<tr><td class="soustitre2"><p><strong>' . $db->f("lieu_nom") . '</strong></td>
 		<td><p style="text-align:center;">' . $db->f("pos_x") . '</td>
 		<td><p style="text-align:center;">' . $db->f("pos_y") . '</td>
 		<td><p style="text-align:center;">' . $db->f("etage_libelle") . '</td>';

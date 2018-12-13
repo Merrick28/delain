@@ -272,7 +272,7 @@ function changeBlockColor(nr,color)
 					</select>
 </form>
           <br-->
-<b>Sélectionner une case sur la carte pour valider</b>
+<strong>Sélectionner une case sur la carte pour valider</strong>
 <!--input type="submit" value="Valider"-->
 
 

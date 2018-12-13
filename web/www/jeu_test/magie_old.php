@@ -274,7 +274,7 @@ if ($erreur == 0)
 				$cout_pa = $db->f("cout");
 				$contenu_page .= '<tr>
 				<td class="soustitre2">
-				<a href="javascript:document.sort_m.sort.value=' . $db->f("sort_cod") . ';document.sort_m.submit();"><b>' . $db->f("sort_nom") . '</a></b> (' . $cout_pa . ' PA)
+				<a href="javascript:document.sort_m.sort.value=' . $db->f("sort_cod") . ';document.sort_m.submit();"><strong>' . $db->f("sort_nom") . '</a></strong> (' . $cout_pa . ' PA)
 				</td>
 				<td><i>' . $db->f("liste_rune") . '</i></td>
 				<td>
@@ -334,10 +334,10 @@ if ($erreur == 0)
             $req2 = 'select count(perobj_obj_cod) from perso_objets, objets where perobj_perso_cod = ' . $perso_cod . ' and obj_cod = perobj_obj_cod and obj_gobj_cod in (select srune_gobj_cod from sort_rune where srune_sort_cod = ' . $db->f("sort_cod") . ') group by obj_gobj_cod';
             $db2->query($req2);
             $lancer = $db2->nf() == $db->f("sort_niveau");
-            $nom = $db->f("sort_nom") . '</b>';
-            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></b> (' . $db->f("cout") . 'PA) ':'</b>');
+            $nom = $db->f("sort_nom") . '</strong>';
+            $nom = ($lancer?'<a href="javascript:sort(\'' . $db->f("sort_combinaison") . '\')">':'') . $db->f("sort_nom") . ($lancer?'</a></strong> (' . $db->f("cout") . 'PA) ':'</strong>');
             $contenu_page .= '<tr>
-			<td class="soustitre2"><b>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
+			<td class="soustitre2"><strong>' . $nom . '<i>(' . $db->f("liste_rune") . ')</i></td>
 			<td>' . $db->f("memo") . ' %</td>
 			<td><a href="visu_desc_sort.php?sort_cod=' . $db->f("sort_cod") . '">Description du sort</a>
 			</tr>';

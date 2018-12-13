@@ -49,7 +49,7 @@ while($db->next_record())
 {
 	echo("<tr>");
 	printf("<td class=\"soustitre3\"><p>%s</p></td>",$db->f("evt_date"));
-	printf("<td class=\"soustitre3\"><p><b>%s</b></p></td>",$db->f("tevt_libelle"));
+	printf("<td class=\"soustitre3\"><p><strong>%s</strong></p></td>",$db->f("tevt_libelle"));
 	$req_nom_evt = "select perso1.perso_nom as nom1 "; 
 	if ($db->f("levt_attaquant") != '')
 	{
@@ -81,14 +81,14 @@ while($db->next_record())
 	$db_detail->next_record();
 	$res_nom_evt = pg_exec($dbconnect,$req_nom_evt);
 	$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-	$texte_evt = str_replace('[perso_cod1]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db_detail->f("nom1") ."</a></b>",$db->f("levt_texte"));
+	$texte_evt = str_replace('[perso_cod1]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">". $db_detail->f("nom1") ."</a></strong>",$db->f("levt_texte"));
 	if ($db->f("levt_attaquant") != '')
 	{
-		$texte_evt = str_replace('[attaquant]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db_detail->f("nom2")."</A></b>",$texte_evt);
+		$texte_evt = str_replace('[attaquant]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">".$db_detail->f("nom2")."</A></strong>",$texte_evt);
 	}
 	if ($db->f("levt_cible") != '')
 	{
-		$texte_evt = str_replace('[cible]',"<b><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db_detail->f("nom3")."</a></b>",$texte_evt);
+		$texte_evt = str_replace('[cible]',"<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">".$db_detail->f("nom3")."</a></strong>",$texte_evt);
 	}
 	
 	echo("<td><p>$texte_evt</p></td>");

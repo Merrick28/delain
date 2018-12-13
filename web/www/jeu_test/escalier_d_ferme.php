@@ -35,7 +35,7 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
 	$tab_lieu = $db->get_lieu($perso_cod);
-	echo "<p><b>" . $tab_lieu['nom'] . "</b>  - " . $tab_lieu['description'];
+	echo "<p><strong>" . $tab_lieu['nom'] . "</strong>  - " . $tab_lieu['description'];
 	echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");
 	echo("Il y a un mot gravé sur la pierre ; <br />");
 	echo("<i>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");

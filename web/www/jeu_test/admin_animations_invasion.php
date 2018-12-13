@@ -71,7 +71,7 @@ switch ($methode)
 			$db->query($req_invasion);
 			$db->next_record();
 			$resultat = $db->f('invasion');
-			echo "<p><b>Pour l’étage $etage_nom</b></p><p>$resultat</p>";
+			echo "<p><strong>Pour l’étage $etage_nom</strong></p><p>$resultat</p>";
 		}
 
 		$texte = pg_escape_string($texte);
@@ -93,10 +93,10 @@ echo '<p>Les invasions de monstre permettent de générer aléatoirement de nomb
 			<p> - Éparpillement : le nombre de cases de l’étage pour un monstre. Une valeur de 50 signifie qu’on créera un monstre pour 50 cases (hors murs). Pour un étage standard (1600 cases), une valeur de 50 ajoute donc 32 monstres. </p>
 			<p>Les paramètres donnés par défaut (sauf pour le type de monstre...) donnent une invasion légère (par exemple utilisée par le passé lors des animations de pâques...).</p>
 	<table>
-		<tr><td class="titre"><b>Type de monstre</b></td>
-		<td class="titre"><b>Étage(s)</b></td>
-		<td class="titre"><b>Options</b></td>
-		<td class="titre"><b>Lancer l’invasion ?</b></td></tr>
+		<tr><td class="titre"><strong>Type de monstre</strong></td>
+		<td class="titre"><strong>Étage(s)</strong></td>
+		<td class="titre"><strong>Options</strong></td>
+		<td class="titre"><strong>Lancer l’invasion ?</strong></td></tr>
 		<tr>
 			<td class="soustitre2">
 			<select name="code_monstre">';
@@ -125,7 +125,7 @@ echo '<td class="soustitre2">
 	<input type="submit" value="Lancer l’invasion !" class="test" />
 	</td></tr>';
 echo '</table></form>';
-echo "<p><b>Historique des invasions :</b> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
+echo "<p><strong>Historique des invasions :</strong> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
 
 $req = 'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
 $db->query($req);

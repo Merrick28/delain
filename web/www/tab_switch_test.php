@@ -92,12 +92,12 @@ function affiche_perso($perso_cod)
 	echo '<div style="white-space:nowrap;" id="dlt">';
 	if ($db->f("dlt_passee") == 1)
 	{
-		echo '<b>';
+		echo '<strong>';
 	}
 	echo 'DLT : ' . $db->f("dlt");
 	if ($db->f("dlt_passee") == 1)
 	{
-		echo '</b>';
+		echo '</strong>';
 	}
 	  echo '<br /><i>Puis ± ' , $db->f('prochaine_dlt') . '</i>';
     echo '</div><br />';
@@ -120,7 +120,7 @@ function affiche_perso($perso_cod)
 		echo '<span class="bouton"><input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $num_perso . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" />';
 	}
 	echo '
-		<div class="image"><b>Niveau ' . $db->f("perso_niveau") . '</b></div>
+		<div class="image"><strong>Niveau ' . $db->f("perso_niveau") . '</strong></div>
 		<div class="image"><img src="' . G_IMAGES . 'barrepa_' . $pa . '.gif" alt="' . $pa . 'PA"></div>
 		<div class="image"><img src="' . G_IMAGES . 'coeur.gif" alt=""> <img src="' . G_IMAGES . 'hp' . $barre_hp . '.gif" title="' . $db->f("perso_pv") . 'PV sur ' . $db->f("perso_pv_max") . '" alt="' . $db->f("perso_pv") . 'PV sur ' . $db->f("perso_pv_max") . '"></div>';
 	$is_enchanteur = $db->is_enchanteur($perso_cod);

@@ -202,21 +202,21 @@ if(isset($_GET['methode'])){
 	switch($etat){
 		case "OUVERT":
 	?>
-<p><b><?php echo $nom_lieu?></b> - <?php echo $desc_lieu ?></p>
+<p><strong><?php echo $nom_lieu?></strong> - <?php echo $desc_lieu ?></p>
 <p>Vous voyez une porte: elle est ouverte.</p>
 <p><a href="lieu.php?methode=passage">Prendre ce passage ! (<?php echo $cout_pa ?> PA)</a></p>
 <?php 
 		break;
 		case "NEUTRE":
 	?>
-<p><b><?php echo $nom_lieu?></b> - <?php echo $desc_lieu ?></p>
-<p>Vous voyez une porte: vous pouvez la franchir en payant un droit de passage: <b><?php echo $cout;?> Br</b>.</p>
+<p><strong><?php echo $nom_lieu?></strong> - <?php echo $desc_lieu ?></p>
+<p>Vous voyez une porte: vous pouvez la franchir en payant un droit de passage: <strong><?php echo $cout;?> Br</strong>.</p>
 <p><a href="lieu.php?methode=passage_payant">Prendre ce passage ! (<?php echo $cout_pa ?> PA)</a></p>
 <?php 
 		break;
 		case "FERME":
 	?>
-<p><b><?php echo $nom_lieu?></b> - <?php echo $desc_lieu ?></p>
+<p><strong><?php echo $nom_lieu?></strong> - <?php echo $desc_lieu ?></p>
 <p>Vous voyez une porte: elle est fermée.</p>
 
 <?php 	

@@ -34,7 +34,7 @@ value="modifier">
 		<p>{intangible}<br>
 		<img src="{img_barre_pa}" title="{nb_pa} PA "><br><br><img src="{img_path}coeur.gif"> <img src="{img_pv}" title="{pv}/{pv_max}PV"><br><br>
 		<img src="{img_path}iconexp.gif">  <img src="{img_px}" title="{px} PX, prochain niveau � {px_niveau}"><br><br>
-		<img src="{img_path}att.gif" title="fourchette de d�gats"> <b>{deg_min}-{deg_max}</b><img src="{img_path}del.gif" height="8" width="16"><img src="{img_path}def.gif" title="Armure"> <b>{armure}</b><span style="line-height:100%;"><br><br>X : <b>{x}</b> Y : <b>{y}</b><br><b>{etage}</b></span></p>
+		<img src="{img_path}att.gif" title="fourchette de d�gats"> <strong>{deg_min}-{deg_max}</strong><img src="{img_path}del.gif" height="8" width="16"><img src="{img_path}def.gif" title="Armure"> <strong>{armure}</strong><span style="line-height:100%;"><br><br>X : <strong>{x}</strong> Y : <strong>{y}</strong><br><strong>{etage}</strong></span></p>
 		</div></div>
 		<div class="barrL"><div class="barrR"><p class="barrC"></p></div></div>
 		<p class="blockPierre"><br></p>

@@ -40,7 +40,7 @@ $contenu_page .= '
 <p style="text-align:center;"><i>' . $desc . '</i>';
 
 /*if (($redist == 'P') && !$is_fam)
-	$contenu_page .= '<p style="text-align:center;"><b><a href="action.php?methode=redist">Redistribuer les améliorations</a></b><br>
+	$contenu_page .= '<p style="text-align:center;"><strong><a href="action.php?methode=redist">Redistribuer les améliorations</a></strong><br>
 	ATTENTION ! ACTION IMMEDIATE ET DEFINITIVE !<br>(entre autres, les sorts mis dans les réceptacles sont perdus)';*/
 
 $contenu_page .= '

@@ -141,7 +141,7 @@ class DB_OCI8 {
     }
     
     if ((1403 != $this->Error["code"]) and (0 != $this->Error["code"]) and $this->sqoe) {
-      echo "<BR><FONT color=red><B>".$this->Error["message"]."<BR>Query :\"$Query_String\"</B></FONT>";
+      echo "<BR><FONT color=red><strong>".$this->Error["message"]."<BR>Query :\"$Query_String\"</strong></FONT>";
     }
     $this->last_query_text = $Query_String;
     return $this->Parse;
@@ -223,7 +223,7 @@ class DB_OCI8 {
         $this->Record[$colreturn] = 
           (is_object($result[$col])) ? $result[$col]->load() : $result[$col];
         if ($this->Debug) {
-          echo "<b>[$col]</b>:".$result[$col]."<br>\n";
+          echo "<strong>[$col]</strong>:".$result[$col]."<br>\n";
         }
       }
       $stat = 1;
@@ -398,8 +398,8 @@ class DB_OCI8 {
   }
   
   function haltmsg($msg) {
-    printf("<p><b>Database error:</b> %s<br>\n", $msg);
-    printf("<b>Oracle Error</b>: %s</p>\n", $this->Error["message"]);
+    printf("<p><strong>Database error:</strong> %s<br>\n", $msg);
+    printf("<strong>Oracle Error</strong>: %s</p>\n", $this->Error["message"]);
   }
 
   function lock($table, $mode = "write") {

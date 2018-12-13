@@ -42,7 +42,7 @@ $db->query($req);
 $db->next_record();
 echo "<center><table>";
 
-echo "<tr><td class=\"soustitre2\" colspan=\"2\"><p><b>Perso $perso_cod : niveau " . $db->f("perso_niveau") . "</b></td></tr>";
+echo "<tr><td class=\"soustitre2\" colspan=\"2\"><p><strong>Perso $perso_cod : niveau " . $db->f("perso_niveau") . "</strong></td></tr>";
 
 echo "<tr>";
 echo "<td class=\"soustitre2\"><p>Dégats corps à corps : </td>";

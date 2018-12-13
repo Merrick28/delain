@@ -183,7 +183,7 @@ class DB_Oracle {
               $col=strtolower(ora_columnname($this->Query_ID,$ix));
               $value=ora_getcolumn($this->Query_ID,$ix);
               $this->Record[ "$col" ] = $value;
-#              echo"<b>[$col]</b>: $value <br>\n";
+#              echo"<strong>[$col]</strong>: $value <br>\n";
           }
           $stat=1;
       }
@@ -395,7 +395,7 @@ class DB_Oracle {
           echo "Debug: Disconnecting $this->Query_ID...<br>\n";
       }
       if ( $this->Query_ID < 1 ) {
-        echo "<B>Warning</B>: disconnect(): Cannot free ID $this->Query_ID\n";
+        echo "<strong>Warning</strong>: disconnect(): Cannot free ID $this->Query_ID\n";
 #        return();
       }
       ora_close($this->Query_ID);
@@ -414,8 +414,8 @@ class DB_Oracle {
   }
 
   function haltmsg($msg) {
-    printf("<p><b>Database error:</b> %s<br>\n", $msg);
-    printf("<b>Oracle Error</b>: %s (%s)</p>\n",
+    printf("<p><strong>Database error:</strong> %s<br>\n", $msg);
+    printf("<strong>Oracle Error</strong>: %s (%s)</p>\n",
       $this->Errno,
       $this->Error);
   }

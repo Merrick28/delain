@@ -50,7 +50,7 @@ while($db->next_record())
 			{
 				echo "<tr>";
 			}
-			echo "<td nowrap class=\"soustitre2\"><p><b>" . $db2->f("comp_libelle") . "</b> - <i>(" . $max . " %)</i></p></td>";
+			echo "<td nowrap class=\"soustitre2\"><p><strong>" . $db2->f("comp_libelle") . "</strong> - <i>(" . $max . " %)</i></p></td>";
 			echo "<td>";
 			$req_p = "select lower(perso_nom) as minusc,perso_cod,perso_nom,pcomp_modificateur from perso,perso_competences 
 				where pcomp_pcomp_cod = " . $db2->f("comp_cod") . " 
@@ -79,7 +79,7 @@ while($db->next_record())
 }	
 ?>
 </table></center>
-<hr><br><b><u>Richesse des souterrains :</u></b><br><br>
+<hr><br><strong><u>Richesse des souterrains :</u></strong><br><br>
 
 <?php 
 $req = "select sum(perso_po) as po,max(perso_po) as po_max,max(perso_for) as force,max(perso_dex) as dex,max(perso_con) as constit,max(perso_int) as intelligence from perso where perso_type_perso = 1";
@@ -106,8 +106,8 @@ $po_banque = $db->f("po_banque");
 $po_banque_max = $db->f("po_banque_max");
 
 
-echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0, '', ' ') . "</b> brouzoufs<br>Le plus riche possède <b>". number_format($po_max, 0, '', ' ') ."</b> brouzoufs<br><b>". number_format($po_monstre, 0, '', ' ') ."</b> brouzoufs sont portés par les monstres, et seulement <b>". number_format($po_familier, 0, '', ' ') . "</b> par les familiers.<br>Non content de cela, les aventuriers ont thésaurisé en banque <b>". number_format($po_banque, 0, '', ' ') ."</b> de brouzoufs, avec un petit veinard qui détient un petit pactole à l'abris de <b>". number_format($po_banque_max, 0, '', ' ') ."</b> ! Mieux vaut que la banque ne se fasse pas braquer !
-<br><br>En même temps, le plus intelligent possède une intelligence de <b>". $intelligence ."</b> alors que le plus fort a <b>". $force ."</b> en force, la plus grosse dextérité est de <b>". $dexterite ."</b> et la plus grosse constitution est de <b>". $constit ."</b>. Alors comment vous situez vous par rapport à cela ?"  ;
+echo "Les aventuriers possèdent tous ensemble <strong>". number_format($po_global, 0, '', ' ') . "</strong> brouzoufs<br>Le plus riche possède <strong>". number_format($po_max, 0, '', ' ') ."</strong> brouzoufs<br><strong>". number_format($po_monstre, 0, '', ' ') ."</strong> brouzoufs sont portés par les monstres, et seulement <strong>". number_format($po_familier, 0, '', ' ') . "</strong> par les familiers.<br>Non content de cela, les aventuriers ont thésaurisé en banque <strong>". number_format($po_banque, 0, '', ' ') ."</strong> de brouzoufs, avec un petit veinard qui détient un petit pactole à l'abris de <strong>". number_format($po_banque_max, 0, '', ' ') ."</strong> ! Mieux vaut que la banque ne se fasse pas braquer !
+<br><br>En même temps, le plus intelligent possède une intelligence de <strong>". $intelligence ."</strong> alors que le plus fort a <strong>". $force ."</strong> en force, la plus grosse dextérité est de <strong>". $dexterite ."</strong> et la plus grosse constitution est de <strong>". $constit ."</strong>. Alors comment vous situez vous par rapport à cela ?"  ;
 ?>
 <br><br>
 <hr>
@@ -134,7 +134,7 @@ echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0
 			$total_max2 = $db->f("total_max2");
 
 			echo "<tr>";
-			echo "<td nowrap class=\"soustitre2\"><p><b>". $race_nom . "</b></p></td>";
+			echo "<td nowrap class=\"soustitre2\"><p><strong>". $race_nom . "</strong></p></td>";
 			echo "<td>";
 			$req_p = "select total_max2,gmon_race_cod,ptab_perso_cod,perso_nom from (select gmon_race_cod,sum(total_max) as total_max2,ptab_perso_cod from 
 						          (select ptab_perso_cod,(sum(ptab_total) * gmon_niveau * gmon_niveau) as total_max,gmon_race_cod 
@@ -157,8 +157,8 @@ echo "Les aventuriers possèdent tous ensemble <b>". number_format($po_global, 0
 
 ?>
 </table>
-<br><b><i>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
-<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</i></b>
+<br><strong><i>à l'intérieur d'une race, les monstres sont pondérés par leur puissance.
+<br>Par exemple, un morbelin n'aura pas la même valeur qu'un capitaine morbelin dans ce classement</i></strong>
 <br>
 <hr>
 
@@ -171,7 +171,7 @@ $req = "select distinct ptab_gmon_cod,gmon_niveau, gmon_nom from perso_tableau_c
 $db->query($req);
 if ($db->nf() != 0)
 {
-   echo '<p class="titre">TABLEAU Des plus grands chasseurs en <b>SOLO</b></p><table width="80%">
+   echo '<p class="titre">TABLEAU Des plus grands chasseurs en <strong>SOLO</strong></p><table width="80%">
    				<tr><td class="titre">Monstre</td><td class="titre">Nom</td><td class="titre">Total achevé en solo</td></tr>';
    while($db->next_record())
 	{
@@ -183,7 +183,7 @@ if ($db->nf() != 0)
 				limit 1';
 		$db2->query($req);
 		$db2->next_record();
-     echo '<tr><td class="soustitre2"><b>' . $db->f("gmon_nom") . '<!-- ' . $db->f('ptab_gmon_cod') . '--></b></td><td>';
+     echo '<tr><td class="soustitre2"><strong>' . $db->f("gmon_nom") . '<!-- ' . $db->f('ptab_gmon_cod') . '--></strong></td><td>';
      /*$req = "select distinct perso_nom
      		from perso,perso_tableau_chasse
      		where ptab_gmon_cod = " . $db->f('ptab_gmon_cod')  . "

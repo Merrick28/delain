@@ -54,10 +54,10 @@ if ($db->nf() > 0)
 		$listeMissions = $db2->missions_du_perso($perso_cod, $fac_cod, TRUE, 'date');
 	
 		$contenu_page .= $rang . '<div style="max-height:300px; overflow:auto;"><table><tr>
-			<th class="soustitre2"><b>Date de début</b></th>
-			<th class="soustitre2"><b>Type</b></th>
-			<th class="soustitre2"><b>Libellé</b></th>
-			<th class="soustitre2"><b>Statut</b></th></tr>';
+			<th class="soustitre2"><strong>Date de début</strong></th>
+			<th class="soustitre2"><strong>Type</strong></th>
+			<th class="soustitre2"><strong>Libellé</strong></th>
+			<th class="soustitre2"><strong>Statut</strong></th></tr>';
 	
 		$revalider = false;
 		$avalider = false;

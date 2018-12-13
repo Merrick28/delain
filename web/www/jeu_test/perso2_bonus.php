@@ -11,12 +11,12 @@ $db->query($req);
 $db->next_record();
 if ($db->f("perso_utl_pa_rest") == 1)
 {
-	$util = $db->f("perso_nom") . " <b>utilise</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 0;
 }
 else
 {
-	$util = $db->f("perso_nom") . " <b>n’utilise pas</b> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $db->f("perso_nom") . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 1;
 }
 $contenu_page .= '<div class="titre">Utilisation des PA restants</div>
@@ -51,7 +51,7 @@ $req_bonus = "select bonus_degats_melee($perso_cod) as melee,bonus_arme_distance
 $db->query($req_bonus);
 $db->next_record();
 
-$contenu_page .= 'Bonus aux dégâts en corps-à-corps : <b>' . $db->f("melee") . ' dégât(s)</b><br>
+$contenu_page .= 'Bonus aux dégâts en corps-à-corps : <strong>' . $db->f("melee") . ' dégât(s)</strong><br>
 <div class="titre">Bonus temporaires</div>
 <table><tr valign="top"><td style="padding:15px;">';
 
@@ -115,14 +115,14 @@ if ($db->nf() + sizeof($bonus_carac) == 0)
 else
 {
 	$contenu_page .= '<table><tr>
-	<td class="soustitre2"><b>Bonus</b></td>
-	<td class="soustitre2"><b>Valeur</b></td>
-	<td class="soustitre2"><b>Échéance</b></td>
+	<td class="soustitre2"><strong>Bonus</strong></td>
+	<td class="soustitre2"><strong>Valeur</strong></td>
+	<td class="soustitre2"><strong>Échéance</strong></td>
 	</tr>';
 
 	while($db->next_record())
 	{
-		$contenu_page .= '<tr><td class="soustitre2"><b>' . $db->f('tonbus_libelle') . '</b></td>';
+		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
 		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td></tr>';
@@ -140,7 +140,7 @@ else
 			case 'CON': $lib_carac = 'Constitution'; break;
 			case 'DEX': $lib_carac = 'Dextérité'; break;
 		}
-		$contenu_page .= "<tr><td class='soustitre2'><b>$lib_carac</b></td>
+		$contenu_page .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
 			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
 			<td><div style='text-align:center;'>$duree</div></td></tr>";
 	}
@@ -157,14 +157,14 @@ if ($db->nf() + sizeof($malus_carac) == 0)
 else
 {
 	$contenu_page .= '<table><tr>
-	<td class="soustitre2"><b>Malus</b></td>
-	<td class="soustitre2"><b>Valeur</b></td>
-	<td class="soustitre2"><b>Échéance</b></td>
+	<td class="soustitre2"><strong>Malus</strong></td>
+	<td class="soustitre2"><strong>Valeur</strong></td>
+	<td class="soustitre2"><strong>Échéance</strong></td>
 	</tr>';
 
 	while($db->next_record())
 	{
-		$contenu_page .= '<tr><td class="soustitre2"><b>' . $db->f('tonbus_libelle') . '</b></td>';
+		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
 		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td></tr>';
@@ -182,7 +182,7 @@ else
 			case 'CON': $lib_carac = 'Constitution'; break;
 			case 'DEX': $lib_carac = 'Dextérité'; break;
 		}
-		$contenu_page .= "<tr><td class='soustitre2'><b>$lib_carac</b></td>
+		$contenu_page .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
 			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
 			<td><div style='text-align:center;'>$duree</div></td></tr>";
 	}

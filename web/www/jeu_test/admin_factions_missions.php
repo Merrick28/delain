@@ -86,7 +86,7 @@ while($db->next_record())
 	$miss_cod = $db->f('miss_cod');
 	$miss_nom = $db->f('miss_nom');
 	$miss_active = ($db->f('miss_fonction_init') != '' && $db->f('miss_fonction_valide') != '');
-	$txt_active = ($miss_active) ? '' : '<br /><b>Inactive ! Contactez un développeur / administrateur</b><br /> afin que la mission soit reliée à ses fonctions de traitement.';
+	$txt_active = ($miss_active) ? '' : '<br /><strong>Inactive ! Contactez un développeur / administrateur</strong><br /> afin que la mission soit reliée à ses fonctions de traitement.';
 	$miss_libelle = $db->f('miss_libelle');
 	$txt_definie = $db->f('fmiss_nb') . ' factions';
 

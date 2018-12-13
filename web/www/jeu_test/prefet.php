@@ -45,15 +45,15 @@ if ($erreur == 0)
 			?>
 			<table>
 			<tr>
-			<td class="soustitre2"><b>Rang</b></td>
-			<td class="soustitre2"><b>Solde</b></td>
+			<td class="soustitre2"><strong>Rang</strong></td>
+			<td class="soustitre2"><strong>Solde</strong></td>
 			<td></td>
 			</tr>
 			<?php 
 			while ($db->next_record())
 			{
 				echo "<tr>";
-				echo "<td class=\"soustitre2\"><b>" , $db->f("rguilde_libelle_rang"), "</b></td>";
+				echo "<td class=\"soustitre2\"><strong>" , $db->f("rguilde_libelle_rang"), "</strong></td>";
 				echo "<td>" , $db->f("rguilde_solde"), " brouzoufs</td>";
 				echo "<td><a href=\"" , $PHP_SELF , "?methode=solde2&rang=" , $db->f("rguilde_cod") , "\">Modifier ?</a></td>";
 				echo "</tr>";
@@ -70,7 +70,7 @@ if ($erreur == 0)
 			<form action="<?php echo $PHP_SELF;?>" method="post">
 			<input type="hidden" name="methode" value="solde3">
 			<input type="hidden" name="rang" value="<?php echo $rang;?>">
-			Entrez la valeur de la solde mensuelle pour le grade <b><?php echo $db->f("rguilde_libelle_rang");?></b> 
+			Entrez la valeur de la solde mensuelle pour le grade <strong><?php echo $db->f("rguilde_libelle_rang");?></strong> 
 			<input type="text" name="solde" value="<?php echo $db->f("rguilde_solde");?>"><br>
 			<input type="submit" class="test" value="Valider !"></form>			
 			<?php 

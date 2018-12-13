@@ -90,7 +90,7 @@ if ($erreur == 0)
 			echo '<hr />';
 
 		if (isset($tableau_noms[$key]))
-			echo "<p><b>Pour " . $tableau_noms[$key] . " :</b></p>";
+			echo "<p><strong>Pour " . $tableau_noms[$key] . " :</strong></p>";
 			
 		$req_evt = "select to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as date_evt,tevt_libelle,levt_texte,tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible from ligne_evt,type_evt where levt_perso_cod1 = $numero_perso and levt_tevt_cod = tevt_cod and levt_lu = 'N' order by levt_cod desc";
 		$db->query($req_evt);
@@ -130,12 +130,12 @@ if ($erreur == 0)
 					
 				$db_evt->query($req_nom_evt);
 				$db_evt->next_record();
-				$texte_evt = str_replace('[perso_cod1]',"<b>".$db_evt->f("nom1")."</b>",$db->f("levt_texte"));
+				$texte_evt = str_replace('[perso_cod1]',"<strong>".$db_evt->f("nom1")."</strong>",$db->f("levt_texte"));
 				if ($db->f("levt_attaquant") != '')
-					$texte_evt = str_replace('[attaquant]',"<b>".$db_evt->f("nom2")."</b>",$texte_evt);
+					$texte_evt = str_replace('[attaquant]',"<strong>".$db_evt->f("nom2")."</strong>",$texte_evt);
 					
 				if ($db->f("levt_cible") != '')
-					$texte_evt = str_replace('[cible]',"<b>".$db_evt->f("nom3")."</b>",$texte_evt);
+					$texte_evt = str_replace('[cible]',"<strong>".$db_evt->f("nom3")."</strong>",$texte_evt);
 					
 				printf("%s : $texte_evt (%s).</br>",$db->f("date_evt"),$db->f("tevt_libelle"));
 			}

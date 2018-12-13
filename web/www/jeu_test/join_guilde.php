@@ -135,14 +135,14 @@ echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value
 if ($sort == 'nom')
 {
 	?>
-	<b>
+	<strong>
 	<?php 
 }
 echo("Nom");
 if ($sort == 'nom')
 {
 	?>
-	</b>
+	</strong>
 	<?php 
 }
 echo("</a></td>");
@@ -150,48 +150,48 @@ echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value
 
 if ($sort == 'nbre')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre d'inscrits");
 if ($sort == 'nbre')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='monstre';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'monstre')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de monstres tués");
 if ($sort == 'monstre')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='joueur';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'joueur')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de joueurs tués");
 if ($sort == 'joueur')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='mort';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
 if ($sort == 'mort')
 {
-	echo("<b>");
+	echo("<strong>");
 }
 echo("Nombre de morts");
 if ($sort == 'mort')
 {
-	echo("</b>");
+	echo("</strong>");
 }
 echo("</a></td>");
 echo("<td></td>");
@@ -201,7 +201,7 @@ while($db->next_record())
 {
 	//$tab_guilde = pg_fetch_array($res_guilde,$cpt);
 	echo("<tr>");
-	printf("<td class=\"soustitre2\"><p><b><a href=\"javascript:document.fsort.action='visu_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">%s</a></b></p></td>",$db->f("guilde_cod"),$db->f("guilde_nom"));
+	printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.fsort.action='visu_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">%s</a></strong></p></td>",$db->f("guilde_cod"),$db->f("guilde_nom"));
 	printf("<td><p>%s</td>",$db->f("nb_perso"));
 	printf("<td><p>%s</td>",$db->f("nb_monstre_tue"));
 	printf("<td><p>%s</td>",$db->f("nb_joueur_tue"));

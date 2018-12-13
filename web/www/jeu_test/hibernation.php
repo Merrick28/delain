@@ -32,7 +32,7 @@ if (!$db->is_admin($compt_cod))
 			}
 			else
 			{
-				echo "<p><b>Attention !</b> La mise en hibernation de votre compte rendra celui-ci inaccessible dans 48 heures, pendant 5 jours. !<br>";
+				echo "<p><strong>Attention !</strong> La mise en hibernation de votre compte rendra celui-ci inaccessible dans 48 heures, pendant 5 jours. !<br>";
 				echo "<br>Après les 48 heures, il vous sera impossible de vous connecter à votre compte pendant cette période. Vos persos seront réactivés lors de votre prochaine connexion après la période d'hibernation, qui peut donc durer de 5 à 90 jours";
 				$req_defi = "select * from defi
 					inner join perso_compte lanceur on lanceur.pcompt_perso_cod = defi_lanceur_cod
@@ -41,7 +41,7 @@ if (!$db->is_admin($compt_cod))
 				$db->query($req_defi);
 				if ($db->nf() > 0)
 				{
-					echo '<br><b>Vous êtes actuellement défié !</b> Si vous demandez une hibernation, au bout du délai de 48h, le défi sera considéré comme abandonné (vous pourriez perdre un petit peu de renommée)<br />';
+					echo '<br><strong>Vous êtes actuellement défié !</strong> Si vous demandez une hibernation, au bout du délai de 48h, le défi sera considéré comme abandonné (vous pourriez perdre un petit peu de renommée)<br />';
 				}
 
 				echo "Voulez-vous continuer ?";

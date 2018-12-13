@@ -198,11 +198,11 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
         // Ici on récupère le nombre d'entrée et la liste de nom recherché (max 10) => affichage dans le popup
         if (d.resultat == -1)
         {
-            $("#spop-serchlist").html("<b>Erreur:</b> "+d.message);
+            $("#spop-serchlist").html("<strong>Erreur:</strong> "+d.message);
         }
         else if (!d.data || !d.data.count)
         {
-            $("#spop-serchlist").html("<b>Aucun élément ne correspond à la recherche.</b>");
+            $("#spop-serchlist").html("<strong>Aucun élément ne correspond à la recherche.</strong>");
         }
         else
         {

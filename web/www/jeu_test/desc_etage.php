@@ -20,7 +20,7 @@ $req = "select etage_libelle, etage_description, etage_numero from etage,positio
 $db->query($req);
 $db->next_record();
 $etage_numero = $db->f("etage_numero");
-$contenu_page .= "<p>Vous êtes dans le lieu : <b>" . $db->f("etage_libelle") . "</b><br>";
+$contenu_page .= "<p>Vous êtes dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong><br>";
 $contenu_page .= "<p><i>" . $db->f("etage_description") . "</i>";
 
 $contenu_page .= "<p style=\"text-align:center;\"><a href=\"frame_vue.php\">Retour à la vue !</a></p>";
@@ -44,14 +44,14 @@ if ($etage_numero == MARCHE_LENO && $db->next_record() && $db->f("dcompt_modif_p
 			and levt_tevt_cod = 91';
 	$db->query($req);
 
-	$contenu_page .= '<p><b>Liste des persos présents à l’étage et ayant entrepris des actions d’alchimie ces 15 derniers jours.</b> Cliquez sur un perso pour voir le détail.</p>';
+	$contenu_page .= '<p><strong>Liste des persos présents à l’étage et ayant entrepris des actions d’alchimie ces 15 derniers jours.</strong> Cliquez sur un perso pour voir le détail.</p>';
 	$contenu_page .= '<p>';
 	$nom_du_perso = '-- non participant --';
 	while ($db->next_record())
 	{
-		if ($perso == $db->f('perso_cod')) $contenu_page .= '<b>';
+		if ($perso == $db->f('perso_cod')) $contenu_page .= '<strong>';
 		$contenu_page .= '- <a href="?perso=' . $db->f('perso_cod') . '">' . $db->f('perso_nom') . '</a> -';
-		if ($perso == $db->f('perso_cod')) $contenu_page .= '</b>';
+		if ($perso == $db->f('perso_cod')) $contenu_page .= '</strong>';
 		if ($perso == $db->f('perso_cod')) $nom_du_perso = $db->f('perso_nom');	// On récupère au passage le nom du perso sélectionné
 	}
 	$contenu_page .= '</p><br /><br />';
@@ -67,14 +67,14 @@ if ($etage_numero == MARCHE_LENO && $db->next_record() && $db->f("dcompt_modif_p
 		<table cellspacing="2">
 		<tr><td colspan="2" class="titre"><p class="titre">Actions alchimiques</p></td></tr>
 		<tr>
-			<td class="soustitre3"><p><b>Date</b></p></td>
-			<td class="soustitre3"><p><b>Détail</b></p></td>
+			<td class="soustitre3"><p><strong>Date</strong></p></td>
+			<td class="soustitre3"><p><strong>Détail</strong></p></td>
 		</tr>';
 		while ($db->next_record())
 		{
 			$levt_date = $db->f("levt_date");
 			$levt_texte = str_replace('[perso_cod1]', $nom_du_perso, $db->f("levt_texte"));
-			$levt_texte = str_replace('a fini sa potion !', '<b>a fini sa potion !</b>', $levt_texte);
+			$levt_texte = str_replace('a fini sa potion !', '<strong>a fini sa potion !</strong>', $levt_texte);
 			$contenu_page .= "<tr>";
 			$contenu_page .= "<td class=\"soustitre3\"><p>$levt_date</p></td>";
 			$contenu_page .= "<td class=\"soustitre3\"><p>$levt_texte</p></td>";

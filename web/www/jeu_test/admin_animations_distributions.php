@@ -146,14 +146,14 @@ switch ($methode)
 				if ($etage_libelle != $db->f('etage_libelle'))
 				{
 					if ($nombre > 0)
-						echo "<p><b>Pour l’étage $etage_libelle</b> : $nombre personnages impactés.</p>";
+						echo "<p><strong>Pour l’étage $etage_libelle</strong> : $nombre personnages impactés.</p>";
 					$nombre = 0;
 					$etage_libelle = $db->f('etage_libelle');
 				}
 				$nombre++;
 			}
 			if ($nombre > 0)
-				echo "<p><b>Pour l’étage $etage_libelle</b> : $nombre personnages impactés.</p>";
+				echo "<p><strong>Pour l’étage $etage_libelle</strong> : $nombre personnages impactés.</p>";
 		}
 
 		// Distribution de brouzoufs ou PX
@@ -196,7 +196,7 @@ switch ($methode)
 			{
 				$resultat = $db->f('distribution');
 				$etage = $db->f('etage_libelle');
-				echo "<p><b>Pour l’étage $etage</b></p><p>$resultat</p>";
+				echo "<p><strong>Pour l’étage $etage</strong></p><p>$resultat</p>";
 			}
 		}
 
@@ -222,11 +222,11 @@ echo '<p>Les distributions générales permettent de donner à tous les personna
 	<p> - Nombre : pour les distributions en inventaire, donne le nombre d’objets à donner à chacun.</p>
 	<p> - Éparpillement : pour les distributions au sol, donne le nombre de cases de l’étage pour un objet. Une valeur de 50 signifie qu’on créera un objet pour 50 cases (hors murs). Pour un étage standard (1600 cases), une valeur de 50 ajoute donc 32 objets. </p>
 	<table>
-		<tr><td class="titre"><b>Objet</b></td>
-		<td class="titre"><b>Étage(s)</b></td>
-		<td class="titre"><b>Cibles</b></td>
-		<td class="titre"><b>Quantité</b></td>
-		<td class="titre"><b>Lancer la distribution ?</b></td></tr>';
+		<tr><td class="titre"><strong>Objet</strong></td>
+		<td class="titre"><strong>Étage(s)</strong></td>
+		<td class="titre"><strong>Cibles</strong></td>
+		<td class="titre"><strong>Quantité</strong></td>
+		<td class="titre"><strong>Lancer la distribution ?</strong></td></tr>';
 
 // Objet
 echo '<tr><td class="soustitre2"><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1, \'distrib_form_objet\', tableauObjetsDistribution);">
@@ -311,7 +311,7 @@ while ($db->next_record())
 		$script_gobj
 	</script>";
 
-echo "<p><b>Historique des distributions :</b> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
+echo "<p><strong>Historique des distributions :</strong> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
 
 $req = 'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'distribution\' ORDER BY anim_date';
 $db->query($req);

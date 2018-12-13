@@ -152,7 +152,7 @@ class Query extends DB_Sql {
 	## set this to another value, if you want to hide it
 	## in your HTML-code
 	## example: var $Q_Debug_print="\n<!-- QDebug: %s -->\n";
-	var $Q_Debug_print="<BR><B>QDebug:</B>\n%s\n<BR>\n";
+	var $Q_Debug_print="<BR><strong>QDebug:</strong>\n%s\n<BR>\n";
 
 	## Set this to TRUE if you only want to test, which query
 	## will be created (ideal in combination with $Q_Debug)
@@ -548,7 +548,7 @@ class Query extends DB_Sql {
 		if ($this->next_record()) {
 			return($this->Record);
 		} else {
-			echo "<BR><B>WARNING:</B> getrow(): KEY: $name VAL: $val not found<BR>";
+			echo "<BR><strong>WARNING:</strong> getrow(): KEY: $name VAL: $val not found<BR>";
 			return(false);
 		}
 	}
@@ -711,7 +711,7 @@ class Query extends DB_Sql {
 				echo "ERROR: all_changed_vars(): Found more than one row!<BR>";
 			}
 		} elseif ($check!='soft') {
-			echo "<BR><B>WARNING:</B> all_changed_vars(): No row found!<BR>";
+			echo "<BR><strong>WARNING:</strong> all_changed_vars(): No row found!<BR>";
 		}
 		$this->_QDebug("WHERE: $where");
 		return($r);

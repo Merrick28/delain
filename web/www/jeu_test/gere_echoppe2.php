@@ -62,7 +62,7 @@ if ($erreur == 0)
 			echo "<center><table>";
 			
 			echo "<tr>";
-			echo "<td colspan=\"2\" class=\"soustitre2\"><p><b>Financier :</td>";
+			echo "<td colspan=\"2\" class=\"soustitre2\"><p><strong>Financier :</td>";
 			echo "</tr>";
 		
 			echo "<td class=\"soustitre2\"><p>Etat de la caisse</td>";
@@ -106,27 +106,27 @@ if ($erreur == 0)
 			if ($modif_possible == 1)
 			{
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=mod\">Modifier ces données</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=mod\">Modifier ces données</a></strong></td>";
 				echo "</tr>";
 				
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=nom\">Changer le nom et la description</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=nom\">Changer le nom et la description</a></strong></td>";
 				echo "</tr>";
 				
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=vente_adm\">Vendre du matériel à l'administration</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=vente_adm\">Vendre du matériel à l'administration</a></strong></td>";
 				echo "</tr>";
 				
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=achat_adm\">Acheter du matériel à l'administration</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=achat_adm\">Acheter du matériel à l'administration</a></strong></td>";
 				echo "</tr>";
 				
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=fix_prix\">Fixer les tarifs</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=fix_prix\">Fixer les tarifs</a></strong></td>";
 				echo "</tr>";
 				
 				echo "<tr>";
-				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><b><a href=\"gere_echoppe2.php?mag=$mag&methode=stats\">Voir les stats</a></b></td>";
+				echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=stats\">Voir les stats</a></strong></td>";
 				echo "</tr>";
 			}
 			
@@ -136,7 +136,7 @@ if ($erreur == 0)
 			echo "<center><table>";
 			
 			echo "<tr>";
-			echo "<td colspan=\"3\" class=\"soustitre2\"><p><b>Etat des stocks : </td>";
+			echo "<td colspan=\"3\" class=\"soustitre2\"><p><strong>Etat des stocks : </td>";
 			echo "</tr>";
 			
 			$req = "select gobj_nom,tobj_libelle,count(obj_cod) as qte ";
@@ -149,9 +149,9 @@ if ($erreur == 0)
 			$req = $req . "order by tobj_libelle,gobj_nom ";
 			$db->query($req);
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Quantité</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
 			while ($db->next_record())
 			{
 				echo "<tr>";
@@ -217,7 +217,7 @@ if ($erreur == 0)
 			$req = $req . "and perso_cod = $perso_cod ";
 			$db->query($req);
 			$db->next_record();
-			echo "<p>Vous avez actuellement <b>" . $db->f("perso_po") . "</b> brouzoufs sur vous, et il y a <b>" . $db->f("lieu_compte") . "</b> brouzoufs dans les caisses de l'échoppe.";
+			echo "<p>Vous avez actuellement <strong>" . $db->f("perso_po") . "</strong> brouzoufs sur vous, et il y a <strong>" . $db->f("lieu_compte") . "</strong> brouzoufs dans les caisses de l'échoppe.";
 			echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe2.php\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"banque2\">";
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
@@ -293,7 +293,7 @@ if ($erreur == 0)
 			$req = $req . "and perso_cod = $perso_cod ";
 			$db->query($req);
 			$db->next_record();
-			echo "<p>Vous avez actuellement <b>" . $db->f("perso_po") . "</b> brouzoufs sur vous, et il y a <b>" . $db->f("lieu_compte") . "</b> brouzoufs dans les caisses de l'échoppe.";
+			echo "<p>Vous avez actuellement <strong>" . $db->f("perso_po") . "</strong> brouzoufs sur vous, et il y a <strong>" . $db->f("lieu_compte") . "</strong> brouzoufs dans les caisses de l'échoppe.";
 			echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe2.php\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"depot2\">";
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
@@ -471,7 +471,7 @@ if ($erreur == 0)
 		
 			break;
 		case "nom2":
-			echo "<p><b>Aperçu : " . $desc;
+			echo "<p><strong>Aperçu : " . $desc;
 			$desc = str_replace(";",chr(127),$desc);
 			$req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
 			$db->query($req);
@@ -493,11 +493,11 @@ if ($erreur == 0)
 			$db->query($req);
 			echo "<center><table>";
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Quantité</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Prix de vente</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Qte à vendre ?</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Prix de vente</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Qte à vendre ?</strong></td>";
 			echo "</tr>";
 			while ($db->next_record())
 			{
@@ -531,7 +531,7 @@ if ($erreur == 0)
 				$db->next_record();
 				if ($val > $db->f("nombre"))
 				{
-					echo "<p>Erreur ! Vous essayez de vendre l'objet <b>" . $db->f("gobj_nom") . "</b> en trop grande quantité !";
+					echo "<p>Erreur ! Vous essayez de vendre l'objet <strong>" . $db->f("gobj_nom") . "</strong> en trop grande quantité !";
 					$erreur = 1;
 				}
 			}
@@ -575,7 +575,7 @@ if ($erreur == 0)
 			$req = "select lieu_compte from lieu where lieu_cod = $mag ";
 			$db->query($req);
 			$db->next_record();
-			echo "<p>Vous diposez de <b>" . $db->f("lieu_compte") . "</b> pour acheter des objets à l'administration.";
+			echo "<p>Vous diposez de <strong>" . $db->f("lieu_compte") . "</strong> pour acheter des objets à l'administration.";
 			$req = "select gobj_cod,tobj_libelle,gobj_nom,gobj_valeur, ";
 			$req = $req . "(select count(obj_cod) ";
 			$req = $req . "from objets,stock_magasin ";
@@ -595,11 +595,11 @@ if ($erreur == 0)
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";	
 			echo "<center><table>";
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Valeur</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Stock</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Quantité</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Stock</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
 			while($db->next_record())
 			{
 				echo "<tr>";
@@ -695,11 +695,11 @@ if ($erreur == 0)
 			echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";	
 			echo "<center><table>";
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><p><b>Nom</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Type</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Stock</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Valeur officielle</b></td>";
-			echo "<td class=\"soustitre2\"><p><b>Valeur actuelle</b></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Stock</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Valeur officielle</strong></td>";
+			echo "<td class=\"soustitre2\"><p><strong>Valeur actuelle</strong></td>";
 			echo "<td></td>";
 			while($db->next_record())
 			{
@@ -801,10 +801,10 @@ if ($erreur == 0)
 				?>
 				<table>
 				<tr>
-				<td class="soustitre2"><b>Nom</b></td>
-				<td class="soustitre2"><b>Sens</b></td>
-				<td class="soustitre2"><b>Montant global</b></td>
-				<td class="soustitre2"><b>Nombre</b></td>
+				<td class="soustitre2"><strong>Nom</strong></td>
+				<td class="soustitre2"><strong>Sens</strong></td>
+				<td class="soustitre2"><strong>Montant global</strong></td>
+				<td class="soustitre2"><strong>Nombre</strong></td>
 				</tr>
 				<?php 
 				while ($db->next_record())
@@ -843,11 +843,11 @@ if ($erreur == 0)
 				?>
 				<table>
 				<tr>
-				<td class="soustitre2"><b>Objet</b></td>
-				<td class="soustitre2"><b>Perso</b></td>
-				<td class="soustitre2"><b>Sens</b></td>
-				<td class="soustitre2"><b>Montant</b></td>
-				<td class="soustitre2"><b>Date</b></td>
+				<td class="soustitre2"><strong>Objet</strong></td>
+				<td class="soustitre2"><strong>Perso</strong></td>
+				<td class="soustitre2"><strong>Sens</strong></td>
+				<td class="soustitre2"><strong>Montant</strong></td>
+				<td class="soustitre2"><strong>Date</strong></td>
 				</tr>
 				<?php 
 				while ($db->next_record())

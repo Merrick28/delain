@@ -62,7 +62,7 @@ if ($erreur == 0)
 			$mode[2] = 'Application des peines';
 			$mode[3] = 'CRS';
 			$vmode = $db->f("pguilde_mode_milice");
-			echo "<p>Vous êtes actuellement en mode <b> $mode[$vmode]</b><br>";
+			echo "<p>Vous êtes actuellement en mode <strong> $mode[$vmode]</strong><br>";
 			echo "<a href=\"" , $PHP_SELF , "?methode=changem\">Changer le mode ?</a><br> ";
 			echo "<a href=\"" , $PHP_SELF , "?methode=voir\">Voir les peines en attente d'éxécution</a><br> ";
 			echo "<a href=\"megaphone.php\">Utiliser son mégaphone ?</a> ";
@@ -117,12 +117,12 @@ if ($erreur == 0)
 				?>
 				<table>	
 				<tr>
-					<td class="soustitre2"><b>Dossier</b></td>
-					<td class="soustitre2"><b>Accusé</b></td>
-					<td class="soustitre2"><b>Peine</b></td>
-					<td class="soustitre2"><b>Validée par</b></td>
-					<td class="soustitre2"><b>Date de peine</b></td>
-					<td class="soustitre2"><b>Etat de la peine</b></td>
+					<td class="soustitre2"><strong>Dossier</strong></td>
+					<td class="soustitre2"><strong>Accusé</strong></td>
+					<td class="soustitre2"><strong>Peine</strong></td>
+					<td class="soustitre2"><strong>Validée par</strong></td>
+					<td class="soustitre2"><strong>Date de peine</strong></td>
+					<td class="soustitre2"><strong>Etat de la peine</strong></td>
 				</tr>
 				<?php 
 				while ($db->next_record())
@@ -131,9 +131,9 @@ if ($erreur == 0)
 					$v_faite = $db->f("peine_faite");
 					echo "<tr>";
 					echo "<td class=\"soustitre2\">" , $db->f("peine_cod") , "</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><b>" , $db->f("n_acc") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_acc") , "\"><strong>" , $db->f("n_acc") , "</strong></td>";
 					echo "<td>$peine[$v_peine]</td>";
-					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><b>" , $db->f("n_mag") , "</b></td>";
+					echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=" , $db->f("c_mag") , "\"><strong>" , $db->f("n_mag") , "</strong></td>";
 					echo "<td>" , $db->f("date_peine") , "</td>";
 					echo "<td>$etat[$v_faite]</td>";
 					echo "</tr>";

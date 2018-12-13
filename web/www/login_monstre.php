@@ -62,11 +62,11 @@ else
 	{
 		if ($db->f("perso_dirige_admin") == 'O')
 		{
-			$ia = "<b>Hors IA</b>";
+			$ia = "<strong>Hors IA</strong>";
 		}
 		else if ($db->f("perso_pnj") == 1)
         {
-            $ia = "<b>PNJ</b>";
+            $ia = "<strong>PNJ</strong>";
         }
 		else
 		{
@@ -79,29 +79,29 @@ else
 		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pv") , " PV sur " , $db->f("perso_pv_max");
 		if ($db->f("etat") != "indemne")
 		{
-			echo " - (<b>" , $db->f("etat") , "</b>)";
+			echo " - (<strong>" , $db->f("etat") , "</strong>)";
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>";
 		if ($db->f("messages") != 0)
 		{
-			echo "<b>";
+			echo "<strong>";
 		}
 		echo $db->f("messages") . " msg non lus.";
 		if ($db->f("messages") != 0)
 		{
-			echo "</b>";
+			echo "</strong>";
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>";
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("<b>");
+			echo("<strong>");
 		}
 		echo $db->f("dlt");
 		if ($db->f("dlt_passee") == 1)
 		{
-			echo("</b>");
+			echo("</strong>");
 		}
 		echo "</td>";
 		echo "<td class=\"soustitre2\"><p>X=" , $db->f("pos_x") , ", Y=" , $db->f("pos_y") , ", E=" , $db->f("pos_etage") , "</td>";
@@ -111,7 +111,7 @@ else
 		if ($db2->nf() != 0)
 		{
 			$db2->next_record();
-			echo "<td class=\"soustitre2\">Joué par <b>" , $db2->f("compt_nom") , "</b></td>";
+			echo "<td class=\"soustitre2\">Joué par <strong>" , $db2->f("compt_nom") , "</strong></td>";
 		}
 		else
 			echo "<td></td>";
