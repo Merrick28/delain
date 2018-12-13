@@ -111,13 +111,13 @@ if ($erreur == 0)
         echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
         echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="'.htmlspecialchars($quete->aquete_description).'"></td></tr>';
         echo '<tr><td><strong>Quête ouverte </strong>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <em>activation/désactivation général</em></td></tr>';
-        echo '<tr><td><strong>Début </strong><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Fin </strong><i style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
         echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
         echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <em>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="'.$quete->aquete_nb_max_quete.'"> <em>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Délai max. </strong><i style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>'.$quete->get_nb_en_cours().'</strong> quête en cours sur <strong>'.$quete->get_nb_total().'</strong> au total <em>(tous persos confondus)</em></td></tr>';
         if ($aquete_cod==0)
         {
@@ -161,7 +161,7 @@ if ($erreur == 0)
                     echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
                     echo "<font color='blue'>Etape #{$etape->aqetape_cod}:</font> <strong>{$etape->aqetape_nom}</strong> basée sur le modèle <strong>{$etape_modele->aqetapmodel_nom}</strong>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
-                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <i style='color: white'>{$etape->aqetape_texte}</em><br>";
+                    echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <em style='color: white'>{$etape->aqetape_texte}</em><br>";
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     $nb_encours_etape = $quete->get_nb_en_cours($etape->aqetape_cod);
@@ -169,13 +169,13 @@ if ($erreur == 0)
                     {
                         $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
                         if ($nb_quete_en_cours>0)
-                            echo 'Il y a <strong>'.$nb_quete_en_cours.'</strong> persos en cours à cette étape (<i style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
+                            echo 'Il y a <strong>'.$nb_quete_en_cours.'</strong> persos en cours à cette étape (<em style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
                         else
                             echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
                     }
                     else if ($nb_encours_etape>0)
                     {
-                        echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><strong>ATTENTION</strong></u>: il y a <strong>'.$nb_encours_etape.'</strong> quête en cours de réalisation à cette etape. (<i style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</em>)</span>';
+                        echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><strong>ATTENTION</strong></u>: il y a <strong>'.$nb_encours_etape.'</strong> quête en cours de réalisation à cette etape. (<em style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</em>)</span>';
                     }
                     echo '</form>';
                     echo '</div></div>';
@@ -192,25 +192,25 @@ if ($erreur == 0)
                                 $e = new aquete_etape;
                                 if (!$e->charge($element->aqelem_misc_cod))    // on charge l'étape pour récupérer le nom!
                                 {
-                                    echo "<b style='color: red'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <i style='color: red'>(étape inexistante)</em><br>";
+                                    echo "<strong style='color: red'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
                                 }
                                 else
                                 {
-                                    echo "<b style='color: blue'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
+                                    echo "<strong style='color: blue'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
                                 }
                             }
                             else if ($etape_modele->aqetapmodel_tag=="#SAUT")
                             {
-                                echo "<b style='color: blue'>&rArr; Fin de la quête</strong> <br>";
+                                echo "<strong style='color: blue'>&rArr; Fin de la quête</strong> <br>";
                             }
                         }
                     }
 
 
                     if ($etape_modele->aqetapmodel_tag=="#END #KO")
-                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';
+                        echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';
                     else if ( ($etape_modele->aqetapmodel_tag=="#END #OK") || ($k == count($etapes)-1))
-                        echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: blue\'>Fin de la Quête avec Succès</strong>&nbsp;&nbsp;</div>';
+                        echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête avec Succès</strong>&nbsp;&nbsp;</div>';
                     else
                         echo '<hr>';
                 }
@@ -258,7 +258,7 @@ if ($erreur == 0)
         echo '<tr><td><strong>Exemple </strong>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.htmlspecialchars($etape->aqetape_nom).'"></td></tr>';
         echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
-        echo '<tr><td></td><td><i style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em></td></tr>';
+        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em></td></tr>';
         echo '</table>';
 
 
