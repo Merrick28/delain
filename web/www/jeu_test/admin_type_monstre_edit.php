@@ -926,7 +926,7 @@ if ($erreur == 0)
 		<hr />
 		OBJETS
 		<TABLE width="80%" align="center">
-			<tr><th>Objet</th><th>Chance de posséder (SUR 10.000 !!!)</th><th style="text-align: center">Chance de drop <i style="font-size: 10px;">(si possédé)</em></th></tr>
+			<tr><th>Objet</th><th>Chance de posséder (SUR 10.000 !!!)</th><th style="text-align: center">Chance de drop <em style="font-size: 10px;">(si possédé)</em></th></tr>
 			<?php 					$req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
 					$db_drops = new base_delain;
 					$db_drops->query($req_drops);
