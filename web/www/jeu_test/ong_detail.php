@@ -3,15 +3,11 @@
 <input type="hidden" name="t_frdr" value="<?php  echo $t_frdr; ?>">
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
-<?php 
-if(isset($_POST['position']) && is_integer($_POST['position']))
-{
-    $position = 1 * $_POST['position'];
-}
+<?php
 
-if(isset($_GET['position']) && is_integer($_GET['position']))
+if(isset($_REQUEST['position']))
 {
-    $position = 1 * $_GET['position'];
+    $position = 1 * $_REQUEST['position'];
 }
 
 if(!isset($db))
