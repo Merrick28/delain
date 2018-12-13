@@ -435,7 +435,7 @@ class aquete_perso
         {
             if ( $k == 0 )
                 $element_texte .= $elem->get_element_texte();
-            else if ( $k <count($result)-1 )
+            else if ( $k <count($elements)-1 )
                 $element_texte .= ", ".$elem->get_element_texte();
             else
                 $element_texte .= " et ".$elem->get_element_texte();
