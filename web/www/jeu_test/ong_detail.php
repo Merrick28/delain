@@ -4,10 +4,16 @@
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
 <?php 
-if(isset($_POST['position']))
-	$position = 1 * $_POST['position'];
-if(isset($_GET['position']))
-	$position = 1 * $_GET['position'];
+if(isset($_POST['position']) && is_integer($_POST['position']))
+{
+    $position = 1 * $_POST['position'];
+}
+
+if(isset($_GET['position']) && is_integer($_GET['position']))
+{
+    $position = 1 * $_GET['position'];
+}
+
 if(!isset($db))
 {
 	include "verif_connexion.php";
