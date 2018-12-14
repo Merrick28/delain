@@ -228,7 +228,7 @@ if ($methode=="")
 
             if ($isAdminAnimation)
             {
-                $contenu_page2 .= '<br><b style="color:#800000"><u>Options d\'admin</u></strong>&nbsp;&nbsp;:<br>';
+                $contenu_page2 .= '<br><strong style="color:#800000"><u>Options d\'admin</u></strong>&nbsp;&nbsp;:<br>';
                 $contenu_page2 .= '<form action="admin_quete_auto_edit.php" method="post">' ;
                 $contenu_page2 .= '<input type="hidden" name="methode" value="perso_step">' ;
                 $contenu_page2 .= '<input type="hidden" name="aqperso_cod" value="'.$quete_perso->aqperso_cod.'">' ;

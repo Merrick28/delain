@@ -336,7 +336,7 @@ if ($erreur == 0)
     }
     //print_r($_REQUEST);
 
-    echo '<div class="hr">&nbsp;&nbsp;<b  style=\'color: #800000;\'>TÉLÉPORTATION DE GROUPE</strong>&nbsp;&nbsp;</div>';
+    echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: #800000;\'>TÉLÉPORTATION DE GROUPE</strong>&nbsp;&nbsp;</div>';
 
     //=======================================================================================
     // == Constantes quete_auto
