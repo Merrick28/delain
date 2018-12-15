@@ -1,4 +1,6 @@
 <?php
+
+
 require __DIR__ . '/conf.php';
 require G_CHE . '../vendor/autoload.php';
 
@@ -163,4 +165,5 @@ $options_twig_defaut = array(
 
 // on commence la temporisation de sortie
 ob_start();
+
 
