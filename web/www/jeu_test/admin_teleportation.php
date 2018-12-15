@@ -40,7 +40,7 @@ include('variables_menu.php');
                 if (s_option=="monstre" && d.data.perso_type_perso!=2)
                 $("#"+divname).html('Vous n\'avez pas les droits pour téléporter ce perso.');
                 else
-                    $("#"+divname).html(d.data.perso_nom+' <i style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</em>');
+                    $("#"+divname).html(d.data.perso_nom+' <em style="font-size:10px;"> (X='+d.data.pos_x+' X='+d.data.pos_y+' '+d.data.etage_libelle+')</em>');
             }
         });
     }
@@ -59,7 +59,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <em style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
@@ -85,7 +85,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <em style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
@@ -111,7 +111,7 @@ include('variables_menu.php');
                     if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso))     // si pas déjà dans la list et autorisé
                     {
                         if (data.perso_type_perso==2) nb_monstre++; else nb_perso++;
-                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <i style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
+                        content += '<div id="s-list-'+k+'" data-perso_cod="'+data.perso_cod+'" data-type_perso="'+data.perso_type_perso+'"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList('+k+')"></a>&nbsp;</span>'+data.perso_nom+' <em style="font-size:10px;"> (X='+data.pos_x+' X='+data.pos_y+' '+data.etage_libelle+')</em></div>';
                     }
                 }
                 if (content!="") content+= '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
