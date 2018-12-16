@@ -6,7 +6,7 @@ $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins
 $t->set_var('URL',$type_flux.G_URL);
 $t->set_var('URL_IMAGES',IMG_PATH);
-// on va maintenant charger toutes les variables li�es au menu
+// on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
 //
@@ -19,7 +19,7 @@ $req = "select dcompt_etage from compt_droit where dcompt_compt_cod = $compt_cod
 $db->query($req);
 if ($db->nf() == 0)
 {
-	die("Erreur sur les �tages possibles !");
+	die("Erreur sur les étages possibles !");
 }
 else
 {
