@@ -9,7 +9,7 @@ define("COMPETENCE_FORGE_MAGE_ID", 88);
 define("COMPETENCE_FORGE_ID", 98);
 define("COMPETENCE_COUTURE_ID", 99);
 
-// V�rifie si le perso a la competence requise.
+// Vérifie si le perso a la competence requise.
 function perso_has_competence($perso_id, $competenceid)
 {
     global $db;
@@ -21,7 +21,7 @@ function perso_has_competence($perso_id, $competenceid)
     return $db->next_record();
 }
 
-// V�rifie si le perso a une comp�tence requise parmi une liste
+// Vérifie si le perso a une compétence requise parmi une liste
 function perso_has_one_competence_in_list($perso_id, $competence_list)
 {
     global $db;
@@ -40,14 +40,14 @@ function perso_has_one_competence_in_list($perso_id, $competence_list)
     return $db->next_record();
 }
 
-// un objet pour contenir les infos du retour d'une utilisationde comp�tence.
+// un objet pour contenir les infos du retour d'une utilisationde compétence.
 class RetourCompetence
 {
-    // Valeur de la comp�tence
+    // Valeur de la compétence
     var $comp_val = 0;
-    // Entier : le jet dans la comp�tence.
+    // Entier : le jet dans la compétence.
     var $jet = 100;
-    // Booleen : true si succ�s.
+    // Booleen : true si succés.
     var $succes = false;
     // Boolean : true si special.
     var $special = false;
@@ -55,15 +55,15 @@ class RetourCompetence
     var $critique = false;
     // Booleen : true si echec critique.
     var $echec_critique = false;
-    // Booleen : true si am�lioration.
+    // Booleen : true si amélioration.
     var $amelioration = false;
     // Booleen : true si erreur pendant le lancement.
     var $erreur = false;
-    // Texte : le log de l'utilisationde la comp�tence.
+    // Texte : le log de l'utilisationde la compétence.
     var $log = '';
 }
 
-// Utilisation d'une competence avec un perso - sans am�lioration.
+// Utilisation d'une competence avec un perso - sans amélioration.
 function perso_utiliser_competence($perso_id, $competenceid, $bonus)
 {
     global $db;
@@ -76,7 +76,7 @@ function perso_utiliser_competence($perso_id, $competenceid, $bonus)
     //echo $req_comp;
     $db->query($req_comp);
     if (!$db->next_record()) {
-        $retour->log .= "Vous ne disposez pas de la comp�tence requise ! <br /><br />";
+        $retour->log .= "Vous ne disposez pas de la compétence requise ! <br /><br />";
         $retour->erreur = false;
         return $retour;
     } else {
@@ -86,28 +86,28 @@ function perso_utiliser_competence($perso_id, $competenceid, $bonus)
         $comp_valeur += $bonus;
         $comp_valeur_spe = $comp_valeur / 4;
         $des = rand(1, 100);
-        $retour->log .= "Vous utilisez la comp�tence <strong> $comp_libelle </strong> <br /><br />";
-        $retour->log .= "Votre chance de r�ussite en tenant compte des modificateurs est de <strong> $comp_valeur </strong> <br /><br />";
-        $retour->log .= "Votre lancer de d�s est de <strong> $des </strong> <br /><br />";
+        $retour->log .= "Vous utilisez la compétence <strong> $comp_libelle </strong> <br /><br />";
+        $retour->log .= "Votre chance de réussite en tenant compte des modificateurs est de <strong> $comp_valeur </strong> <br /><br />";
+        $retour->log .= "Votre lancer de dés est de <strong> $des </strong> <br /><br />";
         $retour->jet = $des;
         if ($des > 96) {
-            $retour->log .= "Il s'agit donc d'un �chec automatique.<br /><br />";
+            $retour->log .= "Il s'agit donc d'un échec automatique.<br /><br />";
             $retour->echec_critique = true;
             return $retour;
         } else if ($des > 5 && $des > $comp_valeur_spe && $des > $comp_valeur) {
-            $retour->log .= "Il s'agit donc d'un �chec.<br /><br />";
+            $retour->log .= "Il s'agit donc d'un échec.<br /><br />";
             return $retour;
         } else if ($des > 5 && $des > $comp_valeur_spe && $des <= $comp_valeur) {
-            $retour->log .= "Il s'agit donc d'une r�ussite.<br /><br />";
+            $retour->log .= "Il s'agit donc d'une réussite.<br /><br />";
             $retour->succes = true;
             return $retour;
         } else if ($des > 5 && $des <= $comp_valeur_spe) {
-            $retour->log .= "Il s'agit donc d'une r�ussite sp�ciale.<br /><br />";
+            $retour->log .= "Il s'agit donc d'une réussite spéciale.<br /><br />";
             $retour->succes = true;
             $retour->special = true;
             return $retour;
         } else if ($des <= 5) {
-            $retour->log .= "Il s'agit donc d'une r�ussite critique.<br /><br />";
+            $retour->log .= "Il s'agit donc d'une réussite critique.<br /><br />";
             $retour->succes = true;
             $retour->critique = true;
             return $retour;
@@ -115,7 +115,7 @@ function perso_utiliser_competence($perso_id, $competenceid, $bonus)
     }
 }
 
-// Utilisation d'une competence avec un perso - sans am�lioration.
+// Utilisation d'une competence avec un perso - sans amélioration.
 function perso_utiliser_competence_avec_amelioration($perso_id, $competenceid, $bonus)
 {
     $retour = perso_utiliser_competence($perso_id, $competenceid, $bonus);
@@ -138,12 +138,12 @@ function perso_amelioration_competence($perso_id, $competenceid, $retour)
         $jet = $amel_res[0];
         $succes = $amel_res[1];
         $new_val = $amel_res[2];
-        $retour->log .= "Votre jet d'am�lioration est de <strong> $jet </strong> <br /><br />";
+        $retour->log .= "Votre jet d'amélioration est de <strong> $jet </strong> <br /><br />";
         if ($succes == 1) {
-            $retour->log .= "Vous avez donc am�lior� cette comp�tence <br /><br />";
+            $retour->log .= "Vous avez donc amélioré cette compétence <br /><br />";
             $retour->log .= "Sa nouvelle valeur est de <strong> $new_val </strong> <br /><br />";
         } else {
-            $retour->log .= "Vous n'avez pas am�lior� cette comp�tence <br /><br />";
+            $retour->log .= "Vous n'avez pas amélioré cette compétence <br /><br />";
         }
         echo $amel_retour;
     }
