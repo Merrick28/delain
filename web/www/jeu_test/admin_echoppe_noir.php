@@ -62,12 +62,12 @@ case "debut":
         $db->next_record();
         echo "<img src=\"" . G_IMAGES . "rune_" . $cpt . "_" . $db->f("gobj_rune_position") . ".gif\">";
     }
-    echo "<p style=\"text-align:center;\"><a href=\"", $PHP_SELF, "?methode=passe&met_pass=change\">Changer le mot de passe ?</a>";
+    echo "<p class=\"centrer\"><a href=\"", $PHP_SELF, "?methode=passe&met_pass=change\">Changer le mot de passe ?</a>";
     break;
 case "change":
 ?>
 <p>Choisissez la combinaison que vous voulez en mot de passe :
-<center>
+<div class="centrer">
     <table>
         <form name="magie" method="post" action="<?php echo $PHP_SELF; ?>">
             <input type="hidden" name="methode" value="passe">
@@ -97,9 +97,9 @@ case "change":
                 echo "</tr></table></center>";
                 echo "</td></tr>";
             }
-            echo "</table></center>";
+            echo "</table></div>";
             ?>
-            <center><input type="submit" value="Changer !" class="test"></center>
+            <div class="centrer"><input type="submit" value="Changer !" class="test"></div>
         </form>
         <?php
         break;
@@ -160,7 +160,6 @@ case "change":
                 ?>
                 <tr>
                     <td colspan="2">
-                        <center><input type="submit" class="test" value="Valider !">
                     </td>
                 </tr>
             </table>
