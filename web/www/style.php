@@ -1,4 +1,4 @@
-<?php 
+<?php
 define("NOGOOGLE", "1");
 // calc an offset of 24 hours
 $offset = 3600 * 24 * 10;
@@ -6,8 +6,8 @@ $offset = 3600 * 24 * 10;
 $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 //output the HTTP header
 Header($expire);
-$gmt_mtime = gmdate('D, d M Y H:i:s', time() ) . ' GMT';
-header("Last-Modified: " . $gmt_mtime );
+$gmt_mtime = gmdate('D, d M Y H:i:s', time()) . ' GMT';
+header("Last-Modified: " . $gmt_mtime);
 header('Content-type: text/css');
 // Bleda 2/2/11 dÃ©jÃ  fait en footer. ob_start();
 ?>
@@ -82,9 +82,9 @@ width: 20em;
 border: 1px solid gray;
 }
 #menu ul {
-	background : url(images/fondparchemin.gif);
-	padding-right:2px;
-	padding-left:2px;
+background : url(images/fondparchemin.gif);
+padding-right:2px;
+padding-left:2px;
 
 }
 #menu li {
@@ -115,8 +115,8 @@ color: #222;
 #mentions a:hover{text-decoration: underline;
 }
 .fond2 {
-	background : url(images/fondparchemin.gif);
-	background-color:#FFFFFF;
+background : url(images/fondparchemin.gif);
+background-color:#FFFFFF;
 }
 #nom {background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0}
 .centrer {
@@ -124,7 +124,7 @@ text-align: center;
 margin-left: auto;
 margin-right: auto;
 }
-<?php 
+<?php
 header('Content-Length: ' . ob_get_length());
- // Bleda 2/2/11 dÃ©jÃ  fait en footer. ob_end_flush();
+// Bleda 2/2/11 dÃ©jÃ  fait en footer. ob_end_flush();
 ?>

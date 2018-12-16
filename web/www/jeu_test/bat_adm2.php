@@ -48,7 +48,8 @@ switch ($methode)
 {
 case "debut":
 ?>
-<p><img src="../images/batadmin.gif"><strong><?php echo("$tab_temple[0]</strong> - $tab_temple[1]"); ?>
+<p><img src="../images/batadmin.gif"
+        alt="Bâtiment administratif"><strong><?php echo("$tab_temple[0]</strong> - $tab_temple[1]"); ?>
 <p>Bonjour,<br>
     Voici ce que vous pouvez faire ici :<br>
     <?php
@@ -64,8 +65,7 @@ case "debut":
             {
                 echo "Vous avez ", $db->f("pguilde_solde"), " brouzoufs de solde que vous pouvez retirer.<br>";
                 echo "<a href=\"", $PHP_SELF, "?methode=solde\">La retirer maintenant ?</a>";
-            }
-            else
+            } else
             {
                 echo "Vous n'avez pas de salaire à retirer à ce jour.";
             }
@@ -77,8 +77,7 @@ case "debut":
     if ($db->is_in_guilde($perso_cod))
     {
         echo "<p>Vous êtes déjà dans une guilde, il vous est impossible d'en créer une nouvelle.";
-    }
-    else
+    } else
     {
         ?>
         <a href="cree_guilde.php">Créer une
@@ -97,8 +96,7 @@ case "debut":
         if ($nb_queue_rat >= 10)
         {
             echo "<a href=\"javascript:document.vente.objet.value=91;document.vente.submit();\">Vendre 10 queues de rat (2PA)</a>";
-        }
-        else
+        } else
         {
             echo "Il faut au minimum 10 unités de queues de rat pour pouvoir les vendre.";
         }
@@ -109,8 +107,7 @@ case "debut":
         if ($nb_toile >= 10)
         {
             echo "<a href=\"javascript:document.vente.objet.value=92;document.vente.submit();\">Vendre 10 soies d'araignée (2PA)</a>";
-        }
-        else
+        } else
         {
             echo "Il faut au minimum 10 unités de soies d'araignée pour pouvoir les vendre.";
         }
@@ -121,8 +118,7 @@ case "debut":
         if ($nb_crochet >= 10)
         {
             echo "<a href=\"javascript:document.vente.objet.value=94;document.vente.submit();\">Vendre 10 crochets de serpents (2PA)</a>";
-        }
-        else
+        } else
         {
             echo "Il faut au minimum 10 unités de crochets de serpents pour pouvoir les vendre.";
         }
@@ -136,8 +132,7 @@ case "debut":
     if ($nbre_visite > 6)
     {
         echo "Félicitations ! Vous avez terminé le marathon des auberges, vous êtes donc un vrai soiffard qui ferait palir un nain au comptoir !";
-    }
-    else
+    } else
     {
         echo "<hr>";
         echo "<p>Désirez vous <a href=\"" . $PHP_SELF . "?methode=tournee\">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?";
@@ -185,8 +180,7 @@ case "debut":
                 $db->query($req);
                 $db->next_record();
                 echo "<p>Vous êtes bien enregistré !";
-            }
-            else
+            } else
             {
                 echo "<p>Vous êtes déjà inscrit à cette tournée !<br>Vous n'avez visité que $nbre_visite auberges, c'est moins que votre contrat ! Poursuivez donc vos efforts !";
             }

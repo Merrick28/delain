@@ -438,7 +438,7 @@ if (!$erreur)
 				</td>
 			</tr>
 			<tr><td <?php  echo $cl;?> colspan="9">
-				<font style="font-size:7pt;"><?php echo $db->f("perso_description");?></font></td></tr>
+				<p style="font-size:7pt;"><?php echo $db->f("perso_description");?></p></td></tr>
 
 	<?php 	}
 	echo '</table>';
