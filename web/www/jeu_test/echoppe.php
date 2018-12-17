@@ -10,6 +10,7 @@ if (!isset($db))
 $db2 = new base_delain;
 $param = new parametres();
 ?>
+<!DOCTYPE html>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
@@ -119,14 +120,13 @@ echo "<p>Bonjour aventurier.";
             if ($db->nf() == 0)
             {
                 echo "<p>Désolé, mais les stocks sont vides, nous n'avons rien à vendre en ce moment.";
-            }
-            else
+            } else
             {
                 echo "<form name=\"achat\" action=\"action.php\" method=\"post\">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_achat\">";
                 echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
                 echo "<input type=\"hidden\" name=\"objet\">";
-                echo "<center><table>";
+                echo "<div class='centrer'><table>";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -145,8 +145,7 @@ echo "<p>Bonjour aventurier.";
                         $bonus = " (" . $db2->f("obon_libelle") . ")";
                         $prix_bon = $db2->f("obon_prix");
                         $url_bon = "&bon=" . $db2->f("obon_cod");
-                    }
-                    else
+                    } else
                     {
                         $bonus = "";
                         $prix_bon = 0;
@@ -166,9 +165,7 @@ echo "<p>Bonjour aventurier.";
                         $db2->query($req);
                         $db2->next_record();
                         echo "<a href=\"visu_desc_objet3.php?objet=" . $db2->f("obj_cod") . "&origine=e", $url_bon, "\">";
-                    }
-
-                    else
+                    } else
                     {
                         echo "<a href=\"visu_desc_objet3.php?objet=" . $db->f("a") . "&origine=e", $url_bon, "\">";
                     }
@@ -185,16 +182,15 @@ echo "<p>Bonjour aventurier.";
                     if ($db->f("type") == 0)
                     {
                         echo "gobj[", $db->f("gobj_cod"), "-", $db->f("obj_obon_cod"), "]\" value=\"0\">";
-                    }
-                    else
+                    } else
                     {
                         echo "uobj[", $db->f("a"), "]\" value=\"0\">";
                     }
                     echo "</td>";
                     echo "</tr>\n";
                 }
-                echo "</table></center>";
-                echo "<center><input type=\"submit\" class=\"test\" value=\"Acheter les quantités sélectionnées !\"></center>";
+                echo "</table></div>";
+                echo "<input type=\"submit\" class=\"test centrer\" value=\"Acheter les quantités sélectionnées !\">";
                 echo "</form>";
             }
             break;
@@ -227,8 +223,7 @@ echo "<p>Bonjour aventurier.";
             if ($db->nf() == 0)
             {
                 echo "<p>Vous n'avez aucun équipement à  vendre pour l'instant.";
-            }
-            else
+            } else
             {
 
 
@@ -236,7 +231,7 @@ echo "<p>Bonjour aventurier.";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_vente\">";
                 echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
                 echo "<input type=\"hidden\" name=\"objet\">";
-                echo "<center><table>";
+                echo "<div class='centrer'><table>";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -253,8 +248,7 @@ echo "<p>Bonjour aventurier.";
                         $bonus = " (" . $db2->f("obon_libelle") . ")";
                         $prix_bon = $db2->f("obon_prix");
                         $url_bon = "&bon=" . $db2->f("obon_cod");
-                    }
-                    else
+                    } else
                     {
                         $bonus = "";
                         $prix_bon = 0;
@@ -268,8 +262,8 @@ echo "<p>Bonjour aventurier.";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
 
                 }
-                echo "</table></center>";
-                echo "<center><input type=\"submit\" class=\"test\" value=\"Vendre les objets sélectionnées !\"></center>";
+                echo "</table></div>";
+                echo "<input type=\"submit\" class=\"test centrer\" value=\"Vendre les objets sélectionnées !\">";
                 echo "</form>";
             }
             break;
@@ -295,15 +289,14 @@ echo "<p>Bonjour aventurier.";
             if ($db->nf() == 0)
             {
                 echo "<p>Vous n'avez aucun équipement à faire identifier pour l'instant.";
-            }
-            else
+            } else
             {
                 echo "<form name=\"identifie\" action=\"action.php\" method=\"post\">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_identifie\">";
                 echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
                 echo "<input type=\"hidden\" name=\"objet\">";
 
-                echo "<center><table>";
+                echo "<div class='centrer'><table>";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -318,8 +311,8 @@ echo "<p>Bonjour aventurier.";
                     echo "<td class=\"soustitre2\"><p>" . $prix . " brouzoufs</td>";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
                 }
-                echo "</table></center>";
-                echo "<center><input type=\"submit\" class=\"test\" value=\"Identifier les objets sélectionnées !\"></center>";
+                echo "</table></div>";
+                echo "<input type=\"submit\" class=\"test centrer\" value=\"Identifier les objets sélectionnées !\">";
                 echo "</form>";
 
             }
@@ -345,14 +338,13 @@ echo "<p>Bonjour aventurier.";
             if ($db->nf() == 0)
             {
                 echo "<p>Vous n'avez aucun équipement à  réparer pour l'instant.";
-            }
-            else
+            } else
             {
                 echo "<form name=\"vente\" action=\"action.php\" method=\"post\">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_repare\">";
                 echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
                 echo "<input type=\"hidden\" name=\"objet\">";
-                echo "<center><table>";
+                echo "<div class='centrer'><table>";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
                 echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
@@ -369,8 +361,7 @@ echo "<p>Bonjour aventurier.";
                         $bonus = " (" . $db2->f("obon_libelle") . ")";
                         $prix_bon = $db2->f("obon_prix");
                         $url_bon = "&bon=" . $db2->f("obon_cod");
-                    }
-                    else
+                    } else
                     {
                         $bonus = "";
                         $prix_bon = 0;
@@ -387,8 +378,8 @@ echo "<p>Bonjour aventurier.";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
 
                 }
-                echo "</table></center>";
-                echo "<center><input type=\"submit\" class=\"test\" value=\"Réparer les objets sélectionnées !\"></center>";
+                echo "</table></div>";
+                echo "<input type=\"submit\" class=\"test centrer\" value=\"Réparer les objets sélectionnées !\">";
                 echo "</form>";
             }
 

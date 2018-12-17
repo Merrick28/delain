@@ -1,10 +1,12 @@
-<?php 
+<?php
 include "verif_connexion.php";
 ?>
+<!DOCTYPE html>
 <html>
 
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Don de poisson</title>
 </head>
 
 <body background="../images/fond5.gif">
@@ -17,27 +19,26 @@ $req_vue = "select perso_cod,perso_nom,lower(perso_nom) as minusc from perso, pe
 $db->query($req_vue);
 if ($db->nf() == 0)
 {
-	echo "<p>Il n'y a pas de joueur à qui vous pouvez donner ce poisson !";
-}
-else
+    echo "<p>Il n'y a pas de joueur à qui vous pouvez donner ce poisson !";
+} else
 {
-	?>
-	<form name="cree_transaction" method="post" action="action.php">
-	<input type="hidden" name="methode" value="donne_poisson">
-	<input type="hidden" name="obj" value="<?php echo $obj;?>">
-	<p><center>Choisissez le perso à qui vous souhaitez donner ce poisson : <select name="perso">
-	<?php 
-	while($db->next_record())
-	{
-		printf("<option value=\"%s\">%s</option>",$db->f("perso_cod"),$db->f("perso_nom"));
-	}	
-	?>
-	</select><br>
-	<input type="submit" class="test" value="Donner le poisson !"></center>
-	</form>
-	<?php 
+    ?>
+    <form name="cree_transaction" method="post" action="action.php">
+        <input type="hidden" name="methode" value="donne_poisson">
+        <input type="hidden" name="obj" value="<?php echo $obj; ?>">
+        <p>
+        <div class="centrer">Choisissez le perso à qui vous souhaitez donner ce poisson : <select name="perso">
+                <?php
+                while ($db->next_record())
+                {
+                    printf("<option value=\"%s\">%s</option>", $db->f("perso_cod"), $db->f("perso_nom"));
+                }
+                ?>
+            </select><br>
+            <input type="submit" class="test" value="Donner le poisson !"></div>
+    </form>
+    <?php
 }
-
 
 
 include "tab_bas.php";

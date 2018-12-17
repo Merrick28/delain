@@ -1,7 +1,9 @@
+<!DOCTYPE html>
 <html>
 
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Fin de session</title>
 </head>
 <body background="../images/fond5.gif">
 <?php

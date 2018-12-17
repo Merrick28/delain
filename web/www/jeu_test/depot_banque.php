@@ -53,7 +53,7 @@ if ($erreur == 0)
 	<hr />
 	<form name="depot" method="post" action="valide_depot_banque.php">
 	<p>Déposer <input type="text" name="quantite"> brouzoufs sur mon compte.
-	<p><center><input type="submit" value="Valider !" class="test"></center>
+	<p><input type="submit" value="Valider !" class="test centrer">
 	</form>
 	<?php 
 	

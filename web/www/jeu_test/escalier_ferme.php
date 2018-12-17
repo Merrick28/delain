@@ -4,9 +4,11 @@ if(!defined("APPEL"))
 if(!isset($db))
 	include "verif_connexion.php";
 ?>
+<!DOCTYPE html>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Escalier fermé</title>
 </head>
 <body background="../images/fond5.gif">
 <?php include "tab_haut.php";
