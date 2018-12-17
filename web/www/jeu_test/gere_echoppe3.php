@@ -59,11 +59,11 @@ function startPane($tab, $index, $active_index)
 {
     if ($active_index == $index)
     {
-        echo "<div align=\"center\" id=\"pane$index\">";
+        echo "<div class='centrer' id=\"pane$index\">";
     }
     else
     {
-        echo "<div align=\"center\" id=\"pane$index\" style=\"display:none;\">";
+        echo "<div class='centrer' id=\"pane$index\" style=\"display:none;\">";
     }
     echo "<table class=\"tableauPane\">";
     echo "<tr>";
@@ -221,7 +221,7 @@ if ($methode == "visu")
         $seuil_force = $db->f("gobj_seuil_force");
         $seuil_dex   = $db->f("gobj_seuil_dex");
         echo "<p class=\"titre\">" . $db->f("gobj_nom") . "</p>";
-        echo "<center><table>";
+        echo "<div class='centrer'><table>";
 
         echo "<tr>";
         echo "<td class=\"soustitre2\"><p>Type d’objet :</td>";
@@ -326,7 +326,7 @@ if ($methode == "visu")
             echo "</tr>";
         }
 
-        echo "</table></center>";
+        echo "</table></div>";
     }
     else
     {
@@ -363,7 +363,7 @@ if ($methode == "visu2")
         $bonus_degats   = $db->f("obj_bonus_degats");
 
         echo "<p class=\"titre\">" . $db->f("obj_nom") . "</p>";
-        echo "<center><table>";
+        echo "<div class='centrer'><table>";
 
         echo "<tr>";
         echo "<td class=\"soustitre2\"><p>Type d'objet :</td>";
@@ -460,7 +460,7 @@ if ($methode == "visu2")
             echo "</tr>";
         }
 
-        echo "</table></center>";
+        echo "</table></div>";
     }
     else
     {
@@ -836,7 +836,7 @@ if (isset($_POST['methode']))
 
 <p class="titre">Gestion de : <?php echo $lieu_nom ?> - (<?php echo $pos_x ?>, <?php echo $pos_y ?>
     , <?php echo $etage_libelle ?>, <?php echo $lieu_compte ?> Br en caisse)</p>
-<div align="center">
+<div class="centrer">
     <div id="intro" class="tableau2">
         <p>Information aux gérants </p>
         <p>Ceci est une page en cours de développement, ce qui veut principalement dire qu'elle ne fonctionne pas. Elle
@@ -873,14 +873,14 @@ if (isset($_POST['methode']))
             <input type="hidden" name="n_dest" value="<?php echo $liste_clients ?>">
             <input type="hidden" name="dmsg_cod">
         </form>
-        <p style=text-align:center>
-            <a href="javascript:document.message.submit();">Envoyer un message à tous les clients !</a><br>
+
+            <a class="centrer" href="javascript:document.message.submit();">Envoyer un message à tous les clients !</a><br>
 
         <form name="description" method="post" action="gere_echoppe4.php">
             <input type="hidden" name="mag" value="<?php echo $mag ?>">
             <input type="hidden" name="methode" value="nom">
         </form>
-        <p style=text-align:center><strong><a href="javascript:document.description.submit();">Changer le nom et la
+        <strong><a class="centrer" href="javascript:document.description.submit();">Changer le nom et la
                     description</a></strong>
 
             <form name="refuge" method="post" action="gere_echoppe4.php">

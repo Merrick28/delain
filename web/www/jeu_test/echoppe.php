@@ -14,6 +14,7 @@ $param = new parametres();
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Echoppe</title>
 </head>
 <body background="../images/fond5.gif">
 <?php
