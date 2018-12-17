@@ -1,4 +1,5 @@
 <?php
+die('Fichier non utilisé, à supprimer ?');
 require G_CHE . "ident.php";
 include G_CHE . "/includes/classes_monstre.php";
 $db2 = new base_delain;

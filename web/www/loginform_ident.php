@@ -1,4 +1,5 @@
-<?php 
+<?php
+die('Fichier non utilisé, à supprimer ?');
 require_once "includes/classes.php";
 $erreur = 0;
 if (!isset($perso_nom))
