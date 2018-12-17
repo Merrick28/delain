@@ -2,7 +2,7 @@
 -- Name: efface_perso(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION efface_perso(integer) RETURNS numeric
+CREATE or replace FUNCTION efface_perso(integer) RETURNS numeric
 LANGUAGE plpgsql
 AS $_$/*****************************************************************/
 /* function efface_perso :Procédure d effacement de personnage   */
