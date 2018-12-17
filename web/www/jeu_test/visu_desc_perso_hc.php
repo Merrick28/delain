@@ -5,16 +5,18 @@ $perso->charge($_REQUEST['visu']);
 $race = new race;
 $race->charge($perso->perso_race_cod);
 
-$template     = $twig->load('visu_desc_perso_hc.twig');
+$template = $twig->load('visu_desc_perso_hc.twig');
 $options_twig = array(
     'PERSO' => $perso,
-    'RACE'  => $race
+    'RACE' => $race
 );
 echo $template->render(array_merge($options_twig_defaut, $options_twig));
 ?>
+<!DOCTYPE html>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Fiche perso</title>
 </head>
 <body background="<?php echo IMG_PATH; ?>/fond5.gif">
 <?php require "tab_haut.php";
