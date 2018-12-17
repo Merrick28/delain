@@ -1036,6 +1036,71 @@ class aquete_action
     }
 
     //==================================================================================================================
+    /**
+     * Création d'un portail sur le perso  =>  '[1:perso|1%1],[2:position|1%1],[3:valeur|1%1],[4:valeur|1%1]',
+     * p1=persos p2=position cible du portail p3=dispertion p4=nombre d'heure d'ouverture
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function teleportation_portail_perso(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'perso')) return false ;
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'position')) return false ;
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur')) return false ;
+
+        // Si le perso est vide, on prend le meneur de quete
+        $perso = new perso( $p1->aqelem_misc_cod == 0 ? $aqperso->aqperso_perso_cod : $p1->aqelem_misc_cod );
+        $portail_pos = $perso->get_position()["pos"]->pos_cod ;
+
+        $req = "select pos_alentour(:pos_cod, :dispersion) as portail_dest ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":pos_cod" => $p2->aqelem_misc_cod, ":dispersion" => $p3->aqelem_misc_cod), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+        $portail_dest = $result["portail_dest"];
+
+        // Portail de départ
+        $req = "insert into lieu (lieu_tlieu_cod,lieu_nom,lieu_description,lieu_refuge,lieu_url,lieu_dest,lieu_port_dfin)
+                values(10,'Passage magique (quête)','Un passage crée par la magie...<br><br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<img src=\"../avatars/passage_entree.gif\"><br>','N','passage.php',?,?)
+                returning lieu_cod ;";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($portail_dest, "NOW()+'".$p4->aqelem_misc_cod." HOURS'::interval"), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+
+        $req = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values (?,?);";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array($portail_pos, $result["lieu_cod"]), $stmt);
+
+        // Portail d'arrivée
+        $req = "insert into lieu (lieu_tlieu_cod,lieu_nom,lieu_description,lieu_refuge,lieu_url,lieu_dest,lieu_port_dfin)
+                values(10,'Passage magique (quête)','Un passage crée par la magie. Il est fermé et ne peut être pris dans ce sens<br><br>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<img src=\"../avatars/passage_sortie.gif\"><br>','N','passage_b.php',0,?)
+                returning lieu_cod ;";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array("NOW()+'".$p4->aqelem_misc_cod." HOURS'::interval"), $stmt);
+        if (!$result = $stmt->fetch()) return false;
+
+        $req = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values (?,?);";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array($portail_dest, $result["lieu_cod"]), $stmt);
+
+        //- automap (mise à jour de l'automap avec les portail nouvellement créé)
+        $req = "select init_automap_pos(?) ; ";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array($portail_pos), $stmt);
+
+        $req = "select init_automap_pos(?) ; ";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array($portail_dest), $stmt);
+
+
+        return true;
+    }
+
+    //==================================================================================================================
 /*
 echo "<pre>"; print_r($p1); echo "</pre>";
 die();

@@ -122,39 +122,54 @@ class aquete_etape_modele
 
         if ($this->aqetapmodel_parametres=="") return $retour;
 
-        $l = explode(',', $this->aqetapmodel_parametres);
+        $l = explode('],[', $this->aqetapmodel_parametres);
         $desc = explode('|', $this->aqetapmodel_param_desc);
         foreach ($l as $k => $param)
         {
-            // Format de param=> [id:type|n%M] avec %M et |n%M  factultatif
-            $t = explode(':', str_replace("]","", str_replace("[","", $param)));
-            $id = 1*$t[0];
+            // Format de param=> [id:type|n%M|extension] avec %M et |n%M  factultatif
+            //$t = explode(':', str_replace("]","", str_replace("[","", $param)));
+            $p = str_replace("]","", str_replace("[","", $param)); // supression des caractères inutiles
+            $id = 1*(int)substr($p,0, strpos($p, ":")) ;
+            $p = substr($p,strpos($p, ":")+1) ;
             $n = -1 ;        // Par défaut
             $M = -1;         // Par défaut
+            $ext = array();
 
-            if (strpos($t[1],'|') !== false)
+            if (strpos($p,'|') !== false)
             {
                 // il y a des paramètres facultatifs
-                $t = explode('|', $t[1]);
+                $t = explode('|', $p);
                 $type = $t[0];
                 if (strpos($t[1], '%') !== false)
                 {
-                    $t = explode('%', $t[1]);
-                    $n = $t[0];
-                    $M = $t[1];
+                    $tn = explode('%', $t[1]);
+                    $n = $tn[0];
+                    $M = $tn[1];
                 }
                 else
                 {
                     $n = $t[1] ;
                 }
+
+                // traitement de l'extension sous la forme {%s1~%s2},{%s3~%s4}, etc... retourn un tablaeu (s1 => s2, s3 => s4, etc....)
+
+                if (strpos($t[2],'~') !== false)
+                {
+                    $e = explode("},{", $t[2] );
+                    foreach ($e as $ke => $pe)
+                    {
+                        $d = explode("~", str_replace("{","", str_replace("}","", $pe)));
+                        $ext[$d[0]] = $d[1] ;
+                    }
+                }
             }
             else
             {
                 // il n'y a pas de paramètres facultatifs retoruner les valeurs par defaut
-                $type = $t[1];
+                $type = $p;
             }
 
-            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k] ,'raw' => $param, 'texte' => ( $n<0 ? "liste de $type non-éditable" : ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max."))) );
+            $retour[$id] = array( "type" => $type, "n" => (1*$n), "M" => (1*$M), 'desc' => $desc[$k], "ext"=> $ext, 'raw' => $param, 'texte' => ( $n<0 ? "liste de $type non-éditable" : ($n>0 ? "$n " : "")."$type".( $M == 0 ? " parmi plusieurs" : ( $M == 1 ? "" : " parmi $M au max."))) );
         }
         return $retour;
     }
