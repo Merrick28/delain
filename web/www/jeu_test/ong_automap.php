@@ -6,7 +6,7 @@ include "../includes/fonctions.php";
 <input type="hidden" name="position">
 <input type="hidden" name="dist">
 </form>
-<center>
+<div class="centrer">
 
 
 <?php 
@@ -63,7 +63,7 @@ switch($methode)
 9	2	Batiment administratif
 */
 		?>
-		<p style="text-align:center"><a href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a></p>
+		<a class="centrer" href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a>
 <table>
 	<td>
 			<table background="../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">
@@ -299,28 +299,28 @@ switch($methode)
 <td>
 	<table>
 
-	<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_9.gif" style="width:8px;height:8px;"></td><td> Bâtiment administratif</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_10.gif" style="width:8px;height:8px;"></td><td> Passage magique, sortie d'antre, ...</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_11.gif" style="width:8px;height:8px;"></td><td> Magasin</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_13.gif" style="width:8px;height:8px;"></td><td> Centre de maitrise magique</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_14.gif" style="width:8px;height:8px;"></td><td> Magasin runique</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_17.gif" style="width:8px;height:8px;"></td><td> Temple, autel de prière</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_19.gif" style="width:8px;height:8px;"></td><td> Centre d'entrainement</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
-		<tr><td border="2" width="20" height="20" ><img src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
+	<tr><td border="2" width="20" height="20" ><img alt="Bâtiment administratif" src="../images/automap_0_9.gif" style="width:8px;height:8px;"></td><td> Bâtiment administratif</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Passage magique" src="../images/automap_0_10.gif" style="width:8px;height:8px;"></td><td> Passage magique, sortie d'antre, ...</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Magasin" src="../images/automap_0_11.gif" style="width:8px;height:8px;"></td><td> Magasin</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Centre de maîtrise magique" src="../images/automap_0_13.gif" style="width:8px;height:8px;"></td><td> Centre de maitrise magique</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Magasin runique" src="../images/automap_0_14.gif" style="width:8px;height:8px;"></td><td> Magasin runique</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Temple" src="../images/automap_0_17.gif" style="width:8px;height:8px;"></td><td> Temple, autel de prière</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Centre d'entrainement" src="../images/automap_0_19.gif" style="width:8px;height:8px;"></td><td> Centre d'entrainement</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Banque" src="../images/automap_0_20.gif" style="width:8px;height:8px;"></td><td> Banque</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Escalier, grands escaliers" src="../images/automap_0_7.gif" style="width:8px;height:8px;"></td><td> Escalier, grands escaliers</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Dispensaire" src="../images/automap_0_4.gif" style="width:8px;height:8px;"></td><td> Dispensaire</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Auberge" src="../images/automap_0_22.gif" style="width:8px;height:8px;"></td><td> Auberge</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Pancartes, indications" src="../images/automap_1_5.gif" style="width:8px;height:8px;"></td><td> Pancartes, indications</td></tr>
+		<tr><td border="2" width="20" height="20" ><img alt="Portails démoniaques" src="../images/automap_1_6.gif" style="width:8px;height:8px;"></td><td> Portails démoniaques</td></tr>
 	</table>
 </td>
 <?php 
 		}
 ?>
-</tr></table></center>
+</tr></table></div>
 <?php 
 		if ($automap_ok)
-			echo "<p style=\"text-align:center;\"><em>$p % de l’étage visité.</em></p>";
+			echo "<em class='centrer'>$p % de l’étage visité.</em>";
 
 		$req = "select etage_libelle from etage where etage_numero = $etage ";
 		$db->query($req);

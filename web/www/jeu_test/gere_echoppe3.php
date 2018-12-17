@@ -1252,8 +1252,8 @@ order by  perso_nom
             </select><br><br>
             Quantité :<input type="text" name="tran_quantite" value="1"><br><br>
             Prix total Proposé :<input type="text" name="tran_prix" value="0"><br><br>
-            <font color="red"> <strong>Attention: à ce prix sera ajouté 10% sur le montant total pour le transport
-                    !</strong></font>
+            <span class="rouge"> <strong>Attention: à ce prix sera ajouté 10% sur le montant total pour le transport
+                    !</strong></span>
             <input type="submit" value="Valider la transaction !">
         </form>
 

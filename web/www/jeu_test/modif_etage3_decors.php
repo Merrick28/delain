@@ -143,7 +143,7 @@ if ($erreur == 0)
         {
             $filename = "dec_{$decor_id}.gif" ;
             $imagesize = @getimagesize($_FILES["decor_file"]["tmp_name"]) ;
-            if (($imagesize[0] != 28) || ($imagesize[0] != 28))
+            if (($imagesize[0] != 28) || ($imagesize[1] != 28))
             {
                 echo "<strong>Impossible d'ajouter ce decor, l'image n'est pas aux dimensions de 28x28 pixels.</strong><br><br>";
             }
