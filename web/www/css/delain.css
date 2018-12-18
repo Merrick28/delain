@@ -253,10 +253,15 @@ hr {
 
 }
 
+div.centrer {
+    width: 100%;
+}
+
 .centrer {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 #descJeu span {
