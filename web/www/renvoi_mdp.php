@@ -2,10 +2,12 @@
 include "includes/classes.php";
 $db = new base_delain;
 ?>
+<!DOCTYPE html>
 <html>
 
     <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
     <head>
+        <title>Renvoi de mot de passe</title>
     </head>
 
     <body background="../images/fond5.gif">

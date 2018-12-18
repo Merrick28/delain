@@ -1,11 +1,13 @@
-<?php 
+<?php
 include "includes/classes.php";
 include "ident.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 ?>
+<!DOCTYPE html>
 <html>
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <head>
+    <title>Suppression de perso</title>
 </head>
 <body background="../images/fond5.gif">
 <?php include "jeu_test/tab_haut.php";
@@ -18,24 +20,21 @@ $req_perso = "select pcompt_perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh
 										and ppos_pos_cod = pos_cod 
 										order by perso_cod ";
 $db->query($req_perso);
-	$nb_perso = $db->nf();
+$nb_perso = $db->nf();
 
-	if ($nb_perso == 0)
-	{
-		echo("<p>Aucun joueur dirigé.");
-	}
-	else
-	{
-		echo("<table border=\"0\">");
-		echo("<form name=\"login\" method=\"post\" action=\"valide_suppr_perso1.php\">");
-		echo("<input type=\"hidden\" name=\"perso\">");
-		echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
-				
-		include "tab_switch.php";
-		
-		echo("</table>");	
-		echo("</form>");
-	}
+if ($nb_perso == 0) {
+    echo("<p>Aucun joueur dirigé.");
+} else {
+    echo("<table border=\"0\">");
+    echo("<form name=\"login\" method=\"post\" action=\"valide_suppr_perso1.php\">");
+    echo("<input type=\"hidden\" name=\"perso\">");
+    echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
+
+    include "tab_switch.php";
+
+    echo("</table>");
+    echo("</form>");
+}
 include "jeu_test/tab_bas.php";
 ?>
 </body>
