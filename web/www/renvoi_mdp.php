@@ -12,6 +12,10 @@ $db = new base_delain;
 
     <body background="../images/fond5.gif">
         <?php
+
+        use PHPMailer\PHPMailer\PHPMailer;
+        use PHPMailer\PHPMailer\Exception;
+
         include "jeu_test/tab_haut.php";
         if (!isset($methode))
         {
@@ -75,6 +79,9 @@ $db = new base_delain;
                     $corps_mail   = $template->render(array_merge($options_twig_defaut,$options_twig));
                     //echo $corps_mail;
                     // on charge la classe mail
+
+
+
                     $mail       = new PHPMailer;
                     // smtp
                     $mail->Host = SMTP_HOST;
@@ -92,14 +99,17 @@ $db = new base_delain;
                     $mail->AddAddress($compte->compt_mail);
                     $mail->Subject  = 'Changement de mot de passe';
                     $mail->Body     = $corps_mail;
-                    if($mail->Send())
-                    {
+
+                    try{
+                        $mail->Send();
                         echo "Un mail vous a été envoyé avec les instructions pour générer un nouveau mot de passe";
                     }
-                    else
-                    {
+                    catch (Exception $e) {
                         echo "Erreur sur l'envoi du mail " . $mail->ErrorInfo;
+
                     }
+
+
                     unset($mail);
                     
                 }
