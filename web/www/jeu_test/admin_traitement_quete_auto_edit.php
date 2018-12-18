@@ -109,13 +109,26 @@ case "sauve_etape":
         $quete->aquete_etape_cod = $etape->aqetape_cod ;
         $quete->stocke();
     }
-    else
+    else if ( $_REQUEST['etape_position']=='' ||  $_REQUEST['etape_position']==0 )
     {
+        // A la fin de toutes les étapes
         $deniere_etape = $quete->get_derniere_etape();
 
         if (($deniere_etape->aqetape_cod != $etape->aqetape_cod ) && ($etape->aqetape_etape_cod == ''))
-    {
+        {
             // On vient juste d'ajouter une etape, il faut mettre à jour la précédente avec le N° de celle-ci
+            $deniere_etape->aqetape_etape_cod = $etape->aqetape_cod ;
+            $deniere_etape->stocke();
+        }
+    }
+    else if ($etape->aqetape_etape_cod == '')
+    {
+        // Insertion après l'étape souhaité
+        $deniere_etape = new aquete_etape;
+        if ($deniere_etape->charge($_REQUEST["etape_position"]))
+        {
+            $etape->aqetape_etape_cod = $deniere_etape->aqetape_etape_cod ;
+            $etape->stocke();
             $deniere_etape->aqetape_etape_cod = $etape->aqetape_cod ;
             $deniere_etape->stocke();
         }

@@ -18,11 +18,13 @@ echo '<script src="/scripts/sceditor-xhtml.min.js" type="text/javascript"></scri
 echo '<script>//# sourceURL=admin_quete_auto_edit.js
  $( document ).ready(function() {
     var textarea = document.getElementById("id-textarea-etape");
-    sceditor.create(textarea, {
-        format: "xhtml",
-        style: "/style/sceditor.min.css",
-        toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|table,quote,image|maximize|source",
-    });
+    if (textarea) {
+        sceditor.create(textarea, {
+            format: "xhtml",
+            style: "/style/sceditor.min.css",
+            toolbar: "bold,italic,underline,strike,subscript,superscript|left,center,right,justify|size,color,removeformat|table,quote,image|maximize|source",
+        });
+    }
 });
 </script>';
 //
@@ -132,6 +134,8 @@ if ($erreur == 0)
             $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
+            $liste_etape = array();
+            $liste_etape[0]="Tout à la fin";
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
             //if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><strong>ATTENTION</strong></u>: il y a déjà <strong>'.$nb_quete_en_cours.'</strong> perso(s) en cours de réalisation de cette quête.</td></tr>';
@@ -144,6 +148,9 @@ if ($erreur == 0)
                 $tag=date("mdHis");
                 foreach ($etapes as $k => $etape)
                 {
+                    // Preparation de la liste des etape pour la boite de selection
+                    $liste_etape[$etape->aqetape_cod]='Après #'.$etape->aqetape_cod.' : '.$etape->aqetape_nom;
+
                     $etape_modele = new aquete_etape_modele;
                     $etape_modele->charge($etape->aqetape_aqetapmodel_cod);    // On charge le modele de l'étape.
 
@@ -219,7 +226,16 @@ if ($erreur == 0)
             echo '<form  method="post"><input type="hidden" name="methode" value="ajoute_etape"/>';
             echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
             echo '<table width="80%" align="center">';
-            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetapmodel_cod", "select aqetapmodel_cod, aqetapmodel_nom from quetes.aquete_etape_modele {$filter} order by aqetapmodel_nom").' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
+            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetapmodel_cod", "select aqetapmodel_cod, aqetapmodel_nom from quetes.aquete_etape_modele {$filter} order by aqetapmodel_nom").' et <input class="test" type="submit" value="ajouter une étape"" />';
+            if ( $etapes)
+            {
+                echo '&nbspinserer&nbsp:&nbsp'.create_selectbox("etape_position", $liste_etape, "",array("style"=>"style='width:250px;'")).'</td></tr>';
+            }
+            else
+            {
+                echo '<input type="hidden" name="etape_position" value="0">';
+            }
+            echo '</td></tr>';
             echo '</table>';
             echo '</form>';
         }
@@ -251,6 +267,7 @@ if ($erreur == 0)
                 <form  method="post"><input type="hidden" id="etape-methode" name="methode" value="sauve_etape" />
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <input type="hidden" name="aqetape_cod" value="'.$aqetape_cod.'" />
+                <input type="hidden" name="etape_position" value="'.$_REQUEST["etape_position"].'" />
                 <input type="hidden" name="aqetapmodel_cod" value="'.$aqetapmodel_cod.'" />
                 <table width="80%" align="center">';
 
@@ -580,15 +597,22 @@ if ($erreur == 0)
                         $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
 
                         echo   '<td>Element : 
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_cod : '').'"> 
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type=='element' ? $element->aqelem_cod : '').'"> 
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
+                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type=='element' ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($element->aqelem_type=='element' ? $element->aqelem_param_num_1 : '').'">
                                 &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "" ]);\'> 
                                 </td>';
                         break;
 
+                    case 'selecteur':
+                        echo   '<td>Selectionner :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> '.
+                                    create_selectbox("aqelem_misc_cod[{$param_id}][]", $param['ext'],($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : ''),array("id"=>$row_id.'aqelem_misc_cod'))
+                                    .'</td>';
+                        break;
                     default:
                         echo '<td>Type de paramètre inconnu</td>';
                     break;

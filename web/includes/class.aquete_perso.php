@@ -701,6 +701,24 @@ class aquete_perso
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
                     break;
+
+                case "#TELEPORTATION #PORTAIL #PERSO":
+                    // Création d'un portail, .
+                    $this->action->teleportation_portail_perso($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même le portail n'a pas été créé)
+                    break;
+
+                case "#TELEPORTATION #PORTAIL #POSITION":
+                    // Création d'un portail, .
+                    $this->action->teleportation_portail_position($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même le portail n'a pas été créé)
+                    break;
+
+                case "#TELEPORTATION #PERSO":
+                    // Création d'un portail, .
+                    $this->action->teleportation_perso($this);
+                    $status_etape = 1;      // 1 => ok etape suivante (même si la téléportation n'a pas été faite)
+                    break;
             }
 
             //------- traitement du status d'étape------------------------------
