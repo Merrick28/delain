@@ -75,8 +75,9 @@ $options_twig = array(
     'VALIDATION' => $validation
 );
 $corps_mail = $template->render(array_merge($options_twig_defaut, $options_twig));
-
-$mail = new PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+$mail = new PHPMailer(true);
 // smtp
 $mail->Host = SMTP_HOST;
 $mail->Port = SMTP_PORT;
@@ -94,18 +95,13 @@ $mail->FromName = 'Le robot des souterrains';
 $mail->AddAddress($compte->compt_mail);
 $mail->Subject = 'Inscription à Delain';
 $mail->Body = $corps_mail;
-if ($mail->Send())
-{
+try{
+    $mail->Send();
+}
+catch (Exception $e) {
     $template = $twig->load('formu_cree_compte2.twig');
     $options_twig = array(
-        'MAIL' => $compte->compt_mail
-    );
-    echo $template->render(array_merge($options_twig_defaut, $options_twig));
-} else
-{
-    $template = $twig->load('formu_cree_compte2.twig');
-    $options_twig = array(
-        'ERROR_MESSAGE' => print_r($smtp->errors, true)
+        'ERROR_MESSAGE' => print_r($mail->ErrorInfo, true)
     );
     echo $template->render(array_merge($options_twig_defaut, $options_twig));
 }
