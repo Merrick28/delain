@@ -1,14 +1,6 @@
 <?php
 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 
 
 //	Préparer la liste des images d'avatar déjà présete sur le serveur.
@@ -36,48 +28,48 @@ while (false !== ($filename = readdir($rep)))
 $contenu_page = '';
 ob_start();
 ?>
-<SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
-<script language="javascript" src="../scripts/validation.js"></script>
-<script language="javascript" src="../scripts/manip_css.js"></script>
-<script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
-<script language="javascript">//# sourceURL=admin_type_monstre_edit.js
-    function updatePv() {
-        objet = document.getElementById("ChampPvCalcul");
-        constit = parseInt(document.getElementById("constit").value);
-        niveau = parseInt(document.getElementById("niveau").value);
-        objet.innerHTML = parseInt(2 * constit + (niveau - 1) * (constit + 12) / 8);
-    }
-
-    function preview_image(event) {
-        var reader = new FileReader();
-        reader.onload = function () {
-            var output = document.getElementById('output_image');
-            output.src = reader.result;
-            $("#type-img-avatar").val("upload");
-            $("#id-gmon_avatar").val("defaut.png");     // en cas de mauvais upload de l'image
+    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></script>
+    <script language="javascript" src="../scripts/validation.js"></script>
+    <script language="javascript" src="../scripts/manip_css.js"></script>
+    <script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
+    <script language="javascript">//# sourceURL=admin_type_monstre_edit.js
+        function updatePv() {
+            objet = document.getElementById("ChampPvCalcul");
+            constit = parseInt(document.getElementById("constit").value);
+            niveau = parseInt(document.getElementById("niveau").value);
+            objet.innerHTML = parseInt(2 * constit + (niveau - 1) * (constit + 12) / 8);
         }
-        reader.readAsDataURL(event.target.files[0]);
-    }
 
-    function open_imglist() {
-        if ($("#images-container").css("display") == "none") {
-            $("#images-container").css("width", $("#images-container").parent().width());
-            $("#images-container").css("white-space", "nowrap");
-            $("#images-container").css("display", "");
-        } else {
+        function preview_image(event) {
+            var reader = new FileReader();
+            reader.onload = function () {
+                var output = document.getElementById('output_image');
+                output.src = reader.result;
+                $("#type-img-avatar").val("upload");
+                $("#id-gmon_avatar").val("defaut.png");     // en cas de mauvais upload de l'image
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function open_imglist() {
+            if ($("#images-container").css("display") == "none") {
+                $("#images-container").css("width", $("#images-container").parent().width());
+                $("#images-container").css("white-space", "nowrap");
+                $("#images-container").css("display", "");
+            } else {
+                $("#images-container").css("display", "none");
+            }
+        }
+
+        function select_imglist(img) {
+            $("#output_image")[0].src = $("#img-serveur-" + img)[0].src;
             $("#images-container").css("display", "none");
+            $("#type-img-avatar").val("server");
+            var path_image = $("#img-serveur-" + img)[0].src.split("/");
+            var file_image = path_image[path_image.length - 1];
+            $("#id-gmon_avatar").val(file_image);
         }
-    }
-
-    function select_imglist(img) {
-        $("#output_image")[0].src = $("#img-serveur-" + img)[0].src;
-        $("#images-container").css("display", "none");
-        $("#type-img-avatar").val("server");
-        var path_image = $("#img-serveur-" + img)[0].src.split("/");
-        var file_image = path_image[path_image.length - 1];
-        $("#id-gmon_avatar").val(file_image);
-    }
-</script>
+    </script>
 <?php $erreur = 0;
 $req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
@@ -1108,7 +1100,8 @@ if ($erreur == 0)
                             <TD colspan="2">Perso N&deg;<?php echo $gmon_cod ?> Nom:<input type="text" name="gmon_nom"
                                                                                            value=""><BR>
                             </TD>
-                            <TD colspan="2"><img alt="avatar" onclick="open_imglist();" style="vertical-align:top;" id="output_image"
+                            <TD colspan="2"><img alt="avatar" onclick="open_imglist();" style="vertical-align:top;"
+                                                 id="output_image"
                                                  height="60px" src="/images/avatars/defaut.png">
 
                                 <div style="display:inline-block"><input type="file" name="avatar_file" accept="image/*"
@@ -1293,12 +1286,9 @@ if ($erreur == 0)
 
 ?>
 
-<p style="text-align:center;"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <a class="centrer" href="<?php echo $PHP_SELF ?>">Retour au début</a>
 
-    <?php //include"../logs/monstre_edit.log";
-    $contenu_page = ob_get_contents();
-    ob_end_clean();
-    $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-    $t->parse('Sortie', 'FileRef');
-    $t->p('Sortie');
-    ?>
+<?php //include"../logs/monstre_edit.log";
+$contenu_page = ob_get_contents();
+ob_end_clean();
+include "blocks/_footer_page_jeu.php";

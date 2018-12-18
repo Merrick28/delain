@@ -1,16 +1,5 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+<?php
+include "blocks/_header_page_jeu.php";
 // on regarde si le joueur est bien sur un centre d’entrainement
 $erreur = 0;
 
@@ -160,6 +149,4 @@ if ($erreur == 0)
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";

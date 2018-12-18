@@ -1,14 +1,8 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
+<?php
+
+include "blocks/_header_page_jeu.php";
+
 include_once '../includes/tools.php';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
 
 
 echo '<link href="/styles/sceditor.min.css" rel="stylesheet">';
@@ -36,8 +30,7 @@ $db->query($req);
 if ($db->nf() == 0)
 {
     $droit['modif_animations'] = 'N';
-}
-else
+} else
 {
     $db->next_record();
     $droit['modif_animations'] = $db->f("dcompt_animations");
@@ -54,13 +47,13 @@ if ($erreur == 0)
     //=======================================================================================
     // On est admin ici, on a les droits sur les quetes
     // Traitement des paramètres
-    $aquete_cod = 1*$_REQUEST['aquete_cod'] ;
+    $aquete_cod = 1 * $_REQUEST['aquete_cod'];
     //-- traitement des actions
-    if(isset($_REQUEST['methode']))
+    if (isset($_REQUEST['methode']))
     {
         // Traitement des actions
-        define("APPEL",1);
-        include ("admin_traitement_quete_auto_edit.php");
+        define("APPEL", 1);
+        include("admin_traitement_quete_auto_edit.php");
     }
     //print_r($_REQUEST);
 
@@ -68,13 +61,14 @@ if ($erreur == 0)
     // == Constantes quete_auto
     //=======================================================================================
     //$request_select_etage_ref = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
-    $request_select_etage_ref = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc" ;
+    $request_select_etage_ref = "SELECT etage_numero, etage_libelle from etage where etage_reference = etage_numero order by etage_numero desc";
     $request_select_etage = "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
-			
+
     //=======================================================================================
     //-- On commence par l'édition de la quete elle-meme (ajout/modif)
     //---------------------------------------------------------------------------------------
-    if(!isset($_REQUEST['methode']) || ($_REQUEST['methode']=='edite_quete')) {
+    if (!isset($_REQUEST['methode']) || ($_REQUEST['methode'] == 'edite_quete'))
+    {
 
         // Liste des quetes existantes
         echo '  <TABLE width="80%" align="center">
@@ -97,7 +91,7 @@ if ($erreur == 0)
                 </TABLE>
                 <HR>';
 
-        echo '<strong>Caractéristiques de la Quête</strong>'. ($aquete_cod>0 ? " #$aquete_cod" : "");
+        echo '<strong>Caractéristiques de la Quête</strong>' . ($aquete_cod > 0 ? " #$aquete_cod" : "");
 
         // La quête elle-même ----------------------------------------------------------------------
         $quete = new aquete;
@@ -105,101 +99,97 @@ if ($erreur == 0)
 
         echo '  <br>
                 <form  method="post"><input type="hidden" name="methode" value="sauve_quete" />
-                <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
+                <input type="hidden" name="aquete_cod" value="' . $aquete_cod . '" />
                 <table width="80%" align="center">';
 
-        echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
-        echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="'.htmlspecialchars($quete->aquete_description).'"></td></tr>';
-        echo '<tr><td><strong>Quête ouverte </strong>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <em>activation/désactivation général</em></td></tr>';
-        echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="' . htmlspecialchars($quete->aquete_nom) . '"></td></tr>';
+        echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="' . htmlspecialchars($quete->aquete_description) . '"></td></tr>';
+        echo '<tr><td><strong>Quête ouverte </strong>:</td><td>' . create_selectbox("aquete_actif", array("O" => "Oui", "N" => "Non"), $quete->aquete_actif) . ' <em>activation/désactivation général</em></td></tr>';
+        echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="' . $quete->aquete_date_debut . '"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="' . $quete->aquete_date_fin . '"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="' . $quete->aquete_nb_max_instance . '"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
         echo '<tr style="display:none;"><td><strong></strong><del>Nb. participants max</del></strong>:</td><td><input disabled type="text" size=10 name="aquete_nb_max_participant" value="1"> <del><em>nb max de perso pouvant la faire ensemble (pas de limite si vide)</del></em></td></tr>';
-        echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="'.$quete->aquete_nb_max_rejouable.'"> <em>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="'.$quete->aquete_nb_max_quete.'"> <em>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="'.$quete->aquete_max_delai.'"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
-        echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>'.$quete->get_nb_en_cours().'</strong> quête en cours sur <strong>'.$quete->get_nb_total().'</strong> au total <em>(tous persos confondus)</em></td></tr>';
-        if ($aquete_cod==0)
+        echo '<tr><td><strong>Nb. rejouabilité</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_rejouable" value="' . $quete->aquete_nb_max_rejouable . '"> <em>nb de fois où elle peut être jouer par un même perso (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Nb. de quête</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_quete" value="' . $quete->aquete_nb_max_quete . '"> <em>nb de fois où elle peut être rejouer tous persos confondus (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Délai max. </strong><em style="font-size: 7pt;">(en jours)</em>:</td><td><input type="text" size=10 name="aquete_max_delai" value="' . $quete->aquete_max_delai . '"> <em>délai max alloué pour la quête (pas de limite si vide)</em></td></tr>';
+        echo '<tr><td><strong>Info sur Nb. Réalisation</strong>:</td><td style="color:#800000">Il y a <strong>' . $quete->get_nb_en_cours() . '</strong> quête en cours sur <strong>' . $quete->get_nb_total() . '</strong> au total <em>(tous persos confondus)</em></td></tr>';
+        if ($aquete_cod == 0)
         {
             // cas d'une nouvelle quete
             echo '<tr><td colspan="2"><input type="submit" value="Créer la quête" /></td></tr>';
             echo '</table>';
-        }
-        else
+        } else
         {
             // Lister les étapes déjà créées
-            $etapes = $quete->get_etapes() ;
+            $etapes = $quete->get_etapes();
             $nb_quete_en_cours = $quete->get_nb_en_cours();
 
             // La quete existe proposer l'ajout d'étape ==>  Si c'est la première etape, elle doit-être du type START
-            $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
+            $filter = (!$etapes || sizeof($etapes) == 0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'";
             echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
             //if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><strong>ATTENTION</strong></u>: il y a déjà <strong>'.$nb_quete_en_cours.'</strong> perso(s) en cours de réalisation de cette quête.</td></tr>';
             echo '</table>';
             echo '</form>';
             echo '<hr>';
 
-            if ( $etapes)
+            if ($etapes)
             {
-                $tag=date("mdHis");
+                $tag = date("mdHis");
                 foreach ($etapes as $k => $etape)
                 {
                     $etape_modele = new aquete_etape_modele;
                     $etape_modele->charge($etape->aqetape_aqetapmodel_cod);    // On charge le modele de l'étape.
 
 
-                    echo '<div id="etape-'.$etape->aqetape_cod.'" style="display: flex;"><div style="width: 30px;">';
-                    if ($k>1)
-                        echo '<a href="?methode=deplace_etape&tag='.$tag.'&move=up&aquete_cod='.$aquete_cod.'&aqetape_cod='.$etape->aqetape_cod.'#etape-'.$etape->aqetape_cod.'"><img src="/images/up-24.png"></a><br><br>';
-                    if(($etape->aqetape_etape_cod!=0) && ($k>0))
-                        echo '<a href="?methode=deplace_etape&tag='.$tag.'&move=down&aquete_cod='.$aquete_cod.'&aqetape_cod='.$etape->aqetape_cod.'#etape-'.$etape->aqetape_cod.'"><img src="/images/down-24.png"></a>';
+                    echo '<div id="etape-' . $etape->aqetape_cod . '" style="display: flex;"><div style="width: 30px;">';
+                    if ($k > 1)
+                        echo '<a href="?methode=deplace_etape&tag=' . $tag . '&move=up&aquete_cod=' . $aquete_cod . '&aqetape_cod=' . $etape->aqetape_cod . '#etape-' . $etape->aqetape_cod . '"><img src="/images/up-24.png"></a><br><br>';
+                    if (($etape->aqetape_etape_cod != 0) && ($k > 0))
+                        echo '<a href="?methode=deplace_etape&tag=' . $tag . '&move=down&aquete_cod=' . $aquete_cod . '&aqetape_cod=' . $etape->aqetape_cod . '#etape-' . $etape->aqetape_cod . '"><img src="/images/down-24.png"></a>';
                     echo '</div><div>';
 
-                    echo '<form  method="post"><input type="hidden" id="etape-methode-'.$k.'" name="methode" value=""/>';
-                    echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
-                    echo '<input type="hidden" name="aqetape_cod" value="'.$etape->aqetape_cod.'" />';
-                    echo '<input type="hidden" name="aqetapmodel_cod" value="'.$etape->aqetape_aqetapmodel_cod.'" />';
+                    echo '<form  method="post"><input type="hidden" id="etape-methode-' . $k . '" name="methode" value=""/>';
+                    echo '<input type="hidden" name="aquete_cod" value="' . $aquete_cod . '" />';
+                    echo '<input type="hidden" name="aqetape_cod" value="' . $etape->aqetape_cod . '" />';
+                    echo '<input type="hidden" name="aqetapmodel_cod" value="' . $etape->aqetape_aqetapmodel_cod . '" />';
                     echo "<font color='blue'>Etape #{$etape->aqetape_cod}:</font> <strong>{$etape->aqetape_nom}</strong> basée sur le modèle <strong>{$etape_modele->aqetapmodel_nom}</strong>:<br>";
                     echo "&nbsp;&nbsp;&nbsp;{$etape_modele->aqetapmodel_description} <br>";
                     echo "&nbsp;&nbsp;&nbsp;Texte de l'étape: <em style='color: white'>{$etape->aqetape_texte}</em><br>";
-                    echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
+                    echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-' . $k . '\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     $nb_encours_etape = $quete->get_nb_en_cours($etape->aqetape_cod);
-                    if (($k!=0 || sizeof($etapes)==1) && ($nb_encours_etape==0))
+                    if (($k != 0 || sizeof($etapes) == 1) && ($nb_encours_etape == 0))
                     {
                         $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
-                        if ($nb_quete_en_cours>0)
-                            echo 'Il y a <strong>'.$nb_quete_en_cours.'</strong> persos en cours à cette étape (<em style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
+                        if ($nb_quete_en_cours > 0)
+                            echo 'Il y a <strong>' . $nb_quete_en_cours . '</strong> persos en cours à cette étape (<em style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
                         else
-                            echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
-                    }
-                    else if ($nb_encours_etape>0)
+                            echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-' . $k . '\').val(\'supprime_etape\');">';
+                    } else if ($nb_encours_etape > 0)
                     {
-                        echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><strong>ATTENTION</strong></u>: il y a <strong>'.$nb_encours_etape.'</strong> quête en cours de réalisation à cette etape. (<em style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</em>)</span>';
+                        echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><strong>ATTENTION</strong></u>: il y a <strong>' . $nb_encours_etape . '</strong> quête en cours de réalisation à cette etape. (<em style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</em>)</span>';
                     }
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (($etape_modele->aqetapmodel_tag=="#CHOIX")||($etape_modele->aqetapmodel_tag=="#SAUT"))
+                    if (($etape_modele->aqetapmodel_tag == "#CHOIX") || ($etape_modele->aqetapmodel_tag == "#SAUT"))
                     {
-                        $type_saut = $etape_modele->aqetapmodel_tag=="#CHOIX" ? "conditionnel" : "inconditionnel" ;
+                        $type_saut = $etape_modele->aqetapmodel_tag == "#CHOIX" ? "conditionnel" : "inconditionnel";
                         $element = new aquete_element;
-                        $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
+                        $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1);
                         foreach ($elements as $k => $element)
                         {
-                            if ($element->aqelem_misc_cod>0)
+                            if ($element->aqelem_misc_cod > 0)
                             {
                                 $e = new aquete_etape;
                                 if (!$e->charge($element->aqelem_misc_cod))    // on charge l'étape pour récupérer le nom!
                                 {
                                     echo "<strong style='color: red'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em style='color: red'>(étape inexistante)</em><br>";
-                                }
-                                else
+                                } else
                                 {
                                     echo "<strong style='color: blue'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
                                 }
-                            }
-                            else if ($etape_modele->aqetapmodel_tag=="#SAUT")
+                            } else if ($etape_modele->aqetapmodel_tag == "#SAUT")
                             {
                                 echo "<strong style='color: blue'>&rArr; Fin de la quête</strong> <br>";
                             }
@@ -207,9 +197,9 @@ if ($erreur == 0)
                     }
 
 
-                    if ($etape_modele->aqetapmodel_tag=="#END #KO")
+                    if ($etape_modele->aqetapmodel_tag == "#END #KO")
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';
-                    else if ( ($etape_modele->aqetapmodel_tag=="#END #OK") || ($k == count($etapes)-1))
+                    else if (($etape_modele->aqetapmodel_tag == "#END #OK") || ($k == count($etapes) - 1))
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête avec Succès</strong>&nbsp;&nbsp;</div>';
                     else
                         echo '<hr>';
@@ -217,9 +207,9 @@ if ($erreur == 0)
             }
 
             echo '<form  method="post"><input type="hidden" name="methode" value="ajoute_etape"/>';
-            echo '<input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />';
+            echo '<input type="hidden" name="aquete_cod" value="' . $aquete_cod . '" />';
             echo '<table width="80%" align="center">';
-            echo '<tr style=""><td colspan="2">Choisir un type d\'étape '.create_selectbox_from_req("aqetapmodel_cod", "select aqetapmodel_cod, aqetapmodel_nom from quetes.aquete_etape_modele {$filter} order by aqetapmodel_nom").' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
+            echo '<tr style=""><td colspan="2">Choisir un type d\'étape ' . create_selectbox_from_req("aqetapmodel_cod", "select aqetapmodel_cod, aqetapmodel_nom from quetes.aquete_etape_modele {$filter} order by aqetapmodel_nom") . ' et <input class="test" type="submit" value="ajouter une étape"" /></td></tr>';
             echo '</table>';
             echo '</form>';
         }
@@ -230,34 +220,34 @@ if ($erreur == 0)
     //=======================================================================================
     //-- Section dédiée aux étapes (ajout/modif)
     //---------------------------------------------------------------------------------------
-    else if ( ( $_REQUEST['methode'] == "edite_etape" ) || ( $_REQUEST['methode'] == "ajoute_etape" ) )
+    else if (($_REQUEST['methode'] == "edite_etape") || ($_REQUEST['methode'] == "ajoute_etape"))
     {
         $quete = new aquete;
         $quete->charge($aquete_cod);    // On charge la quete
 
-        $aqetapmodel_cod = 1*$_REQUEST["aqetapmodel_cod"] ;
+        $aqetapmodel_cod = 1 * $_REQUEST["aqetapmodel_cod"];
         $etape_modele = new aquete_etape_modele;
         $etape_modele->charge($aqetapmodel_cod);    // On charge le modele de l'étape.
 
-        $aqetape_cod = 1*$_REQUEST["aqetape_cod"] ;
+        $aqetape_cod = 1 * $_REQUEST["aqetape_cod"];
         $etape = new aquete_etape;
         $etape->charge($aqetape_cod);    // On charge l'étape elle-même.
 
-        echo '<strong>Quête</strong> #'.$aquete_cod.' - '.$quete->aquete_nom.'<br><hr>';
-        echo '<strong>Caractéristiques de l\'étape</strong>'. ($aqetape_cod>0 ? " #$aqetape_cod" : "");
+        echo '<strong>Quête</strong> #' . $aquete_cod . ' - ' . $quete->aquete_nom . '<br><hr>';
+        echo '<strong>Caractéristiques de l\'étape</strong>' . ($aqetape_cod > 0 ? " #$aqetape_cod" : "");
 
         // Mise en forme de l'étape pour la saisie des infos.
         echo '  <br>
                 <form  method="post"><input type="hidden" id="etape-methode" name="methode" value="sauve_etape" />
-                <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
-                <input type="hidden" name="aqetape_cod" value="'.$aqetape_cod.'" />
-                <input type="hidden" name="aqetapmodel_cod" value="'.$aqetapmodel_cod.'" />
+                <input type="hidden" name="aquete_cod" value="' . $aquete_cod . '" />
+                <input type="hidden" name="aqetape_cod" value="' . $aqetape_cod . '" />
+                <input type="hidden" name="aqetapmodel_cod" value="' . $aqetapmodel_cod . '" />
                 <table width="80%" align="center">';
 
-        echo '<tr><td colspan="2">'.$etape_modele->aqetapmodel_description.'</td></tr>';
-        echo '<tr><td><strong>Exemple </strong>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
-        echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.htmlspecialchars($etape->aqetape_nom).'"></td></tr>';
-        echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
+        echo '<tr><td colspan="2">' . $etape_modele->aqetapmodel_description . '</td></tr>';
+        echo '<tr><td><strong>Exemple </strong>:</td><td>' . $etape_modele->aqetapmodel_modele . '<br><br></td></tr>';
+        echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="' . htmlspecialchars($etape->aqetape_nom) . '"></td></tr>';
+        echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">' . ($etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele) . '</textarea></td></tr>';
         echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em></td></tr>';
         echo '</table>';
 
@@ -268,334 +258,334 @@ if ($erreur == 0)
         {
 
             // Certains paramètres peuvent être remplacé par un paramètre d'étape déjà saisi précédement
-            if (( in_array($param['type'], array("perso", "lieu", "type_lieu", "objet_generique", "monstre_generique", "position" )) ) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true ; else $alternate_type = false ;
+            if ((in_array($param['type'], array("perso", "lieu", "type_lieu", "objet_generique", "monstre_generique", "position"))) && ($etape_modele->aqetapmodel_tag != '#START')) $alternate_type = true; else $alternate_type = false;
 
-            echo '<br><br><strong>Edition du paramètre ['.$param_id.']</strong>: <em>('.$param['texte'].')</em><br>';
-            echo $param['desc'].'</em><br><br>';
+            echo '<br><br><strong>Edition du paramètre [' . $param_id . ']</strong>: <em>(' . $param['texte'] . ')</em><br>';
+            echo $param['desc'] . '</em><br><br>';
 
-            if (1*$param['n']<0)
+            if (1 * $param['n'] < 0)
             {
                 // Pour les paramètre non-éditable on prépare juste une coquille vide
                 $row_id = "row-$param_id-0-";
-                echo   '<input id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$elements[0]->aqelem_cod.'"> 
-                        <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> ';
+                echo '<input id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $elements[0]->aqelem_cod . '"> 
+                        <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> ';
                 continue;       // paramètre suivant!
             }
 
             $element = new aquete_element;
-            $elements = $element->getBy_etape_param_id($aqetape_cod, $param_id) ;
-            if (!$elements) $elements[] =  new aquete_element;
-            while ( sizeof($elements) < (1*$param['n']) )   $elements[] =  new aquete_element;
-            $add_buttons = (1*$param['M']==1*$param['n'] && 1*$param['M']>0) ? false : true;
+            $elements = $element->getBy_etape_param_id($aqetape_cod, $param_id);
+            if (!$elements) $elements[] = new aquete_element;
+            while (sizeof($elements) < (1 * $param['n'])) $elements[] = new aquete_element;
+            $add_buttons = (1 * $param['M'] == 1 * $param['n'] && 1 * $param['M'] > 0) ? false : true;
 
             // Gestion du type "element" alternatif
             if ($alternate_type)
             {
                 echo 'Vous pouvez définir un nouveau paramètre ou choisir d\'utiliser un élément défini lors d\'une étape précédente:';
-                echo '<input type="hidden" id="alt-type-'.$param_id.'" name="element_type['.$param_id.']" value="'.($elements[0]->aqelem_type == "element" ? "element" : $param['type']).'">';
-                echo '<input type="button" value="Changer" onClick="switchQueteAutoParamRow(\''.$param_id.'\', \''.$param['type'].'\');"><br><br>';
+                echo '<input type="hidden" id="alt-type-' . $param_id . '" name="element_type[' . $param_id . ']" value="' . ($elements[0]->aqelem_type == "element" ? "element" : $param['type']) . '">';
+                echo '<input type="button" value="Changer" onClick="switchQueteAutoParamRow(\'' . $param_id . '\', \'' . $param['type'] . '\');"><br><br>';
             }
             echo '<table width="80%" align="center">';
             //echo '<input type="hidden" id="max-param-'.$param_id.'" value="'.$param['M'].'">';
 
             // En cas de type alternatif, il y a un ligne de saisie supplementaire
-            $style_tr = "display: block;" ;
+            $style_tr = "display: block;";
             if ($alternate_type)
             {
                 // affcihage de l'élement alternatif !
-                if ($elements[0]->aqelem_type == "element") $style_tr = "display: none;" ;
-                if ((1*$elements[0]->aqelem_misc_cod != 0) && ($elements[0]->aqelem_type == "element"))
+                if ($elements[0]->aqelem_type == "element") $style_tr = "display: none;";
+                if ((1 * $elements[0]->aqelem_misc_cod != 0) && ($elements[0]->aqelem_type == "element"))
                 {
-                    $aquete_etape = new aquete_etape ;
-                    $aquete_etape->charge( $elements[0]->aqelem_misc_cod );
-                    $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
+                    $aquete_etape = new aquete_etape;
+                    $aquete_etape->charge($elements[0]->aqelem_misc_cod);
+                    $aqelem_misc_nom = $aquete_etape->aqetape_nom;
                 }
 
                 $row_id = "row-$param_id-x-"; // paramètre en x pour ne pas parasiter avec les autres et pouvoir la distinguer !!
                 // Il faut aussi utilisé tous les champs num_2, num_3, etc.. même s'il ne son tpas utilisé pour ne pas avoir de déclage d'indice sur l'élément réel.
-                echo   '<tr style="'.($elements[0]->aqelem_type=='element' ? "display: block;" : "display: none;").'" id="alt-'.$param_id.'"><td colspan="2">Element d\'une autre étape :
-                                        <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_cod : '').'"> 
-                                        <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
-                                        <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                         #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
-                                         <input name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                         <input name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_2" type="hidden">
-                                        &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                        &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "'.$param['type'].'" ]);\'> 
+                echo '<tr style="' . ($elements[0]->aqelem_type == 'element' ? "display: block;" : "display: none;") . '" id="alt-' . $param_id . '"><td colspan="2">Element d\'une autre étape :
+                                        <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_cod : '') . '"> 
+                                        <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="element"> 
+                                        <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                         #<input data-entry="val" name="aqelem_param_num_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_1" type="text" size="2" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_param_num_1 : '') . '">
+                                         <input name="aqelem_param_num_2[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_num_3[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_2[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_2" type="hidden">
+                                         <input name="aqelem_param_txt_3[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_2" type="hidden">
+                                        &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                        &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","element","Rechercher un élément", [' . $aquete_cod . ', ' . $aqetape_cod . ', "' . $param['type'] . '" ]);\'> 
                                         </td>';
                 echo "</tr>";
             }
             //echo "$param_id => <pre>"; print_r($elements);echo "</pre>";
 
-            foreach($elements as $row => $element)
+            foreach ($elements as $row => $element)
             {
                 $row_id = "row-$param_id-$row-";
-                $aqelem_misc_nom = "" ;
-                echo   '<tr id="'.$row_id.'" style="'.$style_tr.'">';
-                if ($add_buttons) echo   '<td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), '.$param['n'].');"></td>';
+                $aqelem_misc_nom = "";
+                echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
+                if ($add_buttons) echo '<td><input type="button" class="test" value="Supprimer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), ' . $param['n'] . ');"></td>';
                 switch ($param['type'])
                 {
                     case 'perso':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $perso = new perso ;
-                                $perso->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $perso->perso_nom ;
-                            }
-                            echo   '<td>Perso :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'perso\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","perso","Rechercher un perso");\'> 
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $perso = new perso;
+                            $perso->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $perso->perso_nom;
+                        }
+                        echo '<td>Perso :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'perso\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","perso","Rechercher un perso");\'> 
                                     </td>';
-                    break;
+                        break;
 
                     case 'lieu':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $lieu = new lieu ;
-                                $lieu->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $lieu->lieu_nom ;
-                            }
-                            echo   '<td>Lieu :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'lieu\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu","Rechercher un lieu");\'> 
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $lieu = new lieu;
+                            $lieu->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $lieu->lieu_nom;
+                        }
+                        echo '<td>Lieu :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'lieu\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","lieu","Rechercher un lieu");\'> 
                                     </td>';
-                    break;
+                        break;
 
                     case 'position':
-                            $etage_reference = "";
-                            $pos_x = "";
-                            $pos_y = "";
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        $etage_reference = "";
+                        $pos_x = "";
+                        $pos_y = "";
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $position = new positions();
+                            $position->charge($element->aqelem_misc_cod);
+                            $etage = new etage();
+                            $etage->getByNumero($position->pos_etage);
+                            $etage_reference = $etage->etage_reference;
+                            $pos_x = $position->pos_x;
+                            $pos_y = $position->pos_y;
+                            $aqelem_misc_nom = 'Etage:' . $etage->etage_reference . ': X=' . $position->pos_x . ',Y=' . $position->pos_y . ' - ' . $etage->etage_libelle;
+                            $lpos = new lieu_position();
+                            if ($lpos->getByPos($element->aqelem_misc_cod))
                             {
-                                $position = new positions() ;
-                                $position->charge( $element->aqelem_misc_cod );
-                                $etage = new etage();
-                                $etage->getByNumero($position->pos_etage);
-                                $etage_reference = $etage->etage_reference ;
-                                $pos_x = $position->pos_x ;
-                                $pos_y = $position->pos_y ;
-                                $aqelem_misc_nom = 'Etage:'.$etage->etage_reference.': X='.$position->pos_x.',Y='.$position->pos_y.' - '.$etage->etage_libelle ;
-                                $lpos = new lieu_position();
-                                if ($lpos->getByPos( $element->aqelem_misc_cod ))
-                                {
-                                    $lieu = new lieu();
-                                    $lieu->charge($lpos->lpos_lieu_cod);
-                                    $aqelem_misc_nom.= " (".$lieu->lieu_nom.")";
-                                }
+                                $lieu = new lieu();
+                                $lieu->charge($lpos->lpos_lieu_cod);
+                                $aqelem_misc_nom .= " (" . $lieu->lieu_nom . ")";
                             }
-                            echo   '<td>Position :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'position\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","position","Rechercher une position",["'.$etage_reference.'","'.$pos_x,'","'.$pos_y.'"]);\'> 
+                        }
+                        echo '<td>Position :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'position\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","position","Rechercher une position",["' . $etage_reference . '","' . $pos_x, '","' . $pos_y . '"]);\'> 
                                     </td>';
-                    break;
+                        break;
 
                     case 'objet_generique':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $gobj = new objet_generique ;
-                                $gobj->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $gobj->gobj_nom ;
-                            }
-                            echo   '<td>Objet générique :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $gobj = new objet_generique;
+                            $gobj->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $gobj->gobj_nom;
+                        }
+                        echo '<td>Objet générique :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
                                     </td>';
-                    break;
+                        break;
 
                     case 'race':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $gobj = new objet_generique ;
-                                $gobj->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $gobj->gobj_nom ;
-                            }
-                            echo   '<td>Race :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'race\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","race","Rechercher une race de monstre");\'> 
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $gobj = new objet_generique;
+                            $gobj->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $gobj->gobj_nom;
+                        }
+                        echo '<td>Race :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'race\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","race","Rechercher une race de monstre");\'> 
                                     </td>';
-                    break;
+                        break;
 
                     case 'lieu_type':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $lieu_type = new lieu_type ;
-                                $lieu_type->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $lieu_type->tlieu_libelle ;
-                            }
-                            echo   '<td>Type de lieu :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'lieu_type\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","lieu_type","Rechercher un type de lieu");\'>
-                                    <br>Situé en dessous de&nbsp;:'.create_selectbox_from_req("aqelem_param_num_1[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_1,     array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 150px;" data-entry="val"')).'
-                                    et situé au dessus de:'.create_selectbox_from_req("aqelem_param_num_2[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_2,     array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 150px;" data-entry="val"')).'
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $lieu_type = new lieu_type;
+                            $lieu_type->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $lieu_type->tlieu_libelle;
+                        }
+                        echo '<td>Type de lieu :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'lieu_type\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","lieu_type","Rechercher un type de lieu");\'>
+                                    <br>Situé en dessous de&nbsp;:' . create_selectbox_from_req("aqelem_param_num_1[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_1, array('id' => "{$row_id}aqelem_param_num_1", 'style' => 'style="width: 150px;" data-entry="val"')) . '
+                                    et situé au dessus de:' . create_selectbox_from_req("aqelem_param_num_2[$param_id][]", $request_select_etage_ref, $element->aqelem_param_num_2, array('id' => "{$row_id}aqelem_param_num_2", 'style' => 'style="width: 150px;" data-entry="val"')) . '
                                     
                                     </td>';
-                    break;
+                        break;
 
                     case 'old_position':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $position = new positions() ;
-                                $position->charge( $element->aqelem_misc_cod );
-                                $element->aqelem_param_num_1 = $position->pos_x ;
-                                $element->aqelem_param_num_2 = $position->pos_y ;
-                                $element->aqelem_param_num_3 = $position->pos_etage ;
-                            }
-                            echo   '<td>Position :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="hidden" size="5" value="'.$element->aqelem_misc_cod.'">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    X = <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
-                                    Y = <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
-                                    Etage&nbsp;:'.create_selectbox_from_req("aqelem_param_num_3[$param_id][]", $request_select_etage, $element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 350px;" data-entry="val" onChange="setQuetePositionCod(\''.$row_id.'\');"')).'                                   
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
+                        {
+                            $position = new positions();
+                            $position->charge($element->aqelem_misc_cod);
+                            $element->aqelem_param_num_1 = $position->pos_x;
+                            $element->aqelem_param_num_2 = $position->pos_y;
+                            $element->aqelem_param_num_3 = $position->pos_etage;
+                        }
+                        echo '<td>Position :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="hidden" size="5" value="' . $element->aqelem_misc_cod . '">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    X = <input data-entry="val" name="aqelem_param_num_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_num_1" type="text" size="5" value="' . $element->aqelem_param_num_1 . '" onChange="setQuetePositionCod(\'' . $row_id . '\');">&nbsp;
+                                    Y = <input data-entry="val" name="aqelem_param_num_2[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_num_2" type="text" size="5" value="' . $element->aqelem_param_num_2 . '" onChange="setQuetePositionCod(\'' . $row_id . '\');">&nbsp;
+                                    Etage&nbsp;:' . create_selectbox_from_req("aqelem_param_num_3[$param_id][]", $request_select_etage, $element->aqelem_param_num_3, array('id' => "{$row_id}aqelem_param_num_3", 'style' => 'style="width: 350px;" data-entry="val" onChange="setQuetePositionCod(\'' . $row_id . '\');"')) . '                                   
                                     </td>';
-                    break;
+                        break;
 
                     case 'monstre_generique':
-                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        if ((1 * $element->aqelem_misc_cod != 0) && ($element->aqelem_type == $param['type']))
                         {
-                            $gmon = new monstre_generique() ;
-                            $gmon->charge( $element->aqelem_misc_cod );
-                            $aqelem_misc_nom = $gmon->gmon_nom ;
+                            $gmon = new monstre_generique();
+                            $gmon->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $gmon->gmon_nom;
                         }
-                        echo   '<td>Monstre générique :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'monstre_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","monstre_generique","Rechercher un monstre générique");\'> 
-                                     <br>Mode d\'invocation &rArr;&nbsp;'.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Monstre","1"=>"Perso"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
-                                     &nbsp;'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Tangible","1"=>"Intangible"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
-                                     &nbsp;'.create_selectbox("aqelem_param_num_3[$param_id][]", array("0"=>"Standard","1"=>"Type PNJ"), 1*$element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                        echo '<td>Monstre générique :
+                                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_cod : '') . '"> 
+                                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($element->aqelem_type == $param['type'] ? $element->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'monstre_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","monstre_generique","Rechercher un monstre générique");\'> 
+                                     <br>Mode d\'invocation &rArr;&nbsp;' . create_selectbox("aqelem_param_num_1[$param_id][]", array("0" => "Monstre", "1" => "Perso"), 1 * $element->aqelem_param_num_1, array('id' => "{$row_id}aqelem_param_num_1", 'style' => 'style="width: 100px;" data-entry="val"')) . '
+                                     &nbsp;' . create_selectbox("aqelem_param_num_2[$param_id][]", array("0" => "Tangible", "1" => "Intangible"), 1 * $element->aqelem_param_num_2, array('id' => "{$row_id}aqelem_param_num_2", 'style' => 'style="width: 100px;" data-entry="val"')) . '
+                                     &nbsp;' . create_selectbox("aqelem_param_num_3[$param_id][]", array("0" => "Standard", "1" => "Type PNJ"), 1 * $element->aqelem_param_num_3, array('id' => "{$row_id}aqelem_param_num_3", 'style' => 'style="width: 100px;" data-entry="val"')) . '
                                    </td>';
                         break;
 
                     case 'choix':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Choix  :
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.htmlspecialchars($element->aqelem_param_txt_1).'"> <br>Etape si choisi:
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                        echo '<td>Choix  :
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_param_txt_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_txt_1" type="text" size="80" value="' . htmlspecialchars($element->aqelem_param_txt_1) . '"> <br>Etape si choisi:
+                                <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . $element->aqelem_misc_cod . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","etape","Rechercher une etape", [' . $aquete_cod . ',' . $aqetape_cod . ']);\'> 
                                 </td>';
                         break;
 
                     case 'delai':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Délai (<em>en jours</em>) :
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'"> (laisser à 0 si illimité), Etape si délai écoulé:
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                        echo '<td>Délai (<em>en jours</em>) :
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_param_num_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_num_1" type="text" size="2" value="' . $element->aqelem_param_num_1 . '"> (laisser à 0 si illimité), Etape si délai écoulé:
+                                <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . $element->aqelem_misc_cod . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","etape","Rechercher une etape", [' . $aquete_cod . ',' . $aqetape_cod . ']);\'> 
                                 </td>';
                         break;
 
                     case 'valeur':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Valeur :
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'">
+                        echo '<td>Valeur :
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_param_num_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_num_1" type="text" size="2" value="' . $element->aqelem_param_num_1 . '">
                                 </td>';
                         break;
 
                     case 'texte':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Texte :
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="95" value="'.htmlspecialchars($element->aqelem_param_txt_1).'">
+                        echo '<td>Texte :
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_param_txt_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_param_txt_1" type="text" size="95" value="' . htmlspecialchars($element->aqelem_param_txt_1) . '">
                                 </td>';
                         break;
 
                     case 'etape':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Etape : 
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                        echo '<td>Etape : 
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . $element->aqelem_misc_cod . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","etape","Rechercher une etape", [' . $aquete_cod . ',' . $aqetape_cod . ']);\'> 
                                 </td>';
                         break;
 
                     case 'quete_etape':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+                        $aquete_etape = new aquete_etape;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1 * $element->aqelem_misc_cod);
 
-                        echo   '<td>Etape : 
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                &nbsp;<i></i><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></i>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape");\'> 
+                        echo '<td>Etape : 
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . $element->aqelem_cod . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="' . $param['type'] . '"> 
+                                <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . $element->aqelem_misc_cod . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                &nbsp;<i></i><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></i>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","etape","Rechercher une etape");\'> 
                                 </td>';
                         break;
 
                     case 'element':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aquete_etape->charge( $element->aqelem_misc_cod ); ;
-                        $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
+                        $aquete_etape = new aquete_etape;
+                        $aquete_etape->charge($element->aqelem_misc_cod);;
+                        $aqelem_misc_nom = $aquete_etape->aqetape_nom;
 
-                        echo   '<td>Element : 
-                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_cod : '').'"> 
-                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="element"> 
-                                <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                #<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_misc_num_1" type="text" size="2" value="'.($elements[0]->aqelem_type=='element' ? $elements[0]->aqelem_param_num_1 : '').'">
-                                &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","element","Rechercher un élément", ['.$aquete_cod.', '.$aqetape_cod.', "" ]);\'> 
+                        echo '<td>Element : 
+                                <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_cod : '') . '"> 
+                                <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="element"> 
+                                <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_misc_cod : '') . '" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'etape\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
+                                #<input data-entry="val" name="aqelem_param_num_1[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_num_1" type="text" size="2" value="' . ($elements[0]->aqelem_type == 'element' ? $elements[0]->aqelem_param_num_1 : '') . '">
+                                &nbsp;<em></em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","element","Rechercher un élément", [' . $aquete_cod . ', ' . $aqetape_cod . ', "" ]);\'> 
                                 </td>';
                         break;
 
                     default:
                         echo '<td>Type de paramètre inconnu</td>';
-                    break;
+                        break;
                 }
                 echo "</tr>";
             }
-            if ($add_buttons) echo '<tr id="add-'.$row_id.'" style="'.$style_tr.'"><td> <input type="button" class="test" value="Nouveau" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(), '.$param['M'].');"> </td></tr>';
+            if ($add_buttons) echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input type="button" class="test" value="Nouveau" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(), ' . $param['M'] . ');"> </td></tr>';
             echo '</table>';
         }
 
@@ -614,10 +604,7 @@ if ($erreur == 0)
 // == Footer
 //=======================================================================================
 ?>
-<p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
-?>
+include "blocks/_footer_page_jeu.php";
