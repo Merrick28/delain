@@ -17,7 +17,7 @@ if ($erreur == 0)
 		case 4: require_once('quete.lieu.auberge.php');	break;
 		case 9: require_once('quete.lieu.bat_adm.php');	break;
 		case 13: require_once('quete.lieu.centre_maitrise_magique.php');	break;
-		case 14: require_once('quete.lieu.echoppe_runique.php');	break;
+		case 14: require_once('quete.lieu.centre_maitrise_magique.php');	break;
 		case 15: require_once('quete.lieu.poste_garde.php');	break;
 		case 17: require_once('quete.lieu.temple.php');	break;
 		case 23: require_once('quete.lieu.poste_garde.php');	break;

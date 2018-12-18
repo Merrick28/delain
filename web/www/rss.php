@@ -29,7 +29,7 @@ while($db->next_record())
 {
 	$ls_return.= '	<item>
 		<title>'.htmlspecialchars($db->f("news_titre")).'</title>
-		<link>http://www.jdr-delain.net/?news=' . $db->f('news_cod') . '</link>';
+		<link>https://www.jdr-delain.net/?news=' . $db->f('news_cod') . '</link>';
 	$texte_auteur = 'Auteur : ';
 	if ($db->f("news_mail_auteur") != "")
 		$texte_auteur .= '<a href="mailto:' . $db->f("news_mail_auteur") . '">';
