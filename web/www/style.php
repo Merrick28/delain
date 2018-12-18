@@ -127,6 +127,12 @@ margin-right: auto;
 div.centrer {
 width: 100%;
 }
+submit.centrer {
+display:block;
+}
+button.centrer {
+display:block;
+}
 <?php
 header('Content-Length: ' . ob_get_length());
 // Bleda 2/2/11 dÃ©jÃ  fait en footer. ob_end_flush();

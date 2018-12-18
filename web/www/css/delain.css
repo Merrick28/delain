@@ -256,7 +256,12 @@ hr {
 div.centrer {
     width: 100%;
 }
-
+submit.centrer {
+    display:block;
+}
+button.centrer {
+    display:block;
+}
 .centrer {
     text-align: center;
     margin-left: auto;
