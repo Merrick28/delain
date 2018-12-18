@@ -16,7 +16,7 @@ $contenu_page = '';
 ob_start();
 ?>
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php  echo $etage; ?>" title="essai">
-<SCRIPT LANGUAGE="JavaScript" src="base.js"></SCRIPT>
+
 <SCRIPT LANGUAGE="JavaScript" src="base2.js"></SCRIPT>
 <script type="text/javascript">
 

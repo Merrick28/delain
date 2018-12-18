@@ -8,7 +8,6 @@ include "verif_connexion.php";
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php echo $num_etage; ?>" title="essai">
 <head>
-    <SCRIPT LANGUAGE="JavaScript" src="base.js"></SCRIPT>
     <SCRIPT LANGUAGE="JavaScript" src="base2.js"></SCRIPT>
     <title>Vue étage</title>
 </head>
