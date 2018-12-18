@@ -1,4 +1,4 @@
-<?php include_once "verif_connexion.php";
+<?php
 include "blocks/_header_page_jeu.php";
 ob_start();
 
