@@ -340,3 +340,12 @@ img.imgFit {
     color: red;
 }
 
+.bordiv
+{
+    border-color:#800000;
+    border-style:solid;
+    border-radius: 10px;
+    background-image:url('../images/fondparchemin.gif');
+    padding:10px;
+}
+
