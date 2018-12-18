@@ -86,6 +86,7 @@ class aquete_action
         $element = new aquete_element();
         if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "quete_etape", 0)) return 0 ;    // Problème lecture passage à l'etape suivante
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape", 1)) return 0 ;          // Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;          // Problème lecture passage à l'etape suivante
 
         $filter_string = array() ;
         $filter = "aqperso_perso_cod=:aqperso_perso_cod AND ( " ;
@@ -106,12 +107,12 @@ class aquete_action
                 where {$filter} ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute($filter_string, $stmt);
-        if ($stmt->rowCount()==0) return 0;                 // Les conditions ne sont pas remplies, passage à l'étape suivante
+        if ($stmt->rowCount()==0) return $p3->aqelem_misc_cod ;                 // Les conditions ne sont pas remplies, passage à l'étape d'erreur
 
         $result = $stmt->fetch();
-        if (1*$result["count"] != count($p1))  return 0; // Les conditions ne sont pas remplies, passage à l'étape suivante
+        if (1*$result["count"] != count($p1))  return $p3->aqelem_misc_cod ; // Les conditions ne sont pas remplies, passage à l'étape d'erreur
 
-        // Le perso est passé par autant d'atape que demandé, on valide le saut d'atape à l'étape demandé!
+        // Le perso est passé par autant d'étape que demandé, on valide le saut d'étape à l'étape demandé!
         return $p2->aqelem_misc_cod ;
     }
 

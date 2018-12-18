@@ -187,11 +187,21 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (($etape_modele->aqetapmodel_tag=="#CHOIX")||($etape_modele->aqetapmodel_tag=="#SAUT"))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE")))
                     {
-                        $type_saut = $etape_modele->aqetapmodel_tag=="#CHOIX" ? "conditionnel" : "inconditionnel" ;
+                        $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE")))
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
+                            if ($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")
+                            {
+                                $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3));
+                            }
+                        } else
+                        {
+                            $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;
+                        }
                         foreach ($elements as $k => $element)
                         {
                             if ($element->aqelem_misc_cod>0)
@@ -206,7 +216,11 @@ if ($erreur == 0)
                                     echo "<strong style='color: blue'>&rArr; Saut {$type_saut} vers Etape #{$element->aqelem_misc_cod}</strong> <em>({$e->aqetape_nom})</em><br>";
                                 }
                             }
-                            else if ($etape_modele->aqetapmodel_tag=="#SAUT")
+                            else if ($element->aqelem_misc_cod==0)
+                            {
+                                echo "<strong style='color: blue'>&rArr; Etape suivante</strong> <br>";
+                            }
+                            else if ($element->aqelem_misc_cod<0) //if ($etape_modele->aqetapmodel_tag!="#CHOIX")
                             {
                                 echo "<strong style='color: blue'>&rArr; Fin de la quête</strong> <br>";
                             }
@@ -216,7 +230,7 @@ if ($erreur == 0)
 
                     if ($etape_modele->aqetapmodel_tag=="#END #KO")
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête sur un Echec</strong>&nbsp;&nbsp;</div>';
-                    else if ( ($etape_modele->aqetapmodel_tag=="#END #OK") || ($k == count($etapes)-1))
+                    else if ( (($etape_modele->aqetapmodel_tag=="#END #OK") || ($k == count($etapes)-1)) && ($etape_modele->aqetapmodel_tag!="#START") )
                         echo '<div class="hr">&nbsp;&nbsp;<strong  style=\'color: blue\'>Fin de la Quête avec Succès</strong>&nbsp;&nbsp;</div>';
                     else
                         echo '<hr>';
