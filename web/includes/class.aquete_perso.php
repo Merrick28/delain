@@ -716,7 +716,7 @@ class aquete_perso
 
                 case "#TELEPORTATION #PERSO":
                     // Création d'un portail, .
-                    $this->action->teleportation__perso($this);
+                    $this->action->teleportation_perso($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si la téléportation n'a pas été faite)
                     break;
             }

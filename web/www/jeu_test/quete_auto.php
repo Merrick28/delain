@@ -240,6 +240,7 @@ if ($methode=="")
                                 where aqperso_perso_cod={$perso_cod} AND aqperso_aquete_cod={$aquete_cod} and aqpersoj_quete_step!={$quete_perso->aqperso_quete_step} ORDER BY aqpersoj_quete_step";
                 $contenu_page2 .= "Retourner à la fin de : ". create_selectbox_from_req("aqpersoj_cod", $req, 0, array('style'=>'style="width:500px;"'))."&nbsp;<input class='test' type=\"submit\" value=\"Retourner à cet état\" />";
                 $contenu_page2 .= '<br><u>ATTENTION</u>: Après le retour au step choisi, tous les éléments de la quête pour ce perso seront supprimés comme s\'il n\'avaient jamais eu lieu.<br>';
+                $contenu_page2 .= '</form>';
             }
 
             $contenu_page2 .= "<div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>" ;

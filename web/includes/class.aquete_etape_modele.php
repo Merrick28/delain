@@ -151,8 +151,7 @@ class aquete_etape_modele
                     $n = $t[1] ;
                 }
 
-                // traitement de l'extension sous la forme {%s1~%s2},{%s3~%s4}, etc... retourn un tablaeu (s1 => s2, s3 => s4, etc....)
-
+                // traitement de l'extension sous la forme {%s1~%s2},{%s3~%s4}, etc... retourne un tablaeu (s1 => s2, s3 => s4, etc....)
                 if (strpos($t[2],'~') !== false)
                 {
                     $e = explode("},{", $t[2] );
