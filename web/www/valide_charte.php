@@ -2,10 +2,12 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-    <link rel="stylesheet" type="text/css" href="style.css" title="essai">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://www.jdr-delain.net//css/delain.css" rel="stylesheet">
     <title>Charte de Delain</title>
 </head>
-<br>
+<body>
+
 <div class="bordiv">
 
     <?php
@@ -28,8 +30,8 @@
             <strong>en entier</strong> ce document que vous allez accepter.<br><br>
 
             <div class="centrer">
-                <IFRAME name="charte des joueurs" SRC="http://www.jdr-delain.net/charte.php" border=0 frameborder=0
-                        height=350 width="80%"></IFRAME>
+                <IFRAME name="charte des joueurs" SRC="https://www.jdr-delain.net/charte.php" border=0 frameborder=0
+                        height=350 width="80%" title="charte"></IFRAME>
             </div><br>
             <form method="post" action="valide_charte.php">
                 <input type="hidden" name="methode" value="e1">
