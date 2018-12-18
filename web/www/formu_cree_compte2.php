@@ -97,6 +97,11 @@ $mail->Subject = 'Inscription à Delain';
 $mail->Body = $corps_mail;
 try{
     $mail->Send();
+    $template = $twig->load('formu_cree_compte2.twig');
+    $options_twig = array(
+        'MAIL' => $compte->compt_mail
+    );
+    echo $template->render(array_merge($options_twig_defaut, $options_twig));
 }
 catch (Exception $e) {
     $template = $twig->load('formu_cree_compte2.twig');
