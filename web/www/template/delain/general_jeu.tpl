@@ -6,11 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=0.75">
     <title>Les souterrains de Delain</title>
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-    <!-- Bootstrap custom CSS -->
-    <link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
+
     <!-- Custom delain CSS -->
     <link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
     <link rel="stylesheet" type="text/css" href="{URL}style.php">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <!-- Bootstrap custom CSS -->
+    <link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
+    <link href="{URL}css/delain.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>

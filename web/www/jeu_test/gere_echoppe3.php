@@ -37,6 +37,9 @@ ELOG_DEBIT
 */
 include "blocks/_header_page_jeu.php";
 ob_start();
+?>
+    <div class="bordiv">
+<?php
 $db2 = new base_delain;
 
 
@@ -75,7 +78,6 @@ echo '	<link rel="stylesheet" type="text/css" href="../styles/onglets.css" title
 		<script language="javascript" src="../scripts/onglets.js"></script>
 ';
 
-include "tab_haut.php";
 $erreur = 0;
 if (!isset($mag)) {
     echo "<p>Erreur sur la transmission du lieu_cod ";
@@ -276,7 +278,7 @@ if ($erreur == 0) {
         } else {
             echo "Vous n'avez pas le droit d'accéder à la description de cet objet</br>";
         }
-        include "tab_bas.php";
+
     }
 
     if ($methode == "visu2") {
@@ -400,7 +402,7 @@ if ($erreur == 0) {
         } else {
             echo "Vous n’avez pas le droit d’accéder à la description de cet objet</br>";
         }
-        include "tab_bas.php";
+
     }
 
     $select_pane = 0;
@@ -950,10 +952,10 @@ where mstock_lieu_cod = $lieu_cod
     endPane();
     startPane($liste_panels, 1, $select_pane);
     ?><p>B</p><?php
-    endPane();
-    startPane($liste_panels, 2, $select_pane);
-    // TRANSACTIONS
-    ?>
+endPane();
+startPane($liste_panels, 2, $select_pane);
+// TRANSACTIONS
+?>
     <div width="100%" align="left">
 
 
@@ -1359,6 +1361,8 @@ order by  lieu_nom
         endPane();
         ?>
     </div>
+    </div>
+
     <?php
 
 }

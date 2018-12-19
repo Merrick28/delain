@@ -1,6 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+?>
+    <div class="bordiv">
+<?php
 $erreur = 0;
 $req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
@@ -18,7 +21,6 @@ $db3 = new base_delain;
 if (!isset($methode)) {
     $methode = 'debut';
 }
-include "tab_haut.php";
 if ($erreur == 0) {
 
 // POSITION DU JOUEUR
@@ -85,23 +87,23 @@ if ($erreur == 0) {
     <hr>
 
     <hr>
-    <?php
-    $sel_etage = $perso_pos_etage;
-    if (isset($_POST['pos_etage'])) {
-        $sel_etage = $_POST['pos_etage'];
-    }
+<?php
+$sel_etage = $perso_pos_etage;
+if (isset($_POST['pos_etage'])) {
+    $sel_etage = $_POST['pos_etage'];
+}
 
-    $req_compo = "select ingrpos_gobj_cod, count(*) as nb
+$req_compo = "select ingrpos_gobj_cod, count(*) as nb
 	from ingredient_position
 	inner join positions on pos_cod = ingrpos_pos_cod
 	where  pos_etage = $sel_etage
 	group by ingrpos_gobj_cod";
-    $db->query($req_compo);
-    $tab_compo = array();
-    while ($db->next_record())
-        $tab_compo[$db->f('ingrpos_gobj_cod')] = $db->f('nb');
+$db->query($req_compo);
+$tab_compo = array();
+while ($db->next_record())
+    $tab_compo[$db->f('ingrpos_gobj_cod')] = $db->f('nb');
 
-    ?>
+?>
     Ajouter des composants dans le sol.
 
     Cette opération ne rajoute pas directement les composants, mais détermine un champ de composants, c'est à dire la valeur max de composants que la case va pouvoir contenir, ainsi que le pourcentage de repousse.
@@ -426,6 +428,7 @@ if ($erreur == 0) {
             ?>
         </tr>
     </table>
+    </div>
     <?php
     echo "<script type='text/javascript'>$js_coord</script>";
 }

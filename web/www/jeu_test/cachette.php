@@ -39,9 +39,7 @@ if ($db->nf() == 0)
     $fonction = $db->f("cache_fonction");
     if ($db->nf() == 0)
     {
-        include "tab_haut.php";
-        echo 'Vous cherchez à accéder à une page qui n\'existe pas !';
-        include "tab_bas.php";
+        echo '<div class="bordiv">Vous cherchez à accéder à une page qui n\'existe pas !</div>';
     } else
     {
         if (!isset($methode))
