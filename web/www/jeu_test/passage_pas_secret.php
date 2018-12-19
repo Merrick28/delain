@@ -20,21 +20,7 @@ if ($erreur == 0)
         echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
     }
 }
-if ($db->compte_objet($perso_cod, 86) != 0)
-{
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
-    $erreur = 1;
-}
-if ($db->compte_objet($perso_cod, 87) != 0)
-{
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
-    $erreur = 1;
-}
-if ($db->compte_objet($perso_cod, 88) != 0)
-{
-    echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
-    $erreur = 1;
-}
+include "blocks/_test_passage_medaillon.php";
 
 if ($erreur == 0)
 {
