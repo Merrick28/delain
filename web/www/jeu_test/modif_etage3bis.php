@@ -1,23 +1,14 @@
 <?php
 /* Création, modification des lieux */
 
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include_once('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 
 
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 {
     global $db, $compt_cod;
 
-    if ($texte)
-    {
+    if ($texte) {
         $log_sql = false;    // Mettre à true pour le debug des requêtes
 
         if (!$log_sql || $sql == '')
@@ -46,16 +37,13 @@ $contenu = '';
 $erreur = 0;
 $req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
-if ($db->nf() == 0)
-{
+if ($db->nf() == 0) {
     $droit['carte'] = 'N';
-} else
-{
+} else {
     $db->next_record();
     $droit['carte'] = $db->f("dcompt_modif_carte");
 }
-if ($droit['carte'] != 'O')
-{
+if ($droit['carte'] != 'O') {
     die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
 }
 
@@ -64,8 +52,7 @@ $db2 = new base_delain;
 $log = '';
 $resultat = '';
 
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     if (isset($pos_etage) && isset($lieu) && !isset($methode))
         $methode = 'début_modifier';
     if (isset($pos_etage) && !isset($lieu) && !isset($methode))
@@ -81,8 +68,7 @@ if ($erreur == 0)
     $etage_arene = $db->f("etage_arene");   // type donjon/arene de l'étage édité
 
     // Traitements des commandes
-    switch ($methode)
-    {
+    switch ($methode) {
         case "supprimer_lieu":
             $req = "select lieu_nom || '(n°' || lieu_cod::text || ', en ' || pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' - ' || etage_libelle || ')' as texte
 				from lieu
@@ -104,21 +90,17 @@ if ($erreur == 0)
         case "creer_lieu":
             $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
             $db->query($req);
-            if ($db->nf() == 0)
-            {
+            if ($db->nf() == 0) {
                 $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
                 $erreur = 1;
-            } else
-            {
+            } else {
                 $db->next_record();
                 $lieu_pos_cod = $db->f("pos_cod");
                 $lieu_dest_pos_cod = 'null';
-                if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL)
-                {
+                if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL) {
                     $req = "select pos_cod from positions where pos_x = $dest_pos_x and pos_y = $dest_pos_y and pos_etage = $dest_pos_etage";
                     $db->query($req);
-                    if ($db->nf() != 0)
-                    {
+                    if ($db->nf() != 0) {
                         $db->next_record();
                         $lieu_dest_pos_cod = $db->f("pos_cod");
                     }
@@ -135,11 +117,9 @@ if ($erreur == 0)
                 $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
                 $url = $db->get_value($req_url, 'tlieu_url');
 
-                if ($tlieu_cod == 29 || $tlieu_cod == 30)
-                {
+                if ($tlieu_cod == 29 || $tlieu_cod == 30) {
                     $cout_pa = $_POST['cout_pa'];
-                } else
-                {
+                } else {
                     $cout_pa = 30; /*correspond au prélèvement des magasins*/
                 }
                 $req = "insert into lieu (lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
@@ -172,21 +152,17 @@ if ($erreur == 0)
         case "modifier_lieu":
             $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
             $db->query($req);
-            if ($db->nf() == 0)
-            {
+            if ($db->nf() == 0) {
                 $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
                 $erreur = 1;
-            } else
-            {
+            } else {
                 $db->next_record();
                 $lieu_pos_cod = $db->f("pos_cod");
                 $lieu_dest_pos_cod = 'null';
-                if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL)
-                {
+                if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL) {
                     $req = "select pos_cod from positions where pos_x = $dest_pos_x and pos_y = $dest_pos_y and pos_etage = $dest_pos_etage";
                     $db->query($req);
-                    if ($db->nf() != 0)
-                    {
+                    if ($db->nf() != 0) {
                         $db->next_record();
                         $lieu_dest_pos_cod = $db->f("pos_cod");
                     }
@@ -223,11 +199,9 @@ if ($erreur == 0)
                 $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
                 $url = $db->get_value($req_url, 'tlieu_url');
 
-                if ($tlieu_cod == 29 || $tlieu_cod == 30)
-                {
+                if ($tlieu_cod == 29 || $tlieu_cod == 30) {
                     $cout_pa = $_POST['cout_pa'];
-                } else
-                {
+                } else {
                     $cout_pa = 30; /*correspond au prélèvement des magasins*/
                 }
                 $req = "update lieu set lieu_tlieu_cod=$tlieu_cod, lieu_nom=e'$nom', lieu_description=e'$description',
@@ -243,8 +217,7 @@ if ($erreur == 0)
                 $req = "select init_automap_pos(" . $lieu_pos_cod . ")";
                 $db->query($req);
 
-                if ($lieu_pos_cod != $pos_cod_avant)
-                {
+                if ($lieu_pos_cod != $pos_cod_avant) {
                     // Marlyza 2018-03-20: Si un lieu change de place, il faut aussi mettre l'automap de sa position précédente à jour.
                     $req = "select init_automap_pos(" . $pos_cod_avant . ")";
                     $db->query($req);
@@ -271,10 +244,9 @@ if ($erreur == 0)
 
     <div class="barrTitle"> Création / Modification des lieux</div>
     <br/>
-    <?php if ($resultat != '')
-{
-    ecrireResultatEtLoguer($resultat, $erreur == 0);
-}
+    <?php if ($resultat != '') {
+        ecrireResultatEtLoguer($resultat, $erreur == 0);
+    }
     ?>
     Choix de l’étage où créer / modifier un lieu
     <form method="post" action="modif_etage3bis.php">
@@ -288,8 +260,7 @@ if ($erreur == 0)
     </form>
     <hr/>
     <?php // Traitement de l’affichage
-    switch ($methode)
-    {
+    switch ($methode) {
         case "début_modifier":
             $req_detail = "select lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
 					lieu_dest, lieu_alignement, lieu_dfin, lieu_compte, lieu_marge, lieu_prelev,
@@ -338,16 +309,14 @@ if ($erreur == 0)
                         ?>
                     </select><br/>
                     <?php
-                    if ($destination != 'null' && $destination != '')
-                    {
+                    if ($destination != 'null' && $destination != '') {
                         $req = "select pos_x, pos_y, pos_etage from positions where pos_cod = $destination";
                         $db->query($req);
                         $db->next_record();
                         $dest_pos_x = $db->f("pos_x");
                         $dest_pos_y = $db->f("pos_y");
                         $dest_pos_etage = $db->f("pos_etage");
-                    } else
-                    {
+                    } else {
                         $dest_pos_x = '';
                         $dest_pos_y = '';
                         $dest_pos_etage = '';
@@ -441,8 +410,7 @@ if ($erreur == 0)
     }
 
     // Affichage de la liste des lieux de l’étage
-    if (isset($pos_etage) && $pos_etage != '')
-    {
+    if (isset($pos_etage) && $pos_etage != '') {
     ?>
     <hr />
     <p>Lieux de cet étage</p>
@@ -495,6 +463,5 @@ if ($erreur == 0)
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
+

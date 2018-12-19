@@ -1,123 +1,95 @@
 <?php /* Affichage de tous les styles de murs et fonds */
 
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include_once('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 $contenu = '';
 $erreur = 0;
 $req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
 
-if ($db->nf() == 0)
-{
+if ($db->nf() == 0) {
     $droit['carte'] = 'N';
+} else {
+    $db->next_record();
+    $droit['carte'] = $db->f("dcompt_modif_carte");
 }
-else
-{
-	$db->next_record();
-	$droit['carte'] = $db->f("dcompt_modif_carte");
+if ($droit['carte'] != 'O') {
+    die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
 }
-if ($droit['carte'] != 'O')
-{
-	die("<p>Erreur ! Vous n’avez pas accès à cette page !</p>");
-}
-if ($erreur == 0)
-{
+if ($erreur == 0) {
 
-    $pdo    = new bddpdo;            // 2018-05-22 - Marlyza - pour traiter les requêtes secondaires
+    $pdo = new bddpdo;            // 2018-05-22 - Marlyza - pour traiter les requêtes secondaires
 
-	// Récupération des images existantes
-	// On y va à la bourrin : on parcourt tous les fichiers du répertoire images.
-	$patron_fond = '/^f_(?P<affichage>[0-9a-zA-Z]+)_(?P<type>\d+)\.png$/';
-	$patron_mur = '/^t_(?P<affichage>[0-9a-zA-Z]+)_mur_(?P<type>\d+)\.png$/';
-	$patron_fig = '/^t_(?P<affichage>[0-9a-zA-Z]+)_(?P<type>enn|per|lie|obj)\.png$/';
-	$chemin = '../../images/';
+    // Récupération des images existantes
+    // On y va à la bourrin : on parcourt tous les fichiers du répertoire images.
+    $patron_fond = '/^f_(?P<affichage>[0-9a-zA-Z]+)_(?P<type>\d+)\.png$/';
+    $patron_mur = '/^t_(?P<affichage>[0-9a-zA-Z]+)_mur_(?P<type>\d+)\.png$/';
+    $patron_fig = '/^t_(?P<affichage>[0-9a-zA-Z]+)_(?P<type>enn|per|lie|obj)\.png$/';
+    $chemin = '../../images/';
 
-	$tableau_styles = array();
+    $tableau_styles = array();
     $tableau_figs = array();
-	$js_tab_fonds = "\nvar tab_fonds = new Array();";
-	$js_tab_murs = "\nvar tab_murs = new Array();";
-	$js_tab_figs = "\nvar tab_figs = new Array();";
-	$js_usage = "\nvar tab_usage = new Array();";
+    $js_tab_fonds = "\nvar tab_fonds = new Array();";
+    $js_tab_murs = "\nvar tab_murs = new Array();";
+    $js_tab_figs = "\nvar tab_figs = new Array();";
+    $js_usage = "\nvar tab_usage = new Array();";
 
-	$rep = opendir($chemin);
-	while (false !== ($fichier = readdir($rep)))
-	{
-		$correspondances = array();
-		$flagNouveauStyle = "" ;
-		if (1 === preg_match($patron_fond, $fichier, $correspondances))
-		{
-			if (!isset($tableau_styles[$correspondances['affichage']]))
-			{
+    $rep = opendir($chemin);
+    while (false !== ($fichier = readdir($rep))) {
+        $correspondances = array();
+        $flagNouveauStyle = "";
+        if (1 === preg_match($patron_fond, $fichier, $correspondances)) {
+            if (!isset($tableau_styles[$correspondances['affichage']])) {
                 $flagNouveauStyle = $correspondances['affichage'];
-				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
-				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
-				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
-                if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
-                {
+                $tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
+                $js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
+                $js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
+                if (!isset($tableau_figs[$correspondances['affichage']]['fig'])) {
                     $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
                     $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
                 }
-			}
-			$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
-		}
+            }
+            $js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
+        }
 
-		$correspondances = array();
-		if (1 === preg_match($patron_mur, $fichier, $correspondances))
-		{
-			if (!isset($tableau_styles[$correspondances['affichage']]))
-			{
+        $correspondances = array();
+        if (1 === preg_match($patron_mur, $fichier, $correspondances)) {
+            if (!isset($tableau_styles[$correspondances['affichage']])) {
                 $flagNouveauStyle = $correspondances['affichage'];
-				$tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
-				$js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
-				$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
-                if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
-                {
+                $tableau_styles[$correspondances['affichage']] = $correspondances['affichage'];
+                $js_tab_fonds .= "\ntab_fonds['" . $correspondances['affichage'] . "'] = new Array();";
+                $js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'] = new Array();";
+                if (!isset($tableau_figs[$correspondances['affichage']]['fig'])) {
                     $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
                     $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
                 }
-			}
-			$js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
-		}
+            }
+            $js_tab_murs .= "\ntab_murs['" . $correspondances['affichage'] . "'][" . $correspondances['type'] . "] = " . $correspondances['type'] . ";";
+        }
 
-		$correspondances = array();
-		if (1 === preg_match($patron_fig, $fichier, $correspondances))
-		{
-            if (!isset($tableau_figs[$correspondances['affichage']]['fig']))
-            {
+        $correspondances = array();
+        if (1 === preg_match($patron_fig, $fichier, $correspondances)) {
+            if (!isset($tableau_figs[$correspondances['affichage']]['fig'])) {
                 $tableau_figs[$correspondances['affichage']]['fig'] = $correspondances['affichage'];
                 $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "'] = new Array();";
             }
             $js_tab_figs .= "\ntab_figs['" . $correspondances['affichage'] . "']['" . $correspondances['type'] . "'] = '" . $correspondances['type'] . "';";
-            $tableau_figs[$correspondances['affichage']][$correspondances['type']] =  $correspondances['type'];
-		}
+            $tableau_figs[$correspondances['affichage']][$correspondances['type']] = $correspondances['type'];
+        }
 
-		if  ($flagNouveauStyle!="")
-        {
+        if ($flagNouveauStyle != "") {
             // Pour chque nouveau style on calcul ne nombre d'étage l'utilisant.
             $req_style = "select count(distinct etage_numero) count from etage where etage_affichage = ?;";
             $stmt = $pdo->prepare($req_style);
             $stmt = $pdo->execute(array($flagNouveauStyle), $stmt);
             $row = $stmt->fetch();
             $style_usage = $row['count'];
-            $js_usage .= "\ntab_usage['" . $flagNouveauStyle . "'] = " .$style_usage . ";";
+            $js_usage .= "\ntab_usage['" . $flagNouveauStyle . "'] = " . $style_usage . ";";
         }
 
-	}
+    }
 
-	echo "<script type='text/javascript'>
+    echo "<script type='text/javascript'>
 		$js_tab_fonds
 		$js_tab_murs
 		$js_tab_figs
@@ -163,11 +135,9 @@ if ($erreur == 0)
 			div_images.innerHTML = chaine_contenu;
 		}
 		</script>";
-	echo '<div class="barrTitle">Visu de tous les styles définis</div><div id="images"></div>
+    echo '<div class="barrTitle">Visu de tous les styles définis</div><div id="images"></div>
 	<script type="text/javascript">afficherStyles();</script>';
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

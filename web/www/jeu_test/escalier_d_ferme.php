@@ -45,7 +45,7 @@ if ($erreur == 0)
 	{
 		echo("<p>Souhaitez vous poser l'amulette sur l'escalier ?<br />");
 		echo("<a href=\"valide_escalier_d_ferme.php\">Oui !</a><br />");
-		echo("<a href=\"perso.php\">Non merci !</a><br />");
+		echo("<a href=\"perso2.php\">Non merci !</a><br />");
 	}
 }
 

@@ -71,7 +71,7 @@ else
   echo("<p>Votre avatar a bien été effacé !");
   
 }
-echo("<p><a href=\"perso.php\">Retour !</a>");
+echo("<p><a href=\"perso2.php\">Retour !</a>");
 $contenu_page = ob_get_contents();
 ob_end_clean();
 $t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);

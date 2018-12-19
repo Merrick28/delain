@@ -1,15 +1,7 @@
 <?php
 /* #LAG - +++ 2018-01-25 +++ - Création, modification des lieux */
 
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include_once('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 
 echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>';                            //Facilité le developpement avec du jquery
 echo '<script src="../scripts/admin_etage_modif3.js"></script>';     // Scripts des traitements des clics dans la map
@@ -512,7 +504,6 @@ if ($erreur == 0)
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
+
 

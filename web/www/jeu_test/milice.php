@@ -1,31 +1,15 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if ($db->is_milice($perso_cod) == 0)
-{
+if ($db->is_milice($perso_cod) == 0) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 3 ";
     $db->query($req);
-    if ($db->nf() != 0)
-    {
+    if ($db->nf() != 0) {
         ?>
         <p><a href="magistrat.php">Acceder à la partie magistrat ?</a>
         <hr>
@@ -33,8 +17,7 @@ if ($erreur == 0)
     }
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 0 ";
     $db->query($req);
-    if ($db->nf() != 0)
-    {
+    if ($db->nf() != 0) {
         ?>
         <p><a href="prefet.php">Acceder à la partie préfet ?</a>
         <hr>
@@ -42,19 +25,16 @@ if ($erreur == 0)
     }
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 16 ";
     $db->query($req);
-    if ($db->nf() != 0)
-    {
+    if ($db->nf() != 0) {
         ?>
         <p><a href="geolier.php">Acceder à la partie geolier ?</a>
         <hr>
         <?php
     }
-    if (!isset($methode))
-    {
+    if (!isset($methode)) {
         $methode = 'debut';
     }
-    switch ($methode)
-    {
+    switch ($methode) {
         case "debut":
 
 
@@ -80,8 +60,7 @@ if ($erreur == 0)
                 Choisissez le mode dans lequel vous souhaitez vous placer :<br>
                 <select name="mode">
                     <?php
-                    for ($cpt = 1; $cpt <= 3; $cpt++)
-                    {
+                    for ($cpt = 1; $cpt <= 3; $cpt++) {
                         echo "<option value=\"$cpt\">$mode[$cpt]</option>";
                     }
                     ?>
@@ -93,8 +72,7 @@ if ($erreur == 0)
             break;
         case "changem2":
             $req = "update guilde_perso set pguilde_mode_milice = $mode where pguilde_perso_cod = $perso_cod ";
-            if ($db->query($req))
-            {
+            if ($db->query($req)) {
                 echo "<p>Modification effectuée !";
             }
             break;
@@ -106,11 +84,9 @@ if ($erreur == 0)
             $req = $req . "and peine_perso_cod = acc.perso_cod ";
             $req = $req . "and peine_faite < 2 ";
             $db->query($req);
-            if ($db->nf() == 0)
-            {
+            if ($db->nf() == 0) {
                 echo "<p>Aucune peine non effectuée en cours.";
-            } else
-            {
+            } else {
                 $etat[0] = "Non effectuée";
                 $etat[1] = "En cours";
                 $peine[0] = "Peine de mort";
@@ -127,8 +103,7 @@ if ($erreur == 0)
                         <td class="soustitre2"><strong>Etat de la peine</strong></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
-                    {
+                    while ($db->next_record()) {
                         $v_peine = $db->f("peine_type");
                         $v_faite = $db->f("peine_faite");
                         echo "<tr>";
@@ -150,7 +125,6 @@ if ($erreur == 0)
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
+
 
