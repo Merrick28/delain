@@ -443,7 +443,7 @@ if ($erreur == 0) {
 			<td>';
 
             $contenu_page .= '<div class="centrer"><input type="radio" class="vide" name="fam_' . $famille . '" value="0" id="fam_' . $famille . '_0" checked><label for="fam_' . $famille . '_0">Aucune rune de cette famille</label></div>
-			<div class="centrer"><table><tr>';
+			<div class="centrer"><table class="centrer" style="padding: 10px;"><tr>';
         }
 
         // on construit le label qui permet de cliquer sur la rune plutôt que sur le petit bouton rond...
@@ -460,7 +460,7 @@ if ($erreur == 0) {
         }
 
         // on écrit la case de la rune
-        $contenu_page .= '<td><table><tr>
+        $contenu_page .= '<td><table style="margin-left: 10px;margin-right: 10px;"><tr>
 		<td><div class="centrer">' . $labelDebut . '<img src="' . G_IMAGES . 'rune_' . $famille . '_' . $db->f("gobj_rune_position") . '.gif" alt="">' . $labelFin . '</div>
 		</td></tr><tr><td>';
         if ($rune_possedee)
