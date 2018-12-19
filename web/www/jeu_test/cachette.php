@@ -39,7 +39,7 @@ if ($db->nf() == 0)
     $fonction = $db->f("cache_fonction");
     if ($db->nf() == 0)
     {
-        echo '<div class="bordiv">Vous cherchez à accéder à une page qui n\'existe pas !</div>';
+        echo 'Vous cherchez à accéder à une page qui n\'existe pas !';
     } else
     {
         if (!isset($methode))

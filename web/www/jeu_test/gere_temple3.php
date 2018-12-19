@@ -73,7 +73,7 @@ $liste_panels = array("Liste des fidèles connaissant ce temple", "Prosélytisme
 
 echo '	<link rel="stylesheet" type="text/css" href="../styles/onglets.css" title="essai">
 		<script language="javascript" src="../scripts/onglets.js"></script>
-		<div class="bordiv">
+		
 ';
 
 
@@ -372,7 +372,6 @@ if ($erreur == 0) {
                 ?><?php
                 endPane();
                 ?>
-    </div>
     </div>
     <?php
 

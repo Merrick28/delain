@@ -6,7 +6,7 @@ if (isset($_GET['methode'])) {
             $req = "update perso set perso_monstre_attaque_monstre = 0
 				where perso_cod IN (select ppos_perso_cod from perso_position where ppos_pos_cod = $position)";
             $db->query($req);
-            echo '<div class="bordiv">Rédemption générale sur la case !</div>';
+            echo 'Rédemption générale sur la case !';
     }
 }
 

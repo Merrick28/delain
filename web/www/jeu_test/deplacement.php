@@ -6,15 +6,13 @@ include "blocks/_header_page_jeu.php";
 //
 
 $resultat_deplacement = '';
-if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
-{
+if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement') {
     $erreur = false;
     /* On se déplace */
     $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
     $db->query($req);
     $db->next_record();
-    if ($db->f('perso_type_perso') == 3)
-    {
+    if ($db->f('perso_type_perso') == 3) {
         $resultat_deplacement .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
         $erreur = true;
     }
@@ -23,13 +21,11 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
         $position = $_POST['position'];
     if (isset($_GET['position']))
         $position = $_GET['position'];
-    if (!isset($position) || $position === '')
-    {
+    if (!isset($position) || $position === '') {
         $resultat_deplacement .= '<p>Erreur ! Position non définie !</p>';
         $erreur = true;
     }
-    if (!$erreur)
-    {
+    if (!$erreur) {
         $req_deplace = 'select deplace_code(' . $perso_cod . ',' . $position . ') as deplace';
         $db->query($req_deplace);
         $db->next_record();
@@ -38,22 +34,18 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
 
         $resultat_deplacement .= $result[1];
 
-        if (strpos($result[1], 'Erreur') !== 0)
-        {
+        if (strpos($result[1], 'Erreur') !== 0) {
             $is_phrase = rand(1, 100);
-            if ($is_phrase < 34)
-            {
+            if ($is_phrase < 34) {
                 $req = 'select choix_rumeur() as rumeur ';
                 $db->query($req);
                 $db->next_record();
                 $resultat_deplacement .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
-            } else if ($is_phrase < 67)
-            {
+            } else if ($is_phrase < 67) {
                 include 'phrase.php';
                 $idx_phrase = rand(1, sizeof($phrase));
                 $resultat_deplacement .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
-            } else
-            {
+            } else {
                 include 'phrase_indice.php';
                 $idx_phrase2 = rand(1, sizeof($phrase_indice));
                 $resultat_deplacement .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $phrase_indice[$idx_phrase2] . '</em></p>';
@@ -63,8 +55,7 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
 }
 
 ob_start();
-if (!isset($position))
-{
+if (!isset($position)) {
     $position = -1;
 }
 $req_position_actuelle = "select pos_cod,pos_x,pos_y,perso_pa,pos_etage,perso_nom, vue_pre(perso_cod) as vue_pre from perso_position,positions,perso ";
@@ -80,8 +71,7 @@ $y = $db->f("pos_y");
 // construction sous-requête
 $temp_table = '';
 for ($ix = $x - 1; $ix <= $x + 1; $ix++)
-    for ($iy = $y - 1; $iy <= $y + 1; $iy++)
-    {
+    for ($iy = $y - 1; $iy <= $y + 1; $iy++) {
         $temp_table .= "select $ix as temp_x, $iy as temp_y ";
         if ($ix != $x + 1 || $iy != $y + 1)
             $temp_table .= " UNION ALL ";
@@ -93,12 +83,11 @@ $vue = $db->f('vue_pre');
 $nom = $db->f('perso_nom');
 ?>
 
-<script language="Javascript" src="../scripts/ajax.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script src="../scripts/ajax2.js?v20181113" type="text/javascript"></script>
-<div style="float:left;" class="bordiv"><?php echo $vue ?></div>
-<?php if ($db->f("perso_pa") >= $db->get_pa_dep($perso_cod))
-{
+    <script language="Javascript" src="../scripts/ajax.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../scripts/ajax2.js?v20181113" type="text/javascript"></script>
+    <div style="float:left;" class="bordiv"><?php echo $vue ?></div>
+<?php if ($db->f("perso_pa") >= $db->get_pa_dep($perso_cod)) {
     ?>
     <form name="deplacement" method="post" action="deplacement.php">
         <input type="hidden" name="methode" value="deplacement">
@@ -123,16 +112,14 @@ $nom = $db->f('perso_nom');
             $db->query($req_alentours);
             $num_ligne = 0;
 
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 if ($db->f('temp_x') == $x - 1) // première case
                 {
                     echo '<tr>';
                     echo '<td class="soustitre2"><p>Y = ' . $db->f('temp_y') . '</p></td>';
                 }
                 echo '<td>';
-                if ($db->f("mur") == -1 && $db->f('pos_cod') > 0)
-                {
+                if ($db->f("mur") == -1 && $db->f('pos_cod') > 0) {
                     if ($db->f("pos_cod") != $position_actuelle)
                         echo "<input type='radio' name='position' value='" . $db->f("pos_cod") . "'>";
                     else
@@ -148,8 +135,7 @@ $nom = $db->f('perso_nom');
             </tr>
         </table>
     </form>
-<?php } else
-{
+<?php } else {
     echo "<p>Vous n’avez pas assez de PA pour vous déplacer.</p>";
 }
 
@@ -157,11 +143,10 @@ $nom = $db->f('perso_nom');
 $is_attaque = 0;
 $portee = 0;
 
-if ($resultat_deplacement != '')
-{
-    echo '<div class="bordiv">';
+if ($resultat_deplacement != '') {
+
     echo $resultat_deplacement;
-    echo '</div>';
+
 }
 
 echo '<div id="vue_bas" class="bordiv">';
