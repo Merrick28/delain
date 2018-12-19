@@ -1,4 +1,4 @@
-<?php 
+c<?php
 
 //
 //Contenu de la div de droite

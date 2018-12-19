@@ -1,17 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
-include_once '../includes/tools.php';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 $contenu_page2 = '';
 if (!isset($methode)) $methode = "" ;
 define("APPEL",1);
@@ -314,10 +302,4 @@ if ($methode=="")
     //echo "<pre>"; print_r($quetes); echo "</pre>";
 }
 
-
-// on va maintenant charger toutes les variables liées au menu
-include_once('variables_menu.php');
-
-$t->set_var('CONTENU_COLONNE_DROITE',$contenu_page2);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

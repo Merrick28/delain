@@ -57,11 +57,11 @@ if (!$db->is_lieu($perso_cod))
 															<input type="hidden" name="methode" value="cede_objet1">
 															<table>
 															<tr>
-																<td class="soustitre2"><p>Volontiers ! Cela m'encombrait plus qu'autre chose.</td>
+																<td class="soustitre2">Volontiers ! Cela m'encombrait plus qu'autre chose.</td>
 																<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
 															</tr>
 															<tr>
-																<td class="soustitre2"><p>Non, je préfère le garder, sait-on jamais, il pourrait me servir plus tard ...</td>
+																<td class="soustitre2">Non, je préfère le garder, sait-on jamais, il pourrait me servir plus tard ...</td>
 																<td><input type="radio" class="vide" name="controle1" value="non"></td>
 															</tr>
 															<tr>
@@ -95,11 +95,11 @@ if (!$db->is_lieu($perso_cod))
 																			<table>
 																			<tr>
 																			<tr>
-																			<td class="soustitre2"><p>Volontiers ! Cela m'encombrait plus qu'autre chose.</td>
+																			<td class="soustitre2">Volontiers ! Cela m'encombrait plus qu'autre chose.</td>
 																			<td><input type="radio" class="vide" name="controle2" value="cede_objet2"></td>
 																		</tr>
 																			<tr>
-																			<td class="soustitre2"><p>Non, je préfère le garder, sait-on jamais, elles pourraient me servir plus tard ...</td>
+																			<td class="soustitre2">Non, je préfère le garder, sait-on jamais, elles pourraient me servir plus tard ...</td>
 																			<td><input type="radio" class="vide" name="controle2" value="non"></td>
 																			</tr>
 																			<tr>
@@ -271,11 +271,11 @@ if (!$db->is_lieu($perso_cod))
 															<input type="hidden" name="methode" value="cede_objet1">
 															<table>
 															<tr>
-																<td class="soustitre2"><p>Poser les caisses à la banque</td>
+																<td class="soustitre2">Poser les caisses à la banque</td>
 																<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
 															</tr>
 															<tr>
-																<td class="soustitre2"><p>Non, finalement, je vais les garder. Je pourrais en retirer plus de brouzoufs plus tard ...</td>
+																<td class="soustitre2">Non, finalement, je vais les garder. Je pourrais en retirer plus de brouzoufs plus tard ...</td>
 																<td><input type="radio" class="vide" name="controle1" value="non"></td>
 															</tr>
 															<tr>

@@ -6,7 +6,7 @@
  * Time: 16:26
  */
 include_once "verif_connexion.php";
-include '../includes/template.inc';
+include_once '../includes/template.inc';
 $t = new template;
 $t->set_file('FileRef','../template/delain/general_jeu.tpl');
 // chemins

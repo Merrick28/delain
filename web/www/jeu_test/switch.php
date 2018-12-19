@@ -1,13 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 ob_start();
 
 $is_log = 1;
@@ -64,18 +56,15 @@ $is_log = 1;
     </script>
 <?php
 $admin = 'N';
-if ($db->is_admin_monstre($compt_cod))
-{
+if ($db->is_admin_monstre($compt_cod)) {
     $admin = 'O';
     $chemin = '.';
     include "switch_monstre.php";
 }
-if ($db->is_admin($compt_cod))
-{
+if ($db->is_admin($compt_cod)) {
     include "switch_admin.php";
 }
-if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
-{
+if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
     $req_perso = "select autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise, compte_nombre_perso(compt_cod) as nb, compt_quete ";
     $req_perso = $req_perso . " from compte where compt_cod = $compt_cod ";
     $db->query($req_perso);
@@ -83,13 +72,11 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
     $nb_perso = $db->f('nb');
     $compt_quatre_perso = ($db->f("autorise") == 't');
     $compt_quete = $db->f('compt_quete');
-    if ($nb_perso == 0)
-    {
+    if ($nb_perso == 0) {
         ?>
         Aucun joueur dirigé.
         <?php
-    } else
-    {
+    } else {
         ?>
         <!--table border="0"-->
         <form name="login" method="post" action="../validation_login3.php">
@@ -109,8 +96,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
         <div class="row">
             <div class="col-md-8 col-sm-6 col-xs-12 centrer">
                 <?php // Bonus XP pour les 10 ans du jeu (Maverick)
-                if ((int)date('Y') == 2014 && (int)date('m') < 2)
-                {
+                if ((int)date('Y') == 2014 && (int)date('m') < 2) {
                     echo '<hr /><a href="repart_xp_compte.php" class="centrer" style="font-size:14px;">Cadeau pour les 10 ans du jeu !</a>';
                 }
                 ?>
@@ -127,13 +113,11 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                     echo "<a href=\"../suppr_perso.php?compt_cod=$compt_cod\">Supprimer un perso ! </A><br>";
                     ?>
                     <a href="hibernation.php">Mettre ses persos en hibernation</a><br>
-                    <?php if ($compt_quatre_perso)
-                    {
+                    <?php if ($compt_quatre_perso) {
                         echo '<a href="options_quatrieme_perso.php">Paramétrer son 4e personnage</a><br>';
                     }
 
-                    if ($compt_quete == 'O')
-                    {
+                    if ($compt_quete == 'O') {
                         echo "<a href=\"admin_quete.php\">Aller dans les options admins quêtes</a>";
                         $erreur = 1;
                     }
@@ -156,7 +140,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
                                 <a href="http://www.jeux-alternatifs.com/Les-Souterrains-de-Delain-jeu715_hit-parade_1_1.html"
                                    onclick="AddNewVote()" target="_blank"><img
                                             src="https://www.jeux-alternatifs.com/im/bandeau/hitP_88x31_v1.gif"
-                                            border="0" alt="Jeux alternatifs"  /></a>
+                                            border="0" alt="Jeux alternatifs"/></a>
                             </td>
                         </tr>
                         <tr>
@@ -205,8 +189,6 @@ $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse("Sortie", "FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";
 
 
