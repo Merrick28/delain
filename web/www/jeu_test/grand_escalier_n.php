@@ -1,30 +1,11 @@
-<?php 
-if(!defined("APPEL"))
-	die("Erreur d’appel de page !");
-if(!isset($db))
-	include_once "verif_connexion.php";
-$param = new parametres();
-$erreur = 0;
-// on regarde si le joueur est bien sur un escalier
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-	$erreur = 1;
-}
-$tab_lieu = $db->get_lieu($perso_cod);
-if ($erreur == 0)
-{
-	if ($tab_lieu['type_lieu'] != 16)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-	}
-	else if ($db->compte_objet($perso_cod, 86) + $db->compte_objet($perso_cod, 87) + $db->compte_objet($perso_cod, 88) > 0)
-	{
-		echo "<p>Vous ne pouvez pas prendre un escalier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";
-		$erreur = 1;
-	}
-}
+<?php
+
+$type_lieu = 16;
+$nom_lieu = 'un escalier';
+
+include "blocks/_test_lieu.php";
+include "blocks/_test_passage_medaillon.php";
+
 
 if ($erreur == 0)
 {

@@ -1,25 +1,8 @@
 <?php
-//
-//Contenu de la div de droite
-//
+$type_lieu = 1;
+$nom_lieu = 'une banque';
 
-// on regarde si le joueur est bien sur une banque
-$erreur = 0;
-$db = new base_delain;
-if (!$db->is_lieu($perso_cod))
-{
-    echo("<p>Erreur ! Vous n'êtes pas sur une banque !!!");
-    $erreur = 1;
-}
-if ($erreur == 0)
-{
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] != 1)
-    {
-        $erreur = 1;
-        echo("<p>Erreur ! Vous n'êtes pas sur une banque !!!");
-    }
-}
+include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {

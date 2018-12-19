@@ -3,21 +3,10 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 $db = new base_delain;
 // on regarde si le joueur est bien sur une banque
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-    echo("<p>Erreur ! Vous n'êtes pas sur une auberge !!!");
-    $erreur = 1;
-}
-if ($erreur == 0)
-{
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] != 4)
-    {
-        $erreur = 1;
-        echo("<p>Erreur ! Vous n'êtes pas sur une auberge !!!");
-    }
-}
+$type_lieu = 4;
+$nom_lieu = 'une auberge';
+
+include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {

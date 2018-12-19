@@ -1,23 +1,10 @@
 <?php
 include "blocks/_header_page_jeu.php";
 // on regarde si le joueur est bien sur un centre d’entrainement
-$erreur = 0;
+$type_lieu = 6;
+$nom_lieu = 'un centre d\'entraînement';
 
-if (!$db->is_lieu($perso_cod))
-{
-	$contenu_page .= "<p>Erreur ! Vous n’êtes pas sur un centre d’entrainement !!!";
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 6)
-	{
-		$erreur = 1;
-		$contenu_page .= "<p>Erreur ! Vous n’êtes pas sur un centre d’entrainement !!!";
-	
-	}
-}
+include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {

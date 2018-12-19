@@ -4,25 +4,14 @@ if(!defined("APPEL"))
 
 include_once "verif_connexion.php";
 
+$type_lieu = 13;
+$nom_lieu = 'un centre d\'entraînement';
+
+include "blocks/_test_lieu.php";
+
 //Contenu de la div de droite
 //
 $db = new base_delain;
-// on regarde si le joueur est bien sur un centre d'entrainement magique
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur un centre d'entrainement !!!");
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 13)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur un centre de maitrise magique !!!");
-	}
-}
 
 if ($erreur == 0)
 {

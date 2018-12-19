@@ -19,21 +19,11 @@ $param = new parametres();
 <body background="../images/fond5.gif">
 <?php
 // on regarde si le joueur est bien sur une échoppe
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-    echo("<p>Erreur ! Vous n'êtes pas sur un magasin !!!");
-    $erreur = 1;
-}
-if ($erreur == 0)
-{
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] != 11)
-    {
-        $erreur = 1;
-        echo("<p>Erreur ! Vous n'êtes pas sur un magasin !!!");
-    }
-}
+
+$type_lieu = 11;
+$nom_lieu = 'un magasin';
+
+include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {
