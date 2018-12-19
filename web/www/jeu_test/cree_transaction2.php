@@ -1,5 +1,6 @@
 ﻿<?php
 include "blocks/_header_page_jeu.php";
+include "../includes/fonctions.php";
 $param = new parametres();
 ob_start();
 
