@@ -1,35 +1,17 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if ($db->is_milice($perso_cod) == 0)
-{
+if ($db->is_milice($perso_cod) == 0) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
-    if (!isset($methode))
-    {
+if ($erreur == 0) {
+    if (!isset($methode)) {
         $methode = 'debut';
     }
-    if (!$db->is_bernardo($perso_cod))
-    {
-        switch ($methode)
-        {
+    if (!$db->is_bernardo($perso_cod)) {
+        switch ($methode) {
             case "debut":
                 ?>
                 <form name="nouveau_message" method="post" action="<?php echo $PHP_SELF; ?>">
@@ -50,8 +32,7 @@ if ($erreur == 0)
                             <td>
                                 <select name="volume">
                                     <?php
-                                    for ($i = 0; $i <= 2; $i++)
-                                    {
+                                    for ($i = 0; $i <= 2; $i++) {
                                         echo "<option value=\"$i\">$i</option>";
                                     }
                                     ?>
@@ -118,8 +99,7 @@ if ($erreur == 0)
                 $req_vue = $req_vue . "and pos_etage = $etage ";
                 $db->query($req_vue);
                 $db2 = new base_delain;
-                while ($db->next_record())
-                {
+                while ($db->next_record()) {
                     $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) ";
                     $req_ins_dest = $req_ins_dest . "values (nextval('seq_dmsg_cod'),$num_mes, " . $db->f("perso_cod") . ",'N','N')";
                     $db2->query($req_ins_dest);
@@ -128,19 +108,16 @@ if ($erreur == 0)
                 echo "<p>Votre message a été envoyé à toutes les personnes présents à $volume de distance de vous.";
                 break;
         }
-    } else
-    {
+    } else {
         echo("<p>Vous êtes sous l'effet du sort Bernardo. Vous ne pouvez pas poster de message.");
     }
-} else
-{
+} else {
     ?>
     <p>Erreur ! vous n'avez pas accès à cette page !
     <?php
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
+
 

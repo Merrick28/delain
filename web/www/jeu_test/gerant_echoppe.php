@@ -1,18 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 ?>
     <script language="javascript">
@@ -59,21 +46,17 @@ include "tab_haut.php";
 $erreur = 0;
 $req = "select perso_admin_echoppe from perso where perso_cod = $perso_cod ";
 $db->query($req);
-if ($db->nf() == 0)
-{
+if ($db->nf() == 0) {
     echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
-} else
-{
+} else {
     $db->next_record();
 }
-if ($db->f("perso_admin_echoppe") != 'O')
-{
+if ($db->f("perso_admin_echoppe") != 'O') {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     //
     // en premier on liste les magasins et leur gérant éventuel
     //
@@ -89,11 +72,9 @@ if ($erreur == 0)
     $req = $req . "and mger_perso_cod = perso_cod ";
     $req = $req . "order by pos_etage desc ";
     $db->query($req);
-    if ($db->nf() == 0)
-    {
+    if ($db->nf() == 0) {
         echo "<p>Aucun magasin n'est en gérance.";
-    } else
-    {
+    } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
         echo "<tr>";
         echo "<td class=\"soustitre2\"><p>Emplacement</td>";
@@ -106,8 +87,7 @@ if ($erreur == 0)
         echo "<td></td>";
         echo "</tr>";
 
-        while ($db->next_record())
-        {
+        while ($db->next_record()) {
             echo "<tr>";
             echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
             echo "<td class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=" . $db->f("lieu_cod") . "\"><strong>" . $db->f("lieu_nom") . "</strong></a></td>";
@@ -133,24 +113,18 @@ if ($erreur == 0)
     $req = $req . "(select 1 from magasin_gerant where mger_lieu_cod = lieu_cod) ";
     $req = $req . "order by pos_etage desc ";
     $db->query($req);
-    if ($db->nf() == 0)
-    {
+    if ($db->nf() == 0) {
         echo "<p>Aucun magasin n'est en gérance.";
-    } else
-    {
+    } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-        while ($db->next_record())
-        {
-            if ($db->f("lieu_cod") == 11)
-            {
+        while ($db->next_record()) {
+            if ($db->f("lieu_cod") == 11) {
                 $statut = 'Echoppe classique';
             }
-            if ($db->f("lieu_cod") == 21)
-            {
+            if ($db->f("lieu_cod") == 21) {
                 $statut = 'Marché noir';
             }
-            if ($db->f("lieu_cod") == 14)
-            {
+            if ($db->f("lieu_cod") == 14) {
                 $statut = 'Echoppe Runique';
             }
             echo "<tr>";
@@ -164,6 +138,5 @@ if ($erreur == 0)
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";
+

@@ -1,27 +1,12 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if (!isset($mag))
-{
+if (!isset($mag)) {
     echo "<p>Erreur sur la transmission du lieu_cod ";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     $req = "select lieu_cod,lieu_nom,pos_x,pos_y,etage_libelle,lieu_alignement ";
     $req = $req . "from lieu,lieu_position,positions,etage,magasin_gerant ";
     $req = $req . "where lieu_cod = lpos_lieu_cod ";
@@ -32,24 +17,19 @@ if ($erreur == 0)
     $req = $req . "and mger_perso_cod = $perso_cod ";
     $req = $req . "and lieu_cod = $mag ";
     $db->query($req);
-    if ($db->nf() == 0)
-    {
+    if ($db->nf() == 0) {
         echo "<p>Erreur, vous n'êtes pas en gérance de ce magasin !";
         $erreur = 1;
-    } else
-    {
+    } else {
         $db->next_record();
     }
 }
-if ($erreur == 0)
-{
-    if (!isset($methode))
-    {
+if ($erreur == 0) {
+    if (!isset($methode)) {
         $methode = "debut";
     }
     echo "<p class=\"titre\">Gestion de : ", $db->f("lieu_nom"), " - (", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), ")</p>";
-    switch ($methode)
-    {
+    switch ($methode) {
         case "debut":
             $modif_possible = 0;
 
@@ -77,11 +57,9 @@ if ($erreur == 0)
             echo "</tr>";
 
             echo "<td class=\"soustitre2\"><p>Protection</td>";
-            if ($db->f("lieu_prelev") == 15)
-            {
+            if ($db->f("lieu_prelev") == 15) {
                 $protection = "Votre magasin n'est pas un refuge";
-            } else
-            {
+            } else {
                 $protection = "Votre magasin est un refuge";
             }
             echo "<td><p>" . $protection . "</td>";
@@ -92,17 +70,14 @@ if ($erreur == 0)
             echo "</tr>";
 
             $tab_lieu = $db->get_lieu($perso_cod);
-            if ($tab_lieu['type_lieu'] == 11)
-            {
+            if ($tab_lieu['type_lieu'] == 11) {
                 $modif_possible = 1;
             }
-            if ($tab_lieu['type_lieu'] == 9)
-            {
+            if ($tab_lieu['type_lieu'] == 9) {
                 $modif_possible = 1;
             }
             $modif_possible = 1;
-            if ($modif_possible == 1)
-            {
+            if ($modif_possible == 1) {
                 echo "<tr>";
                 echo "<td colspan=\"2\" class=\"soustitre2\"><p style=\"text-align:center\"><strong><a href=\"gere_echoppe2.php?mag=$mag&methode=mod\">Modifier ces données</a></strong></td>";
                 echo "</tr>";
@@ -150,8 +125,7 @@ if ($erreur == 0)
             echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_nom") . "</td>";
                 echo "<td><p>" . $db->f("tobj_libelle") . "</td>";
@@ -183,11 +157,9 @@ if ($erreur == 0)
 
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Protection</td>";
-            if ($db->f("lieu_prelev") == 15)
-            {
+            if ($db->f("lieu_prelev") == 15) {
                 $protection = "Votre magasin n'est pas un refuge";
-            } else
-            {
+            } else {
                 $protection = "Votre magasin est un refuge";
             }
             echo "<td><p>" . $protection . "</td>";
@@ -231,23 +203,19 @@ if ($erreur == 0)
             $db->next_record();
             $banque = $db->f("lieu_compte");
             $erreur = 0;
-            if (!isset($qte))
-            {
+            if (!isset($qte)) {
                 echo "<p>Erreur ! Quantité non définie !";
                 $erreur = 1;
             }
-            if ($qte < 0)
-            {
+            if ($qte < 0) {
                 echo "<p>Erreur ! Quantité négative !";
                 $erreur = 1;
             }
-            if ($qte > $banque)
-            {
+            if ($qte > $banque) {
                 echo "<p>Erreur ! Pas assez de brouzoufs à retirer !";
                 $erreur = 1;
             }
-            if ($erreur == 0)
-            {
+            if ($erreur == 0) {
                 // message
                 $req = "select perso_nom,nextval('seq_msg_cod') as message from perso where perso_cod = $perso_cod ";
                 $db->query($req);
@@ -259,16 +227,13 @@ if ($erreur == 0)
                 $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
                 $db->query($req);
                 $tab_lieu = $db->get_lieu($perso_cod);
-                if ($tab_lieu['type_lieu'] == 11)
-                {
+                if ($tab_lieu['type_lieu'] == 11) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
                 }
-                if ($tab_lieu['type_lieu'] == 9)
-                {
+                if ($tab_lieu['type_lieu'] == 9) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
                 }
-                if ($tab_lieu['type_lieu'] == 21)
-                {
+                if ($tab_lieu['type_lieu'] == 21) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' ";
                 }
                 $db->query($req);
@@ -306,23 +271,19 @@ if ($erreur == 0)
             $db->next_record();
             $banque = $db->f("perso_po");
             $erreur = 0;
-            if (!isset($qte))
-            {
+            if (!isset($qte)) {
                 echo "<p>Erreur ! Quantité non définie !";
                 $erreur = 1;
             }
-            if ($qte < 0)
-            {
+            if ($qte < 0) {
                 echo "<p>Erreur ! Quantité négative !";
                 $erreur = 1;
             }
-            if ($qte > $banque)
-            {
+            if ($qte > $banque) {
                 echo "<p>Erreur ! Pas assez de brouzoufs à déposer !";
                 $erreur = 1;
             }
-            if ($erreur == 0)
-            {
+            if ($erreur == 0) {
                 // message
                 $req = "select perso_nom,nextval('seq_msg_cod') as message from perso where perso_cod = $perso_cod ";
                 $db->query($req);
@@ -334,16 +295,13 @@ if ($erreur == 0)
                 $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
                 $db->query($req);
                 $tab_lieu = $db->get_lieu($perso_cod);
-                if ($tab_lieu['type_lieu'] == 11)
-                {
+                if ($tab_lieu['type_lieu'] == 11) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
                 }
-                if ($tab_lieu['type_lieu'] == 9)
-                {
+                if ($tab_lieu['type_lieu'] == 9) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
                 }
-                if ($tab_lieu['type_lieu'] == 21)
-                {
+                if ($tab_lieu['type_lieu'] == 21) {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' and perso_cod != 605745 ";
                 }
                 $db->query($req);
@@ -380,18 +338,15 @@ if ($erreur == 0)
             $db->next_record();
             $prelev = $db->f("lieu_prelev");
             $erreur = 0;
-            if (!isset($qte))
-            {
+            if (!isset($qte)) {
                 echo "<p>Erreur ! marge non définie !";
                 $erreur = 1;
             }
-            if ($qte < $prelev)
-            {
+            if ($qte < $prelev) {
                 echo "<p>Erreur ! Marge inférieur à l'autorisé ($prelev %) !";
                 $erreur = 1;
             }
-            if ($erreur == 0)
-            {
+            if ($erreur == 0) {
                 $req = "update lieu set lieu_marge = $qte where lieu_cod = $mag ";
                 $db->query($req);
                 echo "<p>La modification a été effectuée.";
@@ -403,32 +358,26 @@ if ($erreur == 0)
             $req = $req . "where lieu_cod = $mag ";
             $db->query($req);
             $db->next_record();
-            if ($db->f("lieu_prelev") == 15)
-            {
+            if ($db->f("lieu_prelev") == 15) {
                 echo "<p>Votre magasin n'est pas un refuge. Si vous souhaitez le transformer en refuge, les prélèvements de l'administration passeront automatiquement à 30%.<br>";
-                if ($db->f("lieu_marge") < 30)
-                {
+                if ($db->f("lieu_marge") < 30) {
                     echo "Votre marge est insuffisante pour accomplir cette action.";
-                } else
-                {
+                } else {
                     echo "<a href=\"gere_echoppe2.php?mag=$mag&methode=statut2&ref=o\">Passer cette échoppe en refuge ?</a>";
                 }
-            } else
-            {
+            } else {
                 echo "<p>Votre magasin est un refuge. Si vous souhaitez abandonner cette fonctionnalité, les prélèvements de l'administration passeront automatiquement à 15%.<br>";
                 echo "<a href=\"gere_echoppe2.php?mag=$mag&methode=statut2&ref=n\">Abandonner le statut de refuge pour cette échoppe ?</a>";
             }
 
             break;
         case "statut2";
-            if ($ref == 'n')
-            {
+            if ($ref == 'n') {
                 $req = "update lieu set lieu_refuge = 'N',lieu_prelev = 15 where lieu_cod = $mag";
                 $db->query($req);
                 echo "<p>La modification a été effectuée.";
             }
-            if ($ref == 'o')
-            {
+            if ($ref == 'o') {
                 $req = "update lieu set lieu_refuge = 'O',lieu_prelev = 30 where lieu_cod = $mag";
                 $db->query($req);
                 echo "<p>La modification a été effectuée.";
@@ -493,8 +442,7 @@ if ($erreur == 0)
             echo "<td class=\"soustitre2\"><p><strong>Prix de vente</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Qte à vendre ?</strong></td>";
             echo "</tr>";
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_nom") . "</td>";
                 echo "<td><p>" . $db->f("tobj_libelle") . "</td>";
@@ -512,8 +460,7 @@ if ($erreur == 0)
             break;
         case "vente_adm2":
             $erreur = 0;
-            foreach ($obj as $key => $val)
-            {
+            foreach ($obj as $key => $val) {
                 $req = "select gobj_nom,count(obj_cod) as nombre ";
                 $req = $req . "from objets,objet_generique,stock_magasin ";
                 $req = $req . "where gobj_cod = $key ";
@@ -523,19 +470,15 @@ if ($erreur == 0)
                 $req = $req . "group by gobj_nom ";
                 $db->query($req);
                 $db->next_record();
-                if ($val > $db->f("nombre"))
-                {
+                if ($val > $db->f("nombre")) {
                     echo "<p>Erreur ! Vous essayez de vendre l'objet <strong>" . $db->f("gobj_nom") . "</strong> en trop grande quantité !";
                     $erreur = 1;
                 }
             }
-            if ($erreur == 0)
-            {
+            if ($erreur == 0) {
                 $gagne = 0;
-                foreach ($obj as $key => $val)
-                {
-                    for ($cpt = 0; $cpt < $val; $cpt++)
-                    {
+                foreach ($obj as $key => $val) {
+                    for ($cpt = 0; $cpt < $val; $cpt++) {
                         // on enlève du magasin
                         $req = "select obj_cod ";
                         $req = $req . "from objets,objet_generique,stock_magasin ";
@@ -594,8 +537,7 @@ if ($erreur == 0)
             echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Stock</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_nom") . "</td>";
                 echo "<td><p>" . $db->f("tobj_libelle") . "</td>";
@@ -616,15 +558,12 @@ if ($erreur == 0)
         case "achat_adm2":
             $erreur = 0;
             $total = 0;
-            foreach ($obj as $key => $val)
-            {
-                if ($val < 0)
-                {
+            foreach ($obj as $key => $val) {
+                if ($val < 0) {
                     echo "<p>Erreur ! Quantité négative !";
                     $erreur = 1;
                 }
-                if ($val > 0)
-                {
+                if ($val > 0) {
                     $req = "select gobj_valeur ";
                     $req = $req . "from objet_generique ";
                     $req = $req . "where gobj_cod = $key ";
@@ -636,19 +575,14 @@ if ($erreur == 0)
             $req = "select lieu_compte from lieu where lieu_cod = $mag ";
             $db->query($req);
             $db->next_record();
-            if ($total > $db->f("lieu_compte"))
-            {
+            if ($total > $db->f("lieu_compte")) {
                 echo "<p>Vous n'avez pas assez de brouzoufs pour acheter ce matériel !";
                 $erreur = 1;
             }
-            if ($erreur == 0)
-            {
-                foreach ($obj as $key => $val)
-                {
-                    if ($val > 0)
-                    {
-                        for ($cpt = 0; $cpt < $val; $cpt++)
-                        {
+            if ($erreur == 0) {
+                foreach ($obj as $key => $val) {
+                    if ($val > 0) {
+                        for ($cpt = 0; $cpt < $val; $cpt++) {
                             // on crée l'objet
                             $req = "select nextval('seq_obj_cod') as num_objet ";
                             $db->query($req);
@@ -695,8 +629,7 @@ if ($erreur == 0)
             echo "<td class=\"soustitre2\"><p><strong>Valeur officielle</strong></td>";
             echo "<td class=\"soustitre2\"><p><strong>Valeur actuelle</strong></td>";
             echo "<td></td>";
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_nom") . "</td>";
                 echo "<td><p>" . $db->f("tobj_libelle") . "</td>";
@@ -733,26 +666,22 @@ if ($erreur == 0)
             break;
         case "fix_prix3":
             $erreur = 0;
-            if ($annul == 'n')
-            {
+            if ($annul == 'n') {
                 $req = "select gobj_nom,gobj_valeur,f_prix_gobj($mag,gobj_cod) from objet_generique ";
                 $req = $req . "where gobj_cod = $gobj ";
                 $db->query($req);
                 $db->next_record();
                 $min = floor(($db->f("gobj_valeur") * 0.8));
                 $max = floor(($db->f("gobj_valeur") * 1.2));
-                if ($n_prix < $min)
-                {
+                if ($n_prix < $min) {
                     echo "<p>Le tarif fixé est inférieur au tarif possible ($min brouzoufs).";
                     $erreur = 1;
                 }
-                if ($n_prix > $max)
-                {
+                if ($n_prix > $max) {
                     echo "<p>Le tarif fixé est supérieur au tarif possible ($max brouzoufs).";
                     $erreur = 1;
                 }
-                if ($erreur == 0)
-                {
+                if ($erreur == 0) {
                     $req = "delete from magasin_tarif ";
                     $req = $req . "where mtar_lieu_cod = $mag ";
                     $req = $req . "and mtar_gobj_cod = $gobj ";
@@ -763,8 +692,7 @@ if ($erreur == 0)
 
 
                 }
-            } else
-            {
+            } else {
                 $req = "delete from magasin_tarif ";
                 $req = $req . "where mtar_lieu_cod = $mag ";
                 $req = $req . "and mtar_gobj_cod = $gobj ";
@@ -782,11 +710,9 @@ if ($erreur == 0)
             $req = $req . "and obj_gobj_cod = gobj_cod ";
             $req = $req . "group by gobj_nom,mtra_sens ";
             $db->query($req);
-            if ($db->nf() == 0)
-            {
+            if ($db->nf() == 0) {
                 echo "<p>Aucune transaction enregistrée dans votre échoppe.";
-            } else
-            {
+            } else {
                 ?>
                 <table>
                     <tr>
@@ -796,8 +722,7 @@ if ($erreur == 0)
                         <td class="soustitre2"><strong>Nombre</strong></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
-                    {
+                    while ($db->next_record()) {
                         echo "<tr>";
                         echo "<td class=\"soustitre2\">", $db->f("gobj_nom"), "</td>";
                         $idx_sens = $db->f("mtra_sens");
@@ -825,11 +750,9 @@ if ($erreur == 0)
             $req = $req . "and mtra_perso_cod = perso_cod ";
             $req = $req . "order by mtra_date ";
             $db->query($req);
-            if ($db->nf() == 0)
-            {
+            if ($db->nf() == 0) {
                 echo "<p>Aucune transaction enregistrée dans votre échoppe.";
-            } else
-            {
+            } else {
                 ?>
                 <table>
                     <tr>
@@ -840,8 +763,7 @@ if ($erreur == 0)
                         <td class="soustitre2"><strong>Date</strong></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
-                    {
+                    while ($db->next_record()) {
                         echo "<tr>";
                         echo "<td class=\"soustitre2\">", $db->f("gobj_nom"), "</td>";
                         echo "<td>", $db->f("perso_nom"), "</td>";
@@ -874,26 +796,21 @@ if ($erreur == 0)
             break;
         case "align2":
             $erreur = 0;
-            if (!isset($valeur))
-            {
+            if (!isset($valeur)) {
                 echo "<p>Erreur ! Valeur non fixée ! ";
                 $erreur = 1;
             }
-            if ($valeur == '')
-            {
+            if ($valeur == '') {
                 echo "<p>Erreur ! Valeur non fixée ! ";
                 $erreur = 1;
             }
-            if ($erreur == 0)
-            {
+            if ($erreur == 0) {
                 $req = "update lieu set lieu_alignement = $valeur where lieu_cod = $mag ";
                 $db->query($req);
-                if ($neutre == 1)
-                {
+                if ($neutre == 1) {
                     $req = "update lieu set lieu_neutre = 1 where lieu_cod = $mag ";
                     $db->query($req);
-                } else
-                {
+                } else {
                     $req = "update lieu set lieu_neutre = 0 where lieu_cod = $mag ";
                     $db->query($req);
 
@@ -907,9 +824,6 @@ if ($erreur == 0)
     echo "<a class=\"centrer\# href=\"gere_echoppe2.php?mag=$mag\">Retour à la gestion de l'échoppe</a>";
     echo "<a class=\"centrer\# href=\"gere_echoppe.php\">Retour à la liste des échoppes gérees</a>";
 }
-
-
-include "tab_bas.php";
-?>
-</body>
-</html>
+$contenu_page = ob_get_contents();
+ob_end_clean();
+include "blocks/_footer_page_jeu.php";
