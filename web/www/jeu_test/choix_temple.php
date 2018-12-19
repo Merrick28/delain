@@ -1,19 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-$param = new parametres();
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 $db = new base_delain;
 $tab_position = $db->get_pos($perso_cod);
@@ -25,8 +11,7 @@ $pos_temple = $tab_position['pos_cod'];
 if ($num_etage < 0)
 {
     $etage = abs($num_etage) + 1;
-}
-else
+} else
 {
     $etage = 5;
 }
@@ -42,9 +27,8 @@ $prix = ($etage * $param->getparm(30)) + ($nb_mort * $param->getparm(31));
 
 if ($or < $prix)
 {
-    echo("<p>Désolé $nom_sexe[$sexe], mais il semble que vous n'ayez pas assez de brouzoufs pour vous payer ce service.");
-}
-else
+    echo "<p>Désolé $nom_sexe[$sexe], mais il semble que vous n'ayez pas assez de brouzoufs pour vous payer ce service.";
+} else
 {
     $req_or = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
     $db->query($req_or);
@@ -53,11 +37,9 @@ else
     $req_temple2 = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values ";
     $req_temple2 = $req_temple2 . "($perso_cod,$pos_temple,0)";
     $db->query($req_temple2);
-    echo("<p>La guérisseuse note d'une écriture vive et précise votre nom et votre race sur un grand livre prévu à cet effet.");
+    echo "<p>La guérisseuse note d'une écriture vive et précise votre nom et votre race sur un grand livre prévu à cet effet." ;
 
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

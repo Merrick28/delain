@@ -1,35 +1,21 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-$erreur       = 0;
-$erreur2      = 0;
-$req          = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
+include "blocks/_header_page_jeu.php";
+$erreur = 0;
+$erreur2 = 0;
+$req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
 if ($db->nf() == 0)
 {
-    $droit['modif_perso']   = 'N';
-    $droit['modif_gmon']    = 'N';
-    $droit['controle']      = 'N';
+    $droit['modif_perso'] = 'N';
+    $droit['modif_gmon'] = 'N';
+    $droit['controle'] = 'N';
     $droit['creer_monstre'] = 'N';
-}
-else
+} else
 {
     $db->next_record();
-    $droit['modif_perso']   = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon']    = $db->f("dcompt_modif_gmon");
-    $droit['controle']      = $db->f("dcompt_controle");
+    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
+    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
+    $droit['controle'] = $db->f("dcompt_controle");
     $droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
 }
 if ($droit['modif_perso'] != 'O')
@@ -114,12 +100,10 @@ if ($erreur2 != 1)
     if (isset($_POST['recup']))
     {
         $methode2 = 'recuperation';
-    }
-    elseif (isset($_POST['validation']))
+    } elseif (isset($_POST['validation']))
     {
         $methode2 = 'validation';
-    }
-    elseif (isset($_POST['deplacement']))
+    } elseif (isset($_POST['deplacement']))
     {
         $methode2 = 'deplacement';
     }
@@ -133,22 +117,21 @@ if ($erreur2 != 1)
                 $db->query($req);
                 $db->next_record();
                 $perso_nom = $db->f("perso_nom");
-                $req       = "select perso_subalterne_cod from perso_commandement where perso_superieur_cod = $recup_commandant";
+                $req = "select perso_subalterne_cod from perso_commandement where perso_superieur_cod = $recup_commandant";
                 $db->query($req);
                 while ($db->next_record())
                 {
                     $monstre2 .= $db->f("perso_subalterne_cod") . ';';
                 }
                 $texte = "Liste des monstres sous le commandement de <strong>$perso_nom</strong>";
-            }
-            else
+            } else
             {
                 $req = "select etage_numero, etage_libelle from etage where etage_numero = $recup_etage";
                 $db->query($req);
                 $db->next_record();
                 $etage_nom = $db->f("etage_libelle");
                 $req
-                           = "select ppos_perso_cod from perso_position, positions 
+                    = "select ppos_perso_cod from perso_position, positions 
 					where pos_x = $recup_x and pos_y = $recup_y and pos_etage = $recup_etage and ppos_pos_cod = pos_cod";
                 $db->query($req);
                 while ($db->next_record())
@@ -167,8 +150,7 @@ if ($erreur2 != 1)
             {
                 $contenu_page .= '<br><p><strong>*********** Attention, aucune position sélectionnée. *************</strong><br><br><hr>';
                 $err_depl = 1;
-            }
-            else
+            } else
             {
                 $req
                     = "select pos_cod from positions 
@@ -178,12 +160,11 @@ if ($erreur2 != 1)
                 {
                     $contenu_page .= '<br><p><strong>*********** Aucune position trouvée à ces coordonnées. *************</strong><br><br><hr>';
                     $err_depl = 1;
-                }
-                else
+                } else
                 {
                     $db->next_record();
                     $pos_cod2 = $db->f("pos_cod");
-                    $req      = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod2 ";
+                    $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod2 ";
                     $db->query($req);
                     if ($db->nf() != 0)
                     {
@@ -192,10 +173,10 @@ if ($erreur2 != 1)
                     }
                 }
             }
-            $erreur      = 0;
+            $erreur = 0;
             $tab_monstre = explode(";", $monstre);
-            $nb_monstre  = count($tab_monstre);
-            $cpt         = 0;
+            $nb_monstre = count($tab_monstre);
+            $cpt = 0;
             if ($nb_monstre == 0)
             {
                 $contenu_page .= '<p>Vous devez renseigner au moins un monstre !';
@@ -222,30 +203,26 @@ if ($erreur2 != 1)
                         if ($db->nf() == 0)
                         {
                             $contenu_page .= '<tr><td class="soustitre2">' . $code . '</td><td class="soustitre2"><strong>Ce code n’existe pas !</strong></td></tr>';
-                        }
-                        else
+                        } else
                         {
                             $db->next_record();
-                            $nom           = $db->f("perso_nom");
-                            $type          = $db->f("perso_type_perso");
-                            $check_stat    = $db->f("perso_sta_combat");
+                            $nom = $db->f("perso_nom");
+                            $type = $db->f("perso_type_perso");
+                            $check_stat = $db->f("perso_sta_combat");
                             $check_stat_hc = $db->f("perso_sta_hors_combat");
-                            $dirige_admin  = $db->f("perso_dirige_admin");
+                            $dirige_admin = $db->f("perso_dirige_admin");
 
                             //On indique le type de perso dont il s’agit
                             if ($type == 1)
                             {
                                 $type_nom = 'Personnage';
-                            }
-                            else if ($type == 2)
+                            } else if ($type == 2)
                             {
                                 $type_nom = 'Monstre';
-                            }
-                            else if ($type == 3)
+                            } else if ($type == 3)
                             {
                                 $type_nom = 'Familier';
-                            }
-                            else
+                            } else
                             {
                                 $type = 'Autre... <strong>Attention, risque d’être inconnu !</strong>';
                             }
@@ -266,8 +243,7 @@ if ($erreur2 != 1)
                                 {
                                     $check_stat_O = "checked";
                                     $check_stat_N = "";
-                                }
-                                else
+                                } else
                                 {
                                     $check_stat_O = "";
                                     $check_stat_N = "checked";
@@ -276,8 +252,7 @@ if ($erreur2 != 1)
                                 {
                                     $check_stat_hc_O = "checked";
                                     $check_stat_hc_N = "";
-                                }
-                                else
+                                } else
                                 {
                                     $check_stat_hc_O = "";
                                     $check_stat_hc_N = "checked";
@@ -303,8 +278,7 @@ if ($erreur2 != 1)
                                 if ($db2->nf() == 0)
                                 {
                                     $compte_administrateur = '';
-                                }
-                                else
+                                } else
                                 {
                                     $db2->next_record();
                                     $compte_administrateur = $db2->f("pcompt_compt_cod");
@@ -317,8 +291,7 @@ if ($erreur2 != 1)
                                 $html->select_from_query($req, 'compt_cod', 'compt_nom', $compte_administrateur);
 
                                 $contenu_page .= '</select></td></tr>';
-                            }
-                            else
+                            } else
                             {
                                 $contenu_page .= '<td colspan="2" class="soustitre2"></td></tr>';
                             }
@@ -341,17 +314,17 @@ if ($erreur2 != 1)
                 {
                     //$contenu_page .= '<br>debug ' . $key . ' - ' . $val . ' - ' . $pos_x[$key];
                     $liste_monstre .= $key;
-                    $pos_x1        = $x[$key];
-                    $pos_y1        = $y[$key];
+                    $pos_x1 = $x[$key];
+                    $pos_y1 = $y[$key];
                     $monstre_etage = $etage_monstre[$key];
 
                     $gestion_ia = isset($perso_sta_combat) && isset($perso_sta_combat[$key]);
                     if ($gestion_ia)
                     {
-                        $stat_combat  = $perso_sta_combat[$key];
-                        $stat_hc      = $perso_sta_hors_combat[$key];
-                        $hors_ia      = $ia[$key];
-                        $admin        = $compt_admin[$key];
+                        $stat_combat = $perso_sta_combat[$key];
+                        $stat_hc = $perso_sta_hors_combat[$key];
+                        $hors_ia = $ia[$key];
+                        $admin = $compt_admin[$key];
                         $ancien_admin = $compte_administrateur[$key];
                     }
                     $req
@@ -364,13 +337,12 @@ if ($erreur2 != 1)
                     if ($db->nf() == 0)
                     {
                         $liste_monstre .= '<strong> ***position inconnue***</strong><br>';
-                    }
-                    else
+                    } else
                     {
                         $db->next_record();
-                        $position   = $db->f("pos_cod");
+                        $position = $db->f("pos_cod");
                         $arene_dest = $db->f("etage_arene");
-                        $req        = "delete from lock_combat where lock_cible = $key ";
+                        $req = "delete from lock_combat where lock_cible = $key ";
                         $db2->query($req);
                         $req = "delete from lock_combat where lock_attaquant = $key ";
                         $db2->query($req);
@@ -384,7 +356,7 @@ if ($erreur2 != 1)
                         $db2->query($req);
                         $db2->next_record();
                         $position_depart = $db2->f("pos_cod");
-                        $arene_depart    = $db2->f("etage_arene");
+                        $arene_depart = $db2->f("etage_arene");
 
                         // déplacement
                         $req = "update perso_position set ppos_pos_cod = $position where ppos_perso_cod = $key ";
@@ -438,8 +410,7 @@ if ($erreur2 != 1)
                                 {
                                     $req = "insert into perso_compte (pcompt_compt_cod,pcompt_perso_cod) values ($admin,$key)";
                                     $db2->query($req);
-                                }
-                                else
+                                } else
                                 {
                                     $req = "update perso_compte set pcompt_compt_cod = $admin where pcompt_perso_cod = $key";
                                     $db2->query($req);
@@ -454,6 +425,4 @@ if ($erreur2 != 1)
     }
 }
 
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse("Sortie", "FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";

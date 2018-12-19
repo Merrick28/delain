@@ -1,18 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 //$mod_perso_cod = 2;
 $db2 = new base_delain;
@@ -22,26 +9,21 @@ $erreur = 0;
 //
 $req = "select dcompt_enchantements from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
-if ($db->nf() == 0)
-{
+if ($db->nf() == 0) {
     $droit['dcompt_enchantements'] = 'N';
-} else
-{
+} else {
     $db->next_record();
     $droit['dcompt_enchantements'] = $db->f("dcompt_enchantements");
 }
-if ($droit['dcompt_enchantements'] != 'O')
-{
+if ($droit['dcompt_enchantements'] != 'O') {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     // initialisation de la méthode
     if (!isset($methode))
         $methode = 'debut';
-    switch ($methode)
-    {
+    switch ($methode) {
         case "debut":
             ?>
             <table>
@@ -52,19 +34,16 @@ if ($erreur == 0)
                         echo '<td class="titre">Enchantements disponibles :</td><br><br>
 						<table>
 						<td><strong>Nom de l\'enchantement</strong></td><td><strong>Objets nécessaires et quantités</strong></td><td><strong>Description</strong></td>';
-                        while ($db->next_record())
-                        {
+                        while ($db->next_record()) {
                             $cod_enchantement = $db->f("enc_cod");
                             echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&enc=' . $cod_enchantement . '">' . $db->f('enc_nom') . '</a></td>';
-                            if ($db->nf() != 0)
-                            {
+                            if ($db->nf() != 0) {
                                 $req = "select oenc_gobj_cod,oenc_nombre,gobj_nom from enc_objets,objet_generique	
 														where oenc_enc_cod = $cod_enchantement 
 														and oenc_gobj_cod = gobj_cod";
                                 $db2->query($req);
                                 echo "<td>";
-                                while ($db2->next_record())
-                                {
+                                while ($db2->next_record()) {
                                     echo $db2->f('gobj_nom') . " \t" . $db2->f('oenc_nombre') . "<br>";
                                 }
                                 echo "</td><td class=\"soustitre2\">" . $db->f('enc_description') . "</td></tr>";
@@ -347,13 +326,11 @@ if ($erreur == 0)
         case "serie_obj":
             if (!isset($action))
                 $action = '';
-            if ($action == 'ajout')
-            {
+            if ($action == 'ajout') {
                 $req = " insert into enc_objets (oenc_enc_cod,oenc_gobj_cod,oenc_nombre) values ($enc,$gobj,$nombre)";
                 $db->query($req);
             }
-            if ($action == 'suppr')
-            {
+            if ($action == 'suppr') {
                 $req = " delete from enc_objets where oenc_cod = $oenc ";
                 $db->query($req);
             }
@@ -362,8 +339,7 @@ if ($erreur == 0)
 				where oenc_enc_cod = ' . $enc . '
 				and oenc_gobj_cod = gobj_cod ';
             $db->query($req);
-            while ($db->next_record())
-            {
+            while ($db->next_record()) {
                 echo '<br>' . $db->f('gobj_nom') . ' (' . $db->f('oenc_nombre') . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&oenc=' . $db->f('oenc_cod') . '&enc=' . $enc . '">Supprimer ?</a>';
             }
             ?>
@@ -446,11 +422,8 @@ if ($erreur == 0)
     }
 }
 ?>
-<p class="centrer"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
-    <?php
-    $contenu_page = ob_get_contents();
-    ob_end_clean();
-    $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-    $t->parse('Sortie', 'FileRef');
-    $t->p('Sortie');
-    ?>
+    <p class="centrer"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+<?php
+$contenu_page = ob_get_contents();
+ob_end_clean();
+include "blocks/_footer_page_jeu.php";

@@ -1,17 +1,10 @@
 ﻿<?php
-include_once "verif_connexion.php";
-include "../includes/fonctions.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
+include "blocks/_header_page_jeu.php";
 $param = new parametres();
 ob_start();
 
 // TODO A Supprimer :
-if(isset($_REQUEST['perso']))
+if (isset($_REQUEST['perso']))
 {
     $perso = $_REQUEST['perso'];
 }
@@ -86,8 +79,7 @@ switch ($methode)
         if ($liste_vue == '')
         {
             echo 'Aucun joueur en vue';
-        }
-        else
+        } else
         {
             echo '<select name="perso">' . $liste_vue . '</select>';
             echo "<center><input type=\"submit\" class=\"test\" value=\"Passer à la suite\"></center>";
@@ -143,8 +135,7 @@ switch ($methode)
                 if ($db->f("perobj_identifie") == 'O')
                 {
                     $nom_objet = $db->f("obj_nom");
-                }
-                else
+                } else
                 {
                     $nom_objet = $db->f("obj_nom_generique");
                 }
@@ -200,8 +191,7 @@ switch ($methode)
         if ($nb_objets + $nb_objets_gros > 0)
         {
             echo "<div><center><input class=\"test\" type=\"submit\" value=\"Passer à la suite\" /></center></div></form>";
-        }
-        else
+        } else
         {
             echo 'Vous n’avez aucun objet à vendre';
         }
@@ -244,8 +234,7 @@ switch ($methode)
             $db->query($req);
             $db->next_record();
             $compt1 = $db->f("pcompt_compt_cod");
-        }
-        else
+        } else
         {
             if ($db->f("perso_type_perso") == 3)
             {
@@ -253,8 +242,7 @@ switch ($methode)
                 $db->query($req);
                 $db->next_record();
                 $compt1 = $db->f("pcompt_compt_cod");
-            }
-            else
+            } else
             {
                 $compt1 = '';
             }
@@ -268,8 +256,7 @@ switch ($methode)
             $db->query($req);
             $db->next_record();
             $compt2 = $db->f("pcompt_compt_cod");
-        }
-        else
+        } else
         {
             if ($db->f("perso_type_perso") == 3)
             {
@@ -277,8 +264,7 @@ switch ($methode)
                 $db->query($req);
                 $db->next_record();
                 $compt2 = $db->f("pcompt_compt_cod");
-            }
-            else
+            } else
             {
                 $compt2 = '';
             }
@@ -331,14 +317,12 @@ switch ($methode)
                         if ($tab_res[0] == -1)
                         {
                             echo("Une erreur est survenue : $tab_res[1]");
-                        }
-                        else
+                        } else
                         {
                             $compteur_accept_auto++;
                             $compteur_accept++;
                         }
-                    }
-                    else
+                    } else
                     {
                         $compteur_accept++;
                     }
@@ -432,14 +416,12 @@ switch ($methode)
                                 if ($tab_res[0] == -1)
                                 {
                                     echo("Une erreur est survenue : $tab_res[1]");
-                                }
-                                else
+                                } else
                                 {
                                     $compteur_accept_auto++;
                                     $compteur_accept++;
                                 }
-                            }
-                            else
+                            } else
                             {
                                 $compteur_accept++;
                             }
@@ -493,15 +475,8 @@ switch ($methode)
         break;
 }
 ?>
-<br><br><a href="transactions2.php">Retour aux transactions</a>
+    <br><br><a href="transactions2.php">Retour aux transactions</a>
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-$t->parse("Sortie", "FileRef");
-$t->p("Sortie");
-?>
+include "blocks/_footer_page_jeu.php";

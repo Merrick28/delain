@@ -30,7 +30,7 @@ if ($compt_cod != null)
         $stmt = $pdo->prepare($add);
         $stmt = $pdo->execute(array(":ip_address" => $IP ), $stmt);
                 
-        echo "Tout c'est bien passé!";
+        echo "Tout s'est bien passé!";
     }
     else
     {

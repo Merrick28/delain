@@ -1,6 +1,6 @@
 ﻿<?php
-include_once "verif_connexion.php";
-include_once '../includes/template.inc';
+include "blocks/_header_page_jeu.php";
+
 
 if (!isset($methode))
 {
@@ -17,10 +17,7 @@ if (!$inc_vue)
     $t->set_var('URL', $type_flux . G_URL);
     $t->set_var('URL_IMAGES', G_IMAGES);
 }
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+
 if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is_monstre($perso_cod) || $db->is_pnj($perso_cod))))
 {
 
@@ -1113,10 +1110,5 @@ else
 
 if (!$inc_vue)
 {
-    // on va maintenant charger toutes les variables liées au menu
-    include('variables_menu.php');
-
-    $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-    $t->parse('Sortie', 'FileRef');
-    $t->p('Sortie');
+    include "blocks/_footer_page_jeu.php";
 }

@@ -1,18 +1,5 @@
 <?php
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+include "blocks/_header_page_jeu.php";
 ob_start();
 //$mod_perso_cod = 2;
 
@@ -24,32 +11,27 @@ $db->next_record();
 $compt_nom = $db->f("compt_nom");
 $req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
 $db->query($req);
-if ($db->nf() == 0)
-{
+if ($db->nf() == 0) {
     $droit['modif_perso'] = 'N';
     $droit['modif_gmon'] = 'N';
     $droit['controle'] = 'N';
     $droit['creer_monstre'] = 'N';
-} else
-{
+} else {
     $db->next_record();
     $droit['modif_perso'] = $db->f("dcompt_modif_perso");
     $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
     $droit['controle'] = $db->f("dcompt_controle");
     $droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
 }
-if ($droit['modif_perso'] != 'O')
-{
+if ($droit['modif_perso'] != 'O') {
     echo "<p>Erreur ! Vous n’avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0)
-{
+if ($erreur == 0) {
     include "admin_edition_header.php";
     if (!isset($methode))
         $methode = 'debut';
-    switch ($methode)
-    {
+    switch ($methode) {
         case 'debut':
             ?>
             Pour éditer un objet :<br>
@@ -72,8 +54,7 @@ if ($erreur == 0)
             $db->query($req);
             if ($db->nf() == 0)
                 echo 'Aucun objet modifiable trouvé pour ce perso !';
-            else
-            {
+            else {
                 echo 'Liste des objets modifiables : <br>';
                 while ($db->next_record())
                     echo '<a href="' . $PHP_SELF . '?methode=objet&num_objet=' . $db->f("obj_cod") . '">' . $db->f("obj_nom") . '</a><br>';
@@ -239,8 +220,7 @@ if ($erreur == 0)
                             <?php $categorie = 0;
                             $premiere_categorie = true;
                             $where = ' where ';
-                            switch ($tobj_cod)
-                            {
+                            switch ($tobj_cod) {
                                 case 1:    // arme
                                     if ($is_distance)    //arme distance
                                         $where .= 'tenc_arme_distance = 1 ';
@@ -264,14 +244,11 @@ if ($erreur == 0)
 				inner join enc_type_objet on tenc_enc_cod = enc_cod $where
 				order by enc_cout, enc_description";
                             $db->query($req);
-                            while ($db->next_record())
-                            {
-                                if ($db->f('enc_cout') != $categorie)
-                                {
+                            while ($db->next_record()) {
+                                if ($db->f('enc_cout') != $categorie) {
                                     $categorie = $db->f('enc_cout');
                                     $nom = '';
-                                    switch ($categorie)
-                                    {
+                                    switch ($categorie) {
                                         case 1000:
                                             $nom = 'Enchantements niveau 1';
                                             break;
@@ -342,16 +319,13 @@ if ($erreur == 0)
             $req_sel_obj .= ' from objets where obj_cod = ' . $num_objet;
             $db->query($req_sel_obj);
             $db->next_record();
-            foreach ($fields as $i => $value)
-            {
-                if ($_POST[$fields[$i]] != $db->f($fields[$i]))
-                {
+            foreach ($fields as $i => $value) {
+                if ($_POST[$fields[$i]] != $db->f($fields[$i])) {
                     $log .= "Modification du champ " . $fields[$i] . " : " . $db->f($fields[$i]) . " => " . $_POST[$fields[$i]] . "\n";
                     $modifie = 1;
                 }
             }
-            if ($modifie == 1)
-            {
+            if ($modifie == 1) {
                 $fieldsNum = array(
                     'obj_valeur',
                     'obj_poids',
@@ -377,33 +351,27 @@ if ($erreur == 0)
                     'obj_desequipable',
                     'obj_distance'
                 );
-                if ($_POST['obj_nom'] != $db->f('obj_nom'))
-                {
+                if ($_POST['obj_nom'] != $db->f('obj_nom')) {
                     $obj_nom = $_POST['obj_nom'];
                 }
-                if ($_POST['obj_nom_generique'] != $db->f('obj_nom_generique'))
-                {
+                if ($_POST['obj_nom_generique'] != $db->f('obj_nom_generique')) {
                     $obj_nom_generique = $_POST['obj_nom_generique'];
                 }
-                if ($_POST['obj_description'] != $db->f('obj_description'))
-                {
+                if ($_POST['obj_description'] != $db->f('obj_description')) {
                     $obj_description = $_POST['obj_description'];
                 }
-                if ($_POST['obj_nom_porte'] != $db->f('obj_nom_porte'))
-                {
+                if ($_POST['obj_nom_porte'] != $db->f('obj_nom_porte')) {
                     $obj_nom_porte = $_POST['obj_nom_porte'];
                 }
                 $req = "update objets set obj_nom = e'" . pg_escape_string(str_replace("'", '’', $obj_nom)) . "'
 					, obj_nom_generique = e'" . pg_escape_string(str_replace("'", '’', $obj_nom_generique)) . "'
 					, obj_description = e'" . pg_escape_string(str_replace("'", '’', $obj_description)) . "'
 					, obj_nom_porte = e'" . pg_escape_string(str_replace("'", '’', $obj_nom_porte)) . "'";
-                foreach ($fieldsNum as $i => $value)
-                {
+                foreach ($fieldsNum as $i => $value) {
                     if ($_POST[$fieldsNum[$i]] != '')
                         $req .= ', ' . $fieldsNum[$i] . ' = ' . $_POST[$fieldsNum[$i]];
                 }
-                foreach ($fieldsText as $i => $value)
-                {
+                foreach ($fieldsText as $i => $value) {
                     if ($_POST[$fieldsText[$i]] != '')
                         $req .= ', ' . $fieldsText[$i] . " = '" . $_POST[$fieldsText[$i]] . "'";
                 }
@@ -412,8 +380,7 @@ if ($erreur == 0)
             }
 
             $cree_enchantement = $_POST['cree_enchantement'];
-            if ($cree_enchantement != '-1')
-            {
+            if ($cree_enchantement != '-1') {
                 $req = "select enc_nom || ' (' || enc_description || ')' as nom from enchantements where enc_cod = $cree_enchantement";
                 $db->query($req);
                 $db->next_record();
@@ -423,13 +390,11 @@ if ($erreur == 0)
                 $db->query($req);
             }
 
-            if ($modifie == 1)
-            {
+            if ($modifie == 1) {
                 $db->query('update objets set obj_modifie = 1 where obj_cod = ' . $num_objet);
                 writelog($log, 'objet_edit');
                 echo "Modification effectuée : <br /><pre>$log</pre>";
-            } else
-            {
+            } else {
                 echo "Aucune modification";
             }
             break;
@@ -439,7 +404,4 @@ if ($erreur == 0)
     <a href="<?php echo $PHP_SELF ?>" class="centrer">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
-
+include "blocks/_footer_page_jeu.php";

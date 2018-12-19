@@ -1,40 +1,5 @@
 <?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
-ob_start();
-$erreur = 0;
-$req = "select perso_admin_echoppe from perso where perso_cod = $perso_cod ";
-$db->query($req);
-if ($db->nf() == 0)
-{
-	echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !";
-	$erreur = 1;
-}
-else
-{
-	$db->next_record();
-}
-if ($db->f("perso_admin_echoppe") != 'O')
-{
-	echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-	$erreur = 1;
-}
-if (!isset($methode))
-{
-	$methode = "entree";
-}
+include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {
 	switch($methode)
