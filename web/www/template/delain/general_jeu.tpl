@@ -10,8 +10,7 @@
     <!-- Custom delain CSS -->
     <link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
     <link rel="stylesheet" type="text/css" href="{URL}style.php">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
     <!-- Bootstrap custom CSS -->
     <link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
     <link href="{URL}css/delain.css" rel="stylesheet">
@@ -63,13 +62,9 @@
              style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
         <div style="text-align:center;padding:5px">
             <div id="intangible" style="padding:2px">{INTANGIBLE}</div>
-            <div id="pa" style="padding:2px; height:18px;"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif"
+            <div id="pa" style="padding:2px;"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif"
                                                                 title="{PERSO_PA} PA " alt="{PERSO_PA} PA "></div>
-            <div id="hp" style="padding:0px"><img src="{URL_IMAGES}coeur.gif" alt="">
-                <div title="{PERSO_PV}/{PERSO_PV_MAX}PV" alt="{PERSO_PV}/{PERSO_PV_MAX}PV" class="container-hp">
-                    <div class="barre-hp" style="width:{PERSO_BARRE_VIE}%"></div>
-                </div>
-            </div>
+            <div id="hp" style="padding:0px"><img src="{URL_IMAGES}coeur.gif" alt=""> <div title="{PERSO_PV}/{PERSO_PV_MAX}PV" alt="{PERSO_PV}/{PERSO_PV_MAX}PV" class="container-hp"><div class="barre-hp" style="width:{PERSO_BARRE_VIE}%"></div></div></div>
             <div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
             <div id="divin" style="padding:0px">{FAM_DIVIN}</div>
             <div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt="">

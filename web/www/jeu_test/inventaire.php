@@ -205,7 +205,7 @@ $db->query($req_id);
 
 ?>
 <div class="centrer">
-    <table width="100%" cellspacing="2" cellpadding="2">
+    <table width="100%" cellspacing="2" cellpadding="2" >
         <tr>
             <td>Encombrement : <?php echo $poids_porte . "/" . $poids_total; ?></td>
         </tr>
@@ -239,7 +239,7 @@ $nb_equipe = $db->nf();
 //log_debug('Fin requête équipé');
 //
 ?>
-<table width="100%" cellspacing="2" cellpadding="2">
+<table width="100%" cellspacing="2" cellpadding="2" class="centrer table-condensed">
     <tr>
         <td colspan="7" class="titre">
             <div class="titre">Matériel équipé</div>
@@ -297,9 +297,9 @@ $nb_equipe = $db->nf();
                 echo "<tr>";
                 echo "<td class=\"soustitre2" . $cpl_class . "\" >" . $db->f("tobj_libelle") . $examiner, "</td>";
                 echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $db->f("obj_cod") . "&origine=i", $url_bon, "\">" . $db->f("obj_nom"), $bonus, "</a></td>";
-                echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $db->f("obj_poids") . "</div></td>";
+                echo "<td class=\"soustitre2\">" . $db->f("obj_poids") . "</td>";
                 echo "<td class=\"soustitre2\">" . get_etat($db->f("obj_etat")) . "</td>";
-                echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $db->f("gobj_pa_normal") . "</div></td>";
+                echo "<td class=\"soustitre2\">" . $db->f("gobj_pa_normal") . "</td>";
                 echo "<td><a href=\"javascript:document.remettre.perobj.value=" . $db->f("perobj_cod") . ";document.remettre.submit();\">";
                 echo "Remettre dans l’inventaire (2PA)</a>";
 
@@ -346,7 +346,7 @@ $nb_matos = $db->nf();
 //log_debug('Fin non esquipe non identifie');
 //
 ?>
-<table width="100%" cellspacing="2" cellpadding="2">
+<table width="100%" cellspacing="2" cellpadding="2"  class="table-condensed">
     <tr>
         <td colspan="6" class="titre">
             <div class="titre">Matériel non identifié</div>
@@ -377,7 +377,7 @@ $nb_matos = $db->nf();
             echo("<tr>");
             printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
             printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_nom_generique"));
-            printf("<td class=\"soustitre2\"><div style=\"text-align:right\">%s</div></td>", $db->f("obj_poids"));
+            printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
             echo "<td></td>";
             echo "<td></td>";
             echo("<td>");
@@ -419,7 +419,7 @@ $nb_matos = $db->nf();
 //log_debug('Fin non equipe, identifie');
 //
 ?>
-<table width="100%" cellspacing="2" cellpadding="2">
+<table width="100%" cellspacing="2" cellpadding="2" class="table-condensed">
     <tr>
         <td colspan="8" class="titre">
             <div class="titre">Matériel identifié</div>
@@ -433,7 +433,7 @@ $nb_matos = $db->nf();
         <td class="soustitre2">Type</td>
         <td class="soustitre2">Objet</td>
         <td class="soustitre2">
-            <div style="text-align:right">Poids</div>
+            Poids
         </td>
         <td class="soustitre2">Etat</td>
         <td class="soustitre2">PA/att.</td>
@@ -497,7 +497,7 @@ $nb_matos = $db->nf();
         }
         ?>
 </table>
-<table width="100%" cellspacing="2" cellpadding="2">
+<table width="100%" cellspacing="2" cellpadding="2" class="table-condensed">
     <?php
     /*****************************************/
     /* Etape 5 : Runes */
@@ -525,7 +525,7 @@ $nb_matos = $db->nf();
             <tr>
                 <td colspan="2" class="soustitre2">Rune</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td class="soustitre2">Nombre</td>
                 <td></td>
@@ -570,7 +570,7 @@ $nb_matos = $db->nf();
                 <td class="soustitre2">Type</td>
                 <td class="soustitre2">Objet</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td class="soustitre2">PA/att.</td>
                 <td></td>
@@ -644,7 +644,7 @@ $nb_matos = $db->nf();
             <tr>
                 <td colspan="2" class="soustitre2">Objet</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td class="soustitre2">Nombre</td>
                 <td></td>
@@ -694,7 +694,7 @@ $nb_matos = $db->nf();
                 <td class="soustitre2">Type</td>
                 <td class="soustitre2">Objet</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td class="soustitre2">PA/att.</td>
                 <td></td>
@@ -792,7 +792,7 @@ $nb_matos = $db->nf();
             <tr>
                 <td colspan="2" class="soustitre2">Objet</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td class="soustitre2">Nombre</td>
                 <td></td>
@@ -839,7 +839,7 @@ $nb_matos = $db->nf();
                 <td class="soustitre2">Type</td>
                 <td class="soustitre2">Objet</td>
                 <td class="soustitre2">
-                    <div style="text-align:right">Poids</div>
+                    Poids
                 </td>
                 <td></td>
                 <td></td>
