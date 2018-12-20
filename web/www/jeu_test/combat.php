@@ -1,76 +1,68 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+<?php
+include "blocks/_header_page_jeu.php";
 $param = new parametres();
 ob_start();
 ?>
-<script language="javascript">
-ns4 = document.layers;
-ie = document.all;
-ns6 = document.getElementById && !document.all;
+    <script language="javascript">
+        ns4 = document.layers;
+        ie = document.all;
+        ns6 = document.getElementById && !document.all;
 
-function changeStyles (id, mouse) {
-   if (ns4) {
-      alert ("Sorry, but NS4 does not allow font changes.");
-      return false;
-   }
-   else if (ie) {
-      obj = document.all[id];
-   }
-   else if (ns6) {
-      obj = document.getElementById(id);
-   }
-   if (!obj) {
-      alert("unrecognized ID");
-      return false;
-   }
+        function changeStyles(id, mouse) {
+            if (ns4) {
+                alert("Sorry, but NS4 does not allow font changes.");
+                return false;
+            }
+            else if (ie) {
+                obj = document.all[id];
+            }
+            else if (ns6) {
+                obj = document.getElementById(id);
+            }
+            if (!obj) {
+                alert("unrecognized ID");
+                return false;
+            }
 
-   if (mouse == 1) {
-      obj.className = "navon";
-   }
+            if (mouse == 1) {
+                obj.className = "navon";
+            }
 
-   if (mouse == 0) {
-      obj.className = "navoff";
-   }
-   return true;
-}
+            if (mouse == 0) {
+                obj.className = "navoff";
+            }
+            return true;
+        }
 
-</script>
-    
-<?php 
+    </script>
+
+<?php
 $erreur = 0;
 if ($is_intangible)
 {
     echo "Vous ne pouvez pas attaquer en étant impalpable !";
-	$erreur = 1;
+    $erreur = 1;
 }
 if ($is_refuge)
 {
-	echo "Vous ne pouvez pas attaquer sur un refuge !";
-	$erreur = 1;
+    echo "Vous ne pouvez pas attaquer sur un refuge !";
+    $erreur = 1;
 }
 if ($erreur == 0)
 {
-	$arme_dist = $db->arme_distance($perso_cod);
-	$req2 = "select mcom_nom from perso, mode_combat where perso_cod = $perso_cod and perso_mcom_cod = mcom_cod";
-	$db->query($req2);
-	$db->next_record();
-	$mode = $db->f("mcom_nom");
-?>
+    $arme_dist = $db->arme_distance($perso_cod);
+    $req2 = "select mcom_nom from perso, mode_combat where perso_cod = $perso_cod and perso_mcom_cod = mcom_cod";
+    $db->query($req2);
+    $db->next_record();
+    $mode = $db->f("mcom_nom");
+    ?>
 
-	<form name="attaque" method="post" action="action.php">
-	<input type="hidden" name="methode" value="attaque2">
-<?php 
-	
-	// Arme équipée
-	$arme_req = "	SELECT obj_nom
+    <form name="attaque" method="post" action="action.php">
+    <input type="hidden" name="methode" value="attaque2">
+    <?php
+
+    // Arme équipée
+    $arme_req = "	SELECT obj_nom
 		FROM objets
 		LEFT JOIN perso_objets ON perobj_obj_cod=obj_cod
 		LEFT JOIN objet_generique ON gobj_cod=obj_gobj_cod
@@ -79,41 +71,37 @@ if ($erreur == 0)
 			AND tobj_libelle = 'Arme'
 			AND perobj_perso_cod = $perso_cod
 		ORDER BY obj_gobj_cod ASC, obj_cod ASC";
-	$db->query($arme_req);
-	if ($db->next_record())
-		$obj_nom = $db->f("obj_nom");
-	else
-		$obj_nom = 'aucune';
-	
-	// Méthode de combat
-	include ('inc_competence_combat.php');
+    $db->query($arme_req);
+    if ($db->next_record())
+        $obj_nom = $db->f("obj_nom");
+    else
+        $obj_nom = 'aucune';
 
-	echo "Arme utilisée : <strong>".$obj_nom."</strong>. ";
-	echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
-	echo $resultat_inc_competence_combat;
+    // Méthode de combat
+    include('inc_competence_combat.php');
 
-	echo "</select> - mode " . $mode . ' <a href="perso2.php?m=3">(changer ?)</a>';
+    echo "Arme utilisée : <strong>" . $obj_nom . "</strong>. ";
+    echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
+    echo $resultat_inc_competence_combat;
 
-	echo "<br>";
-	echo "Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a>";
-	echo "<br>";
+    echo "</select> - mode " . $mode . ' <a href="perso2.php?m=3">(changer ?)</a>';
 
-	if ($param->getparm(56) == 1)
-	{
-		include "include_tab_attaque3.php";
-	}
-	else
-	{
-		include "include_tab_attaque2.php";
-	}
-	?>
-	<center><input type="submit" class="test" value="Attaquer !"></center>
-	<?php 
+    echo "<br>";
+    echo "Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a>";
+    echo "<br>";
+
+    if ($param->getparm(56) == 1)
+    {
+        include "include_tab_attaque3.php";
+    } else
+    {
+        include "include_tab_attaque2.php";
+    }
+    ?>
+    <input type="submit" class="test centrer" value="Attaquer !">
+    <?php
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
-?>
+include "blocks/_footer_page_jeu.php";
 

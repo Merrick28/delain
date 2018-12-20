@@ -14,11 +14,11 @@ function changeDestinataire(addFrom)
 		var intPosString = strDest.indexOf(selectedValue,0);
 		var intPosString2 = strDest.indexOf(";" + selectedValue,0);
 		
-		//Si cela a �t� trouv� au d�but (donc pas de ";" avant) : on supprime
+		//Si cela a été trouvé au début (donc pas de ";" avant) : on supprime
 		if(intPosString == 0)
 			document.nouveau_message.dest.value = strDest.substr(selectedValue.length, strDest.length-intPosString);
 		
-		//Si AUCUN n'a �t� trouv� avec un ";" avant : on ajoute
+		//Si AUCUN n'a été trouvé avec un ";" avant : on ajoute
 		else if(intPosString2 < 0)
 			document.nouveau_message.dest.value = strDest + selectedValue.substr(0, selectedValue.length);
 		

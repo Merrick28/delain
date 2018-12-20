@@ -5,21 +5,11 @@ if(!isset($db))
 	include "verif_connexion.php";
 $param = new parametres();
 // on regarde si le joueur est bien sur une passage
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur un passage !!!");
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 10)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur un passage !!!");
-	}
-}
+
+$type_lieu = 10;
+$nom_lieu = 'un passage';
+
+include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {

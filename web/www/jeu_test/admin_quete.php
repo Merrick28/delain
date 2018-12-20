@@ -1,24 +1,11 @@
 <?php
-$perso = $_REQUEST['perso'];
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+include "blocks/_header_page_jeu.php";
 
 $num_perso2 = $_REQUEST['num_perso2'];
 
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
 ob_start();
 $erreur = 0;
-$req    = "select compt_quete from compte where compt_cod = $compt_cod ";
+$req = "select compt_quete from compte where compt_cod = $compt_cod ";
 $db->query($req);
 $db->next_record();
 if ($db->f("compt_quete") != 'O')
@@ -58,7 +45,7 @@ if ($erreur == 0)
             $req = $req . "and pos_etage = etage_numero ";
             $db->query($req);
             $db->next_record();
-            $tangible  = $db->f("perso_tangible");
+            $tangible = $db->f("perso_tangible");
             $err_actif = 0;
             if ($db->f("perso_actif") != 'O')
             {
@@ -72,8 +59,7 @@ if ($erreur == 0)
                         echo "Ce perso est <strong>en hibernation !</strong>. Vous ne pouvez pas intervenir dessus !";
                         break;
                 }
-            }
-            else
+            } else
             {
                 echo "<p><strong>", $db->f("perso_nom"), "</strong> se trouve en ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), ".<br>";
                 echo "Sa dlt est à <strong>", $db->f("dlt"), ".</br>";
@@ -92,8 +78,7 @@ if ($erreur == 0)
                 if ($tangible == 'O')
                 {
                     echo "<a href=\"", $PHP_SELF, "?methode=palpable&t=N&num_perso2=", $num_perso2, "\">Rendre ce perso impalpable ?</a><br>";
-                }
-                else
+                } else
                 {
                     echo "<a href=\"", $PHP_SELF, "?methode=palpable&t=O&num_perso2=", $num_perso2, "\">Rendre ce perso palpable ?</a><br>";
                 }
@@ -127,13 +112,13 @@ if ($erreur == 0)
                                 }
                                 ?>
                             </select><br>
-                        <center><input type="submit" class="test" value="Déplacer !">
+                            <input type="submit" class="test centrer" value="Déplacer !">
                     </form>
                     <?php
                     break;
                 case "dest":
                     $err_depl = 0;
-                    $req      = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
+                    $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
                     $db->query($req);
                     if ($db->nf() == 0)
                     {
@@ -143,7 +128,7 @@ if ($erreur == 0)
                     }
                     $db->next_record();
                     $pos_cod = $db->f("pos_cod");
-                    $req     = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
+                    $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
                     $db->query($req);
                     if ($db->nf() != 0)
                     {
@@ -156,7 +141,7 @@ if ($erreur == 0)
                         // insertion dun évènement
                         $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
                         $req
-                                   = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)  
+                            = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)  
                           values(43,now(),$num_perso2,'$texte_evt','N','N') ";
                         $db->query($req);
                         // effacement des locks
@@ -176,7 +161,7 @@ if ($erreur == 0)
             // insertion dun évènement
             $texte_evt = "La DLT de [perso_cod1] a été actualisée par un admin quête.";
             $req
-                       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
+                = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
 			  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
             $db->query($req);
             $req = "update perso set perso_dlt = now() where perso_cod = $num_perso2 ";
@@ -188,7 +173,8 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer de nouveaux objets (première
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer de nouveaux objets
+                        (première
                         apparition dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un objet déjà existant, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet_ex&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
@@ -215,7 +201,7 @@ if ($erreur == 0)
                         <td><input type="text" name="poids_objet"></td>
                     </tr>
                     </table>
-                    <center><input type="submit" class="test" value="Créer !"></center></form>
+                    <input type="submit" class="test centrer" value="Créer !"></form>
                     <?php
                     break;
                 case "etape2":
@@ -223,10 +209,10 @@ if ($erreur == 0)
                     $req = "select nextval('seq_gobj_cod') as gobj";
                     $db->query($req);
                     $db->next_record();
-                    $gobj_cod           = $db->f("gobj");
-                    $nom_objet          = str_replace("'", "\'", $nom_objet);
+                    $gobj_cod = $db->f("gobj");
+                    $nom_objet = str_replace("'", "\'", $nom_objet);
                     $nom_objet_non_iden = str_replace("'", "\'", $nom_objet_non_iden);
-                    $desc               = str_replace("'", "\'", $desc);
+                    $desc = str_replace("'", "\'", $desc);
                     // création dans les objets génériques
                     $req = "INSERT INTO objet_generique (gobj_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_poids,gobj_description,gobj_deposable,gobj_visible,gobj_echoppe) 
                       values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
@@ -234,7 +220,7 @@ if ($erreur == 0)
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
                     $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
+                        = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
 					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
                     $db->query($req);
                     // création
@@ -249,16 +235,17 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas encore
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas
+                        encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
                             de cliquer ici !</a><br>
-                        <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
-                            <input type="hidden" name="methode" value="objet_ex">
-                            <input type="hidden" name="met_obj" value="etape2">
-                            <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
-                    <p>Objet à créer : <select name="gobj">
+                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <input type="hidden" name="methode" value="objet_ex">
+                        <input type="hidden" name="met_obj" value="etape2">
+                        <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
+                        <br/>Objet à créer : <select name="gobj">
                             <?php
                             $req = "SELECT gobj_nom,gobj_cod FROM objet_generique WHERE gobj_tobj_cod = 11 ORDER BY gobj_nom ";
                             $db->query($req);
@@ -267,14 +254,14 @@ if ($erreur == 0)
                                 echo "<option value=\"", $db->f("gobj_cod"), "\">", $db->f("gobj_nom"), "</option>";
                             }
                             ?></select><br>
-                    <center><input type="submit" class="test" value="Créer !"></center></form>
+                        <input type="submit" class="test centrer" value="Créer !"></form>
                     <?php
                     break;
                 case "etape2":
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
                     $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
+                        = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
                           values(43,now(),$num_perso2,'$texte_evt','N','N') ";
                     $db->query($req);
                     // création
@@ -289,16 +276,17 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas encore
+                    <p><strong>Attention ! </strong>Cette procédure n'a pour but que de créer des objets existants (pas
+                        encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
                                 href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
                             de cliquer ici !</a><br>
-                        <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
-                            <input type="hidden" name="methode" value="objet_ex">
-                            <input type="hidden" name="met_obj" value="etape2">
-                            <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
-                    <p>Objet à créer : <select name="gobj">
+                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <input type="hidden" name="methode" value="objet_ex">
+                        <input type="hidden" name="met_obj" value="etape2">
+                        <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
+                        <br/>Objet à créer : <select name="gobj">
                             <?php
                             $req = "SELECT gobj_nom,gobj_cod,tobj_libelle,tobj_cod FROM objet_generique,type_objet WHERE gobj_tobj_cod != 11 AND gobj_tobj_cod = tobj_cod ORDER BY tobj_cod,gobj_nom ";
                             $db->query($req);
@@ -307,14 +295,14 @@ if ($erreur == 0)
                                 echo "<option value=\"", $db->f("gobj_cod"), "\">", $db->f("gobj_nom"), " - (", $db->f("tobj_libelle"), ")</option>";
                             }
                             ?></select><br>
-                    <center><input type="submit" class="test" value="Créer !"></center></form>
+                        <input type="submit" class="test centrer" value="Créer !"></form>
                     <?php
                     break;
                 case "etape2":
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
                     $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
+                        = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
 					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
                     $db->query($req);
                     // création
@@ -382,14 +370,14 @@ if ($erreur == 0)
                             </tr>
                         </table>
 
-                        <center><input type="submit" class="test" value="Lancer l'appel !">
+                        <input type="submit centrer" class="test" value="Lancer l'appel !">
                     </form>
                     <?php
                     break;
                 case "dest":
                     $err_depl = 0;
                     $req
-                              = "select pos_cod,pos_x,pos_y,pos_etage 
+                        = "select pos_cod,pos_x,pos_y,pos_etage 
 											from positions 
 											where pos_x = $pos_x 
 											and pos_y = $pos_y 
@@ -437,9 +425,9 @@ if ($erreur == 0)
                         $db->query($req_pos);
                         $db->next_record();
                         $pos_actuelle = $db->f("ppos_pos_cod");
-                        $v_x          = $db->f("pos_x");
-                        $v_y          = $db->f("pos_y");
-                        $etage        = $db->f("pos_etage");
+                        $v_x = $db->f("pos_x");
+                        $v_y = $db->f("pos_y");
+                        $etage = $db->f("pos_etage");
                         // rechreche des dest
                         $req_vue
                             = "select perso_cod,perso_type_perso,perso_nom from perso, perso_position, positions
@@ -472,10 +460,10 @@ if ($erreur == 0)
             {
                 case "O":
                     $texte_evt = "Un admin quête a rendu [perso_cod1] palpable.";
-                    $req       = "update perso set perso_tangible = 'O',perso_nb_tour_intangible = 0 where perso_cod = $num_perso2 ";
+                    $req = "update perso set perso_tangible = 'O',perso_nb_tour_intangible = 0 where perso_cod = $num_perso2 ";
                     break;
                 case "N":
-                    $req       = "update perso set perso_tangible = 'N',perso_nb_tour_intangible = 4 where perso_cod = $num_perso2 ";
+                    $req = "update perso set perso_tangible = 'N',perso_nb_tour_intangible = 4 where perso_cod = $num_perso2 ";
                     $texte_evt = "Un admin quête a rendu [perso_cod1] impalpable.";
                     break;
             }
@@ -487,11 +475,8 @@ if ($erreur == 0)
             break;
     }
 }
-echo "<p style=\"text-align:center;\"><a href=\"", $PHP_SELF, "\">Retour au début</a></p>";
+echo "<a class=<\"centrer\" href=\"", $PHP_SELF, "\">Retour au début</a>";
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
-?>
+include "blocks/_footer_page_jeu.php";

@@ -1,13 +1,5 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
+<?php
+include "blocks/_header_page_jeu.php";
 
 $methode = (isset($_GET['methode'])) ? $_GET['methode'] : '';
 $resultat = '<div><strong>Les paramètres de votre quatrième personnage ont été mis à jour.</strong></div>';
@@ -208,6 +200,4 @@ else
 {
     $contenu_page .= 'Erreur ! Cette page ne vous concerne pas.';
 }
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";

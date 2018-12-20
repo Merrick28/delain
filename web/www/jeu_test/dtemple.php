@@ -11,30 +11,23 @@ if (!isset($methode))
 {
 	$methode = 'entree';
 }
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur un temple !!!");
-	$erreur = 1;
-}
+
+$type_lieu = 17;
+$nom_lieu = 'un temple';
+
+include "blocks/_test_lieu.php";
+
 $perso_fam = false;
-if ($erreur == 0)
+$req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
+$db->query($req);
+$db->next_record();
+if ($db->f("perso_type_perso") == 3)
 {
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 17)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n’êtes pas sur un temple !!!</p>");
-	}
-	$req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-	$db->query($req);
-	$db->next_record();
-	if ($db->f("perso_type_perso") == 3)
-	{
-		$erreur = 1;
-		$perso_fam = true;
-		echo("<p>Les familiers, quels qu’ils soient ne sont pas admis dans les temples.</p>");
-	}
+    $erreur = 1;
+    $perso_fam = true;
+    echo("<p>Les familiers, quels qu’ils soient ne sont pas admis dans les temples.</p>");
 }
+
 //
 // OK, tout est bon, on s’attaque à la suite
 //

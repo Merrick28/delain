@@ -1,17 +1,6 @@
-<?php 
-define("APPEL",1);
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+<?php
+define("APPEL", 1);
+include "blocks/_header_page_jeu.php";
 
 
 // scripts JS
@@ -89,10 +78,10 @@ height:200px;
 
 //
 $is_enchanteur = $db->is_enchanteur($perso_cod);
-	if($is_enchanteur)
-	{
-		$controle = 1;
-	}
+if ($is_enchanteur)
+{
+    $controle = 1;
+}
 $contenu_page .= '<span align="center"><strong>Enchantement</strong></span>
 (<a href="javascript:blocking(\'aide\');">Aide</a>)<br><br>
 	<div id="aide" class="tableau2"  style="display:none;">
@@ -107,44 +96,42 @@ $ong[1] = 'Créer un composant pour Enchanter';
 $ong[2] = 'Créer un objet qui pourra être enchanté';
 $ong[3] = 'Enchanter un objet';
 
-if(isset($_POST['t_ench']) && !isset($t_ench))
-	$t_ench = $_POST['t_ench'];
-if(!isset($t_ench))
-	$t_ench = 0;
+if (isset($_POST['t_ench']) && !isset($t_ench))
+    $t_ench = $_POST['t_ench'];
+if (!isset($t_ench))
+    $t_ench = 0;
 $nb = count($ong);
 
 //
-$contenu_page .= '<div class="bordiv">';
 //
 $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 									<tr>';
 
-	for($cpt=0;$cpt<$nb;$cpt++)
-	{
-		if($cpt == $t_ench)
-		{
-			$style = 'onglet';
-			$lien = '';
-			$f_lien = '';
-			
-		}
-		else
-		{
-			$style = 'pas_onglet';
-			$lien = '<a href="' . $PHP_SELF . '?t_ench=' . $cpt . '">';
-			$f_lien = '</a>';
-		}
-		$contenu_page .= '<td class="' . $style .'"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
-	}
-	$contenu_page .= '</tr>
+for ($cpt = 0; $cpt < $nb; $cpt++)
+{
+    if ($cpt == $t_ench)
+    {
+        $style = 'onglet';
+        $lien = '';
+        $f_lien = '';
+
+    } else
+    {
+        $style = 'pas_onglet';
+        $lien = '<a href="' . $PHP_SELF . '?t_ench=' . $cpt . '">';
+        $f_lien = '</a>';
+    }
+    $contenu_page .= '<td class="' . $style . '"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
+}
+$contenu_page .= '</tr>
 										<tr>
-										<td colspan="' . $nb. '" class="reste_onglet">';
-	switch($t_ench)
-	{
-		case "0": //Analyse des flux magiques
-			if($controle == 1)
-			{
-				$contenu_page .= '<span align="center"><strong>Les flux magiques</strong></span>
+										<td colspan="' . $nb . '" class="reste_onglet">';
+switch ($t_ench)
+{
+    case "0": //Analyse des flux magiques
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Les flux magiques</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide sur les vents magiques</a>)<br><br>
 					<div id="aide2" class="tableau2"  style="display:none;">
 					<p><strong>A quoi cela sert-il de comprendre les vents magiques ?</strong>
@@ -156,18 +143,17 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 						</p>
 				</div>
 				<br>';
-				include "enchantement_flux.php";
-				$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=0">Retour à l\'onglet sélectionné</a>';
-			}
-			else
-			{
-				$contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
-			}
-			break;	
-		case "1": //Créer un composant pour Enchanter
-			if($controle == 1)
-			{
-				$contenu_page .= '<span align="center"><strong>Les composants</strong></span>
+            include "enchantement_flux.php";
+            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=0">Retour à l\'onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
+        }
+        break;
+    case "1": //Créer un composant pour Enchanter
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Les composants</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>
 					<div id="aide2" class="tableau2"  style="display:none;">
 					<p><strong>Création de composants :</strong>
@@ -179,18 +165,17 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 						</p>
 				</div>
 				<br>';
-				include "enchantement_composant.php";
-				$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=1">Retour à l\'onglet sélectionné</a>';
-			}
-			else
-			{
-				$contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
-			}
-			break;		
-		case "2": // Créer un objet qui pourra être enchanté
-			if($controle == 1)
-			{
-				$contenu_page .= '<span align="center"><strong>Les objets enchantables</strong></span>
+            include "enchantement_composant.php";
+            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=1">Retour à l\'onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
+        }
+        break;
+    case "2": // Créer un objet qui pourra être enchanté
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Les objets enchantables</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>    
 					<div id="aide2" class="tableau2"  style="display:none;">
 					<p><strong>Rendre un objet enchantable :</strong>
@@ -207,18 +192,17 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 						</p>
 				</div>
 				<br>';
-				include "enchantement_objet.php";
-			$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench='. $t_ench .'">Retour à l\'onglet sélectionné</a>';
-			}
-			else
-			{
-				$contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
-			}
-		break;
-		case "3": // Enchanter un objet
-			if($controle == 1)
-			{
-				$contenu_page .= '<span align="center"><strong>Aide pour enchanter un objet</strong></span>
+            include "enchantement_objet.php";
+            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
+        }
+        break;
+    case "3": // Enchanter un objet
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Aide pour enchanter un objet</strong></span>
 				(<a href="javascript:blocking(\'aide3\');">Comment enchanter un objet</a>)<br><br>
 				<div id="aide3" class="tableau2"  style="display:none;">
 				<p>Rien de plus simple ... Vous avez besoin des composants qui composent une formule de forgeamage, et hop, l\'enchantement pourra être tenté. 
@@ -228,25 +212,19 @@ $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 					</p>
 				</div>
 				<br>';
-				include "enchantement_objet_enchante.php";
-				$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench='. $t_ench .'">Retour à l\'onglet sélectionné</a>';	
-			}
-			else
-			{
-				$contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
-			}
-		break;
-		
-	}
-	$contenu_page .= '</td></tr></table>';
+            include "enchantement_objet_enchante.php";
+            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
+        }
+        break;
+
+}
+$contenu_page .= '</td></tr></table>';
 //
 //
 //
-$contenu_page .= '</div>';
 //
 
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

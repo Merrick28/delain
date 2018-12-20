@@ -1,28 +1,13 @@
-<?php 
-include_once "verif_connexion.php";
-//include G_CHE . "../includes/classes_monstre.php";
-
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-ob_start();
-
-$resultat = '';
-if (isset($_GET['methode']))
-{
-	switch ($_GET['methode'])
-	{
-		case 'redemption':
-			$req = "update perso set perso_monstre_attaque_monstre = 0
+<?php
+include "blocks/_header_page_jeu.php";
+if (isset($_GET['methode'])) {
+    switch ($_GET['methode']) {
+        case 'redemption':
+            $req = "update perso set perso_monstre_attaque_monstre = 0
 				where perso_cod IN (select ppos_perso_cod from perso_position where ppos_pos_cod = $position)";
-			$db->query($req);
-			echo '<div class="bordiv">Rédemption générale sur la case !</div>';
-	}
+            $db->query($req);
+            echo 'Rédemption générale sur la case !';
+    }
 }
 
 $db = new base_delain;
@@ -40,13 +25,12 @@ $req_detail = $req_detail . "and ppos_pos_cod = $position ";
 $req_detail = $req_detail . "group by perso_type_perso, perso_pnj ";
 $db->query($req_detail);
 $matrice_type = array(
-	1 => array(0, 0, 0),
-	2 => array(0, 0, 0),
-	3 => array(0, 0, 0)
+    1 => array(0, 0, 0),
+    2 => array(0, 0, 0),
+    3 => array(0, 0, 0)
 );
-while ($db->next_record())
-{
-	$matrice_type[$db->f('perso_type_perso')][$db->f('perso_pnj')] = $db->f('nb');
+while ($db->next_record()) {
+    $matrice_type[$db->f('perso_type_perso')][$db->f('perso_pnj')] = $db->f('nb');
 }
 echo "<table><tr><td class='soustitre2'>Sont<br />présents :</td><td>";
 echo "<table><tr><th></th><th class='soustitre2'>Normal</th><th class='soustitre2'>PNJ</th><th class='soustitre2'>4e perso</th></tr>";
@@ -64,11 +48,11 @@ $db->next_record();
 $mvm = $db->f('nb');
 $texte_mvm = '';
 if ($mvm < 2)
-	$texte_mvm = "Nul ou négligeable ($mvm)";
+    $texte_mvm = "Nul ou négligeable ($mvm)";
 elseif ($mvm == 2)
-	$texte_mvm = "Rififi à prévoir ($mvm)";
+    $texte_mvm = "Rififi à prévoir ($mvm)";
 else
-	$texte_mvm = "Baston générale ! ($mvm)";
+    $texte_mvm = "Baston générale ! ($mvm)";
 echo "<td style='padding-left:10px' class='soustitre2'>Marqueurs MvM :<br />(Indique si des monstres<br />se tapent entre eux)</td><td><strong>$texte_mvm</strong> - 
 	<a href='?methode=redemption&position=$position'><strong>Rédemption générale !</strong></a></td></tr></table>";
 
@@ -88,75 +72,59 @@ $req_monstre = $req_monstre . "and pos_cod = $position ";
 $req_monstre = $req_monstre . "order by perso_nom ";
 $db->query($req_monstre);
 $nb_monstre = $db->nf();
-if ($nb_monstre == 0)
-{
-	echo("<p>Aucun monstre à cet endroit !</p>");
-}
-else
-{
-	echo("<table>");
-	while($db->next_record())
-	{
-		if ($db->f("perso_dirige_admin") == 'O')
-		{
-			$ia = "<strong>Hors IA</strong>";
-		}
-		if ($db->f("perso_pnj") == 1)
-		{
-		    $ia = "<strong>PNJ</strong>";
-		}
-		else
-		{
-			$ia = "IA";
-		}
-		echo("<tr>");
-		echo "<td class=\"soustitre2\"><p><a href=\"../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . "</a></td>";
-		echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
-		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pa") , "</td>";
-		echo "<td class=\"soustitre2\"><p>" , $db->f("perso_pv") , " PV sur " , $db->f("perso_pv_max");
-		if ($db->f("etat") != "indemne")
-		{
-			echo " - (<strong>" , $db->f("etat") , "</strong>)";
-		}
-		echo "</td>";
-		echo "<td class=\"soustitre2\"><p>";
-		if ($db->f("messages") != 0)
-		{
-			echo "<strong>";
-		}
-		echo $db->f("messages") . " msg non lus.";
-		if ($db->f("messages") != 0)
-		{
-			echo "</strong>";
-		}
-		echo "</td>";
-		echo "<td class=\"soustitre2\"><p>";
-		if ($db->f("dlt_passee") == 1)
-		{
-			echo("<strong>");
-		}
-		echo $db->f("dlt");
-		if ($db->f("dlt_passee") == 1)
-		{
-			echo("</strong>");
-		}
-		echo "</td>";
-		echo "<td class=\"soustitre2\"><p>X=" , $db->f("pos_x") , ", Y=" , $db->f("pos_y") , ", E=" , $db->f("pos_etage") , "</td>";
-		if ($db->f('compt_nom') != '')
-		{
-			echo "<td class=\"soustitre2\">Joué par <strong>" , $db->f("compt_nom") , "</strong></td>";
-		}
-		else
-			echo "<td></td>";
-		echo("</tr>");
-	}
+if ($nb_monstre == 0) {
+    echo("<p>Aucun monstre à cet endroit !</p>");
+} else {
+    echo("<table>");
+    while ($db->next_record()) {
+        if ($db->f("perso_dirige_admin") == 'O') {
+            $ia = "<strong>Hors IA</strong>";
+        }
+        if ($db->f("perso_pnj") == 1) {
+            $ia = "<strong>PNJ</strong>";
+        } else {
+            $ia = "IA";
+        }
+        echo("<tr>");
+        echo "<td class=\"soustitre2\"><p><a href=\"../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . "</a></td>";
+        echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
+        echo "<td class=\"soustitre2\"><p>", $db->f("perso_pa"), "</td>";
+        echo "<td class=\"soustitre2\"><p>", $db->f("perso_pv"), " PV sur ", $db->f("perso_pv_max");
+        if ($db->f("etat") != "indemne") {
+            echo " - (<strong>", $db->f("etat"), "</strong>)";
+        }
+        echo "</td>";
+        echo "<td class=\"soustitre2\"><p>";
+        if ($db->f("messages") != 0) {
+            echo "<strong>";
+        }
+        echo $db->f("messages") . " msg non lus.";
+        if ($db->f("messages") != 0) {
+            echo "</strong>";
+        }
+        echo "</td>";
+        echo "<td class=\"soustitre2\"><p>";
+        if ($db->f("dlt_passee") == 1) {
+            echo("<strong>");
+        }
+        echo $db->f("dlt");
+        if ($db->f("dlt_passee") == 1) {
+            echo("</strong>");
+        }
+        echo "</td>";
+        echo "<td class=\"soustitre2\"><p>X=", $db->f("pos_x"), ", Y=", $db->f("pos_y"), ", E=", $db->f("pos_etage"), "</td>";
+        if ($db->f('compt_nom') != '') {
+            echo "<td class=\"soustitre2\">Joué par <strong>", $db->f("compt_nom"), "</strong></td>";
+        } else
+            echo "<td></td>";
+        echo("</tr>");
+    }
 
-	echo("</table>");
+    echo("</table>");
 }
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+include "blocks/_footer_page_jeu.php";
+
 

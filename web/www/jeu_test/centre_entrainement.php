@@ -1,26 +1,12 @@
 <?php 
 include_once "verif_connexion.php";
 
-//
-//Contenu de la div de droite
-//
-$contenu_page = '';
+$type_lieu = 6;
+$nom_lieu = 'un centre d\'entraînement';
+
+include "blocks/_test_lieu.php";
+
 // on regarde si le joueur est bien sur un centre d'entrainement
-$erreur = 0;
-if (!$db->is_lieu($perso_cod))
-{
-	echo("<p>Erreur ! Vous n'êtes pas sur un centre d'entrainement !!!");
-	$erreur = 1;
-}
-if ($erreur == 0)
-{
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 6)
-	{
-		$erreur = 1;
-		echo("<p>Erreur ! Vous n'êtes pas sur un centre d'entrainement !!!");
-	}
-}
 
 if ($erreur == 0)
 {

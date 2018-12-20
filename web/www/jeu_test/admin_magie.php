@@ -1,69 +1,51 @@
-<?php 
-include_once "verif_connexion.php";
-include '../includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
-// on va maintenant charger toutes les variables liées au menu
-include('variables_menu.php');
-
-//
-//Contenu de la div de droite
-//
+<?php
+include "blocks/_header_page_jeu.php";
 
 ob_start();
 
 $erreur = 0;
 $req = "select dcompt_enchantements from compt_droit where dcompt_compt_cod = $compt_cod";
 $db->query($req);
-if ($db->nf() == 0)
-{
-	echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-	$erreur = 1;
+if ($db->nf() == 0) {
+    echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
+    $erreur = 1;
+} else {
+    $db->next_record();
+    if ($db->f("dcompt_enchantements") != 'O') {
+        echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
+        $erreur = 1;
+    }
 }
-else
-{
-	$db->next_record();
-	if ($db->f("dcompt_enchantements") != 'O')
-	{
-		echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-		$erreur = 1;
-	}
-}
-if ($erreur == 0)
-{
-	if (!isset($_POST['methode']))
-		$methode = 'debut';
-	else
-		$methode = $_POST['methode'];		
+if ($erreur == 0) {
+    if (!isset($_POST['methode']))
+        $methode = 'debut';
+    else
+        $methode = $_POST['methode'];
 
-	$resultat = '';
+    $resultat = '';
 
-	switch ($methode)
-	{
-		case 'debut': break;
-		case 'modif':
-			if (isset($_POST['sort_cod']))
-			{
-				$sort_cod = $_POST['sort_cod'];
-				$sort_nom = pg_escape_string(str_replace('\'', '’', $_POST['sort_nom']));
-				$sort_comp_cod = $_POST['sort_comp_cod'];
-				$sort_niveau = $_POST['sort_niveau'];
-				$sort_cout = $_POST['sort_cout'];
-				$sort_distance = $_POST['sort_distance'];
-				$sort_soi_meme = (isset($_POST['sort_soi_meme'])) ? 'O' : 'N';
-				$sort_monstre = (isset($_POST['sort_monstre'])) ? 'O' : 'N';
-				$sort_joueur = (isset($_POST['sort_joueur'])) ? 'O' : 'N';
-				$sort_case = (isset($_POST['sort_case'])) ? 'O' : 'N';
-				$sort_aggressif = (isset($_POST['sort_aggressif'])) ? 'O' : 'N';
-				$sort_soutien = (isset($_POST['sort_soutien'])) ? 'O' : 'N';
-				$sort_bloquable = (isset($_POST['sort_bloquable'])) ? 'O' : 'N';
-				$sort_temps_recharge = $_POST['sort_temps_recharge'];
-				$sort_description = pg_escape_string(str_replace('\'', '’', $_POST['sort_description']));
+    switch ($methode) {
+        case 'debut':
+            break;
+        case 'modif':
+            if (isset($_POST['sort_cod'])) {
+                $sort_cod = $_POST['sort_cod'];
+                $sort_nom = pg_escape_string(str_replace('\'', '’', $_POST['sort_nom']));
+                $sort_comp_cod = $_POST['sort_comp_cod'];
+                $sort_niveau = $_POST['sort_niveau'];
+                $sort_cout = $_POST['sort_cout'];
+                $sort_distance = $_POST['sort_distance'];
+                $sort_soi_meme = (isset($_POST['sort_soi_meme'])) ? 'O' : 'N';
+                $sort_monstre = (isset($_POST['sort_monstre'])) ? 'O' : 'N';
+                $sort_joueur = (isset($_POST['sort_joueur'])) ? 'O' : 'N';
+                $sort_case = (isset($_POST['sort_case'])) ? 'O' : 'N';
+                $sort_aggressif = (isset($_POST['sort_aggressif'])) ? 'O' : 'N';
+                $sort_soutien = (isset($_POST['sort_soutien'])) ? 'O' : 'N';
+                $sort_bloquable = (isset($_POST['sort_bloquable'])) ? 'O' : 'N';
+                $sort_temps_recharge = $_POST['sort_temps_recharge'];
+                $sort_description = pg_escape_string(str_replace('\'', '’', $_POST['sort_description']));
 
-				$req = "UPDATE sorts SET
+                $req = "UPDATE sorts SET
 						sort_nom = '$sort_nom',
 						sort_comp_cod = $sort_comp_cod,
 						sort_niveau = $sort_niveau,
@@ -79,27 +61,26 @@ if ($erreur == 0)
 						sort_temps_recharge = $sort_temps_recharge,
 						sort_description = '$sort_description'
 					WHERE sort_cod = $sort_cod";
-				$db->query($req);
-				$resultat = "<p>Sort $sort_nom ($sort_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
-			}
-			else
-				$resultat = "<p>Erreur de paramètres</p>";
-		break;
-	}
-	if ($resultat)
-		echo "<div class='bordiv'>$resultat</div>";
+                $db->query($req);
+                $resultat = "<p>Sort $sort_nom ($sort_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
+            } else
+                $resultat = "<p>Erreur de paramètres</p>";
+            break;
+    }
+    if ($resultat)
+        echo "<div class='bordiv'>$resultat</div>";
 
-	$req_comp = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_cod IN (50, 51)';
-	$req_comp_complete = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_typc_cod = 5';
-	$db_comp = new base_delain;
-	
-	function ecrire_checkbox($label, $id_unique, $name, $valeur)
-	{
-		$checked = ($valeur == 'O') ? 'checked="checked"' : '';
-		return "<label for='$id_unique'>$label&nbsp;</label><input type='checkbox' $checked name='$name' id='$id_unique' />";
-	}
+    $req_comp = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_cod IN (50, 51)';
+    $req_comp_complete = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_typc_cod = 5';
+    $db_comp = new base_delain;
 
-	$req_runiques = 'SELECT
+    function ecrire_checkbox($label, $id_unique, $name, $valeur)
+    {
+        $checked = ($valeur == 'O') ? 'checked="checked"' : '';
+        return "<label for='$id_unique'>$label&nbsp;</label><input type='checkbox' $checked name='$name' id='$id_unique' />";
+    }
+
+    $req_runiques = 'SELECT
 			sort_cod, sort_combinaison, sort_nom, sort_cout, sort_distance, sort_fonction,
 			sort_comp_cod, sort_description, sort_aggressif, sort_niveau, sort_soi_meme,
 			sort_monstre, sort_joueur, sort_soutien, sort_bloquable, sort_case, sort_temps_recharge
@@ -108,7 +89,7 @@ if ($erreur == 0)
 		WHERE sort_combinaison NOT LIKE \'%9%\'
 		ORDER BY sort_niveau, sort_nom';
 
-	$req_divins = 'SELECT
+    $req_divins = 'SELECT
 			sort_cod, sort_nom, sort_cout, sort_distance, sort_description, 
 			sort_aggressif, sort_niveau, sort_soi_meme, sort_monstre, sort_joueur, 
 			sort_comp_cod, sort_soutien, sort_bloquable, sort_case, sort_temps_recharge,
@@ -122,7 +103,7 @@ if ($erreur == 0)
 			sort_soutien, sort_bloquable, sort_case, sort_temps_recharge, sort_fonction
 		ORDER BY sort_niveau, sort_nom';
 
-	$req_autres = 'SELECT
+    $req_autres = 'SELECT
 			sort_cod, sort_nom, sort_cout, sort_distance, sort_comp_cod, 
 			sort_description, sort_aggressif, sort_niveau, sort_soi_meme,
 			sort_monstre, sort_joueur, sort_soutien, sort_bloquable, sort_case, 
@@ -133,10 +114,10 @@ if ($erreur == 0)
 		WHERE dsort_sort_cod IS NULL AND sort_combinaison LIKE \'%9%\'
 		ORDER BY sort_niveau, sort_nom';
 
-	echo '<p>Accès direct : <a href="#runiques">Sorts runiques</a> - <a href="#divins">Sorts divins</a> - <a href="#autres">Autres sorts</a></p>';
+    echo '<p>Accès direct : <a href="#runiques">Sorts runiques</a> - <a href="#divins">Sorts divins</a> - <a href="#autres">Autres sorts</a></p>';
 
-	// Tableau des sorts runiques
-	echo '<h1 id="runiques">Sorts accessibles par runes</h1><table>
+    // Tableau des sorts runiques
+    echo '<h1 id="runiques">Sorts accessibles par runes</h1><table>
 		<tr>
 			<th class="titre">Sort / combinaison</th>
 			<th class="titre">Compétence / Paramètres</th>
@@ -146,30 +127,29 @@ if ($erreur == 0)
 			<th class="titre">Description</th>
 			<th class="titre">Action</th>
 		</tr>';
-	
-	$db->query($req_runiques);
 
-	while($db->next_record())
-	{
-		// Récupération des données
-		$sort_cod = $db->f('sort_cod');
-		$sort_nom = $db->f('sort_nom');
-		$sort_combinaison = $db->f('sort_combinaison');
-		$sort_comp_cod = $db->f('sort_comp_cod');
-		$sort_niveau = $db->f('sort_niveau');
-		$sort_cout = $db->f('sort_cout');
-		$sort_distance = $db->f('sort_distance');
-		$sort_soi_meme = $db->f('sort_soi_meme');
-		$sort_monstre = $db->f('sort_monstre');
-		$sort_joueur = $db->f('sort_joueur');
-		$sort_case = $db->f('sort_case');
-		$sort_aggressif = $db->f('sort_aggressif');
-		$sort_soutien = $db->f('sort_soutien');
-		$sort_bloquable = $db->f('sort_bloquable');
-		$sort_temps_recharge = $db->f('sort_temps_recharge');
-		$sort_description = $db->f('sort_description');
+    $db->query($req_runiques);
 
-		echo "<form action='#' method='POST'><tr>
+    while ($db->next_record()) {
+        // Récupération des données
+        $sort_cod = $db->f('sort_cod');
+        $sort_nom = $db->f('sort_nom');
+        $sort_combinaison = $db->f('sort_combinaison');
+        $sort_comp_cod = $db->f('sort_comp_cod');
+        $sort_niveau = $db->f('sort_niveau');
+        $sort_cout = $db->f('sort_cout');
+        $sort_distance = $db->f('sort_distance');
+        $sort_soi_meme = $db->f('sort_soi_meme');
+        $sort_monstre = $db->f('sort_monstre');
+        $sort_joueur = $db->f('sort_joueur');
+        $sort_case = $db->f('sort_case');
+        $sort_aggressif = $db->f('sort_aggressif');
+        $sort_soutien = $db->f('sort_soutien');
+        $sort_bloquable = $db->f('sort_bloquable');
+        $sort_temps_recharge = $db->f('sort_temps_recharge');
+        $sort_description = $db->f('sort_description');
+
+        echo "<form action='#' method='POST'><tr>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' />
 				<br />$sort_combinaison</td>
 			<td class='soustitre2'><select name='sort_comp_cod'>" . $html->select_from_query($req_comp, 'comp_cod', 'comp_libelle', $sort_comp_cod) . "</select>
@@ -190,10 +170,10 @@ if ($erreur == 0)
 				<input type='submit' class='test' value='Modifier' />
 			</td>
 		</tr></form>";
-	}
+    }
 
-	// Tableau des sorts divins
-	echo '</table><h1 id="divins">Sorts Divins</h1><table>
+    // Tableau des sorts divins
+    echo '</table><h1 id="divins">Sorts Divins</h1><table>
 		<tr>
 			<th class="titre">Sort / dieux</th>
 			<th class="titre">Paramètres</th>
@@ -203,30 +183,29 @@ if ($erreur == 0)
 			<th class="titre">Description</th>
 			<th class="titre">Action</th>
 		</tr>';
-	
-	$db->query($req_divins);
 
-	while($db->next_record())
-	{
-		// Récupération des données
-		$sort_cod = $db->f('sort_cod');
-		$sort_nom = $db->f('sort_nom');
-		$dieux_nom = $db->f('dieux_nom');
-		$sort_niveau = $db->f('sort_niveau');
-		$sort_comp_cod = $db->f('sort_comp_cod');
-		$sort_cout = $db->f('sort_cout');
-		$sort_distance = $db->f('sort_distance');
-		$sort_soi_meme = $db->f('sort_soi_meme');
-		$sort_monstre = $db->f('sort_monstre');
-		$sort_joueur = $db->f('sort_joueur');
-		$sort_case = $db->f('sort_case');
-		$sort_aggressif = $db->f('sort_aggressif');
-		$sort_soutien = $db->f('sort_soutien');
-		$sort_bloquable = $db->f('sort_bloquable');
-		$sort_temps_recharge = $db->f('sort_temps_recharge');
-		$sort_description = $db->f('sort_description');
+    $db->query($req_divins);
 
-		echo "<tr><form action='#' method='POST'>
+    while ($db->next_record()) {
+        // Récupération des données
+        $sort_cod = $db->f('sort_cod');
+        $sort_nom = $db->f('sort_nom');
+        $dieux_nom = $db->f('dieux_nom');
+        $sort_niveau = $db->f('sort_niveau');
+        $sort_comp_cod = $db->f('sort_comp_cod');
+        $sort_cout = $db->f('sort_cout');
+        $sort_distance = $db->f('sort_distance');
+        $sort_soi_meme = $db->f('sort_soi_meme');
+        $sort_monstre = $db->f('sort_monstre');
+        $sort_joueur = $db->f('sort_joueur');
+        $sort_case = $db->f('sort_case');
+        $sort_aggressif = $db->f('sort_aggressif');
+        $sort_soutien = $db->f('sort_soutien');
+        $sort_bloquable = $db->f('sort_bloquable');
+        $sort_temps_recharge = $db->f('sort_temps_recharge');
+        $sort_description = $db->f('sort_description');
+
+        echo "<tr><form action='#' method='POST'>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' />
 				<br /><small>$dieux_nom</small></td>
 			<td class='soustitre2'>Distance <input type='text' value='$sort_distance' name='sort_distance' size='2' />
@@ -247,10 +226,10 @@ if ($erreur == 0)
 				<input type='submit' class='test' value='Modifier' />
 			</td></form>
 		</tr>";
-	}
+    }
 
-	// Tableau des autres sorts
-	echo '</table><h1 id="autres">Autres sorts (tests et/ou monstres)</h1><table>
+    // Tableau des autres sorts
+    echo '</table><h1 id="autres">Autres sorts (tests et/ou monstres)</h1><table>
 		<tr>
 			<th class="titre">Sort</th>
 			<th class="titre">Compétence / Paramètres</th>
@@ -260,29 +239,28 @@ if ($erreur == 0)
 			<th class="titre">Description</th>
 			<th class="titre">Action</th>
 		</tr>';
-	
-	$db->query($req_autres);
 
-	while($db->next_record())
-	{
-		// Récupération des données
-		$sort_cod = $db->f('sort_cod');
-		$sort_nom = $db->f('sort_nom');
-		$sort_comp_cod = $db->f('sort_comp_cod');
-		$sort_niveau = $db->f('sort_niveau');
-		$sort_cout = $db->f('sort_cout');
-		$sort_distance = $db->f('sort_distance');
-		$sort_soi_meme = $db->f('sort_soi_meme');
-		$sort_monstre = $db->f('sort_monstre');
-		$sort_joueur = $db->f('sort_joueur');
-		$sort_case = $db->f('sort_case');
-		$sort_aggressif = $db->f('sort_aggressif');
-		$sort_soutien = $db->f('sort_soutien');
-		$sort_bloquable = $db->f('sort_bloquable');
-		$sort_temps_recharge = $db->f('sort_temps_recharge');
-		$sort_description = $db->f('sort_description');
+    $db->query($req_autres);
 
-		echo "<tr><form action='#' method='POST'>
+    while ($db->next_record()) {
+        // Récupération des données
+        $sort_cod = $db->f('sort_cod');
+        $sort_nom = $db->f('sort_nom');
+        $sort_comp_cod = $db->f('sort_comp_cod');
+        $sort_niveau = $db->f('sort_niveau');
+        $sort_cout = $db->f('sort_cout');
+        $sort_distance = $db->f('sort_distance');
+        $sort_soi_meme = $db->f('sort_soi_meme');
+        $sort_monstre = $db->f('sort_monstre');
+        $sort_joueur = $db->f('sort_joueur');
+        $sort_case = $db->f('sort_case');
+        $sort_aggressif = $db->f('sort_aggressif');
+        $sort_soutien = $db->f('sort_soutien');
+        $sort_bloquable = $db->f('sort_bloquable');
+        $sort_temps_recharge = $db->f('sort_temps_recharge');
+        $sort_description = $db->f('sort_description');
+
+        echo "<tr><form action='#' method='POST'>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' /></td>
 			<td class='soustitre2'><select name='sort_comp_cod'>" . $html->select_from_query($req_comp_complete, 'comp_cod', 'comp_libelle', $sort_comp_cod) . "</select>
 				<br />Distance <input type='text' value='$sort_distance' name='sort_distance' size='2' />
@@ -302,11 +280,9 @@ if ($erreur == 0)
 				<input type='submit' class='test' value='Modifier' />
 			</td></form>
 		</tr>";
-	}
-	echo '</table>';
+    }
+    echo '</table>';
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+include "blocks/_footer_page_jeu.php";

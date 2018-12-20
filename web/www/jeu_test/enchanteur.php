@@ -20,30 +20,21 @@ $req = 'select pcomp_modificateur,pcomp_pcomp_cod from perso_competences
 			where pcomp_perso_cod = ' . $perso_cod . '
 			and pcomp_pcomp_cod in (88,102,103)';
 $db->query($req);
-if ($db->nf() != 0) {
+if ($db->nf() != 0)
+{
     $db->next_record();
     $comp_enchantement = $db->f('pcomp_pcomp_cod');
     $comp_enchantement_percent = $db->f('pcomp_modificateur');
 }
 
 
-switch ($type_appel) {
+switch ($type_appel)
+{
     case 0:
-        $erreur = 0;
-        if (!DEFINED("APPEL"))
-            die("Erreur d'appel de page !");
-        if (!$db->is_lieu($perso_cod)) {
-            $contenu_page .= "<p>Erreur ! Vous n'êtes pas sur une boutique de l'enchanteur !!!";
-            $erreur = 1;
-        }
-        if ($erreur == 0) {
-            $tab_lieu = $db->get_lieu($perso_cod);
-            $lieu_cod = $tab_lieu['lieu_cod'];
-            if ($tab_lieu['type_lieu'] != 26) {
-                $erreur = 1;
-                $contenu_page .= "<p>Erreur ! Vous n'êtes pas sur une boutique de l'enchanteur !!!";
-            }
-        }
+        $type_lieu = 26;
+        $nom_lieu = 'une boutique de l\'enchanteur';
+
+        include "blocks/_test_lieu.php";
         break;
     /*	case 1: // Mise en commentaire car un perso ne doit pas pouvoir accéder à cette page uniquement avec ses compétences. Se référer pour cela à enchantement_general.php
             $req = 'select pcomp_modificateur from perso_competences
@@ -58,12 +49,15 @@ switch ($type_appel) {
             break;*/
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ
         $tab_quete = $db->get_perso_quete($perso_cod);
-        foreach ($tab_quete as $key => $val) {
-            if ($val == 'enchanteur.php') {
+        foreach ($tab_quete as $key => $val)
+        {
+            if ($val == 'enchanteur.php')
+            {
                 $erreur = 0;
             }
         }
-        if ($erreur != 0) {
+        if ($erreur != 0)
+        {
             $contenu_page .= "Aucun enchanteur ne se trouve près de vous";
             $erreur = 1;
         }
@@ -76,7 +70,8 @@ switch ($type_appel) {
         $erreur = 1;
         break;
 }
-if ($db->is_fam($perso_cod)) {
+if ($db->is_fam($perso_cod))
+{
     $contenu_page .= "Désolé mais les familiers ne sont pas les bienvenus ici.";
     $erreur = 1;
 }
@@ -85,8 +80,10 @@ if ($db->is_fam($perso_cod)) {
 //
 if (!isset($methode))
     $methode = 'debut';
-if ($erreur == 0) {
-    switch ($methode) {
+if ($erreur == 0)
+{
+    switch ($methode)
+    {
         case "debut":
             $contenu_page .= '<strong>Un enchanteur vous aborde :</strong><br>';
             //
@@ -101,24 +98,28 @@ if ($erreur == 0) {
             $db->query($req);
             if ($db->nf() == 0)
                 $contenu_page .= '« <em>Désolé, vous ne possédez aucun objet sur lequel je puisse lancer un enchantement.</em>»';
-            else {
+            else
+            {
                 $contenu_page .= '« <em>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
 				Voici les objets sur lesquels je peux intervenir : </em>»<br>';
                 while ($db->next_record())
                     $contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&type_appel=' . $type_appel . '">' . $db->f('obj_nom') . '</a></strong>';
             }
             $contenu_page .= '<br><br>';
-            if ($comp_enchantement == 0) {
+            if ($comp_enchantement == 0)
+            {
                 $req = "select pquete_param_texte from quete_perso
 											where pquete_quete_cod = 15
 											and pquete_nombre = 1
 											and pquete_perso_cod = " . $perso_cod;
                 $db->query($req);
-                if ($db->nf() == 0) {
+                if ($db->nf() == 0)
+                {
                     $contenu_page .= '« <em>Mais j\'y pense, vous voulez peut-être devenir vous-même un enchanteur de renom ?
 														<br>Si c\'est le cas, dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap, celui d\'apprenti.</em>»
 														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv1&comp=88"><strong>Allez je me lance !</strong></a><br><br>';
-                } else {
+                } else
+                {
                     $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
 														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
 														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
@@ -128,15 +129,18 @@ if ($erreur == 0) {
 														<input type="text" name="code">
 														<input type="submit" value="Valider 12 PA" class="test">';
                 }
-            } else if ($comp_enchantement == 88) {
-                if ($comp_enchantement_percent < 85) {
+            } else if ($comp_enchantement == 88)
+            {
+                if ($comp_enchantement_percent < 85)
+                {
                     $contenu_page .= '« <em>Vous revoilà déjà ?
 													<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 													Revenez donc lorsque vous serez un peu plus expérimenté.
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
 													</em>»
 													<br><br>Un niveau minimum de <strong>85%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 2 / Artisan forgeamiste<br><br>';
-                } else {
+                } else
+                {
                     $contenu_page .= '« <em>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
@@ -144,15 +148,18 @@ if ($erreur == 0) {
 													</em>»
 													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv2&comp=102"><strong>Allez je me lance !</strong></a><br><br>';
                 }
-            } else if ($comp_enchantement == 102) {
-                if ($comp_enchantement_percent < 100) {
+            } else if ($comp_enchantement == 102)
+            {
+                if ($comp_enchantement_percent < 100)
+                {
                     $contenu_page .= '« <em>Vous revoilà déjà ?
 													<br>Vous manquez de pratique pour prétendre à ce que je vous apprenne autre chose !
 													Revenez donc lorsque vous serez un peu plus expérimenté.
 													<br>L\'enseignement est une chose, la pratique et l\'expérience une autre !
 													</em>»
 													<br><br>Un niveau minimum de <strong>100%</strong> dans votre compétence en forgeamage est nécessaire avant de pouvoir passer au niveau 3 / Enchanteur<br><br>';
-                } else {
+                } else
+                {
                     $contenu_page .= '« <em>Ah, je vois que vous avez investi dans l\'enseignement que je vous avais donné !
 														C\'est une bonne chose, et je me verrais ravi de vous en apprendre un peu plus.
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
@@ -161,7 +168,8 @@ if ($erreur == 0) {
 													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv3&comp=103"><strong>Allez je me lance !</strong></a><br><br>';
                 }
 
-            } else if ($comp_enchantement == 103) {
+            } else if ($comp_enchantement == 103)
+            {
                 $contenu_page .= '« <em>Cher confrère ! Nous pouvons deviser si vous le souhaitez des meilleurs endroits pour lancer nos enchantements !
 													<br>Ces vents magiques sont tellement difficiles à capturer ...</em>»
 													<br><br>Et l\'enchanteur se lance dans des palabres sans fin ...<br><br>';
@@ -181,7 +189,8 @@ if ($erreur == 0) {
 				and obj_gobj_cod = gobj_cod ';
             $db->query($req);
             $db->next_record();
-            switch ($db->f("gobj_tobj_cod")) {
+            switch ($db->f("gobj_tobj_cod"))
+            {
                 case 1:    // arme
                     if ($db->f('gobj_distance') == 'O')    //arme distance
                         $app_req = ' where tenc_arme_distance = 1 ';
@@ -212,7 +221,8 @@ if ($erreur == 0) {
             if ($db->nf() == 0)
                 $contenu_page .= 'Non, désolé, je ne peux rien faire avec ce que vous avez en inventaire. Il vous faut trouver d\'autres matériaux afin que je puisse enchanter cet objet.
 													<br>Le forgeamage demande certes de l\'expertise, mais ausis d\'avoir les objets nécessaires pour cela.';
-            else {
+            else
+            {
                 $contenu_page .= 'Voici ce que nous pouvons tenter de faire avec ça :
 				<table>
 					<tr>
@@ -221,7 +231,8 @@ if ($erreur == 0) {
 						<td class="soustitre2"><strong>Cout</strong></td>
 						<td class="soustitre2"><strong>Nécessite</strong></td>
 					</tr>';
-                while ($db->next_record()) {
+                while ($db->next_record())
+                {
                     $contenu_page .= '<tr>
 						<td class="soustitre2"><a href="action.php?methode=enc&enc=' . $db->f('enc_cod') . '&obj=' . $obj . '&type_appel=' . $type_appel . '">' . $db->f('enc_nom') . '</a></td>
 						<td>' . $db->f('enc_description') . '</td>
@@ -246,12 +257,14 @@ if ($erreur == 0) {
 											and pquete_nombre = 1
 											and pquete_perso_cod = " . $perso_cod;
             $db->query($req);
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
                 $db2->query($req);
                 $db2->next_record();
                 $contenu_page .= $db2->f('resultat');
-            } else {
+            } else
+            {
                 $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
 														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
 														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
@@ -285,20 +298,24 @@ if ($erreur == 0) {
             $db->query($req);
             $db->next_record();
             $code_array = explode(";", $db->f('pquete_param_texte'));
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 $contenu_page .= 'Vous n\'avez rien à faire ici !';
                 break;
-            } else if ($db->f('perso_pa') != 12) {
+            } else if ($db->f('perso_pa') != 12)
+            {
                 $contenu_page .= 'Vous n\'avez pas suffisamment de PA pour réaliser cette action !';
                 break;
-            } else if ($code == $code_array[0]) {
+            } else if ($code == $code_array[0])
+            {
                 //Mise à jour de la comp enchanteur
                 $req2 = "select enchanteur(" . $perso_cod . ",88) as resultat";
                 $db2->query($req2);
                 $db2->next_record();
                 $contenu_page .= '« <em>' . $db2->f('resultat') . '</em>»<br><br>
 																		<strong>Vous bénéficiez maintenant d\'une nouvelle compétence. Bonne découverte !</strong>';
-            } else {
+            } else
+            {
                 $contenu_page .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
 														<br>Prenez un peu de temps pour réfléchir un peu plus ...</em>»<br><br>';
                 $req2 = "update perso set perso_pa = perso_pa - 6 where perso_cod = " . $perso_cod;

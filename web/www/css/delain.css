@@ -1,6 +1,6 @@
 body {
-    background-image:url('../../images/fond5.gif');
-    font-family: verdana,helvetica,sans-serif;
+    background-image: url('../../images/fond5.gif');
+    font-family: verdana, helvetica, sans-serif;
     font-size: 9pt;
 }
 
@@ -9,7 +9,7 @@ body {
 }
 
 .navbar-default {
-    background-image:url('../../images/fond5.gif');
+    background-image: url('../../images/fond5.gif');
 }
 
 .navbar-default li a:link {
@@ -49,7 +49,7 @@ a:hover {
 }
 
 .groupdiv {
-    background-image:url('../../images/fondparchemin.gif');
+    background-image: url('../../images/fondparchemin.gif');
     border-color: #800000;
     border-style: solid;
     border-radius: 10px;
@@ -57,16 +57,16 @@ a:hover {
     overflow: auto;
     margin-bottom: 10px;
     padding-bottom: 10px;
-    margin-top:10px;
+    margin-top: 10px;
     margin-right: 10px;
-    padding:10px;
-    overflow:hidden;
+    padding: 10px;
+    overflow: hidden;
 }
 
 .groupdiv_gauche {
-     margin-right: 0px;
-     margin-left: 0px;
-     padding: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    padding: 0px;
 }
 
 .groupdiv .titre {
@@ -78,7 +78,7 @@ a:hover {
 }
 
 .groupdiv_nopadding {
-    background-image:url('../../images/fondparchemin.gif');
+    background-image: url('../../images/fondparchemin.gif');
     border-color: #800000;
     border-style: solid;
     border-radius: 10px;
@@ -86,104 +86,115 @@ a:hover {
     overflow: auto;
     margin-bottom: 1px;
     padding-bottom: 1px;
-    margin-top:1px;
-    overflow:hidden;
+    margin-top: 1px;
+    overflow: hidden;
     margin-right: -15px;
     margin-left: -15px;
     padding: 0px;
 }
 
-/* make sidebar nav vertical */ 
+/* make sidebar nav vertical */
 @media (min-width: 768px) {
     .sidebar-nav .navbar .navbar-collapse {
         padding-left: 20px;
         padding-right: 20px;
         max-height: none;
     }
+
     .sidebar-nav .navbar ul {
         float: none;
     }
+
     .sidebar-nav .navbar ul:not {
         display: block;
     }
+
     .sidebar-nav .navbar li {
         float: none;
         display: block;
     }
+
     .sidebar-nav .navbar li a {
         padding-top: 0px;
         padding-bottom: 0px;
     }
-    
+
     .blockAuthTop ul {
         float: none;
     }
+
     .blockAuthTop ul:not {
         display: block;
     }
-    .blockAuthTop  li {
+
+    .blockAuthTop li {
         float: none;
         display: block;
     }
+
     .blockAuthTop li a {
         padding-top: 0px;
         padding-bottom: 0px;
     }
-    
-    
-    
-    
+
 }
+
 @media (min-width: 992px) {
-  .navbar {
-    border-radius: 4px;
-  }
+    .navbar {
+        border-radius: 4px;
+    }
 }
+
 @media (min-width: 992px) {
-  .navbar-header {
-    float: left;
-  }
+    .navbar-header {
+        float: left;
+    }
 }
+
 .navbar-collapse {
-  padding-right: 15px;
-  padding-left: 15px;
-  overflow-x: visible;
-  -webkit-overflow-scrolling: touch;
-  border-top: 1px solid transparent;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+    padding-right: 15px;
+    padding-left: 15px;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid transparent;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
 }
+
 @media (min-width: 992px) {
-  .navbar-collapse {
-    width: auto;
-    border-top: 0;
-    -webkit-box-shadow: none;
-            box-shadow: none;
-  }
-  .navbar-collapse.collapse {
-    display: block !important;
-    height: auto !important;
-    padding-bottom: 0;
-    overflow: visible !important;
-  }
-  .navbar-collapse.in {
-    overflow-y: visible;
-  }
-  .navbar-fixed-top .navbar-collapse,
-  .navbar-static-top .navbar-collapse,
-  .navbar-fixed-bottom .navbar-collapse {
-    padding-right: 0;
-    padding-left: 0;
-  }
+    .navbar-collapse {
+        width: auto;
+        border-top: 0;
+        -webkit-box-shadow: none;
+        box-shadow: none;
+    }
+
+    .navbar-collapse.collapse {
+        display: block !important;
+        height: auto !important;
+        padding-bottom: 0;
+        overflow: visible !important;
+    }
+
+    .navbar-collapse.in {
+        overflow-y: visible;
+    }
+
+    .navbar-fixed-top .navbar-collapse,
+    .navbar-static-top .navbar-collapse,
+    .navbar-fixed-bottom .navbar-collapse {
+        padding-right: 0;
+        padding-left: 0;
+    }
 }
 
 .navbar-nav li a {
-    padding-top:0px;
-    padding-bottom:0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
 }
 
 .navbar-header {
-    background-image:url('../../images/fondparchemin.gif');
+    background-image: url('../../images/fondparchemin.gif');
     border-color: #800000;
     border-style: solid;
     border-radius: 10px;
@@ -202,14 +213,14 @@ hr {
 }
 
 #formLogin {
-    padding:10px;
+    padding: 10px;
 }
 
 .formControlDelain {
     height: 19px;
-    padding-left:10px;
-    padding-top:2px;
-    padding-bottom:2px;
+    padding-left: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
     font-size: 11px;
 }
 
@@ -226,7 +237,6 @@ hr {
     margin-bottom: 2px;
 }
 
-
 #wrapper.toggled {
     padding-left: 0;
 }
@@ -235,60 +245,72 @@ hr {
     width: 0;
 }
 
-#descJeu{
+#descJeu {
     font-style: italic;
     text-align: center;
     height: 200px;
     display: table;
 
-    
 }
 
+div.centrer {
+    width: 100%;
+}
+submit.centrer {
+    display:block;
+}
+button.centrer {
+    display:block;
+}
 .centrer {
     text-align: center;
     margin-left: auto;
     margin-right: auto;
+
 }
 
 #descJeu span {
-     display: table-cell;
+    display: table-cell;
     vertical-align: middle;
 }
 
-#avatarMonstre{
-    max-width: 200px; 
+#avatarMonstre {
+    max-width: 200px;
     max-height: 200px;
-   /* height: 200px;*/
+    /* height: 200px;*/
     text-align: center;
-    line-height:200px;
-    overflow:hidden;
-}
-#avatarMonstre img{
-    height: 100%; 
-    width: 100%; 
-    object-fit: contain;
-    
+    line-height: 200px;
+    overflow: hidden;
 }
 
-.imgVertCenter { 
-    vertical-align:middle; 
-    overflow:hidden;
-     width:auto; 
-    max-height: 200px;
-}
-#logoDelainAccueil{
-    max-width: 200px; 
-    max-height: 200px;
-   /* height: 200px;*/
-    text-align: center;
-    line-height:200px;
-    overflow:hidden;
-}
-#logoDelainAccueil img{
-    height: 100%; 
-    width: 100%; 
+#avatarMonstre img {
+    height: 100%;
+    width: 100%;
     object-fit: contain;
-    
+
+}
+
+.imgVertCenter {
+    vertical-align: middle;
+    overflow: hidden;
+    width: auto;
+    max-height: 200px;
+}
+
+#logoDelainAccueil {
+    max-width: 200px;
+    max-height: 200px;
+    /* height: 200px;*/
+    text-align: center;
+    line-height: 200px;
+    overflow: hidden;
+}
+
+#logoDelainAccueil img {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+
 }
 
 .tableau_perso {
@@ -297,20 +319,33 @@ hr {
 }
 
 .tableau_perso td {
-    padding:2px;
+    padding: 2px;
 }
 
 .nopadding {
-    padding:0
+    padding: 0
 }
 
 img.imgFit {
     max-width: 100%;
     height: auto;
-    max-width:200px;
+    max-width: 200px;
 }
 
 .space_between_div {
-    padding:2px;
+    padding: 2px;
+}
+
+.rouge {
+    color: red;
+}
+
+.bordiv
+{
+    border-color:#800000;
+    border-style:solid;
+    border-radius: 10px;
+    background-image:url('../images/fondparchemin.gif');
+    padding:10px;
 }
 

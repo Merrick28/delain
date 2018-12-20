@@ -4,6 +4,8 @@ if(!defined("APPEL"))
 if(!isset($db))
 	include_once "verif_connexion.php";
 
+
+
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 $db = new base_delain;
