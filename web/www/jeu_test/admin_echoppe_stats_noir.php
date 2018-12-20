@@ -2,52 +2,25 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 ?>
-    <script language="javascript">
-        ns4 = document.layers;
-        ie = document.all;
-        ns6 = document.getElementById && !document.all;
-
-        function changeStyles(id, mouse) {
-            if (ns4) {
-                alert("Sorry, but NS4 does not allow font changes.");
-                return false;
-            }
-            else if (ie) {
-                obj = document.all[id];
-            }
-            else if (ns6) {
-                obj = document.getElementById(id);
-            }
-            if (!obj) {
-                alert("unrecognized ID");
-                return false;
-            }
-
-            if (mouse == 1) {
-                obj.className = "navon";
-            }
-
-            if (mouse == 0) {
-                obj.className = "navoff";
-            }
-            return true;
-        }
-
-    </script>
+    <script language="javascript" src="javascripts/changestyles.js"></script>
 <?php
 $erreur = 0;
-if (!isset($methode)) {
+if (!isset($methode))
+{
     $methode = "debut";
 }
 $req = "select perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
 $db->query($req);
 $db->next_record();
-if ($db->f("perso_admin_echoppe_noir") != 'O') {
+if ($db->f("perso_admin_echoppe_noir") != 'O')
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0) {
-    switch ($methode) {
+if ($erreur == 0)
+{
+    switch ($methode)
+    {
         case "debut":
             //
             // en premier on liste les magasins et leur gérant éventuel
@@ -64,9 +37,11 @@ if ($erreur == 0) {
             $req = $req . "and mger_perso_cod = perso_cod ";
             $req = $req . "order by pos_etage desc ";
             $db->query($req);
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 echo "<p>Aucun magasin n'est en gérance.";
-            } else {
+            } else
+            {
                 echo "<table cellspacing=\"2\" cellpadding=\"2\">";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Nom magasin</td>";
@@ -75,7 +50,8 @@ if ($erreur == 0) {
                 echo "<td></td>";
                 echo "</tr>";
 
-                while ($db->next_record()) {
+                while ($db->next_record())
+                {
                     echo "<tr>";
                     echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
                     echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
@@ -97,11 +73,14 @@ if ($erreur == 0) {
             $req = $req . "(select 1 from magasin_gerant where mger_lieu_cod = lieu_cod) ";
             $req = $req . "order by pos_etage desc ";
             $db->query($req);
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 echo "<p>Aucun magasin n'est en gérance.";
-            } else {
+            } else
+            {
                 echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-                while ($db->next_record()) {
+                while ($db->next_record())
+                {
                     echo "<tr>";
                     echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
                     echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"", $PHP_SELF, "?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
@@ -120,9 +99,11 @@ if ($erreur == 0) {
             $req = $req . "and obj_gobj_cod = gobj_cod ";
             $req = $req . "group by obj_nom,mtra_sens ";
             $db->query($req);
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 echo "<p>Aucune transaction enregistrée dans votre échoppe.";
-            } else {
+            } else
+            {
                 ?>
                 <table>
                 <tr>
@@ -132,7 +113,8 @@ if ($erreur == 0) {
                     <td class="soustitre2"><strong>Nombre</strong></td>
                 </tr>
                 <?php
-                while ($db->next_record()) {
+                while ($db->next_record())
+                {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\">", $db->f("obj_nom"), "</td>";
                     $idx_sens = $db->f("mtra_sens");
@@ -158,9 +140,11 @@ if ($erreur == 0) {
             $req = $req . "and mtra_perso_cod = perso_cod ";
             $req = $req . "order by mtra_date ";
             $db->query($req);
-            if ($db->nf() == 0) {
+            if ($db->nf() == 0)
+            {
                 echo "<p>Aucune transaction enregistrée dans votre échoppe.";
-            } else {
+            } else
+            {
                 ?>
                 <table>
                     <tr>
@@ -171,7 +155,8 @@ if ($erreur == 0) {
                         <td class="soustitre2"><strong>Date</strong></td>
                     </tr>
                 <?php
-                while ($db->next_record()) {
+                while ($db->next_record())
+                {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\">", $db->f("obj_nom"), "</td>";
                     echo "<td>", $db->f("perso_nom"), "</td>";
