@@ -5,7 +5,7 @@ ob_start();
 
 
 $erreur = 0;
-$droit_modif = 'objet';
+$droit_modif = 'dcompt_objet';
 include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0) {
     include "admin_edition_header.php";

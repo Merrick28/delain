@@ -7,7 +7,7 @@ ob_start();
 <?php
 $erreur = 0;
 
-$droit_modif = 'modif_perso';
+$droit_modif = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
 
 if($erreur == 0) {

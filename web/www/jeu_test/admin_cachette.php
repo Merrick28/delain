@@ -18,10 +18,9 @@ include 'sadmin.php'; // Pour intégration XML
 
 $db2 = new base_delain;
 $erreur = 0;
-$droit_modif = 'modif_perso';
+$droit_modif = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
 
-include "blocks/_test_droit_modif_generique.php";
 if($erreur == 0)
 {
     if (!isset($methode))

@@ -32,23 +32,10 @@ echo '<script>//# sourceURL=admin_quete_auto_edit.js
 //
 
 $contenu_page = '';
-$erreur = 0;
-$req = 'select dcompt_animations from compt_droit where dcompt_compt_cod = ' . $compt_cod;
-$db->query($req);
-if ($db->nf() == 0)
-{
-    $droit['modif_animations'] = 'N';
-}
-else
-{
-    $db->next_record();
-    $droit['modif_animations'] = $db->f("dcompt_animations");
-}
-if ($droit['modif_animations'] != 'O')
-{
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page $compt_cod !";
-    $erreur = 1;
-}
+
+$droit_modif = 'dcompte_animations';
+include "blocks/_test_droit_modif_generique.php";
+
 if ($erreur == 0)
 {
     //=======================================================================================
