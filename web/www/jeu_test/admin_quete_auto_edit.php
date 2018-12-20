@@ -33,7 +33,7 @@ echo '<script>//# sourceURL=admin_quete_auto_edit.js
 
 $contenu_page = '';
 
-$droit_modif = 'dcompte_animations';
+$droit_modif = 'dcompt_animations';
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
