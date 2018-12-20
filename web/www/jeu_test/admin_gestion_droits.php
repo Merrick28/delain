@@ -480,7 +480,25 @@ else
                 $etage = 'A';
             }
             $modif_perso = $_REQUEST['modif_perso'];
+            $creer_monstre = $_REQUEST['creer_monstre'];
+            $modif_gmon = $_REQUEST['modif_gmon'];
+            $controle = $_REQUEST['controle'];
+            $acces_log = $_REQUEST['acces_log'];
+            $automap_monstre = $_REQUEST['automap_monstre'];
+            $etage = $_REQUEST['etage'];
+            $gere_droits = $_REQUEST['gere_droits'];
+            $modif_carte = $_REQUEST['modif_carte'];
+            $carte_monstre = $_REQUEST['carte_monstre'];
+            $logs_admin = $_REQUEST['logs_admin'];
+            $objet = $_REQUEST['objet'];
+            $enchantements = $_REQUEST['enchantements'];
+            $potions = $_REQUEST['potions'];
+            $sondage = $_REQUEST['sondage'];
             $news = $_REQUEST['news'];
+            $anims = $_REQUEST['anims'];
+            $magie = $_REQUEST['magie'];
+            $factions = $_REQUEST['factions'];
+            $vcompte = $_REQUEST['vcompte'];
 
             $req = "update compt_droit set
 					dcompt_modif_perso = '$modif_perso',
