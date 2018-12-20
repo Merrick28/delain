@@ -247,17 +247,40 @@ if ($erreur == 0)
         // Vérification du nom de compte
         $erreur = false;
         $erreur_msg = "";
-        if (empty($nom))
+        $nom = $_REQUEST['nom'];
+        $mdp = $_REQUEST['mdp'];
+        $type_compte = $_REQUEST['type_compte'];
+        $modif_perso = $_REQUEST['modif_perso'];
+        $creer_monstre = $_REQUEST['creer_monstre'];
+        $modif_gmon = $_REQUEST['modif_gmon'];
+        $controle = $_REQUEST['controle'];
+        $acces_log = $_REQUEST['acces_log'];
+        $automap_monstre = $_REQUEST['automap_monstre'];
+        $etage = $_REQUEST['etage'];
+        $gere_droits = $_REQUEST['gere_droits'];
+        $modif_carte = $_REQUEST['modif_carte'];
+        $carte_monstre = $_REQUEST['carte_monstre'];
+        $logs_admin = $_REQUEST['logs_admin'];
+        $objet = $_REQUEST['objet'];
+        $enchantements = $_REQUEST['enchantements'];
+        $potions = $_REQUEST['potions'];
+        $sondage = $_REQUEST['sondage'];
+        $news = $_REQUEST['news'];
+        $anims = $_REQUEST['anims'];
+        $magie = $_REQUEST['magie'];
+        $factions = $_REQUEST['factions'];
+
+        if ($nom=="")
         {
             $erreur = true;
             $erreur_msg = 'Veuillez donner un nom au compte à créer.';
         }
-        if (empty($mdp))
+        if ($mdp=="")
         {
             $erreur = true;
             $erreur_msg = 'Veuillez donner un mot de passe au compte à créer.';
         }
-        if (!isset($etage) || $etage === '')
+        if ($etage=="")
         {
             $erreur = true;
             $erreur_msg = 'Veuillez indiquer au moins un étage.';
@@ -292,6 +315,7 @@ if ($erreur == 0)
 
         if (!$erreur)
         {
+
             // Création du compte
             $insertion = "insert into compte 
 					(compt_nom, compt_password, compt_mail, compt_monstre, compt_admin, compt_validation, compt_actif, compt_dcreat, compt_acc_charte, compt_type_quatrieme)
@@ -299,10 +323,6 @@ if ($erreur == 0)
 					RETURNING compt_cod";
             $vcompte = $db->get_value($insertion, 'compt_cod');
 
-            // Application des droits
-            $modif_perso = $_REQUEST['modif_perso'];
-            $news = $_REQUEST['news'];
-            $controle = $_REQUEST['controle'];
             $insertion = "insert into compt_droit
 					(dcompt_compt_cod, dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_acces_log, dcompt_monstre_automap, dcompt_etage,
 					dcompt_gere_droits, dcompt_modif_carte, dcompt_controle_admin, dcompt_monstre_carte, dcompt_objet, dcompt_enchantements, dcompt_potions,
@@ -449,6 +469,27 @@ else
             break;
 
         case "et4":
+            $modif_perso = $_REQUEST['modif_perso'];
+            $creer_monstre = $_REQUEST['creer_monstre'];
+            $modif_gmon = $_REQUEST['modif_gmon'];
+            $controle = $_REQUEST['controle'];
+            $acces_log = $_REQUEST['acces_log'];
+            $automap_monstre = $_REQUEST['automap_monstre'];
+            $etage = $_REQUEST['etage'];
+            $gere_droits = $_REQUEST['gere_droits'];
+            $modif_carte = $_REQUEST['modif_carte'];
+            $carte_monstre = $_REQUEST['carte_monstre'];
+            $logs_admin = $_REQUEST['logs_admin'];
+            $objet = $_REQUEST['objet'];
+            $enchantements = $_REQUEST['enchantements'];
+            $potions = $_REQUEST['potions'];
+            $sondage = $_REQUEST['sondage'];
+            $news = $_REQUEST['news'];
+            $anims = $_REQUEST['anims'];
+            $magie = $_REQUEST['magie'];
+            $factions = $_REQUEST['factions'];
+            $vcompte = $_REQUEST['vcompte'];
+
             $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
             $db->query($req_pers);
             if ($db->next_record())
@@ -469,30 +510,6 @@ else
                 // Si $etage contient A (tous les étages), on ne garde que 'A' et on vire tous les autres.
                 $etage = 'A';
             }
-            $modif_perso = $_REQUEST['modif_perso'];
-            $creer_monstre = $_REQUEST['creer_monstre'];
-            $modif_gmon = $_REQUEST['modif_gmon'];
-            $controle = $_REQUEST['controle'];
-            $acces_log = $_REQUEST['acces_log'];
-            $automap_monstre = $_REQUEST['automap_monstre'];
-            $etage = $_REQUEST['etage'];
-            $gere_droits = $_REQUEST['gere_droits'];
-            $modif_carte = $_REQUEST['modif_carte'];
-            $carte_monstre = $_REQUEST['carte_monstre'];
-            $logs_admin = $_REQUEST['logs_admin'];
-            $objet = $_REQUEST['objet'];
-            $enchantements = $_REQUEST['enchantements'];
-            $potions = $_REQUEST['potions'];
-            $sondage = $_REQUEST['sondage'];
-            $news = $_REQUEST['news'];
-
-            $anims = $_REQUEST['anims'];
-            $magie = $_REQUEST['magie'];
-            $factions = $_REQUEST['factions'];
-            $vcompte = $_REQUEST['vcompte'];
-
-            $controle = $_REQUEST['controle'];
-
 
             $req = "update compt_droit set
 					dcompt_modif_perso = '$modif_perso',
