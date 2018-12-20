@@ -9,7 +9,7 @@ require G_CHE . '/includes/classes.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-function envoie_mail($adr_mail, $sujet, $texte_mail)
+function envoie_mail($adr_mail, $sujet, $texte_mail, $val)
 {
     global $db;
     $mail = new PHPMailer(true);
@@ -82,7 +82,7 @@ Cordialement,<br />
 Merrick.<br />
 <br />
 (Attention, ce mail est envoyé par un robot, inutile d'y répondre. En cas de problème, merci de signaler l'anomalie sur le forum ( <a href=\"http://www.jdr-delain.net/forum/\">http://www.jdr-delain.net/forum/</a> ))";
-                envoie_mail($adr_mail, $sujet, $texte_mail);
+                envoie_mail($adr_mail, $sujet, $texte_mail, $val);
 
             }
         }
