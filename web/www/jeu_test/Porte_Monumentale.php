@@ -18,20 +18,11 @@ include "../includes/constantes.php";
 <div class="bordiv">
     <?php
 
-    // on regarde si le joueur est bien sur une porte monumentale
-    $erreur = 0;
-    if (!$db->is_lieu($perso_cod)) {
-        echo("<p>Erreur ! Vous n'êtes pas sur une porte monumentale !!!");
-        $erreur = 1;
-    }
-    if ($erreur == 0) {
-        $tab_lieu = $db->get_lieu($perso_cod);
-        if ($tab_lieu['type_lieu'] != 36) {
-            $erreur = 1;
-            echo("<p>Erreur ! Vous n'êtes pas sur une Porte Monumentale !!!");
-        }
-        $lieu_cod = $tab_lieu['lieu_cod'];
-    }
+    $type_lieu = 36;
+    $nom_lieu = 'une porte monumentale';
+
+    include "blocks/_test_lieu.php";
+
     if (!isset($methode)) {
         $methode = 'debut';
     }

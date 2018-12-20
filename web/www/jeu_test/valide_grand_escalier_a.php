@@ -2,19 +2,12 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
-// on regarde si le joueur est bien sur un escalier
-$erreur = 0;
-if (!$db->is_lieu($perso_cod)) {
-    echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-    $erreur = 1;
-}
-if ($erreur == 0) {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] != 16) {
-        $erreur = 1;
-        echo("<p>Erreur ! Vous n’êtes pas sur un escalier !!!</p>");
-    }
-}
+$type_lieu = 16;
+$nom_lieu = 'un escalier';
+
+include "blocks/_test_lieu.php";
+
+
 $req = "select perso_type_perso, perso_pa from perso where perso_cod = $perso_cod ";
 $db->query($req);
 $db->next_record();

@@ -19,19 +19,12 @@ if (!isset($db)) {
 <div class="bordiv">
     <?php
 
-    // on regarde si le joueur est bien sur une banque
-    $erreur = 0;
-    if (!$db->is_lieu($perso_cod)) {
-        echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
-        $erreur = 1;
-    }
-    if ($erreur == 0) {
-        $tab_lieu = $db->get_lieu($perso_cod);
-        if ($tab_lieu['type_lieu'] != 3) {
-            $erreur = 1;
-            echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
-        }
-    }
+
+    $type_lieu = 3;
+    $nom_lieu = 'un escalier';
+
+    include "blocks/_test_lieu.php";
+
 
     if ($erreur == 0) {
         $tab_lieu = $db->get_lieu($perso_cod);

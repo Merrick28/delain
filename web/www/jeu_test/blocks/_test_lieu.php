@@ -19,4 +19,5 @@ if ($erreur == 0)
         $erreur = 1;
         echo "<p>Erreur ! Vous n'êtes pas sur " . $nom_lieu . "!";
     }
+    $lieu_cod = $tab_lieu['lieu_cod'];
 }

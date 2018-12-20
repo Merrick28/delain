@@ -5,6 +5,9 @@ ob_start();
 define("APPEL", 1);
 $is_lieu = $db->is_lieu($perso_cod);
 if ($is_lieu) {
+
+
+
     $tab_lieu = $db->get_lieu($perso_cod);
     $url = $tab_lieu['url'];
 

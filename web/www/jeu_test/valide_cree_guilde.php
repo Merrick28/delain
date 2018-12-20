@@ -2,18 +2,11 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
-$erreur = 0;
-if (!$db->is_lieu($perso_cod)) {
-    echo("<p>Erreur ! Vous n'êtes pas sur un batiment administratif !!!");
-    $erreur = 1;
-}
-if ($erreur == 0) {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] != 9) {
-        $erreur = 1;
-        echo("<p>Erreur ! Vous n'êtes pas sur un batiment administratif !!!");
-    }
-}
+$type_lieu = 9;
+$nom_lieu = 'un bâtiment administratif';
+
+include "blocks/_test_lieu.php";
+
 if ($erreur == 0) {
 
     $req = "delete from guilde_perso where pguilde_perso_cod = $perso_cod ";
