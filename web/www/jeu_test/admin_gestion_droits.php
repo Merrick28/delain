@@ -313,6 +313,7 @@ if ($erreur == 0)
             // Application des droits
             $modif_perso = $_REQUEST['modif_perso'];
             $news = $_REQUEST['news'];
+            $controle = $_REQUEST['controle'];
             $insertion = "insert into compt_droit
 					(dcompt_compt_cod, dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_acces_log, dcompt_monstre_automap, dcompt_etage,
 					dcompt_gere_droits, dcompt_modif_carte, dcompt_controle_admin, dcompt_monstre_carte, dcompt_objet, dcompt_enchantements, dcompt_potions,
@@ -481,6 +482,7 @@ else
             }
             $modif_perso = $_REQUEST['modif_perso'];
             $news = $_REQUEST['news'];
+            $controle = $_REQUEST['controle'];
 
             $req = "update compt_droit set
 					dcompt_modif_perso = '$modif_perso',
