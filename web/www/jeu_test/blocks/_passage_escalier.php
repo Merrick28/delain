@@ -6,10 +6,17 @@
  * Time: 18:37
  */
 
-if(!defined("APPEL"))
+if (!defined("APPEL"))
+{
     die("Erreur d'appel de page !");
-if(!isset($db))
+
+}
+
+if (!isset($db))
+{
     include "verif_connexion.php";
+}
+
 $param = new parametres();
 // on regarde si le joueur est bien sur une banque
 include G_CHE . "/jeu_test/blocks/_test_lieu.php";
@@ -21,7 +28,7 @@ if ($erreur == 0)
     $tab_lieu = $db->get_lieu($perso_cod);
     $nom_lieu = $tab_lieu['nom'];
     $desc_lieu = $tab_lieu['description'];
-    echo "<p><strong>$nom_lieu</strong><br>$desc_lieu " ;
-    echo "<p><a href=\"action.php?methode=passage\">Prendre cet escalier ! (" . $param->getparm(13) . " PA)</a></p>" ;
+    echo "<p><strong>$nom_lieu</strong><br>$desc_lieu ";
+    echo "<p><a href=\"action.php?methode=passage\">Prendre cet escalier ! (" . $param->getparm(13) . " PA)</a></p>";
 }
 

@@ -173,6 +173,10 @@ if (!isset($db))
                         ?><p>Vous avez déjà la compétence</p><?php
                     }
                     break;
+                default:
+                    $contenu_page .= "<p>Erreur sur le type d'appel !";
+                    $erreur = 1;
+                    break;
 
             }
         }
@@ -218,7 +222,7 @@ if (!isset($db))
             ?>
             <p>Reviens quand tu seras un peu plus doué.</p>
             <?php
-        } else if (($valeur_comp_niv3 == 0))
+        } else if ($valeur_comp_niv3 == 0)
         {
             ?>
             <p>Bien voilà un élève prometteur, tu pourras faire encore mieux si tu perfectionne encore ta technique avec
