@@ -6,16 +6,7 @@
  * Time: 18:37
  */
 
-if (!defined("APPEL"))
-{
-    die("Erreur d'appel de page !");
-
-}
-
-if (!isset($db))
-{
-    include "verif_connexion.php";
-}
+include G_CHE . "/jeu_test/blocks/_tests_appels_page_externe.php";
 
 $param = new parametres();
 // on regarde si le joueur est bien sur une banque

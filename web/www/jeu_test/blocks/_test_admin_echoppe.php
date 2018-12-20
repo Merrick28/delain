@@ -24,7 +24,3 @@ if ($db->f("perso_admin_echoppe") != 'O')
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if (!isset($methode))
-{
-    $methode = "entree";
-}

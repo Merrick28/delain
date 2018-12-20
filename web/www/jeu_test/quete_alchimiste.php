@@ -22,8 +22,8 @@ switch ($type_appel)
         include "blocks/_test_lieu.php";
 
 
-        if (!defined("APPEL"))
-            die("Erreur d'appel de page !");
+        include "blocks/_tests_appels_page_externe.php";
+
 
         break;
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ et qu'il ne s'agit pas d'un familier

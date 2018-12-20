@@ -1,8 +1,6 @@
 <?php
-if (!defined("APPEL"))
-{
-    die("Erreur d'appel de page !");
-}
+include "blocks/_tests_appels_page_externe.php";
+
 include "../includes/constantes.php";
 
 include "blocks/_header_page_jeu.php";

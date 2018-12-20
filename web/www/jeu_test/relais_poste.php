@@ -24,8 +24,8 @@
  */
 
 
-if (!defined("APPEL"))
-    die("Erreur d'appel de page !");
+include "blocks/_tests_appels_page_externe.php";
+
 include_once "../includes/constantes.php";
 include_once "verif_connexion.php";
 

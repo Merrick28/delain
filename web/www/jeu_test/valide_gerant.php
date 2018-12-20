@@ -6,15 +6,9 @@ include "blocks/_header_page_jeu.php";
 //
 $contenu_page = '';
 ob_start();
-$erreur = 0;
-$req = "select perso_admin_echoppe from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-if ($db->f("perso_admin_echoppe") != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
-if ($erreur == 0) {
+include "blocks/_test_admin_echoppe.php";
+if ($erreur == 0)
+{
     // Conversion en numeric pour minimiser l'injection sql
     $perso_cible = 1 * $perso_cible;
     $lieu = 1 * $lieu;
@@ -28,28 +22,35 @@ if ($erreur == 0) {
     $db->query($req);
     $db->next_record();
     echo "<p class=\"titre\">Gestion de l'échoppe " . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</p>";
-    switch ($methode) {
+    switch ($methode)
+    {
         case "ajout":
             $req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso_cible,$lieu) ";
-            if ($db->query($req)) {
+            if ($db->query($req))
+            {
                 echo "<p>Modif effectuée !";
-            } else {
+            } else
+            {
                 echo "<p>Anomalie sur la requête !";
             }
             break;
         case "modif":
             $req = "update magasin_gerant set mger_perso_cod = $perso_cible where mger_lieu_cod = $lieu ";
-            if ($db->query($req)) {
+            if ($db->query($req))
+            {
                 echo "<p>Modif effectuée !";
-            } else {
+            } else
+            {
                 echo "<p>Anomalie sur la requête !";
             }
             break;
         case "supprime":
             $req = "delete from  magasin_gerant where mger_lieu_cod = $lieu ";
-            if ($db->query($req)) {
+            if ($db->query($req))
+            {
                 echo "<p>Modif effectuée !";
-            } else {
+            } else
+            {
                 echo "<p>Anomalie sur la requête !";
             }
             break;

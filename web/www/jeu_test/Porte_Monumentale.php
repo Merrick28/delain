@@ -1,8 +1,6 @@
 ﻿<?php
-if (!defined("APPEL"))
-    die("Erreur d'appel de page !");
-if (!isset($db))
-    include "verif_connexion.php";
+include "blocks/_tests_appels_page_externe.php";
+
 include "../includes/constantes.php";
 ?>
 <!DOCTYPE html>
