@@ -37,9 +37,7 @@ ELOG_DEBIT
 */
 include "blocks/_header_page_jeu.php";
 ob_start();
-?>
-    <div class="bordiv">
-<?php
+
 $db2 = new base_delain;
 
 
@@ -952,10 +950,10 @@ where mstock_lieu_cod = $lieu_cod
     endPane();
     startPane($liste_panels, 1, $select_pane);
     ?><p>B</p><?php
-endPane();
-startPane($liste_panels, 2, $select_pane);
+    endPane();
+    startPane($liste_panels, 2, $select_pane);
 // TRANSACTIONS
-?>
+    ?>
     <div width="100%" align="left">
 
 
@@ -1360,7 +1358,6 @@ order by  lieu_nom
         }
         endPane();
         ?>
-    </div>
     </div>
 
     <?php

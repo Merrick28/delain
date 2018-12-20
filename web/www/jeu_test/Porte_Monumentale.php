@@ -140,17 +140,6 @@ include "../includes/constantes.php";
 
     ?>
 
-    </td>
-    <td width="10" background="<?php echo G_IMAGES ?>ligne_droite.gif">&nbsp;</td>
-    </tr>
-    <tr>
-        <td height="10" width="10" background="<?php echo G_IMAGES ?>coin_bg.gif"><img
-                    src="<?php echo G_IMAGES ?>del.gif"
-                    height="2"></td>
-        <td height="10" background="<?php echo G_IMAGES ?>ligne_bas.gif"><a href="falis.php">&nbsp;</a></td>
-        <td height="10" width="10" background="<?php echo G_IMAGES ?>coin_bd.gif"></td>
-    </tr>
-    </table>
 </div>
 </body>
 </html>

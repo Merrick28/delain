@@ -311,6 +311,8 @@ if ($erreur == 0)
             $vcompte = $db->get_value($insertion, 'compt_cod');
 
             // Application des droits
+            $modif_perso = $_REQUEST['modif_perso'];
+            $news = $_REQUEST['news'];
             $insertion = "insert into compt_droit
 					(dcompt_compt_cod, dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_acces_log, dcompt_monstre_automap, dcompt_etage,
 					dcompt_gere_droits, dcompt_modif_carte, dcompt_controle_admin, dcompt_monstre_carte, dcompt_objet, dcompt_enchantements, dcompt_potions,
@@ -477,6 +479,9 @@ else
                 // Si $etage contient A (tous les étages), on ne garde que 'A' et on vire tous les autres.
                 $etage = 'A';
             }
+            $modif_perso = $_REQUEST['modif_perso'];
+            $news = $_REQUEST['news'];
+
             $req = "update compt_droit set
 					dcompt_modif_perso = '$modif_perso',
 					dcompt_creer_monstre = '$creer_monstre',

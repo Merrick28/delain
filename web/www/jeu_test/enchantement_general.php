@@ -103,7 +103,6 @@ if (!isset($t_ench))
 $nb = count($ong);
 
 //
-$contenu_page .= '<div class="bordiv">';
 //
 $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 									<tr>';
@@ -226,7 +225,6 @@ $contenu_page .= '</td></tr></table>';
 //
 //
 //
-$contenu_page .= '</div>';
 //
 
 include "blocks/_footer_page_jeu.php";
