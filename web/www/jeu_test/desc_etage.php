@@ -13,10 +13,11 @@ $contenu_page .= "<p><em>" . $db->f("etage_description") . "</em>";
 
 $contenu_page .= "<p style=\"text-align:center;\"><a href=\"frame_vue.php\">Retour à la vue !</a></p>";
 
-$req = "select dcompt_modif_perso from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
+$droit_modif = 'dcompt_modif_perso';
+include "blocks/_test_droit_modif_generique.php";
 
-if ($etage_numero == MARCHE_LENO && $db->next_record() && $db->f("dcompt_modif_perso") == 'O')
+
+if ($etage_numero == MARCHE_LENO && $erreur == 0)
 {
     $contenu_page .= '<hr /><br /><div class="titre">Concours d’alchimie</div><p><em>Attention ! Les résultats visibles ci-dessous ne sont valables que pour ces deux dernières semaines !</em></p>';
 

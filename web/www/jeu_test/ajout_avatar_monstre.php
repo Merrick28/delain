@@ -1,20 +1,20 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
+if (!isset($methode))
+{
     $methode = "debut";
 }
 
-$req = "select dcompt_controle_admin from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['controle_admin'] = 'N';
-} else {
-    $db->next_record();
-    $droit['controle_admin'] = $db->f("dcompt_controle_admin");
-}
-if ($droit['controle_admin'] == 'O') {
-    switch ($methode) {
+
+$droit_modif = 'dcompt_controle_admin';
+include "blocks/_test_droit_modif_generique.php";
+
+
+if ($erreur == 0)
+{
+    switch ($methode)
+    {
         case "debut":
             $req = "select gmon_cod,gmon_nom from monstre_generique order by gmon_nom";
             $db->query($req);
@@ -24,7 +24,8 @@ if ($droit['controle_admin'] == 'O') {
                 <input type="hidden" name="methode" value="et2">
                 <select name="vmonstre">
                     <?php
-                    while ($db->next_record()) {
+                    while ($db->next_record())
+                    {
                         ?>
                         <option value="<?php echo $db->f("gmon_cod"); ?>"><?php echo $db->f("gmon_nom"); ?></option>
                         <?php
@@ -46,7 +47,8 @@ if ($droit['controle_admin'] == 'O') {
                         <td class="soustitre2"><strong>Avatar</strong></td>
                     </tr>
                     <?php
-                    while ($db->next_record()) {
+                    while ($db->next_record())
+                    {
                         ?>
                         <tr>
                             <td><?php echo $db->f("gmon_nom"); ?></td>
@@ -66,7 +68,8 @@ if ($droit['controle_admin'] == 'O') {
     }
 
 
-} else {
+} else
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
 }
 

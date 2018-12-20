@@ -77,21 +77,11 @@ if (!isset($vcompte))
         }
     }
 }
-$req = "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
-{
-    $droit['modif_perso'] = 'N';
-    $droit['modif_gmon'] = 'N';
-    $droit['controle'] = 'N';
-} else
-{
-    $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-    $droit['controle'] = $db->f("dcompt_controle");
-}
-if ($droit['controle'] == 'O' && $vcompte != -1)
+
+$droit_modif = 'dcompt_controle';
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur == 0 && $vcompte != -1)
 {
     switch ($methode2)
     {

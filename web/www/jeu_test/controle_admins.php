@@ -1,20 +1,18 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
+if (!isset($methode))
+{
     $methode = "debut";
 }
 
-$req = "select dcompt_controle_admin from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['controle_admin'] = 'N';
-} else {
-    $db->next_record();
-    $droit['controle_admin'] = $db->f("dcompt_controle_admin");
-}
-if ($droit['controle_admin'] == 'O') {
-    switch ($methode) {
+$droit_modif = 'dcompt_controle_admin';
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur == 0)
+{
+    switch ($methode)
+    {
         case "debut":
             $req = "select compt_cod,compt_nom from compte where (compt_admin = 'O' or compt_monstre = 'O') and compt_actif = 'O' order by compt_nom";
             $db->query($req);
@@ -24,7 +22,8 @@ if ($droit['controle_admin'] == 'O') {
                 <input type="hidden" name="methode" value="et2">
                 <select name="vcompte">
                     <?php
-                    while ($db->next_record()) {
+                    while ($db->next_record())
+                    {
                         ?>
                         <option value="<?php echo $db->f("compt_cod"); ?>"><?php echo $db->f("compt_nom"); ?></option>
                         <?php
@@ -36,10 +35,12 @@ if ($droit['controle_admin'] == 'O') {
             <?php
             break;
         case "et2":
-            if (!isset($evt_start)) {
+            if (!isset($evt_start))
+            {
                 $evt_start = 0;
             }
-            if ($evt_start < 0) {
+            if ($evt_start < 0)
+            {
                 $evt_start = 0;
             }
 
@@ -60,7 +61,8 @@ if ($droit['controle_admin'] == 'O') {
                         <tr>
                             <td>
                                 <?php
-                                if ($evt_start != 0) {
+                                if ($evt_start != 0)
+                                {
                                     ?>
                                     <div align="left"><a
                                                 href="javascript:document.controle.evt_start.value=<?php echo $evt_start; ?>-50;document.controle.submit();"><==
@@ -84,7 +86,8 @@ if ($droit['controle_admin'] == 'O') {
     }
 
 
-} else {
+} else
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
 }
 

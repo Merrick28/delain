@@ -5,12 +5,11 @@ include "blocks/_header_page_jeu.php";
 //
 //Contenu de la div de droite
 //
-$req = "select dcompt_acces_log from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
 
-$acces_autorise = $db->next_record() && $db->f("dcompt_acces_log") == 'O';
+$droit_modif = 'dcompt_acces_log';
+include "blocks/_test_droit_modif_generique.php";
 
-if (!$acces_autorise)
+if ($erreur != 0)
 {
     echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
 } else

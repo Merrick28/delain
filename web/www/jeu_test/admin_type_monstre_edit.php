@@ -70,28 +70,10 @@ ob_start();
             $("#id-gmon_avatar").val(file_image);
         }
     </script>
-<?php $erreur = 0;
-$req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
-{
-    $droit['modif_perso'] = 'N';
-    $droit['modif_gmon'] = 'N';
-    $droit['controle'] = 'N';
-    $droit['creer_monstre'] = 'N';
-} else
-{
-    $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-    $droit['controle'] = $db->f("dcompt_controle");
-    $droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
-}
-if ($droit['modif_gmon'] != 'O')
-{
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
+<?php
+$droit_modif = 'dcompt_modif_gmon';
+include "blocks/_test_droit_modif_generique.php";
+
 if ($erreur == 0)
 {
     if (isset($_POST['methode']))
