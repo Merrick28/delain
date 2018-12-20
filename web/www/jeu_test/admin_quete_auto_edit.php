@@ -85,12 +85,12 @@ if ($erreur == 0)
                 <form method="post">
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
-        $db->query('select aquete_nom, aquete_cod from quetes.aquete order by aquete_nom');
+        $db->query('select aquete_nom_alias, aquete_cod from quetes.aquete order by aquete_nom_alias');
         while ($db->next_record())
         {
             echo '<option value="' . $db->f('aquete_cod');
             if ($db->f('aquete_cod') == $aquete_cod) echo '" selected="selected';
-            echo '">' . $db->f('aquete_nom') . '</option>';
+            echo '">' . $db->f('aquete_nom_alias') . '</option>';
         }
         echo '  </select>
                 <!--input type="submit" value="Valider"-->
@@ -110,9 +110,11 @@ if ($erreur == 0)
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <table width="80%" align="center">';
 
+        echo '<tr><td><strong>Nom de référence admin</strong>:</td><td><input type="text" name="aquete_nom_alias" value="'.htmlspecialchars($quete->aquete_nom_alias).'"></td></tr>';
         echo '<tr><td><strong>Nom de la quête </strong>:</td><td><input type="text" name="aquete_nom" value="'.htmlspecialchars($quete->aquete_nom).'"></td></tr>';
         echo '<tr><td><strong>Description </strong>:</td><td><input type="text" size=80 name="aquete_description" value="'.htmlspecialchars($quete->aquete_description).'"></td></tr>';
         echo '<tr><td><strong>Quête ouverte </strong>:</td><td>'.create_selectbox("aquete_actif", array("O"=>"Oui","N"=>"Non"), $quete->aquete_actif).' <em>activation/désactivation général</em></td></tr>';
+        echo '<tr><td><strong>Archivage dans le journal </strong>:</td><td>'.create_selectbox("aquete_journal_archive", array("O"=>"Oui","N"=>"Non"), $quete->aquete_journal_archive).' <em>Faut-il mettre la quette dans le journal des quêtes terminée</em></td></tr>';
         echo '<tr><td><strong>Début </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_debut" value="'.$quete->aquete_date_debut.'"> <em>elle ne peut pas être commencée avant cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Fin </strong><em style="font-size: 7pt;">(dd/mm/yyyy hh:mm:ss)</em>:</td><td><input type="text" size=18 name="aquete_date_fin" value="'.$quete->aquete_date_fin.'"> <em>elle ne peut plus être commencée après cette date (pas de limite si vide)</em></td></tr>';
         echo '<tr><td><strong>Nb. quête simultanée</strong>:</td><td><input type="text" size=10 name="aquete_nb_max_instance" value="'.$quete->aquete_nb_max_instance.'"> <em>nb de fois où elle peut être faite en parallèle (pas de limite si vide)</em></td></tr>';
@@ -273,7 +275,7 @@ if ($erreur == 0)
         $etape = new aquete_etape;
         $etape->charge($aqetape_cod);    // On charge l'étape elle-même.
 
-        echo '<strong>Quête</strong> #'.$aquete_cod.' - '.$quete->aquete_nom.'<br><hr>';
+        echo '<strong>Quête</strong> #'.$aquete_cod.' - '.$quete->aquete_nom_alias.'<br><hr>';
         echo '<strong>Caractéristiques de l\'étape</strong>'. ($aqetape_cod>0 ? " #$aqetape_cod" : "");
 
         // Mise en forme de l'étape pour la saisie des infos.

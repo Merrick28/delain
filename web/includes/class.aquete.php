@@ -22,6 +22,8 @@ class aquete
     var $aquete_nb_max_rejouable = 1;
     var $aquete_nb_max_quete;
     var $aquete_max_delai;
+    var $aquete_nom_alias ='' ;
+    var $aquete_journal_archive = 'O';
 
     function __construct()
     {
@@ -45,10 +47,12 @@ class aquete
             return false;
         }
         $this->aquete_cod = $result['aquete_cod'];
+        $this->aquete_nom_alias = $result['aquete_nom_alias'];
         $this->aquete_nom = $result['aquete_nom'];
         $this->aquete_description = $result['aquete_description'];
         $this->aquete_etape_cod = $result['aquete_etape_cod'];
         $this->aquete_actif = $result['aquete_actif'];
+        $this->aquete_journal_archive = $result['aquete_journal_archive'];
         $this->aquete_date_debut = $result['aquete_date_debut'];
         $this->aquete_date_fin = $result['aquete_date_fin'];
         $this->aquete_nb_max_instance = $result['aquete_nb_max_instance'];
@@ -71,10 +75,12 @@ class aquete
         {
             $req = "insert into quetes.aquete 
                     (
+                        aquete_nom_alias,
                         aquete_nom,
                         aquete_description,
                         aquete_etape_cod,
                         aquete_actif,
+                        aquete_journal_archive,
                         aquete_date_debut,
                         aquete_date_fin,
                         aquete_nb_max_instance,
@@ -85,10 +91,12 @@ class aquete
                     )
                     values
                     (
+                        :aquete_nom_alias,
                         :aquete_nom,
                         :aquete_description,
                         :aquete_etape_cod,
                         :aquete_actif,
+                        :aquete_journal_archive,
                         :aquete_date_debut,
                         :aquete_date_fin,
                         :aquete_nb_max_instance,
@@ -100,10 +108,12 @@ class aquete
                     returning aquete_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
+                    ":aquete_nom_alias" => $this->aquete_nom_alias,
                     ":aquete_nom" => $this->aquete_nom,
                     ":aquete_description" => $this->aquete_description,
                     ":aquete_etape_cod" => $this->aquete_etape_cod,
                     ":aquete_actif" => $this->aquete_actif,
+                    ":aquete_journal_archive" => $this->aquete_journal_archive,
                     ":aquete_date_debut" => $this->aquete_date_debut,
                     ":aquete_date_fin" => $this->aquete_date_fin,
                     ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
@@ -120,10 +130,12 @@ class aquete
         {
             $req = "update quetes.aquete
                     set
+            aquete_nom_alias = :aquete_nom_alias,
             aquete_nom = :aquete_nom,
             aquete_description = :aquete_description,
             aquete_etape_cod = :aquete_etape_cod,
             aquete_actif = :aquete_actif,
+            aquete_journal_archive = :aquete_journal_archive,
             aquete_date_debut = :aquete_date_debut,
             aquete_date_fin = :aquete_date_fin,
             aquete_nb_max_instance = :aquete_nb_max_instance,
@@ -136,10 +148,12 @@ class aquete
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aquete_cod" => $this->aquete_cod,
+                ":aquete_nom_alias" => $this->aquete_nom_alias,
                 ":aquete_nom" => $this->aquete_nom,
                 ":aquete_description" => $this->aquete_description,
                 ":aquete_etape_cod" => $this->aquete_etape_cod,
                 ":aquete_actif" => $this->aquete_actif,
+                ":aquete_journal_archive" => $this->aquete_journal_archive,
                 ":aquete_date_debut" => $this->aquete_date_debut,
                 ":aquete_date_fin" => $this->aquete_date_fin,
                 ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
