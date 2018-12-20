@@ -8,7 +8,7 @@ ob_start();
 $db2 = new base_delain;
 $erreur = 0;
 
-$droit_modif = 'creer_monstre';
+$droit_modif = 'dcompt_creer_monstre';
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)

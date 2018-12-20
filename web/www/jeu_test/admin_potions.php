@@ -7,19 +7,11 @@ ob_start();
 <?php $erreur = 0;
 //
 // verif droits
-//
-$req = "select dcompt_potions from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['dcompt_potions'] = 'N';
-} else {
-    $db->next_record();
-    $droit['dcompt_potions'] = $db->f("dcompt_potions");
-}
-if ($droit['dcompt_potions'] != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
+
+$droit_modif = 'dcompt_potions';
+include "blocks/_test_droit_modif_generique.php";
+
+
 if ($erreur == 0) {
     // initialisation de la méthode
     if (!isset($methode))
