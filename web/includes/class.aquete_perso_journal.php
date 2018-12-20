@@ -162,6 +162,45 @@ class aquete_perso_journal
         }
     }
 
+    /**
+     * retourne un tableau avec les index des réalisations qui ont été conservées dans le journal
+     * @global bdd_mysql $pdo
+     * @return array
+     */
+    function getListe_perso_realisation($aqperso_cod)
+    {
+        $retour = array();
+
+        $pdo    = new bddpdo;
+        $req    = "SELECT DISTINCT aqpersoj_realisation from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ?";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso_cod), $stmt);
+        while($result = $stmt->fetch())
+        {
+            $retour[] = $result["aqpersoj_realisation"] ;
+        }
+        return $retour;
+    }
+
+    /**
+     * supprime tout le journal de la reéalisation d'une quete
+     * @global bdd_mysql $pdo
+     * @return boolean => false pas réussi a supprimer
+     */
+    function deleteBy_aqperso_cod($aqperso_cod, $realisation)
+    {
+        $pdo    = new bddpdo;
+        $req    = "DELETE from quetes.aquete_perso_journal where aqpersoj_aqperso_cod = ? and aqpersoj_realisation = ? ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso_cod, $realisation), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
 
     /**
      * Retourne un tableau de tous les enregistrements

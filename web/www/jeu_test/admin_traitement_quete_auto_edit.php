@@ -35,9 +35,11 @@ case "sauve_quete":
     }
     $clone_q = clone $quete;
 
+    $quete->aquete_nom_alias = $_REQUEST["aquete_nom_alias"];
     $quete->aquete_nom = $_REQUEST["aquete_nom"];
     $quete->aquete_description = $_REQUEST["aquete_description"];
     $quete->aquete_actif = $_REQUEST["aquete_actif"];
+    $quete->aquete_journal_archive = $_REQUEST["aquete_journal_archive"];
     $quete->aquete_date_debut = $_REQUEST["aquete_date_debut"] == "" ? NULL : $_REQUEST["aquete_date_debut"];
     $quete->aquete_date_fin = $_REQUEST["aquete_date_fin"] == "" ? NULL : $_REQUEST["aquete_date_fin"];
     $quete->aquete_nb_max_instance = $_REQUEST["aquete_nb_max_instance"] == "" ? NULL : $_REQUEST["aquete_nb_max_instance"];
