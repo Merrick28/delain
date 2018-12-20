@@ -31,17 +31,8 @@ ob_start();
         }
 
     </script>
-<?php $req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['carte'] = 'N';
-} else {
-    $db->next_record();
-    $droit['carte'] = $db->f("dcompt_modif_carte");
-}
-if ($droit['carte'] != 'O') {
-    die("<p>Erreur ! Vous n’avez pas accès à cette page !");
-}
+<?php
+include "blocks/_test_droit_modif_etage.php";
 $db2 = new base_delain;
 $db3 = new base_delain;
 if (!isset($methode)) {

@@ -6,26 +6,11 @@ ob_start();
     <p class="titre">Création d’une fontaine</p>
 <?php
 $erreur = 0;
-$req = "select dcompt_objet,dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle
-	from compt_droit
-	where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['modif_perso'] = 'N';
-    $droit['modif_gmon'] = 'N';
-    $droit['controle'] = 'N';
-    $droit['objet'] = 'N';
-} else {
-    $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-    $droit['controle'] = $db->f("dcompt_controle");
-    $droit['objet'] = $db->f("dcompt_objet");
-}
-if ($droit['modif_perso'] != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-} else {
+
+$droit_modif = 'modif_perso';
+include "blocks/_test_droit_modif_generique.php";
+
+if($erreur == 0) {
     if (!isset($mode))
         $mode = "normal";
     if (!isset($methode))

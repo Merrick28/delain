@@ -2,25 +2,7 @@
 define("APPEL",1);
 include "blocks/_header_page_jeu.php";
 $contenu_page .= '
-<script language="javascript">
-function blocking(nr)
-{
-	if (document.layers)
-	{
-		current = (document.layers[nr].display == \'none\') ? \'block\' : \'none\';
-		document.layers[nr].display = current;
-	}
-	else if (document.all)
-	{
-		current = (document.all[nr].style.display == \'none\') ? \'block\' : \'none\';
-		document.all[nr].style.display = current;
-	}
-	else if (document.getElementById)
-	{ vista = (document.getElementById(nr).style.display == \'none\') ? \'block\' : \'none\';
-		document.getElementById(nr).style.display = vista;
-	}
-}
-</script>';
+<script language="javascript" src="javascripts/modif_etage.js"></script>';
 // contenu de la page
 $contenu_page .= '
 <style type="text/css">

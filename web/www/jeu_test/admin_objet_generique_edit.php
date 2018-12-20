@@ -6,31 +6,19 @@ ob_start();
     <p class="titre">Édition d’un objet générique</p>
 <?php
 $erreur = 0;
-$req = "select dcompt_objet,dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['modif_perso'] = 'N';
-    $droit['modif_gmon'] = 'N';
-    $droit['controle'] = 'N';
-    $droit['objet'] = 'N';
-} else {
-    $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-    $droit['controle'] = $db->f("dcompt_controle");
-    $droit['objet'] = $db->f("dcompt_objet");
-}
-if ($droit['objet'] != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-} else {
-    if (($methode == "mod3" && ISSET($_POST["cancel"])) || ($methode == "cre2" && ISSET($_POST["cancel"]))) {
+$droit_modif = 'objet';
+include "blocks/_test_droit_modif_generique.php";
+if ($erreur == 0)
+{
+    if (($methode == "mod3" && ISSET($_POST["cancel"])) || ($methode == "cre2" && ISSET($_POST["cancel"])))
+    {
         $methode = "mod";
     }
 
     if (!isset($methode))
         $methode = "mod";
-    switch ($methode) {
+    switch ($methode)
+    {
         case "debut":
             ?>
             <p>Choisissez votre méthode :</p>
@@ -58,7 +46,8 @@ if ($droit['objet'] != 'O') {
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
                                     $db->query($req);
-                                    while ($db->next_record()) {
+                                    while ($db->next_record())
+                                    {
                                         echo '<option value="' . $db->f("tobj_cod") . '">' . $db->f('tobj_libelle') . '</option>';
                                     }
                                     ?>
@@ -100,7 +89,8 @@ if ($droit['objet'] != 'O') {
                                     <?php
                                     $req = "select comp_libelle,comp_cod from competences where comp_typc_cod in (6,7,8) order by comp_cod ";
                                     $db->query($req);
-                                    while ($db->next_record()) {
+                                    while ($db->next_record())
+                                    {
                                         echo '<option value="' . $db->f("comp_cod") . '">' . $db->f('comp_libelle') . '</option>';
                                     }
                                     ?>
@@ -232,7 +222,8 @@ if ($droit['objet'] != 'O') {
                     inner join type_objet on tobj_cod = gobj_tobj_cod where gobj_tobj_cod not in (3,5,9,10) 
                     order by tobj_libelle, gobj_nom";
             $db->query($req_tobj);
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 $gobj_nom = $db->f("gobj_nom");
                 $gobj_nom = str_replace("\"", "", $gobj_nom);
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
@@ -250,7 +241,8 @@ if ($droit['objet'] != 'O') {
 
             $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
             $db->query($req_tobj);
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
                 echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
             }
@@ -283,10 +275,12 @@ if ($droit['objet'] != 'O') {
 				where gobj_cod =  $gobj_cod ";
             $db->query($req);
             $db->next_record();
-            if ($db->f("gobj_obcar_cod") != '') {
+            if ($db->f("gobj_obcar_cod") != '')
+            {
                 $req = "select * from objets_caracs where obcar_cod = " . $db->f("gobj_obcar_cod");
                 $db2->query($req);
-                if ($db2->nf() != 0) {
+                if ($db2->nf() != 0)
+                {
                     $db2->next_record();
                     $obcar_cod = $db2->f("obcar_cod");
                 } else
@@ -316,7 +310,8 @@ if ($droit['objet'] != 'O') {
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
                                     $db3->query($req);
-                                    while ($db3->next_record()) {
+                                    while ($db3->next_record())
+                                    {
                                         echo '<option value="' . $db3->f("tobj_cod") . '" ';
                                         if ($db3->f('tobj_cod') == $db->f("gobj_tobj_cod"))
                                             echo " selected ";
@@ -385,7 +380,8 @@ if ($droit['objet'] != 'O') {
                                     <?php
                                     $req = "select comp_libelle,comp_cod from competences where comp_typc_cod in (6,7,8) order by comp_cod ";
                                     $db3->query($req);
-                                    while ($db3->next_record()) {
+                                    while ($db3->next_record())
+                                    {
                                         echo '<option value="' . $db3->f("comp_cod") . '" ';
                                         if ($db3->f('comp_cod') == $db->f("gobj_comp_cod"))
                                             echo " selected ";
@@ -581,7 +577,8 @@ if ($droit['objet'] != 'O') {
                 'obcar_chute',
                 'obcar_armure'
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = 0;
             }
@@ -596,7 +593,8 @@ if ($droit['objet'] != 'O') {
             $fields = array(
                 'gobj_chance_drop_monstre',
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = "NULL";
             }
@@ -623,7 +621,8 @@ if ($droit['objet'] != 'O') {
                 'gobj_stabilite',
                 'gobj_niveau_min'
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = 0;
             }
@@ -654,7 +653,8 @@ if ($droit['objet'] != 'O') {
                 'obcar_chute',
                 'obcar_armure'
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = 0;
             }
@@ -669,7 +669,8 @@ if ($droit['objet'] != 'O') {
             $fields = array(
                 'gobj_chance_drop_monstre',
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = "NULL";
             }
@@ -697,7 +698,8 @@ if ($droit['objet'] != 'O') {
                 'gobj_stabilite',
                 'gobj_niveau_min'
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = 0;
             }

@@ -33,23 +33,18 @@ ob_start();
 <?php
 // A FAIRE POUR LANCER DES NEWS !!
 $erreur = 0;
-$req = "select dcompt_news from compt_droit where dcompt_compt_cod = $compt_cod";
-$db->query($req);
-if ($db->nf() == 0) {
-    echo "<p>Erreur ! Vous n’avez pas accès à cette page !";
-    $erreur = 1;
-} else {
-    $db->next_record();
-}
-if ($db->f("dcompt_news") != 'O') {
-    echo "<p>Erreur ! Vous n’avez pas accès à cette page !";
-    $erreur = 1;
-}
-if ($erreur == 0) {
-    if (!isset($methode)) {
+
+$droit_modif = 'dcompt_news';
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur == 0)
+{
+    if (!isset($methode))
+    {
         $methode = "debut";
     }
-    switch ($methode) {
+    switch ($methode)
+    {
         case "debut":
             ?>
             <form name="lanceNews" method="post" action="<?php echo $PHP_SELF; ?>">
@@ -126,8 +121,10 @@ if ($erreur == 0) {
         case "lance":
 
             // on vérifie qu’on a rempli les champs correctement
-            if (isset($titre) && isset($auteur) && isset($texte)) {
-                if ($titre != '' && $auteur != '' && $texte != '') {
+            if (isset($titre) && isset($auteur) && isset($texte))
+            {
+                if ($titre != '' && $auteur != '' && $texte != '')
+                {
                     $titre = pg_escape_string(str_replace('\'', '’', $titre));
                     $auteur = pg_escape_string(str_replace('\'', '’', $auteur));
                     $texte = pg_escape_string(str_replace('\'', '’', $texte));
@@ -137,10 +134,12 @@ if ($erreur == 0) {
 
                     ?> News correctement lancée <?php
 
-                } else {
+                } else
+                {
                     ?> Échec, un champ n’est pas rempli ! <?php
                 }
-            } else {
+            } else
+            {
                 ?> Échec, un champ n’est pas rempli ! <?php
             }
             break;
@@ -148,9 +147,11 @@ if ($erreur == 0) {
         case "lanceRumeur":
 
             // on vérifie qu’on a rempli les champs correctement
-            if (isset($poids) && isset($texte)) {
+            if (isset($poids) && isset($texte))
+            {
                 if ($poids == '' || $poids == 0) $poids = 1;
-                if (strlen(trim($texte)) > 5) {
+                if (strlen(trim($texte)) > 5)
+                {
                     $texte = pg_escape_string(str_replace('\'', '’', $texte));
                     $poids = pg_escape_string(str_replace('\'', '’', $poids));
                     $req = "insert into rumeurs (rum_perso_cod, rum_texte, rum_poids) values ($perso_cod, e'$texte', $poids)";
@@ -158,10 +159,12 @@ if ($erreur == 0) {
 
                     ?> Rumeur correctement lancée <?php
 
-                } else {
+                } else
+                {
                     ?> Échec, le texte est trop court ! <?php
                 }
-            } else {
+            } else
+            {
                 ?> Échec, un champ n’est pas rempli ! <?php
             }
             break;

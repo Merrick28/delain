@@ -27,15 +27,9 @@ function valide_form2() {
 	}
 }
 
-function retour()
-{
-parent.gauche.location.href=\"menu.php\";
-}
 </script>";
 $t->set_var("javascript", $javascript);
-// fonction body onload
-$action_onload = ' onload="retour();"';
-$t->set_var("action_onload", $action_onload);
+
 // chemin des images
 $t->set_var("img_path", G_IMAGES);
 // contenu de la page

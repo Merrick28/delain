@@ -9,25 +9,13 @@ ob_start();
     <script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
 <?php
 $erreur = 0;
-$req = "select dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_creer_monstre from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['modif_perso'] = 'N';
-    $droit['modif_gmon'] = 'N';
-    $droit['controle'] = 'N';
-    $droit['creer_monstre'] = 'N';
-} else {
-    $db->next_record();
-    $droit['modif_perso'] = $db->f("dcompt_modif_perso");
-    $droit['modif_gmon'] = $db->f("dcompt_modif_gmon");
-    $droit['controle'] = $db->f("dcompt_controle");
-    $droit['creer_monstre'] = $db->f("dcompt_creer_monstre");
-}
-if ($droit['modif_perso'] != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
-if ($erreur == 0) {
+
+
+$droit_modif = 'modif_perso';
+include "blocks/_test_droit_modif_generique.php";
+
+if ($erreur == 0)
+{
     include "admin_edition_header.php";
     include 'sadmin.php';
 
@@ -54,23 +42,25 @@ if ($erreur == 0) {
 
     <hr/>
     Sauter vers... <a href="#p_perso">PERSO</a> - <a href="#p_comp">COMPÉTENCES</a> - <a href="#p_bonmal">BONUS /
-        MALUS</a> - <a href="#p_inv">INVENTAIRE</a> - <a href="#p_sort">SORTS</a>
+    MALUS</a> - <a href="#p_inv">INVENTAIRE</a> - <a href="#p_sort">SORTS</a>
     - <a href="#p_effet">EFFETS AUTO</a> - <a href="#p_fam">FAMILIER</a> - <a href="#p_rel">RELIGION</a> - <a
-            href="#p_titre">TITRES</a> - <a href="#p_pos">POSITION</a>
+        href="#p_titre">TITRES</a> - <a href="#p_pos">POSITION</a>
     <hr/>
 
     <p id='p_perso'>PERSO</p>
 
     <?php
-// TRAITEMENT DU FORMULAIRE
+    // TRAITEMENT DU FORMULAIRE
 
-    if (isset($_POST['methode'])) {
+    if (isset($_POST['methode']))
+    {
         include "admin_traitement_perso_edit.php";
     }
 
-    if (isset($_POST['mod_perso_cod'])) {
+    if (isset($_POST['mod_perso_cod']))
+    {
 
-// affichage des attributs principaux
+        // affichage des attributs principaux
         $req_perso = "select perso_nom,perso_for,perso_dex,perso_int,perso_con,perso_sex,perso_race_cod,perso_pv,perso_pv_max"
             . ",perso_amelioration_degats,perso_amel_deg_dex,perso_amelioration_armure,perso_amelioration_vue"
             . ",to_char(perso_dcreat,'DD/MM/YYYY hh24:mi:ss') as date_creation,to_char(perso_der_connex,'DD/MM/YYYY hh24:mi:ss') as date_derniere_connexion,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt"
@@ -81,7 +71,7 @@ if ($erreur == 0) {
             . ",perso_voie_magique"
             . " from perso where perso_cod = $mod_perso_cod";
 
-//echo "QUERY = ".$req_perso;
+        //echo "QUERY = ".$req_perso;
 
         $db = new base_delain;
         $db->query($req_perso);
@@ -243,11 +233,13 @@ if ($erreur == 0) {
                     <TD class="soustitre2">Sexe</TD>
                     <TD>
                         <SELECT name="perso_sex">
-                            <OPTION value="M" <?php if ($perso_sex == "M") {
+                            <OPTION value="M" <?php if ($perso_sex == "M")
+                            {
                                 echo "selected";
                             } ?>>Mâle
                             </OPTION>
-                            <OPTION value="F" <?php if ($perso_sex == "F") {
+                            <OPTION value="F" <?php if ($perso_sex == "F")
+                            {
                                 echo "selected";
                             } ?>>Femelle
                             </OPTION>
@@ -312,11 +304,13 @@ if ($erreur == 0) {
                     <TD class="soustitre2">Tangible</TD>
                     <TD>
                         <select name="perso_tangible">
-                            <option value="O" <?php if ($perso_tangible == "O") {
+                            <option value="O" <?php if ($perso_tangible == "O")
+                            {
                                 echo "selected";
                             } ?>>Oui
                             </option>
-                            <option value="N" <?php if ($perso_tangible == "N") {
+                            <option value="N" <?php if ($perso_tangible == "N")
+                            {
                                 echo "selected";
                             } ?>>Non
                             </option>
@@ -335,11 +329,13 @@ if ($erreur == 0) {
                     <td class="soustitre2">Effets automatiques</td>
                     <td>
                         <select name="perso_effets_auto">
-                            <option value="1" <?php if ($perso_effets_auto == 1) {
+                            <option value="1" <?php if ($perso_effets_auto == 1)
+                            {
                                 echo "selected";
                             } ?>>Activés (Par défaut)
                             </option>
-                            <option value="0" <?php if ($perso_effets_auto == 0) {
+                            <option value="0" <?php if ($perso_effets_auto == 0)
+                            {
                                 echo "selected";
                             } ?>>Désactivés
                             </option>
@@ -385,7 +381,8 @@ if ($erreur == 0) {
                 $req_comp = $req_comp . "order by comp_libelle ";
                 //ECHO $req_comp;
                 $db->query($req_comp);
-                while ($db->next_record()) { ?>
+                while ($db->next_record())
+                { ?>
                     <TR>
                         <TD class="soustitre2"><?php echo $db->f("comp_libelle"); ?></TD>
                         <TD><INPUT type="text" size="6" name="PERSO_COMP_<?php echo $db->f("comp_cod"); ?>"
@@ -460,7 +457,8 @@ if ($erreur == 0) {
 			or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
 		order by bonus_tbonus_libc";
                             $db->query($req_bon);
-                            while ($db->next_record()) {
+                            while ($db->next_record())
+                            {
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
@@ -490,7 +488,8 @@ if ($erreur == 0) {
 			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
 		order by bonus_tbonus_libc";
                             $db->query($req_mal);
-                            while ($db->next_record()) {
+                            while ($db->next_record())
+                            {
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
@@ -552,7 +551,8 @@ if ($erreur == 0) {
                             // Écriture du JS qui dit si on a un bonus ou un malus
                             $db->query($req_bm);
                             echo "</select><script type='text/javascript'>var arr_bonmal = new Array();\n";
-                            while ($db->next_record()) {
+                            while ($db->next_record())
+                            {
                                 $clef = $db->f('tbonus_libc');
                                 $valeur = ($db->f('tbonus_gentil_positif') == 't') ? 'BON' : 'MAL';
                                 echo "arr_bonmal['$clef'] = '$valeur';\n";
@@ -591,7 +591,8 @@ if ($erreur == 0) {
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			order by tobj_libelle, gobj_nom";
             $db->query($req_tobj);
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 $gobj_nom = $db->f("gobj_nom");
                 $gobj_nom = str_replace("\"", "", $gobj_nom);
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
@@ -620,7 +621,8 @@ if ($erreur == 0) {
             $req_inv = $req_inv . "order by obj_nom ";
             $db->query($req_inv);
             $nb_tobj = 0;
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 echo("listeCurrent[$nb_tobj] = new Array(0); \n");
                 echo("listeCurrent[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
                 echo("listeCurrent[$nb_tobj][1] = \"" . $db->f("nombre") . "\"; \n");
@@ -657,7 +659,8 @@ if ($erreur == 0) {
                             <?php
                             $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
                             $db->query($req_tobj);
-                            while ($db->next_record()) {
+                            while ($db->next_record())
+                            {
                                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
                                 echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
                             }
@@ -700,14 +703,16 @@ if ($erreur == 0) {
                     $db->query($req_sorts);
                     $nbs = 0;
                     $db_sm = new base_delain;
-                    while ($db->next_record()) {
+                    while ($db->next_record())
+                    {
                         $s_cod = $db->f("sort_cod");
                         $req_sm = "select sort_cod,sort_nom,sort_cout from sorts,perso_sorts "
                             . "where psort_perso_cod = $mod_perso_cod "
                             . "and psort_sort_cod = $s_cod ";
                         $db_sm->query($req_sm);
                         $memo = "";
-                        if ($db_sm->next_record()) {
+                        if ($db_sm->next_record())
+                        {
                             $memo = "checked";
                         }
                         ?>
@@ -717,9 +722,10 @@ if ($erreur == 0) {
                             &nbsp;
                         </TD>
 
-                        <?php if ($nbs % 4 == 0) {
-                            echo "</TR><TR>";
-                        }
+                        <?php if ($nbs % 4 == 0)
+                    {
+                        echo "</TR><TR>";
+                    }
                         $nbs++;
                     } ?>
                 </TR>
@@ -755,7 +761,8 @@ if ($erreur == 0) {
 				inner join perso on perso_gmon_cod = fonc_gmon_cod
 				where perso_cod = $mod_perso_cod AND fonc_gmon_cod IS NOT NULL";
             $db->query($req);
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 $fonc_id = $db->f('fonc_cod');
                 $fonc_type = $db->f('fonc_type');
                 $fonc_nom = $db->f('fonc_nom');
@@ -775,7 +782,8 @@ if ($erreur == 0) {
 					coalesce(EXTRACT(EPOCH FROM (fonc_date_limite - now())::INTERVAL) / 60, 0)::integer as validite
 				from fonction_specifique where fonc_perso_cod = $mod_perso_cod";
             $db->query($req);
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 $fonc_id = $db->f('fonc_cod');
                 $fonc_type = $db->f('fonc_type');
                 $fonc_nom = $db->f('fonc_nom');
@@ -803,7 +811,8 @@ if ($erreur == 0) {
 	inner join perso on perso_cod = pfam_familier_cod AND  perso_actif='O' 
 	where pfam_perso_cod = $mod_perso_cod order by pfam_familier_cod desc";
         $db->query($req_fam);
-        if ($db->next_record()) {
+        if ($db->next_record())
+        {
             $fam_cod = $db->f("pfam_familier_cod");
             $fam_nom = $db->f("perso_nom");
             $fam_duree_vie = $db->f("pfam_duree_vie");
@@ -819,7 +828,8 @@ if ($erreur == 0) {
                 <input type="submit" value="Modifier">&nbsp;<input type="submit" value="Supprimer"
                                                                    onClick="document.familier.methode.value='suppr_familier';">
             </form>
-        <?php } else {
+        <?php } else
+        {
             ?>
             <form method="post" action="#">
                 <input type="hidden" name="methode" value="ajout_familier">
@@ -836,9 +846,10 @@ if ($erreur == 0) {
         <hr>
         <p id='p_rel'>RELIGION (<a href="#p_haut">Retour en haut</a>)</p>
         <?php $req_religion = "select 	dper_dieu_cod,dper_niveau,dper_points"
-            . " from  	dieu_perso where dper_perso_cod = $mod_perso_cod";
+        . " from  	dieu_perso where dper_perso_cod = $mod_perso_cod";
         $db->query($req_religion);
-        if ($db->next_record()) {
+        if ($db->next_record())
+        {
             $dieu_cod = $db->f("dper_dieu_cod");
             ?>
             <form method="post" name="religion" action="#">
@@ -851,11 +862,13 @@ if ($erreur == 0) {
                     $req_dieu = "select 		dieu_cod ,dieu_nom"
                         . " from dieu order by dieu_nom";
                     $db_dieu->query($req_dieu);
-                    while ($db_dieu->next_record()) {
+                    while ($db_dieu->next_record())
+                    {
                         $nom_dieu = $db_dieu->f("dieu_nom");
                         $cod_dieu = $db_dieu->f("dieu_cod");
                         $selected = "";
-                        if ($cod_dieu == $dieu_cod) {
+                        if ($cod_dieu == $dieu_cod)
+                        {
                             $selected = "selected";
                         }
                         echo "<option value=\"$cod_dieu\" $selected>$nom_dieu</option>\n";
@@ -868,17 +881,20 @@ if ($erreur == 0) {
                         . " from dieu_niveau where dniv_dieu_cod = $dieu_cod order by dniv_niveau";
                     $db_dieu->query($req_dieu);
                     $has_niveau = false;
-                    while ($db_dieu->next_record()) {
+                    while ($db_dieu->next_record())
+                    {
                         $has_niveau = true;
                         $dniv_libelle = $db_dieu->f("dniv_libelle");
                         $dniv_niveau = $db_dieu->f("dniv_niveau");
                         $selected = "";
-                        if ($dniv_niveau == $db->f("dper_niveau")) {
+                        if ($dniv_niveau == $db->f("dper_niveau"))
+                        {
                             $selected = "selected";
                         }
                         echo "<option value=\"$dniv_niveau\" $selected>$dniv_niveau - $dniv_libelle</option>\n";
                     }
-                    if (!$has_niveau) {
+                    if (!$has_niveau)
+                    {
                         echo "<option value=\"0\" >0 - pas de niveau</option>\n";
                     }
                     ?>
@@ -898,7 +914,8 @@ if ($erreur == 0) {
                     $req_dieu = "select 		dieu_cod ,dieu_nom"
                         . " from dieu order by dieu_nom";
                     $db_dieu->query($req_dieu);
-                    while ($db_dieu->next_record()) {
+                    while ($db_dieu->next_record())
+                    {
                         $nom_dieu = $db_dieu->f("dieu_nom");
                         $cod_dieu = $db_dieu->f("dieu_cod");
                         echo "<option value=\"$cod_dieu\">$nom_dieu</option>\n";
@@ -921,7 +938,8 @@ if ($erreur == 0) {
                 . " from perso_titre where ptitre_perso_cod = $mod_perso_cod order by ptitre_titre";
             $db->query($req_titres);
             $nbs = 0;
-            while ($db->next_record()) {
+            while ($db->next_record())
+            {
                 ?>
                 <TR>
                     <TD class="soustitre2">
@@ -962,7 +980,8 @@ if ($erreur == 0) {
             $pos_x = 0;
             $pos_y = 0;
             $pos_etage = 0;
-            if ($db->next_record()) {
+            if ($db->next_record())
+            {
                 $pos_x = $db->f("pos_x");
                 $pos_y = $db->f("pos_y");
                 $pos_etage = $db->f("pos_etage");
@@ -1028,7 +1047,8 @@ if ($erreur == 0) {
                 </TR>
             </TABLE>
         </form>
-    <?php } else {
+    <?php } else
+    {
         echo "Entrez un numéro de perso";
     }
 }
