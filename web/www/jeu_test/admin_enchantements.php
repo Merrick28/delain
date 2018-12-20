@@ -7,18 +7,10 @@ $erreur = 0;
 //
 // verif droits
 //
-$req = "select dcompt_enchantements from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['dcompt_enchantements'] = 'N';
-} else {
-    $db->next_record();
-    $droit['dcompt_enchantements'] = $db->f("dcompt_enchantements");
-}
-if ($droit['dcompt_enchantements'] != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
+
+$droit_modif = 'dcompt_enchantements';
+include "blocks/_test_droit_modif_generique.php";
+
 if ($erreur == 0) {
     // initialisation de la méthode
     if (!isset($methode))

@@ -32,18 +32,10 @@ ob_start();
 
 // Liste des animations possibles
 $erreur = 0;
-$req = "select dcompt_factions from compt_droit where dcompt_compt_cod = $compt_cod";
-$db->query($req);
-if ($db->nf() == 0) {
-    echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-    $erreur = 1;
-} else {
-    $db->next_record();
-    if ($db->f("dcompt_factions") != 'O') {
-        echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-        $erreur = 1;
-    }
-}
+
+$droit_modif = 'dcompt_factions';
+include "blocks/_test_droit_modif_generique.php";
+
 if ($erreur == 0) {
     define("APPEL", 1);
 

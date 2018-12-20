@@ -18,23 +18,12 @@ function cree_OuiNon($nom, $valeur, $titre)
 
 
 $erreur = 0;
-$req = "select dcompt_gere_droits from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
+$droit_modif = 'dcompt_gere_droits';
+include "blocks/_test_droit_modif_generique.php";
+
+
 $compte = $_REQUEST['compte'];
 
-if ($db->nf() == 0)
-{
-    $droit['gere_droits'] = 'N';
-} else
-{
-    $db->next_record();
-    $droit['gere_droits'] = $db->f("dcompt_gere_droits");
-}
-if ($droit['gere_droits'] != 'O')
-{
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !</p>";
-    $erreur = 1;
-}
 if ($erreur == 0)
 {
     if (!isset($methode))

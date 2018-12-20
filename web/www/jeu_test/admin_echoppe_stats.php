@@ -2,55 +2,12 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 ?>
-    <script language="javascript">
-        ns4 = document.layers;
-        ie = document.all;
-        ns6 = document.getElementById && !document.all;
-
-        function changeStyles(id, mouse) {
-            if (ns4) {
-                alert("Sorry, but NS4 does not allow font changes.");
-                return false;
-            }
-            else if (ie) {
-                obj = document.all[id];
-            }
-            else if (ns6) {
-                obj = document.getElementById(id);
-            }
-            if (!obj) {
-                alert("unrecognized ID");
-                return false;
-            }
-
-            if (mouse == 1) {
-                obj.className = "navon";
-            }
-
-            if (mouse == 0) {
-                obj.className = "navoff";
-            }
-            return true;
-        }
-
-    </script>
+    <script language="javascript" src="javascripts/changestyles.js"></script>
 <?php
-$erreur = 0;
 if (!isset($methode)) {
     $methode = "debut";
 }
-$req = "select perso_admin_echoppe from perso where perso_cod = $perso_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-} else {
-    $db->next_record();
-}
-if ($db->f("perso_admin_echoppe") != 'O') {
-    echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
-    $erreur = 1;
-}
+include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0) {
     switch ($methode) {
         case "debut":

@@ -8,19 +8,12 @@ $erreur = false;
 //
 // verif droits
 //
-$req = "select dcompt_gere_droits from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
-    $droit['dcompt_gere_droits'] = 'N';
-} else {
-    $db->next_record();
-    $droit['dcompt_gere_droits'] = $db->f("dcompt_gere_droits");
-}
-if ($droit['dcompt_gere_droits'] != 'O') {
-    echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-    $erreur = true;
-}
-if (!$erreur) {
+
+$droit_modif = 'dcompt_gere_droits';
+include "blocks/_test_droit_modif_generique.php";
+
+
+if ($erreur == 0) {
     $log = '';
     // initialisation de la méthode
     if (!isset($methode))

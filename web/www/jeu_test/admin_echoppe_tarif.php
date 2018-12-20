@@ -1,5 +1,9 @@
 <?php 
 include "blocks/_test_admin_echoppe.php";
+if (!isset($methode))
+{
+    $methode = "entree";
+}
 if ($erreur == 0)
 {
 	switch($methode)

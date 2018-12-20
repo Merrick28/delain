@@ -1,6 +1,6 @@
-<?php if (!defined("APPEL"))
-    die("Erreur d'appel de page !");
-include_once "verif_connexion.php";
+<?php
+include "blocks/_tests_appels_page_externe.php";
+
 $param = new parametres();
 //
 //Contenu de la div de droite

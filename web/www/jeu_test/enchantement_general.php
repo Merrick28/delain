@@ -5,29 +5,7 @@ include "blocks/_header_page_jeu.php";
 
 // scripts JS
 $contenu_page .= '
-<script language="javascript">
-function blocking(nr)
-{
-	if (document.layers)
-	{
-		current = (document.layers[nr].display == \'none\') ? \'block\' : \'none\';
-		document.layers[nr].display = current;
-	}
-	else if (document.all)
-	{
-		current = (document.all[nr].style.display == \'none\') ? \'block\' : \'none\';
-		document.all[nr].style.display = current;
-	}
-	else if (document.getElementById)
-	{ vista = (document.getElementById(nr).style.display == \'none\') ? \'block\' : \'none\';
-		document.getElementById(nr).style.display = vista;
-	}
-}
-function retour()
-{
-parent.gauche.location.href="menu.php";
-}
-</script>';
+<script language="javascript" src="javascripts/modif_etage.js"></script>';
 $contenu_page .= '
 <style type="text/css">
 .interieur {

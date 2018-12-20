@@ -8,22 +8,9 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $erreur = 0;
-$req = "select dcompt_enchantements from compt_droit where dcompt_compt_cod = $compt_cod";
-$db->query($req);
-if ($db->nf() == 0)
-{
-	echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-	$erreur = 1;
-}
-else
-{
-	$db->next_record();
-	if ($db->f("dcompt_enchantements") != 'O')
-	{
-		echo "<p>Erreur ! Vous n’avez pas accès à cette page !</p>";
-		$erreur = 1;
-	}
-}
+$droit_modif = 'dcompt_enchantements';
+include "blocks/_test_droit_modif_generique.php";
+
 if ($erreur == 0)
 {
 	if (!isset($_POST['methode']))

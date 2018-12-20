@@ -47,31 +47,8 @@ var bMoz = (navigator.appName == 'Netscape');
 			execJS(document.getElementById('droite'));
 		}
 	</script>
-	
-	<script type="text/javascript">
-	ns4 = document.layers; 
-	ie = document.all; 
-	ns6 = document.getElementById && !document.all; 
-	function changeStyles (id, mouse) { 
-   if (ns4) { 
-      alert ("Sorry, but NS4 does not allow font changes."); 
-      return false; 
-   } 
-   else if (ie) { 
-      obj = document.all[id]; 
-      } 
-   else if (ns6) { 
-      obj = document.getElementById(id); 
-       } 
-   if (!obj) { 
-      alert("unrecognized ID"); 
-      return false; 
-   } 
-   obj.className = mouse; 
-   return true; 
-	}
-	
-	</script>
+	<script src="{g_url}jeu_test/javascripts/changestyles.js" type="text/javascript"></script>
+
 
 
 	<script type="text/javascript">
