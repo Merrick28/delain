@@ -13,6 +13,11 @@ $param = new parametres();
 include G_CHE . "/jeu_test/blocks/_test_lieu.php";
 include G_CHE . "/jeu_test/blocks/_test_passage_medaillon.php";
 
+if(!isset($desc_passage))
+{
+    $desc_passage = 'cet escalier';
+}
+
 if ($erreur == 0)
 {
     $tab_lieu = $db->get_lieu($perso_cod);
@@ -20,6 +25,6 @@ if ($erreur == 0)
     $nom_lieu = $tab_lieu['nom'];
     $desc_lieu = $tab_lieu['description'];
     echo "<p><strong>$nom_lieu</strong><br>$desc_lieu ";
-    echo "<p><a href=\"action.php?methode=passage\">Prendre cet escalier ! (" . $param->getparm(13) . " PA)</a></p>";
+    echo "<p><a href=\"action.php?methode=passage\">Prendre " . $desc_passage . " ! (" . $param->getparm(13) . " PA)</a></p>";
 }
 
