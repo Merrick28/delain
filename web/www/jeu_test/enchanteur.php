@@ -323,6 +323,11 @@ if ($erreur == 0)
                 $db2->next_record();
             }
             break;
+        default:
+            $contenu_page .= "<p>Erreur sur le type d'appel !";
+            $erreur = 1;
+            break;
+
     }
 }
 echo $contenu_page;
