@@ -109,18 +109,34 @@ case 'stop2' :
         $quete_perso->aqperso_quete_step ++ ; // Step suivant pour le journal
 
         $perso_journal = new aquete_perso_journal();
-        $perso_journal->aqpersoj_aqperso_cod = $quete_perso->aqperso_cod ;
-        $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation ;
-        $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step ;
-        $perso_journal->aqpersoj_texte = "Vous avez choisi d'abandonner cette quête!<br> ";
-        $perso_journal->stocke(true);
+        if ($quete->aquete_journal_archive!='O')
+        {
+            // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
+            $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod,  $quete_perso->aqperso_nb_realisation);
+        }
+        else
+        {
+            // On conserve l'archive du journal de quete
+            $perso_journal->aqpersoj_aqperso_cod = $quete_perso->aqperso_cod ;
+            $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation ;
+            $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step ;
+            $perso_journal->aqpersoj_texte = "Vous avez choisi d'abandonner cette quête!<br> ";
+            $perso_journal->stocke(true);
+        }
+
 
         $quete_perso->aqperso_actif = 'N';
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
         $quete_perso->stocke();
 
-
-        $contenu_page2 .= "La quête <strong>{$quete->aquete_nom}</strong> s'est termniné par un abandon, malgré tout vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        if ($quete->aquete_journal_archive!='O')
+        {
+            $contenu_page2 .= "La quête <strong>{$quete->aquete_nom}</strong> s'est termniné par un abandon!";
+        }
+        else
+        {
+            $contenu_page2 .= "La quête <strong>{$quete->aquete_nom}</strong> s'est termniné par un abandon, malgré tout vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        }
         $contenu_page2 .= "<br><br>";
     }
 break;
@@ -144,11 +160,26 @@ case 'terminer' :
         {
             $contenu_page2 .= "<br>Malheureusement, vous n'avez pas réussi cette quête!";
         }
+
+        if ($quete->aquete_journal_archive!='O')
+        {
+            // La quête est terminée, et l'on n'en conserve pas de journal, supprimer toutes les entrées déjà faites.
+            $perso_journal = new aquete_perso_journal();
+            $perso_journal->deleteBy_aqperso_cod($quete_perso->aqperso_cod, $quete_perso->aqperso_nb_realisation);
+        }
+
         $quete_perso->aqperso_actif = 'N';
         $quete_perso->aqperso_date_fin = date('Y-m-d H:i:s');
         $quete_perso->stocke();
 
-        $contenu_page2 .= "<br>Voila, la quête <strong>{$quete->aquete_nom}</strong> est maintenant terminée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        if ($quete->aquete_journal_archive!='O')
+        {
+            $contenu_page2 .= "<br>Voila, la quête <strong>{$quete->aquete_nom}</strong> est maintenant terminée!";
+        }
+        else
+        {
+            $contenu_page2 .= "<br>Voila, la quête <strong>{$quete->aquete_nom}</strong> est maintenant terminée, vous retrouverez le journal de cette quête dans la section des quêtes terminées!";
+        }
         $contenu_page2 .= "<br><br>";
     }
 break;
@@ -274,16 +305,22 @@ if ($methode=="")
         }
         else
         {
+            $perso_journal = new aquete_perso_journal();
             $aq_select = array();
             foreach ($quetes_perso as $k => $qp)
             {
                 $quete = new aquete() ;
                 $quete->charge($qp->aqperso_aquete_cod);
                 $nb_realisation = $qp->aqperso_actif == 'O' ?  $qp->aqperso_nb_realisation-1 : $qp->aqperso_nb_realisation ;
+                $Liste_perso_realisation = $perso_journal->getListe_perso_realisation($qp->aqperso_cod);
                 for ($i=0; $i<$nb_realisation; $i++)
                 {
                     $r = $i+1;
-                    $aq_select[$qp->aqperso_cod.'*'.$r] = $quete->aquete_nom." ($r)";
+                    if (in_array($r, $Liste_perso_realisation))
+                    {
+                        // seulement si la quete à été journalisée
+                        $aq_select[$qp->aqperso_cod.'*'.$r] = $quete->aquete_nom." ($r)";
+                    }
                 }
             }
             // Affichage de la boite de selection
@@ -297,7 +334,6 @@ if ($methode=="")
             $quete_perso->charge($q[0]);
             $realisation = 1*$q[1];
 
-            $perso_journal = new aquete_perso_journal();
             $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
 
             $contenu_page2 .= "Quête commencée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) ." et terminée le : ".date("d/m/Y H:i:s", strtotime($journal_pages[count($journal_pages)-1]->aqpersoj_date)) ."<br>" ;
