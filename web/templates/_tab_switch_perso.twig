@@ -75,6 +75,43 @@
                         </div>
                     </td>
                 </tr>
+                {% if PERSO.is_enchanteur %}
+                    <tr>
+                        <td>
+                            <div class="image">
+                                <img src="{{ G_IMAGES }}energi10.png" alt="">
+                                <div title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100"
+                                     class="container-nrj">
+                                    <div class="barre-nrj" style="width:{{ BARRE_ENERGIE }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+                {% if DIEU_PERSO.dper_points > 0 %}
+                    <tr>
+                        <td>
+                            <div class="image"><img src="{{ G_IMAGES }}magie.gif" alt="" title="Énergie divine">
+                                <div title="Énergie divine : {{ DIEU_PERSO.dper_points }}"
+                                     alt="Énergie divine : {{ DIEU_PERSO.dper_points }}" class="container-div">
+                                    <div class="barre-div" style="width:{{ BARRE_DIVINE }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>
+                        <div class="image">
+                            <img src="{{ G_IMAGES }}iconexp.gif" alt="">
+                            <div title="{{ PERSO.perso_px|round( floor) }} PX, prochain niveau à ' . $limite_niveau . '"
+                                 alt="' . floor($perso->perso_px) . ' PX sur ' . $limite_niveau . '"
+                                 class="container-xp">
+                                <div class="barre-xp" style="width:' . $barre_xp . '%"></div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
             </table>
         </td>
     </tr>

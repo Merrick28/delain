@@ -331,7 +331,10 @@ function affiche_perso($perso_cod)
         'IS_LOG' => $is_log,
         'IMPALPABLE' => $impalpable,
         'G_IMAGES' => G_IMAGES,
-        'BARRE_HP' => $barre_hp
+        'BARRE_HP' => $barre_hp,
+        'BARRE_ENERGIE' => $barre_energie,
+        'DIEU_PERSO' => $dieu_perso,
+        'BARRE_DIVINE' => $barre_divine
 
 
     );
