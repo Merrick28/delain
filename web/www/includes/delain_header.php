@@ -60,7 +60,6 @@ function register_globals($order = 'egpcs')
     // define a subroutine
     if (!function_exists('register_global_array'))
     {
-
         function register_global_array(array $superglobal)
         {
             $detection_hacking = false ;    // par défaut tout va bien !!
@@ -69,8 +68,9 @@ function register_globals($order = 'egpcs')
                 // On recherche des chaines qui pourraient faire penser à de l'injection SQL comme "SELECT * FROM", "DELETE FROM" et "UPDATE FROM"
                 // mais il faut penser qu'un paramètre du type "&action=delete" est valide
                 // =>  Pour commencer on  va interdire tout ce qui contient "FROM" et une autre chaine du type "SELECT", "DELETE" ou "UPDATE"
-                if (stripos($value, "from" ) !== false)
+                if (!is_array($value) && (stripos($value, "from" ) !== false))
                 {
+
                     if ((stripos($value, "select" ) !== false)||(stripos($value, "delete" ) !== false)||(stripos($value, "update" ) !== false))
                     {
                         $detection_hacking = true ;
@@ -79,6 +79,7 @@ function register_globals($order = 'egpcs')
                 // C'est louche, on ne permet pas d'aller plus loin!!
                 if ($detection_hacking)
                 {
+
                     $log = "Tentative de ".get_ip()." sur la page ".$_SERVER["REQUEST_URI"]."\nInjection sur le paramètre '$varname' : $value\n ";
                     writelog($log, 'hacking',false);
                     die('<br>Une erreur est survenue, si le problème se répète, merci de contacter les administrateurs sur le <a target="_blank" href="https://forum.jdr-delain.net/viewforum.php?f=2&sid=9a837e88f0b38247280c5869a6a6a99c">Forum bug</a><br><br>Pour faciliter le débuggage veuillez préciser la date et l\'heure de l\'incident: <b>'.date("Y-m-d H:i:s").'</b>');
