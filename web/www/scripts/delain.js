@@ -1,17 +1,13 @@
-
 // Indique si le cadre du bas de la vue doit être étendu. Par défaut, non.
 var etendreVue = 0;
 
 // Fonction appelée à l'ouverture de la vue, déterminant s'il y a lieu d'étendre le cadre du bas ou non.
-function tailleCadre()
-{
+function tailleCadre() {
     // lecture du cookie pour savoir si on retaille le cadre du bas ou non
-    var lesCookies=document.cookie.split(";");
-    for (var i = 0; i < lesCookies.length; i++)
-    {
-        var nom = lesCookies[i].substr(0, lesCookies[i].indexOf("=")).replace(/^\s+|\s+$/g,"");
-        if (nom == "etendrevue")
-        {
+    var lesCookies = document.cookie.split(";");
+    for (var i = 0; i < lesCookies.length; i++) {
+        var nom = lesCookies[i].substr(0, lesCookies[i].indexOf("=")).replace(/^\s+|\s+$/g, "");
+        if (nom == "etendrevue") {
             etendreVue = parseInt(lesCookies[i].substr(lesCookies[i].indexOf("=") + 1));
         }
     }
@@ -21,8 +17,7 @@ function tailleCadre()
 }
 
 // Permet de permutter entre l'état étendu ou l'état réduit du cadre du bas.
-function modifierCadre()
-{
+function modifierCadre() {
     etendreVue = 1 - etendreVue;
     if (etendreVue == 0)
         reduireCadre();
@@ -32,8 +27,7 @@ function modifierCadre()
 }
 
 // Augmente le cadre du bas
-function aggrandirCadre()
-{
+function aggrandirCadre() {
     document.getElementById("vue_bas").style.maxHeight = "";
 
     // Mise en place d’un cookie pour se souvenir de ce choix
@@ -45,8 +39,7 @@ function aggrandirCadre()
 }
 
 // réduit le cadre du bas
-function reduireCadre()
-{
+function reduireCadre() {
     var hauteurCadreGauche = document.getElementById("vue_gauche").offsetHeight;
     var hauteurCadreDroit = document.getElementById("vue_droite").offsetHeight;
     var hauteurVueHaut = Math.max(hauteurCadreGauche, hauteurCadreDroit);
@@ -72,15 +65,45 @@ function reduireCadre()
 /* Pour que cela fonctionne, il faut que l'objet cliquable
  ait la class change_class_on_click, et les attributs remplus
  par exemple
- <input type="checkbox" class="change_class_on_click" data-class-dest="<un id>" data-class-normal="<style normal>" data-class-onclick="Styleonclick">
+ <input type="checkbox" class="change_class_on_select" data-class-dest="<id>" data-class-onclick="Styleonclick">
  */
-$("body").on('click', '.change_class_on_click', function() {
-    console.log('Clik change');
-    var class1=$(this).attr('data-class-normal');
-    console.log("class1 = " + class1);
-    var class2=$(this).attr('data-class-onclick');
-    console.log("class2 = " + class2);
-    var dest=$(this).attr('data-class-dest');
-    console.log("Dest = " + dest);
-    $("#"+dest).toggleClass(class2+' '+class1);
+$(document).on('change', '.change_class_on_select', function () {
+    var newstyle = $(this).attr("data-class-onclick");
+    $(".allliste").removeClass(newstyle);
+    if ($(this).is(':checked')) {
+        var dest = $(this).attr("data-class-dest");
+        $("#" + dest).addClass(newstyle);
+    }
 });
+
+$(".change_class_on_hover").hover(
+    function () {
+        var newstyle = $(this).attr("data-class-onhover");
+        var dest = $(this).attr("data-class-dest");
+        $("#" + dest).addClass(newstyle);
+    },
+    function () {
+        var newstyle = $(this).attr("data-class-onhover");
+        var dest = $(this).attr("data-class-dest");
+        $("#" + dest).removeClass(newstyle);
+    }
+);
+
+$(".double_change_class_on_hover").hover(
+    function () {
+        var newstyle1 = $(this).attr("data-class-onhover1");
+        var newstyle2 = $(this).attr("data-class-onhover2");
+        var dest1 = $(this).attr("data-class-dest1");
+        var dest2 = $(this).attr("data-class-dest2");
+        $("#" + dest1).addClass(newstyle1);
+        $("#" + dest2).addClass(newstyle2);
+    },
+    function () {
+        var newstyle1 = $(this).attr("data-class-onhover1");
+        var newstyle2 = $(this).attr("data-class-onhover2");
+        var dest1 = $(this).attr("data-class-dest1");
+        var dest2 = $(this).attr("data-class-dest2");
+        $("#" + dest1).removeClass(newstyle1);
+        $("#" + dest2).removeClass(newstyle2);
+    }
+);
