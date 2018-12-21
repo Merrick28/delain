@@ -74,7 +74,7 @@ function reduireCadre()
  par exemple
  <input type="checkbox" class="change_class_on_click" data-class-dest="<un id>" data-class-normal="<style normal>" data-class-onclick="Styleonclick">
  */
-$(".change_class_on_click").live('click', function() {
+$("body").on('click', '.change_class_on_click', function() {
     console.log('Clik change');
     var class1=$(this).attr('data-class-normal');
     console.log("class1 = " + class1);
