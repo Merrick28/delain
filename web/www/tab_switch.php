@@ -116,26 +116,10 @@ function affiche_perso($perso_cod)
     $etage = new etage();
     $etage->getByNumero($position->pos_etage);
 
-    $db = new base_delain;
-    $req = "select perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt,perso_energie,
-		perso_pv,perso_pv_max,dlt_passee(perso_cod) as dlt_passee,to_char(prochaine_dlt(perso_cod),'DD/MM hh24:mi') as prochaine_dlt,perso_pa,perso_race_cod,perso_sex,
-		limite_niveau(perso_cod) as limite_niveau,limite_niveau_actuel(perso_cod) as limite_niveau_actuel,floor(perso_px) as perso_px,
-		pos_x,pos_y,pos_etage,perso_niveau,perso_avatar,etage_libelle,perso_description,perso_tangible,perso_nb_tour_intangible,
-		exists(select levt_cod from ligne_evt where levt_perso_cod1 = $perso_cod and levt_lu = 'N' limit 1) as events, perso_gmon_cod, perso_avatar_version
-		from perso,perso_position,positions,etage
-	where perso_cod = $perso_cod
-	and ppos_perso_cod = perso_cod
-	and ppos_pos_cod = pos_cod
-	and perso_actif = 'O'
-	and etage_numero = pos_etage ";
-    $db->query($req);
-    $db->next_record();
-    // description
+
 
     $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $perso->perso_description)));
-    $pa = $db->f("perso_pa");
 
-    $db2 = new base_delain;
     if ($perso->perso_avatar == '')
     {
         $avatar = G_IMAGES . $perso->perso_race_cod . "_" . $perso->perso_sex . ".png";
@@ -171,8 +155,12 @@ function affiche_perso($perso_cod)
         $dieu_perso->getByPersoCod($perso->perso_cod);
         $barre_divine = barre_divine($dieu_perso->dper_points);
     }
+    ?>
+    <table width="100%" border="0">
+    <?php
 
-    echo '<table width="100%" border="0">
+
+    echo '
 		<tr>
 		<td colspan="2" class="titre" valign="top"><div class="titre">' . $perso->perso_nom . '</div></td></tr>
 		<tr><td colspan="2" class="soustitre2"><div style="text-align:center;font-size:7pt;">' . $desc . '</div></td></tr>
@@ -280,7 +268,7 @@ function affiche_perso($perso_cod)
 		        </td>
 		    </tr>';
 
-    if($perso->is_enchanteur())
+    if ($perso->is_enchanteur())
     {
         echo '<tr>
             <td>
@@ -301,33 +289,28 @@ function affiche_perso($perso_cod)
     echo '<tr>
             <td>
 		        <div class="image">
-		            <img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . floor($perso->perso_px) . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . floor($perso->perso_px)  . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:' . $barre_xp . '%"></div></div> 
+		            <img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . floor($perso->perso_px) . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . floor($perso->perso_px) . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:' . $barre_xp . '%"></div></div> 
 		        </div>
 		    </td>
            </tr>';
 
+
     //
     // Messages
     //
-    $req_msg = "select count(*) as nombre from messages_dest where dmsg_perso_cod = $num_perso
-		and dmsg_lu = 'N' and dmsg_archive = 'N' ";
-    $db2->query($req_msg);
-    $db2->next_record();
-    $nb_msg = $db2->f("nombre");
+    $nb_msg = count($perso->getMsgNonLu());
     if ($nb_msg != 0)
     {
-        $txt_msg = '<span class="bouton">
+        echo '<span class="bouton">
 			<input type="button" class="bouton"
-				onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_messages.php?visu_perso=' . $num_perso . '\',\'messages\',\'scrollbars=yes,resizable=yes,width=800,height=600\');" title=\'Cliquez ici pour lire vos 10 derniers messages\' value="' . $nb_msg . ' messages non lus." />
-			</span>';
-        echo $txt_msg . '<br>';
+				onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_messages.php?visu_perso=' . $perso->perso_cod . '\',\'messages\',\'scrollbars=yes,resizable=yes,width=800,height=600\');" title=\'Cliquez ici pour lire vos 10 derniers messages\' value="' . $nb_msg . ' messages non lus." />
+			</span><br />';
     }
     //
     // Transactions
     //
-    $req_tran = "select * from transaction where (tran_vendeur = $num_perso or tran_acheteur = $num_perso)";
-    $db2->query($req_tran);
-    $nb_tran = $db2->nf();
+    $nb_tran = $perso->transactions();
+
     if ($nb_tran != 0)
     {
         echo $nb_tran . ' transactions en attente.<br>';
