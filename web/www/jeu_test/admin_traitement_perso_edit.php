@@ -1,4 +1,15 @@
-<?php 
+<?php
+
+include "blocks/_tests_appels_page_externe.php";
+
+$droit_modif = 'dcompt_modif_perso';
+include "blocks/_test_droit_modif_generique.php";
+if($erreur != 0)
+{
+    die("Pas d'accès à cette page");
+}
+
+
 // RECUPERATION DES INFORMATIONS POUR LE LOG
 $req = "select compt_nom from compte where compt_cod = $compt_cod";
 $db->query($req);

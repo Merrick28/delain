@@ -54,6 +54,7 @@ if ($erreur == 0)
 
     if (isset($_POST['methode']))
     {
+        define('APPEL',1);
         include "admin_traitement_perso_edit.php";
     }
 
