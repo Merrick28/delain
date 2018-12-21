@@ -67,3 +67,20 @@ function reduireCadre()
     echeance.setTime(danslongtemps);
     document.cookie = "etendrevue=0; expires=" + echeance.toGMTString();
 }
+
+/* Change styles, en utilisant javascript */
+/* Pour que cela fonctionne, il faut que l'objet cliquable
+ ait la class change_class_on_click, et les attributs remplus
+ par exemple
+ <input type="checkbox" class="change_class_on_click" data-class-dest="<un id>" data-class-normal="<style normal>" data-class-onclick="Styleonclick">
+ */
+.change_class_on_click.click(function() {
+    console.log('Clik change)')
+    var class1=$(this).attr('data-class-normal');
+    console.log("class1 = " + class1);
+    var class2=$(this).attr('data-class-onclick');
+    console.log("class2 = " + class2);
+    var dest=$(this).attr('data-class-dest');
+    console.log("Dest = " + dest);
+    $('#'+dest).toggleClass(class2+' '+class1);
+});

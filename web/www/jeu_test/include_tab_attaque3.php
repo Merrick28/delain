@@ -238,7 +238,8 @@ if ($nb_joueur_en_vue != 0)
 	for (i=0; i<liste.length; i++)
 	{
 		document.write('<tr>');
-		document.write('<td><input type="radio" name="cible" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>');
+		document.write('<td><input type="radio" name="cible" class="change_class_on_click" data-class-normal="navoff" data-class-onclick="navon" data-class-dest="cell\' + liste[i][0] + '" value="' + liste[i][0] + '"  id="bouton' + liste[i][0] + '"></td>');
+        /*document.write('<td><input type="radio" name="cible" class="change_class_on_click" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>');*/
 		document.write('<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + '"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>');
 		document.write('<td>' + liste[i][3] + '</td>');
 		document.write('<td>' + liste[i][4] + '</td>');
