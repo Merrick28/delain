@@ -103,6 +103,7 @@ function affiche_perso($perso_cod)
 {
     global $type_flux;
     global $is_log;
+    global $twig;
 
     $perso = new perso;
     $perso->charge($perso_cod);
@@ -115,7 +116,6 @@ function affiche_perso($perso_cod)
 
     $etage = new etage();
     $etage->getByNumero($position->pos_etage);
-
 
 
     $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $perso->perso_description)));
@@ -317,6 +317,27 @@ function affiche_perso($perso_cod)
     }
     echo '</td></tr></table>';
     echo '</td></tr></table>';
+
+
+    $template = $twig->load('_tab_switch_perso.twig');
+    $options_twig = array(
+        'PERSO' => $perso,
+        'POSITION' => $position,
+        'ETAGE' => $etage,
+        'MYGUILDE' => $myguilde,
+        'AVATAR' => $avatar,
+        'TYPE_FLUX' => $type_flux,
+        'G_URL' => G_URL,
+        'IS_LOG' => $is_log,
+        'IMPALPABLE' => $impalpable,
+        'G_IMAGES' => G_IMAGES,
+        'BARRE_HP' => $barre_hp
+
+
+    );
+    echo $template->render($options_twig);
+
+
 }
 
 function affiche_case_perso_vide()
