@@ -17,22 +17,19 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
         return $barre_xp;
     }
     $niveau_xp = ($perso_px - $limite_niveau_actuel);
-    $div_xp    = ($limite_niveau - $limite_niveau_actuel);
+    $div_xp = ($limite_niveau - $limite_niveau_actuel);
 
-    $barre_xp = round(100 * $niveau_xp / $div_xp) ;
-    if(($barre_xp>=98) && ($niveau_xp<$div_xp))
+    $barre_xp = round(100 * $niveau_xp / $div_xp);
+    if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
     {
         $barre_xp = 98;
-    }
-    else if (($barre_xp <= 2)&& ($niveau_xp>0))
+    } else if (($barre_xp <= 2) && ($niveau_xp > 0))
     {
         $barre_xp = 2;
-    }
-    else if ($barre_xp < 0)
+    } else if ($barre_xp < 0)
     {
         $barre_xp = 0;
-    }
-    else if ($barre_xp >= 100)
+    } else if ($barre_xp >= 100)
     {
         $barre_xp = 100;
     }
@@ -43,11 +40,11 @@ function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
 function barre_hp($perso_pv, $perso_pv_max)
 {
     //$barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;        // Gestion de la barre au % pres
-    $barre_hp = round(($perso_pv/$perso_pv_max)*100);
-    if(($barre_hp>=98) && ($perso_pv<$perso_pv_max))
+    $barre_hp = round(($perso_pv / $perso_pv_max) * 100);
+    if (($barre_hp >= 98) && ($perso_pv < $perso_pv_max))
     {
         $barre_hp = 98;
-    } else if (($barre_hp <= 2) && ($perso_pv>0))
+    } else if (($barre_hp <= 2) && ($perso_pv > 0))
     {
         $barre_hp = 2;
     } else if ($barre_hp < 0)
@@ -64,14 +61,14 @@ function barre_hp($perso_pv, $perso_pv_max)
 function barre_energie($perso_energie)
 {
     //$barre_energie = floor(($perso_energie / 100) * 10) * 10;       // Gestion de la barre au % pres
-    $barre_energie = round($perso_energie) ;
-    if ( $barre_energie <= 0)
+    $barre_energie = round($perso_energie);
+    if ($barre_energie <= 0)
     {
         $barre_energie = 0;
-    } else if ( $barre_energie >=100)
+    } else if ($barre_energie >= 100)
     {
         $barre_energie = 100;
-    } else if($barre_energie>=98)
+    } else if ($barre_energie >= 98)
     {
         $barre_energie = 98;
     } else if ($barre_energie <= 2)
@@ -84,14 +81,14 @@ function barre_energie($perso_energie)
 // barre d'énergie divine (pour familiers divins uniquement)
 function barre_divine($perso_divine)
 {
-    $barre_divine = round(100 * $perso_divine / 200) ;
-    if ( $barre_divine <= 0)
+    $barre_divine = round(100 * $perso_divine / 200);
+    if ($barre_divine <= 0)
     {
         $barre_divine = 0;
-    } else if ( $barre_divine >=100)
+    } else if ($barre_divine >= 100)
     {
         $barre_divine = 100;
-    } else if($barre_divine>=98)
+    } else if ($barre_divine >= 98)
     {
         $barre_divine = 98;
     } else if ($barre_divine <= 2)
@@ -104,10 +101,22 @@ function barre_divine($perso_divine)
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
 {
-    include "img_pack.php";
     global $type_flux;
     global $is_log;
-    $db  = new base_delain;
+
+    $perso = new perso;
+    $perso->charge($perso_cod);
+
+    $perso_position = new perso_position();
+    $perso_position->getByPerso($perso->perso_cod);
+
+    $position = new positions();
+    $position->charge($perso_position->ppos_pos_cod);
+
+    $etage = new etage();
+    $etage->getByNumero($position->pos_etage);
+
+    $db = new base_delain;
     $req = "select perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt,perso_energie,
 		perso_pv,perso_pv_max,dlt_passee(perso_cod) as dlt_passee,to_char(prochaine_dlt(perso_cod),'DD/MM hh24:mi') as prochaine_dlt,perso_pa,perso_race_cod,perso_sex,
 		limite_niveau(perso_cod) as limite_niveau,limite_niveau_actuel(perso_cod) as limite_niveau_actuel,floor(perso_px) as perso_px,
@@ -123,132 +132,180 @@ function affiche_perso($perso_cod)
     $db->next_record();
     // description
 
-    $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_description"))));
-    $pa   = $db->f("perso_pa");
+    $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $perso->perso_description)));
+    $pa = $db->f("perso_pa");
 
     $db2 = new base_delain;
-    if ($db->f("perso_avatar") == '')
+    if ($perso->perso_avatar == '')
     {
-        $avatar = G_IMAGES . $db->f("perso_race_cod") . "_" . $db->f("perso_sex") . ".png";
-    }
-    else
+        $avatar = G_IMAGES . $perso->perso_race_cod . "_" . $perso->perso_sex . ".png";
+    } else
     {
-        $avatar = $type_flux . G_URL . "avatars/" . $db->f("perso_avatar");
+        $avatar = $type_flux . G_URL . "avatars/" . $perso->perso_avatar;
     }
     //
     // Partie permier avril
     //
     //$avatar = G_URL . "avatars/" . $aff_avat;
     $annee_en_cours = date('Y');
-    $debut_1avril   = mktime(0, 0, 1, 4, 1, $annee_en_cours);
-    $fin_1avril     = mktime(0, 0, 1, 4, 2, $annee_en_cours);
-    $is1avril       = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
+    $debut_1avril = mktime(0, 0, 1, 4, 1, $annee_en_cours);
+    $fin_1avril = mktime(0, 0, 1, 4, 2, $annee_en_cours);
+    $is1avril = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
     //
     // fin 1er avril
     //
-    $perso_px             = $db->f("perso_px");
-    $limite_niveau_actuel = $db->f("limite_niveau_actuel");
-    $limite_niveau        = $db->f("limite_niveau");
-    $energie              = $db->f("perso_energie");
-    $barre_xp             = barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau);
-    $barre_hp             = barre_hp($db->f("perso_pv"), $db->f("perso_pv_max"));
-    $barre_energie        = barre_energie($db->f("perso_energie"));
+
+    $limite_niveau_actuel = $perso->px_limite_actuel();
+    $limite_niveau = $perso->px_limite();
+    $barre_xp = barre_xp($perso->perso_px, $limite_niveau_actuel, $limite_niveau);
+    $barre_hp = barre_hp($perso->perso_pv, $perso->perso_pv_max);
+    $barre_energie = barre_energie($perso->perso_energie);
+    $dlt_passee = $perso->dlt_passee();
 
     // récupération énergie divine pour les familiers divins
-    $barre_divine   = -1;
+    $barre_divine = -1;
     $energie_divine = -1;
-    if ($db->f("perso_gmon_cod") == 441)
+    if ($perso->perso_gmon_cod == 441)
     {
-        $db_divin = new base_delain;
-        $req      = "select dper_points from dieu_perso where dper_perso_cod = $perso_cod";
-        $db_divin->query($req);
-        $db_divin->next_record();
-        $energie_divine = $db_divin->f("dper_points");
-        $barre_divine   = barre_divine($energie_divine);
+        $dieu_perso = new dieu_perso();
+        $dieu_perso->getByPersoCod($perso->perso_cod);
+        $barre_divine = barre_divine($dieu_perso->dper_points);
     }
+
     echo '<table width="100%" border="0">
 		<tr>
-		<td colspan="2" class="titre" valign="top"><div class="titre">' . $db->f("perso_nom") . '</div></td></tr>
+		<td colspan="2" class="titre" valign="top"><div class="titre">' . $perso->perso_nom . '</div></td></tr>
 		<tr><td colspan="2" class="soustitre2"><div style="text-align:center;font-size:7pt;">' . $desc . '</div></td></tr>
 		<tr><td class="soustitre2" colspan="2">';
-    if ($db->f("dlt_passee") == 1)
+
+    // dlt
+    if ($dlt_passee == 1)
     {
         echo '<strong>';
     }
-    echo 'DLT : ' . $db->f("dlt");
-    if ($db->f("dlt_passee") == 1)
+    $date = new DateTime($perso->perso_dlt);
+    echo 'DLT : ' . date_format($date, 'd/m/Y H:i:s');
+    if ($dlt_passee == 1)
     {
         echo '</strong>';
     }
-    echo '<br /><em>Puis ± ', $db->f('prochaine_dlt') . '</em>';
+
+    // prochaine dlt
+    $date = new DateTime($perso->prochaine_dlt());
+    echo '<br /><em>Puis ± ', date_format($date, 'd/m/Y H:i:s') . '</em>';
+
+    // positions
     echo '<br></td></tr>
-		<tr><td class="soustitre2" colspan="2">Position : X=' . $db->f("pos_x") . '; Y=' . $db->f("pos_y") . '; ' . $db->f("etage_libelle") . '</td></tr>';
+		<tr><td class="soustitre2" colspan="2">Position : X=' . $position->pos_x . '; Y=' . $position->pos_y . '; ' . $etage->etage_libelle . '</td></tr>';
+
+
     $num_perso = $perso_cod;
-    $guilde    = $db2->get_nom_guilde($num_perso);
-    echo '<tr><td class="soustitre2" colspan="2">';
-    if ($guilde == '')
-    {
-        echo 'Pas de guilde';
-    }
-    else
-    {
-        echo 'Guilde : ' . $guilde;
-    }
-    $niveau           = $db->f("perso_niveau");
-    $tours_impalpable = ($db->f('perso_nb_tour_intangible') > 1) ? ' tours' : ' tour';
-    $impalpable       = ($db->f('perso_tangible') == 'N') ? '<br /><em>Impalpable (' . $db->f('perso_nb_tour_intangible') . $tours_impalpable . ')</em>' : '';
 
-    if ($is1avril)
+    $myguilde = "Pas de guilde";
+
+    $guilde_perso = new guilde_perso();
+    if ($guilde_perso->get_by_perso($perso->perso_cod))
     {
-        $niveau     = mt_rand(1, 10);
-        $impalpable = ' - <em>Impalpable</em>';
-        $dbavril    = new base_delain;
-        $dbavril->query('select gmon_nom from monstre_generique where gmon_cod < 50 and gmon_niveau < 5 and gmon_cod <> 7
-			order by random()
-			limit 1');
-        $dbavril->next_record();
-        $impalpable .= '<br /><em>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</em>';
-        $barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
+        if ($guilde_perso->pguilde_valide == 'O')
+        {
+            $guilde = new guilde;
+            if ($guilde->charge($guilde_perso->pguilde_guilde_cod))
+            {
+                $myguilde = 'Guilde : ' . $guilde->guilde_nom;
+            }
+        }
     }
 
-    echo '</td></tr>
-		<tr><td valign="top"><center><a href="#" onClick="javascript:document.login.perso.value=' . $num_perso . ';document.login.submit();"><img width="110px" src="' . $avatar . '?' . $db->f("perso_avatar_version") . '" alt="Jouer ' . $db->f("perso_nom") . '"/></a>
-		', ($db->f('events') == 'f' ? '' : '<table><tr><td class="bouton" height="1" width="1"><span class="bouton">
-		<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $num_perso . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" /></span></td></tr></table>'), '
-		</center>
-		</td>
+
+    echo '<tr><td class="soustitre2" colspan="2">' . $myguilde . '</td></tr>';
+
+
+    $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
+    $impalpable = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
+
+    /**
+     * Sauvegarde du code du premier avril
+     *
+     * if ($is1avril)
+     * {
+     * $niveau = mt_rand(1, 10);
+     * $impalpable = ' - <em>Impalpable</em>';
+     * $dbavril = new base_delain;
+     * $dbavril->query('select gmon_nom from monstre_generique where gmon_cod < 50 and gmon_niveau < 5 and gmon_cod <> 7
+     * order by random()
+     * limit 1');
+     * $dbavril->next_record();
+     * $impalpable .= '<br /><em>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</em>';
+     * $barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
+     * }*/
+
+    echo '
+		<tr>
+		    <td valign="top">
+		        <a class="centrer" href="#" onClick="javascript:document.login.perso.value=' . $perso->perso_cod . ';document.login.submit();">
+		            <img width="110px" src="' . $avatar . '?' . $perso->perso_avatar_version . '" alt="Jouer ' . $perso->perso_nom . '"/>
+		        </a>';
+    if ($perso->has_evt_non_lu())
+    {
+        echo '<table>
+            <tr>
+                <td class="bouton" height="1" width="1">
+                    <span class="bouton">
+		                <input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $perso->perso_cod . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" />
+		            </span>
+		        </td>
+		    </tr>
+		</table>';
+    }
+    echo '</td>
 		<td>
 		<table>
-		<tr><td>
-		<div class="image"><strong>Niveau ' . $niveau . '</strong>' . $impalpable . '</div>
-		</td></tr>
-		<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'barrepa_' . $pa . '.gif" alt="' . $pa . 'PA">
-		</div></td></tr>
-		<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'coeur.gif" alt=""> <div title="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" alt="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" class="container-hp"><div class="barre-hp" style="width:'. $barre_hp.'%"></div></div> 
-		</div></td></tr>';
+		    <tr>
+		        <td>
+		            <div class="image"><strong>Niveau ' . $perso->perso_niveau . '</strong>' . $impalpable . '</div>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td>
+		            <div class="image">
+		                <img src="' . G_IMAGES . 'barrepa_' . $perso->perso_pa . '.gif" alt="' . $perso->perso_pa . 'PA">
+		            </div>
+		        </td>
+		    </tr>
+		    <tr>
+		        <td>
+		            <div class="image">
+		                <img src="' . G_IMAGES . 'coeur.gif" alt=""> <div title="' . $perso->perso_pv . '/' . $perso->perso_pv_max . ' PV" alt="' . $perso->perso_pv . '/' . $perso->perso_pv_max . ' PV" class="container-hp"><div class="barre-hp" style="width:' . $barre_hp . '%"></div></div> 
+		            </div>
+		        </td>
+		    </tr>';
 
-    $is_enchanteur = $db->is_enchanteur($perso_cod);
-    if ($is_enchanteur)
+    if($perso->is_enchanteur())
+    {
+        echo '<tr>
+            <td>
+			    <div class="image">
+			        <img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $perso->perso_energie . ' sur 100" alt="' . $perso->perso_energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:' . $barre_energie . '%"></div></div>
+			    </div>
+			</td>
+		</tr>';
+    }
+
+    if ($dieu_perso->dper_points > 0)
     {
         echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $energie . ' sur 100" alt="' . $energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_energie.'%"></div></div>
+			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $dieu_perso->dper_points . '" alt="Énergie divine : ' . $dieu_perso->dper_points . '" class="container-div"><div class="barre-div" style="width:' . $barre_divine . '%"></div></div> 
 			</div></td></tr>';
     }
 
-    if ($energie_divine > 0)
-    {
-        echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '" class="container-div"><div class="barre-div" style="width:'. $barre_divine .'%"></div></div> 
-			</div></td></tr>';
-    }
+    echo '<tr>
+            <td>
+		        <div class="image">
+		            <img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . floor($perso->perso_px) . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . floor($perso->perso_px)  . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:' . $barre_xp . '%"></div></div> 
+		        </div>
+		    </td>
+           </tr>';
 
-    echo '	<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:'. $barre_xp.'%"></div></div> 
-		</div></td></tr>';
-
-    echo '<tr><td>';
     //
     // Messages
     //
@@ -310,12 +367,12 @@ $req = "select compt_ligne_perso, autorise_4e_perso(compt_quatre_perso, compt_dc
 $req .= " from compte where compt_cod = " . $compt_cod;
 $db->query($req);
 $db->next_record();
-$nb_perso_max   = $db->f('compt_ligne_perso') * 3;
+$nb_perso_max = $db->f('compt_ligne_perso') * 3;
 $nb_perso_ligne = 3;
-$ok_4           = ($db->f('autorise_quatrieme') != 'f');
+$ok_4 = ($db->f('autorise_quatrieme') != 'f');
 if ($ok_4)
 {
-    $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
+    $nb_perso_max = $db->f('compt_ligne_perso') * 4;
     $nb_perso_ligne = 4;
 }
 $taille = 100 / $nb_perso_ligne;
@@ -330,9 +387,9 @@ $req_perso = "select pcompt_perso_cod, case when 2 IN (perso_type_perso, perso_p
 	order by perso_cod ";
 $db->query($req_perso);
 $perso_normaux = array();
-$quatriemes    = array();
+$quatriemes = array();
 
-$cpt_normaux    = 0;
+$cpt_normaux = 0;
 $cpt_quatriemes = 0;
 
 while ($db->next_record())
@@ -340,8 +397,7 @@ while ($db->next_record())
     if ($db->f('quatrieme') == 1)
     {
         $quatriemes[] = $db->f('pcompt_perso_cod');
-    }
-    else
+    } else
     {
         $perso_normaux[] = $db->f('pcompt_perso_cod');
     }
@@ -364,7 +420,7 @@ if ($premier_perso == -1)
 
 echo '<div class="row row-eq-height">';     //Debut ligne des persos
 $numero_quatrieme = -1;
-$cpt              = 0;
+$cpt = 0;
 while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes))
 {
     // Est-on sur la case réservée au quatrième ?
@@ -387,8 +443,7 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
         if (!empty($perso_normaux[$cpt_normaux]))
         {
             affiche_perso($perso_normaux[$cpt_normaux]);
-        }
-        else
+        } else
         {
             affiche_case_perso_vide();
         }
@@ -403,12 +458,10 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
         if (!empty($quatriemes[$cpt_quatriemes]))
         {
             affiche_perso($quatriemes[$cpt_quatriemes]);
-        }
-        elseif ($type_4 != 2)
+        } elseif ($type_4 != 2)
         {
             affiche_case_perso_vide();
-        }
-        else
+        } else
         {
             affiche_case_monstre_vide();
         }
@@ -454,7 +507,7 @@ if ($db->nf() != 0)
     echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Familiers : </div></div>';
 
     echo '<div class="row row-eq-height">';   //Debut ligne des familiers
-    $nb_perso    = $db->nf();
+    $nb_perso = $db->nf();
     $alias_perso = 0;
     for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
     {
@@ -509,7 +562,7 @@ if ($db->nf() != 0)
     echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
 
     $nb_perso_max = $db->nf();
-    $nb_perso     = $nb_perso_max;
+    $nb_perso = $nb_perso_max;
     for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
     {
         if ($cpt < $nb_perso)
@@ -527,19 +580,18 @@ if ($db->nf() != 0)
         //tableau intérieur
         if ($cpt >= $nb_perso)
         {
-            $nom      = 'Pas de perso';
-            $image    = '';
+            $nom = 'Pas de perso';
+            $image = '';
             $barre_pa = '';
             $barre_hp = '';
             $barre_xp = '';
-            $enc      = '';
+            $enc = '';
             echo '<table width="100%" height="100%" border="0">
 				<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
 				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
 				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
 				<tr><td><center><img src="' . G_IMAGES . 'noperso.gif"></center></td></tr></table>';
-        }
-        else
+        } else
         {
             affiche_perso($db->f('pcompt_perso_cod'));
         }
@@ -571,8 +623,8 @@ if ($db->nf() != 0)
     {
 
         $nb_perso_max = $db->nf();
-        $nb_perso     = $nb_perso_max;
-        $alias_perso  = 0;
+        $nb_perso = $nb_perso_max;
+        $alias_perso = 0;
         for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
         {
             if ($cpt < $nb_perso)

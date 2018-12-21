@@ -819,6 +819,17 @@ class perso
         return $retour;
     }
 
+    function has_evt_non_lu()
+    {
+        $ligne_evt = new ligne_evt();
+        $tab_evt = $ligne_evt->getByPersoNonLu($this->perso_cod);
+        if(count($tab_evt) != 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
     function getByComptDerPerso($vcompte)
     {
         $compte = new compte;
