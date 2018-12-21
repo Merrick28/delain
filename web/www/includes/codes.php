@@ -73,6 +73,8 @@ function smiley2($smiley1)
         <tr>
             <td class=\"titre\" width='100%' colspan='4'><p class="titre">Smileys</td>
         </tr>
+
+        <?php
         smiley1(":D", ":)");
         smiley1(":grin:", ":)");
         smiley1(":-)", ":smile:");
@@ -91,8 +93,8 @@ function smiley2($smiley1)
         smiley1(";-)", ":mrgreen:");
         smiley1(":ange:", ":doute:");
         smiley1(":eek:", ":cherche:");
-
-
+        ?>
+        </tr>
         </font></td></tr></table>
     <br>
     <div class="centrer"><input type="button" onClick="javascript:window.close()" class="test" value="Fermer"></div>
