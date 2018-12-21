@@ -155,39 +155,7 @@ function affiche_perso($perso_cod)
         $dieu_perso->getByPersoCod($perso->perso_cod);
         $barre_divine = barre_divine($dieu_perso->dper_points);
     }
-    ?>
-    <table width="100%" border="0">
-    <?php
 
-
-    echo '
-		<tr>
-		<td colspan="2" class="titre" valign="top"><div class="titre">' . $perso->perso_nom . '</div></td></tr>
-		<tr><td colspan="2" class="soustitre2"><div style="text-align:center;font-size:7pt;">' . $desc . '</div></td></tr>
-		<tr><td class="soustitre2" colspan="2">';
-
-    // dlt
-    if ($dlt_passee == 1)
-    {
-        echo '<strong>';
-    }
-    $date = new DateTime($perso->perso_dlt);
-    echo 'DLT : ' . date_format($date, 'd/m/Y H:i:s');
-    if ($dlt_passee == 1)
-    {
-        echo '</strong>';
-    }
-
-    // prochaine dlt
-    $date = new DateTime($perso->prochaine_dlt());
-    echo '<br /><em>Puis ± ', date_format($date, 'd/m/Y H:i:s') . '</em>';
-
-    // positions
-    echo '<br></td></tr>
-		<tr><td class="soustitre2" colspan="2">Position : X=' . $position->pos_x . '; Y=' . $position->pos_y . '; ' . $etage->etage_libelle . '</td></tr>';
-
-
-    $num_perso = $perso_cod;
 
     $myguilde = "Pas de guilde";
 
@@ -203,9 +171,6 @@ function affiche_perso($perso_cod)
             }
         }
     }
-
-
-    echo '<tr><td class="soustitre2" colspan="2">' . $myguilde . '</td></tr>';
 
 
     $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
@@ -227,114 +192,23 @@ function affiche_perso($perso_cod)
      * $barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
      * }*/
 
-    echo '
-		<tr>
-		    <td valign="top">
-		        <a class="centrer" href="#" onClick="javascript:document.login.perso.value=' . $perso->perso_cod . ';document.login.submit();">
-		            <img width="110px" src="' . $avatar . '?' . $perso->perso_avatar_version . '" alt="Jouer ' . $perso->perso_nom . '"/>
-		        </a>';
-    if ($perso->has_evt_non_lu())
-    {
-        echo '<table>
-            <tr>
-                <td class="bouton" height="1" width="1">
-                    <span class="bouton">
-		                <input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $perso->perso_cod . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" />
-		            </span>
-		        </td>
-		    </tr>
-		</table>';
-    }
-    echo '</td>
-		<td>
-		<table>
-		    <tr>
-		        <td>
-		            <div class="image"><strong>Niveau ' . $perso->perso_niveau . '</strong>' . $impalpable . '</div>
-		        </td>
-		    </tr>
-		    <tr>
-		        <td>
-		            <div class="image">
-		                <img src="' . G_IMAGES . 'barrepa_' . $perso->perso_pa . '.gif" alt="' . $perso->perso_pa . 'PA">
-		            </div>
-		        </td>
-		    </tr>
-		    <tr>
-		        <td>
-		            <div class="image">
-		                <img src="' . G_IMAGES . 'coeur.gif" alt=""> <div title="' . $perso->perso_pv . '/' . $perso->perso_pv_max . ' PV" alt="' . $perso->perso_pv . '/' . $perso->perso_pv_max . ' PV" class="container-hp"><div class="barre-hp" style="width:' . $barre_hp . '%"></div></div> 
-		            </div>
-		        </td>
-		    </tr>';
-
-    if ($perso->is_enchanteur())
-    {
-        echo '<tr>
-            <td>
-			    <div class="image">
-			        <img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $perso->perso_energie . ' sur 100" alt="' . $perso->perso_energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:' . $barre_energie . '%"></div></div>
-			    </div>
-			</td>
-		</tr>';
-    }
-
-    if ($dieu_perso->dper_points > 0)
-    {
-        echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $dieu_perso->dper_points . '" alt="Énergie divine : ' . $dieu_perso->dper_points . '" class="container-div"><div class="barre-div" style="width:' . $barre_divine . '%"></div></div> 
-			</div></td></tr>';
-    }
-
-    echo '<tr>
-            <td>
-		        <div class="image">
-		            <img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . floor($perso->perso_px) . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . floor($perso->perso_px) . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:' . $barre_xp . '%"></div></div> 
-		        </div>
-		    </td>
-           </tr>';
-
-
-    //
-    // Messages
-    //
-    $nb_msg = count($perso->getMsgNonLu());
-    if ($nb_msg != 0)
-    {
-        echo '<span class="bouton">
-			<input type="button" class="bouton"
-				onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_messages.php?visu_perso=' . $perso->perso_cod . '\',\'messages\',\'scrollbars=yes,resizable=yes,width=800,height=600\');" title=\'Cliquez ici pour lire vos 10 derniers messages\' value="' . $nb_msg . ' messages non lus." />
-			</span><br />';
-    }
-    //
-    // Transactions
-    //
-    $nb_tran = $perso->transactions();
-
-    if ($nb_tran != 0)
-    {
-        echo $nb_tran . ' transactions en attente.<br>';
-    }
-    echo '</td></tr></table>';
-    echo '</td></tr></table>';
-
-
     $template = $twig->load('_tab_switch_perso.twig');
     $options_twig = array(
-        'PERSO' => $perso,
-        'POSITION' => $position,
-        'ETAGE' => $etage,
-        'MYGUILDE' => $myguilde,
-        'AVATAR' => $avatar,
-        'TYPE_FLUX' => $type_flux,
-        'G_URL' => G_URL,
-        'IS_LOG' => $is_log,
-        'IMPALPABLE' => $impalpable,
-        'G_IMAGES' => G_IMAGES,
-        'BARRE_HP' => $barre_hp,
+        'PERSO'         => $perso,
+        'POSITION'      => $position,
+        'ETAGE'         => $etage,
+        'MYGUILDE'      => $myguilde,
+        'AVATAR'        => $avatar,
+        'TYPE_FLUX'     => $type_flux,
+        'G_URL'         => G_URL,
+        'IS_LOG'        => $is_log,
+        'IMPALPABLE'    => $impalpable,
+        'G_IMAGES'      => G_IMAGES,
+        'BARRE_HP'      => $barre_hp,
         'BARRE_ENERGIE' => $barre_energie,
-        'DIEU_PERSO' => $dieu_perso,
-        'BARRE_DIVINE' => $barre_divine
+        'DIEU_PERSO'    => $dieu_perso,
+        'BARRE_DIVINE'  => $barre_divine,
+        'BARRE_XP'      => $barre_xp
 
 
     );
@@ -345,22 +219,25 @@ function affiche_perso($perso_cod)
 
 function affiche_case_perso_vide()
 {
-    global $type_flux, $compt_cod;
-    echo '<table width="100%" border="0">
-		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td><center><a href="', $type_flux, G_URL, 'cree_perso_compte.php?compt_cod=', $compt_cod, '">
-		<img src="', G_IMAGES, 'noperso.gif" alt="Créer un nouveau"></a></center></td></tr></table>';
+    global $type_flux, $compt_cod, $twig;
+    $template = $twig->load('_tab_switch_perso_vide.twig');
+    $options_twig = array(
+        'TYPE_FLUX' => $type_flux,
+        'G_URL'     => G_URL,
+        'G_IMAGES'  => G_IMAGES,
+        'COMPT_COD' => $compt_cod
+    );
+    echo $template->render($options_twig);
 }
 
 function affiche_case_monstre_vide()
 {
-    echo '<table width="100%" border="0">
-		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas encore de monstre !<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td><center><img src="', G_IMAGES, 'noperso.gif" alt="Pas de monstre"/></center></td></tr></table>';
+    global $twig;
+    $template = $twig->load('_tab_switch_monstre_vide.twig');
+    $options_twig = array(
+        'G_IMAGES' => G_IMAGES
+    );
+    echo $template->render($options_twig);
 }
 
 /***************************************************************/
@@ -368,48 +245,52 @@ function affiche_case_monstre_vide()
 /***************************************************************/
 //
 /***************************************************************/
-/* Début de la page											*/
+/* Début de la page										    	*/
 /***************************************************************/
+$compte = new compte;
+$compte->charge($compt_cod);
+
+
 $req = "select compt_ligne_perso, autorise_4e_perso(compt_quatre_perso, compt_dcreat) OR autorise_4e_monstre(compt_quatre_perso, compt_dcreat) as autorise_quatrieme, compt_type_quatrieme ";
 $req .= " from compte where compt_cod = " . $compt_cod;
 $db->query($req);
 $db->next_record();
-$nb_perso_max = $db->f('compt_ligne_perso') * 3;
+
+$nb_perso_max = $compte->compt_ligne_perso * 3;
 $nb_perso_ligne = 3;
-$ok_4 = ($db->f('autorise_quatrieme') != 'f');
+$ok_4 = $compte->autorise_4e_global();
+
+
 if ($ok_4)
 {
-    $nb_perso_max = $db->f('compt_ligne_perso') * 4;
+    $nb_perso_max = $compte->compt_ligne_perso * 4;
     $nb_perso_ligne = 4;
 }
 $taille = 100 / $nb_perso_ligne;
-$type_4 = $db->f('compt_type_quatrieme');
+$type_4 = $compte->compt_type_quatrieme;
+
 /*********************/
 /* Persos classiques */
 /*********************/
-$req_perso = "select pcompt_perso_cod, case when 2 IN (perso_type_perso, perso_pnj) then 1 else 0 end as quatrieme
-	from perso_compte
-	inner join perso on perso_cod = pcompt_perso_cod
-	where pcompt_compt_cod = $compt_cod and perso_actif = 'O'
-	order by perso_cod ";
-$db->query($req_perso);
+$tab_perso = $compte->getPersosActifsSansFam();
 $perso_normaux = array();
 $quatriemes = array();
 
 $cpt_normaux = 0;
 $cpt_quatriemes = 0;
 
-while ($db->next_record())
+foreach ($tab_perso as $detail_perso)
 {
-    if ($db->f('quatrieme') == 1)
+    if ($detail_perso->perso_type_perso == 2 || $detail_perso->perso_pnj == 2)
     {
-        $quatriemes[] = $db->f('pcompt_perso_cod');
+        $quatriemes[] = $detail_perso->perso_cod;
     } else
     {
-        $perso_normaux[] = $db->f('pcompt_perso_cod');
+        $perso_normaux[] = $detail_perso->perso_cod;
     }
-    $premier_perso = $db->f('pcompt_perso_cod');
 }
+
+
 if (sizeof($quatriemes) == 0 && $ok_4)
 {
     $quatriemes[] = false;
@@ -433,14 +314,6 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     // Est-on sur la case réservée au quatrième ?
     $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
 
-    // Début de ligne
-    //if (fmod($cpt, $nb_perso_ligne) == 0)
-    //{
-    //    echo '<tr>';
-    //}
-
-    // Début de case
-    //echo '<td valign="top" width="' . $taille . '%">';
     echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
     // Une case normale
@@ -477,11 +350,6 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     }
 
     echo '</div>';      // fin de case!
-    //echo '</td>';
-    //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-    //{
-    //    echo '</tr>';
-    //}
     $cpt++;
 }
 echo '</div>';               //Fin de ligne des persos

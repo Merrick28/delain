@@ -257,6 +257,59 @@ class compte
     }
 
     /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
+    function getPersosActifsSansFam()
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req
+            = "SELECT pcompt_perso_cod FROM perso
+						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
+						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pcompt_perso_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
+        return $retour;
+    }
+
+    /**
+     * Retourne les persos actifs d'un compte (y comris les 4e)
+     * @return perso[]
+     */
+    function getPersosActifsQueFam()
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+
+        $req
+            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+          WHERE pcompt_compt_cod = ? 
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O' ORDER BY pfam_perso_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result['pfam_familier_cod']);
+            $retour[] = $temp;
+            unset($temp);
+        }
+
+        return $retour;
+    }
+
+    /**
      * Retourne les persos sittés d'un compte
      * @return perso[]
      */

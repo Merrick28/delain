@@ -12,9 +12,9 @@
     <tr>
         <td class="soustitre2" colspan="2">
             {% if PERSO.dlt_passee %}<strong>{% endif %}
-                DLT : {{ PERSO.perso_dlt }}
+                DLT : {{ PERSO.perso_dlt|date("d/m/Y H:i:s") }}
                 {% if PERSO.dlt_passee %}</strong>{% endif %}
-            <br/><em>Puis ± {{ PERSO.prochaine_dlt }}</em>
+            <br/><em>Puis ± {{ PERSO.prochaine_dlt|date("d/m/Y H:i:s") }}</em>
         </td>
     </tr>
     <tr>
@@ -104,14 +104,27 @@
                     <td>
                         <div class="image">
                             <img src="{{ G_IMAGES }}iconexp.gif" alt="">
-                            <div title="{{ PERSO.perso_px|round( floor) }} PX, prochain niveau à ' . $limite_niveau . '"
-                                 alt="' . floor($perso->perso_px) . ' PX sur ' . $limite_niveau . '"
+                            <div title="{{ PERSO.perso_px|round( floor) }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                                 alt="{{ PERSO.perso_px|round( floor) }} PX sur {{ PERSO.px_limite }}"
                                  class="container-xp">
-                                <div class="barre-xp" style="width:' . $barre_xp . '%"></div>
+                                <div class="barre-xp" style="width:{{ BARRE_XP }}%"></div>
                             </div>
                         </div>
+                        {% if PERSO.getMsgNonLu|length > 0 %}
+                            <span class="bouton">
+			<input type="button" class="bouton"
+                   onClick="javascript:window.open('{{ TYPE_FLUX }}{{ G_URL }}visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
+                   title='Cliquez ici pour lire vos 10 derniers messages'
+                   value="PERSO.getMsgNonLu|length messages non lus."/>
+			</span><br/>
+                        {% endif %}
+                        {% if PERSO.transactions > 0 %}
+                            {{ PERSO.transactions }} transactions en attente.
+                        {% endif %}
                     </td>
                 </tr>
+
+
             </table>
         </td>
     </tr>
