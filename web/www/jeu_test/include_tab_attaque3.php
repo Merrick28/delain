@@ -162,6 +162,7 @@ if ($nb_joueur_en_vue != 0)
 	<td class="soustitre2"><strong>Y</strong></td>
 	<td class="soustitre2"><strong>Distance</strong></td>
 	</tr>
+
 	<script language="JavaScript" type="text/JavaScript">
   	var liste = new Array();
   	<?php 
@@ -234,19 +235,22 @@ if ($nb_joueur_en_vue != 0)
 	}
 
 		?>
+
 	var i;
+	var textetableau = '';
 	for (i=0; i<liste.length; i++)
 	{
-		document.write('<tr>');
-		/*document.write('<td><input type="radio" name="cible" class="change_class_on_click" data-class-normal="navoff" data-class-onclick="navon" data-class-dest="cell' + liste[i][0] + '" value="' + liste[i][0] + '"  id="bouton' + liste[i][0] + '"></td>');*/
-        document.write('<td><input type="radio" name="cible" class="change_class_on_click" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>');
-		document.write('<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + '"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>');
-		document.write('<td>' + liste[i][3] + '</td>');
-		document.write('<td>' + liste[i][4] + '</td>');
-		document.write('<td>' + liste[i][5] + '</td>');
-		document.write('<td>' + liste[i][6] + '</td>');
-		document.write('</tr>');
+        textetableau+='<tr>';
+        /*textetableau+='<td><input type="radio" name="cible" value="' + liste[i][0] + '" onClick="changeStyles(\'cell' + liste[i][0] + '\',1)" onBlur="changeStyles(\'cell' +  liste[i][0] + '\',0)" id="bouton' + liste[i][0] + '"></td>';*/
+        textetableau+='<td><input type="radio" name="cible" value="' + liste[i][0] + '" class="change_class_on_select" data-class-onclick="navon" data-class-dest="cell' + liste[i][0] + '" id="bouton' + liste[i][0] + '"></td>';
+        textetableau+='<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>';
+        textetableau+='<td>' + liste[i][3] + '</td>';
+        textetableau+='<td>' + liste[i][4] + '</td>';
+        textetableau+='<td>' + liste[i][5] + '</td>';
+        textetableau+='<td>' + liste[i][6] + '</td>';
+        textetableau+='</tr>';
 	}
+	document.write(textetableau);
 	</script>
 	</table>
 

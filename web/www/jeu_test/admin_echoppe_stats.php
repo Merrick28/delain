@@ -1,9 +1,8 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-?>
-    <script language="javascript" src="javascripts/changestyles.js"></script>
-<?php
+
+$erreur = 0;
 if (!isset($methode)) {
     $methode = "debut";
 }
@@ -42,7 +41,7 @@ if ($erreur == 0) {
                     echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
                     echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_compte") . " brouzoufs</td>";
-                    echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"admin_echoppe_stats.php?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
+                    echo "<td><p><a class='change_class_on_hover' data-class-dest='cell" . $db->f("lieu_cod") . "' data-class-onhover='navon'  href=\"admin_echoppe_stats.php?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
                     echo "</tr>";
                 }
                 echo "</table>";
@@ -66,7 +65,7 @@ if ($erreur == 0) {
                 while ($db->next_record()) {
                     echo "<tr>";
                     echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-                    echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"admin_echoppe_stats.php?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
+                    echo "<td><p><a class='change_class_on_hover' data-class-dest='cell" . $db->f("lieu_cod") . "' data-class-onhover='navon' href=\"admin_echoppe_stats.php?methode=stats&lieu=" . $db->f("lieu_cod") . "\">Voir les stats !</a></td>";
                     echo "</tr>";
                 }
                 echo "</table>";
