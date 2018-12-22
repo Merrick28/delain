@@ -822,12 +822,134 @@ class perso
     function has_evt_non_lu()
     {
         $ligne_evt = new ligne_evt();
-        $tab_evt = $ligne_evt->getByPersoNonLu($this->perso_cod);
-        if(count($tab_evt) != 0)
+        $tab_evt   = $ligne_evt->getByPersoNonLu($this->perso_cod);
+        if (count($tab_evt) != 0)
         {
             return true;
         }
         return false;
+    }
+
+    function has_arme_distance()
+    {
+        $pdo      = new bddpdo;
+        $req_arme = "select gobj_distance 
+            from objet_generique,objets,perso_objets  
+            where perobj_perso_cod = :perso
+            and perobj_equipe = 'O' 
+            and perobj_obj_cod = obj_cod 
+            and obj_gobj_cod = gobj_cod 
+            and gobj_tobj_cod = 1 
+            and gobj_distance = 'O'";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
+        if ($stmt->fetch())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function get_arme_equipee()
+    {
+        $pdo      = new bddpdo;
+        $req_arme = "SELECT obj_cod
+		  FROM objets
+		  LEFT JOIN perso_objets ON perobj_obj_cod=obj_cod
+		  LEFT JOIN objet_generique ON gobj_cod=obj_gobj_cod
+		  LEFT JOIN type_objet ON tobj_cod=gobj_tobj_cod
+		  WHERE perobj_equipe = 'O'
+		  AND tobj_libelle = 'Arme'
+		  AND perobj_perso_cod = :perso
+		  ORDER BY obj_gobj_cod ASC, obj_cod ASC";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $obj = new objets();
+        if (!$obj->charge($result['obj_cod']))
+        {
+            return false;
+        }
+        return $obj;
+    }
+
+    function get_mode_combat()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select gobj_distance 
+            from objet_generique,objets,perso_objets  
+            where perobj_perso_cod = :perso
+            and perobj_equipe = 'O' 
+            and perobj_obj_cod = obj_cod 
+            and obj_gobj_cod = gobj_cod 
+            and gobj_tobj_cod = 1 
+            and gobj_distance = 'O'";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        if ($stmt->fetch())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    function get_pa_attaque()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select nb_pa_attaque(:perso) as pa";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['pa'];
+    }
+
+    function portee_attaque()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select portee_attaque(:perso) as pa";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['pa'];
+    }
+
+    function distance_vue()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select distance_vue(:perso) as pa";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['pa'];
+    }
+
+    function type_arme()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select type_arme(:perso) as pa";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['pa'];
+    }
+
+    function get_pa_foudre()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select nb_pa_foudre(:perso) as pa";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['pa'];
     }
 
     function has_competence($competence)
@@ -934,12 +1056,12 @@ class perso
         $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
         while ($result = $stmt->fetch())
         {
-            $req  = "SELECT ".$result["pfav_function_cout_pa"]." as cout_pa ";
-            $stmt2 = $pdo->prepare($req);
-            $stmt2 = $pdo->execute(array(),$stmt2);
+            $req     = "SELECT " . $result["pfav_function_cout_pa"] . " as cout_pa ";
+            $stmt2   = $pdo->prepare($req);
+            $stmt2   = $pdo->execute(array(), $stmt2);
             $result2 = $stmt2->fetch();
 
-            $retour[] = array( "pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"]." (".$result2["cout_pa"]." PA)", "link" => $result["pfav_link"] );
+            $retour[] = array("pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"] . " (" . $result2["cout_pa"] . " PA)", "link" => $result["pfav_link"]);
         }
         return $retour;
     }
@@ -1045,11 +1167,11 @@ class perso
         } else
         {
             // LAG: Affichage au % près (avec des bornes  >2% et <98% pour la lisibilité)
-            $barre_hp = round(100*$this->perso_pv/$this->perso_pv_max);
-            if(($barre_hp>=98) && ($this->perso_pv<$this->perso_pv_max))
+            $barre_hp = round(100 * $this->perso_pv / $this->perso_pv_max);
+            if (($barre_hp >= 98) && ($this->perso_pv < $this->perso_pv_max))
             {
                 $barre_hp = 98;
-            } else if (($barre_hp <= 2) && ($this->perso_pv>0))
+            } else if (($barre_hp <= 2) && ($this->perso_pv > 0))
             {
                 $barre_hp = 2;
             } else if ($barre_hp < 0)
@@ -1067,14 +1189,14 @@ class perso
     {
         if ($this->is_enchanteur())
         {
-            $barre_energie   = round($this->perso_energie);
-            if ( $barre_energie <= 0)
+            $barre_energie = round($this->perso_energie);
+            if ($barre_energie <= 0)
             {
                 $barre_energie = 0;
-            } else if ( $barre_energie >=100)
+            } else if ($barre_energie >= 100)
             {
                 $barre_energie = 100;
-            } else if($barre_energie>=98)
+            } else if ($barre_energie >= 98)
             {
                 $barre_energie = 98;
             } else if ($barre_energie <= 2)
@@ -1099,14 +1221,14 @@ class perso
         if ($this->is_fam_divin() == 1)
         {
             $energie_divine = $this->energie_divine();
-            $barre_divine   = round(100 * $energie_divine / 200) ;
-            if ( $barre_divine <= 0)
+            $barre_divine   = round(100 * $energie_divine / 200);
+            if ($barre_divine <= 0)
             {
                 $barre_divine = 0;
-            } else if ( $barre_divine >=100)
+            } else if ($barre_divine >= 100)
             {
                 $barre_divine = 100;
-            } else if($barre_divine>=98)
+            } else if ($barre_divine >= 98)
             {
                 $barre_divine = 98;
             } else if ($barre_divine <= 2)
@@ -1189,16 +1311,16 @@ class perso
         if ($result['nombre'] != 0) return true;        // il y a des quetes traditionnelles
 
         // Verification quete auto
-        $quete = new aquete;
+        $quete     = new aquete;
         $tab_quete = $quete->get_debut_quete($this->perso_cod);
-        return sizeof($tab_quete["quetes"])>0;
+        return sizeof($tab_quete["quetes"]) > 0;
     }
 
     // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
     function perso_nb_auto_quete()
     {
         $quete = new aquete_perso;
-        return ($quete->get_perso_nb_quete($this->perso_cod)) ;       // retourn un tableau nb_encours,nb_total
+        return ($quete->get_perso_nb_quete($this->perso_cod));       // retourn un tableau nb_encours,nb_total
     }
 
     function get_lieu()
@@ -1262,47 +1384,47 @@ class perso
         return $retour;
     }
 
-	/* Retourne un tableau de 1 perso si le nom fourni est identique à $perso_nom, 
-	   sinon retourne un tableau de perso dont le nom contien la chaine $perso_nom
-	   valeur possible pour $type_perso :
-				du type entier exemple: 1 (type perso)
-				du type array exemple: array(1,3) pour un recherche sur les perso et leurs familiers
-	*/
- 	function getPersosByNameLike($perso_nom, $type_perso = 1)
+    /* Retourne un tableau de 1 perso si le nom fourni est identique à $perso_nom,
+       sinon retourne un tableau de perso dont le nom contien la chaine $perso_nom
+       valeur possible pour $type_perso :
+                du type entier exemple: 1 (type perso)
+                du type array exemple: array(1,3) pour un recherche sur les perso et leurs familiers
+    */
+    function getPersosByNameLike($perso_nom, $type_perso = 1)
     {
         $pdo    = new bddpdo;
         $retour = array();
-		
-		// Si on a pas un array on converti pour avoir un seul traitement
-		if (!is_array($type_perso)) 
-		{
-			$type_perso = array($type_perso);
-		}
-		
-		if (count($type_perso)==0)
-		{
-			return $retour;
-		}
 
-		$list_types = array();
- 		foreach($type_perso as $k => $type)
-		{
-    		$list_types[':type'.$k] = intval($type);
-		}
-		
-		// Recherche d'abord avec un nom exacte
-        $req = "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+        // Si on a pas un array on converti pour avoir un seul traitement
+        if (!is_array($type_perso))
+        {
+            $type_perso = array($type_perso);
+        }
+
+        if (count($type_perso) == 0)
+        {
+            return $retour;
+        }
+
+        $list_types = array();
+        foreach ($type_perso as $k => $type)
+        {
+            $list_types[':type' . $k] = intval($type);
+        }
+
+        // Recherche d'abord avec un nom exacte
+        $req  = "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)),$list_types), $stmt);
-		
-		// Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
-		if ($stmt->rowCount()==0) 
-		{
-			$req = "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (".implode(",", array_keys($list_types)).") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
-			$stmt = $pdo->prepare($req);
-			$stmt = $pdo->execute(array_merge(array(":perso_nom" => '%'.$perso_nom.'%'),$list_types), $stmt);
-		}
-		
+        $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)), $list_types), $stmt);
+
+        // Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
+        if ($stmt->rowCount() == 0)
+        {
+            $req  = "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array_merge(array(":perso_nom" => '%' . $perso_nom . '%'), $list_types), $stmt);
+        }
+
         while ($result = $stmt->fetch())
         {
             $temp = new perso;
@@ -1313,7 +1435,7 @@ class perso
         return $retour;
     }
 
-	
+
     function is_lieu()
     {
         $ppos = new perso_position;
@@ -1364,20 +1486,17 @@ class perso
         $niveau_xp = ($this->perso_px - $limite_actu);
         $div_xp    = ($limite - $limite_actu);
 
-        $barre_xp = round(100 * $niveau_xp / $div_xp) ;
-        if(($barre_xp>=98) && ($niveau_xp<$div_xp))
+        $barre_xp = round(100 * $niveau_xp / $div_xp);
+        if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
         {
             $barre_xp = 98;
-        }
-        else if (($barre_xp <= 2)&& ($niveau_xp>0))
+        } else if (($barre_xp <= 2) && ($niveau_xp > 0))
         {
             $barre_xp = 2;
-        }
-        else if ($barre_xp < 0)
+        } else if ($barre_xp < 0)
         {
             $barre_xp = 0;
-        }
-        else if ($barre_xp >= 100)
+        } else if ($barre_xp >= 100)
         {
             $barre_xp = 100;
         }
@@ -1499,10 +1618,10 @@ class perso
         $this->perso_mail_inactif_envoye = 0;
         $this->perso_der_connex          = $date->format('Y-m-d H:i:s');
         $this->stocke();
-        $pdo                             = new bddpdo();
-        $req                             = "select calcul_dlt2(?) as dlt";
-        $stmt                            = $pdo->prepare($req);
-        $stmt                            = $pdo->execute(array($this->perso_cod), $stmt);
+        $pdo  = new bddpdo();
+        $req  = "select calcul_dlt2(?) as dlt";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
         // beaucoup de choses ont pu changer suite à la requête précédente
         // du coup, on recharge tout
         $this->charge($this->perso_cod);
@@ -1581,6 +1700,79 @@ class perso
         $msg_dest = new messages_dest();
         return $msg_dest->getByPersoNonLu($this->perso_cod);
 
+    }
+
+    function get_vue_non_lock()
+    {
+        // position
+        $ppos  = new perso_position();
+        $pos   = new positions();
+        $etage = new etage();
+
+        $ppos->getByPerso($this->perso_cod);
+        $pos->charge($ppos->ppos_pos_cod);
+        $etage->getByNumero($pos->pos_etage);
+
+        $compte = new compte;
+        $perso_compte = new perso_compte();
+        $perso_compte->getby_pcompt_perso_cod($this->perso_cod);
+        $compte->charge($perso_compte->pcompt_compt_cod);
+
+        $distance_vue = $perso->distance_vue();
+        $portee       = $perso->portee_attaque();
+        if ($distance_vue <= $portee)
+        {
+            $portee = $distance_vue;
+        }
+
+
+        $pdo  = new bddpdo();
+        $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
+          perso_nom,pos_x,pos_y,pos_etage,race_nom,distance(:pos_cod,pos_cod) as distance,
+          pos_cod,perso_cod,case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
+          perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge , 
+          (select count(1) from trajectoire_perso(:pos_cod,pos_cod) as (nv_cible int, v_pos int, type_perso int)) as obstruction 
+          from perso,positions,perso_position,race 
+          where pos_x between (:pos_x - :portee) and (:pos_x +  )
+          and pos_y between (:pos_y - :portee) and (:pos_y + :portee)
+          and pos_cod = ppos_pos_cod 
+          and pos_etage = :pos_etage 
+          and ppos_perso_cod = perso_cod 
+          and perso_cod != :perso 
+          and perso_actif = 'O' 
+          and perso_tangible = 'O' 
+          and perso_race_cod = race_cod 
+          and not exists 
+          (select 1 from lieu,lieu_position 
+          where lpos_pos_cod = ppos_pos_cod 
+          and lpos_lieu_cod = lieu_cod 
+          and lieu_refuge = 'O') 
+          and not exists 
+            (select 1 from perso_familier 
+            where pfam_perso_cod = :perso 
+            and pfam_familier_cod = perso_cod) ";
+        if (($compt_cod != 'monstre') && ($compt_cod != 'admin'))
+        {
+            $req_vue_joueur = $req_vue_joueur . "and not exists 
+        (select 1 from perso_compte 
+        where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
+        and pcompt_perso_cod = perso_cod) ";
+            /*Rajout pour ne pas pouvoir attaquer un perso d'un compte sitté + 2018-09-06 - Marlyza - ne pas attaquer les fam du compte */
+            $req_vue_joueur = $req_vue_joueur . "	and perso_cod not in
+            ((select pfam_familier_cod from perso_compte join perso_familier on pfam_perso_cod=pcompt_perso_cod join perso on perso_cod=pfam_familier_cod  where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and perso_actif='O')
+        	union
+        	(select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now())
+            union
+            (select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitte and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now())
+            union
+            (select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitte and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod)
+            union
+            (select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod))";
+            /*Fin rajout*/
+        }
+        $req_vue_joueur = $req_vue_joueur . "order by perso_type_perso desc, distance,pos_x,pos_y,perso_nom ";
+        $stmt = $pdo->prepare($req_vue_joueur);
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
     }
 
     public function __call($name, $arguments)
