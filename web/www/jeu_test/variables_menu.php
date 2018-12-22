@@ -1,4 +1,10 @@
 <?php
+/**
+ * Modif Merrick
+ * Cette page doit aussi prendre en compte les variables twig pour commencer à remplacer
+ * le moteur de template de phplib
+ *
+ */
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
