@@ -4,6 +4,9 @@ ob_start();
 
 $is_log = 1;
 
+
+
+
 ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script language="javascript">
@@ -189,6 +192,12 @@ $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
-include "blocks/_footer_page_jeu.php";
+//include "blocks/_footer_page_jeu.php";
 
+include "variables_menu.php";
 
+$template = $twig->load('switch.twig');
+$options_twig = array(
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig));

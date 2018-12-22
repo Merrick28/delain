@@ -8,17 +8,17 @@
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 
     <!-- Custom delain CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ G_URL }}style.css?v20181113" title="essai">
-    <link rel="stylesheet" type="text/css" href="{{ G_URL }}style.php">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v20181113" title="essai">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.php">
 
     <!-- Bootstrap custom CSS -->
-    <link href="{{ G_URL }}css/container-fluid.css?v20181113" rel="stylesheet">
-    <link href="{{ G_URL }}css/delain.css" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v20181113" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ G_URL }}scripts/tools.js?v20181113" type="text/javascript"></script>
-    <script src="{{ G_URL }}scripts/delain.js?v20181113" type="text/javascript"></script>
-    <script src="{{ G_URL }}vendor/nok/nok.min.js" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v20181113" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v20181113" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js" type="text/javascript"></script>
 </head>
 <body style="background-image:url({{ G_IMAGES }}fond5.gif);">
 
@@ -60,8 +60,6 @@
 </script>
 
 
-{{ BARRE_MENU_ICONE }}
-
 <div id="colonne1">
     <div id="dropdown-box">
         <div id="nom"
@@ -71,113 +69,257 @@
         <div style="text-align:center;padding:5px">
             <div id="intangible" style="padding:2px">{{ INTANGIBLE }}</div>
             <div id="pa" style="padding:2px;"><img src="{{ G_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
-                                                   title="{{ PERSO.perso_pa }} PA " alt="{{ PERSO.perso_pa }} PA "></div>
+                                                   title="{{ PERSO.perso_pa }} PA " alt="{{ PERSO.perso_pa }} PA ">
+            </div>
             <div id="hp" style="padding:0px"><img src="{{ G_IMAGES }}coeur.gif" alt="">
-                <div title="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}PV" alt="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}PV" class="container-hp">
-                    <div class="barre-hp" style="width:{{ PERSO_BARRE_VIE }}%"></div>
+                <div title="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}PV"
+                     alt="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}PV" class="container-hp">
+                    <div class="barre-hp" style="width:{{ PERSO.barre_hp }}%"></div>
                 </div>
             </div>
-            <div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
-            <div id="divin" style="padding:0px">{FAM_DIVIN}</div>
-            <div id="xp" style="padding:0px"><img src="{{ G_IMAGES }}iconexp.gif" alt="">
-                <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}"
-                     alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp">
-                    <div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div>
+            <div id="enchanteur" style="padding:0px">
+                {% if PERSO.is_enchanteur %}
+                <img src="{{ G_IMAGES }}energi10.png" alt="">
+                <div title="{{ PERSO.perso_energie }}/100 énergie" alt="{{ PERSO.perso_energie }}/100 énergie"
+                     class="container-nrj">
+                    <div class="barre-nrj" style="width:"{{ PERSO.barre_energie }} "%\">
                 </div>
             </div>
-            <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
-                <strong>{PERSO_DEGATS}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="16" alt=" "><img
-                        src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong></div>
-            <div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a
-                            href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif"
-                                                                     style="height:12px;border:0px;"/>{PERSO_ETAGE}</a></strong>
+            {% endif %}
+        </div>
+        <div id="divin" style="padding:0px">
+            {% if PERSO.is_fam_divin == 1 %}
+                <img src="{{ G_IMAGES }}magie.gif" alt="">
+                <div title="Énergie divine : {{ PERSO.energie_divine }}" alt="" Énergie divine
+                     : {{ PERSO.energie_divine }}"
+                class="container-div">
+                <div class="barre-div" style="width:{{ PERSO.barre_divine }}%"></div>
+            {% endif %}
+
+        </div>
+        <div id="xp" style="padding:0px"><img src="{{ G_IMAGES }}iconexp.gif" alt="">
+            <div title="{{ PERSO.perso_px|round }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                 alt="{{ PERSO.perso_px|round }}/{{ PERSO.px_limite }} PX" class="container-xp">
+                <div class="barre-xp" style="width:{{ PERSO.barre_xp }}%"></div>
             </div>
         </div>
-        <div style="padding:0 10 0 10px; text-align:center;">
-            <div id="passageniveau">{PASSAGE_NIVEAU}</div>
-            <div id="quete">{PERSO_QUETE}</div>
-            <div id="lieu">{PERSO_LIEU}</div>
+        <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
+            <strong>{{ DEG_MIN }} - {{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="16"
+                                                               alt=" ">
+            <img src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def">
+            <strong>{{ PERSO.armure }}</strong>
         </div>
-        <div id="dropdown-button">&or;</div>
+        <div id="position"><br>X : <strong>{{ POSITION.pos_x }}</strong> Y :
+            <strong>{{ POSITION.pos_y }}</strong><br><strong><a
+                        href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
+                                                   style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
+                </a></strong>
+        </div>
     </div>
-    <div id="dropdown-menu" class="dropdown-content">
+    <div style="padding:0 10 0 10px; text-align:center;">
+        <div id="passageniveau">
+            {% if PERSO.perso_px >= PERSO.px_limite %}
+                <hr/><a href="niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>
+            {% endif %}
+        </div>
+        <div id="quete">
+            {% if PERSO.is_perso_quete %}
+                <hr/><a href="quete_perso.php"><strong>Quête</strong></a>
+            {% endif %}
+        </div>
+        <div id="lieu">
+            {% if PERSO.is_lieu %}
+                <hr/>
+                <a href="lieu.php">
+                    <strong>{{ LIEU.lieu_nom }}</strong> ({{ LIEU.tlieu_libelle }})</a>
+            {% endif %}
+        </div>
+    </div>
+    <div id="dropdown-button">&or;</div>
+</div>
+<div id="dropdown-menu" class="dropdown-content">
 
-        <hr>
-        <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="{URL_RELATIVE}perso2.php">Fiche de perso</a><br>
-        <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="{URL_RELATIVE}frame_vue.php">Vue</a></strong><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="{URL_RELATIVE}evenements.php">Événements</a><br>
-        {PERSO_AUTO_QUETE}
-        <hr/>
+    <hr>
+    <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="perso2.php">Fiche de perso</a><br>
+    <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="frame_vue.php">Vue</a></strong><br>
+    <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="evenements.php">Événements</a><br>
+    {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
+        <img src="{{ G_IMAGES }}calice.png\"> <a href="quete_auto.php">Mes quêtes
+        {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
+            ({{ PERSO.perso_nb_auto_quete.nb_encours }})
+        {% endif %}
+    </a><br>
 
-        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="{URL_RELATIVE}inventaire.php">Inventaire</a><br>
-        <div id="ramasser">{RAMASSER}</div>
-        <div id="transaction"><img src="{{ G_IMAGES }}transaction.gif" alt=""> <a
-                    href="{URL_RELATIVE}transactions2.php">{TRANSACTIONS}</a></br></div>
-        <hr/>
-        <div id="deplacement">{TEXTE_DEP}</div>
-        <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="{URL_RELATIVE}combat.php">Combat !</a></strong><br>
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="{URL_RELATIVE}magie.php">Magie !</a></strong><br>
-        {VOIE_MAGIQUE}
-        {FAVORIS}
-        <hr/>
-        {FORGE}
-        {CREUSER}
-        {ENLUMINEUR}
-        {POTION}
-        {RELIGION}
-        {ENSEIGNEMENT}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="{URL_RELATIVE}concentration.php">Concentration</a><br>
-        {VOL}
-        <hr/>
-        <div id="messagerie"><img src="{{ G_IMAGES }}messagerie.gif" alt=""> <a
-                    href="{URL_RELATIVE}messagerie2.php">{PERSO_MESSAGERIE}</a></div>
-        <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="{URL_RELATIVE}guilde.php">Guilde</a><br/>
-        <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="{URL_RELATIVE}groupe.php">Coterie</a>
-        <hr/>
-        {CONTROLE}
-        {CONTROLE_ADMIN}
-        {DROIT_LOGS}
-        {GESTION_DROITS}
-        {MODIF_PERSO}
-        {MODIF_MONSTRE}
-        {MODIF_OBJETS}
-        {DROIT_CARTE}
-        {DROIT_ENCHANTEMENT}
-        {DROIT_POTION}
-        {QUETE_AUTO}
-        {FACTIONS}
-        {NEWS}
-        {ANIMATIONS}
-        {ECHOPPE}
-        {GERANT}
-        {COMMANDEMENT}
-        {OPTION_MONSTRE}
-        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="{URL_RELATIVE}switch.php"><strong>Gestion
-                compte</strong></a>
-        <hr/>
-        <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a> - <a
-                href="https://forum.jdr-delain.net/app.php/chat/popup" target="_blank">Chat</a> -{WIKI}<br>
-        <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{URL}" target="_top">Accueil</a><br/>
+    {% endif %}
+    <hr/>
 
-        <hr/>
-        <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{URL}logout.php" target="_top">Se déconnecter</a>
-        <hr/>
-        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-            <input type="hidden" name="cmd" value="_s-xclick">
-            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+    <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="inventaire.php">Inventaire</a><br>
+    <div id="ramasser">
+        {% if (PERSO.nb_obj_case != 0) or (PERSO.nb_or_case != 0) %}
+            <img src="{{ G_IMAGES }}ramasser.gif" alt="">
+            {% if PERSO.perso_pa >= PA_RAMASSE %}
+                <a href="ramasser.php">
+            {% endif %}
+            Ramasser ({{ PA_RAMASSE }} PA)
+
+            {% if PERSO.perso_pa >= PA_RAMASSE %}
+                </a>
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+    <div id="transaction"><img src="{{ G_IMAGES }}transaction.gif" alt=""> <a
+                href="transactions2.php">
+            {% if PERSO.transactions > 0 %}
+                <strong>Transactions ({{ PERSO.transactions }})</strong>
+            {% else %}
+                Transactions
+            {% endif %}</a><br/></div>
+    <hr/>
+
+    <div id="deplacement">
+        {% if not PERSO.is_fam %}
+            {% if (not PERSO.is_locked) and (DROIT.controle != 'O') %}
+                <img src="{{ G_IMAGES }}deplacement.gif" alt="">
+                <a href="deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
+            {% endif %}
+            {% if (PERSO.is_locked) and (DROIT.controle != 'O') %}
+                <img src="{{ G_IMAGES }}fuite.gif" alt="">
+                <a href="deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
+            {% endif %}
+
+        {% endif %}
+
+
+    </div>
+
+    <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="combat.php">Combat
+            !</a></strong><br>
+
+    <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="magie.php">Magie !</a></strong><br>
+
+    {% if (PERSO.sort_lvl5 > 0) and (PERSO.sort_memo > 5) %}
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/choix_voie_magique.php">Voie magique</a><br>'
+    {% endif %}
+
+    {% if PERSO.get_favoris|length > 0 %}
+        <div id="barre-favoris">
+            <hr/>
+            {% for fav in PERSO.get_favoris %}
+            <div id="fav-link-{{ fav.pfav_cod }}">
+                <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a></div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div id="barre-favoris" style="display:none;">
+            <hr/>
+        </div>
+    {% endif %}
+    <hr/>
+
+    {FORGE}
+    {CREUSER}
+    {ENLUMINEUR}
+    {POTION}
+    {RELIGION}
+    {ENSEIGNEMENT}
+    <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
+            href="concentration.php">Concentration</a><br>
+    {VOL}
+    <hr/>
+    <div id="messagerie"><img src="{{ G_IMAGES }}messagerie.gif" alt=""> <a
+                href="messagerie2.php">{PERSO_MESSAGERIE}</a></div>
+    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="guilde.php">Guilde</a><br/>
+    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="groupe.php">Coterie</a>
+    <hr/>
+    {CONTROLE}
+    {CONTROLE_ADMIN}
+    {DROIT_LOGS}
+    {GESTION_DROITS}
+    {MODIF_PERSO}
+    {MODIF_MONSTRE}
+    {MODIF_OBJETS}
+    {DROIT_CARTE}
+    {DROIT_ENCHANTEMENT}
+    {DROIT_POTION}
+    {QUETE_AUTO}
+    {FACTIONS}
+    {NEWS}
+    {ANIMATIONS}
+    {ECHOPPE}
+    {GERANT}
+    {COMMANDEMENT}
+    {OPTION_MONSTRE}
+    <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="switch.php"><strong>Gestion
+            compte</strong></a>
+    <hr/>
+    <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a> - <a
+            href="https://forum.jdr-delain.net/app.php/chat/popup" target="_blank">Chat</a> -{WIKI}<br>
+    <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{URL}" target="_top">Accueil</a><br/>
+
+    <hr/>
+    <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{URL}logout.php" target="_top">Se déconnecter</a>
+    <hr/>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+        <input type="hidden" name="cmd" value="_s-xclick">
+        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
 ">
-            <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_SM.gif" border="0"
-                   style="border:0px; background-color:transparent"
-                   name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
-            <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
-        </form>
-    </div>
+        <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_SM.gif" border="0"
+               style="border:0px; background-color:transparent"
+               name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
+        <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
+    </form>
+</div>
 </div>
 
 </div>
-{BARRE_SWITCH_RAPIDE}
+{# BARRE DE SWITCH RAPIDE #}
+<div id="colonne0-icons" class="centrer">
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/frame_vue.php">
+            <img title="Vue" src="{{ G_IMAGES }}eye.png"></a></div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/evenements.php">
+            <img title="Evénements" src="{{ G_IMAGES }}events.png"></a>
+        {% if PERSO.has_evt_non_lu %}
+            <span class="badge">{{ PERSO.getEvtNonLu|length }}</span>
+        {% endif %}
+    </div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/inventaire.php">
+            <img title="Inventaire" src="{{ G_IMAGES }}chest.png"></a></div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/transactions2.php">
+            <img title="Transaction" src="{{ G_IMAGES }}transac.png"></a>
+        {% if PERSO.transactions !=0 %}
+            <span class="badge">{{ PERSO.transactions }}</span>
+        {% endif %}
+    </div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/combat.php">
+            <img title="Combat" src="{{ G_IMAGES }}war.png"></a></div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/magie.php">
+            <img title="Magie" src="{{ G_IMAGES }}book.png"></a></div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/messagerie2.php">
+            <img title="Messagerie" src="{{ G_IMAGES }}mail.png"></a>
+        {% if PERSO.getMsgNonLu|length > 0 %}
+            <span class="badge">
+            {{ PERSO.getMsgNonLu|length }}
+        </span>
+        {% endif %}
+    </div>
+    <div style="float: left;  width:12.5%;">
+        <a href="/jeu_test/switch.php">
+            <img title="Gestion de compte" src="{{ G_IMAGES }}castle.png"></a></div>
+</div>
+{# FIN BARRE DE SWITCH RAPIDE #}
 <div id="colonne2" class="fond-delain">
-    {CONTENU_COLONNE_DROITE}
+    {% block contenu_droite %}
+        Contenu de la page
+    {% endblock %}
 </div>
 </body>
 </html>
