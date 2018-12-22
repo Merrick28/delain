@@ -3,7 +3,6 @@ if (!isset($is_log))
 {
     $is_log = 'N';
 }
-$db = new base_delain;
 /***************************************************************/
 /* Fonctions pour l'affichage des barres de santé et XP		*/
 /***************************************************************/
@@ -176,22 +175,6 @@ function affiche_perso($perso_cod)
     $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
     $impalpable = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
 
-    /**
-     * Sauvegarde du code du premier avril
-     *
-     * if ($is1avril)
-     * {
-     * $niveau = mt_rand(1, 10);
-     * $impalpable = ' - <em>Impalpable</em>';
-     * $dbavril = new base_delain;
-     * $dbavril->query('select gmon_nom from monstre_generique where gmon_cod < 50 and gmon_niveau < 5 and gmon_cod <> 7
-     * order by random()
-     * limit 1');
-     * $dbavril->next_record();
-     * $impalpable .= '<br /><em>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</em>';
-     * $barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
-     * }*/
-
     $template = $twig->load('_tab_switch_perso.twig');
     $options_twig = array(
         'PERSO'         => $perso,
@@ -251,10 +234,6 @@ $compte = new compte;
 $compte->charge($compt_cod);
 
 
-$req = "select compt_ligne_perso, autorise_4e_perso(compt_quatre_perso, compt_dcreat) OR autorise_4e_monstre(compt_quatre_perso, compt_dcreat) as autorise_quatrieme, compt_type_quatrieme ";
-$req .= " from compte where compt_cod = " . $compt_cod;
-$db->query($req);
-$db->next_record();
 
 $nb_perso_max = $compte->compt_ligne_perso * 3;
 $nb_perso_ligne = 3;
@@ -373,15 +352,6 @@ echo $template->render($options_twig);
 $tab_fam = $compte->getPersosActifs(true, false);
 
 
-$req_perso = "select pfam_familier_cod,perso_cod
-	from perso,perso_compte,perso_familier
-	where pcompt_compt_cod = $compt_cod
-	and pcompt_perso_cod = pfam_perso_cod
-	and pfam_familier_cod = perso_cod
-	and perso_actif = 'O'
-	and perso_type_perso = 3
-	order by pfam_perso_cod ";
-$db->query($req_perso);
 if (count($tab_fam) != 0)
 {
     //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
@@ -390,21 +360,19 @@ if (count($tab_fam) != 0)
     echo '<div class="row row-eq-height">';   //Debut ligne des familiers
 
     $alias_perso = 0;
-    for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
-        foreach ($tab_fam as $fam)
-        {
+    //for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
+    foreach ($tab_fam as $fam)
+    {
 
-            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+        echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
-            //tableau intérieur
-            if ($cpt < count($tab_fam))
-            {
-                $db->next_record();
-                affiche_perso($fam->perso_cod);
-            }
-            echo '</div>';
 
-        }
+
+        affiche_perso($fam->perso_cod);
+
+        echo '</div>';
+
+    }
     echo '</div>';
 }
 
@@ -424,8 +392,7 @@ if (count($tab_perso_sit) != 0)
 
     echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
 
-    $nb_perso_max = $db->nf();
-    $nb_perso = $nb_perso_max;
+
     foreach ($tab_perso_sit as $sit)
     {
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
@@ -436,24 +403,12 @@ if (count($tab_perso_sit) != 0)
     //
     // bon, on sait qu'on a sitté des persos, maintenant, on va quand même voir s'il y a des familiers
     //
-    $req_perso = "select pfam_familier_cod,perso_cod
-		from perso,perso_compte,perso_familier,compte_sitting
-		where csit_compte_sitteur = $compt_cod
-		and csit_compte_sitte = pcompt_compt_cod
-		and csit_ddeb <= now()
-		and csit_dfin >= now()
-		and pcompt_perso_cod = pfam_perso_cod
-		and pfam_familier_cod = perso_cod
-		and perso_actif = 'O'
-		and perso_type_perso = 3
-		order by pfam_perso_cod ";
-    $db->query($req_perso);
+
     $tab_fam_sit = $compte->getPersosSittes(true, false);
 
     if (count($tab_fam_sit) != 0)
     {
 
-        $nb_perso_max = $db->nf();
         $nb_perso = $nb_perso_max;
         $alias_perso = 0;
         foreach ($tab_fam_sit as $fam_sit)

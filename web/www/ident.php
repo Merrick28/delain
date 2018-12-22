@@ -166,6 +166,9 @@ else
     }
 }
 
+
+
+
 montre_formulaire_connexion($verif_auth);
 
 // on met la variable ISAUTH dans options_tiwg_defaut
