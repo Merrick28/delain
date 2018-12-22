@@ -830,6 +830,16 @@ class perso
         return false;
     }
 
+    function has_competence($competence)
+    {
+        $pcomp = new perso_competences();
+        if ($pcomp->getByPersoComp($this->perso_cod, $competence))
+        {
+            return true;
+        }
+        return false;
+    }
+
     function getByComptDerPerso($vcompte)
     {
         $compte = new compte;

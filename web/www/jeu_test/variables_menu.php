@@ -845,6 +845,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         $barre_switch_rapide = '<div id="colonne0" data-switch-bar="autohide" style="display:none"><div class="container-fluid"><div class="row">' . $liste_boutons . '</div></div></div>';
     }
 }
+
 $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 
 $barre_menu_icone = '
@@ -864,18 +865,22 @@ $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
 
 // variables twig
 $var_twig_defaut = array(
-    'G_IMAGES'         => G_IMAGES,
-    'G_URL'            => G_URL,
-    'PERSO'            => $perso,
-    'BARRE_MENU_ICONE' => $barre_menu_icone,
-    'TYPE_FLUX'        => $type_flux,
-    'DEG_MIN'          => $deg_min,
-    'DEG_MAX'          => $deg_max,
-    'POSITION'         => $var_menu_pos,
-    'ETAGE'            => $var_menu_etage,
-    'LIEU'             => $tab_lieu,
-    'PA_RAMASSE'       => $pa_ramasse,
-    'DROIT'            => $droit
+    'G_IMAGES'            => G_IMAGES,
+    'G_URL'               => G_URL,
+    'PERSO'               => $perso,
+    'BARRE_MENU_ICONE'    => $barre_menu_icone,
+    'TYPE_FLUX'           => $type_flux,
+    'DEG_MIN'             => $deg_min,
+    'DEG_MAX'             => $deg_max,
+    'POSITION'            => $var_menu_pos,
+    'ETAGE'               => $var_menu_etage,
+    'LIEU'                => $tab_lieu,
+    'PA_RAMASSE'          => $pa_ramasse,
+    'DROIT'               => $droit,
+    'NB_MSG'              => $nb_msg,
+    'GERANT'              => $gerant,
+    'COMPTE'              => $compte,
+    'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide
 )
 
 ?>
