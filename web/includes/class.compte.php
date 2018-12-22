@@ -17,41 +17,41 @@ class compte
     var $compt_password;
     var $compt_mail;
     var $compt_validation;
-    var $compt_actif = 'O';
+    var $compt_actif                = 'O';
     var $compt_habilitation;
     var $compt_dcreat;
     var $compt_der_connex;
     var $compt_ip;
     var $compt_commentaire;
     var $compt_renvoye;
-    var $compt_monstre = 'N';
+    var $compt_monstre              = 'N';
     var $compt_testeur;
-    var $compt_admin = 'N';
+    var $compt_admin                = 'N';
     var $compt_hibernation;
     var $compt_dfin_hiber;
     var $compt_acc_charte;
-    var $compt_confiance = 'N';
+    var $compt_confiance            = 'N';
     var $compt_ddeb_hiber;
-    var $compt_quete = 'N';
-    var $compt_envoi_mail = 0;
-    var $compt_envoi_mail_message = 0;
-    var $compt_der_news = 1;
-    var $compt_vue_desc = 0;
-    var $compt_ligne_perso = 1;
+    var $compt_quete                = 'N';
+    var $compt_envoi_mail           = 0;
+    var $compt_envoi_mail_message   = 0;
+    var $compt_der_news             = 1;
+    var $compt_vue_desc             = 0;
+    var $compt_ligne_perso          = 1;
     var $compt_wikidev;
     var $compt_compte_lie;
-    var $compt_quatre_perso = 'O';
+    var $compt_quatre_perso         = 'O';
     var $compt_der_perso_cod;
     var $compt_fb;
     var $compt_twitter;
     var $compt_google;
-    var $compt_frameless = 'O';
+    var $compt_frameless            = 'O';
     var $compt_envoi_mail_frequence = 5;
     var $compt_envoi_mail_dernier;
     var $compt_type_quatrieme;
-    var $compt_clef_forum = NULL;
+    var $compt_clef_forum           = NULL;
     var $compt_validite_clef_forum;
-    var $compt_nombre_clef_forum = 0;
+    var $compt_nombre_clef_forum    = 0;
     var $compt_phashword;
     var $compt_clef_reinit_mdp;
     var $compt_passwd_hash;
@@ -219,106 +219,64 @@ class compte
      * Retourne les persos actifs d'un compte (y comris les 4e)
      * @return perso[]
      */
-    function getPersosActifs()
+    function getPersosActifs($horsjoueur = false, $horsfam = false)
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req
-            = "SELECT pcompt_perso_cod FROM perso
+        if (!$horsjoueur)
+        {
+            $req
+                = "SELECT pcompt_perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new perso;
-            $temp->charge($result['pcompt_perso_cod']);
-            $retour[] = $temp;
-            unset($temp);
+
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $temp = new perso;
+                $temp->charge($result['pcompt_perso_cod']);
+                $retour[] = $temp;
+                unset($temp);
+            }
         }
         // familiers
-        $req
-            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
+        if (!$horsfam)
+        {
+            $req
+                = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
           WHERE pcompt_compt_cod = ? 
           AND pcompt_perso_cod = pfam_perso_cod 
           AND pfam_familier_cod = perso_cod 
           AND perso_actif = 'O' ORDER BY pfam_perso_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new perso;
-            $temp->charge($result['pfam_familier_cod']);
-            $retour[] = $temp;
-            unset($temp);
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $temp = new perso;
+                $temp->charge($result['pfam_familier_cod']);
+                $retour[] = $temp;
+                unset($temp);
+            }
+
         }
 
         return $retour;
     }
 
-    /**
-     * Retourne les persos actifs d'un compte (y comris les 4e)
-     * @return perso[]
-     */
-    function getPersosActifsSansFam()
-    {
-        $retour = array();
-        $pdo = new bddpdo;
-        $req
-            = "SELECT pcompt_perso_cod FROM perso
-						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
-						WHERE pcompt_compt_cod = ? AND perso_actif = 'O' ORDER BY pcompt_perso_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new perso;
-            $temp->charge($result['pcompt_perso_cod']);
-            $retour[] = $temp;
-            unset($temp);
-        }
-
-        return $retour;
-    }
-
-    /**
-     * Retourne les persos actifs d'un compte (y comris les 4e)
-     * @return perso[]
-     */
-    function getPersosActifsQueFam()
-    {
-        $retour = array();
-        $pdo = new bddpdo;
-
-        $req
-            = "SELECT pfam_familier_cod,pfam_perso_cod FROM perso_familier,perso,perso_compte
-          WHERE pcompt_compt_cod = ? 
-          AND pcompt_perso_cod = pfam_perso_cod 
-          AND pfam_familier_cod = perso_cod 
-          AND perso_actif = 'O' ORDER BY pfam_perso_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new perso;
-            $temp->charge($result['pfam_familier_cod']);
-            $retour[] = $temp;
-            unset($temp);
-        }
-
-        return $retour;
-    }
 
     /**
      * Retourne les persos sittés d'un compte
      * @return perso[]
      */
-    function getPersosSittes()
+    function getPersosSittes($horsjoueur = false, $horsfam = false)
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req
-            = "SELECT pcompt_perso_cod
+        if (!$horsjoueur)
+        {
+            $req
+                = "SELECT pcompt_perso_cod
             FROM perso,perso_compte,compte_sitting
             WHERE csit_compte_sitteur = ?
             AND csit_compte_sitte = pcompt_compt_cod
@@ -328,15 +286,40 @@ class compte
             AND perso_actif = 'O'
             AND perso_type_perso = 1
             ORDER BY perso_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
-            $temp = new perso;
-            $temp->charge($result['pcompt_perso_cod']);
-            $retour[] = $temp;
-            unset($temp);
+
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $temp = new perso;
+                $temp->charge($result['pcompt_perso_cod']);
+                $retour[] = $temp;
+                unset($temp);
+            }
         }
+        if (!$horsfam)
+        {
+            $req
+                = "SELECT pfam_familier_cod 
+          FROM perso_familier,perso,perso_compte,compte_sitting
+          WHERE csit_compte_sitteur = ?
+          AND csit_compte_sitte = pcompt_compt_cod
+          AND csit_ddeb <= now()
+          AND csit_dfin >= now()
+          AND pcompt_perso_cod = pfam_perso_cod 
+          AND pfam_familier_cod = perso_cod 
+          AND perso_actif = 'O' ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                $temp = new perso;
+                $temp->charge($result['pfam_familier_cod']);
+                $retour[] = $temp;
+                unset($temp);
+            }
+        }
+
         return $retour;
     }
 
@@ -454,11 +437,10 @@ class compte
                 ":nom" => strtolower($nom)
             ), $stmt
         );
-        if(!$temp = $stmt->fetch())
+        if (!$temp = $stmt->fetch())
         {
             return false;
-        }
-        else
+        } else
         {
             return $this->charge($temp['compt_cod']);
         }

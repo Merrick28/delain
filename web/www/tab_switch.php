@@ -272,7 +272,7 @@ $type_4 = $compte->compt_type_quatrieme;
 /*********************/
 /* Persos classiques */
 /*********************/
-$tab_perso = $compte->getPersosActifsSansFam();
+$tab_perso = $compte->getPersosActifs(false, true);
 $perso_normaux = array();
 $quatriemes = array();
 
@@ -355,18 +355,24 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
 echo '</div>';               //Fin de ligne des persos
 
 
-echo '<div class="row"><div class="col-lg-12">';
-echo '<center><table>';
-echo "<tr><td colspan='$nb_perso_ligne' ><span class='bouton'>";
-echo '<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $premier_perso . '&is_log=' . $is_log . '&voir_tous=1\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title="Voir les derniers événements de tous les personnages" value="Voir tous les événements" style="width:200px;"/></span>&nbsp;&nbsp;';
-echo "<span class='bouton'><input type='button' class='bouton' onClick='javascript:document.login.perso.value=$premier_perso; document.login.activeTout.value=1; document.login.submit();' title='Activer toutes les DLT' value='Activer toutes les DLT' style='width:200px;'/></span></td></tr>";
-echo "</table></center>";
-echo '</div></div>';
+global $twig;
+$template = $twig->load('_tab_switch_visu_evt.twig');
+$options_twig = array(
+    'G_IMAGES'       => G_IMAGES,
+    'G_URL'          => G_URL,
+    'PREMIER_PERSO'  => $premier_perso,
+    'IS_LOG'         => $is_log,
+    'NB_PERSO_LIGNE' => $nb_perso_ligne
+);
+echo $template->render($options_twig);
 
 
 /*************/
 /* Familiers */
 /*************/
+$tab_fam = $compte->getPersosActifs(true, false);
+
+
 $req_perso = "select pfam_familier_cod,perso_cod
 	from perso,perso_compte,perso_familier
 	where pcompt_compt_cod = $compt_cod
@@ -376,56 +382,38 @@ $req_perso = "select pfam_familier_cod,perso_cod
 	and perso_type_perso = 3
 	order by pfam_perso_cod ";
 $db->query($req_perso);
-if ($db->nf() != 0)
+if (count($tab_fam) != 0)
 {
     //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
     echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Familiers : </div></div>';
 
     echo '<div class="row row-eq-height">';   //Debut ligne des familiers
-    $nb_perso = $db->nf();
+
     $alias_perso = 0;
-    for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
-    {
-        //if (fmod($cpt, $nb_perso_ligne) == 0)
-        //{
-        //    echo '<tr>';
-        //}
-        //echo '<td valign="top" width="' . $taille . '%">';
-        echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-        //tableau intérieur
-        if ($cpt < $nb_perso)
+    for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
+        foreach ($tab_fam as $fam)
         {
-            $db->next_record();
-            affiche_perso($db->f('perso_cod'));
-        }
-        //fin tableau intérieur
-        echo '</div>';
 
-        //echo '</td>';
-        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        //{
-        //    echo '</tr>';
-        //}
-    }
-    echo '</div>';   //Fin ligne des familiers
+            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+
+            //tableau intérieur
+            if ($cpt < count($tab_fam))
+            {
+                $db->next_record();
+                affiche_perso($fam->perso_cod);
+            }
+            echo '</div>';
+
+        }
+    echo '</div>';
 }
 
 /******************************************/
 /* Comptes sittés ?					   */
 /******************************************/
-$req_perso = "select pcompt_perso_cod
-	from perso,perso_compte,compte_sitting
-	where csit_compte_sitteur = $compt_cod
-	and csit_compte_sitte = pcompt_compt_cod
-	and csit_ddeb <= now()
-	and csit_dfin >= now()
-	and pcompt_perso_cod = perso_cod
-	and perso_actif = 'O'
-	and perso_type_perso = 1
-	order by perso_cod ";
-$db->query($req_perso);
-if ($db->nf() != 0)
+$tab_perso_sit = $compte->getPersosSittes(false, true);
+
+if (count($tab_perso_sit) != 0)
 {
     //
     // là on a des persos sittés, donc, on va quand même regarder ce qui se passe
@@ -438,46 +426,12 @@ if ($db->nf() != 0)
 
     $nb_perso_max = $db->nf();
     $nb_perso = $nb_perso_max;
-    for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
+    foreach ($tab_perso_sit as $sit)
     {
-        if ($cpt < $nb_perso)
-        {
-            $db->next_record();
-        }
-        //if (fmod($cpt, $nb_perso_ligne) == 0)
-        //{
-        //    echo '<tr>';
-        //}
-        //echo '<td valign="top" width="' . $taille . '%">';
-
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-        //tableau intérieur
-        if ($cpt >= $nb_perso)
-        {
-            $nom = 'Pas de perso';
-            $image = '';
-            $barre_pa = '';
-            $barre_hp = '';
-            $barre_xp = '';
-            $enc = '';
-            echo '<table width="100%" height="100%" border="0">
-				<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
-				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-				<tr><td><center><img src="' . G_IMAGES . 'noperso.gif"></center></td></tr></table>';
-        } else
-        {
-            affiche_perso($db->f('pcompt_perso_cod'));
-        }
-        //fin tableau intérieur
-
+        affiche_perso($sit->perso_cod);
         echo '</div>';
-        //echo '</td>';
-        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        //{
-        //    echo '</tr>';
-        //}
+
     }
     //
     // bon, on sait qu'on a sitté des persos, maintenant, on va quand même voir s'il y a des familiers
@@ -494,41 +448,21 @@ if ($db->nf() != 0)
 		and perso_type_perso = 3
 		order by pfam_perso_cod ";
     $db->query($req_perso);
-    if ($db->nf() != 0)
+    $tab_fam_sit = $compte->getPersosSittes(true, false);
+
+    if (count($tab_fam_sit) != 0)
     {
 
         $nb_perso_max = $db->nf();
         $nb_perso = $nb_perso_max;
         $alias_perso = 0;
-        for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
-        {
-            if ($cpt < $nb_perso)
+        foreach ($tab_fam_sit as $fam_sit)
+            for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
             {
-                $db->next_record();
+                echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+                affiche_perso($fam_sit->perso_cod);
+                echo '</div>';
             }
-            //if (fmod($cpt, $nb_perso_ligne) == 0)
-            //{
-            //    echo '<tr>';
-            //}
-            //echo '<td valign="top" width="' . $taille . '%">';
-            //echo '<!--' . $cpt . '-' . $nb_perso_max . '-' . $nb_perso . '-->';
-
-            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-            //tableau intérieur
-            if ($cpt < $nb_perso)
-            {
-                affiche_perso($db->f('perso_cod'));
-            }
-            //fin tableau intérieur
-            echo '</div>';
-
-            //echo '</td>';
-            //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-            //{
-            //    echo '</tr>';
-            //}
-        }
     }
     echo '</div>';               //Fin de ligne des persos+familiers sittés
 }

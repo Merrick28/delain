@@ -53,7 +53,7 @@
             <table>
                 <tr>
                     <td>
-                        <div class="image"><strong>Niveau {{ PERSO.perso_niveau }}</strong>{{ IMPALPABLE }}</div>
+                        <div class="image"><strong>Niveau {{ PERSO.perso_niveau }}</strong>{{ IMPALPABLE|raw }}</div>
                     </td>
                 </tr>
                 <tr>
@@ -115,7 +115,7 @@
 			<input type="button" class="bouton"
                    onClick="javascript:window.open('{{ TYPE_FLUX }}{{ G_URL }}visu_messages.php?visu_perso={{ PERSO.perso_cod }}','messages','scrollbars=yes,resizable=yes,width=800,height=600');"
                    title='Cliquez ici pour lire vos 10 derniers messages'
-                   value="PERSO.getMsgNonLu|length messages non lus."/>
+                   value="{{ PERSO.getMsgNonLu|length }} messages non lus."/>
 			</span><br/>
                         {% endif %}
                         {% if PERSO.transactions > 0 %}
