@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 $param = new parametres();
-ob_start();
+//ob_start();
 
 $erreur = 0;
 if ($is_intangible)
@@ -21,11 +21,7 @@ if ($erreur == 0)
     $mc = new mode_combat();
     $mc->charge($perso->perso_mcom_cod);
     $mode = $mc->mcom_nom;
-    ?>
 
-    <form name="attaque" method="post" action="action.php">
-    <input type="hidden" name="methode" value="attaque2">
-    <?php
 
     // Arme équipée
     if (!$obj = $perso->get_arme_equipee())
@@ -40,28 +36,32 @@ if ($erreur == 0)
     // Méthode de combat
     include('inc_competence_combat.php');
 
-    echo "Arme utilisée : <strong>" . $obj_nom . "</strong>. ";
-    echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
-    echo $resultat_inc_competence_combat;
 
-    echo "</select> - mode " . $mode . ' <a href="perso2.php?m=3">(changer ?)</a>';
 
-    echo "<br>";
-    echo "Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a>";
-    echo "<br>";
+    $template     = $twig->load('combat_debut.twig');
+    $options_twig = array(
+        'ARME_UTILISEE' => $obj_nom,
+        'COMP_COMBAT'   => $resultat_inc_competence_combat,
+        'MODE'          => $mode
+    );
+    $page =  $template->render(array_merge($var_twig_defaut, $options_twig));
 
-    if ($param->getparm(56) == 1)
-    {
-        include "include_tab_attaque3.php";
-    } else
-    {
-        include "include_tab_attaque2.php";
-    }
-    ?>
-    <input type="submit" class="test centrer" value="Attaquer !">
-    <?php
+    ob_start();
+    include "include_tab_attaque3.php"; // ) mettre en twig un de ces jours
+    $page  .= ob_get_contents();
+    ob_end_clean();
+
+    $page .= '<input type="submit" class="test centrer" value="Attaquer !">';
+
 }
-$contenu_page = ob_get_contents();
-ob_end_clean();
-include "blocks/_footer_page_jeu.php";
+
+$template     = $twig->load('combat.twig');
+$options_twig = array(
+    'CONTENU_PAGE' => $page,
+);
+echo $template->render(array_merge($var_twig_defaut, $options_twig));
+
+
+
+//include "blocks/_footer_page_jeu.php";
 

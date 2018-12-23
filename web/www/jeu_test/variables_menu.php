@@ -28,9 +28,9 @@ $t->set_var('URL_RELATIVE', $chemin . '/');
 // variables du perso
 $is_enchanteur = $perso->is_enchanteur();
 $is_enlumineur = $perso->is_enlumineur();
-$is_refuge = $perso->is_refuge();
-$is_milice = $perso->is_milice();
-$is_fam = $perso->is_fam();
+$is_refuge     = $perso->is_refuge();
+$is_milice     = $perso->is_milice();
+$is_fam        = $perso->is_fam();
 $is_intangible = $perso->isIntangible();
 if ($is_intangible)
 {
@@ -39,37 +39,37 @@ if ($is_intangible)
 {
     $pa_ramasse = $param->getparm(41);
 }
-$degats_perso = $perso->degats_perso();
-$det_deg = explode(";", $degats_perso);
-$deg_min = $det_deg[0];
-$deg_max = $det_deg[1];
+$degats_perso    = $perso->degats_perso();
+$det_deg         = explode(";", $degats_perso);
+$deg_min         = $det_deg[0];
+$deg_max         = $det_deg[1];
 $prochain_niveau = $perso->px_limite();
 
 $gerant = 'N';
-$mg = new magasin_gerant();
+$mg     = new magasin_gerant();
 if ($mg->getByPersoCod($perso->perso_cod))
 {
     $gerant = 'O';
 }
 
-$admin_dieu = $perso->is_admin_dieu();
-$fidele_gerant = $perso->is_fidele_gerant();
-$pa = $perso->perso_pa;
-$nom_perso = $perso->perso_nom;
-$admin_echoppe = $perso->perso_admin_echoppe;
+$admin_dieu         = $perso->is_admin_dieu();
+$fidele_gerant      = $perso->is_fidele_gerant();
+$pa                 = $perso->perso_pa;
+$nom_perso          = $perso->perso_nom;
+$admin_echoppe      = $perso->perso_admin_echoppe;
 $admin_echoppe_noir = $perso->perso_admin_echoppe_noir;
-$is_vampire = $perso->perso_niveau_vampire;
-$potions = $perso->is_potions();
-$religion = $perso->is_religion();
-$transaction = $perso->transactions();
-$px_actuel = floor($perso->perso_px);
-$barre_energie = $perso->barre_energie();
-$is_fam_divin = $perso->is_fam_divin();
-$pa_dep = $perso->get_pa_dep();
-$nb_evt_non_lu = sizeof($perso->getEvtNonLu());
+$is_vampire         = $perso->perso_niveau_vampire;
+$potions            = $perso->is_potions();
+$religion           = $perso->is_religion();
+$transaction        = $perso->transactions();
+$px_actuel          = floor($perso->perso_px);
+$barre_energie      = $perso->barre_energie();
+$is_fam_divin       = $perso->is_fam_divin();
+$pa_dep             = $perso->get_pa_dep();
+$nb_evt_non_lu      = sizeof($perso->getEvtNonLu());
 if ($is_fam_divin == 1)
 {
-    $barre_divine = $perso->barre_divin();
+    $barre_divine   = $perso->barre_divin();
     $energie_divine = $perso->energie_divine();
 }
 
@@ -79,39 +79,39 @@ $barre_hp = $perso->barre_hp();
 
 // Gestion des droits
 // par défaut, on met tout à NON
-$droit['modif_perso'] = 'N';
-$droit['modif_gmon'] = 'N';
-$droit['controle'] = 'N';
-$droit['acces_log'] = 'N';
-$droit['droits'] = 'N';
-$droit['carte'] = 'N';
+$droit['modif_perso']    = 'N';
+$droit['modif_gmon']     = 'N';
+$droit['controle']       = 'N';
+$droit['acces_log']      = 'N';
+$droit['droits']         = 'N';
+$droit['carte']          = 'N';
 $droit['controle_admin'] = 'N';
-$droit['objet'] = 'N';
-$droit['enchantements'] = 'N';
-$droit['potions'] = 'N';
-$droit['news'] = 'N';
-$droit['animations'] = 'N';
-$droit['factions'] = 'N';
-$cd = new compt_droit();
+$droit['objet']          = 'N';
+$droit['enchantements']  = 'N';
+$droit['potions']        = 'N';
+$droit['news']           = 'N';
+$droit['animations']     = 'N';
+$droit['factions']       = 'N';
+$cd                      = new compt_droit();
 if ($cd->charge($compt_cod))
 {
-    $droit['modif_perso'] = $cd->dcompt_modif_perso;
-    $droit['modif_gmon'] = $cd->dcompt_modif_gmon;
-    $droit['controle'] = $cd->dcompt_controle;
-    $droit['acces_log'] = $cd->dcompt_acces_log;
-    $droit['droits'] = $cd->dcompt_gere_droits;
-    $droit['carte'] = $cd->dcompt_modif_carte;
+    $droit['modif_perso']    = $cd->dcompt_modif_perso;
+    $droit['modif_gmon']     = $cd->dcompt_modif_gmon;
+    $droit['controle']       = $cd->dcompt_controle;
+    $droit['acces_log']      = $cd->dcompt_acces_log;
+    $droit['droits']         = $cd->dcompt_gere_droits;
+    $droit['carte']          = $cd->dcompt_modif_carte;
     $droit['controle_admin'] = $cd->dcompt_controle_admin;
-    $droit['objet'] = $cd->dcompt_objet;
-    $droit['enchantements'] = $cd->dcompt_enchantements;
-    $droit['potions'] = $cd->dcompt_potions;
-    $droit['news'] = $cd->dcompt_news;
-    $droit['animations'] = $cd->dcompt_animations;
-    $droit['factions'] = $cd->dcompt_factions;
+    $droit['objet']          = $cd->dcompt_objet;
+    $droit['enchantements']  = $cd->dcompt_enchantements;
+    $droit['potions']        = $cd->dcompt_potions;
+    $droit['news']           = $cd->dcompt_news;
+    $droit['animations']     = $cd->dcompt_animations;
+    $droit['factions']       = $cd->dcompt_factions;
 }
 
 // variables du compte
-$is_admin = $compte->is_admin();
+$is_admin         = $compte->is_admin();
 $is_admin_monstre = $compte->is_admin_monstre();
 
 /***********************************************/
@@ -145,11 +145,11 @@ $t->set_var('PERSO_PV_MAX', $perso->perso_pv_max);
 if ($is_enchanteur)
 {
     $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:" . $barre_energie . "%\"></div></div>";
-    $forge = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
+    $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
 } else
 {
     $enchanteur = '';
-    $forge = '';
+    $forge      = '';
 }
 
 $t->set_var('ENCHANTEUR', $enchanteur);
@@ -219,24 +219,24 @@ if ($nb_quete_auto["nb_total"] * 1 > 0)
 $t->set_var('PERSO_AUTO_QUETE', $perso_auto_quete);
 
 // lieux
-$tab_lieu = array();
+$tab_lieu   = array();
 $perso_lieu = "";
 if ($perso->is_lieu())
 {
     $tab_lieu = $perso->get_lieu();
-    $temp = $tab_lieu['lieu'];
+    $temp     = $tab_lieu['lieu'];
     if (!empty($tab_lieu['lieu']->lieu_url))
     {
-        $nom_lieu = $tab_lieu['lieu']->lieu_nom;
-        $libelle = $tab_lieu['lieu_type']->tlieu_libelle;
+        $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
+        $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
         $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><strong>" . $nom_lieu . "</strong> (" . $libelle . ")</a>";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
 
 //messagerie
-$mdest = new messages_dest();
-$tab = $mdest->getByPersoNonLu($perso->perso_cod);
+$mdest  = new messages_dest();
+$tab    = $mdest->getByPersoNonLu($perso->perso_cod);
 $nb_msg = count($tab);
 if ($nb_msg != 0)
 {
@@ -307,11 +307,11 @@ $t->set_var('TRANSACTIONS', $perso_transactions);
 // wiki
 if ($is_admin_monstre)
 {
-    $wiki = '<a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>';
+    $wiki           = '<a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>';
     $option_monstre = '<img src="' . G_IMAGES . 'iconeswitch.gif" alt=""> <a href="' . $chemin . '/option_monstre.php">Option du monstre</a>';
 } else
 {
-    $wiki = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
+    $wiki           = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
     $option_monstre = '';
 }
 
@@ -542,9 +542,9 @@ $t->set_var('RELIGION', $religion);
 // Compétences spéciales
 $commandement = '';
 $enseignement = '';
-$creuser = '';
-$vol = '';
-$pcomp = new perso_competences();
+$creuser      = '';
+$vol          = '';
+$pcomp        = new perso_competences();
 if ($pcomp->getByPersoComp($perso->perso_cod, 80))
 {
     $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
@@ -563,7 +563,7 @@ if ($pcomp->getByPersoComp($perso->perso_cod, 86))
 }
 
 
-$pc = new perso_commandement();
+$pc  = new perso_commandement();
 $tab = $pc->getBy_perso_subalterne_cod($perso->perso_cod);
 if ($tab !== false)
 {
@@ -665,27 +665,27 @@ if ($is_vampire != 0)
 //
 // gestion des vote
 // 
-$cv = new compte_vote();
+$cv           = new compte_vote();
 $totalXpGagne = 0;
-$tab = $cv->getBy_compte_vote_compte_cod($compte->compt_cod);
+$tab          = $cv->getBy_compte_vote_compte_cod($compte->compt_cod);
 if ($tab !== false)
 {
     $totalXpGagne = $tab[0]->compte_vote_total_px_gagner;
 }
 
 
-$cvip = new compte_vote_ip();
-$tab = $cvip->getByCompteTrue($compte->compt_cod);
+$cvip    = new compte_vote_ip();
+$tab     = $cvip->getByCompteTrue($compte->compt_cod);
 $nbrVote = count($tab);
 
 
-$tab = $cvip->getByCompteTrueMois($compte->compt_cod);
+$tab         = $cvip->getByCompteTrueMois($compte->compt_cod);
 $nbrVoteMois = count($tab);
 
-$tab = $cvip->getVoteAValider($compte->compt_cod);
+$tab          = $cvip->getVoteAValider($compte->compt_cod);
 $VoteAValider = count($tab);
 
-$tab = $cvip->getVoteRefus($compte->compt_cod);
+$tab          = $cvip->getVoteRefus($compte->compt_cod);
 $votesRefusee = count($tab);
 
 //
@@ -695,8 +695,8 @@ $barre_switch_rapide = '';
 
 if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapide.php")))
 {
-    $pdo = new bddpdo;
-    $req = "SELECT perso_cod, 
+    $pdo   = new bddpdo;
+    $req   = "SELECT perso_cod, 
                       perso_nom, 
                       perso_pv, 
                       perso_pv_max, 
@@ -740,15 +740,15 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
                     join perso on perso_cod=pfam_familier_cod where perso_actif='O'
                 ) as p on p_perso_cod = perso_cod
                 ORDER BY type, ordre, perso_type_perso ";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array($compt_cod, $compt_cod, $compt_cod, $compt_cod), $stmt);
+    $stmt  = $pdo->prepare($req);
+    $stmt  = $pdo->execute(array($compt_cod, $compt_cod, $compt_cod, $compt_cod), $stmt);
     $count = 1 * $stmt->rowCount();
-    $rows = $stmt->fetchAll();
+    $rows  = $stmt->fetchAll();
 
     // pour optimiser l'affichage on compte le nombre de perso et de fam
-    $nb_perso = 0;
+    $nb_perso    = 0;
     $nb_familier = 0;
-    $nb_button = sizeof($rows);
+    $nb_button   = sizeof($rows);
     foreach ($rows as $result)
     {
         if ((1 * $result["perso_type_perso"]) == 3)
@@ -758,7 +758,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
     }
 
     $liste_boutons = "";
-    $col = 0;
+    $col           = 0;
     if ($nb_familier > 0)
         $col_class = 'col-xs-12  col-sm-6';                         // perso + fam on préparera regroupemet par 2
     else if ($nb_perso > 3)
@@ -786,7 +786,7 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         if (substr($_aff_nom, 0, 12) == "Familier de ")
         {
             $_aff_nom = "Fam. de " . substr($_aff_nom, 12);
-            $pesprit = strpos($_aff_nom, "(esprit de ");
+            $pesprit  = strpos($_aff_nom, "(esprit de ");
             if ($pesprit > 0) $_aff_nom = substr($_aff_nom, 0, $pesprit) . "(" . substr($_aff_nom, $pesprit + 11);
         } else if (substr($_aff_nom, 0, 31) == "Image démoniaque, Familier de ")
         {
@@ -800,11 +800,11 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         }
 
         // ajout d'info PA, PV et DLT
-        $_blessure = 100 * (1 * $result["perso_pv"]) / (1 * $result["perso_pv_max"]);
+        $_blessure     = 100 * (1 * $result["perso_pv"]) / (1 * $result["perso_pv_max"]);
         $_aff_perso_pv = $_blessure > 50 ? ($_blessure == 100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>') : ($_blessure > 25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>');
         $_aff_perso_pa = $result["perso_pa"] == 0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">' . $result["perso_pa"] . '</span>';
-        $_aff_dlt = $result["dlt"] == "" ? "" : " &rArr; " . $result["dlt"];
-        $_aff_nom .= "<br><span style=\"color:white; font-size:9px;font-weight:normal;\">" . $_aff_perso_pv . "/" . $result["perso_pv_max"] . " - " . $_aff_perso_pa . "PA" . $_aff_dlt . "</span>";
+        $_aff_dlt      = $result["dlt"] == "" ? "" : " &rArr; " . $result["dlt"];
+        $_aff_nom      .= "<br><span style=\"color:white; font-size:9px;font-weight:normal;\">" . $_aff_perso_pv . "/" . $result["perso_pv_max"] . " - " . $_aff_perso_pa . "PA" . $_aff_dlt . "</span>";
 
         $_aff_msg = "";
         if (1 * $result["nb_msg_non_lu"] > 0) $_aff_msg = '<span class="badge-btn">' . $result["nb_msg_non_lu"] . '</span>';
@@ -880,7 +880,9 @@ $var_twig_defaut = array(
     'NB_MSG'              => $nb_msg,
     'GERANT'              => $gerant,
     'COMPTE'              => $compte,
-    'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide
+    'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide,
+    'IS_INTANGIBLE'       => $is_intangible,
+    'IS_REFUGE'           => $is_refuge
 )
 
 ?>
