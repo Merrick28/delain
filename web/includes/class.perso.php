@@ -1706,6 +1706,19 @@ class perso
 
     }
 
+    function get_valeur_bonus($bonus)
+    {
+        $pdo            = new bddpdo();
+        $req = "select valeur_bonus(:perso, '$bonus') as bonus";
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+            ':perso'     => $this->perso_cod
+        ), $stmt);
+        $result = $stmt->fetch();
+        return $result['bonus'];
+
+    }
+
     function prepare_get_vue()
     {
         $ppos  = new perso_position();

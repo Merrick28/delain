@@ -36,36 +36,14 @@ $tab_lock_cible = $lc->getBy_lock_cible($perso_cod);
 
 if (!$tab_lock_cible)
 {
-    /*$req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj,perso_nom,pos_x,pos_y,pos_etage,race_nom,distance($pos_cod,pos_cod) as distance,pos_cod,perso_cod,case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,perso_pv,perso_pv_max,is_surcharge(perso_cod,$perso_cod) as surcharge , (select count(1) from trajectoire_perso($pos_cod,pos_cod) as (nv_cible int, v_pos int, type_perso int)
-    where not exists (select 1 from perso_position,lieu,lieu_position where ppos_pos_cod = v_pos and ppos_perso_cod = nv_cible and lpos_pos_cod = v_pos and lpos_lieu_cod = lieu_cod and lieu_refuge = 'O')
-    ) as obstruction ";*/
-    if (($compt_cod != 'monstre') && ($compt_cod != 'admin')){
-        $tab_vue = $perso->get_vue_non_lock();
-    }
-    else{
-        // on verra
-    }
-
+    $tab_vue = $perso->get_vue_non_lock();
 } else
 {
-    if (($compt_cod != 'monstre') && ($compt_cod != 'admin'))
-    {
-        $tab_vue = $perso->get_vue_lock();
-    }
-    else
-    {
-        // on verra
-    }
-
+    $tab_vue = $perso->get_vue_lock();
 }
-
 echo("<input type=\"hidden\" name=\"type_arme\" value=\"$type_arme\">");
-// On recherche les autres joueurs en vue
-$nb_joueur_en_vue = count($tab_vue);
-?>
 
-<?php
-if ($nb_joueur_en_vue != 0)
+if (count($tab_vue) != 0)
 {
     ?>
     <table width="100%" cellspacing="2" cellapdding="2">
@@ -86,7 +64,7 @@ if ($nb_joueur_en_vue != 0)
             <?php
             $i = 0;
             $jAttaquable = 0;
-            foreach($tab_vue as $detail_vue)
+            foreach ($tab_vue as $detail_vue)
             {
                 if ($detail_vue["traj"] == 1)
                 {
@@ -173,10 +151,7 @@ if ($nb_joueur_en_vue != 0)
     <?php
 
     // on regarde si la cible ne subit pas un malus de désorientation (sort Morsure du soleil) pour message de prévention !!!
-    $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-    $db->query($req_malus_desorientation);
-    $db->next_record();
-    if ($db->f("desorientation") > 0)
+    if ($perso->get_valeur_bonus('DES') > 0)
     {
         echo "<strong>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</strong><br>";
     }
