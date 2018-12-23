@@ -883,6 +883,5 @@ $var_twig_defaut = array(
     'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide,
     'IS_INTANGIBLE'       => $is_intangible,
     'IS_REFUGE'           => $is_refuge
-)
-
+);
 ?>
