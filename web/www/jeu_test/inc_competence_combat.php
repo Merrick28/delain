@@ -1,20 +1,31 @@
-<?php if (!isset($perso_cod))
+<?php
+if (!isset($perso_cod))
+{
     die ("Erreur d’appel de la page");
+}
+
 
 $resultat_inc_competence_combat = '';
 
 if (!isset($inc_verif_pa))
+{
     $inc_verif_pa = 12;
+}
+
 
 if (!isset($inc_attaque_courante))
+{
     $inc_attaque_courante = -1;
+}
 
+$pdo = new bddpdo();
 // Méthode de combat
 
-$pa_n = $db->get_pa_attaque($perso_cod);
+
+$pa_n   = $perso->get_pa_attaque();
 $pa_f_1 = $pa_n + 3;
 $pa_f_2 = $pa_n + 1;
-$pa_f = $db->get_pa_foudre($perso_cod);
+$pa_f   = $perso->get_pa_foudre();
 
 $req_comp = "select comp_libelle,
     	case
@@ -49,16 +60,25 @@ $req_comp = "select comp_libelle,
 		case when comp_cod in (25, 61, 62) then 0 else 1 end as distance_ok
 	from competences
 	inner join perso_competences on pcomp_pcomp_cod = comp_cod
-	where pcomp_perso_cod = $perso_cod
+	where pcomp_perso_cod = :perso
 		and comp_cod in (25, 61, 62, 63, 64, 65, 66, 67, 68, 72, 73, 74, 75, 76, 77, 89, 94, 95, 96)
 	order by comp_cod";
-$db->query($req_comp);
+
+$stmt = $pdo->prepare($req_comp);
+$stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+
 
 if ($inc_verif_pa >= $pa_n && $inc_attaque_courante != 0)
-    $resultat_inc_competence_combat .= "<option value=\"0\">Attaque normale (" . $pa_n . " PA)</option>";
-
-while ($db->next_record())
 {
-    if (($db->f('distance_ok') == 1 || !$arme_dist) && $inc_verif_pa >= $db->f('cout_pa') && $inc_attaque_courante != $db->f('type_attaque'))
-        $resultat_inc_competence_combat .= "<option value='" . $db->f('type_attaque') . "'>" . $db->f('comp_libelle') . " (" . $db->f('cout_pa') . " PA)</option>";
+    $resultat_inc_competence_combat .= "<option value=\"0\">Attaque normale (" . $pa_n . " PA)</option>";
+}
+
+
+while ($result = $stmt->fetch())
+{
+    if (($result['distance_ok'] == 1 || !$arme_dist) && $inc_verif_pa >= $result['cout_pa'] && $inc_attaque_courante != $result['type_attaque'])
+    {
+        $resultat_inc_competence_combat .= "<option value='" . $result['type_attaque'] . "'>" . $result['comp_libelle'] . " (" . $result['cout_pa'] . " PA)</option>";
+
+    }
 }

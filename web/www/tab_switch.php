@@ -3,99 +3,7 @@ if (!isset($is_log))
 {
     $is_log = 'N';
 }
-/***************************************************************/
-/* Fonctions pour l'affichage des barres de santé et XP		*/
-/***************************************************************/
-// barre XP
-function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
-{
-    $barre_xp = '0';
-    if (($perso_px - $limite_niveau_actuel) < 0)
-    {
-        //$barre_xp = 'negative';   // Gestion de la barre au % pres
-        return $barre_xp;
-    }
-    $niveau_xp = ($perso_px - $limite_niveau_actuel);
-    $div_xp = ($limite_niveau - $limite_niveau_actuel);
 
-    $barre_xp = round(100 * $niveau_xp / $div_xp);
-    if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
-    {
-        $barre_xp = 98;
-    } else if (($barre_xp <= 2) && ($niveau_xp > 0))
-    {
-        $barre_xp = 2;
-    } else if ($barre_xp < 0)
-    {
-        $barre_xp = 0;
-    } else if ($barre_xp >= 100)
-    {
-        $barre_xp = 100;
-    }
-    return $barre_xp;
-}
-
-// barre de sante
-function barre_hp($perso_pv, $perso_pv_max)
-{
-    //$barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;        // Gestion de la barre au % pres
-    $barre_hp = round(($perso_pv / $perso_pv_max) * 100);
-    if (($barre_hp >= 98) && ($perso_pv < $perso_pv_max))
-    {
-        $barre_hp = 98;
-    } else if (($barre_hp <= 2) && ($perso_pv > 0))
-    {
-        $barre_hp = 2;
-    } else if ($barre_hp < 0)
-    {
-        $barre_hp = 0;
-    } else if ($barre_hp >= 100)
-    {
-        $barre_hp = 100;
-    }
-    return $barre_hp;
-}
-
-// barre d'énergie
-function barre_energie($perso_energie)
-{
-    //$barre_energie = floor(($perso_energie / 100) * 10) * 10;       // Gestion de la barre au % pres
-    $barre_energie = round($perso_energie);
-    if ($barre_energie <= 0)
-    {
-        $barre_energie = 0;
-    } else if ($barre_energie >= 100)
-    {
-        $barre_energie = 100;
-    } else if ($barre_energie >= 98)
-    {
-        $barre_energie = 98;
-    } else if ($barre_energie <= 2)
-    {
-        $barre_energie = 2;
-    }
-    return $barre_energie;
-}
-
-// barre d'énergie divine (pour familiers divins uniquement)
-function barre_divine($perso_divine)
-{
-    $barre_divine = round(100 * $perso_divine / 200);
-    if ($barre_divine <= 0)
-    {
-        $barre_divine = 0;
-    } else if ($barre_divine >= 100)
-    {
-        $barre_divine = 100;
-    } else if ($barre_divine >= 98)
-    {
-        $barre_divine = 98;
-    } else if ($barre_divine <= 2)
-    {
-        $barre_divine = 2;
-    }
-    return $barre_divine;
-}
 
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
@@ -140,9 +48,9 @@ function affiche_perso($perso_cod)
 
     $limite_niveau_actuel = $perso->px_limite_actuel();
     $limite_niveau = $perso->px_limite();
-    $barre_xp = barre_xp($perso->perso_px, $limite_niveau_actuel, $limite_niveau);
-    $barre_hp = barre_hp($perso->perso_pv, $perso->perso_pv_max);
-    $barre_energie = barre_energie($perso->perso_energie);
+    $barre_xp = $perso->barre_xp();
+    $barre_hp = $perso->barre_hp();
+    $barre_energie = $perso->barre_energie();
     $dlt_passee = $perso->dlt_passee();
 
     // récupération énergie divine pour les familiers divins
@@ -152,7 +60,7 @@ function affiche_perso($perso_cod)
     {
         $dieu_perso = new dieu_perso();
         $dieu_perso->getByPersoCod($perso->perso_cod);
-        $barre_divine = barre_divine($dieu_perso->dper_points);
+        $barre_divine = $perso->barre_divin();
     }
 
 

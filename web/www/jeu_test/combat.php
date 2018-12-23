@@ -2,10 +2,7 @@
 include "blocks/_header_page_jeu.php";
 $param = new parametres();
 ob_start();
-?>
-    <script language="javascript" src="javascripts/changestyles.js"></script>
 
-<?php
 $erreur = 0;
 if ($is_intangible)
 {
@@ -19,11 +16,11 @@ if ($is_refuge)
 }
 if ($erreur == 0)
 {
-    $arme_dist = $db->arme_distance($perso_cod);
-    $req2 = "select mcom_nom from perso, mode_combat where perso_cod = $perso_cod and perso_mcom_cod = mcom_cod";
-    $db->query($req2);
-    $db->next_record();
-    $mode = $db->f("mcom_nom");
+    $arme_dist = $perso->has_arme_distance();
+    //$arme_dist = $db->arme_distance($perso_cod);
+    $mc = new mode_combat();
+    $mc->charge($perso->perso_mcom_cod);
+    $mode = $mc->mcom_nom;
     ?>
 
     <form name="attaque" method="post" action="action.php">
@@ -31,20 +28,14 @@ if ($erreur == 0)
     <?php
 
     // Arme équipée
-    $arme_req = "	SELECT obj_nom
-		FROM objets
-		LEFT JOIN perso_objets ON perobj_obj_cod=obj_cod
-		LEFT JOIN objet_generique ON gobj_cod=obj_gobj_cod
-		LEFT JOIN type_objet ON tobj_cod=gobj_tobj_cod
-		WHERE perobj_equipe = 'O'
-			AND tobj_libelle = 'Arme'
-			AND perobj_perso_cod = $perso_cod
-		ORDER BY obj_gobj_cod ASC, obj_cod ASC";
-    $db->query($arme_req);
-    if ($db->next_record())
-        $obj_nom = $db->f("obj_nom");
-    else
+    if (!$obj = $perso->get_arme_equipee())
+    {
         $obj_nom = 'aucune';
+    } else
+    {
+        $obj_nom = $obj->obj_nom;
+    }
+
 
     // Méthode de combat
     include('inc_competence_combat.php');
