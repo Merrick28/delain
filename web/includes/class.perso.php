@@ -1732,8 +1732,16 @@ class perso
 
         $compte       = new compte;
         $perso_compte = new perso_compte();
-        $perso_compte->getBy_pcompt_perso_cod($this->perso_cod);
+
+
+        if(!$perso_compte->get_by_perso($this->perso_cod))
+        {
+            die('Erreur d appel de compte');
+        }
+
         $compte->charge($perso_compte->pcompt_compt_cod);
+
+
 
         $distance_vue = $this->distance_vue();
         $portee       = $this->portee_attaque();
@@ -1754,6 +1762,8 @@ class perso
     {
         $this->prepare_get_vue();
 
+
+
         $pdo            = new bddpdo();
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
           perso_nom,pos_x,pos_y,pos_etage,race_nom,distance(:pos_cod,pos_cod) as distance,
@@ -1771,10 +1781,10 @@ class perso
           and perso_tangible = 'O' 
           and perso_race_cod = race_cod 
           and not exists 
-          (select 1 from lieu,lieu_position 
-          where lpos_pos_cod = ppos_pos_cod 
-          and lpos_lieu_cod = lieu_cod 
-          and lieu_refuge = 'O') 
+              (select 1 from lieu,lieu_position 
+              where lpos_pos_cod = ppos_pos_cod 
+              and lpos_lieu_cod = lieu_cod 
+              and lieu_refuge = 'O') 
           and not exists 
             (select 1 from perso_familier 
             where pfam_perso_cod = :perso 

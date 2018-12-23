@@ -113,6 +113,27 @@ class perso_compte
         return $retour;
     }
 
+    function get_by_perso($perso_cod)
+    {
+        $pdo    = new bddpdo;
+        $req    = 'SELECT pcompt_cod  FROM perso_compte where pcompt_perso_cod = :perso ';
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+            ":perso" => $perso_cod
+        ), $stmt);
+        if(!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        if(!$this->charge($result['pcompt_cod']))
+        {
+            return false;
+        }
+        return $this;
+
+
+    }
+
 
 
     public function __call($name, $arguments)
@@ -125,6 +146,7 @@ class perso_compte
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "SELECT pcompt_cod  FROM perso_compte WHERE " . substr($name, 6) . " = ? ORDER BY pcompt_cod";
+
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
