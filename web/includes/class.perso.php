@@ -1708,11 +1708,11 @@ class perso
 
     function get_valeur_bonus($bonus)
     {
-        $pdo            = new bddpdo();
-        $req = "select valeur_bonus(:perso, '$bonus') as bonus";
-        $stmt           = $pdo->prepare($req);
-        $stmt           = $pdo->execute(array(
-            ':perso'     => $this->perso_cod
+        $pdo    = new bddpdo();
+        $req    = "select valeur_bonus(:perso, '$bonus') as bonus";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ':perso' => $this->perso_cod
         ), $stmt);
         $result = $stmt->fetch();
         return $result['bonus'];
@@ -1742,10 +1742,11 @@ class perso
             $portee = $distance_vue;
         }
 
-        $this->x_min = $pos->pos_x - $portee;
-        $this->x_max = $pos->pos_x + $portee;
-        $this->y_min = $pos->pos_y - $portee;
-        $this->y_max = $pos->pos_y + $portee;
+        $this->x_min  = $pos->pos_x - $portee;
+        $this->x_max  = $pos->pos_x + $portee;
+        $this->y_min  = $pos->pos_y - $portee;
+        $this->y_max  = $pos->pos_y + $portee;
+        $this->compte = $compte;
 
     }
 
@@ -1780,7 +1781,7 @@ class perso
             and pfam_familier_cod = perso_cod) 
           and not exists 
             (select 1 from perso_compte 
-            where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
+            where pcompt_compt_cod = :compte
             and pcompt_perso_cod = perso_cod) 
           and perso_cod not in
             ((select pfam_familier_cod from perso_compte join perso_familier on pfam_perso_cod=pcompt_perso_cod join perso on perso_cod=pfam_familier_cod  where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and perso_actif='O')
@@ -1801,11 +1802,11 @@ class perso
             ':x_min'     => $this->x_min,
             ':x_max'     => $this->x_max,
             ':y_min'     => $this->y_min,
-            ':y_max'     => $this->y_max
+            ':y_max'     => $this->y_max,
+            ':compte'    => $this->compte->compt_cod
         ), $stmt);
         return $stmt->fetchAll();
     }
-
 
 
     function get_vue_lock()
@@ -1840,7 +1841,7 @@ class perso
                 and pfam_familier_cod = perso_cod) 
               and not exists 
                 (select 1 from perso_compte 
-                where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
+                where pcompt_compt_cod = :compte
                 and pcompt_perso_cod = perso_cod) 
               and lock_cible = :perso 
               and lock_attaquant = perso_cod 
@@ -1869,7 +1870,7 @@ class perso
                     and pfam_familier_cod = perso_cod) 
                 and not exists 
                     (select 1 from perso_compte 
-                    where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  
+                    where pcompt_compt_cod = :compte 
                     and pcompt_perso_cod = perso_cod) 
                 and lock_cible = perso_cod 
                 and lock_attaquant = :perso ";
@@ -1881,7 +1882,8 @@ class perso
             ':x_min'     => $this->x_min,
             ':x_max'     => $this->x_max,
             ':y_min'     => $this->y_min,
-            ':y_max'     => $this->y_max
+            ':y_max'     => $this->y_max,
+            ':compte'    => $this->compte->compt_cod
         ), $stmt);
         return $stmt->fetchAll();
     }

@@ -195,6 +195,21 @@ class positions
         return $retour;
     }
 
+    function get_indice()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select indice_lieu(:position) as indice";
+
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+            ':position'   => $this->pos_cod,
+
+        ), $stmt);
+        $stmt   = $pdo->query($req);
+        $result = $stmt->fetch();
+        return $result['indice'];
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
