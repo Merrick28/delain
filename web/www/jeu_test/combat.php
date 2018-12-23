@@ -2,6 +2,8 @@
 include "blocks/_header_page_jeu.php";
 include "../includes/constantes.php";
 $param = new parametres();
+
+
 //ob_start();
 
 $erreur = 0;
