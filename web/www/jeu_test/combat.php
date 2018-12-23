@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+include "../includes/constantes.php";
 $param = new parametres();
 //ob_start();
 
@@ -32,36 +33,43 @@ if ($erreur == 0)
         $obj_nom = $obj->obj_nom;
     }
 
+    $distance_vue = $perso->distance_vue();
+    $portee       = $perso->portee_attaque();
+    if ($distance_vue <= $portee)
+    {
+        $portee = $distance_vue;
+    }
+
 
     // Méthode de combat
     include('inc_competence_combat.php');
 
 
+    $lc             = new lock_combat();
+    $tab_lock_cible = $lc->getBy_lock_cible($perso_cod);
 
-    $template     = $twig->load('combat_debut.twig');
-    $options_twig = array(
-        'ARME_UTILISEE' => $obj_nom,
-        'COMP_COMBAT'   => $resultat_inc_competence_combat,
-        'MODE'          => $mode
-    );
-    $page =  $template->render(array_merge($var_twig_defaut, $options_twig));
-
-    ob_start();
-    include "include_tab_attaque3.php"; // ) mettre en twig un de ces jours
-    $page  .= ob_get_contents();
-    ob_end_clean();
-
-    $page .= '<input type="submit" class="test centrer" value="Attaquer !">';
+    if (!$tab_lock_cible)
+    {
+        $tab_vue = $perso->get_vue_non_lock();
+    } else
+    {
+        $tab_vue = $perso->get_vue_lock();
+    }
 
 }
 
 $template     = $twig->load('combat.twig');
 $options_twig = array(
-    'CONTENU_PAGE' => $page,
+    'INCL_TAB_ATTAQUE' => $incl_tab_attaque,
+    'ARME_UTILISEE'    => $obj_nom,
+    'COMP_COMBAT'      => $resultat_inc_competence_combat,
+    'MODE'             => $mode,
+    'TAB_VUE'          => $tab_vue,
+    'TYPE_PERSO'       => $perso_type_perso,
+    'TAB_BLESSURES'    => $tab_blessures,
+    'PORTEE'           => $portee
 );
 echo $template->render(array_merge($var_twig_defaut, $options_twig));
 
 
-
-//include "blocks/_footer_page_jeu.php";
 

@@ -1,0 +1,73 @@
+{% if TAB_VUE|length > 0 %}
+    <table width="100%" cellspacing="2" cellapdding="2">
+        <tr>
+            <td colspan="6" class="soustitre"><p class="soustitre">Cibles</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td class="soustitre2"><strong>Nom</strong></td>
+            <td class="soustitre2"><strong>Race</strong></td>
+            <td class="soustitre2"><strong>X</strong></td>
+            <td class="soustitre2"><strong>Y</strong></td>
+            <td class="soustitre2"><strong>Distance</strong></td>
+        </tr>
+
+        <script language="JavaScript" type="text/JavaScript">
+            var liste = new Array();
+{% for VUE in TAB_VUE %}
+{% if VUE.traj == 1 %}
+{# Gestion des blessures #}
+{% set BLESSURES = '' %}
+{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.75 %}
+{% set BLESSURES = TAB_BLESSURES[0] %}
+{% endif %}
+{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
+{% set BLESSURES = TAB_BLESSURES[1] %}
+{% endif %}
+{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.25 %}
+{% set BLESSURES = TAB_BLESSURES[2] %}
+{% endif %}
+{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
+{% set BLESSURES = TAB_BLESSURES[3] %}
+{% endif %}
+{# Gestion du style #}
+{% set STYLE = "soustitre2" %}
+{% if VUE.surcharge == 1 %}
+{% set STYLE = "surcharge1" %}
+{% endif %}
+{% if VUE.surcharge == 2 %}
+{% set STYLE = "surcharge2" %}
+{% endif %}
+{% if VUE.obstruction > 0 %}
+{% set STYLE = "soustitre2 obstruction1" %}
+{% endif %}
+{% if VUE.obstruction > 5 %}
+{% set STYLE = "soustitre2 obstruction2" %}
+{% endif %}
+liste[{{ loop.index0 }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
+{% endif %}
+            {% endfor %}
+
+
+            var i;
+            var textetableau = '';
+            for (i = 0; i < liste.length; i++) {
+                textetableau += '<tr>';
+                textetableau += '<td><input type="radio" name="cible" value="' + liste[i][0] + '" class="change_class_on_select" data-class-onclick="navon" data-class-dest="cell' + liste[i][0] + '" id="bouton' + liste[i][0] + '"></td>';
+                textetableau += '<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>';
+                textetableau += '<td>' + liste[i][3] + '</td>';
+                textetableau += '<td>' + liste[i][4] + '</td>';
+                textetableau += '<td>' + liste[i][5] + '</td>';
+                textetableau += '<td>' + liste[i][6] + '</td>';
+                textetableau += '</tr>';
+            }
+            document.write(textetableau);
+        </script>
+    </table>
+
+    {% if PERSO.get_valeur_bonus('DES') > 0 %}
+        <strong>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</strong><br>
+    {% endif %}
+{% else %}
+    Pas de cible en vue !<br/>
+{% endif %}
