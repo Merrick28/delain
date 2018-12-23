@@ -122,6 +122,10 @@ class perso
     var $avatar_largeur;
     var $avatar_hauteur;
     var $barre_divine;
+    //
+    // Variables qui ne serviront que pour la vue
+    //
+
 
     function __construct()
     {
@@ -1702,39 +1706,49 @@ class perso
 
     }
 
-    function get_vue_non_lock()
+    function prepare_get_vue()
     {
-        // position
         $ppos  = new perso_position();
         $pos   = new positions();
         $etage = new etage();
 
         $ppos->getByPerso($this->perso_cod);
         $pos->charge($ppos->ppos_pos_cod);
+        $this->pos = $pos;
         $etage->getByNumero($pos->pos_etage);
 
-        $compte = new compte;
+        $compte       = new compte;
         $perso_compte = new perso_compte();
-        $perso_compte->getby_pcompt_perso_cod($this->perso_cod);
+        $perso_compte->getBy_pcompt_perso_cod($this->perso_cod);
         $compte->charge($perso_compte->pcompt_compt_cod);
 
-        $distance_vue = $perso->distance_vue();
-        $portee       = $perso->portee_attaque();
+        $distance_vue = $this->distance_vue();
+        $portee       = $this->portee_attaque();
         if ($distance_vue <= $portee)
         {
             $portee = $distance_vue;
         }
 
+        $this->x_min = $pos->pos_x - $portee;
+        $this->x_max = $pos->pos_x + $portee;
+        $this->y_min = $pos->pos_y - $portee;
+        $this->y_max = $pos->pos_y + $portee;
 
-        $pdo  = new bddpdo();
+    }
+
+    function get_vue_non_lock()
+    {
+        $this->prepare_get_vue();
+
+        $pdo            = new bddpdo();
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
           perso_nom,pos_x,pos_y,pos_etage,race_nom,distance(:pos_cod,pos_cod) as distance,
           pos_cod,perso_cod,case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
           perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge , 
           (select count(1) from trajectoire_perso(:pos_cod,pos_cod) as (nv_cible int, v_pos int, type_perso int)) as obstruction 
           from perso,positions,perso_position,race 
-          where pos_x between (:pos_x - :portee) and (:pos_x +  )
-          and pos_y between (:pos_y - :portee) and (:pos_y + :portee)
+          where pos_x between (:x_min) and (:x_max)
+          and pos_y between (:y_min) and (:y_max)
           and pos_cod = ppos_pos_cod 
           and pos_etage = :pos_etage 
           and ppos_perso_cod = perso_cod 
@@ -1750,15 +1764,12 @@ class perso
           and not exists 
             (select 1 from perso_familier 
             where pfam_perso_cod = :perso 
-            and pfam_familier_cod = perso_cod) ";
-        if (($compt_cod != 'monstre') && ($compt_cod != 'admin'))
-        {
-            $req_vue_joueur = $req_vue_joueur . "and not exists 
-        (select 1 from perso_compte 
-        where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
-        and pcompt_perso_cod = perso_cod) ";
-            /*Rajout pour ne pas pouvoir attaquer un perso d'un compte sitté + 2018-09-06 - Marlyza - ne pas attaquer les fam du compte */
-            $req_vue_joueur = $req_vue_joueur . "	and perso_cod not in
+            and pfam_familier_cod = perso_cod) 
+          and not exists 
+            (select 1 from perso_compte 
+            where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
+            and pcompt_perso_cod = perso_cod) 
+          and perso_cod not in
             ((select pfam_familier_cod from perso_compte join perso_familier on pfam_perso_cod=pcompt_perso_cod join perso on perso_cod=pfam_familier_cod  where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and perso_actif='O')
         	union
         	(select pcompt_perso_cod from perso_compte,compte_sitting where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now())
@@ -1767,13 +1778,101 @@ class perso
             union
             (select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitte and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod)
             union
-            (select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod))";
-            /*Fin rajout*/
-        }
-        $req_vue_joueur = $req_vue_joueur . "order by perso_type_perso desc, distance,pos_x,pos_y,perso_nom ";
-        $stmt = $pdo->prepare($req_vue_joueur);
-        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
+            (select pfam_familier_cod from perso_compte,compte_sitting,perso_familier where pcompt_compt_cod = csit_compte_sitteur and csit_compte_sitteur = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and csit_dfin > now() and csit_ddeb < now() and pfam_perso_cod = pcompt_perso_cod))
+            order by perso_type_perso desc, distance,pos_x,pos_y,perso_nom ";
+        $stmt           = $pdo->prepare($req_vue_joueur);
+        $stmt           = $pdo->execute(array(
+            ':pos_cod'   => $this->pos->pos_cod,
+            ':perso'     => $this->perso_cod,
+            ':pos_etage' => $this->pos->pos_etage,
+            ':x_min'     => $this->x_min,
+            ':x_max'     => $this->x_max,
+            ':y_min'     => $this->y_min,
+            ':y_max'     => $this->y_max
+        ), $stmt);
+        return $stmt->fetchAll();
     }
+
+
+
+    function get_vue_lock()
+    {
+        // position
+        $this->prepare_get_vue();
+
+
+        $pdo            = new bddpdo();
+        $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,perso_nom,pos_x,pos_y,pos_etage,
+              race_nom,distance(:pos_cod,pos_cod) as distance,pos_cod,perso_cod,
+              case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
+              perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge, 0 as obstruction 
+            from perso,positions,perso_position,race,lock_combat 
+              where pos_x between (:x_min) and (:x_max) 
+              and pos_y between (:y_min) and (:y_max) 
+              and pos_cod = ppos_pos_cod
+              and pos_etage = :pos_etage
+              and ppos_perso_cod = perso_cod 
+              and perso_cod != :perso 
+              and perso_actif = 'O' 
+              and perso_tangible = 'O' 
+              and perso_race_cod = race_cod 
+              and not exists 
+                (select 1 from lieu,lieu_position 
+                 where lpos_pos_cod = ppos_pos_cod 
+                 and lpos_lieu_cod = lieu_cod 
+                 and lieu_refuge = 'O') 
+              and not exists 
+                (select 1 from perso_familier 
+                where pfam_perso_cod = :perso 
+                and pfam_familier_cod = perso_cod) 
+              and not exists 
+                (select 1 from perso_compte 
+                where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso) 
+                and pcompt_perso_cod = perso_cod) 
+              and lock_cible = :perso 
+              and lock_attaquant = perso_cod 
+            union 
+              select trajectoire_vue(:pos_cod,pos_cod) as traj,perso_nom,pos_x,pos_y,pos_etage,race_nom,
+                distance(:pos_cod,pos_cod) as distance,pos_cod,perso_cod,perso_type_perso,
+                perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso ) as surcharge, 0 as obstruction 
+              from perso,positions,perso_position,race,lock_combat 
+              where pos_x between (:x_min) and (:x_max) 
+                and pos_y between (:y_min) and (:y_max) 
+                and pos_cod = ppos_pos_cod 
+                and pos_etage = :pos_etage 
+                and ppos_perso_cod = perso_cod 
+                and perso_cod != :perso 
+                and perso_actif = 'O' 
+                and perso_tangible = 'O' 
+                and perso_race_cod = race_cod 
+                and not exists 
+                    (select 1 from lieu,lieu_position 
+                    where lpos_pos_cod = ppos_pos_cod 
+                    and lpos_lieu_cod = lieu_cod 
+                    and lieu_refuge = 'O') 
+                and not exists 
+                    (select 1 from perso_familier 
+                    where pfam_perso_cod = :perso  
+                    and pfam_familier_cod = perso_cod) 
+                and not exists 
+                    (select 1 from perso_compte 
+                    where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  
+                    and pcompt_perso_cod = perso_cod) 
+                and lock_cible = perso_cod 
+                and lock_attaquant = :perso ";
+        $stmt           = $pdo->prepare($req_vue_joueur);
+        $stmt           = $pdo->execute(array(
+            ':pos_cod'   => $this->pos->pos_cod,
+            ':perso'     => $this->perso_cod,
+            ':pos_etage' => $this->pos->pos_etage,
+            ':x_min'     => $this->x_min,
+            ':x_max'     => $this->x_max,
+            ':y_min'     => $this->y_min,
+            ':y_max'     => $this->y_max
+        ), $stmt);
+        return $stmt->fetchAll();
+    }
+
 
     public function __call($name, $arguments)
     {
