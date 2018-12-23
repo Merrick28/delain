@@ -54,7 +54,7 @@ liste[{{ loop.index0 }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ 
             for (i = 0; i < liste.length; i++) {
                 textetableau += '<tr>';
                 textetableau += '<td><input type="radio" name="cible" value="' + liste[i][0] + '" class="change_class_on_select" data-class-onclick="navon" data-class-dest="cell' + liste[i][0] + '" id="bouton' + liste[i][0] + '"></td>';
-                textetableau += '<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + '<strong>' + liste[i][8] + '</strong>)</label></td>';
+                textetableau += '<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + ' <strong>' + liste[i][8] + '</strong>)</label></td>';
                 textetableau += '<td>' + liste[i][3] + '</td>';
                 textetableau += '<td>' + liste[i][4] + '</td>';
                 textetableau += '<td>' + liste[i][5] + '</td>';
