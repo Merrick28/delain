@@ -14,6 +14,7 @@ include "ident.php";
 </head>
 <body>
 <div class="bordiv">
+    <?php
 echo("<p>Cliquez sur le portrait du perso à supprimer :");
 $db = new base_delain;
 $req_perso = "select pcompt_perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss'),perso_pv,perso_pv_max,dlt_passee(perso_cod),perso_pa,perso_race_cod,perso_sex,limite_niveau(perso_cod),limite_niveau_actuel(perso_cod),perso_px,pos_x,pos_y,pos_etage,perso_niveau from perso,perso_compte,perso_position,positions

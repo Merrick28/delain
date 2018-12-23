@@ -134,6 +134,31 @@ class perso_compte
 
     }
 
+    function get_by_perso_fam($perso_cod)
+    {
+        $pdo    = new bddpdo;
+        $req    = 'SELECT pcompt_cod  FROM perso_compte where pcompt_perso_cod = (
+          select pfam_perso_cod
+          from perso_familier
+          where pfam_familier_cod = :perso
+        ) ';
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+            ":perso" => $perso_cod
+        ), $stmt);
+        if(!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        if(!$this->charge($result['pcompt_cod']))
+        {
+            return false;
+        }
+        return $this;
+
+
+    }
+
 
 
     public function __call($name, $arguments)

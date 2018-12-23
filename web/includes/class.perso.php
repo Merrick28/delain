@@ -1734,13 +1734,24 @@ class perso
         $perso_compte = new perso_compte();
 
 
-        if(!$perso_compte->get_by_perso($this->perso_cod))
+        if ($this->perso_type_perso != 3)
         {
-            die('Erreur d appel de compte');
+            if (!$perso_compte->get_by_perso($this->perso_cod))
+            {
+                die('Erreur d appel de compte');
+            }
+
+        }
+        else
+        {
+            if (!$perso_compte->get_by_perso_fam($this->perso_cod))
+            {
+                die('Erreur d appel de compte');
+            }
         }
 
-        $compte->charge($perso_compte->pcompt_compt_cod);
 
+        $compte->charge($perso_compte->pcompt_compt_cod);
 
 
         $distance_vue = $this->distance_vue();
@@ -1761,7 +1772,6 @@ class perso
     function get_vue_non_lock()
     {
         $this->prepare_get_vue();
-
 
 
         $pdo            = new bddpdo();

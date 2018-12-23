@@ -172,8 +172,11 @@
         <div id="lieu">
             {% if PERSO.is_lieu %}
                 <hr/>
+
                 <a href="lieu.php">
-                    <strong>{{ LIEU.lieu_nom }}</strong> ({{ LIEU.tlieu_libelle }})</a>
+
+
+                    <strong>{{ LIEU.lieu.lieu_nom }}</strong> ({{ LIEU.lieu_type.tlieu_libelle }})</a>
             {% endif %}
         </div>
     </div>
@@ -438,4 +441,6 @@
 </div>
 </body>
 </html>
+
+
 
