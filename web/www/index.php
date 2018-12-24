@@ -57,4 +57,4 @@ $options_twig = array(
 );
 echo $template->render(array_merge($options_twig_defaut,$options_twig));
 
-echo $toolbar->render();
+

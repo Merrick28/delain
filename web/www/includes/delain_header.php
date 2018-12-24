@@ -6,6 +6,22 @@ require G_CHE . '../vendor/autoload.php';
 
 header('Content-type: text/html; charset=utf-8');
 
+// mode debug
+$debug_mode = false;
+if(isset($_REQUEST['debug_mode']))
+{
+    $debug_mode = true;
+}
+if(defined('DEBUG_MODE'))
+{
+
+    if(DEBUG_MODE)
+    {
+        $debug_mode = true;
+
+    }
+}
+
 //
 // Fonction de hashage salé
 //
