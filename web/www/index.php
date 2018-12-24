@@ -1,6 +1,11 @@
 <?php
 $nouvelle_version = 1;
 
+$profiler = new \Fabfuel\Prophiler\Profiler();
+$toolbar = new \Fabfuel\Prophiler\Toolbar($profiler);
+$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+//$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\PDO());
+
 // par défaut, on n'est pas authentifié
 $verif_auth = false;
 include G_CHE . "ident.php";
@@ -51,3 +56,5 @@ $options_twig = array(
 
 );
 echo $template->render(array_merge($options_twig_defaut,$options_twig));
+
+echo $toolbar->render();

@@ -41,9 +41,13 @@ class bddpdo
 
     function __construct()
     {
+        global $profiler;
         try
         {
-            $this->pdo = new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
+            $temp = new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
+
+            //$this->pdo = new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
+            $this->pdo = new \Fabfuel\Prophiler\Decorator\PDO\PDO($temp, $profiler);
             /* if(ENTEST)
               {
               $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
