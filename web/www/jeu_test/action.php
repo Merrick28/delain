@@ -179,12 +179,12 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= '<p>Erreur : numéro objet non défini !';
                 break;
             }
-
+            // passage en pdo sd
             $req    = 'select ramasse_' . $objet[$type_objet] . '(:perso,:num_objet) as resultat';
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(":perso"        => $perso_cod,
-                                          ":num_objet"    => $num_objet,
-                                          ":type_attaque" => $type_at), $stmt);
+                                          ":num_objet"    => $num_objet
+            ), $stmt);
             $result = $stmt->fetch();
 
             $contenu_page .= $result['resultat'];
