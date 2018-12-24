@@ -3,300 +3,132 @@ if (!isset($is_log))
 {
     $is_log = 'N';
 }
-$db = new base_delain;
-/***************************************************************/
-/* Fonctions pour l'affichage des barres de santé et XP		*/
-/***************************************************************/
-// barre XP
-function barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau)
-{
-    $barre_xp = '0';
-    if (($perso_px - $limite_niveau_actuel) < 0)
-    {
-        //$barre_xp = 'negative';   // Gestion de la barre au % pres
-        return $barre_xp;
-    }
-    $niveau_xp = ($perso_px - $limite_niveau_actuel);
-    $div_xp    = ($limite_niveau - $limite_niveau_actuel);
 
-    $barre_xp = round(100 * $niveau_xp / $div_xp) ;
-    if(($barre_xp>=98) && ($niveau_xp<$div_xp))
-    {
-        $barre_xp = 98;
-    }
-    else if (($barre_xp <= 2)&& ($niveau_xp>0))
-    {
-        $barre_xp = 2;
-    }
-    else if ($barre_xp < 0)
-    {
-        $barre_xp = 0;
-    }
-    else if ($barre_xp >= 100)
-    {
-        $barre_xp = 100;
-    }
-    return $barre_xp;
-}
-
-// barre de sante
-function barre_hp($perso_pv, $perso_pv_max)
-{
-    //$barre_hp = floor(($perso_pv / $perso_pv_max) * 10) * 10;        // Gestion de la barre au % pres
-    $barre_hp = round(($perso_pv/$perso_pv_max)*100);
-    if(($barre_hp>=98) && ($perso_pv<$perso_pv_max))
-    {
-        $barre_hp = 98;
-    } else if (($barre_hp <= 2) && ($perso_pv>0))
-    {
-        $barre_hp = 2;
-    } else if ($barre_hp < 0)
-    {
-        $barre_hp = 0;
-    } else if ($barre_hp >= 100)
-    {
-        $barre_hp = 100;
-    }
-    return $barre_hp;
-}
-
-// barre d'énergie
-function barre_energie($perso_energie)
-{
-    //$barre_energie = floor(($perso_energie / 100) * 10) * 10;       // Gestion de la barre au % pres
-    $barre_energie = round($perso_energie) ;
-    if ( $barre_energie <= 0)
-    {
-        $barre_energie = 0;
-    } else if ( $barre_energie >=100)
-    {
-        $barre_energie = 100;
-    } else if($barre_energie>=98)
-    {
-        $barre_energie = 98;
-    } else if ($barre_energie <= 2)
-    {
-        $barre_energie = 2;
-    }
-    return $barre_energie;
-}
-
-// barre d'énergie divine (pour familiers divins uniquement)
-function barre_divine($perso_divine)
-{
-    $barre_divine = round(100 * $perso_divine / 200) ;
-    if ( $barre_divine <= 0)
-    {
-        $barre_divine = 0;
-    } else if ( $barre_divine >=100)
-    {
-        $barre_divine = 100;
-    } else if($barre_divine>=98)
-    {
-        $barre_divine = 98;
-    } else if ($barre_divine <= 2)
-    {
-        $barre_divine = 2;
-    }
-    return $barre_divine;
-}
 
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
 {
-    include "img_pack.php";
     global $type_flux;
     global $is_log;
-    $db  = new base_delain;
-    $req = "select perso_cod,perso_nom,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt,perso_energie,
-		perso_pv,perso_pv_max,dlt_passee(perso_cod) as dlt_passee,to_char(prochaine_dlt(perso_cod),'DD/MM hh24:mi') as prochaine_dlt,perso_pa,perso_race_cod,perso_sex,
-		limite_niveau(perso_cod) as limite_niveau,limite_niveau_actuel(perso_cod) as limite_niveau_actuel,floor(perso_px) as perso_px,
-		pos_x,pos_y,pos_etage,perso_niveau,perso_avatar,etage_libelle,perso_description,perso_tangible,perso_nb_tour_intangible,
-		exists(select levt_cod from ligne_evt where levt_perso_cod1 = $perso_cod and levt_lu = 'N' limit 1) as events, perso_gmon_cod, perso_avatar_version
-		from perso,perso_position,positions,etage
-	where perso_cod = $perso_cod
-	and ppos_perso_cod = perso_cod
-	and ppos_pos_cod = pos_cod
-	and perso_actif = 'O'
-	and etage_numero = pos_etage ";
-    $db->query($req);
-    $db->next_record();
-    // description
+    global $twig;
 
-    $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_description"))));
-    $pa   = $db->f("perso_pa");
+    $perso = new perso;
+    $perso->charge($perso_cod);
 
-    $db2 = new base_delain;
-    if ($db->f("perso_avatar") == '')
+    $perso_position = new perso_position();
+    $perso_position->getByPerso($perso->perso_cod);
+
+    $position = new positions();
+    $position->charge($perso_position->ppos_pos_cod);
+
+    $etage = new etage();
+    $etage->getByNumero($position->pos_etage);
+
+
+    $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $perso->perso_description)));
+
+    if ($perso->perso_avatar == '')
     {
-        $avatar = G_IMAGES . $db->f("perso_race_cod") . "_" . $db->f("perso_sex") . ".png";
-    }
-    else
+        $avatar = G_IMAGES . $perso->perso_race_cod . "_" . $perso->perso_sex . ".png";
+    } else
     {
-        $avatar = $type_flux . G_URL . "avatars/" . $db->f("perso_avatar");
+        $avatar = $type_flux . G_URL . "avatars/" . $perso->perso_avatar;
     }
     //
     // Partie permier avril
     //
     //$avatar = G_URL . "avatars/" . $aff_avat;
     $annee_en_cours = date('Y');
-    $debut_1avril   = mktime(0, 0, 1, 4, 1, $annee_en_cours);
-    $fin_1avril     = mktime(0, 0, 1, 4, 2, $annee_en_cours);
-    $is1avril       = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
+    $debut_1avril = mktime(0, 0, 1, 4, 1, $annee_en_cours);
+    $fin_1avril = mktime(0, 0, 1, 4, 2, $annee_en_cours);
+    $is1avril = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
     //
     // fin 1er avril
     //
-    $perso_px             = $db->f("perso_px");
-    $limite_niveau_actuel = $db->f("limite_niveau_actuel");
-    $limite_niveau        = $db->f("limite_niveau");
-    $energie              = $db->f("perso_energie");
-    $barre_xp             = barre_xp($perso_px, $limite_niveau_actuel, $limite_niveau);
-    $barre_hp             = barre_hp($db->f("perso_pv"), $db->f("perso_pv_max"));
-    $barre_energie        = barre_energie($db->f("perso_energie"));
+
+    $limite_niveau_actuel = $perso->px_limite_actuel();
+    $limite_niveau = $perso->px_limite();
+    $barre_xp = $perso->barre_xp();
+    $barre_hp = $perso->barre_hp();
+    $barre_energie = $perso->barre_energie();
+    $dlt_passee = $perso->dlt_passee();
 
     // récupération énergie divine pour les familiers divins
-    $barre_divine   = -1;
+    $barre_divine = -1;
     $energie_divine = -1;
-    if ($db->f("perso_gmon_cod") == 441)
+    if ($perso->perso_gmon_cod == 441)
     {
-        $db_divin = new base_delain;
-        $req      = "select dper_points from dieu_perso where dper_perso_cod = $perso_cod";
-        $db_divin->query($req);
-        $db_divin->next_record();
-        $energie_divine = $db_divin->f("dper_points");
-        $barre_divine   = barre_divine($energie_divine);
-    }
-    echo '<table width="100%" border="0">
-		<tr>
-		<td colspan="2" class="titre" valign="top"><div class="titre">' . $db->f("perso_nom") . '</div></td></tr>
-		<tr><td colspan="2" class="soustitre2"><div style="text-align:center;font-size:7pt;">' . $desc . '</div></td></tr>
-		<tr><td class="soustitre2" colspan="2">';
-    if ($db->f("dlt_passee") == 1)
-    {
-        echo '<strong>';
-    }
-    echo 'DLT : ' . $db->f("dlt");
-    if ($db->f("dlt_passee") == 1)
-    {
-        echo '</strong>';
-    }
-    echo '<br /><em>Puis ± ', $db->f('prochaine_dlt') . '</em>';
-    echo '<br></td></tr>
-		<tr><td class="soustitre2" colspan="2">Position : X=' . $db->f("pos_x") . '; Y=' . $db->f("pos_y") . '; ' . $db->f("etage_libelle") . '</td></tr>';
-    $num_perso = $perso_cod;
-    $guilde    = $db2->get_nom_guilde($num_perso);
-    echo '<tr><td class="soustitre2" colspan="2">';
-    if ($guilde == '')
-    {
-        echo 'Pas de guilde';
-    }
-    else
-    {
-        echo 'Guilde : ' . $guilde;
-    }
-    $niveau           = $db->f("perso_niveau");
-    $tours_impalpable = ($db->f('perso_nb_tour_intangible') > 1) ? ' tours' : ' tour';
-    $impalpable       = ($db->f('perso_tangible') == 'N') ? '<br /><em>Impalpable (' . $db->f('perso_nb_tour_intangible') . $tours_impalpable . ')</em>' : '';
-
-    if ($is1avril)
-    {
-        $niveau     = mt_rand(1, 10);
-        $impalpable = ' - <em>Impalpable</em>';
-        $dbavril    = new base_delain;
-        $dbavril->query('select gmon_nom from monstre_generique where gmon_cod < 50 and gmon_niveau < 5 and gmon_cod <> 7
-			order by random()
-			limit 1');
-        $dbavril->next_record();
-        $impalpable .= '<br /><em>Tué par un(e) ' . $dbavril->f('gmon_nom') . '</em>';
-        $barre_hp = barre_hp($db->f("perso_pv") / 3, $db->f("perso_pv_max"));
+        $dieu_perso = new dieu_perso();
+        $dieu_perso->getByPersoCod($perso->perso_cod);
+        $barre_divine = $perso->barre_divin();
     }
 
-    echo '</td></tr>
-		<tr><td valign="top"><center><a href="#" onClick="javascript:document.login.perso.value=' . $num_perso . ';document.login.submit();"><img width="110px" src="' . $avatar . '?' . $db->f("perso_avatar_version") . '" alt="Jouer ' . $db->f("perso_nom") . '"/></a>
-		', ($db->f('events') == 'f' ? '' : '<table><tr><td class="bouton" height="1" width="1"><span class="bouton">
-		<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $num_perso . '&is_log=' . $is_log . '\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title=\'Cliquez ici pour voir vos événements importants depuis votre dernière connexion\' value="Événements" /></span></td></tr></table>'), '
-		</center>
-		</td>
-		<td>
-		<table>
-		<tr><td>
-		<div class="image"><strong>Niveau ' . $niveau . '</strong>' . $impalpable . '</div>
-		</td></tr>
-		<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'barrepa_' . $pa . '.gif" alt="' . $pa . 'PA">
-		</div></td></tr>
-		<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'coeur.gif" alt=""> <div title="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" alt="' . $db->f("perso_pv") . '/' . $db->f("perso_pv_max") . ' PV" class="container-hp"><div class="barre-hp" style="width:'. $barre_hp.'%"></div></div> 
-		</div></td></tr>';
 
-    $is_enchanteur = $db->is_enchanteur($perso_cod);
-    if ($is_enchanteur)
+    $myguilde = "Pas de guilde";
+
+    $guilde_perso = new guilde_perso();
+    if ($guilde_perso->get_by_perso($perso->perso_cod))
     {
-        echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'energi10.png" alt=""> <div title="' . $energie . ' sur 100" alt="' . $energie . ' sur 100" class="container-nrj"><div class="barre-nrj" style="width:'. $barre_energie.'%"></div></div>
-			</div></td></tr>';
+        if ($guilde_perso->pguilde_valide == 'O')
+        {
+            $guilde = new guilde;
+            if ($guilde->charge($guilde_perso->pguilde_guilde_cod))
+            {
+                $myguilde = 'Guilde : ' . $guilde->guilde_nom;
+            }
+        }
     }
 
-    if ($energie_divine > 0)
-    {
-        echo '	<tr><td>
-			<div class="image"><img src="' . G_IMAGES . 'magie.gif" alt="" title="Énergie divine"> <div title="Énergie divine : ' . $energie_divine . '" alt="Énergie divine : ' . $energie_divine . '" class="container-div"><div class="barre-div" style="width:'. $barre_divine .'%"></div></div> 
-			</div></td></tr>';
-    }
 
-    echo '	<tr><td>
-		<div class="image"><img src="' . G_IMAGES . 'iconexp.gif" alt=""> <div title="' . $perso_px . ' PX, prochain niveau à ' . $limite_niveau . '" alt="' . $perso_px . ' PX sur ' . $limite_niveau . '" class="container-xp"><div class="barre-xp" style="width:'. $barre_xp.'%"></div></div> 
-		</div></td></tr>';
+    $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
+    $impalpable = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
 
-    echo '<tr><td>';
-    //
-    // Messages
-    //
-    $req_msg = "select count(*) as nombre from messages_dest where dmsg_perso_cod = $num_perso
-		and dmsg_lu = 'N' and dmsg_archive = 'N' ";
-    $db2->query($req_msg);
-    $db2->next_record();
-    $nb_msg = $db2->f("nombre");
-    if ($nb_msg != 0)
-    {
-        $txt_msg = '<span class="bouton">
-			<input type="button" class="bouton"
-				onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_messages.php?visu_perso=' . $num_perso . '\',\'messages\',\'scrollbars=yes,resizable=yes,width=800,height=600\');" title=\'Cliquez ici pour lire vos 10 derniers messages\' value="' . $nb_msg . ' messages non lus." />
-			</span>';
-        echo $txt_msg . '<br>';
-    }
-    //
-    // Transactions
-    //
-    $req_tran = "select * from transaction where (tran_vendeur = $num_perso or tran_acheteur = $num_perso)";
-    $db2->query($req_tran);
-    $nb_tran = $db2->nf();
-    if ($nb_tran != 0)
-    {
-        echo $nb_tran . ' transactions en attente.<br>';
-    }
-    echo '</td></tr></table>';
-    echo '</td></tr></table>';
+    $template = $twig->load('_tab_switch_perso.twig');
+    $options_twig = array(
+        'PERSO'         => $perso,
+        'POSITION'      => $position,
+        'ETAGE'         => $etage,
+        'MYGUILDE'      => $myguilde,
+        'AVATAR'        => $avatar,
+        'TYPE_FLUX'     => $type_flux,
+        'G_URL'         => G_URL,
+        'IS_LOG'        => $is_log,
+        'IMPALPABLE'    => $impalpable,
+        'G_IMAGES'      => G_IMAGES,
+        'BARRE_HP'      => $barre_hp,
+        'BARRE_ENERGIE' => $barre_energie,
+        'DIEU_PERSO'    => $dieu_perso,
+        'BARRE_DIVINE'  => $barre_divine,
+        'BARRE_XP'      => $barre_xp
+
+
+    );
+    echo $template->render($options_twig);
+
+
 }
 
 function affiche_case_perso_vide()
 {
-    global $type_flux, $compt_cod;
-    echo '<table width="100%" border="0">
-		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td><center><a href="', $type_flux, G_URL, 'cree_perso_compte.php?compt_cod=', $compt_cod, '">
-		<img src="', G_IMAGES, 'noperso.gif" alt="Créer un nouveau"></a></center></td></tr></table>';
+    global $type_flux, $compt_cod, $twig;
+    $template = $twig->load('_tab_switch_perso_vide.twig');
+    $options_twig = array(
+        'TYPE_FLUX' => $type_flux,
+        'G_URL'     => G_URL,
+        'G_IMAGES'  => G_IMAGES,
+        'COMPT_COD' => $compt_cod
+    );
+    echo $template->render($options_twig);
 }
 
 function affiche_case_monstre_vide()
 {
-    echo '<table width="100%" border="0">
-		<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas encore de monstre !<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-		<tr><td><center><img src="', G_IMAGES, 'noperso.gif" alt="Pas de monstre"/></center></td></tr></table>';
+    global $twig;
+    $template = $twig->load('_tab_switch_monstre_vide.twig');
+    $options_twig = array(
+        'G_IMAGES' => G_IMAGES
+    );
+    echo $template->render($options_twig);
 }
 
 /***************************************************************/
@@ -304,49 +136,48 @@ function affiche_case_monstre_vide()
 /***************************************************************/
 //
 /***************************************************************/
-/* Début de la page											*/
+/* Début de la page										    	*/
 /***************************************************************/
-$req = "select compt_ligne_perso, autorise_4e_perso(compt_quatre_perso, compt_dcreat) OR autorise_4e_monstre(compt_quatre_perso, compt_dcreat) as autorise_quatrieme, compt_type_quatrieme ";
-$req .= " from compte where compt_cod = " . $compt_cod;
-$db->query($req);
-$db->next_record();
-$nb_perso_max   = $db->f('compt_ligne_perso') * 3;
+$compte = new compte;
+$compte->charge($compt_cod);
+
+
+
+$nb_perso_max = $compte->compt_ligne_perso * 3;
 $nb_perso_ligne = 3;
-$ok_4           = ($db->f('autorise_quatrieme') != 'f');
+$ok_4 = $compte->autorise_4e_global();
+
+
 if ($ok_4)
 {
-    $nb_perso_max   = $db->f('compt_ligne_perso') * 4;
+    $nb_perso_max = $compte->compt_ligne_perso * 4;
     $nb_perso_ligne = 4;
 }
 $taille = 100 / $nb_perso_ligne;
-$type_4 = $db->f('compt_type_quatrieme');
+$type_4 = $compte->compt_type_quatrieme;
+
 /*********************/
 /* Persos classiques */
 /*********************/
-$req_perso = "select pcompt_perso_cod, case when 2 IN (perso_type_perso, perso_pnj) then 1 else 0 end as quatrieme
-	from perso_compte
-	inner join perso on perso_cod = pcompt_perso_cod
-	where pcompt_compt_cod = $compt_cod and perso_actif = 'O'
-	order by perso_cod ";
-$db->query($req_perso);
+$tab_perso = $compte->getPersosActifs(false, true);
 $perso_normaux = array();
-$quatriemes    = array();
+$quatriemes = array();
 
-$cpt_normaux    = 0;
+$cpt_normaux = 0;
 $cpt_quatriemes = 0;
 
-while ($db->next_record())
+foreach ($tab_perso as $detail_perso)
 {
-    if ($db->f('quatrieme') == 1)
+    if ($detail_perso->perso_type_perso == 2 || $detail_perso->perso_pnj == 2)
     {
-        $quatriemes[] = $db->f('pcompt_perso_cod');
-    }
-    else
+        $quatriemes[] = $detail_perso->perso_cod;
+    } else
     {
-        $perso_normaux[] = $db->f('pcompt_perso_cod');
+        $perso_normaux[] = $detail_perso->perso_cod;
     }
-    $premier_perso = $db->f('pcompt_perso_cod');
 }
+
+
 if (sizeof($quatriemes) == 0 && $ok_4)
 {
     $quatriemes[] = false;
@@ -364,20 +195,12 @@ if ($premier_perso == -1)
 
 echo '<div class="row row-eq-height">';     //Debut ligne des persos
 $numero_quatrieme = -1;
-$cpt              = 0;
+$cpt = 0;
 while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes))
 {
     // Est-on sur la case réservée au quatrième ?
     $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
 
-    // Début de ligne
-    //if (fmod($cpt, $nb_perso_ligne) == 0)
-    //{
-    //    echo '<tr>';
-    //}
-
-    // Début de case
-    //echo '<td valign="top" width="' . $taille . '%">';
     echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
     // Une case normale
@@ -387,8 +210,7 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
         if (!empty($perso_normaux[$cpt_normaux]))
         {
             affiche_perso($perso_normaux[$cpt_normaux]);
-        }
-        else
+        } else
         {
             affiche_case_perso_vide();
         }
@@ -403,12 +225,10 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
         if (!empty($quatriemes[$cpt_quatriemes]))
         {
             affiche_perso($quatriemes[$cpt_quatriemes]);
-        }
-        elseif ($type_4 != 2)
+        } elseif ($type_4 != 2)
         {
             affiche_case_perso_vide();
-        }
-        else
+        } else
         {
             affiche_case_monstre_vide();
         }
@@ -417,87 +237,59 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     }
 
     echo '</div>';      // fin de case!
-    //echo '</td>';
-    //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-    //{
-    //    echo '</tr>';
-    //}
     $cpt++;
 }
 echo '</div>';               //Fin de ligne des persos
 
 
-echo '<div class="row"><div class="col-lg-12">';
-echo '<center><table>';
-echo "<tr><td colspan='$nb_perso_ligne' ><span class='bouton'>";
-echo '<input type="button" class="bouton" onClick="javascript:window.open(\'' . $type_flux . G_URL . 'visu_derniers_evt.php?visu_perso=' . $premier_perso . '&is_log=' . $is_log . '&voir_tous=1\',\'evenements\',\'scrollbars=yes,resizable=yes,width=500,height=300\');" title="Voir les derniers événements de tous les personnages" value="Voir tous les événements" style="width:200px;"/></span>&nbsp;&nbsp;';
-echo "<span class='bouton'><input type='button' class='bouton' onClick='javascript:document.login.perso.value=$premier_perso; document.login.activeTout.value=1; document.login.submit();' title='Activer toutes les DLT' value='Activer toutes les DLT' style='width:200px;'/></span></td></tr>";
-echo "</table></center>";
-echo '</div></div>';
+global $twig;
+$template = $twig->load('_tab_switch_visu_evt.twig');
+$options_twig = array(
+    'G_IMAGES'       => G_IMAGES,
+    'G_URL'          => G_URL,
+    'PREMIER_PERSO'  => $premier_perso,
+    'IS_LOG'         => $is_log,
+    'NB_PERSO_LIGNE' => $nb_perso_ligne
+);
+echo $template->render($options_twig);
 
 
 /*************/
 /* Familiers */
 /*************/
-$req_perso = "select pfam_familier_cod,perso_cod
-	from perso,perso_compte,perso_familier
-	where pcompt_compt_cod = $compt_cod
-	and pcompt_perso_cod = pfam_perso_cod
-	and pfam_familier_cod = perso_cod
-	and perso_actif = 'O'
-	and perso_type_perso = 3
-	order by pfam_perso_cod ";
-$db->query($req_perso);
-if ($db->nf() != 0)
+$tab_fam = $compte->getPersosActifs(true, false);
+
+
+if (count($tab_fam) != 0)
 {
     //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
     echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Familiers : </div></div>';
 
     echo '<div class="row row-eq-height">';   //Debut ligne des familiers
-    $nb_perso    = $db->nf();
+
     $alias_perso = 0;
-    for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
+    //for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
+    foreach ($tab_fam as $fam)
     {
-        //if (fmod($cpt, $nb_perso_ligne) == 0)
-        //{
-        //    echo '<tr>';
-        //}
-        //echo '<td valign="top" width="' . $taille . '%">';
+
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
 
-        //tableau intérieur
-        if ($cpt < $nb_perso)
-        {
-            $db->next_record();
-            affiche_perso($db->f('perso_cod'));
-        }
-        //fin tableau intérieur
+
+
+        affiche_perso($fam->perso_cod);
+
         echo '</div>';
 
-        //echo '</td>';
-        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        //{
-        //    echo '</tr>';
-        //}
     }
-    echo '</div>';   //Fin ligne des familiers
+    echo '</div>';
 }
 
 /******************************************/
 /* Comptes sittés ?					   */
 /******************************************/
-$req_perso = "select pcompt_perso_cod
-	from perso,perso_compte,compte_sitting
-	where csit_compte_sitteur = $compt_cod
-	and csit_compte_sitte = pcompt_compt_cod
-	and csit_ddeb <= now()
-	and csit_dfin >= now()
-	and pcompt_perso_cod = perso_cod
-	and perso_actif = 'O'
-	and perso_type_perso = 1
-	order by perso_cod ";
-$db->query($req_perso);
-if ($db->nf() != 0)
+$tab_perso_sit = $compte->getPersosSittes(false, true);
+
+if (count($tab_perso_sit) != 0)
 {
     //
     // là on a des persos sittés, donc, on va quand même regarder ce qui se passe
@@ -508,100 +300,32 @@ if ($db->nf() != 0)
 
     echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
 
-    $nb_perso_max = $db->nf();
-    $nb_perso     = $nb_perso_max;
-    for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
+
+    foreach ($tab_perso_sit as $sit)
     {
-        if ($cpt < $nb_perso)
-        {
-            $db->next_record();
-        }
-        //if (fmod($cpt, $nb_perso_ligne) == 0)
-        //{
-        //    echo '<tr>';
-        //}
-        //echo '<td valign="top" width="' . $taille . '%">';
-
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-        //tableau intérieur
-        if ($cpt >= $nb_perso)
-        {
-            $nom      = 'Pas de perso';
-            $image    = '';
-            $barre_pa = '';
-            $barre_hp = '';
-            $barre_xp = '';
-            $enc      = '';
-            echo '<table width="100%" height="100%" border="0">
-				<tr><td height="100%" valign="center" class="soustitre2" style="text-align:center;">Pas de personnage<br></td></tr>
-				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-				<tr><td height="100%" valign="center">&nbsp;<br></td></tr>
-				<tr><td><center><img src="' . G_IMAGES . 'noperso.gif"></center></td></tr></table>';
-        }
-        else
-        {
-            affiche_perso($db->f('pcompt_perso_cod'));
-        }
-        //fin tableau intérieur
-
+        affiche_perso($sit->perso_cod);
         echo '</div>';
-        //echo '</td>';
-        //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-        //{
-        //    echo '</tr>';
-        //}
+
     }
     //
     // bon, on sait qu'on a sitté des persos, maintenant, on va quand même voir s'il y a des familiers
     //
-    $req_perso = "select pfam_familier_cod,perso_cod
-		from perso,perso_compte,perso_familier,compte_sitting
-		where csit_compte_sitteur = $compt_cod
-		and csit_compte_sitte = pcompt_compt_cod
-		and csit_ddeb <= now()
-		and csit_dfin >= now()
-		and pcompt_perso_cod = pfam_perso_cod
-		and pfam_familier_cod = perso_cod
-		and perso_actif = 'O'
-		and perso_type_perso = 3
-		order by pfam_perso_cod ";
-    $db->query($req_perso);
-    if ($db->nf() != 0)
+
+    $tab_fam_sit = $compte->getPersosSittes(true, false);
+
+    if (count($tab_fam_sit) != 0)
     {
 
-        $nb_perso_max = $db->nf();
-        $nb_perso     = $nb_perso_max;
-        $alias_perso  = 0;
-        for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
-        {
-            if ($cpt < $nb_perso)
+        $nb_perso = $nb_perso_max;
+        $alias_perso = 0;
+        foreach ($tab_fam_sit as $fam_sit)
+            for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
             {
-                $db->next_record();
+                echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+                affiche_perso($fam_sit->perso_cod);
+                echo '</div>';
             }
-            //if (fmod($cpt, $nb_perso_ligne) == 0)
-            //{
-            //    echo '<tr>';
-            //}
-            //echo '<td valign="top" width="' . $taille . '%">';
-            //echo '<!--' . $cpt . '-' . $nb_perso_max . '-' . $nb_perso . '-->';
-
-            echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-            //tableau intérieur
-            if ($cpt < $nb_perso)
-            {
-                affiche_perso($db->f('perso_cod'));
-            }
-            //fin tableau intérieur
-            echo '</div>';
-
-            //echo '</td>';
-            //if (fmod(($cpt + 1), $nb_perso_ligne) == 0)
-            //{
-            //    echo '</tr>';
-            //}
-        }
     }
     echo '</div>';               //Fin de ligne des persos+familiers sittés
 }

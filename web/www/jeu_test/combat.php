@@ -1,11 +1,11 @@
 <?php
 include "blocks/_header_page_jeu.php";
+include "../includes/constantes.php";
 $param = new parametres();
-ob_start();
-?>
-    <script language="javascript" src="javascripts/changestyles.js"></script>
 
-<?php
+
+//ob_start();
+
 $erreur = 0;
 if ($is_intangible)
 {
@@ -19,58 +19,59 @@ if ($is_refuge)
 }
 if ($erreur == 0)
 {
-    $arme_dist = $db->arme_distance($perso_cod);
-    $req2 = "select mcom_nom from perso, mode_combat where perso_cod = $perso_cod and perso_mcom_cod = mcom_cod";
-    $db->query($req2);
-    $db->next_record();
-    $mode = $db->f("mcom_nom");
-    ?>
+    $arme_dist = $perso->has_arme_distance();
+    //$arme_dist = $db->arme_distance($perso_cod);
+    $mc = new mode_combat();
+    $mc->charge($perso->perso_mcom_cod);
+    $mode = $mc->mcom_nom;
 
-    <form name="attaque" method="post" action="action.php">
-    <input type="hidden" name="methode" value="attaque2">
-    <?php
 
     // Arme équipée
-    $arme_req = "	SELECT obj_nom
-		FROM objets
-		LEFT JOIN perso_objets ON perobj_obj_cod=obj_cod
-		LEFT JOIN objet_generique ON gobj_cod=obj_gobj_cod
-		LEFT JOIN type_objet ON tobj_cod=gobj_tobj_cod
-		WHERE perobj_equipe = 'O'
-			AND tobj_libelle = 'Arme'
-			AND perobj_perso_cod = $perso_cod
-		ORDER BY obj_gobj_cod ASC, obj_cod ASC";
-    $db->query($arme_req);
-    if ($db->next_record())
-        $obj_nom = $db->f("obj_nom");
-    else
+    if (!$obj = $perso->get_arme_equipee())
+    {
         $obj_nom = 'aucune';
+    } else
+    {
+        $obj_nom = $obj->obj_nom;
+    }
+
+    $distance_vue = $perso->distance_vue();
+    $portee       = $perso->portee_attaque();
+    if ($distance_vue <= $portee)
+    {
+        $portee = $distance_vue;
+    }
+
 
     // Méthode de combat
     include('inc_competence_combat.php');
 
-    echo "Arme utilisée : <strong>" . $obj_nom . "</strong>. ";
-    echo "Choisissez votre méthode de combat : <select name=\"type_at\">";
-    echo $resultat_inc_competence_combat;
 
-    echo "</select> - mode " . $mode . ' <a href="perso2.php?m=3">(changer ?)</a>';
+    $lc             = new lock_combat();
+    $tab_lock_cible = $lc->getBy_lock_cible($perso_cod);
 
-    echo "<br>";
-    echo "Souhaitez-vous <a href='perso2.php?m=5'>défier un aventurier ?</a>";
-    echo "<br>";
-
-    if ($param->getparm(56) == 1)
+    if (!$tab_lock_cible)
     {
-        include "include_tab_attaque3.php";
+        $tab_vue = $perso->get_vue_non_lock();
     } else
     {
-        include "include_tab_attaque2.php";
+        $tab_vue = $perso->get_vue_lock();
     }
-    ?>
-    <input type="submit" class="test centrer" value="Attaquer !">
-    <?php
+
 }
-$contenu_page = ob_get_contents();
-ob_end_clean();
-include "blocks/_footer_page_jeu.php";
+
+$template     = $twig->load('combat.twig');
+$options_twig = array(
+    'INCL_TAB_ATTAQUE' => $incl_tab_attaque,
+    'ARME_UTILISEE'    => $obj_nom,
+    'COMP_COMBAT'      => $resultat_inc_competence_combat,
+    'MODE'             => $mode,
+    'TAB_VUE'          => $tab_vue,
+    'TYPE_PERSO'       => $perso_type_perso,
+    'TAB_BLESSURES'    => $tab_blessures,
+    'PORTEE'           => $portee
+);
+echo $template->render(array_merge($var_twig_defaut, $options_twig));
+
+
 

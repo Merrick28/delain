@@ -1,4 +1,10 @@
 <?php
+/**
+ * Modif Merrick
+ * Cette page doit aussi prendre en compte les variables twig pour commencer à remplacer
+ * le moteur de template de phplib
+ *
+ */
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
@@ -29,13 +35,14 @@ $is_intangible = $perso->isIntangible();
 if ($is_intangible)
 {
     $pa_ramasse = $param->getparm(42);
-}
-else
+} else
 {
     $pa_ramasse = $param->getparm(41);
 }
 $degats_perso    = $perso->degats_perso();
 $det_deg         = explode(";", $degats_perso);
+$deg_min         = $det_deg[0];
+$deg_max         = $det_deg[1];
 $prochain_niveau = $perso->px_limite();
 
 $gerant = 'N';
@@ -120,8 +127,7 @@ $t->set_var('PERSO_NOM', $nom_perso);
 if ($is_intangible)
 {
     $intangible = "<em>Perso impalpable !</em><br><br>";
-}
-else
+} else
 {
     $intangible = '';
 }
@@ -138,10 +144,9 @@ $t->set_var('PERSO_PV_MAX', $perso->perso_pv_max);
 // Barre d'énergie enchanteur
 if ($is_enchanteur)
 {
-    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:". $barre_energie."%\"></div></div>";
+    $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:" . $barre_energie . "%\"></div></div>";
     $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
-}
-else
+} else
 {
     $enchanteur = '';
     $forge      = '';
@@ -153,9 +158,8 @@ $t->set_var('FORGE', $forge);
 // Barre d'énergie pour familiers divins
 if ($is_fam_divin == 1)
 {
-    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-div\"><div class=\"barre-div\" style=\"width:". $barre_divine."%\"></div></div>";
-}
-else
+    $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-div\"><div class=\"barre-div\" style=\"width:" . $barre_divine . "%\"></div></div>";
+} else
 {
     $fam_divin = '';
 }
@@ -187,8 +191,7 @@ $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 if ($px_actuel >= $prochain_niveau)
 {
     $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>';
-}
-else
+} else
 {
     $passage_niveau = '';
 }
@@ -198,36 +201,35 @@ $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 if ($perso->is_perso_quete())
 {
     $perso_quete = "<hr /><a href=\"$chemin/quete_perso.php\"><strong>Quête</strong></a>";
-}
-else
+} else
 {
     $perso_quete = '';
 }
 $t->set_var('PERSO_QUETE', $perso_quete);
 
 // Menu pour gérer les quetes perso en cours ou terminée
-$nb_quete_auto=$perso->perso_nb_auto_quete();
-if ($nb_quete_auto["nb_total"]*1>0)
+$nb_quete_auto = $perso->perso_nb_auto_quete();
+if ($nb_quete_auto["nb_total"] * 1 > 0)
 {
-    $perso_auto_quete = "<img src=\"". G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes ".( 1*$nb_quete_auto["nb_encours"]>0 ? "(".$nb_quete_auto["nb_encours"].")" : "")."</a><br>";
-}
-else
+    $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes " . (1 * $nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
+} else
 {
     $perso_auto_quete = '';
 }
 $t->set_var('PERSO_AUTO_QUETE', $perso_auto_quete);
 
 // lieux
+$tab_lieu   = array();
 $perso_lieu = "";
 if ($perso->is_lieu())
 {
     $tab_lieu = $perso->get_lieu();
-    $temp = $tab_lieu['lieu'];
+    $temp     = $tab_lieu['lieu'];
     if (!empty($tab_lieu['lieu']->lieu_url))
     {
         $nom_lieu   = $tab_lieu['lieu']->lieu_nom;
         $libelle    = $tab_lieu['lieu_type']->tlieu_libelle;
-        $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><strong>" . $nom_lieu  . "</strong> (" . $libelle . ")</a>";
+        $perso_lieu = "<hr /><a href=\"$chemin/lieu.php\"><strong>" . $nom_lieu . "</strong> (" . $libelle . ")</a>";
     }
 }
 $t->set_var('PERSO_LIEU', $perso_lieu);
@@ -239,8 +241,7 @@ $nb_msg = count($tab);
 if ($nb_msg != 0)
 {
     $perso_messagerie = "<strong>Messagerie (" . $nb_msg . ")</strong>";
-}
-else
+} else
 {
     $perso_messagerie = "Messagerie";
 }
@@ -297,8 +298,7 @@ $t->set_var('RAMASSER', $ramasser);
 if ($transaction > 0)
 {
     $perso_transactions = "<strong>Transactions (" . $transaction . ")</strong>";
-}
-else
+} else
 {
     $perso_transactions = "Transactions";
 }
@@ -309,8 +309,7 @@ if ($is_admin_monstre)
 {
     $wiki           = '<a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>';
     $option_monstre = '<img src="' . G_IMAGES . 'iconeswitch.gif" alt=""> <a href="' . $chemin . '/option_monstre.php">Option du monstre</a>';
-}
-else
+} else
 {
     $wiki           = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
     $option_monstre = '';
@@ -319,7 +318,7 @@ else
 // 2018-10-30 - Marlyza - Ajout menu téléportation
 if ($is_admin_monstre || ($droit['modif_perso'] == 'O'))
 {
-    $option_monstre.= ($option_monstre=="" ? "" : "<br>").'<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_teleportation.php">Téléportation</a><br>';
+    $option_monstre .= ($option_monstre == "" ? "" : "<br>") . '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_teleportation.php">Téléportation</a><br>';
 }
 
 $t->set_var('WIKI', $wiki);
@@ -334,8 +333,7 @@ if ($droit['controle'] == 'O')
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/multi_trace.php">Visu des multi</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/sitting.php">Sittings > 5 j.</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_interaction_4e.php">Intéractions 4e persos</a><br>';
-}
-else
+} else
 {
     $controle = '';
 }
@@ -344,8 +342,7 @@ else
 if ($droit['modif_perso'] == 'O')
 {
     $modif_perso = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_perso_edit.php">Modif. perso</a><br>';
-}
-else
+} else
 {
     $modif_perso = '';
 }
@@ -355,8 +352,7 @@ if ($droit['modif_gmon'] == 'O')
 {
     $modif_monstre = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_type_monstre_edit.php">Modif. types monstre</a><br>
 		<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_repartition_monstres.php">Modif. répart. monstres</a><br>';
-}
-else
+} else
 {
     $modif_monstre = '';
 }
@@ -366,8 +362,7 @@ else
 if ($droit['carte'] == 'O')
 {
     $droit_carte = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_etage.php">Modif. étages</a><br>';
-}
-else
+} else
 {
     $droit_carte = '';
 }
@@ -376,8 +371,7 @@ else
 if ($droit['controle_admin'] == 'O')
 {
     $controle_admin = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_admins.php">Controle admins</a><br>';
-}
-else
+} else
 {
     $controle_admin = '';
 }
@@ -387,8 +381,7 @@ if ($droit['droits'] == 'O')
 {
     $gestion_droits = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_gestion_droits.php">Gestion des droits</a><br>';
     $gestion_droits .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_params.php">Gestion des paramètres</a><br>';
-}
-else
+} else
 {
     $gestion_droits = '';
 }
@@ -397,8 +390,7 @@ else
 if ($droit['objet'] == 'O')
 {
     $modif_objets = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_objet_generique_edit.php">Gestion objets generiques</a><br>';
-}
-else
+} else
 {
     $modif_objets = '';
 }
@@ -410,8 +402,7 @@ if ($droit['enchantements'] == 'O')
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_enluminure.php">Enluminure</a><br>';
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_magie.php">Modif. sorts</a><br>';
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_bonusmalus.php">Modif. bonus/malus</a><br>';
-}
-else
+} else
 {
     $droit_enchantement = '';
 }
@@ -420,8 +411,7 @@ else
 if ($droit['potions'] == 'O')
 {
     $droit_potion = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_potions.php">Création de potions</a><br>';
-}
-else
+} else
 {
     $droit_potion = '';
 }
@@ -430,8 +420,7 @@ else
 if ($droit['acces_log'] == 'O')
 {
     $droit_logs = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_visu_logs.php">Voir les logs</a><br>';
-}
-else
+} else
 {
     $droit_logs = '';
 }
@@ -440,8 +429,7 @@ else
 if ($droit['modif_perso'] == 'O')
 {
     $quete_auto = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_quete_auto_edit.php">Quetes auto</a><br>';
-}
-else
+} else
 {
     $quete_auto = '';
 }
@@ -450,8 +438,7 @@ else
 if ($droit['news'] == 'O')
 {
     $news = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_news.php">Lancer une news</a><br>';
-}
-else
+} else
 {
     $news = '';
 }
@@ -460,8 +447,7 @@ else
 if ($droit['animations'] == 'O')
 {
     $animations = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_animations.php">Animations</a><br>';
-}
-else
+} else
 {
     $animations = '';
 }
@@ -470,8 +456,7 @@ else
 if ($droit['factions'] == 'O')
 {
     $factions = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_factions.php">Factions</a><br>';
-}
-else
+} else
 {
     $factions = '';
 }
@@ -480,8 +465,7 @@ else
 if ($admin_echoppe == 'O')
 {
     $echoppe = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/admin_echoppe.php">Admin. échoppes</a><br>';
-}
-else
+} else
 {
     $echoppe = '';
 }
@@ -490,26 +474,24 @@ else
 if ($gerant == 'O')
 {
     $gerant = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/gere_echoppe.php">Gestion échoppes</a><br>';
-}
-else
+} else
 {
     $gerant = '';
 }
 
 // Gestion des favoris
 $arr_favoris = $perso->get_favoris();
-if (count($arr_favoris)==0)
+if (count($arr_favoris) == 0)
 {
-    $favoris='<div id="barre-favoris" style="display:none;"><hr /></div>';
-}
-else
+    $favoris = '<div id="barre-favoris" style="display:none;"><hr /></div>';
+} else
 {
-    $favoris='<div id="barre-favoris"><hr />';
+    $favoris = '<div id="barre-favoris"><hr />';
     foreach ($arr_favoris as $key => $fav)
     {
-        $favoris.='<div id="fav-link-' . $fav["pfav_cod"] . '"><img src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
+        $favoris .= '<div id="fav-link-' . $fav["pfav_cod"] . '"><img src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
     }
-     $favoris.='</div>';
+    $favoris .= '</div>';
 }
 $t->set_var('FAVORIS', $favoris);
 
@@ -518,11 +500,10 @@ $nv5 = $perso->sort_lvl5();
 
 $req = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
 $mem = $perso->sort_memo();
-if ($nv5 > 0 && $mem > 5)
+if ($perso->sort_lvl5() > 0 && $perso->sort_memo() > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
-}
-else
+} else
 {
     $voie_magique = '';
 }
@@ -532,8 +513,7 @@ $t->set_var('VOIE_MAGIQUE', $voie_magique);
 if ($is_enlumineur)
 {
     $enlumineur = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enluminure_general.php">Enluminure</a><br>';
-}
-else
+} else
 {
     $enlumineur = '';
 }
@@ -543,19 +523,17 @@ $t->set_var('ENLUMINEUR', $enlumineur);
 if ($potions == 1)
 {
     $potion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/comp_potions.php">Alchimie</a><br>';
-}
-else
+} else
 {
     $potion = '';
 }
 $t->set_var('POTION', $potion);
 
 //religion
-if ($religion || $fidele_gerant || $admin_dieu )
+if ($religion || $fidele_gerant || $admin_dieu)
 {
     $religion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/religion.php">Religion</a><br>';
-}
-else
+} else
 {
     $religion = '';
 }
@@ -587,7 +565,7 @@ if ($pcomp->getByPersoComp($perso->perso_cod, 86))
 
 $pc  = new perso_commandement();
 $tab = $pc->getBy_perso_subalterne_cod($perso->perso_cod);
-if($tab !== false)
+if ($tab !== false)
 {
     $commandement = '<img src="' . G_IMAGES . 'concentration.gif" alt=""> <a href="' . $chemin . '/comp_commandement.php">Commandement</a><br>';
 }
@@ -671,8 +649,7 @@ $t->set_var('CONTROLE_ADMIN', $controle_admin);
 if ($is_milice == 1)
 {
     $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""><a href="' . $chemin . '/milice.php">Milice</a><br>';
-}
-else
+} else
 {
     $milice = '';
 }
@@ -714,12 +691,12 @@ $votesRefusee = count($tab);
 //
 // gestion de la barre de switch rapide (seulement sur des pages spécifiques)
 //
-$barre_switch_rapide='';
+$barre_switch_rapide = '';
 
-if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_rapide.php" )))
+if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapide.php")))
 {
-    $pdo    = new bddpdo;
-    $req    = "SELECT perso_cod, 
+    $pdo   = new bddpdo;
+    $req   = "SELECT perso_cod, 
                       perso_nom, 
                       perso_pv, 
                       perso_pv_max, 
@@ -763,131 +740,148 @@ if (!in_array( $_SERVER["PHP_SELF"] , array( "/jeu_test/switch.php", "/switch_ra
                     join perso on perso_cod=pfam_familier_cod where perso_actif='O'
                 ) as p on p_perso_cod = perso_cod
                 ORDER BY type, ordre, perso_type_perso ";
-    $stmt   = $pdo->prepare($req);
-    $stmt   = $pdo->execute(array($compt_cod,$compt_cod,$compt_cod,$compt_cod), $stmt);
-    $count = 1*$stmt->rowCount();
-    $rows = $stmt->fetchAll();
+    $stmt  = $pdo->prepare($req);
+    $stmt  = $pdo->execute(array($compt_cod, $compt_cod, $compt_cod, $compt_cod), $stmt);
+    $count = 1 * $stmt->rowCount();
+    $rows  = $stmt->fetchAll();
 
     // pour optimiser l'affichage on compte le nombre de perso et de fam
-    $nb_perso = 0;
+    $nb_perso    = 0;
     $nb_familier = 0;
-    $nb_button = sizeof($rows);
-    foreach($rows as $result)
+    $nb_button   = sizeof($rows);
+    foreach ($rows as $result)
     {
-        if ((1*$result["perso_type_perso"])==3)
+        if ((1 * $result["perso_type_perso"]) == 3)
             $nb_familier++;
         else
             $nb_perso++;
     }
 
-    $liste_boutons = "" ;
-    $col = 0 ;
-    if ($nb_familier>0)
+    $liste_boutons = "";
+    $col           = 0;
+    if ($nb_familier > 0)
         $col_class = 'col-xs-12  col-sm-6';                         // perso + fam on préparera regroupemet par 2
-    else if ($nb_perso>3)
+    else if ($nb_perso > 3)
         $col_class = 'col-xs-12 col-sm-6 col-md-3 col-lg-3';        //pas de fam juste 4 persos
     else
         $col_class = 'col-xs-12 col-sm-6 col-md-4 col-lg-4';        // pas de fam juste 3 persos ou moins
-    foreach($rows as $result)
+    foreach ($rows as $result)
     {
-            if (($col %2 == 1) && ((1*$result["perso_type_perso"])!=3) && ($nb_familier>0))
-            {
-                // le dernier perso n'avait pas de fam, on padd
-                $liste_boutons.= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
-                $col++;
-            }
-            if (($col %2 == 0) && ($nb_familier>0))
-            {
-                // regroupement des cases par paire (le perso et son fam) seulement s'il y a des familiers
-                if ($nb_perso>3)
-                    $liste_boutons.= '<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">';
-                else
-                    $liste_boutons.= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">';
-            }
-            // Raccourcir les nom en retirant les tags superflux
-            $_aff_nom = $result["perso_nom"] ;
-            if (substr($_aff_nom, 0, 12)=="Familier de ")
-            {
-                $_aff_nom = "Fam. de ".substr($_aff_nom, 12);
-                $pesprit = strpos($_aff_nom,  "(esprit de ");
-                if ($pesprit>0) $_aff_nom = substr($_aff_nom, 0, $pesprit)."(".substr($_aff_nom, $pesprit+11);
-            }
-            else if (substr($_aff_nom, 0, 31)=="Image démoniaque, Familier de ")
-            {
-                $_aff_nom = "Kirga de ".substr($_aff_nom, 31);
-            }
-            else if (substr($_aff_nom, 0, 27)=="Kirga-Uh-Kmot, Familier de ")
-            {
-                $_aff_nom = "Kirga de ".substr($_aff_nom, 27);
-            }
+        if (($col % 2 == 1) && ((1 * $result["perso_type_perso"]) != 3) && ($nb_familier > 0))
+        {
+            // le dernier perso n'avait pas de fam, on padd
+            $liste_boutons .= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
+            $col++;
+        }
+        if (($col % 2 == 0) && ($nb_familier > 0))
+        {
+            // regroupement des cases par paire (le perso et son fam) seulement s'il y a des familiers
+            if ($nb_perso > 3)
+                $liste_boutons .= '<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">';
             else
-            {
-                $_aff_nom = preg_replace("/ \(n° (\d+)\)$/", "", $_aff_nom);
-            }
+                $liste_boutons .= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">';
+        }
+        // Raccourcir les nom en retirant les tags superflux
+        $_aff_nom = $result["perso_nom"];
+        if (substr($_aff_nom, 0, 12) == "Familier de ")
+        {
+            $_aff_nom = "Fam. de " . substr($_aff_nom, 12);
+            $pesprit  = strpos($_aff_nom, "(esprit de ");
+            if ($pesprit > 0) $_aff_nom = substr($_aff_nom, 0, $pesprit) . "(" . substr($_aff_nom, $pesprit + 11);
+        } else if (substr($_aff_nom, 0, 31) == "Image démoniaque, Familier de ")
+        {
+            $_aff_nom = "Kirga de " . substr($_aff_nom, 31);
+        } else if (substr($_aff_nom, 0, 27) == "Kirga-Uh-Kmot, Familier de ")
+        {
+            $_aff_nom = "Kirga de " . substr($_aff_nom, 27);
+        } else
+        {
+            $_aff_nom = preg_replace("/ \(n° (\d+)\)$/", "", $_aff_nom);
+        }
 
-            // ajout d'info PA, PV et DLT
-            $_blessure = 100*(1*$result["perso_pv"])/(1*$result["perso_pv_max"]);
-            $_aff_perso_pv = $_blessure>50 ? ($_blessure==100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>')  : ( $_blessure>25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">'.$result["perso_pv"].'</span>' );
-            $_aff_perso_pa = $result["perso_pa"]==0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">'.$result["perso_pa"].'</span>';
-            $_aff_dlt = $result["dlt"] == "" ? "" :  " &rArr; ".$result["dlt"];
-            $_aff_nom.="<br><span style=\"color:white; font-size:9px;font-weight:normal;\">". $_aff_perso_pv ."/". $result["perso_pv_max"]." - ". $_aff_perso_pa ."PA".$_aff_dlt."</span>";
+        // ajout d'info PA, PV et DLT
+        $_blessure     = 100 * (1 * $result["perso_pv"]) / (1 * $result["perso_pv_max"]);
+        $_aff_perso_pv = $_blessure > 50 ? ($_blessure == 100 ? $result["perso_pv"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>') : ($_blessure > 25 ? '<span style="color:#ffd700;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>' : '<span style="color:#ff69b4;font-size:9px;font-weight:bold;">' . $result["perso_pv"] . '</span>');
+        $_aff_perso_pa = $result["perso_pa"] == 0 ? $result["perso_pa"] : '<span style="color:lightgreen;font-size:9px;font-weight:bold;">' . $result["perso_pa"] . '</span>';
+        $_aff_dlt      = $result["dlt"] == "" ? "" : " &rArr; " . $result["dlt"];
+        $_aff_nom      .= "<br><span style=\"color:white; font-size:9px;font-weight:normal;\">" . $_aff_perso_pv . "/" . $result["perso_pv_max"] . " - " . $_aff_perso_pa . "PA" . $_aff_dlt . "</span>";
 
-            $_aff_msg = "" ;
-            if( 1*$result["nb_msg_non_lu"]>0) $_aff_msg = '<span class="badge-btn">'.$result["nb_msg_non_lu"].'</span>';
+        $_aff_msg = "";
+        if (1 * $result["nb_msg_non_lu"] > 0) $_aff_msg = '<span class="badge-btn">' . $result["nb_msg_non_lu"] . '</span>';
 
-            if ($result["dlt_passee"]!=0)
-            {
-                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch-dlt">'.$_aff_nom.'</button></div>';
-            }
-            else if ($result["perso_cod"]==$perso_cod)
-            {
-                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch-act">'.$_aff_nom.'</button></div>';
-            }
-            else
-            {
-                $liste_boutons.= '<div class="'. $col_class.'">'.$_aff_msg.'<button id='.$result["perso_cod"].' class="button-switch">'.$_aff_nom.'</button></div>';
-            }
+        if ($result["dlt_passee"] != 0)
+        {
+            $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch-dlt">' . $_aff_nom . '</button></div>';
+        } else if ($result["perso_cod"] == $perso_cod)
+        {
+            $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch-act">' . $_aff_nom . '</button></div>';
+        } else
+        {
+            $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch">' . $_aff_nom . '</button></div>';
+        }
 
-            if (($col %2 == 1) && ($nb_familier>0))
-            {
-                // regroupement des cases par paire (le perso et son fam)
-                $liste_boutons.= '</div>';
-            }
+        if (($col % 2 == 1) && ($nb_familier > 0))
+        {
+            // regroupement des cases par paire (le perso et son fam)
+            $liste_boutons .= '</div>';
+        }
 
-            $col++ ; // colonne suivante
+        $col++; // colonne suivante
     }
 
-    if (($col %2 == 1) && ($nb_familier>0))
+    if (($col % 2 == 1) && ($nb_familier > 0))
     {
         // le dernier perso n'avait pas de fam, on padd
-        $liste_boutons.= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
+        $liste_boutons .= '<div class="col-xs-12  col-sm-6"><button class="button-switch">&nbsp;</button></div></div>';
         $col++;
     }
 
-    if (($liste_boutons!='') && ($nb_button<=16))
+    if (($liste_boutons != '') && ($nb_button <= 16))
     {
-        $barre_switch_rapide='<div id="colonne0" data-switch-bar="standard" style="display:block"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
-    }
-    else
+        $barre_switch_rapide = '<div id="colonne0" data-switch-bar="standard" style="display:block"><div class="container-fluid"><div class="row">' . $liste_boutons . '</div></div></div>';
+    } else
     {
         // Au dessus de 16 persos, il doit s'agir d'un admin monstres, on cache la barre par défaut (sera affiché si la souris passe en haut de l'écran
-        $barre_switch_rapide='<div id="colonne0" data-switch-bar="autohide" style="display:none"><div class="container-fluid"><div class="row">'.$liste_boutons.'</div></div></div>';
+        $barre_switch_rapide = '<div id="colonne0" data-switch-bar="autohide" style="display:none"><div class="container-fluid"><div class="row">' . $liste_boutons . '</div></div></div>';
     }
 }
+
 $t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
 
-$barre_menu_icone='
+$barre_menu_icone = '
 <div id="colonne0-icons"><center>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/frame_vue.php"><img title="Vue" src="' . G_IMAGES . 'eye.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/evenements.php"><img title="Evénements" src="' . G_IMAGES . 'events.png"></a>'.($nb_evt_non_lu<=0 ? '' : '<span class="badge">'.$nb_evt_non_lu.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/evenements.php"><img title="Evénements" src="' . G_IMAGES . 'events.png"></a>' . ($nb_evt_non_lu <= 0 ? '' : '<span class="badge">' . $nb_evt_non_lu . '</span>') . '</div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/inventaire.php"><img title="Inventaire" src="' . G_IMAGES . 'chest.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/transactions2.php"><img title="Transaction" src="' . G_IMAGES . 'transac.png"></a>'.($transaction<=0 ? '' : '<span class="badge">'.$transaction.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/transactions2.php"><img title="Transaction" src="' . G_IMAGES . 'transac.png"></a>' . ($transaction <= 0 ? '' : '<span class="badge">' . $transaction . '</span>') . '</div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/combat.php"><img title="Combat" src="' . G_IMAGES . 'war.png"></a></div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/magie.php"><img title="Magie" src="' . G_IMAGES . 'book.png"></a></div>
-	<div style="float: left;  width:12.5%;"><a href="/jeu_test/messagerie2.php"><img title="Messagerie" src="' . G_IMAGES . 'mail.png"></a>'.($nb_msg<=0 ? '' : '<span class="badge">'.$nb_msg.'</span>').'</div>
+	<div style="float: left;  width:12.5%;"><a href="/jeu_test/messagerie2.php"><img title="Messagerie" src="' . G_IMAGES . 'mail.png"></a>' . ($nb_msg <= 0 ? '' : '<span class="badge">' . $nb_msg . '</span>') . '</div>
 	<div style="float: left;  width:12.5%;"><a href="/jeu_test/switch.php"><img title="Gestion de compte" src="' . G_IMAGES . 'castle.png"></a></div>
 </center></div>';
 //$barre_menu_icone='';
 $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
 
+
+// variables twig
+$var_twig_defaut = array(
+    'G_IMAGES'            => G_IMAGES,
+    'G_URL'               => G_URL,
+    'PERSO'               => $perso,
+    'BARRE_MENU_ICONE'    => $barre_menu_icone,
+    'TYPE_FLUX'           => $type_flux,
+    'DEG_MIN'             => $deg_min,
+    'DEG_MAX'             => $deg_max,
+    'POSITION'            => $var_menu_pos,
+    'ETAGE'               => $var_menu_etage,
+    'LIEU'                => $tab_lieu,
+    'PA_RAMASSE'          => $pa_ramasse,
+    'DROIT'               => $droit,
+    'NB_MSG'              => $nb_msg,
+    'GERANT'              => $gerant,
+    'COMPTE'              => $compte,
+    'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide,
+    'IS_INTANGIBLE'       => $is_intangible,
+    'IS_REFUGE'           => $is_refuge
+);
 ?>

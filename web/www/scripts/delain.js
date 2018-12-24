@@ -75,35 +75,37 @@ $(document).on('change', '.change_class_on_select', function () {
         $("#" + dest).addClass(newstyle);
     }
 });
+$(document).ready(function () {
+    $(".change_class_on_hover").hover(
+        function () {
+            var newstyle = $(this).attr("data-class-onhover");
+            var dest = $(this).attr("data-class-dest");
+            $("#" + dest).addClass(newstyle);
+        },
+        function () {
+            var newstyle = $(this).attr("data-class-onhover");
+            var dest = $(this).attr("data-class-dest");
+            $("#" + dest).removeClass(newstyle);
+        }
+    );
 
-$(".change_class_on_hover").hover(
-    function () {
-        var newstyle = $(this).attr("data-class-onhover");
-        var dest = $(this).attr("data-class-dest");
-        $("#" + dest).addClass(newstyle);
-    },
-    function () {
-        var newstyle = $(this).attr("data-class-onhover");
-        var dest = $(this).attr("data-class-dest");
-        $("#" + dest).removeClass(newstyle);
-    }
-);
 
-$(".double_change_class_on_hover").hover(
-    function () {
-        var newstyle1 = $(this).attr("data-class-onhover1");
-        var newstyle2 = $(this).attr("data-class-onhover2");
-        var dest1 = $(this).attr("data-class-dest1");
-        var dest2 = $(this).attr("data-class-dest2");
-        $("#" + dest1).addClass(newstyle1);
-        $("#" + dest2).addClass(newstyle2);
-    },
-    function () {
-        var newstyle1 = $(this).attr("data-class-onhover1");
-        var newstyle2 = $(this).attr("data-class-onhover2");
-        var dest1 = $(this).attr("data-class-dest1");
-        var dest2 = $(this).attr("data-class-dest2");
-        $("#" + dest1).removeClass(newstyle1);
-        $("#" + dest2).removeClass(newstyle2);
-    }
-);
+    $(".double_change_class_on_hover").hover(
+        function () {
+            var newstyle1 = $(this).attr("data-class-onhover1");
+            var newstyle2 = $(this).attr("data-class-onhover2");
+            var dest1 = $(this).attr("data-class-dest1");
+            var dest2 = $(this).attr("data-class-dest2");
+            $("#" + dest1).addClass(newstyle1);
+            $("#" + dest2).addClass(newstyle2);
+        },
+        function () {
+            var newstyle1 = $(this).attr("data-class-onhover1");
+            var newstyle2 = $(this).attr("data-class-onhover2");
+            var dest1 = $(this).attr("data-class-dest1");
+            var dest2 = $(this).attr("data-class-dest2");
+            $("#" + dest1).removeClass(newstyle1);
+            $("#" + dest2).removeClass(newstyle2);
+        }
+    );
+});

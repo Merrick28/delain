@@ -27,6 +27,7 @@ if ($erreur != 0)
         "poste" => array("relais_poste.log", "Transactions via les relais de la poste."),
         "comptes" => array("compte_creation.log", "Creation de compte de joueur."),
         "quêtes" => array("quete_auto.log", "Modification des Quête auto."),
+        "hacking" => array("hacking.log", "Tentative de hack du site."),
     );
     $visu = (isset($visu)) ? $visu : "début";
     $mode = (isset($mode)) ? $mode : "web";

@@ -1,6 +1,8 @@
 ﻿<?php
 include "blocks/_header_page_jeu.php";
 
+$pdo = new bddpdo();
+
 
 if (!isset($methode))
 {
@@ -27,9 +29,15 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             /* on porte une attaque */
             $arme_dist = $db->arme_distance($perso_cod);
             if (isset($_POST['cible']))
-                $cible     = $_POST['cible'];
+            {
+                $cible = $_POST['cible'];
+            }
+
             if (isset($_GET['cible']))
-                $cible     = $_GET['cible'];
+            {
+                $cible = $_GET['cible'];
+            }
+
 
             if (!isset($cible))
             {
@@ -59,8 +67,8 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $tex_at[19] = 'Utiliser Jeu de trolls ';
             $tex_at[20] = 'Utiliser charge divine ';
 
-            $pa_n = $db->get_pa_attaque($perso_cod);
-            $pa_f = $db->get_pa_foudre($perso_cod);
+            $pa_n = $perso->get_pa_attaque();
+            $pa_f = $perso->get_pa_foudre();
             $pa_s = 12; // volontairement haut pour ne pas afficher le message d’utilisation
 
             $pa_at[0]  = $pa_n;
@@ -88,33 +96,37 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             {
                 $type_at = 0;
             }
-            $req        = 'select attaque(' . $perso_cod . ',' . $cible . ',' . $type_at . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+
+            $req    = 'select attaque(:perso,:cible,:type_attaque) as resultat';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso"        => $perso_cod,
+                                          ":cible"        => $cible,
+                                          ":type_attaque" => $type_at), $stmt);
+            $result = $stmt->fetch();
+
+            $contenu_page .= $result['resultat'];
             $contenu_page .= '
 			<form name="attaquer1" method="post" action="action.php">
 			<input type="hidden" name="ctl" value="0">
 			<input type="hidden" name="methode" value="attaque2">
 			<input type="hidden" name="type_at" value="' . $type_at . '">
 			<input type="hidden" name="type" value="1">';
-            $attaquable = 1;
+            $attaquable   = 1;
+
+            // on recharhe le perso
+            $perso->charge($perso_cod);
+
             //on regarde pour le nombre de PA
-
-            $req = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-            $db->query($req);
-            $db->next_record();
-            $pa  = $db->f('perso_pa');
-
-            if ($pa < $pa_at[$type_at])
+            if ($perso->perso_pa < $pa_at[$type_at])
             {
                 $attaquable = 0;
             }
+
+            // on charge le "perso" de la cible
+            $perso_cible = new perso;
+            $perso_cible->charge($sible);
             // on regarde pour la distance de la cible
-            $req = 'select perso_tangible from perso where perso_cod = ' . $cible;
-            $db->query($req);
-            $db->next_record();
-            if ($db->f('perso_tangible') == 'N')
+            if ($perso_cible->perso_tangible == 'N')
             {
                 $attaquable = 0;
             }
@@ -137,7 +149,9 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             // Méthode de combat
             $inc_attaque_courante = $type_at;
             $inc_verif_pa         = $pa;
-            include ('inc_competence_combat.php');
+
+            include('inc_competence_combat.php');
+
             $contenu_page2 .= $resultat_inc_competence_combat;
 
             $contenu_page2 .= '</select> <input type="submit" value="Valider" class="test"></form>';
@@ -165,47 +179,58 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= '<p>Erreur : numéro objet non défini !';
                 break;
             }
-            $req_ramasser = 'select ramasse_' . $objet[$type_objet] . '(' . $perso_cod . ',' . $num_objet . ') as resultat';
-            $db->query($req_ramasser);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+
+            $req    = 'select ramasse_' . $objet[$type_objet] . '(:perso,:num_objet) as resultat';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso"        => $perso_cod,
+                                          ":num_objet"    => $num_objet,
+                                          ":type_attaque" => $type_at), $stmt);
+            $result = $stmt->fetch();
+
+            $contenu_page .= $result['resultat'];
+
             break;
 
 
         case 'deplacement':
             /* On se déplace */
-            $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-            $db->query($req);
-            $db->next_record();
-            if ($db->f('perso_type_perso') == 3)
+
+            if ($perso->perso_type_perso == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
                 if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
             if (isset($_POST['position']))
+            {
                 $position = $_POST['position'];
+            }
+
             if (isset($_GET['position']))
+            {
                 $position = $_GET['position'];
+            }
+
             if (!isset($position) || $position === '')
             {
                 $contenu_page .= '<p>Erreur ! Position non définie !</p>';
                 if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
-            $req_deplace = 'select deplace_code(?,?) as deplace';
-           
-            $stmt = $pdo->prepare($req_deplace);
-            $stmt = $pdo->execute(array(intval($perso_cod),intval($position)),$stmt);
+
+
+            $req_deplace = 'select deplace_code(:perso_cod,:position) as deplace';
+
+            $stmt   = $pdo->prepare($req_deplace);
+            $stmt   = $pdo->execute(array(
+                ':perso_cod' => intval($perso_cod),
+                ':position'  => intval($position)), $stmt);
             $retour = $stmt->fetch();
-            //$db->query($req_deplace);
-            
-            
-            //$db->next_record();
+
             $result      = explode('#', $retour['deplace']);
             $page_retour = 'frame_vue.php';
 
-            $retour      = '';
+            $retour = '';
             if ($menu_deplacement !== '')
             {
                 $page_retour = 'deplacement.php';
@@ -222,14 +247,12 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $db->query($req);
                     $db->next_record();
                     $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
-                }
-                else if ($is_phrase < 67)
+                } else if ($is_phrase < 67)
                 {
                     include 'phrase.php';
-                    $idx_phrase = rand(1, sizeof($phrase));
+                    $idx_phrase   = rand(1, sizeof($phrase));
                     $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
-                }
-                else
+                } else
                 {
                     $req = "select indice_lieu($position) as indice";
                     $db->query($req);
@@ -257,7 +280,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $req_deplace = 'select passage(' . $perso_cod . ') as deplace';
             $db->query($req_deplace);
             $db->next_record();
-            $result      = explode('#', $db->f('deplace'));
+            $result       = explode('#', $db->f('deplace'));
             $contenu_page .= $result[0];
             $contenu_page .= '<br />';
             if ($result[1] == 0)
@@ -269,14 +292,12 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $db->query($req);
                     $db->next_record();
                     $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
-                }
-                else if ($is_phrase < 67)
+                } else if ($is_phrase < 67)
                 {
                     include 'phrase.php';
-                    $idx_phrase = rand(1, sizeof($phrase));
+                    $idx_phrase   = rand(1, sizeof($phrase));
                     $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
-                }
-                else
+                } else
                 {
                     $req = "select indice_lieu(ppos_pos_cod) as indice from perso_position where ppos_perso_cod=$perso_cod";
                     $db->query($req);
@@ -288,30 +309,30 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             break;
         case "sortie_arene":
 
-            $req    = 'select sortir_arene(' . $perso_cod . ') as res';
+            $req = 'select sortir_arene(' . $perso_cod . ') as res';
             $db->query($req);
             $db->next_record();
-            $result = explode(';', $db->f('res'));
+            $result       = explode(';', $db->f('res'));
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
             break;
         case "sortir_donjon":
 
-            $req    = 'select sortir_donjon(' . $perso_cod . ') as res';
+            $req = 'select sortir_donjon(' . $perso_cod . ') as res';
             $db->query($req);
             $db->next_record();
-            $result = explode(';', $db->f('res'));
+            $result       = explode(';', $db->f('res'));
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
             break;
         case "enreg_pos_donjon":
 
-            $req    = 'select enregistre_avancee_donjon(' . $perso_cod . ') as res';
+            $req = 'select enregistre_avancee_donjon(' . $perso_cod . ') as res';
             $db->query($req);
             $db->next_record();
-            $result = explode(';', $db->f('res'));
+            $result       = explode(';', $db->f('res'));
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
@@ -330,7 +351,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $req_deplace = 'select passage(' . $perso_cod . ') as deplace';
             $db->query($req_deplace);
             $db->next_record();
-            $result      = explode('#', $db->f('deplace'));
+            $result       = explode('#', $db->f('deplace'));
             $contenu_page .= $result[0];
             $contenu_page .= '<br />';
             if ($result[1] == 0)
@@ -342,10 +363,9 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     if ($is_phrase > 50)
                     {
                         include 'phrase.php';
-                        $idx_phrase = rand(1, 109);
+                        $idx_phrase   = rand(1, 109);
                         $contenu_page .= '<p><em>' . $phrase[$idx_phrase] . '</em><br /><br />';
-                    }
-                    else
+                    } else
                     {
                         $req = 'select choix_rumeur() as rumeur ';
                         $db->query($req);
@@ -362,8 +382,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             if ($db->f('ptemple_anc_pos_cod') == 0)
             {
                 $req = 'delete from perso_temple where ptemple_perso_cod = ' . $perso_cod;
-            }
-            else
+            } else
             {
                 $req = 'update perso_temple set ptemple_pos_cod = ptemple_anc_pos_cod,ptemple_nombre = ptemple_anc_nombre ';
                 $req = $req . 'where ptemple_perso_cod = ' . $perso_cod;
@@ -391,12 +410,12 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 break;
             }
 
-            $tab_cible     = $db->get_pos($cible);
+            $tab_cible = $db->get_pos($cible);
 
-//Ajout Teruo 22/01/2016: test recherche tableau sort interdit
-            $tab_pos     = $db->get_pos($perso_cod);
-            $req            = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_pos['pos_cod'] ;
-	  
+            //Ajout Teruo 22/01/2016: test recherche tableau sort interdit
+            $tab_pos = $db->get_pos($perso_cod);
+            $req     = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_pos['pos_cod'];
+
             $db->query($req);
             if ($db->nf() != 0)
             {
@@ -405,8 +424,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             }
 
 
-
-            $req            = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_cible['pos_cod'] ;
+            $req = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_cible['pos_cod'];
             $db->query($req);
             if ($db->nf() != 0)
             {
@@ -414,14 +432,14 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 break;
             }
 
-//Fin ajout
+            //Fin ajout
 
             if ($db->is_intangible($perso_cod))
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req            = 'select sort_fonction,sort_soi_meme,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
+            $req = 'select sort_fonction,sort_soi_meme,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
             $db->query($req);
             $db->next_record();
             $sort_soi_meme  = $db->f('sort_soi_meme');
@@ -454,16 +472,16 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     from perso 
                     join sorts on sort_cod=' . $sort_cod . '
                     left join perso_nb_sorts on pnbs_perso_cod=perso_cod and pnbs_sort_cod=' . $sort_cod . '
-                    where perso_cod = '.$perso_cod.' and (pnbs_nombre<2 or pnbs_nombre is null) ';
+                    where perso_cod = ' . $perso_cod . ' and (pnbs_nombre<2 or pnbs_nombre is null) ';
             $db->query($req);
             $db->next_record();
             if ($db->nf() != 0)
             {
-                if ($db->f('perso_pa')>=$db->f('sort_pa'))
+                if ($db->f('perso_pa') >= $db->f('sort_pa'))
                 {
                     // ajouter les runes utilisé dans le cas d'un lancé de ce type
-                    $runes = ($type_lance != 0) ? "" :   "&fam_1=".(1*substr($db->f('sort_combinaison'),0,1))."&fam_2=".(1*substr($db->f('sort_combinaison'),1,1))."&fam_3=".(1*substr($db->f('sort_combinaison'),2,1))."&fam_4=".(1*substr($db->f('sort_combinaison'),3,1))."&fam_5=".(1*substr($db->f('sort_combinaison'),4,1))."&fam_6=".(1*substr($db->f('sort_combinaison'),5,1));
-                    $contenu_page .='<br><br><center><a href="choix_sort.php?&sort='.$sort_cod.'&type_lance='.$type_lance.$runes.'">Relancer ('.$db->f('sort_pa').' PA)</a></center>';
+                    $runes        = ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($db->f('sort_combinaison'), 0, 1)) . "&fam_2=" . (1 * substr($db->f('sort_combinaison'), 1, 1)) . "&fam_3=" . (1 * substr($db->f('sort_combinaison'), 2, 1)) . "&fam_4=" . (1 * substr($db->f('sort_combinaison'), 3, 1)) . "&fam_5=" . (1 * substr($db->f('sort_combinaison'), 4, 1)) . "&fam_6=" . (1 * substr($db->f('sort_combinaison'), 5, 1));
+                    $contenu_page .= '<br><br><center><a href="choix_sort.php?&sort=' . $sort_cod . '&type_lance=' . $type_lance . $runes . '">Relancer (' . $db->f('sort_pa') . ' PA)</a></center>';
                 }
             }
             break;
@@ -504,15 +522,15 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             {
                 $prefixe = 'dv_';
             }
-            $lieu_protege   = 'N';
-            $req            = 'select lieu_refuge from lieu,lieu_position,positions
+            $lieu_protege = 'N';
+            $req          = 'select lieu_refuge from lieu,lieu_position,positions
 				where pos_cod = ' . $position . '
 					and lpos_pos_cod = pos_cod
 					and lpos_lieu_cod = lieu_cod';
             $db->query($req);
             if ($db->next_record())
-                $lieu_protege   = $db->f('lieu_refuge');
-            $req            = 'select sort_fonction,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
+                $lieu_protege = $db->f('lieu_refuge');
+            $req = 'select sort_fonction,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
             $db->query($req);
             $db->next_record();
             $fonction       = $db->f('sort_fonction');
@@ -523,10 +541,10 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 break;
             }
 
-//Ajout Teruo 22/01/2016: test recherche tableau sort interdit
-            $tab_pos     = $db->get_pos($perso_cod);
-            $req            = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_pos['pos_cod'] ;
-	  
+            //Ajout Teruo 22/01/2016: test recherche tableau sort interdit
+            $tab_pos = $db->get_pos($perso_cod);
+            $req     = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_pos['pos_cod'];
+
             $db->query($req);
             if ($db->nf() != 0)
             {
@@ -535,8 +553,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             }
 
 
-
-            $req            = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $position ;
+            $req = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $position;
             $db->query($req);
             if ($db->nf() != 0)
             {
@@ -544,7 +561,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 break;
             }
 
-//Fin ajout
+            //Fin ajout
 
 
             $req = 'select ' . $prefixe . $fonction . '(' . $perso_cod . ',' . $position . ',' . $type_lance . ') as resultat ';
@@ -559,22 +576,20 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             if ($db->nf())
             {
                 $contenu_page .= 'ERREUR: Vous aviez déjà choisi une voie magique: ' . $db->f('mvoie_libelle');
-            }
-            else
+            } else
             {
                 if (!isset($_POST['voie']))
                     $voie = -1;  // Erreur
                 else
                     $voie = $_POST['voie'];
-                $req  = 'select mvoie_libelle from voie_magique where mvoie_cod = ' . $voie;
+                $req = 'select mvoie_libelle from voie_magique where mvoie_cod = ' . $voie;
                 $db->query($req);
                 if ($db->nf())
                 {
                     $db->next_record();
                     $contenu_page .= 'Vous avez choisi la voie magique: ' . $db->f('mvoie_libelle');
                     $db->query('update perso set perso_voie_magique = ' . $voie . ' where perso_cod = ' . $perso_cod);
-                }
-                else
+                } else
                 {
                     $contenu_page .= 'ERREUR: Voie magique choisie non spécifiée ou inconnue';
                 }
@@ -599,8 +614,8 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             }
             break;
         case 'revolution':
-            $cible         = $_POST['cible'];
-            $req           = 'select cree_revolution(' . $perso_cod . ',' . $cible . ') as resultat ';
+            $cible = $_POST['cible'];
+            $req   = 'select cree_revolution(' . $perso_cod . ',' . $cible . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -614,19 +629,19 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= $db->f('resultat');
             break;
         case 'passe_niveau':
-            $amelioration  = $_POST['amelioration'];
+            $amelioration = $_POST['amelioration'];
             if (!isset($amelioration) || $amelioration === '')
             {
                 break;
             }
-            $req   = 'select f_passe_niveau(' . $perso_cod . ',' . $amelioration . ') as resultat ';
+            $req = 'select f_passe_niveau(' . $perso_cod . ',' . $amelioration . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             $contenu_page .= '<center><a href="index.php">Retour</a></center>';
             break;
         case 'depose_objet':
-            $req   = 'select depose_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
+            $req = 'select depose_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -639,33 +654,32 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= $db->f('resultat');
             break;
         case 'nv_magasin_achat':
-            $db2   = new base_delain;
-            $lieu  = $_POST['lieu'];
+            $db2  = new base_delain;
+            $lieu = $_POST['lieu'];
             foreach ($gobj as $key => $val)
             {
                 if ($val != 0)
                 {
                     $type = explode('-', $key);
                     // on cherche l'objet kivabien dans le magasin
-                    $req  = 'select obj_cod,obj_nom ';
-                    $req  = $req . 'from objets,stock_magasin,objet_generique ';
-                    $req  = $req . 'where mstock_lieu_cod = ' . $lieu;
-                    $req  = $req . 'and mstock_obj_cod = obj_cod ';
-                    $req  = $req . 'and obj_gobj_cod = ' . $type[0];
-                    $req  = $req . 'and coalesce(obj_obon_cod,0) = ' . $type[1];
-                    $req  = $req . 'and obj_gobj_cod = gobj_cod ';
-                    $req  = $req . 'limit ' . $val;
+                    $req = 'select obj_cod,obj_nom ';
+                    $req = $req . 'from objets,stock_magasin,objet_generique ';
+                    $req = $req . 'where mstock_lieu_cod = ' . $lieu;
+                    $req = $req . 'and mstock_obj_cod = obj_cod ';
+                    $req = $req . 'and obj_gobj_cod = ' . $type[0];
+                    $req = $req . 'and coalesce(obj_obon_cod,0) = ' . $type[1];
+                    $req = $req . 'and obj_gobj_cod = gobj_cod ';
+                    $req = $req . 'limit ' . $val;
                     $db->query($req);
                     if ($db->nf() == 0)
                     {
                         $contenu_page .= '<p>Erreur, pas d’objet trouvé dans le magasin pour ' . $key;
-                    }
-                    else
+                    } else
                     {
                         while ($db->next_record())
                         {
                             $contenu_page .= '<p>pour l’objet : <strong>' . $db->f('obj_nom') . '</strong>';
-                            $req = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $db->f('obj_cod') . ') as resultat ';
+                            $req          = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $db->f('obj_cod') . ') as resultat ';
                             $db2->query($req);
                             $db2->next_record();
                             $contenu_page .= $db2->f('resultat');
@@ -708,7 +722,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= $db->f('resultat');
             break;
         case 'nv_magasin_identifie':
-            $lieu  = $_POST['lieu'];
+            $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
                 $req = 'select magasin_identifie(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
@@ -728,19 +742,19 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             }
             break;
         case 'magasin_repare':
-            $objet         = $_POST['objet'];
-            $lieu          = $_POST['lieu'];
-            $req           = 'select magasin_repare(' . $perso_cod . ',' . $lieu . ',' . $objet . ') as resultat ';
+            $objet = $_POST['objet'];
+            $lieu  = $_POST['lieu'];
+            $req   = 'select magasin_repare(' . $perso_cod . ',' . $lieu . ',' . $objet . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'repare':
-            $type_rep[1]   = 'arme';
-            $type_rep[2]   = 'armure';
-            $type_rep[4]   = 'casque';
-            $autorise      = 0;
-            $query_val     = "select gobj_tobj_cod
+            $type_rep[1] = 'arme';
+            $type_rep[2] = 'armure';
+            $type_rep[4] = 'casque';
+            $autorise    = 0;
+            $query_val   = "select gobj_tobj_cod
 						from objets,objet_generique
 						where obj_gobj_cod = gobj_cod
 						and obj_cod = " . $objet;
@@ -762,15 +776,14 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
 							)";
             $db->query($query_val);
             if ($db->nf() != 0)
-                $autorise  = 1;
+                $autorise = 1;
 
 
             //if (($type != 1) && ($type != 2) && ($type != 4))
             if ($autorise != 1)
             {
                 $contenu_page .= '<p>Inutile d’essayer de réparer ce genre d’objets....';
-            }
-            else
+            } else
             {
                 $req = 'select f_repare_' . $type_rep[$type] . '(' . $perso_cod . ',' . $objet . ') as resultat';
                 $db->query($req);
@@ -792,7 +805,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req          = 'select cree_receptacle(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
+            $req = 'select cree_receptacle(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -810,13 +823,13 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req  = 'select cree_parchemin(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
+            $req = 'select cree_parchemin(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'milice_tel':
-            $req  = 'select milice_tel(' . $perso_cod . ',' . $destination . ') as resultat ';
+            $req = 'select milice_tel(' . $perso_cod . ',' . $destination . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -831,7 +844,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $req  = 'select prie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
+            $req = 'select prie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -846,49 +859,49 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $req          = 'select prie_dieu_ext(' . $perso_cod . ',' . $dieu . ') as resultat ';
+            $req = 'select prie_dieu_ext(' . $perso_cod . ',' . $dieu . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'ceremonie':
-            $req          = 'select ceremonie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
+            $req = 'select ceremonie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'dgrade':
-            $req          = 'select change_grade(' . $perso_cod . ',' . $dieu . ') as resultat ';
+            $req = 'select change_grade(' . $perso_cod . ',' . $dieu . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'don_br':
-            $req          = 'select don_br(' . $perso_cod . ',' . $dest . ',' . $qte . ') as resultat ';
+            $req = 'select don_br(' . $perso_cod . ',' . $dest . ',' . $qte . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'vente_auberge':
-            $req          = 'select vend_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
+            $req = 'select vend_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'achat_objet':
-            $req          = 'select achete_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
+            $req = 'select achete_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'redist':
-            $req          = 'select start_redispatch(' . $perso_cod . ') as resultat ';
+            $req = 'select start_redispatch(' . $perso_cod . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'mode_combat':
-            $req          = 'select change_mcom_cod(' . $perso_cod . ',' . $mode . ') as resultat ';
+            $req = 'select change_mcom_cod(' . $perso_cod . ',' . $mode . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -902,25 +915,25 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= '<center><a href="niveau_redist.php">Retour</a></center>';
             break;
         case 'embr':
-            $req          = 'select embr(' . $perso_cod . ',' . $cible . ') as resultat ';
+            $req = 'select embr(' . $perso_cod . ',' . $cible . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'ouvre_cadeau':
-            $req          = 'select ouvre_cadeau(' . $perso_cod . ') as resultat ';
+            $req = 'select ouvre_cadeau(' . $perso_cod . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'don_cadeau_rouge':
-            $req          = 'select donne_rouge(' . $perso_cod . ') as resultat ';
+            $req = 'select donne_rouge(' . $perso_cod . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'don_cadeau_rougeX10':
-            $req          = 'select donne_rouge(' . $perso_cod . ') as resultat ';
+            $req = 'select donne_rouge(' . $perso_cod . ') as resultat ';
             for ($i = 0; $i < 10; $i++)
             {
                 $db->query($req);
@@ -929,44 +942,44 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             }
             break;
         case 'don_cadeau_noir':
-            $req          = 'select donne_noir(' . $perso_cod . ') as resultat ';
+            $req = 'select donne_noir(' . $perso_cod . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'donne_bonbon':
-            $req          = 'select donne_bonbon(' . $perso_cod . ',' . $cible . ') as resultat ';
+            $req = 'select donne_bonbon(' . $perso_cod . ',' . $cible . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'teld':
-            $req          = 'select teleportation_divine(' . $perso_cod . ',' . $pos . ') as resultat ';
+            $req = 'select teleportation_divine(' . $perso_cod . ',' . $pos . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'offre_boire':
-            $req          = 'select offre_boire(' . $perso_cod . ',' . $cible . ') as resultat ';
+            $req = 'select offre_boire(' . $perso_cod . ',' . $cible . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'enc':
-            $req          = 'select f_enchantement(' . $perso_cod . ',' . $obj . ',' . $enc . ',' . $type_appel . ') as resultat ';
+            $req = 'select f_enchantement(' . $perso_cod . ',' . $obj . ',' . $enc . ',' . $type_appel . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             break;
         case 'cree_groupe':
-            $req          = 'select cree_groupe(' . $perso_cod . ',\'' . pg_escape_string($nom_groupe) . '\') as resultat ';
+            $req = 'select cree_groupe(' . $perso_cod . ',\'' . pg_escape_string($nom_groupe) . '\') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
             break;
         case 'regle_groupe':
-            $req          = 'select regle_groupe(' . $perso_cod . ',' . $pa . ',' . $pv . ',' . $dlt . ',' . $bonus . ',' . $messages . ',' . $messagemort . ',' . $champions . ') as resultat ';
+            $req = 'select regle_groupe(' . $perso_cod . ',' . $pa . ',' . $pv . ',' . $dlt . ',' . $bonus . ',' . $messages . ',' . $messagemort . ',' . $champions . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -986,16 +999,16 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 if ($nb_vrai_dest == 0)
                 {
                     $contenu_page .= '<br><br><p><strong>********* Vous devez renseigner au moins un membre de coterie ! *********</strong><br><br>';
-                    $erreur = 1;
+                    $erreur       = 1;
                 }
                 if ($erreur == 0)
                 {
                     // on cherche le destinataire
                     if ($tab_dest[$cpt] != "")
                     {
-                        $nom_dest     = ltrim(rtrim($tab_dest[$cpt]));
-                        $nom_dest     = pg_escape_string($nom_dest);
-                        $req_dest     = "select f_cherche_perso('$nom_dest') as num_perso";
+                        $nom_dest = ltrim(rtrim($tab_dest[$cpt]));
+                        $nom_dest = pg_escape_string($nom_dest);
+                        $req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
                         $db->query($req_dest);
                         $db->next_record();
                         $tab_res_dest = $db->f("num_perso");
@@ -1009,14 +1022,14 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
             break;
         case 'accinv':
-            $req         = 'select accepte_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
+            $req = 'select accepte_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
             $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
             break;
         case 'refinv':
-            $req         = 'select refuse_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
+            $req = 'select refuse_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
             $db->query($req);
             $db->next_record();
             $contenu_page .= $db->f('resultat');
@@ -1033,7 +1046,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             break;
         case 'retour_plan': // Retour du perso dans son plan d'origine
             // On vérifie qu'il est sur un bâtiment administratif
-            $req         = 'select ppp_pos_cod from lieu, lieu_position, perso_position, perso_plan_parallele, perso where lieu_tlieu_cod = 9 and perso_pa >= 12 and lieu_cod = lpos_lieu_cod and lpos_pos_cod = ppos_pos_cod and ppp_perso_cod = ppos_perso_cod and perso_cod = ppos_perso_cod and ppos_perso_cod = ' . $perso_cod;
+            $req = 'select ppp_pos_cod from lieu, lieu_position, perso_position, perso_plan_parallele, perso where lieu_tlieu_cod = 9 and perso_pa >= 12 and lieu_cod = lpos_lieu_cod and lpos_pos_cod = ppos_pos_cod and ppp_perso_cod = ppos_perso_cod and perso_cod = ppos_perso_cod and ppos_perso_cod = ' . $perso_cod;
             $db->query($req);
             if ($db->next_record())
             {
@@ -1054,7 +1067,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             if ($p_position['pos_cod'] == 7327)
             {
                 /* Vérif des PA */
-                $req     = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
+                $req = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
                 $db->query($req);
                 $db->next_record();
                 $nb_p_pa = $db->f('perso_pa');
@@ -1068,7 +1081,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
 						and perobj_equipe='O' ";
                     $db->query($req_matos);
                     $db->next_record();
-                    $matos     = $db->f('nbobj');
+                    $matos = $db->f('nbobj');
                     if ($matos)
                     {
                         /* Action */
@@ -1077,21 +1090,18 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                         $req = 'update perso set perso_pa = (perso_pa - 6), perso_px = perso_px + 0.25 where perso_cod = ' . $perso_cod;
                         $db->query($req);
                         $req = 'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
-                           . 'values(nextval(\'seq_levt_cod\'),89,now(),1,' . $perso_cod . ',\'[perso_cod1] a travaillé.\',\'O\',\'O\',' . $perso_cod . ')';
+                            . 'values(nextval(\'seq_levt_cod\'),89,now(),1,' . $perso_cod . ',\'[perso_cod1] a travaillé.\',\'O\',\'O\',' . $perso_cod . ')';
                         $db->query($req);
                         $contenu_page .= 'La construction du bâtiment a progressé.<br>Votre dieu a gagné en puissance.<br>Vous gagnez 0.25px.';
-                    }
-                    else
+                    } else
                     {
                         $contenu_page .= 'Vous n’avez pas de pioche équipée.';
                     }
-                }
-                else
+                } else
                 {
                     $contenu_page .= 'Vous n’avez pas assez de PA pour cette action.';
                 }
-            }
-            else
+            } else
             {
                 $contenu_page .= 'Vous n’êtes pas sur le chantier de la cathédrale.';
             }
@@ -1103,8 +1113,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= '<p>Erreur : action non définie !';
             break;
     }
-}
-else
+} else
 {
     $contenu_page .= '<p>Vous ne pouvez pas valider des actions en étant administrateur !';
 }

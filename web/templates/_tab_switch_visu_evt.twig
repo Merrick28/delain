@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="centrer">
+            <table style="width:100%;">
+                <tr>
+                    <td colspan='{{ NB_PERSO_LIGNE }}'>
+                        <div style="width:500px;margin:auto">
+                        <span class='bouton'>
+
+                            <input type="button" class="bouton centrer"
+                                   onClick="javascript:window.open('{{ G_URL }}visu_derniers_evt.php?visu_perso={{ PREMIER_PERSO }}&is_log={{ IS_LOG }}&voir_tous=1','evenements','scrollbars=yes,resizable=yes,width=500,height=300');"
+                                   title="Voir les derniers événements de tous les personnages"
+                                   value="Voir tous les événements"
+                                   style="width:200px;"/>
+                        </span>&nbsp;&nbsp;
+                        <span class='bouton'><input type='button' class='bouton centrer'
+                                                    onClick='javascript:document.login.perso.value={{ PREMIER_PERSO }}; document.login.activeTout.value=1; document.login.submit();'
+                                                    title='Activer toutes les DLT' value='Activer toutes les DLT'
+                                                    style='width:200px;'/></span>
+                        </div>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+    </div>
+</div>

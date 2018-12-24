@@ -37,21 +37,75 @@ function writelog($textline,$filename='undefined',$verbose=true)
 
 }
 
+/**
+ * Récupérer la véritable adresse IP d'un visiteur
+ */
+function get_ip()
+{
+    // IP si internet partagé
+    if (isset($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    }
+    // IP derrière un proxy
+    elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    // Sinon : IP normale
+    else {
+        return (isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '');
+    }
+}
+
+// On recherche des chaines qui pourraient faire penser à de l'injection SQL comme "SELECT * FROM", "DELETE FROM" et "UPDATE FROM"
+// mais il faut penser qu'un paramètre du type "&action=delete" est valide
+// =>  Pour commencer on  va interdire tout ce qui contient "FROM" et une autre chaine du type "SELECT", "DELETE" ou "UPDATE"
+function is_hacking_string($value)
+{
+    if (stripos($value, "from" ) !== false)
+    {
+        if ((stripos($value, "select" ) !== false)||(stripos($value, "delete" ) !== false)||(stripos($value, "update" ) !== false))
+        {
+             return $value ;
+        }
+    }
+    return "";
+}
+
 function register_globals($order = 'egpcs')
 {
     // define a subroutine
     if (!function_exists('register_global_array'))
     {
-
         function register_global_array(array $superglobal)
         {
+            $hacking_value = "" ;           // Chaine qui est détéectée comme du hacking
             foreach ($superglobal as $varname => $value)
             {
+                if (is_array($value))
+                {
+                    foreach ($value as $v)
+                    {
+                        $hacking_value = is_hacking_string($v);
+                        if ($hacking_value != '') break;
+                    }
+                }
+                else
+                {
+                    $hacking_value = is_hacking_string($value);
+                }
+
+                // C'est louche, on ne permet pas d'aller plus loin!!
+                if ($hacking_value != '')
+                {
+
+                    $log = "Tentative de ".get_ip()." sur la page ".$_SERVER["REQUEST_URI"]."\nInjection sur le paramètre '{$varname}' : {$hacking_value}\n ";
+                    writelog($log, 'hacking',false);
+                    die('<br>Une erreur est survenue, si le problème se répète, merci de contacter les administrateurs sur le <a target="_blank" href="https://forum.jdr-delain.net/viewforum.php?f=2&sid=9a837e88f0b38247280c5869a6a6a99c">Forum bug</a><br><br>Pour faciliter le débuggage veuillez préciser la date et l\'heure de l\'incident: <b>'.date("Y-m-d H:i:s").'</b>');
+                }
                 global $$varname;
                 $$varname = $value;
             }
         }
-
     }
 
     $order = explode("\r\n", trim(chunk_split($order, 1)));
@@ -148,7 +202,8 @@ if(defined('TWIG_CACHE'))
     }
     else
     {
-        $twig     = new Twig_Environment($loader, array());
+        $twig     = new Twig_Environment($loader, array('debug' => true));
+        $twig->addExtension(new Twig_Extension_Debug());
     }
 }
 else
