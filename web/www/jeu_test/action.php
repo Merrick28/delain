@@ -171,6 +171,7 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
             $contenu_page .= $db->f('resultat');
             break;
 
+
         case 'deplacement':
             /* On se déplace */
             $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
