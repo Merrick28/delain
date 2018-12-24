@@ -10,6 +10,7 @@ for f in `find $livroot -type f| grep -v "initial_import.sql"|sort`; do
       $psql -A -q -t -d delain -U webdelain << EOF >> ${shellroot}/livraison.log 2>&1
 insert into livraisons (liv_fichier) values ('$(basename $f)');
 EOF
+fi
 done
 # livraison des fonctions
 echo "= LIVRAISONS DES FONCTIONS =" >> ${shellroot}/livraison.log
