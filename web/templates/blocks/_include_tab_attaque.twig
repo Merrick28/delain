@@ -14,38 +14,40 @@
 
         <script language="JavaScript" type="text/JavaScript">
             var liste = new Array();
-{% for VUE in TAB_VUE %}
-{% if VUE.traj == 1 %}
-{# Gestion des blessures #}
-{% set BLESSURES = '' %}
-{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.75 %}
-{% set BLESSURES = TAB_BLESSURES[0] %}
-{% endif %}
-{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
-{% set BLESSURES = TAB_BLESSURES[1] %}
-{% endif %}
-{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.25 %}
-{% set BLESSURES = TAB_BLESSURES[2] %}
-{% endif %}
-{% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
-{% set BLESSURES = TAB_BLESSURES[3] %}
-{% endif %}
-{# Gestion du style #}
-{% set STYLE = "soustitre2" %}
-{% if VUE.surcharge == 1 %}
-{% set STYLE = "surcharge1" %}
-{% endif %}
-{% if VUE.surcharge == 2 %}
-{% set STYLE = "surcharge2" %}
-{% endif %}
-{% if VUE.obstruction > 0 %}
-{% set STYLE = "soustitre2 obstruction1" %}
-{% endif %}
-{% if VUE.obstruction > 5 %}
-{% set STYLE = "soustitre2 obstruction2" %}
-{% endif %}
-liste[{{ loop.index0 }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
-{% endif %}
+            {% set compteur = 0 %}
+            {% for VUE in TAB_VUE %}
+            {% if VUE.traj == 1 %}
+            {# Gestion des blessures #}
+            {% set BLESSURES = '' %}
+            {% if (VUE.perso_pv/VUE.perso_pv_max) < 0.75 %}
+            {% set BLESSURES = TAB_BLESSURES[0] %}
+            {% endif %}
+            {% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
+            {% set BLESSURES = TAB_BLESSURES[1] %}
+            {% endif %}
+            {% if (VUE.perso_pv/VUE.perso_pv_max) < 0.25 %}
+            {% set BLESSURES = TAB_BLESSURES[2] %}
+            {% endif %}
+            {% if (VUE.perso_pv/VUE.perso_pv_max) < 0.5 %}
+            {% set BLESSURES = TAB_BLESSURES[3] %}
+            {% endif %}
+            {# Gestion du style #}
+            {% set STYLE = "soustitre2" %}
+            {% if VUE.surcharge == 1 %}
+            {% set STYLE = "surcharge1" %}
+            {% endif %}
+            {% if VUE.surcharge == 2 %}
+            {% set STYLE = "surcharge2" %}
+            {% endif %}
+            {% if VUE.obstruction > 0 %}
+            {% set STYLE = "soustitre2 obstruction1" %}
+            {% endif %}
+            {% if VUE.obstruction > 5 %}
+            {% set STYLE = "soustitre2 obstruction2" %}
+            {% endif %}
+            liste[{{ compteur }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
+            {% set compteur = compteur + 1 %}
+            {% endif %}
             {% endfor %}
 
 
