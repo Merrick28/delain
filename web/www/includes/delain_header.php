@@ -6,6 +6,10 @@ require G_CHE . '../vendor/autoload.php';
 
 header('Content-type: text/html; charset=utf-8');
 
+$profiler = new \Fabfuel\Prophiler\Profiler();
+$toolbar = new \Fabfuel\Prophiler\Toolbar($profiler);
+$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+
 // mode debug
 $debug_mode = false;
 if(isset($_REQUEST['debug_mode']))

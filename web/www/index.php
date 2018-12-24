@@ -1,9 +1,7 @@
 <?php
 $nouvelle_version = 1;
 
-$profiler = new \Fabfuel\Prophiler\Profiler();
-$toolbar = new \Fabfuel\Prophiler\Toolbar($profiler);
-$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+
 //$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\PDO());
 
 // par défaut, on n'est pas authentifié
