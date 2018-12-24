@@ -205,7 +205,6 @@ class positions
             ':position'   => $this->pos_cod,
 
         ), $stmt);
-        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         return $result['indice'];
     }
