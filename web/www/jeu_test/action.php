@@ -1,4 +1,4 @@
-﻿<?php
+﻿﻿<?php
 include "blocks/_header_page_jeu.php";
 
 $pdo = new bddpdo();
@@ -243,10 +243,8 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                 $is_phrase = rand(1, 100);
                 if ($is_phrase < 34)
                 {
-                    $req = 'select choix_rumeur() as rumeur ';
-                    $db->query($req);
-                    $db->next_record();
-                    $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
+                    $rumeur = new rumeurs();
+                    $contenu_page .= '<hr /><p><em>Rumeur :</em> ' . $rumeur->get_rumeur() . '</p>';
                 } else if ($is_phrase < 67)
                 {
                     include 'phrase.php';
@@ -254,10 +252,9 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
                 } else
                 {
-                    $req = "select indice_lieu($position) as indice";
-                    $db->query($req);
-                    $db->next_record();
-                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $db->f('indice') . '</em></p>';
+                    $pos = new positions();
+                    $pos->charge($position);
+                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $pos->get_indice() . '</em></p>';
                 }
             }
             $contenu_page .= $retour;
@@ -299,10 +296,9 @@ if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is
                     $contenu_page .= '<hr /><p><em>' . $phrase[$idx_phrase] . '</em></p>';
                 } else
                 {
-                    $req = "select indice_lieu(ppos_pos_cod) as indice from perso_position where ppos_perso_cod=$perso_cod";
-                    $db->query($req);
-                    $db->next_record();
-                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $db->f('indice') . '</em></p>';
+                    $pos = new positions();
+                    $pos->charge($position);
+                    $contenu_page .= '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $pos->get_indice() . '</em></p>';
                 }
             }
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
