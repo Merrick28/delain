@@ -44,7 +44,7 @@
 {% if VUE.obstruction > 5 %}
 {% set STYLE = "soustitre2 obstruction2" %}
 {% endif %}
-liste[{{ loop.index0 }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
+liste[{{ loop.index0 }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|escape('js') }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
 {% endif %}
             {% endfor %}
 
