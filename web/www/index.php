@@ -19,6 +19,8 @@ $gmon->getRandom();
 $news       = new news;
 $numberNews = $news->getNumber();
 
+
+
 if (!isset($_REQUEST['start_news']))
 {
     $start_news = 0;
@@ -33,6 +35,7 @@ if ($start_news < 0)
 }
 
 $tabNews = $news->getNews($start_news);
+
 
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
