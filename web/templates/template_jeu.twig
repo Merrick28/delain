@@ -185,11 +185,11 @@
 <div id="dropdown-menu" class="dropdown-content">
 
     <hr>
-    <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="perso2.php">Fiche de perso</a><br>
-    <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="frame_vue.php">Vue</a></strong><br>
-    <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="evenements.php">Événements</a><br>
+    <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="/jeu_test/perso2.php">Fiche de perso</a><br>
+    <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
+    <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
     {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
-        <img src="{{ G_IMAGES }}calice.png\"> <a href="quete_auto.php">Mes quêtes
+        <img src="{{ G_IMAGES }}calice.png\"> <a href="/jeu_test/quete_auto.php">Mes quêtes
         {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
             ({{ PERSO.perso_nb_auto_quete.nb_encours }})
         {% endif %}
@@ -198,12 +198,12 @@
     {% endif %}
     <hr/>
 
-    <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="inventaire.php">Inventaire</a><br>
+    <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/inventaire.php">Inventaire</a><br>
     <div id="ramasser">
         {% if (PERSO.nb_obj_case != 0) or (PERSO.nb_or_case != 0) %}
             <img src="{{ G_IMAGES }}ramasser.gif" alt="">
             {% if PERSO.perso_pa >= PA_RAMASSE %}
-                <a href="ramasser.php">
+                <a href="/jeu_test/ramasser.php">
             {% endif %}
             Ramasser ({{ PA_RAMASSE }} PA)
 
@@ -215,7 +215,7 @@
     </div>
 
     <div id="transaction"><img src="{{ G_IMAGES }}transaction.gif" alt=""> <a
-                href="transactions2.php">
+                href="/jeu_test/transactions2.php">
             {% if PERSO.transactions > 0 %}
                 <strong>Transactions ({{ PERSO.transactions }})</strong>
             {% else %}
@@ -227,11 +227,11 @@
         {% if not PERSO.is_fam %}
             {% if (not PERSO.is_locked) and (DROIT.controle != 'O') %}
                 <img src="{{ G_IMAGES }}deplacement.gif" alt="">
-                <a href="deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                <a href="/jeu_test/deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
             {% endif %}
             {% if (PERSO.is_locked) and (DROIT.controle != 'O') %}
                 <img src="{{ G_IMAGES }}fuite.gif" alt="">
-                <a href="deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                <a href="/jeu_test/deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
             {% endif %}
 
         {% endif %}
@@ -239,13 +239,13 @@
 
     </div>
 
-    <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="combat.php">Combat
+    <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="/jeu_test/combat.php">Combat
             !</a></strong><br>
 
-    <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="magie.php">Magie !</a></strong><br>
+    <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="/jeu_test/magie.php">Magie !</a></strong><br>
 
     {% if (PERSO.sort_lvl5 > 0) and (PERSO.sort_memo > 5) %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/choix_voie_magique.php">Voie magique</a><br>'
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/choix_voie_magique.php">Voie magique</a><br>'
     {% endif %}
 
     {% if PERSO.get_favoris|length > 0 %}
@@ -264,39 +264,39 @@
     <hr/>
 
     {% if PERSO.is_enchanteur %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="enchantement_general.php">Forgeamage</a><br>
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enchantement_general.php">Forgeamage</a><br>
     {% endif %}
 
     {% if PERSO.has_competence(83) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="objets/pioche.php">Creuser</a><br>
+        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/objets/pioche.php">Creuser</a><br>
     {% endif %}
 
     {% if PERSO.is_enlumineur %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="enluminure_general.php">Enluminure</a><br>
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enluminure_general.php">Enluminure</a><br>
     {% endif %}
 
     {% if PERSO.is_potions %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="comp_potions.php">Alchimie</a><br>
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/comp_potions.php">Alchimie</a><br>
     {% endif %}
 
     {% if (PERSO.is_religion) or (PERSO.is_fidele_gerant) or (PERSO.is_admin_dieu) %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="religion.php">Religion</a><br>
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/religion.php">Religion</a><br>
     {% endif %}
 
     {% if PERSO.has_competence(81) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="comp_enseignement.php">Enseignement</a><br>
+        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_enseignement.php">Enseignement</a><br>
     {% endif %}
 
     <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
-            href="concentration.php">Concentration</a><br>
+            href="/jeu_test/concentration.php">Concentration</a><br>
 
     {% if PERSO.has_competence(86) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="comp_vol.php">Vol</a><br>
+        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_vol.php">Vol</a><br>
     {% endif %}
 
     <hr/>
     <div id="messagerie"><img src="{{ G_IMAGES }}messagerie.gif" alt="">
-        <a href="messagerie2.php">
+        <a href="/jeu_test/messagerie2.php">
             {% if NB_MSG != 0 %}
                 <strong>Messagerie ({{ NB_MSG }})</strong>
             {% else %}
@@ -305,103 +305,103 @@
         </a>
     </div>
 
-    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="guilde.php">Guilde</a><br/>
-    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="groupe.php">Coterie</a>
+    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/guilde.php">Guilde</a><br/>
+    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/groupe.php">Coterie</a>
     <hr/>
 
     {% if DROIT.controle == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="visu_amelioration.php">Améliorations</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="detail_compte.php">Détail du compte</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="rech_compte.php">Recherches sur comptes</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="multi_trace.php">Visu des multi</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="sitting.php">Sittings > 5 j.</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/controle_interaction_4e.php">Intéractions 4e
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/visu_amelioration.php">Améliorations</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/detail_compte.php">Détail du compte</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches sur comptes</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions 4e
         persos</a><br>
     {% endif %}
 
     {% if DROIT.controle_admin == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="controle_admins.php">Controle admins</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_admins.php">Controle admins</a><br>
     {% endif %}
 
     {% if DROIT.acces_logs == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_visu_logs.php">Voir les logs</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_visu_logs.php">Voir les logs</a><br>
     {% endif %}
 
     {% if DROIT.droits == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_gestion_droits.php">Gestion des droits</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_params.php">Gestion des paramètres</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_gestion_droits.php">Gestion des droits</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_params.php">Gestion des paramètres</a><br>
     {% endif %}
 
     {% if DROIT.modif_perso == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_perso_edit.php">Modif. perso</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a><br>
     {% endif %}
 
     {% if DROIT.modif_gmon == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_type_monstre_edit.php">Modif. types monstre</a>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_type_monstre_edit.php">Modif. types monstre</a>
         <br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_repartition_monstres.php">Modif. répart.
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_repartition_monstres.php">Modif. répart.
         monstres</a><br>
     {% endif %}
 
 
     {% if DROIT.objet == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_objet_generique_edit.php">Gestion objets
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_objet_generique_edit.php">Gestion objets
         generiques</a><br>
     {% endif %}
 
     {% if DROIT.carte == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_etage.php">Modif. étages</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_etage.php">Modif. étages</a><br>
     {% endif %}
 
     {% if DROIT.enchantements == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_enchantements.php">Enchantements</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_enluminure.php">Enluminure</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_magie.php">Modif. sorts</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_bonusmalus.php">Modif. bonus/malus</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enluminure.php">Enluminure</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_magie.php">Modif. sorts</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif. bonus/malus</a><br>
     {% endif %}
 
     {% if DROIT.potions == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_potions.php">Création de potions</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_potions.php">Création de potions</a><br>
     {% endif %}
 
     {% if DROIT.modif_perso == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_quete_auto_edit.php">Quetes auto</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_quete_auto_edit.php">Quetes auto</a><br>
     {% endif %}
 
     {% if DROIT.factions == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_factions.php">Factions</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_factions.php">Factions</a><br>
     {% endif %}
 
     {% if DROIT.news == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_news.php">Lancer une news</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_news.php">Lancer une news</a><br>
     {% endif %}
 
     {% if DROIT.animations == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_animations.php">Animations</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_animations.php">Animations</a><br>
     {% endif %}
 
     {% if PERSO.perso_admin_echoppe == 'O' %}
-        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="admin_echoppe.php">Admin. échoppes</a><br>
+        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/admin_echoppe.php">Admin. échoppes</a><br>
     {% endif %}
 
     {% if GERANT == 'O' %}
-        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="gere_echoppe.php">Gestion échoppes</a><br>
+        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/gere_echoppe.php">Gestion échoppes</a><br>
     {% endif %}
 
     {% if PERSO.has_competence(80) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="comp_commandement.php">Commandement</a><br>
+        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_commandement.php">Commandement</a><br>
     {% endif %}
 
     {% if COMPTE.is_admin_monstre %}
-        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="option_monstre.php">Option du monstre</a><br>
+        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/option_monstre.php">Option du monstre</a><br>
     {% endif %}
 
     {% if (COMPTE.is_admin_monstre) and (DROIT.modif_perso) %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="admin_teleportation.php">Téléportation</a><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
     {% endif %}
 
 
-    <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="switch.php"><strong>Gestion
+    <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion
             compte</strong></a>
     <hr/>
     <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a>
