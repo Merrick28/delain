@@ -1,4 +1,4 @@
-<?php 
+<?php
 //$result = stripos($PHP_SELF,'sadsearch');
 //if(!$result)
 $sortie = ob_get_contents();
@@ -8,9 +8,13 @@ echo preg_replace('/Moustiques sanguinaires \(n° \d+\)/', 'Moustiques sanguinai
 
 //$stmt->closeCursor(); // this is not even required
 $stmt = null; // doing this is mandatory for connection to get closed
-$pdo = null;
+$pdo  = null;
 
-if($debug_mode)
+if ($debug_mode)
 {
-    echo $toolbar->render();
+    if (!defined('NO_DEBUG'))
+    {
+        echo $toolbar->render();
+    }
+
 }

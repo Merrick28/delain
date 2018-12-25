@@ -10,11 +10,20 @@ $profiler = new \Fabfuel\Prophiler\Profiler();
 $toolbar = new \Fabfuel\Prophiler\Toolbar($profiler);
 $toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
 
+$logger = new \Fabfuel\Prophiler\Adapter\Psr\Log\Logger($profiler);
+
+
 // mode debug
 $debug_mode = false;
-if(isset($_REQUEST['debug_mode']))
+if(isset($_REQUEST['debug_delain']))
 {
-    $debug_mode = true;
+    if($_REQUEST['debug_delain'] == DEBUG_TOKEN)
+    {
+        $debug_mode = true;
+        $logger->debug('Debug manuel demandé');
+    }
+
+
 }
 if(defined('DEBUG_MODE'))
 {

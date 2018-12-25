@@ -1,5 +1,5 @@
-
 <?php
+define('NO_DEBUG');
      header("Pragma: no-cache");
      header("Expires: 0");
      header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
