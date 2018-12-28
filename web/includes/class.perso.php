@@ -1804,6 +1804,114 @@ class perso
         return $result['resultat'];
     }
 
+    function cree_receptacle($sort, $type_lance)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select cree_receptacle(:perso,:sort,:type_lance) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":sort"       => $sort,
+            ":type_lance" => $type_lance), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function cree_parchemin($sort, $type_lance)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select cree_parchemin(:perso,:sort,:type_lance) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":sort"       => $sort,
+            ":type_lance" => $type_lance), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function milice_tel($dest)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select milice_tel(:perso,:dest) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":dest"       => $dest), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function prie_dieu($dieu)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select prie_dieu(:perso,:dieu) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":dieu"       => $dieu), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function ceremonie_dieu($dieu)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select ceremonie_dieu(:perso,:dieu) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":dieu"       => $dieu), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function change_grade($dieu)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select change_grade(:perso,:dieu) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":dieu"       => $dieu), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function prie_dieu_ext($dieu)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select prie_dieu_ext(:perso,:dieu) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":dieu"       => $dieu), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function repare_objet($type_rep, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select f_repare_" . $type_rep . "(:perso,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+
+
     function prepare_for_tab_switch()
     {
         global $type_flux;

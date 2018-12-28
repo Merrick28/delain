@@ -634,7 +634,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'nv_magasin_achat':
             $lieu = $_POST['lieu'];
-            $sm = new stock_magasin();
+            $sm   = new stock_magasin();
             $sm->getBy_mstock_lieu_cod($lieu)[0];
 
             foreach ($gobj as $key => $val)
@@ -645,22 +645,20 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
                     $type = explode('-', $key);
 
-                    $gobj = $type[0];
-                    $qte = $val;
-                    $bonus =  $type[1];
-                    $liste_objets = $sm->get_objets($gobj,$bonus,$qte);
+                    $gobj         = $type[0];
+                    $qte          = $val;
+                    $bonus        = $type[1];
+                    $liste_objets = $sm->get_objets($gobj, $bonus, $qte);
 
                     if (count($liste_objets) == 0)
                     {
                         $contenu_page .= '<p>Erreur, pas d’objet trouvé dans le magasin pour ' . $key;
                     } else
                     {
-                        foreach($liste_objets as $objet)
-
-                        while ($db->next_record())
+                        foreach ($liste_objets as $objet)
                         {
                             $contenu_page .= '<p>pour l’objet : <strong>' . $objet->obj_nom . '</strong>';
-                            $contenu_page .= $perso->magasin_achat($lieu,$objet->obj_cod);
+                            $contenu_page .= $perso->magasin_achat($lieu, $objet->obj_cod);
                         }
                     }
                 }
@@ -671,27 +669,27 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $contenu_page .= $perso->magasin_vente($lieu,$key);
+                $contenu_page .= $perso->magasin_vente($lieu, $key);
             }
             break;
         case 'magasin_identifie':
-            $contenu_page .= $perso->magasin_identifie($_POST['lieu'],$_POST['objet']);
+            $contenu_page .= $perso->magasin_identifie($_POST['lieu'], $_POST['objet']);
             break;
         case 'nv_magasin_identifie':
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $contenu_page .= $perso->magasin_identifie($_POST['lieu'],$key);
+                $contenu_page .= $perso->magasin_identifie($_POST['lieu'], $key);
             }
             break;
         case 'nv_magasin_repare':
             foreach ($obj as $key => $val)
             {
-                $contenu_page .= $perso->magasin_repare($_POST['lieu'],$key);
+                $contenu_page .= $perso->magasin_repare($_POST['lieu'], $key);
             }
             break;
         case 'magasin_repare':
-            $contenu_page .= $contenu_page .= $perso->magasin_repare($_POST['lieu'],$_POST['objet']);
+            $contenu_page .= $contenu_page .= $perso->magasin_repare($_POST['lieu'], $_POST['objet']);
             break;
         case 'repare':
             $type_rep[1] = 'arme';
@@ -705,129 +703,92 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $objet_generique = new objet_generique();
             $objet_generique->charge($objet->obj_gobj_cod);
 
-
-            $query_val   = "select gobj_tobj_cod
-						from objets,objet_generique
-						where obj_gobj_cod = gobj_cod
-						and obj_cod = " . $objet;
-            $db->query($query_val);
-            $db->next_record();
-
-            $type_controle = $db->f('gobj_tobj_cod');
             if ($objet_generique->gobj_tobj_cod != $type)
             {
-                $query_val = "insert into trace2 (trace2_texte) values ($perso_cod)";
-                $db->query($query_val);
+                $trace               = new trace2();
+                $trace->trace2_texte = $perso_cod;
+                $trace->stocke(true);
             }
-            $query_val = "select perobj_cod
-						from perso_objets
-						where perobj_perso_cod = " . $perso_cod . "
-						and perobj_obj_cod = " . $objet . "
-						and perobj_identifie = 'O'
-						and ( (perobj_equipe = 'N' and " . $type . " in (2,4) )
-						      or ( " . $type . " = 1)
-							)";
-            $db->query($query_val);
-            if ($db->nf() != 0)
-                $autorise = 1;
 
-
-            //if (($type != 1) && ($type != 2) && ($type != 4))
-            if ($autorise != 1)
+            $erreur = false;
+            $perobj = new perso_objets();
+            if (!$perobj->getByPersoObjet($perso_cod, $objet->obj_cod))
             {
-                $contenu_page .= '<p>Inutile d’essayer de réparer ce genre d’objets....';
+                $contenu_page .= 'Erreur sur le chargement du perso/objet';
+                $erreur       = true;
             } else
             {
-                $req = 'select f_repare_' . $type_rep[$type] . '(' . $perso_cod . ',' . $objet . ') as resultat';
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f('resultat');
+                if ($perobj->perobj_identifie != 'O')
+                {
+                    $contenu_page .= 'Vous ne pouvez pas réparer un objet non identifié';
+                }
+                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4))
+                {
+                    $autorise = 1;
+                }
+                if ($type == 1)
+                {
+                    $autorise = 1;
+                }
+
             }
-            $contenu_page .= '<center><a href="inventaire.php">Retour à l’inventaire</a></center>';
+
+            if ($autorise == 1)
+            {
+                $contenu_page .= $perso->repare_objet($type_rep[$type], $objet->obj_cod);
+            }
+            $contenu_page .= '<a class="centrer" href="inventaire.php">Retour à l’inventaire</a>';
             break;
         case 'receptacle':
-            $tab_lieu     = $db->get_lieu($perso_cod);
-            $lieu_protege = $tab_lieu['lieu_refuge'];
-            if ($lieu_protege == 'O')
+            if ($perso->is_refuge() == 'O')
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer de sort en étant sur un lieu protégé !';
                 break;
             }
-            if ($db->is_intangible($perso_cod))
+            if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req = 'select cree_receptacle(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->cree_receptacle($_REQUEST['sort'], $_REQUEST['type_lance']);
             break;
         case 'enluminure':
-            $tab_lieu     = $db->get_lieu($perso_cod);
-            $lieu_protege = $tab_lieu['lieu_refuge'];
-            if ($lieu_protege == 'O')
+            if ($perso->is_refuge() == 'O')
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer de sort en étant sur un lieu protégé !';
                 break;
             }
-            if ($db->is_intangible($perso_cod))
+            if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req = 'select cree_parchemin(' . $perso_cod . ',' . $sort . ',' . $type_lance . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->cree_parchemin($_REQUEST['sort'], $_REQUEST['type_lance']);
             break;
         case 'milice_tel':
-            $req = 'select milice_tel(' . $perso_cod . ',' . $destination . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->milice_tel($_REQUEST['destination']);
             break;
         case 'prie':
-            if (isset($_POST['dieu']))
-                $dieu = $_POST['dieu'];
-            if (isset($_GET['dieu']))
-                $dieu = $_GET['dieu'];
-            if (!isset($dieu) || $dieu === '')
+            if (!isset($_REQUEST['dieu']))
             {
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $req = 'select prie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->prie_dieu($_RQEUEST['dieu']);
             break;
         case 'prie_ext':
-            if (isset($_POST['dieu']))
-                $dieu = $_POST['dieu'];
-            if (isset($_GET['dieu']))
-                $dieu = $_GET['dieu'];
-            if (!isset($dieu) || $dieu === '')
+            if (!isset($_REQUEST['dieu']))
             {
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $req = 'select prie_dieu_ext(' . $perso_cod . ',' . $dieu . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->prie_dieu_ext($_RQEUEST['dieu']);
             break;
         case 'ceremonie':
-            $req = 'select ceremonie_dieu(' . $perso_cod . ',' . $dieu . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->ceremonie_dieu($_RQEUEST['dieu']);
             break;
         case 'dgrade':
-            $req = 'select change_grade(' . $perso_cod . ',' . $dieu . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->change_grade($_RQEUEST['dieu']);
             break;
         case 'don_br':
             $req = 'select don_br(' . $perso_cod . ',' . $dest . ',' . $qte . ') as resultat ';

@@ -1,0 +1,181 @@
+<?php
+/**
+ * includes/class.perso_objets.php
+ */
+
+/**
+ * Class perso_objets
+ *
+ * Gère les objets BDD de la table perso_objets
+ */
+class perso_objets
+{
+    var $perobj_cod;
+    var $perobj_perso_cod;
+    var $perobj_obj_cod;
+    var $perobj_identifie = 'N';
+    var $perobj_equipe    = 'N';
+    var $perobj_dfin;
+
+    function __construct()
+    {
+    }
+
+    /**
+     * Charge dans la classe un enregistrement de perso_objets
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK
+     * @return boolean => false si non trouvé
+     */
+    function charge($code)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select * from perso_objets where perobj_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $this->perobj_cod       = $result['perobj_cod'];
+        $this->perobj_perso_cod = $result['perobj_perso_cod'];
+        $this->perobj_obj_cod   = $result['perobj_obj_cod'];
+        $this->perobj_identifie = $result['perobj_identifie'];
+        $this->perobj_equipe    = $result['perobj_equipe'];
+        $this->perobj_dfin      = $result['perobj_dfin'];
+        return true;
+    }
+
+    function getByPersoObjet($perso, $objet)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select perobj_cod
+						from perso_objets
+						where perobj_perso_cod = :perso
+						and perobj_obj_cod = :objet";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso" => $perso,
+            ":objet" => $objet
+        ), $stmt);
+        if(!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['perobj_cod']);
+
+    }
+
+    /**
+     * Stocke l'enregistrement courant dans la BDD
+     * @global bdd_mysql $pdo
+     * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     */
+    function stocke($new = false)
+    {
+        $pdo = new bddpdo;
+        if ($new)
+        {
+            $req  = "insert into perso_objets (
+            perobj_perso_cod,
+            perobj_obj_cod,
+            perobj_identifie,
+            perobj_equipe,
+            perobj_dfin                        )
+                    values
+                    (
+                        :perobj_perso_cod,
+                        :perobj_obj_cod,
+                        :perobj_identifie,
+                        :perobj_equipe,
+                        :perobj_dfin                        )
+    returning perobj_cod as id";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":perobj_perso_cod" => $this->perobj_perso_cod,
+                ":perobj_obj_cod"   => $this->perobj_obj_cod,
+                ":perobj_identifie" => $this->perobj_identifie,
+                ":perobj_equipe"    => $this->perobj_equipe,
+                ":perobj_dfin"      => $this->perobj_dfin,
+            ), $stmt);
+
+
+            $temp = $stmt->fetch();
+            $this->charge($temp['id']);
+        } else
+        {
+            $req  = "update perso_objets
+                    set
+            perobj_perso_cod = :perobj_perso_cod,
+            perobj_obj_cod = :perobj_obj_cod,
+            perobj_identifie = :perobj_identifie,
+            perobj_equipe = :perobj_equipe,
+            perobj_dfin = :perobj_dfin                        where perobj_cod = :perobj_cod ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(
+                ":perobj_cod"       => $this->perobj_cod,
+                ":perobj_perso_cod" => $this->perobj_perso_cod,
+                ":perobj_obj_cod"   => $this->perobj_obj_cod,
+                ":perobj_identifie" => $this->perobj_identifie,
+                ":perobj_equipe"    => $this->perobj_equipe,
+                ":perobj_dfin"      => $this->perobj_dfin,
+            ), $stmt);
+        }
+    }
+
+    /**
+     * Retourne un tableau de tous les enregistrements
+     * @global bdd_mysql $pdo
+     * @return \perso_objets
+     */
+    function getAll()
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select perobj_cod  from perso_objets order by perobj_cod";
+        $stmt   = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso_objets;
+            $temp->charge($result["perobj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function __call($name, $arguments)
+    {
+        switch (substr($name, 0, 6))
+        {
+            case 'getBy_':
+                if (property_exists($this, substr($name, 6)))
+                {
+                    $retour = array();
+                    $pdo    = new bddpdo;
+                    $req    = "select perobj_cod  from perso_objets where " . substr($name, 6) . " = ? order by perobj_cod";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    while ($result = $stmt->fetch())
+                    {
+                        $temp = new perso_objets;
+                        $temp->charge($result["perobj_cod"]);
+                        $retour[] = $temp;
+                        unset($temp);
+                    }
+                    if (count($retour) == 0)
+                    {
+                        return false;
+                    }
+                    return $retour;
+                } else
+                {
+                    die('Unknown variable ' . substr($name, 6) . ' in table perso_objets');
+                }
+                break;
+
+            default:
+                die('Unknown method.');
+        }
+    }
+}
