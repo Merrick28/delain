@@ -1658,8 +1658,7 @@ class perso
     function get_guilde()
     {
         $pdo  = new bddpdo();
-        $req
-              = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
+        $req  = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
             and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
@@ -1677,11 +1676,10 @@ class perso
 
     function desengagement($cible)
     {
-        $pdo = new bddpdo();
-        $req
-             = "select desengagement(:perso,:cible) as resultat";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
+        $pdo    = new bddpdo();
+        $req    = "select desengagement(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod,
             ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
@@ -1690,13 +1688,118 @@ class perso
 
     function cree_revolution($cible)
     {
-        $pdo = new bddpdo();
-        $req
-             = "select cree_revolution(:perso,:cible) as resultat";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
+        $pdo    = new bddpdo();
+        $req    = "select cree_revolution(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod,
             ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function passe_niveau($amel)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select passe_niveau(:perso,:amel) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":amel"  => $amel), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function depose_objet($objet)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select depose_objet(:perso,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function vente_bat($objet)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select vente_bat(:perso,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function vote_revolution($revguilde, $vote)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select vote_revolution(:perso,:revguilde,:vote) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"     => $this->perso_cod,
+            ":revguilde" => $revguilde,
+            ":vote"      => $vote), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function magasin_achat($lieu, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select magasin_achat(:perso,:lieu,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function magasin_vente($lieu, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select magasin_vente(:perso,:lieu,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function magasin_identifie($lieu, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select magasin_identifie(:perso,:lieu,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function magasin_repare($lieu, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select magasin_repare(:perso,:lieu,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }

@@ -620,147 +620,101 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $perso->cree_revolution($_POST['cible']);
             break;
         case 'vote_guilde':
-            $vote          = $_POST['vote'];
-            $revguilde_cod = $_POST['revguilde_cod'];
-            $req           = 'select vote_revolution(' . $perso_cod . ',' . $revguilde_cod . ',\'' . $vote . '\') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->vote_revolution($_POST['revguilde_cod'], $_POST['vote']);
             break;
         case 'passe_niveau':
-            $amelioration = $_POST['amelioration'];
-            if (!isset($amelioration) || $amelioration === '')
-            {
-                break;
-            }
-            $req = 'select f_passe_niveau(' . $perso_cod . ',' . $amelioration . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<center><a href="index.php">Retour</a></center>';
+            $contenu_page .= $perso->passe_niveau($_POST['amelioration']);
+            $contenu_page .= '<a href="index.php" class="centrer">Retour</a>';
             break;
         case 'depose_objet':
-            $req = 'select depose_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->depose_objet($objet);
             break;
         case 'vente_bat':
-            $objet = $_POST['objet'];
-            $req   = 'select vente_bat(' . $perso_cod . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->vente_bat($objet);
             break;
         case 'nv_magasin_achat':
-            $db2  = new base_delain;
             $lieu = $_POST['lieu'];
+            $sm = new stock_magasin();
+            $sm->getBy_mstock_lieu_cod($lieu)[0];
+
             foreach ($gobj as $key => $val)
             {
                 if ($val != 0)
                 {
+
+
                     $type = explode('-', $key);
-                    // on cherche l'objet kivabien dans le magasin
-                    $req = 'select obj_cod,obj_nom ';
-                    $req = $req . 'from objets,stock_magasin,objet_generique ';
-                    $req = $req . 'where mstock_lieu_cod = ' . $lieu;
-                    $req = $req . 'and mstock_obj_cod = obj_cod ';
-                    $req = $req . 'and obj_gobj_cod = ' . $type[0];
-                    $req = $req . 'and coalesce(obj_obon_cod,0) = ' . $type[1];
-                    $req = $req . 'and obj_gobj_cod = gobj_cod ';
-                    $req = $req . 'limit ' . $val;
-                    $db->query($req);
-                    if ($db->nf() == 0)
+
+                    $gobj = $type[0];
+                    $qte = $val;
+                    $bonus =  $type[1];
+                    $liste_objets = $sm->get_objets($gobj,$bonus,$qte);
+
+                    if (count($liste_objets) == 0)
                     {
                         $contenu_page .= '<p>Erreur, pas d’objet trouvé dans le magasin pour ' . $key;
                     } else
                     {
+                        foreach($liste_objets as $objet)
+
                         while ($db->next_record())
                         {
-                            $contenu_page .= '<p>pour l’objet : <strong>' . $db->f('obj_nom') . '</strong>';
-                            $req          = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $db->f('obj_cod') . ') as resultat ';
-                            $db2->query($req);
-                            $db2->next_record();
-                            $contenu_page .= $db2->f('resultat');
+                            $contenu_page .= '<p>pour l’objet : <strong>' . $objet->obj_nom . '</strong>';
+                            $contenu_page .= $perso->magasin_achat($lieu,$objet->obj_cod);
                         }
                     }
                 }
             }
-            /* Ancienne version certainement. Je laisse pour l'instant, mais c'est plus un code pollueur qu'autre chose
-              foreach($gobj as $key=>$val)
-              {
-              if ($val != 0)
-              {
-              $req = 'select obj_nom from objets where obj_cod = ' . $key;
-              $db->query($req);
-              $db->next_record();
-              $contenu_page .= '<p>pour l\'objet : <strong>' . $db->f('obj_nom') . '</strong>';
-              $req = 'select magasin_achat(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
-              $db2->query($req);
-              $db2->next_record();
-              $contenu_page .= $db2->f('resultat');
-              }
-              } */
+
             break;
         case 'nv_magasin_vente':
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $req = 'select magasin_vente(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f('resultat');
+                $contenu_page .= $perso->magasin_vente($lieu,$key);
             }
             break;
         case 'magasin_identifie':
-            $objet = $_POST['objet'];
-            $lieu  = $_POST['lieu'];
-            $req   = 'select magasin_identifie(' . $perso_cod . ',' . $lieu . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->magasin_identifie($_POST['lieu'],$_POST['objet']);
             break;
         case 'nv_magasin_identifie':
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $req = 'select magasin_identifie(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f('resultat');
+                $contenu_page .= $perso->magasin_identifie($_POST['lieu'],$key);
             }
             break;
         case 'nv_magasin_repare':
-            $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $req = 'select magasin_repare(' . $perso_cod . ',' . $lieu . ',' . $key . ') as resultat ';
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f('resultat');
+                $contenu_page .= $perso->magasin_repare($_POST['lieu'],$key);
             }
             break;
         case 'magasin_repare':
-            $objet = $_POST['objet'];
-            $lieu  = $_POST['lieu'];
-            $req   = 'select magasin_repare(' . $perso_cod . ',' . $lieu . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $contenu_page .= $perso->magasin_repare($_POST['lieu'],$_POST['objet']);
             break;
         case 'repare':
             $type_rep[1] = 'arme';
             $type_rep[2] = 'armure';
             $type_rep[4] = 'casque';
             $autorise    = 0;
+
+            $objet = new objets();
+            $objet->charge($_REQUEST['objet']);
+
+            $objet_generique = new objet_generique();
+            $objet_generique->charge($objet->obj_gobj_cod);
+
+
             $query_val   = "select gobj_tobj_cod
 						from objets,objet_generique
 						where obj_gobj_cod = gobj_cod
 						and obj_cod = " . $objet;
             $db->query($query_val);
             $db->next_record();
+
             $type_controle = $db->f('gobj_tobj_cod');
-            if ($type_controle != $type)
+            if ($objet_generique->gobj_tobj_cod != $type)
             {
                 $query_val = "insert into trace2 (trace2_texte) values ($perso_cod)";
                 $db->query($query_val);
