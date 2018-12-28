@@ -94,7 +94,7 @@ class pos_sort_interdit
             ":sort"    => $sort,
             ":pos_cod" => $pos->pos_cod
         ), $stmt);
-        if($stmt->fecth())
+        if($stmt->fetch())
         {
             return true;
         }
