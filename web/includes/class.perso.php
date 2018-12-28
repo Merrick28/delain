@@ -1081,10 +1081,10 @@ class perso
 
     function get_cout_pa_magie($sort, $type_lance)
     {
-        $pdo  = new bddpdo;
-        $req  = "SELECT cout_pa_magie(:perso, :sort, :type_lance) as cout";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
+        $pdo    = new bddpdo;
+        $req    = "SELECT cout_pa_magie(:perso, :sort, :type_lance) as cout";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
             ":perso"      => $this->perso_cod,
             ":sort"       => $sort,
             ":type_lance" => $type_lance), $stmt);
@@ -1673,8 +1673,32 @@ class perso
             return false;
         }
         return $guilde;
+    }
 
+    function desengagement($cible)
+    {
+        $pdo = new bddpdo();
+        $req
+             = "select desengagement(:perso,:cible) as resultat";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
 
+    function cree_revolution($cible)
+    {
+        $pdo = new bddpdo();
+        $req
+             = "select cree_revolution(:perso,:cible) as resultat";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
     }
 
     function prepare_for_tab_switch()

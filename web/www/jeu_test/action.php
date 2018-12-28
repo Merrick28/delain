@@ -413,11 +413,9 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             }
 
 
-
-
             $perso_cible = new perso;
             $perso_cible->charge($cible);
-            $logger->warning('Cible ' . print_r($perso_cible,true));
+            $logger->warning('Cible ' . print_r($perso_cible, true));
             $pos_cible = $perso_cible->get_position_object();
 
             $pos_sort_interdit = new pos_sort_interdit();
@@ -479,7 +477,6 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $pnbs->getByPersoSort($perso_cod, $sort->sort_cod);
 
 
-
             // bouton de relance
             $sort_pa = $perso->get_cout_pa_magie($sort->sort_cod, $type_lance);
             if ($perso->perso_pa >= $sort_pa && ($pnbs->pnbs_nombre < 2 || is_null($pnbs->pnbs_nombre)))
@@ -506,7 +503,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             }
 
 
-            $sort_cod   = $_POST['sort_cod'];
+            $sort_cod = $_POST['sort_cod'];
             $logger->debug('Sort ' . $sort_cod);
             $position   = $_POST['position'];
             $type_lance = $_POST['type_lance'];
@@ -537,10 +534,10 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
             // on regarde si on est sur un lieu protégé
             $lieu_protege = 'N';
-            $lpos = new lieu_position();
+            $lpos         = new lieu_position();
             $lpos->getByPos($pos->pos_cod);
             $lieu = new lieu();
-            if($lieu->charge($lpos->lpos_lieu_cod))
+            if ($lieu->charge($lpos->lpos_lieu_cod))
             {
                 $lieu_protege = $lieu->lieu_refuge;
             }
@@ -551,7 +548,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-            $pos_perso = $perso->get_position_object();
+            $pos_perso         = $perso->get_position_object();
             $pos_sort_interdit = new pos_sort_interdit();
             if ($pos_sort_interdit->is_sort_interdit($sort_cod, $pos_perso->pos_cod))
             {
@@ -564,46 +561,49 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-            $req    = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(
+            $req          = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $stmt         = $pdo->prepare($req);
+            $stmt         = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
                       ':cible'      => $pos->pos_cod,
                       ':type_lance' => $type_lance), $stmt
             );
-            $result = $stmt->fetch();
+            $result       = $stmt->fetch();
             $contenu_page .= $result['resultat'];
 
             break;
         case 'voie_magique':
-            $req = 'select perso_voie_magique, mvoie_libelle from perso, voie_magique
-                where perso_voie_magique = mvoie_cod and perso_cod = ' . $perso_cod;
-            $db->query($req);
-            if ($db->nf())
+            $vm = new voie_magique();
+            if (!empty($perso->perso_voie_magique))
             {
-                $contenu_page .= 'ERREUR: Vous aviez déjà choisi une voie magique: ' . $db->f('mvoie_libelle');
+
+                $vm->charge($perso->perso_voie_magique);
+                $contenu_page .= 'ERREUR: Vous aviez déjà choisi une voie magique: ' . $vm->mvoie_libelle;
             } else
             {
                 if (!isset($_POST['voie']))
-                    $voie = -1;  // Erreur
-                else
-                    $voie = $_POST['voie'];
-                $req = 'select mvoie_libelle from voie_magique where mvoie_cod = ' . $voie;
-                $db->query($req);
-                if ($db->nf())
                 {
-                    $db->next_record();
-                    $contenu_page .= 'Vous avez choisi la voie magique: ' . $db->f('mvoie_libelle');
-                    $db->query('update perso set perso_voie_magique = ' . $voie . ' where perso_cod = ' . $perso_cod);
+                    $voie = -1;  // Erreur
                 } else
                 {
-                    $contenu_page .= 'ERREUR: Voie magique choisie non spécifiée ou inconnue';
+                    $voie = $_POST['voie'];
                 }
+                if (!$vm->charge($voie))
+                {
+                    $contenu_page .= 'ERREUR: Voie magique choisie non spécifiée ou inconnue';
+                } else
+                {
+                    $perso->perso_voie_magique = $voie;
+                    $perso->stocke();
+                    $contenu_page .= 'Vous avez choisi la voie magique: ' . $vm->mvoie_libelle;
+                }
+
             }
+
             break;
 
         case 'desengagement':
-            switch ($valide)
+            switch ($_REQUEST['valide'])
             {
                 case 'N':
                     $contenu_page .= '<p>Le désengagement permet de détruire tous les blocages de combat (offensifs ou défensifs) avec une cible déterminée.<br />';
@@ -612,19 +612,12 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     $contenu_page .= '<a href="etat.php">Non, je ne souhaite pas me désengager !</a><br />';
                     break;
                 case 'O':
-                    $req = 'select desengagement(' . $perso_cod . ',' . $cible . ') as resultat ';
-                    $db->query($req);
-                    $db->next_record();
-                    $contenu_page .= $db->f('resultat');
+                    $contenu_page .= $perso->desengagement($_REQUEST['cible']);
                     break;
             }
             break;
         case 'revolution':
-            $cible = $_POST['cible'];
-            $req   = 'select cree_revolution(' . $perso_cod . ',' . $cible . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->cree_revolution($_POST['cible']);
             break;
         case 'vote_guilde':
             $vote          = $_POST['vote'];
