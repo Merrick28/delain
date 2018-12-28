@@ -5,6 +5,7 @@
  * le moteur de template de phplib
  *
  */
+$benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
 $db2 = new base_delain;
 
@@ -884,4 +885,5 @@ $var_twig_defaut = array(
     'IS_INTANGIBLE'       => $is_intangible,
     'IS_REFUGE'           => $is_refuge
 );
+$benchmark->stop($benchmark);
 ?>

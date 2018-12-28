@@ -90,7 +90,9 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
         echo("<input type=\"hidden\" name=\"compte\" value=\"$compt_cod\"/>");
 
         echo '<div class="container-fluid">';
+        $benchmark = $profiler->start('Debut tab switch');
         include "../tab_switch.php";
+        $benchmark->stop($benchmark);
         echo '</div>';
         echo '</form>';
 
@@ -98,11 +100,6 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
         <div class="container-fluid">
         <div class="row">
             <div class="col-md-8 col-sm-6 col-xs-12 centrer">
-                <?php // Bonus XP pour les 10 ans du jeu (Maverick)
-                if ((int)date('Y') == 2014 && (int)date('m') < 2) {
-                    echo '<hr /><a href="repart_xp_compte.php" class="centrer" style="font-size:14px;">Cadeau pour les 10 ans du jeu !</a>';
-                }
-                ?>
                 <hr/>
                 <div style="centrer">
                     Numéro de compte : <?php echo $compt_cod; ?><br/><a href="change_pass.php">Changer de mot de

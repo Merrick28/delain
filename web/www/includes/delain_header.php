@@ -7,8 +7,12 @@ require G_CHE . '../vendor/autoload.php';
 header('Content-type: text/html; charset=utf-8');
 
 $profiler = new \Fabfuel\Prophiler\Profiler();
+$profiler->addAggregator(new \Fabfuel\Prophiler\Aggregator\Database\QueryAggregator());
+
 $toolbar = new \Fabfuel\Prophiler\Toolbar($profiler);
 $toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+
+
 
 $logger = new \Fabfuel\Prophiler\Adapter\Psr\Log\Logger($profiler);
 
