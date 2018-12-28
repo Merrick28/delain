@@ -1050,6 +1050,15 @@ class perso
         return $retour;
     }
 
+    function get_position_object()
+    {
+        $ppos = new perso_position();
+        $ppos->getByPerso($this->perso_cod);
+        $pos = new positions();
+        $pos->charge($ppos->ppos_pos_cod);
+        return $pos;
+    }
+
     function get_favoris()
     {
         $pdo    = new bddpdo;
