@@ -20,14 +20,20 @@ if (!$inc_vue)
     $t->set_var('URL_IMAGES', G_IMAGES);
 }
 
-if (!$db->is_admin($compt_cod) || ($db->is_admin_monstre($compt_cod) && ($db->is_monstre($perso_cod) || $db->is_pnj($perso_cod))))
+$compte = new compte;
+$compte->charge($compt_cod);
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if(!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
 {
 
     switch ($methode)
     {
         case 'attaque2':
             /* on porte une attaque */
-            $arme_dist = $db->arme_distance($perso_cod);
+            $arme_dist = $perso->has_arme_distance();
             if (isset($_POST['cible']))
             {
                 $cible = $_POST['cible'];
