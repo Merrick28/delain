@@ -412,7 +412,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-            $logger->warning('Cible ' . $cible);
+
 
 
             $perso_cible = new perso;
@@ -491,27 +491,34 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
 
         case 'magie_case':
-            $tab_lieu     = $db->get_lieu($perso_cod);
-            $lieu_protege = $tab_lieu['lieu_refuge'];
-            if ($lieu_protege == 'O')
+
+            if ($perso->is_refuge())
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer de sort en étant sur un lieu protégé !';
                 break;
             }
-            $sort_cod   = $_POST['sort_cod'];
-            $position   = $_POST['position'];
-            $type_lance = $_POST['type_lance'];
-            if ($db->is_intangible($perso_cod))
+
+
+            if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            if (!isset($sort_cod))
+
+
+            $sort_cod   = $_POST['sort_cod'];
+            $logger->debug('Sort ' . $sort_cod);
+            $position   = $_POST['position'];
+            $type_lance = $_POST['type_lance'];
+
+            $sort = new sorts;
+            if (!$sort->charge($sort_cod))
             {
                 $contenu_page .= '<p>Erreur ! Sort non défini !';
                 break;
             }
-            if (!isset($position))
+            $pos = new positions();
+            if (!$pos->charge($position))
             {
                 $contenu_page .= '<p>Erreur ! Cible non définie !';
                 break;
@@ -521,57 +528,52 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= '<p>Erreur ! Type de lancer non défini !';
                 break;
             }
+
             $prefixe = 'nv_';
             if ($type_lance == 3)
             {
                 $prefixe = 'dv_';
             }
+
+            // on regarde si on est sur un lieu protégé
             $lieu_protege = 'N';
-            $req          = 'select lieu_refuge from lieu,lieu_position,positions
-				where pos_cod = ' . $position . '
-					and lpos_pos_cod = pos_cod
-					and lpos_lieu_cod = lieu_cod';
-            $db->query($req);
-            if ($db->next_record())
-                $lieu_protege = $db->f('lieu_refuge');
-            $req = 'select sort_fonction,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
-            $db->query($req);
-            $db->next_record();
-            $fonction       = $db->f('sort_fonction');
-            $sort_aggressif = $db->f('sort_aggressif');
-            if ($lieu_protege == 'O' and $sort_aggressif == 'O')
+            $lpos = new lieu_position();
+            $lpos->getByPos($pos->pos_cod);
+            $lieu = new lieu();
+            if($lieu->charge($lpos->lpos_lieu_cod))
+            {
+                $lieu_protege = $lieu->lieu_refuge;
+            }
+
+            if ($lieu_protege == 'O' and $sort->sort_aggressif == 'O')
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
                 break;
             }
 
-            //Ajout Teruo 22/01/2016: test recherche tableau sort interdit
-            $tab_pos = $db->get_pos($perso_cod);
-            $req     = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $tab_pos['pos_cod'];
-
-            $db->query($req);
-            if ($db->nf() != 0)
+            $pos_perso = $perso->get_position_object();
+            $pos_sort_interdit = new pos_sort_interdit();
+            if ($pos_sort_interdit->is_sort_interdit($sort_cod, $pos_perso->pos_cod))
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer ce sort depuis cette case !';
                 break;
             }
-
-
-            $req = 'select sinterd_pos_cod, sinterd_sort_cod from pos_sort_interdit where ' . $sort_cod . ' in (sinterd_sort_cod, 0) and sinterd_pos_cod = ' . $position;
-            $db->query($req);
-            if ($db->nf() != 0)
+            if ($pos_sort_interdit->is_sort_interdit($sort_cod, $pos->pos_cod))
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer ce sort sur cette case !';
                 break;
             }
 
-            //Fin ajout
+            $req    = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(
+                array(':perso_cod'  => $perso_cod,
+                      ':cible'      => $pos->pos_cod,
+                      ':type_lance' => $type_lance), $stmt
+            );
+            $result = $stmt->fetch();
+            $contenu_page .= $result['resultat'];
 
-
-            $req = 'select ' . $prefixe . $fonction . '(' . $perso_cod . ',' . $position . ',' . $type_lance . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
             break;
         case 'voie_magique':
             $req = 'select perso_voie_magique, mvoie_libelle from perso, voie_magique
