@@ -1079,6 +1079,19 @@ class perso
         return $retour;
     }
 
+    function get_cout_pa_magie($sort, $type_lance)
+    {
+        $pdo  = new bddpdo;
+        $req  = "SELECT cout_pa_magie(:perso, :sort, :type_lance) as cout";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":sort"       => $sort,
+            ":type_lance" => $type_lance), $stmt);
+        $result = $stmt->fetch();
+        return $result['cout'];
+    }
+
     function is_fam()
     {
         if ($this->perso_type_perso == 3)
@@ -1750,8 +1763,7 @@ class perso
                 die('Erreur d appel de compte');
             }
 
-        }
-        else
+        } else
         {
             if (!$perso_compte->get_by_perso_fam($this->perso_cod))
             {

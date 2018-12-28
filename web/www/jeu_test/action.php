@@ -412,14 +412,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
+            $logger->warning('Cible ' . $cible);
+
 
             $perso_cible = new perso;
             $perso_cible->charge($cible);
+            $logger->warning('Cible ' . print_r($perso_cible,true));
             $pos_cible = $perso_cible->get_position_object();
 
             $pos_sort_interdit = new pos_sort_interdit();
 
-            $db->query($req);
+
             if ($pos_sort_interdit->is_sort_interdit($sort_cod, $perso->get_position_object()->pos_cod))
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer ce sort depuis cette case !';
@@ -432,25 +435,21 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             }
 
 
-            if ($db->is_intangible($perso_cod))
+            if ($perso->perso_tangible != 'O')
             {
                 $contenu_page .= "<p>Vous ne pouvez pas lancer de magie en étant impalpable !";
                 break;
             }
-            $req = 'select sort_fonction,sort_soi_meme,sort_aggressif from sorts where sort_cod = ' . $sort_cod;
-            $db->query($req);
-            $db->next_record();
-            $sort_soi_meme  = $db->f('sort_soi_meme');
-            $fonction       = $db->f('sort_fonction');
-            $sort_aggressif = $db->f('sort_aggressif');
-            $tab_lieu       = $db->get_lieu($cible);
-            $lieu_protege   = $tab_lieu['lieu_refuge'];
-            if ($lieu_protege == 'O' and $sort_aggressif == 'O')
+
+            $sort = new sorts;
+            $sort->charge($sort_cod);
+
+            if ($perso_cible->is_refuge() and $sort->sort_aggressif == 'O')
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer de sort agressif sur une cible résidant dans un lieu protégé !';
                 break;
             }
-            if ($perso_cod == $cible and $sort_aggressif == 'O')
+            if ($perso_cod == $perso_cible->perso_cod and $sort->sort_aggressif == 'O')
             {
                 $contenu_page .= '<p>Vous ne pouvez pas lancer un sort aggressif sur vous même !';
                 break;
@@ -460,28 +459,35 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             {
                 $prefixe = 'dv_';
             }
-            $req = 'select ' . $prefixe . $fonction . '(' . $perso_cod . ',' . $cible . ',' . $type_lance . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $req    = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(
+                array(':perso_cod'  => $perso_cod,
+                      ':cible'      => $perso_cible->perso_cod,
+                      ':type_lance' => $type_lance), $stmt
+            );
+            $result = $stmt->fetch();
 
-            // Bouton de relance
-            $req = 'select perso_pa, cout_pa_magie(perso_cod,' . $sort_cod . ',' . $type_lance . ') as sort_pa, sort_combinaison
-                    from perso 
-                    join sorts on sort_cod=' . $sort_cod . '
-                    left join perso_nb_sorts on pnbs_perso_cod=perso_cod and pnbs_sort_cod=' . $sort_cod . '
-                    where perso_cod = ' . $perso_cod . ' and (pnbs_nombre<2 or pnbs_nombre is null) ';
-            $db->query($req);
-            $db->next_record();
-            if ($db->nf() != 0)
+
+            $contenu_page .= $result['resultat'];
+
+            // on recharge le perso
+            $perso->charge($perso_cod);
+
+            // on regarde combien de sorts ont été lancé
+            $pnbs = new perso_nb_sorts();
+            $pnbs->getByPersoSort($perso_cod, $sort->sort_cod);
+
+
+
+            // bouton de relance
+            $sort_pa = $perso->get_cout_pa_magie($sort->sort_cod, $type_lance);
+            if ($perso->perso_pa >= $sort_pa && ($pnbs->pnbs_nombre < 2 || is_null($pnbs->pnbs_nombre)))
             {
-                if ($db->f('perso_pa') >= $db->f('sort_pa'))
-                {
-                    // ajouter les runes utilisé dans le cas d'un lancé de ce type
-                    $runes        = ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($db->f('sort_combinaison'), 0, 1)) . "&fam_2=" . (1 * substr($db->f('sort_combinaison'), 1, 1)) . "&fam_3=" . (1 * substr($db->f('sort_combinaison'), 2, 1)) . "&fam_4=" . (1 * substr($db->f('sort_combinaison'), 3, 1)) . "&fam_5=" . (1 * substr($db->f('sort_combinaison'), 4, 1)) . "&fam_6=" . (1 * substr($db->f('sort_combinaison'), 5, 1));
-                    $contenu_page .= '<br><br><center><a href="choix_sort.php?&sort=' . $sort_cod . '&type_lance=' . $type_lance . $runes . '">Relancer (' . $db->f('sort_pa') . ' PA)</a></center>';
-                }
+                $runes        = ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($sort->sort_combinaison, 0, 1)) . "&fam_2=" . (1 * substr($sort->sort_combinaison, 1, 1)) . "&fam_3=" . (1 * substr($sort->sort_combinaison, 2, 1)) . "&fam_4=" . (1 * substr($sort->sort_combinaison, 3, 1)) . "&fam_5=" . (1 * substr($sort->sort_combinaison, 4, 1)) . "&fam_6=" . (1 * substr($sort->sort_combinaison, 5, 1));
+                $contenu_page .= '<br><br><a href="choix_sort.php?&sort=' . $sort_cod . '&type_lance=' . $type_lance . $runes . '" class="centrer">Relancer (' . $sort_pa . ' PA)</a></center>';
             }
+
             break;
 
         case 'magie_case':
