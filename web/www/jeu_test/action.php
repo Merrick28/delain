@@ -774,7 +774,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $contenu_page .= $perso->prie_dieu($_RQEUEST['dieu']);
+            $contenu_page .= $perso->prie_dieu($_REQUEST['dieu']);
             break;
         case 'prie_ext':
             if (!isset($_REQUEST['dieu']))
@@ -782,122 +782,76 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= '<p>Erreur ! Dieu non définie !';
                 break;
             }
-            $contenu_page .= $perso->prie_dieu_ext($_RQEUEST['dieu']);
+            $contenu_page .= $perso->prie_dieu_ext($_REQUEST['dieu']);
             break;
         case 'ceremonie':
-            $contenu_page .= $perso->ceremonie_dieu($_RQEUEST['dieu']);
+            $contenu_page .= $perso->ceremonie_dieu($_REQUEST['dieu']);
             break;
         case 'dgrade':
-            $contenu_page .= $perso->change_grade($_RQEUEST['dieu']);
+            $contenu_page .= $perso->change_grade($_REQUEST['dieu']);
             break;
         case 'don_br':
-            $req = 'select don_br(' . $perso_cod . ',' . $dest . ',' . $qte . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->change_grade($_REQUEST['dest'], $_REQUEST['qte']);
             break;
         case 'vente_auberge':
-            $req = 'select vend_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->vente_auberge($_REQUEST['objet']);
             break;
         case 'achat_objet':
-            $req = 'select achete_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->achete_objet($_REQUEST['objet']);
             break;
         case 'redist':
-            $req = 'select start_redispatch(' . $perso_cod . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->start_redispatch();
             break;
         case 'mode_combat':
-            $req = 'select change_mcom_cod(' . $perso_cod . ',' . $mode . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->change_mode_combat($_REQUEST['mode']);
             break;
         case 'niveau_redist':
-            $amelioration = $_POST['amelioration'];
-            $req          = 'select detail_redispatch(' . $perso_cod . ',' . $amelioration . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<center><a href="niveau_redist.php">Retour</a></center>';
+            $contenu_page .= $perso->detail_redispatch($_POST['amelioration']);
+            $contenu_page .= '<a href="niveau_redist.php" class="centrer">Retour</a>';
             break;
         case 'embr':
-            $req = 'select embr(' . $perso_cod . ',' . $cible . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->embr($_POST['cible']);
             break;
         case 'ouvre_cadeau':
-            $req = 'select ouvre_cadeau(' . $perso_cod . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->ouvre_cadeau();
             break;
         case 'don_cadeau_rouge':
-            $req = 'select donne_rouge(' . $perso_cod . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->donne_rouge();
             break;
         case 'don_cadeau_rougeX10':
-            $req = 'select donne_rouge(' . $perso_cod . ') as resultat ';
             for ($i = 0; $i < 10; $i++)
             {
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f('resultat');
+                $contenu_page .= $perso->donne_rouge();
             }
             break;
         case 'don_cadeau_noir':
-            $req = 'select donne_noir(' . $perso_cod . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->donne_noir();
             break;
         case 'donne_bonbon':
-            $req = 'select donne_bonbon(' . $perso_cod . ',' . $cible . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->donne_bonbon($_REQUEST['cible']);
             break;
         case 'teld':
-            $req = 'select teleportation_divine(' . $perso_cod . ',' . $pos . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->teleportation_divine($_REQUEST['pos']);
             break;
         case 'offre_boire':
-            $req = 'select offre_boire(' . $perso_cod . ',' . $cible . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->offre_boire($_REQUEST['cible']);
             break;
         case 'enc':
-            $req = 'select f_enchantement(' . $perso_cod . ',' . $obj . ',' . $enc . ',' . $type_appel . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $contenu_page .= $perso->f_enchantement($_REQUEST['obj'], $_REQUEST['enc'], $_REQUEST['type_appel']);
             break;
         case 'cree_groupe':
-            $req = 'select cree_groupe(' . $perso_cod . ',\'' . pg_escape_string($nom_groupe) . '\') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
+            $contenu_page .= $perso->cree_groupe($_REQUEST['nom_groupe']);
+            $contenu_page .= '<br /><a class="centrer" href="groupe.php">Retour à la gestion de la coterie</a>';
             break;
         case 'regle_groupe':
-            $req = 'select regle_groupe(' . $perso_cod . ',' . $pa . ',' . $pv . ',' . $dlt . ',' . $bonus . ',' . $messages . ',' . $messagemort . ',' . $champions . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
+            $contenu_page .= $perso->regle_groupe($_REQUEST['pa'],
+                $_REQUEST['pv'],
+                $_REQUEST['dlt'],
+                $_REQUEST['bonus'],
+                $_REQUEST['messages'],
+                $_REQUEST['messagemort'],
+                $_REQUEST['champions']);
+            $contenu_page .= '<br /><a class="centrer" href="groupe.php">Retour à la gestion de la coterie</a>';
             break;
         case 'invite_groupe':
             $erreur       = 0;
@@ -920,55 +874,83 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     // on cherche le destinataire
                     if ($tab_dest[$cpt] != "")
                     {
-                        $nom_dest = ltrim(rtrim($tab_dest[$cpt]));
-                        $nom_dest = pg_escape_string($nom_dest);
-                        $req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
-                        $db->query($req_dest);
-                        $db->next_record();
-                        $tab_res_dest = $db->f("num_perso");
-                        $req          = 'select invite_groupe(' . $perso_cod . ',' . $groupe . ',' . $tab_res_dest . ') as resultat ';
-                        $db->query($req);
-                        $db->next_record();
-                        $contenu_page .= '<br><br>' . $db->f('resultat');
+                        if ($invite = $perso->f_cherche_perso($tab_dest[$cpt]))
+                        {
+                            $contenu_page .= '<br><br>' . $perso->invite_groupe($groupe, $invite->perso_cod);
+                        }
                     }
                 }
             }
             $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
             break;
         case 'accinv':
-            $req = 'select accepte_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
+            $contenu_page .= $perso->accepte_invitation($_REQUEST['g']);
+            $contenu_page .= '<br /><a class="centrer" href="groupe.php">Retour à la gestion de la coterie</a>';
             break;
         case 'refinv':
-            $req = 'select refuse_invitation(' . $perso_cod . ',' . $g . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
-            $contenu_page .= '<p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
+            $contenu_page .= $perso->refuse_invitation($_REQUEST['g']);
+            $contenu_page .= '<br /><a class="centrer" href="groupe.php">Retour à la gestion de la coterie</a>';
             break;
         case 'abtemp':
             $contenu_page .= 'En continuant, vous abandonnerez le dispensaire qui vous ramenait en cas de mort.<br />
 			<a href="' . $PHP_SELF . '?methode=abtemp2">Cliquez ici pour continuer</a>';
             break;
         case 'abtemp2':
-            $req_temple1 = 'delete from perso_temple where ptemple_perso_cod = ' . $perso_cod;
-            $db->query($req_temple1);
+            $ptemple = new perso_temple();
+            $ptemple = $ptemple->getBy_ptemple_perso_cod($perso_cod)[0];
+            $ptemple->efface();
             $contenu_page .= 'Vous n’avez plus de dispensaire spécifique pour vous ramener en cas de mort.';
             break;
         case 'retour_plan': // Retour du perso dans son plan d'origine
             // On vérifie qu'il est sur un bâtiment administratif
-            $req = 'select ppp_pos_cod from lieu, lieu_position, perso_position, perso_plan_parallele, perso where lieu_tlieu_cod = 9 and perso_pa >= 12 and lieu_cod = lpos_lieu_cod and lpos_pos_cod = ppos_pos_cod and ppp_perso_cod = ppos_perso_cod and perso_cod = ppos_perso_cod and ppos_perso_cod = ' . $perso_cod;
+            if ($perso->perso_pa != 12)
+            {
+                $contenu_page .= "Vous n'avez pas assez de PA pour cette action.";
+            } else
+            {
+                if ($lieu = $perso->get_lieu())
+                {
+                    if ($lieu['lieu_type']->tlieu_cod != 9)
+                    {
+                        $contenu_page .= "Vous n'êtes pas sur un bâtiment administratif";
+                    } else
+                    {
+                        $ppp = new perso_plan_parallele();
+                        $ppp->$charge($perso_cod);
+
+                        $perso_pos = new perso_position();
+                        $perso_pos->getByPerso($perso_cod);
+                        $perso_pos->ppos_pos_cod = $ppp->ppp_pos_cod;
+                        $perso_cod->stocke();
+
+                        $ppp->delete();
+
+                        $perso->perso_pa = 0;
+                        $perso->stocke();
+
+                        unset($perso);
+                        $perso->charge($perso_cod);
+
+                        $contenu_page .= 'Bon retour dans les souterrains !';
+                    }
+
+                }
+            }
+
+
+            $req = 'select ppp_pos_cod 
+                from lieu, lieu_position, perso_position, perso_plan_parallele, perso 
+                where lieu_tlieu_cod = 9 
+                and perso_pa >= 12 
+                and lieu_cod = lpos_lieu_cod 
+                and lpos_pos_cod = ppos_pos_cod 
+                and ppp_perso_cod = ppos_perso_cod 
+                and perso_cod = ppos_perso_cod 
+                and ppos_perso_cod = ' . $perso_cod;
             $db->query($req);
             if ($db->next_record())
             {
-                $req = 'update perso_position set ppos_pos_cod = ' . $db->f('ppp_pos_cod') . ' where ppos_perso_cod = ' . $perso_cod;
-                $db->query($req);
-                $db->query('delete from perso_plan_parallele where ppp_perso_cod = ' . $perso_cod);
-                $db->query('update perso set perso_pa = 0 where perso_cod = ' . $perso_cod);
-                $contenu_page .= 'Bon retour dans les souterrains !';
+
                 break;
             }
             $contenu_page .= 'Si vous avez assez de PA, vous n’êtes probablement pas dans le bâtiment administratif d’un plan parallèle. Dommage pour vous.';

@@ -1698,6 +1698,191 @@ class perso
         return $result['resultat'];
     }
 
+    function embr($cible)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select embr(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function donne_bonbon($cible)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select donne_bonbon(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function cree_groupe($nom_groupe)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select cree_groupe(:perso,:nom_groupe) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":nom_groupe" => $nom_groupe), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function accepte_invitation($groupe)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select accepte_invitation(:perso,:groupe) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":groupe" => $groupe), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function refuse_invitation($groupe)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select refuse_invitation(:perso,:groupe) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":groupe" => $groupe), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function regle_groupe($pa, $pv, $dlt, $bonus, $messages, $messagemort, $champions)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:messages,:messagemort,:champions) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"       => $this->perso_cod,
+            ":pa"          => $pa,
+            ":pv"          => $pv,
+            ":dlt"         => $dlt,
+            ":bonus"       => $bonus,
+            ":messages"    => $messages,
+            ":messagemort" => $messagemort,
+            ":champions"   => $champions), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    /**
+     * @param $nom
+     * @return bool|perso
+     * @throws Exception
+     */
+    function f_cherche_perso($nom)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_cherche_perso(:nom) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":nom" => $nom), $stmt);
+        $result = $stmt->fetch();
+
+        $this_perso = new perso;
+        if (!$this_perso->charge($result['resultat']))
+        {
+            return false;
+        }
+
+        return $this_perso;
+    }
+
+    function teleportation_divine($dest)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select teleportation_divine(:perso,:dest) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":dest"  => $dest), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function invite_groupe($groupe, $invite)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select invite_groupe(:perso,:groupe,:invite) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"  => $this->perso_cod,
+            ":groupe" => $groupe,
+            ":invite" => $invite), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function f_enchantement($obj, $enc, $type_appel)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_enchantement(:perso,:obj,:enc,:type_appel) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso"      => $this->perso_cod,
+            ":obj"        => $obj,
+            ":enc"        => $end,
+            ":type_appel" => $type_appel), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function offre_boire($cible)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select offre_boire(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":cible" => $cible), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function ouvre_cadeau()
+    {
+        $pdo    = new bddpdo();
+        $req    = "select ouvre_cadeau(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function donne_rouge()
+    {
+        $pdo    = new bddpdo();
+        $req    = "select donne_rouge(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function donne_noir()
+    {
+        $pdo    = new bddpdo();
+        $req    = "select donne_noir(:perso,:cible) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
     function passe_niveau($amel)
     {
         $pdo    = new bddpdo();
@@ -1832,6 +2017,20 @@ class perso
         return $result['resultat'];
     }
 
+    function don_br($dest, $qte)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select don_br(:perso,:dest,:qte) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":dest"  => $dest,
+            ":qte"   => $qte), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
     function milice_tel($dest)
     {
         $pdo    = new bddpdo();
@@ -1839,8 +2038,72 @@ class perso
                 = "select milice_tel(:perso,:dest) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":dest"       => $dest), $stmt);
+            ":perso" => $this->perso_cod,
+            ":dest"  => $dest), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function vente_auberge($objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select vend_objet(:perso,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function change_mode_combat($mode)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select change_mcom_cod(:perso,:mode) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":mode"  => $mode), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function detail_redispatch($amel)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select detail_redispatch(:perso,:amel) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":amel"  => $amel), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function start_redispatch()
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select start_redispatch(:perso) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function achete_objet($objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select achete_objet(:perso,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1852,8 +2115,8 @@ class perso
                 = "select prie_dieu(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":dieu"       => $dieu), $stmt);
+            ":perso" => $this->perso_cod,
+            ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1865,8 +2128,8 @@ class perso
                 = "select ceremonie_dieu(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":dieu"       => $dieu), $stmt);
+            ":perso" => $this->perso_cod,
+            ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1878,8 +2141,8 @@ class perso
                 = "select change_grade(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":dieu"       => $dieu), $stmt);
+            ":perso" => $this->perso_cod,
+            ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1891,8 +2154,8 @@ class perso
                 = "select prie_dieu_ext(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":dieu"       => $dieu), $stmt);
+            ":perso" => $this->perso_cod,
+            ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1909,7 +2172,6 @@ class perso
         $result = $stmt->fetch();
         return $result['resultat'];
     }
-
 
 
     function prepare_for_tab_switch()
