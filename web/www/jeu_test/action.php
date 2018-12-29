@@ -936,38 +936,16 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
                 }
             }
-
-
-            $req = 'select ppp_pos_cod 
-                from lieu, lieu_position, perso_position, perso_plan_parallele, perso 
-                where lieu_tlieu_cod = 9 
-                and perso_pa >= 12 
-                and lieu_cod = lpos_lieu_cod 
-                and lpos_pos_cod = ppos_pos_cod 
-                and ppp_perso_cod = ppos_perso_cod 
-                and perso_cod = ppos_perso_cod 
-                and ppos_perso_cod = ' . $perso_cod;
-            $db->query($req);
-            if ($db->next_record())
-            {
-
-                break;
-            }
-            $contenu_page .= 'Si vous avez assez de PA, vous n’êtes probablement pas dans le bâtiment administratif d’un plan parallèle. Dommage pour vous.';
-            break;
+          break;
 
         /* Quête de la construction de la cathédrale de Balgur au -3 */
         case 'batir':
             /* Vérif position */
-            $p_position = $db->get_pos($perso_cod);
-            if ($p_position['pos_cod'] == 7327)
+            $position = $perso->get_position_object();
+            if ($position->pos_cod == 7327)
             {
                 /* Vérif des PA */
-                $req = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-                $db->query($req);
-                $db->next_record();
-                $nb_p_pa = $db->f('perso_pa');
-                if ($nb_p_pa >= 6)
+                if ($perso->perso_pa >= 6)
                 {
                     /* Vérif pioche */
                     $req_matos = "select count(perobj_cod) as nbobj from perso_objets, objets 
