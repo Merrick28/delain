@@ -1853,7 +1853,7 @@ class perso
     function ouvre_cadeau()
     {
         $pdo    = new bddpdo();
-        $req    = "select ouvre_cadeau(:perso,:cible) as resultat";
+        $req    = "select ouvre_cadeau(:perso) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod), $stmt);
