@@ -92,13 +92,23 @@ function get_ip()
 // On recherche des chaines qui pourraient faire penser à de l'injection SQL comme "SELECT * FROM", "DELETE FROM" et "UPDATE FROM"
 // mais il faut penser qu'un paramètre du type "&action=delete" est valide
 // =>  Pour commencer on  va interdire tout ce qui contient "FROM" et une autre chaine du type "SELECT", "DELETE" ou "UPDATE"
-function is_hacking_string($value)
+function is_hacking($value)
 {
-    if (stripos($value, "from") !== false)
+    if (is_array($value))
     {
-        if ((stripos($value, "select") !== false) || (stripos($value, "delete") !== false) || (stripos($value, "update") !== false))
+        foreach ($value as $v)
         {
-            return $value;
+            $hacking_value = is_hacking($v);
+            if ($hacking_value != '')  return $hacking_value;
+        }
+    } else
+    {
+        if (stripos($value, "from") !== false)
+        {
+            if ((stripos($value, "select") !== false) || (stripos($value, "delete") !== false) || (stripos($value, "update") !== false))
+            {
+                return $value;
+            }
         }
     }
     return "";
@@ -114,17 +124,7 @@ function register_globals($order = 'egpcs')
             $hacking_value = "";           // Chaine qui est détéectée comme du hacking
             foreach ($superglobal as $varname => $value)
             {
-                if (is_array($value))
-                {
-                    foreach ($value as $v)
-                    {
-                        $hacking_value = is_hacking_string($v);
-                        if ($hacking_value != '') break;
-                    }
-                } else
-                {
-                    $hacking_value = is_hacking_string($value);
-                }
+                $hacking_value = is_hacking($value);
 
                 // C'est louche, on ne permet pas d'aller plus loin!!
                 if ($hacking_value != '')
