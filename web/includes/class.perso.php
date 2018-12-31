@@ -1832,7 +1832,7 @@ class perso
         $stmt   = $pdo->execute(array(
             ":perso"      => $this->perso_cod,
             ":obj"        => $obj,
-            ":enc"        => $end,
+            ":enc"        => $enc,
             ":type_appel" => $type_appel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
@@ -1887,7 +1887,7 @@ class perso
     {
         $pdo    = new bddpdo();
         $req
-                = "select passe_niveau(:perso,:amel) as resultat";
+                = "select f_passe_niveau(:perso,:amel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod,
