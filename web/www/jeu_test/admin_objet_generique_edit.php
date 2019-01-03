@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+
 ?>
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
     <p class="titre">Édition d’un objet générique</p>
@@ -213,7 +214,7 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a><br><br><strong>Modification d’un objet existant:</strong><br><br>';
+            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a><br><br><hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';
@@ -266,6 +267,23 @@ if ($erreur == 0)
             <SCRIPT>
             addOptionArray(document.mod.gobj_cod, listeBase, "", "");
             </SCRIPT>';
+
+
+            // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
+            $style_tr = "display: block;";
+            $param_id = 0;
+            $row = 0;
+            $row_id = "row-$param_id-$row-";
+            $aqelem_misc_nom = "";
+            echo '<form name="mod" action="' . $PHP_SELF . '" method="post"><input type="hidden" name="methode" value="mod2">';
+            echo '<br><hr><br><strong>Modification d’un objet existant</strong> (<em>recherche par nom<em>)<br>Code de l\'objet générique :
+                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
+                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
+                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                    &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'>
+                    &nbsp;<br><input type="submit" value="Valider" class="test"></form><br><br>';
+
 
             break;
         case "mod2":
