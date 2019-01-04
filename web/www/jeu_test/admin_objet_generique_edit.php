@@ -214,7 +214,8 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a><br><br><hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
+            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br><br>
+                    <hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';
@@ -270,18 +271,12 @@ if ($erreur == 0)
 
 
             // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-            $style_tr = "display: block;";
-            $param_id = 0;
-            $row = 0;
-            $row_id = "row-$param_id-$row-";
-            $aqelem_misc_nom = "";
+            $row_id = "obj-generique-";
             echo '<form name="mod" action="' . $PHP_SELF . '" method="post"><input type="hidden" name="methode" value="mod2">';
             echo '<br><hr><br><strong>Modification d’un objet existant</strong> (<em>recherche par nom<em>)<br>Code de l\'objet générique :
-                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
-                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                    &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
-                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'>
+                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'objet_generique\', $(\'#'.$row_id.'misc_cod\').val());">
+                    &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","objet_generique","Rechercher un objet générique");\'>
                     &nbsp;<br><input type="submit" value="Valider" class="test"></form><br><br>';
 
 
@@ -577,6 +572,17 @@ if ($erreur == 0)
                     </table>
                 </div>
             </form>
+            <?php
+            $objsorts = new objets_sorts();
+            if ($list = $objsorts->getBy_objsort_gobj_cod($gobj_cod))
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' sort(s) rattaché(s): <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a>';
+            }
+            else
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de sort rattaché: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            ?>
 
 
             <?php

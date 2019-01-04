@@ -192,6 +192,7 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
     if ( $( "#spop-tablecod-position-etage" ).length ) params.position_etage = $( "#spop-tablecod-position-etage" ).val() ;
     if ( $( "#spop-tablecod-position-x" ).length ) params.position_x = $( "#spop-tablecod-position-x" ).val() ;
     if ( $( "#spop-tablecod-position-y" ).length ) params.position_y = $( "#spop-tablecod-position-y" ).val() ;
+    if ( $( "#spop-tablecod-objet-generique-sort" ).length ) params.objet_generique_sort = $( "#spop-tablecod-objet-generique-sort" ).prop( "checked" ) ? true : false ;
 
     //executer le service asynchrone
     runAsync({request: "get_table_cod", data:{recherche:$("#spop-tablecod-cherche").val(), table:$("#spop-tablecod-table").val(), params:params}}, function(d){
@@ -259,6 +260,9 @@ function getTableCod(divname, table, titre, params)
         options += '<input id="spop-tablecod-element-aquete_cod" type="hidden" value="'+params[0]+'">';
         options += '<input id="spop-tablecod-element-aqetape_cod" type="hidden" value="'+params[1]+'">';
         options += '<input id="spop-tablecod-element-aqelem_type" type="hidden" value="'+params[2]+'">';
+   } else if (table=="objet_generique")
+   {
+        options += 'Limiter aux objets avec sort(s) rattaché(s): <input type="checkbox" id="spop-tablecod-objet-generique-sort" onChange="getTableCod_update();"> ';
    }
 
     $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +

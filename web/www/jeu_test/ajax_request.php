@@ -331,6 +331,10 @@ switch($_REQUEST["request"])
                 $filter.= "(tobj_libelle || ' ' || gobj_nom ilike :search$k) ";
                 $search_string[":search$k"] = "%{$w}%" ;
             }
+            if ($params["objet_generique_sort"]=="true")
+            {  // limitation aux objet avec des sorts rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_sorts where objsort_gobj_cod=gobj_cod) ";
+            }
 
             // requete de comptage
             $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
@@ -384,6 +388,31 @@ switch($_REQUEST["request"])
             $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'sort':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(sort_cod::text||' '||sort_nom||' ('||sort_cout::text||'PA)' ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from sorts where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select sort_cod cod, sort_nom||' ('||sort_cout::text||'PA)' nom from sorts where {$filter} ORDER BY sort_nom LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
             break;
 
         case 'etape':
@@ -492,6 +521,9 @@ switch($_REQUEST["request"])
             case 'objet_generique':
                 $req = "select gobj_nom nom from objet_generique where gobj_cod = ? ";
                 break;
+            case 'sort':
+                $req = "select sort_nom nom from sorts where sort_cod = ? ";
+                break;
             case 'race':
                 $req = "select race_nom nom from race where race_cod = ? ";
                 break;
@@ -584,6 +616,13 @@ switch($_REQUEST["request"])
                         where pos_x = ? and pos_y = ? and pos_etage = ? ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["pos_x"],$_REQUEST["pos_y"],$_REQUEST["pos_etage"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
+            case 'objets_sorts':     // pos_cod à partir x,y,etage
+                $req = "select * from objets_sorts where objsort_cod = ?  ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["objsort_cod"]), $stmt);
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 

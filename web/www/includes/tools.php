@@ -36,3 +36,21 @@ function create_selectbox_from_req($name, $req, $default='', $param=array())
     return create_selectbox($name, $data, $default, $param);
 
 }#-# create_selectbox_from_table()
+
+
+//=======================================================================================
+// Fonction obj_diff retourne les diferences entre 2 objets pour mettre dans le log
+//=======================================================================================
+function obj_diff($obj1, $obj2, $texte="")
+{
+    $class_vars = get_class_vars(get_class($obj1));
+    $diff = "" ;
+    // la premère variable est la PK (primary key) on s'en passe
+    $is_pk = true ;
+    foreach ($class_vars as $name => $value) {
+        if ((!$is_pk) && ($obj1->$name!=$obj2->$name)) $diff.= "      {$name} : {$obj1->$name} => {$obj2->$name}\n";
+        $is_pk = false ;
+    }
+    if ($diff!="") $diff = $texte.$diff ;
+    return $diff;
+}
