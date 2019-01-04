@@ -3,6 +3,10 @@ ini_set('include_path', '.:/home/delain/delain/web/phplib-7.4a/php:/home/delain/
 
 include "delain_header.php";
 include "base_delain.php";
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 $db = new base_delain;
 //
 // Etate 1 : on regarde tous les mail en instance
@@ -85,8 +89,16 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
         $mail->addAddress($adr_mail);
         $mail->Subject = 'Événements dans les souterrains de Delain' . $compl_sujet;
         $mail->Body = $texte_mail;
-        if (!$mail->Send())
-        {
+        try{
+            $mail->Send();
+            echo 'Email bien envoyé à ' . $adr_mail . "\r\n";
+
+            // Any recipients that failed (relaying denied for example) will be logged in the errors variable.
+            //print_r($smtp->errors);
+            $req = 'delete from envois_mail where menv_compt_cod = ' . $val;
+            $db->query($req);
+        }
+        catch (Exception $e) {
             echo 'Anomalie sur l’adresse ' . $adr_mail;
 
             // The reason for failure should be in the errors variable
@@ -95,15 +107,7 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
             $db->query($req);
             echo 'Mailer Error: ' . $mail->ErrorInfo;
         }
-        else
-        {
-            echo 'Email bien envoyé à ' . $adr_mail . "\r\n";
 
-            // Any recipients that failed (relaying denied for example) will be logged in the errors variable.
-            //print_r($smtp->errors);
-            $req = 'delete from envois_mail where menv_compt_cod = ' . $val;
-            $db->query($req);
-        }
 
     }
     $req = 'update compte set compt_envoi_mail_dernier = now() where compt_cod IN (' . implode(',', $compte) . ')';
