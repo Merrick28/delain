@@ -505,7 +505,7 @@ class aquete_action
         $t = 0; // compteur de transaction
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
-            $tran_quantite = (1*result["tran_quantite"]) == 0 ? 1 : (1*result["tran_quantite"])  ;
+            $tran_quantite = (1*$result["tran_quantite"]) == 0 ? 1 : (1*$result["tran_quantite"])  ;
             $objet = new objets();
             $objet->charge(1*$result["tran_obj_cod"]);
 
