@@ -19,6 +19,7 @@ select to_char(now(),'YYYY-MM-DD HH24:MI:SS')||' ['||query||'],'||pg_cancel_back
 	and query not like '%vacuum%'
         and query not like '%DEALLOCATE%';
 
+
 select to_char(now(),'YYYY-MM-DD HH24:MI:SS')||' ['||query||'],'||pg_cancel_backend(pid)
  from pg_stat_activity
 	where usename = 'webdelain'
