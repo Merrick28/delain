@@ -122,17 +122,22 @@ if ($erreur == 0) {
     // -------------------------
     // réceptacles
     // -------------------------
+    $req_r = 'select perso_nb_receptacle from perso where perso_cod= ' . $perso_cod;
+    $db->query($req_r);
+    $db->next_record();
+    $nb_recep = $db->f("perso_nb_receptacle");
     $req = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
-		cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
-		where recsort_perso_cod = ' . $perso_cod . '
-		and recsort_sort_cod = sort_cod
-		order by sort_niveau,sort_nom';
+       cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
+       where recsort_perso_cod = ' . $perso_cod . '
+       and recsort_sort_cod = sort_cod
+       order by sort_niveau,sort_nom';
     $db->query($req);
+
     if ($db->nf() != 0) {
         $contenu_page .= '
 		<tr>
 		<td class="titre">
-		<span class="titre">Réceptacles magiques :<a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
+		<span class="titre">Réceptacles magiques : (' . $db->nf() . '/' . $nb_recep . ') : <a class="titre" href="javascript:montre(\'rec\')">(Montrer/Cacher)</a></span>
 		</td>
 		</tr>
 		
@@ -162,6 +167,30 @@ if ($erreur == 0) {
     // -------------------------
     // parchemins
     // -------------------------
+    $req = 'select count(obj_cod) as nombre
+        from perso_objets,objets,objet_generique
+        where perobj_perso_cod = ' . $perso_cod . '
+        and perobj_identifie = \'O\'
+        and perobj_obj_cod = obj_cod
+        and obj_gobj_cod = gobj_cod
+        and gobj_tobj_cod = 20
+        and gobj_cod in (481,482,483,729)';
+    $db->query($req);
+    $db->next_record();
+    $nb_parcho_enchantable = $db->f("nombre");
+
+    $req = 'select count(obj_cod) as nombre
+        from sorts,perso_objets,objets,objet_generique
+        where perobj_perso_cod = ' . $perso_cod . '
+        and perobj_identifie = \'O\'
+        and perobj_obj_cod = obj_cod
+        and obj_gobj_cod = gobj_cod
+        and gobj_tobj_cod = 20
+        and obj_sort_cod = sort_cod';
+    $db->query($req);
+    $db->next_record();
+    $nb_parcho_enchante = $db->f("nombre");
+
     $req = 'select obj_nom,sort_cod,sort_nom,sort_cout,sort_niveau,
 		cout_pa_magie(' . $perso_cod . ',sort_cod,4) as cout from sorts,perso_objets,objets,objet_generique
 		where perobj_perso_cod = ' . $perso_cod . '
@@ -176,7 +205,7 @@ if ($erreur == 0) {
         $contenu_page .= '
 		<tr>
 		<td class="titre">
-		<span class="titre">Parchemins :<a class="titre" href="javascript:montre(\'parc\')">(Montrer/Cacher)</a></span>
+		<span class="titre">Parchemins enluminés : (' . $nb_parcho_enchante . '/' . ($nb_parcho_enchante + $nb_parcho_enchantable) . ') : <a class="titre" href="javascript:montre(\'parc\')">(Montrer/Cacher)</a></span>
 		</td>
 		</tr>
 		<form name="sort_parc" method="post" action="choix_sort.php">
