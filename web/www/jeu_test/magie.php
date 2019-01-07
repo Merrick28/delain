@@ -127,10 +127,10 @@ if ($erreur == 0) {
     $db->next_record();
     $nb_recep = $db->f("perso_nb_receptacle");
     $req = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
-       cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
-       where recsort_perso_cod = ' . $perso_cod . '
-       and recsort_sort_cod = sort_cod
-       order by sort_niveau,sort_nom';
+                cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
+                where recsort_perso_cod = ' . $perso_cod . '
+                and recsort_sort_cod = sort_cod
+                order by sort_niveau,sort_nom';
     $db->query($req);
 
     if ($db->nf() != 0) {
