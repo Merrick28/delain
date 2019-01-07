@@ -343,6 +343,38 @@ class objets
         return $result["tobj_libelle"];
     }
 
+    /***
+     * Retourne la liste des sorts attachés sur l'objet
+     * @return array|bool
+     */
+    function get_sorts_attaches()
+    {
+        $retour = array();
+
+        $pdo = new bddpdo;
+        $objsort = new objets_sorts();
+
+        // liste des sorts attahchés sur le générique
+        $temp =  $objsort->getBy_objsort_gobj_cod($this->obj_gobj_cod);
+        if ($temp)
+        {
+            $retour =  $temp ;
+        }
+
+        // Fusionner avec les sorts attahchés sur l'objet lui même
+        $temp =  $objsort->getBy_objsort_obj_cod($this->obj_cod);
+        if ($temp)
+        {
+            $retour =  array_merge ($retour, $temp);
+        }
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
     /**
      * supprime l'enregistrement de objets
      * @global bdd_mysql $pdo

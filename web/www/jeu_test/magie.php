@@ -118,7 +118,46 @@ if ($erreur == 0) {
 		<input type="hidden" name="sort">
 		</form>
 		
+		<form name="sort_obj" method="post" action="choix_sort.php" style="display:none;">
+		<input type="hidden" name="type_lance" value="5">
+		<input type="hidden" name="sort">
+		</form>
+		
 	<table width="100%">' . $mess_viderec;
+    // -------------------------
+    // début objets magique (2019-01-07@Marlyza)
+    // -------------------------
+    $objsort = new objets_sorts();
+    if ($liste_sorts = $objsort->get_perso_objets_sorts($perso_cod))
+    {
+        $contenu_page .= '
+		<tr>
+		<td class="titre">
+		<span class="titre">Objets magiques ('.count($liste_sorts).'):<a class="titre" href="javascript:montre(\'objmag\')">(Montrer/Cacher)</a></span>
+		</td>
+		</tr>
+		
+		<tr>
+		<td>
+		<table id="objmag">';
+        foreach ($liste_sorts as $sorts_attaches)
+        {
+            $contenu_page .= '<tr><td class="soustitre2">
+			<a href="javascript:document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->getCout() . ' PA)
+			</td>
+			<td>
+			<a href="visu_desc_sort.php?sort_cod=' . $sorts_attaches->objsort_sort_cod . '">Description du sort</a>
+			</td>
+			</tr>';
+        }
+        $contenu_page .= '</table>
+		</td>
+		</tr>';
+    }
+    // -------------------------
+    // Fin objets magiques
+    // -------------------------
+
     // -------------------------
     // réceptacles
     // -------------------------
@@ -364,12 +403,6 @@ if ($erreur == 0) {
     // -------------------------
     // debut sorts étudiés
     // -------------------------
-    $contenu_page .= '
-	<tr>
-	<td class="titre">
-	<span class="titre">Sorts étudiés :<a class="titre" href="javascript:montre(\'etu\')">(Montrer/Cacher)</a></span>
-	</td>
-	</tr>';
     $req = 'select liste_rune_sort(sort_cod) as liste_rune,sort_niveau,sort_cod,sort_nom,f_chance_memo_plus(pnbst_perso_cod,sort_cod) as memo, sort_cout, cout_pa_magie(pnbst_perso_cod,sort_cod,1) as cout, sort_combinaison from perso_nb_sorts_total,sorts
 		where pnbst_sort_cod = sort_cod
 		and not exists
@@ -380,6 +413,14 @@ if ($erreur == 0) {
 		order by sort_niveau,sort_nom ';
     $db->query($req);
     $nb_sort = $db->nf();
+
+    $contenu_page .= '
+	<tr>
+	<td class="titre">
+	<span class="titre">Sorts étudiés ('.$nb_sort.'):<a class="titre" href="javascript:montre(\'etu\')">(Montrer/Cacher)</a></span>
+	</td>
+	</tr>';
+
     if ($nb_sort == 0) {
         $contenu_page .= '
 		<tr><td>Pas de sorts lancés !</td></tr>';

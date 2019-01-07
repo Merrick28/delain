@@ -19,9 +19,11 @@ class objets_sorts
     var $objsort_malchance;
     var $objsort_nb_utilisation;
     var $objsort_equip_requis = false;
+    var $sort;                // Le sort de rattachement
 
     function __construct()
     {
+        $this->sort = new sorts();                // Le sort de rattachement est un objet (vide tant qu'on en à pas réellement besoin
     }
 
     /**
@@ -124,6 +126,72 @@ class objets_sorts
             ),$stmt);
         }
     }
+
+    /***
+     * Retourne la liste des sorts qu'un perso peux lancer via les ojets qu'il possède
+     * @return array|bool
+     */
+    function get_perso_objets_sorts($perso_cod)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "select objsort_cod from perso_objets
+                join objets_sorts on objsort_obj_cod=perobj_obj_cod
+                where perobj_perso_cod=? and (perobj_equipe='O' or objsort_equip_requis=false)
+                
+                union 
+                
+                select objsort_cod from perso_objets
+                join objets on obj_cod=perobj_obj_cod
+                join objets_sorts on objsort_gobj_cod=obj_gobj_cod
+                where perobj_perso_cod=? and (perobj_equipe='O' or objsort_equip_requis=false)";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod, $perso_cod),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new objets_sorts;
+            $temp->charge($result["objsort_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    /***
+     * retourne le nom du sort
+     * @return mixed
+     */
+    function getNom()
+    {
+        if ($this->objsort_nom!="") return $this->objsort_nom ;
+
+        // Sinon le nom est celui du sorts rattaché
+        if (!$this->sort->sort_cod)
+        {
+            $this->sort->charge($this->objsort_sort_cod);
+        }
+
+        return $this->sort->sort_nom;
+    }
+
+    /***
+     * retourne le cout du sort(en PA)
+     * @return mixed
+     */
+    function getCout()
+    {
+        if ($this->objsort_cout) return $this->objsort_cout ;
+
+        // Sinon le nom est celui du sorts rattaché
+        if (!$this->sort->sort_cod)
+        {
+            $this->sort->charge($this->objsort_sort_cod);
+        }
+
+        return $this->sort->sort_cout;
+    }
+
+
 
     /**
      * @param $code
