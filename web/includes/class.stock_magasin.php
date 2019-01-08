@@ -146,7 +146,7 @@ mstock_obj_cod = :mstock_obj_cod                        where mstock_cod = :msto
      * @return objets[]
      * @throws Exception
      */
-    function get_objets($gobj, $bonus, $qte)
+    function get_objets($lieu,$gobj, $bonus, $qte)
     {
         $retour = array();
         $pdo  = new bddpdo;
@@ -160,7 +160,7 @@ mstock_obj_cod = :mstock_obj_cod                        where mstock_cod = :msto
             limit :qte';
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ':lieu'  => $this->mstock_lieu_cod,
+            ':lieu'  => $lieu,
             ':gobj'  => $gobj,
             ':bonus' => $bonus,
             ':qte'   => $qte)
