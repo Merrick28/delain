@@ -121,19 +121,19 @@ function compileAccumulatorCounter(selectSrc, inputDst) {
     inputDst.value = result;
 }
 
-$(".tobj").change(function () {
+$("#tobj").change(function () {
     $('#gobj').empty();
-    var tobj_val = $(this).attr('data-tobj');
+    var tobj_val = $(this).val();
     $.ajax({
         url: "ajax/get_objets_by_tobj.php",
         method: "POST",
         data: {tobj_cod: tobj_val},
-        dataType: "json",
+        dataType: "json"
     }).done(function (data) {
         $.each(data, function (index, element) {
             $("#gobj").append($('<option>', {
                     value: element.gobj_cod,
-                    text: element.gobj_nom_generique
+                    text: element.gobj_nom
                 })
             );
         })
@@ -142,7 +142,7 @@ $(".tobj").change(function () {
     });
 });
 
-$(".gobj_valeur").change(function () {
+$("#gobj_valeur").change(function () {
     $('#gobj').empty();
     var valeur = $(this).val();
     $.ajax({
@@ -151,6 +151,7 @@ $(".gobj_valeur").change(function () {
         data: {valeur: valeur},
         dataType: "json",
     }).done(function (data) {
+        //console.log(data);
         $.each(data, function (index, element) {
             $("#gobj").append($('<option>', {
                     value: element.gobj_cod,

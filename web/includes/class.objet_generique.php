@@ -453,7 +453,7 @@ class objet_generique
         $pdo    = new bddpdo;
         $req    = "select gobj_cod  from objet_generique
             where gobj_valeur >= :min
-             and gob_valeur <= :max 
+             and gobj_valeur <= :max 
              order by gobj_cod";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(

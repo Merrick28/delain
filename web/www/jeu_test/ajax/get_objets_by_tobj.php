@@ -7,10 +7,10 @@ define('NO_DEBUG',true);
  * Time: 09:55
  */
 
-
 $gobj = new objet_generique();
 $liste_obj = $gobj->getBy_gobj_tobj_cod($_POST['tobj_cod']);
-echo json_encode($liste_obj);
+
+echo json_encode($liste_obj,true);
 
 
 

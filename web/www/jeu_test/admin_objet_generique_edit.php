@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 ?>
-    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
+
     <p class="titre">Édition d’un objet générique</p>
 <?php
 $erreur          = 0;
@@ -238,16 +238,17 @@ if ($erreur == 0)
                 echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
                 $nb_tobj++;
             }
-            echo '</SCRIPT>			
-            <form name="mod" action="' . $PHP_SELF . '" method="post">
-            <select class="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
-
+            ?>
+            </SCRIPT>
+            <form name="mod" action="<?php echo $PHP_SELF ?>" method="post">
+            <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
+            <?php
             $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
             $db->query($req_tobj);
             while ($db->next_record())
             {
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                echo "<option data-gobj=\"$db->f('tobj_cod')\" value='$tobj_libelle'>$tobj_libelle</option>";
+                echo "<option data-gobj=\"" . $db->f('tobj_cod') . "\" value=\"" . $db->f('tobj_cod') . "\">$tobj_libelle</option>";
             }
 
             echo '
@@ -269,7 +270,7 @@ if ($erreur == 0)
             $liste_obj = $gobj->getAll();
             foreach($liste_obj as $detail_obj)
             {
-                echo '<option value="' . $detail_obj->gobj_cod . '">' . $detail_obj->gobj_nom_generique . '</option>';
+                echo '<option value="' . $detail_obj->gobj_cod . '">' . $detail_obj->gobj_nom . '</option>';
             }
 
             echo '</select>
@@ -800,6 +801,9 @@ if ($erreur == 0)
 
     }
 }
+?>
+<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
+<?php
 $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";
