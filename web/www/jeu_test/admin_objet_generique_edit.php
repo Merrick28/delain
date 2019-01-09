@@ -6,8 +6,8 @@ ob_start();
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
     <p class="titre">Édition d’un objet générique</p>
 <?php
-$erreur = 0;
-$droit_modif = 'dcompt_objet';
+$erreur          = 0;
+$droit_modif     = 'dcompt_objet';
 include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0)
 {
@@ -17,7 +17,9 @@ if ($erreur == 0)
     }
 
     if (!isset($methode))
+    {
         $methode = "mod";
+    }
     switch ($methode)
     {
         case "debut":
@@ -218,17 +220,17 @@ if ($erreur == 0)
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';
-            $nb_tobj = 0;
+            $nb_tobj  = 0;
             $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
                     inner join type_objet on tobj_cod = gobj_tobj_cod where gobj_tobj_cod not in (3,5,9,10) 
                     order by tobj_libelle, gobj_nom";
             $db->query($req_tobj);
             while ($db->next_record())
             {
-                $gobj_nom = $db->f("gobj_nom");
-                $gobj_nom = str_replace("\"", "", $gobj_nom);
+                $gobj_nom     = $db->f("gobj_nom");
+                $gobj_nom     = str_replace("\"", "", $gobj_nom);
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                $gobj_valeur = $db->f("gobj_valeur");
+                $gobj_valeur  = $db->f("gobj_valeur");
                 echo("listeBase[$nb_tobj] = new Array(0); \n");
                 echo("listeBase[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
                 echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
@@ -238,19 +240,19 @@ if ($erreur == 0)
             }
             echo '</SCRIPT>			
             <form name="mod" action="' . $PHP_SELF . '" method="post">
-            <select style="width: 280px;" name="selecttype" onchange="cleanOption(document.mod.gobj_cod); addOptionArray(document.mod.gobj_cod, listeBase, this.value, document.mod.selectvaleur.value);"><option value="">Tous types d’objets</option>';
+            <select class="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
 
-            $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
+            $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
             $db->query($req_tobj);
             while ($db->next_record())
             {
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
+                echo "<option data-gobj=\"$db->f('tobj_cod')\" value='$tobj_libelle'>$tobj_libelle</option>";
             }
 
             echo '
             </select><br />
-            <select style="width: 280px;" name="selectvaleur" onchange="cleanOption(document.mod.gobj_cod); addOptionArray(document.mod.gobj_cod, listeBase, document.mod.selecttype.value, this.value);">
+            <select style="width: 280px;" id="gobj_valeur" name="selectvaleur">
                 <option value="">Valeur indéfinie</option>
                 <option value="0;1000">Moins de 1 000 brouzoufs</option>
                 <option value="1000;5000">Entre 1 000 et 5 000 brouzoufs</option>
@@ -261,25 +263,31 @@ if ($erreur == 0)
                 <option value="100000;100000000">Plus de 100 000 brouzoufs</option>
             </select><br /><br>Choisissez l’objet à modifier :<br>
             <input type="hidden" name="methode" value="mod2">
-            <select name="gobj_cod" style="width:280px;"></select>
+            <select name="gobj_cod" id="gobj" style="width:280px;">';
+
+            $gobj = new objet_generique();
+            $liste_obj = $gobj->getAll();
+            foreach($liste_obj as $detail_obj)
+            {
+                echo '<option value="' . $detail_obj->gobj_cod . '">' . $detail_obj->gobj_nom_generique . '</option>';
+            }
+
+            echo '</select>
             <input type="submit" value="Valider" class="test">
-            </form>
-            <SCRIPT>
-            addOptionArray(document.mod.gobj_cod, listeBase, "", "");
-            </SCRIPT>';
+            </form>';
 
 
             // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-            $style_tr = "display: block;";
-            $param_id = 0;
-            $row = 0;
-            $row_id = "row-$param_id-$row-";
+            $style_tr        = "display: block;";
+            $param_id        = 0;
+            $row             = 0;
+            $row_id          = "row-$param_id-$row-";
             $aqelem_misc_nom = "";
             echo '<form name="mod" action="' . $PHP_SELF . '" method="post"><input type="hidden" name="methode" value="mod2">';
             echo '<br><hr><br><strong>Modification d’un objet existant</strong> (<em>recherche par nom<em>)<br>Code de l\'objet générique :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'>
                     &nbsp;<br><input type="submit" value="Valider" class="test"></form><br><br>';
@@ -301,11 +309,17 @@ if ($erreur == 0)
                 {
                     $db2->next_record();
                     $obcar_cod = $db2->f("obcar_cod");
-                } else
+                }
+                else
+                {
                     $obcar_cod = 0;
+                }
 
-            } else
+            }
+            else
+            {
                 $obcar_cod = 0;
+            }
             ?>
             <form name="cre" method="post" action="<?php echo $PHP_SELF; ?>">
                 <input type="hidden" name="methode" value="mod3">
@@ -332,7 +346,9 @@ if ($erreur == 0)
                                     {
                                         echo '<option value="' . $db3->f("tobj_cod") . '" ';
                                         if ($db3->f('tobj_cod') == $db->f("gobj_tobj_cod"))
+                                        {
                                             echo " selected ";
+                                        }
                                         echo '>' . $db3->f('tobj_libelle') . '</option>';
                                     }
                                     ?>
@@ -362,14 +378,18 @@ if ($erreur == 0)
                                     <option value="O"
                                         <?php
                                         if ($db->f("gobj_distance") == 'O')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Oui
                                     </option>
                                     <option value="N"
                                         <?php
                                         if ($db->f("gobj_distance") == 'N')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Non
                                     </option>
@@ -390,7 +410,9 @@ if ($erreur == 0)
                                     <option value="30"
                                         <?php
                                         if ($db->f("gobj_comp_cod") == 30)
+                                        {
                                             echo " selected ";
+                                        }
                                         ?>
 
                                     >Mains nues
@@ -402,7 +424,9 @@ if ($erreur == 0)
                                     {
                                         echo '<option value="' . $db3->f("comp_cod") . '" ';
                                         if ($db3->f('comp_cod') == $db->f("gobj_comp_cod"))
+                                        {
                                             echo " selected ";
+                                        }
                                         echo '>' . $db3->f('comp_libelle') . '</option>';
                                     }
                                     ?>
@@ -433,14 +457,18 @@ if ($erreur == 0)
                                     <option value="O"
                                         <?php
                                         if ($db->f("gobj_deposable") == 'O')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Oui
                                     </option>
                                     <option value="N"
                                         <?php
                                         if ($db->f("gobj_deposable") == 'N')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Non
                                     </option>
@@ -456,14 +484,18 @@ if ($erreur == 0)
                                     <option value="O"
                                         <?php
                                         if ($db->f("gobj_echoppe") == 'O')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Oui
                                     </option>
                                     <option value="N"
                                         <?php
                                         if ($db->f("gobj_echoppe") == 'N')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Non
                                     </option>
@@ -475,14 +507,18 @@ if ($erreur == 0)
                                     <option value="O"
                                         <?php
                                         if ($db->f("gobj_postable") == 'O')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Oui
                                     </option>
                                     <option value="N"
                                         <?php
                                         if ($db->f("gobj_postable") == 'N')
+                                        {
                                             echo " selected";
+                                        }
                                         ?>
                                     >Non
                                     </option>
@@ -598,7 +634,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = 0;
+                }
             }
             // insertion dans objets_caracs
             $req = "insert into objets_caracs
@@ -614,7 +652,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = "NULL";
+                }
             }
 
             // mise à 0 des valeurs vides pour objets_generique
@@ -642,7 +682,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = 0;
+                }
             }
             // insertion dans objets_generique
             $req = "insert into objet_generique
@@ -652,11 +694,11 @@ if ($erreur == 0)
 				gobj_chance_drop,gobj_chance_drop_monstre,gobj_chance_enchant,gobj_desequipable,gobj_stabilite, gobj_niveau_min)
 				values
 				($obcar_cod,e'" . pg_escape_string($gobj_nom) . "',e'" . pg_escape_string($gobj_nom_generique) . "'," . $_POST['gobj_tobj_cod'] . "," . $_POST['gobj_valeur'] .
-                ",'$gobj_distance'," . $_POST['gobj_portee'] . "," . $_POST['gobj_comp_cod'] . "," . $_POST['gobj_poids'] . "," . $_POST['gobj_pa_normal'] . "," .
-                $_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
-                $_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] .
-                "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
-                "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
+                   ",'$gobj_distance'," . $_POST['gobj_portee'] . "," . $_POST['gobj_comp_cod'] . "," . $_POST['gobj_poids'] . "," . $_POST['gobj_pa_normal'] . "," .
+                   $_POST['gobj_pa_eclair'] . ",e'" . pg_escape_string($gobj_description) . "','$gobj_deposable','" . $_POST['gobj_postable'] . "'," . $_POST['gobj_usure'] . ",'$gobj_echoppe'," .
+                   $_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] .
+                   "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
+                   "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
             $db->query($req);
             echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $PHP_SELF . "?methode=mod\">Créer/Modifier d'autres objets</a>";
             break;
@@ -674,7 +716,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = 0;
+                }
             }
             // update dans objets_caracs
             $req = "update objets_caracs
@@ -690,7 +734,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = "NULL";
+                }
             }
 
             // mise à 0 des valeurs vides pour objets_generique
@@ -719,7 +765,9 @@ if ($erreur == 0)
             foreach ($fields as $i => $value)
             {
                 if ($_POST[$fields[$i]] == '')
+                {
                     $_POST[$fields[$i]] = 0;
+                }
             }
 
             // insertion dans objets_generique
