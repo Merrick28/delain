@@ -142,7 +142,7 @@ class objets_sorts
     }
 
     /***
-     * Retourne la liste des sorts qu'un perso peux lancer via les ojets qu'il possède
+     * Retourne la liste des sorts qu'un perso peut lancer via les ojets qu'il possède
      * @return array|bool
      */
     function get_perso_objets_sorts($perso_cod)
@@ -184,6 +184,32 @@ class objets_sorts
                 order by sort_cout, coalesce(objsort_nom, sort_nom), objsort_obj_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new objets_sorts;
+            $temp->charge($result["objsort_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+
+    /***
+     * Retourne la liste des sorts d'un ojet
+     * @return array|bool
+     */
+    function get_objets_sorts(objets $objet)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        // Les sorts, sont tous les générique de l'objet plus eventuellement des spécifiques
+        $req = "select objsort_cod from objets_sorts where objsort_gobj_cod=:gobj_cod or (objsort_obj_cod=:obj_cod and objsort_parent_cod is null) order by objsort_cod";
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":gobj_cod" => $objet->obj_gobj_cod,
+                                    ":obj_cod" => $objet->obj_cod
+                                    ),$stmt);
         while($result = $stmt->fetch())
         {
             $temp = new objets_sorts;

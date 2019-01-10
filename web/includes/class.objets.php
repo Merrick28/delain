@@ -351,22 +351,8 @@ class objets
     {
         $retour = array();
 
-        $pdo = new bddpdo;
         $objsort = new objets_sorts();
-
-        // liste des sorts attahchés sur le générique
-        $temp =  $objsort->getBy_objsort_gobj_cod($this->obj_gobj_cod);
-        if ($temp)
-        {
-            $retour =  $temp ;
-        }
-
-        // Fusionner avec les sorts attahchés sur l'objet lui même
-        $temp =  $objsort->getBy_objsort_obj_cod($this->obj_cod);
-        if ($temp)
-        {
-            $retour =  array_merge ($retour, $temp);
-        }
+        $retour = $objsort->get_objets_sorts($this) ;
 
         if(count($retour) == 0)
         {
