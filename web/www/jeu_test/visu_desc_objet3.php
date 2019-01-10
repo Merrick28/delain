@@ -199,6 +199,25 @@ if ($autorise == 1) {
             echo "<td colspan=\"2\" class=\"soustitre2\"><strong>Objet enchanté !</strong></td>";
             echo "</tr>";
         }
+
+        //2019-01-07@Marlyza : Gestion des objets avec des sorts rattachés
+        // Il faudrait passer toute la page en PDO, mais en attendant faisons en sorte que les nouveautées le soient déjà!
+        $obj = new objets();
+        $obj->charge($objet);
+        if ($sorts_attaches = $obj->get_sorts_attaches())
+        {
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet est magique, liste des sorts qu'il vous permet de lancer:</strong></td>";
+            echo "</tr>";
+            foreach ($sorts_attaches as $objsort)
+            {
+                echo "<tr><td class=\"soustitre2\">".($objsort->objsort_equip_requis ? "Equipé" : "Inventaire")."</td>";
+                echo "<td><strong>". $objsort->getNom()."</strong> <em>(". $objsort->getCout()." PA)</em></td>";
+                echo "<tr>";
+            }
+        }
+
+
         echo "<tr>";
         echo "<td class=\"soustitre2\">Description</td>";
         echo "<td>" . $desc . "</td>";
