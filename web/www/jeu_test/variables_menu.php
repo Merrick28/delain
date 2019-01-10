@@ -36,7 +36,8 @@ $is_intangible = $perso->isIntangible();
 if ($is_intangible)
 {
     $pa_ramasse = $param->getparm(42);
-} else
+}
+else
 {
     $pa_ramasse = $param->getparm(41);
 }
@@ -93,6 +94,7 @@ $droit['potions']        = 'N';
 $droit['news']           = 'N';
 $droit['animations']     = 'N';
 $droit['factions']       = 'N';
+$droit['creer_monstre']  = 'N';
 $cd                      = new compt_droit();
 if ($cd->charge($compt_cod))
 {
@@ -109,6 +111,7 @@ if ($cd->charge($compt_cod))
     $droit['news']           = $cd->dcompt_news;
     $droit['animations']     = $cd->dcompt_animations;
     $droit['factions']       = $cd->dcompt_factions;
+    $droit['creer_monstre']  = $cd->dcompt_creer_monstre;
 }
 
 // variables du compte
@@ -128,7 +131,8 @@ $t->set_var('PERSO_NOM', $nom_perso);
 if ($is_intangible)
 {
     $intangible = "<em>Perso impalpable !</em><br><br>";
-} else
+}
+else
 {
     $intangible = '';
 }
@@ -147,7 +151,8 @@ if ($is_enchanteur)
 {
     $enchanteur = "<img src=\"" . G_IMAGES . "energi10.png\" alt=\"\"> <div title=\"" . $perso->perso_energie . "/100 énergie\" alt=\"" . $perso->perso_energie . "/100 énergie\" class=\"container-nrj\"><div class=\"barre-nrj\" style=\"width:" . $barre_energie . "%\"></div></div>";
     $forge      = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enchantement_general.php">Forgeamage</a><br>';
-} else
+}
+else
 {
     $enchanteur = '';
     $forge      = '';
@@ -160,7 +165,8 @@ $t->set_var('FORGE', $forge);
 if ($is_fam_divin == 1)
 {
     $fam_divin = "<img src=\"" . G_IMAGES . "magie.gif\" alt=\"\"> <div title=\"Énergie divine : " . $energie_divine . "\" alt=\"Énergie divine : " . $energie_divine . "\" class=\"container-div\"><div class=\"barre-div\" style=\"width:" . $barre_divine . "%\"></div></div>";
-} else
+}
+else
 {
     $fam_divin = '';
 }
@@ -192,7 +198,8 @@ $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 if ($px_actuel >= $prochain_niveau)
 {
     $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>';
-} else
+}
+else
 {
     $passage_niveau = '';
 }
@@ -202,7 +209,8 @@ $t->set_var('PASSAGE_NIVEAU', $passage_niveau);
 if ($perso->is_perso_quete())
 {
     $perso_quete = "<hr /><a href=\"$chemin/quete_perso.php\"><strong>Quête</strong></a>";
-} else
+}
+else
 {
     $perso_quete = '';
 }
@@ -213,7 +221,8 @@ $nb_quete_auto = $perso->perso_nb_auto_quete();
 if ($nb_quete_auto["nb_total"] * 1 > 0)
 {
     $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes " . (1 * $nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
-} else
+}
+else
 {
     $perso_auto_quete = '';
 }
@@ -242,7 +251,8 @@ $nb_msg = count($tab);
 if ($nb_msg != 0)
 {
     $perso_messagerie = "<strong>Messagerie (" . $nb_msg . ")</strong>";
-} else
+}
+else
 {
     $perso_messagerie = "Messagerie";
 }
@@ -299,7 +309,8 @@ $t->set_var('RAMASSER', $ramasser);
 if ($transaction > 0)
 {
     $perso_transactions = "<strong>Transactions (" . $transaction . ")</strong>";
-} else
+}
+else
 {
     $perso_transactions = "Transactions";
 }
@@ -310,7 +321,8 @@ if ($is_admin_monstre)
 {
     $wiki           = '<a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>';
     $option_monstre = '<img src="' . G_IMAGES . 'iconeswitch.gif" alt=""> <a href="' . $chemin . '/option_monstre.php">Option du monstre</a>';
-} else
+}
+else
 {
     $wiki           = '<a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>';
     $option_monstre = '';
@@ -334,7 +346,8 @@ if ($droit['controle'] == 'O')
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/multi_trace.php">Visu des multi</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/sitting.php">Sittings > 5 j.</a><br>
 	<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_interaction_4e.php">Intéractions 4e persos</a><br>';
-} else
+}
+else
 {
     $controle = '';
 }
@@ -343,7 +356,8 @@ if ($droit['controle'] == 'O')
 if ($droit['modif_perso'] == 'O')
 {
     $modif_perso = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_perso_edit.php">Modif. perso</a><br>';
-} else
+}
+else
 {
     $modif_perso = '';
 }
@@ -353,7 +367,8 @@ if ($droit['modif_gmon'] == 'O')
 {
     $modif_monstre = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_type_monstre_edit.php">Modif. types monstre</a><br>
 		<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_repartition_monstres.php">Modif. répart. monstres</a><br>';
-} else
+}
+else
 {
     $modif_monstre = '';
 }
@@ -363,7 +378,8 @@ if ($droit['modif_gmon'] == 'O')
 if ($droit['carte'] == 'O')
 {
     $droit_carte = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_etage.php">Modif. étages</a><br>';
-} else
+}
+else
 {
     $droit_carte = '';
 }
@@ -372,7 +388,8 @@ if ($droit['carte'] == 'O')
 if ($droit['controle_admin'] == 'O')
 {
     $controle_admin = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/controle_admins.php">Controle admins</a><br>';
-} else
+}
+else
 {
     $controle_admin = '';
 }
@@ -382,7 +399,8 @@ if ($droit['droits'] == 'O')
 {
     $gestion_droits = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_gestion_droits.php">Gestion des droits</a><br>';
     $gestion_droits .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_params.php">Gestion des paramètres</a><br>';
-} else
+}
+else
 {
     $gestion_droits = '';
 }
@@ -391,7 +409,8 @@ if ($droit['droits'] == 'O')
 if ($droit['objet'] == 'O')
 {
     $modif_objets = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_objet_generique_edit.php">Gestion objets generiques</a><br>';
-} else
+}
+else
 {
     $modif_objets = '';
 }
@@ -403,7 +422,8 @@ if ($droit['enchantements'] == 'O')
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_enluminure.php">Enluminure</a><br>';
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_magie.php">Modif. sorts</a><br>';
     $droit_enchantement .= '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_bonusmalus.php">Modif. bonus/malus</a><br>';
-} else
+}
+else
 {
     $droit_enchantement = '';
 }
@@ -412,7 +432,8 @@ if ($droit['enchantements'] == 'O')
 if ($droit['potions'] == 'O')
 {
     $droit_potion = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_potions.php">Création de potions</a><br>';
-} else
+}
+else
 {
     $droit_potion = '';
 }
@@ -421,7 +442,8 @@ if ($droit['potions'] == 'O')
 if ($droit['acces_log'] == 'O')
 {
     $droit_logs = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_visu_logs.php">Voir les logs</a><br>';
-} else
+}
+else
 {
     $droit_logs = '';
 }
@@ -430,7 +452,8 @@ if ($droit['acces_log'] == 'O')
 if ($droit['modif_perso'] == 'O')
 {
     $quete_auto = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_quete_auto_edit.php">Quetes auto</a><br>';
-} else
+}
+else
 {
     $quete_auto = '';
 }
@@ -439,7 +462,8 @@ if ($droit['modif_perso'] == 'O')
 if ($droit['news'] == 'O')
 {
     $news = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_news.php">Lancer une news</a><br>';
-} else
+}
+else
 {
     $news = '';
 }
@@ -448,7 +472,8 @@ if ($droit['news'] == 'O')
 if ($droit['animations'] == 'O')
 {
     $animations = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_animations.php">Animations</a><br>';
-} else
+}
+else
 {
     $animations = '';
 }
@@ -457,7 +482,8 @@ if ($droit['animations'] == 'O')
 if ($droit['factions'] == 'O')
 {
     $factions = '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_factions.php">Factions</a><br>';
-} else
+}
+else
 {
     $factions = '';
 }
@@ -466,7 +492,8 @@ if ($droit['factions'] == 'O')
 if ($admin_echoppe == 'O')
 {
     $echoppe = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/admin_echoppe.php">Admin. échoppes</a><br>';
-} else
+}
+else
 {
     $echoppe = '';
 }
@@ -475,7 +502,8 @@ if ($admin_echoppe == 'O')
 if ($gerant == 'O')
 {
     $gerant = '<img src="' . G_IMAGES . 'inventaire.gif" alt=""> <a href="' . $chemin . '/gere_echoppe.php">Gestion échoppes</a><br>';
-} else
+}
+else
 {
     $gerant = '';
 }
@@ -485,7 +513,8 @@ $arr_favoris = $perso->get_favoris();
 if (count($arr_favoris) == 0)
 {
     $favoris = '<div id="barre-favoris" style="display:none;"><hr /></div>';
-} else
+}
+else
 {
     $favoris = '<div id="barre-favoris"><hr />';
     foreach ($arr_favoris as $key => $fav)
@@ -504,7 +533,8 @@ $mem = $perso->sort_memo();
 if ($perso->sort_lvl5() > 0 && $perso->sort_memo() > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
-} else
+}
+else
 {
     $voie_magique = '';
 }
@@ -514,7 +544,8 @@ $t->set_var('VOIE_MAGIQUE', $voie_magique);
 if ($is_enlumineur)
 {
     $enlumineur = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/enluminure_general.php">Enluminure</a><br>';
-} else
+}
+else
 {
     $enlumineur = '';
 }
@@ -524,7 +555,8 @@ $t->set_var('ENLUMINEUR', $enlumineur);
 if ($potions == 1)
 {
     $potion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/comp_potions.php">Alchimie</a><br>';
-} else
+}
+else
 {
     $potion = '';
 }
@@ -534,7 +566,8 @@ $t->set_var('POTION', $potion);
 if ($religion || $fidele_gerant || $admin_dieu)
 {
     $religion = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/religion.php">Religion</a><br>';
-} else
+}
+else
 {
     $religion = '';
 }
@@ -650,7 +683,8 @@ $t->set_var('CONTROLE_ADMIN', $controle_admin);
 if ($is_milice == 1)
 {
     $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""><a href="' . $chemin . '/milice.php">Milice</a><br>';
-} else
+}
+else
 {
     $milice = '';
 }
@@ -753,19 +787,32 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
     foreach ($rows as $result)
     {
         if ((1 * $result["perso_type_perso"]) == 3)
+        {
             $nb_familier++;
+        }
         else
+        {
             $nb_perso++;
+        }
     }
 
     $liste_boutons = "";
     $col           = 0;
     if ($nb_familier > 0)
-        $col_class = 'col-xs-12  col-sm-6';                         // perso + fam on préparera regroupemet par 2
-    else if ($nb_perso > 3)
-        $col_class = 'col-xs-12 col-sm-6 col-md-3 col-lg-3';        //pas de fam juste 4 persos
+    {
+        $col_class = 'col-xs-12  col-sm-6';
+    }                         // perso + fam on préparera regroupemet par 2
     else
-        $col_class = 'col-xs-12 col-sm-6 col-md-4 col-lg-4';        // pas de fam juste 3 persos ou moins
+    {
+        if ($nb_perso > 3)
+        {
+            $col_class = 'col-xs-12 col-sm-6 col-md-3 col-lg-3';
+        }        //pas de fam juste 4 persos
+        else
+        {
+            $col_class = 'col-xs-12 col-sm-6 col-md-4 col-lg-4';
+        }
+    }        // pas de fam juste 3 persos ou moins
     foreach ($rows as $result)
     {
         if (($col % 2 == 1) && ((1 * $result["perso_type_perso"]) != 3) && ($nb_familier > 0))
@@ -778,9 +825,13 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         {
             // regroupement des cases par paire (le perso et son fam) seulement s'il y a des familiers
             if ($nb_perso > 3)
+            {
                 $liste_boutons .= '<div class="col-xs-12 col-sm-6 col-md-3 col-lg-3">';
+            }
             else
+            {
                 $liste_boutons .= '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-4">';
+            }
         }
         // Raccourcir les nom en retirant les tags superflux
         $_aff_nom = $result["perso_nom"];
@@ -788,16 +839,28 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         {
             $_aff_nom = "Fam. de " . substr($_aff_nom, 12);
             $pesprit  = strpos($_aff_nom, "(esprit de ");
-            if ($pesprit > 0) $_aff_nom = substr($_aff_nom, 0, $pesprit) . "(" . substr($_aff_nom, $pesprit + 11);
-        } else if (substr($_aff_nom, 0, 31) == "Image démoniaque, Familier de ")
+            if ($pesprit > 0)
+            {
+                $_aff_nom = substr($_aff_nom, 0, $pesprit) . "(" . substr($_aff_nom, $pesprit + 11);
+            }
+        }
+        else
         {
-            $_aff_nom = "Kirga de " . substr($_aff_nom, 31);
-        } else if (substr($_aff_nom, 0, 27) == "Kirga-Uh-Kmot, Familier de ")
-        {
-            $_aff_nom = "Kirga de " . substr($_aff_nom, 27);
-        } else
-        {
-            $_aff_nom = preg_replace("/ \(n° (\d+)\)$/", "", $_aff_nom);
+            if (substr($_aff_nom, 0, 31) == "Image démoniaque, Familier de ")
+            {
+                $_aff_nom = "Kirga de " . substr($_aff_nom, 31);
+            }
+            else
+            {
+                if (substr($_aff_nom, 0, 27) == "Kirga-Uh-Kmot, Familier de ")
+                {
+                    $_aff_nom = "Kirga de " . substr($_aff_nom, 27);
+                }
+                else
+                {
+                    $_aff_nom = preg_replace("/ \(n° (\d+)\)$/", "", $_aff_nom);
+                }
+            }
         }
 
         // ajout d'info PA, PV et DLT
@@ -808,17 +871,25 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
         $_aff_nom      .= "<br><span style=\"color:white; font-size:9px;font-weight:normal;\">" . $_aff_perso_pv . "/" . $result["perso_pv_max"] . " - " . $_aff_perso_pa . "PA" . $_aff_dlt . "</span>";
 
         $_aff_msg = "";
-        if (1 * $result["nb_msg_non_lu"] > 0) $_aff_msg = '<span class="badge-btn">' . $result["nb_msg_non_lu"] . '</span>';
+        if (1 * $result["nb_msg_non_lu"] > 0)
+        {
+            $_aff_msg = '<span class="badge-btn">' . $result["nb_msg_non_lu"] . '</span>';
+        }
 
         if ($result["dlt_passee"] != 0)
         {
             $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch-dlt">' . $_aff_nom . '</button></div>';
-        } else if ($result["perso_cod"] == $perso_cod)
+        }
+        else
         {
-            $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch-act">' . $_aff_nom . '</button></div>';
-        } else
-        {
-            $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch">' . $_aff_nom . '</button></div>';
+            if ($result["perso_cod"] == $perso_cod)
+            {
+                $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch-act">' . $_aff_nom . '</button></div>';
+            }
+            else
+            {
+                $liste_boutons .= '<div class="' . $col_class . '">' . $_aff_msg . '<button id=' . $result["perso_cod"] . ' class="button-switch">' . $_aff_nom . '</button></div>';
+            }
         }
 
         if (($col % 2 == 1) && ($nb_familier > 0))
@@ -840,7 +911,8 @@ if (!in_array($_SERVER["PHP_SELF"], array("/jeu_test/switch.php", "/switch_rapid
     if (($liste_boutons != '') && ($nb_button <= 16))
     {
         $barre_switch_rapide = '<div id="colonne0" data-switch-bar="standard" style="display:block"><div class="container-fluid"><div class="row">' . $liste_boutons . '</div></div></div>';
-    } else
+    }
+    else
     {
         // Au dessus de 16 persos, il doit s'agir d'un admin monstres, on cache la barre par défaut (sera affiché si la souris passe en haut de l'écran
         $barre_switch_rapide = '<div id="colonne0" data-switch-bar="autohide" style="display:none"><div class="container-fluid"><div class="row">' . $liste_boutons . '</div></div></div>';

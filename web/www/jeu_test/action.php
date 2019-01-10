@@ -684,7 +684,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
         case 'nv_magasin_achat':
             $lieu = $_POST['lieu'];
             $sm   = new stock_magasin();
-            $sm->getBy_mstock_lieu_cod($lieu)[0];
+            //$sm->getBy_mstock_lieu_cod($lieu)[0];
 
             foreach ($gobj as $key => $val)
             {
@@ -697,7 +697,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     $gobj         = $type[0];
                     $qte          = $val;
                     $bonus        = $type[1];
-                    $liste_objets = $sm->get_objets($gobj, $bonus, $qte);
+                    $liste_objets = $sm->get_objets($lieu, $gobj, $bonus, $qte);
 
                     if (count($liste_objets) == 0)
                     {
@@ -840,7 +840,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $perso->change_grade($_REQUEST['dieu']);
             break;
         case 'don_br':
-            $contenu_page .= $perso->change_grade($_REQUEST['dest'], $_REQUEST['qte']);
+            $contenu_page .= $perso->don_br($_REQUEST['dest'], $_REQUEST['qte']);
             break;
         case 'vente_auberge':
             $contenu_page .= $perso->vente_auberge($_REQUEST['objet']);
