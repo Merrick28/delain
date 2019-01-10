@@ -120,6 +120,7 @@ if ($erreur == 0) {
 		
 		<form name="sort_obj" method="post" action="choix_sort.php" style="display:none;">
 		<input type="hidden" name="type_lance" value="5">
+		<input type="hidden" name="objsort_cod">
 		<input type="hidden" name="sort">
 		</form>
 		
@@ -142,12 +143,12 @@ if ($erreur == 0) {
 		<table id="objmag">';
         foreach ($liste_sorts as $sorts_attaches)
         {
-            $contenu_page .= '<tr><td class="soustitre2">
-			<a href="javascript:document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->getCout() . ' PA)
-			</td>
-			<td>
-			<a href="visu_desc_sort.php?sort_cod=' . $sorts_attaches->objsort_sort_cod . '">Description du sort</a>
-			</td>
+            $objet = new objets();
+            $objet->charge($sorts_attaches->objsort_obj_cod);
+            $contenu_page .= '<tr>
+            <td class="soustitre2"><a href="javascript:document.sort_obj.objsort_cod.value=' . $sorts_attaches->objsort_cod . ';document.sort_obj.sort.value=' . $sorts_attaches->objsort_sort_cod . ';document.sort_obj.submit();">' . $sorts_attaches->getNom() . '</a> (' . $sorts_attaches->getCout() . ' PA)</td>
+			<td><a href="visu_desc_objet3.php?&origine=i&objet=' . $objet->obj_cod . '">' . $objet->obj_nom . ' (' . $objet->obj_cod . ')</a></td>
+			<td>Charge: <strong>'.($sorts_attaches->objsort_nb_utilisation_max>0 ? ($sorts_attaches->objsort_nb_utilisation_max-$sorts_attaches->objsort_nb_utilisation) : 'illimitée' ).'</strong></td>
 			</tr>';
         }
         $contenu_page .= '</table>

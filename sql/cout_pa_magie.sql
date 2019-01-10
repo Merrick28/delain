@@ -67,7 +67,7 @@ select into cout_pa sort_cout from sorts where sort_cod = num_sort;
 -- modification du cout pour les lancer via receptacles
 -- on exclue le receptacle du traitement des bonus
 
-if type_lancer != 2 then
+if type_lancer not in (2,5) then
 	cout_pa := cout_pa + valeur_bonus(lanceur, 'PAM');
         if type_lancer != 4 then
            if num_sort in(128,139) then
@@ -86,16 +86,30 @@ if type_lancer != 2 then
 end if;
 -- le cout depends du cout du sort d'origine
 if type_lancer = 2 then
-       if cout_pa < 9 then
-	cout_pa := 2;
-         else
-        cout_pa := 4;
+  if cout_pa < 9 then
+	  cout_pa := 2;
+  else
+    cout_pa := 4;
 	end if;
 end if;
+
+-- le coût pour les ojets magiques dépend de l'objet.
+if type_lancer = 5 then
+  select into cout_pa COALESCE(NULLIF(objsort_cout,0),sort_cout)
+    from objets_sorts_magie
+    join objets_sorts on objsort_cod=objsortm_objsort_cod
+    join sorts on sort_cod=objsort_sort_cod
+    where objsortm_perso_cod = lanceur ;
+  if not found then
+    cout_pa := 20 ;     -- il y a une anomalie, on met un nombre de PA impossible, le sort ne sera pas lancé
+  end if;
+end if;
+
 -- pour les parchemins le cout est le cout normal - 1
-   if type_lancer = 4 then
-       cout_pa := cout_pa - 1;
-   end if;
+ if type_lancer = 4 then
+     cout_pa := cout_pa - 1;
+ end if;
+
 temp := cout_pa;
 code_retour := code_retour||temp;
 	return code_retour;

@@ -214,7 +214,7 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br><br>
+            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br><a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br><br>
                     <hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 
             // LISTE DES OBJETS POSSIBLES

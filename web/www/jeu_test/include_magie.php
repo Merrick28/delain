@@ -1,6 +1,7 @@
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
     <input type="hidden" name="sort_cod" value="<?php echo $sort_cod; ?>">
+    <input type="hidden" name="objsort_cod" value="<?php echo $objsort_cod; ?>">
     <input type="hidden" name="cible" value="0">
     <input type="hidden" name="type_lance" value="<?php echo $type_lance ?>">
     <?php

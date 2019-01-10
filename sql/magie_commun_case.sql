@@ -87,6 +87,7 @@ declare
 	compt integer;            -- fourre tout
 	niveau_religion integer;
 	facteur_reussite integer;
+	facteur_malchance numeric ;  -- facteur de malchance sur certains objets magiques
 	v_special integer;
 	resultat text;
 
@@ -137,7 +138,7 @@ begin
 		code_retour := code_retour || '0;<p>' || res_controle;
 		return code_retour;
 	end if;
-	if type_lancer in (2, 4) then
+	if type_lancer in (2, 4, 5) then
 		facteur_reussite := to_number(split_part(res_controle, ';', 2), '9999999999999');
 	end if;
 ------------------------------------------------------------
@@ -148,6 +149,8 @@ begin
 		code_retour := code_retour || 'en utilisant un réceptacle.<br><br>';
 	elsif type_lancer = 4 then
 		code_retour := code_retour || 'en utilisant un parchemin.<br><br>';
+	elsif type_lancer = 5 then
+		code_retour := code_retour||'en utilisant un objet.<br><br>';
 	else
 		code_retour := code_retour || 'en utilisant la compétence <b>' || nom_comp || '</b>.<br><br>';
 	end if;
@@ -165,7 +168,7 @@ begin
 	if not found then
 		niveau_religion := 0;
 	end if;
-	if type_lancer != 4 then
+	if type_lancer not in (4,5) then
 		select into compt pnbst_cod from perso_nb_sorts_total
 		where pnbst_perso_cod = lanceur
 			and pnbst_sort_cod = num_sort;
@@ -174,7 +177,7 @@ begin
 			values (lanceur, num_sort, 0);
 		end if;
 	end if;
-	if type_lancer not in (2, 4) then
+	if type_lancer not in (2,4,5) then
 		if niveau_religion < 2 then
 			update perso_nb_sorts_total
 			set pnbst_nombre = pnbst_nombre + 1
@@ -191,8 +194,18 @@ begin
 	-- appel de la fonction cout_pa_magie pour les calculs de cout de pa avec correlation pour l’affichage dans la page magie_php
 	select into resultat cout_pa_magie(lanceur, num_sort, type_lancer);
 	cout_pa := resultat;
+
+		-- pour les sorts lancés à partir d'objet on met a jour le compteur (et on supprime le sort préparé)
+  facteur_malchance :=0 ;
+  if type_lancer = 5 then
+    select into facteur_malchance objsort_malchance from objets_sorts join objets_sorts_magie on objsortm_objsort_cod=objsort_cod where objsortm_perso_cod = lanceur ;
+		update objets_sorts set objsort_nb_utilisation=objsort_nb_utilisation+1 from objets_sorts_magie where objsortm_perso_cod = lanceur  and objsortm_objsort_cod=objsort_cod;
+		--On fera le ménage en front, on a besoin de connaitre l'objet utilisé pour les option de "relancer"
+		--delete from objets_sorts_magie where objsortm_perso_cod = lanceur ;
+	end if;
+
 	-- on regarde s’il y a concentration
-	if type_lancer not in (2, 4) then
+	if type_lancer not in (2, 4, 5) then
 		select into compt concentration_perso_cod from concentrations
 		where concentration_perso_cod = lanceur;
 		if found then
@@ -230,7 +243,7 @@ begin
 	if v_comp_modifie < 1 then
 		v_comp_modifie := 1;
 	end if;
-	if type_lancer not in (2, 4) then
+	if type_lancer not in (2, 4, 5) then
 		code_retour := code_retour || 'Votre chance de réussir (en tenant compte des modificateurs) est de <b>' || trim(to_char(v_comp_modifie, '9999')) || '</b> ';
 		-- on regarde si il y a un bonus pour avoir plus de chances de conserver ses runes
 		v_chances_runes := valeur_bonus(lanceur, 'PER');
@@ -357,7 +370,25 @@ begin
 				code_retour := code_retour || 'Vous n’avez pas réussi à mémoriser ce sort.<br><br>';
 			end if;
 		end if;
+	end if; -- fin réceptacle, parcho, objet
+
+  -- Il y a certains objets qui possède un facteur de malchance, faisant échoué le lancement du sort
+	if type_lancer = 5 and facteur_malchance >0 then
+	    des := 100 * lancer_des(1,100);   -- facteur_malchance a une précision à 0.01 %
+	    if des <= 100 * facteur_malchance then
+        code_retour := code_retour||'Vous n''avez pas réussi à utiliser l''objet, le sortilège à <b>échoué</b>.<br><br>';
+
+        texte_evt := '[attaquant] a tenté de lancer ' || nom_sort || ' et a échoué.';
+
+        insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant)
+        values(nextval('seq_levt_cod'), 14, now(), 1, lanceur, texte_evt, 'O', 'O', lanceur);
+
+		    update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
+        code_retour := '0;'||code_retour;
+        return code_retour;
+      end if;
 	end if;
+
 	code_retour := '1;0;' || code_retour;
 	update perso set perso_pa = perso_pa - cout_pa where perso_cod = lanceur;
 

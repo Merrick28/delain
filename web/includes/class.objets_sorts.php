@@ -11,13 +11,15 @@
 class objets_sorts
 {
     var $objsort_cod;
+    var $objsort_parent_cod ;
     var $objsort_gobj_cod;
     var $objsort_obj_cod;
     var $objsort_sort_cod;
     var $objsort_nom;
     var $objsort_cout;
     var $objsort_malchance;
-    var $objsort_nb_utilisation;
+    var $objsort_nb_utilisation_max;
+    var $objsort_nb_utilisation = 0;
     var $objsort_equip_requis = false;
     var $sort;                // Le sort de rattachement
 
@@ -49,8 +51,10 @@ class objets_sorts
         $this->objsort_nom = $result['objsort_nom'];
         $this->objsort_cout = $result['objsort_cout'];
         $this->objsort_malchance = $result['objsort_malchance'];
+        $this->objsort_nb_utilisation_max = $result['objsort_nb_utilisation_max'];
         $this->objsort_nb_utilisation = $result['objsort_nb_utilisation'];
         $this->objsort_equip_requis = $result['objsort_equip_requis'];
+        $this->objsort_parent_cod = $result['objsort_parent_cod'];
         return true;
     }
 
@@ -71,8 +75,10 @@ class objets_sorts
             objsort_nom,
             objsort_cout,
             objsort_malchance,
+            objsort_nb_utilisation_max,
             objsort_nb_utilisation,
-            objsort_equip_requis                        )
+            objsort_equip_requis,
+            objsort_parent_cod                        )
                     values
                     (
                         :objsort_gobj_cod,
@@ -81,8 +87,10 @@ class objets_sorts
                         :objsort_nom,
                         :objsort_cout,
                         :objsort_malchance,
+                        :objsort_nb_utilisation_max,
                         :objsort_nb_utilisation,
-                        :objsort_equip_requis                        )
+                        :objsort_equip_requis,
+                        :objsort_parent_cod                        )
     returning objsort_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -92,8 +100,10 @@ class objets_sorts
                 ":objsort_nom" => $this->objsort_nom,
                 ":objsort_cout" => $this->objsort_cout,
                 ":objsort_malchance" => $this->objsort_malchance,
+                ":objsort_nb_utilisation_max" => $this->objsort_nb_utilisation_max,
                 ":objsort_nb_utilisation" => $this->objsort_nb_utilisation,
                 ":objsort_equip_requis" => $this->objsort_equip_requis,
+                ":objsort_parent_cod" => $this->objsort_parent_cod,
             ),$stmt);
 
 
@@ -110,8 +120,10 @@ class objets_sorts
             objsort_nom = :objsort_nom,
             objsort_cout = :objsort_cout,
             objsort_malchance = :objsort_malchance,
+            objsort_nb_utilisation_max = :objsort_nb_utilisation_max,
             objsort_nb_utilisation = :objsort_nb_utilisation,
-            objsort_equip_requis = :objsort_equip_requis                        where objsort_cod = :objsort_cod ";
+            objsort_equip_requis = :objsort_equip_requis,
+            objsort_parent_cod = :objsort_parent_cod                        where objsort_cod = :objsort_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objsort_cod" => $this->objsort_cod,
@@ -121,8 +133,10 @@ class objets_sorts
                 ":objsort_nom" => $this->objsort_nom,
                 ":objsort_cout" => $this->objsort_cout,
                 ":objsort_malchance" => $this->objsort_malchance,
+                ":objsort_nb_utilisation_max" => $this->objsort_nb_utilisation_max,
                 ":objsort_nb_utilisation" => $this->objsort_nb_utilisation,
                 ":objsort_equip_requis" => $this->objsort_equip_requis,
+                ":objsort_parent_cod" => $this->objsort_parent_cod,
             ),$stmt);
         }
     }
@@ -135,18 +149,41 @@ class objets_sorts
     {
         $retour = array();
         $pdo = new bddpdo;
+
+        // On commence par "ensorceler" les objets sur la base de leur générique (si cela n'avait pas été déjà fait)
+        $req = "insert into objets_sorts(objsort_gobj_cod, objsort_obj_cod, objsort_sort_cod, objsort_nom, objsort_cout, objsort_malchance, objsort_nb_utilisation_max, objsort_nb_utilisation, objsort_equip_requis, objsort_parent_cod)     
+                select null as objsort_gobj_cod, obj_cod objsort_obj_cod, og.objsort_sort_cod, og.objsort_nom, og.objsort_cout, og.objsort_malchance, og.objsort_nb_utilisation_max, 0, og.objsort_equip_requis, og.objsort_cod as objsort_parent_cod
+                from perso_objets
+                join objets on obj_cod=perobj_obj_cod
+                join objets_sorts as og on og.objsort_gobj_cod=obj_gobj_cod
+                left join objets_sorts as oo on oo.objsort_obj_cod=obj_cod and oo.objsort_parent_cod=og.objsort_cod
+                where oo.objsort_cod is null and  perobj_perso_cod=? and perobj_identifie = 'O' and (perobj_equipe='O' or og.objsort_equip_requis=false)
+                ";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array($perso_cod),$stmt);
+
+        // On met a jour les objets enscorcelés si leur générique a été modifiés depuis l'ensorcellement(sauf nb utilisation)
+        $req = "update objets_sorts oo set 
+                objsort_nom=og.objsort_nom, 
+                objsort_cout=og.objsort_cout,
+                objsort_malchance=og.objsort_malchance,
+                objsort_nb_utilisation_max=og.objsort_nb_utilisation_max,
+                objsort_equip_requis=og.objsort_equip_requis
+                from objets_sorts og, perso_objets, objets
+                where oo.objsort_obj_cod=obj_cod and oo.objsort_parent_cod=og.objsort_cod and obj_cod=perobj_obj_cod and og.objsort_gobj_cod=obj_gobj_cod 
+                and  perobj_perso_cod=? and perobj_identifie = 'O' 
+                ";
+        $stmt = $pdo->prepare($req);
+        $pdo->execute(array($perso_cod),$stmt);
+
+        // On ne prend les sorts que sur les objets rééls, pas de générique
         $req = "select objsort_cod from perso_objets
                 join objets_sorts on objsort_obj_cod=perobj_obj_cod
-                where perobj_perso_cod=? and (perobj_equipe='O' or objsort_equip_requis=false)
-                
-                union 
-                
-                select objsort_cod from perso_objets
-                join objets on obj_cod=perobj_obj_cod
-                join objets_sorts on objsort_gobj_cod=obj_gobj_cod
-                where perobj_perso_cod=? and (perobj_equipe='O' or objsort_equip_requis=false)";
+                join sorts on sort_cod=objsort_sort_cod
+                where perobj_perso_cod=? and perobj_identifie = 'O' and (perobj_equipe='O' or objsort_equip_requis=false) and (objsort_nb_utilisation_max>objsort_nb_utilisation or COALESCE(objsort_nb_utilisation_max,0) = 0)
+                order by sort_cout, coalesce(objsort_nom, sort_nom), objsort_obj_cod ";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($perso_cod, $perso_cod),$stmt);
+        $stmt = $pdo->execute(array($perso_cod),$stmt);
         while($result = $stmt->fetch())
         {
             $temp = new objets_sorts;

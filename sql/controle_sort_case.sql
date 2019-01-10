@@ -132,13 +132,30 @@ cout_pa := resultat;
 			and perobj_obj_cod = obj_cod
 			and obj_gobj_cod = gobj_cod
 			and gobj_tobj_cod = 20
+			and not exists (select 1 from transaction where tran_obj_cod = perobj_obj_cod)
 			and obj_sort_cod = num_sort;
 		if not found then
-			code_retour := 'Erreur : Ce sort n''est pas dans un parchemin !';
+			code_retour := 'Erreur : vous ne possédez pas de parchemin contenant ce sort (qui ne soit pas engagé dans une transaction).';
 			return code_retour;
 		end if;
 	end if;
-	if type_lancer > 4 then
+	-- lancement à partir d'un objet
+	if type_lancer = 5 then
+		select into compt_rune perobj_obj_cod from objets_sorts_magie
+    join objets_sorts on objsort_cod=objsortm_objsort_cod
+    join sorts on sort_cod=objsort_sort_cod
+    join objets on obj_cod=objsort_obj_cod
+    join perso_objets on perobj_obj_cod=obj_cod and perobj_perso_cod=objsortm_perso_cod
+    where objsortm_perso_cod = lanceur
+      and sort_cod = num_sort
+      and perobj_identifie = 'O'
+      and (objsort_nb_utilisation_max>objsort_nb_utilisation or COALESCE(objsort_nb_utilisation_max,0) = 0)
+      and not exists (select 1 from transaction where tran_obj_cod = perobj_obj_cod);
+		if not found then
+			code_retour := 'Erreur : l''objet ne doit pas engagé dans une transaction ou il ne dispose plus de charge.';			return code_retour;
+		end if;
+	end if;
+	if type_lancer > 5 then
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
@@ -164,8 +181,8 @@ cout_pa := resultat;
 		code_retour := 'Erreur : Vous ne pouvez pas lancer le sort surun mur !';
 		return code_retour;
 	end if;
--- on vérifie que le sort ait pas déjà été lancé plusieurs fois
-	if type_lancer <3 then
+-- sauf pour la magie divine on vérifie que le sort ait pas déjà été lancé plusieurs fois
+	if type_lancer != 3 then
 		if not exists (select 1 from perso_nb_sorts
 			where pnbs_perso_cod = lanceur
 			and pnbs_sort_cod = num_sort) then

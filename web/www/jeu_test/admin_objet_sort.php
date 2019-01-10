@@ -34,7 +34,7 @@ include_once '../includes/tools.php';
                    $("#objsort_nom").val(data.objsort_nom ? data.objsort_nom : "");
                    $("#objsort_cout").val(data.objsort_cout ? data.objsort_cout : "");
                    $("#objsort_malchance").val(data.objsort_malchance ? data.objsort_malchance : "0");
-                   $("#objsort_nb_utilisation").val(data.objsort_nb_utilisation ? data.objsort_cod : "");
+                   $("#objsort_nb_utilisation_max").val(data.objsort_nb_utilisation_max ? data.objsort_nb_utilisation_max : "");
                    $("#objsort_equip_requis").val((!data.objsort_equip_requis || data.objsort_equip_requis =='false') ? 'N' : 'O');
                }
             });
@@ -96,13 +96,15 @@ if ($erreur == 0)
                 // Cas d'une creation/modification
                 $clone_os = clone $objsorts;
 
+                $objsorts->objsort_parent_cod = null ;
                 $objsorts->objsort_gobj_cod = 1*(int)$_REQUEST["objsort_gobj_cod"];
                 $objsorts->objsort_obj_cod = null ;
                 $objsorts->objsort_sort_cod = 1*(int)$_REQUEST["objsort_sort_cod"];
                 $objsorts->objsort_nom = $_REQUEST["objsort_nom"]=='' ? null : $_REQUEST["objsort_nom"] ;
                 $objsorts->objsort_cout = $_REQUEST["objsort_cout"]=='' ? null : 1*(int)$_REQUEST["objsort_cout"];
                 $objsorts->objsort_malchance = $_REQUEST["objsort_malchance"]=='' ? 0 : 1*(float)$_REQUEST["objsort_malchance"];
-                $objsorts->objsort_nb_utilisation = $_REQUEST["objsort_nb_utilisation"]=='' ? null : 1*(int)$_REQUEST["objsort_nb_utilisation"];
+                $objsorts->objsort_nb_utilisation_max = $_REQUEST["objsort_nb_utilisation_max"]=='' ? null : 1*(int)$_REQUEST["objsort_nb_utilisation_max"];
+                $objsorts->objsort_nb_utilisation = 0 ;
                 $objsorts->objsort_equip_requis = $_REQUEST["objsort_equip_requis"]=="O" ? "true" : "false" ;
                 $objsorts->stocke($new);
 
@@ -153,7 +155,7 @@ if ($erreur == 0)
                 <tr><td>Nom du sort :</td><td><input type="text" id="objsort_nom" name="objsort_nom" size="50">&nbsp;<em> si vide, le nom réel du sort sera utilisé</em></td></tr>
                 <tr><td>Cout (en PA) :</td><td><input type="text" id="objsort_cout" name="objsort_cout" size="2">&nbsp;<em> si vide, le cout réel du sort sera utilisé</em></td></tr>
                 <tr><td>Malchance :</td><td><input type="text" id="objsort_malchance" name="objsort_malchance" size="3">&nbsp;<em> au format 99.99 c\'est le % d\'échec possible (0 ou vide = toujours réussi)</em></td></tr>
-                <tr><td>Nb Utilisation :</td><td><input type="text" id="objsort_nb_utilisation" name="objsort_nb_utilisation" size="2">&nbsp;<em> nombre d\'utilisation possible (illimité si vide)</em></td></tr>
+                <tr><td>Nb Utilisation :</td><td><input type="text" id="objsort_nb_utilisation_max" name="objsort_nb_utilisation_max" size="2">&nbsp;<em> nombre d\'utilisation possible (illimité si vide)</em></td></tr>
                 <tr><td>Equip. requis :</td><td>'.create_selectbox("objsort_equip_requis", array("O"=>"Oui","N"=>"Non"), 'N', array("id"=>"objsort_equip_requis")).'&nbsp;<em> l\'objet doit-t-il être quipé pour pourvoir utiliser le sort?</em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                 </table>
@@ -179,11 +181,11 @@ if ($erreur == 0)
                 $sort->charge($os->objsort_sort_cod);
                 echo "<tr id='sortlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetSort({$k}, {$os->objsort_cod});'></td>
                       <td>{$os->objsort_cod}</td>
-                      <td>{$os->objsort_sort_cod} ({$sort->sort_nom}) </td>
-                      <td>".( $os->objsort_nom=="" ? $sort->sort_nom : $os->objsort_nom)."</td>
-                      <td>".( $os->objsort_count=="" ? $sort->sort_cout : $os->objsort_count)." PA</td>
+                      <td>{$os->objsort_sort_cod} ({$sort->sort_nom} - {$sort->sort_cout}PA) </td>
+                      <td>".$os->getNom()."</td>
+                      <td>".$os->getCout()." PA</td>
                       <td>{$os->objsort_malchance}</td>
-                      <td>{$os->objsort_nb_utilisation}</td>
+                      <td>{$os->objsort_nb_utilisation_max}</td>
                       <td>".( $os->objsort_equip_requis ? "O" : "N" )."</td></tr>";
             }
             echo "</table>";
