@@ -26,7 +26,7 @@ begin
   get diagnostics test = row_count;
   code_retour := trim(to_char(test,'9999999'))||' évènements supprimés, ';
   test := 0;
-  for ligne in select * from perso where perso_actif = 'N' and not exists	(select 1 from ligne_evt where (levt_perso_cod1 = perso_cod or levt_attaquant = perso_cod or levt_cible = perso_cod)) loop
+  for ligne in select * from perso where perso_actif = 'N' and (perso_type_perso!=3 or perso_der_connex<now()-'1 year'::interval) and not exists	(select 1 from ligne_evt where (levt_perso_cod1 = perso_cod or levt_attaquant = perso_cod or levt_cible = perso_cod)) loop
     test_t :=  efface_perso(ligne.perso_cod);
     test := test + 1;
   end loop;
