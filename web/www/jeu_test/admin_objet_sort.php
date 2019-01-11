@@ -203,6 +203,12 @@ if ($erreur == 0)
 
 }
 ?>
+    <br> <strong><u>Remarques</u></strong>:<br>
+    * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront ensorcellés<br>
+    * Il y a des objets qui ne peuvent pas être équipé <em>(ce n'est pas contrôlé ici)</em><br>
+    * Les familiers pourront aussi lancer les sorts si l'objet n'a pas besoin d'être équipé<br>
+    * L'IA des monstres ne sait pas utiliser ces objets<br>
     <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php">Retour au modification d'objets génériques</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
