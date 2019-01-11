@@ -40,50 +40,14 @@ if ($type_lance == 0) // runes
         }
     }
 }
-if ($type_lance == 1) // mémorisé
+else
 {
-    $sort_cod = $_REQUEST['sort'];
-    if ($sort_cod == '')
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-    if (!isset($sort_cod))
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-}
-if ($type_lance == 2) // mémorisé
-{
-    $sort_cod = $_REQUEST['sort'];
-    if ($sort_cod == '')
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-    if (!isset($sort_cod))
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-}
-if ($type_lance == 3) // divin
-{
-    $sort_cod = $_REQUEST['sort'];
-    if ($sort_cod == '')
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-    if (!isset($sort_cod))
-    {
-        echo "<p>Erreur sur le sort lancé !";
-        $erreur = 1;
-    }
-}
-if ($type_lance == 4) // parchemin
-{
+    //($type_lance == 1) // mémorisé
+    //($type_lance == 2) // receptacle
+    //($type_lance == 3) // divin
+    //($type_lance == 4) // parchemin
+    //($type_lance == 5) // objets magiques
+
     $sort_cod = $_REQUEST['sort'];
     if ($sort_cod == '')
     {
@@ -113,7 +77,7 @@ if ($erreur == 0)
 
     if ($nb_rec_utl < $nb_rec)
     {
-        if (($type_lance != 3) && ($type_lance != 4))
+        if (($type_lance != 3) && ($type_lance != 4) && ($type_lance != 5))
         {
             echo "<p><a href=\"action.php?methode=receptacle&sort=", $sort_cod, "&type_lance=", $type_lance, "\">Mettre ce sort dans un réceptacle ?</a>";
         }
@@ -128,7 +92,7 @@ if ($erreur == 0)
     /***********************/
     /* E N L U M I N U R E */
     /***********************/
-    if (($type_lance != 3) && ($type_lance != 4))
+    if (($type_lance != 3) && ($type_lance != 4) && ($type_lance != 5))
     {
         $is_enlumineur_niv3 = $db->existe_competence($perso_cod, 93);
         $is_enlumineur_niv2 = $is_enlumineur_niv3 || $db->existe_competence($perso_cod, 92);

@@ -6,21 +6,6 @@ if(!defined("APPEL")) die("Erreur d’appel de page !");
 // Préparation du log
 $log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) ";
 
-// retourne les diference entre 2 objets pour mettre dans le log
-function obj_diff($obj1, $obj2, $texte="")
-{
-    $class_vars = get_class_vars(get_class($obj1));
-    $diff = "" ;
-    // la premère variable est la PK (primary key) on s'en passe
-    $is_pk = true ;
-    foreach ($class_vars as $name => $value) {
-        if ((!$is_pk) && ($obj1->$name!=$obj2->$name)) $diff.= "      {$name} : {$obj1->$name} => {$obj2->$name}\n";
-        $is_pk = false ;
-    }
-    if ($diff!="") $diff = $texte.$diff ;
-    return $diff;
-}
-
 //==================================================================================================================
 // Traitement de données en focntion de la methode
 switch ($methode)

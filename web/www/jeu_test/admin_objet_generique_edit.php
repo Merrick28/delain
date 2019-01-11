@@ -1,7 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+
 ?>
+
     <p class="titre">Édition d’un objet générique</p>
 <?php
 $erreur          = 0;
@@ -214,7 +216,8 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a><br><br><hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
+            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br><a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br><br>
+                    <hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 
             // LISTE DES OBJETS POSSIBLES
             echo '<SCRIPT language="javascript"> var listeBase = new Array();';
@@ -236,16 +239,17 @@ if ($erreur == 0)
                 echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
                 $nb_tobj++;
             }
-            echo '</SCRIPT>			
-            <form name="mod" action="' . $PHP_SELF . '" method="post">
-            <select class="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
-
+            ?>
+            </SCRIPT>
+            <form name="mod" action="<?php echo $PHP_SELF ?>" method="post">
+            <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
+            <?php
             $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
             $db->query($req_tobj);
             while ($db->next_record())
             {
                 $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                echo "<option data-gobj=\"$db->f('tobj_cod')\" value='$tobj_libelle'>$tobj_libelle</option>";
+                echo "<option data-gobj=\"" . $db->f('tobj_cod') . "\" value=\"" . $db->f('tobj_cod') . "\">$tobj_libelle</option>";
             }
 
             echo '
@@ -263,11 +267,11 @@ if ($erreur == 0)
             <input type="hidden" name="methode" value="mod2">
             <select name="gobj_cod" id="gobj" style="width:280px;">';
 
-            $gobj      = new objet_generique();
+            $gobj = new objet_generique();
             $liste_obj = $gobj->getAll();
-            foreach ($liste_obj as $detail_obj)
+            foreach($liste_obj as $detail_obj)
             {
-                echo '<option value="' . $detail_obj->gobj_cod . '">' . $detail_obj->gobj_nom_generique . '</option>';
+                echo '<option value="' . $detail_obj->gobj_cod . '">' . $detail_obj->gobj_nom . '</option>';
             }
 
             echo '</select>
@@ -276,21 +280,13 @@ if ($erreur == 0)
 
 
             // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-            $style_tr        = "display: block;";
-            $param_id        = 0;
-            $row             = 0;
-            $row_id          = "row-$param_id-$row-";
-            $aqelem_misc_nom = "";
+            $row_id = "obj-generique-";
             echo '<form name="mod" action="' . $PHP_SELF . '" method="post"><input type="hidden" name="methode" value="mod2">';
             echo '<br><hr><br><strong>Modification d’un objet existant</strong> (<em>recherche par nom<em>)<br>Code de l\'objet générique :
-                    <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
-                    <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
-                    &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
-                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'>
+                    <input data-entry="val" name="gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'objet_generique\', $(\'#'.$row_id.'misc_cod\').val());">
+                    &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","objet_generique","Rechercher un objet générique");\'>
                     &nbsp;<br><input type="submit" value="Valider" class="test"></form><br><br>';
-
-
             break;
         case "mod2":
             $db2 = new base_delain;
@@ -611,6 +607,17 @@ if ($erreur == 0)
                     </table>
                 </div>
             </form>
+            <?php
+            $objsorts = new objets_sorts();
+            if ($list = $objsorts->getBy_objsort_gobj_cod($gobj_cod))
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' sort(s) rattaché(s): <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a>';
+            }
+            else
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de sort rattaché: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            ?>
 
 
             <?php
@@ -797,11 +804,10 @@ if ($erreur == 0)
             break;
 
     }
-    ?>
-    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
-    <?php
 }
-
+?>
+<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
+<?php
 $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

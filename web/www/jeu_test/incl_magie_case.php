@@ -36,6 +36,7 @@ $y_actuel = $db->f("pos_y");
 	<input type="hidden" name="methode" value="magie_case">
 	<input type="hidden" name="position">
 	<input type="hidden" name="sort_cod" value="<?php  echo $sort_cod; ?>">
+    <input type="hidden" name="objsort_cod" value="<?php echo $objsort_cod; ?>">
 	<input type="hidden" name="type_lance" value="<?php  echo $type_lance ?>">
 </form>
 <?php 
