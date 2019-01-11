@@ -426,6 +426,35 @@ class objet_generique
         }
     }
 
+    /***
+     * Retroune le nombre total d'exemplaire de l'objet générque ainsi que le nombre possédé par les joueurs
+     * @return object
+     * @throws Exception
+     */
+    function getNombreExemplaires()
+    {
+        $retour =  (object) array("total"=>0, "inventaire"=>0);
+
+        $pdo    = new bddpdo;
+        $req    = "select count(*) as total from objets where obj_gobj_cod=:obj_gobj_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":obj_gobj_cod" => $this->gobj_cod), $stmt);
+        if ($result = $stmt->fetch())
+        {
+            $retour->total = $result["total"];
+        }
+
+        $req    = "select count(*) as inventaire from perso_objets join objets on perobj_obj_cod=obj_cod where obj_gobj_cod=:obj_gobj_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":obj_gobj_cod" => $this->gobj_cod), $stmt);
+        if ($result = $stmt->fetch())
+        {
+            $retour->inventaire = $result["inventaire"];
+        }
+
+        return $retour;
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo

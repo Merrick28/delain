@@ -137,7 +137,12 @@ if ($erreur == 0)
     {
         $gobj = new objet_generique();
         $gobj->charge($objsort_gobj_cod);
-        echo "Détail des sorts sur l'objet: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br><br>";
+        echo "Détail des sorts sur l'objet: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+        $exemplaires = $gobj->getNombreExemplaires();
+        echo "Nombre d'exemplaire de l'objet:<br>";
+        echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
+        echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
+        echo "<br>";
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
@@ -198,6 +203,12 @@ if ($erreur == 0)
 
 }
 ?>
+    <br> <strong><u>Remarques</u></strong>:<br>
+    * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
+    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront ensorcellés<br>
+    * Il y a des objets qui ne peuvent pas être équipé <em>(ce n'est pas contrôlé ici)</em><br>
+    * Les familiers pourront aussi lancer les sorts si l'objet n'a pas besoin d'être équipé<br>
+    * L'IA des monstres ne sait pas utiliser ces objets<br>
     <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php">Retour au modification d'objets génériques</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
