@@ -137,7 +137,12 @@ if ($erreur == 0)
     {
         $gobj = new objet_generique();
         $gobj->charge($objsort_gobj_cod);
-        echo "Détail des sorts sur l'objet: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br><br>";
+        echo "Détail des sorts sur l'objet: <strong>#{$gobj->gobj_cod} - {$gobj->gobj_nom}</strong><br>";
+        $exemplaires = $gobj->getNombreExemplaires();
+        echo "Nombre d'exemplaire de l'objet:<br>";
+        echo "&nbsp;&nbsp;&nbsp;Total&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <strong>".$exemplaires->total."</strong><br>";
+        echo "&nbsp;&nbsp;&nbsp;Inventaire : <strong>".$exemplaires->inventaire."</strong> <em style='font-size: x-small'>(possédés par les joueurs, monstres ou PNJ)</em><br>";
+        echo "<br>";
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
