@@ -55,7 +55,7 @@ if ($erreur == 0)
 {
     //echo "<pre>"; print_r($_POST); echo "</pre>";
 
-    if ((!isset($_POST["dupliquer"])) && (!isset($_POST["supprimer"])))
+    if ((!isset($_POST["dupliquer"])) && (!isset($_POST["supprimer"])) && (!isset($_POST["do_supprimer"])))
     {
 
         echo "<table width='100%' class='bordiv'><tr><td><p><strong>DUPLICATION D’ETAGE :</strong></p>
@@ -78,11 +78,9 @@ if ($erreur == 0)
 
     }
 
-    // Menu Supression d'étage----------------------------------------------------------------
-    if (isset($_POST["supprimer"]))
+    // Vérification commune a supprimer et do_supprimer
+    if (isset($_POST["supprimer"]) || isset($_POST["do_supprimer"]))
     {
-        echo "<table width='100%' class='bordiv'><tr><td><p><strong>DUPLICATION D’ETAGE :</strong></p><tr><td>";
-
         $erreur_message = "";
         if (!isset($_POST["etage"]))
         {
@@ -96,13 +94,105 @@ if ($erreur == 0)
             $erreur_message.= "Impossible de charger l'étage à supprimer!!<br>";
         }
 
+        // Compter les persos encore sur l'étage
+        $req ="SELECT count(*) count_total, sum(case when perso_actif='O' then 1 else 0 end) count_actif from perso_position join positions on pos_cod=ppos_pos_cod join perso on perso_cod=ppos_perso_cod
+                      WHERE pos_etage = :pos_etage and perso_type_perso=1 and perso_pnj!=1 ; ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            $erreur_message.= "Impossible de vérifier les perso sur l'étage!!<br>";
+        }
+        else
+        {
+            if ((int)$result["count_total"]>0)
+            {
+                $erreur_message.= "Impossible de supprimer l'étage, il contient encore {$result['count_total']} perso(s) dont {$result['count_actif']} actif(s)!!<br>";
+            }
+        }
+    }
+
+    if (isset($_POST["supprimer"]))
+    {
+        // on s'assure que l'on peut supprimer et l'on demande confirmation
+        echo "<table width='100%' class='bordiv'><tr><td><p><strong>CONFIRMATION SUPPRESSION D’ETAGE :</strong></p><tr><td>";
         if ($erreur_message != "")
         {
             echo "<br><strong>Erreur lors de la suppression d'étage:</strong><br><br>$erreur_message ";
         }
         else
         {
-            // On commence par supprimer les lieux !
+            Echo "Etage # <strong>{$etage->etage_numero}</strong> - <strong>{$etage->etage_libelle}</strong><br><br>";
+            Echo "L'étage contient:<br>";
+            // Compter les monstres encore sur l'étage
+            $req ="SELECT count(*) count_total, sum(case when perso_actif='O' then 1 else 0 end) count_actif from perso_position join positions on pos_cod=ppos_pos_cod join perso on perso_cod=ppos_perso_cod
+                      WHERE pos_etage = :pos_etage and (perso_type_perso=3 or perso_pnj=1); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Monstres ou PNJ: <strong>{$result['count_total']}</strong> dont <strong>".(int)$result['count_actif']."</strong> actif(s)<br>";
+            }
+
+            // Compter les objets encore sur l'étage
+            $req ="SELECT count(*) count_total from objet_position join positions on pos_cod=pobj_pos_cod WHERE pos_etage = :pos_etage ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Objets: <strong>{$result['count_total']}</strong><br>";
+            }
+
+            // Compter l'or
+            $req ="SELECT sum(por_qte) sum_total from or_position join positions on pos_cod=por_pos_cod WHERE pos_etage = :pos_etage ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                Echo "Or: <strong>{$result['sum_total']}</strong> Bz<br>";
+            }
+
+            echo "<br><strong>Voulez-vous vraiment supprimer cet étage?</strong><br><br>
+                <form method='post' action='{$PHP_SELF}'>
+                <input type='hidden' value='do_supprimer' name='do_supprimer' />
+                <input type='hidden' value='{$_POST['etage']}' name='etage' />
+                <input type='submit' value=\"Supprimer l'étage\" class='test'/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"{$PHP_SELF}\"><input type='button' value=\"NON!!!\" class='test'/></a></form>";
+
+        }
+        echo "</td><td></table>";
+
+        echo '<br><div style="text-align:center"><a href="modif_etage3quater.php">Retour à la page de duplication / suppression</a></div>';
+    }
+
+    // Menu Supression d'étage----------------------------------------------------------------
+    if (isset($_POST["do_supprimer"]))
+    {
+        echo "<table width='100%' class='bordiv'><tr><td><p><strong>SUPPRESSION D’ETAGE :</strong></p><tr><td>";
+
+        if ($erreur_message != "")
+        {
+            echo "<br><strong>Erreur lors de la suppression d'étage:</strong><br><br>$erreur_message ";
+        }
+        else
+        {
+            echo "Suppression des monstres et PNJ de l'étage...<br>";
+            $req ="SELECT efface_perso(perso_cod) from perso_position join positions on pos_cod=ppos_pos_cod join perso on perso_cod=ppos_perso_cod
+                      WHERE pos_etage = :pos_etage and (perso_type_perso=3 or perso_pnj=1); ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+
+            echo "Suppression des objets de l'étage...<br>";
+            $req ="SELECT f_del_objet(pobj_obj_cod) from objet_position join positions on pos_cod=pobj_pos_cod WHERE pos_etage = :pos_etage ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+
+            echo "Suppression de l'or de l'étage...<br>";
+            $req ="DELETE from or_position using positions where pos_cod=por_pos_cod and pos_etage = :pos_etage ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":pos_etage" => $etage->etage_numero), $stmt);
+
+            // On poursuit avec la supression des lieux !
             // Boucle sur les lieux à supprimer
             echo "Suppression des lieux de l'étage...<br>";
             $req ="SELECT lieu_cod, lpos_cod from lieu_position 
@@ -121,6 +211,11 @@ if ($erreur == 0)
                 $stmt2   = $pdo->prepare($req);
                 $stmt2   = $pdo->execute(array(":lieu_cod" => $result["lieu_cod"]), $stmt2);
             }
+
+            echo "Suppression de l'automap...<br>";
+            $req ="drop table perso_vue_pos_".$etage->etage_cod.";";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
 
             // On commence par supprimer les murs !
             echo "Suppression des murs de l'étage...<br>";
@@ -270,6 +365,25 @@ if ($erreur == 0)
                       WHERE rmon_etage_cod = :ref_pos_etage; ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(":rmon_etage_cod" => $etage_cod, ":ref_pos_etage" => $etage->etage_numero), $stmt);
+
+            echo "Creation de l'automap...<br>";
+            $req ="create table perso_vue_pos_".$etage_cod." (  pvue_perso_cod INT not null, pvue_pos_cod INT not null )";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
+            $req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT pk_perso_vue_pos_".$etage_cod." PRIMARY KEY (pvue_perso_cod, pvue_pos_cod)";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
+            $req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT fk_pvue_perso_cod".$etage_cod." FOREIGN KEY (pvue_perso_cod) REFERENCES perso (perso_cod) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
+            $req = "ALTER TABLE perso_vue_pos_".$etage_cod." OWNER TO delain;";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
+
+            // Maintenant que les table sont créé ont met à jour l'automap
+            $req = "select init_automap($etage_cod) ";
+            $stmt   = $pdo->prepare($req);
+            $pdo->query($req);
 
             //dupliquer_lieux
             if (isset($_POST["dupliquer_lieux"]))
