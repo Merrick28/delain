@@ -6,31 +6,6 @@ include "blocks/_header_page_jeu.php";
 echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>';                            //Facilité le developpement avec du jquery
 echo '<script src="../scripts/admin_etage_modif3.js"></script>';     // Scripts des traitements des clics dans la map
 
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-    global $db, $compt_cod;
-
-    if ($texte)
-    {
-        $log_sql = false;    // Mettre à true pour le debug des requêtes
-
-        if (!$log_sql || $sql == '')
-            $sql = "\n";
-        else
-            $sql = "\n\t\tRequête : $sql\n";
-
-        $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $db->query($req);
-        $db->next_record();
-        $compt_nom = $db->f("compt_nom");
-
-        $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-        if ($log_sql) echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-        if ($loguer)
-            writelog($en_tete . $texte . $sql, 'lieux_etages');
-    }
-}
-
 //Contenu de la div de droite
 //
 $contenu_page = '';
@@ -247,6 +222,16 @@ if ($erreur == 0)
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(":etage_cod" => $etage->etage_cod), $stmt);
 
+            // Loguer pour le suivi admin
+            $req ="select compt_nom from compte where compt_cod = :compt_cod ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+            $result = $stmt->fetch();
+
+            $log = date("d/m/y - H:i") . "\tCompte ".$result["compt_nom"]." ($compt_cod)\t";
+            $log.= "Suppression de l'étage #{$etage->etage_numero} - {$etage->etage_libelle}";
+            writelog($log, 'lieux_etages');
+
             echo "L'étage a été supprimé.<br>";
         }
         echo "</td><td></table>";
@@ -424,6 +409,16 @@ if ($erreur == 0)
                     $lieu_position->stocke(true);    // Créer nouveau !
                 }
             }
+
+            // Loguer pour le suivi admin
+            $req ="select compt_nom from compte where compt_cod = :compt_cod ; ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
+            $result = $stmt->fetch();
+
+            $log = date("d/m/y - H:i") . "\tCompte ".$result["compt_nom"]." ($compt_cod)\t";
+            $log.= "Duplication de l'étage #{$etage->etage_numero} - {$etage->etage_libelle} vers etage #{$etage_cod} - ".$_POST["etage_libelle"];
+            writelog($log, 'lieux_etages');
 
             echo "L'étage a été dupliqué.<br>";
 
