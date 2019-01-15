@@ -20,11 +20,24 @@ if(!isset($desc_passage))
 
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $nom_lieu = $tab_lieu['nom'];
-    $desc_lieu = $tab_lieu['description'];
-    echo "<p><strong>$nom_lieu</strong><br>$desc_lieu ";
-    echo "<p><a href=\"action.php?methode=passage\">Prendre " . $desc_passage . " ! (" . $param->getparm(13) . " PA)</a></p>";
+
+    if ($type_lieu == 16)
+    {
+        // Cas d'un grand escalier standard
+        $tab_lieu = $db->get_lieu($perso_cod);
+        $nom_lieu = $tab_lieu['nom'];
+        $desc_lieu = $tab_lieu['description'];
+        echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
+        echo("<p><a href=\"valide_grand_escalier_a.php\">Prendre cet escalier ! (" . $param->getparm(43) . " PA)</a></p>");
+    }
+    else
+    {
+        // Cas d'un escalier standard
+        $tab_lieu = $db->get_lieu($perso_cod);
+        $nom_lieu = $tab_lieu['nom'];
+        $desc_lieu = $tab_lieu['description'];
+        echo "<p><strong>$nom_lieu</strong><br>$desc_lieu ";
+        echo "<p><a href=\"action.php?methode=passage\">Prendre " . $desc_passage . " ! (" . $param->getparm(13) . " PA)</a></p>";
+    }
 }
 

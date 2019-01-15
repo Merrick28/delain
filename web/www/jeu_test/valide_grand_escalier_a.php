@@ -118,4 +118,4 @@ if ($erreur == 0) {
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-include "blocks/_header_page_jeu.php";
+include "blocks/_footer_page_jeu.php";
