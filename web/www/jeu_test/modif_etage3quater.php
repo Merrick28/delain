@@ -344,8 +344,8 @@ if ($erreur == 0)
 
             // Duplication de la répartition de monstre
             echo "Duplication de la répartition des monstres...<br>";
-            $req ="INSERT INTO repart_monstre( rmon_cod, rmon_gmon_cod, rmon_etage_cod, rmon_poids, rmon_max)
-                      SELECT rmon_cod, rmon_gmon_cod, :rmon_etage_cod, rmon_poids, rmon_max
+            $req ="INSERT INTO repart_monstre( rmon_gmon_cod, rmon_etage_cod, rmon_poids, rmon_max)
+                      SELECT rmon_gmon_cod, :rmon_etage_cod, rmon_poids, rmon_max
                       FROM repart_monstre  
                       WHERE rmon_etage_cod = :ref_pos_etage; ";
             $stmt   = $pdo->prepare($req);
