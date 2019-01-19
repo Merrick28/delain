@@ -1092,6 +1092,26 @@ class perso
         return $result['cout'];
     }
 
+    function get_nb_sort_memorisable()
+    {
+        $pdo    = new bddpdo;
+        $req    = "SELECT nb_sort_memorisable(:perso) as nb_sort_memorisable";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute( array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['nb_sort_memorisable'];
+    }
+
+    function get_nb_sort_appris()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select count(*) as nb_sorts_appris from perso_sorts where psort_perso_cod = :perso ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute( array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['nb_sorts_appris'];
+    }
+
     function is_fam()
     {
         if ($this->perso_type_perso == 3)
@@ -1568,6 +1588,16 @@ class perso
         $result = $stmt->fetch();
         return $result['prochaine_dlt'];
     }
+    
+    function get_poids()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select get_poids(?) as get_poids";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return (float)$result['get_poids'];
+    }
 
     function is_locked()
     {
@@ -1886,12 +1916,24 @@ class perso
     function passe_niveau($amel)
     {
         $pdo    = new bddpdo();
-        $req
-                = "select f_passe_niveau(:perso,:amel) as resultat";
+        $req    = "select f_passe_niveau(:perso,:amel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod,
             ":amel"  => $amel), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function rituel_modif_caracs($demel, $amel)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_rituel_modif_caracs(:perso,:demel,:amel) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+                                ":perso" => $this->perso_cod,
+                                ":demel"  => $demel,
+                                ":amel"  => $amel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }

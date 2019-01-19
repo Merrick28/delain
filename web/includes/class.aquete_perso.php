@@ -512,7 +512,7 @@ class aquete_perso
             $model_tag = $this->etape_modele->aqetapmodel_tag;
 
             // Vérification du délai d'étape, seuelement pour certaine etape, ce délai s'il existe est TOUJOURS le 1er paramètre--------------
-            if (count($elements) >= 1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
+            if ($elements && sizeof($elements) >= 1 && $elements[0]->aqelem_type == 'delai' && $elements[0]->aqelem_param_num_1 > 0)
             {
                 if ((date("Y-m-d H:i:s") > date("Y-m-d H:i:s", strtotime($this->aqperso_date_debut_etape . " +" . $elements[0]->aqelem_param_num_1 . " DAYS"))))
                 {
