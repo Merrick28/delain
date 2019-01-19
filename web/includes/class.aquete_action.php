@@ -478,6 +478,7 @@ class aquete_action
 
         $pnj = new perso();
         $pnj->charge($p2->aqelem_misc_cod);
+
         $perso = new perso();
         $perso->charge($aqperso->aqperso_perso_cod);
         $nbobj = $p3->aqelem_param_num_1 ;
@@ -503,6 +504,7 @@ class aquete_action
         $stmt = $pdo->execute(array(  ":tran_acheteur"=> $pnj->perso_cod, ":tran_vendeur" => $aqperso->aqperso_perso_cod ), $stmt);
 
         $t = 0; // compteur de transaction
+        $poids_transaction = 0 ;
         while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
         {
             $tran_quantite = (1*$result["tran_quantite"]) == 0 ? 1 : (1*$result["tran_quantite"])  ;
@@ -520,6 +522,7 @@ class aquete_action
                     $t ++ ;
                     unset($exemplaires[$k]);            // plus besoin de chercher celui-la
                     $tran_quantite -- ;
+                    $poids_transaction += $objet->obj_poids ;
                     break;
                 }
             }
@@ -538,6 +541,7 @@ class aquete_action
                         $liste_transaction[$t]["element"] = clone $elem ;   // garder une trace de l'élément corespondant
                         $t ++ ;
                         $tran_quantite -- ;
+                        $poids_transaction += $objet->obj_poids ;
                         $flag = true ;          // tant qu'on trouve on cherche
                         break;
                     }
@@ -548,6 +552,9 @@ class aquete_action
         // Si on demande plus d'objet qu'il y a de générique, il faut vérifier si on a un exemplaire de chaque
         if (($nbobj > $nbgenerique) && (count($exemplaires)>0)) return false;        // on a pas un exemplaire de chaque objet!
         if (count($liste_transaction)<$nbobj) return false;                          // tous les objets attendus ne sont pas là!
+
+        // Vérification du poids des ojets à transférer
+        if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
 
         // Il faut maintenant prendre les objets
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
@@ -561,7 +568,15 @@ class aquete_action
             $req = "select accepte_transaction(:tran_cod) as resultat; ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array( ":tran_cod" => 1*$transac["tran_cod"]), $stmt);
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (!$result = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                return false; // un problème lors de l'execution de la requete
+            }
+            $r = explode(";", $result["resultat"]);
+            if ((int)$r[0]!=0)
+            {
+                return false; // un problème lors du transfert, le perso est peut-$etre trop chargé pour prendre plus d'objet
+            }
 
             // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
             $elem = $transac["element"];
@@ -616,15 +631,16 @@ class aquete_action
         $liste_generique ="" ;
 
         // On commence par chercher un exeplaire de chaque.
+        $poids_transaction = 0 ;
         foreach ($p4 as $k => $elem)
         {
             if ($elem->aqelem_type == "objet")
             {
-                $req = "select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_cod = ? order by random()";
+                $req = "select obj_cod, obj_poids from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_cod = ? order by random()";
             }
             else
             {
-                $req = "select obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod = ? order by random() limit 1";
+                $req = "select obj_cod, obj_poids from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod = ? order by random() limit 1";
                 $liste_generique .= $elem->aqelem_misc_cod . ",";
             }
             $stmt   = $pdo->prepare($req);
@@ -633,6 +649,7 @@ class aquete_action
             {
                 $liste_objet .= $result["obj_cod"] . "," ;
                 $liste_echange[] = 1*$result["obj_cod"];
+                $poids_transaction += (float)$result["obj_poids"] ;
             }
             if (count($liste_echange)==$nbobj) break;   // On en a assez!
         }
@@ -643,7 +660,7 @@ class aquete_action
             $nb = ($nbobj-$nbgenerique);                                         // nombre restant à prendre parmis les génériques
             $liste_generique = substr($liste_generique,0,-1);       // On retire les vigules finales
             $liste_objet = substr($liste_objet,0,-1);               // On retire les vigules finales
-            $req = "select obj_cod 
+            $req = "select obj_cod, obj_poids 
                     from perso_objets 
                     join objets on obj_cod = perobj_obj_cod 
                     where perobj_perso_cod = ? 
@@ -655,10 +672,14 @@ class aquete_action
             while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
             {
                 $liste_echange[] = 1*$result["obj_cod"];
+                $poids_transaction += (float)$result["obj_poids"] ;
             }
         }
 
         if (count($liste_echange)<$nbobj) return false;       //il en manque !
+
+        // Vérification du poids des ojets à transférer
+        if (($pnj->get_poids() + $poids_transaction) > (3 * $pnj->perso_enc_max))  return false; // un problème de surcharge du PNJ
 
         // Il faut maintenant prendre les objets
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
