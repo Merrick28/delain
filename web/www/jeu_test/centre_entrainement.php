@@ -14,6 +14,8 @@ if ($erreur == 0)
 	<br>Au delà d'une certaine expertise dans votre compétence, nous ne pourrons plus vous aider. Il faudra vous entrainer en conditions réelles<br /><br />");
 	$req_typc = "select typc_cod,typc_libelle from type_competences where typc_cod in (2,6,7,8,19) ";
 
+    echo "<p>Le maître des lieux est disponible pour ceux qui veulent modifier leurs compétences physiques ou magiques.<br>Nous n'offrons aucune garantie quand au résultat. Cela vous intéresse tout de même ?<br>Veuillez donc rentrer dans la <a href=\"centre_modif_carac.php\">salle spéciale...</a><br><br>";
+
 	$db->query($req_typc);
 	?>
 	<form name="amelioration_comp" method="post" action="amel_centre_entrainement.php">

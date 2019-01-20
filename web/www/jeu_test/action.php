@@ -671,6 +671,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
         case 'vote_guilde':
             $contenu_page .= $perso->vote_revolution($_POST['revguilde_cod'], $_POST['vote']);
             break;
+        case 'rituel_modif_caracs':
+            if (((int)$_POST['diminution']<=0) || ((int)$_POST['amelioration']<=0))
+            {
+                $contenu_page .= "Pour faire le rituel, vous devez choisir les 2 caractéristiques!<br><br>";
+            }
+            else
+            {
+                $contenu_page .= $perso->rituel_modif_caracs((int)$_POST['diminution'],(int)$_POST['amelioration']);
+            }
+            $contenu_page .= '<a href="frame_vue.php" class="centrer">Retour</a>';
+            break;
         case 'passe_niveau':
             $contenu_page .= $perso->passe_niveau($_POST['amelioration']);
             $contenu_page .= '<a href="index.php" class="centrer">Retour</a>';
