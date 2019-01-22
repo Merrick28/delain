@@ -622,7 +622,7 @@ if ($erreur == 0)
             }
             else
             {
-                echo "Vous avez déjà réalisé ce rituel, la dernière fois c'était le ".date("d/m/Y",strtotime($perso_rituel_caracs->prcarac_date_rituel)) ."<br>";
+                echo "Vous avez déjà réalisé ce rituel <strong>".$perso_rituel_caracs->get_nb_rituel($perso_cod)."</strong> fois, la dernière fois c'était le <strong>".date("d/m/Y",strtotime($perso_rituel_caracs->prcarac_date_rituel)) ."</strong><br>";
             }
             echo "Vous diposez de <strong>{$perso_nb_obj}</strong> {$objet_generique->gobj_nom} et <strong>{$perso_nb_bz}</strong> Bz<br><br>";
 

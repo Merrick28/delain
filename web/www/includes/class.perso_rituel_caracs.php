@@ -173,6 +173,22 @@ class perso_rituel_caracs
         return true;
     }
 
+    /***
+     * @param $perso_cod
+     * @return int
+     * @throws Exception
+     */
+    function get_nb_rituel($perso_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select count(*) nb_rituel from perso_rituel_caracs where prcarac_perso_cod=:perso_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod),$stmt);
+        $result = $stmt->fetch();
+
+        return (int) $result["nb_rituel"];
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
