@@ -680,7 +680,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             {
                 $contenu_page .= $perso->rituel_modif_caracs((int)$_POST['diminution'],(int)$_POST['amelioration']);
             }
-            $contenu_page .= '<a href="frame_vue.php" class="centrer">Retour</a>';
+            $contenu_page .= '<br><a href="frame_vue.php" class="centrer">Retour</a>';
             break;
         case 'passe_niveau':
             $contenu_page .= $perso->passe_niveau($_POST['amelioration']);

@@ -69,6 +69,7 @@ declare
     v_nb_sort integer;
     v_nb_sort_memo integer;
     v_nb_sort_memo_max integer;
+    v_nb_receptacle integer;
     v_int integer;
     v_con integer;
     v_dex integer;
@@ -229,7 +230,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
         else
             temp :=1 ;
         end if;
-        if (v_nb_sort_memo_max - temp)<v_nb_sort_memo_max then
+        if (v_nb_sort_memo_max - temp)<v_nb_sort_memo then
           v_resultat.code_retour := '<p>Vous avez déjà appris trop de sorts pour baisser cette caractéristique !';
           v_resultat.etat := -1 ;
           return v_resultat;
@@ -547,7 +548,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             v_resultat.etat := -1 ;
             return v_resultat;
         end if;
-        select into compt perso_nb_amel_comp from perso where perso_cod = personnage and perso_nb_receptacle >0 ;
+        select into v_nb_receptacle perso_nb_receptacle from perso where perso_cod = personnage and perso_nb_receptacle >0 ;
         if not found then
             v_resultat.code_retour := 'Erreur ! Vous ne possèdez pas de réceptacle !';
             v_resultat.etat := -1 ;
@@ -558,6 +559,11 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             where perso_cod = personnage;
         -- on met le recept
         update perso set perso_nb_receptacle = perso_nb_receptacle - 1 where perso_cod = personnage;
+        -- si on a trop de récéptacle rempli, on en supprime 1 au hazard
+        select into compt count(*) from recsort where recsort_perso_cod = personnage;
+        if compt>=v_nb_receptacle then
+          delete from recsort where recsort_cod in ( select recsort_cod from  recsort where recsort_perso_cod = personnage order by random() limit 1) ;
+        end if;
     elsif amel = 20 then
         v_resultat.code_retour := '<p>Cette amélioration n''existe plus !';
         v_resultat.etat := -1 ;

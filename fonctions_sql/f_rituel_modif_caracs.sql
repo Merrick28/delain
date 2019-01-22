@@ -93,7 +93,7 @@ begin
         perform release('f_modif_carac');
         return code_retour;
     end if;
-/*
+
     --------------------------------------------------
     -- réalise la détérioration de caracs
     --------------------------------------------------
@@ -128,7 +128,7 @@ begin
     texte_evt := 'Rituel de transformation, option améliorée : '||trim(to_char(amel,'999999'));
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
             values(nextval('seq_levt_cod'),-1,now(),1,personnage,texte_evt,'O','N');
-*/
+
     --------------------------------------------------
     -- tout semble correct, le rituel a été fait
     -- 1 détérioration au profit d'1 amélioration
@@ -136,7 +136,7 @@ begin
     update perso set perso_po = perso_po - getparm_n(137) where perso_cod = personnage;
 
     -- suppression des objets qui ont servit au rituel
-		select into temp  f_del_objet(perobj_obj_cod)
+		perform f_del_objet(obj_cod)
         from perso_objets join objets on obj_cod = perobj_obj_cod
         where perobj_perso_cod = personnage and obj_gobj_cod = getparm_n(135)
         limit getparm_n(136);
