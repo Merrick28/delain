@@ -17,8 +17,10 @@ if ($erreur == 0)
 {
 	echo("<p>Vous entrez dans un centre de maitrise magique. Vous pourrez ici améliorer votre connaissance de la magie, moyennant finances, bien sur...");
 	$req_typc = "select typc_cod,typc_libelle from type_competences where typc_cod = 5 ";
-	
-	$db->query($req_typc);
+
+    echo "<br><br><p>La maîtresse des lieux est disponible pour ceux qui veulent modifier leurs compétences physiques ou magiques.<br>Nous n'offrons aucune garantie quand au résultat. Cela vous intéresse tout de même ?<br>Veuillez donc rentrer dans la <a href=\"centre_modif_carac.php\">salle spéciale...</a><br><br>";
+
+$db->query($req_typc);
 	?>
 	<form name="amelioration_comp" method="post" action="amel_centre_entrainement_magie.php">
 	<input type="hidden" name="comp_cod">

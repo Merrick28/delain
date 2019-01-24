@@ -46,6 +46,12 @@ class perso_objets
         return true;
     }
 
+    /***
+     * @param $perso
+     * @param $objet
+     * @return bool
+     * @throws Exception
+     */
     function getByPersoObjet($perso, $objet)
     {
         $pdo  = new bddpdo;
@@ -63,7 +69,36 @@ class perso_objets
             return false;
         }
         return $this->charge($result['perobj_cod']);
+    }
 
+    /***
+     * @param $perso
+     * @param $objet_generique
+     * @return bool
+     * @throws Exception
+     */
+    function getByPersoObjetGenerique($perso, $objet_generique)
+    {
+        $retour = array();
+
+        $pdo  = new bddpdo;
+        $req  = "select perobj_cod
+						from perso_objets join objets on obj_cod = perobj_obj_cod
+						where perobj_perso_cod = :perso
+						and obj_gobj_cod = :objet_generique";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":perso" => $perso,
+            ":objet_generique" => $objet_generique
+        ), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso_objets;
+            $temp->charge($result["perobj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
     }
 
     /**
