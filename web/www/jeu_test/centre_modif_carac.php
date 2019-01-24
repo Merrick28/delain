@@ -198,8 +198,8 @@ if ($erreur == 0)
                 echo "Le rituel est sur le point de commencer, voici ce qu'il va vous arriver si vous poursuivez:<br><br> ";
                 echo "<form name=\"niveau\" action=\"action.php\" method=\"post\">" ;
                 echo "<input type=\"hidden\" name=\"methode\" value=\"rituel_modif_caracs\">";
-                echo "<input type=\"hidden\" name=\"diminution\" value=\"".$_POST['diminution']."<\">";
-                echo "<input type=\"hidden\" name=\"amelioration\" value=\"".$_POST['amelioration']."<\">";
+                echo "<input type=\"hidden\" name=\"diminution\" value=\"".$_POST['diminution']."\">";
+                echo "<input type=\"hidden\" name=\"amelioration\" value=\"".$_POST['amelioration']."\">";
 
                 echo $_POST['texte_diminution'][$_POST['diminution']]."<br>";
                 echo $_POST['texte_amelioration'][$_POST['amelioration']]."<br><br>";

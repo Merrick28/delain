@@ -53,6 +53,13 @@ begin
     -- On rend la fonction atomique, pour éviter les problèmes de double clic.
     perform guard('f_modif_carac'); -- Ne pas oublier le perform release à chaque branche de sortie de fonction !
 
+    if demel<=0 or demel>30 or amel<=0 or amel>30 then
+        code_retour := '<p>Les caractéristiques modifiées ne sont pas conformes!';
+        perform release('f_modif_carac');
+        return code_retour;
+    end if;
+
+
     -- on verifie que le service de rituel est bien configuré comme ouvert!
     if getparm_t(139) <> 'O' then
         code_retour := '<p>L''officine est fermée, le rituel n''est pas faisable actuellement!';
