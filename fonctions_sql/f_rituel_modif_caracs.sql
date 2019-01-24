@@ -53,8 +53,15 @@ begin
     -- On rend la fonction atomique, pour éviter les problèmes de double clic.
     perform guard('f_modif_carac'); -- Ne pas oublier le perform release à chaque branche de sortie de fonction !
 
-  -- Un minimum de vérification (cout nécéssaire etc...) !!!
-  -- d'abord on le perso
+    -- on verifie que le service de rituel est bien configuré comme ouvert!
+    if getparm_t(139) <> 'O' then
+        code_retour := '<p>L''officine est fermée, le rituel n''est pas faisable actuellement!';
+        perform release('f_modif_carac');
+        return code_retour;
+    end if;
+
+    -- Un minimum de vérification (cout nécéssaire etc...) !!!
+    -- d'abord on le perso
     select into v_perso_po
             perso_po
         from perso

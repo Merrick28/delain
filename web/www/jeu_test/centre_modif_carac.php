@@ -2,8 +2,8 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
-$type_lieu = 6;
-$nom_lieu = 'un centre d\'entraînement';
+$type_lieu = array(6, 13);      // 6=centre d'entrainement 13=centre d'entrainement magie
+$nom_lieu = 'arrrière boutique du centre d\'entraînement';
 
 include "blocks/_test_lieu.php";
 
@@ -127,12 +127,13 @@ if ($erreur == 0)
     $cout_obj = $param->getparm(136);       // nombre d'ojets à rammener (initialement 20)
     $cout_bz = $param->getparm(137);        // nombre de bz à rammener (initialement 1000)
     $nb_jour = $param->getparm(138);        // nombre jour devant spéparer deux utilisations (initialement 365)
+    $boutique_ouverte = $param->getparm(139);        // Boutique ouverte
 
     $objet_generique = new objet_generique();  // LE type d'objet (monnaie) de l'interface
     $objet_generique->charge( $obj_rituel ) ;
 
 
-    if (!$perso || !$objet_generique)
+    if ((!$perso || !$objet_generique) || ($boutique_ouverte!='O'))
     {
         echo "L'officine est fermée, revenez un autre jour!!<br>";
     }

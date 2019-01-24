@@ -2,7 +2,8 @@ INSERT INTO public.parametres(parm_type, parm_desc, parm_valeur, parm_valeur_tex
 ( 'Integer', 'Code de l''objet générique nécéssaire pour l''interface de modification de caracs.', 997, null),
 ( 'Integer', 'Nombre d''objet à rammener pour utiliser l''interface de modification de caracs.', 20, null),
 ( 'Integer', 'Cout en brouzoufs (en plus des objets) pour utiliser l''interface de modification de caracs.', 1000, null),
-( 'Integer', 'Nombre de jours devant spérarer l''utilisation successive de l''interface de modification de caracs.', 365, null);
+( 'Integer', 'Nombre de jours devant spérarer l''utilisation successive de l''interface de modification de caracs.', 365, null),
+( 'Text', 'Ouvrir l''interface de modification de caracs (O/N)?', null, 'N');
 
 
 CREATE SEQUENCE public.seq_prcarac_cod
