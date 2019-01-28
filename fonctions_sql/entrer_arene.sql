@@ -34,17 +34,18 @@ declare
 	v_pa integer;
 	v_new_pos integer;
 	v_tangible text;
-        v_type_perso integer;
-        v_level_max integer;
-        v_level_perso integer;
+  v_type_perso integer;
+  v_level_max integer;
+  v_level_min integer;
+  v_level_perso integer;
 	v_familier integer;
-        texte_evt text;
-        texte_fuite text;
+  texte_evt text;
+  texte_fuite text;
 
-        -- Ajouté pour l anim
-        imp_actif integer; -- 1 = Impalpable ON
-        imp_nbtour integer; -- Nombre de tour impalpable
-        fam_actif integer; -- familier actif paramétré pour l'étage ou non
+  -- Ajouté pour l anim
+  imp_actif integer; -- 1 = Impalpable ON
+  imp_nbtour integer; -- Nombre de tour impalpable
+  fam_actif integer; -- familier actif paramétré pour l'étage ou non
 
 begin
 
@@ -74,7 +75,7 @@ if v_type_perso = 3 then
 end if;
 
 -- on vérifie que le perso peut entrer dans l'arène en fonction de son niveau
-select into v_level_max carene_level_max from carac_arene
+select into v_level_max, v_level_min COALESCE(carene_level_max,0), COALESCE(carene_level_min,0) from carac_arene
 where carene_etage_numero = v_etage;
 
 if v_level_max > 0 then
@@ -83,6 +84,16 @@ if v_level_max > 0 then
 
    if v_level_perso > v_level_max then
         return '1;Vous ne pouvez pas entrer dans l''arène car votre niveau est trop élevé.';
+   end if;
+
+end if;
+
+if v_level_min > 0 then
+   select into v_level_perso perso_niveau from perso
+   where perso_cod = v_perso;
+
+   if v_level_perso < v_level_min then
+        return '1;Vous ne pouvez pas entrer dans l''arène car votre niveau est trop faible.';
    end if;
 
 end if;

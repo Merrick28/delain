@@ -70,13 +70,14 @@ if ($erreur == 0)
 
             <?php
             echo("<table cellspacing=\"2\" cellpadding=\"2\">");
-            echo("<tr><td class=\"soustitre2\" colspan=\"4\"><p style=\"text-align:center;\">Répartition par arène : </td></tr>");
+            echo("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par arène : </td></tr>");
             echo("<tr><td class=\"soustitre2\"><p>Arène</td>
 			<td class=\"soustitre2\"><p>Personnages</td>
 			<td class=\"soustitre2\"><p>Niveau moyen</td>
+			<td class=\"soustitre2\"><p>Niveau minimum</td>
 			<td class=\"soustitre2\"><p>Niveau maximum</td>
 			</tr>");
-            $req = "select etage_libelle, carene_level_max, ";
+            $req = "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
             $req = $req . "(select count(parene_perso_cod) from perso_arene ";
             $req = $req . " where parene_etage_numero = etage_numero) as joueur,";
             $req = $req . "(select sum(perso_niveau) from perso, perso_arene ";
@@ -103,6 +104,8 @@ if ($erreur == 0)
 				<td><p>" . ($db->f("joueur") != 0 ?
                         round($db->f("jnv") / $db->f("joueur"), 0) :
                         0) . "</td>
+				<td><p>" . ($db->f("carene_level_min") != 0 ?
+                        $db->f("carene_level_min") : 'Tous niveaux') . "</td>
 				<td><p>" . ($db->f("carene_level_max") != 0 ?
                         $db->f("carene_level_max") : 'Tous niveaux') . "</td></tr>";
 

@@ -27,6 +27,7 @@ declare
 	v_tangible text;
   v_type_perso integer;
   v_level_max integer;
+  v_level_min integer;
   v_level_perso integer;
 	v_familier integer;
 	v_etage integer;
@@ -42,8 +43,8 @@ begin
 /* on vérifie que le perso à les droits de rentrer */
 /***************************************************/
 
-select into v_pa, v_tangible, v_type_perso, v_level_perso, v_pos_depart, v_preg_pos_cod, v_level_max, v_etage
-    perso_pa, perso_tangible, perso_type_perso, perso_niveau, ppos_pos_cod, preg_pos_cod, carene_level_max, pos_etage
+select into v_pa, v_tangible, v_type_perso, v_level_perso, v_pos_depart, v_preg_pos_cod, v_level_max, v_level_min, v_etage
+    perso_pa, perso_tangible, perso_type_perso, perso_niveau, ppos_pos_cod, preg_pos_cod, COALESCE(carene_level_max,0), COALESCE(carene_level_min,0), pos_etage
     from perso
     join perso_position on ppos_perso_cod=perso_cod
     join perso_registre on preg_perso_cod=perso_cod
@@ -72,6 +73,12 @@ end if;
 if v_level_max > 0 then
    if v_level_perso > v_level_max then
         return '1;Vous ne pouvez pas entrer dans l''arène car votre niveau est trop élevé.';
+   end if;
+end if;
+
+if v_level_min > 0 then
+   if v_level_perso < v_level_min then
+        return '1;Vous ne pouvez pas entrer dans l''arène car votre niveau est trop faible.';
    end if;
 end if;
 
