@@ -37,7 +37,7 @@ include "../includes/constantes.php";
         $db->query($req);
         $db->next_record();
         $lieu_cod = $db->f("lpos_lieu_cod");
-        $etage_cod = $db->f("pos_etage");
+        $etage_numero = $db->f("pos_etage");
         $pos_cod = $db->f("pos_cod");
         switch ($methode) {
             case "entrer_donjon":
@@ -73,7 +73,7 @@ include "../includes/constantes.php";
 			<td class=\"soustitre2\"><p>Niveau minimum</td>
 			<td class=\"soustitre2\"><p>Niveau maximum</td>
 			</tr>");
-                $req = "select etage_libelle, coalese(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
+                $req = "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
                 $req = $req . "(select count(parene_perso_cod) from perso_arene ";
                 $req = $req . " where parene_etage_numero = etage_numero) as joueur,";
                 $req = $req . "(select sum(perso_niveau) from perso, perso_arene ";
