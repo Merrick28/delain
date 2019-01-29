@@ -70,18 +70,19 @@ if ($erreur == 0)
 
             <?php
             echo("<table cellspacing=\"2\" cellpadding=\"2\">");
-            echo("<tr><td class=\"soustitre2\" colspan=\"4\"><p style=\"text-align:center;\">Répartition par arène : </td></tr>");
+            echo("<tr><td class=\"soustitre2\" colspan=\"5\"><p style=\"text-align:center;\">Répartition par arène : </td></tr>");
             echo("<tr><td class=\"soustitre2\"><p>Arène</td>
 			<td class=\"soustitre2\"><p>Personnages</td>
 			<td class=\"soustitre2\"><p>Niveau moyen</td>
+			<td class=\"soustitre2\"><p>Niveau minimum</td>
 			<td class=\"soustitre2\"><p>Niveau maximum</td>
 			</tr>");
-            $req = "select etage_libelle, carene_level_max, ";
-            $req = $req . "(select count(parene_perso_cod) from perso_arene ";
+            $req = "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
+            $req = $req . "(select count(parene_perso_cod) from perso_arene join perso on perso_cod=parene_perso_cod and perso_actif='O' ";
             $req = $req . " where parene_etage_numero = etage_numero) as joueur,";
             $req = $req . "(select sum(perso_niveau) from perso, perso_arene ";
             $req = $req . "where parene_etage_numero = etage_numero ";
-            $req = $req . "and parene_perso_cod = perso_cod ) as jnv, ";
+            $req = $req . "and parene_perso_cod = perso_cod and perso_actif='O') as jnv, ";
             $req = $req . "filtre_entree_arene.nb_entree as nb_entree_arene ";
             $req = $req . "from etage, carac_arene, ";
             $req = $req . "(select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene ";
@@ -103,6 +104,8 @@ if ($erreur == 0)
 				<td><p>" . ($db->f("joueur") != 0 ?
                         round($db->f("jnv") / $db->f("joueur"), 0) :
                         0) . "</td>
+				<td><p>" . ($db->f("carene_level_min") != 0 ?
+                        $db->f("carene_level_min") : 'Tous niveaux') . "</td>
 				<td><p>" . ($db->f("carene_level_max") != 0 ?
                         $db->f("carene_level_max") : 'Tous niveaux') . "</td></tr>";
 

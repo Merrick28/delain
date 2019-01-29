@@ -335,8 +335,8 @@ if ($erreur == 0)
 
             // Duplication des caracs d'arènes (si c'est le cas)
             echo "Duplication des caracs d'arène (si c'est le cas)...<br>";
-            $req ="INSERT INTO carac_arene( carene_etage_numero, carene_level_max, carene_ouverte)
-                      SELECT :carene_etage_numero, carene_level_max, carene_ouverte
+            $req ="INSERT INTO carac_arene( carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte)
+                      SELECT :carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte
                       FROM carac_arene  
                       WHERE carene_etage_numero = :ref_pos_etage; ";
             $stmt   = $pdo->prepare($req);

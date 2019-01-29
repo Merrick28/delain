@@ -1,5 +1,6 @@
 <?php
-die('Fichier non utilisé, à supprimer ?');
+//die('Fichier non utilisé, à supprimer ?');
+//@2019-01-01: le fichier sert pour le login monstre sur un étage dédié
 require G_CHE . "ident.php";
 include G_CHE . "/includes/classes_monstre.php";
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));

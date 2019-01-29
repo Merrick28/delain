@@ -107,6 +107,9 @@ begin
     -- tout semble correct, l'amélioration a été faite
     -- Reste la gestion des PX/Niveau/PA
     --------------------------------------------------
+    -- On recharge les pv_max, ils ont pû être déjà mis à jour si amélioration de la constit
+    select into pv_max_actuel perso_pv_max from perso where perso_cod = personnage ;
+    -- On maximalise si le perso est trop loin des standards
     temp := round(floor(v_con/4));
     gain_pv := lancer_des(1,temp);
     gain_pv := gain_pv + 1;

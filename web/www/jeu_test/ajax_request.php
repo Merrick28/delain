@@ -606,6 +606,17 @@ switch($_REQUEST["request"])
                 $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 break;
 
+            case 'perso_etage_pos':     // nom des persos situé sur l'étage
+                $req = "select perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
+                        join perso_position on ppos_perso_cod=perso_cod
+                        join positions on pos_cod=perso_position.ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where perso_actif='O' and perso_type_perso=1 and etage_numero=? order by perso_nom ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(1*$_REQUEST["etage_numero"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
             case 'position_description':     // une description de la position passée par pos_x, pos_y, et pos_etage
                 //$req = "select pos_cod, COALESCE(CASE WHEN mur_pos_cod IS NOT NULL THEN 'Un mur' ELSE NULL end, lieu_nom || COALESCE('(' || lieu_description || ')', '') ) as position_desc
                 $req = "select pos_cod, COALESCE(CASE WHEN mur_pos_cod IS NOT NULL THEN 'Un mur' ELSE NULL end, lieu_nom  ) as position_desc 

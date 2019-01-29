@@ -111,6 +111,30 @@ include_once '../includes/tools.php';
                 if (content == "") $("#liste-ajout-rapide").html("Rien trouvé (de nouveau) pour ce controleur...");
             });
         }
+        function listPersoEtage(etage_numero) {
+            $("#liste-ajout-rapide").html("");
+            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", etage_numero: etage_numero}}, function (d) {
+                var content = "";
+                var nb_perso = 0;
+                var nb_monstre = 0;
+                if ((d.resultat == 0) && (d.data) && (d.data.length > 0)) {
+                    for (k in d.data) {
+                        var data = d.data[k];
+                        if (!isInTeleportationtList(data.perso_cod) && isAuthorized(data.perso_type_perso) && (nb_perso<100))     // si pas déjà dans la list et autorisé
+                        {
+                            if (data.perso_type_perso == 2) nb_monstre++; else nb_perso++;
+                            content += '<div id="s-list-' + k + '" data-perso_cod="' + data.perso_cod + '" data-type_perso="' + data.perso_type_perso + '"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList(' + k + ')"></a>&nbsp;</span>' + data.perso_nom + ' <em style="font-size:10px;"> (X=' + data.pos_x + ' X=' + data.pos_y + ' ' + data.etage_libelle + ')</em></div>';
+                        }
+                    }
+                    if (nb_perso==100) content += "<br>L'affichage a été limité aux 100 premiers persos.";
+                    if (content != "") content += '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
+                    if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
+                    if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';
+                    $("#liste-ajout-rapide").html(content);
+                }
+                if (content == "") $("#liste-ajout-rapide").html("Rien trouvé (de nouveau) pour ce controleur...");
+            });
+        }
 
         function addFromSearchListAll(type) {
             $('div[id^="s-list-"]').each(function () {
@@ -350,7 +374,9 @@ if ($erreur == 0)
     echo '</form>';
 
     echo '<hr>Section de recherche de persos liés:';
-    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br><br>';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br>';
+    echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;')) ;
+    echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage($(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
 
