@@ -30,6 +30,7 @@ declare
 	v_etage alias for $2;
 	v_pos_depart alias for $3;
 	v_nombre_entree integer;
+	v_etage_arene text;    -- type de la position de départ arene ou dongeon
 	des_entree integer;
 	v_pa integer;
 	v_new_pos integer;
@@ -126,8 +127,29 @@ end if;
 /* on insère les données du perso dans perso_arene*/
 /**************************************************/
 
-insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
-values (v_perso, v_etage, v_pos_depart, now());
+-- On verifie si le perso n'avait pas déjà une sortie d'arène de programmée
+-- Cela ne devrait pas arriver, mais il y en a !!
+select into v_etage_arene etage_arene from perso_arene
+  inner join perso_position on ppos_perso_cod = parene_perso_cod
+  inner join positions on pos_cod = ppos_pos_cod
+  inner join etage on etage_numero = pos_etage
+  where parene_perso_cod=v_perso ;
+if found then
+  if v_etage_arene = 'O' then
+      -- D’une étage arène vers une arène
+    update perso_arene set parene_etage_numero = v_etage where parene_perso_cod = v_perso ;
+  else
+    -- D’un étage normal vers une arène
+    delete from perso_arene where parene_perso_cod = v_perso ;
+    insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
+      values (v_perso, v_etage, v_pos_depart, now());
+  end if;
+else
+  -- cas normal, le perso n'avait pas de sortie d'arene de definie
+  insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
+    values (v_perso, v_etage, v_pos_depart, now());
+end if;
+
 
 texte_evt := 'Entrée en arène';
 	insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible)
