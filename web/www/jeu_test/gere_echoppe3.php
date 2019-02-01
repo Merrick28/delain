@@ -588,14 +588,18 @@ if ($erreur == 0) {
                         $req_tran = "delete from transaction_echoppe where tran_gobj_cod = $objet_cod";
                         $db->query($req_tran);
                         // Ajout de la ligne de Log
-                        //impossible: problème de contrainte avec perso__cod
-                        /*
                         $req_tran =  "insert into mag_tran_generique
                         (mgtra_lieu_cod,mgtra_perso_cod,mgtra_gobj_cod,mgtra_sens,mgtra_montant,mgtra_nombre)
                         values
-                        ($vendeur,$acheteur,$obj_gobj_cod,5,$prix,$quantite)";
+                        ($vendeur,$perso_cod,$obj_gobj_cod,6,$prix,$quantite)";
                         $db->query($req_tran);
-                        */
+
+                        $req_tran =  "insert into mag_tran_generique
+                        (mgtra_lieu_cod,mgtra_perso_cod,mgtra_gobj_cod,mgtra_sens,mgtra_montant,mgtra_nombre)
+                        values
+                        ($acheteur,$perso_cod,$obj_gobj_cod,5,$prix,$quantite)";
+                        $db->query($req_tran);
+
                     }
                 }
                 break;
@@ -739,7 +743,8 @@ if ($erreur == 0) {
             <p><strong>28/12/2009</strong> De nombreuses modifications / Corrections ont été apportées. L'une va vous
                 toucher
                 directement, avec la limitation des approvisionnements en fonction de l'échoppe. Certains articles ne
-                pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré ...</p>
+                pourront plus être approvisionnés librement. Adressez vous à votre Maitre Marchand préféré ...
+            <p><strong>01/02/2019</strong> Divers modifications pour faire fonctionner les magasins runiques ...</p>
             Clients présents dans l’échoppe:
             <?php
             $liste_clients = "";
@@ -826,6 +831,31 @@ if ($erreur == 0) {
         startPane($liste_panels, 0, $select_pane);
         ?>
         <p>
+            <?php
+            if (TYPE_ECHOPPE=="MAGIE")
+            {
+                $req_stock
+                    = "select string_agg(count||' '||obj_nom, ', ') stock from (
+                        select count(*) count, obj_nom, gobj_cod
+                        from objets,objet_generique,stock_magasin
+                        where mstock_lieu_cod ={$mag}
+                        and mstock_obj_cod = obj_cod
+                        and obj_gobj_cod = gobj_cod
+                        group by obj_nom, gobj_cod
+                        order by gobj_cod
+                    ) g";
+                    $db->query($req_stock);
+                    if ($db->nf() == 0) {
+                        echo "Aucun objet remarquable !<BR/>";
+                    } else {
+                        $db->next_record();
+                        // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
+                        // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
+                        // Pour l'instant les gérants ne peuvent pas y toucher, mais les joueurs peuvent l'acheter.
+                        echo "<strong>Stock Autonome</strong></trong>:<br> " . $db->f('stock') . ".<BR/><BR/>";
+                    }
+            }
+            ?>
 
             <strong>Objets Uniques en vitrine:</strong><BR/>
             <?php
@@ -850,9 +880,10 @@ where mstock_lieu_cod = $lieu_cod
 
             <?php
             $req_stock
-                = "select gobj_cod,gobj_nom,gobj_valeur,gobj_echoppe_stock,gobj_echoppe_destock,mgstock_nombre,mgstock_vente_persos,mgstock_vente_echoppes,comp_libelle,mgaut_gobj_cod from objet_generique
- LEFT OUTER JOIN stock_magasin_autorisations ON (gobj_cod = mgaut_gobj_cod and mgaut_lieu_cod = $lieu_cod)
- LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod) ";
+                = "select gobj_cod,gobj_nom,gobj_valeur,gobj_echoppe_stock,gobj_echoppe_destock,mgstock_nombre,mgstock_vente_persos,mgstock_vente_echoppes,comp_libelle,mgaut_gobj_cod 
+                    from objet_generique
+                    LEFT OUTER JOIN stock_magasin_autorisations ON (gobj_cod = mgaut_gobj_cod and mgaut_lieu_cod = $lieu_cod)
+                    LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod) ";
             if ($perso_cod == 451072 or $perso_cod == 185) {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
                 $req_stock = $req_stock . "LEFT outer JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where (gobj_echoppe_vente = 'O' or mgstock_nombre > 0)";
             } else {
@@ -918,7 +949,7 @@ where mstock_lieu_cod = $lieu_cod
                     "</td><td>",
                     $db->f("mgstock_nombre"),
                     "</td>";
-                    if (($db->f("gobj_echoppe_stock") == 'O' and $db->f("mgaut_gobj_cod") != NULL) || $perso_cod == 451072) {
+                    if (($db->f("gobj_echoppe_stock") == 'O' and $db->f("mgaut_gobj_cod") != NULL) || $perso_cod == 451072 || (TYPE_ECHOPPE=="MAGIE")) {
                         echo "<td><input type=\"text\" name=\"STOCK", $db->f("gobj_cod"), "\" size=\"4\"></td>";
                     } else {
                         echo "<td>&nbsp;</td>";
@@ -953,6 +984,13 @@ where mstock_lieu_cod = $lieu_cod
     endPane();
     startPane($liste_panels, 2, $select_pane);
 // TRANSACTIONS
+    if (TYPE_ECHOPPE == "MAGIE")
+    {
+        echo '<div width="100%" align="left">Non disponible pour les Magasin runiques<div>';
+    }
+    else
+    {
+
     ?>
     <div width="100%" align="left">
 
@@ -1076,6 +1114,8 @@ order by  perso_nom
         </table>
     </div>
     <?php
+    } // fin Transaction!
+
     endPane();
     startPane($liste_panels, 3, $select_pane);
     //CONTRATS
@@ -1091,7 +1131,7 @@ order by  perso_nom
             Client :<select name="dest_lieu_cod">
                 <option value="-">- Choisir une autre échoppe -</option>
                 <?php
-                $req = "select lieu_cod,lieu_nom from lieu where lieu_tlieu_cod in (11,21) and lieu_cod != $lieu_cod";
+                $req = "select lieu_cod,lieu_nom from lieu where lieu_tlieu_cod in (".(TYPE_ECHOPPE=="MAGIE" ? "14" : "11,21").") and lieu_cod != $lieu_cod";
                 $db->query($req);
                 while ($db->next_record()) {
                     echo "<option value=\"" . $db->f("lieu_cod") . "\">" . $db->f("lieu_nom") . "</option>";
@@ -1219,7 +1259,7 @@ order by  lieu_nom
         <?php
         endPane();
         startPane($liste_panels, 4, $select_pane);
-        $label_type = array("Achat (Av -> Ech)", "Vente (Ech -> Av)", "Stockage (Adm -> Ech)", "Destockage (Ech -> Adm)", "Transaction (Ech -> Av)");
+        $label_type = array("Achat (Av -> Ech)", "Vente (Ech -> Av)", "Stockage (Adm -> Ech)", "Destockage (Ech -> Adm)", "Transaction (Ech -> Av)", "Contrat (Ext -> Ech)", "Contrat (Ech -> Ext)");
         if (isset($_POST['tran_type'])) {
             $t_type = $_POST['tran_type'];
         } else {
@@ -1274,8 +1314,19 @@ order by  lieu_nom
                 <td class="soustitre2">Montant</td>
             </tr>
             <?php
-            $req = "select perso_nom,gobj_nom,to_char(mgtra_date,'DD/MM/YYYY hh24:mi:ss') as date_tran,mgtra_sens,mgtra_montant,mgtra_nombre from mag_tran_generique tr ,perso per,objet_generique obj"
-                . " where perso_cod = mgtra_perso_cod and gobj_cod = mgtra_gobj_cod and mgtra_lieu_cod = $lieu_cod";
+            $req = "
+                  select perso_nom,gobj_nom,mgtra_date, to_char(mgtra_date,'DD/MM/YYYY hh24:mi:ss') as date_tran ,mgtra_sens,mgtra_montant,mgtra_nombre 
+                  from (
+                      select perso_nom,gobj_nom,mgtra_date,mgtra_sens,mgtra_montant,mgtra_nombre 
+                            from mag_tran_generique tr ,perso per,objet_generique obj
+                            where perso_cod = mgtra_perso_cod and gobj_cod = mgtra_gobj_cod and mgtra_lieu_cod = {$lieu_cod}
+                      union    
+                      select perso_nom,obj_nom obj_nom,mtra_date as mgtra_date,mtra_sens as mgtra_sens,mtra_montant as mgtra_montant, 1 as mgtra_nombre
+                            from mag_tran tr ,perso per,objets
+                            where perso_cod = mtra_perso_cod and obj_cod = mtra_obj_cod and mtra_lieu_cod =  {$lieu_cod}      
+                  ) u  where mgtra_nombre>0 
+                        ";
+
             if ($t_type >= 0) {
                 $req = $req . " and mgtra_sens = $t_type";
             }
@@ -1299,62 +1350,69 @@ order by  lieu_nom
 
         endPane();
         startPane($liste_panels, 5, $select_pane);
-        $req_stock = "SELECT frm_cod,	frm_type,	frm_nom,	frm_temps_travail,	frm_cout,	frm_resultat,	frm_comp_cod FROM formule WHERE frm_type = 1"
-            . " ORDER BY frm_nom";
-        $db->query($req_stock);
-        ?><p>Travaux disponibles:</p>
-        <form name="realiser_formule" method="post">
-            <input type="hidden" name="pane" value="5">
-            <input type="hidden" name="methode" value="realiser_formule">
-            <input type="hidden" name="frm_cod" value="-1">
-        </form>
-        <script language="javascript">
-            function real_form(code) {
-                document.realiser_formule.frm_cod.value = code;
-                document.realiser_formule.submit();
-            }
-        </script>
-        <?php
-        while ($db->next_record()) {
-            ?>
-            <div class="tableau">
-                <strong><?php echo $db->f("frm_nom") ?></strong> Temps nécéssaire:
-                <strong><?php echo $db->f("frm_temps_travail") ?></strong> h <br/>
-                Composants: <strong><?php echo $db->f("frm_cout") ?></strong> Br<br/>
-                <?php
-                $req_comp
-                    = "SELECT gobj_nom,frmco_num,mgstock_nombre FROM objet_generique,formule_composant 
-		LEFT JOIN stock_magasin_generique ON (mgstock_gobj_cod = frmco_gobj_cod AND mgstock_lieu_cod = " . $lieu_cod . ")
-		WHERE frmco_gobj_cod = gobj_cod AND frmco_frm_cod = " . $db->f("frm_cod") . "
-		ORDER BY gobj_nom";
-                $db2->query($req_comp);
-                while ($db2->next_record()) {
-                    echo " - " . $db2->f("gobj_nom") . " (x" . $db2->f("frmco_num") . ") / Stock : " . $db2->f("mgstock_nombre") . "<br/>";
+        if (TYPE_ECHOPPE == "MAGIE")
+        {
+            echo '<div width="100%" align="left">Non disponible pour les Magasin runiques<div>';
+        }
+        else
+        {
+            $req_stock = "SELECT frm_cod,	frm_type,	frm_nom,	frm_temps_travail,	frm_cout,	frm_resultat,	frm_comp_cod FROM formule WHERE frm_type = 1"
+                . " ORDER BY frm_nom";
+            $db->query($req_stock);
+            ?><p>Travaux disponibles:</p>
+            <form name="realiser_formule" method="post">
+                <input type="hidden" name="pane" value="5">
+                <input type="hidden" name="methode" value="realiser_formule">
+                <input type="hidden" name="frm_cod" value="-1">
+            </form>
+            <script language="javascript">
+                function real_form(code) {
+                    document.realiser_formule.frm_cod.value = code;
+                    document.realiser_formule.submit();
                 }
-                ?>
-                <br/>
-                Produits: <strong><?php echo $db->f("frm_resultat") ?></strong> Br<br/>
-                <?php
-                $req_comp = "SELECT gobj_nom,	frmpr_num FROM  	formule_produit,objet_generique"
-                    . " WHERE frmpr_gobj_cod = gobj_cod AND frmpr_frm_cod = " . $db->f("frm_cod")
-                    . " ORDER BY gobj_nom";
-                $db2->query($req_comp);
-                while ($db2->next_record()) {
-                    echo " - " . $db2->f("gobj_nom") . " (x" . $db2->f("frmpr_num") . ")<br/>";
-                }
-                ?>
-                <form name="realise" method="post" action="<?php echo $PHP_SELF ?>">
-                    <input type="text" name="nombre">
-                    <input type="hidden" name="methode" value="realiser_formule">
-                    <input type="hidden" name="mag" value="<?php echo $lieu_cod ?>">
-                    <input type="hidden" name="pane" value="5">
-                    <input type="hidden" name="frm_cod" value="<?php echo $db->f("frm_cod") ?>">
-                    <input type="submit" class="test" value="Realiser !">
-                    <!--<a href="javascript:real_form(<?php echo $db->f("frm_cod") ?>);">Realiser</a>-->
-                </form>
-                <br/><br/>
-            </div>
+            </script>
             <?php
+            while ($db->next_record()) {
+                ?>
+                <div class="tableau">
+                    <strong><?php echo $db->f("frm_nom") ?></strong> Temps nécéssaire:
+                    <strong><?php echo $db->f("frm_temps_travail") ?></strong> h <br/>
+                    Composants: <strong><?php echo $db->f("frm_cout") ?></strong> Br<br/>
+                    <?php
+                    $req_comp
+                        = "SELECT gobj_nom,frmco_num,mgstock_nombre FROM objet_generique,formule_composant 
+            LEFT JOIN stock_magasin_generique ON (mgstock_gobj_cod = frmco_gobj_cod AND mgstock_lieu_cod = " . $lieu_cod . ")
+            WHERE frmco_gobj_cod = gobj_cod AND frmco_frm_cod = " . $db->f("frm_cod") . "
+            ORDER BY gobj_nom";
+                    $db2->query($req_comp);
+                    while ($db2->next_record()) {
+                        echo " - " . $db2->f("gobj_nom") . " (x" . $db2->f("frmco_num") . ") / Stock : " . $db2->f("mgstock_nombre") . "<br/>";
+                    }
+                    ?>
+                    <br/>
+                    Produits: <strong><?php echo $db->f("frm_resultat") ?></strong> Br<br/>
+                    <?php
+                    $req_comp = "SELECT gobj_nom,	frmpr_num FROM  	formule_produit,objet_generique"
+                        . " WHERE frmpr_gobj_cod = gobj_cod AND frmpr_frm_cod = " . $db->f("frm_cod")
+                        . " ORDER BY gobj_nom";
+                    $db2->query($req_comp);
+                    while ($db2->next_record()) {
+                        echo " - " . $db2->f("gobj_nom") . " (x" . $db2->f("frmpr_num") . ")<br/>";
+                    }
+                    ?>
+                    <form name="realise" method="post" action="<?php echo $PHP_SELF ?>">
+                        <input type="text" name="nombre">
+                        <input type="hidden" name="methode" value="realiser_formule">
+                        <input type="hidden" name="mag" value="<?php echo $lieu_cod ?>">
+                        <input type="hidden" name="pane" value="5">
+                        <input type="hidden" name="frm_cod" value="<?php echo $db->f("frm_cod") ?>">
+                        <input type="submit" class="test" value="Realiser !">
+                        <!--<a href="javascript:real_form(<?php echo $db->f("frm_cod") ?>);">Realiser</a>-->
+                    </form>
+                    <br/><br/>
+                </div>
+                <?php
+            }
         }
         endPane();
         ?>

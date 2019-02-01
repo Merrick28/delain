@@ -58,17 +58,32 @@ if ($erreur == 0)
             // Rechangement le 03/07/2012 par Reivax : réintroduction de la fonction f_prix_obj_perso_a dans la requête, mais uniquement sur
             // un seul obj_cod (le MIN) et non sur l’ensemble des objets.
             // Suppression des sous-requêtes dans les boucles.
-            $req = "select obj_nom, obj_valeur, f_prix_obj_perso_a($perso_cod, $lieu_cod, MIN(obj_cod)) as valeur, 
-                tobj_libelle, gobj_cod, coalesce(obon_libelle, '') as obon_libelle, coalesce(obon_cod, 0) as obon_cod,
-                coalesce(obon_prix, 0) as obon_prix, count(*) as nombre
-    			from objets
-                    inner join objet_generique on gobj_cod = obj_gobj_cod
-                    inner join stock_magasin on mstock_obj_cod = obj_cod
-                    inner join type_objet on tobj_cod = gobj_tobj_cod
-                    left outer join bonus_objets on obon_cod = obj_obon_cod
-				where mstock_lieu_cod = $lieu_cod
-				group by obj_nom, obj_valeur, tobj_libelle, gobj_cod, obon_cod, obon_libelle, obon_prix
-				order by tobj_libelle, obj_nom ";
+
+            // Rechangement le 31/01/2019 par Marlyza : Integrer les stocks du magasin à la vente
+            $req = "
+                select '' as type_stock, obj_nom, obj_valeur, f_prix_obj_perso_a($perso_cod, $lieu_cod, MIN(obj_cod)) as valeur, 
+                    tobj_libelle, gobj_cod, coalesce(obon_libelle, '') as obon_libelle, coalesce(obon_cod, 0) as obon_cod,
+                    coalesce(obon_prix, 0) as obon_prix, count(*) as nombre
+                    from objets
+                        inner join objet_generique on gobj_cod = obj_gobj_cod
+                        inner join stock_magasin on mstock_obj_cod = obj_cod
+                        inner join type_objet on tobj_cod = gobj_tobj_cod
+                        left outer join bonus_objets on obon_cod = obj_obon_cod
+                    where mstock_lieu_cod = $lieu_cod
+                    group by obj_nom, obj_valeur, tobj_libelle, gobj_cod, obon_cod, obon_libelle, obon_prix
+
+                union
+                
+                select 'generique' as type_stock, gobj_nom as obj_nom,gobj_valeur as obj_valeur, f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur,
+                    tobj_libelle, gobj_cod, '' as obon_libelle, 0 as obon_cod,0 as obon_prix, mgstock_nombre as nombre
+                    from objet_generique,stock_magasin_generique,type_objet
+                    where gobj_cod = mgstock_gobj_cod
+                    and mgstock_lieu_cod = $lieu_cod
+                    and gobj_tobj_cod = tobj_cod
+                    and mgstock_vente_persos = 'O'
+      
+            order by type_stock , tobj_libelle, obj_nom ";
+
             $db->query($req);
 
             if ($db->nf() == 0)
@@ -113,7 +128,7 @@ if ($erreur == 0)
 
                     echo "<td><p>", $db->f("nombre"), "</p></td>";
                     echo "<td><p>";
-                    echo "<input type=\"text\" name=\"gobj[", $db->f("gobj_cod"), "-", $db->f("obon_cod"), "]\" value=\"0\">";
+                    echo "<input type=\"text\" name=\"gobj[", $db->f("gobj_cod"), "-", $db->f("obon_cod"), ($db->f("type_stock")!="" ? "-generique" : ""), "]\" value=\"0\">";
                     echo "</p></td>";
                     echo "</tr>\n";
                 }
@@ -185,6 +200,11 @@ if ($erreur == 0)
                     echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
                     echo "<td class=\"soustitre2\"><p>" . $db->f("valeur") . " brouzoufs</td>";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $db->f("obj_cod"), "]\"></td>";
+                    if ($bonus=="")
+                    {
+                        // Pour le magasin runique, sauf cas particulier d'un objet avec bonus, on vend pour mettre dans les stocks de générique
+                        echo "<td><p><input type=\"hidden\" name=\"stock[", $db->f("obj_cod"), "]\" value=\"1\"></td>";
+                    }
                 }
                 echo "</table></center>";
                 echo "<center><input type=\"submit\" class=\"test\" value=\"Vendre les objets sélectionnés !\"></center>";
