@@ -112,11 +112,15 @@ if ($erreur == 0) {
                 } else {
                     $cout_pa = 30; /*correspond au prélèvement des magasins*/
                 }
+                $lieu_compte = "null";
+                if ($tlieu_cod == 11 || $tlieu_cod == 14 || $tlieu_cod == 21) {
+                    $lieu_compte = "0";     // pour les magasins c'est le solde de départ!
+                }
                 $req = "insert into lieu (lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
 						lieu_dest, lieu_alignement, lieu_dfin, lieu_compte, lieu_marge, lieu_prelev,
 						lieu_mobile, lieu_date_bouge, lieu_date_refill, lieu_port_dfin, lieu_dieu_cod) values "
                     . "($lieu_cod, $tlieu_cod, e'$nom', e'$description', e'" . pg_escape_string($_POST['refuge']) . "', '" . pg_escape_string($url) . "', " .
-                    "$lieu_dest_pos_cod, 0, null, null, 50, $cout_pa, 
+                    "$lieu_dest_pos_cod, 0, null, $lieu_compte, 50, $cout_pa, 
 					'" . $_POST['mobile'] . "', now(), null, null, " . $_POST['dieu'] . ")";
                 $db->query($req);
 

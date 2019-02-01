@@ -10,6 +10,10 @@ if ($db->f("perso_admin_echoppe_noir") != 'O') {
     $erreur = 1;
 }
 if ($erreur == 0) {
+    // Conversion en numeric pour minimiser l'injection sql
+    $perso_cible = 1 * (int)$perso_cible;
+    $lieu = 1 * (int)$lieu;
+
     // pour vérif, on récupère les coordonnées du magasin
     $req = "select pos_x,pos_y,etage_libelle ";
     $req = $req . "from lieu_position,positions,etage ";

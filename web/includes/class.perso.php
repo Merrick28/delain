@@ -1975,6 +1975,42 @@ class perso
         return $result['resultat'];
     }
 
+    function magasin_achat_generique($lieu, $objet, $qte)
+    {
+        $retour = "" ;
+        $pdo    = new bddpdo();
+
+        // Avant de faire la boucle on vérifie que les objest sont bien dans les stocks du magasin
+        $req = "select sum(mgstock_nombre) count from stock_magasin_generique where mgstock_lieu_cod = :lieu and mgstock_gobj_cod = :objet and mgstock_vente_persos='O' ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
+        if ( !$result = $stmt->fetch())
+        {
+            return  '<p>Erreur ! Impossible de vérifier dans les stocks du magasin pour acheter cet objet  !';
+        }
+        else if ((int)$result['count']<$qte)
+        {
+            return  '<p>Erreur ! Impossible les stocks du magasin sont insuffisants  !';
+        }
+
+        // Faire les achats :
+        for ($i = 0; $i < $qte; $i++)
+        {
+            $req = "select magasin_achat_generique(:perso,:lieu,:objet) as resultat ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(
+                ":perso" => $this->perso_cod,
+                ":lieu"  => $lieu,
+                ":objet" => $objet), $stmt);
+            $result = $stmt->fetch();
+            $retour .= $result['resultat'];
+        }
+
+        return $retour;
+    }
+
     function magasin_achat($lieu, $objet)
     {
         $pdo    = new bddpdo();
@@ -1994,6 +2030,20 @@ class perso
         $pdo    = new bddpdo();
         $req
                 = "select magasin_vente(:perso,:lieu,:objet) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+            ":perso" => $this->perso_cod,
+            ":lieu"  => $lieu,
+            ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function magasin_vente_generique($lieu, $objet)
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select magasin_vente_generique(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
             ":perso" => $this->perso_cod,

@@ -10,8 +10,8 @@ include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {
     // Conversion en numeric pour minimiser l'injection sql
-    $perso_cible = 1 * $perso_cible;
-    $lieu = 1 * $lieu;
+    $perso_cible = 1 * (int)$perso_cible;
+    $lieu = 1 * (int)$lieu;
 
     // pour vérif, on récupère les coordonnées du magasin
     $req = "select pos_x,pos_y,etage_libelle ";

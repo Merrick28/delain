@@ -6,5 +6,6 @@ if (!isset($methode))
 {
     $methode = "entree";
 }
+$_admin_echoppe_type = "";
 include "blocks/_admin_echoppe.php";
 include "blocks/_footer_page_jeu.php";

@@ -696,31 +696,40 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $lieu = $_POST['lieu'];
             $sm   = new stock_magasin();
             //$sm->getBy_mstock_lieu_cod($lieu)[0];
-
             foreach ($gobj as $key => $val)
             {
                 if ($val != 0)
                 {
-
-
                     $type = explode('-', $key);
 
-                    $gobj         = $type[0];
-                    $qte          = $val;
-                    $bonus        = $type[1];
-                    $liste_objets = $sm->get_objets($lieu, $gobj, $bonus, $qte);
+                    if ($type[2]=="generique")
+                    {
+                        // Cas des objets achetés dans les stocks de génériques
+                        $gobj         = $type[0];
+                        $qte          = $val;
+                        $contenu_page .= $perso->magasin_achat_generique($lieu, $gobj, $qte);
+                    }
+                    else
+                    {
+                        // Cas des objets achetés dans les stocks standards
+                        $gobj         = $type[0];
+                        $qte          = $val;
+                        $bonus        = $type[1];
+                        $liste_objets = $sm->get_objets($lieu, $gobj, $bonus, $qte);
 
-                    if (count($liste_objets) == 0)
-                    {
-                        $contenu_page .= '<p>Erreur, pas d’objet trouvé dans le magasin pour ' . $key;
-                    } else
-                    {
-                        foreach ($liste_objets as $objet)
+                        if (count($liste_objets) == 0)
                         {
-                            $contenu_page .= '<p>pour l’objet : <strong>' . $objet->obj_nom . '</strong>';
-                            $contenu_page .= $perso->magasin_achat($lieu, $objet->obj_cod);
+                            $contenu_page .= '<p>Erreur, pas d’objet trouvé dans le magasin pour ' . $key;
+                        } else
+                        {
+                            foreach ($liste_objets as $objet)
+                            {
+                                $contenu_page .= '<p>pour l’objet : <strong>' . $objet->obj_nom . '</strong>';
+                                $contenu_page .= $perso->magasin_achat($lieu, $objet->obj_cod);
+                            }
                         }
                     }
+
                 }
             }
 
@@ -729,7 +738,16 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                $contenu_page .= $perso->magasin_vente($lieu, $key);
+                if ($_POST['stock'][$key]!="")
+                {
+                    //pour les runes (voir echoppe_magie) on converti les objet bvers un stock de générique
+                    $contenu_page .= $perso->magasin_vente_generique($lieu, $key);
+                }
+                else
+                {
+                    // Vente normale!
+                    $contenu_page .= $perso->magasin_vente($lieu, $key);
+                }
             }
             break;
         case 'magasin_identifie':

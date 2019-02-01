@@ -1,4 +1,6 @@
-<?php 
+<?php
+include "blocks/_header_page_jeu.php";
+ob_start();
 include "blocks/_test_admin_echoppe.php";
 if (!isset($methode))
 {

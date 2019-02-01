@@ -20,7 +20,7 @@ if ($erreur == 0) {
     echo "<p class=\"titre\">Gestion de l'échoppe " . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</p>";
     switch ($methode) {
         case "ajout":
-            echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant_noir.php\">";
+            echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant{$_admin_echoppe_type}.php\">";
             echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"ajout\">";
             echo "<p>Ajout d'un gérant :";
@@ -49,7 +49,7 @@ if ($erreur == 0) {
             $req = $req . "and pguilde_perso_cod = perso_cod ";
             $req = $req . "order by perso_nom ";
             $db->query($req);
-            echo "<select name=\"perso\">";
+            echo "<select name=\"perso_cible\">";
             while ($db->next_record()) {
                 echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_nom") . "</option>";
             }
@@ -61,7 +61,7 @@ if ($erreur == 0) {
             $db->query($req);
             $db->next_record();
             $actuel = $db->f("mger_perso_cod");
-            echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant_noir.php\">";
+            echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant{$_admin_echoppe_type}.php\">";
             echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"modif\">";
             echo "<p>Modification d'un gérant :";
@@ -90,7 +90,7 @@ if ($erreur == 0) {
             $req = $req . "and pguilde_perso_cod = perso_cod ";
             $req = $req . "order by perso_nom ";
             $db->query($req);
-            echo "<select name=\"perso\">";
+            echo "<select name=\"perso_cible\">";
             while ($db->next_record()) {
                 echo "<option value=\"" . $db->f("perso_cod") . "\"";
                 if ($db->f("perso_cod") == $actuel) {
