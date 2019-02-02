@@ -848,7 +848,7 @@ if ($erreur == 0) {
                     if ($db->nf() > 0)
                     {
                         $db->next_record();
-                        if ($db->f('stock')>0)
+                        if ($db->f('stock')!="")
                         {
                             // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
                             // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
