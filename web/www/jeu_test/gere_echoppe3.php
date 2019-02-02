@@ -845,14 +845,16 @@ if ($erreur == 0) {
                         order by gobj_cod
                     ) g";
                     $db->query($req_stock);
-                    if ($db->nf() == 0) {
-                        echo "Aucun objet remarquable !<BR/>";
-                    } else {
+                    if ($db->nf() > 0)
+                    {
                         $db->next_record();
-                        // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
-                        // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
-                        // Pour l'instant les gérants ne peuvent pas y toucher, mais les joueurs peuvent l'acheter.
-                        echo "<strong>Stock Autonome</strong></trong>:<br> " . $db->f('stock') . ".<BR/><BR/>";
+                        if ($db->f('stock')!="")
+                        {
+                            // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
+                            // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
+                            // Pour l'instant les gérants ne peuvent pas y toucher, mais les joueurs peuvent l'acheter.
+                            echo "<strong>Stock Autonome</strong></trong>:<br> " . $db->f('stock') . ".<BR/><BR/>";
+                        }
                     }
             }
             ?>
