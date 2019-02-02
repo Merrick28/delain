@@ -114,7 +114,7 @@ if ($erreur == 0) {
                 }
                 $lieu_compte = "null";
                 if ($tlieu_cod == 11 || $tlieu_cod == 14 || $tlieu_cod == 21) {
-                    $lieu_compte = "0";     // pour les magasins c'est le solde de départ!
+                    $lieu_compte = "40000";     // pour les magasins c'est le solde de départ (pour achalander un peu la boutique)!
                 }
                 $req = "insert into lieu (lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
 						lieu_dest, lieu_alignement, lieu_dfin, lieu_compte, lieu_marge, lieu_prelev,
