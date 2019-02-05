@@ -1,11 +1,11 @@
 --
--- Name: f_rituel_modif_caracs(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: f_rituel_modif_voiemagique(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION f_rituel_modif_caracs(integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION f_rituel_modif_voiemagique(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/********************************************************/
-/* fonction f_rituel_modif_caracs: effectue toutes      */
+/* fonction f_rituel_modif_voiemagique: effectue toutes */
 /* les actions liées aux modifications de carac et      */
 /* retourne une chaine exploitable en html              */
 /* on passe en paramètres :                             */
@@ -42,48 +42,43 @@ CREATE OR REPLACE FUNCTION f_rituel_modif_caracs(integer, integer, integer) RETU
 declare
     code_retour text;               -- chaine de retour
     personnage alias for $1;        -- perso_cod
-    demel alias for $2;              -- type détérioration
-    amel alias for $3;              -- type amélioration
-    v_perso_po integer;                       -- nombre de PO du perso
-    v_perso_nb_obj integer;                       -- nombre de d'ojet du rituel dans le sac du perso
-    temp integer;                       -- vraible passe partout
+    voie alias for $2;              -- nouvelle voie
+    v_perso_voie_magique integer;   -- voie magique actuelle
+    v_perso_po integer;             -- nombre de PO du perso
+    v_perso_nb_obj integer;         -- nombre de d'ojet du rituel dans le sac du perso
+    temp integer;                   -- vraible passe partout
+    v_mvoie_libelle text;           -- nom de la nouvelle voie
     texte_evt text;                 -- texte pour évènements
-    v_resultat  f_resultat;        -- resultat de f_carac_ameliore()
 begin
-    -- On rend la fonction atomique, pour éviter les problèmes de double clic.
-    perform guard('f_modif_carac'); -- Ne pas oublier le perform release à chaque branche de sortie de fonction !
 
-    if demel<=0 or demel>30 or amel<=0 or amel>30 then
-        code_retour := '<p>Les caractéristiques modifiées ne sont pas conformes!';
-        perform release('f_modif_carac');
+    select into v_mvoie_libelle mvoie_libelle from voie_magique where mvoie_cod = voie ;
+    if not found then
+        code_retour := '<p>La nouvelle voie choisie est inconnue!';
         return code_retour;
     end if;
-
 
     -- on verifie que le service de rituel est bien configuré comme ouvert!
     if getparm_t(139) <> 'O' then
         code_retour := '<p>L''officine est fermée, le rituel n''est pas faisable actuellement!';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
 
     -- Un minimum de vérification (cout nécéssaire etc...) !!!
     -- d'abord on le perso
-    select into v_perso_po
-            perso_po
+    select into v_perso_po, v_perso_voie_magique
+            perso_po,
+            perso_voie_magique
         from perso
         where perso_cod = personnage
         and perso_actif = 'O';
     if not found then
         code_retour := '<p>Erreur ! Perso non trouvé !';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
 
     -- Vérification Brouzoufs
     if v_perso_po < getparm_n(137) then
         code_retour := '<p>Vous n''avez pas assez de brouzouf !';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
 
@@ -91,12 +86,10 @@ begin
     select into v_perso_nb_obj count(*) perso_nb_obj from perso_objets join objets on obj_cod = perobj_obj_cod where perobj_perso_cod = personnage and obj_gobj_cod = getparm_n(135) ;
     if not found then
         code_retour := '<p>Vous n''avez d''objets pour le rituel !';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
     if v_perso_nb_obj < getparm_n(136) then
         code_retour := '<p>Vous n''avez assez d''objets pour le rituel !';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
 
@@ -104,42 +97,27 @@ begin
     select into temp prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=personnage and prcarac_date_rituel > now()-((getparm_n(138)::text)||' DAYS')::interval ;
     if found then
         code_retour := '<p>Trop peu de temps vous sépare du dernier rituel pour en faire un nouveau !!';
-        perform release('f_modif_carac');
         return code_retour;
     end if;
 
     --------------------------------------------------
-    -- réalise la détérioration de caracs
+    -- réalise la modification de voie
     --------------------------------------------------
-    v_resultat := f_carac_deteriore(personnage, demel);
-    if v_resultat.etat != 0 then
-      -- il y a eu un problème lors de la détérioration de caract
-      perform release('f_modif_carac');
-      return v_resultat.code_retour;
-    end if;
+    update perso set perso_voie_magique=voie where perso_cod=personnage;
 
-    -- Tout c'est bien passé (pour la détérioration, on met le texte d'events!
-    texte_evt := '[perso_cod1] a réalisé un rituel de transformation de caractéristiques.';
+
+    -- Tout c'est bien passé (pour la modification), on met le texte d'events!
+    texte_evt := '[perso_cod1] a réalisé un rituel de changement de voie magique.';
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
             values(nextval('seq_levt_cod'),11,now(),1,personnage,texte_evt,'O','N');
 
     -- texte invisible au joueur mais qui permettra eventuelelemnt un debugage
-    texte_evt := 'Rituel de transformation, option détériorée : '||trim(to_char(demel,'999999'));
+    texte_evt := 'Rituel de changement de voie, option détériorée : '||trim(to_char(v_perso_voie_magique,'999999'));
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
             values(nextval('seq_levt_cod'),-1,now(),1,personnage,texte_evt,'O','N');
 
-    --------------------------------------------------
-    -- réalise l'amélioration de caracs
-    --------------------------------------------------
-    v_resultat := f_carac_ameliore(personnage, amel);
-    if v_resultat.etat != 0 then
-      -- il y a eu un problème lors de l'amelioration de caract
-      perform release('f_modif_carac');
-      return v_resultat.code_retour;
-    end if;
-
     -- texte invisible au joueur mais qui permettra eventuelelemnt un debugage
-    texte_evt := 'Rituel de transformation, option améliorée : '||trim(to_char(amel,'999999'));
+    texte_evt := 'Rituel de changement de voie, option améliorée : '||trim(to_char(voie,'999999'));
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
             values(nextval('seq_levt_cod'),-1,now(),1,personnage,texte_evt,'O','N');
 
@@ -156,13 +134,12 @@ begin
         limit getparm_n(136);
 
     -- garder une trace du rituel
-		insert into perso_rituel_caracs( prcarac_perso_cod, prcarac_amelioration_carac_cod, prcarac_diminution_carac_cod, prcarac_type_rituel) values (personnage, amel, demel, 1);
+		insert into perso_rituel_caracs( prcarac_perso_cod, prcarac_amelioration_carac_cod, prcarac_diminution_carac_cod, prcarac_type_rituel) values (personnage, voie, v_perso_voie_magique, 2);
 
-    code_retour := '<p>Vous avez réalisé un <b>rituel de transformation</b> de caractéristiques.<br>';
+    code_retour := '<p>Vous avez réalisé un <b>rituel de modification</b> de voie magique, votre nouvelle voie est: <b>' || v_mvoie_libelle || '<b>.<br>';
 
-    perform release('f_modif_carac');
     return code_retour;
 end;$_$;
 
 
-ALTER FUNCTION public.f_rituel_modif_caracs(integer, integer, integer) OWNER TO delain;
+ALTER FUNCTION public.f_rituel_modif_voiemagique(integer, integer) OWNER TO delain;

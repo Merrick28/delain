@@ -47,6 +47,7 @@ class perso_rituel_caracs
     var $prcarac_date_rituel;
     var $prcarac_amelioration_carac_cod;
     var $prcarac_diminution_carac_cod;
+    var $prcarac_type_rituel = 1;
 
     function __construct()
     {
@@ -74,6 +75,7 @@ class perso_rituel_caracs
         $this->prcarac_date_rituel = $result['prcarac_date_rituel'];
         $this->prcarac_amelioration_carac_cod = $result['prcarac_amelioration_carac_cod'];
         $this->prcarac_diminution_carac_cod = $result['prcarac_diminution_carac_cod'];
+        $this->prcarac_type_rituel = $result['prcarac_type_rituel'];
         return true;
     }
 
@@ -91,13 +93,15 @@ class perso_rituel_caracs
             prcarac_perso_cod,
             prcarac_date_rituel,
             prcarac_amelioration_carac_cod,
-            prcarac_diminution_carac_cod                        )
+            prcarac_diminution_carac_cod ,
+            prcarac_type_rituel                        )
                     values
                     (
                         :prcarac_perso_cod,
                         :prcarac_date_rituel,
                         :prcarac_amelioration_carac_cod,
-                        :prcarac_diminution_carac_cod                        )
+                        :prcarac_diminution_carac_cod,
+                        :prcarac_type_rituel                        )
     returning prcarac_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -105,6 +109,7 @@ class perso_rituel_caracs
                 ":prcarac_date_rituel" => $this->prcarac_date_rituel,
                 ":prcarac_amelioration_carac_cod" => $this->prcarac_amelioration_carac_cod,
                 ":prcarac_diminution_carac_cod" => $this->prcarac_diminution_carac_cod,
+                ":prcarac_type_rituel" => $this->prcarac_type_rituel,
             ),$stmt);
 
 
@@ -118,7 +123,8 @@ class perso_rituel_caracs
             prcarac_perso_cod = :prcarac_perso_cod,
             prcarac_date_rituel = :prcarac_date_rituel,
             prcarac_amelioration_carac_cod = :prcarac_amelioration_carac_cod,
-            prcarac_diminution_carac_cod = :prcarac_diminution_carac_cod                        where prcarac_cod = :prcarac_cod ";
+            prcarac_diminution_carac_cod = :prcarac_diminution_carac_cod,
+            prcarac_type_rituel = :prcarac_type_rituel                        where prcarac_cod = :prcarac_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":prcarac_cod" => $this->prcarac_cod,
@@ -126,6 +132,7 @@ class perso_rituel_caracs
                 ":prcarac_date_rituel" => $this->prcarac_date_rituel,
                 ":prcarac_amelioration_carac_cod" => $this->prcarac_amelioration_carac_cod,
                 ":prcarac_diminution_carac_cod" => $this->prcarac_diminution_carac_cod,
+                ":prcarac_type_rituel" => $this->prcarac_type_rituel,
             ),$stmt);
         }
     }

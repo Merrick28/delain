@@ -682,6 +682,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             }
             $contenu_page .= '<br><a href="frame_vue.php" class="centrer">Retour</a>';
             break;
+        case 'rituel_modif_voiemagique':
+            if ((int)$_POST['mvoie_cod']<=0)
+            {
+                $contenu_page .= "Pour faire le rituel de modification de voie, vous devez choisir une nouvelle voie!<br><br>";
+            }
+            else
+            {
+                $contenu_page .= $perso->rituel_modif_voiemagique((int)$_POST['mvoie_cod']);
+            }
+            $contenu_page .= '<br><a href="frame_vue.php" class="centrer">Retour</a>';
+            break;
         case 'passe_niveau':
             $contenu_page .= $perso->passe_niveau($_POST['amelioration']);
             $contenu_page .= '<a href="index.php" class="centrer">Retour</a>';
