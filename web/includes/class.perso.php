@@ -1938,6 +1938,18 @@ class perso
         return $result['resultat'];
     }
 
+    function rituel_modif_voiemagique($voie)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select f_rituel_modif_voiemagique(:perso,:voie) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+                                ":perso" => $this->perso_cod,
+                                ":voie"  => $voie), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
     function depose_objet($objet)
     {
         $pdo    = new bddpdo();

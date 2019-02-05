@@ -6,6 +6,7 @@ $type_lieu = array(6, 13);      // 6=centre d'entrainement 13=centre d'entrainem
 $nom_lieu = 'arrrière boutique du centre d\'entraînement';
 
 include "blocks/_test_lieu.php";
+include "../includes/tools.php";
 
 $caracteristique_nom=array(
     1   =>  "Temps",
@@ -216,6 +217,43 @@ if ($erreur == 0)
                 echo "<br>Humm, c'est embarassant tout ça, je n'ai pas bien compris votre demande!<br>";
                 echo "<a href=\"centre_modif_carac.php\">Ré-essayer!</a><br><br>";
             }
+        }
+        else if ($_POST["methode"]=="changervoie")
+        {
+            $req    = "select mvoie_libelle from voie_magique where mvoie_cod = :mvoie_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":mvoie_cod" => $perso->perso_voie_magique), $stmt);
+            $result1 = $stmt->fetch();
+
+            $req    = "select mvoie_libelle, mvoie_description from voie_magique where mvoie_cod = :mvoie_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":mvoie_cod" => $_POST['mvoie_cod']), $stmt);
+            $result2 = $stmt->fetch();
+
+            if (!$result1 || !$result2)
+            {
+                echo "<br>Humm, c'est embarassant tout ça, je n'ai pas bien compris votre demande!<br>";
+                echo "<a href=\"centre_modif_carac.php\">Ré-essayer!</a><br><br>";
+            }
+            else
+            {
+                echo "Le rituel est sur le point de commencer, voici ce qu'il va vous arriver si vous poursuivez:<br><br> ";
+                echo "<form name=\"niveau\" action=\"action.php\" method=\"post\">" ;
+                echo "<input type=\"hidden\" name=\"methode\" value=\"rituel_modif_voiemagique\">";
+                echo "<input type=\"hidden\" name=\"mvoie_cod\" value=\"".$_POST['mvoie_cod']."\">";
+
+                echo "Vous allez changer de voie magique de <strong>{$result1['mvoie_libelle']}</strong> pour la voie <strong>{$result2['mvoie_libelle']}</strong><br><br>";
+
+                echo "<em>Les coûts du rituel de transformation sont les suivants</em>:<br>";
+                if ($cout_bz>0) echo " &#8226; <strong>{$cout_bz} Brouzoufs</strong><br>";
+                if ($cout_obj>0) echo " &#8226; <strong>{$cout_obj} {$objet_generique->gobj_nom}</strong><br>";
+
+                echo "<br><br><input type=\"submit\" class=\"test centrer\" value=\"Payer et Faire le rituel !!\"><br><br>";
+                echo "</form>";
+
+                echo "La voie du <strong>{$result2['mvoie_libelle']}</strong> :<br><br> {$result2['mvoie_description']}<br><br>";
+            }
+
         }
         else
         {
@@ -627,7 +665,7 @@ if ($erreur == 0)
             }
             echo "Vous diposez de <strong>{$perso_nb_obj}</strong> {$objet_generique->gobj_nom} et <strong>{$perso_nb_bz}</strong> Bz<br><br>";
 
-
+            $flagRituelPossible = false ;
             echo "<em>Les coûts du rituel de transformation sont les suivants</em>:<br>";
             if ($cout_bz>0) echo " &#8226; <strong>{$cout_bz} Brouzoufs</strong><br>";
             if ($cout_obj>0) echo " &#8226; <strong>{$cout_obj} {$objet_generique->gobj_nom}</strong><br>";
@@ -642,14 +680,37 @@ if ($erreur == 0)
             }
             else
             {
-                echo "<br><br><input type=\"submit\" class=\"test centrer\" value=\"Valider\"><br><br>";
+                $flagRituelPossible = true ;
+                echo "<br><input type=\"submit\" class=\"test centrer\" value=\"Valider\"><br><br>";
             }
 
             echo "</form>";
+
+            if ($flagRituelPossible)
+            {
+                //Récupération de la voie magique actuelle
+                $req    = "select mvoie_libelle, mvoie_description from voie_magique where mvoie_cod = :mvoie_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":mvoie_cod" => $perso->perso_voie_magique), $stmt);
+                if ($result = $stmt->fetch())
+                {
+                    //Changement de voie de magique
+                    echo "<form name=\"voiemagique\" action=\"centre_modif_carac.php\" method=\"post\">" ;
+                    echo "<input type=\"hidden\" name=\"methode\" value=\"changervoie\">";
+                    echo "<p>Nous avons aussi la possibilité de changer <strong><u>votre voie magique</u></strong>, vous avez choisie la voie du : <strong>{$result['mvoie_libelle']}</strong><br><br>" ;
+                    echo "<em>Les coûts du changement de voie sont les mêmes que pour les caractéristiques</em>:<br>";
+                    if ($cout_bz>0) echo " &#8226; <strong>{$cout_bz} Brouzoufs</strong><br>";
+                    if ($cout_obj>0) echo " &#8226; <strong>{$cout_obj} {$objet_generique->gobj_nom}</strong><br>";
+
+                   echo "<br>Changer de voie pour: ".create_selectbox_from_req("mvoie_cod", 'select mvoie_cod, mvoie_libelle, mvoie_description from voie_magique where mvoie_cod!='.((int)$perso->perso_voie_magique).' order by mvoie_cod');
+                   echo "<br><br><input type=\"submit\" class=\"test centrer\" value=\"Changer de voie\"><br><br>";
+                    echo "</form><br><br><br><br>";
+                }
+            }
+
         }
+
     }
-
-
 
 }
 // on va maintenant charger toutes les variables liées au menu
