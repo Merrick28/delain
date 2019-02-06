@@ -82,6 +82,7 @@
             </div>
         </div>
         <div style="padding:0 10 0 10px; text-align:center;">
+            <div id="animation"><a href="concours_barde.php">Concours de Barde</a></div>
             <div id="passageniveau">{PASSAGE_NIVEAU}</div>
             <div id="quete">{PERSO_QUETE}</div>
             <div id="lieu">{PERSO_LIEU}</div>
