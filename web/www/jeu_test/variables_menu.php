@@ -193,8 +193,11 @@ $t->set_var('PERSO_POS_X', $var_menu_pos->pos_x);
 $t->set_var('PERSO_POS_Y', $var_menu_pos->pos_y);
 $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 
-// passage niveau
+// Animation Léno 2019: Concours de barde
+$animation = '<hr /><a href="' . $chemin . '/concours_barde.php">Concours de Barde</a>';
+$t->set_var('PERSO_ANIMATION', $animation);
 
+// passage niveau
 if ($px_actuel >= $prochain_niveau)
 {
     $passage_niveau = '<hr /><a href="' . $chemin . '/niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>';
