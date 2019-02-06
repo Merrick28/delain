@@ -58,6 +58,7 @@
 			<div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
 		</div>
         <div  style="padding:0 10 0 10px; text-align:center;">
+			<div id="animation"><a href="concours_barde.php">Concours de Barde</a></div>
             <div id="passageniveau">{PASSAGE_NIVEAU}</div>
             <div id="quete">{PERSO_QUETE}</div>
             <div id="lieu">{PERSO_LIEU}</div>
