@@ -39,22 +39,22 @@ function affiche_perso($perso_cod)
     //
     //$avatar = G_URL . "avatars/" . $aff_avat;
     $annee_en_cours = date('Y');
-    $debut_1avril = mktime(0, 0, 1, 4, 1, $annee_en_cours);
-    $fin_1avril = mktime(0, 0, 1, 4, 2, $annee_en_cours);
-    $is1avril = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
+    $debut_1avril   = mktime(0, 0, 1, 4, 1, $annee_en_cours);
+    $fin_1avril     = mktime(0, 0, 1, 4, 2, $annee_en_cours);
+    $is1avril       = false; //en 2018 on change la blague!// time() > $debut_1avril && time() < $fin_1avril;
     //
     // fin 1er avril
     //
 
     $limite_niveau_actuel = $perso->px_limite_actuel();
-    $limite_niveau = $perso->px_limite();
-    $barre_xp = $perso->barre_xp();
-    $barre_hp = $perso->barre_hp();
-    $barre_energie = $perso->barre_energie();
-    $dlt_passee = $perso->dlt_passee();
+    $limite_niveau        = $perso->px_limite();
+    $barre_xp             = $perso->barre_xp();
+    $barre_hp             = $perso->barre_hp();
+    $barre_energie        = $perso->barre_energie();
+    $dlt_passee           = $perso->dlt_passee();
 
     // récupération énergie divine pour les familiers divins
-    $barre_divine = -1;
+    $barre_divine   = -1;
     $energie_divine = -1;
     if ($perso->perso_gmon_cod == 441)
     {
@@ -81,9 +81,9 @@ function affiche_perso($perso_cod)
 
 
     $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
-    $impalpable = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
+    $impalpable       = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
 
-    $template = $twig->load('_tab_switch_perso.twig');
+    $template     = $twig->load('_tab_switch_perso.twig');
     $options_twig = array(
         'PERSO'         => $perso,
         'POSITION'      => $position,
@@ -111,7 +111,7 @@ function affiche_perso($perso_cod)
 function affiche_case_perso_vide()
 {
     global $type_flux, $compt_cod, $twig;
-    $template = $twig->load('_tab_switch_perso_vide.twig');
+    $template     = $twig->load('_tab_switch_perso_vide.twig');
     $options_twig = array(
         'TYPE_FLUX' => $type_flux,
         'G_URL'     => G_URL,
@@ -124,7 +124,7 @@ function affiche_case_perso_vide()
 function affiche_case_monstre_vide()
 {
     global $twig;
-    $template = $twig->load('_tab_switch_monstre_vide.twig');
+    $template     = $twig->load('_tab_switch_monstre_vide.twig');
     $options_twig = array(
         'G_IMAGES' => G_IMAGES
     );
@@ -142,15 +142,14 @@ $compte = new compte;
 $compte->charge($compt_cod);
 
 
-
-$nb_perso_max = $compte->compt_ligne_perso * 3;
+$nb_perso_max   = $compte->compt_ligne_perso * 3;
 $nb_perso_ligne = 3;
-$ok_4 = $compte->autorise_4e_global();
+$ok_4           = $compte->autorise_4e_global();
 
 
 if ($ok_4)
 {
-    $nb_perso_max = $compte->compt_ligne_perso * 4;
+    $nb_perso_max   = $compte->compt_ligne_perso * 4;
     $nb_perso_ligne = 4;
 }
 $taille = 100 / $nb_perso_ligne;
@@ -159,11 +158,11 @@ $type_4 = $compte->compt_type_quatrieme;
 /*********************/
 /* Persos classiques */
 /*********************/
-$tab_perso = $compte->getPersosActifs(false, true);
+$tab_perso     = $compte->getPersosActifs(false, true);
 $perso_normaux = array();
-$quatriemes = array();
+$quatriemes    = array();
 
-$cpt_normaux = 0;
+$cpt_normaux    = 0;
 $cpt_quatriemes = 0;
 
 foreach ($tab_perso as $detail_perso)
@@ -195,7 +194,7 @@ if ($premier_perso == -1)
 
 echo '<div class="row row-eq-height">';     //Debut ligne des persos
 $numero_quatrieme = -1;
-$cpt = 0;
+$cpt              = 0;
 while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes))
 {
     // Est-on sur la case réservée au quatrième ?
@@ -243,7 +242,7 @@ echo '</div>';               //Fin de ligne des persos
 
 
 global $twig;
-$template = $twig->load('_tab_switch_visu_evt.twig');
+$template     = $twig->load('_tab_switch_visu_evt.twig');
 $options_twig = array(
     'G_IMAGES'       => G_IMAGES,
     'G_URL'          => G_URL,
@@ -273,7 +272,6 @@ if (count($tab_fam) != 0)
     {
 
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
 
 
         affiche_perso($fam->perso_cod);
@@ -317,7 +315,7 @@ if (count($tab_perso_sit) != 0)
     if (count($tab_fam_sit) != 0)
     {
 
-        $nb_perso = $nb_perso_max;
+        $nb_perso    = $nb_perso_max;
         $alias_perso = 0;
         foreach ($tab_fam_sit as $fam_sit)
         {
