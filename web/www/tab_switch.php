@@ -319,12 +319,13 @@ if (count($tab_perso_sit) != 0)
         $alias_perso = 0;
         foreach ($tab_fam_sit as $fam_sit)
         {
-            for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
-            {
+            // 2019-02-07@Marlyza : Je ne sais pas trop pourquoi il y a ce compteur, mais il duplique les familiers sittés!
+            //for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
+            //{
                 echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
                 affiche_perso($fam_sit->perso_cod);
                 echo '</div>';
-            }
+            //}
         }
     }
     echo '</div>';               //Fin de ligne des persos+familiers sittés
