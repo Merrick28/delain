@@ -28,4 +28,4 @@ if ($erreur == 0)
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
-include "blocks/_header_page_jeu.php";
+include "blocks/_footer_page_jeu.php";
