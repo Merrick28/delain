@@ -40,27 +40,27 @@ CREATE OR REPLACE FUNCTION f_carac_deteriore(integer, integer) RETURNS f_resulta
 /*       30 -> intelligence                             */
 /********************************************************/
 declare
-    personnage alias for $1;        -- perso_cod
-    amel alias for $2;              -- type amélioration
-    v_pa integer;                   -- nombre de PA du perso
-    v_niveau_actu integer;          -- niveau actuel du perso
-    v_limite_niveau integer;        -- PX nécessaires pour monter de niveau
-    v_px numeric;                       -- PX du perso
-    v_nom_perso text;                   -- nom du perso
-    v_constitution integer;         -- constit du perso
-    pv_max_actuel integer;          -- PV max du perso
-    temp integer;                       -- temp
-    fait integer;                       -- amélioration faite ou non ?
-    v_temps_actuel integer;         -- temps de tour du perso en minutes
-    amel_temps integer;             -- amélioration de temps en minutes
-    v_repar integer;                    -- capacité de réparation
-    v_modif_repar integer;          -- ce qu'on monte en répar
-    v_enc_max integer;          -- encombrement du perso
+    personnage alias for $1;      -- perso_cod
+    amel alias for $2;            -- type amélioration
+    v_pa integer;                 -- nombre de PA du perso
+    v_niveau_actu integer;        -- niveau actuel du perso
+    v_limite_niveau integer;      -- PX nécessaires pour monter de niveau
+    v_px numeric;                 -- PX du perso
+    v_nom_perso text;             -- nom du perso
+    v_constitution integer;       -- constit du perso
+    pv_max_actuel integer;        -- PV max du perso
+    temp integer;                 -- temp
+    fait integer;                 -- amélioration faite ou non ?
+    v_temps_actuel integer;       -- temps de tour du perso en minutes
+    amel_temps integer;           -- amélioration de temps en minutes
+    v_repar integer;              -- capacité de réparation
+    v_modif_repar integer;        -- ce qu'on monte en répar
+    v_enc_max integer;            -- encombrement du perso
     v_lvl_vamp integer;
     v_nb_amel_comp integer;
+    v_race integer;               -- race du perso
     compt integer;
     v_force integer;
-    v_race integer;
     v_deg_dex integer;
     v_regen integer;
     v_degats integer;
@@ -514,6 +514,11 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
     elsif amel = 18 then    -- supression af0
          if (v_nb_amel_comp <=0 ) then
             v_resultat.code_retour := 'Erreur ! Le minimum d''amélioration a été atteint!';
+            v_resultat.etat := -1 ;
+            return v_resultat;
+        end if;
+        if (v_race = 2 ) then
+            v_resultat.code_retour := 'Erreur ! Les nains ne peuvent pas perdre la compétence attaque foudroyante obtenue par leur naissance!';
             v_resultat.etat := -1 ;
             return v_resultat;
         end if;

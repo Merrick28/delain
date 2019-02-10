@@ -41,10 +41,11 @@ $caracteristique_nom=array(
     30  =>  "Intelligence"
 );
 
-function table_competence_lvl_1($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $adds="")
+function table_competence_lvl_1($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $options=array())
 {
     GLOBAL $caracteristique_nom;
     $carac = $caracteristique_nom[$comp];
+    $adds = isset($options["adds"]) ? $options["adds"] : "";
 
     $retour = "" ;
 
@@ -66,10 +67,11 @@ function table_competence_lvl_1($comp, $af0, $af1, $af2, $nouvelle_comp_possible
 }
 
 
-function table_competence_lvl_2($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $adds="")
+function table_competence_lvl_2($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $options=array())
 {
     GLOBAL $caracteristique_nom;
     $carac = $caracteristique_nom[$comp];
+    $adds = isset($options["adds"]) ? $options["adds"] : "";
 
     $retour = "" ;
 
@@ -90,10 +92,11 @@ function table_competence_lvl_2($comp, $af0, $af1, $af2, $nouvelle_comp_possible
     return $retour;
 }
 
-function table_competence_lvl_3($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $adds="")
+function table_competence_lvl_3($comp, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, $options=array())
 {
     GLOBAL $caracteristique_nom;
     $carac = $caracteristique_nom[$comp];
+    $adds = isset($options["adds"]) ? $options["adds"] : "";
 
     $retour = "" ;
 
@@ -601,9 +604,14 @@ if ($erreur == 0)
             $tp1 = $tp2 || $perso->existe_competence(76);
             $tp0 = $tp1 || $perso->existe_competence(75);
 
-            echo table_competence_lvl_1(18, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>");
-            echo table_competence_lvl_2(10, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>");
-            echo table_competence_lvl_3(11, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>");
+
+            // Sauf pour les nains: ils connaissent déjà la compétence Attaque Foudrayante (de naissance) et ne doivent pas la perdre!!
+            if ($race != 2)
+            {
+                echo table_competence_lvl_1(18, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>"));
+            }
+            echo table_competence_lvl_2(10, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>"));
+            echo table_competence_lvl_3(11, $af0, $af1, $af2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes au <strong>corps à corps</strong></em>"));
 
             echo table_competence_lvl_1(12, $f0, $f1, $f2, $nouvelle_comp_possible, $suppression_comp_possible);
             echo table_competence_lvl_2(13, $f0, $f1, $f2, $nouvelle_comp_possible, $suppression_comp_possible);
@@ -613,9 +621,9 @@ if ($erreur == 0)
             echo table_competence_lvl_2(16, $cg0, $cg1, $cg2, $nouvelle_comp_possible, $suppression_comp_possible);
             echo table_competence_lvl_3(17, $cg0, $cg1, $cg2, $nouvelle_comp_possible, $suppression_comp_possible);
 
-            echo table_competence_lvl_1(21, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>");
-            echo table_competence_lvl_2(22, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>");
-            echo table_competence_lvl_3(23, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, "<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>");
+            echo table_competence_lvl_1(21, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>"));
+            echo table_competence_lvl_2(22, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>"));
+            echo table_competence_lvl_3(23, $bp0, $bp1, $bp2, $nouvelle_comp_possible, $suppression_comp_possible, array("adds"=>"<br><em style=\"font-size: small\">Attention: Uniquement pour les armes de <strong>distance</strong></em> </td>"));
 
             echo table_competence_lvl_1(24, $tp0, $tp1, $tp2, $nouvelle_comp_possible, $suppression_comp_possible);
             echo table_competence_lvl_2(25, $tp0, $tp1, $tp2, $nouvelle_comp_possible, $suppression_comp_possible);
