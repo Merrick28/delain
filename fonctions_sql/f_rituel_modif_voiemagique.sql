@@ -94,7 +94,7 @@ begin
     end if;
 
     -- vérification du délai entre 2 rituels!
-    select into temp prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=personnage and prcarac_date_rituel > now()-((getparm_n(138)::text)||' DAYS')::interval ;
+    select into temp prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=personnage and prcarac_date_rituel > now()-((getparm_n(138)::text)||' DAYS')::interval and prcarac_type_rituel=2 ;
     if found then
         code_retour := '<p>Trop peu de temps vous sépare du dernier rituel pour en faire un nouveau !!';
         return code_retour;

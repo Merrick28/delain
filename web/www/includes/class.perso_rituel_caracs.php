@@ -139,18 +139,24 @@ class perso_rituel_caracs
 
     /***
      * @param $perso_cod
+     * @param int $type_rituel : type de rituel 1=caracs, 2=voie magique*
      * @return bool faux ou l'objet représentant le dernier rituel du perso_cod
      * @throws Exception
      */
-    function  get_dernier_rituel($perso_cod)
+    function  get_dernier_rituel($perso_cod, $type_rituel)
     {
         $retour = new perso_rituel_caracs();
         $pdo = new bddpdo;
-        $req = "select prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=:perso_cod
-                and prcarac_date_rituel=(select max(prcarac_date_rituel) prcarac_date_rituel from perso_rituel_caracs where prcarac_perso_cod=:perso_cod)
+        $req = "select prcarac_cod 
+                from perso_rituel_caracs 
+                where prcarac_perso_cod=:perso_cod and prcarac_type_rituel=:prcarac_type_rituel and prcarac_date_rituel=(
+                    select max(prcarac_date_rituel) prcarac_date_rituel 
+                    from perso_rituel_caracs 
+                    where prcarac_perso_cod=:perso_cod and prcarac_type_rituel=:prcarac_type_rituel
+                )
                 order by prcarac_perso_cod";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod),$stmt);
+        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod, ":prcarac_type_rituel" => $type_rituel),$stmt);
         if(!$result = $stmt->fetch())
         {
             return false;
@@ -160,17 +166,19 @@ class perso_rituel_caracs
     }
 
     /**
-     * @param $perso_cod
+     * @param $perso_cod : perso
+     * @param int $type_rituel : type de rituel 1=caracs, 2=voie magique
      * @return bool vrai si le rituel est permis faux dans le cas contraire (si la date du dernier rituel est trop proche voir param 138)
      * @throws Exception
      */
-    function  is_rituel_possible($perso_cod)
+    function  is_rituel_possible($perso_cod, $type_rituel)
     {
         $retour = new perso_rituel_caracs();
         $pdo = new bddpdo;
-        $req = "select prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=:perso_cod and prcarac_date_rituel > now()-((getparm_n(138)::text)||' DAYS')::interval ";
+        $req = "select prcarac_cod from perso_rituel_caracs where prcarac_perso_cod=:perso_cod and prcarac_date_rituel > now()-((getparm_n(138)::text)||' DAYS')::interval and prcarac_type_rituel=:prcarac_type_rituel ";
+
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod),$stmt);
+        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod, ":prcarac_type_rituel" => $type_rituel),$stmt);
         if($result = $stmt->fetch())
         {
             return false;       // Il y a eu des rituels trop récents
@@ -182,15 +190,17 @@ class perso_rituel_caracs
 
     /***
      * @param $perso_cod
+     * @param int $type_rituel : type de rituel 1=caracs, 2=voie magique
      * @return int
      * @throws Exception
      */
-    function get_nb_rituel($perso_cod)
+    function get_nb_rituel($perso_cod, $type_rituel)
     {
         $pdo = new bddpdo;
-        $req = "select count(*) nb_rituel from perso_rituel_caracs where prcarac_perso_cod=:perso_cod ";
+        $req = "select count(*) nb_rituel from perso_rituel_caracs where prcarac_perso_cod=:perso_cod and prcarac_type_rituel=:prcarac_type_rituel ";
+
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod),$stmt);
+        $stmt = $pdo->execute(array(":perso_cod"=>$perso_cod, ":prcarac_type_rituel" => $type_rituel),$stmt);
         $result = $stmt->fetch();
 
         return (int) $result["nb_rituel"];

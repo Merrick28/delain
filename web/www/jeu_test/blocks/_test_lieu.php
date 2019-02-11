@@ -35,4 +35,5 @@ if ($erreur == 0)
         }
     }
     $lieu_cod = $tab_lieu['lieu_cod'];
+    $tlieu_cod = $tab_lieu['type_lieu'];
 }
