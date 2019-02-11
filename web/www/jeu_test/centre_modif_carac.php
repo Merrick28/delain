@@ -719,7 +719,7 @@ if ($erreur == 0)
                 if ($result = $stmt->fetch())
                 {
                     //Changement de voie de magique
-                    echo "<p>Nous vous offrons la possibilité de changer <strong><u>votre voie magique</u></strong>, vous avez choisie la voie du : <strong>{$result['mvoie_libelle']}</strong><br><br>" ;
+                    echo "<p>Nous vous accordons la possibilité de changer <strong><u>votre voie magique</u></strong>, vous avez choisie la voie du : <strong>{$result['mvoie_libelle']}</strong><br><br>" ;
 
                     echo "<form name=\"voiemagique\" action=\"centre_modif_carac.php\" method=\"post\">" ;
                     echo "<input type=\"hidden\" name=\"methode\" value=\"changervoie\">";
@@ -763,7 +763,11 @@ if ($erreur == 0)
                 }
                 else
                 {
-                    echo "<p>xxxxxx<br>";
+                    echo "<p>Nous vous accordons ici la possibilité de changer <strong><u>votre voie magique</u></strong>, mais vous n'avez pas encore choisi votre voie.<br>" ;
+                    echo "<br><em>Les coûts du rituel de modification de voie sont les suivants</em>:<br>";
+                    if ($cout_bz>0) echo " &#8226; <strong>{$cout_bz} Brouzoufs</strong><br>";
+                    if ($cout_obj>0) echo " &#8226; <strong>{$cout_obj} {$objet_generique->gobj_nom}</strong><br>";
+                    echo "<br>";
                 }
             }
 
