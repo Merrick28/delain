@@ -557,6 +557,54 @@ switch($_REQUEST["request"])
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 
+            case 'perso_titre':     // nom du perso et sa position à partir perso_cod
+                $req = "select distinct perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        join perso_titre on ptitre_perso_cod=perso_cod
+                        where ptitre_titre ilike ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["titre"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
+            case 'perso_liste':     // nom du perso et sa position à partir perso_cod
+                $filter = "" ;
+                $words = explode(";", $_REQUEST["liste"]);
+                $search_string = array();
+                foreach ($words as $k => $w)
+                {
+                    if ($w != "")
+                    {
+                        if ($filter!="")  $filter.= "OR ";
+                        $filter.= "(perso_nom ilike :search$k) ";
+                        $search_string[":search$k"] = "{$w}" ;
+                    }
+                }
+
+                $req = "select distinct perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        where ($filter) ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute($search_string, $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
+            case 'perso_gain_px':     // nom du perso et sa position à partir perso_cod
+                $req = "select distinct perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        join ligne_evt on levt_cible=perso_cod
+                        where  levt_tevt_cod=48 and levt_attaquant=? and perso_type_perso in (1,3) ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                break;
+
             case 'perso_pos':     // nom du perso et sa position à partir perso_cod
                 $req = "select perso_nom, perso_type_perso, pos_x, pos_y, pos_etage,etage_libelle from perso 
                         join perso_position on ppos_perso_cod=perso_cod 
