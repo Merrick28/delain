@@ -432,9 +432,9 @@ switch ($methode)
                 $nb_vrai_dest = $nb_vrai_dest + 1;
             }
         }
-        if ($nb_dest > 50)
+        if ($nb_dest > 100)
         {
-            $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 20 destinataires ! *********</strong><br><br>';
+            $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 100 destinataires ! *********</strong><br><br>';
             $erreur = 1;
         }
         if ($nb_vrai_dest == 0)
