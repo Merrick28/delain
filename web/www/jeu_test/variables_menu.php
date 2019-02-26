@@ -334,7 +334,7 @@ else
 // 2019-02-12 - Marlyza - Ajout menu attribution de titre
 if ($droit['modif_perso'] == 'O')
 {
-    $option_monstre .= ($option_monstre == "" ? "" : "<br>") . '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_titre.php">Gestion des titres</a>';
+    $option_monstre .= ($option_monstre == "" ? "" : "<br>") . '<img src="' . G_IMAGES . 'evenements.gif" alt=""> <a href="' . $chemin . '/admin_titre.php">Gestion de récompense</a>';
 }
 
 // 2018-10-30 - Marlyza - Ajout menu téléportation

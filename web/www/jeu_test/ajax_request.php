@@ -571,7 +571,8 @@ switch($_REQUEST["request"])
 
             case 'perso_liste':     // nom du perso et sa position à partir perso_cod
                 $filter = "" ;
-                $words = explode(";", $_REQUEST["liste"]);
+                if (strpos($_REQUEST["liste"], ";")>0) $delimiter=";"; else $delimiter=",";  // rechercher le delimiteur
+                $words = explode($delimiter, $_REQUEST["liste"]);
                 $search_string = array();
                 foreach ($words as $k => $w)
                 {
@@ -579,7 +580,7 @@ switch($_REQUEST["request"])
                     {
                         if ($filter!="")  $filter.= "OR ";
                         $filter.= "(perso_nom ilike :search$k) ";
-                        $search_string[":search$k"] = "{$w}" ;
+                        $search_string[":search$k"] = trim($w) ;
                     }
                 }
 
