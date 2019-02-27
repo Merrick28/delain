@@ -194,7 +194,14 @@ $t->set_var('PERSO_POS_Y', $var_menu_pos->pos_y);
 $t->set_var('PERSO_ETAGE', $var_menu_etage->etage_libelle);
 
 // Animation Léno 2019: Concours de barde
-$animation = '<hr /><a href="' . $chemin . '/concours_barde.php">Concours de Barde</a>';
+$animation = "" ;
+$pdo   = new bddpdo;
+$req = "SELECT cbar_saison FROM concours_barde where (now()>cbar_date_teaser or now()>=cbar_date_ouverture) and now()<=cbar_fermeture order by cbar_saison desc limit 1 ";
+$stmt  = $pdo->query($req);
+if ($rows  = $stmt->fetch())
+{
+    $animation = '<hr /><a href="' . $chemin . '/concours_barde.php">Concours de Barde</a>';
+}
 $t->set_var('PERSO_ANIMATION', $animation);
 
 // passage niveau
