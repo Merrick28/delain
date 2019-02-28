@@ -303,27 +303,36 @@ if ($methode == "")
                     }
                 }
             }
-            // Affichage de la boite de selection
-            $contenu_page .= '<form method="post">';
-            if (isset($_REQUEST["onglet"])) $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
-            $contenu_page .= "<br>Sélectionner la quête : " . create_selectbox("quete_nb", $aq_select, $_REQUEST["quete_nb"], array('style' => 'style="width:300px;" onchange="this.parentNode.submit();"'));
-            $contenu_page .= '</form><hr>';
 
-            if (!isset($_REQUEST["quete_nb"])) $_REQUEST["quete_nb"] = array_keys($aq_select)[0];
-            $q = explode("*", $_REQUEST["quete_nb"]);
-            $quete_perso->charge($q[0]);
-            $realisation = 1 * $q[1];
-
-            $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
-
-            $contenu_page .= "Quête commencée le : " . date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) . " et terminée le : " . date("d/m/Y H:i:s", strtotime($journal_pages[count($journal_pages) - 1]->aqpersoj_date)) . "<br>";
-            $contenu_page .= "<u>Description de la quête</u> : " . $quete->aquete_description . " (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>";
-
-            foreach ($journal_pages as $k => $jpages)
+            //seulement s'il y a eu des quêtes journalisée (le perso n'a peut-être terminé que des quêtes qui ne vont pas dans le journal)
+            if (sizeof($aq_select)==0)
             {
-                $contenu_page .= $jpages->aqpersoj_texte . "<br><br>";;
+                // Affichage de la boite de selection
+                $contenu_page .= "<br><br><br><br><center>Vous n'avez pas encore terminé de quête (journalisée)!!!!<center><br><br><br><br>";
             }
+            else
+            {
+                // Affichage de la boite de selection
+                $contenu_page .= '<form method="post">';
+                if (isset($_REQUEST["onglet"])) $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
+                $contenu_page .= "<br>Sélectionner la quête : " . create_selectbox("quete_nb", $aq_select, $_REQUEST["quete_nb"], array('style' => 'style="width:300px;" onchange="this.parentNode.submit();"'));
+                $contenu_page .= '</form><hr>';
 
+                if (!isset($_REQUEST["quete_nb"])) $_REQUEST["quete_nb"] = array_keys($aq_select)[0];
+                $q = explode("*", $_REQUEST["quete_nb"]);
+                $quete_perso->charge($q[0]);
+                $realisation = 1 * $q[1];
+
+                $journal_pages = $perso_journal->getBy_perso_realisation($quete_perso->aqperso_cod, $realisation);
+
+                $contenu_page .= "Quête commencée le : " . date("d/m/Y H:i:s", strtotime($journal_pages[0]->aqpersoj_date)) . " et terminée le : " . date("d/m/Y H:i:s", strtotime($journal_pages[count($journal_pages) - 1]->aqpersoj_date)) . "<br>";
+                $contenu_page .= "<u>Description de la quête</u> : " . $quete->aquete_description . " (réalisation #$realisation)<br><br><div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>";
+
+                foreach ($journal_pages as $k => $jpages)
+                {
+                    $contenu_page .= $jpages->aqpersoj_texte . "<br><br>";;
+                }
+            }
         }
     }
     $contenu_page .= "</td></tr></table>";     // Fin des onglets!!
