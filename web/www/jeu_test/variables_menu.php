@@ -536,7 +536,7 @@ else
     $favoris = '<div id="barre-favoris"><hr />';
     foreach ($arr_favoris as $key => $fav)
     {
-        $favoris .= '<div id="fav-link-' . $fav["pfav_cod"] . '"><img src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
+        $favoris .= '<div id="fav-link-' . $fav["pfav_cod"] . '"><img onclick="javascript:delSortFavoris(' . substr($fav["pfav_type"],-1) .',' . $fav["pfav_misc_cod"] .');" src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
     }
     $favoris .= '</div>';
 }

@@ -1064,7 +1064,7 @@ class perso
         $pdo    = new bddpdo;
         $retour = array();
 
-        $req  = "SELECT pfav_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
+        $req  = "SELECT pfav_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -1074,7 +1074,19 @@ class perso
             $stmt2   = $pdo->execute(array(), $stmt2);
             $result2 = $stmt2->fetch();
 
-            $retour[] = array("pfav_cod" => $result["pfav_cod"], "nom" => $result["pfav_nom"] . " (" . $result2["cout_pa"] . " PA)", "link" => $result["pfav_link"]);
+            //if ((int)$result2["cout_pa"]==20 && $result["pfav_type"]=="sort5")
+            //{
+            //    //Supression automatique des racourcis non-valides (si le perso n'a plus l'objet magique)
+            //    $req  = "DELETE FROM public.perso_favoris WHERE pfav_cod=:pfav_cod  ";
+            //    $stmt3 = $pdo->prepare($req);
+            //    $pdo->execute(array(":pfav_cod" => $result["pfav_cod"]), $stmt3);
+            //}
+
+            $retour[] = array(  "pfav_cod" => $result["pfav_cod"],
+                                "nom" =>  $result2["cout_pa"]> 12 ? $result["pfav_nom"] : $result["pfav_nom"] . " (" . $result2["cout_pa"] . " PA)",
+                                "link" => $result["pfav_link"],
+                                "pfav_type" => $result["pfav_type"],
+                                "pfav_misc_cod" => $result["pfav_misc_cod"]);
         }
         return $retour;
     }

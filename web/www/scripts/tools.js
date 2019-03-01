@@ -91,7 +91,7 @@ function popRequestStatus(r, context)
             $("#fav-add-"+context.type+"-"+context.misc_cod).css("display","none");
             $("#fav-del-"+context.type+"-"+context.misc_cod).css("display","block");
             $("#barre-favoris").css("display","block");  // au cas où c'est le premier element
-            $("#barre-favoris").append('<div id="fav-link-' + r.data.pfav_cod + '"><img src="/images/favoris.png" alt=""> <a href="' + r.data.link + '">' + r.data.nom + '</a></div>');
+            $("#barre-favoris").append('<div id="fav-link-' + r.data.pfav_cod + '"><img onclick="javascript:delSortFavoris('+context.type.substr(-1)+','+context.misc_cod+');" src="/images/favoris.png" alt=""> <a href="' + r.data.link + '">' + r.data.nom + '</a></div>');
         }
         else
         {
@@ -106,12 +106,13 @@ function popRequestStatus(r, context)
     }
 }
 
-function addSortFavoris(type, sort_cod)
+function addSortFavoris(type, misc_cod)
 {
-    var nom = $.trim($("#fav-add-sort-" + sort_cod).parent().next().text());
+    var fav = "#fav-add-sort-" + type + "-" + misc_cod ;
+    var nom = $.trim($(fav).parent().next().text());
     nom = nom.substring(0, nom.indexOf(" ("));
 
-    $("#fav-add-sort-" + sort_cod).parent().prepend('<div id="spop-sort" class="spop-overlay"><em>Nom du favoris:</em><input id="spop-sort-nom" style="margin:4px;" type="text" value="' + nom + '"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
+    $(fav).parent().prepend('<div id="spop-sort" class="spop-overlay"><em>Nom du favoris:</em><input id="spop-sort-nom" style="margin:4px;" type="text" value="' + nom + '"><br><center><input id="spop-sort-valid" type="submit" class="test" value="Ajouter !">&nbsp;&nbsp;<input id="spop-sort-cancel" type="submit" class="test" value="Annuler"></div></center></div>');
 
     $(document).click(function (event) {
         if ((event.target.id == "spop-sort-cancel") || (event.target.closest("div").id != "spop-sort"))
@@ -122,7 +123,7 @@ function addSortFavoris(type, sort_cod)
         else if (event.target.id == "spop-sort-valid")
         {
             var nom = $("#spop-sort-nom").val();
-            runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"add", type:"sort", misc_cod:sort_cod})
+            runAsync({request: "add_favoris", data:{nom:nom, type:"sort"+type, misc_cod:misc_cod}}, popRequestStatus, {action:"add", type:"sort-"+type, misc_cod:misc_cod})
             $(document).unbind("click");
             $('#spop-sort').remove();
             event.stopPropagation();
@@ -136,9 +137,9 @@ function addSortFavoris(type, sort_cod)
  }
 
 
-function delSortFavoris(type, sort_cod)
+function delSortFavoris(type, misc_cod)
 {
-    runAsync({request: "del_favoris", data:{type:"sort"+type, misc_cod:sort_cod}}, popRequestStatus, {action:"del", type:"sort", misc_cod:sort_cod})
+    runAsync({request: "del_favoris", data:{type:"sort"+type, misc_cod:misc_cod}}, popRequestStatus, {action:"del", type:"sort-"+type, misc_cod:misc_cod})
 }
 
 //------------------------------------------------------------------------------------------------------------------
