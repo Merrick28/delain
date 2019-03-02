@@ -972,7 +972,8 @@ $var_twig_defaut = array(
     'COMPTE'              => $compte,
     'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide,
     'IS_INTANGIBLE'       => $is_intangible,
-    'IS_REFUGE'           => $is_refuge
+    'IS_REFUGE'           => $is_refuge,
+    'PERSO_ANIMATION'     => $animation
 );
 $benchmark->stop($benchmark);
 ?>
