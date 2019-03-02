@@ -2276,6 +2276,35 @@ class perso
         return $result['resultat'];
     }
 
+    function niveau_blessures($pv=null, $pv_max=null)
+    {
+        // Sans paramètres on prends le perso courant
+        if ($pv==null || $pv_max==null)
+        {
+            $pv = $this->perso_pv ;
+            $pv_max = $this->perso_pv_max ;
+        }
+
+        $niveau_blessures = "" ;
+        if ($pv / $pv_max < 0.15)
+        {
+            $niveau_blessures = 'presque mort';
+        }
+        else if ($pv / $pv_max < 0.25)
+        {
+            $niveau_blessures = 'gravement touché';
+        }
+        else if ($pv / $pv_max < 0.5)
+        {
+            $niveau_blessures = 'blessé';
+        }
+        else if ($pv / $pv_max < 0.75)
+        {
+            $niveau_blessures = 'touché';
+        }
+        return $niveau_blessures;
+    }
+
     function repare_objet($type_rep, $objet)
     {
         $pdo    = new bddpdo();

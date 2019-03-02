@@ -82,7 +82,7 @@
         echo "<tr>
 			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
 			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
-			" . $perso_nom . "</a></strong><em> (vous-même <strong>" . $niveau_blessures . "</strong>)</em></td>
+			" . $perso_nom . "</a></strong><em> (vous-même<strong>" . $niveau_blessures . "</strong>)</em></td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
 			<td style=\"background-color:darkseagreen; text-align:center;\">0</td>
