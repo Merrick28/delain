@@ -32,7 +32,8 @@ begin
 	v_des := lancer_des(1,100);
 	code_retour := code_retour || 'lancer: ' || v_des;
 		if v_des < v_chance then
-				select into v_cible perso_cible from perso where perso_cod = monstre;
+				--select into v_cible perso_cible from perso where perso_cod = monstre;
+				select into v_cible choix_perso_vue_aleatoire(perso_cod, 1)  from perso where perso_cod = monstre;
 				code_retour := code_retour || 'Cible: ' || v_cible;
 			        if v_cible is not null then
 				select into v_pos
@@ -92,11 +93,9 @@ begin
 	select into v_nom_monstre gmon_nom from monstre_generique where gmon_cod = v_invocation;
 	v_des := lancer_des(1,100);
 	if v_des < v_chance then
-		select into v_cible perso_cible from perso where perso_cod = monstre;
-		/*if v_cible is null then
-			v_cible := monstre;
-		end if;*/
-	        if v_cible is not null then
+		--select into v_cible perso_cible from perso where perso_cod = monstre;
+		select into v_cible choix_perso_vue_aleatoire(perso_cod, 1) from perso where perso_cod = monstre;
+	  if v_cible is not null then
 			code_retour := code_retour || 'Invocation de ' || v_nom_monstre || '.';
 			select into v_pos ppos_pos_cod
 			from perso_position where ppos_perso_cod = v_cible;
@@ -154,7 +153,8 @@ begin
 	select into v_nom_monstre gmon_nom from monstre_generique where gmon_cod = v_invocation;
 	v_des := lancer_des(1,100);
 	if v_des < v_chance then
-		select into v_cible perso_cible from perso where perso_cod = monstre;
+		--select into v_cible perso_cible from perso where perso_cod = monstre;
+		select into v_cible choix_perso_vue_aleatoire(perso_cod, 1) from perso where perso_cod = monstre;
 		code_retour := code_retour || 'Invocation de ' || v_nom_monstre || '.';
 		v_monstre := cree_monstre_pos(v_invocation, v_pos);
 		insert into ligne_evt (levt_tevt_cod, levt_texte, levt_perso_cod1, levt_lu, levt_visible) values (53, v_texte, monstre, 'O', 'O');
