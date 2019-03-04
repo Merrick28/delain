@@ -154,8 +154,14 @@
         </div>
         <div id="position"><br>X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
             <strong>{{ POSITION.pos_y }}</strong>
-            {% if not PERSO.is_fam and false%}
-            &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+            {% if not PERSO.is_fam %}
+                {% if PERSO.get_pa_dep()==4 %}
+                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                {% elseif PERSO.get_pa_dep()<4 %}
+                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                {% else %}
+                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                {% endif %}
             {% endif %}
             <br><strong><a
                         href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
