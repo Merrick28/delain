@@ -180,6 +180,15 @@ $t->set_var('PERSO_PROCHAIN_NIVEAU', $prochain_niveau);
 // affichage dégats et armure
 $t->set_var('PERSO_DEGATS', $det_deg[0] . '-' . $det_deg[1]);
 $t->set_var('PERSO_ARMURE', $perso->armure());
+if (true) //en attendant validation des admins => if ($is_fam)
+{
+    $t->set_var('PERSO_MOVE', "");
+}
+else
+{
+    $t->set_var('PERSO_MOVE', ' &nbsp;&nbsp;<img src="' . G_IMAGES . 'footsteps.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
+}
+
 
 // position
 $var_menu_ppos = new perso_position();

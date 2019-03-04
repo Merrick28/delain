@@ -146,13 +146,18 @@
             </div>
         </div>
         <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
-            <strong>{{ DEG_MIN }} - {{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="16"
+            <strong>{{ DEG_MIN }}-{{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
                                                                alt=" ">
             <img src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def">
-            <strong>{{ PERSO.armure }}</strong>
+            <strong>{{ PERSO.armure }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
+                                                    alt=" ">
         </div>
-        <div id="position"><br>X : <strong>{{ POSITION.pos_x }}</strong> Y :
-            <strong>{{ POSITION.pos_y }}</strong><br><strong><a
+        <div id="position"><br>X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
+            <strong>{{ POSITION.pos_y }}</strong>
+            {% if not PERSO.is_fam and false%}
+            &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+            {% endif %}
+            <br><strong><a
                         href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
                                                    style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
                 </a></strong>
