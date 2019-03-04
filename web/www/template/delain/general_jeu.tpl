@@ -8,16 +8,16 @@
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 
     <!-- Custom delain CSS -->
-    <link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
+    <link rel="stylesheet" type="text/css" href="{URL}style.css?v20190301" title="essai">
     <link rel="stylesheet" type="text/css" href="{URL}style.php">
 
     <!-- Bootstrap custom CSS -->
-    <link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
+    <link href="{URL}css/container-fluid.css?v20190301" rel="stylesheet">
     <link href="{URL}css/delain.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
-    <script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>
+    <script src="{URL}scripts/tools.js?v20190301" type="text/javascript"></script>
+    <script src="{URL}scripts/delain.js?v20190301" type="text/javascript"></script>
     <script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 </head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);">
@@ -73,13 +73,11 @@
                     <div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div>
                 </div>
             </div>
-            <div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att">
-                <strong>{PERSO_DEGATS}</strong><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img
-                        src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong></div>
-            <div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a
-                            href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif"
-                                                                     style="height:12px;border:0px;"/>{PERSO_ETAGE}</a></strong>
+            <div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <strong>{PERSO_DEGATS}</strong>
+                <img src="{URL_IMAGES}del.gif" height="2" width="8" alt=" ">
+                <img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong>
             </div>
+            <div id="position"><br>X: <strong>{PERSO_POS_X}</strong>&nbsp;&nbsp;Y: <strong>{PERSO_POS_Y}</strong>{PERSO_MOVE}<br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
         </div>
         <div style="padding:0 10 0 10px; text-align:center;">
             <div id="animation">{PERSO_ANIMATION}</div>

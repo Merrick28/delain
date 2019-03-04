@@ -25,7 +25,7 @@ if ($verif_auth) {
         <!DOCTYPE html>
         <html>
         <head>
-            <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
+            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
             <title>Login</title>
         </head>
         <body background="images/fond5.gif">
@@ -79,8 +79,8 @@ if ($verif_auth) {
             <html>
             <head>
 
-                <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
-                <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20181113">
+                <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
+                <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
                 <title>Login</title>
             </head>
             <body background="images/fond5.gif" onload="retour();">
@@ -98,8 +98,8 @@ if ($verif_auth) {
 
             echo("<html><head>");
             ?>
-            <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20181113">
+            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
             <?php
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';
@@ -186,8 +186,8 @@ if ($verif_auth) {
 
             echo("<html><head>");
             ?>
-            <link rel="stylesheet" type="text/css" href="style.css?v20181113" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20181113">
+            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
             <?php
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';

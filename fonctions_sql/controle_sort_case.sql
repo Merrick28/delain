@@ -149,10 +149,12 @@ cout_pa := resultat;
     where objsortm_perso_cod = lanceur
       and sort_cod = num_sort
       and perobj_identifie = 'O'
+      and (perobj_equipe='O' or objsort_equip_requis=false)
       and (objsort_nb_utilisation_max>objsort_nb_utilisation or COALESCE(objsort_nb_utilisation_max,0) = 0)
       and not exists (select 1 from transaction where tran_obj_cod = perobj_obj_cod);
 		if not found then
-			code_retour := 'Erreur : l''objet ne doit pas engagé dans une transaction ou il ne dispose plus de charge.';			return code_retour;
+			code_retour := 'Erreur : vous ne possédez plus l''objet, ou il n''est plus équipé, ou il est engagé dans une transaction ou il ne dispose plus de charge.';
+			return code_retour;
 		end if;
 	end if;
 	if type_lancer > 5 then

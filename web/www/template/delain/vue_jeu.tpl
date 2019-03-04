@@ -4,15 +4,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20181113" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20190301" title="essai">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20181113" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v20190301" rel="stylesheet">
 
 		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="{URL}scripts/ajax2.js?v20181113" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js?v20181113" type="text/javascript"></script>
-		<script src="{URL}scripts/delain.js?v20181113" type="text/javascript"></script>
+		<script src="{URL}scripts/ajax2.js?v20190301" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v20190301" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v20190301" type="text/javascript"></script>
 		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
 
 	</head>
@@ -54,8 +54,11 @@
 			<div id="enchanteur" style="padding:0px">{ENCHANTEUR}</div>
 			<div id="divin" style="padding:0px">{FAM_DIVIN}</div>
 			<div id="xp" style="padding:0px"><img src="{URL_IMAGES}iconexp.gif" alt=""> <div title="{PERSO_PX} PX, prochain niveau à {PERSO_PROCHAIN_NIVEAU}" alt="{PERSO_PX}/{PERSO_PROCHAIN_NIVEAU} PX" class="container-xp"><div class="barre-xp" style="width:{PERSO_BARRE_XP}%"></div></div></div>
-			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <strong>{PERSO_DEGATS}</strong><img src="{URL_IMAGES}del.gif" height="2" width="16" alt=" "><img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong></div>
-			<div id="position"><br>X : <strong>{PERSO_POS_X}</strong> Y : <strong>{PERSO_POS_Y}</strong><br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
+			<div id="degats"><img src="{URL_IMAGES}att.gif" title="fourchette de dégats" alt="Att"> <strong>{PERSO_DEGATS}</strong>
+				<img src="{URL_IMAGES}del.gif" height="2" width="8" alt=" ">
+				<img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong>
+			</div>
+			<div id="position"><br>X: <strong>{PERSO_POS_X}</strong>&nbsp;&nbsp;Y: <strong>{PERSO_POS_Y}</strong>{PERSO_MOVE}<br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
 		</div>
         <div  style="padding:0 10 0 10px; text-align:center;">
 			<div id="animation">{PERSO_ANIMATION}</div>

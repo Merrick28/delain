@@ -46,19 +46,32 @@ switch($_REQUEST["request"])
     case "add_favoris":
     //==============================================================================================
         $type = $_REQUEST["type"];
-        $misc_cod = 1*$_REQUEST["misc_cod"];
-        // on épure le nom des caractèred interdits (sinon c'est interprété par le template twig
+        $misc_cod = 1*(int)$_REQUEST["misc_cod"];
+        // on épure le nom des caractèred interdits (sinon c'est interprété par le template twig)
         $nom = str_replace('{', '',str_replace('}', '',$_REQUEST["nom"]));
+
+        // Cas particulier des objets magiques (il faut qu'on recupère le n° du sort lancé)
+        if ($type=="sort5")
+        {
+            $req  = "select objsort_sort_cod from objets_sorts join perso_objets on perobj_obj_cod=objsort_obj_cod where perobj_perso_cod=:perso_cod and objsort_cod=:objsort_cod;";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod, ":objsort_cod" => $misc_cod), $stmt);
+            if (!$result = $stmt->fetch()) die('{"resultat":1, "message":"Anomalie sur la recherche de l\objet magique"}');
+            $sort_cod = (int)$result["objsort_sort_cod"];
+        }
+
         $list_function_cout_pa = array(
             "sort1" =>   "cout_pa_magie($perso_cod,$misc_cod,1)",
-            "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)"
+            "sort3" =>   "cout_pa_magie($perso_cod,$misc_cod,3)",
+            "sort5" =>   "cout_pa_objet_sort($perso_cod,$misc_cod)"
         );
         $list_link = array(
             "sort1" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,1])",
-            "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])"
+            "sort3" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance'],[$misc_cod,3])",
+            "sort5" =>     "javascript:post('/jeu_test/choix_sort.php',['sort','type_lance','objsort_cod'],[$sort_cod,5,$misc_cod])"
         );
 
-        if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris san nom."}');
+        if ($nom=="") die('{"resultat":1, "message":"Impossible d\'ajouter un favoris sans nom."}');
 
         $req  = "SELECT count(*) count from perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod AND pfav_type=:pfav_type AND pfav_misc_cod=:pfav_misc_cod";
         $stmt = $pdo->prepare($req);

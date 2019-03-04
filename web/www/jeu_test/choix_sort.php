@@ -40,6 +40,42 @@ if ($type_lance == 0) // runes
         }
     }
 }
+else if ($type_lance == 5)
+{
+    $sort_cod = $_REQUEST['sort'];
+    if ($sort_cod == '' || !isset($sort_cod))
+    {
+        echo "<p>Erreur sur le sort lancé !";
+        $erreur = 1;
+    }
+
+    // pour les objet magique on verifie que le perso le possede bien et qu'il est équipé si besoin
+    $pdo    = new bddpdo;
+    $objsort_cod = $_REQUEST['objsort_cod'];
+
+    $found = false ;
+    $objsort = new objets_sorts();
+    // On prend la lsite des sorts d'ojet (appel de la fonction pour mise à jour si le joueur utilise des raccroucis)
+    if ($liste_sorts = $objsort->get_perso_objets_sorts($perso_cod))
+    {
+        foreach ($liste_sorts as $sorts_attaches)
+        {
+            if ($sorts_attaches->objsort_cod==$objsort_cod)
+            {
+                $found = true;
+                break;
+            }
+        }
+    }
+
+    if (!$found)
+    {
+        echo "<p>Vous ne possédez plus l'objet vous permettant de faire ce sort (ou il n'est plus équipé ou encore il n'a plus de charge).";
+        $erreur = 1;
+    }
+
+
+}
 else
 {
     //($type_lance == 1) // mémorisé

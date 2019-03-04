@@ -8,16 +8,16 @@
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 
     <!-- Custom delain CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v20181113" title="essai">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v20190301" title="essai">
     <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.php">
 
     <!-- Bootstrap custom CSS -->
-    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v20181113" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v20190301" rel="stylesheet">
     <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v20181113" type="text/javascript"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v20181113" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v20190301" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v20190301" type="text/javascript"></script>
     <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js" type="text/javascript"></script>
 </head>
 <body style="background-image:url({{ G_IMAGES }}fond5.gif);">
@@ -146,20 +146,25 @@
             </div>
         </div>
         <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
-            <strong>{{ DEG_MIN }} - {{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="16"
+            <strong>{{ DEG_MIN }}-{{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
                                                                alt=" ">
             <img src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def">
-            <strong>{{ PERSO.armure }}</strong>
+            <strong>{{ PERSO.armure }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
+                                                    alt=" ">
         </div>
-        <div id="position"><br>X : <strong>{{ POSITION.pos_x }}</strong> Y :
-            <strong>{{ POSITION.pos_y }}</strong><br><strong><a
+        <div id="position"><br>X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
+            <strong>{{ POSITION.pos_y }}</strong>
+            {% if not PERSO.is_fam and false%}
+            &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+            {% endif %}
+            <br><strong><a
                         href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
                                                    style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
                 </a></strong>
         </div>
     </div>
     <div style="padding:0 10 0 10px; text-align:center;">
-        <div id="animation"><a href="concours_barde.php">Concours de Barde</a></div>
+        {{ PERSO_ANIMATION|raw }}
         <div id="passageniveau">
             {% if PERSO.perso_px >= PERSO.px_limite %}
                 <hr/><a href="niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>

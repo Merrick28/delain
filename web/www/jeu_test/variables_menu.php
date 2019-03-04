@@ -180,6 +180,15 @@ $t->set_var('PERSO_PROCHAIN_NIVEAU', $prochain_niveau);
 // affichage dégats et armure
 $t->set_var('PERSO_DEGATS', $det_deg[0] . '-' . $det_deg[1]);
 $t->set_var('PERSO_ARMURE', $perso->armure());
+if (true) //en attendant validation des admins => if ($is_fam)
+{
+    $t->set_var('PERSO_MOVE', "");
+}
+else
+{
+    $t->set_var('PERSO_MOVE', ' &nbsp;&nbsp;<img src="' . G_IMAGES . 'footsteps.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
+}
+
 
 // position
 $var_menu_ppos = new perso_position();
@@ -536,7 +545,7 @@ else
     $favoris = '<div id="barre-favoris"><hr />';
     foreach ($arr_favoris as $key => $fav)
     {
-        $favoris .= '<div id="fav-link-' . $fav["pfav_cod"] . '"><img src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
+        $favoris .= '<div id="fav-link-' . $fav["pfav_cod"] . '"><img onclick="javascript:delSortFavoris(' . substr($fav["pfav_type"],-1) .',' . $fav["pfav_misc_cod"] .');" src="' . G_IMAGES . 'favoris.png" alt=""> <a href="' . $fav["link"] . '">' . htmlspecialchars($fav["nom"]) . '</a></div>';
     }
     $favoris .= '</div>';
 }
@@ -972,7 +981,8 @@ $var_twig_defaut = array(
     'COMPTE'              => $compte,
     'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide,
     'IS_INTANGIBLE'       => $is_intangible,
-    'IS_REFUGE'           => $is_refuge
+    'IS_REFUGE'           => $is_refuge,
+    'PERSO_ANIMATION'     => $animation
 );
 $benchmark->stop($benchmark);
 ?>
