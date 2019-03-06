@@ -671,6 +671,37 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
         case 'vote_guilde':
             $contenu_page .= $perso->vote_revolution($_POST['revguilde_cod'], $_POST['vote']);
             break;
+        case 'utilise_potion':
+            $gobj_cod = 0 ;
+
+            // Charger l'objet pour récupérer son cod générique
+            $o = new perso_objets();
+            if ($o->getByPersoObjet($perso_cod, $_POST["obj_cod"]))
+            {
+                $potion = new objets();
+                $potion->charge($_REQUEST["obj_cod"]);
+                $gobj_cod = $potion->obj_gobj_cod ;
+            }
+
+            $req = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = :fpot_gobj_cod ' ;
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute( array(':fpot_gobj_cod' =>$gobj_cod), $stmt);
+            if (!$result = $stmt->fetch())
+            {
+                $contenu_page .= 'Erreur sur la fonction appelée.';
+            }
+            else
+            {
+                $fonction = $result['fpot_fonction'] ;
+                $req = 'select potions.' . $fonction . '(:perso_cod, :cible) as resultat';
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute( array(':perso_cod' => $perso_cod, ':cible' => $_POST['cible']), $stmt);
+                if ($result = $stmt->fetch())
+                {
+                    $contenu_page .= $result['resultat'];
+                }
+            }
+            break;
         case 'rituel_modif_caracs':
             if (((int)$_POST['diminution']<=0) || ((int)$_POST['amelioration']<=0))
             {

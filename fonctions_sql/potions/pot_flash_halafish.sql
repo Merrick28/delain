@@ -1,18 +1,20 @@
 --
--- Name: pot_flash_halafish(integer); Type: FUNCTION; Schema: potions; Owner: delain
+-- Name: pot_flash_halafish(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION potions.pot_flash_halafish(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_flash_halafish(integer,integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_poulpe_halafish                          */
 /* parametres :                                          */
-/*  $1 = personnage qui boit la potion                   */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
 /* Sortie :                                              */
 /*  code_retour = texte exploitable par php              */
 /*********************************************************/
 declare
   personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
   code_retour text;				-- code retour
   --
   v_gobj_cod integer;			-- code de l'objet générique
@@ -35,9 +37,9 @@ begin
   v_gobj_cod := 557;
   code_retour := '';
   /*Partie générique pour toutes les potions*/
-  select into code_retour potions.potion_generique(personnage,v_gobj_cod);
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
   if not found then
-    code_retour := code_retour||'Erreur ! Fonction générique non trouvée ';
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
   elsif substring(code_retour,1,1) != '0' then
     return split_part(code_retour,';',2);
   /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
@@ -47,19 +49,27 @@ begin
     select into v_esquive
       pcomp_modificateur
     from perso_competences
-    where pcomp_perso_cod = personnage
+    where pcomp_perso_cod = cible
           and pcomp_pcomp_cod = 5;
     v_bonus_toucher := floor(v_esquive/2);
     -- esquive diminuée
-    perform ajoute_bonus(personnage, 'ESQ', 3, -v_bonus_toucher);
-    code_retour := code_retour||'Vous oubliez à moitié votre esquive, ';
+    perform ajoute_bonus(cible, 'ESQ', 3, -v_bonus_toucher);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous oubliez à moitié votre esquive, ';
+	else
+		code_retour := code_retour || 'Votre cible oublie à moitié son esquive, ';
+	end if;
     -- chances de toucher augmentées
-    perform ajoute_bonus(personnage, 'PCC', 3, v_bonus_toucher );
-    code_retour := code_retour||' ce qui améliore vos chances au corps à corps.';
+    perform ajoute_bonus(cible, 'PCC', 3, v_bonus_toucher );
+	if cible = personnage then
+		code_retour := code_retour || ' ce qui améliore vos chances au corps à corps.';
+	else
+		code_retour := code_retour || ' ce qui améliore ses chances au corps à corps.';
+	end if;
   end if;
   return code_retour;
 end;
 $_$;
 
 
-ALTER FUNCTION potions.pot_flash_halafish(integer) OWNER TO delain;
+ALTER FUNCTION potions.pot_flash_halafish(integer,integer) OWNER TO delain;

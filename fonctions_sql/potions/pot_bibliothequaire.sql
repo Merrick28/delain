@@ -1,19 +1,21 @@
 
 --
--- Name: pot_bibliothequaire(integer); Type: FUNCTION; Schema: potions; Owner: delain
+-- Name: pot_bibliothequaire(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION potions.pot_bibliothequaire(integer) RETURNS text
+CREATE or replace FUNCTION potions.pot_bibliothequaire(integer,integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function pot_bibliothequaire                          */
 /* parametres :                                          */
-/*  $1 = personnage qui boit la potion                   */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
 /* Sortie :                                              */
 /*  code_retour = texte exploitable par php              */
 /*********************************************************/
 declare
   personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
   code_retour text;				-- code retour
   --
   v_gobj_cod integer;			-- code de l'objet générique
@@ -32,9 +34,9 @@ begin
   v_gobj_cod := 549;
   code_retour := '';
   /*Partie générique pour toutes les potions*/
-  select into code_retour potions.potion_generique(personnage,v_gobj_cod);
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
   if not found then
-    code_retour := code_retour||'Erreur ! Fonction générique non trouvée ';
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
   elsif substring(code_retour,1,1) != '0' then
     return split_part(code_retour,';',2);
   /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
@@ -42,15 +44,23 @@ begin
     code_retour := split_part(code_retour,';',2);
     -- sinon, on a les effets normaux de la potion maintenant.
     -- les PA pour les sorts
-    perform ajoute_bonus(personnage, 'PAM', 3, -1);
-    code_retour := code_retour||'Vous vous sentez plus alerte intellectuellement, ';
+    perform ajoute_bonus(cible, 'PAM', 3, -1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous vous sentez plus alerte intellectuellement, ';
+	else
+		code_retour := code_retour || 'Votre cible se sent plus alerte intellectuellement, ';
+	end if;
     -- les chances pour lancer un sort
-    perform ajoute_bonus(personnage, 'PMA', 3, 5);
-    code_retour := code_retour||', les arcanes magiques vous semblent plus simples à comprendre, vous bénéficiez d''un bonus de 5% aux lancements de vos sorts. ';
+    perform ajoute_bonus(cible, 'PMA', 3, 5);
+	if cible = personnage then
+		code_retour := code_retour || ', les arcanes magiques vous semblent plus simples à comprendre, vous bénéficiez d''un bonus de 5% aux lancements de vos sorts. ';
+	else
+		code_retour := code_retour || ', les arcanes magiques lui semblent plus simples à comprendre, elle bénéficie d''un bonus de 5% aux lancements de ses sorts. ';
+	end if;
   end if;
   return code_retour;
 end;
 $_$;
 
 
-ALTER FUNCTION potions.pot_bibliothequaire(integer) OWNER TO delain;
+ALTER FUNCTION potions.pot_bibliothequaire(integer,integer) OWNER TO delain;

@@ -1,8 +1,8 @@
 --
--- Name: potion_generique(integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
+-- Name: potion_generique(integer, integer, integer); Type: FUNCTION; Schema: potions; Owner: delain
 --
 
-CREATE or replace FUNCTION potions.potion_generique(integer, integer) RETURNS text
+CREATE or replace FUNCTION potions.potion_generique(integer, integer, integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*********************************************************/
 /* function potion_générique                             */
@@ -18,7 +18,8 @@ AS $_$/*********************************************************/
 /**************************************************************/
 declare
   personnage alias for $1;	-- perso_cod
-  potion alias for $2;	-- gobj_cod
+  cible alias for $2;	-- perso_cod
+  potion alias for $3;	-- gobj_cod
   code_retour text;				-- code retour
   texte_evt text;			-- Texte pour événements
   --
@@ -50,6 +51,9 @@ begin
   if not found then
     return '1;Erreur ! Vous ne possédez pas cette potion !';
   end if;
+
+  -- Verification distance de la cible, potion ident, etc...
+
   -- controle sur les PA de l'utilisateur
   select into v_pa
     perso_pa
@@ -58,7 +62,12 @@ begin
   if v_pa < getparm_n(104) then
     return '1;Erreur ! Vous n''avez pas assez de PA pour effectuer cette action';
   end if;
-  texte_evt := '[perso_cod1] a bu une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+  if cible = personnage then
+    texte_evt := '[perso_cod1] a bu une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+  else
+    texte_evt := '[attaquent] a fait boire une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion || ' a [cible]' end;
+  end if;
+
   -- controles sur la stabilité de la potion
   select into v_stabilite
     gobj_stabilite
@@ -88,11 +97,19 @@ begin
   insert into potions.perso_toxic
   (ptox_perso_cod,ptox_potion,ptox_toxicite)
   values
-    (personnage,potion,100-v_stabilite);
+    (cible,potion,100-v_stabilite);
   --
   texte_evt  := texte_evt || '.';
-  insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-  values(nextval('seq_levt_cod'),81,now(),1,personnage,texte_evt,'O','O');
+
+  insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
+    values(nextval('seq_levt_cod'),81,now(),1,personnage,texte_evt,'O','O',cible,personnage);
+
+  if cible != personnage then
+    texte_evt := '[attaquant] vous a fait boire une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+    insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
+    values(nextval('seq_levt_cod'),81,now(),1,cible,texte_evt,'N','N',cible,personnage);
+  end if;
+
   if lancer_des(1,100) < 20 then
     v_pa :=	cree_objet_perso(412,personnage);
     code_retour := code_retour||'<br>Vous réussissez à conserver le flacon vide, sans qu''il ne soit définitivement souillé.<br>Il pourra donc être réutilisé par un alchimiste qui pourra créer une nouvelle décoction.<br>';
@@ -103,4 +120,4 @@ begin
 end;	$_$;
 
 
-ALTER FUNCTION potions.potion_generique(integer, integer) OWNER TO delain;
+ALTER FUNCTION potions.potion_generique(integer, integer, integer) OWNER TO delain;

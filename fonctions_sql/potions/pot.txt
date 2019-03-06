@@ -1,0 +1,2866 @@
+--
+-- Name: pot_antidote(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_antidote(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_antidote						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1267;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'POI';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés au poison';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés au poison';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_antidote(integer,integer) OWNER TO delain;--
+-- Name: pot_biafine(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_biafine(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_biafine						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1286;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'BRU';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés aux brûlures profondes';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés aux brûlures profondes';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_biafine(integer,integer) OWNER TO delain;
+--
+-- Name: pot_bibliothequaire(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_bibliothequaire(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_bibliothequaire                          */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 549;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- sinon, on a les effets normaux de la potion maintenant.
+    -- les PA pour les sorts
+    perform ajoute_bonus(cible, 'PAM', 3, -1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous vous sentez plus alerte intellectuellement, ';
+	else
+		code_retour := code_retour || 'Votre cible se sent plus alerte intellectuellement, ';
+	end if;
+    -- les chances pour lancer un sort
+    perform ajoute_bonus(cible, 'PMA', 3, 5);
+	if cible = personnage then
+		code_retour := code_retour || ', les arcanes magiques vous semblent plus simples à comprendre, vous bénéficiez d''un bonus de 5% aux lancements de vos sorts. ';
+	else
+		code_retour := code_retour || ', les arcanes magiques lui semblent plus simples à comprendre, elle bénéficie d''un bonus de 5% aux lancements de ses sorts. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_bibliothequaire(integer,integer) OWNER TO delain;
+--
+-- Name: pot_bip(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_bip(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_bip						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 725;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vitesse de déplacement
+    perform ajoute_bonus(cible, 'DEP', 4, -1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous gagnez un bonus de -1 dans tous vos déplacements pendant 4 DLT';
+	else
+		code_retour := code_retour || 'Votre cible gagne un bonus de -1 dans tous ses déplacements pendant 4 DLT';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_bip(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_bloque_magie_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_bloque_magie_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_bloque_magie_faible                      */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_bonus integer;	-- bonus final calculé
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 691;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- le bloque magie
+    perform ajoute_bonus(cible, 'BLM', 3, 20);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous vous sentez un peu plus ... nain ... ';
+	else
+		code_retour := code_retour || 'Votre cible se sent un peu plus ... nain ... ';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_bloque_magie_faible(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_bloque_magie_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_bloque_magie_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_bloque_magie_forte                       */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_bonus integer;	-- bonus final calculé
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 693;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- le bloque magie
+    perform ajoute_bonus(cible, 'BLM', 3, 40);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous vous sentez un peu plus ... nain ... ';
+	else
+		code_retour := code_retour || 'Votre cible se sent un peu plus ... nain ... ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'TOU', 3, -30);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 30% de chances de toucher au combat.';
+	else
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Elle gagne un malus de 30% de chances de toucher au combat.';
+	end if;
+    -- l'esquive
+    perform ajoute_bonus(cible, 'ESQ', 3, -20);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Le nain est lourd, il a du mal à éviter les coups. Vous gagnez un malus de 20% de chances d''esquiver les coups.';
+	else
+		code_retour := code_retour || '<br>Le nain est lourd, il a du mal à éviter les coups. Elle gagne un malus de 20% de chances d''esquiver les coups.';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_bloque_magie_forte(integer,integer) OWNER TO delain;--
+-- Name: pot_bloque_magie_moyen(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_bloque_magie_moyen(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_bloque_magie_moyen                      */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_bonus integer;	-- bonus final calculé
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 692;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- le bloque magie
+    perform ajoute_bonus(cible, 'BLM', 3, 40);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous vous sentez un peu plus ... nain ... ';
+	else
+		code_retour := code_retour || 'Votre cible se sent un peu plus ... nain ... ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'TOU', 3, -10);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 10% de chances de toucher au combat.';
+	else
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Votre cible gagne un malus de 10% de chances de toucher au combat.';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_bloque_magie_moyen(integer,integer) OWNER TO delain;
+--
+-- Name: pot_cachette(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_cachette(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_cachette                                 */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_bonus_decouvre integer;	-- bonus pour creuser
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 541;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    perform ajoute_bonus(cible, 'CAC', 3, 30);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Un sentiment d''ultravision vous envahit ... Comment ça, vous n''avez jamais eu de sentiment d''ultravision ? Il faut bien une première fois, et celle là pourrait vous apporter des surprises';
+	else
+		code_retour := code_retour || '<br>Un sentiment d''ultravision envahit votre cible ... Comment ça, elle n''a jamais eu de sentiment d''ultravision ? Il faut bien une première fois, et celle là pourrait lui apporter des surprises';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_cachette(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_con_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_con_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_faible	                         */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 530;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 20;
+    perform f_modif_carac(cible,'CON',duree,1);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous n''auriez pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
+	else
+		code_retour := code_retour || '<br>Votre cible n''aurait pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_con_faible(integer,integer) OWNER TO delain;--
+-- Name: pot_con_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_con_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_forte                              */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 532;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 25;
+    effet := lancer_des(2,4) + 2;
+    perform f_modif_carac(cible,'CON',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Nul ne pourra vous arrêter maintenant. Vous êtes la puissance incarnée, et ne craignez plus rien de vos adversaires qui trouveront un mur contre eux.';
+	else
+		code_retour := code_retour || '<br>Nul ne pourra arrêter votre cible maintenant. Elle est la puissance incarnée, et ne craint plus rien de ses adversaires qui trouveront un mur contre eux.';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_con_forte(integer,integer) OWNER TO delain;
+--
+-- Name: pot_con_moyenne(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_con_moyenne(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_moyenne                            */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 531;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 23;
+    effet := lancer_des(1,3) + 1;
+    perform f_modif_carac(cible,'CON',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Sans exercice, vous êtes devenu temporairement plus résistant. Faites attention, car plus dure sera la chute. D''ici là, ce sont vos adversaires qui risquent d''être surpris ...';
+	else
+		code_retour := code_retour || '<br>Sans exercice, votre cible êtes devenue temporairement plus résistante. Qu''elle fasse attention, car plus dure sera la chute. D''ici là, ce sont ses adversaires qui risquent d''être surpris ...';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_con_moyenne(integer,integer) OWNER TO delain;
+--
+-- Name: pot_creusage_fort(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE  FUNCTION potions.pot_creusage_fort(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_creusage                                 */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_bonus_creusage integer;	-- bonus pour creuser
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 555;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on enlève les bonus existants
+    perform ajoute_bonus(cible, 'CRE', 3, 45);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Rien ne peut arrêter vos bras qui se saisissent de la pioche la plus proche et martèlent la roche';
+	else
+		code_retour := code_retour || '<br>Rien ne peut arrêter les bras de votre cible qui se saisissent de la pioche la plus proche et martèlent la roche';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_creusage_fort(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_creusage(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_creusage(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_creusage                                 */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_bonus_creusage integer;	-- bonus pour creuser
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 540;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on enlève les bonus existants
+    perform ajoute_bonus(cible, 'CRE', 3, 30);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous sentez une certaine puissance dans vos bras, qui ne peuvent s''empêcher d''aller d''avant en arrière, frappant la roche la plus proche de vous';
+	else
+		code_retour := code_retour || '<br>Votre cible resent une certaine puissance dans ses bras, qui ne peuvent s''empêcher d''aller d''avant en arrière, frappant la roche la plus proche d''elle';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_creusage(integer,integer) OWNER TO delain;--
+-- Name: pot_deadbull(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_deadbull(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_deadbull						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1287;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'DIS';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés à la lenteur temporelle';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés à la lenteur temporelle';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_deadbull(integer,integer) OWNER TO delain;
+--
+-- Name: pot_dex_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_dex_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_faible	                         */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 527;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour from 1 for 6) = 'Erreur' then
+    return code_retour;
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    duree := lancer_des(1,10) + 20;
+    perform f_modif_carac(cible,'DEX',duree,1);
+if cible = personnage then
+    code_retour := code_retour || '<br>Votre acuité semble s''être améliorée';
+else
+    code_retour := code_retour || '<br>L''acuité de votre cible semble s''être améliorée';
+end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_dex_faible(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_dex_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_dex_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_forte                              */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 529;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour from 1 for 6) = 'Erreur' then
+    return code_retour;
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    duree := lancer_des(1,10) + 25;
+    effet := lancer_des(2,4) + 2;
+    perform f_modif_carac(cible,'DEX',duree,effet);
+if cible = personnage then
+    code_retour := code_retour || '<br>Bobin des Rois était votre frère, et Cunégonde la bretteuse votre soeur. Vous en avez rêvé pendant des années de pouvoir les égaler, et là, ce sont quelques instants de bonheur !!';
+else
+    code_retour := code_retour || '<br>Bobin des Rois était son frère, et Cunégonde la bretteuse sa soeur. Votre cible en a rêvé pendant des années de pouvoir les égaler, et là, ce sont quelques instants de bonheur !!';
+end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_dex_forte(integer,integer) OWNER TO delain;
+--
+-- Name: pot_dex_moyenne(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_dex_moyenne(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_moyenne                            */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 528;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour from 1 for 6) = 'Erreur' then
+    return code_retour;
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    duree := lancer_des(1,10) + 23;
+    effet := lancer_des(1,3) + 1;
+    perform f_modif_carac(cible,'DEX',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous aviez toujours rêvé de mettre dans le mille ! Profitez en avant que vos adversaires ne s''en aperçoivent ';
+	else
+		code_retour := code_retour || '<br>Votre cible a toujours toujours rêvé de mettre dans le mille ! Qu''elle en profite avant que ses adversaires ne s''en aperçoivent ';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_dex_moyenne(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_enchanteur(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_enchanteur(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_moyenne                            */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 727;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour from 1 for 6) = 'Erreur' then
+    return code_retour;
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    update perso set perso_energie = 100 where perso_cod = cible;
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vos sens de l''énergie ambiante se sont accrus. Le forgeamage vous attend !';
+	else
+		code_retour := code_retour || '<br>Les sens de l''énergie ambiante de votre cible se sont accrus. Le forgeamage l''attend !';
+	end if;
+  end if;
+  return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_enchanteur(integer,integer) OWNER TO delain;--
+-- Name: pot_flash_halafish(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_flash_halafish(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_poulpe_halafish                          */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_esquive integer;
+  v_bonus_toucher integer;
+  v_diff integer;
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 557;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    select into v_esquive
+      pcomp_modificateur
+    from perso_competences
+    where pcomp_perso_cod = cible
+          and pcomp_pcomp_cod = 5;
+    v_bonus_toucher := floor(v_esquive/2);
+    -- esquive diminuée
+    perform ajoute_bonus(cible, 'ESQ', 3, -v_bonus_toucher);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous oubliez à moitié votre esquive, ';
+	else
+		code_retour := code_retour || 'Votre cible oublie à moitié son esquive, ';
+	end if;
+    -- chances de toucher augmentées
+    perform ajoute_bonus(cible, 'PCC', 3, v_bonus_toucher );
+	if cible = personnage then
+		code_retour := code_retour || ' ce qui améliore vos chances au corps à corps.';
+	else
+		code_retour := code_retour || ' ce qui améliore ses chances au corps à corps.';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_flash_halafish(integer,integer) OWNER TO delain;
+--
+-- Name: pot_force_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_force_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_faible	                         */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 526;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 20;
+    perform f_modif_carac(cible,'FOR',duree,1);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vos muscles semblent avoir grossis depuis la dernière fois';
+	else
+		code_retour := code_retour || '<br>Les muscles de votre cible semblent avoir grossis depuis la dernière fois';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_force_faible(integer,integer) OWNER TO delain;--
+-- Name: pot_force_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_force_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_forte                              */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 525;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 25;
+    effet := lancer_des(2,4) + 2;
+    perform f_modif_carac(cible,'FOR',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous êtes énervé, très énervé, le tissus de vos vêtements commence à se tendre, de la sueur perle sur votre front, la couleur de votre peau ... change !
+<br>Vous devenez tout vert !
+<br><br>C''est bon j''rigole, mais vous êtes sacrément plus fort maintenant !';
+	else
+		code_retour := code_retour || '<br>Votre cible est énervée, très énervée, le tissus de ses vêtements commence à se tendre, de la sueur perle sur son front, la couleur de sa peau ... change !
+<br>Elle devient toute verte !
+<br><br>C''est bon j''rigole, mais elle est sacrément plus forte maintenant !';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_force_forte(integer,integer) OWNER TO delain;
+--
+-- Name: pot_force_moyenne(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_force_moyenne(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_force_moyenne                            */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 524;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 23;
+    effet := lancer_des(1,3) + 1;
+    perform f_modif_carac(cible,'FOR',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Petit déjà on vous promettait un avenir de bodybuilder ou d''haltérophile ! Vous avez au moins deux points communs maintenant : vous êtes visiblement plus fort, et complètement dopé';
+	else
+		code_retour := code_retour || '<br>Votre cible êtes visiblement plus forte, et complètement dopé';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_force_moyenne(integer,integer) OWNER TO delain;--
+-- Name: pot_gant_dalga(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_gant_dalga(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_gant_dalga                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 545;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vue
+    perform ajoute_bonus(cible, 'PVU', 6, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous gagnez un bonus de 1 en vue, ';
+	else
+		code_retour := code_retour || 'Votre cible gagne un bonus de 1 en vue, ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'PDT', 6, 20);
+	if cible = personnage then
+		code_retour := code_retour || ', vous gagnez un bonus de 20% de chances de toucher à distance, ';
+	else
+		code_retour := code_retour || ', elle gagne un bonus de 20% de chances de toucher à distance, ';
+	end if;
+
+    -- les dégats
+    perform ajoute_bonus(cible, 'PDD', 6, 1);
+if cible = personnage then
+    code_retour := code_retour || 'et vous gagnez un bonus de 1 en dégats à distance. ';
+else
+    code_retour := code_retour || 'et vous gagnez un bonus de 1 en dégats à distance. ';
+end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_gant_dalga(integer,integer) OWNER TO delain;--
+-- Name: pot_hortophilie_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_hortophilie_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_hortophilie_faible                       */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1; -- perso_cod
+  cible alias for $2; -- perso_cod
+  code_retour text;        -- code retour
+  v_gobj_cod integer;      -- code de l’objet générique
+  duree integer;           -- durée de l’effet
+  force integer;           -- force de l’effet
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 894;
+  code_retour := '';
+  duree := 2;
+  force := -2;
+
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible, v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour, 1, 1) != '0' then
+    return split_part(code_retour, ';', 2);
+
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour, ';', 2);
+
+    perform ajoute_bonus(cible, 'HOR', duree, force);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Aaaah, avec ça, vous voyez tout de suite mieux comment mélanger ces fichus ingrédients !';
+	else
+		code_retour := code_retour || '<br>Aaaah, avec ça, votre cible voit tout de suite mieux comment mélanger ces fichus ingrédients !';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_hortophilie_faible(integer,integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION pot_hortophilie_faible(integer,integer); Type: COMMENT; Schema: potions; Owner: delain
+--
+
+COMMENT ON FUNCTION potions.pot_hortophilie_faible(integer,integer) IS 'Gère la potion de Kharrah’ch le méthodique';--
+-- Name: pot_hortophilie_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_hortophilie_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_hortophilie_forte                        */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1; -- perso_cod
+  cible alias for $2; -- perso_cod
+  code_retour text;        -- code retour
+  v_gobj_cod integer;      -- code de l’objet générique
+  duree integer;           -- durée de l’effet
+  force integer;           -- force de l’effet
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 896;
+  code_retour := '';
+  duree := 4;
+  force := -2;
+
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible, v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour, 1, 1) != '0' then
+    return split_part(code_retour, ';', 2);
+
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour, ';', 2);
+
+    perform ajoute_bonus(cible, 'HOR', duree, force);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Aaaah, avec ça, vous voyez tout de suite mieux comment mélanger ces fichus ingrédients !';
+	else
+		code_retour := code_retour || '<br>Aaaah, avec ça, votre cible voit tout de suite mieux comment mélanger ces fichus ingrédients !';
+	end if;
+  end if;
+  return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_hortophilie_forte(integer,integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION pot_hortophilie_forte(integer,integer); Type: COMMENT; Schema: potions; Owner: delain
+--
+
+COMMENT ON FUNCTION potions.pot_hortophilie_forte(integer,integer) IS 'Gère la potion de Kharrah’ch l’artiste';--
+-- Name: pot_intelligence_faible(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_intelligence_faible(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_intelligence_faible                      */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 521;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 20;
+    perform f_modif_carac(cible,'INT',duree,1);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous vous trouvez subitement plus intelligent, mais n''en abusez pas, n''est pas qui veut Einstein ...';
+	else
+		code_retour := code_retour || '<br>Votre cible se trouve subitement plus intelligent, mais n''en abusez pas, n''est pas qui veut Einstein ...';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_intelligence_faible(integer,integer) OWNER TO delain;--
+-- Name: pot_intelligence_forte(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_intelligence_forte(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_intelligence_forte                       */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 523;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 25;
+    effet := lancer_des(2,4) + 2;
+    perform f_modif_carac(cible,'INT',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous vous trouvez subitement plus intelligent, mais n''en abusez pas, n''est pas Einstein qui veut ...';
+	else
+		code_retour := code_retour || '<br>Votre cible se trouve subitement plus intelligente, mais n''en abusez pas, n''est pas Einstein qui veut ...';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_intelligence_forte(integer,integer) OWNER TO delain;
+--
+-- Name: pot_intelligence_moyenne(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_intelligence_moyenne(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_intelligence_moyenne                     */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  duree integer;	-- Duree de l'effet
+  effet integer;	-- Force de l'effet
+
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 522;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    duree := lancer_des(1,10) + 23;
+    effet := lancer_des(1,3) + 1;
+    perform f_modif_carac(cible,'INT',duree,effet);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Vous vous trouvez subitement plus intelligent, mais n''en abusez pas, n''est pas qui veut Einstein ...';
+	else
+		code_retour := code_retour || '<br>Votre cible se trouve subitement plus intelligente, mais n''en abusez pas, n''est pas qui veut Einstein ...';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_intelligence_moyenne(integer,integer) OWNER TO delain;--
+-- Name: pot_langueur_duurstaf(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_langueur_duurstaf(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_langueur_durrstaf                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_pv integer;
+  v_pv_max integer;
+  v_diff integer;
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 547;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- les pv
+    select into v_pv,v_pv_max
+      perso_pv,perso_pv_max
+    from perso
+    where perso_cod = cible;
+    v_diff := lancer_des(5,5);
+    v_pv := v_pv + v_diff;
+    if v_pv > v_pv_max then
+      v_pv := v_pv_max;
+    end if;
+    update perso set perso_pv = v_pv where perso_cod = cible;
+	if cible = personnage then
+		code_retour := code_retour || 'Vous gagnez '||trim(to_char(v_diff,'999999999'))||' points de vie, ';
+	else
+		code_retour := code_retour || 'Votre cible gagne '||trim(to_char(v_diff,'999999999'))||' points de vie, ';
+	end if;
+    -- cout d'une attaque
+    perform ajoute_bonus(cible, 'PPA', 6, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'vous avez un malus de +1 PA par attaque, ';
+	else
+		code_retour := code_retour || 'elle a un malus de +1 PA par attaque, ';
+	end if;
+    -- competences de combat
+    perform ajoute_bonus(cible, 'PCC', 6, -10);
+	if cible = personnage then
+		code_retour := code_retour || 'vous avez un malus de 10% de chances de toucher au corps à corps.';
+	else
+		code_retour := code_retour || 'elle a un malus de 10% de chances de toucher au corps à corps.';
+	end if;
+
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_langueur_duurstaf(integer,integer) OWNER TO delain;
+--
+-- Name: pot_lithium(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_lithium(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_lithium						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1289;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'DES';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés à la désorientation';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cibke liés à la désorientation';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_lithium(integer,integer) OWNER TO delain;--
+-- Name: pot_mur_tour(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_mur_tour(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_mur_tour                                 */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_pv integer;
+  v_pv_max integer;
+  v_diff integer;
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 553;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    perform ajoute_bonus(cible, 'PAR', 3, 3);
+	if cible = personnage then
+		code_retour := code_retour || 'vous vous sentez plus résistant, et gagnez un bonus de 3 en armure, ';
+	else
+		code_retour := code_retour || 'votre cible se sent plus résistante, et gagne un bonus de 3 en armure, ';
+	end if;
+    -- competences de combat
+    perform ajoute_bonus(cible, 'ESQ', 3, -35);
+	if cible = personnage then
+		code_retour := code_retour || ' vous avez un malus de 35% de chances en esquive. ';
+	else
+		code_retour := code_retour || ' elle a un malus de 35% de chances en esquive. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_mur_tour(integer,integer) OWNER TO delain;--
+-- Name: pot_oeil_dalga(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or REPLACE FUNCTION potions.pot_oeil_dalga(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_oeil_dalga                               */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* modifs du 30/01/2007 (l'anniversaire de ma femme pour ceux */
+/*  que ça intéresse )                                        */
+/* - gestion des effets aléatoires                            */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 485;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    return 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    --code_retour := split_part(code_retour,';',2);
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vue
+    perform ajoute_bonus(cible, 'PVU', 6, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous gagnez un bonus de 1 en vue, ';
+	else
+		code_retour := code_retour || 'Votre cible gagne un bonus de 1 en vue, ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'PTD', 6, 35);
+	if cible = personnage then
+		code_retour := code_retour || 'et vous gagnez un bonus de 35% de chances de toucher à distance. ';
+	else
+		code_retour := code_retour || 'et elle gagne un bonus de 35% de chances de toucher à distance. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_oeil_dalga(integer,integer) OWNER TO delain;
+--
+-- Name: pot_hortophilie_moyenne(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_hortophilie_moyenne(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_hortophilie_faible                       */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1; -- perso_cod
+  cible alias for $2; -- perso_cod
+  code_retour text;        -- code retour
+  v_gobj_cod integer;      -- code de l’objet générique
+  duree integer;           -- durée de l’effet
+  force integer;           -- force de l’effet
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 895;
+  code_retour := '';
+  duree := 3;
+  force := -2;
+
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible, v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour, 1, 1) != '0' then
+    return split_part(code_retour, ';', 2);
+
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour, ';', 2);
+
+    perform ajoute_bonus(cible, 'HOR', duree, force);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Aaaah, avec ça, vous voyez tout de suite mieux comment mélanger ces fichus ingrédients !';
+	else
+		code_retour := code_retour || '<br>Aaaah, avec ça, votre cible voit tout de suite mieux comment mélanger ces fichus ingrédients !';
+	end if;
+  end if;
+  return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_hortophilie_moyenne(integer,integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION pot_hortophilie_moyenne(integer,integer); Type: COMMENT; Schema: potions; Owner: delain
+--
+
+COMMENT ON FUNCTION potions.pot_hortophilie_moyenne(integer,integer) IS 'Gère la potion de Kharrah’ch le passionné';--
+-- Name: pot_hortophilie_ultime(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_hortophilie_ultime(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_hortophilie_ultime                       */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1; -- perso_cod
+  cible alias for $2; -- perso_cod
+  code_retour text;        -- code retour
+  v_gobj_cod integer;      -- code de l’objet générique
+  duree integer;           -- durée de l’effet
+  force integer;           -- force de l’effet
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 897;
+  code_retour := '';
+  duree := 6;
+  force := -3;
+
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible, v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour, 1, 1) != '0' then
+    return split_part(code_retour, ';', 2);
+
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour, ';', 2);
+
+    perform ajoute_bonus(cible, 'HOR', duree, force, 1);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Aaaah, avec ça, vous voyez tout de suite mieux comment mélanger ces fichus ingrédients !';
+	else
+		code_retour := code_retour || '<br>Aaaah, avec ça, votre cible voit tout de suite mieux comment mélanger ces fichus ingrédients !';
+	end if;
+  end if;
+  return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_hortophilie_ultime(integer,integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION pot_hortophilie_ultime(integer,integer); Type: COMMENT; Schema: potions; Owner: delain
+--
+
+COMMENT ON FUNCTION potions.pot_hortophilie_ultime(integer,integer) IS 'Gère la potion de Kharrah’ch l’éternel';
+--
+-- Name: pot_poing_duurstaf(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_poing_duurstaf(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_poing_durrstaf                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 546;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vue
+    perform ajoute_bonus(cible, 'PVU', 6, -2);
+	if cible = personnage then
+		code_retour := code_retour || 'Votre vue se trouble, ';
+	else
+		code_retour := code_retour || 'La vue de votre cible se trouble, ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'PCC', 6, 10);
+	if cible = personnage then
+		code_retour := code_retour || ', vous gagnez un bonus de 10% de chances de toucher en corps à corps, ';
+	else
+		code_retour := code_retour || ', elle gagne un bonus de 10% de chances de toucher en corps à corps, ';
+	end if;
+    -- les dégats
+    perform ajoute_bonus(cible, 'PDC', 6, 2);
+	if cible = personnage then
+		code_retour := code_retour || 'et vous gagnez un bonus de 2 en dégats en corps à corps. ';
+	else
+		code_retour := code_retour || 'et elle gagne un bonus de 2 en dégats en corps à corps. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_poing_duurstaf(integer,integer) OWNER TO delain;
+--
+-- Name: pot_poulpe_halafish(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_poulpe_halafish(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_poulpe_halafish                          */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_intelligence integer;
+  v_bonus_degats integer;
+  v_diff integer;
+
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 556;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    --modif de l'intelligence
+    select into v_intelligence
+      perso_int
+    from perso
+    where perso_cod = cible;
+    v_bonus_existant := floor(v_intelligence/2) - v_intelligence;
+    v_bonus_degats := floor(v_intelligence/2);
+    perform f_modif_carac(cible,'INT',36,v_bonus_existant);
+	if cible = personnage then
+		code_retour := code_retour || 'vous vous sentez soudain plus ... débile, ';
+	else
+		code_retour := code_retour || 'votre cible se sent soudain plus ... débile, ';
+	end if;
+    -- dégâts augmentés
+    perform ajoute_bonus(cible, 'PDC', 3, v_bonus_degats);
+	if cible = personnage then
+		code_retour := code_retour || ' mais en même temps plus pugnace, vous donnant un bonus en dégâts, ';
+	else
+		code_retour := code_retour || ' mais en même temps plus pugnace, lui donnant un bonus en dégâts, ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_poulpe_halafish(integer,integer) OWNER TO delain;
+--
+-- Name: pot_prosa_cola(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_prosa_cola(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_prosa_cola						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1288;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'HYP';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés à l''Hypnose';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés à l''Hypnose';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_prosa_cola(integer,integer) OWNER TO delain;--
+-- Name: pot_rage_durrstaf(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_rage_durrstaf(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_rage_durrstaf                            */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 548;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vue
+    perform ajoute_bonus(cible, 'PVU', 6, -1);
+	if cible = personnage then
+		code_retour := code_retour || 'Votre vue se trouble, ';
+	else
+		code_retour := code_retour || 'La vue de votre cible se trouble, ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'PCC', 6, -20);
+	if cible = personnage then
+		code_retour := code_retour || ', vous portez vos coups à l''aveuglette avec fureur, vous perdez 20% de chances de toucher en corps à corps, ';
+	else
+		code_retour := code_retour || ', elle porte ses coups à l''aveuglette avec fureur, elle perd 20% de chances de toucher en corps à corps, ';
+	end if;
+    -- les dégats
+    perform ajoute_bonus(cible, 'PDC', 6, 4);
+    perform ajoute_bonus(cible, 'PAR', 6, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'et vous gagnez un bonus de 1 en armure. ';
+	else
+		code_retour := code_retour || 'et elle gagne un bonus de 1 en armure. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_rage_durrstaf(integer,integer) OWNER TO delain;
+--
+-- Name: pot_remede(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_remede(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_remede						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1266;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'MDS';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés à la maladie du sang';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés à la maladie du sang';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_remede(integer,integer) OWNER TO delain;--
+-- Name: pot_runes(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_runes(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_runes                                    */
+/* augmente les chances de garder ses rune en cas de     */
+/* ratage de sort                                        */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+/**************************************************************/
+/* 	       			                              */
+/**************************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_bonus_runes integer;	-- bonus pour creuser
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 542;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour || 'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on enlève les bonus existants
+    perform ajoute_bonus(cible, 'PER', 3, 30);
+	if cible = personnage then
+		code_retour := code_retour || '<br>Dire que vous sentez mieux les arcanes magiques serait exagéré, mais en tout cas, c''est moins pire qu''avant !';
+	else
+		code_retour := code_retour || '<br>Dire que votre cible ressent mieux les arcanes magiques serait exagéré, mais en tout cas, c''est moins pire qu''avant !';
+	end if;
+  end if;
+  return code_retour;
+end;	$_$;
+
+
+ALTER FUNCTION potions.pot_runes(integer,integer) OWNER TO delain;--
+-- Name: pot_serum(integer,integer); Type: FUNCTION; Schema: potions; Owner: postgres
+--
+
+CREATE or replace FUNCTION potions.pot_serum(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_serum						                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 1265;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+
+    -- Supprimer les bonus/malus de poison
+	delete from bonus where
+		bonus_perso_cod = cible and
+		bonus_tbonus_libc = 'VEN';
+
+	if cible = personnage then
+		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés au venin';
+	else
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés au venin';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_serum(integer,integer) OWNER TO delain;--
+-- Name: pot_soufflet_dalga(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_soufflet_dalga(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_soufflet_dalga                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 544;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    -- la vue
+    perform ajoute_bonus(cible, 'PVU', 6, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'Vous gagnez un bonus de 1 en vue, ';
+	else
+		code_retour := code_retour || 'Votre cible gagne un bonus de 1 en vue, ';
+	end if;
+    -- les chances de toucher
+    perform ajoute_bonus(cible, 'PDD', 6, 3);
+	if cible = personnage then
+		code_retour := code_retour || 'et vous gagnez un bonus de 3 en dégâts à distance. ';
+	else
+		code_retour := code_retour || 'et un bonus de 3 en dégâts à distance. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_soufflet_dalga(integer,integer) OWNER TO delain;--
+-- Name: pot_spray_mirreck(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_spray_mirreck(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_vie_de_sang                          */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  titre text;
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 411;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- sinon, on a les effets normaux de la potion maintenant.
+    -- le non décalage de dlt en cas de blessure
+    select into titre ptitre_titre from perso_titre
+    where substring(ptitre_titre,1,4) = 'Pue '
+          and ptitre_perso_cod = cible;
+    if not found then
+if cible = personnage then
+      code_retour := code_retour || '<br>Vous sentez parfaitement bon ! Pourquoi avez vous utilisé un spray contre les mauvaises odeurs ?';
+else
+      code_retour := code_retour || '<br>Votre cible sent parfaitement bon ! Pourquoi avez vous utilisé un spray contre les mauvaises odeurs ?';
+end if;
+    else
+		delete from perso_titre
+		where substring(ptitre_titre,1,4) = 'Pue '
+			and ptitre_perso_cod = cible;
+		if cible = personnage then
+			  code_retour := code_retour || '<br>Quel bonheur de retrouver une odeur à peu près correcte dans ces souterrains ! La prochaine est sans doute un bon bain, mais déjà, cette mauvaise odeur est loin maintenant. ';
+		else
+			  code_retour := code_retour || '<br>Quel bonheur de retrouver une odeur à peu près correcte dans ces souterrains ! La prochaine est sans doute un bon bain, mais déjà, cette mauvaise odeur est loin maintenant. ';
+		end if;
+    end if;
+  end if;
+  return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_spray_mirreck(integer,integer) OWNER TO delain;
+--
+--
+-- Name: pot_test(utilise,integer); Ty FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_test(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$declare
+  personnage alias for $1;
+  cible alias for $2;
+  v_nom text;
+begin
+  select into v_nom perso_nom from perso where perso_cod = personnage;
+  return v_nom;
+end;$_$;
+
+
+ALTER FUNCTION potions.pot_test(integer,integer) OWNER TO delain;
+
+--
+-- Name: pot_tour_cachee(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_tour_cachee(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_tour_cachee                              */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_pv integer;
+  v_pv_max integer;
+  v_diff integer;
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 554;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- on a les effets normaux de la potion maintenant.
+    perform ajoute_bonus(cible, 'PAR', 3, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'vous vous sentez plus résistant, et gagnez un bonus de 1 en armure, ';
+	else
+		code_retour := code_retour || 'votre cible se sent plus résistante, et gagne un bonus de 1 en armure, ';
+	end if;
+    -- competences de combat
+    perform ajoute_bonus(cible, 'ESQ', 3, 30);
+	if cible = personnage then
+		code_retour := code_retour || 'et vous avez un bonus de 30% de chances en esquive. ';
+	else
+		code_retour := code_retour || 'et elle a un bonus de 30% de chances en esquive. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_tour_cachee(integer,integer) OWNER TO delain;--
+-- Name: pot_vie_de_sang(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_vie_de_sang(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_vie_de_sang                          */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_bonus_regen integer; --bonus de regen à intégrer
+  v_pv integer; --pv du perso
+  v_pv_max integer; --pv max du perso
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 550;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- sinon, on a les effets normaux de la potion maintenant.
+    -- le non décalage de dlt en cas de blessure
+    perform ajoute_bonus(cible, 'PDL', 3, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'Aucune douleur ne vous étreint malgré vos blessures, ';
+	else
+		code_retour := code_retour || 'Aucune douleur n''étreint votre cible malgré ses blessures, ';
+	end if;
+    -- la régénération accrue
+    -- On calcule le bonus de régénération
+    v_bonus_regen := lancer_des(4, 5);
+    perform ajoute_bonus(cible, 'REG', 3, v_bonus_regen);
+	if cible = personnage then
+		code_retour := code_retour || 'vos blessures semblent se refermer plus rapidement. ';
+	else
+		code_retour := code_retour || 'ses blessures semblent se refermer plus rapidement. ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_vie_de_sang(integer,integer) OWNER TO delain;--
+-- Name: pot_vue_de_la_tour(integer,integer); Type: FUNCTION; Schema: potions; Owner: delain
+--
+
+CREATE or replace FUNCTION potions.pot_vue_de_la_tour(integer,integer) RETURNS text
+LANGUAGE plpgsql
+AS $_$/*********************************************************/
+/* function pot_vue_de_la_tour                           */
+/* parametres :                                          */
+/*  $1 = personnage qui utilise la potion                */
+/*  $2 = personnage qui boit la potion                   */
+/* Sortie :                                              */
+/*  code_retour = texte exploitable par php              */
+/*********************************************************/
+declare
+  personnage alias for $1;	-- perso_cod
+  cible alias for $2;	-- perso_cod
+  code_retour text;				-- code retour
+  --
+  v_gobj_cod integer;			-- code de l'objet générique
+  v_obj_cod integer;			-- obj_cod de la potion
+  v_nom_potion text;			-- nom de la potion
+  v_pa integer;					-- PA de l'utilisateur
+  v_stabilite integer;			-- stabilite de la potion
+  v_des_stabilite integer;	-- lancer de dés sur la stabilité
+  v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
+  v_bonus_existant integer;	-- bonus existant ?
+  v_bonus_regen integer; --bonus de regen à intégrer
+  v_pv integer; --pv du perso
+  v_pv_max integer; --pv max du perso
+
+begin
+  /*********************************************************/
+  /*        I N I T I A L I S A T I O N S                  */
+  /*********************************************************/
+  v_gobj_cod := 551;
+  code_retour := '';
+  /*Partie générique pour toutes les potions*/
+  select into code_retour potions.potion_generique(personnage,cible,v_gobj_cod);
+  if not found then
+    code_retour := code_retour  ||  'Erreur ! Fonction générique non trouvée ';
+  elsif substring(code_retour,1,1) != '0' then
+    return split_part(code_retour,';',2);
+  /*Tous les controles sont OK, on passe alors aux effets de la potion uniquement*/
+  else
+    code_retour := split_part(code_retour,';',2);
+    -- sinon, on a les effets normaux de la potion maintenant.
+    -- le non décalage de dlt en cas de blessure
+    perform ajoute_bonus(cible, 'PVU', 3, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'Votre vue porte plus loin, bénéficiant d''une certaine acuité visuelle, ';
+	else
+		code_retour := code_retour || 'La vue de votre cible porte plus loin, bénéficiant d''une certaine acuité visuelle, ';
+	end if;
+    -- la régénération accrue
+    -- On calcule le bonus de régénération
+    perform ajoute_bonus(cible, 'PAR', 3, 1);
+	if cible = personnage then
+		code_retour := code_retour || 'vous êtes plus résitant et bénéficiez d''un bonus de 1 en armure, ';
+	else
+		code_retour := code_retour || 'votre cible est plus résitante et bénéficie d''un bonus de 1 en armure, ';
+	end if;
+  end if;
+  return code_retour;
+end;
+$_$;
+
+
+ALTER FUNCTION potions.pot_vue_de_la_tour(integer,integer) OWNER TO delain;
