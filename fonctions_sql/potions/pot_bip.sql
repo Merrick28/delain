@@ -47,7 +47,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous gagnez un bonus de -1 dans tous vos déplacements pendant 4 DLT';
 	else
-		code_retour := code_retour || 'Votre cible gagne un bonus de -1 dans tous ses déplacements pendant 4 DLT';
+		code_retour := code_retour || 'Le buveur gagne un bonus de -1 dans tous ses déplacements pendant 4 DLT';
 	end if;
   end if;
   return code_retour;

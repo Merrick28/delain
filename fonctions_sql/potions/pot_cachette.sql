@@ -42,7 +42,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Un sentiment d''ultravision vous envahit ... Comment ça, vous n''avez jamais eu de sentiment d''ultravision ? Il faut bien une première fois, et celle là pourrait vous apporter des surprises';
 	else
-		code_retour := code_retour || '<br>Un sentiment d''ultravision envahit votre cible ... Comment ça, elle n''a jamais eu de sentiment d''ultravision ? Il faut bien une première fois, et celle là pourrait lui apporter des surprises';
+		code_retour := code_retour || '<br>Un sentiment d''ultravision envahit le buveur ... Comment ça, il n''a jamais eu de sentiment d''ultravision ? Il faut bien une première fois, et celle là pourrait lui apporter des surprises';
 	end if;
   end if;
   return code_retour;

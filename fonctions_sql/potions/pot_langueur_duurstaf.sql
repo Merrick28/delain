@@ -59,21 +59,21 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous gagnez '||trim(to_char(v_diff,'999999999'))||' points de vie, ';
 	else
-		code_retour := code_retour || 'Votre cible gagne '||trim(to_char(v_diff,'999999999'))||' points de vie, ';
+		code_retour := code_retour || 'Le buveur gagne '||trim(to_char(v_diff,'999999999'))||' points de vie, ';
 	end if;
     -- cout d'une attaque
     perform ajoute_bonus(cible, 'PPA', 6, 1);
 	if cible = personnage then
 		code_retour := code_retour || 'vous avez un malus de +1 PA par attaque, ';
 	else
-		code_retour := code_retour || 'elle a un malus de +1 PA par attaque, ';
+		code_retour := code_retour || 'il a un malus de +1 PA par attaque, ';
 	end if;
     -- competences de combat
     perform ajoute_bonus(cible, 'PCC', 6, -10);
 	if cible = personnage then
 		code_retour := code_retour || 'vous avez un malus de 10% de chances de toucher au corps à corps.';
 	else
-		code_retour := code_retour || 'elle a un malus de 10% de chances de toucher au corps à corps.';
+		code_retour := code_retour || 'il a un malus de 10% de chances de toucher au corps à corps.';
 	end if;
 
   end if;

@@ -48,9 +48,9 @@ begin
 <br>Vous devenez tout vert !
 <br><br>C''est bon j''rigole, mais vous êtes sacrément plus fort maintenant !';
 	else
-		code_retour := code_retour || '<br>Votre cible est énervée, très énervée, le tissus de ses vêtements commence à se tendre, de la sueur perle sur son front, la couleur de sa peau ... change !
-<br>Elle devient toute verte !
-<br><br>C''est bon j''rigole, mais elle est sacrément plus forte maintenant !';
+		code_retour := code_retour || '<br>Le buveur est énervé, très énervé, le tissus de ses vêtements commence à se tendre, de la sueur perle sur son front, la couleur de sa peau ... change !
+<br>Il devient toute verte !
+<br><br>C''est bon j''rigole, mais il est sacrément plus fort maintenant !';
 	end if;
   end if;
   return code_retour;

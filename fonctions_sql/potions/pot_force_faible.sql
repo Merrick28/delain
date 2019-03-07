@@ -44,7 +44,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vos muscles semblent avoir grossis depuis la dernière fois';
 	else
-		code_retour := code_retour || '<br>Les muscles de votre cible semblent avoir grossis depuis la dernière fois';
+		code_retour := code_retour || '<br>Les muscles du buveur semblent avoir grossis depuis la dernière fois';
 	end if;
   end if;
   return code_retour;

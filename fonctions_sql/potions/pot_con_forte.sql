@@ -46,7 +46,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Nul ne pourra vous arrêter maintenant. Vous êtes la puissance incarnée, et ne craignez plus rien de vos adversaires qui trouveront un mur contre eux.';
 	else
-		code_retour := code_retour || '<br>Nul ne pourra arrêter votre cible maintenant. Elle est la puissance incarnée, et ne craint plus rien de ses adversaires qui trouveront un mur contre eux.';
+		code_retour := code_retour || '<br>Nul ne pourra arrêter le buveur maintenant. Il est la puissance incarnée, et ne craint plus rien de ses adversaires qui trouveront un mur contre eux.';
 	end if;
   end if;
   return code_retour;

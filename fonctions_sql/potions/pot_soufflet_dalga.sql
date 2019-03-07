@@ -47,7 +47,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous gagnez un bonus de 1 en vue, ';
 	else
-		code_retour := code_retour || 'Votre cible gagne un bonus de 1 en vue, ';
+		code_retour := code_retour || 'Le buveur gagne un bonus de 1 en vue, ';
 	end if;
     -- les chances de toucher
     perform ajoute_bonus(cible, 'PDD', 6, 3);

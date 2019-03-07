@@ -49,21 +49,21 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous vous sentez un peu plus ... nain ... ';
 	else
-		code_retour := code_retour || 'Votre cible se sent un peu plus ... nain ... ';
+		code_retour := code_retour || 'Le buveur se sent un peu plus ... nain ... ';
 	end if;
     -- les chances de toucher
     perform ajoute_bonus(cible, 'TOU', 3, -30);
 	if cible = personnage then
 		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 30% de chances de toucher au combat.';
 	else
-		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Elle gagne un malus de 30% de chances de toucher au combat.';
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Il gagne un malus de 30% de chances de toucher au combat.';
 	end if;
     -- l'esquive
     perform ajoute_bonus(cible, 'ESQ', 3, -20);
 	if cible = personnage then
 		code_retour := code_retour || '<br>Le nain est lourd, il a du mal à éviter les coups. Vous gagnez un malus de 20% de chances d''esquiver les coups.';
 	else
-		code_retour := code_retour || '<br>Le nain est lourd, il a du mal à éviter les coups. Elle gagne un malus de 20% de chances d''esquiver les coups.';
+		code_retour := code_retour || '<br>Le nain est lourd, il a du mal à éviter les coups. Il gagne un malus de 20% de chances d''esquiver les coups.';
 	end if;
   end if;
   return code_retour;

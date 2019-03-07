@@ -39,7 +39,7 @@ begin
       v_perte_pv = v_pv - 1;
     end if;
     update perso set perso_pv = perso_pv - v_perte_pv where perso_cod = personnage;
-    code_retour := 'Votre potion a un goût abominable ! Vous perdez '||trim(to_char(v_perte_pv,'999999'))||' points de vie.<br>';
+    code_retour := 'Votre potion a un goût abominable ! Vous perdez '||trim(to_char(v_perte_pv,'999999'))||' points de vie.';
   elsif v_des <= 20 then
     -- annulation de la régénération
     perform ajoute_bonus(personnage, '0RG', 2, 1);
@@ -53,7 +53,7 @@ begin
     v_perte_regen := floor(v_force/2);
     v_temps_perte_regen := floor(v_constit/4);
     perform ajoute_bonus(personnage, 'REG', v_temps_perte_regen, -v_perte_regen);
-    code_retour := E'Votre potion vous brûle l''estomac. Votre régénération est diminuée de '||trim(to_char(v_perte_regen,'99999'))||' pendant '||trim(to_char(v_temps_perte_regen,'99999'))||' tours.<br>';
+    code_retour := E'Votre potion vous brûle l''estomac. Votre régénération est diminuée de '||trim(to_char(v_perte_regen,'99999'))||' pendant '||trim(to_char(v_temps_perte_regen,'99999'))||' tours.';
   elsif v_des <= 31 then
     -- baisse de l'esquive
     select into v_dexterite perso_dex
@@ -67,7 +67,7 @@ begin
     update perso
     set perso_nb_esquive = perso_nb_esquive + 4
     where perso_cod = personnage;
-    code_retour := E'Vous avez des hallucinations, et esquivez des attaques qui n''existent pas....<br>';
+    code_retour := E'Vous avez des hallucinations, et esquivez des attaques qui n''existent pas....';
   elsif v_des <= 48 then
     -- pieds gonflés
     perform ajoute_bonus(personnage, 'DEP', 2, 2);

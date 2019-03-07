@@ -46,7 +46,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Petit déjà on vous promettait un avenir de bodybuilder ou d''haltérophile ! Vous avez au moins deux points communs maintenant : vous êtes visiblement plus fort, et complètement dopé';
 	else
-		code_retour := code_retour || '<br>Votre cible êtes visiblement plus forte, et complètement dopé';
+		code_retour := code_retour || '<br>Le buveur est visiblement plus fort, et complètement dopé';
 	end if;
   end if;
   return code_retour;

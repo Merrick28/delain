@@ -43,7 +43,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Rien ne peut arrêter vos bras qui se saisissent de la pioche la plus proche et martèlent la roche';
 	else
-		code_retour := code_retour || '<br>Rien ne peut arrêter les bras de votre cible qui se saisissent de la pioche la plus proche et martèlent la roche';
+		code_retour := code_retour || '<br>Rien ne peut arrêter les bras du buveur qui se saisissent de la pioche la plus proche et martèlent la roche';
 	end if;
   end if;
   return code_retour;

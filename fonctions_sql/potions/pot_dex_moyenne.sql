@@ -46,7 +46,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vous aviez toujours rêvé de mettre dans le mille ! Profitez en avant que vos adversaires ne s''en aperçoivent ';
 	else
-		code_retour := code_retour || '<br>Votre cible a toujours toujours rêvé de mettre dans le mille ! Qu''elle en profite avant que ses adversaires ne s''en aperçoivent ';
+		code_retour := code_retour || '<br>Le buveur a toujours toujours rêvé de mettre dans le mille ! Qu''il en profite avant que ses adversaires ne s''en aperçoivent ';
 	end if;
   end if;
   return code_retour;

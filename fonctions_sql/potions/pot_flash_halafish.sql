@@ -57,7 +57,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous oubliez à moitié votre esquive, ';
 	else
-		code_retour := code_retour || 'Votre cible oublie à moitié son esquive, ';
+		code_retour := code_retour || 'Le buveur oublie à moitié son esquive, ';
 	end if;
     -- chances de toucher augmentées
     perform ajoute_bonus(cible, 'PCC', 3, v_bonus_toucher );

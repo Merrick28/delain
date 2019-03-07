@@ -46,7 +46,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vous vous trouvez subitement plus intelligent, mais n''en abusez pas, n''est pas qui veut Einstein ...';
 	else
-		code_retour := code_retour || '<br>Votre cible se trouve subitement plus intelligente, mais n''en abusez pas, n''est pas qui veut Einstein ...';
+		code_retour := code_retour || '<br>Le buveur se trouve subitement plus intelligent, mais n''en abusez pas, n''est pas qui veut Einstein ...';
 	end if;
   end if;
   return code_retour;

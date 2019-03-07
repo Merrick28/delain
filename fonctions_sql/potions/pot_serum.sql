@@ -51,7 +51,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés au venin';
 	else
-		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés au venin';
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus du buveur liés au venin';
 	end if;
   end if;
   return code_retour;

@@ -50,7 +50,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Aucune douleur ne vous étreint malgré vos blessures, ';
 	else
-		code_retour := code_retour || 'Aucune douleur n''étreint votre cible malgré ses blessures, ';
+		code_retour := code_retour || 'Aucune douleur n''étreint le buveur malgré ses blessures, ';
 	end if;
     -- la régénération accrue
     -- On calcule le bonus de régénération

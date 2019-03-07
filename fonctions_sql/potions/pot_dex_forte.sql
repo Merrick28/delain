@@ -46,7 +46,7 @@ begin
 if cible = personnage then
     code_retour := code_retour || '<br>Bobin des Rois était votre frère, et Cunégonde la bretteuse votre soeur. Vous en avez rêvé pendant des années de pouvoir les égaler, et là, ce sont quelques instants de bonheur !!';
 else
-    code_retour := code_retour || '<br>Bobin des Rois était son frère, et Cunégonde la bretteuse sa soeur. Votre cible en a rêvé pendant des années de pouvoir les égaler, et là, ce sont quelques instants de bonheur !!';
+    code_retour := code_retour || '<br>Bobin des Rois était son frère, et Cunégonde la bretteuse sa soeur. LE buveur en a rêvé pendant des années de pouvoir les égaler, et là, ce sont quelques instants de bonheur !!';
 end if;
   end if;
   return code_retour;

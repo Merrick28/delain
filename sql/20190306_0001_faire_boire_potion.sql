@@ -46,3 +46,10 @@ DROP FUNCTION potions.pot_test(integer);
 DROP FUNCTION potions.pot_tour_cachee(integer);
 DROP FUNCTION potions.pot_vie_de_sang(integer);
 DROP FUNCTION potions.pot_vue_de_la_tour(integer);
+
+INSERT INTO parametres(parm_type, parm_desc, parm_valeur, parm_valeur_texte) VALUES
+( 'Integer', 'Distance max pour faire boire une potion.', 0, null),
+( 'Text', 'A qui peut-on faire boire une potion (S=Soi-même, 3=Triplette, G=Groupe (coterie+triplette), P=Perso+fam, T=Tous)?', null, 'T');
+
+INSERT INTO type_evt(tevt_libelle, tevt_texte) VALUES
+( 'Potion', '[attaquant] a fait boire une potion à [cible].');

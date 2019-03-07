@@ -48,14 +48,14 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous vous sentez plus alerte intellectuellement, ';
 	else
-		code_retour := code_retour || 'Votre cible se sent plus alerte intellectuellement, ';
+		code_retour := code_retour || 'Le buveur se sent plus alerte intellectuellement, ';
 	end if;
     -- les chances pour lancer un sort
     perform ajoute_bonus(cible, 'PMA', 3, 5);
 	if cible = personnage then
 		code_retour := code_retour || ', les arcanes magiques vous semblent plus simples à comprendre, vous bénéficiez d''un bonus de 5% aux lancements de vos sorts. ';
 	else
-		code_retour := code_retour || ', les arcanes magiques lui semblent plus simples à comprendre, elle bénéficie d''un bonus de 5% aux lancements de ses sorts. ';
+		code_retour := code_retour || ', les arcanes magiques lui semblent plus simples à comprendre, il bénéficie d''un bonus de 5% aux lancements de ses sorts. ';
 	end if;
   end if;
   return code_retour;

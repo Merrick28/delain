@@ -46,7 +46,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Sans exercice, vous êtes devenu temporairement plus résistant. Faites attention, car plus dure sera la chute. D''ici là, ce sont vos adversaires qui risquent d''être surpris ...';
 	else
-		code_retour := code_retour || '<br>Sans exercice, votre cible êtes devenue temporairement plus résistante. Qu''elle fasse attention, car plus dure sera la chute. D''ici là, ce sont ses adversaires qui risquent d''être surpris ...';
+		code_retour := code_retour || '<br>Sans exercice, le buveur est devenu temporairement plus résistant. Qu''il fasse attention, car plus dure sera la chute. D''ici là, ce sont ses adversaires qui risquent d''être surpris ...';
 	end if;
   end if;
   return code_retour;

@@ -50,7 +50,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Votre vue porte plus loin, bénéficiant d''une certaine acuité visuelle, ';
 	else
-		code_retour := code_retour || 'La vue de votre cible porte plus loin, bénéficiant d''une certaine acuité visuelle, ';
+		code_retour := code_retour || 'La vue du buveur porte plus loin, bénéficiant d''une certaine acuité visuelle, ';
 	end if;
     -- la régénération accrue
     -- On calcule le bonus de régénération
@@ -58,7 +58,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'vous êtes plus résitant et bénéficiez d''un bonus de 1 en armure, ';
 	else
-		code_retour := code_retour || 'votre cible est plus résitante et bénéficie d''un bonus de 1 en armure, ';
+		code_retour := code_retour || 'le buveur est plus résitant et bénéficie d''un bonus de 1 en armure, ';
 	end if;
   end if;
   return code_retour;

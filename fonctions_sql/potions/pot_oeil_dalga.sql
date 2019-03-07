@@ -53,14 +53,14 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous gagnez un bonus de 1 en vue, ';
 	else
-		code_retour := code_retour || 'Votre cible gagne un bonus de 1 en vue, ';
+		code_retour := code_retour || 'Le buveur gagne un bonus de 1 en vue, ';
 	end if;
     -- les chances de toucher
     perform ajoute_bonus(cible, 'PTD', 6, 35);
 	if cible = personnage then
 		code_retour := code_retour || 'et vous gagnez un bonus de 35% de chances de toucher à distance. ';
 	else
-		code_retour := code_retour || 'et elle gagne un bonus de 35% de chances de toucher à distance. ';
+		code_retour := code_retour || 'et il gagne un bonus de 35% de chances de toucher à distance. ';
 	end if;
   end if;
   return code_retour;

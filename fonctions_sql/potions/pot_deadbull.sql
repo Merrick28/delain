@@ -51,7 +51,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous avez supprimé tous vos bonus/malus liés à la lenteur temporelle';
 	else
-		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus de votre cible liés à la lenteur temporelle';
+		code_retour := code_retour || 'Vous avez supprimé tous les bonus/malus du buveur liés à la lenteur temporelle';
 	end if;
   end if;
   return code_retour;

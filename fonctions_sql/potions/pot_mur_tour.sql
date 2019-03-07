@@ -49,14 +49,14 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'vous vous sentez plus résistant, et gagnez un bonus de 3 en armure, ';
 	else
-		code_retour := code_retour || 'votre cible se sent plus résistante, et gagne un bonus de 3 en armure, ';
+		code_retour := code_retour || 'le buveur se sent plus résistant, et gagne un bonus de 3 en armure, ';
 	end if;
     -- competences de combat
     perform ajoute_bonus(cible, 'ESQ', 3, -35);
 	if cible = personnage then
 		code_retour := code_retour || ' vous avez un malus de 35% de chances en esquive. ';
 	else
-		code_retour := code_retour || ' elle a un malus de 35% de chances en esquive. ';
+		code_retour := code_retour || ' il a un malus de 35% de chances en esquive. ';
 	end if;
   end if;
   return code_retour;

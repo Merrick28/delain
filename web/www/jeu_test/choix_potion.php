@@ -18,8 +18,8 @@ if ($_REQUEST["methode"]=="utilise_potion")
     echo '
             <form id="valide_potion" name="valide_potion" method="post" action="action.php">
             <input type="hidden" name="methode" value="utilise_potion">
-            <input type="hidden" name="obj_cod" value='.$_REQUEST["obj_cod"].'">
-            <input id="cible" type="hidden" name="cible" value="0">
+            <input type="hidden" name="obj_cod" value="'.$_REQUEST["obj_cod"].'">
+            <input id="cible" type="hidden" name="cible" value="'.$_REQUEST["cible"].'">
             
             Souhaitez-vous néanmoins continuer ?<br /><br />
             <a href="javascript:document.valide_potion.submit();">Oui, advienne que pourra !</a><br />
@@ -31,7 +31,6 @@ else
     echo '  <script>//# sourceURL=choix_potion.js
                 function valide_potion(cible, toxic)
                 {
-                    toxic = 1 ;
                     if (toxic)
                     {
                         $("#ptox_cod").val(toxic);
@@ -48,11 +47,20 @@ else
             <input id="cible" type="hidden" name="cible" value="0">';
 
     // Paramètre globaux ------
-    $dist_potion = 1 ;
-    $type_cible = "1,2,3";
-    $soi_meme = 'O' ;
     $message_erreur = "";
+    $param = new parametres();  // Pour récupérer  les paramètres
+    $dist_potion = $param->getparm(140);
+    $cible = $param->getparm(141);     //(S=Soi-même, 3=Triplette, G=Groupe (coterie+triplette), P=Perso+fam, T=Tous)
+    if (($cible=='P')||($cible=='G')||($cible=='3'))
+    {
+        $type_cible = "1,3";
+    }
+    else
+    {
+        $type_cible = "1,2,3";
+    }
 
+    //--------------------------------
     // On cherche la coterie du perso
     $pdo   = new bddpdo;
     $coterie_perso_lanceur = -1;
@@ -93,7 +101,7 @@ else
     }
 
     // on cherche la position du perso
-    $req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue(perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee, COALESCE(ptox_cod , 0) ptox_cod 
+    $req_pos = "select distinct ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue(perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee, CASE WHEN ptox_cod IS NOT NULL THEN 1 ELSE 0 END as ptox_cod 
                 from perso
                 inner join perso_position on ppos_perso_cod = perso_cod 
                 inner join positions on pos_cod = ppos_pos_cod 
@@ -149,98 +157,106 @@ else
         <td class="soustitre2"><p><strong>DLT</strong></p></td>
         </tr>';
 
-        if ($soi_meme == 'O')
+        // On peut toujours se cibler ?
+        echo "<tr>
+            <td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
+            <a href=\"javascript:valide_potion(" . $perso_cod . "," . $toxic . ");\">
+                " . $perso_nom . "</a></strong><em> (vous-même<strong>" . $niveau_blessures . "</strong>)</em>
+                <input type=\"hidden\" name=\"ptox_cod\" value=\"$toxic\"> 
+            </td>
+            <td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
+            <td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
+            <td style=\"background-color:darkseagreen; text-align:center;\">0</td>
+            <td style=\"background-color:darkseagreen; text-align:left;\">$perso_bonus</td>
+            <td style=\"background-color:darkseagreen; text-align:left;\">$perso_pa</td>
+            <td style=\"background-color:darkseagreen; text-align:left;\">$perso_dlt</td>
+        </tr>";
+
+
+        if (in_array($cible, array('T', 'P', 'G', '3')))
         {
-            echo "<tr>
-                <td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
-                <a href=\"javascript:valide_potion(" . $perso_cod . "," . $toxic . ");\">
-                    " . $perso_nom . "</a></strong><em> (vous-même<strong>" . $niveau_blessures . "</strong>)</em>
-                    <input type=\"hidden\" name=\"ptox_cod\" value=\"$toxic\"> 
-                </td>
-                <td style=\"background-color:darkseagreen; text-align:center;\">" . $x . "</td>
-                <td style=\"background-color:darkseagreen; text-align:center;\">" . $y . "</td>
-                <td style=\"background-color:darkseagreen; text-align:center;\">0</td>
-                <td style=\"background-color:darkseagreen; text-align:left;\">$perso_bonus</td>
-                <td style=\"background-color:darkseagreen; text-align:left;\">$perso_pa</td>
-                <td style=\"background-color:darkseagreen; text-align:left;\">$perso_dlt</td>
-            </tr>";
-        }
+            // On ramène toutes les cibles potentiel suivant le type
+            $req_vue_joueur = "select distinct  trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom, pos_x, pos_y, pos_etage, race_nom,
+                                        distance($position, pos_cod) as distance, pos_cod, perso_cod, perso_type_perso, perso_pv, perso_pv_max,
+                                        case when groupe_perso.pgroupe_perso_cod IS NOT NULL THEN 1 ELSE 0 END as meme_coterie,
+                                        case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette,
+                                        case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_bonus=1) then perso_bonus(perso_cod)
+                                            when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_bonus=0) then 'masqué'
+                                            else NULL end perso_bonus,
+                                        case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_pa=1) then perso_pa::text
+                                            when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_pa=0) then 'masqué'
+                                            else NULL end perso_pa,
+                                        case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_dlt=1) then to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss')
+                                            when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_dlt=0) then 'masqué'
+                                            else NULL end perso_dlt,
+                                        dlt_passee(perso_cod)::text as perso_dlt_passee,
+                                        CASE WHEN ptox_cod IS NOT NULL THEN 1 ELSE 0 END as ptox_cod 
+                                from perso
+                                inner join perso_position on ppos_perso_cod = perso_cod 
+                                inner join positions on pos_cod = ppos_pos_cod 
+                                inner join race on race_cod = perso_race_cod
+                                left join potions.perso_toxic on ptox_perso_cod = perso_cod
+                                LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 and pgroupe_groupe_cod=$coterie_perso_lanceur
+                                LEFT OUTER JOIN (
+                                                select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=:compt_cod and perso_actif='O'
+                                                union
+                                                select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=:compt_cod and perso_actif='O'
+                                            ) as triplette on triplette_perso_cod = perso_cod
+                                where pos_x between ($x-$distance_vue) and ($x+$distance_vue)
+                                    and pos_y between ($y-$distance_vue) and ($y+$distance_vue)
+                                    and pos_etage = $etage
+                                    and perso_cod != :perso_cod
+                                    and perso_actif = 'O'
+                                    and perso_type_perso in ($type_cible) 
+                                order by perso_type_perso asc,distance, pos_x, pos_y, perso_nom ";
 
-        $req_vue_joueur = "select   trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom, pos_x, pos_y, pos_etage, race_nom,
-                                    distance($position, pos_cod) as distance, pos_cod, perso_cod, perso_type_perso, perso_pv, perso_pv_max,
-                                    case when groupe_perso.pgroupe_perso_cod IS NOT NULL THEN 1 ELSE 0 END as meme_coterie,
-                                    case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette,
-                                    case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_bonus=1) then perso_bonus(perso_cod)
-                                        when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_bonus=0) then 'masqué'
-                                        else NULL end perso_bonus,
-                                    case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_pa=1) then perso_pa::text
-                                        when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_pa=0) then 'masqué'
-                                        else NULL end perso_pa,
-                                    case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_dlt=1) then to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss')
-                                        when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_dlt=0) then 'masqué'
-                                        else NULL end perso_dlt,
-                                    dlt_passee(perso_cod)::text as perso_dlt_passee,
-                                    COALESCE(ptox_cod , 0) ptox_cod
-                            from perso
-                            inner join perso_position on ppos_perso_cod = perso_cod 
-                            inner join positions on pos_cod = ppos_pos_cod 
-                            inner join race on race_cod = perso_race_cod
-                            left join potions.perso_toxic on ptox_perso_cod = perso_cod
-                            LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 and pgroupe_groupe_cod=$coterie_perso_lanceur
-                            LEFT OUTER JOIN (
-                                            select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=:compt_cod and perso_actif='O'
-                                            union
-                                            select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
-                                        ) as triplette on triplette_perso_cod = perso_cod
-                            where pos_x between ($x-$distance_vue) and ($x+$distance_vue)
-                                and pos_y between ($y-$distance_vue) and ($y+$distance_vue)
-                                and pos_etage = $etage
-                                and perso_cod != :perso_cod
-                                and perso_actif = 'O'
-                                and perso_type_perso in ($type_cible) 
-                            order by perso_type_perso asc,distance, pos_x, pos_y, perso_nom ";
+            $stmt   = $pdo->prepare($req_vue_joueur);
+            $stmt   = $pdo->execute(array(":compt_cod" => $compt_cod, ":perso_cod" => $perso_cod), $stmt);
 
-        $stmt   = $pdo->prepare($req_vue_joueur);
-        $stmt   = $pdo->execute(array(":compt_cod" => $compt_cod, ":perso_cod" => $perso_cod), $stmt);
-
-        while ($row = $stmt->fetch())
-        {
-            if ($row["traj"] == 1)
+            while ($row = $stmt->fetch())
             {
-                $niveau_blessures = $perso->niveau_blessures($row["perso_pv"], $row["perso_pv_max"]) ;
-                if ($niveau_blessures != "" ) $niveau_blessures = ' - ' . $niveau_blessures;
-                $type_perso = $row["perso_type_perso"];
-
-                $perso_pa = $row["perso_pa"];
-                if (($row["perso_dlt_passee"] == 1) && ($perso_pa != "") && ($perso_pa != "masqué")) $perso_pa = "<strong>{$perso_pa}</strong>";
-                $perso_dlt = $row["perso_dlt"];
-                if (($row["perso_dlt_passee"] == 1) && ($perso_dlt != "") && ($perso_dlt != "masqué")) $perso_dlt = "<strong>{$perso_dlt}</strong>";
-
-                $toxic = "0" ;
-                if (($row["triplette"] == 1 || $row["meme_coterie"] == 1) && $row["ptox_cod"])
+                if (($row["traj"] == 1) && (
+                                ($cible=='T')
+                            ||  ($cible=='P')
+                            ||  ($cible=='3' && $row["triplette"]==1)
+                            ||  ($cible=='G' && ($row["triplette"]==1 || $row["meme_coterie"]==1))
+                    ))
                 {
-                    $toxic = $row["ptox_cod"] ;
-                }
-                $script_choix = "javascript:valide_potion(" . $row["perso_cod"] . "," . $toxic . ");";
+                    $niveau_blessures = $perso->niveau_blessures($row["perso_pv"], $row["perso_pv_max"]) ;
+                    if ($niveau_blessures != "" ) $niveau_blessures = ' - ' . $niveau_blessures;
+                    $type_perso = $row["perso_type_perso"];
 
-                $perso_bonus = $row["perso_bonus"]; // le reste n'a pas été approuvé => $row["perso_dlt_passee"]==0 ? $row["perso_bonus"] : ( $row["perso_bonus"]=="" ? "" : "<strong>".$row["perso_bonus"]."</strong>" ) ;
-                $perso_style = $perso_bonus == NULL ? "" : ($row["triplette"] == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
-                echo "<tr>
-                    <td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $row["perso_nom"] . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>
-                        <input type=\"hidden\" name=\"ptox_cod\" value=\"$toxic\">
-                    </td>
-                    <td style=\"{$perso_style}\">" . $row["race_nom"] . "</td>
-                    <td style=\"{$perso_style} text-align:center;\">" . $row["pos_x"] . "</td>
-                    <td style=\"{$perso_style} text-align:center;\">" . $row["pos_y"] . "</td>
-                    <td style=\"{$perso_style} text-align:center;\">" . $row["distance"] . "</td>
-                    <td style=\"{$perso_style} text-align:left;\">" . $perso_bonus . "</td>
-                    <td style=\"{$perso_style} text-align:left;\">" . $perso_pa . "</td>
-                    <td style=\"{$perso_style} text-align:left;\">" . $perso_dlt . "</td>
-                </tr>";
+                    $perso_pa = $row["perso_pa"];
+                    if (($row["perso_dlt_passee"] == 1) && ($perso_pa != "") && ($perso_pa != "masqué")) $perso_pa = "<strong>{$perso_pa}</strong>";
+                    $perso_dlt = $row["perso_dlt"];
+                    if (($row["perso_dlt_passee"] == 1) && ($perso_dlt != "") && ($perso_dlt != "masqué")) $perso_dlt = "<strong>{$perso_dlt}</strong>";
+
+                    $toxic = "0" ;
+                    if (($row["triplette"] == 1 || $row["meme_coterie"] == 1) && $row["ptox_cod"])
+                    {
+                        $toxic = $row["ptox_cod"] ;
+                    }
+                    $script_choix = "javascript:valide_potion(" . $row["perso_cod"] . "," . $toxic . ");";
+
+                    $perso_bonus = $row["perso_bonus"]; // le reste n'a pas été approuvé => $row["perso_dlt_passee"]==0 ? $row["perso_bonus"] : ( $row["perso_bonus"]=="" ? "" : "<strong>".$row["perso_bonus"]."</strong>" ) ;
+                    $perso_style = $perso_bonus == NULL ? "" : ($row["triplette"] == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
+                    echo "<tr>
+                        <td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $row["perso_nom"] . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>
+                            <input type=\"hidden\" name=\"ptox_cod\" value=\"$toxic\">
+                        </td>
+                        <td style=\"{$perso_style}\">" . $row["race_nom"] . "</td>
+                        <td style=\"{$perso_style} text-align:center;\">" . $row["pos_x"] . "</td>
+                        <td style=\"{$perso_style} text-align:center;\">" . $row["pos_y"] . "</td>
+                        <td style=\"{$perso_style} text-align:center;\">" . $row["distance"] . "</td>
+                        <td style=\"{$perso_style} text-align:left;\">" . $perso_bonus . "</td>
+                        <td style=\"{$perso_style} text-align:left;\">" . $perso_pa . "</td>
+                        <td style=\"{$perso_style} text-align:left;\">" . $perso_dlt . "</td>
+                    </tr>";
+                }
             }
         }
+        echo '</table></form>';
     }
-    echo '</table></form>';
 }
 
 $contenu_page = ob_get_contents();

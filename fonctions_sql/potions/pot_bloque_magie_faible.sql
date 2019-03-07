@@ -50,7 +50,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Vous vous sentez un peu plus ... nain ... ';
 	else
-		code_retour := code_retour || 'Votre cible se sent un peu plus ... nain ... ';
+		code_retour := code_retour || 'Le buveur se sent un peu plus ... nain ... ';
 	end if;
   end if;
   return code_retour;

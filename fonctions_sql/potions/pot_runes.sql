@@ -44,7 +44,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Dire que vous sentez mieux les arcanes magiques serait exagéré, mais en tout cas, c''est moins pire qu''avant !';
 	else
-		code_retour := code_retour || '<br>Dire que votre cible ressent mieux les arcanes magiques serait exagéré, mais en tout cas, c''est moins pire qu''avant !';
+		code_retour := code_retour || '<br>Dire que le buveur ressente mieux les arcanes magiques serait exagéré, mais en tout cas, c''est moins pire qu''avant !';
 	end if;
   end if;
   return code_retour;

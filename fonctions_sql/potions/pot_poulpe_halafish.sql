@@ -57,7 +57,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'vous vous sentez soudain plus ... débile, ';
 	else
-		code_retour := code_retour || 'votre cible se sent soudain plus ... débile, ';
+		code_retour := code_retour || 'le buveur se sent soudain plus ... débile, ';
 	end if;
     -- dégâts augmentés
     perform ajoute_bonus(cible, 'PDC', 3, v_bonus_degats);

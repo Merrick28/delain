@@ -47,14 +47,14 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'Votre vue se trouble, ';
 	else
-		code_retour := code_retour || 'La vue de votre cible se trouble, ';
+		code_retour := code_retour || 'La vue du buveur se trouble, ';
 	end if;
     -- les chances de toucher
     perform ajoute_bonus(cible, 'PCC', 6, -20);
 	if cible = personnage then
 		code_retour := code_retour || ', vous portez vos coups à l''aveuglette avec fureur, vous perdez 20% de chances de toucher en corps à corps, ';
 	else
-		code_retour := code_retour || ', elle porte ses coups à l''aveuglette avec fureur, elle perd 20% de chances de toucher en corps à corps, ';
+		code_retour := code_retour || ', il porte ses coups à l''aveuglette avec fureur, il perd 20% de chances de toucher en corps à corps, ';
 	end if;
     -- les dégats
     perform ajoute_bonus(cible, 'PDC', 6, 4);
@@ -62,7 +62,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || 'et vous gagnez un bonus de 1 en armure. ';
 	else
-		code_retour := code_retour || 'et elle gagne un bonus de 1 en armure. ';
+		code_retour := code_retour || 'et il gagne un bonus de 1 en armure. ';
 	end if;
   end if;
   return code_retour;

@@ -50,7 +50,7 @@ begin
 if cible = personnage then
       code_retour := code_retour || '<br>Vous sentez parfaitement bon ! Pourquoi avez vous utilisé un spray contre les mauvaises odeurs ?';
 else
-      code_retour := code_retour || '<br>Votre cible sent parfaitement bon ! Pourquoi avez vous utilisé un spray contre les mauvaises odeurs ?';
+      code_retour := code_retour || '<br>Le buveur sent parfaitement bon ! Pourquoi avez vous utilisé un spray contre les mauvaises odeurs ?';
 end if;
     else
 		delete from perso_titre

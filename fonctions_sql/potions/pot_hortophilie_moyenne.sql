@@ -47,7 +47,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Aaaah, avec ça, vous voyez tout de suite mieux comment mélanger ces fichus ingrédients !';
 	else
-		code_retour := code_retour || '<br>Aaaah, avec ça, votre cible voit tout de suite mieux comment mélanger ces fichus ingrédients !';
+		code_retour := code_retour || '<br>Aaaah, avec ça, le buveur voit tout de suite mieux comment mélanger ces fichus ingrédients !';
 	end if;
   end if;
   return code_retour;

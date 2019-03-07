@@ -44,7 +44,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vos sens de l''énergie ambiante se sont accrus. Le forgeamage vous attend !';
 	else
-		code_retour := code_retour || '<br>Les sens de l''énergie ambiante de votre cible se sont accrus. Le forgeamage l''attend !';
+		code_retour := code_retour || '<br>Les sens de l''énergie ambiante du buveur se sont accrus. Le forgeamage l''attend !';
 	end if;
   end if;
   return code_retour;

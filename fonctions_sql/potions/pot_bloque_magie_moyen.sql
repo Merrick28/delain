@@ -55,7 +55,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Vous gagnez un malus de 10% de chances de toucher au combat.';
 	else
-		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Votre cible gagne un malus de 10% de chances de toucher au combat.';
+		code_retour := code_retour || '<br>Le nain est petit, il manque donc souvent sa cible. Le buveur gagne un malus de 10% de chances de toucher au combat.';
 	end if;
   end if;
   return code_retour;

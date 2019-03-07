@@ -44,7 +44,7 @@ begin
 if cible = personnage then
     code_retour := code_retour || '<br>Votre acuité semble s''être améliorée';
 else
-    code_retour := code_retour || '<br>L''acuité de votre cible semble s''être améliorée';
+    code_retour := code_retour || '<br>L''acuité du buveur semble s''être améliorée';
 end if;
   end if;
   return code_retour;

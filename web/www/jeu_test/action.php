@@ -698,7 +698,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $stmt   = $pdo->execute( array(':perso_cod' => $perso_cod, ':cible' => $_POST['cible']), $stmt);
                 if ($result = $stmt->fetch())
                 {
-                    $contenu_page .= $result['resultat'];
+                    $contenu_page .= $result['resultat'].'<br><br>';
                 }
             }
             break;

@@ -45,7 +45,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vous n''auriez pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
 	else
-		code_retour := code_retour || '<br>Votre cible n''aurait pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
+		code_retour := code_retour || '<br>Le buveur n''aurait pas pris un peu de poids depuis la dernière fois ? Au moins, cela pourra atténuer quelque peu les coups';
 	end if;
   end if;
   return code_retour;

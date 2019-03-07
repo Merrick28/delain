@@ -43,7 +43,7 @@ begin
 	if cible = personnage then
 		code_retour := code_retour || '<br>Vous sentez une certaine puissance dans vos bras, qui ne peuvent s''empêcher d''aller d''avant en arrière, frappant la roche la plus proche de vous';
 	else
-		code_retour := code_retour || '<br>Votre cible resent une certaine puissance dans ses bras, qui ne peuvent s''empêcher d''aller d''avant en arrière, frappant la roche la plus proche d''elle';
+		code_retour := code_retour || '<br>Le buveur sent une certaine puissance dans ses bras, qui ne peuvent s''empêcher d''aller d''avant en arrière, frappant la roche la plus proche de lui';
 	end if;
   end if;
   return code_retour;
