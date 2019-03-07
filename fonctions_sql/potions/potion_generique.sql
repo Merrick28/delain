@@ -44,7 +44,8 @@ declare
   v_traj integer;	-- trajectoire lanceur/cible
   v_dist integer;	-- distance lanceur/cible
   v_nom_cible text;	-- nom cible
-  v_type_perso integer;	-- type de cible
+  v_type_perso integer;	-- type de lanceur
+  v_type_perso_cible integer;	-- type de cible
   v_triplette integer;	-- 1 si la cible est de la même triplette que le lanceur
 
 begin
@@ -57,7 +58,7 @@ begin
   /*********************************************************/
   -- controle sur la possession de la potion (2019-03-07: la potion doit-être identifiée)
   select into v_obj_cod,v_nom_potion
-    obj_cod,obj_nom
+    obj_cod, CASE WHEN lower(substring(trim(obj_nom),1,6))='potion' THEN trim(substring(trim(obj_nom),7)) else obj_nom END
   from objets,perso_objets
   where perobj_perso_cod = personnage
         and perobj_obj_cod = obj_cod
@@ -69,15 +70,14 @@ begin
   end if;
 
   -- controle sur les PA de l'utilisateur
-  select into v_pa, v_compt_cod, v_coterie, v_pos_cod, v_etage, v_pos_x, v_pos_y, v_distance_vue, v_nom_cible
-    perso_pa, pcompt_compt_cod, COALESCE(pgroupe_groupe_cod,0), pos_cod, pos_etage, pos_x, pos_y, distance_vue(perso_cod), perso_nom
+  select into v_pa, v_type_perso, v_coterie, v_pos_cod, v_etage, v_pos_x, v_pos_y, v_distance_vue, v_nom_cible
+    perso_pa, perso_type_perso, COALESCE(pgroupe_groupe_cod,0), pos_cod, pos_etage, pos_x, pos_y, distance_vue(perso_cod), perso_nom
   from perso
-  join perso_compte on pcompt_perso_cod=perso_cod
   join perso_position on ppos_perso_cod = perso_cod
   join positions on pos_cod = ppos_pos_cod
   left join groupe_perso on pgroupe_perso_cod = perso_cod and pgroupe_statut = 1
   where perso_cod = personnage;
-  if v_pa < getparm_n(104) then
+  if not found or v_pa < getparm_n(104) then
     return '1;Erreur ! Vous n''avez pas assez de PA pour effectuer cette action';
   end if;
 
@@ -88,8 +88,16 @@ begin
       return '1;Erreur ! Vous ne pouvez cibler que vous même pour cette action';
     end if;
 
+    -- récupération du compte joueur (pour identification de la triplette)
+    v_compt_cod := 0 ;    -- pas de triplette pour les monstres
+    if v_type_perso = 3 then
+      select v_compt_cod pcompt_compt_cod from perso_familier join perso_compte on pcompt_perso_cod = pfam_perso_cod where pfam_familier_cod=personnage ;
+    elsif v_type_perso = 1 then
+      select into v_compt_cod  pcompt_compt_cod from perso_compte where pcompt_perso_cod=personnage ;
+    end if;
+
     -- récupération des infos sur la cible
-    select into v_coterie_cible, v_traj, v_dist, v_type_perso, v_nom_cible, v_triplette
+    select into v_coterie_cible, v_traj, v_dist, v_type_perso_cible, v_nom_cible, v_triplette
       COALESCE(pgroupe_groupe_cod,0), trajectoire_vue(v_pos_cod, pos_cod), distance(v_pos_cod, pos_cod), perso_type_perso, perso_nom, case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END
     from perso
     inner join perso_position on ppos_perso_cod = perso_cod
@@ -100,7 +108,7 @@ begin
           union
           select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=v_compt_cod and perso_actif='O'
       ) as triplette on triplette_perso_cod = perso_cod
-    where perso_cod = cible ;
+    where perso_cod = cible and perso_actif='O';
     if not found then
       return '1;Erreur ! la cible n''a pas été trouvée';
     end if;
@@ -119,15 +127,19 @@ begin
       return '1;Erreur ! Vous ne pouvez cibler que votre triplette ou votre coterie pour cette action';
     end if;
 
-    if (v_type_cible = 'P') and (v_type_perso != 1) and (v_type_perso != 3) then
+    if (v_type_cible = 'A') and (v_type_perso!=2) and (v_type_perso_cible != 1) and (v_type_perso_cible != 3) then
       return '1;Erreur ! Vous ne pouvez cibler que des personages ou des familiers pour cette action';
+    end if;
+
+    if (v_type_cible = 'A') and (v_type_perso=2) and (v_type_perso_cible != 2) then
+      return '1;Erreur ! Vous ne pouvez cibler que des monstres pour cette action';
     end if;
   end if;
 
   if cible = personnage then
-    texte_evt := '[perso_cod1] a bu une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+    texte_evt := '[perso_cod1] a bu une potion ' ||  v_nom_potion ;
   else
-    texte_evt := '[attaquant] a fait boire à [cible] la ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+    texte_evt := '[attaquant] a fait boire à [cible] la potion ' || v_nom_potion;
   end if;
 
   -- controles sur la stabilité de la potion
@@ -179,7 +191,7 @@ begin
     insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible, levt_attaquant, levt_cible)
     values(nextval('seq_levt_cod'),104,now(),1,personnage,texte_evt,'O','O',personnage,cible);
 
-    texte_evt := '[attaquant] vous a fait boire une ' || CASE WHEN lower(substring(trim(v_nom_potion),1,6))='potion' THEN v_nom_potion else 'potion ' || v_nom_potion end;
+    texte_evt := '[attaquant] vous a fait boire une potion ' || v_nom_potion ;
     if v_des_stabilite > v_stabilite then
       texte_evt := texte_evt || ' qui était instable';
     end if;

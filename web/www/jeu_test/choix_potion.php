@@ -51,7 +51,18 @@ else
     $param = new parametres();  // Pour récupérer  les paramètres
     $dist_potion = $param->getparm(140);
     $cible = $param->getparm(141);     //(S=Soi-même, 3=Triplette, G=Groupe (coterie+triplette), P=Perso+fam, T=Tous)
-    if (($cible=='P')||($cible=='G')||($cible=='3'))
+    if ($cible=='A')
+    {
+        if ($perso->perso_type_perso == 2)
+        {
+            $type_cible = "2";
+        }
+        else
+        {
+            $type_cible = "1,3";
+        }
+    }
+    else if (($cible=='G')||($cible=='3'))
     {
         $type_cible = "1,3";
     }
@@ -173,7 +184,7 @@ else
         </tr>";
 
 
-        if (in_array($cible, array('T', 'P', 'G', '3')))
+        if (in_array($cible, array('T', 'A', 'G', '3')))
         {
             // On ramène toutes les cibles potentiel suivant le type
             $req_vue_joueur = "select distinct  trajectoire_vue($pos_cod, pos_cod) as traj, perso_nom, pos_x, pos_y, pos_etage, race_nom,
@@ -217,7 +228,7 @@ else
             {
                 if (($row["traj"] == 1) && (
                                 ($cible=='T')
-                            ||  ($cible=='P')
+                            ||  ($cible=='A')
                             ||  ($cible=='3' && $row["triplette"]==1)
                             ||  ($cible=='G' && ($row["triplette"]==1 || $row["meme_coterie"]==1))
                     ))
