@@ -478,7 +478,8 @@ $db->query($req_id);
 
                     if ($potion_buvable)
                     {
-                        echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $db->f("gobj_cod") . '">Boire (2PA)</a>';
+                        //echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $db->f("gobj_cod") . '">Boire (2PA)</a>';
+                        echo '<a href="choix_potion.php?&obj_cod=' . $db->f("obj_cod") . '">Utiliser (2PA)</a>';
                     }
                     echo("</td>");
                     echo("<td class=\"soustitre2\">");
