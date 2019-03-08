@@ -91,7 +91,7 @@ begin
     -- récupération du compte joueur (pour identification de la triplette)
     v_compt_cod := 0 ;    -- pas de triplette pour les monstres
     if v_type_perso = 3 then
-      select v_compt_cod pcompt_compt_cod from perso_familier join perso_compte on pcompt_perso_cod = pfam_perso_cod where pfam_familier_cod=personnage ;
+      select into v_compt_cod pcompt_compt_cod from perso_familier join perso_compte on pcompt_perso_cod = pfam_perso_cod where pfam_familier_cod=personnage ;
     elsif v_type_perso = 1 then
       select into v_compt_cod  pcompt_compt_cod from perso_compte where pcompt_perso_cod=personnage ;
     end if;
