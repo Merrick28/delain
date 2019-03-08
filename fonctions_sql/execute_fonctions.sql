@@ -106,7 +106,7 @@ begin
 			select into retour_fonction trans_crap(v_perso_cod);
 
 		elsif code_fonction = 'deb_tour_necromancie' then
-			select into retour_fonction deb_tour_necromancie(v_perso_cod, ligne_fonction.fonc_force::numeric, ligne_fonction.fonc_proba::integer);
+			select into retour_fonction deb_tour_necromancie(v_perso_cod, coalesce(nullif(ligne_fonction.fonc_force,''),'1')::numeric, ligne_fonction.fonc_proba::integer);
 
 		elsif code_fonction = 'deb_tour_haloween' then
 			select into retour_fonction deb_tour_haloween(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_proba::integer);
