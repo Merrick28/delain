@@ -205,7 +205,7 @@ class aquete_etape
      * @param $trigger_nom
      * @return string
      */
-    function get_initial_texte( $trigger_nom )
+    function get_initial_texte( perso $perso, $trigger_nom )
     {
         $hydrate_texte = "" ;
         $textes = explode("[", $this->aqetape_texte);
@@ -218,8 +218,13 @@ class aquete_etape
                 $params = explode("]", $v);
 
                 // On traite le cas particulier de la première etape non instanciée, alors on on a: Param1 => Element déclencheur, Param2 => Choix
-                $param_num = 1*$params[0] ;
-                if ($param_num == 1)
+                $param_num = (int)$params[0] ;
+
+                if (substr($params[0],0,1)=="#")
+                {
+                    $hydrate_texte .=  $perso->get_champ(substr($params[0],1));
+                }
+                else if ($param_num == 1)
                 {
                     $hydrate_texte.= $trigger_nom;
                 }
@@ -254,7 +259,6 @@ class aquete_etape
         $hydrate_texte = "" ;
 
         $element = new aquete_element();
-        //$elements = $element->getBy_etape_param_id($this->aqetape_cod, 1);
         $elements = $element->getBy_aqperso_param_id ( $aqperso,1) ;
         foreach ($elements as $i => $e)
         {
@@ -271,6 +275,23 @@ class aquete_etape
             $hydrate_texte = $this->aqetape_texte.$hydrate_texte;  // Le début de la description
 
         return $hydrate_texte ;
+    }
+
+    /**
+     * Fonction pour mettre en forme le texte d'une étape du type choix_etape (saisi d'un texte)
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_texte_form(aquete_perso $aqperso)
+    {
+        $etape_modele = $aqperso->get_etape_modele();
+
+        return '<form method="post" action="quete_auto.php">
+        <input type="hidden" name="methode" value="dialogue">
+        <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">
+        &nbsp;&nbsp;&nbsp;Vous : <input name="dialogue" type="text" size="80"><br>
+        <br>&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="choix_etape" value="Valider" >
+        </form>' ;
     }
 
     /**

@@ -176,14 +176,14 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE")))
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
-                            if ($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")
+                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE"))
                             {
                                 $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3));
                             }
@@ -278,7 +278,21 @@ if ($erreur == 0)
         echo '<tr><td><strong>Exemple </strong>:</td><td>'.$etape_modele->aqetapmodel_modele.'<br><br></td></tr>';
         echo '<tr><td><strong>Nom de l\'étape </strong>:</td><td><input type="text" size="50" name="aqetape_nom" value="'.htmlspecialchars($etape->aqetape_nom).'"></td></tr>';
         echo '<tr><td><strong>Texte de l\'étape </strong>:</td><td><textarea id="id-textarea-etape" style="min-height: 150px; min-width: 650px;" name="aqetape_texte">'.( $etape->aqetape_texte != "" ? $etape->aqetape_texte : $etape_modele->aqetapmodel_modele).'</textarea></td></tr>';
-        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em></td></tr>';
+        echo '<tr><td></td><td><em style="font-size: 10px;">Ce texte sera afficher au début de l\'étape, il doit orienter l\'aventurier sur ce qu\'il doit faire pour poursuivre sa quête.<br><u>Nota</u>: Vous pouvez aussi utiliser ce texte pour le féliciter sur la réussite de l\'étape précédente.</em>&nbsp;
+                   <a href="#" onclick="$(\'#info-variables\').slideToggle();"><img src="/images/info_16.png"></a><div id="info-variables" style="display:none;"><br>Le texte d\'étape peut contenir des <u>variables</u>:<br>
+                   <br>* [X] est une représentation en texte du paramètre X de l\'étape (exemple [1], [2] etc...<br> 
+                   <br>* [#perso.XXXXX] est une représentation en texte de la propriété "XXXXX" du perso, comme par exemple:<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.nom] : nom du meneur de quete<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.sex] : son sexe (Monsieur ou Madame)<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.niveau] : son niveau, <br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.for], [#perso.dex], [#perso.int],[#perso.con] : sa force, sa dex, son int et sa constitution, <br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.po] : le nombre de brouzouf qu\'il possède.<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;etc..<br>
+                   <br>* [#perso.XXXXX()] est une représentation en texte de la méthode XXXXX du perso, comme par exemple:<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.race()] : affiche la race du meneur de quete<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.get_poids()] : le poids qu\'il transporte<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;etc..<br>
+                   <br></div></td></tr>';
         echo '</table>';
 
 
@@ -472,26 +486,6 @@ if ($erreur == 0)
                                     </td>';
                     break;
 
-                    case 'old_position':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $position = new positions() ;
-                                $position->charge( $element->aqelem_misc_cod );
-                                $element->aqelem_param_num_1 = $position->pos_x ;
-                                $element->aqelem_param_num_2 = $position->pos_y ;
-                                $element->aqelem_param_num_3 = $position->pos_etage ;
-                            }
-                            echo   '<td>Position :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="hidden" size="5" value="'.$element->aqelem_misc_cod.'">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    X = <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
-                                    Y = <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'" onChange="setQuetePositionCod(\''.$row_id.'\');">&nbsp;
-                                    Etage&nbsp;:'.create_selectbox_from_req("aqelem_param_num_3[$param_id][]", $request_select_etage, $element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 350px;" data-entry="val" onChange="setQuetePositionCod(\''.$row_id.'\');"')).'                                   
-                                    </td>';
-                    break;
-
                     case 'monstre_generique':
                         if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                         {
@@ -521,6 +515,22 @@ if ($erreur == 0)
                                 <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
                                 <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.htmlspecialchars($element->aqelem_param_txt_1).'"> <br>Etape si choisi:
                                 <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
+                                </td>';
+                        break;
+
+                    case 'choix_etape':
+
+                        $aquete_etape = new aquete_etape ;
+                        $aqelem_misc_nom = $aquete_etape->getNom(1*$element->aqelem_misc_cod) ;
+
+                        echo   '<td>Liste de mot <em style="font-size: x-small">(séparés par |)</em>  :
+                                <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.$element->aqelem_cod.'"> 
+                                <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="80" value="'.htmlspecialchars($element->aqelem_param_txt_1).'"> <br>
+                                Condition sur les mots: |='.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 60px;" data-entry="val"')).'
+                                Etape sur condition: <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.$element->aqelem_misc_cod.'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'etape\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
                                 &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
                                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","etape","Rechercher une etape", ['.$aquete_cod.','.$aqetape_cod.']);\'> 
                                 </td>';

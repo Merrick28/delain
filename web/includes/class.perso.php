@@ -2571,6 +2571,59 @@ class perso
         return $stmt->fetchAll();
     }
 
+    function race()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select race_nom from race where race_cod = ? ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array( $this->perso_race_cod ), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return 'inconnue';
+        }
+        return $result["race_nom"];
+    }
+
+    /**
+     * @param $field: champ au format perso.champ
+     * @return string
+     */
+    public function get_champ($field)
+    {
+        // Traitements Spécifiques. --------------------------------------
+        if ($field =="perso.sex")
+        {
+            return $this->perso_sex == "M" ? "Monsieur" : "Madame";
+        }
+
+        //Traitement générique. --------------------------------------
+        if (substr($field, -2)  == "()")
+        {
+            //Cas d'une methode----
+            $field = substr($field , 6, -2);    //supression de "perso." et de "()"
+            if (method_exists($this, $field))
+            {
+                return $this->$field();
+            }
+        }
+        else
+        {
+            //Cas d'un propriétée---
+            $field = str_replace(".", "_", $field);
+            if (property_exists($this, $field))
+            {
+                return $this->$field ;
+            }
+
+            $field = substr($field , 6);    //supression de "perso."
+            if (property_exists($this, $field))
+            {
+                return $this->$field ;
+            }
+        }
+        return "";
+    }
+
 
     public function __call($name, $arguments)
     {

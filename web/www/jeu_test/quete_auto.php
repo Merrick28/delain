@@ -175,7 +175,11 @@ switch ($methode)
             $quete_perso->set_choix_aventurier(1 * $_REQUEST["choix"]);
         }
         $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
+        break;
 
+    case 'dialogue' :
+        // La saisie du joueur est dans le $_REQUEST, rien de particulier ici, tout sera géré dans le run!
+        $methode = "";     // => Pour réaliser la suite (run) dans la liste de mes quetes en cours !!!!
         break;
 }
 

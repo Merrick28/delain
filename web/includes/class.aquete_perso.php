@@ -21,6 +21,7 @@ class aquete_perso
     var $aqperso_date_debut;
     var $aqperso_date_fin;
     var $aqperso_date_debut_etape;
+    var $perso;         // définition du perso qui fait la quete
     var $quete;         // définition de la quete
     var $etape;         // définition de l'étape en cours
     var $etape_modele;  // définition du modele d'étape en cours
@@ -28,11 +29,19 @@ class aquete_perso
 
     function __construct()
     {
+        $this->perso = new perso();
         $this->quete = new aquete();
         $this->etape = new aquete_etape();
         $this->etape_modele = new aquete_etape_modele();
         $this->action = new aquete_action();
         $this->aqperso_date_debut = date('Y-m-d H:i:s');
+    }
+
+    //getter de l'élément perso, le charger si ce n'est pas déjà fait.
+    function get_perso()
+    {
+        if (!$this->perso->perso_cod) $this->perso->charge($this->aqperso_perso_cod);
+        return $this->perso;
     }
 
     //getter de l'élément quete, le charger si ce n'est pas déjà fait.
@@ -395,6 +404,7 @@ class aquete_perso
     {
         $element = new aquete_element;          // pour utilisation des fonctions de cette classe
         $etape = $this->get_etape();            // Pour obtenir le texte brut de l'étape
+        $perso = $this->get_perso();            // Pour hydrater des infos sur le meneur de quete
 
         // S'il n'y a pas de variazble on retourne directement le texte brut!
         if (!preg_match_all('#\[(.+)\]#isU', $etape->aqetape_texte, $matches)) return $etape->aqetape_texte;
@@ -408,7 +418,15 @@ class aquete_perso
             if (!in_array("[$v]", $search))
             {
                 $search[] = "[$v]";
-                $replace[] = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                if (substr($v,0,1)=="#")
+                {
+                    // Gestion des varibales du perso
+                    $replace[] = $perso->get_champ(substr($v,1));
+                }
+                else
+                {
+                    $replace[] = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                }
             }
         }
         //echo "<pre>"; print_r($search); echo "</pre>";
@@ -571,6 +589,26 @@ class aquete_perso
                     }
 
                     $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
+                case "#SAUT #CONDITION #DIALOGUE":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionné par une saisie du joueur.
+                    $result =  $this->action->saut_condition_dialogue($this);
+                    if ($result->status)
+                    {
+                        //L'étape est terminée, mais elle peu echouer
+                        if ($result->etape == 0)
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                        } else if ($result->etape < 0)
+                        {
+                            $status_etape = $result->etape;          // fin de la quete sur succes ou echec
+                        } else
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                            $next_etape_cod = $result->etape;        // vers une etape specifique !
+                        }
+                    }
                     break;
 
                 case "#END #OK":
@@ -776,6 +814,10 @@ class aquete_perso
         {
             case "#CHOIX":
                 $texte_etape = $etape->get_texte_choix($this);
+                break;
+
+            case "#SAUT #CONDITION #DIALOGUE":
+                $texte_etape = $etape->get_texte_form($this);
                 break;
         }
 

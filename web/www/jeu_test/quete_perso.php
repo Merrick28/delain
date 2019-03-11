@@ -34,7 +34,7 @@ if ($erreur == 0)
         $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>{$tab_quete["triggers"][$k]["nom"]}</strong></center></div>" ;
         $contenu_page .= "<br><u>Description de la quête</u> : ".$quete->aquete_description."<br><br>" ;
 
-        $contenu_page .= $etape->get_initial_texte($tab_quete["triggers"][$k]["nom"]);
+        $contenu_page .= $etape->get_initial_texte($perso, $tab_quete["triggers"][$k]["nom"]);
         $contenu_page .= "<br><br><hr><!-- fin $k => $quete->aquete_etape_cod -->";
 
     }

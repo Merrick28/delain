@@ -213,7 +213,7 @@ if ($erreur == 0) {
                     <tr>
                         <td><select name="gobj">
                                 <?php
-                                $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34) order by gobj_nom ";
+                                $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34 or gobj_tobj_cod = 39) order by gobj_nom ";
                                 $db->query($req);
                                 while ($db->next_record())
                                     echo '<option value="' . $db->f("gobj_cod") . '">' . $db->f("gobj_nom") . '</option>';
@@ -386,7 +386,7 @@ if ($erreur == 0) {
                     <tr>
                         <td><select name="gobj">
                                 <?php
-                                $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34) order by gobj_nom ";
+                                $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34 or gobj_tobj_cod = 39) order by gobj_nom ";
                                 $db->query($req);
                                 while ($db->next_record())
                                     echo '<option value="' . $db->f("gobj_cod") . '">' . $db->f("gobj_nom") . '</option>';
