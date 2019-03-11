@@ -134,7 +134,7 @@ begin
     perso_cod, perso_nom, taux_perte_xp * perso_px  FROM perso_familier
     INNER JOIN perso on perso_cod=pfam_familier_cod
     INNER JOIN (
-    	SELECT MAX(perso_dcreat) perso_dcreat FROM perso_familier INNER JOIN perso on perso_cod=pfam_familier_cod WHERE pfam_perso_cod = cible AND perso_actif='N' AND perso_type_perso=3 AND perso_race_cod=37
+    	SELECT MAX(perso_dcreat) perso_dcreat FROM perso_familier INNER JOIN perso on perso_cod=pfam_familier_cod WHERE pfam_perso_cod = cible AND perso_actif='N' AND perso_type_perso=3
     ) dernier_familier ON dernier_familier.perso_dcreat = perso.perso_dcreat
     WHERE pfam_perso_cod = cible;
   if not found then
