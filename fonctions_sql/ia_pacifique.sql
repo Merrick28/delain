@@ -350,7 +350,7 @@ begin
 				offset temp
 				limit 1;
 -- on construit la chaine de lancement du sort
-			fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'999999'))||','||trim(to_char(v_cible,'999999'))||',1)';
+			fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'999999999'))||','||trim(to_char(v_cible,'999999999'))||',1)';
 -- on lance le sort proprement dit
 			execute fonction_sort;
 		code_retour := code_retour||'Lancement de sort offensif.<br>';
@@ -432,7 +432,7 @@ begin
 					offset temp
 					limit 1;
 	-- on construit la chaine de lancement du sort
-				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'999999'))||','||trim(to_char(cible_soutien,'999999'))||',1)';
+				fonction_sort := 'select nv_'||fonction_sort||'('||trim(to_char(v_monstre,'9999999999'))||','||trim(to_char(cible_soutien,'999999999'))||',1)';
 	-- on lance le sort proprement dit
 				execute fonction_sort;
 				code_retour := code_retour||'Lancement de sort de soutien sur '||trim(to_char(cible_soutien,'9999999999999'))||'.<br>';
