@@ -66,3 +66,9 @@ end;$_$;
 
 
 ALTER FUNCTION public.compter_perso_amelioration(integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION compter_perso_amelioration(integer); Type: COMMENT; Schema: public; Owner: delain
+--
+
+COMMENT ON FUNCTION compter_perso_amelioration(integer) IS 'Permet de comptabiliser le nombre de niveaux pris par un personnage';
