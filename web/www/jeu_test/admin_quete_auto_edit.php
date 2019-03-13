@@ -292,6 +292,9 @@ if ($erreur == 0)
                    &nbsp;&nbsp;&nbsp;&nbsp;[#perso.race()] : affiche la race du meneur de quete<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;[#perso.get_poids()] : le poids qu\'il transporte<br>
                    &nbsp;&nbsp;&nbsp;&nbsp;etc..<br>
+                   <br>* [#perso.genre(XXXXX,YYYYY)] si le perso est féminin YYYYY sera affiché sinon c\'est XXXXX, par exemple:<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;[#perso.genre(le meneur,la meneuse)] : affichera "la meneuse" pour les filles et "le meneur" pour les gars.<br>
+                   &nbsp;&nbsp;&nbsp;&nbsp;<br>
                    <br></div></td></tr>';
         echo '</table>';
 

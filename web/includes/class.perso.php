@@ -2595,6 +2595,11 @@ class perso
         {
             return $this->perso_sex == "M" ? "Monsieur" : "Madame";
         }
+        else if ((substr($field, 0, 12)  == "perso.genre(") && (substr($field, -1)  == ")"))
+        {
+            $genre = explode(",", substr($field, 12, -1));
+            return $this->perso_sex == "M" ? $genre[0] : $genre[1] ;
+        }
 
         //Traitement générique. --------------------------------------
         if (substr($field, -2)  == "()")
