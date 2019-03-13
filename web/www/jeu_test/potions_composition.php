@@ -66,7 +66,7 @@ if($db->next_record())
 				where obj_gobj_cod = gobj_cod
 					and perobj_perso_cod = ' . $perso_cod . '
 					and perobj_obj_cod = obj_cod
-					and (gobj_tobj_cod = 22 OR gobj_tobj_cod = 28 OR gobj_tobj_cod = 30 OR gobj_tobj_cod = 34)
+					and (gobj_tobj_cod = 22 OR gobj_tobj_cod = 28 OR gobj_tobj_cod = 30 OR gobj_tobj_cod = 34 OR gobj_tobj_cod = 39)
 				group by obj_nom,obj_gobj_cod
 				order by obj_gobj_cod';
 			$db->query($req);
