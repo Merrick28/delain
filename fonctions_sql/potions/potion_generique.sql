@@ -171,7 +171,7 @@ begin
     if cible != personnage then
       code_retour := code_retour||'<br>Les effets sur ' || v_nom_cible || ' sont les suivants:<br>'||v_texte_stabilite||'<br>';
     else
-      code_retour := code_retour|||v_texte_stabilite||'<br>';
+      code_retour := code_retour||v_texte_stabilite||'<br>';
     end if;
 
     texte_evt := texte_evt || ' qui était instable';
