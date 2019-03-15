@@ -81,11 +81,15 @@ $mail = new PHPMailer(true);
 // smtp
 $mail->Host = SMTP_HOST;
 $mail->Port = SMTP_PORT;
-if (!empty(SMTP_USER))
+if(defined('SMTP_USER'))
 {
-    $mail->Username = SMTP_USER;
-    $mail->Password = SMTP_PASSWORD;
+    if (!empty(SMTP_USER))
+    {
+        $mail->Username = SMTP_USER;
+        $mail->Password = SMTP_PASSWORD;
+    }
 }
+
 
 $mail->IsHTML(true);
 $mail->IsHTML(true);

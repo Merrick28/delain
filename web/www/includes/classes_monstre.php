@@ -55,7 +55,25 @@ var $begin;
 var $commit;
 var $transaction = true;
 var $classname = 'base_delain';
-var $Database = 'sdewitte';
+//var $Database = 'sdewitte';
+
+var $Host = SERVER_HOST;
+// User
+var $User = SERVER_USERNAME;
+// Password
+var $Password = SERVER_PASSWORD;
+// Databse
+var $Database = SERVER_DBNAME;
+// Persistency
+var $persistency = false;
+// Port
+var $port = NULL;
+// DB DSN
+var $dsn = '';
+// PDO
+var $pdo = NULL;
+// Error mode
+var $errorMode = 'WARNING';
 
 function connect() {
     if ( 0 == $this->Link_ID ) {
@@ -64,7 +82,7 @@ function connect() {
       $this->ifadd($this->Port, "port=").
       $this->ifadd($this->User, "user=").
       $this->ifadd($this->Password, "password=");
-      $cstr="service=delain";
+      //$cstr="service=delain";
       if(!$this->PConnect) {
         $this->Link_ID = pg_connect($cstr);
       } else {
