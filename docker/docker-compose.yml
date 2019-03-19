@@ -14,4 +14,8 @@ services:
     volumes:
       - ../sql_init:/docker-entrypoint-initdb.d
       - ../:/home/delain/delain
+      # Décommentez la ligne ci dessous si vous voulez
+      # garder une database persistante
+      # pensez à changer le chemin local
+      # - /my/own/datadir:/var/lib/postgresql/data
     container_name: postgres
