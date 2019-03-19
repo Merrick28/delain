@@ -11,13 +11,7 @@ services:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=delain
       - POSTGRES_DB=delain
-
     volumes:
       - ../sql_init:/docker-entrypoint-initdb.d
       - ../:/home/delain/delain
-
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-    - 8080:8080
+    container_name: postgres
