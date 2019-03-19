@@ -21,3 +21,8 @@ services:
       # pensez à changer le chemin local
       # - /my/own/datadir:/var/lib/postgresql/data
     container_name: postgres
+###############################
+# Serveur web
+###############################
+  web:
+    image:
