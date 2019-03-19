@@ -15,6 +15,7 @@ services:
     volumes:
       - ../sql_init:/docker-entrypoint-initdb.d
       - ../:/home/delain/delain
+      - ./conf.php:/home/delain/delain/web/www/includes/conf.php
       # Décommentez la ligne ci dessous si vous voulez
       # garder une database persistante
       # pensez à changer le chemin local
