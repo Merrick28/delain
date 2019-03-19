@@ -69,7 +69,8 @@ $options_twig = array(
     'TAB_VUE'          => $tab_vue,
     'TYPE_PERSO'       => $perso_type_perso,
     'TAB_BLESSURES'    => $tab_blessures,
-    'PORTEE'           => $portee
+    'PORTEE'           => $portee,
+    'COTERIE'          => $perso->coterie()
 );
 echo $template->render(array_merge($var_twig_defaut, $options_twig));
 
