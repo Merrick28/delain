@@ -2513,10 +2513,21 @@ class perso
 
 
         $pdo            = new bddpdo();
-        $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,perso_nom,pos_x,pos_y,pos_etage,
-              race_nom,distance(:pos_cod,pos_cod) as distance,pos_cod,perso_cod,
+        $req_vue_joueur = "select 
+              trajectoire_vue(:pos_cod,pos_cod) as traj,
+              perso_nom,
+              pos_x,
+              pos_y,
+              pos_etage,
+              race_nom,
+              distance(:pos_cod,pos_cod) as distance,
+              pos_cod,
+              perso_cod,
               case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
-              perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge, 0 as obstruction,
+              perso_pv,
+              perso_pv_max,
+              is_surcharge(perso_cod,:perso) as surcharge, 
+              0 as obstruction,
              (select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 ) coterie,
               perso_type_perso as type_perso
             from perso,positions,perso_position,race,lock_combat 
@@ -2545,9 +2556,23 @@ class perso
               and lock_cible = :perso 
               and lock_attaquant = perso_cod 
             union 
-              select trajectoire_vue(:pos_cod,pos_cod) as traj,perso_nom,pos_x,pos_y,pos_etage,race_nom,
-                distance(:pos_cod,pos_cod) as distance,pos_cod,perso_cod,perso_type_perso,
-                perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso ) as surcharge, 0 as obstruction 
+              select 
+                trajectoire_vue(:pos_cod,pos_cod) as traj,
+                perso_nom,
+                pos_x,
+                pos_y,
+                pos_etage,
+                race_nom,
+                distance(:pos_cod,pos_cod) as distance,
+                pos_cod,
+                perso_cod,
+                perso_type_perso,
+                perso_pv,
+                perso_pv_max,
+                is_surcharge(perso_cod,:perso ) as surcharge, 
+                0 as obstruction ,
+                (select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 ) coterie,
+              perso_type_perso as type_perso
               from perso,positions,perso_position,race,lock_combat 
               where pos_x between (:x_min) and (:x_max) 
                 and pos_y between (:y_min) and (:y_max) 
