@@ -174,9 +174,9 @@ if ($nb_joueur_en_vue != 0)
 					echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
 				}
 			}
-		echo '</td></tr>';
+		    echo '</td></tr>';
+            $row++;
 		}
-		$row++;
 	}
 }
 else

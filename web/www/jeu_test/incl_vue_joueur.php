@@ -273,8 +273,8 @@ $nb_joueur_en_vue = $db->nf();
                     }
                 }
                 echo '</td></tr>';
+                $row++;
             }
-            $row++;
         }
     }
     else
