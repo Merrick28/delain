@@ -6,7 +6,6 @@ include_once '../includes/tools.php';
 
 
 ?>
-
     <script>//# sourceURL=admin_titre.js
 
         function select_onglet(onglet) {
@@ -18,6 +17,9 @@ include_once '../includes/tools.php';
                 $("#onglet-butin").css("display", "none");
                 $("#onglet-recompense").css("display", "none");
                 $("#onglet-titre").css("display", "block");
+                $("#section-recherche-objet").css("display", "none");
+                $("#bouton-objet-butin").css("display", "none");
+                $("#bouton-objet-recompense").css("display", "none");
             }
             else if (onglet=='recompense')
             {
@@ -27,6 +29,9 @@ include_once '../includes/tools.php';
                 $("#onglet-titre").css("display", "none");
                 $("#onglet-butin").css("display", "none");
                 $("#onglet-recompense").css("display", "block");
+                $("#section-recherche-objet").css("display", "block");
+                $("#bouton-objet-butin").css("display", "none");
+                $("#bouton-objet-recompense").css("display", "block");
             }
             else
             {
@@ -36,6 +41,9 @@ include_once '../includes/tools.php';
                 $("#onglet-titre").css("display", "none");
                 $("#onglet-recompense").css("display", "none");
                 $("#onglet-butin").css("display", "block");
+                $("#section-recherche-objet").css("display", "block");
+                $("#bouton-objet-butin").css("display", "block");
+                $("#bouton-objet-recompense").css("display", "none");
             }
         }
 
@@ -230,6 +238,40 @@ include_once '../includes/tools.php';
             });
         }
 
+
+        function addRecompenseFromSearchList(list)
+        {
+            var chance = $("#chance-objet-recompense").val();
+            $('#'+list+' option').each(function () {
+                // calcul du nombre d'objet
+                var num = $(this).text().substring($(this).text().indexOf('(') + 1, $(this).text().indexOf(')'));
+                for (i=0; i<num; i++)
+                {   // ajouter autant
+                    $("#add-button-recompense").trigger("click");  // simuler le click sur le bouton ajouter un objet
+                    var id = $('tr[id^="row-1-"]:last').attr("id");
+                    $('#' + id + 'aqelem_param_num_1').val(chance);
+                    $('#' + id + 'aqelem_misc_cod').val($(this).val());
+                    $('#' + id + 'aqelem_misc_cod').trigger("change");
+                }
+            });
+            $('#'+list).find('option').remove();
+        }
+
+        function addButinFromSearchList(list)
+        {
+            $('#'+list+' option').each(function () {
+                // calcul du nombre d'objet
+                var num = $(this).text().substring($(this).text().indexOf('(') + 1, $(this).text().indexOf(')'));
+                $("#add-button-butin").trigger("click");  // simuler le click sur le bouton ajouter un objet
+                var id = $('tr[id^="row-2-"]:last').attr("id");
+                $('#' + id + 'aqelem_param_num_1').val(num);
+                $('#' + id + 'aqelem_misc_cod').val($(this).val());
+                $('#' + id + 'aqelem_misc_cod').trigger("change");
+            });
+            $('#'+list).find('option').remove();
+        }
+
+
         function addFromSearchListAll(type) {
             $('div[id^="s-list-"]').each(function () {
                 var type_perso = $('#s-list-' + this.id.substr(7)).attr("data-type_perso");
@@ -239,7 +281,7 @@ include_once '../includes/tools.php';
 
         function addFromSearchList(k) {
             var perso_cod = $('#s-list-' + k).attr("data-perso_cod");
-            $("#add-button").trigger("click");  // simuler le click sur le bouton ajouter
+            $("#add-button-perso").trigger("click");  // simuler le click sur le bouton ajouter
             var id = $('tr[id^="row-0-"]:last').attr("id");
             $('#' + id + 'aqelem_misc_cod').val(perso_cod);
             $('#' + id + 'aqelem_misc_cod').trigger("change");
@@ -297,7 +339,7 @@ ob_start();
 
 $droit_modif = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
-
+echo '<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>';
 
 if ($erreur == 0)
 {
@@ -432,9 +474,12 @@ if ($erreur == 0)
             $nb_obj_max = 1*(int)$_REQUEST["don-obj-max"];
             foreach ($_REQUEST["aqelem_misc_cod"][1] as $k => $gobj_cod)
             {
-                $chance = (float)$_REQUEST[aqelem_param_num_1][1][$k];
-                if ($chance==0) $chance=100; else if ($chance>100) $chance=100;
-                $list_obj[] = array("chance" => $chance, "ordre" => 0, "gobj_cod" => $gobj_cod) ;
+                if ((int)$gobj_cod>0)
+                {
+                    $chance = (float)$_REQUEST[aqelem_param_num_1][1][$k];
+                    if ($chance==0) $chance=100; else if ($chance>100) $chance=100;
+                    $list_obj[] = array("chance" => $chance, "ordre" => 0, "gobj_cod" => $gobj_cod) ;
+                }
             }
             $nb_obj = sizeof($list_obj);
             if ($nb_obj_max==0) $nb_obj_max = $nb_obj ;     // S'il n'y a pas pas de max, on met tous les objets
@@ -486,6 +531,7 @@ if ($erreur == 0)
                             }
 
                             // Ensuite le don d'objets -----------------------------
+
                             if ($nb_obj>0)
                             {
                                 $log .= "\nDon d'objet(s) au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
@@ -610,45 +656,44 @@ if ($erreur == 0)
             $p = $nb_perso ;    // Index du perso pour la distribution
             foreach ($_REQUEST["aqelem_misc_cod"][2] as $o => $gobj_cod)
             {
-                $nb_obj = (int)$_REQUEST[aqelem_param_num_1][2][$o];
-                if ($nb_obj==0) $nb_obj = 1 ;       // Si pas de quantité renseigné on met 1 par défaut
-                while ( $nb_obj>0 )
+                if ((int)$gobj_cod>0)
                 {
-                    $nb_obj-- ;     // Un objet de moins à distribuer
+                    $nb_obj = (int)$_REQUEST[aqelem_param_num_1][2][$o];
+                    if ($nb_obj == 0) $nb_obj = 1;       // Si pas de quantité renseigné on met 1 par défaut
+                    while ($nb_obj > 0) {
+                        $nb_obj--;     // Un objet de moins à distribuer
 
-                    // Tri selon les critères de chances - on mélange la liste de perso à chaque fois que tout le monde a été servi
-                    if ($p>=$nb_perso)
-                    {
-                        // Pour ne pas distribuer la même chose à tout le monde on ajoute un peu d'aléatoire
-                        for ($p=0; $p<$nb_perso ; $p++)
-                        {
-                            $list_perso[$p]["ordre"] = mt_rand(1,10000) ;
+                        // Tri selon les critères de chances - on mélange la liste de perso à chaque fois que tout le monde a été servi
+                        if ($p >= $nb_perso) {
+                            // Pour ne pas distribuer la même chose à tout le monde on ajoute un peu d'aléatoire
+                            for ($p = 0; $p < $nb_perso; $p++) {
+                                $list_perso[$p]["ordre"] = mt_rand(1, 10000);
+                            }
+
+                            $p = 0;    // On distribut à partir du début de la liste
+                            array_multisort(array_column($list_perso, 'ordre'), SORT_ASC, $list_perso);
                         }
 
-                        $p = 0 ;    // On distribut à partir du début de la liste
-                        array_multisort(array_column($list_perso, 'ordre'), SORT_ASC, $list_perso );
-                    }
+                        $mod_perso_cod = $list_perso[$p]["perso_cod"];    // Choix du perso gagnant
+                        $mod_perso_nom = $list_perso[$p]["perso_nom"];    // récupe de son nom
+                        $p++;   // passage au perso suivant
 
-                    $mod_perso_cod =  $list_perso[$p]["perso_cod"] ;    // Choix du perso gagnant
-                    $mod_perso_nom =  $list_perso[$p]["perso_nom"] ;    // récupe de son nom
-                    $p++;   // passage au perso suivant
+                        $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":gobj_cod" => $gobj_cod, ":perso_cod" => $mod_perso_cod), $stmt);
 
-                    $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(":gobj_cod" => $gobj_cod, ":perso_cod" => $mod_perso_cod ), $stmt);
+                        if ($result = $stmt->fetch()) {
+                            $objet = new objets();
+                            $objet->charge(1 * $result["obj_cod"]);
 
-                    if ($result = $stmt->fetch())
-                    {
-                        $objet = new objets();
-                        $objet->charge(1*$result["obj_cod"]);
+                            $texte_evt = '[cible] a reçu une part du butin <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                                 values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+                            $stmt = $pdo->prepare($req);
+                            $stmt = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
-                        $texte_evt = '[cible] a reçu une part du butin <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-                                             values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                        $stmt   = $pdo->prepare($req);
-                        $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
-
-                        $log .= "Partage du butin, objet #". $objet->obj_cod ." (". $objet->get_type_libelle() ." / ". $objet->obj_nom .") au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
+                            $log .= "Partage du butin, objet #" . $objet->obj_cod . " (" . $objet->get_type_libelle() . " / " . $objet->obj_nom . ") au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
+                        }
                     }
                 }
             }
@@ -692,7 +737,7 @@ if ($erreur == 0)
                     &nbsp;<input type="button" class="" value="sa position" onClick=\'listSurZone($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     &nbsp;<input type="button" class="" value="controleur" onClick=\'listControleur($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     </td>';
-    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-perso" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
 
     //---- section à onglet------------------------------------------------------------
@@ -734,7 +779,7 @@ if ($erreur == 0)
     $aqelem_misc_nom = "";
     echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
     echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
-    echo '<td> Chance de  <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value="">&nbsp;%
+    echo '<td> Chance de  <input data-entry="val" id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value="">&nbsp;%
              d\'obtenir l\'objet générique :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
@@ -742,7 +787,7 @@ if ($erreur == 0)
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
                     </td>';
-    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-recompense" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
 
 
@@ -774,7 +819,7 @@ if ($erreur == 0)
     $aqelem_misc_nom = "";
     echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
     echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
-    echo '<td> <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value=""> exemplaire(s)
+    echo '<td> <input data-entry="val"  id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value=""> exemplaire(s)
              de l\'objet générique :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
@@ -782,7 +827,7 @@ if ($erreur == 0)
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
                     </td>';
-    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-butin" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
 
 
@@ -799,6 +844,7 @@ if ($erreur == 0)
     echo '</td></tr></table>';     // Fin des onglets!!
     //---- fin de section à onglet------------------------------------------------------------
 
+    //=============================== SECTION RECHERCHE DE PERSO ===================================
     echo "</form><br><br><div class=\"titre\" style=\"padding:5px;\"><center><strong>Section de recherche de persos</strong></center></div><br><br>";
     //echo '<hr><strong>Section de recherche de persos</strong>:';
     echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br>';
@@ -811,6 +857,100 @@ if ($erreur == 0)
     echo '<hr>';
 
     echo "<script> listControleur({$perso_cod}); </script>"; // Injection javascript => perso par défaut.
+
+
+
+    //=============================== SECTION RECHERCHE D'OBJET ===================================
+    // Pas de temps e faire de la cosmétique, on reprend tel quel la page de gestion de l'inventaire perso
+    echo '<div id="section-recherche-objet">';
+    echo "<br><br><div class=\"titre\" style=\"padding:5px;\"><center><strong>Section de recherche d'objet</strong></center></div><br><br>";
+    echo '<SCRIPT language="javascript">
+            var listeBase = new Array();';
+        
+            $nb_tobj = 0;
+            $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
+			inner join type_objet on tobj_cod = gobj_tobj_cod
+			order by tobj_libelle, gobj_nom";
+            $db->query($req_tobj);
+            while ($db->next_record())
+            {
+                $gobj_nom = $db->f("gobj_nom");
+                $gobj_nom = str_replace("\"", "", $gobj_nom);
+                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                $gobj_valeur = $db->f("gobj_valeur");
+                echo("listeBase[$nb_tobj] = new Array(0); \n");
+                echo("listeBase[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
+                echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
+                echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
+                echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
+                $nb_tobj++;
+            }
+
+    echo '  var listeCurrent = new Array(); 
+        </SCRIPT>
+        <form method="post" name="formInventaire" action="#">
+            <input type="hidden" name="methode" value="update_inventaire">
+            <input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod ?>">
+            <TABLE width="80%" align="center">
+                <TR>
+                    <TD>
+                        <select multiple name="select1" id="select1" size="10" style="width:280px;">
+                        </select>
+                    </TD>
+                    <TD>
+                        <input type="button" value="<- 1 "
+                               onClick="addToOptions(document.formInventaire.select2,document.formInventaire.select1,1,document.formInventaire.compiledInv);">
+                        <br><input type="button" value="<- 5 "
+                                   onClick="addToOptions(document.formInventaire.select2,document.formInventaire.select1,5,document.formInventaire.compiledInv);">
+                        <br><input type="button" value="-> 1 "
+                                   onClick="substractToOptions(document.formInventaire.select1,1,document.formInventaire.compiledInv);">
+                        <br><input type="button" value="-> 5 "
+                                   onClick="substractToOptions(document.formInventaire.select1,5,document.formInventaire.compiledInv);">
+                    </TD>
+                    <TD>
+                        <select style="width: 280px;" name="selecttype"
+                                onchange=\'cleanOption(document.formInventaire.select2); addOptionArray(document.formInventaire.select2, listeBase, this.value, document.formInventaire.selectvaleur.value);\'>
+                            <option value=\'\'>Tous types d’objets</option>';
+                                
+                     
+                            $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
+                            $db->query($req_tobj);
+                            while ($db->next_record())
+                            {
+                                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                                echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
+                            }
+    echo '
+                        </select><br/>
+                        <select style="width: 280px;" name="selectvaleur"
+                                onchange=\'cleanOption(document.formInventaire.select2); addOptionArray(document.formInventaire.select2, listeBase, document.formInventaire.selecttype.value, this.value);\'>
+                            <option value=\'\'>Valeur indéfinie</option>
+                            <option value=\'0;1000\'>Moins de 1 000 brouzoufs</option>
+                            <option value=\'1000;5000\'>Entre 1 000 et 5 000 brouzoufs</option>
+                            <option value=\'5000;10000\'>Entre 5 000 et 10 000 brouzoufs</option>
+                            <option value=\'10000;20000\'>Entre 10 000 et 20 000 brouzoufs</option>
+                            <option value=\'20000;50000\'>Entre 20 000 et 50 000 brouzoufs</option>
+                            <option value=\'50000;100000\'>Entre 50 000 et 100 000 brouzoufs</option>
+                            <option value=\'100000;100000000\'>Plus de 100 000 brouzoufs</option>
+                        </select><br/>
+                        <select multiple name="select2" size="10" style="width:280px;">
+                        </select>
+                    </TD>
+                </TR>
+            </TABLE>
+
+            <input type="hidden" name="compiledInv" value="">
+            <SCRIPT>
+                addOptionArray(document.formInventaire.select2, listeBase, \'\', \'\');
+                fillOptions(document.formInventaire.select2, document.formInventaire.select1, listeCurrent);
+                compileAccumulatorCounter(document.formInventaire.select1, document.formInventaire.compiledInv);
+            </SCRIPT>
+            <div id="bouton-objet-butin" style="display: none"><input type="button" class="test" value="Ajouter ces objets au butin" onClick="addButinFromSearchList(\'select1\');"></div>
+            <div id="bouton-objet-recompense">Chance d\'obtenir les objets :&nbsp;<input id="chance-objet-recompense" type="text" size="2" value="">&nbsp;&nbsp;<input type="button" class="test" value="Ajouter ses objets comme récompense" onClick="addRecompenseFromSearchList(\'select1\');"></div>
+            <br>
+        </form>';
+    echo '<hr>';
+    echo '</div>';
 
 }
 ?>
