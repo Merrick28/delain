@@ -22,7 +22,7 @@
         $coterie_perso_lanceur = $db->f("pgroupe_groupe_cod");
 
     // on cherche la position du perso
-    $req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
+    $req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_type_perso, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
@@ -41,6 +41,7 @@
     $perso_bonus = $db->f("perso_bonus");
     $perso_pa = $db->f("perso_pa");
     $perso_dlt = $db->f("perso_dlt_passee") == 1 ? "<strong>{$db->f("perso_dlt")}</strong>" : $db->f("perso_dlt");
+    $type_perso = $db->f("perso_type_perso");
 
     $pv = $db->f("perso_pv");
     $pv_max = $db->f("perso_pv_max");
@@ -64,8 +65,22 @@
     }
 
     ?>
-    <p>Choisissez la cible du sort :
-        <table>
+
+    <script src="/scripts/filtres.js?v20190318" type="text/javascript"></script>
+
+    <p>Choisissez la cible du sort :<br>
+        <table id="choix-sort">
+            <tr style="height: 30px;"><td class="soustitre2" colspan="8"><strong>Filtres:&nbsp;&nbsp;</strong>
+                    <input id="choix-sort-col" type="hidden" value="1">
+                    <input id="choix-sort-filtre-perso" type="text" size="40" onkeyup="filtre_table_search('choix-sort');">
+                    &nbsp;&nbsp;<br><strong>Limiter aux:&nbsp;&nbsp;</strong>
+                    &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="3" type="radio" onChange="filtre_table_search('choix-sort');">&nbsp;<em>Familiers <span id="ft-familier"></span></em>
+                    &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="2" type="radio" onChange="filtre_table_search('choix-sort');">&nbsp;<em>Monstres <span id="ft-monstre"></span></em>
+                    &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="1" type="radio" onChange="filtre_table_search('choix-sort');">&nbsp;<em>Aventuriers <span id="ft-aventurier"></span></em>
+                    &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="0" type="radio" onChange="filtre_table_search('choix-sort');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
+                    &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="-1" type="radio" checked onChange="filtre_table_search('choix-sort');">&nbsp;<em>Sans limites</span></em>
+                </td>
+            </tr>
             <tr>
                 <td class="soustitre2">
     <p><strong>Nom</strong></p></td>
@@ -77,9 +92,15 @@
     <td class="soustitre2"><p><strong>PA</strong></p></td>
     <td class="soustitre2"><p><strong>DLT</strong></p></td>
     </tr>
+
     <?php
+
+    $row = 2 ;
+    $cdata = "";
+    $cdata.="data-partisans='O' ";
+    $cdata.="data-type='".($type_perso)."' ";
     if ($soi_meme == 'O') {
-        echo "<tr>
+        echo "<tr id='row-{$row}' {$cdata}>
 			<td class=\"soustitre2\" style=\"background-color:darkseagreen;\" colspan=\"2\"><strong>
 			<a href=\"javascript:document.valide_sort.cible.value=" . $perso_cod . ";document.valide_sort.submit();\">
 			" . $perso_nom . "</a></strong><em> (vous-même<strong>" . $niveau_blessures . "</strong>)</em></td>
@@ -90,7 +111,9 @@
 			<td style=\"background-color:darkseagreen; text-align:left;\">$perso_pa</td>
 			<td style=\"background-color:darkseagreen; text-align:left;\">$perso_dlt</td>
 		</tr>";
+        $row++;
     }
+
     $add_dieu = "";
     if ($soi_meme == 'O' and $dieu_perso != NULL and $sort_dieu == 'mg' and $sort_joueur == 'N') {
         $type_cible = $type_cible . ",1,2,3";
@@ -172,7 +195,12 @@
 
             $perso_bonus = $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<strong>".$db->f("perso_bonus")."</strong>" ) ;
             $perso_style = $perso_bonus == NULL ? "" : ($db->f("triplette") == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
-            echo "<tr>
+
+            $cdata = "";
+            $cdata.="data-partisans='".(($db->f("meme_coterie")== 1) || ($db->f("triplette")== 1) ? "O" : "N")."' ";
+            $cdata.="data-type='".($type_perso)."' ";
+
+            echo "<tr id='row-{$row}' {$cdata}>
 				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em></td>
 				<td style=\"{$perso_style}\">" . $db->f("race_nom") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_x") . "</td>
@@ -182,6 +210,7 @@
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_pa . "</td>
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_dlt . "</td>
 			</tr>";
+            $row++;
         }
     } ?>
     </table>

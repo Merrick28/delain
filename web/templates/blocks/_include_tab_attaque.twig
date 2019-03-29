@@ -1,10 +1,24 @@
 {% if TAB_VUE|length > 0 %}
-    <table width="100%" cellspacing="2" cellapdding="2">
+
+    <script src="/scripts/filtres.js?v20190318" type="text/javascript"></script>
+
+    <table id="choix-cible" width="100%" cellspacing="2" cellapdding="2">
         <tr>
             <td colspan="6" class="soustitre"><p class="soustitre">Cibles</td>
         </tr>
+        <tr style="height: 30px;"><td class="soustitre2" colspan="8"><strong>Filtres:&nbsp;&nbsp;</strong>
+                <input id="choix-cible-col" type="hidden" value="2">
+                <input id="choix-cible-filtre-perso" type="text" size="40" onkeyup="filtre_table_search('choix-cible');">
+                &nbsp;&nbsp;<br><strong>Limiter aux:&nbsp;&nbsp;</strong>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="3" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Familiers <span id="ft-familier"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="2" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Monstres <span id="ft-monstre"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="1" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Aventuriers <span id="ft-aventurier"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="0" type="radio" onChange="filtre_table_search('choix-cible');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
+                &nbsp;&nbsp;<input name="choix-cible-filtre-type" value="-1" type="radio" checked onChange="filtre_table_search('choix-cible');">&nbsp;<em>Sans limites</span></em>
+            </td>
+        </tr>
         <tr>
-            <td></td>
+            <td style="width:30px;"></td>
             <td class="soustitre2"><strong>Nom</strong></td>
             <td class="soustitre2"><strong>Race</strong></td>
             <td class="soustitre2"><strong>X</strong></td>
@@ -45,7 +59,11 @@
             {% if VUE.obstruction > 5 %}
             {% set STYLE = "soustitre2 obstruction2" %}
             {% endif %}
-            liste[{{ compteur }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}'];
+            {% set STYLE2 = "" %}
+            {% if VUE.coterie == COTERIE %}
+            {% set STYLE2 = "background-color:#BA9C6C;" %}
+            {% endif %}
+            liste[{{ compteur }}] = ['{{ VUE.perso_cod }}', '{{ VUE.perso_nom|e }}', '{{ TYPE_PERSO[VUE.perso_type_perso] }}', '{{ VUE.race_nom }}', '{{ VUE.pos_x }}', '{{ VUE.pos_y }}', '{{ VUE.distance }}', '{% if VUE.distance <= PORTEE %}1{% else %}0{% endif %}', '{{ BLESSURES }}', '{{ STYLE }}', '{{ STYLE2 }}', '{{ VUE.type_perso }}'];
             {% set compteur = compteur + 1 %}
             {% endif %}
             {% endfor %}
@@ -54,13 +72,13 @@
             var i;
             var textetableau = '';
             for (i = 0; i < liste.length; i++) {
-                textetableau += '<tr>';
+                textetableau += '<tr id="row-'+ (i+3) +'" data-type="'+ liste[i][11] +'" data-partisans="'+ (liste[i][10]=='' ? 'N' : 'O') +'">';
                 textetableau += '<td><input type="radio" name="cible" value="' + liste[i][0] + '" class="change_class_on_select" data-class-onclick="navon" data-class-dest="cell' + liste[i][0] + '" id="bouton' + liste[i][0] + '"></td>';
-                textetableau += '<td id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + ' <strong>' + liste[i][8] + '</strong>)</label></td>';
-                textetableau += '<td>' + liste[i][3] + '</td>';
-                textetableau += '<td>' + liste[i][4] + '</td>';
-                textetableau += '<td>' + liste[i][5] + '</td>';
-                textetableau += '<td>' + liste[i][6] + '</td>';
+                textetableau += '<td style="' + liste[i][10] + '" id="cell' + liste[i][0] + '" class="' + liste[i][9] + ' allliste"><label for="bouton' + liste[i][0] + '"><strong>' + liste[i][1] + '</strong> (' + liste[i][2] + ' <strong>' + liste[i][8] + '</strong>)</label></td>';
+                textetableau += '<td style="' + liste[i][10] + '">' + liste[i][3] + '</td>';
+                textetableau += '<td style="' + liste[i][10] + '">' + liste[i][4] + '</td>';
+                textetableau += '<td style="' + liste[i][10] + '">' + liste[i][5] + '</td>';
+                textetableau += '<td style="' + liste[i][10] + '">' + liste[i][6] + '</td>';
                 textetableau += '</tr>';
             }
             document.write(textetableau);
