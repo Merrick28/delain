@@ -17,6 +17,13 @@ $compte->charge($compt_cod);
 $perso = new perso;
 $perso->charge($perso_cod);
 
+// activation spéciale le premier avril 2019 !
+if($global_avril_2019)
+{
+    $perso->perso_pv = 0.30 * $perso->perso_pv_max;
+    $perso->perso_tangible = 'N';
+}
+
 $get_compte = '';
 //if ($db->is_admin_monstre($compt_cod) || $db->is_admin($compt_cod))
 $get_compte = "&compt_cod=$compt_cod";
