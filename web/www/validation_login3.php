@@ -258,7 +258,7 @@ if ($autorise == 1)
                 echo "<p style='margin-top:10px;'><strong>Vos derniers événements importants :</strong></p>";
             }
 
-            echo "<br><br>".date('d/m/Y H:i:s') . " : <strong>Kangaxxx</strong> lance attaque mentale sur <strong>".$perso_dlt->perso_nom."</strong>";
+            echo "<br><br>".date('d/m/Y H:i:s') . " : <strong>Kangaxxx</strong> lance attaque mentale sur <strong>".$perso_dlt->perso_nom."</strong> infligeant 555 dommages.";
             echo "<br>".date('d/m/Y H:i:s') . " :  <strong>Kangaxxx</strong> a tué <strong>".$perso->perso_nom."</strong>.";
             echo "<br>".date('d/m/Y H:i:s') . " : <strong>".$perso->perso_nom."</strong> pert 15 px.";
             echo '<br><p><b>VOUS ÊTES MORT !</b><br>';
