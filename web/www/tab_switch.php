@@ -46,6 +46,16 @@ function affiche_perso($perso_cod)
     // fin 1er avril
     //
 
+    if (date("Y-m-d") == "2019-04-01")
+    {
+        if ($perso->dlt_passee())
+        {
+            $perso->perso_pv = 0.30 * $perso->perso_pv_max;
+            $perso->perso_tangible = 'N';
+            $perso->perso_nb_tour_intangible = 4;
+        }
+    }
+
     $limite_niveau_actuel = $perso->px_limite_actuel();
     $limite_niveau        = $perso->px_limite();
     $barre_xp             = $perso->barre_xp();
