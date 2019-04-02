@@ -17,13 +17,6 @@ $compte->charge($compt_cod);
 $perso = new perso;
 $perso->charge($perso_cod);
 
-// activation spéciale le premier avril 2019 !
-if($global_avril_2019)
-{
-    $perso->perso_pv = 0.30 * $perso->perso_pv_max;
-    $perso->perso_tangible = 'N';
-}
-
 $get_compte = '';
 //if ($db->is_admin_monstre($compt_cod) || $db->is_admin($compt_cod))
 $get_compte = "&compt_cod=$compt_cod";
@@ -719,23 +712,19 @@ $t->set_var('CONTROLE', $controle);
 $t->set_var('MODIF_PERSO', $modif_perso);
 $t->set_var('CONTROLE_ADMIN', $controle_admin);
 
+$milice = '';
 if ($is_milice == 1)
 {
-    $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""><a href="' . $chemin . '/milice.php">Milice</a><br>';
+    $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""> <a href="' . $chemin . '/milice.php">Milice</a><br>';
 }
-else
-{
-    $milice = '';
-}
+$t->set_var('MILICE', $milice);
 
+$vampire = "" ;
 if ($is_vampire != 0)
 {
-    ?>
-    <img src="<?php echo G_IMAGES; ?>magie.gif" alt=""> <a href="<?php echo $chemin; ?>/vampirisme.php">Vampirisme</a>
-    <br>
-    <?php
+    $vampire = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/vampirisme.php">Vampirisme</a><br>';
 }
-
+$t->set_var('VAMPIRE', $vampire);
 //
 // gestion des vote
 // 
