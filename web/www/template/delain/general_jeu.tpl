@@ -121,6 +121,8 @@
         <img src="{URL_IMAGES}guilde.gif" alt=""/> <a href="{URL_RELATIVE}guilde.php">Guilde</a><br/>
         <img src="{URL_IMAGES}guilde.gif" alt=""/> <a href="{URL_RELATIVE}groupe.php">Coterie</a>
         <hr/>
+        {MILICE}
+        {VAMPIRE}
         {CONTROLE}
         {CONTROLE_ADMIN}
         {DROIT_LOGS}

@@ -169,7 +169,6 @@ if ($autorise == 1)
 
     echo "<p>Identification réussie !</p><br /><br />";
     $premier_perso = true;
-    $global_avril_2019 = false;
 
     foreach ($tableau_numeros as $key => $numero_perso)
     {
@@ -243,25 +242,6 @@ if ($autorise == 1)
             $perso_dlt->marqueEvtLus();
             //$req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
             //$db->query($req_raz_evt);
-        }
-
-        // activation spéciale le premier avril 2019 !
-        $dlt2 = $perso_dlt->perso_dlt;      // dlt actuelle
-        $perso_dlt_pos_cod = $perso_dlt->get_position()["pos"]->pos_cod;
-        if (($perso_dlt->perso_type_perso == 1 || $perso_dlt->perso_type_perso == 2)       // perso ou familier
-            && ($dlt1 != $dlt2)                                                           // à l'activation de la DLT
-            && ($perso_dlt_pos_cod != 152387)                                           // N'est pas dans un garde mangé
-            && (date("Y-m-d") == "2019-04-01")                                    // Le premier avril 2018!
-        ) {
-            $global_avril_2019 = true;
-            if (count($liste_evt) != 0) {
-                echo "<p style='margin-top:10px;'><strong>Vos derniers événements importants :</strong></p>";
-            }
-
-            echo "<br><br>".date('d/m/Y H:i:s') . " : <strong>Kangaxxx</strong> lance attaque mentale sur <strong>".$perso_dlt->perso_nom."</strong> infligeant 555 dommages.";
-            echo "<br>".date('d/m/Y H:i:s') . " :  <strong>Kangaxxx</strong> a tué <strong>".$perso->perso_nom."</strong>.";
-            echo "<br>".date('d/m/Y H:i:s') . " : <strong>".$perso->perso_nom."</strong> pert 15 px.";
-            echo '<br><p><b>VOUS ÊTES MORT !</b><br>';
         }
 
         $premier_perso = false;
