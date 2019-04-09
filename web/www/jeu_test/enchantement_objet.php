@@ -46,8 +46,8 @@ switch ($methode) {
         $contenu_page .= '</table></p>';
         $contenu_page .= '<p align="left"><strong>Liste des objets qui doivent être manipulés pour devenir enchantables : </strong>
 													<table>';
-        $req4 = $req . ' and obj_enchantable = 0 and gobj_tobj_cod not in (6)
-										order by gobj_tobj_cod,obj_nom desc';           // Marlyza 2019-04-09 - Cas particulier: les artefacts non enchantable, ne doivent pas le devenir.
+        $req4 = $req . ' and obj_enchantable = 0 and gobj_chance_enchant > 0
+										order by gobj_tobj_cod,obj_nom desc';           // Marlyza 2019-04-09 - Cas particulier: ne pas laisser la possibilité d'anchante rles objet à 0% de chance
         $db3->query($req4);
         if ($db3->nf() == 0) {
             $contenu_page .= '<td><em>Aucun objet non enchanté et enchantable à votre disposition</em></td>';
