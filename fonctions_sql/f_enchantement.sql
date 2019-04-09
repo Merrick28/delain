@@ -28,6 +28,7 @@ declare
 	v_enc_cod alias for $3;
 	v_type_enc alias for $4;
 	v_obj_enchantable integer;
+	v_chance_enchant integer;
 	v_pa integer;
 	v_nb_objet integer;
 	ligne record;
@@ -84,19 +85,20 @@ begin
 		-- DEBUT DES CONTROLES --
 		-------------------------
 		-- on regarde que l’objet soit bien dans l’inventaire
-		select into v_obj_enchantable
-			obj_enchantable
-			from objets,perso_objets
+		select into v_obj_enchantable, v_chance_enchant
+			obj_enchantable, gobj_chance_enchant
+			from objets,perso_objets,objet_generique
 			where perobj_perso_cod = personnage
 			and perobj_identifie = 'O'
-			and perobj_obj_cod = v_obj_cod
+			and gobj_cod = obj_gobj_cod
+			and perobj_obj_cod = obj_cod
 			and obj_cod = v_obj_cod;
 		if not found then
 			code_retour := 'Erreur, l’objet demandé n’est pas dans l’inventaire ou n’est pas identifié !';
 			return code_retour;
 		end if;
 		-- on regarde qu’il soit bien enchantable
-		if v_obj_enchantable = 0 then
+		if v_obj_enchantable = 0 or v_chance_enchant = 0 then
 			code_retour := 'Erreur, l’objet demandé n’est pas enchantable !';
 			return code_retour;
 		end if;
