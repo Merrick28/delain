@@ -169,6 +169,7 @@ if($db->next_record())
 		break;
 
 		case "description":
+            $potion = $_REQUEST['potion'];
 			$req = 'select pfrm_frm_cod,gobj_nom,gobj_description from objet_generique,perso_formule,formule_produit
 				where pfrm_perso_cod = '. $perso_cod .'
 					and gobj_cod = frmpr_gobj_cod
