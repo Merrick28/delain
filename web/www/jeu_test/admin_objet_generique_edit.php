@@ -304,7 +304,7 @@ if ($erreur == 0)
                     $db2->next_record();
                     $obcar_cod = $db2->f("obcar_cod");
                     $obcar = new objets_caracs();
-                    $obacr->charge($db2->f("obcar_cod"));
+                    $obcar->charge($db2->f("obcar_cod"));
                 }
                 else
                 {
