@@ -26,7 +26,8 @@ $pa_n = $db->get_pa_attaque($perso_cod);
 $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, pcompt_compt_cod, perso_tangible, perso_nom, pos_x, pos_y, 
 				pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_sex, perso_cod, perso_pv, perso_pv_max, perso_description,
 				perso_desc_long, pos_cod, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma, 
-				is_surcharge(perso_cod,$perso_cod) as surcharge, perso_pnj, perso_mortel, pgroupe_groupe_cod, l1.lock_nb_tours as lock1, l2.lock_nb_tours as lock2
+				is_surcharge(perso_cod,$perso_cod) as surcharge, perso_pnj, perso_mortel, pgroupe_groupe_cod, l1.lock_nb_tours as lock1, l2.lock_nb_tours as lock2,
+                case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette
 		FROM perso
 		INNER JOIN perso_position ON ppos_perso_cod = perso_cod
 		INNER JOIN positions ON pos_cod = ppos_pos_cod
@@ -35,6 +36,9 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
 		LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 		LEFT OUTER JOIN lock_combat l1 ON l1.lock_cible = perso_cod AND l1.lock_attaquant = $perso_cod
 		LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
+        LEFT OUTER JOIN (
+                        select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
+                     ) as triplette on triplette_perso_cod = perso_cod
 		WHERE pos_etage = $etage 
 			and perso_type_perso = 1 
 			and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
@@ -55,9 +59,13 @@ $nb_joueur_en_vue = $db->nf();
             <div class="soustitre">Aventuriers</div>
         </td>
     </tr>
-    <tr>
-        <td colspan="9" class="soustitre2">Afficher/masquer : <span style="cursor:pointer;"
-                                                                    onclick="afficheMasque(contient, new Array(1, 'guilde.gif'), 'tablePersos', affichePersosCoterie); affichePersosCoterie = !affichePersosCoterie;">la coterie</span>.
+    <tr style="height: 30px;"><td class="soustitre2" colspan="8"><strong>Filtres:&nbsp;&nbsp;</strong>
+            <input id="tablePersos-col" type="hidden" value="2">
+            <input id="tablePersos-filtre-perso" type="text" size="20" onkeyup="filtre_table_search('tablePersos');">
+            &nbsp;&nbsp;<strong>Limiter aux:&nbsp;&nbsp;</strong>
+            &nbsp;&nbsp;<input name="tablePersos-filtre-type" value="1" type="radio" onChange="filtre_table_search('tablePersos');">&nbsp;<em>Aventuriers <span id="ft-aventurier"></span></em>
+            &nbsp;&nbsp;<input name="tablePersos-filtre-type" value="0" type="radio" onChange="filtre_table_search('tablePersos');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
+            &nbsp;&nbsp;<input name="tablePersos-filtre-type" value="-1" type="radio" checked onChange="filtre_table_search('tablePersos');">&nbsp;<em>Sans limites</span></em>
         </td>
     </tr>
     <?php if ($marquerQuatriemes)
@@ -88,6 +96,7 @@ $nb_joueur_en_vue = $db->nf();
     {
         // on boucle sur les joueurs "visibles"
         $i = 0;
+        $row = 3 ;
         while ($db->next_record())
         {
             if ($db->f("traj") == 1)
@@ -238,7 +247,10 @@ $nb_joueur_en_vue = $db->nf();
                     $style = "soustitre2";
                 }
                 $ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lperso' . $db->f("perso_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lperso' . $db->f("perso_cod") . '\',\'pasvu\',\'' . $style . '\');"';
-                echo '<tr>
+                $cdata = "";
+                $cdata.="data-partisans='".(($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) || ($db->f("triplette")== 1) ? "O" : "N")."' ";
+                $cdata.="data-type='1' ";
+                echo '<tr id="row-'.$row.'" '.$cdata.'>
 				<td ' . $ch_style . '><div style="text-align:center;">' . $db->f("distance") . '</div></td>';
                 if ($marquerQuatriemes)
                 {
@@ -261,6 +273,7 @@ $nb_joueur_en_vue = $db->nf();
                     }
                 }
                 echo '</td></tr>';
+                $row++;
             }
         }
     }

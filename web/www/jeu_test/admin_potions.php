@@ -22,7 +22,7 @@ if ($erreur == 0) {
             <table>
                 <?php
                 $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
-											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37)
+											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)
 											and not exists (select 1 from formule_produit where frmpr_gobj_cod = gobj_cod ) 
 											order by gobj_nom';
                 $db->query($req);
@@ -132,7 +132,7 @@ if ($erreur == 0) {
                             <select name="potion">
                                 <?php
                                 $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
-											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37)';
+											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)';
                                 if ($pot != null) {
                                     $req .= 'and gobj_cod = ' . $pot;
                                 }
@@ -287,7 +287,7 @@ if ($erreur == 0) {
                             <select name="potion">
                                 <?php
                                 $req_pot = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
-											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37) 
+											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39) 
 											order by gobj_nom';
                                 $db2->query($req_pot);
                                 while ($db2->next_record()) {

@@ -303,6 +303,8 @@ if ($erreur == 0)
                 {
                     $db2->next_record();
                     $obcar_cod = $db2->f("obcar_cod");
+                    $obcar = new objets_caracs();
+                    $obcar->charge($db2->f("obcar_cod"));
                 }
                 else
                 {
@@ -355,15 +357,15 @@ if ($erreur == 0)
                         <tr>
                             <td class="soustitre2">Dégâts (armes uniquement)</td>
                             <td><input type="text" size="5" name="obcar_des_degats"
-                                       value="<?php echo $db2->f("obcar_des_degats"); ?>"> D <input type="text" size="5"
+                                       value="<?php echo $obcar->obcar_des_degat; ?>"> D <input type="text" size="5"
                                                                                                     name="obcar_val_des_degats"
-                                                                                                    value="<?php echo $db2->f("obcar_val_des_degats"); ?>">
+                                                                                                    value="<?php echo $obcar->obcar_val_des_degats; ?>">
                                 + <input type="text" size="5" name="obcar_bonus_degats"
-                                         value="<?php echo $db2->f("obcar_bonus_degats"); ?>"></td>
+                                         value="<?php echo $obcar->obcar_bonus_degats; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Armure (armures uniquement)</td>
-                            <td><input type="text" name="obcar_armure" value="<?php echo $db2->f("obcar_armure"); ?>">
+                            <td><input type="text" name="obcar_armure" value="<?php echo$obcar->obcar_armure; ?>">
                             </td>
                         </tr>
                         <tr>
@@ -395,7 +397,7 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
-                            <td><input type="text" name="obcar_chute" value="<?php echo $db2->f("obcar_chute"); ?>">
+                            <td><input type="text" name="obcar_chute" value="<?php echo $obcar->obcar_chute; ?>">
                             </td>
                         </tr>
                         <tr>

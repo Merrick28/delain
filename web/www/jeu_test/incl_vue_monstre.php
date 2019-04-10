@@ -24,7 +24,9 @@ $pa_n = $db->get_pa_attaque($perso_cod);
 $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangible, perso_description, perso_desc_long, perso_nom,
 		pos_x, pos_y, pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_cod, perso_sex, perso_pv,
 		perso_pv_max, pos_cod, is_surcharge(perso_cod,$perso_cod) as surcharge, pgroupe_groupe_cod, l1.lock_nb_tours as lock1,
-		l2.lock_nb_tours as lock2, coalesce(compt_monstre, 'N') as compt_monstre, coalesce(compt_cod, -1) as compt_cod, perso_dirige_admin
+		l2.lock_nb_tours as lock2, coalesce(compt_monstre, 'N') as compt_monstre, coalesce(compt_cod, -1) as compt_cod, perso_dirige_admin,
+		perso_type_perso,
+		case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette
 	FROM perso
 	INNER JOIN perso_position ON ppos_perso_cod = perso_cod
 	INNER JOIN positions ON pos_cod = ppos_pos_cod
@@ -34,6 +36,9 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangi
 	LEFT OUTER JOIN lock_combat l2 ON l2.lock_cible = $perso_cod AND l2.lock_attaquant = perso_cod
 	LEFT OUTER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 	LEFT OUTER JOIN compte ON compt_cod = pcompt_compt_cod 
+    LEFT OUTER JOIN (
+                    select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso_familier on pfam_perso_cod=pcompt_perso_cod  join perso on perso_cod=pfam_familier_cod where compt_cod=$compt_cod and perso_actif='O'
+                ) as triplette on triplette_perso_cod = perso_cod
 	WHERE pos_etage = $etage
 		and perso_type_perso in (2,3)
 		and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
@@ -47,10 +52,21 @@ $db->query($req_vue_joueur);
 $nb_joueur_en_vue = $db->nf();
 
 $nb_colonnes = ($marquerQuatriemes) ? 7 : 6;
+
 ?>
 <tr><td colspan="<?php echo  $nb_colonnes; ?>" class="soustitre"><div class="soustitre">Monstres</div></td></tr>
-<tr><td colspan="<?php echo  $nb_colonnes; ?>" class="soustitre2">Afficher/masquer : <span style="cursor:pointer;" onclick="afficheMasque(egal, new Array(2, 'Familier'), 'tableMonstres', afficheFamiliers); afficheFamiliers = !afficheFamiliers;">les familiers</span>, <span style="cursor:pointer;" onclick="afficheMasque(contient, new Array(1, 'guilde.gif'), 'tableMonstres', afficheMonstresCoterie); afficheMonstresCoterie = !afficheMonstresCoterie;">la coterie</span>.</td></tr>
-<tr>
+
+<tr style="height: 30px;"><td class="soustitre2" colspan="8"><strong>Filtres:&nbsp;&nbsp;</strong>
+        <input id="tableMonstres-col" type="hidden" value="2">
+        <input id="tableMonstres-filtre-perso" type="text" size="20" onkeyup="filtre_table_search('tableMonstres');">
+        &nbsp;&nbsp;<strong>Limiter aux:&nbsp;&nbsp;</strong>
+        &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="3" type="radio" onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Familiers <span id="ft-familier"></span></em>
+        &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="2" type="radio" <?php if ($tab_vue!=5) echo "checked"; ?> onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Monstres <span id="ft-monstre"></span></em>
+        &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="0" type="radio" onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Partisans <span id="ft-partisan"></span></em>
+        &nbsp;&nbsp;<input name="tableMonstres-filtre-type" value="-1" type="radio" <?php if ($tab_vue==5) echo "checked"; ?> onChange="filtre_table_search('tableMonstres');">&nbsp;<em>Sans limites</span></em>
+    </td>
+</tr>
+
 <td class="soustitre2" width="50"><strong>Dist.</strong></td>
 <?php  if ($marquerQuatriemes) echo '<td class="soustitre2"><strong>Contrôle</strong></td>'; ?>
 <td class="soustitre2"><strong>Nom</strong></td>
@@ -64,6 +80,7 @@ if ($nb_joueur_en_vue != 0)
 {
 	$i = 0;
 	$lieuRefuge = $db_refuge->is_refuge($perso_cod);
+    $row = 3 ;
 
 	while($db->next_record())
 	{
@@ -135,7 +152,11 @@ if ($nb_joueur_en_vue != 0)
 				$style = "soustitre2";
 			}
 			$ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lmonstre' . $db->f("perso_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lmonstre' . $db->f("perso_cod") . '\',\'pasvu\',\'' . $style . '\');"';
-			echo '<tr>
+
+            $cdata = "";
+            $cdata.="data-partisans='".(($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) || ($db->f("triplette")== 1) ? "O" : "N")."' ";
+            $cdata.="data-type='".($db->f("perso_type_perso"))."' ";
+			echo '<tr id="row-'.$row.'" '.$cdata.'>
 				<td ' . $ch_style . '><div style="text-align:center;">' . $db->f("distance") . '</div></td>';
                 
     		if ($marquerQuatriemes)
@@ -153,7 +174,8 @@ if ($nb_joueur_en_vue != 0)
 					echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
 				}
 			}
-		echo '</td></tr>';
+		    echo '</td></tr>';
+            $row++;
 		}
 	}
 }
@@ -167,3 +189,6 @@ else
 
 ?>
 </table>
+<script type="text/javascript">
+    filtre_table_search('tableMonstres'); // on filtre sur les monstres par défaut
+</script>

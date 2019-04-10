@@ -712,23 +712,19 @@ $t->set_var('CONTROLE', $controle);
 $t->set_var('MODIF_PERSO', $modif_perso);
 $t->set_var('CONTROLE_ADMIN', $controle_admin);
 
+$milice = '';
 if ($is_milice == 1)
 {
-    $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""><a href="' . $chemin . '/milice.php">Milice</a><br>';
+    $milice = '<img src="' . G_IMAGES . 'attaquer.gif" alt=""> <a href="' . $chemin . '/milice.php">Milice</a><br>';
 }
-else
-{
-    $milice = '';
-}
+$t->set_var('MILICE', $milice);
 
+$vampire = "" ;
 if ($is_vampire != 0)
 {
-    ?>
-    <img src="<?php echo G_IMAGES; ?>magie.gif" alt=""> <a href="<?php echo $chemin; ?>/vampirisme.php">Vampirisme</a>
-    <br>
-    <?php
+    $vampire = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/vampirisme.php">Vampirisme</a><br>';
 }
-
+$t->set_var('VAMPIRE', $vampire);
 //
 // gestion des vote
 // 

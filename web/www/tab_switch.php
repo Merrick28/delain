@@ -46,6 +46,7 @@ function affiche_perso($perso_cod)
     // fin 1er avril
     //
 
+
     $limite_niveau_actuel = $perso->px_limite_actuel();
     $limite_niveau        = $perso->px_limite();
     $barre_xp             = $perso->barre_xp();

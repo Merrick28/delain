@@ -138,7 +138,7 @@ if($db->next_record())
 					and gobj_cod = frmpr_gobj_cod
 					and frmpr_frm_cod	= pfrm_frm_cod
 					and frm_cod = pfrm_frm_cod
-					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37)
+					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)
 					and gobj_cod = '. $potion .'
 				order by gobj_nom';
 			$db->query($req);
@@ -169,6 +169,7 @@ if($db->next_record())
 		break;
 
 		case "description":
+            $potion = $_REQUEST['potion'];
 			$req = 'select pfrm_frm_cod,gobj_nom,gobj_description from objet_generique,perso_formule,formule_produit
 				where pfrm_perso_cod = '. $perso_cod .'
 					and gobj_cod = frmpr_gobj_cod

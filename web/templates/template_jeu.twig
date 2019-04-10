@@ -412,6 +412,14 @@
         <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
     {% endif %}
 
+    {% if PERSO.is_milice()  %}
+        <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <a href="/jeu_test/milice.php">Milice</a><br>
+    {% endif %}
+
+    {% if PERSO.perso_niveau_vampire>0 %}
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/vampirisme.php">Vampirisme</a><br>
+    {% endif %}
+
 
     <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion
             compte</strong></a>

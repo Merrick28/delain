@@ -190,50 +190,6 @@ if ($autorise == 1)
         echo $perso_dlt->calcul_dlt();
         $date_dlt = new DateTime($perso_dlt->perso_dlt);
 
-        // activation spéciale le premier avril 2018 !
-        $dlt2 = $perso_dlt->perso_dlt;      // dlt actuelle
-        $perso_dlt_pos_cod = $perso_dlt->get_position()["pos"]->pos_cod ;
-        if  (($perso_dlt->perso_type_perso==1 || $perso_dlt->perso_type_perso==2)       // perso ou familier
-            && ($dlt1!=$dlt2)                                                           // à l'activation de la DLT
-            && ($perso_dlt_pos_cod != 152387)                                           // N'est pas dans un garde mangé
-            && (date("Y-m-d")=="2018-04-01")                                    // Le premier avril 2018!
-            )
-        {
-            // Il y a eu une activation de DLT
-            $pdo  = new bddpdo();
-            $req  = "select cree_monstre_pos(194,?) as perso_cod";                      // 194 = code du monstre generique balrog
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($perso_dlt_pos_cod), $stmt);
-            $invocation = $stmt->fetch();
-            $monstre_perso_cod = $invocation["perso_cod"] ;
-
-            // Un peu de carac!
-            $nv_monstre = new perso;
-            $nv_monstre->charge($monstre_perso_cod);
-            $nv_monstre->perso_nb_joueur_tue = mt_rand(666,6666) ;
-            $nv_monstre->perso_dirige_admin = 'O' ;                 // faudrait pas que l'ia en prenne le controle ;-)
-            $nv_monstre->perso_kharma = -5000 ;
-            $nv_monstre->perso_renommee = 1600 ;
-            $nv_monstre->perso_renommee_magie = 4600 ;
-            $nv_monstre->perso_renommee_artisanat = 550 ;
-            $nv_monstre->perso_avatar = "balrog-".(mt_rand(0,9)).".jpg" ;   // 10 images différentes du monstre
-            $nv_monstre->stocke();
-
-            ///********************************************************************/
-            //// Préparation de l'objet pour gérer les lignes d'évènements
-            ///********************************************************************/
-            //$ligne_evt = new ligne_evt;
-            //$ligne_evt->levt_perso_cod1 =  $perso_dlt->perso_cod ;
-
-            //// Mettre la ligne d'événement correpondante
-            //$ligne_evt->levt_tevt_cod = 100;
-            //$ligne_evt->levt_texte = "[perso_cod1] a déclenché la fureur du [cible], il est revenu des enfers pour en finir!.";
-            //$ligne_evt->levt_cible = $monstre_perso_cod ;
-            //$ligne_evt->levt_lu = 'N';
-            //$ligne_evt->levt_visible = 'N';
-            //$ligne_evt->stocke(true);		// Nouvel évènement
-
-        }
 
         echo "<br>Votre nouvelle date limite de tour est : <strong>" . $date_dlt->format('d/m/Y H:i:s') . "</strong>";
 
@@ -287,6 +243,7 @@ if ($autorise == 1)
             //$req_raz_evt = "update ligne_evt set levt_lu = 'O' where levt_perso_cod1 = $numero_perso and levt_lu = 'N'";
             //$db->query($req_raz_evt);
         }
+
         $premier_perso = false;
     }
     // formulaire pour passer au jeu
