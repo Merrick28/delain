@@ -58,9 +58,8 @@
 {BARRE_MENU_ICONE}
 <div id="colonne1">
     <div id="dropdown-box">
-        <div id="nom"
-             style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
-        <div style="text-align:center;padding:5px">
+        <div id="nom" style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">{PERSO_NOM}</div>
+        <div style="text-align:center;padding:3px">
             <div id="intangible" style="padding:2px">{INTANGIBLE}</div>
             <div id="pa" style="padding:2px;"><img src="{URL_IMAGES}barrepa_{PERSO_PA}.gif"
                                                                 title="{PERSO_PA} PA " alt="{PERSO_PA} PA "></div>
@@ -77,13 +76,16 @@
                 <img src="{URL_IMAGES}del.gif" height="2" width="8" alt=" ">
                 <img src="{URL_IMAGES}def.gif" title="Armure" alt="Def"> <strong>{PERSO_ARMURE}</strong>
             </div>
-            <div id="position"><br>X: <strong>{PERSO_POS_X}</strong>&nbsp;&nbsp;Y: <strong>{PERSO_POS_Y}</strong>{PERSO_MOVE}<br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
+            <div id="position" style="padding-top:10px;">X: <strong>{PERSO_POS_X}</strong>&nbsp;&nbsp;Y: <strong>{PERSO_POS_Y}</strong>{PERSO_MOVE}<br><strong><a href="{URL_RELATIVE}desc_etage.php"><img alt="" src="/images/iconmap.gif" style="height:12px;border:0px;" />{PERSO_ETAGE}</a></strong></div>
         </div>
         <div style="padding:0 10 0 10px; text-align:center;">
             <div id="animation">{PERSO_ANIMATION}</div>
             <div id="passageniveau">{PASSAGE_NIVEAU}</div>
             <div id="quete">{PERSO_QUETE}</div>
             <div id="lieu">{PERSO_LIEU}</div>
+        </div>
+        <div  style="padding:0px 10px 0px 10px; text-align:left;">
+            {FAVORIS}
         </div>
         <div id="dropdown-button">&or;</div>
     </div>
@@ -105,7 +107,6 @@
         <img src="{URL_IMAGES}attaquer.gif" alt=""> <strong><a href="{URL_RELATIVE}combat.php">Combat !</a></strong><br>
         <img src="{URL_IMAGES}magie.gif" alt=""> <strong><a href="{URL_RELATIVE}magie.php">Magie !</a></strong><br>
         {VOIE_MAGIQUE}
-        {FAVORIS}
         <hr/>
         {FORGE}
         {CREUSER}
