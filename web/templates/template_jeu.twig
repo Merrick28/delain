@@ -198,13 +198,14 @@
                 <hr/>
                 {% for fav in PERSO.get_favoris %}
                     <div id="fav-link-{{ fav.pfav_cod }}">
-                        <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a></div>
+                        <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a>
+                    </div>
                 {% endfor %}
             </div>
         </div>
     {% else %}
         <div  style="padding:0px 10px 0px 10px; text-align:left;">
-            <div id="barre-favoris" style="display:none;">
+            <div id="barre-favoris" style="display:none;"></div>
         </div>
     {% endif %}
     <div id="dropdown-button">&or;</div>
