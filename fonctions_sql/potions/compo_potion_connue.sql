@@ -40,6 +40,7 @@ declare
 	resultat text;		--texte d’amélioration de la comp
 
 	v_gobj_cod integer;	-- code de l’objet générique
+	v_frmpr_num integer;	-- nombre de potion à créer
 	v_obj_cod integer;	-- obj_cod de la potion
 	v_nom_potion text;	-- nom de la potion
 	v_description_potion text; -- nom de la potion
@@ -213,6 +214,13 @@ begin
 		obj_valeur = v_valeur_potion,
 		obj_gobj_cod = potion
 	where obj_cod = v_obj_cod;
+
+  -- creation de plusieurs potions avec les mêmes produits
+  select into v_frmpr_num frmpr_num from formule_produit where frmpr_gobj_cod  = potion ;
+  if v_frmpr_num>1 then
+    perform cree_objet_perso_nombre(potion,personnage,v_frmpr_num-1);
+    code_retour := code_retour || '<br>Les composants vous on permis de créer <b>' || v_frmpr_num::text || ' potions</b>.';
+  end if;
 
 /*********************************************************/
 /*                  Gestion des effets / messages        */
