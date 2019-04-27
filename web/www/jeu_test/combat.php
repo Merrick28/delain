@@ -52,10 +52,10 @@ if ($erreur == 0)
 
     if (!$tab_lock_cible)
     {
-        $tab_vue = $perso->get_vue_non_lock();
+        $tab_vue = $perso->get_vue_non_lock($compte);
     } else
     {
-        $tab_vue = $perso->get_vue_lock();
+        $tab_vue = $perso->get_vue_lock($compte);
     }
 
 }
