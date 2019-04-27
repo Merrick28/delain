@@ -326,8 +326,24 @@ if($db->next_record())
 					$req = 'update objets set obj_nom = e\''. pg_escape_string($nom) .'\',obj_gobj_cod = '. $g_objet .',obj_description = e\''. pg_escape_string($description) .'\' where obj_cod = '. $fiole;
 					$db->query($req);
 					$db->next_record();
+
+                    // Les ingredients peuvent parfois fournir plusieurs potions
+                    $text_nb_potion = "" ;
+                    $db3->query("select frmpr_num from formule_produit where frmpr_frm_cod = $formule ");
+                    if($db3->nf() > 0)	// récupération du nombre de potion a fabriquer
+                    {
+                        $db3->next_record();
+                        $frmpr_num = $db3->f('frmpr_num');
+                        if ($frmpr_num>1)
+                        {
+                            $text_nb_potion = "<br> Les composants vous on permis de créer <strong>{$frmpr_num} potions</strong>.<br>" ;
+                            $frmpr_num = $frmpr_num - 1 ;
+                            $db3->query("select cree_objet_perso_nombre({$g_objet},{$perso_cod},{$frmpr_num}); ");
+                        }
+                    }
+
 					$contenu_page .= '<img src="http://www.jdr-delain.net/images/pos1.gif"><br>En assemblant les différents éléments, vous parvenez à fabriquer une nouvelle potion ! Il semblerait que ce soit une ' . $nom . '<br />
-						Prenez garde tout de même. Parfois, l’assemblage de composants peut donner des résultats que vous n’êtes pas tout à fait capable de comprendre et d’analyser. Une erreur est vite arrivée.<br />';
+                        '.$text_nb_potion.'Prenez garde tout de même. Parfois, l’assemblage de composants peut donner des résultats que vous n’êtes pas tout à fait capable de comprendre et d’analyser. Une erreur est vite arrivée.<br />';
 
 					// On vérifie si la formule est déjà connue
 					$requete_existence = "select * from perso_formule where pfrm_frm_cod = $formule and pfrm_perso_cod = $perso_cod";
