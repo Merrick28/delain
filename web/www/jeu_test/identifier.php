@@ -65,10 +65,10 @@ else
         $objet = new objets();
         $objet->charge($_REQUEST['objet']);
 
-        $req_objet = "select obj_nom,obj_enchantable,obj_description from objets ";
+        /*$req_objet = "select obj_nom,obj_enchantable,obj_description from objets ";
         $req_objet = $req_objet . "where obj_cod = " . $objet;
         $db->query($req_objet);
-        $db->next_record();
+        $db->next_record();*/
         //$tab_objet = pg_fetch_array($res_objet,0);
         echo "<p>L'objet identifié est : <strong>" . $objet->obj_nom . "</strong>. Vous pouvez maintenant l'utiliser.</p>";
         if ($objet->obj_enchantable == 1)
