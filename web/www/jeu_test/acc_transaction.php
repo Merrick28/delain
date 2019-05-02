@@ -1,11 +1,22 @@
 <?php 
 include "blocks/_header_page_jeu.php";
 
-$req_acc_tran = "select accepte_transaction($transaction) as resultat";
-$db = new base_delain;
-$db->query($req_acc_tran);
-$db->next_record();
-$resultat_temp = $db->f("resultat");
+$pdo = new bddpdo();
+
+$req_acc_tran = "select accepte_transaction(:transaction) as resultat";
+
+$stmt           = $pdo->prepare($req_acc_tran);
+$stmt           = $pdo->execute(array(
+    ":transaction" => $_REQUEST['transaction']
+), $stmt);
+
+if(!$result = $stmt->fetch())
+{
+    die('Erreur sur chargement fonction identification');
+}
+$resultat_temp = $result['identifie'];
+
+
 $tab_res = explode(";",$resultat_temp);
 if ($tab_res[0] == -1)
 {

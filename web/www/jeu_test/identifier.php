@@ -18,15 +18,6 @@ if(!$result = $stmt->fetch())
 }
 $resultat = $result['identifie'];
 
-
-/*
- * Old syntaxe pre pdo
- *
-$req_identifier = "select identifier_objet($perso_cod," . $_REQUEST['objet']  . ") as identifie";
-$db->query($req_identifier);
-$db->next_record();
-$resultat = $db->f("identifie");*/
-
 $tab_res  = explode(";", $resultat);
 if ($tab_res[0] == -1)
 {
@@ -65,11 +56,6 @@ else
         $objet = new objets();
         $objet->charge($_REQUEST['objet']);
 
-        /*$req_objet = "select obj_nom,obj_enchantable,obj_description from objets ";
-        $req_objet = $req_objet . "where obj_cod = " . $objet;
-        $db->query($req_objet);
-        $db->next_record();*/
-        //$tab_objet = pg_fetch_array($res_objet,0);
         echo "<p>L'objet identifié est : <strong>" . $objet->obj_nom . "</strong>. Vous pouvez maintenant l'utiliser.</p>";
         if ($objet->obj_enchantable == 1)
         {
