@@ -9,12 +9,12 @@ $param = new parametres();
 $erreur = 0;
 if ($is_intangible)
 {
-    echo "Vous ne pouvez pas attaquer en étant impalpable !";
+    //echo "Vous ne pouvez pas attaquer en étant impalpable !";
     $erreur = 1;
 }
 if ($is_refuge)
 {
-    echo "Vous ne pouvez pas attaquer sur un refuge !";
+    //echo "Vous ne pouvez pas attaquer sur un refuge !";
     $erreur = 1;
 }
 if ($erreur == 0)

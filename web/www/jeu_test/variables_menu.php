@@ -5,6 +5,8 @@
  * le moteur de template de phplib
  *
  */
+$__VERSION = "20190502";
+
 $benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
 $db2 = new base_delain;
@@ -969,9 +971,12 @@ $barre_menu_icone = '
 //$barre_menu_icone='';
 $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
 
+// Injection de la version
+$t->set_var('__VERSION', $__VERSION);
 
 // variables twig
 $var_twig_defaut = array(
+    '__VERSION'           => $__VERSION,
     'G_IMAGES'            => G_IMAGES,
     'G_URL'               => G_URL,
     'PERSO'               => $perso,

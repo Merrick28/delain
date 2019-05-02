@@ -4,16 +4,16 @@
         <meta name="viewport" content="width=device-width, initial-scale=0.75">
 		<title>Les souterrains de Delain</title>
 		<link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
-		<link rel="stylesheet" type="text/css" href="{URL}style.css?v20190301" title="essai">
+		<link rel="stylesheet" type="text/css" href="{URL}style.css?v{__VERSION}" title="essai">
 		<!-- Bootstrap custom CSS -->
-		<link href="{URL}css/container-fluid.css?v20190301" rel="stylesheet">
+		<link href="{URL}css/container-fluid.css?v{__VERSION}" rel="stylesheet">
 
-		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js"></script>
+		<SCRIPT language="Javascript" src="{URL}scripts/ajax.js?v{__VERSION}"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-		<script src="{URL}scripts/ajax2.js?v20190301" type="text/javascript"></script>
-		<script src="{URL}scripts/tools.js?v20190301" type="text/javascript"></script>
-		<script src="{URL}scripts/delain.js?v20190301" type="text/javascript"></script>
-		<script src="{URL}vendor/nok/nok.min.js" type="text/javascript"></script>
+		<script src="{URL}scripts/ajax2.js?v{__VERSION}" type="text/javascript"></script>
+		<script src="{URL}scripts/tools.js?v{__VERSION}" type="text/javascript"></script>
+		<script src="{URL}scripts/delain.js?v{__VERSION}" type="text/javascript"></script>
+		<script src="{URL}vendor/nok/nok.min.js?v{__VERSION}" type="text/javascript"></script>
 
 	</head>
 <body style="background-image:url({URL_IMAGES}fond5.gif);" onload="tailleCadre()">
