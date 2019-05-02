@@ -1,22 +1,37 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-if (!$db->is_revolution($num_guilde))
-{
-	$req = "update guilde_perso set pguilde_valide = 'O' where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
-	
-	$db->query($req);
-    
-    $msg = new message;
-    $msg->corps = "Vous avez été validé dans la guilde pour laquelle vous demandiez une admission.<br />";
-    $msg->sujet = "Demande d’admission dans une guilde.";
-    $msg->expediteur = $perso_cod;
-    $msg->ajouteDestinataire($vperso);
-    
-    $msg->envoieMessage();
+$guilde = new guilde();
+$guilde->charge($_REQUEST['$num_guilde']);
+$guilderev = new guilde_revolution();
 
-	$contenu_page = '<p>Le joueur a été rajouté à votre guilde.</p>
+if(!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
+{
+	$guilde_perso = new guilde_perso();
+	$guilde_perso->get_by_perso($_REQUEST['vperso']);
+	if($guilde_perso->pguilde_guilde_cod = $guilde->guilde_cod)
+    {
+        $guilde_perso->pguilde_valide = 'O';
+        $guilde_perso->stocke();
+        $msg = new message;
+        $msg->corps = "Vous avez été validé dans la guilde pour laquelle vous demandiez une admission.<br />";
+        $msg->sujet = "Demande d’admission dans une guilde.";
+        $msg->expediteur = $perso_cod;
+        $msg->ajouteDestinataire($_REQUEST['vperso']);
+
+        $msg->envoieMessage();
+
+        $contenu_page = '<p>Le joueur a été rajouté à votre guilde.</p>
 		<p><a href="admin_guilde.php">Retourner à l’administration de la guilde</a></p>';
+    }
+	else
+    {
+        $contenu_page = "Une erreur est survenue sur le numéro de guilde";
+    }
+
+
+    
+
 }
 else
 {
