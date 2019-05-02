@@ -5,6 +5,8 @@
  * le moteur de template de phplib
  *
  */
+$__VERSION = "20190502";
+
 $benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
 $db2 = new base_delain;
@@ -186,13 +188,20 @@ if ($is_fam)
 }
 else
 {
-    if ($pa_dep==4)
+    $is_locked = $perso->is_locked();   // réutilisé plus loin!
+    $bagde_lock ="&nbsp;&nbsp;";
+    if ($is_locked)
+    {
+        $bagde_lock = '&nbsp;<span class="badge-profil">'.$perso->nb_locks().'</span>';
+        $moveimage = 'run';
+    } else if ($pa_dep==4) {
         $moveimage = 'footsteps';
-    else if ($pa_dep<4)
-        $moveimage = 'footgreen';
-    else
+    } else if ($pa_dep<4) {
+            $moveimage = 'footgreen';
+    } else {
         $moveimage = 'footred';
-    $t->set_var('PERSO_MOVE', ' &nbsp;&nbsp;<img src="' . G_IMAGES . $moveimage.'.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
+    }
+    $t->set_var('PERSO_MOVE', $bagde_lock.'<img src="' . G_IMAGES . $moveimage.'.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
 }
 
 
@@ -287,7 +296,6 @@ $t->set_var('PERSO_MESSAGERIE', $perso_messagerie);
 $texte_dep = '';
 if (!$is_fam)
 {
-    $is_locked = $perso->is_locked();
     if ((!$is_locked) && ($droit['controle'] != 'O'))
     {
         $texte_dep .= "<img src=\"" . G_IMAGES . "deplacement.gif\" alt=\"\"> ";
@@ -963,9 +971,12 @@ $barre_menu_icone = '
 //$barre_menu_icone='';
 $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
 
+// Injection de la version
+$t->set_var('__VERSION', $__VERSION);
 
 // variables twig
 $var_twig_defaut = array(
+    '__VERSION'           => $__VERSION,
     'G_IMAGES'            => G_IMAGES,
     'G_URL'               => G_URL,
     'PERSO'               => $perso,

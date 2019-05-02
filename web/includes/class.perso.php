@@ -1626,6 +1626,23 @@ class perso
         }
     }
 
+    function nb_locks()
+    {
+        $locks = 0 ;
+        $lc  = new lock_combat();
+        $tab = $lc->getBy_lock_cible($this->perso_cod);
+        if ($tab !== false)
+        {
+            $locks += count($tab);
+        }
+        $tab = $lc->getBy_lock_attaquant($this->perso_cod);
+        if ($tab !== false)
+        {
+            $locks += count($tab);
+        }
+        return $locks;
+    }
+
     function nb_obj_case()
     {
         $ppos = new perso_position;
@@ -2396,7 +2413,7 @@ class perso
 
     }
 
-    function prepare_get_vue()
+    function prepare_get_vue($compte)
     {
         $ppos  = new perso_position();
         $pos   = new positions();
@@ -2410,8 +2427,9 @@ class perso
         $compte       = new compte;
         $perso_compte = new perso_compte();
 
-
-        if ($this->perso_type_perso != 3)
+        /*
+         * Pour les monstres joué par un compte admin, le compte n'est pas forcément rattaché au perso_cod
+         if ($this->perso_type_perso != 3)
         {
             if (!$perso_compte->get_by_perso($this->perso_cod))
             {
@@ -2425,6 +2443,7 @@ class perso
                 die('Erreur d appel de compte');
             }
         }
+        */
 
 
         $compte->charge($perso_compte->pcompt_compt_cod);
@@ -2445,9 +2464,9 @@ class perso
 
     }
 
-    function get_vue_non_lock()
+    function get_vue_non_lock($compte)
     {
-        $this->prepare_get_vue();
+        $this->prepare_get_vue($compte);
 
         $pdo            = new bddpdo();
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
@@ -2506,10 +2525,10 @@ class perso
     }
 
 
-    function get_vue_lock()
+    function get_vue_lock($compte)
     {
         // position
-        $this->prepare_get_vue();
+        $this->prepare_get_vue($compte);
 
 
         $pdo            = new bddpdo();

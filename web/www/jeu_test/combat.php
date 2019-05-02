@@ -9,12 +9,12 @@ $param = new parametres();
 $erreur = 0;
 if ($is_intangible)
 {
-    echo "Vous ne pouvez pas attaquer en étant impalpable !";
+    //echo "Vous ne pouvez pas attaquer en étant impalpable !";
     $erreur = 1;
 }
 if ($is_refuge)
 {
-    echo "Vous ne pouvez pas attaquer sur un refuge !";
+    //echo "Vous ne pouvez pas attaquer sur un refuge !";
     $erreur = 1;
 }
 if ($erreur == 0)
@@ -52,10 +52,10 @@ if ($erreur == 0)
 
     if (!$tab_lock_cible)
     {
-        $tab_vue = $perso->get_vue_non_lock();
+        $tab_vue = $perso->get_vue_non_lock($compte);
     } else
     {
-        $tab_vue = $perso->get_vue_lock();
+        $tab_vue = $perso->get_vue_lock($compte);
     }
 
 }

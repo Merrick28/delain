@@ -8,17 +8,17 @@
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 
     <!-- Custom delain CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v20190301" title="essai">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v{{ __VERSION }}" title="essai">
     <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.php">
 
     <!-- Bootstrap custom CSS -->
-    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v20190301" rel="stylesheet">
-    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css?v{{ __VERSION }}" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v20190301" type="text/javascript"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v20190301" type="text/javascript"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js?v{{ __VERSION }}" type="text/javascript"></script>
 </head>
 <body style="background-image:url({{ G_IMAGES }}fond5.gif);">
 
@@ -155,12 +155,13 @@
         <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
             <strong>{{ POSITION.pos_y }}</strong>
             {% if not PERSO.is_fam %}
-                {% if PERSO.get_pa_dep()==4 %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                {% elseif PERSO.get_pa_dep()<4 %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+
+                {% if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
                 {% else %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% endif %}
                 {% endif %}
             {% endif %}
             <br><strong><a

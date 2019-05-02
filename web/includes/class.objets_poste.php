@@ -221,10 +221,12 @@ class objets_poste
         // position du relais de -- livraison --
         $pos = new positions();
         $pos->charge($pos_cod);
+        $etage= new etage();
+        $etage->getByNumero($pos->pos_etage);
 
         if ($short)
         {
-            if ($pos->pos_etage>=-5)
+            if ($etage->etage_reference>=-5)
             {
                 return "du 0 au -5";
             }
@@ -235,7 +237,7 @@ class objets_poste
         }
         else
         {
-            if ($pos->pos_etage>=-5)
+            if ($etage->etage_reference>=-5)
             {
                 return "étages de la surface au -5";
             }
