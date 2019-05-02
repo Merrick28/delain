@@ -335,12 +335,16 @@ class objets_poste
         // position du relais de -- livraison --
         $pos1 = new positions();
         $pos1->charge($this->opost_emet_pos_cod);
+        $etage1 = new etage();
+        $etage1->getByNumero($pos1->pos_etage);
 
         // position du relais de -- reception --
         $pos2 = new positions();
         $pos2->charge($pos_cod);
+        $etage2 = new etage();
+        $etage2->getByNumero($pos2->pos_etage);
 
-        if ((($pos1->pos_etage<=-5)&&($pos2->pos_etage>-5)) || (($pos1->pos_etage>-5)&&($pos2->pos_etage<=-5)))
+        if ((($etage1->etage_reference<=-5)&&($etage2->etage_reference>-5)) || (($etage1->etage_reference>-5)&&($etage2->etage_reference<=-5)))
         {
             return false;   // le receptionneur n'est pas dans la zone de couverture du relais de livraison
         }
