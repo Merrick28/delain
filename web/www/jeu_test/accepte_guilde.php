@@ -8,8 +8,8 @@ $guilderev = new guilde_revolution();
 if(!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
 {
 	$guilde_perso = new guilde_perso();
-	$guilde_perso->get_by_perso($_REQUEST['vperso']);
-	if($guilde_perso->pguilde_guilde_cod = $guilde->guilde_cod)
+
+	if($guilde_perso->get_by_perso_guilde($_REQUEST['vperso'],$guilde->guilde_cod))
     {
         $guilde_perso->pguilde_valide = 'O';
         $guilde_perso->stocke();
