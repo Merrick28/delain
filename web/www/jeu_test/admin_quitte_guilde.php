@@ -41,8 +41,8 @@ switch ($methode)
 														and pguilde_perso_cod = $perso_cod ";
                 $db->query($req);
 
-                $texte = "L\'administrateur $perso_nom a quitté la guilde dont vous êtes administrateur.<br />";
-                $titre = "Départ d\'un admin de la guilde.";
+                $texte = "L'administrateur $perso_nom a quitté la guilde dont vous êtes administrateur.<br />";
+                $titre = "Départ d'un admin de la guilde.";
                 $req_num_mes = "select nextval('seq_msg_cod') as numero";
                 $db->query($req_num_mes);
                 $db->next_record();
