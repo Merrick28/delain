@@ -1,15 +1,23 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
+
+
 $guilde = new guilde();
-$guilde->charge($_REQUEST['$num_guilde']);
+$guilde_perso = new guilde_perso();
+
+$guilde_perso->get_by_perso($perso_cod);
+
+$guilde->charge($guilde_perso->pguilde_guilde_cod);
 $guilderev = new guilde_revolution();
+
 
 if(!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
 {
-	$guilde_perso = new guilde_perso();
+    $gperso2 = new guilde_perso();
 
-	if($guilde_perso->get_by_perso_guilde($_REQUEST['vperso'],$guilde->guilde_cod))
+
+	if($gperso2->get_by_perso_guilde($_REQUEST['vperso'],$guilde->guilde_cod))
     {
         $guilde_perso->pguilde_valide = 'O';
         $guilde_perso->stocke();
