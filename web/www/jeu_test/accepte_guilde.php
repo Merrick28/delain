@@ -19,8 +19,8 @@ if(!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
 
 	if($gperso2->get_by_perso_guilde($_REQUEST['vperso'],$guilde->guilde_cod))
     {
-        $guilde_perso->pguilde_valide = 'O';
-        $guilde_perso->stocke();
+        $gperso2->pguilde_valide = 'O';
+        $gperso2->stocke();
         $msg = new message;
         $msg->corps = "Vous avez été validé dans la guilde pour laquelle vous demandiez une admission.<br />";
         $msg->sujet = "Demande d’admission dans une guilde.";
