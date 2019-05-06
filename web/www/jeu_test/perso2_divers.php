@@ -97,6 +97,53 @@ $req_temple = "select lieu_nom,pos_x,pos_y,etage_libelle,ptemple_nombre
 $db->query($req_temple);
 $nb = $db->nf();
 $contenu_page .= '<p class="titre">Dispensaire choisi</p>';
+
+// Affichage Sort de résurection
+$pdo    = new bddpdo();
+$req    = "select  rpos_pos_cod as resu_pos from perso_resuc where rpos_perso_cod=:perso_cod ";
+$stmt   = $pdo->prepare($req);
+$stmt   = $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
+$result = $stmt->fetch();
+$flag_resu = false ;
+if ((int)$result["resu_pos"]>0)
+{
+    $flag_resu = true ;
+    $req    = "select etage_libelle, pos_x, pos_y from etage, positions where etage_numero = pos_etage and pos_cod = :pos_cod ";
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array(':pos_cod' => $result["resu_pos"]), $stmt);
+    $result = $stmt->fetch();
+    $contenu_page .= "<p>Vous êtes lié par un sort de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br></br>";
+}
+
+// Affichage glyphe de resu-------
+$req    = "select  rejoint_glyphe_resurrection(:perso_cod) as glyphe_pos";
+$stmt   = $pdo->prepare($req);
+$stmt   = $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
+$result = $stmt->fetch();
+if ((int)$result["glyphe_pos"]>0)
+{
+    $req    = "select etage_libelle, pos_x, pos_y from etage, positions where etage_numero = pos_etage and pos_cod = :pos_cod ";
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array(':pos_cod' => $result["glyphe_pos"]), $stmt);
+    $result = $stmt->fetch();
+    $contenu_page .= "<p>Vous avez un glyphe de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br>";
+    if ($flag_resu)
+    {
+        $contenu_page .= "<p>Nota: Le glyphe est inactif tant que vous êtes lié par un sort de résurrection.</br>";
+    }
+    $contenu_page .= "</br>";
+
+}
+
+/*
+select  rejoint_glyphe_resurrection(4) ;
+
+
+select etage_libelle, pos_x, pos_y from etage, positions
+	where etage_numero = pos_etage
+and pos_cod = 4538 ;
+*/
+
 if ($nb == 0)
 {
 	$contenu_page .= '<p>Vous n’avez pas de dispensaire spécifique pour vous ramener en cas de mort.';

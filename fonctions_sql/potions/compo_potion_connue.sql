@@ -178,7 +178,7 @@ begin
 
 	for ligne in
 		select frmco_gobj_cod, frmco_num, gobj_nom
-		from formule_composant, formule, formule_produit, objet_generique
+		from formule_composainnt, formule, formule_produit, objet_generique
 		where frm_cod = frmco_frm_cod
 			and frm_cod = frmpr_frm_cod
 			and frmco_gobj_cod = gobj_cod
