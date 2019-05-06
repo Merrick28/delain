@@ -96,7 +96,7 @@ $req_temple = "select lieu_nom,pos_x,pos_y,etage_libelle,ptemple_nombre
 									and pos_etage = etage_numero ";
 $db->query($req_temple);
 $nb = $db->nf();
-$contenu_page .= '<p class="titre">Dispensaire choisi</p>';
+$contenu_page .= '<p class="titre">Dispensaire et résurrection</p>';
 
 // Affichage Sort de résurection
 $pdo    = new bddpdo();
@@ -104,35 +104,37 @@ $req    = "select  rpos_pos_cod as resu_pos from perso_resuc where rpos_perso_co
 $stmt   = $pdo->prepare($req);
 $stmt   = $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
 $result = $stmt->fetch();
-$flag_resu = false ;
-if ((int)$result["resu_pos"]>0)
-{
-    $flag_resu = true ;
-    $req    = "select etage_libelle, pos_x, pos_y from etage, positions where etage_numero = pos_etage and pos_cod = :pos_cod ";
-    $stmt   = $pdo->prepare($req);
-    $stmt   = $pdo->execute(array(':pos_cod' => $result["resu_pos"]), $stmt);
-    $result = $stmt->fetch();
-    $contenu_page .= "<p>Vous êtes lié par un sort de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br></br>";
-}
+(int)$result["resu_pos"];
+$resu_pos = (int)$result["resu_pos"];
 
 // Affichage glyphe de resu-------
 $req    = "select  rejoint_glyphe_resurrection(:perso_cod) as glyphe_pos";
 $stmt   = $pdo->prepare($req);
 $stmt   = $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
 $result = $stmt->fetch();
-if ((int)$result["glyphe_pos"]>0)
+$glyphe_pos = (int)$result["glyphe_pos"];
+
+if ($resu_pos>0)
 {
+    $flag_resu = true ;
     $req    = "select etage_libelle, pos_x, pos_y from etage, positions where etage_numero = pos_etage and pos_cod = :pos_cod ";
     $stmt   = $pdo->prepare($req);
-    $stmt   = $pdo->execute(array(':pos_cod' => $result["glyphe_pos"]), $stmt);
+    $stmt   = $pdo->execute(array(':pos_cod' => $resu_pos), $stmt);
     $result = $stmt->fetch();
-    $contenu_page .= "<p>Vous avez un glyphe de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br>";
-    if ($flag_resu)
-    {
-        $contenu_page .= "<p>Nota: Le glyphe est inactif tant que vous êtes lié par un sort de résurrection.</br>";
-    }
-    $contenu_page .= "</br>";
+    $contenu_page .= "<p>En cas de mort vous serez ramené par: <strong>Le sort de résurrection.</strong></br><br>";
+    $contenu_page .= "<p>Vous êtes lié par un sort de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br></br>";
+}
 
+if ($glyphe_pos>0) {
+    $req = "select etage_libelle, pos_x, pos_y from etage, positions where etage_numero = pos_etage and pos_cod = :pos_cod ";
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array(':pos_cod' => $glyphe_pos), $stmt);
+    $result = $stmt->fetch();
+    if ($resu_pos <= 0)
+    {
+        $contenu_page .= "<p>En cas de mort vous serez ramené par: <strong>Le sort votre glyphe de résurrection.</strong></br><br>";
+    }
+    $contenu_page .= "<p>Vous avez un glyphe de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br></br>";
 }
 
 /*
