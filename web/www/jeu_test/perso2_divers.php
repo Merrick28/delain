@@ -132,7 +132,7 @@ if ($glyphe_pos>0) {
     $result = $stmt->fetch();
     if ($resu_pos <= 0)
     {
-        $contenu_page .= "<p>En cas de mort vous serez ramené par: <strong>Le sort votre glyphe de résurrection.</strong></br><br>";
+        $contenu_page .= "<p>En cas de mort vous serez ramené par: <strong>Votre glyphe de résurrection.</strong></br><br>";
     }
     $contenu_page .= "<p>Vous avez un glyphe de résurrection en <strong>X={$result['pos_x']} Y={$result['pos_y']}</strong> à l’étage <strong>{$result['etage_libelle']}</strong>.</br></br>";
 }
