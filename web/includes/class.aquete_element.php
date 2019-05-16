@@ -549,6 +549,12 @@ class aquete_element
                 $element_texte = "<strong><em>".$race->race_nom."</em></strong>";
             break;
 
+            case 'type_monstre_generique':
+                $type = new monstre_generique();
+                $type->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$type->gmon_nom."</em></strong>";
+            break;
+
             case 'objet':
                 $objet = new objets();
                 $objet->charge($this->aqelem_misc_cod);

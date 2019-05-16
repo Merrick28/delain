@@ -1071,7 +1071,7 @@ class aquete_action
     //==================================================================================================================
     /**
      * Le joueur doit tuer un certains nombre de représentant de race de monstre  =>  '[1:delai|1%1],[2:race|0%0],[3:valeur|1%1]',
-     * p2=persos cibles p3=nombre de kill p4=etape si echec
+     * p2=races cibles p3=nombre de kill
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
      * @return stdClass
@@ -1142,6 +1142,80 @@ class aquete_action
 
         // si le compteur de kill atteind le contrat et au moins un de chaque race si compteur supérieur au nombre de race
         if (($nb_kill>=$nb_contrat) && (($nb_contrat<count($p2)) || ($nb_race==count($p2)))) return true;
+
+        // le contrat n'est pas encore rempli
+        return false;
+    }
+    //==================================================================================================================
+    /**
+     * Le joueur doit tuer un certains nombre de représentant de type de monstre  =>  '[1:delai|1%1],[2:monstre_generique|0%0],[3:valeur|1%1]',
+     * p2=type cibles p3=nombre de kill
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return stdClass
+     **/
+    function tuer_type(aquete_perso $aqperso)
+    {
+
+        $pdo = new bddpdo;
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'type_monstre_generique', 0)) return false ;                  // Problème lecture des paramètres
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+
+        // le compteur initial de type va être stocké dans l'élément du type  (P2) dans aqelem_param_num_1
+        // on se base sur les statistiques du "Tableau de chasse"
+        foreach ($p2 as $k => $elem)
+        {
+           // au premier passage (compteur null) initalisation du compteur.
+           if ($elem->aqelem_param_num_1 == null)
+           {
+                $req = "select ptab_gmon_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                        from perso_tableau_chasse
+                        where ptab_perso_cod = ? and ptab_gmon_cod = ?
+                        group by ptab_gmon_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+                if (!$result = $stmt->fetch())
+                {
+                    $elem->aqelem_param_num_1 = 0;
+                }
+                else
+                {
+                    $elem->aqelem_param_num_1 = 1*$result["total"];
+                }
+                $elem->stocke();
+           }
+        }
+
+        $nb_contrat = $p3->aqelem_param_num_1 ;     // Contrat: nombre de monstre à tuer
+
+        // Comptage des kills
+        $nb_kill = 0;
+        $nb_type = 0;
+        foreach ($p2 as $k => $elem)
+        {
+            if ($elem->aqelem_param_num_1 == null) return false; // compteur non initialisé
+
+            $req = "select ptab_gmon_cod, sum(ptab_total) as total, sum(ptab_solo) as solo 
+                    from perso_tableau_chasse
+                    where ptab_perso_cod = ? and ptab_gmon_cod = ?
+                    group by ptab_gmon_cod";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_misc_cod), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                // Il y a eu des kill de ce type dans le tableau, vérification par rapport au début du contrat
+                $kill_type = 1*$result["total"];
+                if ($kill_type>$elem->aqelem_param_num_1)
+                {
+                    $nb_kill += $kill_type - $elem->aqelem_param_num_1;
+                    $nb_type++;
+                }
+            }
+        }
+
+        // si le compteur de kill atteind le contrat et au moins un de chaque type si compteur supérieur au nombre de type
+        if (($nb_kill>=$nb_contrat) && (($nb_contrat<count($p2)) || ($nb_type==count($p2)))) return true;
 
         // le contrat n'est pas encore rempli
         return false;
