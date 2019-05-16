@@ -732,8 +732,17 @@ class aquete_perso
                     break;
 
                 case "#TUER #RACE":
-                    // Le joueur doit tuer des persos.
+                    // Le joueur doit une race de msontre.
                     if ($this->action->tuer_race($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
+                case "#TUER #TYPE":
+                    // Le joueur doit tuer un type de monstres.
+                    if ($this->action->tuer_type($this))
                     {
                         // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,
