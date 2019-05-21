@@ -154,7 +154,7 @@ begin
  update perso_position set ppos_pos_cod = pos_actuelle where ppos_perso_cod = familier_perso_cod ;
 
  -- pour un familier divin qui aurait été tué par manque de foi, on remet sa barre à 20%
-  update dieu_perso dieu_fam set dper_points=40 where dper_perso_cod=familier_perso_cod and dper_points<=0;
+  update dieu_perso dieu_fam set dper_points=40 where dper_perso_cod=familier_perso_cod and dper_points<40;
 
   code_retour := code_retour||'<br>vous lancez le puissant sortilège de résurrection de familier, vous avez ramené <b>' || familier_perso_nom || '</b> du plan des morts.<br>';
 
