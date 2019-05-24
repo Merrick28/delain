@@ -404,7 +404,6 @@ class aquete_action
                     join lieu_position on lpos_lieu_cod=lieu_cod
                     join positions on pos_cod=lpos_pos_cod                     
                     join etage on etage_numero=pos_etage and etage_reference<=aqelem_param_num_1 and etage_reference>=aqelem_param_num_2
-                    join perso on perso_cod=lpos_pos_cod
                     where aqperso_cod=?
                 ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
         $stmt   = $pdo->prepare($req);

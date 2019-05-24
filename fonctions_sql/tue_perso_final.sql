@@ -341,10 +341,13 @@ end if;
 		if v_etage_arene = 'N' then -- pas de perte en arène
 			-- Un perso mortel meurt définitivement (même en cas de grosse différence de niveau)
 			if v_perso_mortel = 'O' then
-				-- Gestion de la perte des objets (1 == mort définitive)
-				v_corps := tue_perso_perd_objets(v_cible, 1);
-				-- On indique que le perso est Mort (il sera désactivé à la prochaine activation de DLT)
-				update perso set perso_mortel = 'M' where perso_cod = v_cible;
+			  -- seulement si on n'est pas dans le cas d'une mort grave!!
+        if v_gravité = 0 then
+          -- Gestion de la perte des objets (1 == mort définitive)
+          v_corps := tue_perso_perd_objets(v_cible, 1);
+          -- On indique que le perso est Mort (il sera désactivé à la prochaine activation de DLT)
+          update perso set perso_mortel = 'M' where perso_cod = v_cible;
+        end if;
 			else
 				-- gravité nulle on applique la perte de matos
 				if v_gravité = 0 then
