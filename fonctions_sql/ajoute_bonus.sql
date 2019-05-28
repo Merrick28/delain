@@ -41,6 +41,13 @@ begin
   insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_nb_tours, bonus_valeur)
   values (v_perso,         v_type,            v_duree,        v_valeur);
 
+  -- 2019-05-28 - Marlyza - Pour le Jus de Chronomèetre on applique immédiatement
+  if v_type='JDC' then
+    update perso
+      set perso_dlt = NOW()::timestamp + (to_char(v_valeur,'999999') || ' minutes')::interval
+      where perso_cod = v_perso ;
+  end if;
+
   return v_retour;
 end;$_$;
 

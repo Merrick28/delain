@@ -424,6 +424,139 @@ class aquete_action
         return true;
     }
 
+
+    //==================================================================================================================
+    /**
+     * Le joeuur reçoit un bonus/malus =>  '[1:valeur|1%1],[2:bonus|0%0]'
+     * Nota: Etape automatiquement réussi
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function recevoir_bonus(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                    // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'bonus', 0)) return false ;       // Problème lecture des paramètres
+
+        shuffle($p2);                                       // ordre aléatoire pour les objets
+
+        $nbdon = $p1->aqelem_param_num_1 ;
+        $nbbonus = count ($p2) ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbdon <= 0) return true;       // etape bizarre !! on ne donne aucun bonus/malus
+
+        // Préparation de la liste des bonus/malus donner en fonction du nombre demandé
+        $liste_bonus = array() ;
+        if ($nbdon > $nbbonus) $nbdon = $nbbonus;
+        // On donne les bonus dans la limite demandé (aléatoirement)
+        for ($i=0; $i<$nbdon; $i++) $liste_bonus[$i] = clone $p2[$i];
+
+        // le sbonus sont appliqué directment
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array()); // on fait le menage pour le recréer
+        $param_ordre = 0 ;
+        foreach ($liste_bonus as $k => $elem)
+        {
+
+            // instancier l'objet générique
+            $req = "select ajoute_bonus(:perso_cod, tbonus_libc, :duree, :valeur) from bonus_type where tbonus_cod = :tbonus_cod ;  ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":tbonus_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod , ":duree" =>  $elem->aqelem_param_num_2, ":valeur" =>  $elem->aqelem_param_num_1), $stmt);
+            if ($result = $stmt->fetch())
+            {
+                $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                $param_ordre ++ ;
+                $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+            }
+        }
+
+        return true;
+    }
+
+
+    //==================================================================================================================
+    /**
+     * Le joeuur reçoit un objet =>  '[1:valeur|1%1],[2:objet_generique|0%0]'
+     * Nota: Etape automatiquement réussi
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function recevoir_instant_objet(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;                              // Problème lecture des paramètres
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'objet_generique', 0)) return false ;       // Problème lecture des paramètres
+
+        shuffle($p2);                                       // ordre aléatoire pour les objets
+
+        $nbobj = $p1->aqelem_param_num_1 ;
+        $nbgenerique = count ($p2) ;
+
+        // Vérification sur le nombre d'objet
+        if ($nbobj <= 0) return true;       // etape bizarre !! on ne donne aucun objet
+
+        // Préparation de la liste des objets donner en fonction du nombre de générique et du nombre d'objet à donner
+        $liste_objet = array() ;
+        if ($nbobj <= $nbgenerique)
+        {
+            // On donne les objets dans la limite demandé (aléatoirement)
+            for ($i=0; $i<$nbobj; $i++) $liste_objet[$i] = clone $p2[$i];
+        }
+        else
+        {
+            for ($i=0; $i<$nbgenerique; $i++) $liste_objet[$i] = clone $p2[$i];        // Chaque objet au moins 1x
+            for ($i=$nbgenerique; $i<$nbobj; $i++)
+            {
+                $liste_objet[$i] = clone $p2[rand(0,($nbgenerique-1))];                    // Le reste est aléatoire
+            }
+        }
+
+
+        // on fait l'échange, on génère les objets à partir du générique (la liste contient tout ce qui doit-être donné)
+        // et ils sont directement mis dans l'inventaire du joueur
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array()); // on fait le menage pour le recréer
+        $param_ordre = 0 ;
+        foreach ($liste_objet as $k => $elem)
+        {
+
+            // instancier l'objet générique
+            $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+
+            if ($result = $stmt->fetch())
+            {
+                if (1*$result["obj_cod"]>0)
+                {
+                    $objet = new objets();
+                    $objet->charge(1*$result["obj_cod"]);
+
+                    $texte_evt = '[attaquant] a reçu un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                    $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array(  ":levt_perso_cod1" => $aqperso->aqperso_perso_cod ,
+                        ":texte_evt"=> $texte_evt,
+                        ":levt_attaquant" => $aqperso->aqperso_perso_cod ,
+                        ":levt_cible" => $aqperso->aqperso_perso_cod ,
+                        ":levt_parametres" =>"[obj_cod]=".$objet->obj_cod ), $stmt);
+                    // Maintenant que l'objet générique a été instancié, on remplace par un objet réel!
+                    $elem->aqelem_type = 'objet';
+                    $elem->aqelem_misc_cod =  $objet->obj_cod ;
+                    $elem->aqelem_param_ordre =  $param_ordre ;         // On ordone correctement !
+                    $param_ordre ++ ;
+                    $elem->stocke(true);                                // sauvegarde du clone forcément du type objet (instancié)
+                }
+            }
+        }
+
+        return true;
+    }
+
     //==================================================================================================================
     /**
     * On verifie si le perso est sur la case du donateur =>  '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:objet_generique|0%0]'

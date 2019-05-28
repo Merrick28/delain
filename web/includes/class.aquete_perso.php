@@ -628,6 +628,7 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+
                 case "#RECEVOIR #PX":
                     // On distribution PO et PX
                     $this->action->recevoir_po_px($this);
@@ -638,6 +639,17 @@ class aquete_perso
                     // Attribution d'un titre
                     $this->action->recevoir_titre($this);
                     $status_etape = 1;      // 1 => ok etape suivante (même si l'attribution c'est mal déroulée)
+                    break;
+
+                case "#RECEVOIR #BONUS":
+                    $this->action->recevoir_bonus($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (même si la distribution c'est mal déroulée)
+                    break;
+
+                case "#RECEVOIR #INSTANT #OBJET":
+                    // contrairement à "#RECEVOIR #OBJET", la distriubution est immédiate, l'étape est toujours un succes
+                    $this->action->recevoir_instant_objet($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (même si la distribution c'est mal déroulée)
                     break;
 
                 case "#RECEVOIR #OBJET":

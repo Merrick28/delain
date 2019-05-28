@@ -140,7 +140,7 @@ class aquete_etape_modele
                 // il y a des paramètres facultatifs
                 $t = explode('|', $p);
                 $type = $t[0];
-                if (strpos($t[1], '%') !== false)
+                if (sizeof($t)>1 && strpos($t[1], '%') !== false)
                 {
                     $tn = explode('%', $t[1]);
                     $n = $tn[0];
@@ -152,7 +152,7 @@ class aquete_etape_modele
                 }
 
                 // traitement de l'extension sous la forme {%s1~%s2},{%s3~%s4}, etc... retourne un tablaeu (s1 => s2, s3 => s4, etc....)
-                if (strpos($t[2],'~') !== false)
+                if (sizeof($t)>2 && strpos($t[2],'~') !== false)
                 {
                     $e = explode("},{", $t[2] );
                     foreach ($e as $ke => $pe)
