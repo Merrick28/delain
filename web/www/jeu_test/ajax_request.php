@@ -403,6 +403,22 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
 
+        case 'bonus_type':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from bonus_type where tonbus_libelle ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select tbonus_cod cod, tonbus_libelle nom from bonus_type where tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
         case 'sort':
             $words = explode(" ", $recherche);
             $search_string = array();
