@@ -551,6 +551,7 @@ end if;
 			partage_fait := 0;
 		end if;
 
+  /*
 		select into nom_perso_px, n1, px1, type_attaquant
 			perso_nom, perso_niveau, perso_px, perso_type_perso
 		from perso where perso_cod = ligne_px.joueur;
@@ -564,6 +565,14 @@ end if;
 		if n2_r > n2
 			then n2 := n2_r;
 		end if;
+		*/
+		-- 2019-05-31 - Marlyza - On prend toujours le niveau relatif pour le calcul, sinon les familiers réssucités qui ont plusieurs niveaux de retard ne gagnent plus rien.
+    select into nom_perso_px, n1, px1, type_attaquant
+      perso_nom, niveau_relatif(perso_px), perso_px, perso_type_perso
+		  from perso where perso_cod = ligne_px.joueur;
+
+		select into n2, px2  niveau_relatif(perso_px), perso_px from perso where perso_cod = v_cible;
+
 		if type_cible = 1 then
 			px_theo := 20 + 3*(n2 - n1) + n2;
 		else
