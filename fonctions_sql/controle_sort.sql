@@ -166,42 +166,42 @@ cout_pa := resultat;
         if num_sort = 150 then
             if v_voie_magique != (1) then
                 code_retour := 'Erreur vous n''etes pas guérisseur !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- maitre des arcanes
         if num_sort = 146 then
             if v_voie_magique != 2 then
                 code_retour := 'Erreur vous n''etes pas Maître des runes !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- enchanteur runique
         if num_sort in(138,167) then
             if v_voie_magique != 5 then
                 code_retour := 'Erreur vous n''etes pas enchanteur runique !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- Mage de guerre
-        if num_sort = 152 then
+        if num_sort in (152,176) then
             if v_voie_magique != 4 then
                 code_retour := 'Erreur vous n''etes pas mage de guerre !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
          -- Mage de bataille
         if num_sort in(153,168) then
             if v_voie_magique != 6 then
                 code_retour := 'Erreur vous n''etes pas mage de bataille !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
          -- Sorcier
         if num_sort in(149,166)then
             if v_voie_magique != 3 then
                 code_retour := 'Erreur vous n''etes pas sorcier !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
  end if;
