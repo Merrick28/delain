@@ -110,7 +110,9 @@ begin
 		and perobj_obj_cod = obj_cod
 		and obj_gobj_cod = gobj_cod
 		and gobj_tobj_cod = 2
-		and perobj_equipe = 'O';
+		and perobj_equipe = 'O'
+		and (obj_desequipable = 'O' or v_type_perso=2)
+		and (gobj_deposable ='O' or v_type_perso=2);
 
 	if not found then
     code_retour := code_retour||'<p>Malgré la réussite de votre invocation, rien ne se passe car la cible ne porte pas d''armure';

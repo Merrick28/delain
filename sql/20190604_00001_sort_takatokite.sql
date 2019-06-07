@@ -3,7 +3,7 @@ INSERT INTO public.sorts (sort_combinaison, sort_nom, sort_fonction, sort_cout,
 		sort_niveau, sort_soi_meme, sort_monstre, sort_joueur, sort_soutien,
 		sort_bloquable, sort_case, sort_temps_recharge)
 VALUES ('121243', 'Takatoukité', 'magie_takatokite', 12,
-		51, 0, 'Ce sort retire l''armure physique de la cible.', 'O',
+		51, 1, 'Ce sort retire l''armure équipée de la cible. Si l’armure est normale, elle tombe au sol pour les monstres ou retourne dans l''inventaire pour les aventuriers. Si il s''agit de l’armure naturelle (carapace, ...) d’un monstre, celle-ci est détruite. Si la cible ne porte pas d''armure équipée, rien ne se passe mais les PA sont perdus.', 'O',
 		6, 'O', 'O', 'O', 'N',
 		'O', 'N', 0);
 
