@@ -78,11 +78,10 @@ if ($erreur == 0)
 			<td class=\"soustitre2\"><p>Niveau maximum</td>
 			</tr>");
             $req = "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
-            $req = $req . "(select count(parene_perso_cod) from perso_arene join perso on perso_cod=parene_perso_cod and perso_actif='O' ";
-            $req = $req . " where parene_etage_numero = etage_numero) as joueur,";
-            $req = $req . "(select sum(perso_niveau) from perso, perso_arene ";
-            $req = $req . "where parene_etage_numero = etage_numero ";
-            $req = $req . "and parene_perso_cod = perso_cod and perso_actif='O') as jnv, ";
+            $req = $req . "(select count(*) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1 ";
+            $req = $req . "where pos_etage = etage_numero) as joueur, ";
+            $req = $req . "(select sum(perso_niveau) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1 ";
+            $req = $req . "where pos_etage = etage_numero) as jnv, ";
             $req = $req . "filtre_entree_arene.nb_entree as nb_entree_arene ";
             $req = $req . "from etage, carac_arene, ";
             $req = $req . "(select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene ";
