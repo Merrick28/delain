@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION public.nv_magie_takatokite(
     integer)
   RETURNS text AS
 $BODY$/*****************************************************************/
-/* function magie_frayeur : lance le sort malediction            */
+/* function magie_takatokite : lance le sort takatokite          */
 /* On passe en paramètres                                        */
 /*   $1 = lanceur                                                */
 /*   $2 = cible                                                  */
