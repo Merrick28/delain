@@ -113,7 +113,7 @@ begin
 
   -- SI sur toutes les cibles de la case
 	for ligne in
-		select pos_cod, perso_cod,perso_nom,perso_pv,perso_pv_max,perso_sex
+		select pos_cod, perso_cod, perso_nom, perso_pv, perso_pv_max, perso_sex
       from perso,perso_position,positions
       where ppos_perso_cod = perso_cod
 		  and ppos_pos_cod = pos_cod
@@ -123,13 +123,13 @@ begin
       and not exists (select 1 from lieu_position,lieu where lpos_pos_cod = pos_cod and lpos_lieu_cod = lieu_cod and lieu_refuge = 'O')
       and perso_actif = 'O'
       and ((v_type_perso!=2 and perso_type_perso!=2) or (v_type_perso=2 and perso_type_perso=2))
-      order by (perso_pv/perso_pv_max)
+      and perso_pv < perso_pv_max
+      order by (100*perso_pv/perso_pv_max)
       limit nb_cible
 
   loop
 
-      -- swithc: sur la case ciblé => SI sinon Merchu
-
+      -- Si on est sur la case ciblé alors faire un SI sinon Merchu
       if ligne.pos_cod = v_pos then
 
         -- ------------------------------- Cas d'un SI
@@ -144,8 +144,9 @@ begin
 
       end if;
 
-        -- on regarde si la personne est malade
-      temp_bonus := greatest(0, temp_bonus - valeur_bonus(ligne.perso_cod, 'MAL'));
+      -- on regarde si la personne est malade
+      -- comme pour mercu de masse on ignore le malus de maladie
+      -- temp_bonus := greatest(0, temp_bonus - valeur_bonus(ligne.perso_cod, 'MAL'));
 
       -- ------------------------------- on passe à l'augmentation de pvies
       nouveau_pv := ligne.perso_pv + temp_bonus;

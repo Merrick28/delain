@@ -30,7 +30,7 @@ declare
 	cout_pa integer;			-- cout en PA du sort
 	distance_sort integer;	-- distance maxi pour sort
 	lanceur_pa integer;		-- PA du lanceur
-        v_voie_magique integer;  -- voie magique du lanceur
+  v_voie_magique integer;  -- voie magique du lanceur
 	nb_sort integer;			-- nombre de fois ou la lanceur à lancé ce sort dans le tour
 	v_pnbs_cod integer;		-- pnbs_cod pour perso_nb_tours
 	pos_lanceur integer;		-- position du lanceur
