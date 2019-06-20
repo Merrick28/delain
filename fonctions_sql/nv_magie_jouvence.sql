@@ -145,8 +145,7 @@ begin
       end if;
 
       -- on regarde si la personne est malade
-      -- comme pour mercu de masse on ignore le malus de maladie
-      -- temp_bonus := greatest(0, temp_bonus - valeur_bonus(ligne.perso_cod, 'MAL'));
+      temp_bonus := greatest(0, temp_bonus - valeur_bonus(ligne.perso_cod, 'MAL'));
 
       -- ------------------------------- on passe à l'augmentation de pvies
       nouveau_pv := ligne.perso_pv + temp_bonus;
@@ -158,13 +157,13 @@ begin
       amel_pv := nouveau_pv - ligne.perso_pv ;
 
       if amel_pv > 0 then
-        insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (5,lanceur,ligne.perso_cod,5*ln(amel_pv));
-
-        -- if (ligne.pos_cod = v_pos) then
-        --   insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (5,lanceur,ligne.perso_cod,5*ln(amel_pv));
-        -- else
-		    --   insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (5,lanceur,ligne.perso_cod,1.5*ln(ligne.perso_pv_max)/nb_cible);
-        -- end if;
+        if (ligne.pos_cod = v_pos) then
+          -- ------------------------------- Cas d'un SI
+          insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (3,lanceur,ligne.perso_cod,5*ln(amel_pv));
+        else
+          -- ------------------------------- Cas d'un Mercu
+          insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (3,lanceur,ligne.perso_cod,1);
+        end if;
       end if;
 
       code_retour := code_retour||'<br>'||ligne.perso_nom||' a regagné '||trim(to_char(amel_pv,'9999'))||' points de vie.<br>';
