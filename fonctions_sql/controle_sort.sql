@@ -30,7 +30,7 @@ declare
 	cout_pa integer;			-- cout en PA du sort
 	distance_sort integer;	-- distance maxi pour sort
 	lanceur_pa integer;		-- PA du lanceur
-        v_voie_magique integer;  -- voie magique du lanceur
+  v_voie_magique integer;  -- voie magique du lanceur
 	nb_sort integer;			-- nombre de fois ou la lanceur à lancé ce sort dans le tour
 	v_pnbs_cod integer;		-- pnbs_cod pour perso_nb_tours
 	pos_lanceur integer;		-- position du lanceur
@@ -163,7 +163,7 @@ cout_pa := resultat;
     -- les maitres du savoir pouvant lancer tous les sorts, on les exclues du test sauf pour le sort de familier sorcier qui reste uniquement pour les sorciers
   if v_voie_magique != 7 then
         -- guerisseur
-        if num_sort = 150 then
+        if num_sort in (150, 177) then
             if v_voie_magique != (1) then
                 code_retour := 'Erreur vous n''etes pas guérisseur !';
 		            return code_retour;

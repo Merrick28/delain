@@ -30,6 +30,7 @@ declare
 	cout_pa integer;			-- cout en PA du sort
 	distance_sort integer;	-- distance maxi pour sort
 	lanceur_pa integer;		-- PA du lanceur
+  v_voie_magique integer;  -- voie magique du lanceur
 	nb_sort integer;			-- nombre de fois ou la lanceur à lancé ce sort dans le tour
 	v_pnbs_cod integer;		-- pnbs_cod pour perso_nb_tours
 	pos_lanceur integer;		-- position du lanceur
@@ -165,6 +166,21 @@ cout_pa := resultat;
 		code_retour := 'Erreur sur le type de lancer !';
 		return code_retour;
 	end if;
+
+  -- on verifie les voies magiques (juste pour les sorts qui cible unce case
+  select into v_voie_magique perso_voie_magique from perso
+    where perso_cod = lanceur;
+    -- les maitres du savoir pouvant lancer tous les sorts, on les exclues
+  if v_voie_magique != 7 then
+        -- guerisseur
+        if num_sort in (177) then
+            if v_voie_magique != (1) then
+                code_retour := 'Erreur vous n''etes pas guérisseur !';
+		            return code_retour;
+            end if;
+        end if;
+  end if;
+
 -- on vérifie les distances
 	select into distance_sort
 		sort_distance

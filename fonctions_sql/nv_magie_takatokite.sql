@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION public.nv_magie_takatokite(
     integer)
   RETURNS text AS
 $BODY$/*****************************************************************/
-/* function magie_frayeur : lance le sort malediction            */
+/* function magie_takatokite : lance le sort takatokite          */
 /* On passe en paramètres                                        */
 /*   $1 = lanceur                                                */
 /*   $2 = cible                                                  */
@@ -49,9 +49,7 @@ declare
 	type_lancer alias for $3;	-- type de lancer (memo ou rune)
 	cout_pa integer;				-- Cout en PA du sort
 	px_gagne text;				-- PX gagnes
-	v_pa_attaque integer;		-- Pa modifiés
-	v_chance_toucher integer;	-- chance de toucher
-	v_malus_degats integer;		-- malus aux dégats
+	v_malus_armure integer;		-- malus d'armure
 -------------------------------------------------------------
 -- variables de contrôle
 -------------------------------------------------------------
@@ -142,6 +140,15 @@ begin
 			code_retour := code_retour||'<p>L''armure de votre adversaire est tombée au sol !<br>';
 		end if;
 	end if;
+
+	-- ajouter un malus d'armure: Fragilité
+	-- Pour la fragilité: Valeur inté/5 pour MdG, max 6, int/8 pour MdS, max 6 (2 DLT)
+  select into v_malus_armure case when perso_voie_magique=4 then ROUND(LEAST(6,perso_int/5)) else ROUND(LEAST(6,perso_int/8)) end from perso where perso_cod = lanceur;
+  if v_malus_armure>0 then
+    if ajoute_bonus(cible, 'FRA', 2, v_malus_armure) then
+      insert into action (act_tact_cod,act_perso1,act_perso2,act_donnee) values (2,lanceur,cible,8*ln(v_pv_cible));
+    end if;
+  end if;
 
 	code_retour := code_retour||'<br>Vous gagnez '||px_gagne||' PX pour cette action.<br>';
 	texte_evt := '[attaquant] a lancé '||nom_sort||' sur [cible] ';
