@@ -80,9 +80,26 @@ function affiche_perso($perso_cod)
         }
     }
 
-
     $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
     $impalpable       = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
+
+    $ligne_malus="" ;
+    $list_malus = $perso->perso_malus();
+    if (count($list_malus)>0)
+    {
+        foreach ($list_malus as $malus)
+        {
+            $img = $malus["tbonus_libc"] ;
+            $bonus_valeur = $malus["bonus_valeur"] ;
+            $bonus_libelle = $malus["tonbus_libelle"] ;
+            $bonus_nb_tours = $malus["bonus_nb_tours"] ;
+            if (is_file(__DIR__ . "/../images/interface/bonus/{$img}.png"))
+            {
+                $ligne_malus.='<span title="'.$bonus_libelle.': '.$bonus_valeur.' sur '.$bonus_nb_tours.' tour(s)"><img class="img-malus" src="/images/interface/bonus/'.$img.'.png"></span><span class="badge-malus">'.$bonus_valeur.'</span>';
+            }
+        }
+    }
+
 
     $template     = $twig->load('_tab_switch_perso.twig');
     $options_twig = array(
@@ -100,7 +117,8 @@ function affiche_perso($perso_cod)
         'BARRE_ENERGIE' => $barre_energie,
         'DIEU_PERSO'    => $dieu_perso,
         'BARRE_DIVINE'  => $barre_divine,
-        'BARRE_XP'      => $barre_xp
+        'BARRE_XP'      => $barre_xp,
+        'LIGNE_MALUS'   => $ligne_malus
 
 
     );

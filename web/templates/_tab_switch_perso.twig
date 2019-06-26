@@ -27,6 +27,15 @@
             {{ MYGUILDE }}
         </td>
     </tr>
+
+    {% if LIGNE_MALUS != "" %}
+        <tr>
+            <td colspan="2" class="soustitre2" height="40px;">
+                <span style="vertical-align: top;">Malus:&nbsp;&nbsp;&nbsp;</span>{{ LIGNE_MALUS|raw }}
+            </td>
+        </tr>
+    {% endif %}
+
     <tr>
         <td valign="top">
             <a class="centrer" href="#"
@@ -128,4 +137,7 @@
             </table>
         </td>
     </tr>
+
+
+
 </table>

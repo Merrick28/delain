@@ -2690,6 +2690,27 @@ class perso
     }
 
 
+    function perso_malus()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select tbonus_libc, tonbus_libelle, bonus_valeur, bonus_nb_tours 
+                   from bonus
+                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                   where bonus_perso_cod = ?
+                        and
+                            (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                            or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                    order by bonus_tbonus_libc";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array( $this->perso_cod ), $stmt);
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return array();
+        }
+        return $result;
+    }
+
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

@@ -776,3 +776,16 @@ div#colonne1:hover   {
 	border-style: inset;
 	border-width: 1px;
 }
+
+/* Affichage des malus dans la page de switch*/
+.badge-malus {
+	color: white;
+	position: relative;
+	font-size: 8px;
+	top: 9px;
+	right: 20px;
+}
+
+.img-malus {
+	 margin-left: -8px;
+}
