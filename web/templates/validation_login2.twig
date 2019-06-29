@@ -1,7 +1,7 @@
 {% extends 'index.twig' %}
 
 {% block contenu %}
-    <link rel="stylesheet" type="text/css" href="{{ HTTPS }}{{ URL }}style.css?v20190629">
+    <link rel="stylesheet" type="text/css" href="{{ HTTPS }}{{ URL }}style.css?v{{ __VERSION }}">
 
     {% if ISAUTH %}
         {% if TYPE_PERSO == 'joueur' %}
