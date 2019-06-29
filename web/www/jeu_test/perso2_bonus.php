@@ -55,7 +55,7 @@ $contenu_page .= 'Bonus aux dégâts en corps-à-corps : <strong>' . $db->f("mel
 <div class="titre">Bonus temporaires</div>
 <table><tr valign="top"><td style="padding:15px;">';
 
-$req_bonus = "select tonbus_libelle, bonus_valeur, bonus_nb_tours ;
+$req_bonus = "select tbonus_libc, tonbus_libelle, bonus_valeur, bonus_nb_tours ;
 	from bonus
 	inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 	where bonus_perso_cod = $perso_cod 
@@ -64,7 +64,7 @@ $req_bonus = "select tonbus_libelle, bonus_valeur, bonus_nb_tours ;
 			or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
 	order by bonus_tbonus_libc";
 
-$req_malus = "select tonbus_libelle, bonus_valeur, bonus_nb_tours ;
+$req_malus = "select tbonus_libc, tonbus_libelle, bonus_valeur, bonus_nb_tours ;
 	from bonus
 	inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 	where bonus_perso_cod = $perso_cod 
@@ -118,14 +118,21 @@ else
 	<td class="soustitre2"><strong>Bonus</strong></td>
 	<td class="soustitre2"><strong>Valeur</strong></td>
 	<td class="soustitre2"><strong>Échéance</strong></td>
+	<td class="soustitre2"><strong>Picto.</strong></td>
 	</tr>';
 
 	while($db->next_record())
 	{
+        $img = "" ;
+        if (is_file(__DIR__ . "/../images/interface/bonus/".$db->f('tbonus_libc').".png"))
+        {
+            $img = '<img src="/../images/interface/bonus/'.$db->f('tbonus_libc').'.png">' ;
+        }
 		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
-		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td></tr>';
+		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td>
+		<td style="text-align:center">'.$img.'</td></tr>';
 	}
 	foreach ($bonus_carac as $carac => $bonus)
 	{
@@ -160,14 +167,22 @@ else
 	<td class="soustitre2"><strong>Malus</strong></td>
 	<td class="soustitre2"><strong>Valeur</strong></td>
 	<td class="soustitre2"><strong>Échéance</strong></td>
+	<td class="soustitre2"><strong>Picto.</strong></td>
 	</tr>';
 
 	while($db->next_record())
 	{
+	    $img = "" ;
+        if (is_file(__DIR__ . "/../images/interface/bonus/".$db->f('tbonus_libc').".png"))
+        {
+            $img = '<img src="/../images/interface/bonus/'.$db->f('tbonus_libc').'.png">' ;
+        }
+
 		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
-		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td></tr>';
+		<td><div style="text-align:center;">' . $db->f("bonus_nb_tours") . ' tour(s)</div></td>
+		<td style="text-align:center">'.$img.'</td></tr>';
 	}
 	foreach ($malus_carac as $carac => $malus)
 	{
