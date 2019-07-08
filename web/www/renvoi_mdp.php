@@ -22,10 +22,12 @@ use PHPMailer\PHPMailer\Exception;
 ?>
 <div class="bordiv">
     <?php
-    if (!isset($methode)) {
+    if (!isset($methode))
+    {
         $methode = "debut";
     }
-    switch ($methode) {
+    switch ($methode)
+    {
         case "debut":
             echo "<p class=\"titre\">Mot de passe perdu ?</p>";
             echo "<p>Pour vous le faire renvoyer, vous pouvez :<br>";
@@ -45,20 +47,25 @@ use PHPMailer\PHPMailer\Exception;
             break;
         case "fin":
             $compte = new compte;
-            $ok = true;
-            if ($type == "nom") {
-                if (!$result = $compte->getBy_compt_nom($nom)) {
+            $ok     = true;
+            if ($type == "nom")
+            {
+                if (!$result = $compte->getBy_compt_nom($nom))
+                {
                     echo "<p>Aucun compte trouvé à ce nom ";
                     $ok = false;
                 }
             }
-            if ($type == "mail") {
-                if (!$result = $compte->getBy_compt_mail(strtolower($mail))) {
+            if ($type == "mail")
+            {
+                if (!$result = $compte->getBy_compt_mail(strtolower($mail)))
+                {
                     echo "<p>Aucun compte trouvé à ce nom ";
                     $ok = false;
                 }
             }
-            if ($ok) {
+            if ($ok)
+            {
 
                 // on hydrate avec le bon compte
                 $compte->charge($result[0]->compt_cod);
@@ -74,7 +81,7 @@ use PHPMailer\PHPMailer\Exception;
                 $options_twig = array(
                     'COMPTE' => $compte
                 );
-                $corps_mail = $template->render(array_merge($options_twig_defaut, $options_twig));
+                $corps_mail   = $template->render(array_merge($options_twig_defaut, $options_twig));
                 //echo $corps_mail;
                 // on charge la classe mail
 
@@ -83,23 +90,31 @@ use PHPMailer\PHPMailer\Exception;
                 // smtp
                 $mail->Host = SMTP_HOST;
                 $mail->Port = SMTP_PORT;
-                if (!empty(SMTP_USER)) {
-                    $mail->Username = SMTP_USER;
-                    $mail->Password = SMTP_PASSWORD;
+                if (defined('SMTP_USER'))
+                {
+                    if (!empty(SMTP_USER))
+                    {
+                        $mail->Username = SMTP_USER;
+                        $mail->Password = SMTP_PASSWORD;
+                    }
+
                 }
 
+
                 $mail->IsHTML(true);
-                $mail->CharSet = 'utf-8';
-                $mail->From = 'noreply@jdr-delain.net';
+                $mail->CharSet  = 'utf-8';
+                $mail->From     = 'noreply@jdr-delain.net';
                 $mail->FromName = 'Le robot des souterrains';
                 $mail->AddAddress($compte->compt_mail);
                 $mail->Subject = 'Changement de mot de passe';
-                $mail->Body = $corps_mail;
+                $mail->Body    = $corps_mail;
 
-                try {
+                try
+                {
                     $mail->Send();
                     echo "Un mail vous a été envoyé avec les instructions pour générer un nouveau mot de passe";
-                } catch (Exception $e) {
+                } catch (Exception $e)
+                {
                     echo "Erreur sur l'envoi du mail " . $mail->ErrorInfo;
 
                 }
