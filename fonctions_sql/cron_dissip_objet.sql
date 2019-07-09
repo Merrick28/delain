@@ -19,14 +19,15 @@ begin
 -- recuperation du coefficient d'absorbtion des vents.
 select into v_coeff to_number( getparm_t(142), '9999999.99');
 
-
+/*
+-- mettre en pause le temps de faire un état des lieux!
 for obj in select obj_cod, pobj_pos_cod, obj_poids from objets
   join objet_position on pobj_obj_cod=obj_cod
   join objet_generique on gobj_cod=obj_gobj_cod
   join type_objet on tobj_cod=gobj_tobj_cod
   where pobj_dlache<now() - (tobj_degradation::text || ' DAYS')::interval AND tobj_degradation>0
   order by pobj_dlache
-  limit 1
+  limit 1000
 
   loop
 
@@ -45,6 +46,6 @@ for obj in select obj_cod, pobj_pos_cod, obj_poids from objets
 
 
   end loop;
-
+*/
 end;$_$;
 ALTER FUNCTION public.cron_dissip_objet()  OWNER TO delain;
