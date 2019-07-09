@@ -30,9 +30,13 @@ if ($erreur == 0)
     if (!$obj = $perso->get_arme_equipee())
     {
         $obj_nom = 'aucune';
+        $etat_arme_etat = "";
+        $etat_arme_couleur = "";
     } else
     {
         $obj_nom = $obj->obj_nom;
+        $etat_arme_etat = $obj->get_etat_objet("état" ) ;
+        $etat_arme_couleur = $obj->get_etat_objet("couleur" ) ;
     }
 
     $distance_vue = $perso->distance_vue();
@@ -70,7 +74,9 @@ $options_twig = array(
     'TYPE_PERSO'       => $perso_type_perso,
     'TAB_BLESSURES'    => $tab_blessures,
     'PORTEE'           => $portee,
-    'COTERIE'          => $perso->coterie()
+    'COTERIE'          => $perso->coterie(),
+    'ARME_ETAT'        => $etat_arme_etat,
+    'ARME_COULEUR'     => $etat_arme_couleur
 );
 echo $template->render(array_merge($var_twig_defaut, $options_twig));
 

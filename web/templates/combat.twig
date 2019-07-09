@@ -11,7 +11,7 @@
     {% if (not IS_INTANGIBLE ) and (not IS_REFUGE) %}
         <form name="attaque" method="post" action="action.php">
         <input type="hidden" name="methode" value="attaque2">
-        Arme utilisée : <strong>{{ ARME_UTILISEE }}</strong><br />
+        <span {% if ARME_COULEUR!="" %}class="soustitre2_{{ ARME_COULEUR }}" style="color:white;"{% endif %}>Arme utilisée {% if ARME_ETAT!="" %}<em>({{ ARME_ETAT }})</em>{% endif %}</span>: <strong>{{ ARME_UTILISEE }}</strong><br />
         Choisissez votre méthode de combat :
         <select name="type_at">
             {{ COMP_COMBAT|raw }}
