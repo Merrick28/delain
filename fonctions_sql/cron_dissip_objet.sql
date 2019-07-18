@@ -27,7 +27,7 @@ for obj in select obj_cod, pobj_pos_cod, obj_poids from objets
   join type_objet on tobj_cod=gobj_tobj_cod
   where pobj_dlache<now() - (tobj_degradation::text || ' DAYS')::interval AND tobj_degradation>0
   order by pobj_dlache
-  limit 500
+  limit 1000
 
   loop
 
