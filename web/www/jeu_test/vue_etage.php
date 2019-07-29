@@ -1,7 +1,5 @@
 <?php
 
-if (!@include "../includes/img_pack.php")
-    include "includes/img_pack.php";
 include "verif_connexion.php";
 ?>
 <!DOCTYPE html>

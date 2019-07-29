@@ -3,7 +3,6 @@
 	<?php 		/* Les includes */
 		include "verif_connexion.php";
 		include "../includes/fonctions.php";
-		include "../includes/img_pack.php";
 		
 		define(G_IMAGES,"./images/");
 		
