@@ -27,7 +27,7 @@ if (!isset($_REQUEST['start_news']))
 }
 else
 {
-    $start_news = $_REQUEST['start_news'];
+    $start_news = (int)$_REQUEST['start_news'];
 }
 if ($start_news < 0)
 {
