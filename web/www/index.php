@@ -36,7 +36,7 @@ if ($start_news < 0)
 // si tentative de hack, on affiche la page par défaut
 // ça évite les logs, et ça permet d'afficher quand
 // même de la pub :-)
-if(!is_int($start_news))
+if ( (int) $start_news !== $start_news )
 {
     $start_news = 0;
 }
