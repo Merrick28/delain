@@ -1,16 +1,21 @@
 <?php
 include "blocks/_header_page_jeu.php";
+
+$compte = new compte;
+
 $adresse = $_POST['mail1'];
 $from = $param->getparm(16);
 $contenu_page = '<p class="titre">Changement d’adresse électronique</p>
 <p style="text-align:center;"><strong>Changement effectué !</strong></p>';
 // changment d'adresse
-$req = "update compte set compt_mail = '" . $_POST['mail1'] . "' where compt_cod = $compt_cod ";
-$db->query($req);
+$compte->compte_mail = $_POST['mail1'];
+
 // génération de password
 $n_pass = rand(100000, 999999);
-$req = "update compte set compt_password = '$n_pass' where compt_cod = $compt_cod ";
-$db->query($req);
+$compte->charge($compte_cod);
+$compte->compt_passwd_hash = crypt($n_pass);
+$compte->stocke();
+
 // génération du mail
 $texte_mail = "Bonjour,\n";
 $texte_mail = $texte_mail . "Vous venez de modifier votre adresse mail pour les souterrains de Delain.\r\n";
