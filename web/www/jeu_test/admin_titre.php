@@ -530,7 +530,32 @@ if ($erreur == 0)
                                 $log .= "\nDon de {$don_bzf} brouzoufs au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
 
-                            // Ensuite le don d'objets -----------------------------
+                            // Ensuite du don de PX -----------------------------
+                            if (1*(int)$_REQUEST["don-px-max"]==0)
+                            {
+                                $don_px = 1*(int)$_REQUEST["don-px-min"];
+                            }
+                            else
+                            {
+                                $don_px = random_int(1*(int)$_REQUEST["don-px-min"], 1*(int)$_REQUEST["don-px-max"]);
+                            }
+
+                            if ($don_px>0)
+                            {
+                                $req = "update perso set perso_px = perso_px + :don_px where perso_cod = :perso_cod ";
+                                $stmt = $pdo->prepare($req);
+                                $stmt = $pdo->execute(array(":don_px"=>$don_px, ":perso_cod"=>$mod_perso_cod),$stmt);
+
+                                $texte_evt = "[cible] a reçu {$don_px} PX." ;
+                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                         values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+                                $stmt   = $pdo->prepare($req);
+                                $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
+
+                                $log .= "\nDon de {$don_px} PX au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
+                            }
+
+                            // Enfin le don d'objets -----------------------------
 
                             if ($nb_obj>0)
                             {
@@ -765,6 +790,10 @@ if ($erreur == 0)
                 minimum : <input name="don-bzf-min" id="don-bz-min" type="text" size="5" value="">&nbsp;
                 et au maximum : <input name="don-bzf-max" id="don-bz-max" type="text" size="5" value="">&nbsp; <br><br>';
 
+    echo 'Donner des PX au  
+                minimum : <input name="don-px-min" id="don-bz-min" type="text" size="5" value="">&nbsp;
+                et au maximum : <input name="don-px-max" id="don-bz-max" type="text" size="5" value="">&nbsp; <br><br>';
+
     echo 'Donner un nombre d\'objets au  
                 minimum : <input name="don-obj-min" id="don-obj-min" type="text" size="5" value="">&nbsp;
                 et au maximum : <input name="don-obj-max" id="don-obj-max" type="text" size="5" value="">&nbsp; parmi:<br>';
@@ -795,8 +824,8 @@ if ($erreur == 0)
     echo '<input class="test" type="submit" value="Distribuer les récompenses" onclick="$(\'#action\').val(\'objets-et-bzf\')">';
     echo '<br><br><strong>Les récompenses seront distribuées pour chaque persos de la liste en respectant les critères de minima/maxima et % d\'obtention</strong><br>
             <em style="font-size: x-small">Nota: <br>
-            * si le minimum et le maximum de bzf ne sont pas pas renseignés aucun bzf ne sera distribué.<br>
-            * si le maximum de bzf n\'est pas renseigné, le minimum sera distribué.<br>
+            * si le minimum et le maximum de bzf (PX) ne sont pas pas renseignés aucun bzf (PX) ne sera distribué.<br>
+            * si le maximum de bzf (PX) n\'est pas renseigné, le minimum sera distribué.<br>
             * si le minimum et le maximum d\'objet ne sont pas pas renseignés, la distribution suivra uniquement les critères de %.<br>
             * si le % de chance n\'est pas défini pour un objet, sont taux sera considéré à 100%.<br>
             * lors de la distribution suivant les %, si le minimum d\'objet n\'est pas atteint les objets avec le % le plus élévés seront donnés.<br>
