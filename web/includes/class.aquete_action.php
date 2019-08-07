@@ -249,7 +249,7 @@ class aquete_action
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;      // Problème lecture des paramètres
         $p3 = $element->get_aqperso_element( $aqperso, 3, 'perso');                           // Ce paramètre est facultatif
 
-        $px = min(   100, $p1->aqelem_param_num_1);        // On donne avec un max de 100PX (au cas ou celui qui a definit la quete a fait une bourde
+        $px = min(   200, $p1->aqelem_param_num_1);        // On donne avec un max de 200PX (au cas ou celui qui a definit la quete a fait une bourde
         $po = min(100000, $p2->aqelem_param_num_1);        // et max 100000 Bz
 
         $pdo = new bddpdo;
