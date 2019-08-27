@@ -221,6 +221,11 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
 
 function getTableCod(divname, table, titre, params)
 {
+    //id des elements
+    var divname_cod = $.isArray(divname) ? divname[0] : divname+"_cod" ;
+    var divname_nom = $.isArray(divname) ? divname[1] : divname+"_nom" ;
+    var divname_num_1 = $.isArray(divname) ? (divname.length>2 ? divname[2] : "") : divname+"_num_1" ;
+
     var options = "" ;
     if (table=="perso"){
         if (params=="monstre")
@@ -266,7 +271,7 @@ function getTableCod(divname, table, titre, params)
         options += 'Limiter aux objets avec sort(s) rattaché(s): <input type="checkbox" id="spop-tablecod-objet-generique-sort" onChange="getTableCod_update();"> ';
    }
 
-    $("#" + divname+"_cod").parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
+    $("#" + divname_cod).parent().prepend('<div id="spop-tablecod" class="spop-overlay">' +
                         '<input type="hidden" id="spop-tablecod-table" value="'+table+'">' +
                         '<div style="width:100%; background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">'+titre+'</div>' +
                         '<br><div id="spop-serchlist" style="width:450px; height:180px; overflow:hidden; white-space:nowrap;">Faites une recherche.</div>' +
@@ -287,9 +292,9 @@ function getTableCod(divname, table, titre, params)
         else if ( event.target.id.substr(0, 21) == "spop-tablecod-select-")
         {
             var element = $("#"+event.target.id);
-            $("#" + divname+"_cod").val (element.attr("data-spop-cod") ).trigger('change');
-            $("#" + divname+"_nom").text (element.attr("data-spop-nom") );
-            $("#" + divname+"_num_1").val (element.attr("data-spop-num1") );
+            $("#" + divname_cod).val (element.attr("data-spop-cod") ).trigger('change');
+            $("#" + divname_nom).text (element.attr("data-spop-nom") );
+            if (divname_num_1 != "") $("#" + divname_num_1).val (element.attr("data-spop-num1") );
             $(document).unbind("click");
             $('#spop-tablecod').remove();
         }
