@@ -263,14 +263,18 @@ if ($methode == "")
             $contenu_page .= "<div class=\"hr\">&nbsp;&nbsp;<strong>Journal de la quête</strong>&nbsp;&nbsp;</div><br>";
             $contenu_page .= $quete_perso->journal('O', 1, $isAdminAnimation);      // Texte avec l'historique de la quete jusqu'a l'étape en cours, montrer la dernière page en non-lu
 
-            //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
-            $contenu_page .= $quete_perso->get_texte_etape_courante();
 
             // Si la quête est finie, proposer la fermeture au joueur!
             if ($quete_perso->est_finie())
             {
                 $contenu_page .= '&nbsp;&nbsp;&nbsp;<form method="post"><input type="hidden" name="methode" value="terminer"><input type="hidden" name="quete" value="' . $aquete_cod . '"><input type="submit" class="test" value="  Terminer  "></form>';
             }
+            else
+            {
+                //** Le texte d'étape courante par exemple un choix (peut être vide si on attend un état spécifique)  **//
+                $contenu_page .= $quete_perso->get_texte_etape_courante();
+            }
+
             $contenu_page .= "<br><br>";
         }
     } else

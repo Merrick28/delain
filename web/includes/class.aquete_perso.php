@@ -611,6 +611,15 @@ class aquete_perso
                     }
                     break;
 
+                case "#ECHANGE #OBJET":
+                    // Pour échanger des objets
+                    if ( $this->action->echange_objet($this) )
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
                 case "#END #OK":
                 case "#END #KO":
                     // cette etape sert à mettre fin à la quête avec ou sans succès.
@@ -847,6 +856,10 @@ class aquete_perso
 
             case "#SAUT #CONDITION #DIALOGUE":
                 $texte_etape = $etape->get_texte_form($this);
+                break;
+
+            case "#ECHANGE #OBJET":
+                $texte_etape = $etape->get_echange_objet_form($this);
                 break;
         }
 
