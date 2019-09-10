@@ -367,7 +367,7 @@ class aquete_action
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
                     if ($result = $stmt->fetch())
-                    {at
+                    {
                         if (1 * $result["obj_cod"] > 0)
                         {
                             $objet = new objets();
