@@ -1268,9 +1268,9 @@ begin
     if v_bonus_critique != 0 then
       v_des_critique := lancer_des(1, 100);
       if v_des_critique < v_bonus_critique then
-        code_retour := code_retour || '<br>Le casque de la cible la protège. Le coup est transformé en <b>spécial</b> (armure de la cible divisée par deux).<br>';
+        code_retour := code_retour || '<br>L''équipement de la cible la protège. Le coup est transformé en <b>spécial</b> (armure de la cible divisée par deux).<br>';
         /* evt pour esquive */
-        texte_evt := '[cible] a été protégé d’un coup critique par son casque.';
+        texte_evt := '[cible] a été protégé d’un coup critique par son équipement.';
         perform insere_evenement(v_attaquant, nv_cible, 47, texte_evt, 'O', NULL);
 
         select into v_casque perobj_obj_cod
@@ -1279,7 +1279,9 @@ begin
               and perobj_equipe ='O'
               and perobj_obj_cod = obj_cod
               and obj_gobj_cod = gobj_cod
-              and gobj_tobj_cod = 4;
+              and coalesce(obj_critique,0) != 0
+              -- and gobj_tobj_cod = 4;  /* avant seuls les casques avait ce privilège */
+        order by obj_critique*random() desc limit 1;
         temp_use_casque := use_artefact(v_casque);
         qualite_attaque := 2;
         nom_qualite_attaque := ' (coup spécial) ';
@@ -1343,10 +1345,10 @@ begin
     if v_bonus_critique != 0 then
       v_des_critique := lancer_des(1, 100);
       if v_des_critique < v_bonus_critique then
-        code_retour := code_retour || '<br>Le casque de la cible la protège. Le coup est transformé en <b>normal</b>.<br>';
+        code_retour := code_retour || '<br>L''équipement de la cible la protège. Le coup est transformé en <b>normal</b>.<br>';
 
         /* evt pour casque */
-        texte_evt := '[cible] a été protégé d’un coup spécial par son casque.';
+        texte_evt := '[cible] a été protégé d’un coup spécial par son équipement.';
         perform insere_evenement(v_attaquant, nv_cible, 47, texte_evt, 'O', NULL);
 
         select into v_casque perobj_obj_cod
@@ -1355,7 +1357,9 @@ begin
               and perobj_equipe ='O'
               and perobj_obj_cod = obj_cod
               and obj_gobj_cod = gobj_cod
-              and gobj_tobj_cod = 4;
+              and coalesce(obj_critique,0) != 0
+              -- and gobj_tobj_cod = 4;  /* avant seuls les casques avait ce privilège */
+        order by obj_critique*random() desc limit 1;
         temp_use_casque := use_artefact(v_casque);
         armure := f_armure_perso(nv_cible);
         qualite_attaque := 0;

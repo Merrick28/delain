@@ -30,7 +30,8 @@ $perso_gmon_cod = $db->f("perso_gmon_cod");
 $gmon_type_ia = $db->f("gmon_type_ia");
 $is_golem_brz = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
 $is_golem_arm = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
-$is_golem = $is_golem_brz || $is_golem_arm;
+$is_golem_pps = $gmon_type_ia == 16;    // 16 = ia "Golem de pierres précieuses"
+$is_golem = $is_golem_brz || $is_golem_arm || $is_golem_pps;
 $pa = $db->f("perso_pa");
 $perso_type_perso = $db->f("perso_type_perso");
 
@@ -170,7 +171,7 @@ switch ($methode)
             {
                 echo "<br><strong>Scrountch ? A pas scrountch :(</strong> Vous ne possédez pas assez de brouzoufs pour gagner des PX de cette façon...<br>";
             }
-        } else if ($is_golem_arm && $pa > 5)
+        } else if (($is_golem_arm || $is_golem_pps) && $pa > 5)
         {
             $req = 'select golem_digestion(' . $perso_cod . ') as resultat ';
             $db->query($req);

@@ -524,6 +524,36 @@ if ($erreur == 0)
                                    </td>';
                         break;
 
+
+                    case 'echange':
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gobj = new objet_generique() ;
+                            $gobj->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $gobj->gobj_nom ;
+                            $gobj = new objet_generique() ;
+                            $gobj->charge( $element->aqelem_param_num_2 );
+                            $aqelem_misc_nom2 = $gobj->gobj_nom ;
+                        }
+                        echo   '<td>Echange :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    
+                                    <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'"> x
+                                    
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                                    
+                                    contre 
+                                    <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="5" value="'.$element->aqelem_param_txt_1.'"> Bzf et
+                                    <input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="2" value="'.$element->aqelem_param_num_3.'"> x
+                                    <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_param_num_2 : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom2\', \'objet_generique\', $(\'#'.$row_id.'aqelem_param_num_2\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom2">'.$aqelem_misc_nom2.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod(["'.$row_id.'aqelem_param_num_2","'.$row_id.'aqelem_misc_nom2"],"objet_generique","Rechercher un objet générique");\'> 
+                                    </td>';
+                        break;
+
                     case 'bonus':       // pour invocation
                         if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                         {

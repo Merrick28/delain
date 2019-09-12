@@ -295,6 +295,206 @@ class aquete_etape
     }
 
     /**
+     * Fonction pour mettre en forme le texte d'une étape du type echange_objet: '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:echange|0%0]'
+     * @param aquete_perso $aqperso
+     * @return mixed|string
+     */
+    function get_echange_objet_form(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+        $form = "" ;
+
+        $etape_modele = $aqperso->get_etape_modele();
+
+        // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
+        if ( ! $aqperso->action->move_perso($aqperso) )
+        {
+            return "Pour faire un achat, rendez-vous sur la case d'un PNJ proposant ce service." ;
+        }
+
+        $element = new aquete_element();
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'echange', 0)) return false ;              // Problème lecture des paramètres
+
+        if ( count($p4) == 0 )
+        {
+            return "Il n'y a plus rien à acheter ici." ;
+        }
+
+        $perso = new perso();
+        $perso->charge($aqperso->aqperso_perso_cod);
+
+        // inventaire du perso
+        $inventaire = [] ;
+        $trocs_en_stock = [] ;
+        $trocs = [] ;
+        $trocs_matos = [] ;
+        $trocs_bzf = 0 ;
+        $req = "select obj_gobj_cod, count(*) as count  from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? group by obj_gobj_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod), $stmt);
+        while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
+        {
+            $inventaire[$result["obj_gobj_cod"]] = (int)$result["count"] ;
+            $trocs_en_stock[$result["obj_gobj_cod"]] = (int)$result["count"] ;           // pour controle
+        }
+
+        $nbtrocs = 0 ;
+        $enstock = true ;
+        $bourse = $perso->perso_po ;
+        $selected_item = "" ;
+
+        if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue") return "Vous avez décidé de ne rien acheter.";
+
+        if (isset($_REQUEST["dialogue-echanger"]))
+        {
+            // le joueur a valider, on vérifie qu'il a les objets nécéssaires
+            foreach ($p4 as $k => $elem)
+            {
+                if (isset($_REQUEST["echange-{$k}"]) && $_REQUEST["echange-{$k}"]=="on")
+                {
+                    $nbtrocs ++ ;
+                    $selected_item.='<input type="hidden" name="echange-'.$k.'" value="on">';
+                    $trocs_matos[$elem->aqelem_misc_cod] = (!isset($trocs_matos[$elem->aqelem_misc_cod])) ? (int)$elem->aqelem_param_num_1 : $trocs_matos[$elem->aqelem_misc_cod] + (int)$elem->aqelem_param_num_1 ;
+
+                    // check breouzouf
+                    $bourse =  $bourse - (int)$elem->aqelem_param_txt_1 ;
+                    $trocs_bzf =  $trocs_bzf + (int)$elem->aqelem_param_txt_1 ;
+                    if ($bourse < 0 )
+                    {
+                        $enstock = false ;
+                    }
+
+                    if ((!isset($trocs_en_stock[$elem->aqelem_param_num_2]) || ($trocs_en_stock[$elem->aqelem_param_num_2]<(int)$elem->aqelem_param_num_3)) && ((int)$elem->aqelem_param_num_2>0 && (int)$elem->aqelem_param_num_3>0))
+                    {
+                        $enstock = false ;
+                    }
+                    else if ((int)$elem->aqelem_param_num_2>0 && (int)$elem->aqelem_param_num_3>0)
+                    {
+                        $trocs[$elem->aqelem_param_num_2] = (!isset($trocs[$elem->aqelem_param_num_2])) ? (int)$elem->aqelem_param_num_3 : $trocs[$elem->aqelem_param_num_2] + (int)$elem->aqelem_param_num_3 ;
+                        $trocs_en_stock[$elem->aqelem_param_num_2] = $trocs_en_stock[$elem->aqelem_param_num_2] - (int)$elem->aqelem_param_num_3 ;
+                    }
+                }
+            }
+
+            if (!$enstock)
+            {
+                $form .= "Vous n'avez <strong>pas les objets ou les brouzoufs</strong> nécéssaires pour cette transaction, veuillez ré-essayer:<br><br>";
+            }
+            else if ($nbtrocs>$p3->aqelem_param_num_1 && $p3->aqelem_param_num_1>0)
+            {
+                $enstock = false; // forcer la resaisie
+                $form .= "Vous n'avez le droit qu'à <strong>{$p3->aqelem_param_num_1} échange(s)</strong>, vous tenter d'en faire <strong>{$nbtrocs}</strong>, veuillez ré-essayer:<br><br>";
+            } else if ($nbtrocs==0) {
+                $enstock = false; // forcer la resaisie
+                $form .= "Vous n'avez rien sélectionné, veuillez ré-essayer:<br><br>";
+            }
+        }
+
+        // panneau de transaction
+        if (!$enstock || $nbtrocs==0 || isset($_REQUEST["cancel"]))
+        {
+            // header de la forme
+            $form .= '<form method="post" action="quete_auto.php">
+            <input type="hidden" name="methode" value="dialogue">
+            <input type="hidden" name="dialogue-echanger" value="dialogue">
+            <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <table><tr><td style="width:20px;"></td><td style="min-width:400px; font-weight: bold">Objets à acquérir</td><td style="min-width:400px; font-weight: bold">Prix</td><td style="min-width:400px; font-weight: bold"></td></tr>';
+
+            foreach ($p4 as $k => $elem)
+            {
+                $objet = new objet_generique();
+                $objet->charge($elem->aqelem_misc_cod);
+
+                $prix = new objet_generique();
+                $prix->charge($elem->aqelem_param_num_2);
+                $bzf = 1 * $elem->aqelem_param_txt_1 ;
+
+                $enstock = true ;
+                if ((!isset($inventaire[$elem->aqelem_param_num_2]) || ($inventaire[$elem->aqelem_param_num_2]<(int)$elem->aqelem_param_num_3)) && ((int)$elem->aqelem_param_num_3>0)) $enstock = false ;
+                if ($perso->perso_po<(int)$elem->aqelem_param_txt_1) $enstock = false ;
+
+                $form .= '<tr style="color:#800000;  font-style: italic;">
+                      <td><input '.($enstock ? ( (isset($_REQUEST["echange-{$k}"]) && $_REQUEST["echange-{$k}"]=="on") ? 'checked ' : '') : 'disabled ').'name="echange-'.$k.'" type="checkbox"></td>
+                      <td>&nbsp;'.$elem->aqelem_param_num_1.' x '.$objet->gobj_nom.'</td>';
+
+                $form .= '<td>';
+                if ($bzf>0) $form .= '&nbsp;'.$elem->aqelem_param_txt_1.'&nbsp;Bzf';
+                if (($elem->aqelem_param_num_3>0) && (1*$elem->aqelem_param_num_2>0)) $form .= '&nbsp;'.$elem->aqelem_param_num_3.' x '.$prix->gobj_nom;
+                $form .= '</td>';
+                if (($enstock) && (1*$elem->aqelem_param_num_2>0))
+                    $form .= '<td>'.$inventaire[$elem->aqelem_param_num_2].' dans l\'inventaire</td>';
+                else if (!$enstock)
+                    $form .= '<td>Vous n\'avez pas les objets/Bzfs necessaires</td>';
+                $form .= '</tr>';
+            }
+            // footer
+            $form.= '</table><br><input class="test" type="submit" name="valider" value="Valider la transaction">&nbsp;&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="cancel" value="Ne rien acheter"></form>' ;
+            $form .= '<br><br>Vous disposez de : <strong>'.$perso->perso_po.' Bzf</strong><br>';
+            if ($p3->aqelem_param_num_1>0) {
+                $form .= '<u>ATTENTION</u>: Vous pouvez sélectionner <strong>'.$p3->aqelem_param_num_1.'</strong> ligne(s) au maximum, il n\'y aura qu\'<u><strong>une seule transaction</strong></u> possible.<br>';
+            }
+            else {
+                $form .= '<u>ATTENTION</u>: Vous pouvez acquerir autant d\'objet que vous le souhaitez, mais en <u>une seule transaction</u>.<br>';
+            }
+        }
+        else
+        {
+            //print_r($_REQUEST); die();
+
+            // Bilan de la transaction
+            if ( $_REQUEST["dialogue-echanger"] == "dialogue-validation" )
+            {
+                $form.= "Vous réalisez l'échange suivant: ";
+            }
+            else
+            {
+                $form.= "Vous allez acquérir ";
+            }
+
+            // D'abord le matos acheté
+            $k = 0 ;
+            $troc_phrase = "" ;
+            foreach ($trocs_matos as $obj => $nbobj)
+            {
+                $k++;
+                $objet = new objet_generique();
+                $objet->charge($obj);
+                if ($k==count($trocs_matos) && $k>1) $troc_phrase .= ' et '; else if ($k>1) $troc_phrase .= ', ';
+                $troc_phrase .= $nbobj.' x <strong>'.$objet->gobj_nom.'</strong>';
+            }
+
+            // ensuite le cout en bz et objet
+            $k = 0 ;
+            if ($trocs_bzf>0) $troc_phrase.= " au prix de {$trocs_bzf} Bzf";
+            if (count($trocs)>0)  $troc_phrase.= (($trocs_bzf>0) ? " et " : "")." contre ";
+            foreach ($trocs as $obj => $nbobj)
+            {
+                $k++;
+                $objet = new objet_generique();
+                $objet->charge($obj);
+                if ($k==count($trocs) && $k>1) $troc_phrase .= 'et '; else if ($k>1) $troc_phrase .= ', ';
+                $troc_phrase .= $nbobj.' x <strong>'.$objet->gobj_nom.'</strong>';
+            }
+            $form.= $troc_phrase."<br>" ;
+
+            if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" )
+            {
+                // proposer une validation
+                $form .= '<form method="post" action="quete_auto.php">
+                <input type="hidden" name="methode" value="dialogue">
+                <input type="hidden" name="dialogue-echanger" value="dialogue-validation">
+                <input type="hidden" name="troc-phrase" value="'.htmlentities($troc_phrase).'">
+                <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">'.$selected_item;
+                $form.= '<input class="test" type="submit" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;<input style="text-align: center;" class="test" type="submit" name="cancel" value="Revoir la liste"></form>' ;
+            }
+
+        }
+
+        return $form ;
+    }
+
+    /**
      * Fonction pour connaitre le "nom humain" des codes d'étape négatifs
      * @param $aqetape_cod
      * @return string
