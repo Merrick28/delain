@@ -313,14 +313,13 @@ class aquete_action
         if ($trocs_bzf>0)
         {
             $texte_evt = '[cible] fait du troc avec [attaquant] et lui donne '.$trocs_bzf.' Brouzoufs';
-            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                                      values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                      values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
                 ":texte_evt" => $texte_evt,
                 ":levt_attaquant" => $pnj->perso_cod,
-                ":levt_cible" => $aqperso->aqperso_perso_cod,
-                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt);
+                ":levt_cible" => $aqperso->aqperso_perso_cod), $stmt);
             // Supprimer l'objet
             //
             $perso->perso_po = $perso->perso_po - $trocs_bzf ;
@@ -340,6 +339,7 @@ class aquete_action
                     $req = "select perobj_cod, obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod= ? limit ? ";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_param_num_2, $elem->aqelem_param_num_3), $stmt);
+
                     while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
                     {
                         $objet = new objets();
@@ -348,12 +348,12 @@ class aquete_action
                             $texte_evt = '[cible] fait du troc avec [attaquant] et lui donne un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                             $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                                       values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                            $stmt = $pdo->prepare($req);
-                            $stmt = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                            $stmt2 = $pdo->prepare($req);
+                            $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
                                 ":texte_evt" => $texte_evt,
                                 ":levt_attaquant" => $pnj->perso_cod,
                                 ":levt_cible" => $aqperso->aqperso_perso_cod,
-                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt);
+                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
                             // Supprimer l'objet
                             $objet->supprime();        // On supprime l'objet !
                         }
@@ -376,12 +376,12 @@ class aquete_action
                             $texte_evt = '[cible] fait du troc avec [attaquant] et reçoit un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                             $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
                               values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                            $stmt = $pdo->prepare($req);
-                            $stmt = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                            $stmt2 = $pdo->prepare($req);
+                            $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
                                 ":texte_evt" => $texte_evt,
                                 ":levt_attaquant" => $pnj->perso_cod,
                                 ":levt_cible" => $aqperso->aqperso_perso_cod,
-                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt);
+                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
                         }
                     }
                 }
