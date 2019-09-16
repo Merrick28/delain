@@ -260,6 +260,26 @@ class aquete_action
         // On attend que le jueur valide son choix
         if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" || isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
 
+        //Préparer la liste des éléments dispo à l'échange.-------------------
+        $p4_matos = array();
+        $p4_couts = array();
+        $i = -1 ;
+        foreach ($p4 as $k => $elem)
+        {
+            if ($elem->aqelem_misc_cod!=0)
+            {
+                $i = $k ;                       // On cale l'id sur l'ordre de lélément à vendre
+                $p4_matos[$i] = $elem ;         // partie gauche
+                $p4_couts[$i] = array();        // et droite
+                $p4_couts[$i][] = $elem ;
+            }
+            else if ($i != -1)
+            {
+                $p4_couts[$i][] = $elem ;       // juste un cout supplémentaire
+            }
+
+        }
+        
 
         // Il a validé!!!! On vérifie d'abord que le perso à de quoi payer
         $perso = new perso();
@@ -280,27 +300,31 @@ class aquete_action
         $enstock = true ;
         $bourse = $perso->perso_po ;
         $trocs_bzf = 0 ;
-        foreach ($p4 as $k => $elem)
+        foreach ($p4_matos as $k => $elem)
         {
             if (isset($_REQUEST["echange-{$k}"]) && $_REQUEST["echange-{$k}"] == "on")
             {
                 $nbtrocs++;
 
-                // check breouzouf
-                $trocs_bzf += (int)$elem->aqelem_param_txt_1;
-                $bourse = $bourse - (int)$elem->aqelem_param_txt_1;
-                if ($bourse < 0)
+                // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
+                foreach ($p4_couts[$k] as $kk => $e)
                 {
-                    $enstock = false;
-                }
+                    // check brouzouf
+                    $trocs_bzf += (int)$e->aqelem_param_txt_1;
+                    $bourse = $bourse - (int)$e->aqelem_param_txt_1;
+                    if ($bourse < 0)
+                    {
+                        $enstock = false;
+                    }
 
-                if ((!isset($trocs_en_stock[$elem->aqelem_param_num_2]) || ($trocs_en_stock[$elem->aqelem_param_num_2] < (int)$elem->aqelem_param_num_3)) && ((int)$elem->aqelem_param_num_2 > 0 && (int)$elem->aqelem_param_num_3 > 0))
-                {
-                    $enstock = false;
-                }
-                else if ((int)$elem->aqelem_param_num_2 > 0 && (int)$elem->aqelem_param_num_3 > 0)
-                {
-                    $trocs_en_stock[$elem->aqelem_param_num_2] = $trocs_en_stock[$elem->aqelem_param_num_2] - (int)$elem->aqelem_param_num_3;
+                    if ((!isset($trocs_en_stock[$e->aqelem_param_num_2]) || ($trocs_en_stock[$e->aqelem_param_num_2] < (int)$e->aqelem_param_num_3)) && ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0))
+                    {
+                        $enstock = false;
+                    }
+                    else if ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0)
+                    {
+                        $trocs_en_stock[$e->aqelem_param_num_2] = $trocs_en_stock[$e->aqelem_param_num_2] - (int)$e->aqelem_param_num_3;
+                    }                    
                 }
             }
         }
@@ -329,53 +353,61 @@ class aquete_action
         // Il faut maintenant prendre les objets du joueur et lui donner ses achats
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array()); // on fait le menage pour le recréer
         $param_ordre = 0 ;
-        foreach ($p4 as $k => $elem)
+        foreach ($p4_matos as $k => $elem)
         {
             if (isset($_REQUEST["echange-{$k}"]) && $_REQUEST["echange-{$k}"] == "on")
             {
-                if ((int)$elem->aqelem_param_num_2 > 0 && (int)$elem->aqelem_param_num_3 > 0)
+                // Ici on boucle sur les lignes de cout (car il peut y en avoir plusieurs)
+                foreach ($p4_couts[$k] as $kk => $e) 
                 {
-                    // selectionner les objets a supprimer de l'inventaire du joueur
-                    $req = "select perobj_cod, obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod= ? limit ? ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $elem->aqelem_param_num_2, $elem->aqelem_param_num_3), $stmt);
+                    if ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0) {
+                        // selectionner les objets a supprimer de l'inventaire du joueur
+                        $req = "select perobj_cod, obj_cod from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=? and obj_gobj_cod= ? limit ? ";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array($aqperso->aqperso_perso_cod, $e->aqelem_param_num_2, $e->aqelem_param_num_3), $stmt);
 
-                    while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
-                    {
-                        $objet = new objets();
-                        if ($objet->charge( (int)$result["obj_cod"] ))
+                        while ($result = $stmt->fetch(PDO::FETCH_ASSOC))
                         {
-                            $texte_evt = '[cible] fait du troc avec [attaquant] et lui donne un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                                      values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
-                            $stmt2 = $pdo->prepare($req);
-                            $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
-                                ":texte_evt" => $texte_evt,
-                                ":levt_attaquant" => $pnj->perso_cod,
-                                ":levt_cible" => $aqperso->aqperso_perso_cod,
-                                ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
-                            // Supprimer l'objet
-                            $objet->supprime();        // On supprime l'objet !
+                            $objet = new objets();
+                            if ($objet->charge((int)$result["obj_cod"]))
+                            {
+                                $texte_evt = '[cible] fait du troc avec [attaquant] et lui donne un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
+                                            values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                                $stmt2 = $pdo->prepare($req);
+                                $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
+                                    ":texte_evt" => $texte_evt,
+                                    ":levt_attaquant" => $pnj->perso_cod,
+                                    ":levt_cible" => $aqperso->aqperso_perso_cod,
+                                    ":levt_parametres" => "[obj_cod]=" . $objet->obj_cod), $stmt2);
+                                // Supprimer l'objet
+                                $objet->supprime();        // On supprime l'objet !
+                            }
                         }
                     }
+
+                    // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
+                    $e->aqelem_param_ordre = $param_ordre;         // On ordonne correctement !
+                    $param_ordre++;
+                    $e->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
                 }
 
                 // instancier les X objets à mettre dans l'inventaire du joueur
-                for ($nbobj=0; $nbobj<$elem->aqelem_param_num_1; $nbobj++)
+                for ($nbobj = 0; $nbobj < $elem->aqelem_param_num_1; $nbobj++)
                 {
                     $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-                    $stmt   = $pdo->prepare($req);
-                    $stmt   = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod  ), $stmt);
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(":gobj_cod" => $elem->aqelem_misc_cod, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
                     if ($result = $stmt->fetch())
                     {
                         if (1 * $result["obj_cod"] > 0)
                         {
                             $objet = new objets();
-                            $objet->charge( (int)$result["obj_cod"] );
+                            $objet->charge((int)$result["obj_cod"]);
 
                             $texte_evt = '[cible] fait du troc avec [attaquant] et reçoit un objet  <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
                             $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible, levt_parametres)
-                              values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
+                                        values(17, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible, :levt_parametres); ";
                             $stmt2 = $pdo->prepare($req);
                             $stmt2 = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod,
                                 ":texte_evt" => $texte_evt,
@@ -385,11 +417,6 @@ class aquete_action
                         }
                     }
                 }
-
-                // Maintenant que l'objet a été pris on remet dans les éléments de la quêtes!
-                $elem->aqelem_param_ordre = $param_ordre;         // On ordonne correctement !
-                $param_ordre++;
-                $elem->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
 
             }
         }

@@ -526,15 +526,21 @@ if ($erreur == 0)
 
 
                     case 'echange':
+                        $aqelem_misc_nom2 =  "";
                         if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                         {
-                            $gobj = new objet_generique() ;
-                            $gobj->charge( $element->aqelem_misc_cod );
+                            $gobj = new objet_generique();
+                            $gobj->charge($element->aqelem_misc_cod);
                             $aqelem_misc_nom = $gobj->gobj_nom ;
+                        }
+
+                        if ((1*$element->aqelem_param_num_2 != 0) && ($element->aqelem_type==$param['type']))
+                        {
                             $gobj = new objet_generique() ;
                             $gobj->charge( $element->aqelem_param_num_2 );
                             $aqelem_misc_nom2 = $gobj->gobj_nom ;
                         }
+
                         echo   '<td>Echange :
                                     <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
                                     <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
