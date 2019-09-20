@@ -220,7 +220,8 @@ class aquete_action
         $element = new aquete_element();
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                             // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur')) return false ;                             // Problème lecture des paramètres
-        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'echange', 0)) return false ;              // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                             // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'echange', 0)) return false ;              // Problème lecture des paramètres
 
         // Recherche du PNJ
         $req = " select aqelem_cod, quete.perso_cod as pnj from perso
@@ -245,7 +246,7 @@ class aquete_action
         $perso_journal->chargeDernierePage($aqperso->aqperso_cod, $aqperso->aqperso_nb_realisation);
 
         // Condition de sortie sans echange
-        if ( count($p5) == 0 )
+        if ( count($p6) == 0 )
         {
             $perso_journal->aqpersoj_texte .= "   Il n'y a plus rien à acheter ici.<br>";
             $perso_journal->stocke();
@@ -253,7 +254,7 @@ class aquete_action
         }                                                                              // pas/plus d'objet on passe à l'étape suivante
         if (isset($_REQUEST["cancel"]) && isset($_REQUEST["dialogue-echanger"]) && $_REQUEST["dialogue-echanger"]=="dialogue")
         {
-            $perso_journal->aqpersoj_texte .= "   ".count($p5)." objet(s) sont disponible(s) à l'achat, vous décidez de ne rien acheter.<br>";
+            $perso_journal->aqpersoj_texte .= "   ".count($p6)." objet(s) sont disponible(s) à l'achat, vous décidez de ne rien acheter.<br>";
             $perso_journal->stocke();
             return true; // aucun achat
         }
@@ -262,21 +263,21 @@ class aquete_action
         if ( $_REQUEST["dialogue-echanger"] != "dialogue-validation" || isset($_REQUEST["cancel"]) ) return false ; // le joueur est toujours en cours de selection de sa trnasaction
 
         //Préparer la liste des éléments dispo à l'échange.-------------------
-        $p5_matos = array();
-        $p5_couts = array();
+        $p6_matos = array();
+        $p6_couts = array();
         $i = -1 ;
-        foreach ($p5 as $k => $elem)
+        foreach ($p6 as $k => $elem)
         {
             if ($elem->aqelem_misc_cod!=0)
             {
                 $i = $k ;                       // On cale l'id sur l'ordre de lélément à vendre
-                $p5_matos[$i] = $elem ;         // partie gauche
-                $p5_couts[$i] = array();        // et droite
-                $p5_couts[$i][] = $elem ;
+                $p6_matos[$i] = $elem ;         // partie gauche
+                $p6_couts[$i] = array();        // et droite
+                $p6_couts[$i][] = $elem ;
             }
             else if ($i != -1)
             {
-                $p5_couts[$i][] = $elem ;       // juste un cout supplémentaire
+                $p6_couts[$i][] = $elem ;       // juste un cout supplémentaire
             }
 
         }
@@ -299,18 +300,20 @@ class aquete_action
         // le joueur a validé, on vérifie qu'il a les objets nécéssaires
         $nbtrocs = 0 ;
         $nbitem = 0 ;
+        $maxitem = 0 ;
         $enstock = true ;
         $bourse = $perso->perso_po ;
         $trocs_bzf = 0 ;
-        foreach ($p5_matos as $k => $elem)
+        foreach ($p6_matos as $k => $elem)
         {
             if (isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"]>0)
             {
                 $nbtrocs++;
                 $nb = (int)$_REQUEST["echange-{$k}"] ;
-                $nbitem = MAX($nbitem, $nb) ;
+                $maxitem = MAX($maxitem, $nb) ;
+                $nbitem +=  $nb ;
                 // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                foreach ($p5_couts[$k] as $kk => $e)
+                foreach ($p6_couts[$k] as $kk => $e)
                 {
                     // check brouzouf
                     $trocs_bzf += $nb * (int)$e->aqelem_param_txt_1;
@@ -333,7 +336,7 @@ class aquete_action
         }
 
         // Erreur la selection du joueur n'est pas valide
-        if (!$enstock || $nbtrocs==0 || ($nbtrocs>$p3->aqelem_param_num_1 && $p3->aqelem_param_num_1>0) || ($nbitem>$p4->aqelem_param_num_1 && $p4->aqelem_param_num_1>0)) return false;
+        if (!$enstock || $nbtrocs==0 || ($nbtrocs>$p3->aqelem_param_num_1 && $p3->aqelem_param_num_1>0) || ($maxitem>$p4->aqelem_param_num_1 && $p4->aqelem_param_num_1>0) || ($nbitem>$p5->aqelem_param_num_1 && $p5->aqelem_param_num_1>0)) return false;
 
         //=============================  On réalise la transaction a proprement dit!!! =======================================
         // On traite d'abord le cas de Bzf
@@ -356,14 +359,14 @@ class aquete_action
         // Il faut maintenant prendre les objets du joueur et lui donner ses achats
         $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 5, array()); // on fait le menage pour le recréer
         $param_ordre = 0 ;
-        foreach ($p5_matos as $k => $elem)
+        foreach ($p6_matos as $k => $elem)
         {
             if (isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"]>0)
             {
                 $nb = (int)$_REQUEST["echange-{$k}"] ;      //nombre de fois où la transaction doit être faites
 
                 // Ici on boucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                foreach ($p5_couts[$k] as $kk => $e) 
+                foreach ($p6_couts[$k] as $kk => $e) 
                 {
                     if ((int)$e->aqelem_param_num_2 > 0 && (int)$e->aqelem_param_num_3 > 0) {
                         // selectionner les objets a supprimer de l'inventaire du joueur
@@ -427,7 +430,7 @@ class aquete_action
         }
 
 
-        $perso_journal->aqpersoj_texte .= "   ".count($p5)." objet(s) sont disponible(s) à l'échange.<br>";
+        $perso_journal->aqpersoj_texte .= "   ".count($p6)." objet(s) sont disponible(s) à l'échange.<br>";
         $perso_journal->aqpersoj_texte .= "    Vous réalisez l'échange suivant: ".html_entity_decode($_REQUEST["troc-phrase"])."<br>";
         $perso_journal->stocke();
         return true; // aucun achat

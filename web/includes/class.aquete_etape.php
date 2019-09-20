@@ -309,36 +309,37 @@ class aquete_etape
         // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
         if ( ! $aqperso->action->move_perso($aqperso) )
         {
-            return "Pour faire un achat, rendez-vous sur la case d'un PNJ proposant ce service." ;
+            return "Pour faire du troc, rendez-vous en un lieu proposant ce service." ;
         }
 
         $element = new aquete_element();
         if (!$p3 = $element->get_aqperso_element( $aqperso, 3, 'valeur')) return false ;                              // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 4, 'valeur')) return false ;                              // Problème lecture des paramètres
-        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'echange', 0)) return false ;              // Problème lecture des paramètres
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, 'valeur')) return false ;                              // Problème lecture des paramètres
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, 'echange', 0)) return false ;              // Problème lecture des paramètres
 
-        if ( count($p5) == 0 )
+        if ( count($p6) == 0 )
         {
-            return "Il n'y a plus rien à acheter ici." ;
+            return "Il n'y a plus rien à troquer ici." ;
         }
 
 
         //Préparer la liste des éléments dispo à l'échange.-------------------
-        $p5_matos = array();
-        $p5_couts = array();
+        $p6_matos = array();
+        $p6_couts = array();
         $i = -1 ;
-        foreach ($p5 as $k => $elem)
+        foreach ($p6 as $k => $elem)
         {
             if ($elem->aqelem_misc_cod!=0)
             {
                 $i = $k ;                       // On cale l'id sur l'ordre de lélément à vendre
-                $p5_matos[$i] = $elem ;         // partie gauche
-                $p5_couts[$i] = array();        // et droite
-                $p5_couts[$i][] = $elem ;
+                $p6_matos[$i] = $elem ;         // partie gauche
+                $p6_couts[$i] = array();        // et droite
+                $p6_couts[$i][] = $elem ;
             }
             else if ($i != -1)
             {
-                $p5_couts[$i][] = $elem ;       // juste un cout supplémentaire
+                $p6_couts[$i][] = $elem ;       // juste un cout supplémentaire
             }
 
         }
@@ -364,6 +365,7 @@ class aquete_etape
 
         $nbtrocs = 0 ;
         $nbitem = 0 ;
+        $maxitem = 0 ;
         $enstock = true ;
         $bourse = $perso->perso_po ;
         $selected_item = "" ;
@@ -373,18 +375,19 @@ class aquete_etape
         if (isset($_REQUEST["dialogue-echanger"]))
         {
             // le joueur a valider, on vérifie qu'il a les objets nécéssaires
-            foreach ($p5_matos as $k => $elem)
+            foreach ($p6_matos as $k => $elem)
             {
                 if (isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"]>0)
                 {
                     $nbtrocs ++ ;
                     $nb = (int)$_REQUEST["echange-{$k}"] ;
-                    $nbitem = MAX($nbitem, $nb) ;
+                    $maxitem = MAX($maxitem, $nb) ;
+                    $nbitem += $nb  ;
                     $selected_item.='<input type="hidden" name="echange-'.$k.'" value="'.$_REQUEST["echange-{$k}"].'">';
                     $trocs_matos[$elem->aqelem_misc_cod] = (!isset($trocs_matos[$elem->aqelem_misc_cod])) ? $nb * (int)$elem->aqelem_param_num_1 : $trocs_matos[$elem->aqelem_misc_cod] + $nb * (int)$elem->aqelem_param_num_1 ;
 
                     // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                    foreach ($p5_couts[$k] as $kk => $e)
+                    foreach ($p6_couts[$k] as $kk => $e)
                     {
                         // check brouzouf
                         $bourse = $bourse -  $nb * (int)$e->aqelem_param_txt_1;
@@ -416,10 +419,15 @@ class aquete_etape
                 $enstock = false; // forcer la resaisie
                 $form .= "Vous n'avez le droit qu'à <strong>{$p3->aqelem_param_num_1} échange(s)</strong>, vous tenter d'en faire <strong>{$nbtrocs}</strong>, veuillez ré-essayer:<br><br>";
             }
-            else if ($nbitem>$p4->aqelem_param_num_1 && $p4->aqelem_param_num_1>0)
+            else if ($maxitem>$p4->aqelem_param_num_1 && $p4->aqelem_param_num_1>0)
             {
                 $enstock = false; // forcer la resaisie
-                $form .= "Vous n'avez le droit au maximum qu'à <strong>{$p4->aqelem_param_num_1} par ligne d'échange(s)</strong>, Il y a une ligne à <strong>{$nbitem}</strong>, veuillez ré-essayer:<br><br>";
+                $form .= "Vous n'avez le droit qu'à <strong>{$p4->aqelem_param_num_1} objet(s) par échange(s)</strong>, Il y a un échange à <strong>{$maxitem}</strong>, veuillez ré-essayer:<br><br>";
+            }
+            else if ($nbitem>$p5->aqelem_param_num_1 && $p5->aqelem_param_num_1>0)
+            {
+                $enstock = false; // forcer la resaisie
+                $form .= "Vous n'avez le droit qu'à <strong>{$p5->aqelem_param_num_1} objet(s) pour toute la transaction</strong>, Il y a au total <strong>{$nbitem}</strong> objet(s), veuillez ré-essayer:<br><br>";
             }
             else if ($nbtrocs==0)
             {
@@ -436,9 +444,9 @@ class aquete_etape
             <input type="hidden" name="methode" value="dialogue">
             <input type="hidden" name="dialogue-echanger" value="dialogue">
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
-            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">Qté</td><td style="min-width:400px; font-weight: bold">Objets à acquérir</td><td style="min-width:400px; font-weight: bold">Prix</td><td style="min-width:400px; font-weight: bold"></td></tr>';
+            <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">Qté</td><td style="min-width:400px; font-weight: bold">Objet à acquérir</td><td style="min-width:400px; font-weight: bold">Prix</td><td style="min-width:400px; font-weight: bold"></td></tr>';
 
-            foreach ($p5_matos as $k => $elem)
+            foreach ($p6_matos as $k => $elem)
             {
                 $objet = new objet_generique();
                 $objet->charge($elem->aqelem_misc_cod);
@@ -447,7 +455,7 @@ class aquete_etape
                 $first_col = true ;
                 $rowstock = true;
                 // Ici on bloucle sur les lignes de cout (car il peut y en avoir plusieurs)
-                foreach ($p5_couts[$k] as $kk => $e) 
+                foreach ($p6_couts[$k] as $kk => $e) 
                 {
                     $prix = new objet_generique();
                     $prix->charge($e->aqelem_param_num_2);
@@ -484,8 +492,8 @@ class aquete_etape
 
                 // Mettre la première colone (maintenant que l'on sait si on a en stock tous les éléments)
                 $form.='<tr style="color:#800000;  font-style: italic; border-top: solid 1px #800000;">
-                                  <td style="border-top: inherit;" rowspan="'.count($p5_couts[$k]).'"><input ' . ($rowstock ? ((isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"] >0) ? ' value='.$_REQUEST["echange-{$k}"] : '') : 'disabled ') . ' name="echange-' . $k . '" type="text" size="1" style="text-align: center;"></td>
-                                  <td style="border-top: inherit;" rowspan="'.count($p5_couts[$k]).'">&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom . '</td>';
+                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'"><input ' . ($rowstock ? ((isset($_REQUEST["echange-{$k}"]) && (int)$_REQUEST["echange-{$k}"] >0) ? ' value='.$_REQUEST["echange-{$k}"] : '') : 'disabled ') . ' name="echange-' . $k . '" type="text" size="1" style="text-align: center;"></td>
+                                  <td style="border-top: inherit;" rowspan="'.count($p6_couts[$k]).'">&nbsp;' . $elem->aqelem_param_num_1 . ' x ' . $objet->gobj_nom . '</td>';
                 $form .= $form_block ;
 
             }
@@ -495,11 +503,15 @@ class aquete_etape
             $form .= '<u><strong>ATTENTION</strong></u>:<br>';
             if ($p3->aqelem_param_num_1>0)
             {
-                $form .= ' * Vous ne pouvez sélectionner que <strong>'.$p3->aqelem_param_num_1.'</strong> ligne(s) d\'échange au maximum.<br>';
+                $form .= ' * Vous ne pouvez choisir que <strong>'.$p3->aqelem_param_num_1.'</strong> ligne(s) d\'échange(s) au maximum.<br>';
             }
             if ($p4->aqelem_param_num_1>0)
             {
-                $form .= ' * Il n\'est possible de sélectionner que <strong>'.$p4->aqelem_param_num_1.'</strong> objet(s) au maximum par ligne.<br>';
+                $form .= ' * Il n\'est possible de sélectionner que <strong>'.$p4->aqelem_param_num_1.'</strong> objet(s) au maximum par ligne(s) d\'échange.<br>';
+            }
+            if ($p5->aqelem_param_num_1>0)
+            {
+                $form .= ' * Au total, vous ne pouvez troquer que <strong>'.$p5->aqelem_param_num_1.'</strong> objet(s) au maximum.<br>';
             }
 
             $form .= ' * Vous quitterez cette étape en Validant ou Abandonnant cet échange et ne pourrez y revenir que si la quête le stipule.';
@@ -532,8 +544,8 @@ class aquete_etape
 
             // ensuite le cout en bz et objet
             $k = 0 ;
-            if ($trocs_bzf>0) $troc_phrase.= " au prix de {$trocs_bzf} Bzf";
-            if (count($trocs)>0)  $troc_phrase.= (($trocs_bzf>0) ? " et " : "")." contre ";
+            if ($trocs_bzf>0) $troc_phrase.= " pour {$trocs_bzf} Bzf";
+            if (count($trocs)>0)  $troc_phrase.= (($trocs_bzf>0) ? " et " : "")." en échange de ";
             foreach ($trocs as $obj => $nbobj)
             {
                 $k++;
