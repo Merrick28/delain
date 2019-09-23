@@ -286,6 +286,13 @@ class aquete_etape
     {
         $etape_modele = $aqperso->get_etape_modele();
 
+        // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
+        if ( ! $aqperso->action->move_perso($aqperso, 1) )
+        {
+            return "Vous êtes trop loin de votre interlocuteur pour dialoguer." ;
+        }
+
+
         return '<form method="post" action="quete_auto.php">
         <input type="hidden" name="methode" value="dialogue">
         <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">

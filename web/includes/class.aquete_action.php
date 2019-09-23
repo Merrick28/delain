@@ -124,6 +124,8 @@ class aquete_action
      */
     function saut_condition_dialogue(aquete_perso $aqperso)
     {
+        $pdo = new bddpdo;
+
         $retour = new stdClass();
         $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
         $retour->etape = 0 ;
@@ -137,10 +139,29 @@ class aquete_action
         $mots_dialogue = preg_split('/\W/', strtolower($dialogue), 0, PREG_SPLIT_NO_EMPTY);
 
         $element = new aquete_element();
-        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "valeur" )) return $retour ;                      // Problème lecture (blocage)
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape" )) return $retour ;                       // Problème lecture (blocage)
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "choix_etape", 0)) return $retour ;    // Problème lecture (blocage)
-        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "texte", 0)) return $retour ;    // Problème lecture (blocage)
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "choix_etape", 0)) return $retour ;    // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "texte", 0)) return $retour ;    // Problème lecture (blocage)
+
+        // Recherche du PNJ (vérifier que le perso est sur sa case pour discuter)
+        $req = " select aqelem_cod, quete.perso_cod as pnj from perso
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join 
+                ( 
+                    select aqelem_cod,  perso_cod,ppos_pos_cod as pos_cod
+                    from quetes.aquete_perso 
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=1 and aqelem_type='perso'  
+                    join perso_position on ppos_perso_cod=aqelem_misc_cod
+                    join perso on perso_cod=ppos_perso_cod
+                    where aqperso_cod=?
+                ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+        if (!$result = $stmt->fetch(PDO::FETCH_ASSOC)) return false;       // pas sur la case du pnj
+        $pnj = new perso();
+        $pnj->charge($result["pnj"]);
+
 
         // On note dans le journal la réponse du joueur
         $perso_journal = new aquete_perso_journal();
@@ -152,11 +173,11 @@ class aquete_action
         $perso_journal->stocke();
 
         //Ajout d'une tentative !
-        $p1->aqelem_param_num_2++;
-        $p1->stocke();
+        $p2->aqelem_param_num_2++;
+        $p2->stocke();
 
         //passage en revue des mots attendus (dans l'ordre)
-        foreach ($p3 as $e => $elem)
+        foreach ($p4 as $e => $elem)
         {
             $nb_mots = 0 ;
             $mots_attendus = explode("|", $elem->aqelem_param_txt_1);
@@ -182,20 +203,20 @@ class aquete_action
         }
 
         // Sortie sur nombre de tentatives infructueuses
-        if (($p1->aqelem_param_num_1>0) && ($p1->aqelem_param_num_2>=$p1->aqelem_param_num_1))
+        if (($p2->aqelem_param_num_1>0) && ($p2->aqelem_param_num_2>=$p2->aqelem_param_num_1))
         {
             $retour->status = true ;  // l'étape n'est pas terminée, sur l'étape spécifique
-            $retour->etape = $p2->aqelem_misc_cod;
+            $retour->etape = $p3->aqelem_misc_cod;
             return $retour;
         }
 
         // On va aider le joueur avec des textes, mettre le texte en fonction du nombre de tentative dans le journal
-        $tentative = $p1->aqelem_param_num_2 - 1 ;
-        if (count($p4)<=$tentative)
+        $tentative = $p2->aqelem_param_num_2 - 1 ;
+        if (count($p5)<=$tentative)
         {
-            $tentative = count($p4) - 1;    // le dernier texte
+            $tentative = count($p5) - 1;    // le dernier texte
         }
-        $bavardage = $p4[$tentative]->aqelem_param_txt_1 ;
+        $bavardage = $p5[$tentative]->aqelem_param_txt_1 ;
         if ($bavardage != "")
         {
             $perso_journal->aqpersoj_texte .= "<br>   {$bavardage}<br> ";
@@ -542,27 +563,30 @@ class aquete_action
     //==================================================================================================================
     /**
      * On verifie si le perso est sur la case d'un autre (un parmi plusieurs) =>  '[1:delai|1%1],[2:perso|1%0]'
+     * On utilise aussi cette fontion pour vérifier que le joueur est sur la case d'un PNJ dans ce cas le paramètre perso n'est pas forcément le N° 2
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
      * @return bool
      */
-    function move_perso(aquete_perso $aqperso)
+    function move_perso(aquete_perso $aqperso, $param_id=2)
     {
         // Il peut y avoir une liste de perso possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
         $pdo = new bddpdo;
         $req = " select aqelem_cod from perso
-                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=:perso_cod
                 join 
                 ( 
                     select aqelem_cod, ppos_pos_cod as pos_cod
                     from quetes.aquete_perso 
-                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='perso'  
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=:param_id and aqelem_type='perso'  
                     join perso_position on ppos_perso_cod=aqelem_misc_cod
                     join perso on perso_cod=ppos_perso_cod
-                    where aqperso_cod=?
+                    where aqperso_cod=:aqperso_cod
                 ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+
+        //print_r(array('req' =>$req, ':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id)); die();
+        $stmt   = $pdo->execute(array(':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id), $stmt);
         if ($stmt->rowCount()==0)
         {
             return false;
@@ -571,7 +595,7 @@ class aquete_action
 
         // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le paramètre trouvé!
         $element = new aquete_element();
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array(0=>$result["aqelem_cod"]));
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, $param_id, array(0=>$result["aqelem_cod"]));
 
         return true;
     }
