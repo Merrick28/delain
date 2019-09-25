@@ -303,7 +303,7 @@ class aquete_etape
 
     /**
      * Fonction pour mettre en forme le texte d'une étape du type echange_objet: '[1:delai|1%1],[2:perso|1%1],[3:valeur|1%1],[4:echange|0%0]'
-     * @param aquete_perso $aqperso
+     * @param aquete_perso $aqpersoi
      * @return mixed|string
      */
     function get_echange_objet_form(aquete_perso $aqperso)
