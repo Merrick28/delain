@@ -4,7 +4,7 @@ $req_visu = "select perso_type_perso, perso_cod, perso_nom, race_nom, perso_sex,
 		perso_nb_joueur_tue, perso_nb_monstre_tue, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma, race_cod,
 		perso_avatar, get_renommee(perso_renommee) as renom, get_renommee_magie(perso_renommee_magie) as renom_magie, perso_nb_mort_arene, 
 		perso_nb_joueur_tue_arene, perso_renommee_artisanat, get_renommee_artisanat(perso_renommee_artisanat) as renommee_artisanat,
-		perso_avatar_version, perso_crapaud
+		perso_avatar_version, perso_crapaud, perso_gmon_cod
 	from perso,race
 	where perso_cod = $visu
 	and perso_race_cod = race_cod ";
@@ -76,6 +76,34 @@ if($visu == $perso_cod)
 		$contenu_page .= '<br><div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar ?</a></div></td></tr>';
 }
 
+if ($db->f("perso_sex") == 'F')
+{
+    if ((int)$db->f("perso_gmon_cod")>0)
+        $perso_sex_txt = "Femelle" ;
+    else
+        $perso_sex_txt = "Féminin" ;
+}
+else if ($db->f("perso_sex") == 'M')
+{
+    if ((int)$db->f("perso_gmon_cod")>0)
+        $perso_sex_txt = "Mâle" ;
+    else
+        $perso_sex_txt = "Masculin" ;
+}
+else if ($db->f("perso_sex") == 'A')
+{
+    $perso_sex_txt = "Androgyne" ;
+}
+
+else if ($db->f("perso_sex") == 'H')
+{
+    $perso_sex_txt = "Hermaphrodite" ;
+}
+else
+{
+    $perso_sex_txt = "Inconnu" ;
+}
+
 $contenu_page .= '</td>
 </tr>
 
@@ -86,7 +114,7 @@ $contenu_page .= '</td>
 
 <tr>
 <td class="soustitre2">Sexe :</td>
-<td>' . $db->f("perso_sex") . '</td>
+<td>' . $perso_sex_txt . '</td>
 </tr>
 
 <tr>

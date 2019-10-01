@@ -230,7 +230,7 @@ class aquete_perso
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod";
+        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         while ($result = $stmt->fetch())

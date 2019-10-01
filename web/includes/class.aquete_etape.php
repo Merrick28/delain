@@ -296,6 +296,7 @@ class aquete_etape
         return '<form method="post" action="quete_auto.php">
         <input type="hidden" name="methode" value="dialogue">
         <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">
+        <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">
         &nbsp;&nbsp;&nbsp;Vous : <input name="dialogue" type="text" size="80"><br>
         <br>&nbsp;&nbsp;&nbsp;<input class="test" type="submit" name="choix_etape" value="Valider" >
         </form>' ;
@@ -451,6 +452,7 @@ class aquete_etape
             <input type="hidden" name="methode" value="dialogue">
             <input type="hidden" name="dialogue-echanger" value="dialogue">
             <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'"> 
+            <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">            
             <table style="border: solid 1px #800000;"><tr><td style="width:20px; font-weight: bold">Qté</td><td style="min-width:400px; font-weight: bold">Objet à acquérir</td><td style="min-width:400px; font-weight: bold">Prix</td><td style="min-width:400px; font-weight: bold"></td></tr>';
 
             foreach ($p6_matos as $k => $elem)
@@ -570,6 +572,7 @@ class aquete_etape
                 <input type="hidden" name="methode" value="dialogue">
                 <input type="hidden" name="dialogue-echanger" value="dialogue-validation">
                 <input type="hidden" name="troc-phrase" value="'.htmlentities($troc_phrase).'">
+                <input type="hidden" name="quete" value="'.$aqperso->aqperso_aquete_cod.'">                
                 <input type="hidden" name="modele" value="'.$etape_modele->aqetapmodel_tag.'">'.$selected_item;
                 $form.= '<input class="test" type="submit" value="Valider">&nbsp;&nbsp;&nbsp;&nbsp;<input style="text-align: center;" class="test" type="submit" name="cancel" value="Revoir la liste"></form>' ;
                 $form .= '<br><strong>RAPPEL</strong>: Vous quitterez cette étape en Validant cet échange et ne pourrez y revenir que si la quête le stipule.';

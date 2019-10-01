@@ -244,7 +244,21 @@ if ($erreur == 0)
                                 echo "selected";
                             } ?>>Femelle
                             </OPTION>
-
+                            <OPTION value="A" <?php if ($perso_sex == "A")
+                            {
+                                echo "selected";
+                            } ?>>Androgyne
+                            </OPTION>
+                            <OPTION value="H" <?php if ($perso_sex == "H")
+                            {
+                                echo "selected";
+                            } ?>>Hermaphrodite
+                            </OPTION>
+                            <OPTION value="I" <?php if ($perso_sex == "I")
+                            {
+                                echo "selected";
+                            } ?>>Inconnu
+                            </OPTION>
                         </SELECT></TD>
                     <TD class="soustitre2">Race</TD>
                     <TD>
