@@ -194,7 +194,7 @@ class aquete_action
             if (($nb_mots>0 && $conjonction==1) || ($nb_mots==count($mots_attendus) && $conjonction==0))
             {
                 // On supprime tous les dialogues qui n'ont pas été choisis
-                $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 3, array($elem->aqelem_cod));
+                $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array($elem->aqelem_cod));
 
                 $retour->status = true ;  // l'étape n'est pas terminée, sur l'étape répondu
                 $retour->etape = $elem->aqelem_misc_cod;

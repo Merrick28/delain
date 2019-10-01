@@ -602,12 +602,13 @@ class aquete_perso
                             $status_etape = 1;                        // 1 => ok etape suivante,
                         } else if ($result->etape < 0)
                         {
-                            $status_etape = $result->etape;          // fin de la quete sur succes ou echec
+                            $status_etape = $result->etape == -1 ? -2 : $result->etape;          // fin de la quete sur succes ou echec
                         } else
                         {
                             $status_etape = 1;                        // 1 => ok etape suivante,
                             $next_etape_cod = $result->etape;        // vers une etape specifique !
                         }
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
                     }
                     break;
 
@@ -617,6 +618,7 @@ class aquete_perso
                     {
                         // Les objets ont été donné
                         $status_etape = 1;      // 1 => ok etape suivante,
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
                     }
                     break;
 
