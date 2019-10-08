@@ -39,7 +39,8 @@ if ($autorise == 1) {
 			gobj_comp_cod, obj_description, coalesce(obj_seuil_force, 0) as obj_seuil_force, obj_seuil_dex,
 			coalesce(obj_bonus_vue, 0) as obj_bonus_vue, coalesce(obj_critique, 0) as obj_critique, obj_armure,
 			coalesce(obj_vampire, 0) as obj_vampire, coalesce(obj_aura_feu, 0) as obj_aura_feu, obj_enchantable, obj_poison, obj_regen,
-			gobj_image, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_niveau_min
+			gobj_image, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_niveau_min, 
+			coalesce(obj_chute, 0) as obj_chute, coalesce(obj_portee, 0) as obj_portee
 		from objets
 		inner join objet_generique on gobj_cod = obj_gobj_cod
 		inner join type_objet on tobj_cod = gobj_tobj_cod
@@ -150,6 +151,17 @@ if ($autorise == 1) {
                 echo "</tr>";
             }
 
+            if ($db->f("gobj_distance") == 'O') {
+                echo "<tr>";
+                echo "<td class=\"soustitre2\">Portée </td>";
+                echo "<td>" . $db->f("obj_portee") . "</td>";
+                echo "</tr>";
+
+                echo "<tr>";
+                echo "<td class=\"soustitre2\">Chute </td>";
+                echo "<td>" . $db->f("obj_chute") . "</td>";
+                echo "</tr>";
+            }
 
             $req = "select comp_libelle from competences where comp_cod = $comp ";
             $db->query($req);
