@@ -1903,7 +1903,7 @@ class aquete_action
         while ($result = $stmt->fetch())
         {
 
-            print_r($result);
+            //print_r($result);
 
             if (     ($result["perso_cod"]==$aqperso->aqperso_perso_cod)                                         // 1: Cas du meneur (il passe toujours)
                || ($p3->aqelem_misc_cod>=2 && $result["pcompt_compt_cod"]==$compt_cod)                        // 2: Meneur et sa triplette
@@ -1912,11 +1912,16 @@ class aquete_action
             )
             {
                 // Téléporter !!!
-                $req = "update perso_position set ppos_pos_cod=pos_alentour(:pos_cod, :dispersion) where ppos_perso_cod=:ppos_perso_cod ";
+                $req = "update perso_position set ppos_pos_cod=pos_alentour(:pos_cod, :dispersion) where ppos_perso_cod=:ppos_perso_cod; ";
                 $stmt2   = $pdo->prepare($req);
                 $pdo->execute(array(":pos_cod" => $p1->aqelem_misc_cod,
                                     ":dispersion" => $p2->aqelem_param_num_1,
                                     ":ppos_perso_cod" => $result["perso_cod"]), $stmt2);
+
+                // Supression des locks de combat !!!
+                $req = "delete from lock_combat where lock_cible = :perso_cod or lock_attaquant = :perso_cod ; ";
+                $stmt2   = $pdo->prepare($req);
+                $pdo->execute(array(":perso_cod" => $result["perso_cod"]), $stmt2);
             }
         }
         return true;
