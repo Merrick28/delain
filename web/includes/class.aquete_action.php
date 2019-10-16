@@ -46,6 +46,25 @@ class aquete_action
     }
 
     //==================================================================================================================
+
+    /**
+     * @param $string
+     * @return string en minuscule et néttoyée de tous les caractère de ponctuation.
+     */
+    private function clean_string($s){
+
+        $s = str_replace(
+            array('à','á','â','ã','ä','ç','è','é','ê','ë','ì','í','î','ï','ñ','ò','ó','ô','õ','ö','ù','ú','û','ü','ý','ÿ','À','Á','Â','Ã','Ä','Ç','È','É','Ê','Ë','Ì','Í','Î','Ï','Ñ','Ò','Ó','Ô','Õ','Ö','Ù','Ú','Û','Ü','Ý'),
+            array('a','a','a','a','a','c','e','e','e','e','i','i','i','i','n','o','o','o','o','o','u','u','u','u','y','y','A','A','A','A','A','C','E','E','E','E','I','I','I','I','N','O','O','O','O','O','U','U','U','U','Y'),
+            $s );
+        $s = str_replace(' ', '-', $s);
+        $s = preg_replace('/[^0-9A-Za-z0-9-]/', '', $s);
+        $s = preg_replace('/-+/', ' ', $s);
+
+        return trim(strtolower($s)) ;
+    }
+
+    //==================================================================================================================
     /**
      * On supprime tous les éléments de la quête créé dont la liste est passé en paramètre =>  '[1:element|0%0]'
      * @param aquete_perso $aqperso
@@ -136,7 +155,7 @@ class aquete_action
             return $retour;     // on ne compte pas ça comme une tentative!
         }
         $dialogue = $_REQUEST["dialogue"] ;
-        $mots_dialogue = preg_split('/\W/', strtolower($dialogue), 0, PREG_SPLIT_NO_EMPTY);
+        $clean_dialogue = " ".$this->clean_string($dialogue)." ";
 
         $element = new aquete_element();
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur" )) return $retour ;                      // Problème lecture (blocage)
@@ -168,7 +187,6 @@ class aquete_action
         $perso_journal->chargeDernierePage($aqperso->aqperso_cod, $aqperso->aqperso_nb_realisation);
 
         //Compléter la dernière parge avec le dialogue:
-
         $perso_journal->aqpersoj_texte .= "   Vous: {$dialogue}<br> ";
         $perso_journal->stocke();
 
@@ -184,7 +202,7 @@ class aquete_action
             $conjonction = $elem->aqelem_param_num_2;     // 0=>ET 1=>OU
             foreach ($mots_attendus as $m =>$mot)
             {
-                if (in_array(strtolower($mot), $mots_dialogue))
+                if (strpos($clean_dialogue, " ".$this->clean_string($mot)." ") !== false )
                 {
                     $nb_mots++ ;
                 }
