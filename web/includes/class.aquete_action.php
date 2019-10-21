@@ -96,6 +96,37 @@ class aquete_action
 
     //==================================================================================================================
     /**
+     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:perso_condition|0%0],[2:etape|1%1],[3:etape|1%1]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_perso(aquete_perso $aqperso)
+    {
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
+
+        // Cette étape est totalement vérifié par la fonction quetes.aq_verif_perso_condition_etape
+
+        $pdo = new bddpdo;
+        $req = "select quetes.aq_verif_perso_condition_etape(:perso_cod, :etape_cod, :param_id, :aqperso_cod) as verification";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                ":perso_cod" => $aqperso->aqperso_perso_cod,
+                                ":etape_cod" => $aqperso->aqperso_etape_cod,
+                                ":param_id" => 1,
+                                ":aqperso_cod" => $aqperso->aqperso_cod
+                            ), $stmt);
+        $result = $stmt->fetch();
+
+        if ((int)$result["verification"] <= 0)  return $p3->aqelem_misc_cod ; // Les conditions ne sont pas remplies, passage à l'étape d'erreur
+
+        // Le perso possède les conditions demandées, on valide le saut d'étape à l'étape demandé!
+        return $p2->aqelem_misc_cod ;
+    }
+
+    //==================================================================================================================
+    /**
      * On recherche le n° d'étape suivant en fonction des condition =>  '[1:quete_etape|0%0],[2:etape|1%1]'
      * @param aquete_perso $aqperso
      * @return bool
