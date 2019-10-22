@@ -203,6 +203,13 @@ if ($autorise == 1)
             echo "<hr /><strong>Évaluation de vos missions en cours</strong><br />$missions<hr />";
         }
 
+        // on vérifie s'il y a du nouveau dans les quetes-auto en cours.
+        $quetes = $perso_dlt->quete_auto();
+        if ($quetes !== '')
+        {
+            echo "<hr /><strong>Évaluation de vos quête en cours</strong><br />$quetes<hr />";
+        }
+
         // recherche des evts non lus
         // TODO: mettre les evts en crud
         $liste_evt = $perso_dlt->getEvtNonLu();

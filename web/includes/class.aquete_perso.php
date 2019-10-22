@@ -189,6 +189,21 @@ class aquete_perso
     }
 
     //Comptage des quetes en cours d'un perso (toutes quetes confondues)
+    /**
+     * @param $perso_cod
+     * @return mixed
+     */
+    function get_journal_nb_news()
+    {
+        $pdo = new bddpdo;
+
+        $req = "select count(*) journal_news from quetes.aquete_perso_journal where aqpersoj_aqperso_cod=:aqperso_cod  and aqpersoj_lu='N'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":aqperso_cod"=>$this->aqperso_cod), $stmt);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 
     /**
      * @param $perso_cod
@@ -201,6 +216,14 @@ class aquete_perso
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $req = "select count(*) journal_nb_news from quetes.aquete_perso join quetes.aquete_perso_journal on aqpersoj_aqperso_cod=aqperso_cod where aqperso_perso_cod=? and aqperso_actif<>'N' and aqpersoj_lu='N'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        $result_j = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $result["journal_nb_news"] = $result_j["journal_nb_news"];
+
         return $result;
     }
 
@@ -484,6 +507,7 @@ class aquete_perso
             $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
             $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$quete->aquete_max_delai} jours</strong> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+            $perso_journal->aqpersoj_lu = "N" ;
             $perso_journal->stocke(true);
 
             $this->aqperso_actif = 'E';       // Etape terminée sur un Echec.
@@ -520,6 +544,7 @@ class aquete_perso
                 $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
                 $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
                 $perso_journal->aqpersoj_texte = $this->hydrate();
+                $perso_journal->aqpersoj_lu = "N" ;
                 $perso_journal->stocke(true);       // Nouvelle page !
             }
 
@@ -541,6 +566,7 @@ class aquete_perso
                         $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
                         $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
                         $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$elements[0]->aqelem_param_num_1} jours</strong> que vous avez commencé cette étape.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+                        $perso_journal->aqpersoj_lu = "N" ;
                         $perso_journal->stocke(true);
                     }
                     // le "timeout d'étape" se comporte comme une étape du type SAUT, le aqelem_misc_cod contient la prochaine étape !
@@ -854,6 +880,8 @@ class aquete_perso
                 $perso_journal->aqpersoj_texte = "Malheureusement, vous n'avez pas réussi cette quête!<br> ";
             else if ($this->aqperso_actif == "O" || $this->aqperso_actif == 'S')
                 $perso_journal->aqpersoj_texte = "Félicitation, vous avez réussi cette quête!<br> ";
+
+            $perso_journal->aqpersoj_lu = "N" ;
             $perso_journal->stocke(true);
         }
 
@@ -991,6 +1019,41 @@ class aquete_perso
             } else
             {
                 $journal_quete .= $journal->aqpersoj_texte . "<br>";
+            }
+
+            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
+            {
+                $journal->aqpersoj_lu = 'O';
+                $journal->stocke();
+            }
+        }
+
+        return $journal_quete;
+    }
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
+
+
+    /**
+     * @param string $lire : O si les pages doivent-être lu
+     * @param int $residu : nombre de page à laisser avec la css "non-lu"
+     * @param int $step : si vrai des infos additionnelles sur l'heure de chaque "step/etape" est ajouté
+     * @return string
+     */
+    function journal_news($lire = 'N')
+    {
+        $journal_quete = "";
+
+        $pdo = new bddpdo;
+        $etape = new aquete_etape();
+        $perso_journal = new aquete_perso_journal();
+        $perso_journaux = $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
+
+        foreach ($perso_journaux as $k => $journal)
+        {
+            // Seulement les pages non-lues
+            if (($journal->aqpersoj_lu == 'N'))
+            {
+                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
             }
 
             if ($lire == 'O' && $journal->aqpersoj_lu == 'N')

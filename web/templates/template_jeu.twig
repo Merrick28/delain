@@ -218,10 +218,10 @@
     <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
     <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
     {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
-        <img src="{{ G_IMAGES }}calice.png"> <a href="/jeu_test/quete_auto.php">Mes quêtes
+        <img src="{{ G_IMAGES }}calice.png"> <a href="/jeu_test/quete_auto.php"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}<strong>{% endif %}Mes quêtes
         {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
             ({{ PERSO.perso_nb_auto_quete.nb_encours }})
-        {% endif %}
+        {% endif %}{% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}</strong>{% endif %}
     </a><br>
 
     {% endif %}
