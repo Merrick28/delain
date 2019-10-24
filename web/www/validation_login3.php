@@ -207,7 +207,7 @@ if ($autorise == 1)
         $quetes = $perso_dlt->quete_auto();
         if ($quetes !== '')
         {
-            echo "<hr /><strong>Évaluation de vos quête en cours</strong><br />$quetes<hr />";
+            echo "<hr /><strong>Évaluation de vos quêtes en cours</strong><br />$quetes<hr />";
         }
 
         // recherche des evts non lus
