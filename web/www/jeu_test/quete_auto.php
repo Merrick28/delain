@@ -7,6 +7,7 @@ define("APPEL", 1);
 
 // Détection des droits admin, pour ajouter de l'info suplémentaire dans l'écran
 $isAdminAnimation = false;
+$pdo = new bddpdo;
 
 $droit_modif = 'dcompt_animations';
 include "blocks/_test_droit_modif_generique.php";
@@ -107,6 +108,7 @@ switch ($methode)
                 $perso_journal->aqpersoj_realisation = $quete_perso->aqperso_nb_realisation;
                 $perso_journal->aqpersoj_quete_step = $quete_perso->aqperso_quete_step;
                 $perso_journal->aqpersoj_texte = "Vous avez choisi d'abandonner cette quête!<br> ";
+                $perso_journal->aqpersoj_lu = "O";
                 $perso_journal->stocke(true);
             }
 
@@ -220,7 +222,23 @@ if ($methode == "")
             // Affichage de la boite de selection
             $contenu_page .= '<form method="post">';
             if (isset($_REQUEST["onglet"])) $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
-            $contenu_page .= "<br>Sélectionner la quête : " . create_selectbox_from_req("quete", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style' => 'style="width:300px;" onchange="this.parentNode.submit();"'));
+
+            // Récupérer la liste de quete en cours
+            //echo "<pre>"; print_r($quetes_perso); echo "</pre>"; die();
+            //selectbox
+            $selectbox = '<select name="quete" style="width:300px;" onchange="this.parentNode.submit();">';
+            foreach ($quetes_perso as $k => $q)
+            {
+                $aq = new aquete();
+                $aq->charge($q->aqperso_aquete_cod);
+                $news = $q->get_journal_nb_news();
+                $style = ((int)$news["journal_news"]>0) ?  'style="font-weight: bold;"' : '';
+                $selectbox.='<option '.$style.' '.($q->aqperso_aquete_cod==$aquete_cod ? "selected" : "").' value="'.$q->aqperso_aquete_cod.'">'.$aq->aquete_nom.'</option>';
+            }
+            $selectbox.= '</select>';
+
+            //$contenu_page .= "<br>Sélectionner la quête : " . create_selectbox_from_req("quete", "SELECT aquete_cod, aquete_nom FROM quetes.aquete where aquete_cod in ({$quete_id_list}) order by aquete_nom", $aquete_cod, array('style' => 'style="width:300px;" onchange="this.parentNode.submit();"'));
+            $contenu_page .= "<br>Sélectionner la quête : " . $selectbox;
             $contenu_page .= '</form><hr>';
 
             $quete_perso->charge($recherche_quete[$aquete_cod]);
