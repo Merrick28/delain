@@ -492,9 +492,10 @@ class aquete_perso
     }
 
     // On reprend à partir de l'étape en cours, on regarde si elle est terminée et ainsi de suite
+    // retourne le nombre d'étape qui ont été réalisées (0 si pas d'évolution de la quête)
     function run()
     {
-        if ($this->aqperso_etape_cod == 0) return;    // on a déjà fini la quete, il reste au joueur à la valider.
+        if ($this->aqperso_etape_cod == 0) return 0;    // on a déjà fini la quete, il reste au joueur à la valider.
 
         $perso_journal = new aquete_perso_journal();
         $perso_journal->chargeDernierePage($this->aqperso_cod, $this->aqperso_nb_realisation);
@@ -514,9 +515,10 @@ class aquete_perso
             $this->aqperso_etape_cod = 0;      // Fin de quête!
             $this->aqperso_quete_step++;
             $this->stocke();                    // Mettre à jours les infos
-            return;
+            return  1;
         }
 
+        $nb_etape_run = 0 ;
         do
         {
             $loop = false;   // par défaut on sort, sauf si une etape est validée, alors il faudra continuer
@@ -845,6 +847,12 @@ class aquete_perso
                     break;
             }
 
+            //------- comptage du nombre d'étape réalisées----------------------
+            if ($status_etape != 0)
+            {
+                $nb_etape_run ++ ;
+            }
+
             //------- traitement du status d'étape------------------------------
             if ($status_etape == 1)
             {
@@ -868,6 +876,7 @@ class aquete_perso
 
             $this->stocke();    // Mettre à jours les infos (car celles-ci peuvent être utilisée dans les étapes d'actions)
 
+
         } while ($loop && $this->aqperso_etape_cod > 0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
         /// Jouraliser la fin de quete
@@ -884,6 +893,8 @@ class aquete_perso
             $perso_journal->aqpersoj_lu = "N" ;
             $perso_journal->stocke(true);
         }
+
+        return $nb_etape_run ;
 
     }
 
