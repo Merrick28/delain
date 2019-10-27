@@ -1524,18 +1524,24 @@ class perso
         $quete_perso = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_en_cours($this->perso_cod);
 
-
-        foreach ($quetes_perso as $k => $q)
+        if ($quetes_perso && sizeof($quetes_perso)>0)
         {
-            $q->run();
-            $quete = new aquete();
-            $quete->charge($q->aqperso_aquete_cod);
-
-            $pages = $q->journal_news();
-            // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
-            if ($pages != "")
+            foreach ($quetes_perso as $k => $q)
             {
-                $news.="<br>&rArr; <em><strong>".$quete->aquete_nom."</strong></em>:<br><br>".$pages;
+                $nb_etapes = $q->run();
+
+                if ($nb_etapes>0)
+                {
+                    $quete = new aquete();
+                    $quete->charge($q->aqperso_aquete_cod);
+
+                    $pages = $q->journal_news();
+                    // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
+                    if ($pages != "")
+                    {
+                        $news.="<br>&rArr; <em><strong>".$quete->aquete_nom."</strong></em>:<br><br>".$pages;
+                    }
+                }
             }
         }
 
