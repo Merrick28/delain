@@ -1257,7 +1257,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On verifie si les objets sont là =>  '[1:delai|1%1],[3:valeur|1%1],[4:objet_generique|0%0]'
+     * On verifie si les objets sont là =>  '[1:delai|1%1],[2:valeur|1%1],[3:objet_generique|0%0]'
      * Attention à la place des objets générique il peut y avoir des objets réelement instanciés (on vérifiera les cod)
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
@@ -1367,6 +1367,41 @@ class aquete_action
                 $elem->stocke(true);                           // sauvegarde du clone forcément du type objet (instancié)
             }
         }
+
+        return true;
+    }
+    //==================================================================================================================
+    /**
+     * On verifie si les brouzoufs sont là =>  '[1:delai|1%1],[2:valeur|1%1]'
+     * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function remettre_detruire_po(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;                            // Problème lecture des paramètres
+
+        $po = $p2->aqelem_param_num_1 ;
+
+        $perso = $aqperso->get_perso();
+        if ($perso->perso_po < $po ) return false;       //il en manque !
+
+        $pdo = new bddpdo;
+        $req = "update perso set perso_po = perso_po - :po where perso_cod = :perso_cod ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":po"               => $po,
+            ":perso_cod"        => $aqperso->aqperso_perso_cod), $stmt);
+
+
+        $texte_evt = "[cible] perd {$po} brouzoufs." ;
+        $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                  values(40, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":levt_perso_cod1" => $aqperso->aqperso_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $aqperso->aqperso_perso_cod , ":levt_cible" => $aqperso->aqperso_perso_cod  ), $stmt);
 
         return true;
     }

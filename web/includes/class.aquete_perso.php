@@ -727,6 +727,14 @@ class aquete_perso
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
 
+                case "#REMETTRE #DETRUIRE #PO":
+                    // Pour recevoir les/les objets le joueur doit être sur la même case que le donnateur
+                    if ($this->action->remettre_detruire_po($this))
+                    {
+                        // Les objets ont été remis et détruits
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+
                 case "#REMETTRE #OBJET":
                     // Pour donner les/les objets le joueur doit être sur la même case que le PNJ et démarrer la transaction
                     if ($this->action->remettre_objet($this))
