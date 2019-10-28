@@ -440,21 +440,26 @@ class aquete_perso
             // Ne faire que les nouveaux
             if (!in_array("[$v]", $search))
             {
-                $search[] = "[$v]";
                 if (substr($v,0,1)=="#")
                 {
                     // Gestion des varibales du perso
+                    $search[] = "[$v]";
                     $replace[] = $perso->get_champ(substr($v,1));
                 }
-                else
+                else if (is_numeric($v))
                 {
-                    $replace[] = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                    $texte = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                    if ($texte!="")
+                    {
+                        $search[] = "[$v]";
+                        $replace[] = $texte ;
+                    }
                 }
             }
         }
         //echo "<pre>"; print_r($search); echo "</pre>";
         //echo "<pre>"; print_r($replace); echo "</pre>";
-        //print_r($etape->aqetape_texte);
+        //print_r($etape->aqetape_texte); die();
         return str_replace($search, $replace, $etape->aqetape_texte);
     }
 
@@ -466,14 +471,17 @@ class aquete_perso
      */
     function get_elements_texte($param_id)
     {
-        $pdo = new bddpdo;
+        if (!is_numeric ($param_id))
+        {
+            return "";                  // si le paramètre est érroné
+        }
 
         $element = new aquete_element();
         $elements = $element->getBy_aqperso_param_id($this, $param_id);
 
         if (count($elements) == 0)
         {
-            return "";                  // si rien trouvé !
+            return "";                   // si rien trouvé !
         }
 
         // Préparation d'une table pour la recherche inversée

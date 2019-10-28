@@ -224,6 +224,10 @@ class aquete_etape
                 {
                     $hydrate_texte .=  $perso->get_champ(substr($params[0],1));
                 }
+                else if (! is_numeric($params[0]) )
+                {
+                    $hydrate_texte.= "[".$params[0]."]";
+                }
                 else if ($param_num == 1)
                 {
                     $hydrate_texte.= $trigger_nom;
