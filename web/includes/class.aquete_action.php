@@ -656,23 +656,23 @@ class aquete_action
      * @param aquete_perso $aqperso
      * @return bool
      */
-    function move_position(aquete_perso $aqperso)
+    function move_position(aquete_perso $aqperso, $param_id=2)
     {
 
         // Il peut y avoir une liste de position possible, on regarde directement par une requete s'il y en a un (plutôt que de faire une boucle sur tous les éléments)
         $pdo = new bddpdo;
         $req = " select aqelem_cod from perso
-                join perso_position on ppos_perso_cod=perso_cod and perso_cod=?
+                join perso_position on ppos_perso_cod=perso_cod and perso_cod=:perso_cod
                 join 
                 ( 
                     select aqelem_cod, aqelem_misc_cod as pos_cod
                     from quetes.aquete_perso
-                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=2 and aqelem_type='position'
-                    where aqperso_cod=?
+                    join quetes.aquete_element on aqelem_aquete_cod=aqperso_aquete_cod and aqelem_aqperso_cod = aqperso_cod and aqelem_aqetape_cod=aqperso_etape_cod and aqelem_param_id=:param_id and aqelem_type='position'
+                    where aqperso_cod=:aqperso_cod
                 ) quete on pos_cod=ppos_pos_cod order by random() limit 1 ";
 
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array($aqperso->aqperso_perso_cod, $aqperso->aqperso_cod), $stmt);
+        $stmt   = $pdo->execute(array(':perso_cod' => $aqperso->aqperso_perso_cod, ':aqperso_cod' => $aqperso->aqperso_cod, ':param_id' => $param_id), $stmt);
         if ($stmt->rowCount()==0)
         {
             return false;
@@ -681,7 +681,7 @@ class aquete_action
 
         // On doit supprimer tous les autres éléments de ce step pour ce perso, on ne garde que le lieu sur lequel il c'est rendu!
         $element = new aquete_element();
-        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 2, array(0=>$result["aqelem_cod"]));
+        $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, $param_id, array(0=>$result["aqelem_cod"]));
 
         return true;
     }
@@ -1257,7 +1257,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On verifie si les objets sont là =>  '[1:delai|1%1],[2:valeur|1%1],[3:objet_generique|0%0]'
+     * On verifie si les objets sont là =>  '[1:delai|1%1],[2:valeur|1%1],[3:objet_generique|0%0],[4:position|1%0]'
      * Attention à la place des objets générique il peut y avoir des objets réelement instanciés (on vérifiera les cod)
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
@@ -1270,6 +1270,12 @@ class aquete_action
         $element = new aquete_element();
         if (!$p3 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;                            // Problème lecture des paramètres
         if (!$p4 = $element->get_aqperso_element( $aqperso, 3, array('objet_generique', 'objet'), 0)) return false ;      // Problème lecture des paramètres
+        $p5 = $element->get_aqperso_element( $aqperso, 4, 'position', 0) ;
+
+        if ($p5 &&  $p5[0]->aqelem_misc_cod>0 && !$aqperso->action->move_position($aqperso, 4) )
+        {
+            return false;       // Pas en position pour réaliser l'action!
+        }
 
         shuffle($p4);                                       // ordre aléatoire pour les objets
 
@@ -1372,7 +1378,7 @@ class aquete_action
     }
     //==================================================================================================================
     /**
-     * On verifie si les brouzoufs sont là =>  '[1:delai|1%1],[2:valeur|1%1]'
+     * On verifie si les brouzoufs sont là =>  '[1:delai|1%1],[2:valeur|1%1],[3:position|1%0]'
      * Nota: La vérification du délai est faite en amont, on s'en occupe pas ici!
      * @param aquete_perso $aqperso
      * @return bool
@@ -1383,6 +1389,12 @@ class aquete_action
 
         $element = new aquete_element();
         if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;                            // Problème lecture des paramètres
+        $p3 = $element->get_aqperso_element( $aqperso, 3, 'position', 0) ;
+
+        if ($p3 &&  $p3[0]->aqelem_misc_cod>0 && !$aqperso->action->move_position($aqperso, 3) )
+        {
+            return false;       // Pas en position pour réaliser l'action!
+        }
 
         $po = $p2->aqelem_param_num_1 ;
 
