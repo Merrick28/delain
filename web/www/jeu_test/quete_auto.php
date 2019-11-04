@@ -190,11 +190,12 @@ if ($methode == "")
     //--------------------------- PAGE DE SUIVI DES QUETES EN COURS ET TERMINEES --------------------------------------
     $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>Suivi de vos Quêtes</strong></center></div><br><br>";
     $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%"><tr style="height:25px;">';
-    if (!isset($_REQUEST["onglet"]))
+
+    if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="encours"))
     {
         // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
-        $contenu_page .= '<td class="onglet"><p style="text-align:center">Quête(s) en cours</p></td><td class="pas_onglet"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
-        $contenu_page .= '<tr><td colspan="2" class="reste_onglet">';
+        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php">Aperçu</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) en cours</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
+        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
 
 
         $quete_perso = new aquete_perso();
@@ -221,7 +222,7 @@ if ($methode == "")
 
             // Affichage de la boite de selection
             $contenu_page .= '<form method="post">';
-            if (isset($_REQUEST["onglet"])) $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
+            $contenu_page .= '<input type="hidden" name="onglet" value="encours">';
 
             // Récupérer la liste de quete en cours
             //echo "<pre>"; print_r($quetes_perso); echo "</pre>"; die();
@@ -295,11 +296,47 @@ if ($methode == "")
 
             $contenu_page .= "<br><br>";
         }
+    } else if (!isset($_REQUEST["onglet"]))
+    {
+        // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
+        $contenu_page .= '<td class="onglet" style="width: 30%"><p style="text-align:center">Aperçu</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
+        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
+
+
+        $quete_perso = new aquete_perso();
+        $quetes_perso = $quete_perso->get_perso_quete_en_cours($perso_cod);
+
+        // Récupération des Quetes en cours
+        if (!$quetes_perso)
+        {
+            // Affichage de la boite de selection
+            $contenu_page .= "<br><br><br><br><center>Vous n'avez pas encore commencé de quête!!!!<center><br><br><br><br>";
+        } else
+        {
+            foreach ($quetes_perso as $k => $q)
+            {
+                // Préparation du journal pour indiquer le résultat de l'échange
+                $journal = new aquete_perso_journal();
+                $journal->chargeDernierePage($q->aqperso_cod, $q->aqperso_nb_realisation) ;
+
+                $aq = new aquete();
+                $aq->charge($q->aqperso_aquete_cod);
+
+                $news = $q->get_journal_nb_news();
+                $style = ((int)$news["journal_news"]>0) ?  'style="background-color: #BA9C6C;"' : '';
+
+                $contenu_page .= '<div class="hr">&nbsp;&nbsp;<strong>Commencée le ' .date("d/m/Y H:i:s", strtotime($q->aqperso_date_debut))  . '</strong>&nbsp;&nbsp;</div>';
+                $contenu_page .= "Quête : <a href=\"quete_auto.php?onglet=encours&quete=".$q->aqperso_aquete_cod."\" style=\"font-weight:bold;\">" . $aq->aquete_nom . "</a><br><br>";
+                $contenu_page .= "<div {$style}>{$journal->aqpersoj_texte}<br></div>";
+
+            }
+        }
+        $contenu_page .= "<br><br>";
     } else
     {
         // --------------------------------------- ONGLET DES QUETES TERMINE------------------------------------------------------------
-        $contenu_page .= '<td class="pas_onglet"><p style="text-align:center"><a href="/jeu_test/quete_auto.php">Quête(s) en cours</a></p></td><td class="onglet"><p style="text-align:center">Quête(s) terminée(s)</p></td></tr>';
-        $contenu_page .= '<tr><td colspan="2" class="reste_onglet">';
+        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php">Aperçu</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) terminée(s)</p></td></tr>';
+        $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
 
         $quete_perso = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_terminee($perso_cod);
@@ -340,7 +377,7 @@ if ($methode == "")
             {
                 // Affichage de la boite de selection
                 $contenu_page .= '<form method="post">';
-                if (isset($_REQUEST["onglet"])) $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
+                $contenu_page .= '<input type="hidden" name="onglet" value="terminees">';
                 $contenu_page .= "<br>Sélectionner la quête : " . create_selectbox("quete_nb", $aq_select, $_REQUEST["quete_nb"], array('style' => 'style="width:300px;" onchange="this.parentNode.submit();"'));
                 $contenu_page .= '</form><hr>';
 

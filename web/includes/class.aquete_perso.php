@@ -1066,8 +1066,6 @@ class aquete_perso
 
     /**
      * @param string $lire : O si les pages doivent-être lu
-     * @param int $residu : nombre de page à laisser avec la css "non-lu"
-     * @param int $step : si vrai des infos additionnelles sur l'heure de chaque "step/etape" est ajouté
      * @return string
      */
     function journal_news($lire = 'N')
@@ -1078,6 +1076,39 @@ class aquete_perso
         $etape = new aquete_etape();
         $perso_journal = new aquete_perso_journal();
         $perso_journaux = $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
+
+        foreach ($perso_journaux as $k => $journal)
+        {
+            // Seulement les pages non-lues
+            if (($journal->aqpersoj_lu == 'N'))
+            {
+                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
+            }
+
+            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
+            {
+                $journal->aqpersoj_lu = 'O';
+                $journal->stocke();
+            }
+        }
+
+        return $journal_quete;
+    }
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
+
+    /**
+     * @param string $lire : O si les pages doivent-être lu
+     * @param int $step : si vrai des infos additionnelles sur l'heure de chaque "step/etape" est ajouté
+     * @return string
+     */
+    function journal_derniere_page($lire = 'N')
+    {
+        $journal_quete = "";
+
+        $pdo = new bddpdo;
+        $etape = new aquete_etape();
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage();
 
         foreach ($perso_journaux as $k => $journal)
         {
