@@ -165,7 +165,8 @@ else if (!in_array( substr(str_replace("http://", "https://", $_REQUEST["url"]),
         "/jeu_test/concentration.php",
         "/jeu_test/messagerie2.php",
         "/jeu_test/guilde.php",
-        "/jeu_test/groupe.php"
+        "/jeu_test/groupe.php",
+        "/jeu_test/quete_auto.php"
     )))
 {
      // par sécurité, on switch sur la vue.
