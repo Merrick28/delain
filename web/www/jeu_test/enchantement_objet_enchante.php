@@ -58,6 +58,7 @@ switch($methode)
 				$app_req = ' where tenc_casque = 1 ';
 				break;
 			case 6:	    //artefact
+			case 7:	    //relique
 			case 27:	//signes distinctifs
 				$app_req = ' where tenc_artefact = 1 ';
 				break;
