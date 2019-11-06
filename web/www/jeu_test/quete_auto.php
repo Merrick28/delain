@@ -326,8 +326,8 @@ if ($methode == "")
                 $style = ((int)$news["journal_news"]>0) ?  'style="background-color: #BA9C6C;"' : '';
 
                 $contenu_page .= '<div class="hr">&nbsp;&nbsp;<strong>Commencée le ' .date("d/m/Y H:i:s", strtotime($q->aqperso_date_debut))  . '</strong>&nbsp;&nbsp;</div>';
-                $contenu_page .= "Quête : <a href=\"quete_auto.php?onglet=encours&quete=".$q->aqperso_aquete_cod."\" style=\"font-weight:bold;\">" . $aq->aquete_nom . "</a><br><br>";
-                $contenu_page .= "<div {$style}>{$journal->aqpersoj_texte}<br></div>";
+                $contenu_page .= "Quête : <a href=\"quete_auto.php?onglet=encours&quete=".$q->aqperso_aquete_cod."\" style=\"font-weight:bold;\">" . $aq->aquete_nom . "</a><br>";
+                $contenu_page .= "<div {$style}>{$journal->aqpersoj_texte}</div>";
 
             }
         }
