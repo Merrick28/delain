@@ -13,7 +13,7 @@ switch ($methode) {
 				from objet_generique,objets,perso_objets
 				where obj_gobj_cod = gobj_cod
 				and perobj_obj_cod = obj_cod
-				and gobj_tobj_cod in (1,2,4,6,7,27,40,41)
+				and gobj_tobj_cod in (1,2,4,6,7,27,40,41) and gobj_chance_enchant > 0
 				and perobj_identifie = 'O'
 				and perobj_perso_cod = $perso_cod";
         $req2 = $req . ' and obj_enchantable = 2
