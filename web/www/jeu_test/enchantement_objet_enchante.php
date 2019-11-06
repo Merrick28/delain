@@ -49,13 +49,16 @@ switch($methode)
 				else	// arme contact
 					$app_req = ' where tenc_arme_contact = 1 ';
 				break;
-			case 2:	// armure
+			case 2:	    // armure
+			case 40:	// gants
+			case 41:	// bottes
 				$app_req = ' where tenc_armure = 1 ';
 				break;
-			case 4:	// casque
+			case 4:	    // casque
 				$app_req = ' where tenc_casque = 1 ';
 				break;
-			case 6:	//artefact
+			case 6:	    //artefact
+			case 27:	//signes distinctifs
 				$app_req = ' where tenc_artefact = 1 ';
 				break;
 		}
