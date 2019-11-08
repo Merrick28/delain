@@ -156,6 +156,13 @@ if v_attaquant != v_cible then
 	-- on exécute les fonctions déclenchées par la mort de la cible (gelées, avatar, etc.)
 	code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'M');
 end if;
+
+	/**************************************************/
+	/* Etape 0 : controle pré-mortalité               */
+	/**************************************************/
+	-- Si le perso était dans le garde-manger, il faut l'en sortir avant afin qu'il subisse une mort normale
+  perform mort_gm(v_cible);
+
 	/**************************************************/
 	/* Etape 1 : on récupère les infos de la cible    */
 	/**************************************************/
