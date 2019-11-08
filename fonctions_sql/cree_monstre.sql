@@ -290,9 +290,16 @@ begin
 			insert into objets(obj_cod,obj_gobj_cod) values (v_code_objet,ligne_objet.ogmon_gobj_cod);
 			insert into perso_objets (perobj_perso_cod,perobj_obj_cod,perobj_identifie,perobj_equipe)
 				values (v_code_perso,v_code_objet,'O','N');
+
+			-- 2019/11/08 - ajout de la possibilité d'équiper du matériel !
+      if ligne_objet.ogmon_equipe then
+        -- tenter d'équpier
+				perform equipe_objet(v_code_perso,v_code_objet);
+      end if;
+
 			if ligne_objet.ogmon_gobj_cod in ('723','829') then
-			select into texte obj_text_texte from potions.objet_texte where obj_text_gobj_cod = ligne_objet.ogmon_gobj_cod order by random() limit 1;
-			update objets set obj_description = texte where obj_cod = v_code_objet;
+        select into texte obj_text_texte from potions.objet_texte where obj_text_gobj_cod = ligne_objet.ogmon_gobj_cod order by random() limit 1;
+        update objets set obj_description = texte where obj_cod = v_code_objet;
 			end if;
 		end if;
 	end loop;

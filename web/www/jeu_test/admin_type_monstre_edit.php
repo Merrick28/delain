@@ -1032,11 +1032,12 @@ if ($erreur == 0)
                 <TABLE width="80%" align="center">
                     <tr>
                         <th>Objet</th>
+
                         <th>Chance de posséder (SUR 10.000 !!!)</th>
                         <th style="text-align: center">Chance de drop <em style="font-size: 10px;">(si possédé)</em>
                         </th>
                     </tr>
-                    <?php $req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
+                    <?php $req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_equipe,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
                     $db_drops = new base_delain;
                     $db_drops->query($req_drops);
                     //echo $req_drops;
@@ -1058,6 +1059,7 @@ if ($erreur == 0)
                                            value="<?php echo $db_drops->f("ogmon_gobj_cod"); ?>">
                                     <INPUT type="text" name="valeur"
                                            value="<?php echo $db_drops->f("ogmon_chance"); ?>">
+                                    &nbsp;Equiper:<input type ="checkbox" name="ogmon_equipe" <?php echo $db_drops->f("ogmon_equipe") == "t" ? "checked" : ""; ?>>
                                     <input type="submit" value="Modifier">
                                 </form>
                             </td>
@@ -1096,8 +1098,9 @@ if ($erreur == 0)
                                     ?>
                                 </select>
                             </TD>
-                            <TD>
-                                <INPUT type="text" name="valeur" value="0">
+                            <TD style="padding-left:5px;">
+                                <INPUT  type="text" name="valeur" value="0">
+                                &nbsp;Equiper:<input type ="checkbox" name="ogmon_equipe">
                                 <input type="submit" value="Ajouter"></TD>
                             <td colspan="2"></td>
                         </form>
