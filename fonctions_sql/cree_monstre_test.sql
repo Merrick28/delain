@@ -267,6 +267,13 @@ begin
 			insert into objets(obj_cod,obj_gobj_cod) values (v_code_objet,ligne_objet.ogmon_gobj_cod);
 			insert into perso_objets (perobj_perso_cod,perobj_obj_cod,perobj_identifie,perobj_equipe)
 				values (v_code_perso,v_code_objet,'O','N');
+
+			-- 2019/11/08 - ajout de la possibilité d'équiper du matériel !
+      if ligne_objet.ogmon_equipe then
+        -- tenter d'équpier
+				perform equipe_objet(v_code_perso,v_code_objet);
+      end if;
+
 		end if;
 	end loop;
 	for ligne_objet in select * from sorts_monstre_generique where sgmon_gmon_cod = v_gmon loop

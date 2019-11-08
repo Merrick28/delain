@@ -273,9 +273,10 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur\n",'monstre_edit');
+        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false" ;
+		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur Equiper: {$ogmon_equipe}\n",'monstre_edit');
 	
-		$req_upd_mon =  "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance) values ($gmon_cod,$gobj_cod,$valeur)";
+		$req_upd_mon =  "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance,ogmon_equipe) values ($gmon_cod,$gobj_cod,$valeur, $ogmon_equipe)";
 		//echo $req_upd_mon;
 		$db_upd_mon->query($req_upd_mon);
 		echo "Ajout d’un drop";
@@ -287,9 +288,10 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom,ogmon_chance from objets_monstre_generique,objet_generique where gobj_cod = $gobj_cod and ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur\n",'monstre_edit');
+        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false" ;
+		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur Equiper: {$ogmon_equipe}\n",'monstre_edit');
 		
-		$req_upd_mon = "update objets_monstre_generique set ogmon_chance = $valeur where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
+		$req_upd_mon = "update objets_monstre_generique set ogmon_chance = $valeur, ogmon_equipe=$ogmon_equipe where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		//echo $req_upd_mon;	
 		$db_upd_mon->query($req_upd_mon);
 		echo "Modification d’un drop";
