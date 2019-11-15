@@ -277,15 +277,23 @@ switch ($methode)
 	break;
 
 	case "suppr_bonmal":
-		if(!($bonmal_cod == "")){
-			$db_upd_bm = new base_delain;
+		if(!($bonmal_cod == "")) {
+            $db_upd_bm = new base_delain;
 
-			$req_bm =  "delete from bonus where
+            if (in_array($bonmal_cod, ['FOR', 'INT', 'DEX', 'CON'])) {
+                // ATTENTION: PAS de DELETE dans le cas des bonus de caracs, sinon le perso garderait son bonus à vie!!!!!
+                $req_bm = "update carac_orig set corig_nb_tours=0, corig_dfin=null where corig_perso_cod = $mod_perso_cod and corig_type_carac = '$bonmal_cod'; ";
+                $db_upd_bm->query($req_bm);
+                $req_bm = "select f_remise_caracs($mod_perso_cod); ";
+                $db_upd_bm->query($req_bm);
+            } else {
+                $req_bm = "delete from bonus where
 				bonus_perso_cod = $mod_perso_cod
 				and bonus_valeur = $bonmal_valeur_debut
 				and bonus_tbonus_libc = '$bonmal_cod'";
+                $db_upd_bm->query($req_bm);
+            }
 
-			$db_upd_bm->query($req_bm);
 
 			$req_bm = "select tonbus_libelle from bonus_type where tbonus_libc = '$bonmal_cod'";
 			$db_upd_bm->query($req_bm);

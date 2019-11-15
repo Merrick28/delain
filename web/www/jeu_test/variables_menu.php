@@ -256,11 +256,11 @@ if ($nb_quete_auto["nb_total"] * 1 > 0)
 {
     if ((int)$nb_quete_auto["journal_nb_news"]>0)
     {
-        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\"><strong>Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</strong></a><br>";
+        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php?onglet=apercu\"><strong>Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</strong></a><br>";
     }
     else
     {
-        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
+        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php?onglet=apercu\">Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
     }
 }
 else

@@ -113,7 +113,7 @@ include_once '../includes/tools.php';
         }
         function listPersoEtage(etage_numero) {
             $("#liste-ajout-rapide").html("");
-            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", etage_numero: etage_numero}}, function (d) {
+            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", type_perso: 1, etage_numero: etage_numero}}, function (d) {
                 var content = "";
                 var nb_perso = 0;
                 var nb_monstre = 0;

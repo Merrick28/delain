@@ -114,6 +114,65 @@ begin
   elsif (v_carac_cod = 18) then                 --   (18, 'Perso PNJ (0=PJ, 1=PNJ, 3=4ème)', 'CARAC'),
     select into v_perso_carac perso_pnj::text from perso where perso_cod = v_perso_cod ;
 
+  elsif (v_carac_cod = 19) then                  --   (19, 'Competence Alchimie (en %)', 'COMPETENCE'),
+    select into v_perso_carac pcomp_modificateur from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (97,100,101) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 20) then                  --   (20, 'Competence Forgemage (en %)', 'COMPETENCE'),
+    select into v_perso_carac pcomp_modificateur from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (88,102,103) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 21) then                  -- (21, 'Competence Enluminure (en %)', 'COMPETENCE'),
+    select into v_perso_carac pcomp_modificateur from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (91,92,93) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 22) then                  --   (22, 'Niveau Alchimie', 'COMPETENCE'),
+    select into v_perso_carac
+          case when comp_cod=97 then 1
+               when comp_cod=100 then 2
+               when comp_cod=101 then 3
+           else 0 end
+      from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (97,100,101) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 23) then                  --   (23, 'Niveau Forgemage', 'COMPETENCE'),
+    select into v_perso_carac
+          case when comp_cod=88 then 1
+               when comp_cod=102 then 2
+               when comp_cod=103 then 3
+           else 0 end
+      from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (88,102,103) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 24) then                  --   (24, 'Niveau Enluminure', 'COMPETENCE');
+    select into v_perso_carac
+          case when comp_cod=91 then 1
+               when comp_cod=92 then 2
+               when comp_cod=93 then 3
+           else 0 end
+      from perso_competences join competences on comp_cod = pcomp_pcomp_cod	where pcomp_perso_cod = v_perso_cod and pcomp_modificateur != 0 and comp_cod in (91,92,93) ;
+    if not found then
+      return 0;
+    end if;
+
+  elsif (v_carac_cod = 25) then                  --    (25, 'A terminé l''étape de QA', 'QUETE');
+    select into v_perso_carac aqpersoj_etape_cod from quetes.aquete_perso_journal join quetes.aquete_perso on aqperso_cod=aqpersoj_aqperso_cod and aqperso_perso_cod=v_perso_cod  and aqpersoj_etape_cod=TO_NUMBER(v_param_txt_2, '9999999999.99') limit 1 ;
+    if not found then
+      return 0;
+    else
+      return 1;
+    end if;
+
   else
     return 0 ;    -- erreur dans les paramètres
 
