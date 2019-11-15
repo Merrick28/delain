@@ -56,12 +56,15 @@ include_once '../includes/tools.php';
         function setNomAndPosPerso(divname, cod) {
             //executer le service asynchrone
             $("#" + divname).text("");
-            runAsync({request: "get_table_info", data: {info: "perso_pos", perso_cod: cod}}, function (d) {
+            runAsync({request: "get_table_info", data: {info: "perso_compte_pos", perso_cod: cod}}, function (d) {
                 if ((d.resultat == 0) && (d.data) && (d.data.perso_nom)) {
-                    if (s_option == "monstre" && d.data.perso_type_perso != 2)
+                    if (s_option == "monstre" && d.data.perso_type_perso != 2) {
                         $("#" + divname).html('Vous n\'avez pas les droits pour titrer/récompenser ce perso.');
-                    else
+                        $("#" + divname+"_compte").val(0);
+                    } else {
                         $("#" + divname).html(d.data.perso_nom + ' <em style="font-size:10px;"> (X=' + d.data.pos_x + ' X=' + d.data.pos_y + ' ' + d.data.etage_libelle + ')</em>');
+                        $("#" + divname+"_compte").val(d.data.compt_cod);
+                    }
                 }
             });
             updatePersoCount();
@@ -213,9 +216,9 @@ include_once '../includes/tools.php';
             });
         }
 
-        function listPersoEtage(etage_numero) {
+        function listPersoEtage(type_perso, etage_numero) {
             $("#liste-ajout-rapide").html("");
-            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", etage_numero: etage_numero}}, function (d) {
+            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", type_perso: type_perso, etage_numero: etage_numero}}, function (d) {
                 var content = "";
                 var nb_perso = 0;
                 var nb_monstre = 0;
@@ -288,6 +291,21 @@ include_once '../includes/tools.php';
             $('#s-list-' + k).remove();
         }
 
+        function reduceTripletteTitrageList() {
+            var compteList = [] ;
+            $('tr[id^="row-0-"]').each(function () {
+                var compte = $('#' + this.id + 'aqelem_misc_nom_compte').val();
+                if (compte!="")
+                {
+                    if (compteList[compte]) {
+                        delQueteAutoParamRow($(this), 1);
+                    } else {
+                        compteList[compte] = true ;
+                    }
+                }
+            });
+            updatePersoCount();
+        }
         function isInTitrageList(cod) {
             var isInList = false;
             $('tr[id^="row-0-"]').each(function () {
@@ -755,6 +773,7 @@ if ($erreur == 0)
     echo '<td>Perso :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
+                    <input id="' . $row_id . 'aqelem_misc_nom_compte" type="hidden" value="">
                     <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomAndPosPerso(\'' . $row_id . 'aqelem_misc_nom\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","perso","Rechercher un perso", "' . $s_option . '");\'>
@@ -762,7 +781,9 @@ if ($erreur == 0)
                     &nbsp;<input type="button" class="" value="sa position" onClick=\'listSurZone($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     &nbsp;<input type="button" class="" value="controleur" onClick=\'listControleur($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     </td>';
-    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-perso" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-perso" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> 
+                                 <input id="del-button-triplette" type="button" class="test" value="Garder 1 par triplette" onClick="reduceTripletteTitrageList();"> 
+                                 </td></tr>';
     echo '</table>';
 
     //---- section à onglet------------------------------------------------------------
@@ -881,7 +902,7 @@ if ($erreur == 0)
     echo 'Titre <input id="perso_titre" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par titre" onClick="listPersoTitre($(\'#perso_titre\').val());"><br>';
     echo 'Liste <input id="perso_liste" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par liste de noms" onClick="listPersoListe($(\'#perso_liste\').val());"> <em style="font-size: x-small">(liste de nom séparés par des ; comme pour la messagerie)</em><br>';
     echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;')) ;
-    echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage($(\'#perso_etage\').val());"><br>';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage(1, $(\'#perso_etage\').val());">&nbsp;&nbsp;<input type="button" class="" value="tous les familiers de l\'étage" onClick="listPersoEtage(3, $(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
 

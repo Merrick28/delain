@@ -191,10 +191,10 @@ if ($methode == "")
     $contenu_page .= "<div class=\"titre\" style=\"padding:5px;\"><center><strong>Suivi de vos Quêtes</strong></center></div><br><br>";
     $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%"><tr style="height:25px;">';
 
-    if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="encours"))
+    if ( !isset($_REQUEST["onglet"]) || (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="encours"))   )
     {
         // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
-        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php">Aperçu</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) en cours</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
+        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) en cours</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
         $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
 
 
@@ -222,7 +222,6 @@ if ($methode == "")
 
             // Affichage de la boite de selection
             $contenu_page .= '<form method="post">';
-            $contenu_page .= '<input type="hidden" name="onglet" value="encours">';
 
             // Récupérer la liste de quete en cours
             //echo "<pre>"; print_r($quetes_perso); echo "</pre>"; die();
@@ -296,7 +295,7 @@ if ($methode == "")
 
             $contenu_page .= "<br><br>";
         }
-    } else if (!isset($_REQUEST["onglet"]))
+    } else if (isset($_REQUEST["onglet"]) && ($_REQUEST["onglet"]=="apercu"))
     {
         // --------------------------------------- ONGLET DES QUETES EN COURS------------------------------------------------------------
         $contenu_page .= '<td class="onglet" style="width: 30%"><p style="text-align:center">Aperçu</p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=terminees">Quête(s) terminée(s)</a></p></td></tr>';
@@ -335,7 +334,7 @@ if ($methode == "")
     } else
     {
         // --------------------------------------- ONGLET DES QUETES TERMINE------------------------------------------------------------
-        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php">Aperçu</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) terminée(s)</p></td></tr>';
+        $contenu_page .= '<td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=apercu">Aperçu</a></p></td><td class="pas_onglet" style="width: 30%"><p style="text-align:center"><a href="/jeu_test/quete_auto.php?onglet=encours">Quête(s) en cours</a></p></td><td class="onglet" style="width: 30%"><p style="text-align:center">Quête(s) terminée(s)</p></td></tr>';
         $contenu_page .= '<tr><td colspan="3" class="reste_onglet">';
 
         $quete_perso = new aquete_perso();

@@ -634,6 +634,9 @@ begin
     set corig_nb_tours = corig_nb_tours - 1
     where corig_perso_cod = personnage;
 
+    /* Marlyza: s'il n'y a plus de bonus, remettre immédiatement les caracs en état */
+    perform f_remise_caracs(personnage) ;
+
     /* louche */
     update perso_louche
     set plouche_nb_tours = plouche_nb_tours - 1

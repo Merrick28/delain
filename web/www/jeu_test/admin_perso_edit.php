@@ -462,7 +462,7 @@ if ($erreur == 0)
                 <tr>
                     <td width='50%'>
                         <table>
-                            <?php // LISTE DES BONUS
+                            <?php // LISTE DES BONUS Standard
                             $req_bon = "select tonbus_libelle, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 		from bonus
 		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
@@ -471,6 +471,40 @@ if ($erreur == 0)
 			(tbonus_gentil_positif = 't' and bonus_valeur > 0
 			or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
 		order by bonus_tbonus_libc";
+                            $db->query($req_bon);
+                            while ($db->next_record())
+                            {
+                                $lib = $db->f("tonbus_libelle");
+                                $val = $db->f("bonus_valeur");
+                                $dur = $db->f("bonus_nb_tours");
+                                $tbon = $db->f("bonus_tbonus_libc");
+                                $id = $tbon . '_' . $val;
+                                echo "<TR>
+			<TD class='soustitre2'>$lib</TD>
+			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
+			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
+			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
+				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
+				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
+                                echo '</tr>';
+                            }
+                            ?>
+                            <?php // LISTE DES BONUS de Caracs
+                            $req_bon = "select tonbus_libelle, tbonus_libc as bonus_tbonus_libc, 
+                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
+                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END as bonus_valeur, 
+                                COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
+                                from carac_orig
+                                inner join bonus_type on tbonus_libc = corig_type_carac
+                                inner join perso on perso_cod=corig_perso_cod
+                                where corig_perso_cod = $mod_perso_cod and
+                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
+                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END >0
+                                order by tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())
                             {
@@ -503,6 +537,40 @@ if ($erreur == 0)
 			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
 		order by bonus_tbonus_libc";
                             $db->query($req_mal);
+                            while ($db->next_record())
+                            {
+                                $lib = $db->f("tonbus_libelle");
+                                $val = $db->f("bonus_valeur");
+                                $dur = $db->f("bonus_nb_tours");
+                                $tbon = $db->f("bonus_tbonus_libc");
+                                $id = $tbon . '_' . $val;
+                                echo "<TR>
+			<TD class='soustitre2'>$lib</TD>
+			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
+			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
+			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
+				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
+				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
+                                echo '</tr>';
+                            }
+                            ?>
+                            <?php // LISTE DES MALUS de Caracs
+                            $req_bon = "select tonbus_libelle, tbonus_libc as bonus_tbonus_libc, 
+                                          CASE WHEN tbonus_libc='FOR' THEN corig_carac_valeur_orig - perso_for
+                                               WHEN tbonus_libc='INT' THEN corig_carac_valeur_orig - perso_int 
+                                               WHEN tbonus_libc='DEX' THEN corig_carac_valeur_orig - perso_dex
+                                               WHEN tbonus_libc='CON' THEN corig_carac_valeur_orig - perso_con END as bonus_valeur, 
+                                COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
+                                from carac_orig
+                                inner join bonus_type on tbonus_libc = corig_type_carac
+                                inner join perso on perso_cod=corig_perso_cod
+                                where corig_perso_cod = $mod_perso_cod and
+                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
+                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
+                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END <0
+                                order by tbonus_libc";
+                            $db->query($req_bon);
                             while ($db->next_record())
                             {
                                 $lib = $db->f("tonbus_libelle");
