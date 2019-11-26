@@ -286,16 +286,24 @@ class aquete_etape
      * @param aquete_perso $aqperso
      * @return mixed|string
      */
-    function get_texte_form(aquete_perso $aqperso)
+    function get_texte_form(aquete_perso $aqperso, $type)
     {
         $etape_modele = $aqperso->get_etape_modele();
 
-        // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
-        if ( ! $aqperso->action->move_perso($aqperso, 1) )
+        if ($type=="perso")
         {
-            return "Vous êtes trop loin de votre interlocuteur pour dialoguer." ;
+            // Vérifier que le perso est bien sur la case du PNJ (utilisation de la mini étape: action->move_perso
+            if ( ! $aqperso->action->move_perso($aqperso, 1) )
+            {
+                return "Vous êtes trop loin de votre interlocuteur pour dialoguer." ;
+            }
+        } else {
+            // Vérifier que le perso est bien sur la case d'un lieu avec interraction
+            if ( ! $aqperso->action->move_position($aqperso, 1) )
+            {
+                return "Vous êtes trop loin du lieu pour interagir." ;
+            }
         }
-
 
         return '<form method="post" action="quete_auto.php">
         <input type="hidden" name="methode" value="dialogue">
