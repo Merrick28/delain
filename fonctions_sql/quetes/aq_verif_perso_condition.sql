@@ -53,7 +53,9 @@ begin
   (21, 'Competence Enluminure (en %)', 'COMPETENCE'),
   (22, 'Niveau Alchimie', 'COMPETENCE'),
   (23, 'Niveau Forgemage', 'COMPETENCE'),
-  (24, 'Niveau Enluminure', 'COMPETENCE');
+  (24, 'Niveau Enluminure', 'COMPETENCE'),
+  (25, 'A terminé l''étape de QA', 'QUETE'),
+  (26, 'Nombre de lock', 'VARIABLE');
  */
 
   v_type_comparaison := 'NUM';  -- PAR Défaut comparaison en Intéger
@@ -172,6 +174,9 @@ begin
     else
       return 1;
     end if;
+
+  elsif (v_carac_cod = 26) then                  --    (26, 'Nombre de lock', 'VARIABLE')
+    select into v_perso_carac count(*) from lock_combat where lock_cible = v_perso_cod or lock_attaquant = v_perso_cod ;
 
   else
     return 0 ;    -- erreur dans les paramètres

@@ -168,7 +168,7 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:valeur|1%1],[2:etape|1%1],[3:choix_etape|1%0]'
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:perso|1%0],[2:valeur|1%1],[3:etape|1%1],[4:choix_etape|1%0]'
      * @param aquete_perso $aqperso
      * @return bool
      */
@@ -211,6 +211,104 @@ class aquete_action
         if (!$result = $stmt->fetch(PDO::FETCH_ASSOC)) return false;       // pas sur la case du pnj
         $pnj = new perso();
         $pnj->charge($result["pnj"]);
+
+
+        // On note dans le journal la réponse du joueur
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage($aqperso->aqperso_cod, $aqperso->aqperso_nb_realisation);
+
+        //Compléter la dernière parge avec le dialogue:
+        $perso_journal->aqpersoj_texte .= "   Vous: {$dialogue}<br> ";
+        $perso_journal->stocke();
+
+        //Ajout d'une tentative !
+        $p2->aqelem_param_num_2++;
+        $p2->stocke();
+
+        //passage en revue des mots attendus (dans l'ordre)
+        foreach ($p4 as $e => $elem)
+        {
+            $nb_mots = 0 ;
+            $mots_attendus = explode("|", $elem->aqelem_param_txt_1);
+            $conjonction = $elem->aqelem_param_num_2;     // 0=>ET 1=>OU
+            foreach ($mots_attendus as $m =>$mot)
+            {
+                if (strpos($clean_dialogue, " ".$this->clean_string($mot)." ") !== false )
+                {
+                    $nb_mots++ ;
+                }
+            }
+
+            // Vérification condition remplies (au moins un mot si OU(1) et tous les mots si ET(0)!
+            if (($nb_mots>0 && $conjonction==1) || ($nb_mots==count($mots_attendus) && $conjonction==0))
+            {
+                // On supprime tous les dialogues qui n'ont pas été choisis
+                $element->clean_perso_step($aqperso->aqperso_etape_cod, $aqperso->aqperso_cod, $aqperso->aqperso_quete_step, 4, array($elem->aqelem_cod));
+
+                $retour->status = true ;  // l'étape n'est pas terminée, sur l'étape répondu
+                $retour->etape = $elem->aqelem_misc_cod;
+                return $retour;
+            }
+        }
+
+        // Sortie sur nombre de tentatives infructueuses
+        if (($p2->aqelem_param_num_1>0) && ($p2->aqelem_param_num_2>=$p2->aqelem_param_num_1))
+        {
+            $retour->status = true ;  // l'étape n'est pas terminée, sur l'étape spécifique
+            $retour->etape = $p3->aqelem_misc_cod;
+            return $retour;
+        }
+
+        // On va aider le joueur avec des textes, mettre le texte en fonction du nombre de tentative dans le journal
+        $tentative = $p2->aqelem_param_num_2 - 1 ;
+        if (count($p5)<=$tentative)
+        {
+            $tentative = count($p5) - 1;    // le dernier texte
+        }
+        $bavardage = $p5[$tentative]->aqelem_param_txt_1 ;
+        if ($bavardage != "")
+        {
+            $perso_journal->aqpersoj_texte .= "<br>   {$bavardage}<br> ";
+            $perso_journal->stocke();
+        }
+
+        // Sortie par défaut!! demander une autre saisie du joueur
+        return $retour;
+    }
+
+    //==================================================================================================================
+    /**
+     * On recherche le n° d'étape suivant en fonction de la saisie =>  '[1:position|1%0],[2:valeur|1%1],[3:etape|1%1],[4:choix_etape|1%0]'
+     * @param aquete_perso $aqperso
+     * @return bool
+     */
+    function saut_condition_interaction(aquete_perso $aqperso)
+    {
+        $pdo = new bddpdo;
+
+        $retour = new stdClass();
+        $retour->status = false ;  // Par défaut, l'étape n'est pas terminée
+        $retour->etape = 0 ;
+
+        // ON vérifie que le joueru a bien dis qq chose avant d'anlyser ses paraoles
+        if ($_REQUEST["dialogue"] == "")
+        {
+            return $retour;     // on ne compte pas ça comme une tentative!
+        }
+        $dialogue = $_REQUEST["dialogue"] ;
+        $clean_dialogue = " ".$this->clean_string($dialogue)." ";
+
+        $element = new aquete_element();
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur" )) return $retour ;                      // Problème lecture (blocage)
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape" )) return $retour ;                       // Problème lecture (blocage)
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "choix_etape", 0)) return $retour ;    // Problème lecture (blocage)
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "texte", 0)) return $retour ;          // Problème lecture (blocage)
+
+        // Recherche du PNJ (vérifier que le perso est sur sa case pour discuter)
+        if ( !$aqperso->action->move_position($aqperso, 1) )
+        {
+            return false;       // Pas en position pour réaliser l'action!
+        }
 
 
         // On note dans le journal la réponse du joueur
