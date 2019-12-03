@@ -6,7 +6,7 @@ ob_start();
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
     <script language="javascript" src="../scripts/validation.js"></script>
     <script language="javascript" src="../scripts/manip_css.js"></script>
-    <script language="javascript" src="../scripts/admin_effets_auto.js?20180919"></script>
+    <script language="javascript" src="../scripts/admin_effets_auto.js?20191130"></script>
 <?php
 $erreur = 0;
 
@@ -447,6 +447,7 @@ if ($erreur == 0)
                 <input type="hidden" name="methode" value="suppr_bonmal"/>
                 <input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod ?>"/>
                 <input type="hidden" name="bonmal_cod" value=""/>
+                <input type="hidden" name="type_bm" value="">
                 <input type="hidden" name="bonmal_valeur_debut" value=""/>
             </form>
             <form method="post" action="#">
@@ -462,64 +463,59 @@ if ($erreur == 0)
                 <tr>
                     <td width='50%'>
                         <table>
-                            <?php // LISTE DES BONUS Standard
-                            $req_bon = "select tonbus_libelle, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
-		from bonus
-		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-		where bonus_perso_cod = $mod_perso_cod
-		and
-			(tbonus_gentil_positif = 't' and bonus_valeur > 0
-			or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
-		order by bonus_tbonus_libc";
+                            <?php // LISTE DES BONUS Standards
+                            $req_bon = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  WHEN bonus_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                                        from bonus
+                                        inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                                        where bonus_perso_cod = $mod_perso_cod
+                                        and
+                                            (tbonus_gentil_positif = 't' and bonus_valeur > 0
+                                            or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
+                                        order by bonus_tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())
                             {
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
-                                $tbon = $db->f("bonus_tbonus_libc");
-                                $id = $tbon . '_' . $val;
+                                $tbon = $db->f("bonus_cod");
+                                $id = $tbon ;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
+			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
+				document.suppr_bonmal.type_bm.value='STD';
 				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
                                 echo '</tr>';
                             }
                             ?>
                             <?php // LISTE DES BONUS de Caracs
-                            $req_bon = "select tonbus_libelle, tbonus_libc as bonus_tbonus_libc, 
-                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
-                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END as bonus_valeur, 
-                                COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
-                                from carac_orig
-                                inner join bonus_type on tbonus_libc = corig_type_carac
-                                inner join perso on perso_cod=corig_perso_cod
-                                where corig_perso_cod = $mod_perso_cod and
-                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
-                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END >0
-                                order by tbonus_libc";
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  WHEN corig_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
+                                          corig_valeur as bonus_valeur, 
+                                          COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
+                                        from carac_orig
+                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join perso on perso_cod=corig_perso_cod
+                                        where corig_perso_cod = $mod_perso_cod and corig_valeur >0
+                                        order by tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())
                             {
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
-                                $tbon = $db->f("bonus_tbonus_libc");
-                                $id = $tbon . '_' . $val;
+                                $tbon = $db->f("corig_cod");
+                                $id = $tbon ;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
-			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
+			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
+			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
-				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
+				document.suppr_bonmal.type_bm.value='CARAC';				
+				document.suppr_bonmal.submit();\">Supprimer</a>(<em style='font-size: 8px;'>non-éditable, supprimez/recréez pour modifier<em>)</TD>";
                                 echo '</tr>';
                             }
                             ?>
@@ -527,8 +523,8 @@ if ($erreur == 0)
                     </td>
                     <td width='50%'>
                         <table>
-                            <?php // LISTE DES MALUS
-                            $req_mal = "select tonbus_libelle, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            <?php // LISTE DES MALUS Standards
+                            $req_mal = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  WHEN bonus_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 		from bonus
 		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 		where bonus_perso_cod = $mod_perso_cod
@@ -542,49 +538,44 @@ if ($erreur == 0)
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
-                                $tbon = $db->f("bonus_tbonus_libc");
-                                $id = $tbon . '_' . $val;
+                                $tbon = $db->f("bonus_cod");
+                                $id = $tbon ;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
 			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
+				document.suppr_bonmal.type_bm.value='STD';				
 				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
                                 echo '</tr>';
                             }
                             ?>
                             <?php // LISTE DES MALUS de Caracs
-                            $req_bon = "select tonbus_libelle, tbonus_libc as bonus_tbonus_libc, 
-                                          CASE WHEN tbonus_libc='FOR' THEN corig_carac_valeur_orig - perso_for
-                                               WHEN tbonus_libc='INT' THEN corig_carac_valeur_orig - perso_int 
-                                               WHEN tbonus_libc='DEX' THEN corig_carac_valeur_orig - perso_dex
-                                               WHEN tbonus_libc='CON' THEN corig_carac_valeur_orig - perso_con END as bonus_valeur, 
-                                COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
-                                from carac_orig
-                                inner join bonus_type on tbonus_libc = corig_type_carac
-                                inner join perso on perso_cod=corig_perso_cod
-                                where corig_perso_cod = $mod_perso_cod and
-                                          CASE WHEN tbonus_libc='FOR' THEN perso_for - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='INT' THEN perso_int - corig_carac_valeur_orig 
-                                               WHEN tbonus_libc='DEX' THEN perso_dex - corig_carac_valeur_orig
-                                               WHEN tbonus_libc='CON' THEN perso_con - corig_carac_valeur_orig END <0
-                                order by tbonus_libc";
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  WHEN corig_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
+                                          corig_valeur as bonus_valeur, 
+                                        COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
+                                        from carac_orig
+                                        inner join bonus_type on tbonus_libc = corig_type_carac
+                                        inner join perso on perso_cod=corig_perso_cod
+                                        where corig_perso_cod = $mod_perso_cod  and corig_valeur <0
+                                        order by tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())
                             {
                                 $lib = $db->f("tonbus_libelle");
                                 $val = $db->f("bonus_valeur");
                                 $dur = $db->f("bonus_nb_tours");
-                                $tbon = $db->f("bonus_tbonus_libc");
-                                $id = $tbon . '_' . $val;
+                                $tbon = $db->f("corig_cod");
+                                $id = $tbon ;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
-			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
+			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
+			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
-				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
+				document.suppr_bonmal.type_bm.value='CARAC';				
+				document.suppr_bonmal.submit();\">Supprimer</a>(<em style='font-size: 8px;'>non-éditable, supprimez/recréez pour modifier<em>)</TD>";
                                 echo '</tr>';
                             }
                             ?>
@@ -605,7 +596,7 @@ if ($erreur == 0)
                 </tr>
                 <tr>
                     <td>L’ajout se passe comme dans le jeu. Il n’est donc pas possible de cumuler des BM allant dans le
-                        même sens)
+                        même sens (sauf pour les bonus/malus définis en cumulatif)
                     </td>
                 </tr>
                 <tr>
@@ -625,7 +616,7 @@ if ($erreur == 0)
                             <option value=""> --</option>
                             <?php
                             // LISTE DES Bonus
-                            $req_bm = "select tbonus_libc, tonbus_libelle, tbonus_gentil_positif
+                            $req_bm = "select tbonus_libc, tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
 		from bonus_type
 		order by tonbus_libelle ";
 
@@ -653,7 +644,8 @@ if ($erreur == 0)
                 <tr>
                     <td>Puissance : <input type="text" name="bonmal_valeur" size='6'> pendant <input type="text"
                                                                                                      name="bonmal_duree"
-                                                                                                     size='6'> tours.
+                                                                                                     size='6'> tours,
+                                   cumulatif:  <input type="checkbox" name="bonmal_cumul" size='6'> (<em>ignoré si le bonus/malus n'est pas cumulable</em>)
                     </td>
                 </tr>
                 <tr>
@@ -824,7 +816,7 @@ if ($erreur == 0)
         echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
 
         // Liste des Bonus-malus
-        $req = "select tbonus_libc, tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
+        $req = "select tbonus_libc, tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
 		from bonus_type
 		order by tonbus_libelle ";
         echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
@@ -839,7 +831,7 @@ if ($erreur == 0)
             <div id="liste_fonctions"></div>
             <script>EffetAuto.MontreValidite = true;</script>
             <?php // D’abord en lecture seule les effets liés au type de monstre du perso
-            $req = "select fonc_cod, fonc_nom, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+            $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
 				from fonction_specifique
 				inner join perso on perso_gmon_cod = fonc_gmon_cod
 				where perso_cod = $mod_perso_cod AND fonc_gmon_cod IS NOT NULL";
@@ -850,6 +842,7 @@ if ($erreur == 0)
                 $fonc_type = $db->f('fonc_type');
                 $fonc_nom = $db->f('fonc_nom');
                 $fonc_effet = $db->f('fonc_effet');
+                $fonc_cumulatif = $db->f('fonc_cumulatif');
                 $fonc_force = $db->f('fonc_force');
                 $fonc_duree = $db->f('fonc_duree');
                 $fonc_type_cible = $db->f('fonc_type_cible');
@@ -858,10 +851,10 @@ if ($erreur == 0)
                 $fonc_proba = $db->f('fonc_proba');
                 $fonc_message = $db->f('fonc_message');
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true);</script>";
             }
 
-            $req = "select fonc_cod, fonc_nom, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
+            $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
 					coalesce(EXTRACT(EPOCH FROM (fonc_date_limite - now())::INTERVAL) / 60, 0)::integer as validite
 				from fonction_specifique where fonc_perso_cod = $mod_perso_cod";
             $db->query($req);
@@ -871,6 +864,7 @@ if ($erreur == 0)
                 $fonc_type = $db->f('fonc_type');
                 $fonc_nom = $db->f('fonc_nom');
                 $fonc_effet = $db->f('fonc_effet');
+                $fonc_cumulatif = $db->f('fonc_cumulatif');
                 $fonc_force = $db->f('fonc_force');
                 $fonc_duree = $db->f('fonc_duree');
                 $fonc_type_cible = $db->f('fonc_type_cible');
@@ -880,7 +874,7 @@ if ($erreur == 0)
                 $fonc_message = $db->f('fonc_message');
                 $fonc_validite = $db->f('validite');
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
             }
             ?>
             <div style='clear: both'>

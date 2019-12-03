@@ -230,7 +230,7 @@ switch ($methode)
 		$db_upd_bm = new base_delain;
 
 		// On liste les bonus / malus, et pour chacun, on regarde ce qui a changé.
-		$req_bm = "select tonbus_libelle, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+		$req_bm = "select tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 			from bonus
 			inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 			where bonus_perso_cod = $mod_perso_cod";
@@ -240,8 +240,8 @@ switch ($methode)
 			$lib = $db->f("tonbus_libelle");
 			$anc_val = $db->f("bonus_valeur");
 			$anc_dur = $db->f("bonus_nb_tours");
-			$tbon = $db->f("bonus_tbonus_libc");
-			$id = $tbon . '_' . $anc_val;
+			$tbon = $db->f("bonus_cod");
+			$id = $tbon ;
 			if (isset($_POST["PERSO_BM_val_$id"]) && isset($_POST["PERSO_BM_dur_$id"]))
 			{
 				$nouv_val = $_POST["PERSO_BM_val_$id"];
@@ -253,8 +253,7 @@ switch ($methode)
 							bonus_valeur = $nouv_val,
 							bonus_nb_tours = $nouv_dur
 						where bonus_perso_cod = $mod_perso_cod
-							and bonus_tbonus_libc = '$tbon' 
-							and bonus_valeur = $anc_val";
+							and bonus_cod = '$tbon' ";
 					$db_upd_bm->query($req_bm);
 				}
 			}
@@ -264,41 +263,45 @@ switch ($methode)
 	break;
 
 	case "add_bonmal":
-		$db_upd_bm = new base_delain;
-		$req_bm = "select ajoute_bonus ($mod_perso_cod, '$bonmal_cod', $bonmal_duree, $bonmal_valeur)";
+        if (!isset($bonmal_cumul)) $bonmal_cumul = "";
+        $db_upd_bm = new base_delain;
+        $bonmal_type = $bonmal_cod . ($bonmal_cumul=="on" ? "+" : "") ;
+		$req_bm = "select ajoute_bonus ($mod_perso_cod, '$bonmal_type', $bonmal_duree, $bonmal_valeur)";
 		$db_upd_bm->query($req_bm);
 
 		$req_bm = "select tonbus_libelle from bonus_type where tbonus_libc = '$bonmal_cod'";
 		$db_upd_bm->query($req_bm);
 		$db_upd_bm->next_record();
-		$log .= "Ajout d’un bonus/malus « " . $db_upd_bm->f("tonbus_libelle") . " » : { $bonmal_valeur / $bonmal_duree tours }\n";
+		$log .= "Ajout d’un bonus/malus « " . $db_upd_bm->f("tonbus_libelle") . " » : { $bonmal_valeur / $bonmal_duree tours }".($bonmal_cumul=="on" ? " [cumulatif]" : "")."\n";
 		writelog($log,'perso_edit');
 		echo "<div class='bordiv'>Ajout d’un bonus/malus<br /><pre>$log</pre></div>";
 	break;
 
 	case "suppr_bonmal":
-		if(!($bonmal_cod == "")) {
+	    //print_r($_REQUEST); die();
+		if(!($bonmal_cod == "") && !($type_bm == "")) {
             $db_upd_bm = new base_delain;
 
-            if (in_array($bonmal_cod, ['FOR', 'INT', 'DEX', 'CON'])) {
+            if ($type_bm=="CARAC") {
                 // ATTENTION: PAS de DELETE dans le cas des bonus de caracs, sinon le perso garderait son bonus à vie!!!!!
-                $req_bm = "update carac_orig set corig_nb_tours=0, corig_dfin=null where corig_perso_cod = $mod_perso_cod and corig_type_carac = '$bonmal_cod'; ";
+                $req_bm = "update carac_orig set corig_nb_tours=0, corig_dfin=null where corig_cod = '$bonmal_cod'; ";
                 $db_upd_bm->query($req_bm);
                 $req_bm = "select f_remise_caracs($mod_perso_cod); ";
                 $db_upd_bm->query($req_bm);
             } else {
+                $req_bm = "select tonbus_libelle from bonus join bonus_type on tbonus_libc=bonus_tbonus_libc where bonus_cod = '$bonmal_cod'";
+                $db_upd_bm->query($req_bm);
+                $db_upd_bm->next_record();
+                $tonbus_libelle = $db_upd_bm->f("tonbus_libelle") ;
+
                 $req_bm = "delete from bonus where
 				bonus_perso_cod = $mod_perso_cod
 				and bonus_valeur = $bonmal_valeur_debut
-				and bonus_tbonus_libc = '$bonmal_cod'";
+				and bonus_cod = '$bonmal_cod'";
                 $db_upd_bm->query($req_bm);
             }
 
-
-			$req_bm = "select tonbus_libelle from bonus_type where tbonus_libc = '$bonmal_cod'";
-			$db_upd_bm->query($req_bm);
-			$db_upd_bm->next_record();
-			$log .= "Suppression du bonus/malus « " . $db_upd_bm->f("tonbus_libelle") . " »\n";
+			$log .= "Suppression du bonus/malus « " .  $tonbus_libelle . " »\n";
 			writelog($log,'perso_edit');
 			echo "<div class='bordiv'>Suppression de bonus/malus<br /><pre>$log</pre></div>";
 		}
@@ -802,7 +805,7 @@ switch ($methode)
 					$fonc_type =         base_delain::format($_POST['declenchement_' . $numero]);
 					$fonc_nom =          base_delain::format($_POST['fonction_type_' . $numero]);
 					$fonc_effet =        !empty($_POST['fonc_effet' . $numero]) ? base_delain::format($_POST['fonc_effet' . $numero]) : '';
-					$fonc_force =        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
+                    $fonc_force =        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
 					$fonc_duree =        !empty($_POST['fonc_duree' . $numero]) ? base_delain::format($_POST['fonc_duree' . $numero]) : '0';
 					$fonc_type_cible =   !empty($_POST['fonc_cible' . $numero]) ? base_delain::format($_POST['fonc_cible' . $numero]) : '';
 					$fonc_nombre_cible = !empty($_POST['fonc_nombre' . $numero]) ? base_delain::format($_POST['fonc_nombre' . $numero]) : '0';
@@ -812,13 +815,15 @@ switch ($methode)
 					$fonc_unite_valid =  $_POST['fonc_validite_unite' . $numero];
 					$fonc_validite =     $fonc_unite_valid * $_POST['fonc_validite' . $numero];
 					$fonc_validite_sql = ($fonc_validite === 0) ? 'NULL' : "now() + '$fonc_validite minutes'::interval";
-				
+                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero]=="on"))  $fonc_effet.= "+" ;
+
 					$fonc_proba = str_replace(',', '.', $fonc_proba);
 	
 					$req = "INSERT INTO fonction_specifique (fonc_nom, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee,
 							fonc_proba, fonc_message, fonc_date_limite)
 						values ('$fonc_nom', $mod_perso_cod, '$fonc_type', '$fonc_effet', '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, 
 							$fonc_proba, '$fonc_message', $fonc_validite_sql)";
+
 					$db_add_fun->query($req);
 	
 					$texteDeclenchement = '';
@@ -860,7 +865,8 @@ switch ($methode)
 					$fonc_unite_valid =  $_POST['fonc_validite_unite' . $numero];
 					$fonc_validite =     $fonc_unite_valid * $_POST['fonc_validite' . $numero];
 					$fonc_validite_sql = ($fonc_validite === 0) ? 'NULL' : "now() + '$fonc_validite minutes'::interval";
-				
+                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero]=="on"))  $fonc_effet.= "+" ;
+
 					$fonc_proba = str_replace(',', '.', $fonc_proba);
 	
 					$req = "UPDATE fonction_specifique

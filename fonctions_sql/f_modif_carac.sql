@@ -30,8 +30,8 @@ declare
 
 begin
 
-  -- appel de la fonction de base avec le type 'H' (nombre d'heure)
-	select into code_retour f_modif_carac_base(personnage, v_type_carac, 'H', v_temps, v_modificateur)	;
+  -- appel de la fonction de base avec le type 'H' (nombre d'heure) et non cumulatif (cas standard pour les potions par exemple)
+	select into code_retour f_modif_carac_base(personnage, v_type_carac, 'H', v_temps, v_modificateur, 'S')	;
 
 	return code_retour;
 
