@@ -72,7 +72,7 @@ begin
             perso_pv_max,
             case
             when exists (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-            then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
+            then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod limit 1)
             else perso_con end
         from perso
         where perso_cod = personnage

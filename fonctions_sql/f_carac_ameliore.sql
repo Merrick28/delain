@@ -116,7 +116,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             perso_int,
             case
                         when exists (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-                        then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
+                        then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod limit 1)
                         else perso_con end,
             perso_dex,
             perso_for
@@ -644,7 +644,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             corig_carac_valeur_orig
             from carac_orig
             where corig_perso_cod = personnage
-            and corig_type_carac = 'FOR';
+            and corig_type_carac = 'FOR' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
@@ -670,7 +670,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             corig_carac_valeur_orig
             from carac_orig
             where corig_perso_cod = personnage
-            and corig_type_carac = 'DEX';
+            and corig_type_carac = 'DEX' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
@@ -696,7 +696,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             corig_carac_valeur_orig
             from carac_orig
             where corig_perso_cod = personnage
-            and corig_type_carac = 'CON';
+            and corig_type_carac = 'CON' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1
@@ -722,7 +722,7 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             corig_carac_valeur_orig
             from carac_orig
             where corig_perso_cod = personnage
-            and corig_type_carac = 'INT';
+            and corig_type_carac = 'INT' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig + 1

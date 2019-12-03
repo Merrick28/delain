@@ -17,7 +17,7 @@ CREATE OR REPLACE FUNCTION f_modif_carac(integer, text, integer, integer) RETURN
 /*-----------------------------------------------*/
 /* code retour : texte                           */
 /*  si tout bon, on sort 'OK'                    */
-/*  sinon, message d’erreur complet              */
+/*  sinon, message d’erreur complet         n     */
 /*-----------------------------------------------*/
 /* créé le 19/10/2006 par Merrick                */
 /*************************************************/

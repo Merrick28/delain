@@ -57,3 +57,8 @@ UPDATE  public.carac_orig SET corig_valeur = perso_for - corig_carac_valeur_orig
 UPDATE  public.carac_orig SET corig_valeur = perso_int - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='INT' ;
 UPDATE  public.carac_orig SET corig_valeur = perso_dex - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='DEX' ;
 UPDATE  public.carac_orig SET corig_valeur = perso_con - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='CON' ;
+
+
+ALTER TABLE public.defi_bmcaracs
+   ADD COLUMN dbmc_mode character varying(1) DEFAULT 'S' NOT NULL;
+

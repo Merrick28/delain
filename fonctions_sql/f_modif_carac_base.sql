@@ -124,7 +124,6 @@ begin
     v_nouvelle_valeur := ceil(v_carac_base * (1 - (v_limit_max/100::numeric))) ;
   end if;
 
-code_retour := code_retour ||'*'||(v_nouvelle_valeur ::text)||'*'||(v_carac_actuelle ::text)||'*'||(v_diff ::text);
   if v_nouvelle_valeur <> v_carac_actuelle  then
     v_diff := v_nouvelle_valeur - v_carac_actuelle ;
 
