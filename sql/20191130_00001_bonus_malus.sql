@@ -24,6 +24,11 @@ ALTER TABLE public.bonus
 COMMENT ON COLUMN public.bonus.bonus_degressivite
   IS 'Pour les bonus/malus standards, il s''agit d''un coefficient de dégressivité.';
 
+ALTER TABLE public.bonus
+   ADD COLUMN bonus_obj_cod integer;
+COMMENT ON COLUMN public.bonus.bonus_obj_cod
+  IS 'Code de l''objet qui donne le bonus d''équipement';
+
 CREATE SEQUENCE public.seq_corig_cod
   INCREMENT 1
   MINVALUE 1
@@ -35,6 +40,7 @@ GRANT SELECT, UPDATE ON SEQUENCE public.seq_corig_cod TO webdelain;
 
 ALTER TABLE public.carac_orig
    ADD COLUMN corig_cod  integer NOT NULL DEFAULT nextval(('seq_corig_cod'::text)::regclass); -- New PK
+
 
 ALTER TABLE public.carac_orig DROP CONSTRAINT pk_corig;
 
@@ -57,6 +63,11 @@ UPDATE  public.carac_orig SET corig_valeur = perso_for - corig_carac_valeur_orig
 UPDATE  public.carac_orig SET corig_valeur = perso_int - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='INT' ;
 UPDATE  public.carac_orig SET corig_valeur = perso_dex - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='DEX' ;
 UPDATE  public.carac_orig SET corig_valeur = perso_con - corig_carac_valeur_orig FROM perso WHERE perso.perso_cod = corig_perso_cod and corig_type_carac='CON' ;
+
+ALTER TABLE public.carac_orig
+   ADD COLUMN corig_obj_cod integer DEFAULT NULL;
+COMMENT ON COLUMN public.carac_orig.corig_obj_cod
+  IS 'code objet de l''équipement qui donne ce bonus/malus';
 
 
 ALTER TABLE public.defi_bmcaracs
@@ -81,7 +92,6 @@ CREATE TABLE public.objets_bm
   objbm_tbonus_cod integer NOT NULL, -- Code du type de bonus/malus utilisé
   objbm_nom character varying(50), -- Le nom du bonus/malus (si null le nom sera celui du bonus/malus réel)
   objbm_bonus_valeur numeric, -- la valeur du bonus/malus
-  objbm_equip_requis boolean NOT NULL DEFAULT true, -- si vrai: l'objet doit être équipé pour être effectif
   CONSTRAINT objets_bm_pkey PRIMARY KEY (objbm_cod)
 )
 WITH (
@@ -96,5 +106,4 @@ COMMENT ON COLUMN public.objets_bm.objbm_obj_cod IS 'Le code de l''obet sur lequ
 COMMENT ON COLUMN public.objets_bm.objbm_tbonus_cod IS 'Code du type de bonus/malus utilisé';
 COMMENT ON COLUMN public.objets_bm.objbm_nom IS 'Le nom du bonus/malus (si null le nom sera celui du bonus/malus réel)';
 COMMENT ON COLUMN public.objets_bm.objbm_bonus_valeur IS 'la valeur du bonus/malus';
-COMMENT ON COLUMN public.objets_bm.objbm_equip_requis IS 'si vrai: l''objet doit être équipé pour être effectif';
 

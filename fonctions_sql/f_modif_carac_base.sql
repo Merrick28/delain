@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, inte
 /*   possibles : FOR, DEX, INT et CON            */
 /*   attention : majuscules !                    */
 /* $3 = H (pour Heure) ou 'T' (pour tour)        */
-/* $4 = nombre d’heures  / de tour               */
+/* $4 = nb d’heure/de tour/ ou code obj si Equip.*/
 /* $5 = modificateur à mettre                    */
 /* $6 = S/C/E si bonus Standard/cumulatif/Equip. */
 /*-----------------------------------------------*/
@@ -44,9 +44,13 @@ declare
 	v_temps_inter interval;
 	v_pv integer;
 	temp_tue text;
+	v_obj_cod integer;    -- code de l'objet en cas de bonus d'équipement
 
 begin
 	code_retour := 'OK';
+	v_obj_cod := null ;   -- par defaut (pas d'objet lié pour les bonus Standard ou cumulatif)
+  v_temps_inter := null; -- par defaut
+
 	--
 	-- on fait d’abord les contrôles possibles
 	--
@@ -54,10 +58,15 @@ begin
 	if not found then
 		return 'Personnage non trouvé !';
 	end if;
-	if v_temps = 0 then
+	if v_temps = 0 and v_cumulatif != 'E' then      -- sauf equipement
 		return 'Paramètre de durée non valide !';
+  elsif v_cumulatif != 'E' then
+	  v_temps_inter := trim(to_char(v_temps,'999999999'))||' hours';
+  else
+    -- cas d'équiepemtn, il n'y a pas de nombre de tour, la fin du bonus est conditionné par l'equipement
+    v_obj_cod := v_temps ;
+    v_temps := null ;
 	end if;
-	v_temps_inter := trim(to_char(v_temps,'999999999'))||' hours';
 
 	select into v_carac_actuelle
 		case v_type_carac when 'FOR' then perso_for
@@ -77,7 +86,7 @@ begin
   end if;
 
   -- dans tous les cas, on doit avoir une limite de carac, impossible à dépasser
-  select into v_limit_max tbonus_degressivite from bonus_type where tbonus_libc = v_type_carac and tbonus_cumulable = 'C';
+  select into v_limit_max tbonus_degressivite from bonus_type where tbonus_libc = v_type_carac ;
 	if not found then
 		v_limit_max = 50 ;   -- limit max non trouvée, on applique le bonus de la formule d'origine qui était de 50% (en positif comme en negatif)
 	end if;
@@ -105,11 +114,11 @@ begin
     v_diff := v_modificateur ;
 
     if v_type_delai = 'H' then
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode)
-      values (personnage, v_type_carac, v_carac_base, now() + v_temps_inter, v_modificateur, v_cumulatif);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode, corig_obj_cod)
+      values (personnage, v_type_carac, v_carac_base, now() + v_temps_inter, v_modificateur, v_cumulatif, v_obj_cod);
     else
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode)
-      values (personnage, v_type_carac, v_carac_base, v_temps, v_modificateur, v_cumulatif);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode, corig_obj_cod)
+      values (personnage, v_type_carac, v_carac_base, v_temps, v_modificateur, v_cumulatif, v_obj_cod);
     end if;
 
   end if;

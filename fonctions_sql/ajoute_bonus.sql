@@ -8,7 +8,7 @@ AS $_$-- Rajoute un bonus à un perso
 -- $1 = Le code du perso en question
 -- $2 = Le type de bonus (si le bonus est cumulatif, alors le type est suivi du suffix "+")
 -- $3 = La durée (DLT) du bonus
--- $3 = La valeur du bonus
+-- $4 = La valeur du bonus
 -- Retourne 1 si le bonus est nouveau, 0 s'il en remplace un autre du même signe.
 -- 13/02/2009 Bleda: Supprime les bonus existants du même type, avant de créer le nouveau
 -- ??/??/???? ?????: Remplace les bonus de même signe, sans toucher à ceux de signe contraire
