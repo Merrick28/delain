@@ -32,6 +32,7 @@ include_once '../includes/tools.php';
                        $("#sort-0-misc_nom").val("");
                    }
                    $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
+                   $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
                }
             });
         }
@@ -96,6 +97,7 @@ if ($erreur == 0)
                 $objbm->objbm_obj_cod = null ;
                 $objbm->objbm_tbonus_cod = 1*(int)$_REQUEST["objbm_tbonus_cod"];
                 $objbm->objbm_nom = $_REQUEST["objbm_nom"]=='' ? null : $_REQUEST["objbm_nom"] ;
+                $objbm->objbm_bonus_valeur = (int)$_REQUEST["objbm_bonus_valeur"]  ;
                 $objbm->stocke($new);
 
                 // Logger les infos pour suivi admin
@@ -147,7 +149,8 @@ if ($erreur == 0)
                 &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
                 </td></tr>
-                <tr><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em> si vide, le nom réel du sort sera utilisé</em></td></tr>
+                <tr><td>Valeur du bonus/malus :</td><td><input type="text" id="objbm_bonus_valeur" name="objbm_bonus_valeur" size="50">&nbsp;<em></em></td></tr>
+                <tr><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em></em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                  </table>
                 </form>';
@@ -161,15 +164,20 @@ if ($erreur == 0)
             echo "<tr><td><input type='button' class='test' value='nouveau' onclick='editObjetBM(-1,0);'></td>
                       <td><strong>objbm_cod</strong></td>
                       <td><strong>Bonus/malus</strong></td>
+                      <td><strong>Valeur</strong></td>
+                      <td><strong>Type</strong></td>
                       <td><strong>Nom sur l'objet</strong></td>
                     </tr>";
             foreach ($lbm as $k => $os)
             {
                 $bm = new bonus_type();
                 $bm->charge($os->objbm_tbonus_cod);
+
                 echo "<tr id='bmlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetBM({$k}, {$os->objbm_cod});'></td>
                       <td>{$os->objbm_cod}</td>
-                      <td>{$os->objbm_tbonus_cod} ({$bm->tbonus_libc} - {$bm->tonbus_libelle}) </td>
+                      <td>{$os->objbm_tbonus_cod} ({$bm->tbonus_libc}</td>
+                      <td>{$os->objbm_bonus_valeur}</td>
+                      <td>".(($bm->tbonus_gentil_positif  == 't') ? ($os->objbm_bonus_valeur>0 ? "BONUS" : "MALUS") : ($os->objbm_bonus_valeur<0 ? "MALUS" : "BONUS")) ."</td>
                       <td>".$os->getNom()."</td>
                      </tr>";
             }
@@ -177,7 +185,7 @@ if ($erreur == 0)
         }
         else
         {
-            echo "<em>Il n'y a pas de bonus/malus sur cet objet</em>";
+            echo "<em>Il n'y a pas de bonus/malus sur cet objet</em><br>";
         }
     }
 
