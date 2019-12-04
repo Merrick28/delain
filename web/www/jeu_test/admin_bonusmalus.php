@@ -31,11 +31,15 @@ if ($erreur == 0)
 				$tbonus_nettoyable = (isset($_POST['tbonus_nettoyable'])) ? 'O' : 'N';
 				$tbonus_gentil_positif = (isset($_POST['tbonus_gentil_positif'])) ? 't' : 'f';
 				$tbonus_libc = pg_escape_string(str_replace('\'', '’', $_POST['tbonus_libc']));
+                $tbonus_cumulable = (isset($_POST['tbonus_cumulable'])) ? 'O' : 'N';
+                $tbonus_degressivite = (int)($_POST['tbonus_degressivite']);
 
 				$req = "UPDATE bonus_type SET
 						tonbus_libelle = '$tonbus_libelle',
 						tbonus_nettoyable = '$tbonus_nettoyable',
-						tbonus_gentil_positif = '$tbonus_gentil_positif'
+						tbonus_gentil_positif = '$tbonus_gentil_positif',
+						tbonus_cumulable = '$tbonus_cumulable',
+						tbonus_degressivite = '$tbonus_degressivite'
 					WHERE tbonus_cod = $tbonus_cod";
 				$db->query($req);
 				$resultat = "<p>Bonus $tonbus_libelle ($tbonus_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
@@ -54,7 +58,7 @@ if ($erreur == 0)
 	}
 
 	$req = 'SELECT
-			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif
+			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite
 		FROM bonus_type
 		ORDER BY tbonus_libc';
 
@@ -65,6 +69,8 @@ if ($erreur == 0)
 			<th class="titre">Libellé</th>
 			<th class="titre">Nettoyable ?</th>
 			<th class="titre">Valeur positive<br />pour un effet<br />bénéfique ?</th>
+			<th class="titre">Cumulable ?</th>
+			<th class="titre">Dégressivité/Limite ?<br> (entre 0% et 100%)</th>
 			<th class="titre">Action</th>
 		</tr>';
 
@@ -78,12 +84,16 @@ if ($erreur == 0)
 		$tbonus_nettoyable = $db->f('tbonus_nettoyable');
 		$tbonus_gentil_positif = $db->f('tbonus_gentil_positif');
 		$tbonus_libc = $db->f('tbonus_libc');
+		$tbonus_cumulable = $db->f('tbonus_cumulable');
+		$tbonus_degressivite = $db->f('tbonus_degressivite');
 
 		echo "<form action='#' method='POST'><tr>
 			<td class='soustitre2'>$tbonus_libc</td>
 			<td class='soustitre2'><input type='text' value='$tonbus_libelle' name='tonbus_libelle' size='30' /></td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_nettoyable_' . $tbonus_cod, 'tbonus_nettoyable', $tbonus_nettoyable) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_gentil_positif_' . $tbonus_cod, 'tbonus_gentil_positif', $tbonus_gentil_positif) . "</td>
+			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable) . "</td>	
+			<td class='soustitre2'><input type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' /></td>					
 			<td class='soustitre2'><input type='hidden' value='$tbonus_cod' name='tbonus_cod' />
 				<input type='hidden' value='modif' name='methode' />
 				<input type='submit' class='test' value='Modifier' />

@@ -348,6 +348,10 @@ switch($_REQUEST["request"])
             {  // limitation aux objet avec des sorts rattachés
                 $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_sorts where objsort_gobj_cod=gobj_cod) ";
             }
+            if ($params["objet_generique_bm"]=="true")
+            {  // limitation aux objet avec des bonus/malus de rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_bm where objbm_gobj_cod=gobj_cod) ";
+            }
 
             // requete de comptage
             $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
@@ -720,10 +724,17 @@ switch($_REQUEST["request"])
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 
-            case 'objets_sorts':     // pos_cod à partir x,y,etage
+            case 'objets_sorts':     // sort sur objet
                 $req = "select * from objets_sorts where objsort_cod = ?  ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["objsort_cod"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
+            case 'objets_bm':     // sort sur objet
+                $req = "select * from objets_bm where objbm_cod = ?  ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["objbm_cod"]), $stmt);
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 

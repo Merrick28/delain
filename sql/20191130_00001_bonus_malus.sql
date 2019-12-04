@@ -62,3 +62,39 @@ UPDATE  public.carac_orig SET corig_valeur = perso_con - corig_carac_valeur_orig
 ALTER TABLE public.defi_bmcaracs
    ADD COLUMN dbmc_mode character varying(1) DEFAULT 'S' NOT NULL;
 
+COMMENT ON COLUMN public.objets_sorts.objsort_parent_cod IS 'C''est un lien vers le objsort_cod d''un ensorcellement d''objet générique qui est le pere de celui-ci, cette liaison est nécéssaire à cause du nombre d''utilisation du sort pour chque objet.';
+
+CREATE SEQUENCE public.seq_objbm_cod
+  INCREMENT 1
+  MINVALUE 1
+  START 1
+  CACHE 1;
+ALTER TABLE public.seq_objbm_cod
+  OWNER TO webdelain;
+GRANT SELECT, UPDATE ON SEQUENCE public.seq_objbm_cod TO webdelain;
+
+CREATE TABLE public.objets_bm
+(
+  objbm_cod integer NOT NULL DEFAULT nextval('seq_objbm_cod'::regclass),
+  objbm_gobj_cod integer, -- Le code de l'objet générique sur lequel est rattaché le bonus/malus
+  objbm_obj_cod integer, -- Le code de l'obet sur lequel est rattaché le bonus/malus  (le bonus/malus peut être rattaché à un objet spécifique)
+  objbm_tbonus_cod integer NOT NULL, -- Code du type de bonus/malus utilisé
+  objbm_nom character varying(50), -- Le nom du bonus/malus (si null le nom sera celui du bonus/malus réel)
+  objbm_bonus_valeur numeric, -- la valeur du bonus/malus
+  objbm_equip_requis boolean NOT NULL DEFAULT true, -- si vrai: l'objet doit être équipé pour être effectif
+  CONSTRAINT objets_bm_pkey PRIMARY KEY (objbm_cod)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE public.objets_bm
+  OWNER TO delain;
+COMMENT ON TABLE public.objets_bm
+  IS 'Permet d’associer un bonus/malus à un objet spécifique ou a un générique';
+COMMENT ON COLUMN public.objets_bm.objbm_gobj_cod IS 'Le code de l''objet générique sur lequel est rattaché le bonus/malus';
+COMMENT ON COLUMN public.objets_bm.objbm_obj_cod IS 'Le code de l''obet sur lequel est rattaché le bonus/malus  (le bonus/malus peut être rattaché à un objet spécifique)';
+COMMENT ON COLUMN public.objets_bm.objbm_tbonus_cod IS 'Code du type de bonus/malus utilisé';
+COMMENT ON COLUMN public.objets_bm.objbm_nom IS 'Le nom du bonus/malus (si null le nom sera celui du bonus/malus réel)';
+COMMENT ON COLUMN public.objets_bm.objbm_bonus_valeur IS 'la valeur du bonus/malus';
+COMMENT ON COLUMN public.objets_bm.objbm_equip_requis IS 'si vrai: l''objet doit être équipé pour être effectif';
+
