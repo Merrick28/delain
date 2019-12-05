@@ -8,7 +8,7 @@ CREATE OR REPLACE FUNCTION f_trg_after_update_perso_objet() RETURNS trigger
     AS $$/***********************************/
 /* trigger f_trg_after_update_perso_objet   */
 /***********************************/
--- traitement des bonus/malus d'équipement: sur insertion dans perso_objet on verifie s'il faut aussi ajouter des bonus/malus d'équipement (en cas d'équipemenr/desequipement)
+-- traitement des bonus/malus d'équipement: sur mise à jour dans perso_objet on verifie s'il faut aussi ajouter/supprimer des bonus/malus d'équipement (en cas d'équipemenr/desequipement)
 declare
   v_gobj_cod integer;
   ligne record;
