@@ -92,11 +92,16 @@ function affiche_perso($perso_cod)
             $img = $malus["tbonus_libc"] ;
             $bonus_valeur = $malus["bonus_valeur"] ;
             $bonus_libelle = $malus["tonbus_libelle"] ;
-            $bonus_nb_tours = $malus["bonus_nb_tours"] ;
+            $bonus_nb_tours = $malus["bonus_mode"]=='E' ? 'Equipement' : $malus["bonus_nb_tours"] .' tour(s)';
             if (is_file(__DIR__ . "/../images/interface/bonus/{$img}.png"))
             {
-                $ligne_malus.='<span title="'.$bonus_libelle.': '.$bonus_valeur.' sur '.$bonus_nb_tours.' tour(s)"><img class="img-malus" src="/images/interface/bonus/'.$img.'.png"></span><span class="badge-malus">'.$bonus_valeur.'</span>';
+                $img = '<img class="img-malus" src="/images/interface/bonus/'.$img.'.png">';
             }
+            else
+            {
+                $img = '<img src="/../images/interface/bonus/MALUS.png">';
+            }
+            $ligne_malus.='<span title="'.$bonus_libelle.': '.$bonus_valeur.' sur '.$bonus_nb_tours.'">'.$img.'</span><span class="badge-malus">'.$bonus_valeur.'</span>';
         }
     }
 

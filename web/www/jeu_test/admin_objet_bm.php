@@ -150,7 +150,7 @@ if ($erreur == 0)
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
                 </td></tr>
                 <tr><td>Valeur du bonus/malus :</td><td><input type="text" id="objbm_bonus_valeur" name="objbm_bonus_valeur" size="50">&nbsp;<em></em></td></tr>
-                <tr><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em></em></td></tr>
+                <tr style="display:none;"><td>Nom du bonus/malus :</td><td><input type="text" id="objbm_nom" name="objbm_nom" size="50">&nbsp;<em></em></td></tr>
                 <tr><td></td><td><input type="submit" name="valider" value="valider" class="test">&nbsp;&nbsp;<input style="display:none" id="bouton-supprimer" type="submit" name="supprimer" value="supprimer" class="test"></td></tr>
                  </table>
                 </form>';
@@ -166,7 +166,7 @@ if ($erreur == 0)
                       <td><strong>Bonus/malus</strong></td>
                       <td><strong>Valeur</strong></td>
                       <td><strong>Type</strong></td>
-                      <td><strong>Nom sur l'objet</strong></td>
+                      <td style=\"display:none;\"><strong>Nom sur l'objet</strong></td>
                     </tr>";
             foreach ($lbm as $k => $os)
             {
@@ -175,10 +175,10 @@ if ($erreur == 0)
 
                 echo "<tr id='bmlist-{$k}'><td><input type='button' class='test' value='modifier' onclick='editObjetBM({$k}, {$os->objbm_cod});'></td>
                       <td>{$os->objbm_cod}</td>
-                      <td>{$os->objbm_tbonus_cod} ({$bm->tbonus_libc}</td>
+                      <td>{$bm->tonbus_libelle} / #{$os->objbm_tbonus_cod} ({$bm->tbonus_libc})</td>
                       <td>{$os->objbm_bonus_valeur}</td>
-                      <td>".(($bm->tbonus_gentil_positif  == 't') ? ($os->objbm_bonus_valeur>0 ? "BONUS" : "MALUS") : ($os->objbm_bonus_valeur<0 ? "MALUS" : "BONUS")) ."</td>
-                      <td>".$os->getNom()."</td>
+                      <td>".(($bm->tbonus_gentil_positif  == 't') ? ($os->objbm_bonus_valeur>0 ? "BONUS" : "MALUS") : ($os->objbm_bonus_valeur>0 ? "MALUS" : "BONUS")) ."</td>
+                      <td style=\"display:none;\">".$os->getNom()."</td>
                      </tr>";
             }
             echo "</table>";

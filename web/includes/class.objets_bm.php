@@ -93,7 +93,7 @@ class objets_bm
             objbm_obj_cod = :objbm_obj_cod,
             objbm_tbonus_cod = :objbm_tbonus_cod,
             objbm_nom = :objbm_nom,
-            objbm_bonus_valeur = :objbm_bonus_valeur,                       where objbm_cod = :objbm_cod ";
+            objbm_bonus_valeur = :objbm_bonus_valeur                       where objbm_cod = :objbm_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":objbm_cod" => $this->objbm_cod,
@@ -101,9 +101,34 @@ class objets_bm
                 ":objbm_obj_cod" => $this->objbm_obj_cod,
                 ":objbm_tbonus_cod" => $this->objbm_tbonus_cod,
                 ":objbm_nom" => $this->objbm_nom,
-                ":objbm_bonus_valeur" => $this->objbm_bonus_valeur,
+                ":objbm_bonus_valeur" => $this->objbm_bonus_valeur
             ),$stmt);
         }
+    }
+
+    /***
+     * Retourne la liste des sorts d'un ojet
+     * @return array|bool
+     */
+    function get_objets_bm(objets $objet)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        // Les sorts, sont tous les générique de l'objet plus eventuellement des spécifiques
+        $req = "select objbm_cod from objets_bm where objbm_gobj_cod=:gobj_cod or objbm_obj_cod=:obj_cod order by objbm_cod";
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":gobj_cod" => $objet->obj_gobj_cod,
+            ":obj_cod" => $objet->obj_cod
+        ),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new objets_bm;
+            $temp->charge($result["objbm_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
     }
 
     /***

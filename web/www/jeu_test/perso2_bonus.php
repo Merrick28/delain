@@ -55,33 +55,35 @@ $contenu_page .= 'Bonus aux dégâts en corps-à-corps : <strong>' . $db->f("mel
 <div class="titre">Bonus temporaires</div>
 <table><tr valign="top"><td style="padding:15px;">';
 
-$req_bonus = "select tbonus_libc, tonbus_libelle, bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
+$req_bonus = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
 	from bonus
 	inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 	where bonus_perso_cod = $perso_cod 
 		and
 			(tbonus_gentil_positif = 't' and bonus_valeur > 0
 			or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
-    group by tbonus_libc, tonbus_libelle, bonus_nb_tours, bonus_mode
+    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
 	order by tbonus_libc";
 
-$req_malus = "select tbonus_libc, tonbus_libelle, bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
+$req_malus = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
 	from bonus
 	inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 	where bonus_perso_cod = $perso_cod 
 		and
 			(tbonus_gentil_positif = 't' and bonus_valeur < 0
 			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-    group by tbonus_libc, tonbus_libelle, bonus_nb_tours, bonus_mode			
+    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode			
 	order by tbonus_libc";
 
 $req_bm_carac = "select corig_type_carac,
         sum(corig_valeur) as bonus_carac,
-		to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin, coalesce(corig_nb_tours, 0) as corig_nb_tours
+		to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin, 
+		coalesce(corig_nb_tours, 0) as corig_nb_tours,
+		corig_mode
 	from carac_orig
 	inner join perso on perso_cod = corig_perso_cod
 	where perso_cod = $perso_cod
-	group by corig_type_carac, to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'), coalesce(corig_nb_tours, 0)
+	group by corig_type_carac, to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'), coalesce(corig_nb_tours, 0), corig_mode
 	order by corig_type_carac";
 $bonus_carac = array();
 $malus_carac = array();
@@ -90,7 +92,11 @@ while ($db->next_record())
 {
 	$carac = $db->f('corig_type_carac');
 	$bm = $db->f('bonus_carac');
-	$duree = ($db->f('corig_nb_tours') == 0) ? $db->f('corig_dfin') : $db->f('corig_nb_tours') . ' tour(s)';
+	if ($db->f('corig_mode')=='E') {
+        $duree = "Equipement" ;
+    } else {
+        $duree = ($db->f('corig_nb_tours') == 0) ? $db->f('corig_dfin') : $db->f('corig_nb_tours') . ' tour(s)';
+    }
 	if ($db->f('bonus_carac') > 0)
 	{
 		$bonus_carac[$carac] = array();
@@ -122,15 +128,18 @@ else
 
 	while($db->next_record())
 	{
-        $img = "" ;
         if (is_file(__DIR__ . "/../images/interface/bonus/".$db->f('tbonus_libc').".png"))
         {
             $img = '<img src="/../images/interface/bonus/'.$db->f('tbonus_libc').'.png">' ;
         }
+        else
+        {
+            $img = '<img src="/../images/interface/bonus/MALUS.png">';
+        }
 		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') .  ($db->f('bonus_mode') == "C" ? " (cumulatif)": "") . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
-		<td><div style="text-align:center;">' . ($db->f('bonus_mode') == "E" ? " Equipement" : $db->f("bonus_nb_tours"))  . ' tour(s)</div></td>
+		<td><div style="text-align:center;">' . ($db->f('bonus_mode') == "E" ? " Equipement" : $db->f("bonus_nb_tours")." tour(s)")  . '</div></td>
 		<td style="text-align:center">'.$img.'</td></tr>';
 	}
 	foreach ($bonus_carac as $carac => $bonus)
@@ -146,9 +155,19 @@ else
 			case 'CON': $lib_carac = 'Constitution'; break;
 			case 'DEX': $lib_carac = 'Dextérité'; break;
 		}
+        if (is_file(__DIR__ . "/../images/interface/bonus/".$carac.".png"))
+        {
+            $img = '<img src="/../images/interface/bonus/'.$carac.'.png">' ;
+        }
+        else
+        {
+            $img = '<img src="/../images/interface/bonus/MALUS.png">';
+        }
 		$contenu_page .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
 			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
-			<td><div style='text-align:center;'>$duree</div></td></tr>";
+			<td><div style='text-align:center;'>$duree</div></td>
+			<td><div style='text-align:center;'>$img</div></td>
+			</tr>";
 	}
 	$contenu_page .= '</table>';
 }
@@ -171,16 +190,19 @@ else
 
 	while($db->next_record())
 	{
-	    $img = "" ;
         if (is_file(__DIR__ . "/../images/interface/bonus/".$db->f('tbonus_libc').".png"))
         {
             $img = '<img src="/../images/interface/bonus/'.$db->f('tbonus_libc').'.png">' ;
+        }
+        else
+        {
+            $img = '<img src="/../images/interface/bonus/MALUS.png">';
         }
 
 		$contenu_page .= '<tr><td class="soustitre2"><strong>' . $db->f('tonbus_libelle') . ($db->f('bonus_mode') == "C" ? " (cumulatif)": "") . '</strong></td>';
 		$signe = ($db->f("bonus_valeur") >= 0) ? '+' : '';
 		$contenu_page .= '<td><div style="text-align:center;">' . $signe . $db->f("bonus_valeur") . '</div></td>
-		<td><div style="text-align:center;">' . ($db->f('bonus_mode') == "E" ? " Equipement" : $db->f("bonus_nb_tours")) . ' tour(s)</div></td>
+		<td><div style="text-align:center;">' . ($db->f('bonus_mode') == "E" ? " Equipement" : $db->f("bonus_nb_tours")." tour(s)") . '</div></td>
 		<td style="text-align:center">'.$img.'</td></tr>';
 	}
 	foreach ($malus_carac as $carac => $malus)
@@ -196,9 +218,19 @@ else
 			case 'CON': $lib_carac = 'Constitution'; break;
 			case 'DEX': $lib_carac = 'Dextérité'; break;
 		}
+        if (is_file(__DIR__ . "/../images/interface/bonus/".$carac.".png"))
+        {
+            $img = '<img src="/../images/interface/bonus/'.$carac.'.png">' ;
+        }
+        else
+        {
+            $img = '<img src="/../images/interface/bonus/MALUS.png">';
+        }
 		$contenu_page .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
 			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
-			<td><div style='text-align:center;'>$duree</div></td></tr>";
+			<td><div style='text-align:center;'>$duree</div></td>
+			<td><div style='text-align:center;'>$img</div></td>
+			</tr>";
 	}
 	$contenu_page .= '</table>';
 }

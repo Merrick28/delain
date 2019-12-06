@@ -14,9 +14,14 @@ declare
   ligne record;
 
 begin
+  -- RAISE NOTICE 'vector_update_customer invoked';
 
   -- seulement si on a equipé ou deséquipé un objet
   if (OLD.perobj_equipe != NEW.perobj_equipe) then
+
+    -- recupération du code d'objet générique
+    select into v_gobj_cod obj_gobj_cod from objets where obj_cod=NEW.perobj_obj_cod;
+
 
     if NEW.perobj_equipe = 'N' then
 
@@ -47,4 +52,4 @@ ALTER FUNCTION public.f_trg_after_update_perso_objet() OWNER TO delain;
 
 DROP TRIGGER IF EXISTS f_trg_after_update_perso_objet ON perso_objets ;
 
-CREATE TRIGGER f_trg_after_update_perso_objet AFTER INSERT ON perso_objets FOR EACH ROW EXECUTE PROCEDURE f_trg_after_update_perso_objet();
+CREATE TRIGGER f_trg_after_update_perso_objet AFTER UPDATE ON perso_objets FOR EACH ROW EXECUTE PROCEDURE f_trg_after_update_perso_objet();

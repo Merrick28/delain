@@ -1,5 +1,17 @@
 <?php $arme_distance = $db->arme_distance($perso_cod);
 
+
+// Cacul des bonus de caracs == pour affichage dans la feuille
+$req_bm_carac = "select corig_type_carac, avg(tbonus_degressivite)::integer as limite, avg(corig_carac_valeur_orig)::integer as valeur_orig, sum(corig_valeur)::integer as corig_valeur
+	from carac_orig join bonus_type on tbonus_libc=corig_type_carac where corig_perso_cod = $perso_cod
+	group by corig_type_carac ";
+$db->query($req_bm_carac);
+$bm_caracs = array();
+while ($db->next_record())
+{
+    $bm_caracs[$db->f('corig_type_carac')] = " (=".$db->f('valeur_orig').($db->f('corig_valeur')>0 ? "+" : "").$db->f('corig_valeur')." limité à ".$db->f('limite')."%)";
+}
+
 $requete = "select perso_description, perso_redispatch, perso_type_perso, perso_niveau_vampire, perso_vampirisme, perso_nom, 
 		perso_capa_repar, to_char(perso_dcreat,'DD/MM/YYYY hh24:mi:ss') as date_cre, race_nom, perso_sex, perso_pv, perso_pv_max, 
 		to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt, perso_pa, perso_nb_esquive, perso_niveau, floor(perso_px) as perso_px,
@@ -104,14 +116,15 @@ $contenu_page .= '<td class="soustitre2">Nombre d’esquives ce tour</td>
 
 <tr>
 <td class="soustitre2">Force</td>
-<td>' . $db->f('perso_for') . '</td>
+<td>' . $db->f('perso_for') . (isset($bm_caracs["FOR"]) ? $bm_caracs["FOR"] : "" ) .'</td>
 <td class="soustitre2">Intelligence</td>
-<td>' . $db->f('perso_int') . '</td></tr>
+<td>' . $db->f('perso_int') . (isset($bm_caracs["INT"]) ? $bm_caracs["INT"] : "" ) .'</td>
+</tr>
 <tr>
 <td class="soustitre2">Dextérité</td>
-<td>' . $db->f('perso_dex') . '</td>
+<td>' . $db->f('perso_dex') . (isset($bm_caracs["DEX"]) ? $bm_caracs["DEX"] : "" ) .'</td>
 <td class="soustitre2">Constitution</td>
-<td>' . $db->f('perso_con') . '</td>
+<td>' . $db->f('perso_con') . (isset($bm_caracs["CON"]) ? $bm_caracs["CON"] : "" ) .'</td>
 </tr>';
 // affichage des bonus
 $contenu_page .= '

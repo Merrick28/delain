@@ -26,4 +26,4 @@ ALTER FUNCTION public.f_trg_after_delete_perso_objet() OWNER TO delain;
 
 DROP TRIGGER IF EXISTS f_trg_after_delete_perso_objet ON perso_objets ;
 
-CREATE TRIGGER f_trg_after_delete_perso_objet AFTER INSERT ON perso_objets FOR EACH ROW EXECUTE PROCEDURE f_trg_after_delete_perso_objet();
+CREATE TRIGGER f_trg_after_delete_perso_objet AFTER DELETE ON perso_objets FOR EACH ROW EXECUTE PROCEDURE f_trg_after_delete_perso_objet();

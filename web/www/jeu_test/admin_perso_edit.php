@@ -464,11 +464,11 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES BONUS Standards
-                            $req_bon = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  WHEN bonus_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_bon = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
                                         from bonus
                                         inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-                                        where bonus_perso_cod = $mod_perso_cod
-                                        and
+                                        where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
+                                           and
                                             (tbonus_gentil_positif = 't' and bonus_valeur > 0
                                             or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
                                         order by bonus_tbonus_libc";
@@ -492,13 +492,13 @@ if ($erreur == 0)
                             }
                             ?>
                             <?php // LISTE DES BONUS de Caracs
-                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  WHEN corig_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
                                           corig_valeur as bonus_valeur, 
                                           COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
                                         inner join bonus_type on tbonus_libc = corig_type_carac
                                         inner join perso on perso_cod=corig_perso_cod
-                                        where corig_perso_cod = $mod_perso_cod and corig_valeur >0
+                                        where corig_perso_cod = $mod_perso_cod and corig_valeur >0 and  corig_mode!='E'
                                         order by tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())
@@ -524,10 +524,10 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES MALUS Standards
-                            $req_mal = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  WHEN bonus_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_mal = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 		from bonus
 		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-		where bonus_perso_cod = $mod_perso_cod
+		where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
 		and
 			(tbonus_gentil_positif = 't' and bonus_valeur < 0
 			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
@@ -552,13 +552,13 @@ if ($erreur == 0)
                             }
                             ?>
                             <?php // LISTE DES MALUS de Caracs
-                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  WHEN corig_mode='E' THEN ' - [equipement]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
                                           corig_valeur as bonus_valeur, 
                                         COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
                                         inner join bonus_type on tbonus_libc = corig_type_carac
                                         inner join perso on perso_cod=corig_perso_cod
-                                        where corig_perso_cod = $mod_perso_cod  and corig_valeur <0
+                                        where corig_perso_cod = $mod_perso_cod  and corig_valeur <0  and corig_mode!='E'
                                         order by tbonus_libc";
                             $db->query($req_bon);
                             while ($db->next_record())

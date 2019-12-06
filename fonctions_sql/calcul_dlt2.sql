@@ -625,14 +625,14 @@ begin
     /* bonus */
     update bonus
     set bonus_nb_tours = bonus_nb_tours - 1
-    where bonus_perso_cod = personnage;
+    where bonus_perso_cod = personnage and bonus_mode!='E';   -- sauf equipement
 
     delete from bonus where bonus_nb_tours <= 0;
 
     /* caracs origine */
     update carac_orig
     set corig_nb_tours = corig_nb_tours - 1
-    where corig_perso_cod = personnage;
+    where corig_perso_cod = personnage and corig_mode!='E';   -- sauf equipement
 
     /* Marlyza: s'il n'y a plus de bonus, remettre immédiatement les caracs en état */
     perform f_remise_caracs(personnage) ;

@@ -20,7 +20,7 @@ begin
   delete from bonus where bonus_perso_cod=v_perso and bonus_obj_cod=v_obj_cod ;
 
   -- supression des bonus de carac
-  update carac_orig set corig_nb_tours=0 where corrig_perso_cod=v_perso and corig_obj_cod=v_obj_cod ;
+  update carac_orig set corig_nb_tours=0 where corig_perso_cod=v_perso and corig_obj_cod=v_obj_cod ;
 
   -- remise des caracs en état après la suppression
   perform f_remise_caracs(v_perso) ;

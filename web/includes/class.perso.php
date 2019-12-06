@@ -2725,14 +2725,15 @@ class perso
     function perso_malus()
     {
         $pdo    = new bddpdo;
-        $req    = "select tbonus_libc, tonbus_libelle, bonus_valeur, bonus_nb_tours 
+        $req    = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
                    from bonus
                    inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                    where bonus_perso_cod = ?
                         and
                             (tbonus_gentil_positif = 't' and bonus_valeur < 0
                             or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-                    order by bonus_tbonus_libc";
+                    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode	
+                    order by tbonus_libc";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array( $this->perso_cod ), $stmt);
         if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))

@@ -625,11 +625,11 @@ if ($erreur == 0)
             $objbm = new objets_bm();
             if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))
             {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
+                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
             }
             else
             {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a><br>';
+                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a><br>';
             }
             ?>
 
