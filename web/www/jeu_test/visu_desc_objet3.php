@@ -249,7 +249,7 @@ if ($autorise == 1) {
                 }
 
                 echo "<tr><td class=\"soustitre2\">".($typebm=="Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>")."</td>";
-                echo "<td>".$img." <strong>".$objbm->objbm_bonus_valeur."</strong> : ". $tbonus->tonbus_libelle."</td>";
+                echo "<td>".$img." <strong>".($objbm->objbm_bonus_valeur>0 ? "+" : "").$objbm->objbm_bonus_valeur."</strong> : ". $tbonus->tonbus_libelle."</td>";
                 echo "<tr>";
             }
         }

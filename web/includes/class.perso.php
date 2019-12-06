@@ -1710,7 +1710,7 @@ class perso
             and pnbst_sort_cod = sort_cod 
             and sort_niveau >= 5 
             and pnbst_nombre > 0 
-            and perso_voie_magique = 0 
+            -- and perso_voie_magique = 0 
             and perso_cod = ?';
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($this->perso_cod), $stmt);

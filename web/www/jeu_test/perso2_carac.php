@@ -9,7 +9,7 @@ $db->query($req_bm_carac);
 $bm_caracs = array();
 while ($db->next_record())
 {
-    $bm_caracs[$db->f('corig_type_carac')] = " (=".$db->f('valeur_orig').($db->f('corig_valeur')>0 ? "+" : "").$db->f('corig_valeur')." limité à ".$db->f('limite')."%)";
+    $bm_caracs[$db->f('corig_type_carac')] = " (base : ".$db->f('valeur_orig').($db->f('corig_valeur')>0 ? " + bonus : " : " - malus : ").abs($db->f('corig_valeur'))." <em style='font-size: 9px;'>limité à ".$db->f('limite')."% de la base.</em>)";
 }
 
 $requete = "select perso_description, perso_redispatch, perso_type_perso, perso_niveau_vampire, perso_vampirisme, perso_nom, 
