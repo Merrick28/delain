@@ -1987,6 +1987,46 @@ class perso
         return $result['resultat'];
     }
 
+    function carac_base_for()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'FOR') as perso_for";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_for'];
+    }
+
+    function carac_base_int()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'INT') as perso_int";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_int'];
+    }
+
+    function carac_base_con()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'CON') as perso_con";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_con'];
+    }
+
+    function carac_base_dex()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'DEX') as perso_dex";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_dex'];
+    }
+
     function passe_niveau($amel)
     {
         $pdo    = new bddpdo();

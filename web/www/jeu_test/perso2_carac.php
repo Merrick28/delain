@@ -9,7 +9,10 @@ $db->query($req_bm_carac);
 $bm_caracs = array();
 while ($db->next_record())
 {
-    $bm_caracs[$db->f('corig_type_carac')] = " (base : ".$db->f('valeur_orig').($db->f('corig_valeur')>0 ? " + bonus : " : " - malus : ").abs($db->f('corig_valeur'))." <em style='font-size: 9px;'>limité à ".$db->f('limite')."% de la base.</em>)";
+    $bm_caracs[$db->f('corig_type_carac')] = [
+            "base" => $db->f('valeur_orig'),
+            "texte" => " : base ".$db->f('valeur_orig').($db->f('corig_valeur')>0 ? " + bonus " : " - malus ").abs($db->f('corig_valeur'))
+    ];
 }
 
 $requete = "select perso_description, perso_redispatch, perso_type_perso, perso_niveau_vampire, perso_vampirisme, perso_nom, 
@@ -116,15 +119,15 @@ $contenu_page .= '<td class="soustitre2">Nombre d’esquives ce tour</td>
 
 <tr>
 <td class="soustitre2">Force</td>
-<td>' . $db->f('perso_for') . (isset($bm_caracs["FOR"]) ? $bm_caracs["FOR"] : "" ) .'</td>
+<td>' . $db->f('perso_for') . (isset($bm_caracs["FOR"]) ? $bm_caracs["FOR"]["texte"]." (".( $db->f('perso_for')-$bm_caracs["FOR"]["base"]).")"  : "" ) .'</td>
 <td class="soustitre2">Intelligence</td>
-<td>' . $db->f('perso_int') . (isset($bm_caracs["INT"]) ? $bm_caracs["INT"] : "" ) .'</td>
+<td>' . $db->f('perso_int') . (isset($bm_caracs["INT"]) ? $bm_caracs["INT"]["texte"]." (".( $db->f('perso_int')-$bm_caracs["INT"]["base"]).")"  : "" ) .'</td>
 </tr>
 <tr>
 <td class="soustitre2">Dextérité</td>
-<td>' . $db->f('perso_dex') . (isset($bm_caracs["DEX"]) ? $bm_caracs["DEX"] : "" ) .'</td>
+<td>' . $db->f('perso_dex') . (isset($bm_caracs["DEX"]) ? $bm_caracs["DEX"]["texte"]." (".( $db->f('perso_dex')-$bm_caracs["DEX"]["base"]).")" : "" ) .'</td>
 <td class="soustitre2">Constitution</td>
-<td>' . $db->f('perso_con') . (isset($bm_caracs["CON"]) ? $bm_caracs["CON"] : "" ) .'</td>
+<td>' . $db->f('perso_con') . (isset($bm_caracs["CON"]) ? $bm_caracs["CON"]["texte"]." (".( $db->f('perso_con')-$bm_caracs["CON"]["base"]).")"  : "" ) .'</td>
 </tr>';
 // affichage des bonus
 $contenu_page .= '

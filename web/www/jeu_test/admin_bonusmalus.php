@@ -40,9 +40,35 @@ if ($erreur == 0)
 						tbonus_gentil_positif = '$tbonus_gentil_positif',
 						tbonus_cumulable = '$tbonus_cumulable',
 						tbonus_degressivite = '$tbonus_degressivite'
-					WHERE tbonus_cod = $tbonus_cod";
+					WHERE tbonus_cod = $tbonus_cod RETURNING tbonus_libc";
 				$db->query($req);
 				$resultat = "<p>Bonus $tonbus_libelle ($tbonus_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
+
+                if ($db->next_record())
+                {
+                    $tbonus_libc = $db->f('tbonus_libc');
+                    if (in_array($tbonus_libc, ["CON", "INT", "DEX", "FOR"]) )
+                    {
+                        $perso_list = "" ;
+                        $db2 = new base_delain;
+                        $db->query("select distinct corig_perso_cod, perso_cod, perso_nom from carac_orig join perso on perso_cod=corig_perso_cod where corig_type_carac  ='{$tbonus_libc}' order by perso_cod");
+                        while ($db->next_record())
+                        {
+                            $bonus_perso_cod = $db->f('corig_perso_cod');
+                            $perso_list .= '#'.$db->f('perso_cod').' ('.$db->f('perso_nom').'), ';
+
+                            // L'ajout et le retrait d'un bonus de carac, même nul force le recalcul des limites pour ce bonus
+                            $db2->query("select f_modif_carac_base({$bonus_perso_cod}, '{$tbonus_libc}', 'T', 1, 0, 'C'); ");
+                            $db2->query("delete from carac_orig where corig_perso_cod={$bonus_perso_cod} and corig_type_carac ='{$tbonus_libc}' and  corig_valeur=0 ;");
+                        }
+
+                        if ($perso_list != "")
+                        {
+                            $resultat.= "Les bonus/malus de caracs ont mis à jour sur TOUS les persos suivants: {$perso_list}";
+                        }
+                    }
+                }
+
 			}
 			else
 				$resultat = "<p>Erreur de paramètres</p>";

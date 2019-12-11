@@ -35,24 +35,10 @@ begin
 	loop
 	  if ligne.carac_actuelle is not null then
 
-      -- dans tous les cas, on doit avoir une limite de carac, impossible à dépasser
-      select into v_limit_max tbonus_degressivite from bonus_type where tbonus_libc = ligne.corig_type_carac and tbonus_cumulable = 'C';
-      if not found then
-        v_limit_max = 50 ;   -- limit max non trouvée, on applique le bonus de la formule d'origine qui était de 50% (en positif comme en negatif)
-      end if;
-      if v_limit_max<=0 or v_limit_max>=100 then
-        v_limit_max = 50 ;   -- si limit bizarre on est jamais trop prudent :-)
-      end if;
-
       -- on regarde quels sont les bonus restant maintenant que certains bonus ont expirer
       select into v_modificateur coalesce(sum(corig_valeur),0) from carac_orig  where corig_perso_cod = v_perso and corig_type_carac = ligne.corig_type_carac and (corig_dfin >= now() or corig_nb_tours > 0) ;
 
-      v_nouvelle_valeur := ligne.corig_carac_valeur_orig + v_modificateur;
-      if v_nouvelle_valeur > (ligne.corig_carac_valeur_orig * (1 + (v_limit_max/100::numeric))) then
-        v_nouvelle_valeur := floor(ligne.corig_carac_valeur_orig * (1 + (v_limit_max/100::numeric)));
-      elsif v_nouvelle_valeur < (ligne.corig_carac_valeur_orig * (1 - (v_limit_max/100::numeric))) then
-        v_nouvelle_valeur := ceil(ligne.corig_carac_valeur_orig * (1 - (v_limit_max/100::numeric)));
-      end if;
+      v_nouvelle_valeur := f_modif_carac_limit(ligne.corig_type_carac, ligne.corig_carac_valeur_orig, ligne.corig_carac_valeur_orig + v_modificateur);
 
       if v_nouvelle_valeur <> ligne.carac_actuelle  then
         v_diff := v_nouvelle_valeur - ligne.carac_actuelle ;
@@ -61,10 +47,10 @@ begin
           update perso set perso_for = perso_for + v_diff, perso_enc_max = perso_enc_max + (v_diff * 3) where perso_cod = v_perso;
 
         elsif ligne.corig_type_carac = 'DEX' then
-          update perso set perso_dex = perso_dex + v_diff where perso_cod = v_perso;
+          update perso set perso_dex = perso_dex + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = v_perso;
 
         elsif ligne.corig_type_carac = 'INT' then
-          update perso set perso_int = perso_int + v_diff where perso_cod = v_perso;
+          update perso set perso_int = perso_int + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = v_perso;
 
         elsif ligne.corig_type_carac = 'CON' then
           update perso set perso_con = perso_con + v_diff, perso_pv_max = perso_pv_max + (v_diff * 3), perso_pv = perso_pv + (v_diff * 3) where perso_cod = v_perso;

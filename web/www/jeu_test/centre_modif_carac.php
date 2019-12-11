@@ -302,10 +302,10 @@ if ($erreur == 0)
                 echo "<td width='150px' class=\"soustitre2\"><strong>Améliorer</strong></td>";
                 echo "<td></td>";
 
-                $perso_for = $perso->perso_for;
-                $perso_dex = $perso->perso_dex;
-                $perso_con = $perso->perso_con;
-                $perso_int = $perso->perso_int;
+                $perso_for = $perso->carac_base_for(); //perso_for;
+                $perso_dex = $perso->carac_base_dex(); //$perso->perso_dex;
+                $perso_con = $perso->carac_base_con(); //$perso->perso_con;
+                $perso_int = $perso->carac_base_int(); //$perso->perso_int;
                 $perso_enc_max = $perso->perso_enc_max;
                 $perso_capa_repar = $perso->perso_capa_repar;
                 $perso_pv_max = $perso->perso_pv_max;

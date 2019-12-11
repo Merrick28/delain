@@ -36,7 +36,6 @@ declare
 
 	v_corig_cod integer;
 	v_corig_valeur integer;
-	v_limit_max integer;
 	v_carac_actuelle integer;
 	v_carac_base integer;
 	v_diff integer;
@@ -85,16 +84,6 @@ begin
     v_carac_base := v_carac_actuelle ; -- aucun bonus/malus la carac de base c'est la carac actuel du perso
   end if;
 
-  -- dans tous les cas, on doit avoir une limite de carac, impossible à dépasser
-  select into v_limit_max tbonus_degressivite from bonus_type where tbonus_libc = v_type_carac ;
-	if not found then
-		v_limit_max = 50 ;   -- limit max non trouvée, on applique le bonus de la formule d'origine qui était de 50% (en positif comme en negatif)
-	end if;
-	if v_limit_max<=0 or v_limit_max>=100 then
-		v_limit_max = 50 ;   -- si limit bizarre on est jamais trop prudent :-)
-	end if;
-
-
   --
   -- on regarde s’il y a déjà quelque chose (seulement pour le cas Standard), Equipement et Cumulatif c'est toujours unnouveua bonus/malus!
   --
@@ -123,15 +112,13 @@ begin
 
   end if;
 
+  -- on calcul quand même ce qu'il y avait déjà comme bonus/malus ==> nouveau modificateur souhaité tous bonus/malus confondus
+  select into v_modificateur coalesce(sum(corig_valeur),0) from carac_orig  where corig_perso_cod = personnage and corig_type_carac = v_type_carac ;
+
   -- le bonus a été ajouté (ou mis à jour), il faut maintenant mettre la carac du perso en conformitée
   -- ATTENTION: la somme de bonus ne doit pas dépasser un % de la carac de base (on vérifie avant de changer la carac)
-  v_nouvelle_valeur := v_carac_actuelle + v_modificateur;
+  v_nouvelle_valeur := f_modif_carac_limit(v_type_carac, v_carac_base, v_carac_base + v_modificateur);
 
-  if v_nouvelle_valeur > (v_carac_base * (1 + (v_limit_max/100::numeric))) then
-    v_nouvelle_valeur := floor(v_carac_base * (1 + (v_limit_max/100::numeric)));
-  elsif v_nouvelle_valeur < (v_carac_base * (1 - (v_limit_max/100::numeric))) then
-    v_nouvelle_valeur := ceil(v_carac_base * (1 - (v_limit_max/100::numeric))) ;
-  end if;
 
   if v_nouvelle_valeur <> v_carac_actuelle  then
     v_diff := v_nouvelle_valeur - v_carac_actuelle ;
@@ -140,10 +127,10 @@ begin
       update perso set perso_for = perso_for + v_diff, perso_enc_max = perso_enc_max + (v_diff * 3) where perso_cod = personnage;
 
     elsif v_type_carac = 'DEX' then
-      update perso set perso_dex = perso_dex + v_diff where perso_cod = personnage;
+      update perso set perso_dex = perso_dex + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;
 
     elsif v_type_carac = 'INT' then
-      update perso set perso_int = perso_int + v_diff where perso_cod = personnage;
+      update perso set perso_int = perso_int + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;
 
     elsif v_type_carac = 'CON' then
       update perso set perso_con = perso_con + v_diff, perso_pv_max = perso_pv_max + (v_diff * 3), perso_pv = perso_pv + (v_diff * 3) where perso_cod = personnage;
