@@ -1,20 +1,22 @@
 --
--- Name: ajoute_bonus_equipement(integer, text, integer, numeric); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: ajoute_bonus_equipement(integer, text, integer, integer, numeric); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function ajoute_bonus_equipement(integer, text, integer, numeric) RETURNS integer
+create or replace function ajoute_bonus_equipement(integer, text, integer, integer, numeric) RETURNS integer
 LANGUAGE plpgsql
 AS $_$-- Rajoute un bonus d'équipement à un perso
 -- $1 = Le code du perso en question
 -- $2 = Le type de bonus
--- $3 = le code de l'objet qui donne ce bonus
--- $4 = La valeur du bonus
+-- $3 = le code du bonus
+-- $4 = le code de l'objet qui donne ce bonus
+-- $5 = La valeur du bonus
 
 declare
   v_perso alias for $1;
   v_type alias for $2;
-  v_obj_cod alias for $3;
-  v_valeur alias for $4;
+  v_objbm_cod alias for $3;
+  v_obj_cod alias for $4;
+  v_valeur alias for $5;
 
 	temp integer;	-- variable fourre tout
   code_retour text;
@@ -24,12 +26,19 @@ begin
   if v_type in ('DEX', 'INT', 'FOR', 'CON')  then
 
     -- la fontion ajoute_bonus_equipement() retourne un texte, mais pas de code d'erreur, on va ignorer le resultat de f_modif_carac_base()
-	  perform f_modif_carac_base(v_perso, v_type, 'T', v_obj_cod, v_valeur::integer, 'E')	;
+    -- perform f_modif_carac_base(v_perso, v_type, 'T', v_obj_cod, v_valeur::integer, 'E')	;
+
+    -- cas d'un bonus de carac en mode équipement !--
+    insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_valeur, corig_mode, corig_obj_cod, corig_objbm_cod)
+    values (v_perso, v_type, f_carac_base(v_perso, v_type), v_valeur, 'E', v_obj_cod, v_objbm_cod);
+
+    -- appliquer réellement les modifications sur la carac du perso (en respectant les contraintes de limite min/max paramétrées)
+    perform f_modif_carac_perso(v_perso, v_type);
 
   else
 
     -- cas des bonus standards en mode équipement !--
-    insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_valeur, bonus_mode, bonus_obj_cod)  values (v_perso, v_type, v_valeur, 'E', v_obj_cod);
+    insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_valeur, bonus_mode, bonus_obj_cod, bonus_objbm_cod)  values (v_perso, v_type, v_valeur, 'E', v_obj_cod, v_objbm_cod);
 
   end if;
 
@@ -37,4 +46,4 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.ajoute_bonus_equipement(integer, text, integer, numeric) OWNER TO delain;
+ALTER FUNCTION public.ajoute_bonus_equipement(integer, text, integer, integer, numeric) OWNER TO delain;

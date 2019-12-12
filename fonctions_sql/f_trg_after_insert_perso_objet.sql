@@ -24,7 +24,7 @@ begin
 	  -- ajout des bonus (si l'objet est équipé)
 	  if  NEW.perobj_equipe='O' then
 
-	    perform ajoute_bonus_equipement(NEW.perobj_perso_cod, ligne.tbonus_libc, NEW.perobj_obj_cod, ligne.objbm_bonus_valeur);
+	    perform ajoute_bonus_equipement(NEW.perobj_perso_cod, ligne.tbonus_libc, ligne.objbm_cod, NEW.perobj_obj_cod, ligne.objbm_bonus_valeur);
 
 	  end if;
 

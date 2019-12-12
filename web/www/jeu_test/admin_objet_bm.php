@@ -85,8 +85,37 @@ if ($erreur == 0)
             // Cas d'une suppression
             if (($_REQUEST["supprimer"] == "supprimer") && ($objbm_cod>0))
             {
-                $log.="supression de l'objet_sort #".$objbm->objbm_cod."\n".obj_diff(new objets_bm, $objbm);
+                // On retire les bonus/malus avant de supprimer pour
+                $nb_obj = 0;
+                $perobj = new perso_objets();
+                $list = $perobj->getByObjetGenerique($objbm->objbm_gobj_cod);
+                if (count($list))
+                {
+                    $pdo = new bddpdo;
+
+                    foreach ($list as $pobj)
+                    {
+                        if ($pobj->perobj_equipe == 'O')
+                        {
+                            // Mise à jour des BM d'équipement pour l'objet de ce joueur!
+                            $req = "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+                            $stmt = $pdo->prepare($req);
+                            $stmt = $pdo->execute(array(
+                                ":perso_cod" => $pobj->perobj_perso_cod,
+                                ":modif" => 'D',
+                                ":objbm_cod" => $objbm->objbm_cod,
+                                ":obj_cod" => $pobj->perobj_obj_cod), $stmt);
+                            $result = $stmt->fetch();
+
+                            $nb_obj++;
+                        }
+                    }
+                }
+
+                $log.="supression de l'objet_bm #".$objbm->objbm_cod."\n".obj_diff(new objets_bm, $objbm);
                 $objbm->delete($objbm_cod);
+                if ($nb_obj>0) echo "<div class='bordiv'><pre><strong><u>ATTENTION</u></strong>: Les {$nb_obj} objet(s) équipé(s) par les joueurs ont été impactés par cette supression!</pre></div>";
+
             }
             else
             {
@@ -100,8 +129,51 @@ if ($erreur == 0)
                 $objbm->objbm_bonus_valeur = (int)$_REQUEST["objbm_bonus_valeur"]  ;
                 $objbm->stocke($new);
 
+                // Vérification de l'ipact sur les objets en jeu!
+                if (($clone_os->objbm_tbonus_cod!=$objbm->objbm_tbonus_cod) || ($clone_os->objbm_bonus_valeur!=$objbm->objbm_bonus_valeur))
+                {
+                    $nb_obj = 0;
+                    $perobj = new perso_objets();
+                    $list = $perobj->getByObjetGenerique($objbm->objbm_gobj_cod);
+                    if (count($list))
+                    {
+                        $pdo = new bddpdo;
+
+                        foreach ($list as $pobj)
+                        {
+                            if ($pobj->perobj_equipe == 'O')
+                            {
+                                // Mise à jour des BM d'équipement pour l'objet de ce joueur!
+                                $req = "select modif_bonus_equipement(:perso_cod,:modif,:objbm_cod,:obj_cod)  as modif;";
+                                $stmt = $pdo->prepare($req);
+                                $stmt = $pdo->execute(array(
+                                                    ":perso_cod" => $pobj->perobj_perso_cod,
+                                                    ":modif" => $new ? 'C' : 'U',
+                                                    ":objbm_cod" => $objbm->objbm_cod,
+                                                    ":obj_cod" => $pobj->perobj_obj_cod ), $stmt);
+                                $result = $stmt->fetch();
+
+                                $nb_obj ++;
+
+                            }
+                        }
+                    }
+                    if ($nb_obj>0) echo "<div class='bordiv'><pre><strong><u>ATTENTION</u></strong>: Les {$nb_obj} objet(s) équipé(s) par les joueurs ont été impactés par cette modification!</pre></div>";
+
+                    while ($db->next_record())
+                    {
+                        $bonus_perso_cod = $db->f('corig_perso_cod');
+                        $perso_list .= '#'.$db->f('perso_cod').' ('.$db->f('perso_nom').'), ';
+
+                        // On recalcule le changement des limites pour ce perso
+                        $db2->query("select f_modif_carac_perso({$bonus_perso_cod}, '{$tbonus_libc}'); ");
+                    }
+
+
+                }
+
                 // Logger les infos pour suivi admin
-                $log.="ajoute/modifie de l'objet_sort #".$objbm->objbm_cod."\n".obj_diff($clone_os, $objbm);
+                $log.="ajoute/modifie de l'objet_bm #".$objbm->objbm_cod."\n".obj_diff($clone_os, $objbm);
             }
 
             writelog($log,'objet_edit', true);

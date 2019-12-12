@@ -29,7 +29,7 @@ declare
 	temp integer;	-- variable fourre tout
   code_retour text;
 begin
-  v_retour := 1;
+  v_retour := 1;    -- par defaut on considère avoir appliqué un bonus
 
   -- decomposition du bonus en type + cumulatif
   v_type := SUBSTR(v_bonus, 1, 3);
@@ -39,30 +39,29 @@ begin
     v_cumulatif := 'S';
   end if;
 
-  -- 08/11/2019 - Marlyza - Ajout de bonus de carac (FOR/INT/DEX/CON) à l'aide de f_modif_carac
+  -- 08/11/2019 - Marlyza - Ajout de bonus de carac (FOR/INT/DEX/CON) à l'aide de f_modif_carac_base
   IF v_type in ('DEX', 'INT', 'FOR', 'CON')  THEN
-    -- cas des bonus de carac --
 
-    -- On vérifie si le perso avait déjà un bonus !!
-    select into temp corig_carac_valeur_orig from carac_orig where corig_perso_cod = v_perso and corig_type_carac = v_type and corig_mode = v_cumulatif ;
-    if found then
-      v_retour := 0;
+    -- cas des bonus de carac -------------------------------------------------------------------------
+	  temp := f_modif_carac_base(v_perso, v_type, 'T', v_duree, v_valeur::integer, v_cumulatif)	;
+
+    -- la fontion ajoute_bonus() doit retourner un boolean 0/1, on va convertir le resultat de f_modif_carac_base()
+	  if temp = 0 then
+	    v_retour := 0;
     else
-     v_retour := 1;
+      v_retour := 1;
     end if;
-
-    -- la fontion ajoute_bonus() retourne un texte, mais pas de code d'erreur, on va ignorer le resultat de f_modif_carac_base()
-	  perform f_modif_carac_base(v_perso, v_type, 'T', v_duree, v_valeur::integer, v_cumulatif)	;
 
   ELSE
 
-    -- cas des bonus standards --
-
+    -- cas des bonus standards -------------------------------------------------------------------------
 
     -- vérifiation si cumulatif et bonus/malus cumulable !
     select into v_degressivite tbonus_degressivite from bonus_type where v_cumulatif='C' and tbonus_cumulable='O' and tbonus_libc=v_type ;
     if found then
+      --
       -- cas d'un fonctionnement avec bonus/malus cumulable et systeme de degressivite!
+      --
 
       -- récupération du nombre de bonus/malus du même type
       select count(*) into v_nb from bonus where bonus_perso_cod = v_perso and bonus_tbonus_libc = v_type and sign(bonus_valeur) = sign(v_valeur) and bonus_mode='C' ;
@@ -86,7 +85,9 @@ begin
       end if;
 
     else
-        -- cas du fonctionnement normal (mode bonus= 'S')
+      --
+      -- cas du fonctionnement normal (mode cumulatif = 'S') (celui utilisé depuis toujours)
+      --
 
       delete from bonus where
         bonus_perso_cod = v_perso and
@@ -116,7 +117,7 @@ begin
 
     end if;
 
-  end if;
+  END IF;
 
   return v_retour;
 end;$_$;
@@ -151,7 +152,7 @@ begin
   where bonus_perso_cod = v_perso
         and bonus_tbonus_libc = v_type
         and bonus_valeur = v_valeur
-        and bonus_cumulatif = 'N';
+        and bonus_cumulatif = 'S';
 
   return v_retour;
 end;$_$;

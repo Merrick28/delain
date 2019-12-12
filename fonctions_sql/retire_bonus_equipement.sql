@@ -16,13 +16,13 @@ declare
   code_retour text;
 begin
 
-  -- supression des bonus normaux
+  -- supression des bonus normaux (s'il y en a)
   delete from bonus where bonus_perso_cod=v_perso and bonus_obj_cod=v_obj_cod ;
 
-  -- supression des bonus de carac
+  -- supression des bonus de carac (s'il y en a)
   update carac_orig set corig_nb_tours=0 where corig_perso_cod=v_perso and corig_obj_cod=v_obj_cod ;
 
-  -- remise des caracs en état après la suppression
+  -- remise des caracs en état après la suppression  (s'il y a eu des supressions)
   perform f_remise_caracs(v_perso) ;
 
   return 0;

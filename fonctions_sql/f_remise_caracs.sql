@@ -35,6 +35,9 @@ begin
 	loop
 	  if ligne.carac_actuelle is not null then
 
+	    perform f_modif_carac_perso(v_perso, ligne.corig_type_carac)  ;
+
+/*
       -- on regarde quels sont les bonus restant maintenant que certains bonus ont expirer
       select into v_modificateur coalesce(sum(corig_valeur),0) from carac_orig  where corig_perso_cod = v_perso and corig_type_carac = ligne.corig_type_carac and (corig_dfin >= now() or corig_nb_tours > 0) ;
 
@@ -67,9 +70,12 @@ begin
         perform insere_evenement(ligne.corig_perso_cod, ligne.corig_perso_cod, 10, temp_tue, 'N', NULL);
         temp_tue := tue_perso_final(ligne.corig_perso_cod, ligne.corig_perso_cod);
       end if;
-
+*/
+      -- supprimer les bonus maintenant que les caracs ont été rétablies
+      delete from carac_orig where corig_type_carac=ligne.corig_type_carac and corig_perso_cod=ligne.corig_perso_cod and (corig_dfin < now() or corig_nb_tours = 0) ;
 
     end if;
+
 
 	end loop;
 	return 'OK';

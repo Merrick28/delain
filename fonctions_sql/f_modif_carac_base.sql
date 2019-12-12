@@ -2,7 +2,7 @@
 -- Name: f_modif_carac_base(integer, text, text, integer, integer, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text) RETURNS text
+CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text) RETURNS integer
     LANGUAGE plpgsql
     AS $_$/*************************************************/
 /* fonction f_modif_carac_base                   */
@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION f_modif_carac_base(integer, text, text, integer, inte
 /* $3 = H (pour Heure) ou 'T' (pour tour)        */
 /* $4 = nb d’heure/de tour/ ou code obj si Equip.*/
 /* $5 = modificateur à mettre                    */
-/* $6 = S/C/E si bonus Standard/cumulatif/Equip. */
+/* $6 = S/C si bonus Standard ou cumulatif       */
 /*-----------------------------------------------*/
 /* code retour : texte                           */
 /*  si tout bon, on sort 'OK'                    */
@@ -38,59 +38,42 @@ declare
 	v_corig_valeur integer;
 	v_carac_actuelle integer;
 	v_carac_base integer;
-	v_diff integer;
-	v_nouvelle_valeur integer;
 	v_temps_inter interval;
 	v_pv integer;
 	temp_tue text;
-	v_obj_cod integer;    -- code de l'objet en cas de bonus d'équipement
 
 begin
 	code_retour := 'OK';
-	v_obj_cod := null ;   -- par defaut (pas d'objet lié pour les bonus Standard ou cumulatif)
-  v_temps_inter := null; -- par defaut
+  v_temps_inter := null; -- par défaut (bonus en tour pas en heure)
 
 	--
 	-- on fait d’abord les contrôles possibles
 	--
 	select into temp perso_cod from perso where perso_cod = personnage;
 	if not found then
-		return 'Personnage non trouvé !';
-	end if;
-	if v_temps = 0 and v_cumulatif != 'E' then      -- sauf equipement
-		return 'Paramètre de durée non valide !';
-  elsif v_cumulatif != 'E' then
-	  v_temps_inter := trim(to_char(v_temps,'999999999'))||' hours';
-  else
-    -- cas d'équiepemtn, il n'y a pas de nombre de tour, la fin du bonus est conditionné par l'equipement
-    v_obj_cod := v_temps ;
-    v_temps := null ;
+		return 0 ;
 	end if;
 
-	select into v_carac_actuelle
-		case v_type_carac when 'FOR' then perso_for
-		                  when 'DEX' then perso_dex
-		                  when 'INT' then perso_int
-		                  when 'CON' then perso_con
-		else NULL end
-	from perso where perso_cod = personnage;
-	if v_carac_actuelle is null then
-		return 'Type de caractéristique non valide !';
+  if v_type_carac not in ('DEX', 'INT', 'FOR', 'CON')  then
+    return 0 ;
 	end if;
 
-  -- récupérer le valeur de base (tous bonus/malus confondus) on en prend 1, tous le bonus du mmême type contienne la même corig_carac_valeur_orig
-  select into v_carac_base corig_carac_valeur_orig from carac_orig where corig_perso_cod = personnage and corig_type_carac = v_type_carac LIMIT 1;
-  if not found then
-    v_carac_base := v_carac_actuelle ; -- aucun bonus/malus la carac de base c'est la carac actuel du perso
+	if v_temps = 0 then
+		return 0 ;
+	end if;
+
+  if v_type_delai = 'H' then
+    v_temps_inter := trim(to_char(v_temps,'999999999'))||' hours';
   end if;
 
+
+
   --
-  -- on regarde s’il y a déjà quelque chose (seulement pour le cas Standard), Equipement et Cumulatif c'est toujours unnouveua bonus/malus!
+  -- on regarde s’il y a déjà quelque chose (seulement pour le cas Standard)! En Equipement et en Cumulatif c'est toujours un nouveau bonus/malus!
   --
   select into v_corig_cod, v_corig_valeur corig_cod, corig_valeur from carac_orig where corig_perso_cod = personnage and corig_type_carac = v_type_carac and corig_mode ='S' and v_cumulatif = 'S';
   if found then
-    -- update du bonus
-    v_diff := v_modificateur - v_corig_valeur ;  -- la différence c'est la valeur que l'on voulait ajouter moins ce qu'il y avait déjà
+    -- update d'un bonus (en mode Standard)
 
     if v_type_delai = 'H' then
       update carac_orig set corig_dfin = now() + v_temps_inter, corig_nb_tours = null, corig_valeur = v_modificateur  where corig_cod = v_corig_cod;
@@ -99,55 +82,23 @@ begin
     end if;
 
   else
-    -- insertion du nouveau bonus
-    v_diff := v_modificateur ;
+    -- insertion du nouveau bonus (mode cumulatif)
 
     if v_type_delai = 'H' then
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode, corig_obj_cod)
-      values (personnage, v_type_carac, v_carac_base, now() + v_temps_inter, v_modificateur, v_cumulatif, v_obj_cod);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_dfin, corig_valeur, corig_mode)
+      values (personnage, v_type_carac, f_carac_base(personnage, v_type_carac), now() + v_temps_inter, v_modificateur, v_cumulatif);
     else
-      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode, corig_obj_cod)
-      values (personnage, v_type_carac, v_carac_base, v_temps, v_modificateur, v_cumulatif, v_obj_cod);
+      insert into carac_orig(corig_perso_cod, corig_type_carac, corig_carac_valeur_orig, corig_nb_tours, corig_valeur, corig_mode)
+      values (personnage, v_type_carac, f_carac_base(personnage, v_type_carac), v_temps, v_modificateur, v_cumulatif);
     end if;
 
   end if;
 
-  -- on calcul quand même ce qu'il y avait déjà comme bonus/malus ==> nouveau modificateur souhaité tous bonus/malus confondus
-  select into v_modificateur coalesce(sum(corig_valeur),0) from carac_orig  where corig_perso_cod = personnage and corig_type_carac = v_type_carac ;
-
-  -- le bonus a été ajouté (ou mis à jour), il faut maintenant mettre la carac du perso en conformitée
-  -- ATTENTION: la somme de bonus ne doit pas dépasser un % de la carac de base (on vérifie avant de changer la carac)
-  v_nouvelle_valeur := f_modif_carac_limit(v_type_carac, v_carac_base, v_carac_base + v_modificateur);
-
-
-  if v_nouvelle_valeur <> v_carac_actuelle  then
-    v_diff := v_nouvelle_valeur - v_carac_actuelle ;
-
-    if v_type_carac = 'FOR' then
-      update perso set perso_for = perso_for + v_diff, perso_enc_max = perso_enc_max + (v_diff * 3) where perso_cod = personnage;
-
-    elsif v_type_carac = 'DEX' then
-      update perso set perso_dex = perso_dex + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;
-
-    elsif v_type_carac = 'INT' then
-      update perso set perso_int = perso_int + v_diff, perso_capa_repar = perso_capa_repar + (v_diff * 3) where perso_cod = personnage;
-
-    elsif v_type_carac = 'CON' then
-      update perso set perso_con = perso_con + v_diff, perso_pv_max = perso_pv_max + (v_diff * 3), perso_pv = perso_pv + (v_diff * 3) where perso_cod = personnage;
-
-    end if;
-
-    select into v_pv perso_pv  from perso  where perso_cod = personnage;
-    if v_pv <= 0 then
-      temp_tue := 'Un malus de constitution a occasionné une perte de PV temporaires qui vous a été fatale.';
-      perform insere_evenement(ligne.corig_perso_cod, ligne.corig_perso_cod, 10, temp_tue, 'N', NULL);
-      temp_tue := tue_perso_final(ligne.corig_perso_cod, ligne.corig_perso_cod);
-    end if;
-
-  end if;
-
+  -- Maintenant que le bonus a été inséré, on applique réellement les modifications sur la carac du perso (en respectant les contraintes de limite min/max paramétrées)
+  code_retour := f_modif_carac_perso(personnage, v_type_carac);
 
 	return code_retour;
+
 end;$_$;
 
 
@@ -158,5 +109,5 @@ ALTER FUNCTION public.f_modif_carac_base(integer, text, text, integer, integer, 
 --
 
 COMMENT ON FUNCTION f_modif_carac_base(integer, text, text, integer, integer, text) IS 'Modifie de façon temporaire une caractéristique primaire (CON, FOR, INT, DEX)
-$1 = perso_cod ; $2 IN (''CON'', ''FOR'', ''INT'', ''DEX'') ; $3 = H ou T ; $4 = durée en heures ; $5 = valeur du bonus / malus. ; $6 = S/C/E (Standard, Cumulatif ou Equipement)';
+$1 = perso_cod ; $2 IN (''CON'', ''FOR'', ''INT'', ''DEX'') ; $3 = H ou T ; $4 = durée en heures ; $5 = valeur du bonus / malus. ; $6 = S/C (Standard ou Cumulatif)';
 

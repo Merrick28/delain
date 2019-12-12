@@ -29,6 +29,11 @@ ALTER TABLE public.bonus
 COMMENT ON COLUMN public.bonus.bonus_obj_cod
   IS 'Code de l''objet qui donne le bonus d''équipement';
 
+ALTER TABLE public.bonus
+   ADD COLUMN bonus_objbm_cod integer;
+COMMENT ON COLUMN public.bonus.bonus_objbm_cod
+  IS 'Code définissant le bonus d''équipement, le lien est nécéssaire modifier les bonus en cours en cas de modification du bonus source';
+
 CREATE SEQUENCE public.seq_corig_cod
   INCREMENT 1
   MINVALUE 1
@@ -68,6 +73,11 @@ ALTER TABLE public.carac_orig
    ADD COLUMN corig_obj_cod integer DEFAULT NULL;
 COMMENT ON COLUMN public.carac_orig.corig_obj_cod
   IS 'code objet de l''équipement qui donne ce bonus/malus';
+
+ALTER TABLE public.carac_orig
+   ADD COLUMN corig_objbm_cod integer DEFAULT NULL;
+COMMENT ON COLUMN public.carac_orig.corig_objbm_cod
+  IS 'Code définissant le bonus d''équipement, le lien est nécéssaire modifier les bonus en cours en cas de modification du bonus source';
 
 
 ALTER TABLE public.defi_bmcaracs

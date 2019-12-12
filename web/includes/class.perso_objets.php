@@ -101,6 +101,33 @@ class perso_objets
         return $retour;
     }
 
+    /***
+     * @param $objet_generique
+     * @return bool
+     * @throws Exception
+     */
+    function getByObjetGenerique($objet_generique)
+    {
+        $retour = array();
+
+        $pdo  = new bddpdo;
+        $req  = "select perobj_cod
+						from perso_objets join objets on obj_cod = perobj_obj_cod
+						where obj_gobj_cod = :objet_generique";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+            ":objet_generique" => $objet_generique
+        ), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso_objets;
+            $temp->charge($result["perobj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo

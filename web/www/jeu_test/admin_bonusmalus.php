@@ -57,9 +57,8 @@ if ($erreur == 0)
                             $bonus_perso_cod = $db->f('corig_perso_cod');
                             $perso_list .= '#'.$db->f('perso_cod').' ('.$db->f('perso_nom').'), ';
 
-                            // L'ajout et le retrait d'un bonus de carac, même nul force le recalcul des limites pour ce bonus
-                            $db2->query("select f_modif_carac_base({$bonus_perso_cod}, '{$tbonus_libc}', 'T', 1, 0, 'C'); ");
-                            $db2->query("delete from carac_orig where corig_perso_cod={$bonus_perso_cod} and corig_type_carac ='{$tbonus_libc}' and  corig_valeur=0 ;");
+                            // On recalcule le changement des limites pour ce perso
+                            $db2->query("select f_modif_carac_perso({$bonus_perso_cod}, '{$tbonus_libc}'); ");
                         }
 
                         if ($perso_list != "")

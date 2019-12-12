@@ -32,10 +32,10 @@ begin
 
       -- on a équipé un objet, ajouter des bonus d'équipement s'il y en a
       for ligne in
-        select tbonus_libc, objbm_bonus_valeur from objets_bm join bonus_type on tbonus_cod=objbm_tbonus_cod where objbm_gobj_cod=v_gobj_cod or objbm_obj_cod=NEW.perobj_obj_cod
+        select objbm_cod, tbonus_libc, objbm_bonus_valeur from objets_bm join bonus_type on tbonus_cod=objbm_tbonus_cod where objbm_gobj_cod=v_gobj_cod or objbm_obj_cod=NEW.perobj_obj_cod
       loop
         -- ajout des bonus
-        perform ajoute_bonus_equipement(NEW.perobj_perso_cod, ligne.tbonus_libc, NEW.perobj_obj_cod, ligne.objbm_bonus_valeur);
+        perform ajoute_bonus_equipement(NEW.perobj_perso_cod, ligne.tbonus_libc, ligne.objbm_cod, NEW.perobj_obj_cod, ligne.objbm_bonus_valeur);
 
       end loop;
 
