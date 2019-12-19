@@ -454,7 +454,7 @@ if ($erreur == 0)
                 <input type="hidden" name="methode" value="update_bonmal">
                 <input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod ?>">
                 <tr>
-                    <td class='titre' colspan='2'>Liste des bonus malus existants</td>
+                    <td class='titre' colspan='2'>Liste des bonus malus temporaires existants</td>
                 </tr>
                 <tr>
                     <td class='titre'>Bonus</td>

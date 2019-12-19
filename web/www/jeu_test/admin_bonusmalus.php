@@ -88,7 +88,11 @@ if ($erreur == 0)
 		ORDER BY tbonus_libc';
 
 	// Tableau des sorts runiques
-	echo '<h1>Bonus et malus</h1><table>
+	echo '<h1>Bonus et malus</h1>
+        <strong><u>ATTENTION</u>:</strong>: la modification des limites sur les bonus de caractéristiques <strong>DEX, FOR, INT, et CON</strong> a un <u>impacte direct</u> sur les joueurs qui ont déjà des bonus/malus de ce type.<br>
+        La dégressivité sur les autres Bonus/Malus ne sera pris en compte qu\'à partir des prochains qui seront donnés.<br>
+        <br> 
+        <table>
 		<tr>
 			<th class="titre">Code court</th>
 			<th class="titre">Libellé</th>
