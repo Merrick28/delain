@@ -229,6 +229,31 @@ if ($autorise == 1) {
             }
         }
 
+        if ($bm_attaches = $obj->get_bm_attaches())
+        {
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet assene des bonus/malus:</strong></td>";
+            echo "</tr>";
+            foreach ($bm_attaches as $objbm)
+            {
+                $tbonus = new bonus_type();
+                $tbonus->charge($objbm->objbm_tbonus_cod);
+                $typebm = (($tbonus->tbonus_gentil_positif=="t" && $objbm->objbm_bonus_valeur>0)||($tbonus->tbonus_gentil_positif!="t" && $objbm->objbm_bonus_valeur<0)) ? "Bonus" : "Malus" ;
+                if (is_file(__DIR__ . "/../images/interface/bonus/".$tbonus->tbonus_libc.".png"))
+                {
+                    $img = '<img src="/../images/interface/bonus/'.$tbonus->tbonus_libc.'.png">';
+                }
+                else
+                {
+                    $img = '<img src="/../images/interface/bonus/'.strtoupper($typebm).'.png">';
+                }
+
+                echo "<tr><td class=\"soustitre2\">".($typebm=="Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>")."</td>";
+                echo "<td>".$img." <strong>".($objbm->objbm_bonus_valeur>0 ? "+" : "").$objbm->objbm_bonus_valeur."</strong> : ". $tbonus->tonbus_libelle."</td>";
+                echo "<tr>";
+            }
+        }
+
 
         echo "<tr>";
         echo "<td class=\"soustitre2\">Description</td>";

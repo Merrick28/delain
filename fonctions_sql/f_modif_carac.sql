@@ -28,12 +28,35 @@ declare
 	v_temps alias for $3;
 	v_modificateur alias for $4;
 
+  temp integer;
 begin
 
-  -- appel de la fonction de base avec le type 'H' (nombre d'heure)
-	select into code_retour f_modif_carac_base(personnage, v_type_carac, 'H', v_temps, v_modificateur)	;
+  -- cette fonction est princpalement utilisé par les potions qui donne un bonus sur une base horaire.
+  -- la fonction va appeler f_modif_carac_base() qui permet de faire la modification sur base de temps ou de tour.
 
-	return code_retour;
+	--
+	-- on fait d’abord les contrôles possibles
+	--
+	select into temp perso_cod from perso where perso_cod = personnage;
+	if not found then
+		return 'perso non trouvé.';
+	end if;
+
+  if v_type_carac not in ('DEX', 'INT', 'FOR', 'CON')  then
+    return 'caractéristique non valide.' ;
+	end if;
+
+	if v_temps = 0 then
+		return 'delai non valide.' ;
+	end if;
+
+	--
+  -- appel de la fonction de base avec le type 'H' (nombre d'heure) et non cumulatif (cas standard pour les potions par exemple)
+  --
+	temp := f_modif_carac_base(personnage, v_type_carac, 'H', v_temps, v_modificateur, 'S')	;
+
+  -- on retourn OK, suivi du bonus/malus réellement appliqué
+	return 'OK;' || temp::text ;
 
 end;$_$;
 

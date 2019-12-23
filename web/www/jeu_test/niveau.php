@@ -13,7 +13,7 @@ $niveau = $db->f("perso_niveau");
 $limite_pa = $param->getparm(8);
 
 
-$req_pa = "select perso_race_cod,perso_for,perso_dex,perso_int,perso_con,perso_nb_amel_comp,perso_niveau_vampire,perso_vampirisme,perso_pa,perso_amelioration_vue,perso_amelioration_regen,perso_des_regen,perso_valeur_regen,";
+$req_pa = "select perso_race_cod,f_carac_base(perso_cod,'FOR') as perso_for,f_carac_base(perso_cod,'DEX') as perso_dex,f_carac_base(perso_cod,'INT') as perso_int,f_carac_base(perso_cod,'CON') as perso_con,perso_nb_amel_comp,perso_niveau_vampire,perso_vampirisme,perso_pa,perso_amelioration_vue,perso_amelioration_regen,perso_des_regen,perso_valeur_regen,";
 $req_pa = $req_pa . "perso_amelioration_degats,perso_amelioration_armure,perso_temps_tour,perso_niveau,perso_nb_amel_chance_memo,perso_nb_receptacle,";
 $req_pa = $req_pa . "perso_amel_deg_dex,perso_capa_repar,perso_nb_amel_repar,nb_sort_memorisable($perso_cod) as nb_sorts from perso where perso_cod = $perso_cod";
 $db->query($req_pa);

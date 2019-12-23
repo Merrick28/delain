@@ -5,7 +5,7 @@
  * le moteur de template de phplib
  *
  */
-$__VERSION = "20190820";    // A changer aussi dans constante.php
+$__VERSION = "20191204";    // A changer aussi dans constante.php
 
 $benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
@@ -573,11 +573,7 @@ else
 $t->set_var('FAVORIS', $favoris);
 
 // voie magique
-$nv5 = $perso->sort_lvl5();
-
-$req = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
-$mem = $perso->sort_memo();
-if ($perso->sort_lvl5() > 0 && $perso->sort_memo() > 5)
+if ($perso->sort_lvl5() > 0 && count($perso->sort_memo()) > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
 }

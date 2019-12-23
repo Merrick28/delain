@@ -216,7 +216,10 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br><a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br><br>
+            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br>
+                    <a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br>
+                    <a href="admin_objet_bm.php?">Rattachement de bonus/malus aux objets?</a><br>
+                    <br>
                     <hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 
             // LISTE DES OBJETS POSSIBLES
@@ -613,11 +616,20 @@ if ($erreur == 0)
             $objsorts = new objets_sorts();
             if ($list = $objsorts->getBy_objsort_gobj_cod($gobj_cod))
             {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' sort(s) rattaché(s): <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a>';
+                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' sort(s) rattaché(s): <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
             }
             else
             {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de sort rattaché: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
+                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de sort rattaché: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a><br>';
+            }
+            $objbm = new objets_bm();
+            if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
+            }
+            else
+            {
+                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a><br>';
             }
             ?>
 

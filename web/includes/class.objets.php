@@ -362,6 +362,24 @@ class objets
     }
 
     /***
+     * Retourne la liste des bonus/malus attachés sur l'objet
+     * @return array|bool
+     */
+    function get_bm_attaches()
+    {
+        $retour = array();
+
+        $objsort = new objets_bm();
+        $retour = $objsort->get_objets_bm($this) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /***
      * Retourne l'état d'un objet
      * @return string
      */

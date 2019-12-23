@@ -5,7 +5,7 @@
 
 /*************************************************************/
 /* Voir fonction sql                                         */
-/* FUNCTION public.passage_niveau_test(integer, integer);    */
+/* FUNCTION public.perso_rituel_caracs(integer, integer);    */
 /*   carac_cod :                                             */
 /*        1 = temps                                          */
 /*        2 = dégats distance                                */

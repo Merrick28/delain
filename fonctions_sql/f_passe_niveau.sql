@@ -70,10 +70,7 @@ begin
             limite_niveau(perso_cod),
             perso_px,
             perso_pv_max,
-            case
-            when exists (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-            then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-            else perso_con end
+            f_carac_base(perso_cod,'CON') as  perso_con
         from perso
         where perso_cod = personnage
         and perso_actif = 'O';
