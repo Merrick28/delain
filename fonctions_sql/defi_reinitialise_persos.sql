@@ -24,8 +24,8 @@ begin
 	-----------------
 	-- BONUS MALUS --
 	-----------------
-	-- Suppression des Bonus / Malus dûs au défi.
-	delete from bonus where bonus_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
+	-- Suppression des Bonus / Malus dûs au défi. (sauf equipement)
+	delete from bonus where bonus_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) and bonus_mode!='E';
 
 	-- Restauration des Bonus / Malus antérieurs
 	insert into bonus (bonus_perso_cod, bonus_nb_tours, bonus_tbonus_libc, bonus_valeur, bonus_croissance)
@@ -62,7 +62,7 @@ begin
 		perso_nb_tour_intangible = max (coalesce(defi_perso_nb_tour_intangible, 0), 2)
 	from defi_caracs
 	where defi_perso_cod = perso_cod
-		and perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
+		and perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) ;
 
 	-- Suppression des caractéristiques sauvegardées
 	delete from defi_caracs where defi_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
@@ -70,7 +70,7 @@ begin
 	---------------------------
 	-- BONUS MALUS PRIMAIRES --
 	---------------------------
-	-- Suppression des éventuelles potions bues pendant le défi
+	-- Suppression des éventuelles potions bues pendant le défi (sauf equipement)
 	update carac_orig set corig_dfin = now(), corig_nb_tours = 0
 	where corig_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) and corig_mode != 'E';
 	perform f_remise_caracs (ligne_defi.defi_lanceur_cod);

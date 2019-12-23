@@ -31,7 +31,7 @@ begin
               when 'CON' then perso_con
           else NULL end as carac_actuelle
 		from carac_orig join perso on perso_cod=corig_perso_cod
-		where corig_perso_cod = v_perso and (corig_dfin < now() or corig_nb_tours = 0)
+		where corig_perso_cod = v_perso and (corig_dfin <= now() or corig_nb_tours = 0)
 	loop
 	  if ligne.carac_actuelle is not null then
 
@@ -72,7 +72,7 @@ begin
       end if;
 */
       -- supprimer les bonus maintenant que les caracs ont été rétablies
-      delete from carac_orig where corig_type_carac=ligne.corig_type_carac and corig_perso_cod=ligne.corig_perso_cod and (corig_dfin < now() or corig_nb_tours = 0) ;
+      delete from carac_orig where corig_type_carac=ligne.corig_type_carac and corig_perso_cod=ligne.corig_perso_cod and (corig_dfin <= now() or corig_nb_tours = 0) ;
 
     end if;
 

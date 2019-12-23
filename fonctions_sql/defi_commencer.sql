@@ -54,14 +54,14 @@ begin
 		return '-1#Vous n’êtes plus actif, ou vous apprêtez à partir en hibernation : vous perdez par forfait !';
 	end if;
 
-	-- Sauvegarde des Bonus / Malus.
+	-- Sauvegarde des Bonus / Malus. (sauf equipement)
 	delete from defi_bonus where defi_bonus_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
 	insert into defi_bonus (defi_bonus_perso_cod, defi_bonus_nb_tours, defi_bonus_tbonus_libc, defi_bonus_valeur, defi_bonus_croissance)
 	select bonus_perso_cod, bonus_nb_tours, bonus_tbonus_libc, bonus_valeur, bonus_croissance
-	from bonus where bonus_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
+	from bonus where bonus_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) AND bonus_mode!='E' ;
 
-	-- Suppression des Bonus / Malus.
-	delete from bonus where bonus_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
+	-- Suppression des Bonus / Malus. (sauf equipement)
+	delete from bonus where bonus_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) AND bonus_mode!='E' ;
 
 	-- Sauvegarde des Réceptacles
 	delete from defi_receptacles where drec_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
@@ -76,7 +76,7 @@ begin
 	delete from defi_caracs where defi_perso_cod IN (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
 	insert into defi_caracs (defi_perso_cod, defi_perso_pv, defi_perso_dlt, defi_perso_pa, defi_perso_nb_esquive, defi_perso_tangible, defi_perso_nb_tour_intangible)
 	select perso_cod, perso_pv, perso_dlt, perso_pa, perso_nb_esquive, perso_tangible, perso_nb_tour_intangible
-	from perso where perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod);
+	from perso where perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) ;
 
 	-- Remise à jour des données du perso
 	update perso
@@ -98,7 +98,8 @@ begin
 
 	-- Suppression des BM de potions (sauf bonus/malus d'équipement)
 	update carac_orig set corig_dfin = now(), corig_nb_tours = 0
-	where corig_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod) and corig_mode != 'E';
+	where corig_perso_cod in (ligne_defi.defi_lanceur_cod, ligne_defi.defi_cible_cod)
+	  and corig_mode != 'E';  -- sauf bonus equipement
 	perform f_remise_caracs (ligne_defi.defi_lanceur_cod);
 	perform f_remise_caracs (ligne_defi.defi_cible_cod);
 

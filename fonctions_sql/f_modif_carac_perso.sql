@@ -48,7 +48,7 @@ begin
   -- NOTA: corig_nb_tours et corig_dfin  sont nuls tous les 2 pour les bonus d'équipements
   select into v_modificateur coalesce(sum(corig_valeur),0)
     from carac_orig
-    where corig_perso_cod = v_perso and corig_type_carac = v_type_carac  and (corig_dfin >= now() or corig_nb_tours > 0 or (corig_nb_tours is null and corig_dfin is null)) ;
+    where corig_perso_cod = v_perso and corig_type_carac = v_type_carac  and (corig_dfin > now() or corig_nb_tours > 0 or (corig_nb_tours is null and corig_dfin is null)) ;
 
   -- carac de base du perso sans bonus/malus
 	v_carac_base := f_carac_base(v_perso, v_type_carac) ;
