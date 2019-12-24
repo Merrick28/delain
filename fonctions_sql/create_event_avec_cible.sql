@@ -38,4 +38,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION public.create_event_avec_cible(source integer, cible integer, type_evt integer, texte_evt text) OWNER TO postgres;
+ALTER FUNCTION public.create_event_avec_cible(source integer, cible integer, type_evt integer, texte_evt text) OWNER TO delain;
