@@ -1,0 +1,61 @@
+swagger: "2.0"
+info:
+  description: "API pour les souterrains de Delain"
+  version: "1.0.0"
+  title: "Les souterrains de Delain"
+  contact:
+    email: "stephane.dewitte@mail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "www.jdr-delain.net"
+basePath: "/api/v2"
+tags:
+- name: "auth"
+  description: "Gestion des authentifications"
+
+- name: "compte"
+  description: "Opérations sur les comptes"
+
+- name: "perso"
+  description: "Opérations sur les persos"
+
+schemes:
+- "https"
+paths:
+  /auth:
+    post:
+      tags:
+      - "auth"
+      summary: "Demander un token"
+      description: ""
+      operationId: "addPet"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Login/password"
+        required: true
+        schema:
+          $ref: "#/definitions/Auth"
+      responses:
+        405:
+          description: "Invalid input"
+
+definitions:
+  Auth:
+    type: "object"
+    required:
+    - "login"
+    - "password"
+    properties:
+      login:
+        type: "string"
+        example: "mylogin"
+      password:
+        type: "string"
+        example: "myPassword"
+
