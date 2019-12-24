@@ -1,3 +1,4 @@
+DROP FUNCTION dep_pos_cod(integer,integer,integer);
 CREATE OR REPLACE FUNCTION public.dep_pos_cod(integer,integer,integer)
   RETURNS void AS
 $BODY$

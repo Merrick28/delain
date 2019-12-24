@@ -4,14 +4,13 @@ services:
 ############################
 # Database
 ############################
-  db:
+  delain_db:
     image: postgres
     restart: always
     environment:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=delain
       - POSTGRES_DB=delain
-
     volumes:
       - ../../sql_init:/docker-entrypoint-initdb.d
       - ../../:/home/delain/delain
@@ -20,12 +19,16 @@ services:
       # garder une database persistante
       # pensez à changer le chemin local
       # - /my/own/datadir:/var/lib/postgresql/data
-    container_name: postgres
+    container_name: delain_db
 ###############################
 # Serveur web
 ###############################
   web:
     build: ..
     ports:
-      - 8080:80
+      - 9090:80
     container_name: web
+    volumes:
+    - ../../:/home/delain/delain
+
+ 

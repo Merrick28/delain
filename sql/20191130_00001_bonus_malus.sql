@@ -11,7 +11,7 @@ ALTER TABLE public.bonus_type
 COMMENT ON COLUMN public.bonus_type.tbonus_degressivite
   IS 'Pour les bonus/malus standards, il s''agit d''un coefficient de dégressivité par defaut. Pour les bonus de carac, c''est la limite de la carac en %';
 
-UPDATE bonus_type SET tbonus_degressipvite='25', tbonus_cumulable='O' WHERE tbonus_libc in ('FOR', 'CON', 'INT', 'DEX');
+UPDATE bonus_type SET tbonus_degressivite='25', tbonus_cumulable='O' WHERE tbonus_libc in ('FOR', 'CON', 'INT', 'DEX');
 
 
 ALTER TABLE public.bonus
@@ -40,8 +40,8 @@ CREATE SEQUENCE public.seq_corig_cod
   START 1
   CACHE 1;
 ALTER TABLE public.seq_corig_cod
-  OWNER TO webdelain;
-GRANT SELECT, UPDATE ON SEQUENCE public.seq_corig_cod TO webdelain;
+  OWNER TO delain;
+GRANT SELECT, UPDATE ON SEQUENCE public.seq_corig_cod TO delain;
 
 ALTER TABLE public.carac_orig
    ADD COLUMN corig_cod  integer NOT NULL DEFAULT nextval(('seq_corig_cod'::text)::regclass); -- New PK
@@ -91,8 +91,8 @@ CREATE SEQUENCE public.seq_objbm_cod
   START 1
   CACHE 1;
 ALTER TABLE public.seq_objbm_cod
-  OWNER TO webdelain;
-GRANT SELECT, UPDATE ON SEQUENCE public.seq_objbm_cod TO webdelain;
+  OWNER TO delain;
+GRANT SELECT, UPDATE ON SEQUENCE public.seq_objbm_cod TO delain;
 
 CREATE TABLE public.objets_bm
 (

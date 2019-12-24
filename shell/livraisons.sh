@@ -2,7 +2,7 @@
 source `dirname $0`/env
 echo "===========================" >> ${shellroot}/livraison.log
 echo "= LIVRAISONS SQL EN COURS =" >> ${shellroot}/livraison.log
-for f in `find $livroot -type f| grep -v "initial_import.sql"|sort`; do
+for f in `find $livroot -type f| grep -v "initial_import.sql"|grep -v ".gitignore"| sort`; do
   livexist=`$shellroot/livraison_exists.sh $(basename $f)`
   if [ "$livexist" -eq "0" ];then
       echo "LIVRAISONS A TRAITER : $f" >> ${shellroot}/livraison.log
