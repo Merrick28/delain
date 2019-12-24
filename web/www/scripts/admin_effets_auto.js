@@ -13,6 +13,7 @@ EffetAuto.Types = [
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
 			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
+			{ nom: 'cumulatif', type: 'checkbox', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n\'est pas [cumulable].' },
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Valeur', description: 'La force du bonus / malus appliqué : valeur fixe ou de la forme 1d6+2', validation: Validation.Types.Roliste },
 			{ nom: 'duree', type: 'entier', label: 'Durée', description: 'La durée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
@@ -323,6 +324,13 @@ EffetAuto.ChampBM = function (parametre, numero, valeur) {
 	html += "(-) Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong>";
 	return html;
 }
+EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 'N';
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="checkbox" '+ (valeur=='O' ? 'checked' : '') +' name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '</label><br />';
+	return html;
+}
 
 EffetAuto.Supprime = function (id, numero) {
 	if (confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?')) {
@@ -364,6 +372,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'BM':
 			html = pd + EffetAuto.ChampBM(parametre, numero, valeur) + pf;
 			break;
+		case 'checkbox':
+			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;
+			break;
 		case 'monstre':
 			html = pd + EffetAuto.ChampMonstre(parametre, numero, valeur) + pf;
 			break;
@@ -391,7 +402,7 @@ EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 	return '<a onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
 }
 
-EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, proba, cible, portee, nombre, validite, heritage) {
+EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, validite, heritage) {
 	EffetAuto.num_courant += 1;
 	EffetAuto.Champs[EffetAuto.num_courant] = [];
 
@@ -436,6 +447,7 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 			case 'force': valeur = force; break;
 			case 'duree': valeur = duree; break;
 			case 'effet': valeur = effet; break;
+			case 'cumulatif': valeur = cumulatif; break;
 			case 'proba': valeur = proba; break;
 			case 'cible': valeur = cible; break;
 			case 'portee': valeur = portee; break;

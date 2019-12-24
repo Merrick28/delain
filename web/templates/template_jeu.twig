@@ -8,17 +8,17 @@
     <link rel="shortcut icon" href="drake_head_red.ico" type="image/gif">
 
     <!-- Custom delain CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v20190301" title="essai">
+    <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.css?v{{ __VERSION }}" title="essai">
     <link rel="stylesheet" type="text/css" href="{{ TYPE_FLUX }}{{ G_URL }}style.php">
 
     <!-- Bootstrap custom CSS -->
-    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v20190301" rel="stylesheet">
-    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/container-fluid.css?v{{ __VERSION }}" rel="stylesheet">
+    <link href="{{ TYPE_FLUX }}{{ G_URL }}css/delain.css?v{{ __VERSION }}" rel="stylesheet">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v20190301" type="text/javascript"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v20190301" type="text/javascript"></script>
-    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js?v{{ __VERSION }}" type="text/javascript"></script>
 </head>
 <body style="background-image:url({{ G_IMAGES }}fond5.gif);">
 
@@ -108,7 +108,7 @@
              style="background-color:#800000;color:white;font-weight:bold;text-align:center;padding:3px 0 3px 0;">
             {{ PERSO.perso_nom }}
         </div>
-        <div style="text-align:center;padding:5px">
+        <div style="text-align:center;padding:3px">
             <div id="intangible" style="padding:2px">{{ INTANGIBLE }}</div>
             <div id="pa" style="padding:2px;"><img src="{{ G_IMAGES }}barrepa_{{ PERSO.perso_pa }}.gif"
                                                    title="{{ PERSO.perso_pa }} PA " alt="{{ PERSO.perso_pa }} PA ">
@@ -124,7 +124,7 @@
                 <img src="{{ G_IMAGES }}energi10.png" alt="">
                 <div title="{{ PERSO.perso_energie }}/100 énergie" alt="{{ PERSO.perso_energie }}/100 énergie"
                      class="container-nrj">
-                    <div class="barre-nrj" style="width:"{{ PERSO.barre_energie }} "%\">
+                    <div class="barre-nrj" style="width:{{ PERSO.barre_energie }}%">
                 </div>
             </div>
             {% endif %}
@@ -135,7 +135,7 @@
                 <div title="Énergie divine : {{ PERSO.energie_divine }}" alt="" Énergie divine
                      : {{ PERSO.energie_divine }}"
                 class="container-div">
-                <div class="barre-div" style="width:{{ PERSO.barre_divine }}%"></div>
+                <div class="barre-div" style="width:{{ PERSO.barre_divin }}%"></div>
             {% endif %}
 
         </div>
@@ -152,15 +152,16 @@
             <strong>{{ PERSO.armure }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
                                                     alt=" ">
         </div>
-        <div id="position"><br>X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
+        <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
             <strong>{{ POSITION.pos_y }}</strong>
             {% if not PERSO.is_fam %}
-                {% if PERSO.get_pa_dep()==4 %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                {% elseif PERSO.get_pa_dep()<4 %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+
+                {% if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
                 {% else %}
-                    &nbsp;&nbsp;<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% endif %}
                 {% endif %}
             {% endif %}
             <br><strong><a
@@ -192,6 +193,22 @@
             {% endif %}
         </div>
     </div>
+    {% if PERSO.get_favoris|length > 0 %}
+        <div  style="padding:0px 10px 0px 10px; text-align:left;">
+            <div id="barre-favoris">
+                <hr/>
+                {% for fav in PERSO.get_favoris %}
+                    <div id="fav-link-{{ fav.pfav_cod }}">
+                        <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% else %}
+        <div  style="padding:0px 10px 0px 10px; text-align:left;">
+            <div id="barre-favoris" style="display:none;"></div>
+        </div>
+    {% endif %}
     <div id="dropdown-button">&or;</div>
 </div>
 <div id="dropdown-menu" class="dropdown-content">
@@ -201,10 +218,10 @@
     <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
     <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
     {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
-        <img src="{{ G_IMAGES }}calice.png"> <a href="/jeu_test/quete_auto.php">Mes quêtes
+        <img src="{{ G_IMAGES }}calice.png"> <a href="/jeu_test/quete_auto.php"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}<strong>{% endif %}Mes quêtes
         {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
             ({{ PERSO.perso_nb_auto_quete.nb_encours }})
-        {% endif %}
+        {% endif %}{% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}</strong>{% endif %}
     </a><br>
 
     {% endif %}
@@ -260,19 +277,6 @@
         <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/choix_voie_magique.php">Voie magique</a><br>'
     {% endif %}
 
-    {% if PERSO.get_favoris|length > 0 %}
-        <div id="barre-favoris">
-            <hr/>
-            {% for fav in PERSO.get_favoris %}
-                <div id="fav-link-{{ fav.pfav_cod }}">
-                    <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a></div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <div id="barre-favoris" style="display:none;">
-            <hr/>
-        </div>
-    {% endif %}
     <hr/>
 
     {% if PERSO.is_enchanteur %}

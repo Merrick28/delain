@@ -189,6 +189,21 @@ class aquete_perso
     }
 
     //Comptage des quetes en cours d'un perso (toutes quetes confondues)
+    /**
+     * @param $perso_cod
+     * @return mixed
+     */
+    function get_journal_nb_news()
+    {
+        $pdo = new bddpdo;
+
+        $req = "select count(*) journal_news from quetes.aquete_perso_journal where aqpersoj_aqperso_cod=:aqperso_cod  and aqpersoj_lu='N'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":aqperso_cod"=>$this->aqperso_cod), $stmt);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result;
+    }
 
     /**
      * @param $perso_cod
@@ -201,6 +216,14 @@ class aquete_perso
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $req = "select count(*) journal_nb_news from quetes.aquete_perso join quetes.aquete_perso_journal on aqpersoj_aqperso_cod=aqperso_cod where aqperso_perso_cod=? and aqperso_actif<>'N' and aqpersoj_lu='N'";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        $result_j = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $result["journal_nb_news"] = $result_j["journal_nb_news"];
+
         return $result;
     }
 
@@ -230,7 +253,7 @@ class aquete_perso
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod";
+        $req = "select aqperso_cod from quetes.aquete_perso where aqperso_perso_cod=? and aqperso_actif<>'N' order by aqperso_cod ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($perso_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -417,21 +440,26 @@ class aquete_perso
             // Ne faire que les nouveaux
             if (!in_array("[$v]", $search))
             {
-                $search[] = "[$v]";
                 if (substr($v,0,1)=="#")
                 {
                     // Gestion des varibales du perso
+                    $search[] = "[$v]";
                     $replace[] = $perso->get_champ(substr($v,1));
                 }
-                else
+                else if (is_numeric($v))
                 {
-                    $replace[] = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                    $texte = $this->get_elements_texte($v); // retourne un texte correpondant au paramètre de l'élément pour le perso ou celui du modele le cas echeant
+                    if ($texte!="")
+                    {
+                        $search[] = "[$v]";
+                        $replace[] = $texte ;
+                    }
                 }
             }
         }
         //echo "<pre>"; print_r($search); echo "</pre>";
         //echo "<pre>"; print_r($replace); echo "</pre>";
-        //print_r($etape->aqetape_texte);
+        //print_r($etape->aqetape_texte); die();
         return str_replace($search, $replace, $etape->aqetape_texte);
     }
 
@@ -443,14 +471,17 @@ class aquete_perso
      */
     function get_elements_texte($param_id)
     {
-        $pdo = new bddpdo;
+        if (!is_numeric ($param_id))
+        {
+            return "";                  // si le paramètre est érroné
+        }
 
         $element = new aquete_element();
         $elements = $element->getBy_aqperso_param_id($this, $param_id);
 
         if (count($elements) == 0)
         {
-            return "";                  // si rien trouvé !
+            return "";                   // si rien trouvé !
         }
 
         // Préparation d'une table pour la recherche inversée
@@ -469,9 +500,10 @@ class aquete_perso
     }
 
     // On reprend à partir de l'étape en cours, on regarde si elle est terminée et ainsi de suite
+    // retourne le nombre d'étape qui ont été réalisées (0 si pas d'évolution de la quête)
     function run()
     {
-        if ($this->aqperso_etape_cod == 0) return;    // on a déjà fini la quete, il reste au joueur à la valider.
+        if ($this->aqperso_etape_cod == 0) return 0;    // on a déjà fini la quete, il reste au joueur à la valider.
 
         $perso_journal = new aquete_perso_journal();
         $perso_journal->chargeDernierePage($this->aqperso_cod, $this->aqperso_nb_realisation);
@@ -484,15 +516,17 @@ class aquete_perso
             $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
             $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
             $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$quete->aquete_max_delai} jours</strong> que vous avez commencé cette quête.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+            $perso_journal->aqpersoj_lu = "N" ;
             $perso_journal->stocke(true);
 
             $this->aqperso_actif = 'E';       // Etape terminée sur un Echec.
             $this->aqperso_etape_cod = 0;      // Fin de quête!
             $this->aqperso_quete_step++;
             $this->stocke();                    // Mettre à jours les infos
-            return;
+            return  1;
         }
 
+        $nb_etape_run = 0 ;
         do
         {
             $loop = false;   // par défaut on sort, sauf si une etape est validée, alors il faudra continuer
@@ -520,6 +554,7 @@ class aquete_perso
                 $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
                 $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
                 $perso_journal->aqpersoj_texte = $this->hydrate();
+                $perso_journal->aqpersoj_lu = "N" ;
                 $perso_journal->stocke(true);       // Nouvelle page !
             }
 
@@ -541,6 +576,7 @@ class aquete_perso
                         $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
                         $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
                         $perso_journal->aqpersoj_texte = "Cela fait plus de <strong>{$elements[0]->aqelem_param_num_1} jours</strong> que vous avez commencé cette étape.<br> Vous ne l'avez pas terminée dans les temps, c'est trop tard!<br> ";
+                        $perso_journal->aqpersoj_lu = "N" ;
                         $perso_journal->stocke(true);
                     }
                     // le "timeout d'étape" se comporte comme une étape du type SAUT, le aqelem_misc_cod contient la prochaine étape !
@@ -559,6 +595,26 @@ class aquete_perso
                     {
                         $this->aqperso_actif = ($etape_cod == -2) ? 'S' : 'E';   // Etape terminée avec Succes ou sur une Echec.
                         $next_etape_cod = 0;                          // Fin de quête!
+                    } else if ($etape_cod == 0)
+                    {
+                        // Stupide, on a mit un saut d'étape pour sauter à l'étape suivante ! (peut-être une étape automatiquement réussi en cas de délai trop long :-) )
+                        $next_etape_cod = 1 * $this->etape->aqetape_etape_cod;     // saut à l'étape suivante comme etape du type TEXTE
+                    } else
+                    {
+                        $next_etape_cod = $etape_cod;
+                    }
+
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
+
+                case "#SAUT #CONDITION #PERSO":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionel mais est toujours réussie.
+                    $etape_cod = $this->action->saut_condition_perso($this);
+
+                    if ($etape_cod < 0)
+                    {
+                        $this->aqperso_actif = ($etape_cod == -2) ? 'S' : 'E';  // Etape terminée avec Succes ou sur une Echec.
+                        $next_etape_cod = 0;                                   // Fin de quête!
                     } else if ($etape_cod == 0)
                     {
                         // Stupide, on a mit un saut d'étape pour sauter à l'étape suivante ! (peut-être une étape automatiquement réussi en cas de délai trop long :-) )
@@ -602,12 +658,44 @@ class aquete_perso
                             $status_etape = 1;                        // 1 => ok etape suivante,
                         } else if ($result->etape < 0)
                         {
-                            $status_etape = $result->etape;          // fin de la quete sur succes ou echec
+                            $status_etape = $result->etape == -1 ? -2 : $result->etape;          // fin de la quete sur succes ou echec
                         } else
                         {
                             $status_etape = 1;                        // 1 => ok etape suivante,
                             $next_etape_cod = $result->etape;        // vers une etape specifique !
                         }
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
+                case "#SAUT #CONDITION #INTERACTION":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionné par une saisie du joueur.
+                    $result =  $this->action->saut_condition_interaction($this);
+                    if ($result->status)
+                    {
+                        //L'étape est terminée, mais elle peu echouer
+                        if ($result->etape == 0)
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                        } else if ($result->etape < 0)
+                        {
+                            $status_etape = $result->etape == -1 ? -2 : $result->etape;          // fin de la quete sur succes ou echec
+                        } else
+                        {
+                            $status_etape = 1;                        // 1 => ok etape suivante,
+                            $next_etape_cod = $result->etape;        // vers une etape specifique !
+                        }
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
+                    }
+                    break;
+
+                case "#ECHANGE #OBJET":
+                    // Pour échanger des objets
+                    if ( $this->action->echange_objet($this) )
+                    {
+                        // Les objets ont été donné
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                        unset($_REQUEST);  // l'étape est fini, NE PAS réinsjecter les paramètres de cette étape dans la prochaine
                     }
                     break;
 
@@ -628,6 +716,7 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
 
+
                 case "#RECEVOIR #PX":
                     // On distribution PO et PX
                     $this->action->recevoir_po_px($this);
@@ -640,6 +729,17 @@ class aquete_perso
                     $status_etape = 1;      // 1 => ok etape suivante (même si l'attribution c'est mal déroulée)
                     break;
 
+                case "#RECEVOIR #BONUS":
+                    $this->action->recevoir_bonus($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (même si la distribution c'est mal déroulée)
+                    break;
+
+                case "#RECEVOIR #INSTANT #OBJET":
+                    // contrairement à "#RECEVOIR #OBJET", la distriubution est immédiate, l'étape est toujours un succes
+                    $this->action->recevoir_instant_objet($this);
+                    $status_etape = 1;      // 1 => ok etape suivante  (même si la distribution c'est mal déroulée)
+                    break;
+
                 case "#RECEVOIR #OBJET":
                     // Pour recevoir les/les objets le joueur doit être sur la même case que le donnateur
                     if ($this->action->recevoir_objet($this))
@@ -647,6 +747,26 @@ class aquete_perso
                         // Les objets ont été donné
                         $status_etape = 1;      // 1 => ok etape suivante,
                     }
+                    break;
+
+                case "#REMETTRE #DETRUIRE #OBJET":
+                    // Pour recevoir les/les objets le joueur doit être sur la même case que le donnateur
+                    if ($this->action->remettre_detruire_objet($this))
+                    {
+                        // Les objets ont été remis et détruits
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
+                case "#REMETTRE #DETRUIRE #PO":
+                    // Pour recevoir les/les objets le joueur doit être sur la même case que le donnateur
+                    if ($this->action->remettre_detruire_po($this))
+                    {
+                        // Les objets ont été remis et détruits
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
 
                 case "#REMETTRE #OBJET":
                     // Pour donner les/les objets le joueur doit être sur la même case que le PNJ et démarrer la transaction
@@ -732,8 +852,17 @@ class aquete_perso
                     break;
 
                 case "#TUER #RACE":
-                    // Le joueur doit tuer des persos.
+                    // Le joueur doit une race de msontre.
                     if ($this->action->tuer_race($this))
+                    {
+                        // Le perso est à l'endroit attendu
+                        $status_etape = 1;      // 1 => ok etape suivante,
+                    }
+                    break;
+
+                case "#TUER #TYPE":
+                    // Le joueur doit tuer un type de monstres.
+                    if ($this->action->tuer_type($this))
                     {
                         // Le perso est à l'endroit attendu
                         $status_etape = 1;      // 1 => ok etape suivante,
@@ -759,6 +888,12 @@ class aquete_perso
                     break;
             }
 
+            //------- comptage du nombre d'étape réalisées----------------------
+            if ($status_etape != 0)
+            {
+                $nb_etape_run ++ ;
+            }
+
             //------- traitement du status d'étape------------------------------
             if ($status_etape == 1)
             {
@@ -782,6 +917,7 @@ class aquete_perso
 
             $this->stocke();    // Mettre à jours les infos (car celles-ci peuvent être utilisée dans les étapes d'actions)
 
+
         } while ($loop && $this->aqperso_etape_cod > 0);      // Tant que les step en cours est fini et qu'il y a encore d'autres étapes..
 
         /// Jouraliser la fin de quete
@@ -794,8 +930,12 @@ class aquete_perso
                 $perso_journal->aqpersoj_texte = "Malheureusement, vous n'avez pas réussi cette quête!<br> ";
             else if ($this->aqperso_actif == "O" || $this->aqperso_actif == 'S')
                 $perso_journal->aqpersoj_texte = "Félicitation, vous avez réussi cette quête!<br> ";
+
+            $perso_journal->aqpersoj_lu = "N" ;
             $perso_journal->stocke(true);
         }
+
+        return $nb_etape_run ;
 
     }
 
@@ -817,7 +957,15 @@ class aquete_perso
                 break;
 
             case "#SAUT #CONDITION #DIALOGUE":
-                $texte_etape = $etape->get_texte_form($this);
+                $texte_etape = $etape->get_texte_form($this, "perso");
+                break;
+
+            case "#SAUT #CONDITION #INTERACTION":
+                $texte_etape = $etape->get_texte_form($this, "position");
+                break;
+
+            case "#ECHANGE #OBJET":
+                $texte_etape = $etape->get_echange_objet_form($this);
                 break;
         }
 
@@ -927,6 +1075,72 @@ class aquete_perso
             } else
             {
                 $journal_quete .= $journal->aqpersoj_texte . "<br>";
+            }
+
+            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
+            {
+                $journal->aqpersoj_lu = 'O';
+                $journal->stocke();
+            }
+        }
+
+        return $journal_quete;
+    }
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
+
+
+    /**
+     * @param string $lire : O si les pages doivent-être lu
+     * @return string
+     */
+    function journal_news($lire = 'N')
+    {
+        $journal_quete = "";
+
+        $pdo = new bddpdo;
+        $etape = new aquete_etape();
+        $perso_journal = new aquete_perso_journal();
+        $perso_journaux = $perso_journal->getBy_perso_realisation($this->aqperso_cod, $this->aqperso_nb_realisation);
+
+        foreach ($perso_journaux as $k => $journal)
+        {
+            // Seulement les pages non-lues
+            if (($journal->aqpersoj_lu == 'N'))
+            {
+                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
+            }
+
+            if ($lire == 'O' && $journal->aqpersoj_lu == 'N')
+            {
+                $journal->aqpersoj_lu = 'O';
+                $journal->stocke();
+            }
+        }
+
+        return $journal_quete;
+    }
+    // retourne le journal de la quete du perso jusqu'a l'étape en cours. Si lu est à 'O' alors toutes les pages retournée sont marquées comme lues
+
+    /**
+     * @param string $lire : O si les pages doivent-être lu
+     * @param int $step : si vrai des infos additionnelles sur l'heure de chaque "step/etape" est ajouté
+     * @return string
+     */
+    function journal_derniere_page($lire = 'N')
+    {
+        $journal_quete = "";
+
+        $pdo = new bddpdo;
+        $etape = new aquete_etape();
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage();
+
+        foreach ($perso_journaux as $k => $journal)
+        {
+            // Seulement les pages non-lues
+            if (($journal->aqpersoj_lu == 'N'))
+            {
+                $journal_quete .= "<div style='background-color: #BA9C6C;'>" . $journal->aqpersoj_texte . "<br></div>";
             }
 
             if ($lire == 'O' && $journal->aqpersoj_lu == 'N')

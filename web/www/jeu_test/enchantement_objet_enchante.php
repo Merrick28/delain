@@ -13,11 +13,13 @@ switch($methode)
 		// requête pour voir si on a des objets enchantables
 		//
 		$req = 'select obj_cod,obj_nom
-			from objets,perso_objets
+			from objets,perso_objets,objet_generique
 			where perobj_perso_cod = ' . $perso_cod . '
 			and perobj_identifie = \'O\'
+			and gobj_cod = obj_gobj_cod
 			and perobj_obj_cod = obj_cod
 			and obj_enchantable = 1
+			and gobj_chance_enchant > 0
 			and obj_gobj_cod not in (834,835,836,837,838,839,840,841,840,842,843,844,845)';
 		$db->query($req);
 		if($db->nf() == 0)
@@ -49,13 +51,17 @@ switch($methode)
 				else	// arme contact
 					$app_req = ' where tenc_arme_contact = 1 ';
 				break;
-			case 2:	// armure
+			case 2:	    // armure
+			case 40:	// gants
+			case 41:	// bottes
 				$app_req = ' where tenc_armure = 1 ';
 				break;
-			case 4:	// casque
+			case 4:	    // casque
 				$app_req = ' where tenc_casque = 1 ';
 				break;
-			case 6:	//artefact
+			case 6:	    //artefact
+			case 7:	    //relique
+			case 27:	//signes distinctifs
 				$app_req = ' where tenc_artefact = 1 ';
 				break;
 		}

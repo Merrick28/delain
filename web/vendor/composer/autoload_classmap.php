@@ -39,4 +39,6 @@ return array(
     'Fabfuel\\Prophiler\\Toolbar\\Formatter\\Encoder\\HtmlEncoderTest' => $vendorDir . '/fabfuel/prophiler/tests/Fabfuel/Prophiler/Toolbar/Formatter/Encoder/HtmlEncoderTest.php',
     'Fabfuel\\Prophiler\\Toolbar\\Formatter\\LogFormatterTest' => $vendorDir . '/fabfuel/prophiler/tests/Fabfuel/Prophiler/Toolbar/Formatter/LogFormatterTest.php',
     'Fabfuel\\Prophiler\\Toolbar\\Formatter\\TimelineFormatterTest' => $vendorDir . '/fabfuel/prophiler/tests/Fabfuel/Prophiler/Toolbar/Formatter/TimelineFormatterTest.php',
+    'Google_Service_Exception' => $vendorDir . '/google/apiclient/src/Google/Service/Exception.php',
+    'Google_Service_Resource' => $vendorDir . '/google/apiclient/src/Google/Service/Resource.php',
 );

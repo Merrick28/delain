@@ -5,6 +5,8 @@
  * le moteur de template de phplib
  *
  */
+$__VERSION = "20191204";    // A changer aussi dans constante.php
+
 $benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
 $db2 = new base_delain;
@@ -186,13 +188,20 @@ if ($is_fam)
 }
 else
 {
-    if ($pa_dep==4)
+    $is_locked = $perso->is_locked();   // réutilisé plus loin!
+    $bagde_lock ="&nbsp;&nbsp;";
+    if ($is_locked)
+    {
+        $bagde_lock = '&nbsp;<span class="badge-profil">'.$perso->nb_locks().'</span>';
+        $moveimage = 'run';
+    } else if ($pa_dep==4) {
         $moveimage = 'footsteps';
-    else if ($pa_dep<4)
-        $moveimage = 'footgreen';
-    else
+    } else if ($pa_dep<4) {
+            $moveimage = 'footgreen';
+    } else {
         $moveimage = 'footred';
-    $t->set_var('PERSO_MOVE', ' &nbsp;&nbsp;<img src="' . G_IMAGES . $moveimage.'.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
+    }
+    $t->set_var('PERSO_MOVE', $bagde_lock.'<img src="' . G_IMAGES . $moveimage.'.png" title="Déplacement" alt="dep">: <strong>'.$pa_dep.'</strong>');
 }
 
 
@@ -245,7 +254,14 @@ $t->set_var('PERSO_QUETE', $perso_quete);
 $nb_quete_auto = $perso->perso_nb_auto_quete();
 if ($nb_quete_auto["nb_total"] * 1 > 0)
 {
-    $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php\">Mes quêtes " . (1 * $nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
+    if ((int)$nb_quete_auto["journal_nb_news"]>0)
+    {
+        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php?onglet=apercu\"><strong>Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</strong></a><br>";
+    }
+    else
+    {
+        $perso_auto_quete = "<img src=\"" . G_IMAGES . "calice.png\"> <a href=\"$chemin/quete_auto.php?onglet=apercu\">Mes quêtes " . ((int)$nb_quete_auto["nb_encours"] > 0 ? "(" . $nb_quete_auto["nb_encours"] . ")" : "") . "</a><br>";
+    }
 }
 else
 {
@@ -287,7 +303,6 @@ $t->set_var('PERSO_MESSAGERIE', $perso_messagerie);
 $texte_dep = '';
 if (!$is_fam)
 {
-    $is_locked = $perso->is_locked();
     if ((!$is_locked) && ($droit['controle'] != 'O'))
     {
         $texte_dep .= "<img src=\"" . G_IMAGES . "deplacement.gif\" alt=\"\"> ";
@@ -558,11 +573,7 @@ else
 $t->set_var('FAVORIS', $favoris);
 
 // voie magique
-$nv5 = $perso->sort_lvl5();
-
-$req = 'select count(1) as mem from perso_sorts, perso where psort_perso_cod = perso_cod and perso_type_perso = 1 and perso_cod = ' . $perso_cod;
-$mem = $perso->sort_memo();
-if ($perso->sort_lvl5() > 0 && $perso->sort_memo() > 5)
+if ($perso->sort_lvl5() > 0 && count($perso->sort_memo()) > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
 }
@@ -963,9 +974,12 @@ $barre_menu_icone = '
 //$barre_menu_icone='';
 $t->set_var('BARRE_MENU_ICONE', $barre_menu_icone);
 
+// Injection de la version
+$t->set_var('__VERSION', $__VERSION);
 
 // variables twig
 $var_twig_defaut = array(
+    '__VERSION'           => $__VERSION,
     'G_IMAGES'            => G_IMAGES,
     'G_URL'               => G_URL,
     'PERSO'               => $perso,

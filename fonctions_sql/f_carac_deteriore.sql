@@ -77,6 +77,7 @@ declare
     v_multi numeric;
     limite integer;                 -- Seuil limite qui permet ou pas l'amélioration
     v_resultat f_resultat;          -- resultat de cette fonction pour la fonction appelante
+    v_diff integer;                 -- détérioration réelle, car s'il y a des bonus de caracs en changeant la base on change aussi les min/max
 begin
 
 -- Les fonctions de modifications de carac doivent-être rendu atomique par les guard/release.
@@ -120,13 +121,10 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
             perso_amelioration_armure,
             perso_amelioration_vue,
             perso_amelioration_nb_sort,
-            perso_int,
-            case
-                        when exists (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-                        then (select corig_carac_valeur_orig from carac_orig where corig_type_carac = 'CON' and corig_perso_cod = perso_cod)
-                        else perso_con end,
-            perso_dex,
-            perso_for,
+            f_carac_base(perso_cod,'INT'),
+            f_carac_base(perso_cod,'CON'),
+            f_carac_base(perso_cod,'DEX'),
+            f_carac_base(perso_cod,'FOR'),
             perso_enc_max
         from perso
         where perso_cod = personnage
@@ -579,18 +577,23 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 v_resultat.etat := -1 ;
                 return v_resultat;
         end if;
-        update perso set perso_for = perso_for - 1,perso_enc_max = perso_enc_max - 3 where perso_cod = personnage;
-        select into temp
-            corig_carac_valeur_orig
-            from carac_orig
+
+        select into temp, v_diff
+            corig_carac_valeur_orig, perso_for - f_modif_carac_limit('FOR', corig_carac_valeur_orig-1, perso_for-1+valeur_bonus(corig_perso_cod, 'FOR')::integer)
+            from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'FOR';
+            and corig_type_carac = 'FOR' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig - 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'FOR';
+        else
+          v_diff := 1 ;
         end if;
+
+        update perso set perso_for = perso_for - v_diff, perso_enc_max = perso_enc_max - (v_diff * 3) where perso_cod = personnage;
+
     elsif amel = 21 then    -- supression bp0
          if (v_nb_amel_comp <=0 ) then
             v_resultat.code_retour := 'Erreur ! Le minimum d''amélioration a été atteint!';
@@ -785,54 +788,69 @@ v_resultat.etat = 0 ; -- par défaut tout ce passe bien
                 v_resultat.etat := -1 ;
                 return v_resultat;
         end if;
-        update perso set perso_dex = perso_dex - 1,perso_capa_repar = perso_capa_repar - 3 where perso_cod = personnage;
-        select into temp
-            corig_carac_valeur_orig
-            from carac_orig
+
+        select into temp, v_diff
+            corig_carac_valeur_orig, perso_dex - f_modif_carac_limit('DEX', corig_carac_valeur_orig-1, perso_dex-1+valeur_bonus(corig_perso_cod, 'DEX')::integer)
+            from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'DEX';
+            and corig_type_carac = 'DEX' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig - 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'DEX';
+        else
+          v_diff := 1;
         end if;
+
+        update perso set perso_dex = perso_dex - v_diff, perso_capa_repar = perso_capa_repar - (v_diff * 3) where perso_cod = personnage;
+
     elsif amel = 29 then
         if (v_con <=6) or (pv_max_actuel <= 3) then
                 v_resultat.code_retour := 'Erreur ! Le minimum de caractéristique a été atteint!';
                 v_resultat.etat := -1 ;
                 return v_resultat;
         end if;
-        update perso set perso_con = perso_con - 1,perso_pv_max = perso_pv_max - 3, perso_pv = GREATEST(1, perso_pv - 3) where perso_cod = personnage;
-        select into temp
-            corig_carac_valeur_orig
-            from carac_orig
+
+        select into temp, v_diff
+            corig_carac_valeur_orig, perso_con - f_modif_carac_limit('CON', corig_carac_valeur_orig-1, perso_con-1+valeur_bonus(corig_perso_cod, 'CON')::integer)
+            from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'CON';
+            and corig_type_carac = 'CON' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig - 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'CON';
+        else
+          v_diff = 1 ;
         end if;
+
+        update perso set perso_con = perso_con - v_diff, perso_pv_max = perso_pv_max - (v_diff*3), perso_pv = GREATEST(1, perso_pv - (v_diff * 3)) where perso_cod = personnage;
+
     elsif amel = 30 then
         if (v_int <= 6) or (v_repar < 3) then
                 v_resultat.code_retour := 'Erreur ! Le minimum de caractéristique a été atteint!';
                 v_resultat.etat := -1 ;
                 return v_resultat;
         end if;
-        update perso set perso_int = perso_int - 1,perso_capa_repar = perso_capa_repar - 3 where perso_cod = personnage;
-        select into temp
-            corig_carac_valeur_orig
-            from carac_orig
+
+        select into temp, v_diff
+            corig_carac_valeur_orig, perso_int - f_modif_carac_limit('INT', corig_carac_valeur_orig-1, perso_int-1+valeur_bonus(corig_perso_cod, 'INT')::integer)
+            from carac_orig join perso on perso_cod=corig_perso_cod
             where corig_perso_cod = personnage
-            and corig_type_carac = 'INT';
+            and corig_type_carac = 'INT' limit 1;
         if found then
             update carac_orig
                 set corig_carac_valeur_orig = corig_carac_valeur_orig - 1
                 where corig_perso_cod = personnage
                 and corig_type_carac = 'INT';
+        else
+          v_diff = 1 ;
         end if;
+
+        update perso set perso_int = perso_int - v_diff, perso_capa_repar = perso_capa_repar - (v_diff * 3) where perso_cod = personnage;
+
     end if;
 
     return v_resultat;

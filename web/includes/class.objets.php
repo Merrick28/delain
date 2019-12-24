@@ -361,6 +361,50 @@ class objets
         return $retour;
     }
 
+    /***
+     * Retourne la liste des bonus/malus attachés sur l'objet
+     * @return array|bool
+     */
+    function get_bm_attaches()
+    {
+        $retour = array();
+
+        $objsort = new objets_bm();
+        $retour = $objsort->get_objets_bm($this) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /***
+     * Retourne l'état d'un objet
+     * @return string
+     */
+    function get_etat_objet($type="etat")
+    {
+        if ($type == "état")
+        {
+
+            if ($this->obj_etat < 10)       $retour = 'état déplorable';
+            else if ($this->obj_etat < 35)  $retour = 'état médiocre';
+            else if ($this->obj_etat < 50)  $retour = 'mauvais état';
+            else if ($this->obj_etat < 70)  $retour = 'bon état';
+            else if ($this->obj_etat < 90)  $retour = 'excellent état';
+            else                            $retour = 'comme neuf';
+        }
+        else
+        {
+            if ($this->obj_etat < 20)       $retour = 'rouge';
+            else if ($this->obj_etat < 40)  $retour = 'orange';
+            else if ($this->obj_etat < 60)  $retour = 'vert';
+            else                            $retour = "" ;
+        }
+        return $retour ;
+    }
+
     /**
      * supprime l'enregistrement de objets
      * @global bdd_mysql $pdo

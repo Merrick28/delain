@@ -745,6 +745,18 @@ div#colonne1:hover   {
 	height: 14px;
 }
 
+.badge-profil {
+	border-radius: 5px;
+	background-color: #800000;
+	color: #ffffff;
+	position: relative;
+	font-size: 8px;
+	padding: 0px 2px 0px 2px;
+	height: 12px;
+	bottom: 8px;
+	left: 2px;
+}
+
 /* affichage specifique quete */
 .hr {
 	display: flex;
@@ -763,4 +775,17 @@ div#colonne1:hover   {
 	overflow: hidden;
 	border-style: inset;
 	border-width: 1px;
+}
+
+/* Affichage des malus dans la page de switch*/
+.badge-malus {
+	color: white;
+	position: relative;
+	font-size: 8px;
+	top: 9px;
+	right: 20px;
+}
+
+.img-malus {
+	 margin-left: -8px;
 }

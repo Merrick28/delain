@@ -55,7 +55,9 @@ $identifie['N'] = "(non identifié)";
 // 22 = composants alchimie
 // 28 = espèce minérale
 // 30 = ingrédients magiques
-$types_ventes_gros = "(5, 11, 17, 18, 19, 21, 22, 28, 30, 34)";
+// 12 = féves (osselets merveilleux)
+// 42 = Grisbi
+$types_ventes_gros = "(5, 11, 12, 17, 18, 19, 21, 22, 28, 30, 34, 42)";
 
 /************************/
 /* recherche des objets */

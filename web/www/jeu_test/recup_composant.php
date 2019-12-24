@@ -129,7 +129,6 @@ else
 /*if(!isset($db))
 	include "verif_connexion.php";
 $db2 = new base_delain;
-include "../includes/img_pack.php";
 include "../includes/template.inc";
 // definition des variables de template
 $temp = new template;

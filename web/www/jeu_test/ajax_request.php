@@ -348,6 +348,10 @@ switch($_REQUEST["request"])
             {  // limitation aux objet avec des sorts rattachés
                 $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_sorts where objsort_gobj_cod=gobj_cod) ";
             }
+            if ($params["objet_generique_bm"]=="true")
+            {  // limitation aux objet avec des bonus/malus de rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_bm where objbm_gobj_cod=gobj_cod) ";
+            }
 
             // requete de comptage
             $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
@@ -399,6 +403,22 @@ switch($_REQUEST["request"])
 
             // requete de recherche
             $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            break;
+
+        case 'bonus_type':
+            $filter = "";
+
+            // requete de comptage
+            $req = "select count(*) from bonus_type where tonbus_libelle ilike ? {$filter}";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select tbonus_cod cod, tonbus_libelle nom from bonus_type where tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT 10";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
@@ -630,6 +650,18 @@ switch($_REQUEST["request"])
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 
+            case 'perso_compte_pos':     // nom du perso, son compte joueur et sa position à partir perso_cod
+                $req = "select pcompt_compt_cod as compt_cod, perso_nom, perso_type_perso, pos_x, pos_y, pos_etage,etage_libelle from perso 
+                        join perso_position on ppos_perso_cod=perso_cod 
+                        join positions on pos_cod=ppos_pos_cod
+                        join etage on etage_numero=pos_etage
+                        join perso_compte on pcompt_perso_cod= case when perso_type_perso=3 then (select pfam_perso_cod from perso_familier where pfam_familier_cod=71 limit 1) else perso_cod end
+                        where perso_cod = ? ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(1*$_REQUEST["perso_cod"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
             case 'perso_coterie_pos':     // nom des persos de la même coterie que perso_cod avec leur position
                 $req = "select perso_cod, perso_type_perso, perso_nom, pos_x, pos_y, pos_etage,etage_libelle from perso
                         join groupe_perso coterie on coterie.pgroupe_perso_cod=?
@@ -673,9 +705,9 @@ switch($_REQUEST["request"])
                         join perso_position on ppos_perso_cod=perso_cod
                         join positions on pos_cod=perso_position.ppos_pos_cod
                         join etage on etage_numero=pos_etage
-                        where perso_actif='O' and perso_type_perso=1 and etage_numero=? order by perso_nom ";
+                        where perso_actif='O' and perso_type_perso=? and etage_numero=? order by perso_nom ";
                 $stmt = $pdo->prepare($req);
-                $stmt = $pdo->execute(array(1*$_REQUEST["etage_numero"]), $stmt);
+                $stmt = $pdo->execute(array((int)$_REQUEST["type_perso"], (int)$_REQUEST["etage_numero"]), $stmt);
                 $resultat = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 break;
 
@@ -692,10 +724,17 @@ switch($_REQUEST["request"])
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 
-            case 'objets_sorts':     // pos_cod à partir x,y,etage
+            case 'objets_sorts':     // sort sur objet
                 $req = "select * from objets_sorts where objsort_cod = ?  ";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute(array($_REQUEST["objsort_cod"]), $stmt);
+                $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
+                break;
+
+            case 'objets_bm':     // sort sur objet
+                $req = "select * from objets_bm where objbm_cod = ?  ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array($_REQUEST["objbm_cod"]), $stmt);
                 $resultat = $stmt->fetch(PDO::FETCH_ASSOC);
                 break;
 

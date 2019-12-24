@@ -1,6 +1,5 @@
 <?php 
 include '../verif_connexion.php';
-include '../../includes/img_pack.php';
 include '../../includes/template.inc';
 
 $t = new template('..');

@@ -68,14 +68,35 @@ case "sauve_etape":
     $etape->aqetape_aqetapmodel_cod = $_REQUEST["aqetapmodel_cod"];
     $etape->aqetape_texte = $_REQUEST['aqetape_texte'];
 
-    // Cas particulier sur les étape choix, il faut obligatoirement un paramètre [1]
+    // Traitement de cas particulier (et/ou controle spécifique si besoin)
     if (($etape_modele->aqetapmodel_tag == "#CHOIX")&& (strpos($etape->aqetape_texte, "[1]")===false))
     {
-            $etape->aqetape_texte.= "[1]";
+        // Cas particulier sur les étape choix, il faut obligatoirement un paramètre [1]
+        $etape->aqetape_texte.= "[1]";
     }
     else if (($etape_modele->aqetapmodel_tag == "#START")&& (strpos($etape->aqetape_texte, "[2]")===false))
     {
-            $etape->aqetape_texte.= "[2]";
+        // Cas particulier sur les étape démarrage, il faut obligatoirement un paramètre [2]
+        $etape->aqetape_texte.= "[2]";
+    }
+    else if (($etape_modele->aqetapmodel_tag == "#ECHANGE #OBJET")&& (strpos($etape->aqetape_texte, "[1]")===false))
+    {
+        // Cas particulier sur les étapes d'échange d'objet, un paramètre texte est utilisé en tant qu'entier numérique, on fait la conversion!
+        if (is_array($_REQUEST['aqelem_type']))
+            foreach ($_REQUEST['aqelem_type'] as $param_id => $types)
+                foreach ($types as $e => $type)
+                    if ((!isset($_REQUEST["element_type"][$param_id])) || ($_REQUEST["element_type"][$param_id] == $type))
+                       if (isset($_REQUEST["aqelem_param_num_1"][$param_id][$e]))
+                           $_REQUEST["aqelem_param_txt_1"][$param_id][$e] = (int) $_REQUEST["aqelem_param_txt_1"][$param_id][$e];
+
+    }
+    else if ($etape_modele->aqetapmodel_tag == "#RECEVOIR #PX")
+    {
+        // c'est uen étape de gain , interdir les valeurs negatives
+        $_REQUEST['aqelem_param_num_1'][1][0] = (int)abs($_REQUEST['aqelem_param_num_1'][1][0]);
+        if ($_REQUEST['aqelem_param_num_1'][1][0] > 200) $_REQUEST['aqelem_param_num_1'][1][0] = 200 ;
+        $_REQUEST['aqelem_param_num_1'][2][0] = (int)abs($_REQUEST['aqelem_param_num_1'][2][0]);
+        if ($_REQUEST['aqelem_param_num_1'][2][0] > 100000) $_REQUEST['aqelem_param_num_1'][2][0] = 100000 ;
     }
     $etape->stocke($new);
 

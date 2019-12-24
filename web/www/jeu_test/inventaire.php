@@ -30,7 +30,8 @@ $perso_gmon_cod = $db->f("perso_gmon_cod");
 $gmon_type_ia = $db->f("gmon_type_ia");
 $is_golem_brz = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
 $is_golem_arm = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
-$is_golem = $is_golem_brz || $is_golem_arm;
+$is_golem_pps = $gmon_type_ia == 16;    // 16 = ia "Golem de pierres précieuses"
+$is_golem = $is_golem_brz || $is_golem_arm || $is_golem_pps;
 $pa = $db->f("perso_pa");
 $perso_type_perso = $db->f("perso_type_perso");
 
@@ -45,6 +46,10 @@ if (!isset($dq))
 if (!isset($dcompo))
 {
     $dcompo = 0;
+}
+if (!isset($dgrisbi))
+{
+    $dgrisbi = 0;
 }
 $db2 = new base_delain;
 ?>
@@ -170,7 +175,7 @@ switch ($methode)
             {
                 echo "<br><strong>Scrountch ? A pas scrountch :(</strong> Vous ne possédez pas assez de brouzoufs pour gagner des PX de cette façon...<br>";
             }
-        } else if ($is_golem_arm && $pa > 5)
+        } else if (($is_golem_arm || $is_golem_pps) && $pa > 5)
         {
             $req = 'select golem_digestion(' . $perso_cod . ') as resultat ';
             $db->query($req);
@@ -413,7 +418,7 @@ $db->query($req_id);
 	WHERE perobj_perso_cod = " . $perso_cod . "
 		and perobj_identifie = 'O'
 		and perobj_equipe = 'N'
-		and gobj_tobj_cod not in (5,11,14,22,28,30,34)
+		and gobj_tobj_cod not in (5,11,12,14,22,28,30,34,42)
 	order by tobj_libelle,gobj_nom ";
         $db->query($req_matos);
         $nb_matos = $db->nf();
@@ -520,7 +525,7 @@ $db->query($req_id);
                 $nb_matos = $db->nf();
                 //log_debug($req_matos);
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo\">(montrer le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -564,7 +569,7 @@ $db->query($req_id);
                 $db->query($req_matos);
                 $nb_matos = $db->nf();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -620,7 +625,7 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
                 $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
-                $req_matos = $req_matos . "and gobj_tobj_cod = 11 ";
+                $req_matos = $req_matos . "and gobj_tobj_cod in (11,12) ";
                 $req_matos = $req_matos . "and gobj_url is null ";
                 $req_matos = $req_matos . "group by obj_nom,gobj_url ";
                 $req_matos = $req_matos . "UNION ";
@@ -632,14 +637,14 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
                 $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
-                $req_matos = $req_matos . "and gobj_tobj_cod = 11 ";
+                $req_matos = $req_matos . "and gobj_tobj_cod in (11,12) ";
                 $req_matos = $req_matos . "and gobj_url is not null) A ";
                 $req_matos = $req_matos . "order by A.obj_nom ";
                 //echo $req_matos;
                 $db->query($req_matos);
                 $nb_matos = $db->nf();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo\">(montrer le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -683,12 +688,12 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
                 $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
-                $req_matos = $req_matos . "and gobj_tobj_cod = 11 ";
+                $req_matos = $req_matos . "and gobj_tobj_cod in (11,12) ";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
                 $db->query($req_matos);
                 $nb_matos = $db->nf();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -788,7 +793,7 @@ $db->query($req_id);
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
-                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie<a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=1\">(montrer le détail)</A></div></td>");
+                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie<a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=1&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                     echo("</tr>");
 
                     ?>
@@ -833,7 +838,106 @@ $db->query($req_id);
                 $db->query($req_matos);
                 $nb_matos = $db->nf();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
+                echo("</tr>");
+                if ($nb_matos != 0)
+                {
+                    ?>
+                    <tr>
+                        <td class="soustitre2">Type</td>
+                        <td class="soustitre2">Objet</td>
+                        <td class="soustitre2">
+                            <div style="text-align:right">Poids</div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <?php
+                    while ($db->next_record())
+                    {
+                        echo("<tr>");
+                        printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=i\">" . $db->f("obj_nom") . "</a></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
+                        echo("<td>");
+                        echo("</td>");
+                        echo("<td>");
+
+                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+
+                        echo("</td>");
+                        echo("</tr>");
+                    }
+                } else
+                {
+                    echo("<tr><td colspan=\"6\">Aucun composant pour potion</td></tr>");
+                }
+            }
+            /*****************************************/
+            /* Etape 10 : Le grisbi                  */
+            /*****************************************/
+            if ($dgrisbi == 0)
+            {
+                $req_matos = "select obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
+                $req_matos = $req_matos . "and perobj_identifie = 'O' ";
+                $req_matos = $req_matos . "and perobj_equipe = 'N' ";
+                $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
+                $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
+                $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
+                $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
+                $req_matos = $req_matos . "group by obj_nom,gobj_url ";
+                $db->query($req_matos);
+                $nb_matos = $db->nf();
+                if ($nb_matos != 0)
+                {
+                    echo("<tr>");
+                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=1\">(montrer le détail)</A></div></td>");
+                    echo("</tr>");
+
+                    ?>
+                    <tr>
+                        <td colspan="2" class="soustitre2">Objet</td>
+                        <td class="soustitre2">
+                            <div style="text-align:right">Poids</div>
+                        </td>
+                        <td class="soustitre2">Nombre</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <?php
+                    while ($db->next_record())
+                    {
+                        $examiner = "";
+                        if ($db->f("gobj_url") != null)
+                        {
+                            $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "\">Voir le détail</a>) ";
+                        }
+                        echo("<tr>");
+                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $db->f("obj_nom") . $examiner . "</strong></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $db->f("poids"));
+                        printf("<td class=\"soustitre2\">%s</td>", $db->f("nombre"));
+                        echo("<td></td><td></td>");
+                        echo("</tr>");
+
+                    }
+
+                }
+            } else
+            {
+                $req_matos = "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
+                $req_matos = $req_matos . "and perobj_identifie = 'O' ";
+                $req_matos = $req_matos . "and perobj_equipe = 'N' ";
+                $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
+                $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
+                $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
+                $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
+                $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
+                $db->query($req_matos);
+                $nb_matos = $db->nf();
+                echo("<tr>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=0\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {

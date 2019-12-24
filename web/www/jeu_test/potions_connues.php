@@ -48,7 +48,7 @@ if($db->next_record())
 					and gobj_cod = frmpr_gobj_cod
 					and frmpr_frm_cod = pfrm_frm_cod
 					and frm_cod = pfrm_frm_cod
-					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37)
+					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 39 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37)
 				order by gobj_nom';
 			$db->query($req);
 			if($db->nf() == 0)
@@ -132,13 +132,13 @@ if($db->next_record())
 				$contenu_page .= 'Vous n’avez pas assez de PA !<br>';
 				break;
 			}
-			$potion = $_POST['potion'];
+			$potion = (int)$_POST['potion'];
 			$req = 'select pfrm_frm_cod,gobj_nom,gobj_cod, frm_comp_cod from objet_generique,perso_formule,formule_produit, formule
 				where pfrm_perso_cod = '. $perso_cod .'
 					and gobj_cod = frmpr_gobj_cod
 					and frmpr_frm_cod	= pfrm_frm_cod
 					and frm_cod = pfrm_frm_cod
-					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)
+					and (gobj_tobj_cod = 21 or gobj_tobj_cod = 39 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)
 					and gobj_cod = '. $potion .'
 				order by gobj_nom';
 			$db->query($req);

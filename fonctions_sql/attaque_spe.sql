@@ -290,6 +290,13 @@ begin
         end if;
 
         degats_portes := floor(ligne.perso_con * impact_armure * comp_modificateur /100 ); --Calcul des dégâts
+
+        -- 2019-05-19 - Marlyza: faire la moitié des dégats sur les familiers
+        if ligne.perso_type_perso = 3 then
+          code_retour := code_retour || '<br>Dégâts avant la réduction de familier : ' || trim(to_char(degats_portes, '9999')) ;
+          degats_portes := floor(0.5 * degats_portes) ;
+        end if;
+
         /***************Code d’analyse**********/
         code_retour := code_retour || '<br>Impact armure : ' || to_char(coalesce(impact_armure, 0), '999999999') || ',
 					dégâts portés : ' || to_char(coalesce(degats_portes, 0), '999999999') || ',

@@ -39,7 +39,8 @@ if ($autorise == 1) {
 			gobj_comp_cod, obj_description, coalesce(obj_seuil_force, 0) as obj_seuil_force, obj_seuil_dex,
 			coalesce(obj_bonus_vue, 0) as obj_bonus_vue, coalesce(obj_critique, 0) as obj_critique, obj_armure,
 			coalesce(obj_vampire, 0) as obj_vampire, coalesce(obj_aura_feu, 0) as obj_aura_feu, obj_enchantable, obj_poison, obj_regen,
-			gobj_image, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_niveau_min
+			gobj_image, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_niveau_min, 
+			coalesce(obj_chute, 0) as obj_chute, coalesce(obj_portee, 0) as obj_portee
 		from objets
 		inner join objet_generique on gobj_cod = obj_gobj_cod
 		inner join type_objet on tobj_cod = gobj_tobj_cod
@@ -150,6 +151,17 @@ if ($autorise == 1) {
                 echo "</tr>";
             }
 
+            if ($db->f("gobj_distance") == 'O') {
+                echo "<tr>";
+                echo "<td class=\"soustitre2\">Portée </td>";
+                echo "<td>" . $db->f("obj_portee") . "</td>";
+                echo "</tr>";
+
+                echo "<tr>";
+                echo "<td class=\"soustitre2\">Chute </td>";
+                echo "<td>" . $db->f("obj_chute") . "</td>";
+                echo "</tr>";
+            }
 
             $req = "select comp_libelle from competences where comp_cod = $comp ";
             $db->query($req);
@@ -213,6 +225,31 @@ if ($autorise == 1) {
             {
                 echo "<tr><td class=\"soustitre2\">".($objsort->objsort_equip_requis ? "Equipé" : "Inventaire")."</td>";
                 echo "<td><strong>". $objsort->getNom()."</strong> <em>(". $objsort->getCout()." PA)</em></td>";
+                echo "<tr>";
+            }
+        }
+
+        if ($bm_attaches = $obj->get_bm_attaches())
+        {
+            echo "<tr>";
+            echo "<td colspan=\"2\" class=\"soustitre2\"><strong>L'objet assene des bonus/malus:</strong></td>";
+            echo "</tr>";
+            foreach ($bm_attaches as $objbm)
+            {
+                $tbonus = new bonus_type();
+                $tbonus->charge($objbm->objbm_tbonus_cod);
+                $typebm = (($tbonus->tbonus_gentil_positif=="t" && $objbm->objbm_bonus_valeur>0)||($tbonus->tbonus_gentil_positif!="t" && $objbm->objbm_bonus_valeur<0)) ? "Bonus" : "Malus" ;
+                if (is_file(__DIR__ . "/../images/interface/bonus/".$tbonus->tbonus_libc.".png"))
+                {
+                    $img = '<img src="/../images/interface/bonus/'.$tbonus->tbonus_libc.'.png">';
+                }
+                else
+                {
+                    $img = '<img src="/../images/interface/bonus/'.strtoupper($typebm).'.png">';
+                }
+
+                echo "<tr><td class=\"soustitre2\">".($typebm=="Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>")."</td>";
+                echo "<td>".$img." <strong>".($objbm->objbm_bonus_valeur>0 ? "+" : "").$objbm->objbm_bonus_valeur."</strong> : ". $tbonus->tonbus_libelle."</td>";
                 echo "<tr>";
             }
         }

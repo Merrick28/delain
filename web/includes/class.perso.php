@@ -1516,6 +1516,38 @@ class perso
         return $result['missions'];
     }
 
+    function quete_auto()
+    {
+        // Run all current queste !!!!
+        $news = "" ;
+
+        $quete_perso = new aquete_perso();
+        $quetes_perso = $quete_perso->get_perso_quete_en_cours($this->perso_cod);
+
+        if ($quetes_perso && sizeof($quetes_perso)>0)
+        {
+            foreach ($quetes_perso as $k => $q)
+            {
+                $nb_etapes = $q->run();
+
+                if ($nb_etapes>0)
+                {
+                    $quete = new aquete();
+                    $quete->charge($q->aqperso_aquete_cod);
+
+                    $pages = $q->journal_news();
+                    // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
+                    if ($pages != "")
+                    {
+                        $news.="<br>&rArr; <em><strong>".$quete->aquete_nom."</strong></em>:<br><br>".$pages;
+                    }
+                }
+            }
+        }
+
+        return $news;
+    }
+
     /**
      * @return ligne_evt[]
      */
@@ -1626,6 +1658,23 @@ class perso
         }
     }
 
+    function nb_locks()
+    {
+        $locks = 0 ;
+        $lc  = new lock_combat();
+        $tab = $lc->getBy_lock_cible($this->perso_cod);
+        if ($tab !== false)
+        {
+            $locks += count($tab);
+        }
+        $tab = $lc->getBy_lock_attaquant($this->perso_cod);
+        if ($tab !== false)
+        {
+            $locks += count($tab);
+        }
+        return $locks;
+    }
+
     function nb_obj_case()
     {
         $ppos = new perso_position;
@@ -1661,7 +1710,7 @@ class perso
             and pnbst_sort_cod = sort_cod 
             and sort_niveau >= 5 
             and pnbst_nombre > 0 
-            and perso_voie_magique = 0 
+            -- and perso_voie_magique = 0 
             and perso_cod = ?';
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
@@ -1936,6 +1985,46 @@ class perso
             ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
+    }
+
+    function carac_base_for()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'FOR') as perso_for";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_for'];
+    }
+
+    function carac_base_int()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'INT') as perso_int";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_int'];
+    }
+
+    function carac_base_con()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'CON') as perso_con";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_con'];
+    }
+
+    function carac_base_dex()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select f_carac_base(?,'DEX') as perso_dex";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['perso_dex'];
     }
 
     function passe_niveau($amel)
@@ -2396,7 +2485,7 @@ class perso
 
     }
 
-    function prepare_get_vue()
+    function prepare_get_vue($compte)
     {
         $ppos  = new perso_position();
         $pos   = new positions();
@@ -2410,8 +2499,9 @@ class perso
         $compte       = new compte;
         $perso_compte = new perso_compte();
 
-
-        if ($this->perso_type_perso != 3)
+        /*
+         * Pour les monstres joué par un compte admin, le compte n'est pas forcément rattaché au perso_cod
+         if ($this->perso_type_perso != 3)
         {
             if (!$perso_compte->get_by_perso($this->perso_cod))
             {
@@ -2425,6 +2515,7 @@ class perso
                 die('Erreur d appel de compte');
             }
         }
+        */
 
 
         $compte->charge($perso_compte->pcompt_compt_cod);
@@ -2445,9 +2536,9 @@ class perso
 
     }
 
-    function get_vue_non_lock()
+    function get_vue_non_lock($compte)
     {
-        $this->prepare_get_vue();
+        $this->prepare_get_vue($compte);
 
         $pdo            = new bddpdo();
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
@@ -2506,10 +2597,10 @@ class perso
     }
 
 
-    function get_vue_lock()
+    function get_vue_lock($compte)
     {
         // position
-        $this->prepare_get_vue();
+        $this->prepare_get_vue($compte);
 
 
         $pdo            = new bddpdo();
@@ -2668,6 +2759,28 @@ class perso
             }
         }
         return "";
+    }
+
+
+    function perso_malus()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
+                   from bonus
+                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                   where bonus_perso_cod = ?
+                        and
+                            (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                            or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode	
+                    order by tbonus_libc";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array( $this->perso_cod ), $stmt);
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return array();
+        }
+        return $result;
     }
 
 

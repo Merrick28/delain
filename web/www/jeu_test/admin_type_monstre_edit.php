@@ -318,7 +318,7 @@ if ($erreur == 0)
                     . ",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
                     . ",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description"
                     . ",gmon_pv,gmon_pourcentage_aleatoire,gmon_serie_arme_cod,gmon_serie_armure_cod"
-                    . ",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique"
+                    . ",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique,gmon_sex"
                     . " from monstre_generique where gmon_cod = $gmon_cod";
                 $db->query($req_gmon);
                 $db->next_record();
@@ -544,10 +544,46 @@ if ($erreur == 0)
                                        value="<?php echo $db->f("gmon_nb_receptacle"); ?>"></TD>
                         </TR>
 
+                        <?php $gmon_sex = $db->f("gmon_sex"); ?>
                         <TR>
                             <TD>PV (calculés)</TD>
                             <TD><SPAN id="ChampPvCalcul"/></TD>
-                            <TD></TD>
+                            <TD>Sexe</TD>
+                            <TD>
+                                <SELECT name="gmon_sex">
+                                    <OPTION value="" <?php if ($gmon_sex == "")
+                                    {
+                                        echo "selected";
+                                    } ?>>Aléatoire (Mâle ou Femelle)
+                                    </OPTION>
+                                    <OPTION value="M" <?php if ($gmon_sex == "M")
+                                    {
+                                        echo "selected";
+                                    } ?>>Mâle
+                                    </OPTION>
+                                    <OPTION value="F" <?php if ($gmon_sex == "F")
+                                    {
+                                        echo "selected";
+                                    } ?>>Femelle
+                                    </OPTION>
+                                    <OPTION value="A" <?php if ($gmon_sex == "A")
+                                    {
+                                        echo "selected";
+                                    } ?>>Androgyne
+                                    </OPTION>
+                                    <OPTION value="H" <?php if ($gmon_sex == "H")
+                                    {
+                                        echo "selected";
+                                    } ?>>Hermaphrodite
+                                    </OPTION>
+                                    <OPTION value="I" <?php if ($gmon_sex == "I")
+                                    {
+                                        echo "selected";
+                                    } ?>>Inconnu
+                                    </OPTION>
+
+                                </SELECT></TD>
+                            </TD>
                         </TR>
 
                         <TR>
@@ -996,11 +1032,12 @@ if ($erreur == 0)
                 <TABLE width="80%" align="center">
                     <tr>
                         <th>Objet</th>
+
                         <th>Chance de posséder (SUR 10.000 !!!)</th>
                         <th style="text-align: center">Chance de drop <em style="font-size: 10px;">(si possédé)</em>
                         </th>
                     </tr>
-                    <?php $req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
+                    <?php $req_drops = "select gobj_nom,ogmon_gobj_cod,ogmon_equipe,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
                     $db_drops = new base_delain;
                     $db_drops->query($req_drops);
                     //echo $req_drops;
@@ -1022,6 +1059,7 @@ if ($erreur == 0)
                                            value="<?php echo $db_drops->f("ogmon_gobj_cod"); ?>">
                                     <INPUT type="text" name="valeur"
                                            value="<?php echo $db_drops->f("ogmon_chance"); ?>">
+                                    &nbsp;Equiper:<input type ="checkbox" name="ogmon_equipe" <?php echo $db_drops->f("ogmon_equipe") == "t" ? "checked" : ""; ?>>
                                     <input type="submit" value="Modifier">
                                 </form>
                             </td>
@@ -1060,8 +1098,9 @@ if ($erreur == 0)
                                     ?>
                                 </select>
                             </TD>
-                            <TD>
-                                <INPUT type="text" name="valeur" value="0">
+                            <TD style="padding-left:5px;">
+                                <INPUT  type="text" name="valeur" value="0">
+                                &nbsp;Equiper:<input type ="checkbox" name="ogmon_equipe">
                                 <input type="submit" value="Ajouter"></TD>
                             <td colspan="2"></td>
                         </form>
@@ -1234,8 +1273,27 @@ if ($erreur == 0)
                         <TR>
                             <TD>Taille</TD>
                             <TD><INPUT type="text" name="gmon_taille" value=""></TD>
-                            <TD></TD>
-                            <TD></TD>
+                            <TD>Sexe</TD>
+                            <TD><SELECT name="gmon_sex">
+                                    <OPTION value="" >
+                                        Aléatoire (Mâle ou Femelle)
+                                    </OPTION>
+                                    <OPTION value="M">
+                                        Mâle
+                                    </OPTION>
+                                    <OPTION value="F" >
+                                        Femelle
+                                    </OPTION>
+                                    <OPTION value="A">
+                                        Androgyne
+                                    </OPTION>
+                                    <OPTION value="H">
+                                        Hermaphrodite
+                                    </OPTION>
+                                    <OPTION value="I">
+                                        Inconnu
+                                    </OPTION>
+                                </SELECT></TD>
                         </TR>
 
                         <TR>

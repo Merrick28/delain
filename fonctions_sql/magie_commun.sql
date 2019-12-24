@@ -547,7 +547,7 @@ begin
 	end if;
 
 	-- on regarde si bloque magie
-	if aggressif = 'O' AND NOT (v_voie_magique = 3 AND num_sort=145) AND NOT (lanceur = cible) then
+	if aggressif = 'O' AND NOT (v_voie_magique = 3 AND num_sort=145) AND NOT (v_voie_magique = 4 AND num_sort=176) AND NOT (lanceur = cible) then
 		select into v_bloque_magie
 			pcomp_modificateur
 			from perso_competences
@@ -576,6 +576,8 @@ begin
 	else
 		if (v_voie_magique = 3 AND num_sort=145) then
 			code_retour := code_retour||'Toute résistance est futile face à la malédiction d’un véritable sorcier.<br><br>';
+		elseif (v_voie_magique = 4 AND num_sort=176) then
+			code_retour := code_retour||'Toute résistance est futile face au takatoukité d''un mage de guerre.<br><br>';
 		end if;
 		v_bloque_magie := 0;
 	end if;

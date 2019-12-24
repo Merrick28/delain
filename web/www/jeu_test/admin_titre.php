@@ -56,12 +56,15 @@ include_once '../includes/tools.php';
         function setNomAndPosPerso(divname, cod) {
             //executer le service asynchrone
             $("#" + divname).text("");
-            runAsync({request: "get_table_info", data: {info: "perso_pos", perso_cod: cod}}, function (d) {
+            runAsync({request: "get_table_info", data: {info: "perso_compte_pos", perso_cod: cod}}, function (d) {
                 if ((d.resultat == 0) && (d.data) && (d.data.perso_nom)) {
-                    if (s_option == "monstre" && d.data.perso_type_perso != 2)
+                    if (s_option == "monstre" && d.data.perso_type_perso != 2) {
                         $("#" + divname).html('Vous n\'avez pas les droits pour titrer/récompenser ce perso.');
-                    else
+                        $("#" + divname+"_compte").val(0);
+                    } else {
                         $("#" + divname).html(d.data.perso_nom + ' <em style="font-size:10px;"> (X=' + d.data.pos_x + ' X=' + d.data.pos_y + ' ' + d.data.etage_libelle + ')</em>');
+                        $("#" + divname+"_compte").val(d.data.compt_cod);
+                    }
                 }
             });
             updatePersoCount();
@@ -213,9 +216,9 @@ include_once '../includes/tools.php';
             });
         }
 
-        function listPersoEtage(etage_numero) {
+        function listPersoEtage(type_perso, etage_numero) {
             $("#liste-ajout-rapide").html("");
-            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", etage_numero: etage_numero}}, function (d) {
+            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", type_perso: type_perso, etage_numero: etage_numero}}, function (d) {
                 var content = "";
                 var nb_perso = 0;
                 var nb_monstre = 0;
@@ -288,6 +291,21 @@ include_once '../includes/tools.php';
             $('#s-list-' + k).remove();
         }
 
+        function reduceTripletteTitrageList() {
+            var compteList = [] ;
+            $('tr[id^="row-0-"]').each(function () {
+                var compte = $('#' + this.id + 'aqelem_misc_nom_compte').val();
+                if (compte!="")
+                {
+                    if (compteList[compte]) {
+                        delQueteAutoParamRow($(this), 1);
+                    } else {
+                        compteList[compte] = true ;
+                    }
+                }
+            });
+            updatePersoCount();
+        }
         function isInTitrageList(cod) {
             var isInList = false;
             $('tr[id^="row-0-"]').each(function () {
@@ -530,7 +548,32 @@ if ($erreur == 0)
                                 $log .= "\nDon de {$don_bzf} brouzoufs au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
 
-                            // Ensuite le don d'objets -----------------------------
+                            // Ensuite du don de PX -----------------------------
+                            if (1*(int)$_REQUEST["don-px-max"]==0)
+                            {
+                                $don_px = 1*(int)$_REQUEST["don-px-min"];
+                            }
+                            else
+                            {
+                                $don_px = random_int(1*(int)$_REQUEST["don-px-min"], 1*(int)$_REQUEST["don-px-max"]);
+                            }
+
+                            if ($don_px>0)
+                            {
+                                $req = "update perso set perso_px = perso_px + :don_px where perso_cod = :perso_cod ";
+                                $stmt = $pdo->prepare($req);
+                                $stmt = $pdo->execute(array(":don_px"=>$don_px, ":perso_cod"=>$mod_perso_cod),$stmt);
+
+                                $texte_evt = "[cible] a reçu {$don_px} PX." ;
+                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                         values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
+                                $stmt   = $pdo->prepare($req);
+                                $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
+
+                                $log .= "\nDon de {$don_px} PX au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
+                            }
+
+                            // Enfin le don d'objets -----------------------------
 
                             if ($nb_obj>0)
                             {
@@ -730,6 +773,7 @@ if ($erreur == 0)
     echo '<td>Perso :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
+                    <input id="' . $row_id . 'aqelem_misc_nom_compte" type="hidden" value="">
                     <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomAndPosPerso(\'' . $row_id . 'aqelem_misc_nom\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","perso","Rechercher un perso", "' . $s_option . '");\'>
@@ -737,7 +781,9 @@ if ($erreur == 0)
                     &nbsp;<input type="button" class="" value="sa position" onClick=\'listSurZone($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     &nbsp;<input type="button" class="" value="controleur" onClick=\'listControleur($("#' . $row_id . 'aqelem_misc_cod").val());\'>
                     </td>';
-    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-perso" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
+    echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-perso" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> 
+                                 <input id="del-button-triplette" type="button" class="test" value="Garder 1 par triplette" onClick="reduceTripletteTitrageList();"> 
+                                 </td></tr>';
     echo '</table>';
 
     //---- section à onglet------------------------------------------------------------
@@ -764,6 +810,10 @@ if ($erreur == 0)
     echo 'Donner des brouzoufs au  
                 minimum : <input name="don-bzf-min" id="don-bz-min" type="text" size="5" value="">&nbsp;
                 et au maximum : <input name="don-bzf-max" id="don-bz-max" type="text" size="5" value="">&nbsp; <br><br>';
+
+    echo 'Donner des PX au  
+                minimum : <input name="don-px-min" id="don-bz-min" type="text" size="5" value="">&nbsp;
+                et au maximum : <input name="don-px-max" id="don-bz-max" type="text" size="5" value="">&nbsp; <br><br>';
 
     echo 'Donner un nombre d\'objets au  
                 minimum : <input name="don-obj-min" id="don-obj-min" type="text" size="5" value="">&nbsp;
@@ -795,8 +845,8 @@ if ($erreur == 0)
     echo '<input class="test" type="submit" value="Distribuer les récompenses" onclick="$(\'#action\').val(\'objets-et-bzf\')">';
     echo '<br><br><strong>Les récompenses seront distribuées pour chaque persos de la liste en respectant les critères de minima/maxima et % d\'obtention</strong><br>
             <em style="font-size: x-small">Nota: <br>
-            * si le minimum et le maximum de bzf ne sont pas pas renseignés aucun bzf ne sera distribué.<br>
-            * si le maximum de bzf n\'est pas renseigné, le minimum sera distribué.<br>
+            * si le minimum et le maximum de bzf (PX) ne sont pas pas renseignés aucun bzf (PX) ne sera distribué.<br>
+            * si le maximum de bzf (PX) n\'est pas renseigné, le minimum sera distribué.<br>
             * si le minimum et le maximum d\'objet ne sont pas pas renseignés, la distribution suivra uniquement les critères de %.<br>
             * si le % de chance n\'est pas défini pour un objet, sont taux sera considéré à 100%.<br>
             * lors de la distribution suivant les %, si le minimum d\'objet n\'est pas atteint les objets avec le % le plus élévés seront donnés.<br>
@@ -852,7 +902,7 @@ if ($erreur == 0)
     echo 'Titre <input id="perso_titre" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par titre" onClick="listPersoTitre($(\'#perso_titre\').val());"><br>';
     echo 'Liste <input id="perso_liste" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par liste de noms" onClick="listPersoListe($(\'#perso_liste\').val());"> <em style="font-size: x-small">(liste de nom séparés par des ; comme pour la messagerie)</em><br>';
     echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;')) ;
-    echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage($(\'#perso_etage\').val());"><br>';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage(1, $(\'#perso_etage\').val());">&nbsp;&nbsp;<input type="button" class="" value="tous les familiers de l\'étage" onClick="listPersoEtage(3, $(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
 

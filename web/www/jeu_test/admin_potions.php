@@ -145,7 +145,7 @@ if ($erreur == 0) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="soustitre2">Nombre de potions produites <em>(Non utilisé pour l'instant)</em></td>
+                        <td class="soustitre2">Nombre de potions produites</td>
                         <td><input type="text" name="nombre" value="1"></td>
                     </tr>
                     <tr>
@@ -302,7 +302,7 @@ if ($erreur == 0) {
                         </td>
                     </tr>
                     <tr>
-                        <td class="soustitre2">Nombre de potions produites <em>(Non utilisé pour l'instant)</em></td>
+                        <td class="soustitre2">Nombre de potions produites</em></td>
                         <td><input type="text" name="nombre" value="<?php echo $db->f("frmpr_num"); ?>"></td>
                     </tr>
                     <tr>

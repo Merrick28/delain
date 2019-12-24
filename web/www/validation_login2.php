@@ -6,6 +6,21 @@ include_once "ident.php";
 include_once "includes/constantes.php";
 
 include_once "includes/fonctions.php";
+
+function getUserIpAddr(){
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+        //ip from share internet
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        //ip pass from proxy
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }else{
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}
+
+
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 //$sess->register('auth');
 
@@ -25,7 +40,7 @@ if ($verif_auth) {
         <!DOCTYPE html>
         <html>
         <head>
-            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
+            <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
             <title>Login</title>
         </head>
         <body background="images/fond5.gif">
@@ -37,7 +52,8 @@ if ($verif_auth) {
         </html>
         <?php
     } else {
-        $ip = getenv("REMOTE_ADDR");
+        //$ip = getenv("REMOTE_ADDR");
+        $ip = getUserIpAddr();
         $db = new base_delain;
         if (isset($_COOKIE['nvcompte'])) {
             $anc_compte = $_COOKIE['nvcompte'];
@@ -79,8 +95,8 @@ if ($verif_auth) {
             <html>
             <head>
 
-                <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
-                <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
+                <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
+                <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v<?php echo $__VERSION; ?>">
                 <title>Login</title>
             </head>
             <body background="images/fond5.gif" onload="retour();">
@@ -98,8 +114,8 @@ if ($verif_auth) {
 
             echo("<html><head>");
             ?>
-            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
+            <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v<?php echo $__VERSION; ?>">
             <?php
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';
@@ -186,8 +202,8 @@ if ($verif_auth) {
 
             echo("<html><head>");
             ?>
-            <link rel="stylesheet" type="text/css" href="style.css?v20190301" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v20190301">
+            <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
+            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v<?php echo $__VERSION; ?>">
             <?php
             echo("</head>");
             echo '<body background="images/fond5.gif" onload="retour();">';

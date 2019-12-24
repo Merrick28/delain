@@ -62,12 +62,16 @@ declare
   code_retour text;
   -- temp pour éviter les erreurs dans les logs
   v_cible_donnee integer;
+  v_bonus_texte text;
 
 begin
+
+  select tonbus_libelle || case when length(v_bonus)>3 then ' (cumulatif)' else '' end into v_bonus_texte from bonus_type where tbonus_libc = substr(v_bonus, 1, 3) ;
+
   v_cible_donnee := 0;
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de ' || v_bonus || ' ce tour-ci.';
+    return 'Pas d’effet automatique de «' || v_bonus_texte || '» ce tour-ci.';
   end if;
   -- Initialisation des conteneurs
   -- Distance
@@ -293,6 +297,7 @@ declare
   v_cibles_nombre integer; -- Nombre de cibles maxi
   v_race_source integer; -- La race de la source
   v_position_source integer; -- Le pos_cod de la source
+  v_bonus_texte text;
 
   -- Output and data holders
   ligne record;  -- Une ligne d’enregistrements
@@ -313,9 +318,12 @@ declare
   code_retour text;
 
 begin
+
+  select tonbus_libelle || case when length(v_bonus)>3 then ' (cumulatif)' else '' end into v_bonus_texte from bonus_type where tbonus_libc = substr(v_bonus, 1, 3) ;
+
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de ' || v_bonus || ' ce tour-ci.';
+    return 'Pas d’effet automatique de «' || v_bonus_texte || '» ce tour-ci.';
   end if;
   -- Initialisation des conteneurs
   -- Distance
@@ -516,6 +524,7 @@ declare
   v_cibles_nombre_max integer; -- Nombre calculé de cibles
   v_race_source integer; -- La race de la source
   v_position_source integer; -- Le pos_cod de la source
+  v_bonus_texte text;
 
   -- Output and data holders
   ligne record;  -- Une ligne d’enregistrements
@@ -531,9 +540,12 @@ declare
   code_retour text;
 
 begin
+
+  select tonbus_libelle || case when length(v_bonus)>3 then ' (cumulatif)' else '' end into v_bonus_texte from bonus_type where tbonus_libc = substr(v_bonus, 1, 3) ;
+
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de ' || v_bonus || '.';
+    return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -619,7 +631,7 @@ begin
       end if;
     end if;
 
-    code_retour := code_retour || '<br />Vous donnez un bonus/malus ' || v_bonus || ' de force ' || valeur::text || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
+    code_retour := code_retour || '<br />Vous donnez un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
     if v_bloque_magie = 1 then
       code_retour := code_retour || ' (résisté)';
     end if;
@@ -637,7 +649,7 @@ begin
   end loop;
 
   if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour le bonus/malus ' || v_bonus;
+    code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
   end if;
 
   return code_retour;
@@ -701,6 +713,8 @@ declare
   v_race_source integer;       -- La race de la source
   v_position_source integer;   -- Le pos_cod de la source
   v_cible_du_monstre integer;  -- La cible actuelle du monstre
+  v_bonus_texte text;
+  v_bonus_degressif text;
 
   -- Output and data holders
   ligne record;                -- Une ligne d’enregistrements
@@ -716,9 +730,15 @@ declare
   code_retour text;
 
 begin
+
+  select  tonbus_libelle || case when length(v_bonus)>3 then ' (cumulatif)' else '' end,
+          case when length(v_bonus)>3 then ' (dégressif)' else '' end
+  into v_bonus_texte, v_bonus_degressif
+  from bonus_type where tbonus_libc = substr(v_bonus, 1, 3) ;
+
   -- Chances de déclencher l’effet
   if random() > v_proba then
-    return 'Pas d’effet automatique de ' || v_bonus || '.';
+    return 'Pas d’effet automatique de «' || v_bonus_texte || '».';
   end if;
   -- Initialisation des conteneurs
   code_retour := '';
@@ -806,7 +826,7 @@ begin
       end if;
     end if;
 
-    code_retour := code_retour || '<br />Vous donnez un bonus/malus ' || v_bonus || ' de force ' || valeur::text || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
+    code_retour := code_retour || '<br />Vous donnez un bonus/malus «' || v_bonus_texte || '» de force ' || valeur::text || v_bonus_degressif || ', pendant ' || v_duree::text || ' tours à ' || ligne.perso_nom;
     if v_bloque_magie = 1 then
       code_retour := code_retour || ' (résisté)';
     end if;
@@ -824,7 +844,7 @@ begin
   end loop;
 
   if code_retour = '' then
-    code_retour := 'Aucune cible éligible pour le bonus/malus ' || v_bonus;
+    code_retour := 'Aucune cible éligible pour le bonus/malus «' || v_bonus_texte || '»';
   end if;
 
   return code_retour;

@@ -543,10 +543,22 @@ class aquete_element
                 $element_texte = "<strong><em>".$objet_generique->gobj_nom."</em></strong>";
             break;
 
+            case 'bonus':
+                $bonus = new bonus_type();
+                $bonus->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$bonus->tonbus_libelle."</em></strong>";
+            break;
+
             case 'race':
                 $race = new race();
                 $race->charge($this->aqelem_misc_cod);
                 $element_texte = "<strong><em>".$race->race_nom."</em></strong>";
+            break;
+
+            case 'type_monstre_generique':
+                $type = new monstre_generique();
+                $type->charge($this->aqelem_misc_cod);
+                $element_texte = "<strong><em>".$type->gmon_nom."</em></strong>";
             break;
 
             case 'objet':

@@ -27,7 +27,7 @@ declare
   v_obj_cod integer;			-- obj_cod de la potion
   v_nom_potion text;			-- nom de la potion
   v_pa integer;					-- PA de l'utilisateur
-  v_stabilite integer;			-- stabilite de la potion
+  v_stabilite integer;			-- staqbilite de la potion
   v_des_stabilite integer;	-- lancer de dés sur la stabilité
   v_texte_stabilite text;		-- texte lié à l'instabilité de la potion
   v_bonus_existant integer;	-- bonus existant ?

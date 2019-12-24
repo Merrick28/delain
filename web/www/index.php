@@ -27,14 +27,24 @@ if (!isset($_REQUEST['start_news']))
 }
 else
 {
-    $start_news = $_REQUEST['start_news'];
+    $start_news = (int)$_REQUEST['start_news'];
 }
 if ($start_news < 0)
 {
     $start_news = 0;
 }
-
+/*
+// si tentative de hack, on affiche la page par défaut
+// ça évite les logs, et ça permet d'afficher quand
+// même de la pub :-)
+if ( (int) $start_news !== $start_news )
+{
+    $start_news = 0;
+}
+*/
 $tabNews = $news->getNews($start_news);
+
+
 
 
 require_once CHEMIN . 'choix_pub.php';

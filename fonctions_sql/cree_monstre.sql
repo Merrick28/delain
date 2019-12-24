@@ -69,6 +69,7 @@ declare
 	ligne record;
 	ligne_objet record;
 	v_code_objet integer;
+	v_sex text;
 	v_genre text;
 	objet_etat_min integer;
 	objet_etat_max integer;
@@ -125,14 +126,16 @@ begin
 	end if;
 	select into 	v_nom,v_for,v_dex,v_int,v_con,v_race,v_temps_tour,v_des_regen,
 						v_valeur_regen,v_vue,v_niveau,v_amelioration_vue,v_amelioration_regen,v_amelioration_degats,v_amelioration_armure,v_nb_des_degats,v_val_des_degats,
-						v_or,v_arme,v_armure,v_dist,v_vampirisme,v_nb_recep,v_code_arme_serie,v_code_armure_serie, v_voie_magique
+						v_or,v_arme,v_armure,v_dist,v_vampirisme,v_nb_recep,v_code_arme_serie,v_code_armure_serie, v_voie_magique, v_sex
 		gmon_nom,gmon_for,gmon_dex,gmon_int,gmon_con,gmon_race_cod,gmon_temps_tour,gmon_des_regen,
 		gmon_valeur_regen,gmon_vue,gmon_niveau,gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure,gmon_nb_des_degats,gmon_val_des_degats,
-		coalesce(gmon_or,0),gmon_arme,gmon_armure,gmon_amel_deg_dist,gmon_vampirisme,gmon_nb_receptacle,gmon_serie_arme_cod,gmon_serie_armure_cod,COALESCE(gmon_voie_magique,0) gmon_voie_magique
+		coalesce(gmon_or,0),gmon_arme,gmon_armure,gmon_amel_deg_dist,gmon_vampirisme,gmon_nb_receptacle,gmon_serie_arme_cod,gmon_serie_armure_cod,COALESCE(gmon_voie_magique,0) gmon_voie_magique, COALESCE(gmon_sex,'')
 		from monstre_generique
 		where gmon_cod = v_gmon;
 		-- genre
-	if lancer_des(1,2) > 1 then
+	if 	v_sex != '' then
+	  v_genre := v_sex ;
+	elseif lancer_des(1,2) > 1 then
 		v_genre := 'M';
 	else
 		v_genre := 'F';
@@ -287,9 +290,16 @@ begin
 			insert into objets(obj_cod,obj_gobj_cod) values (v_code_objet,ligne_objet.ogmon_gobj_cod);
 			insert into perso_objets (perobj_perso_cod,perobj_obj_cod,perobj_identifie,perobj_equipe)
 				values (v_code_perso,v_code_objet,'O','N');
+
+			-- 2019/11/08 - ajout de la possibilité d'équiper du matériel !
+      if ligne_objet.ogmon_equipe then
+        -- tenter d'équpier
+				perform equipe_objet(v_code_perso,v_code_objet);
+      end if;
+
 			if ligne_objet.ogmon_gobj_cod in ('723','829') then
-			select into texte obj_text_texte from potions.objet_texte where obj_text_gobj_cod = ligne_objet.ogmon_gobj_cod order by random() limit 1;
-			update objets set obj_description = texte where obj_cod = v_code_objet;
+        select into texte obj_text_texte from potions.objet_texte where obj_text_gobj_cod = ligne_objet.ogmon_gobj_cod order by random() limit 1;
+        update objets set obj_description = texte where obj_cod = v_code_objet;
 			end if;
 		end if;
 	end loop;

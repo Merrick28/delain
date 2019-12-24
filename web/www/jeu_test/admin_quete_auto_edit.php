@@ -176,14 +176,14 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #INTERACTION")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE")))
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #INTERACTION")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
-                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE"))
+                            if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
                             {
                                 $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 3));
                             }
@@ -378,7 +378,7 @@ if ($erreur == 0)
                     case 'perso':
                             if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {
-                                $perso = new perso ;
+                                $perso = new perso() ;
                                 $perso->charge( $element->aqelem_misc_cod );
                                 $aqelem_misc_nom = $perso->perso_nom ;
                             }
@@ -394,7 +394,7 @@ if ($erreur == 0)
                     case 'lieu':
                             if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {
-                                $lieu = new lieu ;
+                                $lieu = new lieu() ;
                                 $lieu->charge( $element->aqelem_misc_cod );
                                 $aqelem_misc_nom = $lieu->lieu_nom ;
                             }
@@ -441,7 +441,7 @@ if ($erreur == 0)
                     case 'objet_generique':
                             if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {
-                                $gobj = new objet_generique ;
+                                $gobj = new objet_generique() ;
                                 $gobj->charge( $element->aqelem_misc_cod );
                                 $aqelem_misc_nom = $gobj->gobj_nom ;
                             }
@@ -454,26 +454,10 @@ if ($erreur == 0)
                                     </td>';
                     break;
 
-                    case 'race':
-                            if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
-                            {
-                                $gobj = new objet_generique ;
-                                $gobj->charge( $element->aqelem_misc_cod );
-                                $aqelem_misc_nom = $gobj->gobj_nom ;
-                            }
-                            echo   '<td>Race :
-                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
-                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
-                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'race\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
-                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
-                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","race","Rechercher une race de monstre");\'> 
-                                    </td>';
-                    break;
-
                     case 'lieu_type':
                             if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                             {
-                                $lieu_type = new lieu_type ;
+                                $lieu_type = new lieu_type() ;
                                 $lieu_type->charge( $element->aqelem_misc_cod );
                                 $aqelem_misc_nom = $lieu_type->tlieu_libelle ;
                             }
@@ -489,7 +473,39 @@ if ($erreur == 0)
                                     </td>';
                     break;
 
-                    case 'monstre_generique':
+                    case 'race':
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gobj = new race() ;
+                            $gobj->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $gobj->race_nom ;
+                        }
+                        echo   '<td>Race :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'race\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","race","Rechercher une race de monstre");\'> 
+                                    </td>';
+                        break;
+
+                    case 'type_monstre_generique':      // pour type seulement (pas d'option d'invocation)
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gmon = new monstre_generique() ;
+                            $gmon->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $gmon->gmon_nom ;
+                        }
+                        echo   '<td>Monstre générique :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'race\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","monstre_generique","monstre_generique");\'> 
+                                    </td>';
+                        break;
+
+                    case 'monstre_generique':       // pour invocation
                         if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
                         {
                             $gmon = new monstre_generique() ;
@@ -505,6 +521,76 @@ if ($erreur == 0)
                                      <br>Mode d\'invocation &rArr;&nbsp;'.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"Monstre","1"=>"Perso"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                      &nbsp;'.create_selectbox("aqelem_param_num_2[$param_id][]", array("0"=>"Tangible","1"=>"Intangible"), 1*$element->aqelem_param_num_2, array('id' =>"{$row_id}aqelem_param_num_2", 'style'=>'style="width: 100px;" data-entry="val"')).'
                                      &nbsp;'.create_selectbox("aqelem_param_num_3[$param_id][]", array("0"=>"Standard","1"=>"Type PNJ"), 1*$element->aqelem_param_num_3, array('id' =>"{$row_id}aqelem_param_num_3", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                   </td>';
+                        break;
+
+
+                    case 'echange':
+                        $aqelem_misc_nom2 =  "";
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gobj = new objet_generique();
+                            $gobj->charge($element->aqelem_misc_cod);
+                            $aqelem_misc_nom = $gobj->gobj_nom ;
+                        }
+
+                        if ((1*$element->aqelem_param_num_2 != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $gobj = new objet_generique() ;
+                            $gobj->charge( $element->aqelem_param_num_2 );
+                            $aqelem_misc_nom2 = $gobj->gobj_nom ;
+                        }
+
+                        echo   '<td>Echange :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                    
+                                    <input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="2" value="'.$element->aqelem_param_num_1.'"> x
+                                    
+                                    <input data-entry="val" name="aqelem_misc_cod['.$param_id.'][]" id="'.$row_id.'aqelem_misc_cod" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_misc_cod : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom">'.$aqelem_misc_nom.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                                    
+                                    contre 
+                                    <input data-entry="val" name="aqelem_param_txt_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_1" type="text" size="5" value="'.$element->aqelem_param_txt_1.'"> Bzf et
+                                    <input data-entry="val" name="aqelem_param_num_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_3" type="text" size="2" value="'.$element->aqelem_param_num_3.'"> x
+                                    <input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_param_num_2 : '').'" onChange="setNomByTableCod(\''.$row_id.'aqelem_misc_nom2\', \'objet_generique\', $(\'#'.$row_id.'aqelem_param_num_2\').val());">
+                                    &nbsp;<em></em><span data-entry="text" id="'.$row_id.'aqelem_misc_nom2">'.$aqelem_misc_nom2.'</span></em>
+                                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod(["'.$row_id.'aqelem_param_num_2","'.$row_id.'aqelem_misc_nom2"],"objet_generique","Rechercher un objet générique");\'> 
+                                    </td>';
+                        break;
+
+                    case 'bonus':       // pour invocation
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $bon = new bonus_type() ;
+                            $bon->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $bon->tonbus_libelle ;
+                        }
+                        echo   '<td>Bonus/Malus :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                     '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select tbonus_cod, tonbus_libelle||case when tbonus_gentil_positif then ' (+)' else ' (-)' end from bonus_type order by tonbus_libelle", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
+                                     Puissance :<input data-entry="val" name="aqelem_param_num_1['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_1" type="text" size="5" value="'.$element->aqelem_param_num_1.'" style="margin-top: 5px;">
+                                     Nombre de DLT :<input data-entry="val" name="aqelem_param_num_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_num_2" type="text" size="5" value="'.$element->aqelem_param_num_2.'">
+                                   </td>';
+                        break;
+
+                    case 'perso_condition':       // pour invocation
+                        if ((1*$element->aqelem_misc_cod != 0) && ($element->aqelem_type==$param['type']))
+                        {
+                            $bon = new bonus_type() ;
+                            $bon->charge( $element->aqelem_misc_cod );
+                            $aqelem_misc_nom = $bon->tonbus_libelle ;
+                        }
+                        echo   '<td>Conditions :
+                                    <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type==$param['type'] ? $element->aqelem_cod : '').'"> 
+                                    <input name="aqelem_type['.$param_id.'][]" type="hidden" value="'.$param['type'].'"> 
+                                     '.create_selectbox("aqelem_param_num_1[$param_id][]", array("0"=>"ET","1"=>"OU"), 1*$element->aqelem_param_num_1, array('id' =>"{$row_id}aqelem_param_num_1", 'style'=>'style="width: 100px;" data-entry="val"')).'
+                                     '.create_selectbox_from_req("aqelem_misc_cod[$param_id][]", "select aqtypecarac_cod, aqtypecarac_nom from quetes.aquete_type_carac order by aqtypecarac_type, aqtypecarac_nom, aqtypecarac_cod", 1*$element->aqelem_misc_cod, array('id' =>"{$row_id}aqelem_misc_cod", 'style'=>'style="width: 250px;" data-entry="val"')).'
+                                     '.create_selectbox("aqelem_param_txt_1[$param_id][]", array("="=>"=","!="=>"!=","<"=>"<","<="=>"<=","entre"=>"entre",">"=>">",">="=>">="), $element->aqelem_param_txt_1, array('id' =>"{$row_id}aqelem_param_txt_1", 'style'=>'style="width: 50px;" data-entry="val"')).'
+                                     <input data-entry="val" name="aqelem_param_txt_2['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_2" type="text" size="15" value="'.$element->aqelem_param_txt_2.'" style="margin-top: 5px;">
+                                     &nbsp;&nbsp;( et <input data-entry="val" name="aqelem_param_txt_3['.$param_id.'][]" id="'.$row_id.'aqelem_param_txt_3" type="text" size="15" value="'.$element->aqelem_param_txt_3.'"> &rArr; pour la condition « entre » seulement )
                                    </td>';
                         break;
 

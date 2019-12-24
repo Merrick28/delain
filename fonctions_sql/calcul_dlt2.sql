@@ -428,12 +428,21 @@ begin
     else
       temp_ajout_temps2 := 0;
     end if;
-    temps_blessures:= temps_tour + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2 ;
-    ajout_temps := to_char(temps_blessures,'999999') || ' minutes';
-    nouvelle_dlt := ((dlt_actuelle)::timestamp + (ajout_temps)::interval);
-    while nouvelle_dlt < now() loop
-      nouvelle_dlt := ((nouvelle_dlt)::timestamp + (ajout_temps)::interval);
-    end loop;
+
+    /* Le jus de chronomètre reduit la DLT à une minute */
+    if valeur_bonus(personnage, 'JDC') > 0 then
+      -- temps_blessures:= GREATEST(1, valeur_bonus(personnage, 'JDC') + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2) ;
+      code_retour := code_retour || 'Vous êtes sous l''effet d''un Jus de Chronomètre, votre DLT est raccourcie à <b>' || to_char(valeur_bonus(personnage, 'JDC'),'999999') || '</b> minute(s)<br>';
+      nouvelle_dlt := NOW()::timestamp + (to_char(valeur_bonus(personnage, 'JDC'),'999999') || ' minutes')::interval;
+    else
+      temps_blessures:= temps_tour + temps_blessures + temp_ajout_temps_poids + temp_ajout_temps2 - raccourci_temps - raccourci_temps2 ;
+      ajout_temps := to_char(temps_blessures,'999999') || ' minutes';
+      nouvelle_dlt := ((dlt_actuelle)::timestamp + (ajout_temps)::interval);
+      while nouvelle_dlt < now() loop
+        nouvelle_dlt := ((nouvelle_dlt)::timestamp + (ajout_temps)::interval);
+      end loop;
+    end if;
+
     /* intangibilité */
     if v_nb_intangible > 1 then
       update perso set perso_nb_tour_intangible = perso_nb_tour_intangible - 1
@@ -616,14 +625,17 @@ begin
     /* bonus */
     update bonus
     set bonus_nb_tours = bonus_nb_tours - 1
-    where bonus_perso_cod = personnage;
+    where bonus_perso_cod = personnage and bonus_mode!='E';   -- sauf equipement
 
     delete from bonus where bonus_nb_tours <= 0;
 
     /* caracs origine */
     update carac_orig
     set corig_nb_tours = corig_nb_tours - 1
-    where corig_perso_cod = personnage;
+    where corig_perso_cod = personnage and corig_mode!='E';   -- sauf equipement
+
+    /* Marlyza: s'il n'y a plus de bonus, remettre immédiatement les caracs en état */
+    perform f_remise_caracs(personnage) ;
 
     /* louche */
     update perso_louche

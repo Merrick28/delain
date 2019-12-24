@@ -156,6 +156,13 @@ if v_attaquant != v_cible then
 	-- on exécute les fonctions déclenchées par la mort de la cible (gelées, avatar, etc.)
 	code_retour := code_retour || execute_fonctions(v_cible, v_attaquant, 'M');
 end if;
+
+	/**************************************************/
+	/* Etape 0 : controle pré-mortalité               */
+	/**************************************************/
+	-- Si le perso était dans le garde-manger, il faut l'en sortir avant afin qu'il subisse une mort normale
+  perform mort_gm(v_cible);
+
 	/**************************************************/
 	/* Etape 1 : on récupère les infos de la cible    */
 	/**************************************************/
@@ -341,10 +348,13 @@ end if;
 		if v_etage_arene = 'N' then -- pas de perte en arène
 			-- Un perso mortel meurt définitivement (même en cas de grosse différence de niveau)
 			if v_perso_mortel = 'O' then
-				-- Gestion de la perte des objets (1 == mort définitive)
-				v_corps := tue_perso_perd_objets(v_cible, 1);
-				-- On indique que le perso est Mort (il sera désactivé à la prochaine activation de DLT)
-				update perso set perso_mortel = 'M' where perso_cod = v_cible;
+			  -- seulement si on n'est pas dans le cas d'une mort grave!!
+        if v_gravité = 0 then
+          -- Gestion de la perte des objets (1 == mort définitive)
+          v_corps := tue_perso_perd_objets(v_cible, 1);
+          -- On indique que le perso est Mort (il sera désactivé à la prochaine activation de DLT)
+          update perso set perso_mortel = 'M' where perso_cod = v_cible;
+        end if;
 			else
 				-- gravité nulle on applique la perte de matos
 				if v_gravité = 0 then
@@ -548,6 +558,7 @@ end if;
 			partage_fait := 0;
 		end if;
 
+  /*
 		select into nom_perso_px, n1, px1, type_attaquant
 			perso_nom, perso_niveau, perso_px, perso_type_perso
 		from perso where perso_cod = ligne_px.joueur;
@@ -561,6 +572,14 @@ end if;
 		if n2_r > n2
 			then n2 := n2_r;
 		end if;
+		*/
+		-- 2019-05-31 - Marlyza - On prend toujours le niveau relatif pour le calcul, sinon les familiers réssucités qui ont plusieurs niveaux de retard ne gagnent plus rien.
+    select into nom_perso_px, n1, px1, type_attaquant
+      perso_nom, niveau_relatif(perso_px), perso_px, perso_type_perso
+		  from perso where perso_cod = ligne_px.joueur;
+
+		select into n2, px2  niveau_relatif(perso_px), perso_px from perso where perso_cod = v_cible;
+
 		if type_cible = 1 then
 			px_theo := 20 + 3*(n2 - n1) + n2;
 		else

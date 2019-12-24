@@ -31,9 +31,9 @@ class guilde_perso
 
     /**
      * Charge dans la classe un enregistrement de guilde_perso
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -62,8 +62,8 @@ class guilde_perso
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -151,12 +151,26 @@ class guilde_perso
 
     function get_by_perso($perso)
     {
-        $pdo    = new bddpdo;
-        $req = "select pguilde_cod from guilde_perso 
+        $pdo  = new bddpdo;
+        $req  = "select pguilde_cod from guilde_perso 
             where pguilde_perso_cod = :perso and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":perso" => $perso),$stmt);
-        if(!$result = $stmt->fetch())
+        $stmt = $pdo->execute(array(":perso" => $perso), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['pguilde_cod']);
+    }
+
+    function get_by_perso_guilde($perso, $guilde)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select pguilde_cod from guilde_perso 
+            where pguilde_perso_cod = :perso and pguilde_guilde_cod = :guilde ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $perso, ":guilde" => $guilde), $stmt);
+        if (!$result = $stmt->fetch())
         {
             return false;
         }
@@ -165,8 +179,8 @@ class guilde_perso
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \guilde_perso
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {

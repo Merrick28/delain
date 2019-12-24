@@ -49,6 +49,8 @@ switch ($methode) {
 		$gmon_nom = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_nom)));
 		$gmon_description = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_description)));
 		$gmon_avatar = pg_escape_string(htmlspecialchars(str_replace('\'', '’', $gmon_avatar)));
+		if (! in_array($gmon_sex, array("F","M","A","H","I"))) $gmon_sex = "NULL"; else $gmon_sex="'$gmon_sex'";
+
 		if($db_cre_mon->next_record()){
 			$gmon_cod = $db_cre_mon->f("cod");
 			$req_cre_gmon = "insert into monstre_generique (gmon_cod,gmon_nom"
@@ -56,12 +58,12 @@ switch ($methode) {
 				.",gmon_race_cod,gmon_temps_tour,gmon_des_regen,gmon_valeur_regen,gmon_vue"
 				.",gmon_amelioration_vue,gmon_amelioration_regen,gmon_amelioration_degats,gmon_amelioration_armure"
 				.",gmon_niveau,gmon_nb_des_degats,gmon_val_des_degats,gmon_or,gmon_arme,gmon_armure"
-				.",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar) values ($gmon_cod, e'$gmon_nom'"
+				.",gmon_soutien,gmon_amel_deg_dist,gmon_vampirisme,gmon_taille,gmon_description,gmon_quete,gmon_duree_vie, gmon_avatar, gmon_sex) values ($gmon_cod, e'$gmon_nom'"
 				.",$gmon_for,$gmon_dex,$gmon_int,$gmon_con"
 				.",$gmon_race_cod,$gmon_temps_tour,$gmon_des_regen,$gmon_valeur_regen,$gmon_vue"
 				.",$gmon_amelioration_vue,$gmon_amelioration_regen,$gmon_amelioration_degats,$gmon_amelioration_armure"
 				.",$gmon_niveau,$gmon_nb_des_degats,$gmon_val_des_degats,$gmon_or,$gmon_arme,$gmon_armure"
-				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar')";
+				.",'$gmon_soutien',$gmon_amel_deg_dist,$gmon_vampirisme,$gmon_taille, e'$gmon_description', '$gmon_quete',$gmon_duree_vie, e'$gmon_avatar', $gmon_sex)";
 			$db_cre_mon->query($req_cre_gmon);
 		}
 		writelog($log."Nouveau type de monstre : $gmon_nom \n",'monstre_edit');
@@ -108,7 +110,8 @@ switch ($methode) {
 			"gmon_quete",
 			"gmon_duree_vie",
             "gmon_avatar",
-            "gmon_voie_magique");
+            "gmon_voie_magique",
+            "gmon_sex");
 		// SELECT POUR LES VALEURS PRECEDENTES
 		$req_sel_mon = "select gmon_cod";
 		foreach ($fields as $i => $value) {
@@ -140,7 +143,7 @@ switch ($methode) {
 			. ",gmon_niveau = $gmon_niveau,gmon_nb_des_degats = $gmon_nb_des_degats,gmon_val_des_degats = $gmon_val_des_degats,gmon_or = $gmon_or,gmon_arme = $gmon_arme,gmon_armure = $gmon_armure"
 			. ",gmon_serie_arme_cod = $gmon_serie_arme_cod,gmon_serie_armure_cod = $gmon_serie_armure_cod,gmon_type_ia = $gmon_ia,gmon_pv = $gmon_pv,gmon_pourcentage_aleatoire = $gmon_pourcentage_aleatoire"
 			. ",gmon_soutien = '$gmon_soutien',gmon_amel_deg_dist = $gmon_amel_deg_dist,gmon_vampirisme = $gmon_vampirisme,gmon_taille = $gmon_taille,gmon_description = e'" . pg_escape_string($gmon_description)
-			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) ."', gmon_voie_magique=$gmon_voie_magique where gmon_cod = $gmon_cod";
+			. "',gmon_nb_receptacle = $gmon_nb_receptacle, gmon_quete = '$gmon_quete', gmon_duree_vie = $gmon_duree_vie, gmon_avatar = e'" . pg_escape_string($gmon_avatar) ."', gmon_voie_magique=$gmon_voie_magique, gmon_sex='" . pg_escape_string($gmon_sex)."' where gmon_cod = $gmon_cod";
 		//echo $req_cre_gmon;
 		$db_cre_mon->query($req_cre_gmon);
 		echo "MAJ modèle<br>";
@@ -270,9 +273,10 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom from objet_generique where gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur\n",'monstre_edit');
+        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false" ;
+		writelog($log."Ajout d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: $valeur Equiper: {$ogmon_equipe}\n",'monstre_edit');
 	
-		$req_upd_mon =  "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance) values ($gmon_cod,$gobj_cod,$valeur)";
+		$req_upd_mon =  "insert into objets_monstre_generique (ogmon_gmon_cod,ogmon_gobj_cod,ogmon_chance,ogmon_equipe) values ($gmon_cod,$gobj_cod,$valeur, $ogmon_equipe)";
 		//echo $req_upd_mon;
 		$db_upd_mon->query($req_upd_mon);
 		echo "Ajout d’un drop";
@@ -284,9 +288,10 @@ switch ($methode) {
 		$req_upd_mon = "select gobj_nom,ogmon_chance from objets_monstre_generique,objet_generique where gobj_cod = $gobj_cod and ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		$db_upd_mon->query($req_upd_mon);
 		$db_upd_mon->next_record();
-		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur\n",'monstre_edit');
+        $ogmon_equipe = isset($_REQUEST["ogmon_equipe"]) ? "true" : "false" ;
+		writelog($log."Modification d’un Drop : $gobj_cod - ".$db_upd_mon->f("gobj_nom")." Chances: ".$db_upd_mon->f("ogmon_chance")." -> $valeur Equiper: {$ogmon_equipe}\n",'monstre_edit');
 		
-		$req_upd_mon = "update objets_monstre_generique set ogmon_chance = $valeur where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
+		$req_upd_mon = "update objets_monstre_generique set ogmon_chance = $valeur, ogmon_equipe=$ogmon_equipe where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = $gobj_cod";
 		//echo $req_upd_mon;	
 		$db_upd_mon->query($req_upd_mon);
 		echo "Modification d’un drop";

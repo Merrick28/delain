@@ -66,7 +66,7 @@
 
     ?>
 
-    <script src="/scripts/filtres.js?v20190318" type="text/javascript"></script>
+    <script src="/scripts/filtres.js?v20190416" type="text/javascript"></script>
 
     <p>Choisissez la cible du sort :<br>
         <table id="choix-sort">
@@ -135,7 +135,8 @@
         case when (triplette_perso_cod IS NOT NULL OR pgroupe_montre_dlt=1) then to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss')
             when (groupe_perso.pgroupe_perso_cod IS NOT NULL and pgroupe_montre_dlt=0) then 'masqué'
             else NULL end perso_dlt,
-        dlt_passee(perso_cod)::text as perso_dlt_passee
+        dlt_passee(perso_cod)::text as perso_dlt_passee,
+        coalesce(pgroupe_texte,'') palimpseste
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
@@ -200,8 +201,16 @@
             $cdata.="data-partisans='".(($db->f("meme_coterie")== 1) || ($db->f("triplette")== 1) ? "O" : "N")."' ";
             $cdata.="data-type='".($type_perso)."' ";
 
-            echo "<tr id='row-{$row}' {$cdata}>
-				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em></td>
+            $onclick = "" ;
+            $iconPalimp = "" ;
+            if ($db->f("palimpseste") != "")
+            {
+                $onclick="onclick=\"toggle_details(event, 'detail-{$row}');\"";
+                $iconPalimp="<span style='float: right;'><img src='/images/guilde.gif'></span>";
+            }
+
+            echo "<tr id='row-{$row}' {$cdata} {$onclick}>
+				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>{$iconPalimp}</td>
 				<td style=\"{$perso_style}\">" . $db->f("race_nom") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_x") . "</td>
 				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_y") . "</td>
@@ -210,6 +219,10 @@
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_pa . "</td>
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_dlt . "</td>
 			</tr>";
+            if ($db->f("palimpseste") != "")
+            {
+                echo "<tr id='detail-{$row}' style='{$perso_style} display:none'><td colspan='8' style='padding-bottom: 15px; font-size: x-small; color:white;'><em>" . $db->f("palimpseste") . "</em></td></tr>";
+            }
             $row++;
         }
     } ?>

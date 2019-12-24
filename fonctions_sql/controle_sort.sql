@@ -30,7 +30,7 @@ declare
 	cout_pa integer;			-- cout en PA du sort
 	distance_sort integer;	-- distance maxi pour sort
 	lanceur_pa integer;		-- PA du lanceur
-        v_voie_magique integer;  -- voie magique du lanceur
+  v_voie_magique integer;  -- voie magique du lanceur
 	nb_sort integer;			-- nombre de fois ou la lanceur à lancé ce sort dans le tour
 	v_pnbs_cod integer;		-- pnbs_cod pour perso_nb_tours
 	pos_lanceur integer;		-- position du lanceur
@@ -163,45 +163,45 @@ cout_pa := resultat;
     -- les maitres du savoir pouvant lancer tous les sorts, on les exclues du test sauf pour le sort de familier sorcier qui reste uniquement pour les sorciers
   if v_voie_magique != 7 then
         -- guerisseur
-        if num_sort = 150 then
+        if num_sort in (150, 177) then
             if v_voie_magique != (1) then
                 code_retour := 'Erreur vous n''etes pas guérisseur !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- maitre des arcanes
         if num_sort = 146 then
             if v_voie_magique != 2 then
                 code_retour := 'Erreur vous n''etes pas Maître des runes !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- enchanteur runique
         if num_sort in(138,167) then
             if v_voie_magique != 5 then
                 code_retour := 'Erreur vous n''etes pas enchanteur runique !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
         -- Mage de guerre
-        if num_sort = 152 then
+        if num_sort in (152,176) then
             if v_voie_magique != 4 then
                 code_retour := 'Erreur vous n''etes pas mage de guerre !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
          -- Mage de bataille
         if num_sort in(153,168) then
             if v_voie_magique != 6 then
                 code_retour := 'Erreur vous n''etes pas mage de bataille !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
          -- Sorcier
         if num_sort in(149,166)then
             if v_voie_magique != 3 then
                 code_retour := 'Erreur vous n''etes pas sorcier !';
-		return code_retour;
+		            return code_retour;
             end if;
         end if;
  end if;
