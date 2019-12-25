@@ -6,7 +6,6 @@ services:
   ############################
   delain_db:
     image: postgres
-    restart: always
     environment:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=delain
@@ -20,6 +19,8 @@ services:
       # pensez à changer le chemin local
       # - /my/own/datadir:/var/lib/postgresql/data
     container_name: delain_db
+    ports:
+      - 5432:5432
   ###############################
   # Serveur web
   ###############################

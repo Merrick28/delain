@@ -63,6 +63,13 @@ if (!$myAuth->verif_auth)
             $normal_auth = true;
             $compt_nom   = $compte->compt_nom;
             $compt_cod   = $compte->compt_cod;
+
+            // on ajoute le token pour la suite
+            $auth_token = new auth_token();
+            $api_token = $auth_token->create_token($compte);
+            $_SESSION['api_token'] = $api_token;
+            setcookie("api_token", $api_token, time() + 36000, "/", G_URL);
+
             // est-ce qu'on change de perso ?
             if (isset($change_perso))
             {

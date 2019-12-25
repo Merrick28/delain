@@ -107,6 +107,15 @@ class auth_token
         return $retour;
     }
 
+    function create_token($compte)
+    {
+        $token = exec('uuidgen -r');
+        $this->at_token = $token;
+        $this->at_compt_cod = $compte->compt_cod;
+        $this->stocke(true);
+        return $token;
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

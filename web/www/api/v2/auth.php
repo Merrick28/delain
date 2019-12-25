@@ -13,15 +13,15 @@ if($_SERVER['REQUEST_METHOD'] == 'POST')
     if ($compte->getByLoginPassword($login, $password))
     {
         // on est authentifié
-        $token = exec('uuidgen -r');
+        $auth_token = new auth_token;
+
+        $token = $auth_token->create_token($compte);
         $result = array(
             "compte" => $compte->compt_cod,
             "token" => $token
         );
-        $auth_token = new auth_token;
-        $auth_token->at_token = $token;
-        $auth_token->at_compt_cod = $compte->compt_cod;
-        $auth_token->stocke(true);
+
+
         die(json_encode($result));
     }
     else
