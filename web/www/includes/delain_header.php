@@ -199,7 +199,7 @@ require 'prepend.php';
 // chemins du jeu
 
 define('CHEMIN', G_CHE);
-/*
+
 if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
 {
     $type_flux = 'https://';
@@ -208,9 +208,9 @@ else
 {
     $type_flux = 'http://';
 }
-*/
+
 // on force tout en https
-$type_flux = 'https://';
+//$type_flux = 'https://';
 
 /**
  * Autochargement des classes manquantes
