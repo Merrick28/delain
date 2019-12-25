@@ -43,8 +43,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     // on récupère les variables json
     $inputJSON = file_get_contents('php://input');
     $input     = json_decode($inputJSON, TRUE);
+
+    if(!isset($input))
+    {
+        header('HTTP/1.0 403 Forbidden');
+        die('Pas de token.');
+    }
+
+    if(!isset($input['login']))
+    {
+        header('HTTP/1.0 403 Forbidden');
+        die('Pas de login.');
+    }
+
+    if(!isset($input['password']))
+    {
+        header('HTTP/1.0 403 Forbidden');
+        die('Pas de password.');
+    }
+
     $login     = $input['login'];
     $password  = $input['password'];
+
+
 
     $compte = new compte;
     if ($compte->getByLoginPassword($login, $password))

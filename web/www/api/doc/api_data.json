@@ -89,5 +89,85 @@
     },
     "filename": "./auth.php",
     "groupTitle": "Auth"
+  },
+  {
+    "version": "2.0.0",
+    "sampleRequest": [
+      {
+        "url": "https://www.jdr-delain.net/api/v2/compte/"
+      }
+    ],
+    "type": "get",
+    "url": "/compte/",
+    "title": "retourne les détails du compte",
+    "name": "CompteDetail",
+    "group": "Compte",
+    "description": "<p>Permet de demander le détail du compte</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "X-delain-auth",
+            "description": "<p>Token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"X-delain-auth\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "403": [
+          {
+            "group": "403",
+            "optional": false,
+            "field": "NoToken",
+            "description": "<p>Token non transmis</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "TokenNotFound",
+            "description": "<p>Token non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "AccountNotFound",
+            "description": "<p>Compte non trouvé dans la base</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "Tableau",
+            "description": "<p>des données</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"compte\": \"2\",\n  \"token\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./compte.php",
+    "groupTitle": "Compte"
   }
 ]
