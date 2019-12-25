@@ -93,7 +93,9 @@ final class callapiTest extends TestCase
     {
         $callapi = new callapi();
         $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET',$token);
+        print_r($test[1]);
         $this->assertEquals($test[0]['http_code'],200);
+
 
     }
 
