@@ -93,9 +93,19 @@ final class callapiTest extends TestCase
     {
         $callapi = new callapi();
         $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET',$token);
-        print_r($test[1]);
         $this->assertEquals($test[0]['http_code'],200);
-
+    }
+    /**
+     * @depends testLoginOk
+     */
+    public function testDeleteToken($token)
+    {
+        $callapi = new callapi();
+        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','DELETE',$token);
+        print_r($test);
+        $this->assertEquals($test[0]['http_code'],200);
+        $auth_token = new auth_token();
+        $this->assertFalse($auth_token->charge($token));
 
     }
 

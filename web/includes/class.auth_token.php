@@ -87,6 +87,22 @@ class auth_token
     }
 
     /**
+     * Deletes a token
+     * @return bool
+     * @throws Exception
+     */
+    function delete()
+    {
+        $pdo = new bddpdo;
+        $req = "delete from auth_token where at_token = :token";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":token"     => $this->at_token
+                              ), $stmt);
+        return true;
+    }
+
+    /**
      * Retourne un tableau de tous les enregistrements
      * @return \auth_token
      * @global bdd_mysql $pdo

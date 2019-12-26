@@ -34,36 +34,11 @@ ob_start();
  */
 
 // on commence par rechercher le compte
-$headers = getallheaders();
-if (!isset($headers['X-delain-auth']))
-{
-    header('HTTP/1.0 403 NoToken');
-    die('Token non transmis');
-}
 
-$UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
-if(!preg_match($UUIDv4, $headers['X-delain-auth']))
-{
-    {
-        header('HTTP/1.0 403 NoToken');
-        die('Token non UUID');
-    }
-}
+$api = new callapi();
+$test_api = $api->verifyCall();
 
-$auth_token = new auth_token();
-
-if (!$auth_token->charge($headers['X-delain-auth']))
-{
-    header('HTTP/1.0 403 TokenNotFound');
-    die('Token non trouvé');
-}
-
-$compte = new compte;
-if (!$compte->charge($auth_token->at_compt_cod))
-{
-    header('HTTP/1.0 403 AccountNotFound');
-    die('Compte non trouvé');
-}
+$compte = $test_api['compte'];
 
 $compt_cod = $compte->compt_cod;
 

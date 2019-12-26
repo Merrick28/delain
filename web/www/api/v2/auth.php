@@ -87,6 +87,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         die('Authentification échouée.');
     }
 }
+if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
+{
+    $api = new callapi();
+    $test_api = $api->verifyCall();
+
+    $auth_token = $test_api['token'];
+    $auth_token->delete();
+
+
+}
 header('HTTP/1.0 405 Method Not Allowed');
 die('Méthode non autorisée.');
 
