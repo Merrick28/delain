@@ -129,6 +129,14 @@ class news
         return $retour;
     }
 
+    function delete()
+    {
+        $pdo  = new bddpdo;
+        $req  = "delete from news where news_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($code), $stmt);
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

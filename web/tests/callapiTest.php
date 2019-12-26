@@ -8,9 +8,21 @@ require_once ('delain_header.php');
 
 use PHPUnit\Framework\TestCase;
 
-final class callapiTest extends TestCase
+class callapiTest extends TestCase
 {
-    var $token;
+    public static function tearDownAfterClass(): void
+    {
+        // on efface les news
+        $news = new news;
+        $tabnews = $news->getAll();
+        foreach($tabnews as $mynew)
+        {
+            $news->charge($mynew->news_cod);
+            $news->delete();
+        }
+    }
+
+
     /******************************
      * Test AUTH
      */
@@ -98,16 +110,46 @@ final class callapiTest extends TestCase
     /**
      * @depends testLoginOk
      */
-    public function testDeleteToken($token)
+    public function testDeleteToken($token): void
     {
         $callapi = new callapi();
         $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','DELETE',$token);
         $this->assertEquals($test[0]['http_code'],200);
         $this->assertEquals($test[1],'Token supprimé');
-        //$auth_token = new auth_token();
-        //$temp = $auth_token->charge($token);
-        //$this->assertFalse($temp);
+        $auth_token = new auth_token();
+        $temp = $auth_token->charge($token);
+        $this->assertFalse($temp);
+    }
 
+    public function testInsertNews()
+    {
+        // on s'assure qu'il y ait des données
+        $news = new news;
+        for($i=1;$i<10;$i++)
+        {
+            $news->news_titre = "Titre " . $i;
+            $news->news_auteur = "Merrick";
+            $news->news_texte = "Texte de la news n°" . $i;
+            $news->news_mail_auteur = "merrick@jdr-delain.net";
+            $news->stocke(true);
+        }
+        $callapi = new callapi();
+        $test = $callapi->call('http://172.17.0.1:9090/api/v2/news','GET');
+        $test = json_decode($test[1],true);
+        $this->assertCount(5,$test);
+    }
+    public function testGetNews()
+    {
+        $callapi = new callapi();
+        $test = $callapi->call('http://172.17.0.1:9090/api/v2/news','GET');
+
+        $this->assertEquals($test[0]['http_code'],200);
+        $tabnews = json_decode($test[1],true);
+        print_r($tabnews);
+        foreach($tabnews as $val)
+        {
+            $this->assertIsInt($val['news_cod']);
+        }
     }
 
 }

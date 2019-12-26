@@ -94,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
  * @apiError (403) NoToken Token non transmis
  * @apiError (403) TokenNotFound Token non trouvé dans la base
  * @apiError (403) AccountNotFound Compte non trouvé dans la base
- * @apiError (403) Token non UUID Le token n'est pas un UUID
+ * @apiError (403) TokenNonUUID Le token n'est pas un UUID
  *
  */
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
