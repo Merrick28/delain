@@ -28,6 +28,13 @@ class callapi
                     curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
                 }
                 break;
+            case "DELETE":
+                curl_setopt($curl, CURLOPT_CUSTOMREQUEST, "DELETE");
+                if ($data)
+                {
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                }
+                break;
             default:
                 if ($data)
                 {

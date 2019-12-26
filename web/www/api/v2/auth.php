@@ -87,6 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         die('Authentification échouée.');
     }
 }
+
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
 {
     $api = new callapi();
@@ -94,6 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
 
     $auth_token = $test_api['token'];
     $auth_token->delete();
+    die('Token supprimé');
 
 
 }

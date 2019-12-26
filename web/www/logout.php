@@ -10,6 +10,8 @@ if($normal_auth)
     $myAuth->logout();
 }
 
+// on suprri
+
 header('Location: ' . $type_flux . G_URL);
 
 

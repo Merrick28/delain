@@ -102,10 +102,11 @@ final class callapiTest extends TestCase
     {
         $callapi = new callapi();
         $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','DELETE',$token);
-        print_r($test);
         $this->assertEquals($test[0]['http_code'],200);
-        $auth_token = new auth_token();
-        $this->assertFalse($auth_token->charge($token));
+        $this->assertEquals($test[1],'Token supprimé');
+        //$auth_token = new auth_token();
+        //$temp = $auth_token->charge($token);
+        //$this->assertFalse($temp);
 
     }
 
