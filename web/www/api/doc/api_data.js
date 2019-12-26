@@ -4,9 +4,6 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://www.jdr-delain.net/api/v2/auth/"
-      },
-      {
-        "url": "https://www.jdr-delain.net/api/v2/auth/"
       }
     ],
     "type": "delete",
@@ -15,6 +12,61 @@ define({ "api": [
     "name": "deleteToken",
     "group": "Auth",
     "description": "<p>Supprime le token</p>",
+    "header": {
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"X-delain-auth\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "403": [
+          {
+            "group": "403",
+            "optional": false,
+            "field": "NoToken",
+            "description": "<p>Token non transmis</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "TokenNotFound",
+            "description": "<p>Token non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "AccountNotFound",
+            "description": "<p>Compte non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>non UUID Le token n'est pas un UUID</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./auth.php",
+    "groupTitle": "Auth"
+  },
+  {
+    "version": "2.0.0",
+    "sampleRequest": [
+      {
+        "url": "https://www.jdr-delain.net/api/v2/auth/"
+      }
+    ],
+    "type": "post",
+    "url": "/auth/",
+    "title": "Request a new token",
+    "name": "requestToken",
+    "group": "Auth",
+    "description": "<p>Permet de demander un token d'identification qu'il faudra faire suivre pour les prochaines demandes</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -48,11 +100,6 @@ define({ "api": [
           "title": "Header-Example:",
           "content": "{\n  \"Content-type\": \"application/json\"\n}",
           "type": "json"
-        },
-        {
-          "title": "Header-Example:",
-          "content": "{\n  \"X-delain-auth\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
-          "type": "json"
         }
       ]
     },
@@ -64,30 +111,6 @@ define({ "api": [
             "optional": false,
             "field": "FailedAuth",
             "description": "<p>Authentification échouée</p>"
-          },
-          {
-            "group": "403",
-            "optional": false,
-            "field": "NoToken",
-            "description": "<p>Token non transmis</p>"
-          },
-          {
-            "group": "403",
-            "optional": false,
-            "field": "TokenNotFound",
-            "description": "<p>Token non trouvé dans la base</p>"
-          },
-          {
-            "group": "403",
-            "optional": false,
-            "field": "AccountNotFound",
-            "description": "<p>Compte non trouvé dans la base</p>"
-          },
-          {
-            "group": "403",
-            "optional": false,
-            "field": "Token",
-            "description": "<p>non UUID Le token n'est pas un UUID</p>"
           }
         ]
       }

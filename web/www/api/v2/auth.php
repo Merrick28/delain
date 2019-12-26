@@ -28,21 +28,8 @@
  *       "compte": "2",
  *       "token": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
  *     }
- * @apiSampleRequest https://www.jdr-delain.net/api/v2/auth/
- * @api {delete} /auth/ Deletes an existing token
- * @apiName deleteToken
- * @apiGroup Auth
- * @apiDescription Supprime le token
- * @apiHeaderExample {json} Header-Example:
- *     {
- *       "X-delain-auth": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
- *     }
- * @apiError (403) NoToken Token non transmis
- * @apiError (403) TokenNotFound Token non trouvé dans la base
- * @apiError (403) AccountNotFound Compte non trouvé dans la base
- * @apiError (403) Token non UUID Le token n'est pas un UUID
- *
  */
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -93,7 +80,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
         die('Authentification échouée.');
     }
 }
-
+/**
+ * @apiVersion 2.0.0
+ * @apiSampleRequest https://www.jdr-delain.net/api/v2/auth/
+ * @api {delete} /auth/ Deletes an existing token
+ * @apiName deleteToken
+ * @apiGroup Auth
+ * @apiDescription Supprime le token
+ * @apiHeaderExample {json} Header-Example:
+ *     {
+ *       "X-delain-auth": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
+ *     }
+ * @apiError (403) NoToken Token non transmis
+ * @apiError (403) TokenNotFound Token non trouvé dans la base
+ * @apiError (403) AccountNotFound Compte non trouvé dans la base
+ * @apiError (403) Token non UUID Le token n'est pas un UUID
+ *
+ */
 if ($_SERVER['REQUEST_METHOD'] == 'DELETE')
 {
     $api = new callapi();
