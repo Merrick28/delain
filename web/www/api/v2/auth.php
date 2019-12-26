@@ -3,39 +3,45 @@
  * @apiVersion 2.0.0
  *
  * @apiSampleRequest https://www.jdr-delain.net/api/v2/auth/
- *
  * @api {post} /auth/ Request a new token
  * @apiName requestToken
  * @apiGroup Auth
- *
- * * @apiDescription Permet de demander un token d'identification
+ * @apiDescription Permet de demander un token d'identification
  * qu'il faudra faire suivre pour les prochaines demandes
- *
  * @apiParam {String} login Login du compte
  * @apiParam {String} password Password du compte
- *
  * @apiParamExample {json} Request-Example:
  *     {
  *       "login": "monlogin",
  *       "password": "monpassword"
  *     }
- *
  * @apiHeaderExample {json} Header-Example:
  *     {
  *       "Content-type": "application/json"
  *     }
- *
  *  @apiError (403) FailedAuth Authentification échouée
- *
  * @apiSuccess {String} compte Numéro du compte
  * @apiSuccess {String} token  Token à garder
- *
- *  * @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "compte": "2",
  *       "token": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
  *     }
+ * @apiSampleRequest https://www.jdr-delain.net/api/v2/auth/
+ * @api {delete} /auth/ Deletes an existing token
+ * @apiName deleteToken
+ * @apiGroup Auth
+ * @apiDescription Supprime le token
+ * @apiHeaderExample {json} Header-Example:
+ *     {
+ *       "X-delain-auth": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
+ *     }
+ * @apiError (403) NoToken Token non transmis
+ * @apiError (403) TokenNotFound Token non trouvé dans la base
+ * @apiError (403) AccountNotFound Compte non trouvé dans la base
+ * @apiError (403) Token non UUID Le token n'est pas un UUID
+ *
  */
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')

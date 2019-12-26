@@ -1,3 +1,4 @@
 .idea
 shell/ia_shell.sh
 doc
+/.phpunit.result.cache

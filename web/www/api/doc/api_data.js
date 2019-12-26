@@ -4,14 +4,17 @@ define({ "api": [
     "sampleRequest": [
       {
         "url": "https://www.jdr-delain.net/api/v2/auth/"
+      },
+      {
+        "url": "https://www.jdr-delain.net/api/v2/auth/"
       }
     ],
-    "type": "post",
+    "type": "delete",
     "url": "/auth/",
-    "title": "Request a new token",
-    "name": "requestToken",
+    "title": "Deletes an existing token",
+    "name": "deleteToken",
     "group": "Auth",
-    "description": "<p>Permet de demander un token d'identification qu'il faudra faire suivre pour les prochaines demandes</p>",
+    "description": "<p>Supprime le token</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -45,6 +48,11 @@ define({ "api": [
           "title": "Header-Example:",
           "content": "{\n  \"Content-type\": \"application/json\"\n}",
           "type": "json"
+        },
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"X-delain-auth\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
+          "type": "json"
         }
       ]
     },
@@ -56,6 +64,30 @@ define({ "api": [
             "optional": false,
             "field": "FailedAuth",
             "description": "<p>Authentification échouée</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "NoToken",
+            "description": "<p>Token non transmis</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "TokenNotFound",
+            "description": "<p>Token non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "AccountNotFound",
+            "description": "<p>Compte non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>non UUID Le token n'est pas un UUID</p>"
           }
         ]
       }
@@ -143,6 +175,12 @@ define({ "api": [
             "optional": false,
             "field": "AccountNotFound",
             "description": "<p>Compte non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "Token",
+            "description": "<p>non UUID Le token n'est pas un UUID</p>"
           }
         ]
       }
