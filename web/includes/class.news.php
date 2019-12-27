@@ -134,7 +134,7 @@ class news
         $pdo  = new bddpdo;
         $req  = "delete from news where news_cod = ?";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($code), $stmt);
+        $stmt = $pdo->execute(array($this->news_cod), $stmt);
     }
 
     public function __call($name, $arguments)

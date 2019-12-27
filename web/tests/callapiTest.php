@@ -10,6 +10,26 @@ use PHPUnit\Framework\TestCase;
 
 class callapiTest extends TestCase
 {
+
+    public static function setUpBeforeClass(): void
+    {
+      if(defined('SERVER_PROD'))
+      {
+         if(SERVER_PROD)
+         {
+           die('Pas de tests unitaires en prod !');
+         }
+         $news = new news;
+        for($i=1;$i<10;$i++)
+        {
+            $news->news_titre = "Titre " . $i;
+            $news->news_auteur = "Merrick";
+            $news->news_texte = "Texte de la news n°" . $i;
+            $news->news_mail_auteur = "merrick@jdr-delain.net";
+            $news->stocke(true);
+        }
+      }
+    }
     public static function tearDownAfterClass(): void
     {
         // on efface les news
@@ -18,7 +38,7 @@ class callapiTest extends TestCase
         foreach($tabnews as $mynew)
         {
             $news->charge($mynew->news_cod);
-            $news->delete();
+              $news->delete();
         }
     }
 
@@ -30,7 +50,7 @@ class callapiTest extends TestCase
     public function testAuthNoToken(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','POST','');
+        $test = $callapi->call(API_URL.'/auth','POST','');
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Pas de token.');
     }
@@ -38,7 +58,7 @@ class callapiTest extends TestCase
     public function testNoLogin(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','POST','',array('password'=>'admin'));
+        $test = $callapi->call(API_URL.'/auth','POST','',array('password'=>'admin'));
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Pas de login.');
     }
@@ -46,7 +66,7 @@ class callapiTest extends TestCase
     public function testNoPassword(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','POST','',array('login'=>'Admin'));
+        $test = $callapi->call(API_URL.'/auth','POST','',array('login'=>'Admin'));
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Pas de password.');
     }
@@ -54,7 +74,7 @@ class callapiTest extends TestCase
     public function testWrongLogin(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','POST','',array('login'=>'Admin','password' => 'admin2'));
+        $test = $callapi->call(API_URL.'/auth','POST','',array('login'=>'Admin','password' => 'admin2'));
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Authentification échouée.');
     }
@@ -62,7 +82,7 @@ class callapiTest extends TestCase
     public function testLoginOk()
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','POST','',array('login'=>'Admin','password' => 'admin'));
+        $test = $callapi->call(API_URL.'/auth','POST','',array('login'=>'Admin','password' => 'admin'));
         $this->assertEquals($test[0]['http_code'],200);
         $json = $test[1];
         $json = json_decode($json,true);
@@ -77,7 +97,7 @@ class callapiTest extends TestCase
     public function testCompteNoToken(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET','');
+        $test = $callapi->call(API_URL.'/compte','GET','');
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Token non transmis');
     }
@@ -85,7 +105,7 @@ class callapiTest extends TestCase
     public function testCompteWithMalformedToken(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET','123');
+        $test = $callapi->call(API_URL.'/compte','GET','123');
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Token non UUID');
     }
@@ -93,7 +113,7 @@ class callapiTest extends TestCase
     public function testCompteWithWrongToken(): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET','d5f60c54-2aac-4074-b2bb-cbedebb396b8');
+        $test = $callapi->call(API_URL.'/compte','GET','d5f60c54-2aac-4074-b2bb-cbedebb396b8');
         $this->assertEquals($test[0]['http_code'],403);
         $this->assertEquals($test[1],'Token non trouvé');
     }
@@ -104,7 +124,7 @@ class callapiTest extends TestCase
     public function testCompteWithGoodToken($token): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/compte','GET',$token);
+        $test = $callapi->call(API_URL.'/compte','GET',$token);
         $this->assertEquals($test[0]['http_code'],200);
     }
     /**
@@ -113,7 +133,7 @@ class callapiTest extends TestCase
     public function testDeleteToken($token): void
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/auth','DELETE',$token);
+        $test = $callapi->call(API_URL.'/auth','DELETE',$token);
         $this->assertEquals($test[0]['http_code'],200);
         $this->assertEquals($test[1],'Token supprimé');
         $auth_token = new auth_token();
@@ -123,29 +143,18 @@ class callapiTest extends TestCase
 
     public function testInsertNews()
     {
-        // on s'assure qu'il y ait des données
-        $news = new news;
-        for($i=1;$i<10;$i++)
-        {
-            $news->news_titre = "Titre " . $i;
-            $news->news_auteur = "Merrick";
-            $news->news_texte = "Texte de la news n°" . $i;
-            $news->news_mail_auteur = "merrick@jdr-delain.net";
-            $news->stocke(true);
-        }
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/news','GET');
+        $test = $callapi->call(API_URL.'/news','GET');
         $test = json_decode($test[1],true);
         $this->assertCount(5,$test);
     }
     public function testGetNews()
     {
         $callapi = new callapi();
-        $test = $callapi->call('http://172.17.0.1:9090/api/v2/news','GET');
+        $test = $callapi->call(API_URL.'/news','GET');
 
         $this->assertEquals($test[0]['http_code'],200);
         $tabnews = json_decode($test[1],true);
-        print_r($tabnews);
         foreach($tabnews as $val)
         {
             $this->assertIsInt($val['news_cod']);
