@@ -208,6 +208,10 @@ else
 {
     $type_flux = 'http://';
 }
+if(SERVER_PROD)
+{
+    $type_flux = 'https://';
+}
 
 // on force tout en https
 //$type_flux = 'https://';
