@@ -3,6 +3,9 @@
 
 class callapi
 {
+    var $http_response;
+    var $content;
+
     function call($url, $method = 'GET', $token = '', $data = '')
     {
         $curl = curl_init();
@@ -57,14 +60,21 @@ class callapi
         $result = curl_exec($curl);
         if(curl_errno($curl))
         {
-            return array(false,curl_errno($curl));
+            $this->http_response = 0;
+            $this->content = curl_errno($curl);
+            return false;
         }
 
+
         $return_curl = curl_getinfo($curl);
+        $this->http_response = $return_curl['http_code'];
+        $this->content = $result;
+        if($this->http_response == 200)
+        {
+            return true;
+        }
+        return false;
 
-
-        curl_close($curl);
-        return array($return_curl,$result);
     }
 
 

@@ -56,46 +56,49 @@ class callapiTest
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'POST', '');
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Pas de token.');
+        $this->assertFalse($test = $callapi->call(API_URL . '/auth', 'POST', ''));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Pas de token.');
     }
 
     public function testNoLogin()
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'POST', '', array('password' => 'admin'));
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Pas de login.');
+        $this->assertFalse($test = $callapi->call(API_URL . '/auth', 'POST', '', array('password' => 'admin')));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Pas de login.');
     }
 
     public function testNoPassword()
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin'));
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Pas de password.');
+        $this->assertFalse($test = $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin')));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Pas de password.');
+
     }
 
     public function testWrongLogin()
     : void
     {
-        $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin', 'password' => 'admin2'));
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Authentification échouée.');
+        $this->assertFalse($test =
+                               $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin', 'password' => 'admin2')));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Authentification échouée.');
     }
 
     public function testLoginOk()
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin', 'password' => 'admin'));
-        $this->assertEquals($test[0]['http_code'], 200);
-        $json = $test[1];
-        $json = json_decode($json, true);
-        $this->assertEquals($json['compte'], 2);
+
+        $this->assertTrue($test = $callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin', 'password'
+                                                                                              => 'admin')));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+
+        $json  = json_decode($callapi->content, true);
         $token = $json['token'];
         return $token;
 
@@ -108,27 +111,27 @@ class callapiTest
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/compte', 'GET', '');
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Token non transmis');
+        $this->assertFalse($test = $callapi->call(API_URL . '/compte', 'GET', ''));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Token non transmis');
     }
 
     public function testCompteWithMalformedToken()
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/compte', 'GET', '123');
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Token non UUID');
+        $this->assertFalse($test = $callapi->call(API_URL . '/compte', 'GET', '123'));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Token non UUID');
     }
 
     public function testCompteWithWrongToken()
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/compte', 'GET', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8');
-        $this->assertEquals($test[0]['http_code'], 403);
-        $this->assertEquals($test[1], 'Token non trouvé');
+        $this->assertFalse($test = $callapi->call(API_URL . '/compte', 'GET', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8'));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Token non trouvé');
     }
 
     /**
@@ -138,9 +141,12 @@ class callapiTest
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/compte', 'GET', $token);
-        $this->assertEquals($test[0]['http_code'], 200);
+
+        $this->assertTrue($test = $callapi->call(API_URL . '/compte', 'GET', $token));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
     }
+
 
     /**
      * @depends testLoginOk
@@ -149,9 +155,11 @@ class callapiTest
     : void
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/auth', 'DELETE', $token);
-        $this->assertEquals($test[0]['http_code'], 200);
-        $this->assertEquals($test[1], 'Token supprimé');
+        $this->assertTrue($test = $callapi->call(API_URL . '/auth', 'DELETE', $token));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertEquals($callapi->content, 'Token supprimé');
+        $this->assertJson($callapi->content);
+
         $auth_token = new auth_token();
         $temp       = $auth_token->charge($token);
         $this->assertFalse($temp);
@@ -160,22 +168,13 @@ class callapiTest
     public function testInsertNews()
     {
         $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/news', 'GET');
-        $test    = json_decode($test[1], true);
-        $this->assertCount(5, $test);
-    }
-
-    public function testGetNews()
-    {
-        $callapi = new callapi();
-        $test    = $callapi->call(API_URL . '/news', 'GET');
-
-        $this->assertEquals($test[0]['http_code'], 200);
-        $tabnews = json_decode($test[1], true);
+        $this->assertTrue($callapi->call(API_URL . '/news', 'GET'));
+        $this->assertJson($callapi->content);
+        $tabnews = json_decode($callapi->content, true);
+        $this->assertCount(5, $tabnews);
         foreach ($tabnews as $val)
         {
             $this->assertIsInt($val['news_cod']);
         }
     }
-
 }
