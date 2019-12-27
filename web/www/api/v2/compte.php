@@ -25,7 +25,7 @@ ob_start();
  *
  * @apiSuccess {json} Tableau des données
  *
- *  * @apiSuccessExample {json} Success-Response:
+ *  @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "compte": "2",

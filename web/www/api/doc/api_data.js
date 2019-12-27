@@ -45,8 +45,8 @@ define({ "api": [
           {
             "group": "403",
             "optional": false,
-            "field": "Token",
-            "description": "<p>non UUID Le token n'est pas un UUID</p>"
+            "field": "TokenNonUUID",
+            "description": "<p>Le token n'est pas un UUID</p>"
           }
         ]
       }
@@ -202,8 +202,8 @@ define({ "api": [
           {
             "group": "403",
             "optional": false,
-            "field": "Token",
-            "description": "<p>non UUID Le token n'est pas un UUID</p>"
+            "field": "TokenNonUUID",
+            "description": "<p>Le token n'est pas un UUID</p>"
           }
         ]
       }
@@ -230,5 +230,48 @@ define({ "api": [
     },
     "filename": "./compte.php",
     "groupTitle": "Compte"
+  },
+  {
+    "version": "2.0.0",
+    "sampleRequest": [
+      {
+        "url": "https://www.jdr-delain.net/api/v2/news/"
+      }
+    ],
+    "type": "get",
+    "url": "/news/",
+    "title": "Retourne les news",
+    "name": "news",
+    "group": "News",
+    "description": "<p>Permet de demander les news (par 5)</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": true,
+            "field": "start_news",
+            "defaultValue": "0",
+            "description": "<p>Numéro de la première news demandée pour pagination</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "Tableau",
+            "description": "<p>des données</p>"
+          }
+        ]
+      }
+    },
+    "filename": "./news.php",
+    "groupTitle": "News"
   }
 ] });
