@@ -2,7 +2,7 @@
 /**
  * @apiVersion 2.0.0
  *
- * @apiSampleRequest https://www.jdr-delain.net/api/v2/news/
+ * @apiSampleRequest https://jdr-delain.net/api/v2/news
  *
  * @api {get} /news/ Retourne les news
  * @apiName news

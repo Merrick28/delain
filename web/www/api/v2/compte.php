@@ -4,7 +4,7 @@ ob_start();
 /**
  * @apiVersion 2.0.0
  *
- * @apiSampleRequest https://www.jdr-delain.net/api/v2/compte/
+ * @apiSampleRequest https://jdr-delain.net/api/v2/compte
  *
  * @api {get} /compte/ retourne les détails du compte
  * @apiName CompteDetail

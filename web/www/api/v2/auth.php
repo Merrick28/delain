@@ -2,7 +2,7 @@
 /**
  * @apiVersion 2.0.0
  *
- * @apiSampleRequest https://www.jdr-delain.net/api/v2/auth/
+ * @apiSampleRequest https://jdr-delain.net/api/v2/auth
  * @api {post} /auth/ Request a new token
  * @apiName requestToken
  * @apiGroup Auth
