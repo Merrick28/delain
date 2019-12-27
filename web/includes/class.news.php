@@ -51,18 +51,17 @@ class news
     returning news_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":news_titre" => $this->news_titre,
-                ":news_texte" => $this->news_texte,
-                ":news_date" => $this->news_date,
-                ":news_auteur" => $this->news_auteur,
-                ":news_mail_auteur" => $this->news_mail_auteur,
-            ), $stmt);
+                                      ":news_titre"       => $this->news_titre,
+                                      ":news_texte"       => $this->news_texte,
+                                      ":news_date"        => $this->news_date,
+                                      ":news_auteur"      => $this->news_auteur,
+                                      ":news_mail_auteur" => $this->news_mail_auteur,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update news
                     set
@@ -73,13 +72,13 @@ class news
             news_mail_auteur = :news_mail_auteur                        where news_cod = :news_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":news_cod" => $this->news_cod,
-                ":news_titre" => $this->news_titre,
-                ":news_texte" => $this->news_texte,
-                ":news_date" => $this->news_date,
-                ":news_auteur" => $this->news_auteur,
-                ":news_mail_auteur" => $this->news_mail_auteur,
-            ), $stmt);
+                                      ":news_cod"         => $this->news_cod,
+                                      ":news_titre"       => $this->news_titre,
+                                      ":news_texte"       => $this->news_texte,
+                                      ":news_date"        => $this->news_date,
+                                      ":news_auteur"      => $this->news_auteur,
+                                      ":news_mail_auteur" => $this->news_mail_auteur,
+                                  ), $stmt);
         }
     }
 
@@ -161,8 +160,7 @@ class news
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6));
                 }
@@ -187,8 +185,8 @@ class news
         $retour    = array();
         $pdo       = new bddpdo;
         $recherche = "SELECT news_cod "
-            . "FROM news order by news_cod desc "
-            . "limit 5 offset ?";
+                     . "FROM news order by news_cod desc "
+                     . "limit 5 offset ?";
         $stmt      = $pdo->prepare($recherche);
         $stmt      = $pdo->execute(array($offset), $stmt);
         while ($result = $stmt->fetch())
