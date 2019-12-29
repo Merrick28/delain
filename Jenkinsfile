@@ -28,10 +28,10 @@ pipeline {
         }
 
     }
-    post {
-        always {
+    //post {
+    //    always {
             // Always cleanup after the build.
             //sh 'docker-compose -f docker-compose-tu.yml down'
-        }
-    }
+    //    }
+    //}
 }
