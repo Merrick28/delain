@@ -18,11 +18,7 @@ services:
     container_name: delain_dbtu
     networks:
       - delaintu
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 10s
-      retries: 60
+
   ###############################
   # Serveur web
   ###############################
@@ -33,9 +29,6 @@ services:
     container_name: webtu
     networks:
       - delaintu
-    depends_on:
-      delain_dbtu:
-        condition: service_healthy
 networks:
   delaintu:
     driver: bridge
