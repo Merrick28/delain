@@ -3,6 +3,11 @@ pipeline {
 
     stages {
         stage('Build') {
+            when {
+                not {
+                changelog '.*^\\[ci skip\\] .+$'
+                }
+            }
             steps {
 
                 // Print all the environment variables.
