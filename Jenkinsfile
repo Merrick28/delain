@@ -1,9 +1,15 @@
 pipeline {
-    agent { label 'hostinght2' }
+    agent { label 'master' }
 
     stages {
         stage('Build') {
             steps {
+                 when {
+                    // Only say hello if a "greeting" is requested
+                    expression { $GIT_COMMIT == 'greeting' }
+                    env.TEXT.contains("False")
+
+                }
                 // Print all the environment variables.
                 sh 'printenv'
                 sh 'echo $GIT_BRANCH'
