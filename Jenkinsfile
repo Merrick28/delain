@@ -31,7 +31,7 @@ pipeline {
     post {
         always {
             // Always cleanup after the build.
-            sh 'docker-compose -f web/docker/docker-compose-tu.yml down'
+            sh 'docker-compose -f docker-compose-tu.yml down'
         }
     }
 }
