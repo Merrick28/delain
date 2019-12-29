@@ -27,7 +27,6 @@ pipeline {
         always {
             // Always cleanup after the build.
             sh 'docker-compose -f web/docker/docker-compose.yml down'
-            sh 'rm .env'
         }
     }
 }
