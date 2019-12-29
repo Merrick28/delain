@@ -40,7 +40,7 @@ pipeline {
                 echo "Deploy to target"
 
             }
-
+        }
 
 
     }
