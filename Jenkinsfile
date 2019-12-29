@@ -10,7 +10,7 @@ pipeline {
                 sh 'echo $GIT_BRANCH'
                 sh 'echo $GIT_COMMIT'
                 echo 'Construction des images'
-                sh 'docker pull stephdw/delaintu'
+                sh 'docker pull delain/tests_unitaires'
                 sh 'docker-compose -f docker-compose-tu.yml build'
                 echo 'Arrêt des instances précédentes '
                 sh 'docker-compose -f docker-compose-tu.yml down --remove-orphans'
