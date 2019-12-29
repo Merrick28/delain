@@ -7,7 +7,7 @@ define('IMG_PATH',G_IMAGES);
 
 // connexion base de données
 define('SERVER_PROD',false); // if true, we'll use a service
-define('SERVER_HOST','delain_db');
+define('SERVER_HOST','delain_dbtu');
 define('SERVER_USERNAME','delain');
 define('SERVER_PASSWORD','mypassword');
 define('SERVER_DBNAME','delain');

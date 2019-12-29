@@ -1,0 +1,7 @@
+FROM stephdw/delaintu
+
+COPY ./ /home/delain/delain 
+COPY ./docker/conf.php /home/delain/delain/web/www/includes/conf.php
+
+
+

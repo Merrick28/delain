@@ -10,9 +10,10 @@ pipeline {
                 sh 'echo $GIT_BRANCH'
                 sh 'echo $GIT_COMMIT'
                 echo 'Construction des images'
-                sh 'cd web/docker && docker-compose build'
+                sh 'docker pull stephdw/delaintu'
+                sh 'cd docker && docker-compose -f docker-compose-tu.yml build'
                 echo 'Lancement du docker-compose'
-                sh 'docker-compose -f web/docker/docker-compose.yml up -d'
+                sh 'docker-compose -f web/docker/docker-compose-tu.yml up -d'
             }
         }
         stage('Test') {
@@ -26,7 +27,7 @@ pipeline {
     post {
         always {
             // Always cleanup after the build.
-            sh 'docker-compose -f web/docker/docker-compose.yml down'
+            sh 'docker-compose -f web/docker/docker-compose-tu.yml down'
         }
     }
 }

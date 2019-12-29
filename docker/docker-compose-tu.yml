@@ -1,0 +1,33 @@
+version: '3.1'
+
+services:
+  ############################
+  # Database
+  ############################
+  delain_dbtu:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_USER=delain
+      - POSTGRES_DB=delain
+    volumes:
+      - ../../sql_init:/docker-entrypoint-initdb.d
+      - ../../:/home/delain/delain
+      - ./conf.php:/home/delain/delain/web/www/includes/conf.php
+
+    container_name: delain_dbtu
+    networks:
+      - delaintu
+  ###############################
+  # Serveur web
+  ###############################
+  webtu:
+    build:
+      dockerfile: ../Dockerfile_launch
+    container_name: webtu
+    networks:
+      - delaintu
+networks:
+  delaintu:
+    driver: bridge
+ 
