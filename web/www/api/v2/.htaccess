@@ -1,0 +1,10 @@
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+RewriteEngine On
+
+# Authentification
+RewriteRule ^auth$ auth.php [L]
+RewriteRule ^compte$ compte.php [L]
+RewriteRule ^news$ news.php [L]
