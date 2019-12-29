@@ -1001,7 +1001,7 @@ if ($erreur == 0)
                     <input type='hidden' name='fonctions_annulees' id='fonctions_annulees' value=''/>
                     <input type='hidden' name='fonctions_existantes' id='fonctions_existantes' value=''/>
                     <div id="liste_fonctions"></div>
-                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet,1,3) as fonc_effet, case when substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
 						from fonction_specifique where fonc_gmon_cod = $gmon_cod";
                     $db->query($req);
                     while ($db->next_record())
@@ -1010,6 +1010,7 @@ if ($erreur == 0)
                         $fonc_type = $db->f('fonc_type');
                         $fonc_nom = $db->f('fonc_nom');
                         $fonc_effet = $db->f('fonc_effet');
+                        $fonc_cumulatif = $db->f('fonc_cumulatif');
                         $fonc_force = $db->f('fonc_force');
                         $fonc_duree = $db->f('fonc_duree');
                         $fonc_type_cible = $db->f('fonc_type_cible');
@@ -1018,7 +1019,7 @@ if ($erreur == 0)
                         $fonc_proba = $db->f('fonc_proba');
                         $fonc_message = $db->f('fonc_message');
                         echo "
-					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible');</script>";
+					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible');</script>";
                     }
                     ?>
                     <div style='clear: both;'>
