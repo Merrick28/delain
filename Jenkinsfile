@@ -11,9 +11,9 @@ pipeline {
                 sh 'echo $GIT_COMMIT'
                 echo 'Construction des images'
                 sh 'docker pull stephdw/delaintu'
-                sh 'cd docker && docker-compose -f docker-compose-tu.yml build'
+                sh 'docker-compose -f docker-compose-tu.yml build'
                 echo 'Lancement du docker-compose'
-                sh 'docker-compose -f web/docker/docker-compose-tu.yml up -d'
+                sh 'docker-compose -f docker-compose-tu.yml up -d'
             }
         }
         stage('Test') {
