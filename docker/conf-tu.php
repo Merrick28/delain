@@ -21,7 +21,7 @@ define('SMTP_PORT',25);
 define('STMP_USER','');
 define('STMP_PASSWORD','');
 
-define('API_URL', 'http://web/api/v2');
+define('API_URL', 'http://webtu/api/v2');
 
 define('DEBUG_TOKEN','a');
 define('DEBUG_MODE',true);

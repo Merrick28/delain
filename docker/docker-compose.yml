@@ -27,7 +27,7 @@ services:
   # Serveur web
   ###############################
   web:
-    image: stephdw/delaintu
+    image: delain/tests_unitaires
     ports:
       - 9090:80
     container_name: web
