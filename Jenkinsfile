@@ -12,7 +12,7 @@ pipeline {
                 echo 'Construction des images'
                 sh 'cd web/docker && docker-compose build'
                 echo 'Lancement du docker-compose'
-                sh 'docker-compose -f web/docker/docker-compose.yml up'
+                sh 'docker-compose -f web/docker/docker-compose.yml up -d'
             }
         }
         stage('Test') {

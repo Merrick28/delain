@@ -27,7 +27,7 @@ services:
   # Serveur web
   ###############################
   web:
-    build: ..
+    image: stephdw/delaintu
     ports:
       - 9090:80
     container_name: web
