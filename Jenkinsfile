@@ -19,20 +19,17 @@ pipeline {
             }
         }
         stage('Test') {
+            when {
+                not {
+                changelog '.*^\\[ci skip\\] .+$'
+                }
+            }
             steps {
-                result = sh (script: "git log -1 | grep '.*\\[ci skip\\].*'", returnStatus: true)
-                    if (result == 0) {
-                        env.CI_SKIP = "true"
-                        error "'[ci skip]' found in git commit message. Aborting."
-                    }
-                    else
-                    {
-                        echo "Wait for postgres to be up"
-                        sh 'docker exec webtu /home/delain/delain/web/tests/wait.sh'
-                        echo 'PHP Unit tests'
-                        sh 'web/tests/phpunit_docker-tu.sh'
-                    }
 
+                echo "Wait for postgres to be up"
+                sh 'docker exec webtu /home/delain/delain/web/tests/wait.sh'
+                echo 'PHP Unit tests'
+                sh 'web/tests/phpunit_docker-tu.sh'
             }
         }
         stage('Deploy')
