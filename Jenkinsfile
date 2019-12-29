@@ -31,12 +31,13 @@ pipeline {
                 echo 'PHP Unit tests'
                 sh 'web/tests/phpunit_docker-tu.sh'
             }
+            stage('Deploy')
+            {
+                when { branch 'master' }
+                echo "Deploy to target"
+            }
         }
-        stage('Deploy')
-        {
-            when { branch 'master' }
-            echo "Deploy to target"
-        }
+
 
     }
     post {
