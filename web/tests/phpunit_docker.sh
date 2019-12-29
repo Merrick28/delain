@@ -1,7 +1,3 @@
 #!/bin/bash
 # on attend la connection à postgres
-while ! nc -z delain_db 5432; do
-  sleep 10
-  echo "Waiting for postgres to be up"
-done
-docker exec webtu /home/delain/delain/web/vendor/bin/phpunit /home/delain/delain/web/tests/
+docker exec web /home/delain/delain/web/vendor/bin/phpunit /home/delain/delain/web/tests/

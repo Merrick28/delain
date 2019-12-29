@@ -20,6 +20,8 @@ pipeline {
         }
         stage('Test') {
             steps {
+                echo "Wait for postgres to be up"
+                sh 'docker exec webtu /home/delain/delain/web/tests/wait.sh'
                 echo 'PHP Unit tests'
                 sh 'web/tests/phpunit_docker-tu.sh'
             }
