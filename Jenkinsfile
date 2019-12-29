@@ -12,6 +12,8 @@ pipeline {
                 echo 'Construction des images'
                 sh 'docker pull stephdw/delaintu'
                 sh 'docker-compose -f docker-compose-tu.yml build'
+                echo 'Arrêt des instances précédentes '
+                sh 'docker-compose -f docker-compose-tu.yml down --remove-orphans'
                 echo 'Lancement du docker-compose'
                 sh 'docker-compose -f docker-compose-tu.yml up -d'
             }
@@ -19,7 +21,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'PHP Unit tests'
-                sh 'web/tests/phpunit_docker.sh'
+                sh 'web/tests/phpunit_docker-tu.sh'
             }
         }
 
