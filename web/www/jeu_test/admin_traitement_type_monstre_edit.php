@@ -330,6 +330,7 @@ switch ($methode) {
 					$fonc_type =         base_delain::format($_POST['declenchement_' . $numero]);
 					$fonc_nom =          base_delain::format($_POST['fonction_type_' . $numero]);
 					$fonc_effet =        !empty($_POST['fonc_effet' . $numero]) ? base_delain::format($_POST['fonc_effet' . $numero]) : '';
+                    if (isset($_POST['fonc_cumulatif' . $numero])) $fonc_effet = $fonc_effet.'+';
 					$fonc_force =        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
 					$fonc_duree =        !empty($_POST['fonc_duree' . $numero]) ? base_delain::format($_POST['fonc_duree' . $numero]) : '0';
 					$fonc_type_cible =   !empty($_POST['fonc_cible' . $numero]) ? base_delain::format($_POST['fonc_cible' . $numero]) : '';
@@ -373,6 +374,7 @@ switch ($methode) {
 				if (!in_array($fonc_cod, $fonctions_supprimees))
 				{
 					$fonc_effet =        !empty($_POST['fonc_effet' . $numero]) ? base_delain::format($_POST['fonc_effet' . $numero]) : '';
+					if (isset($_POST['fonc_cumulatif' . $numero])) $fonc_effet = $fonc_effet.'+';
 					$fonc_force =        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
 					$fonc_duree =        !empty($_POST['fonc_duree' . $numero]) ? base_delain::format($_POST['fonc_duree' . $numero]) : '0';
 					$fonc_type_cible =   !empty($_POST['fonc_cible' . $numero]) ? base_delain::format($_POST['fonc_cible' . $numero]) : '';
