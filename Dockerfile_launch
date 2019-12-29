@@ -1,7 +1,7 @@
 FROM stephdw/delaintu
 
 COPY ./ /home/delain/delain 
-COPY ./docker/conf.php /home/delain/delain/web/www/includes/conf.php
+COPY ./docker/conf-tu.php /home/delain/delain/web/www/includes/conf.php
 
 
 
