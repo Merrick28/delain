@@ -11,9 +11,9 @@ services:
       - POSTGRES_USER=delain
       - POSTGRES_DB=delain
     volumes:
-      - ../../sql_init:/docker-entrypoint-initdb.d
-      - ../../:/home/delain/delain
-      - ./conf.php:/home/delain/delain/web/www/includes/conf.php
+      - ./sql_init:/docker-entrypoint-initdb.d
+      - .:/home/delain/delain
+      - ./docker/conf-tu.php:/home/delain/delain/web/www/includes/conf.php
 
     container_name: delain_dbtu
     networks:
