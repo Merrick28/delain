@@ -24,6 +24,7 @@ services:
   webtu:
     build:
       dockerfile: ../Dockerfile_launch
+      context: ../
     container_name: webtu
     networks:
       - delaintu
