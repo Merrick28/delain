@@ -11,8 +11,8 @@ services:
       - POSTGRES_USER=delain
       - POSTGRES_DB=delain
     volumes:
-      - ../../sql_init:/docker-entrypoint-initdb.d
-      - ../../:/home/delain/delain
+      - ../sql_init:/docker-entrypoint-initdb.d
+      - ../:/home/delain/delain
       - ./conf.php:/home/delain/delain/web/www/includes/conf.php
       # Décommentez la ligne ci dessous si vous voulez
       # garder une database persistante
@@ -32,7 +32,7 @@ services:
       - 9090:80
     container_name: web
     volumes:
-      - ../../:/home/delain/delain
+      - ../:/home/delain/delain
     networks:
       - delain
   ################################
