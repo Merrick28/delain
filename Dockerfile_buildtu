@@ -7,7 +7,7 @@ COPY ./docker/000-default.conf /etc/apache2/sites-available
 
 RUN chown -R delain: /etc/apache2/sites-available && \
 apt-get update && \
-apt-get install -y libpq-dev libz-dev libmemcached-dev uuid-runtime git && \
+apt-get install -y libpq-dev libz-dev libmemcached-dev uuid-runtime git netcat && \
 docker-php-ext-install pdo pdo_pgsql pgsql && \
 pecl install memcached && \
 docker-php-ext-enable memcached && \

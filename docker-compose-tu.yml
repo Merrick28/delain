@@ -4,7 +4,7 @@ services:
   ############################
   # Database
   ############################
-  delain_dbtu:
+  delain_db:
     image: postgres
     environment:
       - POSTGRES_PASSWORD=mypassword
@@ -15,17 +15,17 @@ services:
       - ../../:/home/delain/delain
       - ./conf.php:/home/delain/delain/web/www/includes/conf.php
 
-    container_name: delain_dbtu
+    container_name: delain_db
     networks:
       - delaintu
   ###############################
   # Serveur web
   ###############################
-  webtu:
+  web:
     build:
       dockerfile: ./Dockerfile_launch
       context: .
-    container_name: webtu
+    container_name: web
     networks:
       - delaintu
 networks:
