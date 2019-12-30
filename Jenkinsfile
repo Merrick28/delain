@@ -24,6 +24,7 @@ pipeline {
                 sh 'docker-compose -f docker-compose-tu.yml up -d'
             }
         }
+
         stage('Test') {
             agent { label 'ht1' }
             when {
