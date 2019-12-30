@@ -1,8 +1,9 @@
 pipeline {
-    agent { label 'ht1' }
+    agent none
 
     stages {
         stage('Build') {
+            agent { label 'ht1' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -24,6 +25,7 @@ pipeline {
             }
         }
         stage('Test') {
+            agent { label 'ht1' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -40,9 +42,17 @@ pipeline {
         }
         stage('Deploy')
         {
+            agent { label 'backenddelain' }
             when { branch 'master' }
             steps {
-                echo "Deploy to target"
+                echo "Git pull"
+                sh "cd /home/delain/delain && git pull"
+                echo "Rights to delain"
+                sh "cd /home/delain && chown -R delain: delain"
+                echo "Empty cache"
+                sh "rm -rf /home/delain/delain/cache/*"
+                echo "Livraisons SQL"
+                sh "su - delain  /home/delain/delain/shell/livraisons.sh"
 
             }
         }
