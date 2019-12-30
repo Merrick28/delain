@@ -60,8 +60,9 @@ pipeline {
 
     }
     post {
-        agent { label 'ht1' }
+
         always {
+            agent { label 'ht1' }
             // Always cleanup after the build.
             sh 'docker-compose -f docker-compose-tu.yml down'
         }
