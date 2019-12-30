@@ -20,6 +20,7 @@ pipeline {
                 sh 'docker-compose -f docker-compose-tu.yml build'
                 echo 'Arrêt des instances précédentes '
                 sh 'docker-compose -f docker-compose-tu.yml down --remove-orphans'
+                sh 'docker rm -f webtu delain_dbtu'
                 echo 'Lancement du docker-compose'
                 sh 'docker-compose -f docker-compose-tu.yml up -d'
             }
