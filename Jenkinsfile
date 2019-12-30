@@ -70,6 +70,9 @@ pipeline {
                                   charset: 'UTF-8',
                                   mimeType: 'text/html',
                                   from: 'stephane@sdewitte.net'
+                     slackSend channel: '#general',
+                                       color: 'red',
+                                       message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
                  }
          changed {
           mail to: 'stephane.dewitte@gmail.com',

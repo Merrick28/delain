@@ -23,10 +23,35 @@ $gmon = new monstre_generique;
 $gmon->getRandom();
 
 
-$news       = new news();
-$start_news = $news->clean_start_news();
+$news       = new news;
+$numberNews = $news->getNumber();
 
-$callapi = new callapi();
+
+
+if (!isset($_REQUEST['start_news']))
+{
+    $start_news = 0;
+}
+else
+{
+    $start_news = (int)$_REQUEST['start_news'];
+}
+if ($start_news < 0)
+{
+    $start_news = 0;
+}
+/*
+// si tentative de hack, on affiche la page par défaut
+// ça évite les logs, et ça permet d'afficher quand
+// même de la pub :-)
+if ( (int) $start_news !== $start_news )
+{
+    $start_news = 0;
+}
+*/
+$tabNews = $news->getNews($start_news);
+
+/*$callapi = new callapi();
 if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
                    'GET'))
 {
@@ -34,7 +59,7 @@ if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
 } else
 {
     die('Erreur sur appel API ' . $callapi->content);
-}
+}*/
 
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
