@@ -46,9 +46,7 @@ pipeline {
             when { branch 'master' }
             steps {
                 echo "Git pull"
-                sh "cd /home/delain/delain && git pull"
-                echo "Rights to delain"
-                sh "cd /home/delain && chown -R delain: delain"
+                sh "su - delain -c 'cd /home/delain/delain && git pull'"
                 echo "Empty cache"
                 sh "rm -rf /home/delain/delain/cache/*"
                 echo "Livraisons SQL"
