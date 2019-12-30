@@ -77,7 +77,7 @@ class parametres
     }
 
     /**
-     * @param $code Code du parametre à obtenir
+     * @param integer $code Code du parametre à obtenir
      * @param bool $refresh True pour forcer le refresh
      * @return bool|mixed
      */

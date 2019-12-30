@@ -26,6 +26,25 @@ class news
     }
 
     /**
+     * @return int
+     */
+    function clean_start_news()
+    {
+        if (!isset($_REQUEST['start_news']))
+        {
+            $start_news = 0;
+        } else
+        {
+            $start_news = (int)$_REQUEST['start_news'];
+        }
+        if ($start_news < 0)
+        {
+            $start_news = 0;
+        }
+        return $start_news;
+    }
+
+    /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
@@ -84,9 +103,10 @@ class news
 
     /**
      * Charge dans la classe un enregistrement de news
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @throws Exception
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -110,7 +130,7 @@ class news
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \news
+     * @return news[]
      */
     function getAll()
     {

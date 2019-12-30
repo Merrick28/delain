@@ -23,19 +23,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $numberNews = $news->getNumber();
 
 
-    if (!isset($_REQUEST['start_news']))
-    {
-        $start_news = 0;
-    } else
-    {
-        $start_news = (int)$_REQUEST['start_news'];
-    }
-    if ($start_news < 0)
-    {
-        $start_news = 0;
-    }
-    $tabNews = $news->getNews($start_news);
-    echo json_encode($tabNews);
+    $start_news = $news->clean_start_news();
+    $tabNews    = $news->getNews($start_news);
+    $numberNews = $news->getNumber();
+    echo json_encode(array("numberNews" => $numberNews, "news" => $tabNews));
     die('');
 }
 header('HTTP/1.0 405 Method Not Allowed');

@@ -40,11 +40,11 @@ class callapiTest
         // on efface les news
         $news    = new news;
         $tabnews = $news->getAll();
-        foreach ($tabnews as $mynew)
+        /*foreach ($tabnews as $mynew)
         {
             $news->charge($mynew->news_cod);
             $news->delete();
-        }
+        }*/
     }
 
 
@@ -164,14 +164,15 @@ class callapiTest
         $this->assertFalse($temp);
     }
 
-    public function testInsertNews()
+    public function testGettNews()
     {
         $callapi = new callapi();
         $this->assertTrue($callapi->call(API_URL . '/news', 'GET'));
         $this->assertJson($callapi->content);
         $tabnews = json_decode($callapi->content, true);
-        $this->assertCount(5, $tabnews);
-        foreach ($tabnews as $val)
+        $this->assertCount(5, $tabnews['news']);
+        $this->assertIsInt($tabnews['numberNews']);
+        foreach ($tabnews['news'] as $val)
         {
             $this->assertIsInt($val['news_cod']);
         }

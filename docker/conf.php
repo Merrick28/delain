@@ -1,8 +1,8 @@
 <?php
 
-define('G_URL','delain.sdewitte.net/'); // soit finir par un /
+define('G_URL','localhost:9090/'); // soit finir par un /
 define('G_CHE',__DIR__ . '/../'); // NE PAS TOUCHER
-define('G_IMAGES','https://delain.sdewitte.net/images/');
+define('G_IMAGES','http://localhost:9090/images/');
 define('IMG_PATH',G_IMAGES);
 
 // connexion base de données
@@ -21,4 +21,7 @@ define('SMTP_PORT',25);
 define('STMP_USER','');
 define('STMP_PASSWORD','');
 
-define('DOCKER',true);
+define('API_URL', 'http://web/api/v2');
+
+define('DEBUG_TOKEN','a');
+define('DEBUG_MODE',true);
