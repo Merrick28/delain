@@ -2,7 +2,14 @@
 $nouvelle_version = 1;
 
 
-//$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\PDO());
+// déjà, on rejette les false news id
+/*if(isset($_REQUEST['start_news']))
+{
+    if(!is_int($_REQUEST['start_news']))
+    {
+        die('test');
+    }
+}*/
 
 // par défaut, on n'est pas authentifié
 $verif_auth = false;
@@ -15,47 +22,38 @@ $param = new parametres;
 $gmon = new monstre_generique;
 $gmon->getRandom();
 
-// chargement des news
-$news       = new news;
-$numberNews = $news->getNumber();
 
+$news       = new news();
+$start_news = $news->clean_start_news();
 
-
-if (!isset($_REQUEST['start_news']))
+$callapi = new callapi();
+if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
+                   'GET'))
 {
-    $start_news = 0;
-}
-else
+    $tabNews = json_decode($callapi->content);
+} else
 {
-    $start_news = $_REQUEST['start_news'];
+    die('Erreur sur appel API ' . $callapi->content);
 }
-if ($start_news < 0)
-{
-    $start_news = 0;
-}
-
-$tabNews = $news->getNews($start_news);
-
 
 require_once CHEMIN . 'choix_pub.php';
 $pub = choix_pub_index();
 
-
-
-$template = $twig->load('index.twig');
+/** @var Twig_Loader_Filesystem $twig */
+$template     = $twig->load('index.twig');
 $options_twig = array(
     'PERCENT_FINANCES'  => $percent_finances,
     'AVENTURIERS_MORTS' => $param->getparm(64),
     'MONSTRES_MORTS'    => $param->getparm(65),
     'FAMILIERS_MORTS'   => $param->getparm(66),
     'GMON'              => $gmon,
-    'TABNEWS'           => $tabNews,
+    'TABNEWS'           => $tabNews->news,
     'START_NEWS'        => $start_news,
-    'NB_NEWS'           => $numberNews,
+    'NB_NEWS'           => $tabNews->numberNews,
     'PUB'               => $pub,
 
 
 );
-echo $template->render(array_merge($options_twig_defaut,$options_twig));
+echo $template->render(array_merge($options_twig_defaut, $options_twig));
 
 

@@ -72,7 +72,7 @@ pipeline {
                                   from: 'stephane@sdewitte.net'
                      slackSend channel: '#general',
                                        color: 'red',
-                                       message: "The pipeline ${currentBuild.fullDisplayName} completed successfully."
+                                       message: "The pipeline ${currentBuild.fullDisplayName} is down."
                  }
          changed {
           mail to: 'stephane.dewitte@gmail.com',
@@ -81,6 +81,9 @@ pipeline {
                                            charset: 'UTF-8',
                                            mimeType: 'text/html',
                                            from: 'stephane@sdewitte.net'
+       slackSend channel: '#general',
+                                              color: 'orange',
+                                              message: "The pipeline ${currentBuild.fullDisplayName} is unstable."
          }
     }
 }
