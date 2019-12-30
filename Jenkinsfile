@@ -63,5 +63,21 @@ pipeline {
             // Always cleanup after the build.
             sh 'docker-compose -f docker-compose-tu.yml down'
         }
+        failure {
+                     mail to: 'stephane.dewitte@gmail.com',
+                                  subject: "Failed Pipeline: ${currentBuild.fullDisplayName}",
+                                  body: "<b>Error on project</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}",
+                                  charset: 'UTF-8',
+                                  mimeType: 'text/html',
+                                  from: 'stephane@sdewitte.net'
+                 }
+         changed {
+          mail to: 'stephane.dewitte@gmail.com',
+                                           subject: "Unstable Pipeline: ${currentBuild.fullDisplayName}",
+                                           body: "<b>Unstable</b><br>Project: ${env.JOB_NAME} <br>Build Number: ${env.BUILD_NUMBER} <br> URL de build: ${env.BUILD_URL}",
+                                           charset: 'UTF-8',
+                                           mimeType: 'text/html',
+                                           from: 'stephane@sdewitte.net'
+         }
     }
 }
