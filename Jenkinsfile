@@ -55,6 +55,17 @@ pipeline {
             }
         }
 
+        stage('Generate api doc')
+        {
+            agent { label 'backenddelain' }
+            when { branch 'master' }
+            steps {
+                echo "Generate api doc"
+                sh "su - delain -c '/usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc'"
+            }
+
+        }
+
 
     }
     post {
