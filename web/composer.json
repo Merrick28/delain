@@ -5,6 +5,7 @@
         "fabfuel/prophiler": "~1.0",
         "google/apiclient": "^2.0",
         "phpunit/phpunit": "^8",
-      "ext-json": "*"
+      "ext-json": "*",
+      "ext-curl": "*"
     }
 }

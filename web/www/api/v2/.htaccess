@@ -5,6 +5,10 @@
 RewriteEngine On
 
 # Authentification
-RewriteRule ^auth$ auth.php [L]
-RewriteRule ^compte$ compte.php [L]
-RewriteRule ^news$ news.php [L]
+RewriteRule ^auth/?$ auth.php [L]
+
+# Compte
+RewriteRule ^compte/?$ compte.php [L]
+
+# news
+RewriteRule ^news/?$ news.php [L]

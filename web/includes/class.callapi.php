@@ -61,7 +61,7 @@ class callapi
         if(curl_errno($curl))
         {
             $this->http_response = 0;
-            $this->content = curl_errno($curl);
+            $this->content = curl_error($curl);
             return false;
         }
 
