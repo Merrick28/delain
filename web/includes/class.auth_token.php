@@ -17,13 +17,21 @@ class auth_token
     function __construct()
     {
         $this->at_date = date('Y-m-d H:i:s');
+        if (rand(1, 100) <= 1)
+        {
+            $pdo = new bddpdo;
+            $req = "delete from auth_token
+				where at_date < now() - interval '12 hours'";
+            $pdo->query($req);
+        } //rand(1, 100) <= GC_GARBAGE
     }
 
     /**
      * Charge dans la classe un enregistrement de auth_token
      * @param integer $code => PK
      * @return boolean => false si non trouvé
-     * @global bdd_mysql $pdo
+     * @throws Exception
+     * @global bddpdo $pdo
      */
     function charge($code)
     {
@@ -44,6 +52,7 @@ class auth_token
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @throws Exception
      * @global bdd_mysql $pdo
      */
     function stocke($new = false)
