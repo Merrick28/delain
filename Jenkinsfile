@@ -20,6 +20,9 @@ pipeline {
                 sh 'docker-compose -f docker-compose-tu.yml build'
                 echo 'Arrêt des instances précédentes '
                 sh 'docker-compose -f docker-compose-tu.yml down --remove-orphans'
+                // par séurité...
+                sh 'if docker ps |grep webtu > /dev/null; then docker rm -f webtu; fi'
+                sh 'if docker ps |grep delain_dbtu > /dev/null; then docker rm -f delain_dbtu; fi'
                 echo 'Lancement du docker-compose'
                 sh 'docker-compose -f docker-compose-tu.yml up -d'
             }
@@ -73,6 +76,8 @@ pipeline {
         always {
             // Always cleanup after the build.
             sh 'docker-compose -f docker-compose-tu.yml down'
+            sh 'if docker ps |grep webtu > /dev/null; then docker rm -f webtu; fi'
+            sh 'if docker ps |grep delain_dbtu > /dev/null; then docker rm -f delain_dbtu; fi'
         }
         failure {
                      mail to: 'stephane.dewitte@gmail.com',
