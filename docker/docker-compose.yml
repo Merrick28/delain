@@ -5,7 +5,7 @@ services:
   # Database
   ############################
   delain_db:
-    image: postgres:10
+    image: postgres:10 # on force la même version que le serveur
     environment:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=delain
