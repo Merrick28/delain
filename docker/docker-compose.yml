@@ -5,7 +5,7 @@ services:
   # Database
   ############################
   delain_db:
-    image: postgres
+    image: postgres:10
     environment:
       - POSTGRES_PASSWORD=mypassword
       - POSTGRES_USER=delain
