@@ -1901,11 +1901,11 @@ class perso
         $result = $stmt->fetch();
 
         $this_perso = new perso;
+
         if (!$this_perso->charge($result['resultat']))
         {
             return false;
         }
-
         return $this_perso;
     }
 

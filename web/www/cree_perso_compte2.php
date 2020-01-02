@@ -7,8 +7,10 @@ function envoie_message($titre, $corps, $dest, $exp)
     $mes->msg_date  = date('Y-m-d H:i:s');
     $mes->msg_titre = $titre;
     $mes->msg_corps = $corps;
+    $mes->exp_perso_cod = $exp;
+    $mes->tabDest = array($dest);
     $mes->stocke(true);
-    $mes->envoi_simple($dest, $exp);
+    //$mes->envoi_simple($dest, $exp);
 }
 
 include "includes/classes.php";
@@ -35,7 +37,6 @@ if (!isset($compt_cod))
 } else
 {
 
-    $logger->debug('Debug manuel page créé perso compte');
     // Recherche du type de perso en cours de création
     $compte = new compte();
     $compte->charge($compt_cod);
@@ -50,7 +51,7 @@ if (!isset($compt_cod))
 }
 if ($creation_possible)
 {
-    $perso = new perso;
+    $nouveau_perso = new perso;
     if (!isset($_REQUEST['nom']))
     {
         $erreur        = -1;
@@ -61,7 +62,7 @@ if ($creation_possible)
         $erreur        = -1;
         $error_message = "<p><b>ERREUR </b>Nom de personnage vide, ou perdu dans les limbes informatiques...";
     }
-    if ($perso->f_cherche_perso($_REQUEST['nom']))
+    if ($nouveau_perso->f_cherche_perso($_REQUEST['nom']))
     {
         $erreur        = -1;
         $error_message = "<p>Un aventurier porte déjà ce nom !!!";
@@ -133,39 +134,39 @@ if ($creation_possible)
         //
         // insertion dans la table perso
         //
-        $perso->perso_nom          = $_REQUEST['nom'];
-        $perso->perso_for          = $_REQUEST['force'];
-        $perso->perso_dex          = $_REQUEST['dex'];
-        $perso->perso_int          = $_REQUEST['intel'];
-        $perso->perso_con          = $_REQUEST['con'];
-        $perso->perso_for_init     = $_REQUEST['force'];
-        $perso->perso_dex_init     = $_REQUEST['dex'];
-        $perso->perso_int_init     = $_REQUEST['intel'];
-        $perso->perso_con_init     = $_REQUEST['con'];
-        $perso->perso_sex          = $_REQUEST['sexe'];
-        $perso->perso_race_cod     = $_REQUEST['race'];
-        $perso->perso_pv           = 0;
-        $perso->perso_pv_max       = 0;
-        $perso->perso_dlt          = date('Y-m-d H:i:s');
-        $perso->perso_temps_tour   = 720;
-        $perso->perso_dcreat       = date('Y-m-d H:i:s');
-        $perso->perso_actif        = 'O';
-        $perso->perso_pa           = 12;
-        $perso->perso_der_connex   = date('Y-m-d H:i:s');
-        $perso->perso_des_regen    = 1;
-        $perso->perso_valeur_regen = 3;
-        $perso->perso_vue          = 3;
-        $perso->perso_type_perso   = 1;
-        $perso->perso_reputation   = 0;
-        $perso->perso_pnj          = $perso_pnj;
-        $perso->stocke(true);
+        $nouveau_perso->perso_nom          = $_REQUEST['nom'];
+        $nouveau_perso->perso_for          = $_REQUEST['force'];
+        $nouveau_perso->perso_dex          = $_REQUEST['dex'];
+        $nouveau_perso->perso_int          = $_REQUEST['intel'];
+        $nouveau_perso->perso_con          = $_REQUEST['con'];
+        $nouveau_perso->perso_for_init     = $_REQUEST['force'];
+        $nouveau_perso->perso_dex_init     = $_REQUEST['dex'];
+        $nouveau_perso->perso_int_init     = $_REQUEST['intel'];
+        $nouveau_perso->perso_con_init     = $_REQUEST['con'];
+        $nouveau_perso->perso_sex          = $_REQUEST['sexe'];
+        $nouveau_perso->perso_race_cod     = $_REQUEST['race'];
+        $nouveau_perso->perso_pv           = 0;
+        $nouveau_perso->perso_pv_max       = 0;
+        $nouveau_perso->perso_dlt          = date('Y-m-d H:i:s');
+        $nouveau_perso->perso_temps_tour   = 720;
+        $nouveau_perso->perso_dcreat       = date('Y-m-d H:i:s');
+        $nouveau_perso->perso_actif        = 'O';
+        $nouveau_perso->perso_pa           = 12;
+        $nouveau_perso->perso_der_connex   = date('Y-m-d H:i:s');
+        $nouveau_perso->perso_des_regen    = 1;
+        $nouveau_perso->perso_valeur_regen = 3;
+        $nouveau_perso->perso_vue          = 3;
+        $nouveau_perso->perso_type_perso   = 1;
+        $nouveau_perso->perso_reputation   = 0;
+        $nouveau_perso->perso_pnj          = $perso_pnj;
+        $nouveau_perso->stocke(true);
 
-        $nouveau_perso_cod = $perso->perso_cod;
+        $nouveau_perso_cod = $nouveau_perso->perso_cod;
 
         //
         // fonction de calcul des compétences
         //
-        $cree_perso = $perso->cree_perso();
+        $cree_perso = $nouveau_perso->cree_perso();
         if ($cree_perso != 0)
         {
             $error_message = "Un problème est survenu lors du calcul des compétences : erreur $cree_perso";
@@ -482,25 +483,13 @@ if ($creation_possible)
                     }
                     break;*/
             }
-            //
-            // Affichage du tableau de résultat
-            //
-            ?>
-            Maintenant que votre personnage est créé, n’hésitez pas à aller consulter <a
-                href="http://www.jdr-delain.net/faq.php"
-                target="_blank">la
-            FAQ</a>  qui vous donnera des réponses aux questions les plus fréquemment posées.<br>
-            Le <a href="http://www.jdr-delain.net/forum/index.php"
-                  target="_blank">forum</a> ajoutera des compléments parfois indispensables, et permet de lier des contacts.
-            <br>
-            <br>
-
-            <?php
-
 
             /***************************************************************************/
             /* Marlyza - 2018-08-30 - Envoi d'un message à l'attention des admins      */
             /***************************************************************************/
+
+
+
             $titre      = "Nouvel aventurier dans les souterrains...";
             $corps      = "Chers amis,<br>
 Je vous informe qu'un nouvel aventurier viens de pénétrer dans les souterrains de delain.<br>
@@ -544,8 +533,12 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             $titre = "Vous êtes indiscret...";
 
             $perso_gildwen = new perso;
-            $perso_gildwen->f_cherche_perso(('gildwen'));
-            envoie_message($titre, $compte, $nouveau_perso_cod, $perso_gildwen->perso_cod);
+            if(!$perso_gildwen = $perso_gildwen->f_cherche_perso('gildwen'))
+            {
+                $error_message = 'Erreur sur la recherche de Gildwen';
+            }
+            envoie_message($titre, $corps, $nouveau_perso_cod, $perso_gildwen->perso_cod);
+
             /******************************/
             /* On enregistre l'expéditeur */
             /******************************/
@@ -555,8 +548,8 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             unset($perso_gildwen);
 
 
-            $perso->perso_piq_rap_env = 0;
-            $perso->stocke();
+            $nouveau_perso->perso_piq_rap_env = 0;
+            $nouveau_perso->stocke();
 
             if ($perso_pnj == 2)
             {
@@ -575,7 +568,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 		<br>
 		<br>";
                 $titre = 'Une nouvelle responsabilité vous incombe';
-                envoie_message($titre, $compte, $nouveau_perso_cod, $nouveau_perso_cod);
+                envoie_message($titre, $corps, $nouveau_perso_cod, $nouveau_perso_cod);
             } else
             {
 
@@ -624,110 +617,72 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 			Tu peux le contacter en lui envoyant une missive, en créant un nouveau message ou en répondant simplement à ce message.";
                     $titre = 'Bienvenue';
 
-                    envoie_message($titre, $compte, $nouveau_perso_cod, $tuteur);
+                    envoie_message($titre, $corps, $nouveau_perso_cod, $tuteur);
                     //
                     // préparation du message envoyé au tuteur
                     //
                     $corps =
                         "Un nouvel aventurier vient d’arriver sur ces terres, et tu as été choisi pour être son parrain ! Celui qui aura besoin de tes conseils s’appelle <a href=\"http://www.jdr-delain.net/jeu/visu_desc_perso.php?visu=" . $nouveau_perso_cod . "\">" . $nom2 . "</a>. Merci pour ton volontariat ! ";
                     $titre = 'Un nouvel aventurier....';
-                    envoie_message($titre, $compte, $tuteur, $nouveau_perso_cod);
+                    envoie_message($titre, $corps, $tuteur, $nouveau_perso_cod);
                 }
             }
-            ?>
-            <div class="bordiv">
-                <?php
-                echo("<p class=\"titre\">$nom</p>\n");
 
 
-                echo("<p class=\"soustitre\">Perso n°$nouveau_perso_cod</p></td>\n");
+            /* affichage des compétences par type */
+            $tc    = new type_competences();
+            $alltc = $tc->getAll();
 
+            foreach ($alltc as $key => $currenttc)
+            {
 
-                echo("<table background=\"images/fondparchemin.gif\" width=\"80%\" cellspacing=\"2\" cellpadding=\"2\">\n");
+                $competences = new competences();
+                $tabcomp     = $competences->getByTypeCompetence($currenttc->typc_cod);
 
-                echo("<tr>\n");
-                echo("<td class=\"soustitre2\"><p>Force</p></td>\n");
-                echo("<td><p>$force</p></td>\n");
-                echo("</tr>\n");
-                echo("<tr>\n");
-                echo("<td class=\"soustitre2\"><p>Dextérité</p></td>\n");
-                echo("<td><p>$dex</p></td>\n");
-                echo("</tr>\n");
-                echo("<tr>\n");
-                echo("<td class=\"soustitre2\"><p>Intelligence</p></td>\n");
-                echo("<td><p>$intel</p></td>\n");
-                echo("</tr>\n");
-                echo("<tr>\n");
-                echo("<td class=\"soustitre2\"><p>Constitution</p></td>\n");
-                echo("<td><p>$con</p></td>\n");
-                echo("</tr>\n");
-
-                /* affichage des compétences par type */
-                $req_type_comp = "select typc_libelle,typc_cod from type_competences";
-                $db->query($req_type_comp);
-                $db_comp = new base_delain;
-                while ($db->next_record())
+                foreach ($tabcomp as $currentcomp => $valcomp)
                 {
-                    echo("<tr>\n");
-                    printf("<td colspan=\"2\" class=\"soustitre\"><p class=\"soustitre\">%s</p></td>\n", $db->f("typc_libelle"));
-                    echo("</tr>\n");
-                    $typc_cod = $db->f("typc_cod");
-
-                    $req_comp = "select comp_libelle,pcomp_modificateur from perso_competences,competences ";
-                    $req_comp = $req_comp . "where pcomp_perso_cod = $nouveau_perso_cod ";
-                    $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
-                    $req_comp = $req_comp . "and pcomp_pcomp_cod = comp_cod ";
-                    $req_comp = $req_comp . "and comp_typc_cod = $typc_cod";
-
-                    $db_comp->query($req_comp);
-                    while ($db_comp->next_record())
+                    $mycomp = new perso_competences();
+                    if ($mycomp->getByPersoComp($nouveau_perso->perso_cod, $currentcomp->comp_cod))
                     {
-                        echo("<tr>\n");
-                        printf("<td class=\"soustitre2\"><p>%s</p></td>\n", $db_comp->f("comp_libelle"));
-                        printf("<td><p>%s ", $db_comp->f("pcomp_modificateur"));
-                        echo("%</p></td>\n");
-                        echo("</tr>\n");
+                        $alltc[$key][$valcomp]['comp_libelle']       = $currentcomp->comp_libelle;
+                        $alltc[$key][$valcomp]['pcomp_modificateur'] = $mycomp->pcomp_modificateur;
                     }
                 }
 
 
-                echo("</table>\n");
-
-                /* fin du tableau secondaire */
 
 
-                /* fin du tableau de résultat */
+            }
 
-                ?>
-                <p>Votre aventurier a été créé.<br/>
-                    <a href="validation_login2.php">Retour !</a></p>
-            </div>
 
-            <?php
+
+
+            /* fin du tableau secondaire */
+
+
+            /* fin du tableau de résultat */
+
+
         }
 
 
     }
 } else
 {
-    echo '<p>Erreur ! Il semble que vous ayiez déjà assez de personnages comme cela...</p>';
+    $error_message = '<p>Erreur ! Il semble que vous ayiez déjà assez de personnages comme cela...</p>';
 }
-?>
-    </div>
-    </body>
-    </html>
 
 
-<?php
+
 $template     = $twig->load('cree_perso_compte2.twig');
 $options_twig = array(
     'PERCENT_FINANCES' => $percent_finances,
     'ERROR_MESSAGE'    => $error_message,
-    'REQUEST'          => $_REQUEST
-
+    'REQUEST'          => $_REQUEST,
+    'PERSO'            => $nouveau_perso,
+    'ALLTC'            => $alltc
 
 );
 
-
-
-
+$logger->debug(print_r($alltc,true));
+echo $template->render(array_merge($options_twig_defaut, $options_twig));

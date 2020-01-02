@@ -105,6 +105,35 @@ class perso_competences
     }
 
     /**
+     * @param $perso
+     * @param $typecomp
+     * @return perso_competences[]
+     * @throws Exception
+     */
+    function getByPersoTypeComp($perso, $typecomp)
+    {
+        $return = array();
+        $pdo = new bddpdo;
+        $req = "select pcomp_cod from perso_competences,competences
+            where pcomp_perso_cod = ? 
+            and pcomp_pcomp_cod = comp_cod
+            and comp_typc_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso,$typecomp), $stmt);
+
+
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso_competences();
+            $temp->charge($result['pcomp_cod']);
+            $return[] = $temp;
+            unset($temp);
+        }
+        return $result;
+
+    }
+
+    /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
      * @return \perso_competences
