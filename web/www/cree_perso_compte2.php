@@ -639,13 +639,19 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 $competences = new competences();
                 $tabcomp     = $competences->getByTypeCompetence($currenttc->typc_cod);
 
-                foreach ($tabcomp as $currentcomp => $valcomp)
+                foreach ($tabcomp as $valcomp => $currentcomp)
                 {
+                    $logger->debug(print_r($currentcomp,true));
                     $mycomp = new perso_competences();
                     if ($mycomp->getByPersoComp($nouveau_perso->perso_cod, $currentcomp->comp_cod))
                     {
-                        $alltc[$key][$valcomp]['comp_libelle']       = $currentcomp->comp_libelle;
-                        $alltc[$key][$valcomp]['pcomp_modificateur'] = $mycomp->pcomp_modificateur;
+                        $logger->debug('FOUND');
+                        $alltc[$key]->comp[$valcomp]['comp_libelle']       = $currentcomp->comp_libelle;
+                        $alltc[$key]->comp[$valcomp]['pcomp_modificateur'] = $mycomp->pcomp_modificateur;
+                    }
+                    else
+                    {
+                        $logger->debug('not found');
                     }
                 }
 
@@ -684,5 +690,4 @@ $options_twig = array(
 
 );
 
-$logger->debug(print_r($alltc,true));
 echo $template->render(array_merge($options_twig_defaut, $options_twig));
