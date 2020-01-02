@@ -163,6 +163,22 @@ class messages
         return $retour;
     }
 
+    function envoi_simple($dest_cod,$exp_cod)
+    {
+        // il faut que le message soit déjà enregistré
+        // expéditeur
+        $msg_exp = new messages_exp();
+        $msg_exp->emsg_msg_cod = $this->msg_cod;
+        $msg_exp->emsg_perso_cod = $exp_cod;
+        $msg_exp->stocke(true);
+        //destinaire
+        $msg_dest = new messages_dest();
+        $msg_dest ->dmsg_msg_cod = $this->msg_cod;
+        $msg_dest->dmsg_perso_cod = $dest_cod;
+        $msg_dest->stocke(true);
+
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

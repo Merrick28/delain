@@ -1,4 +1,16 @@
 <?php
+
+function envoie_message($titre,$corps,$dest,$exp)
+{
+    $mes = new messages();
+    $mes->msg_date2 = date('Y-m-d H:i:s');
+    $mes->msg_date = date('Y-m-d H:i:s');
+    $mes->msg_titre = $titre;
+    $mes->msg_corps = $corps;
+    $mes->stocke(true);
+    $mes->envoi_simple($dest, $exp);
+}
+
 include "includes/classes.php";
 include "ident.php";
 ?>
@@ -199,11 +211,9 @@ include "ident.php";
             $new_pos        = new positions;
             $perso_position = new perso_position();
 
-            $perso_position->ppos_pos_cod = $new_pos->lieu_arrive($_REQUEST['poste'] == 'H');
+            $perso_position->ppos_pos_cod   = $new_pos->lieu_arrive($_REQUEST['poste'] == 'H');
             $perso_position->ppos_perso_cod = $nouveau_perso_cod;
             $perso_position->stocke(true);
-
-
 
 
             $objet = new objets();
@@ -315,14 +325,24 @@ include "ident.php";
                     $positions = new positions();
                     $positions->charge($perso_position->ppos_pos_cod);
 
+                    // effacement de l'automap existante
+                    $req  = 'delete from perso_vue_pos_1 where pvue_perso_cod = :perso';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(':perso' => $nouveau_perso_cod), $stmt);
 
-                    $db->query('delete from perso_vue_pos_1 where pvue_perso_cod = ' . $nouveau_perso_cod);
-                    $req = 'insert into perso_vue_pos_1 (pvue_perso_cod,pvue_pos_cod) select ' . $nouveau_perso_cod . ',pos_cod
+                    // ajout de la nouvelle automap
+                    $req  = 'insert into perso_vue_pos_1 (pvue_perso_cod,pvue_pos_cod) select :perso,pos_cod
     				from positions
     				where pos_etage = 0
-    				and pos_x between ' . $v_x . ' - 10 and ' . $v_x . ' + 10
-    				and pos_y between ' . $v_y . ' - 10 and ' . $v_y . ' + 10';
-                    $db->query($req);
+    				and pos_x between :x - 10 and :x + 10
+    				and pos_y between :y - 10 and :y + 10';
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(':perso' => $nouveau_perso_cod,
+                                                ':x'     => $positions->pos_x,
+                                                ':y'     => $positions->pos_y), $stmt);
+
+
+
                     // parchemins
                     for ($i = 1; $i <= 8; $i++)
                     {
@@ -507,10 +527,7 @@ Gildwen.
             /***************************************************************************/
             /* Envoi du message au joueur                                              */
             /***************************************************************************/
-            $req = "select nextval('seq_msg_cod') as numero";
-            $db->query($req);
-            $db->next_record();
-            $num_mes = $db->f("numero");
+
             //
             $corps = "Vous arrivez dans la salle principale du poste d’entrée qui sent la sueur et le renfermé. Autour de vous, vous voyez des gardes et des aventuriers de tous les horizons.<br>
 <br>
@@ -538,18 +555,18 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 ";
 
             $titre       = "Vous êtes indiscret...";
-            $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps)
-	values ($num_mes,now(),now(),'$titre','$corps') ";
-            $db->query($req_ins_mes);
+
+            $perso_gildwen = new perso;
+            $perso_gildwen->f_cherche_perso(('gildwen'));
+            envoie_message($titre,$compte,$nouveau_perso_cod,$perso_gildwen->perso_cod);
             /******************************/
             /* On enregistre l'expéditeur */
             /******************************/
-            $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive)
-	values (nextval('seq_emsg_cod'),$num_mes,f_cherche_perso('gildwen'),'N')";
-            $db->query($req_ins_exp);
-            $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive)
-	values (nextval('seq_dmsg_cod'),$num_mes, $nouveau_perso_cod,'N','N')";
-            $db->query($req_ins_dest);
+
+
+            // on détruit les variables
+            unset($perso_gildwen);
+
 
             $perso->perso_piq_rap_env = 0;
             $perso->stocke();
@@ -571,23 +588,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 		<br>
 		<br>";
                 $titre = 'Une nouvelle responsabilité vous incombe';
-                $req   = "select nextval('seq_msg_cod') as numero";
-                $db->query($req);
-                $db->next_record();
-                $num_mes     = $db->f("numero");
-                $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps)
-			values ($num_mes,now(),now(),'$titre','$corps') ";
-                $db->query($req_ins_mes);
-                /******************************/
-                /* On enregistre l'expéditeur */
-                /******************************/
-                $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive)
-			values (nextval('seq_emsg_cod'),$num_mes,$nouveau_perso_cod,'N')";
-                $db->query($req_ins_exp);
-                $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive)
-			values (nextval('seq_dmsg_cod'),$num_mes, $nouveau_perso_cod,'N','N')";
-                $db->query($req_ins_dest);
-
+                envoie_message($titre,$compte,$nouveau_perso_cod,$nouveau_perso_cod);
             } else
             {
 
@@ -610,21 +611,22 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 				group by tuto_tuteur) t2 on t1.perso_cod = t2.tuto_tuteur
 				order by t2.compteur,random()
 				limit 1";
-                $db->query($req);
-                if ($db->nf() != 0)
+                $stmt = $pdo->query($req);
+
+                if ($result = $stmt->fetch())
                 {
-                    $db->next_record();
-                    $tuteur     = $db->f('perso_cod');
-                    $nom_tuteur = pg_escape_string($db->f('perso_nom'));
+
+                    $tuteur     = $result['perso_cod'];
+                    $nom_tuteur = $result['perso_nom'];
 
                     //
                     // on va faire l'association
                     //
-                    $req = 'insert into tutorat
-				(tuto_tuteur,tuto_filleul)
-				values
-				(' . $tuteur . ',' . $nouveau_perso_cod . ')';
-                    $db->query($req);
+                    $tutorat = new tutorat();
+                    $tutorat->tuto_filleul = $nouveau_perso_cod;
+                    $tutorat->tuto_tuteur = $tuteur;
+                    $tutorat->stocke(true);
+
                     //
                     // préparation du message envoyé au joueur
                     //
@@ -634,44 +636,15 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 			<a href=\"http://www.jdr-delain.net/jeu/visu_desc_perso.php?visu=" . $tuteur . "\">" . $nom_tuteur . "</a> est désormais le tien ! Il sera laà pour répondre à tes questions, te conseiller sur les stratégies à adopter, te donner des indications géographiques, et que sais-je encore. Il est là aussi bien pour des conseils HRP (hors roleplay) que RP (roleplay).<br />
 			Tu peux le contacter en lui envoyant une missive, en créant un nouveau message ou en répondant simplement à ce message.";
                     $titre = 'Bienvenue';
-                    $req   = "select nextval('seq_msg_cod') as numero";
-                    $db->query($req);
-                    $db->next_record();
-                    $num_mes     = $db->f("numero");
-                    $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps)
-				values ($num_mes,now(),now(),'$titre','$corps') ";
-                    $db->query($req_ins_mes);
-                    /******************************/
-                    /* On enregistre l'expéditeur */
-                    /******************************/
-                    $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive)
-				values (nextval('seq_emsg_cod'),$num_mes,$tuteur,'N')";
-                    $db->query($req_ins_exp);
-                    $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive)
-				values (nextval('seq_dmsg_cod'),$num_mes, $nouveau_perso_cod,'N','N')";
-                    $db->query($req_ins_dest);
+
+                    envoie_message($titre,$compte,$nouveau_perso_cod,$tuteur);
                     //
                     // préparation du message envoyé au tuteur
                     //
                     $corps =
                         "Un nouvel aventurier vient d’arriver sur ces terres, et tu as été choisi pour être son parrain ! Celui qui aura besoin de tes conseils s’appelle <a href=\"http://www.jdr-delain.net/jeu/visu_desc_perso.php?visu=" . $nouveau_perso_cod . "\">" . $nom2 . "</a>. Merci pour ton volontariat ! ";
                     $titre = 'Un nouvel aventurier....';
-                    $req   = "select nextval('seq_msg_cod') as numero";
-                    $db->query($req);
-                    $db->next_record();
-                    $num_mes     = $db->f("numero");
-                    $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps)
-				values ($num_mes,now(),now(),'$titre','$corps') ";
-                    $db->query($req_ins_mes);
-                    /******************************/
-                    /* On enregistre l'expéditeur */
-                    /******************************/
-                    $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive)
-				values (nextval('seq_emsg_cod'),$num_mes,$nouveau_perso_cod,'N')";
-                    $db->query($req_ins_exp);
-                    $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive)
-				values (nextval('seq_dmsg_cod'),$num_mes, $tuteur,'N','N')";
-                    $db->query($req_ins_dest);
+                    envoie_message($titre,$compte,$tuteur,$nouveau_perso_cod);
                 }
             }
             ?>
