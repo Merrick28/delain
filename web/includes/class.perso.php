@@ -138,8 +138,8 @@ class perso
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bddpdo $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bddpdo $pdo
      */
     function stocke($new = false)
     {
@@ -148,6 +148,7 @@ class perso
         {
             $req
                   = "insert into perso (
+            perso_cod,
             perso_for,
             perso_dex,
             perso_int,
@@ -252,7 +253,8 @@ class perso
             alterego                        )
                     values
                     (
-                        :perso_for,
+                        nextval('seq_perso'),   
+                     :perso_for,
                         :perso_dex,
                         :perso_int,
                         :perso_con,
@@ -357,109 +359,109 @@ class perso
     returning perso_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perso_for"                     => $this->perso_for,
-                ":perso_dex"                     => $this->perso_dex,
-                ":perso_int"                     => $this->perso_int,
-                ":perso_con"                     => $this->perso_con,
-                ":perso_for_init"                => $this->perso_for_init,
-                ":perso_dex_init"                => $this->perso_dex_init,
-                ":perso_int_init"                => $this->perso_int_init,
-                ":perso_con_init"                => $this->perso_con_init,
-                ":perso_sex"                     => $this->perso_sex,
-                ":perso_race_cod"                => $this->perso_race_cod,
-                ":perso_pv"                      => $this->perso_pv,
-                ":perso_pv_max"                  => $this->perso_pv_max,
-                ":perso_dlt"                     => $this->perso_dlt,
-                ":perso_temps_tour"              => $this->perso_temps_tour,
-                ":perso_email"                   => $this->perso_email,
-                ":perso_dcreat"                  => $this->perso_dcreat,
-                ":perso_validation"              => $this->perso_validation,
-                ":perso_actif"                   => $this->perso_actif,
-                ":perso_pa"                      => $this->perso_pa,
-                ":perso_der_connex"              => $this->perso_der_connex,
-                ":perso_des_regen"               => $this->perso_des_regen,
-                ":perso_valeur_regen"            => $this->perso_valeur_regen,
-                ":perso_vue"                     => $this->perso_vue,
-                ":perso_po"                      => $this->perso_po,
-                ":perso_nb_esquive"              => $this->perso_nb_esquive,
-                ":perso_niveau"                  => $this->perso_niveau,
-                ":perso_type_perso"              => $this->perso_type_perso,
-                ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
-                ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
-                ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
-                ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
-                ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
-                ":perso_val_des_degats"          => $this->perso_val_des_degats,
-                ":perso_cible"                   => $this->perso_cible,
-                ":perso_enc_max"                 => $this->perso_enc_max,
-                ":perso_description"             => $this->perso_description,
-                ":perso_nb_mort"                 => $this->perso_nb_mort,
-                ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
-                ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
-                ":perso_reputation"              => $this->perso_reputation,
-                ":perso_avatar"                  => $this->perso_avatar,
-                ":perso_kharma"                  => $this->perso_kharma,
-                ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
-                ":perso_nom"                     => $this->perso_nom,
-                ":perso_gmon_cod"                => $this->perso_gmon_cod,
-                ":perso_renommee"                => $this->perso_renommee,
-                ":perso_dirige_admin"            => $this->perso_dirige_admin,
-                ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
-                ":perso_sta_combat"              => $this->perso_sta_combat,
-                ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
-                ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
-                ":perso_tangible"                => $this->perso_tangible,
-                ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
-                ":perso_capa_repar"              => $this->perso_capa_repar,
-                ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
-                ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
-                ":perso_renommee_magie"          => $this->perso_renommee_magie,
-                ":perso_vampirisme"              => $this->perso_vampirisme,
-                ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
-                ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
-                ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
-                ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
-                ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
-                ":perso_priere"                  => $this->perso_priere,
-                ":perso_dfin"                    => $this->perso_dfin,
-                ":perso_px"                      => $this->perso_px,
-                ":perso_taille"                  => $this->perso_taille,
-                ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
-                ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
-                ":perso_pnj"                     => $this->perso_pnj,
-                ":perso_redispatch"              => $this->perso_redispatch,
-                ":perso_nb_redist"               => $this->perso_nb_redist,
-                ":perso_mcom_cod"                => $this->perso_mcom_cod,
-                ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
-                ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
-                ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
-                ":perso_nb_crap"                 => $this->perso_nb_crap,
-                ":perso_nb_embr"                 => $this->perso_nb_embr,
-                ":perso_crapaud"                 => $this->perso_crapaud,
-                ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
-                ":perso_prestige"                => $this->perso_prestige,
-                ":perso_av_mod"                  => $this->perso_av_mod,
-                ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
-                ":perso_test"                    => $this->perso_test,
-                ":perso_nb_spe"                  => $this->perso_nb_spe,
-                ":perso_compt_pvp"               => $this->perso_compt_pvp,
-                ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
-                ":perso_effets_auto"             => $this->perso_effets_auto,
-                ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
-                ":perso_voie_magique"            => $this->perso_voie_magique,
-                ":perso_energie"                 => $this->perso_energie,
-                ":perso_desc_long"               => $this->perso_desc_long,
-                ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
-                ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
-                ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
-                ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
-                ":perso_avatar_version"          => $this->perso_avatar_version,
-                ":perso_etage_origine"           => $this->perso_etage_origine,
-                ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
-                ":perso_mortel"                  => $this->perso_mortel,
-                ":alterego"                      => $this->alterego,
-            ), $stmt);
+                                      ":perso_for"                     => $this->perso_for,
+                                      ":perso_dex"                     => $this->perso_dex,
+                                      ":perso_int"                     => $this->perso_int,
+                                      ":perso_con"                     => $this->perso_con,
+                                      ":perso_for_init"                => $this->perso_for_init,
+                                      ":perso_dex_init"                => $this->perso_dex_init,
+                                      ":perso_int_init"                => $this->perso_int_init,
+                                      ":perso_con_init"                => $this->perso_con_init,
+                                      ":perso_sex"                     => $this->perso_sex,
+                                      ":perso_race_cod"                => $this->perso_race_cod,
+                                      ":perso_pv"                      => $this->perso_pv,
+                                      ":perso_pv_max"                  => $this->perso_pv_max,
+                                      ":perso_dlt"                     => $this->perso_dlt,
+                                      ":perso_temps_tour"              => $this->perso_temps_tour,
+                                      ":perso_email"                   => $this->perso_email,
+                                      ":perso_dcreat"                  => $this->perso_dcreat,
+                                      ":perso_validation"              => $this->perso_validation,
+                                      ":perso_actif"                   => $this->perso_actif,
+                                      ":perso_pa"                      => $this->perso_pa,
+                                      ":perso_der_connex"              => $this->perso_der_connex,
+                                      ":perso_des_regen"               => $this->perso_des_regen,
+                                      ":perso_valeur_regen"            => $this->perso_valeur_regen,
+                                      ":perso_vue"                     => $this->perso_vue,
+                                      ":perso_po"                      => $this->perso_po,
+                                      ":perso_nb_esquive"              => $this->perso_nb_esquive,
+                                      ":perso_niveau"                  => $this->perso_niveau,
+                                      ":perso_type_perso"              => $this->perso_type_perso,
+                                      ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
+                                      ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
+                                      ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
+                                      ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
+                                      ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
+                                      ":perso_val_des_degats"          => $this->perso_val_des_degats,
+                                      ":perso_cible"                   => $this->perso_cible,
+                                      ":perso_enc_max"                 => $this->perso_enc_max,
+                                      ":perso_description"             => $this->perso_description,
+                                      ":perso_nb_mort"                 => $this->perso_nb_mort,
+                                      ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
+                                      ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
+                                      ":perso_reputation"              => $this->perso_reputation,
+                                      ":perso_avatar"                  => $this->perso_avatar,
+                                      ":perso_kharma"                  => $this->perso_kharma,
+                                      ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
+                                      ":perso_nom"                     => $this->perso_nom,
+                                      ":perso_gmon_cod"                => $this->perso_gmon_cod,
+                                      ":perso_renommee"                => $this->perso_renommee,
+                                      ":perso_dirige_admin"            => $this->perso_dirige_admin,
+                                      ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
+                                      ":perso_sta_combat"              => $this->perso_sta_combat,
+                                      ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
+                                      ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
+                                      ":perso_tangible"                => $this->perso_tangible,
+                                      ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
+                                      ":perso_capa_repar"              => $this->perso_capa_repar,
+                                      ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
+                                      ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
+                                      ":perso_renommee_magie"          => $this->perso_renommee_magie,
+                                      ":perso_vampirisme"              => $this->perso_vampirisme,
+                                      ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
+                                      ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
+                                      ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
+                                      ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
+                                      ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
+                                      ":perso_priere"                  => $this->perso_priere,
+                                      ":perso_dfin"                    => $this->perso_dfin,
+                                      ":perso_px"                      => $this->perso_px,
+                                      ":perso_taille"                  => $this->perso_taille,
+                                      ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
+                                      ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
+                                      ":perso_pnj"                     => $this->perso_pnj,
+                                      ":perso_redispatch"              => $this->perso_redispatch,
+                                      ":perso_nb_redist"               => $this->perso_nb_redist,
+                                      ":perso_mcom_cod"                => $this->perso_mcom_cod,
+                                      ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
+                                      ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
+                                      ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
+                                      ":perso_nb_crap"                 => $this->perso_nb_crap,
+                                      ":perso_nb_embr"                 => $this->perso_nb_embr,
+                                      ":perso_crapaud"                 => $this->perso_crapaud,
+                                      ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
+                                      ":perso_prestige"                => $this->perso_prestige,
+                                      ":perso_av_mod"                  => $this->perso_av_mod,
+                                      ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
+                                      ":perso_test"                    => $this->perso_test,
+                                      ":perso_nb_spe"                  => $this->perso_nb_spe,
+                                      ":perso_compt_pvp"               => $this->perso_compt_pvp,
+                                      ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
+                                      ":perso_effets_auto"             => $this->perso_effets_auto,
+                                      ":perso_quete"                   => $this->perso_quete,
+                                      ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
+                                      ":perso_voie_magique"            => $this->perso_voie_magique,
+                                      ":perso_energie"                 => $this->perso_energie,
+                                      ":perso_desc_long"               => $this->perso_desc_long,
+                                      ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
+                                      ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
+                                      ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
+                                      ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
+                                      ":perso_avatar_version"          => $this->perso_avatar_version,
+                                      ":perso_etage_origine"           => $this->perso_etage_origine,
+                                      ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
+                                      ":perso_mortel"                  => $this->perso_mortel,
+                                      ":alterego"                      => $this->alterego,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
@@ -573,118 +575,118 @@ class perso
             alterego = :alterego                        where perso_cod = :perso_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perso_cod"                     => $this->perso_cod,
-                ":perso_for"                     => $this->perso_for,
-                ":perso_dex"                     => $this->perso_dex,
-                ":perso_int"                     => $this->perso_int,
-                ":perso_con"                     => $this->perso_con,
-                ":perso_for_init"                => $this->perso_for_init,
-                ":perso_dex_init"                => $this->perso_dex_init,
-                ":perso_int_init"                => $this->perso_int_init,
-                ":perso_con_init"                => $this->perso_con_init,
-                ":perso_sex"                     => $this->perso_sex,
-                ":perso_race_cod"                => $this->perso_race_cod,
-                ":perso_pv"                      => $this->perso_pv,
-                ":perso_pv_max"                  => $this->perso_pv_max,
-                ":perso_dlt"                     => $this->perso_dlt,
-                ":perso_temps_tour"              => $this->perso_temps_tour,
-                ":perso_email"                   => $this->perso_email,
-                ":perso_dcreat"                  => $this->perso_dcreat,
-                ":perso_validation"              => $this->perso_validation,
-                ":perso_actif"                   => $this->perso_actif,
-                ":perso_pa"                      => $this->perso_pa,
-                ":perso_der_connex"              => $this->perso_der_connex,
-                ":perso_des_regen"               => $this->perso_des_regen,
-                ":perso_valeur_regen"            => $this->perso_valeur_regen,
-                ":perso_vue"                     => $this->perso_vue,
-                ":perso_po"                      => $this->perso_po,
-                ":perso_nb_esquive"              => $this->perso_nb_esquive,
-                ":perso_niveau"                  => $this->perso_niveau,
-                ":perso_type_perso"              => $this->perso_type_perso,
-                ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
-                ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
-                ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
-                ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
-                ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
-                ":perso_val_des_degats"          => $this->perso_val_des_degats,
-                ":perso_cible"                   => $this->perso_cible,
-                ":perso_enc_max"                 => $this->perso_enc_max,
-                ":perso_description"             => $this->perso_description,
-                ":perso_nb_mort"                 => $this->perso_nb_mort,
-                ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
-                ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
-                ":perso_reputation"              => $this->perso_reputation,
-                ":perso_avatar"                  => $this->perso_avatar,
-                ":perso_kharma"                  => $this->perso_kharma,
-                ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
-                ":perso_nom"                     => $this->perso_nom,
-                ":perso_gmon_cod"                => $this->perso_gmon_cod,
-                ":perso_renommee"                => $this->perso_renommee,
-                ":perso_dirige_admin"            => $this->perso_dirige_admin,
-                ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
-                ":perso_sta_combat"              => $this->perso_sta_combat,
-                ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
-                ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
-                ":perso_tangible"                => $this->perso_tangible,
-                ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
-                ":perso_capa_repar"              => $this->perso_capa_repar,
-                ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
-                ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
-                ":perso_renommee_magie"          => $this->perso_renommee_magie,
-                ":perso_vampirisme"              => $this->perso_vampirisme,
-                ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
-                ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
-                ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
-                ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
-                ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
-                ":perso_priere"                  => $this->perso_priere,
-                ":perso_dfin"                    => $this->perso_dfin,
-                ":perso_px"                      => $this->perso_px,
-                ":perso_taille"                  => $this->perso_taille,
-                ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
-                ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
-                ":perso_pnj"                     => $this->perso_pnj,
-                ":perso_redispatch"              => $this->perso_redispatch,
-                ":perso_nb_redist"               => $this->perso_nb_redist,
-                ":perso_mcom_cod"                => $this->perso_mcom_cod,
-                ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
-                ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
-                ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
-                ":perso_nb_crap"                 => $this->perso_nb_crap,
-                ":perso_nb_embr"                 => $this->perso_nb_embr,
-                ":perso_crapaud"                 => $this->perso_crapaud,
-                ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
-                ":perso_prestige"                => $this->perso_prestige,
-                ":perso_av_mod"                  => $this->perso_av_mod,
-                ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
-                ":perso_test"                    => $this->perso_test,
-                ":perso_nb_spe"                  => $this->perso_nb_spe,
-                ":perso_compt_pvp"               => $this->perso_compt_pvp,
-                ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
-                ":perso_effets_auto"             => $this->perso_effets_auto,
-                ":perso_quete"                   => $this->perso_quete,
-                ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
-                ":perso_voie_magique"            => $this->perso_voie_magique,
-                ":perso_energie"                 => $this->perso_energie,
-                ":perso_desc_long"               => $this->perso_desc_long,
-                ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
-                ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
-                ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
-                ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
-                ":perso_avatar_version"          => $this->perso_avatar_version,
-                ":perso_etage_origine"           => $this->perso_etage_origine,
-                ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
-                ":perso_mortel"                  => $this->perso_mortel,
-                ":alterego"                      => $this->alterego,
-            ), $stmt);
+                                      ":perso_cod"                     => $this->perso_cod,
+                                      ":perso_for"                     => $this->perso_for,
+                                      ":perso_dex"                     => $this->perso_dex,
+                                      ":perso_int"                     => $this->perso_int,
+                                      ":perso_con"                     => $this->perso_con,
+                                      ":perso_for_init"                => $this->perso_for_init,
+                                      ":perso_dex_init"                => $this->perso_dex_init,
+                                      ":perso_int_init"                => $this->perso_int_init,
+                                      ":perso_con_init"                => $this->perso_con_init,
+                                      ":perso_sex"                     => $this->perso_sex,
+                                      ":perso_race_cod"                => $this->perso_race_cod,
+                                      ":perso_pv"                      => $this->perso_pv,
+                                      ":perso_pv_max"                  => $this->perso_pv_max,
+                                      ":perso_dlt"                     => $this->perso_dlt,
+                                      ":perso_temps_tour"              => $this->perso_temps_tour,
+                                      ":perso_email"                   => $this->perso_email,
+                                      ":perso_dcreat"                  => $this->perso_dcreat,
+                                      ":perso_validation"              => $this->perso_validation,
+                                      ":perso_actif"                   => $this->perso_actif,
+                                      ":perso_pa"                      => $this->perso_pa,
+                                      ":perso_der_connex"              => $this->perso_der_connex,
+                                      ":perso_des_regen"               => $this->perso_des_regen,
+                                      ":perso_valeur_regen"            => $this->perso_valeur_regen,
+                                      ":perso_vue"                     => $this->perso_vue,
+                                      ":perso_po"                      => $this->perso_po,
+                                      ":perso_nb_esquive"              => $this->perso_nb_esquive,
+                                      ":perso_niveau"                  => $this->perso_niveau,
+                                      ":perso_type_perso"              => $this->perso_type_perso,
+                                      ":perso_amelioration_vue"        => $this->perso_amelioration_vue,
+                                      ":perso_amelioration_regen"      => $this->perso_amelioration_regen,
+                                      ":perso_amelioration_degats"     => $this->perso_amelioration_degats,
+                                      ":perso_amelioration_armure"     => $this->perso_amelioration_armure,
+                                      ":perso_nb_des_degats"           => $this->perso_nb_des_degats,
+                                      ":perso_val_des_degats"          => $this->perso_val_des_degats,
+                                      ":perso_cible"                   => $this->perso_cible,
+                                      ":perso_enc_max"                 => $this->perso_enc_max,
+                                      ":perso_description"             => $this->perso_description,
+                                      ":perso_nb_mort"                 => $this->perso_nb_mort,
+                                      ":perso_nb_monstre_tue"          => $this->perso_nb_monstre_tue,
+                                      ":perso_nb_joueur_tue"           => $this->perso_nb_joueur_tue,
+                                      ":perso_reputation"              => $this->perso_reputation,
+                                      ":perso_avatar"                  => $this->perso_avatar,
+                                      ":perso_kharma"                  => $this->perso_kharma,
+                                      ":perso_amel_deg_dex"            => $this->perso_amel_deg_dex,
+                                      ":perso_nom"                     => $this->perso_nom,
+                                      ":perso_gmon_cod"                => $this->perso_gmon_cod,
+                                      ":perso_renommee"                => $this->perso_renommee,
+                                      ":perso_dirige_admin"            => $this->perso_dirige_admin,
+                                      ":perso_lower_perso_nom"         => $this->perso_lower_perso_nom,
+                                      ":perso_sta_combat"              => $this->perso_sta_combat,
+                                      ":perso_sta_hors_combat"         => $this->perso_sta_hors_combat,
+                                      ":perso_utl_pa_rest"             => $this->perso_utl_pa_rest,
+                                      ":perso_tangible"                => $this->perso_tangible,
+                                      ":perso_nb_tour_intangible"      => $this->perso_nb_tour_intangible,
+                                      ":perso_capa_repar"              => $this->perso_capa_repar,
+                                      ":perso_nb_amel_repar"           => $this->perso_nb_amel_repar,
+                                      ":perso_amelioration_nb_sort"    => $this->perso_amelioration_nb_sort,
+                                      ":perso_renommee_magie"          => $this->perso_renommee_magie,
+                                      ":perso_vampirisme"              => $this->perso_vampirisme,
+                                      ":perso_niveau_vampire"          => $this->perso_niveau_vampire,
+                                      ":perso_admin_echoppe"           => $this->perso_admin_echoppe,
+                                      ":perso_nb_amel_comp"            => $this->perso_nb_amel_comp,
+                                      ":perso_nb_receptacle"           => $this->perso_nb_receptacle,
+                                      ":perso_nb_amel_chance_memo"     => $this->perso_nb_amel_chance_memo,
+                                      ":perso_priere"                  => $this->perso_priere,
+                                      ":perso_dfin"                    => $this->perso_dfin,
+                                      ":perso_px"                      => $this->perso_px,
+                                      ":perso_taille"                  => $this->perso_taille,
+                                      ":perso_admin_echoppe_noir"      => $this->perso_admin_echoppe_noir,
+                                      ":perso_use_repart_auto"         => $this->perso_use_repart_auto,
+                                      ":perso_pnj"                     => $this->perso_pnj,
+                                      ":perso_redispatch"              => $this->perso_redispatch,
+                                      ":perso_nb_redist"               => $this->perso_nb_redist,
+                                      ":perso_mcom_cod"                => $this->perso_mcom_cod,
+                                      ":perso_nb_ch_mcom"              => $this->perso_nb_ch_mcom,
+                                      ":perso_piq_rap_env"             => $this->perso_piq_rap_env,
+                                      ":perso_ancien_avatar"           => $this->perso_ancien_avatar,
+                                      ":perso_nb_crap"                 => $this->perso_nb_crap,
+                                      ":perso_nb_embr"                 => $this->perso_nb_embr,
+                                      ":perso_crapaud"                 => $this->perso_crapaud,
+                                      ":perso_dchange_mcom"            => $this->perso_dchange_mcom,
+                                      ":perso_prestige"                => $this->perso_prestige,
+                                      ":perso_av_mod"                  => $this->perso_av_mod,
+                                      ":perso_mail_inactif_envoye"     => $this->perso_mail_inactif_envoye,
+                                      ":perso_test"                    => $this->perso_test,
+                                      ":perso_nb_spe"                  => $this->perso_nb_spe,
+                                      ":perso_compt_pvp"               => $this->perso_compt_pvp,
+                                      ":perso_dmodif_compt_pvp"        => $this->perso_dmodif_compt_pvp,
+                                      ":perso_effets_auto"             => $this->perso_effets_auto,
+                                      ":perso_quete"                   => $this->perso_quete,
+                                      ":perso_tuteur"                  => ($this->perso_tuteur ? 1 : 0),
+                                      ":perso_voie_magique"            => $this->perso_voie_magique,
+                                      ":perso_energie"                 => $this->perso_energie,
+                                      ":perso_desc_long"               => $this->perso_desc_long,
+                                      ":perso_nb_mort_arene"           => $this->perso_nb_mort_arene,
+                                      ":perso_nb_joueur_tue_arene"     => $this->perso_nb_joueur_tue_arene,
+                                      ":perso_dfin_tangible"           => $this->perso_dfin_tangible,
+                                      ":perso_renommee_artisanat"      => $this->perso_renommee_artisanat,
+                                      ":perso_avatar_version"          => $this->perso_avatar_version,
+                                      ":perso_etage_origine"           => $this->perso_etage_origine,
+                                      ":perso_monstre_attaque_monstre" => $this->perso_monstre_attaque_monstre,
+                                      ":perso_mortel"                  => $this->perso_mortel,
+                                      ":alterego"                      => $this->alterego,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de perso
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -804,8 +806,8 @@ class perso
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \perso
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -1064,7 +1066,8 @@ class perso
         $pdo    = new bddpdo;
         $retour = array();
 
-        $req  = "SELECT pfav_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
+        $req  =
+            "SELECT pfav_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
         while ($result = $stmt->fetch())
@@ -1082,11 +1085,11 @@ class perso
             //    $pdo->execute(array(":pfav_cod" => $result["pfav_cod"]), $stmt3);
             //}
 
-            $retour[] = array(  "pfav_cod" => $result["pfav_cod"],
-                                "nom" =>  $result2["cout_pa"]> 12 ? $result["pfav_nom"] : $result["pfav_nom"] . " (" . $result2["cout_pa"] . " PA)",
-                                "link" => $result["pfav_link"],
-                                "pfav_type" => $result["pfav_type"],
-                                "pfav_misc_cod" => $result["pfav_misc_cod"]);
+            $retour[] = array("pfav_cod"      => $result["pfav_cod"],
+                              "nom"           => $result2["cout_pa"] > 12 ? $result["pfav_nom"] : $result["pfav_nom"] . " (" . $result2["cout_pa"] . " PA)",
+                              "link"          => $result["pfav_link"],
+                              "pfav_type"     => $result["pfav_type"],
+                              "pfav_misc_cod" => $result["pfav_misc_cod"]);
         }
         return $retour;
     }
@@ -1097,9 +1100,9 @@ class perso
         $req    = "SELECT cout_pa_magie(:perso, :sort, :type_lance) as cout";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":sort"       => $sort,
-            ":type_lance" => $type_lance), $stmt);
+                                    ":perso"      => $this->perso_cod,
+                                    ":sort"       => $sort,
+                                    ":type_lance" => $type_lance), $stmt);
         $result = $stmt->fetch();
         return $result['cout'];
     }
@@ -1109,7 +1112,7 @@ class perso
         $pdo    = new bddpdo;
         $req    = "SELECT nb_sort_memorisable(:perso) as nb_sort_memorisable";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute( array(":perso" => $this->perso_cod), $stmt);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['nb_sort_memorisable'];
     }
@@ -1119,7 +1122,7 @@ class perso
         $pdo    = new bddpdo;
         $req    = "select count(*) as nb_sorts_appris from perso_sorts where psort_perso_cod = :perso ";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute( array(":perso" => $this->perso_cod), $stmt);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['nb_sorts_appris'];
     }
@@ -1413,8 +1416,8 @@ class perso
           and perso_cod not in (1,2,3) and perso_pnj != 1";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":type_joueur" => $type_joueur
-        ), $stmt);
+                                  ":type_joueur" => $type_joueur
+                              ), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso;
@@ -1471,14 +1474,16 @@ class perso
         }
 
         // Recherche d'abord avec un nom exacte
-        $req  = "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+        $req  =
+            "select perso_cod from perso where perso_actif = 'O' and LOWER(perso_nom) = :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)), $list_types), $stmt);
 
         // Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
         if ($stmt->rowCount() == 0)
         {
-            $req  = "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
+            $req  =
+                "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array_merge(array(":perso_nom" => '%' . $perso_nom . '%'), $list_types), $stmt);
         }
@@ -1519,18 +1524,18 @@ class perso
     function quete_auto()
     {
         // Run all current queste !!!!
-        $news = "" ;
+        $news = "";
 
-        $quete_perso = new aquete_perso();
+        $quete_perso  = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_en_cours($this->perso_cod);
 
-        if ($quetes_perso && sizeof($quetes_perso)>0)
+        if ($quetes_perso && sizeof($quetes_perso) > 0)
         {
             foreach ($quetes_perso as $k => $q)
             {
                 $nb_etapes = $q->run();
 
-                if ($nb_etapes>0)
+                if ($nb_etapes > 0)
                 {
                     $quete = new aquete();
                     $quete->charge($q->aqperso_aquete_cod);
@@ -1539,7 +1544,7 @@ class perso
                     // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
                     if ($pages != "")
                     {
-                        $news.="<br>&rArr; <em><strong>".$quete->aquete_nom."</strong></em>:<br><br>".$pages;
+                        $news .= "<br>&rArr; <em><strong>" . $quete->aquete_nom . "</strong></em>:<br><br>" . $pages;
                     }
                 }
             }
@@ -1632,7 +1637,7 @@ class perso
         $result = $stmt->fetch();
         return $result['prochaine_dlt'];
     }
-    
+
     function get_poids()
     {
         $pdo    = new bddpdo;
@@ -1660,9 +1665,9 @@ class perso
 
     function nb_locks()
     {
-        $locks = 0 ;
-        $lc  = new lock_combat();
-        $tab = $lc->getBy_lock_cible($this->perso_cod);
+        $locks = 0;
+        $lc    = new lock_combat();
+        $tab   = $lc->getBy_lock_cible($this->perso_cod);
         if ($tab !== false)
         {
             $locks += count($tab);
@@ -1771,8 +1776,8 @@ class perso
         $req    = "select desengagement(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $cible), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1783,8 +1788,8 @@ class perso
         $req    = "select cree_revolution(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $cible), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1795,8 +1800,8 @@ class perso
         $req    = "select embr(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $cible), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1807,8 +1812,8 @@ class perso
         $req    = "select donne_bonbon(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $cible), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1819,8 +1824,8 @@ class perso
         $req    = "select cree_groupe(:perso,:nom_groupe) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":nom_groupe" => $nom_groupe), $stmt);
+                                    ":perso"      => $this->perso_cod,
+                                    ":nom_groupe" => $nom_groupe), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1831,8 +1836,8 @@ class perso
         $req    = "select accepte_invitation(:perso,:groupe) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":groupe" => $groupe), $stmt);
+                                    ":perso"  => $this->perso_cod,
+                                    ":groupe" => $groupe), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1843,8 +1848,8 @@ class perso
         $req    = "select refuse_invitation(:perso,:groupe) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":groupe" => $groupe), $stmt);
+                                    ":perso"  => $this->perso_cod,
+                                    ":groupe" => $groupe), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1855,24 +1860,25 @@ class perso
         $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:messages,:messagemort,:champions) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"       => $this->perso_cod,
-            ":pa"          => $pa,
-            ":pv"          => $pv,
-            ":dlt"         => $dlt,
-            ":bonus"       => $bonus,
-            ":messages"    => $messages,
-            ":messagemort" => $messagemort,
-            ":champions"   => $champions), $stmt);
+                                    ":perso"       => $this->perso_cod,
+                                    ":pa"          => $pa,
+                                    ":pv"          => $pv,
+                                    ":dlt"         => $dlt,
+                                    ":bonus"       => $bonus,
+                                    ":messages"    => $messages,
+                                    ":messagemort" => $messagemort,
+                                    ":champions"   => $champions), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
 
     function coterie()
     {
-        $pdo    = new bddpdo();
-        $req    = "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut = 1 ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
+        $pdo  = new bddpdo();
+        $req  =
+            "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut = 1 ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return -1;
@@ -1891,7 +1897,7 @@ class perso
         $req    = "select f_cherche_perso(:nom) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":nom" => $nom), $stmt);
+                                    ":nom" => $nom), $stmt);
         $result = $stmt->fetch();
 
         $this_perso = new perso;
@@ -1909,8 +1915,8 @@ class perso
         $req    = "select teleportation_divine(:perso,:dest) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dest"  => $dest), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dest"  => $dest), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1921,9 +1927,9 @@ class perso
         $req    = "select invite_groupe(:perso,:groupe,:invite) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"  => $this->perso_cod,
-            ":groupe" => $groupe,
-            ":invite" => $invite), $stmt);
+                                    ":perso"  => $this->perso_cod,
+                                    ":groupe" => $groupe,
+                                    ":invite" => $invite), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1934,10 +1940,10 @@ class perso
         $req    = "select f_enchantement(:perso,:obj,:enc,:type_appel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":obj"        => $obj,
-            ":enc"        => $enc,
-            ":type_appel" => $type_appel), $stmt);
+                                    ":perso"      => $this->perso_cod,
+                                    ":obj"        => $obj,
+                                    ":enc"        => $enc,
+                                    ":type_appel" => $type_appel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1948,8 +1954,8 @@ class perso
         $req    = "select offre_boire(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":cible" => $cible), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":cible" => $cible), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1960,7 +1966,7 @@ class perso
         $req    = "select ouvre_cadeau(:perso) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+                                    ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1971,7 +1977,7 @@ class perso
         $req    = "select donne_rouge(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+                                    ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -1982,7 +1988,7 @@ class perso
         $req    = "select donne_noir(:perso,:cible) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+                                    ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2033,8 +2039,8 @@ class perso
         $req    = "select f_passe_niveau(:perso,:amel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":amel"  => $amel), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":amel"  => $amel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2045,9 +2051,9 @@ class perso
         $req    = "select f_rituel_modif_caracs(:perso,:demel,:amel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-                                ":perso" => $this->perso_cod,
-                                ":demel"  => $demel,
-                                ":amel"  => $amel), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":demel" => $demel,
+                                    ":amel"  => $amel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2058,8 +2064,8 @@ class perso
         $req    = "select f_rituel_modif_voiemagique(:perso,:voie) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-                                ":perso" => $this->perso_cod,
-                                ":voie"  => $voie), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":voie"  => $voie), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2070,8 +2076,8 @@ class perso
         $req    = "select depose_objet(:perso,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2082,8 +2088,8 @@ class perso
         $req    = "select vente_bat(:perso,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2094,42 +2100,42 @@ class perso
         $req    = "select vote_revolution(:perso,:revguilde,:vote) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"     => $this->perso_cod,
-            ":revguilde" => $revguilde,
-            ":vote"      => $vote), $stmt);
+                                    ":perso"     => $this->perso_cod,
+                                    ":revguilde" => $revguilde,
+                                    ":vote"      => $vote), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
 
     function magasin_achat_generique($lieu, $objet, $qte)
     {
-        $retour = "" ;
+        $retour = "";
         $pdo    = new bddpdo();
 
         // Avant de faire la boucle on vérifie que les objest sont bien dans les stocks du magasin
-        $req = "select sum(mgstock_nombre) count from stock_magasin_generique where mgstock_lieu_cod = :lieu and mgstock_gobj_cod = :objet and mgstock_vente_persos='O' ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
-        if ( !$result = $stmt->fetch())
+        $req  =
+            "select sum(mgstock_nombre) count from stock_magasin_generique where mgstock_lieu_cod = :lieu and mgstock_gobj_cod = :objet and mgstock_vente_persos='O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":lieu"  => $lieu,
+                                  ":objet" => $objet), $stmt);
+        if (!$result = $stmt->fetch())
         {
-            return  '<p>Erreur ! Impossible de vérifier dans les stocks du magasin pour acheter cet objet  !';
-        }
-        else if ((int)$result['count']<$qte)
+            return '<p>Erreur ! Impossible de vérifier dans les stocks du magasin pour acheter cet objet  !';
+        } else if ((int)$result['count'] < $qte)
         {
-            return  '<p>Erreur ! Impossible les stocks du magasin sont insuffisants  !';
+            return '<p>Erreur ! Impossible les stocks du magasin sont insuffisants  !';
         }
 
         // Faire les achats :
         for ($i = 0; $i < $qte; $i++)
         {
-            $req = "select magasin_achat_generique(:perso,:lieu,:objet) as resultat ";
+            $req    = "select magasin_achat_generique(:perso,:lieu,:objet) as resultat ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(
-                ":perso" => $this->perso_cod,
-                ":lieu"  => $lieu,
-                ":objet" => $objet), $stmt);
+                                        ":perso" => $this->perso_cod,
+                                        ":lieu"  => $lieu,
+                                        ":objet" => $objet), $stmt);
             $result = $stmt->fetch();
             $retour .= $result['resultat'];
         }
@@ -2144,9 +2150,9 @@ class perso
                 = "select magasin_achat(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":lieu"  => $lieu,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2158,9 +2164,9 @@ class perso
                 = "select magasin_vente(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":lieu"  => $lieu,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2172,9 +2178,9 @@ class perso
                 = "select magasin_vente_generique(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":lieu"  => $lieu,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2186,9 +2192,9 @@ class perso
                 = "select magasin_identifie(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":lieu"  => $lieu,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2200,9 +2206,9 @@ class perso
                 = "select magasin_repare(:perso,:lieu,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":lieu"  => $lieu,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":lieu"  => $lieu,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2214,9 +2220,9 @@ class perso
                 = "select cree_receptacle(:perso,:sort,:type_lance) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":sort"       => $sort,
-            ":type_lance" => $type_lance), $stmt);
+                                    ":perso"      => $this->perso_cod,
+                                    ":sort"       => $sort,
+                                    ":type_lance" => $type_lance), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2228,9 +2234,21 @@ class perso
                 = "select cree_parchemin(:perso,:sort,:type_lance) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso"      => $this->perso_cod,
-            ":sort"       => $sort,
-            ":type_lance" => $type_lance), $stmt);
+                                    ":perso"      => $this->perso_cod,
+                                    ":sort"       => $sort,
+                                    ":type_lance" => $type_lance), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function cree_perso()
+    {
+        $pdo    = new bddpdo();
+        $req
+                = "select cree_perso(:perso) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(
+                                    ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2242,9 +2260,9 @@ class perso
                 = "select don_br(:perso,:dest,:qte) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dest"  => $dest,
-            ":qte"   => $qte), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dest"  => $dest,
+                                    ":qte"   => $qte), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2256,8 +2274,8 @@ class perso
                 = "select milice_tel(:perso,:dest) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dest"  => $dest), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dest"  => $dest), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2269,8 +2287,8 @@ class perso
                 = "select vend_objet(:perso,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2282,8 +2300,8 @@ class perso
                 = "select change_mcom_cod(:perso,:mode) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":mode"  => $mode), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":mode"  => $mode), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2295,8 +2313,8 @@ class perso
                 = "select detail_redispatch(:perso,:amel) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":amel"  => $amel), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":amel"  => $amel), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2308,7 +2326,7 @@ class perso
                 = "select start_redispatch(:perso) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod), $stmt);
+                                    ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2320,8 +2338,8 @@ class perso
                 = "select achete_objet(:perso,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2333,8 +2351,8 @@ class perso
                 = "select prie_dieu(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dieu"  => $dieu), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2346,8 +2364,8 @@ class perso
                 = "select ceremonie_dieu(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dieu"  => $dieu), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2359,8 +2377,8 @@ class perso
                 = "select change_grade(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dieu"  => $dieu), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2372,35 +2390,32 @@ class perso
                 = "select prie_dieu_ext(:perso,:dieu) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":dieu"  => $dieu), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":dieu"  => $dieu), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
 
-    function niveau_blessures($pv=null, $pv_max=null)
+    function niveau_blessures($pv = null, $pv_max = null)
     {
         // Sans paramètres on prends le perso courant
-        if ($pv==null || $pv_max==null)
+        if ($pv == null || $pv_max == null)
         {
-            $pv = $this->perso_pv ;
-            $pv_max = $this->perso_pv_max ;
+            $pv     = $this->perso_pv;
+            $pv_max = $this->perso_pv_max;
         }
 
-        $niveau_blessures = "" ;
+        $niveau_blessures = "";
         if ($pv / $pv_max < 0.15)
         {
             $niveau_blessures = 'presque mort';
-        }
-        else if ($pv / $pv_max < 0.25)
+        } else if ($pv / $pv_max < 0.25)
         {
             $niveau_blessures = 'gravement touché';
-        }
-        else if ($pv / $pv_max < 0.5)
+        } else if ($pv / $pv_max < 0.5)
         {
             $niveau_blessures = 'blessé';
-        }
-        else if ($pv / $pv_max < 0.75)
+        } else if ($pv / $pv_max < 0.75)
         {
             $niveau_blessures = 'touché';
         }
@@ -2414,8 +2429,8 @@ class perso
                 = "select f_repare_" . $type_rep . "(:perso,:objet) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ":perso" => $this->perso_cod,
-            ":objet" => $objet), $stmt);
+                                    ":perso" => $this->perso_cod,
+                                    ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
     }
@@ -2443,7 +2458,8 @@ class perso
                 $this->avatar_largeur = $size[0];
                 $this->avatar_hauteur = $size[1];
             }
-        } catch (Exception $e)
+        }
+        catch (Exception $e)
         {
             unset($e);
         }
@@ -2478,8 +2494,8 @@ class perso
         $req    = "select valeur_bonus(:perso, '$bonus') as bonus";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
-            ':perso' => $this->perso_cod
-        ), $stmt);
+                                    ':perso' => $this->perso_cod
+                                ), $stmt);
         $result = $stmt->fetch();
         return $result['bonus'];
 
@@ -2584,15 +2600,15 @@ class perso
             order by perso_type_perso desc, distance,pos_x,pos_y,perso_nom ";
         $stmt           = $pdo->prepare($req_vue_joueur);
         $stmt           = $pdo->execute(array(
-            ':pos_cod'   => $this->pos->pos_cod,
-            ':perso'     => $this->perso_cod,
-            ':pos_etage' => $this->pos->pos_etage,
-            ':x_min'     => $this->x_min,
-            ':x_max'     => $this->x_max,
-            ':y_min'     => $this->y_min,
-            ':y_max'     => $this->y_max,
-            ':compte'    => $this->compte->compt_cod
-        ), $stmt);
+                                            ':pos_cod'   => $this->pos->pos_cod,
+                                            ':perso'     => $this->perso_cod,
+                                            ':pos_etage' => $this->pos->pos_etage,
+                                            ':x_min'     => $this->x_min,
+                                            ':x_max'     => $this->x_max,
+                                            ':y_min'     => $this->y_min,
+                                            ':y_max'     => $this->y_max,
+                                            ':compte'    => $this->compte->compt_cod
+                                        ), $stmt);
         return $stmt->fetchAll();
     }
 
@@ -2691,24 +2707,24 @@ class perso
                 and lock_attaquant = :perso ";
         $stmt           = $pdo->prepare($req_vue_joueur);
         $stmt           = $pdo->execute(array(
-            ':pos_cod'   => $this->pos->pos_cod,
-            ':perso'     => $this->perso_cod,
-            ':pos_etage' => $this->pos->pos_etage,
-            ':x_min'     => $this->x_min,
-            ':x_max'     => $this->x_max,
-            ':y_min'     => $this->y_min,
-            ':y_max'     => $this->y_max,
-            ':compte'    => $this->compte->compt_cod
-        ), $stmt);
+                                            ':pos_cod'   => $this->pos->pos_cod,
+                                            ':perso'     => $this->perso_cod,
+                                            ':pos_etage' => $this->pos->pos_etage,
+                                            ':x_min'     => $this->x_min,
+                                            ':x_max'     => $this->x_max,
+                                            ':y_min'     => $this->y_min,
+                                            ':y_max'     => $this->y_max,
+                                            ':compte'    => $this->compte->compt_cod
+                                        ), $stmt);
         return $stmt->fetchAll();
     }
 
     function race()
     {
-        $pdo    = new bddpdo;
-        $req    = "select race_nom from race where race_cod = ? ";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array( $this->perso_race_cod ), $stmt);
+        $pdo  = new bddpdo;
+        $req  = "select race_nom from race where race_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_race_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return 'inconnue';
@@ -2717,45 +2733,43 @@ class perso
     }
 
     /**
-     * @param $field: champ au format perso.champ
+     * @param $field : champ au format perso.champ
      * @return string
      */
     public function get_champ($field)
     {
         // Traitements Spécifiques. --------------------------------------
-        if ($field =="perso.sex")
+        if ($field == "perso.sex")
         {
             return $this->perso_sex == "M" ? "Monsieur" : "Madame";
-        }
-        else if ((substr($field, 0, 12)  == "perso.genre(") && (substr($field, -1)  == ")"))
+        } else if ((substr($field, 0, 12) == "perso.genre(") && (substr($field, -1) == ")"))
         {
             $genre = explode(",", substr($field, 12, -1));
-            return $this->perso_sex == "M" ? $genre[0] : $genre[1] ;
+            return $this->perso_sex == "M" ? $genre[0] : $genre[1];
         }
 
         //Traitement générique. --------------------------------------
-        if (substr($field, -2)  == "()")
+        if (substr($field, -2) == "()")
         {
             //Cas d'une methode----
-            $field = substr($field , 6, -2);    //supression de "perso." et de "()"
+            $field = substr($field, 6, -2);    //supression de "perso." et de "()"
             if (method_exists($this, $field))
             {
                 return $this->$field();
             }
-        }
-        else
+        } else
         {
             //Cas d'un propriétée---
             $field = str_replace(".", "_", $field);
             if (property_exists($this, $field))
             {
-                return $this->$field ;
+                return $this->$field;
             }
 
-            $field = substr($field , 6);    //supression de "perso."
+            $field = substr($field, 6);    //supression de "perso."
             if (property_exists($this, $field))
             {
-                return $this->$field ;
+                return $this->$field;
             }
         }
         return "";
@@ -2764,8 +2778,8 @@ class perso
 
     function perso_malus()
     {
-        $pdo    = new bddpdo;
-        $req    = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
+        $pdo  = new bddpdo;
+        $req  = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
                    from bonus
                    inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                    where bonus_perso_cod = ?
@@ -2774,8 +2788,8 @@ class perso
                             or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
                     group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode	
                     order by tbonus_libc";
-        $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array( $this->perso_cod ), $stmt);
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
         if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
         {
             return array();
