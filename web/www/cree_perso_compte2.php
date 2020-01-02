@@ -1,10 +1,10 @@
 <?php
 
-function envoie_message($titre,$corps,$dest,$exp)
+function envoie_message($titre, $corps, $dest, $exp)
 {
-    $mes = new messages();
+    $mes            = new messages();
     $mes->msg_date2 = date('Y-m-d H:i:s');
-    $mes->msg_date = date('Y-m-d H:i:s');
+    $mes->msg_date  = date('Y-m-d H:i:s');
     $mes->msg_titre = $titre;
     $mes->msg_corps = $corps;
     $mes->stocke(true);
@@ -13,176 +13,164 @@ function envoie_message($titre,$corps,$dest,$exp)
 
 include "includes/classes.php";
 include "ident.php";
-?>
-<!DOCTYPE html>
-<html>
-<link rel="stylesheet" type="text/css" href="style.css" title="essai">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link href="css/delain.css" rel="stylesheet">
-<head>
-    <title>Création de perso</title>
-</head>
-<body>
-<div class="bordiv">
-    <?php
 
-    $erreur = 0;
-    // on recherche s'il existe déjà un aventurier à ce nom
-    $db                = new base_delain;
-    $creation_possible = false;
-    $creation_4e       = false;
 
-    if (isset($_REQUEST['nom']))
+$erreur = 0;
+// on recherche s'il existe déjà un aventurier à ce nom
+$db                = new base_delain;
+$creation_possible = false;
+$creation_4e       = false;
+
+if (isset($_REQUEST['nom']))
+{
+    $nom2 = $_REQUEST['nom'];
+} else
+{
+    $nom2 = '';
+}
+
+if (!isset($compt_cod))
+{
+    $error_message = "<p><b>ERREUR </b>Numéro de compte non défini !";
+} else
+{
+
+    $logger->debug('Debug manuel page créé perso compte');
+    // Recherche du type de perso en cours de création
+    $compte = new compte();
+    $compte->charge($compt_cod);
+
+    $nb_perso           = $compte->compte_nombre_perso();
+    $possede_4e         = $compte->possede_4e_perso();
+    $nb_perso_par_ligne = ($compte->autorise_4e_perso() || $possede_4e) ? 4 : 3;
+    $nb_perso_max       = $compte->compt_ligne_perso * $nb_perso_par_ligne;
+    //$nb_perso_max = 6;
+    $creation_possible = $nb_perso < $nb_perso_max;
+    $creation_4e       = ($nb_perso == 3 && !$possede_4e);
+}
+if ($creation_possible)
+{
+    $perso = new perso;
+    if (!isset($_REQUEST['nom']))
     {
-        $nom2 = $_REQUEST['nom'];
-    } else
+        $erreur        = -1;
+        $error_message = "<p><b>ERREUR </b>Nom de personnage vide, ou perdu dans les limbes informatiques...";
+    }
+    if (trim($_REQUEST['nom']) == '')
     {
-        $nom2 = '';
+        $erreur        = -1;
+        $error_message = "<p><b>ERREUR </b>Nom de personnage vide, ou perdu dans les limbes informatiques...";
+    }
+    if ($perso->f_cherche_perso($_REQUEST['nom']))
+    {
+        $erreur        = -1;
+        $error_message = "<p>Un aventurier porte déjà ce nom !!!";
     }
 
-    if (!isset($compt_cod))
-    {
-        echo "<p>Numéro de compte non défini ! Merci de contacter Merrick (page cree_perso_compte2.php)!";
-    } else
-    {
 
-        $logger->debug('Debug manuel page créé perso compte');
-        // Recherche du type de perso en cours de création
-        $compte = new compte();
-        $compte->charge($compt_cod);
-
-        $nb_perso           = $compte->compte_nombre_perso();
-        $possede_4e         = $compte->possede_4e_perso();
-        $nb_perso_par_ligne = ($compte->autorise_4e_perso() || $possede_4e) ? 4 : 3;
-        $nb_perso_max       = $compte->compt_ligne_perso * $nb_perso_par_ligne;
-        //$nb_perso_max = 6;
-        $creation_possible = $nb_perso < $nb_perso_max;
-        $creation_4e       = ($nb_perso == 3 && !$possede_4e);
+    if (($_REQUEST['force'] > 16) || ($_REQUEST['dex'] > 16) || ($_REQUEST['intel'] > 16) || ($_REQUEST['con'] > 16))
+    {
+        $erreur        = -1;
+        $error_message = "<p>Erreur sur les valeurs choisies...";
     }
-    if ($creation_possible)
+    if (($_REQUEST['force'] < 6) || ($_REQUEST['dex'] < 6) || ($_REQUEST['intel'] < 6) || ($_REQUEST['con'] < 6))
     {
-        $perso = new perso;
-        if (!isset($_REQUEST['nom']))
-        {
-            $erreur = -1;
-            echo '<p>Nom de personnage vide, ou perdu dans les limbes informatiques...</p>';
-        }
-        if (trim($_REQUEST['nom']) == '')
-        {
-            $erreur = -1;
-            echo '<p>Nom de personnage vide, ou perdu dans les limbes informatiques...</p>';
-        }
-        if ($perso->f_cherche_perso($_REQUEST['nom']))
-        {
-            $erreur = -1;
-            echo("<p>Un aventurier porte déjà ce nom !!!</p>\n");
-        }
+        $erreur        = -1;
+        $error_message = "<p>Erreur sur les valeurs choisies...";
+    }
+    if (($_REQUEST['force'] + $_REQUEST['dex'] + $_REQUEST['intel'] + $_REQUEST['con']) > 45)
+    {
+        $erreur        = -1;
+        $error_message = "<p>Erreur sur les valeurs choisies...";
+        /* On doit retourner au premier formulaire */
+    }
+    if ($_REQUEST['voie'] == 'err')
+    {
+        $error_message = "<p>Vous devez choisir une voie pour votre aventurier !";
+        $erreur        = -1;
+    }
+    if ($_REQUEST['poste'] == 'err')
+    {
+        $error_message = "<p>Vous devez choisir un poste d'entrée pour votre aventurier !";
+        $erreur        = -1;
+    }
+    if (!preg_match('/^[0-9]*$/i', $_REQUEST['force']))
+    {
+        $error_message = "<p><b>ANOMALIE, valeur non entière</b> !";
 
+        $erreur = -1;
+    }
+    if (!preg_match('/^[0-9]*$/i', $_REQUEST['dex']))
+    {
+        $error_message = "ANOMALIE, valeur non entière !";
+        $erreur        = -1;
+    }
+    if (!preg_match('/^[0-9]*$/i', $_REQUEST['intel']))
+    {
+        $error_message = "ANOMALIE, valeur non entière !";
+        $erreur        = -1;
+    }
+    if (!preg_match('/^[0-9]*$/i', $_REQUEST['con']))
+    {
+        $error_message = "ANOMALIE, valeur non entière !";
+        $erreur        = -1;
+    }
 
-        if (($_REQUEST['force'] > 16) || ($_REQUEST['dex'] > 16) || ($_REQUEST['intel'] > 16) || ($_REQUEST['con'] > 16))
+    // pas d'erreur, on continue
+    if ($erreur == 0)
+    {
+        /* On passe à la suite du formulaire */
+
+        $reparation = ($_REQUEST['dex'] + $_REQUEST['intel']) * 3;
+        //
+        // Si il s'agit d'un 4° perso dans le compte, alors on va créer un perso "d'accompagnateur" au 0 et -1
+        //
+        $perso_pnj = 0;
+        if ($creation_4e)
         {
-            $erreur = -1;
-            echo("<p>Erreur sur les valeurs choisies (1)!!!</p>\n");
+            $perso_pnj = 2;
         }
-        if (($_REQUEST['force'] < 6) || ($_REQUEST['dex'] < 6) || ($_REQUEST['intel'] < 6) || ($_REQUEST['con'] < 6))
+        //
+        // insertion dans la table perso
+        //
+        $perso->perso_nom          = $_REQUEST['nom'];
+        $perso->perso_for          = $_REQUEST['force'];
+        $perso->perso_dex          = $_REQUEST['dex'];
+        $perso->perso_int          = $_REQUEST['intel'];
+        $perso->perso_con          = $_REQUEST['con'];
+        $perso->perso_for_init     = $_REQUEST['force'];
+        $perso->perso_dex_init     = $_REQUEST['dex'];
+        $perso->perso_int_init     = $_REQUEST['intel'];
+        $perso->perso_con_init     = $_REQUEST['con'];
+        $perso->perso_sex          = $_REQUEST['sexe'];
+        $perso->perso_race_cod     = $_REQUEST['race'];
+        $perso->perso_pv           = 0;
+        $perso->perso_pv_max       = 0;
+        $perso->perso_dlt          = date('Y-m-d H:i:s');
+        $perso->perso_temps_tour   = 720;
+        $perso->perso_dcreat       = date('Y-m-d H:i:s');
+        $perso->perso_actif        = 'O';
+        $perso->perso_pa           = 12;
+        $perso->perso_der_connex   = date('Y-m-d H:i:s');
+        $perso->perso_des_regen    = 1;
+        $perso->perso_valeur_regen = 3;
+        $perso->perso_vue          = 3;
+        $perso->perso_type_perso   = 1;
+        $perso->perso_reputation   = 0;
+        $perso->perso_pnj          = $perso_pnj;
+        $perso->stocke(true);
+
+        $nouveau_perso_cod = $perso->perso_cod;
+
+        //
+        // fonction de calcul des compétences
+        //
+        $cree_perso = $perso->cree_perso();
+        if ($cree_perso != 0)
         {
-            $erreur = -1;
-            echo("<p>Erreur sur les valeurs choisies !!! (2)</p>\n");
-        }
-        if (($_REQUEST['force'] + $_REQUEST['dex'] + $_REQUEST['intel'] + $_REQUEST['con']) > 45)
-        {
-            $erreur = -1;
-            echo("<p>Erreur sur les valeurs choisies !!! (3)</p>\n");
-            /* On doit retourner au premier formulaire */
-        }
-        if ($_REQUEST['voie'] == 'err')
-        {
-            echo "Vous devez choisir une voie pour votre aventurier !<br>";
-            $erreur = -1;
-        }
-        if ($_REQUEST['poste'] == 'err')
-        {
-            echo "Vous devez choisir un poste d'entrée pour votre aventurier !<br>";
-            $erreur = -1;
-        }
-        if (!preg_match('/^[0-9]*$/i', $_REQUEST['force']))
-        {
-            echo "<p>Anomalie sur force !";
-            $erreur = -1;
-        }
-        if (!preg_match('/^[0-9]*$/i', $_REQUEST['dex']))
-        {
-            echo "<p>Anomalie sur dextérité !";
-            $erreur = -1;
-        }
-        if (!preg_match('/^[0-9]*$/i', $_REQUEST['intel']))
-        {
-            echo "<p>Anomalie sur intelligence !";
-            $erreur = -1;
-        }
-        if (!preg_match('/^[0-9]*$/i', $_REQUEST['con']))
-        {
-            echo "<p>Anomalie sur constitution !";
-            $erreur = -1;
-        }
-        if ($erreur != 0)
-        {
-            echo '<a href="cree_perso_compte.php?retour=1&ret_for=' . $_REQUEST['force'] . '&ret_dex=' . $_REQUEST['dex'] . '&ret_con=' . $_REQUEST['con'] . '&ret_int=' . $_REQUEST['intel'] . '">Retourner à l’étape 1</a>';
+            $error_message = "Un problème est survenu lors du calcul des compétences : erreur $cree_perso";
         } else
         {
-            /* On passe à la suite du formulaire */
-
-            $reparation = ($_REQUEST['dex'] + $_REQUEST['intel']) * 3;
-            //
-            // Si il s'agit d'un 4° perso dans le compte, alors on va créer un perso "d'accompagnateur" au 0 et -1
-            //
-            $perso_pnj = 0;
-            if ($creation_4e)
-            {
-                $perso_pnj = 2;
-            }
-            //
-            // insertion dans la table perso
-            //
-            $perso->perso_nom          = $_REQUEST['nom'];
-            $perso->perso_for          = $_REQUEST['force'];
-            $perso->perso_dex          = $_REQUEST['dex'];
-            $perso->perso_int          = $_REQUEST['intel'];
-            $perso->perso_con          = $_REQUEST['con'];
-            $perso->perso_for_init     = $_REQUEST['force'];
-            $perso->perso_dex_init     = $_REQUEST['dex'];
-            $perso->perso_int_init     = $_REQUEST['intel'];
-            $perso->perso_con_init     = $_REQUEST['con'];
-            $perso->perso_sex          = $_REQUEST['sexe'];
-            $perso->perso_race_cod     = $_REQUEST['race'];
-            $perso->perso_pv           = 0;
-            $perso->perso_pv_max       = 0;
-            $perso->perso_dlt          = date('Y-m-d H:i:s');
-            $perso->perso_temps_tour   = 720;
-            $perso->perso_dcreat       = date('Y-m-d H:i:s');
-            $perso->perso_actif        = 'O';
-            $perso->perso_pa           = 12;
-            $perso->perso_der_connex   = date('Y-m-d H:i:s');
-            $perso->perso_des_regen    = 1;
-            $perso->perso_valeur_regen = 3;
-            $perso->perso_vue          = 3;
-            $perso->perso_type_perso   = 1;
-            $perso->perso_reputation   = 0;
-            $perso->perso_pnj          = $perso_pnj;
-            $perso->stocke(true);
-
-            $nouveau_perso_cod = $perso->perso_cod;
-
-            //
-            // fonction de calcul des compétences
-            //
-            $cree_perso = $perso->cree_perso();
-            if ($cree_perso != 0)
-            {
-                echo("<br>Un problème est survenu lors du calcul des compétences : erreur $cree_perso<br>\n");
-            }
-
             // on attache le perso au compte
             $perso_compte                          = new perso_compte();
             $perso_compte->pcompt_perso_cod        = $nouveau_perso_cod;
@@ -340,7 +328,6 @@ include "ident.php";
                     $stmt = $pdo->execute(array(':perso' => $nouveau_perso_cod,
                                                 ':x'     => $positions->pos_x,
                                                 ':y'     => $positions->pos_y), $stmt);
-
 
 
                     // parchemins
@@ -554,11 +541,11 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 « - Dis donc, vous ne seriez pas en train de nous écouter, vous ? Vous venez d’arriver, ça se voit. Comment vous appelez-vous ? »<br>
 ";
 
-            $titre       = "Vous êtes indiscret...";
+            $titre = "Vous êtes indiscret...";
 
             $perso_gildwen = new perso;
             $perso_gildwen->f_cherche_perso(('gildwen'));
-            envoie_message($titre,$compte,$nouveau_perso_cod,$perso_gildwen->perso_cod);
+            envoie_message($titre, $compte, $nouveau_perso_cod, $perso_gildwen->perso_cod);
             /******************************/
             /* On enregistre l'expéditeur */
             /******************************/
@@ -588,7 +575,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 		<br>
 		<br>";
                 $titre = 'Une nouvelle responsabilité vous incombe';
-                envoie_message($titre,$compte,$nouveau_perso_cod,$nouveau_perso_cod);
+                envoie_message($titre, $compte, $nouveau_perso_cod, $nouveau_perso_cod);
             } else
             {
 
@@ -599,7 +586,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 //
                 // on commence par rechercher un tuteur
                 //
-                $req = "select t1.perso_cod,t1.perso_nom,t2.compteur from (select perso_cod,perso_nom
+                $req  = "select t1.perso_cod,t1.perso_nom,t2.compteur from (select perso_cod,perso_nom
 				from perso,perso_compte,compte
 				where perso_tuteur
 				and perso_type_perso = 1
@@ -622,9 +609,9 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                     //
                     // on va faire l'association
                     //
-                    $tutorat = new tutorat();
+                    $tutorat               = new tutorat();
                     $tutorat->tuto_filleul = $nouveau_perso_cod;
-                    $tutorat->tuto_tuteur = $tuteur;
+                    $tutorat->tuto_tuteur  = $tuteur;
                     $tutorat->stocke(true);
 
                     //
@@ -637,14 +624,14 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 			Tu peux le contacter en lui envoyant une missive, en créant un nouveau message ou en répondant simplement à ce message.";
                     $titre = 'Bienvenue';
 
-                    envoie_message($titre,$compte,$nouveau_perso_cod,$tuteur);
+                    envoie_message($titre, $compte, $nouveau_perso_cod, $tuteur);
                     //
                     // préparation du message envoyé au tuteur
                     //
                     $corps =
                         "Un nouvel aventurier vient d’arriver sur ces terres, et tu as été choisi pour être son parrain ! Celui qui aura besoin de tes conseils s’appelle <a href=\"http://www.jdr-delain.net/jeu/visu_desc_perso.php?visu=" . $nouveau_perso_cod . "\">" . $nom2 . "</a>. Merci pour ton volontariat ! ";
                     $titre = 'Un nouvel aventurier....';
-                    envoie_message($titre,$compte,$tuteur,$nouveau_perso_cod);
+                    envoie_message($titre, $compte, $tuteur, $nouveau_perso_cod);
                 }
             }
             ?>
@@ -718,14 +705,29 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 
             <?php
         }
-    } else
-    {
-        echo '<p>Erreur ! Il semble que vous ayiez déjà assez de personnages comme cela...</p>';
+
+
     }
-    ?>
-</div>
-</body>
-</html>
+} else
+{
+    echo '<p>Erreur ! Il semble que vous ayiez déjà assez de personnages comme cela...</p>';
+}
+?>
+    </div>
+    </body>
+    </html>
+
+
+<?php
+$template     = $twig->load('cree_perso_compte2.twig');
+$options_twig = array(
+    'PERCENT_FINANCES' => $percent_finances,
+    'ERROR_MESSAGE'    => $error_message,
+    'REQUEST'          => $_REQUEST
+
+
+);
+
 
 
 

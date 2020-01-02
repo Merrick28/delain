@@ -1,0 +1,82 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    {% if ERROR_MESSAGE is defined %}
+        <div class="groupdiv">
+            <div class="alert alert-danger">
+                {{ ERROR_MESSAGE }}
+            </div>
+        </div>
+        <a href="cree_perso_compte.php?retour=1&ret_for={{ REQUEST.force }}&ret_dex={{ REQUEST.dex }}&ret_con={{ REQUEST.con }}&ret_int={{ REQUEST.int }}">Retourner à l’étape 1</a>
+    {% endif %}
+    <div class="groupdiv">
+        <FORM method="post" action="formu_cree_compte2.php" id="formuperso1">
+            <div class="form-group row form-group-delain">
+                <label for="mail" class="col-sm-2 col-form-label">Adresse e-mail</label>
+                <div class="col-sm-10">
+                    <input type="email" class="form-control formControlDelain" id="mail" name="mail" placeholder="Email"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group row  form-group-delain">
+                <label for="mail" class="col-sm-2 col-form-label">Nom du compte</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control formControlDelain" id="nom" name="nom"
+                           placeholder="Nom du compte" required>
+                </div>
+            </div>
+
+            <div class="form-group row form-group-delain">
+                <label for="mail" class="col-sm-2 col-form-label">Mot de passe</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control formControlDelain" id="pass1" name="pass1" required>
+                </div>
+            </div>
+
+            <div class="form-group row form-group-delain">
+                <label for="mail" class="col-sm-2 col-form-label">Confirmer le mot de passe</label>
+                <div class="col-sm-10">
+                    <input type="password" class="form-control formControlDelain" id="pass2" name="pass2" required>
+                </div>
+            </div>
+
+            <div class="form-group row form-group-delain">
+                <div class="col-sm-2">Charte</div>
+                <div class="col-sm-10">
+                    <div class="form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" type="checkbox" name="regles" id="regles" value="1"
+                                   required> Je
+                            certifie avoir lu la <a href="charte.php" target="_blank">charte des joueurs</a> et
+                            l'accepter.
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group row form-group-delain">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-default btn-delain">Valider et continuer</button>
+                </div>
+            </div>
+
+        </FORM>
+    </div>
+{% endblock %}
+{% block postscripts %}
+    <script>
+        $("#formuperso1").validate({
+            rules: {
+                nom: {
+                    required: true,
+                    minlength: 5
+                },
+                pass1: "required",
+                pass2: {
+                    equalTo: "#pass1"
+                }
+            }
+        });
+    </script>
+
+{% endblock %}
