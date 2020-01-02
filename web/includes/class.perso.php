@@ -2243,6 +2243,7 @@ class perso
 
     function cree_perso()
     {
+
         $pdo    = new bddpdo();
         $req
                 = "select cree_perso(:perso) as resultat";
@@ -2250,6 +2251,9 @@ class perso
         $stmt   = $pdo->execute(array(
                                     ":perso" => $this->perso_cod), $stmt);
         $result = $stmt->fetch();
+        // les données ont été modifiées en base
+        // on recharge pour ne pas écraser les valeurs par la suite
+        $this->charge($this->perso_cod);
         return $result['resultat'];
     }
 

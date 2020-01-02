@@ -161,7 +161,15 @@ include "ident.php";
             $perso->stocke(true);
 
             $nouveau_perso_cod = $perso->perso_cod;
-            $logger->debug('Nouveau code perso ' . $nouveau_perso_cod);
+
+            //
+            // fonction de calcul des compétences
+            //
+            $cree_perso = $perso->cree_perso();
+            if ($cree_perso != 0)
+            {
+                echo("<br>Un problème est survenu lors du calcul des compétences : erreur $cree_perso<br>\n");
+            }
 
             // on attache le perso au compte
             $perso_compte                          = new perso_compte();
@@ -196,14 +204,7 @@ include "ident.php";
             $perso_position->stocke(true);
 
 
-            //
-            // fonction de calcul des compétences
-            //
-            $cree_perso = $perso->cree_perso();
-            if ($cree_perso != 0)
-            {
-                echo("<br>Un problème est survenu lors du calcul des compétences : erreur $cree_perso<br>\n");
-            }
+
 
             $objet = new objets();
             $objet->cree_objet_perso(725, $nouveau_perso_cod);
@@ -752,5 +753,6 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 </div>
 </body>
 </html>
+
 
 
