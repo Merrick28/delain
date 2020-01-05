@@ -244,12 +244,12 @@ if (defined('TWIG_CACHE'))
     } else
     {
         $twig = new Twig_Environment($loader, array('debug' => true));
-        $twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
     }
 } else
 {
     $twig = new Twig_Environment($loader, array('debug' => true));
-    $twig->addExtension(new Twig_Extension_Debug());
+    $twig->addExtension(new \Twig\Extension\DebugExtension());
 }
 
 

@@ -44,7 +44,10 @@
 
                 {% for typecomp in ALLTC %}
                     {% if typecomp.comp|length != 0 %}
-                        <tr colspan="2" class="soustitre"><p class="soustitre">{{ typecomp.typc_libelle }}</p></tr>
+                        <tr>
+                            <td colspan="2" class="soustitre"><b><p
+                                            class="soustitre">{{ typecomp.typc_libelle }}</p></b></td>
+                        </tr>
                         {% for comp in typecomp.comp %}
                             <tr>
                                 <td class="soustitre2">{{ comp.comp_libelle }}</td>
@@ -52,9 +55,7 @@
                             </tr>
                         {% endfor %}
                     {% endif %}
-
                 {% endfor %}
-
             </table>
             <p>Votre aventurier a été créé.<br/>
                 <a href="validation_login2.php">Retour !</a>
@@ -65,3 +66,5 @@
 {% endblock %}
 {% block postscripts %}
 {% endblock %}
+
+

@@ -636,6 +636,9 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             foreach ($alltc as $key => $currenttc)
             {
 
+                // on initialise le tableau des comp
+                // pour éviter un plantage de twig
+                $alltc[$key]->comp = array();
                 $competences = new competences();
                 $tabcomp     = $competences->getByTypeCompetence($currenttc->typc_cod);
 
@@ -659,19 +662,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 
 
             }
-
-
-
-
-            /* fin du tableau secondaire */
-
-
-            /* fin du tableau de résultat */
-
-
         }
-
-
     }
 } else
 {
