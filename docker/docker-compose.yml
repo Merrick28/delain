@@ -21,20 +21,17 @@ services:
     container_name: delain_db
     ports:
       - 5432:5432
-    networks:
-      - delain
   ###############################
   # Serveur web
   ###############################
   web:
     image: delain/tests_unitaires
     ports:
-      - 9090:80
+      - 80:80
     container_name: web
     volumes:
       - ../:/home/delain/delain
-    networks:
-      - delain
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   ################################
   # phppgadmin
   ################################
@@ -43,9 +40,4 @@ services:
     container_name: phppgadmin
     ports:
       - 5050:5050
-    networks:
-      - delain
-networks:
-  delain:
-    driver: bridge
  

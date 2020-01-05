@@ -9,10 +9,10 @@ RUN chown -R delain: /etc/apache2/sites-available && \
 mkdir -p /usr/share/man/man1 && \
 mkdir -p /usr/share/man/man7 && \
 apt-get update && \
-apt-get install -y libpq-dev libz-dev libmemcached-dev uuid-runtime git netcat postgresql-client && \
+apt-get install -y libpq-dev libz-dev libmemcached-dev uuid-runtime git netcat postgresql-client  && \
 docker-php-ext-install pdo pdo_pgsql pgsql && \
-pecl install memcached && \
-docker-php-ext-enable memcached && \
+pecl install memcached xdebug && \
+docker-php-ext-enable memcached xdebug && \
 a2enmod rewrite && \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
