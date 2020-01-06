@@ -26,19 +26,19 @@
             <p class="soustitre">Perso n°{{ PERSO.perso_cod }}</p>
             <table class="table table-bordered table-condensed" style="width: 80%">
                 <tr>
-                    <td class="soustitre2">Force</td>
+                    <td class="soustitre">Force</td>
                     <td>{{ PERSO.perso_for }}</td>
                 </tr>
                 <tr>
-                    <td class="soustitre2">Dextérité</td>
+                    <td class="soustitre">Dextérité</td>
                     <td>{{ PERSO.perso_dex }}</td>
                 </tr>
                 <tr>
-                    <td class="soustitre2">Intelligence</td>
+                    <td class="soustitre">Intelligence</td>
                     <td>{{ PERSO.perso_int }}</td>
                 </tr>
                 <tr>
-                    <td class="soustitre2">Constitution</td>
+                    <td class="soustitre">Constitution</td>
                     <td>{{ PERSO.perso_con }}</td>
                 </tr>
 
@@ -50,7 +50,7 @@
                         </tr>
                         {% for comp in typecomp.comp %}
                             <tr>
-                                <td class="soustitre2">{{ comp.comp_libelle }}</td>
+                                <td class="soustitre">{{ comp.comp_libelle }}</td>
                                 <td>{{ comp.pcomp_modificateur }}</td>
                             </tr>
                         {% endfor %}
