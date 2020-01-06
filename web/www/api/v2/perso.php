@@ -84,7 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     $creation_4e       = false;
 
     $nom2 = $input['nom'];
-
+    if(!array_key_exists("nom",$input))
+    {
+        header('HTTP/1.0 403 NoName');
+        die('Nom de personnage vide, ou perdu dans les limbes informatiques...');
+    }
 
     // Recherche du type de perso en cours de création
     $compte = new compte();
