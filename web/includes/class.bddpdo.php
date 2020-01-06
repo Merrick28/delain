@@ -43,7 +43,8 @@ class bddpdo
         global $profiler, $debug_mode;
         try
         {
-            $temp = new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
+            $temp =
+                new PDO('pgsql:host=' . $this->host . ';dbname=' . $this->database, $this->user, $this->password, array(PDO::ATTR_PERSISTENT => true));
             if ($debug_mode)
             {
                 $this->pdo = new \Fabfuel\Prophiler\Decorator\PDO\PDO($temp, $profiler);
@@ -52,7 +53,8 @@ class bddpdo
                 $this->pdo = $temp;
             }
 
-        } catch (PDOException $e)
+        }
+        catch (PDOException $e)
         {
             echo 'Échec lors de la connexion : ' . $e->getMessage();
         }
@@ -103,7 +105,11 @@ class bddpdo
             if ($ret === false)
             {
                 $this->erreur($stmt);
+                $debug = false;
+
                 die('Erreur SQL, impossible de continuer');
+
+
             }
             return $stmt;
         } else
@@ -338,7 +344,8 @@ class bddpdo
         global $auth;
         $ip        = getenv('REMOTE_ADDR');
         $message   = $msg;
-        $texte_log = chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
+        $texte_log =
+            chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
 	IP : ' . $ip . '
 	Message : [' . $message . ']
 	Erreur :  

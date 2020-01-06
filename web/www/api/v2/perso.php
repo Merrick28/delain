@@ -43,6 +43,7 @@ function envoie_message($titre, $corps, $dest, $exp)
  * @apiParam {Integer} con Constitution
  * @apiParam {Integer} dex Dextérité
  * @apiParam {Integer} intel Intelligence
+ * @apiParam {Integer=1,2,3} race Code race
  * @apiParam {string="guerrier","bucheron","monk","mage","explo","mineur","archer"} voie La voie choisie (Hormandre ou SalMorv)
  * @apiParam {string="H","S"} poste Poste d'entrée (Hormandre ou SalMorv)
  * @apiParamExample {json} Request-Example:
@@ -53,7 +54,8 @@ function envoie_message($titre, $corps, $dest, $exp)
  *       "dex": 12,
  *       "intel": 9,
  *       "voie": "guerrier",
- *       "poste": "H"
+ *       "poste": "H",
+ *        "race": 1
  *     }
  *
  *
@@ -88,6 +90,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     {
         header('HTTP/1.0 403 NoName');
         die('Nom de personnage vide, ou perdu dans les limbes informatiques...');
+    }
+    if(!array_key_exists("race",$input))
+    {
+        header('HTTP/1.0 403 NoName');
+        die('Race non choisie');
     }
 
     // Recherche du type de perso en cours de création

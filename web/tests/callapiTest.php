@@ -177,7 +177,8 @@ class callapiTest
             "dex"   => 12,
             "intel" => 9,
             "voie"  => "guerrier",
-            "poste" => "H"
+            "poste" => "H",
+            "race" => 1
         );
 
         //mauvais compte
@@ -217,6 +218,12 @@ class callapiTest
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2 = $array_good;
+        unset($a2['race']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Race non choisie');
 
         // valeurs foireuses
         $a2          = $array_good;
