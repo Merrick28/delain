@@ -579,10 +579,10 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 //
                 // on commence par rechercher un tuteur
                 //
-                $req  = "select t1.perso_cod,t1.perso_nom,t2.compteur from (select perso_cod,perso_nom
+                $req  = "select t1.perso_cod as perso_cod,t1.perso_nom as perso_nom,t2.compteur as compteur from (select perso_cod,perso_nom
 				from perso,perso_compte,compte
 				where perso_tuteur
-				and perso_type_perso = 1
+				and perso_type_perso = :type_perso
 				and perso_cod = pcompt_perso_cod
 				and pcompt_compt_cod = compt_cod
 				and compt_actif = 'O'
@@ -591,7 +591,8 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 				group by tuto_tuteur) t2 on t1.perso_cod = t2.tuto_tuteur
 				order by t2.compteur,random()
 				limit 1";
-                $stmt = $pdo->query($req);
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":type_perso" => 1),$stmt);
 
                 if ($result = $stmt->fetch())
                 {
