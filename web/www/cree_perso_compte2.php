@@ -13,13 +13,8 @@ function envoie_message($titre, $corps, $dest, $exp)
     //$mes->envoi_simple($dest, $exp);
 }
 
-include "includes/classes.php";
-include "ident.php";
-
-
 $erreur = 0;
 // on recherche s'il existe déjà un aventurier à ce nom
-$db                = new base_delain;
 $creation_possible = false;
 $creation_4e       = false;
 

@@ -12,3 +12,6 @@ RewriteRule ^compte/?$ compte.php [L]
 
 # news
 RewriteRule ^news/?$ news.php [L]
+
+# perso
+RewriteRule ^perso/?$ perso.php [L]
