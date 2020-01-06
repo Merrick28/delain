@@ -25,7 +25,7 @@ ob_start();
  *
  * @apiSuccess {json} Tableau des données
  *
- *  @apiSuccessExample {json} Success-Response:
+ * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
  *       "compte": "2",
@@ -35,7 +35,7 @@ ob_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
-// on commence par rechercher le compte
+    // on commence par rechercher le compte
 
     $api      = new callapi();
     $test_api = $api->verifyCall();
@@ -54,10 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         die('compte admin');
     }
 
-    $perso  = $compte->getPersosActifs();
-    $sittes = $compte->getPersosSittes();
 
-// on efface tout ce qu'on ne veut pas afficher
+    // on efface tout ce qu'on ne veut pas afficher
     unset($compte->compt_password);
     unset($compte->compt_validation);
     unset($compte->compt_habilitation);
@@ -87,9 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     unset($compte->compt_passwd_hash);
 
     $return = array(
-        "compte"       => $compte,
-        "persos"       => $perso,
-        "perso_sittes" => $sittes
+        "compte" => $compte
     );
     echo json_encode($return);
     die('');
