@@ -1,5 +1,5 @@
 <?php
-
+ob_start();
 function envoie_message($titre, $corps, $dest, $exp)
 {
     $mes                = new messages();
@@ -530,6 +530,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 				group by tuto_tuteur) t2 on t1.perso_cod = t2.tuto_tuteur
 				order by t2.compteur,random()
 				limit 1";
+            $pdo = new bddpdo();
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":type_perso" => 1), $stmt);
 
@@ -574,6 +575,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
         header('HTTP/1.0 403 TooMuchPerso');
         die('Il semble que vous ayiez déjà assez de personnages comme cela');
     }
+    ob_end_clean();
     $return = array("perso" => $nouveau_perso_cod);
     echo json_encode($return);
     die('');
