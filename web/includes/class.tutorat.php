@@ -53,15 +53,18 @@ class tutorat
         if ($new)
         {
             $req  = "insert into tutorat (
+                     tuto_tuteur,
             tuto_filleul,
             tuto_ddeb                        )
                     values
                     (
-                        :tuto_filleul,
+                     :tuto_tuteur,   
+                     :tuto_filleul,
                         :tuto_ddeb                        )
     returning tuto_tuteur as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
+                ":tuto_tuteur" => $this->tuto_tuteur,
                                       ":tuto_filleul" => $this->tuto_filleul,
                                       ":tuto_ddeb"    => $this->tuto_ddeb,
                                   ), $stmt);

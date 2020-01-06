@@ -533,13 +533,14 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             $pdo = new bddpdo();
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":type_perso" => 1), $stmt);
-            /*
-             * Mise en pause le temps du debug
+
             if ($result = $stmt->fetch())
             {
 
+
                 $tuteur     = $result['perso_cod'];
                 $nom_tuteur = $result['perso_nom'];
+
 
                 //
                 // on va faire l'association
@@ -547,6 +548,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 $tutorat               = new tutorat();
                 $tutorat->tuto_filleul = $nouveau_perso_cod;
                 $tutorat->tuto_tuteur  = $tuteur;
+
                 $tutorat->stocke(true);
 
                 //
@@ -568,7 +570,11 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 $titre = 'Un nouvel aventurier....';
                 envoie_message($titre, $corps, $tuteur, $nouveau_perso_cod);
             }
-            */
+            else
+            {
+                echo "no tuteur";
+            }
+
         }
 
 
