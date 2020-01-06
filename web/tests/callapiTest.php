@@ -182,72 +182,71 @@ class callapiTest
 
         //mauvais compte
         $a2 = $array_good;
-        unset($a2['nom']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8', $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8', $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Token non trouvé');
 
         // sans le nom
         $a2 = $array_good;
         unset($a2['nom']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Nom de personnage vide, ou perdu dans les limbes informatiques...');
 
         // sans les caracs
         $a2 = $array_good;
         unset($a2['force']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'valeur non entière');
 
         $a2 = $array_good;
         unset($a2['con']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'valeur non entière');
 
         $a2 = $array_good;
         unset($a2['intel']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'valeur non entière');
 
         $a2 = $array_good;
         unset($a2['dex']);
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'valeur non entière');
 
         // valeurs foireuses
         $a2          = $array_good;
         $a2['force'] = 45;
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         // valeurs foireuses
         $a2          = $array_good;
         $a2['force'] = 2;
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         $a2         = $array_good;
         $a2['voie'] = 'err';
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Vous devez choisir une voie');
 
         $a2          = $array_good;
         $a2['poste'] = 'err';
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Vous devez choisir un poste d\'entrée');
 
         // création du premier perso OK
         $a2          = $array_good;
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
         $tab = json_decode($callapi->content,true);
@@ -255,14 +254,14 @@ class callapiTest
 
         // le second doit planter à cause du nom
         $a2          = $array_good;
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Un aventurier porte déjà ce nom');
 
         // un autre avec un autre nom
         $a2          = $array_good;
         $a2['nom'] = 'nouveau nom';
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
         $tab = json_decode($callapi->content,true);
@@ -271,7 +270,7 @@ class callapiTest
         // on devrait avoir assez de persos
         $a2          = $array_good;
         $a2['nom'] = 'nouveau nom 2';
-        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', $token, $a2));
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
     }

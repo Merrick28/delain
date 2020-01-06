@@ -571,4 +571,5 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
     echo json_encode($return);
     die('');
 }
-
+header('HTTP/1.0 405 Method Not Allowed');
+die('Méthode non autorisée.');
