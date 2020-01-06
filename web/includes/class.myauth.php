@@ -82,6 +82,13 @@ class myauth
                 $stmt = $pdo->execute(array(
                    $this->id
                    ), $stmt);
+
+
+                // on update le timestamp de l'api token
+                $auth_token = new auth_token();
+                $auth_token->charge($_SESSION['api_token']);
+                $auth_token->at_date = date('Y-m-d H:i:s');
+                $auth_token->stocke();
             }
         } //isset($_SESSION['id'])
         else
