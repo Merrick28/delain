@@ -1,5 +1,5 @@
 <?php
-
+include "ident.php";
 // on appelle l'api de création de perso
 $api = new callapi();
 
