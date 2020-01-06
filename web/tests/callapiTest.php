@@ -198,25 +198,25 @@ class callapiTest
         unset($a2['force']);
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
-        $this->assertEquals($callapi->content, 'valeur non entière');
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         $a2 = $array_good;
         unset($a2['con']);
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
-        $this->assertEquals($callapi->content, 'valeur non entière');
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         $a2 = $array_good;
         unset($a2['intel']);
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
-        $this->assertEquals($callapi->content, 'valeur non entière');
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         $a2 = $array_good;
         unset($a2['dex']);
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
-        $this->assertEquals($callapi->content, 'valeur non entière');
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
 
         // valeurs foireuses
         $a2          = $array_good;
