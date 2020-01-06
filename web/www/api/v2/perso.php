@@ -533,7 +533,8 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             $pdo = new bddpdo();
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":type_perso" => 1), $stmt);
-
+            /*
+             * Mise en pause le temps du debug
             if ($result = $stmt->fetch())
             {
 
@@ -567,6 +568,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 $titre = 'Un nouvel aventurier....';
                 envoie_message($titre, $corps, $tuteur, $nouveau_perso_cod);
             }
+            */
         }
 
 
