@@ -180,6 +180,13 @@ class callapiTest
             "poste" => "H"
         );
 
+        //mauvais compte
+        $a2 = $array_good;
+        unset($a2['nom']);
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'PUT', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8', $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Token non trouvé');
+
         // sans le nom
         $a2 = $array_good;
         unset($a2['nom']);
