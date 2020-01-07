@@ -5,24 +5,6 @@ include_once "ident.php";
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
 
-function getUserIpAddr()
-{
-    if (!empty($_SERVER['HTTP_CLIENT_IP']))
-    {
-        //ip from share internet
-        $ip = $_SERVER['HTTP_CLIENT_IP'];
-    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))
-    {
-        //ip pass from proxy
-        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-    } else
-    {
-        $ip = $_SERVER['REMOTE_ADDR'];
-    }
-    return $ip;
-}
-
-
 $is_log = 0;
 if ($verif_auth)
 {
@@ -52,17 +34,13 @@ if ($verif_auth)
         //$ip = getenv("REMOTE_ADDR");
         $ip = getUserIpAddr();
 
-        $db = new base_delain;
-
-
         $callapi = new callapi();
         if ($callapi->call(API_URL . '/compte', 'GET', $_SESSION['api_token']))
         {
             $error_message = '';
             $compte_json   = json_decode($callapi->content, true);
             $compt_cod     = $compte_json['compt_cod'];
-
-            $compte = new compte;
+            $compte        = new compte;
             $compte->charge($compt_cod);
         } else
         {
@@ -188,17 +166,6 @@ if ($verif_auth)
         // Si joueur
         if ($type_perso == 'joueur')
         {
-
-            echo("<html><head>");
-            ?>
-            <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
-            <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v<?php echo $__VERSION; ?>">
-            <?php
-            echo("</head>");
-            echo '<body background="images/fond5.gif" onload="retour();">';
-
-            echo '<div class="bordiv">';
-
             if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
                                'GET'))
             {
@@ -208,12 +175,6 @@ if ($verif_auth)
                 die('Erreur sur appel API news ' . $callapi->content);
             }
             $news_cod = $tabNews[0]['news_cod'];
-
-            /*$req = "select news_cod from news order by news_cod desc limit 1";
-            $db->query($req);
-            $db->next_record();
-            $news_cod = $db->f("news_cod");*/
-
             // Récupération du numéro du monstre actuel, s'il existe.
             $pdo  = new bddpdo();
             $req  = "select perso_cod from perso inner join perso_compte on pcompt_perso_cod = perso_cod
@@ -229,30 +190,16 @@ if ($verif_auth)
 
             $der_news   = $compte->compt_der_news;
             $nv_monstre = ($compte->attribue_monstre_4e_perso() > 0);
-            $hiber      = $compte->compt_hibernation;
-            $charte     = $compte->compt_acc_charte;
-            //_SESSION[_authsession][data][compt_der_news];
-            if ($hiber == 'O')
+
+            if ($compte->compt_hibernation != 'O')
             {
-                $date = $compte->compt_dfin_hiber;
-                $date = new DateTime($date);
-                echo "<p>Votre compte est en hibernation jusqu’au " . $date->format('Y-m-d H:i:s') . "<br>";
-                echo "Vous ne pouvez pas vous connecter d’ici là.";
-            } else
-            {
+
+
                 if ($der_news < $news_cod || $nv_monstre)
                 {
-                    ?>
-                    <p class="titre">Dernières nouvelles : </p>
-                    <?php
                     if ($nv_monstre)
                     {
-                        ?>
-                        <p class="titre">Nouveau monstre !</p>
-                        <p class="texteNorm">
-                            Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
-                        </p>
-                        <?php
+
                         if ($monstre_cod > 0)
                         {
                             // on charge le détail de ce monstre
@@ -260,131 +207,57 @@ if ($verif_auth)
                             $perso_monstre->charge($monstre_cod);
 
                             // on récupère les événements du monstre pour les afficher.
-                            $levt   = new ligne_evt();
-                            $allevt = $levt->getByPersoNonLu($monstre_cod);
+                            $levt              = new ligne_evt();
+                            $allevt_oldmonstre = $levt->getByPersoNonLu($monstre_cod);
 
-                            if (count($allevt) != 0)
-                            {
-                                echo '<p>Les derniers événements du monstre précédent :</p>';
-                                foreach ($allevt as $detailevt)
-                                {
-                                    $type_evt = new type_evt();
-                                    $type_evt->charge($detailevt->levt_tevt_cod);
-                                    $texte_evt =
-                                        str_replace('[perso_cod1]', "<strong>" . $perso_monstre->perso_nom . "</strong>",
-                                                    $detailevt->levt_texte);
-                                    if ($detailevt->levt_attaquant != '')
-                                    {
-                                        $texte_evt =
-                                            str_replace('[attaquant]', "<strong>" .
-                                                                       $detailevt->perso_attaquant->perso_nom . "</strong>", $texte_evt);
 
-                                    }
-
-                                    if ($detailevt->levt_cible != '')
-                                    {
-                                        $perso_cible = new perso;
-                                        $perso_cible->charge($detailevt->levt_cible);
-                                        $texte_evt =
-                                            str_replace('[cible]', "<strong>" . $detailevt->perso_cible->perso_nom . "</strong>",
-                                                        $texte_evt);
-                                        unset($perso_cible);
-
-                                    }
-                                    echo $detailevt->levt_date . " : " . $texte_evt . "(" . $db->f("tevt_libelle") . ")";
-                                    unset($type_evt);
-                                }
-                            } else
-                            {
-                                echo "<p>Aucun événement depuis votre dernière DLT</p>";
-                            }
                             // On relâche le monstre du compte du joueur
                             $req_mort = "select relache_monstre_4e_perso(:monstre_cod, 1::smallint) as resultat";
-                            $stmt = $pdo->prepare($req_mort);
-                            $stmt = $pdo->execute(array(":monstre_cod" => $monstre_cod),$stmt);
+                            $stmt     = $pdo->prepare($req_mort);
+                            $stmt     = $pdo->execute(array(":monstre_cod" => $monstre_cod), $stmt);
                         }
                     }
                     //print_r($_SESSION);
                     $news    = new news;
                     $tabnews = $news->getNewsSup($der_news);
 
-                    //while ($db->next_record())
-                    foreach ($tabnews as $valnews)
-                    {
-
-                        ?>
-                        <p class="titre"><?php echo $valnews->news_titre ?></p>
-                        <p class="texteNorm" style="text-align:right;"><?php echo $valnews->date_news ?></p>
-                        <p class="texteNorm">
-                            <?php echo $valnews->news_texte; ?>
-                        </p>
-                        <p class="texteNorm" style="text-align:right;">
-                            <?php
-                            if ($valnews->news_mail_auteur != "")
-                            {
-                                echo '<a href="mailto:' . $valnews->news_mail_auteur . '">' .
-                                     $valnews->news_auteur . '</a>';
-                            } else
-                            {
-                                echo $valnews->news_auteur;
-                            }
-                            ?>
-                        </p>
-                        <?php
-
-                    }
                     $compte->compt_der_news = $news_cod;
                     $compte->stocke();
                 }
                 // on efface l'hibernation si il en reste
-                if ($hiber == 'T')
+                if ($compte->compt_hibernation == 'T')
                 {
-                    $req = "select fin_hibernation($compt_cod) ";
-                    $db->query($req);
+                    $req  = "select fin_hibernation(:compte) ";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(":compte" => $compt_cod), $stmt);
                 }
-                if ($charte == 'N')
+                if ($compte->compt_acc_charte != 'N')
                 {
-                    echo "<p>Vous devez revalider la <a href=\"charte.php\" target=\"_blank\">charte des joueurs</a>.<br>";
-                    echo "Cette opération est nécessaire pour continuer.<br>";
-                    echo "Afin de valider la charte, cliquez <a href=\"valide_charte.php\">ici.<a/>";
-                } else
-                {
-                    $req_perso = "SELECT pcompt_perso_cod, perso_nom FROM perso
-						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
-						WHERE pcompt_compt_cod = $compt_cod AND perso_actif = 'O'";
-                    $db        = new base_delain;
-                    $db->query($req_perso);
-                    $nb_perso = $db->nf();
-                    if ($nb_perso == 0)
+                    $persos_compte = $compte->getPersosActifs();
+                    if (count($persos_compte) != 0)
                     {
-                        echo("<p>Aucun joueur dirigé.</p>");
-                        echo("<form name=\"nouveau\" method=\"post\">");
-                        echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
-
-                        echo("<a href=\"javascript:document.nouveau.action='cree_perso_compte.php';document.nouveau.submit();\">Créer un nouveau personnage !</a>");
-                        echo("</form>");
-                    } else
-                    {
-                        //echo("<table background=\"images/fondparchemin.gif\" border=\"0\">");
-                        echo("<form name=\"login\" method=\"post\" action=\"validation_login3.php\">");
-                        echo("<input type=\"hidden\" name=\"perso\">");
-                        echo("<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">");
-                        //echo("<input type=\"hidden\" name=\"password\" value=\"$pass\">");
-                        echo("<input type=\"hidden\" name=\"activeTout\" value=\"0\">");
-
-                        echo '<div class="container-fluid">';
+                        ob_start();
                         include "tab_switch.php";
-                        echo '</div>';
-
-                        //echo("</table>");
-                        echo("</form>");
+                        $tab_switch = ob_get_clean();
                     }
-
-                    echo "<p style=\"text-align:center;\"><a href=\"http://www.jdr-delain.net/jeu_test/logout.php\"><strong>se déconnecter</strong></a></p>";
-                    echo "<p style=\"text-align:center;\"><br /><em>Date et heure serveur : " . date('d/m/Y H:i:s') . "</em></p>";
                 }
             }
-            echo '</div></body></html>';
+            $template     = $twig->load('validation_login2_perso.twig');
+            $options_twig = array(
+                'COMPTE'          => $compte,
+                'DER_NEWS'        => $der_news,
+                'NEWS_COD'        => $news_cod,
+                'NOUVEAU_MONSTRE' => $nv_monstre,
+                'MONSTRE_COD'     => $monstre_cod,
+                'EVTOLDMONSTRE'   => $allevt_oldmonstre,
+                'PERSO_MONSTRE'   => $perso_monstre,
+                'TAB_NEWS'        => $tabnews,
+                'LISTE_PERSO'     => $persos_compte,
+                'TAB_SWITCH'      => $tab_switch
+
+
+            );
+            echo $template->render($options_twig);
         }
     }
 }

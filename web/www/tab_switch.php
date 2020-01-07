@@ -128,8 +128,6 @@ function affiche_perso($perso_cod)
 
     );
     echo $template->render($options_twig);
-
-
 }
 
 function affiche_case_perso_vide()
