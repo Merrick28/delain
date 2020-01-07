@@ -537,10 +537,8 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
             if ($result = $stmt->fetch())
             {
 
-
                 $tuteur     = $result['perso_cod'];
                 $nom_tuteur = $result['perso_nom'];
-
 
                 //
                 // on va faire l'association
@@ -548,7 +546,6 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                 $tutorat               = new tutorat();
                 $tutorat->tuto_filleul = $nouveau_perso_cod;
                 $tutorat->tuto_tuteur  = $tuteur;
-
                 $tutorat->stocke(true);
 
                 //
@@ -569,10 +566,6 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
                     "Un nouvel aventurier vient d’arriver sur ces terres, et tu as été choisi pour être son parrain ! Celui qui aura besoin de tes conseils s’appelle <a href=\"http://www.jdr-delain.net/jeu/visu_desc_perso.php?visu=" . $nouveau_perso_cod . "\">" . $nom2 . "</a>. Merci pour ton volontariat ! ";
                 $titre = 'Un nouvel aventurier....';
                 envoie_message($titre, $corps, $tuteur, $nouveau_perso_cod);
-            }
-            else
-            {
-                echo "no tuteur";
             }
 
         }
