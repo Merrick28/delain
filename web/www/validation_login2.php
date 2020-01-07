@@ -39,7 +39,7 @@ if ($verif_auth)
         {
             $error_message = '';
             $compte_json   = json_decode($callapi->content, true);
-            $compt_cod     = $compte_json['compt_cod'];
+            $compt_cod     = $compte_json['compte']['compt_cod'];
             $compte        = new compte;
             $compte->charge($compt_cod);
         } else
@@ -169,7 +169,7 @@ if ($verif_auth)
             if ($callapi->call(API_URL . '/news?start_news=' . $start_news,
                                'GET'))
             {
-                $tabNews = json_decode($callapi->content);
+                $tabNews = json_decode($callapi->content,true);
             } else
             {
                 die('Erreur sur appel API news ' . $callapi->content);
@@ -257,7 +257,7 @@ if ($verif_auth)
 
 
             );
-            echo $template->render($options_twig);
+            echo $template->render(array_merge($options_twig_defaut, $options_twig));
         }
     }
 }
