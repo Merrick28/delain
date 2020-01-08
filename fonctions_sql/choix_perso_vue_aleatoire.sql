@@ -135,4 +135,4 @@ $BODY$
   COST 100;
 ALTER FUNCTION public.choix_perso_vue_aleatoire(integer, integer)
   OWNER TO delain;
-GRANT EXECUTE ON FUNCTION public.choix_perso_vue_aleatoire(integer, integer) TO webdelain;
+GRANT EXECUTE ON FUNCTION public.choix_perso_vue_aleatoire(integer, integer) TO delain;

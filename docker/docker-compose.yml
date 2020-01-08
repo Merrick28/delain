@@ -1,0 +1,43 @@
+version: '3.1'
+
+services:
+  ############################
+  # Database
+  ############################
+  delain_db:
+    image: postgres:10 # on force la même version que le serveur
+    environment:
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_USER=delain
+      - POSTGRES_DB=delain
+    volumes:
+      - ../sql_init:/docker-entrypoint-initdb.d
+      - ../:/home/delain/delain
+      - ./conf.php:/home/delain/delain/web/www/includes/conf.php
+      # Décommentez la ligne ci dessous si vous voulez
+      # garder une database persistante
+      # pensez à changer le chemin local
+      # - /my/own/datadir:/var/lib/postgresql/data
+    container_name: delain_db
+    ports:
+      - 5432:5432
+  ###############################
+  # Serveur web
+  ###############################
+  web:
+    image: delain/tests_unitaires
+    ports:
+      - 9090:80
+    container_name: web
+    volumes:
+      - ../:/home/delain/delain
+      - ./xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+  ################################
+  # phppgadmin
+  ################################
+  phppgadmin:
+    image: thajeztah/pgadmin4
+    container_name: phppgadmin
+    ports:
+      - 5050:5050
+ 

@@ -4,7 +4,7 @@ $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 header($expire);
 header("Content-type: text/css");
 
-include "../includes/img_pack.php";
+
 include "verif_connexion.php";
 include_once '../includes/images_delain.php';
 

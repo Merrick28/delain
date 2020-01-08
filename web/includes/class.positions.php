@@ -209,6 +209,27 @@ class positions
         return $result['indice'];
     }
 
+    function lieu_arrive($poste_garde)
+    {
+        $pdo    = new bddpdo;
+        if($poste_garde == 'H')
+        {
+            $req = "select lieu_arrive(:param) as resultat";
+        }
+        else
+        {
+            $req = "select lieu_arrive2(:param) as resultat";
+        }
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(
+                                            ':param'   => 0,
+
+                                        ), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

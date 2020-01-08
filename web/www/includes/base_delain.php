@@ -15,23 +15,13 @@ class base_delain extends DB_Sql
     {
         if (0 == $this->Link_ID)
         {
-            if (SERVER_PROD)
-            {
-                $cstr = "dbname=" . $this->Database .
-                   $this->ifadd($this->Host, "host=") .
-                   $this->ifadd($this->Port, "port=") .
-                   $this->ifadd($this->User, "user=") .
-                   $this->ifadd($this->Password, "password=");
-                $cstr = "service=delain";
-            }
-            else
-            {
+
                 $cstr = "dbname=" . SERVER_DBNAME .
                    $this->ifadd(SERVER_HOST, "host=") .
                    $this->ifadd($this->Port, "port=") .
                    $this->ifadd(SERVER_USERNAME, "user=") .
                    $this->ifadd(SERVER_PASSWORD, "password=");
-            }
+
             /* if(!$this->PConnect) {
               $this->Link_ID = pg_connect($cstr);
               } else {

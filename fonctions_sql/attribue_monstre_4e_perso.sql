@@ -194,5 +194,5 @@ end;$BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100;
 ALTER FUNCTION public.attribue_monstre_4e_perso(integer)
-OWNER TO webdelain;
+OWNER TO delain;
 COMMENT ON FUNCTION public.attribue_monstre_4e_perso(integer) IS 'Donne un monstre à jouer à un compte, en tant que 4e personnage, suivant certaines règles restrictives.';

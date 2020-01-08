@@ -199,7 +199,7 @@ require 'prepend.php';
 // chemins du jeu
 
 define('CHEMIN', G_CHE);
-/*
+
 if (isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
 {
     $type_flux = 'https://';
@@ -208,9 +208,13 @@ else
 {
     $type_flux = 'http://';
 }
-*/
+if(SERVER_PROD)
+{
+    $type_flux = 'https://';
+}
+
 // on force tout en https
-$type_flux = 'https://';
+//$type_flux = 'https://';
 
 /**
  * Autochargement des classes manquantes
@@ -240,12 +244,12 @@ if (defined('TWIG_CACHE'))
     } else
     {
         $twig = new Twig_Environment($loader, array('debug' => true));
-        $twig->addExtension(new Twig_Extension_Debug());
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
     }
 } else
 {
     $twig = new Twig_Environment($loader, array('debug' => true));
-    $twig->addExtension(new Twig_Extension_Debug());
+    $twig->addExtension(new \Twig\Extension\DebugExtension());
 }
 
 

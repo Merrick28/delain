@@ -103,7 +103,7 @@ class messages
             $exp = new messages_exp;
             $exp->emsg_msg_cod = $this->msg_cod;
             $exp->emsg_perso_cod = $this->exp_perso_cod;
-            $exp->emsg_lu = 'N';
+            $exp->emsg_lu = 0;
             $exp->stocke(true);
             // on enregistre les destinataires
             foreach($this->tabDest as $perso_dest)
@@ -161,6 +161,23 @@ class messages
             unset($temp);
         }
         return $retour;
+    }
+
+    function envoi_simple($dest_cod,$exp_cod)
+    {
+        // il faut que le message soit déjà enregistré
+        // expéditeur
+        $msg_exp = new messages_exp();
+        $msg_exp->emsg_msg_cod = $this->msg_cod;
+        $msg_exp->emsg_perso_cod = $exp_cod;
+        print_r($msg_exp);
+        $msg_exp->stocke(true);
+        //destinaire
+        $msg_dest = new messages_dest();
+        $msg_dest ->dmsg_msg_cod = $this->msg_cod;
+        $msg_dest->dmsg_perso_cod = $dest_cod;
+        $msg_dest->stocke(true);
+
     }
 
     public function __call($name, $arguments)

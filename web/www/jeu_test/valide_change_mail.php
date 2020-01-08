@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+require_once (G_CHE. '/includes/incl_mail.php');
 $contenu_page = '<p class="titre">Changement d’adresse électronique</p>';
 $ok = 1;
 if ($_POST['mail1'] != $_POST['mail2']) {

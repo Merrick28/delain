@@ -26,6 +26,25 @@ class news
     }
 
     /**
+     * @return int
+     */
+    function clean_start_news()
+    {
+        if (!isset($_REQUEST['start_news']))
+        {
+            $start_news = 0;
+        } else
+        {
+            $start_news = (int)$_REQUEST['start_news'];
+        }
+        if ($start_news < 0)
+        {
+            $start_news = 0;
+        }
+        return $start_news;
+    }
+
+    /**
      * Stocke l'enregistrement courant dans la BDD
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
@@ -51,18 +70,17 @@ class news
     returning news_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":news_titre" => $this->news_titre,
-                ":news_texte" => $this->news_texte,
-                ":news_date" => $this->news_date,
-                ":news_auteur" => $this->news_auteur,
-                ":news_mail_auteur" => $this->news_mail_auteur,
-            ), $stmt);
+                                      ":news_titre"       => $this->news_titre,
+                                      ":news_texte"       => $this->news_texte,
+                                      ":news_date"        => $this->news_date,
+                                      ":news_auteur"      => $this->news_auteur,
+                                      ":news_mail_auteur" => $this->news_mail_auteur,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update news
                     set
@@ -73,21 +91,22 @@ class news
             news_mail_auteur = :news_mail_auteur                        where news_cod = :news_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":news_cod" => $this->news_cod,
-                ":news_titre" => $this->news_titre,
-                ":news_texte" => $this->news_texte,
-                ":news_date" => $this->news_date,
-                ":news_auteur" => $this->news_auteur,
-                ":news_mail_auteur" => $this->news_mail_auteur,
-            ), $stmt);
+                                      ":news_cod"         => $this->news_cod,
+                                      ":news_titre"       => $this->news_titre,
+                                      ":news_texte"       => $this->news_texte,
+                                      ":news_date"        => $this->news_date,
+                                      ":news_auteur"      => $this->news_auteur,
+                                      ":news_mail_auteur" => $this->news_mail_auteur,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de news
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @throws Exception
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -111,7 +130,7 @@ class news
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \news
+     * @return news[]
      */
     function getAll()
     {
@@ -127,6 +146,14 @@ class news
             unset($temp);
         }
         return $retour;
+    }
+
+    function delete()
+    {
+        $pdo  = new bddpdo;
+        $req  = "delete from news where news_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->news_cod), $stmt);
     }
 
     public function __call($name, $arguments)
@@ -153,8 +180,7 @@ class news
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6));
                 }
@@ -179,8 +205,8 @@ class news
         $retour    = array();
         $pdo       = new bddpdo;
         $recherche = "SELECT news_cod "
-            . "FROM news order by news_cod desc "
-            . "limit 5 offset ?";
+                     . "FROM news order by news_cod desc "
+                     . "limit 5 offset ?";
         $stmt      = $pdo->prepare($recherche);
         $stmt      = $pdo->execute(array($offset), $stmt);
         while ($result = $stmt->fetch())

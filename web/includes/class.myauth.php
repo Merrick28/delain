@@ -82,6 +82,13 @@ class myauth
                 $stmt = $pdo->execute(array(
                    $this->id
                    ), $stmt);
+
+
+                // on update le timestamp de l'api token
+                $auth_token = new auth_token();
+                $auth_token->charge($_SESSION['api_token']);
+                $auth_token->at_date = date('Y-m-d H:i:s');
+                $auth_token->stocke();
             }
         } //isset($_SESSION['id'])
         else
@@ -94,6 +101,8 @@ class myauth
     /**
      * Fonction de stockage en bdd, quand une session démarre
      * (juste après l'authentification)
+     * @param $user_id
+     * @throws Exception
      */
     function stocke($user_id)
     {
@@ -123,6 +132,7 @@ class myauth
     /**
      * Fonction logout
      * Permet de déconnecter l'utilisateur courant
+     * @throws Exception
      */
     function logout()
     {
@@ -133,9 +143,17 @@ class myauth
         $stmt       = $pdo->execute(array(
            $this->id
            ), $stmt);
+        // on supprime aussi le token
+        $auth_token = new auth_token();
+        $auth_token->charge($_SESSION['api_token']);
+        $auth_token->delete();
+
         session_unset();
         session_destroy();
         setcookie("passsession", "", time() - 36000, "/", G_URL);
         setcookie("passhash", "", time() - 36000, "/", G_URL);
+        setcookie("api_token", "", time() - 36000, "/", G_URL);
+
+
     }
 }

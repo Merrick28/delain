@@ -424,6 +424,17 @@ class objets
         return true;
     }
 
+    function cree_objet_perso($gobj,$perso_cod)
+    {
+        $pdo    = new bddpdo;
+        $req_arme = "select cree_objet_perso(:gobj,:perso) as resultat";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":gobj" => $gobj,":perso" => $perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        $objet_cree =  $result['resultat'];
+        $this->charge($objet_cree);
+    }
+
 
     /**
      * Retourne un tableau de tous les enregistrements

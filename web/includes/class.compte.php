@@ -92,6 +92,16 @@ class compte
         return $result['autorise_4e_perso'];
     }
 
+    function compte_nombre_perso()
+    {
+        $pdo = new bddpdo;
+        $req = "select compte_nombre_perso(?) as compte_nombre_perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['compte_nombre_perso'];
+    }
+
     function autorise_4e_global()
     {
         return $this->autorise_4e_monstre() || $this->autorise_4e_perso();
@@ -105,6 +115,16 @@ class compte
         $stmt = $pdo->execute(array($this->compt_cod), $stmt);
         $result = $stmt->fetch();
         return $result['attribue_monstre_4e_perso'];
+    }
+
+    function possede_4e_perso()
+    {
+        $pdo = new bddpdo;
+        $req = "select possede_4e_perso(?) as possede_4e_perso ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->compt_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['possede_4e_perso'];
     }
 
     function fin_hibernation()
