@@ -40,11 +40,11 @@ class callapiTest
         // on efface les news
         $news    = new news;
         $tabnews = $news->getAll();
-        foreach ($tabnews as $mynew)
+        /*foreach ($tabnews as $mynew)
         {
             $news->charge($mynew->news_cod);
             $news->delete();
-        }
+        }*/
     }
 
 
@@ -94,7 +94,7 @@ class callapiTest
         $callapi = new callapi();
 
         $this->assertTrue($callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin', 'password'
-                                                                                              => 'admin')));
+                                                                                      => 'admin')));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
 
@@ -148,6 +148,141 @@ class callapiTest
     }
 
 
+    public function testGettNews()
+    {
+        $callapi = new callapi();
+        $this->assertTrue($callapi->call(API_URL . '/news', 'GET'));
+        $this->assertJson($callapi->content);
+        $tabnews = json_decode($callapi->content, true);
+        $this->assertCount(5, $tabnews['news']);
+        $this->assertIsInt($tabnews['numberNews']);
+        foreach ($tabnews['news'] as $val)
+        {
+            $this->assertIsInt($val['news_cod']);
+        }
+    }
+
+    /**
+     * @depends testLoginOk
+     */
+    public function testCreateBadPerso($token)
+    : void
+    {
+        $callapi = new callapi();
+
+        $array_good = array(
+            "nom"   => "monperso",
+            "force" => 12,
+            "con"   => 12,
+            "dex"   => 12,
+            "intel" => 9,
+            "voie"  => "guerrier",
+            "poste" => "H",
+            "race" => 1
+        );
+
+        //mauvais compte
+        $a2 = $array_good;
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', 'd5f60c54-2aac-4074-b2bb-cbedebb396b8', $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Token non trouvé');
+
+        // sans le nom
+        $a2 = $array_good;
+        unset($a2['nom']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Nom de personnage vide, ou perdu dans les limbes informatiques...');
+
+        // sans les caracs
+        $a2 = $array_good;
+        unset($a2['force']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2 = $array_good;
+        unset($a2['con']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2 = $array_good;
+        unset($a2['intel']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2 = $array_good;
+        unset($a2['dex']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2 = $array_good;
+        unset($a2['race']);
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Race non choisie');
+
+        // valeurs foireuses
+        $a2          = $array_good;
+        $a2['force'] = 45;
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        // valeurs foireuses
+        $a2          = $array_good;
+        $a2['force'] = 2;
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Erreur sur les valeurs choisies');
+
+        $a2         = $array_good;
+        $a2['voie'] = 'err';
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Vous devez choisir une voie');
+
+        $a2          = $array_good;
+        $a2['poste'] = 'err';
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Vous devez choisir un poste d\'entrée');
+
+        // création du premier perso OK
+        $a2          = $array_good;
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+        $tab = json_decode($callapi->content,true);
+        $this->assertIsInt($tab['perso']);
+
+        // le second doit planter à cause du nom
+        $a2          = $array_good;
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Un aventurier porte déjà ce nom');
+
+        // un autre avec un autre nom
+        $a2          = $array_good;
+        $a2['nom'] = 'nouveau nom';
+        $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+        $tab = json_decode($callapi->content,true);
+        $this->assertIsInt($tab['perso']);
+
+        // on devrait avoir assez de persos
+        $a2          = $array_good;
+        $a2['nom'] = 'nouveau nom 2';
+        $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
+        $this->assertEquals($callapi->http_response, 403);
+        $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
+    }
+
+
     /**
      * @depends testLoginOk
      */
@@ -162,18 +297,5 @@ class callapiTest
         $auth_token = new auth_token();
         $temp       = $auth_token->charge($token);
         $this->assertFalse($temp);
-    }
-
-    public function testInsertNews()
-    {
-        $callapi = new callapi();
-        $this->assertTrue($callapi->call(API_URL . '/news', 'GET'));
-        $this->assertJson($callapi->content);
-        $tabnews = json_decode($callapi->content, true);
-        $this->assertCount(5, $tabnews);
-        foreach ($tabnews as $val)
-        {
-            $this->assertIsInt($val['news_cod']);
-        }
     }
 }
