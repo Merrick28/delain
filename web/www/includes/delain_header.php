@@ -212,6 +212,9 @@ if(SERVER_PROD)
 {
     $type_flux = 'https://';
 }
+if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ('https' == $_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+   $type_flux = 'https://';
+}
 
 // on force tout en https
 //$type_flux = 'https://';
@@ -257,6 +260,7 @@ $options_twig_defaut = array(
     'URL'        => G_URL,
     'URL_IMAGES' => G_IMAGES,
     'HTTPS'      => $type_flux,
+    'DEBUG' => $debug_mode
 );
 
 // on commence la temporisation de sortie

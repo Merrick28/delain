@@ -222,7 +222,7 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     // Est-on sur la case réservée au quatrième ?
     $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
 
-    echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
+    echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" style="padding-left:2px; padding-right: 2px;">';
 
     // Une case normale
     if (!$case_quatrieme)
