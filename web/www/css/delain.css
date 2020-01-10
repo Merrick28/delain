@@ -521,3 +521,17 @@ table {
     border-color: grey;
     font-variant: normal;
 }
+
+input.bouton {
+	color : #FFFFFF;
+	font-size: 9px;
+	font-family: Verdana, Helvetica, sans-serif;
+	border-color : #B5955A #9F7F47 #9F7F47 #B5955A;
+	background : url(../images/bouton.gif);
+	border-width: 2px;
+	padding-right:0pt;
+	padding-left:0pt;
+	margin-left:0pt;
+	margin-right:0pt;
+	text-indent:0pt;
+}
