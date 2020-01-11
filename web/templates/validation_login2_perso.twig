@@ -5,7 +5,7 @@
             Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}<br>
             Vous ne pouvez pas vous connecter d’ici là.
         {% else %}
-            {% if (DER_NEWS < NEWS_COD) or NV_MONSTRE %}
+            {% if ((DER_NEWS < NEWS_COD) or NV_MONSTRE) %}
                 <p class="titre">Dernières nouvelles : </p>
                 {% if NV_MONSTRE %}
                     <p class="titre">Nouveau monstre !</p>
