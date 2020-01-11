@@ -161,7 +161,7 @@ if ($verif_auth) {
             } else {
                 die('Erreur sur appel API news ' . $callapi->content);
             }
-            $news_cod = $tabNews[0]['news_cod'];
+            $news_cod = $tabNews['news'][0]['news_cod'];
             // Récupération du numéro du monstre actuel, s'il existe.
             $pdo  = new bddpdo();
             $req  = "select perso_cod from perso inner join perso_compte on pcompt_perso_cod = perso_cod
@@ -203,6 +203,7 @@ if ($verif_auth) {
                     $compte->compt_der_news = $news_cod;
                     $compte->stocke();
                 }
+
                 // on efface l'hibernation si il en reste
                 if ($compte->compt_hibernation == 'T') {
                     $req  = "select fin_hibernation(:compte) ";

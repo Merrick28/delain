@@ -30,9 +30,9 @@
                     {% endif %}
 
                 {% endif %}
-                {% for news in TABNEWS %}
+                {% for news in TAB_NEWS %}
                     <p class="titre">{{ news.news_titre }}</p>
-                    <p class="texteNorm" style="text-align:right;">{{ news.date_news|date('d/m/Y H:i:s') }}</p>
+                    <p class="texteNorm" style="text-align:right;">{{ news.news_date|date('d/m/Y H:i:s') }}</p>
                     <p class="texteNorm">
                         {{ news.news_texte }}
                     </p>
@@ -40,7 +40,7 @@
                         {% if news.news_mail_auteur == '' %}
                             {{ news.news_auteur }}
                         {% else %}
-                            <a href="mailto:{{ newsnews_mail_auteur }}"> {{ news.news_auteur }}</a>
+                            <a href="mailto:{{ news.news_mail_auteur }}"> {{ news.news_auteur }}</a>
                         {% endif %}
 
                     </p>
