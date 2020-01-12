@@ -241,17 +241,17 @@ if ($verif_auth)
             }
             $template     = $twig->load('validation_login2_perso.twig');
             $options_twig = array(
-                'COMPTE'          => $compte,
-                'DER_NEWS'        => $der_news,
-                'NEWS_COD'        => $news_cod,
-                'NOUVEAU_MONSTRE' => $nv_monstre,
-                'MONSTRE_COD'     => $monstre_cod,
-                'EVTOLDMONSTRE'   => $allevt_oldmonstre,
-                'PERSO_MONSTRE'   => $perso_monstre,
-                'TAB_NEWS'        => $tabnews,
-                'LISTE_PERSO'     => $persos_compte,
-                'TAB_SWITCH'      => $tab_switch,
-                'NV_MONSTRE'      => $nv_monstre
+                'COMPTE'           => $compte,
+                'DER_NEWS'         => $der_news,
+                'NEWS_COD'         => $news_cod,
+                'NOUVEAU_MONSTRE'  => $nv_monstre,
+                'MONSTRE_COD'      => $monstre_cod,
+                'EVTOLDMONSTRE'    => $allevt_oldmonstre,
+                'PERSO_MONSTRE'    => $perso_monstre,
+                'TAB_NEWS'         => $tabnews,
+                'LISTE_PERSO'      => $persos_compte,
+                'TAB_SWITCH'       => $tab_switch,
+                'NV_MONSTRE'       => $nv_monstre
 
 
             );

@@ -42,7 +42,7 @@ $pub = choix_pub_index();
 /** @var Twig_Loader_Filesystem $twig */
 $template     = $twig->load('index.twig');
 $options_twig = array(
-    'PERCENT_FINANCES'  => $percent_finances,
+
     'AVENTURIERS_MORTS' => $param->getparm(64),
     'MONSTRES_MORTS'    => $param->getparm(65),
     'FAMILIERS_MORTS'   => $param->getparm(66),
