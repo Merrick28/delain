@@ -236,7 +236,7 @@ if ($verif_auth)
                         $persos_compte = json_decode($persos_compte, true);
                         //$persos_compte = $compte->getPersosActifs();
                         $nb_persos = count($persos_compte['persos']) + count($persos_compte['sittes']);
-                        if ($nb_persos != 0))
+                        if ($nb_persos != 0)
                         {
                             ob_start();
                             $origine_switch = 'accueil';

@@ -240,7 +240,7 @@ define({ "api": [
     ],
     "type": "get",
     "url": "/compte/persos",
-    "title": "Crée un nouveau perso",
+    "title": "Liste les persos d'un compte",
     "name": "ComptePersos",
     "group": "Compte",
     "description": "<p>Permet de lister les personnages d'un compte</p>",
