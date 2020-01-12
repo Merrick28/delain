@@ -283,6 +283,26 @@ class callapiTest
         $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
     }
 
+    function testGetPersoCompte()
+    {
+        $callapi = new callapi();
+
+        $this->assertTrue($callapi->call(API_URL . '/compte/persos', 'GET', ''));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+
+        $tab_persos = json_decode($callapi->content, true);
+        foreach($tab_persos['persos'] as $val)
+        {
+            $this->assertIsInt($val['perso_cod']);
+        }
+        foreach($tab_persos['sittes'] as $val)
+        {
+            $this->assertIsInt($val['perso_cod']);
+        }
+        return $tab_persos;
+    }
+
 
     /**
      * @depends testLoginOk

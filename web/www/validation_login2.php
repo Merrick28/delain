@@ -229,29 +229,41 @@ if ($verif_auth)
                 }
                 if ($compte->compt_acc_charte != 'N')
                 {
-                    $persos_compte = $compte->getPersosActifs();
-                    if (count($persos_compte) != 0)
+                    // on passe maintenant par un appel api
+                    if ($callapi->call(API_URL . '/compte/persos', 'GET', $_SESSION['api_token']))
                     {
-                        ob_start();
-                        $origine_switch = 'accueil';
-                        include "tab_switch.php";
-                        $tab_switch = ob_get_clean();
+                        $persos_compte = $callapi->content;
+                        $persos_compte = json_decode($persos_compte, true);
+                        //$persos_compte = $compte->getPersosActifs();
+                        $nb_persos = count($persos_compte['persos']) + count($persos_compte['sittes']);
+                        if ($nb_persos != 0))
+                        {
+                            ob_start();
+                            $origine_switch = 'accueil';
+                            include "tab_switch.php";
+                            $tab_switch = ob_get_clean();
+                        }
+
+                    } else
+                    {
+                        die('Erreur sur appel API (get persos compte) : ' . $callapi->content);
                     }
                 }
             }
             $template     = $twig->load('validation_login2_perso.twig');
             $options_twig = array(
-                'COMPTE'           => $compte,
-                'DER_NEWS'         => $der_news,
-                'NEWS_COD'         => $news_cod,
-                'NOUVEAU_MONSTRE'  => $nv_monstre,
-                'MONSTRE_COD'      => $monstre_cod,
-                'EVTOLDMONSTRE'    => $allevt_oldmonstre,
-                'PERSO_MONSTRE'    => $perso_monstre,
-                'TAB_NEWS'         => $tabnews,
-                'LISTE_PERSO'      => $persos_compte,
-                'TAB_SWITCH'       => $tab_switch,
-                'NV_MONSTRE'       => $nv_monstre
+                'COMPTE'          => $compte,
+                'DER_NEWS'        => $der_news,
+                'NEWS_COD'        => $news_cod,
+                'NOUVEAU_MONSTRE' => $nv_monstre,
+                'MONSTRE_COD'     => $monstre_cod,
+                'EVTOLDMONSTRE'   => $allevt_oldmonstre,
+                'PERSO_MONSTRE'   => $perso_monstre,
+                'TAB_NEWS'        => $tabnews,
+                'LISTE_PERSO'     => $persos_compte,
+                'TAB_SWITCH'      => $tab_switch,
+                'NV_MONSTRE'      => $nv_monstre,
+                'NB_PERSOS'       => $nb_persos
 
 
             );

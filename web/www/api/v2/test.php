@@ -12,10 +12,10 @@ $array_good = array(
 );
 
 $callapi = new callapi();
-echo "tata";
-$montest = $callapi->call('http://172.17.0.1:9090/api/v2/perso','POST','0b248457-8942-45a2-85c1-d67b4557fa72',
-                         $array_good);
+
+$montest = $callapi->call('http://172.17.0.1:9090/api/v2/compte/persos','GET','34ef18f1-b59f-4c9a-8cf5-b529207be6bf');
 echo "titi";
 
-
+echo "<pre>";
 print_r($callapi);
+echo "</pre>";
