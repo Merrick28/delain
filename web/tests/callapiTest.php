@@ -255,7 +255,7 @@ class callapiTest
         $a2          = $array_good;
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
-        print_r($callapi);
+
         $this->assertJson($callapi->content);
         $tab = json_decode($callapi->content,true);
         $this->assertIsInt($tab['perso']);
@@ -282,8 +282,11 @@ class callapiTest
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
     }
+
     /**
      * @depends testLoginOk
+     * @param $token
+     * @return mixed
      */
     function testGetPersoCompte($token)
     {
