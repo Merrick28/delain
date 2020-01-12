@@ -282,12 +282,14 @@ class callapiTest
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
     }
-
-    function testGetPersoCompte()
+    /**
+     * @depends testLoginOk
+     */
+    function testGetPersoCompte($token)
     {
         $callapi = new callapi();
 
-        $this->assertTrue($callapi->call(API_URL . '/compte/persos', 'GET', ''));
+        $this->assertTrue($callapi->call(API_URL . '/compte/persos', 'GET', $token));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
 
