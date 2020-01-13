@@ -599,17 +599,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     // de regarder ce perso
     $api    = new callapi();
     $isauth = true;
-    if ($test_api = $api->verifyCallIsAuth() === false)
+    $test_api = $api->verifyCallIsAuth() ;
+
+
+
+    if ($test_api  === false)
     {
         $isauth = false;
     } else
     {
+
+
         $compte = $test_api['compte'];
+
+
+
+        if (!$compte->autoriseJouePerso($perso->perso_cod))
+        {
+            $isauth = false;
+        }
+
     }
-    if (!$compte->autoriseJouePerso($perso->perso_cod))
-    {
-        $isauth = false;
-    }
+
+
 
     $return['perso_cod']                 = $perso->perso_cod;
     $return['perso_sex']                 = $perso->perso_sex;
@@ -659,7 +671,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         $return['perso_energie']            = $perso->perso_energie;
         $return['perso_desc_long']          = $perso->perso_desc_long;
     }
-    echo json_encode(array("isauth" => $isauth,"perso" => $return));
+    echo json_encode(array("isauth" => $isauth, "perso" => $return));
     die('');
 }
 header('HTTP/1.0 405 Method Not Allowed');

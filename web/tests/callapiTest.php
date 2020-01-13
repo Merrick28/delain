@@ -315,27 +315,28 @@ class callapiTest
      * @param $token
      * @return mixed
      */
-    function testGetPerso($tab_persos,$token)
+    function testGetPerso($tab_persos, $token)
     : void
     {
         $callapi = new callapi();
 
-        foreach($tab_persos['persos'] as $perso)
+        foreach ($tab_persos['persos'] as $perso)
         {
             // test de perso auth
             $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET', $token));
             $this->assertEquals($callapi->http_response, 200);
             $this->assertJson($callapi->content);
             $tab_reponse = json_decode($callapi->content, true);
+
             $this->assertTrue($tab_reponse['isauth']);
-            $this->assertArrayHasKey('perso_for',$tab_reponse);
+            $this->assertArrayHasKey('perso_for', $tab_reponse['perso']);
             // test de perso non auth
             $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET'));
             $this->assertEquals($callapi->http_response, 200);
             $this->assertJson($callapi->content);
             $tab_reponse = json_decode($callapi->content, true);
             $this->assertFalse($tab_reponse['isauth']);
-            $this->assertArrayNotHasKey('perso_for',$tab_reponse);
+            $this->assertArrayNotHasKey('perso_for', $tab_reponse['perso']);
         }
         // test perso non existant
         $this->assertFalse($callapi->call(API_URL . '/perso/255', 'GET'));
@@ -343,15 +344,16 @@ class callapiTest
         $this->assertEquals($callapi->content, 'perso non trouvé');
 
 
-
     }
 
 
     /**
      * @depends testLoginOk
+     * @depends testGetPersoCompte
+     * @param $tab_persos
      *
      */
-    public function testDeleteToken($token)
+    public function testDeleteToken($token, $tab_persos)
     : void
     {
         $callapi = new callapi();
@@ -362,5 +364,20 @@ class callapiTest
         $auth_token = new auth_token();
         $temp       = $auth_token->charge($token);
         $this->assertFalse($temp);
+
+        // on efface les persos pour pouvoir relancer les tests
+
+        foreach ($tab_persos['persos'] as $tabperso)
+        {
+            if ($tabperso['perso_cod'] != 1)
+            {
+                $perso = new perso;
+                $perso->charge($tabperso['perso_cod']);
+                $perso->efface();
+                unset($perso);
+            }
+
+        }
+
     }
 }
