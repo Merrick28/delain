@@ -575,6 +575,45 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
     echo json_encode($return);
     die('');
 }
+
+
+/**
+ * @apiVersion 2.0.0
+ *
+ * @apiSampleRequest https://jdr-delain.net/api/v2/perso/:id
+ *
+ * @api {get} /perso/:id
+ * @apiName GetPerso
+ * @apiGroup Perso
+ *
+ *  @apiDescription Détail d'un perso
+ *  Retourne un résultat différent si on est authentifié et si
+ * on a le droit de jouer ce perso
+ *
+ * @apiHeader {string} [X-delain-auth] Token
+ * @apiHeaderExample {json} Header-Example:
+ *     {
+ *       "X-delain-auth": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
+ *     }
+ *
+ *
+ * @apiParam {integer} id Numéro du perso
+
+ * @apiSuccess {String} isauth true si on est auth et si on a le droit de jouer ce perso
+ * @apiSuccess {json} perso Détail du perso
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+{
+"isauth": true,
+"perso": {
+"perso_cod": 1,
+"perso_sex": "M",
+"perso_race_cod": 1,
+"perso_dcreat": "2020-01-13 16:50:14.961443+00",
+...
+}
+}
+ */
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     if (!isset($_REQUEST['visu_perso']))
