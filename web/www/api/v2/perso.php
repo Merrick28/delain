@@ -57,13 +57,7 @@ function envoie_message($titre, $corps, $dest, $exp)
  *       "poste": "H",
  *        "race": 1
  *     }
- *
- *
- *
  * @apiSuccess {json} Tableau des données
- *
- *
- *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -86,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     $creation_4e       = false;
 
     $nom2 = $input['nom'];
-    if(!array_key_exists("nom",$input))
+    if (!array_key_exists("nom", $input))
     {
         header('HTTP/1.0 403 NoName');
         die('Nom de personnage vide, ou perdu dans les limbes informatiques...');
     }
-    if(!array_key_exists("race",$input))
+    if (!array_key_exists("race", $input))
     {
         header('HTTP/1.0 403 NoName');
         die('Race non choisie');
@@ -530,7 +524,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 				group by tuto_tuteur) t2 on t1.perso_cod = t2.tuto_tuteur
 				order by t2.compteur,random()
 				limit 1";
-            $pdo = new bddpdo();
+            $pdo  = new bddpdo();
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":type_perso" => 1), $stmt);
 
@@ -580,6 +574,82 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
     $return = array("perso" => $nouveau_perso_cod);
     echo json_encode($return);
     die('');
+}
+if ($_SERVER['REQUEST_METHOD'] == 'GET')
+{
+    if (!isset($_REQUEST['visu_perso']))
+    {
+        header('HTTP/1.0 405 MissingArgument');
+        die('visu_perso non transmis');
+    }
+    if (filter_var($_REQUEST['visu_perso'], FILTER_VALIDATE_INT) === false)
+    {
+        header('HTTP/1.0 405 MissingArgument');
+        die('visu_perso non entier');
+    }
+
+    $perso = new perso;
+    if (!$perso->charge($_REQUEST['visu_perso']))
+    {
+        header('HTTP/1.0 405 MissingArgument');
+        die('perso non trouvé');
+    }
+
+    // on regarder si le compte a le droit
+    // de regarder ce perso
+    $api    = new callapi();
+    $isauth = true;
+    if ($test_api = $api->verifyCallIsAuth() === false)
+    {
+        $isauth = false;
+    } else
+    {
+        $compte = $test_api['compte'];
+    }
+    if (!$compte->autoriseJouePerso($perso->perso_cod))
+    {
+        $isauth = false;
+    }
+
+    // maintenant on fait le nettoyage
+    unset($perso->perso_for_init);
+    unset($perso->perso_dex_init);
+    unset($perso->perso_int_init);
+    unset($perso->perso_con_init);
+    unset($perso->perso_email);
+    unset($perso->perso_validation);
+    unset($perso->perso_actif);
+    unset($perso->perso_nb_esquive);
+    unset($perso->perso_amelioration_vue);
+    unset($perso->perso_amelioration_regen);
+    unset($perso->perso_amelioration_degats);
+    unset($perso->perso_amelioration_armure);
+    unset($perso->perso_cible);
+    unset($perso->perso_amel_deg_dex);
+    unset($perso->perso_gmon_cod);
+    unset($perso->perso_dirige_admin);
+    unset($perso->perso_lower_perso_nom);
+    unset($perso->perso_sta_combat);
+    unset($perso->perso_sta_hors_combat);
+    unset($perso->perso_nb_amel_repar);
+    unset($perso->perso_admin_echoppe);
+    unset($perso->perso_admin_echoppe_noir);
+    unset($perso->perso_nb_amel_comp);
+    unset($perso->perso_nb_amel_chance_memo);
+    unset($perso->perso_priere);
+    unset($perso->perso_dfin);
+    unset($perso->perso_dfin_tangible);
+    unset($perso->perso_pnj);
+    unset($perso->perso_redispatch);
+    unset($perso->perso_nb_redist);
+
+
+
+
+
+
+
+
 }
 header('HTTP/1.0 405 Method Not Allowed');
 die('Méthode non autorisée.');
