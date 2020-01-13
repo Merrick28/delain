@@ -51,14 +51,14 @@ define({ "api": [
         ]
       }
     },
-    "filename": "./auth.php",
+    "filename": "/home/delain/delain/web/www/api/v2/auth.php",
     "groupTitle": "Auth"
   },
   {
     "version": "2.0.0",
     "sampleRequest": [
       {
-        "url": "https://www.jdr-delain.net/api/v2/auth/"
+        "url": "https://jdr-delain.net/api/v2/auth"
       }
     ],
     "type": "post",
@@ -142,14 +142,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "./auth.php",
+    "filename": "/home/delain/delain/web/www/api/v2/auth.php",
     "groupTitle": "Auth"
   },
   {
     "version": "2.0.0",
     "sampleRequest": [
       {
-        "url": "https://www.jdr-delain.net/api/v2/compte/"
+        "url": "https://jdr-delain.net/api/v2/compte"
       }
     ],
     "type": "get",
@@ -228,14 +228,14 @@ define({ "api": [
         }
       ]
     },
-    "filename": "./compte.php",
+    "filename": "/home/delain/delain/web/www/api/v2/compte.php",
     "groupTitle": "Compte"
   },
   {
     "version": "2.0.0",
     "sampleRequest": [
       {
-        "url": "https://www.jdr-delain.net/api/v2/news/"
+        "url": "https://jdr-delain.net/api/v2/news"
       }
     ],
     "type": "get",
@@ -271,7 +271,192 @@ define({ "api": [
         ]
       }
     },
-    "filename": "./news.php",
+    "filename": "/home/delain/delain/web/www/api/v2/news.php",
     "groupTitle": "News"
+  },
+  {
+    "version": "2.0.0",
+    "sampleRequest": [
+      {
+        "url": "https://jdr-delain.net/api/v2/perso"
+      }
+    ],
+    "type": "post",
+    "url": "/perso",
+    "title": "Crée un nouveau perso",
+    "name": "CreePerso",
+    "group": "Perso",
+    "description": "<p>Permet de créer un nouveau perso</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "X-delain-auth",
+            "description": "<p>Token</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n  \"X-delain-auth\": \"d5f60c54-2aac-4074-b2bb-cbedebb396b8\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "403": [
+          {
+            "group": "403",
+            "optional": false,
+            "field": "NoToken",
+            "description": "<p>Token non transmis</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "TokenNotFound",
+            "description": "<p>Token non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "AccountNotFound",
+            "description": "<p>Compte non trouvé dans la base</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "TokenNonUUID",
+            "description": "<p>Le token n'est pas un UUID</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "PersoExists",
+            "description": "<p>Il existe déjà un perso avec ce nom</p>"
+          },
+          {
+            "group": "403",
+            "optional": false,
+            "field": "NotInteger",
+            "description": "<p>Valeur non entière</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "nom",
+            "description": "<p>Nom du perso</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "force",
+            "description": "<p>Force</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "con",
+            "description": "<p>Constitution</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "dex",
+            "description": "<p>Dextérité</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "optional": false,
+            "field": "intel",
+            "description": "<p>Intelligence</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Integer",
+            "allowedValues": [
+              "1",
+              "2",
+              "3"
+            ],
+            "optional": false,
+            "field": "race",
+            "description": "<p>Code race</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "allowedValues": [
+              "\"guerrier\"",
+              "\"bucheron\"",
+              "\"monk\"",
+              "\"mage\"",
+              "\"explo\"",
+              "\"mineur\"",
+              "\"archer\""
+            ],
+            "optional": false,
+            "field": "voie",
+            "description": "<p>La voie choisie (Hormandre ou SalMorv)</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "string",
+            "allowedValues": [
+              "\"H\"",
+              "\"S\""
+            ],
+            "optional": false,
+            "field": "poste",
+            "description": "<p>Poste d'entrée (Hormandre ou SalMorv)</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Request-Example:",
+          "content": "{\n  \"nom\": \"monperso\",\n  \"force\": 12,\n  \"con\": 12,\n  \"dex\": 12,\n  \"intel\": 9,\n  \"voie\": \"guerrier\",\n  \"poste\": \"H\",\n   \"race\": 1\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "json",
+            "optional": false,
+            "field": "Tableau",
+            "description": "<p>des données</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"perso\": \"2\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "/home/delain/delain/web/www/api/v2/perso.php",
+    "groupTitle": "Perso"
   }
 ] });

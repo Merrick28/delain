@@ -52,8 +52,9 @@ if ($verif_auth)
 
         // Ici on sépare si monstre ou joueur
         // si monstre
-        if ($is_admin_monstre === true)
+        if ($compte->is_admin_monstre())
         {
+            echo "test";
             ?>
             <!DOCTYPE html>
             <html>
@@ -69,12 +70,14 @@ if ($verif_auth)
 
             echo '<div class="bordiv">';
             $admin  = 'O';
+            $compt_cod = $compte->compt_cod;
             $chemin = 'jeu_test';
             include "jeu_test/switch_monstre.php";
             echo '</div></body></html>';
+            die('');
         }
         // Si admin
-        if ($is_admin === true)
+        elseif ($compte->is_admin())
         {
             echo("<html><head>"); ?>
             <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
@@ -158,9 +161,10 @@ if ($verif_auth)
             echo "";
             echo "</form>";
             echo '</div></body></html>';
+            die('');
         }
         // Si joueur
-        if ($type_perso == 'joueur')
+        elseif ($type_perso == 'joueur')
         {
             if ($callapi->call(
                 API_URL . '/news?start_news=' . $start_news,
