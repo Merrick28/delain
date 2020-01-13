@@ -611,45 +611,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         $isauth = false;
     }
 
-    // maintenant on fait le nettoyage
-    unset($perso->perso_for_init);
-    unset($perso->perso_dex_init);
-    unset($perso->perso_int_init);
-    unset($perso->perso_con_init);
-    unset($perso->perso_email);
-    unset($perso->perso_validation);
-    unset($perso->perso_actif);
-    unset($perso->perso_nb_esquive);
-    unset($perso->perso_amelioration_vue);
-    unset($perso->perso_amelioration_regen);
-    unset($perso->perso_amelioration_degats);
-    unset($perso->perso_amelioration_armure);
-    unset($perso->perso_cible);
-    unset($perso->perso_amel_deg_dex);
-    unset($perso->perso_gmon_cod);
-    unset($perso->perso_dirige_admin);
-    unset($perso->perso_lower_perso_nom);
-    unset($perso->perso_sta_combat);
-    unset($perso->perso_sta_hors_combat);
-    unset($perso->perso_nb_amel_repar);
-    unset($perso->perso_admin_echoppe);
-    unset($perso->perso_admin_echoppe_noir);
-    unset($perso->perso_nb_amel_comp);
-    unset($perso->perso_nb_amel_chance_memo);
-    unset($perso->perso_priere);
-    unset($perso->perso_dfin);
-    unset($perso->perso_dfin_tangible);
-    unset($perso->perso_pnj);
-    unset($perso->perso_redispatch);
-    unset($perso->perso_nb_redist);
-
-
-
-
-
-
-
-
+    $return['perso_cod']                 = $perso->perso_cod;
+    $return['perso_sex']                 = $perso->perso_sex;
+    $return['perso_race_cod']            = $perso->perso_race_cod;
+    $return['perso_dcreat']              = $perso->perso_dcreat;
+    $return['perso_actif']               = $perso->perso_actif;
+    $return['perso_niveau']              = $perso->perso_niveau;
+    $return['perso_description']         = $perso->perso_description;
+    $return['perso_nb_mort']             = $perso->perso_nb_mort;
+    $return['perso_reputation']          = $perso->perso_reputation;
+    $return['perso_avatar']              = $perso->perso_avatar;
+    $return['perso_kharma']              = $perso->perso_kharma;
+    $return['perso_nom']                 = $perso->perso_nom;
+    $return['perso_renommee']            = $perso->perso_renommee;
+    $return['perso_renommee_magie']      = $perso->perso_renommee_magie;
+    $return['perso_nb_mort_arene']       = $perso->perso_nb_mort_arene;
+    $return['perso_nb_joueur_tue_arene'] = $perso->perso_nb_joueur_tue_arene;
+    $return['perso_renommee_artisanat']  = $perso->perso_renommee_artisanat;
+    if ($isauth)
+    {
+        $return['perso_for']                = $perso->perso_for;
+        $return['perso_dex']                = $perso->perso_dex;
+        $return['perso_int']                = $perso->perso_int;
+        $return['perso_con']                = $perso->perso_con;
+        $return['perso_pv']                 = $perso->perso_pv;
+        $return['perso_pv_max']             = $perso->perso_pv_max;
+        $return['perso_dlt']                = $perso->perso_dlt;
+        $return['perso_temps_tour']         = $perso->perso_temps_tour;
+        $return['perso_pa']                 = $perso->perso_pa;
+        $return['perso_der_connex']         = $perso->perso_der_connex;
+        $return['perso_des_regen']          = $perso->perso_des_regen;
+        $return['perso_valeur_regen']       = $perso->perso_valeur_regen;
+        $return['perso_vue']                = $perso->perso_vue;
+        $return['perso_po']                 = $perso->perso_po;
+        $return['perso_nb_des_degats']      = $perso->perso_nb_des_degats;
+        $return['perso_val_des_degats']     = $perso->perso_val_des_degats;
+        $return['perso_enc_max']            = $perso->perso_enc_max;
+        $return['perso_nb_monstre_tue']     = $perso->perso_nb_monstre_tue;
+        $return['perso_nb_joueur_tue']      = $perso->perso_nb_joueur_tue;
+        $return['perso_utl_pa_rest']        = $perso->perso_utl_pa_rest;
+        $return['perso_tangible']           = $perso->perso_tangible;
+        $return['perso_nb_tour_intangible'] = $perso->perso_nb_tour_intangible;
+        $return['perso_capa_repar']         = $perso->perso_capa_repar;
+        $return['perso_nb_receptacle']      = $perso->perso_nb_receptacle;
+        $return['perso_px']                 = $perso->perso_px;
+        $return['perso_use_repart_auto']    = $perso->perso_use_repart_auto;
+        $return['perso_energie']            = $perso->perso_energie;
+        $return['perso_desc_long']          = $perso->perso_desc_long;
+    }
+    echo json_encode(array("isauth" => $isauth,"perso" => $return));
+    die('');
 }
 header('HTTP/1.0 405 Method Not Allowed');
 die('Méthode non autorisée.');
