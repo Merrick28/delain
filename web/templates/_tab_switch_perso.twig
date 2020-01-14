@@ -1,6 +1,6 @@
-<table width="100%" border="0">
+<table width="100%" border="0" class="tabperso">
     <tr>
-        <td colspan="2" class="titre" valign="top">
+        <td colspan="2" class="persotitre" valign="top">
             <div class="titre">{{ PERSO.perso_nom }}</div>
         </td>
     </tr>
@@ -77,7 +77,7 @@
                         <div class="image">
                             <img src="{{ G_IMAGES }}coeur.gif" alt="">
                             <div title="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }} PV"
-                                 alt="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }} PV" class="container-hp">
+                                 alt="{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }} PV" class="container-hp" {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
                                 <div class="barre-hp" style="width:{{ BARRE_HP }}%">
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                             <div class="image">
                                 <img src="{{ G_IMAGES }}energi10.png" alt="">
                                 <div title="{{ PERSO.perso_energie }} sur 100" alt="{{ PERSO.perso_energie }} sur 100"
-                                     class="container-nrj">
+                                     class="container-nrj"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
                                     <div class="barre-nrj" style="width:{{ BARRE_ENERGIE }}%"></div>
                                 </div>
                             </div>
@@ -102,7 +102,7 @@
                         <td>
                             <div class="image"><img src="{{ G_IMAGES }}magie.gif" alt="" title="Énergie divine">
                                 <div title="Énergie divine : {{ DIEU_PERSO.dper_points }}"
-                                     alt="Énergie divine : {{ DIEU_PERSO.dper_points }}" class="container-div">
+                                     alt="Énergie divine : {{ DIEU_PERSO.dper_points }}" class="container-div"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
                                     <div class="barre-div" style="width:{{ BARRE_DIVINE }}%"></div>
                                 </div>
                             </div>
@@ -115,7 +115,7 @@
                             <img src="{{ G_IMAGES }}iconexp.gif" alt="">
                             <div title="{{ PERSO.perso_px|round( floor) }} PX, prochain niveau à {{ PERSO.px_limite }}"
                                  alt="{{ PERSO.perso_px|round( floor) }} PX sur {{ PERSO.px_limite }}"
-                                 class="container-xp">
+                                 class="container-xp"  {% if ORIGINE_SWITCH== 'accueil' %} style="width:90px;"{% endif %}>
                                 <div class="barre-xp" style="width:{{ BARRE_XP }}%"></div>
                             </div>
                         </div>

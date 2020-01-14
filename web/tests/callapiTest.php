@@ -255,6 +255,7 @@ class callapiTest
         $a2          = $array_good;
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
+        print_r($callapi);
         $this->assertJson($callapi->content);
         $tab = json_decode($callapi->content,true);
         $this->assertIsInt($tab['perso']);

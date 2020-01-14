@@ -1,0 +1,84 @@
+{% extends 'index.twig' %}
+{% block contenu %}
+    <div class="groupdiv">
+        {% if COMPTE.compt_hibernation == 'O' %}
+            Votre compte est en hibernation jusqu’au {{ COMPTE.compt_dfin_hiber|date('d/m/Y H:i:s') }}<br>
+            Vous ne pouvez pas vous connecter d’ici là.
+        {% else %}
+            {% if ((DER_NEWS < NEWS_COD) or NV_MONSTRE) %}
+                <p class="titre">Dernières nouvelles : </p>
+                {% if NV_MONSTRE %}
+                    <p class="titre">Nouveau monstre !</p>
+                    <p class="texteNorm">
+                        Un nouveau monstre vient de vous être affecté. Prenez-en bien soin :)
+                    </p>
+                    {% if MONSTRE_COD > 0 %}
+                        {% if EVTOLDMONSTRE|length > 0 %}
+                            <p>Les derniers événements du monstre précédent :</p>
+                            <ul>
+                                {% for evt in EVTOLDMONSTRE %}
+                                    <li>{{ evt.levt_date|date('d/m/Y H:i:s') }}
+                                        : {{ evt.levt_texte|replace({'[perso_cod1]': PERSO_MONSTRE.perso_nom, '[attaquant]' : evt.perso_attaquant.perso_nom, '[cible]' : evt.perso_cible.perso_nom}) }}
+                                        ( {{ evt.tevt.tevt_libelle }} )
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p>Aucun événement depuis votre dernière DLT</p>
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+                {% for news in TAB_NEWS %}
+                    <p class="titre">{{ news.news_titre }}</p>
+                    <p class="texteNorm" style="text-align:right;">{{ news.news_date|date('d/m/Y H:i:s') }}</p>
+                    <p class="texteNorm">
+                        {{ news.news_texte }}
+                    </p>
+                    <p class="texteNorm" style="text-align:right;">
+                        {% if news.news_mail_auteur == '' %}
+                            {{ news.news_auteur }}
+                        {% else %}
+                            <a href="mailto:{{ news.news_mail_auteur }}"> {{ news.news_auteur }}</a>
+                        {% endif %}
+
+                    </p>
+                {% endfor %}
+            {% endif %}
+            {% if COMPTE.compt_acc_charte == 'N' %}
+                Vous devez revalider la <a href="charte.php" target="_blank">charte des joueurs</a>.<br>
+                Cette opération est nécessaire pour continuer.<br>
+                Afin de valider la charte, cliquez <a href="valide_charte.php">ici.</a>
+            {% else %}
+                {% if LISTE_PERSO|length == 0 %}
+                    <p>Aucun joueur dirigé.</p>
+                    <form name="nouveau" method="post">
+                        <input type="hidden" name="compt_cod" value="{{ COMPTE.compt_cod }}">
+
+                        <a href="javascript:document.nouveau.action='cree_perso_compte.php';document.nouveau.submit();">Créer
+                            un nouveau personnage !</a>
+                    </form>
+                {% else %}
+                    <form name="login" method="post" action="validation_login3.php">
+                        <input type="hidden" name="perso">
+                        <input type="hidden" name="compt_cod" value="{{ COMPTE.compt_cod }}">
+                        <input type="hidden" name="activeTout" value="0">
+
+                        <div class="container-fluid">
+                            {{ TAB_SWITCH|raw }}
+                        </div>
+                    </form>
+
+                {% endif %}
+
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="groupdiv">
+        <p style="text-align:center;"><a href="logout.php"><strong>se déconnecter</strong></a></p>
+    </div>
+{% endblock %}
+
+{% block postscripts %}
+{% endblock %}

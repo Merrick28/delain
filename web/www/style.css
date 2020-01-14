@@ -789,3 +789,11 @@ div#colonne1:hover   {
 .img-malus {
 	 margin-left: -8px;
 }
+
+.groupdiv .persotitre {
+    background-color: #800000;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    padding: 0px;
+}

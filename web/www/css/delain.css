@@ -77,6 +77,14 @@ a:hover {
     padding: 3px 0px;
 }
 
+.groupdiv .persotitre {
+    background-color: #800000;
+    color: #FFF;
+    font-weight: bold;
+    text-align: center;
+    padding: 0px;
+}
+
 .groupdiv_nopadding {
     background-image: url('../../images/fondparchemin.gif');
     border-color: #800000;
@@ -379,3 +387,151 @@ td.soustitre2{
     background-color:#BA9C6C;
 }
 
+.tabperso {
+    border-spacing: 1px;
+    border-collapse: separate;
+}
+
+.image {
+    text-align: center;
+}
+
+/* class pour les barres de pv, xp, etc.... */
+.container-hp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/hp0.gif');
+ }
+.barre-hp {
+	height: 10px;
+	background-image: url('../images/hp01.png');
+	background-repeat:repeat-x;
+}
+.container-xp {
+	 display: inline-block;
+	 width: 80px;
+	 height: 10px;
+	 padding-left:5px;
+	 padding-right:5px;
+	 background-image: url('../images/xp0.gif');
+ }
+.barre-xp {
+	height: 10px;
+	background-image: url('../images/xp01.png');
+	background-repeat:repeat-x;
+}
+.container-nrj {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/nrj0.png');
+}
+.barre-nrj {
+	height: 10px;
+	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}
+.container-div {
+	display: inline-block;
+	width: 80px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
+	background-repeat:repeat-x;
+}
+
+/* class pour les barres de pv, xp, etc pour version responsive .... */
+.mob-barre-inline {
+	display: inline-block;
+}
+.mob-container-hp {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/hp0.gif');
+}
+.mob-barre-hp {
+	height: 10px;
+	background-image: url('../images/hp01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-xp {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/xp0.gif');
+}
+.mob-barre-xp {
+	height: 10px;
+	background-image: url('../images/xp01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-nrj {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/nrj0.png');
+}
+.mob-barre-nrj {
+	height: 10px;
+	background-image: url('../images/nrj01.png');
+	background-repeat:repeat-x;
+}
+.mob-container-div {
+	display: inline-block;
+	width: 90px;
+	height: 10px;
+	padding-left:5px;
+	padding-right:5px;
+	background-image: url('../images/div0.png');
+}
+.mob-barre-div {
+	height: 10px;
+	background-image: url('../images/div01.png');
+	background-repeat:repeat-x;
+}
+
+table {
+    display: table;
+    border-collapse: separate;
+    white-space: normal;
+    line-height: normal;
+    font-weight: normal;
+    font-size: medium;
+    font-style: normal;
+    color: -internal-quirk-inherit;
+    text-align: start;
+    border-spacing: 2px;
+    border-color: grey;
+    font-variant: normal;
+}
+
+input.bouton {
+	color : #FFFFFF;
+	font-size: 9px;
+	font-family: Verdana, Helvetica, sans-serif;
+	border-color : #B5955A #9F7F47 #9F7F47 #B5955A;
+	background : url(../images/bouton.gif);
+	border-width: 2px;
+	padding-right:0pt;
+	padding-left:0pt;
+	margin-left:0pt;
+	margin-right:0pt;
+	text-indent:0pt;
+}
