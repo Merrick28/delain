@@ -10,24 +10,23 @@
  */
 class ligne_evt
 {
-    var $levt_cod;
-    var $levt_tevt_cod;
-    var $levt_date;
-    var $levt_type_per1 = 1;
-    var $levt_perso_cod1;
-    var $levt_type_per2;
-    var $levt_perso_cod2;
-    var $levt_texte;
-    var $levt_lu        = 'N';
-    var $levt_visible;
-    var $levt_attaquant;
-    var $levt_cible;
-    var $levt_nombre;
-    var $levt_parametres;
+    public $levt_cod;
+    public $levt_tevt_cod;
+    public $levt_date;
+    public $levt_type_per1 = 1;
+    public $levt_perso_cod1;
+    public $levt_type_per2;
+    public $levt_perso_cod2;
+    public $levt_texte;
+    public $levt_lu        = 'N';
+    public $levt_visible;
+    public $levt_attaquant;
+    public $levt_cible;
+    public $levt_nombre;
+    public $levt_parametres;
 
-    function __construct()
+    public function __construct()
     {
-
         $this->levt_date = date('Y-m-d H:i:s');
     }
 
@@ -37,14 +36,13 @@ class ligne_evt
      * @param integer $code => PK
      * @return boolean => false si non trouvé
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo  = new bddpdo;
         $req  = "SELECT * FROM ligne_evt WHERE levt_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->levt_cod        = $result['levt_cod'];
@@ -69,11 +67,10 @@ class ligne_evt
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req
                   = "INSERT INTO ligne_evt (
             levt_tevt_cod,
@@ -125,9 +122,7 @@ class ligne_evt
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
-        {
+        } else {
             $req
                   = "UPDATE ligne_evt
                     SET
@@ -169,14 +164,13 @@ class ligne_evt
      * @global bdd_mysql $pdo
      * @return \ligne_evt
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "SELECT levt_cod  FROM ligne_evt ORDER BY levt_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new ligne_evt;
             $temp->charge($result["levt_cod"]);
             $retour[] = $temp;
@@ -189,36 +183,38 @@ class ligne_evt
      * @param $perso_cod
      * @return ligne_evt[]
      */
-    function getByPersoNonLu($perso_cod)
+    public function getByPersoNonLu($perso_cod)
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req
-                = "SELECT levt_cod  FROM ligne_evt 
+                = "SELECT levt_cod  FROM ligne_evt
           WHERE levt_perso_cod1 = ?
           AND levt_lu = 'N'
           ORDER BY levt_cod DESC";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new ligne_evt;
             $temp->charge($result["levt_cod"]);
             $tevt = new type_evt();
             $tevt->charge($temp->levt_tevt_cod);
             $temp->tevt = $tevt;
             // on prend les evts liés
-            if (!empty($this->levt_attaquant != ''))
-            {
+            if (!is_null(trim($this->levt_attaquant))) {
                 $perso_attaquant = new perso;
-                $perso_attaquant->charge($this->levt_attaquant);
-                $temp->perso_attaquant = $perso_attaquant;
+                if ($perso_attaquant->charge($this->levt_attaquant)) {
+                    $temp->perso_attaquant = $perso_attaquant;
+                } else {
+                    $temp->perso_attaquant = "erreur";
+                }
+                unset($perso_attaquant);
             }
-            if (!empty($this->levt_cible != ''))
-            {
+            if (!is_null(trim($this->levt_cible))) {
                 $perso_cible = new perso;
                 $perso_cible->charge($this->levt_cible);
                 $temp->perso_cible = $perso_cible;
+                unset($perso_cible);
             }
 
             $retour[]   = $temp;
@@ -227,7 +223,7 @@ class ligne_evt
         return $retour;
     }
 
-    function marquePersoLu($perso_cod)
+    public function marquePersoLu($perso_cod)
     {
         $pdo  = new bddpdo;
         $req  = "UPDATE ligne_evt SET levt_lu = 'O' WHERE levt_perso_cod1 = ? AND levt_lu = 'N'";
@@ -238,31 +234,25 @@ class ligne_evt
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "SELECT levt_cod  FROM ligne_evt WHERE " . substr($name, 6) . " = ? ORDER BY levt_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp = new ligne_evt;
                         $temp->charge($result["levt_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                }
-                else
-                {
+                } else {
                     die('Unknown variable ' . substr($name, 6) . ' in table ligne_evt');
                 }
                 break;

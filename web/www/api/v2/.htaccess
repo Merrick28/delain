@@ -17,3 +17,4 @@ RewriteRule ^news/?$ news.php [L]
 # perso
 RewriteRule ^perso/?$ perso.php [L]
 RewriteRule ^perso/([0-9]+)/?$ perso.php?visu_perso=$1 [L]
+RewriteRule ^perso/([0-9]+)/evts/?$ perso_evts.php?visu_perso=$1 [QSA]
