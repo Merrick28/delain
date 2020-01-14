@@ -178,7 +178,7 @@ class callapiTest
             "intel" => 9,
             "voie"  => "guerrier",
             "poste" => "H",
-            "race" => 1
+            "race"  => 1
         );
 
         //mauvais compte
@@ -252,31 +252,31 @@ class callapiTest
         $this->assertEquals($callapi->content, 'Vous devez choisir un poste d\'entrée');
 
         // création du premier perso OK
-        $a2          = $array_good;
+        $a2 = $array_good;
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
 
         $this->assertJson($callapi->content);
-        $tab = json_decode($callapi->content,true);
+        $tab = json_decode($callapi->content, true);
         $this->assertIsInt($tab['perso']);
 
         // le second doit planter à cause du nom
-        $a2          = $array_good;
+        $a2 = $array_good;
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Un aventurier porte déjà ce nom');
 
         // un autre avec un autre nom
-        $a2          = $array_good;
+        $a2        = $array_good;
         $a2['nom'] = 'nouveau nom';
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
-        $tab = json_decode($callapi->content,true);
+        $tab = json_decode($callapi->content, true);
         $this->assertIsInt($tab['perso']);
 
         // on devrait avoir assez de persos
-        $a2          = $array_good;
+        $a2        = $array_good;
         $a2['nom'] = 'nouveau nom 2';
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
@@ -297,22 +297,63 @@ class callapiTest
         $this->assertJson($callapi->content);
 
         $tab_persos = json_decode($callapi->content, true);
-        foreach($tab_persos['persos'] as $val)
+        foreach ($tab_persos['persos'] as $val)
         {
             $this->assertIsInt($val['perso_cod']);
         }
-        foreach($tab_persos['sittes'] as $val)
+        foreach ($tab_persos['sittes'] as $val)
         {
             $this->assertIsInt($val['perso_cod']);
         }
         return $tab_persos;
     }
 
+    /**
+     * @depends testGetPersoCompte
+     * @depends testLoginOk
+     * @param $tab_persos
+     * @param $token
+     * @return mixed
+     */
+    function testGetPerso($tab_persos, $token)
+    : void
+    {
+        $callapi = new callapi();
+
+        foreach ($tab_persos['persos'] as $perso)
+        {
+            // test de perso auth
+            $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET', $token));
+            $this->assertEquals($callapi->http_response, 200);
+            $this->assertJson($callapi->content);
+            $tab_reponse = json_decode($callapi->content, true);
+
+            $this->assertTrue($tab_reponse['isauth']);
+            $this->assertArrayHasKey('perso_for', $tab_reponse['perso']);
+            // test de perso non auth
+            $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET'));
+            $this->assertEquals($callapi->http_response, 200);
+            $this->assertJson($callapi->content);
+            $tab_reponse = json_decode($callapi->content, true);
+            $this->assertFalse($tab_reponse['isauth']);
+            $this->assertArrayNotHasKey('perso_for', $tab_reponse['perso']);
+        }
+        // test perso non existant
+        $this->assertFalse($callapi->call(API_URL . '/perso/255', 'GET'));
+        $this->assertEquals($callapi->http_response, 405);
+        $this->assertEquals($callapi->content, 'perso non trouvé');
+
+
+    }
+
 
     /**
      * @depends testLoginOk
+     * @depends testGetPersoCompte
+     * @param $tab_persos
+     *
      */
-    public function testDeleteToken($token)
+    public function testDeleteToken($token, $tab_persos)
     : void
     {
         $callapi = new callapi();
@@ -323,5 +364,20 @@ class callapiTest
         $auth_token = new auth_token();
         $temp       = $auth_token->charge($token);
         $this->assertFalse($temp);
+
+        // on efface les persos pour pouvoir relancer les tests
+
+        foreach ($tab_persos['persos'] as $tabperso)
+        {
+            if ($tabperso['perso_cod'] != 1)
+            {
+                $perso = new perso;
+                $perso->charge($tabperso['perso_cod']);
+                $perso->efface();
+                unset($perso);
+            }
+
+        }
+
     }
 }
