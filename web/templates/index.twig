@@ -217,11 +217,12 @@
                         </div>
                     </div>
                 </div>
-                {#
-                <div class="groupdiv" id="pub">
-                    {{ PUB | raw }}
+                {% if PUB.type == 'haut' %}
+                <div class="groupdiv" style="text-align: center;" id="pub">
+                    {{ PUB.code | raw }}
                 </div>
-                #}
+                {% endif %}
+                
                 <div class="groupdiv">
                     <strong>Les souterrains de Delain</strong> est un jeu de rôles en ligne, où vous pouvez incarner jusqu’à 3
                     aventuriers. Il se déroule en tour par tour, et les seuls outils nécessaires pour y jouer sont une
@@ -302,7 +303,10 @@ Je sais à quel point la pub sur Internet peut être pénible, mais nous nous ef
 
 {%  endblock %}
 
-{{ PUB | raw }}
+ {% if PUB.type == 'bas' %}
+                    {{ PUB.code | raw }}
+
+                {% endif %}
 </body>
 
 </html>
