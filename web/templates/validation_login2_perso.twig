@@ -34,7 +34,7 @@
                     <p class="titre">{{ news.news_titre }}</p>
                     <p class="texteNorm" style="text-align:right;">{{ news.news_date|date('d/m/Y H:i:s') }}</p>
                     <p class="texteNorm">
-                        {{ news.news_texte }}
+                        {{ news.news_texte|raw }}
                     </p>
                     <p class="texteNorm" style="text-align:right;">
                         {% if news.news_mail_auteur == '' %}

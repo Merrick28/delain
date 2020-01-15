@@ -45,14 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $compt_cod = $compte->compt_cod;
 
 
-    if ($compte->is_admin_monstre())
+    /*if ($compte->is_admin_monstre())
     {
         die('compte monstre');
     }
     if ($compte->is_admin())
     {
         die('compte admin');
-    }
+    }*/
 
 
     // on efface tout ce qu'on ne veut pas afficher
