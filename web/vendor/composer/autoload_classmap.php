@@ -41,6 +41,7 @@ return array(
     'Fabfuel\\Prophiler\\Toolbar\\Formatter\\TimelineFormatterTest' => $vendorDir . '/fabfuel/prophiler/tests/Fabfuel/Prophiler/Toolbar/Formatter/TimelineFormatterTest.php',
     'Google_Service_Exception' => $vendorDir . '/google/apiclient/src/Google/Service/Exception.php',
     'Google_Service_Resource' => $vendorDir . '/google/apiclient/src/Google/Service/Resource.php',
+    'Mobile_Detect' => $vendorDir . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
     'PHPUnit\\Exception' => $vendorDir . '/phpunit/phpunit/src/Exception.php',
     'PHPUnit\\Framework\\Assert' => $vendorDir . '/phpunit/phpunit/src/Framework/Assert.php',
     'PHPUnit\\Framework\\AssertionFailedError' => $vendorDir . '/phpunit/phpunit/src/Framework/Exception/AssertionFailedError.php',

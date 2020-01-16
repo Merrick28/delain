@@ -6,6 +6,7 @@
         "google/apiclient": "^2.0",
         "phpunit/phpunit": "^8",
       "ext-json": "*",
-      "ext-curl": "*"
+      "ext-curl": "*",
+        "mobiledetect/mobiledetectlib": "^2.8"
     }
 }

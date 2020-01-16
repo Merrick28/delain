@@ -173,6 +173,13 @@ class ComposerStaticInit279f50f578ce432663cc652442aa369d
                 0 => __DIR__ . '/..' . '/fabfuel/prophiler/src',
             ),
         ),
+        'D' => 
+        array (
+            'Detection' => 
+            array (
+                0 => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/namespaced',
+            ),
+        ),
     );
 
     public static $classMap = array (
@@ -211,6 +218,7 @@ class ComposerStaticInit279f50f578ce432663cc652442aa369d
         'Fabfuel\\Prophiler\\Toolbar\\Formatter\\TimelineFormatterTest' => __DIR__ . '/..' . '/fabfuel/prophiler/tests/Fabfuel/Prophiler/Toolbar/Formatter/TimelineFormatterTest.php',
         'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
         'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
+        'Mobile_Detect' => __DIR__ . '/..' . '/mobiledetect/mobiledetectlib/Mobile_Detect.php',
         'PHPUnit\\Exception' => __DIR__ . '/..' . '/phpunit/phpunit/src/Exception.php',
         'PHPUnit\\Framework\\Assert' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert.php',
         'PHPUnit\\Framework\\AssertionFailedError' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Exception/AssertionFailedError.php',
