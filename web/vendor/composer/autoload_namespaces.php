@@ -10,4 +10,5 @@ return array(
     'Google_Service_' => array($vendorDir . '/google/apiclient-services/src'),
     'Google_' => array($vendorDir . '/google/apiclient/src'),
     'Fabfuel\\Prophiler\\' => array($vendorDir . '/fabfuel/prophiler/src'),
+    'Detection' => array($vendorDir . '/mobiledetect/mobiledetectlib/namespaced'),
 );
