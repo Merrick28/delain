@@ -127,7 +127,7 @@ if ($erreur == 0)
                     <input data-entry="val" name="objsort_gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'objet_generique\', $(\'#'.$row_id.'misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","objet_generique","Rechercher un objet générique");\'>
-                    &nbsp;<input type="submit" value="Voir/Modifier ses rattachements de cet objet" class="test"></form>';
+                    &nbsp;<input type="submit" value="Voir/Modifier les sorts de cet objet" class="test"></form>';
 
 
     echo "<hr>";
@@ -200,16 +200,18 @@ if ($erreur == 0)
             echo "<em>Il n'y a pas de sort sur cet objet</em>";
         }
     }
-
-}
 ?>
-    <br> <strong><u>Remarques</u></strong>:<br>
+<br> <strong><u>Remarques</u></strong>:<br>
     * Pensez à ne pas déséquilibrer le jeu (avec des objets trop puissants)<br>
-    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront ensorcellés<br>
+    * N'oubliez pas que TOUS les exemplaires d'un objet générique seront immédiatement ensorcellés<br>
     * Il y a des objets qui ne peuvent pas être équipé <em>(ce n'est pas contrôlé ici)</em><br>
     * Les familiers pourront aussi lancer les sorts si l'objet n'a pas besoin d'être équipé<br>
     * L'IA des monstres ne sait pas utiliser ces objets<br>
-    <br><p style="text-align:center;"><a href="admin_objet_generique_edit.php">Retour au modification d'objets génériques</a>
-<?php $contenu_page = ob_get_contents();
+<br><p style="text-align:center;"><a href="admin_objet_generique_edit.php?&gobj_cod=<?php echo $_REQUEST["objsort_gobj_cod"];?>">Retour au modification d'objets génériques</a>
+<?php
+
+}
+
+$contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";
