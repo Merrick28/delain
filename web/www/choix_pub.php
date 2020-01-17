@@ -79,13 +79,61 @@ function choix_pub_index()
             r.parentNode.insertBefore(s, r);
     }(document, 'script'));
 </script>",
-'<script type="text/javascript"> var infolinks_pid = 3230751; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>'
+'<script type="text/javascript"> var infolinks_pid = 3230751; var infolinks_wsid = 0; </script> <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>',
+'<script type="text/javascript">
+var infolinks_pid = 3230751;
+var infolinks_wsid = 0;
+</script>
+<script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>'
     );
         // bandeaux à positionner
         $pub_position = array(
-    '<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=300x250&ga=g"></script>
-<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub/300x250.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>;',
-'<a href="https://www.awin1.com/awclick.php?gid=325849&mid=7127&awinaffid=674299&linkid=2068405&clickref=">Inscrivez-vous</a>');
+
+'<a href="https://www.awin1.com/cread.php?s=606781&v=7127&q=299451&r=674299">
+    <img src="https://www.awin1.com/cshow.php?s=606781&v=7127&q=299451&r=674299" border="0">
+</a>',
+'<script type="text/javascript">
+var infolinks_pid = 3230751;
+var infolinks_wsid = 0;
+</script>
+<script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>',
+'<script src="//ap.lijit.com/www/delivery/fpi.js?z=675316&width=728&height=90"></script> ',
+'<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=728x90&ga=g"></script>
+<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub/728x90.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>',
+'
+<!-- START ADVERTISER: izziDiscount FR from awin.com -->
+
+<a href="https://www.awin1.com/cread.php?s=2586729&v=18965&q=383553&r=674299">
+    <img src="https://www.awin1.com/cshow.php?s=2586729&v=18965&q=383553&r=674299" border="0">
+</a>
+
+<!-- END ADVERTISER: izziDiscount FR from awin.com -->
+');
+
+$pub_mobile = array(
+    '<script src="//ap.lijit.com/www/delivery/fpi.js?z=675317&width=320&height=50"></script> ',
+    "<script type=\"text/javascript\">
+	atOptions = {
+		'key' : '5c7d38cd428bdcebca93f3089ab2c3f4',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+	document.write('<scr' + 'ipt type=\"text/javascript\" src=\"http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/5c7d38cd428bdcebca93f3089ab2c3f4/invoke.js\"></scr' + 'ipt>');
+</script>",
+'<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=300x50&ga=g"></script>
+<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub_0ei6v1.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>',
+'
+<!-- START ADVERTISER: izziDiscount FR from awin.com -->
+
+<a href="https://www.awin1.com/cread.php?s=2586721&v=18965&q=383553&r=674299">
+    <img src="https://www.awin1.com/cshow.php?s=2586721&v=18965&q=383553&r=674299" border="0">
+</a>
+
+<!-- END ADVERTISER: izziDiscount FR from awin.com -->
+'
+    );
 
         // on regarde quel type de bandeau on prend
         if (rand(1, 100) < 50) {
@@ -98,8 +146,15 @@ function choix_pub_index()
             $publicite = "<!-- debut pub $compt_pub / " . count($pub_position) . "-->" . $pub_position[$compt_pub] . "<!-- fin pub -->";
         }
     } else {
-        $type_pub = 'bas';
-        $publicite = '';
+         if (rand(1, 100) < 50) {
+            $type_pub = "bas";
+            $compt_pub = rand(1, count($pub_bas)) - 1;
+            $publicite = "<!-- debut pub $compt_pub / " . count($pub_bas) . "-->" . $pub_bas[$compt_pub] . "<!-- fin pub -->";
+        } else {
+            $type_pub = "haut";
+            $compt_pub = rand(1, count($pub_mobile)) - 1;
+            $publicite = "<!-- debut pub $compt_pub / " . count($pub_mobile) . "-->" . $pub_mobile[$compt_pub] . "<!-- fin pub -->";
+        }
     }
 
 
