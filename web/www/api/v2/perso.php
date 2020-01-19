@@ -582,7 +582,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
  *
  * @apiSampleRequest https://jdr-delain.net/api/v2/perso/:id
  *
- * @api {get} /perso/:id
+ * @api {get} /perso/:id Détail d'un perso
  * @apiName GetPerso
  * @apiGroup Perso
  *
@@ -616,49 +616,27 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
  */
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
-    if (!isset($_REQUEST['visu_perso']))
-    {
-        header('HTTP/1.0 405 MissingArgument');
-        die('visu_perso non transmis');
-    }
-    if (filter_var($_REQUEST['visu_perso'], FILTER_VALIDATE_INT) === false)
-    {
-        header('HTTP/1.0 405 MissingArgument');
-        die('visu_perso non entier');
-    }
+    include "fonctions_api.php";
+    $perso = test_perso();
 
-    $perso = new perso;
-    if (!$perso->charge($_REQUEST['visu_perso']))
-    {
-        header('HTTP/1.0 405 MissingArgument');
-        die('perso non trouvé');
-    }
+
 
     // on regarder si le compte a le droit
     // de regarder ce perso
     $api    = new callapi();
     $isauth = true;
     $test_api = $api->verifyCallIsAuth() ;
-
-
-
     if ($test_api  === false)
     {
         $isauth = false;
     } else
     {
-
-
         $compte = $test_api['compte'];
-
-
-
         if (!$compte->autoriseJouePerso($perso->perso_cod))
         {
             $isauth = false;
         }
-
-    }
+   }
 
 
 
