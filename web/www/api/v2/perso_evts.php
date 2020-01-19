@@ -76,17 +76,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         {
             // non auth, on prend la ligne du type d'événement
             $texte = str_replace('[perso_cod1]', $perso->perso_nom, $val->tevt->tevt_texte);
-            //unset($val->tevt);
+
         }
+
         $texte           = str_replace('[attaquant]', $val->perso_attaquant->perso_nom, $texte);
         $texte           = str_replace('[cible]', $val->perso_cible->perso_nom, $texte);
         $val->levt_texte = $texte;
         // suppression des persos
         $val->perso_cod_attaquant = $val->perso_attaquant->perso_cod;
         $val->perso_cod_cible     = $val->perso_cible->perso_cod;
-        //unset($val->perso_cible);
-        //  unset($val->perso_attaquant);
-        // reformatage du texte
+        unset($val->perso_cible);
+        unset($val->perso_attaquant);
+        unset($val->tevt);
+        unset($val->levt_type_per1);
+        unset($val->levt_type_per1);
+        unset($val->levt_type_per2);
+        unset($val->levt_perso_cod2);
+        unset($val->levt_nombre);
+        unset($val->levt_parametres);
+
 
     }
 

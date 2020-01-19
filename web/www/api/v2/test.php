@@ -80,12 +80,9 @@ unset($levt);
 */
 
 $perso_temp = new perso;
-if(!$perso_temp->charge(3))
-{
-    die ("erreur");
-}
 
-if ($callapi->call(API_URL . '/perso/1/evts', 'GET'))
+
+if ($callapi->call(API_URL . '/perso/1/evts', 'GET',$auth_token->at_token))
 {
     echo "<pre>";
     print_r($callapi->content);
