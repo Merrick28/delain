@@ -11,16 +11,14 @@
  */
 class messages_exp
 {
+    public $emsg_cod;
+    public $emsg_msg_cod;
+    public $emsg_perso_cod;
+    public $emsg_archive = 'N';
+    public $emsg_lu;
 
-    var $emsg_cod;
-    var $emsg_msg_cod;
-    var $emsg_perso_cod;
-    var $emsg_archive = 'N';
-    var $emsg_lu;
-
-    function __construct()
+    public function __construct()
     {
-        
     }
 
     /**
@@ -29,14 +27,13 @@ class messages_exp
      * @param integer $code => PK
      * @return boolean => false si non trouvé
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo    = new bddpdo;
         $req    = "select * from messages_exp where emsg_cod = ?";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->emsg_cod       = $result['emsg_cod'];
@@ -52,11 +49,10 @@ class messages_exp
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req  = "insert into messages_exp (
             emsg_msg_cod,
             emsg_perso_cod,
@@ -80,9 +76,7 @@ class messages_exp
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
-        {
+        } else {
             $req  = "update messages_exp
                     set
             emsg_msg_cod = :emsg_msg_cod,
@@ -105,14 +99,13 @@ class messages_exp
      * @global bdd_mysql $pdo
      * @return \messages_exp
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select emsg_cod  from messages_exp order by emsg_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp     = new messages_exp;
             $temp->charge($result["emsg_cod"]);
             $retour[] = $temp;
@@ -121,34 +114,41 @@ class messages_exp
         return $retour;
     }
 
+    public function getByMsg($msg)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select emsg_cod from messages_exp where emsg_msg_cod = :message";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":message" => $msg), $stmt);
+        if (!$result = $stmt->fetch()) {
+            return false;
+        }
+        return $this->charge($result['emsg_cod']);
+    }
+
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "select emsg_cod  from messages_exp where " . substr($name, 6) . " = ? order by emsg_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp     = new messages_exp;
                         $temp->charge($result["emsg_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                }
-                else
-                {
-                    die('Unknown variable ' . substr($name,6));
+                } else {
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
@@ -156,5 +156,4 @@ class messages_exp
                 die('Unknown method.');
         }
     }
-
 }
