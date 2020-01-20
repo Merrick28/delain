@@ -89,9 +89,7 @@ var infolinks_wsid = 0;
         // bandeaux à positionner
         $pub_position = array(
 
-'<a href="https://www.awin1.com/cread.php?s=606781&v=7127&q=299451&r=674299">
-    <img src="https://www.awin1.com/cshow.php?s=606781&v=7127&q=299451&r=674299" border="0">
-</a>',
+
 '<script type="text/javascript">
 var infolinks_pid = 3230751;
 var infolinks_wsid = 0;
@@ -100,15 +98,7 @@ var infolinks_wsid = 0;
 '<script src="//ap.lijit.com/www/delivery/fpi.js?z=675316&width=728&height=90"></script> ',
 '<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=728x90&ga=g"></script>
 <noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub/728x90.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>',
-'
-<!-- START ADVERTISER: izziDiscount FR from awin.com -->
-
-<a href="https://www.awin1.com/cread.php?s=2586729&v=18965&q=383553&r=674299">
-    <img src="https://www.awin1.com/cshow.php?s=2586729&v=18965&q=383553&r=674299" border="0">
-</a>
-
-<!-- END ADVERTISER: izziDiscount FR from awin.com -->
-');
+);
 
 $pub_mobile = array(
     '<script src="//ap.lijit.com/www/delivery/fpi.js?z=675317&width=320&height=50"></script> ',
@@ -123,16 +113,7 @@ $pub_mobile = array(
 	document.write('<scr' + 'ipt type=\"text/javascript\" src=\"http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/5c7d38cd428bdcebca93f3089ab2c3f4/invoke.js\"></scr' + 'ipt>');
 </script>",
 '<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=300x50&ga=g"></script>
-<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub_0ei6v1.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>',
-'
-<!-- START ADVERTISER: izziDiscount FR from awin.com -->
-
-<a href="https://www.awin1.com/cread.php?s=2586721&v=18965&q=383553&r=674299">
-    <img src="https://www.awin1.com/cshow.php?s=2586721&v=18965&q=383553&r=674299" border="0">
-</a>
-
-<!-- END ADVERTISER: izziDiscount FR from awin.com -->
-'
+<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub_0ei6v1.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>'
     );
 
         // on regarde quel type de bandeau on prend
