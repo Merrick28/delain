@@ -9,9 +9,15 @@ RewriteRule ^auth/?$ auth.php [L]
 
 # Compte
 RewriteRule ^compte/?$ compte.php [L]
+RewriteRule ^compte/persos?$ compte_persos.php [L]
 
 # news
 RewriteRule ^news/?$ news.php [L]
 
 # perso
 RewriteRule ^perso/?$ perso.php [L]
+RewriteRule ^perso/([0-9]+)/?$ perso.php?visu_perso=$1 [L]
+RewriteRule ^perso/([0-9]+)/evts/?$ perso_evts.php?visu_perso=$1 [QSA]
+RewriteRule ^perso/([0-9]+)/msg_dest/?$ perso_msg_dest.php?visu_perso=$1 [QSA]
+RewriteRule ^perso/([0-9]+)/msg_exp/?$ perso_msg_dest.php?visu_perso=$1 [QSA]
+

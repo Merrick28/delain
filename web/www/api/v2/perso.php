@@ -57,13 +57,7 @@ function envoie_message($titre, $corps, $dest, $exp)
  *       "poste": "H",
  *        "race": 1
  *     }
- *
- *
- *
  * @apiSuccess {json} Tableau des données
- *
- *
- *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -86,12 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     $creation_4e       = false;
 
     $nom2 = $input['nom'];
-    if(!array_key_exists("nom",$input))
+    if (!array_key_exists("nom", $input))
     {
         header('HTTP/1.0 403 NoName');
         die('Nom de personnage vide, ou perdu dans les limbes informatiques...');
     }
-    if(!array_key_exists("race",$input))
+    if (!array_key_exists("race", $input))
     {
         header('HTTP/1.0 403 NoName');
         die('Race non choisie');
@@ -530,7 +524,7 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 				group by tuto_tuteur) t2 on t1.perso_cod = t2.tuto_tuteur
 				order by t2.compteur,random()
 				limit 1";
-            $pdo = new bddpdo();
+            $pdo  = new bddpdo();
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":type_perso" => 1), $stmt);
 
@@ -579,6 +573,122 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
     ob_end_clean();
     $return = array("perso" => $nouveau_perso_cod);
     echo json_encode($return);
+    die('');
+}
+
+
+/**
+ * @apiVersion 2.0.0
+ *
+ * @apiSampleRequest https://jdr-delain.net/api/v2/perso/:id
+ *
+ * @api {get} /perso/:id Détail d'un perso
+ * @apiName GetPerso
+ * @apiGroup Perso
+ *
+ *  @apiDescription Détail d'un perso
+ *  Retourne un résultat différent si on est authentifié et si
+ * on a le droit de jouer ce perso
+ *
+ * @apiHeader {string} [X-delain-auth] Token
+ * @apiHeaderExample {json} Header-Example:
+ *     {
+ *       "X-delain-auth": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
+ *     }
+ *
+ *
+ * @apiParam {integer} id Numéro du perso
+
+ * @apiSuccess {String} isauth true si on est auth et si on a le droit de jouer ce perso
+ * @apiSuccess {json} perso Détail du perso
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+{
+"isauth": true,
+"perso": {
+"perso_cod": 1,
+"perso_sex": "M",
+"perso_race_cod": 1,
+"perso_dcreat": "2020-01-13 16:50:14.961443+00",
+...
+}
+}
+ */
+if ($_SERVER['REQUEST_METHOD'] == 'GET')
+{
+    include "fonctions_api.php";
+    $perso = test_perso();
+
+
+
+    // on regarder si le compte a le droit
+    // de regarder ce perso
+    $api    = new callapi();
+    $isauth = true;
+    $test_api = $api->verifyCallIsAuth() ;
+    if ($test_api  === false)
+    {
+        $isauth = false;
+    } else
+    {
+        $compte = $test_api['compte'];
+        if (!$compte->autoriseJouePerso($perso->perso_cod))
+        {
+            $isauth = false;
+        }
+   }
+
+
+
+    $return['perso_cod']                 = $perso->perso_cod;
+    $return['perso_sex']                 = $perso->perso_sex;
+    $return['perso_race_cod']            = $perso->perso_race_cod;
+    $return['perso_dcreat']              = $perso->perso_dcreat;
+    $return['perso_actif']               = $perso->perso_actif;
+    $return['perso_niveau']              = $perso->perso_niveau;
+    $return['perso_description']         = $perso->perso_description;
+    $return['perso_nb_mort']             = $perso->perso_nb_mort;
+    $return['perso_reputation']          = $perso->perso_reputation;
+    $return['perso_avatar']              = $perso->perso_avatar;
+    $return['perso_kharma']              = $perso->perso_kharma;
+    $return['perso_nom']                 = $perso->perso_nom;
+    $return['perso_renommee']            = $perso->perso_renommee;
+    $return['perso_renommee_magie']      = $perso->perso_renommee_magie;
+    $return['perso_nb_mort_arene']       = $perso->perso_nb_mort_arene;
+    $return['perso_nb_joueur_tue_arene'] = $perso->perso_nb_joueur_tue_arene;
+    $return['perso_renommee_artisanat']  = $perso->perso_renommee_artisanat;
+    if ($isauth)
+    {
+        $return['perso_for']                = $perso->perso_for;
+        $return['perso_dex']                = $perso->perso_dex;
+        $return['perso_int']                = $perso->perso_int;
+        $return['perso_con']                = $perso->perso_con;
+        $return['perso_pv']                 = $perso->perso_pv;
+        $return['perso_pv_max']             = $perso->perso_pv_max;
+        $return['perso_dlt']                = $perso->perso_dlt;
+        $return['perso_temps_tour']         = $perso->perso_temps_tour;
+        $return['perso_pa']                 = $perso->perso_pa;
+        $return['perso_der_connex']         = $perso->perso_der_connex;
+        $return['perso_des_regen']          = $perso->perso_des_regen;
+        $return['perso_valeur_regen']       = $perso->perso_valeur_regen;
+        $return['perso_vue']                = $perso->perso_vue;
+        $return['perso_po']                 = $perso->perso_po;
+        $return['perso_nb_des_degats']      = $perso->perso_nb_des_degats;
+        $return['perso_val_des_degats']     = $perso->perso_val_des_degats;
+        $return['perso_enc_max']            = $perso->perso_enc_max;
+        $return['perso_nb_monstre_tue']     = $perso->perso_nb_monstre_tue;
+        $return['perso_nb_joueur_tue']      = $perso->perso_nb_joueur_tue;
+        $return['perso_utl_pa_rest']        = $perso->perso_utl_pa_rest;
+        $return['perso_tangible']           = $perso->perso_tangible;
+        $return['perso_nb_tour_intangible'] = $perso->perso_nb_tour_intangible;
+        $return['perso_capa_repar']         = $perso->perso_capa_repar;
+        $return['perso_nb_receptacle']      = $perso->perso_nb_receptacle;
+        $return['perso_px']                 = $perso->perso_px;
+        $return['perso_use_repart_auto']    = $perso->perso_use_repart_auto;
+        $return['perso_energie']            = $perso->perso_energie;
+        $return['perso_desc_long']          = $perso->perso_desc_long;
+    }
+    echo json_encode(array("isauth" => $isauth, "perso" => $return));
     die('');
 }
 header('HTTP/1.0 405 Method Not Allowed');

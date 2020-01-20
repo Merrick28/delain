@@ -11,17 +11,15 @@
  */
 class messages_dest
 {
+    public $dmsg_cod;
+    public $dmsg_msg_cod;
+    public $dmsg_perso_cod;
+    public $dmsg_lu      = 'N';
+    public $dmsg_archive = 'N';
+    public $dmsg_efface  = 0;
 
-    var $dmsg_cod;
-    var $dmsg_msg_cod;
-    var $dmsg_perso_cod;
-    var $dmsg_lu      = 'N';
-    var $dmsg_archive = 'N';
-    var $dmsg_efface  = 0;
-
-    function __construct()
+    public function __construct()
     {
-        
     }
 
     /**
@@ -30,14 +28,13 @@ class messages_dest
      * @param integer $code => PK
      * @return boolean => false si non trouvé
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo    = new bddpdo;
         $req    = "select * from messages_dest where dmsg_cod = ?";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->dmsg_cod       = $result['dmsg_cod'];
@@ -49,17 +46,76 @@ class messages_dest
         return true;
     }
 
-    function getByPersoNonLu($perso)
+    public function getByPersoNonLu($perso)
     {
         $pdo    = new bddpdo;
         $retour = array();
         $req    = "select dmsg_cod from messages_dest where dmsg_perso_cod = ? and dmsg_lu = 'N' and dmsg_archive = 'N'";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso), $stmt);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp     = new messages_dest;
             $temp->charge($result["dmsg_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function getByMessage($msg)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest where dmsg_msg_cod = :message and dmsg_efface = 0";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":message" => $msg), $stmt);
+        while ($result = $stmt->fetch()) {
+            $temp     = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    public function getByPerso($perso, $offset = 0, $limit = 50)
+    {
+        $pdo    = new bddpdo;
+        $retour = array();
+        $req    = "select dmsg_cod from messages_dest where dmsg_perso_cod = ? limit $limit offset $offset";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso), $stmt);
+
+        while ($result = $stmt->fetch()) {
+            $temp     = new messages_dest;
+            $temp->charge($result["dmsg_cod"]);
+            // on va charger le message
+            $message = new messages;
+            $message->charge($temp->dmsg_msg_cod);
+            $temp->message = $message;
+            unset($message);
+
+            // on va chercher l'expéditeur
+            $messages_exp = new messages_exp;
+            if ($messages_exp->getByMsg($temp->dmsg_msg_cod) !== false) {
+                $temp->messages_exp = $messages_exp;
+            }
+            unset($messages_exp);
+
+            // on va chercher les destinataires
+            $messages_dest2 = new messages_dest;
+            $temp->messages_dest = $messages_dest2->getByMessage($temp->dmsg_msg_cod);
+            unset($messages_dest2);
+
+            // on nettoie
+            unset($temp->dmsg_cod);
+            unset($temp->dmsg_msg_cod);
+            unset($temp->dmsg_perso_cod);
+            unset($temp->dmsg_lu);
+            unset($temp->dmsg_archive);
+            unset($temp->dmsg_efface);
+
+
             $retour[] = $temp;
             unset($temp);
         }
@@ -71,11 +127,10 @@ class messages_dest
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req  = "insert into messages_dest (
                                         dmsg_msg_cod,
                                         dmsg_perso_cod,
@@ -102,9 +157,7 @@ class messages_dest
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
-        {
+        } else {
             $req  = "update messages_dest
                     set
                                 dmsg_msg_cod = :dmsg_msg_cod,
@@ -129,14 +182,13 @@ class messages_dest
      * @global bdd_mysql $pdo
      * @return \messages_dest
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select dmsg_cod  from messages_dest order by dmsg_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp     = new messages_dest;
             $temp->charge($result["dmsg_cod"]);
             $retour[] = $temp;
@@ -147,32 +199,26 @@ class messages_dest
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "select dmsg_cod  from messages_dest where " . substr($name, 6) . " = ? order by dmsg_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp     = new messages_dest;
                         $temp->charge($result["dmsg_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                }
-                else
-                {
-                    die('Unknown variable ' . substr($name,6));
+                } else {
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
@@ -180,5 +226,4 @@ class messages_dest
                 die('Unknown method.');
         }
     }
-
 }

@@ -8,23 +8,18 @@ require_once('delain_header.php');
 
 use PHPUnit\Framework\TestCase;
 
-class callapiTest
-    extends
+class callapiTest extends
     TestCase
 {
-
     public static function setUpBeforeClass()
     : void
     {
-        if (defined('SERVER_PROD'))
-        {
-            if (SERVER_PROD)
-            {
+        if (defined('SERVER_PROD')) {
+            if (SERVER_PROD) {
                 die('Pas de tests unitaires en prod !');
             }
             $news = new news;
-            for ($i = 1; $i < 10; $i++)
-            {
+            for ($i = 1; $i < 10; $i++) {
                 $news->news_titre       = "Titre " . $i;
                 $news->news_auteur      = "Merrick";
                 $news->news_texte       = "Texte de la news n°" . $i;
@@ -77,7 +72,6 @@ class callapiTest
         $this->assertFalse($callapi->call(API_URL . '/auth', 'POST', '', array('login' => 'Admin')));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Pas de password.');
-
     }
 
     public function testWrongLogin()
@@ -101,7 +95,6 @@ class callapiTest
         $json  = json_decode($callapi->content, true);
         $token = $json['token'];
         return $token;
-
     }
 
     /*******************
@@ -156,8 +149,7 @@ class callapiTest
         $tabnews = json_decode($callapi->content, true);
         $this->assertCount(5, $tabnews['news']);
         $this->assertIsInt($tabnews['numberNews']);
-        foreach ($tabnews['news'] as $val)
-        {
+        foreach ($tabnews['news'] as $val) {
             $this->assertIsInt($val['news_cod']);
         }
     }
@@ -178,7 +170,7 @@ class callapiTest
             "intel" => 9,
             "voie"  => "guerrier",
             "poste" => "H",
-            "race" => 1
+            "race"  => 1
         );
 
         //mauvais compte
@@ -252,42 +244,193 @@ class callapiTest
         $this->assertEquals($callapi->content, 'Vous devez choisir un poste d\'entrée');
 
         // création du premier perso OK
-        $a2          = $array_good;
+        $a2 = $array_good;
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
-        print_r($callapi);
+
         $this->assertJson($callapi->content);
-        $tab = json_decode($callapi->content,true);
+        $tab = json_decode($callapi->content, true);
         $this->assertIsInt($tab['perso']);
 
         // le second doit planter à cause du nom
-        $a2          = $array_good;
+        $a2 = $array_good;
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Un aventurier porte déjà ce nom');
 
         // un autre avec un autre nom
-        $a2          = $array_good;
+        $a2        = $array_good;
         $a2['nom'] = 'nouveau nom';
         $this->assertTrue($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 200);
         $this->assertJson($callapi->content);
-        $tab = json_decode($callapi->content,true);
+        $tab = json_decode($callapi->content, true);
         $this->assertIsInt($tab['perso']);
 
         // on devrait avoir assez de persos
-        $a2          = $array_good;
+        $a2        = $array_good;
         $a2['nom'] = 'nouveau nom 2';
         $this->assertFalse($callapi->call(API_URL . '/perso', 'POST', $token, $a2));
         $this->assertEquals($callapi->http_response, 403);
         $this->assertEquals($callapi->content, 'Il semble que vous ayiez déjà assez de personnages comme cela');
     }
 
+    /**
+     * @depends testLoginOk
+     * @param $token
+     * @return mixed
+     */
+    public function testGetPersoCompte($token)
+    {
+        $callapi = new callapi();
+
+        $this->assertTrue($callapi->call(API_URL . '/compte/persos', 'GET', $token));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+
+        $tab_persos = json_decode($callapi->content, true);
+        foreach ($tab_persos['persos'] as $val) {
+            $this->assertIsInt($val['perso_cod']);
+        }
+        foreach ($tab_persos['sittes'] as $val) {
+            $this->assertIsInt($val['perso_cod']);
+        }
+        return $tab_persos;
+    }
+
+    /**
+     * @depends testGetPersoCompte
+     * @depends testLoginOk
+     * @param $tab_persos
+     * @param $token
+     * @return mixed
+     */
+    public function testGetPerso($tab_persos, $token)
+    : void
+    {
+        $callapi = new callapi();
+
+        foreach ($tab_persos['persos'] as $perso) {
+            // test de perso auth
+            $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET', $token));
+            $this->assertEquals($callapi->http_response, 200);
+            $this->assertJson($callapi->content);
+            $tab_reponse = json_decode($callapi->content, true);
+
+            $this->assertTrue($tab_reponse['isauth']);
+            $this->assertArrayHasKey('perso_for', $tab_reponse['perso']);
+            // test de perso non auth
+            $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'], 'GET'));
+            $this->assertEquals($callapi->http_response, 200);
+            $this->assertJson($callapi->content);
+            $tab_reponse = json_decode($callapi->content, true);
+            $this->assertFalse($tab_reponse['isauth']);
+            $this->assertArrayNotHasKey('perso_for', $tab_reponse['perso']);
+        }
+        // test perso non existant
+        $this->assertFalse($callapi->call(API_URL . '/perso/255', 'GET'));
+        $this->assertEquals($callapi->http_response, 405);
+        $this->assertEquals($callapi->content, 'perso non trouvé');
+    }
+
+    /**
+     * @depends testGetPersoCompte
+     * @depends testLoginOk
+     * @param $tab_persos
+     * @param $token
+     * @return mixed
+     */
+    public function testReadEvts($tab_persos, $token)
+    : void
+    {
+        $callapi = new callapi();
+        // on va d'abord créer des evts
+        foreach ($tab_persos['persos'] as $perso) {
+            $levt                  = new ligne_evt;
+            $levt->levt_perso_cod1 = 1;
+            $levt->levt_attaquant  = $perso['perso_cod'];
+            $levt->levt_cible      = 1;
+            $levt->levt_tevt_cod   = 9;
+            $levt->levt_lu         = 'N';
+            $levt->levt_texte      = '[attaquant] a salement attaqué [perso_cod1]';
+            $levt->stocke(true);
+            unset($levt);
+
+            $levt                  = new ligne_evt;
+            $levt->levt_perso_cod1 = 1;
+            $levt->levt_cible      = $perso['perso_cod'];
+            $levt->levt_attaquant  = 1;
+            $levt->levt_tevt_cod   = 9;
+            $levt->levt_lu         = 'N';
+            $levt->levt_texte      = '[perso_cod1] a salement attaqué [cible]';
+            $levt->stocke(true);
+            unset($levt);
+        }
+        // on vérifie qu'on ait bien toutes les infos
+        $this->assertTrue($callapi->call(API_URL . '/perso/1/evts', 'GET', $token));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+        $tab_reponse = json_decode($callapi->content, true);
+        //print_r($tab_reponse);
+        $this->assertTrue($tab_reponse['isauth']);
+        foreach ($tab_reponse['evts'] as $detail_reponse) {
+            $this->assertRegExp('/salement/', $detail_reponse['levt_texte']);
+            $this->assertIsInt($detail_reponse['levt_perso_cod1']);
+        }
+
+        // on fait la même chose non identifié
+        $this->assertTrue($callapi->call(API_URL . '/perso/1/evts', 'GET'));
+        $this->assertEquals($callapi->http_response, 200);
+        $this->assertJson($callapi->content);
+        $tab_reponse = json_decode($callapi->content, true);
+        //print_r($tab_reponse);
+        $this->assertFalse($tab_reponse['isauth']);
+        foreach ($tab_reponse['evts'] as $detail_reponse) {
+            $this->assertNotRegExp('/salement/', $detail_reponse['levt_texte']);
+            $this->assertIsInt($detail_reponse['levt_perso_cod1']);
+        }
+    }
+
+    /**
+    * @depends testGetPersoCompte
+    * @depends testLoginOk
+    * @param $tab_persos
+    * @param $token
+    * @return mixed
+    */
+    public function testReadMessages($tab_persos, $token)
+    : void
+    {
+        $callapi = new callapi();
+        // on va d'abord créer des evts
+        foreach ($tab_persos['persos'] as $perso) {
+            $this->assertTrue($callapi->call(API_URL . '/perso/' . $perso['perso_cod'] . '/msg_dest', 'GET', $token));
+            $this->assertEquals($callapi->http_response, 200);
+            $this->assertJson($callapi->content);
+            $tab_reponse = json_decode($callapi->content, true);
+
+            foreach ($tab_reponse as $mkey => $mval) {
+                $this->assertIsInt($mval['message']['msg_cod']);
+                $this->assertIsInt($mval['messages_exp']['emsg_perso_cod']);
+                foreach ($mval['messages_dest'] as $val) {
+                    $this->assertIsInt($val['dmsg_perso_cod']);
+                }
+            }
+
+
+
+            $this->assertFalse($callapi->call(API_URL . '/perso/' . $perso['perso_cod'] . '/msg_dest', 'GET'));
+        }
+    }
+
 
     /**
      * @depends testLoginOk
+     * @depends testGetPersoCompte
+     * @param $tab_persos
+     *
      */
-    public function testDeleteToken($token)
+    public function testDeleteToken($token, $tab_persos)
     : void
     {
         $callapi = new callapi();
@@ -298,5 +441,16 @@ class callapiTest
         $auth_token = new auth_token();
         $temp       = $auth_token->charge($token);
         $this->assertFalse($temp);
+
+        // on efface les persos pour pouvoir relancer les tests
+
+        foreach ($tab_persos['persos'] as $tabperso) {
+            if ($tabperso['perso_cod'] != 1) {
+                $perso = new perso;
+                $perso->charge($tabperso['perso_cod']);
+                $perso->efface();
+                unset($perso);
+            }
+        }
     }
 }

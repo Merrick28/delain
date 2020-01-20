@@ -116,4 +116,37 @@ class callapi
 
         return array("compte" =>$compte,"token" =>$auth_token);
     }
+
+    function verifyCallIsAuth()
+    {
+        $headers = getallheaders();
+        $isauth = false;
+        if (!isset($headers['X-delain-auth']))
+        {
+           return false;
+        }
+
+        $UUIDv4 = '/^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i';
+        if(!preg_match($UUIDv4, $headers['X-delain-auth']))
+        {
+            {
+                return false;
+            }
+        }
+
+        $auth_token = new auth_token();
+
+        if (!$auth_token->charge($headers['X-delain-auth']))
+        {
+            return false;
+        }
+
+        $compte = new compte;
+        if (!$compte->charge($auth_token->at_compt_cod))
+        {
+            return false;
+        }
+
+        return array("compte" =>$compte,"token" =>$auth_token);
+    }
 }

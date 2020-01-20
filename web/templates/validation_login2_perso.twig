@@ -51,7 +51,7 @@
                 Cette opération est nécessaire pour continuer.<br>
                 Afin de valider la charte, cliquez <a href="valide_charte.php">ici.</a>
             {% else %}
-                {% if LISTE_PERSO|length == 0 %}
+                {% if NB_PERSOS == 0 %}
                     <p>Aucun joueur dirigé.</p>
                     <form name="nouveau" method="post">
                         <input type="hidden" name="compt_cod" value="{{ COMPTE.compt_cod }}">

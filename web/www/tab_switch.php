@@ -1,5 +1,6 @@
 <?php
-if (!isset($is_log)) {
+if (!isset($is_log))
+{
     $is_log = 'N';
 }
 
@@ -27,9 +28,11 @@ function affiche_perso($perso_cod)
 
     $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $perso->perso_description)));
 
-    if ($perso->perso_avatar == '') {
+    if ($perso->perso_avatar == '')
+    {
         $avatar = G_IMAGES . $perso->perso_race_cod . "_" . $perso->perso_sex . ".png";
-    } else {
+    } else
+    {
         $avatar = $type_flux . G_URL . "avatars/" . $perso->perso_avatar;
     }
     //
@@ -55,7 +58,8 @@ function affiche_perso($perso_cod)
     // récupération énergie divine pour les familiers divins
     $barre_divine   = -1;
     $energie_divine = -1;
-    if ($perso->perso_gmon_cod == 441) {
+    if ($perso->perso_gmon_cod == 441)
+    {
         $dieu_perso = new dieu_perso();
         $dieu_perso->getByPersoCod($perso->perso_cod);
         $barre_divine = $perso->barre_divin();
@@ -65,54 +69,62 @@ function affiche_perso($perso_cod)
     $myguilde = "Pas de guilde";
 
     $guilde_perso = new guilde_perso();
-    if ($guilde_perso->get_by_perso($perso->perso_cod)) {
-        if ($guilde_perso->pguilde_valide == 'O') {
+    if ($guilde_perso->get_by_perso($perso->perso_cod))
+    {
+        if ($guilde_perso->pguilde_valide == 'O')
+        {
             $guilde = new guilde;
-            if ($guilde->charge($guilde_perso->pguilde_guilde_cod)) {
+            if ($guilde->charge($guilde_perso->pguilde_guilde_cod))
+            {
                 $myguilde = 'Guilde : ' . $guilde->guilde_nom;
             }
         }
     }
 
     $tours_impalpable = ($perso->perso_nb_tour_intangible > 1) ? ' tours' : ' tour';
-    $impalpable       = ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
+    $impalpable       =
+        ($perso->perso_tangible == 'N') ? '<br /><em>Impalpable (' . $perso->perso_nb_tour_intangible . $tours_impalpable . ')</em>' : '';
 
-    $ligne_malus="" ;
-    $list_malus = $perso->perso_malus();
-    if (count($list_malus)>0) {
-        foreach ($list_malus as $malus) {
-            $img = $malus["tbonus_libc"] ;
-            $bonus_valeur = $malus["bonus_valeur"] ;
-            $bonus_libelle = $malus["tonbus_libelle"] ;
-            $bonus_nb_tours = $malus["bonus_mode"]=='E' ? 'Equipement' : $malus["bonus_nb_tours"] .' tour(s)';
-            if (is_file(__DIR__ . "/../images/interface/bonus/{$img}.png")) {
-                $img = '<img class="img-malus" src="/images/interface/bonus/'.$img.'.png">';
-            } else {
+    $ligne_malus = "";
+    $list_malus  = $perso->perso_malus();
+    if (count($list_malus) > 0)
+    {
+        foreach ($list_malus as $malus)
+        {
+            $img            = $malus["tbonus_libc"];
+            $bonus_valeur   = $malus["bonus_valeur"];
+            $bonus_libelle  = $malus["tonbus_libelle"];
+            $bonus_nb_tours = $malus["bonus_mode"] == 'E' ? 'Equipement' : $malus["bonus_nb_tours"] . ' tour(s)';
+            if (is_file(__DIR__ . "/../images/interface/bonus/{$img}.png"))
+            {
+                $img = '<img class="img-malus" src="/images/interface/bonus/' . $img . '.png">';
+            } else
+            {
                 $img = '<img src="/../images/interface/bonus/MALUS.png">';
             }
-            $ligne_malus.='<span title="'.$bonus_libelle.': '.$bonus_valeur.' sur '.$bonus_nb_tours.'">'.$img.'</span><span class="badge-malus">'.$bonus_valeur.'</span>';
+            $ligne_malus .= '<span title="' . $bonus_libelle . ': ' . $bonus_valeur . ' sur ' . $bonus_nb_tours . '">' . $img . '</span><span class="badge-malus">' . $bonus_valeur . '</span>';
         }
     }
 
 
     $template     = $twig->load('_tab_switch_perso.twig');
     $options_twig = array(
-        'PERSO'         => $perso,
-        'POSITION'      => $position,
-        'ETAGE'         => $etage,
-        'MYGUILDE'      => $myguilde,
-        'AVATAR'        => $avatar,
-        'TYPE_FLUX'     => $type_flux,
-        'G_URL'         => G_URL,
-        'IS_LOG'        => $is_log,
-        'IMPALPABLE'    => $impalpable,
-        'G_IMAGES'      => G_IMAGES,
-        'BARRE_HP'      => $barre_hp,
-        'BARRE_ENERGIE' => $barre_energie,
-        'DIEU_PERSO'    => $dieu_perso,
-        'BARRE_DIVINE'  => $barre_divine,
-        'BARRE_XP'      => $barre_xp,
-        'LIGNE_MALUS'   => $ligne_malus,
+        'PERSO'          => $perso,
+        'POSITION'       => $position,
+        'ETAGE'          => $etage,
+        'MYGUILDE'       => $myguilde,
+        'AVATAR'         => $avatar,
+        'TYPE_FLUX'      => $type_flux,
+        'G_URL'          => G_URL,
+        'IS_LOG'         => $is_log,
+        'IMPALPABLE'     => $impalpable,
+        'G_IMAGES'       => G_IMAGES,
+        'BARRE_HP'       => $barre_hp,
+        'BARRE_ENERGIE'  => $barre_energie,
+        'DIEU_PERSO'     => $dieu_perso,
+        'BARRE_DIVINE'   => $barre_divine,
+        'BARRE_XP'       => $barre_xp,
+        'LIGNE_MALUS'    => $ligne_malus,
         'ORIGINE_SWITCH' => $origine_switch
 
 
@@ -150,7 +162,8 @@ function affiche_case_monstre_vide()
 /***************************************************************/
 /* Début de la page										    	*/
 /***************************************************************/
-$compte = new compte;
+$callapi = new callapi();
+$compte  = new compte;
 $compte->charge($compt_cod);
 
 
@@ -159,7 +172,8 @@ $nb_perso_ligne = 3;
 $ok_4           = $compte->autorise_4e_global();
 
 
-if ($ok_4) {
+if ($ok_4)
+{
     $nb_perso_max   = $compte->compt_ligne_perso * 4;
     $nb_perso_ligne = 4;
 }
@@ -169,53 +183,77 @@ $type_4 = $compte->compt_type_quatrieme;
 /*********************/
 /* Persos classiques */
 /*********************/
-$tab_perso     = $compte->getPersosActifs(false, true);
+//$tab_perso     = $compte->getPersosActifs(false, true);
+if ($callapi->call(API_URL . '/compte/persos?horsFam=true', 'GET', $_SESSION['api_token']))
+{
+    $persos_compte = $callapi->content;
+    $persos_compte = json_decode($persos_compte, true);
+    // pour la suite
+    $perso_sittes = $persos_compte['sittes'];
+} else
+{
+    die('Erreur sur appel API (get persos compte) : ' . $callapi->content);
+}
 $perso_normaux = array();
 $quatriemes    = array();
 
 $cpt_normaux    = 0;
 $cpt_quatriemes = 0;
 
-if (!isset($origine_switch)) {
+if (!isset($origine_switch))
+{
     $origine_switch = 'jeu';
 }
 
-foreach ($tab_perso as $detail_perso) {
-    if ($detail_perso->perso_type_perso == 2 || $detail_perso->perso_pnj == 2) {
+foreach ($persos_compte['persos'] as $num_perso)
+{
+    $detail_perso = new perso;
+    $detail_perso->charge($num_perso['perso_cod']);
+    if ($detail_perso->perso_type_perso == 2 || $detail_perso->perso_pnj == 2)
+    {
         $quatriemes[] = $detail_perso->perso_cod;
-    } else {
+    } else
+    {
         $perso_normaux[] = $detail_perso->perso_cod;
     }
+    unset($detail_perso);
 }
 
 
-if (sizeof($quatriemes) == 0 && $ok_4) {
+if (sizeof($quatriemes) == 0 && $ok_4)
+{
     $quatriemes[] = false;
 }
 
-while (sizeof($perso_normaux) % 3 !== 0) {
+while (sizeof($perso_normaux) % 3 !== 0)
+{
     $perso_normaux[] = false;
 }
 $premier_perso = (isset($perso_normaux[0])) ? $perso_normaux[0] : -1;
-if ($premier_perso == -1) {
+if ($premier_perso == -1)
+{
     $premier_perso = (isset($quatriemes[0])) ? $quatriemes[0] : -1;
 }
 
 echo '<div class="row row-eq-height">';     //Debut ligne des persos
 $numero_quatrieme = -1;
 $cpt              = 0;
-while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes)) {
+while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatriemes))
+{
     // Est-on sur la case réservée au quatrième ?
     $case_quatrieme = $ok_4 && ($cpt % $nb_perso_ligne == $nb_perso_ligne - 1);
 
     echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12" style="padding-left:2px; padding-right: 2px;">';
 
     // Une case normale
-    if (!$case_quatrieme) {
+    if (!$case_quatrieme)
+    {
         // On a un perso à afficher
-        if (!empty($perso_normaux[$cpt_normaux])) {
+        if (!empty($perso_normaux[$cpt_normaux]))
+        {
             affiche_perso($perso_normaux[$cpt_normaux]);
-        } else {
+        } else
+        {
             affiche_case_perso_vide();
         }
 
@@ -223,13 +261,17 @@ while ($cpt_normaux < sizeof($perso_normaux) || $cpt_quatriemes < sizeof($quatri
     }
 
     // Une case de 4ème perso
-    if ($case_quatrieme) {
+    if ($case_quatrieme)
+    {
         // On a un perso à afficher
-        if (!empty($quatriemes[$cpt_quatriemes])) {
+        if (!empty($quatriemes[$cpt_quatriemes]))
+        {
             affiche_perso($quatriemes[$cpt_quatriemes]);
-        } elseif ($type_4 != 2) {
+        } elseif ($type_4 != 2)
+        {
             affiche_case_perso_vide();
-        } else {
+        } else
+        {
             affiche_case_monstre_vide();
         }
 
@@ -257,10 +299,20 @@ echo $template->render($options_twig);
 /*************/
 /* Familiers */
 /*************/
-$tab_fam = $compte->getPersosActifs(true, false);
+//$tab_fam = $compte->getPersosActifs(true, false);
+if ($callapi->call(API_URL . '/compte/persos?horsPersos=true', 'GET', $_SESSION['api_token']))
+{
+    $persos_compte = $callapi->content;
+    $persos_compte = json_decode($persos_compte, true);
+    //pour la suite
+    $familiers_sittes = $persos_compte['sittes'];
+} else
+{
+    die('Erreur sur appel API (get persos compte) : ' . $callapi->content);
+}
 
-
-if (count($tab_fam) != 0) {
+if (count($persos_compte['persos']) != 0)
+{
     //echo '<tr><td colspan="3"><hr><div class="titre">Familiers : </div></td></tr>';
     echo '<div class="row" style="padding-left: 4px; padding-right: 4px;"><div class="col-lg-12 titre">Familiers : </div></div>';
 
@@ -268,12 +320,12 @@ if (count($tab_fam) != 0) {
 
     $alias_perso = 0;
     //for ($cpt = 0; $cpt < count($tab_fam); $cpt++)
-    foreach ($tab_fam as $fam) {
+    foreach ($persos_compte['persos'] as $num_perso)
+    {
+        $fam = new perso;
+        $fam->charge($num_perso['perso_cod']);
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
-
-
         affiche_perso($fam->perso_cod);
-
         echo '</div>';
     }
     echo '</div>';
@@ -282,9 +334,10 @@ if (count($tab_fam) != 0) {
 /******************************************/
 /* Comptes sittés ?					   */
 /******************************************/
-$tab_perso_sit = $compte->getPersosSittes(false, true);
+//$tab_perso_sit = $compte->getPersosSittes(false, true);
 
-if (count($tab_perso_sit) != 0) {
+if (count($perso_sittes) != 0)
+{
     //
     // là on a des persos sittés, donc, on va quand même regarder ce qui se passe
     //
@@ -295,28 +348,33 @@ if (count($tab_perso_sit) != 0) {
     echo '<div class="row row-eq-height">';   //Debut ligne des persos+familiers sittés
 
 
-    foreach ($tab_perso_sit as $sit) {
+    foreach ($perso_sittes as $detail_perso_sit)
+    {
+        $sit = new perso;
+        $sit->charge($detail_perso_sit['perso_cod']);
         echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
         affiche_perso($sit->perso_cod);
         echo '</div>';
+        unset($sit);
     }
     //
     // bon, on sait qu'on a sitté des persos, maintenant, on va quand même voir s'il y a des familiers
     //
 
-    $tab_fam_sit = $compte->getPersosSittes(true, false);
+    //$tab_fam_sit = $compte->getPersosSittes(true, false);
 
-    if (count($tab_fam_sit) != 0) {
+    if (count($familiers_sittes) != 0)
+    {
         $nb_perso    = $nb_perso_max;
         $alias_perso = 0;
-        foreach ($tab_fam_sit as $fam_sit) {
-            // 2019-02-07@Marlyza : Je ne sais pas trop pourquoi il y a ce compteur, mais il duplique les familiers sittés!
-            //for ($cpt = 0; $cpt < $nb_perso_max; $cpt++)
-            //{
+        foreach ($familiers_sittes as $detail_fam_sit)
+        {
+            $fam_sit = new perso;
+            $fam_sit->charge($detail_fam_sit['perso_cod']);
             echo '<div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">';
             affiche_perso($fam_sit->perso_cod);
             echo '</div>';
-            //}
+            unset($fam_sit);
         }
     }
     echo '</div>';               //Fin de ligne des persos+familiers sittés

@@ -58,7 +58,6 @@ if ($callapi->call(API_URL . '/perso', 'POST', $_SESSION['api_token'], $array_pe
 
 $template     = $twig->load('cree_perso_compte2.twig');
 $options_twig = array(
-    'PERCENT_FINANCES' => $percent_finances,
     'ERROR_MESSAGE'    => $error_message,
     'REQUEST'          => $_REQUEST,
     'PERSO'            => $nouveau_perso,

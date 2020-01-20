@@ -2801,6 +2801,14 @@ class perso
         return $result;
     }
 
+    function efface()
+    {
+        $pdo  = new bddpdo;
+        $req  = "select efface_perso(:perso)";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+    }
+
 
     public function __call($name, $arguments)
     {
