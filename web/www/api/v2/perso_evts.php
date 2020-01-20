@@ -21,39 +21,28 @@ ob_start();
  *
  *
  * @apiParam {Integer} id Numéro du perso
- * @apiParam {Integer} [marqueLu] si égal à 1, les evts sont marqués comme lus
- * @apiSuccess {json} Tableau des données
- * @apiSuccessExample {json} Success-Response:
- *     HTTP/1.1 200 OK
- *     {
- *       "perso": "2"
- *     }
+ * @apiParam {Integer} [marqueLu] si égal à 1, tous les evts sont marqués comme lus (nécessite l'authentification)
+ * @apiSuccess {json} Evenements Tableau des données
  */
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'GET')
-{
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     // on regarder si le compte a le droit
     // de regarder ce perso
     $api      = new callapi();
     $isauth   = true;
 
-
-
     include "fonctions_api.php";
     $perso = test_perso();
 
     $test_api = $api->verifyCallIsAuth();
 
-    if ($test_api === false)
-    {
+    if ($test_api === false) {
         $isauth = false;
-    } else
-    {
+    } else {
         $compte = $test_api['compte'];
-        if (!$compte->autoriseJouePerso($perso->perso_cod))
-        {
+        if (!$compte->autoriseJouePerso($perso->perso_cod)) {
             $isauth = false;
         }
     }
@@ -65,18 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $levt    = new ligne_evt;
     $all_evt = $levt->getByPerso($perso->perso_cod, $offset, $limit);
 
-    foreach ($all_evt as $key => $val)
-    {
-
-        if ($isauth)
-        {
+    foreach ($all_evt as $key => $val) {
+        if ($isauth) {
             // on prend la ligne de l'événement
             $texte = str_replace('[perso_cod1]', $perso->perso_nom, $val->levt_texte);
-        } else
-        {
+        } else {
             // non auth, on prend la ligne du type d'événement
             $texte = str_replace('[perso_cod1]', $perso->perso_nom, $val->tevt->tevt_texte);
-
         }
 
         $texte           = str_replace('[attaquant]', $val->perso_attaquant->perso_nom, $texte);
@@ -94,16 +78,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         unset($val->levt_perso_cod2);
         unset($val->levt_nombre);
         unset($val->levt_parametres);
-
-
     }
 
-    if ($isauth)
-    {
-        if (isset($_REQUEST['marqueLu']))
-        {
-            if ($_REQUEST['maruqeLu'] == 1)
-            {
+    if ($isauth) {
+        if (isset($_REQUEST['marqueLu'])) {
+            if ($_REQUEST['maruqeLu'] == 1) {
                 $levt->marquePersoLu($perso->perso_cod);
             }
         }
