@@ -9,7 +9,7 @@ RewriteRule ^auth/?$ auth.php [L]
 
 # Compte
 RewriteRule ^compte/?$ compte.php [L]
-RewriteRule ^compte/persos?$ compte_persos.php [L]
+RewriteRule ^compte/persos/?$ compte_persos.php [L]
 
 # news
 RewriteRule ^news/?$ news.php [L]

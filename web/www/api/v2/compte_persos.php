@@ -29,11 +29,47 @@ ob_start();
  * @apiParam {Boolean} [horsPersos=false] Si à true, on n'affiche pas les persos (que les fams)
  * @apiParam {Boolean} [horsFam=false] Si à true, on n'affiche pas les fams (que les persos)
  *
- * @apiSuccess {json} Tableau des données
+ * @apiSuccess {json[]} persos Persos du compte
+ * @apiSuccess {int} persos.perso_cod Numéro de perso
+ * @apiSuccess {text} persos.type Type de perso 
+ * @apiSuccess {text} persos.nom Nom de perso
+ * @apiSuccess {json[]} sittes Persos sittes
+ * @apiSuccess {int} sittes.perso_cod Numéro de perso
+ * @apiSuccess {text} sittes.type Type de perso 
+ * @apiSuccess {text} sittes.nom Nom de perso
  *
  *
  * @apiSuccessExample {json} Success-Response:
- *     {"persos":[{"perso_cod":1},{"perso_cod":3}]}
+ *     {
+  "persos": [
+    {
+      "perso_cod": 50,
+      "type": "perso",
+      "nom": "Merrick"
+    },
+    {
+      "perso_cod": 8753659,
+      "type": "monstre",
+      "nom": "Elementa d'infragène (n° 8753659)"
+    },
+    {
+      "perso_cod": 8837692,
+      "type": "perso",
+      "nom": "Galogan"
+    },
+    {
+      "perso_cod": 8837693,
+      "type": "perso",
+      "nom": "Belena"
+    },
+    {
+      "perso_cod": 7939836,
+      "type": "familier",
+      "nom": "Familier de Merrick"
+    }
+  ],
+  "sittes": []
+}
  */
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
@@ -65,10 +101,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     foreach ($temp['persos'] as $key => $val)
     {
         $return['persos'][$key]['perso_cod'] = $val->perso_cod;
+        if($val->perso_type_perso == 1)
+        {
+            $type = "perso";
+        }
+        elseif($val->perso_type_perso == 2)
+        {
+            $type = "monstre";
+        }
+        else
+        {
+            $type = "familier";
+        }
+        $return['persos'][$key]['type'] = $type;
+        $return['persos'][$key]['nom'] = $val->perso_nom;
     }
     foreach ($temp['sittes'] as $key => $val)
     {
         $return['sittes'][$key]['perso_cod'] = $val->perso_cod;
+        if($val->perso_type_perso == 1)
+        {
+            $type = "perso";
+        }
+        elseif($val->perso_type_perso == 2)
+        {
+            $type = "monstre";
+        }
+        else
+        {
+            $type = "familier";
+        }
+        $return['persos'][$key]['type'] = $type;
+        $return['persos'][$key]['nom'] = $val->perso_nom;
     }
 
     ob_end_clean();
