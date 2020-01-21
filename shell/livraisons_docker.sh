@@ -17,5 +17,4 @@ done
 # création du perso 1
 $psql -A -q -t -d delain -U ${USERNAME} << EOF
 select cree_perso(1);
-exit
 EOF
