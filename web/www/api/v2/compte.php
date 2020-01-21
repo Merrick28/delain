@@ -23,14 +23,39 @@ ob_start();
  * @apiError (403) AccountNotFound Compte non trouvé dans la base
  * @apiError (403) TokenNonUUID Le token n'est pas un UUID
  *
- * @apiSuccess {json} Tableau des données
+ * @apiSuccess {json} compte Détail du compte
+ * @apiSuccess {integer} compte.compt_cod Numéro du compte
+ * @apiSuccess {text} compte.compt_nom Nom du compte
+ * @apiSuccess {text} compte.compt_mail Adresse e-mail 
+ * @apiSuccess {char} compte.compt_actif Compte actif ? (O = Oui)
+ * @apiSuccess {date} compte.compt_dcreat Date de création
+ * @apiSuccess {date} compte.compt_der_connex Date de dernière connexion
+ * @apiSuccess {char} compte.compt_hibernation hibernation ('O ' = Oui, 'T' = fin, null ou 'N' = non)
+ * @apiSuccess {date} compte.compt_dfin_hiber Date fin hibernation 
+ * @apiSuccess {date} compte.compt_ddeb_hiber Date début hibernation
+ * @apiSuccess {integer} compte.compt_der_news Numéro de la dernière news lue
+ * @apiSuccess {char} compte.compt_quatre_perso Compte éligible au 4e perso ?
+ * @apiSuccess {integer} compte.compt_type_quatrieme Type de 4e (1 = perso, 2 = monstre)
+ * 
  *
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
- *     {
- *       "compte": "2",
- *       "token": "d5f60c54-2aac-4074-b2bb-cbedebb396b8"
- *     }
+ * {
+ *   "compte": {
+ *     "compt_cod": 4,
+ *     "compt_nom": "Moncompte",
+ *     "compt_mail": "me@myself.com",
+ *     "compt_actif": "O",
+ *     "compt_dcreat": "2003-08-11 14:15:59.644098+02",
+ *     "compt_der_connex": "2020-01-21 09:28:23+01",
+ *     "compt_hibernation": null,
+ *     "compt_dfin_hiber": null,
+ *     "compt_ddeb_hiber": null,
+ *     "compt_der_news": 710,
+ *     "compt_quatre_perso": "O",
+ *     "compt_type_quatrieme": 2
+ *    }
+ * }
  */
 
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
@@ -43,17 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $compte = $test_api['compte'];
 
     $compt_cod = $compte->compt_cod;
-
-
-    /*if ($compte->is_admin_monstre())
-    {
-        die('compte monstre');
-    }
-    if ($compte->is_admin())
-    {
-        die('compte admin');
-    }*/
-
 
     // on efface tout ce qu'on ne veut pas afficher
     unset($compte->compt_password);
@@ -83,6 +97,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     unset($compte->compt_phashword);
     unset($compte->compt_clef_reinit_mdp);
     unset($compte->compt_passwd_hash);
+    unset($compte->compt_ip);
+    unset($compte->compt_vue_desc);
+    unset($compte->compt_envoi_mail_frequence);
 
     $return = array(
         "compte" => $compte

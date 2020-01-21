@@ -57,7 +57,7 @@ function envoie_message($titre, $corps, $dest, $exp)
  *       "poste": "H",
  *        "race": 1
  *     }
- * @apiSuccess {json} Tableau des données
+ * @apiSuccess {integer} perso Numéro du perso créé
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  *     {
@@ -601,25 +601,106 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 
  * @apiSuccess {String} isauth true si on est auth et si on a le droit de jouer ce perso
  * @apiSuccess {json} perso Détail du perso
+ * @apiSuccess {integer} perso.perso_cod Numéro du perso
+ * @apiSuccess {char} perso.perso_sex Sexe du perso
+ * @apiSuccess {integer} perso.perso_race_cod Race du perso
+ * @apiSuccess {date} perso.perso_dcreat Date de création
+ * @apiSuccess {char} [perso.perso_actif] perso actif ?
+ * @apiSuccess {integer} perso.perso_niveau niveau du perso
+ * @apiSuccess {text} perso.perso_description Description du perso
+ * @apiSuccess {integer} perso.perso_nb_mort Nombre de morts
+ * @apiSuccess {integer} perso.perso_reputation Réputation
+ * @apiSuccess {text} perso.perso_avatar Chemin de l'avatar
+ * @apiSuccess {float} perso.perso_kharma Karma de l'aventurier
+ * @apiSuccess {text} perso.perso_nom Nom
+ * @apiSuccess {float} perso.perso_renommee Renommée
+ * @apiSuccess {float} perso.perso_renommee_magie Renommée magique
+ * @apiSuccess {integer} perso.perso_nb_mort_arene Nombre de morts en arène
+ * @apiSuccess {integer} perso.perso_nb_joueur_tue_arene Nombre de joueurs tués en arène
+ * @apiSuccess {integer} perso.perso_desc_long Description longue
+ * @apiSuccess {integer} [perso.perso_for] Force
+ * @apiSuccess {integer} [perso.perso_dex] Dextérité
+ * @apiSuccess {integer} [perso.perso_int] Intellignece
+ * @apiSuccess {integer} [perso.perso_con] Constitution
+ * @apiSuccess {integer} [perso.perso_pv] Points de vie
+ * @apiSuccess {integer} [perso.perso_pv_max] Points de vie max
+ * @apiSuccess {integer} [perso.perso_temps_tour] Temps de tour en minutes
+ * @apiSuccess {integer} [perso.perso_pa] PA restants
+ * @apiSuccess {date} [perso.perso_der_connex] Date de dernière connexion
+ * @apiSuccess {integer} [perso.perso_des_regen] Dés de regen
+ * @apiSuccess {integer} [perso.perso_valeur_regen] Valeur des dés de régen
+ * @apiSuccess {integer} [perso.perso_vue] Distance vue
+ * @apiSuccess {integer} [perso.perso_po] Quantité de brouzoufs
+ * @apiSuccess {integer} [perso.perso_nb_des_degats] Nombre de dés de dégâts (hors bonus)
+ * @apiSuccess {integer} [perso.perso_val_des_degats] Valeur des dés de dégats (hors bonus)
+ * @apiSuccess {integer} [perso.perso_enc_max] Encombrement maximum
+ * @apiSuccess {integer} perso.perso_nb_joueur_tue Nombre de joueurs tués
+ * @apiSuccess {integer} perso.perso_nb_monstre_tue Nombre de monstres tués
+ * @apiSuccess {integer} [perso.perso_utl_pa_rest] Utilise ses pa pour réduire le temps de tour (1 = Oui)
+ * @apiSuccess {char} [perso.perso_tangible] Perso tangible ("O" = oui)
+ * @apiSuccess {integer} [perso.perso_nb_tour_intangible] Nombre de tours intangibles
+ * @apiSuccess {integer} [perso.perso_capa_repar] Capacité de réparation
+ * @apiSuccess {integer} [perso.perso_nb_receptacle] Nombre de réceptable
+ * @apiSuccess {float} [perso.perso_px] Quantité de px
+ * 
+ * 
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
 {
-"isauth": true,
-"perso": {
-"perso_cod": 1,
-"perso_sex": "M",
-"perso_race_cod": 1,
-"perso_dcreat": "2020-01-13 16:50:14.961443+00",
-...
-}
+  "isauth": true,
+  "perso": {
+    "perso_cod": 50,
+    "perso_sex": "M",
+    "perso_race_cod": 1,
+    "perso_dcreat": "2003-04-01 21:37:33.279216+02",
+    "perso_actif": "O",
+    "perso_niveau": 55,
+    "perso_description": "Premier entré....",
+    "perso_nb_mort": 57,
+    "perso_reputation": 45,
+    "perso_avatar": "50.gif",
+    "perso_kharma": "512.35046666666666670000",
+    "perso_nom": "Merrick",
+    "perso_renommee": "132.353125525894",
+    "perso_renommee_magie": "530.946264566087",
+    "perso_nb_mort_arene": 0,
+    "perso_nb_joueur_tue_arene": 0,
+    "perso_renommee_artisanat": "52.7",
+    "perso_for": 24,
+    "perso_dex": 8,
+    "perso_int": 26,
+    "perso_con": 11,
+    "perso_pv": 180,
+    "perso_pv_max": 180,
+    "perso_dlt": "2020-01-17 16:08:23.380308+01",
+    "perso_temps_tour": 690,
+    "perso_pa": 12,
+    "perso_der_connex": "2020-01-17 11:49:49+01",
+    "perso_des_regen": 4,
+    "perso_valeur_regen": 3,
+    "perso_vue": 3,
+    "perso_po": 0,
+    "perso_nb_des_degats": 1,
+    "perso_val_des_degats": 3,
+    "perso_enc_max": 48,
+    "perso_nb_monstre_tue": 674,
+    "perso_nb_joueur_tue": 6,
+    "perso_utl_pa_rest": 1,
+    "perso_tangible": "O",
+    "perso_nb_tour_intangible": 0,
+    "perso_capa_repar": 102,
+    "perso_nb_receptacle": 5,
+    "perso_px": "14978.03128416486666666663",
+    "perso_use_repart_auto": 1,
+    "perso_energie": 100,
+    "perso_desc_long": null
+  }
 }
  */
 if ($_SERVER['REQUEST_METHOD'] == 'GET')
 {
     include "fonctions_api.php";
     $perso = test_perso();
-
-
 
     // on regarder si le compte a le droit
     // de regarder ce perso
@@ -657,6 +738,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
     $return['perso_nb_mort_arene']       = $perso->perso_nb_mort_arene;
     $return['perso_nb_joueur_tue_arene'] = $perso->perso_nb_joueur_tue_arene;
     $return['perso_renommee_artisanat']  = $perso->perso_renommee_artisanat;
+    $return['perso_desc_long']          = $perso->perso_desc_long;
+    $return['perso_nb_monstre_tue']     = $perso->perso_nb_monstre_tue;
+    $return['perso_nb_joueur_tue']      = $perso->perso_nb_joueur_tue;
     if ($isauth)
     {
         $return['perso_for']                = $perso->perso_for;
@@ -676,8 +760,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         $return['perso_nb_des_degats']      = $perso->perso_nb_des_degats;
         $return['perso_val_des_degats']     = $perso->perso_val_des_degats;
         $return['perso_enc_max']            = $perso->perso_enc_max;
-        $return['perso_nb_monstre_tue']     = $perso->perso_nb_monstre_tue;
-        $return['perso_nb_joueur_tue']      = $perso->perso_nb_joueur_tue;
+        
         $return['perso_utl_pa_rest']        = $perso->perso_utl_pa_rest;
         $return['perso_tangible']           = $perso->perso_tangible;
         $return['perso_nb_tour_intangible'] = $perso->perso_nb_tour_intangible;
@@ -685,8 +768,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET')
         $return['perso_nb_receptacle']      = $perso->perso_nb_receptacle;
         $return['perso_px']                 = $perso->perso_px;
         $return['perso_use_repart_auto']    = $perso->perso_use_repart_auto;
-        $return['perso_energie']            = $perso->perso_energie;
-        $return['perso_desc_long']          = $perso->perso_desc_long;
+       
     }
     echo json_encode(array("isauth" => $isauth, "perso" => $return));
     die('');

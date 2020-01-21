@@ -63,10 +63,7 @@ function choix_pub_index()
     if (!isset($aff)) {
         die('erreur sur choix écran');
     }
-    //die($aff);
-    if ($aff == 'normal') {
-        // bandeaux à placer en bas de page
-        $pub_bas       = array(
+            $pub_bas       = array(
 
        "<script type=\"text/javascript\">
     var vglnk = {key: 'e3e57e29280f5110ef7f3b37447871a1'};
@@ -115,6 +112,10 @@ $pub_mobile = array(
 '<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=300x50&ga=g"></script>
 <noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub_0ei6v1.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>'
     );
+    //die($aff);
+    if ($aff == 'normal') {
+        // bandeaux à placer en bas de page
+
 
         // on regarde quel type de bandeau on prend
         if (rand(1, 100) < 50) {

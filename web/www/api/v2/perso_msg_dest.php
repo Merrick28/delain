@@ -22,23 +22,39 @@ ob_start();
  *
  * @apiParam {Integer} id Numéro du perso
  * @apiSuccess {json} message Détail du message
+ * @apiSuccess {integer} message.msg_cod Code du message
+ * @apiSuccess {text} message.msg_titre Titre du message
+ * @apiSuccess {text} message.msg_corps Corps du message
+ * @apiSuccess {date} message.msg_date2 Date du message
+ * @apiSuccess {char} message.msg_guilde Message de guilde ?
+ * @apiSuccess {integer} message.msg_guilde_cod Code de la guilde
+ * @apiSuccess {integer} message.msg_init Message de départ de la conversation
+ * 
  * @apiSuccess {json} messages_exp Détail de l'expéditeur
- * @apiSuccess {json} messages_dest Liste des destinataires
+ * @apiSuccess {integer} messages_exp.emsg_perso_cod Numéro de perso de l'émetteur
+ * @apiSuccess {char} messages_exp.emsg_archive Archivé par l'émetteur ?
+ * @apiSuccess {integer} messages_exp.emsg_lu Marqué comme lu par l'émetteur ?
+ * 
+ * 
+ * @apiSuccess {json[]} messages_dest Liste des destinataires
+ * @apiSuccess {integer} messages_dest.dmsg_perso_cod Numéro de perso destinataire
+ * @apiSuccess {char} [messages_dest.dmsg_lu] Message lu par le destinataire ?
+ * @apiSuccess {char} [messages_dest.dmsg_archive] Message archivé par le destinataire ?
+ * 
+ * 
+ * 
  * @apiSuccessExample {json} Success-Response:
  *     HTTP/1.1 200 OK
  * [
  *  {
  *    "message": {
  *      "msg_cod": 148,
- *      "msg_date": "2020-01-20",
  *      "msg_titre": "Vous êtes indiscret...",
  *      "msg_corps": "texte du message",
  *      "msg_date2": "2020-01-20 14:08:13+00",
  *      "msg_guilde": "N",
  *      "msg_guilde_cod": null,
- *      "msg_init": 148,
- *      "exp_perso_cod": null,
- *      "tabDest": null
+ *      "msg_init": 148
  *    },
  *    "messages_exp": {
  *      "emsg_perso_cod": 1,
@@ -83,6 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     foreach ($all_messages as $key => $val) {
         unset($val->messages_exp->emsg_cod);
         unset($val->messages_exp->emsg_msg_cod);
+        unset($val->msg_date);
+        unset($val->exp_perso_cod);
+        unset($val->tabDest);
         if (!$compte->autoriseJouePerso($val->messages_exp->emsg_perso_cod)) {
             unset($val->messages_dest->emsg_archive);
             unset($val->messages_dest->emsg_lu);

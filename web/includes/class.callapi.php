@@ -84,6 +84,10 @@ class callapi
     function verifyCall()
     {
         $headers = getallheaders();
+        if(isset($headers['X-Delain-Auth']))
+        {
+            $headers['X-delain-auth'] = $headers['X-Delain-Auth'];
+        }
         if (!isset($headers['X-delain-auth']))
         {
             header('HTTP/1.0 403 NoToken');
@@ -116,11 +120,17 @@ class callapi
 
         return array("compte" =>$compte,"token" =>$auth_token);
     }
+    
+        
 
     function verifyCallIsAuth()
     {
         $headers = getallheaders();
         $isauth = false;
+        if(isset($headers['X-Delain-Auth']))
+        {
+            $headers['X-delain-auth'] = $headers['X-Delain-Auth'];
+        }
         if (!isset($headers['X-delain-auth']))
         {
            return false;
