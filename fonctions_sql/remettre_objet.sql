@@ -48,10 +48,11 @@ begin
     code_retour := 'Perso non trouvé !!';
     return code_retour;
   end if;
-  if v_type_perso = 3 then
-    code_retour := 'Un familier ne peut pas équiper d''objet !!';
-    return code_retour;
-  end if;
+  -- si le familier a reussi à l'équiper, on l'autrise à le déséquiper
+  -- if v_type_perso = 3 then
+  --  code_retour := 'Un familier ne peut pas équiper d''objet !!';
+  --  return code_retour;
+  -- end if;
   /**********************************************/
   /* Etape 2 : on vérifie que le perobj existe  */
   /**********************************************/
@@ -62,7 +63,7 @@ begin
     return code_retour;
   end if;
 
-  select into test_t (obj_desequipable='N') from objets,perso_objets
+  select into test_t (obj_desequipable='N' or (obj_deposable='N' and v_type_perso = 3)) from objets,perso_objets
   where perobj_cod = perobj and perobj_obj_cod = obj_cod;
   if test_t then
     code_retour := 'Cet objet n''est pas déséquipable.';

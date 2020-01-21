@@ -160,6 +160,31 @@ class objet_element
         }
     }
 
+    /***
+     * Retourne la liste des element (condition d'équipeent) d'un ojbet
+     * @return array|bool
+     */
+    function get_objet_element(objets $objet)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        // Les sorts, sont tous les générique de l'objet plus eventuellement des spécifiques
+        $req = "select objelem_cod from objet_element where objelem_gobj_cod=:gobj_cod or objelem_obj_cod=:obj_cod order by objelem_cod";
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":gobj_cod" => $objet->obj_gobj_cod,
+            ":obj_cod" => $objet->obj_cod
+        ),$stmt);
+        while($result = $stmt->fetch())
+        {
+            $temp = new objet_element();
+            $temp->charge($result["objelem_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     /**
      * supprime tous les éléments d'un objet generique qui ne sont pas dans la liste des elements
      * @global bdd_mysql $pdo

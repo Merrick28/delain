@@ -95,12 +95,17 @@ switch ($methode)
     case "remettre":
         if ($pa >= 2)
         {
-            $req_remettre = "select remettre_objet($perso_cod,$perobj)";
+            $req_remettre = "select remettre_objet($perso_cod,$perobj) as equipe";
             $db->query($req_remettre);
             $db->next_record();
-            ?>
-            <br><strong>L’équipement a été remis dans votre inventaire</strong><br>
-            <?php
+            $tab_remettre = $db->f("equipe");
+            if ($tab_remettre == "0")
+            {
+                echo("<br><strong>L’équipement a été remis dans votre inventaire</strong><br>");
+            } else
+            {
+                echo("<br><strong>$tab_remettre</strong><br>");
+            }
         } else
         {
             ?>
@@ -116,11 +121,15 @@ switch ($methode)
             echo("<br><strong>Vous n’avez pas assez de PA pour effectuer cette action !</strong><br>");
             $erreur = 1;
         }
-        if ($perso_type_perso == 3)
-        {
-            echo "<br><strong>Un familier ne peut pas équiper d’objet !</strong><br>";
-            $erreur = 1;
-        }
+
+        // En commentaire car aussi fait par equipe_objet()
+        //// vérifier si l'objet possède des prérequis pour l'équiper
+        // if ($perso_type_perso == 3)
+        // {
+        //    echo "<br><strong>Un familier ne peut pas équiper d’objet !</strong><br>";
+        //    $erreur = 1;
+        //}
+
         if ($erreur == 0)
         {
             $req_remettre = "select equipe_objet($perso_cod,$objet) as equipe";

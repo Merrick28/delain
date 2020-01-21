@@ -380,6 +380,41 @@ class objets
     }
 
     /***
+     * Retourne la liste des bonus/malus attachés sur l'objet
+     * @return array|bool
+     */
+    function get_condition_equipement()
+    {
+        $retour = array();
+
+        $objelem = new objet_element();
+        $retour = $objelem->get_objet_element($this) ;
+
+        if(count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+    /**
+     * Retourne vrai si le perso passé en paramètre peu equiper l'objet, et false sinon
+     * @return boolean
+     */
+    function est_equipable($perso_cod)
+    {
+        $pdo = new bddpdo;
+        $req = "select obj_verif_perso_condition(:perso_cod, :obj_cod) as est_equipable; ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":obj_cod" => $this->obj_cod, ":perso_cod" => $perso_cod),$stmt);
+        if (!$result = $stmt->fetch()) return false ;
+
+        if ($result["est_equipable"]==1) return true;
+
+        return false ;
+    }
+
+    /***
      * Retourne l'état d'un objet
      * @return string
      */

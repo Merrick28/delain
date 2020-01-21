@@ -1224,7 +1224,7 @@ begin
     if des <= 5 then
       des := limite_comp_maitre + 1;
       code_retour := code_retour || 'Alors que votre coup semblait parfait, un éclair de lumière vient s’interposer déviant légèrement votre coup pour le rendre moins parfait.';
-      delete from bonus where bonus_perso_cod = nv_cible and bonus_tbonus_libc = 'JUS';
+      delete from bonus where bonus_perso_cod = nv_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'JUS';
       texte_evt := '[cible] a été protégé d’un coup critique par son dieu.';
       perform insere_evenement(v_attaquant, nv_cible, 47, texte_evt, 'O', NULL);
     end if;

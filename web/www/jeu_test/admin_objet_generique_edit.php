@@ -647,7 +647,7 @@ if ($erreur == 0)
                     $carac = new aquete_type_carac();
                     $carac->charge($objelem->objelem_misc_cod);
                     $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
-                    echo $conj." [".$carac->aqtypecarac_nom." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                    echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
                 }
                 echo ': <a target="_blanck" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
             }

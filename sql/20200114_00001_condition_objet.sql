@@ -43,3 +43,14 @@ COMMENT ON COLUMN objet_element.objelem_param_txt_2  IS 'Paramètre texte utilis
 COMMENT ON COLUMN objet_element.objelem_param_txt_3  IS 'Paramètre texte utilisé en fonction du type de l''element';
 COMMENT ON COLUMN objet_element.objelem_param_ordre  IS 'Si un parmètre dispose de plusieurs éléments, ce champ permet de les trier.';
 COMMENT ON COLUMN objet_element.objelem_nom   IS 'Nom de l''élément pour une utilisation texte';
+
+
+ALTER TABLE quetes.aquete_type_carac ADD COLUMN aqtypecarac_aff text;
+COMMENT ON COLUMN quetes.aquete_type_carac.aqtypecarac_aff IS 'Texte pour l''affichage (or interface admin)';
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff=aqtypecarac_nom ;
+
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Sexe' where aqtypecarac_cod=5 ;
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Race' where aqtypecarac_cod=6 ;
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Voie Magique' where aqtypecarac_cod=16;
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Type de perso' where aqtypecarac_cod=17 ;
+UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Type de PNJ' where aqtypecarac_cod=18 ;

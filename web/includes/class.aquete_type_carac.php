@@ -14,6 +14,7 @@ class aquete_type_carac
     var $aqtypecarac_nom;
     var $aqtypecarac_type;
     var $aqtypecarac_description;
+    var $aqtypecarac_aff;
 
     function __construct()
     {
@@ -39,10 +40,7 @@ class aquete_type_carac
         $this->aqtypecarac_nom = $result['aqtypecarac_nom'];
         $this->aqtypecarac_type = $result['aqtypecarac_type'];
         $this->aqtypecarac_description = $result['aqtypecarac_description'];
-        $this->aqtypecarac_cod = $result['aqtypecarac_cod'];
-        $this->aqtypecarac_nom = $result['aqtypecarac_nom'];
-        $this->aqtypecarac_type = $result['aqtypecarac_type'];
-        $this->aqtypecarac_description = $result['aqtypecarac_description'];
+        $this->aqtypecarac_aff = $result['aqtypecarac_aff'];
         return true;
     }
 
@@ -62,7 +60,8 @@ class aquete_type_carac
             aqtypecarac_description,
             aqtypecarac_nom,
             aqtypecarac_type,
-            aqtypecarac_description                        )
+            aqtypecarac_description,
+            aqtypecarac_aff                        )
                     values
                     (
                         :aqtypecarac_nom,
@@ -70,7 +69,8 @@ class aquete_type_carac
                         :aqtypecarac_description,
                         :aqtypecarac_nom,
                         :aqtypecarac_type,
-                        :aqtypecarac_description                        )
+                        :aqtypecarac_description,
+                        :aqtypecarac_aff                        )
     returning aqtypecarac_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
@@ -80,6 +80,7 @@ class aquete_type_carac
                 ":aqtypecarac_nom" => $this->aqtypecarac_nom,
                 ":aqtypecarac_type" => $this->aqtypecarac_type,
                 ":aqtypecarac_description" => $this->aqtypecarac_description,
+                ":aqtypecarac_aff" => $this->aqtypecarac_aff,
             ),$stmt);
 
 
@@ -95,7 +96,8 @@ class aquete_type_carac
             aqtypecarac_description = :aqtypecarac_description,
             aqtypecarac_nom = :aqtypecarac_nom,
             aqtypecarac_type = :aqtypecarac_type,
-            aqtypecarac_description = :aqtypecarac_description                        where aqtypecarac_cod = :aqtypecarac_cod ";
+            aqtypecarac_description = :aqtypecarac_description ,
+            aqtypecarac_aff = :aqtypecarac_aff                        where aqtypecarac_cod = :aqtypecarac_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
                 ":aqtypecarac_cod" => $this->aqtypecarac_cod,
@@ -106,9 +108,65 @@ class aquete_type_carac
                 ":aqtypecarac_nom" => $this->aqtypecarac_nom,
                 ":aqtypecarac_type" => $this->aqtypecarac_type,
                 ":aqtypecarac_description" => $this->aqtypecarac_description,
+                ":aqtypecarac_aff" => $this->aqtypecarac_aff,
             ),$stmt);
         }
     }
+
+    /**
+     * @param objet_element $element
+     * @return string
+     */
+    function element_language_humain(objet_element $objelem) {
+
+        $signe = array("=" => "égale à", "!=" => "différent de", "<" => "inférieur à", "<=" => "inférieur ou égale à", "entre" => "entre", ">" => "supérieur à", ">=" => "supérieur ou égale à");
+        $param_txt_2 = $objelem->objelem_param_txt_2 ;
+        $param_txt_3 = $objelem->objelem_param_txt_3 ;
+
+        // gestion des cas particuliers
+        if ($objelem->objelem_misc_cod==16) {
+
+            $voie = new voie_magique();
+            $voie->charge($objelem->objelem_param_txt_2);
+            $param_txt_2 = $voie->mvoie_libelle;
+
+            if ($objelem->objelem_param_txt_3!="") {
+                $voie->charge($objelem->objelem_param_txt_3);
+                $param_txt_3 = $voie->mvoie_libelle;
+            }
+        }
+        else if ($objelem->objelem_misc_cod==17) {
+
+            // cas du type de perso
+            if ($objelem->objelem_param_txt_2==1) $param_txt_2 = "aventurier" ;
+            else if ($objelem->objelem_param_txt_2==2) $param_txt_2 = "monstre" ;
+            else if ($objelem->objelem_param_txt_2==3) $param_txt_2 = "familier" ;
+            else $param_txt_2 = "inconnu" ;
+            if ($objelem->objelem_param_txt_3!="") {
+                if ($objelem->objelem_param_txt_3==1) $param_txt_3 = "aventurier" ;
+                else if ($objelem->objelem_param_txt_3==2) $param_txt_3 = "monstre" ;
+                else if ($objelem->objelem_param_txt_3==3) $param_txt_3 = "familier" ;
+                else $param_txt_3 = "inconnu" ;
+            }
+        }
+        else if ($objelem->objelem_misc_cod==18) {
+
+            // cas du type de PNJ
+            if ($objelem->objelem_param_txt_2==0) $param_txt_2 = "PJ" ;
+            else if ($objelem->objelem_param_txt_2==1) $param_txt_2 = "PNJ" ;
+            else if ($objelem->objelem_param_txt_2==3) $param_txt_2 = "4ème" ;
+            else $param_txt_2 = "inconnu" ;
+            if ($objelem->objelem_param_txt_3!="") {
+                if ($objelem->objelem_param_txt_3==1) $param_txt_3 = "PJ" ;
+                else if ($objelem->objelem_param_txt_3==2) $param_txt_3 = "PNJ" ;
+                else if ($objelem->objelem_param_txt_3==3) $param_txt_3 = "4ème" ;
+                else $param_txt_3 = "inconnu" ;
+            }
+        }
+
+        return $this->aqtypecarac_aff." ".$signe[$objelem->objelem_param_txt_1]." ".$param_txt_2.($param_txt_3=="" ? "" : " et ".$param_txt_3);
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
