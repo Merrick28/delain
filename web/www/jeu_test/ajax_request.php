@@ -570,6 +570,12 @@ switch($_REQUEST["request"])
             case 'element':
                 $req = "select aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom from quetes.aquete_element join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod where aqelem_cod = ? ";
                 break;
+            case 'bonus_type':
+                $req = "select tbonus_libc  || ' (' || tonbus_libelle || ')' as nom from bonus_type where tbonus_cod = ? ";
+                break;
+            case 'bonus_type2':
+                $req = "select tbonus_cod as cod,   tbonus_libc || ' (' || tonbus_libelle || ')' as nom from bonus_type where tbonus_libc = ? ";
+                break;
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');
         }

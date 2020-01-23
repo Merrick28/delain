@@ -7,6 +7,40 @@ include_once '../includes/tools.php';
 
     <script>//# sourceURL=admin_objet_bm.js
 
+        function setNomByBMCod(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
+            //executer le service asynchrone
+            $("#"+divname).text("");
+            runAsync({request: "get_table_nom", data:{table:table, cod:cod}}, function(d){
+                if ((d.resultat == 0)&&(d.data)&&(d.data.nom))
+                {
+                    $("#"+divname).text(d.data.nom);
+                    $("#"+divname.substr(0, divname.length-8)+'libc').val((d.data.nom.substr(0,3)));
+                }
+                else
+                {
+                    $("#"+divname).text('');
+                    $("#"+divname.substr(0, divname.length-8)+'libc').val((''));
+                }
+            });
+        }
+
+        function setNomByBMLibc(divname, table, cod) { // fonction de mise à jour d'un champ nom quand on connait le cod
+            //executer le service asynchrone
+            $("#"+divname).text("");
+            runAsync({request: "get_table_nom", data:{table:table, cod:cod}}, function(d){
+                if ((d.resultat == 0)&&(d.data)&&(d.data.nom))
+                {
+                    $("#"+divname).text(d.data.nom);
+                    $("#"+divname.substr(0, divname.length-8)+'misc_cod').val((d.data.cod));
+                }
+                else
+                {
+                    $("#"+divname).text('');
+                    $("#"+divname.substr(0, divname.length-8)+'misc_cod').val((''));
+                }
+            });
+        }
+
         function editObjetBM(row, objbm_cod) {
             //executer le service asynchrone
             $('tr[id^="bmlist-"]').removeClass("soustitre2");
@@ -25,11 +59,12 @@ include_once '../includes/tools.php';
                    $("#sort-0-misc_cod").val(data.objbm_tbonus_cod ? data.objbm_tbonus_cod : "");
                    if ($("#sort-0-misc_cod").val()>0)
                    {
-                        setNomByTableCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
+                       setNomByBMCod('sort-0-misc_nom', 'bonus_type', $("#sort-0-misc_cod").val());
                    }
                    else
                    {
                        $("#sort-0-misc_nom").val("");
+                       $("#sort-0-libc").val("");
                    }
                    $("#objbm_nom").val(data.objbm_nom ? data.objbm_nom : "");
                    $("#objbm_bonus_valeur").val(data.objbm_bonus_valeur ? data.objbm_bonus_valeur : "");
@@ -216,8 +251,9 @@ if ($erreur == 0)
              <input type="hidden" id="objbm_gobj_cod" name="objbm_gobj_cod" value="'.$objbm_gobj_cod.'">
              <input type="hidden" id="objbm_obj_cod" name="objbm_obj_cod" value="">
              ';
-        echo '<table width="100%" class=\'bordiv\'><tr><td>Sélection du type de bonus/malus (<em>tbonus_cod</em>) :</td><td>
-                <input data-entry="val" name="objbm_tbonus_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'bonus_type\', $(\'#'.$row_id.'misc_cod\').val());">
+        echo '<table width="100%" class=\'bordiv\'><tr><td>Sélection du type de bonus/malus CODE (<em> ou tbonus_cod</em>) :</td><td>
+                <input data-entry="val" name="objbm_tbonus_libc" id="' . $row_id . 'libc" type="text" size="5" value="" onChange="setNomByBMLibc(\''.$row_id.'misc_nom\', \'bonus_type2\', $(\'#'.$row_id.'libc\').val());">
+                &nbsp;OU&nbsp;<input data-entry="val" name="objbm_tbonus_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByBMCod(\''.$row_id.'misc_nom\', \'bonus_type\', $(\'#'.$row_id.'misc_cod\').val());">
                 &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
                 </td></tr>
