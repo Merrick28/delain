@@ -223,6 +223,7 @@ if ($erreur == 0)
             echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br>
                     <a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br>
                     <a href="admin_objet_bm.php?">Rattachement de bonus/malus aux objets?</a><br>
+                    <a href="admin_objet_equip.php?">Rattachement de condistions d\'équipement aux objets?</a><br>
                     <br>
                     <hr><strong>Modification d’un objet existant</strong> (<em>recherche par type<em>):<br><br>';
 

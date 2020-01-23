@@ -252,7 +252,7 @@ if ($erreur == 0)
              <input type="hidden" id="objbm_obj_cod" name="objbm_obj_cod" value="">
              ';
         echo '<table width="100%" class=\'bordiv\'><tr><td>Sélection du type de bonus/malus CODE (<em> ou tbonus_cod</em>) :</td><td>
-                <input data-entry="val" name="objbm_tbonus_libc" id="' . $row_id . 'libc" type="text" size="5" value="" onChange="setNomByBMLibc(\''.$row_id.'misc_nom\', \'bonus_type2\', $(\'#'.$row_id.'libc\').val());">
+                <input data-entry="val" name="objbm_tbonus_libc" id="' . $row_id . 'libc" type="text" size="5" value="" onChange="setNomByBMLibc(\''.$row_id.'misc_nom\', \'bonus_type2\', $(\'#'.$row_id.'libc\').val().toUpperCase());">
                 &nbsp;OU&nbsp;<input data-entry="val" name="objbm_tbonus_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByBMCod(\''.$row_id.'misc_nom\', \'bonus_type\', $(\'#'.$row_id.'misc_cod\').val());">
                 &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                 &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","bonus_type","Rechercher un bonus/malus");\'><br>
