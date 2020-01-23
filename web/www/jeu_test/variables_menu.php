@@ -573,7 +573,9 @@ else
 $t->set_var('FAVORIS', $favoris);
 
 // voie magique
-if ($perso->sort_lvl5() > 0 && count($perso->sort_memo()) > 5)
+$psort5 = $perso->sort_lvl5();
+$psortm = $perso->sort_memo();
+if ($psort5 > 0 && is_array($psortm) && count($psortm) > 5)
 {
     $voie_magique = '<img src="' . G_IMAGES . 'magie.gif" alt=""> <a href="' . $chemin . '/choix_voie_magique.php">Voie magique</a><br>';
 }
