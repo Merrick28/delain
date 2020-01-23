@@ -352,6 +352,10 @@ switch($_REQUEST["request"])
             {  // limitation aux objet avec des bonus/malus de rattachés
                 $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_bm where objbm_gobj_cod=gobj_cod) ";
             }
+            if ($params["objet_generique_equipe"]=="true")
+            {  // limitation aux objet avec des bonus/malus de rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objet_element where objelem_gobj_cod=gobj_cod and objelem_param_id=1 and objelem_type='perso_condition') ";
+            }
 
             // requete de comptage
             $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
