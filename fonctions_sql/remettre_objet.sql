@@ -63,7 +63,7 @@ begin
     return code_retour;
   end if;
 
-  select into test_t (obj_desequipable='N' or (obj_deposable='N' and v_type_perso = 3)) from objets,perso_objets
+  select into test_t (obj_desequipable='N') from objets,perso_objets
   where perobj_cod = perobj and perobj_obj_cod = obj_cod;
   if test_t then
     code_retour := 'Cet objet n''est pas déséquipable.';

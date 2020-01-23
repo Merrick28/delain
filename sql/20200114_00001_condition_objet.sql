@@ -54,3 +54,7 @@ UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Race' where aqtypecarac_cod
 UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Voie Magique' where aqtypecarac_cod=16;
 UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Type de perso' where aqtypecarac_cod=17 ;
 UPDATE quetes.aquete_type_carac SET aqtypecarac_aff='Type de PNJ' where aqtypecarac_cod=18 ;
+
+-- rendre desequipable les armes naturrelles des familiers
+UPDATE objet_generique SET gobj_desequipable='N'  where gobj_cod in (169,307,369);
+UPDATE objets SET obj_desequipable='N'  where obj_gobj_cod in (169,307,369);
