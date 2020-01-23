@@ -46,6 +46,7 @@ begin
     -- Supprimer les bonus/malus de poison
 	delete from bonus where
 		bonus_perso_cod = cible and
+	  bonus_mode != 'E' and   -- sauf bonus d'équipement
 		bonus_tbonus_libc = 'POI';
 
 	if cible = personnage then

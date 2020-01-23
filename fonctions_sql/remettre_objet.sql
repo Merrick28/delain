@@ -48,10 +48,11 @@ begin
     code_retour := 'Perso non trouvé !!';
     return code_retour;
   end if;
-  if v_type_perso = 3 then
-    code_retour := 'Un familier ne peut pas équiper d''objet !!';
-    return code_retour;
-  end if;
+  -- si le familier a reussi à l'équiper, on l'autrise à le déséquiper
+  -- if v_type_perso = 3 then
+  --  code_retour := 'Un familier ne peut pas équiper d''objet !!';
+  --  return code_retour;
+  -- end if;
   /**********************************************/
   /* Etape 2 : on vérifie que le perobj existe  */
   /**********************************************/

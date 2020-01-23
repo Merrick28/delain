@@ -404,7 +404,7 @@ select into pos_cible,type_cible,v_or,cible_pv_max,niveau_cible,px_cible,v_race,
 	end if;
 	code_retour := trim(to_char(px_gagnes,'99999'))||';'; -- pos 1
 	/*On supprime les empoisonnements si il y en a */
-	delete from bonus where bonus_perso_cod = v_cible and bonus_tbonus_libc = 'POI';
+	delete from bonus where bonus_perso_cod = v_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'POI';
 	/* reputation */
 	select into nouveau_x, nouveau_y,nouveau_e pos_x,pos_y,pos_etage from positions
 		where pos_cod = nouvelle_position;

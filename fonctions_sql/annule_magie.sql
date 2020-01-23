@@ -66,6 +66,7 @@ begin
     for ligne_bonus in select tonbus_libelle from bonus_type,bonus
     where bonus_tbonus_libc = tbonus_libc
           and bonus_perso_cod = v_perso
+          and bonus_mode != 'E'
           and bonus_tbonus_libc not in ('POI')
     loop
       if compteur = 1 then
@@ -85,7 +86,7 @@ begin
     insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_cible)
     values(nextval('seq_levt_cod'), 14, now(), 1, v_perso, texte_evt, 'N', 'N', v_perso);
     /*Suppression de tous les bonus de type "magiques" pour le perso concerné */
-    delete from bonus where bonus_perso_cod = ligne.perso_cod and bonus_tbonus_libc in ('ATT', 'BER', 'PAM', 'ARM', 'PAA', 'TOU', 'DEG', 'VUE', 'ESQ', 'REG', 'DEP', 'ULT', 'DFM', 'BLM', 'MUR', 'MAE', 'DIS', 'DIT');
+    delete from bonus where bonus_perso_cod = ligne.perso_cod and bonus_mode != 'E' and bonus_tbonus_libc in ('ATT', 'BER', 'PAM', 'ARM', 'PAA', 'TOU', 'DEG', 'VUE', 'ESQ', 'REG', 'DEP', 'ULT', 'DFM', 'BLM', 'MUR', 'MAE', 'DIS', 'DIT');
 
     /* Suppression des armes élémentaires : on a la liste des persos qui peuvent être concernés, on va regarder leur équipement porté*/
     texte_evt := '';
@@ -227,6 +228,7 @@ begin
     for ligne_bonus in select tonbus_libelle, bonus_tbonus_libc from bonus_type, bonus
     where bonus_tbonus_libc = tbonus_libc
           and bonus_perso_cod = v_perso
+          and bonus_mode != 'E'
           and bonus_tbonus_libc in ('ATT', 'BER', 'PAM', 'ARM', 'PAA', 'TOU', 'DEG', 'VUE', 'ESQ', 'REG', 'DEP', 'ULT', 'DFM', 'BLM', 'MUR', 'MAE', 'DIS', 'DIT')
           and random() < v_proba
     loop
@@ -237,7 +239,7 @@ begin
         texte_evt := texte_evt||' et le bonus '||ligne_bonus.tonbus_libelle;
       end if;
       /*Suppression de tous les bonus de type "magiques" pour le perso concerné */
-      delete from bonus where bonus_perso_cod = ligne.perso_cod and bonus_tbonus_libc = ligne_bonus.bonus_tbonus_libc;
+      delete from bonus where bonus_perso_cod = ligne.perso_cod and bonus_mode != 'E' and bonus_tbonus_libc = ligne_bonus.bonus_tbonus_libc;
 
       compteur := compteur + 1;
       code_retour := code_retour||', Bonus '||ligne_bonus.tonbus_libelle||' supprimé';

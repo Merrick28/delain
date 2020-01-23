@@ -7,6 +7,7 @@ CREATE OR REPLACE FUNCTION public.perso_bonus(integer)
 $BODY$/***********************************/
 /* perso_bonus                     */
 /* $1 = perso_cod                  */
+/* 23/01/2020 - Sauf Equipement    */
 /***********************************/
 declare
 	code_retour text;
@@ -33,7 +34,8 @@ begin
 		select tonbus_libelle,bonus_valeur,bonus_nb_tours
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
-		and bonus_tbonus_libc = tbonus_libc loop
+		and bonus_tbonus_libc = tbonus_libc
+		and bonus_mode != 'E' loop
 			if (ligne.bonus_valeur > 0) then
 				bonus_signe := '+';
 			else
@@ -55,7 +57,7 @@ begin
 			else ' / '|| trim(to_char(coalesce(corig_nb_tours, 0),'999999')) || ' tours' end as corig_delai
 			from carac_orig
 			inner join perso on perso_cod = corig_perso_cod
-			where perso_cod = v_perso loop
+			where perso_cod = v_perso and corig_mode !='E' loop
 			if (ligne.bonus_carac > 0) then
 				bonus_signe := '+';
 			else

@@ -16,6 +16,10 @@ if ($erreur == 0)
         $methode = "mod";
     }
 
+    if ($gobj_cod>0)
+    {
+         $methode = "mod2";
+    }
     if (!isset($methode))
     {
         $methode = "mod";
@@ -601,6 +605,58 @@ if ($erreur == 0)
                             <td><input type="text" name="gobj_stabilite"
                                        value="<?php echo $db->f("gobj_stabilite"); ?>"></td>
                         </tr>
+
+
+            <?php
+            $objsorts = new objets_sorts();
+            echo "<tr><td class=\"soustitre2\">Sort(s) rattaché(s)</td><td>";
+            if ($list = $objsorts->getBy_objsort_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objsort) {
+                    $sort = new sorts();
+                    $sort->charge($objsort->objsort_sort_cod);
+                    echo $sort->sort_nom." (".$objsort->getCout()."PA), ";
+                }
+                echo ': <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">éditer</a>';
+            }
+            else
+            {
+                echo 'Aucun: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
+            $objbm = new objets_bm();
+            echo "<tr><td class=\"soustitre2\">Bonus/malus rattaché(s)</td><td>";
+            if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objbm) {
+                    $bonus = new bonus_type();
+                    $bonus->charge($objbm->objbm_tbonus_cod);
+                    echo $bonus->tonbus_libelle." (".$objbm->objbm_bonus_valeur."),";
+                }
+                echo ': <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">éditer</a>';
+            }
+            else
+            {
+                echo 'Aucun: <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            $objelem = new objet_element();
+            echo "<tr><td class=\"soustitre2\">Condition(s) d'équipement</td><td>";
+            if ($list = $objelem->getBy_objelem_gobj_cod($gobj_cod))
+            {
+                foreach ($list as $objelem) {
+                    $carac = new aquete_type_carac();
+                    $carac->charge($objelem->objelem_misc_cod);
+                    $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                    echo $conj." [".$carac->aqtypecarac_aff." ".$objelem->objelem_param_txt_1." ".$objelem->objelem_param_txt_2.($objelem->objelem_param_txt_3=="" ? "" : " et ".$objelem->objelem_param_txt_3)."] ";
+                }
+                echo ': <a target="_blanck" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">éditer</a>';
+            }
+            else
+            {
+                echo 'Aucune: <a target="_blanck" href="admin_objet_equip.php?objelem_gobj_cod='.$gobj_cod.'">en créer</a>';
+            }
+            echo "</td></tr>";
+            ?>
                         <tr>
                             <td colspan="2">
                                 <input type="submit" class="test centrer" name="cancel"
@@ -608,30 +664,10 @@ if ($erreur == 0)
                                                                           value="Valider !">
                             </td>
                         </tr>
-
                     </table>
                 </div>
             </form>
-            <?php
-            $objsorts = new objets_sorts();
-            if ($list = $objsorts->getBy_objsort_gobj_cod($gobj_cod))
-            {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' sort(s) rattaché(s): <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
-            }
-            else
-            {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de sort rattaché: <a target="_blanck" href="admin_objet_sort.php?objsort_gobj_cod='.$gobj_cod.'">en créer</a><br>';
-            }
-            $objbm = new objets_bm();
-            if ($list = $objbm->getBy_objbm_gobj_cod($gobj_cod))
-            {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet possède '.count($list).' bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">voir/éditer</a><br>';
-            }
-            else
-            {
-                echo '&nbsp;&nbsp;&nbsp;L\'objet ne possède pas de bonus/malus rattaché(s): <a target="_blanck" href="admin_objet_bm.php?objbm_gobj_cod='.$gobj_cod.'">en créer</a><br>';
-            }
-            ?>
+
 
 
             <?php

@@ -843,12 +843,12 @@ end if;
 			update perso set perso_kharma = 0 where perso_cod = v_attaquant;
 		end if;
 	end if;
-	/*On supprime les empoisonnements si il y en a */
-	delete from bonus where bonus_perso_cod = v_cible and bonus_tbonus_libc = 'POI';
-	delete from bonus where bonus_perso_cod = v_cible and bonus_tbonus_libc = 'VEN';
+	/*On supprime les empoisonnements si il y en a (sauf equipement) */
+	delete from bonus where bonus_perso_cod = v_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'POI';
+	delete from bonus where bonus_perso_cod = v_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'VEN';
         /* Modif kahlann : suppression brulure et maladie du Sang */
-        delete from bonus where bonus_perso_cod = v_cible and bonus_tbonus_libc = 'BRU';
-        delete from bonus where bonus_perso_cod = v_cible and bonus_tbonus_libc = 'MDS';
+  delete from bonus where bonus_perso_cod = v_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'BRU';
+  delete from bonus where bonus_perso_cod = v_cible and bonus_mode != 'E' and bonus_tbonus_libc = 'MDS';
 
 	/* Suppression des transaction en cours, pour le perso ou son familier*/
 	delete from transaction

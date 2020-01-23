@@ -352,6 +352,10 @@ switch($_REQUEST["request"])
             {  // limitation aux objet avec des bonus/malus de rattachés
                 $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objets_bm where objbm_gobj_cod=gobj_cod) ";
             }
+            if ($params["objet_generique_equipe"]=="true")
+            {  // limitation aux objet avec des bonus/malus de rattachés
+                $filter .= ($filter!="" ? "AND " : "")."exists(select 1 from objet_element where objelem_gobj_cod=gobj_cod and objelem_param_id=1 and objelem_type='perso_condition') ";
+            }
 
             // requete de comptage
             $req = "select count(*) from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ";
@@ -565,6 +569,12 @@ switch($_REQUEST["request"])
                 break;
             case 'element':
                 $req = "select aqetape_nom || ' / paramètre #' || aqelem_param_id::text as nom from quetes.aquete_element join quetes.aquete_etape on aqetape_cod = aqelem_aqetape_cod where aqelem_cod = ? ";
+                break;
+            case 'bonus_type':
+                $req = "select tbonus_libc  || ' (' || tonbus_libelle || ')' as nom from bonus_type where tbonus_cod = ? ";
+                break;
+            case 'bonus_type2':
+                $req = "select tbonus_cod as cod,   tbonus_libc || ' (' || tonbus_libelle || ')' as nom from bonus_type where tbonus_libc = ? ";
                 break;
             default:
                 die('{"resultat":-1, "message":"table inconne dans get_table_cod"}');

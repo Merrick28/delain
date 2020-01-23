@@ -1001,7 +1001,7 @@ if ($erreur == 0)
                     <input type='hidden' name='fonctions_annulees' id='fonctions_annulees' value=''/>
                     <input type='hidden' name='fonctions_existantes' id='fonctions_existantes' value=''/>
                     <div id="liste_fonctions"></div>
-                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet,1,3) as fonc_effet, case when substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
 						from fonction_specifique where fonc_gmon_cod = $gmon_cod";
                     $db->query($req);
                     while ($db->next_record())
