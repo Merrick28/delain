@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'docker' }
+    agent { label 'backup' }
 
     stages {
         stage('Build') {
-            agent { label 'docker' }
+            agent { label 'backup' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'docker' }
+            agent { label 'backup' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
