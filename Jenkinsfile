@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'proxy' }
+    agent { label 'docker' }
 
     stages {
         stage('Build') {
-            agent { label 'proxy' }
+            agent { label 'docker' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'proxy' }
+            agent { label 'docker' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
