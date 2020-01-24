@@ -191,6 +191,8 @@ if ($erreur == 0) {
 <br> <strong><u>Remarques</u></strong>:<br>
     * N'oubliez pas que TOUS les exemplaires d'un objet générique possèdederont immédiatement ces conditions d'équipement.<br>
     * S'il n'y a aucune condition, les conditions d'usages habituelles seront appliquées: objet réservé aux persos/monstres.<br>
+    * Par défaut un familier ne peut jamais vérifier les contions d'équipement d'un objet, <b>SAUF</b>:<br>
+    &nbsp;&nbsp;-> si il est explicitement spécifié dans une règle : <u>"ET Type perso = 3"</u><br>
     * si les conditions sont modifiées rendant inéquipable un objet à un perso alors que celui-ci a déjà équipé l'objet:<br>
     &nbsp;&nbsp;-> L'objet restera équipé et le perso en gardera ses avantages (bonus/malus, sorts, etc...)<br>
     &nbsp;&nbsp;-> Lorsqu'il déséquipera cet objet, le perso ne sera plus en mesure de le ré-équiper.
