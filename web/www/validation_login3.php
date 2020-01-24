@@ -2,15 +2,13 @@
 $target = '  target="_top"';
 
 // changement de perso
-if (isset($_REQUEST['perso']))
-{
+if (isset($_REQUEST['perso'])) {
     $change_perso = $_REQUEST['perso'];
 }
 
 include_once "ident.php";
 include_once "includes/classes.php";
-if (!$verif_auth)
-{
+if (!$verif_auth) {
     header('Location:' . $type_flux . G_URL . 'inter.php');
     die();
 }
@@ -39,7 +37,7 @@ ob_start();
 $num_resultat = 0;
 $db = new base_delain;
 $requete
-    = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel, 
+    = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel,
 			perso_dlt
 		FROM perso WHERE perso_cod = " . $perso_cod;
 $db->query($requete);
@@ -53,35 +51,28 @@ $num_perso = $perso->perso_cod;
 $perso_cod = $num_perso;
 $autorise = 0;
 $type_perso = $perso->perso_type_perso;
-if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
-{
+if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre)) {
     // on va quand même charger le perso_compte
     $pcompt = new perso_compte();
     $tab = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
-    if ($tab !== false)
-    {
+    if ($tab !== false) {
         // On a trouvé un perso_compte pour ce perso
-        if ($tab[0]->pcompt_compt_cod == $compte->compt_cod)
-        {
+        if ($tab[0]->pcompt_compt_cod == $compte->compt_cod) {
             // le compte compt_cod correspond au compt_cod courant, on autorise
             $autorise = 1;
         }
     }
-} elseif ($type_perso == 3)
-{
+} elseif ($type_perso == 3) {
     $pfam = new perso_familier();
     $pcompt = new perso_compte();
     $tab_fam = $pfam->getBy_pfam_familier_cod($perso->perso_cod);
-    if ($tab_fam !== false)
-    {
+    if ($tab_fam !== false) {
         // on est bien dans la table familiers
         $tab_pcompt = $pcompt->getBy_pcompt_perso_cod($tab_fam[0]->pfam_perso_cod);
         {
-            if ($tab_pcompt !== false)
-            {
+            if ($tab_pcompt !== false) {
                 // on est bien dabs la table pcompte
-                if ($tab_pcompt[0]->pcompt_compt_cod == $compte->compt_cod)
-                {
+                if ($tab_pcompt[0]->pcompt_compt_cod == $compte->compt_cod) {
                     // le compte compt_cod correspond au compt_cod courant, on autorise
                     $autorise = 1;
                 }
@@ -89,47 +80,37 @@ if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre))
         }
     }
 }
-if ($autorise != 1)
+if ($autorise != 1) {
     //
     // on va quand même vérifier que le compte n'est pas sitté
     //
-{
-    if ($type_perso == 1)
-    {
+    if ($type_perso == 1) {
         $cs = new compte_sitting();
-        if ($cs->isSittingValide($compte->compt_cod, $perso->perso_cod))
-        {
+        if ($cs->isSittingValide($compte->compt_cod, $perso->perso_cod)) {
             $autorise = 1;
         }
-    } elseif ($type_perso == 3)
-    {
+    } elseif ($type_perso == 3) {
         $cs = new compte_sitting();
-        if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod))
-        {
+        if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod)) {
             $autorise = 1;
         }
     }
 }
-if ($autorise == 1)
-{
+if ($autorise == 1) {
     $myAuth = new myauth;
     $myAuth->start();
     $myAuth->perso_cod = $num_perso;
     $tableau_numeros = array();
     $tableau_noms = array();
-    if (isset($activeTout) && $activeTout == 1)
-    {
+    if (isset($activeTout) && $activeTout == 1) {
         $pcompt = new perso_compte();
         // on prend tous les perso_compte du compte
         $tab_compte = $pcompt->getBy_pcompt_compt_cod($compte->compt_cod);
-        foreach ($tab_compte as $dcompte)
-        {
+        foreach ($tab_compte as $dcompte) {
             $temp_perso = new perso;
-            if ($temp_perso->charge($dcompte->pcompt_perso_cod))
-            {
+            if ($temp_perso->charge($dcompte->pcompt_perso_cod)) {
                 // on charge le perso
-                if ($temp_perso->perso_actif == 'O')
-                {
+                if ($temp_perso->perso_actif == 'O') {
                     // il est actif, on l'ajoute au tableau
                     $tableau_numeros[] = $temp_perso->perso_cod;
                     $tableau_noms[] = $temp_perso->perso_nom;
@@ -137,50 +118,37 @@ if ($autorise == 1)
                     $temp_fam = new perso_familier();
                     // on regarde si ce perso a un familier
                     $tab_fam = $temp_fam->getBy_pfam_perso_cod($temp_perso->perso_cod);
-                    if ($tab_fam !== false)
-                    {
+                    if ($tab_fam !== false) {
                         // il a au moins un familier, on boucle
-                        foreach ($tab_fam as $detail_fam)
-                        {
+                        foreach ($tab_fam as $detail_fam) {
                             $perso_fam = new perso;
-                            if ($perso_fam->charge($detail_fam->pfam_familier_cod))
-                            {
-                                if ($perso_fam->perso_actif == 'O')
-                                {
+                            if ($perso_fam->charge($detail_fam->pfam_familier_cod)) {
+                                if ($perso_fam->perso_actif == 'O') {
                                     // il est actif, on l'ajoute
                                     $tableau_numeros[] = $perso_fam->perso_cod;
                                     $tableau_noms[] = $perso_fam->perso_nom;
                                 }
-
                             }
-
                         }
-
                     }
-
                 }
-
             }
         }
-    } else
-    {
+    } else {
         $tableau_numeros[] = $num_perso;
     }
 
     echo "<p>Identification réussie !</p><br /><br />";
     $premier_perso = true;
 
-    foreach ($tableau_numeros as $key => $numero_perso)
-    {
+    foreach ($tableau_numeros as $key => $numero_perso) {
         $perso_dlt = new perso;
         $perso_dlt->charge($numero_perso);
-        if (!$premier_perso)
-        {
+        if (!$premier_perso) {
             echo '<hr />';
         }
 
-        if (isset($tableau_noms[$key]))
-        {
+        if (isset($tableau_noms[$key])) {
             echo "<p><strong>Pour " . $tableau_noms[$key] . " :</strong></p>";
         }
 
@@ -198,15 +166,13 @@ if ($autorise == 1)
 
         // on vérifie si une mission n’est pas validée
         $missions = $perso_dlt->missions();
-        if ($missions !== '')
-        {
+        if ($missions !== '') {
             echo "<hr /><strong>Évaluation de vos missions en cours</strong><br />$missions<hr />";
         }
 
         // on vérifie s'il y a du nouveau dans les quetes-auto en cours.
         $quetes = $perso_dlt->quete_auto();
-        if ($quetes !== '')
-        {
+        if ($quetes !== '') {
             echo "<hr /><strong>Évaluation de vos quêtes en cours</strong><br />$quetes<hr />";
         }
 
@@ -215,32 +181,26 @@ if ($autorise == 1)
         $liste_evt = $perso_dlt->getEvtNonLu();
 
         // TODO : mettre des evts bidon pour tester
-        if (count($liste_evt) != 0)
-        {
+        if (count($liste_evt) != 0) {
             echo "<p style='margin-top:10px;'><strong>Vos derniers événements importants :</strong></p>";
             echo "<p>";
             $db_evt = new base_delain;
-            foreach ($liste_evt as $detail_evt)
-            {
-                if (!empty($detail_evt->levt_attaquant != ''))
-                {
+            foreach ($liste_evt as $detail_evt) {
+                if (!empty($detail_evt->levt_attaquant != '')) {
                     $perso_attaquant = new perso;
                     $perso_attaquant->charge($detail_evt->levt_attaquant);
                 }
-                if (!empty($detail_evt->levt_cible != ''))
-                {
+                if (!empty($detail_evt->levt_cible != '')) {
                     $perso_cible = new perso;
                     $perso_cible->charge($detail_evt->levt_cible);
                 }
 
                 //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
                 $texte_evt = str_replace('[perso_cod1]', "<strong>" . $perso_dlt->perso_nom . "</strong>", $detail_evt->levt_texte);
-                if ($detail_evt->levt_attaquant != '')
-                {
+                if ($detail_evt->levt_attaquant != '') {
                     $texte_evt = str_replace('[attaquant]', "<strong>" . $perso_attaquant->perso_nom . "</strong>", $texte_evt);
                 }
-                if ($detail_evt->levt_cible != '')
-                {
+                if ($detail_evt->levt_cible != '') {
                     $texte_evt = str_replace('[cible]', "<strong>" . $perso_cible->perso_nom . "</strong>", $texte_evt);
                 }
                 $date_evt = new DateTime($detail_evt->levt_date);
@@ -260,20 +220,17 @@ if ($autorise == 1)
 
 
     echo "<input type=\"hidden\" name=\"nom_perso\" value=\"$nom\">";
-    if ($perso_mortel != 'M')
-    {
+    if ($perso_mortel != 'M') {
         echo "<center><input type=\"submit\" value=\"Jouer !!\" class=\"test\"><br />";
         $checked = ($frameless) ? 'checked="checked"' : '';
         echo "<input type=\"hidden\" name=\"changed_frameless\" id='hidframeless' value=\"0\" />";
-    } else
-    {
+    } else {
         echo "<center><a href='validation_login2.php'>La vie continue... Retrouver mes autres persos !</a></center><br />";
     }
     echo "</form>";
 
     echo "<p style=\"text-align:center;\"><br /><em>Date et heure serveur : $maintenant</em></p>";
-} else
-{
+} else {
     echo "Accès refusé !";
 }
 
@@ -286,8 +243,7 @@ echo '</div>';
 $contenu_page = ob_get_contents();
 ob_end_clean();
 
-if ($perso_mortel != 'M')
-{
+if ($perso_mortel != 'M') {
     // on va maintenant charger toutes les variables liées au menu
     // sauf si le perso est définitivement mort (sinon ça plante...)
     include_once('jeu_test/variables_menu.php');
@@ -296,4 +252,3 @@ if ($perso_mortel != 'M')
 $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
 $t->parse("Sortie", "FileRef");
 $t->p("Sortie");
-

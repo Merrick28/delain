@@ -10,15 +10,14 @@
  */
 class perso_titre
 {
-    var $ptitre_cod;
-    var $ptitre_perso_cod;
-    var $ptitre_titre;
-    var $ptitre_date;
-    var $ptitre_type;
+    public $ptitre_cod;
+    public $ptitre_perso_cod;
+    public $ptitre_titre;
+    public $ptitre_date;
+    public $ptitre_type;
 
-    function __construct()
+    public function __construct()
     {
-
         $this->ptitre_date = date('Y-m-d H:i:s');
     }
 
@@ -28,14 +27,13 @@ class perso_titre
      * @param integer $code => PK
      * @return boolean => false si non trouvé
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo  = new bddpdo;
         $req  = "select * from perso_titre where ptitre_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->ptitre_cod       = $result['ptitre_cod'];
@@ -51,11 +49,10 @@ class perso_titre
      * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req  = "insert into perso_titre (
             ptitre_perso_cod,
             ptitre_titre,
@@ -79,8 +76,7 @@ class perso_titre
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        } else
-        {
+        } else {
             $req  = "update perso_titre
                     set
             ptitre_perso_cod = :ptitre_perso_cod,
@@ -103,14 +99,13 @@ class perso_titre
      * @global bdd_mysql $pdo
      * @return perso_titre[]
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select ptitre_cod  from perso_titre order by ptitre_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new perso_titre;
             $temp->charge($result["ptitre_cod"]);
             $retour[] = $temp;
@@ -119,51 +114,44 @@ class perso_titre
         return $retour;
     }
 
-    function getByPerso($perso_cod)
+    public function getByPerso($perso_cod)
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select ptitre_cod  from perso_titre where ptitre_perso_cod = :perso";
-        $pdo->prepare($req);
-        $pdo->execute(array(":perso" => $perso_cod),$stmt);
-        while ($result = $stmt->fetch())
-        {
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+        while ($result = $stmt->fetch()) {
             $temp = new perso_titre;
             $temp->charge($result["ptitre_cod"]);
             $retour[] = $temp;
             unset($temp);
         }
         return $retour;
-
     }
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    =
                         "select ptitre_cod  from perso_titre where " . substr($name, 6) . " = ? order by ptitre_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp = new perso_titre;
                         $temp->charge($result["ptitre_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                } else
-                {
+                } else {
                     die('Unknown variable ' . substr($name, 6) . ' in table perso_titre');
                 }
                 break;

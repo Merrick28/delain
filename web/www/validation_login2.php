@@ -6,14 +6,11 @@ include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
 
 $is_log = 0;
-if ($verif_auth)
-{
-    if ($compt_cod == '')
-    {
+if ($verif_auth) {
+    if ($compt_cod == '') {
         //
         // on recherche le type perso
-        //
-        ?>
+        // ?>
         <!DOCTYPE html>
         <html>
         <head>
@@ -28,21 +25,18 @@ if ($verif_auth)
         </body>
         </html>
         <?php
-    } else
-    {
+    } else {
         //$ip = getenv("REMOTE_ADDR");
         $ip = getUserIpAddr();
 
         $callapi = new callapi();
-        if ($callapi->call(API_URL . '/compte', 'GET', $_SESSION['api_token']))
-        {
+        if ($callapi->call(API_URL . '/compte', 'GET', $_SESSION['api_token'])) {
             $error_message = '';
             $compte_json   = json_decode($callapi->content, true);
             $compt_cod     = $compte_json['compte']['compt_cod'];
             $compte        = new compte;
             $compte->charge($compt_cod);
-        } else
-        {
+        } else {
             die('Erreur sur le chargement du compte : ' . $callapi->content);
         }
 
@@ -52,10 +46,8 @@ if ($verif_auth)
 
         // Ici on sépare si monstre ou joueur
         // si monstre
-        if ($compte->is_admin_monstre())
-        {
-            echo "test";
-            ?>
+        if ($compte->is_admin_monstre()) {
+            echo "test"; ?>
             <!DOCTYPE html>
             <html>
             <head>
@@ -77,8 +69,7 @@ if ($verif_auth)
             die('');
         }
         // Si admin
-        elseif ($compte->is_admin())
-        {
+        elseif ($compte->is_admin()) {
             echo("<html><head>"); ?>
             <link rel="stylesheet" type="text/css" href="style.css?v<?php echo $__VERSION; ?>" title="essai">
             <link rel="stylesheet" type="text/css" href="css/container-fluid.css?v<?php echo $__VERSION; ?>">
@@ -164,16 +155,13 @@ if ($verif_auth)
             die('');
         }
         // Si joueur
-        elseif ($type_perso == 'joueur')
-        {
+        elseif ($type_perso == 'joueur') {
             if ($callapi->call(
                 API_URL . '/news?start_news=' . $start_news,
                 'GET'
-            ))
-            {
+            )) {
                 $tabNews = json_decode($callapi->content, true);
-            } else
-            {
+            } else {
                 die('Erreur sur appel API news ' . $callapi->content);
             }
             $news_cod = $tabNews['news'][0]['news_cod'];
@@ -184,8 +172,7 @@ if ($verif_auth)
 				order by pcompt_date_attachement desc limit 1";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":compte" => $compte_json['compt_cod']), $stmt);
-            if ($result = $stmt->fetch())
-            {
+            if ($result = $stmt->fetch()) {
                 $monstre_cod = $result['perso_cod'];
             }
 
@@ -193,14 +180,10 @@ if ($verif_auth)
             $der_news   = $compte->compt_der_news;
             $nv_monstre = ($compte->attribue_monstre_4e_perso() > 0);
 
-            if ($compte->compt_hibernation != 'O')
-            {
-                if ($der_news < $news_cod || $nv_monstre)
-                {
-                    if ($nv_monstre)
-                    {
-                        if ($monstre_cod > 0)
-                        {
+            if ($compte->compt_hibernation != 'O') {
+                if ($der_news < $news_cod || $nv_monstre) {
+                    if ($nv_monstre) {
+                        if ($monstre_cod > 0) {
                             // on charge le détail de ce monstre
                             $perso_monstre = new perso();
                             $perso_monstre->charge($monstre_cod);
@@ -225,31 +208,25 @@ if ($verif_auth)
                 }
 
                 // on efface l'hibernation si il en reste
-                if ($compte->compt_hibernation == 'T')
-                {
+                if ($compte->compt_hibernation == 'T') {
                     $req  = "select fin_hibernation(:compte) ";
                     $stmt = $pdo->prepare($req);
                     $stmt = $pdo->execute(array(":compte" => $compt_cod), $stmt);
                 }
-                if ($compte->compt_acc_charte != 'N')
-                {
+                if ($compte->compt_acc_charte != 'N') {
                     // on passe maintenant par un appel api
-                    if ($callapi->call(API_URL . '/compte/persos', 'GET', $_SESSION['api_token']))
-                    {
+                    if ($callapi->call(API_URL . '/compte/persos', 'GET', $_SESSION['api_token'])) {
                         $persos_compte = $callapi->content;
                         $persos_compte = json_decode($persos_compte, true);
                         //$persos_compte = $compte->getPersosActifs();
                         $nb_persos = count($persos_compte['persos']) + count($persos_compte['sittes']);
-                        if ($nb_persos != 0)
-                        {
+                        if ($nb_persos != 0) {
                             ob_start();
                             $origine_switch = 'accueil';
                             include "tab_switch.php";
                             $tab_switch = ob_get_clean();
                         }
-
-                    } else
-                    {
+                    } else {
                         die('Erreur sur appel API (get persos compte) : ' . $callapi->content);
                     }
                 }

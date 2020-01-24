@@ -10,126 +10,125 @@
  */
 class perso
 {
-    var $perso_cod;
-    var $perso_for;
-    var $perso_dex;
-    var $perso_int;
-    var $perso_con;
-    var $perso_for_init;
-    var $perso_dex_init;
-    var $perso_int_init;
-    var $perso_con_init;
-    var $perso_sex;
-    var $perso_race_cod;
-    var $perso_pv                   = 0;
-    var $perso_pv_max;
-    var $perso_dlt;
-    var $perso_temps_tour;
-    var $perso_email;
-    var $perso_dcreat;
-    var $perso_validation;
-    var $perso_actif                = 'N';
-    var $perso_pa                   = 12;
-    var $perso_der_connex;
-    var $perso_des_regen            = 1;
-    var $perso_valeur_regen         = 3;
-    var $perso_vue                  = 3;
-    var $perso_po                   = 0;
-    var $perso_nb_esquive;
-    var $perso_niveau               = 1;
-    var $perso_type_perso           = 1;
-    var $perso_amelioration_vue;
-    var $perso_amelioration_regen;
-    var $perso_amelioration_degats;
-    var $perso_amelioration_armure;
-    var $perso_nb_des_degats;
-    var $perso_val_des_degats;
-    var $perso_cible;
-    var $perso_enc_max;
-    var $perso_description;
-    var $perso_nb_mort;
-    var $perso_nb_monstre_tue;
-    var $perso_nb_joueur_tue;
-    var $perso_reputation           = 0;
-    var $perso_avatar;
-    var $perso_kharma;
-    var $perso_amel_deg_dex;
-    var $perso_nom;
-    var $perso_gmon_cod;
-    var $perso_renommee;
-    var $perso_dirige_admin;
-    var $perso_lower_perso_nom;
-    var $perso_sta_combat;
-    var $perso_sta_hors_combat;
-    var $perso_utl_pa_rest          = 1;
-    var $perso_tangible             = 'O';
-    var $perso_nb_tour_intangible   = 0;
-    var $perso_capa_repar;
-    var $perso_nb_amel_repar        = 0;
-    var $perso_amelioration_nb_sort = 0;
-    var $perso_renommee_magie       = 0;
-    var $perso_vampirisme           = 0;
-    var $perso_niveau_vampire       = 0;
-    var $perso_admin_echoppe;
-    var $perso_nb_amel_comp         = 0;
-    var $perso_nb_receptacle        = 0;
-    var $perso_nb_amel_chance_memo  = 0;
-    var $perso_priere               = 0;
-    var $perso_dfin;
-    var $perso_px                   = 0;
-    var $perso_taille               = 3;
-    var $perso_admin_echoppe_noir   = 'N';
-    var $perso_use_repart_auto      = 1;
-    var $perso_pnj                  = 0;
-    var $perso_redispatch           = 'N';
-    var $perso_nb_redist            = 0;
-    var $perso_mcom_cod             = 0;
-    var $perso_nb_ch_mcom           = 0;
-    var $perso_piq_rap_env          = 1;
-    var $perso_ancien_avatar;
-    var $perso_nb_crap              = 0;
-    var $perso_nb_embr              = 0;
-    var $perso_crapaud              = 0;
-    var $perso_dchange_mcom;
-    var $perso_prestige             = 0;
-    var $perso_av_mod               = 0;
-    var $perso_mail_inactif_envoye;
-    var $perso_test;
-    var $perso_nb_spe               = 1;
-    var $perso_compt_pvp            = 0;
-    var $perso_dmodif_compt_pvp;
-    var $perso_effets_auto          = 1;
-    var $perso_quete;
-    var $perso_tuteur               = false;
-    var $perso_voie_magique         = 0;
-    var $perso_energie              = 0;
-    var $perso_desc_long;
-    var $perso_nb_mort_arene        = 0;
-    var $perso_nb_joueur_tue_arene  = 0;
-    var $perso_dfin_tangible;
-    var $perso_renommee_artisanat   = 0;
-    var $perso_avatar_version       = 0;
-    var $perso_etage_origine;
-    var $perso_monstre_attaque_monstre;
-    var $perso_mortel               = NULL;
-    var $alterego                   = 0;
+    public $perso_cod;
+    public $perso_for;
+    public $perso_dex;
+    public $perso_int;
+    public $perso_con;
+    public $perso_for_init;
+    public $perso_dex_init;
+    public $perso_int_init;
+    public $perso_con_init;
+    public $perso_sex;
+    public $perso_race_cod;
+    public $perso_pv                   = 0;
+    public $perso_pv_max;
+    public $perso_dlt;
+    public $perso_temps_tour;
+    public $perso_email;
+    public $perso_dcreat;
+    public $perso_validation;
+    public $perso_actif                = 'N';
+    public $perso_pa                   = 12;
+    public $perso_der_connex;
+    public $perso_des_regen            = 1;
+    public $perso_valeur_regen         = 3;
+    public $perso_vue                  = 3;
+    public $perso_po                   = 0;
+    public $perso_nb_esquive;
+    public $perso_niveau               = 1;
+    public $perso_type_perso           = 1;
+    public $perso_amelioration_vue;
+    public $perso_amelioration_regen;
+    public $perso_amelioration_degats;
+    public $perso_amelioration_armure;
+    public $perso_nb_des_degats;
+    public $perso_val_des_degats;
+    public $perso_cible;
+    public $perso_enc_max;
+    public $perso_description;
+    public $perso_nb_mort;
+    public $perso_nb_monstre_tue;
+    public $perso_nb_joueur_tue;
+    public $perso_reputation           = 0;
+    public $perso_avatar;
+    public $perso_kharma;
+    public $perso_amel_deg_dex;
+    public $perso_nom;
+    public $perso_gmon_cod;
+    public $perso_renommee;
+    public $perso_dirige_admin;
+    public $perso_lower_perso_nom;
+    public $perso_sta_combat;
+    public $perso_sta_hors_combat;
+    public $perso_utl_pa_rest          = 1;
+    public $perso_tangible             = 'O';
+    public $perso_nb_tour_intangible   = 0;
+    public $perso_capa_repar;
+    public $perso_nb_amel_repar        = 0;
+    public $perso_amelioration_nb_sort = 0;
+    public $perso_renommee_magie       = 0;
+    public $perso_vampirisme           = 0;
+    public $perso_niveau_vampire       = 0;
+    public $perso_admin_echoppe;
+    public $perso_nb_amel_comp         = 0;
+    public $perso_nb_receptacle        = 0;
+    public $perso_nb_amel_chance_memo  = 0;
+    public $perso_priere               = 0;
+    public $perso_dfin;
+    public $perso_px                   = 0;
+    public $perso_taille               = 3;
+    public $perso_admin_echoppe_noir   = 'N';
+    public $perso_use_repart_auto      = 1;
+    public $perso_pnj                  = 0;
+    public $perso_redispatch           = 'N';
+    public $perso_nb_redist            = 0;
+    public $perso_mcom_cod             = 0;
+    public $perso_nb_ch_mcom           = 0;
+    public $perso_piq_rap_env          = 1;
+    public $perso_ancien_avatar;
+    public $perso_nb_crap              = 0;
+    public $perso_nb_embr              = 0;
+    public $perso_crapaud              = 0;
+    public $perso_dchange_mcom;
+    public $perso_prestige             = 0;
+    public $perso_av_mod               = 0;
+    public $perso_mail_inactif_envoye;
+    public $perso_test;
+    public $perso_nb_spe               = 1;
+    public $perso_compt_pvp            = 0;
+    public $perso_dmodif_compt_pvp;
+    public $perso_effets_auto          = 1;
+    public $perso_quete;
+    public $perso_tuteur               = false;
+    public $perso_voie_magique         = 0;
+    public $perso_energie              = 0;
+    public $perso_desc_long;
+    public $perso_nb_mort_arene        = 0;
+    public $perso_nb_joueur_tue_arene  = 0;
+    public $perso_dfin_tangible;
+    public $perso_renommee_artisanat   = 0;
+    public $perso_avatar_version       = 0;
+    public $perso_etage_origine;
+    public $perso_monstre_attaque_monstre;
+    public $perso_mortel               = null;
+    public $alterego                   = 0;
     //
-    var $position;
-    var $guilde;
-    var $avatar;
-    var $perso_vide = false;
-    var $msg_non_lu;
-    var $avatar_largeur;
-    var $avatar_hauteur;
-    var $barre_divine;
+    public $position;
+    public $guilde;
+    public $avatar;
+    public $perso_vide = false;
+    public $msg_non_lu;
+    public $avatar_largeur;
+    public $avatar_hauteur;
+    public $barre_divine;
     //
     // Variables qui ne serviront que pour la vue
     //
 
 
-    function __construct()
+    public function __construct()
     {
-
         $this->perso_dcreat           = date('Y-m-d H:i:s');
         $this->perso_der_connex       = date('Y-m-d H:i:s');
         $this->perso_dchange_mcom     = date('Y-m-d H:i:s');
@@ -141,11 +140,10 @@ class perso
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      * @global bddpdo $pdo
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req
                   = "insert into perso (
             perso_cod,
@@ -253,7 +251,7 @@ class perso
             alterego                        )
                     values
                     (
-                        nextval('seq_perso'),   
+                        nextval('seq_perso'),
                      :perso_for,
                         :perso_dex,
                         :perso_int,
@@ -466,8 +464,7 @@ class perso
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        } else
-        {
+        } else {
             $req
                   = "update perso
                     set
@@ -688,14 +685,13 @@ class perso
      * @return boolean => false si non trouvé
      * @global bdd_mysql $pdo
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo  = new bddpdo;
         $req  = "select * from perso where perso_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->perso_cod                     = $result['perso_cod'];
@@ -809,14 +805,13 @@ class perso
      * @return \perso
      * @global bdd_mysql $pdo
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select perso_cod  from perso order by perso_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
             $retour[] = $temp;
@@ -825,38 +820,36 @@ class perso
         return $retour;
     }
 
-    function has_evt_non_lu()
+    public function has_evt_non_lu()
     {
         $ligne_evt = new ligne_evt();
         $tab_evt   = $ligne_evt->getByPersoNonLu($this->perso_cod);
-        if (count($tab_evt) != 0)
-        {
+        if (count($tab_evt) != 0) {
             return true;
         }
         return false;
     }
 
-    function has_arme_distance()
+    public function has_arme_distance()
     {
         $pdo      = new bddpdo;
-        $req_arme = "select gobj_distance 
-            from objet_generique,objets,perso_objets  
+        $req_arme = "select gobj_distance
+            from objet_generique,objets,perso_objets
             where perobj_perso_cod = :perso
-            and perobj_equipe = 'O' 
-            and perobj_obj_cod = obj_cod 
-            and obj_gobj_cod = gobj_cod 
-            and gobj_tobj_cod = 1 
+            and perobj_equipe = 'O'
+            and perobj_obj_cod = obj_cod
+            and obj_gobj_cod = gobj_cod
+            and gobj_tobj_cod = 1
             and gobj_distance = 'O'";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
-        if ($stmt->fetch())
-        {
+        if ($stmt->fetch()) {
             return true;
         }
         return false;
     }
 
-    function get_arme_equipee()
+    public function get_arme_equipee()
     {
         $pdo      = new bddpdo;
         $req_arme = "SELECT obj_cod
@@ -870,42 +863,37 @@ class perso
 		  ORDER BY obj_gobj_cod ASC, obj_cod ASC";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $obj = new objets();
-        if (!$obj->charge($result['obj_cod']))
-        {
+        if (!$obj->charge($result['obj_cod'])) {
             return false;
         }
         return $obj;
     }
 
-    function get_mode_combat()
+    public function get_mode_combat()
     {
-
         $pdo      = new bddpdo;
-        $req_arme = "select gobj_distance 
-            from objet_generique,objets,perso_objets  
+        $req_arme = "select gobj_distance
+            from objet_generique,objets,perso_objets
             where perobj_perso_cod = :perso
-            and perobj_equipe = 'O' 
-            and perobj_obj_cod = obj_cod 
-            and obj_gobj_cod = gobj_cod 
-            and gobj_tobj_cod = 1 
+            and perobj_equipe = 'O'
+            and perobj_obj_cod = obj_cod
+            and obj_gobj_cod = gobj_cod
+            and gobj_tobj_cod = 1
             and gobj_distance = 'O'";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
-        if ($stmt->fetch())
-        {
+        if ($stmt->fetch()) {
             return true;
         }
         return false;
     }
 
-    function get_pa_attaque()
+    public function get_pa_attaque()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select nb_pa_attaque(:perso) as pa";
         $stmt     = $pdo->prepare($req_arme);
@@ -914,9 +902,8 @@ class perso
         return $result['pa'];
     }
 
-    function f_vue_renommee()
+    public function f_vue_renommee()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select f_vue_renommee(:perso) as f_vue_renommee";
         $stmt     = $pdo->prepare($req_arme);
@@ -925,9 +912,8 @@ class perso
         return $result['f_vue_renommee'];
     }
 
-    function get_renommee()
+    public function get_renommee()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee(:perso) as get_renommee";
         $stmt     = $pdo->prepare($req_arme);
@@ -936,9 +922,8 @@ class perso
         return $result['get_renommee'];
     }
 
-    function get_renommee_magie()
+    public function get_renommee_magie()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee_magie(:perso) as get_renommee_magie";
         $stmt     = $pdo->prepare($req_arme);
@@ -947,20 +932,18 @@ class perso
         return $result['get_renommee_magie'];
     }
 
-    function get_karma()
+    public function get_karma()
     {
-
         $pdo      = new bddpdo;
-        $req_arme = "select get_karma(:perso) as get_karma";
+        $req_arme = "select get_karma(:perso::integer) as get_karma";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result   = $stmt->fetch();
         return $result['get_karma'];
     }
 
-    function get_renommee_artisanat()
+    public function get_renommee_artisanat()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee_artisanat(:perso) as get_renommee_artisanat";
         $stmt     = $pdo->prepare($req_arme);
@@ -969,9 +952,8 @@ class perso
         return $result['get_renommee_artisanat'];
     }
 
-    function portee_attaque()
+    public function portee_attaque()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select portee_attaque(:perso) as pa";
         $stmt     = $pdo->prepare($req_arme);
@@ -980,9 +962,8 @@ class perso
         return $result['pa'];
     }
 
-    function distance_vue()
+    public function distance_vue()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select distance_vue(:perso) as pa";
         $stmt     = $pdo->prepare($req_arme);
@@ -991,9 +972,8 @@ class perso
         return $result['pa'];
     }
 
-    function type_arme()
+    public function type_arme()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select type_arme(:perso) as pa";
         $stmt     = $pdo->prepare($req_arme);
@@ -1002,9 +982,8 @@ class perso
         return $result['pa'];
     }
 
-    function get_pa_foudre()
+    public function get_pa_foudre()
     {
-
         $pdo      = new bddpdo;
         $req_arme = "select nb_pa_foudre(:perso) as pa";
         $stmt     = $pdo->prepare($req_arme);
@@ -1013,24 +992,23 @@ class perso
         return $result['pa'];
     }
 
-    function has_competence($competence)
+    public function has_competence($competence)
     {
         $pcomp = new perso_competences();
-        if ($pcomp->getByPersoComp($this->perso_cod, $competence))
-        {
+        if ($pcomp->getByPersoComp($this->perso_cod, $competence)) {
             return true;
         }
         return false;
     }
 
-    function getByComptDerPerso($vcompte)
+    public function getByComptDerPerso($vcompte)
     {
         $compte = new compte;
         $compte->charge($vcompte);
         return $this->charge($compte->compt_der_perso_cod);
     }
 
-    function get_pa_dep()
+    public function get_pa_dep()
     {
         $pdo    = new bddpdo;
         $req    = 'select get_pa_dep(?) as pa';
@@ -1040,7 +1018,7 @@ class perso
         return $result['pa'];
     }
 
-    function is_milice()
+    public function is_milice()
     {
         $pdo    = new bddpdo;
         $req    = 'select is_milice(?) as ismilice';
@@ -1050,12 +1028,12 @@ class perso
         return $result['ismilice'];
     }
 
-    function isIntangible()
+    public function isIntangible()
     {
         return $this->perso_tangible != 'O';
     }
 
-    function is_enlumineur()
+    public function is_enlumineur()
     {
         $test1 = $this->existe_competence('91');
         $test2 = $this->existe_competence('92');
@@ -1063,13 +1041,13 @@ class perso
         return ($test1 || $test2 || $test3);
     }
 
-    function existe_competence($comp_cod)
+    public function existe_competence($comp_cod)
     {
         $comp = new perso_competences();
         return $comp->getByPersoComp($this->perso_cod, $comp_cod);
     }
 
-    function is_potions()
+    public function is_potions()
     {
         $test1 = $this->existe_competence('97');
         $test2 = $this->existe_competence('100');
@@ -1077,24 +1055,22 @@ class perso
         return ($test1 || $test2 || $test3);
     }
 
-    function is_refuge()
+    public function is_refuge()
     {
         $ppos = new perso_position();
         $ppos->getByPerso($this->perso_cod);
         $lpos = new lieu_position();
         $lpos->getByPos($ppos->ppos_pos_cod);
         $lieu = new lieu;
-        if ($lieu->charge($lpos->lpos_lieu_cod))
-        {
-            if ($lieu->lieu_refuge == 'O')
-            {
+        if ($lieu->charge($lpos->lpos_lieu_cod)) {
+            if ($lieu->lieu_refuge == 'O') {
                 return true;
             }
         }
         return false;
     }
 
-    function get_position()
+    public function get_position()
     {
         $ppos = new perso_position();
         $ppos->getByPerso($this->perso_cod);
@@ -1107,7 +1083,7 @@ class perso
         return $retour;
     }
 
-    function get_position_object()
+    public function get_position_object()
     {
         $ppos = new perso_position();
         $ppos->getByPerso($this->perso_cod);
@@ -1116,7 +1092,7 @@ class perso
         return $pos;
     }
 
-    function get_favoris()
+    public function get_favoris()
     {
         $pdo    = new bddpdo;
         $retour = array();
@@ -1125,8 +1101,7 @@ class perso
             "SELECT pfav_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $req     = "SELECT " . $result["pfav_function_cout_pa"] . " as cout_pa ";
             $stmt2   = $pdo->prepare($req);
             $stmt2   = $pdo->execute(array(), $stmt2);
@@ -1149,7 +1124,7 @@ class perso
         return $retour;
     }
 
-    function get_cout_pa_magie($sort, $type_lance)
+    public function get_cout_pa_magie($sort, $type_lance)
     {
         $pdo    = new bddpdo;
         $req    = "SELECT cout_pa_magie(:perso, :sort, :type_lance) as cout";
@@ -1162,7 +1137,7 @@ class perso
         return $result['cout'];
     }
 
-    function get_nb_sort_memorisable()
+    public function get_nb_sort_memorisable()
     {
         $pdo    = new bddpdo;
         $req    = "SELECT nb_sort_memorisable(:perso) as nb_sort_memorisable";
@@ -1172,7 +1147,7 @@ class perso
         return $result['nb_sort_memorisable'];
     }
 
-    function get_nb_sort_appris()
+    public function get_nb_sort_appris()
     {
         $pdo    = new bddpdo;
         $req    = "select count(*) as nb_sorts_appris from perso_sorts where psort_perso_cod = :perso ";
@@ -1182,141 +1157,118 @@ class perso
         return $result['nb_sorts_appris'];
     }
 
-    function is_fam()
+    public function is_fam()
     {
-        if ($this->perso_type_perso == 3)
-        {
+        if ($this->perso_type_perso == 3) {
             return true;
         }
         return false;
     }
 
-    function is_monstre()
+    public function is_monstre()
     {
-        if ($this->perso_type_perso == 2)
-        {
+        if ($this->perso_type_perso == 2) {
             return true;
         }
         return false;
     }
 
-    function is_4eme_perso()
+    public function is_4eme_perso()
     {
-        if ($this->perso_pnj == 2)
-        {
+        if ($this->perso_pnj == 2) {
             return true;
         }
         return false;
     }
 
-    function is_admin_dieu()
+    public function is_admin_dieu()
     {
         $dp  = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
-        if ($tab === false)
-        {
+        if ($tab === false) {
             return false;
         }
-        foreach ($tab as $ddp)
-        {
-            if ($ddp->dper_niveau > 3)
-            {
+        foreach ($tab as $ddp) {
+            if ($ddp->dper_niveau > 3) {
                 return true;
             }
         }
         return false;
     }
 
-    function is_religion()
+    public function is_religion()
     {
         $dp  = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
-        if ($tab === false)
-        {
+        if ($tab === false) {
             return false;
         }
-        foreach ($tab as $ddp)
-        {
-            if ($ddp->dper_niveau >= 2)
-            {
+        foreach ($tab as $ddp) {
+            if ($ddp->dper_niveau >= 2) {
                 return true;
             }
         }
         return false;
     }
 
-    function is_fidele_gerant()
+    public function is_fidele_gerant()
     {
         $tf  = new temple_fidele();
         $tab = $tf->getBy_tfid_perso_cod($this->perso_cod);
-        if ($tab === false)
-        {
+        if ($tab === false) {
             return false;
         }
         return true;
     }
 
-    function transactions()
+    public function transactions()
     {
         $tran  = new transaction();
         $total = 0;
         $tabv  = $tran->getBy_tran_vendeur($this->perso_cod);
-        if ($tabv !== false)
-        {
+        if ($tabv !== false) {
             $total += count($tabv);
         }
 
 
         $taba = $tran->getBy_tran_acheteur($this->perso_cod);
-        if ($taba !== false)
-        {
+        if ($taba !== false) {
             $total += count($taba);
         }
         return $total;
     }
 
-    function barre_hp()
+    public function barre_hp()
     {
-        if ($this->perso_pv_max == 0)
-        {
+        if ($this->perso_pv_max == 0) {
             $barre_hp = 0;
-        } else
-        {
+        } else {
             // LAG: Affichage au % près (avec des bornes  >2% et <98% pour la lisibilité)
             $barre_hp = round(100 * $this->perso_pv / $this->perso_pv_max);
-            if (($barre_hp >= 98) && ($this->perso_pv < $this->perso_pv_max))
-            {
+            if (($barre_hp >= 98) && ($this->perso_pv < $this->perso_pv_max)) {
                 $barre_hp = 98;
-            } else if (($barre_hp <= 2) && ($this->perso_pv > 0))
-            {
+            } elseif (($barre_hp <= 2) && ($this->perso_pv > 0)) {
                 $barre_hp = 2;
-            } else if ($barre_hp < 0)
-            {
+            } elseif ($barre_hp < 0) {
                 $barre_hp = 0;
-            } else if ($barre_hp >= 100)
-            {
+            } elseif ($barre_hp >= 100) {
                 $barre_hp = 100;
             }
         }
         return $barre_hp;
     }
 
-    function barre_energie()
+    public function barre_energie()
     {
-        if ($this->is_enchanteur())
-        {
+        if ($this->is_enchanteur()) {
             $barre_energie = round($this->perso_energie);
-            if ($barre_energie <= 0)
-            {
+            if ($barre_energie <= 0) {
                 $barre_energie = 0;
-            } else if ($barre_energie >= 100)
-            {
+            } elseif ($barre_energie >= 100) {
                 $barre_energie = 100;
-            } else if ($barre_energie >= 98)
-            {
+            } elseif ($barre_energie >= 98) {
                 $barre_energie = 98;
-            } else if ($barre_energie <= 2)
-            {
+            } elseif ($barre_energie <= 2) {
                 $barre_energie = 2;
             }
             return $barre_energie;
@@ -1324,7 +1276,7 @@ class perso
         return false;
     }
 
-    function is_enchanteur()
+    public function is_enchanteur()
     {
         $test1 = $this->existe_competence('88');
         $test2 = $this->existe_competence('102');
@@ -1332,23 +1284,18 @@ class perso
         return ($test1 || $test2 || $test3);
     }
 
-    function barre_divin()
+    public function barre_divin()
     {
-        if ($this->is_fam_divin() == 1)
-        {
+        if ($this->is_fam_divin() == 1) {
             $energie_divine = $this->energie_divine();
             $barre_divine   = round(100 * $energie_divine / 200);
-            if ($barre_divine <= 0)
-            {
+            if ($barre_divine <= 0) {
                 $barre_divine = 0;
-            } else if ($barre_divine >= 100)
-            {
+            } elseif ($barre_divine >= 100) {
                 $barre_divine = 100;
-            } else if ($barre_divine >= 98)
-            {
+            } elseif ($barre_divine >= 98) {
                 $barre_divine = 98;
-            } else if ($barre_divine <= 2)
-            {
+            } elseif ($barre_divine <= 2) {
                 $barre_divine = 2;
             }
             return $barre_divine;
@@ -1356,20 +1303,18 @@ class perso
         return false;
     }
 
-    function is_fam_divin()
+    public function is_fam_divin()
     {
         $is_fam_divin = 0;
-        if ($this->perso_gmon_cod == 441)
-        {
+        if ($this->perso_gmon_cod == 441) {
             $is_fam_divin = 1;
         }
         return $is_fam_divin;
     }
 
-    function energie_divine()
+    public function energie_divine()
     {
-        if ($this->is_fam_divin() == 1)
-        {
+        if ($this->is_fam_divin() == 1) {
             $dp = new dieu_perso;
             $dp->getByPersoCod($this->perso_cod);
             $energie_divine = $dp->dper_points;
@@ -1378,7 +1323,7 @@ class perso
         return false;
     }
 
-    function degats_perso()
+    public function degats_perso()
     {
         $pdo    = new bddpdo;
         $req    = "select degats_perso(?) as degats_perso";
@@ -1388,7 +1333,7 @@ class perso
         return $result['degats_perso'];
     }
 
-    function relache_monstre_4e_perso()
+    public function relache_monstre_4e_perso()
     {
         $pdo    = new bddpdo;
         $req    = "select relache_monstre_4e_perso(?) as degats_perso";
@@ -1398,7 +1343,7 @@ class perso
         return $result['degats_perso'];
     }
 
-    function armure()
+    public function armure()
     {
         $pdo    = new bddpdo;
         $req    = "select f_armure_perso(?) as armure";
@@ -1409,7 +1354,7 @@ class perso
     }
 
     // Retourne vrai si le perso est sur un endroit permettant le démarrage d'une nouvelle quête (quete auto ou standard)
-    function is_perso_quete()
+    public function is_perso_quete()
     {
         $pdo  = new bddpdo;
         $ppos = new perso_position;
@@ -1424,7 +1369,9 @@ class perso
         $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
         $result = $stmt->fetch();
 
-        if ($result['nombre'] != 0) return true;        // il y a des quetes traditionnelles
+        if ($result['nombre'] != 0) {
+            return true;
+        }        // il y a des quetes traditionnelles
 
         // Verification quete auto
         $quete     = new aquete;
@@ -1433,16 +1380,15 @@ class perso
     }
 
     // Retourne vrai si le perso a au moins une quete auto en cours de réalisation ou terminée.
-    function perso_nb_auto_quete()
+    public function perso_nb_auto_quete()
     {
         $quete = new aquete_perso;
         return ($quete->get_perso_nb_quete($this->perso_cod));       // retourn un tableau nb_encours,nb_total
     }
 
-    function get_lieu()
+    public function get_lieu()
     {
-        if ($this->is_lieu())
-        {
+        if ($this->is_lieu()) {
             $ppos = new perso_position;
             $ppos->getByPerso($this->perso_cod);
             $lpos = new lieu_position();
@@ -1458,23 +1404,22 @@ class perso
         return false;
     }
 
-    function getPersosActifs($type_joueur = 1)
+    public function getPersosActifs($type_joueur = 1)
     {
         $pdo    = new bddpdo;
         $retour = array();
         //$req_joueur = "select lower(perso_nom) as minusc,perso_cod,perso_nom,perso_nb_joueur_tue,perso_nb_monstre_tue,perso_nb_mort,get_renommee(perso_renommee) as renommee,get_karma(perso_kharma)as karma,perso_renommee,perso_kharma,get_renommee_magie(perso_renommee_magie) as renommee_magie,perso_renommee_magie,perso_nb_joueur_tue_arene,perso_nb_mort_arene, get_renommee_artisanat(perso_renommee_artisanat) as renommee_artisanat ";
         $req
               = "select perso_cod
-          from perso 
-          where perso_actif = 'O' 
-          and perso_type_perso = :type_joueur 
+          from perso
+          where perso_actif = 'O'
+          and perso_type_perso = :type_joueur
           and perso_cod not in (1,2,3) and perso_pnj != 1";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
                                   ":type_joueur" => $type_joueur
                               ), $stmt);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
 
@@ -1506,25 +1451,22 @@ class perso
                 du type entier exemple: 1 (type perso)
                 du type array exemple: array(1,3) pour un recherche sur les perso et leurs familiers
     */
-    function getPersosByNameLike($perso_nom, $type_perso = 1)
+    public function getPersosByNameLike($perso_nom, $type_perso = 1)
     {
         $pdo    = new bddpdo;
         $retour = array();
 
         // Si on a pas un array on converti pour avoir un seul traitement
-        if (!is_array($type_perso))
-        {
+        if (!is_array($type_perso)) {
             $type_perso = array($type_perso);
         }
 
-        if (count($type_perso) == 0)
-        {
+        if (count($type_perso) == 0) {
             return $retour;
         }
 
         $list_types = array();
-        foreach ($type_perso as $k => $type)
-        {
+        foreach ($type_perso as $k => $type) {
             $list_types[':type' . $k] = intval($type);
         }
 
@@ -1535,16 +1477,14 @@ class perso
         $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)), $list_types), $stmt);
 
         // Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
-        if ($stmt->rowCount() == 0)
-        {
+        if ($stmt->rowCount() == 0) {
             $req  =
                 "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array_merge(array(":perso_nom" => '%' . $perso_nom . '%'), $list_types), $stmt);
         }
 
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
 
@@ -1554,19 +1494,18 @@ class perso
     }
 
 
-    function is_lieu()
+    public function is_lieu()
     {
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
         $lpos = new lieu_position();
-        if (!$lpos->getByPos($ppos->ppos_pos_cod))
-        {
+        if (!$lpos->getByPos($ppos->ppos_pos_cod)) {
             return false;
         }
         return true;
     }
 
-    function missions()
+    public function missions()
     {
         $pdo    = new bddpdo;
         $req    = "select missions_verifie(?) as missions";
@@ -1576,7 +1515,7 @@ class perso
         return $result['missions'];
     }
 
-    function quete_auto()
+    public function quete_auto()
     {
         // Run all current queste !!!!
         $news = "";
@@ -1584,21 +1523,17 @@ class perso
         $quete_perso  = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_en_cours($this->perso_cod);
 
-        if ($quetes_perso && sizeof($quetes_perso) > 0)
-        {
-            foreach ($quetes_perso as $k => $q)
-            {
+        if ($quetes_perso && sizeof($quetes_perso) > 0) {
+            foreach ($quetes_perso as $k => $q) {
                 $nb_etapes = $q->run();
 
-                if ($nb_etapes > 0)
-                {
+                if ($nb_etapes > 0) {
                     $quete = new aquete();
                     $quete->charge($q->aqperso_aquete_cod);
 
                     $pages = $q->journal_news();
                     // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
-                    if ($pages != "")
-                    {
+                    if ($pages != "") {
                         $news .= "<br>&rArr; <em><strong>" . $quete->aquete_nom . "</strong></em>:<br><br>" . $pages;
                     }
                 }
@@ -1611,49 +1546,44 @@ class perso
     /**
      * @return ligne_evt[]
      */
-    function getEvtNonLu()
+    public function getEvtNonLu()
     {
         $levt = new ligne_evt();
         return $levt->getByPersoNonLu($this->perso_cod);
     }
 
-    function marqueEvtLus()
+    public function marqueEvtLus()
     {
         $levt = new ligne_evt();
         return $levt->marquePersoLu($this->perso_cod);
     }
 
-    function barre_xp()
+    public function barre_xp()
     {
         $barre_xp    = '0';
         $limite      = $this->px_limite();
         $limite_actu = $this->px_limite_actuel();
 
-        if (($this->perso_px - $limite_actu) < 0)
-        {
+        if (($this->perso_px - $limite_actu) < 0) {
             return 0;
         }
         $niveau_xp = ($this->perso_px - $limite_actu);
         $div_xp    = ($limite - $limite_actu);
 
         $barre_xp = round(100 * $niveau_xp / $div_xp);
-        if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
-        {
+        if (($barre_xp >= 98) && ($niveau_xp < $div_xp)) {
             $barre_xp = 98;
-        } else if (($barre_xp <= 2) && ($niveau_xp > 0))
-        {
+        } elseif (($barre_xp <= 2) && ($niveau_xp > 0)) {
             $barre_xp = 2;
-        } else if ($barre_xp < 0)
-        {
+        } elseif ($barre_xp < 0) {
             $barre_xp = 0;
-        } else if ($barre_xp >= 100)
-        {
+        } elseif ($barre_xp >= 100) {
             $barre_xp = 100;
         }
         return $barre_xp;
     }
 
-    function px_limite()
+    public function px_limite()
     {
         $pdo    = new bddpdo;
         $req    = "select limite_niveau(?) as limite_niveau";
@@ -1663,7 +1593,7 @@ class perso
         return $result['limite_niveau'];
     }
 
-    function px_limite_actuel()
+    public function px_limite_actuel()
     {
         $pdo    = new bddpdo;
         $req    = "select limite_niveau_actuel(?) as limite_niveau";
@@ -1673,7 +1603,7 @@ class perso
         return $result['limite_niveau'];
     }
 
-    function dlt_passee()
+    public function dlt_passee()
     {
         $pdo    = new bddpdo;
         $req    = "select dlt_passee(?) as dlt_passee";
@@ -1683,7 +1613,7 @@ class perso
         return $result['dlt_passee'];
     }
 
-    function prochaine_dlt()
+    public function prochaine_dlt()
     {
         $pdo    = new bddpdo;
         $req    = "select prochaine_dlt(?) as prochaine_dlt";
@@ -1693,7 +1623,7 @@ class perso
         return $result['prochaine_dlt'];
     }
 
-    function get_poids()
+    public function get_poids()
     {
         $pdo    = new bddpdo;
         $req    = "select get_poids(?) as get_poids";
@@ -1703,74 +1633,68 @@ class perso
         return (float)$result['get_poids'];
     }
 
-    function is_locked()
+    public function is_locked()
     {
         $lc  = new lock_combat();
         $tab = $lc->getBy_lock_cible($this->perso_cod);
-        if ($tab !== false)
-        {
+        if ($tab !== false) {
             return true;
         }
         $tab = $lc->getBy_lock_attaquant($this->perso_cod);
-        if ($tab !== false)
-        {
+        if ($tab !== false) {
             return true;
         }
     }
 
-    function nb_locks()
+    public function nb_locks()
     {
         $locks = 0;
         $lc    = new lock_combat();
         $tab   = $lc->getBy_lock_cible($this->perso_cod);
-        if ($tab !== false)
-        {
+        if ($tab !== false) {
             $locks += count($tab);
         }
         $tab = $lc->getBy_lock_attaquant($this->perso_cod);
-        if ($tab !== false)
-        {
+        if ($tab !== false) {
             $locks += count($tab);
         }
         return $locks;
     }
 
-    function nb_obj_case()
+    public function nb_obj_case()
     {
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
         $opos = new objet_position();
         $tab  = $opos->getBy_pobj_pos_cod($ppos->ppos_pos_cod);
-        if ($tab === false)
-        {
+        if ($tab === false) {
             return 0;
         }
         return count($tab);
     }
 
-    function nb_or_case()
+    public function nb_or_case()
     {
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
         $por = new or_position();
         $tab = $por->getBy_por_pos_cod($ppos->ppos_pos_cod);
-        if ($tab === false)
-        {
+        if ($tab === false) {
             return 0;
         }
         return count($tab);
     }
 
-    function sort_lvl5()
+    public function sort_lvl5()
     {
         $pdo    = new bddpdo;
         $req
-                = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts 
-            where perso_cod = pnbst_perso_cod 
-            and pnbst_sort_cod = sort_cod 
-            and sort_niveau >= 5 
-            and pnbst_nombre > 0 
-            -- and perso_voie_magique = 0 
+                = 'select count(1) as nv5 from perso, perso_nb_sorts_total, sorts
+            where perso_cod = pnbst_perso_cod
+            and pnbst_sort_cod = sort_cod
+            and sort_niveau >= 5
+            and pnbst_nombre > 0
+            -- and perso_voie_magique = 0
             and perso_cod = ?';
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($this->perso_cod), $stmt);
@@ -1782,14 +1706,14 @@ class perso
      * Retourne la liste des sorts mémorisés
      * @return [perso_sorts]
      */
-    function sort_memo()
+    public function sort_memo()
     {
         $ps  = new perso_sorts();
         $tab = $ps->getBy_psort_perso_cod($this->perso_cod);
         return $tab;
     }
 
-    function calcul_dlt()
+    public function calcul_dlt()
     {
         $date                            = new DateTime();
         $this->perso_mail_inactif_envoye = 0;
@@ -1806,26 +1730,24 @@ class perso
         return $result['dlt'];
     }
 
-    function get_guilde()
+    public function get_guilde()
     {
         $pdo  = new bddpdo();
         $req  = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = ?
             and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $guilde = new guilde();
-        if (!$guilde->charge($result['pguilde_guilde_cod']))
-        {
+        if (!$guilde->charge($result['pguilde_guilde_cod'])) {
             return false;
         }
         return $guilde;
     }
 
-    function desengagement($cible)
+    public function desengagement($cible)
     {
         $pdo    = new bddpdo();
         $req    = "select desengagement(:perso,:cible) as resultat";
@@ -1837,7 +1759,7 @@ class perso
         return $result['resultat'];
     }
 
-    function cree_revolution($cible)
+    public function cree_revolution($cible)
     {
         $pdo    = new bddpdo();
         $req    = "select cree_revolution(:perso,:cible) as resultat";
@@ -1849,7 +1771,7 @@ class perso
         return $result['resultat'];
     }
 
-    function embr($cible)
+    public function embr($cible)
     {
         $pdo    = new bddpdo();
         $req    = "select embr(:perso,:cible) as resultat";
@@ -1861,7 +1783,7 @@ class perso
         return $result['resultat'];
     }
 
-    function donne_bonbon($cible)
+    public function donne_bonbon($cible)
     {
         $pdo    = new bddpdo();
         $req    = "select donne_bonbon(:perso,:cible) as resultat";
@@ -1873,7 +1795,7 @@ class perso
         return $result['resultat'];
     }
 
-    function cree_groupe($nom_groupe)
+    public function cree_groupe($nom_groupe)
     {
         $pdo    = new bddpdo();
         $req    = "select cree_groupe(:perso,:nom_groupe) as resultat";
@@ -1885,7 +1807,7 @@ class perso
         return $result['resultat'];
     }
 
-    function accepte_invitation($groupe)
+    public function accepte_invitation($groupe)
     {
         $pdo    = new bddpdo();
         $req    = "select accepte_invitation(:perso,:groupe) as resultat";
@@ -1897,7 +1819,7 @@ class perso
         return $result['resultat'];
     }
 
-    function refuse_invitation($groupe)
+    public function refuse_invitation($groupe)
     {
         $pdo    = new bddpdo();
         $req    = "select refuse_invitation(:perso,:groupe) as resultat";
@@ -1909,7 +1831,7 @@ class perso
         return $result['resultat'];
     }
 
-    function regle_groupe($pa, $pv, $dlt, $bonus, $messages, $messagemort, $champions)
+    public function regle_groupe($pa, $pv, $dlt, $bonus, $messages, $messagemort, $champions)
     {
         $pdo    = new bddpdo();
         $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:messages,:messagemort,:champions) as resultat";
@@ -1927,15 +1849,14 @@ class perso
         return $result['resultat'];
     }
 
-    function coterie()
+    public function coterie()
     {
         $pdo  = new bddpdo();
         $req  =
             "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut = 1 ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return -1;
         }
         return $result['pgroupe_groupe_cod'];
@@ -1946,7 +1867,7 @@ class perso
      * @return bool|perso
      * @throws Exception
      */
-    function f_cherche_perso($nom)
+    public function f_cherche_perso($nom)
     {
         $pdo    = new bddpdo();
         $req    = "select f_cherche_perso(:nom) as resultat";
@@ -1957,14 +1878,13 @@ class perso
 
         $this_perso = new perso;
 
-        if (!$this_perso->charge($result['resultat']))
-        {
+        if (!$this_perso->charge($result['resultat'])) {
             return false;
         }
         return $this_perso;
     }
 
-    function teleportation_divine($dest)
+    public function teleportation_divine($dest)
     {
         $pdo    = new bddpdo();
         $req    = "select teleportation_divine(:perso,:dest) as resultat";
@@ -1976,7 +1896,7 @@ class perso
         return $result['resultat'];
     }
 
-    function invite_groupe($groupe, $invite)
+    public function invite_groupe($groupe, $invite)
     {
         $pdo    = new bddpdo();
         $req    = "select invite_groupe(:perso,:groupe,:invite) as resultat";
@@ -1989,7 +1909,7 @@ class perso
         return $result['resultat'];
     }
 
-    function f_enchantement($obj, $enc, $type_appel)
+    public function f_enchantement($obj, $enc, $type_appel)
     {
         $pdo    = new bddpdo();
         $req    = "select f_enchantement(:perso,:obj,:enc,:type_appel) as resultat";
@@ -2003,7 +1923,7 @@ class perso
         return $result['resultat'];
     }
 
-    function offre_boire($cible)
+    public function offre_boire($cible)
     {
         $pdo    = new bddpdo();
         $req    = "select offre_boire(:perso,:cible) as resultat";
@@ -2015,7 +1935,7 @@ class perso
         return $result['resultat'];
     }
 
-    function ouvre_cadeau()
+    public function ouvre_cadeau()
     {
         $pdo    = new bddpdo();
         $req    = "select ouvre_cadeau(:perso) as resultat";
@@ -2026,7 +1946,7 @@ class perso
         return $result['resultat'];
     }
 
-    function donne_rouge()
+    public function donne_rouge()
     {
         $pdo    = new bddpdo();
         $req    = "select donne_rouge(:perso,:cible) as resultat";
@@ -2037,7 +1957,7 @@ class perso
         return $result['resultat'];
     }
 
-    function donne_noir()
+    public function donne_noir()
     {
         $pdo    = new bddpdo();
         $req    = "select donne_noir(:perso,:cible) as resultat";
@@ -2048,7 +1968,7 @@ class perso
         return $result['resultat'];
     }
 
-    function carac_base_for()
+    public function carac_base_for()
     {
         $pdo    = new bddpdo;
         $req    = "select f_carac_base(?,'FOR') as perso_for";
@@ -2058,7 +1978,7 @@ class perso
         return $result['perso_for'];
     }
 
-    function carac_base_int()
+    public function carac_base_int()
     {
         $pdo    = new bddpdo;
         $req    = "select f_carac_base(?,'INT') as perso_int";
@@ -2068,7 +1988,7 @@ class perso
         return $result['perso_int'];
     }
 
-    function carac_base_con()
+    public function carac_base_con()
     {
         $pdo    = new bddpdo;
         $req    = "select f_carac_base(?,'CON') as perso_con";
@@ -2078,7 +1998,7 @@ class perso
         return $result['perso_con'];
     }
 
-    function carac_base_dex()
+    public function carac_base_dex()
     {
         $pdo    = new bddpdo;
         $req    = "select f_carac_base(?,'DEX') as perso_dex";
@@ -2088,7 +2008,7 @@ class perso
         return $result['perso_dex'];
     }
 
-    function passe_niveau($amel)
+    public function passe_niveau($amel)
     {
         $pdo    = new bddpdo();
         $req    = "select f_passe_niveau(:perso,:amel) as resultat";
@@ -2100,7 +2020,7 @@ class perso
         return $result['resultat'];
     }
 
-    function rituel_modif_caracs($demel, $amel)
+    public function rituel_modif_caracs($demel, $amel)
     {
         $pdo    = new bddpdo();
         $req    = "select f_rituel_modif_caracs(:perso,:demel,:amel) as resultat";
@@ -2113,7 +2033,7 @@ class perso
         return $result['resultat'];
     }
 
-    function rituel_modif_voiemagique($voie)
+    public function rituel_modif_voiemagique($voie)
     {
         $pdo    = new bddpdo();
         $req    = "select f_rituel_modif_voiemagique(:perso,:voie) as resultat";
@@ -2125,7 +2045,7 @@ class perso
         return $result['resultat'];
     }
 
-    function depose_objet($objet)
+    public function depose_objet($objet)
     {
         $pdo    = new bddpdo();
         $req    = "select depose_objet(:perso,:objet) as resultat";
@@ -2137,7 +2057,7 @@ class perso
         return $result['resultat'];
     }
 
-    function vente_bat($objet)
+    public function vente_bat($objet)
     {
         $pdo    = new bddpdo();
         $req    = "select vente_bat(:perso,:objet) as resultat";
@@ -2149,7 +2069,7 @@ class perso
         return $result['resultat'];
     }
 
-    function vote_revolution($revguilde, $vote)
+    public function vote_revolution($revguilde, $vote)
     {
         $pdo    = new bddpdo();
         $req    = "select vote_revolution(:perso,:revguilde,:vote) as resultat";
@@ -2162,7 +2082,7 @@ class perso
         return $result['resultat'];
     }
 
-    function magasin_achat_generique($lieu, $objet, $qte)
+    public function magasin_achat_generique($lieu, $objet, $qte)
     {
         $retour = "";
         $pdo    = new bddpdo();
@@ -2174,17 +2094,14 @@ class perso
         $stmt = $pdo->execute(array(
                                   ":lieu"  => $lieu,
                                   ":objet" => $objet), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return '<p>Erreur ! Impossible de vérifier dans les stocks du magasin pour acheter cet objet  !';
-        } else if ((int)$result['count'] < $qte)
-        {
+        } elseif ((int)$result['count'] < $qte) {
             return '<p>Erreur ! Impossible les stocks du magasin sont insuffisants  !';
         }
 
         // Faire les achats :
-        for ($i = 0; $i < $qte; $i++)
-        {
+        for ($i = 0; $i < $qte; $i++) {
             $req    = "select magasin_achat_generique(:perso,:lieu,:objet) as resultat ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(
@@ -2198,7 +2115,7 @@ class perso
         return $retour;
     }
 
-    function magasin_achat($lieu, $objet)
+    public function magasin_achat($lieu, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2212,7 +2129,7 @@ class perso
         return $result['resultat'];
     }
 
-    function magasin_vente($lieu, $objet)
+    public function magasin_vente($lieu, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2226,7 +2143,7 @@ class perso
         return $result['resultat'];
     }
 
-    function magasin_vente_generique($lieu, $objet)
+    public function magasin_vente_generique($lieu, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2240,7 +2157,7 @@ class perso
         return $result['resultat'];
     }
 
-    function magasin_identifie($lieu, $objet)
+    public function magasin_identifie($lieu, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2254,7 +2171,7 @@ class perso
         return $result['resultat'];
     }
 
-    function magasin_repare($lieu, $objet)
+    public function magasin_repare($lieu, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2268,7 +2185,7 @@ class perso
         return $result['resultat'];
     }
 
-    function cree_receptacle($sort, $type_lance)
+    public function cree_receptacle($sort, $type_lance)
     {
         $pdo    = new bddpdo();
         $req
@@ -2282,7 +2199,7 @@ class perso
         return $result['resultat'];
     }
 
-    function cree_parchemin($sort, $type_lance)
+    public function cree_parchemin($sort, $type_lance)
     {
         $pdo    = new bddpdo();
         $req
@@ -2296,9 +2213,8 @@ class perso
         return $result['resultat'];
     }
 
-    function cree_perso()
+    public function cree_perso()
     {
-
         $pdo    = new bddpdo();
         $req
                 = "select cree_perso(:perso) as resultat";
@@ -2312,7 +2228,7 @@ class perso
         return $result['resultat'];
     }
 
-    function don_br($dest, $qte)
+    public function don_br($dest, $qte)
     {
         $pdo    = new bddpdo();
         $req
@@ -2326,7 +2242,7 @@ class perso
         return $result['resultat'];
     }
 
-    function milice_tel($dest)
+    public function milice_tel($dest)
     {
         $pdo    = new bddpdo();
         $req
@@ -2339,7 +2255,7 @@ class perso
         return $result['resultat'];
     }
 
-    function vente_auberge($objet)
+    public function vente_auberge($objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2352,7 +2268,7 @@ class perso
         return $result['resultat'];
     }
 
-    function change_mode_combat($mode)
+    public function change_mode_combat($mode)
     {
         $pdo    = new bddpdo();
         $req
@@ -2365,7 +2281,7 @@ class perso
         return $result['resultat'];
     }
 
-    function detail_redispatch($amel)
+    public function detail_redispatch($amel)
     {
         $pdo    = new bddpdo();
         $req
@@ -2378,7 +2294,7 @@ class perso
         return $result['resultat'];
     }
 
-    function start_redispatch()
+    public function start_redispatch()
     {
         $pdo    = new bddpdo();
         $req
@@ -2390,7 +2306,7 @@ class perso
         return $result['resultat'];
     }
 
-    function achete_objet($objet)
+    public function achete_objet($objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2403,7 +2319,7 @@ class perso
         return $result['resultat'];
     }
 
-    function prie_dieu($dieu)
+    public function prie_dieu($dieu)
     {
         $pdo    = new bddpdo();
         $req
@@ -2416,7 +2332,7 @@ class perso
         return $result['resultat'];
     }
 
-    function ceremonie_dieu($dieu)
+    public function ceremonie_dieu($dieu)
     {
         $pdo    = new bddpdo();
         $req
@@ -2429,7 +2345,7 @@ class perso
         return $result['resultat'];
     }
 
-    function change_grade($dieu)
+    public function change_grade($dieu)
     {
         $pdo    = new bddpdo();
         $req
@@ -2442,7 +2358,7 @@ class perso
         return $result['resultat'];
     }
 
-    function prie_dieu_ext($dieu)
+    public function prie_dieu_ext($dieu)
     {
         $pdo    = new bddpdo();
         $req
@@ -2455,33 +2371,28 @@ class perso
         return $result['resultat'];
     }
 
-    function niveau_blessures($pv = null, $pv_max = null)
+    public function niveau_blessures($pv = null, $pv_max = null)
     {
         // Sans paramètres on prends le perso courant
-        if ($pv == null || $pv_max == null)
-        {
+        if ($pv == null || $pv_max == null) {
             $pv     = $this->perso_pv;
             $pv_max = $this->perso_pv_max;
         }
 
         $niveau_blessures = "";
-        if ($pv / $pv_max < 0.15)
-        {
+        if ($pv / $pv_max < 0.15) {
             $niveau_blessures = 'presque mort';
-        } else if ($pv / $pv_max < 0.25)
-        {
+        } elseif ($pv / $pv_max < 0.25) {
             $niveau_blessures = 'gravement touché';
-        } else if ($pv / $pv_max < 0.5)
-        {
+        } elseif ($pv / $pv_max < 0.5) {
             $niveau_blessures = 'blessé';
-        } else if ($pv / $pv_max < 0.75)
-        {
+        } elseif ($pv / $pv_max < 0.75) {
             $niveau_blessures = 'touché';
         }
         return $niveau_blessures;
     }
 
-    function repare_objet($type_rep, $objet)
+    public function repare_objet($type_rep, $objet)
     {
         $pdo    = new bddpdo();
         $req
@@ -2495,40 +2406,32 @@ class perso
     }
 
 
-    function prepare_for_tab_switch()
+    public function prepare_for_tab_switch()
     {
         global $type_flux;
         $this->position = $this->get_position();
         $this->guilde   = $this->get_guilde();
 
-        if ($this->perso_avatar == '')
-        {
+        if ($this->perso_avatar == '') {
             $this->avatar = G_IMAGES . $this->perso_race_cod . "_" . $this->perso_sex . ".png";
-        } else
-        {
+        } else {
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
         }
 
-        try
-        {
+        try {
             $size = @getimagesize($this->avatar);
-            if ($size !== false)
-            {
+            if ($size !== false) {
                 $this->avatar_largeur = $size[0];
                 $this->avatar_hauteur = $size[1];
             }
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             unset($e);
         }
 
         $this->barre_divine = -1;
-        if ($this->perso_gmon_cod == 441)
-        {
+        if ($this->perso_gmon_cod == 441) {
             $barre_divine = floor(($this->energie_divine() / 200) * 10) * 10;
-            if ($barre_divine >= 100)
-            {
+            if ($barre_divine >= 100) {
                 $barre_divine = 100;
             }
             $this->barre_divine = $barre_divine;
@@ -2540,14 +2443,13 @@ class perso
     /**
      * @return messages_dest[]
      */
-    function getMsgNonLu()
+    public function getMsgNonLu()
     {
         $msg_dest = new messages_dest();
         return $msg_dest->getByPersoNonLu($this->perso_cod);
-
     }
 
-    function get_valeur_bonus($bonus)
+    public function get_valeur_bonus($bonus)
     {
         $pdo    = new bddpdo();
         $req    = "select valeur_bonus(:perso, '$bonus') as bonus";
@@ -2557,10 +2459,9 @@ class perso
                                 ), $stmt);
         $result = $stmt->fetch();
         return $result['bonus'];
-
     }
 
-    function prepare_get_vue($compte)
+    public function prepare_get_vue($compte)
     {
         $ppos  = new perso_position();
         $pos   = new positions();
@@ -2598,8 +2499,7 @@ class perso
 
         $distance_vue = $this->distance_vue();
         $portee       = $this->portee_attaque();
-        if ($distance_vue <= $portee)
-        {
+        if ($distance_vue <= $portee) {
             $portee = $distance_vue;
         }
 
@@ -2608,10 +2508,9 @@ class perso
         $this->y_min  = $pos->pos_y - $portee;
         $this->y_max  = $pos->pos_y + $portee;
         $this->compte = $compte;
-
     }
 
-    function get_vue_non_lock($compte)
+    public function get_vue_non_lock($compte)
     {
         $this->prepare_get_vue($compte);
 
@@ -2619,33 +2518,33 @@ class perso
         $req_vue_joueur = "select trajectoire_vue(:pos_cod,pos_cod) as traj,
           perso_nom,pos_x,pos_y,pos_etage,race_nom,distance(:pos_cod,pos_cod) as distance,
           pos_cod,perso_cod,case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
-          perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge , 
+          perso_pv,perso_pv_max,is_surcharge(perso_cod,:perso) as surcharge ,
           (select count(1) from trajectoire_perso(:pos_cod,pos_cod) as (nv_cible int, v_pos int, type_perso int)) as obstruction,
           (select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 ) coterie,
           perso_type_perso as type_perso
-          from perso,positions,perso_position,race 
+          from perso,positions,perso_position,race
           where pos_x between (:x_min) and (:x_max)
           and pos_y between (:y_min) and (:y_max)
-          and pos_cod = ppos_pos_cod 
-          and pos_etage = :pos_etage 
-          and ppos_perso_cod = perso_cod 
-          and perso_cod != :perso 
-          and perso_actif = 'O' 
-          and perso_tangible = 'O' 
-          and perso_race_cod = race_cod 
-          and not exists 
-              (select 1 from lieu,lieu_position 
-              where lpos_pos_cod = ppos_pos_cod 
-              and lpos_lieu_cod = lieu_cod 
-              and lieu_refuge = 'O') 
-          and not exists 
-            (select 1 from perso_familier 
-            where pfam_perso_cod = :perso 
-            and pfam_familier_cod = perso_cod) 
-          and not exists 
-            (select 1 from perso_compte 
+          and pos_cod = ppos_pos_cod
+          and pos_etage = :pos_etage
+          and ppos_perso_cod = perso_cod
+          and perso_cod != :perso
+          and perso_actif = 'O'
+          and perso_tangible = 'O'
+          and perso_race_cod = race_cod
+          and not exists
+              (select 1 from lieu,lieu_position
+              where lpos_pos_cod = ppos_pos_cod
+              and lpos_lieu_cod = lieu_cod
+              and lieu_refuge = 'O')
+          and not exists
+            (select 1 from perso_familier
+            where pfam_perso_cod = :perso
+            and pfam_familier_cod = perso_cod)
+          and not exists
+            (select 1 from perso_compte
             where pcompt_compt_cod = :compte
-            and pcompt_perso_cod = perso_cod) 
+            and pcompt_perso_cod = perso_cod)
           and perso_cod not in
             ((select pfam_familier_cod from perso_compte join perso_familier on pfam_perso_cod=pcompt_perso_cod join perso on perso_cod=pfam_familier_cod  where pcompt_compt_cod = (select pcompt_compt_cod from perso_compte where pcompt_perso_cod = :perso)  and perso_actif='O')
         	union
@@ -2672,14 +2571,14 @@ class perso
     }
 
 
-    function get_vue_lock($compte)
+    public function get_vue_lock($compte)
     {
         // position
         $this->prepare_get_vue($compte);
 
 
         $pdo            = new bddpdo();
-        $req_vue_joueur = "select 
+        $req_vue_joueur = "select
               trajectoire_vue(:pos_cod,pos_cod) as traj,
               perso_nom,
               pos_x,
@@ -2692,37 +2591,37 @@ class perso
               case when perso_type_perso = 1 then 1 else 2 end as perso_type_perso,
               perso_pv,
               perso_pv_max,
-              is_surcharge(perso_cod,:perso) as surcharge, 
+              is_surcharge(perso_cod,:perso) as surcharge,
               0 as obstruction,
              (select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 ) coterie,
               perso_type_perso as type_perso
-            from perso,positions,perso_position,race,lock_combat 
-              where pos_x between (:x_min) and (:x_max) 
-              and pos_y between (:y_min) and (:y_max) 
+            from perso,positions,perso_position,race,lock_combat
+              where pos_x between (:x_min) and (:x_max)
+              and pos_y between (:y_min) and (:y_max)
               and pos_cod = ppos_pos_cod
               and pos_etage = :pos_etage
-              and ppos_perso_cod = perso_cod 
-              and perso_cod != :perso 
-              and perso_actif = 'O' 
-              and perso_tangible = 'O' 
-              and perso_race_cod = race_cod 
-              and not exists 
-                (select 1 from lieu,lieu_position 
-                 where lpos_pos_cod = ppos_pos_cod 
-                 and lpos_lieu_cod = lieu_cod 
-                 and lieu_refuge = 'O') 
-              and not exists 
-                (select 1 from perso_familier 
-                where pfam_perso_cod = :perso 
-                and pfam_familier_cod = perso_cod) 
-              and not exists 
-                (select 1 from perso_compte 
+              and ppos_perso_cod = perso_cod
+              and perso_cod != :perso
+              and perso_actif = 'O'
+              and perso_tangible = 'O'
+              and perso_race_cod = race_cod
+              and not exists
+                (select 1 from lieu,lieu_position
+                 where lpos_pos_cod = ppos_pos_cod
+                 and lpos_lieu_cod = lieu_cod
+                 and lieu_refuge = 'O')
+              and not exists
+                (select 1 from perso_familier
+                where pfam_perso_cod = :perso
+                and pfam_familier_cod = perso_cod)
+              and not exists
+                (select 1 from perso_compte
                 where pcompt_compt_cod = :compte
-                and pcompt_perso_cod = perso_cod) 
-              and lock_cible = :perso 
-              and lock_attaquant = perso_cod 
-            union 
-              select 
+                and pcompt_perso_cod = perso_cod)
+              and lock_cible = :perso
+              and lock_attaquant = perso_cod
+            union
+              select
                 trajectoire_vue(:pos_cod,pos_cod) as traj,
                 perso_nom,
                 pos_x,
@@ -2735,34 +2634,34 @@ class perso
                 perso_type_perso,
                 perso_pv,
                 perso_pv_max,
-                is_surcharge(perso_cod,:perso ) as surcharge, 
+                is_surcharge(perso_cod,:perso ) as surcharge,
                 0 as obstruction ,
                 (select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1 ) coterie,
               perso_type_perso as type_perso
-              from perso,positions,perso_position,race,lock_combat 
-              where pos_x between (:x_min) and (:x_max) 
-                and pos_y between (:y_min) and (:y_max) 
-                and pos_cod = ppos_pos_cod 
-                and pos_etage = :pos_etage 
-                and ppos_perso_cod = perso_cod 
-                and perso_cod != :perso 
-                and perso_actif = 'O' 
-                and perso_tangible = 'O' 
-                and perso_race_cod = race_cod 
-                and not exists 
-                    (select 1 from lieu,lieu_position 
-                    where lpos_pos_cod = ppos_pos_cod 
-                    and lpos_lieu_cod = lieu_cod 
-                    and lieu_refuge = 'O') 
-                and not exists 
-                    (select 1 from perso_familier 
-                    where pfam_perso_cod = :perso  
-                    and pfam_familier_cod = perso_cod) 
-                and not exists 
-                    (select 1 from perso_compte 
-                    where pcompt_compt_cod = :compte 
-                    and pcompt_perso_cod = perso_cod) 
-                and lock_cible = perso_cod 
+              from perso,positions,perso_position,race,lock_combat
+              where pos_x between (:x_min) and (:x_max)
+                and pos_y between (:y_min) and (:y_max)
+                and pos_cod = ppos_pos_cod
+                and pos_etage = :pos_etage
+                and ppos_perso_cod = perso_cod
+                and perso_cod != :perso
+                and perso_actif = 'O'
+                and perso_tangible = 'O'
+                and perso_race_cod = race_cod
+                and not exists
+                    (select 1 from lieu,lieu_position
+                    where lpos_pos_cod = ppos_pos_cod
+                    and lpos_lieu_cod = lieu_cod
+                    and lieu_refuge = 'O')
+                and not exists
+                    (select 1 from perso_familier
+                    where pfam_perso_cod = :perso
+                    and pfam_familier_cod = perso_cod)
+                and not exists
+                    (select 1 from perso_compte
+                    where pcompt_compt_cod = :compte
+                    and pcompt_perso_cod = perso_cod)
+                and lock_cible = perso_cod
                 and lock_attaquant = :perso ";
         $stmt           = $pdo->prepare($req_vue_joueur);
         $stmt           = $pdo->execute(array(
@@ -2778,14 +2677,13 @@ class perso
         return $stmt->fetchAll();
     }
 
-    function race()
+    public function race()
     {
         $pdo  = new bddpdo;
         $req  = "select race_nom from race where race_cod = ? ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_race_cod), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return 'inconnue';
         }
         return $result["race_nom"];
@@ -2798,36 +2696,29 @@ class perso
     public function get_champ($field)
     {
         // Traitements Spécifiques. --------------------------------------
-        if ($field == "perso.sex")
-        {
+        if ($field == "perso.sex") {
             return $this->perso_sex == "M" ? "Monsieur" : "Madame";
-        } else if ((substr($field, 0, 12) == "perso.genre(") && (substr($field, -1) == ")"))
-        {
+        } elseif ((substr($field, 0, 12) == "perso.genre(") && (substr($field, -1) == ")")) {
             $genre = explode(",", substr($field, 12, -1));
             return $this->perso_sex == "M" ? $genre[0] : $genre[1];
         }
 
         //Traitement générique. --------------------------------------
-        if (substr($field, -2) == "()")
-        {
+        if (substr($field, -2) == "()") {
             //Cas d'une methode----
             $field = substr($field, 6, -2);    //supression de "perso." et de "()"
-            if (method_exists($this, $field))
-            {
+            if (method_exists($this, $field)) {
                 return $this->$field();
             }
-        } else
-        {
+        } else {
             //Cas d'un propriétée---
             $field = str_replace(".", "_", $field);
-            if (property_exists($this, $field))
-            {
+            if (property_exists($this, $field)) {
                 return $this->$field;
             }
 
             $field = substr($field, 6);    //supression de "perso."
-            if (property_exists($this, $field))
-            {
+            if (property_exists($this, $field)) {
                 return $this->$field;
             }
         }
@@ -2835,28 +2726,27 @@ class perso
     }
 
 
-    function perso_malus()
+    public function perso_malus()
     {
         $pdo  = new bddpdo;
-        $req  = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur 
+        $req  = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur
                    from bonus
                    inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                    where bonus_perso_cod = ?
                         and
                             (tbonus_gentil_positif = 't' and bonus_valeur < 0
                             or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-                    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode	
+                    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
                     order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
-        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
-        {
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
             return array();
         }
         return $result;
     }
 
-    function efface()
+    public function efface()
     {
         $pdo  = new bddpdo;
         $req  = "select efface_perso(:perso)";
@@ -2867,30 +2757,25 @@ class perso
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "select perso_cod  from perso where " . substr($name, 6) . " = ? order by perso_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp = new perso;
                         $temp->charge($result["perso_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                } else
-                {
+                } else {
                     die('Unknown variable ' . substr($name, 6));
                 }
                 break;
