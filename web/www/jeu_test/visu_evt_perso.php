@@ -3,6 +3,9 @@
 include "blocks/_header_page_jeu.php";
 require_once G_CHE . "includes/fonctions.php";
 
+
+
+
 if (!isset($_REQUEST['visu'])) {
     $visu = '';
 } else {
@@ -26,9 +29,6 @@ if (!isset($_REQUEST['met'])) {
     $met = $_REQUEST['met'];
 }
 
-
-$compte = new compte;
-$compte->charge($compte_cod);
 if ($met == 'aff') {
     $compte->compt_vue_desc = 1;
     $compte->stocke();
