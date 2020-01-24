@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'ovhvps1' }
+    agent { label 'docker' }
 
     stages {
         stage('Build') {
-            agent { label 'ovhvps1' }
+            agent { label 'docker' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'ovhvps1' }
+            agent { label 'docker' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
