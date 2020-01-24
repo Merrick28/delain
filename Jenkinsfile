@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'backup' }
+    agent { label 'log' }
 
     stages {
         stage('Build') {
-            agent { label 'backup' }
+            agent { label 'log' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'backup' }
+            agent { label 'log' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
