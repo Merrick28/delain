@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'ht1' }
+    agent { label 'proxy' }
 
     stages {
         stage('Build') {
-            agent { label 'ht1' }
+            agent { label 'proxy' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'ht1' }
+            agent { label 'proxy' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
