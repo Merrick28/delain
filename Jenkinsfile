@@ -1,9 +1,9 @@
 pipeline {
-    agent { label 'log' }
+    agent { label 'ovhvps1' }
 
     stages {
         stage('Build') {
-            agent { label 'log' }
+            agent { label 'ovhvps1' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
@@ -28,7 +28,7 @@ pipeline {
             }
         }
         stage('Test') {
-            agent { label 'log' }
+            agent { label 'ovhvps1' }
             when {
                 not {
                 changelog '.*^\\[ci skip\\] .+$'
