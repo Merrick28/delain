@@ -259,6 +259,10 @@ class ligne_evt
             $temp->tevt = $tevt;
             // on prend les evts liés
             //die("**" . trim($this->levt_attaquant) . "**");
+            $perso1 = new perso;
+            $perso1->charge($temp->levt_perso_cod1);
+            $temp->perso1 = $perso1;
+            unset($perso1);
 
             $perso_attaquant = new perso;
 

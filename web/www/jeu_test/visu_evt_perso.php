@@ -1,148 +1,133 @@
 <?php
+// visu_evt_perso
 include "blocks/_header_page_jeu.php";
 
-if (!isset($visu))
+if (!isset($_REQUEST['visu']))
+{
     $visu = '';
+} else
+{
+    $visu = $_REQUEST['visu'];
+}
 
-$visu = str_replace(";", " ", $visu);
-if (!preg_match('/^[0-9]+$/', $visu)) {
+if (filter_var($visu, FILTER_VALIDATE_INT) === false)
+{
     echo "Anomalie sur numéro perso !";
     exit();
 }
+
+$visu_perso = new perso();
+$visu_perso->charge($visu);
+
 /*****************************/
 /* GESTION DE LA DESCRIPTION */
 /*****************************/
-if (!isset($met))
+if (!isset($_REQUEST['met']))
+{
     $met = 'vide';
+} else
+{
+    $met = $_REQUEST['met'];
+}
+
+
+$compte = new compte;
+$compte->charge($compte_cod);
 if ($met == 'aff')
-    $db->query('update compte set compt_vue_desc = 1 where compt_cod = ' . $compt_cod);
+{
+    $compte->compt_vue_desc = 1;
+    $compte->stocke();
+}
+
 if ($met == 'masq')
-    $db->query('update compte set compt_vue_desc = 0 where compt_cod = ' . $compt_cod);
-$req = "select compt_vue_desc from compte where compt_cod = $compt_cod";
-$db->query($req);
-$db->next_record();
-if ($db->f("compt_vue_desc") == 1) {
+{
+    $compte->compt_vue_desc = 0;
+    $compte->stocke();
+}
+
+if ($compte->compt_vue_desc == 1)
+{
     include "perso2_description.php";
-    $req = 'select perso_nom from perso where perso_cod = ' . $visu;
-    $db->query($req);
-    $db->next_record();
+
     $contenu_page .= '<form name="message" method="post" action="messagerie2.php">
 	<input type="hidden" name="m" value="2">
-	<input type="hidden" name="n_dest" value="' . $db->f('perso_nom') . '">
+	<input type="hidden" name="n_dest" value="' . $visu_perso->perso_nom . '">
 	<input type="hidden" name="dmsg_cod">
 	</form>
 	<div style=text-align:center>
 	<a href="javascript:document.message.submit();">Envoyer un message !</a><br>
 	<a href="' . $PHP_SELF . '?met=masq&visu=' . $visu . '">Masquer la description ?</a></div>';
 
-} else {
+} else
+{
     $contenu_page .= '<center><a href="' . $PHP_SELF . '?met=aff&visu=' . $visu . '">Afficher la description ?</a></center>';
 }
 /****************************************/
 /* CONTENU                              */
 /****************************************/
-$db_evt = new base_delain;
-$db_detail = new base_delain;
-if (!isset($pevt_start)) {
+
+if (!isset($_REQUEST['pevt_start']))
+{
+    $pevt_start = 0;
+} else
+{
+    $pevt_start = $_REQUEST['pevt_start'];
+}
+if ($pevt_start < 0)
+{
     $pevt_start = 0;
 }
-if ($pevt_start < 0) {
-    $pevt_start = 0;
-}
-$req_nom = "select perso_nom,race_nom,perso_sex from perso,race where perso_cod = $visu and perso_race_cod = race_cod";
-$db->query($req_nom);
-$db->next_record();
-$nom = $db->f("perso_nom");
-$race = $db->f("race_nom");
-$sexe = $db->f("perso_sex");
+
+$race = new race;
+$race->charge($visu_perso->perso_race_cod);
+
 $contenu_page .= '<center><table cellspacing="2">
 	<tr>
-	<td colspan="3" class="titre"><div class="titre">Evènements de ' . $nom . '(' . $sexe . ' - ' . $race . ')</div></td>
+	<td colspan="3" class="titre"><div class="titre">Evènements de ' . $visu_perso->perso_nom . '(' .
+                 $visu_perso->perso_sex . ' - ' .
+                 $race->race_nom . ')</div></td>
 	</tr>';
-if ($db->is_admin($compt_cod))
-    /****************/
-    /* Compte admin */ /****************/ {
-    $req_evt = 'select levt_cod, to_char(levt_date,\'DD/MM/YYYY hh24:mi:ss\') as evt_date, tevt_libelle, levt_texte, 
-			levt_perso_cod1, p0.perso_nom as nom1, 
-			levt_attaquant, p1.perso_nom as nom2,
-			levt_cible, p2.perso_nom as nom3
-		from ligne_evt
-		inner join type_evt ON tevt_cod = levt_tevt_cod
-		inner join perso p0 ON p0.perso_cod = levt_perso_cod1
-		left outer join perso p1 ON p1.perso_cod = levt_attaquant
-		left outer join perso p2 ON p2.perso_cod = levt_cible
-		where levt_perso_cod1 = ' . $visu . '
-		order by levt_cod desc
-		limit 20
-		offset ' . $pevt_start;
-
-    $db->query($req_evt);
-    $contenu_page .= '<form name="visu_evt" method="post" action="visu_evt_perso.php">
+$contenu_page .= '<form name="visu_evt" method="post" action="visu_evt_perso.php">
 	<input type="hidden" name="visu">';
-    while ($db->next_record()) {
-        $contenu_page .= '<tr>
-			<td class="soustitre3">' . $db->f("evt_date") . '</td>
-			<td class="soustitre3"><strong>' . $db->f("tevt_libelle") . '</strong></td>';
-
-        $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">" . $db->f("nom1") . "</a></strong>", $db->f("levt_texte"));
-        if ($db->f("levt_attaquant") != '') {
-            $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">" . $db->f("nom2") . "</A></strong>", $texte_evt);
-        }
-        if ($db->f("levt_cible") != '') {
-            $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">" . $db->f("nom3") . "</a></strong>", $texte_evt);
-        }
-
-        $contenu_page .= '<td>' . $texte_evt . '</td></tr>';
-    }
-} else
-    /********************************/
-    /* Compte normal                */ /********************************/ {
-    $req_evt = 'select levt_cod, to_char(levt_date,\'DD/MM/YYYY hh24:mi:ss\') as evt_date, tevt_libelle, tevt_texte, 
-			levt_perso_cod1, p0.perso_nom as nom1, 
-			levt_attaquant, p1.perso_nom as nom2,
-			levt_cible, p2.perso_nom as nom3
-		from ligne_evt
-		inner join type_evt ON tevt_cod = levt_tevt_cod
-		inner join perso p0 ON p0.perso_cod = levt_perso_cod1
-		left outer join perso p1 ON p1.perso_cod = levt_attaquant
-		left outer join perso p2 ON p2.perso_cod = levt_cible
-		where levt_perso_cod1 = ' . $visu . '
-			and levt_visible = \'O\'
-		order by levt_cod desc
-		limit 20
-		offset ' . $pevt_start;
-
-    $db->query($req_evt);
-    $contenu_page .= '<form name="form_visu" method="post" action="visu_evt_perso.php">
-	<input type="hidden" name="visu" value="' . $visu . '">';
-    $first = true;
-    while ($db->next_record()) {
-        // Ne pas afficher les effets automatiques s'ils sont la dernière action du perso (Pour ne pas signaler le début du tour)
-        if ($first && 'Effet automatique' == $db->f("tevt_libelle"))
+$levt         = new ligne_evt();
+$tab_evt      = $levt->getByPerso($pevt_start, 20);
+$first        = true;
+foreach ($tab_evt as $val)
+{
+    $contenu_page .= '<tr>
+			<td class="soustitre3">' . format_date($ligne_evt->levt_date) . '</td>
+			<td class="soustitre3"><strong>' . $ligne_evt->tevt->tevt_libelle . '</strong></td>';
+    if ($compte->is_admin())
+    {
+        $texte = str_replace('[perso_cod1]', '<strong><a href="javascript:document.visu_evt.visu.value=' .
+                                             $val->levt_perso_cod1 . ';document.visu_evt.submit();">' . $val->perso1->perso_nom . '</a></strong>', $val->levt_texte);
+    } else
+    {
+        if ($first && 'Effet automatique' == $ligne_evt->tevt->tevt_libelle)
+        {
             continue;
+        }
+
         $first = false;
-        $levt_attaquant = $db->f("levt_attaquant");
-        $levt_cible = $db->f("levt_cible");
-        $num_perso = $db->f("levt_perso_cod1");
-        $texte = $db->f("tevt_texte");
-
-        $contenu_page .= '<tr><td class="soustitre3">' . $db->f("evt_date") . '</td>
-			<td class="soustitre3"><strong>' . $db->f("tevt_libelle") . '</strong></td>';
-
-
-        $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.form_visu.visu.value=$num_perso;document.form_visu.submit();\">" . $db->f("nom1") . "</a></strong>\n", $texte);
-        if ($levt_attaquant != '') {
-            $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.form_visu.visu.value=$levt_attaquant;document.form_visu.submit();\">" . $db->f("nom2") . "</a></strong>\n", $texte_evt);
-        }
-        if ($levt_cible != '') {
-            $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.form_visu.visu.value=$levt_cible;document.form_visu.submit();\">" . $db->f("nom3") . "</a></strong>\n", $texte_evt);
-        }
-        $contenu_page .= '<td>' . $texte_evt . '</td></tr>';
+        $texte =
+            str_replace('[perso_cod1]', '<strong><a href="javascript:document.form_visu.visu.value=' .
+                                        $val->levt_perso_cod1 . ';document.form_visu.submit();">' . $val->perso1->perso_nom . '</a></strong>', $val->tevt->tevt_texte);
     }
+    $texte = str_replace('[attaquant]', '<strong><a href="javascript:document.form_visu.visu.value=' .
+                                        $val->levt_attaquant . ';document.form_visu.submit();">' .
+                                        $val->perso_attaquant->perso_nom . '</a></strong>', $texte);
+    $texte = str_replace('[cible]', '<strong><a href="javascript:document.form_visu.visu.value=' .
+                                    $val->levt_cible . ';document.form_visu.submit();">' .
+                                    $val->perso_cible->perso_nom . '</a></strong>', $texte);
+
+    $contenu_page .= '<td>' . $texte . '</td></tr>';
 }
+
+
 $contenu_page .= '<tr></form><td><form name="evt" method="post" action="visu_evt_perso.php"><input type="hidden" name="pevt_start">
 	<input type="hidden" name="visu" value="' . $visu . '">';
-if ($pevt_start != 0) {
+if ($pevt_start != 0)
+{
     $contenu_page .= '<div align="left"><a href="javascript:document.evt.pevt_start.value=' . $pevt_start . '-20;document.evt.submit();"><== Précédent</a></div>';
 }
 $contenu_page .= '</td><td></td>

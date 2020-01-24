@@ -914,6 +914,61 @@ class perso
         return $result['pa'];
     }
 
+    function f_vue_renommee()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select f_vue_renommee(:perso) as f_vue_renommee";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['f_vue_renommee'];
+    }
+
+    function get_renommee()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select get_renommee(:perso) as get_renommee";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['get_renommee'];
+    }
+
+    function get_renommee_magie()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select get_renommee_magie(:perso) as get_renommee_magie";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['get_renommee_magie'];
+    }
+
+    function get_karma()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select get_karma(:perso) as get_karma";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['get_karma'];
+    }
+
+    function get_renommee_artisanat()
+    {
+
+        $pdo      = new bddpdo;
+        $req_arme = "select get_renommee_artisanat(:perso) as get_renommee_artisanat";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['get_renommee_artisanat'];
+    }
+
     function portee_attaque()
     {
 

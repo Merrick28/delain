@@ -1,32 +1,34 @@
-<?php 
-$chemin = "http://www.jdr-delain.net/images/avatars/";
-$req_visu = "select perso_type_perso, perso_cod, perso_nom, race_nom, perso_sex, perso_description, perso_desc_long, perso_nb_mort,
-		perso_nb_joueur_tue, perso_nb_monstre_tue, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma, race_cod,
-		perso_avatar, get_renommee(perso_renommee) as renom, get_renommee_magie(perso_renommee_magie) as renom_magie, perso_nb_mort_arene, 
-		perso_nb_joueur_tue_arene, perso_renommee_artisanat, get_renommee_artisanat(perso_renommee_artisanat) as renommee_artisanat,
-		perso_avatar_version, perso_crapaud, perso_gmon_cod
-	from perso,race
-	where perso_cod = $visu
-	and perso_race_cod = race_cod ";
-$db->query($req_visu);
-$db->next_record();
-$visu_perso_nom = $db->f("perso_nom");
+<?php
+//perso2_description.php
+$chemin = G_URL . "images/avatars/";
 
+$visu_perso = new perso;
+if (!$visu_perso->charge($_REQUEST['visu']))
+{
+    die('Erreur sur le chargement de perso');
+}
+
+$visu_perso_nom = $visu_perso->perso_nom;
 
 if ((!isset($contenu_page)) and ((basename($_SERVER['PHP_SELF'])) != 'perso2.php?m=4'))
+{
     $contenu_page = '';
-
-$contenu_page .= '<center><table id="desc_perso"><tr><td><table>';
-if ($db->f("perso_avatar") == '')
-{
-	if ($db->f("perso_type_perso") == 1)
-		$avatar = $chemin . "../" . $db->f("race_cod") . "_" . $db->f("perso_sex") . ".png";
-	else
-		$avatar = $chemin . "../del.gif";
 }
-else
+
+$contenu_page .= '<div style="text-align:center;"><table id="desc_perso"><tr><td><table>';
+if ($visu_perso->perso_avatar == '')
 {
-	$avatar = $chemin . $db->f("perso_avatar") . '?' . $db->f('perso_avatar_version');
+    if ($visu_perso->perso_type_perso == 1)
+    {
+        $avatar = $chemin . "../" . $visu_perso->perso_race_cod . "_" . $visu_perso->perso_sex . ".png";
+    } else
+    {
+        $avatar = $chemin . "../del.gif";
+    }
+
+} else
+{
+    $avatar = $chemin . $visu_perso->perso_avatar . '?' . $visu_perso->perso_avatar_version;
 }
 /*
 //
@@ -37,79 +39,80 @@ $avatar = $chemin . $aff_avat;
 // fin 1er avril
 //
 */
-$contenu_page .='<tr><td colspan="3" class="titre"><div class="titre">Fiche de ' . $db->f("perso_nom") . '</div></td>
+$contenu_page .= '<tr><td colspan="3" class="titre"><div class="titre">Fiche de ' . $visu_perso->perso_nom . '</div></td>
 </tr>';
 
-$desc = '';
+$desc  = '';
 $desc2 = '';
 
-if ($db->f("perso_description") != '')
+if ($visu_perso->perso_description != '')
 {
-	// Commenté par Reivax -- cause des problèmes avec le passage à l’UTF-8
-	// Est-ce une protection anti-scripts ? Dans ce cas, je ne comprends pas pourquoi les Ç (chr(128)) seraient impactés... Dans le doute, je place htmlspecialchars.
-	/*$desc = str_replace(chr(128),";",$db->f("perso_description"));
-	$desc = str_replace(chr(127),";",$desc);*/
-	$desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_description"))));
-	$contenu_page .='<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
+    $desc         = nl2br(htmlspecialchars(str_replace('\'', '’', $visu_perso->perso_description)));
+    $contenu_page .= '<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
 }
-if($visu == $perso_cod)
+if ($_REQUEST['visu'] == $perso_cod) // perso courant
 {
-	$contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description ?</a></div></td></tr>';
+    $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description ?</a></div></td></tr>';
 
 }
-if ($db->f("perso_desc_long") != '' and $db->f("perso_desc_long") != NULL )
+if ($visu_perso->perso_desc_long != '' and $visu_perso->perso_desc_long != NULL)
 {
-	$desc = nl2br(htmlspecialchars($db->f("perso_desc_long")));
-	$desc2 ='<tr><td colspan="3" row="3" class="soustitre2">' . $desc . '</td></tr>';
-
+    $desc  = nl2br(htmlspecialchars($visu_perso->perso_desc_long));
+    $desc2 = '<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
 }
-if($visu == $perso_cod)
+if ($_REQUEST['visu'] == $perso_cod)
 {
-	$desc2 .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
-}
-
-$contenu_page .='<tr>
-<td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $db->f("perso_nom") . '">';
-if($visu == $perso_cod)
-{
-	if ($db->f("perso_crapaud") == 0)
-		$contenu_page .= '<br><div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar ?</a></div></td></tr>';
+    $desc2 .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
 }
 
-if ($db->f("perso_sex") == 'F')
+$contenu_page .= '<tr>
+<td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $visu_perso->perso_nom . '">';
+if ($_REQUEST['visu'] == $perso_cod)
 {
-    if ((int)$db->f("perso_gmon_cod")>0)
-        $perso_sex_txt = "Femelle" ;
-    else
-        $perso_sex_txt = "Féminin" ;
-}
-else if ($db->f("perso_sex") == 'M')
-{
-    if ((int)$db->f("perso_gmon_cod")>0)
-        $perso_sex_txt = "Mâle" ;
-    else
-        $perso_sex_txt = "Masculin" ;
-}
-else if ($db->f("perso_sex") == 'A')
-{
-    $perso_sex_txt = "Androgyne" ;
+    if ($visu_perso->perso_crapaud == 0)
+        $contenu_page .= '<br><div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar ?</a></div></td></tr>';
 }
 
-else if ($db->f("perso_sex") == 'H')
+if ($visu_perso->perso_sex == 'F')
 {
-    $perso_sex_txt = "Hermaphrodite" ;
-}
-else
+    if ((int)($visu_perso->perso_gmon_cod) > 0)
+    {
+        $perso_sex_txt = "Femelle";
+    } else
+    {
+        $perso_sex_txt = "Féminin";
+    }
+
+} else if ($visu_perso->perso_sex == 'M')
 {
-    $perso_sex_txt = "Inconnu" ;
+    if ((int)$visu_perso->perso_gmon_cod > 0)
+    {
+        $perso_sex_txt = "Mâle";
+    } else
+    {
+        $perso_sex_txt = "Masculin";
+    }
+
+} else if ($visu_perso->perso_sex == 'A')
+{
+    $perso_sex_txt = "Androgyne";
+} else if ($visu_perso->perso_sex == 'H')
+{
+    $perso_sex_txt = "Hermaphrodite";
+} else
+{
+    $perso_sex_txt = "Inconnu";
 }
+
+$race = new race();
+$race->charge($visu_perso->perso_race_cod);
 
 $contenu_page .= '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Race :</td>
-<td>' . $db->f("race_nom") . '</td>
+<td>' . $race->race_nom . '</td>
 </tr>
 
 <tr>
@@ -119,142 +122,139 @@ $contenu_page .= '</td>
 
 <tr>
 <td class="soustitre2">Renommee :</td>
-<td>' . $db->f("renommee") . ' (' . $db->f("renom") . ' classique - ' . $db->f("renom_magie") . ' magie - ' . $db->f("renommee_artisanat") . ' artisanat)</td>
+<td>' . $visu_perso->f_vue_renommee() . ' (' . $visu_perso->get_renommee() . ' classique - ' .
+                 $visu_perso->get_renommee_magie() . ' magie - ' .
+                 $visu_perso->get_renommee_artisanat() . ' artisanat)</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Karma :</td>
-<td>' . $db->f("karma") . '</td>
+<td>' . $visu_perso->get_karma() . '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Nombre de décès :</td>
-<td>' . $db->f("perso_nb_mort") . '</td>
+<td>' . $visu_perso->perso_nb_mort . '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Nombre d’aventuriers tués :</td>
-<td>' . $db->f("perso_nb_joueur_tue") . '</td>
+<td>' . $visu_perso->perso_nb_joueur_tue . '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Nombre de décès en arène :</td>
-<td>' . $db->f("perso_nb_mort_arene") . '</td>
+<td>' . $visu_perso->perso_nb_mort_arene . '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Nombre d’aventuriers tués en arène :</td>
-<td>' . $db->f("perso_nb_joueur_tue_arene") . '</td>
+<td>' . $visu_perso->perso_nb_joueur_tue_arene . '</td>
 </tr>
 
 <tr>
 <td class="soustitre2">Nombre de monstres tués :</td>
-<td>' . $db->f("perso_nb_monstre_tue") . '</td>
+<td>' . $visu_perso->perso_nb_monstre_tue . '</td>
 </tr>';
 
-$req_equipement = "select obj_nom_porte,tobj_libelle
-	from perso_objets,objets,objet_generique,type_objet
-	where perobj_perso_cod = $visu
-	and perobj_equipe = 'O'
-	and perobj_obj_cod = obj_cod
-	and obj_gobj_cod = gobj_cod
-	and gobj_tobj_cod = tobj_cod ";
-	$db->query($req_equipement);
+$perobj        = new perso_objets();
+$objets_portes = $perobj->getByPersoEquipe($visu_perso->perso_cod);
 
 $contenu_page .= '<tr><td class="soustitre2">Équipement porté :</td>';
-if ($db->nf() == 0)
+if (count($objets_portes) == 0)
 {
-	$contenu_page .= '<td>Aucun objet équipé</td>';
-}
-else
+    $contenu_page .= '<td>Aucun objet équipé</td>';
+} else
 {
-	$contenu_page .= '<td>';
-	while ($db->next_record())
-	{
-		$contenu_page .=  $db->f("obj_nom_porte") . ' (' . $db->f("tobj_libelle") . ')<br>';
-	}
-	$contenu_page .= '</td>';
+    $contenu_page .= '<td>';
+    foreach ($objets_portes as $item)
+    {
+        $contenu_page .= $item->objet->obj_nom_porte . ' (' . $item->objet_generique->tobj_libelle . ')<br>';
+    }
+    $contenu_page .= '</td>';
 }
-$contenu_page .=  '</tr>';
+$contenu_page .= '</tr>';
 //  GUILDE
-$req_guilde = "select guilde_nom,rguilde_libelle_rang,guilde_cod,rguilde_admin,pguilde_meta_noir,pguilde_meta_milice,pguilde_meta_caravane from guilde,guilde_perso,guilde_rang
-	where pguilde_perso_cod = $visu and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod
-	and rguilde_guilde_cod = guilde_cod and rguilde_rang_cod = pguilde_rang_cod ";
-$db->query($req_guilde);
-$nb_guilde = $db->nf();
-
 $contenu_page .= '<tr>
 <td class="soustitre2">Guilde :</td>
 <td>';
-if ($nb_guilde == 0)
+$pguilde      = new guilde_perso();
+if ($pguilde->get_by_perso($visu_perso->perso_cod))
 {
-	$contenu_page .= 'Pas de guilde';
-}
-else
-{
-	$db->next_record();
-	$adm = $db->f("rguilde_admin");
-	$contenu_page .= '<a href="visu_guilde.php?num_guilde=' . $db->f("guilde_cod") . '">' . $db->f("guilde_nom"). '</a> ('. $db->f("rguilde_libelle_rang");
-	if($adm == 'O')
-	{
-		$contenu_page .= " - Administrateur";
-	}
-	$contenu_page .= ')';
-	if ($db->f("pguilde_meta_noir") == 'O')
-		$contenu_page .= '<br>Meta guildé à <strong>envoyés de Salm\'o\'rv</strong>';
-	if ($db->f("pguilde_meta_milice") == 'O')
-		$contenu_page .= '<br>Meta guildé à <strong>milice</strong>';
-	if ($db->f("pguilde_meta_caravane") == 'O')
-		$contenu_page .= '<br>Meta guildé à <strong>Corporation marchande du R.A.D.I.S</strong>';
+    $guilde = new guilde;
+    $guilde->charge($pguilde->pguilde_guilde_cod);
 
+    $guilde_rang = new guilde_rang();
+    $guilde_rang->get_by_guilde_rang($guilde->guilde_cod, $pguilde->pguilde_rang_cod);
+
+
+    $contenu_page .= '<a href="visu_guilde.php?num_guilde=' . $guilde->guilde_cod . '">' . $guilde->guilde_nom . '</a> (' . $guilde_rang->rguilde_libelle_rang;
+    if ($guilde_rang->rguilde_admin == 'O')
+    {
+        $contenu_page .= " - Administrateur";
+    }
+    $contenu_page .= ')';
+    if ($pguilde->pguilde_meta_noir == 'O')
+    {
+        $contenu_page .= '<br>Meta guildé à <strong>envoyés de Salm\'o\'rv</strong>';
+    }
+
+    if ($pguilde->pguilde_meta_milice == 'O')
+    {
+        $contenu_page .= '<br>Meta guildé à <strong>milice</strong>';
+    }
+
+    if ($pguilde->pguilde_meta_caravane == 'O')
+    {
+        $contenu_page .= '<br>Meta guildé à <strong>Corporation marchande du R.A.D.I.S</strong>';
+    }
+
+
+} else
+{
+    $contenu_page .= 'Pas de guilde';
 }
 $contenu_page .= '</td></tr>';
 // RELIGION
-		$req = "select dieu_nom,dniv_libelle from dieu,dieu_perso,dieu_niveau
-			where dper_perso_cod = $visu
-			and dper_dieu_cod = dieu_cod
-			and dper_niveau = dniv_niveau
-			and dniv_dieu_cod = dieu_cod
-			and dniv_niveau >= 1 ";
-		$db->query($req);
-		if ($db->nf() != 0)
-		{
-			$db->next_record();
-			$religion = " </strong>(" . $db->f("dniv_libelle") . " de " . $db->f("dieu_nom") . ")<strong> ";
-			//$religion = str_replace("'","\'",$religion);
-			$contenu_page .= '<tr>
+$dieu        = new dieu();
+$dieu_perso  = new dieu_perso();
+$dieu_niveau = new dieu_niveau();
+
+if ($dieu_perso->getByPersoCod($visu_perso->perso_cod))
+{
+    $dieu_niveau->getByNiveauDieu($dieu_perso->dper_niveau, $dieu_perso->dper_dieu_cod);
+    $dieu->charge($dieu_perso->dper_dieu_cod);
+    $contenu_page .= '<tr>
 			<td></td>
 			<td class="soustitre2">Religion :</td>
-			<td>' . $religion . '</td>
+			<td><strong>(" . $dieu_niveau->dniv_libelle . " de " . $dieu->dieu_nom . ")</strong></td>
 			</tr>';
-		}
+}
 
-$contenu_page .= '</table></center>';
-// TITRES
-$req = "select ptitre_titre,to_char(ptitre_date,'DD/MM/YYYY') as titre_date from perso_titre
-	where ptitre_perso_cod = $visu
-	order by ptitre_cod desc ";
-$db->query($req);
-if ($db->nf() != 0)
+
+$contenu_page .= '</table></div>';
+
+$perso_titre = new perso_titre;
+$titres      = $perso_titre->getByPerso($visu_perso->perso_cod);
+if (count($titres) != 0)
 {
-	$contenu_page .= '<hr><center><table>
+    $contenu_page .= '<hr><div style="text-align:center;"><table>
 	<tr><td colspan="2" class="titre">Titres obtenus</td></tr>
 	<tr><td class="soustitre2">Titre</td><td class="soustitre2">Obtenu le</td></tr>';
-	while($db->next_record())
-	{
-		$contenu_page .= '<tr><td><strong>' . $db->f("ptitre_titre") . '</strong></td><td>' . $db->f("titre_date") . '</td></tr>';
-	}
-	$contenu_page .= '</table></center><hr>';
+    foreach ($titres as $titre)
+    {
+        $contenu_page .= '<tr><td><strong>' . $perso_titre->ptitre_titre . '</strong></td><td>' . format_date
+            ($perso_titre->ptitre_date) . '</td></tr></table></div>';
+    }
 }
-$req = "select plouche_perso_cod from perso_louche where plouche_perso_cod = $visu ";
-$db->query($req);
-if ($db->nf() != 0)
+
+$perso_louche = new perso_louche();
+if ($perso_louche->getByPerso($visu_perso->perso_cod))
 {
-	$contenu_page .= '<div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
+    $contenu_page .= '<div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac quelque chose.<br>
 	Il transpire abondemment et regarde autour de lui pour voir s\'il est suivi.<br>
 	Le moindre blason de la milice semble le mettre dans un drole d\'état. Il n\'y a pas a dire il est pas net... </em></div>';
 }
-$contenu_page .= '</td></tr>';
-$contenu_page .= $desc2.'</table>';
+
 
 

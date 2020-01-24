@@ -61,10 +61,10 @@ class perso_objets
 						and perobj_obj_cod = :objet";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":perso" => $perso,
-            ":objet" => $objet
-        ), $stmt);
-        if(!$result = $stmt->fetch())
+                                  ":perso" => $perso,
+                                  ":objet" => $objet
+                              ), $stmt);
+        if (!$result = $stmt->fetch())
         {
             return false;
         }
@@ -88,13 +88,56 @@ class perso_objets
 						and obj_gobj_cod = :objet_generique";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":perso" => $perso,
-            ":objet_generique" => $objet_generique
-        ), $stmt);
+                                  ":perso"           => $perso,
+                                  ":objet_generique" => $objet_generique
+                              ), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso_objets;
             $temp->charge($result["perobj_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    function getByPersoEquipe($perso)
+    {
+        $retour = array();
+
+        $pdo = new bddpdo;
+        /*
+         * select obj_nom_porte,tobj_libelle
+	from perso_objets,objets,objet_generique,type_objet
+	where perobj_perso_cod = $visu
+	and perobj_equipe = 'O'
+	and perobj_obj_cod = obj_cod
+	and obj_gobj_cod = gobj_cod
+	and gobj_tobj_cod = tobj_cod
+         */
+
+        $req = "select perobj_cod
+						from perso_objets 
+						where perobj_perso_cod = :perso
+						and perobj_equipe = 'O'";
+
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":perso" => $perso
+                              ), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso_objets;
+            $temp->charge($result["perobj_cod"]);
+
+            $objets = new objets();
+            $objets->charge($temp->perobj_obj_cod);
+            $temp->objet = $objets;
+            $gobj        = new objet_generique();
+            $gobj->charge($objets->obj_gobj_cod);
+            $temp->objet_generique = $gobj;
+            unset($gobj);
+            unset($objets);
             $retour[] = $temp;
             unset($temp);
         }
@@ -116,8 +159,8 @@ class perso_objets
 						where obj_gobj_cod = :objet_generique";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":objet_generique" => $objet_generique
-        ), $stmt);
+                                  ":objet_generique" => $objet_generique
+                              ), $stmt);
         while ($result = $stmt->fetch())
         {
             $temp = new perso_objets;
@@ -154,12 +197,12 @@ class perso_objets
     returning perobj_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perobj_perso_cod" => $this->perobj_perso_cod,
-                ":perobj_obj_cod"   => $this->perobj_obj_cod,
-                ":perobj_identifie" => $this->perobj_identifie,
-                ":perobj_equipe"    => $this->perobj_equipe,
-                ":perobj_dfin"      => $this->perobj_dfin,
-            ), $stmt);
+                                      ":perobj_perso_cod" => $this->perobj_perso_cod,
+                                      ":perobj_obj_cod"   => $this->perobj_obj_cod,
+                                      ":perobj_identifie" => $this->perobj_identifie,
+                                      ":perobj_equipe"    => $this->perobj_equipe,
+                                      ":perobj_dfin"      => $this->perobj_dfin,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
@@ -175,13 +218,13 @@ class perso_objets
             perobj_dfin = :perobj_dfin                        where perobj_cod = :perobj_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":perobj_cod"       => $this->perobj_cod,
-                ":perobj_perso_cod" => $this->perobj_perso_cod,
-                ":perobj_obj_cod"   => $this->perobj_obj_cod,
-                ":perobj_identifie" => $this->perobj_identifie,
-                ":perobj_equipe"    => $this->perobj_equipe,
-                ":perobj_dfin"      => $this->perobj_dfin,
-            ), $stmt);
+                                      ":perobj_cod"       => $this->perobj_cod,
+                                      ":perobj_perso_cod" => $this->perobj_perso_cod,
+                                      ":perobj_obj_cod"   => $this->perobj_obj_cod,
+                                      ":perobj_identifie" => $this->perobj_identifie,
+                                      ":perobj_equipe"    => $this->perobj_equipe,
+                                      ":perobj_dfin"      => $this->perobj_dfin,
+                                  ), $stmt);
         }
     }
 
@@ -215,7 +258,8 @@ class perso_objets
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "select perobj_cod  from perso_objets where " . substr($name, 6) . " = ? order by perobj_cod";
+                    $req    =
+                        "select perobj_cod  from perso_objets where " . substr($name, 6) . " = ? order by perobj_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
