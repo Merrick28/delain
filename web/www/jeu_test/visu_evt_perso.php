@@ -82,7 +82,7 @@ $tab_evt      = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20);
 
 $first        = true;
 foreach ($tab_evt as $ligne_evt) {
-    $maligne .= '<tr>
+    $maligne = '<tr>
 			<td class="soustitre3">' . format_date($ligne_evt->levt_date) . '</td>
 			<td class="soustitre3"><strong>' . $ligne_evt->tevt->tevt_libelle . '</strong></td>';
     if ($compte->is_admin()) {
