@@ -55,11 +55,10 @@ if ($visu == $perso_cod) { // perso courant
     $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description ?</a></div></td></tr>';
 }
 if ($visu_perso->perso_desc_long != '' and $visu_perso->perso_desc_long != null) {
-    $desc  = nl2br(htmlspecialchars($visu_perso->perso_desc_long));
-    $desc2 = '<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
+    $contenu_page = '<tr><td colspan="3" class="soustitre2">' . nl2br(htmlspecialchars($visu_perso->perso_desc_long)) . '</td></tr>';
 }
 if ($visu == $perso_cod) {
-    $desc2 .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
+    $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
 }
 
 $contenu_page .= '<tr>
