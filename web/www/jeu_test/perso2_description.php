@@ -51,20 +51,20 @@ if ($visu_perso->perso_description != '') {
     $desc         = nl2br(htmlspecialchars(str_replace('\'', '’', $visu_perso->perso_description)));
     $contenu_page .= '<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
 }
-if ($_REQUEST['visu'] == $perso_cod) { // perso courant
+if ($visu == $perso_cod) { // perso courant
     $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description ?</a></div></td></tr>';
 }
 if ($visu_perso->perso_desc_long != '' and $visu_perso->perso_desc_long != null) {
     $desc  = nl2br(htmlspecialchars($visu_perso->perso_desc_long));
     $desc2 = '<tr><td colspan="3" class="soustitre2">' . $desc . '</td></tr>';
 }
-if ($_REQUEST['visu'] == $perso_cod) {
+if ($visu == $perso_cod) {
     $desc2 .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
 }
 
 $contenu_page .= '<tr>
 <td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $visu_perso->perso_nom . '">';
-if ($_REQUEST['visu'] == $perso_cod) {
+if ($visu == $perso_cod) {
     if ($visu_perso->perso_crapaud == 0) {
         $contenu_page .= '<br><div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar ?</a></div></td></tr>';
     }
