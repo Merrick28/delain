@@ -133,9 +133,12 @@ class perso_objets
             $objets = new objets();
             $objets->charge($temp->perobj_obj_cod);
             $temp->objet = $objets;
+            $temp->nom_type_objet = $objets->get_type_libelle();
             $gobj        = new objet_generique();
             $gobj->charge($objets->obj_gobj_cod);
             $temp->objet_generique = $gobj;
+
+
             unset($gobj);
             unset($objets);
             $retour[] = $temp;

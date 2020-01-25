@@ -152,7 +152,7 @@ if (count($objets_portes) == 0) {
 } else {
     $contenu_page .= '<td>';
     foreach ($objets_portes as $item) {
-        $contenu_page .= $item->objet->obj_nom_porte . ' (' . $item->objet_generique->tobj_libelle . ')<br>';
+        $contenu_page .= $item->objet->obj_nom_porte . ' (' . $item->nom_type_objet . ')<br>';
     }
     $contenu_page .= '</td>';
 }
