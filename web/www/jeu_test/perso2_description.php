@@ -215,8 +215,9 @@ if (count($titres) != 0) {
 	<tr><td colspan="2" class="titre">Titres obtenus</td></tr>
 	<tr><td class="soustitre2">Titre</td><td class="soustitre2">Obtenu le</td></tr>';
     foreach ($titres as $titre) {
-        $contenu_page .= '<tr><td><strong>' . $titre->ptitre_titre . '</strong></td><td>' . format_date($titre->ptitre_date) . '</td></tr></table></div>';
+        $contenu_page .= '<tr><td><strong>' . $titre->ptitre_titre . '</strong></td><td>' . format_date($titre->ptitre_date) . '</td></tr>';
     }
+    echo '</table></div>';
 }
 
 $perso_louche = new perso_louche();
