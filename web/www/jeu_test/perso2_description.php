@@ -4,7 +4,15 @@ $chemin = G_URL . "images/avatars/";
 require_once G_CHE . "includes/fonctions.php";
 
 $visu_perso = new perso;
-if (!$visu_perso->charge($_REQUEST['visu'])) {
+if(isset($_REQUEST['visu']))
+{
+    $visu = $_REQUEST['visu'];
+}
+else
+{
+    $visu = $perso_cod;
+}
+if (!$visu_perso->charge($visu)) {
     die('Erreur sur le chargement de perso');
 }
 
