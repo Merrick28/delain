@@ -75,8 +75,7 @@ $contenu_page .= '<center><table cellspacing="2">
                  $visu_perso->perso_sex . ' - ' .
                  $race->race_nom . ')</div></td>
 	</tr>';
-$contenu_page .= '<form name="visu_evt" method="post" action="visu_evt_perso.php">
-	<input type="hidden" name="visu">';
+
 $levt         = new ligne_evt();
 $tab_evt      = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20);
 
@@ -86,8 +85,8 @@ foreach ($tab_evt as $ligne_evt) {
 			<td class="soustitre3">' . format_date($ligne_evt->levt_date) . '</td>
 			<td class="soustitre3"><strong>' . $ligne_evt->tevt->tevt_libelle . '</strong></td>';
     if ($compte->is_admin()) {
-        $texte = str_replace('[perso_cod1]', '<strong><a href="javascript:document.visu_evt.visu.value=' .
-                                             $ligne_evt->levt_perso_cod1 . ';document.visu_evt.submit();">' . $ligne_evt->perso1->perso_nom . '</a></strong>', $ligne_evt->levt_texte);
+        $texte = str_replace('[perso_cod1]', '<strong><a href="visu_evt_perso.php?visu=' .
+                                             $ligne_evt->levt_perso_cod1 . '">' . $ligne_evt->perso1->perso_nom . '</a></strong>', $ligne_evt->levt_texte);
     } else {
         if ($first && 'Effet automatique' == $ligne_evt->tevt->tevt_libelle) {
             continue;
@@ -96,14 +95,14 @@ foreach ($tab_evt as $ligne_evt) {
 
         $first = false;
         $texte =
-            str_replace('[perso_cod1]', '<strong><a href="javascript:document.form_visu.visu.value=' .
-                                        $ligne_evt->levt_perso_cod1 . ';document.form_visu.submit();">' . $visu_perso->perso_nom . '</a></strong>', $ligne_evt->tevt->tevt_texte);
+            str_replace('[perso_cod1]', '<strong><a href="visu_evt_perso.php?visu=' .
+                                        $ligne_evt->levt_perso_cod1 . '">' . $visu_perso->perso_nom . '</a></strong>', $ligne_evt->tevt->tevt_texte);
     }
-    $texte = str_replace('[attaquant]', '<strong><a href="javascript:document.form_visu.visu.value=' .
-                                        $ligne_evt->levt_attaquant . ';document.form_visu.submit();">' .
+    $texte = str_replace('[attaquant]', '<strong><a href="visu_evt_perso.php?visu=' .
+                                        $ligne_evt->levt_attaquant . '">' .
                                         $ligne_evt->perso_attaquant->perso_nom . '</a></strong>', $texte);
-    $texte = str_replace('[cible]', '<strong><a href="javascript:document.form_visu.visu.value=' .
-                                    $ligne_evt->levt_cible . ';document.form_visu.submit();">' .
+    $texte = str_replace('[cible]', '<strong><a href="visu_evt_perso.php?visu=' .
+                                    $ligne_evt->levt_cible . '">' .
                                     $ligne_evt->perso_cible->perso_nom . '</a></strong>', $texte);
 
 
@@ -117,12 +116,13 @@ foreach ($tab_evt as $ligne_evt) {
 }
 
 
-$contenu_page .= '<tr></form><td><form name="evt" method="post" action="visu_evt_perso.php"><input type="hidden" name="pevt_start">
-	<input type="hidden" name="visu" value="' . $visu . '">';
+$contenu_page .= '<tr><td>';
 if ($pevt_start != 0) {
-    $contenu_page .= '<div align="left"><a href="javascript:document.evt.pevt_start.value=' . $pevt_start . '-20;document.evt.submit();"><== Précédent</a></div>';
+    $moins20 = $pevt_start - 20;
+    $contenu_page .= '<div align="left"><a href="visu_evt_perso?visu=' . $visu . '&pevt_start=' . $moins20 . '"><== Précédent</a></div>';
 }
+$plus20 = $pevt_start + 20;
 $contenu_page .= '</td><td></td>
-	<td><div align="right"><a href="javascript:document.evt.pevt_start.value=' . $pevt_start . '+20;document.evt.submit();">Suivant ==></a></div></td>
-	</tr></form></table></center>';
+	<td><div align="right"><a href="visu_evt_perso?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
+	</tr></table></center>';
 include "blocks/_footer_page_jeu.php";
