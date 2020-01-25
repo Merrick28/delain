@@ -93,8 +93,7 @@ var infolinks_wsid = 0;
 </script>
 <script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>',
 '<script src="//ap.lijit.com/www/delivery/fpi.js?z=675316&width=728&height=90"></script> ',
-'<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=728x90&ga=g"></script>
-<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub/728x90.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>',
+
 );
 
 $pub_mobile = array(
@@ -108,9 +107,7 @@ $pub_mobile = array(
 		'params' : {}
 	};
 	document.write('<scr' + 'ipt type=\"text/javascript\" src=\"http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/5c7d38cd428bdcebca93f3089ab2c3f4/invoke.js\"></scr' + 'ipt>');
-</script>",
-'<script type="text/javascript" src="//uprimp.com/bnr.php?section=General&pub=682388&format=300x50&ga=g"></script>
-<noscript><a href="https://yllix.com/publishers/682388" target="_blank"><img src="//ylx-aff.advertica-cdn.com/pub_0ei6v1.png" style="border:none;margin:0;padding:0;vertical-align:baseline;" /></a></noscript>'
+</script>"
     );
     //die($aff);
     if ($aff == 'normal') {
