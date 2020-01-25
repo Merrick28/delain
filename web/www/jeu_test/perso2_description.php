@@ -1,6 +1,6 @@
 <?php
 //perso2_description.php
-$chemin = G_URL . "images/avatars/";
+$chemin = $type_flux . G_URL . "images/avatars/";
 require_once G_CHE . "includes/fonctions.php";
 
 $visu_perso = new perso;
