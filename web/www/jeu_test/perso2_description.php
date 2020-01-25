@@ -201,7 +201,7 @@ if ($dieu_perso->getByPersoCod($visu_perso->perso_cod)) {
     $contenu_page .= '<tr>
 			<td></td>
 			<td class="soustitre2">Religion :</td>
-			<td><strong>(" . $dieu_niveau->dniv_libelle . " de " . $dieu->dieu_nom . ")</strong></td>
+			<td><strong>(' . $dieu_niveau->dniv_libelle . ' de ' . $dieu->dieu_nom . ')</strong></td>
 			</tr>';
 }
 
