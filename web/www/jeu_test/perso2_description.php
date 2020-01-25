@@ -54,12 +54,12 @@ if ($visu_perso->perso_description != '') {
 if ($visu == $perso_cod) { // perso courant
     $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description ?</a></div></td></tr>';
 }
-if ($visu_perso->perso_desc_long != '' and $visu_perso->perso_desc_long != null) {
+/*if ($visu_perso->perso_desc_long != '' and $visu_perso->perso_desc_long != null) {
     $contenu_page = '<tr><td colspan="3" class="soustitre2">' . nl2br(htmlspecialchars($visu_perso->perso_desc_long)) . '</td></tr>';
 }
 if ($visu == $perso_cod) {
     $contenu_page .= '<tr><td colspan="3"><div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description longue ?</a></div></td></tr>';
-}
+}*/
 
 $contenu_page .= '<tr>
 <td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $visu_perso->perso_nom . '">';
