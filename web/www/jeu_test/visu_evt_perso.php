@@ -93,9 +93,15 @@ $contenu_page .= '<center><table cellspacing="2">
 
 $levt        = new ligne_evt();
 $withvisible = false;
-if ($memeperso || $compte->is_admin())
+if ($memeperso)
 {
     $withvisible = true;
+    echo "<!-- meme compte -->";
+}
+if($compte->is_admin())
+{
+    $withvisible = true;
+    echo "<!-- isadmin -->";
 }
 $tab_evt = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20, $withvisible);
 
