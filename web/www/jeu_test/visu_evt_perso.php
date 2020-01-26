@@ -119,10 +119,10 @@ foreach ($tab_evt as $ligne_evt) {
 $contenu_page .= '<tr><td>';
 if ($pevt_start != 0) {
     $moins20 = $pevt_start - 20;
-    $contenu_page .= '<div align="left"><a href="visu_evt_perso?visu=' . $visu . '&pevt_start=' . $moins20 . '"><== Précédent</a></div>';
+    $contenu_page .= '<div align="left"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $moins20 . '"><== Précédent</a></div>';
 }
 $plus20 = $pevt_start + 20;
 $contenu_page .= '</td><td></td>
-	<td><div align="right"><a href="visu_evt_perso?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
+	<td><div align="right"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
 	</tr></table></center>';
 include "blocks/_footer_page_jeu.php";
