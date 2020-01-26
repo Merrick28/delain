@@ -12,6 +12,12 @@ else
 {
     $visu = $perso_cod;
 }
+$memeperso = false;
+if ($visu == $perso_cod)
+{
+    $memeperso = true;
+}
+
 if (!$visu_perso->charge($visu)) {
     die('Erreur sur le chargement de perso');
 }

@@ -1,0 +1,32 @@
+<div style="text-align:center;">
+    <table id="desc_perso">
+        <tr>
+            <td>
+                <table>
+                    <tr>
+                        <td colspan="3" class="titre">
+                            <div class="titre">Fiche de {{ VISU_PERSO.perso_nom }}</div>
+                        </td>
+                    </tr>
+                    {% if VISU_PERSO.perso_description != '' %}
+                        <tr>
+                            <td colspan="3" class="soustitre2">{{ VISU_PERSO.perso_description|nl2br }}</td>
+                        </tr>
+                    {% endif %}
+                    {% if MEMEPERSO == %}
+                        <tr>
+                            <td colspan="3">
+                                <div style="text-align:center;"><a href="change_desc_perso.php">
+                                        Changer sa description ?</a></div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                    <tr>
+                        <td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $visu_perso->perso_nom . '">
+
+                            {% if VISU_PERSO.perso_avatar != '' %}
+                            {% if VISU_PERSO.perso_type_perso == 1 %}
+
+                            {% endif %}
+
+{% endif %}
