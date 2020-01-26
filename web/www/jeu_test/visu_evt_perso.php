@@ -12,7 +12,7 @@ if (!isset($_REQUEST['visu']))
     $visu = $_REQUEST['visu'];
 }
 $memeperso = false;
-if ($visu = $perso_cod)
+if ($visu == $perso_cod)
 {
     $memeperso = true;
 }
