@@ -22,11 +22,82 @@
                         </tr>
                     {% endif %}
                     <tr>
-                        <td rowspan="12"><img src="' . $avatar . '" alt="Avatar de ' . $visu_perso->perso_nom . '">
-
-                            {% if VISU_PERSO.perso_avatar != '' %}
-                            {% if VISU_PERSO.perso_type_perso == 1 %}
-
+                        <td rowspan="12">
+                            <img src="
+                            {% if VISU_PERSO.perso_avatar == '' %}
+                                {% if VISU_PERSO.perso_type_perso == 1 %}
+                                    {{ CHEMIN_AVATAR }}/../{{ VISU_PERSO.race_cod }}_{{ VISU_PERSO.perso_sex }}.png
+                                {% else %}
+                                    {{ CHEMIN_AVATAR }}/../del.gif
+                                {% endif %}
+                            {% else %}
+                                {{ CHEMIN_AVATAR }}/{{ VISU_PERSO.perso_avatar }}?{{ VISU_PERSO.perso_avatar_version }}
+                            {% endif %}" alt="Avatar de {{ VISU_PERSO.perso_nom }}">
+                            {% if MEMEPERSO %}
+                                {% if VISU_PERSO.perso_crapaud == 0 %}
+                                    <br>
+                                    <div style="text-align:center;"><a href="change_avatar_perso.php">Changer son avatar
+                                            ?</a></div>
+                                {% endif %}
                             {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="soustitre2">Race :</td>
+                        <td>{{ RACE.race_nom }}</td>
+                    </tr>
 
-{% endif %}
+                    <tr>
+                        <td class="soustitre2">Sexe :</td>
+                        <td>{{ PERSO_SEX_TXT }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Renommee :</td>
+                        <td>{{ VISU_PERSO.f_vue_renommee }} ({{ VISU_PERSO.get_renommee }} classique -
+                            {{ VISU_PERSO.get_renommee_magie }} magie -
+                            {{ VISU_PERSO.get_renommee_artisanat }} artisanat)
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Karma :</td>
+                        <td>{{ VISU_PERSO.get_karma }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de décès :</td>
+                        <td>{{ VISU_PERSO.perso_nb_mort }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre d’aventuriers tués :</td>
+                        <td>{{ VISU_PERSO.perso_nb_joueur_tue }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de décès en arène :</td>
+                        <td>{{ VISU_PERSO.perso_nb_mort_arene }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre d’aventuriers tués en arène :</td>
+                        <td>{{ VISU_PERSO.perso_nb_joueur_tue_arene }}</td>
+                    </tr>
+
+                    <tr>
+                        <td class="soustitre2">Nombre de monstres tués :</td>
+                        <td>{{ VISU_PERSO.perso_nb_monstre_tue }}</td>
+                    </tr>
+                    <tr>
+                        <td class="soustitre2">Équipement porté :</td>
+                        <td>
+                            {% if OBJETS_PORTES|length == 0 %}
+                                Aucun objet équipé
+                            {% else %}
+                                {% for OBJET in  OBJETS_PORTES %}
+                                    {{ OBJET.objet.obj_nom_porte }} ({{ OBJET.nom_type_objet }})<br>
+                             {% endfor %}
+                            {% endif %}
+                        </td>
+                    </tr>
