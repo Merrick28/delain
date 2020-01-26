@@ -4,15 +4,21 @@ include "blocks/_header_page_jeu.php";
 require_once G_CHE . "includes/fonctions.php";
 
 
-
-
-if (!isset($_REQUEST['visu'])) {
+if (!isset($_REQUEST['visu']))
+{
     $visu = '';
-} else {
+} else
+{
     $visu = $_REQUEST['visu'];
 }
+$memeperso = false;
+if ($visu = $perso_cod)
+{
+    $memeperso = true;
+}
 
-if (filter_var($visu, FILTER_VALIDATE_INT) === false) {
+if (filter_var($visu, FILTER_VALIDATE_INT) === false)
+{
     echo "Anomalie sur numéro perso !";
     exit();
 }
@@ -23,23 +29,28 @@ $visu_perso->charge($visu);
 /*****************************/
 /* GESTION DE LA DESCRIPTION */
 /*****************************/
-if (!isset($_REQUEST['met'])) {
+if (!isset($_REQUEST['met']))
+{
     $met = 'vide';
-} else {
+} else
+{
     $met = $_REQUEST['met'];
 }
 
-if ($met == 'aff') {
+if ($met == 'aff')
+{
     $compte->compt_vue_desc = 1;
     $compte->stocke();
 }
 
-if ($met == 'masq') {
+if ($met == 'masq')
+{
     $compte->compt_vue_desc = 0;
     $compte->stocke();
 }
 
-if ($compte->compt_vue_desc == 1) {
+if ($compte->compt_vue_desc == 1)
+{
     include "perso2_description.php";
 
     $contenu_page .= '<form name="message" method="post" action="messagerie2.php">
@@ -50,19 +61,23 @@ if ($compte->compt_vue_desc == 1) {
 	<div style=text-align:center>
 	<a href="javascript:document.message.submit();">Envoyer un message !</a><br>
 	<a href="' . $PHP_SELF . '?met=masq&visu=' . $visu . '">Masquer la description ?</a></div>';
-} else {
+} else
+{
     $contenu_page .= '<center><a href="' . $PHP_SELF . '?met=aff&visu=' . $visu . '">Afficher la description ?</a></center>';
 }
 /****************************************/
 /* CONTENU                              */
 /****************************************/
 
-if (!isset($_REQUEST['pevt_start'])) {
+if (!isset($_REQUEST['pevt_start']))
+{
     $pevt_start = 0;
-} else {
+} else
+{
     $pevt_start = $_REQUEST['pevt_start'];
 }
-if ($pevt_start < 0) {
+if ($pevt_start < 0)
+{
     $pevt_start = 0;
 }
 
@@ -76,19 +91,28 @@ $contenu_page .= '<center><table cellspacing="2">
                  $race->race_nom . ')</div></td>
 	</tr>';
 
-$levt         = new ligne_evt();
-$tab_evt      = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20);
+$levt        = new ligne_evt();
+$withvisible = false;
+if ($memeperso || $compte->is_admin())
+{
+    $withvisible = true;
+}
+$tab_evt = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20, $withvisible);
 
-$first        = true;
-foreach ($tab_evt as $ligne_evt) {
+$first = true;
+foreach ($tab_evt as $ligne_evt)
+{
     $maligne = '<tr>
 			<td class="soustitre3">' . format_date($ligne_evt->levt_date) . '</td>
 			<td class="soustitre3"><strong>' . $ligne_evt->tevt->tevt_libelle . '</strong></td>';
-    if ($compte->is_admin()) {
+    if ($compte->is_admin())
+    {
         $texte = str_replace('[perso_cod1]', '<strong><a href="visu_evt_perso.php?visu=' .
                                              $ligne_evt->levt_perso_cod1 . '">' . $ligne_evt->perso1->perso_nom . '</a></strong>', $ligne_evt->levt_texte);
-    } else {
-        if ($first && 'Effet automatique' == $ligne_evt->tevt->tevt_libelle) {
+    } else
+    {
+        if ($first && 'Effet automatique' == $ligne_evt->tevt->tevt_libelle)
+        {
             continue;
         }
 
@@ -107,21 +131,17 @@ foreach ($tab_evt as $ligne_evt) {
 
 
     $maligne .= '<td>' . $texte . '</td></tr>';
-    if (!$compte->is_admin()) {
-        if ($ligne_evt->levt_visible == 'N') {
-            $maligne = '';
-        }
-    }
     $contenu_page .= $maligne;
 }
 
 
 $contenu_page .= '<tr><td>';
-if ($pevt_start != 0) {
-    $moins20 = $pevt_start - 20;
+if ($pevt_start != 0)
+{
+    $moins20      = $pevt_start - 20;
     $contenu_page .= '<div align="left"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $moins20 . '"><== Précédent</a></div>';
 }
-$plus20 = $pevt_start + 20;
+$plus20       = $pevt_start + 20;
 $contenu_page .= '</td><td></td>
 	<td><div align="right"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
 	</tr></table></center>';

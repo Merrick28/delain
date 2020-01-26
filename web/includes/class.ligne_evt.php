@@ -237,15 +237,27 @@ class ligne_evt
         return $retour;
     }
 
-    public function getByPerso($perso_cod, $offset = 0, $limit = 50)
+    public function getByPerso($perso_cod, $offset = 0, $limit = 50, $withvisible = true)
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req
+        if ($withvisible)
+        {
+            $req
                 = "SELECT levt_cod  FROM ligne_evt
           WHERE levt_perso_cod1 = :perso
           ORDER BY levt_cod DESC
           limit $limit offset $offset";
+        } else
+        {
+            $req
+                = "SELECT levt_cod  FROM ligne_evt
+          WHERE levt_perso_cod1 = :perso
+            and levt_visible = 'O'
+          ORDER BY levt_cod DESC
+          limit $limit offset $offset";
+        }
+
 
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
@@ -269,8 +281,7 @@ class ligne_evt
             if ($perso_attaquant->charge($temp->levt_attaquant))
             {
                 $temp->perso_attaquant = $perso_attaquant;
-            }
-            else
+            } else
             {
                 $temp->perso_attaquant = "erreur sur " . $this->levt_attaquant;
             }
