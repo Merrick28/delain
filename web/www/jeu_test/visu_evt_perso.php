@@ -52,18 +52,6 @@ if ($met == 'masq')
 if ($compte->compt_vue_desc == 1)
 {
     include "perso2_description.php";
-
-    $contenu_page .= '<form name="message" method="post" action="messagerie2.php">
-	<input type="hidden" name="m" value="2">
-	<input type="hidden" name="n_dest" value="' . $visu_perso->perso_nom . '">
-	<input type="hidden" name="dmsg_cod">
-	</form>
-	<div style=text-align:center>
-	<a href="javascript:document.message.submit();">Envoyer un message !</a><br>
-	<a href="' . $PHP_SELF . '?met=masq&visu=' . $visu . '">Masquer la description ?</a></div>';
-} else
-{
-    $contenu_page .= '<center><a href="' . $PHP_SELF . '?met=aff&visu=' . $visu . '">Afficher la description ?</a></center>';
 }
 /****************************************/
 /* CONTENU                              */
@@ -84,24 +72,15 @@ if ($pevt_start < 0)
 $race = new race;
 $race->charge($visu_perso->perso_race_cod);
 
-$contenu_page .= '<center><table cellspacing="2">
-	<tr>
-	<td colspan="3" class="titre"><div class="titre">Evènements de ' . $visu_perso->perso_nom . '(' .
-                 $visu_perso->perso_sex . ' - ' .
-                 $race->race_nom . ')</div></td>
-	</tr>';
-
 $levt        = new ligne_evt();
 $withvisible = false;
 if ($memeperso)
 {
     $withvisible = true;
-    echo "<!-- meme compte -->";
 }
-if($compte->is_admin())
+if ($compte->is_admin())
 {
     $withvisible = true;
-    echo "<!-- isadmin -->";
 }
 $tab_evt = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20, $withvisible);
 
@@ -136,7 +115,7 @@ foreach ($tab_evt as $ligne_evt)
                                     $ligne_evt->perso_cible->perso_nom . '</a></strong>', $texte);
 
 
-    $maligne .= '<td>' . $texte . '</td></tr>';
+    $maligne      .= '<td>' . $texte . '</td></tr>';
     $contenu_page .= $maligne;
 }
 
@@ -151,4 +130,21 @@ $plus20       = $pevt_start + 20;
 $contenu_page .= '</td><td></td>
 	<td><div align="right"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
 	</tr></table></center>';
+
+
+$template     = $twig->load('_visu_evt_perso.twig');
+$options_twig = array(
+
+    'VISU_PERSO' => $visu_perso,
+    'COMPTE'     => $compte,
+    'PHP_SELF'   => $PHP_SELF,
+    'RACE'       => $race,
+    'MEMEPERSO'  => $memeperso,
+    'EVTS'       => $tab_evt
+
+
+);
+$contenu_page = $template->render(array_merge($options_twig_defaut, $options_twig));
+
+
 include "blocks/_footer_page_jeu.php";

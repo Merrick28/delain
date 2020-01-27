@@ -111,4 +111,4 @@ $options_twig = array(
 
 
 );
-$contenu_page = $template->render(array_merge($options_twig_defaut, $options_twig));
+$contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));

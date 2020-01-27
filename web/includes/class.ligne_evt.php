@@ -278,21 +278,18 @@ class ligne_evt
 
             $perso_attaquant = new perso;
 
-            if ($perso_attaquant->charge($temp->levt_attaquant))
-            {
-                $temp->perso_attaquant = $perso_attaquant;
-            } else
-            {
-                $temp->perso_attaquant = "erreur sur " . $this->levt_attaquant;
-            }
+            $perso_attaquant->charge($temp->levt_attaquant);
+
+            $temp->perso_attaquant = $perso_attaquant;
+
             unset($perso_attaquant);
 
 
             $perso_cible = new perso;
-            if ($perso_cible->charge($temp->levt_cible))
-            {
-                $temp->perso_cible = $perso_cible;
-            }
+            $perso_cible->charge($temp->levt_cible);
+
+            $temp->perso_cible = $perso_cible;
+
             unset($perso_cible);
 
 
