@@ -84,53 +84,14 @@ if ($compte->is_admin())
 }
 $tab_evt = $levt->getByPerso($visu_perso->perso_cod, $pevt_start, 20, $withvisible);
 
-$first = true;
-foreach ($tab_evt as $ligne_evt)
-{
-    $maligne = '<tr>
-			<td class="soustitre3">' . format_date($ligne_evt->levt_date) . '</td>
-			<td class="soustitre3"><strong>' . $ligne_evt->tevt->tevt_libelle . '</strong></td>';
-    if ($compte->is_admin())
-    {
-        $texte = str_replace('[perso_cod1]', '<strong><a href="visu_evt_perso.php?visu=' .
-                                             $ligne_evt->levt_perso_cod1 . '">' . $ligne_evt->perso1->perso_nom . '</a></strong>', $ligne_evt->levt_texte);
-    } else
-    {
-        if ($first && 'Effet automatique' == $ligne_evt->tevt->tevt_libelle)
-        {
-            continue;
-        }
 
-
-        $first = false;
-        $texte =
-            str_replace('[perso_cod1]', '<strong><a href="visu_evt_perso.php?visu=' .
-                                        $ligne_evt->levt_perso_cod1 . '">' . $visu_perso->perso_nom . '</a></strong>', $ligne_evt->tevt->tevt_texte);
-    }
-    $texte = str_replace('[attaquant]', '<strong><a href="visu_evt_perso.php?visu=' .
-                                        $ligne_evt->levt_attaquant . '">' .
-                                        $ligne_evt->perso_attaquant->perso_nom . '</a></strong>', $texte);
-    $texte = str_replace('[cible]', '<strong><a href="visu_evt_perso.php?visu=' .
-                                    $ligne_evt->levt_cible . '">' .
-                                    $ligne_evt->perso_cible->perso_nom . '</a></strong>', $texte);
-
-
-    $maligne      .= '<td>' . $texte . '</td></tr>';
-    $contenu_page .= $maligne;
-}
-
-
-$contenu_page .= '<tr><td>';
 $moins20      = 0;
 if ($pevt_start != 0)
 {
     $moins20      = $pevt_start - 20;
-    $contenu_page .= '<div align="left"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $moins20 . '"><== Précédent</a></div>';
 }
 $plus20       = $pevt_start + 20;
-$contenu_page .= '</td><td></td>
-	<td><div align="right"><a href="visu_evt_perso.php?visu=' . $visu . '&pevt_start=' . $plus20 . '">Suivant ==></a></div></td>
-	</tr></table></center>';
+
 
 
 $template     = $twig->load('_visu_evt_perso.twig');
