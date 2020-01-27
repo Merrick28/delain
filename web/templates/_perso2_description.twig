@@ -4,25 +4,25 @@
             <td>
                 <table>
                     <tr>
-                        <td colspan="2" class="titre">
+                        <td colspan="3" class="titre">
                             <div class="titre">Fiche de {{ VISU_PERSO.perso_nom }}</div>
                         </td>
                     </tr>
                     {% if VISU_PERSO.perso_description != '' %}
                         <tr>
-                            <td colspan="2" class="soustitre2">{{ VISU_PERSO.perso_description|nl2br }}</td>
+                            <td colspan="3" class="soustitre2">{{ VISU_PERSO.perso_description|nl2br }}</td>
                         </tr>
                     {% endif %}
-                    {% if MEMEPERSO == %}
+                    {% if MEMEPERSO %}
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <div style="text-align:center;"><a href="change_desc_perso.php">
                                         Changer sa description ?</a></div>
                             </td>
                         </tr>
                     {% endif %}
                     <tr>
-                        <td rowspan="12" colspan="2">
+                        <td rowspan="12">
                             <img src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom }}">
                             {% if MEMEPERSO %}
                                 {% if VISU_PERSO.perso_crapaud == 0 %}
@@ -95,7 +95,7 @@
                     <tr>
                         <td class="soustitre2">Guilde :</td>
                         <td>
-                            {% if ISGUILDE !== false %}
+                            {% if not ISGUILDE == false %}
                                 <a href="visu_guilde.php?num_guilde={{ GUILDE.guilde_cod }}">{{ GUILDE.guilde_nom }}</a> ({{ GUILDE_RANG.rguilde_libelle_rang }}
                                 {% if GUILDE_RANG.rguilde_admin == 'O' %}
                                     - Administrateur
@@ -115,41 +115,38 @@
                             {% endif %}
                         </td>
                     </tr>
-                    {% if ISDIEU !== false %}
+                    {% if not ISDIEU == false %}
                         <tr>
-                            <td class="soustitre2">Religion :</td>
+                            <td colspan="2" class="soustitre2">Religion :</td>
                             <td><strong>{{ DIEU_NIVEAU.dniv_libelle }} de {{ DIEU.dieu_nom }}</strong></td>
                         </tr>
                     {% endif %}
                     {% if TITRES|length > 0 %}
-                        <hr>
-                        <div style="text-align:center;">
-                            <table>
+
                                 <tr>
-                                    <td colspan="2" class="titre">Titres obtenus</td>
+                                    <td colspan="3" class="titre">Titres obtenus</td>
                                 </tr>
                                 <tr>
-                                    <td class="soustitre2">Titre</td>
+                                    <td colspan="2" class="soustitre2">Titre</td>
                                     <td class="soustitre2">Obtenu le</td>
                                 </tr>
                                 {% for TITRE in TITRES %}
                                     <tr>
-                                        <td><strong>{{ TITRE.ptitre_titre }}</strong></td>
+                                        <td colspan="2" ><strong>{{ TITRE.ptitre_titre }}</strong></td>
                                         <td>{{ TITRE.ptitre_date|date('d/m/Y') }}</td>
                                     </tr>
                                 {% endfor %}
-                            </table>
-                        </div>
+
                     {% endif %}
                     {% if VISU_PERSO.perso_desc_long != '' %}
                         <tr>
-                            <td colspan="2" class="soustitre2">{{ VISU_PERSO.perso_desc_long|nl2br }}
+                            <td colspan="3" class="soustitre2">{{ VISU_PERSO.perso_desc_long|nl2br }}
                             </td>
                         </tr>
                     {% endif %}
                     {% if MEMEPERSO %}
                         <tr>
-                            <td colspan="2">
+                            <td colspan="3">
                                 <div style="text-align:center;"><a href="change_desc_perso.php">Changer sa description
                                         longue ?</a></div>
                             </td>
@@ -160,7 +157,7 @@
         </tr>
     </table>
 </div>
-{% if PLOUCHE !== false %}
+{% if not PLOUCHE == false %}
     <div style="text-align:center;"><em><strong>Note de jeu : </strong>Cet individu cache sous sa veste et dans son sac
             quelque chose.<br>
             Il transpire abondemment et regarde autour de lui pour voir s'il est suivi.<br>

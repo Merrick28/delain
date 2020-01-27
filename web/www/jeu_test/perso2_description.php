@@ -4,71 +4,56 @@ $chemin = $type_flux . G_URL . "images/avatars/";
 require_once G_CHE . "includes/fonctions.php";
 
 $visu_perso = new perso;
-if (isset($_REQUEST['visu']))
-{
+if (isset($_REQUEST['visu'])) {
     $visu = $_REQUEST['visu'];
-} else
-{
+} else {
     $visu = $perso_cod;
 }
 $memeperso = false;
-if ($visu == $perso_cod)
-{
+if ($visu == $perso_cod) {
     $memeperso = true;
 }
 
-if (!$visu_perso->charge($visu))
-{
+if (!$visu_perso->charge($visu)) {
     die('Erreur sur le chargement de perso');
 }
 
 $visu_perso_nom = $visu_perso->perso_nom;
 
-if ((!isset($contenu_page)) and ((basename($_SERVER['PHP_SELF'])) != 'perso2.php?m=4'))
-{
+if ((!isset($contenu_page)) and ((basename($_SERVER['PHP_SELF'])) != 'perso2.php?m=4')) {
     $contenu_page = '';
 }
-if ($visu_perso->perso_avatar == '')
-{
-    if ($visu_perso->perso_type_perso == 1)
-    {
+if ($visu_perso->perso_avatar == '') {
+    if ($visu_perso->perso_type_perso == 1) {
         $avatar = $chemin . "../" . $visu_perso->perso_race_cod . "_" . $visu_perso->perso_sex . ".png";
-    } else
-    {
+    } else {
         $avatar = $chemin . "../del.gif";
     }
-} else
-{
+} else {
     $avatar = $chemin . $visu_perso->perso_avatar . '?' . $visu_perso->perso_avatar_version;
 }
-if ($visu_perso->perso_sex == 'F')
-{
-    if ((int)($visu_perso->perso_gmon_cod) > 0)
-    {
+if ($visu_perso->perso_sex == 'F') {
+    if ((int)($visu_perso->perso_gmon_cod) > 0) {
         $perso_sex_txt = "Femelle";
-    } else
-    {
+    } else {
         $perso_sex_txt = "Féminin";
     }
-} elseif ($visu_perso->perso_sex == 'M')
-{
-    if ((int)$visu_perso->perso_gmon_cod > 0)
-    {
+} elseif ($visu_perso->perso_sex == 'M') {
+    if ((int)$visu_perso->perso_gmon_cod > 0) {
         $perso_sex_txt = "Mâle";
-    } else
-    {
+    } else {
         $perso_sex_txt = "Masculin";
     }
-} elseif ($visu_perso->perso_sex == 'A')
-{
+} elseif ($visu_perso->perso_sex == 'A') {
     $perso_sex_txt = "Androgyne";
-} elseif ($visu_perso->perso_sex == 'H')
-{
+} elseif ($visu_perso->perso_sex == 'H') {
     $perso_sex_txt = "Hermaphrodite";
-} else
-{
+} else {
     $perso_sex_txt = "Inconnu";
 }
+
+$race = new race;
+$race->charge($visu_perso->perso_race_cod);
 
 $perobj        = new perso_objets();
 $objets_portes = $perobj->getByPersoEquipe($visu_perso->perso_cod);
@@ -79,8 +64,7 @@ $guilde      = '';
 $guilde_rang = '';
 $isguilde    = false;
 
-if ($isguilde = $pguilde->get_by_perso($visu_perso->perso_cod))
-{
+if ($isguilde = $pguilde->get_by_perso($visu_perso->perso_cod)) {
     $guilde = new guilde;
     $guilde->charge($pguilde->pguilde_guilde_cod);
 
@@ -93,8 +77,7 @@ $dieu_perso  = new dieu_perso();
 $dieu_niveau = new dieu_niveau();
 
 $isdieu = false;
-if ($isdieu = $dieu_perso->getByPersoCod($visu_perso->perso_cod))
-{
+if ($isdieu = $dieu_perso->getByPersoCod($visu_perso->perso_cod)) {
     $dieu_niveau->getByNiveauDieu($dieu_perso->dper_niveau, $dieu_perso->dper_dieu_cod);
     $dieu->charge($dieu_perso->dper_dieu_cod);
 }
