@@ -121,6 +121,7 @@ foreach ($tab_evt as $ligne_evt)
 
 
 $contenu_page .= '<tr><td>';
+$moins20      = 0;
 if ($pevt_start != 0)
 {
     $moins20      = $pevt_start - 20;
@@ -140,7 +141,10 @@ $options_twig = array(
     'PHP_SELF'   => $PHP_SELF,
     'RACE'       => $race,
     'MEMEPERSO'  => $memeperso,
-    'EVTS'       => $tab_evt
+    'EVTS'       => $tab_evt,
+    'MOINS20'    => $moins20,
+    'PLUS20'     => $plus20,
+    'PEVT_START' => $pevt_start
 
 
 );

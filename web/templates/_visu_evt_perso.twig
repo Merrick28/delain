@@ -30,15 +30,34 @@
                     {{ EVT.levt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1 ~  '">' ~  EVT.perso1.perso_nom ~ ' </a></strong>'})|raw }}
 
                 {% else %}
-                    {{ EVT.tevt.tevt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1  ~ '">' ~  EVT.perso1.perso_nom ~ '</a></strong>',
-                                                     '[attaquant]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_attaquant ~ '">' ~ EVT.perso_attaquant.perso_nom ~ '</a></strong>',
-                                                     '[cible]' : '<strong><a href="visu_evt_perso.php?visu=' ~ EVT.levt_cible ~ '">' ~
-                EVT.perso_cible.perso_nom ~ '</a></strong>'}) |raw }}
+                    {% if (loop.index == 1 and EVT.tevt.tevt_libelle == 'Effet automatique') %}
+                        <!-- effet auto -->
+                    {% else %}
 
+                        {{ EVT.tevt.tevt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1  ~ '">' ~  EVT.perso1.perso_nom ~ '</a></strong>',
+                            '[attaquant]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_attaquant ~ '">' ~ EVT.perso_attaquant.perso_nom ~ '</a></strong>',
+                            '[cible]' : '<strong><a href="visu_evt_perso.php?visu=' ~ EVT.levt_cible ~ '">' ~
+                            EVT.perso_cible.perso_nom ~ '</a></strong>'}) |raw }}
+                    {% endif %}
 
                 {% endif %}
             </td>
         </tr>
 
+
     {% endfor %}
+    <tr>
+        <td>
+            {% if PEVT_START !=0 %}
+                <div align="left"><a
+                            href="visu_evt_perso.php?visu={{ VISU_PERSO.perso_cod }}&pevt_start={{ MOINS20 }}"><==
+                        Précédent</a></div>
+            {% endif %}
+        </td>
+        </td>
+        <td>
+            <div align="right"><a href="visu_evt_perso.php?visu={{ VISU_PERSO.perso_cod }}&pevt_start={{ PLUS20 }}">Suivant
+                    ==></a></div>
+        </td>
+    </tr>
 </table>
