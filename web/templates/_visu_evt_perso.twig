@@ -26,7 +26,7 @@
             <td class="soustitre3">{{ EVT.levt_date|date('d/m/Y H:i:s') }}</td>
             <td class="soustitre3"><strong>{{ EVT.tevt.tevt_libelle }}</strong></td>
             <td>
-                {% if COMPTE.is_admin %}
+                {% if (COMPTE.is_admin or MEMEPERSO) %}
                     {{ EVT.levt_texte|replace({'[perso_cod1]': '<strong><a href="visu_evt_perso.php?visu=' ~  EVT.levt_perso_cod1 ~  '">' ~  EVT.perso1.perso_nom ~ ' </a></strong>'})|raw }}
 
                 {% else %}
