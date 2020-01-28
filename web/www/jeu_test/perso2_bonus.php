@@ -1,22 +1,21 @@
-<?php 
-if (isset($ch_util))
+<?php
+
+$perso = new perso;
+$perso->charge($perso_cod);
+if (isset($_REQUEST['ch_util']))
 {
-	$req = "update perso set perso_utl_pa_rest = $ch_util where perso_cod = $perso_cod ";
-	$db->query($req);
+	$perso->perso_utl_pa_rest = $_REQUEST['ch_util'];
+	$perso->stocke();
 }
 
-
-$req = "select perso_nom,perso_utl_pa_rest from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-if ($db->f("perso_utl_pa_rest") == 1)
+if ($perso->perso_utl_pa_rest == 1)
 {
-	$util = $db->f("perso_nom") . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $perso->perso_nom . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 0;
 }
 else
 {
-	$util = $db->f("perso_nom") . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
+	$util = $perso->perso_nom . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 1;
 }
 $contenu_page .= '<div class="titre">Utilisation des PA restants</div>
@@ -25,27 +24,27 @@ $contenu_page .= '<div class="titre">Utilisation des PA restants</div>
 /* Concentration */
 //
 $contenu_page .= '<div class="titre">Concentration</div>';
-
-$req_concentration = "select concentration_nb_tours from concentrations where concentration_perso_cod = $perso_cod";
-$db->query($req_concentration);
+$concentration = new concentrations();
+$has_concentration = false;
 $nb_concentration = $db->nf();
-if ($nb_concentration == 0)
+if ($concentration->getByPerso($perso->perso_cod))
 {
-	$contenu_page .= 'Vous n’avez effectué aucune concentration. ';
+    $has_concentration = true;
+    $contenu_page .= 'Vous êtes concentré(e) pendant ' . $concentration->concentration_nb_tours . ' tours. ';
 }
 else
 {
-	$db->next_record();
-	$contenu_page .= 'Vous êtes concentré(e) pendant ' . $db->f("concentration_nb_tours") . ' tours. ';
+    $contenu_page .= 'Vous n’avez effectué aucune concentration. ';
 }
 $contenu_page .= '<br /><a href="valide_concentration.php">Se concentrer ! (4 PA)</a>';
-if ($nb_concentration != 0)
+if ($has_concentration != 0)
 {
 	$contenu_page .= '<br /><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</em>';
 }
 //
 /* BONUS PERMANENTS */
 //
+
 $contenu_page .= '<div class="titre">Bonus permanents</div>';
 $req_bonus = "select bonus_degats_melee($perso_cod) as melee,bonus_arme_distance($perso_cod) as distance";
 $db->query($req_bonus);
