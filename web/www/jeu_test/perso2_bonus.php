@@ -26,7 +26,7 @@ $contenu_page .= '<div class="titre">Utilisation des PA restants</div>
 $contenu_page .= '<div class="titre">Concentration</div>';
 $concentration = new concentrations();
 $has_concentration = false;
-$nb_concentration = $db->nf();
+
 if ($concentration->getByPerso($perso->perso_cod))
 {
     $has_concentration = true;
