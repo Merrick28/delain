@@ -143,7 +143,8 @@ class perso
     public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new) {
+        if ($new)
+        {
             $req
                   = "insert into perso (
             perso_cod,
@@ -464,7 +465,8 @@ class perso
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        } else {
+        } else
+        {
             $req
                   = "update perso
                     set
@@ -691,7 +693,8 @@ class perso
         $req  = "select * from perso where perso_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return false;
         }
         $this->perso_cod                     = $result['perso_cod'];
@@ -811,7 +814,8 @@ class perso
         $pdo    = new bddpdo;
         $req    = "select perso_cod  from perso order by perso_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
             $retour[] = $temp;
@@ -824,7 +828,8 @@ class perso
     {
         $ligne_evt = new ligne_evt();
         $tab_evt   = $ligne_evt->getByPersoNonLu($this->perso_cod);
-        if (count($tab_evt) != 0) {
+        if (count($tab_evt) != 0)
+        {
             return true;
         }
         return false;
@@ -843,7 +848,8 @@ class perso
             and gobj_distance = 'O'";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
-        if ($stmt->fetch()) {
+        if ($stmt->fetch())
+        {
             return true;
         }
         return false;
@@ -863,11 +869,13 @@ class perso
 		  ORDER BY obj_gobj_cod ASC, obj_cod ASC";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(':perso' => $this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return false;
         }
         $obj = new objets();
-        if (!$obj->charge($result['obj_cod'])) {
+        if (!$obj->charge($result['obj_cod']))
+        {
             return false;
         }
         return $obj;
@@ -886,7 +894,8 @@ class perso
             and gobj_distance = 'O'";
         $stmt     = $pdo->prepare($req_arme);
         $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
-        if ($stmt->fetch()) {
+        if ($stmt->fetch())
+        {
             return true;
         }
         return false;
@@ -995,7 +1004,8 @@ class perso
     public function has_competence($competence)
     {
         $pcomp = new perso_competences();
-        if ($pcomp->getByPersoComp($this->perso_cod, $competence)) {
+        if ($pcomp->getByPersoComp($this->perso_cod, $competence))
+        {
             return true;
         }
         return false;
@@ -1062,8 +1072,10 @@ class perso
         $lpos = new lieu_position();
         $lpos->getByPos($ppos->ppos_pos_cod);
         $lieu = new lieu;
-        if ($lieu->charge($lpos->lpos_lieu_cod)) {
-            if ($lieu->lieu_refuge == 'O') {
+        if ($lieu->charge($lpos->lpos_lieu_cod))
+        {
+            if ($lieu->lieu_refuge == 'O')
+            {
                 return true;
             }
         }
@@ -1101,7 +1113,8 @@ class perso
             "SELECT pfav_cod, pfav_type, pfav_misc_cod, pfav_nom, pfav_function_cout_pa, pfav_link FROM public.perso_favoris WHERE pfav_perso_cod=:pfav_perso_cod order by pfav_nom";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":pfav_perso_cod" => $this->perso_cod), $stmt);
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $req     = "SELECT " . $result["pfav_function_cout_pa"] . " as cout_pa ";
             $stmt2   = $pdo->prepare($req);
             $stmt2   = $pdo->execute(array(), $stmt2);
@@ -1159,7 +1172,8 @@ class perso
 
     public function is_fam()
     {
-        if ($this->perso_type_perso == 3) {
+        if ($this->perso_type_perso == 3)
+        {
             return true;
         }
         return false;
@@ -1167,7 +1181,8 @@ class perso
 
     public function is_monstre()
     {
-        if ($this->perso_type_perso == 2) {
+        if ($this->perso_type_perso == 2)
+        {
             return true;
         }
         return false;
@@ -1175,7 +1190,8 @@ class perso
 
     public function is_4eme_perso()
     {
-        if ($this->perso_pnj == 2) {
+        if ($this->perso_pnj == 2)
+        {
             return true;
         }
         return false;
@@ -1185,11 +1201,14 @@ class perso
     {
         $dp  = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
-        if ($tab === false) {
+        if ($tab === false)
+        {
             return false;
         }
-        foreach ($tab as $ddp) {
-            if ($ddp->dper_niveau > 3) {
+        foreach ($tab as $ddp)
+        {
+            if ($ddp->dper_niveau > 3)
+            {
                 return true;
             }
         }
@@ -1200,11 +1219,14 @@ class perso
     {
         $dp  = new dieu_perso();
         $tab = $dp->getBy_dper_perso_cod($this->perso_cod);
-        if ($tab === false) {
+        if ($tab === false)
+        {
             return false;
         }
-        foreach ($tab as $ddp) {
-            if ($ddp->dper_niveau >= 2) {
+        foreach ($tab as $ddp)
+        {
+            if ($ddp->dper_niveau >= 2)
+            {
                 return true;
             }
         }
@@ -1215,7 +1237,8 @@ class perso
     {
         $tf  = new temple_fidele();
         $tab = $tf->getBy_tfid_perso_cod($this->perso_cod);
-        if ($tab === false) {
+        if ($tab === false)
+        {
             return false;
         }
         return true;
@@ -1226,13 +1249,15 @@ class perso
         $tran  = new transaction();
         $total = 0;
         $tabv  = $tran->getBy_tran_vendeur($this->perso_cod);
-        if ($tabv !== false) {
+        if ($tabv !== false)
+        {
             $total += count($tabv);
         }
 
 
         $taba = $tran->getBy_tran_acheteur($this->perso_cod);
-        if ($taba !== false) {
+        if ($taba !== false)
+        {
             $total += count($taba);
         }
         return $total;
@@ -1240,18 +1265,24 @@ class perso
 
     public function barre_hp()
     {
-        if ($this->perso_pv_max == 0) {
+        if ($this->perso_pv_max == 0)
+        {
             $barre_hp = 0;
-        } else {
+        } else
+        {
             // LAG: Affichage au % près (avec des bornes  >2% et <98% pour la lisibilité)
             $barre_hp = round(100 * $this->perso_pv / $this->perso_pv_max);
-            if (($barre_hp >= 98) && ($this->perso_pv < $this->perso_pv_max)) {
+            if (($barre_hp >= 98) && ($this->perso_pv < $this->perso_pv_max))
+            {
                 $barre_hp = 98;
-            } elseif (($barre_hp <= 2) && ($this->perso_pv > 0)) {
+            } elseif (($barre_hp <= 2) && ($this->perso_pv > 0))
+            {
                 $barre_hp = 2;
-            } elseif ($barre_hp < 0) {
+            } elseif ($barre_hp < 0)
+            {
                 $barre_hp = 0;
-            } elseif ($barre_hp >= 100) {
+            } elseif ($barre_hp >= 100)
+            {
                 $barre_hp = 100;
             }
         }
@@ -1260,15 +1291,20 @@ class perso
 
     public function barre_energie()
     {
-        if ($this->is_enchanteur()) {
+        if ($this->is_enchanteur())
+        {
             $barre_energie = round($this->perso_energie);
-            if ($barre_energie <= 0) {
+            if ($barre_energie <= 0)
+            {
                 $barre_energie = 0;
-            } elseif ($barre_energie >= 100) {
+            } elseif ($barre_energie >= 100)
+            {
                 $barre_energie = 100;
-            } elseif ($barre_energie >= 98) {
+            } elseif ($barre_energie >= 98)
+            {
                 $barre_energie = 98;
-            } elseif ($barre_energie <= 2) {
+            } elseif ($barre_energie <= 2)
+            {
                 $barre_energie = 2;
             }
             return $barre_energie;
@@ -1286,16 +1322,21 @@ class perso
 
     public function barre_divin()
     {
-        if ($this->is_fam_divin() == 1) {
+        if ($this->is_fam_divin() == 1)
+        {
             $energie_divine = $this->energie_divine();
             $barre_divine   = round(100 * $energie_divine / 200);
-            if ($barre_divine <= 0) {
+            if ($barre_divine <= 0)
+            {
                 $barre_divine = 0;
-            } elseif ($barre_divine >= 100) {
+            } elseif ($barre_divine >= 100)
+            {
                 $barre_divine = 100;
-            } elseif ($barre_divine >= 98) {
+            } elseif ($barre_divine >= 98)
+            {
                 $barre_divine = 98;
-            } elseif ($barre_divine <= 2) {
+            } elseif ($barre_divine <= 2)
+            {
                 $barre_divine = 2;
             }
             return $barre_divine;
@@ -1306,7 +1347,8 @@ class perso
     public function is_fam_divin()
     {
         $is_fam_divin = 0;
-        if ($this->perso_gmon_cod == 441) {
+        if ($this->perso_gmon_cod == 441)
+        {
             $is_fam_divin = 1;
         }
         return $is_fam_divin;
@@ -1314,7 +1356,8 @@ class perso
 
     public function energie_divine()
     {
-        if ($this->is_fam_divin() == 1) {
+        if ($this->is_fam_divin() == 1)
+        {
             $dp = new dieu_perso;
             $dp->getByPersoCod($this->perso_cod);
             $energie_divine = $dp->dper_points;
@@ -1369,7 +1412,8 @@ class perso
         $stmt   = $pdo->execute(array($ppos->ppos_pos_cod), $stmt);
         $result = $stmt->fetch();
 
-        if ($result['nombre'] != 0) {
+        if ($result['nombre'] != 0)
+        {
             return true;
         }        // il y a des quetes traditionnelles
 
@@ -1388,7 +1432,8 @@ class perso
 
     public function get_lieu()
     {
-        if ($this->is_lieu()) {
+        if ($this->is_lieu())
+        {
             $ppos = new perso_position;
             $ppos->getByPerso($this->perso_cod);
             $lpos = new lieu_position();
@@ -1419,7 +1464,8 @@ class perso
         $stmt = $pdo->execute(array(
                                   ":type_joueur" => $type_joueur
                               ), $stmt);
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
 
@@ -1457,16 +1503,19 @@ class perso
         $retour = array();
 
         // Si on a pas un array on converti pour avoir un seul traitement
-        if (!is_array($type_perso)) {
+        if (!is_array($type_perso))
+        {
             $type_perso = array($type_perso);
         }
 
-        if (count($type_perso) == 0) {
+        if (count($type_perso) == 0)
+        {
             return $retour;
         }
 
         $list_types = array();
-        foreach ($type_perso as $k => $type) {
+        foreach ($type_perso as $k => $type)
+        {
             $list_types[':type' . $k] = intval($type);
         }
 
@@ -1477,14 +1526,16 @@ class perso
         $stmt = $pdo->execute(array_merge(array(":perso_nom" => strtolower($perso_nom)), $list_types), $stmt);
 
         // Si on ne trouve rien avec une recherche exacte, on assouplie la règle de recherche
-        if ($stmt->rowCount() == 0) {
+        if ($stmt->rowCount() == 0)
+        {
             $req  =
                 "select perso_cod from perso where perso_actif = 'O' and perso_nom ILIKE :perso_nom and perso_type_perso IN (" . implode(",", array_keys($list_types)) . ") and perso_pnj != 1 and perso_cod not in (1,2,3) ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array_merge(array(":perso_nom" => '%' . $perso_nom . '%'), $list_types), $stmt);
         }
 
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new perso;
             $temp->charge($result["perso_cod"]);
 
@@ -1499,7 +1550,8 @@ class perso
         $ppos = new perso_position;
         $ppos->getByPerso($this->perso_cod);
         $lpos = new lieu_position();
-        if (!$lpos->getByPos($ppos->ppos_pos_cod)) {
+        if (!$lpos->getByPos($ppos->ppos_pos_cod))
+        {
             return false;
         }
         return true;
@@ -1523,17 +1575,21 @@ class perso
         $quete_perso  = new aquete_perso();
         $quetes_perso = $quete_perso->get_perso_quete_en_cours($this->perso_cod);
 
-        if ($quetes_perso && sizeof($quetes_perso) > 0) {
-            foreach ($quetes_perso as $k => $q) {
+        if ($quetes_perso && sizeof($quetes_perso) > 0)
+        {
+            foreach ($quetes_perso as $k => $q)
+            {
                 $nb_etapes = $q->run();
 
-                if ($nb_etapes > 0) {
+                if ($nb_etapes > 0)
+                {
                     $quete = new aquete();
                     $quete->charge($q->aqperso_aquete_cod);
 
                     $pages = $q->journal_news();
                     // Ne mettre l'entête de la quête que s'il y a de nouvelles pages
-                    if ($pages != "") {
+                    if ($pages != "")
+                    {
                         $news .= "<br>&rArr; <em><strong>" . $quete->aquete_nom . "</strong></em>:<br><br>" . $pages;
                     }
                 }
@@ -1564,20 +1620,25 @@ class perso
         $limite      = $this->px_limite();
         $limite_actu = $this->px_limite_actuel();
 
-        if (($this->perso_px - $limite_actu) < 0) {
+        if (($this->perso_px - $limite_actu) < 0)
+        {
             return 0;
         }
         $niveau_xp = ($this->perso_px - $limite_actu);
         $div_xp    = ($limite - $limite_actu);
 
         $barre_xp = round(100 * $niveau_xp / $div_xp);
-        if (($barre_xp >= 98) && ($niveau_xp < $div_xp)) {
+        if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
+        {
             $barre_xp = 98;
-        } elseif (($barre_xp <= 2) && ($niveau_xp > 0)) {
+        } elseif (($barre_xp <= 2) && ($niveau_xp > 0))
+        {
             $barre_xp = 2;
-        } elseif ($barre_xp < 0) {
+        } elseif ($barre_xp < 0)
+        {
             $barre_xp = 0;
-        } elseif ($barre_xp >= 100) {
+        } elseif ($barre_xp >= 100)
+        {
             $barre_xp = 100;
         }
         return $barre_xp;
@@ -1637,11 +1698,13 @@ class perso
     {
         $lc  = new lock_combat();
         $tab = $lc->getBy_lock_cible($this->perso_cod);
-        if ($tab !== false) {
+        if ($tab !== false)
+        {
             return true;
         }
         $tab = $lc->getBy_lock_attaquant($this->perso_cod);
-        if ($tab !== false) {
+        if ($tab !== false)
+        {
             return true;
         }
     }
@@ -1651,11 +1714,13 @@ class perso
         $locks = 0;
         $lc    = new lock_combat();
         $tab   = $lc->getBy_lock_cible($this->perso_cod);
-        if ($tab !== false) {
+        if ($tab !== false)
+        {
             $locks += count($tab);
         }
         $tab = $lc->getBy_lock_attaquant($this->perso_cod);
-        if ($tab !== false) {
+        if ($tab !== false)
+        {
             $locks += count($tab);
         }
         return $locks;
@@ -1667,7 +1732,8 @@ class perso
         $ppos->getByPerso($this->perso_cod);
         $opos = new objet_position();
         $tab  = $opos->getBy_pobj_pos_cod($ppos->ppos_pos_cod);
-        if ($tab === false) {
+        if ($tab === false)
+        {
             return 0;
         }
         return count($tab);
@@ -1679,7 +1745,8 @@ class perso
         $ppos->getByPerso($this->perso_cod);
         $por = new or_position();
         $tab = $por->getBy_por_pos_cod($ppos->ppos_pos_cod);
-        if ($tab === false) {
+        if ($tab === false)
+        {
             return 0;
         }
         return count($tab);
@@ -1737,11 +1804,13 @@ class perso
             and pguilde_valide = 'O'";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return false;
         }
         $guilde = new guilde();
-        if (!$guilde->charge($result['pguilde_guilde_cod'])) {
+        if (!$guilde->charge($result['pguilde_guilde_cod']))
+        {
             return false;
         }
         return $guilde;
@@ -1856,7 +1925,8 @@ class perso
             "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut = 1 ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return -1;
         }
         return $result['pgroupe_groupe_cod'];
@@ -1878,7 +1948,8 @@ class perso
 
         $this_perso = new perso;
 
-        if (!$this_perso->charge($result['resultat'])) {
+        if (!$this_perso->charge($result['resultat']))
+        {
             return false;
         }
         return $this_perso;
@@ -2094,14 +2165,17 @@ class perso
         $stmt = $pdo->execute(array(
                                   ":lieu"  => $lieu,
                                   ":objet" => $objet), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return '<p>Erreur ! Impossible de vérifier dans les stocks du magasin pour acheter cet objet  !';
-        } elseif ((int)$result['count'] < $qte) {
+        } elseif ((int)$result['count'] < $qte)
+        {
             return '<p>Erreur ! Impossible les stocks du magasin sont insuffisants  !';
         }
 
         // Faire les achats :
-        for ($i = 0; $i < $qte; $i++) {
+        for ($i = 0; $i < $qte; $i++)
+        {
             $req    = "select magasin_achat_generique(:perso,:lieu,:objet) as resultat ";
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(
@@ -2374,19 +2448,24 @@ class perso
     public function niveau_blessures($pv = null, $pv_max = null)
     {
         // Sans paramètres on prends le perso courant
-        if ($pv == null || $pv_max == null) {
+        if ($pv == null || $pv_max == null)
+        {
             $pv     = $this->perso_pv;
             $pv_max = $this->perso_pv_max;
         }
 
         $niveau_blessures = "";
-        if ($pv / $pv_max < 0.15) {
+        if ($pv / $pv_max < 0.15)
+        {
             $niveau_blessures = 'presque mort';
-        } elseif ($pv / $pv_max < 0.25) {
+        } elseif ($pv / $pv_max < 0.25)
+        {
             $niveau_blessures = 'gravement touché';
-        } elseif ($pv / $pv_max < 0.5) {
+        } elseif ($pv / $pv_max < 0.5)
+        {
             $niveau_blessures = 'blessé';
-        } elseif ($pv / $pv_max < 0.75) {
+        } elseif ($pv / $pv_max < 0.75)
+        {
             $niveau_blessures = 'touché';
         }
         return $niveau_blessures;
@@ -2412,26 +2491,34 @@ class perso
         $this->position = $this->get_position();
         $this->guilde   = $this->get_guilde();
 
-        if ($this->perso_avatar == '') {
+        if ($this->perso_avatar == '')
+        {
             $this->avatar = G_IMAGES . $this->perso_race_cod . "_" . $this->perso_sex . ".png";
-        } else {
+        } else
+        {
             $this->avatar = $type_flux . G_URL . "avatars/" . $this->perso_avatar;
         }
 
-        try {
+        try
+        {
             $size = @getimagesize($this->avatar);
-            if ($size !== false) {
+            if ($size !== false)
+            {
                 $this->avatar_largeur = $size[0];
                 $this->avatar_hauteur = $size[1];
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e)
+        {
             unset($e);
         }
 
         $this->barre_divine = -1;
-        if ($this->perso_gmon_cod == 441) {
+        if ($this->perso_gmon_cod == 441)
+        {
             $barre_divine = floor(($this->energie_divine() / 200) * 10) * 10;
-            if ($barre_divine >= 100) {
+            if ($barre_divine >= 100)
+            {
                 $barre_divine = 100;
             }
             $this->barre_divine = $barre_divine;
@@ -2499,7 +2586,8 @@ class perso
 
         $distance_vue = $this->distance_vue();
         $portee       = $this->portee_attaque();
-        if ($distance_vue <= $portee) {
+        if ($distance_vue <= $portee)
+        {
             $portee = $distance_vue;
         }
 
@@ -2683,7 +2771,8 @@ class perso
         $req  = "select race_nom from race where race_cod = ? ";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_race_cod), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return 'inconnue';
         }
         return $result["race_nom"];
@@ -2696,29 +2785,36 @@ class perso
     public function get_champ($field)
     {
         // Traitements Spécifiques. --------------------------------------
-        if ($field == "perso.sex") {
+        if ($field == "perso.sex")
+        {
             return $this->perso_sex == "M" ? "Monsieur" : "Madame";
-        } elseif ((substr($field, 0, 12) == "perso.genre(") && (substr($field, -1) == ")")) {
+        } elseif ((substr($field, 0, 12) == "perso.genre(") && (substr($field, -1) == ")"))
+        {
             $genre = explode(",", substr($field, 12, -1));
             return $this->perso_sex == "M" ? $genre[0] : $genre[1];
         }
 
         //Traitement générique. --------------------------------------
-        if (substr($field, -2) == "()") {
+        if (substr($field, -2) == "()")
+        {
             //Cas d'une methode----
             $field = substr($field, 6, -2);    //supression de "perso." et de "()"
-            if (method_exists($this, $field)) {
+            if (method_exists($this, $field))
+            {
                 return $this->$field();
             }
-        } else {
+        } else
+        {
             //Cas d'un propriétée---
             $field = str_replace(".", "_", $field);
-            if (property_exists($this, $field)) {
+            if (property_exists($this, $field))
+            {
                 return $this->$field;
             }
 
             $field = substr($field, 6);    //supression de "perso."
-            if (property_exists($this, $field)) {
+            if (property_exists($this, $field))
+            {
                 return $this->$field;
             }
         }
@@ -2729,21 +2825,91 @@ class perso
     public function perso_malus()
     {
         $pdo  = new bddpdo;
-        $req  = "select tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, bonus_mode, sum(bonus_valeur) as bonus_valeur
-                   from bonus
-                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
-                   where bonus_perso_cod = ?
-                        and
-                            (tbonus_gentil_positif = 't' and bonus_valeur < 0
-                            or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-                    group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
-                    order by tbonus_libc";
+        $req  = "select tbonus_libc, 
+                 tonbus_libelle,
+                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text 
+                 end as bonus_nb_tours, 
+                 bonus_mode, 
+                 sum(bonus_valeur) as bonus_valeur
+             from bonus
+                  inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  where bonus_perso_cod = ?
+                  and
+                    (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                    or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
+                  order by tbonus_libc";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($this->perso_cod), $stmt);
-        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC)) {
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
             return array();
         }
         return $result;
+    }
+
+    public function perso_malus_equipement($equipement = false)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select tbonus_libc, 
+                 tonbus_libelle,
+                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text 
+                 end as bonus_nb_tours, 
+                 bonus_mode, 
+                 sum(bonus_valeur) as bonus_valeur
+             from bonus
+                  inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  where bonus_perso_cod = ?
+                  and
+                    (tbonus_gentil_positif = 't' and bonus_valeur < 0
+                    or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
+                    and bonus_mode ".($equipement ? "=" : "!=")." 'E'
+                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
+                  order by tbonus_libc";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return array();
+        }
+        return $result;
+    }
+
+
+    public function perso_bonus_equimpement($equipement = false)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select tbonus_libc, 
+                 tonbus_libelle,
+                 case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, 
+                 bonus_mode, 
+                 sum(bonus_valeur) as bonus_valeur
+             from bonus
+                  inner join bonus_type on tbonus_libc = bonus_tbonus_libc
+                  where bonus_perso_cod = ?
+                  and
+                    (tbonus_gentil_positif = 't' and bonus_valeur > 0
+                    or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
+                    and bonus_mode ".($equipement ? "=" : "!=")." 'E'
+                  group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
+                  order by tbonus_libc";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($this->perso_cod), $stmt);
+        if (!$result = $stmt->fetchAll(PDO::FETCH_ASSOC))
+        {
+            return array();
+        }
+        return $result;
+    }
+
+    function bonus_degats_melee()
+    {
+        $pdo  = new bddpdo;
+        $req    = "select bonus_degats_melee(:perso) as bonus_degats_melee";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['bonus_degats_melee'];
     }
 
     public function efface()
@@ -2757,25 +2923,30 @@ class perso
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6)) {
+        switch (substr($name, 0, 6))
+        {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6))) {
+                if (property_exists($this, substr($name, 6)))
+                {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "select perso_cod  from perso where " . substr($name, 6) . " = ? order by perso_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch()) {
+                    while ($result = $stmt->fetch())
+                    {
                         $temp = new perso;
                         $temp->charge($result["perso_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0) {
+                    if (count($retour) == 0)
+                    {
                         return false;
                     }
                     return $retour;
-                } else {
+                } else
+                {
                     die('Unknown variable ' . substr($name, 6));
                 }
                 break;

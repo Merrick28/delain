@@ -46,10 +46,7 @@ if ($has_concentration != 0)
 //
 
 $contenu_page .= '<div class="titre">Bonus permanents</div>';
-$req_bonus = "select bonus_degats_melee($perso_cod) as melee,bonus_arme_distance($perso_cod) as distance";
-$db->query($req_bonus);
-$db->next_record();
-$contenu_page .= 'Bonus aux dégâts en corps-à-corps : <strong>' . $db->f("melee") . ' dégât(s)</strong><br>';
+$contenu_page .= 'Bonus aux dégâts en corps-à-corps : <strong>' . $perso->bonus_degats_melee() . ' dégât(s)</strong><br>';
 
 // Loop=0 pour bonus equipement  Loop=1 bonus temporaire
 for ($loop=0; $loop<2; $loop++) {
