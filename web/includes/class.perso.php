@@ -2876,7 +2876,7 @@ class perso
     }
 
 
-    public function perso_bonus_equimpement($equipement = false)
+    public function perso_bonus_equipement($equipement = false)
     {
         $pdo  = new bddpdo;
         $req  = "select tbonus_libc, 

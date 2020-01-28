@@ -1,0 +1,26 @@
+{# UTILISATION DES PA RESTANTS #}
+<div class="titre">Utilisation des PA restants</div>
+{{ PERSO.perso_nom }}
+<strong>{% if PERSO.perso_utl_pa_rest == 1 %}utilise{% else %}n'utilise pas{% endif %}</strong> ses PA restants pour réduire le temps de tour suivant.
+<a href="{{ PHP_SELF }}?m=2&ch_util={% if PERSO.perso_utl_pa_rest == 1 %}0{% else %}1{% endif %}">(changer ?)</a></br>
+
+{# CONCENTRATONS #}
+<div class="titre">Concentration</div>
+{% if not CONENTRATION == false %}
+    Vous êtes concentré(e) pendant {{ CONENTRATION.concentration_nb_tours }} tours.
+{% else %}
+    Vous n’avez effectué aucune concentration.
+{% endif %}
+<br/><a href="valide_concentration.php">Se concentrer ! (4 PA)</a>
+{% if HAS_CONCENTRATION %}
+    <br/><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration
+    précédente sera annulée !</em>
+{% endif %}
+
+{# BONUS PERMANENTS #}
+<div class="titre">Bonus permanents</div>
+Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} dégât(s)</strong><br>
+
+{# BONUS EQUIPEMENT #}
+<div class="titre">Bonus d'équipement</div>
+<table ><tr valign="top" ><td style="padding:15px;">
