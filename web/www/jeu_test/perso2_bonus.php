@@ -1,5 +1,4 @@
 <?php
-
 $perso = new perso;
 $perso->charge($perso_cod);
 if (isset($_REQUEST['ch_util']))
@@ -11,20 +10,15 @@ if (isset($_REQUEST['ch_util']))
 //
 /* Concentration */
 //
-$contenu_page      .= '<div class="titre">Concentration</div>';
 $concentration     = new concentrations();
 $has_concentration = false;
-
 if ($concentration->getByPerso($perso->perso_cod))
 {
     $has_concentration = true;
 }
-
 //
 /* BONUS PERMANENTS */
 //
-
-
 // Loop=0 pour bonus equipement  Loop=1 bonus temporaire
 for ($loop = 0; $loop < 2; $loop++)
 {
@@ -33,8 +27,7 @@ for ($loop = 0; $loop < 2; $loop++)
     {
         $equipement = true;
     }
-    $contenu_page .= '<div class="titre">' . ($equipement ? "Bonus d'équipement" : "Bonus temporaires") . '</div>
-<table ><tr valign="top" ><td style="padding:15px;">';
+
 
     $carac_orig            = new carac_orig;
     $tab_carac_orig[$loop] = $carac_orig->getByPersoCumul($perso->perso_cod, $equipement);
@@ -42,7 +35,6 @@ for ($loop = 0; $loop < 2; $loop++)
     $bonus_carac = array();
     $malus_carac = array();
     $record      = 0;
-    //while ($db->next_record()) {
     foreach ($tab_carac_orig[$loop] as $detail_carac_orig)
     {
         $carac      = $detail_carac_orig['corig_type_carac'];
@@ -76,20 +68,11 @@ for ($loop = 0; $loop < 2; $loop++)
 
     $tab_bonus[$loop] = $perso->perso_bonus_equipement($equipement);
 
-    if (count($tab_bonus[$loop]) + count($bonus_carac[$loop]) == 0)
+    if (count($tab_bonus[$loop]) + count($bonus_carac[$loop]) != 0)
     {
-        $contenu_page .= '<p>Vous n’avez aucun bonus ' . ($loop == 0 ? "d'équipement " : "") . 'en ce moment.</p>';
-    } else
-    {
-        $contenu_page .= '<table><tr>
-	<td class="soustitre2"><strong>Bonus</strong></td>
-	<td class="soustitre2"><strong>Valeur</strong></td>
-	<td class="soustitre2"><strong>Échéance</strong></td>
-	<td class=""></td>
-	</tr>';
         foreach ($tab_bonus[$loop] as $key => $detail_bonus)
         {
-            if (is_file(__DIR__ . "/../images/interface/bonus/" . $db->f('tbonus_libc') . ".png"))
+            if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_bonus['tbonus_libc'] . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $detail_bonus['tbonus_libc'] . '.png';
             } else
@@ -131,30 +114,12 @@ for ($loop = 0; $loop < 2; $loop++)
                 $img = "/../images/interface/bonus/MALUS.png";
             }
             $bonus_carac[$loop][$key]['img'] = $img;
-            $contenu_page                    .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
-			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
-			<td><div style='text-align:center;'>" . ($corig_mode == "Equipement" ? "Equipement" : $duree) . "</div></td>
-			<td><div style='text-align:center;'>$img</div></td>
-			</tr>";
+
         }
-        $contenu_page .= '</table>';
     }
-
-    $contenu_page .= '</td><td style="padding:15px;">';
-
     $tab_malus[$loop] = $perso->perso_malus_equipement($equipement);
-
-    if (count($tab_malus[$loop]) + count($malus_carac[$loop]) == 0)
+    if (count($tab_malus[$loop]) + count($malus_carac[$loop]) != 0)
     {
-        $contenu_page .= '<p>Vous n’avez aucun malus ' . ($loop == 0 ? "d'équipement " : "") . 'en ce moment.</p>';
-    } else
-    {
-        $contenu_page .= '<table><tr>
-	<td class="soustitre2"><strong>Malus</strong></td>
-	<td class="soustitre2"><strong>Valeur</strong></td>
-	<td class="soustitre2"><strong>Échéance</strong></td>
-	<td class=""></td>
-	</tr>';
         foreach ($tab_malus[$loop] as $key => $detail_malus)
         {
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_malus['tbonus_libc'] . ".png"))
@@ -197,15 +162,9 @@ for ($loop = 0; $loop < 2; $loop++)
                 $img = '/../images/interface/bonus/MALUS.png';
             }
             $malus_carac[$loop][$key]['img'] = $img;
-            $contenu_page .= "<tr><td class='soustitre2'><strong>$lib_carac</strong></td>
-			<td><div style='text-align:center;'>$signe" . "$valeur</div></td>
-			<td><div style='text-align:center;'>" . ($corig_mode == "Equipement" ? "Equipement" : $duree) . "</div></td>
-			<td><div style='text-align:center;'>$img</div></td>
-			</tr>";
+
         }
-        $contenu_page .= '</table>';
     }
-    $contenu_page .= '</td></tr></table>';
 }
 
 $template     = $twig->load('_perso2_bonus.twig');
@@ -220,8 +179,6 @@ $options_twig = array(
     'TAB_MALUS'         => $tab_malus,
     'BONUS_CARAC'       => $bonus_carac,
     'MALUS_CARAC'       => $malus_carac
-
-
 );
 $contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));
 
