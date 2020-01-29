@@ -1,0 +1,16 @@
+<p class="titre">{{ PERSO.perso_nom }} ({{ PERSO.perso_sex }} - {{ RACE.race_nom }}) - Date de création
+    : {{ PERSO.perso_dcreat|date('d/m/Y') }}
+<p class="soustitre">Perso n°{{ PERSO.perso_cod }}
+<p style="text-align:center;"><em>{{ PERSO.perso_desc|nl2br }}</em>
+<table width="100%" cellspacing="2">
+
+    <tr>
+        <td class="soustitre2">Niveau</td>
+        <td>{{ PERSO.perso_niveau }}<em>(prochain niveau à {{ PERSO.px_limite }} PX)</em></td>
+        <td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
+        <td>{{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Expérience</td>
+        <td>{{ PERSO.perso_px|round(0,floor) }}
