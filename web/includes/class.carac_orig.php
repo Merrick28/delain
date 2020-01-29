@@ -10,18 +10,18 @@
  */
 class carac_orig
 {
-    var $corig_perso_cod;
-    var $corig_type_carac;
-    var $corig_carac_valeur_orig;
-    var $corig_dfin;
-    var $corig_nb_tours;
-    var $corig_cod;
-    var $corig_mode   = 'S';
-    var $corig_valeur = 0;
-    var $corig_obj_cod;
-    var $corig_objbm_cod;
+    public $corig_perso_cod;
+    public $corig_type_carac;
+    public $corig_carac_valeur_orig;
+    public $corig_dfin;
+    public $corig_nb_tours;
+    public $corig_cod;
+    public $corig_mode   = 'S';
+    public $corig_valeur = 0;
+    public $corig_obj_cod;
+    public $corig_objbm_cod;
 
-    function __construct()
+    public function __construct()
     {
     }
 
@@ -31,14 +31,13 @@ class carac_orig
      * @return boolean => false si non trouvé
      * @global bdd_mysql $pdo
      */
-    function charge($code)
+    public function charge($code)
     {
         $pdo  = new bddpdo;
         $req  = "select * from carac_orig where corig_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch())
-        {
+        if (!$result = $stmt->fetch()) {
             return false;
         }
         $this->corig_perso_cod         = $result['corig_perso_cod'];
@@ -59,11 +58,10 @@ class carac_orig
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
      * @global bdd_mysql $pdo
      */
-    function stocke($new = false)
+    public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new)
-        {
+        if ($new) {
             $req  = "insert into carac_orig (
             corig_perso_cod,
             corig_type_carac,
@@ -102,8 +100,7 @@ class carac_orig
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        } else
-        {
+        } else {
             $req  = "update carac_orig
                     set
             corig_perso_cod = :corig_perso_cod,
@@ -136,14 +133,13 @@ class carac_orig
      * @return \carac_orig
      * @global bdd_mysql $pdo
      */
-    function getAll()
+    public function getAll()
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select corig_cod  from carac_orig order by corig_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new carac_orig;
             $temp->charge($result["corig_cod"]);
             $retour[] = $temp;
@@ -152,15 +148,14 @@ class carac_orig
         return $retour;
     }
 
-    function getByPerso($perso_cod)
+    public function getByPerso($perso_cod)
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select corig_cod  from carac_orig  where corig_perso_cod = :perso order by corig_cod";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(':perso' => $perso_cod), $stmt);
-        while ($result = $stmt->fetch())
-        {
+        while ($result = $stmt->fetch()) {
             $temp = new carac_orig;
             $temp->charge($result["corig_cod"]);
             $retour[] = $temp;
@@ -169,55 +164,52 @@ class carac_orig
         return $retour;
     }
 
-    function getByPersoCumul($perso_cod,$equipement = false)
+    public function getByPersoCumul($perso_cod, $equipement = false)
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select corig_type_carac,
             sum(corig_valeur) as bonus_carac,
-            to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin, 
+            to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin,
             coalesce(corig_nb_tours, 0) as corig_nb_tours,
             case when corig_mode='E' then 'Equipement' else corig_nb_tours::text end as corig_mode
         from carac_orig
         where corig_perso_cod = :perso_cod
         and corig_mode " . ($equipement ? "=" : "!=") . " 'E'
-        group by corig_type_carac, 
-            to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'), 
-            coalesce(corig_nb_tours, 0), 
-            case when corig_mode='E' then 'Equipement' else corig_nb_tours::text end
+        group by corig_type_carac,
+            to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'),
+            corig_nb_tours,
+            corig_mode
         order by corig_type_carac";
+
+
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(':perso' => $perso_cod), $stmt);
+        $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
 
         return $stmt->fetchAll();
     }
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6))
-        {
+        switch (substr($name, 0, 6)) {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6)))
-                {
+                if (property_exists($this, substr($name, 6))) {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "select corig_cod  from carac_orig where " . substr($name, 6) . " = ? order by corig_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch())
-                    {
+                    while ($result = $stmt->fetch()) {
                         $temp = new carac_orig;
                         $temp->charge($result["corig_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0)
-                    {
+                    if (count($retour) == 0) {
                         return false;
                     }
                     return $retour;
-                } else
-                {
+                } else {
                     die('Unknown variable ' . substr($name, 6) . ' in table carac_orig');
                 }
                 break;
