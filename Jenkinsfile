@@ -8,7 +8,7 @@ pipeline {
                 {
                     not {
                     changelog '.*^\\[ci skip\\] .+$'
-                    },
+                    }
                     env.CHANGE_ID == null
                 }
             }
@@ -36,7 +36,7 @@ pipeline {
                        {
                            not {
                            changelog '.*^\\[ci skip\\] .+$'
-                           },
+                           }
                            env.CHANGE_ID == null
                        }
             }
