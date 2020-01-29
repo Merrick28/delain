@@ -90,7 +90,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <tr>
                             <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
                                     {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
-                            $signe = ($detail_malus['bonus_valeur'] >= 0) ? '+' : '';
+
                             <td>
                                 <div style="text-align:center;">{% if detail_malus.bonus_valeur >= 0 %}+{% endif %}{{ detail_malus.bonus_valeur }}</div>
                             </td>
@@ -101,7 +101,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                     {% endif %}
                                 </div>
                             </td>
-                            <td style="text-align:center">{{ detail_malus.img }}</td>
+                            <td style="text-align:center"><img src="{{ detail_malus.img }}"></td>
                         </tr>
 
                     {% endfor %}
@@ -195,7 +195,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <tr>
                             <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
                                     {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
-                            $signe = ($detail_malus['bonus_valeur'] >= 0) ? '+' : '';
+
                             <td>
                                 <div style="text-align:center;">{% if detail_malus.bonus_valeur >= 0 %}+{% endif %}{{ detail_malus.bonus_valeur }}</div>
                             </td>
@@ -204,7 +204,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                                     {{ detail_malus.bonus_nb_tours }} tour(s)
                                 </div>
                             </td>
-                            <td style="text-align:center">{{ detail_malus.img }}</td>
+                            <td style="text-align:center"><img src="{{ detail_malus.img }}"></td>
                         </tr>
 
                     {% endfor %}
