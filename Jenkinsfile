@@ -6,9 +6,9 @@ pipeline {
             when {
                 allOf
                 {
-                    not {
+                    {not {
                     changelog '.*^\\[ci skip\\] .+$'
-                    };
+                    }},
                     env.CHANGE_ID == null
                 }
             }
@@ -34,9 +34,9 @@ pipeline {
             when {
                 allOf
                        {
-                           not {
+                           {not {
                            changelog '.*^\\[ci skip\\] .+$'
-                           };
+                           }},
                            env.CHANGE_ID == null
                        }
             }
