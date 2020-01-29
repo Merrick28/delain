@@ -20,11 +20,11 @@ begin
 	select into temp count(*)
 		from bonus,bonus_type
 		where bonus_perso_cod = v_perso
-		and bonus_tbonus_libc = tbonus_libc;
+		and bonus_tbonus_libc = tbonus_libc and bonus_mode != 'E' ;
 
 	select into temp_car count(*)
 		from carac_orig inner join perso on perso_cod = corig_perso_cod
-		where perso_cod = v_perso;
+		where perso_cod = v_perso and corig_mode !='E' ;
 
 	if temp+temp_car = 0 then
 		return 'Aucun bonus/malus magique';
