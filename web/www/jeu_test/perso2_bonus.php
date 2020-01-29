@@ -30,8 +30,8 @@ for ($loop = 0; $loop < 2; $loop++) {
     $carac_orig            = new carac_orig;
     $tab_carac_orig[$loop] = $carac_orig->getByPersoCumul($perso->perso_cod, $equipement);
 
-    $bonus_carac = array();
-    $malus_carac = array();
+    $bonus_carac[$loop] = array();
+    $malus_carac[$loop] = array();
     $record      = 0;
     foreach ($tab_carac_orig[$loop] as $detail_carac_orig) {
         $carac      = $detail_carac_orig['corig_type_carac'];
