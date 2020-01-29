@@ -4,8 +4,12 @@ pipeline {
     stages {
         stage('Build') {
             when {
-                not {
-                changelog '.*^\\[ci skip\\] .+$'
+                allOf
+                {
+                    not {
+                    changelog '.*^\\[ci skip\\] .+$'
+                    },
+                    env.CHANGE_ID == null
                 }
             }
             steps {
@@ -28,9 +32,13 @@ pipeline {
         }
         stage('Test') {
             when {
-                not {
-                changelog '.*^\\[ci skip\\] .+$'
-                }
+                allOf
+                       {
+                           not {
+                           changelog '.*^\\[ci skip\\] .+$'
+                           },
+                           env.CHANGE_ID == null
+                       }
             }
             steps {
 
