@@ -55,36 +55,7 @@ $db->next_record();
 $sexe   = $perso->perso_sex;
 $is_fam = $perso->is_fam();
 $redist = $perso->perso_redispatch;
-// Commenté par Reivax -- cause des problèmes avec le passage à l’UTF-8
-// Est-ce une protection anti-scripts ? Dans ce cas, je ne comprends pas pourquoi les Ç (chr(128)) seraient impactés... Dans le doute, je place htmlspecialchars.
-/*$desc = str_replace(chr(128),";",$db->f("perso_description"));
-$desc = str_replace(chr(127),";",$desc);*/
 
-
-/*if (($redist == 'P') && !$is_fam)
-	$contenu_page .= '<p style="text-align:center;"><strong><a href="action.php?methode=redist">Redistribuer les améliorations</a></strong><br>
-	ATTENTION ! ACTION IMMEDIATE ET DEFINITIVE !<br>(entre autres, les sorts mis dans les réceptacles sont perdus)';*/
-
-$contenu_page .= '
-<table width="100%" cellspacing="2">
-
-<tr>
-<td class="soustitre2">Niveau </td>
-<td>' . $db->f("perso_niveau") . '<em>(prochain niveau à ' . $db->f("limite_niveau") . ' PX)</em></td>
-<td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
-<td>' . $db->f("dlt") . '</td></tr>
-
-<tr><td class="soustitre2">Expérience</td>
-<td>' . $db->f('perso_px');
-
-$contenu_page     .= '
-</td>
-<td class="soustitre2">Points d’action</td>
-<td>' . $db->f('perso_pa') . '</td>
-</tr>
-
-<tr>
-<td class="soustitre2">Points de vie</td>';
 $pv               = $db->f("perso_pv");
 $pv_max           = $db->f("perso_pv_max");
 $niveau_blessures = '';
@@ -104,7 +75,6 @@ if ($pv / $pv_max < 0.15)
 {
     $niveau_blessures = ' - ' . $tab_blessures[3];
 }
-$contenu_page .= '<td>' . $db->f('perso_pv') . '/' . $db->f('perso_pv_max') . $niveau_blessures . '</td>';
 $contenu_page .= '<td class="soustitre2">Nombre d’esquives ce tour</td>
 <td>' . $db->f('perso_nb_esquive') . '</td>
 </tr>
@@ -277,9 +247,11 @@ $contenu_page .= '</table>';
 $template     = $twig->load('_perso2_carac.twig');
 $options_twig = array(
 
-    'PERSO'    => $perso,
-    'PHP_SELF' => $PHP_SELF,
-    'RACE'     => $race
+    'PERSO'            => $perso,
+    'PHP_SELF'         => $PHP_SELF,
+    'RACE'             => $race,
+    'NIVEAU_BLESSURES' => $niveau_blessures,
+    'BM_CARACS'        => $bm_caracs
 
 );
 $contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));
