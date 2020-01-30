@@ -831,7 +831,7 @@ class perso
         $req    = "select perso_cod  from perso 
           where perso_nom like :perso_nom order by perso_cod
           and perso_actif = :perso_actif
-          and perso_type_perso = :type_perso";
+          and perso_type_perso = :perso_type_perso";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(
             array(
