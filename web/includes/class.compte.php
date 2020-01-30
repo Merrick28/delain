@@ -389,7 +389,7 @@ class compte
     {
         $retour = array();
         $pdo = new bddpdo;
-        $req = "SELECT compt_cod  FROM compte where compt_nom like :compt_nom ORDER BY compt_cod";
+        $req = "SELECT compt_cod  FROM compte where compt_nom ilike :compt_nom ORDER BY compt_cod";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":compt_nom" => '%' . $compt_nom . '%'),$stmt);
         while ($result = $stmt->fetch())

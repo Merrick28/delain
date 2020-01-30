@@ -829,7 +829,7 @@ class perso
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select perso_cod  from perso 
-          where perso_nom like :perso_nom 
+          where perso_nom ilike :perso_nom 
           and perso_actif = :perso_actif
           and perso_type_perso = :perso_type_perso
           order by perso_cod";
