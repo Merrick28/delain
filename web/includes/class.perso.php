@@ -829,9 +829,10 @@ class perso
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select perso_cod  from perso 
-          where perso_nom like :perso_nom order by perso_cod
+          where perso_nom like :perso_nom 
           and perso_actif = :perso_actif
-          and perso_type_perso = :perso_type_perso";
+          and perso_type_perso = :perso_type_perso
+          order by perso_cod";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(
             array(
