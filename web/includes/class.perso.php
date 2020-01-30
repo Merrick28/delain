@@ -824,6 +824,33 @@ class perso
         return $retour;
     }
 
+    public function getByNomLike($perso_nom,$perso_actif = 'O', $perso_type_perso = 1)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select perso_cod  from perso 
+          where perso_nom like :perso_nom order by perso_cod
+          and perso_actif = :perso_actif
+          and perso_type_perso = :type_perso";
+        $stmt   = $pdo->preapre($req);
+        $stmt = $pdo->execute(
+            array(
+                ":perso_nom" => '%' . $perso_nom . '%',
+                ":perso_actif" => $perso_actif,
+                ":perso_type_perso" => $perso_type_perso
+            ),
+            $stmt
+        );
+        while ($result = $stmt->fetch())
+        {
+            $temp = new perso;
+            $temp->charge($result["perso_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     public function has_evt_non_lu()
     {
         $ligne_evt = new ligne_evt();
