@@ -824,7 +824,7 @@ class perso
         return $retour;
     }
 
-    public function getByNomLike($perso_nom,$perso_actif = 'O', $perso_type_perso = 1)
+    public function getByNomLike($perso_nom, $perso_actif = 'O', $perso_type_perso = 1)
     {
         $retour = array();
         $pdo    = new bddpdo;
@@ -832,11 +832,11 @@ class perso
           where perso_nom like :perso_nom order by perso_cod
           and perso_actif = :perso_actif
           and perso_type_perso = :type_perso";
-        $stmt   = $pdo->preapre($req);
-        $stmt = $pdo->execute(
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(
             array(
-                ":perso_nom" => '%' . $perso_nom . '%',
-                ":perso_actif" => $perso_actif,
+                ":perso_nom"        => '%' . $perso_nom . '%',
+                ":perso_actif"      => $perso_actif,
                 ":perso_type_perso" => $perso_type_perso
             ),
             $stmt
@@ -2890,7 +2890,7 @@ class perso
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur < 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
-                    and bonus_mode ".($equipement ? "=" : "!=")." 'E'
+                    and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
                   group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
@@ -2917,7 +2917,7 @@ class perso
                   and
                     (tbonus_gentil_positif = 't' and bonus_valeur > 0
                     or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
-                    and bonus_mode ".($equipement ? "=" : "!=")." 'E'
+                    and bonus_mode " . ($equipement ? "=" : "!=") . " 'E'
                   group by tbonus_libc, tonbus_libelle, case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end, bonus_mode
                   order by tbonus_libc";
         $stmt = $pdo->prepare($req);
@@ -2931,7 +2931,7 @@ class perso
 
     function bonus_degats_melee()
     {
-        $pdo  = new bddpdo;
+        $pdo    = new bddpdo;
         $req    = "select bonus_degats_melee(:perso) as bonus_degats_melee";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
