@@ -29,7 +29,6 @@ while ($result = $stmt->fetch())
     ];
 }
 
-$arme_distance = $perso->has_arme_distance();
 $race          = new race;
 $race->charge($perso->perso_race_cod);
 
@@ -55,10 +54,6 @@ $db->next_record();
 $sexe   = $perso->perso_sex;
 $is_fam = $perso->is_fam();
 $redist = $perso->perso_redispatch;
-// Commenté par Reivax -- cause des problèmes avec le passage à l’UTF-8
-// Est-ce une protection anti-scripts ? Dans ce cas, je ne comprends pas pourquoi les Ç (chr(128)) seraient impactés... Dans le doute, je place htmlspecialchars.
-/*$desc = str_replace(chr(128),";",$db->f("perso_description"));
-$desc = str_replace(chr(127),";",$desc);*/
 
 
 /*if (($redist == 'P') && !$is_fam)
