@@ -65,28 +65,9 @@ $desc = str_replace(chr(127),";",$desc);*/
 	$contenu_page .= '<p style="text-align:center;"><strong><a href="action.php?methode=redist">Redistribuer les améliorations</a></strong><br>
 	ATTENTION ! ACTION IMMEDIATE ET DEFINITIVE !<br>(entre autres, les sorts mis dans les réceptacles sont perdus)';*/
 
-$contenu_page .= '
-<table width="100%" cellspacing="2">
 
-<tr>
-<td class="soustitre2">Niveau </td>
-<td>' . $db->f("perso_niveau") . '<em>(prochain niveau à ' . $db->f("limite_niveau") . ' PX)</em></td>
-<td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
-<td>' . $db->f("dlt") . '</td></tr>
-
-<tr><td class="soustitre2">Expérience</td>
-<td>' . $db->f('perso_px');
-
-$contenu_page     .= '
-</td>
-<td class="soustitre2">Points d’action</td>
-<td>' . $db->f('perso_pa') . '</td>
-</tr>
-
-<tr>
-<td class="soustitre2">Points de vie</td>';
-$pv               = $db->f("perso_pv");
-$pv_max           = $db->f("perso_pv_max");
+$pv               = $perso->perso_pv;
+$pv_max           = $perso->perso_pv_max;
 $niveau_blessures = '';
 if ($pv / $pv_max < 0.75)
 {
@@ -104,89 +85,36 @@ if ($pv / $pv_max < 0.15)
 {
     $niveau_blessures = ' - ' . $tab_blessures[3];
 }
-$contenu_page .= '<td>' . $db->f('perso_pv') . '/' . $db->f('perso_pv_max') . $niveau_blessures . '</td>';
-$contenu_page .= '<td class="soustitre2">Nombre d’esquives ce tour</td>
-<td>' . $db->f('perso_nb_esquive') . '</td>
-</tr>
-<tr><td class="soustitre2">Renommée </td>
-<td>' . round($db->f('perso_renommee'), 2) . ' (' . $db->f('renommee') . ')</td>
-<td class="soustitre2">Renommée magique </td>
-<td nowrap>' . round($db->f("perso_renommee_magie"), 2) . ' (' . $db->f("renommee_magie") . ')</td>
-</tr>
-<tr>
-<td class="soustitre2">Renommée artisanale </td>
-<td>' . round($db->f('perso_renommee_artisanat'), 2) . ' (' . $db->f('renommee_artisanat') . ')</td>
-<td class="soustitre2">Karma </td>
-<td>' . $db->f('perso_kharma') . ' (' . $db->f('karma') . ')</td>
-</tr>
-<tr>
-<td height="3" colspan="4"><hr /></td>
-</tr>
 
-
-<tr>
-<td class="soustitre2">Force</td>
-<td>' . $db->f('perso_for') . (isset($bm_caracs["FOR"]) ? $bm_caracs["FOR"]["texte"] . " (" . ($db->f('perso_for') - $bm_caracs["FOR"]["base"]) . ")" : "") . '</td>
-<td class="soustitre2">Intelligence</td>
-<td>' . $db->f('perso_int') . (isset($bm_caracs["INT"]) ? $bm_caracs["INT"]["texte"] . " (" . ($db->f('perso_int') - $bm_caracs["INT"]["base"]) . ")" : "") . '</td>
-</tr>
-<tr>
-<td class="soustitre2">Dextérité</td>
-<td>' . $db->f('perso_dex') . (isset($bm_caracs["DEX"]) ? $bm_caracs["DEX"]["texte"] . " (" . ($db->f('perso_dex') - $bm_caracs["DEX"]["base"]) . ")" : "") . '</td>
-<td class="soustitre2">Constitution</td>
-<td>' . $db->f('perso_con') . (isset($bm_caracs["CON"]) ? $bm_caracs["CON"]["texte"] . " (" . ($db->f('perso_con') - $bm_caracs["CON"]["base"]) . ")" : "") . '</td>
-</tr>';
 // affichage des bonus
-$contenu_page .= '
-<tr>
-<td height="3" colspan="4"><hr /></td>
-</tr>
-<tr>
-<td class="soustitre2">Dégâts <em>(+ amélioration)</em></td>';
-$req_arme     = "select max(obj_des_degats) as obj_des_degats,
+
+$req_arme = "select max(obj_des_degats) as obj_des_degats,
 		max(obj_val_des_degats) as obj_val_des_degats,
 		sum(obj_bonus_degats) as obj_bonus_degats,
 		count(*) as nombre
 	from perso_objets
 	inner join objets on obj_cod = perobj_obj_cod
-	where perobj_perso_cod = $perso_cod 
+	where perobj_perso_cod = :perso
 		and perobj_equipe = 'O'";
-$db_arme      = new base_delain;
-$db_arme->query($req_arme);
-$db_arme->next_record();
-$nb_arme = $db_arme->f('nombre');
-if ($nb_arme == 0)
+$stmt     = $pdo->prepare($req_arme);
+$stmt     = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
+$result   = $stmt->fetch();
+if ($result['nombre'] == 0)
 {
     $nb_des  = 1;
     $val_des = 3;
     $bonus   = 0;
 } else
 {
-    $nb_des  = $db_arme->f("obj_des_degats");
-    $val_des = $db_arme->f("obj_val_des_degats");
-    $bonus   = $db_arme->f("obj_bonus_degats");
+    $nb_des  = $result['obj_des_degats'];
+    $val_des = $result['obj_val_des_degats'];
+    $bonus   = $result['obj_bonus_degats'];
 }
-$contenu_page .= '<td>' . $nb_des . 'D' . $val_des . '+' . $bonus;
-if (!$arme_distance)
-{
-    $contenu_page .= '<em>(+' . $db->f('perso_amelioration_degats') . ')</em>';
-} else
-{
-    $contenu_page .= '<em>(+' . $db->f('perso_amel_deg_dex') . ')</em>';
-}
-$contenu_page .= '</td>';
 
-if ($db->f("perso_niveau_vampire") == 0)
+
+if ($perso->perso_niveau_vampire == 0)
 {
-    $regAmelTxt   = ($db->f('perso_amelioration_regen') != 0 ?
-        '<em>(+ amélioration)</em>' :
-        '');
-    $regAmelVal   = ($db->f('perso_amelioration_regen') != 0 ?
-        '<em>(+ ' . $db->f('perso_amelioration_regen') . ')</em>' :
-        '');
-    $bonus_pv_reg = min(25, floor($db->f('perso_des_regen') * $db->f("perso_pv_max") / 100));
-    $contenu_page .= '<td class="soustitre2">Régénération ' . $regAmelTxt . ' </td>
-	<td>' . $db->f('perso_des_regen') . 'D' . $db->f('perso_valeur_regen') . '+' . $bonus_pv_reg . $regAmelVal . '</td></tr>';
+    $bonus_pv_reg = min(25, floor($perso->perso_des_regen * $perso->perso_pv_max / 100));
 } else
 {
     $vamp         = $db->f("perso_vampirisme") * 10;
@@ -277,9 +205,16 @@ $contenu_page .= '</table>';
 $template     = $twig->load('_perso2_carac.twig');
 $options_twig = array(
 
-    'PERSO'    => $perso,
-    'PHP_SELF' => $PHP_SELF,
-    'RACE'     => $race
+    'PERSO'            => $perso,
+    'PHP_SELF'         => $PHP_SELF,
+    'RACE'             => $race,
+    'NIVEAU_BLESSURES' => $niveau_blessures,
+    'BM_CARACS'        => $bm_caracs,
+    'NB_DES'           => $nb_des,
+    'VAL_DES'          => $val_des,
+    'BONUS'            => $bonus,
+    'BONUS_PV_REG'     => $bonus_pv_reg
+}
 
 );
 $contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));

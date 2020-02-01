@@ -13,4 +13,86 @@
 
     <tr>
         <td class="soustitre2">Expérience</td>
-        <td>{{ PERSO.perso_px|round(0,floor) }}
+        <td>{{ PERSO.perso_px|round(0,floor) }}</td>
+        <td class="soustitre2">Points d’action</td>
+        <td>{{ PERSO.perso_pa }}</td>
+    </tr>
+
+    <tr>
+        <td class="soustitre2">Points de vie</td>
+        <td>{{ PERSO.perso_pv }}/{{ PERSO.perso_pv_max }}{{ NIVEAU_BLESSURES }}</td>
+        <td class="soustitre2">Nombre d’esquives ce tour</td>
+        <td>{{ PERSO.perso_nb_esquive }}</td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Renommée</td>
+        <td>{{ PERSO.perso_renommee|round(2) }} ({{ PERSO.get_renommee }})</td>
+        <td class="soustitre2">Renommée magique</td>
+        <td nowrap>{{ PERSO.perso_renommee_magie|round(2) }} ({{ PERSO.get_renommee_magie }})</td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Renommée artisanale</td>
+        <td>{{ PERSO.perso_renommee_artisanat|round(2) }} ({{ PERSO.get_renommee_artisanat }})</td>
+        <td class="soustitre2">Karma</td>
+        <td>{{ PERSO.perso_kharma }} ({{ PERSO.get_rkarma }})</td>
+    </tr>
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+
+
+    <tr>
+        <td class="soustitre2">Force</td>
+        <td>{{ PERSO.perso_for }}{% if BM_CARACS.FOR is defined %} ({{ BM_CARACS.FOR.texte }}{{ PERSO.perso_for -  BM_CARACS.FOR.base }}){% endif %}
+        </td>
+        <td class="soustitre2">Intelligence</td>
+        <td>{{ PERSO.perso_int }}{% if BM_CARACS.INT is defined %} ({{ BM_CARACS.INT.texte }}{{ PERSO.perso_int -  BM_CARACS.INT.base }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Dextérité</td>
+        <td>{{ PERSO.perso_dex }}{% if BM_CARACS.DEX is defined %} ({{ BM_CARACS.DEX.texte }}{{ PERSO.perso_dex -  BM_CARACS.DEX.base }}){% endif %}
+        </td>
+        <td class="soustitre2">Constitution</td>
+        <td>{{ PERSO.perso_con }}{% if BM_CARACS.CON is defined %} ({{ BM_CARACS.CON.texte }}{{ PERSO.perso_con -  BM_CARACS.CON.base }}){% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td height="3" colspan="4">
+            <hr/>
+        </td>
+    </tr>
+    <tr>
+        <td class="soustitre2">Dégâts <em>(+ amélioration)</em></td>
+        <td>{{ NB_DES }}D{{ VAL_DES }}+{{ BONUS }}
+            {% if PERSO.has_arme_distance %}
+                <em>(+{{ PERSO.perso_amelioration_degats }})</em>
+            {% else %}
+                <em>(+{{ PERSO.perso_amel_deg_dex }})</em>
+            {% endif %}
+        </td>
+        {% if PERSO.perso_niveau_vampire == 0 %}
+        <td class="soustitre2">Régénération
+
+            {% if PERSO.perso_amelioration_regen != 0 %}
+
+                <em>(+ amélioration)</em>
+            {% endif %}
+            {% endif %}
+
+            $bonus_pv_reg = min(25, floor($db->f('perso_des_regen') * $db->f("perso_pv_max") / 100));
+
+        </td>
+        <td>{{ PERSO.perso_des_regen }}D{{ PERSO.perso_valeur_regen }}+{{ BONUS_PV_REG }}
+            {% if PERSO.perso_amelioration_regen != 0 %}
+                <em>(+ {{ PERSO.perso_amelioration_regen }})</em>
+            {% endif %}
+        </td>
+
+        {% else %}
+        <td class="soustitre2">Vampirisme</td>
+        <td>{{ PERSO.perso_vampirisme * 10 }}'</td>
+    </tr>
+    {% endif %}
