@@ -1,7 +1,10 @@
 <script type="text/javascript">
     var affichePersosCoterie = true;
 </script>
-<?php $marquerQuatriemes = $db->is_admin_monstre($compt_cod);
+<?php
+require_once "fonctions.php";
+
+$marquerQuatriemes = $db->is_admin_monstre($compt_cod);
 $param = new parametres();
 $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
 $db->query($req_malus_desorientation);
@@ -109,27 +112,13 @@ $nb_joueur_en_vue = $db->nf();
                 $meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
 
                 $is_tangible = $db->f("perso_tangible");
-                $niveau_blessures = '';
+
                 $pv = $db->f("perso_pv");
                 $num_perso = $db->f("perso_cod");
                 $pv_max = $db->f("perso_pv_max");
+                $niveau_blessures = niveau_blessures($pv,$pv_max);
 
-                if ($pv / $pv_max < 0.75)
-                {
-                    $niveau_blessures = ' - ' . $tab_blessures[0];
-                }
-                if ($pv / $pv_max < 0.5)
-                {
-                    $niveau_blessures = ' - ' . $tab_blessures[1];
-                }
-                if ($pv / $pv_max < 0.25)
-                {
-                    $niveau_blessures = ' - ' . $tab_blessures[2];
-                }
-                if ($pv / $pv_max < 0.15)
-                {
-                    $niveau_blessures = ' - ' . $tab_blessures[3];
-                }
+
                 $aff_tangible = $palbable[$is_tangible];
                 $req_guilde = "select guilde_nom,guilde_cod from guilde,guilde_perso where pguilde_perso_cod = $num_perso and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod ";
                 $db_guilde = new base_delain;

@@ -492,3 +492,25 @@ function getUserIpAddr()
     }
     return $ip;
 }
+
+function niveau_blessures($pv,$pv_max){
+    global $tab_blessures;
+    $niveau_blessures = '';
+    if ($pv / $pv_max < 0.75)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[0];
+    }
+    if ($pv / $pv_max < 0.5)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[1];
+    }
+    if ($pv / $pv_max < 0.25)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[2];
+    }
+    if ($pv / $pv_max < 0.15)
+    {
+        $niveau_blessures = ' - ' . $tab_blessures[3];
+    }
+    return $niveau_blessures;
+}

@@ -1,5 +1,6 @@
 <?php
 include "../includes/constantes.php";
+require_once "foncions.php";
 $db = new base_delain;
 
 // position
@@ -56,23 +57,8 @@ if (count($tab_vue) != 0)
                 {
                     $pv               = $detail_vue["perso_pv"];
                     $pv_max           = $detail_vue["perso_pv_max"];
-                    $niveau_blessures = '';
-                    if ($pv / $pv_max < 0.75)
-                    {
-                        $niveau_blessures = ' - ' . $tab_blessures[0];
-                    }
-                    if ($pv / $pv_max < 0.5)
-                    {
-                        $niveau_blessures = ' - ' . $tab_blessures[1];
-                    }
-                    if ($pv / $pv_max < 0.25)
-                    {
-                        $niveau_blessures = ' - ' . $tab_blessures[2];
-                    }
-                    if ($pv / $pv_max < 0.15)
-                    {
-                        $niveau_blessures = ' - ' . $tab_blessures[3];
-                    }
+                    $niveau_blessures = niveau_blessures($pv,$pv_max);
+
                     $nom         = str_replace("\\", " ", $detail_vue["perso_nom"]);
                     $nom         = str_replace("'", "\'", $nom);
                     $type_perso  = $detail_vue["perso_type_perso"];
