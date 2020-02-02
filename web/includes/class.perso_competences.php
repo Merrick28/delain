@@ -21,15 +21,15 @@ class perso_competences
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
         $pdo = new bddpdo;
         if ($new)
         {
-            $req = "insert into perso_competences (
+            $req  = "insert into perso_competences (
             pcomp_perso_cod,
             pcomp_pcomp_cod,
             pcomp_modificateur                        )
@@ -41,61 +41,60 @@ class perso_competences
     returning pcomp_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pcomp_perso_cod" => $this->pcomp_perso_cod,
-                ":pcomp_pcomp_cod" => $this->pcomp_pcomp_cod,
-                ":pcomp_modificateur" => $this->pcomp_modificateur,
-            ), $stmt);
+                                      ":pcomp_perso_cod"    => $this->pcomp_perso_cod,
+                                      ":pcomp_pcomp_cod"    => $this->pcomp_pcomp_cod,
+                                      ":pcomp_modificateur" => $this->pcomp_modificateur,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
-            $req = "update perso_competences
+            $req  = "update perso_competences
                     set
             pcomp_perso_cod = :pcomp_perso_cod,
             pcomp_pcomp_cod = :pcomp_pcomp_cod,
             pcomp_modificateur = :pcomp_modificateur                        where pcomp_cod = :pcomp_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pcomp_cod" => $this->pcomp_cod,
-                ":pcomp_perso_cod" => $this->pcomp_perso_cod,
-                ":pcomp_pcomp_cod" => $this->pcomp_pcomp_cod,
-                ":pcomp_modificateur" => $this->pcomp_modificateur,
-            ), $stmt);
+                                      ":pcomp_cod"          => $this->pcomp_cod,
+                                      ":pcomp_perso_cod"    => $this->pcomp_perso_cod,
+                                      ":pcomp_pcomp_cod"    => $this->pcomp_pcomp_cod,
+                                      ":pcomp_modificateur" => $this->pcomp_modificateur,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de perso_competences
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
-        $pdo = new bddpdo;
-        $req = "select * from perso_competences where pcomp_cod = ?";
+        $pdo  = new bddpdo;
+        $req  = "select * from perso_competences where pcomp_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
         }
-        $this->pcomp_cod = $result['pcomp_cod'];
-        $this->pcomp_perso_cod = $result['pcomp_perso_cod'];
-        $this->pcomp_pcomp_cod = $result['pcomp_pcomp_cod'];
+        $this->pcomp_cod          = $result['pcomp_cod'];
+        $this->pcomp_perso_cod    = $result['pcomp_perso_cod'];
+        $this->pcomp_pcomp_cod    = $result['pcomp_pcomp_cod'];
         $this->pcomp_modificateur = $result['pcomp_modificateur'];
         return true;
     }
 
     function getByPersoComp($perso, $comp)
     {
-        $pdo = new bddpdo;
-        $req = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_pcomp_cod = ?";
+        $pdo  = new bddpdo;
+        $req  = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_pcomp_cod = ?";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($perso,$comp), $stmt);
+        $stmt = $pdo->execute(array($perso, $comp), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;
@@ -113,13 +112,13 @@ class perso_competences
     function getByPersoTypeComp($perso, $typecomp)
     {
         $return = array();
-        $pdo = new bddpdo;
-        $req = "select pcomp_cod from perso_competences,competences
+        $pdo    = new bddpdo;
+        $req    = "select pcomp_cod from perso_competences,competences
             where pcomp_perso_cod = ? 
             and pcomp_pcomp_cod = comp_cod
             and comp_typc_cod = ?";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($perso,$typecomp), $stmt);
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso, $typecomp), $stmt);
 
 
         while ($result = $stmt->fetch())
@@ -127,6 +126,10 @@ class perso_competences
 
             $temp = new perso_competences();
             $temp->charge($result['pcomp_cod']);
+            $comp = new competences();
+            $comp->charge($temp->pcomp_pcomp_cod);
+            $temp->competence = $comp;
+            unset($comp);
             $return[] = $temp;
             unset($temp);
         }
@@ -136,15 +139,15 @@ class perso_competences
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \perso_competences
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
         $retour = array();
-        $pdo = new bddpdo;
-        $req = "select pcomp_cod  from perso_competences order by pcomp_cod";
-        $stmt = $pdo->query($req);
+        $pdo    = new bddpdo;
+        $req    = "select pcomp_cod  from perso_competences order by pcomp_cod";
+        $stmt   = $pdo->query($req);
         while ($result = $stmt->fetch())
         {
             $temp = new perso_competences;
@@ -163,10 +166,11 @@ class perso_competences
                 if (property_exists($this, substr($name, 6)))
                 {
                     $retour = array();
-                    $pdo = new bddpdo;
-                    $req = "select pcomp_cod  from perso_competences where " . substr($name, 6) . " = ? order by pcomp_cod";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array($arguments[0]), $stmt);
+                    $pdo    = new bddpdo;
+                    $req    =
+                        "select pcomp_cod  from perso_competences where " . substr($name, 6) . " = ? order by pcomp_cod";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
                     {
                         $temp = new perso_competences;
@@ -179,10 +183,9 @@ class perso_competences
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 

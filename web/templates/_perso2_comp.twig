@@ -1,0 +1,17 @@
+<table style="width: 100%">
+    {% for typc in ALLTYPECOMP %}
+        {% if typc.typc_libelle|length != 0 %}
+            <tr>
+                <td colspan="2" class="soustitre"><p class="soustitre">{{ typc.typc_libelle }}</p></td>
+            </tr>
+
+            {% for comp in typc.liste_comp %}
+                <tr>
+                    <td class="soustitre2">{{ comp.competence.comp_libelle }}</td>
+                    <td>{{ comp.pcomp_modificateur }} %</td>
+                </tr>
+            {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+</table>
