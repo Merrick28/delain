@@ -11,13 +11,13 @@ services:
       - POSTGRES_USER=delain
       - POSTGRES_DB=delain
     volumes:
-      - ../sql_init:/docker-entrypoint-initdb.d
+      - /home/steph/tmpdata:/docker-entrypoint-initdb.d
       - ../:/home/delain/delain
       - ./conf.php:/home/delain/delain/web/www/includes/conf.php
       # Décommentez la ligne ci dessous si vous voulez
       # garder une database persistante
       # pensez à changer le chemin local
-      # - /home/steph/data_delain:/var/lib/postgresql/data
+      - /home/steph/data_delain:/var/lib/postgresql/data
     container_name: delain_db
     ports:
       - 5432:5432

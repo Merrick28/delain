@@ -18,8 +18,8 @@ $req_bm_carac = "select corig_type_carac,
 	join bonus_type on tbonus_libc=corig_type_carac 
     where corig_perso_cod = :perso
 	group by corig_type_carac ";
-$pdo->prepare($req_bm_carac);
-$pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
+$stmt = $pdo->prepare($req_bm_carac);
+$stmt = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
 
 while ($result = $stmt->fetch())
 {
@@ -75,13 +75,14 @@ if ($perso->perso_utl_pa_rest == 1)
 }
 
 $perso_competence = new perso_competences();
+
 $pc88             = $perso_competence->getByPersoComp($perso->perso_cod, 88);
 $pc102            = $perso_competence->getByPersoComp($perso->perso_cod, 102);
 $pc103            = $perso_competence->getByPersoComp($perso->perso_cod, 103);
 
 
 $is_forgeamage = false;
-if (count($pc88) + count($pc102) + count($pc103) != 0)
+if (!$pc88 || !$pc102 || ! $pc102)
 {
     $is_forgeamage = true;
 }

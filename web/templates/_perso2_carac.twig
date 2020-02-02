@@ -1,19 +1,19 @@
 <p class="titre">{{ PERSO.perso_nom }} ({{ PERSO.perso_sex }} - {{ RACE.race_nom }}) - Date de création
     : {{ PERSO.perso_dcreat|date('d/m/Y') }}
 <p class="soustitre">Perso n°{{ PERSO.perso_cod }}
-<p style="text-align:center;"><em>{{ PERSO.perso_desc|nl2br }}</em>
+<p style="text-align:center;"><em>{{ PERSO.perso_description|nl2br }}</em>
 <table width="100%" cellspacing="2">
 
     <tr>
         <td class="soustitre2">Niveau</td>
-        <td>{{ PERSO.perso_niveau }}<em>(prochain niveau à {{ PERSO.px_limite }} PX)</em></td>
+        <td>{{ PERSO.perso_niveau }}<em> (prochain niveau à {{ PERSO.px_limite }} PX)</em></td>
         <td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
         <td>{{ PERSO.perso_dlt|date('d/m/Y H:i:s') }}</td>
     </tr>
 
     <tr>
         <td class="soustitre2">Expérience</td>
-        <td>{{ PERSO.perso_px|round(0,floor) }}</td>
+        <td>{{ PERSO.perso_px|round(0,'floor') }}</td>
         <td class="soustitre2">Points d’action</td>
         <td>{{ PERSO.perso_pa }}</td>
     </tr>
@@ -34,7 +34,7 @@
         <td class="soustitre2">Renommée artisanale</td>
         <td>{{ PERSO.perso_renommee_artisanat|round(2) }} ({{ PERSO.get_renommee_artisanat }})</td>
         <td class="soustitre2">Karma</td>
-        <td>{{ PERSO.perso_kharma }} ({{ PERSO.get_rkarma }})</td>
+        <td>{{ PERSO.perso_kharma|round(2) }} ({{ PERSO.get_karma }})</td>
     </tr>
     <tr>
         <td height="3" colspan="4">
@@ -74,67 +74,54 @@
             {% endif %}
         </td>
         {% if PERSO.perso_niveau_vampire == 0 %}
-        <td class="soustitre2">Régénération
+            <td class="soustitre2">Régénération
 
-            {% if PERSO.perso_amelioration_regen != 0 %}
+                {% if PERSO.perso_amelioration_regen != 0 %}
 
-                <em>(+ amélioration)</em>
-            {% endif %}
-            {% endif %}
+                    <em>(+ amélioration)</em>
+                {% endif %}
 
-            $bonus_pv_reg = min(25, floor($db->f('perso_des_regen') * $db->f("perso_pv_max") / 100));
-
-        </td>
-        <td>{{ PERSO.perso_des_regen }}D{{ PERSO.perso_valeur_regen }}+{{ BONUS_PV_REG }}
-            {% if PERSO.perso_amelioration_regen != 0 %}
-                <em>(+ {{ PERSO.perso_amelioration_regen }})</em>
-            {% endif %}
-        </td>
+            </td>
+            <td>{{ PERSO.perso_des_regen }}D{{ PERSO.perso_valeur_regen }}+{{ BONUS_PV_REG }}
+                {% if PERSO.perso_amelioration_regen != 0 %}
+                    <em>(+ {{ PERSO.perso_amelioration_regen }})</em>
+                {% endif %}
+            </td>
 
         {% else %}
-        <td class="soustitre2">Vampirisme</td>
-        <td>{{ PERSO.perso_vampirisme * 10 }}'</td>
+            <td class="soustitre2">Vampirisme</td>
+            <td>{{ PERSO.perso_vampirisme * 10 }}'</td>
+
+        {% endif %}
     </tr>
-    {% endif %}
     <tr>
         <td class="soustitre2">Armure <em>(+ amélioration)</em></td>
-        <td>{{ PERSO.armure }}'<em>(+ {{ PERSO.perso_amelioration_armure }})</em></td>
+        <td>{{ PERSO.armure }}<em>(+ {{ PERSO.perso_amelioration_armure }})</em></td>
         <td class="soustitre2">Vue <em>(+ amélioration)</em></td>
         <td>{{ PERSO.perso_vue }}<em>(+ {{ PERSO.perso_amelioration_vue }})</em></td>
     </tr>
 
     <tr>
         <td class="soustitre2">Temps normal de tour</td>
-        ';
-        $tab_normal = explode(";", $db->f('temps_tour'));
-        $contenu_page .= '
-        <td>{{ (PERSO.perso_temps_tour/60)|round(O,floor) }} h {{ PERSO.perso_temps_tour%60 }} m</td>
+
+        <td>{{ (PERSO.perso_temps_tour/60)|round(O,'floor') }} h {{ PERSO.perso_temps_tour%60 }} m</td>
         <td class="soustitre2">Malus temps lié aux blessures (à cet instant)</td>
-        <td>{{ (PERSO.allonge_temps/60)|round(O,floor) }} h {{ PERSO.allonge_temps%60 }} m</td>
+        <td>{{ (PERSO.allonge_temps/60)|round(O,'floor') }} h {{ PERSO.allonge_temps%60 }} m</td>
     </tr>
 
     <tr>
         <td class="soustitre2">Encombrement</td>
         <td>{{ PERSO.get_poids }}/{{ PERSO.perso_enc_max }}</td>
         <td class="soustitre2">Malus lié au poids transporté</td>
-        <td>{{ (PERSO.allonge_temps_poids/60)|round(O,floor) }} h {{ PERSO.mps_poids%60 }} m</td>
+        <td>{{ (PERSO.allonge_temps_poids/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids%60 }} m</td>
     </tr>
     <tr>
         <td></td>
         <td></td>
         <td class="soustitre2">Bonus liés aux PA restant <em>(à cet instant précis !)</em></td>
-        if ($db->f("perso_utl_pa_rest") == 1)
-        {
-        $tab_diminue = explode(";", $db->f('bonus_pa_temps_tour'));
-        } else
-        {
-        $tab_diminue[0] = 0;
-        $tab_diminue[1] = 0;
-        }
 
-        $contenu_page .= '
         <td>{% if PERSO.perso_utl_pa_rest == 1 %}
-                {{ (BONUS_TEMPS_PA/60)|round(O,floor) }} h {{ BONUS_TEMPS_PA%60 }} m
+                {{ (BONUS_TEMPS_PA/60)|round(O,'floor') }} h {{ BONUS_TEMPS_PA%60 }} m
             {% else %}0h 0m
             {% endif %}
         </td>
@@ -165,6 +152,6 @@
                 <td class="soustitre2" colspan="2">Énergie divine</td>
                 <td colspan="2">{{ DIEU_PERSO.dper_points }}'</td>
             </tr>
-       {% endif %}
+        {% endif %}
     {% endif %}
 </table>

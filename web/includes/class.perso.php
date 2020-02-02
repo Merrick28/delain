@@ -946,7 +946,7 @@ class perso
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee(:perso) as get_renommee";
         $stmt     = $pdo->prepare($req_arme);
-        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_renommee), $stmt);
         $result   = $stmt->fetch();
         return $result['get_renommee'];
     }
@@ -956,7 +956,7 @@ class perso
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee_magie(:perso) as get_renommee_magie";
         $stmt     = $pdo->prepare($req_arme);
-        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_renommee_magie), $stmt);
         $result   = $stmt->fetch();
         return $result['get_renommee_magie'];
     }
@@ -964,9 +964,9 @@ class perso
     public function get_karma()
     {
         $pdo      = new bddpdo;
-        $req_arme = "select get_karma(:perso::integer) as get_karma";
+        $req_arme = "select get_karma(:perso::numeric) as get_karma";
         $stmt     = $pdo->prepare($req_arme);
-        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_kharma), $stmt);
         $result   = $stmt->fetch();
         return $result['get_karma'];
     }
@@ -976,7 +976,7 @@ class perso
         $pdo      = new bddpdo;
         $req_arme = "select get_renommee_artisanat(:perso) as get_renommee_artisanat";
         $stmt     = $pdo->prepare($req_arme);
-        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_renommee_artisanat), $stmt);
         $result   = $stmt->fetch();
         return $result['get_renommee_artisanat'];
     }
