@@ -1,0 +1,125 @@
+<div style="padding:10px; text-align:left;">
+    {% for objet in OBJETS_POSSEDES %}
+        <div>Vous possédez l’objet <strong>{{ objet.obj_nom }}</strong> jusqu’au
+            <strong>{{ objet.dfin|date('d/m/Y H:i:s') }}</strong></div>
+    {% endfor %}
+    <div>{% if PERSO.is_locked %}Vous êtes actuellement engagé en combat.
+        {% else %}Vous êtes actuellement hors combat.
+        {% endif %}
+    </div>
+    <div>
+        {{ CONTENU_INCLUDE|raw }}
+    </div>
+    <a href="groupe.php">Accéder au menu coterie</a>
+    <hr>
+    <table width="100%" border="1">
+        <tr>
+            <td valign="top">
+                <table width="100%">
+                    <tr>
+                        <td class="titre">Blocages de combat</td>
+                        <td class="titre">Légitimes défenses</td>
+                    </tr>
+                    <tr>
+                        <td><strong>En tant que cible :</strong>
+                            {% if LOCK_CIBLE|length != 0 %}
+                                <table cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td class="soustitre2"><strong>Nom</strong></td>
+                                        <td class="soustitre2"><strong>Tours</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    {% for attaquant in LOCK_CIBLE %}
+                                        <tr>
+                                            <td class="soustitre2"><strong><a
+                                                            href="visu_evt_perso.php?visu={{ attaquant.attaquant.perso_cod }}">
+                                                        {{ attaquant.attaquant.perso_nom }}</a></strong></td>
+                                            <td style="text-align:center;">{{ attaquant.lock_nb_tours }}</td>
+                                            <td>
+                                                <a href="action.php?methode=desengagement&cible={{ attaquant.attaquant.perso_cod }}&valide=O">Se
+                                                    désengager ? ({{ COUT_DES }} PA)</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                Vous n’êtes pas bloqué en tant que cible.
+
+                            {% endif %}
+
+                            <br><strong>En tant qu’attaquant :</strong>
+                            {% if LOCK_ATTAQUANT|length != 0 %}
+                                <table cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td class="soustitre2"><strong>Nom</strong></td>
+                                        <td class="soustitre2"><strong>Tours</strong></td>
+                                        <td></td>
+                                    </tr>
+                                    {% for cible in LOCK_ATTAQUANT %}
+                                        <tr>
+                                            <td class="soustitre2"><strong><a
+                                                            href="visu_evt_perso.php?visu={{ cible.cible.perso_cod }}">
+                                                        {{ cible.cible.perso_nom }}</a></strong></td>
+                                            <td style="text-align:center;">{{ cible.lock_nb_tours }}</td>
+                                            <td>
+                                                <a href="action.php?methode=desengagement&cible={{ cible.cible.perso_cod }}&valide=O">Se
+                                                    désengager ? ({{ COUT_DES }} PA)</a></td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                Vous n’êtes pas bloqué en tant qu’attaquant.
+                            {% endif %}
+
+
+                        </td>
+
+                        <td><strong>En tant que cible :</strong>
+                            {% if RIPOSTE_CIBLE|length != 0 %}
+                                <table cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td class="soustitre2"><strong>Nom</strong></td>
+                                        <td class="soustitre2"><strong>Tours</strong></td>
+
+                                    </tr>
+                                    {% for attaquant in RIPOSTE_CIBLE %}
+                                        <tr>
+                                            <td class="soustitre2"><strong><a
+                                                            href="visu_evt_perso.php?visu={{ attaquant.attaquant.perso_cod }}">
+                                                        {{ attaquant.attaquant.perso_nom }}</a></strong></td>
+                                            <td style="text-align:center;">{{ attaquant.riposte_nb_tours }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                Vous n’avez aucune légitime défense.
+                            {% endif %}
+                            <br><strong>En tant qu’attaquant :</strong>
+                            {% if RIPOSTE_ATTAQUANT|length != 0 %}
+                                <table cellspacing="2" cellpadding="2">
+                                    <tr>
+                                        <td class="soustitre2"><strong>Nom</strong></td>
+                                        <td class="soustitre2"><strong>Tours</strong></td>
+
+                                    </tr>
+                                    {% for cible in RIPOSTE_ATTAQUANT %}
+                                        <tr>
+                                            <td class="soustitre2"><strong><a
+                                                            href="visu_evt_perso.php?visu={{ cible.cible.perso_cod }}">
+                                                        {{ cible.cible.perso_nom }}</a></strong>
+                                            </td>
+                                            <td style="text-align:center;">{{ cible.riposte_nb_tours }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            {% else %}
+                                Aucun perso ne peut utiliser la légitime défense contre vous.
+                            {% endif %}
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+
