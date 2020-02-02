@@ -46,7 +46,7 @@
 
     $pv               = $db->f("perso_pv");
     $pv_max           = $db->f("perso_pv_max");
-    $niveau_blessures = $niveau_blessures($pv, $pv_max);
+    $niveau_blessures = niveau_blessures($pv, $pv_max);
 
 
     if ($distance_vue > $dist_sort)

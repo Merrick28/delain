@@ -124,12 +124,13 @@ class perso_competences
 
         while ($result = $stmt->fetch())
         {
+
             $temp = new perso_competences();
             $temp->charge($result['pcomp_cod']);
             $return[] = $temp;
             unset($temp);
         }
-        return $result;
+        return $return;
 
     }
 
