@@ -70,7 +70,7 @@ if (isset($etage_actuel))
 ?>
 
 
-<table border="0" cellspacing="0" cellpadding="0" ID="tab_vue" bgcolor="#FFFFFF" >
+<table style="border-spacing : 0;" border="0" cellspacing="0" cellpadding="0" ID="tab_vue" bgcolor="#FFFFFF" >
 
 <?php 
 	$req_x = "select distinct pos_x from positions where pos_x between ($x_actuel - $distance_vue) and ($x_actuel + $distance_vue) and pos_etage = $etage_actuel order by pos_x";

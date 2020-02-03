@@ -121,336 +121,365 @@
             </div>
             <div id="enchanteur" style="padding:0px">
                 {% if PERSO.is_enchanteur %}
-                <img src="{{ G_IMAGES }}energi10.png" alt="">
-                <div title="{{ PERSO.perso_energie }}/100 énergie" alt="{{ PERSO.perso_energie }}/100 énergie"
-                     class="container-nrj">
-                    <div class="barre-nrj" style="width:{{ PERSO.barre_energie }}%">
+                    <img src="{{ G_IMAGES }}energi10.png" alt="">
+                    <div title="{{ PERSO.perso_energie }}/100 énergie" alt="{{ PERSO.perso_energie }}/100 énergie"
+                         class="container-nrj">
+                        <div class="barre-nrj" style="width:{{ PERSO.barre_energie }}%">
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="divin" style="padding:0px">
+                {% if PERSO.is_fam_divin == 1 %}
+                    <img src="{{ G_IMAGES }}magie.gif" alt="">
+                    <div title="Énergie divine : {{ PERSO.energie_divine }}" alt="" Énergie divine
+                         : {{ PERSO.energie_divine }}"
+                    class="container-div">
+                    <div class="barre-div" style="width:{{ PERSO.barre_divin }}%"></div>
+                {% endif %}
+
+            </div>
+            <div id="xp" style="padding:0px"><img src="{{ G_IMAGES }}iconexp.gif" alt="">
+                <div title="{{ PERSO.perso_px|round }} PX, prochain niveau à {{ PERSO.px_limite }}"
+                     alt="{{ PERSO.perso_px|round }}/{{ PERSO.px_limite }} PX" class="container-xp">
+                    <div class="barre-xp" style="width:{{ PERSO.barre_xp }}%"></div>
                 </div>
             </div>
-            {% endif %}
-        </div>
-        <div id="divin" style="padding:0px">
-            {% if PERSO.is_fam_divin == 1 %}
-                <img src="{{ G_IMAGES }}magie.gif" alt="">
-                <div title="Énergie divine : {{ PERSO.energie_divine }}" alt="" Énergie divine
-                     : {{ PERSO.energie_divine }}"
-                class="container-div">
-                <div class="barre-div" style="width:{{ PERSO.barre_divin }}%"></div>
-            {% endif %}
-
-        </div>
-        <div id="xp" style="padding:0px"><img src="{{ G_IMAGES }}iconexp.gif" alt="">
-            <div title="{{ PERSO.perso_px|round }} PX, prochain niveau à {{ PERSO.px_limite }}"
-                 alt="{{ PERSO.perso_px|round }}/{{ PERSO.px_limite }} PX" class="container-xp">
-                <div class="barre-xp" style="width:{{ PERSO.barre_xp }}%"></div>
+            <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
+                <strong>{{ DEG_MIN }}-{{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
+                                                                 alt=" ">
+                <img src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def">
+                <strong>{{ PERSO.armure }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
+                                                        alt=" ">
             </div>
-        </div>
-        <div id="degats"><img src="{{ G_IMAGES }}att.gif" title="fourchette de dégats" alt="Att">
-            <strong>{{ DEG_MIN }}-{{ DEG_MAX }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
-                                                               alt=" ">
-            <img src="{{ G_IMAGES }}def.gif" title="Armure" alt="Def">
-            <strong>{{ PERSO.armure }}</strong><img src="{{ G_IMAGES }}del.gif" height="2" width="8"
-                                                    alt=" ">
-        </div>
-        <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
-            <strong>{{ POSITION.pos_y }}</strong>
-            {% if not PERSO.is_fam %}
+            <div id="position" style="padding-top:10px;">X: <strong>{{ POSITION.pos_x }}</strong>&nbsp;&nbsp;Y:
+                <strong>{{ POSITION.pos_y }}</strong>
+                {% if not PERSO.is_fam %}
 
-                {% if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                {% else %}
-                    {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                    {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
-                    {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% if PERSO.is_locked() %}&nbsp;<span class="badge-profil">{{ PERSO.nb_locks() }}</span><img
+                            src="{{ G_IMAGES }}run.png" title="Déplacement" alt="Dep">:
+                        <strong>{{ PERSO.get_pa_dep() }}</strong>
+                    {% else %}
+                        {% if PERSO.get_pa_dep()==4 %}<img src="{{ G_IMAGES }}footsteps.png" title="Déplacement"
+                                                           alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% elseif PERSO.get_pa_dep()<4 %}<img src="{{ G_IMAGES }}footgreen.png" title="Déplacement"
+                                                              alt="Dep">: <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% else %}<img src="{{ G_IMAGES }}footred.png" title="Déplacement" alt="Dep">:
+                            <strong>{{ PERSO.get_pa_dep() }}</strong>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
-            {% endif %}
-            <br><strong><a
-                        href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
-                                                   style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
-                </a></strong>
-        </div>
-    </div>
-    <div style="padding:0 10 0 10px; text-align:center;">
-        {{ PERSO_ANIMATION|raw }}
-        <div id="passageniveau">
-            {% if PERSO.perso_px >= PERSO.px_limite %}
-                <hr/><a href="niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>
-            {% endif %}
-        </div>
-        <div id="quete">
-            {% if PERSO.is_perso_quete %}
-                <hr/><a href="quete_perso.php"><strong>Quête</strong></a>
-            {% endif %}
-        </div>
-        <div id="lieu">
-            {% if PERSO.is_lieu %}
-                <hr/>
-
-                <a href="lieu.php">
-
-
-                    <strong>{{ LIEU.lieu.lieu_nom }}</strong> ({{ LIEU.lieu_type.tlieu_libelle }})</a>
-            {% endif %}
-        </div>
-    </div>
-    {% if PERSO.get_favoris|length > 0 %}
-        <div  style="padding:0px 10px 0px 10px; text-align:left;">
-            <div id="barre-favoris">
-                <hr/>
-                {% for fav in PERSO.get_favoris %}
-                    <div id="fav-link-{{ fav.pfav_cod }}">
-                        <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a>
-                    </div>
-                {% endfor %}
+                <br><strong><a
+                            href="desc_etage.php"><img alt="" src="/images/iconmap.gif"
+                                                       style="height:12px;border:0px;"/>{{ ETAGE.etage_libelle }}
+                    </a></strong>
             </div>
         </div>
-    {% else %}
-        <div  style="padding:0px 10px 0px 10px; text-align:left;">
-            <div id="barre-favoris" style="display:none;"></div>
+        <div style="padding:0 10 0 10px; text-align:center;">
+            {{ PERSO_ANIMATION|raw }}
+            <div id="passageniveau">
+                {% if PERSO.perso_px >= PERSO.px_limite %}
+                    <hr/><a href="niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>
+                {% endif %}
+            </div>
+            <div id="quete">
+                {% if PERSO.is_perso_quete %}
+                    <hr/><a href="quete_perso.php"><strong>Quête</strong></a>
+                {% endif %}
+            </div>
+            <div id="lieu">
+                {% if PERSO.is_lieu %}
+                    <hr/>
+
+                    <a href="lieu.php">
+
+
+                        <strong>{{ LIEU.lieu.lieu_nom }}</strong> ({{ LIEU.lieu_type.tlieu_libelle }})</a>
+                {% endif %}
+            </div>
         </div>
-    {% endif %}
-    <div id="dropdown-button">&or;</div>
-</div>
-<div id="dropdown-menu" class="dropdown-content">
-
-    <hr>
-    <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="/jeu_test/perso2.php">Fiche de perso</a><br>
-    <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
-    <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
-    {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
-        <img src="{{ G_IMAGES }}calice.png"> <a href="/jeu_test/quete_auto.php"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}<strong>{% endif %}Mes quêtes
-        {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
-            ({{ PERSO.perso_nb_auto_quete.nb_encours }})
-        {% endif %}{% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}</strong>{% endif %}
-    </a><br>
-
-    {% endif %}
-    <hr/>
-
-    <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/inventaire.php">Inventaire</a><br>
-    <div id="ramasser">
-        {% if (PERSO.nb_obj_case != 0) or (PERSO.nb_or_case != 0) %}
-            <img src="{{ G_IMAGES }}ramasser.gif" alt="">
-            {% if PERSO.perso_pa >= PA_RAMASSE %}
-                <a href="/jeu_test/ramasser.php">
-            {% endif %}
-            Ramasser ({{ PA_RAMASSE }} PA)
-
-            {% if PERSO.perso_pa >= PA_RAMASSE %}
-                </a>
-            {% endif %}
+        {% if PERSO.get_favoris|length > 0 %}
+            <div style="padding:0px 10px 0px 10px; text-align:left;">
+                <div id="barre-favoris">
+                    <hr/>
+                    {% for fav in PERSO.get_favoris %}
+                        <div id="fav-link-{{ fav.pfav_cod }}">
+                            <img src="{{ G_IMAGES }}favoris.png" alt=""> <a href="{{ fav.link }}">{{ fav.nom }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <div style="padding:0px 10px 0px 10px; text-align:left;">
+                <div id="barre-favoris" style="display:none;"></div>
+            </div>
         {% endif %}
-
+        <div id="dropdown-button">&or;</div>
     </div>
+    <div id="dropdown-menu" class="dropdown-content">
 
-    <div id="transaction"><img src="{{ G_IMAGES }}transaction.gif" alt=""> <a
-                href="/jeu_test/transactions2.php">
-            {% if PERSO.transactions > 0 %}
-                <strong>Transactions ({{ PERSO.transactions }})</strong>
-            {% else %}
-                Transactions
-            {% endif %}</a><br/></div>
-    <hr/>
-
-    <div id="deplacement">
-        {% if not PERSO.is_fam %}
-            {% if (not PERSO.is_locked) and (DROIT.controle != 'O') %}
-                <img src="{{ G_IMAGES }}deplacement.gif" alt="">
-                <a href="/jeu_test/deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
-            {% endif %}
-            {% if (PERSO.is_locked) and (DROIT.controle != 'O') %}
-                <img src="{{ G_IMAGES }}fuite.gif" alt="">
-                <a href="/jeu_test/deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
-            {% endif %}
+        <hr>
+        <img src="{{ G_IMAGES }}ficheperso.gif" alt=""> <a href="/jeu_test/perso2.php">Fiche de perso</a><br>
+        <img src="{{ G_IMAGES }}vue.gif" alt=""> <strong><a href="/jeu_test/frame_vue.php">Vue</a></strong><br>
+        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
+        {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
+            <img src="{{ G_IMAGES }}calice.png"> <a
+                href="/jeu_test/quete_auto.php"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}
+            <strong>{% endif %}Mes quêtes
+                {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
+                    ({{ PERSO.perso_nb_auto_quete.nb_encours }})
+                {% endif %}{% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}</strong>{% endif %}
+        </a><br>
 
         {% endif %}
+        <hr/>
 
+        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/inventaire.php">Inventaire</a><br>
+        <div id="ramasser">
+            {% if (PERSO.nb_obj_case != 0) or (PERSO.nb_or_case != 0) %}
+                <img src="{{ G_IMAGES }}ramasser.gif" alt="">
+                {% if PERSO.perso_pa >= PA_RAMASSE %}
+                    <a href="/jeu_test/ramasser.php">
+                {% endif %}
+                Ramasser ({{ PA_RAMASSE }} PA)
 
-    </div>
-
-    <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="/jeu_test/combat.php">Combat
-            !</a></strong><br>
-
-    <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="/jeu_test/magie.php">Magie !</a></strong><br>
-
-    {% if (PERSO.sort_lvl5 > 0) and (PERSO.sort_memo > 5) %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/choix_voie_magique.php">Voie magique</a><br>'
-    {% endif %}
-
-    <hr/>
-
-    {% if PERSO.is_enchanteur %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enchantement_general.php">Forgeamage</a><br>
-    {% endif %}
-
-    {% if PERSO.has_competence(83) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/objets/pioche.php">Creuser</a><br>
-    {% endif %}
-
-    {% if PERSO.is_enlumineur %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enluminure_general.php">Enluminure</a><br>
-    {% endif %}
-
-    {% if PERSO.is_potions %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/comp_potions.php">Alchimie</a><br>
-    {% endif %}
-
-    {% if (PERSO.is_religion) or (PERSO.is_fidele_gerant) or (PERSO.is_admin_dieu) %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/religion.php">Religion</a><br>
-    {% endif %}
-
-    {% if PERSO.has_competence(81) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_enseignement.php">Enseignement</a><br>
-    {% endif %}
-
-    <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
-            href="/jeu_test/concentration.php">Concentration</a><br>
-
-    {% if PERSO.has_competence(86) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_vol.php">Vol</a><br>
-    {% endif %}
-
-    <hr/>
-    <div id="messagerie"><img src="{{ G_IMAGES }}messagerie.gif" alt="">
-        <a href="/jeu_test/messagerie2.php">
-            {% if NB_MSG != 0 %}
-                <strong>Messagerie ({{ NB_MSG }})</strong>
-            {% else %}
-                Messagerie
+                {% if PERSO.perso_pa >= PA_RAMASSE %}
+                    </a>
+                {% endif %}
             {% endif %}
-        </a>
-    </div>
 
-    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/guilde.php">Guilde</a><br/>
-    <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/groupe.php">Coterie</a>
-    <hr/>
+        </div>
 
-    {% if DROIT.controle == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/visu_amelioration.php">Améliorations</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/detail_compte.php">Détail du compte</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches sur comptes</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions 4e
-        persos</a><br>
-    {% endif %}
+        <div id="transaction"><img src="{{ G_IMAGES }}transaction.gif" alt=""> <a
+                    href="/jeu_test/transactions2.php">
+                {% if PERSO.transactions > 0 %}
+                    <strong>Transactions ({{ PERSO.transactions }})</strong>
+                {% else %}
+                    Transactions
+                {% endif %}</a><br/></div>
+        <hr/>
 
-    {% if DROIT.controle_admin == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_admins.php">Controle admins</a><br>
-    {% endif %}
+        <div id="deplacement">
+            {% if not PERSO.is_fam %}
+                {% if (not PERSO.is_locked) and (DROIT.controle != 'O') %}
+                    <img src="{{ G_IMAGES }}deplacement.gif" alt="">
+                    <a href="/jeu_test/deplacement.php">Déplacement ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                {% endif %}
+                {% if (PERSO.is_locked) and (DROIT.controle != 'O') %}
+                    <img src="{{ G_IMAGES }}fuite.gif" alt="">
+                    <a href="/jeu_test/deplacement.php">Fuite ({{ PERSO.get_pa_dep }} PA)</a><br/>
+                {% endif %}
 
-    {% if DROIT.acces_logs == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_visu_logs.php">Voir les logs</a><br>
-    {% endif %}
-
-    {% if DROIT.droits == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_gestion_droits.php">Gestion des droits</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_params.php">Gestion des paramètres</a><br>
-    {% endif %}
-
-    {% if DROIT.modif_perso == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a><br>
-    {% endif %}
-
-    {% if DROIT.modif_gmon == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_type_monstre_edit.php">Modif. types monstre</a>
-        <br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_repartition_monstres.php">Modif. répart.
-        monstres</a><br>
-    {% endif %}
+            {% endif %}
 
 
-    {% if DROIT.objet == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_objet_generique_edit.php">Gestion objets
-        generiques</a><br>
-    {% endif %}
+        </div>
 
-    {% if DROIT.carte == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_etage.php">Modif. étages</a><br>
-    {% endif %}
+        <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <strong><a href="/jeu_test/combat.php">Combat
+                !</a></strong><br>
 
-    {% if DROIT.enchantements == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enluminure.php">Enluminure</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_magie.php">Modif. sorts</a><br>
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif. bonus/malus</a><br>
-    {% endif %}
+        <img src="{{ G_IMAGES }}magie.gif" alt=""> <strong><a href="/jeu_test/magie.php">Magie !</a></strong><br>
 
-    {% if DROIT.potions == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_potions.php">Création de potions</a><br>
-    {% endif %}
+        {% if (PERSO.sort_lvl5 > 0) and (PERSO.sort_memo > 5) %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/choix_voie_magique.php">Voie magique</a><br>
+        {% endif %}
 
-    {% if DROIT.modif_perso == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_quete_auto_edit.php">Quetes auto</a><br>
-    {% endif %}
+        <hr/>
 
-    {% if DROIT.factions == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_factions.php">Factions</a><br>
-    {% endif %}
+        {% if PERSO.is_enchanteur %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enchantement_general.php">Forgeamage</a><br>
+        {% endif %}
 
-    {% if DROIT.news == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_news.php">Lancer une news</a><br>
-    {% endif %}
+        {% if PERSO.has_competence(83) %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/objets/pioche.php">Creuser</a><br>
+        {% endif %}
 
-    {% if DROIT.animations == 'O' %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_animations.php">Animations</a><br>
-    {% endif %}
+        {% if PERSO.is_enlumineur %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/enluminure_general.php">Enluminure</a><br>
+        {% endif %}
 
-    {% if PERSO.perso_admin_echoppe == 'O' %}
-        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/admin_echoppe.php">Admin. échoppes</a><br>
-    {% endif %}
+        {% if PERSO.is_potions %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/comp_potions.php">Alchimie</a><br>
+        {% endif %}
 
-    {% if GERANT == 'O' %}
-        <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/gere_echoppe.php">Gestion échoppes</a><br>
-    {% endif %}
+        {% if (PERSO.is_religion) or (PERSO.is_fidele_gerant) or (PERSO.is_admin_dieu) %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/religion.php">Religion</a><br>
+        {% endif %}
 
-    {% if PERSO.has_competence(80) %}
-        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_commandement.php">Commandement</a><br>
-    {% endif %}
+        {% if PERSO.has_competence(81) %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
+                href="/jeu_test/comp_enseignement.php">Enseignement</a><br>
+        {% endif %}
 
-    {% if COMPTE.is_admin_monstre %}
-        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/option_monstre.php">Option du monstre</a><br>
-    {% endif %}
+        <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
+                href="/jeu_test/concentration.php">Concentration</a><br>
 
-    {% if (COMPTE.is_admin_monstre) and (DROIT.modif_perso) %}
-        <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
-    {% endif %}
+        {% if PERSO.has_competence(86) %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a href="/jeu_test/comp_vol.php">Vol</a><br>
+        {% endif %}
 
-    {% if PERSO.is_milice()  %}
-        <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <a href="/jeu_test/milice.php">Milice</a><br>
-    {% endif %}
+        <hr/>
+        <div id="messagerie"><img src="{{ G_IMAGES }}messagerie.gif" alt="">
+            <a href="/jeu_test/messagerie2.php">
+                {% if NB_MSG != 0 %}
+                    <strong>Messagerie ({{ NB_MSG }})</strong>
+                {% else %}
+                    Messagerie
+                {% endif %}
+            </a>
+        </div>
 
-    {% if PERSO.perso_niveau_vampire>0 %}
-        <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/vampirisme.php">Vampirisme</a><br>
-    {% endif %}
+        <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/guilde.php">Guilde</a><br/>
+        <img src="{{ G_IMAGES }}guilde.gif" alt=""/> <a href="/jeu_test/groupe.php">Coterie</a>
+        <hr/>
+
+        {% if DROIT.controle == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/visu_amelioration.php">Améliorations</a>
+            <br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/detail_compte.php">Détail du compte</a>
+            <br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/rech_compte.php">Recherches sur
+            comptes</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/multi_trace.php">Visu des multi</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/sitting.php">Sittings > 5 j.</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_interaction_4e.php">Intéractions
+            4e
+            persos</a><br>
+        {% endif %}
+
+        {% if DROIT.controle_admin == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/controle_admins.php">Controle admins</a>
+            <br>
+        {% endif %}
+
+        {% if DROIT.acces_logs == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_visu_logs.php">Voir les logs</a>
+            <br>
+        {% endif %}
+
+        {% if DROIT.droits == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_gestion_droits.php">Gestion des
+            droits</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_params.php">Gestion des
+            paramètres</a><br>
+        {% endif %}
+
+        {% if DROIT.modif_perso == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_perso_edit.php">Modif. perso</a>
+            <br>
+        {% endif %}
+
+        {% if DROIT.modif_gmon == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_type_monstre_edit.php">Modif. types
+            monstre</a>
+            <br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_repartition_monstres.php">Modif.
+            répart.
+            monstres</a><br>
+        {% endif %}
 
 
-    <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion
-            compte</strong></a>
-    <hr/>
-    <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a>
-    - {% if COMPTE.is_admin_monstre %}
-    <a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>
-{% else %}
-    <a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>
-    {% endif %}<br>
-    <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{{ TYPE_FLUX }}{{ G_URL }}"
-                                                         target="_top">Accueil</a><br/>
+        {% if DROIT.objet == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_objet_generique_edit.php">Gestion
+            objets
+            generiques</a><br>
+        {% endif %}
 
-    <hr/>
-    <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{{ TYPE_FLUX }}{{ G_URL }}logout.php" target="_top">Se
-        déconnecter</a>
-    <hr/>
-    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
-        <input type="hidden" name="cmd" value="_s-xclick">
-        <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+        {% if DROIT.carte == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_etage.php">Modif. étages</a><br>
+        {% endif %}
+
+        {% if DROIT.enchantements == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a
+                href="/jeu_test/admin_enchantements.php">Enchantements</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_enluminure.php">Enluminure</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_magie.php">Modif. sorts</a><br>
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_bonusmalus.php">Modif.
+            bonus/malus</a><br>
+        {% endif %}
+
+        {% if DROIT.potions == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_potions.php">Création de
+            potions</a><br>
+        {% endif %}
+
+        {% if DROIT.modif_perso == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_quete_auto_edit.php">Quetes
+            auto</a><br>
+        {% endif %}
+
+        {% if DROIT.factions == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_factions.php">Factions</a><br>
+        {% endif %}
+
+        {% if DROIT.news == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_news.php">Lancer une news</a><br>
+        {% endif %}
+
+        {% if DROIT.animations == 'O' %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_animations.php">Animations</a><br>
+        {% endif %}
+
+        {% if PERSO.perso_admin_echoppe == 'O' %}
+            <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/admin_echoppe.php">Admin. échoppes</a>
+            <br>
+        {% endif %}
+
+        {% if GERANT == 'O' %}
+            <img src="{{ G_IMAGES }}inventaire.gif" alt=""> <a href="/jeu_test/gere_echoppe.php">Gestion échoppes</a>
+            <br>
+        {% endif %}
+
+        {% if PERSO.has_competence(80) %}
+            <img src="{{ G_IMAGES }}concentration.gif" alt=""> <a
+                href="/jeu_test/comp_commandement.php">Commandement</a><br>
+        {% endif %}
+
+        {% if COMPTE.is_admin_monstre %}
+            <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/option_monstre.php">Option du
+            monstre</a><br>
+        {% endif %}
+
+        {% if (COMPTE.is_admin_monstre) and (DROIT.modif_perso) %}
+            <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a
+                href="/jeu_test/admin_teleportation.php">Téléportation</a><br>
+        {% endif %}
+
+        {% if PERSO.is_milice() %}
+            <img src="{{ G_IMAGES }}attaquer.gif" alt=""> <a href="/jeu_test/milice.php">Milice</a><br>
+        {% endif %}
+
+        {% if PERSO.perso_niveau_vampire>0 %}
+            <img src="{{ G_IMAGES }}magie.gif" alt=""> <a href="/jeu_test/vampirisme.php">Vampirisme</a><br>
+        {% endif %}
+
+
+        <img src="{{ G_IMAGES }}iconeswitch.gif" alt=""> <a href="/jeu_test/switch.php"><strong>Gestion
+                compte</strong></a>
+        <hr/>
+        <img src="{{ G_IMAGES }}forum.gif" alt=""> <a href="http://forum.jdr-delain.net" target="_blank">Forum</a>
+        - {% if COMPTE.is_admin_monstre %}
+        <a href="http://wikimonstre.jdr-delain.net/index.php/Accueil">Wiki Monstre</a>
+    {% else %}
+        <a href="http://wiki.jdr-delain.net/" target="_blank">Wiki</a>
+        {% endif %}<br>
+        <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{{ TYPE_FLUX }}{{ G_URL }}"
+                                                             target="_top">Accueil</a><br/>
+
+        <hr/>
+        <img src="{{ G_IMAGES }}deconnection.gif" alt=""> <a href="{{ TYPE_FLUX }}{{ G_URL }}logout.php" target="_top">Se
+            déconnecter</a>
+        <hr/>
+        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
 ">
-        <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_SM.gif" border="0"
-               style="border:0px; background-color:transparent"
-               name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
-        <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
-    </form>
-</div>
+            <input type="image" src="https://www.paypalobjects.com/fr_FR/FR/i/btn/btn_donate_SM.gif" border="0"
+                   style="border:0px; background-color:transparent"
+                   name="submit" alt="PayPal, le réflexe sécurité pour payer en ligne">
+            <img alt="" border="0" src="https://www.paypalobjects.com/fr_FR/i/scr/pixel.gif" width="1" height="1">
+        </form>
+    </div>
 </div>
 
 </div>
@@ -460,7 +489,7 @@
 
 <div id="colonne2" class="fond-delain">
     {% block contenu_droite %}
-        Contenu de la page
+        {{ CONTENU_PAGE|raw }}
     {% endblock %}
     {% block extra_scripts %}
     {% endblock %}

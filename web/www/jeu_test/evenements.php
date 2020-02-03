@@ -123,4 +123,7 @@ $db->query($req_evt);
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();
+
+
+
 include "blocks/_footer_page_jeu.php";

@@ -1,0 +1,48 @@
+{% extends 'template_jeu.twig' %}
+
+
+
+{% block contenu_droite %}
+    <SCRIPT language="Javascript" src="{{ TYPE_FLUX }}{{ G_URL }}scripts/ajax.js?v{{ __VERSION }}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/ajax2.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/tools.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}scripts/delain.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <script src="{{ TYPE_FLUX }}{{ G_URL }}vendor/nok/nok.min.js?v{{ __VERSION }}" type="text/javascript"></script>
+    <form name="visu_evt2" method="post" action="visu_evt_perso.php">
+        <input type="hidden" name="visu"/>
+        <input type="hidden" name="cible"/>
+        <input type="hidden" name="num_guilde"/>
+        <input type="hidden" name="type" value="1"/>
+        <input type="hidden" name="type_at" value="0"/>
+        <input type="hidden" name="methode" value="attaque2"/>
+        <input type="hidden" id="saction" name="saction" value="action.php">
+        <input type="hidden" id="sposition" name="sposition" value="action.php">
+    </form>
+    <form name="destdroite" id="destdroite" method="post">
+        <input type="hidden" name="position" id="idposition"/>
+        <input type="hidden" name="destcadre" value="le_tout" id="iddestcadre"/>
+        <input type="hidden" name="dist" value=""/>
+        <input type="hidden" name="action" id="idaction" value="action.php"/>
+        <input type="hidden" name="methode" value="deplacement"/>
+    </form>
+    <div id="vue_haut" style="overflow:auto;">
+        <table style="background : none;">
+            <tr>
+                <td valign="top">
+                    <div id="vue_gauche" class="bordiv">{{ VUE_GAUCHE|raw }}</div>
+                </td>
+                <td>
+                    <div id="vue_droite" class="bordiv">{{ VUE_DROITE|raw }}</div>
+                </td>
+            </tr>
+            {{ VUE_RESULTAT|raw }}
+        </table>
+    </div>
+    <div id="vue_bas" class="bordiv" style="overflow:auto;">{{ VUE_BAS|raw }}</div>
+    <p style="font-style:italic;"><a href="#" onclick="javascript:modifierCadre();">Étendre / réduire ce cadre</a></p>
+{% endblock %}
+
+{% block extra_scripts %}
+
+{% endblock %}
