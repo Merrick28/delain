@@ -36,7 +36,14 @@
                     <div id="vue_droite" class="bordiv">{{ VUE_DROITE|raw }}</div>
                 </td>
             </tr>
-            {{ VUE_RESULTAT|raw }}
+            {% if VUE_RESULTAT != '' %}
+                <tr>
+                    <td colspan="2">
+                        <div id="vue_resultat" class="bordiv">{{ VUE_RESULTAT|raw }}</div>
+                    </td>
+                </tr>
+
+            {% endif %}
         </table>
     </div>
     <div id="vue_bas" class="bordiv" style="overflow:auto;">{{ VUE_BAS|raw }}</div>
@@ -44,9 +51,5 @@
 {% endblock %}
 
 {% block extra_scripts %}
-    <script>
-        $(document).ready(function () {
-            changeOnglet(5);
-        });
-    </script>
+
 {% endblock %}

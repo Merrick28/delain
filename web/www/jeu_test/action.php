@@ -272,9 +272,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= affiche_apres_deplacement($position);
             }
             $contenu_page .= $retour;
+
+
             if ($menu_deplacement === '')
             {
+                $resultat_dep = $contenu_page;
                 include('frame_vue.php');
+                die('');
                 //header('Location:' . $type_flux.G_URL . 'jeu_test/' . $page_retour);
             }
             break;

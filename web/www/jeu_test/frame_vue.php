@@ -24,7 +24,7 @@ $options_twig = array(
     'VUE_GAUCHE'   => $vue_gauche,
     'VUE_DROITE'   => $vue_droite,
     'VUE_BAS'      => $vue_bas,
-    'VUE_RESULTAT' => $contenu_page
+    'VUE_RESULTAT' => $resultat_dep
 
 );
 echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

@@ -23,15 +23,12 @@ if ($db->nf())
 	{
 		document.getElementsByName('position').value = pos_cod;
 		document.forms['destdroite'].dist.value = distance;
-		console.log('distance = ' + distance);
-		console.log('pos_cod = ' + pos_cod);
-        console.log(document.forms['destdroite'].action.value);
 		if (distance == 1 || document.forms['destdroite'].action.value != 'action.php') // En cas de déplacement, on vérifie la distance
 		{
-			console.log('premiere etape');
+
 		    if(document.forms['destdroite'].action.value == 'action.php')
             {
-                console.log('2e etape');
+
                 $(location).attr('href', '<?php echo $type_flux . G_URL ; ?>jeu_test/action.php?position=' + pos_cod
                 +'&methode=deplacement');
             }
