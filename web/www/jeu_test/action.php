@@ -227,6 +227,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if ($perso->perso_type_perso == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
+                $resultat_dep = $contenu_page;
                 if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
@@ -243,6 +244,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if (!isset($position) || $position === '')
             {
                 $contenu_page .= '<p>Erreur ! Position non définie !</p>';
+                $resultat_dep = $contenu_page;
                 if ($menu_deplacement === '') include('frame_vue.php');
                 break;
             }
@@ -272,7 +274,6 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= affiche_apres_deplacement($position);
             }
             $contenu_page .= $retour;
-
 
             if ($menu_deplacement === '')
             {
