@@ -323,6 +323,9 @@ $barre_menu_icone = '
 </center></div>';
 
 
+
+
+
 // variables twig
 $var_twig_defaut = array(
     '__VERSION'           => $__VERSION,

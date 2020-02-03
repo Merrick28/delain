@@ -5,7 +5,31 @@ ob_start();
 $is_log = 1;
 
 
+//
+// gestion des vote
+//
+$cv           = new compte_vote();
+$totalXpGagne = 0;
+$tab          = $cv->getBy_compte_vote_compte_cod($compte->compt_cod);
+if ($tab !== false)
+{
+    $totalXpGagne = $tab[0]->compte_vote_total_px_gagner;
+}
 
+
+$cvip    = new compte_vote_ip();
+$tab     = $cvip->getByCompteTrue($compte->compt_cod);
+$nbrVote = count($tab);
+
+
+$tab         = $cvip->getByCompteTrueMois($compte->compt_cod);
+$nbrVoteMois = count($tab);
+
+$tab          = $cvip->getVoteAValider($compte->compt_cod);
+$VoteAValider = count($tab);
+
+$tab          = $cvip->getVoteRefus($compte->compt_cod);
+$votesRefusee = count($tab);
 
 ?>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
@@ -195,13 +219,8 @@ include "variables_menu.php";
 
 
 
-$template     = $twig->load('template_jeu.twig');
+$template = $twig->load('switch.twig');
 $options_twig = array(
-
-    'PERSO'        => $perso,
-    'PHP_SELF'     => $PHP_SELF,
-    'CONTENU_PAGE' => $contenu_page,
-    'BARRE_SWITCH_RAPIDE' => $barre_switch_rapide
-
+    'CONTENU_PAGE' => $contenu_page
 );
 echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
