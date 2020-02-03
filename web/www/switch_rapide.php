@@ -108,11 +108,7 @@ if ($autorise != 1)
     // perso non authorisé et n'est pas sitté.... pas de switch rapide => sortie d'érreur comme validation_login3.php
     //
     include_once 'includes/template.inc';
-    $t = new template('jeu_test');
-    $t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-    // chemins
-    $t->set_var('URL', $type_flux . G_URL);
-    $t->set_var('URL_IMAGES', G_IMAGES);
+
     ob_start();
 
     if ($autorise != 1)
@@ -135,9 +131,15 @@ if ($autorise != 1)
         include_once('jeu_test/variables_menu.php');
     }
 
-    $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-    $t->parse("Sortie", "FileRef");
-    $t->p("Sortie");
+    $template     = $twig->load('template_jeu.twig');
+    $options_twig = array(
+
+        'PERSO'        => $perso,
+        'PHP_SELF'     => $PHP_SELF,
+        'CONTENU_PAGE' => $contenu_page
+
+    );
+    echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
     die();                  // Ne pas continuer en cas d'erreur
 }
 

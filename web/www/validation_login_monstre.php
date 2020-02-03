@@ -2,32 +2,13 @@
 include_once 'classes.php';
 include_once G_CHE . 'ident.php';
 
-$db = new base_delain;
-$req = "SELECT compt_frameless FROM compte WHERE compt_cod = $compt_cod";
-$db->query($req);
-$db->next_record();
-$frameless = ($db->f('compt_frameless') == 'O');
+$db  = new base_delain;
 
-if ($frameless) {
-    include_once 'includes/template.inc';
-    $t = new template('jeu_test');
-    $t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-    // chemins
-    $t->set_var('URL', $type_flux . G_URL);
-    $t->set_var('URL_IMAGES', G_IMAGES);
-    ob_start();
-} else {
-    ?>
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="style.css" title="essai">
-        <title>Login monstre</title>
-    </head>
-    <body background="images/fond5.gif">
-    <div class="bordiv">
-    <?php
-}
+
+
+
+ob_start();
+
 
 // On trouve le monstre
 $requete = "select perso_cod, perso_dlt, to_char(now(), 'DD/MM/YYYY hh24:mi:ss') as maintenant, perso_nom
@@ -35,15 +16,16 @@ $requete = "select perso_cod, perso_dlt, to_char(now(), 'DD/MM/YYYY hh24:mi:ss')
 $db->query($requete);
 
 $num_resultat = $db->nf();
-$num_droits = 0;
+$num_droits   = 0;
 
 // Étage autorisé ?
-if ($num_resultat > 0) {
+if ($num_resultat > 0)
+{
     $db->next_record();
     $maintenant = $db->f("maintenant");
-    $nom = $db->f("perso_nom");
-    $num_perso = $db->f("perso_cod");
-    $perso_cod = $db->f("perso_cod");
+    $nom        = $db->f("perso_nom");
+    $num_perso  = $db->f("perso_cod");
+    $perso_cod  = $db->f("perso_cod");
 
     $requete = "select pos_etage from perso_position
 		inner join positions on pos_cod = ppos_pos_cod
@@ -63,11 +45,13 @@ if ($num_resultat > 0) {
     $num_droits = $db->nf();
 }
 
-if ($num_resultat == 0 || $num_droits == 0) {
+if ($num_resultat == 0 || $num_droits == 0)
+{
     // Identification échouée
     echo("<p>Identification échouée !!!</p><p>Vérifiez que le numéro corresponde à un monstre (ou PNJ) existant, et qu’il se trouve à un étage qui
 		vous est autorisé.\n");
-} else {
+} else
+{
     echo("<p>Identification réussie !!!</p></td>\n");
 
     // avant toute autre chose, on renseigne la date de dernier login !
@@ -81,7 +65,8 @@ if ($num_resultat == 0 || $num_droits == 0) {
     $db->next_record();
     $retour_dlt = $db->f("dlt");
 
-    $req_dlt = "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt,perso_pa from perso where perso_cod = $num_perso";
+    $req_dlt =
+        "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt,perso_pa from perso where perso_cod = $num_perso";
     $db->query($req_dlt);
     $db->next_record();
 
@@ -96,9 +81,11 @@ if ($num_resultat == 0 || $num_droits == 0) {
     echo("<p><em>Date et heure serveur : <strong>$maintenant</strong> </em></p>");
 
     // formulaire pour passer au jeu
-    if ($frameless) {
+    if ($frameless)
+    {
         echo "<form name=\"ok\" method=\"post\" action=\"jeu_test/index.php\" target=\"_top\">";
-    } else {
+    } else
+    {
         echo "<script type='text/javascript'>if (parent.gauche) parent.gauche.location.href='jeu/menu.php';</script>";
         echo "<form name=\"ok\" method=\"post\" action=\"jouer.php\" target=\"_top\">";
     }
@@ -109,20 +96,23 @@ if ($num_resultat == 0 || $num_droits == 0) {
     echo("<input type=\"hidden\" name=\"num_perso\" value=\"$num_perso\">\n");
     echo("<center><input type=\"submit\" value=\"Jouer !!\" class=\"test\"></form>");
 }
-if ($frameless) {
-    $contenu_page = ob_get_contents();
-    ob_end_clean();
 
-    // on va maintenant charger toutes les variables liées au menu
-    include_once('jeu_test/variables_menu.php');
+$contenu_page = ob_get_contents();
+ob_end_clean();
 
-    $t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-    $t->parse("Sortie", "FileRef");
-    $t->p("Sortie");
-} else {
-    ?>
-    </div>
-    </body>
-    </html>
-<?php }
+// on va maintenant charger toutes les variables liées au menu
+include_once('jeu_test/variables_menu.php');
+
+
+
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'PERSO'        => $perso,
+    'PHP_SELF'     => $PHP_SELF,
+    'CONTENU_PAGE' => $contenu_page
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
+
 

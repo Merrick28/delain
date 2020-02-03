@@ -35,4 +35,4 @@ $options_twig = array(
     'GUILDE_RANG' => $guilde_rang
 );
 echo $template->render(array_merge($options_twig_defaut, $options_twig));
-?>
+

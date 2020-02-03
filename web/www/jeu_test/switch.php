@@ -205,7 +205,7 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
 
 $barre_switch_rapide =
     '<div id="colonne0-hide"><div class="container-fluid" ><div class="row centrer"></div></div></div>';
-//$t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
+
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

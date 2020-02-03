@@ -1,11 +1,6 @@
 <?php 
 include "classes.php";
-include 'includes/template.inc';
-$t = new template;
-$t->set_file('FileRef','template/delain/index.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
+
 //
 // identification
 //
@@ -13,7 +8,6 @@ ob_start();
 include G_CHE . "ident.php";
 $ident = montre_formulaire_connexion($verif_auth);
 ob_end_clean();
-$t->set_var("IDENT",$ident);
 
 //
 // Récupération des paramètres
@@ -83,10 +77,13 @@ while ($db->next_record())
 $contenu_page .= "<div style='clear:both;'>&nbsp;</div>";
 
 
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
 
-//test
+
+
+$template     = $twig->load('page_generique.twig');
+$options_twig = array(
+'CONTENU' => $contenu_page
+);
+echo $template->render(array_merge($options_twig_defaut, $options_twig));
 
 
