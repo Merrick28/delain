@@ -23,15 +23,27 @@ if ($db->nf())
 	{
 		document.getElementsByName('position').value = pos_cod;
 		document.forms['destdroite'].dist.value = distance;
+		console.log('distance = ' + distance);
+		console.log('pos_cod = ' + pos_cod);
+        console.log(document.forms['destdroite'].action.value);
 		if (distance == 1 || document.forms['destdroite'].action.value != 'action.php') // En cas de déplacement, on vérifie la distance
 		{
-			voirList(document.forms['destdroite'], document.forms['destdroite'].action.value + '?position=' + pos_cod + '&t_frdr=<?php echo $t_frdr; ?>', document.forms['destdroite'].destcadre.value);
+			console.log('premiere etape');
+		    if(document.forms['destdroite'].action.value == 'action.php')
+            {
+                console.log('2e etape');
+                $(location).attr('href', '<?php echo $type_flux . G_URL ; ?>jeu_test/action.php?position=' + pos_cod
+                +'&methode=deplacement');
+            }
+
+		    voirList(document.forms['destdroite'], document.forms['destdroite'].action.value + '?position=' + pos_cod + '&t_frdr=<?php echo $t_frdr; ?>', document.forms['destdroite'].destcadre.value);
 			document.getElementById("cell" + pos_cod).className = 'vu';
 			if (document.forms['destdroite'].action.value == 'action.php')
 				clignoter("cell" + pos_cod, 10);	// clic pour déplacement
 			else
 				window.setTimeout("cligno_fin('cell" + pos_cod + "')", 1000);	// clic pour détails
 		}
+
 	}
 	function clignoter(cell, nombre)
 	{
