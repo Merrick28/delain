@@ -34,9 +34,9 @@ class sorts
 
     /**
      * Charge dans la classe un enregistrement de sorts
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -70,8 +70,8 @@ class sorts
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -116,23 +116,23 @@ class sorts
     returning sort_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":sort_combinaison"    => $this->sort_combinaison,
-                ":sort_nom"            => $this->sort_nom,
-                ":sort_fonction"       => $this->sort_fonction,
-                ":sort_cout"           => $this->sort_cout,
-                ":sort_comp_cod"       => $this->sort_comp_cod,
-                ":sort_distance"       => $this->sort_distance,
-                ":sort_description"    => $this->sort_description,
-                ":sort_aggressif"      => $this->sort_aggressif,
-                ":sort_niveau"         => $this->sort_niveau,
-                ":sort_soi_meme"       => $this->sort_soi_meme,
-                ":sort_monstre"        => $this->sort_monstre,
-                ":sort_joueur"         => $this->sort_joueur,
-                ":sort_soutien"        => $this->sort_soutien,
-                ":sort_bloquable"      => $this->sort_bloquable,
-                ":sort_case"           => $this->sort_case,
-                ":sort_temps_recharge" => $this->sort_temps_recharge,
-            ), $stmt);
+                                      ":sort_combinaison"    => $this->sort_combinaison,
+                                      ":sort_nom"            => $this->sort_nom,
+                                      ":sort_fonction"       => $this->sort_fonction,
+                                      ":sort_cout"           => $this->sort_cout,
+                                      ":sort_comp_cod"       => $this->sort_comp_cod,
+                                      ":sort_distance"       => $this->sort_distance,
+                                      ":sort_description"    => $this->sort_description,
+                                      ":sort_aggressif"      => $this->sort_aggressif,
+                                      ":sort_niveau"         => $this->sort_niveau,
+                                      ":sort_soi_meme"       => $this->sort_soi_meme,
+                                      ":sort_monstre"        => $this->sort_monstre,
+                                      ":sort_joueur"         => $this->sort_joueur,
+                                      ":sort_soutien"        => $this->sort_soutien,
+                                      ":sort_bloquable"      => $this->sort_bloquable,
+                                      ":sort_case"           => $this->sort_case,
+                                      ":sort_temps_recharge" => $this->sort_temps_recharge,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
@@ -159,31 +159,31 @@ class sorts
             sort_temps_recharge = :sort_temps_recharge                        where sort_cod = :sort_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":sort_cod"            => $this->sort_cod,
-                ":sort_combinaison"    => $this->sort_combinaison,
-                ":sort_nom"            => $this->sort_nom,
-                ":sort_fonction"       => $this->sort_fonction,
-                ":sort_cout"           => $this->sort_cout,
-                ":sort_comp_cod"       => $this->sort_comp_cod,
-                ":sort_distance"       => $this->sort_distance,
-                ":sort_description"    => $this->sort_description,
-                ":sort_aggressif"      => $this->sort_aggressif,
-                ":sort_niveau"         => $this->sort_niveau,
-                ":sort_soi_meme"       => $this->sort_soi_meme,
-                ":sort_monstre"        => $this->sort_monstre,
-                ":sort_joueur"         => $this->sort_joueur,
-                ":sort_soutien"        => $this->sort_soutien,
-                ":sort_bloquable"      => $this->sort_bloquable,
-                ":sort_case"           => $this->sort_case,
-                ":sort_temps_recharge" => $this->sort_temps_recharge,
-            ), $stmt);
+                                      ":sort_cod"            => $this->sort_cod,
+                                      ":sort_combinaison"    => $this->sort_combinaison,
+                                      ":sort_nom"            => $this->sort_nom,
+                                      ":sort_fonction"       => $this->sort_fonction,
+                                      ":sort_cout"           => $this->sort_cout,
+                                      ":sort_comp_cod"       => $this->sort_comp_cod,
+                                      ":sort_distance"       => $this->sort_distance,
+                                      ":sort_description"    => $this->sort_description,
+                                      ":sort_aggressif"      => $this->sort_aggressif,
+                                      ":sort_niveau"         => $this->sort_niveau,
+                                      ":sort_soi_meme"       => $this->sort_soi_meme,
+                                      ":sort_monstre"        => $this->sort_monstre,
+                                      ":sort_joueur"         => $this->sort_joueur,
+                                      ":sort_soutien"        => $this->sort_soutien,
+                                      ":sort_bloquable"      => $this->sort_bloquable,
+                                      ":sort_case"           => $this->sort_case,
+                                      ":sort_temps_recharge" => $this->sort_temps_recharge,
+                                  ), $stmt);
         }
     }
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \sorts
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -199,6 +199,20 @@ class sorts
             unset($temp);
         }
         return $retour;
+    }
+
+    function getByCombinaison($combinaison)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select sort_cod  from sorts where sort_combinaison = :combinaison";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":combinaison" => $combinaison), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['sort_cod']);
     }
 
     public function __call($name, $arguments)
