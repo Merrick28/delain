@@ -1,41 +1,53 @@
-<?php 
-if (!isset($perso_cod))
+<?php
+
+$perso = new perso;
+if (!$perso->charge($perso_cod))
+{
     die ("Erreur d’appel de la page");
+}
+$mode_combat = new mode_combat();
+$all_mode    = $mode_combat->getAll();
 
-if (isset($methode) && $methode == 'mode_combat')
+
+if (isset($_REQUEST['methode']) && $_REQUEST['methode'] == 'mode_combat')
 {
-    $req = "select change_mcom_cod($perso_cod, $mode) as resultat ";
-    $db->query($req);
+    $perso->change_mode_combat($_REQUEST['mode']);
+    $perso->charge($perso->perso_cod);
+}
+$mode_combat->charge($perso->perso_mcom_cod);
+
+
+$perso_dchange_mcom = new DateTime($perso->perso_dchange_mcom);
+date_add($perso_dchange_mcom, date_interval_create_from_date_string('1 days'));
+
+$perso_dcreat = new DateTime($perso->perso_dcreat);
+date_add($perso_dcreat, date_interval_create_from_date_string('1 days'));
+
+$now = date_create();
+
+$is_depasse = false;
+if ($perso_dchange_mcom > $now)
+{
+    $is_depasse = true;
 }
 
-$req = "select (perso_dchange_mcom + '24 hours'::interval) > now() as depasse,
-            (perso_dcreat + '24 hours'::interval) > now() as date_creation,
-            mcom_nom, mcom_cod,
-            to_char(perso_dchange_mcom + '24 hours'::interval,'DD/MM/YYYY hh24:mi:ss') as dch
-            from perso, mode_combat
-    	where perso_cod = $perso_cod
-		and perso_mcom_cod = mcom_cod";
-$db->query($req);
-$db->next_record();
-$actu = $db->f("mcom_cod");
-$contenu_include = 'Vous êtes actuellement en mode ';
+$is_date_creation = false;
+if ($perso_dcreat > $now)
+{
+    $is_date_creation = true;
+}
 
-if ($db->f("depasse") != 'f' && $db->f("date_creation") == 'f')
-{
-	$contenu_include = 'Votre posture de combat est ';
-    $contenu_include .= '<strong>' . $db->f("mcom_nom") . '</strong>. (Vous ne pourrez la changer qu’à partir de ' . $db->f("dch") . ').';
-}
-else
-{
-    $contenu_include = '<form action="#" method="post" style="margin-left:0px; padding-left:0px;">
-    <input type="hidden" name="methode" value="mode_combat">
-    Votre posture de combat est <select name="mode">';
-    $req = "select mcom_nom,mcom_cod from mode_combat order by mcom_cod ";
-    $db->query($req);
-    while($db->next_record())
-    {
-        $selected = ($actu == $db->f("mcom_cod")) ? ' selected="selected"' : '';
-        $contenu_include .= '<option value="' . $db->f("mcom_cod") . '"' . $selected . '>' . $db->f("mcom_nom") . '</option>';
-    }
-    $contenu_include .= '</select>.&nbsp;<input type="submit" class="test" value="Changer !" title="Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, hormis le jour de création du personnage où la modification est illimitée."> (Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, excepté le jour de création du personnage.)</form>';
-}
+$template        = $twig->load('_mode_combat.twig');
+$options_twig    = array(
+
+    'PERSO'              => $perso,
+    'PHP_SELF'           => $PHP_SELF,
+    'MODE_COMBAT'        => $mode_combat,
+    'IS_DEPASSE'         => $is_depasse,
+    'IS_DATE_CREATION'   => $is_date_creation,
+    'PERSO_DCHANGE_MCOM' => $perso_dchange_mcom,
+    'ALL_MODE'           => $all_mode
+
+);
+$contenu_include = $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));
+

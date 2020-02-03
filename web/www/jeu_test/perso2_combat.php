@@ -17,7 +17,9 @@ $stmt            = $pdo->prepare($req);
 $stmt            = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
 $objets_possedes = $stmt->fetchAll();
 
+
 include('mode_combat.php');
+
 
 /*
  LEGITIMES DEFENSES 

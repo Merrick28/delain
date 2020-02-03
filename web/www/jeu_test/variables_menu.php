@@ -9,7 +9,7 @@ $__VERSION = "20201223";    // A changer aussi dans constante.php
 
 $benchmark = $profiler->start('Variables menu');
 include_once "verif_connexion.php";
-$db2 = new base_delain;
+
 
 $param = new parametres();
 
@@ -20,7 +20,6 @@ $perso = new perso;
 $perso->charge($perso_cod);
 
 $get_compte = '';
-//if ($db->is_admin_monstre($compt_cod) || $db->is_admin($compt_cod))
 $get_compte = "&compt_cod=$compt_cod";
 
 // Chemin d'accès relatif
@@ -1003,4 +1002,3 @@ $var_twig_defaut = array(
     'PERSO_ANIMATION'     => $animation
 );
 $benchmark->stop($benchmark);
-?>

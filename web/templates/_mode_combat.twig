@@ -1,0 +1,20 @@
+{% if (IS_DEPASSE and not IS_DATE_CREATION) %}
+    Votre posture de combat est
+    <strong>{{ MODE_COMBAT.mcom_nom }}</strong>. (Vous ne pourrez la changer qu’à partir de {{ PERSO_DCHANGE_MCOM|date('d/m/Y H:i:s') }})
+
+{% else %}
+    <form action="#" method="post" style="margin-left:0px; padding-left:0px;">
+        <input type="hidden" name="methode" value="mode_combat">
+        Votre posture de combat est <select name="mode">
+            {% for mcom in ALL_MODE %}
+                <option value="{{ mcom.mcom_cod }}" {% if mcom.mcom_cod == MODE_COMBAT.mcom_cod %} selected="selected"{% endif %}>{{ mcom.mcom_nom }}</option>
+            {% endfor %}
+        </select>
+        &nbsp;<input type="submit" class="test" value="Changer !"
+                     title="Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, hormis le jour de création du personnage où la modification est illimitée.">
+        (Attention, ce mode ne peut être changé qu’une fois toutes les 24 heures, excepté le jour de création du
+        personnage.)
+    </form>
+
+
+{% endif %}

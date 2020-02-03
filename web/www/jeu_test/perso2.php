@@ -66,9 +66,6 @@ if ($m == 0)  // Caractéristiques
     include "perso2_divers.php";
 }
 
-
-//include "blocks/_footer_page_jeu.php";
-include "variables_menu.php";
 $template     = $twig->load('perso2.twig');
 $options_twig = array(
 
