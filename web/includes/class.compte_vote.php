@@ -121,17 +121,17 @@ class compte_vote
 
 
         $cvip    = new compte_vote_ip();
-        $tab     = $cvip->getByCompteTrue($compte->compt_cod);
+        $tab     = $cvip->getByCompteTrue($compte);
         $nbrVote = count($tab);
 
 
-        $tab         = $cvip->getByCompteTrueMois($compte->compt_cod);
+        $tab         = $cvip->getByCompteTrueMois($compte);
         $nbrVoteMois = count($tab);
 
-        $tab          = $cvip->getVoteAValider($compte->compt_cod);
+        $tab          = $cvip->getVoteAValider($compte);
         $VoteAValider = count($tab);
 
-        $tab          = $cvip->getVoteRefus($compte->compt_cod);
+        $tab          = $cvip->getVoteRefus($compte);
         $votesRefusee = count($tab);
 
         return array("totalXpGagne" => $totalXpGagne,
