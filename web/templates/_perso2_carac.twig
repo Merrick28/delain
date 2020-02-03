@@ -68,9 +68,9 @@
         <td class="soustitre2">Dégâts <em>(+ amélioration)</em></td>
         <td>{{ NB_DES }}D{{ VAL_DES }}+{{ BONUS }}
             {% if PERSO.has_arme_distance %}
-                <em>(+{{ PERSO.perso_amelioration_degats }})</em>
-            {% else %}
                 <em>(+{{ PERSO.perso_amel_deg_dex }})</em>
+            {% else %}
+                <em>(+{{ PERSO.perso_amelioration_degats }})</em>
             {% endif %}
         </td>
         {% if PERSO.perso_niveau_vampire == 0 %}
