@@ -73,7 +73,7 @@
                 $req = "update compte set compt_acc_charte = 'O' where compt_cod = $num ";
                 $db->query($req);
                 echo "<p>Votre compte est validé.";
-                echo "<p><a href=\"login2.php\">Retour à l'identification</a>";
+                echo "<p><a href=\"index.php\">Retour à l'identification</a>";
             }
             break;
 

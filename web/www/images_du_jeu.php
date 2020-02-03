@@ -1,5 +1,7 @@
-<?php 
+<?php
 include "classes.php";
+
+$pdo = new bddpdo();
 
 //
 // identification
@@ -29,24 +31,29 @@ $contenu_page .= '<p style="clear:right;"><a href="#goto-monstres">Voir les mons
 
 // Requête sur les objets 
 if ($tri)
-	$req_objets = 'select gobj_nom, gobj_image from objet_generique
+{
+    $req_objets = 'select gobj_nom, gobj_image from objet_generique
 		inner join objets on obj_gobj_cod = gobj_cod
 		inner join perso_objets on perobj_obj_cod = obj_cod
 		inner join perso on perso_cod = perobj_perso_cod
 		where perso_type_perso = 1
 		group by gobj_tobj_cod, gobj_nom, gobj_image
 		order by count(*) desc, gobj_tobj_cod, gobj_nom';
-else
-	$req_objets = 'select gobj_nom, gobj_image from objet_generique order by gobj_tobj_cod, gobj_nom';
-$db->query($req_objets);
+} else
+{
+    $req_objets = 'select gobj_nom, gobj_image from objet_generique order by gobj_tobj_cod, gobj_nom';
+}
+$stmt = $pdo->query($req_objets);
+
+
 
 // Boucle d’affichage des objets
 $path = 'http://www.jdr-delain.net/images';
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	$img = $db->f('gobj_image');
-	$nom = $db->f('gobj_nom');
-	$contenu_page .= "<div style='float:left; border: solid 1px black;'><img src='$path/$img' style='width:80px; height:80px;' /><br />$nom</div>";
+    $img          = $result['gobj_image'];
+    $nom          = $result['gobj_nom'];
+    $contenu_page .= "<div style='float:left; border: solid 1px black;'><img src='$path/$img' style='width:80px; height:80px;' /><br />$nom</div>";
 }
 
 // MONSTRES
@@ -58,31 +65,32 @@ $contenu_page .= '<p style="clear:right;"><a href="#goto-objets">Voir les objets
 
 // Requête sur les monstres 
 if ($tri)
-	$req_monstres = 'select gmon_nom, gmon_avatar, count(*) from monstre_generique
+{
+    $req_monstres = 'select gmon_nom, gmon_avatar, count(*) from monstre_generique
 		inner join perso on perso_gmon_cod = gmon_cod
 		group by gmon_race_cod, gmon_nom, gmon_avatar
 		order by count(*) desc, gmon_race_cod, gmon_nom';
-else
-	$req_monstres = 'select gmon_nom, gmon_avatar from monstre_generique order by gmon_race_cod, gmon_nom';
-$db->query($req_monstres);
+} else
+{
+    $req_monstres = 'select gmon_nom, gmon_avatar from monstre_generique order by gmon_race_cod, gmon_nom';
+}
+
+$stmt = $pdo->query($req_monstres);
 
 // Boucle d’affichage des monstres
 $path = 'http://www.jdr-delain.net/images/avatars';
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	$img = $db->f('gmon_avatar');
-	$nom = $db->f('gmon_nom');
-	$contenu_page .= "<div style='float:left; border: solid 1px black;'><img src='$path/$img' style='width:80px; height:80px;' /><br />$nom</div>";
+    $img          = $result['gmon_avatar'];
+    $nom          = $result['gmon_nom'];
+    $contenu_page .= "<div style='float:left; border: solid 1px black;'><img src='$path/$img' style='width:80px; height:80px;' /><br />$nom</div>";
 }
 $contenu_page .= "<div style='clear:both;'>&nbsp;</div>";
 
 
-
-
-
 $template     = $twig->load('page_generique.twig');
 $options_twig = array(
-'CONTENU' => $contenu_page
+    'CONTENU' => $contenu_page
 );
 echo $template->render(array_merge($options_twig_defaut, $options_twig));
 

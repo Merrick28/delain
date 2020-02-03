@@ -2,7 +2,9 @@
 die('Fichier non utilisé, à supprimer ?');
 require G_CHE . "ident.php";
 include G_CHE . "/includes/classes_monstre.php";
-$db2 = new base_delain;
+require_once "fonctions.php";
+$pdo = new bddpdo();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -15,79 +17,39 @@ $db2 = new base_delain;
     <div class="bordiv">
         <p class="titre">Monstres dont la DLT n'est pas encore passée</p>
         <?php
-        $db = new base_delain;
-        $req_monstre = "select dlt_passee(perso_cod) as dlt_passee,etat_perso(perso_cod) as etat,perso_cod,perso_nom,perso_pa,perso_pv,perso_pv_max,to_char(perso_dlt,'DD/MM/YYYY HH24:mi:ss') as dlt,pos_x,pos_y,pos_etage,(select count(dmsg_cod) from messages_dest where dmsg_perso_cod = perso_cod and dmsg_lu = 'N') as messages  ";
-        $req_monstre = $req_monstre . ",perso_dirige_admin, perso_pnj ";
-        $req_monstre = $req_monstre . "from perso,perso_position,positions ";
-        $req_monstre = $req_monstre . "where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' ";
-        $req_monstre = $req_monstre . "and ppos_perso_cod = perso_cod ";
-        $req_monstre = $req_monstre . "and ppos_pos_cod = $position ";
-        $req_monstre = $req_monstre . "and ppos_pos_cod = pos_cod ";
-        $req_monstre = $req_monstre . "order by pos_x,pos_y,perso_nom ";
-        $db->query($req_monstre);
-        $nb_monstre = $db->nf();
+        $req_monstre = "select dlt_passee(perso_cod) as dlt_passee,
+            etat_perso(perso_cod) as etat,
+            perso_cod,
+            perso_nom,
+            perso_pa,
+            perso_pv,
+            perso_pv_max,
+           to_char(perso_dlt,'DD/MM/YYYY HH24:mi:ss') as dlt,
+           pos_x,
+           pos_y,
+           pos_etage,
+           (select count(dmsg_cod) from messages_dest where dmsg_perso_cod = perso_cod and dmsg_lu = 'N') as messages 
+       ,perso_dirige_admin, perso_pnj 
+       from perso,perso_position,positions 
+       where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' 
+       and ppos_perso_cod = perso_cod 
+       and ppos_pos_cod = :position 
+       and ppos_pos_cod = pos_cod 
+       order by pos_x,pos_y,perso_nom ";
+        $stmt        = $pdo->prepare($req_monstre);
+        $stmt        = $pdo->execute(array(":position" => $_REQUEST['position']), $stmt);
+        $allMonstre  = $stmt->fetchAll();
+
+        $nb_monstre = count($allMonstre);
         if ($nb_monstre == 0)
         {
             echo("<p>Tous les monstres ont passé leur DLT");
         } else
         {
             echo("<table>");
-            while ($db->next_record())
+            foreach ($allMonstre as $monstre)
             {
-                if ($db->f("perso_dirige_admin") == 'O')
-                {
-                    $ia = "<strong>Hors IA</strong>";
-                }
-                if ($db->f("perso_pnj") == 1)
-                {
-                    $ia = "<strong>PNJ</strong>";
-                } else
-                {
-                    $ia = "IA";
-                }
-                echo("<tr>");
-                echo "<td class=\"soustitre2\"><p><a href=\"validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . "</a></td>";
-                echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
-                echo "<td class=\"soustitre2\"><p>", $db->f("perso_pa"), "</td>";
-                echo "<td class=\"soustitre2\"><p>", $db->f("perso_pv"), " PV sur ", $db->f("perso_pv_max");
-                if ($db->f("etat") != "indemne")
-                {
-                    echo " - (<strong>", $db->f("etat"), "</strong>)";
-                }
-                echo "</td>";
-                echo "<td class=\"soustitre2\"><p>";
-                if ($db->f("messages") != 0)
-                {
-                    echo "<strong>";
-                }
-                echo $db->f("messages") . " msg non lus.";
-                if ($db->f("messages") != 0)
-                {
-                    echo "</strong>";
-                }
-                echo "</td>";
-                echo "<td class=\"soustitre2\"><p>";
-                if ($db->f("dlt_passee") == 1)
-                {
-                    echo("<strong>");
-                }
-                echo $db->f("dlt");
-                if ($db->f("dlt_passee") == 1)
-                {
-                    echo("</strong>");
-                }
-                echo "</td>";
-                echo "<td class=\"soustitre2\"><p>X=", $db->f("pos_x"), ", Y=", $db->f("pos_y"), ", E=", $db->f("pos_etage"), "</td>";
-                $req = "select compt_nom from perso_compte,compte where pcompt_perso_cod = " . $db->f("perso_cod") .
-                    " and pcompt_compt_cod = compt_cod and compt_monstre = 'O' ";
-                $db2->query($req);
-                if ($db2->nf() != 0)
-                {
-                    $db2->next_record();
-                    echo "<td class=\"soustitre2\">Joué par <strong>", $db2->f("compt_nom"), "</strong></td>";
-                } else
-                    echo "<td></td>";
-                echo("</tr>");
+                ligne_login_monstre($monstre);
             }
 
             echo("</table>");

@@ -20,7 +20,7 @@ if ($verif_auth) {
         <body background="images/fond5.gif">
         <div class="bordiv">
             <p>Identification échouée !</p>
-            <p><a href="login2.php" target="_top">Retour à l’accueil</a></p>
+            <p><a href="index.php" target="_top">Retour à l’accueil</a></p>
         </div>
         </body>
         </html>

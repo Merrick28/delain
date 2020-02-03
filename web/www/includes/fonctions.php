@@ -514,3 +514,66 @@ function niveau_blessures($pv,$pv_max){
     }
     return $niveau_blessures;
 }
+
+function ligne_login_monstre($monstre)
+{
+    $pdo = new bddpdo();
+    if ($monstre['perso_dirige_admin'] == 'O')
+    {
+        $ia = "<strong>Hors IA</strong>";
+    } else if ($monstre['perso_pnj'] == 1)
+    {
+        $ia = "<strong>PNJ</strong>";
+    } else
+    {
+        $ia = "IA";
+    }
+    echo("<tr>");
+    echo "<td class=\"soustitre2\"><p><a href=\"validation_login_monstre.php?numero=" . $monstre['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $monstre['perso_nom'] . "</a></td>";
+    echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
+    echo "<td class=\"soustitre2\"><p>", $monstre['perso_pa'], "</td>";
+    echo "<td class=\"soustitre2\"><p>", $monstre['perso_pv'], " PV sur ", $monstre['perso_pv_max'];
+    if ($monstre['etat'] != "indemne")
+    {
+        echo " - (<strong>", $monstre['etat'], "</strong>)";
+    }
+    echo "</td>";
+    echo "<td class=\"soustitre2\"><p>";
+    if ($monstre['messages'] != 0)
+    {
+        echo "<strong>";
+    }
+    echo $monstre['messages'] . " msg non lus.";
+    if ($monstre['messages'] != 0)
+    {
+        echo "</strong>";
+    }
+    echo "</td>";
+    echo "<td class=\"soustitre2\"><p>";
+    if ($monstre['dlt_passee'] == 1)
+    {
+        echo("<strong>");
+    }
+    echo $monstre['dlt'];
+    if ($monstre['dlt_passee'] == 1)
+    {
+        echo("</strong>");
+    }
+    echo "</td>";
+    echo "<td class=\"soustitre2\"><p>X=", $monstre['pos_x'], ", Y=", $monstre['pos_y'], ", E=", $monstre['pos_etage'], "</td>";
+    $req  =
+        "select compt_nom from perso_compte,compte where pcompt_perso_cod = :monstre  and pcompt_compt_cod = compt_cod ";
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array(":monstre" => $monstre['perso_cod']), $stmt);
+
+    if ($result = $stmt->fetch())
+    {
+        echo "<td class=\"soustitre2\">Joué par <strong>", $result['compt_nom'], "</strong></td>";
+    } else
+    {
+        echo "<td></td>";
+    }
+
+
+    echo("</tr>");
+}
