@@ -21,8 +21,8 @@ class compte_vote
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -41,16 +41,15 @@ class compte_vote
     returning compte_vote_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":compte_vote_total_px_gagner" => $this->compte_vote_total_px_gagner,
-                ":compte_vote_nbr" => $this->compte_vote_nbr,
-                ":compte_vote_compte_cod" => $this->compte_vote_compte_cod,
-            ), $stmt);
+                                      ":compte_vote_total_px_gagner" => $this->compte_vote_total_px_gagner,
+                                      ":compte_vote_nbr"             => $this->compte_vote_nbr,
+                                      ":compte_vote_compte_cod"      => $this->compte_vote_compte_cod,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update compte_vote
                     set
@@ -59,19 +58,19 @@ class compte_vote
             compte_vote_compte_cod = :compte_vote_compte_cod                        where compte_vote_cod = :compte_vote_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":compte_vote_cod" => $this->compte_vote_cod,
-                ":compte_vote_total_px_gagner" => $this->compte_vote_total_px_gagner,
-                ":compte_vote_nbr" => $this->compte_vote_nbr,
-                ":compte_vote_compte_cod" => $this->compte_vote_compte_cod,
-            ), $stmt);
+                                      ":compte_vote_cod"             => $this->compte_vote_cod,
+                                      ":compte_vote_total_px_gagner" => $this->compte_vote_total_px_gagner,
+                                      ":compte_vote_nbr"             => $this->compte_vote_nbr,
+                                      ":compte_vote_compte_cod"      => $this->compte_vote_compte_cod,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de compte_vote
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -92,8 +91,8 @@ class compte_vote
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \compte_vote
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -111,6 +110,37 @@ class compte_vote
         return $retour;
     }
 
+    function getStats($compte)
+    {
+        $totalXpGagne = 0;
+        $tab          = $this->getBy_compte_vote_compte_cod($compte);
+        if ($tab !== false)
+        {
+            $totalXpGagne = $tab[0]->compte_vote_total_px_gagner;
+        }
+
+
+        $cvip    = new compte_vote_ip();
+        $tab     = $cvip->getByCompteTrue($compte->compt_cod);
+        $nbrVote = count($tab);
+
+
+        $tab         = $cvip->getByCompteTrueMois($compte->compt_cod);
+        $nbrVoteMois = count($tab);
+
+        $tab          = $cvip->getVoteAValider($compte->compt_cod);
+        $VoteAValider = count($tab);
+
+        $tab          = $cvip->getVoteRefus($compte->compt_cod);
+        $votesRefusee = count($tab);
+
+        return array("totalXpGagne" => $totalXpGagne,
+                     "nbrVote"      => $nbrVote,
+                     "nbrVoteMois"  => $nbrVoteMois,
+                     "VoteAValider" => $VoteAValider,
+                     "votesRefusee" => $votesRefusee);
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
@@ -120,7 +150,8 @@ class compte_vote
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "select compte_vote_cod  from compte_vote where " . substr($name, 6) . " = ? order by compte_vote_cod";
+                    $req    =
+                        "select compte_vote_cod  from compte_vote where " . substr($name, 6) . " = ? order by compte_vote_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())
@@ -135,10 +166,9 @@ class compte_vote
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 

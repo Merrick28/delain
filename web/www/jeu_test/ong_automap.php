@@ -64,9 +64,10 @@ switch($methode)
 */
 		?>
 		<a class="centrer" href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a>
-<table>
+<table style="border-spacing : 0;">
 	<td>
-			<table background="../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">
+			<table style="border-spacing : 0;" background="../images/fond5.gif" border="0" cellspacing="1"
+                   cellpadding="0">
 	<?php 
 		$req = "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
 		$db->query($req);
