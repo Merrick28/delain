@@ -1,6 +1,11 @@
 <?php 
 $param = new parametres();
-$contenu_page .= '<p class="titre">Défis d’aventuriers</p><p></p>';
+$perso = new perso;
+if(!$perso->charge($perso_cod))
+{
+    die('Erreur sur le chargement de perso');
+}
+
 $dialogue = '';
 $erreur = false;
 $message_erreur = '<strong>Une erreur est survenue !</strong><br />';
@@ -843,3 +848,13 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 	if ($existe_defis) $resultat .= '</table>';
 	return $resultat;
 }
+
+/*
+$template     = $twig->load('_perso2_defis.twig');
+$options_twig = array(
+
+    'PERSO'       => $perso,
+    'PHP_SELF'    => $PHP_SELF,
+
+);
+$contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));*/
