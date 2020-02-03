@@ -129,6 +129,14 @@ if ($erreur == 0)
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
+
+
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'PERSO'        => $perso,
+    'PHP_SELF'     => $PHP_SELF,
+    'CONTENU_PAGE' => $contenu_page
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

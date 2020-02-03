@@ -2,11 +2,7 @@
 include_once "verif_connexion.php";
 include '../includes/template.inc';
 include_once '../includes/tools.php';
-$t = new template;
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
+
 // on va maintenant charger toutes les variables liées au menu
 include('variables_menu.php');
 
@@ -743,7 +739,13 @@ if ($erreur == 0)
 <p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse('Sortie','FileRef');
-$t->p('Sortie');
-?>
+
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'PERSO'        => $perso,
+    'PHP_SELF'     => $PHP_SELF,
+    'CONTENU_PAGE' => $contenu_page
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
