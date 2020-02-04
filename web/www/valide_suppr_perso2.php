@@ -2,9 +2,9 @@
 include "jeu_test/verif_connexion.php";
 
 require_once G_CHE . "/includes/base_delain.php";
-$db = new base_delain;
-$db2 = new base_delain;
+
 $perso_cible = $_REQUEST['perso'];
+$pdo = new bddpdo();
 ?>
 <!DOCTYPE html>
 <html>
@@ -18,13 +18,22 @@ $perso_cible = $_REQUEST['perso'];
 <div class="bordiv">
     <?php
     $erreur = 0;
-    $req = 'select (perso_dcreat + \'24 hours\'::interval) > now() as test, perso_type_perso from perso where perso_cod = ' . $perso_cible;
-    $db->query($req);
-    $db->next_record();
-    if ($db->f('test') == 't') {
+    $req = 'select (perso_dcreat + \'24 hours\'::interval) > now() as test, perso_type_perso from perso where perso_cod = :perso';
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array(":perso" => $perso_cible),$stmt);
+    if(!$result = $stmt->fetch())
+    {
         $erreur = 1;
     }
-    $type_perso = $db->f("perso_type_perso");
+
+
+
+    if ($result['test'] == 't') {
+        $erreur = 1;
+    }
+    $perso_a_effacer = new perso;
+    $perso_a_effacer->charge($perso_cible);
+    $type_perso = $perso_a_effacer->perso_type_perso;
 
     if ($type_perso == 3) {
         $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cible and pfam_perso_cod = pcompt_perso_cod";

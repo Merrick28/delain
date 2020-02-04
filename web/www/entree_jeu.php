@@ -161,26 +161,7 @@ if ($verif_auth)
 
                 foreach ($liste_evt as $detail_evt)
                 {
-                    if (!empty($detail_evt->levt_attaquant != ''))
-                    {
-                        $perso_attaquant = new perso;
-                        $perso_attaquant->charge($detail_evt->levt_attaquant);
-                    }
-                    if (!empty($detail_evt->levt_cible != ''))
-                    {
-                        $perso_cible = new perso;
-                        $perso_cible->charge($detail_evt->levt_cible);
-                    }
-                    $texte_evt = str_replace('[perso_cod1]', "<strong>" . $ancien_monstre->perso_nom . "</strong>", $detail_evt->levt_texte);
-                    if ($detail_evt->levt_attaquant != '')
-                    {
-                        $texte_evt = str_replace('[attaquant]', "<strong>" . $perso_attaquant->perso_nom . "</strong>", $texte_evt);
-                    }
-                    if ($detail_evt->levt_cible != '')
-                    {
-                        $texte_evt = str_replace('[cible]', "<strong>" . $perso_cible->perso_nom . "</strong>", $texte_evt);
-                    }
-                    $date_evt      = new DateTime($detail_evt->levt_date);
+                    require "_block_nouveaux_evts.php";
                     $evt_monstre[] = $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
                 }
                 // On relâche le monstre du compte du joueur
