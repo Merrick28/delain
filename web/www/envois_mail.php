@@ -96,6 +96,10 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
         $req  = 'delete from envois_mail where menv_compt_cod = :val';
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":val" => $val), $stmt);
+
+        $req = 'update compte set compt_envoi_mail_dernier = now() where compt_cod = :val';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":val" => $val),stmt);
     }
     catch (Exception $e)
     {
@@ -111,6 +115,5 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
 
 
 }
-$req = 'update compte set compt_envoi_mail_dernier = now() where compt_cod IN (' . implode(',', $compte) . ')';
-$pdo->query($req);
+
 
