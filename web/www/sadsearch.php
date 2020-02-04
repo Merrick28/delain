@@ -27,4 +27,4 @@ if (!empty($_REQUEST["foo"]))
 }
 $xml .= "\n</resultats>";
 echo utf8_encode($xml);
-?>
+
