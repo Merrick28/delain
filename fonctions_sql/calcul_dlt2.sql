@@ -133,6 +133,7 @@ declare
   resultat_intermediaire integer;
   v_limite_quatriemes smallint;   -- Vaut 1 pour limiter les quatrième persos, 0 sinon.
   v_duree_vie interval;   -- Durée de vie, utilisé pour les monstres.
+  texte_evt text;				-- texte de l evenement
 
 begin
   v_limite_quatriemes := 1;
@@ -636,6 +637,24 @@ begin
 
     /* Marlyza: s'il n'y a plus de bonus, remettre immédiatement les caracs en état */
     perform f_remise_caracs(personnage) ;
+
+    /* Marlyza: déséquiper les objets pour lesquels le perso ne respecte plus le conditions nécéssaires */
+    for ligne in
+      select perobj_obj_cod, obj_nom, obj_nom_generique from perso_objets join objets on obj_cod=perobj_obj_cod where perobj_perso_cod=personnage and perobj_equipe='O' and obj_desequipable='O' and obj_verif_perso_condition(perobj_perso_cod,perobj_obj_cod)=0
+    loop
+      texte_evt := '[perso_cod1] ne respecte plus les conditions pour équiper l''objet « ' || ligne.obj_nom_generique || ' » (n° '||trim(to_char(ligne.perobj_obj_cod,'99999999'))||'), <strong><font color="red">il a été remis dans son invetaire</font></strong>.';
+      insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu)
+      values(nextval('seq_levt_cod'),6,now(),1,personnage,texte_evt,'O');
+
+      code_retour := code_retour || '<br><p>Vous ne respectez plus les conditions pour équiper l''objet « ' || ligne.obj_nom || ' » <br><strong><font color="red">L''objet a été remis dans votre inventaire</font></strong></p>';
+
+      update perso_objets set perobj_equipe='N' where perobj_obj_cod = ligne.perobj_obj_cod ;    -- déséquipe l'objet
+
+    end loop;
+
+    -- 2020-02-04 - Marlyza - S'il y a eu des modifications en bonus de vue, il faut recalculer l'automap
+    perform update_automap(personnage);
+
 
     /* louche */
     update perso_louche

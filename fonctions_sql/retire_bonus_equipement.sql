@@ -4,7 +4,7 @@
 
 create or replace function retire_bonus_equipement(integer, integer) RETURNS integer
 LANGUAGE plpgsql
-AS $_$-- Rajoute un bonus d'équipement à un perso
+AS $_$-- Retire un bonus d'équipement à un perso
 -- $1 = Le code du perso en question
 -- $2 = le code de l'objet qui donne ce bonus
 
