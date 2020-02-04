@@ -1,6 +1,5 @@
 <?php
 include "includes/classes.php";
-$db = new base_delain;
 ?>
 <!DOCTYPE html>
 <html>

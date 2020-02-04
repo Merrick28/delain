@@ -1,6 +1,7 @@
 <?php
 require G_CHE . "ident.php";
 include G_CHE . "/includes/classes_monstre.php";
+$pdo = new bddpdo;
 ?>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -8,31 +9,38 @@ include G_CHE . "/includes/classes_monstre.php";
 <link href="css/delain.css" rel="stylesheet">
 <body>
 <?php
-$db = new base_delain;
-$req = "select dcompt_etage from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
+
+$req  = "select dcompt_etage from compt_droit where dcompt_compt_cod = :compte ";
+$stmt = $pdo->prepare($req);
+$stmt = $pdo->execute(array(":compte" => $compt_cod), $stmt);
+if (!$result = $stmt->fecth())
+{
     die("Erreur sur les etages possibles !");
-} else {
-    $db->next_record();
-    $droit['etage'] = $db->f("dcompt_etage");
+} else
+{
+    $droit['etage'] = $result['dcompt_etage'];
 }
-if ($droit['etage'] == 'A') {
-    $restrict = '';
+if ($droit['etage'] == 'A')
+{
+    $restrict  = '';
     $restrict2 = '';
-} else {
-    $restrict = 'where etage_numero in (' . $droit['etage'] . ') ';
+} else
+{
+    $restrict  = 'where etage_numero in (' . $droit['etage'] . ') ';
     $restrict2 = 'and pos_etage in (' . $droit['etage'] . ') ';
 }
 ?>
 <div class="bordiv">
     <?php
-    $req = "select etage_libelle,etage_numero,etage_reference from etage " . $restrict . "order by etage_reference desc, etage_numero asc";
-    $db->query($req);
+    $req  =
+        "select etage_libelle,etage_numero,etage_reference from etage " . $restrict . "order by etage_reference desc, etage_numero asc";
+    $stmt = $pdo->query($req);
+
     echo("<p>");
-    while ($db->next_record()) {
-        $bold = ($db->f("etage_numero") == $db->f("etage_reference"));
-        echo ($bold ? '<p /><strong>' : '') . "<a href=\"jeu/tab_vue_total.php?num_etage=" . $db->f("etage_numero") . "&compt_cod=" . $compt_cod . "\">" . $db->f("etage_libelle") . "</a>" . ($bold ? '</strong>' : '') . "<br />";
+    while ($result = $stmt->fetch())
+    {
+        $bold = ($result['etage_numero'] == $result['etage_reference']);
+        echo ($bold ? '<p /><strong>' : '') . "<a href=\"jeu/tab_vue_total.php?num_etage=" . $result['etage_numero'] . "&compt_cod=" . $compt_cod . "\">" . $result['etage_libelle'] . "</a>" . ($bold ? '</strong>' : '') . "<br />";
     }
 
     ?>
