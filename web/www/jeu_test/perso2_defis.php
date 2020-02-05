@@ -1,6 +1,11 @@
 <?php 
 $param = new parametres();
-$contenu_page .= '<p class="titre">Défis d’aventuriers</p><p></p>';
+$perso = new perso;
+if(!$perso->charge($perso_cod))
+{
+    die('Erreur sur le chargement de perso');
+}
+
 $dialogue = '';
 $erreur = false;
 $message_erreur = '<strong>Une erreur est survenue !</strong><br />';

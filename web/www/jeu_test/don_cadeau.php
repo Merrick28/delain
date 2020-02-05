@@ -28,10 +28,7 @@ function valide_form2() {
 }
 
 </script>";
-$t->set_var("javascript", $javascript);
 
-// chemin des images
-$t->set_var("img_path", G_IMAGES);
 // contenu de la page
 $contenu_page = "";
 if (!$db->is_admin($compt_cod))

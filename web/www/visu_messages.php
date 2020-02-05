@@ -1,11 +1,6 @@
 <?php require_once "classes.php";
-require_once 'includes/template.inc';
 require_once "ident.php";
 
-$t = new template;
-$t->set_file('FileRef', 'template/delain/sans_menu.tpl');
-// chemins
-$t->set_var('URL', $type_flux.G_URL);
 
 $contenu_page = '';
 $titre_page = '';
@@ -121,7 +116,11 @@ if (!$erreur && !empty($visu_msg))	// Lecture d’un message
 }
 
 
-$t->set_var("CONTENU", $contenu_page);
-$t->set_var("TITRE", $titre_page);
-$t->parse('Sortie', 'FileRef');
-$t->p('Sortie');
+
+
+$template     = $twig->load('template_jeu_sans_menu.twig');
+$options_twig = array(
+    'CONTENU'       => $contenu_page,
+    'TITRE'        => $titre_page
+);
+echo $template->render(array_merge($options_twig_defaut, $options_twig));

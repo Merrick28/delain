@@ -64,9 +64,10 @@ switch($methode)
 */
 		?>
 		<a class="centrer" href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a>
-<table>
+<table style="border-spacing : 0;">
 	<td>
-			<table background="../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">
+			<table style="border-spacing : 1px;" background="../images/fond5.gif" border="0" cellspacing="1"
+                   cellpadding="0">
 	<?php 
 		$req = "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
 		$db->query($req);
@@ -270,11 +271,13 @@ switch($methode)
 						$dessus = 0;
 						$comment = '';
 					}
-					$ligne = '<td><img src="' . G_IMAGES . 'automap_' . $isvue . '_' . $dessus . '.gif" title=" '. $comment . 'X ' . $db->f("pos_x") . ',Y ' . $db->f("pos_y") . ')"></td>';
+					$ligne = '<td style="padding: 0px;"   ><img src="' . G_IMAGES . 'automap_' . $isvue . '_' . $dessus .
+                             '.gif" title=" '.
+                             $comment . 'X ' . $db->f("pos_x") . ',Y ' . $db->f("pos_y") . ')"></td>';
 					if($y_encours != $db->f("pos_y"))
 					{
 						$y_encours = $db->f("pos_y");
-						$ligne = "</tr><tr>" . $ligne;
+						$ligne = "</tr><tr style=\"padding: 0px;line-height: 0px;\" >" . $ligne;
 					}
 					echo $ligne;
 					//$texte = "tc[$i]" .  "=" . "['" . $db->f("pos_x") . "','" . $db->f("pos_y") . "','$isvue','$dessus','$comment'];\r\n";

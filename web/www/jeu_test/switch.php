@@ -5,6 +5,17 @@ ob_start();
 $is_log = 1;
 
 
+//
+// gestion des vote
+//
+$cv           = new compte_vote();
+$votes        = $cv->getStats($compt_cod);
+
+$totalXpGagne = $votes['totalXpGagne'];
+$nbrVote      = $votes['nbrVote'];
+$nbrVoteMois  = $votes['nbrVoteMois'];
+$VoteAValider = $votes['VoteAValider'];
+$votesRefusee = $votes['votesRefusee'];
 
 
 ?>
@@ -59,27 +70,33 @@ $is_log = 1;
     </script>
 <?php
 $admin = 'N';
-if ($db->is_admin_monstre($compt_cod)) {
-    $admin = 'O';
+if ($db->is_admin_monstre($compt_cod))
+{
+    $admin  = 'O';
     $chemin = '.';
     include "switch_monstre.php";
 }
-if ($db->is_admin($compt_cod)) {
+if ($db->is_admin($compt_cod))
+{
     include "switch_admin.php";
 }
-if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
-    $req_perso = "select autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise, compte_nombre_perso(compt_cod) as nb, compt_quete ";
+if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
+{
+    $req_perso =
+        "select autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise, compte_nombre_perso(compt_cod) as nb, compt_quete ";
     $req_perso = $req_perso . " from compte where compt_cod = $compt_cod ";
     $db->query($req_perso);
     $db->next_record();
-    $nb_perso = $db->f('nb');
+    $nb_perso           = $db->f('nb');
     $compt_quatre_perso = ($db->f("autorise") == 't');
-    $compt_quete = $db->f('compt_quete');
-    if ($nb_perso == 0) {
+    $compt_quete        = $db->f('compt_quete');
+    if ($nb_perso == 0)
+    {
         ?>
         Aucun joueur dirigé.
         <?php
-    } else {
+    } else
+    {
         ?>
         <!--table border="0"-->
         <form name="login" method="post" action="../validation_login3.php">
@@ -113,11 +130,13 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
                     echo "<a href=\"../suppr_perso.php?compt_cod=$compt_cod\">Supprimer un perso ! </A><br>";
                     ?>
                     <a href="hibernation.php">Mettre ses persos en hibernation</a><br>
-                    <?php if ($compt_quatre_perso) {
+                    <?php if ($compt_quatre_perso)
+                    {
                         echo '<a href="options_quatrieme_perso.php">Paramétrer son 4e personnage</a><br>';
                     }
 
-                    if ($compt_quete == 'O') {
+                    if ($compt_quete == 'O')
+                    {
                         echo "<a href=\"admin_quete.php\">Aller dans les options admins quêtes</a>";
                         $erreur = 1;
                     }
@@ -184,8 +203,9 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod))) {
 }
 
 
-$barre_switch_rapide = '<div id="colonne0-hide"><div class="container-fluid" ><div class="row centrer"></div></div></div>';
-$t->set_var('BARRE_SWITCH_RAPIDE', $barre_switch_rapide);
+$barre_switch_rapide =
+    '<div id="colonne0-hide"><div class="container-fluid" ><div class="row centrer"></div></div></div>';
+
 
 $contenu_page = ob_get_contents();
 ob_end_clean();
@@ -193,8 +213,9 @@ ob_end_clean();
 
 include "variables_menu.php";
 
-$template = $twig->load('switch.twig');
+
+$template     = $twig->load('switch.twig');
 $options_twig = array(
     'CONTENU_PAGE' => $contenu_page
 );
-echo $template->render(array_merge($var_twig_defaut,$options_twig));
+echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

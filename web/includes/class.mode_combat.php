@@ -110,6 +110,8 @@ class mode_combat
         return $retour;
     }
 
+
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

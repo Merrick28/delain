@@ -1,6 +1,5 @@
 <?php
 include "includes/classes.php";
-$db = new base_delain;
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,10 +13,15 @@ $db = new base_delain;
 <body>
 <div class="bordiv">
     <?php
-    if (!isset($methode)) {
+    if (!isset($_REQUEST['methode']))
+    {
         $methode = 'debut';
+    } else
+    {
+        $methode = $_REQUEST['methode'];
     }
-    switch ($methode) {
+    switch ($methode)
+    {
         case 'debut':
             ?>
             <form method="post" action="rech_class.php">
@@ -32,20 +36,33 @@ $db = new base_delain;
         case 'suite':
             $nom = strtolower($nom);
             $nom = pg_escape_string($nom);
-            $req = "select lower(perso_nom) as minusc,perso_cod,perso_nom from perso where lower(perso_nom) like E'$nom' and perso_type_perso = 1 and perso_actif = 'O' and perso_pnj != 1 order by minusc ";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $req =
+                "select lower(perso_nom) as minusc,
+                        perso_cod,
+                        perso_nom 
+                from perso 
+                where lower(perso_nom) 
+                like :nom and perso_type_perso = 1 
+                and perso_actif = 'O' and perso_pnj != 1 
+                order by minusc ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":nom" => '%' . $_REQUEST['nom'] . '%'), $stmt);
+            $allperso = $stmt->fetchAll();
+            if (count($allperso) == 0)
+            {
                 echo "<p>Pas de personnage trouvé !<br>";
                 echo "<a href=\"rech_class.php\">Retour !</a>";
-            } else {
+            } else
+            {
                 ?>
                 <p>Choisissez parmi la liste suivante :
                 <form method="post" action="rech_class.php">
                     <input type="hidden" name="methode" value="fin">
                     <select name="code">
                         <?php
-                        while ($db->next_record()) {
-                            echo "<option value=\"", $db->f("perso_cod"), "\">", $db->f("perso_nom"), "</option>";
+                        foreach ($allperso as $detailperso)
+                        {
+                            echo "<option value=\"", $detailperso['perso_cod'], "\">", $detailperso['perso_nom'], "</option>";
                         }
                         ?>
                     </select>
@@ -55,14 +72,21 @@ $db = new base_delain;
             }
             break;
         case 'fin':
-            $req = "select lower(perso_nom) as minusc from perso where perso_cod = $code ";
-            $db->query($req);
-            $db->next_record();
-            $temp_nom = pg_escape_string($db->f("minusc"));
-            $req = "select count(perso_cod) as nombre from perso where lower(perso_nom) < E'$temp_nom' and perso_actif = 'O' and perso_type_perso = 1  and perso_pnj != 1 ";
-            $db->query($req);
-            $db->next_record();
-            $nombre = $db->f("nombre");
+            $req    = "select lower(perso_nom) as minusc from perso where perso_cod = :code ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":code" => $_REQUEST['code']), $stmt);
+            $result = $stmt->fetch();
+
+            $temp_nom = $result['minusc'];
+            $req      =
+                "select count(perso_cod) as nombre 
+                    from perso where lower(perso_nom) < :nom 
+                    and perso_actif = 'O' and perso_type_perso = 1  and perso_pnj != 1 ";
+            $stmt     = $pdo->prepare($req);
+            $stmt     = $pdo->execute(array(":nom" => $temp_nom), $stmt);
+            $result = $stmt->fetch();
+
+            $nombre = $result['nombre'];
             $offset = (floor($nombre / 20) * 20);
             echo "<p><a href=\"classement_v2.php?sort=nom&sens=asc&debut=$offset\">Accéder au résultat</a>";
             break;

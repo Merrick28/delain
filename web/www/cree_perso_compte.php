@@ -1,6 +1,8 @@
 <?php
 include "includes/classes.php";
 include "ident.php";
+$pdo = new bddpdo();
+
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 ?>
 <!DOCTYPE html>
@@ -19,8 +21,8 @@ include "ident.php";
         ns6 = document.getElementById && !document.all;
 
         function getObject(n, d) {
-            if (typeof(n) == 'object') return n;
-            if (typeof(n) == 'undefined') return null;
+            if (typeof (n) == 'object') return n;
+            if (typeof (n) == 'undefined') return null;
             var p, i, x;
             if (!d) d = document;
             if ((p = n.indexOf("@")) > 0 && parent.frames.length) {
@@ -76,50 +78,58 @@ include "ident.php";
 </head>
 <body>
 <?php
-if (!$verif_auth) {
+if (!$verif_auth)
+{
     echo "<p>Erreur sur le passage de compte !";
     exit;
 }
-if (!isset($retour)) {
+if (!isset($retour))
+{
     $retour = 0;
 }
-if ($retour == 1) {
+if ($retour == 1)
+{
     $def_for = $ret_for;
     $def_dex = $ret_dex;
     $def_con = $ret_con;
     $def_int = $ret_int;
-} else {
+} else
+{
     $def_for = 9;
     $def_dex = 9;
     $def_con = 9;
     $def_int = 9;
 }
-$db = new base_delain;
 $creation_possible = false;
-$creation_4e = false;
-if (!isset($compt_cod)) {
+$creation_4e       = false;
+if (!isset($compt_cod))
+{
     echo "<p><strong>Numéro de compte non défini ! </strong>Merci de contacter Merrick (page cree_perso_compte.php)!";
-} else {
+} else
+{
     // Recherche du type de perso en cours de création
     $requete = "select compt_ligne_perso, autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise_quatrieme,
             compte_nombre_perso(compt_cod) as nb_perso, possede_4e_perso(compt_cod) as possede
         from compte 
-        where compt_cod = $compt_cod";
+        where compt_cod = :compte";
+    $stmt = $pdo->prepare($requete);
+    $stmt = $pdo->execute(array(":compte" => $compt_cod),$stmt);
+    $result = $stmt->fetch();
 
-    $db->query($requete);
-    $db->next_record();
-    $nb_perso = $db->f('nb_perso');
-    $possede_4e = ($db->f('possede') == 't');
-    $nb_perso_par_ligne = ($db->f('autorise_quatrieme') == 't' || $possede_4e) ? 4 : 3;
-    $nb_perso_max = $db->f('compt_ligne_perso') * $nb_perso_par_ligne;
+
+    $nb_perso           = $result['nb_perso'];
+    $possede_4e         = ($result['possede'] == 't');
+    $nb_perso_par_ligne = ($result['autorise_quatrieme'] == 't' || $possede_4e) ? 4 : 3;
+    $nb_perso_max       = $result['compt_ligne_perso'] * $nb_perso_par_ligne;
 
     $creation_possible = $nb_perso < $nb_perso_max;
-    $creation_4e = ($nb_perso == 3 && !$possede_4e);
+    $creation_4e       = ($nb_perso == 3 && !$possede_4e);
 }
 ?>
 <div class="bordiv">
     <?php
-    if ($creation_possible) {
+    if ($creation_possible)
+    {
         ?>
         <p class="titre">Création d’un aventurier (étape 1)</p>
 
@@ -130,7 +140,8 @@ if (!isset($compt_cod)) {
             <div class="centrer">
                 <table background="images/fondparchemin.gif" width="80%" bgcolor="#EBE7E7" border="0" cellpadding="2"
                        cellspacing="2">
-                    <?php if ($creation_4e) {
+                    <?php if ($creation_4e)
+                    {
                         ?>
                         <tr>
                             <td colspan="3">
@@ -241,9 +252,12 @@ if (!isset($compt_cod)) {
                             <select name="race">
                                 <?php
                                 $recherche = "SELECT race_cod,race_nom from race where race_cod in (1,2,3)";
-                                $db->query($recherche);
-                                while ($db->next_record()) {
-                                    printf("<option value=\"%s\">%s</option>\n", $db->f("race_cod"), $db->f("race_nom"));
+                                $stmt = $pdo->query($recherche);
+
+
+                                while ($result = $stmt->fetch())
+                                {
+                                    echo '<option value="' . $result['race_cod'] . '">' . $result['race_nom'] . '</option>';
                                 }
                                 ?>
                             </select></td>
@@ -408,7 +422,8 @@ if (!isset($compt_cod)) {
             </div>
         </FORM>
         <?php
-    } else {
+    } else
+    {
         echo '<p>Erreur ! Il semble que vous ayiez déjà assez de personnages comme cela...</p>';
     }
     ?>

@@ -17,7 +17,7 @@ services:
       # Décommentez la ligne ci dessous si vous voulez
       # garder une database persistante
       # pensez à changer le chemin local
-      # - /my/own/datadir:/var/lib/postgresql/data
+      # - /home/steph/data_delain:/var/lib/postgresql/data
     container_name: delain_db
     ports:
       - 5432:5432

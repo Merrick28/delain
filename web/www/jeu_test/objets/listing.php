@@ -1,12 +1,6 @@
 <?php 
 include "../verif_connexion.php";
-include '../../includes/template.inc';
 
-$t = new template('..');
-$t->set_file('FileRef','../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL',$type_flux.G_URL);
-$t->set_var('URL_IMAGES',G_IMAGES);
 
 $contenu_page = '';
 
@@ -75,6 +69,9 @@ if(!($bd->next_record())){
 // on va maintenant charger toutes les variables liées au menu
 include('../variables_menu.php');
 
-$t->set_var("CONTENU_COLONNE_DROITE",$contenu_page);
-$t->parse("Sortie","FileRef");
-$t->p("Sortie");
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'CONTENU_PAGE'             => $contenu_page
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

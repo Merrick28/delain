@@ -18,12 +18,6 @@ $frameless = ($compte->compt_frameless == 'O');
 $autorise_monstre = ($compte->autorise_4e_monstre() == 't');
 
 
-include_once 'includes/template.inc';
-$t = new template('jeu_test');
-$t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-// chemins
-$t->set_var('URL', $type_flux . G_URL);
-$t->set_var('URL_IMAGES', G_IMAGES);
 ob_start();
 ?>
     <script>
@@ -32,70 +26,10 @@ ob_start();
         }
     </script>
 <?php
+$perso = new perso;
+$perso->charge($perso_cod);
 
-
-$num_resultat = 0;
-$db = new base_delain;
-$requete
-    = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel,
-			perso_dlt
-		FROM perso WHERE perso_cod = " . $perso_cod;
-$db->query($requete);
-$num_resultat = $db->nf();
-
-$nom = $perso->perso_nom;
-$perso_nom = str_replace(chr(39), " ", $nom);
-$maintenant = date("d/m/Y H:i:s");
-$perso_mortel = $perso->perso_mortel;
-$num_perso = $perso->perso_cod;
-$perso_cod = $num_perso;
-$autorise = 0;
-$type_perso = $perso->perso_type_perso;
-if ($type_perso == 1 || ($type_perso == 2 && $autorise_monstre)) {
-    // on va quand même charger le perso_compte
-    $pcompt = new perso_compte();
-    $tab = $pcompt->getBy_pcompt_perso_cod($perso->perso_cod);
-    if ($tab !== false) {
-        // On a trouvé un perso_compte pour ce perso
-        if ($tab[0]->pcompt_compt_cod == $compte->compt_cod) {
-            // le compte compt_cod correspond au compt_cod courant, on autorise
-            $autorise = 1;
-        }
-    }
-} elseif ($type_perso == 3) {
-    $pfam = new perso_familier();
-    $pcompt = new perso_compte();
-    $tab_fam = $pfam->getBy_pfam_familier_cod($perso->perso_cod);
-    if ($tab_fam !== false) {
-        // on est bien dans la table familiers
-        $tab_pcompt = $pcompt->getBy_pcompt_perso_cod($tab_fam[0]->pfam_perso_cod);
-        {
-            if ($tab_pcompt !== false) {
-                // on est bien dabs la table pcompte
-                if ($tab_pcompt[0]->pcompt_compt_cod == $compte->compt_cod) {
-                    // le compte compt_cod correspond au compt_cod courant, on autorise
-                    $autorise = 1;
-                }
-            }
-        }
-    }
-}
-if ($autorise != 1) {
-    //
-    // on va quand même vérifier que le compte n'est pas sitté
-    //
-    if ($type_perso == 1) {
-        $cs = new compte_sitting();
-        if ($cs->isSittingValide($compte->compt_cod, $perso->perso_cod)) {
-            $autorise = 1;
-        }
-    } elseif ($type_perso == 3) {
-        $cs = new compte_sitting();
-        if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod)) {
-            $autorise = 1;
-        }
-    }
-}
+require "_block_valide_autorise_joue_perso.php";
 if ($autorise == 1) {
     $myAuth = new myauth;
     $myAuth->start();
@@ -184,26 +118,8 @@ if ($autorise == 1) {
         if (count($liste_evt) != 0) {
             echo "<p style='margin-top:10px;'><strong>Vos derniers événements importants :</strong></p>";
             echo "<p>";
-            $db_evt = new base_delain;
             foreach ($liste_evt as $detail_evt) {
-                if (!empty($detail_evt->levt_attaquant != '')) {
-                    $perso_attaquant = new perso;
-                    $perso_attaquant->charge($detail_evt->levt_attaquant);
-                }
-                if (!empty($detail_evt->levt_cible != '')) {
-                    $perso_cible = new perso;
-                    $perso_cible->charge($detail_evt->levt_cible);
-                }
-
-                //$tab_nom_evt = pg_fetch_array($res_nom_evt,0);
-                $texte_evt = str_replace('[perso_cod1]', "<strong>" . $perso_dlt->perso_nom . "</strong>", $detail_evt->levt_texte);
-                if ($detail_evt->levt_attaquant != '') {
-                    $texte_evt = str_replace('[attaquant]', "<strong>" . $perso_attaquant->perso_nom . "</strong>", $texte_evt);
-                }
-                if ($detail_evt->levt_cible != '') {
-                    $texte_evt = str_replace('[cible]', "<strong>" . $perso_cible->perso_nom . "</strong>", $texte_evt);
-                }
-                $date_evt = new DateTime($detail_evt->levt_date);
+                require "_block_nouveaux_evts.php";
                 echo $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
             }
             $perso_dlt->marqueEvtLus();
@@ -249,6 +165,15 @@ if ($perso_mortel != 'M') {
     include_once('jeu_test/variables_menu.php');
 }
 
-$t->set_var("CONTENU_COLONNE_DROITE", $contenu_page);
-$t->parse("Sortie", "FileRef");
-$t->p("Sortie");
+
+
+
+$template     = $twig->load('template_jeu.twig');
+$options_twig = array(
+
+    'PERSO'        => $perso,
+    'PHP_SELF'     => $PHP_SELF,
+    'CONTENU_PAGE' => $contenu_page
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

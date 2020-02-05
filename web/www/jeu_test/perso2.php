@@ -41,24 +41,7 @@ if (!isset($_REQUEST['m']))
     $m = $_REQUEST['m'];
 }
 
-$contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
-	<tr>';
-for ($cpt = 0; $cpt < $nb; $cpt++)
-{
-    $lien   = '<a href="' . $PHP_SELF . '?m=' . $cpt . '">';
-    $f_lien = '</a>';
-    if ($cpt == $m)
-    {
-        $style = 'onglet';
-    } else
-    {
-        $style = 'pas_onglet';
-    }
-    $contenu_page .= '<td width="' . $size . '%" class="' . $style . '" style="text-align:center">' . $lien . $mess[$cpt] . $f_lien . '</td>';
-}
 
-$contenu_page .= '</tr><tr>';
-$contenu_page .= '<td colspan="' . $nb . '" class="reste_onglet"><div class="centrer">';
 if ($m == 0)  // Caractéristiques
 {
     include "perso2_carac.php";
@@ -83,6 +66,15 @@ if ($m == 0)  // Caractéristiques
     include "perso2_divers.php";
 }
 
+$template     = $twig->load('perso2.twig');
+$options_twig = array(
 
-$contenu_page .= '</div></td></tr></table>';
-include "blocks/_footer_page_jeu.php";
+    'PERSO'        => $perso,
+    'PHP_SELF'     => $PHP_SELF,
+    'MESS'         => $mess,
+    'SIZE'         => $size,
+    'M'            => $m,
+    'CONTENU_PAGE' => $contenu_page
+
+);
+echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));

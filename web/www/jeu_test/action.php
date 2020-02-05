@@ -41,14 +41,7 @@ function affiche_apres_deplacement($position)
 
 $menu_deplacement = isset($_POST['menu_deplacement']) ? $_POST['menu_deplacement'] : '';
 $inc_vue          = ($methode == 'deplacement') && (!$menu_deplacement);
-if (!$inc_vue)
-{
-    $t = new template;
-    $t->set_file('FileRef', '../template/delain/general_jeu.tpl');
-    // chemins
-    $t->set_var('URL', $type_flux . G_URL);
-    $t->set_var('URL_IMAGES', G_IMAGES);
-}
+
 
 if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_perso == 2 || $perso->perso_pnj == 1))
 {
@@ -227,8 +220,9 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if ($perso->perso_type_perso == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
+                $resultat_dep = $contenu_page;
                 if ($menu_deplacement === '') include('frame_vue.php');
-                break;
+                die('');
             }
             if (isset($_POST['position']))
             {
@@ -243,8 +237,9 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if (!isset($position) || $position === '')
             {
                 $contenu_page .= '<p>Erreur ! Position non définie !</p>';
+                $resultat_dep = $contenu_page;
                 if ($menu_deplacement === '') include('frame_vue.php');
-                break;
+                die('');
             }
 
 
@@ -272,12 +267,16 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= affiche_apres_deplacement($position);
             }
             $contenu_page .= $retour;
+
             if ($menu_deplacement === '')
             {
+                $resultat_dep = $contenu_page;
                 include('frame_vue.php');
+                die('');
                 //header('Location:' . $type_flux.G_URL . 'jeu_test/' . $page_retour);
             }
             break;
+
         case "passage":
             /* On se déplace */
 

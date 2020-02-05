@@ -385,6 +385,23 @@ class compte
         return $retour;
     }
 
+    function getByNomLike($compt_nom)
+    {
+        $retour = array();
+        $pdo = new bddpdo;
+        $req = "SELECT compt_cod  FROM compte where compt_nom ilike :compt_nom ORDER BY compt_cod";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":compt_nom" => '%' . $compt_nom . '%'),$stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new compte;
+            $temp->charge($result["compt_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     /**
      * Charge dans la classe un enregistrement de compte
      * @global bdd_mysql $pdo

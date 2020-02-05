@@ -25,7 +25,6 @@ if (!$bool_admin_monstre && !$bool_admin)
     $sess->delete();
     $auth->logout();
     $auth->auth_loginform();
-    //header('Location: ' . $type_flux.G_URL . 'login2.php');
     exit();
 }
 
