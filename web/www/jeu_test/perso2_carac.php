@@ -24,7 +24,7 @@ $stmt = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
 while ($result = $stmt->fetch())
 {
     $bm_caracs[$result['corig_type_carac']] = [
-        "base"  => $result['valeur_orig'],
+        "base"  => $$result['valeur_orig'],
         "texte" => " : base " . $result['valeur_orig'] . ($result['corig_valeur'] > 0 ? " + bonus " : " - malus ")
                    . abs($result['corig_valeur'])
     ];
@@ -37,92 +37,7 @@ $pv               = $perso->perso_pv;
 $pv_max           = $perso->perso_pv_max;
 $niveau_blessures = niveau_blessures($pv,$pv_max);
 
-$db->query($requete);
-$db->next_record();
-$sexe   = $perso->perso_sex;
-$is_fam = $perso->is_fam();
-$redist = $perso->perso_redispatch;
-// Commenté par Reivax -- cause des problèmes avec le passage à l’UTF-8
-// Est-ce une protection anti-scripts ? Dans ce cas, je ne comprends pas pourquoi les Ç (chr(128)) seraient impactés... Dans le doute, je place htmlspecialchars.
-/*$desc = str_replace(chr(128),";",$db->f("perso_description"));
-$desc = str_replace(chr(127),";",$desc);*/
 
-
-/*if (($redist == 'P') && !$is_fam)
-	$contenu_page .= '<p style="text-align:center;"><strong><a href="action.php?methode=redist">Redistribuer les améliorations</a></strong><br>
-	ATTENTION ! ACTION IMMEDIATE ET DEFINITIVE !<br>(entre autres, les sorts mis dans les réceptacles sont perdus)';*/
-
-$contenu_page .= '
-<table width="100%" cellspacing="2">
-
-<tr>
-<td class="soustitre2">Niveau </td>
-<td>' . $db->f("perso_niveau") . '<em>(prochain niveau à ' . $db->f("limite_niveau") . ' PX)</em></td>
-<td class="soustitre2">Date limite de tour <a href="decalage_dlt.php">(Décaler sa DLT)</a></td>
-<td>' . $db->f("dlt") . '</td></tr>
-
-<tr><td class="soustitre2">Expérience</td>
-<td>' . $db->f('perso_px');
-
-$contenu_page     .= '
-</td>
-<td class="soustitre2">Points d’action</td>
-<td>' . $db->f('perso_pa') . '</td>
-</tr>
-
-<tr>
-<td class="soustitre2">Points de vie</td>';
-$pv               = $db->f("perso_pv");
-$pv_max           = $db->f("perso_pv_max");
-$niveau_blessures = '';
-if ($pv / $pv_max < 0.75)
-{
-    $niveau_blessures = ' - ' . $tab_blessures[0];
-}
-if ($pv / $pv_max < 0.5)
-{
-    $niveau_blessures = ' - ' . $tab_blessures[1];
-}
-if ($pv / $pv_max < 0.25)
-{
-    $niveau_blessures = ' - ' . $tab_blessures[2];
-}
-if ($pv / $pv_max < 0.15)
-{
-    $niveau_blessures = ' - ' . $tab_blessures[3];
-}
-$contenu_page .= '<td>' . $db->f('perso_pv') . '/' . $db->f('perso_pv_max') . $niveau_blessures . '</td>';
-$contenu_page .= '<td class="soustitre2">Nombre d’esquives ce tour</td>
-<td>' . $db->f('perso_nb_esquive') . '</td>
-</tr>
-<tr><td class="soustitre2">Renommée </td>
-<td>' . round($db->f('perso_renommee'), 2) . ' (' . $db->f('renommee') . ')</td>
-<td class="soustitre2">Renommée magique </td>
-<td nowrap>' . round($db->f("perso_renommee_magie"), 2) . ' (' . $db->f("renommee_magie") . ')</td>
-</tr>
-<tr>
-<td class="soustitre2">Renommée artisanale </td>
-<td>' . round($db->f('perso_renommee_artisanat'), 2) . ' (' . $db->f('renommee_artisanat') . ')</td>
-<td class="soustitre2">Karma </td>
-<td>' . $db->f('perso_kharma') . ' (' . $db->f('karma') . ')</td>
-</tr>
-<tr>
-<td height="3" colspan="4"><hr /></td>
-</tr>
-
-
-<tr>
-<td class="soustitre2">Force</td>
-<td>' . $db->f('perso_for') . (isset($bm_caracs["FOR"]) ? $bm_caracs["FOR"]["texte"] . " (" . ($db->f('perso_for') - $bm_caracs["FOR"]["base"]) . ")" : "") . '</td>
-<td class="soustitre2">Intelligence</td>
-<td>' . $db->f('perso_int') . (isset($bm_caracs["INT"]) ? $bm_caracs["INT"]["texte"] . " (" . ($db->f('perso_int') - $bm_caracs["INT"]["base"]) . ")" : "") . '</td>
-</tr>
-<tr>
-<td class="soustitre2">Dextérité</td>
-<td>' . $db->f('perso_dex') . (isset($bm_caracs["DEX"]) ? $bm_caracs["DEX"]["texte"] . " (" . ($db->f('perso_dex') - $bm_caracs["DEX"]["base"]) . ")" : "") . '</td>
-<td class="soustitre2">Constitution</td>
-<td>' . $db->f('perso_con') . (isset($bm_caracs["CON"]) ? $bm_caracs["CON"]["texte"] . " (" . ($db->f('perso_con') - $bm_caracs["CON"]["base"]) . ")" : "") . '</td>
-</tr>';
 // affichage des bonus
 
 $req_arme = "select max(obj_des_degats) as obj_des_degats,
