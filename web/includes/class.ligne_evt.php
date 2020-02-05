@@ -299,6 +299,100 @@ class ligne_evt
         return $retour;
     }
 
+    /**
+     * @param ligne_evt[] $tab_evt
+     * @param bool $isauth
+     * @param bool $strong
+     * @param bool $lien
+     */
+    function mise_en_page_evt($tab_evt, $isauth, $strong = false, $lien = false)
+    {
+        $strong_avant = '';
+        $strong_apres = '';
+        if ($strong)
+        {
+            $strong_avant = '<strong>';
+            $strong_apres = '</strong>';
+        }
+        foreach ($tab_evt as $key => $val)
+        {
+            $lien_avant = '';
+            $lien_apres = '';
+
+            $perso = new perso;
+            $perso->charge($val->levt_perso_cod1);
+            if ($isauth)
+            {
+                if ($lien)
+                {
+                    $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' . $perso->perso_cod . '>';
+                    $lien_apres = '</a>';
+                }
+                // on prend la ligne de l'événement
+                $texte =
+                    str_replace('[perso_cod1]', $strong_avant . $lien_avant . $perso->perso_nom . $lien_apres .
+                                                $strong_apres,
+                                $val->levt_texte);
+            } else
+            {
+                if ($lien)
+                {
+                    $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' . $perso->perso_cod . '>';
+                    $lien_apres = '</a>';
+                }
+                // non auth, on prend la ligne du type d'événement
+                $texte =
+                    str_replace('[perso_cod1]', $strong_avant . $lien_avant . $perso->perso_nom . $lien_apres .
+                                                $strong_apres,
+                                $val->tevt->tevt_texte);
+            }
+            if ($lien)
+            {
+                $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' .
+                              $val->perso_attaquant->perso_cod . '>';
+                $lien_apres = '</a>';
+            }
+            $texte =
+                str_replace('[attaquant]', $strong_avant . $lien_avant . $val->perso_attaquant->perso_nom .
+                                           $lien_apres . $strong_apres, $texte);
+            {
+                $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' .
+                              $val->perso_cible->perso_cod . '>';
+                $lien_apres = '</a>';
+            }
+            $texte           =
+                str_replace('[cible]', $strong_avant . $lien_avant . $val->perso_cible->perso_nom . $lien_apres .
+                                       $strong_apres,
+                            $texte);
+            $val->levt_texte = $texte;
+            // suppression des persos
+            $val->perso_cod_attaquant = $val->perso_attaquant->perso_cod;
+            $val->perso_cod_cible     = $val->perso_cible->perso_cod;
+            unset($val->perso_cible);
+            unset($val->perso_attaquant);
+            unset($val->tevt);
+            unset($val->levt_type_per1);
+            unset($val->levt_type_per1);
+            unset($val->levt_type_per2);
+            unset($val->levt_perso_cod2);
+            unset($val->levt_nombre);
+            unset($val->levt_parametres);
+            unset($val->perso_cod_attaquant);
+            unset($val->perso_cod_cible);
+            if (!$isauth)
+            {
+                if ($val->levt_visible == 'N')
+                {
+                    unset($val);
+                }
+            }
+
+        }
+        return $tab_evt;
+
+
+    }
+
     public function marquePersoLu($perso_cod)
     {
         $pdo  = new bddpdo;

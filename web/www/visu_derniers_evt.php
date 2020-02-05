@@ -4,6 +4,7 @@
 //test
 
 require "ident.php";
+require_once "fonctions.php";
 $pdo = new bddpdo();
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 
@@ -113,7 +114,7 @@ $pdo = new bddpdo();
             {
                 echo "<p><strong>Pour " . $tableau_noms[$key] . " :</strong></p>";
             }
-            $levt = new ligne_evt();
+            $levt   = new ligne_evt();
             $allevt = $levt->getByPersoNonLu($numero_perso);
 
 
@@ -126,46 +127,11 @@ $pdo = new bddpdo();
                         <td><p>Vos derniers événements importants :</p>
                             <p>
                                 <?php
-
+                                $allevtformat = $levt->mise_en_page_evt($allevt, true, true, false);
                                 foreach ($allevt as $detailevt)
                                 {
-                                    $req_nom_evt = "select perso1.perso_nom as nom1 ";
-                                    if ($db->f("levt_attaquant") != '')
-                                        $req_nom_evt = $req_nom_evt . ",attaquant.perso_nom as nom2 ";
-
-                                    if ($db->f("levt_cible") != '')
-                                        $req_nom_evt = $req_nom_evt . ",cible.perso_nom as nom3 ";
-
-                                    $req_nom_evt = $req_nom_evt . " from perso perso1";
-                                    if ($db->f("levt_attaquant") != '')
-                                        $req_nom_evt = $req_nom_evt . ",perso attaquant";
-
-                                    if ($db->f("levt_cible") != '')
-                                        $req_nom_evt = $req_nom_evt . ",perso cible";
-
-                                    $req_nom_evt =
-                                        $req_nom_evt . " where perso1.perso_cod = " . $db->f("levt_perso_cod1") . " ";
-                                    if ($db->f("levt_attaquant") != '')
-                                        $req_nom_evt =
-                                            $req_nom_evt . " and attaquant.perso_cod = " . $db->f("levt_attaquant") . " ";
-
-                                    if ($db->f("levt_cible") != '')
-                                        $req_nom_evt =
-                                            $req_nom_evt . " and cible.perso_cod = " . $db->f("levt_cible") . " ";
-
-                                    $db_evt->query($req_nom_evt);
-                                    $db_evt->next_record();
-                                    $texte_evt =
-                                        str_replace('[perso_cod1]', "<strong>" . $db_evt->f("nom1") . "</strong>", $db->f("levt_texte"));
-                                    if ($db->f("levt_attaquant") != '')
-                                        $texte_evt =
-                                            str_replace('[attaquant]', "<strong>" . $db_evt->f("nom2") . "</strong>", $texte_evt);
-
-                                    if ($db->f("levt_cible") != '')
-                                        $texte_evt =
-                                            str_replace('[cible]', "<strong>" . $db_evt->f("nom3") . "</strong>", $texte_evt);
-
-                                    printf("%s : $texte_evt (%s).</br>", $db->f("date_evt"), $db->f("tevt_libelle"));
+                                    printf("%s : $texte_evt (%s).</br>", format_date($detailevt->levt_date),
+                                           $detailevt->levt_texte);
                                 }
                                 ?>
                         </td>
