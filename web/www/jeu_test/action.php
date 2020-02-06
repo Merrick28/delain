@@ -9,6 +9,7 @@ if (!$perso->charge($perso_cod))
     die('Erreur sur chargement de perso !');
 }
 
+
 $compte = new compte;
 $compte->charge($compt_cod);
 
@@ -33,7 +34,8 @@ function affiche_apres_deplacement($position)
     {
         $pos = new positions();
         $pos->charge($position);
-        $retour = '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $pos->get_indice() . '</em></p>';
+        $retour =
+            '<hr /><p>Sur le sol est gravé un indice qui pourrait être fort utile : <br /><em>' . $pos->get_indice() . '</em></p>';
     }
     return $retour;
 }
@@ -206,7 +208,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $stmt   = $pdo->prepare($req);
             $stmt   = $pdo->execute(array(":perso"     => $perso_cod,
                                           ":num_objet" => $num_objet
-            ), $stmt);
+                                    ), $stmt);
             $result = $stmt->fetch();
 
             $contenu_page .= $result['resultat'];
@@ -247,8 +249,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
             $stmt   = $pdo->prepare($req_deplace);
             $stmt   = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod),
-                ':position'  => intval($position)), $stmt);
+                                        ':perso_cod' => intval($perso_cod),
+                                        ':position'  => intval($position)), $stmt);
             $retour = $stmt->fetch();
 
             $result      = explode('#', $retour['deplace']);
@@ -288,8 +290,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $req_deplace  = 'select passage(:perso_cod) as deplace';
             $stmt         = $pdo->prepare($req_deplace);
             $stmt         = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod)
-            ), $stmt);
+                                              ':perso_cod' => intval($perso_cod)
+                                          ), $stmt);
             $retour       = $stmt->fetch();
             $result       = explode('#', $result['deplace']);
             $contenu_page .= $result[0];
@@ -305,8 +307,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $req_deplace  = 'select sortir_arene(:perso_cod) as res';
             $stmt         = $pdo->prepare($req_deplace);
             $stmt         = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod)
-            ), $stmt);
+                                              ':perso_cod' => intval($perso_cod)
+                                          ), $stmt);
             $retour       = $stmt->fetch();
             $result       = explode(';', $retour['res']);
             $contenu_page .= $result[1];
@@ -317,8 +319,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $req_deplace  = 'select sortir_donjon(:perso_cod) as res';
             $stmt         = $pdo->prepare($req_deplace);
             $stmt         = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod)
-            ), $stmt);
+                                              ':perso_cod' => intval($perso_cod)
+                                          ), $stmt);
             $retour       = $stmt->fetch();
             $result       = explode(';', $retour['res']);
             $contenu_page .= $result[1];
@@ -329,8 +331,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $req_deplace  = 'select enregistre_avancee_donjon(:perso_cod) as res';
             $stmt         = $pdo->prepare($req_deplace);
             $stmt         = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod)
-            ), $stmt);
+                                              ':perso_cod' => intval($perso_cod)
+                                          ), $stmt);
             $retour       = $stmt->fetch();
             $result       = explode(';', $retour['res']);
             $contenu_page .= $result[1];
@@ -348,8 +350,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $req_deplace  = 'select passage(:perso_cod) as deplace';
             $stmt         = $pdo->prepare($req_deplace);
             $stmt         = $pdo->execute(array(
-                ':perso_cod' => intval($perso_cod)
-            ), $stmt);
+                                              ':perso_cod' => intval($perso_cod)
+                                          ), $stmt);
             $retour       = $stmt->fetch();
             $result       = explode('#', $result['deplace']);
             $contenu_page .= $result[0];
@@ -458,23 +460,24 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             }
             if ($type_lance == 5)
             {   // sort lancé avec un objet, on indique l'objet utilisé (on vérifiera que le sort lancé est bien celui de l'objet)
-                $req    = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
-                $stmt   = $pdo->prepare($req);
+                $req  = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
+                $stmt = $pdo->prepare($req);
                 $pdo->execute(
-                    array(':perso_cod'      => $perso_cod,
-                          ':objsort_cod'    => $_REQUEST["objsort_cod"],
-                          ':sort_cod'       => $sort_cod), $stmt
+                    array(':perso_cod'   => $perso_cod,
+                          ':objsort_cod' => $_REQUEST["objsort_cod"],
+                          ':sort_cod'    => $sort_cod), $stmt
                 );
             }
 
-            $req    = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(
+            $req          =
+                'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $stmt         = $pdo->prepare($req);
+            $stmt         = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
                       ':cible'      => $perso_cible->perso_cod,
                       ':type_lance' => $type_lance), $stmt
             );
-            $result = $stmt->fetch();
+            $result       = $stmt->fetch();
             $contenu_page .= $result['resultat'];
 
             // on recharge le perso
@@ -488,16 +491,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $sort_pa = $perso->get_cout_pa_magie($sort->sort_cod, $type_lance);
             if ($perso->perso_pa >= $sort_pa && ($pnbs->pnbs_nombre < 2 || is_null($pnbs->pnbs_nombre)))
             {
-                $adds        = ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($sort->sort_combinaison, 0, 1)) . "&fam_2=" . (1 * substr($sort->sort_combinaison, 1, 1)) . "&fam_3=" . (1 * substr($sort->sort_combinaison, 2, 1)) . "&fam_4=" . (1 * substr($sort->sort_combinaison, 3, 1)) . "&fam_5=" . (1 * substr($sort->sort_combinaison, 4, 1)) . "&fam_6=" . (1 * substr($sort->sort_combinaison, 5, 1));
-                $adds       .= ($type_lance != 5) ? "" : "&objsort_cod=".$_REQUEST["objsort_cod"];
+                $adds         =
+                    ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($sort->sort_combinaison, 0, 1)) . "&fam_2=" . (1 * substr($sort->sort_combinaison, 1, 1)) . "&fam_3=" . (1 * substr($sort->sort_combinaison, 2, 1)) . "&fam_4=" . (1 * substr($sort->sort_combinaison, 3, 1)) . "&fam_5=" . (1 * substr($sort->sort_combinaison, 4, 1)) . "&fam_6=" . (1 * substr($sort->sort_combinaison, 5, 1));
+                $adds         .= ($type_lance != 5) ? "" : "&objsort_cod=" . $_REQUEST["objsort_cod"];
                 $contenu_page .= '<br><br><a href="choix_sort.php?&sort=' . $sort_cod . '&type_lance=' . $type_lance . $adds . '" class="centrer">Relancer (' . $sort_pa . ' PA)</a></center>';
             }
 
             if ($type_lance == 5)
             {   // On fait le menage maintenant que le sort a été lancé
-             $req    = 'delete from objets_sorts_magie where objsortm_perso_cod = :perso_cod; ';
-             $stmt   = $pdo->prepare($req);
-             $pdo->execute(array(':perso_cod' => $perso_cod), $stmt );
+                $req  = 'delete from objets_sorts_magie where objsortm_perso_cod = :perso_cod; ';
+                $stmt = $pdo->prepare($req);
+                $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
             }
             break;
 
@@ -577,16 +581,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
             if ($type_lance == 5)
             {   // sort lancé avec un objet, on indique l'objet utilisé (on vérifiera que le sort lancé est bien celui de l'objet)
-                $req    = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
-                $stmt   = $pdo->prepare($req);
+                $req  = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
+                $stmt = $pdo->prepare($req);
                 $pdo->execute(
-                    array(':perso_cod'      => $perso_cod,
-                        ':objsort_cod'    => $_REQUEST["objsort_cod"],
-                        ':sort_cod'       => $sort_cod), $stmt
+                    array(':perso_cod'   => $perso_cod,
+                          ':objsort_cod' => $_REQUEST["objsort_cod"],
+                          ':sort_cod'    => $sort_cod), $stmt
                 );
             }
 
-            $req          = 'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
+            $req          =
+                'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
             $stmt         = $pdo->prepare($req);
             $stmt         = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
@@ -607,16 +612,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $sort_pa = $perso->get_cout_pa_magie($sort->sort_cod, $type_lance);
             if ($perso->perso_pa >= $sort_pa && ($pnbs->pnbs_nombre < 2 || is_null($pnbs->pnbs_nombre)))
             {
-                $adds        = ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($sort->sort_combinaison, 0, 1)) . "&fam_2=" . (1 * substr($sort->sort_combinaison, 1, 1)) . "&fam_3=" . (1 * substr($sort->sort_combinaison, 2, 1)) . "&fam_4=" . (1 * substr($sort->sort_combinaison, 3, 1)) . "&fam_5=" . (1 * substr($sort->sort_combinaison, 4, 1)) . "&fam_6=" . (1 * substr($sort->sort_combinaison, 5, 1));
-                $adds       .= ($type_lance != 5) ? "" : "&objsort_cod=".$_REQUEST["objsort_cod"];
+                $adds         =
+                    ($type_lance != 0) ? "" : "&fam_1=" . (1 * substr($sort->sort_combinaison, 0, 1)) . "&fam_2=" . (1 * substr($sort->sort_combinaison, 1, 1)) . "&fam_3=" . (1 * substr($sort->sort_combinaison, 2, 1)) . "&fam_4=" . (1 * substr($sort->sort_combinaison, 3, 1)) . "&fam_5=" . (1 * substr($sort->sort_combinaison, 4, 1)) . "&fam_6=" . (1 * substr($sort->sort_combinaison, 5, 1));
+                $adds         .= ($type_lance != 5) ? "" : "&objsort_cod=" . $_REQUEST["objsort_cod"];
                 $contenu_page .= '<br><br><a href="choix_sort.php?&sort=' . $sort_cod . '&type_lance=' . $type_lance . $adds . '" class="centrer">Relancer (' . $sort_pa . ' PA)</a></center>';
             }
 
             if ($type_lance == 5)
             {   // On fait le menage maintenant que le sort a été lancé
-                $req    = 'delete from objets_sorts_magie where objsortm_perso_cod = :perso_cod; ';
-                $stmt   = $pdo->prepare($req);
-                $pdo->execute(array(':perso_cod' => $perso_cod), $stmt );
+                $req  = 'delete from objets_sorts_magie where objsortm_perso_cod = :perso_cod; ';
+                $stmt = $pdo->prepare($req);
+                $pdo->execute(array(':perso_cod' => $perso_cod), $stmt);
             }
 
             break;
@@ -671,7 +677,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $perso->vote_revolution($_POST['revguilde_cod'], $_POST['vote']);
             break;
         case 'utilise_potion':
-            $gobj_cod = 0 ;
+            $gobj_cod = 0;
 
             // Charger l'objet pour récupérer son cod générique
             $o = new perso_objets();
@@ -679,45 +685,42 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             {
                 $potion = new objets();
                 $potion->charge($_REQUEST["obj_cod"]);
-                $gobj_cod = $potion->obj_gobj_cod ;
+                $gobj_cod = $potion->obj_gobj_cod;
             }
 
-            $req = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = :fpot_gobj_cod ' ;
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute( array(':fpot_gobj_cod' =>$gobj_cod), $stmt);
+            $req  = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = :fpot_gobj_cod ';
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(':fpot_gobj_cod' => $gobj_cod), $stmt);
             if (!$result = $stmt->fetch())
             {
                 $contenu_page .= 'Erreur sur la fonction appelée.';
-            }
-            else
+            } else
             {
-                $fonction = $result['fpot_fonction'] ;
-                $req = 'select potions.' . $fonction . '(:perso_cod, :cible) as resultat';
-                $stmt   = $pdo->prepare($req);
-                $stmt   = $pdo->execute( array(':perso_cod' => $perso_cod, ':cible' => $_POST['cible']), $stmt);
+                $fonction = $result['fpot_fonction'];
+                $req      = 'select potions.' . $fonction . '(:perso_cod, :cible) as resultat';
+                $stmt     = $pdo->prepare($req);
+                $stmt     = $pdo->execute(array(':perso_cod' => $perso_cod, ':cible' => $_POST['cible']), $stmt);
                 if ($result = $stmt->fetch())
                 {
-                    $contenu_page .= $result['resultat'].'<br><br>';
+                    $contenu_page .= $result['resultat'] . '<br><br>';
                 }
             }
             break;
         case 'rituel_modif_caracs':
-            if (((int)$_POST['diminution']<=0) || ((int)$_POST['amelioration']<=0))
+            if (((int)$_POST['diminution'] <= 0) || ((int)$_POST['amelioration'] <= 0))
             {
                 $contenu_page .= "Pour faire le rituel, vous devez choisir les 2 caractéristiques!<br><br>";
-            }
-            else
+            } else
             {
-                $contenu_page .= $perso->rituel_modif_caracs((int)$_POST['diminution'],(int)$_POST['amelioration']);
+                $contenu_page .= $perso->rituel_modif_caracs((int)$_POST['diminution'], (int)$_POST['amelioration']);
             }
             $contenu_page .= '<br><a href="frame_vue.php" class="centrer">Retour</a>';
             break;
         case 'rituel_modif_voiemagique':
-            if ((int)$_POST['mvoie_cod']<=0)
+            if ((int)$_POST['mvoie_cod'] <= 0)
             {
                 $contenu_page .= "Pour faire le rituel de modification de voie, vous devez choisir une nouvelle voie!<br><br>";
-            }
-            else
+            } else
             {
                 $contenu_page .= $perso->rituel_modif_voiemagique((int)$_POST['mvoie_cod']);
             }
@@ -743,14 +746,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 {
                     $type = explode('-', $key);
 
-                    if ($type[2]=="generique")
+                    if ($type[2] == "generique")
                     {
                         // Cas des objets achetés dans les stocks de génériques
                         $gobj         = $type[0];
                         $qte          = $val;
                         $contenu_page .= $perso->magasin_achat_generique($lieu, $gobj, $qte);
-                    }
-                    else
+                    } else
                     {
                         // Cas des objets achetés dans les stocks standards
                         $gobj         = $type[0];
@@ -779,12 +781,11 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $lieu = $_POST['lieu'];
             foreach ($obj as $key => $val)
             {
-                if ($_POST['stock'][$key]!="")
+                if ($_POST['stock'][$key] != "")
                 {
                     //pour les runes (voir echoppe_magie) on converti les objet bvers un stock de générique
                     $contenu_page .= $perso->magasin_vente_generique($lieu, $key);
-                }
-                else
+                } else
                 {
                     // Vente normale!
                     $contenu_page .= $perso->magasin_vente($lieu, $key);
@@ -964,12 +965,12 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'regle_groupe':
             $contenu_page .= $perso->regle_groupe($_REQUEST['pa'],
-                $_REQUEST['pv'],
-                $_REQUEST['dlt'],
-                $_REQUEST['bonus'],
-                $_REQUEST['messages'],
-                $_REQUEST['messagemort'],
-                $_REQUEST['champions']);
+                                                  $_REQUEST['pv'],
+                                                  $_REQUEST['dlt'],
+                                                  $_REQUEST['bonus'],
+                                                  $_REQUEST['messages'],
+                                                  $_REQUEST['messagemort'],
+                                                  $_REQUEST['champions']);
             $contenu_page .= '<br /><a class="centrer" href="groupe.php">Retour à la gestion de la coterie</a>';
             break;
         case 'invite_groupe':
@@ -1055,7 +1056,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
                 }
             }
-          break;
+            break;
 
         /* Quête de la construction de la cathédrale de Balgur au -3 */
         case 'batir':
@@ -1070,21 +1071,24 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     $req_matos = "select count(perobj_cod) as nbobj from perso_objets, objets 
 						where perobj_obj_cod = obj_cod 
 						and obj_gobj_cod=332 
-						and perobj_perso_cod=" . $perso_cod . " 
+						and perobj_perso_cod=:perso
 						and perobj_equipe='O' ";
-                    $db->query($req_matos);
-                    $db->next_record();
-                    $matos = $db->f('nbobj');
-                    if ($matos)
+                    $stmt      = $pdo->prepare($req_matos);
+                    $stmt      = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                    if ($result = $stmt->fetch())
                     {
                         /* Action */
                         $req = 'update dieu set dieu_pouvoir = (dieu_pouvoir + 10) where dieu_cod = 2';
-                        $db->query($req);
-                        $req = 'update perso set perso_pa = (perso_pa - 6), perso_px = perso_px + 0.25 where perso_cod = ' . $perso_cod;
-                        $db->query($req);
-                        $req = 'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
-                            . 'values(nextval(\'seq_levt_cod\'),89,now(),1,' . $perso_cod . ',\'[perso_cod1] a travaillé.\',\'O\',\'O\',' . $perso_cod . ')';
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
+                        $req =
+                            'update perso set perso_pa = (perso_pa - 6), perso_px = perso_px + 0.25 where perso_cod = :perso';
+                        $stmt      = $pdo->prepare($req_matos);
+                        $stmt      = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $req =
+                            'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
+                            . 'values(nextval(\'seq_levt_cod\'),89,now(),1,:perso,\'[perso_cod1] a travaillé.\',\'O\',\'O\',:perso)';
+                        $stmt      = $pdo->prepare($req_matos);
+                        $stmt      = $pdo->execute(array(":perso" => $perso_cod), $stmt);
                         $contenu_page .= 'La construction du bâtiment a progressé.<br>Votre dieu a gagné en puissance.<br>Vous gagnez 0.25px.';
                     } else
                     {
