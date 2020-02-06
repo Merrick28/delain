@@ -828,8 +828,8 @@ class perso
     {
         $retour = array();
         $pdo    = new bddpdo;
-        $req    = "select perso_cod  from perso 
-          where perso_nom ilike :perso_nom 
+        $req    = "select perso_cod  from perso
+          where perso_nom ilike :perso_nom
           and perso_actif = :perso_actif
           and perso_type_perso = :perso_type_perso
           order by perso_cod";
@@ -1995,6 +1995,8 @@ class perso
                                     ":nom" => $nom), $stmt);
         $result = $stmt->fetch();
 
+
+
         $this_perso = new perso;
 
         if (!$this_perso->charge($result['resultat']))
@@ -2874,11 +2876,11 @@ class perso
     public function perso_malus()
     {
         $pdo  = new bddpdo;
-        $req  = "select tbonus_libc, 
+        $req  = "select tbonus_libc,
                  tonbus_libelle,
-                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text 
-                 end as bonus_nb_tours, 
-                 bonus_mode, 
+                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text
+                 end as bonus_nb_tours,
+                 bonus_mode,
                  sum(bonus_valeur) as bonus_valeur
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
@@ -2900,11 +2902,11 @@ class perso
     public function perso_malus_equipement($equipement = false)
     {
         $pdo  = new bddpdo;
-        $req  = "select tbonus_libc, 
+        $req  = "select tbonus_libc,
                  tonbus_libelle,
-                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text 
-                 end as bonus_nb_tours, 
-                 bonus_mode, 
+                 case when bonus_mode = 'E' then 'Equipement' else bonus_nb_tours::text
+                 end as bonus_nb_tours,
+                 bonus_mode,
                  sum(bonus_valeur) as bonus_valeur
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc
@@ -2928,10 +2930,10 @@ class perso
     public function perso_bonus_equipement($equipement = false)
     {
         $pdo  = new bddpdo;
-        $req  = "select tbonus_libc, 
+        $req  = "select tbonus_libc,
                  tonbus_libelle,
-                 case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours, 
-                 bonus_mode, 
+                 case when bonus_mode='E' then 'Equipement' else bonus_nb_tours::text end as bonus_nb_tours,
+                 bonus_mode,
                  sum(bonus_valeur) as bonus_valeur
              from bonus
                   inner join bonus_type on tbonus_libc = bonus_tbonus_libc

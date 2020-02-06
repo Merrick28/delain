@@ -80,7 +80,7 @@ switch ($methode) {
             $compte->charge($compt_cod);
             if (!$compte->is_admin()) {
                 $dmsg   = new messages_dest();
-                $allmsg = $dmsg->getByPersoMessage($mid);
+                $allmsg = $dmsg->getByPersoMessage($perso_cod,$mid);
                 foreach ($allmsg as $detail) {
                     $detail->dmsg_lu = 'O';
                     $detail->stocke();
@@ -509,11 +509,11 @@ switch ($methode) {
             $nb_non_expedie    = 0;
             $liste_non_expedie = "";
             $liste_expedie     = "";
-            for ($cpt = 0; $cpt < $nb_dest; $cpt++) {
+            foreach ($tab_dest as $detaildest) {
                 $special = 0;
                 // on cherche le destinataire
-                if ($tab_dest[$cpt] != "") {
-                    if ($tab_dest[$cpt] == 'tous_joueurs_admin') {
+                if ($detaildest != "") {
+                    if ($detaildest == 'tous_joueurs_admin') {
                         $special      = 1;
                         $req_pos      =
                             "select ppos_pos_cod, distance_vue(:perso) as dist,
@@ -555,7 +555,7 @@ switch ($methode) {
                             $nb_expedie++;
                         }
                     }
-                    if (!strcasecmp($tab_dest[$cpt], 'guilde')) {
+                    if (!strcasecmp($detaildest, 'guilde')) {
                         $special    = 1;
                         $guilde     = 'O';
                         $dest       = '';
@@ -574,7 +574,7 @@ switch ($methode) {
 							and pguilde_perso_cod != :perso
 							and pguilde_perso_cod = perso_cod
 							and pguilde_valide = \'O\' and pguilde_message = \'O\' ';
-                        $stmt       = $pdo->prepare($req_guilde);
+                        $stmt       = $pdo->prepare($req_membre);
                         $stmt       = $pdo->execute(array(":perso"  => $perso_cod,
                                                           ":guilde" => $num_guilde), $stmt);
 
@@ -584,9 +584,9 @@ switch ($methode) {
                             $nb_expedie++;
                         }
                     }
-                    if (substr($tab_dest[$cpt], 0, 10) == 'liste_dif_') {
+                    if (substr($detaildest, 0, 10) == 'liste_dif_') {
                         $special = 1;
-                        $liste   = substr($tab_dest[$cpt], 10);
+                        $liste   = substr($detaildest, 10);
                         // on vérfie que cette liste soit bien au bon perso
                         $req  = "select cliste_cod from contact_liste
 							where (cliste_cod = :liste and cliste_perso_cod = :perso)
@@ -598,7 +598,7 @@ switch ($methode) {
                         if (!$stmt->fetch()) {
                             $contenu_page .= "Vous ne pouvez pas écrire à cette liste !";
                         } else {
-                            $req =
+                            $req  =
                                 "select contact_perso_cod,perso_nom
                                     from contact,perso
                                     where contact_cliste_cod = :liste
@@ -613,21 +613,16 @@ switch ($methode) {
                         }
                     }
                     if ($special == 0) {
-                        $ptemp = new perso;
-                        $ptemp2 = $ptemp->f_cherche_perso($nom_dest);
-                        echo "<pre>";
-                        echo '**' . $nom_dest . '**' . PHP_EOL;
-                        print_r($ptemp);
-                        print_r($ptemp);
-                        die('</pre>');
+                        $ptemp  = new perso;
+                        $ptemp2 = $ptemp->f_cherche_perso($detaildest);
 
-                        if ($ptemp2 !== false) {
+                        if ($ptemp2 === false) {
                             $nb_non_expedie++;
-                            $liste_non_expedie = $liste_non_expedie . $tab_dest[$cpt] . ",";
+                            $liste_non_expedie = $liste_non_expedie . $detaildest . ",";
                         } else {
                             $msg->ajouteDestinataire($ptemp2->perso_cod);
                             $nb_expedie++;
-                            $liste_expedie = $liste_expedie . $tab_dest[$cpt] . ", ";
+                            $liste_expedie = $liste_expedie . $detaildest . ", ";
                         }
                     }
                 }
