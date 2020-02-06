@@ -1140,6 +1140,7 @@ class perso
         $etage->getByNumero($pos->pos_etage);
         $retour['pos']   = $pos;
         $retour['etage'] = $etage;
+
         return $retour;
     }
 

@@ -1,4 +1,8 @@
-<?php 
+<?php
+/*******************
+ * deviendra obsoolete avec pdo
+ * a supprimer par la suite
+ */
 // Gère l’affichage standardisé d’éléments HTML.
 class html
 {

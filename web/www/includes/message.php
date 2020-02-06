@@ -48,34 +48,43 @@ class message
 		$ajout_champs = ($this->guilde >= 0) ? ', msg_guilde, msg_guilde_cod' : '';
 		$ajout_valeurs = ($this->guilde >= 0) ? ", 'O', " . $this->guilde : '';
 
-		$db = new base_delain;
+		$pdo = new bddpdo;
 
 		// Création du message
 		$req = "INSERT INTO messages (msg_date2, msg_date, msg_titre, msg_corps, msg_init $ajout_champs)
-			VALUES (now(), now(), e'$sujet', e'$corps', $reponseA $ajout_valeurs)
+			VALUES (now(), now(), :sujet, :corps, $reponseA $ajout_valeurs)
 			RETURNING msg_cod";
-		$msg_cod = $db->get_value($req, 'msg_cod');
+		$stmt = $pdo->prepare($req);
+		$stmt = $pdo->execute(array(
+		    ":sujet" => $sujet,
+            ":coprs" => $corps
+                              ),$stmt);
+		$result = $stmt->fetch();
+		$msg_cod = $result['msg_cod'];
         
 		// Gestion des fils de discussion
 		if ($this->enReponseA === 0)
 		{
 			$this->enReponseA = $msg_cod;
 			$reponseA = $this->enReponseA;
-			$req = "UPDATE messages SET msg_init = $reponseA WHERE msg_cod = $msg_cod";
-			$db->query($req);
+			$req = "UPDATE messages SET msg_init = $reponseA WHERE msg_cod = :msg";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":msg" => $msg_cod),$stmt);
 		}
 
 		// Insertion de l’expéditeur
 		$req = "insert into messages_exp (emsg_msg_cod, emsg_perso_cod, emsg_archive)
-			values ($msg_cod, $expediteur, 'N')";
-		$db->query($req);
+			values (:msg, :exp, 'N')";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":msg" => $msg_cod,":exp" => $expediteur),$stmt);
 
 		// Insertion des destinataires
 		foreach($this->destinataires as $destinataire)
 		{
 			$req = "insert into messages_dest (dmsg_msg_cod, dmsg_perso_cod, dmsg_lu ,dmsg_archive)
-				values ($msg_cod, $destinataire, 'N', 'N')";
-			$db->query($req);
+				values (:msg, :dest, 'N', 'N')";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":msg" => $msg_cod,":dest" => $destinataire),$stmt);
 		}
 
 		$this->msg_cod = $msg_cod;
