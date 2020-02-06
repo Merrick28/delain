@@ -334,7 +334,7 @@ class monstre_generique
     /**
      * Retourne un tableau de tous les enregistrements
      * @global bdd_mysql $pdo
-     * @return \monstre_generique
+     * @return monstre_generique[] array
      */
     function getAll()
     {

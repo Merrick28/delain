@@ -74,17 +74,15 @@ switch ($methode)
                                           ":eparpillement" => $eparpillement,
                                           ":adapterNiveau" => $adapterNiveau
                                       ), $stmt2);
-            $restult2 = $stmt2->fetch();
+            $result2  = $stmt2->fetch();
             $resultat = $result2['invasion'];
             echo "<p><strong>Pour l’étage $etage_nom</strong></p><p>$resultat</p>";
         }
-
-        $texte = pg_escape_string($texte);
-        $req   =
-            "INSERT INTO historique_animations(anim_date, anim_texte, anim_type) values (now()::date, '$texte', 'invasion')";
-        $db->query($req);
-
-        $log = date("d/m/y - H:i") . "\tCompte $compt_cod a généré une $texte\n";
+        $req  =
+            "INSERT INTO historique_animations(anim_date, anim_texte, anim_type) values (now()::date, :texte , 'invasion')";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":texte" => $texte), $stmt);
+        $log  = date("d/m/y - H:i") . "\tCompte $compt_cod a généré une $texte\n";
         writelog($log, 'animation_invasion');
         break;
 }
@@ -107,11 +105,14 @@ echo '<p>Les invasions de monstre permettent de générer aléatoirement de nomb
 			<td class="soustitre2">
 			<select name="code_monstre">';
 
-$req = 'select gmon_cod, gmon_nom, gmon_niveau from monstre_generique order by gmon_nom';
-$db->query($req);
-while ($db->next_record())
+$monstre = new monstre_generique();
+$allmonstre = $monstre->getAll();
+
+foreach ($allmonstre as $detailmonstre)
 {
-    echo '<option value="' . $db->f('gmon_cod') . '">' . $db->f('gmon_nom') . ' (Niv. ' . $db->f('gmon_niveau') . ' )</option>';
+    echo '<option value="' . $detailmonstre->gmon_cod . '">' . $detailmonstre->gmon_nom . ' (Niv. ' .
+         $detailmonstre->gmon_niveau .
+         ' )</option>';
 }
 echo '</select></td>';
 echo '<td class="soustitre2">
@@ -134,13 +135,16 @@ echo '</table></form>';
 echo "<p><strong>Historique des invasions :</strong> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
 
 $req =
-    'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
-$db->query($req);
+    'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, 
+    anim_texte, (now()::date - anim_date) as duree 
+    FROM historique_animations 
+    WHERE anim_type=\'invasion\' ORDER BY anim_date';
+$stmt = $pdo->query($req);
 $derniere_distrib = -1;
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-    echo '<li>' . $db->f('date') . ' : ' . $db->f('anim_texte') . '</li>';
-    $derniere_distrib = $db->f('duree');
+    echo '<li>' . $result['date'] . ' : ' . $result['anim_texte'] . '</li>';
+    $derniere_distrib = $result['duree'];
 }
 echo '</ul>';
 echo '</div>';
