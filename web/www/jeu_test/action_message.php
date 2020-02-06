@@ -15,36 +15,28 @@ $nb      = count($mess);
 //
 
 
-if (!isset($_REQUEST['m']))
-{
+if (!isset($_REQUEST['m'])) {
     $m = 0;
-} else
-{
+} else {
     $m = $_REQUEST['m'];
 }
 
-if (!isset($_REQUEST['methode']))
-{
+if (!isset($_REQUEST['methode'])) {
     $methode = 'debut';
-} else
-{
+} else {
     $methode = $_REQUEST['methode'];
 }
 
 $contenu_page .= '
 	<table cellspacing="0" cellpadding="0" width="100%">
 <tr>';
-for ($cpt = 0; $cpt < $nb; $cpt++)
-{
+for ($cpt = 0; $cpt < $nb; $cpt++) {
     $lien   = '<a href="messagerie2.php?m=' . $cpt . '">';
     $f_lien = '</a>';
-    if ($cpt == $m)
-    {
+    if ($cpt == $m) {
         $style = 'onglet';
-    } else
-    {
+    } else {
         $style = 'pas_onglet';
-
     }
     $contenu_page .= '<td class="' . $style . '"><div style="text-align:center">' . $lien . $mess[$cpt] . $f_lien . '</div></td>';
 }
@@ -56,19 +48,16 @@ $auth_mes     = 0;
 $message      = new messages();
 $mid          = $_REQUEST['mid'];
 $message->charge($mid);
-if ($message->is_auth_msg($perso_cod))
-{
+if ($message->is_auth_msg($perso_cod)) {
     $auth_mes = 1;
 }
 
-switch ($methode)
-{
+switch ($methode) {
     /************************************/
     /* V O I R    U N    M E S S A G E  */
     /************************************/
     case "visu_msg":
-        if ($auth_mes == 1)
-        {
+        if ($auth_mes == 1) {
             $disparu = '<em>-- Personnage disparu --</em>';
 
             //
@@ -79,11 +68,9 @@ switch ($methode)
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
 
-            if ($result = $stmt->fetch())
-            {
+            if ($result = $stmt->fetch()) {
                 $num_guilde = $resut['pguilde_guilde_cod'];
-            } else
-            {
+            } else {
                 $num_guilde = 0;
             }
             //
@@ -91,16 +78,13 @@ switch ($methode)
             //
             $compte = new compte;
             $compte->charge($compt_cod);
-            if (!$compte->is_admin())
-            {
+            if (!$compte->is_admin()) {
                 $dmsg   = new messages_dest();
                 $allmsg = $dmsg->getByPersoMessage($mid);
-                foreach ($allmsg as $detail)
-                {
+                foreach ($allmsg as $detail) {
                     $detail->dmsg_lu = 'O';
                     $detail->stocke();
                 }
-
             }
             //
             // On prend les infos du message
@@ -121,13 +105,11 @@ switch ($methode)
             $messages_exp->getByMsg($mid);
 
             $perso_exp = new perso;
-            if (!$perso_exp->charge($messages_exp->emsg_perso_cod))
-            {
+            if (!$perso_exp->charge($messages_exp->emsg_perso_cod)) {
                 $exp            = '';
                 $emsg_perso_cod = -1;
                 $emsg_perso_nom = $disparu;
-            } else
-            {
+            } else {
                 $exp            = str_replace("'", "\'", $perso_exp->perso_nom . ";");
                 $emsg_perso_cod = $perso_exp->perso_cod;
                 $emsg_perso_nom = $perso_exp->perso_nom;
@@ -161,19 +143,15 @@ switch ($methode)
 				and ' . $pref[$m] . 'msg_cod < ' . $mid . $restr[$m] . $restr2[$m] . '
 				order by ' . $pref[$m] . 'msg_cod desc limit 1';
             $stmt      = $pdo->query($req_ordre);
-            if ($result = $stmt->fetch())
-            {
-
+            if ($result = $stmt->fetch()) {
                 $t_var             = $pref[$m] . 'msg_cod';
                 $precedent_suivant .= '<a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $result[$t_var] . '&methode='
                                       . $methode . '">';
-                if ($result[$pref[$m] . 'lu'] == 'N')
-                {
+                if ($result[$pref[$m] . 'lu'] == 'N') {
                     $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= '<== Message plus ancien ';
-                if ($result[$pref[$m] . 'lu'] == 'N')
-                {
+                if ($result[$pref[$m] . 'lu'] == 'N') {
                     $precedent_suivant .= '</strong>';
                 }
                 $precedent_suivant .= '</a>';
@@ -185,18 +163,15 @@ switch ($methode)
 				and ' . $pref[$m] . 'msg_cod > ' . $mid . $restr[$m] . $restr2[$m] . '
 				order by ' . $pref[$m] . 'msg_cod asc limit 1';
             $stmt              = $pdo->query($req_ordre2);
-            if ($result = $stmt->fetch())
-            {
+            if ($result = $stmt->fetch()) {
                 $t_var             = $pref[$m] . 'msg_cod';
                 $precedent_suivant .= '<div style="text-align:right;"><a href="' . $PHP_SELF . '?m=' . $m . '&mid=' .
                                       $result[$t_var] . '&methode=' . $methode . '">';
-                if ($result[$pref[$m] . 'lu'] == 'N')
-                {
+                if ($result[$pref[$m] . 'lu'] == 'N') {
                     $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= 'Message plus récent ==> ';
-                if ($$result[$pref[$m] . 'lu'] == 'N')
-                {
+                if ($$result[$pref[$m] . 'lu'] == 'N') {
                     $precedent_suivant .= '</strong>';
                 }
                 $precedent_suivant .= '</a>';
@@ -227,18 +202,16 @@ switch ($methode)
             // ni dans la même guilde pour un message de guilde.
             if ($msg_guilde == 'O' && $msg_guilde_cod == $num_guilde
                 || $emsg_perso_cod == $perso_cod
-            )
-            {
+            ) {
                 $liste_dest = '';
-            } else
-            {
+            } else {
                 $liste_dest = ($is_expediteur) ? $exp . ';' : '';
             }
 
             //
             // Puis les infos des destinataires
             //
-            $req_dest         = "select dmsg_perso_cod, coalesce(perso_nom, '$disparu') as perso_nom, dmsg_lu, 
+            $req_dest         = "select dmsg_perso_cod, coalesce(perso_nom, '$disparu') as perso_nom, dmsg_lu,
 					coalesce(pguilde_guilde_cod, -1) as pguilde_guilde_cod
 				from messages_dest
 				left outer join perso on perso_cod = dmsg_perso_cod
@@ -252,38 +225,31 @@ switch ($methode)
             $contenu_page .= '
 				<tr><td class="soustitre2" width="200">Destinataire(s) : </td>
 					<td>';
-            if ($msg_guilde == 'O' && $msg_guilde_cod == $num_guilde)
-            {
+            if ($msg_guilde == 'O' && $msg_guilde_cod == $num_guilde) {
                 $liste_dest       = $liste_dest . 'guilde;';
                 $contenu_page     .= "Guilde, ";
                 $is_destinataires = true;
             }
-            if (!$is_destinataires)
-            {
+            if (!$is_destinataires) {
                 $contenu_page .= $disparu;
             }
-            foreach ($alldest as $result)
-            {
+            foreach ($alldest as $result) {
                 $nom_dest        = $result['perso_nom'];
                 $num_dest        = $result['dmsg_perso_cod'];
                 $guilde_cod_dest = $result['pguilde_guilde_cod'];
 
                 // Construction de la liste des destinataires du Répondre à tous
-                if ($num_dest != $perso_cod)    // On ne s’inclut pas
-                {
-                    if ($msg_guilde != 'O' || $msg_guilde_cod != $num_guilde || $guilde_cod_dest != $msg_guilde_cod)
+                if ($num_dest != $perso_cod) {    // On ne s’inclut pas
+                    if ($msg_guilde != 'O' || $msg_guilde_cod != $num_guilde || $guilde_cod_dest != $msg_guilde_cod) {
                         // On inclut tous ceux qui ne sont pas dans la guilde du message,
                         // ou tout le monde si la personne qui répond à tous n’est pas dans la guilde du message
                         // ou tout le monde si le message n’a pas de guilde
-                    {
                         $liste_dest = $liste_dest . str_replace("'", "\'", $nom_dest) . ";";
                     }
                 }
-                if ($result['dmsg_lu'] == 'O')
-                {
+                if ($result['dmsg_lu'] == 'O') {
                     $contenu_page .= '<a href="visu_desc_perso.php?visu=' . $num_dest . '">' . $nom_dest . '</a>, ';
-                } else
-                {
+                } else {
                     $contenu_page .= '<a href="visu_desc_perso.php?visu=' . $num_dest . '"><strong>' . $nom_dest . '</strong></a>, ';
                 }
             }
@@ -292,14 +258,11 @@ switch ($methode)
             $stmt         = $pdo->prepare($req);
             $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
 
-            if ($result = $stmt->fetch())
-            {
+            if ($result = $stmt->fetch()) {
                 $chance   = $result['bonus_valeur'];
                 $longueur = strlen($corps);
-                for ($cpt = 0; $cpt < $longueur; $cpt++)
-                {
-                    if (rand(1, 100) < $chance)
-                    {
+                for ($cpt = 0; $cpt < $longueur; $cpt++) {
+                    if (rand(1, 100) < $chance) {
                         $char  = rand(1, 255);
                         $char2 = chr($char);
                         $corps = substr_replace($corps, $char2, $cpt, 1);
@@ -330,8 +293,7 @@ switch ($methode)
 					<td class="soustitre2"><div style=text-align:center><a href="action_message.php?m=' . $m . '&methode=efface_msg&mid=' . $mid . '">Effacer</a></div></td>
 					<td class="soustitre2"><div style=text-align:center><a href="action_message.php?m=' . $m . '&methode=non_lu_msg&mid=' . $mid . '">Marquer comme non lu</a></div></td>
 				</tr></table>';
-        } else
-        {
+        } else {
             $contenu_page .= '<div class="titre">Vous n’avez pas accès à ce message !';
         }
         break;
@@ -343,10 +305,8 @@ switch ($methode)
         break;
     case "select_efface":
         $nb = 0;
-        for ($cpt = 0; $cpt < 20; $cpt++)
-        {
-            if (isset($msg[$cpt]) && $msg[$cpt] != '')
-            {
+        for ($cpt = 0; $cpt < 20; $cpt++) {
+            if (isset($msg[$cpt]) && $msg[$cpt] != '') {
                 $nb      = $nb + 1;
                 $requete =
                     'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
@@ -359,10 +319,8 @@ switch ($methode)
         break;
     case "select_archive":
         $nb = 0;
-        for ($cpt = 0; $cpt < 20; $cpt++)
-        {
-            if (isset($msg[$cpt]))
-            {
+        for ($cpt = 0; $cpt < 20; $cpt++) {
+            if (isset($msg[$cpt])) {
                 $nb      = $nb + 1;
                 $requete =
                     'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
@@ -375,10 +333,8 @@ switch ($methode)
         break;
     case "select_non_lu":
         $nb = 0;
-        for ($cpt = 0; $cpt < 20; $cpt++)
-        {
-            if (isset($msg[$cpt]))
-            {
+        for ($cpt = 0; $cpt < 20; $cpt++) {
+            if (isset($msg[$cpt])) {
                 $nb      = $nb + 1;
                 $requete =
                     'update messages_dest set dmsg_lu = \'N\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
@@ -452,41 +408,33 @@ switch ($methode)
         $stmt         = $pdo->prepare($req);
         $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
         $result       = $stmt->fetch();
-        if ($result['valeur_bonus'] > 0)
-        {
+        if ($result['valeur_bonus'] > 0) {
             $contenu_page .= '<br><br><strong>********* Vous êtes sous l’effet d’un Bernardo, vous ne pouvez pas envoyer de message ! *********</strong><br><br>';
             $erreur       = 1;
         }
-        for ($cpt = 0; $cpt < $nb_dest; $cpt++)
-        {
-            if ($tab_dest[$cpt] != "")
-            {
+        for ($cpt = 0; $cpt < $nb_dest; $cpt++) {
+            if ($tab_dest[$cpt] != "") {
                 $nb_vrai_dest = $nb_vrai_dest + 1;
             }
         }
-        if ($nb_dest > 100)
-        {
+        if ($nb_dest > 100) {
             $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 100 destinataires ! *********</strong><br><br>';
             $erreur       = 1;
         }
-        if ($nb_vrai_dest == 0)
-        {
+        if ($nb_vrai_dest == 0) {
             $contenu_page .= '<br><br><strong>********* Vous devez renseigner au moins un destinataire ! *********</strong><br><br>';
             $erreur       = 1;
         }
         $titre = $_REQUEST['titre'];
-        if ($titre == '')
-        {
+        if ($titre == '') {
             $contenu_page .= '<br><br><strong>********* Vous devez mettre un titre au message !*********</strong><br><br>';
             $erreur       = 1;
         }
-        if (strlen($titre) >= 50)
-        {
+        if (strlen($titre) >= 50) {
             $contenu_page .= '<br><br><strong>********* Votre titre est trop long, merci de le raccourcir ! *********</strong><br><br>';
             $erreur       = 1;
         }
-        if ($erreur == 1)
-        {
+        if ($erreur == 1) {
             $contenu_page .= '<!-- Titre original: [' . $titre . '] -->';
             $titre        = htmlspecialchars($titre);
             $titre        = str_replace(";", chr(127), $titre);
@@ -526,16 +474,14 @@ switch ($methode)
 				</table>
 				</form>';
         }
-        if ($erreur == 0)
-        {
+        if ($erreur == 0) {
             /************************************/
             /* d’abord on enregistre le message */
             /************************************/
 
             $msg = new message();
 
-            if (!isset($msg_init))
-            {
+            if (!isset($msg_init)) {
                 $msg_init = 0;
             }
             $msg->enReponseA = $msg_init;
@@ -546,8 +492,7 @@ switch ($methode)
             $stmt   = $pdo->execute(array(":perso" => $perso_cod), $stmt);
             $result = $stmt->fetch();
 
-            if ($result['perso_crapaud'] == 1)
-            {
+            if ($result['perso_crapaud'] == 1) {
                 $titre = "Crôôa ?!!??? ";
                 $corps = "Croa, crôoâa, crôâ, CROOOAAAAA !
 				" . $corps;
@@ -564,21 +509,18 @@ switch ($methode)
             $nb_non_expedie    = 0;
             $liste_non_expedie = "";
             $liste_expedie     = "";
-            for ($cpt = 0; $cpt < $nb_dest; $cpt++)
-            {
+            for ($cpt = 0; $cpt < $nb_dest; $cpt++) {
                 $special = 0;
                 // on cherche le destinataire
-                if ($tab_dest[$cpt] != "")
-                {
-                    if ($tab_dest[$cpt] == 'tous_joueurs_admin')
-                    {
+                if ($tab_dest[$cpt] != "") {
+                    if ($tab_dest[$cpt] == 'tous_joueurs_admin') {
                         $special      = 1;
                         $req_pos      =
-                            "select ppos_pos_cod, distance_vue(:perso) as dist, 
-                            pos_etage, pos_x, pos_y 
-                            from perso_position, perso, positions 
+                            "select ppos_pos_cod, distance_vue(:perso) as dist,
+                            pos_etage, pos_x, pos_y
+                            from perso_position, perso, positions
                             where ppos_perso_cod = :perso
-                                  and perso_cod =:perso 
+                                  and perso_cod =:perso
                                       and ppos_pos_cod = pos_cod ";
                         $stmt         = $pdo->prepare($req_pos);
                         $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
@@ -607,15 +549,13 @@ switch ($methode)
                                                           ":etage"        => $etage
                                                       ), $stmt);
 
-                        while ($result = $stmt->fetch())
-                        {
+                        while ($result = $stmt->fetch()) {
                             $msg->ajouteDestinataire($result['perso_cod']);
                             $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                             $nb_expedie++;
                         }
                     }
-                    if (!strcasecmp($tab_dest[$cpt], 'guilde'))
-                    {
+                    if (!strcasecmp($tab_dest[$cpt], 'guilde')) {
                         $special    = 1;
                         $guilde     = 'O';
                         $dest       = '';
@@ -638,15 +578,13 @@ switch ($methode)
                         $stmt       = $pdo->execute(array(":perso"  => $perso_cod,
                                                           ":guilde" => $num_guilde), $stmt);
 
-                        while ($result = $stmt->fetch())
-                        {
+                        while ($result = $stmt->fetch()) {
                             $msg->ajouteDestinataire($result['perso_cod']);
                             $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                             $nb_expedie++;
                         }
                     }
-                    if (substr($tab_dest[$cpt], 0, 10) == 'liste_dif_')
-                    {
+                    if (substr($tab_dest[$cpt], 0, 10) == 'liste_dif_') {
                         $special = 1;
                         $liste   = substr($tab_dest[$cpt], 10);
                         // on vérfie que cette liste soit bien au bon perso
@@ -657,54 +595,51 @@ switch ($methode)
                         $stmt = $pdo->execute(array(":perso" => $perso_cod,
                                                     ":liste" => $liste), $stmt);
 
-                        if (!$stmt->fetch())
-                        {
+                        if (!$stmt->fetch()) {
                             $contenu_page .= "Vous ne pouvez pas écrire à cette liste !";
-                        } else
-                        {
+                        } else {
                             $req =
-                                "select contact_perso_cod,perso_nom 
-                                    from contact,perso 
-                                    where contact_cliste_cod = :liste 
+                                "select contact_perso_cod,perso_nom
+                                    from contact,perso
+                                    where contact_cliste_cod = :liste
                                     and contact_perso_cod = perso_cod ";
                             $stmt = $pdo->prepare($req);
                             $stmt = $pdo->execute(array(":liste" => $liste), $stmt);
-                            while ($result = $stmt->fetch())
-                            {
+                            while ($result = $stmt->fetch()) {
                                 $msg->ajouteDestinataire($result['contact_perso_cod']);
                                 $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                                 $nb_expedie++;
                             }
                         }
                     }
-                    if ($special == 0)
-                    {
+                    if ($special == 0) {
                         $ptemp = new perso;
+                        $ptemp2 = $ptemp->f_cherche_perso($nom_dest);
+                        echo "<pre>";
+                        echo '**' . $nom_dest . '**' . PHP_EOL;
+                        print_r($ptemp);
+                        print_r($ptemp);
+                        die('</pre>');
 
-                        if (!$ptemp = $ptemp->f_cherche_perso($nom_dest))
-                        {
+                        if ($ptemp2 !== false) {
                             $nb_non_expedie++;
                             $liste_non_expedie = $liste_non_expedie . $tab_dest[$cpt] . ",";
-                        } else
-                        {
-                            $msg->ajouteDestinataire($ptemp->perso_cod);
+                        } else {
+                            $msg->ajouteDestinataire($ptemp2->perso_cod);
                             $nb_expedie++;
                             $liste_expedie = $liste_expedie . $tab_dest[$cpt] . ", ";
                         }
                     }
                 }
             }
-            if ($nb_non_expedie != 0)
-            {
+            if ($nb_non_expedie != 0) {
                 $contenu_page .= "Le message n’a pas été expédié à $liste_non_expedie : aventurier(s) inexistant(s).";
             }
 
             $envoi = $msg->envoieMessage();
-            if ($envoi)
-            {
+            if ($envoi) {
                 $contenu_page .= "Le message a été envoyé correctement à $liste_expedie. Il arrivera sous peu.";
-            } else
-            {
+            } else {
                 $contenu_page .= 'Le message n’a pas été envoyé : pas de destinataires valides trouvés.';
             }
         }
