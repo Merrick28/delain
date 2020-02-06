@@ -366,7 +366,7 @@ switch ($methode)
                 $nb      = $nb + 1;
                 $requete =
                     'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
-                $stmt   = $pdo->prepare($requete);
+                $stmt    = $pdo->prepare($requete);
                 $pdo->execute(array(":perso" => $perso_cod,
                                     ":msg"   => $msg[$cpt]), $stmt);
             }
@@ -382,7 +382,7 @@ switch ($methode)
                 $nb      = $nb + 1;
                 $requete =
                     'update messages_dest set dmsg_lu = \'N\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
-                $stmt   = $pdo->prepare($requete);
+                $stmt    = $pdo->prepare($requete);
                 $pdo->execute(array(":perso" => $perso_cod,
                                     ":msg"   => $msg[$cpt]), $stmt);
             }
@@ -392,7 +392,7 @@ switch ($methode)
     case "efface_msg":
         $requete =
             'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
-        $stmt   = $pdo->prepare($requete);
+        $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a bien été effacé.';
@@ -400,7 +400,7 @@ switch ($methode)
     case "archive__vue generale_msg":
         $requete =
             'update messages_dest set dmsg_archive = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
-        $stmt   = $pdo->prepare($requete);
+        $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a été archivé.';
@@ -408,7 +408,7 @@ switch ($methode)
     case "efface_vue generale_msg":
         $requete =
             'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
-        $stmt   = $pdo->prepare($requete);
+        $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a bien été effacé. Message : ' . $mid . ' perso : ' . $perso_cod;
@@ -416,24 +416,26 @@ switch ($methode)
     case "archive_msg":
         $requete =
             'update messages_dest set dmsg_archive = \'O\' where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
-        $stmt   = $pdo->prepare($requete);
+        $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $requete =
             'update messages_exp set emsg_archive = \'O\' where emsg_msg_cod = :msg and emsg_perso_cod = ' . $perso_cod;
-        $stmt   = $pdo->prepare($requete);
+        $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a été archivé.';
         break;
     case "non_lu_msg":
         $requete =
-            'update messages_dest set dmsg_lu = \'N\' where dmsg_msg_cod = ' . $mid . ' and dmsg_perso_cod = ' . $perso_cod;
-        $db->query($requete);
+            'update messages_dest set dmsg_lu = \'N\' where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
+        $stmt    = $pdo->prepare($requete);
+        $pdo->execute(array(":perso" => $perso_cod,
+                            ":msg"   => $msg[$cpt]), $stmt);
+
         $contenu_page .= 'Le message a été marqué comme non lu.';
         break;
     case "nouveau_message":
-        $db2    = new base_delain;
         $guilde = 'N';
         $erreur = 0;
 
@@ -443,13 +445,14 @@ switch ($methode)
         //$dest = preg_replace("(&#[0-9]+);","\\1", $dest);
         //fin modif
 
-        $tab_dest     = explode(";", $dest);
+        $tab_dest     = explode(";", $_REQUEST['dest']);
         $nb_dest      = count($tab_dest);
         $nb_vrai_dest = 0;
-        $req          = "select valeur_bonus($perso_cod, 'BER')";
-        $db->query($req);
-        $db->next_record();
-        if ($db->f('valeur_bonus') > 0)
+        $req          = "select valeur_bonus(:perso, 'BER')";
+        $stmt         = $pdo->prepare($req);
+        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+        $result       = $stmt->fetch();
+        if ($result['valeur_bonus'] > 0)
         {
             $contenu_page .= '<br><br><strong>********* Vous êtes sous l’effet d’un Bernardo, vous ne pouvez pas envoyer de message ! *********</strong><br><br>';
             $erreur       = 1;
@@ -471,6 +474,7 @@ switch ($methode)
             $contenu_page .= '<br><br><strong>********* Vous devez renseigner au moins un destinataire ! *********</strong><br><br>';
             $erreur       = 1;
         }
+        $titre = $_REQUEST['titre'];
         if ($titre == '')
         {
             $contenu_page .= '<br><br><strong>********* Vous devez mettre un titre au message !*********</strong><br><br>';
@@ -486,11 +490,11 @@ switch ($methode)
             $contenu_page .= '<!-- Titre original: [' . $titre . '] -->';
             $titre        = htmlspecialchars($titre);
             $titre        = str_replace(";", chr(127), $titre);
-            $titre        = pg_escape_string($titre);
+
             $contenu_page .= '<!-- Titre final: [' . $titre . '] -->';
             $corps        = htmlspecialchars($corps);
             $corps        = str_replace(";", chr(127), $corps);
-            $corps        = pg_escape_string($corps);
+
             $contenu_page .= '<form name="nouveau_message" method="post" action="action_message.php">
 				<input type="hidden" name="msg_init" value="' . $msg_init . '">
 				<input type="hidden" name="methode" value="nouveau_message">
@@ -537,10 +541,12 @@ switch ($methode)
             $msg->enReponseA = $msg_init;
 
             // Crapaud ?
-            $req = "select perso_crapaud from perso where perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("perso_crapaud") == 1)
+            $req    = "select perso_crapaud from perso where perso_cod = :perso ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+            $result = $stmt->fetch();
+
+            if ($result['perso_crapaud'] == 1)
             {
                 $titre = "Crôôa ?!!??? ";
                 $corps = "Croa, crôoâa, crôâ, CROOOAAAAA !
@@ -566,30 +572,45 @@ switch ($methode)
                 {
                     if ($tab_dest[$cpt] == 'tous_joueurs_admin')
                     {
-                        $special = 1;
-                        $req_pos =
-                            "select ppos_pos_cod, distance_vue($perso_cod) as dist, pos_etage, pos_x, pos_y from perso_position, perso, positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-                        $db->query($req_pos);
-                        $db->next_record();
-                        $pos_actuelle = $db->f("ppos_pos_cod");
-                        $v_x          = $db->f("pos_x");
-                        $v_y          = $db->f("pos_y");
-                        $etage        = $db->f("pos_etage");
-                        $vue          = $db->f("dist");
-                        $req_vue      = 'select perso_cod, perso_nom, distance(ppos_pos_cod,' . $pos_actuelle . ') from perso, perso_position, positions
-							where pos_x >= (' . $v_x . ' - ' . $vue . ') and pos_x <= (' . $v_x . ' + ' . $vue . ')
-    							and pos_y >= (' . $v_y . ' - ' . $vue . ') and pos_y <= (' . $v_y . ' + ' . $vue . ')
+                        $special      = 1;
+                        $req_pos      =
+                            "select ppos_pos_cod, distance_vue(:perso) as dist, 
+                            pos_etage, pos_x, pos_y 
+                            from perso_position, perso, positions 
+                            where ppos_perso_cod = :perso
+                                  and perso_cod =:perso 
+                                      and ppos_pos_cod = pos_cod ";
+                        $stmt         = $pdo->prepare($req_pos);
+                        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $result       = $stmt->fetch();
+                        $pos_actuelle = $result['ppos_pos_cod'];
+                        $v_x          = $result['pos_x'];
+                        $v_y          = $result['pos_y'];
+                        $etage        = $result['pos_etage'];
+                        $vue          = $result['dist'];
+                        $req_vue      = 'select perso_cod, perso_nom, distance(ppos_pos_cod,:pos_actuelle) from perso, perso_position, positions
+							where pos_x >= (:x - :vue) and pos_x <= (:x + :vue)
+    							and pos_y >= (:y - :vue) and pos_y <= (:y + :vue)
     							and ppos_perso_cod = perso_cod
-    							and perso_cod != ' . $perso_cod . '
+    							and perso_cod != :perso_cod
     							and perso_type_perso = 1
     							and perso_actif = \'O\'
     							and ppos_pos_cod = pos_cod
-    							and pos_etage = ' . $etage;
-                        $db->query($req_vue);
-                        while ($db->next_record())
+    							and pos_etage = :etage';
+                        $stmt         = $pdo->prepare($req_vue);
+                        $stmt         = $pdo->execute(array(
+                                                          ":x"            => $v_x,
+                                                          ":y"            => $v_y,
+                                                          ":vue"          => $vue,
+                                                          ":pos_actuelle" => $pos_actuelle,
+                                                          ":perso_cod"    => $perso_cod,
+                                                          ":etage"        => $etage
+                                                      ), $stmt);
+
+                        while ($result = $stmt->fetch())
                         {
-                            $msg->ajouteDestinataire($db->f("perso_cod"));
-                            $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
+                            $msg->ajouteDestinataire($result['perso_cod']);
+                            $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                             $nb_expedie++;
                         }
                     }
@@ -599,25 +620,28 @@ switch ($methode)
                         $guilde     = 'O';
                         $dest       = '';
                         $req_guilde = "select pguilde_guilde_cod from guilde_perso
-							where pguilde_perso_cod = $perso_cod
+							where pguilde_perso_cod = :perso
 							and pguilde_valide = 'O' ";
-                        $db->query($req_guilde);
-                        $db->next_record();
-                        $num_guilde = $db->f("pguilde_guilde_cod");
+                        $stmt       = $pdo->prepare($req_guilde);
+                        $stmt       = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $result     = $stmt->fetch();
+                        $num_guilde = $result['pguilde_guilde_cod'];
 
                         $msg->guilde = $num_guilde;
 
                         $req_membre = 'select perso_cod,perso_nom from perso,guilde_perso
-							where pguilde_guilde_cod = ' . $num_guilde . '
-							and pguilde_perso_cod != ' . $perso_cod . '
+							where pguilde_guilde_cod = :guilde
+							and pguilde_perso_cod != :perso
 							and pguilde_perso_cod = perso_cod
 							and pguilde_valide = \'O\' and pguilde_message = \'O\' ';
-                        $db->query($req_membre);
+                        $stmt       = $pdo->prepare($req_guilde);
+                        $stmt       = $pdo->execute(array(":perso"  => $perso_cod,
+                                                          ":guilde" => $num_guilde), $stmt);
 
-                        while ($db->next_record())
+                        while ($result = $stmt->fetch())
                         {
-                            $msg->ajouteDestinataire($db->f("perso_cod"));
-                            $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
+                            $msg->ajouteDestinataire($result['perso_cod']);
+                            $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                             $nb_expedie++;
                         }
                     }
@@ -626,41 +650,44 @@ switch ($methode)
                         $special = 1;
                         $liste   = substr($tab_dest[$cpt], 10);
                         // on vérfie que cette liste soit bien au bon perso
-                        $req = "select cliste_cod from contact_liste
-							where (cliste_cod = $liste and cliste_perso_cod = $perso_cod)
-								or exists (select 1 from contact,perso where contact_cliste_cod = $liste and contact_perso_cod = $perso_cod) ";
-                        $db->query($req);
-                        if ($db->nf() == 0)
+                        $req  = "select cliste_cod from contact_liste
+							where (cliste_cod = :liste and cliste_perso_cod = :perso)
+								or exists (select 1 from contact,perso where contact_cliste_cod = :liste  and contact_perso_cod = :perso) ";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":perso" => $perso_cod,
+                                                    ":liste" => $liste), $stmt);
+
+                        if (!$stmt->fetch())
                         {
                             $contenu_page .= "Vous ne pouvez pas écrire à cette liste !";
                         } else
                         {
                             $req =
-                                "select contact_perso_cod,perso_nom from contact,perso where contact_cliste_cod = $liste and contact_perso_cod = perso_cod ";
-                            $db->query($req);
-                            while ($db->next_record())
+                                "select contact_perso_cod,perso_nom 
+                                    from contact,perso 
+                                    where contact_cliste_cod = :liste 
+                                    and contact_perso_cod = perso_cod ";
+                            $stmt = $pdo->prepare($req);
+                            $stmt = $pdo->execute(array(":liste" => $liste), $stmt);
+                            while ($result = $stmt->fetch())
                             {
-                                $msg->ajouteDestinataire($db->f("contact_perso_cod"));
-                                $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
+                                $msg->ajouteDestinataire($result['contact_perso_cod']);
+                                $liste_expedie = $liste_expedie . $result['perso_nom'] . ", ";
                                 $nb_expedie++;
                             }
                         }
                     }
                     if ($special == 0)
                     {
-                        $nom_dest = ltrim(rtrim($tab_dest[$cpt]));
-                        $nom_dest = pg_escape_string($nom_dest);
-                        $req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
-                        $db->query($req_dest);
-                        $db->next_record();
-                        $tab_res_dest = $db->f("num_perso");
-                        if ($tab_res_dest == -1)
+                        $ptemp = new perso;
+
+                        if (!$ptemp = $ptemp->f_cherche_perso($nom_dest))
                         {
                             $nb_non_expedie++;
                             $liste_non_expedie = $liste_non_expedie . $tab_dest[$cpt] . ",";
                         } else
                         {
-                            $msg->ajouteDestinataire($db->f("num_perso"));
+                            $msg->ajouteDestinataire($ptemp->perso_cod);
                             $nb_expedie++;
                             $liste_expedie = $liste_expedie . $tab_dest[$cpt] . ", ";
                         }
