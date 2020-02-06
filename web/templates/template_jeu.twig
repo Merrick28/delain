@@ -352,7 +352,7 @@
             <br>
         {% endif %}
 
-        {% if DROIT.acces_logs == 'O' %}
+        {% if (DROIT.acces_logs == 'O' or COMPTE.is_admin) %}
             <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/admin_visu_logs.php">Voir les logs</a>
             <br>
         {% endif %}
