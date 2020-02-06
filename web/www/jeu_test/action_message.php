@@ -105,41 +105,34 @@ switch ($methode)
             //
             // On prend les infos du message
             //
-            $req_msg = "select to_char(msg_date2,'DD/MM/YYYY hh24:mi:ss') as date_mes,
-					msg_init, msg_titre, msg_cod, msg_corps,
-					msg_guilde, msg_guilde_cod
-				from messages
-				where msg_cod = $mid";
-            $db->query($req_msg);
-            $db->next_record();
-            $corps          = str_replace(chr(127), ';', $db->f('msg_corps'));
-            $date           = $db->f('date_mes');
-            $titre          = str_replace(chr(127), ';', $db->f('msg_titre'));
-            $msg_init       = $db->f('msg_init');
-            $msg_guilde_cod = $db->f('msg_guilde_cod');
-            $msg_guilde     = $db->f('msg_guilde');
-            $n_titre        = str_replace(chr(39), " ", $titre);
+
+            $corps          = $message->msg_corps;
+            $date           = $message->msg_date;
+            $titre          = $message->msg_titre;
+            $msg_init       = $message->msg_init;
+            $msg_guilde_cod = $message->msg_guilde_cod;
+            $msg_guilde     = $message->msg_guilde;
+            $n_titre        = $message->msg_titre;
 
             //
             // Puis les infos de l’expéditeur
             //
-            $req_exp = "select emsg_perso_cod, coalesce(perso_nom, '$disparu') as perso_nom
-				from messages_exp
-				left outer join perso on perso_cod = emsg_perso_cod
-				where emsg_msg_cod = $mid";
-            $db->query($req_exp);
-            $is_expediteur = ($db->nf() > 0);
-            if ($db->next_record())
-            {
-                $exp            = str_replace("'", "\'", $db->f('perso_nom')) . ";";
-                $emsg_perso_cod = $db->f('emsg_perso_cod');
-                $emsg_perso_nom = $db->f('perso_nom');
-            } else
+            $messages_exp = new messages_exp();
+            $messages_exp->getByMsg($mid);
+
+            $perso_exp = new perso;
+            if (!$perso_exp->charge($messages_exp->emsg_perso_cod))
             {
                 $exp            = '';
                 $emsg_perso_cod = -1;
                 $emsg_perso_nom = $disparu;
+            } else
+            {
+                $exp            = str_replace("'", "\'", $perso_exp->perso_nom . ";");
+                $emsg_perso_cod = $perso_exp->perso_cod;
+                $emsg_perso_nom = $perso_exp->perso_nom;
             }
+
 
             //
             // on regarde sur quel type de message on est
@@ -167,18 +160,19 @@ switch ($methode)
 				where ' . $pref[$m] . 'perso_cod = ' . $perso_cod . '
 				and ' . $pref[$m] . 'msg_cod < ' . $mid . $restr[$m] . $restr2[$m] . '
 				order by ' . $pref[$m] . 'msg_cod desc limit 1';
-            $db3->query($req_ordre);
-            if ($db3->nf() != 0)
+            $stmt      = $pdo->query($req_ordre);
+            if ($result = $stmt->fetch())
             {
-                $db3->next_record();
+
                 $t_var             = $pref[$m] . 'msg_cod';
-                $precedent_suivant .= '<a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $db3->f($t_var) . '&methode=' . $methode . '">';
-                if ($db3->f($pref[$m] . 'lu') == 'N')
+                $precedent_suivant .= '<a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $result[$t_var] . '&methode='
+                                      . $methode . '">';
+                if ($result[$pref[$m] . 'lu'] == 'N')
                 {
                     $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= '<== Message plus ancien ';
-                if ($db3->f($pref[$m] . 'lu') == 'N')
+                if ($result[$pref[$m] . 'lu'] == 'N')
                 {
                     $precedent_suivant .= '</strong>';
                 }
@@ -190,18 +184,18 @@ switch ($methode)
 				where ' . $pref[$m] . 'perso_cod = ' . $perso_cod . '
 				and ' . $pref[$m] . 'msg_cod > ' . $mid . $restr[$m] . $restr2[$m] . '
 				order by ' . $pref[$m] . 'msg_cod asc limit 1';
-            $db3->query($req_ordre2);
-            if ($db3->nf() != 0)
+            $stmt              = $pdo->query($req_ordre2);
+            if ($result = $stmt->fetch())
             {
-                $db3->next_record();
                 $t_var             = $pref[$m] . 'msg_cod';
-                $precedent_suivant .= '<div style="text-align:right;"><a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $db3->f($t_var) . '&methode=' . $methode . '">';
-                if ($db3->f($pref[$m] . 'lu') == 'N')
+                $precedent_suivant .= '<div style="text-align:right;"><a href="' . $PHP_SELF . '?m=' . $m . '&mid=' .
+                                      $result[$t_var] . '&methode=' . $methode . '">';
+                if ($result[$pref[$m] . 'lu'] == 'N')
                 {
                     $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= 'Message plus récent ==> ';
-                if ($db3->f($pref[$m] . 'lu') == 'N')
+                if ($$result[$pref[$m] . 'lu'] == 'N')
                 {
                     $precedent_suivant .= '</strong>';
                 }
@@ -244,14 +238,16 @@ switch ($methode)
             //
             // Puis les infos des destinataires
             //
-            $req_dest = "select dmsg_perso_cod, coalesce(perso_nom, '$disparu') as perso_nom, dmsg_lu, 
+            $req_dest         = "select dmsg_perso_cod, coalesce(perso_nom, '$disparu') as perso_nom, dmsg_lu, 
 					coalesce(pguilde_guilde_cod, -1) as pguilde_guilde_cod
 				from messages_dest
 				left outer join perso on perso_cod = dmsg_perso_cod
 				left outer join guilde_perso on pguilde_perso_cod = perso_cod and pguilde_valide = 'O'
-				where dmsg_msg_cod = $mid";
-            $db->query($req_dest);
-            $is_destinataires = ($db->nf() > 0);
+				where dmsg_msg_cod = :msg";
+            $stmt             = $pdo->prepare($req_dest);
+            $stmt             = $pdo->execute(array(":msg" => $mid), $stmt);
+            $alldest          = $stmt->fetchAll();
+            $is_destinataires = (count($alldest) > 0);
 
             $contenu_page .= '
 				<tr><td class="soustitre2" width="200">Destinataire(s) : </td>
@@ -266,11 +262,11 @@ switch ($methode)
             {
                 $contenu_page .= $disparu;
             }
-            while ($db->next_record())
+            foreach ($alldest as $result)
             {
-                $nom_dest        = $db->f('perso_nom');
-                $num_dest        = $db->f('dmsg_perso_cod');
-                $guilde_cod_dest = $db->f('pguilde_guilde_cod');
+                $nom_dest        = $result['perso_nom'];
+                $num_dest        = $result['dmsg_perso_cod'];
+                $guilde_cod_dest = $result['pguilde_guilde_cod'];
 
                 // Construction de la liste des destinataires du Répondre à tous
                 if ($num_dest != $perso_cod)    // On ne s’inclut pas
@@ -283,7 +279,7 @@ switch ($methode)
                         $liste_dest = $liste_dest . str_replace("'", "\'", $nom_dest) . ";";
                     }
                 }
-                if ($db->f('dmsg_lu') == 'O')
+                if ($result['dmsg_lu'] == 'O')
                 {
                     $contenu_page .= '<a href="visu_desc_perso.php?visu=' . $num_dest . '">' . $nom_dest . '</a>, ';
                 } else
@@ -292,12 +288,13 @@ switch ($methode)
                 }
             }
             $contenu_page .= '</td></tr>';
-            $req          = 'select valeur_bonus(' . $perso_cod . ' , \'ULT\') as bonus_valeur';
-            $db->query($req);
-            if ($db->nf() != 0)
+            $req          = 'select valeur_bonus(:perso , \'ULT\') as bonus_valeur';
+            $stmt         = $pdo->prepare($req);
+            $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+
+            if ($result = $stmt->fetch())
             {
-                $db->next_record();
-                $chance   = $db->f('bonus_valeur');
+                $chance   = $result['bonus_valeur'];
                 $longueur = strlen($corps);
                 for ($cpt = 0; $cpt < $longueur; $cpt++)
                 {
@@ -339,8 +336,9 @@ switch ($methode)
         }
         break;
     case "tout_lu":
-        $requete = 'update messages_dest set dmsg_lu = \'O\' where dmsg_perso_cod = ' . $perso_cod;
-        $db->query($requete);
+        $requete = 'update messages_dest set dmsg_lu = \'O\' where dmsg_perso_cod = :perso';
+        $stmt    = $pdo->prepare($requete);
+        $pdo->execute(array(":perso" => $perso_cod), $stmt);
         $contenu_page .= 'Tous les messages de votre boite de réception sont marqués comme lus.';
         break;
     case "select_efface":
@@ -351,8 +349,10 @@ switch ($methode)
             {
                 $nb      = $nb + 1;
                 $requete =
-                    'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_cod = ' . $msg[$cpt] . ' and dmsg_perso_cod = ' . $perso_cod;
-                $db->query($requete);
+                    'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
+                $stmt    = $pdo->prepare($requete);
+                $pdo->execute(array(":perso" => $perso_cod,
+                                    ":msg"   => $msg[$cpt]), $stmt);
             }
         }
         $contenu_page .= $nb . ' messages ont été supprimés de votre boite de réception.';
@@ -365,8 +365,10 @@ switch ($methode)
             {
                 $nb      = $nb + 1;
                 $requete =
-                    'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = ' . $msg[$cpt] . ' and dmsg_perso_cod = ' . $perso_cod;
-                $db->query($requete);
+                    'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
+                $stmt   = $pdo->prepare($requete);
+                $pdo->execute(array(":perso" => $perso_cod,
+                                    ":msg"   => $msg[$cpt]), $stmt);
             }
         }
         $contenu_page .= $nb . ' messages ont été archivés.';
@@ -379,22 +381,28 @@ switch ($methode)
             {
                 $nb      = $nb + 1;
                 $requete =
-                    'update messages_dest set dmsg_lu = \'N\' where dmsg_cod = ' . $msg[$cpt] . ' and dmsg_perso_cod = ' . $perso_cod;
-                $db->query($requete);
+                    'update messages_dest set dmsg_lu = \'N\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
+                $stmt   = $pdo->prepare($requete);
+                $pdo->execute(array(":perso" => $perso_cod,
+                                    ":msg"   => $msg[$cpt]), $stmt);
             }
         }
         $contenu_page .= $nb . ' messages ont été marqués comme non lus.';
         break;
     case "efface_msg":
         $requete =
-            'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_msg_cod = ' . $mid . ' and dmsg_perso_cod = ' . $perso_cod;
-        $db->query($requete);
+            'update messages_dest set dmsg_efface = 1,dmsg_lu = \'O\' where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
+        $stmt   = $pdo->prepare($requete);
+        $pdo->execute(array(":perso" => $perso_cod,
+                            ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a bien été effacé.';
         break;
     case "archive__vue generale_msg":
         $requete =
-            'update messages_dest set dmsg_archive = \'O\' where dmsg_cod = ' . $mid . ' and dmsg_perso_cod = ' . $perso_cod;
-        $db->query($requete);
+            'update messages_dest set dmsg_archive = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
+        $stmt   = $pdo->prepare($requete);
+        $pdo->execute(array(":perso" => $perso_cod,
+                            ":msg"   => $msg[$cpt]), $stmt);
         $contenu_page .= 'Le message a été archivé.';
         break;
     case "efface_vue generale_msg":
