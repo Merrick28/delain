@@ -136,6 +136,25 @@ class compte_vote_ip
         return $retour;                
     }
 
+    function verification_vote($code_compte)
+    {
+        $pdo  = new bddpdo;
+        $req ="select count(*) as nombre
+                from compte_vote_ip 
+                where compte_vote_ip.compte_vote_compte_cod = :compte
+		and compte_vote_date = current_date;";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":compte" => $code_compte),$stmt);
+        $result = $stmt->fetch();
+        $nbr = $result['nombre'];
+        if($nbr==0)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     function getByCompteTrueMois($code)
     {
         $pdo  = new bddpdo;
