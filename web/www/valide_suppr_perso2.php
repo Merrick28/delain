@@ -54,8 +54,8 @@ $pdo         = new bddpdo();
     $req  =
         "select pcompt_perso_cod, perso_type_perso 
             from perso_compte, perso 
-            where pcompt_perso_cod = $perso_cible 
-              and pcompt_compt_cod = $compt_cod 
+            where pcompt_perso_cod = :perso_cible
+              and pcompt_compt_cod = :compt_cod
               and pcompt_perso_cod = perso_cod";
     $stmt = $pdo->prepare($req);
     $stmt = $pdo->execute(array(":perso_cible" => $perso_cible,
