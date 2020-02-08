@@ -467,24 +467,24 @@ case 'collection_nouvelle':    // Formulaire vierge
             <?php echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1, \'form_objet\', tableauObjetsCollection);"><option value="-1">Choisissez un type d’objet...</option>';
             $req =
                 'select distinct tobj_cod, tobj_libelle from type_objet inner join objet_generique on gobj_tobj_cod = tobj_cod order by tobj_libelle';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $script_tobj = 'var tableauObjetsCollection = new Array();';
-            while ($db->next_record())
+            while($result = $stmt->fetch())
             {
-                $clef        = $db->f('tobj_cod');
-                $valeur      = $db->f('tobj_libelle');
+                $clef        = $result['tobj_cod'];
+                $valeur      = $result['tobj_libelle'];
                 $script_tobj .= "tableauObjetsCollection[$clef] = new Array();\n";
                 echo "<option value='$clef'>$valeur</option>";
             }
             echo '</select><br /><select name="form_objet" id="form_objet">';
             $req = 'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $script_gobj = '';
-            while ($db->next_record())
+            while($result = $stmt->fetch())
             {
-                $clef        = $db->f('gobj_cod');
-                $clef_tobj   = $db->f('gobj_tobj_cod');
-                $valeur      = $db->f('gobj_nom');
+                $clef        = $result['gobj_cod'];
+                $clef_tobj   = $result['gobj_tobj_cod'];
+                $valeur      = $result['gobj_nom'];
                 $script_gobj .= "tableauObjetsCollection[$clef_tobj][$clef] = \"" . str_replace('"', '', $valeur) . "\";\n";
             }
 

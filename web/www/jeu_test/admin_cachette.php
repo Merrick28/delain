@@ -8,20 +8,19 @@ $contenu_page = '';
 ob_start();
 include 'sadmin.php'; // Pour intégration XML
 ?>
-<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
-<p class="titre">Gestion des cachettes</p>
+    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
+    <p class="titre">Gestion des cachettes</p>
 <?php
 
 //************************************************
 // Page de création ou modification d’une cachette
 //************************************************
 
-$db2 = new base_delain;
-$erreur = 0;
-$droit_modif = 'dcompt_modif_perso';
+$erreur                = 0;
+$droit_modif           = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
 
-if($erreur == 0)
+if ($erreur == 0)
 {
     if (!isset($methode))
         $methode = "debut";
@@ -96,29 +95,42 @@ if($erreur == 0)
                 <?php
                 break;
             }
-            $req = "select creappro_nom from cachette_reappro where creappro_nom = '$nom_liste'";
-            $db->query($req);
-            $db->next_record();
-            if ($db->nf() == 0)
+            $req  = "select creappro_nom from cachette_reappro 
+                where creappro_nom = :nom_liste";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":nom_liste" => $nom_liste), $stmt);
+            if ($result = $stmt->fetch())
             {
-                $req = "select creappro_cache_liste_respawn from cachette_reappro order by creappro_cache_liste_respawn desc limit 1";
-                $db2->query($req);
-                $db2->next_record();
-                $liste = $db2->f("creappro_cache_liste_respawn") + 1; // on crée le nouveau numéro de liste
-                $objet = explode(",", $_POST['obj_ajout']);
+                $req    = "select creappro_cache_liste_respawn 
+                    from cachette_reappro 
+                    order by creappro_cache_liste_respawn desc limit 1";
+                $stmt   = $pdo->query($req);
+                $result = $stmt->fetch();
+                $liste  = $result['creappro_cache_liste_respawn'] + 1; // on crée le nouveau numéro de liste
+                $objet  = explode(",", $_POST['obj_ajout']);
                 foreach ($objet as $cle => $valeur)
                 {
                     if ($valeur != '')
                     {
-                        $req = "select creappro_gobj_cod from cachette_reappro where creappro_cache_liste_respawn = $liste and creappro_gobj_cod = $valeur";
-                        $db2->query($req);
-                        $db2->next_record();
-                        if ($db2->nf() == 0)
+                        $req  =
+                            "select creappro_gobj_cod 
+                                from cachette_reappro 
+                                where creappro_cache_liste_respawn = :liste
+                                and creappro_gobj_cod = :valeur ";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":liste"  => $liste,
+                                                    ":valeur" => $valeur), $stmt);
+                        if ($result = $stmt->fetch())
                         {
                             echo $valeur . '<br />';
-                            $req = "insert into cachette_reappro (creappro_cache_liste_respawn,creappro_gobj_cod,creappro_nom) values ($liste,$valeur,'$nom_liste')";
-                            $db->query($req);
-                            $db->next_record();
+                            $req  =
+                                "insert into cachette_reappro (creappro_cache_liste_respawn,creappro_gobj_cod,creappro_nom) 
+                                values (:liste,:valeur,:nom_liste)";
+                            $stmt = $pdo->prepare($req);
+                            $stmt = $pdo->execute(array(":liste"     => $liste,
+                                                        ":valeur"    => $valeur,
+                                                        ":nom_liste" => $nom_liste), $stmt);
+
                         } else
                         {
                             echo 'Risque d’objet déjà présent :' . $valeur . '<br>';
@@ -149,7 +161,8 @@ if($erreur == 0)
                     <option value="-1">Choisir la liste à modifier</option>
                     ;
                     <?php
-                    $req = "select creappro_cache_liste_respawn, creappro_nom from cachette_reappro group by creappro_cache_liste_respawn,creappro_nom order by creappro_cache_liste_respawn";
+                    $req =
+                        "select creappro_cache_liste_respawn, creappro_nom from cachette_reappro group by creappro_cache_liste_respawn,creappro_nom order by creappro_cache_liste_respawn";
                     echo $html->select_from_query($req, 'creappro_cache_liste_respawn', 'creappro_nom', $liste_num);
                     ?>
                 </select>
@@ -174,7 +187,8 @@ if($erreur == 0)
                             <select multiple name="liste_objet" size="10"
                                     onChange="explode_cible(this.value, document.liste_modif.obj_sup, document.liste_modif.obj_sup_nom);"
                                     size="10" style="width:280px;">
-                                <?php $req = "select gobj_cod::text || '#' || gobj_nom as creappro_gobj_cod, gobj_nom from cachette_reappro,objet_generique where creappro_gobj_cod = gobj_cod and creappro_cache_liste_respawn = $liste_num order by gobj_cod";
+                                <?php $req =
+                                    "select gobj_cod::text || '#' || gobj_nom as creappro_gobj_cod, gobj_nom from cachette_reappro,objet_generique where creappro_gobj_cod = gobj_cod and creappro_cache_liste_respawn = $liste_num order by gobj_cod";
                                 echo $html->select_from_query($req, 'creappro_gobj_cod', 'gobj_nom');
                                 ?>
                             </select>
@@ -224,38 +238,56 @@ if($erreur == 0)
 
         case "liste_mod1":
             $liste = $_POST['liste_num'];
-            $req = "select creappro_nom from cachette_reappro where creappro_cache_liste_respawn = $liste group by creappro_cache_liste_respawn,creappro_nom";
-            $db->query($req);
-            $db->next_record();
-            $nom_liste = $db->f('creappro_nom');
-            $objet = explode(",", $_POST['obj_sup']);
+            $req       =
+                "select creappro_nom from cachette_reappro 
+                    where creappro_cache_liste_respawn = :liste
+                    group by creappro_cache_liste_respawn,creappro_nom";
+            $stmt      = $pdo->prepare($req);
+            $stmt      = $pdo->execute(array(":liste" => $liste), $stmt);
+            $result    = $stmt->fetch();
+            $nom_liste = $result['creappro_nom'];
+            $objet     = explode(",", $_POST['obj_sup']);
             echo 'Liste : "' . $liste . ' / ' . $nom_liste . '"<br>';
             echo 'Suppression de : <br>';
+            $req  =
+                "delete from cachette_reappro 
+                        where creappro_cache_liste_respawn = :liste
+                          and creappro_gobj_cod = :valeur";
+            $stmt = $pdo->prepare($req);
             foreach ($objet as $cle => $valeur)
             {
                 echo $valeur . '<br />';
                 if ($valeur != '')
                 {
-                    $req = "delete from cachette_reappro where creappro_cache_liste_respawn = $liste and creappro_gobj_cod = $valeur";
-                    $db->query($req);
-                    $db->next_record();
+
+                    $stmt = $pdo->execute(array(":liste"  => $liste,
+                                                ":valeur" => $valeur), $stmt);
                 }
             }
             $objet = explode(",", $_POST['obj_ajout']);
             echo 'Ajout de : <br>';
+            $req  =
+                "select creappro_gobj_cod from cachette_reappro 
+                         where creappro_cache_liste_respawn = :liste
+                        and creappro_gobj_cod = :valeur";
+            $stmt = $pdo->prepare($req);
             foreach ($objet as $cle => $valeur)
             {
                 if ($valeur != '')
                 {
-                    $req = "select creappro_gobj_cod from cachette_reappro where creappro_cache_liste_respawn = $liste and creappro_gobj_cod = $valeur";
-                    $db2->query($req);
-                    $db2->next_record();
-                    if ($db2->nf() == 0)
+
+                    $stmt = $pdo->execute(array(":liste"  => $liste,
+                                                ":valeur" => $valeur), $stmt);
+                    if ($result = $stmt->fetch())
                     {
                         echo $valeur . '<br />';
-                        $req = "insert into cachette_reappro (creappro_cache_liste_respawn,creappro_gobj_cod,creappro_nom) values ($liste,$valeur,'$nom_liste')";
-                        $db->query($req);
-                        $db->next_record();
+                        $req  =
+                            "insert into cachette_reappro (creappro_cache_liste_respawn,creappro_gobj_cod,creappro_nom) 
+                            values (:liste,:valeur,:nom_liste)";
+                        $stmt = $pdo->prepare($req);
+                        $stmt = $pdo->execute(array(":liste"     => $liste,
+                                                    ":valeur"    => $valeur,
+                                                    ":nom_liste" => $nom_liste), $stmt);
                     } else
                     {
                         echo 'Risque d’objet déjà présent :' . $valeur . '<br>';
@@ -344,13 +376,16 @@ if($erreur == 0)
         case "cre1":
             // vérification de la présence d’une position
             $erreur = 0;
-            $req = 'select pos_cod
+            $req    = 'select pos_cod
 				from positions
-				where pos_x = ' . $_POST['pos_x'] . '
-				AND pos_y = ' . $_POST['pos_y'] . '
-				AND pos_etage = ' . $_POST['pos_etage'];
-            $db->query($req);
-            if ($db->nf() == 0)
+				where pos_x = :x
+				AND pos_y = :y
+				AND pos_etage = :etage';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":x"     => $_POST['pos_x'],
+                                          ":y"     => $_POST['pos_y'],
+                                          ":etage" => $_POST['pos_etage']), $stmt);
+            if (!$result = $stmt->fetch())
             {
                 /*********************************/
                 /* Il n’existe pas de position ! */
@@ -360,26 +395,21 @@ if($erreur == 0)
                 break;
             } else
             {
-                /*********************************/
-                /* on stocke le pos_cod          */
-                /*********************************/
-                $db->next_record();
-                $pos_cod = $db->f("pos_cod");
+                $pos_cod = $result['pos_cod'];
             }
             //
             // on regarde si une cachette existe déjà sur cette position
             //
-            $req2 = 'select cache_pos_cod from cachettes where cache_pos_cod = ' . $pos_cod;
-            $db->query($req2);
-            if ($db->nf() != 0)
+            $req2 = 'select cache_cod,cache_pos_cod 
+                    from cachettes where 
+                    cache_pos_cod = :pos';
+            $stmt = $pdo->prepare($req2);
+            $stmt = $pdo->execute(array(":pos" => $pos_cod), $stmt);
+
+            if ($result = $stmt->fetch())
             {
-                /***************************************************/
-                /* Il y a déjà une cachette ! On récupère son code */
-                /***************************************************/
-                $req2 = 'select cache_cod from cachettes where cache_pos_cod = ' . $pos_cod;
-                $db->query($req2);
-                $db->next_record();
-                $cache_cod = $db->f("cache_cod");
+
+                $cache_cod = $result['cache_cod'];
                 echo 'Il y a une cachette existante sur cette position !<br>
 					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
 					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
@@ -389,10 +419,16 @@ if($erreur == 0)
                 //
                 // on regarde si il y a déjà une autre fonction présente sur cette case
                 //
-                $req4 = 'select pos_fonction_arrivee from positions where pos_cod = ' . $pos_cod;
-                $db->query($req4);
-                $db->next_record();
-                $fonction_cod = $db->f("pos_fonction_arrivee");
+                $req4         = 'select pos_fonction_arrivee 
+                    from positions where pos_cod = :pos';
+                $stmt         = $pdo->prepare($req4);
+                $stmt         = $pdo->execute(array(":pos" => $pos_cod), $stmt);
+                $fonction_cod = '';
+                if ($result = $stmt->fetch())
+                {
+                    $fonction_cod = $result['pos_fonction_arrivee'];
+                }
+
             }
             if ($fonction_cod != '')
             {
@@ -406,17 +442,34 @@ if($erreur == 0)
                 //on intègre la nouvelle cachette
             {
 
-                $req = 'insert into cachettes (cache_cod,cache_nom,cache_desc,cache_image,cache_pos_cod,cache_max_respawn,cache_chance_respawn,cache_liste_respawn)
-					values (DEFAULT, e\'' . pg_escape_string($nom) . '\', e\'' . pg_escape_string($desc) . '\', \'' . $image . '\', \'' . $pos_cod . '\',' . $max_obj . ',' . $chance_respawn . ',' . $liste_obj . ')';
-                $db->query($req);
-                $cachette = 'decouvre_cachette([perso],' . $_POST[coef_dex] . ',' . $_POST[coef_int] . ')';
-                $req3 = "update positions set pos_fonction_arrivee = '$cachette' where pos_cod = " . $pos_cod;
-                $db->query($req3);
-                $db->next_record();
-                $req2 = 'select cache_cod from cachettes where cache_pos_cod = ' . $pos_cod;
-                $db->query($req2);
-                $db->next_record();
-                $cache_cod = $db->f("cache_cod");
+                $req  = 'insert into cachettes (cache_cod,cache_nom,cache_desc,cache_image,cache_pos_cod,cache_max_respawn,cache_chance_respawn,cache_liste_respawn)
+					values (DEFAULT, :nom, :desc, :image, :pos_cod,:max_obj,:chance_respawn,:liste_obj)';
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":nom"            => $nom,
+                                            ":desc"           => $desc,
+                                            ":image"          => $image,
+                                            ":pos_cod"        => $pos_cod,
+                                            ":max_obj"        => $max_obj,
+                                            ":chance_respawn" => $chance_respawn,
+                                            ":liste_obj"      => $liste_obj
+                                      ), $stmt);
+
+
+                $cachette  = 'decouvre_cachette([perso],' . $_POST[coef_dex] . ',' . $_POST[coef_int] . ')';
+                $req3      = "update positions set pos_fonction_arrivee = :cachette where pos_cod = :pos_cod";
+                $stmt      = $pdo->prepare($req3);
+                $stmt      = $pdo->execute(array(":cachette" => $cachette,
+                                                 ":pos_cod"  => $pos_cod
+                                           ), $stmt);
+                $result    = $stmt->fetch();
+                $req2      = 'select cache_cod from cachettes 
+                    where cache_pos_cod = :pos_cod';
+                $stmt      = $pdo->prepare($req2);
+                $stmt      = $pdo->execute(array(
+                                               ":pos_cod" => $pos_cod
+                                           ), $stmt);
+                $result    = $stmt->fetch();
+                $cache_cod = $result['cache_cod'];
                 echo '<p>L’insertion de cette nouvelle cachette s’est bien déroulée en ' . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'] . '<br>
 					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>';
             }
@@ -425,8 +478,12 @@ if($erreur == 0)
         //Cas du remplacement d’une fonction présente,, par une cachette
         case "update_fonction":
             $cachette = 'decouvre_cachette([perso],' . $_POST[coef_dex] . ',' . $_POST[coef_int] . ')';
-            $req3 = "update positions set pos_fonction_arrivee = '$cachette' where pos_cod = " . $pos_cod;
-            $db->query($req3);
+            $req3     = "update positions 
+                set pos_fonction_arrivee = :cachette
+                where pos_cod = :pos_cod";
+            $stmt     = $pdo->prepare($req3);
+            $stmt     = $pdo->execute(array(":cachette" => $cachette,
+                                            ":pos_cod"  => $pos_cod), $stmt);
 
             echo 'Mise à jour réalisée <br>
 				<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
@@ -438,18 +495,18 @@ if($erreur == 0)
             <p>Liste de l’ensemble des cachettes du jeu<br>
             <?php
             echo '<hr><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a><hr>';
-            $req = 'select cache_cod,cache_nom,cache_desc,cache_image,pos_x,pos_y,pos_etage,etage_libelle
+            $req  = 'select cache_cod,cache_nom,cache_desc,cache_image,pos_x,pos_y,pos_etage,etage_libelle
 				from cachettes,positions,etage
 				where cache_pos_cod = pos_cod
 					and pos_etage = etage_numero
 					and etage_numero <> 6
 				order by pos_etage,cache_cod';
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $cache_cod = $db->f("cache_cod");
-                echo '<br><strong>Cachette numéro </strong>' . $db->f('cache_cod') . '<br><strong>Nom : </strong>' . $db->f('cache_nom') . '<br><strong>Description : </strong>' . $db->f('cache_desc') .
-                     '<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
+                $cache_cod = $result['cache_cod'];
+                echo '<br><strong>Cachette numéro </strong>' . $result['cache_cod'] . '<br><strong>Nom : </strong>' . $result['cache_nom'] . '<br><strong>Description : </strong>' . $result['cache_desc'] .
+                     '<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
 					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
             }
             break;
@@ -471,12 +528,13 @@ if($erreur == 0)
 					and cache_pos_cod = pos_cod
 					and pos_etage = etage_numero
 				order by pos_etage,cache_cod';
-            $db->query($req);
-            while ($db->next_record())
+
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $cache_cod = $db->f("cache_cod");
-                echo '<br><strong>Cachette numéro </strong>' . $db->f('cache_cod') . '<br><strong>Nom : </strong>' . $db->f('cache_nom') . '<br><strong>Description : </strong>' . $db->f('cache_desc') .
-                     '<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
+                $cache_cod = $result['cache_cod'];
+                echo '<br><strong>Cachette numéro </strong>' . $result['cache_cod'] . '<br><strong>Nom : </strong>' . $result['cache_nom'] . '<br><strong>Description : </strong>' . $result['cache_desc'] .
+                     '<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
 				<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
             }
             break;
@@ -490,15 +548,16 @@ if($erreur == 0)
                 $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
 					inner join type_objet on tobj_cod = gobj_tobj_cod
 					order by tobj_libelle, gobj_nom";
-                $db->query($req_tobj);
-                while ($db->next_record())
+
+                $stmt = $pdo->query($req_tobj);
+                while ($result = $stmt->fetch())
                 {
-                    $gobj_nom = $db->f("gobj_nom");
-                    $gobj_nom = str_replace("\"", "", $gobj_nom);
-                    $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                    $gobj_valeur = $db->f("gobj_valeur");
+                    $gobj_nom     = $result['gobj_nom'];
+                    $gobj_nom     = str_replace("\"", "", $gobj_nom);
+                    $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
+                    $gobj_valeur  = $result['gobj_valeur'];
                     echo("listeBase[$nb_tobj] = new Array(0); \n");
-                    echo("listeBase[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
+                    echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
                     echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
                     echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
                     echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
@@ -509,18 +568,19 @@ if($erreur == 0)
                 <?php            // LISTE DES OBJETS DANS LA CACHETTE
                 $req_cache = 'select count(obj_cod) as nombre,gobj_cod,obj_nom
 				from cachettes_objets,objets,objet_generique
-				where objcache_cod_cache_cod =' . $cache_cod . '
+				where objcache_cod_cache_cod = :cache_cod
 					and obj_cod = objcache_obj_cod
 					and obj_gobj_cod = gobj_cod
 				group by gobj_cod,obj_nom
 				order by obj_nom';
-                $db->query($req_cache);
+                $stmt = $pdo->prepare($req_cache);
+                $stmt = $pdo->execute(array(":cache_cod" => $_REQUEST['cache_cod']), $stmt);
                 $nb_tobj = 0;
-                while ($db->next_record())
+                while ($result = $stmt->fetch())
                 {
                     echo("listeCurrent[$nb_tobj] = new Array(0); \n");
-                    echo("listeCurrent[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
-                    echo("listeCurrent[$nb_tobj][1] = \"" . $db->f("nombre") . "\"; \n");
+                    echo("listeCurrent[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
+                    echo("listeCurrent[$nb_tobj][1] = \"" . $result['nombre'] . "\"; \n");
                     echo("listeCurrent[$nb_tobj][2] = \"\"; \n");
                     echo("listeCurrent[$nb_tobj][3] = \"\"; \n");
                     $nb_tobj++;
@@ -554,10 +614,11 @@ if($erreur == 0)
                                 <option value=''>Tous types d’objets</option>
                                 <?php
                                 $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
-                                $db->query($req_tobj);
-                                while ($db->next_record())
+                                $stmt     = $pdo->query($req);
+
+                                while ($result = $stmt->fetch())
                                 {
-                                    $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                                    $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
                                     echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
                                 }
                                 ?>
@@ -590,21 +651,22 @@ if($erreur == 0)
             <?php
             $req = 'select cache_cod,cache_nom,cache_desc,cache_image,cache_max_respawn,cache_chance_respawn,cache_liste_respawn,creappro_nom
 				from cachettes,cachette_reappro
-				where cache_cod = ' . $cache_cod . '
+				where cache_cod = :cache_cod
 				and creappro_cache_liste_respawn = cache_liste_respawn limit 1';
-            $db = new base_delain;
-            $db->query($req);
-            $db->next_record();
 
-            $cache_nom = $db->f("cache_nom");
-            $cache_desc = $db->f("cache_desc");
-            $cache_image = $db->f("cache_image");
-            $cache_max_respawn = $db->f("cache_max_respawn");
-            $cache_chance_respawn = $db->f("cache_chance_respawn");
-            $creappro_nom = $db->f("creappro_nom");
-            $cache_liste_respawn = $db->f("cache_liste_respawn");
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":cache_cod" => $_REQUEST['cache_cod']), $stmt);
+            $result = $stmt->fetch();
 
-            echo 'num cachette : ' . $cache_cod . '<br>';
+            $cache_nom            = $result['cache_nom'];
+            $cache_desc           = $result['cache_desc'];
+            $cache_image          = $result['cache_image'];
+            $cache_max_respawn    = $result['cache_max_respawn'];
+            $cache_chance_respawn = $result['cache_chance_respawn'];
+            $creappro_nom         = $result['creappro_nom'];
+            $cache_liste_respawn  = $result['cache_liste_respawn'];
+
+            echo 'num cachette : ' . $_REQUEST['cache_cod'] . '<br>';
             ?>
             <form name="update_nom" method="post" action="<?php echo $PHP_SELF; ?>">
 
@@ -638,7 +700,8 @@ if($erreur == 0)
                             <td class="soustitre2">Liste d’objets associés</td>
                             <td><select name="cache_liste_respawn">
                                     <?php
-                                    $req = "select creappro_cache_liste_respawn,creappro_nom from cachette_reappro group by creappro_cache_liste_respawn,creappro_nom order by creappro_cache_liste_respawn";
+                                    $req =
+                                        "select creappro_cache_liste_respawn,creappro_nom from cachette_reappro group by creappro_cache_liste_respawn,creappro_nom order by creappro_cache_liste_respawn";
                                     echo $html->select_from_query($req, 'creappro_cache_liste_respawn', 'creappro_nom', $cache_liste_respawn);
                                     ?>
                                 </select></td>
@@ -660,34 +723,39 @@ if($erreur == 0)
 
         // MAJ des objets contenus dans la cachette
         case "update_cache2":
-            $db_cache = new base_delain;
+            $cache_cod = $_REQUEST['cache_cod'];
             // SUPPRESSION D’OBJETS DE LA CACHETTE
             $req_cache = "select distinct obj_gobj_cod
 				from cachettes_objets,objets
 				where objcache_cod_cache_cod = $cache_cod
 					and objcache_obj_cod = obj_cod ";
-            $db_cache->query($req_cache);
-            while ($db_cache->next_record())
+            $stmt      = $pdo->prepare($req_cache);
+            $stmt      = $pdo->execute(array(":cache_cod" => $cache_cod), $stmt);
+            while ($result = $stmt->fetch())
             {
-                $obj_cod = $db_cache->f("obj_gobj_cod");
-                $to_find = $db_cache->f("obj_gobj_cod") . ":";
-                $pos1 = strpos($compiledCache, $to_find);
+                $obj_cod = $result['obj_gobj_cod'];
+                $to_find = $result['obj_gobj_cod'] . ":";
+                $pos1    = strpos($compiledCache, $to_find);
                 //$pos1 = stripos($compiledCache, $to_find);
                 if ($pos1 === false)
                 {
                     //echo "The string '$to_find' was not found in the string";
                     $req_add_obj = "select obj_cod
 						from cachettes_objets,objets
-						where objcache_cod_cache_cod = $cache_cod
+						where objcache_cod_cache_cod = :cache_cod
 							and objcache_obj_cod = obj_cod
-							and obj_gobj_cod = $obj_cod";
-                    $db_cache->query($req_add_obj);
-                    $db_cache_suppr = new base_delain;
-                    while ($db_cache->next_record())
+							and obj_gobj_cod = :obj_cod";
+                    $stmt        = $pdo->prepare($req_cache);
+                    $stmt        = $pdo->execute(array(":obj_cod"   => $obj_cod,
+                                                       ":cache_cod" => $cache_cod), $stmt);
+
+                    $req_supr_obj = "select  f_del_objet(del_obj_cod)";
+                    $stmt2        = $pdo->prepare($req_supr_obj);
+                    while ($result = $stmt->fetch())
                     {
-                        $del_obj_cod = $db_cache->f("obj_cod");
-                        $req_supr_obj = "select  f_del_objet($del_obj_cod)";
-                        $db_cache_suppr->query($req_supr_obj);
+
+                        $stmt2 = $pdo->execute(array(":del_obj_cod" => $result['obj_cod']), $stmt2);
+
                     }
                 }
             }
@@ -698,56 +766,63 @@ if($erreur == 0)
             {
                 if ($objs[$i] != "")
                 {
-                    $obj = explode(":", $objs[$i]);
-                    $obj_cod = $obj[0];
-                    $obj_nb = $obj[1];
+                    $obj        = explode(":", $objs[$i]);
+                    $obj_cod    = $obj[0];
+                    $obj_nb     = $obj[1];
                     $obj_nb_pre = 0;
                     // NOMBRE D'OBJETS DE CE TYPE DEJA DANS LA CACHETTE
                     $req_cache = "select count(obj_cod) as nombre
 						from cachettes_objets,objets
 						where objcache_cod_cache_cod = $cache_cod
 							and objcache_obj_cod = obj_cod
-							and obj_gobj_cod = $obj_cod ";
-                    $db_cache->query($req_cache);
-                    if ($db_cache->next_record())
+							and obj_gobj_cod = :obj_cod ";
+                    $stmt      = $pdo->prepare($req_cache);
+                    $stmt      = $pdo->execute(array(":obj_cod" => $obj_cod), $stmt);
+                    if ($result = $stmt->fetch())
                     {
-                        $obj_nb_pre = $db_cache->f("nombre");
+                        $obj_nb_pre = $result['nombre'];
                     }
                     // NBR OBJETS A AJOUTER
                     $obj_nb_add = $obj_nb - $obj_nb_pre;
                     if ($obj_nb_add > 0)
                     {
                         // AJOUT D’OBJETS
-                        $req_add_obj = "select cree_objet_cachette($obj_cod,$cache_cod,$obj_nb_add)";
-                        $db_cache->query($req_add_obj);
+                        $req_add_obj = "select cree_objet_cachette(:obj_cod,:cache_cod,:obj_nb_add)";
+                        $stmt        = $pdo->prepare($req_add_obj);
+                        $stmt        = $pdo->execute(array(":obj_cod"    => $obj_cod,
+                                                           ":cache_cod"  => $cache_cod,
+                                                           ":obj_nb_add" => $obj_nb_add), $stmt);
 
-                        $req_cache = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
-                        $db_cache->query($req_cache);
-                        $db_cache->next_record();
+                        $req_cache = "select gobj_nom from objet_generique where gobj_cod = :obj_cod ";
+                        $stmt      = $pdo->prepare($req_cache);
+                        $stmt      = $pdo->execute(array(":obj_cod" => $obj_cod), $stmt);
                         $nb_ajoute++;
                     } else if ($obj_nb_add < 0)
                     {
                         // SUPPRESSION D'OBJETS
-                        $req_cache = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
-                        $db_cache->query($req_cache);
-                        $db_cache->next_record();
+                        $req_cache = "select gobj_nom from objet_generique where gobj_cod = :obj_cod";
+                        $stmt      = $pdo->prepare($req_cache);
+                        $stmt      = $pdo->execute(array(":obj_cod" => $obj_cod), $stmt);
+
                         $nb_ajoute++;
 
-                        $obj_nb_add = -1 * $obj_nb_add;
-                        $req_add_obj = "select obj_cod
+                        $obj_nb_add   = -1 * $obj_nb_add;
+                        $req_add_obj  = "select obj_cod
 							from cachettes_objets,objets
-							where objcache_cod_cache_cod = $cache_cod
+							where objcache_cod_cache_cod = :cache_cod
 								and objcache_obj_cod = obj_cod
 								and obj_gobj_cod = $obj_cod LIMIT $obj_nb_add";
-                        $db_cache->query($req_add_obj);
-                        $db_cache_suppr = new base_delain;
-                        while ($db_cache->next_record())
+                        $stmt         = $pdo->prepare($req_add_obj);
+                        $stmt         = $pdo->execute(array(":cache_cod" => $cache_cod,
+                                                            ":obj_cod"   => $obj_cod), $stmt);
+                        $req_supr_obj = "delete from cachettes_objets where objcache_obj_cod = :del_obj_cod";
+                        $stmt2        = $pdo->prepare($req_supr_obj);
+                        $req_supr_obj = "delete from objets where obj_cod = :del_obj_cod";
+                        $stmt3        = $pdo->prepare($req_supr_obj);
+                        while ($result = $stmt->fetch())
                         {
-                            $del_obj_cod = $db_cache->f("obj_cod");
-                            $req_supr_obj = "delete from cachettes_objets where objcache_obj_cod = $del_obj_cod";
-                            $db_cache_suppr->query($req_supr_obj);
-                            $req_supr_obj = "delete from objets where obj_cod = $del_obj_cod";
-                            $db_cache_suppr->query($req_supr_obj);
+                            $pdo->execute(array("del_obj_cod" => $result['obj_cod']), $stmt2);
+                            $pdo->execute(array("del_obj_cod" => $result['obj_cod']), $stmt3);
                         }
                     }
                 }
@@ -765,8 +840,22 @@ if($erreur == 0)
 
         //MAJ du nom et description
         case "update_cache_nom":
-            $req = 'update cachettes set cache_nom = (e\'' . pg_escape_string($nom) . '\'), cache_desc = (e\'' . pg_escape_string($desc) . '\'), cache_image = (\'' . $image . '\'), cache_liste_respawn = ' . $cache_liste_respawn . ', cache_max_respawn = ' . $cache_max_respawn . ', cache_chance_respawn = ' . $cache_chance_respawn . ' where cache_cod = ' . $cache_cod;
-            $db->query($req);
+            $req =
+                'update cachettes set cache_nom = :nom, cache_desc = :desc, 
+                     cache_image = :image, 
+                     cache_liste_respawn = :cache_liste_respawn, 
+                     cache_max_respawn = :cache_max_respawn, 
+                cache_chance_respawn = :cache_chance_respawn 
+                where cache_cod = :cache_cod';
+            $stmt      = $pdo->prepare($req);
+            $stmt      = $pdo->execute(array(":nom"                  => $_REQUEST['nom'],
+                                             ":desc"                 => $_REQUEST['desc'],
+                                             ":image"                => $_REQUEST['image'],
+                                             ":cache_liste_respawn"  => $_REQUEST['cache_liste_respawn'],
+                                             ":cache_max_respawn"    => $_REQUEST['cache_max_respawn'],
+                                             ":cache_chance_respawn" => $_REQUEST['cache_chance_respawn'],
+                                             ":cache_cod"            => $_REQUEST['cache_cod']),
+                                       $stmt);
             echo "MAJ cachette";
             ?>
             <br><a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’une cachette ?</a><br>
