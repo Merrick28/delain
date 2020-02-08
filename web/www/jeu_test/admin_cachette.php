@@ -745,7 +745,7 @@ if ($erreur == 0)
 						where objcache_cod_cache_cod = :cache_cod
 							and objcache_obj_cod = obj_cod
 							and obj_gobj_cod = :obj_cod";
-                    $stmt        = $pdo->prepare($req_cache);
+                    $stmt        = $pdo->prepare($req_add_obj);
                     $stmt        = $pdo->execute(array(":obj_cod"   => $obj_cod,
                                                        ":cache_cod" => $cache_cod), $stmt);
 

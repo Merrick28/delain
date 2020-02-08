@@ -40,7 +40,7 @@ if ($erreur == 0)
 						tbonus_nettoyable = :tbonus_nettoyable,
 						tbonus_gentil_positif = :tbonus_gentil_positif,
 						tbonus_cumulable = :tbonus_cumulable,
-						tbonus_degressivite = :tbonus_degressivite'
+						tbonus_degressivite = :tbonus_degressivite
 					WHERE tbonus_cod = :tbonus_cod RETURNING tbonus_libc";
                 $stmt     = $pdo->prepare($req);
                 $stmt     = $pdo->execute(array(":tbonus_cod"            => $tbonus_cod,
