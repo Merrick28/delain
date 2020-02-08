@@ -23,92 +23,57 @@ if ($erreur == 0)
         {
             case "deposer_monstre":
                 $err_depl = 0;
-                $req      = "select pos_cod from positions where pos_x = :x and pos_y = :y and pos_etage = :etage";
-                $stmt     = $pdo->prepare($req);
-                $stmt     = $pdo->execute(array(":x"     => $_REQUEST['pos_x'],
-                                                ":y"     => $_REQUEST['pos_y'],
-                                                ":etage" => $_REQUEST['etage']), $stmt);
-                if (!$result = $stmt->fetch())
-                {
-                    echo "<p>Aucune position trouvée à ces coordonnées.<br /></p>";
-                    $err_depl = 1;
-                }
-
-                $pos_cod = $result['pos_cod'];
-                $req     = "select mur_pos_cod from murs where mur_pos_cod = :pos_cod ";
-                $stmt    = $pdo->prepare($req);
-                $stmt    = $pdo->execute(array(":pos_cod" => $pos_cod), $stmt);
-                if ($result = $stmt->fetch())
-                {
-                    echo "<p>Impossible de poser le monstre : un mur en destination.<br /></p>";
-                    $err_depl = 1;
-                }
+                require "_admin_creation_monstre_test_pos.php";
                 if ($err_depl == 0)
                 {
                     $perso_sta_combat      = (isset($_POST['perso_sta_combat'])) ? 'O' : 'N';
                     $perso_sta_hors_combat = (isset($_POST['perso_sta_hors_combat'])) ? 'O' : 'N';
                     $perso_dirige_admin    = (isset($_POST['perso_dirige_admin'])) ? 'N' : 'O';
-                    for ($i = 0; $i < $nombre_mons; $i++)
+                    $req                   = "select cree_monstre_test(:gmon_cod,:etage) as num_mons ";
+                    $stmt                  = $pdo->prepare($req);
+                    $req                   =
+                        "update perso_position set ppos_pos_cod = :pos_cod where ppos_perso_cod = :mon_cod";
+                    $stmt2                 = $pdo->prepare($req);
+                    $req                   = "select cree_monstre_pos(:gmon_cod,:pos_cod) as num_mons ";
+                    $stmt3                 = $pdo->prepare($req);
+                    for ($i = 0; $i < $_REQUEST['nombre_mons']; $i++)
                     {
-                        if ($utiliser_test == "OUI")
+                        if ($_REQUEST['utiliser_test'] == "OUI")
                         {
-                            $req     = "select cree_monstre_test(:gmon_cod,:etage) as num_mons ";
-                            $stmt    = $pdo->prepare($req);
+
                             $stmt    = $pdo->execute(array(":gmon_cod" => $_REQUEST['gmon_cod'],
                                                            ":etage"    => $_REQUEST['etage']), $stmt);
                             $result  = $stmt->fetch();
                             $mon_cod = $result['num_mons'];
-                            $req     =
-                                "update perso_position set ppos_pos_cod = :pos_cod where ppos_perso_cod = :mon_cod";
-                            $stmt    = $pdo->prepare($req);
-                            $stmt    = $pdo->execute(array(":pos_cod" => $pos_cod,
-                                                           ":mon_cod" => $mon_cod), $stmt);
+
+                            $stmt2 = $pdo->execute(array(":pos_cod" => $pos_cod,
+                                                         ":mon_cod" => $mon_cod), $stmt2);
 
                         } else
                         {
-                            $req     = "select cree_monstre_pos(:gmon_cod,:pos_cod) as num_mons ";
-                            $stmt    = $pdo->prepare($req);
-                            $stmt    = $pdo->execute(array(":gmon_cod" => $_REQUEST['gmon_cod'],
-                                                           ":pos_cod"  => $pos_cod), $stmt);
-                            $result  = $stmt->fetch();
+
+                            $stmt3   = $pdo->execute(array(":gmon_cod" => $_REQUEST['gmon_cod'],
+                                                           ":pos_cod"  => $pos_cod), $stmt3);
+                            $result  = $stmt3->fetch();
                             $mon_cod = $result['num_mons'];
                         }
-                        $tmpperso =  new perso;
-                        $tmpperso->charge($mon_cod);
-                        $tmpperso->perso_sta_combat = $perso_sta_combat;
-                        $tmpperso->perso_sta_hors_combat = $perso_sta_hors_combat;
-                        $tmpperso->perso_mcom_cod = $mcom_cod;
-
-
-                        if ($compt_admin != -1)
-                        {
-
-                            $tmpperso->perso_dirige_admin = $perso_dirige_admin;
-                            $tmpperso->stocke();
-                            echo "ADMIN : $compt_admin";
-                            $pc = new perso_compte();
-                            $pc->pcompt_compt_cod = $compt_admin;
-                            $pc->pcompt_perso_cod = $mon_cod;
-                            $pc->stocke(true);
-
-                        }
-                        if ($pia_ia_type != -1)
-                        {
-                            echo "IA : $pia_ia_type";
-                            $req = "insert into perso_ia (pia_perso_cod,pia_ia_type) values ($mon_cod,$pia_ia_type)";
-                            $db->query($req);
-                        }
+                        require "_admin_creation_monstre_modif_perso.php";
                         echo "<p>Le monstre $mon_cod a bien été déposé !</p>";
                     }
                     $req_mons =
-                        "select gmon_nom, perso_nom, compt_nom from monstre_generique, perso, compte where gmon_cod = $gmon_cod and perso_cod = $perso_cod and compt_cod = $compt_cod";
-                    $db_mons  = new base_delain;
-                    $db_mons->query($req_mons);
-                    if ($db_mons->next_record())
+                        "select gmon_nom, perso_nom, compt_nom 
+                        from monstre_generique, perso, compte 
+                        where gmon_cod = :gmon_cod
+                        and perso_cod = :perso_cod and compt_cod = :compt_cod";
+                    $stmt     = $pdo->prepare($req_mons);
+                    $stmt     = $pdo->execute(array(":gmon_cod"  => $_REQUEST['gmon_cod'],
+                                                    ":perso_cod" => $perso_cod,
+                                                    ":compt_cod" => $compt_cod), $stmt);
+                    if ($result = $stmt->fetch())
                     {
-                        $pmons_mod_nom = $db_mons->f("gmon_nom");
-                        $perso_nom     = $db_mons->f('perso_nom');
-                        $compt_nom     = $db_mons->f('compt_nom');
+                        $pmons_mod_nom = $result['gmon_nom'];
+                        $perso_nom     = $result['perso_nom'];
+                        $compt_nom     = $result['compt_nom'];
                     } else
                     {
                         $pmons_mod_nom = $gmon_nom;
@@ -120,23 +85,7 @@ if ($erreur == 0)
 
             case "deposer_armée":
                 $err_depl = 0;
-                $req      =
-                    "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
-                $db->query($req);
-                if ($db->nf() == 0)
-                {
-                    echo "<p>Aucune position trouvée à ces coordonnées.<br /></p>";
-                    $err_depl = 1;
-                }
-                $db->next_record();
-                $pos_cod = $result['pos_cod'];
-                $req     = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
-                $db->query($req);
-                if ($db->nf() != 0)
-                {
-                    echo "<p>impossible de poser le monstre : un mur en destination.<br /></p>";
-                    $err_depl = 1;
-                }
+                require "_admin_creation_monstre_test_pos.php";
                 if ($err_depl == 0)
                 {
                     $commandant = -1;
@@ -155,52 +104,58 @@ if ($erreur == 0)
                             $perso_dirige_admin    = (isset($_POST['perso_dirige_admin_' . $j])) ? 'N' : 'O';
 
                             $nb_troupes += $nombre_mons;
+                            $req        = "select cree_monstre_pos(:gmon_cod, :pos_cod) as num_mons ";
+                            $stmt       = $pdo->prepare($req);
+
+
+                            $tmpperso = new perso;
+                            $tmpperso->charge($mon_cod);
+                            $tmpperso->perso_sta_combat      = $perso_sta_combat;
+                            $tmpperso->perso_sta_hors_combat = $perso_sta_hors_combat;
+                            $tmpperso->perso_mcom_cod        = $mcom_cod;
+                            $tmpperso->stocke();
+
 
                             for ($i = 0; $i < $nombre_mons; $i++)
                             {
-                                $req = "select cree_monstre_pos($gmon_cod, $pos_cod) as num_mons ";
-                                $db->query($req);
-                                $db->next_record();
+
+                                $stmt    = $pdo->execute(array(":gmon_cod" => $gmon_cod,
+                                                               ":pos_cod"  => $pos_cod), $stmt);
+                                $result  = $stmt->fetch();
                                 $mon_cod = $result['num_mons'];
 
                                 if ($commandant == -1 && $j == 0 && isset($_POST['commandant']))
+                                {
                                     $commandant = $mon_cod;
+                                }
 
-                                $req = "update perso set perso_sta_combat = '$perso_sta_combat', perso_sta_hors_combat = '$perso_sta_hors_combat',
-									perso_mcom_cod = $mcom_cod where perso_cod = $mon_cod";
-                                $db->query($req);
-                                if ($compt_admin != -1)
-                                {
-                                    $req =
-                                        "update perso set perso_dirige_admin = '$perso_dirige_admin' where perso_cod = $mon_cod";
-                                    $db->query($req);
-                                    $req =
-                                        "insert into perso_compte (pcompt_compt_cod,pcompt_perso_cod) values ($compt_admin,$mon_cod)";
-                                    $db->query($req);
-                                }
-                                if ($pia_ia_type != -1)
-                                {
-                                    $req =
-                                        "insert into perso_ia (pia_perso_cod,pia_ia_type) values ($mon_cod, $pia_ia_type)";
-                                    $db->query($req);
-                                }
+
+                                require "_admin_creation_monstre_modif_perso.php";
                                 if ($commandant > 0 && $commandant != $mon_cod)
                                 {
-                                    $req_troupe = "select ajoute_commandement($commandant, $mon_cod, true) as resultat";
-                                    $db->query($req_troupe);
-                                    $db->next_record();
+                                    $req_troupe = "select ajoute_commandement(:commandant, :mon_cod, true) as resultat";
+                                    $stmt       = $pdo->prepare($req_troupe);
+                                    $stmt       = $pdo->execute(array(":commandant" => $commandant,
+                                                                      ":mon_cod"    => $mon_cod), $stmt);
+                                    $result     = $stmt->fetch();
                                     echo '<p>' . $result['resultat'] . '</p>';
                                 }
                             }
                             $req_mons =
-                                "select gmon_nom, perso_nom, compt_nom from monstre_generique, perso, compte where gmon_cod = $gmon_cod and perso_cod = $perso_cod and compt_cod = $compt_cod";
-                            $db_mons  = new base_delain;
-                            $db_mons->query($req_mons);
-                            if ($db_mons->next_record())
+                                "select gmon_nom, perso_nom, compt_nom 
+                                    from monstre_generique, perso, compte 
+                                    where gmon_cod = :gmon_cod 
+                                    and perso_cod = :perso_cod 
+                                    and compt_cod = :compt_cod";
+                            $stmt     = $pdo->prepare($req_mons);
+                            $stmt     = $pdo->execute(array(":gmon_cod"  => $_REQUEST['gmon_cod'],
+                                                            ":perso_cod" => $perso_cod,
+                                                            ":compt_cod" => $compt_cod), $stmt);
+                            if ($result = $stmt->fetch())
                             {
-                                $pmons_mod_nom = $db_mons->f("gmon_nom");
-                                $perso_nom     = $db_mons->f('perso_nom');
-                                $compt_nom     = $db_mons->f('compt_nom');
+                                $pmons_mod_nom = $result['gmon_nom'];
+                                $perso_nom     = $result['perso_nom'];
+                                $compt_nom     = $result['compt_nom'];
                             } else
                             {
                                 $pmons_mod_nom = $gmon_nom;
@@ -217,14 +172,19 @@ if ($erreur == 0)
                         $req_commandant = "select pcomp_modificateur from perso_competences 
 							where pcomp_perso_cod = $commandant 
 								and pcomp_pcomp_cod = 80";
-                        $db->query($req_commandant);
-                        if ($db->nf() > 0)
-                            $req_commandant = "update perso_competences set pcomp_modificateur = max($nb_troupes, pcomp_modificateur)
-								where pcomp_perso_cod = $commandant and pcomp_pcomp_cod = 80";
-                        else
-                            $req_commandant = "insert into perso_competences(pcomp_modificateur, pcomp_pcomp_cod, pcomp_perso_cod)
-								values(max($nb_troupes, 20), 80, $commandant)";
-                        $db->query($req_commandant);
+                        $pc             = new perso_competences();
+                        if ($pc->getByPersoComp($commandant, 80))
+                        {
+                            $pc->pcomp_modificateur = max($nb_troupes, $pc->pcomp_modificateur);
+                            $pc->stocke();
+                        } else
+                        {
+                            $pc->pcomp_pcomp_cod    = 80;
+                            $pc->pcomp_perso_cod    = $commandant;
+                            $pc->pcomp_modificateur = max($nb_troupes, 20);
+                            $pc->stocke(true);
+
+                        }
                     }
                 }
                 break;
@@ -233,16 +193,16 @@ if ($erreur == 0)
 
     $option_monstre = '';
     $req            = "select gmon_cod,gmon_nom from monstre_generique order by gmon_nom ";
-    $db->query($req);
-    while ($db->next_record())
+    $stmt           = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $option_monstre .= "<option value=\"" . $result['gmon_cod'] . "\" >" . $result['gmon_nom'] . "</option>";
     }
 
     $option_compte = '';
     $req           = "select compt_nom,compt_cod from compte where compt_monstre = 'O' order by compt_nom desc ";
-    $db->query($req);
-    while ($db->next_record())
+    $stmt          = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $texte_select  = ($result['compt_cod'] == $compt_cod) ? 'selected="selected"' : '';
         $option_compte .= "<option value=\"" . $result['compt_cod'] . "\" $texte_select>" . $result['compt_nom'] . "</option>";
@@ -250,16 +210,16 @@ if ($erreur == 0)
 
     $option_IA = '';
     $req       = "select ia_type,ia_nom from type_ia order by ia_type desc ";
-    $db->query($req);
-    while ($db->next_record())
+    $stmt      = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $option_IA .= "<option value=\"" . $result['ia_type'] . "\">" . $result['ia_nom'] . "</option>";
     }
 
     $option_combat = '';
     $req           = "select mcom_cod, mcom_nom from mode_combat order by mcom_cod desc ";
-    $db->query($req);
-    while ($db->next_record())
+    $stmt          = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $option_combat .= "<option value=\"" . $result['mcom_cod'] . "\">" . $result['mcom_nom'] . "</option>";
     }
