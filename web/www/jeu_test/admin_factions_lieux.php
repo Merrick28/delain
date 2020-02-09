@@ -15,9 +15,9 @@ if (!isset($fac_cod))
 else
 {
 	$req = "SELECT fac_nom FROM factions where fac_cod = $fac_cod";
-	$db->query($req);
-	$db->next_record();
-	$fac_nom = $db->f('fac_nom');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les lieux servant de base à la faction « $fac_nom »</div><br />";
 }
 
@@ -40,7 +40,7 @@ switch ($methode)
 
 			$req = "INSERT INTO faction_lieu_type (tlfac_fac_cod, tlfac_tlieu_cod, tlfac_dieu_cod, tlfac_etage_min, tlfac_etage_max, tlfac_levo_niveau)
 				VALUES ($fac_cod, $tlfac_tlieu_cod, $tlfac_dieu_cod, $tlfac_etage_min, $tlfac_etage_max, $tlfac_levo_niveau)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Lieu $tlfac_tlieu_cod ajouté à la faction « $fac_nom » !";
 		}
@@ -60,7 +60,7 @@ switch ($methode)
 					AND tlfac_tlieu_cod = $tlfac_tlieu_cod
 					AND tlfac_levo_niveau = $tlfac_levo_niveau
 					AND tlfac_etage_min = $tlfac_etage_min";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Lieu $tlfac_tlieu_cod supprimé à la faction « $fac_nom » !";
 		}
@@ -108,18 +108,18 @@ if ($fac_cod > -1)
 			<th class="titre">Actions</th>
 		</tr>';
 
-	$db->query($req);
+	$stmt = $pdo->query($req);
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
 		// Récupération des données
-		$tlieu_libelle = $db->f('tlieu_libelle');
-		$dieu_nom = $db->f('dieu_nom');
-		$tlfac_levo_niveau = $db->f('tlfac_levo_niveau');
-		$tlfac_etage_min = $db->f('tlfac_etage_min');
-		$tlfac_etage_min_nom = $db->f('tlfac_etage_min_nom');
-    	$tlfac_etage_max_nom = $db->f('tlfac_etage_max_nom');
-    	$tlfac_tlieu_cod = $db->f('tlfac_tlieu_cod');
+		$tlieu_libelle = $result['tlieu_libelle'];
+		$dieu_nom = $result['dieu_nom'];
+		$tlfac_levo_niveau = $result['tlfac_levo_niveau'];
+		$tlfac_etage_min = $result['tlfac_etage_min'];
+		$tlfac_etage_min_nom = $result['tlfac_etage_min_nom'];
+    	$tlfac_etage_max_nom = $result['tlfac_etage_max_nom'];
+    	$tlfac_tlieu_cod = $result['tlfac_tlieu_cod'];
 
 		echo "<form action='#' method='POST' onsubmit='return confirm(\"Êtes-vous sûr de vouloir supprimer ce lieu d’ancrage pour cette faction ?\");'><tr>
 			<td class='soustitre2'>$tlieu_libelle</td>

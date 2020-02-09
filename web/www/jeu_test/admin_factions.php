@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 
 function ecrireResultatEtLoguer($texte, $sql = '')
 {
-    global $db, $compt_cod;
+    global $compt_cod;
     $pdo = new bddpdo;
 
     if ($texte) {
