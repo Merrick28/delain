@@ -99,18 +99,18 @@ class guilde_perso
     returning pguilde_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pguilde_guilde_cod"    => $this->pguilde_guilde_cod,
-                ":pguilde_perso_cod"     => $this->pguilde_perso_cod,
-                ":pguilde_rang_cod"      => $this->pguilde_rang_cod,
-                ":pguilde_valide"        => $this->pguilde_valide,
-                ":pguilde_message"       => $this->pguilde_message,
-                ":pguilde_solde"         => $this->pguilde_solde,
-                ":pguilde_mode_milice"   => $this->pguilde_mode_milice,
-                ":pguilde_dcreat"        => $this->pguilde_dcreat,
-                ":pguilde_meta_noir"     => $this->pguilde_meta_noir,
-                ":pguilde_meta_milice"   => $this->pguilde_meta_milice,
-                ":pguilde_meta_caravane" => $this->pguilde_meta_caravane,
-            ), $stmt);
+                                      ":pguilde_guilde_cod"    => $this->pguilde_guilde_cod,
+                                      ":pguilde_perso_cod"     => $this->pguilde_perso_cod,
+                                      ":pguilde_rang_cod"      => $this->pguilde_rang_cod,
+                                      ":pguilde_valide"        => $this->pguilde_valide,
+                                      ":pguilde_message"       => $this->pguilde_message,
+                                      ":pguilde_solde"         => $this->pguilde_solde,
+                                      ":pguilde_mode_milice"   => $this->pguilde_mode_milice,
+                                      ":pguilde_dcreat"        => $this->pguilde_dcreat,
+                                      ":pguilde_meta_noir"     => $this->pguilde_meta_noir,
+                                      ":pguilde_meta_milice"   => $this->pguilde_meta_milice,
+                                      ":pguilde_meta_caravane" => $this->pguilde_meta_caravane,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
@@ -133,19 +133,19 @@ class guilde_perso
             pguilde_meta_caravane = :pguilde_meta_caravane                        where pguilde_cod = :pguilde_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":pguilde_cod"           => $this->pguilde_cod,
-                ":pguilde_guilde_cod"    => $this->pguilde_guilde_cod,
-                ":pguilde_perso_cod"     => $this->pguilde_perso_cod,
-                ":pguilde_rang_cod"      => $this->pguilde_rang_cod,
-                ":pguilde_valide"        => $this->pguilde_valide,
-                ":pguilde_message"       => $this->pguilde_message,
-                ":pguilde_solde"         => $this->pguilde_solde,
-                ":pguilde_mode_milice"   => $this->pguilde_mode_milice,
-                ":pguilde_dcreat"        => $this->pguilde_dcreat,
-                ":pguilde_meta_noir"     => $this->pguilde_meta_noir,
-                ":pguilde_meta_milice"   => $this->pguilde_meta_milice,
-                ":pguilde_meta_caravane" => $this->pguilde_meta_caravane,
-            ), $stmt);
+                                      ":pguilde_cod"           => $this->pguilde_cod,
+                                      ":pguilde_guilde_cod"    => $this->pguilde_guilde_cod,
+                                      ":pguilde_perso_cod"     => $this->pguilde_perso_cod,
+                                      ":pguilde_rang_cod"      => $this->pguilde_rang_cod,
+                                      ":pguilde_valide"        => $this->pguilde_valide,
+                                      ":pguilde_message"       => $this->pguilde_message,
+                                      ":pguilde_solde"         => $this->pguilde_solde,
+                                      ":pguilde_mode_milice"   => $this->pguilde_mode_milice,
+                                      ":pguilde_dcreat"        => $this->pguilde_dcreat,
+                                      ":pguilde_meta_noir"     => $this->pguilde_meta_noir,
+                                      ":pguilde_meta_milice"   => $this->pguilde_meta_milice,
+                                      ":pguilde_meta_caravane" => $this->pguilde_meta_caravane,
+                                  ), $stmt);
         }
     }
 
@@ -198,6 +198,29 @@ class guilde_perso
         return $retour;
     }
 
+    /**
+     * @param $guilde_cod
+     * @return guilde_perso[] array
+     * @throws Exception
+     */
+    function getByGuilde($guilde_cod)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    =
+            "select pguilde_cod  from guilde_perso where pguilde_guilde_cod = :guilde  and pguilde_valide = 'O' order by pguilde_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":guilde" => $guilde_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new guilde_perso;
+            $temp->charge($result["pguilde_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
@@ -207,7 +230,8 @@ class guilde_perso
                 {
                     $retour = array();
                     $pdo    = new bddpdo;
-                    $req    = "select pguilde_cod  from guilde_perso where " . substr($name, 6) . " = ? order by pguilde_cod";
+                    $req    =
+                        "select pguilde_cod  from guilde_perso where " . substr($name, 6) . " = ? order by pguilde_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
                     while ($result = $stmt->fetch())

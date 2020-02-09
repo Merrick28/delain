@@ -27,6 +27,23 @@ class guilde
         
     }
 
+    function nb_admin_guilde()
+    {
+
+        $pdo    = new bddpdo;
+        $req_comp = "select count(*) as nombre 
+            from guilde_perso,guilde_rang,perso where pguilde_guilde_cod = :guilde
+            and pguilde_guilde_cod = rguilde_guilde_cod 
+            and pguilde_rang_cod = rguilde_rang_cod 
+            and rguilde_admin = 'O' 
+            and pguilde_perso_cod = perso_cod 
+            and perso_actif = 'O' ";
+        $stmt   = $pdo->prepare($req_comp);
+        $stmt   = $pdo->execute(array(":guilde" => $this->guilde_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['nombre'];
+    }
+
     /**
      * Charge dans la classe un enregistrement de guilde
      * @global bdd_mysql $pdo

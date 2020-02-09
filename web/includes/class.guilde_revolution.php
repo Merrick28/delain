@@ -117,6 +117,20 @@ class guilde_revolution
         return $retour;
     }
 
+    function getByGuilde($guilde_cod)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select revguilde_cod  from guilde_revolution where revguilde_guilde_cod = :guilde order by revguilde_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":guilde" => $guilde_cod),$stmt);
+        if(!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['revguilde_cod']);
+    }
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))
