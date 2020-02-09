@@ -144,10 +144,13 @@ switch($methode)
 				if ($case == "") continue;
 				$req_case = "select pos_type_aff, coalesce(mur_type, -1) as mur_type, pos_decor, pos_decor_dessus
 					from positions left outer join murs on mur_pos_cod = pos_cod
-					where pos_cod = $case AND pos_etage = $admin_etage";
-				if ($db->get_one_record($req_case))
+					where pos_cod = :case AND pos_etage = :admin_etage";
+                $stmt = $pdo->prepare($req_case);
+                $stmt = $pdo->execute(array(":case" => $case,
+                                          ":admin_etage" => $admin_etage),$stmt);
+                if($result = $stmt->fetch())
 				{
-					$mur_ancien = $db->f('mur_type');
+					$mur_ancien = $result['mur_type'];
 					$modifs_case = explode(',', $tab_infos_case[1]);
 					$set_case = array();	// on regroupe les changements qui s’effectuent sur une même case
 					$set_mur = array();		// on regroupe les changements qui s’effectuent sur un même mur
@@ -194,7 +197,7 @@ switch($methode)
 									$set_mur[] = "mur_type = $valeur";
 								$cpt_mur++;
 								if ($req !== '')
-									$db->query($req);
+									$pdo->query($req);
 							break;
 							case 'c': // mur creusable
 								$set_mur[] = "mur_creusable = '" . (($valeur) ? 'O' : 'N') . "'";
@@ -210,13 +213,13 @@ switch($methode)
 					if ($set_req !== "")
 					{
 						$req = "update positions set $set_req where pos_cod = $case";
-						$db->query($req); 
+						$pdo->query($req); 
 					}
 					$set_req = implode(',', $set_mur);
 					if ($set_req !== "")
 					{
 						$req = "update murs set $set_req where mur_pos_cod = $case";
-						$db->query($req);
+						$pdo->query($req);
 					}
 				}
 				else
@@ -235,7 +238,7 @@ switch($methode)
 				$cpt_erreur erreurs détectées<br /></p>";
 
 			$req = "select init_automap($admin_etage) ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			echo "<p>Changements validés dans les automaps.</p>";
 		}
 	break;
