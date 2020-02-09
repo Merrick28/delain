@@ -2,44 +2,55 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 //$mod_perso_cod = 2;
-$db2 = new base_delain;
 $erreur = 0;
 //
 // verif droits
 //
 
-$droit_modif = 'dcompt_enchantements';
+$droit_modif        = 'dcompt_enchantements';
 include "blocks/_test_droit_modif_generique.php";
 
-if ($erreur == 0) {
+if ($erreur == 0)
+{
     // initialisation de la méthode
-    if (!isset($methode))
-        $methode = 'debut';
-    switch ($methode) {
+    if (!isset($_REQUEST['methode']))
+    {
+        $methode = "debut";
+    } else
+    {
+        $methode = $_REQUEST['methode'];
+    }
+
+    switch ($methode)
+    {
         case "debut":
             ?>
             <table>
                 <tr>
                     <td>
                         <?php $req = 'select enc_cod,enc_nom,enc_description from enchantements order by enc_nom ';
-                        $db->query($req);
+                        $stmt      = $pdo->query($req);
+                        $req       = "select oenc_gobj_cod,oenc_nombre,gobj_nom from enc_objets,objet_generique	
+														where oenc_enc_cod = :cod
+														and oenc_gobj_cod = gobj_cod";
+                        $stmt2     = $pdo->prepare($req);
                         echo '<td class="titre">Enchantements disponibles :</td><br><br>
 						<table>
 						<td><strong>Nom de l\'enchantement</strong></td><td><strong>Objets nécessaires et quantités</strong></td><td><strong>Description</strong></td>';
-                        while ($db->next_record()) {
-                            $cod_enchantement = $db->f("enc_cod");
-                            echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&enc=' . $cod_enchantement . '">' . $db->f('enc_nom') . '</a></td>';
-                            if ($db->nf() != 0) {
-                                $req = "select oenc_gobj_cod,oenc_nombre,gobj_nom from enc_objets,objet_generique	
-														where oenc_enc_cod = $cod_enchantement 
-														and oenc_gobj_cod = gobj_cod";
-                                $db2->query($req);
-                                echo "<td>";
-                                while ($db2->next_record()) {
-                                    echo $db2->f('gobj_nom') . " \t" . $db2->f('oenc_nombre') . "<br>";
-                                }
-                                echo "</td><td class=\"soustitre2\">" . $db->f('enc_description') . "</td></tr>";
+                        while ($result = $stmt->fetch())
+                        {
+                            $cod_enchantement = $result['enc_cod'];
+                            echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&enc=' . $cod_enchantement . '">' . $result['enc_nom'] . '</a></td>';
+
+
+                            $stmt2 = $pdo->execute(array(":cod" => $cod_enchantement), $stmt2);
+                            echo "<td>";
+                            while ($result2 = $stmt->fetch())
+                            {
+                                echo $result2['gobj_nom'] . " \t" . $result2['oenc_nombre'] . "<br>";
                             }
+                            echo "</td><td class=\"soustitre2\">" . $result['enc_description'] . "</td></tr>";
+
                         }
                         ?>
             </table>
@@ -157,11 +168,11 @@ if ($erreur == 0) {
                 'enc_cout_pa',
                 'enc_cout'
             );
-            $req = 'insert into enchantements
+            $req    = 'insert into enchantements
 				(enc_nom,enc_description';
             foreach ($fields as $i => $value)
                 $req .= ',' . $fields[$i];
-            $req .= ') values (e\'' . pg_escape_string($_POST['nom']) . '\',e\'' . pg_escape_string($_POST['description']) . '\'';
+            $req    .= ') values (e\'' . pg_escape_string($_POST['nom']) . '\',e\'' . pg_escape_string($_POST['description']) . '\'';
             $fields = array(
                 'enc_degat',
                 'enc_armure',
@@ -182,15 +193,16 @@ if ($erreur == 0) {
             );
             foreach ($fields as $i => $value)
                 $req .= ',' . $_POST[$fields[$i]];
-            $req .= ')';
-            $db->query($req);
+            $req  .= ')';
+            $stmt = $pdo->query($req);
             echo "<p>L'enchantement a bien été inséré !<br>
 				pensez à inclure les objets nécessaires pour cet enchantement.<br>";
             break;
         case "modif":
-            $req = 'select * from enchantements where enc_cod = ' . $enc;
-            $db->query($req);
-            $db->next_record();
+            $req = 'select * from enchantements where enc_cod = :enc';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":enc" => $enc), $stmt);
+            $result = $stmt->fetch();
             ?>
             <a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&enc=<?php echo $enc; ?>">Modifier la liste d'objets</a>
             <br>
@@ -202,79 +214,80 @@ if ($erreur == 0) {
                     <input type="hidden" name="enc" value="<?php echo $enc; ?>">
                     <tr>
                         <td class="soustitre2">Nom de l'enchantement</td>
-                        <td><input type="text" size="50" name="nom" value="<?php echo $db->f('enc_nom'); ?>"></td>
+                        <td><input type="text" size="50" name="nom" value="<?php echo $result['enc_nom']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Description</td>
                         <td><textarea cols="50" rows="10"
-                                      name="description"><?php echo $db->f('enc_description'); ?></textarea></td>
+                                      name="description"><?php echo $result['enc_description']; ?></textarea></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Cout en brouzoufs</td>
-                        <td><input type="text" name="enc_cout" value="<?php echo $db->f('enc_cout'); ?>"></td>
+                        <td><input type="text" name="enc_cout" value="<?php echo $result['enc_cout']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Cout en PA</td>
-                        <td><input type="text" name="enc_cout_pa" value="<?php echo $db->f('enc_cout_pa'); ?>"></td>
+                        <td><input type="text" name="enc_cout_pa" value="<?php echo $result['enc_cout_pa']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus degats (entier)</td>
-                        <td><input type="text" name="enc_degat" value="<?php echo $db->f('enc_degat'); ?>"></td>
+                        <td><input type="text" name="enc_degat" value="<?php echo $result['enc_degat']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus armure (entier)</td>
-                        <td><input type="text" name="enc_armure" value="<?php echo $db->f('enc_armure'); ?>"></td>
+                        <td><input type="text" name="enc_armure" value="<?php echo $result['enc_armure']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus portée (entier)</td>
-                        <td><input type="text" name="enc_portee" value="<?php echo $db->f('enc_portee'); ?>"></td>
+                        <td><input type="text" name="enc_portee" value="<?php echo $result['enc_portee']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus chute (réél)</td>
-                        <td><input type="text" name="enc_chute" value="<?php echo $db->f('enc_chute'); ?>"></td>
+                        <td><input type="text" name="enc_chute" value="<?php echo $result['enc_chute']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus usure (réél, multiplicateur)</td>
-                        <td><input type="text" name="enc_usure" value="<?php echo $db->f('enc_usure'); ?>"></td>
+                        <td><input type="text" name="enc_usure" value="<?php echo $result['enc_usure']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus vampirisme (réél)</td>
-                        <td><input type="text" name="enc_vampirisme" value="<?php echo $db->f('enc_vampirisme'); ?>">
+                        <td><input type="text" name="enc_vampirisme" value="<?php echo $result['enc_vampirisme']; ?>">
                         </td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus régénération (entier)</td>
-                        <td><input type="text" name="enc_regen" value="<?php echo $db->f('enc_regen'); ?>"></td>
+                        <td><input type="text" name="enc_regen" value="<?php echo $result['enc_regen']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus aura de feu (réél)</td>
-                        <td><input type="text" name="enc_aura_feu" value="<?php echo $db->f('enc_aura_feu'); ?>"></td>
+                        <td><input type="text" name="enc_aura_feu" value="<?php echo $result['enc_aura_feu']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Protection des critiques (entier > 0, en %)</td>
-                        <td><input type="text" name="enc_critique" value="<?php echo $db->f('enc_critique'); ?>"></td>
+                        <td><input type="text" name="enc_critique" value="<?php echo $result['enc_critique']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus seuil force (entier)</td>
-                        <td><input type="text" name="enc_seuil_force" value="<?php echo $db->f('enc_seuil_force'); ?>">
+                        <td><input type="text" name="enc_seuil_force" value="<?php echo $result['enc_seuil_force']; ?>">
                         </td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus seuil dextérité (entier)</td>
-                        <td><input type="text" name="enc_seuil_dex" value="<?php echo $db->f('enc_seuil_dex'); ?>"></td>
+                        <td><input type="text" name="enc_seuil_dex" value="<?php echo $result['enc_seuil_dex']; ?>">
+                        </td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus vue (entier)</td>
-                        <td><input type="text" name="enc_vue" value="<?php echo $db->f('enc_vue'); ?>"></td>
+                        <td><input type="text" name="enc_vue" value="<?php echo $result['enc_vue']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus chance drop (réél, multiplicateur)</td>
-                        <td><input type="text" name="enc_chance_drop" value="<?php echo $db->f('enc_chance_drop'); ?>">
+                        <td><input type="text" name="enc_chance_drop" value="<?php echo $result['enc_chance_drop']; ?>">
                         </td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Bonus poids (réél, multiplicateur)</td>
-                        <td><input type="text" name="enc_poids" value="<?php echo $db->f('enc_poids'); ?>"></td>
+                        <td><input type="text" name="enc_poids" value="<?php echo $result['enc_poids']; ?>"></td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -306,33 +319,43 @@ if ($erreur == 0) {
                 'enc_cout_pa',
                 'enc_cout'
             );
-            $req = 'update enchantements
+            $req    = 'update enchantements
 					set enc_nom = e\'' . pg_escape_string($nom) . '\',enc_description = e\'' . pg_escape_string($description) . '\'';
             foreach ($fields as $i => $value)
                 $req .= ',' . $fields[$i] . '=' . $_POST[$fields[$i]];
-            $req .= ' where enc_cod = ' . $enc;
-            $db->query($req);
+            $req  .= ' where enc_cod = :enc';
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
             echo "<p>L'enchantement a bien été modifié !<br>
 				pensez à inclure les objets nécessaires pour cet enchantement.<br>";
             break;
         case "serie_obj":
             if (!isset($action))
                 $action = '';
-            if ($action == 'ajout') {
-                $req = " insert into enc_objets (oenc_enc_cod,oenc_gobj_cod,oenc_nombre) values ($enc,$gobj,$nombre)";
-                $db->query($req);
+            if ($action == 'ajout')
+            {
+                $req  = " insert into enc_objets (oenc_enc_cod,oenc_gobj_cod,oenc_nombre) 
+                    values (:enc,:gobj,:nombre)";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":enc"    => $enc,
+                                            ":gobj"   => $gobj,
+                                            ":nombre" => $nombre), $stmt);
             }
-            if ($action == 'suppr') {
-                $req = " delete from enc_objets where oenc_cod = $oenc ";
-                $db->query($req);
+            if ($action == 'suppr')
+            {
+                $req  = " delete from enc_objets where oenc_cod = :oenc ";
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":oenc" => $oenc), $stmt);
             }
-            $req = 'select oenc_cod,gobj_nom,oenc_nombre
+            $req  = 'select oenc_cod,gobj_nom,oenc_nombre
 				from enc_objets,objet_generique
-				where oenc_enc_cod = ' . $enc . '
+				where oenc_enc_cod = :enc
 				and oenc_gobj_cod = gobj_cod ';
-            $db->query($req);
-            while ($db->next_record()) {
-                echo '<br>' . $db->f('gobj_nom') . ' (' . $db->f('oenc_nombre') . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&oenc=' . $db->f('oenc_cod') . '&enc=' . $enc . '">Supprimer ?</a>';
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
+            while ($result = $stmt->fetch())
+            {
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['oenc_nombre'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&oenc=' . $result['oenc_cod'] . '&enc=' . $enc . '">Supprimer ?</a>';
             }
             ?>
             <hr>Ajouter un objet :
@@ -342,21 +365,27 @@ if ($erreur == 0) {
                 <input type="hidden" name="enc" value="<?php echo $enc; ?>">
                 <select name="gobj">
                     <?php
-                    $req = "select gobj_cod,gobj_nom from objet_generique order by gobj_nom ";
-                    $db->query($req);
-                    while ($db->next_record())
-                        echo '<option value="' . $db->f("gobj_cod") . '">' . $db->f("gobj_nom") . '</option>';
+                    $req  = "select gobj_cod,gobj_nom from objet_generique order by gobj_nom ";
+                    $stmt = $pdo->query($req);
+                    while ($result = $stmt->fetch())
+                    {
+                        echo '<option value="' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</option>';
+                    }
+
                     ?>
                 </select><input type="text" name="nombre"> <input type="submit" value="Ajouter"></form>
             <?php
             break;
         case "compat":
-            $req = 'select * from enc_type_objet  where tenc_enc_cod = ' . $enc;
-            $db->query($req);
-            if ($db->nf() == 0)
-                $db->query('insert into enc_type_objet (tenc_enc_cod) values (' . $enc . ')');
-            $db->query($req);
-            $db->next_record();
+            $req = 'select * from enc_type_objet  where tenc_enc_cod = :enc';
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":enc" => $enc), $stmt);
+            if (!$result = $stmt->fetch())
+            {
+                $db->query('insert into enc_type_objet (tenc_enc_cod) values (:enc)');
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
+            }
             ?>
             <form method="post" action="<?php echo $PHP_SELF; ?>">
                 <input type="hidden" name="enc" value="<?php echo $enc; ?>">
@@ -367,24 +396,25 @@ if ($erreur == 0) {
                     <tr>
                         <td class="soustitre2">Arme de contact</td>
                         <td><input type="text" name="tenc_arme_contact"
-                                   value="<?php echo $db->f("tenc_arme_contact"); ?>"></td>
+                                   value="<?php echo $result['tenc_arme_contact']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Arme à distance</td>
                         <td><input type="text" name="tenc_arme_distance"
-                                   value="<?php echo $db->f("tenc_arme_distance"); ?>"></td>
+                                   value="<?php echo $result['tenc_arme_distance']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Casque</td>
-                        <td><input type="text" name="tenc_casque" value="<?php echo $db->f("tenc_casque"); ?>"></td>
+                        <td><input type="text" name="tenc_casque" value="<?php echo $result['tenc_casque']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Armure</td>
-                        <td><input type="text" name="tenc_armure" value="<?php echo $db->f("tenc_armure"); ?>"></td>
+                        <td><input type="text" name="tenc_armure" value="<?php echo $result['tenc_armure']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Artefact</td>
-                        <td><input type="text" name="tenc_artefact" value="<?php echo $db->f("tenc_artefact"); ?>"></td>
+                        <td><input type="text" name="tenc_artefact" value="<?php echo $result['tenc_artefact']; ?>">
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2">
@@ -403,12 +433,13 @@ if ($erreur == 0) {
                 'tenc_armure',
                 'tenc_artefact'
             );
-            $req = 'update enc_type_objet
-					set tenc_enc_cod = ' . $enc;
+            $req    = 'update enc_type_objet
+					set tenc_enc_cod = :enc ';
             foreach ($fields as $i => $value)
                 $req .= ',' . $fields[$i] . '=' . $_POST[$fields[$i]];
-            $req .= ' where tenc_enc_cod = ' . $enc;
-            $db->query($req);
+            $req  .= ' where tenc_enc_cod = :enc';
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
             echo "Les compatibilités sont bien réglées.";
             break;
     }
