@@ -1,18 +1,27 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$req = "select perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-if ($db->f("perso_admin_echoppe_noir") != 'O') {
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if ($perso->perso_admin_echoppe_noir != 'O')
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0) {
-    if (!isset($methode)) {
+if ($erreur == 0)
+{
+    if (!isset($_REQUEST['methode']))
+    {
         $methode = "debut";
+    } else
+    {
+        $methode = $_REQUEST['methode'];
     }
-    switch ($methode) {
+
+    switch ($methode)
+    {
         case "debut":
             echo "<p><a href=\"gerant_echoppe_noir.php\">Affecter les gérances des échoppes</a>";
             echo "<p><a href=\"admin_echoppe_guilde_noir.php\">Modifier les remises de guilde</a>";
@@ -23,22 +32,28 @@ if ($erreur == 0) {
             echo "<p><a href=\"", $PHP_SELF, "?methode=stats_paq\">Voir les stats sur les paquets bruns</a>";
             break;
         case "passe":
-            if (!isset($met_pass)) {
+            if (!isset($met_pass))
+            {
                 $met_pass = "debut";
             }
-            switch ($met_pass) {
+            switch ($met_pass)
+            {
                 case "debut":
                     $seq = $param->getparm(71);
                     echo "<p>Le mot de passe actuel est : ";
-                    for ($cpt = 1; $cpt <= 6; $cpt++) {
-                        $rang = substr($seq, $cpt - 1, 1);
-                        $req_rune = "select gobj_cod,gobj_rune_position,gobj_nom from objet_generique ";
-                        $req_rune = $req_rune . "where gobj_tobj_cod = 5 ";
-                        $req_rune = $req_rune . "and gobj_frune_cod = $cpt ";
-                        $req_rune = $req_rune . "and gobj_rune_position = $rang ";
-                        $db->query($req_rune);
-                        $db->next_record();
-                        echo "<img src=\"" . G_IMAGES . "rune_" . $cpt . "_" . $db->f("gobj_rune_position") . ".gif\">";
+                    // preparation du statement pdo
+                    $req_rune = "select gobj_cod,gobj_rune_position,gobj_nom from objet_generique 
+                        where gobj_tobj_cod = 5 
+                        and gobj_frune_cod = :cpt 
+                        and gobj_rune_position = :rang ";
+                    $stmt     = $pdo->prepare($req_rune);
+                    for ($cpt = 1; $cpt <= 6; $cpt++)
+                    {
+                        $rang   = substr($seq, $cpt - 1, 1);
+                        $stmt   = $pdo->execute(array(":cpt"  => $cpt,
+                                                      ":rang" => rang), $stmt);
+                        $result = $stmt->fetch();
+                        echo "<img src=\"" . G_IMAGES . "rune_" . $cpt . "_" . $result['gobj_rune_position'] . ".gif\">";
                     }
                     echo "<p class=\"centrer\"><a href=\"", $PHP_SELF, "?methode=passe&met_pass=change\">Changer le mot de passe ?</a>";
                     break;
@@ -51,20 +66,26 @@ if ($erreur == 0) {
                         <input type="hidden" name="methode" value="passe">
                         <input type="hidden" name="met_pass" value="valide_change">
                         <?php
-                        for ($famille = 1; $famille < 7; $famille++) {
+                        $req_rune =
+                            "select gobj_cod,gobj_rune_position,gobj_nom 
+                                from objet_generique where gobj_tobj_cod = 5 
+                                and gobj_frune_cod = :famille 
+                                order by gobj_rune_position ";
+                        $stmt     = $pdo->prepare($req_rune);
+                        for ($famille = 1; $famille < 7; $famille++)
+                        {
                             echo "<tr><td>";
                             echo "<center><table><tr>";
-                            $req_rune = "select gobj_cod,gobj_rune_position,gobj_nom from objet_generique where gobj_tobj_cod = 5 ";
-                            $req_rune = $req_rune . "and gobj_frune_cod = $famille ";
-                            $req_rune = $req_rune . "order by gobj_rune_position ";
-                            $db->query($req_rune);
-                            while ($db->next_record()) {
-                                echo "<td><center><img src=\"" . G_IMAGES . "rune_" . $famille . "_" . $db->f("gobj_rune_position") . ".gif\"></center>";
+                            $stmt = $pdo->execute(array(":famille" => $famille), $stmt);
+                            while ($result = $stmt->fetch())
+                            {
+                                echo "<td><center><img src=\"" . G_IMAGES . "rune_" . $famille . "_" . $result['gobj_rune_position'] . ".gif\"></center>";
                                 ?>
                                 <br>
                                 <?php
-                                echo "<input type=\"radio\" class=\"vide\" name=\"fam_", $famille, "\" value=\"", $db->f("gobj_rune_position"), "\"";
-                                if ($db->f("gobj_rune_position") == 1) {
+                                echo "<input type=\"radio\" class=\"vide\" name=\"fam_", $famille, "\" value=\"", $result['gobj_rune_position'], "\"";
+                                if ($result['gobj_rune_position'] == 1)
+                                {
                                     echo " checked";
                                 }
                                 echo "></td>";
@@ -91,114 +112,20 @@ if ($erreur == 0) {
             break;
         case "guilde":
             // champ générique pour ren=prendre sur les autres pages
-            $champ = 'guilde_meta_noir';
+            $champ       = 'guilde_meta_noir';
             $champ_perso = 'pguilde_meta_noir';
-            switch ($met_guilde) {
+            switch ($_REQUEST['met_guilde'])
+            {
                 case "debut":
-                    $req = "select lower(guilde_nom) as minusc,guilde_nom,guilde_cod," . $champ . " from guilde order by minusc ";
-                    $db->query($req);
-                    ?>
-                <form name="guilde" method="post" action="<?php echo $PHP_SELF; ?>">
-                    <input type="hidden" name="methode" value="guilde">
-                    <input type="hidden" name="met_guilde" value="suite">
-                    <table>
-                        <tr>
-                            <td class="soustitre2"><strong>Nom</strong></td>
-                            <td class="soustitre2"><strong>Autorisée ?</strong></td>
-                            <td class="soustitre2"><strong>Refusée</strong></td>
-                        </tr>
-                        <?php
-                        while ($db->next_record()) {
-                            echo "<tr>";
-                            echo "<td class=\"soustitre2\"><strong>", $db->f("guilde_nom"), "</strong></td>";
-
-                            if ($db->f($champ) == 'O') {
-                                $coche = " checked";
-                                $ncoche = "";
-                            } else {
-                                $coche = "";
-                                $ncoche = " checked";
-                            }
-                            echo "<td>";
-                            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $db->f("guilde_cod") . "]\" value=\"O\"", $coche, ">";
-                            echo "</td>";
-                            echo "<td>";
-                            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $db->f("guilde_cod") . "]\" value=\"N\"", $ncoche, ">";
-                            echo "</td>";
-                            echo "</tr>";
-                        }
-                        ?>
-                        <tr>
-                            <td colspan="2">
-                            </td>
-                        </tr>
-                    </table>
-                    <?php
+                    require "_admin_echoppe_met_guilde.php";
                     break;
                 case "suite":
-                    foreach ($guilde as $key => $val) {
-                        $req = "select guilde_nom," . $champ . " from guilde where guilde_cod = $key ";
-                        $db->query($req);
-                        $db->next_record();
-                        if ($val != $db->f($champ)) // changement
-                        {
-                            // d'abord on marque le changement
-                            $req = "update guilde set " . $champ . " = '$val' where guilde_cod = $key ";
-                            $db->query($req);
-                            // si c'est une suppression, on supprime les gens meta guildés
-                            if ($val == 'N') {
-                                $req = "select pguilde_perso_cod,perso_nom from guilde_perso,perso where pguilde_guilde_cod = $key and pguilde_perso_cod = perso_cod ";
-                                $req = $req . "and pguilde_valide = 'O' ";
-                                $req = $req . "and " . $champ_perso . " = 'O' ";
-                                $db->query($req);
-                                if ($db->nf() != 0) {
-                                    $db2 = new base_delain;
-                                    $texte = "Un administrateur de meta-guilde a décidé de ne plus rattacher votre guilde.<br>Vous perdez donc les droits liés à ce meta-guildage.<br />";
-                                    $titre = "Fin de meta guildage.";
-                                    $req_num_mes = "select nextval('seq_msg_cod') as num_mes";
-                                    $db2->query($req_num_mes);
-                                    $db2->next_record();
-                                    $num_mes = $db2->f("num_mes");
-                                    $req_mes = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
-                                    $req_mes = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
-                                    $db2->query($req_mes);
-                                    $req2 = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-                                    $req2 = $req2 . "values ($num_mes,$perso_cod,'N') ";
-                                    $db2->query($req2);
-                                    while ($db->next_record()) {
-                                        $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes," . $db->f("pguilde_perso_cod") . ",'N','N') ";
-                                        echo "<p>Le joueur <strong>", $db->f("perso_nom"), "</strong> a été supprimé du méta guildage.";
-                                        $db2->query($req_dest);
-                                    }
-
-                                }
-                                $req = "update guilde_perso set " . $champ_perso . " = 'N' where pguilde_guilde_cod = $key ";
-                                $db->query($req);
-                                echo "<p>La guilde <strong>", $db->f("guilde_nom"), "</strong> a été supprimée des meta guildages.";
-                            } else {
-                                echo "<p>La guilde <strong>", $db->f("guilde_nom"), "</strong> a été ajoutée aux meta guildages.";
-                            }
-                        }
-                    }
+                    require "_admin_echoppe_suite.php";
                     break;
             }
             break;
         case "voir_meta":
-            echo "<p><strong>Liste des personnes méta guildées :</strong><br>";
-            $req = "select perso_nom,perso_cod from perso,guilde_perso ";
-            $req = $req . "where pguilde_valide = 'O' ";
-            $req = $req . "and pguilde_meta_noir = 'O' ";
-            $req = $req . "and perso_cod = pguilde_perso_cod ";
-            $db->query($req);
-            if ($db->nf() == 0) {
-                echo "<p>Aucun personnage meta guildé !";
-            } else {
-                echo "<table>";
-                while ($db->next_record()) {
-                    echo "<tr><td class=\"soustitre2\"><p><a href=\"visu_desc_perso.php?visu=", $db->f("perso_cod"), "\">", $db->f("perso_nom"), "</a></td></tr>";
-                }
-                echo "</table>";
-            }
+            require "_admin_echoppe_voir_meta.php";
             break;
         case "stats_paq":
             echo "<p>Paquets vendus par les postes d'entrée aux aventuriers (ce mois-ci/total) : <strong>", $param->getparm(81), "/", $param->getparm(80), "</strong>";
