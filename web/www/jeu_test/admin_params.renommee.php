@@ -99,9 +99,9 @@ switch ($methode)
 		{
 			$req_verif = "select $col_min, $col_max, $col_lib
 				from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = !$db->next_record();
+			$erreur = !$result = $stmt->fetch();
 		}
 
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
@@ -121,7 +121,7 @@ switch ($methode)
 
 			$req_upd = "update $table_ren set $col_min = $renommee_min, $col_max = $renommee_max, $col_lib = '$renommee_libelle'
 				where $col_cod = $renommee_cod";
-			$db->query($req_upd);
+			$stmt = $pdo->query($req_upd);
 		}
 	break;
 
@@ -141,7 +141,7 @@ switch ($methode)
 
 			$req_ins = "insert into $table_ren ($col_min, $col_max, $col_lib)
 				values ($renommee_min, $renommee_max, '$renommee_libelle')";
-			$db->query($req_ins);
+			$stmt = $pdo->query($req_ins);
 		}
 	break;
 
@@ -159,9 +159,9 @@ switch ($methode)
 		{
 			$req_verif = "select $col_min, $col_max, $col_lib
 				from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = !$db->next_record();
+			$erreur = !$result = $stmt->fetch();
 		}
 
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
@@ -173,7 +173,7 @@ switch ($methode)
 			$log .= "	Suppression de $log_renommee n°$renommee_cod « $renommee_libelle_orig » [$renommee_min_orig ; $renommee_max_orig].\n";
 
 			$req_del = "delete from $table_ren where $col_cod = $renommee_cod";
-			$db->query($req_del);
+			$stmt = $pdo->query($req_del);
 		}
 	break;
 }
@@ -233,9 +233,9 @@ foreach ($lesTypes as $i)
 		</form></tr>";
 
 	$req = "select $col_cod, $col_min, $col_max, $col_lib from $table_ren order by $col_min";
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	$prev_max = false;
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
 		$renommee_cod = $db->f($col_cod);
 		$renommee_min = $db->f($col_min);

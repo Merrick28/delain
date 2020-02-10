@@ -52,10 +52,10 @@ if ($erreur == 0)
                             <td><select name="gobj_tobj_cod">
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
-                                    $db->query($req);
-                                    while ($db->next_record())
+                                    $stmt = $pdo->query($req);
+                                    while ($result = $stmt->fetch())
                                     {
-                                        echo '<option value="' . $db->f("tobj_cod") . '">' . $db->f('tobj_libelle') . '</option>';
+                                        echo '<option value="' . $result['tobj_cod'] . '">' . $result['tobj_libelle'] . '</option>';
                                     }
                                     ?>
                                 </select></td>
@@ -95,10 +95,10 @@ if ($erreur == 0)
                                     <option value="30">Mains nues</option>
                                     <?php
                                     $req = "select comp_libelle,comp_cod from competences where comp_typc_cod in (6,7,8) order by comp_cod ";
-                                    $db->query($req);
-                                    while ($db->next_record())
+                                    $stmt = $pdo->query($req);
+                                    while ($result = $stmt->fetch())
                                     {
-                                        echo '<option value="' . $db->f("comp_cod") . '">' . $db->f('comp_libelle') . '</option>';
+                                        echo '<option value="' . $result['comp_cod'] . '">' . $result['comp_libelle'] . '</option>';
                                     }
                                     ?>
                                 </select></td>
@@ -233,15 +233,15 @@ if ($erreur == 0)
             $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
                     inner join type_objet on tobj_cod = gobj_tobj_cod where gobj_tobj_cod not in (3,5,9,10) 
                     order by tobj_libelle, gobj_nom";
-            $db->query($req_tobj);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_tobj);
+            while ($result = $stmt->fetch())
             {
-                $gobj_nom     = $db->f("gobj_nom");
+                $gobj_nom     = $result['gobj_nom'];
                 $gobj_nom     = str_replace("\"", "", $gobj_nom);
-                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                $gobj_valeur  = $db->f("gobj_valeur");
+                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
+                $gobj_valeur  = $result['gobj_valeur'];
                 echo("listeBase[$nb_tobj] = new Array(0); \n");
-                echo("listeBase[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
+                echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
                 echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
                 echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
                 echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
@@ -253,11 +253,11 @@ if ($erreur == 0)
             <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
             <?php
             $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
-            $db->query($req_tobj);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_tobj);
+            while ($result = $stmt->fetch())
             {
-                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                echo "<option data-gobj=\"" . $db->f('tobj_cod') . "\" value=\"" . $db->f('tobj_cod') . "\">$tobj_libelle</option>";
+                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
+                echo "<option data-gobj=\"" . $result['tobj_cod'] . "\" value=\"" . $result['tobj_cod'] . "\">$tobj_libelle</option>";
             }
 
             echo '
@@ -301,11 +301,11 @@ if ($erreur == 0)
             $db3 = new base_delain;
             $req = "select * from objet_generique
 				where gobj_cod =  $gobj_cod ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("gobj_obcar_cod") != '')
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['gobj_obcar_cod'] != '')
             {
-                $req = "select * from objets_caracs where obcar_cod = " . $db->f("gobj_obcar_cod");
+                $req = "select * from objets_caracs where obcar_cod = " . $result['gobj_obcar_cod'];
                 $db2->query($req);
                 if ($db2->nf() != 0)
                 {
@@ -333,12 +333,12 @@ if ($erreur == 0)
                     <table>
                         <tr>
                             <td class="soustitre2">Nom de l’objet (identifié)</td>
-                            <td><input type="text" name="gobj_nom" value="<?php echo $db->f("gobj_nom"); ?>"></td>
+                            <td><input type="text" name="gobj_nom" value="<?php echo $result['gobj_nom']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Nom de l’objet (non identifié)</td>
                             <td><input type="text" name="gobj_nom_generique"
-                                       value="<?php echo $db->f("gobj_nom_generique"); ?>"></td>
+                                       value="<?php echo $result['gobj_nom_generique']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Type d’objet</td>
@@ -349,7 +349,7 @@ if ($erreur == 0)
                                     while ($db3->next_record())
                                     {
                                         echo '<option value="' . $db3->f("tobj_cod") . '" ';
-                                        if ($db3->f('tobj_cod') == $db->f("gobj_tobj_cod"))
+                                        if ($db3->f('tobj_cod') == $result['gobj_tobj_cod'])
                                         {
                                             echo " selected ";
                                         }
@@ -360,7 +360,7 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Valeur</td>
-                            <td><input type="text" name="gobj_valeur" value="<?php echo $db->f("gobj_valeur"); ?>"></td>
+                            <td><input type="text" name="gobj_valeur" value="<?php echo $result['gobj_valeur']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Dégâts (armes uniquement)</td>
@@ -381,7 +381,7 @@ if ($erreur == 0)
                             <td><select name="gobj_distance">
                                     <option value="O"
                                         <?php
-                                        if ($db->f("gobj_distance") == 'O')
+                                        if ($result['gobj_distance'] == 'O')
                                         {
                                             echo " selected";
                                         }
@@ -390,7 +390,7 @@ if ($erreur == 0)
                                     </option>
                                     <option value="N"
                                         <?php
-                                        if ($db->f("gobj_distance") == 'N')
+                                        if ($result['gobj_distance'] == 'N')
                                         {
                                             echo " selected";
                                         }
@@ -401,7 +401,7 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Distance max (armes à distance uniquement)</td>
-                            <td><input type="text" name="gobj_portee" value="<?php echo $db->f("gobj_portee"); ?>"></td>
+                            <td><input type="text" name="gobj_portee" value="<?php echo $result['gobj_portee']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chute (armes à distance uniquement)</td>
@@ -413,7 +413,7 @@ if ($erreur == 0)
                             <td><select name="gobj_comp_cod">
                                     <option value="30"
                                         <?php
-                                        if ($db->f("gobj_comp_cod") == 30)
+                                        if ($result['gobj_comp_cod'] == 30)
                                         {
                                             echo " selected ";
                                         }
@@ -427,7 +427,7 @@ if ($erreur == 0)
                                     while ($db3->next_record())
                                     {
                                         echo '<option value="' . $db3->f("comp_cod") . '" ';
-                                        if ($db3->f('comp_cod') == $db->f("gobj_comp_cod"))
+                                        if ($db3->f('comp_cod') == $result['gobj_comp_cod'])
                                         {
                                             echo " selected ";
                                         }
@@ -438,21 +438,21 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Poids</td>
-                            <td><input type="text" name="gobj_poids" value="<?php echo $db->f("gobj_poids"); ?>"></td>
+                            <td><input type="text" name="gobj_poids" value="<?php echo $result['gobj_poids']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Coût en PA pour une attaque normale (armes uniquement)</td>
                             <td><input type="text" name="gobj_pa_normal"
-                                       value="<?php echo $db->f("gobj_pa_normal"); ?>"></td>
+                                       value="<?php echo $result['gobj_pa_normal']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Coût en PA pour une attaque foudroyante (armes uniquement)</td>
                             <td><input type="text" name="gobj_pa_eclair"
-                                       value="<?php echo $db->f("gobj_pa_eclair"); ?>"></td>
+                                       value="<?php echo $result['gobj_pa_eclair']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Description</td>
-                            <td><textarea name="gobj_description"><?php echo $db->f("gobj_description"); ?></textarea>
+                            <td><textarea name="gobj_description"><?php echo $result['gobj_description']; ?></textarea>
                             </td>
                         </tr>
                         <tr>
@@ -460,7 +460,7 @@ if ($erreur == 0)
                             <td><select name="gobj_deposable">
                                     <option value="O"
                                         <?php
-                                        if ($db->f("gobj_deposable") == 'O')
+                                        if ($result['gobj_deposable'] == 'O')
                                         {
                                             echo " selected";
                                         }
@@ -469,7 +469,7 @@ if ($erreur == 0)
                                     </option>
                                     <option value="N"
                                         <?php
-                                        if ($db->f("gobj_deposable") == 'N')
+                                        if ($result['gobj_deposable'] == 'N')
                                         {
                                             echo " selected";
                                         }
@@ -480,14 +480,14 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Usure par utilisation</td>
-                            <td><input type="text" name="gobj_usure" value="<?php echo $db->f("gobj_usure"); ?>"></td>
+                            <td><input type="text" name="gobj_usure" value="<?php echo $result['gobj_usure']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Vendable dans les échoppes ?</td>
                             <td><select name="gobj_echoppe">
                                     <option value="O"
                                         <?php
-                                        if ($db->f("gobj_echoppe") == 'O')
+                                        if ($result['gobj_echoppe'] == 'O')
                                         {
                                             echo " selected";
                                         }
@@ -496,7 +496,7 @@ if ($erreur == 0)
                                     </option>
                                     <option value="N"
                                         <?php
-                                        if ($db->f("gobj_echoppe") == 'N')
+                                        if ($result['gobj_echoppe'] == 'N')
                                         {
                                             echo " selected";
                                         }
@@ -510,7 +510,7 @@ if ($erreur == 0)
                             <td><select name="gobj_postable">
                                     <option value="O"
                                         <?php
-                                        if ($db->f("gobj_postable") == 'O')
+                                        if ($result['gobj_postable'] == 'O')
                                         {
                                             echo " selected";
                                         }
@@ -519,7 +519,7 @@ if ($erreur == 0)
                                     </option>
                                     <option value="N"
                                         <?php
-                                        if ($db->f("gobj_postable") == 'N')
+                                        if ($result['gobj_postable'] == 'N')
                                         {
                                             echo " selected";
                                         }
@@ -530,81 +530,81 @@ if ($erreur == 0)
                         </tr>
                         <tr>
                             <td class="soustitre2">Vampirisme (armes uniquement) en numérique (ex : 0.2 pour 20%)</td>
-                            <td><input type="text" name="gobj_vampire" value="<?php echo $db->f("gobj_vampire"); ?>">
+                            <td><input type="text" name="gobj_vampire" value="<?php echo $result['gobj_vampire']; ?>">
                             </td>
                         </tr>
                         </tr>
                         <tr>
                             <td class="soustitre2">Seuil d’utilisation en force</td>
                             <td><input type="text" name="gobj_seuil_force"
-                                       value="<?php echo $db->f("gobj_seuil_force"); ?>"></td>
+                                       value="<?php echo $result['gobj_seuil_force']; ?>"></td>
                         </tr>
                         </tr>
                         <tr>
                             <td class="soustitre2">Seuil d’utilisation en dextérité</td>
                             <td><input type="text" name="gobj_seuil_dex"
-                                       value="<?php echo $db->f("gobj_seuil_dex"); ?>"></td>
+                                       value="<?php echo $result['gobj_seuil_dex']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Seuil d’utilisation en niveau</td>
                             <td><input type="text" name="gobj_niveau_min"
-                                       value="<?php echo $db->f("gobj_niveau_min"); ?>"></td>
+                                       value="<?php echo $result['gobj_niveau_min']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Nombre de mains (armes uniquement)</td>
-                            <td><input type="text" name="gobj_nb_mains" value="<?php echo $db->f("gobj_nb_mains"); ?>">
+                            <td><input type="text" name="gobj_nb_mains" value="<?php echo $result['gobj_nb_mains']; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Bonus/malus à la régénération</td>
-                            <td><input type="text" name="gobj_regen" value="<?php echo $db->f("gobj_regen"); ?>"></td>
+                            <td><input type="text" name="gobj_regen" value="<?php echo $result['gobj_regen']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Aura de feu - en numérique (ex : 0.2 pour 20%)</td>
-                            <td><input type="text" name="gobj_aura_feu" value="<?php echo $db->f("gobj_aura_feu"); ?>">
+                            <td><input type="text" name="gobj_aura_feu" value="<?php echo $result['gobj_aura_feu']; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Bonus/malus à la vue</td>
                             <td><input type="text" name="gobj_bonus_vue"
-                                       value="<?php echo $db->f("gobj_bonus_vue"); ?>"></td>
+                                       value="<?php echo $result['gobj_bonus_vue']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Protection contre les critiques (en %)</td>
-                            <td><input type="text" name="gobj_critique" value="<?php echo $db->f("gobj_critique"); ?>">
+                            <td><input type="text" name="gobj_critique" value="<?php echo $result['gobj_critique']; ?>">
                             </td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Bonus à l’armure (artefacts et casques)</td>
                             <td><input type="text" name="gobj_bonus_armure"
-                                       value="<?php echo $db->f("gobj_bonus_armure"); ?>"></td>
+                                       value="<?php echo $result['gobj_bonus_armure']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chance de drop à la mort du joueur (en %)</td>
                             <td><input type="text" name="gobj_chance_drop"
-                                       value="<?php echo $db->f("gobj_chance_drop"); ?>"></td>
+                                       value="<?php echo $result['gobj_chance_drop']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chance de drop à la mort du monstre (en %)</td>
                             <td><input type="text" name="gobj_chance_drop_monstre"
-                                       value="<?php echo $db->f("gobj_chance_drop_monstre"); ?>">&nbsp; <em
+                                       value="<?php echo $result['gobj_chance_drop_monstre']; ?>">&nbsp; <em
                                         style="font-size: 9px;">à n'utiliser que si l'objet a 100% de chance d'être
                                     possèdé par le monstre</em></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Chance d’avoir un objet enchantable (en %)</td>
                             <td><input type="text" name="gobj_chance_enchant"
-                                       value="<?php echo $db->f("gobj_chance_enchant"); ?>"></td>
+                                       value="<?php echo $result['gobj_chance_enchant']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Objet déséquipable (O: oui ; N: non)</td>
                             <td><input type="text" name="gobj_desequipable"
-                                       value="<?php echo $db->f("gobj_desequipable"); ?>"></td>
+                                       value="<?php echo $result['gobj_desequipable']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="soustitre2">Stabilité (potions uniquement)</td>
                             <td><input type="text" name="gobj_stabilite"
-                                       value="<?php echo $db->f("gobj_stabilite"); ?>"></td>
+                                       value="<?php echo $result['gobj_stabilite']; ?>"></td>
                         </tr>
 
 
@@ -676,9 +676,9 @@ if ($erreur == 0)
         case "cre2":
             // détermination du obcar_cod
             $req = 'select nextval(\'seq_obcar_cod\') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            $obcar_cod = $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $obcar_cod = $result['resultat'];
             // mise à 0 des valeurs vides pour objets_caracs
             $fields = array(
                 'obcar_des_degats',
@@ -699,7 +699,7 @@ if ($erreur == 0)
 				(obcar_cod,obcar_des_degats,obcar_val_des_degats,obcar_bonus_degats,obcar_chute,obcar_armure)
 				values
 				(" . $obcar_cod . "," . $_POST['obcar_des_degats'] . "," . $_POST['obcar_val_des_degats'] . "," . $_POST['obcar_bonus_degats'] . "," . $_POST['obcar_chute'] . "," . $_POST['obcar_armure'] . ")";
-            $db->query($req);
+            $stmt = $pdo->query($req);
 
             // mise à NULL des valeurs vides pour objets_generique
             $fields = array(
@@ -755,7 +755,7 @@ if ($erreur == 0)
                    $_POST['gobj_vampire'] . ",	" . $_POST['gobj_seuil_force'] . "," . $_POST['gobj_seuil_dex'] . "," . $_POST['gobj_nb_mains'] . "," . $_POST['gobj_regen'] .
                    "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
                    "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $PHP_SELF . "?methode=mod\">Créer/Modifier d'autres objets</a>";
             break;
         case "mod3":
@@ -781,7 +781,7 @@ if ($erreur == 0)
 				set obcar_des_degats = " . $_POST['obcar_des_degats'] . ",obcar_val_des_degats = " . $_POST['obcar_val_des_degats'] . ",
 				obcar_bonus_degats = " . $_POST['obcar_bonus_degats'] . ",obcar_chute = " . $_POST['obcar_chute'] . ",obcar_armure = " . $_POST['obcar_armure'] . "
 				where obcar_cod = $obcar_cod";
-            $db->query($req);
+            $stmt = $pdo->query($req);
 
             // mise à NULL des valeurs vides pour objets_generique
             $fields = array(
@@ -838,7 +838,7 @@ if ($erreur == 0)
 				gobj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",gobj_critique = " . $_POST['gobj_critique'] . ",gobj_bonus_armure = " . $_POST['gobj_bonus_armure'] . ",
 				gobj_chance_drop = " . $_POST['gobj_chance_drop'] . ", gobj_chance_drop_monstre = " . $_POST['gobj_chance_drop_monstre'] . ", gobj_chance_enchant = " . $_POST['gobj_chance_enchant'] . ", gobj_desequipable = '$gobj_desequipable', gobj_stabilite = " . $_POST['gobj_stabilite'] . ", 
 				gobj_niveau_min = " . $_POST['gobj_niveau_min'] . " where gobj_cod = $objet ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>L’insertion s’est bien déroulée.";
             //MAJ des objets individuels déjà existants. ATTENTION, certains champs ne sont bizarrement pas présents !
             $req = "update objets set obj_nom = e'" . pg_escape_string($gobj_nom) . "',obj_nom_generique = e'" . pg_escape_string($gobj_nom_generique) . "',
@@ -850,7 +850,7 @@ if ($erreur == 0)
 			obj_bonus_vue = " . $_POST['gobj_bonus_vue'] . ",obj_critique = " . $_POST['gobj_critique'] . ",
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
 			where obj_gobj_cod = $objet and obj_modifie = 0";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"" . $PHP_SELF . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
             break;
 

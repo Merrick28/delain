@@ -195,10 +195,10 @@ if ($erreur == 0)
                     }
                     if ($nb_obj>0) echo "<div class='bordiv'><pre><strong><u>ATTENTION</u></strong>: Les {$nb_obj} objet(s) équipé(s) par les joueurs ont été impactés par cette modification!</pre></div>";
 
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
-                        $bonus_perso_cod = $db->f('corig_perso_cod');
-                        $perso_list .= '#'.$db->f('perso_cod').' ('.$db->f('perso_nom').'), ';
+                        $bonus_perso_cod = $result['corig_perso_cod'];
+                        $perso_list .= '#'.$result['perso_cod'].' ('.$result['perso_nom'].'), ';
 
                         // On recalcule le changement des limites pour ce perso
                         $db2->query("select f_modif_carac_perso({$bonus_perso_cod}, '{$tbonus_libc}'); ");

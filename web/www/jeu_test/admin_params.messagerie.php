@@ -29,9 +29,9 @@ switch ($methode)
 
             $req = "select perso_cod, perso_nom from perso where perso_cod={$num_perso} OR perso_cod in ({$list_cod}) order by perso_cod";
 
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $perso_cod_list = "";
-            while ($db->next_record()) $perso_cod_list.=$db->f('perso_cod').',';
+            while ($result = $stmt->fetch()) $perso_cod_list.=$result['perso_cod'].',';
             if (strlen($perso_cod_list)>0)  $perso_cod_list = substr($perso_cod_list, 0, -1);
 
             $log .= "	Modification du paramètre n°$parm_cod « {$param->parm_desc} ».\n";
@@ -60,9 +60,9 @@ switch ($methode)
 
             $req = "select perso_cod, perso_nom from perso where perso_cod<>{$num_perso} AND perso_cod in ({$list_cod}) order by perso_cod";
 
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $perso_cod_list = "";
-            while ($db->next_record()) $perso_cod_list.=$db->f('perso_cod').',';
+            while ($result = $stmt->fetch()) $perso_cod_list.=$result['perso_cod'].',';
             if (strlen($perso_cod_list)>0)  $perso_cod_list = substr($perso_cod_list, 0, -1);
 
             $log .= "	Modification du paramètre n°$parm_cod « {$param->parm_desc} ».\n";
@@ -106,12 +106,12 @@ echo "<tr><form name='login2' method='POST' action='#'>
 
   $req = "select perso_cod, perso_nom from perso where perso_cod in ({$list_cod}) order by perso_cod";
   //die($req);
-  $db->query($req);
+  $stmt = $pdo->query($req);
 
-  while ($db->next_record())
+  while ($result = $stmt->fetch())
   {
-      $perso_cod = $db->f('perso_cod');
-      $perso_nom = str_replace('\'', '’', $db->f('perso_nom'));
+      $perso_cod = $result['perso_cod'];
+      $perso_nom = str_replace('\'', '’', $result['perso_nom']);
 
       echo "<tr><form method='POST' action='#' onsubmit='return confirm(\"Êtes-vous sûr de vouloir supprimer ce perso de la liste ?\");'>
   		<td style='padding:2px;'><input disabled type='text' size='10' value='$perso_cod' /></td>

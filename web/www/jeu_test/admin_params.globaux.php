@@ -29,9 +29,9 @@ switch ($methode)
 					lower(parm_type) as parm_type, parm_desc,
 					case lower(parm_type) when 'integer' then parm_valeur::text else parm_valeur_texte end as parm_valeur
 				from parametres where parm_cod = $parm_cod";
-			$db->query($req_verif);
+			$stmt = $pdo->query($req_verif);
 
-			$erreur = (!$db->next_record()) || ($parm_type != 'integer' && $parm_type != 'text')
+			$erreur = (!$result = $stmt->fetch()) || ($parm_type != 'integer' && $parm_type != 'text')
 				|| ($parm_type == 'integer' && !is_numeric($parm_valeur));
 		}
 
@@ -42,9 +42,9 @@ switch ($methode)
 		}
 		else
 		{
-			$texte_orig = $db->f('parm_desc');
-			$valeur_orig = $db->f('parm_valeur');
-			$type_orig = $db->f('parm_type');
+			$texte_orig = $result['parm_desc'];
+			$valeur_orig = $result['parm_valeur'];
+			$type_orig = $result['parm_type'];
 			$log .= "	Modification du paramètre n°$parm_cod « $texte_orig ».\n";
 
 			if ($parm_type == 'integer')
@@ -109,7 +109,7 @@ switch ($methode)
 
 			$req_ins = "insert into parametres (parm_type, $champ_valeur, parm_desc)
 				values ('$parm_type', '$parm_valeur', '$parm_desc')";
-			$db->query($req_ins);
+			$stmt = $pdo->query($req_ins);
 		}
 	break;
 }
@@ -140,13 +140,13 @@ echo "<tr><form method='POST' action='#'>
 $req = "select parm_cod, lower(parm_type) as parm_type, parm_desc,
 		case lower(parm_type) when 'integer' then parm_valeur::text else parm_valeur_texte end as parm_valeur
 	from parametres order by parm_cod";
-$db->query($req);
-while ($db->next_record())
+$stmt = $pdo->query($req);
+while ($result = $stmt->fetch())
 {
-	$parm_cod = $db->f('parm_cod');
-	$parm_desc = str_replace('\'', '’', $db->f('parm_desc'));
-	$parm_valeur = str_replace('\'', '’', $db->f('parm_valeur'));
-	$parm_type = $db->f('parm_type');
+	$parm_cod = $result['parm_cod'];
+	$parm_desc = str_replace('\'', '’', $result['parm_desc']);
+	$parm_valeur = str_replace('\'', '’', $result['parm_valeur']);
+	$parm_type = $result['parm_type'];
 
 	$int_selected = ($parm_type == 'integer') ? 'selected="selected"' : '' ;
 	$tex_selected = ($parm_type == 'text') ? 'selected="selected"' : '' ;

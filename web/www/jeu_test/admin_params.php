@@ -20,9 +20,9 @@ if ($erreur == 0) {
         $methode = 'debut';
     else {
         $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $db->query($req);
-        $db->next_record();
-        $compt_nom = $db->f("compt_nom");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $compt_nom = $result['compt_nom'];
         $log = date("d/m/y - H:i") . " Compte $compt_nom (n°$compt_cod) modifie les paramètres.\n";
     }
     define("APPEL", 1);

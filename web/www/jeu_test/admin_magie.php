@@ -53,7 +53,7 @@ if ($erreur == 0) {
 						sort_temps_recharge = $sort_temps_recharge,
 						sort_description = '$sort_description'
 					WHERE sort_cod = $sort_cod";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 $resultat = "<p>Sort $sort_nom ($sort_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
             } else
                 $resultat = "<p>Erreur de paramètres</p>";
@@ -120,26 +120,26 @@ if ($erreur == 0) {
 			<th class="titre">Action</th>
 		</tr>';
 
-    $db->query($req_runiques);
+    $stmt = $pdo->query($req_runiques);
 
-    while ($db->next_record()) {
+    while ($result = $stmt->fetch()) {
         // Récupération des données
-        $sort_cod = $db->f('sort_cod');
-        $sort_nom = $db->f('sort_nom');
-        $sort_combinaison = $db->f('sort_combinaison');
-        $sort_comp_cod = $db->f('sort_comp_cod');
-        $sort_niveau = $db->f('sort_niveau');
-        $sort_cout = $db->f('sort_cout');
-        $sort_distance = $db->f('sort_distance');
-        $sort_soi_meme = $db->f('sort_soi_meme');
-        $sort_monstre = $db->f('sort_monstre');
-        $sort_joueur = $db->f('sort_joueur');
-        $sort_case = $db->f('sort_case');
-        $sort_aggressif = $db->f('sort_aggressif');
-        $sort_soutien = $db->f('sort_soutien');
-        $sort_bloquable = $db->f('sort_bloquable');
-        $sort_temps_recharge = $db->f('sort_temps_recharge');
-        $sort_description = $db->f('sort_description');
+        $sort_cod = $result['sort_cod'];
+        $sort_nom = $result['sort_nom'];
+        $sort_combinaison = $result['sort_combinaison'];
+        $sort_comp_cod = $result['sort_comp_cod'];
+        $sort_niveau = $result['sort_niveau'];
+        $sort_cout = $result['sort_cout'];
+        $sort_distance = $result['sort_distance'];
+        $sort_soi_meme = $result['sort_soi_meme'];
+        $sort_monstre = $result['sort_monstre'];
+        $sort_joueur = $result['sort_joueur'];
+        $sort_case = $result['sort_case'];
+        $sort_aggressif = $result['sort_aggressif'];
+        $sort_soutien = $result['sort_soutien'];
+        $sort_bloquable = $result['sort_bloquable'];
+        $sort_temps_recharge = $result['sort_temps_recharge'];
+        $sort_description = $result['sort_description'];
 
         echo "<form action='#' method='POST'><tr>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' />
@@ -176,26 +176,26 @@ if ($erreur == 0) {
 			<th class="titre">Action</th>
 		</tr>';
 
-    $db->query($req_divins);
+    $stmt = $pdo->query($req_divins);
 
-    while ($db->next_record()) {
+    while ($result = $stmt->fetch()) {
         // Récupération des données
-        $sort_cod = $db->f('sort_cod');
-        $sort_nom = $db->f('sort_nom');
-        $dieux_nom = $db->f('dieux_nom');
-        $sort_niveau = $db->f('sort_niveau');
-        $sort_comp_cod = $db->f('sort_comp_cod');
-        $sort_cout = $db->f('sort_cout');
-        $sort_distance = $db->f('sort_distance');
-        $sort_soi_meme = $db->f('sort_soi_meme');
-        $sort_monstre = $db->f('sort_monstre');
-        $sort_joueur = $db->f('sort_joueur');
-        $sort_case = $db->f('sort_case');
-        $sort_aggressif = $db->f('sort_aggressif');
-        $sort_soutien = $db->f('sort_soutien');
-        $sort_bloquable = $db->f('sort_bloquable');
-        $sort_temps_recharge = $db->f('sort_temps_recharge');
-        $sort_description = $db->f('sort_description');
+        $sort_cod = $result['sort_cod'];
+        $sort_nom = $result['sort_nom'];
+        $dieux_nom = $result['dieux_nom'];
+        $sort_niveau = $result['sort_niveau'];
+        $sort_comp_cod = $result['sort_comp_cod'];
+        $sort_cout = $result['sort_cout'];
+        $sort_distance = $result['sort_distance'];
+        $sort_soi_meme = $result['sort_soi_meme'];
+        $sort_monstre = $result['sort_monstre'];
+        $sort_joueur = $result['sort_joueur'];
+        $sort_case = $result['sort_case'];
+        $sort_aggressif = $result['sort_aggressif'];
+        $sort_soutien = $result['sort_soutien'];
+        $sort_bloquable = $result['sort_bloquable'];
+        $sort_temps_recharge = $result['sort_temps_recharge'];
+        $sort_description = $result['sort_description'];
 
         echo "<tr><form action='#' method='POST'>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' />
@@ -232,25 +232,25 @@ if ($erreur == 0) {
 			<th class="titre">Action</th>
 		</tr>';
 
-    $db->query($req_autres);
+    $stmt = $pdo->query($req_autres);
 
-    while ($db->next_record()) {
+    while ($result = $stmt->fetch()) {
         // Récupération des données
-        $sort_cod = $db->f('sort_cod');
-        $sort_nom = $db->f('sort_nom');
-        $sort_comp_cod = $db->f('sort_comp_cod');
-        $sort_niveau = $db->f('sort_niveau');
-        $sort_cout = $db->f('sort_cout');
-        $sort_distance = $db->f('sort_distance');
-        $sort_soi_meme = $db->f('sort_soi_meme');
-        $sort_monstre = $db->f('sort_monstre');
-        $sort_joueur = $db->f('sort_joueur');
-        $sort_case = $db->f('sort_case');
-        $sort_aggressif = $db->f('sort_aggressif');
-        $sort_soutien = $db->f('sort_soutien');
-        $sort_bloquable = $db->f('sort_bloquable');
-        $sort_temps_recharge = $db->f('sort_temps_recharge');
-        $sort_description = $db->f('sort_description');
+        $sort_cod = $result['sort_cod'];
+        $sort_nom = $result['sort_nom'];
+        $sort_comp_cod = $result['sort_comp_cod'];
+        $sort_niveau = $result['sort_niveau'];
+        $sort_cout = $result['sort_cout'];
+        $sort_distance = $result['sort_distance'];
+        $sort_soi_meme = $result['sort_soi_meme'];
+        $sort_monstre = $result['sort_monstre'];
+        $sort_joueur = $result['sort_joueur'];
+        $sort_case = $result['sort_case'];
+        $sort_aggressif = $result['sort_aggressif'];
+        $sort_soutien = $result['sort_soutien'];
+        $sort_bloquable = $result['sort_bloquable'];
+        $sort_temps_recharge = $result['sort_temps_recharge'];
+        $sort_description = $result['sort_description'];
 
         echo "<tr><form action='#' method='POST'>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' /></td>

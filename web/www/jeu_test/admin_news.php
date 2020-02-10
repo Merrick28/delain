@@ -130,7 +130,7 @@ if ($erreur == 0)
                     $texte = pg_escape_string(str_replace('\'', '’', $texte));
 
                     $req = "insert into news (news_titre, news_auteur, news_texte) values (e'$titre', e'$auteur', e'$texte')";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
 
                     ?> News correctement lancée <?php
 
@@ -155,7 +155,7 @@ if ($erreur == 0)
                     $texte = pg_escape_string(str_replace('\'', '’', $texte));
                     $poids = pg_escape_string(str_replace('\'', '’', $poids));
                     $req = "insert into rumeurs (rum_perso_cod, rum_texte, rum_poids) values ($perso_cod, e'$texte', $poids)";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
 
                     ?> Rumeur correctement lancée <?php
 
