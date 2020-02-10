@@ -1,21 +1,10 @@
 # coding: utf-8
 
 import re, sys, getopt
+fw= open("../web/www/jeu_test/admin_factions_missions.tmp","w+")
 
-def main(argv):
-   inputfile = ''
-   try:
-      opts, args = getopt.getopt(argv,"hi:",["ifile="])
-   except getopt.GetoptError:
-      print 'passage_pdo.py -i <inputfile>'
-      sys.exit(2)
-   for opt, arg in opts:
-      if opt == '-h':
-         print 'passage_pdo.py -i <inputfile> -o <outputfile>'
-         sys.exit()
-      elif opt in ("-i", "--ifile"):
-         inputfile = arg
-   print 'Input file is "', inputfile
-
-if __name__ == "__main__":
-   main(sys.argv[1:])
+with open ('../web/www/jeu_test/admin_factions_missions.php', 'r' ) as f:
+    content = f.read()
+content_new = re.sub("\$db->query\(\$([a-zA-Z_]*)\)", r'$stmt = $pdo->query($\1)', content, flags = re.M)
+fw.write(content_new)
+fw.close
