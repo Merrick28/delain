@@ -64,7 +64,9 @@ if ($erreur == 0)
                 echo "<p><strong>", $result['perso_nom'], "</strong> se trouve en ", $result['pos_x'], ", ", $result['pos_y'], ", ", $result['etage_libelle'], ".<br>";
                 echo "Sa dlt est à <strong>", $result['dlt'], ".</br>";
                 echo "Il est à ", $result['perso_pv'], "/", $result['perso_pv_max'], " PV.";
-                if ($db->is_locked($num_perso2))
+                $persotemp = new perso;
+                $persotemp->charge($num_perso2);
+                if ($persotemp->is_locked())
                 {
                     echo "<p><strong>Ce perso est locké en combat !</strong>";
                 }
@@ -90,7 +92,8 @@ if ($erreur == 0)
             switch ($met_depl)
             {
                 case "debut":
-                    if ($db->is_locked($num_perso2))
+                    $persotemp = new perso;
+                    $persotemp->charge($num_perso2);
                     {
                         echo "<p><strong>Ce perso est locké en combat !</strong> Son déplacement va rompre tous les locks de combat.";
                     }
@@ -120,7 +123,7 @@ if ($erreur == 0)
                     $err_depl = 0;
                     $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
                     $stmt = $pdo->query($req);
-                    if ($db->nf() == 0)
+                    if ($stmt->rowCount() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
                         echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
@@ -130,7 +133,7 @@ if ($erreur == 0)
                     $pos_cod = $result['pos_cod'];
                     $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
                     $stmt = $pdo->query($req);
-                    if ($db->nf() != 0)
+                    if ($stmt->rowCount() != 0)
                     {
                         echo "<p>impossible de déplacer le perso : un mur en destination.<br>";
                         echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
@@ -383,7 +386,7 @@ if ($erreur == 0)
 											and pos_y = $pos_y 
 											and pos_etage = $etage ";
                     $stmt = $pdo->query($req);
-                    if ($db->nf() == 0)
+                    if ($stmt->rowCount() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
                         echo "<a href=\"", $PHP_SELF, "?methode=appel&met_appel=debut\">Retour au choix des coordonnées ?</a><br>";
@@ -439,12 +442,14 @@ if ($erreur == 0)
 														and ppos_pos_cod = pos_cod
 														and pos_etage = $etage ";
                         $stmt = $pdo->query($req_vue);
-                        $db2 = new base_delain;
+                        $req_ins_dest = "INSERT INTO messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) 
+                              values (nextval('seq_dmsg_cod'),:num_mes, :perso,'N','N')";
+                        $stmt2 = $pdo->prepare($req_ins_dest);
                         while ($result = $stmt->fetch())
                         {
-                            $req_ins_dest = "INSERT INTO messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) 
-                              values (nextval('seq_dmsg_cod'),$num_mes, " . $result['perso_cod'] . ",'N','N')";
-                            $db2->query($req_ins_dest);
+                            
+                            $stmt2 = $pdo->execute(array(":num_mes" => $num_mes,
+                                                       ":perso" => $result['perso_cod']),$stmt2);
                             $liste_expedie = $liste_expedie . $result['perso_nom'] . ",";
                         }
                         echo "<p>Votre message a été envoyé à toutes les personnes présentes à $volume de distance de vous.";

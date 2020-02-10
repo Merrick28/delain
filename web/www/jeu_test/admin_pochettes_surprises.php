@@ -10,7 +10,7 @@ switch ($methode)
 	case 'pochette_suppression':	// Suppression des pochettes existantes
 		$req_sup = 'select f_del_objet(obj_cod) as nombre from objets where obj_gobj_cod = 642';
 		$stmt = $pdo->query($req_sup);
-		echo '<p>Suppression des pochettes effectuée. ' . $db->nf() . ' pochettes supprimées.</p>';
+		echo '<p>Suppression des pochettes effectuée. ' . $stmt->rowCount() . ' pochettes supprimées.</p>';
 	break;
 	case 'pochette_distribution':	// Réinitialisation des compteurs et distribution de nouvelles pochettes
 		$req = 'select cree_pochette_surprise() as resultat';
