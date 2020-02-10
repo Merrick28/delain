@@ -6,9 +6,9 @@ $num_perso2 = $_REQUEST['num_perso2'];
 ob_start();
 $erreur = 0;
 $req = "select compt_quete from compte where compt_cod = $compt_cod ";
-$db->query($req);
-$db->next_record();
-if ($db->f("compt_quete") != 'O')
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+if ($result['compt_quete'] != 'O')
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
@@ -43,14 +43,14 @@ if ($erreur == 0)
             $req = $req . "and ppos_perso_cod = perso_cod ";
             $req = $req . "and ppos_pos_cod = pos_cod ";
             $req = $req . "and pos_etage = etage_numero ";
-            $db->query($req);
-            $db->next_record();
-            $tangible = $db->f("perso_tangible");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $tangible = $result['perso_tangible'];
             $err_actif = 0;
-            if ($db->f("perso_actif") != 'O')
+            if ($result['perso_actif'] != 'O')
             {
                 $err_actif = 1;
-                switch ($db->f("perso_actif"))
+                switch ($result['perso_actif'])
                 {
                     case "N":
                         echo "Ce perso est <strong>Inactif !</strong>. Vous ne pouvez pas intervenir dessus !";
@@ -61,9 +61,9 @@ if ($erreur == 0)
                 }
             } else
             {
-                echo "<p><strong>", $db->f("perso_nom"), "</strong> se trouve en ", $db->f("pos_x"), ", ", $db->f("pos_y"), ", ", $db->f("etage_libelle"), ".<br>";
-                echo "Sa dlt est à <strong>", $db->f("dlt"), ".</br>";
-                echo "Il est à ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), " PV.";
+                echo "<p><strong>", $result['perso_nom'], "</strong> se trouve en ", $result['pos_x'], ", ", $result['pos_y'], ", ", $result['etage_libelle'], ".<br>";
+                echo "Sa dlt est à <strong>", $result['dlt'], ".</br>";
+                echo "Il est à ", $result['perso_pv'], "/", $result['perso_pv_max'], " PV.";
                 if ($db->is_locked($num_perso2))
                 {
                     echo "<p><strong>Ce perso est locké en combat !</strong>";
@@ -105,10 +105,10 @@ if ($erreur == 0)
                             Etage : <select name="etage">
                                 <?php
                                 $req = "SELECT etage_numero,etage_libelle FROM etage ORDER BY etage_numero DESC ";
-                                $db->query($req);
-                                while ($db->next_record())
+                                $stmt = $pdo->query($req);
+                                while ($result = $stmt->fetch())
                                 {
-                                    echo "<option value=\"", $db->f("etage_numero"), "\">", $db->f("etage_libelle"), "</option>";
+                                    echo "<option value=\"", $result['etage_numero'], "\">", $result['etage_libelle'], "</option>";
                                 }
                                 ?>
                             </select><br>
@@ -119,17 +119,17 @@ if ($erreur == 0)
                 case "dest":
                     $err_depl = 0;
                     $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     if ($db->nf() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
                         echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
                         $err_depl = 1;
                     }
-                    $db->next_record();
-                    $pos_cod = $db->f("pos_cod");
+                    $result = $stmt->fetch();
+                    $pos_cod = $result['pos_cod'];
                     $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     if ($db->nf() != 0)
                     {
                         echo "<p>impossible de déplacer le perso : un mur en destination.<br>";
@@ -143,15 +143,15 @@ if ($erreur == 0)
                         $req
                             = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)  
                           values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         // effacement des locks
                         $req = "delete from lock_combat where lock_cible = $num_perso2 ";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "delete from lock_combat where lock_attaquant = $num_perso2 ";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         // déplacement
                         $req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $num_perso2 ";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         echo "<p>Le perso a bien été déplacé !";
                     }
                     break;
@@ -163,9 +163,9 @@ if ($erreur == 0)
             $req
                 = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
 			  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = "update perso set perso_dlt = now() where perso_cod = $num_perso2 ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La dlt de ce joueur est prête à être activée.";
             break;
         case "objet":
@@ -207,25 +207,25 @@ if ($erreur == 0)
                 case "etape2":
                     // recherche du num objet generique
                     $req = "select nextval('seq_gobj_cod') as gobj";
-                    $db->query($req);
-                    $db->next_record();
-                    $gobj_cod = $db->f("gobj");
+                    $stmt = $pdo->query($req);
+                    $result = $stmt->fetch();
+                    $gobj_cod = $result['gobj'];
                     $nom_objet = str_replace("'", "\'", $nom_objet);
                     $nom_objet_non_iden = str_replace("'", "\'", $nom_objet_non_iden);
                     $desc = str_replace("'", "\'", $desc);
                     // création dans les objets génériques
                     $req = "INSERT INTO objet_generique (gobj_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_poids,gobj_description,gobj_deposable,gobj_visible,gobj_echoppe) 
                       values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
                     $req
                         = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
 					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     // création
                     $req = "select cree_objet_perso_nombre($gobj_cod,$num_perso2,1) ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "<p>L'objet a bien été créé !";
                     break;
             }
@@ -248,10 +248,10 @@ if ($erreur == 0)
                         <br/>Objet à créer : <select name="gobj">
                             <?php
                             $req = "SELECT gobj_nom,gobj_cod FROM objet_generique WHERE gobj_tobj_cod = 11 ORDER BY gobj_nom ";
-                            $db->query($req);
-                            while ($db->next_record())
+                            $stmt = $pdo->query($req);
+                            while ($result = $stmt->fetch())
                             {
-                                echo "<option value=\"", $db->f("gobj_cod"), "\">", $db->f("gobj_nom"), "</option>";
+                                echo "<option value=\"", $result['gobj_cod'], "\">", $result['gobj_nom'], "</option>";
                             }
                             ?></select><br>
                         <input type="submit" class="test centrer" value="Créer !"></form>
@@ -263,10 +263,10 @@ if ($erreur == 0)
                     $req
                         = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
                           values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     // création
                     $req = "select cree_objet_perso_nombre($gobj,$num_perso2,1) ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "<p>L'objet a bien été créé !";
                     break;
             }
@@ -289,10 +289,10 @@ if ($erreur == 0)
                         <br/>Objet à créer : <select name="gobj">
                             <?php
                             $req = "SELECT gobj_nom,gobj_cod,tobj_libelle,tobj_cod FROM objet_generique,type_objet WHERE gobj_tobj_cod != 11 AND gobj_tobj_cod = tobj_cod ORDER BY tobj_cod,gobj_nom ";
-                            $db->query($req);
-                            while ($db->next_record())
+                            $stmt = $pdo->query($req);
+                            while ($result = $stmt->fetch())
                             {
-                                echo "<option value=\"", $db->f("gobj_cod"), "\">", $db->f("gobj_nom"), " - (", $db->f("tobj_libelle"), ")</option>";
+                                echo "<option value=\"", $result['gobj_cod'], "\">", $result['gobj_nom'], " - (", $result['tobj_libelle'], ")</option>";
                             }
                             ?></select><br>
                         <input type="submit" class="test centrer" value="Créer !"></form>
@@ -304,10 +304,10 @@ if ($erreur == 0)
                     $req
                         = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
 					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     // création
                     $req = "select cree_objet_perso_nombre($gobj,$num_perso2,1) ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "<p>L'objet a bien été créé !";
                     break;
             }
@@ -331,10 +331,10 @@ if ($erreur == 0)
                                     Etage : <select name="etage">
                                         <?php
                                         $req = "SELECT etage_numero,etage_libelle FROM etage ORDER BY etage_numero DESC ";
-                                        $db->query($req);
-                                        while ($db->next_record())
+                                        $stmt = $pdo->query($req);
+                                        while ($result = $stmt->fetch())
                                         {
-                                            echo "<option value=\"", $db->f("etage_numero"), "\">", $db->f("etage_libelle"), "</option>";
+                                            echo "<option value=\"", $result['etage_numero'], "\">", $result['etage_libelle'], "</option>";
                                         }
                                         ?>
                                     </select></td>
@@ -382,7 +382,7 @@ if ($erreur == 0)
 											where pos_x = $pos_x 
 											and pos_y = $pos_y 
 											and pos_etage = $etage ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     if ($db->nf() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
@@ -396,9 +396,9 @@ if ($erreur == 0)
                         $titre = pg_escape_string($titre);
                         // numéro du message
                         $req_msg_cod = "select nextval('seq_msg_cod') as numero";
-                        $db->query($req_msg_cod);
-                        $db->next_record();
-                        $num_mes = $db->f("numero");
+                        $stmt = $pdo->query($req_msg_cod);
+                        $result = $stmt->fetch();
+                        $num_mes = $result['numero'];
                         // encodage du texte
                         $corps = htmlspecialchars($corps);
                         $corps = nl2br($corps);
@@ -408,12 +408,12 @@ if ($erreur == 0)
                         $req_ins_mes
                             = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) 
 						  values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-                        $db->query($req_ins_mes);
+                        $stmt = $pdo->query($req_ins_mes);
                         // enregistrement de l'expéditeur
                         $req_ins_exp
                             = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive)
 						  values (nextval('seq_emsg_cod'),$num_mes,$perso_cible,'N')";
-                        $db->query($req_ins_exp);
+                        $stmt = $pdo->query($req_ins_exp);
                         // enregistrement des destinataires
                         // recherche de la position
                         $req_pos
@@ -422,12 +422,12 @@ if ($erreur == 0)
 														where pos_x = $pos_x 
 														and pos_y = $pos_y 
 														and pos_etage = $etage";
-                        $db->query($req_pos);
-                        $db->next_record();
-                        $pos_actuelle = $db->f("ppos_pos_cod");
-                        $v_x = $db->f("pos_x");
-                        $v_y = $db->f("pos_y");
-                        $etage = $db->f("pos_etage");
+                        $stmt = $pdo->query($req_pos);
+                        $result = $stmt->fetch();
+                        $pos_actuelle = $result['ppos_pos_cod'];
+                        $v_x = $result['pos_x'];
+                        $v_y = $result['pos_y'];
+                        $etage = $result['pos_etage'];
                         // rechreche des dest
                         $req_vue
                             = "select perso_cod,perso_type_perso,perso_nom from perso, perso_position, positions
@@ -438,14 +438,14 @@ if ($erreur == 0)
 														and perso_type_perso = 1
 														and ppos_pos_cod = pos_cod
 														and pos_etage = $etage ";
-                        $db->query($req_vue);
+                        $stmt = $pdo->query($req_vue);
                         $db2 = new base_delain;
-                        while ($db->next_record())
+                        while ($result = $stmt->fetch())
                         {
                             $req_ins_dest = "INSERT INTO messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) 
-                              values (nextval('seq_dmsg_cod'),$num_mes, " . $db->f("perso_cod") . ",'N','N')";
+                              values (nextval('seq_dmsg_cod'),$num_mes, " . $result['perso_cod'] . ",'N','N')";
                             $db2->query($req_ins_dest);
-                            $liste_expedie = $liste_expedie . $db->f("perso_nom") . ",";
+                            $liste_expedie = $liste_expedie . $result['perso_nom'] . ",";
                         }
                         echo "<p>Votre message a été envoyé à toutes les personnes présentes à $volume de distance de vous.";
                     }
@@ -468,10 +468,10 @@ if ($erreur == 0)
                     break;
             }
             echo "<p>Opération effectuée !";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = "INSERT INTO ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
               values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             break;
     }
 }

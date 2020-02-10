@@ -69,11 +69,11 @@ if ($erreur == 0)
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
         $db->query('select aquete_nom_alias, aquete_cod from quetes.aquete order by aquete_nom_alias');
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            echo '<option value="' . $db->f('aquete_cod');
-            if ($db->f('aquete_cod') == $aquete_cod) echo '" selected="selected';
-            echo '">' . $db->f('aquete_nom_alias') . '</option>';
+            echo '<option value="' . $result['aquete_cod'];
+            if ($result['aquete_cod'] == $aquete_cod) echo '" selected="selected';
+            echo '">' . $result['aquete_nom_alias'] . '</option>';
         }
         echo '  </select>
                 <!--input type="submit" value="Valider"-->

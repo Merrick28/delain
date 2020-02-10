@@ -921,15 +921,15 @@ if ($erreur == 0)
             $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			order by tobj_libelle, gobj_nom";
-            $db->query($req_tobj);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_tobj);
+            while ($result = $stmt->fetch())
             {
-                $gobj_nom = $db->f("gobj_nom");
+                $gobj_nom = $result['gobj_nom'];
                 $gobj_nom = str_replace("\"", "", $gobj_nom);
-                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
-                $gobj_valeur = $db->f("gobj_valeur");
+                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
+                $gobj_valeur = $result['gobj_valeur'];
                 echo("listeBase[$nb_tobj] = new Array(0); \n");
-                echo("listeBase[$nb_tobj][0] = \"" . $db->f("gobj_cod") . "\"; \n");
+                echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
                 echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
                 echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
                 echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
@@ -964,10 +964,10 @@ if ($erreur == 0)
                                 
                      
                             $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
-                            $db->query($req_tobj);
-                            while ($db->next_record())
+                            $stmt = $pdo->query($req_tobj);
+                            while ($result = $stmt->fetch())
                             {
-                                $tobj_libelle = str_replace("\"", "", $db->f("tobj_libelle"));
+                                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
                                 echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
                             }
     echo '

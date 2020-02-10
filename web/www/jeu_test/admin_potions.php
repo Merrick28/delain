@@ -26,12 +26,12 @@ if ($erreur == 0) {
 											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)
 											and not exists (select 1 from formule_produit where frmpr_gobj_cod = gobj_cod ) 
 											order by gobj_nom';
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo '<br><hr><td class="titre">Liste des potions sans formule</td><br><br><table>
 						<td><strong>Nom de la potion</strong></td><td><strong>Description</strong></td>';
-                while ($db->next_record()) {
-                    echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=ajout&pot=' . $db->f('gobj_cod') . '">' . $db->f('gobj_nom') . '</a></td>
-						<td class="soustitre2">' . $db->f('gobj_nom') . '</td></tr>';
+                while ($result = $stmt->fetch()) {
+                    echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=ajout&pot=' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</a></td>
+						<td class="soustitre2">' . $result['gobj_nom'] . '</td></tr>';
 
                 }
                 ?>
@@ -39,13 +39,13 @@ if ($erreur == 0) {
             <hr><a href="<?php echo $PHP_SELF; ?>?methode=ajout">Ou ajouter une nouvelle formule de potion</a>
             <?php
             $req = 'select 	frmpr_frm_cod,frmpr_gobj_cod,frmpr_num,frm_cod,frm_type,frm_nom,frm_comp_cod from formule_produit,formule where frm_type = 2 and frm_cod = frmpr_frm_cod order by frm_nom ';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo '<br><table><td class="titre">Potions disponibles :</td><tr><br><br>
 						<td><strong>Nom de la potion</strong></td><td><strong>Objets nécessaires et quantités</strong></td><td><strong>Description</strong></td><td><strong>Compétence nécessaire</strong></td>';
-            while ($db->next_record()) {
-                $cod_potion = $db->f("frm_cod");
-                $comp = $db->f('frm_comp_cod');
-                echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&pot=' . $cod_potion . '">' . $db->f('frm_nom') . '</a></td>';
+            while ($result = $stmt->fetch()) {
+                $cod_potion = $result['frm_cod'];
+                $comp = $result['frm_comp_cod'];
+                echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&pot=' . $cod_potion . '">' . $result['frm_nom'] . '</a></td>';
                 if ($db->nf() != 0) {
                     $req_composant = "select 	frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom from formule_composant,objet_generique	
 														where frmco_frm_cod = $cod_potion 
@@ -56,7 +56,7 @@ if ($erreur == 0) {
                         echo $db2->f('gobj_nom') . " \t" . $db2->f('frmco_num') . "<br>";
                     }
 
-                    echo "</td><td class=\"soustitre2\">" . $db->f('frm_nom') . "</td>";
+                    echo "</td><td class=\"soustitre2\">" . $result['frm_nom'] . "</td>";
                     $req_comp = "select comp_libelle from competences	
 														where comp_cod = " . $comp;
                     $db2->query($req_comp);
@@ -72,9 +72,9 @@ if ($erreur == 0) {
         case "ajout":
             if ($pot != null) {
                 $req = 'select fpot_niveau from potions.fonction_potion where fpot_gobj_cod = ' . $pot;
-                $db->query($req);
-                $db->next_record();
-                $comp = $db->f('fpot_niveau');
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $comp = $result['fpot_niveau'];
             }
             ?>
             <table>
@@ -138,9 +138,9 @@ if ($erreur == 0) {
                                     $req .= 'and gobj_cod = ' . $pot;
                                 }
                                 $req .= 'order by gobj_nom';
-                                $db->query($req);
-                                while ($db->next_record()) {
-                                    echo '<option value="' . $db->f("gobj_cod") . '"> ' . $db->f("gobj_nom") . '</option>';
+                                $stmt = $pdo->query($req);
+                                while ($result = $stmt->fetch()) {
+                                    echo '<option value="' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
                                 }
                                 echo '</select><br>'; ?>
                         </td>
@@ -158,17 +158,17 @@ if ($erreur == 0) {
             break;
         case "ajout2":
             $req_form_cod = "select nextval('seq_frm_cod') as numero";
-            $db->query($req_form_cod);
-            $db->next_record();
-            $num_form = $db->f("numero");
+            $stmt = $pdo->query($req_form_cod);
+            $result = $stmt->fetch();
+            $num_form = $result['numero'];
             $req = 'insert into formule
 								(frm_cod,frm_type,frm_nom,frm_temps_travail,frm_cout,frm_resultat,frm_comp_cod)
 								values(' . $num_form . ',2,e\'' . pg_escape_string($_POST['nom']) . '\',' . $_POST['temps'] . ',' . $_POST['pot_cout'] . ',' . $_POST['resultat'] . ',' . $_POST['competence'] . ')';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = 'insert into formule_produit
 								(frmpr_frm_cod,frmpr_gobj_cod,frmpr_num)
 								values(' . $num_form . ',' . $_POST['potion'] . ',' . $_POST['nombre'] . ')';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La formule de base de la potion a bien été insérée !<br>
 				Pensez à inclure les composants nécessaires pour cette potion.<br>";
             ?><a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $num_form; ?>">Modifier la liste des
@@ -186,19 +186,19 @@ if ($erreur == 0) {
                 $action = '';
             if ($action == 'ajout') {
                 $req = " insert into formule_composant (frmco_frm_cod,frmco_gobj_cod,frmco_num) values ($pot,$gobj,$nombre)";
-                $db->query($req);
+                $stmt = $pdo->query($req);
             }
             if ($action == 'suppr') {
                 $req = " delete from formule_composant where frmco_frm_cod = $pot and frmco_gobj_cod = $comp_pot";
-                $db->query($req);
+                $stmt = $pdo->query($req);
             }
             $req = 'select frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom
 				from formule_composant,objet_generique
 				where frmco_frm_cod = ' . $num_form . '
 				and frmco_gobj_cod = gobj_cod ';
-            $db->query($req);
-            while ($db->next_record()) {
-                echo '<br>' . $db->f('gobj_nom') . ' (' . $db->f('frmco_num') . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $db->f('frmco_gobj_cod') . '&pot=' . $pot . '">Supprimer ?</a>';
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
             }
             ?>
             <br>Ajouter un objet :
@@ -215,9 +215,9 @@ if ($erreur == 0) {
                         <td><select name="gobj">
                                 <?php
                                 $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34 or gobj_tobj_cod = 39) order by gobj_nom ";
-                                $db->query($req);
-                                while ($db->next_record())
-                                    echo '<option value="' . $db->f("gobj_cod") . '">' . $db->f("gobj_nom") . '</option>';
+                                $stmt = $pdo->query($req);
+                                while ($result = $stmt->fetch())
+                                    echo '<option value="' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</option>';
                                 ?>
                             </select></td>
                         <td><input type="text" name="nombre" value="1"></td>
@@ -227,9 +227,9 @@ if ($erreur == 0) {
             break;
         case "modif":
             $req = 'select * from formule,formule_produit where frm_cod = ' . $pot . ' and frm_cod = frmpr_frm_cod';
-            $db->query($req);
-            $db->next_record();
-            $cod_pot = $db->f("frmpr_gobj_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $cod_pot = $result['frmpr_gobj_cod'];
             ?>
             <a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste d'objets</a>
             <br>
@@ -237,31 +237,31 @@ if ($erreur == 0) {
                 <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
                     <input type="hidden" name="methode" value="modif2">
                     <input type="hidden" name="pot" value="<?php echo $pot; ?>">
-                    <input type="hidden" name="nom" value="<?php echo $db->f("frm_nom"); ?>">
+                    <input type="hidden" name="nom" value="<?php echo $result['frm_nom']; ?>">
 
                     <tr>
                         <td class="soustitre2">Nom / Description de la formule de potion (conserver le nom de la potion
                             dedans)
                         </td>
-                        <td><textarea cols="50" rows="10" name="nom"><?php echo $db->f("frm_nom"); ?></textarea></td>
+                        <td><textarea cols="50" rows="10" name="nom"><?php echo $result['frm_nom']; ?></textarea></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="temps" value="<?php echo $db->f("frm_temps_travail"); ?>"></td>
+                        <td><input type="text" name="temps" value="<?php echo $result['frm_temps_travail']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Cout en brouzoufs</td>
-                        <td><input type="text" name="pot_cout" value="<?php echo $db->f("frm_cout"); ?>"></td>
+                        <td><input type="text" name="pot_cout" value="<?php echo $result['frm_cout']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="resultat" value="<?php echo $db->f("frm_resultat"); ?>"></td>
+                        <td><input type="text" name="resultat" value="<?php echo $result['frm_resultat']; ?>"></td>
                     </tr>
                     <tr>
                         <td class="soustitre2">Compétence</em></td>
                         <td>
                             <select name="competence">
-                                <?php $s = $db->f("frm_comp_cod");
+                                <?php $s = $result['frm_comp_cod'];
                                 $s1 = '';
                                 $s2 = '';
                                 $s3 = '';
@@ -304,7 +304,7 @@ if ($erreur == 0) {
                     </tr>
                     <tr>
                         <td class="soustitre2">Nombre de potions produites</em></td>
-                        <td><input type="text" name="nombre" value="<?php echo $db->f("frmpr_num"); ?>"></td>
+                        <td><input type="text" name="nombre" value="<?php echo $result['frmpr_num']; ?>"></td>
                     </tr>
                     <tr>
                         <td colspan="2"><input type="submit" class="test" value="Valider"></td>
@@ -323,12 +323,12 @@ if ($erreur == 0) {
 								frm_resultat = ' . $_POST['resultat'] . ',
 								frm_comp_cod = ' . $_POST['competence'] . '
 								where frm_cod = ' . $pot;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = 'update formule_produit
 									set frmpr_gobj_cod = ' . $_POST['potion'] . ',
 									frmpr_num = ' . $_POST['nombre'] . '
 									where frmpr_frm_cod = ' . $pot;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($_POST['competence'] == '97') {
                 $comp = 1;
             } else if ($_POST['competence'] == '100') {
@@ -337,7 +337,7 @@ if ($erreur == 0) {
                 $comp = 3;
             }
             $req = 'update potions.fonction_potion set fpot_niveau = ' . $comp . ' where fpot_gobj_cod = ' . $_POST['potion'];
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La formule de base de la potion a bien été modifiée !<br>
 							Vous pouvez aussi en modifier les composants.<br>";
             ?><a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste des
@@ -359,19 +359,19 @@ if ($erreur == 0) {
                 $action = '';
             if ($action == 'ajout') {
                 $req = " insert into formule_composant (frmco_frm_cod,frmco_gobj_cod,frmco_num) values ($pot,$gobj,$nombre)";
-                $db->query($req);
+                $stmt = $pdo->query($req);
             }
             if ($action == 'suppr') {
                 $req = " delete from formule_composant where frmco_frm_cod = $pot and frmco_gobj_cod = $comp_pot";
-                $db->query($req);
+                $stmt = $pdo->query($req);
             }
             $req = 'select frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom
 				from formule_composant,objet_generique
 				where frmco_frm_cod = ' . $pot . '
 				and frmco_gobj_cod = gobj_cod ';
-            $db->query($req);
-            while ($db->next_record()) {
-                echo '<br>' . $db->f('gobj_nom') . ' (' . $db->f('frmco_num') . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $db->f('frmco_gobj_cod') . '&pot=' . $pot . '">Supprimer ?</a>';
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
             }
             ?>
             <br>Ajouter un objet :
@@ -388,9 +388,9 @@ if ($erreur == 0) {
                         <td><select name="gobj">
                                 <?php
                                 $req = "select gobj_cod,gobj_nom from objet_generique where (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34 or gobj_tobj_cod = 39) order by gobj_nom ";
-                                $db->query($req);
-                                while ($db->next_record())
-                                    echo '<option value="' . $db->f("gobj_cod") . '">' . $db->f("gobj_nom") . '</option>';
+                                $stmt = $pdo->query($req);
+                                while ($result = $stmt->fetch())
+                                    echo '<option value="' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</option>';
                                 ?>
                             </select></td>
                         <td><input type="text" name="nombre" value="1"></td>

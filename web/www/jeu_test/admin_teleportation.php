@@ -228,18 +228,18 @@ if ($erreur == 0)
                     pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position from positions
                 inner join etage on etage_numero = pos_etage
                 where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $new_etage ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($db->nf() == 0)
             {
                 echo "<div class='bordiv'>Erreur ! Aucune position trouvée à ces coordonnées</div>";
                 $err_depl = 1;
             }
-            $db->next_record();
-            $pos_cod = $db->f("pos_cod");
-            $arene = $db->f("etage_arene");
-            $nv_position = $db->f("position");
+            $result = $stmt->fetch();
+            $pos_cod = $result['pos_cod'];
+            $arene = $result['etage_arene'];
+            $nv_position = $result['position'];
             $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($db->nf() != 0)
             {
                 echo "<div class='bordiv'>Erreur ! Impossible de déplacer le perso : un mur en destination.</div>";
@@ -252,10 +252,10 @@ if ($erreur == 0)
                     {
                         // Position de départ
                         $req_perso = "select perso_nom, perso_type_perso from perso where perso_cod = $mod_perso_cod ";
-                        $db->query($req_perso);
-                        $db->next_record();
-                        $mod_perso_nom = $db->f('perso_nom');
-                        $mod_perso_type_perso = $db->f('perso_type_perso');
+                        $stmt = $pdo->query($req_perso);
+                        $result = $stmt->fetch();
+                        $mod_perso_nom = $result['perso_nom'];
+                        $mod_perso_type_perso = $result['perso_type_perso'];
                         $log .= "Téléportation du perso {$mod_perso_nom} ({$mod_perso_cod}) : ";
 
                         if ($mod_perso_type_perso != 2 && $s_option == "monstre")
@@ -268,12 +268,12 @@ if ($erreur == 0)
                             $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
                             $req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
                             $req = $req . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-                            $db->query($req);
+                            $stmt = $pdo->query($req);
                             // effacement des locks
                             $req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
-                            $db->query($req);
+                            $stmt = $pdo->query($req);
                             $req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
-                            $db->query($req);
+                            $stmt = $pdo->query($req);
 
                             // Position de départ
                             $req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
@@ -282,37 +282,37 @@ if ($erreur == 0)
                                 inner join positions on pos_cod = ppos_pos_cod
                                 inner join etage on etage_numero = pos_etage
                                 where ppos_perso_cod = $mod_perso_cod ";
-                            $db->query($req_position);
-                            $db->next_record();
-                            $anc_pos_cod = $db->f('pos_cod');
-                            $anc_arene = $db->f('etage_arene');
-                            $anc_position = $db->f('position');
+                            $stmt = $pdo->query($req_position);
+                            $result = $stmt->fetch();
+                            $anc_pos_cod = $result['pos_cod'];
+                            $anc_arene = $result['etage_arene'];
+                            $anc_position = $result['position'];
                             $log .= "Déplacement de $anc_position vers $nv_position.";
 
                             // déplacement
                             $req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $mod_perso_cod ";
-                            $db->query($req);
+                            $stmt = $pdo->query($req);
 
                             switch ($anc_arene . $arene)
                             {
                                 case 'NO':    // D’un étage normal vers une arène
                                     $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
-                                    $db->query($req);
+                                    $stmt = $pdo->query($req);
                                     $req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
                                         values($mod_perso_cod, $new_etage, $anc_pos_cod, now()) ";
-                                    $db->query($req);
+                                    $stmt = $pdo->query($req);
                                     $log .= "\nCette position est en arène : le personnage en ressortira à sa position d’origine.";
                                     break;
 
                                 case 'OO':    // D’une arène vers une autre
                                     $req = "update perso_arene set parene_etage_numero = $new_etage where parene_perso_cod = $mod_perso_cod";
-                                    $db->query($req);
+                                    $stmt = $pdo->query($req);
                                     $log .= "\nCette position est en arène, le perso était déjà dans une arène : il ressortira à la position d’où il est rentré dans la première arène.";
                                     break;
 
                                 case 'ON':    // D’une arène vers un étage normal
                                     $req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
-                                    $db->query($req);
+                                    $stmt = $pdo->query($req);
                                     $log .= "\nAttention ! Le perso était en arène : sa position d’entrée dans l’arène est perdue !";
                                     // Si on ne le supprimait pas, on empêcherait le perso de rentrer à nouveau en arène...
                                     break;

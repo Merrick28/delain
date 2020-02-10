@@ -271,12 +271,12 @@ if ($erreur == 0)
                 }
                 $req_m_sorts = "select sort_nom from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gen_mon_cod and sgmon_sort_cod = sort_cod";
                 $db = new base_delain;
-                $db->query($req_m_sorts);
+                $stmt = $pdo->query($req_m_sorts);
                 $nbs = $db->nf();
                 $comments = "";
-                while ($db->next_record())
+                while ($result = $stmt->fetch())
                 {
-                    $comments .= $db->f("sort_nom") . ",";
+                    $comments .= $result['sort_nom'] . ",";
                 }
                 echo "<TR><TD><a href=\"admin_type_monstre_edit.php?methode2=edit&sel_method=edit&gmon_cod=$gen_mon_cod\">", $db_gmon->f("gmon_nom"), "</a>
 					</TD><TD>", $db_gmon->f("gmon_niveau"),
@@ -307,9 +307,9 @@ if ($erreur == 0)
                 // Calcul du nombre de sorts de soutien, pour informer l'admin s'il doit en ajouter
                 $db = new base_delain;
                 $req_gmon = "SELECT count(*) nb_sort_soutien FROM sorts_monstre_generique JOIN sorts ON sort_cod=sgmon_sort_cod and sort_soutien = 'O' WHERE sgmon_gmon_cod = $gmon_cod";
-                $db->query($req_gmon);
-                $db->next_record();
-                $nb_sort_soutien = $db->f("nb_sort_soutien");
+                $stmt = $pdo->query($req_gmon);
+                $result = $stmt->fetch();
+                $nb_sort_soutien = $result['nb_sort_soutien'];
 
                 $req_gmon = "select gmon_cod,gmon_nom"
                     . ",gmon_for,gmon_dex,gmon_int,gmon_con,gmon_avatar"
@@ -320,11 +320,11 @@ if ($erreur == 0)
                     . ",gmon_pv,gmon_pourcentage_aleatoire,gmon_serie_arme_cod,gmon_serie_armure_cod"
                     . ",gmon_nb_receptacle,gmon_type_ia,gmon_quete,gmon_duree_vie,gmon_voie_magique,gmon_sex"
                     . " from monstre_generique where gmon_cod = $gmon_cod";
-                $db->query($req_gmon);
-                $db->next_record();
-                $gmon_nom = $db->f("gmon_nom");
-                $gmon_avatar = $db->f("gmon_avatar");
-                $race = $db->f("gmon_race_cod");
+                $stmt = $pdo->query($req_gmon);
+                $result = $stmt->fetch();
+                $gmon_nom = $result['gmon_nom'];
+                $gmon_avatar = $result['gmon_avatar'];
+                $race = $result['gmon_race_cod'];
 
                 ?>
                 <br>
@@ -401,58 +401,58 @@ if ($erreur == 0)
                         </TR>
                         <TR>
                             <TD>Force</TD>
-                            <TD><INPUT type="text" name="gmon_for" value="<?php echo $db->f("gmon_for"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_for" value="<?php echo $result['gmon_for']; ?>"></TD>
                             <TD>Amélioration dégâts CàC</TD>
                             <TD><INPUT type="text" name="gmon_amelioration_degats"
-                                       value="<?php echo $db->f("gmon_amelioration_degats"); ?>"></TD>
+                                       value="<?php echo $result['gmon_amelioration_degats']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Dextérité</TD>
-                            <TD><INPUT type="text" name="gmon_dex" value="<?php echo $db->f("gmon_dex"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_dex" value="<?php echo $result['gmon_dex']; ?>"></TD>
                             <TD>Amélioration dégâts Dist</TD>
                             <TD><INPUT type="text" name="gmon_amel_deg_dist"
-                                       value="<?php echo $db->f("gmon_amel_deg_dist"); ?>"></TD>
+                                       value="<?php echo $result['gmon_amel_deg_dist']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Intelligence</TD>
-                            <TD><INPUT type="text" name="gmon_int" value="<?php echo $db->f("gmon_int"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_int" value="<?php echo $result['gmon_int']; ?>"></TD>
                             <TD>Amélioration Vue</TD>
                             <TD><INPUT type="text" name="gmon_amelioration_vue"
-                                       value="<?php echo $db->f("gmon_amelioration_vue"); ?>"></TD>
+                                       value="<?php echo $result['gmon_amelioration_vue']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Constitution</TD>
                             <TD><INPUT id="constit" type="text" name="gmon_con"
-                                       value="<?php echo $db->f("gmon_con"); ?>" onChange="updatePv()"></TD>
+                                       value="<?php echo $result['gmon_con']; ?>" onChange="updatePv()"></TD>
                             <TD>Amélioration armure</TD>
                             <TD><INPUT type="text" name="gmon_amelioration_armure"
-                                       value="<?php echo $db->f("gmon_amelioration_armure"); ?>"></TD>
+                                       value="<?php echo $result['gmon_amelioration_armure']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Temps de tour</TD>
                             <TD><INPUT type="text" name="gmon_temps_tour"
-                                       value="<?php echo $db->f("gmon_temps_tour"); ?>"></TD>
+                                       value="<?php echo $result['gmon_temps_tour']; ?>"></TD>
                             <TD>Amélioration Régénération</TD>
                             <TD><INPUT type="text" name="gmon_amelioration_regen"
-                                       value="<?php echo $db->f("gmon_amelioration_regen"); ?>"></TD>
+                                       value="<?php echo $result['gmon_amelioration_regen']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Dés de régen</TD>
                             <TD><INPUT type="text" name="gmon_des_regen"
-                                       value="<?php echo $db->f("gmon_des_regen"); ?>"></TD>
+                                       value="<?php echo $result['gmon_des_regen']; ?>"></TD>
                             <TD>Valeur dés régen</TD>
                             <TD><INPUT type="text" name="gmon_valeur_regen"
-                                       value="<?php echo $db->f("gmon_valeur_regen"); ?>"></TD>
+                                       value="<?php echo $result['gmon_valeur_regen']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Vue</TD>
-                            <TD><INPUT type="text" name="gmon_vue" value="<?php echo $db->f("gmon_vue"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_vue" value="<?php echo $result['gmon_vue']; ?>"></TD>
                             <TD>Race</TD>
                             <TD>
                                 <SELECT name="gmon_race_cod">
@@ -474,18 +474,18 @@ if ($erreur == 0)
                         <TR>
                             <TD>Dés de dégâts</TD>
                             <TD><INPUT type="text" name="gmon_nb_des_degats"
-                                       value="<?php echo $db->f("gmon_nb_des_degats"); ?>"></TD>
+                                       value="<?php echo $result['gmon_nb_des_degats']; ?>"></TD>
                             <TD>Valeur dés dégâts</TD>
                             <TD><INPUT type="text" name="gmon_val_des_degats"
-                                       value="<?php echo $db->f("gmon_val_des_degats"); ?>"></TD>
+                                       value="<?php echo $result['gmon_val_des_degats']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Niveau</TD>
                             <TD><INPUT id="niveau" type="text" name="gmon_niveau"
-                                       value="<?php echo $db->f("gmon_niveau"); ?>" onChange="updatePv()"></TD>
+                                       value="<?php echo $result['gmon_niveau']; ?>" onChange="updatePv()"></TD>
                             <TD>Brouzoufs</TD>
-                            <TD><INPUT type="text" name="gmon_or" value="<?php echo $db->f("gmon_or"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_or" value="<?php echo $result['gmon_or']; ?>"></TD>
                         </TR>
 
                         <TR>
@@ -494,7 +494,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_arme">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES ARMES
-                                    $arme = $db->f("gmon_arme");
+                                    $arme = $result['gmon_arme'];
                                     $req_armes = "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 1 order by gobj_nom";
                                     $db_armes = new base_delain;
                                     $db_armes->query($req_armes);
@@ -512,7 +512,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_armure">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES ARMURES
-                                    $armure = $db->f("gmon_armure");
+                                    $armure = $result['gmon_armure'];
                                     $req_armures = "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 2 order by gobj_nom";
                                     $db_armures = new base_delain;
                                     $db_armures->query($req_armures);
@@ -529,22 +529,22 @@ if ($erreur == 0)
 
                         <TR>
                             <TD>Soutien (<?php echo $nb_sort_soutien == 0 ? "pas de " : $nb_sort_soutien; ?> sorts)</TD>
-                            <TD><INPUT type="text" name="gmon_soutien" value="<?php echo $db->f("gmon_soutien"); ?>">
+                            <TD><INPUT type="text" name="gmon_soutien" value="<?php echo $result['gmon_soutien']; ?>">
                             </TD>
                             <TD>Vampirisme</TD>
                             <TD><INPUT type="text" name="gmon_vampirisme"
-                                       value="<?php echo $db->f("gmon_vampirisme"); ?>"></TD>
+                                       value="<?php echo $result['gmon_vampirisme']; ?>"></TD>
                         </TR>
 
                         <TR>
                             <TD>Taille</TD>
-                            <TD><INPUT type="text" name="gmon_taille" value="<?php echo $db->f("gmon_taille"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_taille" value="<?php echo $result['gmon_taille']; ?>"></TD>
                             <TD>Nombre de réceptacles</TD>
                             <TD><INPUT type="text" name="gmon_nb_receptacle"
-                                       value="<?php echo $db->f("gmon_nb_receptacle"); ?>"></TD>
+                                       value="<?php echo $result['gmon_nb_receptacle']; ?>"></TD>
                         </TR>
 
-                        <?php $gmon_sex = $db->f("gmon_sex"); ?>
+                        <?php $gmon_sex = $result['gmon_sex']; ?>
                         <TR>
                             <TD>PV (calculés)</TD>
                             <TD><SPAN id="ChampPvCalcul"/></TD>
@@ -590,18 +590,18 @@ if ($erreur == 0)
                             <TD>Description</TD>
                             <TD colspan="3">
                                 <textarea name="gmon_description"
-                                          cols="80"><?php echo $db->f("gmon_description"); ?></textarea>
+                                          cols="80"><?php echo $result['gmon_description']; ?></textarea>
                             </TD>
                         </TR>
                         <TR>
                             <TD>Monstre utilisé ou non pour les contrats de chasse (O ou N)</TD>
                             <TD>
-                                <INPUT type="text" name="gmon_quete" value="<?php echo $db->f("gmon_quete"); ?>">
+                                <INPUT type="text" name="gmon_quete" value="<?php echo $result['gmon_quete']; ?>">
                             </TD>
                             <TD>Durée de vie du monstre (en jours ; 0 ou vide pour un monstre classique)</TD>
                             <TD>
                                 <INPUT type="text" name="gmon_duree_vie"
-                                       value="<?php echo $db->f("gmon_duree_vie"); ?>">
+                                       value="<?php echo $result['gmon_duree_vie']; ?>">
                             </TD>
                         </TR>
                         <TR>
@@ -611,10 +611,10 @@ if ($erreur == 0)
                         </TR>
                         <TR>
                             <TD>PVs</TD>
-                            <TD><INPUT type="text" name="gmon_pv" value="<?php echo $db->f("gmon_pv"); ?>"></TD>
+                            <TD><INPUT type="text" name="gmon_pv" value="<?php echo $result['gmon_pv']; ?>"></TD>
                             <TD>Pourcentage aléatoire</TD>
                             <TD><INPUT type="text" name="gmon_pourcentage_aleatoire"
-                                       value="<?php echo $db->f("gmon_pourcentage_aleatoire"); ?>"></TD>
+                                       value="<?php echo $result['gmon_pourcentage_aleatoire']; ?>"></TD>
                         </TR>
                         <TR>
                             <TD>Série d’Armes</TD>
@@ -622,7 +622,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_serie_arme_cod">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES ARMES
-                                    $arme = $db->f("gmon_serie_arme_cod");
+                                    $arme = $result['gmon_serie_arme_cod'];
                                     $req_armes = "select 	seequ_cod,seequ_nom from  serie_equipement  order by seequ_nom";
                                     $db_armes->query($req_armes);
                                     while ($db_armes->next_record())
@@ -639,7 +639,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_serie_armure_cod">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES ARMES
-                                    $armure = $db->f("gmon_serie_armure_cod");
+                                    $armure = $result['gmon_serie_armure_cod'];
                                     $req_armures = "select 	seequ_cod,seequ_nom from  serie_equipement  order by seequ_nom";
                                     $db_armures->query($req_armures);
                                     while ($db_armures->next_record())
@@ -658,7 +658,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_ia">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES IA possibles
-                                    $ia = $db->f("gmon_type_ia");
+                                    $ia = $result['gmon_type_ia'];
                                     $req_ia = "select ia_type,ia_nom from type_ia order by ia_type";
                                     $db_ia = new base_delain;
                                     $db_ia->query($req_ia);
@@ -676,7 +676,7 @@ if ($erreur == 0)
                                 <SELECT name="gmon_voie_magique">
                                     <option value="null">aucune</option>
                                     <?php // LISTE DES IA possibles
-                                    $voie = $db->f("gmon_voie_magique");
+                                    $voie = $result['gmon_voie_magique'];
                                     $req_voie = "select mvoie_cod,mvoie_libelle from voie_magique order by mvoie_libelle";
                                     $db_voie = new base_delain;
                                     $db_voie->query($req_voie);
@@ -1003,21 +1003,21 @@ if ($erreur == 0)
                     <div id="liste_fonctions"></div>
                     <?php $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
 						from fonction_specifique where fonc_gmon_cod = $gmon_cod";
-                    $db->query($req);
-                    while ($db->next_record())
+                    $stmt = $pdo->query($req);
+                    while ($result = $stmt->fetch())
                     {
-                        $fonc_id = $db->f('fonc_cod');
-                        $fonc_type = $db->f('fonc_type');
-                        $fonc_nom = $db->f('fonc_nom');
-                        $fonc_effet = $db->f('fonc_effet');
-                        $fonc_cumulatif = $db->f('fonc_cumulatif');
-                        $fonc_force = $db->f('fonc_force');
-                        $fonc_duree = $db->f('fonc_duree');
-                        $fonc_type_cible = $db->f('fonc_type_cible');
-                        $fonc_nombre_cible = $db->f('fonc_nombre_cible');
-                        $fonc_portee = $db->f('fonc_portee');
-                        $fonc_proba = $db->f('fonc_proba');
-                        $fonc_message = $db->f('fonc_message');
+                        $fonc_id = $result['fonc_cod'];
+                        $fonc_type = $result['fonc_type'];
+                        $fonc_nom = $result['fonc_nom'];
+                        $fonc_effet = $result['fonc_effet'];
+                        $fonc_cumulatif = $result['fonc_cumulatif'];
+                        $fonc_force = $result['fonc_force'];
+                        $fonc_duree = $result['fonc_duree'];
+                        $fonc_type_cible = $result['fonc_type_cible'];
+                        $fonc_nombre_cible = $result['fonc_nombre_cible'];
+                        $fonc_portee = $result['fonc_portee'];
+                        $fonc_proba = $result['fonc_proba'];
+                        $fonc_message = $result['fonc_message'];
                         echo "
 					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible');</script>";
                     }

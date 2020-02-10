@@ -16,35 +16,35 @@ if ($erreur == 0)
 		switch ($methode) {
 			case "ajouter":
 				$req = "insert into repart_monstre (rmon_gmon_cod,rmon_etage_cod,rmon_poids, rmon_max) values ($gmon_cod,$pos_etage,$poids, $rmon_max) ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				echo "<p>AJOUTE</p>";
 			break;
 
 			case "modifier":
 				$req = "update repart_monstre set rmon_poids = $poids, rmon_max = $rmon_max where rmon_cod = $rmon_cod ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				echo "<p>MODIFIER</p>";
 			break;
 
 			case "supprimer":
 				$req = "delete from repart_monstre where rmon_cod = $rmon_cod and rmon_etage_cod = $pos_etage ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				echo "<p>SUPPRIMER</p>";
 			break;
 
 			case "modifier_proportion":
 				$req = "select rjmon_repart,rjmon_type from rep_mon_joueur where  rjmon_etage = $pos_etage";
-				$db->query($req);
-				if($db->next_record())
+				$stmt = $pdo->query($req);
+				if($result = $stmt->fetch())
 				{
 					// UPDATE
 					$req = "update rep_mon_joueur set rjmon_repart =  $rjmon_repart,rjmon_type = '$rjmon_type' where  rjmon_etage = $pos_etage";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 				} else
 				{
 					// INSERT
 					$req = "insert into rep_mon_joueur (rjmon_repart,rjmon_type,rjmon_etage) values ($rjmon_repart,'$rjmon_type',$pos_etage)";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 
 				}
 			break;
@@ -70,8 +70,8 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 		and perso_type_perso = 1
 		and perso_actif = 'O'
 		group by etage_libelle";
-	$db->query($req);
-	$db->next_record();
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
 	$req_monstre = "select etage_libelle,count(ppos_perso_cod) as perso_presents from etage,perso_position,positions,perso where  etage_numero = $pos_etage
 		and ppos_pos_cod = pos_cod and pos_etage = etage_numero 
 		and ppos_perso_cod = perso_cod
@@ -80,17 +80,17 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 		group by etage_libelle";
 	$db2->query($req_monstre);
 	$db2->next_record();?>
-<p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $db->f("etage_libelle");?></strong> / Nombre de persos présents : <?php  echo $db->f("perso_presents");?> / Nombre de monstres présents : <?php  echo $db2->f("perso_presents");?></p><br>
+<p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $result['etage_libelle'];?></strong> / Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $db2->f("perso_presents");?></p><br>
 <p>
 <?php 
 $rjmon_repart = 0.0;
 $rjmon_type = '';
 $req = "select rjmon_repart, rjmon_type from rep_mon_joueur where rjmon_etage = $pos_etage";
-$db->query($req);
-if($db->next_record())
+$stmt = $pdo->query($req);
+if($result = $stmt->fetch())
 {
-	$rjmon_repart = $db->f("rjmon_repart");
-	$rjmon_type = $db->f("rjmon_type");
+	$rjmon_repart = $result['rjmon_repart'];
+	$rjmon_type = $result['rjmon_type'];
 }
 ?>
 	<form method="post" name="modif_proportion">
@@ -125,20 +125,20 @@ if($db->next_record())
 			on monstres.gmon_cod = rmon_gmon_cod
 		where rmon_etage_cod = $pos_etage
 		order by mg.gmon_nom";
-	$db->query($req);
-	while($db->next_record())
+	$stmt = $pdo->query($req);
+	while($result = $stmt->fetch())
 	{
 ?>
-	<form method="post" name="modif_mon_<?php  echo  $db->f("rmon_cod"); ?>">
+	<form method="post" name="modif_mon_<?php  echo  $result['rmon_cod']; ?>">
 		<input type="hidden" name="methode" value="modifier">
 		<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
-		<input type="hidden" name="rmon_cod" value="<?php  echo  $db->f("rmon_cod"); ?>">
+		<input type="hidden" name="rmon_cod" value="<?php  echo  $result['rmon_cod']; ?>">
 		<TR>
-			<TD><?php echo '<strong>' . $db->f("gmon_nom") . '</strong><em> (code = ' . $db->f("gmon_cod") . ')</em>';?></TD>
-			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $db->f("rmon_poids"); ?>"> / <?php  echo  $db->f("nombre"); ?></p></TD>
-			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $db->f("rmon_max"); ?>"></p></TD>
+			<TD><?php echo '<strong>' . $result['gmon_nom'] . '</strong><em> (code = ' . $result['gmon_cod'] . ')</em>';?></TD>
+			<TD><p align="center"><input type="text" name="poids" value="<?php  echo  $result['rmon_poids']; ?>"> / <?php  echo  $result['nombre']; ?></p></TD>
+			<TD><p align="center"><input type="text" name="rmon_max" value="<?php  echo  $result['rmon_max']; ?>"></p></TD>
 			<TD><p align="center"><input type="submit" value="Modifier"></p></TD>
-			<TD><p align="center"><input type="submit" value="Supprimer" onClick="document.modif_mon_<?php  echo  $db->f("rmon_cod"); ?>.methode.value='supprimer'"></p></TD>
+			<TD><p align="center"><input type="submit" value="Supprimer" onClick="document.modif_mon_<?php  echo  $result['rmon_cod']; ?>.methode.value='supprimer'"></p></TD>
 		</TR>
 	</form>
 <?php 	} ?>
@@ -151,10 +151,10 @@ Ajouter un nouveau monstre :
 	Monstre : <select name="gmon_cod">
 <?php 
 	$req = "select gmon_cod,gmon_nom from monstre_generique order by gmon_nom ";
-	$db->query($req);
-	while($db->next_record())
+	$stmt = $pdo->query($req);
+	while($result = $stmt->fetch())
 	{
-		echo "<option value=\"" , $db->f("gmon_cod") , "\" >" , $db->f("gmon_nom") , "</option>";
+		echo "<option value=\"" , $result['gmon_cod'] , "\" >" , $result['gmon_nom'] , "</option>";
 	}
 ?>
 	</select>

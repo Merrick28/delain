@@ -9,17 +9,17 @@ switch ($methode)
 {
 	case 'pochette_suppression':	// Suppression des pochettes existantes
 		$req_sup = 'select f_del_objet(obj_cod) as nombre from objets where obj_gobj_cod = 642';
-		$db->query($req_sup);
+		$stmt = $pdo->query($req_sup);
 		echo '<p>Suppression des pochettes effectuée. ' . $db->nf() . ' pochettes supprimées.</p>';
 	break;
 	case 'pochette_distribution':	// Réinitialisation des compteurs et distribution de nouvelles pochettes
 		$req = 'select cree_pochette_surprise() as resultat';
-		$db->query($req);
-		$db->next_record();
-		echo '<p>Compteurs réinitialisés, pochettes créées. ' . $db->f('resultat') . '</p>';
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		echo '<p>Compteurs réinitialisés, pochettes créées. ' . $result['resultat'] . '</p>';
 		$texte = pg_escape_string($_POST['texte']);
 		$req = "INSERT INTO historique_animations(anim_date, anim_texte, anim_type) values (now()::date, '$texte', 'pochettes')";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 	break;
 }
 
@@ -32,12 +32,12 @@ echo '<table><tr><td class="titre"><strong>Fonctionnement générique</strong></
 echo '<td style="padding:2px; width:30%"><p>(les distributions sont enregistrées depuis début 2012)</p><ul>';
 
 $req = 'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'pochettes\' ORDER BY anim_date';
-$db->query($req);
+$stmt = $pdo->query($req);
 $derniere_distrib = -1;
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	echo '<li>' . $db->f('date') . ' : ' . $db->f('anim_texte') . '</li>';
-	$derniere_distrib = $db->f('duree');
+	echo '<li>' . $result['date'] . ' : ' . $result['anim_texte'] . '</li>';
+	$derniere_distrib = $result['duree'];
 }
 echo '</ul></td>';
 

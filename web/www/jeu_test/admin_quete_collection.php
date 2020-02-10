@@ -84,7 +84,7 @@ $req_concours = 'select ccol_cod, ccol_titre, ccol_date_ouverture, ccol_gobj_cod
 				from concours_collections
 				left outer join objet_generique on gobj_cod = ccol_gobj_cod
 				order by ccol_date_ouverture';
-$db->query($req_concours);
+$stmt = $pdo->query($req_concours);
 
 echo '<table>
 	<tr>
@@ -96,36 +96,36 @@ echo '<table>
 
 $toutesPassees = true;
 
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
 	// Au passage, pendant le parcours, on enregistre les valeurs de celle qu’on va afficher.
-	if ($ccol_cod == $db->f('ccol_cod'))
+	if ($ccol_cod == $result['ccol_cod'])
 	{
-		$ccol_titre = $db->f('ccol_titre');
-		$ccol_date_ouverture = $db->f('ccol_date_ouverture');
-		$ccol_gobj_cod = $db->f('ccol_gobj_cod');
-		$ccol_gobj_tobj_cod = $db->f('gobj_tobj_cod');
-		$ccol_date_fermeture = $db->f('ccol_date_fermeture');
-		$ccol_description = $db->f('ccol_description');
-		$ouvert = ($db->f('ouvert') == 1);
-		$futur = ($db->f('futur') == 1);
-		$ferme = ($db->f('ferme') == 1);
+		$ccol_titre = $result['ccol_titre'];
+		$ccol_date_ouverture = $result['ccol_date_ouverture'];
+		$ccol_gobj_cod = $result['ccol_gobj_cod'];
+		$ccol_gobj_tobj_cod = $result['gobj_tobj_cod'];
+		$ccol_date_fermeture = $result['ccol_date_fermeture'];
+		$ccol_description = $result['ccol_description'];
+		$ouvert = ($result['ouvert'] == 1);
+		$futur = ($result['futur'] == 1);
+		$ferme = ($result['ferme'] == 1);
 	}
 	$texte_etat = '';
-	if ($db->f('ferme') != 1)
+	if ($result['ferme'] != 1)
 		$toutesPassees = false;
 
-	if ($db->f('ouvert') == 1)
+	if ($result['ouvert'] == 1)
 		$texte_etat = ' (ouverte)';
-	if ($db->f('futur') == 1)
+	if ($result['futur'] == 1)
 		$texte_etat = ' (future)';
-	if ($db->f('ferme') == 1)
+	if ($result['ferme'] == 1)
 		$texte_etat = ' (fermée)';
 
-	if ($ccol_cod == $db->f('ccol_cod'))
-		echo "<p><strong><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></strong></p>";
+	if ($ccol_cod == $result['ccol_cod'])
+		echo "<p><strong><a href='?methode=collection_visu&ccol_cod=" . $result['ccol_cod'] . "'>" . $result['ccol_titre'] . "$texte_etat</a></strong></p>";
 	else
-		echo "<p><a href='?methode=collection_visu&ccol_cod=" . $db->f('ccol_cod') . "'>" . $db->f('ccol_titre') . "$texte_etat</a></p>";
+		echo "<p><a href='?methode=collection_visu&ccol_cod=" . $result['ccol_cod'] . "'>" . $result['ccol_titre'] . "$texte_etat</a></p>";
 }
 echo "</td>";
 
@@ -151,24 +151,24 @@ switch ($methode)
 		echo '<tr><td class="soustitre2">Titre</td><td><input type="text" name="form_titre" value="' . $ccol_titre . '" /></td><td>Dénomination du concours (typiquement, « Collections de citrouilles, 2010 »).</td></tr>';
 		echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1);"><option value="-1">Choisissez un type d’objet...</option>';
 		$req = 'select distinct tobj_cod, tobj_libelle from type_objet inner join objet_generique on gobj_tobj_cod = tobj_cod order by tobj_libelle';
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$script_tobj = '';
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			$clef = $db->f('tobj_cod');
-			$valeur = $db->f('tobj_libelle');
+			$clef = $result['tobj_cod'];
+			$valeur = $result['tobj_libelle'];
 			$script_tobj .= "tableauObjets[$clef] = new Array();\n";
 			echo "<option value='$clef'" . getSelected($clef, $ccol_gobj_tobj_cod) . ">$valeur</option>";
 		}
 		echo '</select><br /><select name="form_objet" id="form_objet">';
 		$req = 'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$script_gobj = '';
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			$clef = $db->f('gobj_cod');
-			$clef_tobj = $db->f('gobj_tobj_cod');
-			$valeur = $db->f('gobj_nom');
+			$clef = $result['gobj_cod'];
+			$clef_tobj = $result['gobj_tobj_cod'];
+			$valeur = $result['gobj_nom'];
 			$script_gobj .= "tableauObjets[$clef_tobj][$clef] = \"" . str_replace('"', '', $valeur) . "\";\n";
 		}
 
@@ -200,11 +200,11 @@ switch ($methode)
 			group by perso_nom
 			order by nombre desc
 			limit 10";
-		$db->query($req);
-		while ($db->next_record())
+		$stmt = $pdo->query($req);
+		while ($result = $stmt->fetch())
 		{
-			$nom = $db->f('perso_nom');
-			$nombre = $db->f('nombre');
+			$nom = $result['perso_nom'];
+			$nombre = $result['nombre'];
 			echo "<tr><td class='soustitre2'>$nom</td><td>$nombre</td></tr>";
 		}
 		echo '</table><hr />';
@@ -214,11 +214,11 @@ switch ($methode)
 			left outer join perso on perso_cod = ccolres_perso_cod
 			where ccolres_ccol_cod = $ccol_cod
 			order by ccolres_nombre desc";
-		$db->query($req);
-		while ($db->next_record())
+		$stmt = $pdo->query($req);
+		while ($result = $stmt->fetch())
 		{
-			$nom = $db->f('perso_nom');
-			$nombre = $db->f('ccolres_nombre');
+			$nom = $result['perso_nom'];
+			$nombre = $result['ccolres_nombre'];
 			echo "<tr><td class='soustitre2'>$nom</td><td>$nombre</td></tr>";
 		}
 		echo '</table>';
@@ -234,24 +234,24 @@ switch ($methode)
 				<tr><td class="soustitre2">Titre</td><td><input type="text" name="form_titre" value="" /></td><td>Dénomination du concours (typiquement, « Collections de citrouilles, 2010 »).</td></tr>	
 <?php 		echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1);"><option value="-1">Choisissez un type d’objet...</option>';
 		$req = 'select distinct tobj_cod, tobj_libelle from type_objet inner join objet_generique on gobj_tobj_cod = tobj_cod order by tobj_libelle';
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$script_tobj = '';
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			$clef = $db->f('tobj_cod');
-			$valeur = $db->f('tobj_libelle');
+			$clef = $result['tobj_cod'];
+			$valeur = $result['tobj_libelle'];
 			$script_tobj .= "tableauObjets[$clef] = new Array();\n";
 			echo "<option value='$clef'>$valeur</option>";
 		}
 		echo '</select><br /><select name="form_objet" id="form_objet">';
 		$req = 'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$script_gobj = '';
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			$clef = $db->f('gobj_cod');
-			$clef_tobj = $db->f('gobj_tobj_cod');
-			$valeur = $db->f('gobj_nom');
+			$clef = $result['gobj_cod'];
+			$clef_tobj = $result['gobj_tobj_cod'];
+			$valeur = $result['gobj_nom'];
 			$script_gobj .= "tableauObjets[$clef_tobj][$clef] = \"" . str_replace('"', '', $valeur) . "\";\n";
 		}
 

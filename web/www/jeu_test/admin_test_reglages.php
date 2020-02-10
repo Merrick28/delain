@@ -17,7 +17,7 @@ if ($erreur == 0)
             case "update_liste_nom":
                 $req = "delete from race_nom_monstre "
                     . "where rac_nom_race_cod = $rac_nom_race_cod and rac_nom_type = '$rac_nom_type' and rac_nom_genre = '$rac_nom_genre'";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 $array = explode(',', $_POST['listenoms']);
                 foreach ($array as $i => $value)
                 {
@@ -28,7 +28,7 @@ if ($erreur == 0)
                         $req = "insert into race_nom_monstre "
                             . "(rac_nom_race_cod,rac_nom_type,rac_nom_genre,rac_nom_nom,rac_nom_chance) values "
                             . "($rac_nom_race_cod,e'" . pg_escape_string($rac_nom_type) . "',e'" . pg_escape_string($rac_nom_genre) . "',e'" . pg_escape_string($trimvalue) . "',$rac_nom_chance)";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 echo "<p>MAJ</p>";
@@ -45,11 +45,11 @@ if ($erreur == 0)
         <select name="race_cod">
             <?php
             $req = "select race_cod,race_nom from race order by race_nom ";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
                 ?>
-                <option value="<?php echo $db->f("race_cod"); ?>"><?php echo $db->f("race_nom"); ?></option>
+                <option value="<?php echo $result['race_cod']; ?>"><?php echo $result['race_nom']; ?></option>
             <?php } ?>
         </select>
         <input type="submit" value="voir">
@@ -62,16 +62,16 @@ if ($erreur == 0)
         -Masculins<br>
         <?php
         $req = "select gmon_cod from monstre_generique where gmon_race_cod = $race_cod limit 1";
-        $db->query($req);
-        $db->next_record();
-        $g_mon_ex = $db->f("gmon_cod");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $g_mon_ex = $result['gmon_cod'];
 
         for ($i = 0; $i < 5; $i++)
         {
             $req = "select choisir_monstre_nom($g_mon_ex,'M') as nom";
-            $db->query($req);
-            $db->next_record();
-            echo "&nbsp;&nbsp;&nbsp;" . $db->f("nom") . "<br>";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
         }
         ?>
         -Feminins<br>
@@ -79,9 +79,9 @@ if ($erreur == 0)
         for ($i = 0; $i < 5; $i++)
         {
             $req = "select choisir_monstre_nom($g_mon_ex,'F') as nom";
-            $db->query($req);
-            $db->next_record();
-            echo "&nbsp;&nbsp;&nbsp;" . $db->f("nom") . "<br>";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "&nbsp;&nbsp;&nbsp;" . $result['nom'] . "<br>";
         }
         ?>
     </p>
@@ -98,13 +98,13 @@ if ($erreur == 0)
         $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
             . "where rac_nom_race_cod = $race_cod and rac_nom_type = 'N' "
             . "order by rac_nom_nom ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <textarea name="listenoms" rows="4" cols="80">
-<?php while ($db->next_record())
+<?php while ($result = $stmt->fetch())
 {
-    $chance = $db->f("rac_nom_chance");
-    echo $db->f("rac_nom_nom") . ",";
+    $chance = $result['rac_nom_chance'];
+    echo $result['rac_nom_nom'] . ",";
 } ?></textarea>
         Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>"> <input type="submit"
                                                                                                 value="Mettre à jour !">
@@ -122,13 +122,13 @@ if ($erreur == 0)
         $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
             . "where rac_nom_race_cod = $race_cod and rac_nom_type = 'P' and rac_nom_genre = 'M'"
             . "order by rac_nom_nom ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <textarea name="listenoms" rows="4" cols="80">
-<?php while ($db->next_record())
+<?php while ($result = $stmt->fetch())
 {
-    $chance = $db->f("rac_nom_chance");
-    echo $db->f("rac_nom_nom") . ",";
+    $chance = $result['rac_nom_chance'];
+    echo $result['rac_nom_nom'] . ",";
 } ?></textarea>
         Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>"> <input type="submit"
                                                                                                 value="Mettre à jour !">
@@ -146,13 +146,13 @@ if ($erreur == 0)
         $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
             . "where rac_nom_race_cod = $race_cod and rac_nom_type = 'P' and rac_nom_genre = 'F'"
             . "order by rac_nom_nom ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <textarea name="listenoms" rows="4" cols="80">
-<?php while ($db->next_record())
+<?php while ($result = $stmt->fetch())
 {
-    $chance = $db->f("rac_nom_chance");
-    echo $db->f("rac_nom_nom") . ",";
+    $chance = $result['rac_nom_chance'];
+    echo $result['rac_nom_nom'] . ",";
 } ?></textarea>
         Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>"> <input type="submit"
                                                                                                 value="Mettre à jour !">
@@ -169,13 +169,13 @@ if ($erreur == 0)
         $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
             . "where rac_nom_race_cod = $race_cod and rac_nom_type = 'S' and rac_nom_genre = 'M'"
             . "order by rac_nom_nom ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <textarea name="listenoms" rows="4" cols="80">
-<?php while ($db->next_record())
+<?php while ($result = $stmt->fetch())
 {
-    $chance = $db->f("rac_nom_chance");
-    echo $db->f("rac_nom_nom") . ",";
+    $chance = $result['rac_nom_chance'];
+    echo $result['rac_nom_nom'] . ",";
 } ?></textarea>
         Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>"> <input type="submit"
                                                                                                 value="Mettre à jour !">
@@ -192,13 +192,13 @@ if ($erreur == 0)
         $req = "select rac_nom_chance,rac_nom_nom from race_nom_monstre "
             . "where rac_nom_race_cod = $race_cod and rac_nom_type = 'S' and rac_nom_genre = 'F'"
             . "order by rac_nom_nom ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <textarea name="listenoms" rows="4" cols="80">
-<?php while ($db->next_record())
+<?php while ($result = $stmt->fetch())
 {
-    $chance = $db->f("rac_nom_chance");
-    echo $db->f("rac_nom_nom") . ",";
+    $chance = $result['rac_nom_chance'];
+    echo $result['rac_nom_nom'] . ",";
 } ?></textarea>
         Chance : <input type="text" name="rac_nom_chance" value="<?php echo $chance ?>"> <input type="submit"
                                                                                                 value="Mettre à jour !">

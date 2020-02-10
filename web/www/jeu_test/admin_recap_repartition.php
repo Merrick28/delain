@@ -20,13 +20,13 @@ if ($erreur == 0)
 
     // Liste déroulante de choix de type d’objet
     $req = "SELECT tobj_cod, tobj_libelle FROM type_objet ORDER BY tobj_libelle";
-    $db->query($req);
+    $stmt = $pdo->query($req);
     echo '<form action="#" method="GET">';
     echo '<select name="typeObjet">';
     echo '<option value="-1">-- Choisissez un type d’objet --</option>';
     echo '<option value="-2"' . (($typeObjet == -2) ? ' selected="selected"' : '') . '>-- Brouzoufs --</option>';
-    while ($db->next_record())
-        echo '<option value="' . $db->f("tobj_cod") . '"' . (($typeObjet == $db->f("tobj_cod")) ? ' selected="selected"' : '') . '>' . $db->f("tobj_libelle") . '</option>';
+    while ($result = $stmt->fetch())
+        echo '<option value="' . $result['tobj_cod'] . '"' . (($typeObjet == $result['tobj_cod']) ? ' selected="selected"' : '') . '>' . $result['tobj_libelle'] . '</option>';
     echo '</select><br />';
     $selected = ($restreindreEtages) ? ' checked="checked"' : '';
     echo '<input type="checkbox" name="restreindreEtages" id="restreindreEtages"' . $selected . ' /><label for="restreindreEtages">Restreindre la recherche aux étages principaux ?</label><br />';
@@ -231,56 +231,56 @@ if ($erreur == 0)
     $unite = ($typeObjet >= 0) ? '&nbsp;%' : '&nbsp;br';
 
     // Récupération des données
-    $db->query($req);
-    while ($db->next_record())
+    $stmt = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
-        if (!isset($lesEtages[$db->f("mon_etage")]))
+        if (!isset($lesEtages[$result['mon_etage']]))
         {
-            $lesEtages[$db->f("mon_etage")] = $db->f("etage_libelle");
-            $donnees[$db->f("mon_etage")] = array();
+            $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
+            $donnees[$result['mon_etage']] = array();
         }
-        if (!isset($lesObjets[$db->f("gobj_cod")]))
+        if (!isset($lesObjets[$result['gobj_cod']]))
         {
-            $lesObjets[$db->f("gobj_cod")] = $db->f("gobj_nom");
-            $objetsTousEtages[$db->f("gobj_cod")] = 0;
+            $lesObjets[$result['gobj_cod']] = $result['gobj_nom'];
+            $objetsTousEtages[$result['gobj_cod']] = 0;
         }
-        $donnees[$db->f("mon_etage")][$db->f("gobj_cod")] = $db->f("chance_drop") / 100;
-        $objetsTousEtages[$db->f("gobj_cod")] += $db->f("chance_drop") / 100;
+        $donnees[$result['mon_etage']][$result['gobj_cod']] = $result['chance_drop'] / 100;
+        $objetsTousEtages[$result['gobj_cod']] += $result['chance_drop'] / 100;
     }
     if (isset($req_equip))
     {
-        $db->query($req_equip);
-        while ($db->next_record())
+        $stmt = $pdo->query($req_equip);
+        while ($result = $stmt->fetch())
         {
-            if (!isset($lesEtages[$db->f("mon_etage")]))
+            if (!isset($lesEtages[$result['mon_etage']]))
             {
-                $lesEtages[$db->f("mon_etage")] = $db->f("etage_libelle");
-                $donnees[$db->f("mon_etage")] = array();
+                $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
+                $donnees[$result['mon_etage']] = array();
             }
-            if (!isset($lesObjets[$db->f("gobj_cod")]))
+            if (!isset($lesObjets[$result['gobj_cod']]))
             {
-                $lesObjets[$db->f("gobj_cod")] = $db->f("gobj_nom");
-                $objetsTousEtages[$db->f("gobj_cod")] = 0;
+                $lesObjets[$result['gobj_cod']] = $result['gobj_nom'];
+                $objetsTousEtages[$result['gobj_cod']] = 0;
             }
-            $donnees[$db->f("mon_etage")][$db->f("gobj_cod")] = $db->f("chance_drop");
-            $objetsTousEtages[$db->f("gobj_cod")] += $db->f("chance_drop");
+            $donnees[$result['mon_etage']][$result['gobj_cod']] = $result['chance_drop'];
+            $objetsTousEtages[$result['gobj_cod']] += $result['chance_drop'];
         }
     }
     if (isset($req2))
     {
         $db->query($req2);
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            if (!isset($lesEtages[$db->f("mon_etage")]))
+            if (!isset($lesEtages[$result['mon_etage']]))
             {
-                $lesEtages[$db->f("mon_etage")] = $db->f("etage_libelle");
-                $donnees[$db->f("mon_etage")] = array();
+                $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
+                $donnees[$result['mon_etage']] = array();
             }
-            if (!isset($lesObjets[$db->f("gobj_cod")]))
+            if (!isset($lesObjets[$result['gobj_cod']]))
             {
-                $lesObjets[$db->f("gobj_cod")] = $db->f("gobj_nom");
+                $lesObjets[$result['gobj_cod']] = $result['gobj_nom'];
             }
-            $donnees[$db->f("mon_etage")][$db->f("gobj_cod")] += $db->f("chance_drop") / 100;
+            $donnees[$result['mon_etage']][$result['gobj_cod']] += $result['chance_drop'] / 100;
         }
     }
 

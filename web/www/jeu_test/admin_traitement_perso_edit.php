@@ -12,9 +12,9 @@ if($erreur != 0)
 
 // RECUPERATION DES INFORMATIONS POUR LE LOG
 $req = "select compt_nom from compte where compt_cod = $compt_cod";
-$db->query($req);
-$db->next_record();
-$compt_nom = $db->f("compt_nom");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$compt_nom = $result['compt_nom'];
 $req_pers = "select perso_nom,perso_type_perso from perso where perso_cod = $mod_perso_cod ";
 $db_pers = new base_delain;
 $db_pers->query($req_pers);
@@ -234,13 +234,13 @@ switch ($methode)
 			from bonus
 			inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 			where bonus_perso_cod = $mod_perso_cod";
-		$db->query($req_bm);
-		while($db->next_record())
+		$stmt = $pdo->query($req_bm);
+		while($result = $stmt->fetch())
 		{
-			$lib = $db->f("tonbus_libelle");
-			$anc_val = $db->f("bonus_valeur");
-			$anc_dur = $db->f("bonus_nb_tours");
-			$tbon = $db->f("bonus_cod");
+			$lib = $result['tonbus_libelle'];
+			$anc_val = $result['bonus_valeur'];
+			$anc_dur = $result['bonus_nb_tours'];
+			$tbon = $result['bonus_cod'];
 			$id = $tbon ;
 			if (isset($_POST["PERSO_BM_val_$id"]) && isset($_POST["PERSO_BM_dur_$id"]))
 			{
@@ -335,9 +335,9 @@ switch ($methode)
 					$req = 'select gobj_nom,obj_nom from objets,objet_generique
 						where obj_cod = ' . $del_obj_cod . '
 						and obj_gobj_cod = gobj_cod ';
-					$db->query($req);
-					$db->next_record();
-					$log .= 'Effacement de l’objet ' . $del_obj_cod . ' - ' . $db->f('obj_nom') . ' (objet générique : ' . $db->f('gobj_nom') . ')' . "\n";
+					$stmt = $pdo->query($req);
+					$result = $stmt->fetch();
+					$log .= 'Effacement de l’objet ' . $del_obj_cod . ' - ' . $result['obj_nom'] . ' (objet générique : ' . $result['gobj_nom'] . ')' . "\n";
 					$req_supr_obj = "select f_del_objet($del_obj_cod)";
 					$db_inventaire_suppr->query($req_supr_obj);
 				}
@@ -395,9 +395,9 @@ switch ($methode)
 						$req = 'select gobj_nom,obj_nom from objets,objet_generique
 							where obj_cod = ' . $del_obj_cod . '
 							and obj_gobj_cod = gobj_cod ';
-						$db->query($req);
-						$db->next_record();
-						$log .= 'Effacement de l’objet ' . $del_obj_cod . ' - ' . $db->f('obj_nom') . ' (objet générique : ' . $db->f('gobj_nom') . ')' . "\n";
+						$stmt = $pdo->query($req);
+						$result = $stmt->fetch();
+						$log .= 'Effacement de l’objet ' . $del_obj_cod . ' - ' . $result['obj_nom'] . ' (objet générique : ' . $result['gobj_nom'] . ')' . "\n";
 						$req_supr_obj = "select f_del_objet($del_obj_cod)";
 						$db_inventaire_suppr->query($req_supr_obj);
 					}
@@ -506,18 +506,18 @@ switch ($methode)
 				pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position from positions
 			inner join etage on etage_numero = pos_etage
 			where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $new_etage ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		if ($db->nf() == 0)
 		{
 			echo "<div class='bordiv'>Erreur ! Aucune position trouvée à ces coordonnées</div>";
 			$err_depl = 1;
 		}
-		$db->next_record();
-		$pos_cod = $db->f("pos_cod");
-		$arene = $db->f("etage_arene");
-		$nv_position = $db->f("position");
+		$result = $stmt->fetch();
+		$pos_cod = $result['pos_cod'];
+		$arene = $result['etage_arene'];
+		$nv_position = $result['position'];
 		$req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		if ($db->nf() != 0)
 		{
 			echo "<div class='bordiv'>Erreur ! Impossible de déplacer le perso : un mur en destination.</div>";
@@ -529,12 +529,12 @@ switch ($methode)
 			$texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
 			$req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
 			$req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			// effacement des locks
 			$req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			
 			// Position de départ
 			$req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
@@ -543,37 +543,37 @@ switch ($methode)
 				inner join positions on pos_cod = ppos_pos_cod
 				inner join etage on etage_numero = pos_etage
 				where ppos_perso_cod = $mod_perso_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$anc_pos_cod = $db->f('pos_cod');
-			$anc_arene = $db->f('etage_arene');
-			$anc_position = $db->f('position');
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$anc_pos_cod = $result['pos_cod'];
+			$anc_arene = $result['etage_arene'];
+			$anc_position = $result['position'];
 			$log .= "Déplacement de $anc_position vers $nv_position.";
 
 			// déplacement
 			$req = "update perso_position set ppos_pos_cod = $pos_cod where ppos_perso_cod = $mod_perso_cod ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			switch ($anc_arene . $arene)
 			{
 				case 'NO':	// D’un étage normal vers une arène
 					$req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$req = "insert into perso_arene (parene_perso_cod, parene_etage_numero, parene_pos_cod, parene_date_entree)
 						values($mod_perso_cod, $new_etage, $anc_pos_cod, now()) ";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$log .= "\nCette position est en arène : le personnage en ressortira à sa position d’origine.";
 				break;
 
 				case 'OO':	// D’une arène vers une autre
 					$req = "update perso_arene set parene_etage_numero = $new_etage where parene_perso_cod = $mod_perso_cod";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$log .= "\nCette position est en arène, le perso était déjà dans une arène : il ressortira à la position d’où il est rentré dans la première arène.";
 				break;
 
 				case 'ON':	// D’une arène vers un étage normal
 					$req = "delete from perso_arene where parene_perso_cod = $mod_perso_cod ";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$log .= "\nAttention ! Le perso était en arène : sa position d’entrée dans l’arène est perdue !";
 					// Si on ne le supprimait pas, on empêcherait le perso de rentrer à nouveau en arène...
 				break;
@@ -591,24 +591,24 @@ switch ($methode)
 	case "add_new_object":
 		// recherche du num objet generique
 		$req = "select nextval('seq_gobj_cod') as gobj";
-		$db->query($req);
-		$db->next_record();
-		$gobj_cod = $db->f("gobj");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$gobj_cod = $result['gobj'];
 		$nom_objet = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet)));
 		$nom_objet_non_iden = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet_non_iden)));
 		$desc = pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $desc))));
 		// création dans les objets génériques
 		$req = "insert into objet_generique (gobj_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_poids,gobj_description,gobj_deposable,gobj_visible,gobj_echoppe) ";
 		$req = $req . "values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// insertion dun évènement
 		$texte_evt = "Un admin quête a créé un objet dans l’inventaire de [perso_cod1].";
 		$req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
 		$req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// création
 		$req = "select cree_objet_perso_nombre($gobj_cod,$mod_perso_cod,1)";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		
 		$log .= "Création d’un nouvel objet, $nom_objet, dans l’inventaire.";
 		writelog($log,'perso_edit');

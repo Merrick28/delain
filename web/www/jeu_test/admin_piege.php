@@ -132,7 +132,7 @@ if ($erreur == 0)
 				where pos_x = ' . $_POST['pos_x'] . '
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($db->nf() == 0)
             {
                 /*********************************/
@@ -147,9 +147,9 @@ if ($erreur == 0)
                 /* on stocke le pos_cod et le    */
                 /* pos_fonction_arrivee          */
                 /*********************************/
-                $db->next_record();
-                $pos_cod = $db->f("pos_cod");
-                $pos_fonction_arrive = $db->f("pos_fonction_arrivee");
+                $result = $stmt->fetch();
+                $pos_cod = $result['pos_cod'];
+                $pos_fonction_arrive = $result['pos_fonction_arrivee'];
             }
 
             if ($pos_fonction_arrive == '')
@@ -188,7 +188,7 @@ if ($erreur == 0)
                 $req = "update positions 
 					set pos_fonction_arrivee = '$piege' 
 					where pos_cod = " . $pos_cod;
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>L’insertion du piège s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'] . " 
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 				<br> (si vide, texte standard)";
@@ -210,7 +210,7 @@ if ($erreur == 0)
                     $valide = 0;
                 if ($valide != 1)
                 {
-                    $db->next_record();
+                    $result = $stmt->fetch();
                     echo '<form method="post" name="piege" action="' . $PHP_SELF . '">';
                     //
                     // on remet les variables post qui vont bien
@@ -257,7 +257,7 @@ if ($erreur == 0)
                     $req = "update positions 
 						set pos_fonction_arrivee = '$piege' 
 						where pos_cod = " . $pos_cod;
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "<p>L’insertion du piège s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'] . " 
 						<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 						<br><em> (si vide, texte standard)</em>";
@@ -273,12 +273,12 @@ if ($erreur == 0)
 				where pos_etage = etage_numero 
 				AND SUBSTR(pos_fonction_arrivee,1,5) = 'piege'
 				order by pos_etage,pos_x,pos_y";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $pos_cod = $db->f("pos_cod");
-                echo '<br><strong>Piège :</strong>' . $db->f('pos_fonction_arrivee') . '
-				<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
+                $pos_cod = $result['pos_cod'];
+                echo '<br><strong>Piège :</strong>' . $result['pos_fonction_arrivee'] . '
+				<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
 				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=mod">Modifier la définition de ce piège ?</a><br><br>
 				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=sup">Supprimer ce piège ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
             }
@@ -289,9 +289,9 @@ if ($erreur == 0)
             $req = "select pos_fonction_arrivee 
 				from positions 
 				where pos_cod = " . $pos_cod;
-            $db->query($req);
-            $db->next_record();
-            $fonction = $db->f("pos_fonction_arrivee");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $fonction = $result['pos_fonction_arrivee'];
             $fonction = str_replace('\\', '', $fonction);
             echo "Fonction d’origine : " . $fonction;
             $fonction = str_replace(array(')', '\''), '', $fonction);
@@ -398,7 +398,7 @@ if ($erreur == 0)
                 $_POST['mal_blessure'] . "," . $_POST['declenchement'] . ",\'" . $texte_event . "\')";
             echo($piege);
             $req = "update positions set pos_fonction_arrivee = '$piege' where pos_cod = " . $pos_cod;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>Le piège a bien été modifié
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 				<br><em> (si vide, texte standard)</em>
@@ -407,7 +407,7 @@ if ($erreur == 0)
 
         case "sup": //Suppression d’un piège existant
             $req = "update positions set pos_fonction_arrivee = '' where pos_cod = " . $pos_cod;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "Piège supprimé
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
             break;

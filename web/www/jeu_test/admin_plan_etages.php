@@ -27,8 +27,8 @@ if ($erreur == 0)
     $departs = array();
 
     // Récupération des données
-    $db->query($requete_etages);
-    while ($db->next_record())
+    $stmt = $pdo->query($requete_etages);
+    while ($result = $stmt->fetch())
     {
         if (!isset($lesEtages[$db->f("er1")]))
             $lesEtages[$db->f("er1")] = array();
@@ -47,7 +47,7 @@ if ($erreur == 0)
         if (!isset($departs[$db->f("e1")]))
             $departs[$db->f("e1")] = array();
 
-        $departs[$db->f("e1")][$db->f("e2")] = $db->f("nb");
+        $departs[$db->f("e1")][$db->f("e2")] = $result['nb'];
     }
 
     // Affichage des données sous forme de tableau
