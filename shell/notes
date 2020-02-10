@@ -1,0 +1,26 @@
+$stmt = $pdo->prepare($req);
+$stmt = $pdo->execute(array(),$stmt);
+
+$stmt = $pdo->query($req);
+
+while($result = $stmt->fetch())
+
+
+
+\$db->f\((['"])([a-zA-Z_]*)(['"])\)
+\$result\['$2'\]
+
+
+if($result = $stmt->fetch())
+
+$result = $stmt->fetch();
+
+
+
+\$db->query\([(a-zA-Z_$]*)\)
+\$stmt = \$pdo->query\($1\)
+
+
+
+
+\$db->f(['\"][a-zA-Z_]*['\"])
