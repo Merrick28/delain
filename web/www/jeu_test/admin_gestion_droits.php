@@ -8,8 +8,8 @@ function cree_OuiNon($nom, $valeur, $titre)
     $resultat .= $titre;
     $resultat .= '</td><td>';
     $resultat .= "<select name='$nom'>";
-    $sel_o = ($valeur == 'O') ? " selected " : "";
-    $sel_n = ($valeur == 'N') ? " selected " : "";
+    $sel_o    = ($valeur == 'O') ? " selected " : "";
+    $sel_n    = ($valeur == 'N') ? " selected " : "";
     $resultat .= "<option value='O' $sel_o>Oui</option>";
     $resultat .= "<option value='N' $sel_n>Non</option>";
     $resultat .= "</select></td></tr>";
@@ -17,12 +17,12 @@ function cree_OuiNon($nom, $valeur, $titre)
 }
 
 
-$erreur = 0;
+$erreur      = 0;
 $droit_modif = 'dcompt_gere_droits';
 include "blocks/_test_droit_modif_generique.php";
 
 
-$compte = $_REQUEST['compte'];
+$compte                  = $_REQUEST['compte'];
 
 if ($erreur == 0)
 {
@@ -124,7 +124,7 @@ if ($erreur == 0)
                                    ELSE ''::text
                                    END AS attributes
                            FROM pg_catalog.pg_user u ORDER BY usename;";
-        $stmt = $pdo->query($req_pers);
+        $stmt     = $pdo->query($req_pers);
         while ($result = $stmt->fetch())
         {
             echo "<tr>";
@@ -164,8 +164,9 @@ if ($erreur == 0)
         echo "<td class=\"soustitre2\"><p><strong>Magie</strong></p></td>";
         echo "</tr>";
 
-        $req_pers = "select compt_cod, compt_nom, compt_mail, TO_CHAR(compt_der_connex, 'YY-MM-DD HH:MI') compt_der_connex, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
-        $stmt = $pdo->query($req_pers);
+        $req_pers =
+            "select compt_cod, compt_nom, compt_mail, TO_CHAR(compt_der_connex, 'YY-MM-DD HH:MI') compt_der_connex, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
+        $stmt     = $pdo->query($req_pers);
         while ($result = $stmt->fetch())
         {
             echo "<tr>";
@@ -246,43 +247,43 @@ if ($erreur == 0)
     case "nouveau_valide":
         // Vérification du nom de compte
         $erreur = false;
-        $erreur_msg = "";
-        $nom = $_REQUEST['nom'];
-        $mdp = $_REQUEST['mdp'];
-        $type_compte = $_REQUEST['type_compte'];
-        $modif_perso = $_REQUEST['modif_perso'];
-        $creer_monstre = $_REQUEST['creer_monstre'];
-        $modif_gmon = $_REQUEST['modif_gmon'];
-        $controle = $_REQUEST['controle'];
-        $acces_log = $_REQUEST['acces_log'];
+        $erreur_msg      = "";
+        $nom             = $_REQUEST['nom'];
+        $mdp             = $_REQUEST['mdp'];
+        $type_compte     = $_REQUEST['type_compte'];
+        $modif_perso     = $_REQUEST['modif_perso'];
+        $creer_monstre   = $_REQUEST['creer_monstre'];
+        $modif_gmon      = $_REQUEST['modif_gmon'];
+        $controle        = $_REQUEST['controle'];
+        $acces_log       = $_REQUEST['acces_log'];
         $automap_monstre = $_REQUEST['automap_monstre'];
-        $etage = $_REQUEST['etage'];
-        $gere_droits = $_REQUEST['gere_droits'];
-        $modif_carte = $_REQUEST['modif_carte'];
-        $carte_monstre = $_REQUEST['carte_monstre'];
-        $logs_admin = $_REQUEST['logs_admin'];
-        $objet = $_REQUEST['objet'];
-        $enchantements = $_REQUEST['enchantements'];
-        $potions = $_REQUEST['potions'];
-        $sondage = $_REQUEST['sondage'];
-        $news = $_REQUEST['news'];
-        $anims = $_REQUEST['anims'];
-        $magie = $_REQUEST['magie'];
-        $factions = $_REQUEST['factions'];
+        $etage           = $_REQUEST['etage'];
+        $gere_droits     = $_REQUEST['gere_droits'];
+        $modif_carte     = $_REQUEST['modif_carte'];
+        $carte_monstre   = $_REQUEST['carte_monstre'];
+        $logs_admin      = $_REQUEST['logs_admin'];
+        $objet           = $_REQUEST['objet'];
+        $enchantements   = $_REQUEST['enchantements'];
+        $potions         = $_REQUEST['potions'];
+        $sondage         = $_REQUEST['sondage'];
+        $news            = $_REQUEST['news'];
+        $anims           = $_REQUEST['anims'];
+        $magie           = $_REQUEST['magie'];
+        $factions        = $_REQUEST['factions'];
 
-        if ($nom=="")
+        if ($nom == "")
         {
-            $erreur = true;
+            $erreur     = true;
             $erreur_msg = 'Veuillez donner un nom au compte à créer.';
         }
-        if ($mdp=="")
+        if ($mdp == "")
         {
-            $erreur = true;
+            $erreur     = true;
             $erreur_msg = 'Veuillez donner un mot de passe au compte à créer.';
         }
-        if ($etage=="")
+        if ($etage == "")
         {
-            $erreur = true;
+            $erreur     = true;
             $erreur_msg = 'Veuillez indiquer au moins un étage.';
         } else if (strpos($etage, 'A') !== false)
         {
@@ -294,21 +295,23 @@ if ($erreur == 0)
             if ($type_compte == 'M')
             {
                 $compt_monstre = 'O';
-                $compt_admin = 'N';
+                $compt_admin   = 'N';
                 if (substr($nom, -8) != '_monstre')
                     $nom .= '_monstre';
             } else
             {
                 $compt_monstre = 'N';
-                $compt_admin = 'O';
+                $compt_admin   = 'O';
                 if (substr($nom, -9) != '_controle')
                     $nom .= '_controle';
             }
-            $req = "select count(*) as nb from compte where compt_nom = '$nom';";
-            $existe = ($db->get_value($req, 'nb') > 0);
+            $req    = "select count(*) as nb from compte where compt_nom = '$nom';";
+            $stmt   = $pdo->query($req);
+            $result = $stmt->fetch();
+            $existe = ($result['nb'] > 0);
             if ($existe)
             {
-                $erreur = true;
+                $erreur     = true;
                 $erreur_msg = "Le compte $nom existe déjà. Veuillez choisir un autre nom.";
             }
         }
@@ -321,7 +324,9 @@ if ($erreur == 0)
 					(compt_nom, compt_password, compt_mail, compt_monstre, compt_admin, compt_validation, compt_actif, compt_dcreat, compt_acc_charte, compt_type_quatrieme)
 					values ('$nom', '$mdp', '', '$compt_monstre', '$compt_admin', 0, 'O', now(), 'O', 2)
 					RETURNING compt_cod";
-            $vcompte = $db->get_value($insertion, 'compt_cod');
+            $stmt   = $pdo->query($req);
+            $result = $stmt->fetch();
+            $vcompte   = $result['compt_cod'];
 
             $insertion = "insert into compt_droit
 					(dcompt_compt_cod, dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_acces_log, dcompt_monstre_automap, dcompt_etage,
@@ -330,13 +335,13 @@ if ($erreur == 0)
 					values ($vcompte, '$modif_perso', '$modif_gmon', '$controle', '$acces_log', '$automap_monstre', '$etage', 
 						'$gere_droits', '$modif_carte', '$logs_admin', '$carte_monstre', '$objet', '$enchantements', '$potions', 
 						'$sondage', '$news', '$anims', '$creer_monstre', '$magie', '$factions')";
-            $stmt = $pdo->query($insertion);
+            $stmt      = $pdo->query($insertion);
 
             echo "Le compte $nom a été correctement créé !";
 
             $req_pers = "select compt_nom from compte where compt_cod = $compt_cod ";
-            $stmt = $pdo->query($req_pers);
-            if($result = $stmt->fetch())
+            $stmt     = $pdo->query($req_pers);
+            if ($result = $stmt->fetch())
             {
                 $compt_origine = $result['compt_nom'];
             }
@@ -376,10 +381,10 @@ if ($erreur == 0)
 
 case "et2":
     echo '<div>';
-    $nom = strtolower($nom);
-    $req = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
+    $nom  = strtolower($nom);
+    $req  = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
     $stmt = $pdo->query($req);
-if ($db->nf() == 0)
+if (!$result = $stmt->fetch())
 {
     ?>
     Aucun compte trouvé à ce nom !<br>
@@ -407,13 +412,13 @@ else
         break;
 
         case "et3":
-            $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
-            $stmt = $pdo->query($req_pers);
+            $req_pers    = "select compt_nom from compte where compt_cod = $vcompte ";
+            $stmt        = $pdo->query($req_pers);
             $compt_modif = ($result = $stmt->fetch()) ? $result['compt_nom'] : 'Compte inconnu';
 
-            $req = "select * from compt_droit where dcompt_compt_cod = $vcompte ";
+            $req  = "select * from compt_droit where dcompt_compt_cod = $vcompte ";
             $stmt = $pdo->query($req);
-            if ($db->nf() == 0)
+            if (!$result = $stmt->fetch())
             {
                 echo "Aucun droit particulier pour le compte « $compt_modif ».<br>
 				<a href='$PHP_SELF?compte=$compte&methode=cree'>Créer des droits ?</a>";
@@ -469,36 +474,36 @@ else
             break;
 
         case "et4":
-            $modif_perso = $_REQUEST['modif_perso'];
-            $creer_monstre = $_REQUEST['creer_monstre'];
-            $modif_gmon = $_REQUEST['modif_gmon'];
-            $controle = $_REQUEST['controle'];
-            $acces_log = $_REQUEST['acces_log'];
+            $modif_perso     = $_REQUEST['modif_perso'];
+            $creer_monstre   = $_REQUEST['creer_monstre'];
+            $modif_gmon      = $_REQUEST['modif_gmon'];
+            $controle        = $_REQUEST['controle'];
+            $acces_log       = $_REQUEST['acces_log'];
             $automap_monstre = $_REQUEST['automap_monstre'];
-            $etage = $_REQUEST['etage'];
-            $gere_droits = $_REQUEST['gere_droits'];
-            $modif_carte = $_REQUEST['modif_carte'];
-            $carte_monstre = $_REQUEST['carte_monstre'];
-            $logs_admin = $_REQUEST['logs_admin'];
-            $objet = $_REQUEST['objet'];
-            $enchantements = $_REQUEST['enchantements'];
-            $potions = $_REQUEST['potions'];
-            $sondage = $_REQUEST['sondage'];
-            $news = $_REQUEST['news'];
-            $anims = $_REQUEST['anims'];
-            $magie = $_REQUEST['magie'];
-            $factions = $_REQUEST['factions'];
-            $vcompte = $_REQUEST['vcompte'];
+            $etage           = $_REQUEST['etage'];
+            $gere_droits     = $_REQUEST['gere_droits'];
+            $modif_carte     = $_REQUEST['modif_carte'];
+            $carte_monstre   = $_REQUEST['carte_monstre'];
+            $logs_admin      = $_REQUEST['logs_admin'];
+            $objet           = $_REQUEST['objet'];
+            $enchantements   = $_REQUEST['enchantements'];
+            $potions         = $_REQUEST['potions'];
+            $sondage         = $_REQUEST['sondage'];
+            $news            = $_REQUEST['news'];
+            $anims           = $_REQUEST['anims'];
+            $magie           = $_REQUEST['magie'];
+            $factions        = $_REQUEST['factions'];
+            $vcompte         = $_REQUEST['vcompte'];
 
             $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
-            $stmt = $pdo->query($req_pers);
-            if($result = $stmt->fetch())
+            $stmt     = $pdo->query($req_pers);
+            if ($result = $stmt->fetch())
             {
                 $compt_modif = $result['compt_nom'];
             }
             $req_pers = "select compt_nom from compte where compt_cod = $compt_cod ";
-            $stmt = $pdo->query($req_pers);
-            if($result = $stmt->fetch())
+            $stmt     = $pdo->query($req_pers);
+            if ($result = $stmt->fetch())
             {
                 $compt_origine = $result['compt_nom'];
             }
@@ -511,7 +516,7 @@ else
                 $etage = 'A';
             }
 
-            $req = "update compt_droit set
+            $req  = "update compt_droit set
 					dcompt_modif_perso = '$modif_perso',
 					dcompt_creer_monstre = '$creer_monstre',
 					dcompt_modif_gmon = '$modif_gmon',
@@ -533,7 +538,7 @@ else
 					dcompt_factions = '$factions'
 				where dcompt_compt_cod = $vcompte";
             $stmt = $pdo->query($req);
-            $log = $log . "dcompt_modif_perso = '$modif_perso',
+            $log  = $log . "dcompt_modif_perso = '$modif_perso',
 				dcompt_creer_monstre = '$creer_monstre',
 				dcompt_modif_gmon = '$modif_gmon',
 				dcompt_controle = '$controle',
@@ -558,7 +563,7 @@ else
             break;
 
         case "cree":
-        $req = "insert into compt_droit (dcompt_compt_cod) values ($vcompte) ";
+        $req  = "insert into compt_droit (dcompt_compt_cod) values ($vcompte) ";
         $stmt = $pdo->query($req);
         ?>
         <p>Les droits ont bien été créés !<br>

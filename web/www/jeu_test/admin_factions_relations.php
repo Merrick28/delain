@@ -1,5 +1,5 @@
-<?php 
-if(!defined("APPEL"))
+<?php
+if (!defined("APPEL"))
     die("Erreur d’appel de page !");
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
@@ -13,70 +13,71 @@ echo '<div style="padding:10px"><p>La table doit se lire : la faction A considè
 $resultat = '';
 
 // Récupération de la matrice des relations
-$req = 'SELECT f2f_sujet_cod, f2f_objet_cod, f2f_note_estime FROM faction_relation_faction order by f2f_sujet_cod, f2f_objet_cod';
-$stmt = $pdo->query($req);
+$req       =
+    'SELECT f2f_sujet_cod, f2f_objet_cod, f2f_note_estime FROM faction_relation_faction order by f2f_sujet_cod, f2f_objet_cod';
+$stmt      = $pdo->query($req);
 $relations = array();
 while ($result = $stmt->fetch())
 {
-	$sujet = $db->f('f2f_sujet_cod');
-	$objet = $db->f('f2f_objet_cod');
-	$note = $db->f('f2f_note_estime');
-	if (!isset($relations[$sujet]))
-		$relations[$sujet] = array();
-	$relations[$sujet][$objet] = $note;
+    $sujet = $result['f2f_sujet_cod'];
+    $objet = $result['f2f_objet_cod'];
+    $note  = $result['f2f_note_estime'];
+    if (!isset($relations[$sujet]))
+        $relations[$sujet] = array();
+    $relations[$sujet][$objet] = $note;
 }
 
 // Récupération de liste des factions
-$req = 'SELECT fac_cod, fac_nom FROM factions WHERE fac_active = \'O\' order by fac_cod';
-$stmt = $pdo->query($req);
+$req      = 'SELECT fac_cod, fac_nom FROM factions WHERE fac_active = \'O\' order by fac_cod';
+$stmt     = $pdo->query($req);
 $factions = array();
 while ($result = $stmt->fetch())
-	$factions[$result['fac_cod']] = $result['fac_nom'];
+    $factions[$result['fac_cod']] = $result['fac_nom'];
 
 // Traitements
 switch ($methode)
 {
-	case 'debut': break;
+    case 'debut':
+        break;
 
-	case 'faction_relations_modif':
-		foreach ($_POST as $nom => $valeur)
-		{
-			if (strpos($nom, 'relation_') === 0 && $valeur > 0 && $valeur < 11)
-			{
-				$champ_expl = explode('_', str_replace('relation_', '', $nom));
-				$sujet = $champ_expl[0];
-				$objet = $champ_expl[1];
-				$modif = false;
-				if (!isset($relations[$sujet]) ||
-					!isset($relations[$sujet][$objet]))
-				{
-					$req = "INSERT INTO faction_relation_faction (f2f_sujet_cod, f2f_objet_cod, f2f_note_estime)
+    case 'faction_relations_modif':
+        foreach ($_POST as $nom => $valeur)
+        {
+            if (strpos($nom, 'relation_') === 0 && $valeur > 0 && $valeur < 11)
+            {
+                $champ_expl = explode('_', str_replace('relation_', '', $nom));
+                $sujet      = $champ_expl[0];
+                $objet      = $champ_expl[1];
+                $modif      = false;
+                if (!isset($relations[$sujet]) ||
+                    !isset($relations[$sujet][$objet]))
+                {
+                    $req   = "INSERT INTO faction_relation_faction (f2f_sujet_cod, f2f_objet_cod, f2f_note_estime)
 						VALUES ($sujet, $objet, $valeur)";
-					$stmt = $pdo->query($req);
-					$modif = true;
-				}
-				else if ($relations[$sujet][$objet] != $valeur)
-				{
-					$req = "UPDATE faction_relation_faction
+                    $stmt  = $pdo->query($req);
+                    $modif = true;
+                } else if ($relations[$sujet][$objet] != $valeur)
+                {
+                    $req   = "UPDATE faction_relation_faction
 						SET f2f_note_estime = $valeur
 						WHERE f2f_sujet_cod = $sujet
 							AND f2f_objet_cod = $objet";
-					$stmt = $pdo->query($req);
-					$modif = true;
-				}
-				if ($modif)
-				{
-					if (!isset($relations[$sujet]))
-						$relations[$sujet] = array();
-					$relations[$sujet][$objet] = $valeur;
+                    $stmt  = $pdo->query($req);
+                    $modif = true;
+                }
+                if ($modif)
+                {
+                    if (!isset($relations[$sujet]))
+                        $relations[$sujet] = array();
+                    $relations[$sujet][$objet] = $valeur;
 
-					$sujet_nom = $factions[$sujet];
-					$objet_nom = $factions[$objet];
-					$resultat .= "<p>Relation entre « $sujet_nom » et « $objet_nom » passée à $valeur.</p>";
-				}
-			}
-		}
-	break;
+                    $sujet_nom = $factions[$sujet];
+                    $objet_nom = $factions[$objet];
+                    $resultat  .= "<p>Relation entre « $sujet_nom » et « $objet_nom » passée à $valeur.</p>";
+                }
+            }
+        }
+        break;
 }
 
 ecrireResultatEtLoguer($resultat);
@@ -94,26 +95,26 @@ echo '<table style="padding:10px">
 
 echo '<tr>';
 foreach ($factions as $id => $nom)
-	echo "<th class='titre' title='$nom'>($id)</th>";
+    echo "<th class='titre' title='$nom'>($id)</th>";
 echo '</tr>';
 
 
 foreach ($factions as $id_sujet => $nom_sujet)
 {
-	echo "<tr><th class='titre' style='text-align:right;'>$nom_sujet ($id_sujet)</th>";
-	foreach ($factions as $id_objet => $nom_objet)
-	{
-		if ($id_sujet == $id_objet)
-			echo "<td style='background-color:black;'></td>";
-		else
-		{
-			$note_donnee = (isset($relations[$id_sujet]) && isset($relations[$id_sujet][$id_objet]));
-			$note = ($note_donnee) ? $relations[$id_sujet][$id_objet] : 0;
-			$style = ($note_donnee) ? '' : ' style="background-color:red;"';
-			echo "<td$style><input type='text' value='$note' name='relation_$id_sujet" . "_$id_objet' size='2' /></td>";
-		}
-	}
-	echo "</tr>";
+    echo "<tr><th class='titre' style='text-align:right;'>$nom_sujet ($id_sujet)</th>";
+    foreach ($factions as $id_objet => $nom_objet)
+    {
+        if ($id_sujet == $id_objet)
+            echo "<td style='background-color:black;'></td>";
+        else
+        {
+            $note_donnee = (isset($relations[$id_sujet]) && isset($relations[$id_sujet][$id_objet]));
+            $note        = ($note_donnee) ? $relations[$id_sujet][$id_objet] : 0;
+            $style       = ($note_donnee) ? '' : ' style="background-color:red;"';
+            echo "<td$style><input type='text' value='$note' name='relation_$id_sujet" . "_$id_objet' size='2' /></td>";
+        }
+    }
+    echo "</tr>";
 }
 echo '</table>';
 
