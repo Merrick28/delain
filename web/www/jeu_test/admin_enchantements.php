@@ -382,8 +382,7 @@ if ($erreur == 0)
             $stmt   = $pdo->execute(array(":enc" => $enc), $stmt);
             if (!$result = $stmt->fetch())
             {
-                $db->query('insert into enc_type_objet (tenc_enc_cod) values (:enc)');
-                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->prepare('insert into enc_type_objet (tenc_enc_cod) values (:enc)');
                 $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
             }
             ?>
