@@ -384,7 +384,8 @@ case "et2":
     $nom  = strtolower($nom);
     $req  = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
     $stmt = $pdo->query($req);
-if (!$result = $stmt->fetch())
+    $allcompte = $stmt->fetchAll();
+if (count($allcompte) == 0)
 {
     ?>
     Aucun compte trouvé à ce nom !<br>
@@ -398,7 +399,7 @@ else
         <input type="hidden" name="methode" value="et3">
         <select name="vcompte">
             <?php
-            while ($result = $stmt->fetch())
+            foreach ($allcompte as $result)
             {
                 ?>
                 <option value="<?php echo $result['compt_cod']; ?>"><?php echo $result['compt_nom']; ?></option>
