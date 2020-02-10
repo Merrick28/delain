@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+$pdo = new bddpdo;
 ?>
     <title>ÉDITION D’UN PERSO / MONSTRE</title>
     <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
@@ -484,7 +485,7 @@ if ($erreur == 0)
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
+			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
 				document.suppr_bonmal.type_bm.value='STD';
@@ -493,8 +494,8 @@ if ($erreur == 0)
                             }
                             ?>
                             <?php // LISTE DES BONUS de Caracs
-                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
-                                          corig_valeur as bonus_valeur, 
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]' ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
+                                          corig_valeur as bonus_valeur,
                                           COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
                                         inner join bonus_type on tbonus_libc = corig_type_carac
@@ -512,10 +513,10 @@ if ($erreur == 0)
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
+			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
-				document.suppr_bonmal.type_bm.value='CARAC';				
+				document.suppr_bonmal.type_bm.value='CARAC';
 				document.suppr_bonmal.submit();\">Supprimer</a>(<em style='font-size: 8px;'>non-éditable, supprimez/recréez pour modifier<em>)</TD>";
                                 echo '</tr>';
                             }
@@ -547,14 +548,14 @@ if ($erreur == 0)
 			pendant <INPUT type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
-				document.suppr_bonmal.type_bm.value='STD';				
+				document.suppr_bonmal.type_bm.value='STD';
 				document.suppr_bonmal.submit();\">Supprimer</a></TD>";
                                 echo '</tr>';
                             }
                             ?>
                             <?php // LISTE DES MALUS de Caracs
-                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc, 
-                                          corig_valeur as bonus_valeur, 
+                            $req_bon = "select tonbus_libelle || CASE WHEN corig_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, corig_cod, tbonus_libc as bonus_tbonus_libc,
+                                          corig_valeur as bonus_valeur,
                                         COALESCE(corig_nb_tours::text, (DATE_PART('HOUR', corig_dfin-now())::text)||'h') as bonus_nb_tours
                                         from carac_orig
                                         inner join bonus_type on tbonus_libc = corig_type_carac
@@ -572,10 +573,10 @@ if ($erreur == 0)
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
-			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.		
+			pendant <INPUT disabled type='text' size='6' name='PERSO_BM_dur_$id' value='$dur' /> tours.
 			<a href=\"javascript:document.suppr_bonmal.bonmal_cod.value='$tbon';
 				document.suppr_bonmal.bonmal_valeur_debut.value='$val';
-				document.suppr_bonmal.type_bm.value='CARAC';				
+				document.suppr_bonmal.type_bm.value='CARAC';
 				document.suppr_bonmal.submit();\">Supprimer</a>(<em style='font-size: 8px;'>non-éditable, supprimez/recréez pour modifier<em>)</TD>";
                                 echo '</tr>';
                             }
@@ -780,8 +781,8 @@ if ($erreur == 0)
                         "select sort_cod,sort_nom,sort_cout from sorts where sort_comp_cod <> 69 order by sort_nom ";
                     $stmt      = $pdo->query($req_sorts);
                     $nbs       = 0;
-                    $req_sm    = "select sort_cod,sort_nom,sort_cout from sorts,perso_sorts 
-                              where psort_perso_cod = :mod_perso_cod 
+                    $req_sm    = "select sort_cod,sort_nom,sort_cout from sorts,perso_sorts
+                              where psort_perso_cod = :mod_perso_cod
                               and psort_sort_cod = :s_cod ";
                     $stmt2     = $pdo->prepare($req_sm);
                     while ($result = $stmt->fetch())
@@ -889,7 +890,7 @@ if ($erreur == 0)
         <hr/>
         <p id='p_fam'>FAMILIER (<a href="#p_haut">Retour en haut</a>)</p>
         <?php $req_fam = "select pfam_familier_cod, perso_nom, coalesce(pfam_duree_vie, 0) as pfam_duree_vie from perso_familier
-	inner join perso on perso_cod = pfam_familier_cod AND  perso_actif='O' 
+	inner join perso on perso_cod = pfam_familier_cod AND  perso_actif='O'
 	where pfam_perso_cod = $mod_perso_cod order by pfam_familier_cod desc";
         $stmt          = $pdo->query($req_fam);
         if ($result = $stmt->fetch())
@@ -1055,9 +1056,13 @@ if ($erreur == 0)
         <TABLE width="80%" align="center">
 
             <?php // POSITION DU PERSONNAGE
-            $req_pos   = " select pos_x,pos_y,pos_etage from positions,perso_position"
-                         . " where ppos_pos_cod = pos_cod and ppos_perso_cod = $mod_perso_cod";
-            $stmt      = $pdo->query($req_pos);
+            $pdo = new bddpdo;
+            $req_pos   = " select pos_x,pos_y,pos_etage from positions,perso_position
+                where ppos_pos_cod = pos_cod and ppos_perso_cod = :perso ";
+
+            $stmt      = $pdo->prepare($req_pos);
+            $stmt = $pdo->execute(array(":perso" =>$mod_perso_cod ),$stmt);
+
             $pos_x     = 0;
             $pos_y     = 0;
             $pos_etage = 0;

@@ -320,7 +320,7 @@ if ($erreur == 0)
         {
 
             // Création du compte
-            $insertion = "insert into compte 
+            $insertion = "insert into compte
 					(compt_nom, compt_password, compt_mail, compt_monstre, compt_admin, compt_validation, compt_actif, compt_dcreat, compt_acc_charte, compt_type_quatrieme)
 					values ('$nom', '$mdp', '', '$compt_monstre', '$compt_admin', 0, 'O', now(), 'O', 2)
 					RETURNING compt_cod";
@@ -332,8 +332,8 @@ if ($erreur == 0)
 					(dcompt_compt_cod, dcompt_modif_perso, dcompt_modif_gmon, dcompt_controle, dcompt_acces_log, dcompt_monstre_automap, dcompt_etage,
 					dcompt_gere_droits, dcompt_modif_carte, dcompt_controle_admin, dcompt_monstre_carte, dcompt_objet, dcompt_enchantements, dcompt_potions,
 					dcompt_sondage, dcompt_news, dcompt_animations, dcompt_creer_monstre, dcompt_magie, dcompt_factions)
-					values ($vcompte, '$modif_perso', '$modif_gmon', '$controle', '$acces_log', '$automap_monstre', '$etage', 
-						'$gere_droits', '$modif_carte', '$logs_admin', '$carte_monstre', '$objet', '$enchantements', '$potions', 
+					values ($vcompte, '$modif_perso', '$modif_gmon', '$controle', '$acces_log', '$automap_monstre', '$etage',
+						'$gere_droits', '$modif_carte', '$logs_admin', '$carte_monstre', '$objet', '$enchantements', '$potions',
 						'$sondage', '$news', '$anims', '$creer_monstre', '$magie', '$factions')";
             $stmt      = $pdo->query($insertion);
 
@@ -425,7 +425,6 @@ else
 				<a href='$PHP_SELF?compte=$compte&methode=cree'>Créer des droits ?</a>";
             } else
             {
-                $result = $stmt->fetch();
                 echo "<p>Modification des droits pour le compte « $compt_modif ».</p>";
                 ?>
                 <form method="post">

@@ -54,7 +54,7 @@ if ($erreur == 0)
 REPARTION DES MONSTRES PAR ÉTAGE :
 <form method="post">
 	Étage : <select name="pos_etage">
-	<?php 
+	<?php
 		echo $html->etage_select($pos_etage);
 	?>
 	</select><br>
@@ -64,7 +64,7 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 <?php if(isset($_POST['pos_etage']))
 {
 	$req = "select etage_libelle,count(ppos_perso_cod) as perso_presents from etage,perso_position,positions,perso where  etage_numero = $pos_etage
-		and ppos_pos_cod = pos_cod and pos_etage = etage_numero 
+		and ppos_pos_cod = pos_cod and pos_etage = etage_numero
 		and ppos_perso_cod = perso_cod
 		and perso_type_perso = 1
 		and perso_actif = 'O'
@@ -72,16 +72,18 @@ REPARTION DES MONSTRES PAR ÉTAGE :
 	$stmt = $pdo->query($req);
 	$result = $stmt->fetch();
 	$req_monstre = "select etage_libelle,count(ppos_perso_cod) as perso_presents from etage,perso_position,positions,perso where  etage_numero = $pos_etage
-		and ppos_pos_cod = pos_cod and pos_etage = etage_numero 
+		and ppos_pos_cod = pos_cod and pos_etage = etage_numero
 		and ppos_perso_cod = perso_cod
 		and perso_type_perso = 2
 		and perso_actif = 'O'
 		group by etage_libelle";
-	$db2->query($req_monstre);
-	$db2->next_record();?>
-<p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $result['etage_libelle'];?></strong> / Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $db2->f("perso_presents");?></p><br>
+	$stmt2 = $pdo->query($req_monstre);
+	$result2 = $stmt2->fetch();
+	?>
+<p><strong>RÉPARTITION DES MONSTRES pour l’étage: <?php  echo $result['etage_libelle'];?></strong>
+/ Nombre de persos présents : <?php  echo $result['perso_presents'];?> / Nombre de monstres présents : <?php  echo $result['perso_presents'];?></p><br>
 <p>
-<?php 
+<?php
 $rjmon_repart = 0.0;
 $rjmon_type = '';
 $req = "select rjmon_repart, rjmon_type from rep_mon_joueur where rjmon_etage = $pos_etage";
@@ -108,7 +110,7 @@ if($result = $stmt->fetch())
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Modifier</TH>
 			<TH width="20%" align="center" valign="top" nowrap="nowrap">Supprimer</TH>
 		</TR>
-<?php 
+<?php
 	$req = "select rmon_cod, mg.gmon_cod, mg.gmon_nom, rmon_poids, rmon_max, coalesce(monstres.nombre, 0) as nombre
 		from repart_monstre
 		inner join monstre_generique mg ON mg.gmon_cod = rmon_gmon_cod
@@ -148,7 +150,7 @@ Ajouter un nouveau monstre :
 	<input type="hidden" name="methode" value="ajouter">
 	<input type="hidden" name="pos_etage" value="<?php echo $pos_etage;?>">
 	Monstre : <select name="gmon_cod">
-<?php 
+<?php
 	$req = "select gmon_cod,gmon_nom from monstre_generique order by gmon_nom ";
 	$stmt = $pdo->query($req);
 	while($result = $stmt->fetch())
