@@ -2,7 +2,7 @@
 -- Name: allonge_temps(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function allonge_temps(integer) RETURNS text
+create or replace function allonge_temps_temps(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*****************************************************************/
 /* Fonction allonge_temps : calcule l augmentation du temps de   */

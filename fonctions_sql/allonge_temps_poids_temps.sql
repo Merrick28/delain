@@ -2,7 +2,7 @@
 -- Name: allonge_temps_poids(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-create or replace function allonge_temps_poids(integer) RETURNS text
+create or replace function allonge_temps_poids_temps(integer) RETURNS text
 LANGUAGE plpgsql
 AS $_$/*****************************************************************/
 /* Fonction allonge_temps_poids : calcule l augmentation du      */
