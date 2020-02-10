@@ -21,11 +21,11 @@ if ($erreur == 0) {
                         <?php
                         $req =
                             "select guilde_cod,guilde_nom,guilde_modif,lower(guilde_nom) as minuscule from guilde order by minuscule";
-                        $db->query($req);
-                        while ($db->next_record()) {
+                        $stmt = $pdo->query($req);
+                        while ($result = $stmt->fetch()) {
                             echo "<tr>";
-                            echo "<td class=\"soustitre2\">", $db->f("guilde_nom"), "</td>";
-                            echo "<td><input type=\"text\" name=\"modif[", $db->f("guilde_cod"), "]\" value=\"", $db->f("guilde_modif"), "\"></td>";
+                            echo "<td class=\"soustitre2\">", $result['guilde_nom'], "</td>";
+                            echo "<td><input type=\"text\" name=\"modif[", $result['guilde_cod'], "]\" value=\"", $result['guilde_modif'], "\"></td>";
                             echo "</tr>";
                         }
                         ?>
@@ -41,16 +41,16 @@ if ($erreur == 0) {
             foreach ($modif as $key => $val) {
                 $erreur = 0;
                 $req = "select guilde_nom from guilde where guilde_cod = $key ";
-                $db->query($req);
-                $db->next_record();
-                $nom_guilde = $db->f("guilde_nom");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $nom_guilde = $result['guilde_nom'];
                 if (($val < -20) || ($val > 20)) {
                     $erreur = 1;
                     echo "<p>Anomalie sur la guilde <strong>", $nom_guilde, "</strong>, le modificateur doit être compris entre -20 et +20 !</p>";
                 }
                 if ($erreur == 0) {
                     $req = "update guilde set guilde_modif = $val where guilde_cod = $key ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "La guilde <strong>", $nom_guilde, "</strong> a été modifiée ! <br>";
                 }
             }
