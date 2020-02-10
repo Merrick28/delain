@@ -22,7 +22,7 @@ switch ($methode)
 					miss_nom = '$miss_nom',
 					miss_libelle = '$miss_libelle'
 				WHERE miss_cod = $miss_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$resultat = "Mission $miss_nom ($miss_cod) mise à jour !";
 		}
 		else
@@ -38,9 +38,9 @@ switch ($methode)
 			$req = "INSERT INTO Missions (miss_nom, miss_libelle, miss_fonction_init, miss_fonction_valide)
 				VALUES ('$miss_nom', '$miss_libelle', '', '')
 				RETURNING miss_cod";
-			$db->query($req);
-			$db->next_record();
-			$miss_cod = $db->f('miss_cod');
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$miss_cod = $result['miss_cod'];
 
 			$resultat = "Mission $miss_nom ($miss_cod) créée !";
 		}
@@ -78,17 +78,17 @@ echo '<table style="padding:10px">
 		<th class="titre">Définie pour</th>
 	</tr>';
 
-$db->query($req);
+$stmt = $pdo->query($req);
 
-while($db->next_record())
+while($result = $stmt->fetch())
 {
 	// Récupération des données
-	$miss_cod = $db->f('miss_cod');
-	$miss_nom = $db->f('miss_nom');
-	$miss_active = ($db->f('miss_fonction_init') != '' && $db->f('miss_fonction_valide') != '');
+	$miss_cod = $result['miss_cod'];
+	$miss_nom = $result['miss_nom'];
+	$miss_active = ($result['miss_fonction_init'] != '' && $result['miss_fonction_valide'] != '');
 	$txt_active = ($miss_active) ? '' : '<br /><strong>Inactive ! Contactez un développeur / administrateur</strong><br /> afin que la mission soit reliée à ses fonctions de traitement.';
-	$miss_libelle = $db->f('miss_libelle');
-	$txt_definie = $db->f('fmiss_nb') . ' factions';
+	$miss_libelle = $result['miss_libelle'];
+	$txt_definie = $result['fmiss_nb'] . ' factions';
 
 	echo "<form action='#' method='POST'><tr>
 		<td class='soustitre2'>$miss_cod. <input type='text' value='$miss_nom' name='miss_nom' size='30' />$txt_active</td>

@@ -11,5 +11,8 @@ content_new = content_new.replace("if ($db->next_record())","if($result = $stmt-
 content_new = content_new.replace("$db->next_record()","$result = $stmt->fetch()")
 content_new = re.sub("\$db->f\('([a-zA-Z_]*)'\)", r"$result['\1']", content_new, flags = re.M)
 content_new = re.sub("\$db->f\(\"([a-zA-Z_]*)\"\)", r"$result['\1']", content_new, flags = re.M)
-fw.write(content_new)
-fw.close
+f = open ('../web/www/jeu_test/admin_factions_missions.php', 'w+' )
+f.seek(0)
+f.write(content_new)
+f.truncate()
+f.close
