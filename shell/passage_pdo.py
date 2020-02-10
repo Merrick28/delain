@@ -1,7 +1,6 @@
 # coding: utf-8
 
 import re, sys, getopt
-fw= open("../web/www/jeu_test/admin_factions_missions.tmp","w+")
 
 with open ('../web/www/jeu_test/admin_factions_missions.php', 'r' ) as f:
     content = f.read()
