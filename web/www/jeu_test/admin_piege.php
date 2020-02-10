@@ -133,7 +133,7 @@ if ($erreur == 0)
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
             $stmt = $pdo->query($req);
-            if ($db->nf() == 0)
+            if (!$result = $stmt->fetch())
             {
                 /*********************************/
                 /* Il n'existe pas de position ! */
@@ -147,7 +147,7 @@ if ($erreur == 0)
                 /* on stocke le pos_cod et le    */
                 /* pos_fonction_arrivee          */
                 /*********************************/
-                $result = $stmt->fetch();
+
                 $pos_cod = $result['pos_cod'];
                 $pos_fonction_arrive = $result['pos_fonction_arrivee'];
             }

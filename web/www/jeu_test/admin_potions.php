@@ -1,6 +1,5 @@
 ﻿<?php
 include "blocks/_header_page_jeu.php";
-$db2 = new base_delain;
 ob_start();
 ?>
 

@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db = new base_delain;
+
 if (!isset($methode))
     $methode = "debut";
 switch ($methode)
@@ -16,21 +16,31 @@ switch ($methode)
         <?php
         break;
     case "quitte":
-        if ($db->is_admin_guilde($perso_cod))
+        $perso = new perso;
+        $perso->charge($perso_cod);
+        $is_admin_guilde = false;
+        $pguilde  = new guilde_perso();
+        if ($pguilde->get_by_perso($perso_cod))
         {
-            $req_guilde = "select guilde_cod,guilde_nom,rguilde_libelle_rang,pguilde_rang_cod from guilde,guilde_perso,guilde_rang
-																where pguilde_perso_cod = $perso_cod
-																and pguilde_guilde_cod = guilde_cod
-																and rguilde_guilde_cod = guilde_cod
-																and rguilde_rang_cod = pguilde_rang_cod ";
-            $stmt = $pdo->query($req_guilde);
-            $result = $stmt->fetch();
-            $ancienne_guilde = $result['guilde_nom'];
-            $guilde_cod = $result['guilde_cod'];
+            $rguilde = new guilde_rang();
+            $rguilde->get_by_guilde_rang($pguilde->pguilde_guilde_cod, $pguilde->pguilde_rang_cod);
+            if ($rguilde->rguilde_admin == 'O')
+            {
+                $is_admin_guilde   = true;
+                $guilde_cod = $pguilde->pguilde_guilde_cod;
+                $guilde     = new guilde;
+                $guilde->charge($guilde_cod);
+            }
+        }
+        if ($is_admin_guilde)
+        {
+
+            $ancienne_guilde = $guilde->guilde_nom;
+            $guilde_cod = $guilde->guilde_cod;
             $num_guilde = $guilde_cod;
             printf("<table><tr><td class=\"titre\"><p class=\"titre\">Administration de la guilde %s</td></tr></table>", $result['guilde_nom']);
 
-            $nb_admin = $db->nb_admin_guilde($guilde_cod);
+            $nb_admin = $guilde->nb_admin_guilde();
             if ($nb_admin == 1)
             {
                 echo("<p>Vous ne pouvez pas quitter la guilde sans nommer un autre administrateur avant votre départ !");

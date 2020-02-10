@@ -68,7 +68,7 @@ if ($erreur == 0)
                 <form method="post">
                 Editer la quête:<select onchange="this.parentNode.submit();" name="aquete_cod"><option value="0">Sélectionner ou créer une quête</option>';
 
-        $db->query('select aquete_nom_alias, aquete_cod from quetes.aquete order by aquete_nom_alias');
+        $stmt = $pdo->query('select aquete_nom_alias, aquete_cod from quetes.aquete order by aquete_nom_alias');
         while ($result = $stmt->fetch())
         {
             echo '<option value="' . $result['aquete_cod'];

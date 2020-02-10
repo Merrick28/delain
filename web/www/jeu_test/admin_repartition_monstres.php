@@ -1,7 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db2 = new base_delain;
 
 $droit_modif = 'dcompt_modif_gmon';
 include "blocks/_test_droit_modif_generique.php";

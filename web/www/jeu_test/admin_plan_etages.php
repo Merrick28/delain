@@ -24,65 +24,65 @@ if ($erreur == 0)
 
     $lesEtages = array();
     $nomEtages = array();
-    $departs = array();
+    $departs   = array();
 
     // Récupération des données
     $stmt = $pdo->query($requete_etages);
     while ($result = $stmt->fetch())
     {
-        if (!isset($lesEtages[$db->f("er1")]))
-            $lesEtages[$db->f("er1")] = array();
-        if (!isset($lesEtages[$db->f("er2")]))
-            $lesEtages[$db->f("er2")] = array();
-        if (!isset($nomEtages[$db->f("e1")]))
-            $nomEtages[$db->f("e1")] = $db->f("nom1");
-        if (!isset($nomEtages[$db->f("e2")]))
-            $nomEtages[$db->f("e2")] = $db->f("nom2");
+        if (!isset($lesEtages[$result['er1']]))
+            $lesEtages[$result['er1']] = array();
+        if (!isset($lesEtages[$result['er2']]))
+            $lesEtages[$result['er2']] = array();
+        if (!isset($nomEtages[$result['e1']]))
+            $nomEtages[$result['e1']] = $result['nom1'];
+        if (!isset($nomEtages[$result['e2']]))
+            $nomEtages[$result['e2']] = $result['nom2'];
 
-        if ($db->f("e1") != $db->f("er1"))
-            $lesEtages[$db->f("er1")][$db->f("e1")] = $db->f("e1");
-        if ($db->f("e2") != $db->f("er2"))
-            $lesEtages[$db->f("er2")][$db->f("e2")] = $db->f("e2");
+        if ($result['e1'] != $result['er1'])
+            $lesEtages[$result['er1']][$result['e1']] = $result['e1'];
+        if ($result['e2'] != $result['er2'])
+            $lesEtages[$result['er2']][$result['e2']] = $result['e2'];
 
-        if (!isset($departs[$db->f("e1")]))
-            $departs[$db->f("e1")] = array();
+        if (!isset($departs[$result['e1']]))
+            $departs[$result['e1']] = array();
 
-        $departs[$db->f("e1")][$db->f("e2")] = $result['nb'];
+        $departs[$result['e1']][$result['e2']] = $result['nb'];
     }
 
     // Affichage des données sous forme de tableau
     foreach ($lesEtages as $etageRef => $sousEtages)
     {
         echo '<div align="center">';
-        $nombre = sizeof($sousEtages);
-        $lig = 0;
-        $col = 0;
+        $nombre     = sizeof($sousEtages);
+        $lig        = 0;
+        $col        = 0;
         $lig_milieu = 0;
         $col_milieu = 0;
-        $reste = 0;
+        $reste      = 0;
         switch ($nombre)
         {
             case 0:
-                $lig = 1;
-                $col = 1;
-                $reste = 0;
+                $lig        = 1;
+                $col        = 1;
+                $reste      = 0;
                 $lig_milieu = 0;
                 $col_milieu = 0;
                 break;
             case 1:
             case 2:
-                $lig = 1;
-                $col = 5;
-                $reste = 2 - $nombre;
+                $lig        = 1;
+                $col        = 5;
+                $reste      = 2 - $nombre;
                 $lig_milieu = 1;
                 $col_milieu = 3;
                 break;
             case 3:
             case 4:
             case 5:
-                $lig = 3;
-                $col = 5;
-                $reste = 5 - $nombre;
+                $lig        = 3;
+                $col        = 5;
+                $reste      = 5 - $nombre;
                 $lig_milieu = 3;
                 $col_milieu = 3;
                 break;
@@ -90,9 +90,9 @@ if ($erreur == 0)
             case 7:
             case 8:
             case 9:
-                $lig = 3;
-                $col = 9;
-                $reste = 9 - $nombre;
+                $lig        = 3;
+                $col        = 9;
+                $reste      = 9 - $nombre;
                 $lig_milieu = 3;
                 $col_milieu = 5;
                 break;
@@ -101,9 +101,9 @@ if ($erreur == 0)
             case 12:
             case 13:
             case 14:
-                $lig = 5;
-                $col = 9;
-                $reste = 14 - $nombre;
+                $lig        = 5;
+                $col        = 9;
+                $reste      = 14 - $nombre;
                 $lig_milieu = 3;
                 $col_milieu = 5;
                 break;
