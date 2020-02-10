@@ -106,14 +106,15 @@
 
         <td>{{ (PERSO.perso_temps_tour/60)|round(O,'floor') }} h {{ PERSO.perso_temps_tour%60 }} m</td>
         <td class="soustitre2">Malus temps lié aux blessures (à cet instant)</td>
-        <td>{{ (PERSO.allonge_temps/60)|round(O,'floor') }} h {{ PERSO.allonge_temps%60 }} m</td>
+
+        <td>{{ (PERSO.allonge_temps_temps/60)|round(O,'floor') }} h {{ PERSO.allonge_temps_temps%60 }} m</td>
     </tr>
 
     <tr>
         <td class="soustitre2">Encombrement</td>
         <td>{{ PERSO.get_poids }}/{{ PERSO.perso_enc_max }}</td>
         <td class="soustitre2">Malus lié au poids transporté</td>
-        <td>{{ (PERSO.allonge_temps_poids/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids%60 }} m</td>
+        <td>{{ (PERSO.allonge_temps_poids_temps/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids_temps%60 }} m</td>
     </tr>
     <tr>
         <td></td>
