@@ -124,13 +124,13 @@ if ($erreur == 0)
                                    ELSE ''::text
                                    END AS attributes
                            FROM pg_catalog.pg_user u ORDER BY usename;";
-        $db->query($req_pers);
-        while ($db->next_record())
+        $stmt = $pdo->query($req_pers);
+        while ($result = $stmt->fetch())
         {
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><strong>" . $db->f("usename") . "</strong></td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("usesysid") . "</td>";
-            echo "<td class=\"soustitre2\">" . $db->f("attributes") . "</td>";
+            echo "<td class=\"soustitre2\"><strong>" . $result['usename'] . "</strong></td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['usesysid'] . "</td>";
+            echo "<td class=\"soustitre2\">" . $result['attributes'] . "</td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -165,31 +165,31 @@ if ($erreur == 0)
         echo "</tr>";
 
         $req_pers = "select compt_cod, compt_nom, compt_mail, TO_CHAR(compt_der_connex, 'YY-MM-DD HH:MI') compt_der_connex, compt_droit.* from compte join compt_droit on dcompt_compt_cod=compt_cod where compt_actif='$filtre_actif' order by compt_nom";
-        $db->query($req_pers);
-        while ($db->next_record())
+        $stmt = $pdo->query($req_pers);
+        while ($result = $stmt->fetch())
         {
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><span title=\"" . $db->f("compt_mail") . "\"><a href=\"admin_gestion_droits.php?methode=et3&vcompte=" . $db->f("compt_cod") . "\">" . $db->f("compt_nom") . "</a></span></td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("compt_der_connex") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_modif_perso") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_creer_monstre") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_modif_gmon") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_controle") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_acces_log") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_monstre_automap") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_monstre_carte") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_etage") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_objet") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_gere_droits") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_modif_carte") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_controle_admin") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_enchantements") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_potions") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_sondage") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_news") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_animations") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_magie") . "</td>";
-            echo "<td class=\"soustitre2 centrer\">" . $db->f("dcompt_factions") . "</td>";
+            echo "<td class=\"soustitre2\"><span title=\"" . $result['compt_mail'] . "\"><a href=\"admin_gestion_droits.php?methode=et3&vcompte=" . $result['compt_cod'] . "\">" . $result['compt_nom'] . "</a></span></td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['compt_der_connex'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_modif_perso'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_creer_monstre'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_modif_gmon'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_controle'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_acces_log'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_monstre_automap'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_monstre_carte'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_etage'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_objet'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_gere_droits'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_modif_carte'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_controle_admin'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_enchantements'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_potions'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_sondage'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_news'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_animations'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_magie'] . "</td>";
+            echo "<td class=\"soustitre2 centrer\">" . $result['dcompt_factions'] . "</td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -330,15 +330,15 @@ if ($erreur == 0)
 					values ($vcompte, '$modif_perso', '$modif_gmon', '$controle', '$acces_log', '$automap_monstre', '$etage', 
 						'$gere_droits', '$modif_carte', '$logs_admin', '$carte_monstre', '$objet', '$enchantements', '$potions', 
 						'$sondage', '$news', '$anims', '$creer_monstre', '$magie', '$factions')";
-            $db->query($insertion);
+            $stmt = $pdo->query($insertion);
 
             echo "Le compte $nom a été correctement créé !";
 
             $req_pers = "select compt_nom from compte where compt_cod = $compt_cod ";
-            $db->query($req_pers);
-            if ($db->next_record())
+            $stmt = $pdo->query($req_pers);
+            if($result = $stmt->fetch())
             {
-                $compt_origine = $db->f("compt_nom");
+                $compt_origine = $result['compt_nom'];
             }
             $log = "
 				" . date("d/m/y - H:i") . " $compt_origine (compte $compt_cod) crée le compte $nom, numéro: $vcompte\n";
@@ -378,7 +378,7 @@ case "et2":
     echo '<div>';
     $nom = strtolower($nom);
     $req = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
-    $db->query($req);
+    $stmt = $pdo->query($req);
 if ($db->nf() == 0)
 {
     ?>
@@ -393,10 +393,10 @@ else
         <input type="hidden" name="methode" value="et3">
         <select name="vcompte">
             <?php
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
                 ?>
-                <option value="<?php echo $db->f("compt_cod"); ?>"><?php echo $db->f("compt_nom"); ?></option>
+                <option value="<?php echo $result['compt_cod']; ?>"><?php echo $result['compt_nom']; ?></option>
                 <?php
             }
             ?>
@@ -408,18 +408,18 @@ else
 
         case "et3":
             $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
-            $db->query($req_pers);
-            $compt_modif = ($db->next_record()) ? $db->f("compt_nom") : 'Compte inconnu';
+            $stmt = $pdo->query($req_pers);
+            $compt_modif = ($result = $stmt->fetch()) ? $result['compt_nom'] : 'Compte inconnu';
 
             $req = "select * from compt_droit where dcompt_compt_cod = $vcompte ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($db->nf() == 0)
             {
                 echo "Aucun droit particulier pour le compte « $compt_modif ».<br>
 				<a href='$PHP_SELF?compte=$compte&methode=cree'>Créer des droits ?</a>";
             } else
             {
-                $db->next_record();
+                $result = $stmt->fetch();
                 echo "<p>Modification des droits pour le compte « $compt_modif ».</p>";
                 ?>
                 <form method="post">
@@ -427,17 +427,17 @@ else
                     <input type="hidden" name="vcompte" value="<?php echo $vcompte; ?>">
                     <table>
                         <?php
-                        echo cree_OuiNon('modif_perso', $db->f("dcompt_modif_perso"), 'Modification de perso');
-                        echo cree_OuiNon('creer_monstre', $db->f("dcompt_creer_monstre"), 'Créer des monstres');
-                        echo cree_OuiNon('modif_gmon', $db->f("dcompt_modif_gmon"), 'Modification de monstre générique');
-                        echo cree_OuiNon('controle', $db->f("dcompt_controle"), 'Contrôle');
-                        echo cree_OuiNon('acces_log', $db->f("dcompt_acces_log"), 'Accès aux logs');
-                        echo cree_OuiNon('automap_monstre', $db->f("dcompt_monstre_automap"), 'Automap complète pour les monstres');
-                        echo cree_OuiNon('carte_monstre', $db->f("dcompt_monstre_carte"), 'Accès aux cartes pour les admins monstres');
+                        echo cree_OuiNon('modif_perso', $result['dcompt_modif_perso'], 'Modification de perso');
+                        echo cree_OuiNon('creer_monstre', $result['dcompt_creer_monstre'], 'Créer des monstres');
+                        echo cree_OuiNon('modif_gmon', $result['dcompt_modif_gmon'], 'Modification de monstre générique');
+                        echo cree_OuiNon('controle', $result['dcompt_controle'], 'Contrôle');
+                        echo cree_OuiNon('acces_log', $result['dcompt_acces_log'], 'Accès aux logs');
+                        echo cree_OuiNon('automap_monstre', $result['dcompt_monstre_automap'], 'Automap complète pour les monstres');
+                        echo cree_OuiNon('carte_monstre', $result['dcompt_monstre_carte'], 'Accès aux cartes pour les admins monstres');
                         ?>
                         <tr>
                             <td class="soustitre2">Étages accessibles pour les monstres</td>
-                            <td><input type="text" name="etage" value="<?php echo $db->f("dcompt_etage"); ?>"
+                            <td><input type="text" name="etage" value="<?php echo $result['dcompt_etage']; ?>"
                                        id="liste_etages"/>
                                 <select name="choix_etage" id='choix_etage' onchange='PermutteEtage();'>
                                     <option value="--" selected='selected'>Choisissez un étage</option>
@@ -447,17 +447,17 @@ else
                                     Ex : -1,-2,0,-3</em></td>
                         </tr>
                         <?php
-                        echo cree_OuiNon('objet', $db->f("dcompt_objet"), 'Modification/création des objets générique');
-                        echo cree_OuiNon('gere_droits', $db->f("dcompt_gere_droits"), 'Gestion des droits');
-                        echo cree_OuiNon('modif_carte', $db->f("dcompt_modif_carte"), 'Modification des cartes');
-                        echo cree_OuiNon('logs_admin', $db->f("dcompt_controle_admin"), 'Accès aux logs des admins/monstres');
-                        echo cree_OuiNon('enchantements', $db->f("dcompt_enchantements"), 'Gestion des enchantements');
-                        echo cree_OuiNon('potions', $db->f("dcompt_potions"), 'Gestion des potions');
-                        echo cree_OuiNon('sondage', $db->f("dcompt_sondage"), 'Gestion des sondages');
-                        echo cree_OuiNon('news', $db->f("dcompt_news"), 'Lancer les news');
-                        echo cree_OuiNon('anims', $db->f("dcompt_animations"), 'Gérer les animations');
-                        echo cree_OuiNon('magie', $db->f("dcompt_magie"), 'Gérer les paramètres de lancer des sorts');
-                        echo cree_OuiNon('factions', $db->f("dcompt_factions"), 'Gérer les factions');
+                        echo cree_OuiNon('objet', $result['dcompt_objet'], 'Modification/création des objets générique');
+                        echo cree_OuiNon('gere_droits', $result['dcompt_gere_droits'], 'Gestion des droits');
+                        echo cree_OuiNon('modif_carte', $result['dcompt_modif_carte'], 'Modification des cartes');
+                        echo cree_OuiNon('logs_admin', $result['dcompt_controle_admin'], 'Accès aux logs des admins/monstres');
+                        echo cree_OuiNon('enchantements', $result['dcompt_enchantements'], 'Gestion des enchantements');
+                        echo cree_OuiNon('potions', $result['dcompt_potions'], 'Gestion des potions');
+                        echo cree_OuiNon('sondage', $result['dcompt_sondage'], 'Gestion des sondages');
+                        echo cree_OuiNon('news', $result['dcompt_news'], 'Lancer les news');
+                        echo cree_OuiNon('anims', $result['dcompt_animations'], 'Gérer les animations');
+                        echo cree_OuiNon('magie', $result['dcompt_magie'], 'Gérer les paramètres de lancer des sorts');
+                        echo cree_OuiNon('factions', $result['dcompt_factions'], 'Gérer les factions');
                         ?>
 
                     </table>
@@ -491,16 +491,16 @@ else
             $vcompte = $_REQUEST['vcompte'];
 
             $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
-            $db->query($req_pers);
-            if ($db->next_record())
+            $stmt = $pdo->query($req_pers);
+            if($result = $stmt->fetch())
             {
-                $compt_modif = $db->f("compt_nom");
+                $compt_modif = $result['compt_nom'];
             }
             $req_pers = "select compt_nom from compte where compt_cod = $compt_cod ";
-            $db->query($req_pers);
-            if ($db->next_record())
+            $stmt = $pdo->query($req_pers);
+            if($result = $stmt->fetch())
             {
-                $compt_origine = $db->f("compt_nom");
+                $compt_origine = $result['compt_nom'];
             }
             $log = "
 			" . date("d/m/y - H:i") . " $compt_origine (compte $compt_cod) modifie le compte $compt_modif, numero: $compte\n";
@@ -532,7 +532,7 @@ else
 					dcompt_magie = '$magie',
 					dcompt_factions = '$factions'
 				where dcompt_compt_cod = $vcompte";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $log = $log . "dcompt_modif_perso = '$modif_perso',
 				dcompt_creer_monstre = '$creer_monstre',
 				dcompt_modif_gmon = '$modif_gmon',
@@ -559,7 +559,7 @@ else
 
         case "cree":
         $req = "insert into compt_droit (dcompt_compt_cod) values ($vcompte) ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         <p>Les droits ont bien été créés !<br>
             <a href="<?php echo $PHP_SELF; ?>?methode=et3&compte=<?php echo $compte; ?>">Régler ces droits ?</a>

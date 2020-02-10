@@ -21,9 +21,9 @@ if (!isset($fac_cod))
 else
 {
 	$req = "SELECT fac_nom FROM factions where fac_cod = $fac_cod";
-	$db->query($req);
-	$db->next_record();
-	$fac_nom = $db->f('fac_nom');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les missions accessibles à la faction « $fac_nom »</div><br />";
 }
 
@@ -47,7 +47,7 @@ switch ($methode)
 				$req = "INSERT INTO faction_missions (fmiss_fac_cod, fmiss_miss_cod, fmiss_proba, fmiss_coeff_difficulte, fmiss_rang_min)
 					VALUES ($fac_cod, $fmiss_miss_cod, $fmiss_proba, $fmiss_coeff_difficulte, $fmiss_rang_min)";
 			
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Mission $fmiss_miss_cod ajoutée pour la faction « $fac_nom » !";
 		}
@@ -71,7 +71,7 @@ switch ($methode)
 					fmiss_rang_min = $fmiss_rang_min,
 					$req_libelle
 				WHERE fmiss_miss_cod = $fmiss_miss_cod AND fmiss_fac_cod = $fac_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Mission $fmiss_miss_cod modifiée pour la faction « $fac_nom » !";
 		}
@@ -84,7 +84,7 @@ switch ($methode)
 		{
 			$fmiss_miss_cod = $_POST['fmiss_miss_cod'];
 			$req = "DELETE FROM faction_missions WHERE fmiss_fac_cod = $fac_cod AND fmiss_miss_cod = $fmiss_miss_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Mission $fmiss_miss_cod supprimée pour la faction « $fac_nom » !";
 		}
@@ -117,9 +117,9 @@ if ($fac_cod > -1)
 		FROM faction_rangs WHERE rfac_fac_cod = $fac_cod ORDER BY rfac_seuil";
 
 	$req_rang_max = "SELECT count(*) as nombre FROM faction_rangs WHERE rfac_fac_cod = $fac_cod";
-	$db->query($req_rang_max);
-	$db->next_record();
-	$rang_max = $db->f('nombre');
+	$stmt = $pdo->query($req_rang_max);
+	$result = $stmt->fetch();
+	$rang_max = $result['nombre'];
 
 	// Tableau des missions
 	echo "<div style='padding:10px;'><div>Voici la liste des missions que les aventuriers pourront remplir au bénéfice de la faction « $fac_nom ».
@@ -138,17 +138,17 @@ if ($fac_cod > -1)
 			<th class="titre">Actions</th>
 		</tr>';
 
-	$db->query($req);
+	$stmt = $pdo->query($req);
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
 		// Récupération des données
-		$fmiss_miss_cod = $db->f('fmiss_miss_cod');
-		$miss_nom = $db->f('miss_nom');
-		$fmiss_proba = $db->f('fmiss_proba');
-		$fmiss_coeff_difficulte = $db->f('fmiss_coeff_difficulte');
-		$fmiss_rang_min = $db->f('fmiss_rang_min');
-		$fmiss_libelle = $db->f('fmiss_libelle');
+		$fmiss_miss_cod = $result['fmiss_miss_cod'];
+		$miss_nom = $result['miss_nom'];
+		$fmiss_proba = $result['fmiss_proba'];
+		$fmiss_coeff_difficulte = $result['fmiss_coeff_difficulte'];
+		$fmiss_rang_min = $result['fmiss_rang_min'];
+		$fmiss_libelle = $result['fmiss_libelle'];
 
 		$attention = ($fmiss_rang_min > $rang_max) ? "<strong>Attention, le rang minimal défini, $fmiss_rang_min, est<br />supérieur au rang maximal existant pour cette faction !</strong><br />" : "";
 		$select_rang = "$attention<select name='fmiss_rang_min'><option value='0'>Aucune restriction</option>"

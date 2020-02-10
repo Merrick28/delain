@@ -89,7 +89,7 @@ if($erreur == 0) {
 				where pos_x = ' . $_POST['pos_x'] . '
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
-            $db->query($req);
+            $stmt = $pdo->query($req);
             if ($db->nf() == 0) {
                 /*********************************/
                 /* Il n’existe pas de position ! */
@@ -102,9 +102,9 @@ if($erreur == 0) {
                 /* on stocke le pos_cod et le    */
                 /* pos_fonction_arrivee          */
                 /*********************************/
-                $db->next_record();
-                $pos_cod = $db->f("pos_cod");
-                $pos_fonction_arrive = $db->f("pos_fonction_arrivee");
+                $result = $stmt->fetch();
+                $pos_cod = $result['pos_cod'];
+                $pos_fonction_arrive = $result['pos_fonction_arrivee'];
             }
 
             if ($pos_fonction_arrive == '') {
@@ -129,7 +129,7 @@ if($erreur == 0) {
 					set pos_fonction_arrivee = '$piege'
 					,pos_decor = 101
 					where pos_cod = " . $pos_cod;
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>L’insertion de cette fontaine s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'];
                 ?>
                 <br><strong><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a></strong><br>
@@ -147,7 +147,7 @@ if($erreur == 0) {
                 if (!isset($valide))
                     $valide = 0;
                 if ($valide != 1) {
-                    $db->next_record();
+                    $result = $stmt->fetch();
                     echo '<form method="post" name="piege" action="' . $PHP_SELF . '">';
                     //
                     // on remet les variables post qui vont bien
@@ -180,7 +180,7 @@ if($erreur == 0) {
 						set pos_fonction_arrivee = '$piege'
 						,pos_decor = 101
 						where pos_cod = " . $pos_cod;
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     echo "<p>L’insertion de cette fontaine s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'];
                 }
             }
@@ -194,11 +194,11 @@ if($erreur == 0) {
 				where pos_etage = etage_numero
 					AND SUBSTR(pos_fonction_arrivee,1,16) = 'deplace_fontaine'
 				order by pos_etage,pos_x,pos_y";
-            $db->query($req);
-            while ($db->next_record()) {
-                $pos_cod = $db->f("pos_cod");
-                echo '<br><strong>Fontaine :</strong>' . $db->f('pos_fonction_arrivee') . '
-				<br><strong>X : ' . $db->f('pos_x') . ' / Y : ' . $db->f('pos_y') . ' / Étage : </strong>' . $db->f('etage_libelle') . '<br>
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
+                $pos_cod = $result['pos_cod'];
+                echo '<br><strong>Fontaine :</strong>' . $result['pos_fonction_arrivee'] . '
+				<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
 				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=mod">Modifier la définition de cette fontaine ?</a><br><br>
 				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=sup">Supprimer cette fontaine ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
             }
@@ -209,9 +209,9 @@ if($erreur == 0) {
             $req = "select pos_fonction_arrivee
 				from positions
 				where pos_cod = " . $pos_cod;
-            $db->query($req);
-            $db->next_record();
-            $fonction = $db->f("pos_fonction_arrivee");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $fonction = $result['pos_fonction_arrivee'];
             echo "Fonction d’origine : " . $fonction;
             $fac_piege = explode(",", $fonction);
 
@@ -266,14 +266,14 @@ if($erreur == 0) {
             $piege = "piege_param([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
             echo($piege);
             $req = "update positions set pos_fonction_arrivee = '$piege',pos_decor = 101 where pos_cod = " . $pos_cod;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La fontaine a bien été modifiée
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
             break;
 
         case "sup": //Suppression d’une fontaine existante
             $req = "update positions set pos_fonction_arrivee = '',pos_decor = 101 where pos_cod = " . $pos_cod;
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "Fontaine supprimée
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
             break;

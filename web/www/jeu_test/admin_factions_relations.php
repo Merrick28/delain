@@ -14,9 +14,9 @@ $resultat = '';
 
 // Récupération de la matrice des relations
 $req = 'SELECT f2f_sujet_cod, f2f_objet_cod, f2f_note_estime FROM faction_relation_faction order by f2f_sujet_cod, f2f_objet_cod';
-$db->query($req);
+$stmt = $pdo->query($req);
 $relations = array();
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
 	$sujet = $db->f('f2f_sujet_cod');
 	$objet = $db->f('f2f_objet_cod');
@@ -28,10 +28,10 @@ while ($db->next_record())
 
 // Récupération de liste des factions
 $req = 'SELECT fac_cod, fac_nom FROM factions WHERE fac_active = \'O\' order by fac_cod';
-$db->query($req);
+$stmt = $pdo->query($req);
 $factions = array();
-while ($db->next_record())
-	$factions[$db->f('fac_cod')] = $db->f('fac_nom');
+while ($result = $stmt->fetch())
+	$factions[$result['fac_cod']] = $result['fac_nom'];
 
 // Traitements
 switch ($methode)
@@ -52,7 +52,7 @@ switch ($methode)
 				{
 					$req = "INSERT INTO faction_relation_faction (f2f_sujet_cod, f2f_objet_cod, f2f_note_estime)
 						VALUES ($sujet, $objet, $valeur)";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$modif = true;
 				}
 				else if ($relations[$sujet][$objet] != $valeur)
@@ -61,7 +61,7 @@ switch ($methode)
 						SET f2f_note_estime = $valeur
 						WHERE f2f_sujet_cod = $sujet
 							AND f2f_objet_cod = $objet";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 					$modif = true;
 				}
 				if ($modif)

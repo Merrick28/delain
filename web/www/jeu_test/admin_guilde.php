@@ -17,15 +17,15 @@ if ($db->is_admin_guilde($perso_cod))
     		and rguilde_guilde_cod = guilde_cod
     		and rguilde_rang_cod = pguilde_rang_cod
     		and pguilde_valide = 'O' ";
-    $db->query($req_guilde);
-    $db->next_record();
-    $meta_noir           = $db->f("guilde_meta_noir");
-    $meta_caravane       = $db->f("guilde_meta_caravane");
-    $num_guilde          = $db->f("guilde_cod");
-    $perso_meta_noir     = $db->f("pguilde_meta_noir");
-    $perso_meta_caravane = $db->f("pguilde_meta_caravane");
+    $stmt = $pdo->query($req_guilde);
+    $result = $stmt->fetch();
+    $meta_noir           = $result['guilde_meta_noir'];
+    $meta_caravane       = $result['guilde_meta_caravane'];
+    $num_guilde          = $result['guilde_cod'];
+    $perso_meta_noir     = $result['pguilde_meta_noir'];
+    $perso_meta_caravane = $result['pguilde_meta_caravane'];
 
-    printf("<table><tr><td class=\"titre\"><p class=\"titre\">Administration de la guilde %s</td></tr></table>", $db->f("guilde_nom"));
+    printf("<table><tr><td class=\"titre\"><p class=\"titre\">Administration de la guilde %s</td></tr></table>", $result['guilde_nom']);
     if ($param->getparm(74) == 1)
     {
         if ($meta_noir == 'O')
@@ -73,7 +73,7 @@ if ($db->is_admin_guilde($perso_cod))
 															where pguilde_guilde_cod = $num_guilde
 															and pguilde_perso_cod = perso_cod
 															and pguilde_valide = 'N' ";
-        $db->query($req_non_valide);
+        $stmt = $pdo->query($req_non_valide);
         $nb_non_valide = $db->nf();
         if ($nb_non_valide == 0)
         {
@@ -86,12 +86,12 @@ if ($db->is_admin_guilde($perso_cod))
             echo("<input type=\"hidden\" name=\"vperso\">");
             echo("<input type=\"hidden\" name=\"visu\">");
             echo("<input type=\"hidden\" name=\"num_guilde\" value=\"$num_guilde\">");
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
                 echo "<tr>";
-                echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.valide.action='visu_desc_perso.php';document.valide.visu.value=" . $db->f("perso_cod") . ";document.valide.submit();\">" . $db->f("perso_nom") . "</A></td>";
-                echo "<td><a href=\"javascript:document.valide.vperso.value=" . $db->f("perso_cod") . ";document.valide.action='accepte_guilde.php';document.valide.submit();\">Accepter</a></td>";
-                echo "<td><a href=\"javascript:document.valide.vperso.value=" . $db->f("perso_cod") . ";document.valide.action='refuse_guilde.php';document.valide.submit();\">Refuser</a></td>";
+                echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.valide.action='visu_desc_perso.php';document.valide.visu.value=" . $result['perso_cod'] . ";document.valide.submit();\">" . $result['perso_nom'] . "</A></td>";
+                echo "<td><a href=\"javascript:document.valide.vperso.value=" . $result['perso_cod'] . ";document.valide.action='accepte_guilde.php';document.valide.submit();\">Accepter</a></td>";
+                echo "<td><a href=\"javascript:document.valide.vperso.value=" . $result['perso_cod'] . ";document.valide.action='refuse_guilde.php';document.valide.submit();\">Refuser</a></td>";
                 echo "</tr>";
             }
             echo("</form>");
@@ -105,7 +105,7 @@ if ($db->is_admin_guilde($perso_cod))
 													and rguilde_guilde_cod = $num_guilde
 													and rguilde_rang_cod = pguilde_rang_cod
 													order by rguilde_admin desc,perso_nom ";
-        $db->query($req_membre);
+        $stmt = $pdo->query($req_membre);
         echo("<p>Membres :");
         $tab_admin['O'] = ' - Administrateur';
         $tab_admin['N'] = '';
@@ -114,28 +114,28 @@ if ($db->is_admin_guilde($perso_cod))
         echo("<input type=\"hidden\" name=\"vperso\">");
         echo("<input type=\"hidden\" name=\"visu\">");
         echo("<table>");
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
             echo("<tr>");
-            printf("<td class=\"soustitre2\"><p><a href=\"javascript:document.admin2.action='visu_desc_perso.php';document.admin2.visu.value=%s;document.admin2.submit();\">%s</td>", $db->f("perso_cod"), $db->f("perso_nom"));
-            $adm = $db->f("rguilde_admin");
-            echo "<td><p>", $db->f("rguilde_libelle_rang"), $tab_admin[$adm], "</td>";
+            printf("<td class=\"soustitre2\"><p><a href=\"javascript:document.admin2.action='visu_desc_perso.php';document.admin2.visu.value=%s;document.admin2.submit();\">%s</td>", $result['perso_cod'], $result['perso_nom']);
+            $adm = $result['rguilde_admin'];
+            echo "<td><p>", $result['rguilde_libelle_rang'], $tab_admin[$adm], "</td>";
             echo("<td>");
-            if ($db->f("rguilde_admin") == 'N')
+            if ($result['rguilde_admin'] == 'N')
             {
-                echo "<p><a href=\"javascript:document.admin2.action='renvoi_guilde.php';document.admin2.vperso.value=" . $db->f("perso_cod") . ";document.admin2.submit();\">Renvoyer de la guilde</a>";
+                echo "<p><a href=\"javascript:document.admin2.action='renvoi_guilde.php';document.admin2.vperso.value=" . $result['perso_cod'] . ";document.admin2.submit();\">Renvoyer de la guilde</a>";
             }
             echo("</td>");
             echo("<td>");
-            /*if ($db->f("rguilde_admin") == 'N')
+            /*if ($result['rguilde_admin'] == 'N')
             {*/
-            echo "<p><a href=\"javascript:document.admin2.action='guilde_modif_rang.php';document.admin2.vperso.value=" . $db->f("perso_cod") . ";document.admin2.submit();\">Changer de rang ?</A>";
+            echo "<p><a href=\"javascript:document.admin2.action='guilde_modif_rang.php';document.admin2.vperso.value=" . $result['perso_cod'] . ";document.admin2.submit();\">Changer de rang ?</A>";
             /*}*/
             echo("</td>");
             if ($is_guilde)
             {
                 $req = "select dieu_nom,dniv_libelle from dieu,dieu_perso,dieu_niveau
-												where dper_perso_cod = " . $db->f("perso_cod") . "
+												where dper_perso_cod = " . $result['perso_cod'] . "
 												and dper_dieu_cod = dieu_cod
 												and dper_niveau = dniv_niveau
 												and dniv_dieu_cod = dieu_cod
@@ -152,7 +152,7 @@ if ($db->is_admin_guilde($perso_cod))
                 }
                 $requete = "select etage_cod,etage_libelle
 													from perso_position,positions,etage
-													where ppos_perso_cod = " . $db->f("perso_cod") . "
+													where ppos_perso_cod = " . $result['perso_cod'] . "
 													and ppos_pos_cod = pos_cod
 													and etage_numero = pos_etage ";
                 $db2->query($requete);
@@ -174,14 +174,14 @@ if ($db->is_admin_guilde($perso_cod))
         echo("</form>");
         $req_compte_guilde =
             "select gbank_cod,gbank_nom,gbank_or from guilde_banque where gbank_guilde_cod = $num_guilde";
-        $db->query($req_compte_guilde);
+        $stmt = $pdo->query($req_compte_guilde);
         if ($db->nf() > 0)
         {
-            $db->next_record();
-            $gbank_cod = $db->f("gbank_cod");
-            $solde     = $db->f("gbank_or");
+            $result = $stmt->fetch();
+            $gbank_cod = $result['gbank_cod'];
+            $solde     = $result['gbank_or'];
             ?>
-            <p>Votre guilde dispose d'un compte: <strong><?php echo $db->f("gbank_nom"); ?></strong> Solde actuel:
+            <p>Votre guilde dispose d'un compte: <strong><?php echo $result['gbank_nom']; ?></strong> Solde actuel:
                 <strong><?php echo $solde; ?> Br</strong>
             </p>
             <p><strong> RELEVE DE COMPTES </strong>
@@ -196,9 +196,9 @@ if ($db->is_admin_guilde($perso_cod))
                 // RELEVE DE COMPTES
                 $req_compte_guilde = "select * from (select gbank_tran_perso_cod ,gbank_tran_montant,gbank_tran_debit_credit,to_char(gbank_tran_date,'YYYY/MM/DD hh24:mi:ss') as date from guilde_banque_transactions,guilde_banque where gbank_tran_gbank_cod = gbank_cod and gbank_guilde_cod = $num_guilde order by date desc) transac
        												left join (select perso_nom,perso_cod from perso) p2 on transac.gbank_tran_perso_cod = p2.perso_cod ";
-                $db->query($req_compte_guilde);
+                $stmt = $pdo->query($req_compte_guilde);
                 $i = 0;
-                while ($db->next_record())
+                while ($result = $stmt->fetch())
                 {
                     if (($i % 2) == 0)
                     {
@@ -208,21 +208,21 @@ if ($db->is_admin_guilde($perso_cod))
                         $style = "";
                     }
                     $i++;
-                    $nom = $db->f("perso_nom");
+                    $nom = $result['perso_nom'];
                     if ($nom == null)
                     {
                         echo "<TR><TD $style><em>Aventurier aujourd'hui disparu ...</em></TD>";
                     } else
                     {
-                        echo "<TR><TD $style>", $db->f("perso_nom"), "</TD>";
+                        echo "<TR><TD $style>", $result['perso_nom'], "</TD>";
                     }
-                    echo "<TD $style>", $db->f("date"), "</TD>";
-                    if ($db->f("gbank_tran_debit_credit") == 'D')
+                    echo "<TD $style>", $result['date'], "</TD>";
+                    if ($result['gbank_tran_debit_credit'] == 'D')
                     {
-                        echo "<TD $style>", $db->f("gbank_tran_montant"), "</TD><TD $style></TD>";
+                        echo "<TD $style>", $result['gbank_tran_montant'], "</TD><TD $style></TD>";
                     } else
                     {
-                        echo "<TD $style></TD><TD $style>", $db->f("gbank_tran_montant"), "</TD>";
+                        echo "<TD $style></TD><TD $style>", $result['gbank_tran_montant'], "</TD>";
                     }
                     echo "</TR>";
                 } ?>

@@ -21,9 +21,9 @@ if (!isset($fac_cod))
 else
 {
 	$req = "SELECT fac_nom FROM factions where fac_cod = $fac_cod";
-	$db->query($req);
-	$db->next_record();
-	$fac_nom = $db->f('fac_nom');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les rangs définis pour la faction « $fac_nom »</div><br />";
 }
 
@@ -41,7 +41,7 @@ switch ($methode)
 
 			$req = "INSERT INTO faction_rangs (rfac_fac_cod, rfac_seuil, rfac_nom, rfac_description, rfac_intro)
 				VALUES ($fac_cod, $rfac_seuil, '$rfac_nom', '$rfac_description', '$rfac_intro')";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Rang $rfac_nom ajouté pour la faction « $fac_nom » !";
 		}
@@ -62,7 +62,7 @@ switch ($methode)
     			SET rfac_seuil = $rfac_seuil, rfac_nom = '$rfac_nom',
     			    rfac_description = '$rfac_description', rfac_intro = '$rfac_intro'
 				WHERE rfac_seuil = $rfac_seuil_prec AND rfac_fac_cod = $fac_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Rang $rfac_nom modifié pour la faction « $fac_nom » !";
 		}
@@ -75,7 +75,7 @@ switch ($methode)
 		{
 			$rfac_seuil = $_POST['rfac_seuil_prec'];
 			$req = "DELETE FROM faction_rangs WHERE rfac_fac_cod = $fac_cod AND rfac_seuil = $rfac_seuil";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$resultat = "Rang seuillé à $rfac_seuil supprimé pour la faction « $fac_nom » !";
 		}
@@ -117,16 +117,16 @@ if ($fac_cod > -1)
 			<th class="titre">Actions</th>
 		</tr>';
 
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	$i = 1;
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
 		// Récupération des données
-		$rfac_seuil = $db->f('rfac_seuil');
-		$rfac_nom = $db->f('rfac_nom');
-		$rfac_description = $db->f('rfac_description');
-		$rfac_intro = $db->f('rfac_intro');
+		$rfac_seuil = $result['rfac_seuil'];
+		$rfac_nom = $result['rfac_nom'];
+		$rfac_description = $result['rfac_description'];
+		$rfac_intro = $result['rfac_intro'];
 
 		echo "<form action='#' method='POST' onsubmit='if (this.methode == \"rang_supprime\") return confirm(\"Êtes-vous sûr de vouloir supprimer ce rang ?\");'><tr>
 			<td class='soustitre2'>$i. <input type='text' value='$rfac_nom' name='rfac_nom' size='20' /></td>
