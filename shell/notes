@@ -21,6 +21,6 @@ $result = $stmt->fetch();
 \$stmt = \$pdo->query\($1\)
 
 
-
+$stmt->rowCount()
 
 \$db->f(['\"][a-zA-Z_]*['\"])
