@@ -4,14 +4,16 @@ ob_start();
 //$mod_perso_cod = 2;
 
 
-$erreur = 0;
+$erreur      = 0;
 $droit_modif = 'dcompt_objet';
 include "blocks/_test_droit_modif_generique.php";
-if ($erreur == 0) {
+if ($erreur == 0)
+{
     include "admin_edition_header.php";
     if (!isset($methode))
         $methode = 'debut';
-    switch ($methode) {
+    switch ($methode)
+    {
         case 'debut':
             ?>
             Pour éditer un objet :<br>
@@ -26,18 +28,23 @@ if ($erreur == 0) {
             <?php
             break;
         case 'perso':
-            $req = 'select obj_cod,obj_nom,obj_nom_generique
+            $req    = 'select obj_cod,obj_nom,obj_nom_generique
 				from perso_objets,objets,objet_generique
 				where perobj_perso_cod = ' . $num_perso2 . '
 				and perobj_obj_cod = obj_cod
 				and obj_gobj_cod = gobj_cod ';
-            $stmt = $pdo->query($req);
-            if ($db->nf() == 0)
+            $stmt   = $pdo->query($req);
+            $allobj = $stmt->fetchAll();
+            if (count($allobj) == 0)
                 echo 'Aucun objet modifiable trouvé pour ce perso !';
-            else {
+            else
+            {
                 echo 'Liste des objets modifiables : <br>';
-                while ($result = $stmt->fetch())
+                foreach ($allobj as $result)
+                {
                     echo '<a href="' . $PHP_SELF . '?methode=objet&num_objet=' . $result['obj_cod'] . '">' . $result['obj_nom'] . '</a><br>';
+                }
+
             }
             break;
         case 'objet':
@@ -47,7 +54,7 @@ if ($erreur == 0) {
             <input type="hidden" name="num_objet" value="<?php echo $num_objet; ?>">
             <?php
             // Caractéristiques
-            $req = 'select obj_nom,obj_nom_generique,tobj_libelle,tobj_cod,gobj_pa_normal,gobj_pa_eclair,obj_nom_porte,
+            $req         = 'select obj_nom,obj_nom_generique,tobj_libelle,tobj_cod,gobj_pa_normal,gobj_pa_eclair,obj_nom_porte,
 				obj_description,obj_valeur,obj_etat,obj_des_degats,obj_val_des_degats,obj_bonus_degats,obj_armure,
 				obj_distance,obj_chute,obj_poids,obj_usure,obj_poison,obj_vampire,obj_regen,obj_aura_feu,obj_bonus_vue,obj_critique,
 				obj_critique,obj_seuil_force,obj_seuil_dex,obj_chance_drop,obj_enchantable,obj_desequipable, trouve_objet(obj_cod) as obj_position,
@@ -56,9 +63,9 @@ if ($erreur == 0) {
 				where obj_cod = ' . $num_objet . '
 				and obj_gobj_cod = gobj_cod
 				and gobj_tobj_cod = tobj_cod';
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $tobj_cod = $result['tobj_cod'];
+            $stmt        = $pdo->query($req);
+            $result      = $stmt->fetch();
+            $tobj_cod    = $result['tobj_cod'];
             $is_distance = ($result['obj_distance'] == 'O');
             ?>
             <table>
@@ -101,7 +108,8 @@ if ($erreur == 0) {
                 </tr>
                 <tr>
                     <td class="soustitre2">Valeur : <br><em>(référence de prix pour les échoppes)</em></td>
-                    <td><input type="text" size="50" name="obj_valeur" value="<?php echo $result['obj_valeur']; ?>"></td>
+                    <td><input type="text" size="50" name="obj_valeur" value="<?php echo $result['obj_valeur']; ?>">
+                    </td>
                 </tr>
                 <tr>
                     <td class="soustitre2">Poids</td>
@@ -123,7 +131,8 @@ if ($erreur == 0) {
                 </tr>
                 <tr>
                     <td class="soustitre2">Seuil en dextérité : <br><em>(0 pour pas de seuil)</em></td>
-                    <td><input type="text" size="5" name="obj_seuil_dex" value="<?php echo $result['obj_seuil_dex']; ?>">
+                    <td><input type="text" size="5" name="obj_seuil_dex"
+                               value="<?php echo $result['obj_seuil_dex']; ?>">
                     </td>
                 </tr>
                 <tr>
@@ -197,10 +206,11 @@ if ($erreur == 0) {
                     <td>
                         <select name='cree_enchantement'>
                             <option selected='selected' value='-1'>Aucun nouvel enchantement</option>
-                            <?php $categorie = 0;
+                            <?php $categorie    = 0;
                             $premiere_categorie = true;
-                            $where = ' where ';
-                            switch ($tobj_cod) {
+                            $where              = ' where ';
+                            switch ($tobj_cod)
+                            {
                                 case 1:    // arme
                                     if ($is_distance)    //arme distance
                                         $where .= 'tenc_arme_distance = 1 ';
@@ -220,15 +230,18 @@ if ($erreur == 0) {
                                     $where .= '0 = 1';
                                     break;
                             }
-                            $req = "select enc_cod, enc_nom || ' (' || enc_description || ')' as nom, enc_cout from enchantements
+                            $req  = "select enc_cod, enc_nom || ' (' || enc_description || ')' as nom, enc_cout from enchantements
 				inner join enc_type_objet on tenc_enc_cod = enc_cod $where
 				order by enc_cout, enc_description";
                             $stmt = $pdo->query($req);
-                            while ($result = $stmt->fetch()) {
-                                if ($result['enc_cout'] != $categorie) {
+                            while ($result = $stmt->fetch())
+                            {
+                                if ($result['enc_cout'] != $categorie)
+                                {
                                     $categorie = $result['enc_cout'];
-                                    $nom = '';
-                                    switch ($categorie) {
+                                    $nom       = '';
+                                    switch ($categorie)
+                                    {
                                         case 1000:
                                             $nom = 'Enchantements niveau 1';
                                             break;
@@ -260,13 +273,13 @@ if ($erreur == 0) {
             <?php
             break;
         case 'fin':
-            $req = "select compt_nom from compte where compt_cod = $compt_cod";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $compt_nom = $result['compt_nom'];
-            $modifie = 0;
-            $log = date("d/m/y - H:i") . " - (compte $compt_cod / $compt_nom) modifie l’objet $num_objet\n";
-            $fields = array(
+            $req         = "select compt_nom from compte where compt_cod = $compt_cod";
+            $stmt        = $pdo->query($req);
+            $result      = $stmt->fetch();
+            $compt_nom   = $result['compt_nom'];
+            $modifie     = 0;
+            $log         = date("d/m/y - H:i") . " - (compte $compt_cod / $compt_nom) modifie l’objet $num_objet\n";
+            $fields      = array(
                 'obj_nom',
                 'obj_nom_generique',
                 'obj_nom_porte',
@@ -297,16 +310,19 @@ if ($erreur == 0) {
             foreach ($fields as $i => $value)
                 $req_sel_obj .= "," . $fields[$i];
             $req_sel_obj .= ' from objets where obj_cod = ' . $num_objet;
-            $stmt = $pdo->query($req_sel_obj);
-            $result = $stmt->fetch();
-            foreach ($fields as $i => $value) {
-                if ($_POST[$fields[$i]] != $db->f($fields[$i])) {
-                    $log .= "Modification du champ " . $fields[$i] . " : " . $db->f($fields[$i]) . " => " . $_POST[$fields[$i]] . "\n";
+            $stmt        = $pdo->query($req_sel_obj);
+            $result      = $stmt->fetch();
+            foreach ($fields as $i => $value)
+            {
+                if ($_POST[$fields[$i]] != $result[$fields[$i]])
+                {
+                    $log     .= "Modification du champ " . $fields[$i] . " : " .  $result[$fields[$i]] . " => " . $_POST[$fields[$i]] . "\n";
                     $modifie = 1;
                 }
             }
-            if ($modifie == 1) {
-                $fieldsNum = array(
+            if ($modifie == 1)
+            {
+                $fieldsNum  = array(
                     'obj_valeur',
                     'obj_poids',
                     'obj_etat',
@@ -331,50 +347,60 @@ if ($erreur == 0) {
                     'obj_desequipable',
                     'obj_distance'
                 );
-                if ($_POST['obj_nom'] != $result['obj_nom']) {
+                if ($_POST['obj_nom'] != $result['obj_nom'])
+                {
                     $obj_nom = $_POST['obj_nom'];
                 }
-                if ($_POST['obj_nom_generique'] != $result['obj_nom_generique']) {
+                if ($_POST['obj_nom_generique'] != $result['obj_nom_generique'])
+                {
                     $obj_nom_generique = $_POST['obj_nom_generique'];
                 }
-                if ($_POST['obj_description'] != $result['obj_description']) {
+                if ($_POST['obj_description'] != $result['obj_description'])
+                {
                     $obj_description = $_POST['obj_description'];
                 }
-                if ($_POST['obj_nom_porte'] != $result['obj_nom_porte']) {
+                if ($_POST['obj_nom_porte'] != $result['obj_nom_porte'])
+                {
                     $obj_nom_porte = $_POST['obj_nom_porte'];
                 }
                 $req = "update objets set obj_nom = e'" . pg_escape_string(str_replace("'", '’', $obj_nom)) . "'
 					, obj_nom_generique = e'" . pg_escape_string(str_replace("'", '’', $obj_nom_generique)) . "'
 					, obj_description = e'" . pg_escape_string(str_replace("'", '’', $obj_description)) . "'
 					, obj_nom_porte = e'" . pg_escape_string(str_replace("'", '’', $obj_nom_porte)) . "'";
-                foreach ($fieldsNum as $i => $value) {
+                foreach ($fieldsNum as $i => $value)
+                {
                     if ($_POST[$fieldsNum[$i]] != '')
                         $req .= ', ' . $fieldsNum[$i] . ' = ' . $_POST[$fieldsNum[$i]];
                 }
-                foreach ($fieldsText as $i => $value) {
+                foreach ($fieldsText as $i => $value)
+                {
                     if ($_POST[$fieldsText[$i]] != '')
                         $req .= ', ' . $fieldsText[$i] . " = '" . $_POST[$fieldsText[$i]] . "'";
                 }
-                $req .= ' where obj_cod = ' . $num_objet;
+                $req  .= ' where obj_cod = ' . $num_objet;
                 $stmt = $pdo->query($req);
             }
 
             $cree_enchantement = $_POST['cree_enchantement'];
-            if ($cree_enchantement != '-1') {
-                $req = "select enc_nom || ' (' || enc_description || ')' as nom from enchantements where enc_cod = $cree_enchantement";
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
-                $log .= "Ajout de l’enchantement " . $result['nom'] . "\n";
+            if ($cree_enchantement != '-1')
+            {
+                $req     =
+                    "select enc_nom || ' (' || enc_description || ')' as nom from enchantements where enc_cod = $cree_enchantement";
+                $stmt    = $pdo->query($req);
+                $result  = $stmt->fetch();
+                $log     .= "Ajout de l’enchantement " . $result['nom'] . "\n";
                 $modifie = 1;
-                $req = "select f_enchantement(-1, $num_objet, $cree_enchantement, 3) ";
-                $stmt = $pdo->query($req);
+                $req     = "select f_enchantement(-1, $num_objet, $cree_enchantement, 3) ";
+                $stmt    = $pdo->query($req);
             }
 
-            if ($modifie == 1) {
-                $db->query('update objets set obj_modifie = 1 where obj_cod = ' . $num_objet);
+            if ($modifie == 1)
+            {
+                $pdo->query('update objets set obj_modifie = 1 where obj_cod = ' . $num_objet);
                 writelog($log, 'objet_edit');
                 echo "Modification effectuée : <br /><pre>$log</pre>";
-            } else {
+            } else
+            {
                 echo "Aucune modification";
             }
             break;

@@ -64,7 +64,7 @@ if ($erreur == 0) {
 
     $req_comp = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_cod IN (50, 51)';
     $req_comp_complete = 'SELECT comp_cod, comp_libelle FROM competences WHERE comp_typc_cod = 5';
-    $db_comp = new base_delain;
+
 
     function ecrire_checkbox($label, $id_unique, $name, $valeur)
     {

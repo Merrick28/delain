@@ -107,9 +107,9 @@ switch ($methode)
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
 		else
 		{
-			$renommee_min_orig = $db->f($col_min);
-			$renommee_max_orig = $db->f($col_max);
-			$renommee_libelle_orig = $db->f($col_lib);
+			$renommee_min_orig = $result[$col_min];
+			$renommee_max_orig = $result[$col_max];
+			$renommee_libelle_orig = $result[$col_lib];
 			$log .= "	Modification $log_renommee n°$renommee_cod « $renommee_libelle_orig ».\n";
 
 			$renommee_libelle = pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $renommee_libelle))));
@@ -167,9 +167,9 @@ switch ($methode)
 		if ($erreur) $message_erreur = 'Ligne de renommée / karma inconnue.';
 		else
 		{
-			$renommee_min_orig = $db->f($col_min);
-			$renommee_max_orig = $db->f($col_max);
-			$renommee_libelle_orig = $db->f($col_lib);
+			$renommee_min_orig = $result[$col_min];
+			$renommee_max_orig = $result[$col_max];
+			$renommee_libelle_orig = $result[$col_lib];
 			$log .= "	Suppression de $log_renommee n°$renommee_cod « $renommee_libelle_orig » [$renommee_min_orig ; $renommee_max_orig].\n";
 
 			$req_del = "delete from $table_ren where $col_cod = $renommee_cod";
@@ -237,10 +237,10 @@ foreach ($lesTypes as $i)
 	$prev_max = false;
 	while ($result = $stmt->fetch())
 	{
-		$renommee_cod = $db->f($col_cod);
-		$renommee_min = $db->f($col_min);
-		$renommee_max = $db->f($col_max);
-		$renommee_libelle = str_replace('\'', '’', $db->f($col_lib));
+		$renommee_cod = $result[$col_cod];
+		$renommee_min = $result[$col_min];
+		$renommee_max = $result[$col_max];
+		$renommee_libelle = str_replace('\'', '’', $result[$col_lib]);
 
 		$erreur = false;
 		$message_erreur = '';

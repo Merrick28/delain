@@ -54,7 +54,7 @@ if ($erreur == 0)
 
     if (isset($_POST['methode']))
     {
-        define('APPEL',1);
+        define('APPEL', 1);
         include "admin_traitement_perso_edit.php";
     }
 
@@ -62,7 +62,8 @@ if ($erreur == 0)
     {
 
         // affichage des attributs principaux
-        $req_perso = "select perso_nom,perso_for,perso_dex,perso_int,perso_con,perso_sex,perso_race_cod,perso_pv,perso_pv_max"
+        $req_perso =
+            "select perso_nom,perso_for,perso_dex,perso_int,perso_con,perso_sex,perso_race_cod,perso_pv,perso_pv_max"
             . ",perso_amelioration_degats,perso_amel_deg_dex,perso_amelioration_armure,perso_amelioration_vue"
             . ",to_char(perso_dcreat,'DD/MM/YYYY hh24:mi:ss') as date_creation,to_char(perso_der_connex,'DD/MM/YYYY hh24:mi:ss') as date_derniere_connexion,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt"
             . ",perso_temps_tour,perso_pa,perso_vue,	perso_des_regen,perso_valeur_regen,perso_po,perso_nb_esquive,perso_niveau,perso_type_perso,perso_px"
@@ -74,8 +75,8 @@ if ($erreur == 0)
 
         //echo "QUERY = ".$req_perso;
 
-        $db = new base_delain;
-        $stmt = $pdo->query($req_perso);
+
+        $stmt   = $pdo->query($req_perso);
         $result = $stmt->fetch();
 
         $perso_nom = $result['perso_nom'];
@@ -84,53 +85,53 @@ if ($erreur == 0)
         $perso_int = $result['perso_int'];
         $perso_con = $result['perso_con'];
 
-        $perso_sex = $result['perso_sex'];
+        $perso_sex      = $result['perso_sex'];
         $perso_race_cod = $result['perso_race_cod'];
 
-        $perso_pv = $result['perso_pv'];
+        $perso_pv     = $result['perso_pv'];
         $perso_pv_max = $result['perso_pv_max'];
 
         $perso_amelioration_degats = $result['perso_amelioration_degats'];
-        $perso_amel_deg_dex = $result['perso_amel_deg_dex'];
+        $perso_amel_deg_dex        = $result['perso_amel_deg_dex'];
         $perso_amelioration_armure = $result['perso_amelioration_armure'];
-        $perso_amelioration_vue = $result['perso_amelioration_vue'];
+        $perso_amelioration_vue    = $result['perso_amelioration_vue'];
 
-        $perso_temps_tour = $result['perso_temps_tour'];
-        $perso_pa = $result['perso_pa'];
-        $perso_des_regen = $result['perso_des_regen'];
+        $perso_temps_tour   = $result['perso_temps_tour'];
+        $perso_pa           = $result['perso_pa'];
+        $perso_des_regen    = $result['perso_des_regen'];
         $perso_valeur_regen = $result['perso_valeur_regen'];
-        $perso_vue = $result['perso_vue'];
-        $perso_po = $result['perso_po'];
-        $perso_nb_esquive = $result['perso_nb_esquive'];
-        $perso_niveau = $result['perso_niveau'];
-        $perso_type_perso = $result['perso_type_perso'];
-        $perso_px = $result['perso_px'];
-        $perso_taille = $result['perso_taille'];
+        $perso_vue          = $result['perso_vue'];
+        $perso_po           = $result['perso_po'];
+        $perso_nb_esquive   = $result['perso_nb_esquive'];
+        $perso_niveau       = $result['perso_niveau'];
+        $perso_type_perso   = $result['perso_type_perso'];
+        $perso_px           = $result['perso_px'];
+        $perso_taille       = $result['perso_taille'];
 
-        $perso_tangible = $result['perso_tangible'];
-        $perso_nb_tour_intangible = $result['perso_nb_tour_intangible'];
-        $perso_enc_max = $result['perso_enc_max'];
+        $perso_tangible             = $result['perso_tangible'];
+        $perso_nb_tour_intangible   = $result['perso_nb_tour_intangible'];
+        $perso_enc_max              = $result['perso_enc_max'];
         $perso_amelioration_nb_sort = $result['perso_amelioration_nb_sort'];
-        $perso_capa_repar = $result['perso_capa_repar'];
-        $perso_nb_amel_repar = $result['perso_nb_amel_repar'];
-        $perso_nb_receptacle = $result['perso_nb_receptacle'];
-        $perso_nb_amel_chance_memo = $result['perso_nb_amel_chance_memo'];
+        $perso_capa_repar           = $result['perso_capa_repar'];
+        $perso_nb_amel_repar        = $result['perso_nb_amel_repar'];
+        $perso_nb_receptacle        = $result['perso_nb_receptacle'];
+        $perso_nb_amel_chance_memo  = $result['perso_nb_amel_chance_memo'];
 
-        $perso_nb_mort = $result['perso_nb_mort'];
+        $perso_nb_mort        = $result['perso_nb_mort'];
         $perso_nb_monstre_tue = $result['perso_nb_monstre_tue'];
-        $perso_nb_joueur_tue = $result['perso_nb_joueur_tue'];
+        $perso_nb_joueur_tue  = $result['perso_nb_joueur_tue'];
         $perso_renommee_magie = $result['perso_renommee_magie'];
-        $perso_kharma = $result['perso_kharma'];
-        $perso_renommee = $result['perso_renommee'];
+        $perso_kharma         = $result['perso_kharma'];
+        $perso_renommee       = $result['perso_renommee'];
 
-        $perso_nb_des_degats = $result['perso_nb_des_degats'];
+        $perso_nb_des_degats  = $result['perso_nb_des_degats'];
         $perso_val_des_degats = $result['perso_val_des_degats'];
-        $perso_nb_amel_comp = $result['perso_nb_amel_comp'];
-        $perso_actif = $result['perso_actif'];
-        $perso_prestige = $result['perso_prestige'];
-        $perso_pnj = $result['perso_pnj'];
-        $perso_effets_auto = $result['perso_effets_auto'];
-        $perso_voie_magique = $result['perso_voie_magique'];
+        $perso_nb_amel_comp   = $result['perso_nb_amel_comp'];
+        $perso_actif          = $result['perso_actif'];
+        $perso_prestige       = $result['perso_prestige'];
+        $perso_pnj            = $result['perso_pnj'];
+        $perso_effets_auto    = $result['perso_effets_auto'];
+        $perso_voie_magique   = $result['perso_voie_magique'];
 
         ?>
 
@@ -404,7 +405,7 @@ if ($erreur == 0)
                                    value="<?php echo $result['pcomp_modificateur'] ?>">
                             <a href="javascript:document.suppr_competence.comp_cod.value='<?php echo $result['comp_cod']; ?>';document.suppr_competence.submit();">Supprimer</a>
                         </TD>
-                        <?php if($result = $stmt->fetch()) { ?>
+                        <?php if ($result = $stmt->fetch()) { ?>
                             <TD class="soustitre2"><?php echo $result['comp_libelle']; ?></TD>
                             <TD><INPUT type="text" size="6" name="PERSO_COMP_<?php echo $result['comp_cod']; ?>"
                                        value="<?php echo $result['pcomp_modificateur'] ?>">
@@ -472,14 +473,14 @@ if ($erreur == 0)
                                             (tbonus_gentil_positif = 't' and bonus_valeur > 0
                                             or tbonus_gentil_positif = 'f' and bonus_valeur < 0)
                                         order by bonus_tbonus_libc";
-                            $stmt = $pdo->query($req_bon);
+                            $stmt    = $pdo->query($req_bon);
                             while ($result = $stmt->fetch())
                             {
-                                $lib = $result['tonbus_libelle'];
-                                $val = $result['bonus_valeur'];
-                                $dur = $result['bonus_nb_tours'];
+                                $lib  = $result['tonbus_libelle'];
+                                $val  = $result['bonus_valeur'];
+                                $dur  = $result['bonus_nb_tours'];
                                 $tbon = $result['bonus_cod'];
-                                $id = $tbon ;
+                                $id   = $tbon;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
@@ -500,14 +501,14 @@ if ($erreur == 0)
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod and corig_valeur >0 and  corig_mode!='E'
                                         order by tbonus_libc";
-                            $stmt = $pdo->query($req_bon);
+                            $stmt    = $pdo->query($req_bon);
                             while ($result = $stmt->fetch())
                             {
-                                $lib = $result['tonbus_libelle'];
-                                $val = $result['bonus_valeur'];
-                                $dur = $result['bonus_nb_tours'];
+                                $lib  = $result['tonbus_libelle'];
+                                $val  = $result['bonus_valeur'];
+                                $dur  = $result['bonus_nb_tours'];
                                 $tbon = $result['corig_cod'];
-                                $id = $tbon ;
+                                $id   = $tbon;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
@@ -532,14 +533,14 @@ if ($erreur == 0)
 			(tbonus_gentil_positif = 't' and bonus_valeur < 0
 			or tbonus_gentil_positif = 'f' and bonus_valeur > 0)
 		order by bonus_tbonus_libc";
-                            $stmt = $pdo->query($req_mal);
+                            $stmt    = $pdo->query($req_mal);
                             while ($result = $stmt->fetch())
                             {
-                                $lib = $result['tonbus_libelle'];
-                                $val = $result['bonus_valeur'];
-                                $dur = $result['bonus_nb_tours'];
+                                $lib  = $result['tonbus_libelle'];
+                                $val  = $result['bonus_valeur'];
+                                $dur  = $result['bonus_nb_tours'];
                                 $tbon = $result['bonus_cod'];
-                                $id = $tbon ;
+                                $id   = $tbon;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
@@ -560,14 +561,14 @@ if ($erreur == 0)
                                         inner join perso on perso_cod=corig_perso_cod
                                         where corig_perso_cod = $mod_perso_cod  and corig_valeur <0  and corig_mode!='E'
                                         order by tbonus_libc";
-                            $stmt = $pdo->query($req_bon);
+                            $stmt    = $pdo->query($req_bon);
                             while ($result = $stmt->fetch())
                             {
-                                $lib = $result['tonbus_libelle'];
-                                $val = $result['bonus_valeur'];
-                                $dur = $result['bonus_nb_tours'];
+                                $lib  = $result['tonbus_libelle'];
+                                $val  = $result['bonus_valeur'];
+                                $dur  = $result['bonus_nb_tours'];
                                 $tbon = $result['corig_cod'];
-                                $id = $tbon ;
+                                $id   = $tbon;
                                 echo "<TR>
 			<TD class='soustitre2'>$lib</TD>
 			<TD><INPUT disabled type='text' size='6' name='PERSO_BM_val_$id' value='$val' />
@@ -627,7 +628,7 @@ if ($erreur == 0)
                             echo "</select><script type='text/javascript'>var arr_bonmal = new Array();\n";
                             while ($result = $stmt->fetch())
                             {
-                                $clef = $result['tbonus_libc'];
+                                $clef   = $result['tbonus_libc'];
                                 $valeur = ($result['tbonus_gentil_positif'] == 't') ? 'BON' : 'MAL';
                                 echo "arr_bonmal['$clef'] = '$valeur';\n";
                             }
@@ -645,7 +646,8 @@ if ($erreur == 0)
                     <td>Puissance : <input type="text" name="bonmal_valeur" size='6'> pendant <input type="text"
                                                                                                      name="bonmal_duree"
                                                                                                      size='6'> tours,
-                                   cumulatif:  <input type="checkbox" name="bonmal_cumul" size='6'> (<em>ignoré si le bonus/malus n'est pas cumulable</em>)
+                        cumulatif: <input type="checkbox" name="bonmal_cumul" size='6'> (<em>ignoré si le bonus/malus
+                            n'est pas cumulable</em>)
                     </td>
                 </tr>
                 <tr>
@@ -668,10 +670,10 @@ if ($erreur == 0)
             $stmt = $pdo->query($req_tobj);
             while ($result = $stmt->fetch())
             {
-                $gobj_nom = $result['gobj_nom'];
-                $gobj_nom = str_replace("\"", "", $gobj_nom);
+                $gobj_nom     = $result['gobj_nom'];
+                $gobj_nom     = str_replace("\"", "", $gobj_nom);
                 $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
-                $gobj_valeur = $result['gobj_valeur'];
+                $gobj_valeur  = $result['gobj_valeur'];
                 echo("listeBase[$nb_tobj] = new Array(0); \n");
                 echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
                 echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
@@ -733,7 +735,7 @@ if ($erreur == 0)
                             <option value=''>Tous types d’objets</option>
                             <?php
                             $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
-                            $stmt = $pdo->query($req_tobj);
+                            $stmt     = $pdo->query($req_tobj);
                             while ($result = $stmt->fetch())
                             {
                                 $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
@@ -774,19 +776,21 @@ if ($erreur == 0)
             <TABLE width="80%" align="center">
                 <TR>
                     <?php // LISTE DES SORTS
-                    $req_sorts = "select sort_cod,sort_nom,sort_cout from sorts where sort_comp_cod <> 69 order by sort_nom ";
-                    $stmt = $pdo->query($req_sorts);
-                    $nbs = 0;
-                    $db_sm = new base_delain;
+                    $req_sorts =
+                        "select sort_cod,sort_nom,sort_cout from sorts where sort_comp_cod <> 69 order by sort_nom ";
+                    $stmt      = $pdo->query($req_sorts);
+                    $nbs       = 0;
+                    $req_sm    = "select sort_cod,sort_nom,sort_cout from sorts,perso_sorts 
+                              where psort_perso_cod = :mod_perso_cod 
+                              and psort_sort_cod = :s_cod ";
+                    $stmt2     = $pdo->prepare($req_sm);
                     while ($result = $stmt->fetch())
                     {
                         $s_cod = $result['sort_cod'];
-                        $req_sm = "select sort_cod,sort_nom,sort_cout from sorts,perso_sorts "
-                            . "where psort_perso_cod = $mod_perso_cod "
-                            . "and psort_sort_cod = $s_cod ";
-                        $db_sm->query($req_sm);
-                        $memo = "";
-                        if ($db_sm->next_record())
+                        $stmt2 = $pdo->execute(array(":mod_perso_cod" => $mod_perso_cod,
+                                                     ":s_cod"         => $s_cod), $stmt2);
+                        $memo  = "";
+                        if ($stmt2->fetch())
                         {
                             $memo = "checked";
                         }
@@ -831,48 +835,48 @@ if ($erreur == 0)
             <div id="liste_fonctions"></div>
             <script>EffetAuto.MontreValidite = true;</script>
             <?php // D’abord en lecture seule les effets liés au type de monstre du perso
-            $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+            $req  = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
 				from fonction_specifique
 				inner join perso on perso_gmon_cod = fonc_gmon_cod
 				where perso_cod = $mod_perso_cod AND fonc_gmon_cod IS NOT NULL";
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                $fonc_id = $result['fonc_cod'];
-                $fonc_type = $result['fonc_type'];
-                $fonc_nom = $result['fonc_nom'];
-                $fonc_effet = $result['fonc_effet'];
-                $fonc_cumulatif = $result['fonc_cumulatif'];
-                $fonc_force = $result['fonc_force'];
-                $fonc_duree = $result['fonc_duree'];
-                $fonc_type_cible = $result['fonc_type_cible'];
+                $fonc_id           = $result['fonc_cod'];
+                $fonc_type         = $result['fonc_type'];
+                $fonc_nom          = $result['fonc_nom'];
+                $fonc_effet        = $result['fonc_effet'];
+                $fonc_cumulatif    = $result['fonc_cumulatif'];
+                $fonc_force        = $result['fonc_force'];
+                $fonc_duree        = $result['fonc_duree'];
+                $fonc_type_cible   = $result['fonc_type_cible'];
                 $fonc_nombre_cible = $result['fonc_nombre_cible'];
-                $fonc_portee = $result['fonc_portee'];
-                $fonc_proba = $result['fonc_proba'];
-                $fonc_message = $result['fonc_message'];
+                $fonc_portee       = $result['fonc_portee'];
+                $fonc_proba        = $result['fonc_proba'];
+                $fonc_message      = $result['fonc_message'];
                 echo "
 		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true);</script>";
             }
 
-            $req = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
+            $req  = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
 					coalesce(EXTRACT(EPOCH FROM (fonc_date_limite - now())::INTERVAL) / 60, 0)::integer as validite
 				from fonction_specifique where fonc_perso_cod = $mod_perso_cod";
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                $fonc_id = $result['fonc_cod'];
-                $fonc_type = $result['fonc_type'];
-                $fonc_nom = $result['fonc_nom'];
-                $fonc_effet = $result['fonc_effet'];
-                $fonc_cumulatif = $result['fonc_cumulatif'];
-                $fonc_force = $result['fonc_force'];
-                $fonc_duree = $result['fonc_duree'];
-                $fonc_type_cible = $result['fonc_type_cible'];
+                $fonc_id           = $result['fonc_cod'];
+                $fonc_type         = $result['fonc_type'];
+                $fonc_nom          = $result['fonc_nom'];
+                $fonc_effet        = $result['fonc_effet'];
+                $fonc_cumulatif    = $result['fonc_cumulatif'];
+                $fonc_force        = $result['fonc_force'];
+                $fonc_duree        = $result['fonc_duree'];
+                $fonc_type_cible   = $result['fonc_type_cible'];
                 $fonc_nombre_cible = $result['fonc_nombre_cible'];
-                $fonc_portee = $result['fonc_portee'];
-                $fonc_proba = $result['fonc_proba'];
-                $fonc_message = $result['fonc_message'];
-                $fonc_validite = $result['validite'];
+                $fonc_portee       = $result['fonc_portee'];
+                $fonc_proba        = $result['fonc_proba'];
+                $fonc_message      = $result['fonc_message'];
+                $fonc_validite     = $result['validite'];
                 echo "
 		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
             }
@@ -887,11 +891,11 @@ if ($erreur == 0)
         <?php $req_fam = "select pfam_familier_cod, perso_nom, coalesce(pfam_duree_vie, 0) as pfam_duree_vie from perso_familier
 	inner join perso on perso_cod = pfam_familier_cod AND  perso_actif='O' 
 	where pfam_perso_cod = $mod_perso_cod order by pfam_familier_cod desc";
-        $stmt = $pdo->query($req_fam);
-        if($result = $stmt->fetch())
+        $stmt          = $pdo->query($req_fam);
+        if ($result = $stmt->fetch())
         {
-            $fam_cod = $result['pfam_familier_cod'];
-            $fam_nom = $result['perso_nom'];
+            $fam_cod       = $result['pfam_familier_cod'];
+            $fam_nom       = $result['perso_nom'];
             $fam_duree_vie = $result['pfam_duree_vie'];
             ?>
             <form method="post" name="familier" action="#">
@@ -923,9 +927,9 @@ if ($erreur == 0)
         <hr>
         <p id='p_rel'>RELIGION (<a href="#p_haut">Retour en haut</a>)</p>
         <?php $req_religion = "select 	dper_dieu_cod,dper_niveau,dper_points"
-        . " from  	dieu_perso where dper_perso_cod = $mod_perso_cod";
-        $stmt = $pdo->query($req_religion);
-        if($result = $stmt->fetch())
+                              . " from  	dieu_perso where dper_perso_cod = $mod_perso_cod";
+        $stmt               = $pdo->query($req_religion);
+        if ($result = $stmt->fetch())
         {
             $dieu_cod = $result['dper_dieu_cod'];
             ?>
@@ -935,14 +939,14 @@ if ($erreur == 0)
                 Modifier religion<br>
                 Dieu :
                 <select name="dper_dieu_cod">
-                    <?php $db_dieu = new base_delain;
-                    $req_dieu = "select 		dieu_cod ,dieu_nom"
-                        . " from dieu order by dieu_nom";
-                    $db_dieu->query($req_dieu);
-                    while ($db_dieu->next_record())
+                    <?php
+                    $dieu    = new dieu;
+                    $alldieu = $dieu->getAll();
+
+                    foreach ($alldieu as $detaildieu)
                     {
-                        $nom_dieu = $db_dieu->f("dieu_nom");
-                        $cod_dieu = $db_dieu->f("dieu_cod");
+                        $nom_dieu = $detaildieu->dieu_nom;
+                        $cod_dieu = $detaildieu->dieu_cod;
                         $selected = "";
                         if ($cod_dieu == $dieu_cod)
                         {
@@ -955,15 +959,16 @@ if ($erreur == 0)
                 Niveau :
                 <select name="dper_niveau">
                     <?php $req_dieu = "select dniv_niveau ,dniv_libelle"
-                        . " from dieu_niveau where dniv_dieu_cod = $dieu_cod order by dniv_niveau";
-                    $db_dieu->query($req_dieu);
+                                      . " from dieu_niveau where dniv_dieu_cod = $dieu_cod order by dniv_niveau";
+                    $stmt2          = $pdo->query($req_dieu);
+
                     $has_niveau = false;
-                    while ($db_dieu->next_record())
+                    while ($result2 = $stmt2->fetch())
                     {
-                        $has_niveau = true;
-                        $dniv_libelle = $db_dieu->f("dniv_libelle");
-                        $dniv_niveau = $db_dieu->f("dniv_niveau");
-                        $selected = "";
+                        $has_niveau   = true;
+                        $dniv_libelle = $result2['dniv_libelle'];
+                        $dniv_niveau  = $result2['dniv_niveau'];
+                        $selected     = "";
                         if ($dniv_niveau == $result['dper_niveau'])
                         {
                             $selected = "selected";
@@ -987,14 +992,13 @@ if ($erreur == 0)
                 Aucune religion sélectionnée<br>
                 Dieu :
                 <select name="dper_dieu_cod">
-                    <?php $db_dieu = new base_delain;
-                    $req_dieu = "select 		dieu_cod ,dieu_nom"
-                        . " from dieu order by dieu_nom";
-                    $db_dieu->query($req_dieu);
-                    while ($db_dieu->next_record())
+                    <?php
+                    $dieu    = new dieu;
+                    $alldieu = $dieu->getAll();
+                    foreach ($alldieu as $detaildieu)
                     {
-                        $nom_dieu = $db_dieu->f("dieu_nom");
-                        $cod_dieu = $db_dieu->f("dieu_cod");
+                        $nom_dieu = $detaildieu->dieu_nom;
+                        $cod_dieu = $detaildieu->dieu_cod;
                         echo "<option value=\"$cod_dieu\">$nom_dieu</option>\n";
                     }
                     ?>
@@ -1012,9 +1016,9 @@ if ($erreur == 0)
             <?php // LISTE DES TITRES
 
             $req_titres = "select 	ptitre_cod,ptitre_titre,to_char(ptitre_date,'DD/MM/YYYY hh24:mi:ss') as date"
-                . " from perso_titre where ptitre_perso_cod = $mod_perso_cod order by ptitre_titre";
-            $stmt = $pdo->query($req_titres);
-            $nbs = 0;
+                          . " from perso_titre where ptitre_perso_cod = $mod_perso_cod order by ptitre_titre";
+            $stmt       = $pdo->query($req_titres);
+            $nbs        = 0;
             while ($result = $stmt->fetch())
             {
                 ?>
@@ -1051,20 +1055,22 @@ if ($erreur == 0)
         <TABLE width="80%" align="center">
 
             <?php // POSITION DU PERSONNAGE
-            $req_pos = " select pos_x,pos_y,pos_etage from positions,perso_position"
-                . " where ppos_pos_cod = pos_cod and ppos_perso_cod = $mod_perso_cod";
-            $stmt = $pdo->query($req_pos);
-            $pos_x = 0;
-            $pos_y = 0;
+            $req_pos   = " select pos_x,pos_y,pos_etage from positions,perso_position"
+                         . " where ppos_pos_cod = pos_cod and ppos_perso_cod = $mod_perso_cod";
+            $stmt      = $pdo->query($req_pos);
+            $pos_x     = 0;
+            $pos_y     = 0;
             $pos_etage = 0;
-            if($result = $stmt->fetch())
+            if ($result = $stmt->fetch())
             {
-                $pos_x = $result['pos_x'];
-                $pos_y = $result['pos_y'];
+                $pos_x     = $result['pos_x'];
+                $pos_y     = $result['pos_y'];
                 $pos_etage = $result['pos_etage'];
             }
-            ?>
-            <?php if ($db->is_locked($mod_perso_cod)) { ?>
+            $tmpperso = new perso;
+            $tmpperso->charge($mod_perso_cod);
+            if ($tmpperso->is_locked())
+            { ?>
                 <TR>
                     <TD colspan="2"><strong>Ce perso est locké en combat !</strong> Son déplacement va rompre tous les
                         locks de combat.

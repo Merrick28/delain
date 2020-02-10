@@ -249,8 +249,8 @@ if ($erreur == 0)
             }
             ?>
             </SCRIPT>
-            <form name="mod" action="<?php echo $PHP_SELF ?>" method="post">
-            <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>';
+            <form name="mod" action="<?php echo $PHP_SELF ;?>" method="post">
+            <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>
             <?php
             $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
             $stmt = $pdo->query($req_tobj);
@@ -297,22 +297,23 @@ if ($erreur == 0)
                     &nbsp;<br><input type="submit" value="Valider" class="test"></form><br><br>';
             break;
         case "mod2":
-            $db2 = new base_delain;
-            $db3 = new base_delain;
+
             $req = "select * from objet_generique
 				where gobj_cod =  $gobj_cod ";
             $stmt = $pdo->query($req);
             $result = $stmt->fetch();
+
+             $req = "select * from objets_caracs where obcar_cod = :gobj_obcar_cod";
+             $stmt2 = $pdo->prepare($req);
             if ($result['gobj_obcar_cod'] != '')
             {
-                $req = "select * from objets_caracs where obcar_cod = " . $result['gobj_obcar_cod'];
-                $db2->query($req);
-                if ($db2->nf() != 0)
+
+                $stmt2 = $pdo->execute(array(":gobj_obcar_cod" => $result['gobj_obcar_cod']),$stmt2);
+                if ($result2 = $stmt->fetch())
                 {
-                    $db2->next_record();
-                    $obcar_cod = $db2->f("obcar_cod");
+                    $obcar_cod = $result2['obcar_cod'];
                     $obcar = new objets_caracs();
-                    $obcar->charge($db2->f("obcar_cod"));
+                    $obcar->charge($obcar_cod);
                 }
                 else
                 {
@@ -345,15 +346,15 @@ if ($erreur == 0)
                             <td><select name="gobj_tobj_cod">
                                     <?php
                                     $req = "select tobj_libelle,tobj_cod from type_objet where tobj_cod not in (3,5,9,10) order by tobj_cod ";
-                                    $db3->query($req);
-                                    while ($db3->next_record())
+                                    $stmt3 = $pdo->query($req);
+                                    while ($result3 = $stmt3->fetch())
                                     {
-                                        echo '<option value="' . $db3->f("tobj_cod") . '" ';
-                                        if ($db3->f('tobj_cod') == $result['gobj_tobj_cod'])
+                                        echo '<option value="' . $result3['tobj_cod']  . '" ';
+                                        if ($result3['tobj_cod'] == $result['gobj_tobj_cod'])
                                         {
                                             echo " selected ";
                                         }
-                                        echo '>' . $db3->f('tobj_libelle') . '</option>';
+                                        echo '>' . $result3['tobj_libelle'] . '</option>';
                                     }
                                     ?>
                                 </select></td>
@@ -423,15 +424,15 @@ if ($erreur == 0)
                                     </option>
                                     <?php
                                     $req = "select comp_libelle,comp_cod from competences where comp_typc_cod in (6,7,8) order by comp_cod ";
-                                    $db3->query($req);
-                                    while ($db3->next_record())
+                                    $stmt3 = $pdo->query($req);
+                                    while ($result3 = $stmt3->fetch())
                                     {
-                                        echo '<option value="' . $db3->f("comp_cod") . '" ';
-                                        if ($db3->f('comp_cod') == $result['gobj_comp_cod'])
+                                        echo '<option value="' . $result3['comp_cod'] . '" ';
+                                        if ($result3['comp_cod'] == $result['gobj_comp_cod'])
                                         {
                                             echo " selected ";
                                         }
-                                        echo '>' . $db3->f('comp_libelle') . '</option>';
+                                        echo '>' . $result3['comp_libelle'] . '</option>';
                                     }
                                     ?>
                                 </select></td>
