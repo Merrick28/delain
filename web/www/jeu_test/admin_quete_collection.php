@@ -23,7 +23,7 @@ switch ($methode)
 		$form_description = "ccol_description='" . pg_escape_string($_POST['form_description']) . "',";
 		$form_objet = "ccol_gobj_cod='" . pg_escape_string($_POST['form_objet']) . "'";
 
-		$db->query("UPDATE concours_collections SET $form_titre $form_date_ouverture $form_date_fermeture $form_description $form_objet WHERE ccol_cod=$form_cod");
+		$pdo->query("UPDATE concours_collections SET $form_titre $form_date_ouverture $form_date_fermeture $form_description $form_objet WHERE ccol_cod=$form_cod");
 		echo '<p>Modification effectuée</p>';
 		$methode = 'collection_visu';
 	break;
@@ -34,7 +34,7 @@ switch ($methode)
 		$form_date_fermeture = "'" . pg_escape_string($_POST['form_date_fermeture']) . "'::timestamp,";
 		$form_description = "'" . pg_escape_string($_POST['form_description']) . "'";
 
-		$db->query("INSERT INTO concours_collections (ccol_titre, ccol_date_ouverture, ccol_gobj_cod, ccol_date_fermeture, ccol_description) VALUES ($form_titre $form_date_ouverture $form_objet $form_date_fermeture $form_description)");
+		$pdo->query("INSERT INTO concours_collections (ccol_titre, ccol_date_ouverture, ccol_gobj_cod, ccol_date_fermeture, ccol_description) VALUES ($form_titre $form_date_ouverture $form_objet $form_date_fermeture $form_description)");
 
 		echo '<p>Création effectuée</p>';
 		$methode = 'debut';

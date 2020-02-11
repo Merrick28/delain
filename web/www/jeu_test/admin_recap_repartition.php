@@ -268,7 +268,7 @@ if ($erreur == 0)
     }
     if (isset($req2))
     {
-        $db->query($req2);
+        $stmt = $pdo->query($req2);
         while ($result = $stmt->fetch())
         {
             if (!isset($lesEtages[$result['mon_etage']]))

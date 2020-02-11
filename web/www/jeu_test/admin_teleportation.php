@@ -229,7 +229,7 @@ if ($erreur == 0)
                 inner join etage on etage_numero = pos_etage
                 where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $new_etage ";
             $stmt = $pdo->query($req);
-            if ($db->nf() == 0)
+            if ($stmt->rowCount() == 0)
             {
                 echo "<div class='bordiv'>Erreur ! Aucune position trouvée à ces coordonnées</div>";
                 $err_depl = 1;
@@ -240,7 +240,7 @@ if ($erreur == 0)
             $nv_position = $result['position'];
             $req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
             $stmt = $pdo->query($req);
-            if ($db->nf() != 0)
+            if ($stmt->rowCount() != 0)
             {
                 echo "<div class='bordiv'>Erreur ! Impossible de déplacer le perso : un mur en destination.</div>";
                 $err_depl = 1;

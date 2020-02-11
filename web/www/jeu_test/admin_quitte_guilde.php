@@ -63,7 +63,7 @@ switch ($methode)
                 // on renseigne l'expéditeur
                 $req2 = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive)
 																				values ($num_mes,1,'N') ";
-                $db->query($req2);
+                $pdo->query($req2);
                 $req_admin = "select pguilde_perso_cod
 																		from guilde_perso,guilde_rang
 																		where pguilde_guilde_cod = $guilde_cod
@@ -76,9 +76,7 @@ switch ($methode)
                     $dest = $result['pguilde_perso_cod'];
                     $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) 
 																		values ($num_mes,$dest,'N','N') ";
-                    $db_dest = new base_delain;
-                    $db_dest->query($req_dest);
-                    $db_dest->next_record();
+                    $pdo->query($req_dest);
                 }
                 //on note l'historique dans les titres
                 $ancienne_guilde = "[Ancien Administrateur de la guilde " . pg_escape_string($ancienne_guilde) . "]";
