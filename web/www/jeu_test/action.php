@@ -814,7 +814,6 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $type_rep[1] = 'arme';
             $type_rep[2] = 'armure';
             $type_rep[4] = 'casque';
-            $type_rep[41] = 'casque';       // Botte compétence casque = compétence équipement
             $autorise    = 0;
 
             $objet = new objets();
@@ -842,7 +841,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 {
                     $contenu_page .= 'Vous ne pouvez pas réparer un objet non identifié';
                 }
-                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4 || $type == 41))
+                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4))
                 {
                     $autorise = 1;
                 }
