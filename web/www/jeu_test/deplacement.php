@@ -4,6 +4,9 @@ include "blocks/_header_page_jeu.php";
 //
 //Contenu de la div de droite
 //
+$perso = new perso;
+$perso->charge($perso_cod);
+
 
 $resultat_deplacement = '';
 if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement') {
@@ -87,7 +90,8 @@ $nom = $result['perso_nom'];
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="../scripts/ajax2.js?v20190301" type="text/javascript"></script>
     <div style="float:left;" class="bordiv"><?php echo $vue ?></div>
-<?php if ($result['perso_pa'] >= $db->get_pa_dep($perso_cod)) {
+<?php if ($result['perso_pa'] >= $perso->get_pa_dep())
+{
     ?>
     <form name="deplacement" method="post" action="deplacement.php">
         <input type="hidden" name="methode" value="deplacement">

@@ -1512,8 +1512,9 @@ class perso
             $lieu->charge($lpos->lpos_lieu_cod);
             $lt = new lieu_type();
             $lt->charge($lieu->lieu_tlieu_cod);
-            $detail['lieu']      = $lieu;
-            $detail['lieu_type'] = $lt;
+            $detail['lieu']          = $lieu;
+            $detail['lieu_type']     = $lt;
+            $detail['lieu_position'] = $lpos;
             return $detail;
         }
         return false;

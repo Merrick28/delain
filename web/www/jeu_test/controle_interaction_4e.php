@@ -80,11 +80,11 @@ if ($compte > 0)
     <?php
     while ($result = $stmt->fetch())
     {
-        $pn1 = $db->f("pn1");
-        $pc1 = $db->f("pc1");
-        $pn2 = $db->f("pn2");
-        $pc2 = $db->f("pc2");
-        $levt_date = $result['levt_date'];
+        $pn1        = $result['pn1'];
+        $pc1        = $result['pc1'];
+        $pn2        = $result['pn2'];
+        $pc2        = $result['pc2'];
+        $levt_date  = $result['levt_date'];
         $levt_texte = $result['levt_texte'];
         echo "<tr>";
         echo "<td class=\"soustitre3\"><p>$levt_date</p></td>";

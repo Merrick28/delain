@@ -59,12 +59,12 @@ while ($result = $stmt->fetch())
 		$compte_precedent = $c_cod;
 		$lignes = '';
 	}
-	$pn1 = $db->f("perso_nom1");
-	$pc1 = $db->f("perso_cod1");
-	$pn4 = $db->f("perso_nom4");
-	$pc4 = $db->f("perso_cod4");
-	$pos1 = $db->f("pos1");
-	$pos4 = $db->f("pos4");
+    $pn1  = $result['perso_nom1'];
+    $pc1  = $result['perso_cod1'];
+    $pn4  = $result['perso_nom4'];
+    $pc4  = $result['perso_cod4'];
+    $pos1 = $result['pos1'];
+    $pos4 = $result['pos4'];
 	if ($nombre == 0)
 	{
 		$lignes .= "<a href='detail_compte.php?compte=$c_cod'>$c_nom</a></td>";

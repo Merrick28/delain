@@ -205,14 +205,25 @@ switch ($methode)
         $compteur_accept = 0;
 
         //Analyse des cas d’erreurs
-        $tab = $db->get_pos($perso_cod);
-        $pos_perso1 = $tab['pos_cod'];
-        $tab = $db->get_pos($_REQUEST['perso']);
-        $pos_perso2 = $tab['pos_cod'];
-        $distance = $db->distance($pos_perso1, $pos_perso2);
-        $is_lieu = $db->is_lieu($perso_cod);
-        $tab_lieu = $db->get_lieu($perso_cod);
-        $lieu_protege = $tab_lieu['lieu_refuge'];
+        $tmpperso1 = new perso;
+        $tmpperso1->charge($perso_cod);
+        $tmpperso2 = new perso;
+        $tmpperso2->charge($_REQUEST['perso']);
+        $fonctions = new fonctions();
+
+        $tab        = $tmpperso1->get_position();
+        $pos_perso1 = $tab['pos']->pos_cod;
+        $tab        = $tmpperso2->get_position();
+        $pos_perso2 = $tab['pos']->pos_cod;
+        $distance   = $fonctions->distance($pos_perso1, $pos_perso2);
+
+        $lieu_protege = '';
+        if ($tmpperso1->is_lieu())
+        {
+            $tab_lieu     = $tmpperso1->get_lieu();
+            $lieu_protege = $tab_lieu['lieu']->lieu_refuge;
+        }
+
 
         $erreur_globale = false;
 
@@ -228,10 +239,7 @@ switch ($methode)
         }
 
         // Acceptation automatique des transactions entre persos d’un même compte
-        $req = "select perso_type_perso from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        if ($result['perso_type_perso'] == 1)
+        if ($tmpperso1->perso_type_perso == 1)
         {
             $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod";
             $stmt = $pdo->query($req);

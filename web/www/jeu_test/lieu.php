@@ -3,30 +3,32 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 define("APPEL", 1);
-$is_lieu = $db->is_lieu($perso_cod);
-if ($is_lieu) {
 
+$perso = new perso;
+$perso->charge($perso_cod);
+if ($perso->is_lieu())
+{
+    $tab_lieu = $perso->get_lieu();
+    $url      = $tab_lieu['lieu']->lieu_url;
+    $evo      = $tab_lieu['lieu']->lieu_levo_niveau;
+    $lieu_cod = $tab_lieu['lieu']->lieu_cod;
+    $position = $tab_lieu['lieu_position']->lpos_pos_cod;
 
-
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $url = $tab_lieu['url'];
-
-    $evo = $tab_lieu['evo_niveau'];
-    $lieu_cod = $tab_lieu['lieu_cod'];
-    $position = $tab_lieu['position'];
-
-    if (empty($url)) {
-        $nom = $tab_lieu['nom'] . ' (' . $tab_lieu['libelle'] . ')';
-        $description = $tab_lieu['description'];
+    if (empty($url))
+    {
+        $nom         = $tab_lieu['lieu']->lieu_nom . ' (' . $tab_lieu['lieu_type']->tlieu_libelle . ')';
+        $description = $tab_lieu['lieu']->lieu_description;
 
         echo "<p><strong>$nom</strong></p><p>$description</p>";
-    } else {
+    } else
+    {
         require_once $url;
     }
 
 
     include_once 'lieu.factions.php';
-} else {
+} else
+{
     echo "<p>Anomalie, vous n’êtes pas sur un lieu !</p>";
 }
 if ($contenu_page == '')
