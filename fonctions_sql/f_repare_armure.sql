@@ -2,7 +2,7 @@
 -- Name: f_repare_armure(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.f_repare_armure(integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.f_repare_armure(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*******************************************************************/
 /* fonction repare_armure : répare une armure                      */
