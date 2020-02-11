@@ -7,19 +7,19 @@ if (!isset($evt_start)) {
 if ($evt_start < 0) {
     $evt_start = 0;
 }
-$req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
+$req      = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod ";
+$stmt     = $pdo->query($req);
+$result   = $stmt->fetch();
 $compt_an = $result['pcompt_compt_cod'];
-$req_evt = "select levt_cod,to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as evt_date,tevt_libelle,levt_texte,levt_perso_cod1,levt_attaquant,levt_cible ";
-$req_evt = $req_evt . "from ligne_evt,type_evt ";
-$req_evt = $req_evt . "where levt_perso_cod1 in (select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $compt_an) ";
-$req_evt = $req_evt . "and levt_tevt_cod = tevt_cod ";
-$req_evt = $req_evt . "and levt_tevt_cod in (18,10,11,63) ";
-$req_evt = $req_evt . "order by levt_cod desc ";
-$req_evt = $req_evt . "limit 20 ";
-$req_evt = $req_evt . "offset $evt_start ";
-$stmt = $pdo->query($req_evt);
+$req_evt  = "select levt_cod,to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as evt_date,tevt_libelle,levt_texte,levt_perso_cod1,levt_attaquant,levt_cible
+    from ligne_evt,type_evt
+    where levt_perso_cod1 in (select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $compt_an)
+    and levt_tevt_cod = tevt_cod 
+    and levt_tevt_cod in (18,10,11,63) 
+    order by levt_cod desc 
+    limit 20 
+    offset $evt_start ";
+$stmt     = $pdo->query($req_evt);
 ?>
     <table cellspacing="2">
         <tr>
@@ -57,8 +57,6 @@ $stmt = $pdo->query($req_evt);
                 }
                 $stmt_detail = $pdo->query($req_nom_evt);
                 $result_detail = $stmt_detail->fetch();
-                $res_nom_evt = pg_exec($dbconnect, $req_nom_evt);
-                $tab_nom_evt = pg_fetch_array($res_nom_evt, 0);
                 $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $db_detail->f("nom1") . "</a></strong>", $result['levt_texte']);
                 if ($result['levt_attaquant'] != '') {
                     $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $db_detail->f("nom2") . "</A></strong>", $texte_evt);

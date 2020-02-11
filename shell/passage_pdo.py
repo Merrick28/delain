@@ -24,8 +24,8 @@ content_new = re.sub("while(\$db([a-zA-Z1-9_]*)->next_record\(\))", r'while($res
 content_new = re.sub("if (\$db([a-zA-Z1-9_]*)->next_record\(\))", r'if($result\1 = $stmt\1->fetch())', content_new, flags = re.M)
 content_new = re.sub("\$db([a-zA-Z1-9_]*)->next_record\(\)", r'$result\1 = $stmt\1->fetch()', content_new, flags = re.M)
 content_new = re.sub("\$db([a-zA-Z1-9_]*)->nf\(\)", r'$stmt\1->rowCount()', content_new, flags = re.M)
-content_new = re.sub("\$db([a-zA-Z1-9_]*)->f\('([a-zA-Z_]*)'\)", r"$result\1['\2']", content_new, flags = re.M)
-content_new = re.sub("\$db([a-zA-Z1-9_]*)->f\(\"([a-zA-Z_]*)\"\)", r"$result\1['\2']", content_new, flags = re.M)
+content_new = re.sub("\$db([a-zA-Z1-9_]*)->f\('([a-zA-Z1-9_]*)'\)", r"$result\1['\2']", content_new, flags = re.M)
+content_new = re.sub("\$db([a-zA-Z1-9_]*)->f\(\"([a-zA-Z1-9_]*)\"\)", r"$result\1['\2']", content_new, flags = re.M)
 content_new = re.sub("\$db([a-zA-Z1-9_ =]*)new base_delain;", r"", content_new, flags = re.M)
 
 f = open (args.inputfile, 'w+' )

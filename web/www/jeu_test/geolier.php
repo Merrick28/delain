@@ -2,7 +2,10 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if ($db->is_milice($perso_cod) == 0) {
+$perso  = new perso;
+$perso->charge($perso_cod);
+if ($perso->is_milice() == 0)
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }

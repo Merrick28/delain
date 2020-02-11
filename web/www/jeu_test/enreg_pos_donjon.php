@@ -11,9 +11,11 @@ include "blocks/_test_lieu.php";
 if ($erreur == 0)
 {
 
-    $tab_lieu  = $db->get_lieu($perso_cod);
-    $nom_lieu  = $tab_lieu['nom'];
-    $desc_lieu = $tab_lieu['description'];
+    $perso = new perso;
+    $perso->charge($perso_cod);
+    $tab_lieu  = $perso->get_lieu();
+    $nom_lieu  = $tab_lieu['lieu']->lieu_nom;
+    $desc_lieu = $tab_lieu['lieu']->lieu_description;
     echo("<p><strong>$nom_lieu</strong> - $desc_lieu ");
 
     // Recherche d'une inscription dans les registres pour retour rapide en arene

@@ -11,7 +11,10 @@ $contenu_page = '';
 //
 include "blocks/_verif_enchanteur.php";
 
-if ($db->is_fam($perso_cod))
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if ($perso->is_fam())
 {
     $contenu_page .= "Désolé mais les familiers ne sont pas les bienvenus ici.";
     $erreur = 1;

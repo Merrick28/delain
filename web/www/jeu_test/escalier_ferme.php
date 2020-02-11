@@ -34,7 +34,10 @@ include "blocks/_tests_appels_page_externe.php";
             echo "<p>Le médaillon du Loup a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
-            if ($db->compte_objet($perso_cod, 86) != 0) {
+            $perso = new perso;
+            $perso->charge($perso_cod);
+            if ($perso->compte_objet(86) != 0)
+            {
                 echo "<p>Vous possédez le médaillon du Loup. ";
                 echo "<a href=\"javascript:document.escalier.objet.value=86;document.escalier.submit();\">Le déposer sur l'escalier ?</a>";
             } else // on recherche sa position
@@ -84,7 +87,8 @@ include "blocks/_tests_appels_page_externe.php";
             echo "<p>Le médaillon du Scorpion a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
-            if ($db->compte_objet($perso_cod, 87) != 0) {
+            if ($perso->compte_objet(87) != 0)
+            {
                 echo "<p>Vous possédez le médaillon du Scorpion. ";
                 echo "<a href=\"javascript:document.escalier.objet.value=87;document.escalier.submit();\">Le déposer sur l'escalier ?</a>";
             } else // on recherche sa position
@@ -135,7 +139,8 @@ include "blocks/_tests_appels_page_externe.php";
             echo "<p>Le médaillon du Serpent a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
-            if ($db->compte_objet($perso_cod, 88) != 0) {
+            if ($perso->compte_objet(88) != 0)
+            {
                 echo "<p>Vous possédez le médaillon du Serpent. ";
                 echo "<a href=\"javascript:document.escalier.objet.value=88;document.escalier.submit();\">Le déposer sur l'escalier ?</a>";
             } else // on recherche sa position

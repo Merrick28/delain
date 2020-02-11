@@ -57,7 +57,10 @@ if ($result['perso_utl_pa_rest'] == 1) {
         <td class="titre"><p class="titre">Combat</p></td>
     </tr>
 <?php
-if ($db->is_locked($perso_cod)) {
+$perso = new perso;
+$perso->charge($perso_cod);
+if ($perso->is_locked())
+{
     $combat = "Vous êtes actuellement engagé en combat.";
 } else {
     $combat = "Vous êtes actuellement hors combat.";

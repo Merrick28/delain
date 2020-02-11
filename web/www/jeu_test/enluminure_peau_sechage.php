@@ -1,5 +1,7 @@
 <?php
-$is_enlumineur = $db->is_enlumineur($perso_cod);
+$perso = new perso;
+$perso->charge($perso_cod);
+$is_enlumineur = $perso->is_enlumineur();
 
 if ($is_enlumineur) {
     if (!isset($methode)) {

@@ -1520,6 +1520,84 @@ class perso
         return false;
     }
 
+    function missions_du_perso($perso_cod, $fac_cod = -1, $inclure_anciennes = FALSE, $tri = 'statut')
+    {
+        $pdo         = new bddpdo;
+        $resultat    = array();
+        $critere_tri = 'mpf_statut desc';
+        switch ($tri)
+        {
+            case 'faction':
+                $critere_tri = 'fac_nom';
+                break;
+            case 'statut':
+                $critere_tri = 'mpf_statut desc';
+                break;
+            case 'date':
+                $critere_tri = 'mpf_date_debut desc';
+                break;
+            default:
+                break;
+        }
+
+        $req = "SELECT miss_nom, fac_nom, mpf_fac_cod, mission_texte(mpf_cod) as libelle,
+				to_char(mpf_date_debut, 'DD/MM/YYYY') as mpf_date_debut,
+				to_char(mpf_date_fin, 'DD/MM/YYYY') as mpf_date_fin,
+				mpf_obj_cod, mpf_pos_cod, mpf_gobj_cod, mpf_cible_perso_cod, mpf_nombre, mpf_gmon_cod,
+				miss_fonction_init, miss_fonction_valide, miss_fonction_releve, mpf_statut,
+				mpf_cod, mpf_texte, mpf_delai, mpf_recompense
+			FROM mission_perso_faction_lieu
+			INNER JOIN factions ON fac_cod = mpf_fac_cod
+			INNER JOIN missions ON miss_cod = mpf_miss_cod
+			WHERE mpf_perso_cod = $this->perso_cod ";
+
+        if (!$inclure_anciennes)    // Statut ni validé, ni échoué
+            $req .= ' AND mpf_statut < 40';
+
+        if ($fac_cod != -1)
+            $req .= " AND mpf_fac_cod = $fac_cod";
+
+        $req .= ' ORDER BY ' . $critere_tri;
+
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $uneMission                      = array();
+            $uneMission['Code']              = $result['mpf_cod'];
+            $uneMission['Nom']               = $result['miss_nom'];
+            $uneMission['Faction']           = $result['fac_nom'];
+            $uneMission['FactionCod']        = $result['mpf_fac_cod'];
+            $uneMission['Libellé']           = $result['libelle'];
+            $uneMission['DateDébut']         = $result['mpf_date_debut'];
+            $uneMission['DateFin']           = $result['mpf_date_fin'];
+            $uneMission['Statut']            = $result['mpf_statut'];
+            $uneMission['Objet']             = $result['mpf_obj_cod'];
+            $uneMission['Position']          = $result['mpf_pos_cod'];
+            $uneMission['PersoCible']        = $result['mpf_cible_perso_cod'];
+            $uneMission['TypeObjet']         = $result['mpf_gobj_cod'];
+            $uneMission['TypeMonstre']       = $result['mpf_gmon_cod'];
+            $uneMission['Quantité']          = $result['mpf_nombre'];
+            $uneMission['FctInit']           = $result['miss_fonction_init'];
+            $uneMission['FctValide']         = $result['miss_fonction_valide'];
+            $uneMission['FctReleve']         = $result['miss_fonction_releve'];
+            $uneMission['Texte']             = $result['mpf_texte'];
+            $uneMission['Délai']             = $result['mpf_delai'];
+            $uneMission['Récompense']        = $result['mpf_recompense'];
+            $statut                          = $result['mpf_statut'];
+            $uneMission['MissionPassee']     = $statut >= 40;
+            $uneMission['Relevée']           = $statut > 0;
+            $uneMission['EnCours']           = $statut >= 10 && $statut < 20;
+            $uneMission['Réussie']           = $statut == 20;
+            $uneMission['Ratée']             = $statut >= 30 && $statut < 40;
+            $uneMission['Validée']           = $statut == 40;
+            $uneMission['Échouée']           = $statut >= 50;
+            $uneMission['ÀValider']          = $statut >= 20 && $statut < 40;
+            $uneMission['RéussitePartielle'] = $statut % 10 > 0;
+            $resultat[]                      = $uneMission;
+        }
+        return $resultat;
+    }
+
     public function getPersosActifs($type_joueur = 1)
     {
         $pdo    = new bddpdo;
@@ -2259,6 +2337,18 @@ class perso
         }
 
         return $retour;
+    }
+
+    function has_artefact($objet)
+    {
+        $pdo    = new bddpdo;
+        $req    =
+            'select count(*) as nombre from perso_objets where perobj_perso_cod =  :perso  and perobj_obj_cod = :objet';
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso" => $this->perso_cod,
+                                      ":objet" => $objet), $stmt);
+        $result = $stmt->fetch();
+        return $result['nombre'] != 0;
     }
 
     public function magasin_achat($lieu, $objet)

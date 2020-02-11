@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+$perso = new perso;
+$perso->charge($perso_cod);
 
 // scripts JS
 $contenu_page .= '
@@ -55,7 +56,7 @@ height:200px;
 
 //
 include_once 'sjoueur.php';
-$is_enlumineur = $db->is_enlumineur($perso_cod);
+$is_enlumineur = $perso->is_enlumineur();
 if($is_enlumineur)
 {
 	$controle = 1;

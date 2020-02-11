@@ -17,18 +17,22 @@ include "blocks/_tests_appels_page_externe.php";
 
 
     $type_lieu = 3;
-    $nom_lieu = 'un escalier';
+    $nom_lieu  = 'un escalier';
 
     include "blocks/_test_lieu.php";
 
 
-    if ($erreur == 0) {
-        $tab_lieu = $db->get_lieu($perso_cod);
-        echo "<p><strong>" . $tab_lieu['nom'] . "</strong>  - " . $tab_lieu['description'];
+    if ($erreur == 0)
+    {
+        $perso = new perso;
+        $perso->charge($perso_cod);
+        $tab_lieu = $perso->get_lieu();
+        echo "<p><strong>" . $tab_lieu['lieu']->lieu_nom . "</strong>  - " . $tab_lieu['lieu']->lieu_description;
         echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");
         echo("Il y a un mot gravé sur la pierre ; <br />");
         echo("<em>Toi le fou qui veut accéder à ces souterrains, porte ici l'amulette de souvenir");
-        if ($db->has_artefact($perso_cod, 636)) {
+        if ($perso->has_artefact(636))
+        {
             echo("<p>Souhaitez vous poser l'amulette sur l'escalier ?<br />");
             echo("<a href=\"valide_escalier_d_ferme.php\">Oui !</a><br />");
             echo("<a href=\"perso2.php\">Non merci !</a><br />");
