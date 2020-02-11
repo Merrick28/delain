@@ -1,0 +1,24 @@
+{% extends 'template_jeu.twig' %}
+
+{% block contenu_droite %}
+
+ <table width="100%" cellspacing="2" cellpadding="2">
+     <tr>
+
+     <td class="titre">Objets</td>
+ {% for p in PERSOS  %}
+     <td class="titre" style="width:{{ 100/(NBCOL+3) }}%;">{{ p.perso_nom }}</td>
+ {% endfor %}
+     <td class="titre" style="width:{{ 100/(NBCOL+3) }}%;">TOTAL</td>
+     </tr>
+     <tr>
+         <td colspan="{{ NBCOL +2 }}" class="titre">
+             <div class="titre">Brouzoufs</div>
+         </td>
+     </tr>
+ </table>
+
+
+
+
+{% endblock %}
