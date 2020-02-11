@@ -45,8 +45,8 @@ if ($erreur == 0)
 		// on active pour le retour
 		$req = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
 		$req = $req . "and pge_lieu_cod = $lieu ";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			echo "<p>Il vous est impossible de prendre cet escalier dans ce sens. Vous devez d'abord le prendre en remontant.</p>";
 			$erreur = 1;

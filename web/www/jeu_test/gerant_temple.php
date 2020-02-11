@@ -6,19 +6,19 @@ ob_start();
 <?php
 $erreur = 0;
 $req = "select dper_dieu_cod,dper_niveau from dieu_perso where dper_perso_cod = $perso_cod";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !1";
     $erreur = 1;
 } else {
-    $db->next_record();
+    $result = $stmt->fetch();
 }
-if ($db->f("dper_niveau") < 4) {
+if ($result['dper_niveau'] < 4) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !2";
     $erreur = 1;
 }
 if ($erreur == 0) {
-    $dieu_perso = $db->f("dper_dieu_cod");
+    $dieu_perso = $result['dper_dieu_cod'];
     //
     // en premier on liste les temples et leur fidèle associé éventuel
     //
@@ -34,8 +34,8 @@ if ($erreur == 0) {
 								and tfid_perso_cod = perso_cod 
 								and lieu_dieu_cod = $dieu_perso
 								order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun temple n'est administré par des fidèles.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
@@ -47,13 +47,13 @@ if ($erreur == 0) {
         echo "<td></td>";
         echo "</tr>";
 
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td class=\"soustitre2\"><p><a href=\"gere_temple3.php?mag=" . $db->f("lieu_cod") . "\"><strong>" . $db->f("lieu_nom") . "</strong></a></td>";
-            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_fidele.php?methode=modif&lieu=" . $db->f("lieu_cod") . "\">Modifier</a></td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_fidele.php?methode=supprime&lieu=" . $db->f("lieu_cod") . "\">Supprimer</a></td>";
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td class=\"soustitre2\"><p><a href=\"gere_temple3.php?mag=" . $result['lieu_cod'] . "\"><strong>" . $result['lieu_nom'] . "</strong></a></td>";
+            echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong></td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_fidele.php?methode=modif&lieu=" . $result['lieu_cod'] . "\">Modifier</a></td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_fidele.php?methode=supprime&lieu=" . $result['lieu_cod'] . "\">Supprimer</a></td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -70,15 +70,15 @@ if ($erreur == 0) {
 					and not exists
 					(select 1 from temple_fidele where tfid_lieu_cod = lieu_cod)
 					order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun temple n'est administré par des fidèles.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p><a href=\"gere_temple3.php?mag=" . $db->f("lieu_cod") . "\"><strong>" . $db->f("lieu_nom") . "</strong></a></td><td class=\"soustitre2\"> " . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_fidele.php?methode=ajout&lieu=" . $db->f("lieu_cod") . "\">Ajouter un fidèle pour gérer ce temple</a></td>";
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p><a href=\"gere_temple3.php?mag=" . $result['lieu_cod'] . "\"><strong>" . $result['lieu_nom'] . "</strong></a></td><td class=\"soustitre2\"> " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_fidele.php?methode=ajout&lieu=" . $result['lieu_cod'] . "\">Ajouter un fidèle pour gérer ce temple</a></td>";
             echo "</tr>";
         }
         echo "</table>";

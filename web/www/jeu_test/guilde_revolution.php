@@ -9,20 +9,20 @@ $req_guilde = $req_guilde . "and pguilde_guilde_cod = guilde_cod ";
 $req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod ";
 $req_guilde = $req_guilde . "and rguilde_rang_cod = pguilde_rang_cod ";
 $req_guilde = $req_guilde . "and pguilde_valide = 'O' ";
-$db->query($req_guilde);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req_guilde);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur ! Vous n'êtes affilié à aucune guilde !";
     $erreur = 1;
 }
-$db->next_record();
-$num_guilde = $db->f("guilde_cod");
+$result = $stmt->fetch();
+$num_guilde = $result['guilde_cod'];
 // on regarde les détails de la révolution
 if (!$db->is_revolution($num_guilde)) {
     echo "<p>Aucune révolution en cours pour votre guilde.";
     $erreur = 1;
 }
 $req_lanceur = "select * from v_revguilde where guilde = $num_guilde ";
-$db->query($req_lanceur);
+$stmt = $pdo->query($req_lanceur);
 ?>
     <form name="revolution" method="post" action="vote_revguilde.php">
     <input type="hidden" name="revguilde_cod">
@@ -37,23 +37,23 @@ $db->query($req_lanceur);
             <td></td>
         </tr>
         <?php
-        while ($db->next_record()) {
-            $pour_oui = round((($db->f("oui") / $db->f("nb_membres")) * 100), 2);
-            $pour_non = round((($db->f("non") / $db->f("nb_membres")) * 100), 2);
+        while ($result = $stmt->fetch()) {
+            $pour_oui = round((($result['oui'] / $result['nb_membres']) * 100), 2);
+            $pour_non = round((($result['non'] / $result['nb_membres']) * 100), 2);
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.revolution.action='visu_desc_perso.php';document.revolution.visu.value=" . $db->f("code_lanceur") . ";document.revolution.submit()\">" . $db->f("nom_lanceur") . "</A></td>";
-            echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.revolution.action='visu_desc_perso.php';document.revolution.visu.value=" . $db->f("code_cible") . ";document.revolution.submit()\">" . $db->f("nom_cible") . "</a></td>";
-            echo "<td><p>" . $db->f("oui") . " (" . $pour_oui . "%)</td>";
-            echo "<td><p>" . $db->f("non") . " (" . $pour_non . "%)</td>";
-            echo "<td><p>" . $db->f("date_fin") . "</td>";
+            echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.revolution.action='visu_desc_perso.php';document.revolution.visu.value=" . $result['code_lanceur'] . ";document.revolution.submit()\">" . $result['nom_lanceur'] . "</A></td>";
+            echo "<td class=\"soustitre2\"><p><a href=\"javascript:document.revolution.action='visu_desc_perso.php';document.revolution.visu.value=" . $result['code_cible'] . ";document.revolution.submit()\">" . $result['nom_cible'] . "</a></td>";
+            echo "<td><p>" . $result['oui'] . " (" . $pour_oui . "%)</td>";
+            echo "<td><p>" . $result['non'] . " (" . $pour_non . "%)</td>";
+            echo "<td><p>" . $result['date_fin'] . "</td>";
             echo "<td>";
             // on regarde si la personne peut voter
             $req2 = "select vrevguilde_cod from guilde_revolution_vote ";
-            $req2 = $req2 . "where vrevguilde_revguilde_cod = " . $db->f("code_rev") . " ";
+            $req2 = $req2 . "where vrevguilde_revguilde_cod = " . $result['code_rev'] . " ";
             $req2 = $req2 . "and vrevguilde_perso_cod = $perso_cod ";
-            $db2->query($req2);
-            if ($db2->nf() == 0) {
-                echo "<p><a href=\"javascript:document.revolution.revguilde_cod.value=" . $db->f("code_rev") . ";document.revolution.submit()\">Voter !</a>";
+            $stmt2 = $pdo->query($req2);
+            if ($stmt2->rowCount() == 0) {
+                echo "<p><a href=\"javascript:document.revolution.revguilde_cod.value=" . $result['code_rev'] . ";document.revolution.submit()\">Voter !</a>";
             }
             echo "</td>";
         }

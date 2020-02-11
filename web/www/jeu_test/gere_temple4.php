@@ -17,30 +17,30 @@ if ($erreur == 0) {
 							and tfid_lieu_cod = lieu_cod 
 							and tfid_perso_cod = $perso_cod 
 							and lieu_cod = $mag";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Erreur, vous n'êtes pas en le disciple responsable de ce temple !";
         $erreur = 1;
     } else {
-        $db->next_record();
-        $cod_lieu = $db->f("lieu_cod");
-        $lieu_nom = $db->f("lieu_nom");
-        $pos_x = $db->f("pos_x");
-        $pos_y = $db->f("pos_y");
-        $etage_libelle = $db->f("etage_libelle");
+        $result = $stmt->fetch();
+        $cod_lieu = $result['lieu_cod'];
+        $lieu_nom = $result['lieu_nom'];
+        $pos_x = $result['pos_x'];
+        $pos_y = $result['pos_y'];
+        $etage_libelle = $result['etage_libelle'];
     }
 }
 
 // RECUPERATION DES INFORMATIONS POUR LE LOG
 $req = "select compt_nom from compte where compt_cod = $compt_cod";
-$db->query($req);
-$db->next_record();
-$compt_nom = $db->f("compt_nom");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$compt_nom = $result['compt_nom'];
 $req_pers = "select perso_nom from perso where perso_cod = $perso_cod ";
-$db_pers = new base_delain;
-$db_pers->query($req_pers);
-if ($db_pers->next_record()) {
-    $perso_mod_nom = $db_pers->f("perso_nom");
+
+$stmt_pers = $pdo->query($req_pers);
+if ($result_pers = $stmt_pers->fetch()) {
+    $perso_mod_nom = $result_pers['perso_nom'];
 }
 $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modifie les statuts du temple $lieu_nom (code : $cod_lieu), X: $pos_x / Y: $pos_y / $etage_libelle\n";
 
@@ -64,14 +64,14 @@ if ($erreur == 0) {
             if ($ref == 'n')
             {
                 $req = "update lieu set lieu_refuge = 'N',lieu_prelev = 15 where lieu_cod = $mag";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>La modification a été effectuée.";
                 $log = $log."Modification du statut pour passer en normal\n";
             }
             if ($ref == 'o')
             {
                 $req = "update lieu set lieu_refuge = 'O',lieu_prelev = 30 where lieu_cod = $mag";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>La modification a été effectuée.";
                 $log = $log."Modification du statut pour passer en mode refuge\n";
             }*/
@@ -84,18 +84,18 @@ if ($erreur == 0) {
             echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
             $req = "select lieu_nom,lieu_description from lieu ";
             $req = $req . "where lieu_cod = $mag ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
 
             echo "<table>";
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Nom du temple (70 caracs maxi)</td>";
-            echo "<td><input type=\"text\" name=\"nom\" size=\"50\" value=\"" . $db->f("lieu_nom") . "\"></td>";
+            echo "<td><input type=\"text\" name=\"nom\" size=\"50\" value=\"" . $result['lieu_nom'] . "\"></td>";
             echo "</tr>";
 
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Description</td>";
-            $desc = str_replace(chr(127), ";", $db->f("lieu_description"));
+            $desc = str_replace(chr(127), ";", $result['lieu_description']);
             echo "<td><textarea name=\"desc\" rows=\"20\" cols=\"100\">" . $desc . "</textarea></td>";
             echo "</tr>";
 
@@ -112,7 +112,7 @@ if ($erreur == 0) {
             echo "<p><strong>Aperçu : " . $desc;
             $desc = str_replace(";", chr(127), $desc);
             $req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>Les changements sont validés !";
             break;
         case "vente_adm":

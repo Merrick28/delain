@@ -12,15 +12,15 @@ $req = $req . "and pguilde_valide = 'O' ";
 $req = $req . "and pguilde_guilde_cod = rguilde_guilde_cod ";
 $req = $req . "and pguilde_rang_cod = rguilde_rang_cod ";
 $req = $req . "and rguilde_admin = 'O' ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 } else {
-    $db->next_record();
+    $result = $stmt->fetch();
 }
-if ($db->f("pguilde_guilde_cod") != 211) {
-    echo "<p>Erreur" . $db->f("pguilde_guilde_cod") . " ! Vous n'avez pas accès à cette page !";
+if ($result['pguilde_guilde_cod'] != 211) {
+    echo "<p>Erreur" . $result['pguilde_guilde_cod'] . " ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
 if ($erreur == 0) {
@@ -38,17 +38,17 @@ if ($erreur == 0) {
     $req = $req . "and mger_lieu_cod = lieu_cod ";
     $req = $req . "and mger_perso_cod = perso_cod ";
     $req = $req . "order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun magasin n'est en gérance.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=modif&lieu=" . $db->f("lieu_cod") . "\">Modifier</a></td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=supprime&lieu=" . $db->f("lieu_cod") . "\">Supprimer</a></td>";
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong></td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=modif&lieu=" . $result['lieu_cod'] . "\">Modifier</a></td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=supprime&lieu=" . $result['lieu_cod'] . "\">Supprimer</a></td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -64,15 +64,15 @@ if ($erreur == 0) {
     $req = $req . "and not exists ";
     $req = $req . "(select 1 from magasin_gerant where mger_lieu_cod = lieu_cod) ";
     $req = $req . "order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun magasin n'est hors gérance.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=ajout&lieu=" . $db->f("lieu_cod") . "\">Ajouter un gérant</a></td>";
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=ajout&lieu=" . $result['lieu_cod'] . "\">Ajouter un gérant</a></td>";
             echo "</tr>";
         }
         echo "</table>";

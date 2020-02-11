@@ -57,12 +57,12 @@ $stmt     = $pdo->query($req_evt);
                 }
                 $stmt_detail = $pdo->query($req_nom_evt);
                 $result_detail = $stmt_detail->fetch();
-                $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $db_detail->f("nom1") . "</a></strong>", $result['levt_texte']);
+                $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $result_detail['nom1'] . "</a></strong>", $result['levt_texte']);
                 if ($result['levt_attaquant'] != '') {
-                    $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $db_detail->f("nom2") . "</A></strong>", $texte_evt);
+                    $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $result_detail['nom2'] . "</A></strong>", $texte_evt);
                 }
                 if ($result['levt_cible'] != '') {
-                    $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_cible'] . ";document.visu_evt.submit();\">" . $db_detail->f("nom3") . "</a></strong>", $texte_evt);
+                    $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_cible'] . ";document.visu_evt.submit();\">" . $result_detail['nom3'] . "</a></strong>", $texte_evt);
                 }
 
                 echo("<td><p>$texte_evt</p></td>");

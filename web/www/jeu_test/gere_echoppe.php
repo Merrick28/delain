@@ -10,13 +10,13 @@ $req = $req . "and pos_etage = etage_numero ";
 $req = $req . "and mger_lieu_cod = lieu_cod ";
 $req = $req . "and mger_perso_cod = $perso_cod ";
 $req = $req . "order by pos_etage desc ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     echo "<p>Vous n'avez aucun magasin en gérance !";
 } else {
     echo "<p>Magasins en gérance :<br>";
-    while ($db->next_record()) {
-        echo "<p><a href=\"gere_echoppe3.php?mag=" . $db->f("lieu_cod") . "\">" . $db->f("lieu_nom") . "</a> (" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . ")<br>";
+    while ($result = $stmt->fetch()) {
+        echo "<p><a href=\"gere_echoppe3.php?mag=" . $result['lieu_cod'] . "\">" . $result['lieu_nom'] . "</a> (" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . ")<br>";
     }
 
 }

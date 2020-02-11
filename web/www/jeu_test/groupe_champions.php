@@ -15,7 +15,7 @@ function gereAffichage($db, $champValeur, $unite, $champTitre, $champComp, $cham
     $cpt_comp = 0;
     $afermer = false;
     $nombre_podium = 3;
-    while ($db->next_record()) {
+    while ($result = $stmt->fetch()) {
         if ($type != $db->f($champTitre)) {
             $cpt_comp = 0;
             $type = $db->f($champTitre);
@@ -66,13 +66,13 @@ $contenu_page = '';
 $contenu_statique = '';
 
 $req = 'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 AND pgroupe_champions = 1';
-$db->query($req);
-if ($db->nf() == 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0)
     $contenu_page .= 'Vous n’appartenez à aucune coterie, ou ne participez pas aux champions de votre coterie.';
 else {
     define("APPEL", 1);
-    $db->next_record();
-    $groupe_cod = $db->f('pgroupe_groupe_cod');
+    $result = $stmt->fetch();
+    $groupe_cod = $result['pgroupe_groupe_cod'];
     $nom_fichier = "./statiques/groupe_champions_$groupe_cod.php";
 
     if (!is_dir('statiques'))
@@ -110,7 +110,7 @@ else {
             inner join type_competences on typc_cod = comp_typc_cod
             order by typc_libelle, pcomp_pcomp_cod, pcomp_modificateur desc, perso_nom";
 
-        $db->query($req_comp);
+        $stmt = $pdo->query($req_comp);
         $contenu_statique .= gereAffichage($db, 'pcomp_modificateur', '%', 'typc_libelle', 'comp_libelle', 'perso_nom');
 
         $req_caracs = "WITH t as (
@@ -151,7 +151,7 @@ else {
 				order by perso_pv_max desc
 				) a";
 
-        $db->query($req_caracs);
+        $stmt = $pdo->query($req_caracs);
         $contenu_statique .= gereAffichage($db, 'valeur', '', 'titre', 'carac', 'nom');
 
         $req_caracs = "WITH t as (
@@ -175,7 +175,7 @@ else {
 				order by banque desc
 				) a";
 
-        $db->query($req_caracs);
+        $stmt = $pdo->query($req_caracs);
         $contenu_statique .= gereAffichage($db, 'valeur', ' bzf', 'titre', 'carac', 'nom');
 
         $req_chasse = "select 'Palmarès de chasse' as libelle, race_nom, sum(ptab_total * gmon_niveau * gmon_niveau) as total, perso_nom
@@ -191,7 +191,7 @@ else {
             group by race_nom, perso_nom
             order by race_nom, total desc, perso_nom ";
 
-        $db->query($req_chasse);
+        $stmt = $pdo->query($req_chasse);
         $contenu_statique .= gereAffichage($db, 'total', ' points', 'libelle', 'race_nom', 'perso_nom');
 
         $req_chasse = "select 'Palmarès Solo (classé par niveau du monstre)' as libelle, gmon_nom, sum(ptab_solo) as total, perso_nom
@@ -207,7 +207,7 @@ else {
             group by gmon_niveau, gmon_nom, perso_nom
             order by gmon_niveau desc, gmon_nom, total desc, perso_nom";
 
-        $db->query($req_chasse);
+        $stmt = $pdo->query($req_chasse);
         $contenu_statique .= gereAffichage($db, 'total', '', 'libelle', 'gmon_nom', 'perso_nom');
 
         $contenu_statique .= '</table>';
@@ -216,7 +216,7 @@ else {
         file_put_contents($nom_fichier, $verification . $contenu_statique);
         $test_mod = chmod($nom_fichier, 0777);
         $req_date = "update groupe set groupe_champion_gen_date = now() where groupe_cod = $groupe_cod";
-        $db->query($req_date);
+        $stmt = $pdo->query($req_date);
     } else {
         ob_start();
         include($nom_fichier);

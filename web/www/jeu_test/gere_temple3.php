@@ -37,7 +37,7 @@ ELOG_DEBIT
 */
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db2 = new base_delain;
+
 
 
 function startPane($tab, $index, $active_index)
@@ -84,10 +84,10 @@ if (!isset($mag)) {
 }
 if ($erreur == 0) {
     $req = "select dper_dieu_cod,dper_niveau from dieu_perso where dper_perso_cod = $perso_cod";
-    $db->query($req);
-    $db->next_record();
-    $niveau_pretre = $db->f("dper_niveau");
-    $dieu = $db->f("dper_dieu_cod");
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $niveau_pretre = $result['dper_niveau'];
+    $dieu = $result['dper_dieu_cod'];
     $req = "select lieu_cod,lieu_tlieu_cod,lieu_nom,pos_cod,pos_x,pos_y,etage_libelle,lieu_dieu_cod,tfid_perso_cod
 								from lieu,lieu_position,positions,etage
 								left outer join temple_fidele on tfid_lieu_cod = $mag
@@ -96,19 +96,19 @@ if ($erreur == 0) {
 								and lpos_pos_cod = pos_cod
 								and pos_etage = etage_numero
 								and lieu_cod = $mag ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Erreur, vous n'êtes pas le fidèle en charge de ce temple !";
         $erreur = 1;
     } else {
         $acces_ok = 0;
-        $db->next_record();
-        $type_lieu = $db->f("lieu_tlieu_cod");
-        $dieu_lieu = $db->f("lieu_dieu_cod");
+        $result = $stmt->fetch();
+        $type_lieu = $result['lieu_tlieu_cod'];
+        $dieu_lieu = $result['lieu_dieu_cod'];
         if ($type_lieu == 17 && $niveau_pretre > 3 && $dieu_lieu == $dieu) {
             $acces_ok = 1;
         }
-        if ($perso_cod == $db->f("tfid_perso_cod")) {
+        if ($perso_cod == $result['tfid_perso_cod']) {
             $acces_ok = 1;
         }
         if ($acces_ok == 0) {
@@ -116,12 +116,12 @@ if ($erreur == 0) {
             $erreur = 1;
         }
 
-        $pos_actuelle = $db->f("pos_cod");
-        $lieu_cod = $db->f("lieu_cod");
-        $lieu_nom = $db->f("lieu_nom");
-        $pos_x = $db->f("pos_x");
-        $pos_y = $db->f("pos_y");
-        $etage_libelle = $db->f("etage_libelle");
+        $pos_actuelle = $result['pos_cod'];
+        $lieu_cod = $result['lieu_cod'];
+        $lieu_nom = $result['lieu_nom'];
+        $pos_x = $result['pos_x'];
+        $pos_y = $result['pos_y'];
+        $etage_libelle = $result['etage_libelle'];
     }
 
 }
@@ -141,18 +141,18 @@ if ($erreur == 0) {
                 echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
                 $req = "select lieu_nom,lieu_description from lieu ";
                 $req = $req . "where lieu_cod = $mag ";
-                $db->query($req);
-                $db->next_record();
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
 
                 echo "<table>";
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Nom du temple (70 caracs maxi)</td>";
-                echo "<td><input type=\"text\" name=\"nom\" size=\"50\" value=\"" . $db->f("lieu_nom") . "\"></td>";
+                echo "<td><input type=\"text\" name=\"nom\" size=\"50\" value=\"" . $result['lieu_nom'] . "\"></td>";
                 echo "</tr>";
 
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Description</td>";
-                $desc = str_replace(chr(127), ";", $db->f("lieu_description"));
+                $desc = str_replace(chr(127), ";", $result['lieu_description']);
                 echo "<td><textarea name=\"desc\" rows=\"10\" cols=\"50\">" . $desc . "</textarea></td>";
                 echo "</tr>";
 
@@ -169,7 +169,7 @@ if ($erreur == 0) {
                 echo "<p><strong>Aperçu : " . $desc;
                 $desc = str_replace(";", chr(127), $desc);
                 $req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>Les changements sont validés !";
                 break;
 
@@ -219,10 +219,10 @@ if ($erreur == 0) {
 						and dper_dieu_cod = $dieu
 						and dniv_dieu_cod = dper_dieu_cod
 						and dniv_niveau = dper_niveau";
-            $db2->query($req);
-            while ($db2->next_record()) {
-                $liste_clients .= $db2->f("perso_nom") . ";";
-                echo $db2->f("perso_nom") . " <em>(" . $db2->f("dniv_libelle") . ")</em><br /> ";
+            $stmt2 = $pdo->query($req);
+            while ($result2 = $stmt2->fetch()) {
+                $liste_clients .= $result2['perso_nom'] . ";";
+                echo $result2['perso_nom'] . " <em>(" . $result2['dniv_libelle'] . ")</em><br /> ";
             }
             ?>
         </p><?php
@@ -238,16 +238,16 @@ if ($erreur == 0) {
 									left outer join dieu on dieu_perso.dper_dieu_cod = dieu.dieu_cod
 									left outer join dieu_niveau on dieu_niveau.dniv_niveau = dieu_perso.dper_niveau and dieu_niveau.dniv_dieu_cod = dieu_perso.dper_dieu_cod
 									where ppos_pos_cod = $pos_actuelle and perso_type_perso in (1,2,3) and perso_actif = 'O' order by perso_type_perso,minusc";
-            $db->query($req_vue);
-            while ($db->next_record()) {
-                $liste_clients .= $db->f("perso_nom") . ";";
-                $religion = $db->f("dniv_libelle");
+            $stmt = $pdo->query($req_vue);
+            while ($result = $stmt->fetch()) {
+                $liste_clients .= $result['perso_nom'] . ";";
+                $religion = $result['dniv_libelle'];
                 if (is_null($religion)) {
                     $religion = "";
                 } else {
-                    $religion = " <em>(" . $db->f("dniv_libelle") . " de " . $db->f("dieu_nom") . ")</em>";
+                    $religion = " <em>(" . $result['dniv_libelle'] . " de " . $result['dieu_nom'] . ")</em>";
                 }
-                echo $db->f("perso_nom") . $religion . "<br /> ";
+                echo $result['perso_nom'] . $religion . "<br /> ";
             }
             ?>
         <form name="message" method="post" action="messagerie2.php">
@@ -262,20 +262,20 @@ if ($erreur == 0) {
             <?php
             $liste_clients2 = "";
             $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod  and perso_type_perso = 1 and perso_actif = 'O' order by perso_type_perso,minusc";
-            $db->query($req_vue);
-            while ($db->next_record()) {
-                $liste_clients2 .= $db->f("perso_nom") . ";";
-                echo $db->f("perso_nom") . "<br /> ";
+            $stmt = $pdo->query($req_vue);
+            while ($result = $stmt->fetch()) {
+                $liste_clients2 .= $result['perso_nom'] . ";";
+                echo $result['perso_nom'] . "<br /> ";
             }
             $req_perso = "select * from lancer_position($pos_actuelle,3)";
-            $db2->query($req_perso);
-            while ($db2->next_record()) {
-                $pos_calcul = $db2->f("lancer_position");
+            $stmt2 = $pdo->query($req_perso);
+            while ($result2 = $stmt2->fetch()) {
+                $pos_calcul = $result2['lancer_position'];
                 $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_calcul and ppos_perso_cod = perso_cod  and perso_type_perso = 1 and perso_actif = 'O' order by perso_type_perso,minusc";
-                $db->query($req_vue);
-                while ($db->next_record()) {
-                    $liste_clients2 .= $db->f("perso_nom") . ";";
-                    echo $db->f("perso_nom") . "<br /> ";
+                $stmt = $pdo->query($req_vue);
+                while ($result = $stmt->fetch()) {
+                    $liste_clients2 .= $result['perso_nom'] . ";";
+                    echo $result['perso_nom'] . "<br /> ";
                 }
             }
             ?>
@@ -303,9 +303,9 @@ if ($erreur == 0) {
                 %age de 91 à 100 : Calice jaune.
             */
             $req = 'select 100 * dieu_pouvoir / (select cast(max(dieu_pouvoir) as float) from dieu ) as pourc from dieu where dieu_cod = ' . $dieu;
-            $db->query($req);
-            $db->next_record();
-            $pourc = $db->f('pourc');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $pourc = $result['pourc'];
             $base_calice = G_IMAGES . 'calice_'; // URL des images (sous-domaine)
             $calice = '';
             if ($pourc <= 0) {
@@ -349,9 +349,9 @@ if ($erreur == 0) {
 
             <?php
             $req = "select lieu_refuge from lieu where lieu_cod = $mag ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("lieu_refuge") == 'N')
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['lieu_refuge'] == 'N')
             {
             ?>
             <p>Votre temple n'est pas un refuge. Si vous souhaitez le transformer en refuge, ...<br>
