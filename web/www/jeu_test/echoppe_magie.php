@@ -4,18 +4,19 @@ include "blocks/_tests_appels_page_externe.php";
 $param = new parametres();
 
 $type_lieu = 14;
-$nom_lieu = 'un magasin magique';
-
+$nom_lieu  = 'un magasin magique';
+$perso     = new perso;
+$perso->charge($perso_cod);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $lieu = $tab_lieu['lieu_cod'];
-    $req = "select mod_vente($perso_cod,$lieu) as modificateur ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
-    $modif = $result['modificateur'];
+    $tab_lieu = $perso->get_lieu();
+    $lieu     = $tab_lieu['lieu']->lieu_cod;
+    $req      = "select mod_vente($perso_cod,$lieu) as modificateur ";
+    $stmt     = $pdo->query($req);
+    $result   = $stmt->fetch();
+    $modif    = $result['modificateur'];
     if (!isset($methode))
     {
         $methode = 'entree';

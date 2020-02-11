@@ -2,24 +2,25 @@
 include "blocks/_tests_appels_page_externe.php";
 
 $param = new parametres();
-
+$perso = new perso;
+$perso->charge($perso_cod);
 // test sur le type de lieu
 $erreur = 0;
-if (!$db->is_lieu($perso_cod))
+if (!$perso->is_lieu())
 {
     echo("<p>Erreur ! Vous n'êtes pas sur un magasin !!!");
     $erreur = 1;
 }
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['type_lieu'] == 14)
+    $tab_lieu = $perso->get_lieu();
+    if ($tab_lieu['lieu_type']->tlieu_cod == 14)
     {
         define("TYPE_ECHOPPE", "MAGIE");
-    } else if ($tab_lieu['type_lieu'] == 21)
+    } else if ($tab_lieu['lieu_type']->tlieu_cod == 21)
     {
         define("TYPE_ECHOPPE", "MARCHE_NOIR");
-    } else if ($tab_lieu['type_lieu'] == 11)
+    } else if ($tab_lieu['lieu_type']->tlieu_cod == 11)
     {
         define("TYPE_ECHOPPE", "ECHOPPE_ROYALE");
     } else
@@ -31,11 +32,10 @@ if ($erreur == 0)
 
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $lieu = $tab_lieu['lieu_cod'];
+    $lieu            = $tab_lieu['lieu']->lieu_cod;
     $controle_gerant = '';
-    $req = "SELECT mger_perso_cod FROM magasin_gerant WHERE mger_lieu_cod = " . $lieu;
-    $stmt = $pdo->query($req);
+    $req             = "SELECT mger_perso_cod FROM magasin_gerant WHERE mger_lieu_cod = " . $lieu;
+    $stmt            = $pdo->query($req);
     if($result = $stmt->fetch())
     {
         if ($result['mger_perso_cod'] == $perso_cod)

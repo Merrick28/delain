@@ -19,7 +19,7 @@ ob_start();
                         {
                             echo "<option value=\"", $result['perso_cod'], "\">", $result['perso_nom'], "</option>";
                         }
-                        $db->query("select perso_po from perso where perso_cod = $perso_cod");
+                        $stmt   = $pdo->query("select perso_po from perso where perso_cod = $perso_cod");
                         $result = $stmt->fetch();
                         ?>
                     </select>

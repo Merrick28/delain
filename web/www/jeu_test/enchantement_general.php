@@ -2,7 +2,8 @@
 define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
 
-
+$perso = new perso;
+$perso->charge($perso_cod);
 // scripts JS
 $contenu_page .= '
 <script language="javascript" src="javascripts/modif_etage.js"></script>';
@@ -55,7 +56,7 @@ height:200px;
 ';
 
 //
-$is_enchanteur = $db->is_enchanteur($perso_cod);
+$is_enchanteur = $perso->is_enchanteur();
 if ($is_enchanteur)
 {
     $controle = 1;
@@ -89,14 +90,14 @@ for ($cpt = 0; $cpt < $nb; $cpt++)
 {
     if ($cpt == $t_ench)
     {
-        $style = 'onglet';
-        $lien = '';
+        $style  = 'onglet';
+        $lien   = '';
         $f_lien = '';
 
     } else
     {
-        $style = 'pas_onglet';
-        $lien = '<a href="' . $PHP_SELF . '?t_ench=' . $cpt . '">';
+        $style  = 'pas_onglet';
+        $lien   = '<a href="' . $PHP_SELF . '?t_ench=' . $cpt . '">';
         $f_lien = '</a>';
     }
     $contenu_page .= '<td class="' . $style . '"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';

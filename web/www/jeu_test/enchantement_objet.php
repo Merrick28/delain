@@ -32,9 +32,9 @@ switch ($methode) {
         $contenu_page .= '</table></p>';
         $contenu_page .= '<p align="left"><strong>Les objets suivants sont déjà enchantables :</strong>
 													<table>';
-        $req1 = $req . ' and obj_enchantable = 1
+        $req1         = $req . ' and obj_enchantable = 1
 										order by gobj_tobj_cod,obj_nom desc';
-        $db2->query($req1);
+        $stmt2        = $pdo->query($req1);
         if ($stmt2->rowCount() == 0) {
             $contenu_page .= '<td><em>Aucun objet enchantable à votre disposition</em></td>';
         } else {
@@ -46,9 +46,9 @@ switch ($methode) {
         $contenu_page .= '</table></p>';
         $contenu_page .= '<p align="left"><strong>Liste des objets qui doivent être manipulés pour devenir enchantables : </strong>
 													<table>';
-        $req4 = $req . ' and obj_enchantable = 0 and gobj_chance_enchant > 0
+        $req4         = $req . ' and obj_enchantable = 0 and gobj_chance_enchant > 0
 										order by gobj_tobj_cod,obj_nom desc';           // Marlyza 2019-04-09 - Cas particulier: ne pas laisser la possibilité d'anchante rles objet à 0% de chance
-        $db3->query($req4);
+        $stmt3        = $pdo->query($req4);
         if ($stmt3->rowCount() == 0) {
             $contenu_page .= '<td><em>Aucun objet non enchanté et enchantable à votre disposition</em></td>';
         } else {

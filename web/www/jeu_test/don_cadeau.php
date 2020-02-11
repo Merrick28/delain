@@ -31,7 +31,9 @@ function valide_form2() {
 
 // contenu de la page
 $contenu_page = "";
-if (!$db->is_admin($compt_cod))
+$compte       = new compte;
+$compte->charge($compt_cod);
+if (!$compte->is_admin())
 {
     $req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
     $stmt = $pdo->query($req);
