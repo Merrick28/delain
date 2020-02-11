@@ -1,15 +1,16 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+
+$compte = new compte;
+$compte->charge($compt_cod);
 ?>
     <script language="javascript" src="../scripts/cocheCase.js"></script>
 
 <?php
-$db2 = new base_delain;
 /*********************/
 /* COMMANDEMENT : 80 */
 /*********************/
-$db = new base_delain;
 $req_comp = "select pcomp_modificateur from perso_competences ";
 $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
 $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
@@ -34,7 +35,7 @@ if($result = $stmt->fetch())
     }
 }
 
-$erreur = $erreur || !$db->is_admin_monstre($compt_cod);
+$erreur = $erreur || !$compte->is_admin_monstre();
 
 if (!$erreur)
 {
@@ -323,7 +324,6 @@ if (!$erreur)
 		where perso_superieur_cod = $commandant_cod";
 	$stmt = $pdo->query($req_troupe);
 	$nb_subalternes = $stmt->rowCount();
-	$db2 = new base_delain;
 	$n = 0;
 	while($result = $stmt->fetch()){
 		$n++;
@@ -336,7 +336,7 @@ if (!$erreur)
 		}
 		$req_ia = "select ia_type,ia_nom,pia_parametre from type_ia,perso_ia where pia_ia_type = ia_type and pia_perso_cod = ".$result['perso_subalterne_cod'];
 		$stmt2 = $pdo->query($req_ia);
-		if($result2 = $stmt2->fetch()())
+		if($result2 = $stmt2->fetch())
 		{
 			$ia = $result2['ia_nom'];
     	    $ia_param = $result2['pia_parametre'];
@@ -357,14 +357,14 @@ if (!$erreur)
 		{
 			$req_pos = "select pos_x, pos_y from positions where pos_cod = $ia_param";
 			$stmt2 = $pdo->query($req_pos);
-			$result2 = $stmt2->fetch()();
+			$result2 = $stmt2->fetch();
 			$ia .= " (".$result2['pos_x'].",".$result2['pos_y'].")";
 		}
 		if(strpos($ia,'[cible]')  != false && $ia_param !== false)
 		{
 			$req_pos = "select perso_nom from perso where perso_cod = $ia_param";
 			$stmt2 = $pdo->query($req_pos);
-			$result2 = $stmt2->fetch()();
+			$result2 = $stmt2->fetch();
 			$ia .= " (".$result2['perso_nom'].")";
 		}
 		$image = ($n == 1) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" />' : '';
@@ -413,7 +413,7 @@ if (!$erreur)
 			union all select lock_cible as lock from lock_combat
 			where lock_attaquant = $cod_monstre) as t2 on perso.perso_cod = t2.lock group by perso_nom";
 		$stmt2 = $pdo->query($req);
-		while ($result2 = $stmt2->fetch()())
+		while ($result2 = $stmt2->fetch())
 		{
 			echo $result2['perso_nom'] . "<br>";
 		}

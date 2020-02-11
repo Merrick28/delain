@@ -9,7 +9,6 @@ ob_start();
 /*********************/
 // contenu de la page
 $contenu_page = "";
-$db = new base_delain;
 $req_comp = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences ";
 $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
 $req_comp = $req_comp . "and pcomp_modificateur != 0 ";

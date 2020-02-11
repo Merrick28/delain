@@ -3,22 +3,25 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 include "constantes.php";
 
-$db2 = new base_delain;
+
 $erreur = 0;
 
 if (!isset($type_lance))
 {
     echo "<p>Erreur technique lors de l’appel du sort. Veuillez recommencer.</p>";
-    $erreur = 1;
+    $erreur     = 1;
     $type_lance = -1;
 }
+
+$perso = new perso;
+$perso->charge($perso_cod);
 
 if ($type_lance == 0) // runes
 {
     $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
     $req_sort = "select sort_cod from sorts where sort_combinaison = '$resultat' ";
-    $db = new base_delain;
-    $stmt = $pdo->query($req_sort);
+
+    $stmt     = $pdo->query($req_sort);
     $nbr_sort = $stmt->rowCount();
     if ($nbr_sort == 0)
     {
@@ -26,21 +29,20 @@ if ($type_lance == 0) // runes
         $erreur = 1;
     } else
     {
-        $result = $stmt->fetch();
+        $result   = $stmt->fetch();
         $sort_cod = $result['sort_cod'];
-        $req = "select pcomp_cod from perso_competences,sorts
+        $req      = "select pcomp_cod from perso_competences,sorts
 										where sort_cod = $sort_cod
 										and sort_comp_cod = pcomp_pcomp_cod
 										and pcomp_perso_cod = $perso_cod ";
-        $stmt = $pdo->query($req);
+        $stmt     = $pdo->query($req);
         if ($stmt->rowCount() == 0)
         {
             echo "<p>Vous ne vous sentez pas capable d'associer ces runes pour lancer un sort.";
             $erreur = 1;
         }
     }
-}
-else if ($type_lance == 5)
+} else if ($type_lance == 5)
 {
     $sort_cod = $_REQUEST['sort'];
     if ($sort_cod == '' || !isset($sort_cod))
@@ -50,17 +52,17 @@ else if ($type_lance == 5)
     }
 
     // pour les objet magique on verifie que le perso le possede bien et qu'il est équipé si besoin
-    $pdo    = new bddpdo;
+    $pdo         = new bddpdo;
     $objsort_cod = $_REQUEST['objsort_cod'];
 
-    $found = false ;
+    $found   = false;
     $objsort = new objets_sorts();
     // On prend la lsite des sorts d'ojet (appel de la fonction pour mise à jour si le joueur utilise des raccroucis)
     if ($liste_sorts = $objsort->get_perso_objets_sorts($perso_cod))
     {
         foreach ($liste_sorts as $sorts_attaches)
         {
-            if ($sorts_attaches->objsort_cod==$objsort_cod)
+            if ($sorts_attaches->objsort_cod == $objsort_cod)
             {
                 $found = true;
                 break;
@@ -75,8 +77,7 @@ else if ($type_lance == 5)
     }
 
 
-}
-else
+} else
 {
     //($type_lance == 1) // mémorisé
     //($type_lance == 2) // receptacle
@@ -101,14 +102,14 @@ if ($erreur == 0)
     /*************************/
     /* R E C E P T A C L E S */
     /*************************/
-    $req = "select perso_nb_receptacle, perso_pa from perso where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
-    $nb_rec = $result['perso_nb_receptacle'];
-    $nb_pa = $result['perso_pa'];
-    $req = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
+    $req        = "select perso_nb_receptacle, perso_pa from perso where perso_cod = $perso_cod ";
+    $stmt       = $pdo->query($req);
+    $result     = $stmt->fetch();
+    $nb_rec     = $result['perso_nb_receptacle'];
+    $nb_pa      = $result['perso_pa'];
+    $req        = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = $perso_cod ";
+    $stmt       = $pdo->query($req);
+    $result     = $stmt->fetch();
     $nb_rec_utl = $result['nombre'];
 
     if ($nb_rec_utl < $nb_rec)
@@ -118,25 +119,25 @@ if ($erreur == 0)
             echo "<p><a href=\"action.php?methode=receptacle&sort=", $sort_cod, "&type_lance=", $type_lance, "\">Mettre ce sort dans un réceptacle ?</a>";
         }
     }
-    $req = "select sort_aggressif, sort_distance, sort_soi_meme, sort_monstre, sort_joueur, sort_case, sort_nom, sort_fonction, sort_niveau
+    $req         = "select sort_aggressif, sort_distance, sort_soi_meme, sort_monstre, sort_joueur, sort_case, sort_nom, sort_fonction, sort_niveau
 		from sorts where sort_cod = $sort_cod";
-    $stmt2 = $pdo->query($req);
-    $result2 = $stmt2->fetch();
-    $portee = $result2['sort_distance'];
-    $nom_sort = $result2['sort_nom'];
+    $stmt2       = $pdo->query($req);
+    $result2     = $stmt2->fetch();
+    $portee      = $result2['sort_distance'];
+    $nom_sort    = $result2['sort_nom'];
     $sort_niveau = $result2['sort_niveau'];
     /***********************/
     /* E N L U M I N U R E */
     /***********************/
     if (($type_lance != 3) && ($type_lance != 4) && ($type_lance != 5))
     {
-        $is_enlumineur_niv3 = $db->existe_competence($perso_cod, 93);
-        $is_enlumineur_niv2 = $is_enlumineur_niv3 || $db->existe_competence($perso_cod, 92);
-        $is_enlumineur_niv1 = $is_enlumineur_niv2 || $db->existe_competence($perso_cod, 91);
-        $has_peau_niv1 = $db->compte_objet($perso_cod, 481) >= 1;
-        $has_peau_niv2 = $db->compte_objet($perso_cod, 482) >= 1;
-        $has_peau_niv3 = $db->compte_objet($perso_cod, 483) >= 1;
-        $has_peau_niv4 = $db->compte_objet($perso_cod, 729) >= 1;
+        $is_enlumineur_niv3 = $perso->existe_competence(93);
+        $is_enlumineur_niv2 = $is_enlumineur_niv3 || $perso->existe_competence(92);
+        $is_enlumineur_niv1 = $is_enlumineur_niv2 || $perso->existe_competence(91);
+        $has_peau_niv1      = $perso->compte_objet(481) >= 1;
+        $has_peau_niv2      = $perso->compte_objet(482) >= 1;
+        $has_peau_niv3      = $perso->compte_objet(483) >= 1;
+        $has_peau_niv4      = $perso->compte_objet(729) >= 1;
 
         if (($is_enlumineur_niv1 && $has_peau_niv1 && $sort_niveau <= 2)
             || ($is_enlumineur_niv1 && $has_peau_niv2 && $sort_niveau <= 3)
@@ -146,7 +147,7 @@ if ($erreur == 0)
             echo "<p><a href='action.php?methode=enluminure&sort=$sort_cod&type_lance=$type_lance'>Enluminer ce sort ?</a></p><br />";
         }
     }
-    $req = "select pnbs_nombre
+    $req  = "select pnbs_nombre
 		from perso_nb_sorts
 		where pnbs_sort_cod = " . $sort_cod . "
 			and pnbs_perso_cod = " . $perso_cod;
@@ -157,11 +158,11 @@ if ($erreur == 0)
     }
     if ($result2['sort_case'] == 'N')
     {
-        $aggressif = $result2['sort_aggressif'];
-        $soi_meme = $result2['sort_soi_meme'];
+        $aggressif   = $result2['sort_aggressif'];
+        $soi_meme    = $result2['sort_soi_meme'];
         $sort_joueur = $result2['sort_joueur'];
-        $sort_dieu = substr($result2['sort_fonction'], 0, 2);
-        $type_cible = "0";
+        $sort_dieu   = substr($result2['sort_fonction'], 0, 2);
+        $type_cible  = "0";
         if ($result2['sort_monstre'] == 'O')
         {
             $type_cible = $type_cible . ",2,3";

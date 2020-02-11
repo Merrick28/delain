@@ -42,7 +42,7 @@ if ($erreur == 0)
 											order by comp_libelle ";
 
 		$stmt_comp = $pdo->query($req_comp);
-		while($result_comp = $stmt_comp->fetch()())
+        while ($result_comp = $stmt_comp->fetch())
 		{
 			echo("<tr>");
 			$score = $result_comp['pcomp_modificateur'];

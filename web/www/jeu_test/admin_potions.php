@@ -57,7 +57,7 @@ if ($erreur == 0)
 														and frmco_gobj_cod = gobj_cod";
                     $stmt2 = $pdo->query($req_composant);
                     echo "<td>";
-                    while ($result2 = $stmt2->fetch()())
+                    while ($result2 = $stmt2->fetch())
                     {
                         echo $result2['gobj_nom'] . " \t" . $result2['frmco_num'] . "<br>";
                     }
@@ -65,8 +65,8 @@ if ($erreur == 0)
                     echo "</td><td class=\"soustitre2\">" . $result['frm_nom'] . "</td>";
                     $req_comp = "select comp_libelle from competences	
 														where comp_cod = " . $comp;
-                    $stmt2 = $pdo->query($req_comp);
-                    $result2 = $stmt2->fetch()();
+                    $stmt2    = $pdo->query($req_comp);
+                    $result2  = $stmt2->fetch();
                     echo "	<td class=\"soustitre2\">" . $result2['comp_libelle'] . "</td></tr>";
                 }
             }

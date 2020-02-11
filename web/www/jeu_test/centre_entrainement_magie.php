@@ -47,7 +47,7 @@ $stmt = $pdo->query($req_typc);
 												order by comp_libelle ";
 
 		$stmt_comp = $pdo->query($req_comp);
-		while($result_comp = $stmt_comp->fetch()())
+        while ($result_comp = $stmt_comp->fetch())
 		{
 			echo("<tr>");
 			$pcCompetence = $result_comp['pcomp_modificateur'];

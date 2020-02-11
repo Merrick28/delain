@@ -68,12 +68,12 @@ echo("<td class=\"soustitre2\"><p>Nombre de monstres tués :</td>");
 printf("<td><p>%s</td>", $result['perso_nb_monstre_tue']);
 echo("</tr>");
 
-$db_guilde = new base_delain;
-$req_guilde = "select guilde_nom,rguilde_libelle_rang from guilde,guilde_perso,guilde_rang ";
-$req_guilde = $req_guilde . "where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod ";
-$req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod and rguilde_rang_cod = pguilde_rang_cod ";
+
+$req_guilde  = "select guilde_nom,rguilde_libelle_rang from guilde,guilde_perso,guilde_rang ";
+$req_guilde  = $req_guilde . "where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod ";
+$req_guilde  = $req_guilde . "and rguilde_guilde_cod = guilde_cod and rguilde_rang_cod = pguilde_rang_cod ";
 $stmt_guilde = $pdo->query($req_guilde);
-$nb_guilde = $stmt_guilde->rowCount()();
+$nb_guilde   = $stmt_guilde->rowCount();
 
 echo("<tr>");
 echo("<td class=\"soustitre2\"><p>Guilde :</td>");
@@ -83,7 +83,7 @@ if ($nb_guilde == 0)
     echo("<p>Pas de guilde");
 } else
 {
-    $result_guilde = $stmt_guilde->fetch()();
+    $result_guilde = $stmt_guilde->fetch();
     printf("<p>%s (%s)", $result_guilde['guilde_nom'], $result_guilde['rguilde_libelle_rang']);
 }
 echo("</td>");

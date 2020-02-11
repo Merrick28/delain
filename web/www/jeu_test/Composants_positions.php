@@ -1,6 +1,4 @@
 <?php
-$db2 = new base_delain;
-$db3 = new base_delain;
 define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
 
@@ -186,7 +184,7 @@ switch ($methode)
                         $position_x2 = $result['pos_x'];
                         $position_y2 = $result['pos_y'];
                         $increment .= '<tr><td>pos cod : ' . $position2 . ' / pos X : ' . $position_x2 . ' / pos Y ' . $position_y2;
-                        $db2 = new base_delain;
+
                         $requete_sql2 = '';
                         $signe = rand(0, $delta);
                         if (rand(1, 2) == 1)
@@ -205,9 +203,9 @@ switch ($methode)
 																 ingrpos_pos_cod = " . $position2 . "
 																 and gobj_cod = ingrpos_gobj_cod";
                         $stmt2 = $pdo->query($req_ingredient);
-                        if ($stmt2->rowCount()() != 0)
+                        if ($stmt2->rowCount() != 0)
                         {
-                            while ($result2 = $stmt2->fetch()())
+                            while ($result2 = $stmt2->fetch())
                             {
                                 $increment .= ' / présence de ' . $result2['gobj_nom'];
                                 if ($result2['ingrpos_gobj_cod'] == $composant)
@@ -219,10 +217,10 @@ switch ($methode)
                         $increment .= '</td></tr>';
                         $requete_sql .= $requete_sql2;
                         $req_murs = "select mur_creusable from murs where mur_pos_cod = $position2";
-                        $db3 = new base_delain;
-                        $stmt3 = $pdo->query($req_murs);
-                        $result3 = $stmt3->fetch()();
-                        $color = "#FFFFFF";
+
+                        $stmt3   = $pdo->query($req_murs);
+                        $result3 = $stmt3->fetch();
+                        $color   = "#FFFFFF";
                         if ($result3['mur_creusable'] == 'O')
                         {
                             $color = "#696969";
@@ -282,7 +280,7 @@ switch ($methode)
                             $position_x2 = $result['pos_x'];
                             $position_y2 = $result['pos_y'];
                             /*$increment .= '<tr><td>pos cod : '. $position2 .' / pos X : '. $position_x2 .' / pos Y '. $position_y2;*/
-                            $db2 = new base_delain;
+
                             $requete_sql2 = '';
                             $signe = rand(0, $delta);
                             if (rand(1, 2) == 1)
@@ -301,9 +299,9 @@ switch ($methode)
 																		 ingrpos_pos_cod = " . $position2 . "
 																		 and gobj_cod = ingrpos_gobj_cod";
                             $stmt2 = $pdo->query($req_ingredient);
-                            if ($stmt2->rowCount()() != 0)
+                            if ($stmt2->rowCount() != 0)
                             {
-                                while ($result2 = $stmt2->fetch()())
+                                while ($result2 = $stmt2->fetch())
                                 {
                                     if ($result2['ingrpos_gobj_cod'] == $composant2)
                                     {
@@ -312,10 +310,10 @@ switch ($methode)
                                 }
                             }
                             $req_murs = "select mur_creusable from murs where mur_pos_cod = " . $position2;
-                            $db3 = new base_delain;
-                            $stmt3 = $pdo->query($req_murs);
-                            $result3 = $stmt3->fetch()();
-                            $color = "#FFFFFF";
+
+                            $stmt3   = $pdo->query($req_murs);
+                            $result3 = $stmt3->fetch();
+                            $color   = "#FFFFFF";
                             if ($result3['mur_creusable'] == 'O')
                             {
                                 $color = "#696969";

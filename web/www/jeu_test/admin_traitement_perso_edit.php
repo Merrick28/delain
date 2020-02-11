@@ -91,8 +91,8 @@ switch ($methode)
 		}
 		$req_sel_perso = $req_sel_perso." from perso where perso_cod = $mod_perso_cod";
 		//echo $req_sel_perso;
-		$stmt_perso = $pdo->query($req_sel_perso);
-		$result_perso = $stmt_perso->fetch()();
+		$stmt_perso   = $pdo->query($req_sel_perso);
+        $result_perso = $stmt_perso->fetch();
 		foreach ($fields as $i => $value) {
 			if($_POST[$fields[$i]] == $result_perso[$fields[$i]]){
 				//echo $fields[$i]." = ".$_POST[$fields[$i]]." = ".$db_perso->f($fields[$i])." EGAL <br>\n";
@@ -175,13 +175,13 @@ switch ($methode)
 		{
 			if(substr($i, 0, 11) == "PERSO_COMP_")
 			{
-				$cmp_cod = substr($i, 11);
-				$req_sel_comp = "select comp_libelle,pcomp_modificateur from perso_competences,competences "
+				$cmp_cod         = substr($i, 11);
+				$req_sel_comp    = "select comp_libelle,pcomp_modificateur from perso_competences,competences "
 					. " where pcomp_perso_cod = $mod_perso_cod"
 						. " and pcomp_pcomp_cod = $cmp_cod"
 						. " and comp_cod = $cmp_cod";
-				$stmt_upd_comp = $pdo->query($req_sel_comp);
-				$result_upd_comp = $stmt_upd_comp->fetch()();
+				$stmt_upd_comp   = $pdo->query($req_sel_comp);
+                $result_upd_comp = $stmt_upd_comp->fetch();
 				if($result_upd_comp['pcomp_modificateur'] != $value){
 					$log = $log."Modification de la compétence ".$result_upd_comp['comp_libelle']." : ".$result_upd_comp['pcomp_modificateur']." => ".$value."\n";
 					$req_upd_comp = "update perso_competences set "
@@ -200,11 +200,11 @@ switch ($methode)
 		$req_upd_comp = "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur ) "
 			." values ($mod_perso_cod,$comp_cod,$comp_modificateur)";
 
-		$stmt_upd_comp = $pdo->query($req_upd_comp);
-		$req_comp = "select comp_libelle from competences where comp_cod = $comp_cod ";
-		$stmt_upd_comp = $pdo->query($req_comp);
-		$result_upd_comp = $stmt_upd_comp->fetch()();
-		$log .= "Ajout d’une compétence : $comp_cod - ".$result_upd_comp['comp_libelle']."\n";
+		$stmt_upd_comp   = $pdo->query($req_upd_comp);
+		$req_comp        = "select comp_libelle from competences where comp_cod = $comp_cod ";
+		$stmt_upd_comp   = $pdo->query($req_comp);
+        $result_upd_comp = $stmt_upd_comp->fetch();
+		$log             .= "Ajout d’une compétence : $comp_cod - ".$result_upd_comp['comp_libelle']."\n";
 		writelog($log,'perso_edit');
 		echo "<div class='bordiv'>Ajout d’une compétence<br /><pre>$log</pre></div>";
 	break;
@@ -215,10 +215,10 @@ switch ($methode)
 
 			$stmt_upd_comp = $pdo->query($req_upd_comp);
 
-			$req_comp = "select comp_libelle from competences where comp_cod = $comp_cod ";
-			$stmt_upd_comp = $pdo->query($req_comp);
-			$result_upd_comp = $stmt_upd_comp->fetch()();
-			$log .= "Suppression d’une competence : $comp_cod - ".$result_upd_comp['comp_libelle']."\n";
+			$req_comp        = "select comp_libelle from competences where comp_cod = $comp_cod ";
+			$stmt_upd_comp   = $pdo->query($req_comp);
+            $result_upd_comp = $stmt_upd_comp->fetch();
+			$log             .= "Suppression d’une competence : $comp_cod - ".$result_upd_comp['comp_libelle']."\n";
 			writelog($log,'perso_edit');
 			echo "<div class='bordiv'>Suppression d’une competence<br /><pre>$log</pre></div>";
 		}
@@ -266,10 +266,10 @@ switch ($methode)
 		$req_bm = "select ajoute_bonus ($mod_perso_cod, '$bonmal_type', $bonmal_duree, $bonmal_valeur)";
 		$stmt_upd_bm = $pdo->query($req_bm);
 
-		$req_bm = "select tonbus_libelle from bonus_type where tbonus_libc = '$bonmal_cod'";
-		$stmt_upd_bm = $pdo->query($req_bm);
-		$result_upd_bm = $stmt_upd_bm->fetch()();
-		$log .= "Ajout d’un bonus/malus « " . $result_upd_bm['tonbus_libelle'] . " » : { $bonmal_valeur / $bonmal_duree tours }".($bonmal_cumul=="on" ? " [cumulatif]" : "")."\n";
+		$req_bm        = "select tonbus_libelle from bonus_type where tbonus_libc = '$bonmal_cod'";
+		$stmt_upd_bm   = $pdo->query($req_bm);
+        $result_upd_bm = $stmt_upd_bm->fetch();
+		$log           .= "Ajout d’un bonus/malus « " . $result_upd_bm['tonbus_libelle'] . " » : { $bonmal_valeur / $bonmal_duree tours }".($bonmal_cumul=="on" ? " [cumulatif]" : "")."\n";
 		writelog($log,'perso_edit');
 		echo "<div class='bordiv'>Ajout d’un bonus/malus<br /><pre>$log</pre></div>";
 	break;
@@ -286,9 +286,9 @@ switch ($methode)
                 $req_bm = "select f_remise_caracs($mod_perso_cod); ";
                 $stmt_upd_bm = $pdo->query($req_bm);
             } else {
-                $req_bm = "select tonbus_libelle from bonus join bonus_type on tbonus_libc=bonus_tbonus_libc where bonus_cod = '$bonmal_cod'";
-                $stmt_upd_bm = $pdo->query($req_bm);
-                $result_upd_bm = $stmt_upd_bm->fetch()();
+                $req_bm         = "select tonbus_libelle from bonus join bonus_type on tbonus_libc=bonus_tbonus_libc where bonus_cod = '$bonmal_cod'";
+                $stmt_upd_bm    = $pdo->query($req_bm);
+                $result_upd_bm  = $stmt_upd_bm->fetch();
                 $tonbus_libelle = $result_upd_bm['tonbus_libelle'] ;
 
                 $req_bm = "delete from bonus where
@@ -314,7 +314,8 @@ switch ($methode)
 		$req_inv = $req_inv ."and obj_nom = gobj_nom ";
 		$req_inv = $req_inv ."and perobj_obj_cod = obj_cod ";
 		$stmt_inventaire = $pdo->query($req_inv);
-		while($result_inventaire = $stmt_inventaire->fetch()()){
+        while ($result_inventaire = $stmt_inventaire->fetch())
+        {
 			$obj_cod = $result_inventaire['obj_gobj_cod'];
 			$to_find = ";".$result_inventaire['obj_gobj_cod'].":";
 			$pos1 = strpos(";".$compiledInv, $to_find);
@@ -324,7 +325,8 @@ switch ($methode)
 				$req_add_obj = "select obj_cod from perso_objets,objets where ".
 					"perobj_perso_cod = $mod_perso_cod and perobj_obj_cod = obj_cod and obj_gobj_cod = $obj_cod";
 				$stmt_inventaire2 = $pdo->query($req_add_obj);
-				while($result_inventaire2 = $stmt_inventaire2->fetch()()){
+                while ($result_inventaire2 = $stmt_inventaire2->fetch())
+                {
 					$del_obj_cod = $result_inventaire2['obj_cod'];
 					$req = 'select gobj_nom,obj_nom from objets,objet_generique
 						where obj_cod = ' . $del_obj_cod . '
@@ -355,7 +357,8 @@ switch ($methode)
 				$req_inv = $req_inv ."and perobj_obj_cod = obj_cod ";
 				$req_inv = $req_inv ."and obj_gobj_cod = $obj_cod ";
 				$stmt_inventaire = $pdo->query($req_inv);
-				if($result_inventaire = $stmt_inventaire->fetch()()){
+                if ($result_inventaire = $stmt_inventaire->fetch())
+                {
 					$obj_nb_pre = $result_inventaire['nombre'];
 				}
 				// NBR OBJETS A AJOUTER
@@ -365,17 +368,17 @@ switch ($methode)
 					$req_add_obj = "select cree_objet_perso_nombre($obj_cod,$mod_perso_cod,$obj_nb_add)";
 					$stmt_inventaire = $pdo->query($req_add_obj);
 
-					$req_inv = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
-					$stmt_inventaire = $pdo->query($req_inv);
-					$result_inventaire = $stmt_inventaire->fetch()();
-					$log = $log."Ajout d’objets dans l’inventaire : $obj_cod - ".$result_inventaire['gobj_nom'].". Quantité : $obj_nb_add\n";
+					$req_inv           = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
+					$stmt_inventaire   = $pdo->query($req_inv);
+                    $result_inventaire = $stmt_inventaire->fetch();
+					$log               = $log."Ajout d’objets dans l’inventaire : $obj_cod - ".$result_inventaire['gobj_nom'].". Quantité : $obj_nb_add\n";
 					$nb_ajoute++;
 				} else if ($obj_nb_add < 0){
 					// SUPPRESSION D’OBJETS
-					$req_inv = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
-					$stmt_inventaire = $pdo->query($req_inv);
-					$result_inventaire = $stmt_inventaire->fetch()();
-					$log = $log."Suppression d’objets dans l’inventaire : $obj_cod - ".$result_inventaire['gobj_nom'].". Quantité : $obj_nb_add\n";
+					$req_inv           = "select gobj_nom from objet_generique where gobj_cod = $obj_cod ";
+					$stmt_inventaire   = $pdo->query($req_inv);
+                    $result_inventaire = $stmt_inventaire->fetch();
+					$log               = $log."Suppression d’objets dans l’inventaire : $obj_cod - ".$result_inventaire['gobj_nom'].". Quantité : $obj_nb_add\n";
 					$nb_ajoute++;
 
 					$obj_nb_add = -1* $obj_nb_add;
@@ -383,7 +386,8 @@ switch ($methode)
 						" perobj_perso_cod = $mod_perso_cod  and perobj_obj_cod = obj_cod and obj_gobj_cod = $obj_cod ".
 						" and obj_gobj_cod = gobj_cod and obj_nom = gobj_nom LIMIT $obj_nb_add ";
 					$stmt_inventaire = $pdo->query($req_add_obj);
-					while($result_inventaire = $stmt_inventaire->fetch()()){
+                    while ($result_inventaire = $stmt_inventaire->fetch())
+                    {
 						$del_obj_cod = $result_inventaire['obj_cod'];
 						$req = 'select gobj_nom,obj_nom from objets,objet_generique
 							where obj_cod = ' . $del_obj_cod . '
@@ -408,13 +412,14 @@ switch ($methode)
 		$req_sm = "select psort_sort_cod from perso_sorts "
 			. "where psort_perso_cod = $mod_perso_cod ";
 		$stmt_sort = $pdo->query($req_sm);
-		while($result_sort = $stmt_sort->fetch()()){
+        while ($result_sort = $stmt_sort->fetch())
+        {
 			$sort_cod = $result_sort['psort_sort_cod'];
 			if(!isset($_POST["PERSO_SORT_".$sort_cod])){
-				$req_sm = "select sort_cod,sort_nom from sorts where sort_cod = $sort_cod ";
-				$stmt_sort_suppr = $pdo->query($req_sm);
-				$result_sort_suppr = $stmt_sort_suppr->fetch()();
-				$log .= "Suppression d’un sort : $sort_cod - ".$result_sort_suppr['sort_nom']."\n";
+				$req_sm            = "select sort_cod,sort_nom from sorts where sort_cod = $sort_cod ";
+				$stmt_sort_suppr   = $pdo->query($req_sm);
+                $result_sort_suppr = $stmt_sort_suppr->fetch();
+				$log               .= "Suppression d’un sort : $sort_cod - ".$result_sort_suppr['sort_nom']."\n";
 				writelog($log,'perso_edit');
 
 				$req_suppr_sort = "delete from perso_sorts where psort_perso_cod = $mod_perso_cod and psort_sort_cod= $sort_cod";
@@ -429,16 +434,17 @@ switch ($methode)
 					. "where psort_perso_cod = $mod_perso_cod "
 					. "and psort_sort_cod = $sort_cod ";
 				$stmt_sort = $pdo->query($req_sm);
-				if(!$result_sort = $stmt_sort->fetch()()){
+                if (!$result_sort = $stmt_sort->fetch())
+                {
 					// Le sort non trouvé -> AJOUT
 					$req_add_sort = "insert into perso_sorts (psort_perso_cod,psort_sort_cod) "
 						." values ($mod_perso_cod,$sort_cod)";
 					$stmt_sort = $pdo->query($req_add_sort);
 
-					$req_sm = "select sort_cod,sort_nom from sorts where sort_cod = $sort_cod ";
-					$stmt_sort = $pdo->query($req_sm);
-					$result_sort = $stmt_sort->fetch()();
-					$log .= "Ajout d’un sort : $sort_cod - ".$result_sort['sort_nom']."\n";
+					$req_sm      = "select sort_cod,sort_nom from sorts where sort_cod = $sort_cod ";
+					$stmt_sort   = $pdo->query($req_sm);
+                    $result_sort = $stmt_sort->fetch();
+					$log         .= "Ajout d’un sort : $sort_cod - ".$result_sort['sort_nom']."\n";
 					writelog($log,'perso_edit');
 				}
 			}
@@ -461,10 +467,10 @@ switch ($methode)
 
 	case "update_titre":
 		if(!($ptitre_titre == "")){
-			$req_upd_titre = "select ptitre_titre from perso_titre where ptitre_cod  = $ptitre_cod ";
-			$stmt_upd_titre = $pdo->query($req_upd_titre);
-			$result_upd_titre = $stmt_upd_titre->fetch()();
-			$log .= "Modification du titre : ".$result_upd_titre['ptitre_titre']." -> $ptitre_titre\n";
+			$req_upd_titre    = "select ptitre_titre from perso_titre where ptitre_cod  = $ptitre_cod ";
+			$stmt_upd_titre   = $pdo->query($req_upd_titre);
+            $result_upd_titre = $stmt_upd_titre->fetch();
+			$log              .= "Modification du titre : ".$result_upd_titre['ptitre_titre']." -> $ptitre_titre\n";
 			writelog($log,'perso_edit');
 
 			$ptitre_titre = str_replace("’","\'",$ptitre_titre);
@@ -477,10 +483,10 @@ switch ($methode)
 	break;
 
 	case "supr_titre":
-		$req_upd_titre = "select ptitre_titre from perso_titre where ptitre_cod  = $ptitre_cod ";
-		$stmt_upd_titre = $pdo->query($req_upd_titre);
-		$result_upd_titre = $stmt_upd_titre->fetch()();
-		$log .= "Suppression du titre : ".$result_upd_titre['ptitre_titre']."\n";
+		$req_upd_titre    = "select ptitre_titre from perso_titre where ptitre_cod  = $ptitre_cod ";
+		$stmt_upd_titre   = $pdo->query($req_upd_titre);
+        $result_upd_titre = $stmt_upd_titre->fetch();
+		$log              .= "Suppression du titre : ".$result_upd_titre['ptitre_titre']."\n";
 		writelog($log,'perso_edit');
 		$req_upd_titre =  "delete from perso_titre where ptitre_cod  = $ptitre_cod";
 		$stmt_upd_titre = $pdo->query($req_upd_titre);
@@ -631,7 +637,7 @@ switch ($methode)
 	case "update_familier":
 		$req = "select coalesce(pfam_duree_vie, 0) as pfam_duree_vie from perso_familier where pfam_perso_cod = $mod_perso_cod";
 		$stmt_fm = $pdo->query($req);
-		if ($result_fm = $stmt_fm->fetch()() && isset($fam_duree_vie))
+        if ($result_fm = $stmt_fm->fetch() && isset($fam_duree_vie))
 		{
 			$anc_duree = $result_fm['pfam_duree_vie'];
 			$fam_duree_vie = ($fam_duree_vie == 0) ? 'NULL' : $fam_duree_vie;
@@ -673,7 +679,7 @@ switch ($methode)
 				left outer join perso_familier on pfam_familier_cod = perso_cod
 				where perso_cod = $fam_cod";
 			$stmt_fm = $pdo->query($req);
-			if ($result_fm = $stmt_fm->fetch()())
+            if ($result_fm = $stmt_fm->fetch())
 			{
 				$pos_fam = $result_fm['ppos_pos_cod'];
 				$fam_type = $result_fm['perso_type_perso'];
@@ -705,7 +711,7 @@ switch ($methode)
 				left outer join perso_familier on pfam_perso_cod = perso_cod
 				where perso_cod = $mod_perso_cod";
 			$stmt_fm = $pdo->query($req);
-			if ($result_fm = $stmt_fm->fetch()())
+            if ($result_fm = $stmt_fm->fetch())
 			{
 				$pos_perso = $result_fm['ppos_pos_cod'];
 				$perso_type = $result_fm['perso_type_perso'];
@@ -755,7 +761,7 @@ switch ($methode)
 		$req = "select pfam_familier_cod from perso_familier where pfam_perso_cod  = $mod_perso_cod";
 		$stmt_fm = $pdo->query($req);
 
-		if ($result_fm = $stmt_fm->fetch()())
+        if ($result_fm = $stmt_fm->fetch())
 		{
 			$num_familier = $result_fm['pfam_familier_cod'];
 			$req = "update perso set perso_type_perso = 2 where perso_cod  = $num_familier";
@@ -850,7 +856,7 @@ switch ($methode)
 
 					$fonc_proba = str_replace(',', '.', $fonc_proba);
 	
-					$req = "UPDATE fonction_specifique
+					$req            = "UPDATE fonction_specifique
 						SET fonc_effet = '$fonc_effet',
 							fonc_force = '$fonc_force',
 							fonc_duree = $fonc_duree,
@@ -862,10 +868,10 @@ switch ($methode)
 							fonc_date_limite = $fonc_validite_sql
 						WHERE fonc_cod = $fonc_cod
 						RETURNING fonc_nom, fonc_type";
-					$stmt_add_fun = $pdo->query($req);
-					$result_add_fun = $stmt_add_fun->fetch()();
-					$fonc_nom = $result_add_fun['fonc_nom'];
-					$fonc_type = $result_add_fun['fonc_type'];
+					$stmt_add_fun   = $pdo->query($req);
+                    $result_add_fun = $stmt_add_fun->fetch();
+					$fonc_nom       = $result_add_fun['fonc_nom'];
+					$fonc_type      = $result_add_fun['fonc_type'];
 	
 					$texteDeclenchement = '';
 					switch ($fonc_type)
@@ -894,7 +900,7 @@ switch ($methode)
 			{
 				$req = "SELECT fonc_nom, fonc_type FROM fonction_specifique WHERE fonc_cod = $id";
 				$stmt_add_fun = $pdo->query($req);
-				if ($result_add_fun = $stmt_add_fun->fetch()())
+                if ($result_add_fun = $stmt_add_fun->fetch())
 				{
 					$fonc_type = $result_add_fun['fonc_type'];
 					$fonc_nom = $result_add_fun['fonc_nom'];

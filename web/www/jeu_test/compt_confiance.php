@@ -31,7 +31,9 @@ if (!isset($_GET['etat']))
 {
     $etat = $_GET['etat'];
 }
-if ($db->is_admin($compt_cod))
+$compte = new compte;
+$compte->charge($compt_cod);
+if ($compte->is_admin())
 {
     $req = "select compt_nom from compte where compt_cod = $compte ";
     $stmt = $pdo->query($req);
