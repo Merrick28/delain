@@ -121,7 +121,7 @@ if ($erreur == 0)
     $req = "select sort_aggressif, sort_distance, sort_soi_meme, sort_monstre, sort_joueur, sort_case, sort_nom, sort_fonction, sort_niveau
 		from sorts where sort_cod = $sort_cod";
     $stmt2 = $pdo->query($req);
-    $result2 = $stmt2->fetch()();
+    $result2 = $stmt2->fetch();
     $portee = $result2['sort_distance'];
     $nom_sort = $result2['sort_nom'];
     $sort_niveau = $result2['sort_niveau'];
