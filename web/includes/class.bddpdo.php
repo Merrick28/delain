@@ -136,16 +136,18 @@ class bddpdo
         if (strpos(strtoupper($sql), "SELECT") == 0)
         {
             return $this->pdo->query($sql);
+
         } else
         {
             return $this->pdo->exec($sql);
+
         }
     }
 
     /*     * *
      * @desc   : Gestion des transactions
      * @param : Bool $autocomit
-     * @return : Bool 
+     * @return : Bool
      */
 
     public function AutoCommit($autocommit = true)
@@ -264,7 +266,7 @@ class bddpdo
     }
 
     /*     * *
-     * @desc   : Librer les resultats de la requête 
+     * @desc   : Librer les resultats de la requête
      * @param : results
      * @return : Bool
      */
@@ -275,7 +277,7 @@ class bddpdo
     }
 
     /*     * *
-     * quote 
+     * quote
      */
 
     public function quote($value, $type = DATABASE::PARAM_STR)
@@ -348,7 +350,7 @@ class bddpdo
             chr(10) . '--------' . chr(10) . '   ' . date('y-m-d H:i:s') . chr(10) . '   Page ' . $_SERVER['PHP_SELF'] . '
 	IP : ' . $ip . '
 	Message : [' . $message . ']
-	Erreur :  
+	Erreur :
 	Libelle : [ ]
 	Compte = ' . ((isset($auth)) ? $auth->compt_cod : '0') . '
 	Perso = ' . ((isset($auth)) ? $auth->perso_cod : '0');

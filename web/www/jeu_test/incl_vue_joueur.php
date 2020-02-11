@@ -3,6 +3,7 @@
 </script>
 <?php
 require_once "fonctions.php";
+$pdo = new bddpdo;
 $compte = new compte;
 $compte->charge($compt_cod);
 $perso = new perso;
@@ -10,8 +11,11 @@ $perso->charge($perso_cod);
 $marquerQuatriemes        = $compte->is_admin_monstre();
 $param                    = new parametres();
 $req_malus_desorientation =
-    " select valeur_bonus(perso_cod, 'DES') as desorientation from perso where perso_cod = $perso_cod";
-$stmt                     = $pdo->query($req_malus_desorientation);
+    " select valeur_bonus(:perso, 'DES') as desorientation ";
+
+$stmt                     = $pdo->prepare($req_malus_desorientation);
+$stmt = $pdo->execute(array(":perso" => $perso_cod),$stmt);
+
 $result                   = $stmt->fetch();
 if ($result['desorientation'] == 0)
 {
@@ -29,9 +33,9 @@ $pa_n          = $perso->get_pa_attaque();
 
 
 // On recherche les autres joueurs en vue
-$req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, pcompt_compt_cod, perso_tangible, perso_nom, pos_x, pos_y, 
+$req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, pcompt_compt_cod, perso_tangible, perso_nom, pos_x, pos_y,
 				pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_sex, perso_cod, perso_pv, perso_pv_max, perso_description,
-				perso_desc_long, pos_cod, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma, 
+				perso_desc_long, pos_cod, f_vue_renommee(perso_cod) as renommee, get_karma(perso_kharma) as karma,
 				is_surcharge(perso_cod,$perso_cod) as surcharge, perso_pnj, perso_mortel, pgroupe_groupe_cod, l1.lock_nb_tours as lock1, l2.lock_nb_tours as lock2,
                 case when triplette.triplette_perso_cod IS NOT NULL THEN 1 ELSE 0 END as triplette
 		FROM perso
@@ -45,12 +49,12 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
         LEFT OUTER JOIN (
                         select perso_cod triplette_perso_cod from compte join perso_compte on pcompt_compt_cod=compt_cod join perso on perso_cod=pcompt_perso_cod where compt_cod=$compt_cod and perso_actif='O'
                      ) as triplette on triplette_perso_cod = perso_cod
-		WHERE pos_etage = $etage 
-			and perso_type_perso = 1 
-			and pos_x between ($x-$distance_vue) and ($x+$distance_vue) 
-			and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
+		WHERE pos_etage = $etage
+			and perso_type_perso = 1
+			and pos_x between ($x-$distance_vue) and ($x+$distance_vue)
+			and pos_y between ($y-$distance_vue) and ($y+$distance_vue)
 			and perso_actif = 'O'
-			and perso_cod != $perso_cod 
+			and perso_cod != $perso_cod
 		order by distance,pos_x,pos_y,perso_nom ";
 
 $stmt             = $pdo->query($req_vue_joueur);
