@@ -6,17 +6,27 @@ if (!isset($methode))
 {
     $methode = 'debut';
 }
-if ($db->is_admin_guilde($perso_cod))
+$perso = new perso;
+$perso->charge($perso_cod);
+$autorise = false;
+$pguilde  = new guilde_perso();
+if ($pguilde->get_by_perso($perso_cod))
 {
-    $req_guilde = "select guilde_cod,guilde_nom,rguilde_libelle_rang,pguilde_rang_cod from guilde,guilde_perso,guilde_rang
-												where pguilde_perso_cod = $perso_cod
-												and pguilde_guilde_cod = guilde_cod
-												and rguilde_guilde_cod = guilde_cod
-												and rguilde_rang_cod = pguilde_rang_cod
-												and pguilde_valide = 'O' ";
-    $stmt = $pdo->query($req_guilde);
-    $result = $stmt->fetch();
-    $num_guilde = $result['guilde_cod'];
+    $rguilde = new guilde_rang();
+    $rguilde->get_by_guilde_rang($pguilde->pguilde_guilde_cod, $pguilde->pguilde_rang_cod);
+    if ($rguilde->rguilde_admin == 'O')
+    {
+        $autorise   = true;
+        $guilde_cod = $pguilde->pguilde_guilde_cod;
+        $guilde     = new guilde;
+        $guilde->charge($guilde_cod);
+    }
+}
+
+
+if ($autorise)
+{
+    $num_guilde = $guilde->guilde_cod;
     switch ($methode)
     {
         case "debut":
@@ -50,72 +60,66 @@ if ($db->is_admin_guilde($perso_cod))
 										and pguilde_guilde_cod = rguilde_guilde_cod
 										and pguilde_rang_cod = rguilde_rang_cod
 										and rguilde_admin = 'O'";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt         = $pdo->query($req);
+            $result       = $stmt->fetch();
             $nombre_admin = $result['nombre'];
 
             // on recherche le rang d'admin précédent			
-            $req = "select rguilde_admin from guilde_perso,guilde_rang
+            $req    = "select rguilde_admin from guilde_perso,guilde_rang
 										where pguilde_perso_cod = $vperso
 										and pguilde_guilde_cod = rguilde_guilde_cod
 										and pguilde_rang_cod = rguilde_rang_cod ";
-            $stmt = $pdo->query($req);
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             if ($result['rguilde_admin'] == 'O')
             {
                 // on recherche le nouveau rang admin
-                $req = "select rguilde_admin from guilde_rang 
+                $req    = "select rguilde_admin from guilde_rang 
 											where rguilde_guilde_cod = $num_guilde
 											and rguilde_rang_cod =$rang";
-                $stmt = $pdo->query($req);
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 if ($vperso == $perso_cod)
                 {
                     if ($result['rguilde_admin'] != 'O' and $nombre_admin <= 1)
                     {
                         echo "<p>Erreur ! Le nouveau rang n'est pas un rang <strong>administrateur</strong>, alors que vous êtes actuellement <strong>le seul administrateur</strong> de cette guilde !";
-                    }
-                    else if ($result['rguilde_admin'] != 'O' and $nombre_admin > 1)
+                    } else if ($result['rguilde_admin'] != 'O' and $nombre_admin > 1)
                     {
-                        $req = "update guilde_perso set pguilde_rang_cod = $rang
+                        $req  = "update guilde_perso set pguilde_rang_cod = $rang
 														where pguilde_perso_cod = $vperso ";
                         $stmt = $pdo->query($req);
                         echo "<p>Le rang de l'utilisateur à été modifié. Vous étiez <strong>administrateur</strong> de cette guilde, et vous êtes redevenu simple <strong>membre</strong>.";
-                    }
-                    else /* Le nouveau rang est un rang admin */
+                    } else /* Le nouveau rang est un rang admin */
                     {
-                        $req = "update guilde_perso set pguilde_rang_cod = $rang
+                        $req  = "update guilde_perso set pguilde_rang_cod = $rang
 														where pguilde_perso_cod = $vperso ";
                         $stmt = $pdo->query($req);
                         echo "<p>Le rang de l'utilisateur à été modifié.";
                     }
-                }
-                else
+                } else
                 {
                     if ($result['rguilde_admin'] != 'O')
                     {
                         echo "<p>Erreur ! Le nouveau rang n'est pas un rang <strong>administrateur</strong>. Vous ne pouvez pas dégrader un administrateur, seul lui peut se changer de rang !";
-                    }
-                    else
+                    } else
                     {
-                        $req = "update guilde_perso set pguilde_rang_cod = $rang
+                        $req  = "update guilde_perso set pguilde_rang_cod = $rang
 														where pguilde_perso_cod = $vperso ";
                         $stmt = $pdo->query($req);
                         echo "<p>Le rang de l'utilisateur à été modifié.";
                     }
                 }
-            }
-            else
+            } else
             {
-                $req = "update guilde_perso set pguilde_rang_cod = $rang
+                $req  = "update guilde_perso set pguilde_rang_cod = $rang
 												where pguilde_perso_cod = $vperso ";
                 $stmt = $pdo->query($req);
                 echo "<p>Le rang de l'utilisateur à été modifié.";
             }
             break;
     }
-}
-else
+} else
 {
     echo "<p>Vous n'êtes pas un administrateur de guilde !";
 }

@@ -95,4 +95,49 @@ class message
         $this->msg_cod = $msg_cod;
         return true;
     }
+
+    function mess_chef_coterie($titre, $corps, $coterie, $perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = 'select groupe_chef from groupe, perso where groupe_cod = :coterie and groupe_chef = perso_cod';
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":coterie" => $coterie), $stmt);
+        if ($result = $stmt->fetch())
+        {
+            $chef             = $result['groupe_chef'];
+            $this->corps      = $corps;
+            $this->sujet      = $titre;
+            $this->expediteur = $perso_cod;
+            $this->ajouteDestinataire($chef);
+            $this->envoieMessage();
+        }
+        return 'ok';
+    }
+
+    function mess_all_coterie($titre, $corps, $coterie)
+    {
+        $pdo    = new bddpdo;
+        $req    = 'select groupe_chef from groupe where groupe_cod = ' . $coterie;
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":coterie" => $coterie), $stmt);
+        $result = $stmt->fetch();
+        $chef   = $result['groupe_chef'];
+
+        $this->corps      = $corps;
+        $this->sujet      = $titre;
+        $this->expediteur = $chef;
+        $req              = "select pgroupe_perso_cod
+			from groupe_perso
+			where pgroupe_groupe_cod = :coterie
+			and pgroupe_statut =  1
+			and pgroupe_messages = 1";
+        $stmt             = $pdo->prepare($req);
+        $stmt             = $pdo->execute(array(":coterie" => $coterie), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $this->ajouteDestinataire($result['pgroupe_perso_cod']);
+        }
+        $this->envoieMessage();
+        return 'ok';
+    }
 }

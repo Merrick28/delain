@@ -1500,6 +1500,9 @@ class perso
         return ($quete->get_perso_nb_quete($this->perso_cod));       // retourn un tableau nb_encours,nb_total
     }
 
+    /**
+     * @return array('lieu' => lieu,'lieu_type' => lieu_type,"lieu_position" => lieu_position)|false
+     */
     public function get_lieu()
     {
         if ($this->is_lieu())

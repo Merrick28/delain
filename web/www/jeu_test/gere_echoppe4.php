@@ -6,6 +6,9 @@ if (!isset($mag)) {
     echo "<p>Erreur sur la transmission du lieu_cod ";
     $erreur = 1;
 }
+$perso = new perso;
+$perso->charge($perso_cod);
+$tab_lieu      = $perso->get_lieu();
 $req = "select perso_nom,perso_admin_echoppe,perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
 $stmt = $pdo->query($req);
 $result = $stmt->fetch();
@@ -95,11 +98,12 @@ if ($erreur == 0) {
             echo "<td><p>" . $result['lieu_alignement'] . "</td>";
             echo "</tr>";
 
-            $tab_lieu = $db->get_lieu($perso_cod);
-            if ($tab_lieu['type_lieu'] == 11) {
+            if ($tab_lieu['lieu']->type_lieu == 11)
+            {
                 $modif_possible = 1;
             }
-            if ($tab_lieu['type_lieu'] == 9) {
+            if ($tab_lieu['lieu']->type_lieu == 9)
+            {
                 $modif_possible = 1;
             }
             $modif_possible = 1;
@@ -252,14 +256,16 @@ if ($erreur == 0) {
                 $stmt = $pdo->query($req);
                 $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
                 $stmt = $pdo->query($req);
-                $tab_lieu = $db->get_lieu($perso_cod);
-                if ($tab_lieu['type_lieu'] == 11) {
+                if ($tab_lieu['lieu']->type_lieu == 11)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
                 }
-                if ($tab_lieu['type_lieu'] == 9) {
+                if ($tab_lieu['lieu']->type_lieu == 9)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
                 }
-                if ($tab_lieu['type_lieu'] == 21) {
+                if ($tab_lieu['lieu']->type_lieu == 21)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' ";
                 }
                 $stmt = $pdo->query($req);
@@ -320,14 +326,16 @@ if ($erreur == 0) {
                 $stmt = $pdo->query($req);
                 $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
                 $stmt = $pdo->query($req);
-                $tab_lieu = $db->get_lieu($perso_cod);
-                if ($tab_lieu['type_lieu'] == 11) {
+                if ($tab_lieu['lieu']->type_lieu == 11)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
                 }
-                if ($tab_lieu['type_lieu'] == 9) {
+                if ($tab_lieu['lieu']->type_lieu == 9)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
                 }
-                if ($tab_lieu['type_lieu'] == 21) {
+                if ($tab_lieu['lieu']->type_lieu == 21)
+                {
                     $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' and perso_cod != 605745 ";
                 }
                 $stmt = $pdo->query($req);
@@ -818,7 +826,7 @@ if ($erreur == 0) {
 
         break;
         case "align":
-            $db->query("select lieu_alignement from lieu where lieu_cod = $mag ");
+            $stmt = $pdo->query("select lieu_alignement from lieu where lieu_cod = $mag ");
             $result = $stmt->fetch();
             ?>
             <form name="aligne" method="post" action="gere_echoppe4.php">

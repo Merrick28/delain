@@ -4,55 +4,66 @@ include "blocks/_header_page_jeu.php";
 //
 // Définition de la fonction qui gère l’affichage
 //
-function gereAffichage($db, $champValeur, $unite, $champTitre, $champComp, $champNom)
+function gereAffichage($stmt, $champValeur, $unite, $champTitre, $champComp, $champNom)
 {
+    $pdo      = new bddpdo;
     $resultat = '';
 
-    $type = '';
-    $comp = '';
-    $valeur = 0;
+    $type            = '';
+    $comp            = '';
+    $valeur          = 0;
     $nombre_affiches = 0;
-    $cpt_comp = 0;
-    $afermer = false;
-    $nombre_podium = 3;
-    while ($result = $stmt->fetch()) {
-        if ($type != $db->f($champTitre)) {
+    $cpt_comp        = 0;
+    $afermer         = false;
+    $nombre_podium   = 3;
+    while ($result = $stmt->fetch())
+    {
+        if ($type != $result[$champTitre])
+        {
             $cpt_comp = 0;
-            $type = $db->f($champTitre);
+            $type     = $result[$champTitre];
             $resultat .= '<tr><td colspan="4" class="titre">' . $type . '</td></tr>';
-            $afermer = false;
+            $afermer  = false;
         }
-        if ($comp != $db->f($champComp)) {
-            $valeur = 0;
+        if ($comp != $result[$champComp])
+        {
+            $valeur          = 0;
             $nombre_affiches = 0;
-            if ($afermer) {
+            if ($afermer)
+            {
                 $resultat .= '</td>';
-                if ($cpt_comp % 2 == 0) {
+                if ($cpt_comp % 2 == 0)
+                {
                     $resultat .= '</tr>';
                 }
                 $afermer = false;
             }
-            $comp = $db->f($champComp);
-            if ($cpt_comp % 2 == 0) {
+            $comp = $result[$champComp];
+            if ($cpt_comp % 2 == 0)
+            {
                 $resultat .= '<tr>';
             }
             $resultat .= '<td nowrap class="soustitre2"><strong>' . $comp . '</strong></td>';
-            $resultat .= '<td><strong>' . $db->f($champValeur) . $unite . '</strong> ' . $db->f($champNom) . '<br />';
-            $afermer = true;
+            $resultat .= '<td><strong>' . $result[$champValeur] . $unite . '</strong> ' . $result[$champNom] . '<br />';
+            $afermer  = true;
             $cpt_comp++;
             $nombre_affiches++;
-            $valeur = $db->f($champValeur);
-        } else if ($nombre_affiches < $nombre_podium || $valeur == $db->f($champValeur)) {
-            $resultat .= '<strong>' . $db->f($champValeur) . $unite . '</strong> ' . $db->f($champNom) . '<br />';
+            $valeur = $result[$champValeur];
+        } else if ($nombre_affiches < $nombre_podium || $valeur == $result[$champValeur])
+        {
+            $resultat .= '<strong>' . $result[$champValeur] . $unite . '</strong> ' . $result[$champNom] . '<br />';
             $nombre_affiches++;
-            $valeur = $db->f($champValeur);
+            $valeur = $result[$champValeur];
         }
     }
-    if ($afermer) {
+    if ($afermer)
+    {
         $resultat .= '</td>';
-        if ($cpt_comp % 2 == 0) {
+        if ($cpt_comp % 2 == 0)
+        {
             $resultat .= '</tr>';
-        } else {
+        } else
+        {
             $resultat .= '<td></td><td></td></tr>';
         }
     }
@@ -62,33 +73,38 @@ function gereAffichage($db, $champValeur, $unite, $champTitre, $champComp, $cham
 //
 //Contenu de la div de droite
 //
-$contenu_page = '';
+$contenu_page     = '';
 $contenu_statique = '';
 
-$req = 'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 AND pgroupe_champions = 1';
+$req  =
+    'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 AND pgroupe_champions = 1';
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
     $contenu_page .= 'Vous n’appartenez à aucune coterie, ou ne participez pas aux champions de votre coterie.';
-else {
+else
+{
     define("APPEL", 1);
-    $result = $stmt->fetch();
-    $groupe_cod = $result['pgroupe_groupe_cod'];
+    $result      = $stmt->fetch();
+    $groupe_cod  = $result['pgroupe_groupe_cod'];
     $nom_fichier = "./statiques/groupe_champions_$groupe_cod.php";
 
     if (!is_dir('statiques'))
         mkdir('statiques', 0777);
 
     $isRefreshRequired = false;
-    if (!is_file($nom_fichier)) {
+    if (!is_file($nom_fichier))
+    {
         // Le fichier n'existe pas, il faut donc le créer
         $isRefreshRequired = true;
-    } else if (date("Y-m-d H:i:s", strtotime('+7 DAY', filectime($nom_fichier))) < date("Y-m-d H:i:s")) {
+    } else if (date("Y-m-d H:i:s", strtotime('+7 DAY', filectime($nom_fichier))) < date("Y-m-d H:i:s"))
+    {
         // Le fichier existe, mais il a été créé il y a plus d'un mois, il faut le refaire
         $isRefreshRequired = true;
     }
 
-    if ($isRefreshRequired) {
-        $verification = '<?php
+    if ($isRefreshRequired)
+    {
+        $verification     = '<?php
 			if(!defined("APPEL"))
 				die("Erreur d’appel de page !");
 			?>
@@ -110,8 +126,8 @@ else {
             inner join type_competences on typc_cod = comp_typc_cod
             order by typc_libelle, pcomp_pcomp_cod, pcomp_modificateur desc, perso_nom";
 
-        $stmt = $pdo->query($req_comp);
-        $contenu_statique .= gereAffichage($db, 'pcomp_modificateur', '%', 'typc_libelle', 'comp_libelle', 'perso_nom');
+        $stmt             = $pdo->query($req_comp);
+        $contenu_statique .= gereAffichage($stmt, 'pcomp_modificateur', '%', 'typc_libelle', 'comp_libelle', 'perso_nom');
 
         $req_caracs = "WITH t as (
 				select perso_for, perso_int, perso_con, perso_dex, perso_nom, perso_pv_max from groupe_perso 
@@ -151,8 +167,8 @@ else {
 				order by perso_pv_max desc
 				) a";
 
-        $stmt = $pdo->query($req_caracs);
-        $contenu_statique .= gereAffichage($db, 'valeur', '', 'titre', 'carac', 'nom');
+        $stmt             = $pdo->query($req_caracs);
+        $contenu_statique .= gereAffichage($stmt, 'valeur', '', 'titre', 'carac', 'nom');
 
         $req_caracs = "WITH t as (
 				select perso_nom, perso_po, coalesce(pbank_or, 0) as banque from groupe_perso 
@@ -175,8 +191,8 @@ else {
 				order by banque desc
 				) a";
 
-        $stmt = $pdo->query($req_caracs);
-        $contenu_statique .= gereAffichage($db, 'valeur', ' bzf', 'titre', 'carac', 'nom');
+        $stmt             = $pdo->query($req_caracs);
+        $contenu_statique .= gereAffichage($stmt, 'valeur', ' bzf', 'titre', 'carac', 'nom');
 
         $req_chasse = "select 'Palmarès de chasse' as libelle, race_nom, sum(ptab_total * gmon_niveau * gmon_niveau) as total, perso_nom
             from groupe_perso
@@ -191,8 +207,8 @@ else {
             group by race_nom, perso_nom
             order by race_nom, total desc, perso_nom ";
 
-        $stmt = $pdo->query($req_chasse);
-        $contenu_statique .= gereAffichage($db, 'total', ' points', 'libelle', 'race_nom', 'perso_nom');
+        $stmt             = $pdo->query($req_chasse);
+        $contenu_statique .= gereAffichage($stmt, 'total', ' points', 'libelle', 'race_nom', 'perso_nom');
 
         $req_chasse = "select 'Palmarès Solo (classé par niveau du monstre)' as libelle, gmon_nom, sum(ptab_solo) as total, perso_nom
             from groupe_perso
@@ -207,8 +223,8 @@ else {
             group by gmon_niveau, gmon_nom, perso_nom
             order by gmon_niveau desc, gmon_nom, total desc, perso_nom";
 
-        $stmt = $pdo->query($req_chasse);
-        $contenu_statique .= gereAffichage($db, 'total', '', 'libelle', 'gmon_nom', 'perso_nom');
+        $stmt             = $pdo->query($req_chasse);
+        $contenu_statique .= gereAffichage($stmt, 'total', '', 'libelle', 'gmon_nom', 'perso_nom');
 
         $contenu_statique .= '</table>';
 
@@ -216,8 +232,9 @@ else {
         file_put_contents($nom_fichier, $verification . $contenu_statique);
         $test_mod = chmod($nom_fichier, 0777);
         $req_date = "update groupe set groupe_champion_gen_date = now() where groupe_cod = $groupe_cod";
-        $stmt = $pdo->query($req_date);
-    } else {
+        $stmt     = $pdo->query($req_date);
+    } else
+    {
         ob_start();
         include($nom_fichier);
         $contenu_statique .= ob_get_contents();

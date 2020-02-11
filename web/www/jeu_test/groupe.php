@@ -1,8 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
-$admin_monstre = $db->is_admin_monstre($compt_cod);
-
+$compte = new compte;
+$compte->charge($compt_cod);
+$admin_monstre = $compte->is_admin_monstre();
+$classmessage  = new message;
 //
 //Contenu de la div de droite
 //
@@ -10,12 +11,13 @@ $admin_monstre = $db->is_admin_monstre($compt_cod);
 $contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
 if (!isset($methode))
     $methode = 'debut';
-switch ($methode) {
+switch ($methode)
+{
     case 'debut':
         //
         // on commence à regarder si le perso fait partie d’un groupe
         //
-        $req = "select groupe_cod, groupe_nom, pgroupe_statut, pgroupe_chef, is_visible_groupe(groupe_cod, $perso_cod) as is_visible, pgroupe_champions, 
+        $req  = "select groupe_cod, groupe_nom, pgroupe_statut, pgroupe_chef, is_visible_groupe(groupe_cod, $perso_cod) as is_visible, pgroupe_champions, 
 			coalesce(perso_actif, 'N') as chef_actif, coalesce(perso_nom, '') as chef_nom, groupe_chef
 			from groupe
 			inner join groupe_perso on pgroupe_groupe_cod = groupe_cod
@@ -26,16 +28,18 @@ switch ($methode) {
         $stmt = $pdo->query($req);
         if ($stmt->rowCount() == 0)
             $is_groupe = 'non';
-        else {
-            $is_groupe = 'oui';
-            $result = $stmt->fetch();
-            $is_suspendu = $result['pgroupe_statut'] == 2;
-            $is_chef_actif = $result['chef_actif'] == 'O';
-            $is_chef = $result['pgroupe_chef'] == 1;
-            $is_visible = $result['is_visible'] == 1;
+        else
+        {
+            $is_groupe           = 'oui';
+            $result              = $stmt->fetch();
+            $is_suspendu         = $result['pgroupe_statut'] == 2;
+            $is_chef_actif       = $result['chef_actif'] == 'O';
+            $is_chef             = $result['pgroupe_chef'] == 1;
+            $is_visible          = $result['is_visible'] == 1;
             $participe_champions = $result['pgroupe_champions'] == 1;
         }
-        switch ($is_groupe) {
+        switch ($is_groupe)
+        {
             case 'non':
                 //
                 // pas dans un groupe
@@ -50,44 +54,53 @@ switch ($methode) {
                 // fait partie d’un groupe de combat
                 //
 
-                $num_groupe = $result['groupe_cod'];
+                $num_groupe   = $result['groupe_cod'];
                 $contenu_page .= 'Vous faites partie de la coterie <strong>' . $result['groupe_nom'] . '</strong><br>
 					<a href="' . $PHP_SELF . '?methode=reglage">Gérer les valeurs affichées.</a><br>';
-                if ($is_suspendu) {
+                if ($is_suspendu)
+                {
                     $contenu_page .= '<a href="' . $PHP_SELF . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
                     $contenu_page .= '<br /> Vous êtes décédé et avez été écarté de votre coterie ! Avec un peu de ferveur, vos compagnons pourront vous y ramener...<br />';
-                } else {
+                } else
+                {
                     if (!$is_chef_actif) // le chef de la coterie est inactif, on promeut le premier perso qui se connecte
                     {
-                        $ancien_chef = $result['groupe_chef'];
+                        $ancien_chef     = $result['groupe_chef'];
                         $nom_ancien_chef = $result['chef_nom'];
                         if ($chef_nom == '')
-                            $message = 'Le chef de votre coterie ayant malheureusement disparu, vous avez été choisi pour le remplacer.';
-                        else {
-                            $message = "Le chef de votre coterie, $nom_ancien_chef, étant inactif ou en hibernation, vous avez été choisi pour le remplacer.";
-                            $db->mess_chef_coterie('Transmission de coterie', 'Suite à votre inactivité, le rôle de chef de votre coterie a été transféré.', $num_groupe, $perso_cod);
+                            $message =
+                                'Le chef de votre coterie ayant malheureusement disparu, vous avez été choisi pour le remplacer.';
+                        else
+                        {
+                            $message =
+                                "Le chef de votre coterie, $nom_ancien_chef, étant inactif ou en hibernation, vous avez été choisi pour le remplacer.";
+                            $classmessage->mess_chef_coterie('Transmission de coterie', 'Suite à votre inactivité, le rôle de chef de votre coterie a été transféré.', $num_groupe, $perso_cod);
                         }
 
                         //
                         // on modifie les groupe_perso
                         //
-                        $req = 'update groupe set groupe_chef = ' . $perso_cod . ' where groupe_cod = ' . $num_groupe;
+                        $req  = 'update groupe set groupe_chef = ' . $perso_cod . ' where groupe_cod = ' . $num_groupe;
                         $stmt = $pdo->query($req);
-                        $req = 'update groupe_perso set pgroupe_chef = 0 where pgroupe_perso_cod = ' . $ancien_chef . ' and pgroupe_groupe_cod = ' . $num_groupe;
+                        $req  =
+                            'update groupe_perso set pgroupe_chef = 0 where pgroupe_perso_cod = ' . $ancien_chef . ' and pgroupe_groupe_cod = ' . $num_groupe;
                         $stmt = $pdo->query($req);
-                        $req = 'update groupe_perso set pgroupe_chef = 1 where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $num_groupe;
+                        $req  =
+                            'update groupe_perso set pgroupe_chef = 1 where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $num_groupe;
                         $stmt = $pdo->query($req);
-                        $db->mess_chef_coterie('Transmission de coterie', $message, $num_groupe, $ancien_chef);
+                        $classmessage->mess_chef_coterie('Transmission de coterie', $message, $num_groupe, $ancien_chef);
                         $contenu_page .= $message;
-                        $is_chef = true;
+                        $is_chef      = true;
                     }
-                    if ($is_chef) {
+                    if ($is_chef)
+                    {
                         $contenu_page .= '<hr>Vous êtes chef de groupe.<br>
 						<a href="' . $PHP_SELF . '?methode=invite">Inviter des participants ?</a><br>
 						<a href="' . $PHP_SELF . '?methode=delegue">Déléguer le role de chef ?</a><br>
 						<a href="' . $PHP_SELF . '?methode=lourdage">Se séparer d’un des participants ?</a><br>
 						<a href="' . $PHP_SELF . '?methode=detruire&confirme=N">Détruire cette coterie ?</a><br><hr>';
-                    } else {
+                    } else
+                    {
                         $contenu_page .= '<a href="' . $PHP_SELF . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
                     }
 
@@ -100,22 +113,24 @@ switch ($methode) {
                     $contenu_page .= '<hr>';
                     if (!$is_visible)
                         $contenu_page .= 'Vous êtes trop éloigné du chef de groupe pour avoir les informations.<br>';
-                    else {
-                        $req = 'select count(perso_cod) as nbre_perso
+                    else
+                    {
+                        $req        = 'select count(perso_cod) as nbre_perso
 							from perso,groupe_perso
 							where pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
 								and pgroupe_perso_cod = perso_cod';
-                        $stmt = $pdo->query($req);
-                        $result = $stmt->fetch();
+                        $stmt       = $pdo->query($req);
+                        $result     = $stmt->fetch();
                         $nbre_perso = $result['nbre_perso'];
-                        
+
                         $req2 = 'select pgroupe_chef,pgroupe_messages,pgroupe_texte,to_char(pgroupe_texte_maj,\'DD/MM/YYYY hh24:mi:ss\') as date_texte_perso,groupe_chef,groupe_texte,to_char(groupe_texte_maj,\'DD/MM/YYYY hh24:mi:ss\') as date_texte_groupe
 							from groupe_perso,groupe
 							where pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
 								and groupe_cod = ' . $num_groupe . '';
-                        $req = 'select perso_cod,perso_type_perso,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $num_groupe . ',perso_cod) as is_visible,perso_pv/perso_pv_max::numeric as pv_relatif,distance((select ppos_pos_cod from perso_position where ppos_perso_cod = ' . $perso_cod . '),(select ppos_pos_cod from perso_position where ppos_perso_cod = perso_cod)) as distance,
+                        $req  =
+                            'select perso_cod,perso_type_perso,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $num_groupe . ',perso_cod) as is_visible,perso_pv/perso_pv_max::numeric as pv_relatif,distance((select ppos_pos_cod from perso_position where ppos_perso_cod = ' . $perso_cod . '),(select ppos_pos_cod from perso_position where ppos_perso_cod = perso_cod)) as distance,
 								case when pgroupe_montre_pa = 1 then perso_pa else -1 end as perso_pa,
 								case when pgroupe_montre_dlt = 1 then to_char(perso_dlt,\'DD/MM/YYYY hh24:mi:ss\') else \'cache\' end as perso_dlt,
 								case when pgroupe_montre_dlt = 1 then dlt_passee(perso_cod) else -1 end as perso_dlt_passee,
@@ -128,29 +143,35 @@ switch ($methode) {
 								and pgroupe_perso_cod = perso_cod
 								and is_visible_groupe(' . $num_groupe . ',perso_cod) = 1';
 
-                        if (!isset($sort)) {
-                            $sort = 'nom';
-                            $sens = 'asc';
+                        if (!isset($sort))
+                        {
+                            $sort    = 'nom';
+                            $sens    = 'asc';
                             $nv_sens = 'desc';
                         }
-                        if (!isset($sens)) {
+                        if (!isset($sens))
+                        {
                             $sens = 'asc';
                         }
-                        if (!isset($_POST['autresens'])) {
-                            $sens = 'asc';
+                        if (!isset($_POST['autresens']))
+                        {
+                            $sens      = 'asc';
                             $autresens = 'desc';
                         } else
                             $autresens = $_POST['autresens'];
 
-                        if (($sens != 'desc') && ($sens != 'asc')) {
+                        if (($sens != 'desc') && ($sens != 'asc'))
+                        {
                             echo "<p>Anomalie sur sens !";
                             exit();
                         }
-                        if (($sort != 'DLT') && ($sort != 'nom') && ($sort != 'PA') && ($sort != 'etat') && ($sort != 'perso_type_perso,minusc') && ($sort != 'distance')) {
+                        if (($sort != 'DLT') && ($sort != 'nom') && ($sort != 'PA') && ($sort != 'etat') && ($sort != 'perso_type_perso,minusc') && ($sort != 'distance'))
+                        {
                             echo "<p>Anomalie sur tri !";
                             exit();
                         }
-                        switch ($sort) {
+                        switch ($sort)
+                        {
                             case 'DLT':
                                 $req = $req . " order by perso_dlt $sens";
                                 break;
@@ -169,11 +190,11 @@ switch ($methode) {
                             default:
                                 break;
                         }
-                        $sens = ($sens == 'desc') ? 'asc' : 'desc';
+                        $sens      = ($sens == 'desc') ? 'asc' : 'desc';
                         $autresens = ($sens == 'desc') ? 'desc' : 'asc';
 
-                        $stmt = $pdo->query($req);
-                        $stmt2 = $pdo->query($req2);
+                        $stmt    = $pdo->query($req);
+                        $stmt2   = $pdo->query($req2);
                         $result2 = $stmt2->fetch();
                         //
                         // on affiche les membres et les infos
@@ -188,7 +209,8 @@ switch ($methode) {
 
                         function get_lien($sort, $sort_valeur, $sens, $texte)
                         {
-                            $lien = "<a href=\"javascript:document.fsort.sort.value='$sort';document.fsort.sens.value='$sens';document.fsort.submit();\">";
+                            $lien =
+                                "<a href=\"javascript:document.fsort.sort.value='$sort';document.fsort.sens.value='$sens';document.fsort.submit();\">";
                             if ($sort == $sort_valeur)
                                 $lien .= '<strong>';
                             $lien .= $texte;
@@ -218,14 +240,18 @@ switch ($methode) {
                         $contenu_page .= '</p></td>
 							</tr>
 							';
-                        $liste_dest = "";
-                        while ($result = $stmt->fetch()) {
-                            if ($result['perso_cod'] != $perso_cod && $result['pgroupe_messages'] == 1) /*On évite d’inclure le perso dans la liste, et ceux ne voulant pas les messages*/ {
+                        $liste_dest   = "";
+                        while ($result = $stmt->fetch())
+                        {
+                            if ($result['perso_cod'] != $perso_cod && $result['pgroupe_messages'] == 1) /*On évite d’inclure le perso dans la liste, et ceux ne voulant pas les messages*/
+                            {
                                 $liste_dest .= $result['perso_nom'] . ";";
                             }
-                            if ($result['is_visible'] == 0) {
+                            if ($result['is_visible'] == 0)
+                            {
                                 $contenu_page .= "<tr><td colspan=\"5\"><em>" . $result['perso_nom'] . " trop lointain</em></td></tr>";
-                            } else {
+                            } else
+                            {
                                 $contenu_page .= "<tr>
 									<td class=\"soustitre2\"><a href=\"visu_evt_perso.php?visu=" . $result['perso_cod'] . "\">" . $result['perso_nom'] . "</a>";
 
@@ -236,7 +262,8 @@ switch ($methode) {
                                 if ($result['perso_dlt'] == 'cache')
                                     $contenu_page .= "masqué'";
 
-                                else {
+                                else
+                                {
                                     if ($result['perso_dlt_passee'] == 1)
                                         $contenu_page .= "<strong>";
                                     $contenu_page .= $result['perso_dlt'];
@@ -273,14 +300,16 @@ switch ($methode) {
 										<input type="hidden" name="num_groupe" value="' . $num_groupe . '">
 										<td><textarea name="pgroupe_texte" rows=1 cols=40>' . $result['pgroupe_texte'] . '</textarea></td>
 										<td>';
-                                if ($result['perso_cod'] == $perso_cod) {
+                                if ($result['perso_cod'] == $perso_cod)
+                                {
                                     $contenu_page .= '<input type="submit" value="Validation" class="test">';
                                 }
                                 $contenu_page .= '<br>' . $result['date_texte_perso'] . '</td></form></tr>';
 
                             } // fin is visible
                         }// fin while
-                        $req = 'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $num_groupe . ',perso_cod) as is_visible,pgroupe_messages
+                        $req  =
+                            'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $num_groupe . ',perso_cod) as is_visible,pgroupe_messages
 							from perso,groupe_perso
 							where pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
@@ -288,11 +317,14 @@ switch ($methode) {
 								and is_visible_groupe(' . $num_groupe . ',perso_cod) = 0
 							order by minusc';
                         $stmt = $pdo->query($req);
-                        while ($result = $stmt->fetch()) {
-                            if ($result['perso_cod'] != $perso_cod && $result['pgroupe_messages'] == 1) /*On évite d’inclure le perso dans la liste, et ceux ne voulant pas les messages*/ {
+                        while ($result = $stmt->fetch())
+                        {
+                            if ($result['perso_cod'] != $perso_cod && $result['pgroupe_messages'] == 1) /*On évite d’inclure le perso dans la liste, et ceux ne voulant pas les messages*/
+                            {
                                 $liste_dest .= $result['perso_nom'] . ";";
                             }
-                            if ($result['is_visible'] == 0) {
+                            if ($result['is_visible'] == 0)
+                            {
                                 $contenu_page .= "<tr><td colspan=\"5\"><em><strong>" . $result['perso_nom'] . " trop lointain</strong></em></td></tr>";
                             }
                         }
@@ -312,14 +344,14 @@ switch ($methode) {
                     // Gestion des morts que l’on peut rappeler
                     //
 
-                    $req = 'select perso_type_perso, perso_tangible
+                    $req            = 'select perso_type_perso, perso_tangible
 						from perso
 						where perso_cod = ' . $perso_cod;
-                    $stmt = $pdo->query($req);
-                    $result = $stmt->fetch();
+                    $stmt           = $pdo->query($req);
+                    $result         = $stmt->fetch();
                     $afficheBoutons = ($result['perso_type_perso'] == 1) && ($result['perso_tangible'] == 'O');
 
-                    $req = 'select perso_cod, perso_nom, pgroupe_valeur_rappel, perso_niveau
+                    $req  = 'select perso_cod, perso_nom, pgroupe_valeur_rappel, perso_niveau
 						from groupe_perso
 						inner join perso on perso_cod = pgroupe_perso_cod
 						where pgroupe_groupe_cod = ' . $num_groupe . '
@@ -327,11 +359,14 @@ switch ($methode) {
 							and perso_type_perso = 1
 							and perso_tangible = \'N\'';
                     $stmt = $pdo->query($req);
-                    if ($stmt->rowCount() > 0) {
+                    if ($stmt->rowCount() > 0)
+                    {
                         $contenu_page .= '<br /><hr /><p><strong>Compagnons d’arme morts au combat.</strong></p><table><tr><td class="soustitre2">Personnage</td><td class="soustitre2">Jauge de rappel</td><td class="soustitre2">Actions</td></tr>';
-                        while ($result = $stmt->fetch()) {
-                            $barre = min(floor(($result['pgroupe_valeur_rappel'] / $result['perso_niveau']) * 10) * 10, 100);
-                            $alt = '';
+                        while ($result = $stmt->fetch())
+                        {
+                            $barre =
+                                min(floor(($result['pgroupe_valeur_rappel'] / $result['perso_niveau']) * 10) * 10, 100);
+                            $alt   = '';
                             if ($barre == 0) $alt = 'Rappel non commencé.';
                             else if ($barre < 50) $alt = 'Rappel initié...';
                             else if ($barre < 70) $alt = 'Encore un effort...';
@@ -355,7 +390,7 @@ switch ($methode) {
         //
         // on regarde maintenant s'il ya des invitations en attente
         //
-        $req = 'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req  = 'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
@@ -382,13 +417,14 @@ switch ($methode) {
         // se contente d’afficher le formulaire qui va bien
         // le traitement de ce formulaire se fait dans la page action.php
         //
-        $req = 'select pgroupe_montre_pa, pgroupe_montre_dlt, pgroupe_montre_pv, 
+        $req  = 'select pgroupe_montre_pa, pgroupe_montre_dlt, pgroupe_montre_pv, 
 				pgroupe_montre_bonus, pgroupe_messages, pgroupe_message_mort, pgroupe_champions
 			from groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_statut = 1';
         $stmt = $pdo->query($req);
-        if($result = $stmt->fetch()) {
+        if ($result = $stmt->fetch())
+        {
             $contenu_page .= '<form method="post" action="action.php">
 				<input type="hidden" name="methode" value="regle_groupe">
 				<table>
@@ -438,7 +474,8 @@ switch ($methode) {
 					<td colspan="2"><center><input type="submit" value="Valider"></center></td>
 				</tr>
 				</table>';
-        } else {
+        } else
+        {
             $contenu_page .= '<strong>Erreur de paramètres !</strong> Informations de coterie non trouvées.';
         }
         break;        // fin methode reglage
@@ -448,27 +485,30 @@ switch ($methode) {
         // se contente d’afficher le formulaire qui va bien
         // le traitement de ce formulaire se fait dans la page action.php
         //
-        $req = 'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req    =
+            'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1
 			and groupe_chef = ' . $perso_cod;
-        $stmt = $pdo->query($req);
+        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
 
         $contenu_page .= '<form name="nouveau_message" method="post" action="action.php">
 			<input type="hidden" name="methode" value="invite_groupe">
 			<input type="hidden" name="groupe" value="' . $result['groupe_cod'] . '">';
-        $req_pos = "select ppos_pos_cod,distance_vue($perso_cod) as dist_vue,pos_etage,pos_x,pos_y from perso_position,perso,positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-        $stmt = $pdo->query($req_pos);
-        $result = $stmt->fetch();
+        $req_pos      =
+            "select ppos_pos_cod,distance_vue($perso_cod) as dist_vue,pos_etage,pos_x,pos_y from perso_position,perso,positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
+        $stmt         = $pdo->query($req_pos);
+        $result       = $stmt->fetch();
         $pos_actuelle = $result['ppos_pos_cod'];
-        $v_x = $result['pos_x'];
-        $v_y = $result['pos_y'];
-        $vue = $result['dist_vue'];
-        $etage = $result['pos_etage'];
-        $req_vue = 'select perso_cod,perso_nom,distance(ppos_pos_cod,' . $pos_actuelle . ') as dist,trajectoire_vue(' . $pos_actuelle . ',pos_cod) as traj from perso, perso_position, positions
+        $v_x          = $result['pos_x'];
+        $v_y          = $result['pos_y'];
+        $vue          = $result['dist_vue'];
+        $etage        = $result['pos_etage'];
+        $req_vue      =
+            'select perso_cod,perso_nom,distance(ppos_pos_cod,' . $pos_actuelle . ') as dist,trajectoire_vue(' . $pos_actuelle . ',pos_cod) as traj from perso, perso_position, positions
 			where pos_x >= (' . $v_x . ' - ' . $vue . ') and pos_x <= (' . $v_x . ' + ' . $vue . ')
 				and pos_y >= (' . $v_y . ' - ' . $vue . ') and pos_y <= (' . $v_y . ' + ' . $vue . ')
 				and ppos_perso_cod = perso_cod
@@ -478,33 +518,37 @@ switch ($methode) {
 				and ppos_pos_cod = pos_cod
 				and pos_etage = ' . $etage . '
 			order by dist,perso_type_perso,perso_nom ';
-        $stmt = $pdo->query($req_vue);
-        $ch = '';
+        $stmt         = $pdo->query($req_vue);
+        $ch           = '';
         $optionDefaut = false;
-        $dist_init = -1;
-        while ($result = $stmt->fetch()) {
-            if ($result['traj'] == 1) {
-                if ($result['dist'] != $dist_init) {
-                    $ch .= '</optgroup><optgroup label="Distance ' . $result['dist'] . '">';
+        $dist_init    = -1;
+        while ($result = $stmt->fetch())
+        {
+            if ($result['traj'] == 1)
+            {
+                if ($result['dist'] != $dist_init)
+                {
+                    $ch        .= '</optgroup><optgroup label="Distance ' . $result['dist'] . '">';
                     $dist_init = $result['dist'];
                 }
 
-                if (!$optionDefaut) {
-                    $ch .= '<option value="">Veuillez saisir un nouveau membre</option>';
+                if (!$optionDefaut)
+                {
+                    $ch           .= '<option value="">Veuillez saisir un nouveau membre</option>';
                     $optionDefaut = true;
                 }
 
                 $ch .= '<option value="' . $result['perso_nom'] . ';">' . $result['perso_nom'] . '</option>';
             }
         }
-        $ch = substr($ch, 11);
+        $ch           = substr($ch, 11);
         $contenu_page .= 'Choisissez les aventuriers à inviter : <select name="joueur" onChange="changeDestinataire(0);">' . $ch . '</select>
 			<p><input type="text" name="dest" size="80" value=""></p>
 			<input type="submit" class="test" value="Inviter"></form>';
         break;        // fin methode invite
 
     case "vint":
-        $req = 'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req  = 'select groupe_cod,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 				and pgroupe_groupe_cod = groupe_cod
@@ -512,10 +556,12 @@ switch ($methode) {
         $stmt = $pdo->query($req);
         if ($stmt->rowCount() == 0)
             $contenu_page .= 'Aucune invitation en attente.';
-        else {
+        else
+        {
             $contenu_page .= 'Liste des invitations en attente : <br>
 				<table>';
-            while ($result = $stmt->fetch()) {
+            while ($result = $stmt->fetch())
+            {
                 $contenu_page .= '<tr>
 					<td class="soustitre2">' . $result['groupe_nom'] . '</td>
 					<td><a href="action.php?methode=accinv&g=' . $result['groupe_cod'] . '">Accepter ?</a></td>
@@ -529,25 +575,28 @@ switch ($methode) {
         break;        // fin methode vint
 
     case "quitte":
-        if ($confirme == 'N') {
+        if ($confirme == 'N')
+        {
             $contenu_page .= 'Vous vous apprêtez à quitter cette coterie.<br>
 			<a href="' . $PHP_SELF . '?methode=quitte&confirme=O">Cliquez ici pour confirmer !</a>';
         }
-        if ($confirme == 'O') {
-            $req = 'select perso_nom,groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        if ($confirme == 'O')
+        {
+            $req       =
+                'select perso_nom,groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 				from groupe,groupe_perso,perso
 				where pgroupe_perso_cod = ' . $perso_cod . '
 					and pgroupe_groupe_cod = groupe_cod
 					and pgroupe_statut = 1
 					and perso_cod = pgroupe_perso_cod';
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $groupe = $result['groupe_cod'];
+            $stmt      = $pdo->query($req);
+            $result    = $stmt->fetch();
+            $groupe    = $result['groupe_cod'];
             $perso_nom = $result['perso_nom'];
-            $corps = $perso_nom . " a quitté la coterie dont vous êtes le chef";
-            $db->mess_chef_coterie('Départ', $corps, $groupe, $perso_cod);
+            $corps     = $perso_nom . " a quitté la coterie dont vous êtes le chef";
+            $classmessage->mess_chef_coterie('Départ', $corps, $groupe, $perso_cod);
 
-            $req = 'delete from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . '
+            $req  = 'delete from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . '
 				and pgroupe_groupe_cod = ' . $groupe;
             $stmt = $pdo->query($req);
 
@@ -556,22 +605,23 @@ switch ($methode) {
         break;        // fin methode quitte
 
     case "delegue":
-        $req = 'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req          =
+            'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1';
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $groupe = $result['groupe_cod'];
-        $req = 'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $groupe . ',perso_cod) as is_visible
+        $stmt         = $pdo->query($req);
+        $result       = $stmt->fetch();
+        $groupe       = $result['groupe_cod'];
+        $req          = 'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $groupe . ',perso_cod) as is_visible
 			from perso,groupe_perso
 			where pgroupe_groupe_cod = ' . $groupe . '
 			and pgroupe_statut = 1
 			and pgroupe_perso_cod = perso_cod
 			and perso_cod != ' . $perso_cod . '
 			order by minusc ';
-        $stmt = $pdo->query($req);
+        $stmt         = $pdo->query($req);
         $contenu_page .= '<form method="post" action="' . $PHP_SELF . '">
 			<input type="hidden" name="methode" value="delegue2">
 			Choisissez l’aventurier auquel vous voulez déléguer : <br>
@@ -585,27 +635,31 @@ switch ($methode) {
         //
         // on vérifie que l’on est bien le chef
         //
-        $req = 'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req    =
+            'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1';
-        $stmt = $pdo->query($req);
+        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         $groupe = $result['groupe_cod'];
         if ($result['groupe_chef'] != $perso_cod)
             $contenu_page .= 'Anomalie sur gestion chef de coterie !';
-        else {
+        else
+        {
             //
             // on modifie les groupe_perso
             //
-            $req = 'update groupe set groupe_chef = ' . $deleg . ' where groupe_cod = ' . $groupe;
+            $req  = 'update groupe set groupe_chef = ' . $deleg . ' where groupe_cod = ' . $groupe;
             $stmt = $pdo->query($req);
-            $req = 'update groupe_perso set pgroupe_chef = 0 where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $groupe;
+            $req  =
+                'update groupe_perso set pgroupe_chef = 0 where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $groupe;
             $stmt = $pdo->query($req);
-            $req = 'update groupe_perso set pgroupe_chef = 1 where pgroupe_perso_cod = ' . $deleg . ' and pgroupe_groupe_cod = ' . $groupe;
+            $req  =
+                'update groupe_perso set pgroupe_chef = 1 where pgroupe_perso_cod = ' . $deleg . ' and pgroupe_groupe_cod = ' . $groupe;
             $stmt = $pdo->query($req);
-            $db->mess_chef_coterie('Promotion', $perso_nom . ' vous a promu chef de coterie !', $groupe, $perso_cod);
+            $classmessage->mess_chef_coterie('Promotion', $perso_nom . ' vous a promu chef de coterie !', $groupe, $perso_cod);
             $contenu_page .= 'Promotion effective. Vous venez de déléguer le rôle de chef de coterie.';
         }
         break;        // fin methode delegue2
@@ -614,33 +668,37 @@ switch ($methode) {
         //
         // on vérifie que l’on est bien le chef
         //
-        $req = 'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req    =
+            'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1';
-        $stmt = $pdo->query($req);
+        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         $groupe = $result['groupe_cod'];
         if ($result['groupe_chef'] != $perso_cod)
             $contenu_page .= 'Anomalie sur gestion chef de coterie !';
-        else {
-            if ($confirme == 'N') {
+        else
+        {
+            if ($confirme == 'N')
+            {
                 $contenu_page .= 'Vous vous apprêtez à détruire cette coterie.<br>
 				<a href="' . $PHP_SELF . '?methode=detruire&confirme=O">Cliquez ici pour confirmer !</a>';
             }
-            if ($confirme == 'O') {
+            if ($confirme == 'O')
+            {
                 //
                 // d’abord un envoie un message à tous les participants
-                $db->mess_all_coterie('Destruction de la coterie', 'Le chef de coterie ' . $perso_nom . ' a décidé de détruire la coterie dont vous faisiez partie.', $groupe, $perso_cod);
+                $classmessage->mess_all_coterie('Destruction de la coterie', 'Le chef de coterie ' . $perso_nom . ' a décidé de détruire la coterie dont vous faisiez partie.', $groupe);
                 //
                 // on supprime ensuite les gruope_perso
-                $req = 'delete from groupe_perso where pgroupe_groupe_cod = ' . $groupe;
+                $req  = 'delete from groupe_perso where pgroupe_groupe_cod = ' . $groupe;
                 $stmt = $pdo->query($req);
                 //
                 // on supprime directement la coterie
-                $req = 'delete from groupe where groupe_cod = ' . $groupe;
-                $stmt = $pdo->query($req);
+                $req          = 'delete from groupe where groupe_cod = ' . $groupe;
+                $stmt         = $pdo->query($req);
                 $contenu_page .= 'La coterie a bien été détruite.<br>
 					<a href="' . $PHP_SELF . '">retour au menu coterie</a>';
             }
@@ -648,22 +706,23 @@ switch ($methode) {
         break;        // fin methode détruire
 
     case "lourdage":
-        $req = 'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req          =
+            'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1';
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $groupe = $result['groupe_cod'];
-        $req = 'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $groupe . ',perso_cod) as is_visible
+        $stmt         = $pdo->query($req);
+        $result       = $stmt->fetch();
+        $groupe       = $result['groupe_cod'];
+        $req          = 'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $groupe . ',perso_cod) as is_visible
 			from perso,groupe_perso
 			where pgroupe_groupe_cod = ' . $groupe . '
 			and pgroupe_statut = 1
 			and pgroupe_perso_cod = perso_cod
 			and perso_cod != ' . $perso_cod . '
 			order by minusc ';
-        $stmt = $pdo->query($req);
+        $stmt         = $pdo->query($req);
         $contenu_page .= '<form method="post" action="' . $PHP_SELF . '">
 			<input type="hidden" name="methode" value="lourde2">
 			Choisissez l’aventurier que vous souhaitez enlever de la coterie : <br>
@@ -677,46 +736,51 @@ switch ($methode) {
         //
         // on vérifie que l’on est bien le chef
         //
-        $req = 'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
+        $req    =
+            'select groupe_cod,groupe_chef,groupe_nom,pgroupe_statut,pgroupe_chef,is_visible_groupe(groupe_cod,' . $perso_cod . ') as is_visible
 			from groupe,groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_groupe_cod = groupe_cod
 			and pgroupe_statut = 1';
-        $stmt = $pdo->query($req);
+        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         $groupe = $result['groupe_cod'];
         if ($result['groupe_chef'] != $perso_cod)
             $contenu_page .= 'Anomalie sur gestion chef de coterie !';
-        else {
-            $req = 'select perso_nom from perso where perso_cod = ' . $deleg;
-            $stmt = $pdo->query($req);
+        else
+        {
+            $req    = 'select perso_nom from perso where perso_cod = ' . $deleg;
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
-            $nom = $result['perso_nom'];
-            $db->mess_all_coterie('Séparation d’un des membres', 'Le chef de coterie ' . $perso_nom . ' a décidé d’éloigner ' . $nom . ' de la coterie.', $groupe, $perso_cod);
+            $nom    = $result['perso_nom'];
+            $classmessage->mess_all_coterie('Séparation d’un des membres', 'Le chef de coterie ' . $perso_nom . ' a décidé d’éloigner ' . $nom . ' de la coterie.', $groupe);
             //
             // on modifie les groupe_perso
             //
-            $req = 'delete from groupe_perso where pgroupe_perso_cod = ' . $deleg . ' and pgroupe_groupe_cod = ' . $groupe;
-            $stmt = $pdo->query($req);
+            $req          =
+                'delete from groupe_perso where pgroupe_perso_cod = ' . $deleg . ' and pgroupe_groupe_cod = ' . $groupe;
+            $stmt         = $pdo->query($req);
             $contenu_page .= 'L’aventurier ' . $nom . ' ne fait plus partie de la coterie.';
         }
         break;        // fin methode lourde2
 
     case "texte":
-        $texte = $_POST['pgroupe_texte'];
-        $texte = htmlspecialchars(str_replace('\'', '’', $texte));
-        $texte2 = pg_escape_string($texte);
-        $req = 'update groupe_perso set pgroupe_texte = \'' . $texte2 . '\',pgroupe_texte_maj = now() where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $num_groupe;
-        $stmt = $pdo->query($req);
+        $texte        = $_POST['pgroupe_texte'];
+        $texte        = htmlspecialchars(str_replace('\'', '’', $texte));
+        $texte2       = pg_escape_string($texte);
+        $req          =
+            'update groupe_perso set pgroupe_texte = \'' . $texte2 . '\',pgroupe_texte_maj = now() where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_groupe_cod = ' . $num_groupe;
+        $stmt         = $pdo->query($req);
         $contenu_page .= 'Vous avez mis à jour votre palimpseste avec le texte ci dessous : <br><strong>' . $texte . '</strong>';
         break;
 
     case "groupe_texte":
-        $texte = $_POST['groupe_texte'];
-        $texte = htmlspecialchars(str_replace('\'', '’', $texte));
-        $texte2 = pg_escape_string($texte);
-        $req = 'update groupe set groupe_texte = \'' . $texte2 . '\',groupe_texte_maj = now() where groupe_cod = ' . $num_groupe;
-        $stmt = $pdo->query($req);
+        $texte        = $_POST['groupe_texte'];
+        $texte        = htmlspecialchars(str_replace('\'', '’', $texte));
+        $texte2       = pg_escape_string($texte);
+        $req          =
+            'update groupe set groupe_texte = \'' . $texte2 . '\',groupe_texte_maj = now() where groupe_cod = ' . $num_groupe;
+        $stmt         = $pdo->query($req);
         $contenu_page .= 'Vous avez mis à jour le palimpseste de la coterie avec le texte ci dessous : <br><strong>' . $texte . '</strong>
 		<br><hr>';
         /*include "groupe.php";*/
@@ -724,18 +788,18 @@ switch ($methode) {
 
     case "rappel_mort":
         $mort_perso_cod = $_POST['mort_perso_cod'];
-        $req = "select rappel_partiel_coterie($mort_perso_cod, $perso_cod) as resultat";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $contenu_page .= $result['resultat'] . '<br /><hr>';
+        $req            = "select rappel_partiel_coterie($mort_perso_cod, $perso_cod) as resultat";
+        $stmt           = $pdo->query($req);
+        $result         = $stmt->fetch();
+        $contenu_page   .= $result['resultat'] . '<br /><hr>';
         break;
 
     case 'messages_lus':
-        $req = "update messages_dest set dmsg_lu = 'O'
+        $req          = "update messages_dest set dmsg_lu = 'O'
 			from groupe_perso
 			inner join perso_compte on pcompt_perso_cod = pgroupe_perso_cod
 			where pgroupe_perso_cod = dmsg_perso_cod AND pgroupe_groupe_cod = $num_groupe AND pcompt_compt_cod = $compt_cod";
-        $stmt = $pdo->query($req);
+        $stmt         = $pdo->query($req);
         $contenu_page .= "<p>Messages marqués comme lus !</p>";
         break;
 } // fin switch methode

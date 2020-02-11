@@ -4,16 +4,28 @@ ob_start();
 if (!isset($methode)) {
     $methode = 'debut';
 }
-if ($db->is_admin_guilde($perso_cod)) {
-    $req_guilde = "select guilde_cod,guilde_nom,rguilde_libelle_rang,pguilde_rang_cod from guilde,guilde_perso,guilde_rang ";
-    $req_guilde = $req_guilde . "where pguilde_perso_cod = $perso_cod ";
-    $req_guilde = $req_guilde . "and pguilde_guilde_cod = guilde_cod ";
-    $req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod ";
-    $req_guilde = $req_guilde . "and rguilde_rang_cod = pguilde_rang_cod ";
-    $req_guilde = $req_guilde . "and pguilde_valide = 'O' ";
-    $stmt = $pdo->query($req_guilde);
-    $result = $stmt->fetch();
-    $num_guilde = $result['guilde_cod'];
+$perso = new perso;
+$perso->charge($perso_cod);
+$autorise = false;
+$pguilde  = new guilde_perso();
+if ($pguilde->get_by_perso($perso_cod))
+{
+    $rguilde = new guilde_rang();
+    $rguilde->get_by_guilde_rang($pguilde->pguilde_guilde_cod, $pguilde->pguilde_rang_cod);
+    if ($rguilde->rguilde_admin == 'O')
+    {
+        $autorise   = true;
+        $guilde_cod = $pguilde->pguilde_guilde_cod;
+        $guilde     = new guilde;
+        $guilde->charge($guilde_cod);
+    }
+}
+
+
+if ($autorise)
+{
+
+    $num_guilde             = $guilde->guilde_cod;
     switch ($methode) {
         case "debut":
             $tab_admin['O'] = 'Administrateur';
