@@ -71,9 +71,9 @@ switch ($methode)
         echo "Choisissez le joueur à qui vous voulez vendre des objets : ";
         echo "<input type=\"hidden\" name=\"methode\" value=\"e1\">";
         $req_pos = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
-        $db->query($req_pos);
-        $db->next_record();
-        $pos_actuelle = $db->f("ppos_pos_cod");
+        $stmt = $pdo->query($req_pos);
+        $result = $stmt->fetch();
+        $pos_actuelle = $result['ppos_pos_cod'];
 
         $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod and perso_cod != $perso_cod  and perso_type_perso in (1,2,3) and perso_actif = 'O' order by perso_type_perso,perso_nom,minusc";
 
@@ -124,8 +124,8 @@ switch ($methode)
 			order by gobj_tobj_cod, gobj_nom";
 
         // Affichage des objets en vente à l’unité
-        $db->query($req_objets_unitaires);
-        $nb_objets = $db->nf();
+        $stmt = $pdo->query($req_objets_unitaires);
+        $nb_objets = $stmt->rowCount();
         if ($nb_objets > 0)
         {
             $etat = '';
@@ -133,26 +133,26 @@ switch ($methode)
             echo("<center><table>");
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
             echo '<tr><td class="soustitre2"></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Prix demandé</strong></td></tr>';
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
-                if ($db->f("perobj_identifie") == 'O')
+                if ($result['perobj_identifie'] == 'O')
                 {
-                    $nom_objet = $db->f("obj_nom");
+                    $nom_objet = $result['obj_nom'];
                 } else
                 {
-                    $nom_objet = $db->f("obj_nom_generique");
+                    $nom_objet = $result['obj_nom_generique'];
                 }
-                $si_identifie = $db->f("perobj_identifie");
+                $si_identifie = $result['perobj_identifie'];
                 echo "<tr>";
-                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $db->f("obj_cod") . "]\" value=\"0\" id=\"obj[" . $db->f("obj_cod") . "]\"></td>";
-                echo "<td class=\"soustitre2\"><label for=\"obj[" . $db->f("obj_cod") . "]\">$nom_objet $identifie[$si_identifie]";
-                if (($db->f("gobj_tobj_cod") == 1) || ($db->f("gobj_tobj_cod") == 2) || ($db->f("gobj_tobj_cod") == 24))
+                echo "<td><input type=\"checkbox\" class=\"vide\" name=\"obj[" . $result['obj_cod'] . "]\" value=\"0\" id=\"obj[" . $result['obj_cod'] . "]\"></td>";
+                echo "<td class=\"soustitre2\"><label for=\"obj[" . $result['obj_cod'] . "]\">$nom_objet $identifie[$si_identifie]";
+                if (($result['gobj_tobj_cod'] == 1) || ($result['gobj_tobj_cod'] == 2) || ($result['gobj_tobj_cod'] == 24))
                 {
-                    echo "  - " . get_etat($db->f("obj_etat"));
+                    echo "  - " . get_etat($result['obj_etat']);
                 }
                 echo "</label></td>";
 
-                echo "<td><input type=\"text\" name=\"prix[" . $db->f("obj_cod") . "]\" size=\"6\" value=\"0\" /> brouzoufs</td>";
+                echo "<td><input type=\"text\" name=\"prix[" . $result['obj_cod'] . "]\" size=\"6\" value=\"0\" /> brouzoufs</td>";
                 echo "</tr>";
             }
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
@@ -161,18 +161,18 @@ switch ($methode)
         }
 
         // Affichage des objets en vente en gros
-        $db->query($req_objets_gros);
-        $nb_objets_gros = $db->nf();
+        $stmt = $pdo->query($req_objets_gros);
+        $nb_objets_gros = $stmt->rowCount();
         if ($nb_objets_gros > 0)
         {
             echo "<div style=\"text-align:center;\" id='vente_detail'>Vente en gros : cliquez sur les objets que vous souhaitez vendre, indiquez-en le nombre puis leurs prix de vente. Les autres objets se vendent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
             echo("<center><table>");
             echo '<tr><td class="soustitre2" colspan="4"><strong>Actions</strong></td><td class="soustitre2"><strong>Objet</strong></td><td class="soustitre2"><strong>Quantité à vendre</strong></td><td class="soustitre2"><strong>Prix demandé (à la pièce !)</strong></td></tr>';
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
-                $nom_objet = $db->f("gobj_nom");
-                $quantite_dispo = $db->f('nombre');
-                $gobj_cod = $db->f('gobj_cod');
+                $nom_objet = $result['gobj_nom'];
+                $quantite_dispo = $result['nombre'];
+                $gobj_cod = $result['gobj_cod'];
                 $id_chk = "gobj[$gobj_cod]";
                 $id_qte = "qtegros[$gobj_cod]";
                 $id_prx = "prixgros[$gobj_cod]";
@@ -229,44 +229,44 @@ switch ($methode)
 
         // Acceptation automatique des transactions entre persos d’un même compte
         $req = "select perso_type_perso from perso where perso_cod = $perso_cod";
-        $db->query($req);
-        $db->next_record();
-        if ($db->f("perso_type_perso") == 1)
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        if ($result['perso_type_perso'] == 1)
         {
             $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod";
-            $db->query($req);
-            $db->next_record();
-            $compt1 = $db->f("pcompt_compt_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $compt1 = $result['pcompt_compt_cod'];
         } else
         {
-            if ($db->f("perso_type_perso") == 3)
+            if ($result['perso_type_perso'] == 3)
             {
                 $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cod and pfam_perso_cod = pcompt_perso_cod";
-                $db->query($req);
-                $db->next_record();
-                $compt1 = $db->f("pcompt_compt_cod");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $compt1 = $result['pcompt_compt_cod'];
             } else
             {
                 $compt1 = '';
             }
         }
         $req = "select perso_type_perso from perso where perso_cod = " . $_REQUEST['perso'];
-        $db->query($req);
-        $db->next_record();
-        if ($db->f("perso_type_perso") == 1)
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        if ($result['perso_type_perso'] == 1)
         {
             $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = " . $_REQUEST['perso'];
-            $db->query($req);
-            $db->next_record();
-            $compt2 = $db->f("pcompt_compt_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $compt2 = $result['pcompt_compt_cod'];
         } else
         {
-            if ($db->f("perso_type_perso") == 3)
+            if ($result['perso_type_perso'] == 3)
             {
                 $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = " . $_REQUEST['perso'] . " and pfam_perso_cod = pcompt_perso_cod";
-                $db->query($req);
-                $db->next_record();
-                $compt2 = $db->f("pcompt_compt_cod");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $compt2 = $result['pcompt_compt_cod'];
             } else
             {
                 $compt2 = '';
@@ -279,9 +279,9 @@ switch ($methode)
             foreach ($obj as $key => $val)
             {
                 $req_ident = "select perobj_identifie from perso_objets where perobj_obj_cod = $key ";
-                $db->query($req_ident);
-                $db->next_record();
-                $si_identifie = $db->f("perobj_identifie");
+                $stmt = $pdo->query($req_ident);
+                $result = $stmt->fetch();
+                $si_identifie = $result['perobj_identifie'];
                 $erreur = 0;
                 $prix_obj = $prix[$key];
                 if ($prix_obj < 0)
@@ -295,8 +295,8 @@ switch ($methode)
                     $erreur = 1;
                 }
                 $req_exist = "select tran_cod from transaction where tran_obj_cod = $key ";
-                $db->query($req_exist);
-                if ($db->nf() > 0)
+                $stmt = $pdo->query($req_exist);
+                if ($stmt->rowCount() > 0)
                 {
                     echo "Erreur ! Une transaction existe déjà sur l’objet $key. Ceci peut arriver en cas de double-clic sur le bouton de validation précédent.";
                     $erreur = 1;
@@ -306,16 +306,16 @@ switch ($methode)
                     $req_ins = "insert into transaction (tran_obj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie)
 						values ($key, $perso_cod, " . $_REQUEST['perso'] . ", " . $param->getparm(7) . ", $prix_obj, '$si_identifie')
 						RETURNING tran_cod";
-                    $db->query($req_ins);
-                    $db->next_record();
-                    $num_tran = $db->f("tran_cod");
+                    $stmt = $pdo->query($req_ins);
+                    $result = $stmt->fetch();
+                    $num_tran = $result['tran_cod'];
 
                     if ($compt1 == $compt2 and $prix_obj == 0)
                     {
                         $req_acc_tran = "select accepte_transaction($num_tran) as resultat";
-                        $db->query($req_acc_tran);
-                        $db->next_record();
-                        $resultat_temp = $db->f("resultat");
+                        $stmt = $pdo->query($req_acc_tran);
+                        $result = $stmt->fetch();
+                        $resultat_temp = $result['resultat'];
                         $tab_res = explode(";", $resultat_temp);
                         if ($tab_res[0] == -1)
                         {
@@ -336,8 +336,8 @@ switch ($methode)
         // traitement des ventes en gros
         if (isset($gobj) && !$erreur_globale)
         {
-            $db2 = new base_delain;
-            $db3 = new base_delain;
+            
+            
 
             // Récupération globale des infos
             $req_objets_gros = "select gobj_nom, gobj_cod, count(*) as nombre
@@ -353,13 +353,13 @@ switch ($methode)
 					and tran_obj_cod IS NULL
 				group by gobj_nom, gobj_cod
 				order by gobj_tobj_cod";
-            $db->query($req_objets_gros);
+            $stmt = $pdo->query($req_objets_gros);
 
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
-                $gobj_cod = $db->f('gobj_cod');
-                $gobj_nom = $db->f('gobj_nom');
-                $nombre_max = $db->f('nombre');
+                $gobj_cod = $result['gobj_cod'];
+                $gobj_nom = $result['gobj_nom'];
+                $nombre_max = $result['nombre'];
                 if (isset($gobj[$gobj_cod]))
                 {
                     $prix_obj = $prixgros[$gobj_cod];
@@ -397,24 +397,24 @@ switch ($methode)
 								and obj_deposable != 'N'
 								and tran_obj_cod IS NULL
 							limit $qte_obj";
-                        $db2->query($req_objets);
+                        $stmt2 = $pdo->query($req_objets);
 
-                        while ($db2->next_record())
+                        while ($result2 = $stmt2->fetch())
                         {
-                            $obj_cod = $db2->f('obj_cod');
+                            $obj_cod = $result2['obj_cod'];
                             $req_ins = "insert into transaction (tran_obj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie)
 								values ($obj_cod, $perso_cod, " . $_REQUEST['perso'] . ", " . $param->getparm(7) . ", $prix_obj, 'O')
 								RETURNING tran_cod";
-                            $db3->query($req_ins);
-                            $db3->next_record();
-                            $num_tran = $db3->f("tran_cod");
+                            $stmt3 = $pdo->query($req_ins);
+                            $result3 = $stmt3->fetch();
+                            $num_tran = $result3['tran_cod'];
 
                             if ($compt1 == $compt2 && $prix_obj == 0)
                             {
                                 $req_acc_tran = "select accepte_transaction($num_tran) as resultat";
-                                $db3->query($req_acc_tran);
-                                $db3->next_record();
-                                $resultat_temp = $db3->f("resultat");
+                                $stmt3 = $pdo->query($req_acc_tran);
+                                $result3 = $stmt3->fetch();
+                                $resultat_temp = $result3['resultat'];
                                 $tab_res = explode(";", $resultat_temp);
                                 if ($tab_res[0] == -1)
                                 {
@@ -471,7 +471,7 @@ switch ($methode)
         if ($compteur_accept > 0)
         {
             $req_evt = "select insere_evenement($perso_cod, " . $_REQUEST['perso'] . ", 17, '$texte_evt', 'N', NULL)";
-            $db->query($req_evt);
+            $stmt = $pdo->query($req_evt);
 
             echo $texte_man . $texte_auto;
         }

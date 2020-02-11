@@ -15,17 +15,17 @@ if ($erreur == 0)
     {
         case "debut":
             $req = "select compt_cod,compt_nom from compte where (compt_admin = 'O' or compt_monstre = 'O') and compt_actif = 'O' order by compt_nom";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             ?>
             <p>Choisissez le compte à controler :
             <form action="<?php echo $PHP_SELF; ?>" metod="post">
                 <input type="hidden" name="methode" value="et2">
                 <select name="vcompte">
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         ?>
-                        <option value="<?php echo $db->f("compt_cod"); ?>"><?php echo $db->f("compt_nom"); ?></option>
+                        <option value="<?php echo $result['compt_cod']; ?>"><?php echo $result['compt_nom']; ?></option>
                         <?php
                     }
                     ?>

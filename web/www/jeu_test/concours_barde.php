@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db=new base_delain;
+
 
 // SAISON
 if(isset($_POST['saison_concours']))
@@ -11,9 +11,9 @@ if(isset($_POST['saison_concours']))
 else
 {
 	$req_concours = 'SELECT MAX(cbar_cod) as cbar_cod from concours_barde WHERE CURRENT_DATE >= cbar_date_teaser';
-	$db->query($req_concours);
-	$db->next_record();
-	$saison_concours = $db->f('cbar_cod');
+	$stmt = $pdo->query($req_concours);
+	$result = $stmt->fetch();
+	$saison_concours = $result['cbar_cod'];
 }
 
 // Infos sur le concours
@@ -25,17 +25,17 @@ $req_concours = "SELECT cbar_saison, to_char(cbar_date_ouverture,'DD/MM/YYYY à 
 					case when CURRENT_DATE < cbar_date_teaser then 1 else 0 end as futur,
 					case when CURRENT_DATE > cbar_fermeture then 1 else 0 end as ferme
 				FROM concours_barde WHERE cbar_cod = $saison_concours";
-$db->query($req_concours);
-$db->next_record();
-$saison = $db->f('cbar_saison');
-$date_ouverture = $db->f('cbar_date_ouverture');
-$date_teaser = $db->f('cbar_date_teaser');
-$fermeture = $db->f('cbar_fermeture');
-$description = $db->f('cbar_description');
-$introduction = ($db->f('introduction') == 1);
-$ouvert = ($db->f('ouvert') == 1);
-$futur = ($db->f('futur') == 1);
-$ferme = ($db->f('ferme') == 1);
+$stmt = $pdo->query($req_concours);
+$result = $stmt->fetch();
+$saison = $result['cbar_saison'];
+$date_ouverture = $result['cbar_date_ouverture'];
+$date_teaser = $result['cbar_date_teaser'];
+$fermeture = $result['cbar_fermeture'];
+$description = $result['cbar_description'];
+$introduction = ($result['introduction'] == 1);
+$ouvert = ($result['ouvert'] == 1);
+$futur = ($result['futur'] == 1);
+$ferme = ($result['ferme'] == 1);
 
 echo "<div class='barrTitle'>Concours de barde, saison $saison.</div>";
 
@@ -53,9 +53,9 @@ if(isset($_POST['methode']))
 			$titre = $_POST['titre'];
 			$corps = $_POST['contenu'];
 			$req = "SELECT ebar_perso_cod FROM concours_barde_epreuves WHERE ebar_perso_cod = $perso_cod AND ebar_cbar_cod = $saison_concours";
-			$db->query($req);
-			$db->next_record();
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			if ($stmt->rowCount() != 0)
 			{
 				echo "<p><br><strong>Vous avez déjà participé au concours de barde pour la saison en cours !
 					<br>Un barde ne peut pleinement s’exprimer dans un concours qu’une seule fois.</strong></p>";
@@ -77,7 +77,7 @@ if(isset($_POST['methode']))
 				$corps = pg_escape_string($corps);
 				$req_ins_mes = "INSERT INTO concours_barde_epreuves (ebar_perso_cod, ebar_titre, ebar_texte, ebar_cbar_cod)
 								VALUES ($perso_cod, e'$titre', e'$corps', $saison_concours)";
-				$db->query($req_ins_mes);
+				$stmt = $pdo->query($req_ins_mes);
 				echo "<p>Votre participation a été enregistrée !</p>";
 			}
 			break;
@@ -175,13 +175,13 @@ else
 </tr>
 <?php 
 $req_jury = "SELECT jbar_perso_cod FROM concours_barde_jury WHERE jbar_cbar_cod = $saison_concours AND jbar_perso_cod = $perso_cod";
-$db->query($req_jury);
-$isJury = ($db->nf() > 0);
+$stmt = $pdo->query($req_jury);
+$isJury = ($stmt->rowCount() > 0);
 
 $req_jury = "SELECT count(*) as nombre FROM concours_barde_jury WHERE jbar_cbar_cod = $saison_concours";
-$db->query($req_jury);
-$db->next_record();
-$nbJury = $db->f('nombre');
+$stmt = $pdo->query($req_jury);
+$result = $stmt->fetch();
+$nbJury = $result['nombre'];
 
 if ($isJury)
 	$req_ins_mes = "SELECT ebar_cod, perso_nom, ebar_perso_cod, ebar_titre, COALESCE(note, 0) as note,
@@ -211,33 +211,33 @@ if($ordre == 'date')
 else
 	$req_ins_mes .= " ORDER BY note DESC";
 
-$db->query($req_ins_mes);
+$stmt = $pdo->query($req_ins_mes);
 
-while($db->next_record())
+while($result = $stmt->fetch())
 {
-	$nb_vote = $db->f('nbvote');
+	$nb_vote = $result['nbvote'];
 	$publier_nom = $nb_vote == $nbJury;
 	echo '<tr><td class="soustitre2">';
 
 	if ($publier_nom)
 	{
-		echo '<a href="javascript:voirPerso(' . $db->f('ebar_perso_cod') . ');">' . $db->f('perso_nom') . '</a>';
+		echo '<a href="javascript:voirPerso(' . $result['ebar_perso_cod'] . ');">' . $result['perso_nom'] . '</a>';
 	}
 	else
 	{
 		echo "- caché -";
 	}
 	echo '</td>
-		<td class="soustitre2"><a href="javascript:voirTexte(' . $db->f('ebar_cod') . ');">' . $db->f('ebar_titre');
+		<td class="soustitre2"><a href="javascript:voirTexte(' . $result['ebar_cod'] . ');">' . $result['ebar_titre'];
 
-	if ($isJury && $db->f('nbar_note') == null)
+	if ($isJury && $result['nbar_note'] == null)
 	{
 		echo ' <em>- non noté</em>';
 	}
 	echo '</a></td>';
 
-	echo '<td class="soustitre2">' . $db->f('date') . '</td>
-			<td class="soustitre2">' . $db->f('note') . '/' . ($nbJury * 20) . ' <em>(votes : ' . $db->f('nbvote') . '/' . $nbJury . ')</em></td>
+	echo '<td class="soustitre2">' . $result['date'] . '</td>
+			<td class="soustitre2">' . $result['note'] . '/' . ($nbJury * 20) . ' <em>(votes : ' . $result['nbvote'] . '/' . $nbJury . ')</em></td>
 		</tr>';
 }
 echo '</table>';
@@ -258,9 +258,9 @@ if ($ouvert)
 }
 
 $req_saisons = "SELECT cbar_cod, cbar_saison FROM concours_barde WHERE cbar_cod <> $saison_concours AND CURRENT_DATE >= cbar_date_teaser";
-$db->query($req_saisons);
-while ($db->next_record())
-	echo '<a href="javascript:voirSaison(' . $db->f('cbar_cod') . ');">Voir la saison ' . $db->f('cbar_saison') . '</a> ';
+$stmt = $pdo->query($req_saisons);
+while ($result = $stmt->fetch())
+	echo '<a href="javascript:voirSaison(' . $result['cbar_cod'] . ');">Voir la saison ' . $result['cbar_saison'] . '</a> ';
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

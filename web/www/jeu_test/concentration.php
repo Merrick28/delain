@@ -2,16 +2,16 @@
 include "blocks/_header_page_jeu.php";
 
 $req_concentration = "select concentration_nb_tours from concentrations where concentration_perso_cod = $perso_cod";
-$db->query($req_concentration);
-$nb_concentration = $db->nf();
+$stmt = $pdo->query($req_concentration);
+$nb_concentration = $stmt->rowCount();
 
 if ($nb_concentration == 0)
 {
     echo("<p>Vous n'avez effectué aucune concentration.</p>");
 } else
 {
-    $db->next_record();
-    printf("<p>Vous êtes concentré(e) pendant %s tours.", $db->f("concentration_nb_tours"));
+    $result = $stmt->fetch();
+    printf("<p>Vous êtes concentré(e) pendant %s tours.", $result['concentration_nb_tours']);
 }
 echo("<p><div align=\"center\"><a href=\"valide_concentration.php\">Se concentrer ! (4 PA)</a></div></p>");
 if ($nb_concentration != 0)

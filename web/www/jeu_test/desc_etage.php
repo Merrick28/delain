@@ -5,11 +5,11 @@ define("MARCHE_LENO", 93);
 
 
 $req = "select etage_libelle, etage_description, etage_numero from etage,positions,perso_position where pos_cod = ppos_pos_cod and ppos_perso_cod = $perso_cod and pos_etage = etage_numero ";
-$db->query($req);
-$db->next_record();
-$etage_numero = $db->f("etage_numero");
-$contenu_page .= "<p>Vous êtes dans le lieu : <strong>" . $db->f("etage_libelle") . "</strong><br>";
-$contenu_page .= "<p><em>" . $db->f("etage_description") . "</em>";
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$etage_numero = $result['etage_numero'];
+$contenu_page .= "<p>Vous êtes dans le lieu : <strong>" . $result['etage_libelle'] . "</strong><br>";
+$contenu_page .= "<p><em>" . $result['etage_description'] . "</em>";
 
 $contenu_page .= "<p style=\"text-align:center;\"><a href=\"frame_vue.php\">Retour à la vue !</a></p>";
 
@@ -31,17 +31,17 @@ if ($etage_numero == MARCHE_LENO && $erreur == 0)
 		inner join ligne_evt on levt_perso_cod1 = perso_cod
 		where pos_etage = ' . MARCHE_LENO . '
 			and levt_tevt_cod = 91';
-    $db->query($req);
+    $stmt = $pdo->query($req);
 
     $contenu_page .= '<p><strong>Liste des persos présents à l’étage et ayant entrepris des actions d’alchimie ces 15 derniers jours.</strong> Cliquez sur un perso pour voir le détail.</p>';
     $contenu_page .= '<p>';
     $nom_du_perso = '-- non participant --';
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
-        if ($perso == $db->f('perso_cod')) $contenu_page .= '<strong>';
-        $contenu_page .= '- <a href="?perso=' . $db->f('perso_cod') . '">' . $db->f('perso_nom') . '</a> -';
-        if ($perso == $db->f('perso_cod')) $contenu_page .= '</strong>';
-        if ($perso == $db->f('perso_cod')) $nom_du_perso = $db->f('perso_nom');    // On récupère au passage le nom du perso sélectionné
+        if ($perso == $result['perso_cod']) $contenu_page .= '<strong>';
+        $contenu_page .= '- <a href="?perso=' . $result['perso_cod'] . '">' . $result['perso_nom'] . '</a> -';
+        if ($perso == $result['perso_cod']) $contenu_page .= '</strong>';
+        if ($perso == $result['perso_cod']) $nom_du_perso = $result['perso_nom'];    // On récupère au passage le nom du perso sélectionné
     }
     $contenu_page .= '</p><br /><br />';
 
@@ -50,7 +50,7 @@ if ($etage_numero == MARCHE_LENO && $erreur == 0)
         $req = "select levt_date, levt_texte from ligne_evt
 			where levt_perso_cod1 = $perso and levt_tevt_cod = 91
 			order by levt_date desc";
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         $contenu_page .= '
 		<table cellspacing="2">
@@ -59,10 +59,10 @@ if ($etage_numero == MARCHE_LENO && $erreur == 0)
 			<td class="soustitre3"><p><strong>Date</strong></p></td>
 			<td class="soustitre3"><p><strong>Détail</strong></p></td>
 		</tr>';
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $levt_date = $db->f("levt_date");
-            $levt_texte = str_replace('[perso_cod1]', $nom_du_perso, $db->f("levt_texte"));
+            $levt_date = $result['levt_date'];
+            $levt_texte = str_replace('[perso_cod1]', $nom_du_perso, $result['levt_texte']);
             $levt_texte = str_replace('a fini sa potion !', '<strong>a fini sa potion !</strong>', $levt_texte);
             $contenu_page .= "<tr>";
             $contenu_page .= "<td class=\"soustitre3\"><p>$levt_date</p></td>";

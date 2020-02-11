@@ -22,25 +22,25 @@ if ($erreur == 0)
 						FROM concours_barde_note GROUP BY nbar_ebar_cod) t
 					ON t.nbar_ebar_cod = ebar_cod
 				WHERE ebar_cod = $texte_cod";
-    $db->query($req_texte);
-    $db->next_record();
-    $cbar_cod = $db->f('ebar_cbar_cod');
-    $ebar_perso_cod = $db->f('ebar_perso_cod');
-    $ebar_titre = $db->f('ebar_titre');
-    $ebar_texte = $db->f('ebar_texte');
-    $notetotale = $db->f('note');
-    $date = $db->f('date');
-    $nbvote = $db->f('nbvote');
-    $perso_nom = $db->f('perso_nom');
+    $stmt = $pdo->query($req_texte);
+    $result = $stmt->fetch();
+    $cbar_cod = $result['ebar_cbar_cod'];
+    $ebar_perso_cod = $result['ebar_perso_cod'];
+    $ebar_titre = $result['ebar_titre'];
+    $ebar_texte = $result['ebar_texte'];
+    $notetotale = $result['note'];
+    $date = $result['date'];
+    $nbvote = $result['nbvote'];
+    $perso_nom = $result['perso_nom'];
 
     // Les membres du jury
     $req_jury = "SELECT jbar_cod, jbar_perso_cod, nbar_note, nbar_commentaire
 					FROM concours_barde_jury
 					LEFT OUTER JOIN concours_barde_note ON nbar_jbar_cod = jbar_cod AND nbar_ebar_cod = $texte_cod
 					WHERE jbar_cbar_cod = $cbar_cod";
-    $db->query($req_jury);
+    $stmt = $pdo->query($req_jury);
 
-    $nbJury = $db->nf();
+    $nbJury = $stmt->rowCount();
     $leJury = array();
     $lesNotes = array();
     $lesCommentaires = array();
@@ -49,18 +49,18 @@ if ($erreur == 0)
     $notationComplete = true;
     $jury_cod = -1;
     $i = 0;
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
-        $leJury[$i] = $db->f('jbar_cod');
-        $lesNotes[$i] = $db->f('nbar_note');
-        $lesCommentaires[$i] = $db->f('nbar_commentaire');
-        if ($db->f('jbar_perso_cod') == $perso_cod)
+        $leJury[$i] = $result['jbar_cod'];
+        $lesNotes[$i] = $result['nbar_note'];
+        $lesCommentaires[$i] = $result['nbar_commentaire'];
+        if ($result['jbar_perso_cod'] == $perso_cod)
         {
             $isJury = true;
-            $jury_cod = $db->f('jbar_cod');
+            $jury_cod = $result['jbar_cod'];
             $iself = $i;
         }
-        if ($db->f('nbar_note') == null)
+        if ($result['nbar_note'] == null)
             $notationComplete = false;
         $i++;
     }
@@ -92,15 +92,15 @@ if ($erreur == 0)
                 if ($erreur == 0)
                 {
                     $req_deja_note = "SELECT * FROM concours_barde_note WHERE nbar_ebar_cod = $texte_cod AND nbar_jbar_cod = $jury_cod";
-                    $db->query($req_deja_note);
+                    $stmt = $pdo->query($req_deja_note);
                     $req_note = '';
-                    if ($db->nf() == 0)
+                    if ($stmt->rowCount() == 0)
                         $req_note = "INSERT INTO concours_barde_note (nbar_ebar_cod, nbar_jbar_cod, nbar_note, nbar_commentaire)
 									VALUES ($texte_cod, $jury_cod, $note, e'$commentaire')";
                     else
                         $req_note = "UPDATE concours_barde_note SET nbar_note = $note, nbar_commentaire = e'$commentaire'
 									WHERE nbar_ebar_cod = $texte_cod AND nbar_jbar_cod = $jury_cod";
-                    $db->query($req_note);
+                    $stmt = $pdo->query($req_note);
                     echo "<p>Votre évaluation a été enregistrée !</p>";
                     $lesNotes[$iself] = $note;
                     $lesCommentaires[$iself] = $commentaire;

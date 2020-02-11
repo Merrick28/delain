@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$db2 = new base_delain;
+
 ob_start();
 if (!isset($methode))
 {
@@ -54,9 +54,9 @@ switch ($methode)
 
     case "sitting":
         $req = "select compt_cod from compte where compt_nom = '$compte_sitteur'";
-        $db->query($req);
-        $db->next_record();
-        $compte_sitteur = $db->f("compt_cod");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $compte_sitteur = $result['compt_cod'];
         if ($duree_heure == null or $heure_debut == null or $compte_sitteur == null)
         {
             echo "Il manque des informations pour enregistrer ce sitting";
@@ -88,9 +88,9 @@ switch ($methode)
                 . ' where csit_compte_sitte = ' . $compt_cod
                 . ' and csit_ddeb >= (now() + \'' . $heure_debut
                 . ' hours\'::interval - \'15 days\'::interval)';
-            $db->query($req);
-            $db->next_record();
-            $nSittings = $db->f('nsittings');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $nSittings = $result['nsittings'];
             // - Pas plus de 5 jours sittés sur les 15 derniers jours
             //   (Compté depuis la fin du sitting prévu, en remontant)
             $periode_debut = 'now() + \'' . ($heure_debut + $duree_heure)
@@ -100,9 +100,9 @@ switch ($methode)
                 . ' from compte_sitting'
                 . ' where csit_compte_sitte = ' . $compt_cod
                 . ' and csit_dfin >= ' . $periode_debut;
-            $db->query($req);
-            $db->next_record();
-            $dSittings = $db->f('dsittings');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $dSittings = $result['dsittings'];
             // - Pas d'accumulation de sitting pour le sitteur.
             //   (Le nouveau sitting ne débute pendant aucun des sittings
             //   (programmés, et aucun sitting programmé ne débute pendant
@@ -122,9 +122,9 @@ switch ($methode)
                 . ' (now() + \'' . $heure_debut . ' hours\'::interval)'
                 . ' and (now() + \'' . ($heure_debut + $duree_heure)
                 . ' hours\'::interval))';
-            $db->query($req);
-            $db->next_record();
-            $bCumul = $db->f('bcumul');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $bCumul = $result['bcumul'];
             // - Pas de sitteur venant d'un compte lié.
             //   (Les couples peuvent être sittés, mais ne peuvent sitter
             //   (personne)
@@ -173,11 +173,11 @@ switch ($methode)
                     . ' (now() + \'' . $heure_debut . ' hours\'::interval)'
                     . ' and (now() + \'' . ($heure_debut + $duree_heure)
                     . ' hours\'::interval))';
-                $db->query($req);
-                if ($db->next_record())
+                $stmt = $pdo->query($req);
+                if($result = $stmt->fetch())
                 {
                     $contenu_page .= 'Vous avez déjà un sitting prévu entre '
-                        . $db->f('csit_ddeb') . ' et ' . $db->f('csit_dfin')
+                        . $result['csit_ddeb'] . ' et ' . $result['csit_dfin']
                         . ' qui croise la plage horaire choisie pour ce nouveau'
                         . ' sitting. <br />';
                 }
@@ -192,11 +192,11 @@ switch ($methode)
                     . ' (now() + \'' . $heure_debut . ' hours\'::interval)'
                     . ' and (now() + \'' . ($heure_debut + $duree_heure)
                     . ' hours\'::interval))';
-                $db->query($req);
-                if ($db->next_record())
+                $stmt = $pdo->query($req);
+                if($result = $stmt->fetch())
                 {
                     $contenu_page .= 'Votre sitteur a déjà un sitting prévu entre '
-                        . $db->f('csit_ddeb') . ' et ' . $db->f('csit_dfin')
+                        . $result['csit_ddeb'] . ' et ' . $result['csit_dfin']
                         . ' qui croise la plage horaire choisie pour ce nouveau'
                         . ' sitting. <br />';
                 }
@@ -214,23 +214,23 @@ switch ($methode)
             {
                 $declenchement = $duree_heure + $heure_debut;
                 $req = "select to_char((now()+'$heure_debut hours'::interval),'DD-MM-YYYY / hh24:mi') as date_deb,to_char((now()+'$declenchement hours'::interval),'DD-MM-YYYY / hh24:mi') as date_fin";
-                $db->query($req);
-                $db->next_record();
-                $date_deb = $db->f("date_deb");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $date_deb = $result['date_deb'];
                 $req = "select sitting($compte_sitteur,$compt_cod,now() + '$heure_debut hours'::interval,now() + '$declenchement hours'::interval) as resultat";
-                $db->query($req);
-                $db->next_record();
-                $contenu_page .= $db->f("resultat");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $contenu_page .= $result['resultat'];
                 $req = "select compt_nom from compte
                                 where compt_cod = $compt_cod";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitte_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitte_nom = $result2['compt_nom'];
                 $req = "select compt_nom from compte
                                 where compt_cod = $compte_sitteur";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitteur_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitteur_nom = $result2['compt_nom'];
                 echo $contenu_page . "<br>Compte sitteur : <strong>" . $compte_sitteur_nom . "</strong>";
                 echo "<br>Nombre d'heures du sitting : <strong>" . $duree_heure . " heures</strong>";
                 echo "<br>Début du sitting : <strong>" . $date_deb . "</strong>";
@@ -239,17 +239,17 @@ switch ($methode)
                 <hr>
                 <?php
                 $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $compt_cod order by pcompt_perso_cod limit 1";
-                $db->query($req);
-                $db->next_record();
-                $perso_sit = $db->f("pcompt_perso_cod");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $perso_sit = $result['pcompt_perso_cod'];
                 $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $compte_sitteur order by pcompt_perso_cod limit 1";
-                $db->query($req);
-                $db->next_record();
-                $perso_sitteur = $db->f("pcompt_perso_cod");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $perso_sitteur = $result['pcompt_perso_cod'];
                 $req = "select nextval('seq_msg_cod') as numero";
-                $db->query($req);
-                $db->next_record();
-                $num_mes = $db->f("numero");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $num_mes = $result['numero'];
                 //
                 $corps = "Le compte $compte_sitte_nom a demandé à être sitté par le compte $compte_sitteur_nom.
                                     <br>Vous pouvez annuler cette demande de sitting si elle n'a pas démarrée.
@@ -275,14 +275,14 @@ switch ($methode)
                     }
                 }
                 $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-                $db->query($req_ins_mes);
+                $stmt = $pdo->query($req_ins_mes);
                 /******************************/
                 /* On enregistre l'expéditeur */
                 /******************************/
                 $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sit,'N')";
-                $db->query($req_ins_exp);
+                $stmt = $pdo->query($req_ins_exp);
                 $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sitteur,'N','N')";
-                $db->query($req_ins_dest);
+                $stmt = $pdo->query($req_ins_dest);
             }
         }
         break;
@@ -305,17 +305,17 @@ switch ($methode)
 								and csit_dfin > now()
 								and (csit_ddeb + '2 hours'::interval) < now()
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitteur = $db->f("csit_compte_sitteur");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitteur = $result['csit_compte_sitteur'];
                 $req2 = "select compt_nom from compte
 								where compt_cod = $compte_sitteur";
                 $db2->query($req2);
-                $db2->next_record();
-                $compte_sitteur_nom = $db2->f("compt_nom");
+                $result2 = $stmt2->fetch();
+                $compte_sitteur_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitteur_nom; ?></td>
@@ -330,19 +330,19 @@ switch ($methode)
 								and (csit_ddeb > now()
 								or (csit_ddeb + '2 hours'::interval) > now())
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitteur = $db->f("csit_compte_sitteur");
-                $compte_sitte = $db->f("csit_compte_sitte");
-                $csit_cod = $db->f("csit_cod");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitteur = $result['csit_compte_sitteur'];
+                $compte_sitte = $result['csit_compte_sitte'];
+                $csit_cod = $result['csit_cod'];
                 $req2 = "select compt_nom from compte
 								where compt_cod = $compte_sitteur";
                 $db2->query($req2);
-                $db2->next_record();
-                $compte_sitteur_nom = $db2->f("compt_nom");
+                $result2 = $stmt2->fetch();
+                $compte_sitteur_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitteur_nom; ?></td>
@@ -366,8 +366,8 @@ switch ($methode)
         } else
         {
             $req = "delete from compte_sitting where csit_cod = $sit and csit_compte_sitteur = $sit2 ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             ?>
             <br>La demande de sitting antérieure a bien été annulée
             <br>Un message a été adressé au compte que vous deviez sitter.
@@ -376,30 +376,30 @@ switch ($methode)
             <?php
             //Envoi d'un message
             $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $sit3 order by pcompt_perso_cod limit 1";
-            $db->query($req);
-            $db->next_record();
-            $perso_sit = $db->f("pcompt_perso_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $perso_sit = $result['pcompt_perso_cod'];
             $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $sit2 order by pcompt_perso_cod limit 1";
-            $db->query($req);
-            $db->next_record();
-            $perso_sitteur = $db->f("pcompt_perso_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $perso_sitteur = $result['pcompt_perso_cod'];
             $req = "select nextval('seq_msg_cod') as numero";
-            $db->query($req);
-            $db->next_record();
-            $num_mes = $db->f("numero");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $num_mes = $result['numero'];
             //
             $corps = "La précédente demande de sitting a été annulée par le demandeur (sitté). L'annulation prend effet immédiatement";
             $corps = pg_escape_string($corps);
             $titre = "Annulation de sitting par le sitté";
             $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-            $db->query($req_ins_mes);
+            $stmt = $pdo->query($req_ins_mes);
             /******************************/
             /* On enregistre l'expéditeur */
             /******************************/
             $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sit,'N')";
-            $db->query($req_ins_exp);
+            $stmt = $pdo->query($req_ins_exp);
             $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sitteur,'N','N')";
-            $db->query($req_ins_dest);
+            $stmt = $pdo->query($req_ins_dest);
         }
         break;
 
@@ -421,17 +421,17 @@ switch ($methode)
 								and csit_dfin > (now() - '3 months'::interval)
 								and csit_dfin < now()
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitteur = $db->f("csit_compte_sitteur");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitteur = $result['csit_compte_sitteur'];
                 $req = "select compt_nom from compte
 								where compt_cod = $compte_sitteur";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitteur_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitteur_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitteur_nom; ?></td>
@@ -466,17 +466,17 @@ switch ($methode)
 								and csit_dfin > now()
 								and csit_ddeb < now()
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitte = $db->f("csit_compte_sitte");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitte = $result['csit_compte_sitte'];
                 $req = "select compt_nom from compte
 								where compt_cod = $compte_sitte";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitte_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitte_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitte_nom; ?></td>
@@ -491,19 +491,19 @@ switch ($methode)
 								and csit_dfin > now()
 								and csit_ddeb > now()
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitte = $db->f("csit_compte_sitte");
-                $compte_sitteur = $db->f("csit_compte_sitteur");
-                $csit_cod = $db->f("csit_cod");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitte = $result['csit_compte_sitte'];
+                $compte_sitteur = $result['csit_compte_sitteur'];
+                $csit_cod = $result['csit_cod'];
                 $req = "select compt_nom from compte
 								where compt_cod = $compte_sitte";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitte_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitte_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitte_nom; ?></td>
@@ -527,8 +527,8 @@ switch ($methode)
         } else
         {
             $req = "delete from compte_sitting where csit_cod = $sit and csit_compte_sitte = $sit2 ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             ?>
             <br>La demande de sitting antérieure a bien été annulée. Un message a été envoyé au compte sitteur.
             <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
@@ -536,30 +536,30 @@ switch ($methode)
             <?php
             //Envoi d'un message
             $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $sit3 order by pcompt_perso_cod limit 1";
-            $db->query($req);
-            $db->next_record();
-            $perso_sitteur = $db->f("pcompt_perso_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $perso_sitteur = $result['pcompt_perso_cod'];
             $req = "select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $sit2 order by pcompt_perso_cod limit 1";
-            $db->query($req);
-            $db->next_record();
-            $perso_sitte = $db->f("pcompt_perso_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $perso_sitte = $result['pcompt_perso_cod'];
             $req = "select nextval('seq_msg_cod') as numero";
-            $db->query($req);
-            $db->next_record();
-            $num_mes = $db->f("numero");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $num_mes = $result['numero'];
             //
             $corps = "La précédente demande de sitting a été annulée par votre sitteur.";
             $corps = pg_escape_string($corps);
             $titre = "Annulation de sitting par le sitteur";
             $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-            $db->query($req_ins_mes);
+            $stmt = $pdo->query($req_ins_mes);
             /******************************/
             /* On enregistre l'expéditeur */
             /******************************/
             $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sitteur,'N')";
-            $db->query($req_ins_exp);
+            $stmt = $pdo->query($req_ins_exp);
             $req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sit,'N','N')";
-            $db->query($req_ins_dest);
+            $stmt = $pdo->query($req_ins_dest);
         }
         break;
 
@@ -582,18 +582,18 @@ switch ($methode)
 								and csit_dfin > (now() - '3 months'::interval)
 								and csit_dfin < now()
 								order by csit_ddeb";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $duree = $db->f("duree");
-                $compte_sitte = $db->f("csit_compte_sitte");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $duree = $result['duree'];
+                $compte_sitte = $result['csit_compte_sitte'];
                 $req = "select compt_nom from compte
 								where compt_cod = $compte_sitte";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitte_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitte_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><?php echo $compte_sitte_nom; ?></td>

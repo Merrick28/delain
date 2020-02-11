@@ -10,9 +10,9 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement') {
     $erreur = false;
     /* On se déplace */
     $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-    $db->query($req);
-    $db->next_record();
-    if ($db->f('perso_type_perso') == 3) {
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    if ($result['perso_type_perso'] == 3) {
         $resultat_deplacement .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>';
         $erreur = true;
     }
@@ -27,9 +27,9 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement') {
     }
     if (!$erreur) {
         $req_deplace = 'select deplace_code(' . $perso_cod . ',' . $position . ') as deplace';
-        $db->query($req_deplace);
-        $db->next_record();
-        $result = explode('#', $db->f('deplace'));
+        $stmt = $pdo->query($req_deplace);
+        $result = $stmt->fetch();
+        $result = explode('#', $result['deplace']);
         $page_retour = 'frame_vue.php';
 
         $resultat_deplacement .= $result[1];
@@ -38,9 +38,9 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement') {
             $is_phrase = rand(1, 100);
             if ($is_phrase < 34) {
                 $req = 'select choix_rumeur() as rumeur ';
-                $db->query($req);
-                $db->next_record();
-                $resultat_deplacement .= '<hr /><p><em>Rumeur :</em> ' . $db->f('rumeur') . '</p>';
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $resultat_deplacement .= '<hr /><p><em>Rumeur :</em> ' . $result['rumeur'] . '</p>';
             } else if ($is_phrase < 67) {
                 include 'phrase.php';
                 $idx_phrase = rand(1, sizeof($phrase));
@@ -62,11 +62,11 @@ $req_position_actuelle = "select pos_cod,pos_x,pos_y,perso_pa,pos_etage,perso_no
 $req_position_actuelle = $req_position_actuelle . "where ppos_perso_cod = $perso_cod ";
 $req_position_actuelle = $req_position_actuelle . "and ppos_pos_cod = pos_cod ";
 $req_position_actuelle = $req_position_actuelle . "and perso_cod = $perso_cod";
-$db->query($req_position_actuelle);
-$db->next_record();
+$stmt = $pdo->query($req_position_actuelle);
+$result = $stmt->fetch();
 
-$x = $db->f("pos_x");
-$y = $db->f("pos_y");
+$x = $result['pos_x'];
+$y = $result['pos_y'];
 
 // construction sous-requête
 $temp_table = '';
@@ -77,17 +77,17 @@ for ($ix = $x - 1; $ix <= $x + 1; $ix++)
             $temp_table .= " UNION ALL ";
     }
 
-$etage = $db->f("pos_etage");
-$position_actuelle = $db->f("pos_cod");
-$vue = $db->f('vue_pre');
-$nom = $db->f('perso_nom');
+$etage = $result['pos_etage'];
+$position_actuelle = $result['pos_cod'];
+$vue = $result['vue_pre'];
+$nom = $result['perso_nom'];
 ?>
 
     <script language="Javascript" src="../scripts/ajax.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="../scripts/ajax2.js?v20190301" type="text/javascript"></script>
     <div style="float:left;" class="bordiv"><?php echo $vue ?></div>
-<?php if ($db->f("perso_pa") >= $db->get_pa_dep($perso_cod)) {
+<?php if ($result['perso_pa'] >= $db->get_pa_dep($perso_cod)) {
     ?>
     <form name="deplacement" method="post" action="deplacement.php">
         <input type="hidden" name="methode" value="deplacement">
@@ -109,24 +109,24 @@ $nom = $db->f('perso_nom');
 		left outer join murs on mur_pos_cod = pos_cod
 		order by pos_y desc, pos_x asc";
 
-            $db->query($req_alentours);
+            $stmt = $pdo->query($req_alentours);
             $num_ligne = 0;
 
-            while ($db->next_record()) {
-                if ($db->f('temp_x') == $x - 1) // première case
+            while ($result = $stmt->fetch()) {
+                if ($result['temp_x'] == $x - 1) // première case
                 {
                     echo '<tr>';
-                    echo '<td class="soustitre2"><p>Y = ' . $db->f('temp_y') . '</p></td>';
+                    echo '<td class="soustitre2"><p>Y = ' . $result['temp_y'] . '</p></td>';
                 }
                 echo '<td>';
-                if ($db->f("mur") == -1 && $db->f('pos_cod') > 0) {
-                    if ($db->f("pos_cod") != $position_actuelle)
-                        echo "<input type='radio' name='position' value='" . $db->f("pos_cod") . "'>";
+                if ($result['mur'] == -1 && $result['pos_cod'] > 0) {
+                    if ($result['pos_cod'] != $position_actuelle)
+                        echo "<input type='radio' name='position' value='" . $result['pos_cod'] . "'>";
                     else
                         echo $perso_nom;
                 }
                 echo '</td>';
-                if ($db->f('temp_x') == $x + 1) // dernière case
+                if ($result['temp_x'] == $x + 1) // dernière case
                     echo '</tr>';
             }
             ?>

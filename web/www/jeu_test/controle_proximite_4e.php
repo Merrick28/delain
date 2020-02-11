@@ -41,16 +41,16 @@ $req = 'select compt_cod, compt_nom,
 		and triplette.perso_actif = \'O\' and quatrieme.perso_actif = \'O\'
 		and controle_persos_proches(triplette.perso_cod, quatrieme.perso_cod, 10)
 	order by compt_cod';
-$db->query($req);
+$stmt = $pdo->query($req);
 
 $lignes = '';
 $compte_precedent = -1;
 $nombre = 0;
 
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	$c_cod = $db->f("compt_cod");
-	$c_nom = $db->f("compt_nom");
+	$c_cod = $result['compt_cod'];
+	$c_nom = $result['compt_nom'];
 
 	if ($c_cod != $compte_precedent && $nombre > 0)
 	{

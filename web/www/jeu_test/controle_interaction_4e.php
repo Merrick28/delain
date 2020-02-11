@@ -23,15 +23,15 @@ $req = 'select distinct compt_cod, compt_nom
 	inner join perso on perso_cod = levt_attaquant
 	inner join perso_compte on pcompt_perso_cod = perso_cod
 	inner join compte on pcompt_compt_cod = compt_cod';
-$db->query($req);
+$stmt = $pdo->query($req);
 
 echo '<p><strong>Liste des comptes ayant commis des intéractions entre la triplette de base et son 4e personnage.</strong> Cliquez sur un compte pour voir le détail.</p>';
 echo '<p>';
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-    if ($compte == $db->f('compt_cod')) echo '<strong>';
-    echo '- <a href="?compte=' . $db->f('compt_cod') . '">' . $db->f('compt_nom') . '</a> -';
-    if ($compte == $db->f('compt_cod')) echo '</strong>';
+    if ($compte == $result['compt_cod']) echo '<strong>';
+    echo '- <a href="?compte=' . $result['compt_cod'] . '">' . $result['compt_nom'] . '</a> -';
+    if ($compte == $result['compt_cod']) echo '</strong>';
 }
 echo '</p>';
 echo '<p><strong>Voir aussi la <a href="controle_proximite_4e.php">liste des comptes dont un personnage est à proximité du 4e perso</a></strong> (peut être un peu long à afficher).</p><hr />';
@@ -62,7 +62,7 @@ if ($compte > 0)
 		inner join perso_compte on pcompt_perso_cod = p1.perso_cod
 		where pcompt_compt_cod = ' . $compte . '
 		order by levt_date';
-    $db->query($req);
+    $stmt = $pdo->query($req);
     ?>
     <p><a href="detail_compte.php?compte=<?php echo $compte ?>">-- Voir les détails du compte --</a></p>
     <p></p>
@@ -78,14 +78,14 @@ if ($compte > 0)
             <td class="soustitre3"><p><strong>Détail</strong></p></td>
         </tr>
     <?php
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
         $pn1 = $db->f("pn1");
         $pc1 = $db->f("pc1");
         $pn2 = $db->f("pn2");
         $pc2 = $db->f("pc2");
-        $levt_date = $db->f("levt_date");
-        $levt_texte = $db->f("levt_texte");
+        $levt_date = $result['levt_date'];
+        $levt_texte = $result['levt_texte'];
         echo "<tr>";
         echo "<td class=\"soustitre3\"><p>$levt_date</p></td>";
         echo "<td class=\"soustitre3\"><p>$pn1</p></td>";

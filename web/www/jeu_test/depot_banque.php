@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db = new base_delain;
+
 // on regarde si le joueur est bien sur une banque
 $type_lieu = 1;
 $nom_lieu = 'une banque';
@@ -13,15 +13,15 @@ if ($erreur == 0)
     echo("<img src=\"../images/banque3.png\"><br />");
     // on recherche l'or en banque
     $req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
-    $db->query($req_or);
-    $nb_or = $db->nf();
+    $stmt = $pdo->query($req_or);
+    $nb_or = $stmt->rowCount();
     if ($nb_or == 0)
     {
         $qte_or = 0;
     } else
     {
-        $db->next_record();
-        $qte_or = $db->f("pbank_or");
+        $result = $stmt->fetch();
+        $qte_or = $result['pbank_or'];
     }
     echo("<p>Vous avez $qte_or brouzoufs sur votre compte.");
     ?>
