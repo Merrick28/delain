@@ -49,7 +49,7 @@ att.perso_nom as attaquant, def.perso_nom as cible, soi.perso_nom as soimeme
 	order by levt_cod desc
 	limit 20
 	offset $evt_start ";
-$db->query($req_evt);
+$stmt = $pdo->query($req_evt);
 ?>
     <form name="visu_evt" method="post" action="visu_evt_perso.php">
         <input type="hidden" name="visu">
@@ -79,17 +79,17 @@ $db->query($req_evt);
 
 
                         <?php
-                        while ($db->next_record()) {
+                        while ($result = $stmt->fetch()) {
                             echo("<tr>");
-                            printf("<td class=\"soustitre3\" style=\"white-space:nowrap;\">%s</td>", $db->f("evt_date"));
-                            printf("<td class=\"soustitre3\"><strong>%s</strong></td>", $db->f("tevt_libelle"));
+                            printf("<td class=\"soustitre3\" style=\"white-space:nowrap;\">%s</td>", $result['evt_date']);
+                            printf("<td class=\"soustitre3\"><strong>%s</strong></td>", $result['tevt_libelle']);
 
-                            $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_perso_cod1") . ";document.visu_evt.submit();\">" . $db->f("soimeme") . "</a></strong>", $db->f("levt_texte"));
-                            if ($db->f("levt_attaquant") != '') {
-                                $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_attaquant") . ";document.visu_evt.submit();\">" . $db->f("attaquant") . "</a></strong>", $texte_evt);
+                            $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $result['soimeme'] . "</a></strong>", $result['levt_texte']);
+                            if ($result['levt_attaquant'] != '') {
+                                $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $result['attaquant'] . "</a></strong>", $texte_evt);
                             }
-                            if ($db->f("levt_cible") != '') {
-                                $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $db->f("levt_cible") . ";document.visu_evt.submit();\">" . $db->f("cible") . "</a></strong>", $texte_evt);
+                            if ($result['levt_cible'] != '') {
+                                $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_cible'] . ";document.visu_evt.submit();\">" . $result['cible'] . "</a></strong>", $texte_evt);
                             }
 
                             echo("<td>$texte_evt</td>");

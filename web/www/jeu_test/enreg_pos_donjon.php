@@ -18,10 +18,10 @@ if ($erreur == 0)
 
     // Recherche d'une inscription dans les registres pour retour rapide en arene
     $req = "select preg_date_inscription from perso_registre where preg_perso_cod=$perso_cod ";
-    $db->query($req);
-    if ($db->next_record())
+    $stmt = $pdo->query($req);
+    if($result = $stmt->fetch())
     {
-        $date_inscription = $db->f("preg_date_inscription");
+        $date_inscription = $result['preg_date_inscription'];
         if ($date_inscription != '')
         {
             echo "<br>Vous vous êtes déjà inscrit(e) dans nos registres à la date du " . date("d/m/Y à H:i:s", strtotime($date_inscription)) . " <br><br>";

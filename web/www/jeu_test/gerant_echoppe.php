@@ -21,8 +21,8 @@ if ($erreur == 0) {
     $req = $req . "and mger_lieu_cod = lieu_cod ";
     $req = $req . "and mger_perso_cod = perso_cod ";
     $req = $req . "order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun magasin n'est en gérance.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
@@ -37,16 +37,16 @@ if ($erreur == 0) {
         echo "<td></td>";
         echo "</tr>";
 
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=" . $db->f("lieu_cod") . "\"><strong>" . $db->f("lieu_nom") . "</strong></a></td>";
-            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong></td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_marge") . " %</td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_prelev") . " %</td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("lieu_compte") . " brouzoufs</td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=modif&lieu=" . $db->f("lieu_cod") . "\">Modifier</a></td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=supprime&lieu=" . $db->f("lieu_cod") . "\">Supprimer</a></td>";
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=" . $result['lieu_cod'] . "\"><strong>" . $result['lieu_nom'] . "</strong></a></td>";
+            echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong></td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['lieu_marge'] . " %</td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['lieu_prelev'] . " %</td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['lieu_compte'] . " brouzoufs</td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=modif&lieu=" . $result['lieu_cod'] . "\">Modifier</a></td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=supprime&lieu=" . $result['lieu_cod'] . "\">Supprimer</a></td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -62,24 +62,24 @@ if ($erreur == 0) {
     $req = $req . "and not exists ";
     $req = $req . "(select 1 from magasin_gerant where mger_lieu_cod = lieu_cod) ";
     $req = $req . "order by pos_etage desc ";
-    $db->query($req);
-    if ($db->nf() == 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0) {
         echo "<p>Aucun magasin n'est en gérance.";
     } else {
         echo "<table cellspacing=\"2\" cellpadding=\"2\">";
-        while ($db->next_record()) {
-            if ($db->f("lieu_cod") == 11) {
+        while ($result = $stmt->fetch()) {
+            if ($result['lieu_cod'] == 11) {
                 $statut = 'Echoppe classique';
             }
-            if ($db->f("lieu_cod") == 21) {
+            if ($result['lieu_cod'] == 21) {
                 $statut = 'Marché noir';
             }
-            if ($db->f("lieu_cod") == 14) {
+            if ($result['lieu_cod'] == 14) {
                 $statut = 'Echoppe Runique';
             }
             echo "<tr>";
-            echo "<td id=\"cell" . $db->f("lieu_cod") . "\" class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=" . $db->f("lieu_cod") . "\"><strong>" . $db->f("lieu_nom") . "</strong></a></td><td class=\"soustitre2\"> " . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</td>";
-            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $db->f("lieu_cod") . "',1)\" onMouseOut=\"changeStyles('cell" . $db->f("lieu_cod") . "',0)\" href=\"modif_gerant.php?methode=ajout&lieu=" . $db->f("lieu_cod") . "\">Ajouter un gérant</a></td>
+            echo "<td id=\"cell" . $result['lieu_cod'] . "\" class=\"soustitre2\"><p><a href=\"gere_echoppe3.php?mag=" . $result['lieu_cod'] . "\"><strong>" . $result['lieu_nom'] . "</strong></a></td><td class=\"soustitre2\"> " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</td>";
+            echo "<td><p><a onMouseOver=\"changeStyles('cell" . $result['lieu_cod'] . "',1)\" onMouseOut=\"changeStyles('cell" . $result['lieu_cod'] . "',0)\" href=\"modif_gerant.php?methode=ajout&lieu=" . $result['lieu_cod'] . "\">Ajouter un gérant</a></td>
 			<td>" . $statut . "</td>";
             echo "</tr>";
         }

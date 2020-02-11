@@ -4,12 +4,12 @@ $param = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences
 	where pcomp_perso_cod = $perso_cod
 		and pcomp_pcomp_cod in (91,92,93)";
-$db->query($req_comp);
+$stmt = $pdo->query($req_comp);
 $pa = 0;
 $pa2 = 0;
-if($db->next_record())
+if($result = $stmt->fetch())
 {
-	$niveau = $db->f("pcomp_pcomp_cod");
+	$niveau = $result['pcomp_pcomp_cod'];
 	$pa = $param->getparm(117);
 	if(!isset($methode))
 	{
@@ -41,8 +41,8 @@ if($db->next_record())
 				) t on frmco_gobj_cod = gobj_cod
 				where gobj_tobj_cod = 24 and perobj_perso_cod = $perso_cod
 				group by obj_gobj_cod, gobj_nom, gobj_niv_peau, frm_comp_cod";
-			$db->query($req_comp);
-			if($db->nf() == 0)
+			$stmt = $pdo->query($req_comp);
+			if($stmt->rowCount() == 0)
 			{
 				$contenu_page .= 'Vous ne possédez aucune peau que vous puissiez travailler.<br><br>';
 			}
@@ -50,17 +50,17 @@ if($db->next_record())
 			{
 				$contenu_page .= '<p align="left">Vous êtes en possession de :';
 				$liste = '<option value="vide"><-- Sélectionner --></option>';
-				while($db->next_record())
+				while($result = $stmt->fetch())
 				{
-					$nombre = $db->f("nombre");
-					$nom = $db->f("gobj_nom");
-					$detail = $db->f("detail");
-					$comp_peau_min = $db->f("frm_comp_cod");
+					$nombre = $result['nombre'];
+					$nom = $result['gobj_nom'];
+					$detail = $result['detail'];
+					$comp_peau_min = $result['frm_comp_cod'];
 					$texte_niveau = ($comp_peau_min <= $niveau) ? "vous vous sentez apte à la tanner." : "son tannage requiert une expertise que vous ne maîtrisez pas encore.";
 					$contenu_page .= "<br><strong>$nombre $nom</strong> / <em>$detail ; $texte_niveau</em>";
                     
 					if ($comp_peau_min <= $niveau)
-						$liste .= '<option value="'. $db->f("obj_gobj_cod") .'"> '. $db->f("gobj_nom") .'</option>';
+						$liste .= '<option value="'. $result['obj_gobj_cod'] .'"> '. $result['gobj_nom'] .'</option>';
 				}
 				$contenu_page .= '
 					<TABLE width="80%" align="center">
@@ -106,9 +106,9 @@ if($db->next_record())
 			{
 				//lance la fonction de création de parchemin vierge
 				$req = 'select tannage('. $perso_cod .','. $peau .','. $parchemin .') as resultat';
-				$db->query($req);
-				$db->next_record();
-				$result = explode(';',$db->f('resultat'));
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$result = explode(';',$result['resultat']);
 				$contenu_page .= $result[2] . '<br>';
 			}
 		break;

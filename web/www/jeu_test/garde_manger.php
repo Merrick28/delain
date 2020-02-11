@@ -10,9 +10,9 @@ $gm_texte = '0'; // Résultat de la fonction sortir_gm()
 /* Tentative de sortie en cours */
 if ( isset($_POST['sortir']) || isset($sortir) ) { // Register_globals ^^ ...
 	$req = "select sortir_gm($perso_cod) as resultat";
-	$db->query($req);
-	$db->next_record();
-	$gm_texte = $db->f('resultat');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$gm_texte = $result['resultat'];
 	$contenu .= substr($gm_texte,1);
 }
 

@@ -7,8 +7,8 @@ if ($db->is_milice($perso_cod) == 0) {
     $erreur = 1;
 }
 $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 16 ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
@@ -28,8 +28,8 @@ if ($erreur == 0) {
             $req = $req . "and ppos_pos_cod = pos_cod ";
             $req = $req . "and pos_etage = 5 ";
             $req = $req . "order by minusc ";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 echo "<p>Aucun joueur en prison à ce jour.";
             } else {
                 echo "<table>";
@@ -37,10 +37,10 @@ if ($erreur == 0) {
                 echo "<td class=\"soustitre2\"><strong>Nom</strong></td>";
                 echo "<td></td>";
                 echo "</tr>";
-                while ($db->next_record()) {
+                while ($result = $stmt->fetch()) {
                     echo "<tr>";
-                    echo "<td class=\"soustitre2\"><strong>", $db->f("perso_nom"), "</strong></td>";
-                    echo "<td><a href=\"", $PHP_SELF, "?methode=ouvrir&perso=", $db->f("perso_cod"), "\">Ouvrir la porte ?</a>";
+                    echo "<td class=\"soustitre2\"><strong>", $result['perso_nom'], "</strong></td>";
+                    echo "<td><a href=\"", $PHP_SELF, "?methode=ouvrir&perso=", $result['perso_cod'], "\">Ouvrir la porte ?</a>";
                     echo "</tr>";
                 }
                 echo "</table>";
@@ -49,9 +49,9 @@ if ($erreur == 0) {
         case "ouvrir":
             // nom
             $req = "select ouvrir_prison($perso_cible,$perso_cod) as resultat ";
-            $db->query($req);
-            $db->next_record();
-            echo $db->f("resultat");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo $result['resultat'];
             break;
 
     }

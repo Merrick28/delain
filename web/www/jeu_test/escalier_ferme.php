@@ -29,8 +29,8 @@ include "blocks/_tests_appels_page_externe.php";
         // partie du loup
         // on regarde si le médaillon est déposé
         $req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 86 ";
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             echo "<p>Le médaillon du Loup a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
@@ -46,12 +46,12 @@ include "blocks/_tests_appels_page_externe.php";
                 $req = $req . "and pobj_obj_cod = obj_cod ";
                 $req = $req . "and pobj_pos_cod = pos_cod ";
                 $req = $req . "and pos_etage = etage_numero ";
-                $db->query($req);
-                if ($db->nf() != 0) {
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() != 0) {
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Loup se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 } else {
@@ -64,11 +64,11 @@ include "blocks/_tests_appels_page_externe.php";
                     $req = $req . "and perso_actif = 'O' ";
                     $req = $req . "and ppos_pos_cod = pos_cod ";
                     $req = $req . "and pos_etage = etage_numero ";
-                    $db->query($req);
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                    $stmt = $pdo->query($req);
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Loup se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 }
@@ -79,8 +79,8 @@ include "blocks/_tests_appels_page_externe.php";
         // partie du scorpion
         // on regarde si le médaillon est déposé
         $req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 87 ";
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             echo "<p>Le médaillon du Scorpion a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
@@ -96,12 +96,12 @@ include "blocks/_tests_appels_page_externe.php";
                 $req = $req . "and pobj_obj_cod = obj_cod ";
                 $req = $req . "and pobj_pos_cod = pos_cod ";
                 $req = $req . "and pos_etage = etage_numero ";
-                $db->query($req);
-                if ($db->nf() != 0) {
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() != 0) {
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Scorpion se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 } else {
@@ -114,11 +114,11 @@ include "blocks/_tests_appels_page_externe.php";
                     $req = $req . "and perso_actif = 'O' ";
                     $req = $req . "and ppos_pos_cod = pos_cod ";
                     $req = $req . "and pos_etage = etage_numero ";
-                    $db->query($req);
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                    $stmt = $pdo->query($req);
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Scorpion se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 }
@@ -130,8 +130,8 @@ include "blocks/_tests_appels_page_externe.php";
         // partie du Serpent
         // on regarde si le médaillon est déposé
         $req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 88 ";
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             echo "<p>Le médaillon du Serpent a déjà été déposé.";
             $nb_depose = $nb_depose + 1;
         } else {
@@ -147,12 +147,12 @@ include "blocks/_tests_appels_page_externe.php";
                 $req = $req . "and pobj_obj_cod = obj_cod ";
                 $req = $req . "and pobj_pos_cod = pos_cod ";
                 $req = $req . "and pos_etage = etage_numero ";
-                $db->query($req);
-                if ($db->nf() != 0) {
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() != 0) {
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Serpent se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 } else {
@@ -165,11 +165,11 @@ include "blocks/_tests_appels_page_externe.php";
                     $req = $req . "and perso_actif = 'O' ";
                     $req = $req . "and ppos_pos_cod = pos_cod ";
                     $req = $req . "and pos_etage = etage_numero ";
-                    $db->query($req);
-                    while ($db->next_record()) {
-                        $x = $db->f("pos_x");
-                        $y = $db->f("pos_y");
-                        $etage = $db->f("etage_libelle");
+                    $stmt = $pdo->query($req);
+                    while ($result = $stmt->fetch()) {
+                        $x = $result['pos_x'];
+                        $y = $result['pos_y'];
+                        $etage = $result['etage_libelle'];
                         echo "Un médaillon du Serpent se trouve en $x, $y dans le lieu $etage <br>";
                     }
                 }

@@ -1,7 +1,7 @@
 <?php 
 include_once "verif_connexion.php";
 if(!isset($db))
-	$db = new base_delain;
+	
 ob_start();
 
 if(!isset($t_frdr) || $t_frdr === '')

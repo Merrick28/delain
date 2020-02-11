@@ -5,7 +5,7 @@ include "blocks/_tests_appels_page_externe.php";
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
 $erreur = 0;
-$db2 = new base_delain;
+
 $contenu_page = '';
 //
 // on vérifie que le type d'appel soit bien passé
@@ -33,15 +33,15 @@ if ($erreur == 0)
 				and perobj_identifie = \'O\'
 				and perobj_obj_cod = obj_cod
 				and obj_enchantable = 1 ';
-            $db->query($req);
-            if ($db->nf() == 0)
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0)
                 $contenu_page .= '« <em>Désolé, vous ne possédez aucun objet sur lequel je puisse lancer un enchantement.</em>»';
             else
             {
                 $contenu_page .= '« <em>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
 				Voici les objets sur lesquels je peux intervenir : </em>»<br>';
-                while ($db->next_record())
-                    $contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db->f('obj_cod') . '&type_appel=' . $type_appel . '">' . $db->f('obj_nom') . '</a></strong>';
+                while ($result = $stmt->fetch())
+                    $contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $result['obj_cod'] . '&type_appel=' . $type_appel . '">' . $result['obj_nom'] . '</a></strong>';
             }
             $contenu_page .= '<br><br>';
             if ($comp_enchantement == 0)
@@ -50,8 +50,8 @@ if ($erreur == 0)
 											where pquete_quete_cod = 15 
 											and pquete_nombre = 1
 											and pquete_perso_cod = " . $perso_cod;
-                $db->query($req);
-                if ($db->nf() == 0)
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() == 0)
                 {
                     $contenu_page .= '« <em>Mais j\'y pense, vous voulez peut-être devenir vous même un enchanteur de renom ?
 														<br>Si c\'est le cas Dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap.</em>»
@@ -123,13 +123,13 @@ if ($erreur == 0)
 											where pquete_quete_cod = 15 
 											and pquete_nombre = 1
 											and pquete_perso_cod = " . $perso_cod;
-            $db->query($req);
-            if ($db->nf() == 0)
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0)
             {
                 $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-                $db2->query($req);
-                $db2->next_record();
-                $contenu_page .= $db2->f('resultat');
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $contenu_page .= $result2['resultat'];
             } else
             {
                 $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
@@ -143,15 +143,15 @@ if ($erreur == 0)
             break;
         case "niv2": // 10000 brouzoufs et limite comp
             $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $contenu_page .= $result['resultat'];
             break;
         case "niv3": // 20000 brouzoufs et limite comp
             $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $contenu_page .= $result['resultat'];
             break;
         case "code":
             $code = $_POST['code'];
@@ -160,31 +160,31 @@ if ($erreur == 0)
 											and pquete_perso_cod = " . $perso_cod . "
 											and perso_cod = pquete_perso_cod
 											and pquete_nombre = 1";
-            $db->query($req);
-            $db->next_record();
-            if ($db->nf() == 0)
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($stmt->rowCount() == 0)
             {
                 $contenu_page .= 'Vous n\'avez rien à faire ici !';
                 break;
-            } else if ($db->f('perso_pa') != 12)
+            } else if ($result['perso_pa'] != 12)
             {
                 $contenu_page .= 'Vous n\'avez pas suffisamment de PA pour réaliser cette action !';
                 break;
-            } else if ($code == $db->f('pquete_param_texte'))
+            } else if ($code == $result['pquete_param_texte'])
             {
                 //Mise à jour de la comp enchanteur
                 $req2 = "select enchanteur(" . $perso_cod . ",88) as resultat";
-                $db2->query($req2);
-                $db2->next_record();
-                $contenu_page .= '« <em>' . $db2->f('resultat') . '</em>»<br><br>
+                $stmt2 = $pdo->query($req2);
+                $result2 = $stmt2->fetch();
+                $contenu_page .= '« <em>' . $result2['resultat'] . '</em>»<br><br>
 																		Vous bénéficiez maintenant d\'une nouvelle compétence. Bonne découverte !';
             } else
             {
                 $contenu_page .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
 														<br>Prenez un peu de temps pour réfléchir un peu plus ...</em>»<br><br>';
                 $req2 = "update perso set perso_pa = perso_pa - 6 where perso_cod = " . $perso_cod;
-                $db2->query($req2);
-                $db2->next_record();
+                $stmt2 = $pdo->query($req2);
+                $result2 = $stmt2->fetch();
             }
             break;
     }
