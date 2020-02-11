@@ -856,6 +856,10 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             {
                 $contenu_page .= $perso->repare_objet($type_rep[$type], $objet->obj_cod);
             }
+            else
+            {
+                $contenu_page .= 'Vous ne savez pas réparer ce type d\'objet.<br>';
+            }
             $contenu_page .= '<a class="centrer" href="inventaire.php">Retour à l’inventaire</a>';
             break;
         case 'receptacle':
