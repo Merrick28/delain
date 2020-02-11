@@ -811,10 +811,12 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $contenu_page .= $perso->magasin_repare($_POST['lieu'], $_POST['objet']);
             break;
         case 'repare':
-            $type_rep[1] = 'arme';
-            $type_rep[2] = 'armure';
-            $type_rep[4] = 'casque';
-            $autorise    = 0;
+            $type_rep[1]  = 'arme';
+            $type_rep[2]  = 'armure';
+            $type_rep[4]  = 'equipement';        // les casques compétence equipement
+            $type_rep[40] = 'equipement';       // les gants compétence equipement
+            $type_rep[41] = 'equipement';       // les bottes compétence equipement
+            $autorise     = 0;
 
             $objet = new objets();
             $objet->charge($_REQUEST['objet']);
@@ -841,7 +843,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 {
                     $contenu_page .= 'Vous ne pouvez pas réparer un objet non identifié';
                 }
-                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4))
+                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4 || $type == 40 || $type == 41))
                 {
                     $autorise = 1;
                 }

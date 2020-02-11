@@ -1,13 +1,8 @@
 --
--- Name: f_repare_casque(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
+-- Name: f_repare_equipement(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
--- Marlyza - le 11/02/2020 --
--- la fonction f_repare_casque est replacé par f_repare_equipement
--- f_repare_casque sera supprimée lorsque le passage à f_repare_equipement aura été validée
-
-
-CREATE OR REPLACE FUNCTION public.f_repare_casque(integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.f_repare_equipement(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*******************************************************************/
 /* fonction repare_casque : répare un casque                      */
@@ -48,6 +43,8 @@ declare
 	bonmal integer;
 	malus integer;
 	gain_renommee numeric;		-- gain (ou perte) de renommée artisanale
+	v_tobj_cod integer;			-- type de l'objet doit être => 4 (=casque), 40 (=gants) 41 (=bottes)
+
 	---------------------------------------------------------------------
 	-- variable concernant l’objet
 	---------------------------------------------------------------------
@@ -59,7 +56,7 @@ declare
 	---------------------------------------------------------------------
 	temp integer;
 begin
-	num_comp := 79;
+	num_comp := 79;   -- compétence "réparer casque" remplacée par "réparer équipement"
 	gain_renommee := 0.2;
 	---------------------------------------------------------------------
 	-- Etape 1  : contrôles
@@ -78,13 +75,20 @@ begin
 	end if;
 
 	-- pour l’objet
-	select into v_etat , v_etat_max obj_etat , obj_etat_max
-	from objets
+	select into v_etat, v_etat_max, v_tobj_cod obj_etat , obj_etat_max, gobj_tobj_cod
+	from objets join objet_generique on gobj_cod=obj_gobj_cod
 	where obj_cod = num_objet;
 	if not found then
 		code_retour := '<p>Erreur ! Objet non trouvé !</p>';
 		return code_retour;
 	end if;
+
+	-- vérification qu'on utilise la bonne compétence
+	if v_tobj_cod != 4 AND v_tobj_cod != 40 AND v_tobj_cod != 41 then
+		code_retour := '<p>Cette compétence ne permet pas de réparer cet objet</p>';
+		return code_retour;
+	end if;
+
 	if v_etat =v_etat_max then
 		code_retour := '<p>Il ne sert à rien de réparer cet objet, vous ne pourrez pas le rajeunir (Quoique, essayez de demander dans une échoppe)</p>';
 		return code_retour;
@@ -122,7 +126,7 @@ begin
 		return code_retour;
 	end if;
 	if is_equipe = 'O' then
-		code_retour := '<p>Erreur ! Vous ne pouvez pas réparer un casque équipé !</p>';
+		code_retour := '<p>Erreur ! Vous ne pouvez pas réparer votre équipent s''il est porté!</p>';
 		return code_retour;
 	end if;
 	-- le nombre de PA
@@ -132,7 +136,7 @@ begin
 	end if;
 	-- on calcule le coefficient maximum de réparation
 	if v_etat >= min(v_capa_repar , 100) * v_etat_max / 100 then
-		code_retour := '<p>Votre capacité de réparation ne vous permet pas d’améliorer l’état de ce casque.</p>';
+		code_retour := '<p>Votre capacité de réparation ne vous permet pas d’améliorer l’état de cette objet.</p>';
 		return code_retour;
 	end if;
 
@@ -217,7 +221,7 @@ begin
 		else
 			code_retour := code_retour||'. Il est maintenant dans un état '||get_etat_objet(v_etat)||'.<br><br>';
 			if (v_pa >= 2*getparm_n(40)) then
-				code_retour := code_retour||'<a href="action.php?methode=repare&type=4&objet='||cast(num_objet as varchar(20))||'">Réessayer ('||cast(getparm_n(40) as varchar(2))||' PA)</a><br>';
+				code_retour := code_retour||'<a href="action.php?methode=repare&type='||cast(v_tobj_cod as varchar(20))||'&objet='||cast(num_objet as varchar(20))||'">Réessayer ('||cast(getparm_n(40) as varchar(2))||' PA)</a><br>';
 			end if;
 		end if; -- fin destruction
 		return code_retour;
@@ -322,10 +326,10 @@ begin
 end;$_$;
 
 
-ALTER FUNCTION public.f_repare_casque(integer, integer) OWNER TO delain;
+ALTER FUNCTION public.f_repare_equipement(integer, integer) OWNER TO delain;
 
 --
--- Name: FUNCTION f_repare_casque(integer, integer); Type: COMMENT; Schema: public; Owner: delain
+-- Name: FUNCTION f_repare_equipement(integer, integer); Type: COMMENT; Schema: public; Owner: delain
 --
 
-COMMENT ON FUNCTION public.f_repare_casque(integer, integer) IS 'Gère la réparation d’un casque.';
+COMMENT ON FUNCTION public.f_repare_equipement(integer, integer) IS 'Gère la réparation d’un équipement (casque, bottes, gants, etc...).';
