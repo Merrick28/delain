@@ -1,6 +1,6 @@
 <?php 
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 include "sjoueur.php";
 
 	$contenu_page .= '
@@ -212,16 +212,16 @@ switch($methode)
 								and mission_statut = 'O'
 								order by mission_cod asc
 								";
-		$db2->query($req_mission);
-		if($db2->nf() == 0)
+		$stmt2 = $pdo->query($req_mission);
+		if($stmt2->rowCount() == 0)
 			$contenu_page .= '<br>aucune mission à cet étage<br>';		
 		else
 		{
-			while($db2->next_record())
+			while($result2 = $stmt2->fetch())
 			{
 				$is_chef = '';
-				$mission = $db2->f('mission_cod');
-				$nombre_groupe_max = $db2->f('mission_nombre_groupe');
+				$mission = $result2['mission_cod'];
+				$nombre_groupe_max = $result2['mission_nombre_groupe'];
 				if ($nombre_groupe_max == null)
 				{
 					$nombre_groupe_texte = 'Elle peut être réalisée par un nombre indéfini de groupe d\'aventuriers.';
@@ -239,10 +239,10 @@ switch($methode)
 										from quetes.mission_groupe_def
 										where mgroupedef_mission_cod = ".$mission."
 										and mgroupedef_statut = 'O'";
-				$db->query($req);
-				$db->next_record();
-				$nombre_groupe = $db->f('nombre');
-				$contenu_page .= '<strong>'.$db2->f('mission_nom').'</strong><br><br>'.$db2->f('mission_desc').'<br><br><em>Cette mission est prévue pour un groupe de '.$db2->f('mission_taille').' aventuriers<br>'.$nombre_groupe_texte;
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$nombre_groupe = $result['nombre'];
+				$contenu_page .= '<strong>'.$result2['mission_nom'].'</strong><br><br>'.$result2['mission_desc'].'<br><br><em>Cette mission est prévue pour un groupe de '.$result2['mission_taille'].' aventuriers<br>'.$nombre_groupe_texte;
 				//
 				// on commence par regarder si le perso fait partie d'une mission à cet étage
 				//
@@ -252,11 +252,11 @@ switch($methode)
 										and mgroupedef_mission_cod = ".$mission."
 										and mgroupedef_cod = mgroupe_groupe_cod
 										and mgroupedef_statut = 'O'";
-				$db->query($req);
-				$db->next_record();
-				if($db->nf() == 0)
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				if($stmt->rowCount() == 0)
 					$is_groupe = 'non';
-				else if ($db->f('mgroupe_statut') == 'E')
+				else if ($result['mgroupe_statut'] == 'E')
 				{
 					$is_groupe = 'en_cours';
 				}
@@ -264,7 +264,7 @@ switch($methode)
 				{
 					$is_groupe = 'oui';
 				}
-				if($db->f('mgroupe_statut') == 'O')
+				if($result['mgroupe_statut'] == 'O')
 				{
 					$is_chef = 'Oui';
 				}
@@ -307,12 +307,12 @@ switch($methode)
 					break;
 								
 					case 'oui':
-						$contenu_page .= '<br>Vous appartenez au groupe de mission <strong>"'.$db->f('mgroupedef_nom').'</strong>"';
+						$contenu_page .= '<br>Vous appartenez au groupe de mission <strong>"'.$result['mgroupedef_nom'].'</strong>"';
 						if($is_chef == 'Oui')
 						{
 							$contenu_page .= '<br>En tant que chef de ce groupe de mission, vous pouvez inviter d\'autres membres.
 							<br><strong><a onclick="newProtoWindowUrl(1, \'Invitation à un groupe de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'&invite_chef=oui\', 600, 250 , 50 ,500)">Oui, je souhaite le faire</a></strong>
-							<br><strong><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $PHP_SELF . '?methode=delegue&groupe='.$db->f('mgroupe_groupe_cod').'&mission='.$mission.'\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></strong>';
+							<br><strong><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $PHP_SELF . '?methode=delegue&groupe='.$result['mgroupe_groupe_cod'].'&mission='.$mission.'\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></strong>';
 						}
 						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Membres du groupe de mission\', this, \'' . $PHP_SELF . '?methode=details&mission='.$mission.'\', 600, 250 , 50 ,500)">voir les détails</a></strong> de ce groupe de mission (aventuriers engagés dedans) ?<br>';
 						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Quitter ce groupe de mission\', this, \'' . $PHP_SELF . '?methode=quitter&mission='.$mission.'\', 600, 250 , 50 ,500)">Quitter ce groupe ?</a></strong><br>';
@@ -328,14 +328,14 @@ switch($methode)
 															where mobject_mission_cod = ".$mission."
 															and mobject_statut in ('O','N')
 															order by mobject_object_cod";
-						$db->query($req_object);
+						$stmt = $pdo->query($req_object);
 						$s = 's';
-						if ($db->nf() <2)
+						if ($stmt->rowCount() <2)
 						{
 							$s = '';
 						}
 						
-						$contenu_page .= '<br><br>Cette mission comporte '.$db->nf().' objectif'.$s.'.
+						$contenu_page .= '<br><br>Cette mission comporte '.$stmt->rowCount().' objectif'.$s.'.
 															<br><br><table border="1" width="1000px" height="200px" style="border: medium solid #FFFF00">
 															<tr>
 															<td><strong>Description de l\'objectif</strong></td>
@@ -343,29 +343,29 @@ switch($methode)
 															<td><strong>Statut</strong></td>
 															<td><strong>Aventurier / groupe de mission ayant réalisé cet objectif</strong></td>
 															</tr>';
-						while($db->next_record())
+						while($result = $stmt->fetch())
 						{
 						  $camp = '';
 							//On détermine les informations en fonction du type d'objectif à crendre
-							if ($db->f('mobject_type_object') == '1')
+							if ($result['mobject_type_object'] == '1')
 							{
 								$perso = '';
-								if ($db->f('mgroupedef_nom') == null)
+								if ($result['mgroupedef_nom'] == null)
 								{
 									$camp = 'Camp des monstres';
 								}
 								else
 								{
-  								if ($db->f('mobject_perso_cod') == null)
+  								if ($result['mobject_perso_cod'] == null)
   								{
   									$camp = 'Aucune prise pour l\'instant';
   								}
   								else
   								{
-  								  $camp = $db->f('perso_nom').' / '.$db->f('mgroupedef_nom');
+  								  $camp = $result['perso_nom'].' / '.$result['mgroupedef_nom'];
                   }
                 }
-								if ($db->f('mobject_statut') == 'O')
+								if ($result['mobject_statut'] == 'O')
 								{
 									$objectif = 'Prise confirmée !';
 								}
@@ -373,28 +373,28 @@ switch($methode)
 								{
 									$objectif = 'La prise n\'est pas encore confirmée';
 								}
-								$information = 'Coordonnées <br> X : '.$db->f('pos_x').' / Y : '.$db->f('pos_y');
+								$information = 'Coordonnées <br> X : '.$result['pos_x'].' / Y : '.$result['pos_y'];
 							}
-							else if ($db->f('mobject_type_object') == '2')
+							else if ($result['mobject_type_object'] == '2')
 							{
 								$objectif = '';
 								$information = 'Vous devez nettoyer toutes ces positions des monstres présents<br>Coordonnées :';
-								$texte = str_replace(";",",",$db->f("mobject_param_text"));
+								$texte = str_replace(";",",",$result['mobject_param_text']);
 								$texte = trim ($texte, ",");
 								if ($texte != '')
 								{
 									$req_monstre = "select pos_cod,pos_x,pos_y,sum(nombre_perso) as nombre  from positions 
 									left outer join (select count(perso_cod) as nombre_perso,ppos_pos_cod from perso_position,perso where ppos_perso_cod = perso_cod and 									perso_actif = 'O' and perso_type_perso = 2 group by perso_cod,ppos_pos_cod) as t1 on (t1.ppos_pos_cod = pos_cod) 
 									where pos_cod in (".$texte.") group by pos_cod,pos_x,pos_y,nombre_perso ";
-									$db3->query($req_monstre);
-									while($db3->next_record())
+									$stmt3 = $pdo->query($req_monstre);
+									while($result3 = $stmt3->fetch())
 									{
 										$nombre_perso = '';
-										if ($db3->f('nombre') > 0)
+										if ($result3['nombre'] > 0)
 										{
-											$nombre_perso = '<em> - ('.$db3->f('nombre').' monstres présents)</em>';
+											$nombre_perso = '<em> - ('.$result3['nombre'].' monstres présents)</em>';
 										}
-										$information = $information.'<br> X : '.$db3->f('pos_x').' / Y : '.$db3->f('pos_y').''. $nombre_perso;
+										$information = $information.'<br> X : '.$result3['pos_x'].' / Y : '.$result3['pos_y'].''. $nombre_perso;
 									}
 								}
 								else
@@ -403,9 +403,9 @@ switch($methode)
 								}
 								$information = $information.'<br><br>';
 							}
-							else if ($db->f('mobject_type_object') == '3')
+							else if ($result['mobject_type_object'] == '3')
 							{
-								if ($db->f("mobject_param_text") == null or $db->f("mobject_param_text") == '')
+								if ($result['mobject_param_text'] == null or $result['mobject_param_text'] == '')
 								{
 									$information = 'Monstres éradiqués';
 									$objectif = 'Objectif réalisé ';
@@ -415,20 +415,20 @@ switch($methode)
 								{
 									$objectif = '';
 									$information = 'Ces monstres sont le danger à éradiquer !<ul>';
-									$texte = str_replace(";",",",$db->f("mobject_param_text"));
+									$texte = str_replace(";",",",$result['mobject_param_text']);
 									$texte = trim ($texte, ",");
 									$req_monstre = "select perso_nom from perso where perso_cod in (".$texte.")";
-									$db3->query($req_monstre);
-									while($db3->next_record())
+									$stmt3 = $pdo->query($req_monstre);
+									while($result3 = $stmt3->fetch())
 									{
-										$information = $information.'<li>'.$db3->f('perso_nom').'</li>';
+										$information = $information.'<li>'.$result3['perso_nom'].'</li>';
 									}
 									$information = $information.'</ul><br>';
 								}
 							}					
-							else if ($db->f('mobject_type_object') == '4')
+							else if ($result['mobject_type_object'] == '4')
 							{
-								if ($db->f("mobject_param_text") == null or $db->f("mobject_param_text") == '')
+								if ($result['mobject_param_text'] == null or $result['mobject_param_text'] == '')
 								{
 									$information = 'Vous avez vaincu un Commandant';
 									$objectif = 'Objectif réalisé ';
@@ -438,19 +438,19 @@ switch($methode)
 								{
 									$information = 'Ces monstres sont les commandants d\'une troupe !<ul>';
                   $objectif = '';
-									$texte = str_replace(";",",",$db->f("mobject_param_text"));
+									$texte = str_replace(";",",",$result['mobject_param_text']);
 									$texte = trim ($texte, ",");
 									$req_monstre = "select perso_nom from perso where perso_cod in (".$texte.")";
-									$db3->query($req_monstre);
-									if ($db3->nf() == 1)
+									$stmt3 = $pdo->query($req_monstre);
+									if ($stmt3->rowCount() == 1)
 									{
 									 $information = 'Ce monstre est le commandant d\'une troupe !<ul>';
                   }
-                  while($db3->next_record())
+                  while($result3 = $stmt3->fetch())
 									{
-										$information = $information.'<li>'.$db3->f('perso_nom').'</li>';
+										$information = $information.'<li>'.$result3['perso_nom'].'</li>';
 									}
-									if ($db3->nf() == 1)
+									if ($stmt3->rowCount() == 1)
 									{
 									 $information = $information.'</ul><br>Il doit être impérativement exécuté !';
                   }
@@ -461,33 +461,33 @@ switch($methode)
                   
 								}
 							}
-							else if ($db->f('mobject_type_object') == '5')
+							else if ($result['mobject_type_object'] == '5')
 							{
 								$information = '<strong>Ces monstres ne doivent pas être tués !</strong><ul>';
-									$texte = str_replace(";",",",$db->f("mobject_param_text"));
+									$texte = str_replace(";",",",$result['mobject_param_text']);
 									$texte = trim ($texte, ",");
 									$req_monstre = "select perso_nom from perso where perso_cod in (".$texte.")";
-									$db3->query($req_monstre);
-									while($db3->next_record())
+									$stmt3 = $pdo->query($req_monstre);
+									while($result3 = $stmt3->fetch())
 									{
-										$information = $information.'<li>'.$db3->f('perso_nom').'</li>';
+										$information = $information.'<li>'.$result3['perso_nom'].'</li>';
 									}
 									$information = $information.'</ul><br>Si un seul meurt, la mission aura échoué ';
 									$objectif = "";
-									if ($db->f('mobject_statut') == 'R')
+									if ($result['mobject_statut'] == 'R')
 									{
 										$objectif = 'Vous avez raté cet objectif. La mission est un échec.';
 									}
-									else if ($db->f('mobject_statut') == 'O')
+									else if ($result['mobject_statut'] == 'O')
 									{
 										$objectif = 'Objectif réalisé ';
 									}
 							}
-							else if ($db->f('mobject_type_object') == '6')
+							else if ($result['mobject_type_object'] == '6')
 							{
 							  $information = '<strong>Empêchez les informateurs d\'atteindre cette position :</strong>
-                                  <br> X : '.$db->f('pos_x').' / Y : '.$db->f('pos_y');
-								if ($db->f("mobject_param_text") == null or $db->f("mobject_param_text") == '')
+                                  <br> X : '.$result['pos_x'].' / Y : '.$result['pos_y'];
+								if ($result['mobject_param_text'] == null or $result['mobject_param_text'] == '')
 								{
 									$objectif = 'Objectif réalisé ';
 									$perso = '';
@@ -495,11 +495,11 @@ switch($methode)
 								else
 								{
 									$objectif = '';
-									$texte = str_replace(";",",",$db->f("mobject_param_text"));
+									$texte = str_replace(";",",",$result['mobject_param_text']);
 									$texte = trim ($texte, ",");
 									$req_monstre = "select ppos_pos_cod from perso_position where ppos_perso_cod in (".$texte.")";
-									$db3->query($req_monstre);
-									if($db3->nf() != 0)
+									$stmt3 = $pdo->query($req_monstre);
+									if($stmt3->rowCount() != 0)
 									{
 										$objectif = 'Objectif raté !';
 									}
@@ -507,7 +507,7 @@ switch($methode)
               }
 							$contenu_page .= '
 							<tr>
-							<td>'.$db->f('mobject_desc').'</td>
+							<td>'.$result['mobject_desc'].'</td>
 							<td>'.$information.'</td>
 							<td>'.$objectif.'</td>
 							<td>'.$camp.'</td>
@@ -549,17 +549,17 @@ switch($methode)
 											and mgroupedef_mission_cod = ".$mission."
 											and mgroupe_groupe_cod = mgroupedef_cod
 											and mgroupedef_statut = 'O'";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			//On check si le perso n'est pas déjà  dans un groupe
-			if($db->nf() != 0)
+			if($stmt->rowCount() != 0)
 			{
 				$contenu_page .= 'Vous faites déjà  partie d\'un groupe pour cette mission';
 				$erreur = 1;
 			}
 			//on checke si le perso n'est pas un familier (pas de familier chef)
 			$req = 'select pfam_familier_cod from perso_familier where pfam_familier_cod = ' .$perso_cod;
-			$db->query($req);
-			if($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if($stmt->rowCount() != 0)
 			{
 				$contenu_page .= 'Un familier ne peut pas créer de groupe de mission';
 				$erreur = 1;
@@ -573,9 +573,9 @@ switch($methode)
       $nom_groupe = nl2br($nom_groupe);
 			$nom_groupe = pg_escape_string($nom_groupe);
 			$req = 'select quetes.cree_groupe_mission(' .$perso_cod. ',' . $mission . ',e\'' . $nom_groupe  . '\') as resultat ';
-			$db->query($req);
-			$db->next_record();
-			$contenu_page .= '<br><br>'.$db->f('resultat');			
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$contenu_page .= '<br><br>'.$result['resultat'];			
 		}
 		//on invite les membres
 		$tab_dest = explode(";",$membre_groupe);
@@ -599,15 +599,15 @@ switch($methode)
 					$nom_dest = ltrim(rtrim($tab_dest[$cpt]));
 					$nom_dest = pg_escape_string($nom_dest);
 					$req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
-					$db->query($req_dest);
-					$db->next_record();
-					$tab_res_dest = $db->f("num_perso");
+					$stmt = $pdo->query($req_dest);
+					$result = $stmt->fetch();
+					$tab_res_dest = $result['num_perso'];
 				}													
 			//on va envoyer une demande aux persos, qui devront valider
 				$req = 'select quetes.invite_mission(' .$perso_cod. ',' . $mission . ',' . $tab_res_dest  . ',e\''.$message_groupe.'\') as resultat ';
-				$db->query($req);
-				$db->next_record();
-				$contenu_page .= '<br><br>'.$db->f('resultat');
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$contenu_page .= '<br><br>'.$result['resultat'];
 			}
 		}
 		$contenu_page .= '<p style="text-align:center;"><a href="'.$PHP_SELF.'">Retour à ca gestion des groupes de mission</a></p>';	
@@ -616,30 +616,30 @@ switch($methode)
 		if($cas == 'promote')
 		{
 			$req = "update quetes.mission_groupe set mgroupe_statut = 'O' where mgroupe_perso_cod = $perso and mgroupe_groupe_cod = $groupe and exists (select 1 from quetes.mission_groupe where mgroupe_groupe_cod = $groupe and mgroupe_perso_cod = $perso_cod and mgroupe_statut = 'O')";
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 		}
 		$req = "select mgroupe_groupe_cod,mgroupe_perso_cod,perso_nom,mgroupe_statut from quetes.mission_groupe,perso 
 						     		where mgroupe_groupe_cod =".$groupe."
 						     		and mgroupe_perso_cod = perso_cod 
 						     		";
-	   $db->query($req);
+	   $stmt = $pdo->query($req);
 	   $contenu_page .= '<br><ul>';
-	   while($db->next_record())
+	   while($result = $stmt->fetch())
 	   {
 	   	$chef = '';
-	   	$promote = '<a href="'.$PHP_SELF.'?methode=delegue&cas=promote&perso='.$db->f('mgroupe_perso_cod').'&groupe='.$db->f('mgroupe_groupe_cod').'&mission='.$mission.'">Promotion !</a>';
-	    if ($db->f('mgroupe_statut')=='O')
+	   	$promote = '<a href="'.$PHP_SELF.'?methode=delegue&cas=promote&perso='.$result['mgroupe_perso_cod'].'&groupe='.$result['mgroupe_groupe_cod'].'&mission='.$mission.'">Promotion !</a>';
+	    if ($result['mgroupe_statut']=='O')
 			{
 				$chef = '- (chef)';
 				$promote = '';
 	    }
-	    if ($db->f('mgroupe_statut')=='E')
+	    if ($result['mgroupe_statut']=='E')
 			{
 				$chef = '- (invitation non acceptée)';
 				$promote = '';
 	    }
-	    $contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' -------------> <strong>'.$promote.'</strong></li>';
+	    $contenu_page .= '<li>'.$result['perso_nom'].''.$chef.' -------------> <strong>'.$promote.'</strong></li>';
 	   }
 	   $contenu_page .= '</ul></br>';
 	break;
@@ -649,9 +649,9 @@ switch($methode)
 										from quetes.mission_groupe_def
 										where mgroupedef_mission_cod = ".$mission."
 										and mgroupedef_statut = 'O'";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$groupe = -1;
-		if ($db->nf() == 0)
+		if ($stmt->rowCount() == 0)
 		{
 			$contenu_page .= 'Aucun groupe existant pour cette mission. Vous devriez essayer de créer le votre et relever le challenge !';
 			break;
@@ -667,12 +667,12 @@ switch($methode)
 				<input type="hidden" name="mission" value="'.$mission.'">
 				<select name="groupe" id="groupe" onchange="loadData2();">
 				<option name="-1"><--Sélectionnner un groupe de mission pour voir le détail--></option>';
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
-				if ($groupe != $db->f('mgroupedef_cod'))
+				if ($groupe != $result['mgroupedef_cod'])
 				{
-					$groupe = $db->f('mgroupedef_cod');
-					$contenu_page .= "<option value=\"".$db->f('mgroupedef_cod')."\">".$db->f('mgroupedef_nom')."
+					$groupe = $result['mgroupedef_cod'];
+					$contenu_page .= "<option value=\"".$result['mgroupedef_cod']."\">".$result['mgroupedef_nom']."
 					</option>";
 				}
 			} 
@@ -692,9 +692,9 @@ switch($methode)
 		{
 				//on va envoyer une demande aux chefs, qui devront valider
 				$req = 'select quetes.rejoindre_mission(' .$perso_cod. ',' . $mission . ',' . $groupe  . ') as resultat ';
-				$db->query($req);
-				$db->next_record();
-				$contenu_page .= '<br><br>'.$db->f('resultat');
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$contenu_page .= '<br><br>'.$result['resultat'];
 		}
 	break;
 	
@@ -709,16 +709,16 @@ switch($methode)
 											and mission_cod = mgroupedef_mission_cod
 											and mgroupedef_statut = 'O'
 											and mgroupe_statut != 'E'";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$contenu_page .= '<strong>Groupe de mission composé des membres suivants : </strong><br><ul>';
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
 				$chef = '';
-				if($db->f('mgroupe_statut') =='O')
+				if($result['mgroupe_statut'] =='O')
 				{
 					$chef = '<em> - chef de mission </em>';
 				}
-				$contenu_page .= '<li>'.$db->f('perso_nom').''.$chef.' / Date d\'intégration : '.$db->f('date_int').'</li>';
+				$contenu_page .= '<li>'.$result['perso_nom'].''.$chef.' / Date d\'intégration : '.$result['date_int'].'</li>';
 			}
 			$contenu_page .= '</ul>';
 	break;
@@ -739,7 +739,7 @@ switch($methode)
 											and mgroupe_groupe_cod = mgroupedef_cod
 											and mgroupedef_statut = 'O'
 											and mgroupe_perso_cod = ". $perso_cod . ")";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$contenu_page .= 'Vous venez de quitter ce groupe<br>';
 	break;
 }

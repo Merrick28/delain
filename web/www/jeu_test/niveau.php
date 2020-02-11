@@ -3,23 +3,23 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
 $req_niveau = "select floor(perso_px) as perso_px,limite_niveau($perso_cod) as limite,perso_niveau from perso where perso_cod = $perso_cod";
-$db->query($req_niveau);
-$db->next_record();
-if ($db->f("perso_px") < $db->f("limite")) {
+$stmt = $pdo->query($req_niveau);
+$result = $stmt->fetch();
+if ($result['perso_px'] < $result['limite']) {
     echo("<p>Vous n'avez pas assez de PX pour passer au niveau supérieur !!!");
     $erreur = 1;
 }
-$niveau = $db->f("perso_niveau");
+$niveau = $result['perso_niveau'];
 $limite_pa = $param->getparm(8);
 
 
 $req_pa = "select perso_race_cod,f_carac_base(perso_cod,'FOR') as perso_for,f_carac_base(perso_cod,'DEX') as perso_dex,f_carac_base(perso_cod,'INT') as perso_int,f_carac_base(perso_cod,'CON') as perso_con,perso_nb_amel_comp,perso_niveau_vampire,perso_vampirisme,perso_pa,perso_amelioration_vue,perso_amelioration_regen,perso_des_regen,perso_valeur_regen,";
 $req_pa = $req_pa . "perso_amelioration_degats,perso_amelioration_armure,perso_temps_tour,perso_niveau,perso_nb_amel_chance_memo,perso_nb_receptacle,";
 $req_pa = $req_pa . "perso_amel_deg_dex,perso_capa_repar,perso_nb_amel_repar,nb_sort_memorisable($perso_cod) as nb_sorts from perso where perso_cod = $perso_cod";
-$db->query($req_pa);
-$db->next_record();
-$pa = $db->f("perso_pa");
-$race = $db->f("perso_race_cod");
+$stmt = $pdo->query($req_pa);
+$result = $stmt->fetch();
+$pa = $result['perso_pa'];
+$race = $result['perso_race_cod'];
 
 if ($erreur == 0) {
     if ($niveau <= 3) {
@@ -41,63 +41,63 @@ if ($erreur == 0) {
     /* CARACS */
     /**********/
     $coeff_for = 1.5;
-    if ($db->f("perso_for") > 29)
+    if ($result['perso_for'] > 29)
         $coeff_for = 2;
-    else if ($db->f("perso_for") > 24)
+    else if ($result['perso_for'] > 24)
         $coeff_for = 1.75;
 
     $coeff_dex = 1.5;
-    if ($db->f("perso_dex") > 29)
+    if ($result['perso_dex'] > 29)
         $coeff_dex = 2;
-    else if ($db->f("perso_dex") > 24)
+    else if ($result['perso_dex'] > 24)
         $coeff_dex = 1.75;
 
     $coeff_con = 1.5;
-    if ($db->f("perso_con") > 29)
+    if ($result['perso_con'] > 29)
         $coeff_con = 2;
-    else if ($db->f("perso_con") > 24)
+    else if ($result['perso_con'] > 24)
         $coeff_con = 1.75;
 
     $coeff_int = 1.5;
-    if ($db->f("perso_int") > 29)
+    if ($result['perso_int'] > 29)
         $coeff_int = 2;
-    else if ($db->f("perso_int") > 24)
+    else if ($result['perso_int'] > 24)
         $coeff_int = 1.75;
 
-    if ($niveau >= ($db->f("perso_for") * $coeff_for)) {
+    if ($niveau >= ($result['perso_for'] * $coeff_for)) {
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Force</td>");
-        $nb = $db->f("perso_for");
+        $nb = $result['perso_for'];
         echo "<td><p>", $nb, "</td>";
         $nb = $nb + 1;
         echo "<td class=\"soustitre2\"><p>", $nb, "</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"27\"></td>";
         echo "</tr>";
     }
-    if ($niveau >= ($db->f("perso_dex") * $coeff_dex)) {
+    if ($niveau >= ($result['perso_dex'] * $coeff_dex)) {
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Dextérité</td>");
-        $nb = $db->f("perso_dex");
+        $nb = $result['perso_dex'];
         echo "<td><p>", $nb, "</td>";
         $nb = $nb + 1;
         echo "<td class=\"soustitre2\"><p>", $nb, "</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"28\"></td>";
         echo "</tr>";
     }
-    if ($niveau >= ($db->f("perso_con") * $coeff_con)) {
+    if ($niveau >= ($result['perso_con'] * $coeff_con)) {
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Constitution</td>");
-        $nb = $db->f("perso_con");
+        $nb = $result['perso_con'];
         echo "<td><p>", $nb, "</td>";
         $nb = $nb + 1;
         echo "<td class=\"soustitre2\"><p>", $nb, "</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"29\"></td>";
         echo "</tr>";
     }
-    if ($niveau >= ($db->f("perso_int") * $coeff_int)) {
+    if ($niveau >= ($result['perso_int'] * $coeff_int)) {
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Intelligence</td>");
-        $nb = $db->f("perso_int");
+        $nb = $result['perso_int'];
         echo "<td><p>", $nb, "</td>";
         $nb = $nb + 1;
         echo "<td class=\"soustitre2\"><p>", $nb, "</td>";
@@ -110,9 +110,9 @@ if ($erreur == 0) {
     /**************************************************/
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Dégâts au corps-à-corps </td>");
-    echo "<td><p>+" . $db->f("perso_amelioration_degats") . "</td>";
-    if ($db->f("perso_amelioration_degats") < $limite) {
-        $degats = $db->f("perso_amelioration_degats") + 1;
+    echo "<td><p>+" . $result['perso_amelioration_degats'] . "</td>";
+    if ($result['perso_amelioration_degats'] < $limite) {
+        $degats = $result['perso_amelioration_degats'] + 1;
         echo "<td class=\"soustitre2\"><p>+$degats</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"4\"></td>";
     } else {
@@ -125,9 +125,9 @@ if ($erreur == 0) {
     /**************************************************/
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Dégâts armes à distance </td>");
-    echo "<td><p>+" . $db->f("perso_amel_deg_dex") . "</td>";
-    if ($db->f("perso_amel_deg_dex") < $limite) {
-        $degats = $db->f("perso_amel_deg_dex") + 1;
+    echo "<td><p>+" . $result['perso_amel_deg_dex'] . "</td>";
+    if ($result['perso_amel_deg_dex'] < $limite) {
+        $degats = $result['perso_amel_deg_dex'] + 1;
         echo "<td class=\"soustitre2\"><p>+$degats</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"2\"></td>";
     } else {
@@ -140,9 +140,9 @@ if ($erreur == 0) {
     /**************************************************/
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Armure </td>");
-    echo "<td><p>+" . $db->f("perso_amelioration_armure") . "</td>";
-    if ($db->f("perso_amelioration_armure") < $limite) {
-        $degats = $db->f("perso_amelioration_armure") + 1;
+    echo "<td><p>+" . $result['perso_amelioration_armure'] . "</td>";
+    if ($result['perso_amelioration_armure'] < $limite) {
+        $degats = $result['perso_amelioration_armure'] + 1;
         echo "<td class=\"soustitre2\"><p>+$degats</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"5\"></td>";
     } else {
@@ -156,9 +156,9 @@ if ($erreur == 0) {
     /**************************************************/
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Vue </td>");
-    echo "<td><p>+" . $db->f("perso_amelioration_vue") . "</td>";
-    if (($db->f("perso_amelioration_vue") < $limite) && ($db->f("perso_amelioration_vue") < 5)) {
-        $degats = $db->f("perso_amelioration_vue") + 1;
+    echo "<td><p>+" . $result['perso_amelioration_vue'] . "</td>";
+    if (($result['perso_amelioration_vue'] < $limite) && ($result['perso_amelioration_vue'] < 5)) {
+        $degats = $result['perso_amelioration_vue'] + 1;
         echo "<td class=\"soustitre2\"><p>+$degats</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"6\"></td>";
     } else {
@@ -170,13 +170,13 @@ if ($erreur == 0) {
     /**************************************************/
     /*              régénération                      */
     /**************************************************/
-    if ($db->f("perso_niveau_vampire") == 0) {
-        $regen_valeur_des = $db->f("perso_valeur_regen");
+    if ($result['perso_niveau_vampire'] == 0) {
+        $regen_valeur_des = $result['perso_valeur_regen'];
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Régénération </td>");
-        echo "<td><p>" . $db->f("perso_des_regen") . "D" . $regen_valeur_des . "</td>";
-        if ($db->f("perso_des_regen") < $limite + 1) {
-            $regen_des = $db->f("perso_des_regen") + 1;
+        echo "<td><p>" . $result['perso_des_regen'] . "D" . $regen_valeur_des . "</td>";
+        if ($result['perso_des_regen'] < $limite + 1) {
+            $regen_des = $result['perso_des_regen'] + 1;
             echo "<td class=\"soustitre2\"><p>" . $regen_des . "D" . $regen_valeur_des . "</td>";
             echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"3\"></td>";
         } else {
@@ -186,7 +186,7 @@ if ($erreur == 0) {
     } else {
         echo("<tr>");
         echo("<td class=\"soustitre2\"><p>Vampirisme </td>");
-        $vamp = $db->f("perso_vampirisme") * 10;
+        $vamp = $result['perso_vampirisme'] * 10;
         echo "<td><p>" . $vamp . "</td>";
         if (($vamp < $limite) && ($vamp < 10)) {
             $degats = $vamp + 0.5;
@@ -202,7 +202,7 @@ if ($erreur == 0) {
     /**************************************************/
     /*              temps tour                        */
     /**************************************************/
-    $temps_actu = $db->f("perso_temps_tour");
+    $temps_actu = $result['perso_temps_tour'];
     if ($temps_actu > 660) {
         $amel_temps = 30;
     }
@@ -226,7 +226,7 @@ if ($erreur == 0) {
 
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Temps de tour </td>");
-    echo "<td><p>" . $db->f("perso_temps_tour") . " minutes</td>";
+    echo "<td><p>" . $result['perso_temps_tour'] . " minutes</td>";
     if ($nv_temps >= 360) {
         echo "<td class=\"soustitre2\"><p>$nv_temps minutes</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"1\"></td>";
@@ -242,32 +242,32 @@ if ($erreur == 0) {
     //
     // OBSOLETE !!
     //
-    /*if ($db->f("perso_capa_repar") <= 40)
+    /*if ($result['perso_capa_repar'] <= 40)
     {
         $repar = 5;
     }
-    if (($db->f("perso_capa_repar") > 40) && ($db->f("perso_capa_repar") <= 50))
+    if (($result['perso_capa_repar'] > 40) && ($result['perso_capa_repar'] <= 50))
     {
         $repar = 4;
     }
-    if (($db->f("perso_capa_repar") > 50) && ($db->f("perso_capa_repar") <= 60))
+    if (($result['perso_capa_repar'] > 50) && ($result['perso_capa_repar'] <= 60))
     {
         $repar = 3;
     }
-    if (($db->f("perso_capa_repar") > 60) && ($db->f("perso_capa_repar") <= 70))
+    if (($result['perso_capa_repar'] > 60) && ($result['perso_capa_repar'] <= 70))
     {
         $repar = 2;
     }
-    if ($db->f("perso_capa_repar") > 70)
+    if ($result['perso_capa_repar'] > 70)
     {
         $repar = 1;
     }
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Réparation </td>");
-    echo "<td><p>" . $db->f("perso_capa_repar") . "</td>";
-    if ($db->f("perso_nb_amel_repar") < $limite)
+    echo "<td><p>" . $result['perso_capa_repar'] . "</td>";
+    if ($result['perso_nb_amel_repar'] < $limite)
     {
-        $vue = $db->f("perso_capa_repar") + $repar;
+        $vue = $result['perso_capa_repar'] + $repar;
         echo "<td class=\"soustitre2\"><p>$vue</td>";
         echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"7\"></td>";
     }
@@ -281,21 +281,21 @@ if ($erreur == 0) {
     /**************************************************/
     echo("<tr>");
     echo("<td class=\"soustitre2\"><p>Sorts mémorisables </td>");
-    echo "<td><p>" . $db->f("nb_sorts") . "</td>";
+    echo "<td><p>" . $result['nb_sorts'] . "</td>";
     if (($race == 1) || ($race == 3))
-        $temp = $db->f("nb_sorts") + 4;
+        $temp = $result['nb_sorts'] + 4;
     else
-        $temp = $db->f("nb_sorts") + 1;
+        $temp = $result['nb_sorts'] + 1;
     echo "<td class=\"soustitre2\"><p>$temp</td>";
     echo "<td><input type=\"radio\" class=\"vide\" name=\"amelioration\" value=\"8\"></td>";
     echo "</tr>";
     /*************************/
     /* compétences de combat */
     /*************************/
-    $test = floor($db->f("perso_niveau") / 7);
-    $nb_rec = $db->f("perso_nb_receptacle");
-    $nb_memo = $db->f("perso_nb_amel_chance_memo");
-    if ($test > $db->f("perso_nb_amel_comp")) {
+    $test = floor($result['perso_niveau'] / 7);
+    $nb_rec = $result['perso_nb_receptacle'];
+    $nb_memo = $result['perso_nb_amel_chance_memo'];
+    if ($test > $result['perso_nb_amel_comp']) {
         $af0 = $db->existe_competence($perso_cod, 25);
         $af1 = $db->existe_competence($perso_cod, 61);
         $af2 = $db->existe_competence($perso_cod, 62);

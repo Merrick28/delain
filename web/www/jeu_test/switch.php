@@ -85,11 +85,11 @@ if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
     $req_perso =
         "select autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise, compte_nombre_perso(compt_cod) as nb, compt_quete ";
     $req_perso = $req_perso . " from compte where compt_cod = $compt_cod ";
-    $db->query($req_perso);
-    $db->next_record();
-    $nb_perso           = $db->f('nb');
-    $compt_quatre_perso = ($db->f("autorise") == 't');
-    $compt_quete        = $db->f('compt_quete');
+    $stmt = $pdo->query($req_perso);
+    $result = $stmt->fetch();
+    $nb_perso           = $result['nb'];
+    $compt_quatre_perso = ($result['autorise'] == 't');
+    $compt_quete        = $result['compt_quete'];
     if ($nb_perso == 0)
     {
         ?>

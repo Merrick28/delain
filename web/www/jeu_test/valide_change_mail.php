@@ -8,8 +8,8 @@ if ($_POST['mail1'] != $_POST['mail2']) {
     $ok = 0;
 }
 $req = "select compt_cod from compte where compt_mail = '" . $_POST['mail1'] . "' and compt_cod != $compt_cod ";
-$db->query($req);
-if ($db->nf() != 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() != 0) {
     $ok = 0;
     $contenu_page .= '<p>Un autre compte existe déjà avec cette adresse !</p>';
 }

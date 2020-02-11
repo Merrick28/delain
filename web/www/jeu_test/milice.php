@@ -8,24 +8,24 @@ if ($db->is_milice($perso_cod) == 0) {
 }
 if ($erreur == 0) {
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 3 ";
-    $db->query($req);
-    if ($db->nf() != 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0) {
         ?>
         <p><a href="magistrat.php">Acceder à la partie magistrat ?</a>
         <hr>
         <?php
     }
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 0 ";
-    $db->query($req);
-    if ($db->nf() != 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0) {
         ?>
         <p><a href="prefet.php">Acceder à la partie préfet ?</a>
         <hr>
         <?php
     }
     $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 16 ";
-    $db->query($req);
-    if ($db->nf() != 0) {
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0) {
         ?>
         <p><a href="geolier.php">Acceder à la partie geolier ?</a>
         <hr>
@@ -39,12 +39,12 @@ if ($erreur == 0) {
 
 
             $req = "select pguilde_mode_milice from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             $mode[1] = 'normal';
             $mode[2] = 'Application des peines';
             $mode[3] = 'CRS';
-            $vmode = $db->f("pguilde_mode_milice");
+            $vmode = $result['pguilde_mode_milice'];
             echo "<p>Vous êtes actuellement en mode <strong> $mode[$vmode]</strong><br>";
             echo "<a href=\"", $PHP_SELF, "?methode=changem\">Changer le mode ?</a><br> ";
             echo "<a href=\"", $PHP_SELF, "?methode=voir\">Voir les peines en attente d'éxécution</a><br> ";
@@ -72,7 +72,7 @@ if ($erreur == 0) {
             break;
         case "changem2":
             $req = "update guilde_perso set pguilde_mode_milice = $mode where pguilde_perso_cod = $perso_cod ";
-            if ($db->query($req)) {
+            if ($stmt = $pdo->query($req)) {
                 echo "<p>Modification effectuée !";
             }
             break;
@@ -83,8 +83,8 @@ if ($erreur == 0) {
             $req = $req . "where peine_magistrat = mag.perso_cod ";
             $req = $req . "and peine_perso_cod = acc.perso_cod ";
             $req = $req . "and peine_faite < 2 ";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 echo "<p>Aucune peine non effectuée en cours.";
             } else {
                 $etat[0] = "Non effectuée";
@@ -103,15 +103,15 @@ if ($erreur == 0) {
                         <td class="soustitre2"><strong>Etat de la peine</strong></td>
                     </tr>
                     <?php
-                    while ($db->next_record()) {
-                        $v_peine = $db->f("peine_type");
-                        $v_faite = $db->f("peine_faite");
+                    while ($result = $stmt->fetch()) {
+                        $v_peine = $result['peine_type'];
+                        $v_faite = $result['peine_faite'];
                         echo "<tr>";
-                        echo "<td class=\"soustitre2\">", $db->f("peine_cod"), "</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_acc"), "\"><strong>", $db->f("n_acc"), "</strong></td>";
+                        echo "<td class=\"soustitre2\">", $result['peine_cod'], "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_acc'], "\"><strong>", $result['n_acc'], "</strong></td>";
                         echo "<td>$peine[$v_peine]</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_mag"), "\"><strong>", $db->f("n_mag"), "</strong></td>";
-                        echo "<td>", $db->f("date_peine"), "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_mag'], "\"><strong>", $result['n_mag'], "</strong></td>";
+                        echo "<td>", $result['date_peine'], "</td>";
                         echo "<td>$etat[$v_faite]</td>";
                         echo "</tr>";
                     }

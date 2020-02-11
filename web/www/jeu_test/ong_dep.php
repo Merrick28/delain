@@ -5,19 +5,19 @@ $req_position_actuelle = "select perso_nom,pos_cod,pos_x,pos_y,perso_pa,pos_etag
 $req_position_actuelle = $req_position_actuelle . "where ppos_perso_cod = $perso_cod ";
 $req_position_actuelle = $req_position_actuelle . "and ppos_pos_cod = pos_cod ";
 $req_position_actuelle = $req_position_actuelle . "and perso_cod = $perso_cod";
-$db->query($req_position_actuelle);
-if ($db->nf())
+$stmt = $pdo->query($req_position_actuelle);
+if ($stmt->rowCount())
 {
-    $db->next_record();
-    $x[1] = $db->f("pos_x");
-    $y[1] = $db->f("pos_y");
+    $result = $stmt->fetch();
+    $x[1] = $result['pos_x'];
+    $y[1] = $result['pos_y'];
     $x[0] = $x[1] - 1;
     $x[2] = $x[1] + 1;
     $y[0] = $y[1] - 1;
     $y[2] = $y[1] + 1;
-    $nom = $db->f("perso_nom");
-    $etage = $db->f("pos_etage");
-    $position_actuelle = $db->f("pos_cod");
+    $nom = $result['perso_nom'];
+    $etage = $result['pos_etage'];
+    $position_actuelle = $result['pos_cod'];
     ?>
     <div class="centrer">
         <form name="ong_dep" id="ong_dep" method="post" action="action.php">
@@ -39,16 +39,16 @@ if ($db->nf())
                         $req_pos = $req_pos . "and pos_y = $y[$cpty] ";
                         $req_pos = $req_pos . "and pos_etage = $etage ";
                         $req_pos = $req_pos . "and not exists (select 1 from murs where mur_pos_cod = pos_cod) ";
-                        $db->query($req_pos);
-                        $num_pos = $db->nf();
+                        $stmt = $pdo->query($req_pos);
+                        $num_pos = $stmt->rowCount();
                         echo '<td class="soustitre2" class="centrer">';
                         if ($num_pos != 0)
                         {
-                            $db->next_record();
-                            if ($db->f("pos_cod") != $position_actuelle)
+                            $result = $stmt->fetch();
+                            if ($result['pos_cod'] != $position_actuelle)
                             {
-                                echo '<input type="radio" name="position" value="' . $db->f("pos_cod") . '" class="vide" ';
-                                if ($db->f("pos_cod") == $position)
+                                echo '<input type="radio" name="position" value="' . $result['pos_cod'] . '" class="vide" ';
+                                if ($result['pos_cod'] == $position)
                                 {
                                     echo("checked ");
                                 }

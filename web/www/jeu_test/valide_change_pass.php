@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db           = new base_delain;
+
 $erreur       = 0;
 if ($nouveau1 != $nouveau2)
 {

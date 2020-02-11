@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db2 = new base_delain;
+
 
 $droit_modif = 'dcompt_controle';
 include "blocks/_test_droit_modif_generique.php";
@@ -88,7 +88,7 @@ switch ($methode2)
             }
         }
 
-        $db->query($req);
+        $stmt = $pdo->query($req);
         echo '
 					<form name="fsort" method="post" action="rech_compte.php?methode2=sit">
 					<input type="hidden" name="sort">
@@ -122,12 +122,12 @@ switch ($methode2)
 					</strong>
 					<?}?>
 					</a></td>';
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $sit_nom = $db->f("compt_nom");
-            $nombre = $db->f("compteur");
-            $duree_cumul = $db->f("temps_cumule");
-            $sitte = $db->f("csit_compte_sitte");
+            $sit_nom = $result['compt_nom'];
+            $nombre = $result['compteur'];
+            $duree_cumul = $result['temps_cumule'];
+            $sitte = $result['csit_compte_sitte'];
             echo "<tr><td><a href=\"rech_compte.php?methode2=detail_sit&sit=$sitte&sit_nom=$sit_nom\">" . $sit_nom . "</a></td><td>" . $nombre . "</td><td>" . $duree_cumul . "</td></tr>";
         }
         echo "</table>";
@@ -193,7 +193,7 @@ switch ($methode2)
             }
         }
 
-        $db->query($req);
+        $stmt = $pdo->query($req);
         echo '
 					<form name="fsort" method="post" action="rech_compte.php?methode2=sitteur">
 					<input type="hidden" name="sort">
@@ -227,12 +227,12 @@ switch ($methode2)
 					</strong>
 					<?}?>
 					</a></td>';
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $sit_nom = $db->f("compt_nom");
-            $nombre = $db->f("compteur");
-            $duree_cumul = $db->f("temps_cumule");
-            $sitteur = $db->f("csit_compte_sitteur");
+            $sit_nom = $result['compt_nom'];
+            $nombre = $result['compteur'];
+            $duree_cumul = $result['temps_cumule'];
+            $sitteur = $result['csit_compte_sitteur'];
             echo "<tr><td><a href=\"rech_compte.php?methode2=detail_sitteur&sitteur=$sitteur&sit_nom=$sit_nom\">" . $sit_nom . "</a></td><td>" . $nombre . "</td><td>" . $duree_cumul . "</td></tr>";
         }
         echo "</table>";
@@ -255,17 +255,17 @@ switch ($methode2)
             $req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
 										where csit_compte_sitte = $sit
 										and csit_dfin > (now() - '15 days'::interval)";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitteur = $db->f("csit_compte_sitteur");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitteur = $result['csit_compte_sitteur'];
                 $req = "select compt_nom from compte
 										where compt_cod = $compte_sitteur";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitteur_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitteur_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><a
@@ -297,17 +297,17 @@ switch ($methode2)
             $req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitte from compte_sitting
 										where csit_compte_sitteur = $sitteur
 										and csit_dfin > (now() - '15 days'::interval)";
-            $db->query($req);
-            while ($db->next_record())
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
             {
-                $date_deb = $db->f("date_debut");
-                $date_fin = $db->f("date_fin");
-                $compte_sitte = $db->f("csit_compte_sitte");
+                $date_deb = $result['date_debut'];
+                $date_fin = $result['date_fin'];
+                $compte_sitte = $result['csit_compte_sitte'];
                 $req = "select compt_nom from compte
 										where compt_cod = $compte_sitte";
-                $db2->query($req);
-                $db2->next_record();
-                $compte_sitte_nom = $db2->f("compt_nom");
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                $compte_sitte_nom = $result2['compt_nom'];
                 ?>
                 <tr>
                     <td class="soustitre2"><a

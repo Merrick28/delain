@@ -17,9 +17,9 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
             $sql = "\n\t\tRequête : $sql\n";
 
         $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $db->query($req);
-        $db->next_record();
-        $compt_nom = $db->f("compt_nom");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $compt_nom = $result['compt_nom'];
 
         $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
         echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";

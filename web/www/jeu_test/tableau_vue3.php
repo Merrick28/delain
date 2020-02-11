@@ -2,7 +2,7 @@
 include_once "verif_connexion.php";
 include "../includes/constantes.php";
 if(!isset($db))
-    $db = new base_delain;
+    
 ob_start();
 
 $requete = "select pos_x, pos_y, etage_libelle, coalesce (lieu_nom, '') as lieu_nom, tlieu_libelle, lieu_refuge
@@ -13,15 +13,15 @@ $requete = "select pos_x, pos_y, etage_libelle, coalesce (lieu_nom, '') as lieu_
 	LEFT OUTER JOIN lieu on lieu_cod = lpos_lieu_cod
 	LEFT OUTER JOIN lieu_type on lieu_tlieu_cod = tlieu_cod
 	where ppos_perso_cod = $perso_cod ";
-$db->query($requete);
-$db->next_record();
+$stmt = $pdo->query($requete);
+$result = $stmt->fetch();
 
-$x = $db->f("pos_x");
-$y = $db->f("pos_y");
-$lib_etage = $db->f("etage_libelle");
-$lieu_nom = $db->f("lieu_nom");
-$tlieu_libelle = $db->f("tlieu_libelle");
-$lieu_refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
+$x = $result['pos_x'];
+$y = $result['pos_y'];
+$lib_etage = $result['etage_libelle'];
+$lieu_nom = $result['lieu_nom'];
+$tlieu_libelle = $result['tlieu_libelle'];
+$lieu_refuge = ($result['lieu_refuge'] == 'O') ? 'refuge' : 'non protégé';
 
 //
 // choix de l'affichage */

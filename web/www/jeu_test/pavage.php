@@ -2,7 +2,7 @@
 include "blocks/_tests_appels_page_externe.php";
 
 
-$db = new base_delain;
+
 
 $type_lieu = 24;
 $nom_lieu = 'une dalle magique';

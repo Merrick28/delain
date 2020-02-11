@@ -22,9 +22,9 @@ if ($erreur == 0)
 	$cout[2] = 35;
 	$cout[3] = 60;
 	$req_soins = "select temple_soins($perso_cod,$pv[$soins],$cout[$soins]) as soins";
-	$db->query($req_soins);
-	$db->next_record();
-	if ($db->f("soins") == 0)
+	$stmt = $pdo->query($req_soins);
+	$result = $stmt->fetch();
+	if ($result['soins'] == 0)
 	{
 		if ($soin == "soin_male")
 		{
@@ -37,7 +37,7 @@ if ($erreur == 0)
 	}
 	else
 	{
-		printf("<p>Une anomalie est survenue : <strong>%s</strong>",$db->f("soins"));
+		printf("<p>Une anomalie est survenue : <strong>%s</strong>",$result['soins']);
 	}
 
 		

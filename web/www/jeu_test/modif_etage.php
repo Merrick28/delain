@@ -33,8 +33,8 @@ ob_start();
     </script>
 <?php
 include "blocks/_test_droit_modif_etage.php";
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 if (!isset($methode)) {
     $methode = 'debut';
 }
@@ -76,9 +76,9 @@ $rep = '../../images/';
 switch ($methode) {
     case "fond":
         $req_etage = "select etage_affichage from etage where etage_numero = $etage ";
-        $db->query($req_etage);
-        $db->next_record();
-        $etage_affichage = $db->f("etage_affichage");
+        $stmt = $pdo->query($req_etage);
+        $result = $stmt->fetch();
+        $etage_affichage = $result['etage_affichage'];
         $pref = "f_{$etage_affichage}_";
         $suff = ".png";
         break;
@@ -90,9 +90,9 @@ switch ($methode) {
 
     case "a_mur":
         $req_etage = "select etage_affichage from etage where etage_numero = $etage ";
-        $db->query($req_etage);
-        $db->next_record();
-        $etage_affichage = $db->f("etage_affichage");
+        $stmt = $pdo->query($req_etage);
+        $result = $stmt->fetch();
+        $etage_affichage = $result['etage_affichage'];
         $pref = "t_{$etage_affichage}_mur_";
         $suff = ".png";
         break;
@@ -132,20 +132,20 @@ switch ($methode) {
         echo "<input type=\"hidden\" name=\"style\" value=\"fond2\">";
         echo "<table>";
         $req_y = "select distinct pos_y from positions where pos_etage = $etage order by pos_y desc";
-        $db->query($req_y);
-        while ($db->next_record()) {
+        $stmt = $pdo->query($req_y);
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
             $req_x = "select pos_decor, pos_cod, pos_x, pos_type_aff, coalesce(mur_type, 0) as mur_type
 				from positions
 				left outer join murs on mur_pos_cod = pos_cod
 				where pos_etage = $etage ";
-            $req_x = $req_x . "and pos_y = " . $db->f("pos_y") . " order by pos_x ";
-            $db2->query($req_x);
-            while ($db2->next_record()) {
-                $mur = $db2->f("mur_type");
-                $decor = $db2->f("pos_decor");
-                $fond = $db2->f("pos_type_aff");
-                $code = $db2->f("pos_cod");
+            $req_x = $req_x . "and pos_y = " . $result['pos_y'] . " order by pos_x ";
+            $stmt2 = $pdo->query($req_x);
+            while ($result2 = $stmt2->fetch()) {
+                $mur = $result2['mur_type'];
+                $decor = $result2['pos_decor'];
+                $fond = $result2['pos_type_aff'];
+                $code = $result2['pos_cod'];
 
                 echo "<td class=\"caseVue v$fond\" onclick='active(document.plateau.pos$code)' id=\"sc$code\"><p>";
 
@@ -175,7 +175,7 @@ switch ($methode) {
         foreach ($_POST as $key => $val) {
             if (substr($key, 0, 3) == 'pos') {
                 $req = "update positions set pos_type_aff = $val where pos_cod = " . substr($key, 3);
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 $cpt_upd++;
             }
         }
@@ -190,20 +190,20 @@ switch ($methode) {
         echo "<input type=\"hidden\" name=\"style\" value=\"decor2\">";
         echo "<table>";
         $req_y = "select distinct pos_y from positions where pos_etage = $etage order by pos_y desc";
-        $db->query($req_y);
-        while ($db->next_record()) {
+        $stmt = $pdo->query($req_y);
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
             $req_x = "select pos_decor, pos_cod, pos_x, pos_type_aff, coalesce(mur_type, 0) as mur_type
 				from positions
 				left outer join murs on mur_pos_cod = pos_cod
 				where pos_etage = $etage ";
-            $req_x = $req_x . "and pos_y = " . $db->f("pos_y") . " order by pos_x ";
-            $db2->query($req_x);
-            while ($db2->next_record()) {
-                $mur = $db2->f("mur_type");
-                $decor = $db2->f("pos_decor");
-                $fond = $db2->f("pos_type_aff");
-                $code = $db2->f("pos_cod");
+            $req_x = $req_x . "and pos_y = " . $result['pos_y'] . " order by pos_x ";
+            $stmt2 = $pdo->query($req_x);
+            while ($result2 = $stmt2->fetch()) {
+                $mur = $result2['mur_type'];
+                $decor = $result2['pos_decor'];
+                $fond = $result2['pos_type_aff'];
+                $code = $result2['pos_cod'];
 
                 echo "<td class=\"caseVue v$fond\" onclick='active(document.plateau.pos$code)'><p>";
 
@@ -233,7 +233,7 @@ switch ($methode) {
         foreach ($_POST as $key => $val) {
             if (substr($key, 0, 3) == 'pos') {
                 $req = "update positions set pos_decor = $val where pos_cod = " . substr($key, 3);
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 $cpt_upd++;
             }
         }
@@ -249,20 +249,20 @@ switch ($methode) {
         echo "<input type=\"hidden\" name=\"style\" value=\"fond2\" />";
         echo "<table>";
         $req_y = "select distinct pos_y from positions where pos_etage = $etage order by pos_y desc";
-        $db->query($req_y);
-        while ($db->next_record()) {
+        $stmt = $pdo->query($req_y);
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
             $req_x = "select pos_decor, pos_cod, pos_x, pos_type_aff, coalesce(mur_type, 0) as mur_type
 				from positions
 				left outer join murs on mur_pos_cod = pos_cod
 				where pos_etage = $etage ";
-            $req_x = $req_x . "and pos_y = " . $db->f("pos_y") . " order by pos_x ";
-            $db2->query($req_x);
-            while ($db2->next_record()) {
-                $mur = $db2->f("mur_type");
-                $decor = $db2->f("pos_decor");
-                $fond = $db2->f("pos_type_aff");
-                $code = $db2->f("pos_cod");
+            $req_x = $req_x . "and pos_y = " . $result['pos_y'] . " order by pos_x ";
+            $stmt2 = $pdo->query($req_x);
+            while ($result2 = $stmt2->fetch()) {
+                $mur = $result2['mur_type'];
+                $decor = $result2['pos_decor'];
+                $fond = $result2['pos_type_aff'];
+                $code = $result2['pos_cod'];
 
                 echo "<td class=\"caseVue v$fond\"><p>";
                 echo "<div id=\"idmur$code\" class=\"caseVue mur_$mur\" onclick='active(document.plateau.mur$code);'>";
@@ -289,10 +289,10 @@ switch ($methode) {
         $cpt_aj = 0;
         $murs_actuels = array();
         $req_murs = "select mur_pos_cod, mur_type from murs inner join positions on pos_cod = mur_pos_cod where pos_etage = $etage";
-        $db->query($req_murs);
-        while ($db->next_record()) {
-            $mur_cod = $db->f('mur_pos_cod');
-            $mur_type = $db->f('mur_type');
+        $stmt = $pdo->query($req_murs);
+        while ($result = $stmt->fetch()) {
+            $mur_cod = $result['mur_pos_cod'];
+            $mur_type = $result['mur_type'];
             $murs_actuels[$mur_cod] = $mur_type;
         }
         foreach ($_POST as $key => $val) {
@@ -305,19 +305,19 @@ switch ($methode) {
 
                 if ($val != 0 && !isset($murs_actuels[$mur])) {
                     $req = "insert into murs (mur_pos_cod,mur_type,mur_tangible) values ($mur, $val, 'O') ";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     $cpt_aj++;
                 }
 
                 if (isset($murs_actuels[$mur]) && $val != $murs_actuels[$mur] && $val != 0) {
                     $req = "update murs set mur_type = $val where mur_pos_cod = $mur";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                     $cpt_upd++;
                 }
             }
         }
         $req = 'delete from murs where mur_pos_cod in (' . $del_mur . ')';
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         echo "<div class='bordiv'><p>Changements effectués :<br>$cpt_del murs supprimés,<br>$cpt_aj murs créés,<br>$cpt_upd murs modifiés.<br><a href=\"modif_etage.php?etage=$etage\">Retour !</a></p></div>";
         echo "<hr />$menus";
@@ -325,7 +325,7 @@ switch ($methode) {
 
     case "valide":
         $req = "select init_automap($etage) ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         echo "<div class='bordiv'><p>Changements validés.<br><a href=\"modif_etage.php?etage=$etage\">Retour !</a></p></div>";
         echo "<hr />$menus";
         break;

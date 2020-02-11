@@ -29,7 +29,7 @@ if ($compt_cod != null)
                 compte_vote_icompt_cod,compte_vote_compte_cod,compte_vote_ip_compte)
                 VALUES (:code_ip_table,:compt_cod,:ip_address);";
         //error_log('Insertion vote requete:'.$add);
-        //$db->query($add);
+        //$stmt = $pdo->query($add);
         //
         //#LAG: Injection SQL possible, il vaut mieux utiliser pdo (car $IP = $_POST['IP'] on ne peut pas faire confiance à son contenu)
         $stmt = $pdo->prepare($add);

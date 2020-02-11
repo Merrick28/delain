@@ -18,8 +18,8 @@ $req_tran_vendeur = "select tran_cod,tran_obj_cod,tran_acheteur,tran_nb_tours,tr
 														and tran_acheteur = perso_cod
 														and tran_obj_cod = obj_cod
 														and obj_gobj_cod = gobj_cod ";
-$db->query($req_tran_vendeur);
-$nb_tran_vendeur = $db->nf();
+$stmt = $pdo->query($req_tran_vendeur);
+$nb_tran_vendeur = $stmt->rowCount();
 echo("<table width=\"100%\"><tr><td class=\"titre\" colspan=\"4\"><div class=\"titre\">Vendeur</div></td></tr>");
 if ($nb_tran_vendeur == 0) {
     echo("<tr><td>Vous n'avez aucune transaction en cours en tant que vendeur.</td></tr>");
@@ -32,17 +32,17 @@ if ($nb_tran_vendeur == 0) {
     echo("<td class=\"soustitre2\">Prix proposé</td>");
     echo("<td></td>");
     echo("</tr>");
-    while ($db->next_record()) {
+    while ($result = $stmt->fetch()) {
         echo("<tr>");
-        if ($db->f("tran_identifie") == 'O') {
-            printf("<td>%s", $db->f("obj_nom"));
+        if ($result['tran_identifie'] == 'O') {
+            printf("<td>%s", $result['obj_nom']);
         } else {
-            printf("<td>%s", $db->f("obj_nom_generique"));
+            printf("<td>%s", $result['obj_nom_generique']);
         }
         echo("</td>");
-        printf("<td>%s</td>", $db->f("perso_nom"));
-        printf("<td>%s brouzoufs</td>", $db->f("tran_prix"));
-        printf("<td><a href=\"javascript:document.efface.transaction.value=%s;document.efface.submit();\">Effacer la transaction !</a></td>", $db->f("tran_cod"));
+        printf("<td>%s</td>", $result['perso_nom']);
+        printf("<td>%s brouzoufs</td>", $result['tran_prix']);
+        printf("<td><a href=\"javascript:document.efface.transaction.value=%s;document.efface.submit();\">Effacer la transaction !</a></td>", $result['tran_cod']);
         echo("</tr>");
         //echo '<tr><td colspan="4"></td><td><a style="font-size:7pt;" href="javascript:toutCocher(document.acheteur,\'tran\');">cocher/décocher/inverser</a></td></tr>';
     }
@@ -62,8 +62,8 @@ $req_tran_acheteur = "select tran_cod,gobj_tobj_cod,tran_obj_cod,tran_acheteur,t
 															and tran_obj_cod = obj_cod
 															and obj_gobj_cod = gobj_cod";
 
-$db->query($req_tran_acheteur);
-$nb_tran_acheteur = $db->nf();
+$stmt = $pdo->query($req_tran_acheteur);
+$nb_tran_acheteur = $stmt->rowCount();
 echo("<table width=\"100%\"><tr><td  colspan=\"5\" class=\"titre\"><div class=\"titre\">Acheteur</div></td></tr>");
 if ($nb_tran_acheteur == 0) {
     echo("<tr><td colspan=\"5\">Vous n'avez aucune transaction à valider.</td></tr>");
@@ -82,24 +82,24 @@ if ($nb_tran_acheteur == 0) {
     echo("<td></td>");
 
     echo("</tr>");
-    $nb_ligne = $db->nf();
-    while ($db->next_record()) {
+    $nb_ligne = $stmt->rowCount();
+    while ($result = $stmt->fetch()) {
 
         echo("<tr>");
-        echo "<td><input type=\"checkbox\" class=\"vide\" name=\"tran[" . $db->f("tran_cod") . "]\" value=\"0\" id=\"tran[" . $db->f("tran_cod") . "]\"></td>";
-        printf("<td class=\"soustitre2\">%s</td>", $db->f("perso_nom"));
-        if ($db->f("tran_identifie") == 'O') {
-            $nom_objet = $db->f("obj_nom") . "<em>(identifié)</em>";
+        echo "<td><input type=\"checkbox\" class=\"vide\" name=\"tran[" . $result['tran_cod'] . "]\" value=\"0\" id=\"tran[" . $result['tran_cod'] . "]\"></td>";
+        printf("<td class=\"soustitre2\">%s</td>", $result['perso_nom']);
+        if ($result['tran_identifie'] == 'O') {
+            $nom_objet = $result['obj_nom'] . "<em>(identifié)</em>";
         } else {
-            $nom_objet = $db->f("obj_nom_generique") . "<strong><em>(non identifié)</em></strong>";
+            $nom_objet = $result['obj_nom_generique'] . "<strong><em>(non identifié)</em></strong>";
         }
-        echo '<td><label for="tran[' . $db->f("tran_cod") . ']">' . $nom_objet . '</td>';
-        echo "<td>" . $db->f("tran_prix") . " brouzoufs.</td>";
-        if ($db->f("gobj_tobj_cod") == 1) {
-            echo "<td>" . get_etat($db->f("obj_etat")) . "</td>";
+        echo '<td><label for="tran[' . $result['tran_cod'] . ']">' . $nom_objet . '</td>';
+        echo "<td>" . $result['tran_prix'] . " brouzoufs.</td>";
+        if ($result['gobj_tobj_cod'] == 1) {
+            echo "<td>" . get_etat($result['obj_etat']) . "</td>";
         }
-        if ($db->f("gobj_tobj_cod") == 2) {
-            echo "<td>" . get_etat($db->f("obj_etat")) . "</td>";
+        if ($result['gobj_tobj_cod'] == 2) {
+            echo "<td>" . get_etat($result['obj_etat']) . "</td>";
         } else {
             echo "<td></td>";
         }

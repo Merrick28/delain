@@ -10,7 +10,7 @@ switch ($methode)
 		if ($nouveau_type != 2)
 			$nouveau_type = 1;
 		$requete = "update compte set compt_type_quatrieme = $nouveau_type where compt_cod = $compt_cod";
-		$db->query($requete);
+		$stmt = $pdo->query($requete);
 	break;
 
 	case 'transforme':
@@ -20,7 +20,7 @@ switch ($methode)
 				and pcompt_compt_cod = $compt_cod
 				and perso_actif = 'O'
 				and perso_pnj = 2";
-		$db->query($requete);
+		$stmt = $pdo->query($requete);
 	break;
 
 	case 'limitation':
@@ -34,7 +34,7 @@ switch ($methode)
 				and pcompt_compt_cod = $compt_cod
 				and perso_actif = 'O'
 				and perso_pnj = 2";
-		$db->query($requete);
+		$stmt = $pdo->query($requete);
 
 		if ($nouveau_type == 'N')
 		{
@@ -44,7 +44,7 @@ switch ($methode)
 					and pcompt_compt_cod = $compt_cod
 					and perso_actif = 'O'
 					and perso_pnj = 2";
-			$db->query($requete);
+			$stmt = $pdo->query($requete);
 
 			$requete = "update perso_competences set pcomp_modificateur = min(85, pcomp_modificateur)
 				from perso
@@ -53,17 +53,17 @@ switch ($methode)
 					and pcompt_compt_cod = $compt_cod
 					and perso_actif = 'O'
 					and perso_pnj = 2";
-			$db->query($requete);
+			$stmt = $pdo->query($requete);
 
 			$requete = "select perso_niveau from perso
 				inner join perso_compte on pcompt_perso_cod = perso_cod
 				where pcompt_compt_cod = $compt_cod
 					and perso_actif = 'O'
 					and perso_pnj = 2";
-			$db->query($requete);
-			if ($db->next_record())
+			$stmt = $pdo->query($requete);
+			if($result = $stmt->fetch())
 			{
-				if ($db->f('perso_niveau') > 14)
+				if ($result['perso_niveau'] > 14)
 				{
 					$requete = "select supprimer_ameliorations_perso(perso_cod)
 						from perso
@@ -71,7 +71,7 @@ switch ($methode)
 						where pcompt_compt_cod = $compt_cod
 							and perso_actif = 'O'
 							and perso_pnj = 2";
-					$db->query($requete);
+					$stmt = $pdo->query($requete);
 				}
 			}
 		}
@@ -86,12 +86,12 @@ $requete = "select possede_4e_perso(compt_cod) as possede, autorise_4e_perso(com
 	from compte
 	where compt_cod = $compt_cod";
 
-$db->query($requete);
-$db->next_record();
+$stmt = $pdo->query($requete);
+$result = $stmt->fetch();
 
-$quatrieme_possible = ($db->f('autorise') == 't');
-$quatrieme_monstre = ($db->f('compt_type_quatrieme') == 2);
-$quatrieme_existant = ($db->f('possede') == 't');
+$quatrieme_possible = ($result['autorise'] == 't');
+$quatrieme_monstre = ($result['compt_type_quatrieme'] == 2);
+$quatrieme_existant = ($result['possede'] == 't');
 
 // Analyse des personnages du compte
 $requete = "select perso_type_perso, perso_pnj, count(*) as nombre
@@ -102,7 +102,7 @@ $requete = "select perso_type_perso, perso_pnj, count(*) as nombre
 	group by perso_type_perso, perso_pnj
 	order by perso_type_perso, perso_pnj";
 
-$db->query($requete);
+$stmt = $pdo->query($requete);
 
 // Matrice perso_type_perso / perso_pnj (la valeur contenue en est le nombre)
 $persos = array(
@@ -110,11 +110,11 @@ $persos = array(
 		1 => array(0 => 0, 1 => 0, 2 => 0),
 		2 => array(0 => 0, 1 => 0, 2 => 0)
 	);
-while ($db->next_record())
+while ($result = $stmt->fetch())
 {
-	$ptp = $db->f('perso_type_perso');
-	$pnj = $db->f('perso_pnj');
-	$nb = $db->f('nombre');
+	$ptp = $result['perso_type_perso'];
+	$pnj = $result['perso_pnj'];
+	$nb = $result['nombre'];
 	$persos[$ptp][$pnj] = $nb;
 }
 
@@ -153,9 +153,9 @@ if ($quatrieme_possible)
 			where pcompt_compt_cod = $compt_cod
 				and perso_actif = 'O'
 				and perso_pnj = 2";
-		$db->query($requete);
-		$db->next_record();
-		$nom_du_perso = $db->f('perso_nom');
+		$stmt = $pdo->query($requete);
+		$result = $stmt->fetch();
+		$nom_du_perso = $result['perso_nom'];
 		$contenu_page .= "<hr /><p><strong>Transformation de personnage : </strong><br />
 			Vous avez un quatrième personnage, $nom_du_perso, mais moins de trois personnages principaux.<br />
 			Vous pouvez transformer votre quatrième personnage en personnage standard, lui enlevant ainsi les restrictions qui sont les siennes.<br />
@@ -173,10 +173,10 @@ if ($quatrieme_possible)
 			where pcompt_compt_cod = $compt_cod
 				and perso_actif = 'O'
 				and perso_pnj = 2";
-		$db->query($requete);
-		$db->next_record();
-		$nom_du_perso = $db->f('perso_nom');
-		$perso_mortel = $db->f('perso_mortel');
+		$stmt = $pdo->query($requete);
+		$result = $stmt->fetch();
+		$nom_du_perso = $result['perso_nom'];
+		$perso_mortel = $result['perso_mortel'];
 		$texte_mortel = 'indéfini';
 		if ($perso_mortel == 'O') $texte_mortel = 'mortel';
 		if ($perso_mortel == 'N') $texte_mortel = 'bridé';

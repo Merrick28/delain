@@ -8,9 +8,9 @@ if (!$db->is_admin($compt_cod)) {
     switch ($methode) {
         case "debut":
             $req = "select prepare_hibernation($compt_cod) as resultat ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("resultat") == 1) {
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['resultat'] == 1) {
                 echo "<p>Une hibernation est déjà préparée !";
             } else {
                 echo "<p><strong>Attention !</strong> La mise en hibernation de votre compte rendra celui-ci inaccessible dans 48 heures, pendant 5 jours. !<br>";
@@ -19,8 +19,8 @@ if (!$db->is_admin($compt_cod)) {
 					inner join perso_compte lanceur on lanceur.pcompt_perso_cod = defi_lanceur_cod
 					inner join perso_compte cible on cible.pcompt_perso_cod = defi_cible_cod
 					where defi_statut <= 1 and $compt_cod in (lanceur.pcompt_compt_cod, cible.pcompt_compt_cod)";
-                $db->query($req_defi);
-                if ($db->nf() > 0) {
+                $stmt = $pdo->query($req_defi);
+                if ($stmt->rowCount() > 0) {
                     echo '<br><strong>Vous êtes actuellement défié !</strong> Si vous demandez une hibernation, au bout du délai de 48h, le défi sera considéré comme abandonné (vous pourriez perdre un petit peu de renommée)<br />';
                 }
 
@@ -30,17 +30,17 @@ if (!$db->is_admin($compt_cod)) {
             break;
         case "oui":
             $req = "select prepare_hibernation($compt_cod) as resultat ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("resultat") == 1) {
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['resultat'] == 1) {
                 echo "<p>Une hibernation est déjà préparée !";
             } else {
                 // on met le compte en hibernation
                 $req = "update compte set compt_ddeb_hiber = now() + '2 day'::interval where compt_cod = $compt_cod ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 // on cherche le compte
                 $req = "select insere_evenement(pcompt_perso_cod, pcompt_perso_cod, 24, '[perso_cod1] a été mis en hibernation', 'O', null) from perso_compte where pcompt_compt_cod = $compt_cod ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>Votre compte sera en hibernation dans 48 heures.</p>";
             }
             break;

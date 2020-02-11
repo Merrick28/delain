@@ -21,8 +21,8 @@ $req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod ";
 $req_guilde = $req_guilde . "and rguilde_rang_cod = pguilde_rang_cod ";
 $req_guilde = $req_guilde . "and pguilde_valide = 'O' ";
 $req_guilde = $req_guilde . "and " . $champ . " = 'O' ";
-$db->query($req_guilde);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req_guilde);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur ! Vous ne pouvez pas intervenir sur ce meta guildage !";
     $erreur = 1;
 }
@@ -36,7 +36,7 @@ if ($erreur == 0) {
             break;
     }
     $req = "update guilde_perso set " . $champ_perso . " = '$r' where pguilde_perso_cod = $perso_cod ";
-    $db->query($req);
+    $stmt = $pdo->query($req);
     echo "<p>$texte";
 }
 $contenu_page = ob_get_contents();

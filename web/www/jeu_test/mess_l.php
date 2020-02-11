@@ -44,15 +44,15 @@ $req_total = "select count(msg_cod) as nb_msg
 		and dmsg_efface = 0";
 
 // calcul pour pages
-$db->query($req_total);
-$db->next_record();
-$nb_total = $db->f('nb_msg');
+$stmt = $pdo->query($req_total);
+$result = $stmt->fetch();
+$nb_total = $result['nb_msg'];
 $nb_pages = ceil($nb_total/$nb_messages_page);
 $page_en_cours = ($msg_start/$nb_messages_page) + 1;
 // fin calcul pour pages
 
 
-$db->query($req_messages);
+$stmt = $pdo->query($req_messages);
 $contenu_page .= '
 <form name="message" method="post" action="action_message.php">
 <input type="hidden" name="methode">
@@ -67,19 +67,19 @@ $contenu_page .= '
 <td width="20"></td>
 </tr>';
 $cpt=0;
-while($db->next_record())
+while($result = $stmt->fetch())
 {
 	$contenu_page .= '<tr>';
-	$contenu_page .= '<td  class="soustitre2">' . $db->f("date_mes") . '</td>';
-	$contenu_page .= '<td  style="width:100px;" nowrap class="soustitre2"><a href="visu_desc_perso.php?visu=' . $db->f("emsg_perso_cod") . '">' . $db->f("perso_nom") . '</a></td>';
+	$contenu_page .= '<td  class="soustitre2">' . $result['date_mes'] . '</td>';
+	$contenu_page .= '<td  style="width:100px;" nowrap class="soustitre2"><a href="visu_desc_perso.php?visu=' . $result['emsg_perso_cod'] . '">' . $result['perso_nom'] . '</a></td>';
 	$contenu_page .= '<td><span style="white-space:nowrap;">';
-	if ($db->f("dmsg_lu") == "N")
+	if ($result['dmsg_lu'] == "N")
 	{
 		$contenu_page .= '<strong>';
 	}
 
-	$contenu_page .= '<a  href="action_message.php?methode=visu_msg&m=' . $m . '&mid=' . $db->f("msg_cod") . '">' . str_replace(chr(127), ';', $db->f("msg_titre") ) . '</a>';
-	if ($db->f("dmsg_lu") == "N")
+	$contenu_page .= '<a  href="action_message.php?methode=visu_msg&m=' . $m . '&mid=' . $result['msg_cod'] . '">' . str_replace(chr(127), ';', $result['msg_titre'] ) . '</a>';
+	if ($result['dmsg_lu'] == "N")
 	{
 		$contenu_page .= '</strong>';
 	}
@@ -87,16 +87,16 @@ while($db->next_record())
 	$contenu_page .= '<td width="20">';
 	if ($compt_cod != 'admin')
 	{
-		$contenu_page .= '<a href="action_message.php?m=' . $m . '&methode=efface_vue generale_msg&mid=' . $db->f("dmsg_cod") . '">Effacer</a>';
+		$contenu_page .= '<a href="action_message.php?m=' . $m . '&methode=efface_vue generale_msg&mid=' . $result['dmsg_cod'] . '">Effacer</a>';
 	}
 	$contenu_page .= '</td>';
 	$contenu_page .= '<td width="20">';
 	if (($compt_cod != 'admin') && ($m == 0))
 	{
-		$contenu_page .= '<a href="action_message.php?m=' . $m . '&methode=archive__vue generale_msg&mid=' . $db->f("dmsg_cod") . '">Archiver</a>';
+		$contenu_page .= '<a href="action_message.php?m=' . $m . '&methode=archive__vue generale_msg&mid=' . $result['dmsg_cod'] . '">Archiver</a>';
 	}
 	$contenu_page .= '</td>';
-	$contenu_page .= '<td width="20"><input type="checkbox" class="vide" name="msg[' . $cpt . ']" value="' . $db->f("dmsg_cod") . '">';
+	$contenu_page .= '<td width="20"><input type="checkbox" class="vide" name="msg[' . $cpt . ']" value="' . $result['dmsg_cod'] . '">';
 	$contenu_page .= '</tr>';
 	$cpt ++;
 }

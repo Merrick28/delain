@@ -20,9 +20,9 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
             $sql = "\n\t\tRequête : $sql\n";
 
         $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $db->query($req);
-        $db->next_record();
-        $compt_nom = $db->f("compt_nom");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $compt_nom = $result['compt_nom'];
 
         $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
         if ($log_sql) echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
@@ -46,31 +46,31 @@ function creer_lieu($_LIEU)
     $erreur = 0;
 
     $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
-    $db->query($req);
-    if ($db->nf() == 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0)
     {
         $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
         $erreur = 1;
     } else
     {
-        $db->next_record();
-        $lieu_pos_cod = $db->f("pos_cod");
+        $result = $stmt->fetch();
+        $lieu_pos_cod = $result['pos_cod'];
         $lieu_dest_pos_cod = 'null';
         /* LAG: lieux avec des destinations de sont pas gérés ici
         if($_LIEU['dest_pos_x'] != NULL && $_LIEU['dest_pos_y'] != NULL  && $_LIEU['dest_pos_etage'] != NULL )
         {
             $req = "select pos_cod from positions where pos_x = $dest_pos_x and pos_y = $dest_pos_y and pos_etage = $dest_pos_etage";
-            $db->query($req);
-            if ($db->nf() != 0)
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() != 0)
             {
-                $db->next_record();
-                $lieu_dest_pos_cod = $db->f("pos_cod");
+                $result = $stmt->fetch();
+                $lieu_dest_pos_cod = $result['pos_cod'];
             }
         }*/
         $req = "select nextval('seq_lieu_cod') as lieu_cod";
-        $db->query($req);
-        $db->next_record();
-        $lieu_cod = $db->f("lieu_cod");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $lieu_cod = $result['lieu_cod'];
 
         $nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
         $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -92,19 +92,19 @@ function creer_lieu($_LIEU)
             . "($lieu_cod, $tlieu_cod, e'$nom', e'$description', e'" . pg_escape_string($_LIEU['refuge']) . "', '" . pg_escape_string($url) . "', " .
             "$lieu_dest_pos_cod, 0, null, null, 50, $cout_pa, 
 				'" . $_LIEU['mobile'] . "', now(), null, null, " . $_LIEU['dieu'] . ")";
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         $req = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values "
             . "($lieu_pos_cod, $lieu_cod)";
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         $req = "select init_automap_pos(" . $lieu_pos_cod . ")";
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         $req = "select tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
-        $db->query($req);
-        $db->next_record();
-        $type_nom = $db->f('tlieu_libelle');
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $type_nom = $result['tlieu_libelle'];
 
         $resultat = "Lieu $nom n°$lieu_cod ($type_nom) créé en $lieu_pos_cod ($pos_x, $pos_y, $pos_etage)";
         // Merrick : mise en commentaire, $dest_pos_x et y et etage ne sont pas définies
@@ -128,7 +128,7 @@ $contenu = '';
 $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
 
-$db2 = new base_delain;
+
 $pdo = new bddpdo;
 
 $log = '';

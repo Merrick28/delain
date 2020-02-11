@@ -4,15 +4,15 @@ ob_start();
 
 $is_log = 1;
 $req = "select compt_nom, dcompt_etage,dcompt_monstre_carte,dcompt_modif_perso from compte, compt_droit where compt_cod = dcompt_compt_cod and dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     die("Erreur sur les étages possibles !");
 } else {
-    $db->next_record();
-    $droit['etage'] = $db->f("dcompt_etage");
-    $monstre_carte = $db->f("dcompt_monstre_carte");
-    $modif_perso = $db->f("dcompt_modif_perso");
-    $compt_nom = $db->f("compt_nom");
+    $result = $stmt->fetch();
+    $droit['etage'] = $result['dcompt_etage'];
+    $monstre_carte = $result['dcompt_monstre_carte'];
+    $modif_perso = $result['dcompt_modif_perso'];
+    $compt_nom = $result['compt_nom'];
 }
 if ($droit['etage'] == 'A') {
     $restrict = '';
@@ -22,17 +22,17 @@ if ($droit['etage'] == 'A') {
     $restrict2 = 'and pos_etage in (' . $droit['etage'] . ') ';
 }
 $req = "select etage_libelle,etage_numero,etage_reference from etage " . $restrict . "order by etage_reference desc, etage_numero asc";
-$db->query($req);
+$stmt = $pdo->query($req);
 ?>
     <div>
         <form name="edit" method="post" action="#">
             Selectionnez un étage pour consulter les monstres
             <select name="etage">
-                <?php while ($db->next_record()) {
-                    $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-                    $etage_num = $db->f("etage_numero");
+                <?php while ($result = $stmt->fetch()) {
+                    $reference = ($result['etage_numero'] == $result['etage_reference']);
+                    $etage_num = $result['etage_numero'];
                     $selected = ($etage == $etage_num) ? "selected='selected'" : '';
-                    echo "<OPTION value='$etage_num' $selected>" . ($reference ? '' : ' |-- ') . $db->f("etage_libelle") . "</OPTION>\n";
+                    echo "<OPTION value='$etage_num' $selected>" . ($reference ? '' : ' |-- ') . $result['etage_libelle'] . "</OPTION>\n";
                 }
                 ?>
             </select>
@@ -43,8 +43,8 @@ $db->query($req);
     <p class="titre">Monstres et PNJ de l’étage</p>
 
 <?php
-$db = new base_delain;
-$db2 = new base_delain;
+
+
 $req_monstre = "select dlt_passee(perso_cod) as dlt_passee, etat_perso(perso_cod) as etat, perso_cod, perso_nom, ";
 $req_monstre = $req_monstre . "perso_pa, perso_pv, perso_pv_max, to_char(perso_dlt,'DD/MM/YYYY HH24:mi:ss') as dlt, ";
 $req_monstre = $req_monstre . "pos_x, pos_y, pos_etage, ";
@@ -58,50 +58,50 @@ $req_monstre = $req_monstre . "left outer join compte on compt_cod = pcompt_comp
 $req_monstre = $req_monstre . "where (perso_type_perso = 2 or perso_pnj = 1) and perso_actif = 'O' ";
 $req_monstre = $req_monstre . "and pos_etage = $etage ";
 $req_monstre = $req_monstre . "order by pos_x,pos_y,perso_nom ";
-$db->query($req_monstre);
-$nb_monstre = $db->nf();
+$stmt = $pdo->query($req_monstre);
+$nb_monstre = $stmt->rowCount();
 if ($nb_monstre == 0) {
     echo("<p>pas de monstre</p>");
 } else {
     echo("<table>");
-    while ($db->next_record()) {
-        if ($db->f("perso_dirige_admin") == 'O') {
+    while ($result = $stmt->fetch()) {
+        if ($result['perso_dirige_admin'] == 'O') {
             $ia = "<strong>Hors IA</strong>";
-        } else if ($db->f("perso_pnj") == 1) {
+        } else if ($result['perso_pnj'] == 1) {
             $ia = "<strong>PNJ</strong>";
         } else {
             $ia = "IA";
         }
         echo("<tr>");
-        echo "<td class=\"soustitre2\"><p><a href=\"../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . "</a></td>";
+        echo "<td class=\"soustitre2\"><p><a href=\"../validation_login_monstre.php?numero=" . $result['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $result['perso_nom'] . "</a></td>";
         echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
-        echo "<td class=\"soustitre2\"><p>", $db->f("perso_pa"), "</td>";
-        echo "<td class=\"soustitre2\"><p>", $db->f("perso_pv"), " PV sur ", $db->f("perso_pv_max");
-        if ($db->f("etat") != "indemne") {
-            echo " - (<strong>", $db->f("etat"), "</strong>)";
+        echo "<td class=\"soustitre2\"><p>", $result['perso_pa'], "</td>";
+        echo "<td class=\"soustitre2\"><p>", $result['perso_pv'], " PV sur ", $result['perso_pv_max'];
+        if ($result['etat'] != "indemne") {
+            echo " - (<strong>", $result['etat'], "</strong>)";
         }
         echo "</td>";
         echo "<td class=\"soustitre2\"><p>";
-        if ($db->f("messages") != 0) {
+        if ($result['messages'] != 0) {
             echo "<strong>";
         }
-        echo $db->f("messages") . " msg non lus.";
-        if ($db->f("messages") != 0) {
+        echo $result['messages'] . " msg non lus.";
+        if ($result['messages'] != 0) {
             echo "</strong>";
         }
         echo "</td>";
         echo "<td class=\"soustitre2\"><p>";
-        if ($db->f("dlt_passee") == 1) {
+        if ($result['dlt_passee'] == 1) {
             echo("<strong>");
         }
-        echo $db->f("dlt");
-        if ($db->f("dlt_passee") == 1) {
+        echo $result['dlt'];
+        if ($result['dlt_passee'] == 1) {
             echo("</strong>");
         }
         echo "</td>";
-        echo "<td class=\"soustitre2\"><p>X=", $db->f("pos_x"), ", Y=", $db->f("pos_y"), ", E=", $db->f("pos_etage"), "</td>";
-        if ($db->f('compt_nom') != '') {
-            echo "<td class=\"soustitre2\">Joué par <strong>", $db->f("compt_nom"), "</strong></td>";
+        echo "<td class=\"soustitre2\"><p>X=", $result['pos_x'], ", Y=", $result['pos_y'], ", E=", $result['pos_etage'], "</td>";
+        if ($result['compt_nom'] != '') {
+            echo "<td class=\"soustitre2\">Joué par <strong>", $result['compt_nom'], "</strong></td>";
         } else
             echo "<td></td>";
         echo("</tr>");

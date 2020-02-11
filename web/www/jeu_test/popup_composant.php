@@ -6,17 +6,17 @@
 		
 		define(G_IMAGES,"./images/");
 		
-		$db_objets = new base_delain;
+		
 		
 		/*Valeur de dex et de force */
 		// on prend les valeurs de forece et dex du perso pour la suite
 		
 		$req = "select perso_pa, perso_for,perso_dex from perso where perso_cod = ".$perso_cod." ";
-		$db_objets->query($req);
-		$db_objets->next_record();
-		$force = $db_objets->f("perso_for");
-		$dex = $db_objets->f("perso_dex");
-		$perso_pa = $db_objets->f("perso_pa");
+		$stmt_objets = $pdo->query($req);
+		$result_objets = $stmt_objets->fetch();
+		$force = $result_objets['perso_for'];
+		$dex = $result_objets['perso_dex'];
+		$perso_pa = $result_objets['perso_pa'];
 		
 		
 		/* objets quetes */
@@ -58,8 +58,8 @@
 		$req_objets = $req_objets . "order by A.obj_nom ";
 	
 		//echo $req_objets;
-		$db_objets->query($req_objets);
-		$nb_objets = $db_objets->nf();
+		$stmt_objets = $pdo->query($req_objets);
+		$nb_objets = $stmt_objets->rowCount();
 		/*
 		echo $nb_objets;
 		echo "<br/>";
@@ -80,23 +80,23 @@
 				echo "</thead>";
 				echo "<tbody>";
 				$i = 0;
-				while($db_objets->next_record())
+				while($result_objets = $stmt_objets->fetch())
 				{
-					$Recup_image = $db_objets->f("gobj_image");
+					$Recup_image = $result_objets['gobj_image'];
 					$image = '../images/'.$Recup_image.'';
-					$desc = htmlspecialchars($db_objets->f("obj_description"));
-					$poids = $db_objets->f("obj_poids");
-					$obj_poids_total = $db_objets->f("obj_poids_total");
-					$id_type = $db_objets->f("tobj_cod");
+					$desc = htmlspecialchars($result_objets['obj_description']);
+					$poids = $result_objets['obj_poids'];
+					$obj_poids_total = $result_objets['obj_poids_total'];
+					$id_type = $result_objets['tobj_cod'];
 					
-					$nom_objet_generique = $db_objets->f("obj_nom_generique");
-					$nom_objet = $db_objets->f("obj_nom");
-					$nb_type_objet = $db_objets->f("nb_type_objet");
+					$nom_objet_generique = $result_objets['obj_nom_generique'];
+					$nom_objet = $result_objets['obj_nom'];
+					$nb_type_objet = $result_objets['nb_type_objet'];
 					
 					$id_object = 0;
 					if( $nb_type_objet == 1 )
 					{
-						$db_idObjets = new base_delain;
+						
 						// requete pour recup  l'id de l'objes..	
 						$req_all_objets = "select perobj_obj_cod ";
 						$req_all_objets = $req_all_objets . "from perso_objets, objets, objet_generique, type_objet ";
@@ -109,9 +109,9 @@
 						$req_all_objets = $req_all_objets . "and obj_nom_generique = '".addslashes($nom_objet_generique)."' ";
 						//echo $req_all_objets;
 						
-						$db_idObjets->query($req_all_objets);
-						$db_idObjets->next_record();
-						$id_object = $db_idObjets->f("perobj_obj_cod");						
+						$stmt_idObjets = $pdo->query($req_all_objets);
+						$result_idObjets = $stmt_idObjets->fetch();
+						$id_object = $result_idObjets['perobj_obj_cod'];						
 					}
 					
 					$classLigneTab = "ligneTab-".(($i%2)+1);
@@ -119,8 +119,8 @@
 					
 					echo "<tr class=\"".$classLigneTab."\">";
 						$examiner = "";
-						if($db->f("gobj_url") != null)
-							$examiner = " (<a href=\"objets/".$db->f("gobj_url")."?objet=".$db->f("obj_cod")." \">Détail</a>) ";
+						if($result['gobj_url'] != null)
+							$examiner = " (<a href=\"objets/".$result['gobj_url']."?objet=".$result['obj_cod']." \">Détail</a>) ";
 			
 						echo "<td><div class=\"nom_objet\">".$nom_objet.$examiner."</div> <img class=\"img_objet\" title=\"".$nom_objet."\" src=\"".G_IMAGES.$Recup_image."\"> </td>";
 						echo "<td>".$nb_type_objet."</td>";

@@ -1,8 +1,8 @@
 <?php include_once "verif_connexion.php";
 include "../includes/constantes.php";
 if(!isset($db))
-	$db = new base_delain;
-$db_refuge = new base_delain;
+	
+
 $is_attaque = 1;
 //
 /* position du joueur et autres données */
@@ -16,22 +16,22 @@ $requete = "select pos_x, pos_y, pos_etage, ppos_pos_cod, distance_vue($perso_co
 				INNER JOIN etage ON etage_numero = pos_etage
 				LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 				where perso_cod = $perso_cod ";
-$db->query($requete);
-$db->next_record();
+$stmt = $pdo->query($requete);
+$result = $stmt->fetch();
 
-$portee = ($db->f("distance_vue") > $db->f("portee")) ? $db->f("portee") : $db->f("distance_vue");
-$type_arme = ($db->f("type_arme") == 2) ? 2 : 1;
-$desorientation = ($db->f("desorientation") == 0);
+$portee = ($result['distance_vue'] > $result['portee']) ? $result['portee'] : $result['distance_vue'];
+$type_arme = ($result['type_arme'] == 2) ? 2 : 1;
+$desorientation = ($result['desorientation'] == 0);
 
-$pos_cod = $db->f("ppos_pos_cod");
-$x = $db->f("pos_x");
-$y = $db->f("pos_y");
-$etage = $db->f("pos_etage");
-$lib_etage = $db->f("etage_libelle");
-$distance_vue = $db->f("distance_vue");
-$coterie = $db->f("pgroupe_groupe_cod");
+$pos_cod = $result['ppos_pos_cod'];
+$x = $result['pos_x'];
+$y = $result['pos_y'];
+$etage = $result['pos_etage'];
+$lib_etage = $result['etage_libelle'];
+$distance_vue = $result['distance_vue'];
+$coterie = $result['pgroupe_groupe_cod'];
 
-$db2 = new base_delain;
+
 if (!isset($tab_vue)) $tab_vue = -1;
 switch($tab_vue)
 {

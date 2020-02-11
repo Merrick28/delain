@@ -24,7 +24,7 @@ $corps = pg_escape_string($corps);
 			if ($erreur == 0)
 			{
 				$req_desc = "update perso set perso_description = e'$corps' where perso_cod = $perso_cod ";
-				$db->query($req_desc);
+				$stmt = $pdo->query($req_desc);
 				echo("<p>La description de votre personnage est enregistrée !");
 			}
 			echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");
@@ -38,7 +38,7 @@ $corps = pg_escape_string($corps);
 			if ($erreur == 0)
 			{
 				$req_desc = "update perso set perso_desc_long = e'$corps' where perso_cod = $perso_cod ";
-				$db->query($req_desc);
+				$stmt = $pdo->query($req_desc);
 				echo("<p>La description longue de votre personnage est enregistrée !");
 			}
 			echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");

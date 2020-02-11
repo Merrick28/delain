@@ -6,17 +6,17 @@ if ($_POST['type_a'] == 'o') {
         foreach ($tran as $key => $val) {
             /*controle de l'acheteur*/
             $req = "select tran_acheteur from transaction where tran_cod = $key";
-            $db->query($req);
-            $db->next_record();
-            $acheteur = $db->f("tran_acheteur");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $acheteur = $result['tran_acheteur'];
             if ($acheteur != $perso_cod) {
                 echo "<p>Erreur ! Vous essayez de valider une transaction qui ne vous est pas destinée !";
                 break;
             }
             $req_acc_tran = "select accepte_transaction($key) as resultat";
-            $db->query($req_acc_tran);
-            $db->next_record();
-            $resultat_temp = $db->f("resultat");
+            $stmt = $pdo->query($req_acc_tran);
+            $result = $stmt->fetch();
+            $resultat_temp = $result['resultat'];
             $tab_res = explode(";", $resultat_temp);
             if ($tab_res[0] == -1) {
                 echo("<p>Une erreur est survenue : $tab_res[1]");
@@ -32,7 +32,7 @@ if ($_POST['type_a'] == 'n') {
     if ($tran) {
         foreach ($tran as $key => $val) {
             $req_ref_tran = "delete from transaction where tran_cod = $key";
-            if ($db->query($req_ref_tran)) {
+            if ($stmt = $pdo->query($req_ref_tran)) {
                 echo "<p>La transaction a été annulée !";
             } else {
                 echo "<p>Une erreur est survenue !";

@@ -18,9 +18,9 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 			$sql = "\n\t\tRequête : $sql\n";
 
 		$req = "select compt_nom from compte where compt_cod = $compt_cod";
-		$db->query($req);
-		$db->next_record();
-		$compt_nom = $db->f("compt_nom");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$compt_nom = $result['compt_nom'];
 
 		$en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
 		echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
@@ -86,16 +86,16 @@ if ($erreur == 0)
 			if ($etage_ref == '--')	// Création d’un étage principal
 			{
 				$req = "select min(etage_numero) - 1 as numero from etage where etage_numero <> -100";
-				$db->query($req);
-				$db->next_record();
-				$etage_numero = $db->f("numero");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_numero = $result['numero'];
 			}
 			if($erreur == 0)
 			{
 				$req = "select nextval('seq_etage_cod') as etage_cod";
-				$db->query($req);
-				$db->next_record();
-				$etage_cod = $db->f("etage_cod");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_cod = $result['etage_cod'];
 				$etage_numero = ($etage_numero = 999) ? $etage_cod : $etage_numero;
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -109,25 +109,25 @@ if ($erreur == 0)
 					."values ($etage_cod, $etage_numero, e'$nom', $etage_ref, e'$description',
 						'$etage_affichage', '$etage_arene', '$etage_quatrieme_perso', '$etage_quatrieme_mortel', $etage_mort, $etage_retour_rune_monstre,
 						$etage_mine, $etage_mine_type, $etage_mine_richesse)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				if ($etage_arene == 'O')
 				{
 					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte)
 						VALUES($etage_numero, $carene_level_max, $carene_level_min, '$carene_ouverte')";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 				}
 
 				$req = "select cree_etage($etage_numero, $x_min, $x_max, $y_min, $y_max)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req ="create table perso_vue_pos_".$etage_cod." (  pvue_perso_cod INT not null, pvue_pos_cod INT not null )";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT pk_perso_vue_pos_".$etage_cod." PRIMARY KEY (pvue_perso_cod, pvue_pos_cod)";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." ADD CONSTRAINT fk_pvue_perso_cod".$etage_cod." FOREIGN KEY (pvue_perso_cod) REFERENCES perso (perso_cod) MATCH SIMPLE ON UPDATE CASCADE ON DELETE CASCADE;";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				$req = "ALTER TABLE perso_vue_pos_".$etage_cod." OWNER TO delain;";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				$resultat .= "Étage $nom ($etage_numero) créé !\n";
 				if ($etage_arene == 'O')
@@ -163,9 +163,9 @@ if ($erreur == 0)
 			if($erreur == 0)
 			{
 				$req = "select etage_reference from etage where etage_numero = $etage_numero";
-				$db->query($req);
-				$db->next_record();
-				$etage_ref = $db->f("etage_reference");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$etage_ref = $result['etage_reference'];
 
 				$req_avant = "select etage_libelle, etage_description, etage_affichage, etage_arene, etage_quatrieme_perso, etage_quatrieme_mortel,
 						etage_mort, etage_retour_rune_monstre, etage_mine, etage_mine_type, etage_mine_richesse,
@@ -173,22 +173,22 @@ if ($erreur == 0)
 					from etage
 					left outer join carac_arene on carene_etage_numero = etage_numero
 					where etage_numero = $etage_numero";
-				$db->query($req_avant);
-				$db->next_record();
-				$nom_avant = $db->f('etage_libelle');
-				$desc_avant = $db->f('etage_description');
-				$affichage_avant = $db->f('etage_affichage');
-				$arene_avant = $db->f('etage_arene');
-				$quatrieme_avant = $db->f('etage_quatrieme_perso');
-				$quatrieme_mortel_avant = $db->f('etage_quatrieme_mortel');
-				$mort_avant = $db->f('etage_mort');
-				$rune_avant = $db->f('etage_retour_rune_monstre');
-				$mine_avant = $db->f('etage_mine');
-				$mine_type_avant = $db->f('etage_mine_type');
-				$richesse_avant = $db->f('etage_mine_richesse');
-				$carene_level_max_avant = $db->f('carene_level_max');
-				$carene_level_min_avant = $db->f('carene_level_min');
-				$carene_ouverte_avant = $db->f('carene_ouverte');
+				$stmt = $pdo->query($req_avant);
+				$result = $stmt->fetch();
+				$nom_avant = $result['etage_libelle'];
+				$desc_avant = $result['etage_description'];
+				$affichage_avant = $result['etage_affichage'];
+				$arene_avant = $result['etage_arene'];
+				$quatrieme_avant = $result['etage_quatrieme_perso'];
+				$quatrieme_mortel_avant = $result['etage_quatrieme_mortel'];
+				$mort_avant = $result['etage_mort'];
+				$rune_avant = $result['etage_retour_rune_monstre'];
+				$mine_avant = $result['etage_mine'];
+				$mine_type_avant = $result['etage_mine_type'];
+				$richesse_avant = $result['etage_mine_richesse'];
+				$carene_level_max_avant = $result['carene_level_max'];
+				$carene_level_min_avant = $result['carene_level_min'];
+				$carene_ouverte_avant = $result['carene_ouverte'];
 
 				$nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
 				$description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -208,15 +208,15 @@ if ($erreur == 0)
 						etage_mine_type = $etage_mine_type,
 						etage_mine_richesse = $etage_mine_richesse
 					where etage_numero = $etage_numero";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				$req = "delete from carac_arene where carene_etage_numero = $etage_numero";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				if ($etage_arene == 'O')
 				{
 					$req = "insert into carac_arene (carene_etage_numero, carene_level_max, carene_level_min, carene_ouverte)
 						VALUES($etage_numero, $carene_level_max, $carene_level_min, '$carene_ouverte')";
-					$db->query($req);
+					$stmt = $pdo->query($req);
 				}
 
 				$resultat .= "Étage $nom ($etage_numero) modifié !";
@@ -390,24 +390,24 @@ if ($erreur == 0)
 			from etage
 			left outer join carac_arene on carene_etage_numero = etage_numero
 			where etage_numero = $pos_etage";
-		$db->query($req);
-		$db->next_record();
-		$etage_numero = $db->f('etage_numero');
-		$etage_libelle = $db->f('etage_libelle');
-		$etage_description = $db->f('etage_description');
-		$etage_affichage = $db->f('etage_affichage');
-		$etage_arene = $db->f('etage_arene');
-		$etage_quatrieme_perso = $db->f('etage_quatrieme_perso');
-		$etage_quatrieme_mortel = $db->f('etage_quatrieme_mortel');
-		$etage_mort = $db->f('etage_mort');
-		$etage_retour_rune_monstre = $db->f('etage_retour_rune_monstre');
-		$etage_mine = $db->f('etage_mine');
-		$etage_mine_type = $db->f('etage_mine_type');
-		$etage_mine_richesse = $db->f('etage_mine_richesse');
-		$carene_level_max = $db->f('carene_level_max');
-		$carene_level_min = $db->f('carene_level_min');
-		$carene_ouverte = $db->f('carene_ouverte');
-		$nb_entree_arene = $db->f('nb_entree_arene');
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$etage_numero = $result['etage_numero'];
+		$etage_libelle = $result['etage_libelle'];
+		$etage_description = $result['etage_description'];
+		$etage_affichage = $result['etage_affichage'];
+		$etage_arene = $result['etage_arene'];
+		$etage_quatrieme_perso = $result['etage_quatrieme_perso'];
+		$etage_quatrieme_mortel = $result['etage_quatrieme_mortel'];
+		$etage_mort = $result['etage_mort'];
+		$etage_retour_rune_monstre = $result['etage_retour_rune_monstre'];
+		$etage_mine = $result['etage_mine'];
+		$etage_mine_type = $result['etage_mine_type'];
+		$etage_mine_richesse = $result['etage_mine_richesse'];
+		$carene_level_max = $result['carene_level_max'];
+		$carene_level_min = $result['carene_level_min'];
+		$carene_ouverte = $result['carene_ouverte'];
+		$nb_entree_arene = $result['nb_entree_arene'];
 ?>
 	<p>Modifier l’étage <?php echo  $etage_libelle; ?></p>
 	<div id="etage" class="tableau2">

@@ -11,12 +11,12 @@ switch($methode2)
 	case "debut":
 		//Utilisation des points de prestige pour donner un peu de contenu.
 		$req = "select perso_prestige,perso_nom,perso_sex,perso_po from perso where perso_cod = $perso_cod";
-		$db->query($req);
-		$db->next_record();
-		$prestige = $db->f("perso_prestige");
-		$nom = $db->f("perso_nom");
-		$sexe = $db->f("perso_sex");
-		$brouzoufs = $db->f("perso_po");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$prestige = $result['perso_prestige'];
+		$nom = $result['perso_nom'];
+		$sexe = $result['perso_sex'];
+		$brouzoufs = $result['perso_po'];
 		if ($prestige >= 10 and $prestige <= 20)
 		{
 			srand ((double) microtime() * 10000000); // pour intialiser le random
@@ -64,11 +64,11 @@ switch($methode2)
 				from perso_auberge
 				where paub_perso_cod = $perso_cod and paub_lieu_cod = $lieu_cod) t2
 			on t1.pquete_perso_cod = t2.paub_perso_cod";
-		$db->query($req);
-		if ($db->next_record())
+		$stmt = $pdo->query($req);
+		if($result = $stmt->fetch())
 		{
-			$quete_termine = $db->f("pquete_termine");
-			$aub_visite = $db->f("paub_visite");
+			$quete_termine = $result['pquete_termine'];
+			$aub_visite = $result['paub_visite'];
 			if ($quete_termine == 'N' and ($aub_visite == null or $aub_visite == 'N'))
 			{
 				echo "<hr><br>". $nom_sexe[$sexe] .", je vois que vous faites partie des joyeux fêtards qui ont choisi la tournée des auberges !
@@ -175,8 +175,8 @@ switch($methode2)
 			echo "<em>Un chant est alors entonné gaillardement :</em><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
 
 			$req = "update perso set perso_po  = perso_po - 50 where perso_cod = $perso_cod";
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 			if ($aub_visite == null)
 			{
 				$req = "insert into perso_auberge (paub_perso_cod, paub_lieu_cod, paub_nombre, paub_visite)
@@ -188,8 +188,8 @@ switch($methode2)
 					where paub_lieu_cod = $lieu_cod
 						and paub_perso_cod = $perso_cod";
 			}
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 		}
 		else if ($valid_tournee == 'tournee_ko')
 		{

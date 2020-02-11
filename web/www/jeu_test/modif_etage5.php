@@ -7,8 +7,8 @@ ob_start();
 <?php $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
 
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 if (!isset($methode)) {
     $methode = 'debut';
 }
@@ -19,12 +19,12 @@ if ($erreur == 0) {
         . "from perso_position,positions "
         . "where ppos_perso_cod = $perso_cod"
         . "and ppos_pos_cod = pos_cod ";
-    $db->query($req_matos);
-    $db->next_record();
-    $perso_pos_x = $db->f("pos_x");
-    $perso_pos_y = $db->f("pos_y");
-    $perso_pos_etage = $db->f("pos_etage");
-    $perso_pos_cod = $db->f("pos_cod");
+    $stmt = $pdo->query($req_matos);
+    $result = $stmt->fetch();
+    $perso_pos_x = $result['pos_x'];
+    $perso_pos_y = $result['pos_y'];
+    $perso_pos_etage = $result['pos_etage'];
+    $perso_pos_cod = $result['pos_cod'];
 
     if (isset($_POST['methode'])) {
         switch ($methode) {
@@ -34,11 +34,11 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "insert into murs (mur_pos_cod,mur_tangible) values (" . $temp_pos_cod . ",'" . $_POST['tangible'] . "')";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -48,11 +48,11 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "insert into murs (mur_pos_cod,mur_creusable,mur_usure,mur_richesse,mur_tangible) values (" . $temp_pos_cod . ",'O'," . $_POST['usure'] . "," . $_POST['qualite'] . ",'" . $_POST['tangible'] . "')";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -62,9 +62,9 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
             case "modif_passage":
@@ -73,9 +73,9 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "update positions set pos_passage_autorise = " . $_POST['passage'] . " where pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -92,14 +92,14 @@ if ($erreur == 0) {
         Etage : <select name="pos_etage">
             <?php
             $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-            $db->query($req);
-            while ($db->next_record()) {
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
                 $sel = "";
-                if ($pos_etage == $db->f("etage_numero")) {
+                if ($pos_etage == $result['etage_numero']) {
                     $sel = "selected";
                 }
-                $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-                echo "<option value=\"", $db->f("etage_numero"), "\" $sel>", ($reference ? '' : ' |-- '), $db->f("etage_libelle"), "</option>";
+                $reference = ($result['etage_numero'] == $result['etage_reference']);
+                echo "<option value=\"", $result['etage_numero'], "\" $sel>", ($reference ? '' : ' |-- '), $result['etage_libelle'], "</option>";
             }
             ?>
         </select><br>
@@ -167,13 +167,13 @@ if ($erreur == 0) {
 					<Etage : <select name="pos_etage">
 					<?php
     $req = "select etage_numero,etage_libelle from etage order by etage_numero desc ";
-    $db->query($req);
-    while ($db->next_record()) {
+    $stmt = $pdo->query($req);
+    while ($result = $stmt->fetch()) {
         $sel = "";
-        if ($pos_etage == $db->f("etage_numero")) {
+        if ($pos_etage == $result['etage_numero']) {
             $sel = "selected";
         }
-        echo "<option value=\"", $db->f("etage_numero"), "\" $sel>", $db->f("etage_libelle"), "</option>";
+        echo "<option value=\"", $result['etage_numero'], "\" $sel>", $result['etage_libelle'], "</option>";
     }
     ?>
 					</select>
@@ -193,44 +193,44 @@ if ($erreur == 0) {
 //." and pos_y > $perso_pos_y-10 and pos_y < $perso_pos_y+10"
                 . " pos_etage = $sel_etage"
                 . " order by pos_y desc,pos_x asc";
-            $db->query($req_murs);
-            while ($db->next_record()){
+            $stmt = $pdo->query($req_murs);
+            while ($result = $stmt->fetch()){
             if (!isset($p_y)) {
-                $p_y = $db->f("pos_y");
+                $p_y = $result['pos_y'];
             }
-            if ($db->f("pos_y") != $p_y){
+            if ($result['pos_y'] != $p_y){
             ?>
         </tr>
         <tr>
             <?php
             }
             $color = "#FFFFFF";
-            if ($db->f("pos_passage_autorise") != '1') {
+            if ($result['pos_passage_autorise'] != '1') {
                 $color = '#FFCCFF'; /*rose*/
             }
-            if ($db->f("mur_creusable") == 'N') {
+            if ($result['mur_creusable'] == 'N') {
                 $color = "#FF0000"; /*rouge*/
             }
-            if ($db->f("mur_tangible") == 'N') {
+            if ($result['mur_tangible'] == 'N') {
                 $color = "#FF00FF"; /*violet*/
             }
-            if ($db->f("mur_creusable") == 'O') {
+            if ($result['mur_creusable'] == 'O') {
                 $color = "#00FF00"; /*vert*/
             }
-            if ($db->f("mur_tangible") == 'N' and $db->f("mur_creusable") == 'O') {
+            if ($result['mur_tangible'] == 'N' and $result['mur_creusable'] == 'O') {
                 $color = "#66FFFF"; /*turquoise*/
             }
             ?>
             <td width="20" height="20">
-                <div id="pos_<?php echo $db->f("pos_cod"); ?>"
+                <div id="pos_<?php echo $result['pos_cod']; ?>"
                      style="width:25px;height:25px;background:<?php echo $color ?>;"
-                     onClick="valActionMur(<?php echo $db->f("pos_cod"); ?>);"><?php echo $decor ?><span
-                            style="font-size:10px;"><?php echo $db->f("mur_usure"); ?>
-                        <br/><?php echo $db->f("mur_richesse"); ?></span></div>
+                     onClick="valActionMur(<?php echo $result['pos_cod']; ?>);"><?php echo $decor ?><span
+                            style="font-size:10px;"><?php echo $result['mur_usure']; ?>
+                        <br/><?php echo $result['mur_richesse']; ?></span></div>
             </td>
             <?php
 
-            $p_y = $db->f("pos_y");
+            $p_y = $result['pos_y'];
             }
             ?>
         </tr>

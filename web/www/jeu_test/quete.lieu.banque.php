@@ -18,11 +18,11 @@ switch($methode2)
 				and perobj_identifie = 'O' 
 				and obj_gobj_cod in ('380')
 			order by obj_gobj_cod ";
-		$db->query($req);
-		while($db->next_record())
+		$stmt = $pdo->query($req);
+		while($result = $stmt->fetch())
 		{
-			$obj_gen_quete = $db->f("obj_gobj_cod");
-			$obj_quete = $db->f("perobj_obj_cod");
+			$obj_gen_quete = $result['obj_gobj_cod'];
+			$obj_quete = $result['perobj_obj_cod'];
 			if ($obj_gen_quete == 380)
 			{
 				$nb_caisses = $db->compte_objet($perso_cod, 380);
@@ -64,7 +64,7 @@ switch($methode2)
 			Une dépêche est partie de votre part (<em>message visible dans votre boîte d’envoi</em>)
 			<br>Nous avons pris la liberté de vous fournir directement la récompense (<em>visible dans votre inventaire</em>).
 		<?php 			$req = "select vente_caisses($perso_cod, $obj_gen_quete)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			// Envoi de message
 			$msg = new message;

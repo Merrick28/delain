@@ -3,12 +3,12 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 // on efface si autre guilde
 $req_eff = "delete from guilde_perso where pguilde_perso_cod = $perso_cod ";
-$db->query($req_eff);
+$stmt = $pdo->query($req_eff);
 
 // on inscrit dans la guilde
 $req_ins = "insert into guilde_perso (pguilde_guilde_cod,pguilde_perso_cod,pguilde_rang_cod,pguilde_valide,pguilde_message) ";
 $req_ins = $req_ins . "values($num_guilde,$perso_cod,1,'N','O')";
-$db->query($req_ins);
+$stmt = $pdo->query($req_ins);
 
 // on envoie un message à l'admin de guilde
 // on prépare le texte du message
@@ -26,9 +26,9 @@ $req_admin = $req_admin . "where pguilde_guilde_cod = $num_guilde ";
 $req_admin = $req_admin . "and rguilde_guilde_cod = $num_guilde ";
 $req_admin = $req_admin . "and pguilde_rang_cod = rguilde_rang_cod ";
 $req_admin = $req_admin . "and rguilde_admin = 'O' ";
-$db->query($req_admin);
-while ($db->next_record()) {
-    $msg->ajouteDestinataire($db->f("pguilde_perso_cod"));
+$stmt = $pdo->query($req_admin);
+while ($result = $stmt->fetch()) {
+    $msg->ajouteDestinataire($result['pguilde_perso_cod']);
 }
 
 $msg->envoieMessage();

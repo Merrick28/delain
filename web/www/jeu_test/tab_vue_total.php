@@ -7,35 +7,35 @@ ob_start();
 <div id='informations_case' class='bordiv' style='width:150px; padding:5px; display:none; position:absolute;'></div>
 
 <?php 
-$db2 = new base_delain;
+
 
 if ($db->is_admin_monstre($compt_cod))
 {
 	echo("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#FFFFFF\">");
 
 	$req_y = "select distinct pos_y from positions where pos_etage = $num_etage order by pos_y desc";
-	$db->query($req_y);
-	$nb_res_y = $db->nf();
+	$stmt = $pdo->query($req_y);
+	$nb_res_y = $stmt->rowCount();
 
 	$req = "select etage_affichage from etage where etage_numero = $num_etage ";
-	$db->query($req);
-	$db->next_record();
-	$aff = $db->f('etage_affichage');
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$aff = $result['etage_affichage'];
 
 	$req_y = "select distinct pos_y from positions where pos_etage = $num_etage order by pos_y desc";
-	$db->query($req_y);
+	$stmt = $pdo->query($req_y);
 ?>
 <script type="text/javascript">
 	var carte = new Array();
 <?php 	$i = 0;
 	$depart = 0;
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		$req_map_vue = "select detail_carte_monstre($num_etage," . $db->f("pos_y") . "," . $depart . ") as vue ";
-		$db2->query($req_map_vue);
-		$db2->next_record();
-		$tab = explode("#",$db2->f("vue"));
+		$req_map_vue = "select detail_carte_monstre($num_etage," . $result['pos_y'] . "," . $depart . ") as vue ";
+		$stmt2 = $pdo->query($req_map_vue);
+		$result2 = $stmt2->fetch();
+		$tab = explode("#",$result2['vue']);
 		echo $tab[0];
 		$depart = $tab[1];
 	}

@@ -6,27 +6,27 @@ header("Pragma: no-cache");
      header("Cache-Control: no-cache, must-revalidate");
      header("Content-type: application/xml"); 
 		include "classes.php";
-		$db2 = new base_delain;
+		
 	   if(!empty($_REQUEST["foo"]))
      {
      		$req = "select mgroupe_perso_cod,perso_nom,mgroupe_statut from quetes.mission_groupe,perso 
      		where mgroupe_groupe_cod =".(1*$foo)." 
      		and mgroupe_perso_cod = perso_cod
      		and mgroupe_statut != 'E'";
-     		$db->query($req);
-     		$xml = "<resultats nb=\"" .  $db->nf() . "\">";
-     		if($db->nf()!= 0)
+     		$stmt = $pdo->query($req);
+     		$xml = "<resultats nb=\"" .  $stmt->rowCount() . "\">";
+     		if($stmt->rowCount()!= 0)
      		{
      			$xml .= "<ul>";
      		/*$xml .= '<resultat titre="valeur=\'0\' title=\'Sélectionner le résultat désiré\' "/>';*/
-     			while($db->next_record())
+     			while($result = $stmt->fetch())
      			{
      				$chef = '';
-     				if ($db->f('mgroupe_statut')=='O')
+     				if ($result['mgroupe_statut']=='O')
      				{
      					$chef = '- (chef)';
      				}
-     				$xml .='<resultat titre="' . str_replace('"', "",$db->f('perso_nom')) .'' . $chef . '" url="javascript:mettrevaleur2(\'' . $db->f('perso_cod') . '\')" />';
+     				$xml .='<resultat titre="' . str_replace('"', "",$result['perso_nom']) .'' . $chef . '" url="javascript:mettrevaleur2(\'' . $result['perso_cod'] . '\')" />';
        		}
        		$xml .= "</ul>";
      		}

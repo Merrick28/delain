@@ -75,8 +75,8 @@ case "debut":
 $req_journal = "select journal_cod,journal_perso_cod,to_char(journal_date,'dd/mm/yyyy hh24:mi:ss') as jdate,journal_titre,journal_date from journal
 			where journal_perso_cod = $perso_cod
 			order by journal_date desc ";
-$db->query($req_journal);
-$nb_journal = $db->nf();
+$stmt = $pdo->query($req_journal);
+$nb_journal = $stmt->rowCount();
 if ($nb_journal == 0)
 {
     echo("<p>Aucune entrée dans le journal.");
@@ -87,17 +87,17 @@ else
 ?>
 <table>
     <?php
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
-        $perso = $db->f("journal_perso_cod");
+        $perso = $result['journal_perso_cod'];
         if ($perso != $perso_cod)
         {
             echo "Vous ne pouvez pas avoir accès à cette entrée de journal !";
             break;
         }
         echo("<tr>");
-        //					echo '<td><p><a href=\"' . $PHP_SELF , "?journal_cod=" , $db->f("journal_cod") , "&t=" , $t , "&methode=voir\">" , $db->f("journal_titre") , "</a> (", $db->f("jdate") , ")</td>";
-        echo '<td><a href="javascript:void(0);" onclick="getdata(\'' . $type_flux . G_URL . 'jeu_test/fr_dr.php?methode=voir&t_frdr=3&journal_cod=' . $db->f("journal_cod") . '\',\'vue_droite\')">' . $db->f("journal_titre") . '</a></td>';
+        //					echo '<td><p><a href=\"' . $PHP_SELF , "?journal_cod=" , $result['journal_cod'] , "&t=" , $t , "&methode=voir\">" , $result['journal_titre'] , "</a> (", $result['jdate'] , ")</td>";
+        echo '<td><a href="javascript:void(0);" onclick="getdata(\'' . $type_flux . G_URL . 'jeu_test/fr_dr.php?methode=voir&t_frdr=3&journal_cod=' . $result['journal_cod'] . '\',\'vue_droite\')">' . $result['journal_titre'] . '</a></td>';
         echo("</tr>");
     }
     echo("</table>");
@@ -117,17 +117,17 @@ else
                         <?php
                         $req_journal = "select journal_titre,journal_perso_cod,to_char(journal_date,'dd/mm/yyyy hh24:mi:ss') as jour_date,journal_texte from journal
 														where journal_cod = $journal_cod ";
-                        $db->query($req_journal);
-                        $db->next_record();
-                        $perso = $db->f("journal_perso_cod");
+                        $stmt = $pdo->query($req_journal);
+                        $result = $stmt->fetch();
+                        $perso = $result['journal_perso_cod'];
                         if ($perso != $perso_cod)
                         {
                             echo "Vous ne pouvez pas avoir accès à cette entrée de journal !";
                             break;
                         }
-                        print "<p><strong>" . $db->f("journal_titre") . "</strong><br />";
-                        printf("Ecrit le %s</p></td></tr>", $db->f("jour_date"));
-                        $texte = str_replace(chr(127), ";", $db->f("journal_texte"));
+                        print "<p><strong>" . $result['journal_titre'] . "</strong><br />";
+                        printf("Ecrit le %s</p></td></tr>", $result['jour_date']);
+                        $texte = str_replace(chr(127), ";", $result['journal_texte']);
                         $texte = nl2br($texte);
                         ?>
                 <tr>
@@ -152,9 +152,9 @@ else
     case "effacer":
         $req_journal = "select journal_perso_cod from journal
 														where journal_cod = $journal_cod ";
-        $db->query($req_journal);
-        $db->next_record();
-        $perso = $db->f("journal_perso_cod");
+        $stmt = $pdo->query($req_journal);
+        $result = $stmt->fetch();
+        $perso = $result['journal_perso_cod'];
         if ($perso != $perso_cod)
         {
             ?>
@@ -163,7 +163,7 @@ else
             break;
         }
         $req_efface = "delete from journal where journal_cod = " . $journal_cod;
-        $db->query($req_efface);
+        $stmt = $pdo->query($req_efface);
         ?>
         <p><strong>L'entrée dans le journal a bien été effacée !</strong></p>
         <?php
@@ -229,7 +229,7 @@ else
             $titre = pg_escape_string($titre);
             $req_ins = "insert into journal (journal_perso_cod,journal_date,journal_titre,journal_texte)
 	      												values ($perso_cod,now(),e'$titre',e'$contenu') ";
-            $db->query($req_ins);
+            $stmt = $pdo->query($req_ins);
             ?>
             <p><strong>La nouvelle entrée dans le journal est enregistrée !</strong></p>
             <?php
@@ -244,20 +244,20 @@ else
             <table>
                 <?php $req_journal = "select journal_titre,journal_perso_cod,to_char(journal_date,'dd/mm/yyyy hh24:mi:ss') as dj,journal_texte from journal
 														where journal_cod = " . $journal_cod;
-                $db->query($req_journal);
-                $db->next_record();
-                $perso = $db->f("journal_perso_cod");
+                $stmt = $pdo->query($req_journal);
+                $result = $stmt->fetch();
+                $perso = $result['journal_perso_cod'];
                 if ($perso != $perso_cod)
                 {
                     echo "Vous ne pouvez pas effacer cette entrée de journal !";
                     break;
                 }
-                $texte = str_replace("<br />", "\n", $db->f("journal_texte"));
+                $texte = str_replace("<br />", "\n", $result['journal_texte']);
                 ?>
                 <tr>
                     <td class="soustitre2" colspan="2">
-                        <p><strong><?php echo $db->f("journal_titre"); ?></strong><br/>
-                            Ecrit le <?php echo $db->f("dj"); ?></p></td>
+                        <p><strong><?php echo $result['journal_titre']; ?></strong><br/>
+                            Ecrit le <?php echo $result['dj']; ?></p></td>
                 </tr>
 
                 <tr>
@@ -301,7 +301,7 @@ else
             $req_upd = "update journal set journal_date = now(), ";
             $req_upd = $req_upd . "journal_texte = e'$contenu' ";
             $req_upd = $req_upd . "where journal_cod = $journal_cod ";
-            $db->query($req_upd);
+            $stmt = $pdo->query($req_upd);
             ?>
             <p><strong>La modification est enregistrée !</strong></p>
             <?php

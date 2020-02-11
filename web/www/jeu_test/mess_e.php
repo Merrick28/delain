@@ -17,9 +17,9 @@ $req_total = "select count(msg_cod) as nb_msg
 	from messages,messages_exp
 	where emsg_perso_cod = " . $perso_cod  . '
 	and emsg_msg_cod = msg_cod ';
-$db->query($req_total);
-$db->next_record();
-$nb_total = $db->f('nb_msg');
+$stmt = $pdo->query($req_total);
+$result = $stmt->fetch();
+$nb_total = $result['nb_msg'];
 $nb_pages = ceil($nb_total/$nb_messages_page);
 $page_en_cours = ($msg_start/$nb_messages_page) + 1;
 // fin total message
@@ -30,13 +30,13 @@ $req_messages = "select to_char(msg_date2,'DD/MM/YYYY hh24:mi:ss') as datemes,ms
 	order by msg_cod desc
 	limit ' . $nb_messages_page . '
 	offset ' . $msg_start;
-$db->query($req_messages);
-while($db->next_record())
+$stmt = $pdo->query($req_messages);
+while($result = $stmt->fetch())
 {
 	$contenu_page .= '<tr>';
-	$contenu_page .= '<td class="soustitre2">' . $db->f("datemes") . '</td>';
-	$contenu_page .= '<td class="soustitre2"><a href="action_message.php?mid=' . $db->f("msg_cod") . '&m=' . $m . '&methode=visu_msg">' . str_replace(chr(127), ';', $db->f("msg_titre")) . '</a></td>';
-	$type_archive = $db->f("emsg_archive");
+	$contenu_page .= '<td class="soustitre2">' . $result['datemes'] . '</td>';
+	$contenu_page .= '<td class="soustitre2"><a href="action_message.php?mid=' . $result['msg_cod'] . '&m=' . $m . '&methode=visu_msg">' . str_replace(chr(127), ';', $result['msg_titre']) . '</a></td>';
+	$type_archive = $result['emsg_archive'];
 	$contenu_page .= '</tr>';
 }
 // listing des pages

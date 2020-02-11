@@ -7,8 +7,8 @@ if ($db->is_milice($perso_cod) == 0) {
     $erreur = 1;
 }
 $req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 3 ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
@@ -29,8 +29,8 @@ if ($erreur == 0) {
             $req = $req . "where peine_magistrat = mag.perso_cod ";
             $req = $req . "and peine_perso_cod = acc.perso_cod ";
             $req = $req . "and peine_faite < 2 ";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 echo "<p>Aucune peine non effectuée en cours.";
             } else {
                 $etat[0] = "Non effectuée";
@@ -50,17 +50,17 @@ if ($erreur == 0) {
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record()) {
-                        $v_peine = $db->f("peine_type");
-                        $v_faite = $db->f("peine_faite");
+                    while ($result = $stmt->fetch()) {
+                        $v_peine = $result['peine_type'];
+                        $v_faite = $result['peine_faite'];
                         echo "<tr>";
-                        echo "<td class=\"soustitre2\">", $db->f("peine_cod"), "</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_acc"), "\"><strong>", $db->f("n_acc"), "</strong></td>";
+                        echo "<td class=\"soustitre2\">", $result['peine_cod'], "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_acc'], "\"><strong>", $result['n_acc'], "</strong></td>";
                         echo "<td>$peine[$v_peine]</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_mag"), "\"><strong>", $db->f("n_mag"), "</strong></td>";
-                        echo "<td>", $db->f("date_peine"), "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_mag'], "\"><strong>", $result['n_mag'], "</strong></td>";
+                        echo "<td>", $result['date_peine'], "</td>";
                         echo "<td>$etat[$v_faite]</td>";
-                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $db->f("peine_cod"), "&perso=", $db->f("c_acc"), "\">Retirer la peine ?</a></td>";
+                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
                         echo "</tr>";
                     }
 
@@ -76,8 +76,8 @@ if ($erreur == 0) {
             $req = $req . "where peine_magistrat = mag.perso_cod ";
             $req = $req . "and peine_perso_cod = acc.perso_cod ";
             $req = $req . "and peine_faite = 2 ";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 echo "<p>Aucune peine effectuée ";
             } else {
                 $etat[0] = "Non effectuée";
@@ -98,18 +98,18 @@ if ($erreur == 0) {
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record()) {
-                        $v_peine = $db->f("peine_type");
-                        $v_faite = $db->f("peine_faite");
+                    while ($result = $stmt->fetch()) {
+                        $v_peine = $result['peine_type'];
+                        $v_faite = $result['peine_faite'];
                         echo "<tr>";
-                        echo "<td class=\"soustitre2\">", $db->f("peine_cod"), "</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_acc"), "\"><strong>", $db->f("n_acc"), "</strong></td>";
+                        echo "<td class=\"soustitre2\">", $result['peine_cod'], "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_acc'], "\"><strong>", $result['n_acc'], "</strong></td>";
                         echo "<td>$peine[$v_peine]</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $db->f("c_mag"), "\"><strong>", $db->f("n_mag"), "</strong></td>";
-                        echo "<td>", $db->f("date_peine"), "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_mag'], "\"><strong>", $result['n_mag'], "</strong></td>";
+                        echo "<td>", $result['date_peine'], "</td>";
                         echo "<td>$etat[$v_faite]</td>";
-                        echo "<td>", $db->f("dexec"), "</td>";
-                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $db->f("peine_cod"), "&perso=", $db->f("c_acc"), "\">Retirer la peine ?</a></td>";
+                        echo "<td>", $result['dexec'], "</td>";
+                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
                         echo "</tr>";
                     }
 
@@ -132,16 +132,16 @@ if ($erreur == 0) {
         case "ajout2":
             $erreur = 0;
             $req = "select f_cherche_perso('$nom') as resultat ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f("resultat") == -1) {
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['resultat'] == -1) {
                 echo "<p>Erreur ! Perso non trouvé !";
                 $erreur = 1;
             }
-            $perso = $db->f("resultat");
+            $perso = $result['resultat'];
             $req = "select peine_cod from peine where peine_perso_cod = $perso and peine_faite < 2";
-            $db->query($req);
-            if ($db->nf() != 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() != 0) {
                 echo "<p>Erreur ! Le perso ciblé est déjà sous le coup d'une peine !<br>
 					Si vous voulez rajouter une peine à ce perso, vous devez supprimer la peine existante.";
                 $erreur = 1;
@@ -175,59 +175,59 @@ if ($erreur == 0) {
             if ($erreur == 0) {
                 $req = "insert into peine (peine_magistrat,peine_perso_cod,peine_type,peine_duree) ";
                 $req = $req . "values ($perso_cod,$perso,$type,$duree) ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 echo "<p>La peine a bien été enregistrée.";
                 $req = "select peine_cod,peine_type,perso_nom from peine,perso where peine_perso_cod = $perso ";
                 $req = $req . "and perso_cod = $perso_cod ";
-                $db->query($req);
-                $db->next_record();
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
                 $peine[0] = "Peine de mort";
                 $peine[1] = "Emprisonnement limité";
                 $peine[2] = "Emprisonnement à pertpétuité";
                 $titre = "Condamnation.";
-                $v_peine = $db->f("peine_type");
-                $v_faite = $db->f("peine_faite");
-                $texte = "Le joueur " . $db->f("perso_nom") . ", en tant que Magistrat de la Milice d'Hormandre III, a émis une condamnation contre vous.<br />";
-                $texte = $texte . "La condamnation est : <strong>" . $peine[$v_peine] . "</strong> et est enrgistrée sous le dossier <strong>" . $db->f("peine_cod") . "</strong>.";
+                $v_peine = $result['peine_type'];
+                $v_faite = $result['peine_faite'];
+                $texte = "Le joueur " . $result['perso_nom'] . ", en tant que Magistrat de la Milice d'Hormandre III, a émis une condamnation contre vous.<br />";
+                $texte = $texte . "La condamnation est : <strong>" . $peine[$v_peine] . "</strong> et est enrgistrée sous le dossier <strong>" . $result['peine_cod'] . "</strong>.";
                 $texte = str_replace("'", "\'", $texte);
                 $req_num_mes = "select nextval('seq_msg_cod') as num_mes";
-                $db->query($req_num_mes);
-                $db->next_record();
-                $num_mes = $db->f("num_mes");
+                $stmt = $pdo->query($req_num_mes);
+                $result = $stmt->fetch();
+                $num_mes = $result['num_mes'];
                 $req_mes = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
                 $req_mes = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
-                $db->query($req_mes);
+                $stmt = $pdo->query($req_mes);
                 // on renseigne l'expéditeur
                 $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
                 $req = $req . "values ($num_mes,$perso_cod,'N') ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
                 $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
-                $db->query($req_dest);
+                $stmt = $pdo->query($req_dest);
             }
             break;
         case "suppr":
             $req = "delete from peine where peine_cod = $peine ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La peine a été retirée.";
             $titre = "Suppression de peine.";
             $req = "select perso_nom from perso where perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
-            $texte = "Le joueur " . $db->f("perso_nom") . ", en tant que Magistrat de la Milice d'Hormandre III, a levé la peine qui était émise contre vous.<br />";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $texte = "Le joueur " . $result['perso_nom'] . ", en tant que Magistrat de la Milice d'Hormandre III, a levé la peine qui était émise contre vous.<br />";
             $texte = str_replace("'", "\'", $texte);
             $req_num_mes = "select nextval('seq_msg_cod') as num_mes";
-            $db->query($req_num_mes);
-            $db->next_record();
-            $num_mes = $db->f("num_mes");
+            $stmt = $pdo->query($req_num_mes);
+            $result = $stmt->fetch();
+            $num_mes = $result['num_mes'];
             $req_mes = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
             $req_mes = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
-            $db->query($req_mes);
+            $stmt = $pdo->query($req_mes);
             // on renseigne l'expéditeur
             $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
             $req = $req . "values ($num_mes,$perso_cod,'N') ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
-            $db->query($req_dest);
+            $stmt = $pdo->query($req_dest);
             break;
 
 

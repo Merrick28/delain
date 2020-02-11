@@ -35,13 +35,13 @@ if (!$erreur) {
     $req_verif = "select pia_parametre, pia_msg_statut, perso_nom from perso_ia
 		inner join perso on perso_cod = pia_perso_cod
 		where pia_perso_cod = $perso AND pia_ia_type = 15";
-    $db->query($req_verif);
-    $erreur = !$db->next_record();
+    $stmt = $pdo->query($req_verif);
+    $erreur = !$result = $stmt->fetch();
 
     if (!$erreur) {
-        $nom_ia = $db->f('perso_nom');
-        $suivre = $db->f('pia_parametre');
-        $attente = ($db->f('pia_msg_statut') == '1');
+        $nom_ia = $result['perso_nom'];
+        $suivre = $result['pia_parametre'];
+        $attente = ($result['pia_msg_statut'] == '1');
         $erreur = $perso_cod != $suivre;
     }
 }
@@ -49,9 +49,9 @@ if (!$erreur) {
 echo "<p><strong>$nom_ia vous répond :</strong></p>";
 if (!$erreur) {
     $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-    $db->query($req_nom);
-    $db->next_record();
-    $nom = $db->f('perso_nom');
+    $stmt = $pdo->query($req_nom);
+    $result = $stmt->fetch();
+    $nom = $result['perso_nom'];
 
     switch ($methode) {
         case 'oui':
@@ -59,16 +59,16 @@ if (!$erreur) {
                 $reponse = 'Ah, désolé, mais vous m’aviez déjà répondu ! Si je n’ai pas fait le bon choix, il faudrait que vous reveniez me chercher...';
             else {
                 $req_passage = "select passage($perso) as resultat";
-                $db->query($req_passage);
-                $db->next_record();
-                $resultat = $db->f('resultat');
+                $stmt = $pdo->query($req_passage);
+                $result = $stmt->fetch();
+                $resultat = $result['resultat'];
                 $tab_resultat = explode('#', $resultat);
 
                 $reponse = "Ah, excellent, $nom ! J’y vais de ce pas, j’espère vous retrouver de l’autre côté.<br />";
                 $reponse .= $tab_resultat[0];
 
                 $req_maj = "update perso_ia set pia_msg_statut = 0 where pia_perso_cod = $perso";
-                $db->query($req_maj);
+                $stmt = $pdo->query($req_maj);
             }
             break;
         case 'non':
@@ -77,7 +77,7 @@ if (!$erreur) {
             else {
                 $reponse = "Très bien $nom, je ne prends pas cet escalier. Mais ne me laissez pas tout seul !";
                 $req_maj = "update perso_ia set pia_msg_statut = 0 where pia_perso_cod = $perso";
-                $db->query($req_maj);
+                $stmt = $pdo->query($req_maj);
             }
             break;
         case 'stop':
@@ -88,7 +88,7 @@ if (!$erreur) {
         case 'stop_oui':
             $reponse = "Je... C’est honteux ! Soyez sûr que je m’en souviendrai !";
             $req_maj = "update perso_ia set pia_parametre = 0 where pia_perso_cod = $perso";
-            $db->query($req_maj);
+            $stmt = $pdo->query($req_maj);
             break;
         case 'stop_non':
             $reponse = "Ah... Ah ah... Vous êtes blagueur, vous ! Ne me refaites jamais une peur pareille !";

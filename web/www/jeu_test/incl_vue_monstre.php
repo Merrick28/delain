@@ -8,17 +8,17 @@
 $parm = new parametres();
 $marquerQuatriemes = $db->is_admin_monstre($compt_cod);
 $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-$db->query($req_malus_desorientation);
-$db->next_record();
-if ($db->f("desorientation") == 0)
+$stmt = $pdo->query($req_malus_desorientation);
+$result = $stmt->fetch();
+if ($result['desorientation'] == 0)
 	$desorientation = false;
 else
 	$desorientation = true;
 $combat_groupe = $parm->getparm(56);
 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-$pa = $db->f("perso_pa");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$pa = $result['perso_pa'];
 $pa_n = $db->get_pa_attaque($perso_cod);
 
 $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangible, perso_description, perso_desc_long, perso_nom,
@@ -48,8 +48,8 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangi
 	ORDER BY distance, pos_x, pos_y";
 //echo "<!--" . $req_vue_joueur . "-->";
 
-$db->query($req_vue_joueur);
-$nb_joueur_en_vue = $db->nf();
+$stmt = $pdo->query($req_vue_joueur);
+$nb_joueur_en_vue = $stmt->rowCount();
 
 $nb_colonnes = ($marquerQuatriemes) ? 7 : 6;
 
@@ -82,24 +82,24 @@ if ($nb_joueur_en_vue != 0)
 	$lieuRefuge = $db_refuge->is_refuge($perso_cod);
     $row = 3 ;
 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		if ($db->f("traj") == 1)
+		if ($result['traj'] == 1)
 		{
     		//Repérage du type de contrôle
-			$ia = ($db->f("perso_dirige_admin") == 'O') ? 'Hors IA' : 'Sous IA';
-            $type_controle = ($db->f("compt_monstre") == 'O') ? ' (Compte monstre)' : ' (Compte joueur)';
-            if ($db->f("compt_cod") == -1)
+			$ia = ($result['perso_dirige_admin'] == 'O') ? 'Hors IA' : 'Sous IA';
+            $type_controle = ($result['compt_monstre'] == 'O') ? ' (Compte monstre)' : ' (Compte joueur)';
+            if ($result['compt_cod'] == -1)
                 $type_controle = '';
 
-			$lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec ce monstre." /> ' : '';
-			$meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Ce monstre appartient à la même coterie que vous." /> ' : '';
-			$is_tangible = $db->f("perso_tangible");
+			$lock_combat = ($result['lock1'] > 0 || $result['lock2'] > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec ce monstre." /> ' : '';
+			$meme_coterie = ($coterie > 0 && $result['pgroupe_groupe_cod'] == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Ce monstre appartient à la même coterie que vous." /> ' : '';
+			$is_tangible = $result['perso_tangible'];
 			$aff_tangible = $palbable[$is_tangible];
 			$niveau_blessures = '';
-			$pv = $db->f("perso_pv");
-			$num_perso = $db->f("perso_cod");
-			$pv_max = $db->f("perso_pv_max");
+			$pv = $result['perso_pv'];
+			$num_perso = $result['perso_cod'];
+			$pv_max = $result['perso_pv_max'];
 			if ($pv/$pv_max < 0.75)
 			{
 				$niveau_blessures = ' - <strong>' . $tab_blessures[0] . '</strong>';
@@ -116,10 +116,10 @@ if ($nb_joueur_en_vue != 0)
 			{
 				$niveau_blessures = ' - <strong>' . $tab_blessures[3] . '</strong>';
 			}
-			$nom = $db->f("perso_nom");
-			if ($db->f("perso_desc_long") != NULL or $db->f("perso_desc_long") != "")
+			$nom = $result['perso_nom'];
+			if ($result['perso_desc_long'] != NULL or $result['perso_desc_long'] != "")
 				$nom .= '<strong> *</strong>';
-			if ($db->f("distance") <= $portee)
+			if ($result['distance'] <= $portee)
 			{
 				$attaquable = 1;
 			}
@@ -135,15 +135,15 @@ if ($nb_joueur_en_vue != 0)
 			{
 				$attaquable = 0;
 			}
-			$desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_description"))));
+			$desc = nl2br(htmlspecialchars(str_replace('\'', '’', $result['perso_description'])));
 			$desc = str_replace("\r","",$desc);
 			$desc = str_replace("%","pourcent",$desc);
 			$style = "soustitre2";
-			if ($db->f("surcharge") == 1)
+			if ($result['surcharge'] == 1)
 			{
 				$style = "surcharge1";
 			}
-			if ($db->f("surcharge") == 2)
+			if ($result['surcharge'] == 2)
 			{
 				$style = "surcharge2";
 			}
@@ -151,27 +151,27 @@ if ($nb_joueur_en_vue != 0)
 			{
 				$style = "soustitre2";
 			}
-			$ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lmonstre' . $db->f("perso_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lmonstre' . $db->f("perso_cod") . '\',\'pasvu\',\'' . $style . '\');"';
+			$ch_style = 'onMouseOver="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lmonstre' . $result['perso_cod'] . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lmonstre' . $result['perso_cod'] . '\',\'pasvu\',\'' . $style . '\');"';
 
             $cdata = "";
-            $cdata.="data-partisans='".(($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) || ($db->f("triplette")== 1) ? "O" : "N")."' ";
-            $cdata.="data-type='".($db->f("perso_type_perso"))."' ";
+            $cdata.="data-partisans='".(($coterie > 0 && $result['pgroupe_groupe_cod'] == $coterie) || ($result['triplette']== 1) ? "O" : "N")."' ";
+            $cdata.="data-type='".($result['perso_type_perso'])."' ";
 			echo '<tr id="row-'.$row.'" '.$cdata.'>
-				<td ' . $ch_style . '><div style="text-align:center;">' . $db->f("distance") . '</div></td>';
+				<td ' . $ch_style . '><div style="text-align:center;">' . $result['distance'] . '</div></td>';
                 
     		if ($marquerQuatriemes)
 				echo '<td ' . $ch_style . '><div style="text-align:center;">' . $ia . $type_controle . '</div></td>';
             
-			echo '<td ' . $ch_style . 'id="lmonstre' . $db->f("perso_cod") . '" class="' . $style .'">'.$lock_combat.$meme_coterie.'<strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom . '</a>
+			echo '<td ' . $ch_style . 'id="lmonstre' . $result['perso_cod'] . '" class="' . $style .'">'.$lock_combat.$meme_coterie.'<strong><a href="visu_desc_perso.php?visu=' . $result['perso_cod'] . '">' . $nom . '</a>
 					</strong>' . $aff_tangible . $niveau_blessures . '<br><span style="font-size:8pt">' . $desc . '</span></td>
-				<td ' . $ch_style .  '>' . $db->f("race_nom") . '</td>
-				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $db->f("pos_x") . '</div></td>
-				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $db->f("pos_y") . '</div></td><td>';
+				<td ' . $ch_style .  '>' . $result['race_nom'] . '</td>
+				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $result['pos_x'] . '</div></td>
+				<td ' . $ch_style .  ' nowrap><div style="text-align:center;">' . $result['pos_y'] . '</div></td><td>';
 			if(!$desorientation)
 			{
 				if($attaquable == 1)
 				{
-					echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
+					echo '<a href="javascript:document.visu_evt2.cible.value=' . $result['perso_cod'] . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
 				}
 			}
 		    echo '</td></tr>';

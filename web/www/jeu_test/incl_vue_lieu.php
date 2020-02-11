@@ -10,8 +10,8 @@ $req_vue_joueur = $req_vue_joueur . "and lieu_tlieu_cod = tlieu_cod ";
 $req_vue_joueur = $req_vue_joueur . "and tlieu_cod != 19 ";
 $req_vue_joueur = $req_vue_joueur . "and not exists(select 1 from murs where mur_pos_cod = pos_cod) ";
 $req_vue_joueur = $req_vue_joueur . "order by distance,pos_x,pos_y";
-$db->query($req_vue_joueur);
-$nb_lieux_en_vue = $db->nf();
+$stmt = $pdo->query($req_vue_joueur);
+$nb_lieux_en_vue = $stmt->rowCount();
 if ($nb_lieux_en_vue != 0)
 {
 
@@ -25,21 +25,21 @@ if ($nb_lieux_en_vue != 0)
 	</tr>
 	<?php 
 	$i = 0;
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		$refuge = ($db->f('lieu_refuge') == 'O') ? 'refuge' : 'non protégé';
-		$nom = $db->f("lieu_nom") . " <em>($refuge)</em>";
-		$type = $db->f("tlieu_libelle");
+		$refuge = ($result['lieu_refuge'] == 'O') ? 'refuge' : 'non protégé';
+		$nom = $result['lieu_nom'] . " <em>($refuge)</em>";
+		$type = $result['tlieu_libelle'];
 		$style = "soustitre2";
 
-		$ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'llieu' . $db->f("lieu_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'llieu' . $db->f("lieu_cod") . '\',\'pasvu\',\'' . $style . '\');"';
+		$ch_style = 'onMouseOver="changeStyles(\'cell' . $result['pos_cod'] . '\',\'llieu' . $result['lieu_cod'] . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $result['pos_cod'] . '\',\'llieu' . $result['lieu_cod'] . '\',\'pasvu\',\'' . $style . '\');"';
 
 		echo '<tr>
-			<td ' . $ch_style . '><p style="text-align:center;">' . $db->f('distance') . '</p></td>
-			<td ' . $ch_style . 'id="llieu' . $db->f("lieu_cod") . '" class="soustitre2"><p>' . $nom . '</p></td>
+			<td ' . $ch_style . '><p style="text-align:center;">' . $result['distance'] . '</p></td>
+			<td ' . $ch_style . 'id="llieu' . $result['lieu_cod'] . '" class="soustitre2"><p>' . $nom . '</p></td>
 			<td ' . $ch_style . '><p>' .$type . '</p></td>
-			<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $db->f("pos_x") . '</p></td>
-			<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $db->f("pos_y") . '</p></td>
+			<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $result['pos_x'] . '</p></td>
+			<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $result['pos_y'] . '</p></td>
 			</tr>';
 	}
 }

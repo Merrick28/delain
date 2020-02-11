@@ -14,9 +14,9 @@ $req = "select rguilde_admin from guilde_perso,guilde_rang
 								and pguilde_guilde_cod = rguilde_guilde_cod
 								and pguilde_rang_cod = rguilde_rang_cod ";
 
-$db->query($req);
-$db->next_record();
-if ($db->f("rguilde_admin") == 'O') {
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+if ($result['rguilde_admin'] == 'O') {
     echo "<p>Erreur ! Vous ne pouvez pas renvoyer un admin !";
 
     die('</div>');
@@ -27,9 +27,9 @@ if ($db->is_revolution($num_guilde)) {
     die('</div>');
 }
 $req1 = "select guilde_nom from guilde where guilde_cod = $num_guilde";
-$db->query($req1);
-$db->next_record();
-$ancienne_guilde = $db->f("guilde_nom");
+$stmt = $pdo->query($req1);
+$result = $stmt->fetch();
+$ancienne_guilde = $result['guilde_nom'];
 $ancienne_guilde = "[Ancien membre de la guilde " . pg_escape_string($ancienne_guilde) . "]";
 
 if (!isset($methode)) {
@@ -43,8 +43,8 @@ switch ($methode) {
         break;
     case 'validation':
         $req = "insert into perso_titre values(default,$vperso,e'$ancienne_guilde',now(),'2')";
-        $db->query($req);
-        $db->next_record();
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
         $req = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
         $res = pg_exec($dbconnect, $req);
         if (!$res) {

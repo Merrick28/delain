@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db = new base_delain;
+
 $type_lieu = 1;
 $nom_lieu = 'une banque';
 
@@ -23,9 +23,9 @@ if ($erreur == 0)
     <img src="../images/banque3.png" alt="Banque"><br/>
     <?php
     $req_depot = "select retrait_banque($perso_cod,$quantite) as retrait";
-    $db->query($req_depot);
-    $db->next_record();
-    $tab_depot = $db->f("retrait");
+    $stmt = $pdo->query($req_depot);
+    $result = $stmt->fetch();
+    $tab_depot = $result['retrait'];
     if ($tab_depot == 0)
     {
         ?>

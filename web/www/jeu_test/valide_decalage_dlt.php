@@ -28,10 +28,10 @@ if ($erreur == 0)
                                to_char(prochaine_dlt($perso_cod) + '$temps_dlt minutes'::interval,'DD/MM/YYYY à hh24:mi:ss') as nxtdlt
 					from perso
 					where perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
-            $nvdlt  = $db->f('nvdlt');
-            $nxtdlt = $db->f('nxtdlt');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $nvdlt  = $result['nvdlt'];
+            $nxtdlt = $result['nxtdlt'];
             ?>
             Etes vous sûr de vouloir décaler votre dlt de <?php echo $temps_dlt ?> minutes ? <br/>
             Votre prochaine dlt commencera le <strong><?php echo $nvdlt; ?></strong> <em>(la suivante le
@@ -45,13 +45,13 @@ if ($erreur == 0)
             $temps_dlt = round($temps_dlt);
             $req       =
                 "update perso set perso_dlt = perso_dlt + '$temps_dlt minutes'::interval where perso_cod = $perso_cod ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
 
             echo("<p>Votre DLT a bien été repoussée de $temps_dlt minutes. ");
             $req2 = "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt from perso where perso_cod = $perso_cod";
-            $db->query($req2);
-            $db->next_record();
-            printf("<p>Votre nouvelle DLT est à <strong>%s</strong>.", $db->f("dlt"));
+            $stmt = $pdo->query($req2);
+            $result = $stmt->fetch();
+            printf("<p>Votre nouvelle DLT est à <strong>%s</strong>.", $result['dlt']);
             break;
     }
 }

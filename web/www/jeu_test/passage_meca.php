@@ -22,12 +22,12 @@ if ($erreur == 0)
 	
 //FORMULE DU LIEU
 $req_formule = "select parm_valeur_texte from parametres where parm_desc = 'FORMULE_DU_LIEU_$lieu_cod'";
-$db->query($req_formule);
-if($db->next_record()){
-	$formule = $db->f("parm_valeur_texte");
+$stmt = $pdo->query($req_formule);
+if($result = $stmt->fetch()){
+	$formule = $result['parm_valeur_texte'];
 } else {
 	$req_formule = "insert into parametres (parm_type,parm_desc,parm_valeur_texte) values('Text','FORMULE_DU_LIEU_$lieu_cod','DEFAULT')";
-	$db->query($req_formule);
+	$stmt = $pdo->query($req_formule);
 	$formule = 'DEFAULT';
 }
 // DETERMINATION DE L'ETAT EN FONCTION DE LA FORMULE
@@ -39,9 +39,9 @@ if($formule != 'DEFAULT'){
       	if($etat_ref != ""){
     		//ETAT DU LIEU
 			$req_etat = "select parm_valeur_texte from parametres where parm_desc = '$etat_ref'";
-			$db->query($req_etat);
-			if($db->next_record()){
-				$etat = $db->f("parm_valeur_texte");
+			$stmt = $pdo->query($req_etat);
+			if($result = $stmt->fetch()){
+				$etat = $result['parm_valeur_texte'];
 			}
     	}
     }
@@ -78,25 +78,25 @@ if(isset($_GET['methode'])){
 			}
 			// CONTROLE: FAMILIER
 			$req = "select perso_type_perso from perso where perso_cod = $perso_cod ";
-			$db->query($req);
-			$db->next_record();
-			if ($db->f("perso_type_perso") == 3)
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			if ($result['perso_type_perso'] == 3)
 			{
 				echo "<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>";
 				$erreur = 1;
 			}
 			// CONTROLE: ARGENT DISPONIBLE
             $req_or = "select perso_po,perso_pa from perso where perso_cod = $perso_cod ";
-            $db->query($req_or);
-            $db->next_record();
-            $nb_or = $db->f("perso_po");
+            $stmt = $pdo->query($req_or);
+            $result = $stmt->fetch();
+            $nb_or = $result['perso_po'];
             if ($nb_or < $cout)
             {
                $erreur = 1;
                echo "<p>Vous n'avez pas assez d'argent dans votre bourse</p>";
             } 
       // CONTROLE: PA DISPONIBLE                 
-            $nb_pa = $db->f("perso_pa");
+            $nb_pa = $result['perso_pa'];
             if ($nb_pa < $cout_pa)
             {
                $erreur = 1;
@@ -106,12 +106,12 @@ if(isset($_GET['methode'])){
            	if($erreur == 0){
            		 // RETRAIT DE LA SOMME
            		$req_or = "update perso set perso_po = perso_po - $cout where perso_cod = $perso_cod ";
-            	$db->query($req_or);
+            	$stmt = $pdo->query($req_or);
             	echo "<p>Vous payez $cout Br pour passer.</p>";
 				$req_deplace = "select passage($perso_cod) as deplace";
-				$db->query($req_deplace);
-				$db->next_record();
-				$result = explode("#",$db->f("deplace"));
+				$stmt = $pdo->query($req_deplace);
+				$result = $stmt->fetch();
+				$result = explode("#",$result['deplace']);
 				echo $result[0];
 				echo "<br>";
 				if ($result[1] == 0)
@@ -131,9 +131,9 @@ if(isset($_GET['methode'])){
 						else
 						{
 							$req = "select choix_rumeur() as rumeur ";
-							$db->query($req);
-							$db->next_record();
-							echo "<p><em>Rumeur :</em> ", $db->f("rumeur"), "<br></p>";
+							$stmt = $pdo->query($req);
+							$result = $stmt->fetch();
+							echo "<p><em>Rumeur :</em> ", $result['rumeur'], "<br></p>";
 						}
 					}
 				}
@@ -148,18 +148,18 @@ if(isset($_GET['methode'])){
 			}
 			/* On se déplace */
 			$req = "select perso_type_perso from perso where perso_cod = $perso_cod ";
-			$db->query($req);
-			$db->next_record();
-			if ($db->f("perso_type_perso") == 3)
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			if ($result['perso_type_perso'] == 3)
 			{
 				echo "<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>";
 				$erreur = 1;
 			}
 			if($erreur == 0){
 				$req_deplace = "select passage($perso_cod) as deplace";
-				$db->query($req_deplace);
-				$db->next_record();
-				$result = explode("#",$db->f("deplace"));
+				$stmt = $pdo->query($req_deplace);
+				$result = $stmt->fetch();
+				$result = explode("#",$result['deplace']);
 				echo $result[0];
 				echo "<br>";
 				if ($result[1] == 0)
@@ -179,9 +179,9 @@ if(isset($_GET['methode'])){
 						else
 						{
 							$req = "select choix_rumeur() as rumeur ";
-							$db->query($req);
-							$db->next_record();
-							echo "<p><em>Rumeur :</em> ", $db->f("rumeur"), "<br></p>";
+							$stmt = $pdo->query($req);
+							$result = $stmt->fetch();
+							echo "<p><em>Rumeur :</em> ", $result['rumeur'], "<br></p>";
 						}
 					}
 				}

@@ -12,16 +12,16 @@ if (!isset($num_etage) || $num_etage === '')
 	$req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
 	$req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
 	$req_etage = $req_etage . "and pos_etage = etage_numero ";
-	$db->query($req_etage);
-	$db->next_record();
-	$etage = $db->f("etage_affichage");
+	$stmt = $pdo->query($req_etage);
+	$result = $stmt->fetch();
+	$etage = $result['etage_affichage'];
 }
 else
 {
 	$req_etage = "select etage_affichage from etage where etage_numero = $num_etage ";
-	$db->query($req_etage);
-	$db->next_record();
-	$etage = $db->f("etage_affichage");
+	$stmt = $pdo->query($req_etage);
+	$result = $stmt->fetch();
+	$etage = $result['etage_affichage'];
 }
 ?>
 
@@ -39,11 +39,11 @@ else
 
 // FOND DE LA CASE
 $req_styles = "select distinct pos_type_aff from positions where pos_etage = $num_etage";
-$db->query($req_styles);
+$stmt = $pdo->query($req_styles);
 $arr_styles = array();
-while($db->next_record())
+while($result = $stmt->fetch())
 {
-	$cpt = $db->f('pos_type_aff');
+	$cpt = $result['pos_type_aff'];
 	echo "td.v$cpt{
 	background: url('" . G_IMAGES . "f_" , $etage, "_" , $cpt, ".png');
 }";
@@ -51,10 +51,10 @@ while($db->next_record())
 
 // LIEUX
 $req_styles = "select distinct tlieu_cod from lieu_type";
-$db->query($req_styles);
-while ($db->next_record())
+$stmt = $pdo->query($req_styles);
+while ($result = $stmt->fetch())
 {
-	$cpt = $db->f('tlieu_cod');
+	$cpt = $result['tlieu_cod'];
 	echo ".lieu$cpt{
 	background:url('" . G_IMAGES . "t_" , $cpt, "_lie.png');
 }";
@@ -64,10 +64,10 @@ while ($db->next_record())
 $req_styles = "select distinct pos_decor from positions where pos_etage = $num_etage
 	UNION
 	select distinct pos_decor_dessus from positions where pos_etage = $num_etage";
-$db->query($req_styles);
-while ($db->next_record())
+$stmt = $pdo->query($req_styles);
+while ($result = $stmt->fetch())
 {
-	$cpt = $db->f('pos_decor');
+	$cpt = $result['pos_decor'];
 	echo ".decor$cpt{
 	background:url('" . $type_flux.G_URL . "images/dec_" , $cpt, ".gif');
 }";
@@ -90,10 +90,10 @@ echo ".objet{
 $req_styles = "select distinct mur_type from murs
 	inner join positions on pos_cod = mur_pos_cod
 	where pos_etage = $num_etage";
-$db->query($req_styles);
-while ($db->next_record())
+$stmt = $pdo->query($req_styles);
+while ($result = $stmt->fetch())
 {
-	$cpt = $db->f('mur_type');
+	$cpt = $result['mur_type'];
 	echo ".mur_$cpt{
 	background: url('" . G_IMAGES . "t_" , $etage, "_mur_" , $cpt, ".png');
 	visibility: visible;

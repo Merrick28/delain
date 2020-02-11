@@ -3,10 +3,10 @@ $param = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences
 	where pcomp_perso_cod = $perso_cod
 		and pcomp_pcomp_cod in (97,100,101)";
-$db->query($req_comp);
-if($db->next_record())
+$stmt = $pdo->query($req_comp);
+if($result = $stmt->fetch())
 {
-	$niveau = $db->f("pcomp_pcomp_cod");
+	$niveau = $result['pcomp_pcomp_cod'];
 	if ($niveau == 100 or $niveau == 101)
 	{
 		$pa = $param->getparm(107);
@@ -65,8 +65,8 @@ if($db->next_record())
 					and ppos_pos_cod = pos_cod
 					and ingrpos_pos_cod = pos_cod
 					and gobj_cod = ingrpos_gobj_cod";
-			$db->query($req_position);
-			if($db->nf() == 0)
+			$stmt = $pdo->query($req_position);
+			if($stmt->rowCount() == 0)
 			{
 				$contenu_page .= 'Votre position ne semble pas vraiment constituer un lieu idéal pour récolter des composants.<br>';
 				break;
@@ -74,7 +74,7 @@ if($db->next_record())
 
 			else
 			{
-				while($db->next_record())
+				while($result = $stmt->fetch())
 				{
 					$contenu_page .= '<br>Votre recherche pourrait s’avérer fructueuse ! Ce lieu est propice à la découverte de composants. Mais quelqu’un aura peut-être déjà fait sa propre récolte en ces lieux ...<br>';
 				}
@@ -84,9 +84,9 @@ if($db->next_record())
 
 		case "detecter2":
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$db->query($req_pa);
-			$db->next_record();
-			if ($db->f("perso_pa") < $pa)
+			$stmt = $pdo->query($req_pa);
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < $pa)
 			{
 				$contenu_page .= 'Vous n’avez pas assez de PA !';
 				break;
@@ -95,7 +95,7 @@ if($db->next_record())
 			{
 				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa,
 					perso_renommee_artisanat = perso_renommee_artisanat + 0.1 where perso_cod = $perso_cod";
-				$db->query($req_enl_pa);
+				$stmt = $pdo->query($req_enl_pa);
 			}
 			$contenu_page .= '<p>Vous observez ce qui pourrait se cacher dans les alentours</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
@@ -104,11 +104,11 @@ if($db->next_record())
 				from perso_position,positions
 				where ppos_perso_cod = $perso_cod
 					and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$perso_pos_x = $db->f("pos_x");
-			$perso_pos_y = $db->f("pos_y");
-			$perso_pos_etage = $db->f("pos_etage");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$perso_pos_x = $result['pos_x'];
+			$perso_pos_y = $result['pos_y'];
+			$perso_pos_etage = $result['pos_etage'];
 			$contenu_page .= '<br><br>Table de description des composants présents :<br>
 				<table border="1">
 				<tr>
@@ -150,10 +150,10 @@ if($db->next_record())
 				from perso_position,positions
 				where ppos_perso_cod = $perso_cod
 					and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$position_x = $db->f("pos_x");
-			$position_y = $db->f("pos_y");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$position_x = $result['pos_x'];
+			$position_y = $result['pos_y'];
 			for ($y=-2; $y<4; $y++)
 			{
 				$contenu_page .= '<TR>';
@@ -170,17 +170,17 @@ if($db->next_record())
 							where pos_etage = $perso_pos_etage
 								and pos_x = $position_x + $x
 								and pos_y = $position_y - $y";
-						$db->query($req_position);
+						$stmt = $pdo->query($req_position);
 						$positionExistante = false;
 						// on vérifie l'existence de la postion dans l'étage
-						if ($db->next_record())
+						if($result = $stmt->fetch())
 						{
 							// nextRecord renvoie true la position existe
-							$position = $db->f("pos_cod");
-							$db2 = new base_delain;
+							$position = $result['pos_cod'];
+							
 							$req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea from ingredient_position where ingrpos_pos_cod = $position";
-							$db2->query($req_ingredient);
-							$nbCouleurs = $db2->nf();
+							$stmt2 = $pdo->query($req_ingredient);
+							$nbCouleurs = $stmt2->rowCount();
 							$positionExistante = true;
 						}
 						else
@@ -233,14 +233,14 @@ if($db->next_record())
 								$color = "#FFFFFF";
 								
 								$req_murs = "select mur_creusable from murs where mur_pos_cod = $position";
-								$db3 = new base_delain;
-								$db3->query($req_murs);
-								if ($db3->next_record())
+								
+								$stmt3 = $pdo->query($req_murs);
+								if ($result3 = $stmt3->fetch())
 								{
-									if($db3->f("mur_creusable") == 'O')
+									if($result3['mur_creusable'] == 'O')
 										$color = "#000000";
 
-									if($db3->f("mur_creusable") == 'N')
+									if($result3['mur_creusable'] == 'N')
 										$color = "#000000";
 								}
 							} else
@@ -254,9 +254,9 @@ if($db->next_record())
 						{
 							$ingredientsArray = array();
 							$i = 0;
-							while ($db2->next_record())
+							while ($result2 = $stmt2->fetch())
 							{
-								$ingredientsArray[$i] = $db2->f("ingrpos_gobj_cod");
+								$ingredientsArray[$i] = $result2['ingrpos_gobj_cod'];
 								$i = ++$i;
 							}
 
@@ -291,9 +291,9 @@ if($db->next_record())
 
 		case "detecter3":
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$db->query($req_pa);
-			$db->next_record();
-			if ($db->f("perso_pa") < 8)
+			$stmt = $pdo->query($req_pa);
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < 8)
 			{
 					$contenu_page .= 'Vous n’avez pas assez de PA !';
 					break;
@@ -302,7 +302,7 @@ if($db->next_record())
 			{
 				$req_enl_pa = "update perso set perso_pa = perso_pa - 8,
 				perso_renommee_artisanat = perso_renommee_artisanat + 0.1 where perso_cod = $perso_cod";
-				$db->query($req_enl_pa);		
+				$stmt = $pdo->query($req_enl_pa);		
 			}
 			$contenu_page .= '<p>Vous observez ce qui pourrait se cacher dans les alentours</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
@@ -311,11 +311,11 @@ if($db->next_record())
 				from perso_position,positions
 				where ppos_perso_cod = $perso_cod
 					and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$perso_pos_x = $db->f("pos_x");
-			$perso_pos_y = $db->f("pos_y");
-			$perso_pos_etage = $db->f("pos_etage");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$perso_pos_x = $result['pos_x'];
+			$perso_pos_y = $result['pos_y'];
+			$perso_pos_etage = $result['pos_etage'];
 			$contenu_page .= '<br><br>Table de description des composants présents :<br>
 				<table border="1">
 				<tr>
@@ -357,10 +357,10 @@ if($db->next_record())
 				from perso_position,positions
 				where ppos_perso_cod = $perso_cod
 					and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$position_x = $db->f("pos_x");
-			$position_y = $db->f("pos_y");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$position_x = $result['pos_x'];
+			$position_y = $result['pos_y'];
 			for ($y=-3; $y<4; $y++)
 			{
 				$contenu_page .= '<TR>';
@@ -377,19 +377,19 @@ if($db->next_record())
 							where pos_etage = $perso_pos_etage
 								and pos_x = $position_x + $x
 								and pos_y = $position_y - $y";
-						$db->query($req_position);
+						$stmt = $pdo->query($req_position);
 						$positionExistante = false;
 
 						// on vérifie l'existence de la postion dans l'étage
-						if ($db->next_record())
+						if($result = $stmt->fetch())
 						{
-							$position = $db->f("pos_cod");
-							$db2 = new base_delain;
+							$position = $result['pos_cod'];
+							
 							$req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea from ingredient_position
 								where ingrpos_pos_cod = $position";
-							$db2->query($req_ingredient);
-							$nbCouleurs = $db2->nf();
-							$ingredients = $db2->f("ingrpos_gobj_cod");
+							$stmt2 = $pdo->query($req_ingredient);
+							$nbCouleurs = $stmt2->rowCount();
+							$ingredients = $result2['ingrpos_gobj_cod'];
 							$positionExistante = true;
 						} else
 							// nexrecord renvoie false, on affiche un mur noir
@@ -423,14 +423,14 @@ if($db->next_record())
 						{
 							if ($positionExistante) {
 								$req_murs = "select mur_creusable from murs where mur_pos_cod = $position";
-								$db3 = new base_delain;
-								$db3->query($req_murs);
-								$db3->next_record();
+								
+								$stmt3 = $pdo->query($req_murs);
+								$result3 = $stmt3->fetch();
 								$color = "#FFFFFF";
-								if($db3->f("mur_creusable") == 'O'){
+								if($result3['mur_creusable'] == 'O'){
 									$color = "#000000";
 								}
-								if($db3->f("mur_creusable") == 'N'){
+								if($result3['mur_creusable'] == 'N'){
 									$color = "#000000";
 								}
 								$contenu_page .= '<td width="20" height="20" ><div style="width:25px;height:25px;background:'. $color .';"> '. $image .'</div></td>';
@@ -442,9 +442,9 @@ if($db->next_record())
 						{
 							$ingredientsArray = array();
 							$i = 0;
-							while ($db2->next_record())
+							while ($result2 = $stmt2->fetch())
 							{
-								$ingredientsArray[$i] = $db2->f("ingrpos_gobj_cod");
+								$ingredientsArray[$i] = $result2['ingrpos_gobj_cod'];
 								$i = ++$i;
 							}
 

@@ -8,7 +8,7 @@ if(!isset($db))
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
-$db = new base_delain;
+
 if (!$db->is_lieu($perso_cod))
 {
 	echo("<p>Erreur ! Vous n'êtes pas sur un poste d'entrée !!!");

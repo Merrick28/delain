@@ -40,15 +40,15 @@ switch($detail)
 			and emsg_perso_cod = perso_cod ';
 
 		// calcul pour pages
-		$db->query($req_total);
-		$db->next_record();
-		$nb_total = $db->f('nb_msg');
+		$stmt = $pdo->query($req_total);
+		$result = $stmt->fetch();
+		$nb_total = $result['nb_msg'];
 		$nb_pages = ceil($nb_total/$nb_messages_page);
 		$page_en_cours = ($msg_start/$nb_messages_page) + 1;
 		// fin calcul pour pages
 
 
-		$db->query($req_messages);
+		$stmt = $pdo->query($req_messages);
 		$contenu_page .= '
 		<form name="message" method="post" action="messagerie2.php">
 		<input type="hidden" name="methode">
@@ -63,19 +63,19 @@ switch($detail)
 		<td width="20"></td>
 		</tr>';
 		$cpt=0;
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
 			$contenu_page .= '<tr>';
-			$contenu_page .= '<td  class="soustitre2">' . $db->f("date_mes") . '</td>';
-			$contenu_page .= '<td  style="width:100px;" nowrap class="soustitre2"><a href="visu_desc_perso.php?visu=' . $db->f("emsg_perso_cod") . '">' . $db->f("perso_nom") . '</a></td>';
+			$contenu_page .= '<td  class="soustitre2">' . $result['date_mes'] . '</td>';
+			$contenu_page .= '<td  style="width:100px;" nowrap class="soustitre2"><a href="visu_desc_perso.php?visu=' . $result['emsg_perso_cod'] . '">' . $result['perso_nom'] . '</a></td>';
 			$contenu_page .= '<td><div style="white-space:nowrap;">';
-			if ($db->f("dmsg_lu") == "N")
+			if ($result['dmsg_lu'] == "N")
 			{
 				$contenu_page .= '<strong>';
 			}
 
-			$contenu_page .= '<a  href="messagerie2.php?m=0&fil=' . $db->f('msg_init') . '">' . str_replace(chr(127), ';', $db->f("msg_titre")) . ' (' . $db->f('nb_fil') . ')</a>';
-			if ($db->f("dmsg_lu") == "N")
+			$contenu_page .= '<a  href="messagerie2.php?m=0&fil=' . $result['msg_init'] . '">' . str_replace(chr(127), ';', $result['msg_titre']) . ' (' . $result['nb_fil'] . ')</a>';
+			if ($result['dmsg_lu'] == "N")
 			{
 				$contenu_page .= '</strong>';
 			}

@@ -24,7 +24,7 @@ $req_evt = "select c1.compt_nom as ancien_nom, c1.compt_cod as ancien_cod, coale
 	order by multi_cod desc 
 	limit 40 
 	offset $evt_start";
-$db->query($req_evt);
+$stmt = $pdo->query($req_evt);
 ?>
     <table cellspacing="2">
         <tr>
@@ -44,21 +44,21 @@ $db->query($req_evt);
         <form name="visu_evt" method="post" action="multi_trace.php">
             <input type="hidden" name="visu">
             <?php
-            while ($db->next_record()) {
-                $compte1 = $db->f("ancien_cod");
-                $compte2 = $db->f("nouveau_cod");
-                $compte1_nom = $db->f("ancien_nom");
-                $compte2_nom = $db->f("nouveau_nom");
-                $compteLie1_nom = $db->f("lie1_nom");
-                $compteLie2_nom = $db->f("lie2_nom");
+            while ($result = $stmt->fetch()) {
+                $compte1 = $result['ancien_cod'];
+                $compte2 = $result['nouveau_cod'];
+                $compte1_nom = $result['ancien_nom'];
+                $compte2_nom = $result['nouveau_nom'];
+                $compteLie1_nom = $result['lie1_nom'];
+                $compteLie2_nom = $result['lie2_nom'];
                 echo "<tr>";
-                echo "<td class=\"soustitre3\"><p>" . $db->f("date") . "</p></td>";
+                echo "<td class=\"soustitre3\"><p>" . $result['date'] . "</p></td>";
                 echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=$compte1\">$compte1_nom</A></p></td>";
                 echo "<td class=\"soustitre3\"><p><strong>$compteLie1_nom</strong></p></td>";
                 echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=$compte2\">$compte2_nom</A></p></td>";
                 echo "<td class=\"soustitre3\"><p><strong>$compteLie2_nom</strong></p></td>";
 
-                $ip = $db->f("multi_ip");
+                $ip = $result['multi_ip'];
                 echo "<td class=\"soustitre3\"><p>" . $ip . "</td>";
                 echo "<td class=\"soustitre3\"><p>" . gethostbyaddr($ip) . "</p></td>";
 

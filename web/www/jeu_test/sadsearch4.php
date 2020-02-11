@@ -6,7 +6,7 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/xml");
 include "classes.php";
-$db2 = new base_delain;
+
 if (!empty($_REQUEST["foo"]))
 {
     $foo = 1 * $_REQUEST["foo"];              // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
@@ -20,15 +20,15 @@ if (!empty($_REQUEST["foo"]))
 								and pcomp_pcomp_cod in (91,92,93)
 								and pcomp_pcomp_cod = frm_comp_cod
 								and pcomp_perso_cod = " . $perso_cod;
-    $db2->query($req);
-    $xml = "<resultats nb=\"" . $db2->nf() . "\">";
+    $stmt2 = $pdo->query($req);
+    $xml = "<resultats nb=\"" . $stmt2->rowCount() . "\">";
     $xml .= "<select name='formule'>";
-    if ($db2->nf() != 0)
+    if ($stmt2->rowCount() != 0)
     {
         /*$xml .= '<resultat titre="valeur=\'0\' title=\'Sélectionner le résultat désiré\' "/>';*/
-        while ($db2->next_record())
+        while ($result2 = $stmt2->fetch())
         {
-            $xml .= '<resultat titre="' . $db2->f('frm_nom') . '" valeur="' . $db2->f('frmpr_gobj_cod') . '" />';
+            $xml .= '<resultat titre="' . $result2['frm_nom'] . '" valeur="' . $result2['frmpr_gobj_cod'] . '" />';
         }
     } else
     {

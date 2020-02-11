@@ -10,8 +10,8 @@ if (!isset($included) || !$included) {
 <script type="text/javascript" src="../scripts/onglets.js"></script>
 <script type="text/javascript" src="../scripts/pop-in.js"></script>
 <div id='informations_case' class='bordiv' style='width:300px; padding:5px; display:none; position:absolute;'></div>
-<?php $db2 = new base_delain;
-$db3 = new base_delain;
+<?php 
+
 
 
 $droit_modif = 'dcompt_modif_perso';
@@ -24,12 +24,12 @@ if ($erreur == 0) {
         . "from perso_position,positions "
         . "where ppos_perso_cod = $perso_cod"
         . "and ppos_pos_cod = pos_cod ";
-    $db->query($req_matos);
-    $db->next_record();
-    $perso_pos_x = $db->f("pos_x");
-    $perso_pos_y = $db->f("pos_y");
-    $perso_pos_etage = $db->f("pos_etage");
-    $perso_pos_cod = $db->f("pos_cod");
+    $stmt = $pdo->query($req_matos);
+    $result = $stmt->fetch();
+    $perso_pos_x = $result['pos_x'];
+    $perso_pos_y = $result['pos_y'];
+    $perso_pos_etage = $result['pos_etage'];
+    $perso_pos_cod = $result['pos_cod'];
     ?>
     <p> Visualisation des fonctions d’arrivée (pièges, cachettes ...)</p>
     <hr>
@@ -86,12 +86,12 @@ if ($erreur == 0) {
 //." and pos_y > $perso_pos_y-10 and pos_y < $perso_pos_y+10"
                 . " pos_etage = $sel_etage"
                 . " order by pos_y desc,pos_x asc";
-            $db->query($req_murs);
-            while ($db->next_record()){
+            $stmt = $pdo->query($req_murs);
+            while ($result = $stmt->fetch()){
             if (!isset($p_y)) {
-                $p_y = $db->f("pos_y");
+                $p_y = $result['pos_y'];
             }
-            if ($db->f("pos_y") != $p_y){
+            if ($result['pos_y'] != $p_y){
             ?>
         </tr>
         <tr>
@@ -103,64 +103,64 @@ if ($erreur == 0) {
             $presence_texte = '';
             $texte = '';
             $comment = '';
-            $lien_px = "&pos_x=" . $db->f('pos_x');
-            $lien_py = "&pos_y=" . $db->f('pos_y');
-            $lien_pe = "&pos_e=" . $db->f('pos_etage');
+            $lien_px = "&pos_x=" . $result['pos_x'];
+            $lien_py = "&pos_y=" . $result['pos_y'];
+            $lien_pe = "&pos_e=" . $result['pos_etage'];
             $lien_piege = "<a href=admin_piege.php?methode=cre&mode=popup" . $lien_py . $lien_px . $lien_pe . " target=_blank>Créer un piège sur cette case</a>";
             $lien_cachette = "<a href=admin_cachette.php?methode=cre&mode=popup" . $lien_py . $lien_px . $lien_pe . " target=_blank>Créer une cachette sur cette case</a>";
             $lien_fontaine = "<a href=admin_fontaine.php?methode=cre&mode=popup" . $lien_py . $lien_px . $lien_pe . " target=_blank>Créer une fontaine de jouvence sur cette case</a>";
             $onclick = "onClick=\"changeInfo(document.getElementById('informations_case'), '$lien_piege<br>$lien_cachette<br>$lien_fontaine<br>')\"";
 
-            if (substr($db->f("pos_fonction_arrivee"), 0, 17) == 'decouvre_cachette') {
+            if (substr($result['pos_fonction_arrivee'], 0, 17) == 'decouvre_cachette') {
                 $color = '#FFCCFF';
                 $cachette = 'O';
                 $presence_texte = 'O';
-                $req2 = 'select cache_cod from cachettes where cache_pos_cod = ' . $db->f("pos_cod");
-                $db2->query($req2);
-                $db2->next_record();
-                $cache_cod = $db2->f("cache_cod");
+                $req2 = 'select cache_cod from cachettes where cache_pos_cod = ' . $result['pos_cod'];
+                $stmt2 = $pdo->query($req2);
+                $result2 = $stmt2->fetch();
+                $cache_cod = $result2['cache_cod'];
                 $onclick = "onClick=\"window.open('admin_cachette.php?cache_cod=" . $cache_cod . "&methode=update_cache&mode=popup','','fullscreen,scrollbars');return(false)\"";
             }
-            if (substr($db->f("pos_fonction_arrivee"), 0, 11) == 'piege_param') {
+            if (substr($result['pos_fonction_arrivee'], 0, 11) == 'piege_param') {
                 $color = '#663399';
                 $piege = 'O';
                 $presence_texte = 'O';
-                $onclick = "onClick=\"window.open('admin_piege.php?pos_cod=" . $db->f("pos_cod") . "&methode=mod&mode=popup','','fullscreen,scrollbars');return(false)\"";
+                $onclick = "onClick=\"window.open('admin_piege.php?pos_cod=" . $result['pos_cod'] . "&methode=mod&mode=popup','','fullscreen,scrollbars');return(false)\"";
             }
-            if (substr($db->f("pos_fonction_arrivee"), 0, 16) == 'deplace_fontaine') {
+            if (substr($result['pos_fonction_arrivee'], 0, 16) == 'deplace_fontaine') {
                 $color = '#FFFF99';
                 $fontaine = 'O';
                 $presence_texte = 'O';
-                $onclick = "onClick=\"window.open('admin_fontaine.php?pos_cod=" . $db->f("pos_cod") . "&methode=mod&mode=popup','','fullscreen,scrollbars');return(false)\"";
+                $onclick = "onClick=\"window.open('admin_fontaine.php?pos_cod=" . $result['pos_cod'] . "&methode=mod&mode=popup','','fullscreen,scrollbars');return(false)\"";
             }
-            if ($db->f("mur_creusable") == 'O') {
+            if ($result['mur_creusable'] == 'O') {
                 $color = "#00FF00";
                 $presence_texte = 'O';
             }
-            if ($db->f("mur_creusable") == 'N') {
+            if ($result['mur_creusable'] == 'N') {
                 $color = "#FF0000";
             }
-            if ($db->f("mur_creusable") == 'O' and $cachette == 'O') {
+            if ($result['mur_creusable'] == 'O' and $cachette == 'O') {
                 $color = "#C0C0C0";
                 $presence_texte = 'O';
             }
-            if ($db->f("mur_creusable") == 'O' and $piege == 'O') {
+            if ($result['mur_creusable'] == 'O' and $piege == 'O') {
                 $color = "#FFCC00";
                 $presence_texte = 'O';
             }
             if ($presence_texte == 'O') {
-                $texte = 'X:' . $db->f("pos_x") . ' Y:' . $db->f("pos_y");
+                $texte = 'X:' . $result['pos_x'] . ' Y:' . $result['pos_y'];
             }
             ?>
 
             <td width="20" height="20">
-                <div id="pos_<?php echo $db->f("pos_cod"); ?>"
+                <div id="pos_<?php echo $result['pos_cod']; ?>"
                      style="width:25px;height:25px;background:<?php echo $color ?>;" <?php echo $onclick ?>><span
                             style="font-size:10px;"><?php echo $texte; ?></span></div>
             </td>
             <?php
 
-            $p_y = $db->f("pos_y");
+            $p_y = $result['pos_y'];
             }
             ?>
         </tr>

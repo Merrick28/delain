@@ -98,11 +98,11 @@ switch($methode)
 		$req = $req . "and perso_cod = pcompt_perso_cod ";
 		$req = $req . "and pcompt_compt_cod = compt_cod ";
 		$req = $req . "order by perso_cod";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		echo "<select name=\"num_perso\">" ;
-		while ($db->next_record())
+		while ($result = $stmt->fetch())
 		{
-			echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_cod") . "-" . $db->f("perso_nom") . " [" . $db->f("compt_nom") . "]</option>";
+			echo "<option value=\"" . $result['perso_cod'] . "\">" . $result['perso_cod'] . "-" . $result['perso_nom'] . " [" . $result['compt_nom'] . "]</option>";
 		}
 		echo "</select>";
 		echo "<input type=\"submit\" value=\"Voir !\" class=\"test\">";

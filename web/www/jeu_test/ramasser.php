@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$db2 = new base_delain;
+
 ob_start();
 if (!isset($methode))
 {
@@ -53,9 +53,9 @@ switch($methode)
 		$req_info_joueur = $req_info_joueur . "where perso_cod = $perso_cod ";
 		$req_info_joueur = $req_info_joueur . "and ppos_perso_cod = perso_cod ";
 		$req_info_joueur = $req_info_joueur . "and ppos_pos_cod = pos_cod";
-		$db->query($req_info_joueur);
-		$db->next_record();
-		$position = $db->f("pos_cod");
+		$stmt = $pdo->query($req_info_joueur);
+		$result = $stmt->fetch();
+		$position = $result['pos_cod'];
 		
 		?>
 		<tr><td colspan="3" class="soustitre"><span class="soustitre">Ramasser des objets</span></td></tr>
@@ -73,7 +73,7 @@ switch($methode)
 		$req_vue_joueur = $req_vue_joueur . "and obj_gobj_cod = gobj_cod ";
 		$req_vue_joueur = $req_vue_joueur . "and gobj_tobj_cod = tobj_cod ";
 		$req_vue_joueur = $req_vue_joueur . "order by tobj_libelle, obj_nom_generique, obj_cod ";
-		$db->query($req_vue_joueur);
+		$stmt = $pdo->query($req_vue_joueur);
 		
 		// on affiche la ligne d'en tête objets
 		?>
@@ -83,26 +83,26 @@ switch($methode)
 		<td class="soustitre2"><strong>Type objet</strong></td>
 		</tr>
 		<?php 
-		if ($db->nf() != 0)
+		if ($stmt->rowCount() != 0)
 		{
 			
 			$nb_objets = 1;
 			// on boucle sur les joueurs "visibles"
-			while ($db->next_record())
+			while ($result = $stmt->fetch())
 			{
 				echo("<tr>");
-				echo "<td><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $db->f("obj_cod") . "]\" value=\"0\" id=\"" . $db->f("obj_cod") . "\" onchange=\"cocheDecoche(this.checked);\"></td>";
-				$objet = $db->f("obj_cod");
+				echo "<td><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\" id=\"" . $result['obj_cod'] . "\" onchange=\"cocheDecoche(this.checked);\"></td>";
+				$objet = $result['obj_cod'];
 				$identifie = $db2->is_identifie_objet($perso_cod,$objet);
 				if ($identifie)
 				{
-					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><strong>" . $db->f("obj_nom"). "</strong></label></td>";
+					echo "<td class=\"soustitre2\"><label for=\"" . $result['obj_cod'] . "\"><strong>" . $result['obj_nom']. "</strong></label></td>";
 				}
 				else
 				{
-					echo "<td class=\"soustitre2\"><label for=\"" . $db->f("obj_cod") . "\"><strong>" . $db->f("obj_nom_generique"). "</strong></label></td>";
+					echo "<td class=\"soustitre2\"><label for=\"" . $result['obj_cod'] . "\"><strong>" . $result['obj_nom_generique']. "</strong></label></td>";
 				}
-				echo "<td>" . $db->f("tobj_libelle") . "</td>";
+				echo "<td>" . $result['tobj_libelle'] . "</td>";
 				
 				echo "</tr>";
 			}
@@ -115,16 +115,16 @@ switch($methode)
 		$req_vue_joueur = "select por_qte,por_cod ";
 		$req_vue_joueur = $req_vue_joueur . "from or_position ";
 		$req_vue_joueur = $req_vue_joueur . "where por_pos_cod = $position ";
-		$db->query($req_vue_joueur);
-		if ($db->nf() != 0)
+		$stmt = $pdo->query($req_vue_joueur);
+		if ($stmt->rowCount() != 0)
 		{
 			$nb_objets = 1;
 			// on boucle sur les joueurs "visibles"
-			while ($db->next_record())
+			while ($result = $stmt->fetch())
 			{
 				echo "<tr>";
-				echo "<td><input type=\"checkbox\" class=\"vide\" name=\"br[" . $db->f("por_cod") . "]\" value=\"0\" id=\"" . $db->f("por_cod") . "\"  onchange='cocheDecoche(this.checked)'></td>";
-				echo "<td class=\"soustitre2\" colspan=\"2\"><label for=\"" . $db->f("por_cod") . "\"><strong>" . $db->f("por_qte") . " brouzoufs</strong></label></td>";
+				echo "<td><input type=\"checkbox\" class=\"vide\" name=\"br[" . $result['por_cod'] . "]\" value=\"0\" id=\"" . $result['por_cod'] . "\"  onchange='cocheDecoche(this.checked)'></td>";
+				echo "<td class=\"soustitre2\" colspan=\"2\"><label for=\"" . $result['por_cod'] . "\"><strong>" . $result['por_qte'] . " brouzoufs</strong></label></td>";
 				
 				echo "</tr>";
 			}
@@ -139,9 +139,9 @@ switch($methode)
 		break;
 	case "suite":
 		$req = "select perso_pa from perso where perso_cod = $perso_cod ";
-		$db->query($req);
-		$db->next_record();
-		$pa = $db->f("perso_pa");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$pa = $result['perso_pa'];
 		$erreur = 0;
 		$total = 0;
 		if (isset($objet))
@@ -170,9 +170,9 @@ switch($methode)
 				foreach($objet as $key=>$val)
 				{
 					$req_ramasser = "select ramasse_objet($perso_cod,$key) as resultat";
-					$db->query($req_ramasser);
-					$db->next_record();
-					echo $db->f("resultat");
+					$stmt = $pdo->query($req_ramasser);
+					$result = $stmt->fetch();
+					echo $result['resultat'];
 				}
 			}
 			if (isset($br))
@@ -180,9 +180,9 @@ switch($methode)
 				foreach($br as $key=>$val)
 				{
 					$req_ramasser = "select ramasse_or($perso_cod,$key) as resultat";
-					$db->query($req_ramasser);
-					$db->next_record();
-					echo $db->f("resultat");
+					$stmt = $pdo->query($req_ramasser);
+					$result = $stmt->fetch();
+					echo $result['resultat'];
 				}
 			}
 		}			

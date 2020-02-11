@@ -9,20 +9,20 @@
 	<tr>
 	<td>
 	<?php 
-	$db = new base_delain;
+	
 	$req = "select compt_nom, dcompt_etage,dcompt_monstre_carte,dcompt_modif_perso from compte, compt_droit where compt_cod = dcompt_compt_cod and dcompt_compt_cod = $compt_cod ";
-	$db->query($req);
-	if ($db->nf() == 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() == 0)
 	{
 		die("Erreur sur les etages possibles !");
 	}
 	else
 	{
-		$db->next_record();
-		$droit['etage'] = $db->f("dcompt_etage");
-		$monstre_carte = $db->f("dcompt_monstre_carte");
-		$modif_perso = $db->f("dcompt_modif_perso");
-		$compt_nom = $db->f("compt_nom");
+		$result = $stmt->fetch();
+		$droit['etage'] = $result['dcompt_etage'];
+		$monstre_carte = $result['dcompt_monstre_carte'];
+		$modif_perso = $result['dcompt_modif_perso'];
+		$compt_nom = $result['compt_nom'];
 	}
 	if ($droit['etage'] == 'A')
 	{
@@ -41,10 +41,10 @@
 		$req = "select ppos_pos_cod, pos_etage from perso_position
 			inner join positions on pos_cod = ppos_pos_cod
 			where ppos_perso_cod = $perso_cod ";
-		$db->query($req);
-		$db->next_record();
-		$pos_actu = $db->f("ppos_pos_cod");
-		$pos_actu_etage = $db->f("pos_etage");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$pos_actu = $result['ppos_pos_cod'];
+		$pos_actu_etage = $result['pos_etage'];
 		echo " - <a href=\"$chemin/login_monstre_case.php?position=" , $pos_actu , "\">Monstres sur la même case</a>";
 	}
     echo "<br /><form action='$chemin/../validation_login_monstre.php' method='GET'>
@@ -77,8 +77,8 @@
 			" . $restrict2 ."	group by perso_nom, perso_cod, perso_actif, pos_x, pos_y, etage_libelle, compt_nom
 		having count(dmsg_cod) >= 1
 		order by compt_nom asc";
-	$db->query($req);
-	if ($db->nf() == 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() == 0)
 	{
 		echo "Pas de messages en attente !";
 	}
@@ -86,25 +86,25 @@
 	{
 		echo "Messages en attente : ";
 		$prec_admin = 'aucun';
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
-			if ($db->f("compt_nom") != $prec_admin) {
+			if ($result['compt_nom'] != $prec_admin) {
 				$style = "";
-				if ($compt_nom == $db->f("compt_nom"))
+				if ($compt_nom == $result['compt_nom'])
 				{
 					$style = ' style="background: red;"';
 				}
-				if ($db->f("compt_nom") != '') {
-  				echo "<br><br><strong $style> - Attribué à " , $db->f("compt_nom") , "</strong>";
+				if ($result['compt_nom'] != '') {
+  				echo "<br><br><strong $style> - Attribué à " , $result['compt_nom'] , "</strong>";
   			}
   			else {
   				echo "<br><strong $style> - Non attribué</strong>";
   			}
-			  $prec_admin = $db->f("compt_nom");
+			  $prec_admin = $result['compt_nom'];
 			}
 			
-			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
-			echo "<br>" , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") . " - <strong>(" , $db->f("mess") , " messages)</strong> (" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>" , ($inactif?'</em>':'');
+			$inactif = ($result['perso_actif'] == 'O' ? 0 : 1);
+			echo "<br>" , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $result['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $result['perso_nom'] . " - <strong>(" , $result['mess'] , " messages)</strong> (" , $result['pos_x'], ", ", $result['pos_y'], ", " , $result['etage_libelle'] , ")</a>" , ($inactif?'</em>':'');
 		}
 	}
 	echo "<hr>";
@@ -128,15 +128,15 @@
 		switch ($_GET['methode'])
 		{
 			case 'relache':
-				$db2 = new base_delain;
+				
 				$req = "select * from perso_compte where pcompt_perso_cod = " . $_GET['perso'] . " and pcompt_compt_cod = $compt_cod";
-				$db2->query($req);
-				if ($db2->nf() > 0)
+				$stmt2 = $pdo->query($req);
+				if ($stmt2->rowCount() > 0)
 				{
 					$req = "delete from perso_compte where pcompt_perso_cod = " . $_GET['perso'];
-					$db2->query($req);
+					$stmt2 = $pdo->query($req);
 					$req = "update perso set perso_dirige_admin = 'N' where perso_cod = " . $_GET['perso'];
-					$db2->query($req);
+					$stmt2 = $pdo->query($req);
 					$res_relache = "<p>Monstre bien relaché !</p>";
 				}
 				else
@@ -144,36 +144,36 @@
 			break;
 
 			case 'tous_lus':
-				$db2 = new base_delain;
+				
 				$req = "update messages_dest set dmsg_lu = 'O'
 					from perso_compte where pcompt_perso_cod = dmsg_perso_cod AND pcompt_compt_cod = $compt_cod";
-				$db2->query($req);
+				$stmt2 = $pdo->query($req);
 				$res_relache = "<p>Messages marqués comme lus !</p>";
 			break;
 
 			case 'relache_morts':
-				$db2 = new base_delain;
+				
 				$req = "delete from perso_compte where pcompt_perso_cod IN
 						(SELECT perso_cod FROM perso
 						INNER JOIN perso_compte ON pcompt_perso_cod = perso_cod
 						WHERE pcompt_compt_cod = $compt_cod
 							AND perso_actif = 'N')";
-				$db2->query($req);
+				$stmt2 = $pdo->query($req);
 				$res_relache = "<p>Monstres morts tous relâchés !</p>";
 			break;
 
 			case 'redemption':
-				$db2 = new base_delain;
+				
 				$req = "update perso set perso_monstre_attaque_monstre = 0 where perso_cod = " . $_GET['perso'];
-				$db2->query($req);
+				$stmt2 = $pdo->query($req);
 				$res_relache = "<p>Monstre réintégré dans les rangs de Malkiar !</p>";
 			break;
 
 			case 'redemption_tous':
-				$db2 = new base_delain;
+				
 				$req = "update perso set perso_monstre_attaque_monstre = 0 
 					from perso_compte where pcompt_perso_cod = perso_cod AND pcompt_compt_cod = $compt_cod";
-				$db2->query($req);
+				$stmt2 = $pdo->query($req);
 				$res_relache = "<p>Monstres tous réintégrés dans les rangs de Malkiar !</p>";
 			break;
 		}
@@ -205,30 +205,30 @@
 			ordre2,
 			etage_libelle, perso_nom
 		";
-	$db->query($req);
-	if($db->nf() != 0)
+	$stmt = $pdo->query($req);
+	if($stmt->rowCount() != 0)
 	{
 		echo "<div class=\"titre\">Monstres rattachés à $compt_nom</div>";
 		echo "<div><a href='?methode=tous_lus'>Marquer tous les messages comme lus</a> - <a href='?methode=relache_morts'>Relâcher tous les monstres morts</a> - <a href='?methode=redemption_tous' title='Tous les monstres marqués comme ayant participé à la mort d’autres monstres seront pardonnés par Malkiar.'>Rédemption générale</a></div>";
 		echo $res_relache;
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
-			$inactif = ($db->f('perso_actif') == 'O' ? 0 : 1);
-			$image = ($db->f('commandant') > 0) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" /> ' : (($db->f('troupe') >= 0) ? '<img src="' . G_IMAGES . 'commandé.png" title="Troupe" /> ' : '');
-			echo "<br>" , $image , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $db->f("perso_cod") . "&compt_cod=" . $compt_cod . "\">" . $db->f("perso_nom") .  "(" , $db->f("pos_x"), ", ", $db->f("pos_y"), ", " , $db->f("etage_libelle") , ")</a>, " , ($inactif?'</em>':''), $db->f("perso_pa"), " PA, ", $db->f("perso_pv"), "/", $db->f("perso_pv_max"), ", ";
-			if ($db->f("dlt_passee") == 1)
+			$inactif = ($result['perso_actif'] == 'O' ? 0 : 1);
+			$image = ($result['commandant'] > 0) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" /> ' : (($result['troupe'] >= 0) ? '<img src="' . G_IMAGES . 'commandé.png" title="Troupe" /> ' : '');
+			echo "<br>" , $image , ($inactif?'<em>(Décédé)':'') , "<a href=\"$chemin/../validation_login_monstre.php?numero=" . $result['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $result['perso_nom'] .  "(" , $result['pos_x'], ", ", $result['pos_y'], ", " , $result['etage_libelle'] , ")</a>, " , ($inactif?'</em>':''), $result['perso_pa'], " PA, ", $result['perso_pv'], "/", $result['perso_pv_max'], ", ";
+			if ($result['dlt_passee'] == 1)
 			{
 				echo("<strong>");
 			}
-			echo $db->f("dlt");
-			if ($db->f("dlt_passee") == 1)
+			echo $result['dlt'];
+			if ($result['dlt_passee'] == 1)
 			{
 				echo("</strong>");
 			}
-			echo " - <a href='?methode=relache&perso=" . $db->f("perso_cod") . "'>Le relâcher ?</a>";
-			$mvm = $db->f("perso_monstre_attaque_monstre");
+			echo " - <a href='?methode=relache&perso=" . $result['perso_cod'] . "'>Le relâcher ?</a>";
+			$mvm = $result['perso_monstre_attaque_monstre'];
 			if ($mvm > 0)
-				echo " - <a href='?methode=redemption&perso=" . $db->f("perso_cod") . "' title='Ce monstre est marqué comme ayant participé à la mort d’autres monstres, et pourrait être pris pour cible par d’autres monstres. Ce lien enlèvera ce marqueur.'>Rédemption</a>";
+				echo " - <a href='?methode=redemption&perso=" . $result['perso_cod'] . "' title='Ce monstre est marqué comme ayant participé à la mort d’autres monstres, et pourrait être pris pour cible par d’autres monstres. Ce lien enlèvera ce marqueur.'>Rédemption</a>";
 		}
 		echo '<hr />';
 	}

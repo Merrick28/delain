@@ -12,12 +12,12 @@ $comp_enlumineur = 0;
 $req = 'select pcomp_modificateur, pcomp_pcomp_cod from perso_competences
 	where pcomp_perso_cod = ' . $perso_cod . '
 		and pcomp_pcomp_cod in (91, 92, 93)';
-$db->query($req);
-if ($db->nf() != 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() != 0)
 {
-    $db->next_record();
-    $comp_enlumineur = $db->f('pcomp_pcomp_cod');
-    $comp_enlumineur_percent = $db->f('pcomp_modificateur');
+    $result = $stmt->fetch();
+    $comp_enlumineur = $result['pcomp_pcomp_cod'];
+    $comp_enlumineur_percent = $result['pcomp_modificateur'];
 }
 //On vérifie que le perso ramène bien les deux objets nécessaires (un de chaque d’ailleurs)
 // gobj_cod = 730 <=> Plume de scribe
@@ -27,9 +27,9 @@ $req_nombre = "select count(obj_gobj_cod) as nombre
 	where perobj_obj_cod = obj_cod
 		and perobj_perso_cod = $perso_cod
 		and obj_gobj_cod = 730 group by obj_gobj_cod order by obj_gobj_cod ";
-$db->query($req_nombre);
-if ($db->next_record())
-    $nombre1 = $db->f('nombre');
+$stmt = $pdo->query($req_nombre);
+if($result = $stmt->fetch())
+    $nombre1 = $result['nombre'];
 else
     $nombre1 = 0;
 
@@ -38,9 +38,9 @@ $req_nombre = "select count(obj_gobj_cod) as nombre
 	where perobj_obj_cod = obj_cod
 		and perobj_perso_cod = $perso_cod
 		and obj_gobj_cod = 731 group by obj_gobj_cod order by obj_gobj_cod ";
-$db->query($req_nombre);
-if ($db->next_record())
-    $nombre2 = $db->f('nombre');
+$stmt = $pdo->query($req_nombre);
+if($result = $stmt->fetch())
+    $nombre2 = $result['nombre'];
 else
     $nombre2 = 0;
 
@@ -55,13 +55,13 @@ switch ($methode2)
             $req = "select pquete_param_texte, pquete_nombre from quete_perso
 				where pquete_quete_cod = 16
 					and pquete_perso_cod = $perso_cod";
-            $db->query($req);
-            if ($db->next_record())
+            $stmt = $pdo->query($req);
+            if($result = $stmt->fetch())
             {
-                $position_quete = $db->f('pquete_param_texte');
+                $position_quete = $result['pquete_param_texte'];
 
                 // On est déjà face à un enlumineur potentiel, on doit donc vérifier à quel stade il est
-                if ($db->f('pquete_nombre') == 2) // Le perso a bien réalisé sa quête en tuant le monstre
+                if ($result['pquete_nombre'] == 2) // Le perso a bien réalisé sa quête en tuant le monstre
                 {
                     $sortie_quete .= '« <em>Vous voilà de nouveau ? Et je vois que vous revenez victorieux !
 						J’espère que vous avez remarqué que vous aviez vaincu votre propre peur !
@@ -97,19 +97,19 @@ switch ($methode2)
 								(select etage_numero from etage, positions
 								where pos_cod = cast($position_quete as integer)
 								and pos_etage = etage_numero)";
-                    $db->query($req_position);
-                    if ($db->nf() == 0)
+                    $stmt = $pdo->query($req_position);
+                    if ($stmt->rowCount() == 0)
                     {
                         $sortie_quete .= '<br />Je vois que malheuseument, vous n’êtes plus à l’étage
 							vous permettant de réaliser cette quête.
 							<br>Voici une nouvelle chance de vous rendre maître dans l’art de l’enluminure.
 							<br><br><em>L’annulation de la quête précédente a été automatiquement faite.</em>';
                         $req_delete = "update positions set pos_fonction_dessus = '' where pos_cod = $position_quete";
-                        $db->query($req_delete);
+                        $stmt = $pdo->query($req_delete);
                         $req_delete = "delete from quete_perso
 							where pquete_quete_cod = 16
 								and pquete_perso_cod = $perso_cod";
-                        $db->query($req_delete);
+                        $stmt = $pdo->query($req_delete);
                     }
                 }
             } else // Pas encore engagé dans la quête
@@ -176,13 +176,13 @@ switch ($methode2)
     case "niv1": //Le perso veut devenir enlumineur, donc on va lui donner la quête qui va bien
         $req = "select pquete_param_texte from quete_perso
 			where pquete_quete_cod = 16 and pquete_perso_cod = " . $perso_cod;
-        $db->query($req);
-        if ($db->nf() == 0)
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() == 0)
         {
             $req = "select enlumineur($perso_cod, 0) as resultat";
-            $db->query($req);
-            $db->next_record();
-            $sortie_quete .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $sortie_quete .= $result['resultat'];
         } else
         {
             $sortie_quete .= 'Tnuuuuuuuuuuut !!!!!!';
@@ -192,30 +192,30 @@ switch ($methode2)
     case "niv1_conf": //Le perso va devenir enlumineur niveau 1
         $req = "select pquete_param_texte from quete_perso
 			where pquete_quete_cod = 16 and pquete_perso_cod = " . $perso_cod;
-        $db->query($req);
-        if ($db->nf() == 0 || $nombre1 = 0 || $nombre2 = 0)
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() == 0 || $nombre1 = 0 || $nombre2 = 0)
         {
             $sortie_quete .= 'Tnuuuuuuuuuuut !!!!!!';
         } else
         {
             $req = "select enlumineur($perso_cod, 1) as resultat";
-            $db->query($req);
-            $db->next_record();
-            $sortie_quete .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $sortie_quete .= $result['resultat'];
         }
         break;
 
     case "niv2": // 10000 brouzoufs et limite comp
         $req = "select enlumineur($perso_cod, $comp_enlumineur) as resultat";
-        $db->query($req);
-        $db->next_record();
-        $sortie_quete .= $db->f('resultat');
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $sortie_quete .= $result['resultat'];
         break;
 
     case "niv3": // 20000 brouzoufs et limite comp
         $req = "select enlumineur($perso_cod, $comp_enlumineur) as resultat";
-        $db->query($req);
-        $db->next_record();
-        $sortie_quete .= $db->f('resultat');
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $sortie_quete .= $result['resultat'];
         break;
 }

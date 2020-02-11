@@ -11,20 +11,20 @@ if ($erreur == 0)
 {
 	$nb_depose = 0;
 	$req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 86 ";
-	$db->query($req);
-	if ($db->nf() != 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() != 0)
 	{
 		$nb_depose = $nb_depose + 1;
 	}
 	$req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 87 ";
-	$db->query($req);
-	if ($db->nf() != 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() != 0)
 	{
 		$nb_depose = $nb_depose + 1;
 	}
 	$req = "select qparm_cod from quete_params where qparm_quete_cod = 5 and qparm_gobj_cod = 88 ";
-	$db->query($req);
-	if ($db->nf() != 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() != 0)
 	{
 		$nb_depose = $nb_depose + 1;
 	}
@@ -34,29 +34,29 @@ if ($erreur == 0)
 		//
 		$db->begin();
 		$req = "delete from perso_objets where perobj_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$req = "delete from objet_position where pobj_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$req = "delete from perso_identifie_objet where pio_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$req = "delete from objets where obj_gobj_cod in (86,87,88) ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// on commence par ouvrir l'escalier
 		$req = "update lieu set lieu_url = 'passage_escalier.php',lieu_dfin = (now() + '2 days'::interval) where lieu_cod in (184,186,187) ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// on recrée les monstres qui vont bien
 		$req = "select cree_monstre_hasard(58,1)"; 
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$req = "select cree_monstre_hasard(59,3)"; 
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$req = "select cree_monstre_hasard(60,2)"; 
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// on enlève les médaillons
 		$req = "delete from quete_params where qparm_quete_cod = 5 ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		// on donne quelques PX
 		$req = "update perso set perso_px = perso_px + 20 where perso_cod = $perso_cod ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		echo "<p>Vous avez ouvert les escaliers vers le -5. Ceux ci resteront ouverts pendant 48 heures avant de se refermer.<br>";
 		echo "Vous gagnez 20 PX pour cette action !<br><br>";
 		$db->commit();

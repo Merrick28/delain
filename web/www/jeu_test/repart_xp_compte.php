@@ -3,24 +3,24 @@ include "blocks/_header_page_jeu.php";
 
 // Récupération du détail sur les xp du compte
 $req_xpcompte = 'select * from compte_xp2013 where cxp13_compt_cod=' . $compt_cod;
-$db->query($req_xpcompte);
-$db->next_record();
-$total_xp = $db->f('cxp13_total');
-$reste_xp = $db->f('cxp13_total') - $db->f('cxp13_perso1') - $db->f('cxp13_perso2') - $db->f('cxp13_perso3');
-$cxp13_perso1 = $db->f('cxp13_perso1');
-$cxp13_perso2 = $db->f('cxp13_perso2');
-$cxp13_perso3 = $db->f('cxp13_perso3');
+$stmt = $pdo->query($req_xpcompte);
+$result = $stmt->fetch();
+$total_xp = $result['cxp13_total'];
+$reste_xp = $result['cxp13_total'] - $result['cxp13_perso1'] - $result['cxp13_perso2'] - $result['cxp13_perso3'];
+$cxp13_perso1 = $result['cxp13_perso1'];
+$cxp13_perso2 = $result['cxp13_perso2'];
+$cxp13_perso3 = $result['cxp13_perso3'];
 
 // Récupération de noms et numéro des perso
 $triplette = array();
 $req_perso = 'select perso_cod, perso_nom from perso, perso_compte where perso_cod=pcompt_perso_cod and pcompt_compt_cod=' . $compt_cod . ' and perso_pnj=0 and perso_actif=\'O\' and perso_type_perso=1 order by perso_cod asc';
-$db->query($req_perso);
-$nb_perso = $db->nf();
+$stmt = $pdo->query($req_perso);
+$nb_perso = $stmt->rowCount();
 if ($nb_perso > 0) {
     for ($i = 1; $i <= $nb_perso; $i++) {
-        $db->next_record();
-        $triplette[$i]['cod'] = $db->f('perso_cod');
-        $triplette[$i]['nom'] = $db->f('perso_nom');
+        $result = $stmt->fetch();
+        $triplette[$i]['cod'] = $result['perso_cod'];
+        $triplette[$i]['nom'] = $result['perso_nom'];
     }
 }
 
@@ -42,10 +42,10 @@ function crediterPX($perso, $montant)
     $montant = (empty($montant)) ? '0' : (string)$montant;
     if ($perso) {
         $req_creditxp = "update perso set perso_px = perso_px + $montant where perso_cod = $perso";
-        $db->query($req_creditxp);
+        $stmt = $pdo->query($req_creditxp);
         $texte_evt = "Pour les 10 ans des Souterrains de Delain, [perso_cod1] a reçu $montant PX.";
         $req_levt = "select insere_evenement($perso, $perso, 12, '$texte_evt', 'O', null)";
-        $db->query($req_levt);
+        $stmt = $pdo->query($req_levt);
     }
 }
 
@@ -74,7 +74,7 @@ if ($reste_xp > 0) {
 					cxp13_perso2 = ' . ($cxp13_perso2 + $pxP2) . ', 
 					cxp13_perso3 = ' . ($cxp13_perso3 + $pxP3) . ' 
 				where cxp13_compt_cod=' . $compt_cod;
-            $db->query($req_uprepart);
+            $stmt = $pdo->query($req_uprepart);
 
             // Attribution des px + ligne d'événement à chaque perso
             crediterPX($triplette[1]['cod'], $pxP1);
@@ -126,7 +126,7 @@ if ($reste_xp > 0) {
     // Les 3 perso principaux
     if ($nb_perso > 0) {
         for ($i = 1; $i <= $nb_perso; $i++) {
-            $db->next_record();
+            $result = $stmt->fetch();
             $contenu_page .= $triplette[$i]['nom'] . ' : <input type="text" name="perso' . $i . '" id="perso' . $i . '" onchange="javascript:modifrepart();" value="0" /><br />';
         }
         $contenu_page .= '<input type="submit" name="valid_repart_cxp" id="valid_repart_cxp" value="Valider" style="color:grey;font-style:italic;" />';

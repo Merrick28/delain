@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$db2 = new base_delain;
+
 ob_start();
 
 
@@ -20,12 +20,12 @@ switch ($methode) {
     case "quitte":
 
         $req1 = "select pguilde_guilde_cod,guilde_nom from guilde_perso,guilde where pguilde_perso_cod = $perso_cod and pguilde_guilde_cod = guilde_cod";
-        $db->query($req1);
-        $db->next_record();
-        $ancienne_guilde = $db->f("guilde_nom");
-        $num_guilde = $db->f("pguilde_guilde_cod");
+        $stmt = $pdo->query($req1);
+        $result = $stmt->fetch();
+        $ancienne_guilde = $result['guilde_nom'];
+        $num_guilde = $result['pguilde_guilde_cod'];
         $req = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $perso_cod ";
-        $db->query($req);
+        $stmt = $pdo->query($req);
 
         $msg = new message;
         $msg->corps = "$perso_nom a quitté la guilde dont vous êtes administrateur.";
@@ -38,10 +38,10 @@ switch ($methode) {
                 and pguilde_rang_cod = rguilde_rang_cod
                 and rguilde_guilde_cod = pguilde_guilde_cod
                 and rguilde_admin = 'O' ";
-        $db->query($req_admin);
+        $stmt = $pdo->query($req_admin);
 
-        while ($db->next_record()) {
-            $msg->ajouteDestinataire($db->f('pguilde_perso_cod'));
+        while ($result = $stmt->fetch()) {
+            $msg->ajouteDestinataire($result['pguilde_perso_cod']);
         }
 
         $msg->envoieMessage();
@@ -49,7 +49,7 @@ switch ($methode) {
         //on note l’historique dans les titres
         $ancienne_guilde = "[Ancien membre de la guilde " . pg_escape_string($ancienne_guilde) . "]";
         $req = "insert into perso_titre values(default,$perso_cod,e'$ancienne_guilde',now(),'2')";
-        $db->query($req);
+        $stmt = $pdo->query($req);
         ?>
         Votre départ de la guilde est enregistré. Les administrateurs ont été prévenus.
         <?php

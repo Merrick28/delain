@@ -13,7 +13,7 @@ include "verif_connexion.php";
 
 <body background="../images/fond5.gif">
 <?php
-$db2 = new base_delain;
+
 $action = "action.php";
 
 /* Deb AJOUT GoodWin */
@@ -31,22 +31,22 @@ if (!$bool_admin_monstre && !$bool_admin)
 /* Fin AJOUT GoodWin */
 
 $req_distance = "select distance_vue($perso_cod) as distance";
-$db->query($req_distance);
-$db->next_record();
-$distance_vue = $db->f("distance");
+$stmt = $pdo->query($req_distance);
+$result = $stmt->fetch();
+$distance_vue = $result['distance'];
 
 // on cherche la position
 $req_etage = "select pos_etage,pos_cod,pos_x,pos_y,etage_affichage from perso_position,positions,etage ";
 $req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
 $req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
 $req_etage = $req_etage . "and pos_etage = etage_numero ";
-$db->query($req_etage);
-$db->next_record();
-$aff_etage = $db->f("etage_affichage");
-$etage_actuel = $db->f("pos_etage");
-$pos_actuelle = $db->f("pos_cod");
-$x_actuel = $db->f("pos_x");
-$y_actuel = $db->f("pos_y");
+$stmt = $pdo->query($req_etage);
+$result = $stmt->fetch();
+$aff_etage = $result['etage_affichage'];
+$etage_actuel = $result['pos_etage'];
+$pos_actuelle = $result['pos_cod'];
+$x_actuel = $result['pos_x'];
+$y_actuel = $result['pos_y'];
 
 
 echo("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" ID=\"tab_vue\" bgcolor=\"#FFFFFF\" >");
@@ -57,31 +57,31 @@ echo("<form name=\"deplacement\" method=\"post\" action=\"$action\">");
 <?php
 // on cherche la distance de vue
 $req_x = "select distinct pos_x from positions where pos_etage = $num_etage order by pos_x";
-$db->query($req_x);
-$db->next_record();
+$stmt = $pdo->query($req_x);
+$result = $stmt->fetch();
 echo("<tr><td></td>");
-$min_x = $db->f("pos_x");
-$db->query($req_x);
-while ($db->next_record())
+$min_x = $result['pos_x'];
+$stmt = $pdo->query($req_x);
+while ($result = $stmt->fetch())
 {
-    echo "<td style=\"coord2\"><p class=\"coord\">", $db->f("pos_x"), "</p></td>\r\n";
+    echo "<td style=\"coord2\"><p class=\"coord\">", $result['pos_x'], "</p></td>\r\n";
 }
 echo("</tr>\r\n");
 // on rajoute la ligne des "y"
 $req_y = "select distinct pos_y from positions where pos_etage = $num_etage order by pos_y desc";
-$db->query($req_y);
+$stmt = $pdo->query($req_y);
 ?>
 <script language="JavaScript" type="text/JavaScript">
     var carte = new Array();
     $i = 0;
     $depart = 0;
     <?php
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
-        $req_map_vue = "select vue_etage2($num_etage," . $db->f("pos_y") . "," . $depart . ") as vue ";
-        $db2->query($req_map_vue);
-        $db2->next_record();
-        $tab = explode("#", $db2->f("vue"));
+        $req_map_vue = "select vue_etage2($num_etage," . $result['pos_y'] . "," . $depart . ") as vue ";
+        $stmt2 = $pdo->query($req_map_vue);
+        $result2 = $stmt2->fetch();
+        $tab = explode("#", $result2['vue']);
         echo $tab[0];
         $depart = $tab[1];
     }

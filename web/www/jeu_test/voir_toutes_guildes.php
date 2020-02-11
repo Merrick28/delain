@@ -55,8 +55,8 @@ if ($sens == 'desc') {
     $sens = 'desc';
 }
 
-$db = new base_delain;
-$db->query($req_guilde);
+
+$stmt = $pdo->query($req_guilde);
 
 if ($is_guilde === false) {
     ?>
@@ -150,18 +150,18 @@ echo("</form>");
 
 echo("<form name=\"guilde\" method=\"post\">");
 echo("<input type=\"hidden\" name=\"num_guilde\">");
-while ($db->next_record()) {
+while ($result = $stmt->fetch()) {
     echo("<tr>");
-    printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.guilde.action='visu_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">%s</a></strong></p></td>", $db->f("guilde_cod"), $db->f("guilde_nom"));
-    printf("<td><p>%s</td>", $db->f("nb_perso"));
-    printf("<td><p>%s</td>", $db->f("renommee"));
-    printf("<td><p>%s</td>", $db->f("karma"));
-    printf("<td><p>%s</td>", $db->f("tot_monstre_tue"));
-    printf("<td><p>%s</td>", $db->f("tot_perso_tue"));
-    printf("<td><p>%s</td>", $db->f("tot_nb_mort"));
+    printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.guilde.action='visu_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">%s</a></strong></p></td>", $result['guilde_cod'], $result['guilde_nom']);
+    printf("<td><p>%s</td>", $result['nb_perso']);
+    printf("<td><p>%s</td>", $result['renommee']);
+    printf("<td><p>%s</td>", $result['karma']);
+    printf("<td><p>%s</td>", $result['tot_monstre_tue']);
+    printf("<td><p>%s</td>", $result['tot_perso_tue']);
+    printf("<td><p>%s</td>", $result['tot_nb_mort']);
 
     if ($is_guilde === false) {
-        printf("<td><a href=\"javascript:document.guilde.action='valide_join_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">S’inscrire !</a></td>", $db->f("guilde_cod"));
+        printf("<td><a href=\"javascript:document.guilde.action='valide_join_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">S’inscrire !</a></td>", $result['guilde_cod']);
     }
 
     echo("</tr>");

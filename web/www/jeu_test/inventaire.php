@@ -11,23 +11,23 @@ $parm = new parametres();
 //
 // Récupération des données du perso
 $req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
-$db->query($req_or);
-$qte_or = ($db->next_record()) ? $db->f("pbank_or") : 0;
+$stmt = $pdo->query($req_or);
+$qte_or = ($result = $stmt->fetch()) ? $result['pbank_or'] : 0;
 $cout_repar = $parm->getparm(40);
 
 $req_perso = "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso, gmon_type_ia from perso left join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = $perso_cod ";
-$db->query($req_perso);
-$db->next_record();
-$poids_total = $db->f("perso_enc_max");
-$perso_po = $db->f("perso_po");
-$perso_gmon_cod = $db->f("perso_gmon_cod");
-$gmon_type_ia = $db->f("gmon_type_ia");
+$stmt = $pdo->query($req_perso);
+$result = $stmt->fetch();
+$poids_total = $result['perso_enc_max'];
+$perso_po = $result['perso_po'];
+$perso_gmon_cod = $result['perso_gmon_cod'];
+$gmon_type_ia = $result['gmon_type_ia'];
 $is_golem_brz = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
 $is_golem_arm = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
 $is_golem_pps = $gmon_type_ia == 16;    // 16 = ia "Golem de pierres précieuses"
 $is_golem = $is_golem_brz || $is_golem_arm || $is_golem_pps;
-$pa = $db->f("perso_pa");
-$perso_type_perso = $db->f("perso_type_perso");
+$pa = $result['perso_pa'];
+$perso_type_perso = $result['perso_type_perso'];
 
 if (!isset($dr))
 {
@@ -45,7 +45,7 @@ if (!isset($dgrisbi))
 {
     $dgrisbi = 0;
 }
-$db2 = new base_delain;
+
 ?>
     <STYLE>
         .secret {
@@ -90,9 +90,9 @@ switch ($methode)
         if ($pa >= 2)
         {
             $req_remettre = "select remettre_objet($perso_cod,$perobj) as equipe";
-            $db->query($req_remettre);
-            $db->next_record();
-            $tab_remettre = $db->f("equipe");
+            $stmt = $pdo->query($req_remettre);
+            $result = $stmt->fetch();
+            $tab_remettre = $result['equipe'];
             if ($tab_remettre == "0")
             {
                 echo("<br><strong>L’équipement a été remis dans votre inventaire</strong><br>");
@@ -127,9 +127,9 @@ switch ($methode)
         if ($erreur == 0)
         {
             $req_remettre = "select equipe_objet($perso_cod,$objet) as equipe";
-            $db->query($req_remettre);
-            $db->next_record();
-            $tab_remettre = $db->f("equipe");
+            $stmt = $pdo->query($req_remettre);
+            $result = $stmt->fetch();
+            $tab_remettre = $result['equipe'];
             if ($tab_remettre == 0)
             {
                 echo("<br><strong>L’objet a été équipé avec succès.</strong><br>");
@@ -147,8 +147,8 @@ switch ($methode)
 			UNION ALL select 1 from defi
 				inner join perso_familier on pfam_perso_cod in (defi_lanceur_cod, defi_cible_cod)
 				where defi_statut = 1 and pfam_familier_cod = $perso_cod";
-        $db->query($req_defi);
-        if ($db->nf() > 0 && !isset($validerabandon))
+        $stmt = $pdo->query($req_defi);
+        if ($stmt->rowCount() > 0 && !isset($validerabandon))
         {
             echo "<br><strong>Vous êtes actuellement en plein défi ! Si vous abandonnez cet objet, vous ne pourrez plus le ramasser à nouveau.
 				<a href='inventaire.php?methode=abandonner&objet=$objet&validerabandon=1'>Abandonner quand même ! (1PA)</a></strong>";
@@ -165,14 +165,14 @@ switch ($methode)
         {
             $px = 20;
             $req = "select perso_px, max(perso_px::integer, min(perso_px::integer + $px, perso_po / 5)) as nv_px from perso where perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
-            if ($db->f('perso_px') + 1 <= $db->f('nv_px'))
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            if ($result['perso_px'] + 1 <= $result['nv_px'])
             {
-                $nv_px = $db->f('nv_px');
+                $nv_px = $result['nv_px'];
                 $req = "update perso set perso_pa = perso_pa - 6, perso_px = $nv_px where perso_cod = $perso_cod ";
-                $db->query($req);
-                $db->next_record();
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
                 echo "<br><strong>Miam scrountch miom !</strong> Cette action vous a redonné des PX, en fonction de la quantité de brouzoufs possédée...<br>";
             } else
             {
@@ -181,9 +181,9 @@ switch ($methode)
         } else if (($is_golem_arm || $is_golem_pps) && $pa > 5)
         {
             $req = 'select golem_digestion(' . $perso_cod . ') as resultat ';
-            $db->query($req);
-            $db->next_record();
-            echo "<br><strong>Miam scrountch miom !</strong> " . $db->f('resultat') . "<br>";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "<br><strong>Miam scrountch miom !</strong> " . $result['resultat'] . "<br>";
         } else
         {
             echo "<br><strong>Erreur !</strong> Seuls les golems savent digérer leur inventaire... Et il leur faut assez de PA !<br>";
@@ -192,9 +192,9 @@ switch ($methode)
 }
 
 $req_poids = "select get_poids($perso_cod) as poids";
-$db->query($req_poids);
-$db->next_record();
-$poids_porte = $db->f("poids");
+$stmt = $pdo->query($req_poids);
+$result = $stmt->fetch();
+$poids_porte = $result['poids'];
 
 // identification auto de certains objets (runes, objets de quêtes, poissons, etc...)
 $req_id = "update perso_objets
@@ -208,7 +208,7 @@ $req_id = "update perso_objets
 	and gobj_tobj_cod = tobj_cod
 	and tobj_identifie_auto = 1 ) ";
 $req_id = "select identifie_perso_objet($perso_cod)";
-$db->query($req_id);
+$stmt = $pdo->query($req_id);
 //
 //log_debug('Fin ident auto');
 //log_debug($req_id);
@@ -243,8 +243,8 @@ $db->query($req_id);
         $req_equipe = $req_equipe . "and obj_gobj_cod = gobj_cod ";
         $req_equipe = $req_equipe . "and gobj_tobj_cod = tobj_cod ";
         $req_equipe = $req_equipe . "order by tobj_libelle";
-        $db->query($req_equipe);
-        $nb_equipe = $db->nf();
+        $stmt = $pdo->query($req_equipe);
+        $nb_equipe = $stmt->rowCount();
         //
         //log_debug('Fin requête équipé');
         //
@@ -274,29 +274,29 @@ $db->query($req_id);
                     <input type="hidden" name="methode" value="remettre">
                     <?php
 
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         $examiner = "";
-                        if ($db->f("gobj_url") != null)
+                        if ($result['gobj_url'] != null)
                         {
-                            $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "\">Voir le détail</a>) ";
+                            $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "\">Voir le détail</a>) ";
                         }
 
                         $req = "select obon_cod,obon_libelle from bonus_objets,objets ";
-                        $req = $req . "where obj_cod = " . $db->f("obj_cod") . " and obj_obon_cod = obon_cod ";
-                        $db2->query($req);
-                        if ($db2->nf() != 0)
+                        $req = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
+                        $stmt2 = $pdo->query($req);
+                        if ($stmt2->rowCount() != 0)
                         {
-                            $db2->next_record();
-                            $bonus = " (" . $db2->f("obon_libelle") . ")";
-                            $url_bon = "&bon=" . $db2->f("obon_cod");
+                            $result2 = $stmt2->fetch();
+                            $bonus = " (" . $result2['obon_libelle'] . ")";
+                            $url_bon = "&bon=" . $result2['obon_cod'];
                         } else
                         {
                             $bonus = "";
                             $url_bon = "";
                         }
-                        $obj_etat = $db->f("obj_etat");
-                        $obj_etat_max = $db->f("obj_etat_max");
+                        $obj_etat = $result['obj_etat'];
+                        $obj_etat_max = $result['obj_etat_max'];
                         $cpl_class = '';
                         if ($obj_etat < 60)
                             $cpl_class = '_vert';
@@ -305,21 +305,21 @@ $db->query($req_id);
                         if ($obj_etat < 20)
                             $cpl_class = '_rouge';
                         echo "<tr>";
-                        echo "<td class=\"soustitre2" . $cpl_class . "\" >" . $db->f("tobj_libelle") . $examiner, "</td>";
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $db->f("obj_cod") . "&origine=i", $url_bon, "\">" . $db->f("obj_nom"), $bonus, "</a></td>";
-                        echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $db->f("obj_poids") . "</div></td>";
-                        echo "<td class=\"soustitre2\">" . get_etat($db->f("obj_etat")) . "</td>";
-                        echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $db->f("gobj_pa_normal") . "</div></td>";
-                        echo "<td><a href=\"javascript:document.remettre.perobj.value=" . $db->f("perobj_cod") . ";document.remettre.submit();\">";
+                        echo "<td class=\"soustitre2" . $cpl_class . "\" >" . $result['tobj_libelle'] . $examiner, "</td>";
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $result['obj_cod'] . "&origine=i", $url_bon, "\">" . $result['obj_nom'], $bonus, "</a></td>";
+                        echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $result['obj_poids'] . "</div></td>";
+                        echo "<td class=\"soustitre2\">" . get_etat($result['obj_etat']) . "</td>";
+                        echo "<td class=\"soustitre2\"><div style=\"text-align:right\">" . $result['gobj_pa_normal'] . "</div></td>";
+                        echo "<td><a href=\"javascript:document.remettre.perobj.value=" . $result['perobj_cod'] . ";document.remettre.submit();\">";
                         echo "Remettre dans l’inventaire (2PA)</a>";
 
                         ?>
                         </td>
                         <td nowrap>
                             <?php
-                            if (($db->f("tobj_cod") == 1) && ($db->f("obj_etat") < 100))
+                            if (($result['tobj_cod'] == 1) && ($result['obj_etat'] < 100))
                             {
-                                echo "<a href=\"action.php?methode=repare&type=1&objet=" . $db->f("obj_cod") . "\">Réparer (" . $cout_repar . " PA)</a>";
+                                echo "<a href=\"action.php?methode=repare&type=1&objet=" . $result['obj_cod'] . "\">Réparer (" . $cout_repar . " PA)</a>";
                             }
                             ?>
                         </td>
@@ -350,8 +350,8 @@ $db->query($req_id);
         $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
         $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
         $req_matos = $req_matos . "order by tobj_libelle";
-        $db->query($req_matos);
-        $nb_matos = $db->nf();
+        $stmt = $pdo->query($req_matos);
+        $nb_matos = $stmt->rowCount();
         //
         //log_debug('Fin non esquipe non identifie');
         //
@@ -381,22 +381,22 @@ $db->query($req_id);
             <form name="identifier" method="post" action="identifier.php"><input type="hidden" name="objet">
                 <input type="hidden" name="methode" value="depose_objet">
                 <?php
-                while ($db->next_record())
+                while ($result = $stmt->fetch())
                 {
                     //$tab_matos = pg_fetch_array($res_matos,$cpt);
                     echo("<tr>");
-                    printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
-                    printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_nom_generique"));
-                    printf("<td class=\"soustitre2\"><div style=\"text-align:right\">%s</div></td>", $db->f("obj_poids"));
+                    printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
+                    printf("<td class=\"soustitre2\">%s</td>", $result['obj_nom_generique']);
+                    printf("<td class=\"soustitre2\"><div style=\"text-align:right\">%s</div></td>", $result['obj_poids']);
                     echo "<td></td>";
                     echo "<td></td>";
                     echo("<td>");
-                    printf("<a href=\"javascript:document.identifier.action='identifier.php';document.identifier.objet.value=%s;document.identifier.submit();\">Identifier (2PA)</a>", $db->f("obj_cod"));
+                    printf("<a href=\"javascript:document.identifier.action='identifier.php';document.identifier.objet.value=%s;document.identifier.submit();\">Identifier (2PA)</a>", $result['obj_cod']);
 
                     echo("</td>");
                     echo("<td>");
 
-                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                     echo("</td>");
 
@@ -423,8 +423,8 @@ $db->query($req_id);
 		and perobj_equipe = 'N'
 		and gobj_tobj_cod not in (5,11,12,14,22,28,30,34,42)
 	order by tobj_libelle,gobj_nom ";
-        $db->query($req_matos);
-        $nb_matos = $db->nf();
+        $stmt = $pdo->query($req_matos);
+        $nb_matos = $stmt->rowCount();
         //
         //log_debug('Fin non equipe, identifie');
         //
@@ -453,50 +453,50 @@ $db->query($req_id);
             </tr>
             <form name="equiper" method="post" action="<?php echo $PHP_SELF; ?>"><input type="hidden" name="objet">
                 <?php
-                while ($db->next_record())
+                while ($result = $stmt->fetch())
                 {
-                    $potion_buvable = ($db->f('tobj_cod') == 21 && $db->f('gobj_cod') != 412 && $db->f('gobj_cod') != 561);
-                    if ($db->f('obon_cod') >= 0)
+                    $potion_buvable = ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
+                    if ($result['obon_cod'] >= 0)
                     {
-                        $bonus = " (" . $db->f("obon_libelle") . ")";
-                        $url_bon = "&bon=" . $db->f("obon_cod");
+                        $bonus = " (" . $result['obon_libelle'] . ")";
+                        $url_bon = "&bon=" . $result['obon_cod'];
                     } else
                     {
                         $bonus = "";
                         $url_bon = "";
                     }
                     $examiner = "";
-                    if ($db->f("gobj_url") != null)
+                    if ($result['gobj_url'] != null)
                     {
-                        $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "\">Voir le détail</a>) ";
+                        $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "\">Voir le détail</a>) ";
                     }
                     $boire = "";
                     echo "<tr>";
-                    echo "<td class=\"soustitre2\">" . $db->f("tobj_libelle"), "</td>";
-                    echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $db->f("obj_cod") . "&origine=i", $url_bon, "\">" . $db->f("obj_nom"), $bonus, "</a></td>";
-                    echo "<td class=\"soustitre2\">" . $db->f("obj_poids") . "</td>";
-                    echo "<td class=\"soustitre2\">" . get_etat($db->f("obj_etat")) . "</td>";
-                    echo "<td class=\"soustitre2\">" . $db->f("gobj_pa_normal") . $examiner . "</td>";
+                    echo "<td class=\"soustitre2\">" . $result['tobj_libelle'], "</td>";
+                    echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $result['obj_cod'] . "&origine=i", $url_bon, "\">" . $result['obj_nom'], $bonus, "</a></td>";
+                    echo "<td class=\"soustitre2\">" . $result['obj_poids'] . "</td>";
+                    echo "<td class=\"soustitre2\">" . get_etat($result['obj_etat']) . "</td>";
+                    echo "<td class=\"soustitre2\">" . $result['gobj_pa_normal'] . $examiner . "</td>";
                     echo "<td>";
 
-                    if ($db->f("tobj_equipable") == 1)
+                    if ($result['tobj_equipable'] == 1)
                     {
-                        printf("<a href=\"$PHP_SELF?methode=equiper&objet=%s\">Equiper (2PA)</a>", $db->f("obj_cod"));
+                        printf("<a href=\"$PHP_SELF?methode=equiper&objet=%s\">Equiper (2PA)</a>", $result['obj_cod']);
                     }
 
                     if ($potion_buvable)
                     {
-                        //echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $db->f("gobj_cod") . '">Boire (2PA)</a>';
-                        echo '<a href="choix_potion.php?&obj_cod=' . $db->f("obj_cod") . '">Utiliser (2PA)</a>';
+                        //echo '<a href="potions_utilisation.php?methode=potion_inventaire1&potion=' . $result['gobj_cod'] . '">Boire (2PA)</a>';
+                        echo '<a href="choix_potion.php?&obj_cod=' . $result['obj_cod'] . '">Utiliser (2PA)</a>';
                     }
                     echo("</td>");
                     echo("<td class=\"soustitre2\">");
 
-                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                     echo("</td>");
                     echo "<td>";
-                    echo "<a href=\"action.php?methode=repare&type=" . $db->f("tobj_cod") . "&objet=" . $db->f("obj_cod") . "\">Réparer (" . $cout_repar . "PA)</a>";
+                    echo "<a href=\"action.php?methode=repare&type=" . $result['tobj_cod'] . "&objet=" . $result['obj_cod'] . "\">Réparer (" . $cout_repar . "PA)</a>";
                     echo "</td>";
                     echo("</tr>");
                 }
@@ -524,8 +524,8 @@ $db->query($req_id);
 	and gobj_tobj_cod = 5
 	group by obj_nom,obj_frune_cod,obj_famille_rune
 	order by obj_frune_cod,obj_nom ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 //log_debug($req_matos);
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
@@ -543,12 +543,12 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         echo("<tr>");
-                        printf("<td colspan=\"2\" class=\"soustitre2\"><strong>%s</strong> (%s)</td>", $db->f("obj_nom"), $db->f("frune_desc"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("nombre"));
+                        printf("<td colspan=\"2\" class=\"soustitre2\"><strong>%s</strong> (%s)</td>", $result['obj_nom'], $result['frune_desc']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['nombre']);
                         echo("<td></td><td></td>");
                         echo("</tr>");
 
@@ -569,8 +569,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = 5 ";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -588,19 +588,19 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         //$tab_matos = pg_fetch_array($res_matos,$cpt);
                         echo("<tr>");
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=i\">" . $db->f("obj_nom") . "</a></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("gobj_pa_normal"));
+                        printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $result['gobj_cod'] . "&origine=i\">" . $result['obj_nom'] . "</a></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['obj_poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['gobj_pa_normal']);
                         echo("<td>");
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -644,8 +644,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_url is not null) A ";
                 $req_matos = $req_matos . "order by A.obj_nom ";
                 //echo $req_matos;
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                 echo("</tr>");
@@ -662,18 +662,18 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         $examiner = "";
-                        if ($db->f("gobj_url") != null)
+                        if ($result['gobj_url'] != null)
                         {
-                            $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "?objet=" . $db->f("obj_cod") . " \">Voir le détail</a>) ";
+                            $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "?objet=" . $result['obj_cod'] . " \">Voir le détail</a>) ";
 
                         }
                         echo("<tr>");
-                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $db->f("obj_nom") . $examiner . "</strong></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("nombre"));
+                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $result['obj_nom'] . $examiner . "</strong></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['nombre']);
                         echo("<td></td><td></td>");
                         echo("</tr>");
 
@@ -693,8 +693,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod in (11,12) ";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -712,18 +712,18 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         echo("<tr>");
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $db->f("obj_cod") . "&origine=i\">" . $db->f("obj_nom") . "</a></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("gobj_pa_normal"));
+                        printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet3.php?objet=" . $result['obj_cod'] . "&origine=i\">" . $result['obj_nom'] . "</a></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['obj_poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['gobj_pa_normal']);
                         echo("<td>");
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -749,8 +749,8 @@ $db->query($req_id);
             $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
             $req_matos = $req_matos . "and gobj_tobj_cod = 14 ";
             $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-            $db->query($req_matos);
-            $nb_matos = $db->nf();
+            $stmt = $pdo->query($req_matos);
+            $nb_matos = $stmt->rowCount();
             if ($nb_matos != 0)
             {
                 ?>
@@ -762,13 +762,13 @@ $db->query($req_id);
                 <td></td>
                 </tr>
                 <?
-                while($db->next_record())
+                while($result = $stmt->fetch())
                 {
                     ?>
                     <tr>
-                    <td class="soustitre2"><p><a href="visu_desc_objet2.php?objet=<?=$db->f("gobj_cod");?>&origine=i\"><?=$db->f("gobj_nom");?></p></td>
-                    <td class="soustitre2"><?=$db->f("gobj_poids");?></td>
-                    <td><p><a href="donne_poisson.php?obj=<?=$db->f("obj_cod");?>">Donner le poisson ? (1 PA)</a></td>
+                    <td class="soustitre2"><p><a href="visu_desc_objet2.php?objet=<?=$result['gobj_cod'];?>&origine=i\"><?=$result['gobj_nom'];?></p></td>
+                    <td class="soustitre2"><?=$result['gobj_poids'];?></td>
+                    <td><p><a href="donne_poisson.php?obj=<?=$result['obj_cod'];?>">Donner le poisson ? (1 PA)</a></td>
                     </tr>
                     <?
                 }
@@ -791,8 +791,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
                 $req_matos = $req_matos . "group by obj_nom,gobj_url ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
@@ -810,17 +810,17 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         $examiner = "";
-                        if ($db->f("gobj_url") != null)
+                        if ($result['gobj_url'] != null)
                         {
-                            $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "\">Voir le détail</a>) ";
+                            $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "\">Voir le détail</a>) ";
                         }
                         echo("<tr>");
-                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $db->f("obj_nom") . $examiner . "</strong></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("nombre"));
+                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $result['obj_nom'] . $examiner . "</strong></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['nombre']);
                         echo("<td></td><td></td>");
                         echo("</tr>");
 
@@ -838,8 +838,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -856,17 +856,17 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         echo("<tr>");
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=i\">" . $db->f("obj_nom") . "</a></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
+                        printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $result['gobj_cod'] . "&origine=i\">" . $result['obj_nom'] . "</a></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['obj_poids']);
                         echo("<td>");
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -890,8 +890,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
                 $req_matos = $req_matos . "group by obj_nom,gobj_url ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
@@ -909,17 +909,17 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         $examiner = "";
-                        if ($db->f("gobj_url") != null)
+                        if ($result['gobj_url'] != null)
                         {
-                            $examiner = " (<a href=\"objets/" . $db->f("gobj_url") . "\">Voir le détail</a>) ";
+                            $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "\">Voir le détail</a>) ";
                         }
                         echo("<tr>");
-                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $db->f("obj_nom") . $examiner . "</strong></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("poids"));
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("nombre"));
+                        echo "<td colspan=\"2\" class=\"soustitre2\"><strong>" . $result['obj_nom'] . $examiner . "</strong></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['poids']);
+                        printf("<td class=\"soustitre2\">%s</td>", $result['nombre']);
                         echo("<td></td><td></td>");
                         echo("</tr>");
 
@@ -937,8 +937,8 @@ $db->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $db->query($req_matos);
-                $nb_matos = $db->nf();
+                $stmt = $pdo->query($req_matos);
+                $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=0\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -955,17 +955,17 @@ $db->query($req_id);
                         <td></td>
                     </tr>
                     <?php
-                    while ($db->next_record())
+                    while ($result = $stmt->fetch())
                     {
                         echo("<tr>");
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("tobj_libelle"));
-                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=i\">" . $db->f("obj_nom") . "</a></td>";
-                        printf("<td class=\"soustitre2\">%s</td>", $db->f("obj_poids"));
+                        printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
+                        echo "<td class=\"soustitre2\"><a href=\"visu_desc_objet2.php?objet=" . $result['gobj_cod'] . "&origine=i\">" . $result['obj_nom'] . "</a></td>";
+                        printf("<td class=\"soustitre2\">%s</td>", $result['obj_poids']);
                         echo("<td>");
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $db->f("obj_cod"));
+                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");

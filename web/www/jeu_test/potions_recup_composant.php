@@ -126,7 +126,7 @@ if($heure <6 || $heure > 18){
 
 /*if(!isset($db))
 	include "verif_connexion.php";
-$db2 = new base_delain;
+
 include "../includes/template.inc";
 // definition des variables de template
 $temp = new template;
@@ -208,16 +208,16 @@ switch($methode)
 		}		
 		/*Controle sur les Pas*/
 		$req ='select perso_pa from perso where perso_cod = '. $perso_cod;
-		$db->query($req);
-		if($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if($stmt->rowCount() == 0)
 		{
 			$contenu_page .= '<td><br />Erreur sur le perso concerné<br /><br /></td>';
 			$erreur = 1;
 		}
         else
 		{	
-			$db->next_record();
-			if ($db->f("perso_pa") < 4)
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < 4)
 			{
 				$contenu_page .= '<br>Vous n’avez pas suffisamment de PA pour réaliser cette action.<br>';
 				$erreur = 1;
@@ -228,9 +228,9 @@ switch($methode)
 				$position = $db->get_pos($perso_cod);
 				$pos_cod = $position['pos_cod'];
 				$req = 'select potions.recup_composant('. $perso_cod .','. $pos_cod .','. $phase .') as resultat';
-				$db->query($req);
-				$db->next_record();
-				$contenu_page .= $db->f('resultat');
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$contenu_page .= $result['resultat'];
 		}
 	break;
 }

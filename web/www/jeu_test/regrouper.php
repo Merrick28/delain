@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db2 = new base_delain;
+
 $erreur = 0;
 if ($db->nb_or_sur_case($perso_cod) < 1)
 {
@@ -9,9 +9,9 @@ if ($db->nb_or_sur_case($perso_cod) < 1)
 	$erreur = 1;
 }
 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-$nb_pa = $db->f("perso_pa");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$nb_pa = $result['perso_pa'];
 if ($nb_pa < $param->getparm(38))
 {
 	echo "<p>Vous n'avez pas assez de PA pour regrouper les tas de brouzoufs sur cette case !";
@@ -20,21 +20,21 @@ if ($nb_pa < $param->getparm(38))
 if ($erreur == 0)
 {
 	$req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod";
-	$db->query($req);
-	$db->next_record();
-	$position = $db->f("ppos_pos_cod");
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$position = $result['ppos_pos_cod'];
 		
 	$qte = 0;
 	$req = "select * from or_position where por_pos_cod = $position ";	
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	
 	// on compte
 	$farfa = 0;
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
-		if ($db->f("por_palpable") == 'O')
+		if ($result['por_palpable'] == 'O')
 		{
-			$qte = $qte + $db->f("por_qte");	
+			$qte = $qte + $result['por_qte'];	
 		}
 		else
 		{
@@ -44,17 +44,17 @@ if ($erreur == 0)
 	
 	// on efface
 	$req = "delete from or_position where por_pos_cod = $position";
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	
 	// on recrée
 	$req = "insert into or_position (por_pos_cod, por_qte) values ($position,$qte) ";
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	
 	$req_ins_evt = "select insere_evenement($perso_cod, $perso_cod, 22, '[attaquant] a regroupé les brouzoufs sur sa case', 'O', '[pos_cod, qte]=$position,$qte') ";
-	$db->query($req_ins_evt);
+	$stmt = $pdo->query($req_ins_evt);
 	
 	$req = "update perso set perso_pa = perso_pa - ". $param->getparm(38) ." where perso_cod = $perso_cod ";
-	$db->query($req);
+	$stmt = $pdo->query($req);
 	if ($farfa == 0)
 	{
 		echo "<p>Vous avez regroupé tous les tas de brouzoufs existants en un tas de $qte brouzoufs. ";	

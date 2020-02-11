@@ -27,7 +27,7 @@ if ($erreur == 0)
 			$req = $req . "and gobj_tobj_cod not in (12,7,9,10,6,8,13,11) ";
 			$req = $req . "order by tobj_libelle,gobj_nom ";
 			echo "<!-- $req -->";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			echo "<table>";
 			echo "<tr>";
 			echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
@@ -38,18 +38,18 @@ if ($erreur == 0)
 			echo "<td class=\"soustitre2\"><p><strong>Stock échoppes</strong></td>";
 			echo "<td class=\"soustitre2\"><p><strong>Total</strong></td>";
 			echo "<td></td>";
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
 				echo "<tr>";
-				echo "<td class=\"soustitre2\"><p><strong><a href=\"visu_desc_objet2.php?objet=" . $db->f("gobj_cod") . "&origine=a\">" . $db->f("gobj_nom") . "</a></strong></td>";
-				echo "<td class=\"soustitre2\"><p>" . $db->f("tobj_libelle") . "</td>";
-				echo "<td class=\"soustitre2\"><p>" . $db->f("gobj_valeur") . "</td>";
-				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $db->f("persos") . "</td>";
-				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $db->f("sol") . "</td>";
-				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $db->f("echoppe") . "</td>";
-				$total = $db->f("persos") + $db->f("sol") + $db->f("echoppe");
+				echo "<td class=\"soustitre2\"><p><strong><a href=\"visu_desc_objet2.php?objet=" . $result['gobj_cod'] . "&origine=a\">" . $result['gobj_nom'] . "</a></strong></td>";
+				echo "<td class=\"soustitre2\"><p>" . $result['tobj_libelle'] . "</td>";
+				echo "<td class=\"soustitre2\"><p>" . $result['gobj_valeur'] . "</td>";
+				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['persos'] . "</td>";
+				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['sol'] . "</td>";
+				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['echoppe'] . "</td>";
+				$total = $result['persos'] + $result['sol'] + $result['echoppe'];
 				echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $total . "</td>";
-				echo "<td><p><a href=\"voir_tarif_echoppe.php?methode=e1&objet=" . $db->f("gobj_cod") . "\">Modifier !</a></td>";
+				echo "<td><p><a href=\"voir_tarif_echoppe.php?methode=e1&objet=" . $result['gobj_cod'] . "\">Modifier !</a></td>";
 				echo "</tr>";
 			}
 			echo "</table>";
@@ -62,10 +62,10 @@ if ($erreur == 0)
 			echo "<input type=\"hidden\" name=\"methode\" value=\"e2\">";
 			echo "<input type=\"hidden\" name=\"objet\" value=\"$objet\">";
 			$req = "select gobj_nom,gobj_valeur from objet_generique where gobj_cod = $objet ";
-			$db->query($req);
-			$db->next_record();
-			echo "<p>Fixer le tarif de <strong>" . $db->f("gobj_nom") . "</strong> à ";
-			echo "<input type=\"text\" name=\"montant\"value=\"" . $db->f("gobj_valeur") . "\">";
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			echo "<p>Fixer le tarif de <strong>" . $result['gobj_nom'] . "</strong> à ";
+			echo "<input type=\"text\" name=\"montant\"value=\"" . $result['gobj_valeur'] . "\">";
 			echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center>";
 			echo "</form>";
 			echo "<p style=\"text-align:center\"><a href=\"voir_tarif_echoppe.php\">Revenir au menu</a>";
@@ -86,16 +86,16 @@ if ($erreur == 0)
 			{
 				// etape 1 : on cherche le premier prix
 				$req = "select gobj_valeur from objet_generique where gobj_cod = $objet ";
-				$db->query($req);
-				$db->next_record();
-				$prix1 = $db->f("gobj_valeur");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$prix1 = $result['gobj_valeur'];
 				$rapport = $montant/$prix1;
 				//etape 2 : on modifie le prix générique
 				$req = "update objet_generique set gobj_valeur = $montant where gobj_cod = $objet ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				// etape 3 : on modifie les prix particulieurs
 				$req = "update magasin_tarif set mtar_prix = round(mtar_prix * $rapport) where mtar_gobj_cod = $objet ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				echo "<p>Modif effectuée !";
 			}		
 			break;

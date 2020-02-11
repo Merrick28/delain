@@ -26,27 +26,27 @@ include "../includes/constantes.php";
     }
     if ($erreur == 0) {
         $req = "select perso_pnj from perso where perso_cod = $perso_cod";
-        $db->query($req);
-        $db->next_record();
-        $quatrieme = $db->f("perso_pnj") == 2;
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $quatrieme = $result['perso_pnj'] == 2;
 
         $req = "select lpos_lieu_cod,pos_etage, pos_cod from lieu_position,perso_position,positions
 		where ppos_perso_cod = $perso_cod 
 			and ppos_pos_cod = lpos_pos_cod 
 			and ppos_pos_cod = pos_cod";
-        $db->query($req);
-        $db->next_record();
-        $lieu_cod = $db->f("lpos_lieu_cod");
-        $etage_numero = $db->f("pos_etage");
-        $pos_cod = $db->f("pos_cod");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $lieu_cod = $result['lpos_lieu_cod'];
+        $etage_numero = $result['pos_etage'];
+        $pos_cod = $result['pos_cod'];
         switch ($methode) {
             case "entrer_donjon":
 
                 $req = "select entrer_donjon(" . $perso_cod . "," . $etage_num . "," . $pos_cod . ") as res";
-                $db->query($req);
-                $db->next_record();
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
 
-                $res = $db->f("res");
+                $res = $result['res'];
                 $libelle = explode(";", $res);
                 echo $libelle[1];
 
@@ -87,18 +87,18 @@ include "../includes/constantes.php";
                     $req = $req . "and etage_quatrieme_perso = 'O' ";
                 else
                     $req = $req . "and etage_quatrieme_perso = 'N' ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
-                while ($db->next_record()) {
-                    echo "<tr><td class=\"soustitre2\"><p>" . $db->f("etage_libelle") . "</p></td>
-				<td><p>" . $db->f("joueur") . "</td>
-				<td><p>" . ($db->f("joueur") != 0 ?
-                            round($db->f("jnv") / $db->f("joueur"), 0) :
+                while ($result = $stmt->fetch()) {
+                    echo "<tr><td class=\"soustitre2\"><p>" . $result['etage_libelle'] . "</p></td>
+				<td><p>" . $result['joueur'] . "</td>
+				<td><p>" . ($result['joueur'] != 0 ?
+                            round($result['jnv'] / $result['joueur'], 0) :
                             0) . "</td>
-				<td><p>" . ($db->f("carene_level_min") != 0 ?
-                            $db->f("carene_level_min") : 'Tous niveaux') . "</td>
-				<td><p>" . ($db->f("carene_level_max") != 0 ?
-                            $db->f("carene_level_max") : 'Tous niveaux') . "</td></tr>";
+				<td><p>" . ($result['carene_level_min'] != 0 ?
+                            $result['carene_level_min'] : 'Tous niveaux') . "</td>
+				<td><p>" . ($result['carene_level_max'] != 0 ?
+                            $result['carene_level_max'] : 'Tous niveaux') . "</td></tr>";
 
                 }
 
@@ -113,10 +113,10 @@ include "../includes/constantes.php";
                     $req = $req . "and etage_quatrieme_perso = 'O' ";
                 else
                     $req = $req . "and etage_quatrieme_perso = 'N' ";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
-                while ($db->next_record()) {
-                    echo "<option value=" . $db->f("etage_numero") . ">" . $db->f("etage_libelle") . "</option>";
+                while ($result = $stmt->fetch()) {
+                    echo "<option value=" . $result['etage_numero'] . ">" . $result['etage_libelle'] . "</option>";
                 }
                 echo "</select>";
                 echo "<input type=\"submit\" value=\"Entrer (4 PA)\" />";

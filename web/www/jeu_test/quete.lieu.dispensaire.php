@@ -19,12 +19,12 @@ switch($methode2)
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod in (373, 374, 376) order by obj_gobj_cod";
-		$db->query($req);
-		while($db->next_record())
+		$stmt = $pdo->query($req);
+		while($result = $stmt->fetch())
 		{
-			$obj_gen_quete = $db->f("obj_gobj_cod");
-			$obj_quete = $db->f("perobj_obj_cod");
-			$obj_nom = $db->f("obj_nom");
+			$obj_gen_quete = $result['obj_gobj_cod'];
+			$obj_quete = $result['perobj_obj_cod'];
+			$obj_nom = $result['obj_nom'];
 			if ($obj_gen_quete == 373)
 			{
 				//Quête du collectionneur : cette quête a pour vocation de faire ramener un objet rare, 
@@ -115,9 +115,9 @@ switch($methode2)
 			<br>Quel choix judicieux. Je vous remercie de m’avoir cédé cet objet. Je vais le donner à notre collectionneur !
 			<br>Pour votre peine, je vais puiser dans mes richesses et vous donner 3000 brouzoufs.
 		<?php 			$req = "select f_del_objet($obj_quete)";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$req2 = 'update perso set perso_po = perso_po + 3000 where perso_cod = ' . $perso_cod;
-			$db->query($req2);
+			$stmt = $pdo->query($req2);
 		}
 		else if($cede_objet == 'non')
 		{
@@ -145,11 +145,11 @@ switch($methode2)
 			// On crée deux parchemins différents dans l’inventaire du perso
 			$req = "select cree_objet_perso_nombre(362 + lancer_des(1, 6), $perso_cod, 1) as parcho1,
 				cree_objet_perso_nombre(362 + lancer_des(1, 6), $perso_cod, 1) as parcho2 ";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 
 			$req = "select vente_ecailles($perso_cod, $obj_gen_quete)";
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 		}
 		else if($cede_objet == 'non')
 		{

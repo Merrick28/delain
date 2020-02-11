@@ -37,12 +37,12 @@ if (!$db->is_lieu($perso_cod))
 																and perobj_perso_cod = $perso_cod 
 																and perobj_identifie = 'O' 
 																and obj_gobj_cod in (373,374,376) order by obj_gobj_cod";
-									$db->query($req);
-											while($db->next_record())
+									$stmt = $pdo->query($req);
+											while($result = $stmt->fetch())
 											{
-											$obj_gen_quete = $db->f("obj_gobj_cod");
-											$obj_quete = $db->f("perobj_obj_cod");
-											$obj_nom = $db->f("obj_nom");
+											$obj_gen_quete = $result['obj_gobj_cod'];
+											$obj_quete = $result['perobj_obj_cod'];
+											$obj_nom = $result['obj_nom'];
 													if
 													($obj_gen_quete == 373)
 													//Quête du collectionneur : cette quête a pour vocation de faire ramener un objet rare, droppé par les capitaines morbelins ou trouvé dans des cachettes
@@ -80,9 +80,9 @@ if (!$db->is_lieu($perso_cod))
 													// Particularité : posséder 10 écailles minimum, et arriver avant le 16 du mois
 													{
 													$req = "select to_char(now(),'DD') as date ";
-													$db2->query($req);
-													$db2->next_record();
-													$jour = $db2->f("date");
+													$stmt2 = $pdo->query($req);
+													$result2 = $stmt2->fetch();
+													$jour = $result2['date'];
 															if
 															($jour < 16)
 															{
@@ -127,9 +127,9 @@ if (!$db->is_lieu($perso_cod))
 											<br> Pour votre peine, je vais puiser dans mes richesses et vous donner 3000 brouzoufs
 											<?php 
 											$req = "select f_del_objet($obj_quete)";
-											$db->query($req);
+											$stmt = $pdo->query($req);
 											$req2 = 'update perso set perso_po = perso_po + 3000 where perso_cod = ' . $perso_cod;
-											$db->query($req2);
+											$stmt = $pdo->query($req2);
 									}
 									else if($cede_objet == 'non')
 									{
@@ -158,22 +158,22 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											// On crée deux parchemins différents dans l'inventaire du perso
 											$req = "select lancer_des(1,6) as des ";
-											$db->query($req);
-											$db->next_record();
-											$parchemin = 362 + $db->f("des");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
+											$parchemin = 362 + $result['des'];
 											$req2 = "select cree_objet_perso_nombre('$parchemin','$perso_cod','1')";
-											$db->query($req2);
-											$db->next_record();
+											$stmt = $pdo->query($req2);
+											$result = $stmt->fetch();
 											$req = "select lancer_des(1,6) as des ";
-											$db->query($req);
-											$db->next_record();
-											$parchemin = 362 + $db->f("des");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
+											$parchemin = 362 + $result['des'];
 											$req2 = "select cree_objet_perso_nombre('$parchemin','$perso_cod','1')";
-											$db->query($req2);
-											$db->next_record();
+											$stmt = $pdo->query($req2);
+											$result = $stmt->fetch();
 											$req3 = "select vente_ecailles($perso_cod,$obj_gen_quete)"; 
-											$db->query($req3);
-											$db->next_record();
+											$stmt = $pdo->query($req3);
+											$result = $stmt->fetch();
 									}
 									else if($cede_objet == 'non')
 									{
@@ -204,10 +204,10 @@ if (!$db->is_lieu($perso_cod))
 								//Cas de l'introduction de la quête7 pour les persos à haut niveau de Points de prestige
 								// Ce passage permet de donner à certains persos l'emplacement des cachettes
 								$req = "select perso_prestige,perso_nom from perso where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();
-								$prestige = $db->f("perso_prestige");
-								$nom = $db->f("perso_nom");
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								$prestige = $result['perso_prestige'];
+								$nom = $result['perso_nom'];
 								if ($prestige >= 10 and $prestige <= 20)
 								{
 								srand ((double) microtime() * 10000000); // pour intialiser le random
@@ -252,12 +252,12 @@ if (!$db->is_lieu($perso_cod))
 								case "debut":	
 					
 									$req = "select obj_gobj_cod,perobj_obj_cod,obj_nom from objets,perso_objets where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and perobj_identifie = 'O' and obj_gobj_cod in ('380') order by obj_gobj_cod ";
-									$db->query($req);
-											while($db->next_record())
+									$stmt = $pdo->query($req);
+											while($result = $stmt->fetch())
 											{
-											$obj_gen_quete = $db->f("obj_gobj_cod");
-											$obj_quete = $db->f("perobj_obj_cod");
-											$obj_nom = $db->f("obj_nom");
+											$obj_gen_quete = $result['obj_gobj_cod'];
+											$obj_quete = $result['perobj_obj_cod'];
+											$obj_nom = $result['obj_nom'];
 													if
 													($obj_gen_quete == 380)
 													//Quête du forgeron Trelmar Mogresh ayant perdu ses caisses de minerais volées par des brigands
@@ -304,28 +304,28 @@ if (!$db->is_lieu($perso_cod))
 											<br>Il vous contactera certainement rapidement pour la récompense.
 											<?php 
 											$req = "select vente_caisses($perso_cod,$obj_gen_quete)"; 
-											$db->query($req);
-											$db->next_record();
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
 											$req5 = "update perso set perso_prestige = perso_prestige + 1 where perso_cod = $perso_cod";
-											$db->query($req5);
+											$stmt = $pdo->query($req5);
 											$req = "select nextval('seq_msg_cod') as numero";
-											$db->query($req);
-											$db->next_record();
-											$num_mes = $db->f("numero");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
+											$num_mes = $result['numero'];
 											//
 											$corps = "Livraison effectuée - STOP - transmettre propriétaire - STOP - Cargaison bon état - STOP -" . $nb_caisses . " caisses livrées - STOP - Fin Transmission - STOP -
 											";
 											
 											$titre = "Livraison Caisses";
 											$req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),'$titre','$corps') ";
-											$db->query($req_ins_mes);
+											$stmt = $pdo->query($req_ins_mes);
 											/******************************/
 											/* On enregistre l'expéditeur */
 											/******************************/
 											$req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_cod,'N')";
-											$db->query($req_ins_exp);
+											$stmt = $pdo->query($req_ins_exp);
 											$req_ins_dest = "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,200017,'N','N')";
-											$db->query($req_ins_dest);
+											$stmt = $pdo->query($req_ins_dest);
 											
 									}
 									else if($cede_objet == 'non')
@@ -365,9 +365,9 @@ if (!$db->is_lieu($perso_cod))
 												where lieu_cod = lpos_lieu_cod
 												and lpos_pos_cod = ppos_pos_cod
 												and ppos_perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();
-								$dieu = $db->f("lieu_dieu_cod");
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								$dieu = $result['lieu_dieu_cod'];
 														
 								if
 								//Cas des temples de Balgur
@@ -378,21 +378,21 @@ if (!$db->is_lieu($perso_cod))
 															where perso_cod = $perso_cod
 															and dper_perso_cod = $perso_cod
 															and dper_niveau > 0";
-											$db->query($req);
-											$db->next_record();		
-											$brouzoufs = $db->f("perso_po");
-											$dieu_perso = $db->f("dper_dieu_cod");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();		
+											$brouzoufs = $result['perso_po'];
+											$dieu_perso = $result['dper_dieu_cod'];
 											if
 											($brouzoufs > 1001 and $dieu_perso == 2)
 															{
 															$req = "select pquete_nombre from quete_perso 
 																			where pquete_quete_cod = 7 
 																			and pquete_perso_cod = $perso_cod";
-															$db->query($req);
-															$db->next_record();		
-															$quete7 = $db->f("pquete_nombre");
+															$stmt = $pdo->query($req);
+															$result = $stmt->fetch();		
+															$quete7 = $result['pquete_nombre'];
 															// On est dans la première étape de la quête, jamais réalisée
-															if ($db->nf() == 0)
+															if ($stmt->rowCount() == 0)
 																	{	
 																	?>	
 																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></strong>
@@ -423,20 +423,20 @@ if (!$db->is_lieu($perso_cod))
 															where perso_cod = $perso_cod
 															and dper_perso_cod = $perso_cod
 															and dper_niveau > 0";
-											$db->query($req);
-											$db->next_record();		
-											$brouzoufs = $db->f("perso_po");
-											$dieu_perso = $db->f("dper_dieu_cod");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();		
+											$brouzoufs = $result['perso_po'];
+											$dieu_perso = $result['dper_dieu_cod'];
 											if ($brouzoufs > 1001 and $dieu_perso == 4)
 															{
 															$req = "select pquete_nombre from quete_perso 
 																			where pquete_quete_cod = 8 
 																			and pquete_perso_cod = $perso_cod";
-															$db->query($req);
-															$db->next_record();		
-															$quete8 = $db->f("pquete_nombre");
+															$stmt = $pdo->query($req);
+															$result = $stmt->fetch();		
+															$quete8 = $result['pquete_nombre'];
 															// On est dans la première étape de la quête, jamais réalisée
-															if ($db->nf() == 0)
+															if ($stmt->rowCount() == 0)
 																		{
 																		?>	
 																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></strong>
@@ -466,20 +466,20 @@ if (!$db->is_lieu($perso_cod))
 															where perso_cod = $perso_cod
 															and dper_perso_cod = $perso_cod
 															and dper_niveau > 0";
-											$db->query($req);
-											$db->next_record();		
-											$brouzoufs = $db->f("perso_po");
-											$dieu_perso = $db->f("dper_dieu_cod");
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();		
+											$brouzoufs = $result['perso_po'];
+											$dieu_perso = $result['dper_dieu_cod'];
 											if ($brouzoufs > 1001 and $dieu_perso == 1)
 															{
 															$req = "select pquete_nombre from quete_perso 
 																			where pquete_quete_cod = 10 
 																			and pquete_perso_cod = $perso_cod";
-															$db->query($req);
-															$db->next_record();		
-															$quete10 = $db->f("pquete_nombre");
+															$stmt = $pdo->query($req);
+															$result = $stmt->fetch();		
+															$quete10 = $result['pquete_nombre'];
 															// On est dans la première étape de la quête, jamais réalisée
-															if ($db->nf() == 0)
+															if ($stmt->rowCount() == 0)
 																		{
 																		?>	
 																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></strong>
@@ -516,8 +516,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -542,14 +542,14 @@ if (!$db->is_lieu($perso_cod))
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
 																	values (default, '7', $perso_cod,'1')";
-											$db->query($req);
-											$db->next_record();			
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();			
 											}
 								//Mise à jour des brouzoufs dans tous les cas
 								$req = "update perso set perso_po = perso_po - 1000 
 															where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
 								break; // Fin du traitement Etape 1 de Balgur
 /***********************************************************************************************************/								
 								case "dieu2_quete7_2": // Balgur deuxièmes dévotions
@@ -563,8 +563,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -593,14 +593,14 @@ if (!$db->is_lieu($perso_cod))
 															set pquete_nombre = 3 
 															where pquete_perso_cod = $perso_cod 
 															and pquete_quete_cod = 7;";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								//Mise à jour des brouzoufs
 								$req = "update perso set perso_po = perso_po - 1000 
 															where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
 								break; // Fin du traitement Etape 2 de Balgur
 								// Fin du traitement de Balgur pour la quête 7
 /***********************************************************************************************************/								
@@ -618,8 +618,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -643,14 +643,14 @@ if (!$db->is_lieu($perso_cod))
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
 																	values (default, '8', $perso_cod,'1')";
-											$db->query($req);
-											$db->next_record();			
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();			
 											}
 								//Mise à jour des brouzoufs dans tous les cas
 								$req = "update perso set perso_po = perso_po - 1000 
 												where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();	
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();	
 								break; // Fin du traitement Etape 1 d'Elian
 								
 								case "dieu4_quete8_2": //Elian, deuxièmes dévotions
@@ -664,8 +664,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -688,19 +688,19 @@ if (!$db->is_lieu($perso_cod))
 															set pquete_nombre = 3 
 															where pquete_perso_cod = $perso_cod 
 															and pquete_quete_cod = 8;";
-											$db->query($req);
-											$db->next_record();
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
 																	values (default, '9', $perso_cod,'1');";
-											$db->query($req);
-											$db->next_record();				
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();				
 											}
 								//Mise à jour des brouzoufs
 								$req = "update perso set perso_po = perso_po - 1000 
 												where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();	
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();	
 								break; // Fin du traitement Etape 2 d'Elian
 								//Fin globale du traitement d'Elian
 /***********************************************************************************************************/
@@ -716,8 +716,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -738,14 +738,14 @@ if (!$db->is_lieu($perso_cod))
 											//Mise à jour de l'étape terminée pour passer à la cachette
 											$req = "insert into quete_perso 
 																	values (default, '10', $perso_cod,'1')";
-											$db->query($req);
-											$db->next_record();				
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();				
 											}
 								//Mise à jour des brouzoufs
 								$req = "update perso set perso_po = perso_po - 1000 
 												where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();	
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();	
 								break; // Fin du traitement de Io Etape 1
 /***********************************************************************************************************/										
 								case "dieu1_quete10_2": // Io deuxièmes dévotions
@@ -759,8 +759,8 @@ if (!$db->is_lieu($perso_cod))
 											<?php 
 											$req = "update perso set perso_pv = perso_pv - 5 
 																		where perso_cod = $perso_cod";
-											$db->query($req);
-											$db->next_record();	
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();	
 											}
 								else
 											{
@@ -792,16 +792,16 @@ if (!$db->is_lieu($perso_cod))
 															set pquete_nombre = 3 
 															where pquete_perso_cod = $perso_cod 
 															and pquete_quete_cod = 10;";
-											$db->query($req);
-											$db->next_record();
+											$stmt = $pdo->query($req);
+											$result = $stmt->fetch();
 											Fin mise en commentaire à supprimer*/
 													
 											}
 								//Mise à jour des brouzoufs
 								$req = "update perso set perso_po = perso_po - 1000 
 												where perso_cod = $perso_cod";
-								$db->query($req);
-								$db->next_record();	
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();	
 								break; // Fin du traitement de Io Etape
 								// Fin global du traitement de Io
 /***********************************************************************************************************/																						
@@ -818,17 +818,17 @@ if (!$db->is_lieu($perso_cod))
 							$req = "select lpos_lieu_cod from lieu_position,perso_position
 														where ppos_perso_cod = $perso_cod
 														and lpos_pos_cod = ppos_pos_cod";
-							$db->query($req);
-							$db->next_record();		
-							$lieu = $db->f("lpos_lieu_cod");
+							$stmt = $pdo->query($req);
+							$result = $stmt->fetch();		
+							$lieu = $result['lpos_lieu_cod'];
 																						
 							//En fonction du dieu, résultat différent ==> à mettre dans le case de résolution	
 							$req = "select dper_dieu_cod from perso,dieu_perso 
 														where perso_cod = $perso_cod
 														and dper_perso_cod = $perso_cod";
-							$db->query($req);
-							$db->next_record();		
-							$dieu = $db->f("dper_dieu_cod");
+							$stmt = $pdo->query($req);
+							$result = $stmt->fetch();		
+							$dieu = $result['dper_dieu_cod'];
 							
 							//Modifier le lieu quand il sera créé ***Attention ! Batiment en construction obligatoire***
 							if ($lieu = XXXX)
@@ -840,12 +840,12 @@ if (!$db->is_lieu($perso_cod))
 												$req = "select pquete_quete_cod,pquete_perso_cod,pquete_nombre 
 																			from quete_perso 
 																			where pquete_perso_cod = $perso_cod";
-												$db->query($req);
-														while($db->next_record())
+												$stmt = $pdo->query($req);
+														while($result = $stmt->fetch())
 														{
-														$quete = $db->f("pquete_quete_cod");
-														$perso = $db->f("pquete_perso_cod");
-														$quete_nombre = $db->f("pquete_nombre");
+														$quete = $result['pquete_quete_cod'];
+														$perso = $result['pquete_perso_cod'];
+														$quete_nombre = $result['pquete_nombre'];
 																if
 																($quete == 7 and $quete_nombre > 1)
 																{
@@ -889,13 +889,13 @@ if (!$db->is_lieu($perso_cod))
 											<?
 											//rajouter une incrémentation des points de prestige pour cette quête 
 											$req = 'insert into quete_perso values (DEFAULT,\'7\',\'' . $perso_cod . '\',\'1\')';
-											$db->query($req);
+											$stmt = $pdo->query($req);
 											$req2 = 'select quete_nom from quetes,quete_perso 
 																		where quete_cod = pquete_quete_cod
 																		and pquete_perso_cod = ' . $perso_cod;
-											$db->query($req2);
-											$db->next_record();
-											$nom_quete = $db->f("obj_gobj_cod");
+											$stmt = $pdo->query($req2);
+											$result = $stmt->fetch();
+											$nom_quete = $result['obj_gobj_cod'];
 											echo '<br>vous venez de terminer la quête ' . $nom_quete;
 									}
 									else 

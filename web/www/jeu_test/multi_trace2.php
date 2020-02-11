@@ -16,11 +16,11 @@ $req = $req . "select multi_cpt2 as compte,compt_nom from multi_trace,compte ";
 $req = $req . "where (multi_cpt1 = $v_compte or multi_cpt2 = $v_compte) ";
 $req = $req . "and multi_cpt2 = compt_cod ";
 $req = $req . "and compt_confiance = 'N' ";
-$db->query($req);
-if ($db->nf() != 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() != 0) {
     echo "<p class=\"titre\">Comptes impliqués :</p>";
-    while ($db->next_record()) {
-        echo "<a href=\"detail_compte.php?compte=" . $db->f("compte") . "\">" . $db->f("compt_nom") . "</A><br>";
+    while ($result = $stmt->fetch()) {
+        echo "<a href=\"detail_compte.php?compte=" . $result['compte'] . "\">" . $result['compt_nom'] . "</A><br>";
     }
 } else {
     echo "<p>Aucune donnée trouvée !";
@@ -37,7 +37,7 @@ $req_evt = $req_evt . "and c2.compt_confiance = 'N' ";
 $req_evt = $req_evt . "order by multi_cod desc ";
 $req_evt = $req_evt . "limit 40 ";
 $req_evt = $req_evt . "offset $evt_start ";
-$db->query($req_evt);
+$stmt = $pdo->query($req_evt);
 ?>
     <table cellspacing="2">
         <tr>
@@ -55,12 +55,12 @@ $db->query($req_evt);
         <form name="visu_evt" method="post" action="multi_trace.php">
             <input type="hidden" name="visu">
             <?php
-            while ($db->next_record()) {
+            while ($result = $stmt->fetch()) {
                 echo "<tr>";
-                echo "<td class=\"soustitre3\"><p>" . $db->f("date") . "</p></td>";
-                echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=" . $db->f("ancien_cod") . "\">" . $db->f("ancien_nom") . "</A></p></td>";
-                echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=" . $db->f("nouveau_cod") . "\">" . $db->f("nouveau_nom") . "</A></p></td>";
-                $ip = $db->f("multi_ip");
+                echo "<td class=\"soustitre3\"><p>" . $result['date'] . "</p></td>";
+                echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=" . $result['ancien_cod'] . "\">" . $result['ancien_nom'] . "</A></p></td>";
+                echo "<td class=\"soustitre3\"><p><a href=\"detail_compte.php?compte=" . $result['nouveau_cod'] . "\">" . $result['nouveau_nom'] . "</A></p></td>";
+                $ip = $result['multi_ip'];
                 echo "<td class=\"soustitre3\"><p>" . $ip . "</td>";
                 echo "<td class=\"soustitre3\"><p>" . gethostbyaddr($ip) . "</p></td>";
 

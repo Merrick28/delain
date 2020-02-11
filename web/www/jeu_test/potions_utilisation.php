@@ -9,8 +9,8 @@ switch ($methode) {
     case "debut":
         $req = 'select * from potions.perso_toxic
 			where ptox_perso_cod = ' . $perso_cod;
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             $contenu_page .= '<br /><strong>Attention !</strong> Votre corps contient encore des restes d’une potion bue précédemment.<br />
 				Boire une autre potion maintenant vous expose à une toxicité qui pourrait avoir des effets regrettables sur votre organisme.<br />';
         }
@@ -27,8 +27,8 @@ switch ($methode) {
 				and gobj_tobj_cod = 21
 				and obj_gobj_cod not in (561,412)
 			order by obj_gobj_cod";
-        $db->query($req);
-        if ($db->nf() == 0)
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() == 0)
             $contenu_page .= "Vous n’avez aucune potion identifiée utilisable !<br>";
         else {
             $contenu_page .= '<br>
@@ -38,9 +38,9 @@ switch ($methode) {
 						<tr>
 							<td class="soustitre">Liste des potions disponibles</td><td></td><td><input type="submit" value="Utiliser cette potion (2PA)"  class="test"></td>
 						</tr>';
-            while ($db->next_record()) {
+            while ($result = $stmt->fetch()) {
                 $contenu_page .= '<tr>	
-					<td>' . $db->f('obj_nom') . '</td><td><input type="radio" name="potion" value="' . $db->f('obj_gobj_cod') . '"></td>
+					<td>' . $result['obj_nom'] . '</td><td><input type="radio" name="potion" value="' . $result['obj_gobj_cod'] . '"></td>
 				</tr>';
             }
             $contenu_page .= '</table></form>';
@@ -56,8 +56,8 @@ switch ($methode) {
     case 'potion_inventaire1':
         $potion = (isset($_POST['potion'])) ? $_POST['potion'] : $_GET['potion'];
         $req = 'select * from potions.perso_toxic where ptox_perso_cod = ' . $perso_cod;
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             $contenu_page .= '<br /><strong>Attention !</strong> Votre corps contient encore des restes d’une potion bue précédemment.<br />
 				Boire une autre potion maintenant vous expose à une toxicité qui pourrait avoir des effets regrettables sur votre organisme.<br />
 				Souhaitez-vous néanmoins continuer ?<br /><br />
@@ -76,16 +76,16 @@ function boire_potion($laPotion)
     global $db, $perso_cod;
     $resultat = '';
     $req = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = ' . $laPotion;
-    $db->query($req);
-    if ($db->nf() == 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() == 0)
         $resultat = 'Erreur sur la fonction appelée.';
     else {
-        $db->next_record();
-        $fonction = $db->f('fpot_fonction');
+        $result = $stmt->fetch();
+        $fonction = $result['fpot_fonction'];
         $req = 'select potions.' . $fonction . '(' . $perso_cod . ') as resultat';
-        $db->query($req);
-        $db->next_record();
-        $resultat = $db->f('resultat');
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $resultat = $result['resultat'];
     }
     return $resultat;
 }

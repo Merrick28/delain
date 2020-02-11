@@ -1,6 +1,6 @@
 <?php 
 $contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
-$db2 = new base_delain;
+
 if (!$db->is_admin($compt_cod)
      || ($db->is_admin_monstre($compt_cod) 
          && ($db->is_monstre($perso_cod) || $db->is_pnj($perso_cod))))
@@ -28,9 +28,9 @@ if (!$db->is_admin($compt_cod)
 												left join messages_exp on emsg_msg_cod=msg_cod
 												left join perso on perso_cod=emsg_perso_cod
 												where msg_cod=".$num_message;
-			$db->query($req_msg);
-			$db->next_record();
-			$mess_old = str_replace(chr(127),';',$db->f('msg_corps'));
+			$stmt = $pdo->query($req_msg);
+			$result = $stmt->fetch();
+			$mess_old = str_replace(chr(127),';',$result['msg_corps']);
 
             $breaks = array("<br />","<br>","<br/>");
             $mess_old = str_ireplace($breaks, "", $mess_old);
@@ -38,17 +38,17 @@ if (!$db->is_admin($compt_cod)
             //$mess_old = eregi_replace('<br[[:space:]]*/?[[:space:]]*>','',$mess_old);
 			preg_match("/.*?(_{1,}\[.*\]_{1,}.*_{12,16}).*/s", $mess_old, $mess_olds); // Dernier ajout
 			if (count($mess_olds)==0) { // S'il n'y a qu'un précédent message
-				$n_message = '__['.$db->f('perso_nom')."]__\n".trim($mess_old)."\n________________\n";
+				$n_message = '__['.$result['perso_nom']."]__\n".trim($mess_old)."\n________________\n";
 			} else { // S'il y a plusieurs précédents messages
 				$mess_old = str_replace($mess_olds[1],'',$mess_old);
 				//$mess_olds[1] = eregi_replace('_{12,16}','',$mess_olds[1]);
-				$n_message = $mess_olds[1]."\n__[".$db->f('perso_nom')."]__\n".trim($mess_old)."\n________________\n";
+				$n_message = $mess_olds[1]."\n__[".$result['perso_nom']."]__\n".trim($mess_old)."\n________________\n";
 			}
 			/* // Ancienne version
 			$req_msg = "select msg_corps from messages where msg_cod = " . $num_message;
-			$db->query($req_msg);
-			$db->next_record();
-			$n_message = str_replace(chr(127),';',$db->f('msg_corps'));
+			$stmt = $pdo->query($req_msg);
+			$result = $stmt->fetch();
+			$n_message = str_replace(chr(127),';',$result['msg_corps']);
 			$n_message = str_replace("<br />",'',$n_message);
 			$n_message = '[Message précédemment reçu : '.$n_message.']';
 			*/
@@ -90,13 +90,13 @@ if (!$db->is_admin($compt_cod)
 		<td class="titre" colspan="3"><div class="titre">Expédition d\'un nouveau message</div></td>
 		</tr>';
 		$req_pos = "select ppos_pos_cod,distance_vue($perso_cod) as dist_vue,pos_etage,pos_x,pos_y from perso_position,perso,positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-		$db->query($req_pos);
-		$db->next_record();
-		$pos_actuelle = $db->f("ppos_pos_cod");
-		$v_x = $db->f("pos_x");
-		$v_y = $db->f("pos_y");
-		$vue =  $db->f("dist_vue");
-		$etage = $db->f("pos_etage");
+		$stmt = $pdo->query($req_pos);
+		$result = $stmt->fetch();
+		$pos_actuelle = $result['ppos_pos_cod'];
+		$v_x = $result['pos_x'];
+		$v_y = $result['pos_y'];
+		$vue =  $result['dist_vue'];
+		$etage = $result['pos_etage'];
 		// remplissage de contenu
 		$contenu_page .= '
 		<tr>
@@ -107,8 +107,8 @@ if (!$db->is_admin($compt_cod)
 		<option value="">---------------</option>';
 
 		$req_guilde = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' ";
-		$db->query($req_guilde);
-		if ($db->nf() != 0)
+		$stmt = $pdo->query($req_guilde);
+		if ($stmt->rowCount() != 0)
 		{
 			// remplissage de contenu
 			$contenu_page .= '<optgroup label="Guilde">
@@ -134,40 +134,40 @@ if (!$db->is_admin($compt_cod)
 												and ppos_pos_cod = pos_cod
 												and pos_etage = $etage
 												order by dist,perso_type_perso,perso_nom ";
-		$db->query($req_vue);
+		$stmt = $pdo->query($req_vue);
 		$ch = '';
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
-			if ($db->f('traj') == 1)
+			if ($result['traj'] == 1)
 			{
-				if ($db->f('dist') != $dist_init)
+				if ($result['dist'] != $dist_init)
 				{
-					$ch .= '</optgroup><optgroup label="Distance ' . $db->f('dist') . '">';
-					$dist_init = $db->f('dist');
+					$ch .= '</optgroup><optgroup label="Distance ' . $result['dist'] . '">';
+					$dist_init = $result['dist'];
 				}
-				$ch .= '<option value="' . $db->f('perso_nom') . ';">' . $db->f('perso_nom') . '</option>';
+				$ch .= '<option value="' . $result['perso_nom'] . ';">' . $result['perso_nom'] . '</option>';
 
 			}
 		}
 			$ch = substr($ch,11);
 			$contenu_page .= $ch;
 			$req = "select cliste_cod,cliste_nom from contact_liste where cliste_perso_cod = $perso_cod ";
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
 				$db2 = new base_delain();
-				while ($db->next_record())
+				while ($result = $stmt->fetch())
 				{
-					$contenu_page .= '<optgroup label="liste - ' . $db->f("cliste_nom") . '">';
-					$contenu_page .= '<option value="liste_dif_' . $db->f("cliste_cod") . ';">Toute la liste</option>';
+					$contenu_page .= '<optgroup label="liste - ' . $result['cliste_nom'] . '">';
+					$contenu_page .= '<option value="liste_dif_' . $result['cliste_cod'] . ';">Toute la liste</option>';
 					$req = "select perso_cod,perso_nom from perso,contact ";
-					$req = $req . "where contact_cliste_cod = " . $db->f("cliste_cod") . " ";
+					$req = $req . "where contact_cliste_cod = " . $result['cliste_cod'] . " ";
 					$req = $req . "and contact_perso_cod = perso_cod ";
 					$req = $req . "order by perso_nom ";
-					$db2->query($req);
-					while ($db2->next_record())
+					$stmt2 = $pdo->query($req);
+					while ($result2 = $stmt2->fetch())
 					{
-						$contenu_page .= '<option value="' . $db2->f("perso_nom") . ';">' . $db2->f("perso_nom") . '</option>';
+						$contenu_page .= '<option value="' . $result2['perso_nom'] . ';">' . $result2['perso_nom'] . '</option>';
 					}
 					
 					$contenu_page .= '</optgroup>';

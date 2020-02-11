@@ -138,9 +138,9 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
 		if ($defi_cible_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -183,9 +183,9 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
 		if ($defi_cible_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -242,9 +242,9 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
 		if ($defi_cible_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -288,9 +288,9 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
 		if ($defi_cible_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -347,9 +347,9 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -402,10 +402,10 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
-		$defi_abandon_etape = $db->f('defi_abandon_etape');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
+		$defi_abandon_etape = $result['defi_abandon_etape'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -472,10 +472,10 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
-		$defi_abandon_etape = $db->f('defi_abandon_etape');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
+		$defi_abandon_etape = $result['defi_abandon_etape'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -519,10 +519,10 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
-		$defi_abandon_etape = $db->f('defi_abandon_etape');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
+		$defi_abandon_etape = $result['defi_abandon_etape'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -550,7 +550,7 @@ switch ($methode)
 			$defi_message";
 
 		$req_defi = "update defi set defi_abandon_etape = 1, defi_abandon_initiateur = '$role' where defi_cod = $defi_cod";
-		$db->query($req_defi);
+		$stmt = $pdo->query($req_defi);
 
 		message::Envoyer($perso_cod, $adversaire, $defi_titre, $defi_message, false);
 
@@ -573,10 +573,10 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
-		$defi_abandon_etape = $db->f('defi_abandon_etape');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
+		$defi_abandon_etape = $result['defi_abandon_etape'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -599,7 +599,7 @@ switch ($methode)
 		$defi_message = "Le défi qui vous opposait à $nom est déclaré nul !";
 
 		$req_defi = "select defi_abandonner($defi_cod, '2')";
-		$db->query($req_defi);
+		$stmt = $pdo->query($req_defi);
 
 		message::Envoyer($perso_cod, $adversaire, $defi_titre, $defi_message, false);
 
@@ -622,10 +622,10 @@ switch ($methode)
 			$message_erreur .= 'Défi introuvable.';
 			break;
 		}
-		$lanceur_cod = $db->f('defi_lanceur_cod');
-		$defi_cible_cod = $db->f('defi_cible_cod');
-		$defi_statut = $db->f('defi_statut');
-		$defi_abandon_etape = $db->f('defi_abandon_etape');
+		$lanceur_cod = $result['defi_lanceur_cod'];
+		$defi_cible_cod = $result['defi_cible_cod'];
+		$defi_statut = $result['defi_statut'];
+		$defi_abandon_etape = $result['defi_abandon_etape'];
 		if ($defi_cible_cod != $perso_cod && $lanceur_cod != $perso_cod)
 		{
 			$erreur = true;
@@ -649,7 +649,7 @@ switch ($methode)
 			Vous devrez donc le continuer, à moins que vous ne préfériez tout abandonner ?";
 
 		$req_defi = "update defi set defi_abandon_etape = 0, defi_abandon_initiateur = NULL where defi_cod = $defi_cod";
-		$db->query($req_defi);
+		$stmt = $pdo->query($req_defi);
 
 		message::Envoyer($perso_cod, $adversaire, $defi_titre, $defi_message, false);
 
@@ -695,15 +695,15 @@ if ($db->get_one_record($req))
 		<td class="soustitre2"><strong>Actions</strong></td></tr>';
 
 	// Données du défi
-	$adversaire_cod = $db->f('adversaire_cod');
-	$adversaire = $db->f('adversaire');
-	$defi_lanceur_cod = $db->f('defi_lanceur_cod');
-	$initiateur = $db->f('lanceur_nom');
-	$defi_cod = $db->f('defi_cod');
-	$defi_date = $db->f('defi_date');
-	$defi_statut = $db->f('defi_statut');
-	$defi_abandon_initiateur = $db->f('defi_abandon_initiateur');
-	$defi_abandon_etape = $db->f('defi_abandon_etape');
+	$adversaire_cod = $result['adversaire_cod'];
+	$adversaire = $result['adversaire'];
+	$defi_lanceur_cod = $result['defi_lanceur_cod'];
+	$initiateur = $result['lanceur_nom'];
+	$defi_cod = $result['defi_cod'];
+	$defi_date = $result['defi_date'];
+	$defi_statut = $result['defi_statut'];
+	$defi_abandon_initiateur = $result['defi_abandon_initiateur'];
+	$defi_abandon_etape = $result['defi_abandon_etape'];
 	$is_lanceur = ($defi_lanceur_cod == $perso_cod);
 
 	$statut_texte = '';
@@ -792,10 +792,10 @@ $contenu_page .= '</td></tr></table>';
 // Affiche la liste des défis passée en paramètres
 function afficherDefisPasses($req_defis, $is_lanceur)
 {
-	$db = new base_delain;
-	$db->query($req_defis);
+	
+	$stmt = $pdo->query($req_defis);
 	$resultat = '';
-	$existe_defis = ($db->nf() > 0);
+	$existe_defis = ($stmt->rowCount() > 0);
 
 	if (!$existe_defis)
 	{
@@ -809,14 +809,14 @@ function afficherDefisPasses($req_defis, $is_lanceur)
 			<td class="soustitre2"><strong>Statut</strong></td></tr>';
 	}
 	
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
 		// Données du défi
-		$adversaire_cod = $db->f('adversaire_cod');
-		$adversaire = $db->f('adversaire');
-		$defi_vainqueur = $db->f('defi_vainqueur');
-		$defi_date = $db->f('defi_date');
-		$defi_statut = $db->f('defi_statut');
+		$adversaire_cod = $result['adversaire_cod'];
+		$adversaire = $result['adversaire'];
+		$defi_vainqueur = $result['defi_vainqueur'];
+		$defi_date = $result['defi_date'];
+		$defi_statut = $result['defi_statut'];
 
 		$statut_texte = '';
 		switch ($defi_statut)

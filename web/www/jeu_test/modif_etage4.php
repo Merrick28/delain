@@ -4,8 +4,8 @@ ob_start();
 
 $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 if (!isset($methode)) {
     $methode = 'debut';
 }
@@ -16,12 +16,12 @@ if ($erreur == 0) {
         . "from perso_position,positions "
         . "where ppos_perso_cod = $perso_cod"
         . "and ppos_pos_cod = pos_cod ";
-    $db->query($req_matos);
-    $db->next_record();
-    $perso_pos_x = $db->f("pos_x");
-    $perso_pos_y = $db->f("pos_y");
-    $perso_pos_etage = $db->f("pos_etage");
-    $perso_pos_cod = $db->f("pos_cod");
+    $stmt = $pdo->query($req_matos);
+    $result = $stmt->fetch();
+    $perso_pos_x = $result['pos_x'];
+    $perso_pos_y = $result['pos_y'];
+    $perso_pos_etage = $result['pos_etage'];
+    $perso_pos_cod = $result['pos_cod'];
 
     if (isset($_POST['methode'])) {
         switch ($methode) {
@@ -32,7 +32,7 @@ if ($erreur == 0) {
                     if ($temp_pos_cod) {
                         $req = "insert into ingredient_position (ingrpos_pos_cod,ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea,ingrpos_qte)
 						values ($temp_pos_cod, $liste, " . $_POST['quantite'] . ", " . $_POST['pourcentage'] . ",0)";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -42,7 +42,7 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from ingredient_position where ingrpos_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -59,14 +59,14 @@ if ($erreur == 0) {
         Etage : <select name="pos_etage">
             <?php
             $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-            $db->query($req);
-            while ($db->next_record()) {
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
                 $sel = "";
-                if ($pos_etage == $db->f("etage_numero")) {
+                if ($pos_etage == $result['etage_numero']) {
                     $sel = "selected";
                 }
-                $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-                echo "<option value=\"", $db->f("etage_numero"), "\" $sel>", ($reference ? '' : ' |-- '), $db->f("etage_libelle"), "</option>";
+                $reference = ($result['etage_numero'] == $result['etage_reference']);
+                echo "<option value=\"", $result['etage_numero'], "\" $sel>", ($reference ? '' : ' |-- '), $result['etage_libelle'], "</option>";
             }
             ?>
         </select><br>
@@ -86,10 +86,10 @@ if ($erreur == 0) {
 	inner join positions on pos_cod = ingrpos_pos_cod
 	where  pos_etage = $sel_etage
 	group by ingrpos_gobj_cod";
-    $db->query($req_compo);
+    $stmt = $pdo->query($req_compo);
     $tab_compo = array();
-    while ($db->next_record())
-        $tab_compo[$db->f('ingrpos_gobj_cod')] = $db->f('nb');
+    while ($result = $stmt->fetch())
+        $tab_compo[$result['ingrpos_gobj_cod']] = $result['nb'];
 
     ?>
     Ajouter des composants dans le sol.
@@ -213,13 +213,13 @@ if ($erreur == 0) {
         Liste des ingrédients : <select name="liste">
             <?php
             $req = "select gobj_nom,gobj_cod from objet_generique where gobj_tobj_cod = 22 order by gobj_nom asc ";
-            $db->query($req);
-            while ($db->next_record()) {
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
                 $sel = "";
-                if ($liste == $db->f("gobj_cod")) {
+                if ($liste == $result['gobj_cod']) {
                     $sel = "selected";
                 }
-                echo "<option value=\"", $db->f("gobj_cod"), "\" $sel>", $db->f("gobj_nom"), "</option>";
+                echo "<option value=\"", $result['gobj_cod'], "\" $sel>", $result['gobj_nom'], "</option>";
             }
             ?>
         </select><br>
@@ -330,33 +330,33 @@ if ($erreur == 0) {
 	left outer join murs on mur_pos_cod = pos_cod
 	where  pos_etage = $sel_etage
 	order by pos_y desc, pos_x asc";
-            $db->query($req_position);
-            $db->next_record();
+            $stmt = $pdo->query($req_position);
+            $result = $stmt->fetch();
             $caseEnCours = -1;
             $continuer = true;
-            $p_y = $db->f("pos_y");
+            $p_y = $result['pos_y'];
             $js_coord = '';
 
             while ($continuer)
             {
-            if ($db->f("pos_y") != $p_y)
+            if ($result['pos_y'] != $p_y)
             {
             ?>
         </tr>
         <tr>
             <?php
             }
-            $p_y = $db->f("pos_y");
-            $position = $db->f("pos_cod");
+            $p_y = $result['pos_y'];
+            $position = $result['pos_cod'];
             $caseEnCours = $position;
-            $nbCouleurs = ($db->f("ingrpos_gobj_cod") > 0) ? 1 : 0;
+            $nbCouleurs = ($result['ingrpos_gobj_cod'] > 0) ? 1 : 0;
 
-            if ($db->f("mur_pos_cod") == -1)
-                $js_coord .= "coord[$position] = [" . $db->f("pos_x") . ", " . $db->f("pos_y") . "];\n";
+            if ($result['mur_pos_cod'] == -1)
+                $js_coord .= "coord[$position] = [" . $result['pos_x'] . ", " . $result['pos_y'] . "];\n";
 
-            if ($nbCouleurs == 0 || $db->f("mur_pos_cod") > 0) {
-                if ($db->f("mur_pos_cod") > 0) {
-                    if ($db->f("mur_creusable") == 'O') {
+            if ($nbCouleurs == 0 || $result['mur_pos_cod'] > 0) {
+                if ($result['mur_pos_cod'] > 0) {
+                    if ($result['mur_creusable'] == 'O') {
                         $color = "#696969";
                     } else {
                         $color = "#000000";
@@ -368,17 +368,17 @@ if ($erreur == 0) {
                 <td width="20" height="20">
                     <div id="pos_<?php echo $position; ?>"
                          style="width:25px;height:25px;background:<?php echo $color ?>;"
-                         onClick="valActionMur(<?php echo $db->f("pos_cod"); ?>);"></div>
+                         onClick="valActionMur(<?php echo $result['pos_cod']; ?>);"></div>
                 </td>
                 <?php
-                $db->next_record();
+                $result = $stmt->fetch();
             } else {
                 $ingredientsArray = array();
-                $texte = $db->f('gobj_nom') . ' (' . $db->f('ingrpos_max') . ', ' . $db->f('ingrpos_chance_crea') . "\n";
-                $ingredientsArray[] = $db->f("ingrpos_gobj_cod");
-                while ($db->next_record() && $db->f('pos_cod') == $caseEnCours) {
-                    $ingredientsArray[] = $db->f("ingrpos_gobj_cod");
-                    $texte .= $db->f('gobj_nom') . ' (' . $db->f('ingrpos_max') . ', ' . $db->f('ingrpos_chance_crea') . "\n";
+                $texte = $result['gobj_nom'] . ' (' . $result['ingrpos_max'] . ', ' . $result['ingrpos_chance_crea'] . "\n";
+                $ingredientsArray[] = $result['ingrpos_gobj_cod'];
+                while ($result = $stmt->fetch() && $result['pos_cod'] == $caseEnCours) {
+                    $ingredientsArray[] = $result['ingrpos_gobj_cod'];
+                    $texte .= $result['gobj_nom'] . ' (' . $result['ingrpos_max'] . ', ' . $result['ingrpos_chance_crea'] . "\n";
                 }
                 $nbCouleurs = sizeof($ingredientsArray);
                 $taille = (25 / $nbCouleurs);
@@ -411,7 +411,7 @@ if ($erreur == 0) {
                 </td>
                 <?php
             }
-            $continuer = ($db->f("pos_cod")) && ($db->f("pos_cod") > 0);
+            $continuer = ($result['pos_cod']) && ($result['pos_cod'] > 0);
             }
             ?>
         </tr>

@@ -7,16 +7,16 @@ if (isset($_POST['methode']))
     {
         case "valide_modif":
             //echo "modification de la description";
-            $db = new base_delain;
+            
             $req_guilde = "select pguilde_rang_cod,rguilde_admin from guilde_perso,guilde_rang
 															where pguilde_perso_cod = $perso_cod
 															and pguilde_guilde_cod = rguilde_guilde_cod
 															and pguilde_guilde_cod = $num_guilde
 															and pguilde_rang_cod = rguilde_rang_cod
 															and pguilde_valide = 'O' ";
-            $db->query($req_guilde);
-            $db->next_record();
-            $admin = $db->f("rguilde_admin");
+            $stmt = $pdo->query($req_guilde);
+            $result = $stmt->fetch();
+            $admin = $result['rguilde_admin'];
             if ($admin == 'O')
             {
                 if (!isset($_POST['noBR']) or ($noBR != "true"))
@@ -26,7 +26,7 @@ if (isset($_POST['methode']))
                 $desc = str_replace(";", chr(127), $desc);
                 $desc = pg_escape_string($desc);
                 $req_modif = "update guilde set guilde_description = e'$desc' where guilde_cod = $num_guilde ";
-                $db->query($req_modif);
+                $stmt = $pdo->query($req_modif);
                 echo "<p><strong>La description de la guilde a été modifiée.</strong></p>";
             } else
             {
@@ -36,9 +36,9 @@ if (isset($_POST['methode']))
     }
 }
 $req_desc = "select pguilde_guilde_cod,guilde_nom,guilde_description from guilde_perso,guilde where pguilde_perso_cod = $perso_cod and pguilde_guilde_cod = guilde_cod ";
-$db->query($req_desc);
-$db->next_record();
-$num_guilde = $db->f("pguilde_guilde_cod");
+$stmt = $pdo->query($req_desc);
+$result = $stmt->fetch();
+$num_guilde = $result['pguilde_guilde_cod'];
 ?>
     <form name="modif_guilde" method="post" action="modif_guilde.php">
         <input type="hidden" name="methode" value="valide_modif">
@@ -46,11 +46,11 @@ $num_guilde = $db->f("pguilde_guilde_cod");
         <table>
             <tr>
                 <td class="soustitre2"><p>Nom de la guilde :</td>
-                <td class="soustitre2"><p><?php echo $db->f("guilde_nom"); ?></td>
+                <td class="soustitre2"><p><?php echo $result['guilde_nom']; ?></td>
             </tr>
             <?php
-            $description = $db->f("guilde_description");
-            $desc = str_replace("<br />", "", $db->f("guilde_description"));
+            $description = $result['guilde_description'];
+            $desc = str_replace("<br />", "", $result['guilde_description']);
             ?>
             <tr>
                 <td class="soustitre2"><p>Description :</td>
@@ -74,7 +74,7 @@ s'ajoutent automatiquement à la fin de chaque ligne cochez cette case:<input ty
 
 <?php
 
-echo '<table width="100%"><tr><td class="titre"><p class="titre">', $db->f("guilde_nom"), '</td></tr></table>';
+echo '<table width="100%"><tr><td class="titre"><p class="titre">', $result['guilde_nom'], '</td></tr></table>';
 echo "<p>" . str_replace(chr(127), ";", $description) . "</p>";
 
 $close = pg_close($dbconnect);

@@ -17,9 +17,9 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
             $sql = "\n\t\tRequête : $sql\n";
 
         $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $db->query($req);
-        $db->next_record();
-        $compt_nom = $db->f("compt_nom");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $compt_nom = $result['compt_nom'];
 
         $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
         echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
@@ -37,7 +37,7 @@ $contenu = '';
 $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
 
-$db2 = new base_delain;
+
 
 $log = '';
 $resultat = '';
@@ -53,9 +53,9 @@ if ($erreur == 0) {
 
     // recupération d'info sur l'étage en cours.
     $req = "select etage_cod, etage_libelle, etage_arene from etage where etage_numero=" . (1 * $pos_etage);
-    $db->query($req);
-    $db->next_record();
-    $etage_arene = $db->f("etage_arene");   // type donjon/arene de l'étage édité
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $etage_arene = $result['etage_arene'];   // type donjon/arene de l'étage édité
 
     // Traitements des commandes
     switch ($methode) {
@@ -66,39 +66,39 @@ if ($erreur == 0) {
 				inner join positions on pos_cod = lpos_pos_cod
 				inner join etage on etage_numero = pos_etage
 				where lieu_cod = $lieu";
-            $db->query($req);
-            $db->next_record();
-            $resultat = 'Lieu supprimé ! ' . $db->f('texte') . "\nIl reste néanmoins existant en base de données, mais hors étages.";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $resultat = 'Lieu supprimé ! ' . $result['texte'] . "\nIl reste néanmoins existant en base de données, mais hors étages.";
             $req = "delete from lieu_position where lpos_lieu_cod = $lieu";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = "delete from lieu where lieu_cod = $lieu";
-            //$db->query($req);	// Commenté : le lieu reste en base, mais n’est plus positionné sur la carte
+            //$stmt = $pdo->query($req);	// Commenté : le lieu reste en base, mais n’est plus positionné sur la carte
             $req = "select init_automap_pos($lieu)";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             break;
 
         case "creer_lieu":
             $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
                 $erreur = 1;
             } else {
-                $db->next_record();
-                $lieu_pos_cod = $db->f("pos_cod");
+                $result = $stmt->fetch();
+                $lieu_pos_cod = $result['pos_cod'];
                 $lieu_dest_pos_cod = 'null';
                 if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL) {
                     $req = "select pos_cod from positions where pos_x = $dest_pos_x and pos_y = $dest_pos_y and pos_etage = $dest_pos_etage";
-                    $db->query($req);
-                    if ($db->nf() != 0) {
-                        $db->next_record();
-                        $lieu_dest_pos_cod = $db->f("pos_cod");
+                    $stmt = $pdo->query($req);
+                    if ($stmt->rowCount() != 0) {
+                        $result = $stmt->fetch();
+                        $lieu_dest_pos_cod = $result['pos_cod'];
                     }
                 }
                 $req = "select nextval('seq_lieu_cod') as lieu_cod";
-                $db->query($req);
-                $db->next_record();
-                $lieu_cod = $db->f("lieu_cod");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $lieu_cod = $result['lieu_cod'];
 
                 $nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
                 $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -122,19 +122,19 @@ if ($erreur == 0) {
                     . "($lieu_cod, $tlieu_cod, e'$nom', e'$description', e'" . pg_escape_string($_POST['refuge']) . "', '" . pg_escape_string($url) . "', " .
                     "$lieu_dest_pos_cod, 0, null, $lieu_compte, 50, $cout_pa, 
 					'" . $_POST['mobile'] . "', now(), null, null, " . $_POST['dieu'] . ")";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 $req = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values "
                     . "($lieu_pos_cod, $lieu_cod)";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 $req = "select init_automap_pos(" . $lieu_pos_cod . ")";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 $req = "select tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
-                $db->query($req);
-                $db->next_record();
-                $type_nom = $db->f('tlieu_libelle');
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $type_nom = $result['tlieu_libelle'];
 
                 $resultat = "Lieu $nom n°$lieu_cod ($type_nom) créé en $lieu_pos_cod ($pos_x, $pos_y, $pos_etage)";
                 if ($lieu_dest_pos_cod != 'null')
@@ -145,20 +145,20 @@ if ($erreur == 0) {
 
         case "modifier_lieu":
             $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
-            $db->query($req);
-            if ($db->nf() == 0) {
+            $stmt = $pdo->query($req);
+            if ($stmt->rowCount() == 0) {
                 $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
                 $erreur = 1;
             } else {
-                $db->next_record();
-                $lieu_pos_cod = $db->f("pos_cod");
+                $result = $stmt->fetch();
+                $lieu_pos_cod = $result['pos_cod'];
                 $lieu_dest_pos_cod = 'null';
                 if ($_POST['dest_pos_x'] != NULL && $_POST['dest_pos_y'] != NULL && $_POST['dest_pos_etage'] != NULL) {
                     $req = "select pos_cod from positions where pos_x = $dest_pos_x and pos_y = $dest_pos_y and pos_etage = $dest_pos_etage";
-                    $db->query($req);
-                    if ($db->nf() != 0) {
-                        $db->next_record();
-                        $lieu_dest_pos_cod = $db->f("pos_cod");
+                    $stmt = $pdo->query($req);
+                    if ($stmt->rowCount() != 0) {
+                        $result = $stmt->fetch();
+                        $lieu_dest_pos_cod = $result['pos_cod'];
                     }
                 }
 
@@ -170,21 +170,21 @@ if ($erreur == 0) {
 					inner join positions pos on pos.pos_cod = lpos_pos_cod
 					left outer join positions dest on dest.pos_cod = lieu_dest
 					where lieu_cod = $lieu";
-                $db->query($req_avant);
-                $db->next_record();
-                $nom_avant = $db->f('lieu_nom');
-                $desc_avant = $db->f('lieu_description');
-                $tlieu_avant = $db->f('lieu_tlieu_cod');
-                $refuge_avant = $db->f('lieu_refuge');
-                $mobile_avant = $db->f('lieu_mobile');
-                $dieu_avant = $db->f('lieu_dieu_cod');
-                $dest_avant = $db->f('lieu_dest');
-                $dest_x_avant = $db->f('dest_x');
-                $dest_y_avant = $db->f('dest_y');
-                $dest_etage_avant = $db->f('dest_etage');
-                $pos_x_avant = $db->f('pos_x');
-                $pos_y_avant = $db->f('pos_y');
-                $pos_cod_avant = $db->f('pos_cod');
+                $stmt = $pdo->query($req_avant);
+                $result = $stmt->fetch();
+                $nom_avant = $result['lieu_nom'];
+                $desc_avant = $result['lieu_description'];
+                $tlieu_avant = $result['lieu_tlieu_cod'];
+                $refuge_avant = $result['lieu_refuge'];
+                $mobile_avant = $result['lieu_mobile'];
+                $dieu_avant = $result['lieu_dieu_cod'];
+                $dest_avant = $result['lieu_dest'];
+                $dest_x_avant = $result['dest_x'];
+                $dest_y_avant = $result['dest_y'];
+                $dest_etage_avant = $result['dest_etage'];
+                $pos_x_avant = $result['pos_x'];
+                $pos_y_avant = $result['pos_y'];
+                $pos_cod_avant = $result['pos_cod'];
 
                 $nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
                 $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
@@ -203,25 +203,25 @@ if ($erreur == 0) {
 						lieu_prelev=$cout_pa, lieu_mobile='" . $_POST['mobile'] . "', lieu_date_bouge=now(),
 						lieu_dieu_cod=" . pg_escape_string($_POST['dieu']) . "
 					where lieu_cod = $lieu";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 $req = "update lieu_position set lpos_pos_cod = $lieu_pos_cod where lpos_lieu_cod = $lieu";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 $req = "select init_automap_pos(" . $lieu_pos_cod . ")";
-                $db->query($req);
+                $stmt = $pdo->query($req);
 
                 if ($lieu_pos_cod != $pos_cod_avant) {
                     // Marlyza 2018-03-20: Si un lieu change de place, il faut aussi mettre l'automap de sa position précédente à jour.
                     $req = "select init_automap_pos(" . $pos_cod_avant . ")";
-                    $db->query($req);
+                    $stmt = $pdo->query($req);
                 }
 
 
                 $req = "select tlieu_libelle from lieu_type where tlieu_cod = " . pg_escape_string($tlieu_cod);
-                $db->query($req);
-                $db->next_record();
-                $type_nom = $db->f('tlieu_libelle');
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $type_nom = $result['tlieu_libelle'];
 
                 $resultat = "Lieu $nom n°$lieu ($type_nom) modifié : ";
                 $resultat .= ($nom == $nom_avant) ? '' : "\nNom passe de $nom_avant à $nom";
@@ -264,14 +264,14 @@ if ($erreur == 0) {
 				where lieu_cod = $lieu
 				and lpos_lieu_cod = lieu_cod
 				and lpos_pos_cod = pos_cod";
-            $db->query($req_detail);
-            $db->next_record();
-            $destination = $db->f("lieu_dest");
-            $refuge = $db->f("lieu_refuge");
-            $mobile = $db->f("lieu_mobile");
-            $cout_pa = $db->f("lieu_prelev");
+            $stmt = $pdo->query($req_detail);
+            $result = $stmt->fetch();
+            $destination = $result['lieu_dest'];
+            $refuge = $result['lieu_refuge'];
+            $mobile = $result['lieu_mobile'];
+            $cout_pa = $result['lieu_prelev'];
             ?>
-            <p>Modifier le lieu sélectionné (<?php echo $db->f("lieu_nom"); ?>)</p>
+            <p>Modifier le lieu sélectionné (<?php echo $result['lieu_nom']; ?>)</p>
             <div class="tableau2">
                 <form name="modif_lieu" method="post" action="modif_etage3bis.php">
                     <input type="hidden" name="methode" value="modifier_lieu">
@@ -280,18 +280,18 @@ if ($erreur == 0) {
                     Type : <select name="tlieu_cod">
                         <?php
                         $req = "select tlieu_cod, tlieu_libelle from lieu_type order by tlieu_libelle desc ";
-                        echo $html->select_from_query($req, 'tlieu_cod', 'tlieu_libelle', $db->f("lieu_tlieu_cod"));
+                        echo $html->select_from_query($req, 'tlieu_cod', 'tlieu_libelle', $result['lieu_tlieu_cod']);
                         ?>
                     </select><br>
-                    Nom : <input type="text" name="nom" value="<?php echo $db->f('lieu_nom'); ?>"><br/>
-                    Description : <textarea name="description"><?php echo $db->f("lieu_description"); ?></textarea><br/>
+                    Nom : <input type="text" name="nom" value="<?php echo $result['lieu_nom']; ?>"><br/>
+                    Description : <textarea name="description"><?php echo $result['lieu_description']; ?></textarea><br/>
                     <strong>Position : </strong> X : <input type="text" name="pos_x"
-                                                            value="<?php echo $db->f("pos_x"); ?>"> Y : <input
-                            type="text" name="pos_y" value="<?php echo $db->f("pos_y"); ?>">
+                                                            value="<?php echo $result['pos_x']; ?>"> Y : <input
+                            type="text" name="pos_y" value="<?php echo $result['pos_y']; ?>">
                     Étage :
                     <select name="pos_etage">
                         <?php
-                        echo $html->etage_select($db->f("pos_etage"), "WHERE etage_arene='$etage_arene'");
+                        echo $html->etage_select($result['pos_etage'], "WHERE etage_arene='$etage_arene'");
                         ?>
                     </select><br/>
                     Dieu (pour les temples et autels)
@@ -299,17 +299,17 @@ if ($erreur == 0) {
                         <option value="null">Pas de dieu</option>
                         <?php
                         $req = "select dieu_cod, dieu_nom from dieu order by dieu_nom desc ";
-                        echo $html->select_from_query($req, 'dieu_cod', 'dieu_nom', $db->f("lieu_dieu_cod"));
+                        echo $html->select_from_query($req, 'dieu_cod', 'dieu_nom', $result['lieu_dieu_cod']);
                         ?>
                     </select><br/>
                     <?php
                     if ($destination != 'null' && $destination != '') {
                         $req = "select pos_x, pos_y, pos_etage from positions where pos_cod = $destination";
-                        $db->query($req);
-                        $db->next_record();
-                        $dest_pos_x = $db->f("pos_x");
-                        $dest_pos_y = $db->f("pos_y");
-                        $dest_pos_etage = $db->f("pos_etage");
+                        $stmt = $pdo->query($req);
+                        $result = $stmt->fetch();
+                        $dest_pos_x = $result['pos_x'];
+                        $dest_pos_y = $result['pos_y'];
+                        $dest_pos_etage = $result['pos_etage'];
                     } else {
                         $dest_pos_x = '';
                         $dest_pos_y = '';
@@ -430,25 +430,25 @@ if ($erreur == 0) {
             left outer join etage on etage_numero = dest.pos_etage ".
             "where p.pos_etage = $pos_etage ".
             "order by tlieu_libelle, lieu_nom";
-        $db->query($req_murs);
-        while($db->next_record())
+        $stmt = $pdo->query($req_murs);
+        while($result = $stmt->fetch())
         {
             ?>
             <tr>
-                <td><a href="?pos_etage=<?php echo  $pos_etage; ?>&lieu=<?php echo  $db->f("lieu_cod")?>">Modifier</a></td>
-                <td><?php echo  $db->f("lieu_nom")?></td>
-                <td><?php echo  $db->f("tlieu_libelle")?></td>
-                <td>(<?php echo  $db->f("pos_x")?>, <?php echo  $db->f("pos_y")?>)</td>
-            <?php 			$etage_dest = $db->f("etage_dest");
+                <td><a href="?pos_etage=<?php echo  $pos_etage; ?>&lieu=<?php echo  $result['lieu_cod']?>">Modifier</a></td>
+                <td><?php echo  $result['lieu_nom']?></td>
+                <td><?php echo  $result['tlieu_libelle']?></td>
+                <td>(<?php echo  $result['pos_x']?>, <?php echo  $result['pos_y']?>)</td>
+            <?php 			$etage_dest = $result['etage_dest'];
             if ($etage_dest != '')
             {
             ?>
-                <td>Destination : <?php echo  $db->f("dest_x"); ?>, <?php echo  $db->f("dest_y"); ?>, <?php echo  $etage_dest; ?></td>
+                <td>Destination : <?php echo  $result['dest_x']; ?>, <?php echo  $result['dest_y']; ?>, <?php echo  $etage_dest; ?></td>
             <?php
             }
             else echo '<td></td>';
             ?>
-                <td><a href="javascript:supprimerlieu(<?php echo  $db->f("lieu_cod")?>);">Supprimer</a></td>
+                <td><a href="javascript:supprimerlieu(<?php echo  $result['lieu_cod']?>);">Supprimer</a></td>
             </tr>
             <?php
         }

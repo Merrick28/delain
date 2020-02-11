@@ -8,8 +8,8 @@ ob_start();
     <script language="javascript" src="javascripts/modif_etage.js"></script>
 <?php $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 if (!isset($methode)) {
     $methode = 'debut';
 }
@@ -20,12 +20,12 @@ if ($erreur == 0) {
         . "from perso_position,positions "
         . "where ppos_perso_cod = $perso_cod"
         . "and ppos_pos_cod = pos_cod ";
-    $db->query($req_matos);
-    $db->next_record();
-    $perso_pos_x = $db->f("pos_x");
-    $perso_pos_y = $db->f("pos_y");
-    $perso_pos_etage = $db->f("pos_etage");
-    $perso_pos_cod = $db->f("pos_cod");
+    $stmt = $pdo->query($req_matos);
+    $result = $stmt->fetch();
+    $perso_pos_x = $result['pos_x'];
+    $perso_pos_y = $result['pos_y'];
+    $perso_pos_etage = $result['pos_etage'];
+    $perso_pos_cod = $result['pos_cod'];
 
     if (isset($_POST['methode'])) {
         switch ($methode) {
@@ -35,11 +35,11 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "insert into murs (mur_pos_cod) values (" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -49,11 +49,11 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "insert into murs (mur_pos_cod,mur_creusable,mur_usure,mur_richesse) values (" . $temp_pos_cod . ",'O'," . $_POST['usure'] . "," . $_POST['qualite'] . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -63,9 +63,9 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "delete from murs where mur_pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
             case "modif_decor":
@@ -74,9 +74,9 @@ if ($erreur == 0) {
                     $temp_pos_cod = $list[$i];
                     if ($temp_pos_cod) {
                         $req = "update positions set pos_decor = " . $_POST['decor'] . ",pos_modif_pa_dep = " . $_POST['deplacement'] . " where pos_cod = " . $temp_pos_cod;
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                         $req = "select init_automap_pos(" . $temp_pos_cod . ")";
-                        $db->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
                 break;
@@ -93,14 +93,14 @@ if ($erreur == 0) {
         Etage : <select name="pos_etage">
             <?php
             $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-            $db->query($req);
-            while ($db->next_record()) {
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch()) {
                 $sel = "";
-                if ($pos_etage == $db->f("etage_numero")) {
+                if ($pos_etage == $result['etage_numero']) {
                     $sel = "selected";
                 }
-                $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-                echo "<option value=\"", $db->f("etage_numero"), "\" $sel>", ($reference ? '' : ' |-- '), $db->f("etage_libelle"), "</option>";
+                $reference = ($result['etage_numero'] == $result['etage_reference']);
+                echo "<option value=\"", $result['etage_numero'], "\" $sel>", ($reference ? '' : ' |-- '), $result['etage_libelle'], "</option>";
             }
             ?>
         </select><br>
@@ -146,17 +146,17 @@ if ($erreur == 0) {
             --
             <tr>
                 <?php /*$req_decor = 'select pos_decor from positions group by pos_decor order by pos_decor';
-		$db->query($req_decor);
+		$stmt = $pdo->query($req_decor);
 		$compteur = 0;
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
 			$compteur = $compteur + 1;
 			if ($compteur%20 == 19)
 			{
 				echo "</tr><tr>";
 			}
-			$decor = '<img src="http://jdr-delain.net/images/dec_'. $db->f('pos_decor') .'.gif">';
-			echo "<td>". $db->f('pos_decor') ."
+			$decor = '<img src="http://jdr-delain.net/images/dec_'. $result['pos_decor'] .'.gif">';
+			echo "<td>". $result['pos_decor'] ."
 			<td>". $decor ."</td>";
 		 } */
                 ?>
@@ -212,13 +212,13 @@ if ($erreur == 0) {
 					<Etage : <select name="pos_etage">
 					<?php
     $req = "select etage_numero,etage_libelle from etage order by etage_numero desc ";
-    $db->query($req);
-    while ($db->next_record()) {
+    $stmt = $pdo->query($req);
+    while ($result = $stmt->fetch()) {
         $sel = "";
-        if ($pos_etage == $db->f("etage_numero")) {
+        if ($pos_etage == $result['etage_numero']) {
             $sel = "selected";
         }
-        echo "<option value=\"", $db->f("etage_numero"), "\" $sel>", $db->f("etage_libelle"), "</option>";
+        echo "<option value=\"", $result['etage_numero'], "\" $sel>", $result['etage_libelle'], "</option>";
     }
     ?>
 					</select>
@@ -238,43 +238,43 @@ if ($erreur == 0) {
 //." and pos_y > $perso_pos_y-10 and pos_y < $perso_pos_y+10"
                 . " pos_etage = $sel_etage"
                 . " order by pos_y desc,pos_x asc";
-            $db->query($req_murs);
-            while ($db->next_record()){
+            $stmt = $pdo->query($req_murs);
+            while ($result = $stmt->fetch()){
             if (!isset($p_y)) {
-                $p_y = $db->f("pos_y");
+                $p_y = $result['pos_y'];
             }
-            if ($db->f("pos_y") != $p_y){
+            if ($result['pos_y'] != $p_y){
             ?>
         </tr>
         <tr>
             <?php
             }
             $color = "#FFFFFF";
-            if ($db->f("mur_creusable") == 'O') {
+            if ($result['mur_creusable'] == 'O') {
                 $color = "#00FF00";
             }
-            if ($db->f("mur_creusable") == 'N') {
+            if ($result['mur_creusable'] == 'N') {
                 $color = "#FF0000";
             }
             $decor = '';
-            if ($db->f("pos_decor") != '0') {
-                $decor = 'background-image:url(http://www.jdr-delain.net/images/dec_' . $db->f('pos_decor') . '.gif);';
+            if ($result['pos_decor'] != '0') {
+                $decor = 'background-image:url(http://www.jdr-delain.net/images/dec_' . $result['pos_decor'] . '.gif);';
             }
             $dep = '';
-            if ($db->f("pos_modif_pa_dep") != 0) {
-                $dep = $db->f("pos_modif_pa_dep");
+            if ($result['pos_modif_pa_dep'] != 0) {
+                $dep = $result['pos_modif_pa_dep'];
             }
             ?>
             <td width="20" height="20">
-                <div id="pos_<?php echo $db->f("pos_cod"); ?>"
+                <div id="pos_<?php echo $result['pos_cod']; ?>"
                      style="width:25px;height:25px;background-color:<?php echo $color ?>;<?php echo $decor ?>"
-                     onClick="valActionMur(<?php echo $db->f("pos_cod"); ?>);"><span
-                            style="font-size:9px;"><?php echo $db->f("mur_usure"); ?><?php echo $db->f("mur_richesse"); ?><?php echo $dep; ?></span>
+                     onClick="valActionMur(<?php echo $result['pos_cod']; ?>);"><span
+                            style="font-size:9px;"><?php echo $result['mur_usure']; ?><?php echo $result['mur_richesse']; ?><?php echo $dep; ?></span>
                 </div>
             </td>
             <?php
 
-            $p_y = $db->f("pos_y");
+            $p_y = $result['pos_y'];
             }
             ?>
         </tr>

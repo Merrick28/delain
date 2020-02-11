@@ -27,9 +27,9 @@ if ($erreur == 0)
 	$etage_min = $parm->getparm(67);
 	$req = "select pos_etage from positions,perso_position ";
 	$req = $req . "where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-	$db->query($req);
-	$db->next_record();
-	if (($db->f("pos_etage") > 0) || ($db->f("pos_etage") < -3))
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	if (($result['pos_etage'] > 0) || ($result['pos_etage'] < -3))
 	{
 		echo "<p>Erreur ! Le lieu sur lequel vous vous trouvez ne permet pas cette action !";
    	$suite = 0;
@@ -37,9 +37,9 @@ if ($erreur == 0)
 	if ($suite == 1)
 	{
 		$req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
-		$db->query($req);
-		$db->next_record();
-		$pos_actu = $db->f("ppos_pos_cod");
+		$stmt = $pdo->query($req);
+		$result = $stmt->fetch();
+		$pos_actu = $result['ppos_pos_cod'];
 		echo "<p>Liste des destinations possibles (cliquez sur un lieu pour vous y rendre - ", $parm->getparm(68) , " PA):";
 		echo "<table>";
 		$req = "select pos_cod,lieu_nom,pos_x,pos_y,etage_libelle,pos_etage ";
@@ -52,14 +52,14 @@ if ($erreur == 0)
 		$req = $req . "and pos_etage >= $etage_min ";
 		$req = $req . "and etage_numero = pos_etage ";
 		$req = $req . "order by pos_etage desc, lieu_nom ";
-		$db->query($req);
-		while ($db->next_record())
+		$stmt = $pdo->query($req);
+		while ($result = $stmt->fetch())
 		{
 			echo "<tr>";
-			echo "<td class=\"soustitre2\"><strong><a href=\"action.php?methode=milice_tel&destination=" , $db->f("pos_cod") , "\">" , $db->f("lieu_nom") , "</a><strong></td>";
-			echo "<td>" , $db->f("pos_x") , "</td>";
-			echo "<td class=\"soustitre2\">" , $db->f("pos_y") , "</td>";
-			echo "<td>" , $db->f("etage_libelle") , "</td>";
+			echo "<td class=\"soustitre2\"><strong><a href=\"action.php?methode=milice_tel&destination=" , $result['pos_cod'] , "\">" , $result['lieu_nom'] , "</a><strong></td>";
+			echo "<td>" , $result['pos_x'] , "</td>";
+			echo "<td class=\"soustitre2\">" , $result['pos_y'] , "</td>";
+			echo "<td>" , $result['etage_libelle'] , "</td>";
 			echo "</tr>";
 		}
 		echo "</table>";

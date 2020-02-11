@@ -21,7 +21,7 @@ switch ($methode) {
 		) ip ON ip.icompt_compt_cod = compte.compt_cod
 		 where compt_actif = 'O' order by compt_nom";
 
-        $db->query($req);
+        $stmt = $pdo->query($req);
         echo "<p>Recherche sur l'adresse IP $ip";
         echo "<table>";
         echo "<tr>";
@@ -34,16 +34,16 @@ switch ($methode) {
         echo "<td class=\"soustitre2\"><p><strong>Dernière utilisation<br />de l'IP recherchée</strong></td>";
         echo "<td class=\"soustitre2\"><p><strong>Commentaire</strong></td>";
         echo "</tr>";
-        while ($db->next_record()) {
+        while ($result = $stmt->fetch()) {
             echo "<tr>";
-            echo "<td>" . $db->f("compt_cod") . "</td>";
-            echo "<td class=\"soustitre2\"><strong><a href=\"detail_compte.php?compte=" . $db->f("compt_cod") . "\">" . $db->f("compt_nom") . "</a></strong></td>";
-            echo "<td>" . $db->f("compt_mail") . "</td>";
-            echo "<td class=\"soustitre2\">" . $db->f("creation") . "</td>";
-            echo "<td>" . $db->f("connex") . "</td>";
-            echo "<td class=\"soustitre2\">" . $db->f("compt_ip") . "</td>";
-            echo "<td>" . $db->f("timestamp") . "</td>";
-            echo "<td class=\"soustitre2\">" . $db->f("compt_commentaire") . "</td>";
+            echo "<td>" . $result['compt_cod'] . "</td>";
+            echo "<td class=\"soustitre2\"><strong><a href=\"detail_compte.php?compte=" . $result['compt_cod'] . "\">" . $result['compt_nom'] . "</a></strong></td>";
+            echo "<td>" . $result['compt_mail'] . "</td>";
+            echo "<td class=\"soustitre2\">" . $result['creation'] . "</td>";
+            echo "<td>" . $result['connex'] . "</td>";
+            echo "<td class=\"soustitre2\">" . $result['compt_ip'] . "</td>";
+            echo "<td>" . $result['timestamp'] . "</td>";
+            echo "<td class=\"soustitre2\">" . $result['compt_commentaire'] . "</td>";
             echo "</tr>";
         }
         echo "</table>";

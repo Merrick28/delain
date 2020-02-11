@@ -3,8 +3,8 @@
 //Contenu de la div de droite
 //
 $contenu_page = '';
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 $contenu_page4 = '';
 $erreur = 0	;
 
@@ -13,20 +13,20 @@ $req_comp = "select count(perso_cod) as nombre from perso,perso_position
 										where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod)
 										and perso_quete = 'quete_chasseur.php'
 										and perso_cod = ppos_perso_cod";
-$db->query($req_comp);
-$db->next_record();
-if($db->f("nombre") == 0 or $db->nf() == 0)
+$stmt = $pdo->query($req_comp);
+$result = $stmt->fetch();
+if($result['nombre'] == 0 or $stmt->rowCount() == 0)
 {
 	$erreur = 1;
 	$contenu_page4 .= 'Vous n\'avez pas accès à cette page !';
 }
 $req_quete = "select pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut from quete_perso where pquete_perso_cod = $perso_cod and pquete_quete_cod = 13";
-$db->query($req_quete);
+$stmt = $pdo->query($req_quete);
 $quete_avancement = 0;
-if ($db->nf() != 0)
+if ($stmt->rowCount() != 0)
 {
-	$db->next_record();
-	$quete_avancement = $db->f("pquete_nombre");
+	$result = $stmt->fetch();
+	$quete_avancement = $result['pquete_nombre'];
 }
 
 if (!isset($methode3))
@@ -68,40 +68,40 @@ if ($erreur == 0)
 										where pquete_quete_cod = 12
 										and pquete_perso_cod = $perso_cod
 										and pquete_termine not in ('O','R')";/*On a la quête en elle même pour chasser les monstres*/
-		$db->query($req);
-		if ($db->nf() != 0) // le perso a une mission en cours, on teste si il l'a terminée.
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() != 0) // le perso a une mission en cours, on teste si il l'a terminée.
 		{
-			$db->next_record();
-			$statut_quete = $db->f("pquete_termine");
-			$nombre_monstre = $db->f("pquete_nombre");
-			$monstre_mission = $db->f("pquete_param");
-			$debut_mission = $db->f("pquete_date_debut");
-			$fin_mission = $db->f("pquete_date_fin");
-			$quete_cod = $db->f("pquete_cod");
+			$result = $stmt->fetch();
+			$statut_quete = $result['pquete_termine'];
+			$nombre_monstre = $result['pquete_nombre'];
+			$monstre_mission = $result['pquete_param'];
+			$debut_mission = $result['pquete_date_debut'];
+			$fin_mission = $result['pquete_date_fin'];
+			$quete_cod = $result['pquete_cod'];
 				$total_encours = 0;
 				$req = "select sum(ptab_total) as total_encours from perso_tableau_chasse
 								where ptab_perso_cod = $perso_cod
 								and ptab_gmon_cod = $monstre_mission
 								and ptab_date > '$debut_mission'
 								and ptab_date < '$fin_mission'";
-				$db3->query($req);
-				$db3->next_record();
-				$total_encours = $db3->f("total_encours");
-				if ($db3->nf() == 0 or is_null($total_encours))
+				$stmt3 = $pdo->query($req);
+				$result3 = $stmt3->fetch();
+				$total_encours = $result3['total_encours'];
+				if ($stmt3->rowCount() == 0 or is_null($total_encours))
 				{
 					$total_encours = 0;
 				}
-				if ($db3->nf() == 0 or $total_encours < $nombre_monstre)
+				if ($stmt3->rowCount() == 0 or $total_encours < $nombre_monstre)
 				{
                                             $req = "update quete_perso set pquete_termine = 'R' where pquete_cod = $quete_cod and pquete_date_fin < now()";
-                                            $db->query($req);
-                                            if ($db->nf() == 0) // Pas d'expiration pour cette mission.
+                                            $stmt = $pdo->query($req);
+                                            if ($stmt->rowCount() == 0) // Pas d'expiration pour cette mission.
                                             {
                                                 $req2 = "select gmon_nom from monstre_generique
                                                                 where gmon_cod = $monstre_mission";
-                                                $db2->query($req2);
-                                                $db2->next_record();
-                                                $monstre_nom = $db2->f("gmon_nom");
+                                                $stmt2 = $pdo->query($req2);
+                                                $result2 = $stmt2->fetch();
+                                                $monstre_nom = $result2['gmon_nom'];
                                                 $contenu_page4 .= "Le traqueur vous regarde intensément quelques secondes. Il ajuste son fourreau et hausse les épaules :
 																																	<br /><br /><em>- « Votre tête ne m'est pas inconnue » </em> finit il par lâcher platement <em>« Vous semblez déjà avoir une tâche de ce type il me semble ! Ne l'avez-vous donc toujours pas effectuée ? Peut-être me suis-je trompé sur votre personne, moi qui croyais que vous aviez la trempe d'un vrai chasseur de monstres. Ne revenez me voir qu'une fois ces créatures de l'Innommable tuées, vous savez bien, ceux qu'on appelle ". $monstre_nom ." ! </em>»";
                                             }
@@ -120,15 +120,15 @@ if ($erreur == 0)
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em>Traqueur</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 7500,perso_px = perso_px + 15,perso_prestige = perso_prestige + 2
 										where perso_cod = $perso_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_titre where ptitre_perso_cod = $perso_cod and ptitre_type = 5";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Traqueur',now(),5)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "update quete_perso set pquete_nombre = 2 where pquete_quete_cod = 13 and pquete_perso_cod = $perso_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					}
 					else if ($quete_avancement == 2)
 					{
@@ -136,15 +136,15 @@ if ($erreur == 0)
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em> Traqueur aguerri</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 10000,perso_px = perso_px + 20,perso_prestige = perso_prestige + 3
 										where perso_cod = $perso_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_titre where ptitre_perso_cod = $perso_cod and ptitre_type = 5";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Traqueur aguerri',now(),5)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "update quete_perso set pquete_nombre = 3 where pquete_quete_cod = 13 and pquete_perso_cod = $perso_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					}
 					else
 					{
@@ -152,14 +152,14 @@ if ($erreur == 0)
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre d'<em>Apprenti traqueur</em> vous est officiellement décerné. ";
 						$req = "update perso set perso_po = perso_po + 5000,perso_px = perso_px + 10,perso_prestige = perso_prestige + 1
 										where perso_cod = $perso_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Apprenti traqueur',now(),5)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut)
 																		values ('13','$perso_cod',1,now())";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					}
 				}
 		}
@@ -172,9 +172,9 @@ if ($erreur == 0)
 				$date = date("d");
 				$date_quete = $date[strlen($date)-1];*/
 				$req = "select donne_contrat($perso_cod) as resultat";
-				$db->query($req);
-				$db->next_record();
-				$donne_contrat = $db->f("resultat");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$donne_contrat = $result['resultat'];
 
 				$req = "select perso_niveau, etage_reference
                     from perso, perso_position, positions, etage
@@ -182,10 +182,10 @@ if ($erreur == 0)
                     and ppos_pos_cod = pos_cod
                     and pos_etage = etage_numero
                     and perso_cod = $perso_cod";
-				$db->query($req);
-				$db->next_record();
-				$perso_level = $db->f("perso_niveau");
-				$etage_reference = $db->f("etage_reference");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$perso_level = $result['perso_niveau'];
+				$etage_reference = $result['etage_reference'];
 				if ($donne_contrat == 'O'  or $perso_cod == '61')		/*Les dates coincident, on va lui donner une mission*/
 				{
 					$input = array ("<br />S'approchant de vous, le traqueur vous glisse quelques mots à l'oreille :
@@ -236,8 +236,8 @@ if ($erreur == 0)
 												order by random()
 												limit 1";
 					}
-					$db->query($req);
-					if ($db->nf() == 0) /*Le perso n'a pas le niveau requis pour cet étage pour avoir une mission*/
+					$stmt = $pdo->query($req);
+					if ($stmt->rowCount() == 0) /*Le perso n'a pas le niveau requis pour cet étage pour avoir une mission*/
 					{
 						$contenu_page4 .= '<br><em>Je ne vous vois pas combattre un quelconque monstre à cet étage. Sachez que les Traqueurs sont très exigeants quant aux cibles à chasser !</em><br><br>';
 					}
@@ -245,12 +245,12 @@ if ($erreur == 0)
 					{
 						$contenu_page4 .= $phrase_wanted;
 
-						$db->next_record();
-						$quete_gmon_cod = $db->f("gmon_cod");
+						$result = $stmt->fetch();
+						$quete_gmon_cod = $result['gmon_cod'];
 						setcookie("quete_gmon_cod",$quete_gmon_cod,time()+86400);
-						$monstre = $db->f("gmon_cod");
-						$monstre_nom = $db->f("gmon_nom");
-						$avatar = $db->f("gmon_avatar");
+						$monstre = $result['gmon_cod'];
+						$monstre_nom = $result['gmon_nom'];
+						$avatar = $result['gmon_avatar'];
 						srand ((double) microtime() * 10000000); // pour intialiser le random
 						$contenu_page4 .= "<br /><br />- « Ces temps-ci, ce sont les ".$monstre_nom." qui créent bien des soucis à la guilde des Traqueurs ! C'est dans leurs rangs qu'il faudra frapper fort ! ";
 						if ($avatar != null) //Utilisation des avatars si il existe pour ce monstre.
@@ -295,10 +295,10 @@ if ($erreur == 0)
 				$req = "select gmon_cod,gmon_nom,gmon_avatar
 										from monstre_generique
 										where gmon_cod = " . $_COOKIE['quete_gmon_cod'];
-				$db->query($req);
-				$db->next_record();
-				$monstre = $db->f("gmon_cod");
-				$monstre_nom = $db->f("gmon_nom");
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$monstre = $result['gmon_cod'];
+				$monstre_nom = $result['gmon_nom'];
 			}
 			else
 			{
@@ -314,8 +314,8 @@ if ($erreur == 0)
 						<br>La mission pour tuer doit se réaliser dans ce laps de temps, mais vous pourrez ensuite prendre tout le temps que vous souhaitez pour venir chercher votre récompense.»</em> ";
 			$req = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut,pquete_date_fin,pquete_param)
 																values ('12','$perso_cod','$random',now(),now() + '$temps weeks'::interval,'$monstre')";
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 
 			}
 			else

@@ -13,8 +13,8 @@ $req      = "select perobj_cod from perso_objets,objets
 	and perobj_obj_cod = obj_cod
 	and perobj_identifie = 'O' 
 	and obj_gobj_cod = $objet ";
-$db->query($req);
-if ($db->nf() != 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() != 0)
     $autorise = 1;
 // on regarde si l'objet est dans une échoppe sur laquelle on est
 
@@ -26,15 +26,15 @@ if ($db->is_lieu($perso_cod))
 		where mstock_lieu_cod = $lieu_cod
 		and mstock_obj_cod = obj_cod
 		and obj_gobj_cod = $objet";
-    $db->query($req);
-    if ($db->nf() != 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
         $autorise = 1;
 
     $req = "select mgstock_cod from  	stock_magasin_generique
 		where mgstock_lieu_cod = $lieu_cod
 		and mgstock_gobj_cod = $objet";
-    $db->query($req);
-    if ($db->nf() != 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
         $autorise = 1;
 }
 if ($autorise == 1)
@@ -45,25 +45,25 @@ if ($autorise == 1)
 			where gobj_cod = $objet 
 				and gobj_tobj_cod = tobj_cod 
 				and (gobj_visible is null or gobj_visible != 'N') ";
-    $db->query($req);
-    if ($db->nf() != 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
     {
-        $db->next_record();
+        $result = $stmt->fetch();
         $t_etat      = 0;
-        $comp        = $db->f("gobj_comp_cod");
-        $desc        = $db->f("gobj_description");
-        $distance    = $db->f("gobj_distance");
-        $type_objet  = $db->f("gobj_tobj_cod");
-        $seuil_force = $db->f("gobj_seuil_force");
-        $seuil_dex   = $db->f("gobj_seuil_dex");
-        $niveau_min  = $db->f("gobj_niveau_min");
-        echo "<p class=\"titre\">" . $db->f("gobj_nom") . "</p>";
+        $comp        = $result['gobj_comp_cod'];
+        $desc        = $result['gobj_description'];
+        $distance    = $result['gobj_distance'];
+        $type_objet  = $result['gobj_tobj_cod'];
+        $seuil_force = $result['gobj_seuil_force'];
+        $seuil_dex   = $result['gobj_seuil_dex'];
+        $niveau_min  = $result['gobj_niveau_min'];
+        echo "<p class=\"titre\">" . $result['gobj_nom'] . "</p>";
         echo "<div class='centrer'><table>";
 
         echo "<tr>";
         echo "<td class=\"soustitre2\"><p>Type d’objet</p></td>";
-        echo "<td><p>" . $db->f("tobj_libelle");
-        if ($db->f("gobj_deposable") == 'N')
+        echo "<td><p>" . $result['tobj_libelle'];
+        if ($result['gobj_deposable'] == 'N')
         {
             echo " <strong>non déposable !</strong>";
         }
@@ -72,21 +72,21 @@ if ($autorise == 1)
 
         echo "<tr>";
         echo "<td class=\"soustitre2\"><p>Poids</p></td>";
-        echo "<td><p>" . $db->f("gobj_poids") . "</p></td>";
+        echo "<td><p>" . $result['gobj_poids'] . "</p></td>";
         echo "</tr>";
 
         if ($type_objet == 1)
         {
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque normale</p></td>";
-            echo "<td><p>" . $db->f("gobj_pa_normal") . "</p></td>";
+            echo "<td><p>" . $result['gobj_pa_normal'] . "</p></td>";
             echo "</tr>";
 
             if ($distance == 'N')
             {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque foudroyante</p></td>";
-                echo "<td><p>" . $db->f("gobj_pa_eclair") . "</p></td>";
+                echo "<td><p>" . $result['gobj_pa_eclair'] . "</p></td>";
                 echo "</tr>";
             }
 
@@ -95,20 +95,20 @@ if ($autorise == 1)
             $req = $req . "where gobj_cod = $objet ";
             //$req = $req . "and obj_gobj_cod = gobj_cod ";
             $req = $req . "and gobj_obcar_cod = obcar_cod ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Dégâts</p></td>";
-            echo "<td><p>" . $db->f("obcar_des_degats") . "D" . $db->f("obcar_val_des_degats") . "+" . $db->f("obcar_bonus_degats") . "</p></td>";
+            echo "<td><p>" . $result['obcar_des_degats'] . "D" . $result['obcar_val_des_degats'] . "+" . $result['obcar_bonus_degats'] . "</p></td>";
             echo "</tr>";
 
 
             $req = "select comp_libelle from competences where comp_cod = $comp ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Compétence utilisée</p></td>";
-            echo "<td><p>" . $db->f("comp_libelle") . "</p></td>";
+            echo "<td><p>" . $result['comp_libelle'] . "</p></td>";
             echo "</tr>";
             if ($seuil_force > 0)
             {
@@ -139,11 +139,11 @@ if ($autorise == 1)
             $req = $req . "where gobj_cod = $objet ";
             $req = $req . "and obj_gobj_cod = gobj_cod ";
             $req = $req . "and gobj_obcar_cod = obcar_cod ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Armure</p></td>";
-            echo "<td><p>" . $db->f("obcar_armure") . "</p></td>";
+            echo "<td><p>" . $result['obcar_armure'] . "</p></td>";
             echo "</tr>";
         }
         if ($type_objet == 1 and $distance == 'O')
@@ -153,12 +153,12 @@ if ($autorise == 1)
             $req = $req . "where gobj_cod = $objet ";
             $req = $req . "and obj_gobj_cod = gobj_cod ";
             $req = $req . "and gobj_obcar_cod = obcar_cod ";
-            $db->query($req);
-            if ($db->next_record())
+            $stmt = $pdo->query($req);
+            if($result = $stmt->fetch())
             {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Chute</p></td>";
-                echo "<td><p>" . $db->f("obcar_chute") . "</p></td>";
+                echo "<td><p>" . $result['obcar_chute'] . "</p></td>";
                 echo "</tr>";
             }
 
@@ -171,11 +171,11 @@ if ($autorise == 1)
         if (isset($bon))
         {
             $req = "select obon_libelle from bonus_objets where obon_cod = $bon ";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Bonus</p></td>";
-            echo "<td><p>" . $db->f("obon_libelle") . "</p></td>";
+            echo "<td><p>" . $result['obon_libelle'] . "</p></td>";
             echo "</tr>";
         }
 

@@ -9,18 +9,18 @@
     require_once 'fonctions.php';
 
     $req_sort = "select sort_distance from sorts where sort_cod = $sort_cod ";
-    $db->query($req_sort);
-    $db->next_record();
-    $dist_sort = $db->f("sort_distance");
+    $stmt = $pdo->query($req_sort);
+    $result = $stmt->fetch();
+    $dist_sort = $result['sort_distance'];
 
     // On cherche la coterie du perso
     $coterie_perso_lanceur = -1;
     $req_coterie           = "select pgroupe_groupe_cod
 	from groupe_perso
 	where pgroupe_perso_cod = $perso_cod and pgroupe_statut = 1";
-    $db->query($req_coterie);
-    if ($db->next_record())
-        $coterie_perso_lanceur = $db->f("pgroupe_groupe_cod");
+    $stmt = $pdo->query($req_coterie);
+    if($result = $stmt->fetch())
+        $coterie_perso_lanceur = $result['pgroupe_groupe_cod'];
 
     // on cherche la position du perso
     $req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_type_perso, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
@@ -29,23 +29,23 @@
 	inner join positions on pos_cod = ppos_pos_cod 
 	left outer join dieu_perso on dper_perso_cod = perso_cod 
 	where perso_cod = $perso_cod";
-    $db->query($req_pos);
-    $db->next_record();
-    $position     = $db->f("ppos_pos_cod");
-    $etage        = $db->f("pos_etage");
-    $x            = $db->f("pos_x");
-    $y            = $db->f("pos_y");
-    $pos_cod      = $db->f("ppos_pos_cod");
-    $distance_vue = $db->f("distance_vue");
-    $perso_nom    = $db->f("perso_nom");
-    $dieu_perso   = $db->f("dper_dieu_cod");
-    $perso_bonus  = $db->f("perso_bonus");
-    $perso_pa     = $db->f("perso_pa");
-    $perso_dlt    = $db->f("perso_dlt_passee") == 1 ? "<strong>{$db->f("perso_dlt")}</strong>" : $db->f("perso_dlt");
-    $type_perso   = $db->f("perso_type_perso");
+    $stmt = $pdo->query($req_pos);
+    $result = $stmt->fetch();
+    $position     = $result['ppos_pos_cod'];
+    $etage        = $result['pos_etage'];
+    $x            = $result['pos_x'];
+    $y            = $result['pos_y'];
+    $pos_cod      = $result['ppos_pos_cod'];
+    $distance_vue = $result['distance_vue'];
+    $perso_nom    = $result['perso_nom'];
+    $dieu_perso   = $result['dper_dieu_cod'];
+    $perso_bonus  = $result['perso_bonus'];
+    $perso_pa     = $result['perso_pa'];
+    $perso_dlt    = $result['perso_dlt_passee'] == 1 ? "<strong>{$result['perso_dlt']}</strong>" : $result['perso_dlt'];
+    $type_perso   = $result['perso_type_perso'];
 
-    $pv               = $db->f("perso_pv");
-    $pv_max           = $db->f("perso_pv_max");
+    $pv               = $result['perso_pv'];
+    $pv_max           = $result['perso_pv_max'];
     $niveau_blessures = niveau_blessures($pv, $pv_max);
 
 
@@ -171,59 +171,59 @@
     }
     $req_vue_joueur = $req_vue_joueur . "distance, pos_x, pos_y, perso_nom ";
 
-    $db->query($req_vue_joueur);
-    while ($db->next_record())
+    $stmt = $pdo->query($req_vue_joueur);
+    while ($result = $stmt->fetch())
     {
-        if ($db->f("traj") == 1)
+        if ($result['traj'] == 1)
         {
-            $pv               = $db->f("perso_pv");
-            $pv_max           = $db->f("perso_pv_max");
+            $pv               = $result['perso_pv'];
+            $pv_max           = $result['perso_pv_max'];
             $niveau_blessures = niveau_blessures($pv, $pv_max);
 
-            $type_perso = $db->f("perso_type_perso");
+            $type_perso = $result['perso_type_perso'];
 
             $script_choix =
-                "javascript:document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();";
-            if ($aggressif == 'O' && $db->f("meme_coterie") == 1)
+                "javascript:document.valide_sort.cible.value=" . $result['perso_cod'] . ";document.valide_sort.submit();";
+            if ($aggressif == 'O' && $result['meme_coterie'] == 1)
                 $script_choix =
-                    "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $db->f("perso_cod") . ";document.valide_sort.submit();}";
-            $perso_pa = $db->f('perso_pa');
-            if (($db->f('perso_dlt_passee') == 1) && ($perso_pa != "") && ($perso_pa != "masqué")) $perso_pa =
+                    "javascript:if (confirm('Vous vous apprêtez à lancer un sort offensif sur un membre de votre coterie. Êtes-vous sûr de vouloir le faire ?')) { document.valide_sort.cible.value=" . $result['perso_cod'] . ";document.valide_sort.submit();}";
+            $perso_pa = $result['perso_pa'];
+            if (($result['perso_dlt_passee'] == 1) && ($perso_pa != "") && ($perso_pa != "masqué")) $perso_pa =
                 "<strong>{$perso_pa}</strong>";
-            $perso_dlt = $db->f('perso_dlt');
-            if (($db->f('perso_dlt_passee') == 1) && ($perso_dlt != "") && ($perso_dlt != "masqué")) $perso_dlt =
+            $perso_dlt = $result['perso_dlt'];
+            if (($result['perso_dlt_passee'] == 1) && ($perso_dlt != "") && ($perso_dlt != "masqué")) $perso_dlt =
                 "<strong>{$perso_dlt}</strong>";
 
             $perso_bonus =
-                $db->f("perso_bonus"); // le reste n'a pas été approuvé => $db->f("perso_dlt_passee")==0 ? $db->f("perso_bonus") : ( $db->f("perso_bonus")=="" ? "" : "<strong>".$db->f("perso_bonus")."</strong>" ) ;
+                $result['perso_bonus']; // le reste n'a pas été approuvé => $result['perso_dlt_passee']==0 ? $result['perso_bonus'] : ( $result['perso_bonus']=="" ? "" : "<strong>".$result['perso_bonus']."</strong>" ) ;
             $perso_style =
-                $perso_bonus == NULL ? "" : ($db->f("triplette") == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
+                $perso_bonus == NULL ? "" : ($result['triplette'] == 1 ? "background-color:#CCC;" : "background-color:#BA9C6C;");
 
             $cdata = "";
-            $cdata .= "data-partisans='" . (($db->f("meme_coterie") == 1) || ($db->f("triplette") == 1) ? "O" : "N") . "' ";
+            $cdata .= "data-partisans='" . (($result['meme_coterie'] == 1) || ($result['triplette'] == 1) ? "O" : "N") . "' ";
             $cdata .= "data-type='" . ($type_perso) . "' ";
 
             $onclick    = "";
             $iconPalimp = "";
-            if ($db->f("palimpseste") != "")
+            if ($result['palimpseste'] != "")
             {
                 $onclick    = "onclick=\"toggle_details(event, 'detail-{$row}');\"";
                 $iconPalimp = "<span style='float: right;'><img src='/images/guilde.gif'></span>";
             }
 
             echo "<tr id='row-{$row}' {$cdata} {$onclick}>
-				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $db->f("perso_nom") . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>{$iconPalimp}</td>
-				<td style=\"{$perso_style}\">" . $db->f("race_nom") . "</td>
-				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_x") . "</td>
-				<td style=\"{$perso_style} text-align:center;\">" . $db->f("pos_y") . "</td>
-				<td style=\"{$perso_style} text-align:center;\">" . $db->f("distance") . "</td>
+				<td class=\"soustitre2\" style=\"{$perso_style}\"><strong><a href=\"$script_choix\">" . $result['perso_nom'] . "</a></strong> <em>(" . $perso_type_perso[$type_perso] . "<strong>" . $niveau_blessures . "</strong>)</em>{$iconPalimp}</td>
+				<td style=\"{$perso_style}\">" . $result['race_nom'] . "</td>
+				<td style=\"{$perso_style} text-align:center;\">" . $result['pos_x'] . "</td>
+				<td style=\"{$perso_style} text-align:center;\">" . $result['pos_y'] . "</td>
+				<td style=\"{$perso_style} text-align:center;\">" . $result['distance'] . "</td>
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_bonus . "</td>
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_pa . "</td>
 				<td style=\"{$perso_style} text-align:left;\">" . $perso_dlt . "</td>
 			</tr>";
-            if ($db->f("palimpseste") != "")
+            if ($result['palimpseste'] != "")
             {
-                echo "<tr id='detail-{$row}' style='{$perso_style} display:none'><td colspan='8' style='padding-bottom: 15px; font-size: x-small; color:white;'><em>" . $db->f("palimpseste") . "</em></td></tr>";
+                echo "<tr id='detail-{$row}' style='{$perso_style} display:none'><td colspan='8' style='padding-bottom: 15px; font-size: x-small; color:white;'><em>" . $result['palimpseste'] . "</em></td></tr>";
             }
             $row++;
         }

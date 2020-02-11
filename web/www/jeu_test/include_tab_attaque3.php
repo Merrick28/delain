@@ -1,7 +1,7 @@
 <?php
 include "../includes/constantes.php";
 require_once "foncions.php";
-$db = new base_delain;
+
 
 // position
 $ppos  = new perso_position();

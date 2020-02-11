@@ -12,13 +12,13 @@ if(!isset($sortie_quete))
 // Quête 17 <=> récupérer un bâton. C’est une quête d’entrée dans le jeu.
 
 $req = "select pquete_termine from quete_perso where pquete_quete_cod = 17 and pquete_perso_cod = ".$perso_cod;
-$db->query($req);
-if($db->nf() == 0)
+$stmt = $pdo->query($req);
+if($stmt->rowCount() == 0)
 	$methode2 = "debut";
 else 
 {
-	$db->next_record();
-	$statut = $db->f("pquete_termine");
+	$result = $stmt->fetch();
+	$statut = $result['pquete_termine'];
 	if ($statut == 'N')
 		$methode2 = "suite";
 	else if ($statut == 'O')
@@ -44,7 +44,7 @@ switch($methode2)
 			<br><br>
 			Mais que fais-tu donc encore ici ?!? T’es pas encore parti ? Allez dépêche-toi...";
 		$req = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod) values (17, $perso_cod)";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 	break;
 
 	case "suite": /*le perso est engagé dans la quête, on teste*/
@@ -56,8 +56,8 @@ switch($methode2)
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod in (151, 362) order by obj_gobj_cod";
-		$db->query($req);
-		if($db->nf() != 0)
+		$stmt = $pdo->query($req);
+		if($stmt->rowCount() != 0)
 		{
 			$sortie_quete .= "<hr><br>Le vieux soldat saisit l’arme tendue : il fendit l’air avec le bâton,
 				et réussit même à faire siffler le bois tellement il le maniait vite...
@@ -72,9 +72,9 @@ switch($methode2)
 				- Par contre, pour parer une attaque, ce n’est franchement pas terrible.
 				Mieux vaut une épée dans ce cas-là, c’est plus efficace.<br>";
 			$req = "update perso set perso_px = perso_px + 5, perso_po = perso_po + 25 where perso_cod = " . $perso_cod;
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$req = "update quete_perso set pquete_termine = 'O' where pquete_quete_cod = 17 and pquete_perso_cod = " . $perso_cod;
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 		else
 		{

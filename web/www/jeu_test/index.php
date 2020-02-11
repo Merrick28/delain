@@ -25,13 +25,13 @@ if(!$verif_auth)
 	die();
 }
 
-$db=new base_delain;
+
 
 if(isset($nom_perso) && $nom_perso == "admin")
 {
 	$db->query("select perso_nom from perso where perso_cod = " . $num_perso);
-	$db->next_record();
-	$nom_perso=$db->f("perso_nom");
+	$result = $stmt->fetch();
+	$nom_perso=$result['perso_nom'];
 }
 
 if (!isset($perso_cod))
@@ -68,9 +68,9 @@ if (isset($_POST['changed_frameless']) && $_POST['changed_frameless'] == 1)
 }
 $page="perso2.php";
 $req_msg="select count(*) as nombre from messages_dest where dmsg_perso_cod =".$perso_cod." and dmsg_lu = 'N' and dmsg_archive = 'N' ";
-$db->query($req_msg);
-$db->next_record();
-$nb_msg=$db->f("nombre");
+$stmt = $pdo->query($req_msg);
+$result = $stmt->fetch();
+$nb_msg=$result['nombre'];
 if($nb_msg!=0)
 	$page="messagerie2.php";
 header('Location: ' . $page);

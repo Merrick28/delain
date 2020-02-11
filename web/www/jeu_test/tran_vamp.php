@@ -11,20 +11,20 @@ if (!isset($methode)) {
 $req = "select tvamp_cod,perso_nom,perso_cod from vampire_tran,perso ";
 $req = $req . "where tvamp_perso_fils = $perso_cod ";
 $req = $req . "and tvamp_perso_pere = perso_cod ";
-$db->query($req);
-if ($db->nf() == 0) {
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0) {
     $erreur = 1;
     echo "<p>Vous n'avez pas accès à cette page !";
 } else {
-    $db->next_record();
-    $pere = $db->f("perso_cod");
+    $result = $stmt->fetch();
+    $pere = $result['perso_cod'];
     echo 'père = ' . $pere;
 }
 if ($erreur == 0) {
     switch ($methode) {
         case "entree":
             echo '<p class="titre">Vampirisme</p>';
-            echo "<p><strong>", $db->f("perso_nom"), "</strong> vous a invité à rejoindre sa famille de vampires.<br>";
+            echo "<p><strong>", $result['perso_nom'], "</strong> vous a invité à rejoindre sa famille de vampires.<br>";
             echo "Cet acte n'est pas anodin. Avant de continuer, voici ce que vous devez savoir sur les vampires :<br>";
             ?>
             - Une transformation exige un rituel long et complexe. Son cout est de 12 PA (un tour entier).<br>
@@ -54,18 +54,18 @@ if ($erreur == 0) {
             // on lance la procédure d'acceptation
             //
             $req = "select accepte_vampire($perso_cod) as resultat";
-            $db->query($req);
-            $db->next_record();
-            echo "<p>", $db->f("resultat");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "<p>", $result['resultat'];
             break;
         case "non":
             $texte_evt = "[cible] a refusé d'être transformé an vampire par [attaquant]";
             $req = "insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible) ";
             $req = $req . "values(nextval('seq_levt_cod'),27,now(),1,$pere,e'" . pg_escape_string($texte_evt) . "','N','N',$pere,$perso_cod)";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = "insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible) ";
             $req = $req . "values(nextval('seq_levt_cod'),27,now(),1,$perso_cod,e'" . pg_escape_string($texte_evt) . "','O','N',$pere,$perso_cod)";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La proposition a bien été refusée";
             break;
     }

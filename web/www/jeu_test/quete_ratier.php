@@ -11,9 +11,9 @@ $req_comp = "select count(perso_cod) as nombre from perso,perso_position
 										where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod)
 										and perso_quete = 'quete_ratier.php'
 										and perso_cod = ppos_perso_cod";
-$db->query($req_comp);
-$db->next_record();
-if($db->f("nombre") == 0)
+$stmt = $pdo->query($req_comp);
+$result = $stmt->fetch();
+if($result['nombre'] == 0)
 {
 	$erreur = 1;
 	$contenu_page3 .= 'Vous n\'avez pas accès à cette page !';
@@ -87,10 +87,10 @@ if ($erreur == 0)
 		case "vente_perso":
 			$objet = $_POST['objet'];
 			$req = 'select vente_perso(' . $perso_cod . ',' . $objet . ') as resultat ';
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 			$contenu_page3 .= '- "Au plus vous en tuez, au plus j\'ai du boulot, continuez comme ça et on refera affaire, je vous le dis moi !" <br><br>';
-			$contenu_page3 .= $db->f('resultat');
+			$contenu_page3 .= $result['resultat'];
 		break;
 	}
 }

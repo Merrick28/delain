@@ -77,7 +77,7 @@ if ($sort == 'mort') {
     }
 
 }
-$db->query($req_guilde);
+$stmt = $pdo->query($req_guilde);
 ?>
     <p><em>Attention ! Toute demande d'affiliation à une guilde supprimera automatiquement les demandes qui sont en
             attente de validation pour les autres guildes !</em>
@@ -146,16 +146,16 @@ $db->query($req_guilde);
             echo("<td></td>");
             echo("</tr>");
 
-            while ($db->next_record()) {
+            while ($result = $stmt->fetch()) {
                 //$tab_guilde = pg_fetch_array($res_guilde,$cpt);
                 echo("<tr>");
-                printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.fsort.action='visu_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">%s</a></strong></p></td>", $db->f("guilde_cod"), $db->f("guilde_nom"));
-                printf("<td><p>%s</td>", $db->f("nb_perso"));
-                printf("<td><p>%s</td>", $db->f("nb_monstre_tue"));
-                printf("<td><p>%s</td>", $db->f("nb_joueur_tue"));
-                printf("<td><p>%s</td>", $db->f("nb_mort"));
+                printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.fsort.action='visu_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">%s</a></strong></p></td>", $result['guilde_cod'], $result['guilde_nom']);
+                printf("<td><p>%s</td>", $result['nb_perso']);
+                printf("<td><p>%s</td>", $result['nb_monstre_tue']);
+                printf("<td><p>%s</td>", $result['nb_joueur_tue']);
+                printf("<td><p>%s</td>", $result['nb_mort']);
 
-                printf("<td><a href=\"javascript:document.fsort.action='valide_join_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">S'inscrire !</a></td>", $db->f("guilde_cod"));
+                printf("<td><a href=\"javascript:document.fsort.action='valide_join_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">S'inscrire !</a></td>", $result['guilde_cod']);
                 echo("</tr>");
             }
             ?>

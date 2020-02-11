@@ -14,7 +14,7 @@ $contenu = '';
 $erreur = 0;
 include "blocks/_test_droit_modif_etage.php";
 
-$db2 = new base_delain;
+
 $pdo = new bddpdo;
 
 $log = '';

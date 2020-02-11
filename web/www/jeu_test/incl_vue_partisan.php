@@ -4,9 +4,9 @@
 <?php $marquerQuatriemes = $db->is_admin_monstre($compt_cod);
 $param = new parametres();
 $req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-$db->query($req_malus_desorientation);
-$db->next_record();
-if ($db->f("desorientation") == 0)
+$stmt = $pdo->query($req_malus_desorientation);
+$result = $stmt->fetch();
+if ($result['desorientation'] == 0)
 {
     $desorientation = false;
 }
@@ -16,9 +16,9 @@ else
 }
 $combat_groupe = $param->getparm(56);
 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-$pa = $db->f("perso_pa");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$pa = $result['perso_pa'];
 $pa_n = $db->get_pa_attaque($perso_cod);
 
 $coterie = 1*$coterie;  // Convertion en entier et mise à zero sir vide!
@@ -53,8 +53,8 @@ $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as tr
 			and (pgroupe_groupe_cod is not NULL or triplette_perso_cod is not NULL) 
 		order by distance,pos_x,pos_y,perso_type_perso,perso_nom ";
 
-$db->query($req_vue_joueur);
-$nb_joueur_en_vue = $db->nf();
+$stmt = $pdo->query($req_vue_joueur);
+$nb_joueur_en_vue = $stmt->rowCount();
 
 ?>
 
@@ -93,45 +93,45 @@ $nb_joueur_en_vue = $db->nf();
     {
         // on boucle sur les joueurs "visibles"
         $i = 0;
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            if ($db->f("traj") == 1)
+            if ($result['traj'] == 1)
             {
                 //Repérage des 4èmes persos
-                $quatrieme = ($db->f("perso_pnj") == 2) ? 'O' : 'N';
-                $mortel = ($db->f("perso_mortel") == 'O') ? ' *' : '';
+                $quatrieme = ($result['perso_pnj'] == 2) ? 'O' : 'N';
+                $mortel = ($result['perso_mortel'] == 'O') ? ' *' : '';
 
-                $lock_combat = ($db->f("lock1") > 0 || $db->f("lock2") > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec cet aventurier." /> ' : '';
-                $meme_coterie = ($coterie > 0 && $db->f("pgroupe_groupe_cod") == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
+                $lock_combat = ($result['lock1'] > 0 || $result['lock2'] > 0) ? '<img src="http://www.jdr-delain.net/images/attaquer.gif" title="Vous êtes en combat avec cet aventurier." /> ' : '';
+                $meme_coterie = ($coterie > 0 && $result['pgroupe_groupe_cod'] == $coterie) ? '<img src="http://www.jdr-delain.net/images/guilde.gif" title="Cet aventurier appartient à la même coterie que vous." /> ' : '';
 
-                $is_tangible = $db->f("perso_tangible");
+                $is_tangible = $result['perso_tangible'];
                 $aff_tangible = $palbable[$is_tangible];
 
                 $niveau_blessures = '';
-                $pv = $db->f("perso_pv");
-                $num_perso = $db->f("perso_cod");
+                $pv = $result['perso_pv'];
+                $num_perso = $result['perso_cod'];
 
                 $perso_dlt = "";
-                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "<strong>";
-                $perso_dlt .= $db->f('perso_dlt');
-                if($db->f('perso_dlt_passee') == 1) $perso_dlt.= "</strong>";
+                if($result['perso_dlt_passee'] == 1) $perso_dlt.= "<strong>";
+                $perso_dlt .= $result['perso_dlt'];
+                if($result['perso_dlt_passee'] == 1) $perso_dlt.= "</strong>";
 
-                $perso_pa = $db->f('perso_pa');
-                $perso_bonus = $db->f('perso_bonus');
+                $perso_pa = $result['perso_pa'];
+                $perso_bonus = $result['perso_bonus'];
 
-                $nom = str_replace("\\", " ", $db->f("perso_nom"));
+                $nom = str_replace("\\", " ", $result['perso_nom']);
                 $nom = str_replace("'", "’", $nom);
                 $nom = str_replace("/", " ", $nom);
-                $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $db->f("perso_description"))));
+                $desc = nl2br(htmlspecialchars(str_replace('\'', '’', $result['perso_description'])));
                 $desc = str_replace("\r", "", $desc);
                 $desc = str_replace("%", "pourcent", $desc);
 
-                if ($db->f("perso_crapaud") == 1)
+                if ($result['perso_crapaud'] == 1)
                 {
                     $crapaud = '';
-                    if ($db->f("distance") == 0)
+                    if ($result['distance'] == 0)
                     {
-                        $crapaud .= '<a href="action.php?methode=embr&cible=' . $db->f("perso_cod") . '">L’embrasser ? (2 PA)</a>';
+                        $crapaud .= '<a href="action.php?methode=embr&cible=' . $result['perso_cod'] . '">L’embrasser ? (2 PA)</a>';
                     }
                     $nom = 'Aventurier transformé en crapaud !';
                 }
@@ -140,7 +140,7 @@ $nb_joueur_en_vue = $db->nf();
                     $crapaud = '';
                 }
 
-                if ($db->f("perso_desc_long") != NULL or $db->f("perso_desc_long") != "")
+                if ($result['perso_desc_long'] != NULL or $result['perso_desc_long'] != "")
                 {
                     $nom .= '<strong> *</strong>';
                 }
@@ -151,22 +151,22 @@ $nb_joueur_en_vue = $db->nf();
                 $req = $req . "and dper_niveau = dniv_niveau ";
                 $req = $req . "and dniv_dieu_cod = dieu_cod ";
                 $req = $req . "and dniv_niveau >= 1 ";
-                $db2->query($req);
-                if ($db2->nf() != 0)
+                $stmt2 = $pdo->query($req);
+                if ($stmt2->rowCount() != 0)
                 {
-                    $db2->next_record();
-                    $religion = " </strong>(" . $db2->f("dniv_libelle") . " de " . $db2->f("dieu_nom") . ")<strong> ";
+                    $result2 = $stmt2->fetch();
+                    $religion = " </strong>(" . $result2['dniv_libelle'] . " de " . $result2['dieu_nom'] . ")<strong> ";
                 }
                 else
                 {
                     $religion = '';
                 }
                 $style = "soustitre2";
-                if ($db->f("surcharge") == 1)
+                if ($result['surcharge'] == 1)
                 {
                     $style = "surcharge1";
                 }
-                if ($db->f("surcharge") == 2)
+                if ($result['surcharge'] == 2)
                 {
                     $style = "surcharge2";
                 }
@@ -174,22 +174,22 @@ $nb_joueur_en_vue = $db->nf();
                 {
                     $style = "soustitre2";
                 }
-                $ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lperso' . $db->f("perso_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lperso' . $db->f("perso_cod") . '\',\'pasvu\',\'' . $style . '\');"';
+                $ch_style = 'onMouseOver="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lperso' . $result['perso_cod'] . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lperso' . $result['perso_cod'] . '\',\'pasvu\',\'' . $style . '\');"';
                 echo '<tr>
-				<td ' . $ch_style . '><div style="text-align:center;">' . $db->f("distance") . '</div></td>';
+				<td ' . $ch_style . '><div style="text-align:center;">' . $result['distance'] . '</div></td>';
                 if ($marquerQuatriemes)
                 {
                     echo '<td ' . $ch_style . '><div style="text-align:center;">' . $quatrieme . $mortel . '</div></td>';
                 }
-                $nom_perso =  ($db->f("perso_cod") != $perso_cod) ? $nom : '<span style="color:black;">' . $nom . '</span></a>';
-                echo '<td ' . $ch_style . 'id="lperso' . $db->f("perso_cod") . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<strong><a href="visu_desc_perso.php?visu=' . $db->f("perso_cod") . '">' . $nom_perso . '</a>' . $religion . $niveau_blessures . '</strong>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
+                $nom_perso =  ($result['perso_cod'] != $perso_cod) ? $nom : '<span style="color:black;">' . $nom . '</span></a>';
+                echo '<td ' . $ch_style . 'id="lperso' . $result['perso_cod'] . '" class="' . $style . '">' . $lock_combat . $meme_coterie . '<strong><a href="visu_desc_perso.php?visu=' . $result['perso_cod'] . '">' . $nom_perso . '</a>' . $religion . $niveau_blessures . '</strong>' . $aff_tangible . $crapaud . '<br><span style="font-size:8pt">' . $desc . '</span>
 				</td>
 				<td ' . $ch_style . '>' . $perso_dlt . '</td>
 				<td ' . $ch_style . '>' .$perso_pa . '</td>
 				<td ' . $ch_style . '>' . $perso_bonus . '</td>
 				<td ' . $ch_style . '>' . $pv . '</td>
-				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_x") . '</div></td>
-				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $db->f("pos_y") . '</div></td>
+				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $result['pos_x'] . '</div></td>
+				<td ' . $ch_style . ' nowrap><div style="text-align:center;">' . $result['pos_y'] . '</div></td>
 				<td ' . $ch_style . '><td>';
                 // A priori partie inutile et non atteignable dans les partisans
                 // la variable attaquable n'est jamaius définie
@@ -197,7 +197,7 @@ $nb_joueur_en_vue = $db->nf();
                 {
                     if ($attaquable == 1)
                     {
-                        echo '<a href="javascript:document.visu_evt2.cible.value=' . $db->f("perso_cod") . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
+                        echo '<a href="javascript:document.visu_evt2.cible.value=' . $result['perso_cod'] . ';document.visu_evt2.action=\'action.php\';document.visu_evt2.submit();">Attaquer !</a>';
                     }
                 }*/
                 echo '</td></tr>';

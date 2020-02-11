@@ -9,11 +9,11 @@
 		<td></td>
 	</tr>
 <?php 
-$db2 = new base_delain;
+
 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$db->query($req);
-$db->next_record();
-$pa = $db->f("perso_pa");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$pa = $result['perso_pa'];
 $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_generique, tobj_libelle, pos_x, pos_y, pos_etage,
 							distance(pos_cod,$pos_cod) as distance, obj_cod as objet, obj_nom, pos_cod, COALESCE(pio_nb_tours, -1) as identifie,
 							COALESCE(obon_libelle, '') as obon_libelle
@@ -28,42 +28,42 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_gen
 							and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
 							and pos_etage = $etage
 						order by distance, tobj_libelle, pos_x, pos_y";
-$db->query($req_vue_joueur);
-$nb_joueur_en_vue = $db->nf();
+$stmt = $pdo->query($req_vue_joueur);
+$nb_joueur_en_vue = $stmt->rowCount();
 if ($nb_joueur_en_vue != 0)
 {
 	$i = 0;
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		if ($db->f("traj") == 1)
+		if ($result['traj'] == 1)
 		{
-			$v_objet = $db->f("objet");
-			if ($db->f("identifie") > 0)
+			$v_objet = $result['objet'];
+			if ($result['identifie'] > 0)
 			{
-				if ($db->f("obon_libelle") != '')
+				if ($result['obon_libelle'] != '')
 				{
-					$bonus = " (" . $db->f("obon_libelle") . ")";
+					$bonus = " (" . $result['obon_libelle'] . ")";
 				}
 				else
 				{
 					$bonus = "";
 				}
-				$nom_objet = $db->f("obj_nom") . $bonus;
+				$nom_objet = $result['obj_nom'] . $bonus;
 			}
 			else
 			{
-				$nom_objet = $db->f("obj_nom_generique");
+				$nom_objet = $result['obj_nom_generique'];
 			}
 			$nom_objet = trim(str_replace("'","’",$nom_objet));
-			$tobj_libelle = trim($db->f("tobj_libelle"));
-			$pos_x = $db->f("pos_x");
-			$pos_y = $db->f("pos_y");
-			$distance = $db->f("distance");
+			$tobj_libelle = trim($result['tobj_libelle']);
+			$pos_x = $result['pos_x'];
+			$pos_y = $result['pos_y'];
+			$distance = $result['distance'];
 			// On ajuste la vue des runes à la portée de vue
 			// 3->0  4->1 6->2 8->3
 			if ($distance > ($distance_vue - 2) / 2 && $tobj_libelle == 'Rune')
 				$nom_objet = 'Rune';
-			$position = $db->f("pos_cod");
+			$position = $result['pos_cod'];
 			$ramassable = 0;
 			if ($distance == 0)
 			{
@@ -96,28 +96,28 @@ $req_vue_joueur = $req_vue_joueur . "and pos_y between ($y-$distance_vue) and ($
 $req_vue_joueur = $req_vue_joueur . "and pos_etage = $etage ";
 $req_vue_joueur = $req_vue_joueur . "and pos_cod = por_pos_cod ";
 $req_vue_joueur = $req_vue_joueur . "order by distance,pos_x,pos_y";
-$db->query($req_vue_joueur);
+$stmt = $pdo->query($req_vue_joueur);
 //$res_vue_joueur = pg_exec($dbconnect,$req_vue_joueur);
-$nb_joueur_en_vue = $db->nf();
+$nb_joueur_en_vue = $stmt->rowCount();
 if ($nb_joueur_en_vue != 0)
 {
 	$i = 0;
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		if($db->f("traj") == 1)
+		if($result['traj'] == 1)
 		{
-			$qte = $db->f("por_qte");
+			$qte = $result['por_qte'];
 			$nom = $qte . " brouzoufs.";
-			$ch_style = 'onMouseOver="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lvor' . $db->f("por_cod") . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $db->f("pos_cod") . '\',\'lvor' . $db->f("por_cod") . '\',\'pasvu\',\'soustitre2\');"';
+			$ch_style = 'onMouseOver="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lvor' . $result['por_cod'] . '\',\'vu\',\'surligne\');" onMouseOut="changeStyles(\'cell' . $result['pos_cod'] . '\',\'lvor' . $result['por_cod'] . '\',\'pasvu\',\'soustitre2\');"';
 			echo '<tr>
-				<td ' . $ch_style . '><p style="text-align:center;">' . $db->f("distance") . '</p></td>
-				<td colspan="2"' . $ch_style .'id="lvor' . $db->f("por_cod") . '" class="soustitre2"><p>' . $qte . ' brouzoufs</p></td>
-				<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $db->f("pos_x") . '</p></td>
-				<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $db->f("pos_y") . '</p></td>
+				<td ' . $ch_style . '><p style="text-align:center;">' . $result['distance'] . '</p></td>
+				<td colspan="2"' . $ch_style .'id="lvor' . $result['por_cod'] . '" class="soustitre2"><p>' . $qte . ' brouzoufs</p></td>
+				<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $result['pos_x'] . '</p></td>
+				<td ' . $ch_style . ' nowrap><p style="text-align:center;">' . $result['pos_y'] . '</p></td>
 				<td '. $ch_style . '>';
-			if($db->f("distance")==0)
+			if($result['distance']==0)
 			{
-				echo '<p><a href="action.php?methode=ramasse_objet&type_objet=2&num_objet=' . $db->f("por_cod") . '">Ramasser !</a>';
+				echo '<p><a href="action.php?methode=ramasse_objet&type_objet=2&num_objet=' . $result['por_cod'] . '">Ramasser !</a>';
 			}
 			echo'</td></tr>';
 		}

@@ -8,33 +8,33 @@ $req_factions = "SELECT pfac_fac_cod, pfac_points, pfac_date_mission, fac_nom
 	INNER JOIN factions ON fac_cod = pfac_fac_cod
 	WHERE pfac_perso_cod = $perso_cod
 	ORDER BY pfac_points desc";
-$db->query($req_factions);
+$stmt = $pdo->query($req_factions);
 
-if ($db->nf() > 0)
+if ($stmt->rowCount() > 0)
 {
 	$contenu_page .= '<p class="titre">Factions</p><p></p>';
 	
 	if (isset($methode) && $methode == 'valide_mission')
 	{
 		$req_mission = "select missions_verifie($perso_cod) as resultat";
-		$db2->query($req_mission);
-		$db2->next_record();
-		if ($db2->f('resultat') != '')
+		$stmt2 = $pdo->query($req_mission);
+		$result2 = $stmt2->fetch();
+		if ($result2['resultat'] != '')
 		{
-			$contenu_page .= "<div class='bordiv' style='margin:10px;'>Résultats de validation :<br />" . $db2->f('resultat') . "</div>";
+			$contenu_page .= "<div class='bordiv' style='margin:10px;'>Résultats de validation :<br />" . $result2['resultat'] . "</div>";
 		}
 	}
 	$contenu_page .= '<table><tr><td valign="top">';
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
 		$contenu_page .= gereColonnes($colonne, $debut, '50%');
 		$colonne = ($colonne + 1) % $colonneMax;
 		$debut = false;
 	
 		// Faction X
-		$fac_nom = $db->f('fac_nom');
-		$fac_cod = $db->f('pfac_fac_cod');
-		$pfac_points = $db->f('pfac_points');
+		$fac_nom = $result['fac_nom'];
+		$fac_cod = $result['pfac_fac_cod'];
+		$pfac_points = $result['pfac_points'];
 	
 		$contenu_page .= "<p class='soustitre'>$fac_nom</p>";
 	
@@ -44,9 +44,9 @@ if ($db->nf() > 0)
 				AND rfac_seuil <= $pfac_points
 			ORDER BY rfac_seuil DESC
 			LIMIT 1";
-		$db2->query($req_rang);
-		if ($db2->next_record())
-			$rang = 'Vous avez atteint le rang de « ' . $db2->f('rfac_nom') . ' »';
+		$stmt2 = $pdo->query($req_rang);
+		if ($result2 = $stmt2->fetch())
+			$rang = 'Vous avez atteint le rang de « ' . $result2['rfac_nom'] . ' »';
 		else
 			$rang = 'Vous n’avez pas encore été inscrits dans les registres.';
 	

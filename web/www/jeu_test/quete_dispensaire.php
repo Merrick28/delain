@@ -4,29 +4,29 @@
 //Contenu de la div de droite
 //
 $param = new parametres();
-$db2 = new base_delain;
+
 $contenu_page3 = '';
 $erreur = 0;
 //On vérifie qu'il s'agit bien d'un perso permettant cette quête sur cette case
 $tab_position = $db->get_pos($perso_cod);
 $cod_etage = $tab_position['etage'];
 $req_or = "select perso_po, perso_sex, perso_nb_mort, perso_nom from perso where perso_cod = $perso_cod ";
-$db->query($req_or);
-$db->next_record();
+$stmt = $pdo->query($req_or);
+$result = $stmt->fetch();
 $pos_temple = $tab_position['pos_cod'];
 $etage = abs($cod_etage) + 1;
-$nom = $db->f("perso_nom");
-$sexe = $db->f("perso_sex");
-$or = $db->f("perso_po");
-$nb_mort = $db->f("perso_nb_mort");
+$nom = $result['perso_nom'];
+$sexe = $result['perso_sex'];
+$or = $result['perso_po'];
+$nb_mort = $result['perso_nb_mort'];
 $prix = ($etage * $param->getparm(30)) + ($nb_mort * $param->getparm(31));
 $req_comp = "select count(perso_cod) as nombre from perso,perso_position 
 										where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod)
 										and perso_quete = 'quete_dispensaire.php'
 										and perso_cod = ppos_perso_cod";
-$db->query($req_comp);
-$db->next_record();
-if ($db->f("nombre") == 0)
+$stmt = $pdo->query($req_comp);
+$result = $stmt->fetch();
+if ($result['nombre'] == 0)
 {
     $erreur = 1;
     $contenu_page3 .= 'Vous n’avez pas accès à cette page !';
@@ -49,10 +49,10 @@ if ($erreur == 0)
             break;
         case "oui":
             $req = 'select * from choix_lieu_vus(' . $perso_cod . ',2)';
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $contenu_page3 .= '<p class="titre"><em>Ainsi, vous avez besoin de mon aide :</em></p>
 			<table>';
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
                 $req = 'select lieu_nom,pos_x,pos_y,etage_libelle,etage_numero,pos_etage
 					from lieu,lieu_position,positions,etage
@@ -60,12 +60,12 @@ if ($erreur == 0)
 					and lpos_pos_cod = pos_cod
 					and lpos_lieu_cod = lieu_cod 
 					and etage_numero = pos_etage';
-                $db2->query($req);
-                $db2->next_record();
-                if ($db2->f("pos_etage") == $cod_etage)
+                $stmt2 = $pdo->query($req);
+                $result2 = $stmt2->fetch();
+                if ($result2['pos_etage'] == $cod_etage)
                 {
-                    $contenu_page3 .= '<tr><td class="soustitre2">' . $db2->f("lieu_nom") . '</td>
-						<td>' . $db2->f("pos_x") . ', ' . $db2->f("pos_y") . ', ' . $db2->f("etage_libelle") . '</td>
+                    $contenu_page3 .= '<tr><td class="soustitre2">' . $result2['lieu_nom'] . '</td>
+						<td>' . $result2['pos_x'] . ', ' . $result2['pos_y'] . ', ' . $result2['etage_libelle'] . '</td>
 						<td class="soustitre2">';
                     $contenu_page3 .= '<a href="' . $PHP_SELF . '?methode=dispensaire&pos=' . $db->f(0) . '">Faire de ce dispensaire celui qui recueillera votre âme ? (' . $prix . ' brouzoufs)</a>';
                     $contenu_page3 .= '</td></tr>';
@@ -79,26 +79,26 @@ if ($erreur == 0)
             break;
         case "dispensaire":
             $req = 'select pos_cod from positions where pos_cod in (select* from choix_lieu_vus(' . $perso_cod . ',2)) and pos_etage = ' . $cod_etage;
-            $db2->query($req);
+            $stmt2 = $pdo->query($req);
             if ($or < $prix)
             {
                 $contenu_page3 .= "<p>Désolé $nom, mais il semble que vous n’ayez pas assez de brouzoufs pour vous payer ce service.</p>";
             }
-            if ($db->nf() == 0)
+            if ($stmt->rowCount() == 0)
             {
                 $contenu_page3 .= 'Vous ne connaissez pas l’existence de ce dispensaire. D’ailleurs, existe-t-il ?';
             }
             else
             {
-                $db2->next_record();
-                $position = $db2->f("pos_cod");
+                $result2 = $stmt2->fetch();
+                $position = $result2['pos_cod'];
                 $req_or = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
-                $db->query($req_or);
+                $stmt = $pdo->query($req_or);
                 $req_temple1 = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
-                $db->query($req_temple1);
+                $stmt = $pdo->query($req_temple1);
                 $req_temple2 = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values ";
                 $req_temple2 = $req_temple2 . "($perso_cod,$position,0)";
-                $db->query($req_temple2);
+                $stmt = $pdo->query($req_temple2);
                 $contenu_page3 .= '<p>D’un geste précis mille fois recommencé, l’ombre d’une écriture vive et précise note votre nom et votre race sur un grand livre prévu à cet effet. <br>Puis sans plus attendre, cherche une autre personne à questionner...';
             }
             break;

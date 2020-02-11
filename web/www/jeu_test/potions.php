@@ -14,8 +14,8 @@ switch($methode)
 		case "debut":
 				$req = 'select * from potions.perso_toxic
 					where ptox_perso_cod = ' . $perso_cod;
-				$db->query($req);
-				if($db->nf() != 0)
+				$stmt = $pdo->query($req);
+				if($stmt->rowCount() != 0)
 				{
 					$contenu_page .= '<br /><strong>Attention !</strong> Votre corps contient encore des restes d\'une potion bue précédemment.<br />
 						Boire une autre potion maintenant vous expose à une toxicité qui pourrait avoir des effets regrettables sur votre organisme.<br />';
@@ -32,8 +32,8 @@ switch($methode)
 					and obj_gobj_cod = gobj_cod
 					and gobj_tobj_cod = 21
 					order by obj_gobj_cod";
-				$db->query($req);
-				if($db->nf() == 0)
+				$stmt = $pdo->query($req);
+				if($stmt->rowCount() == 0)
 					$contenu_page .= "Vous n'avez aucune potion identifiée utilisable !";
 				else
 				{
@@ -44,10 +44,10 @@ switch($methode)
 															<tr>
 																<td class="soustitre">Liste des potions disponibles</td><td></td><td><input type="submit" value="Utiliser cette potion (3PA)"  class="test"></td>
 															</tr>';
-					while($db->next_record())
+					while($result = $stmt->fetch())
 					{
 						$contenu_page .= '<tr>	
-																<td>' . $db->f('obj_nom') . '</td><td><input type="radio" name="potion" value="' . $db->f('obj_gobj_cod') . '"></td>
+																<td>' . $result['obj_nom'] . '</td><td><input type="radio" name="potion" value="' . $result['obj_gobj_cod'] . '"></td>
 															</tr>';
 					}
 						$contenu_page .= '</table></form>';
@@ -56,17 +56,17 @@ switch($methode)
 		case 'potions':
 		$potion = $_POST['potion'];
 			$req = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = ' . $potion;
-			$db->query($req);
-			if($db->nf() == 0)
+			$stmt = $pdo->query($req);
+			if($stmt->rowCount() == 0)
 				$contenu_page .= 'Erreur sur la fonction appelée.';
 			else
 			{
-				$db->next_record();
-				$fonction = $db->f('fpot_fonction');
+				$result = $stmt->fetch();
+				$fonction = $result['fpot_fonction'];
 				$req = 'select potions.' . $fonction . '(' . $perso_cod . ') as resultat';
-				$db->query($req);
-				$db->next_record();
-				$contenu_page .= $db->f('resultat');
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$contenu_page .= $result['resultat'];
 			}
 			break;
 }

@@ -15,9 +15,9 @@ if ($erreur == 0)
 
     <?php
     $req = "select perso_sex from perso where perso_cod = $perso_cod";
-    $db->query($req);
-    $db->next_record();
-    $sexe = $db->f("perso_sex");
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $sexe = $result['perso_sex'];
     ?>
     <?php if ($sexe == 'F')
 {
@@ -92,9 +92,9 @@ if ($erreur == 0)
 }
 
     $req_mort = "select perso_nb_mort from perso where perso_cod = $perso_cod ";
-    $db->query($req_mort);
-    $db->next_record();
-    $nb_mort = $db->f("perso_nb_mort");
+    $stmt = $pdo->query($req_mort);
+    $result = $stmt->fetch();
+    $nb_mort = $result['perso_nb_mort'];
     $tab_position = $db->get_pos($perso_cod);
     $num_etage = $tab_position['etage_reference'];
     if ($num_etage < 0)

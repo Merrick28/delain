@@ -12,10 +12,10 @@ $req = "select lieu_dieu_cod, dieu_nom from perso_position
 		inner join lieu on lieu_cod = lpos_lieu_cod
 		inner join dieu on dieu_cod = lieu_dieu_cod
 	where ppos_perso_cod = $perso_cod";
-$db->query($req);
-$db->next_record();
-$dieu = $db->f("lieu_dieu_cod");
-$dieu_nom = $db->f("dieu_nom");
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+$dieu = $result['lieu_dieu_cod'];
+$dieu_nom = $result['dieu_nom'];
 
 // Pour la quête de la guerre des dieux, on récupère le $quete_cod
 $quete_cod = 0;
@@ -39,13 +39,13 @@ switch($methode2)
 				where perso_cod = $perso_cod
 					and dper_perso_cod = $perso_cod
 					and dper_niveau > 0";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 			$brouzoufs = 0;
 			$dieu_perso = -1;
-			if ($db->next_record())
+			if($result = $stmt->fetch())
 			{
-				$brouzoufs = $db->f("perso_po");
-				$dieu_perso = $db->f("dper_dieu_cod");
+				$brouzoufs = $result['perso_po'];
+				$dieu_perso = $result['dper_dieu_cod'];
 			}
 
 			if ($brouzoufs > 1001 && $dieu_perso == $dieu)
@@ -58,10 +58,10 @@ switch($methode2)
 				$req = "select pquete_nombre from quete_perso
 					where pquete_quete_cod = $quete_cod
 						and pquete_perso_cod = $perso_cod";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				
 				// Quête pas commencée
-				if ($db->nf() == 0)
+				if ($stmt->rowCount() == 0)
 				{
 				?>
 					<p><br><br>Vous avez apparemment suffisamment de brouzoufs, et votre statut dans notre religion vous
@@ -73,8 +73,8 @@ switch($methode2)
 				<?php 				}
 				else
 				{
-					$db->next_record();
-					$quete = $db->f("pquete_nombre");
+					$result = $stmt->fetch();
+					$quete = $result['pquete_nombre'];
 
 					// On est dans la deuxième étape de la quête, après découverte de la première cachette
 					if ($quete == 2)
@@ -112,7 +112,7 @@ switch($methode2)
 			<br>Vous n’êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 			<br>Vous vous écroulez, du sang coulant de vos narines.
 		<?php 			$req = "update perso set perso_pv = max(perso_pv - 5, 1) where perso_cod = $perso_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 		else
 		{
@@ -172,12 +172,12 @@ switch($methode2)
 			echo $texte;
 			//Mise à jour de l’étape terminée pour passer à la cachette
 			$req = "insert into quete_perso values (default, $quete_cod, $perso_cod, '1')";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 
 		//Mise à jour des brouzoufs dans tous les cas
 		$req = "update perso set perso_po = perso_po - 1000 where perso_cod = $perso_cod";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 	break; // Fin du traitement de la première étape des dévotions
 
 	case "dieu2_quete7_2": // Balgur deuxièmes dévotions
@@ -191,7 +191,7 @@ switch($methode2)
 			<br>Vous n’êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 			<br>Vous vous écroulez, du sang coulant de vos narines.
 		<?php 			$req = "update perso set perso_pv = max(perso_pv - 5, 1) where perso_cod = $perso_cod";
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		}
 		else
 		{
@@ -206,7 +206,7 @@ switch($methode2)
 				//Mise à jour de l’étape pour finaliser la quête
 				$req = "update quete_perso set pquete_nombre = 3
 					where pquete_perso_cod = $perso_cod and pquete_quete_cod = $quete_cod";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 			}
 			else // Textes pour Io, qui joue le rôle d’arbitre
 			{
@@ -225,14 +225,14 @@ switch($methode2)
 				//Mise à jour de l'étape terminée pour cloturer cette étape
 				$req = "update quete_perso set pquete_nombre = 3
 					where pquete_perso_cod = $perso_cod and pquete_quete_cod = $quete_cod";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				Fin mise en commentaire à supprimer*/
 			}
 		}
 		//Mise à jour des brouzoufs
 		$req = "update perso set perso_po = perso_po - 1000 where perso_cod = $perso_cod";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 	break; // Fin du traitement Etape 2
 }
 ?>

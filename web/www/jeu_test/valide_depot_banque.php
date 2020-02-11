@@ -17,13 +17,13 @@ if ($erreur == 0) {
 
     echo("<img src=\"../images/banque3.png\"><br />");
     $req_depot = "select depot_banque($perso_cod,$quantite) as depot";
-    $db->query($req_depot);
-    $db->next_record();
+    $stmt = $pdo->query($req_depot);
+    $result = $stmt->fetch();
     $tab_depot = pg_fetch_array($res_depot, 0);
-    if ($db->f("depot") == 0) {
+    if ($result['depot'] == 0) {
         echo("<p>Vous venez de déposer <strong>$quantite</strong> brouzoufs sur votre compte en banque.");
     } else {
-        printf("<p>Une anomalie est survenue : <strong>%s</strong>", $db->f("depot"));
+        printf("<p>Une anomalie est survenue : <strong>%s</strong>", $result['depot']);
     }
 }
 $contenu_page = ob_get_contents();

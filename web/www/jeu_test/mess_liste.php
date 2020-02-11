@@ -1,17 +1,17 @@
 <?php 
 $contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
 $req = 'select cliste_cod,cliste_nom from contact_liste where cliste_perso_cod = ' . $perso_cod;
-$db->query($req);
-if ($db->nf() == 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0)
 {
     $contenu_page .= '<p>Vous n\'avez aucune liste de diffusion en ce moment.<br>';
 }
 else
 {
 	$contenu_page .= '<p>Liste existantes : ';
-	while ($db->next_record())
+	while ($result = $stmt->fetch())
 	{
-		$contenu_page .= '<p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=aliste&liste=' . $db->f("cliste_cod") . '">' . $db->f("cliste_nom") . '</a>';
+		$contenu_page .= '<p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=aliste&liste=' . $result['cliste_cod'] . '">' . $result['cliste_nom'] . '</a>';
 	}
 }
 $contenu_page .= '<br><hr><p style="text-align:center;"><a href="' . $PHP_SELF . '?m=' . $m . '&methode=cree_liste">Créer une liste !</a><br>';
@@ -34,27 +34,27 @@ switch($methode)
 	case "cree_liste2":	
 		$req = "insert into contact_liste (cliste_perso_cod,cliste_nom) ";
 		$req = $req . "values ($perso_cod,'$nom') ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$contenu_page .= '<p>La liste a bien été créée !';
 		$contenu_page .= '<p style="text-align:center"><a href="' . $PHP_SELF . '?m=' . $m . '">Retour !</a>';
 	break;
 
 	case "aliste":	
 		$req = "select cliste_cod,cliste_nom from contact_liste where cliste_perso_cod = $perso_cod and cliste_cod = $liste ";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			echo "<p>Vous n'avez pas accès à cette liste !";
 			break;
 		}
-		$db->next_record();
-		$nom_liste = $db->f("cliste_nom");
+		$result = $stmt->fetch();
+		$nom_liste = $result['cliste_nom'];
 		$req = "select perso_nom,contact_perso_cod from perso,contact ";
 		$req = $req . "where contact_cliste_cod = $liste ";
 		$req = $req . "and contact_perso_cod = perso_cod ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$contenu_page .= "<p><strong>Gestion de la liste ".$nom_liste."</strong>";
-		if ($db->nf() == 0)
+		if ($stmt->rowCount() == 0)
 		{
 			$contenu_page .= '<p>Aucun contact dans cette liste !';
 		}
@@ -62,15 +62,15 @@ switch($methode)
 		{
 
 		$contenu_page .= "<table>";
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
 				$contenu_page .= "<tr>";
-				$contenu_page .= "<td class=\"soustitre2\"><p>" . $db->f("perso_nom") . "</td>";		
-				$contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $db->f("contact_perso_cod") . "&liste=" . $liste . "\">Retirer !</A>";
+				$contenu_page .= "<td class=\"soustitre2\"><p>" . $result['perso_nom'] . "</td>";		
+				$contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
 			}
 			$contenu_page .= "</table>";
 		}
-		if ($db->nf() < 20)
+		if ($stmt->rowCount() < 20)
 		{
 			$contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
 		}
@@ -91,13 +91,13 @@ switch($methode)
 		$req_pos = "select ppos_pos_cod,distance_vue($perso_cod) as dist_vue,pos_etage,pos_x,pos_y
 			from perso_position,perso,positions
 			where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-		$db->query($req_pos);
-		$db->next_record();
-		$pos_actuelle = $db->f("ppos_pos_cod");
-		$v_x = $db->f("pos_x");
-		$v_y = $db->f("pos_y");
-		$vue =  $db->f("dist_vue");
-		$etage = $db->f("pos_etage");
+		$stmt = $pdo->query($req_pos);
+		$result = $stmt->fetch();
+		$pos_actuelle = $result['ppos_pos_cod'];
+		$v_x = $result['pos_x'];
+		$v_y = $result['pos_y'];
+		$vue =  $result['dist_vue'];
+		$etage = $result['pos_etage'];
 		$contenu_page .= '
 		<select name="joueur" onChange="changeDestinataire(0);">
 		<option value="">---------------</option>';
@@ -113,18 +113,18 @@ switch($methode)
 				and ppos_pos_cod = pos_cod
 				and pos_etage = $etage
 			order by dist,perso_type_perso,perso_nom ";
-		$db->query($req_vue);
+		$stmt = $pdo->query($req_vue);
 		$ch = '';
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
-			if ($db->f('traj') == 1)
+			if ($result['traj'] == 1)
 			{
-				if ($db->f('dist') != $dist_init)
+				if ($result['dist'] != $dist_init)
 				{
-					$ch .= '</optgroup><optgroup label="Distance ' . $db->f('dist') . '">';
-					$dist_init = $db->f('dist');
+					$ch .= '</optgroup><optgroup label="Distance ' . $result['dist'] . '">';
+					$dist_init = $result['dist'];
 				}
-				$ch .= '<option value="' . $db->f('perso_nom') . ';">' . $db->f('perso_nom') . '</option>';
+				$ch .= '<option value="' . $result['perso_nom'] . ';">' . $result['perso_nom'] . '</option>';
 			}
 		}
 			$ch = substr($ch,11);
@@ -134,8 +134,8 @@ switch($methode)
 
 	case "aliste_a3":
 		$req = "select cliste_cod,cliste_nom from contact_liste where cliste_perso_cod = $perso_cod and cliste_cod = $liste ";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			echo "<p>Vous n'avez pas accès à cette liste !";
 			break;
@@ -147,20 +147,20 @@ switch($methode)
 		  if ($valeur != '')
 		  {		
 				$req = "select f_cherche_perso('" . pg_escape_string($valeur) . "') as resultat ";
-				$db->query($req);
-				$db->next_record();
-				if ($db->f("resultat") == -1)
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				if ($result['resultat'] == -1)
 				{
 					$contenu_page .= "<p>Aucun perso trouvé pour le nom ".$valeur." !";
 				}
 				else
 				{
-					$num_contact = $db->f("resultat");
+					$num_contact = $result['resultat'];
 					$req = "select contact_perso_cod from contact ";
 					$req = $req . "where contact_perso_cod = $num_contact ";
 					$req = $req . "and contact_cliste_cod = $liste ";
-					$db->query($req);
-					if ($db->nf() != 0)
+					$stmt = $pdo->query($req);
+					if ($stmt->rowCount() != 0)
 					{
 						$contenu_page .= "<p>Le perso ".$valeur." <strong> est déjà dans cette liste !</strong><br>";
 					}
@@ -168,7 +168,7 @@ switch($methode)
 					{
 						$req = "insert into contact (contact_cliste_cod,contact_perso_cod) ";
 						$req = $req . "values ($liste,$num_contact) ";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$contenu_page .= "<p>Le perso ".$valeur." a été rajouté à votre liste.<br>";
 					}
 				}
@@ -179,14 +179,14 @@ switch($methode)
 
 	case "dliste":
 		$req = "select cliste_nom from contact_liste where cliste_cod = $liste and cliste_perso_cod = $perso_cod";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			$contenu_page .= '<p>Cette liste ne vous appartient pas ! Attention !';
 			break;
 		}
-		$db->next_record();
-		$nom = $db->f("cliste_nom");
+		$result = $stmt->fetch();
+		$nom = $result['cliste_nom'];
 		$contenu_page .= '
 		<p>Voulez vous vraiment détruire la liste <strong>' . $nom . '</strong> ?<br>
 		<a href="' . $PHP_SELF . '?m=' . $m . '&methode=dliste2&liste=' . $liste . '">Oui je le veux !</a><br>
@@ -195,14 +195,14 @@ switch($methode)
 
 	case "dliste2":
 		$req = "select cliste_nom from contact_liste where cliste_cod = $liste and cliste_perso_cod = $perso_cod";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			$contenu_page .= '<p>Cette liste ne vous appartient pas ! Attention !';
 			break;
 		}
 		$req = "delete from contact_liste where cliste_cod = $liste  and cliste_perso_cod = $perso_cod";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 
 		$contenu_page .= "<p>La liste a bien été détruite !";
 		$contenu_page .= '<p style="text-align:center"><a href="' . $PHP_SELF . '?m=' . $m . '">Retour !</a>';
@@ -210,39 +210,39 @@ switch($methode)
 
     case "dcontact":
 		$req = "delete from contact where contact_perso_cod = $contact and contact_cliste_cod = $liste ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$contenu_page .= "<p>Le contact a été enlevé de votre liste !";
 
 		$req = "select cliste_cod,cliste_nom from contact_liste where cliste_perso_cod = $perso_cod and cliste_cod = $liste ";
-		$db->query($req);
-		if ($db->nf() == 0)
+		$stmt = $pdo->query($req);
+		if ($stmt->rowCount() == 0)
 		{
 			echo "<p>Vous n'avez pas accès à cette liste !";
 			break;
 		}
-		$db->next_record();
-		$nom_liste = $db->f("cliste_nom");
+		$result = $stmt->fetch();
+		$nom_liste = $result['cliste_nom'];
 		$req = "select perso_nom,contact_perso_cod from perso,contact ";
 		$req = $req . "where contact_cliste_cod = $liste ";
 		$req = $req . "and contact_perso_cod = perso_cod ";
-		$db->query($req);
+		$stmt = $pdo->query($req);
 		$contenu_page .= "<p><strong>Gestion de la liste ".$nom_liste."</strong>";
-		if ($db->nf() == 0)
+		if ($stmt->rowCount() == 0)
 		{
 			$contenu_page .= '<p>Aucun contact dans cette liste !';
 		}
 		else
 		{
 			$contenu_page .= "<table>";
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
 				$contenu_page .= "<tr>";
-				$contenu_page .= "<td class=\"soustitre2\"><p>" . $db->f("perso_nom") . "</td>";		
-				$contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $db->f("contact_perso_cod") . "&liste=" . $liste . "\">Retirer !</A>";
+				$contenu_page .= "<td class=\"soustitre2\"><p>" . $result['perso_nom'] . "</td>";		
+				$contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
 			}
 			$contenu_page .= "</table>";
 		}
-		if ($db->nf() < 20)
+		if ($stmt->rowCount() < 20)
 		{
 			$contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
 		}
