@@ -980,7 +980,6 @@ class perso
     }
 
 
-
     public function f_vue_renommee()
     {
         $pdo      = new bddpdo;
@@ -2018,7 +2017,6 @@ class perso
         $result = $stmt->fetch();
 
 
-
         $this_perso = new perso;
 
         if (!$this_perso->charge($result['resultat']))
@@ -2892,6 +2890,23 @@ class perso
             }
         }
         return "";
+    }
+
+    /**
+     * @param $objet
+     * @return mixed
+     * @throws Exception
+     */
+    function compte_objet($objet)
+    {
+        $pdo     = new bddpdo();
+        $req_obj = 'select count(perobj_cod) as nombre from perso_objets,objets 
+        where perobj_perso_cod = :perso
+        and perobj_obj_cod = obj_cod and obj_gobj_cod = :objet';
+        $stmt    = $pdo->prepare($req_obj);
+        $stmt    = $pdo->execute(array(":perso" => $this->perso_cod, ":objet" => $objet), $stmt);
+        $result  = $stmt->fetch();
+        return $result['nombre'];
     }
 
 

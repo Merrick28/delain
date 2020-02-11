@@ -96,7 +96,6 @@ if ($erreur == 0)
                             <?php // LISTE DES ARMES ET ARMURES
                             $req_armes =
                                 "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod IN (1,2) order by gobj_nom";
-                            $db_armes  = new base_delain;
                             $stmt2     = $pdo->query($req_armes);
                             while ($result2 = $stmt2->fetch)
                             {

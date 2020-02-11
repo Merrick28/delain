@@ -1,7 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db2 = new base_delain;
 // comment
 //Premier test : vérification si le joueur a bien vu la cachette
 $req = "select persocache_cache_cod

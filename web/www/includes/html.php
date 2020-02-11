@@ -7,12 +7,11 @@
 // Gère l’affichage standardisé d’éléments HTML.
 class html
 {
-    var $db;
+    var $pdo;
     var $cache = array();
 
     function html()
     {
-        $this->db  = new base_delain;
         $this->pdo = new bddpdo();
     }
 

@@ -11,7 +11,7 @@ include "blocks/_test_lieu.php";
 
 //Contenu de la div de droite
 //
-$db = new base_delain;
+
 
 if ($erreur == 0)
 {
@@ -45,7 +45,7 @@ $stmt = $pdo->query($req_typc);
 												and typc_cod = $typc_cod
 												and comp_cod != 27
 												order by comp_libelle ";
-		$db_comp = new base_delain;
+
 		$stmt_comp = $pdo->query($req_comp);
 		while($result_comp = $stmt_comp->fetch()())
 		{

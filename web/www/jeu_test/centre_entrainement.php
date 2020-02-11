@@ -40,7 +40,7 @@ if ($erreur == 0)
 											and comp_typc_cod = typc_cod
 											and typc_cod = $typc_cod
 											order by comp_libelle ";
-		$db_comp = new base_delain;
+
 		$stmt_comp = $pdo->query($req_comp);
 		while($result_comp = $stmt_comp->fetch()())
 		{

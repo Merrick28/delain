@@ -8,12 +8,13 @@ $nom_lieu = 'une banque';
 
 include "blocks/_test_lieu.php";
 
-$db = new base_delain;
+$perso = new perso;
+$perso->charge($perso_cod);
 
 if ($erreur == 0)
 {
-    $tab_lieu_cod = $db->get_lieu($perso_cod);
-    $lieu_cod = $tab_lieu_cod['lieu_cod'];
+    $tab_lieu_cod = $perso->get_lieu();
+    $lieu_cod = $tab_lieu_cod['lieu']->lieu_cod;
     $req = "select lieu_dieu_cod from lieu where lieu_cod = $lieu_cod ";
     $stmt = $pdo->query($req);
     $result = $stmt->fetch();

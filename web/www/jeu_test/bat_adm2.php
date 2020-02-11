@@ -2,7 +2,8 @@
 include "blocks/_tests_appels_page_externe.php";
 
 include "../includes/constantes.php";
-
+$perso = new perso;
+$perso->charge($perso_cod);
 include "blocks/_header_page_jeu.php";
 
 $param = new parametres();
@@ -10,7 +11,7 @@ ob_start();
 
 
 $type_lieu = 9;
-$nom_lieu = 'un bâtiment administratif';
+$nom_lieu  = 'un bâtiment administratif';
 
 include "blocks/_test_lieu.php";
 
@@ -31,11 +32,11 @@ if ($erreur == 0)
             <?php
             if ($lieu_cod == 1470)
             {
-                if ($db->is_milice($perso_cod) != 0)
+                if ($perso->is_milice())
                 {
                     echo "<hr>";
-                    $req = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-                    $stmt = $pdo->query($req);
+                    $req    = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
+                    $stmt   = $pdo->query($req);
                     $result = $stmt->fetch();
                     if ($result['pguilde_solde'] > 0)
                     {
@@ -50,7 +51,16 @@ if ($erreur == 0)
 
 
             }
-            if ($db->is_in_guilde($perso_cod))
+            $pguilde  = new guilde_perso;
+            $isguilde = false;
+            if ($pguilde->get_by_perso($perso->perso_cod))
+            {
+                if ($pguilde->pguilde_valide == 'O')
+                {
+                    $isguilde = true;
+                }
+            }
+            if ($isguilde)
             {
                 echo "<p>Vous êtes déjà dans une guilde, il vous est impossible d'en créer une nouvelle.";
             } else
@@ -60,9 +70,9 @@ if ($erreur == 0)
                     guilde </a>(<?php printf("%s", $param->getparm(27)); ?> PA - <?php printf("%s", $param->getparm(28)); ?> brouzoufs)
                 <?php
             }
-            $nb_queue_rat = $db->compte_objet($perso_cod, 91);
-            $nb_toile = $db->compte_objet($perso_cod, 92);
-            $nb_crochet = $db->compte_objet($perso_cod, 94);
+            $nb_queue_rat = $perso->compte_objet(91);
+            $nb_toile     = $perso->compte_objet(92);
+            $nb_crochet   = $perso->compte_objet(94);
             echo "<form name=\"vente\" method=\"post\" action=\"action.php\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"vente_bat\">";
             echo "<input type=\"hidden\" name=\"objet\">";
@@ -100,10 +110,10 @@ if ($erreur == 0)
                 }
             }
             //La tournée des auberges
-            $req = "select count(paub_visite) as nbre_visite from perso_auberge
+            $req         = "select count(paub_visite) as nbre_visite from perso_auberge
  						where paub_perso_cod =185 and  paub_visite = 'O'";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt        = $pdo->query($req);
+            $result      = $stmt->fetch();
             $nbre_visite = $result['nbre_visite'];
             if ($nbre_visite > 6)
             {
@@ -116,19 +126,19 @@ if ($erreur == 0)
             break;
 
         case "tournee":
-            $erreur = 0;
-            $req = "select lpos_lieu_cod from lieu_position,perso_position ";
-            $req = $req . "where ppos_perso_cod = $perso_cod ";
-            $req = $req . "and ppos_pos_cod = lpos_pos_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $erreur   = 0;
+            $req      = "select lpos_lieu_cod from lieu_position,perso_position ";
+            $req      = $req . "where ppos_perso_cod = $perso_cod ";
+            $req      = $req . "and ppos_pos_cod = lpos_pos_cod ";
+            $stmt     = $pdo->query($req);
+            $result   = $stmt->fetch();
             $lieu_cod = $result['lpos_lieu_cod'];
-            $req_pa = "select perso_pa,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            $nb_po = $result['perso_po'];
-            $prix = 50;
-            $sexe = $result['perso_sex'];
+            $req_pa   = "select perso_pa,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
+            $stmt     = $pdo->query($req_pa);
+            $result   = $stmt->fetch();
+            $nb_po    = $result['perso_po'];
+            $prix     = 50;
+            $sexe     = $result['perso_sex'];
 
             if ($result['perso_po'] < $prix)
             {
@@ -142,18 +152,19 @@ if ($erreur == 0)
             }
             if ($erreur == 0)
             {
-                $req = "select pquete_cod from quete_perso 
+                $req  = "select pquete_cod from quete_perso 
 								where pquete_perso_cod = $perso_cod;
 								and pquete_quete_cod = 6 ";
                 $stmt = $pdo->query($req);
                 if ($stmt->rowCount() == 0)
                 {
-                    $req = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
+                    $req    = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
 				values ($perso_cod,6,now()); ";
-                    $stmt = $pdo->query($req);
+                    $stmt   = $pdo->query($req);
                     $result = $stmt->fetch();
-                    $req = "update perso set perso_po = perso_po - 50,perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
-                    $stmt = $pdo->query($req);
+                    $req    =
+                        "update perso set perso_po = perso_po - 50,perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
+                    $stmt   = $pdo->query($req);
                     $result = $stmt->fetch();
                     echo "<p>Vous êtes bien enregistré !";
                 } else
@@ -163,18 +174,18 @@ if ($erreur == 0)
             }
             break;
         case "solde":
-            $req = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $req    = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
-            $solde = $result['pguilde_solde'];
-            $req = "update perso set perso_po = perso_po + $solde where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            $req = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $solde  = $result['pguilde_solde'];
+            $req    = "update perso set perso_po = perso_po + $solde where perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
+            $req    = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             echo "<p>Vous venez de retirer votre solde.";
             break;
     }
-    if ($db->is_milice($perso_cod) == 1)
+    if ($perso->is_milice())
     {
         echo "<p><a href=\"milice_tel.php\">Se téléporter vers un autre lieu ? </a>";
     }

@@ -1,7 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$db = new base_delain;
 // on regarde si le joueur est bien sur une banque
 $type_lieu = 4;
 $nom_lieu = 'une auberge';
