@@ -279,24 +279,24 @@ if ($erreur == 0)
                 {
                     $comments .= $result2['sort_nom'] . ",";
                 }
-                echo "<TR><TD><a href=\"admin_type_monstre_edit.php?methode2=edit&sel_method=edit&gmon_cod=$gen_mon_cod\">", $db_gmon->f("gmon_nom"), "</a>
-					</TD><TD>", $db_gmon->f("gmon_niveau"),
-                "</TD><TD>", $db_gmon->f("ia_nom"),
-                "</TD><TD>", $db_gmon->f("gmon_for"),
-                "</TD><TD>", $db_gmon->f("gmon_dex"),
-                "</TD><TD>", $db_gmon->f("gmon_int"),
-                "</TD><TD>", $db_gmon->f("gmon_con"),
-                "</TD><TD>", $db_gmon->f("gmon_nb_des_degats"), "D", $db_gmon->f("gmon_val_des_degats"), "(+", $db_gmon->f("gmon_amelioration_degats"), ")",
-                "</TD><TD>", $db_gmon->f("gmon_des_regen"), "D", $db_gmon->f("gmon_valeur_regen"), "(+", $db_gmon->f("gmon_amelioration_regen"), ")",
-                "</TD><TD>", $db_gmon->f("gmon_vue"),
-                "</TD><TD>", $db_gmon->f("gmon_temps_tour"),
-                "</TD><TD>", $db_gmon->f("obcar_armure") * 1, "(+", $db_gmon->f("gmon_amelioration_armure"), ")",
+                echo "<TR><TD><a href=\"admin_type_monstre_edit.php?methode2=edit&sel_method=edit&gmon_cod=$gen_mon_cod\">", $result_gmon['gmon_nom'], "</a>
+					</TD><TD>", $result_gmon['gmon_niveau'],
+                "</TD><TD>", $result_gmon['ia_nom'],
+                "</TD><TD>", $result_gmon['gmon_for'],
+                "</TD><TD>", $result_gmon['gmon_dex'],
+                "</TD><TD>", $result_gmon['gmon_int'],
+                "</TD><TD>", $result_gmon['gmon_con'],
+                "</TD><TD>", $result_gmon['gmon_nb_des_degats'], "D", $result_gmon['gmon_val_des_degats'], "(+", $result_gmon['gmon_amelioration_degats'], ")",
+                "</TD><TD>", $result_gmon['gmon_des_regen'], "D", $result_gmon['gmon_valeur_regen'], "(+", $result_gmon['gmon_amelioration_regen'], ")",
+                "</TD><TD>", $result_gmon['gmon_vue'],
+                "</TD><TD>", $result_gmon['gmon_temps_tour'],
+                "</TD><TD>", $result_gmon['obcar_armure'] * 1, "(+", $result_gmon['gmon_amelioration_armure'], ")",
                 "</TD><TD>", $arme,
                 "</TD><TD>", $armure, "
-					</TD><TD>", $db_gmon->f("gmon_nb_receptacle"),
+					</TD><TD>", $result_gmon['gmon_nb_receptacle'],
                 "</TD><TD> ($comments)",
-                "</TD><TD>", $db_gmon->f("gmon_or"), " br",
-                "</TD><TD>", $db_gmon->f("gmon_quete"),
+                "</TD><TD>", $result_gmon['gmon_or'], " br",
+                "</TD><TD>", $result_gmon['gmon_quete'],
                 "</TD></TR>";
             }
             echo "</table>";
@@ -306,7 +306,7 @@ if ($erreur == 0)
             if ($sel_method == "edit" or $sel_method == "new_from")
             {
                 // Calcul du nombre de sorts de soutien, pour informer l'admin s'il doit en ajouter
-                $db              = new base_delain;
+
                 $req_gmon        =
                     "SELECT count(*) nb_sort_soutien FROM sorts_monstre_generique JOIN sorts ON sort_cod=sgmon_sort_cod and sort_soutien = 'O' WHERE sgmon_gmon_cod = $gmon_cod";
                 $stmt            = $pdo->query($req_gmon);
@@ -460,13 +460,12 @@ if ($erreur == 0)
                                 <SELECT name="gmon_race_cod">
                                     <?php // LISTE DES RACES
                                     $req_races = "select race_cod,race_nom from race order by race_nom";
-                                    $db_race   = new base_delain;
-                                    $db_race->query($req_races);
-                                    while ($db_race->next_record())
+                                    $stmt_race = $pdo->query($req_races);
+                                    while ($result_race = $stmt_race->fetch()())
                                     {
-                                        $race_cod = $db_race->f("race_cod");
+                                        $race_cod = $result_race['race_cod'];
                                         $sel      = ($race_cod == $race) ? "selected" : "";
-                                        echo "<OPTION value=\"$race_cod\" $sel>" . $db_race->f("race_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$race_cod\" $sel>" . $result_race['race_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -499,13 +498,13 @@ if ($erreur == 0)
                                     $arme      = $result['gmon_arme'];
                                     $req_armes =
                                         "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 1 order by gobj_nom";
-                                    $db_armes  = new base_delain;
-                                    $db_armes->query($req_armes);
-                                    while ($db_armes->next_record())
+
+                                    $stmt_armes = $pdo->query($req_armes);
+                                    while ($result_armes = $stmt_armes->fetch()())
                                     {
-                                        $arme_cod = $db_armes->f("gobj_cod");
+                                        $arme_cod = $result_armes['gobj_cod'];
                                         $sel      = ($arme_cod == $arme) ? "selected" : "";
-                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $db_armes->f("gobj_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $result_armes['gobj_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -518,13 +517,13 @@ if ($erreur == 0)
                                     $armure      = $result['gmon_armure'];
                                     $req_armures =
                                         "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 2 order by gobj_nom";
-                                    $db_armures  = new base_delain;
-                                    $db_armures->query($req_armures);
-                                    while ($db_armures->next_record())
+
+                                    $stmt_armures = $pdo->query($req_armures);
+                                    while ($result_armures = $stmt_armures->fetch()())
                                     {
-                                        $armure_cod = $db_armures->f("gobj_cod");
+                                        $armure_cod = $result_armures['gobj_cod'];
                                         $sel        = ($armure_cod == $armure) ? "selected" : "";
-                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $db_armures->f("gobj_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $result_armures['gobj_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -630,12 +629,12 @@ if ($erreur == 0)
                                     $arme      = $result['gmon_serie_arme_cod'];
                                     $req_armes =
                                         "select 	seequ_cod,seequ_nom from  serie_equipement  order by seequ_nom";
-                                    $db_armes->query($req_armes);
-                                    while ($db_armes->next_record())
+                                    $stmt_armes = $pdo->query($req_armes);
+                                    while ($result_armes = $stmt_armes->fetch()())
                                     {
-                                        $arme_cod = $db_armes->f("seequ_cod");
+                                        $arme_cod = $result_armes['seequ_cod'];
                                         $sel      = ($arme_cod == $arme) ? "selected" : "";
-                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $db_armes->f("seequ_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $result_armes['seequ_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -648,12 +647,12 @@ if ($erreur == 0)
                                     $armure      = $result['gmon_serie_armure_cod'];
                                     $req_armures =
                                         "select 	seequ_cod,seequ_nom from  serie_equipement  order by seequ_nom";
-                                    $db_armures->query($req_armures);
-                                    while ($db_armures->next_record())
+                                    $stmt_armures = $pdo->query($req_armures);
+                                    while ($result_armures = $stmt_armures->fetch()())
                                     {
-                                        $armure_cod = $db_armures->f("seequ_cod");
+                                        $armure_cod = $result_armures['seequ_cod'];
                                         $sel        = ($armure_cod == $armure) ? "selected" : "";
-                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $db_armures->f("seequ_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $result_armures['seequ_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -667,13 +666,13 @@ if ($erreur == 0)
                                     <?php // LISTE DES IA possibles
                                     $ia     = $result['gmon_type_ia'];
                                     $req_ia = "select ia_type,ia_nom from type_ia order by ia_type";
-                                    $db_ia  = new base_delain;
-                                    $db_ia->query($req_ia);
-                                    while ($db_ia->next_record())
+
+                                    $stmt_ia = $pdo->query($req_ia);
+                                    while ($result_ia = $stmt_ia->fetch()())
                                     {
-                                        $ia_cod = $db_ia->f("ia_type");
+                                        $ia_cod = $result_ia['ia_type'];
                                         $sel    = ($ia_cod == $ia) ? "selected" : "";
-                                        echo "<OPTION value=\"$ia_cod\" " . $sel . ">" . $db_ia->f("ia_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$ia_cod\" " . $sel . ">" . $result_ia['ia_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -686,13 +685,13 @@ if ($erreur == 0)
                                     $voie     = $result['gmon_voie_magique'];
                                     $req_voie =
                                         "select mvoie_cod,mvoie_libelle from voie_magique order by mvoie_libelle";
-                                    $db_voie  = new base_delain;
-                                    $db_voie->query($req_voie);
-                                    while ($db_voie->next_record())
+
+                                    $stmt_voie = $pdo->query($req_voie);
+                                    while ($result_voie = $stmt_voie->fetch()())
                                     {
-                                        $mvoie_cod = $db_voie->f("mvoie_cod");
+                                        $mvoie_cod = $result_voie['mvoie_cod'];
                                         $sel       = ($mvoie_cod == $voie) ? "selected" : "";
-                                        echo "<OPTION value=\"$mvoie_cod\" " . $sel . ">" . $db_voie->f("mvoie_libelle") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$mvoie_cod\" " . $sel . ">" . $result_voie['mvoie_libelle'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -716,14 +715,14 @@ if ($erreur == 0)
                     </tr>
                     <?php $req_m_sorts =
                         "select sgmon_sort_cod,sort_nom,sgmon_gmon_cod,sgmon_chance,sort_aggressif, sort_soutien from sorts_monstre_generique,sorts where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod";
-                    $db_m_sorts        = new base_delain;
-                    $db_m_sorts->query($req_m_sorts);
-                    while ($db_m_sorts->next_record())
+
+                    $stmt_m_sorts = $pdo->query($req_m_sorts);
+                    while ($result_m_sorts = $stmt_m_sorts->fetch()())
                     {
-                        $sort_nom         = $db_m_sorts->f("sort_nom");
-                        $sgmon_chance     = $db_m_sorts->f("sgmon_chance");
+                        $sort_nom         = $result_m_sorts['sort_nom'];
+                        $sgmon_chance     = $result_m_sorts['sgmon_chance'];
                         $sort_nom_advance =
-                            $db_m_sorts->f("sort_aggressif") == 'O' ? ' <em>(agressif)</em>' : ($db_m_sorts->f("sort_soutien") == 'O' ? ' <em>(soutien)</em>' : '');
+                            $result_m_sorts['sort_aggressif'] == 'O' ? ' <em>(agressif)</em>' : ($result_m_sorts['sort_soutien'] == 'O' ? ' <em>(soutien)</em>' : '');
                         ?>
                         <TR>
                             <TD><?php echo $sort_nom . $sort_nom_advance; ?></TD>
@@ -734,7 +733,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="delete_mon_sort">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="sort_cod"
-                                           value="<?php echo $db_m_sorts->f("sgmon_sort_cod") ?>">
+                                           value="<?php echo $result_m_sorts['sgmon_sort_cod'] ?>">
                                     <input type="submit" value="Supprimer">
                                 </form>
                             </TD>
@@ -754,11 +753,11 @@ if ($erreur == 0)
                                                                    WHEN sort_soutien='O' THEN  sort_nom || ' (soutien)'
                                                                    ELSE sort_nom END AS sort_nom
                                                     from sorts where not exists(select 1 from sorts_monstre_generique where sgmon_gmon_cod  = $gmon_cod and sgmon_sort_cod = sort_cod) order by sort_nom";
-                                    $db_m_sorts->query($req_m_sorts);
-                                    while ($db_m_sorts->next_record())
+                                    $stmt_m_sorts = $pdo->query($req_m_sorts);
+                                    while ($result_m_sorts = $stmt_m_sorts->fetch()())
                                     {
                                         ?>
-                                        <option value="<?php echo $db_m_sorts->f("sort_cod") ?>"><?php echo $db_m_sorts->f("sort_nom") ?></option>
+                                        <option value="<?php echo $result_m_sorts['sort_cod'] ?>"><?php echo $result_m_sorts['sort_nom'] ?></option>
                                     <?php }
                                     ?>
                                 </select>
@@ -781,13 +780,13 @@ if ($erreur == 0)
 						from monstre_generique_immunite
 						inner join sorts on sort_cod = immun_sort_cod
 						where immun_gmon_cod  = $gmon_cod";
-                    $db_m_sorts        = new base_delain;
-                    $db_m_sorts->query($req_m_sorts);
-                    while ($db_m_sorts->next_record())
+
+                    $stmt_m_sorts = $pdo->query($req_m_sorts);
+                    while ($result_m_sorts = $stmt_m_sorts->fetch()())
                     {
-                        $sort_nom     = $db_m_sorts->f("sort_nom");
-                        $immun_valeur = $db_m_sorts->f("immun_valeur");
-                        $immun_runes  = $db_m_sorts->f("immun_runes");
+                        $sort_nom     = $result_m_sorts['sort_nom'];
+                        $immun_valeur = $result_m_sorts['immun_valeur'];
+                        $immun_runes  = $result_m_sorts['immun_runes'];
                         ?>
                         <TR>
                             <TD><?php echo $sort_nom; ?></TD>
@@ -800,7 +799,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="delete_mon_immunite"/>
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>"/>
                                     <input type="hidden" name="sort_cod"
-                                           value="<?php echo $db_m_sorts->f("immun_sort_cod") ?>"/>
+                                           value="<?php echo $result_m_sorts['immun_sort_cod'] ?>"/>
                                     <input type="submit" value="Supprimer"/>
                                 </form>
                             </TD>
@@ -821,11 +820,11 @@ if ($erreur == 0)
 							select 1 from monstre_generique_immunite
 							where immun_gmon_cod = $gmon_cod and immun_sort_cod = sort_cod)
 						order by sort_nom";
-                                    $db_m_sorts->query($req_m_sorts);
-                                    while ($db_m_sorts->next_record())
+                                    $stmt_m_sorts = $pdo->query($req_m_sorts);
+                                    while ($result_m_sorts = $stmt_m_sorts->fetch()())
                                     {
                                         ?>
-                                        <option value="<?php echo $db_m_sorts->f("sort_cod") ?>"><?php echo $db_m_sorts->f("sort_nom") ?></option>
+                                        <option value="<?php echo $result_m_sorts['sort_cod'] ?>"><?php echo $result_m_sorts['sort_nom'] ?></option>
                                     <?php }
                                     ?>
                                 </select>
@@ -847,23 +846,23 @@ if ($erreur == 0)
                     </tr>
                     <?php $req_m_comps =
                         "select typc_libelle,gtypc_typc_cod,gtypc_valeur from  	gmon_type_comp,  	type_competences where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod";
-                    $db_m_comps        = new base_delain;
-                    $db_detail_comp    = new base_delain;
-                    $db_m_comps->query($req_m_comps);
-                    while ($db_m_comps->next_record())
+
+
+                    $stmt_m_comps = $pdo->query($req_m_comps);
+                    while ($result_m_comps = $stmt_m_comps->fetch()())
                     {
 
-                        $typc_libelle = $db_m_comps->f("typc_libelle");
-                        $gtypc_valeur = $db_m_comps->f("gtypc_valeur");
-                        $gtypc_cod    = $db_m_comps->f("gtypc_typc_cod");
+                        $typc_libelle = $result_m_comps['typc_libelle'];
+                        $gtypc_valeur = $result_m_comps['gtypc_valeur'];
+                        $gtypc_cod    = $result_m_comps['gtypc_typc_cod'];
 
                         $req_detail_comp =
                             "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
-                        $db_detail_comp->query($req_detail_comp);
+                        $stmt_detail_comp = $pdo->query($req_detail_comp);
                         $liste_comp = "";
-                        while ($db_detail_comp->next_record())
+                        while ($result_detail_comp = $stmt_detail_comp->fetch()())
                         {
-                            $liste_comp = $liste_comp . $db_detail_comp->f("comp_libelle") . ", ";
+                            $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
                         }
                         ?>
                         <TR>
@@ -875,9 +874,9 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="mod_comp_mon">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="typc_cod"
-                                           value="<?php echo $db_m_comps->f("gtypc_typc_cod"); ?>">
+                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
                                     <INPUT type="text" name="valeur"
-                                           value="<?php echo $db_m_comps->f("gtypc_valeur"); ?>">
+                                           value="<?php echo $result_m_comps['gtypc_valeur']; ?>">
                                     <input type="submit" value="Modifier">
                                 </form>
                             </td>
@@ -888,7 +887,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="supr_comp_mon">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="typc_cod"
-                                           value="<?php echo $db_m_comps->f("gtypc_typc_cod"); ?>">
+                                           value="<?php echo $result_m_comps['gtypc_typc_cod']; ?>">
                                     <input type="submit" value="Supprimer">
                                 </form>
                             </TD>
@@ -905,21 +904,21 @@ if ($erreur == 0)
                                 <select name="typc_cod">
                                     <?php $req_m_comps =
                                         "select typc_cod,typc_libelle from type_competences where not exists(select 1 from gmon_type_comp where gtypc_gmon_cod  = $gmon_cod and gtypc_typc_cod = typc_cod) order by typc_libelle";
-                                    $db_m_comps->query($req_m_comps);
-                                    while ($db_m_comps->next_record())
+                                    $stmt_m_comps = $pdo->query($req_m_comps);
+                                    while ($result_m_comps = $stmt_m_comps->fetch()())
                                     {
-                                        $gtypc_cod       = $db_m_comps->f("typc_cod");
+                                        $gtypc_cod       = $result_m_comps['typc_cod'];
                                         $req_detail_comp =
                                             "select comp_libelle from competences where comp_typc_cod = $gtypc_cod and comp_connu = 'O'";
-                                        $db_detail_comp->query($req_detail_comp);
+                                        $stmt_detail_comp = $pdo->query($req_detail_comp);
                                         $liste_comp = "";
-                                        while ($db_detail_comp->next_record())
+                                        while ($result_detail_comp = $stmt_detail_comp->fetch()())
                                         {
-                                            $liste_comp = $liste_comp . $db_detail_comp->f("comp_libelle") . ", ";
+                                            $liste_comp = $liste_comp . $result_detail_comp['comp_libelle'] . ", ";
                                         }
 
                                         ?>
-                                        <option value="<?php echo $db_m_comps->f("typc_cod") ?>"><?php echo $db_m_comps->f("typc_libelle") ?>
+                                        <option value="<?php echo $result_m_comps['typc_cod'] ?>"><?php echo $result_m_comps['typc_libelle'] ?>
                                             ( <?php echo $liste_comp ?> )
                                         </option>
                                     <?php }
@@ -945,15 +944,15 @@ if ($erreur == 0)
                     <?php $req_m_comps =
                         "select comp_cod,  comp_libelle,gmoncomp_valeur,gmoncomp_chance from competences, monstre_generique_comp "
                         . "where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod";
-                    $db_m_comps        = new base_delain;
-                    $db_m_comps->query($req_m_comps);
-                    while ($db_m_comps->next_record())
+
+                    $stmt_m_comps = $pdo->query($req_m_comps);
+                    while ($result_m_comps = $stmt_m_comps->fetch()())
                     {
                         ?>
                         <TR>
-                            <TD width="40%"><?php echo $db_m_comps->f("comp_libelle"); ?> Pourcentage :
-                                (<?php echo $db_m_comps->f("gmoncomp_valeur") ?> %) Chance :
-                                (<?php echo $db_m_comps->f("gmoncomp_chance") ?> %)
+                            <TD width="40%"><?php echo $result_m_comps['comp_libelle']; ?> Pourcentage :
+                                (<?php echo $result_m_comps['gmoncomp_valeur'] ?> %) Chance :
+                                (<?php echo $result_m_comps['gmoncomp_chance'] ?> %)
                             </TD>
                             <td>
                                 <form method="post">
@@ -962,7 +961,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="supr_comp_mon_spe">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="typc_cod"
-                                           value="<?php echo $db_m_comps->f("comp_cod"); ?>">
+                                           value="<?php echo $result_m_comps['comp_cod']; ?>">
                                     <input type="submit" value="Supprimer">
                                 </form>
                             </TD>
@@ -981,11 +980,11 @@ if ($erreur == 0)
                                     <?php $req_m_comps =
                                         "select comp_cod,  comp_libelle from competences where comp_connu <> 'O'   "
                                         . "and not exists(select 1 from monstre_generique_comp where gmoncomp_gmon_cod  = $gmon_cod and gmoncomp_comp_cod = comp_cod) order by comp_libelle";
-                                    $db_m_comps->query($req_m_comps);
-                                    while ($db_m_comps->next_record())
+                                    $stmt_m_comps = $pdo->query($req_m_comps);
+                                    while ($result_m_comps = $stmt_m_comps->fetch()())
                                     {
                                         ?>
-                                        <option value="<?php echo $db_m_comps->f("comp_cod") ?>"><?php echo $db_m_comps->f("comp_libelle") ?></option>
+                                        <option value="<?php echo $result_m_comps['comp_cod'] ?>"><?php echo $result_m_comps['comp_libelle'] ?></option>
                                     <?php }
                                     ?>
                                 </select>
@@ -1056,14 +1055,14 @@ if ($erreur == 0)
                     </tr>
                     <?php $req_drops =
                         "select gobj_nom,ogmon_gobj_cod,ogmon_equipe,ogmon_chance,COALESCE(gobj_chance_drop_monstre,100) as gobj_chance_drop_monstre from objets_monstre_generique,objet_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod";
-                    $db_drops        = new base_delain;
-                    $db_drops->query($req_drops);
+
+                    $stmt_drops = $pdo->query($req_drops);
                     //echo $req_drops;
-                    while ($db_drops->next_record())
+                    while ($result_drops = $stmt_drops->fetch()())
                     {
 
-                        $gobj_nom        = $db_drops->f("gobj_nom");
-                        $drop_obj_chance = $db_drops->f("ogmon_chance");
+                        $gobj_nom        = $result_drops['gobj_nom'];
+                        $drop_obj_chance = $result_drops['ogmon_chance'];
                         ?>
                         <TR>
                             <TD><?php echo $gobj_nom; ?></TD>
@@ -1074,16 +1073,16 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="mod_drop_mon">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="gobj_cod"
-                                           value="<?php echo $db_drops->f("ogmon_gobj_cod"); ?>">
+                                           value="<?php echo $result_drops['ogmon_gobj_cod']; ?>">
                                     <INPUT type="text" name="valeur"
-                                           value="<?php echo $db_drops->f("ogmon_chance"); ?>">
+                                           value="<?php echo $result_drops['ogmon_chance']; ?>">
                                     &nbsp;Equiper:<input type="checkbox"
-                                                         name="ogmon_equipe" <?php echo $db_drops->f("ogmon_equipe") == "t" ? "checked" : ""; ?>>
+                                                         name="ogmon_equipe" <?php echo $result_drops['ogmon_equipe'] == "t" ? "checked" : ""; ?>>
                                     <input type="submit" value="Modifier">
                                 </form>
                             </td>
                             <td style="text-align: center"><a target="_blank"
-                                                              href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $db_drops->f("ogmon_gobj_cod"); ?>"><?php echo $db_drops->f("gobj_chance_drop_monstre") . '</a> %'; ?>
+                                                              href="admin_objet_generique_edit.php?&methode=mod2&gobj_cod=<?php echo $result_drops['ogmon_gobj_cod']; ?>"><?php echo $result_drops['gobj_chance_drop_monstre'] . '</a> %'; ?>
                             </td>
                             <td>
                                 <form method="post">
@@ -1092,7 +1091,7 @@ if ($erreur == 0)
                                     <input type="hidden" name="methode" value="supr_drop_mon">
                                     <input type="hidden" name="gmon_cod" value="<?php echo $gmon_cod ?>">
                                     <input type="hidden" name="gobj_cod"
-                                           value="<?php echo $db_drops->f("ogmon_gobj_cod"); ?>">
+                                           value="<?php echo $result_drops['ogmon_gobj_cod']; ?>">
                                     <input type="submit" value="Supprimer">
                                 </form>
                             </td>
@@ -1109,11 +1108,11 @@ if ($erreur == 0)
                                 <select name="gobj_cod">
                                     <?php $req_drops =
                                         "select gobj_nom,gobj_cod from objet_generique where not exists(select 1 from objets_monstre_generique where ogmon_gmon_cod = $gmon_cod and ogmon_gobj_cod = gobj_cod) order by gobj_nom";
-                                    $db_drops->query($req_drops);
-                                    while ($db_drops->next_record())
+                                    $stmt_drops = $pdo->query($req_drops);
+                                    while ($result_drops = $stmt_drops->fetch()())
                                     {
                                         ?>
-                                        <option value="<?php echo $db_drops->f("gobj_cod") ?>"><?php echo $db_drops->f("gobj_nom") ?></option>
+                                        <option value="<?php echo $result_drops['gobj_cod'] ?>"><?php echo $result_drops['gobj_nom'] ?></option>
                                     <?php }
                                     ?>
                                 </select>
@@ -1219,13 +1218,13 @@ if ($erreur == 0)
                                 <SELECT name="gmon_race_cod">
                                     <?php // LISTE DES RACES
                                     $req_races = "select race_cod,race_nom from race order by race_nom";
-                                    $db_race   = new base_delain;
-                                    $db_race->query($req_races);
-                                    while ($db_race->next_record())
+
+                                    $stmt_race = $pdo->query($req_races);
+                                    while ($result_race = $stmt_race->fetch()())
                                     {
-                                        $race_cod = $db_race->f("race_cod");
+                                        $race_cod = $result_race['race_cod'];
                                         $sel      = "";
-                                        echo "<OPTION value=\"$race_cod\" $sel>" . $db_race->f("race_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$race_cod\" $sel>" . $result_race['race_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -1254,13 +1253,13 @@ if ($erreur == 0)
                                     <?php // LISTE DES ARMES
                                     $req_armes =
                                         "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 1 order by gobj_nom";
-                                    $db_armes  = new base_delain;
-                                    $db_armes->query($req_armes);
-                                    while ($db_armes->next_record())
+
+                                    $stmt_armes = $pdo->query($req_armes);
+                                    while ($result_armes = $stmt_armes->fetch()())
                                     {
-                                        $arme_cod = $db_armes->f("gobj_cod");
+                                        $arme_cod = $result_armes['gobj_cod'];
                                         $sel      = "";
-                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $db_armes->f("gobj_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$arme_cod\" $sel>" . $result_armes['gobj_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
@@ -1272,13 +1271,13 @@ if ($erreur == 0)
                                     <?php // LISTE DES ARMES
                                     $req_armures =
                                         "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod = 2 order by gobj_nom";
-                                    $db_armures  = new base_delain;
-                                    $db_armures->query($req_armures);
-                                    while ($db_armures->next_record())
+
+                                    $stmt_armures = $pdo->query($req_armures);
+                                    while ($result_armures = $stmt_armures->fetch()())
                                     {
-                                        $armure_cod = $db_armures->f("gobj_cod");
+                                        $armure_cod = $result_armures['gobj_cod'];
                                         $sel        = "";
-                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $db_armures->f("gobj_nom") . "</OPTION>\n";
+                                        echo "<OPTION value=\"$armure_cod\" $sel>" . $result_armures['gobj_nom'] . "</OPTION>\n";
                                     }
                                     ?>
                                 </SELECT>
