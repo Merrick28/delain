@@ -4,7 +4,10 @@ ob_start();
 if (!isset($methode)) {
     $methode = "debut";
 }
-if (!$db->is_admin($compt_cod)) {
+$compte = new compte;
+$compte->charge($compt_cod);
+if (!$compte->is_admin())
+{
     switch ($methode) {
         case "debut":
             $req = "select prepare_hibernation($compt_cod) as resultat ";

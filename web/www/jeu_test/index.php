@@ -29,9 +29,9 @@ if(!$verif_auth)
 
 if(isset($nom_perso) && $nom_perso == "admin")
 {
-	$db->query("select perso_nom from perso where perso_cod = " . $num_perso);
-	$result = $stmt->fetch();
-	$nom_perso=$result['perso_nom'];
+    $stmt      = $pdo->query("select perso_nom from perso where perso_cod = " . $num_perso);
+	$result    = $stmt->fetch();
+	$nom_perso =$result['perso_nom'];
 }
 
 if (!isset($perso_cod))
@@ -64,7 +64,7 @@ if ($perso_cod == 0)
 if (isset($_POST['changed_frameless']) && $_POST['changed_frameless'] == 1)
 {
 	$valeur = isset($_POST['frameless']) ? 'O' : 'N';
-	$db->query("update compte set compt_frameless='$valeur' where compt_cod = $compt_cod");
+    $stmt   = $pdo->query("update compte set compt_frameless='$valeur' where compt_cod = $compt_cod");
 }
 $page="perso2.php";
 $req_msg="select count(*) as nombre from messages_dest where dmsg_perso_cod =".$perso_cod." and dmsg_lu = 'N' and dmsg_archive = 'N' ";

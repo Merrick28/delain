@@ -1,7 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if ($db->is_admin($compt_cod))
+$vcompte = new compte;
+$vcompte->charge($compt_cod);
+if ($vcompte->is_admin())
 {
 	$req = "select compt_nom from compte where compt_cod = $compte ";
 	$stmt = $pdo->query($req);

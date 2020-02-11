@@ -10,23 +10,24 @@ $parm = new parametres();
 //log_debug('Debut de page inventaire');
 //
 // Récupération des données du perso
-$req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
-$stmt = $pdo->query($req_or);
-$qte_or = ($result = $stmt->fetch()) ? $result['pbank_or'] : 0;
+$req_or     = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
+$stmt       = $pdo->query($req_or);
+$qte_or     = ($result = $stmt->fetch()) ? $result['pbank_or'] : 0;
 $cout_repar = $parm->getparm(40);
 
-$req_perso = "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso, gmon_type_ia from perso left join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req_perso);
-$result = $stmt->fetch();
-$poids_total = $result['perso_enc_max'];
-$perso_po = $result['perso_po'];
-$perso_gmon_cod = $result['perso_gmon_cod'];
-$gmon_type_ia = $result['gmon_type_ia'];
-$is_golem_brz = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
-$is_golem_arm = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
-$is_golem_pps = $gmon_type_ia == 16;    // 16 = ia "Golem de pierres précieuses"
-$is_golem = $is_golem_brz || $is_golem_arm || $is_golem_pps;
-$pa = $result['perso_pa'];
+$req_perso        =
+    "select perso_enc_max, perso_po, perso_gmon_cod, perso_pa, perso_type_perso, gmon_type_ia from perso left join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = $perso_cod ";
+$stmt             = $pdo->query($req_perso);
+$result           = $stmt->fetch();
+$poids_total      = $result['perso_enc_max'];
+$perso_po         = $result['perso_po'];
+$perso_gmon_cod   = $result['perso_gmon_cod'];
+$gmon_type_ia     = $result['gmon_type_ia'];
+$is_golem_brz     = $gmon_type_ia == 12;    // 12 = ia "Golem de brouzoufs"
+$is_golem_arm     = $gmon_type_ia == 13;    // 13 = ia "Golem d'armes et d'armures"
+$is_golem_pps     = $gmon_type_ia == 16;    // 16 = ia "Golem de pierres précieuses"
+$is_golem         = $is_golem_brz || $is_golem_arm || $is_golem_pps;
+$pa               = $result['perso_pa'];
 $perso_type_perso = $result['perso_type_perso'];
 
 if (!isset($dr))
@@ -90,8 +91,8 @@ switch ($methode)
         if ($pa >= 2)
         {
             $req_remettre = "select remettre_objet($perso_cod,$perobj) as equipe";
-            $stmt = $pdo->query($req_remettre);
-            $result = $stmt->fetch();
+            $stmt         = $pdo->query($req_remettre);
+            $result       = $stmt->fetch();
             $tab_remettre = $result['equipe'];
             if ($tab_remettre == "0")
             {
@@ -127,8 +128,8 @@ switch ($methode)
         if ($erreur == 0)
         {
             $req_remettre = "select equipe_objet($perso_cod,$objet) as equipe";
-            $stmt = $pdo->query($req_remettre);
-            $result = $stmt->fetch();
+            $stmt         = $pdo->query($req_remettre);
+            $result       = $stmt->fetch();
             $tab_remettre = $result['equipe'];
             if ($tab_remettre == 0)
             {
@@ -136,7 +137,7 @@ switch ($methode)
             } else
             {
                 $tab_remettre = explode(';', $tab_remettre);
-                $texte = (isset($tab_remettre[1])) ? $tab_remettre[1] : $tab_remettre[0];
+                $texte        = (isset($tab_remettre[1])) ? $tab_remettre[1] : $tab_remettre[0];
                 echo("<br><strong>$texte</strong><br>");
             }
         }
@@ -147,15 +148,18 @@ switch ($methode)
 			UNION ALL select 1 from defi
 				inner join perso_familier on pfam_perso_cod in (defi_lanceur_cod, defi_cible_cod)
 				where defi_statut = 1 and pfam_familier_cod = $perso_cod";
-        $stmt = $pdo->query($req_defi);
+        $stmt     = $pdo->query($req_defi);
         if ($stmt->rowCount() > 0 && !isset($validerabandon))
         {
             echo "<br><strong>Vous êtes actuellement en plein défi ! Si vous abandonnez cet objet, vous ne pourrez plus le ramasser à nouveau.
 				<a href='inventaire.php?methode=abandonner&objet=$objet&validerabandon=1'>Abandonner quand même ! (1PA)</a></strong>";
         } else
         {
-            $req = 'select depose_objet(' . $perso_cod . ',' . $objet . ') as resultat ';
-            $resultat = $db->get_value($req, 'resultat');
+            $req      =
+                'select depose_objet(perso_cod,' . $objet . ') as resultat from perso where perso_cod = $perso_cod';
+            $stmt     = $pdo->query($req);
+            $result   = $stmt->fetch();
+            $resultat = $result['resultat'];
             echo "<br><strong>$resultat</strong><br>";
         }
         break;
@@ -163,15 +167,16 @@ switch ($methode)
     case "manger":
         if ($is_golem_brz && $pa > 5)
         {
-            $px = 20;
-            $req = "select perso_px, max(perso_px::integer, min(perso_px::integer + $px, perso_po / 5)) as nv_px from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $px     = 20;
+            $req    =
+                "select perso_px, max(perso_px::integer, min(perso_px::integer + $px, perso_po / 5)) as nv_px from perso where perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             if ($result['perso_px'] + 1 <= $result['nv_px'])
             {
-                $nv_px = $result['nv_px'];
-                $req = "update perso set perso_pa = perso_pa - 6, perso_px = $nv_px where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
+                $nv_px  = $result['nv_px'];
+                $req    = "update perso set perso_pa = perso_pa - 6, perso_px = $nv_px where perso_cod = $perso_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<br><strong>Miam scrountch miom !</strong> Cette action vous a redonné des PX, en fonction de la quantité de brouzoufs possédée...<br>";
             } else
@@ -180,8 +185,8 @@ switch ($methode)
             }
         } else if (($is_golem_arm || $is_golem_pps) && $pa > 5)
         {
-            $req = 'select golem_digestion(' . $perso_cod . ') as resultat ';
-            $stmt = $pdo->query($req);
+            $req    = 'select golem_digestion(' . $perso_cod . ') as resultat ';
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<br><strong>Miam scrountch miom !</strong> " . $result['resultat'] . "<br>";
         } else
@@ -191,9 +196,9 @@ switch ($methode)
         break;
 }
 
-$req_poids = "select get_poids($perso_cod) as poids";
-$stmt = $pdo->query($req_poids);
-$result = $stmt->fetch();
+$req_poids   = "select get_poids($perso_cod) as poids";
+$stmt        = $pdo->query($req_poids);
+$result      = $stmt->fetch();
 $poids_porte = $result['poids'];
 
 // identification auto de certains objets (runes, objets de quêtes, poissons, etc...)
@@ -208,7 +213,7 @@ $req_id = "update perso_objets
 	and gobj_tobj_cod = tobj_cod
 	and tobj_identifie_auto = 1 ) ";
 $req_id = "select identifie_perso_objet($perso_cod)";
-$stmt = $pdo->query($req_id);
+$stmt   = $pdo->query($req_id);
 //
 //log_debug('Fin ident auto');
 //log_debug($req_id);
@@ -236,15 +241,16 @@ $stmt = $pdo->query($req_id);
         /**************************/
         /* Etape 2 : matos équipé */
         /**************************/
-        $req_equipe = "select obj_etat,obj_etat_max,obj_cod,tobj_cod,gobj_cod,tobj_libelle,obj_nom,perobj_cod,obj_poids,gobj_pa_normal,gobj_pa_eclair,gobj_url from perso_objets,objets,objet_generique,type_objet ";
+        $req_equipe =
+            "select obj_etat,obj_etat_max,obj_cod,tobj_cod,gobj_cod,tobj_libelle,obj_nom,perobj_cod,obj_poids,gobj_pa_normal,gobj_pa_eclair,gobj_url from perso_objets,objets,objet_generique,type_objet ";
         $req_equipe = $req_equipe . "where perobj_perso_cod = $perso_cod ";
         $req_equipe = $req_equipe . "and perobj_equipe = 'O' ";
         $req_equipe = $req_equipe . "and perobj_obj_cod = obj_cod ";
         $req_equipe = $req_equipe . "and obj_gobj_cod = gobj_cod ";
         $req_equipe = $req_equipe . "and gobj_tobj_cod = tobj_cod ";
         $req_equipe = $req_equipe . "order by tobj_libelle";
-        $stmt = $pdo->query($req_equipe);
-        $nb_equipe = $stmt->rowCount();
+        $stmt       = $pdo->query($req_equipe);
+        $nb_equipe  = $stmt->rowCount();
         //
         //log_debug('Fin requête équipé');
         //
@@ -282,22 +288,22 @@ $stmt = $pdo->query($req_id);
                             $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "\">Voir le détail</a>) ";
                         }
 
-                        $req = "select obon_cod,obon_libelle from bonus_objets,objets ";
-                        $req = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
+                        $req   = "select obon_cod,obon_libelle from bonus_objets,objets ";
+                        $req   = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
                         $stmt2 = $pdo->query($req);
                         if ($stmt2->rowCount() != 0)
                         {
                             $result2 = $stmt2->fetch();
-                            $bonus = " (" . $result2['obon_libelle'] . ")";
+                            $bonus   = " (" . $result2['obon_libelle'] . ")";
                             $url_bon = "&bon=" . $result2['obon_cod'];
                         } else
                         {
-                            $bonus = "";
+                            $bonus   = "";
                             $url_bon = "";
                         }
-                        $obj_etat = $result['obj_etat'];
+                        $obj_etat     = $result['obj_etat'];
                         $obj_etat_max = $result['obj_etat_max'];
-                        $cpl_class = '';
+                        $cpl_class    = '';
                         if ($obj_etat < 60)
                             $cpl_class = '_vert';
                         if ($obj_etat < 40)
@@ -343,15 +349,16 @@ $stmt = $pdo->query($req_id);
         /*********************************************/
         /* Etape 3 : matos non équipé, non identifié */
         /*********************************************/
-        $req_matos = "select tobj_libelle,obj_nom_generique,obj_cod,obj_poids from perso_objets,objets,objet_generique,type_objet ";
+        $req_matos =
+            "select tobj_libelle,obj_nom_generique,obj_cod,obj_poids from perso_objets,objets,objet_generique,type_objet ";
         $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
         $req_matos = $req_matos . "and perobj_identifie = 'N' ";
         $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
         $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
         $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
         $req_matos = $req_matos . "order by tobj_libelle";
-        $stmt = $pdo->query($req_matos);
-        $nb_matos = $stmt->rowCount();
+        $stmt      = $pdo->query($req_matos);
+        $nb_matos  = $stmt->rowCount();
         //
         //log_debug('Fin non esquipe non identifie');
         //
@@ -423,8 +430,8 @@ $stmt = $pdo->query($req_id);
 		and perobj_equipe = 'N'
 		and gobj_tobj_cod not in (5,11,12,14,22,28,30,34,42)
 	order by tobj_libelle,gobj_nom ";
-        $stmt = $pdo->query($req_matos);
-        $nb_matos = $stmt->rowCount();
+        $stmt      = $pdo->query($req_matos);
+        $nb_matos  = $stmt->rowCount();
         //
         //log_debug('Fin non equipe, identifie');
         //
@@ -455,14 +462,15 @@ $stmt = $pdo->query($req_id);
                 <?php
                 while ($result = $stmt->fetch())
                 {
-                    $potion_buvable = ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
+                    $potion_buvable =
+                        ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
                     if ($result['obon_cod'] >= 0)
                     {
-                        $bonus = " (" . $result['obon_libelle'] . ")";
+                        $bonus   = " (" . $result['obon_libelle'] . ")";
                         $url_bon = "&bon=" . $result['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus   = "";
                         $url_bon = "";
                     }
                     $examiner = "";
@@ -524,8 +532,8 @@ $stmt = $pdo->query($req_id);
 	and gobj_tobj_cod = 5
 	group by obj_nom,obj_frune_cod,obj_famille_rune
 	order by obj_frune_cod,obj_nom ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 //log_debug($req_matos);
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
@@ -560,7 +568,8 @@ $stmt = $pdo->query($req_id);
                 }
             } else
             {
-                $req_matos = "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
@@ -569,8 +578,8 @@ $stmt = $pdo->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = 5 ";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -620,7 +629,8 @@ $stmt = $pdo->query($req_id);
             {
                 $req_matos = "select A.obj_cod, A.obj_nom, A.poids, A.nombre, A.gobj_url ";
                 $req_matos = $req_matos . "from ( ";
-                $req_matos = $req_matos . "select 1 as obj_cod, obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url ";
+                $req_matos =
+                    $req_matos . "select 1 as obj_cod, obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url ";
                 $req_matos = $req_matos . "from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
@@ -644,7 +654,7 @@ $stmt = $pdo->query($req_id);
                 $req_matos = $req_matos . "and gobj_url is not null) A ";
                 $req_matos = $req_matos . "order by A.obj_nom ";
                 //echo $req_matos;
-                $stmt = $pdo->query($req_matos);
+                $stmt     = $pdo->query($req_matos);
                 $nb_matos = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
@@ -667,7 +677,8 @@ $stmt = $pdo->query($req_id);
                         $examiner = "";
                         if ($result['gobj_url'] != null)
                         {
-                            $examiner = " (<a href=\"objets/" . $result['gobj_url'] . "?objet=" . $result['obj_cod'] . " \">Voir le détail</a>) ";
+                            $examiner =
+                                " (<a href=\"objets/" . $result['gobj_url'] . "?objet=" . $result['obj_cod'] . " \">Voir le détail</a>) ";
 
                         }
                         echo("<tr>");
@@ -684,7 +695,8 @@ $stmt = $pdo->query($req_id);
                 }
             } else
             {
-                $req_matos = "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
@@ -693,8 +705,8 @@ $stmt = $pdo->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod in (11,12) ";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -782,17 +794,19 @@ $stmt = $pdo->query($req_id);
             /*****************************************/
             if ($dcompo == 0)
             {
-                $req_matos = "select obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
                 $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
                 $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
-                $req_matos = $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
+                $req_matos =
+                    $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
                 $req_matos = $req_matos . "group by obj_nom,gobj_url ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
@@ -829,17 +843,19 @@ $stmt = $pdo->query($req_id);
                 }
             } else
             {
-                $req_matos = "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
                 $req_matos = $req_matos . "and perobj_obj_cod = obj_cod ";
                 $req_matos = $req_matos . "and obj_gobj_cod = gobj_cod ";
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
-                $req_matos = $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
+                $req_matos =
+                    $req_matos . "and (gobj_tobj_cod = 22 or gobj_tobj_cod = 28 or gobj_tobj_cod = 30 or gobj_tobj_cod = 34)";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -881,7 +897,8 @@ $stmt = $pdo->query($req_id);
             /*****************************************/
             if ($dgrisbi == 0)
             {
-                $req_matos = "select obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_nom,sum(obj_poids) as poids,count(*) as nombre,gobj_url from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
@@ -890,8 +907,8 @@ $stmt = $pdo->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
                 $req_matos = $req_matos . "group by obj_nom,gobj_url ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
@@ -928,7 +945,8 @@ $stmt = $pdo->query($req_id);
                 }
             } else
             {
-                $req_matos = "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
+                $req_matos =
+                    "select obj_cod,gobj_cod,tobj_libelle,obj_nom,obj_cod,obj_poids,gobj_tobj_cod,gobj_pa_normal from perso_objets,objets,objet_generique,type_objet ";
                 $req_matos = $req_matos . "where perobj_perso_cod = $perso_cod ";
                 $req_matos = $req_matos . "and perobj_identifie = 'O' ";
                 $req_matos = $req_matos . "and perobj_equipe = 'N' ";
@@ -937,8 +955,8 @@ $stmt = $pdo->query($req_id);
                 $req_matos = $req_matos . "and gobj_tobj_cod = tobj_cod ";
                 $req_matos = $req_matos . "and (gobj_tobj_cod = 42)";
                 $req_matos = $req_matos . "order by tobj_libelle,gobj_nom ";
-                $stmt = $pdo->query($req_matos);
-                $nb_matos = $stmt->rowCount();
+                $stmt      = $pdo->query($req_matos);
+                $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
                 echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=0\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
@@ -988,7 +1006,6 @@ ob_end_clean();
 include('variables_menu.php');
 
 
-
 $template     = $twig->load('template_jeu.twig');
 $options_twig = array(
 
@@ -997,4 +1014,4 @@ $options_twig = array(
     'CONTENU_PAGE' => $contenu_page
 
 );
-echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
+echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

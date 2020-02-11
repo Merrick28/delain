@@ -2494,6 +2494,16 @@ class perso
         return $result['resultat'];
     }
 
+    function is_bernardo()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select valeur_bonus(perso_cod , 'BER') as nombre from perso where perco_cod = :perso";
+        $stmt   = $pdo->query($req);
+        $result = $stmt->fetch();
+
+        return $result['nombre'] != 0;
+    }
+
     public function vente_auberge($objet)
     {
         $pdo    = new bddpdo();

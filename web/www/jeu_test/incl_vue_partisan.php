@@ -1,11 +1,17 @@
 <script type="text/javascript">
     var affichePersosCoterie = true;
 </script>
-<?php $marquerQuatriemes = $db->is_admin_monstre($compt_cod);
-$param = new parametres();
-$req_malus_desorientation = " select valeur_bonus($perso_cod, 'DES') as desorientation";
-$stmt = $pdo->query($req_malus_desorientation);
-$result = $stmt->fetch();
+<?php
+$compte = new compte;
+$compte->charge($compt_cod);
+$perso = new perso;
+$perso->charge($perso_cod);
+$marquerQuatriemes        = $compte->is_admin_monstre();
+$param                    = new parametres();
+$req_malus_desorientation =
+    " select valeur_bonus(perso_cod, 'DES') as desorientation from perso where perso_cod = $perso_cod";
+$stmt                     = $pdo->query($req_malus_desorientation);
+$result                   = $stmt->fetch();
 if ($result['desorientation'] == 0)
 {
     $desorientation = false;
@@ -15,11 +21,11 @@ else
     $desorientation = true;
 }
 $combat_groupe = $param->getparm(56);
-$req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-$pa = $result['perso_pa'];
-$pa_n = $db->get_pa_attaque($perso_cod);
+$req           = "select perso_pa from perso where perso_cod = $perso_cod ";
+$stmt          = $pdo->query($req);
+$result        = $stmt->fetch();
+$pa            = $result['perso_pa'];
+$pa_n          = $perso->get_pa_attaque();
 
 $coterie = 1*$coterie;  // Convertion en entier et mise à zero sir vide!
 // On recherche les autres joueurs en vue
