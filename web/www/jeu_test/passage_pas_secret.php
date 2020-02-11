@@ -9,13 +9,13 @@ $nom_lieu = 'un escalier';
 include "blocks/_test_lieu.php";
 
 include "blocks/_test_passage_medaillon.php";
-
+$perso = new perso;
+$perso->charge($perso_cod);
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $nom_lieu = $tab_lieu['nom'];
-    $desc_lieu = $tab_lieu['description'];
+    $tab_lieu = $perso->get_lieu();
+    $nom_lieu = $tab_lieu['lieu']->lieu_nom;
+    $desc_lieu = $tab_lieu['lieu']->lieu_description;
     echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
     if (!isset($methode))
     {

@@ -50,7 +50,7 @@ switch ($methode)
 		}
 		$verif_nom = pg_escape_string(trim($cible_nom));
 		$req_verif = "select f_cherche_perso('$verif_nom') as num_perso";
-		$numero_cible = $db->get_value($req_verif, 'num_perso');
+		$numero_cible = $pdo->get_value($req_verif, 'num_perso');
 		if ($numero_cible == -1)
 		{
 			$erreur = true;
@@ -58,7 +58,7 @@ switch ($methode)
 			break;
 		}
 		$req_verif = "select defi_possible($perso_cod, $numero_cible) as resultat";
-		$verif = $db->get_value($req_verif, 'resultat');
+		$verif = $pdo->get_value($req_verif, 'resultat');
 
 		$defi_ok = explode('#', $verif);
 		if ($defi_ok[0] == -1)
@@ -93,7 +93,7 @@ switch ($methode)
 		}
 		$defi_numero_cible = base_delain::format($defi_numero_cible, false);
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 		$defi_titre = "$nom vous lance un défi !";
 		if ($defi_message == '')
 			$defi_message = 'Grand timide, votre adversaire n’a pas daigné agrémenter son geste de paroles.';
@@ -105,7 +105,7 @@ switch ($methode)
 			$defi_message <hr /><a href=\"perso2.php?m=5\">Rendez-vous sur votre Fiche de Personnage !</a>";
 
 		$req_defi = "select defi_creer($perso_cod, $defi_numero_cible) as resultat";
-		$lancement = $db->get_value($req_defi, 'resultat');
+		$lancement = $pdo->get_value($req_defi, 'resultat');
 
 		$resultat_lancement = explode('#', $lancement);
 		if ($resultat_lancement[0] == -1)
@@ -132,7 +132,7 @@ switch ($methode)
 		}
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -155,7 +155,7 @@ switch ($methode)
 		}
 
 		$req_nom = "select perso_nom from perso where perso_cod = $lanceur_cod";
-		$lanceur_nom = $db->get_value($req_nom, 'perso_nom');
+		$lanceur_nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$dialogue = "Vous vous apprêtez à relever le défi de $lanceur_nom.<br />
 			Vous pouvez personnaliser ci-dessous le message qui sera envoyé à votre adversaire.
@@ -177,7 +177,7 @@ switch ($methode)
 		}
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -200,7 +200,7 @@ switch ($methode)
 		}
 
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$defi_titre = "$nom relève votre défi !";
 		if ($defi_message == '')
@@ -212,7 +212,7 @@ switch ($methode)
 			$defi_message";
 
 		$req_defi = "select defi_commencer($defi_cod) as resultat";
-		$lancement = $db->get_value($req_defi, 'resultat');
+		$lancement = $pdo->get_value($req_defi, 'resultat');
 
 		$resultat_lancement = explode('#', $lancement);
 		if ($resultat_lancement[0] == -1)
@@ -236,7 +236,7 @@ switch ($methode)
 		}
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -259,7 +259,7 @@ switch ($methode)
 		}
 
 		$req_nom = "select perso_nom from perso where perso_cod = $lanceur_cod";
-		$lanceur_nom = $db->get_value($req_nom, 'perso_nom');
+		$lanceur_nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$dialogue = "Vous vous apprêtez à rejeter le défi de $lanceur_nom.<br />
 			Cela pourra occasionner une perte de réputation. Et lui pourra en retirer de la gloire !<br />
@@ -282,7 +282,7 @@ switch ($methode)
 		}
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -305,7 +305,7 @@ switch ($methode)
 		}
 
 		$req_nom = "select perso_nom from perso where perso_cod = $defi_cible_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$defi_titre = "$nom rejette votre défi.";
 		if ($defi_message == '')
@@ -317,7 +317,7 @@ switch ($methode)
 			$defi_message";
 
 		$req_defi = "select to_char(defi_abandonner($defi_cod, 'C'), '99D99') as resultat";
-		$renommee = $db->get_value($req_defi, 'resultat');
+		$renommee = $pdo->get_value($req_defi, 'resultat');
 
 		if ((int)$renommee != -1)
 		{
@@ -341,7 +341,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -364,7 +364,7 @@ switch ($methode)
 		}
 		$adversaire = ($defi_cible_cod != $perso_cod) ? $defi_cible_cod : $lanceur_cod;
 		$req_nom = "select perso_nom from perso where perso_cod = $adversaire";
-		$adversaire_nom = $db->get_value($req_nom, 'perso_nom');
+		$adversaire_nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		if ($defi_statut == 0) // Défi pas encore commencé
 		{
@@ -396,7 +396,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -420,7 +420,7 @@ switch ($methode)
 		}
 		$role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		if ($defi_statut == 0) // Défi pas encore commencé
 		{
@@ -441,7 +441,7 @@ switch ($methode)
 			$defi_message";
 
 		$req_defi = "select to_char(defi_abandonner($defi_cod, '$role'), '99D99') as resultat";
-		$renommee = $db->get_value($req_defi, 'resultat');
+		$renommee = $pdo->get_value($req_defi, 'resultat');
 
 		if ((int)$renommee != -1)
 		{
@@ -466,7 +466,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -490,7 +490,7 @@ switch ($methode)
 		}
 		$adversaire = ($defi_cible_cod != $perso_cod) ? $defi_cible_cod : $lanceur_cod;
 		$req_nom = "select perso_nom from perso where perso_cod = $adversaire";
-		$adversaire_nom = $db->get_value($req_nom, 'perso_nom');
+		$adversaire_nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$dialogue = "Vous vous apprêtez à demander le match nul dans votre défi face à $adversaire_nom.<br />
 			Vous pouvez personnaliser ci-dessous le message qui sera envoyé à votre adversaire.
@@ -513,7 +513,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -537,7 +537,7 @@ switch ($methode)
 		}
 		$role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$defi_titre = "$nom demande le match nul pour votre défi.";
 		$adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
@@ -567,7 +567,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -591,7 +591,7 @@ switch ($methode)
 		}
 		$role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$defi_titre = "Le défi est déclaré match nul.";
 		$adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
@@ -616,7 +616,7 @@ switch ($methode)
 		$defi_cod = base_delain::format($defi_cod, false);
 		$params_defi = "select defi_lanceur_cod, defi_cible_cod, defi_statut, defi_abandon_etape
 			from defi where defi_cod = $defi_cod";
-		if (!$db->get_one_record($params_defi))
+		if (!$pdo->get_one_record($params_defi))
 		{
 			$erreur = true;
 			$message_erreur .= 'Défi introuvable.';
@@ -640,7 +640,7 @@ switch ($methode)
 		}
 		$role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 		$req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-		$nom = $db->get_value($req_nom, 'perso_nom');
+		$nom = $pdo->get_value($req_nom, 'perso_nom');
 
 		$defi_titre = "$nom refuse le match nul !";
 		$adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
@@ -684,7 +684,7 @@ $req = "SELECT defi_cod,
 	INNER JOIN perso lanceur ON lanceur.perso_cod = defi_lanceur_cod
 	INNER JOIN perso cible ON cible.perso_cod = defi_cible_cod
 	WHERE $perso_cod IN (defi_lanceur_cod, defi_cible_cod) and defi_statut < 2";
-if ($db->get_one_record($req))
+if ($result = $pdo->get_one_record($req))
 {
 	$contenu_page .= '<table><tr><td class="titre" colspan="5">Défi en cours</td></tr>
 		<tr>

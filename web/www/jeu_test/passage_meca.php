@@ -1,11 +1,12 @@
 <?php 
 if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
-if(!isset($db))
+
 	include "verif_connexion.php";
 $param = new parametres();
 // on regarde si le joueur est bien sur une passage
-
+$perso = new perso;
+$perso->charge($perso_cod);
 $type_lieu = 10;
 $nom_lieu = 'un passage';
 
@@ -13,11 +14,10 @@ include "blocks/_test_lieu.php";
 
 if ($erreur == 0)
 {
-	$tab_lieu = $db->get_lieu($perso_cod);
-	$tab_lieu = $db->get_lieu($perso_cod);
-	$nom_lieu = $tab_lieu['nom'];
-	$desc_lieu = $tab_lieu['description'];
-	$lieu_cod = $tab_lieu['lieu_cod'];
+	$tab_lieu = $perso->get_lieu();
+	$nom_lieu = $tab_lieu['lieu']->lieu_nom;
+	$desc_lieu = $tab_lieu['lieu']->lieu_description;
+	$lieu_cod = $tab_lieu['lieu']->lieu_cod;
 	
 	
 //FORMULE DU LIEU
@@ -52,8 +52,8 @@ if($formule != 'DEFAULT'){
 
 /* Ajout de prix différents, d'après l'étage où se trouve la passage payant.
 	(Maverick, le 31/12/2010) */
-$ppos = $db->get_pos($perso_cod);
-switch ($ppos['etage']) {
+$ppos = $perso->get_position();
+switch ($ppos['pos']->pos_etage) {
 		case '56' : // Le bayou de l'agonie
 			$cout = 2000;
 			break;

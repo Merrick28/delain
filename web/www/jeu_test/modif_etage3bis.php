@@ -6,7 +6,7 @@ include "blocks/_header_page_jeu.php";
 
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 {
-    global $db, $compt_cod;
+    global $pdo, $compt_cod;
 
     if ($texte) {
         $log_sql = false;    // Mettre à true pour le debug des requêtes
@@ -105,7 +105,7 @@ if ($erreur == 0) {
 
                 // Récupération lieu_url
                 $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-                $url = $db->get_value($req_url, 'tlieu_url');
+                $url = $pdo->get_value($req_url, 'tlieu_url');
 
                 if ($tlieu_cod == 29 || $tlieu_cod == 30) {
                     $cout_pa = $_POST['cout_pa'];
@@ -191,7 +191,7 @@ if ($erreur == 0) {
 
                 // Récupération lieu_url
                 $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-                $url = $db->get_value($req_url, 'tlieu_url');
+                $url = $pdo->get_value($req_url, 'tlieu_url');
 
                 if ($tlieu_cod == 29 || $tlieu_cod == 30) {
                     $cout_pa = $_POST['cout_pa'];

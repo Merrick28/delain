@@ -1,12 +1,19 @@
 <?php 
 $contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
 
-if (!$db->is_admin($compt_cod)
-     || ($db->is_admin_monstre($compt_cod) 
-         && ($db->is_monstre($perso_cod) || $db->is_pnj($perso_cod))))
+$compte = new compte;
+$compte->charge($compt_cod);
+$perso = new perso;
+$perso->charge($perso_cod);
+
+
+
+if (!$compte->is_admin()
+     || ($compte->is_admin_monstre()
+         && ($perso->is_monstre() || $perso->is_pnj())))
 {
 
-	if (!$db->is_bernardo($perso_cod))
+	if (!$perso->is_bernardo())
 	{
 		if (!isset($n_dest))
 		{
@@ -115,7 +122,7 @@ if (!$db->is_admin($compt_cod)
 			<option value="guilde;">Message à toute la guilde</option>
 			</optgroup>';
 		}
-		if ($db->is_admin_monstre($compt_cod))
+		if ($compte->is_admin_monstre())
 		{
 			// remplissage de contenu
 			$contenu_page .= '
@@ -155,7 +162,6 @@ if (!$db->is_admin($compt_cod)
 			$stmt = $pdo->query($req);
 			if ($stmt->rowCount() != 0)
 			{
-				$db2 = new base_delain();
 				while ($result = $stmt->fetch())
 				{
 					$contenu_page .= '<optgroup label="liste - ' . $result['cliste_nom'] . '">';

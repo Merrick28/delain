@@ -13,10 +13,9 @@
         $position = 1 * (int)$_GET['position'];
     }
 
-    if (!isset($db))
-    {
-        include "verif_connexion.php";
-    }
+
+        include_once "verif_connexion.php";
+
 
     if ((!isset($position)) || ($position == ''))
     {

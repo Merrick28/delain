@@ -32,7 +32,7 @@ if ($erreur == 0)
 	if ($nb_depose == 3)
 	{
 		//
-		$db->begin();
+		$pdo->Begin();
 		$req = "delete from perso_objets where perobj_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
 		$stmt = $pdo->query($req);
 		$req = "delete from objet_position where pobj_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
@@ -59,7 +59,7 @@ if ($erreur == 0)
 		$stmt = $pdo->query($req);
 		echo "<p>Vous avez ouvert les escaliers vers le -5. Ceux ci resteront ouverts pendant 48 heures avant de se refermer.<br>";
 		echo "Vous gagnez 20 PX pour cette action !<br><br>";
-		$db->commit();
+		$pdo->Commit();
 		
 		
 	}

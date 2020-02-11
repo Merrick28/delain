@@ -342,6 +342,19 @@ class bddpdo
         }
     }
 
+    function get_value($req, $champ)
+    {
+        $stmt   = $this->query($req);
+        $result = $stmt->fetch();
+        return $result[$champ];
+    }
+
+    function get_one_record($req)
+    {
+        $stmt   = $this->query($req);
+        return $stmt->fetch();
+    }
+
     function log_message($msg)
     {
         global $auth;

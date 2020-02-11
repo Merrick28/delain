@@ -2,7 +2,9 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if ($db->is_milice($perso_cod) == 0)
+$perso = new perso;
+$perso->charge($perso_cod);
+if ($perso->is_milice() == 0)
 {
 	echo "<p>Erreur ! Vous n'averz pas accès à cette page !";
 	$erreur = 1;
@@ -10,7 +12,7 @@ if ($db->is_milice($perso_cod) == 0)
 $lieu['entree'] = 15;
 $lieu['bat_adm'] = 9;
 $lieu['poste_garde'] = 5;
-if (!$db->is_lieu($perso_cod))
+if (!$perso->is_lieu())
 {
 	echo("<p>Erreur ! Vous n'êtes pas sur un lieu permettant cette action !!!");
 	$erreur = 1;
@@ -18,8 +20,8 @@ if (!$db->is_lieu($perso_cod))
 if ($erreur == 0)
 {
 	$suite = 1;
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if (!in_array($tab_lieu['type_lieu'], $lieu))
+	$tab_lieu = $perso->get_lieu();
+	if (!in_array($tab_lieu['lieu_type']->tlieu_cod, $lieu))
 	{
    	echo "<p>Erreur ! Le lieu sur lequel vous vous trouvez ne permet pas cette action !";
    	$suite = 0;

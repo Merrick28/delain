@@ -1,12 +1,13 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+$compte = new compte;
+$compte->charge($compt_cod);
 //
 //Contenu de la div de droite
 //
 $contenu_page = '';
 ob_start();
-if ($db->is_admin($compt_cod)) {
+if ($compte->is_admin()) {
     echo "<p class=\"titre\">Ajouter un commentaire sur ce compte</p>";
     echo "<form name=\"comment\" action=\"valide_modif_detail_compte.php\" method=\"post\">";
     echo "<input type=\"hidden\" name=\"methode\" value=\"comment\">";

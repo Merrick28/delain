@@ -5,7 +5,7 @@ include "blocks/_header_page_jeu.php";
 
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 {
-    global $db, $compt_cod;
+    global $pdo, $compt_cod;
 
     if ($texte)
     {

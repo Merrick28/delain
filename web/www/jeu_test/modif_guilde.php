@@ -77,7 +77,7 @@ s'ajoutent automatiquement à la fin de chaque ligne cochez cette case:<input ty
 echo '<table width="100%"><tr><td class="titre"><p class="titre">', $result['guilde_nom'], '</td></tr></table>';
 echo "<p>" . str_replace(chr(127), ";", $description) . "</p>";
 
-$close = pg_close($dbconnect);
+
 $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

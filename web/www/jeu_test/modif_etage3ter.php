@@ -8,7 +8,7 @@ echo '<script src="../scripts/admin_etage_modif3.js"></script>';     // Scripts 
 
 function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 {
-    global $db, $compt_cod;
+    global $pdo, $compt_cod;
 
     if ($texte)
     {
@@ -34,7 +34,7 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
 // Function récupérée/adaptée de modif_etage3bis.php (c'est pas avec du pdo, mais ça va plus vite à DEV car c'est déjà fait)
 function creer_lieu($_LIEU)
 {
-    GLOBAL $db;
+    GLOBAL $pdo;
 
     $lieu_cod = $_LIEU["lieu_cod"];
     $tlieu_cod = $_LIEU["tlieu_cod"];
@@ -77,7 +77,7 @@ function creer_lieu($_LIEU)
 
         // Récupération lieu_url
         $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-        $url = $db->get_value($req_url, 'tlieu_url');
+        $url = $pdo->get_value($req_url, 'tlieu_url');
 
         if ($tlieu_cod == 29 || $tlieu_cod == 30)
         {

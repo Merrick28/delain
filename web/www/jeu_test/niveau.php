@@ -1,5 +1,8 @@
 <?php
 include "blocks/_header_page_jeu.php";
+
+$perso = new perso;
+$perso->charge($perso_cod);
 ob_start();
 $erreur = 0;
 $req_niveau = "select floor(perso_px) as perso_px,limite_niveau($perso_cod) as limite,perso_niveau from perso where perso_cod = $perso_cod";
@@ -296,21 +299,21 @@ if ($erreur == 0) {
     $nb_rec = $result['perso_nb_receptacle'];
     $nb_memo = $result['perso_nb_amel_chance_memo'];
     if ($test > $result['perso_nb_amel_comp']) {
-        $af0 = $db->existe_competence($perso_cod, 25);
-        $af1 = $db->existe_competence($perso_cod, 61);
-        $af2 = $db->existe_competence($perso_cod, 62);
-        $f0 = $db->existe_competence($perso_cod, 63);
-        $f1 = $db->existe_competence($perso_cod, 64);
-        $f2 = $db->existe_competence($perso_cod, 65);
-        $cg0 = $db->existe_competence($perso_cod, 66);
-        $cg1 = $db->existe_competence($perso_cod, 67);
-        $cg2 = $db->existe_competence($perso_cod, 68);
-        $bp0 = $db->existe_competence($perso_cod, 72);
-        $bp1 = $db->existe_competence($perso_cod, 73);
-        $bp2 = $db->existe_competence($perso_cod, 74);
-        $tp0 = $db->existe_competence($perso_cod, 75);
-        $tp1 = $db->existe_competence($perso_cod, 76);
-        $tp2 = $db->existe_competence($perso_cod, 77);
+        $af0 = $perso->existe_competence( 25);
+        $af1 = $perso->existe_competence( 61);
+        $af2 = $perso->existe_competence( 62);
+        $f0 = $perso->existe_competence( 63);
+        $f1 = $perso->existe_competence( 64);
+        $f2 = $perso->existe_competence( 65);
+        $cg0 = $perso->existe_competence( 66);
+        $cg1 = $perso->existe_competence( 67);
+        $cg2 = $perso->existe_competence( 68);
+        $bp0 = $perso->existe_competence( 72);
+        $bp1 = $perso->existe_competence( 73);
+        $bp2 = $perso->existe_competence( 74);
+        $tp0 = $perso->existe_competence( 75);
+        $tp1 = $perso->existe_competence( 76);
+        $tp2 = $perso->existe_competence( 77);
         if (!$af0 && !$af1 && !$af2) {
             echo "<tr>";
             echo "<td colspan=\"3\" class=\"soustitre2\"><p><a href=\"desc_comp.php?index=0\">Attaque foudroyante</a><br /><em>Attention: Uniquement pour les armes au <strong>corps à corps</strong></em></td>";

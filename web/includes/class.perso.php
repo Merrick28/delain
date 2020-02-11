@@ -2181,6 +2181,11 @@ class perso
         return $result['resultat'];
     }
 
+    function is_pnj()
+    {
+        return ($this->perso_pnj == 1);
+    }
+
     public function donne_noir()
     {
         $pdo    = new bddpdo();
