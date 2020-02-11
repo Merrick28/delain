@@ -18,7 +18,7 @@ include "includes/classes.php";
         $methode = 'debut';
     } else
     {
-        $methode = _REQUEST['methode'];
+        $methode = $_REQUEST['methode'];
     }
     switch ($methode)
     {

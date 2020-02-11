@@ -949,6 +949,16 @@ class perso
         return $result['allonge_temps'];
     }
 
+    public function allonge_temps_temps()
+    {
+        $pdo      = new bddpdo;
+        $req_arme = "select allonge_temps_temps(:perso) as allonge_temps";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['allonge_temps'];
+    }
+
     public function allonge_temps_poids()
     {
         $pdo      = new bddpdo;
@@ -958,6 +968,18 @@ class perso
         $result   = $stmt->fetch();
         return $result['allonge_temps_poids'];
     }
+
+    public function allonge_temps_poids_temps()
+    {
+        $pdo      = new bddpdo;
+        $req_arme = "select allonge_temps_poids_temps(:perso) as allonge_temps_poids";
+        $stmt     = $pdo->prepare($req_arme);
+        $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $result   = $stmt->fetch();
+        return $result['allonge_temps_poids'];
+    }
+
+
 
     public function f_vue_renommee()
     {
