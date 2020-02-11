@@ -1,6 +1,6 @@
 <?php
-$db2 = new base_delain;
-$db3 = new base_delain;
+
+
 $param = new parametres();
 //Interface pour rendre un objet enchantable. Risque de détruire l'objet
 if (!isset($methode)) {
@@ -18,15 +18,15 @@ switch ($methode) {
 				and perobj_perso_cod = $perso_cod";
         $req2 = $req . ' and obj_enchantable = 2
 										order by gobj_tobj_cod,obj_nom desc';
-        $db->query($req2);
+        $stmt = $pdo->query($req2);
         $contenu_page .= '<p align="left"><strong>Les objets suivants sont déjà enchantés :</strong>
 													<table>';
-        if ($db->nf() == 0) {
+        if ($stmt->rowCount() == 0) {
             $contenu_page .= '<td><em>Aucun objet enchanté à votre disposition</em></td>';
         } else {
-            while ($db->next_record())//Cas des objets enchantés
+            while ($result = $stmt->fetch())//Cas des objets enchantés
             {
-                $contenu_page .= '<td>' . $db->f("obj_nom") . ' <em>(' . $db->f("obj_nom_generique") . ')</em></td>';
+                $contenu_page .= '<td>' . $result['obj_nom'] . ' <em>(' . $result['obj_nom_generique'] . ')</em></td>';
             }
         }
         $contenu_page .= '</table></p>';
@@ -35,12 +35,12 @@ switch ($methode) {
         $req1 = $req . ' and obj_enchantable = 1
 										order by gobj_tobj_cod,obj_nom desc';
         $db2->query($req1);
-        if ($db2->nf() == 0) {
+        if ($stmt2->rowCount() == 0) {
             $contenu_page .= '<td><em>Aucun objet enchantable à votre disposition</em></td>';
         } else {
-            while ($db2->next_record()) //Cas des objets enchantables
+            while ($result2 = $stmt2->fetch()) //Cas des objets enchantables
             {
-                $contenu_page .= '<td>' . $db2->f("obj_nom") . ' <em>(' . $db2->f("obj_nom_generique") . ')</em></td>';
+                $contenu_page .= '<td>' . $result2['obj_nom'] . ' <em>(' . $result2['obj_nom_generique'] . ')</em></td>';
             }
         }
         $contenu_page .= '</table></p>';
@@ -49,18 +49,18 @@ switch ($methode) {
         $req4 = $req . ' and obj_enchantable = 0 and gobj_chance_enchant > 0
 										order by gobj_tobj_cod,obj_nom desc';           // Marlyza 2019-04-09 - Cas particulier: ne pas laisser la possibilité d'anchante rles objet à 0% de chance
         $db3->query($req4);
-        if ($db3->nf() == 0) {
+        if ($stmt3->rowCount() == 0) {
             $contenu_page .= '<td><em>Aucun objet non enchanté et enchantable à votre disposition</em></td>';
         } else {
             $compt = 0;
-            while ($db3->next_record()) //Cas des objets non enchantés et non enchantables pour l'instant
+            while ($result3 = $stmt3->fetch()) //Cas des objets non enchantés et non enchantables pour l'instant
             {
                 if ($compt == 0) {
                     $contenu_page .= '<td class="titre">Objet</td><td class="titre">Chances de rendre <br>l\'objet enchantable : </td>
 													<td class="titre">Action</td>
 													<td><em><strong>Lisez bien l\'aide avant de valider votre action !<br>Celle-ci est définitive ! Son coût est de ' . $param->getparm(115) . 'PA</strong></em></td>';
                 }
-                $chance = $db3->f("gobj_chance_enchant");
+                $chance = $result3['gobj_chance_enchant'];
                 if ($chance == 0) {
                     $chance_indic = "Nulles";
                 } else if ($chance <= 10) {
@@ -72,9 +72,9 @@ switch ($methode) {
                 } else {
                     $chance_indic = "Exceptionnelles";
                 }
-                $contenu_page .= '<tr><td class="soustitre2">' . $db3->f("obj_nom") . ' <em>(' . $db3->f("obj_nom_generique") . ')</em></td>
+                $contenu_page .= '<tr><td class="soustitre2">' . $result3['obj_nom'] . ' <em>(' . $result3['obj_nom_generique'] . ')</em></td>
 										<td class="soustitre2" style="text-align:center"><strong>' . $chance_indic . '</strong></td>
-										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $db3->f('obj_cod') . '&t_ench=2"><em>Procéder au forgeamage de cet objet</em></a></td></tr>';
+										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $result3['obj_cod'] . '&t_ench=2"><em>Procéder au forgeamage de cet objet</em></a></td></tr>';
                 $compt = $compt + 1;
             }
         }
@@ -93,26 +93,26 @@ switch ($methode) {
 				and perobj_identifie = 'O'
 				and perobj_perso_cod = $perso_cod
 				order by obj_enchantable,gobj_tobj_cod desc";
-        $db->query($req);
-        $db->next_record();
-        if ($db->nf() == 0) // L'objet n'est pas relié au perso
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        if ($stmt->rowCount() == 0) // L'objet n'est pas relié au perso
         {
             $contenu_page .= 'Ceci n\'est pas très malin ...';
             break;
         }
-        if ($db->f("obj_enchantable") != '0')//Cas des objets non enchantés et non enchantables pour l'instant
+        if ($result['obj_enchantable'] != '0')//Cas des objets non enchantés et non enchantables pour l'instant
         {
             $contenu_page .= 'Ceci n\'est pas très malin ...';
             break;
         }
-        $chance_enchant = $db->f("gobj_chance_enchant");
+        $chance_enchant = $result['gobj_chance_enchant'];
         //On récupère les compétences du perso
         $req_comp = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences
 									where pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod in (88,102,103)";
-        $db->query($req_comp);
-        $db->next_record();
-        $forgeamage = $db->f("pcomp_pcomp_cod");
-        $forgeamage_pourcent = $db->f("pcomp_modificateur");
+        $stmt = $pdo->query($req_comp);
+        $result = $stmt->fetch();
+        $forgeamage = $result['pcomp_pcomp_cod'];
+        $forgeamage_pourcent = $result['pcomp_modificateur'];
         if ($forgeamage == 88) {
             $competence_facteur = 1;
         } else if ($forgeamage == 102) {
@@ -128,10 +128,10 @@ switch ($methode) {
 
         $req_comp = "select perso_energie,perso_pa from perso
 										where perso_cod = " . $perso_cod;
-        $db->query($req_comp);
-        $db->next_record();
-        $perso_energie = $db->f("perso_energie");
-        $pa = $db->f("perso_pa");
+        $stmt = $pdo->query($req_comp);
+        $result = $stmt->fetch();
+        $perso_energie = $result['perso_energie'];
+        $pa = $result['perso_pa'];
 
         //On vérifie les pa
         if ($pa < $param->getparm(115)) {
@@ -142,10 +142,10 @@ switch ($methode) {
         //On regarde l'énergie de la case : niveau minimum nécessaire, et risque si le niveau est trop élevé. 1000 est un niveau mini
         $req_comp = "select pos_magie,pos_cod from positions,perso_position
 									where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod";
-        $db->query($req_comp);
-        $db->next_record();
-        $position = $db->f("pos_cod");
-        $puissance_case = $db->f("pos_magie");
+        $stmt = $pdo->query($req_comp);
+        $result = $stmt->fetch();
+        $position = $result['pos_cod'];
+        $puissance_case = $result['pos_magie'];
         if ($puissance_case < $param->getparm(114)) {
             $contenu_page .= '<strong>La puissance magique à cet endroit n\'est pas suffisante pour tenter de rendre enchantable un objet à cet endroit !
 													<br>Rien ne se produit</strong><br>';
@@ -159,8 +159,8 @@ switch ($methode) {
 													<br>Vous perdez votre énergie accumulée, gachée dans cette action sans résultat<br>';
 
             $req = 'update perso set perso_energie = 0, perso_renommee_artisanat = perso_renommee_artisanat - 0.5 where perso_cod = ' . $perso_cod;
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             break;
         }
 
@@ -168,12 +168,12 @@ switch ($methode) {
         $concentration = 0;
         $req = 'select concentration_perso_cod from concentrations
 							where concentration_perso_cod = ' . $perso_cod;
-        $db->query($req);
-        if ($db->nf() != 0) {
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) {
             $contenu_page .= '<strong>Vous vous êtes concentré avant cette action</strong><br>';
             $concentration = 20;
             $req = 'delete from concentrations where concentration_perso_cod = ' . $perso_cod;
-            $db->query($req);
+            $stmt = $pdo->query($req);
         }
         $px_gagne = 0;
         $de = rand(1, 100);
@@ -192,9 +192,9 @@ switch ($methode) {
             if ($forgeamage_pourcent <= $limite_comp) //Amélioration si < 40%
             {
                 $req = 'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
-                $db->query($req);
-                $db->next_record();
-                $jet_ameliore = explode(';', $db->f('resultat'), 3);
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $jet_ameliore = explode(';', $result['resultat'], 3);
                 $jet = $jet_ameliore[0];
                 $ameliore = $jet_ameliore[1];
                 $nouvelle_valeur = $jet_ameliore[2];
@@ -211,12 +211,12 @@ switch ($methode) {
             $gain_renommee = -0.5;
             // Conséquences négatives (PV, dégradation de l'objet, déflagration, Vue, ...)
             $req = 'select enchantement_rate(' . $perso_cod . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $contenu_page .= $result['resultat'];
             $req = 'update objets set obj_etat = obj_etat * 0.9, obj_etat_max = obj_etat_max * 0.9 where obj_cod = ' . $obj;
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             $contenu_page .= '<br><br>L’objet que vous avez tenté de rendre enchantable a été détérioré par votre manipulation ratée.<br>';
         }
         if ($reussite == 1) {
@@ -224,12 +224,12 @@ switch ($methode) {
 												<br>Vous devez maintenant regarder si vous pouvez l\'associer à des composants pour réaliser un enchantement<br>';
             //On modifie l'objet pour le rendre enchantable
             $req = 'update objets set obj_enchantable = 1 where obj_cod = ' . $obj;
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             $req = 'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $jet_ameliore = explode(';', $db->f('resultat'), 3);
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $jet_ameliore = explode(';', $result['resultat'], 3);
             $jet = $jet_ameliore[0];
             $ameliore = $jet_ameliore[1];
             $nouvelle_valeur = $jet_ameliore[2];
@@ -249,15 +249,15 @@ switch ($methode) {
         if ($position != 152794)    // == -6 / -7 dans la Halle Merveilleuse
         {
             $req = 'update positions set pos_magie = pos_magie - 500 where pos_cod = ' . $position;
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             $contenu_page .= '<br><br>La puissance magique de ce lieu a fortement diminué.';
         }
         //On diminue les PA, on augmente les pxs, on diminue l'énergie du perso
         $req = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-        $db->query($req);
-        $db->next_record();
-        $pa = $db->f("perso_pa");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $pa = $result['perso_pa'];
         if ($pa < $perte_pa) {
             $perte_pa = $pa;
         }
@@ -265,15 +265,15 @@ switch ($methode) {
                 perso_pa = perso_pa - ' . $perte_pa . ',perso_px = perso_px + ' . $px_gagne . ', 
                 perso_renommee_artisanat = perso_renommee_artisanat + ' . $gain_renommee . '
                 where perso_cod = ' . $perso_cod;
-        $db->query($req);
-        $db->next_record();
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
         $contenu_page .= '<br>Vous vous sentez assez épuisé, il va vous falloir récupérer un peu d\'énergie avant de pouvoir espérer tenter d\'enchanter un autre objet.';
         if ($puissance_case > 5000) {
             $contenu_page .= '<br><br>Malheureusement, la puissance a cet endroit était trop importante. Vous en subissez quelques ratées<br>';
             $req = 'select enchantement_rate(' . $perso_cod . ') as resultat';
-            $db->query($req);
-            $db->next_record();
-            $contenu_page .= $db->f('resultat');
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $contenu_page .= $result['resultat'];
         }
         break;
 }

@@ -34,22 +34,22 @@ $contenu_page = "";
 if (!$db->is_admin($compt_cod))
 {
     $req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
-    $db->query($req);
-    $db->next_record();
-    $pos = $db->f("ppos_pos_cod");
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $pos = $result['ppos_pos_cod'];
     $req = "select perso_cod  from perso,perso_position
 		where perso_race_cod = 53
 		and perso_cod = ppos_perso_cod
 		and ppos_pos_cod = $pos ";
-    $db->query($req);
-    if ($db->nf() != 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
         $contenu_page .= '<p>Vous rencontrez un lutin rouge. Vous pouvez <a href="action.php?methode=don_cadeau_rouge">lui donner un cadeau (' . $param->getparm(99) . ' PA)</a>.';
     $req = "select perso_cod  from perso,perso_position
 		where perso_race_cod = 54
 		and perso_cod = ppos_perso_cod
 		and ppos_pos_cod = $pos ";
-    $db->query($req);
-    if ($db->nf() != 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
         $contenu_page .= '<p>Vous rencontrez un lutin noir. Vous pouvez <a href="action.php?methode=don_cadeau_noir">lui donner un cadeau (' . $param->getparm(99) . ' PA)</a>.';
 } else
 {

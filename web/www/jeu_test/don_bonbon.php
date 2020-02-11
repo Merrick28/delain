@@ -38,22 +38,22 @@ if (!$db->is_admin($compt_cod))
     {
         $pa = $param->getparm(102);
         $req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
-        $db->query($req);
-        $db->next_record();
-        $pos = $db->f("ppos_pos_cod");
+        $stmt = $pdo->query($req);
+        $result = $stmt->fetch();
+        $pos = $result['ppos_pos_cod'];
         $req = "select perso_cod,perso_nom  from perso,perso_position
 		where perso_gmon_cod in (30,331)
 		and perso_actif = 'O'
 		and perso_cod = ppos_perso_cod
 		and ppos_pos_cod = $pos ";
-        $db->query($req);
-        if ($db->nf() != 0)
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0)
         {
             $contenu_page .= '<p>Vous rencontrez des mosntres qui semblent intéresser par les bonbons que vous possédez. Si vous souhaitez donner des bonbons à un monstre, merci de le choisir ci dessous : (' . $pa . ' PA)</a>.';
             $contenu_page .= '<form method="post" action="action.php"><input type="hidden" name="methode" value="donne_bonbon">';
-            while ($db->next_record())
+            while ($result = $stmt->fetch())
             {
-                $contenu_page .= '<input type="radio" name="cible" value="' . $db->f('perso_cod') . '">' . $db->f("perso_nom") . '<br>';
+                $contenu_page .= '<input type="radio" name="cible" value="' . $result['perso_cod'] . '">' . $result['perso_nom'] . '<br>';
             }
             $contenu_page .= '<center><input type="submit" value="Donner 5 bonbons"></center>';
         } else

@@ -57,20 +57,20 @@ function tag_perso($pnj, $type_perso, $actif)
 if (!isset($vcompte))
 {
     $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod ";
-    $db->query($req);
+    $stmt = $pdo->query($req);
 
     // Compte trouvé
-    if ($db->next_record())
-        $vcompte = $db->f("pcompt_compt_cod");
+    if($result = $stmt->fetch())
+        $vcompte = $result['pcompt_compt_cod'];
     // Compte non trouvé ; peut-être un familier ?
     else
     {
         $req = "select pcompt_compt_cod from perso_compte
 			inner join perso_familier on pfam_perso_cod = pcompt_perso_cod
 			where pfam_familier_cod = $perso_cod ";
-        $db->query($req);
-        if ($db->next_record())
-            $vcompte = $db->f("pcompt_compt_cod");
+        $stmt = $pdo->query($req);
+        if($result = $stmt->fetch())
+            $vcompte = $result['pcompt_compt_cod'];
         else
         {
             $vcompte = -1;
@@ -87,19 +87,19 @@ if ($erreur == 0 && $vcompte != -1)
     {
         case 'mise_a_jour'://MAJ du compte lié associé à un compte
             $req = "update compte set compt_compte_lie = (select compt_cod from compte where compt_nom = '$foo') where compt_cod = $vcompte";
-            $db->query($req);
-            $db->next_record();
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
             $req = "select compt_compte_lie from compte
 				where compt_cod = $vcompte ";
-            $db->query($req);
-            $db->next_record();
-            $vcompte_lie = $db->f("compt_compte_lie");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $vcompte_lie = $result['compt_compte_lie'];
             break;
     }
     $req = "select perso_nom from perso where perso_cod = $perso_cod ";
-    $db->query($req);
-    $db->next_record();
-    $nom_pers = $db->f("perso_nom");
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $nom_pers = $result['perso_nom'];
 
     // Détails du compte
     $req = "select compt_admin, compt_nom, compt_password, compt_nom, compt_mail, to_char(compt_dcreat, 'DD/MM/YYYY hh24:mi:ss') as creation,
@@ -107,10 +107,10 @@ if ($erreur == 0 && $vcompte != -1)
 			compt_hibernation, to_char(compt_dfin_hiber, 'DD/MM/YYYY hh24:mi:ss') as fin_hiber, compt_compte_lie
 		from compte
 		where compt_cod = $vcompte ";
-    $db->query($req);
-    $db->next_record();
-    $vcompte_lie = $db->f("compt_compte_lie");
-    echo "<p class=\"titre\">Détail du compte " . $db->f("compt_nom") . "</p>";
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $vcompte_lie = $result['compt_compte_lie'];
+    echo "<p class=\"titre\">Détail du compte " . $result['compt_nom'] . "</p>";
     echo "<table cellspacing=\"2\" cellpadding=\"2\">";
     echo "<tr>";
     echo "<td class=\"soustitre2\"><p><strong>Nom du compte</strong></td>";
@@ -125,31 +125,31 @@ if ($erreur == 0 && $vcompte != -1)
     echo "</tr>";
 
     echo "<tr>";
-    echo "<td class=\"soustitre2\"><p><strong>" . $db->f("compt_nom") . "</strong></td>";
+    echo "<td class=\"soustitre2\"><p><strong>" . $result['compt_nom'] . "</strong></td>";
     if (($vcompte != 4) && ($vcompte != 353))
     {
-        if ($db->f('compt_admin') == 'O')
+        if ($result['compt_admin'] == 'O')
         {
             echo "<td class=\"soustitre2\"><p>Mot de passe contrôle....</td>";
         } else
         {
-            echo "<td class=\"soustitre2\"><p>" . $db->f("compt_password") . "</td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['compt_password'] . "</td>";
         }
     } else
     {
         echo "<td><p>Vous pensez sérieusement pas voir le mot de passe de ce compte, non ? ;-) </td>";
     }
-    echo "<td class=\"soustitre2\"><p>" . $db->f("compt_mail") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("creation") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("connex") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("compt_ip") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("compt_hibernation") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("fin_hiber") . "</td>";
-    echo "<td class=\"soustitre2\"><p>" . $db->f("compt_commentaire") . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['compt_mail'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['creation'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['connex'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['compt_ip'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['compt_hibernation'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['fin_hiber'] . "</td>";
+    echo "<td class=\"soustitre2\"><p>" . $result['compt_commentaire'] . "</td>";
     echo "</tr>";
 
     echo "</table>";
-    $compt_conf = $db->f("compt_confiance");
+    $compt_conf = $result['compt_confiance'];
 
     // Détails des persos
     $req = "select perso_cod, perso_nom, perso_px, perso_niveau, to_char(perso_dcreat, ' DD/MM/YYYY hh24:mi:ss') as crea, perso_type_perso, perso_pnj, perso_actif,
@@ -160,24 +160,24 @@ if ($erreur == 0 && $vcompte != -1)
 		inner join etage on etage_numero = pos_etage
 		where perso_cod in (select pcompt_perso_cod
 		from perso_compte where pcompt_compt_cod = $vcompte) order by perso_cod";
-    $db->query($req);
+    $stmt = $pdo->query($req);
     echo "<table>";
     echo "<tr><td colspan=\"6\"><p class=\"titre\">Persos de ce compte : </p></td></tr>";
-    while ($db->next_record())
+    while ($result = $stmt->fetch())
     {
-        $type_perso = tag_perso($db->f('perso_pnj'), $db->f('perso_type_perso'), $db->f('perso_actif'));
+        $type_perso = tag_perso($result['perso_pnj'], $result['perso_type_perso'], $result['perso_actif']);
 
         echo "<tr>";
         echo "<form name=\"login\" method=\"post\" action=\"index.php\">";
         echo "<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">";
-        echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $db->f("perso_cod") . "\">";
+        echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $result['perso_cod'] . "\">";
         echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
         echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-        echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong> (n° " . $db->f("perso_cod") . ")</p></td>";
-        echo "<td class=\"soustitre2\"><p>" . $db->f("perso_px") . " PX</p></td>";
-        echo "<td class=\"soustitre2\"><p>Niveau " . $db->f("perso_niveau") . "</p></td>";
-        echo "<td class=\"soustitre2\"><p>" . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("pos_etage") . " (" . $db->f("etage_libelle") . ")</p></td>";
-        echo "<td class=\"soustitre2\"><p>Créé le " . $db->f("crea") . "</p></td>";
+        echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong> (n° " . $result['perso_cod'] . ")</p></td>";
+        echo "<td class=\"soustitre2\"><p>" . $result['perso_px'] . " PX</p></td>";
+        echo "<td class=\"soustitre2\"><p>Niveau " . $result['perso_niveau'] . "</p></td>";
+        echo "<td class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['pos_etage'] . " (" . $result['etage_libelle'] . ")</p></td>";
+        echo "<td class=\"soustitre2\"><p>Créé le " . $result['crea'] . "</p></td>";
         echo "<td class=\"soustitre2\"><input type=\"submit\" value=\"Voir !\" class=\"test\"></td>";
         echo "</form>";
         echo "</tr>";
@@ -194,25 +194,25 @@ if ($erreur == 0 && $vcompte != -1)
 		inner join perso_compte on pcompt_perso_cod = per.perso_cod
 		where pcompt_compt_cod = $vcompte
 		order by fam.perso_cod";
-    $db->query($req);
-    if ($db->nf() > 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() > 0)
     {
         echo "<table>";
         echo "<tr><td colspan=\"6\"><p class=\"titre\">Familiers de ce compte : </p></td></tr>";
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $type_perso = tag_perso($db->f('perso_pnj'), $db->f('perso_type_perso'), $db->f('perso_actif'));
+            $type_perso = tag_perso($result['perso_pnj'], $result['perso_type_perso'], $result['perso_actif']);
 
             echo "<tr>";
             echo "<form name=\"login\" method=\"post\" action=\"index.php\">";
             echo "<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">";
-            echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $db->f("perso_cod") . "\">";
+            echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $result['perso_cod'] . "\">";
             echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
             echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-            echo "<td class=\"soustitre2\"><p><strong>" . $db->f("perso_nom") . "</strong> (n° " . $db->f("perso_cod") . ")</p></td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("perso_px") . " PX</p></td>";
-            echo "<td class=\"soustitre2\"><p>Niveau " . $db->f("perso_niveau") . "</p></td>";
-            echo "<td class=\"soustitre2\"><p>Créé le " . $db->f("crea") . "</p></td>";
+            echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong> (n° " . $result['perso_cod'] . ")</p></td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['perso_px'] . " PX</p></td>";
+            echo "<td class=\"soustitre2\"><p>Niveau " . $result['perso_niveau'] . "</p></td>";
+            echo "<td class=\"soustitre2\"><p>Créé le " . $result['crea'] . "</p></td>";
             echo "<td class=\"soustitre2\"><input type=\"submit\" value=\"Voir !\" class=\"test\"></td>";
             echo "</form>";
             echo "</tr>";
@@ -229,8 +229,8 @@ if ($erreur == 0 && $vcompte != -1)
 		inner join compte sitte on sitte.compt_cod = csit_compte_sitte
 		where $vcompte IN (csit_compte_sitteur, csit_compte_sitte)
 		order by csit_ddeb desc limit 50";
-    $db->query($req);
-    if ($db->nf() > 0)
+    $stmt = $pdo->query($req);
+    if ($stmt->rowCount() > 0)
     {
         echo '<p class="titre">Historique des 50 derniers sittings :
 			<a class="titre" href="javascript:montre(\'sitting\')">(Montrer/Cacher)</a></p>';
@@ -240,14 +240,14 @@ if ($erreur == 0 && $vcompte != -1)
 				<td class=\"soustitre2\">Date de début</td>
 				<td class=\"soustitre2\">Date de fin</td>
 				<td class=\"soustitre2\">Durée</td></tr>";
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><a href='?compte=" . $db->f("csit_compte_sitteur") . "'>" . $db->f("sitteur_nom") . "</a></p></td>";
-            echo "<td class=\"soustitre2\"><p><a href='?compte=" . $db->f("csit_compte_sitte") . "'>" . $db->f("sitte_nom") . "</a></p></td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("ddeb") . "</p></td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("dfin") . "</p></td>";
-            echo "<td class=\"soustitre2\"><p>" . $db->f("duree") . "</p></td>";
+            echo "<td class=\"soustitre2\"><p><a href='?compte=" . $result['csit_compte_sitteur'] . "'>" . $result['sitteur_nom'] . "</a></p></td>";
+            echo "<td class=\"soustitre2\"><p><a href='?compte=" . $result['csit_compte_sitte'] . "'>" . $result['sitte_nom'] . "</a></p></td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['ddeb'] . "</p></td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['dfin'] . "</p></td>";
+            echo "<td class=\"soustitre2\"><p>" . $result['duree'] . "</p></td>";
             echo "</tr>";
         }
         echo "</table>";
@@ -259,17 +259,17 @@ if ($erreur == 0 && $vcompte != -1)
     $req .= 'where icompt_compt_cod = ' . $vcompte;
     $req .= ' order by timestamp desc ';
     $req .= 'limit 50';
-    $db->query($req);
+    $stmt = $pdo->query($req);
     ?>
     <p class="titre">Dernières IP utilisées :
         <a class="titre" href="javascript:montre('ip')">(Montrer/Cacher)</a>
     </p>
     <table id="ip" style="display:none">
-        <?php while ($db->next_record())
+        <?php while ($result = $stmt->fetch())
         { ?>
             <tr>
-                <td class="soustitre2"><?php echo $db->f('timestamp'); ?></td>
-                <td class="soustitre2"><?php echo $db->f('icompt_compt_ip'); ?></td>
+                <td class="soustitre2"><?php echo $result['timestamp']; ?></td>
+                <td class="soustitre2"><?php echo $result['icompt_compt_ip']; ?></td>
             </tr>
         <?php } ?>
     </table>
@@ -294,9 +294,9 @@ if ($erreur == 0 && $vcompte != -1)
     {
         $req2 = "select compt_nom from compte
 			where compt_cod = $vcompte_lie ";
-        $db->query($req2);
-        $db->next_record();
-        $vcompte_lie_nom = $db->f("compt_nom");
+        $stmt = $pdo->query($req2);
+        $result = $stmt->fetch();
+        $vcompte_lie_nom = $result['compt_nom'];
     } else
     {
         $vcompte_lie_nom = "";

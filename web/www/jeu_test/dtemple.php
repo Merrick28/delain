@@ -19,9 +19,9 @@ include "blocks/_test_lieu.php";
 
 $perso_fam = false;
 $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-$db->query($req);
-$db->next_record();
-if ($db->f("perso_type_perso") == 3)
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+if ($result['perso_type_perso'] == 3)
 {
     $erreur = 1;
     $perso_fam = true;
@@ -37,12 +37,12 @@ if ($erreur == 0)
 		from dieu_perso,dieu_niveau,dieu where dper_perso_cod = ' . $perso_cod  . '
 			and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau
 			and dieu_cod = dper_dieu_cod ';
-	$db->query($req);
-	if ($db->nf() != 0)
+	$stmt = $pdo->query($req);
+	if ($stmt->rowCount() != 0)
 	{
-		$db->next_record();
-		$niveau_actu = $db->f("dper_niveau");
-		$dieu_perso = $db->f("dper_dieu_cod");
+		$result = $stmt->fetch();
+		$niveau_actu = $result['dper_niveau'];
+		$dieu_perso = $result['dper_dieu_cod'];
 	}
     else
     {
@@ -53,14 +53,14 @@ if ($erreur == 0)
 	$lieu = $tab_lieu['lieu_cod'];
 	$req = "select dieu_cod,dieu_nom,dieu_description,lieu_description,dieu_ceremonie,dieu_pouvoir from dieu,lieu ";
 	$req = $req . "where lieu_cod = " . $tab_lieu['lieu_cod']  . " and lieu_dieu_cod = dieu_cod ";
-	$db->query($req);
-	$db->next_record();
-	$dieu_cod = $db->f("dieu_cod");
-	$dieu_nom = $db->f("dieu_nom");
-	$dieu_descr = $db->f("dieu_description");
-	$lieu_descr = $db->f("lieu_description");
-	$dieu_ceremonie = $db->f("dieu_ceremonie");
-	$dieu_pouvoir = $db->f("dieu_pouvoir");
+	$stmt = $pdo->query($req);
+	$result = $stmt->fetch();
+	$dieu_cod = $result['dieu_cod'];
+	$dieu_nom = $result['dieu_nom'];
+	$dieu_descr = $result['dieu_description'];
+	$lieu_descr = $result['lieu_description'];
+	$dieu_ceremonie = $result['dieu_ceremonie'];
+	$dieu_pouvoir = $result['dieu_pouvoir'];
 	switch($methode)
 	{
 		case 'entree':
@@ -84,9 +84,9 @@ if ($erreur == 0)
 					$calice .= $nomcalice;
 				} else {
 					$req = 'SELECT MAX(dieu_pouvoir) AS dp FROM dieu';
-					$db->query($req);
-					$db->next_record();
-					$max_pouvoir = $db->f('dp');
+					$stmt = $pdo->query($req);
+					$result = $stmt->fetch();
+					$max_pouvoir = $result['dp'];
 					$pourc = floor( $dieu_pouvoir *100 /$max_pouvoir );
 					if ($pourc <= 10) {
 						$nomcalice = 'rouge.png';
@@ -129,16 +129,16 @@ if ($erreur == 0)
 			echo "<br><br><em>" , $lieu_descr, "</em><br>";
 			//on indique le responsable du temple
 			$req = 'select tfid_perso_cod, perso_nom from perso, temple_fidele where tfid_perso_cod = perso_cod and tfid_lieu_cod = '. $lieu;
-			$db->query($req);
-			if ($db->next_record())
+			$stmt = $pdo->query($req);
+			if($result = $stmt->fetch())
             {
 			?>
                 <form name="message" method="post" action="messagerie2.php">
                     <input type="hidden" name="m" value="2">
-                    <input type="hidden" name="n_dest" value="<?php echo $db->f("perso_nom")?>;">
+                    <input type="hidden" name="n_dest" value="<?php echo $result['perso_nom']?>;">
                     <input type="hidden" name="dmsg_cod">
                 </form>
-                <p>Ce temple est sous la responsabilité de <strong><?php echo $db->f("perso_nom")?></strong> (<a href="javascript:document.message.submit();">Envoyer un message</a>)</p><br>
+                <p>Ce temple est sous la responsabilité de <strong><?php echo $result['perso_nom']?></strong> (<a href="javascript:document.message.submit();">Envoyer un message</a>)</p><br>
 			<?php 
             }
 			// on regarde s’il existe un lien avec le perso
@@ -146,21 +146,21 @@ if ($erreur == 0)
 				from dieu_perso,dieu_niveau,dieu where dper_perso_cod = ' . $perso_cod  . '
 				and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau
 				and dieu_cod = dper_dieu_cod ';
-			$db->query($req);
-			if ($db->nf() == 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() == 0)
 			{
 				// aucun rattachement
 				echo "<p>Vous n’êtes fidèle d’aucun dieu</p>";
 			}
 			else
 			{
-				$db->next_record();
-				$perso_dieu_nom = $db->f("dieu_nom");
-				if ($db->f("dper_dieu_cod") == $dieu_cod)
+				$result = $stmt->fetch();
+				$perso_dieu_nom = $result['dieu_nom'];
+				if ($result['dper_dieu_cod'] == $dieu_cod)
 				{
-					echo "<p>Vous êtes " . $db->f("dniv_libelle") . " de ce dieu</p>";
-					$points = $db->f("dper_points");
-					$niveau_actu = $db->f("dper_niveau");
+					echo "<p>Vous êtes " . $result['dniv_libelle'] . " de ce dieu</p>";
+					$points = $result['dper_points'];
+					$niveau_actu = $result['dper_niveau'];
 					$cout_pa = $param->getparm(55);
 					switch($niveau_actu)
 					{
@@ -169,9 +169,9 @@ if ($erreur == 0)
 							{
 								$req = "select dniv_libelle from dieu_niveau ";
 								$req = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = 1 ";
-								$db->query($req);
-								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 1:
@@ -179,9 +179,9 @@ if ($erreur == 0)
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 2 ";
-								$db->query($req);
-								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 2:
@@ -189,9 +189,9 @@ if ($erreur == 0)
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 3 ";
-								$db->query($req);
-								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 						case 3:
@@ -199,9 +199,9 @@ if ($erreur == 0)
 							{
 								$req = "select dniv_libelle from dieu_niveau
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 4 ";
-								$db->query($req);
-								$db->next_record();
-								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $db->f("dniv_libelle"), "</strong></a> ($cout_pa PA).</p><br>";
+								$stmt = $pdo->query($req);
+								$result = $stmt->fetch();
+								echo "<p>Vous pouvez choisir de <a href=\"" , $PHP_SELF , "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
 							}
 							break;
 					}
@@ -213,13 +213,13 @@ if ($erreur == 0)
 				}
 				else
 				{
-					echo "<p>Vous êtes " , $db->f("dniv_libelle") , " de $perso_dieu_nom</p>";
+					echo "<p>Vous êtes " , $result['dniv_libelle'] , " de $perso_dieu_nom</p>";
 				}
 			}
 			// on regarde si on n'est pas rénégat, quand même.
 			$req = "select dren_cod from dieu_renegat where dren_dieu_cod = $dieu_cod and dren_perso_cod = $perso_cod and dren_datfin > now()";
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
 				// RENEGAT !!!
 				echo "<p>Vous êtes <strong>renégat</strong> !! Inutile de s’attarder en ce lieu, $dieu_nom ne veut même pas entendre parler de vous !</p>";
@@ -241,9 +241,9 @@ if ($erreur == 0)
 				$cout_or = $param->getparm(50) * 2;
                 // On regarde si le perso possède déjà un familier/esprit
                 $req = "SELECT count(*) count FROM perso_familier INNER JOIN perso ON perso_cod=pfam_familier_cod WHERE pfam_perso_cod = {$perso_cod} AND perso_actif='O' ";
-                $db->query($req);
-                $db->next_record();
-                $count_familier_actif = $db->f("count") ;
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $count_familier_actif = $result['count'] ;
 
 				if ($count_familier_actif == 0 and $dieu_perso == $dieu_cod and $niveau_actu >= 3 and $dieu_pouvoir > 150)
 				{
@@ -256,9 +256,9 @@ if ($erreur == 0)
                             INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
                             INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
                             WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
-                    $db->query($req);
-                    $db->next_record();
-                    $count_familier_mort = $db->f("count") ;
+                    $stmt = $pdo->query($req);
+                    $result = $stmt->fetch();
+                    $count_familier_mort = $result['count'] ;
                     if ($count_familier_mort > 0 )
                     {
                         ?>
@@ -301,8 +301,8 @@ if ($erreur == 0)
 				INNER JOIN objets ON obj_cod = mstock_obj_cod
 				WHERE cetemple.lieu_cod = $lieu
 				ORDER BY obj_nom";
-			$db->query($sql_reliquaire);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($sql_reliquaire);
+			if ($stmt->rowCount() != 0)
 			{
 				?>
 				<script type='text/javascript'>
@@ -324,14 +324,14 @@ if ($erreur == 0)
 				</script>
 				<?php 				echo '<p>Voici les objets sacrés exposés dans le reliquaire du temple :</p>';
 				echo '<table><tr><th class="titre"><strong>Relique</strong></th><th class="titre">Description</th></tr>';
-				while ($db->next_record())
+				while ($result = $stmt->fetch())
 				{
-					$description_longue = $db->f('obj_description');
+					$description_longue = $result['obj_description'];
 					$description_courte = $description_longue;
-					$objet = $db->f('obj_cod');
+					$objet = $result['obj_cod'];
 					if (strlen($description_longue) > 100)
 						$description_courte = substr($description_longue, 0, 100) . "... <a href='javascript:permutterDescription($objet);'>(Voir plus)</a>";
-					echo '<tr><td class="soustitre2">' . $db->f('obj_nom') . '</td>';
+					echo '<tr><td class="soustitre2">' . $result['obj_nom'] . '</td>';
 					echo "<td class='soustitre2'><div style='display:none;' id='plus$objet'>" . nl2br($description_longue) . "<br /><a href='javascript:permutterDescription($objet);'>(Réduire)</a></div>
 						<div style='display:block;' id='moins$objet'>" . nl2br($description_courte) . "</div></td></tr>";
 				}
@@ -357,11 +357,11 @@ if ($erreur == 0)
 					where perobj_perso_cod = $perso_cod
 					group by obj_nom
 					order by obj_nom";
-				$db->query($req_relique);
-				while ($db->next_record())
+				$stmt = $pdo->query($req_relique);
+				while ($result = $stmt->fetch())
 				{
-					$relique_cod = $db->f('obj_cod');
-					$relique_nom = $db->f('obj_nom');
+					$relique_cod = $result['obj_cod'];
+					$relique_nom = $result['obj_nom'];
 					echo "<option value='$relique_cod'>$relique_nom</option>";
 				}
 				echo '</select><input type="submit" class="test" value="Effectuer la cérémonie de remise (6 PA)" /></form>';
@@ -382,9 +382,9 @@ if ($erreur == 0)
 			}
 
 			$req_verif = "select perso_pa from perso where perso_cod = $perso_cod";
-			$db->query($req_verif);
-			$db->next_record();
-			if ($db->f('perso_pa') < 6)
+			$stmt = $pdo->query($req_verif);
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < 6)
 			{
 				echo "<p>$dieu_nom regarde cet énergumène essoufflé, vociférer en agitant une breloque... Non, mais soyez une sérieux, une cérémonie se fait avec 6 PA, pas moins !</p>";
 				$erreur = 1;
@@ -394,16 +394,16 @@ if ($erreur == 0)
 				inner join perso_objets on perobj_obj_cod = obj_cod
 				where perobj_perso_cod = $perso_cod
 					and obj_cod = $relique_cod";
-			$db->query($req_verif);
-			if ($db->nf() == 0)
+			$stmt = $pdo->query($req_verif);
+			if ($stmt->rowCount() == 0)
 			{
 				echo "<p>$dieu_nom regarde cet énergumène s’agiter les mains vides... Non, mais soyez une sérieux, il ne vous manque pas la relique, là ?</p>";
 				$erreur = 1;
 			}
 			else
 			{
-				$db->next_record();
-				$relique_nom = $db->f('obj_nom');
+				$result = $stmt->fetch();
+				$relique_nom = $result['obj_nom'];
 			}
 
 			if ($erreur == 0)
@@ -412,23 +412,23 @@ if ($erreur == 0)
 
 				// Équivalent d’une prière
 				$req = "select prie_dieu($perso_cod, $dieu_cod) ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				// Ajout de points supplémentaires au dieu
 				$req = "update dieu set dieu_pouvoir = dieu_pouvoir + $niveau_actu where dieu_cod = $dieu_cod";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 
 				// Mise à jour du reliquaire
 				$req = "insert into stock_magasin(mstock_lieu_cod, mstock_obj_cod) values ($lieu, $relique_cod) ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				
 				// Suppression de l’objet de l’inventaire
 				$req = "delete from perso_objets where perobj_obj_cod = $relique_cod ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				
 				// Suppression de 2 PA (4 déjà enlevés par la prière)
 				$req = "update perso set perso_pa = perso_pa - 2 where perso_cod = $perso_cod ";
-				$db->query($req);
+				$stmt = $pdo->query($req);
 			}
 			echo '<hr /><a href="lieu.php">Retour au temple</a>';
 		break;
@@ -453,8 +453,8 @@ if ($erreur == 0)
 				where  pfam_familier_cod = perso_cod
 					and perso_actif in ('O','H')
 					and pfam_perso_cod = ". $perso_cod;
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
 				echo "<br><strong><p>Vous ne pouvez pas ressuciter un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></strong><br>";
 				break;
@@ -468,9 +468,9 @@ if ($erreur == 0)
                     INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
                     INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
                     WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
-            $db->query($req);
-            $db->next_record();
-            $count_familier_mort = $db->f("count") ;
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $count_familier_mort = $result['count'] ;
             if ($count_familier_mort == 0)
             {
                 echo "<br><strong><p>la résurection n'est pas possible, l'ame de votre familier n'a pas été retrouvée.</p></strong><br>";
@@ -480,10 +480,10 @@ if ($erreur == 0)
 			/* contrôle sur les pa disponible*/
 			$req = "select perso_pa,perso_po from perso
 				where perso_cod = ". $perso_cod;
-			$db->query($req);
-			$db->next_record();
-			$pa = $db->f("perso_pa");
-			$or = $db->f("perso_po");
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$pa = $result['perso_pa'];
+			$or = $result['perso_po'];
 			$cout_pa = $param->getparm(100);
 			$cout_or = $param->getparm(50) * 2;
 			if ($pa < $cout_pa)
@@ -500,13 +500,13 @@ if ($erreur == 0)
 			{
 				$req = "update perso set perso_pa = perso_pa - ". $cout_pa .",perso_po = perso_po -  ". $cout_or ."
 						where perso_cod = ". $perso_cod;
-				$db->query($req);
+				$stmt = $pdo->query($req);
 			}
 			/* on ressucite le familier*/
 			$req = "select ressuscite_familier_divin($perso_cod) as resultat";
-			$db->query($req);
-			$db->next_record();
-			$resultat = explode(';', $db->f('resultat'));
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$resultat = explode(';', $result['resultat']);
 			if ($resultat[0] == '1')
 			{
 				echo '<p>' . $resultat[1] . '</p>';
@@ -518,7 +518,7 @@ if ($erreur == 0)
 			}
 			/* On diminue le compteur de la religion*/
 			$req = "update dieu set dieu_pouvoir = dieu_pouvoir - 150 where dieu_cod = ". $dieu_cod;
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		break;
 		
 		case 'invoc':
@@ -541,8 +541,8 @@ if ($erreur == 0)
 				where  pfam_familier_cod = perso_cod
 					and perso_actif in ('O','H')
 					and pfam_perso_cod = ". $perso_cod;
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
 				echo "<br><strong><p>Vous ne pouvez pas récupérer un familier esprit ici. Vous êtes déjà en charge d’un autre familier, deux seraient trop à gérer.</p></strong><br>";
 				break;
@@ -550,10 +550,10 @@ if ($erreur == 0)
 			/* contrôle sur les pa disponible*/
 			$req = "select perso_pa,perso_po from perso
 				where perso_cod = ". $perso_cod;
-			$db->query($req);
-			$db->next_record();
-			$pa = $db->f("perso_pa");
-			$or = $db->f("perso_po");
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$pa = $result['perso_pa'];
+			$or = $result['perso_po'];
 			$cout_pa = $param->getparm(100);
 			$cout_or = $param->getparm(50) * 2;
 			if ($pa < $cout_pa)
@@ -570,13 +570,13 @@ if ($erreur == 0)
 			{
 				$req = "update perso set perso_pa = perso_pa - ". $cout_pa .",perso_po = perso_po -  ". $cout_or ."
 						where perso_cod = ". $perso_cod;
-				$db->query($req);
+				$stmt = $pdo->query($req);
 			}
 			/* on créé le familier*/
 			$req = "select ajoute_familier(441, $perso_cod) as resultat";
-			$db->query($req);
-			$db->next_record();
-			$resultat = explode(';', $db->f('resultat'));
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$resultat = explode(';', $result['resultat']);
 			if ($resultat[0] == '1')
 			{
 				echo '<p>' . $resultat[1] . '</p>';
@@ -588,18 +588,18 @@ if ($erreur == 0)
 			}
 			/* On diminue le compteur de la religion*/
 			$req = "update dieu set dieu_pouvoir = dieu_pouvoir - 150 where dieu_cod = ". $dieu_cod;
-			$db->query($req);
+			$stmt = $pdo->query($req);
 		break;
 
 		case 'prie1':
 			$attention = 0;
 			$req = "select dper_dieu_cod,dniv_libelle from dieu_perso,dieu_niveau where dper_perso_cod = $perso_cod ";
 			$req = $req . "and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau ";
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
-				$db->next_record();
-				if ($db->f("dper_dieu_cod") != $dieu_cod)
+				$result = $stmt->fetch();
+				if ($result['dper_dieu_cod'] != $dieu_cod)
 				{
 					$attention = 1;
 				}
@@ -610,7 +610,7 @@ if ($erreur == 0)
 			}
 			else
 			{
-				echo "<p>Vous êtes " , $db->f("dniv_libelle") , " d’un autre dieu.<br>";
+				echo "<p>Vous êtes " , $result['dniv_libelle'] , " d’un autre dieu.<br>";
 			}
 			?>
 			<a href="action.php?methode=prie&dieu=<?php echo $dieu_cod; ?>">Continuer ?</a>
@@ -621,11 +621,11 @@ if ($erreur == 0)
 			$attention = 0;
 			$req = "select dper_dieu_cod,dniv_libelle from dieu_perso,dieu_niveau where dper_perso_cod = $perso_cod ";
 			$req = $req . "and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau ";
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
-				$db->next_record();
-				if ($db->f("dper_dieu_cod") != $dieu_cod)
+				$result = $stmt->fetch();
+				if ($result['dper_dieu_cod'] != $dieu_cod)
 				{
 					$attention = 1;
 				}
@@ -636,7 +636,7 @@ if ($erreur == 0)
 			}
 			else
 			{
-				echo "<p>Vous êtes " , $db->f("dniv_libelle") , " d’un autre dieu.<br>";
+				echo "<p>Vous êtes " , $result['dniv_libelle'] , " d’un autre dieu.<br>";
 			}
 			?>
 			<a href="action.php?methode=ceremonie&dieu=<?php echo $dieu_cod; ?>">Continuer ?</a>
@@ -646,9 +646,9 @@ if ($erreur == 0)
 		case 'infos':
 			$req = "select dieu_cod,dieu_nom,dieu_description from dieu
 								where dieu_cod = $dieu_cod ";
-			$db->query($req);
-			$db->next_record();
-			$dieu_descr = $db->f("dieu_description");
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$dieu_descr = $result['dieu_description'];
 			echo "<br><em>" , $dieu_descr, "</em><br><br>";
 			echo '<a href="' . $PHP_SELF . '?methode=entree"">Retour</a><br>';
 		break;
@@ -657,14 +657,14 @@ if ($erreur == 0)
 			$req = "select dper_niveau from dieu_perso,dieu_niveau,dieu where dper_perso_cod = $perso_cod ";
 			$req = $req . "and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau ";
 			$req = $req . "and dieu_cod = dper_dieu_cod ";
-			$db->query($req);
-			$db->next_record();
-			$niveau = $db->f("dper_niveau") + 1;
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			$niveau = $result['dper_niveau'] + 1;
 			$req = "select dniv_libelle from dieu_niveau ";
 			$req = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = $niveau ";
-			$db->query($req);
-			$db->next_record();
-			echo "<p>Vous vous apprêtez à devenir <strong>", $db->f("dniv_libelle") ,"</strong><br>";
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
+			echo "<p>Vous vous apprêtez à devenir <strong>", $result['dniv_libelle'] ,"</strong><br>";
 			switch($niveau)
 			{
 				case 1:
@@ -677,7 +677,7 @@ if ($erreur == 0)
 				case 2:
 				// initié
 					?>
-					<p>En devenant <?php  echo $db->f("dniv_libelle"); ?>, vous faites un pas de plus dans la religion. Vous acceptez votre divinité pour seule et unique source de puissance.<br>
+					<p>En devenant <?php  echo $result['dniv_libelle']; ?>, vous faites un pas de plus dans la religion. Vous acceptez votre divinité pour seule et unique source de puissance.<br>
 					Vous gagnez de nouveaux sorts divins, mais en retour, il vous est impossible de lancer des sorts mémorisés. Vous pouvez toujours utiliser les runes pour lancer des sorts non divins, mais vous ne faites pas de jet de mémorisation. Votre capacité de mémorisation n’augmentera pas pour ces sorts.<br>
 					À partir de ce rang, vous avez la possibilité de prier votre divinité en extérieur, et non plus seulement dans un temple.<br>
 					<?php 
@@ -685,7 +685,7 @@ if ($erreur == 0)
 				case 3:
 				// clerc
 					?>
-					<p>Le grade de <?php  echo $db->f("dniv_libelle"); ?> marque un tournant dans la religion. La confiance entre vous et votre dieu est maintenant totalement réciproque. C’est pour cela que votre dieu vous permet à tout moment d’avoir accès à la liste des personnes renégates.<br>
+					<p>Le grade de <?php  echo $result['dniv_libelle']; ?> marque un tournant dans la religion. La confiance entre vous et votre dieu est maintenant totalement réciproque. C’est pour cela que votre dieu vous permet à tout moment d’avoir accès à la liste des personnes renégates.<br>
 					Votre dieu attend de vous une obéissance totale et aveugle, ainsi qu’un investissment total. Il vous offre des sorts de plus en plus puissants. Toutefois, du fait de votre charge, chaque tour passé sans prier vous fait oublier de votre divinité. Cet oubli n’est pas suffisant pour vous faire descendre de grade, mais il peut sérieusement retarder votre accession au grade suivant.<br>
 					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
@@ -693,28 +693,28 @@ if ($erreur == 0)
 				case 4:
 				//prêtre
 					?>
-					<p>À partir de <?php  echo $db->f("dniv_libelle"); ?>, en cas de mort, le corps n’est plus ramené dans un dispensaire, mais dans un temple de votre dieu, le plus proche de vous.
+					<p>À partir de <?php  echo $result['dniv_libelle']; ?>, en cas de mort, le corps n’est plus ramené dans un dispensaire, mais dans un temple de votre dieu, le plus proche de vous.
 					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
 				break;
 				case 5:
 				// grand prêtre
 					?>
-					<p>À partir de <?php  echo $db->f("dniv_libelle"); ?>, votre dieu vous autorise à vous téléporter sur chaque temple qui lui est dévoué (sous réserve qu’il ait assez d’énergie bien sur). Par contre, vous n’avez plus aucun accès à la magie runique.
+					<p>À partir de <?php  echo $result['dniv_libelle']; ?>, votre dieu vous autorise à vous téléporter sur chaque temple qui lui est dévoué (sous réserve qu’il ait assez d’énergie bien sur). Par contre, vous n’avez plus aucun accès à la magie runique.
 					<br><em>Attention ! Pas encore codé !</em>
 					<?php 
 				break;
 			}
 			// sorts gagnés
-			echo "<p><strong>Sorts disponibles en étant " , $db->f("dniv_libelle") , "</strong> :<br>";
+			echo "<p><strong>Sorts disponibles en étant " , $result['dniv_libelle'] , "</strong> :<br>";
 			$req = "select sort_cod,sort_nom from sorts, dieu_sorts ";
 			$req = $req . "where dsort_dieu_cod = $dieu_cod ";
 			$req = $req . "and dsort_niveau <= $niveau ";
 			$req = $req . "and dsort_sort_cod = sort_cod ";
-			$db->query($req);
-			while($db->next_record())
+			$stmt = $pdo->query($req);
+			while($result = $stmt->fetch())
 			{
-				echo "<a href=\"visu_desc_sort.php?sort_cod=" ,$db->f("sort_cod") , "\">" , $db->f("sort_nom"), "</a><br>";
+				echo "<a href=\"visu_desc_sort.php?sort_cod=" ,$result['sort_cod'] , "\">" , $result['sort_nom'], "</a><br>";
 			}
 			echo "<br><a href=\"action.php?methode=dgrade&dieu=$dieu_cod\">Continuer ? </a>";
 		break;
@@ -723,14 +723,14 @@ if ($erreur == 0)
 			// liste des temples visités
 			$cout_pa = $param->getparm(100);
 			$req = 'select * from choix_temple_vus(' . $perso_cod . ')';
-			$db->query($req);
-			$db2 = new base_delain;
+			$stmt = $pdo->query($req);
+			
 
 			?>
 			<p class="titre">Temples déjà visités :</p>
 			<table>
 			<?php 
-			while($db->next_record())
+			while($result = $stmt->fetch())
 			{
 				$req = 'select  lieu_nom,pos_x,pos_y,etage_libelle
 					from lieu,lieu_position,positions,etage
@@ -738,11 +738,11 @@ if ($erreur == 0)
 					and lpos_pos_cod = pos_cod
 					and lpos_lieu_cod = lieu_cod
 					and etage_numero = pos_etage ';
-				$db2->query($req);
-				$db2->next_record();
+				$stmt2 = $pdo->query($req);
+				$result2 = $stmt2->fetch();
 				?>
-				<tr><td class="soustitre2"><?php echo $db2->f("lieu_nom");?></td>
-					<td><?php echo $db2->f("pos_x");?>, <?php echo $db2->f("pos_y");?>, <?php echo $db2->f("etage_libelle");?></td>
+				<tr><td class="soustitre2"><?php echo $result2['lieu_nom'];?></td>
+					<td><?php echo $result2['pos_x'];?>, <?php echo $result2['pos_y'];?>, <?php echo $result2['etage_libelle'];?></td>
 					<td class="soustitre2">
 					<?php 
 					if ($tab_lieu['pos_cod'] != $db->f(0))
@@ -786,9 +786,9 @@ if ($erreur == 0)
 				// on contrôle les PA
 				//
 				$req = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-				$db->query($req);
-				$db->next_record();
-				$pa = $db->f('perso_pa');
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$pa = $result['perso_pa'];
 				if($pa < $param->getparm(110))
 				{
 					echo "<p>Vous n’avez pas assez de PA pour cette action.";
@@ -801,74 +801,74 @@ if ($erreur == 0)
 				$nb_tours = $niveau_actu * $niveau_actu;
 				// on commence par enlever les points au dieu
 				$req = "update dieu set dieu_pouvoir = dieu_pouvoir - " . $points_ben . " where dieu_cod = ". $dieu_cod;
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				// on enlève les PA
 				$req = 'update perso set perso_pa = perso_pa - getparm_n(110) where perso_cod = ' . $perso_cod;
-				$db->query($req);
+				$stmt = $pdo->query($req);
 				// et maintenant, on va switcher par rapport à la divinité.
 				switch($dieu_cod)
 				{
 					case 1: // IO l'aveugle => chant du barde
 						$req = "select ajoute_bonus($perso_cod,'TOU', $nb_tours, 25)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "select ajoute_bonus($perso_cod,'PAA', $nb_tours, -1)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "select ajoute_bonus($perso_cod,'DEG', $nb_tours, 2)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Io vous a entendu, vous vous sentez plus habile au combat.";
 						break;
 					case 2: // Balgur => soins importants
 						$req = "select perso_pv,perso_pv_max from perso
 							where perso_cod = " . $perso_cod;
-						$db->query($req);
-						$db->next_record();
-						$v_pv = $db->f('perso_pv');
-						$v_pv_max = $db->f('perso_pv_max');
+						$stmt = $pdo->query($req);
+						$result = $stmt->fetch();
+						$v_pv = $result['perso_pv'];
+						$v_pv_max = $result['perso_pv_max'];
 						$pv_gagne = 0;
 						for ($i=0;$i<8;$i++)
 						{
 							$req = "select lancer_des(1,4) as resultat";
-							$db->query($req);
-							$db->next_record();
-							$pv_gagne += $db->f('resultat');
+							$stmt = $pdo->query($req);
+							$result = $stmt->fetch();
+							$pv_gagne += $result['resultat'];
 						}
 						$tot_pv =  $v_pv + $pv_gagne;
 						if($tot_pv > $v_pv_max)
 							$tot_pv = $v_pv_max;
 						$req = "update perso set perso_pv = " . $tot_pv . " where perso_cod = " . $perso_cod;
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Balgur soigne vos blessures... ";
 						break;
 					case 3: // Galthée => reconstruction intense
 						$req = "select ajoute_bonus($perso_cod,'REG', $nb_tours, 10)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Dans sa grande bonté, Galthée aide votre corps à se reconstruire.";
 						break;
 					case 4: // Elian => sort de défense
 						$req = "select ajoute_bonus($perso_cod,'ARM', $nb_tours, 2)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Elian rend votre corps plus résistant aux blessures.";
 						break;
 					case 5: // Apiera => armure dure
 						$req = "select ajoute_bonus($perso_cod,'ARM', $nb_tours, 5)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Apiera rend votre corps plus résistant aux blessures.";
 						break;
 					case 7:	// FAlis => Fou furieux
 						$req = "select ajoute_bonus($perso_cod,'PAA', $nb_tours, -3)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Falis vous entend, et répond à votre demande de bénédiction. Vous vous sentez plus rapide au combat.";
 						break;
 					case 8: // Ecatis => Mange ta soupe
 						$req = "select ajoute_bonus($perso_cod,'TOU', $nb_tours, 25)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Ecatis vous a entendu, vous vous sentez plus habile au combat.";
 						break;
 					case 9: // Tonto => Danse de Saint Guy
 						$req = "select ajoute_bonus($perso_cod,'ESQ', $nb_tours, 25)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "select ajoute_bonus($perso_cod,'DSG', $nb_tours, 20)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$texte = "Tonto vous enseigne la technique de l'homme ivre.";
 						break;
 				}

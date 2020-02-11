@@ -14,19 +14,19 @@ ob_start();
                         $req = $req . "and ppos_perso_cod = perso_cod ";
                         $req = $req . "and perso_cod != $perso_cod and perso_actif = 'O' ";
                         $req = $req . "order by perso_type_perso,minusc ";
-                        $db->query($req);
-                        while ($db->next_record())
+                        $stmt = $pdo->query($req);
+                        while ($result = $stmt->fetch())
                         {
-                            echo "<option value=\"", $db->f("perso_cod"), "\">", $db->f("perso_nom"), "</option>";
+                            echo "<option value=\"", $result['perso_cod'], "\">", $result['perso_nom'], "</option>";
                         }
                         $db->query("select perso_po from perso where perso_cod = $perso_cod");
-                        $db->next_record();
+                        $result = $stmt->fetch();
                         ?>
                     </select>
                 </td>
             </tr>
             <tr>
-                <td>Ainsi que la somme à donner (max <?php echo $db->f("perso_po"); ?> brouzoufs) :</td>
+                <td>Ainsi que la somme à donner (max <?php echo $result['perso_po']; ?> brouzoufs) :</td>
                 <td><input type="text" name="qte" value="0"></td>
             </tr>
         </table>

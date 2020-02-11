@@ -2,13 +2,13 @@
 
 $req_comp = "select pcomp_modificateur, pcomp_pcomp_cod from perso_competences 
     where pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod in (88, 102, 103)";
-$db->query($req_comp);
+$stmt = $pdo->query($req_comp);
 $pa = 0;
 $pa2 = 0;
 $param = new parametres();
-if($db->next_record())
+if($result = $stmt->fetch())
 {
-	$niveau = $db->f("pcomp_pcomp_cod");
+	$niveau = $result['pcomp_pcomp_cod'];
 	if ($niveau == 102)
 	{
 		$pa = $param->getparm(116) -1;
@@ -56,9 +56,9 @@ if($db->next_record())
 
 		case "detecter2":
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$db->query($req_pa);
-			$db->next_record();
-			if ($db->f("perso_pa") < $pa)
+			$stmt = $pdo->query($req_pa);
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < $pa)
 			{
 				$contenu_page .= 'Vous n’avez pas assez de PA !';
 				break;
@@ -66,7 +66,7 @@ if($db->next_record())
 			else
 			{
 				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa where perso_cod = $perso_cod";
-				$db->query($req_enl_pa);
+				$stmt = $pdo->query($req_enl_pa);
 			}
 			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
 				<table background="../../images/fond5.gif" border="0" cellspacing="0" cellpadding="0" style="margin:15px;">';
@@ -74,11 +74,11 @@ if($db->next_record())
 			$req_position = "select pos_x, pos_y, pos_etage
 				from perso_position, positions
 				where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$position_x = $db->f("pos_x");
-			$position_y = $db->f("pos_y");
-			$perso_pos_etage = $db->f("pos_etage");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$position_x = $result['pos_x'];
+			$position_y = $result['pos_y'];
+			$perso_pos_etage = $result['pos_etage'];
 			for ($y = -2; $y < 4; $y++)
 			{
 				$contenu_page .= '<tr>';
@@ -86,16 +86,16 @@ if($db->next_record())
 				{
 					if(($y * $y + $x * $x) < 8)
 					{
-						$db2 = new base_delain;
+						
 						$req_position = "select pos_magie from positions
 							where pos_etage = $perso_pos_etage
 								and pos_x = $position_x + $x
 								and pos_y = $position_y - $y";
-						$db2->query($req_position);
+						$stmt2 = $pdo->query($req_position);
 						$magie = 0;
-						if ($db2->next_record())
+						if ($result2 = $stmt2->fetch())
 						{
-							$magie = $db2->f("pos_magie");
+							$magie = $result2['pos_magie'];
 						}
 						$pos_case_x = $position_x + $x;
 						$pos_case_y = $position_y - $y;
@@ -115,9 +115,9 @@ if($db->next_record())
 
 		case "detecter3":
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$db->query($req_pa);
-			$db->next_record();
-			if ($db->f("perso_pa") < $pa2)
+			$stmt = $pdo->query($req_pa);
+			$result = $stmt->fetch();
+			if ($result['perso_pa'] < $pa2)
 			{
 				$contenu_page .= 'Vous n’avez pas assez de PA !';
 				break;
@@ -125,7 +125,7 @@ if($db->next_record())
 			else
 			{
 				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa2 where perso_cod = $perso_cod";
-				$db->query($req_enl_pa);
+				$stmt = $pdo->query($req_enl_pa);
 			}
 
 			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
@@ -134,11 +134,11 @@ if($db->next_record())
 			$req_position = "select pos_x,pos_y,pos_etage
 				from perso_position,positions
 				where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$position_x = $db->f("pos_x");
-			$position_y = $db->f("pos_y");
-			$perso_pos_etage = $db->f("pos_etage");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$position_x = $result['pos_x'];
+			$position_y = $result['pos_y'];
+			$perso_pos_etage = $result['pos_etage'];
 			for ($y = -4; $y < 5; $y++)
 			{  
 				$contenu_page .= '<tr>';
@@ -146,16 +146,16 @@ if($db->next_record())
 				{
 					if(($y * $y + $x * $x) < 30)
 					{
-						$db2 = new base_delain;
+						
 						$req_position = "select pos_magie from positions
 							where pos_etage = $perso_pos_etage
 								and pos_x = $position_x + $x
 								and pos_y = $position_y - $y";
-						$db2->query($req_position);
+						$stmt2 = $pdo->query($req_position);
 						$magie = 0;
-						if ($db2->next_record())
+						if ($result2 = $stmt2->fetch())
 						{
-							$magie = $db2->f("pos_magie");
+							$magie = $result2['pos_magie'];
 						}
 						$pos_case_x = $position_x + $x;
 						$pos_case_y = $position_y - $y;
