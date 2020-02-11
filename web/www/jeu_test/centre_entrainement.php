@@ -16,7 +16,7 @@ if ($erreur == 0)
 
     echo "<p>Le maître des lieux est disponible pour ceux qui veulent modifier leurs compétences physiques ou magiques.<br>Nous n'offrons aucune garantie quand au résultat. Cela vous intéresse tout de même ?<br>Veuillez donc rentrer dans la <a href=\"centre_modif_carac.php\">salle spéciale...</a><br><br>";
 
-	$db->query($req_typc);
+	$stmt = $pdo->query($req_typc);
 	?>
 	<form name="amelioration_comp" method="post" action="amel_centre_entrainement.php">
 	<input type="hidden" name="comp_cod">
@@ -30,10 +30,10 @@ if ($erreur == 0)
 	<td class="soustitre2"></td>
 	</tr>
 	<?php 
-	while($db->next_record())
+	while($result = $stmt->fetch())
 	{
-		printf("<tr><td colspan=\"5\" class=\"titre\"><p class=\"titre\">%s</td></tr>",$db->f("typc_libelle"));
-		$typc_cod = $db->f("typc_cod");
+		printf("<tr><td colspan=\"5\" class=\"titre\"><p class=\"titre\">%s</td></tr>",$result['typc_libelle']);
+		$typc_cod = $result['typc_cod'];
 		$req_comp = "select comp_cod,typc_libelle,comp_libelle,pcomp_modificateur from perso_competences,competences,type_competences
 											where pcomp_perso_cod = $perso_cod
 											and pcomp_pcomp_cod = comp_cod
@@ -41,12 +41,12 @@ if ($erreur == 0)
 											and typc_cod = $typc_cod
 											order by comp_libelle ";
 		$db_comp = new base_delain;
-		$db_comp->query($req_comp);
-		while($db_comp->next_record())
+		$stmt_comp = $pdo->query($req_comp);
+		while($result_comp = $stmt_comp->fetch()())
 		{
 			echo("<tr>");
-			$score = $db_comp->f("pcomp_modificateur");
-			printf("<td class=\"soustitre2\"><p>%s</td>",$db_comp->f("comp_libelle"));
+			$score = $result_comp['pcomp_modificateur'];
+			printf("<td class=\"soustitre2\"><p>%s</td>",$result_comp['comp_libelle']);
 			printf("<td><p style=\"text-align:right;\">%s", $score);
 			echo(" %</td>");
 			$prix = 4 * $score;
@@ -82,7 +82,7 @@ if ($erreur == 0)
 			echo("<td>");
 			if ($score < 85)
 			{
-				printf("<p><a href=\"javascript:document.amelioration_comp.comp_cod.value=%s;document.amelioration_comp.prix.value=$prix;document.amelioration_comp.submit();\">S'entrainer ! ($pa PA)</a>",$db_comp->f("comp_cod"));
+				printf("<p><a href=\"javascript:document.amelioration_comp.comp_cod.value=%s;document.amelioration_comp.prix.value=$prix;document.amelioration_comp.submit();\">S'entrainer ! ($pa PA)</a>",$result_comp['comp_cod']);
 			}
 			echo("</td>");
 			echo("</tr>");

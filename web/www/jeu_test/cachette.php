@@ -10,9 +10,9 @@ $req = "select persocache_cache_cod
 					and ppos_perso_cod = persocache_perso_cod
 					and persocache_cache_cod = cache_cod	
 					and cache_pos_cod = ppos_pos_cod";
-$db->query($req);
-$db->next_record();
-if ($db->nf() == 0)
+$stmt = $pdo->query($req);
+$result = $stmt->fetch();
+if ($stmt->rowCount() == 0)
 {
     echo 'Vous continuez à chercher sans grand espoir ! Vos efforts restent vains ...';
 
@@ -24,20 +24,20 @@ if ($db->nf() == 0)
 														where perso_cod = $perso_cod
 														and ppos_perso_cod = perso_cod
 														and ppos_pos_cod = pos_cod";
-    $db->query($req_info_joueur);
-    $db->next_record();
-    $position = $db->f("pos_cod");
+    $stmt = $pdo->query($req_info_joueur);
+    $result = $stmt->fetch();
+    $position = $result['pos_cod'];
     // On récupère les infos générique pour les afficher
     $req_cache = "select cache_nom,cache_desc,cache_image,cache_cod,cache_fonction from cachettes
 																	where cache_pos_cod = $position";
-    $db->query($req_cache);
-    $db->next_record();
-    $nom = $db->f("cache_nom");
-    $desc = $db->f("cache_desc");
-    $image = $db->f("cache_image");
-    $cache = $db->f("cache_cod");
-    $fonction = $db->f("cache_fonction");
-    if ($db->nf() == 0)
+    $stmt = $pdo->query($req_cache);
+    $result = $stmt->fetch();
+    $nom = $result['cache_nom'];
+    $desc = $result['cache_desc'];
+    $image = $result['cache_image'];
+    $cache = $result['cache_cod'];
+    $fonction = $result['cache_fonction'];
+    if ($stmt->rowCount() == 0)
     {
         echo 'Vous cherchez à accéder à une page qui n\'existe pas !';
     } else
@@ -74,9 +74,9 @@ if ($db->nf() == 0)
                             {
                                 $fonction = str_replace('[perso]', $perso_cod, $fonction);
                                 $req = "select $fonction as resultat";
-                                $db->query($req);
-                                $db->next_record();
-                                echo '<br>' . $db->f("resultat");
+                                $stmt = $pdo->query($req);
+                                $result = $stmt->fetch();
+                                echo '<br>' . $result['resultat'];
                             }
                             if ($desc != '')
                             {
@@ -106,7 +106,7 @@ if ($db->nf() == 0)
 															and obj_gobj_cod = gobj_cod
 															and gobj_tobj_cod = tobj_cod
 															order by tobj_libelle";
-                            $db->query($req);
+                            $stmt = $pdo->query($req);
 
 
                             // on affiche la ligne d'en tête objets
@@ -118,18 +118,18 @@ if ($db->nf() == 0)
                             </tr>
 
                             <?php
-                            if ($db->nf() != 0)
+                            if ($stmt->rowCount() != 0)
                             {
 
                                 $nb_objets = 1;
                                 // on boucle sur les objets dans la cachette
-                                while ($db->next_record())
+                                while ($result = $stmt->fetch())
                                 {
                                     echo("<tr>");
-                                    $objet = $db->f("obj_cod");
-                                    echo "<td class=\"soustitre2\"><p><strong>" . $db->f("obj_nom_generique") . "</strong></p></td>";
-                                    echo "<td><p>" . $db->f("tobj_libelle") . "</p></td>";
-                                    echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $db->f("obj_cod") . "]\" value=\"0\"></p></td>";
+                                    $objet = $result['obj_cod'];
+                                    echo "<td class=\"soustitre2\"><p><strong>" . $result['obj_nom_generique'] . "</strong></p></td>";
+                                    echo "<td><p>" . $result['tobj_libelle'] . "</p></td>";
+                                    echo "<td><p><input type=\"checkbox\" class=\"vide\" name=\"objet[" . $result['obj_cod'] . "]\" value=\"0\"></p></td>";
                                     echo "</tr>";
                                 }
                             } else
@@ -145,9 +145,9 @@ if ($db->nf() == 0)
 
             case "suite":
                 $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-                $db->query($req);
-                $db->next_record();
-                $pa = $db->f("perso_pa");
+                $stmt = $pdo->query($req);
+                $result = $stmt->fetch();
+                $pa = $result['perso_pa'];
                 $erreur = 0;
                 $total = 0;
                 if ($objet)
@@ -169,9 +169,9 @@ if ($db->nf() == 0)
                         foreach ($objet as $key => $val)
                         {
                             $req_ramasser = "select ramasse_objet_cachette($perso_cod,$key) as resultat";
-                            $db->query($req_ramasser);
-                            $db->next_record();
-                            echo $db->f("resultat");
+                            $stmt = $pdo->query($req_ramasser);
+                            $result = $stmt->fetch();
+                            echo $result['resultat'];
                         }
                     }
                 }

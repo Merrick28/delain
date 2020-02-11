@@ -35,11 +35,11 @@ if ($erreur == 0)
                 {
                     echo "<hr>";
                     $req = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-                    $db->query($req);
-                    $db->next_record();
-                    if ($db->f("pguilde_solde") > 0)
+                    $stmt = $pdo->query($req);
+                    $result = $stmt->fetch();
+                    if ($result['pguilde_solde'] > 0)
                     {
-                        echo "Vous avez ", $db->f("pguilde_solde"), " brouzoufs de solde que vous pouvez retirer.<br>";
+                        echo "Vous avez ", $result['pguilde_solde'], " brouzoufs de solde que vous pouvez retirer.<br>";
                         echo "<a href=\"", $PHP_SELF, "?methode=solde\">La retirer maintenant ?</a>";
                     } else
                     {
@@ -102,9 +102,9 @@ if ($erreur == 0)
             //La tournée des auberges
             $req = "select count(paub_visite) as nbre_visite from perso_auberge
  						where paub_perso_cod =185 and  paub_visite = 'O'";
-            $db->query($req);
-            $db->next_record();
-            $nbre_visite = $db->f("nbre_visite");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $nbre_visite = $result['nbre_visite'];
             if ($nbre_visite > 6)
             {
                 echo "Félicitations ! Vous avez terminé le marathon des auberges, vous êtes donc un vrai soiffard qui ferait palir un nain au comptoir !";
@@ -120,22 +120,22 @@ if ($erreur == 0)
             $req = "select lpos_lieu_cod from lieu_position,perso_position ";
             $req = $req . "where ppos_perso_cod = $perso_cod ";
             $req = $req . "and ppos_pos_cod = lpos_pos_cod ";
-            $db->query($req);
-            $db->next_record();
-            $lieu_cod = $db->f("lpos_lieu_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $lieu_cod = $result['lpos_lieu_cod'];
             $req_pa = "select perso_pa,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-            $db->query($req_pa);
-            $db->next_record();
-            $nb_po = $db->f("perso_po");
+            $stmt = $pdo->query($req_pa);
+            $result = $stmt->fetch();
+            $nb_po = $result['perso_po'];
             $prix = 50;
-            $sexe = $db->f("perso_sex");
+            $sexe = $result['perso_sex'];
 
-            if ($db->f("perso_po") < $prix)
+            if ($result['perso_po'] < $prix)
             {
                 echo("<p>Vous savez, $nom_sexe[$sexe], nous ne vous inscrirons pas si vous n'avez pas de quoi payer la somme de 50 brouzoufs !<br />");
                 $erreur = 1;
             }
-            if ($db->f("perso_pa") < 6)
+            if ($result['perso_pa'] < 6)
             {
                 echo("<p>pas assez de PA....<br />");
                 $erreur = 1;
@@ -145,16 +145,16 @@ if ($erreur == 0)
                 $req = "select pquete_cod from quete_perso 
 								where pquete_perso_cod = $perso_cod;
 								and pquete_quete_cod = 6 ";
-                $db->query($req);
-                if ($db->nf() == 0)
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() == 0)
                 {
                     $req = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
 				values ($perso_cod,6,now()); ";
-                    $db->query($req);
-                    $db->next_record();
+                    $stmt = $pdo->query($req);
+                    $result = $stmt->fetch();
                     $req = "update perso set perso_po = perso_po - 50,perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
-                    $db->query($req);
-                    $db->next_record();
+                    $stmt = $pdo->query($req);
+                    $result = $stmt->fetch();
                     echo "<p>Vous êtes bien enregistré !";
                 } else
                 {
@@ -164,13 +164,13 @@ if ($erreur == 0)
             break;
         case "solde":
             $req = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $db->query($req);
-            $db->next_record();
-            $solde = $db->f("pguilde_solde");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $solde = $result['pguilde_solde'];
             $req = "update perso set perso_po = perso_po + $solde where perso_cod = $perso_cod ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             $req = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>Vous venez de retirer votre solde.";
             break;
     }

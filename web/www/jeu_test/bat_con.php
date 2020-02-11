@@ -15,9 +15,9 @@ if ($erreur == 0)
     $tab_lieu_cod = $db->get_lieu($perso_cod);
     $lieu_cod = $tab_lieu_cod['lieu_cod'];
     $req = "select lieu_dieu_cod from lieu where lieu_cod = $lieu_cod ";
-    $db->query($req);
-    $db->next_record();
-    $index = $db->f("lieu_dieu_cod");
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $index = $result['lieu_dieu_cod'];
     $desc[1] = "Vous voyez un batiment tout en rondeur, avec des domes et des minarets. Le Jade et L'Obsidienne sont omniprésent donnant au batiment des couleurs vertes et noires. ";
     $desc[2] = "Vous voyez une construction aux murs épais, machicoulis, avec des meurtrières, une Tour de garde, le tout protégé par un pont levis";
     $desc[3] = "Vous voyez une sorte de batiment plat en matérieux naturels avec de nombreux coins, avec des silos sur les cotés.";

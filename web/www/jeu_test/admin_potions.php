@@ -55,19 +55,19 @@ if ($erreur == 0)
                     $req_composant = "select 	frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom from formule_composant,objet_generique	
 														where frmco_frm_cod = $cod_potion 
 														and frmco_gobj_cod = gobj_cod";
-                    $db2->query($req_composant);
+                    $stmt2 = $pdo->query($req_composant);
                     echo "<td>";
-                    while ($db2->next_record())
+                    while ($result2 = $stmt2->fetch()())
                     {
-                        echo $db2->f('gobj_nom') . " \t" . $db2->f('frmco_num') . "<br>";
+                        echo $result2['gobj_nom'] . " \t" . $result2['frmco_num'] . "<br>";
                     }
 
                     echo "</td><td class=\"soustitre2\">" . $result['frm_nom'] . "</td>";
                     $req_comp = "select comp_libelle from competences	
 														where comp_cod = " . $comp;
-                    $db2->query($req_comp);
-                    $db2->next_record();
-                    echo "	<td class=\"soustitre2\">" . $db2->f('comp_libelle') . "</td></tr>";
+                    $stmt2 = $pdo->query($req_comp);
+                    $result2 = $stmt2->fetch()();
+                    echo "	<td class=\"soustitre2\">" . $result2['comp_libelle'] . "</td></tr>";
                 }
             }
             ?>

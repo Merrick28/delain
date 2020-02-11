@@ -10,21 +10,21 @@ if ($erreur == 0)
     $req_guilde = "select guilde_nom,guilde_cod,rguilde_admin from guilde,guilde_perso,guilde_rang ";
     $req_guilde = $req_guilde . "where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod ";
     $req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod and rguilde_rang_cod = pguilde_rang_cod ";
-    $db->query($req_guilde);
-    $nb_guilde = $db->nf();
+    $stmt = $pdo->query($req_guilde);
+    $nb_guilde = $stmt->rowCount();
     if ($nb_guilde > 0)
     {
-        $db->next_record();
-        $adm = $db->f("rguilde_admin");
-        $guilde_cod = $db->f("guilde_cod");
-        $guilde_nom = $db->f("guilde_nom");
+        $result = $stmt->fetch();
+        $adm = $result['rguilde_admin'];
+        $guilde_cod = $result['guilde_cod'];
+        $guilde_nom = $result['guilde_nom'];
     }
     // INFOS ETAGE
     $req_pos = " select pos_etage from positions,perso_position"
         . " where ppos_pos_cod = pos_cod and ppos_perso_cod = $perso_cod";
-    $db->query($req_pos);
-    $db->next_record();
-    $numero = -1 * $db->f("pos_etage");
+    $stmt = $pdo->query($req_pos);
+    $result = $stmt->fetch();
+    $numero = -1 * $result['pos_etage'];
     if ($numero < 0)
     {
         $numero = 5;
@@ -73,10 +73,10 @@ if ($erreur == 0)
                             <option value="-1">-- SELECTIONNER UN COMPTE DE GUILDE --</option>
                             <?php
                             $req_compte_guilde = "select gbank_cod,gbank_nom,guilde_nom from guilde_banque,guilde where gbank_guilde_cod = guilde_cod order by guilde_nom";
-                            $db->query($req_compte_guilde);
-                            while ($db->next_record())
+                            $stmt = $pdo->query($req_compte_guilde);
+                            while ($result = $stmt->fetch())
                             {
-                                echo "<option value=\"", $db->f("gbank_cod"), "\">", $db->f("gbank_nom"), " (", $db->f("guilde_nom"), ")</option>";
+                                echo "<option value=\"", $result['gbank_cod'], "\">", $result['gbank_nom'], " (", $result['guilde_nom'], ")</option>";
                             }
                             ?>
                         </select>
@@ -108,15 +108,15 @@ if ($erreur == 0)
                 }
                 // TRAITEMENT: UN PERSONNAGE FAIT UN DEPOT SUR SON COMPTE PERSONNEL
                 $req_depot = "select depot_banque($perso_cod,$quantite) as depot";
-                $db->query($req_depot);
-                $db->next_record();
+                $stmt = $pdo->query($req_depot);
+                $result = $stmt->fetch();
                 //$tab_depot = pg_fetch_array($res_depot,0);
-                if ($db->f("depot") == 0)
+                if ($result['depot'] == 0)
                 {
                     echo("<p>Vous venez de déposer <strong>$quantite</strong> brouzoufs sur votre compte en banque.");
                 } else
                 {
-                    printf("<p>Une anomalie est survenue : <strong>%s</strong>", $db->f("depot"));
+                    printf("<p>Une anomalie est survenue : <strong>%s</strong>", $result['depot']);
                 }
                 break;
             case "valider_retrait" :
@@ -131,9 +131,9 @@ if ($erreur == 0)
                 if ($erreur == 0)
                 {
                     $req_depot = "select retrait_banque($perso_cod,$quantite) as retrait";
-                    $db->query($req_depot);
-                    $db->next_record();
-                    $tab_depot = $db->f("retrait");
+                    $stmt = $pdo->query($req_depot);
+                    $result = $stmt->fetch();
+                    $tab_depot = $result['retrait'];
                     if ($tab_depot == 0)
                     {
                         ?>
@@ -154,17 +154,17 @@ if ($erreur == 0)
                 {
                     // CONTROLE: COMPTE NON EXISTANT
                     $req_compte_guilde = "select gbank_cod from guilde_banque where gbank_guilde_cod = $guilde_cod";
-                    $db->query($req_compte_guilde);
-                    if ($db->nf() > 0)
+                    $stmt = $pdo->query($req_compte_guilde);
+                    if ($stmt->rowCount() > 0)
                     {
                         $erreur = 1;
                         $info = "Votre guilde dispose déjà d'un compte";
                     }
                     // CONTROLE: ARGENT DISPONIBLE
                     $req_or = "select perso_po from perso where perso_cod = $perso_cod ";
-                    $db->query($req_or);
-                    $db->next_record();
-                    $nb_or = $db->f("perso_po");
+                    $stmt = $pdo->query($req_or);
+                    $result = $stmt->fetch();
+                    $nb_or = $result['perso_po'];
                     if ($nb_or < 5000)
                     {
                         $erreur = 1;
@@ -174,13 +174,13 @@ if ($erreur == 0)
                     {
                         // RETRAIT DE LA SOMME
                         $req_or = "update perso set perso_po = perso_po - 5000 where perso_cod = $perso_cod ";
-                        $db->query($req_or);
+                        $stmt = $pdo->query($req_or);
                         // CREATION DU COMPTE
                         $compte_nom = str_replace("''", "\'", $compte_nom);
                         $compte_nom = pg_escape_string($compte_nom);
 
                         $req_cre_compte = "insert into guilde_banque (gbank_guilde_cod,gbank_nom,gbank_or,gbank_date_creation) values ($guilde_cod,e'$compte_nom',0,now())";
-                        $db->query($req_cre_compte);
+                        $stmt = $pdo->query($req_cre_compte);
                         ?>
                         <p>Le compte a bien été créé</p>
                         <?php
@@ -205,9 +205,9 @@ if ($erreur == 0)
 
                 // CONTROLE: ARGENT DISPONIBLE
                 $req_or = "select perso_po from perso where perso_cod = $perso_cod ";
-                $db->query($req_or);
-                $db->next_record();
-                $nb_or = $db->f("perso_po");
+                $stmt = $pdo->query($req_or);
+                $result = $stmt->fetch();
+                $nb_or = $result['perso_po'];
                 if ($nb_or < $quantite)
                 {
                     $erreur = 1;
@@ -227,20 +227,20 @@ if ($erreur == 0)
                 {
                     // RETRAIT DE LA SOMME
                     $req_or = "update perso set perso_po = perso_po - $quantite where perso_cod = $perso_cod ";
-                    $db->query($req_or);
+                    $stmt = $pdo->query($req_or);
                     // AJOUT AU COMPTE
                     $req_compte = "update guilde_banque set gbank_or  = gbank_or + $depot_guilde where gbank_cod = $depot_compt_cod";
-                    $db->query($req_compte);
+                    $stmt = $pdo->query($req_compte);
                     // LIGNE DE TRANSACTION
                     $req_compte = "insert into guilde_banque_transactions (gbank_tran_gbank_cod,gbank_tran_perso_cod,gbank_tran_montant,gbank_tran_debit_credit,gbank_tran_date) values ($depot_compt_cod,$perso_cod,$depot_guilde,'C',now())";
-                    $db->query($req_compte);
+                    $stmt = $pdo->query($req_compte);
 
                     $req_or = "select gbank_nom,guilde_nom from guilde,guilde_banque where gbank_cod = $depot_compt_cod and gbank_guilde_cod = guilde_cod";
-                    $db->query($req_or);
-                    $db->next_record();
+                    $stmt = $pdo->query($req_or);
+                    $result = $stmt->fetch();
                     ?>
-                    <p>Vous avez versé <?php echo $depot_guilde; ?> Br sur le compte <?php echo $db->f("gbank_nom") ?>
-                        (<?php echo $db->f("guilde_nom") ?>), <BR\>
+                    <p>Vous avez versé <?php echo $depot_guilde; ?> Br sur le compte <?php echo $result['gbank_nom'] ?>
+                        (<?php echo $result['guilde_nom'] ?>), <BR\>
                         <?php echo $quantite ?> Br ont été retirés de votre bourse.
                     </p>
                     <?php
@@ -262,12 +262,12 @@ if ($erreur == 0)
                     }
                     // CONTROLE: ARGENT DISPONIBLE
                     $req_or = "select gbank_cod,gbank_or from guilde_banque where gbank_guilde_cod = $guilde_cod ";
-                    $db->query($req_or);
-                    if ($db->nf() > 0)
+                    $stmt = $pdo->query($req_or);
+                    if ($stmt->rowCount() > 0)
                     {
-                        $db->next_record();
-                        $nb_or = $db->f("gbank_or");
-                        $gbank_cod_retrait = $db->f("gbank_cod");
+                        $result = $stmt->fetch();
+                        $nb_or = $result['gbank_or'];
+                        $gbank_cod_retrait = $result['gbank_cod'];
                         if ($nb_or < $quantite)
                         {
                             $erreur = 1;
@@ -282,23 +282,23 @@ if ($erreur == 0)
                     {
                         // RETRAIT SUR LE COMPTE
                         $req_compte = "update guilde_banque set gbank_or  = gbank_or - $quantite where gbank_cod = $gbank_cod_retrait";
-                        $db->query($req_compte);
+                        $stmt = $pdo->query($req_compte);
 
 
                         // AJOUT DANS LA BOURSE
                         $req_or = "update perso set perso_po = perso_po + $quantite where perso_cod = $perso_cod ";
-                        $db->query($req_or);
+                        $stmt = $pdo->query($req_or);
 
                         // LIGNE DE TRANSACTION
                         $req_compte = "insert into guilde_banque_transactions (gbank_tran_gbank_cod,gbank_tran_perso_cod,gbank_tran_montant,gbank_tran_debit_credit,gbank_tran_date) values ($gbank_cod_retrait,$perso_cod,$quantite,'D',now())";
-                        $db->query($req_compte);
+                        $stmt = $pdo->query($req_compte);
 
                         $req_or = "select gbank_nom,guilde_nom from guilde,guilde_banque where gbank_cod = $gbank_cod_retrait and gbank_guilde_cod = guilde_cod";
-                        $db->query($req_or);
-                        $db->next_record();
+                        $stmt = $pdo->query($req_or);
+                        $result = $stmt->fetch();
                         ?>
                         <p>Vous venez de retirer <?php echo $quantite; ?> Br à partir du
-                            compte <?php echo $db->f("gbank_nom") ?> (<?php echo $db->f("guilde_nom") ?>).
+                            compte <?php echo $result['gbank_nom'] ?> (<?php echo $result['guilde_nom'] ?>).
                         </p>
                         <?php
 
@@ -314,23 +314,23 @@ if ($erreur == 0)
     }
     // on recherche l'or sur soi
     $req_or_perso = "select perso_po from perso where perso_cod = $perso_cod ";
-    $db->query($req_or_perso);
-    $db->next_record();
-    $nb_or_perso = $db->f("perso_po");
+    $stmt = $pdo->query($req_or_perso);
+    $result = $stmt->fetch();
+    $nb_or_perso = $result['perso_po'];
     echo '<p>Vous avez ' . $nb_or_perso . ' brouzoufs sur vous.</p>'
     ?>
     <?php
     // on recherche l'or en banque
     $req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
-    $db->query($req_or);
-    $nb_or = $db->nf();
+    $stmt = $pdo->query($req_or);
+    $nb_or = $stmt->rowCount();
     if ($nb_or == 0)
     {
         $qte_or = 0;
     } else
     {
-        $db->next_record();
-        $qte_or = $db->f("pbank_or");
+        $result = $stmt->fetch();
+        $qte_or = $result['pbank_or'];
     }
     ?>
     <p>Vous avez <?php echo $qte_or; ?> brouzoufs sur votre compte.</p>
@@ -365,14 +365,14 @@ if ($erreur == 0)
         {
             echo "Vous êtes administrateur de la guilde: ", $guilde_nom;
             $req_compte_guilde = "select gbank_cod,gbank_nom,gbank_or from guilde_banque where gbank_guilde_cod = $guilde_cod";
-            $db->query($req_compte_guilde);
-            if ($db->nf() > 0)
+            $stmt = $pdo->query($req_compte_guilde);
+            if ($stmt->rowCount() > 0)
             {
-                $db->next_record();
-                $gbank_cod = $db->f("gbank_cod");
-                $solde = $db->f("gbank_or");
+                $result = $stmt->fetch();
+                $gbank_cod = $result['gbank_cod'];
+                $solde = $result['gbank_or'];
                 ?>
-                <p>Votre guilde dispose d'un compte: <strong><?php echo $db->f("gbank_nom"); ?></strong> Solde actuel:
+                <p>Votre guilde dispose d'un compte: <strong><?php echo $result['gbank_nom']; ?></strong> Solde actuel:
                     <strong><?php echo $solde; ?> Br</strong> <BR/>
                 <p>
                 <form name="retrait_guilde" method="post" action="lieu.php">
@@ -393,9 +393,9 @@ if ($erreur == 0)
                         <?php
                         // RELEVE DE COMPTES
                         $req_compte_guilde = "select perso_nom,gbank_tran_montant,gbank_tran_debit_credit,to_char(gbank_tran_date,'DD/MM/YYYY hh24:mi:ss') as date from guilde_banque_transactions,perso where gbank_tran_gbank_cod = $gbank_cod and gbank_tran_perso_cod = perso_cod order by gbank_tran_date";
-                        $db->query($req_compte_guilde);
+                        $stmt = $pdo->query($req_compte_guilde);
                         $i = 0;
-                        while ($db->next_record())
+                        while ($result = $stmt->fetch())
                         {
                             if (($i % 2) == 0)
                             {
@@ -405,14 +405,14 @@ if ($erreur == 0)
                                 $style = "";
                             }
                             $i++;
-                            echo "<TR><TD $style>", $db->f("perso_nom"), "</TD>";
-                            echo "<TD $style>", $db->f("date"), "</TD>";
-                            if ($db->f("gbank_tran_debit_credit") == 'D')
+                            echo "<TR><TD $style>", $result['perso_nom'], "</TD>";
+                            echo "<TD $style>", $result['date'], "</TD>";
+                            if ($result['gbank_tran_debit_credit'] == 'D')
                             {
-                                echo "<TD $style>", $db->f("gbank_tran_montant"), "</TD><TD $style></TD>";
+                                echo "<TD $style>", $result['gbank_tran_montant'], "</TD><TD $style></TD>";
                             } else
                             {
-                                echo "<TD $style></TD><TD $style>", $db->f("gbank_tran_montant"), "</TD>";
+                                echo "<TD $style></TD><TD $style>", $result['gbank_tran_montant'], "</TD>";
                             }
                             echo "</TR>";
                         } ?>

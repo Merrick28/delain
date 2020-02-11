@@ -11,12 +11,12 @@ include "blocks/_test_lieu.php";
 if ($erreur == 0)
 {
     $req_pa = "select perso_pa,perso_pv,perso_pv_max,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-    $db->query($req_pa);
-    $nb_pa = $db->f("perso_pa");
+    $stmt = $pdo->query($req_pa);
+    $nb_pa = $result['perso_pa'];
     $prix = $nb_pa * 2;
-    $sexe = $db->f("perso_sex");
+    $sexe = $result['perso_sex'];
 
-    if ($db->f("perso_po") < $prix)
+    if ($result['perso_po'] < $prix)
     {
         echo("<p>Vous savez, $nom_sexe[$sexe], n'ous n'apprécions pas vraiment le genre de personnes qui n'ont pas de quoi payer ce qu'elles demandent.<br />");
         echo("Revenez quand vous poches seront plus pleines, ou bien allez dormir dehors, au milieu des monstres.");
@@ -25,7 +25,7 @@ if ($erreur == 0)
     {
         $gain_pv = $nb_pa * 1.5;
         $gain_pv = round($gain_pv);
-        $diff_pv = $db->f("perso_pv_max") - $db->f("perso_pv");
+        $diff_pv = $result['perso_pv_max'] - $result['perso_pv'];
         if ($gain_pv > $diff_pv)
         {
             $gain_pv = $diff_pv;
@@ -35,7 +35,7 @@ if ($erreur == 0)
         $req_repos = $req_repos . "perso_pa = 0, ";
         $req_repos = $req_repos . "perso_po = perso_po - $prix ";
         $req_repos = $req_repos . "where perso_cod = $perso_cod ";
-        $db->query($req_repos);
+        $stmt = $pdo->query($req_repos);
 
         echo("<p>Vous vous êtes bien reposé. Vous avez regagné <strong>$gain_pv</strong> PV");
 
