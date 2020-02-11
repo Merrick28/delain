@@ -2,7 +2,7 @@
 -- Name: f_repare_casque(integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.f_repare_casque(integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.f_repare_casque(integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*******************************************************************/
 /* fonction repare_casque : répare un casque                      */
