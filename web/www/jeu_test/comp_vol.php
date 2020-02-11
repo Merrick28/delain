@@ -14,16 +14,16 @@ $req_comp = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences ";
 $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
 $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
 $req_comp = $req_comp . "and pcomp_pcomp_cod IN (84,85,86)";
-$db->query($req_comp);
-if ($db->next_record())
+$stmt = $pdo->query($req_comp);
+if($result = $stmt->fetch())
 {
-    $num_comp = $db->f("pcomp_pcomp_cod");
-    $valeur_comp = $db->f("pcomp_modificateur");
+    $num_comp = $result['pcomp_pcomp_cod'];
+    $valeur_comp = $result['pcomp_modificateur'];
     $req_vue = "select ppos_pos_cod "
         . "from perso_position where ppos_perso_cod = $perso_cod";
-    $db->query($req_vue);
-    $db->next_record();
-    $position = $db->f("ppos_pos_cod");
+    $stmt = $pdo->query($req_vue);
+    $result = $stmt->fetch();
+    $position = $result['ppos_pos_cod'];
 
 
     // TRAITEMENT DE FORMULAIRE
@@ -38,11 +38,11 @@ if ($db->next_record())
                 } else
                 {
                     $req_vol = "select vol($perso_cod,$cible_cod) as resultat";
-                    $db->query($req_vol);
-                    $db->next_record();
+                    $stmt = $pdo->query($req_vol);
+                    $result = $stmt->fetch();
                     ?>
                     <p>Vol !</p>
-                    <p><?php echo $db->f("resultat"); ?></p>
+                    <p><?php echo $result['resultat']; ?></p>
                     <hr>
                     <?php
                 }
@@ -54,11 +54,11 @@ if ($db->next_record())
                 } else
                 {
                     $req_vol = "select vol_objet($perso_cod,$cible_cod) as resultat";
-                    $db->query($req_vol);
-                    $db->next_record();
+                    $stmt = $pdo->query($req_vol);
+                    $result = $stmt->fetch();
                     ?>
                     <p>Vol !</p>
-                    <p><?php echo $db->f("resultat"); ?></p>
+                    <p><?php echo $result['resultat']; ?></p>
                     <hr>
                     <?php
                 }
@@ -91,12 +91,12 @@ if ($db->next_record())
                 . "(select 1 from perso_familier "
                 . "where pfam_perso_cod = $perso_cod "
                 . "and pfam_familier_cod = perso_cod) ";
-            $db->query($req_cibles);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_cibles);
+            while ($result = $stmt->fetch())
             {
                 ?>
-                <option value="<?php echo $db->f("perso_cod") ?>"><?php echo $db->f("perso_nom") ?>
-                    (<?php echo $db->f("race_nom") ?>)
+                <option value="<?php echo $result['perso_cod'] ?>"><?php echo $result['perso_nom'] ?>
+                    (<?php echo $result['race_nom'] ?>)
                 </option>
                 <?php
             }

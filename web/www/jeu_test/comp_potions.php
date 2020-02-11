@@ -121,8 +121,8 @@ $contenu_page .= '
 $req_comp = "select pcomp_modificateur from perso_competences 
 			where pcomp_perso_cod = $perso_cod 
 				and pcomp_pcomp_cod in (97,100,101);";
-$db->query($req_comp);
-if($db->nf() != 0)
+$stmt = $pdo->query($req_comp);
+if($stmt->rowCount() != 0)
 {
 	$controle = 1;
 }

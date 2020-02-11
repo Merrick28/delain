@@ -4,8 +4,8 @@ ob_start();
 $db = new base_delain;
 $tab_position = $db->get_pos($perso_cod);
 $req_or = "select perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-$db->query($req_or);
-$db->next_record();
+$stmt = $pdo->query($req_or);
+$result = $stmt->fetch();
 $num_etage = $tab_position['etage_reference'];
 $pos_temple = $tab_position['pos_cod'];
 if ($num_etage < 0)
@@ -15,13 +15,13 @@ if ($num_etage < 0)
 {
     $etage = 5;
 }
-$sexe = $db->f("perso_sex");
-$or = $db->f("perso_po");
+$sexe = $result['perso_sex'];
+$or = $result['perso_po'];
 
 $req_mort = "select perso_nb_mort from perso where perso_cod = $perso_cod ";
-$db->query($req_mort);
-$db->next_record();
-$nb_mort = $db->f("perso_nb_mort");
+$stmt = $pdo->query($req_mort);
+$result = $stmt->fetch();
+$nb_mort = $result['perso_nb_mort'];
 
 $prix = ($etage * $param->getparm(30)) + ($nb_mort * $param->getparm(31));
 
@@ -31,7 +31,7 @@ if ($or < $prix)
 } else
 {
     $req_or = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
-    $db->query($req_or);
+    $stmt = $pdo->query($req_or);
     $req_temple1 = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
     $db->query($req_temple1);
     $req_temple2 = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values ";

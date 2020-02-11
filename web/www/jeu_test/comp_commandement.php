@@ -14,22 +14,22 @@ $req_comp = "select pcomp_modificateur from perso_competences ";
 $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
 $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
 $req_comp = $req_comp . "and pcomp_pcomp_cod = 80";
-$db->query($req_comp);
+$stmt = $pdo->query($req_comp);
 
 $erreur = true;
-if ($db->next_record())
+if($result = $stmt->fetch())
 {
-    $valeur_comp = $db->f("pcomp_modificateur");
+    $valeur_comp = $result['pcomp_modificateur'];
     $commandant_cod = $perso_cod;
     $erreur = false;
 } else
 {
     $req_comp = "select perso_superieur_cod from perso_commandement where $perso_cod = perso_subalterne_cod";
-    $db->query($req_comp);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_comp);
+    if($result = $stmt->fetch())
     {
         $valeur_comp = 0;
-        $commandant_cod = $db->f("perso_superieur_cod");
+        $commandant_cod = $result['perso_superieur_cod'];
         $erreur = false;
     }
 }
@@ -44,15 +44,15 @@ if (!$erreur)
 		. "inner join perso_position on ppos_perso_cod = perso_cod "
 		. "inner join positions on pos_cod = ppos_pos_cod "
 		. "where perso_cod = $perso_cod";
-	$db->query($req_vue);
-	$db->next_record();
-	$vue = $db->f("distance_vue");
-	$x = $db->f("pos_x");
-	$y = $db->f("pos_y");
-	$etage = $db->f("pos_etage");
-	$perso_nom = $db->f("perso_nom");
+	$stmt = $pdo->query($req_vue);
+	$result = $stmt->fetch();
+	$vue = $result['distance_vue'];
+	$x = $result['pos_x'];
+	$y = $result['pos_y'];
+	$etage = $result['pos_etage'];
+	$perso_nom = $result['perso_nom'];
 	$req_troupe = "delete from perso_commandement where not exists(select 1 from perso where perso_actif = 'O' and perso_cod = perso_subalterne_cod)";
-	$db->query($req_troupe);
+	$stmt = $pdo->query($req_troupe);
 	$methode = (isset($_POST['methode'])) ? $_POST['methode'] : ((isset($_GET['methode'])) ? $_GET['methode'] : false);
 
 	// TRAITEMENT DE FORMULAIRE
@@ -61,15 +61,15 @@ if (!$erreur)
 		case "ajouter_subalterne":
 			// Ajout au commandement
 			$req_troupe = "select ajoute_commandement($commandant_cod, $nouv_perso_cod, false) as resultat";
-			$db->query($req_troupe);
-			$db->next_record();
-			echo '<p>' . $db->f('resultat') . '</p>';
+			$stmt = $pdo->query($req_troupe);
+			$result = $stmt->fetch();
+			echo '<p>' . $result['resultat'] . '</p>';
 
 			// Ajout au compte de l’admin
 			$req_compte = "delete from perso_compte where pcompt_perso_cod = $nouv_perso_cod";
-			$db->query($req_compte);
+			$stmt = $pdo->query($req_compte);
 			$req_compte = "insert into perso_compte (pcompt_perso_cod, pcompt_compt_cod) values ($nouv_perso_cod, $compt_cod)";
-			$db->query($req_compte);
+			$stmt = $pdo->query($req_compte);
 		break;
 
 		case "changer_description":
@@ -95,7 +95,7 @@ if (!$erreur)
 				$in_val = substr($in_val, 0, strlen($in_val)-1);
 				$req_desc = "update perso set perso_description = '$description' where perso_cod in ($in_val) ";
 				//echo $req_desc;
-				$db->query($req_desc);
+				$stmt = $pdo->query($req_desc);
 				echo("<p>La description est enregistrée !<br></p>");
 			}
 		break;
@@ -116,7 +116,7 @@ if (!$erreur)
                 $req_desc = "update perso set perso_sta_combat = '$perso_sta_combat', perso_sta_hors_combat = '$perso_sta_hors_combat'
                     where perso_cod in ($in_val) ";
                 //echo $req_desc;
-                $db->query($req_desc);
+                $stmt = $pdo->query($req_desc);
                 echo("<p>Les propriétés statiques sont enregistrée !<br></p>");
             }
 		break;
@@ -136,7 +136,7 @@ if (!$erreur)
                 $in_val = substr($in_val, 0, strlen($in_val)-1);
                 $req_desc = "update perso set perso_dirige_admin = '$hors_ia' where perso_cod in ($in_val) ";
                 //echo $req_desc;
-                $db->query($req_desc);
+                $stmt = $pdo->query($req_desc);
                 echo("<p>L’utilisation de l’IA a été enregistrée !<br></p>");
             }
 		break;
@@ -155,21 +155,21 @@ if (!$erreur)
                 }
                 $in_val = substr($in_val, 0, strlen($in_val)-1);
                 $req_troupe = "delete from perso_commandement where perso_subalterne_cod in ($in_val)";
-                $db->query($req_troupe);
+                $stmt = $pdo->query($req_troupe);
                 
                 // Renvoi de la coterie, si le commandant en fait partie
                 $req_coterie = "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = $commandant_cod and pgroupe_statut <> 0";
-                $db->query($req_coterie);
+                $stmt = $pdo->query($req_coterie);
                 $pgroupe_groupe_cod = -1;
-                if ($db->next_record())
-                	$pgroupe_groupe_cod = $db->f('pgroupe_groupe_cod');
+                if($result = $stmt->fetch())
+                	$pgroupe_groupe_cod = $result['pgroupe_groupe_cod'];
                 
                 $req_coterie = "delete from groupe_perso where pgroupe_perso_cod in ($in_val) and pgroupe_groupe_cod = $pgroupe_groupe_cod";
-                $db->query($req_coterie);
+                $stmt = $pdo->query($req_coterie);
                 
                 // Renvoi du compte de l’admin
                 $req_compte = "delete from perso_compte where pcompt_perso_cod in ($in_val) and pcompt_compt_cod = $compt_cod";
-                $db->query($req_compte);
+                $stmt = $pdo->query($req_compte);
             }
 		break;
 
@@ -184,16 +184,16 @@ if (!$erreur)
     			foreach ($array as $i => $mon_cod) {
     				if($pia_ia_type != -1){
     					$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-    					$db->query($req);
+    					$stmt = $pdo->query($req);
     					$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-    					$db->query($req);
+    					$stmt = $pdo->query($req);
     					$req = "insert into perso_ia (pia_perso_cod,pia_ia_type) values ($mon_cod,$pia_ia_type)";
-    					$db->query($req);
+    					$stmt = $pdo->query($req);
     				} else {
     					$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-    					$db->query($req);
+    					$stmt = $pdo->query($req);
     					$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-    					$db->query($req);
+    					$stmt = $pdo->query($req);
     				}
     			}
             }
@@ -202,17 +202,17 @@ if (!$erreur)
 		case "modifier_IA_pos":
 			$erreur = 0;
 			$req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $etage ";
-			$db->query($req);
-			if ($db->nf() == 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() == 0)
 			{
 				echo "<p>Aucune position trouvée à ces coordonnées.<br></p>";
 				$erreur = 1;
 			}
-			$db->next_record();
-			$pos_cod = $db->f("pos_cod");
+			$result = $stmt->fetch();
+			$pos_cod = $result['pos_cod'];
 			$req = "select mur_pos_cod from murs where mur_pos_cod = $pos_cod ";
-			$db->query($req);
-			if ($db->nf() != 0)
+			$stmt = $pdo->query($req);
+			if ($stmt->rowCount() != 0)
 			{
 				echo "<p>Impossible d’aller sur cette position : un mur en destination.<br></p>";
 				$erreur = 1;
@@ -228,16 +228,16 @@ if (!$erreur)
 				foreach ($array as $i => $mon_cod) {
 					if($pia_ia_type_pos != -1){
 						$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into perso_ia (pia_perso_cod,pia_ia_type,pia_parametre) values ($mon_cod,$pia_ia_type_pos,$pos_cod)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					} else {
 						$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					}
 				}
 			}
@@ -256,16 +256,16 @@ if (!$erreur)
 				foreach ($array as $i => $mon_cod) {
 					if($pia_ia_type_cib != -1){
 						$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "insert into perso_ia (pia_perso_cod,pia_ia_type,pia_parametre) values ($mon_cod,$pia_ia_type_cib,$cible_cod)";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					} else {
 						$req = "update perso set perso_dirige_admin = 'N' where perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 						$req = "delete from perso_ia where pia_perso_cod = $mon_cod";
-						$db->query($req);
+						$stmt = $pdo->query($req);
 					}
 				}
 			}
@@ -279,10 +279,10 @@ if (!$erreur)
 			}
 			$cod_monstre = $_GET['cod_monstre'];
 			$req = "select ia_monstre($cod_monstre) as resultat";
-			$db->query($req);
-			$db->next_record();
+			$stmt = $pdo->query($req);
+			$result = $stmt->fetch();
 			echo "<p>Résultat de l’IA :</p>";
-			echo "<p>" . $db->f('resultat') . "</p>";
+			echo "<p>" . $result['resultat'] . "</p>";
 		break;
 	}
 
@@ -321,25 +321,25 @@ if (!$erreur)
 		inner join perso_position ON ppos_perso_cod = perso_cod
 		inner join positions ON pos_cod = ppos_pos_cod
 		where perso_superieur_cod = $commandant_cod";
-	$db->query($req_troupe);
-	$nb_subalternes = $db->nf();
+	$stmt = $pdo->query($req_troupe);
+	$nb_subalternes = $stmt->rowCount();
 	$db2 = new base_delain;
 	$n = 0;
-	while($db->next_record()){
+	while($result = $stmt->fetch()){
 		$n++;
-		$cod_monstre = $db->f("perso_subalterne_cod");
-		$monstre_ia = $db->f("perso_dirige_admin");
+		$cod_monstre = $result['perso_subalterne_cod'];
+		$monstre_ia = $result['perso_dirige_admin'];
 		if(fmod($n,2) == 0){
 			$cl = "class=\"soustitre2\"";
 		} else {
 			$cl = "";
 		}
-		$req_ia = "select ia_type,ia_nom,pia_parametre from type_ia,perso_ia where pia_ia_type = ia_type and pia_perso_cod = ".$db->f("perso_subalterne_cod");
-		$db2->query($req_ia);
-		if($db2->next_record())
+		$req_ia = "select ia_type,ia_nom,pia_parametre from type_ia,perso_ia where pia_ia_type = ia_type and pia_perso_cod = ".$result['perso_subalterne_cod'];
+		$stmt2 = $pdo->query($req_ia);
+		if($result2 = $stmt2->fetch()())
 		{
-			$ia = $db2->f("ia_nom");
-    	    $ia_param = $db2->f("pia_parametre");
+			$ia = $result2['ia_nom'];
+    	    $ia_param = $result2['pia_parametre'];
     	    
     	    if ($ia == null || $ia_param == null)
 			{
@@ -356,40 +356,40 @@ if (!$erreur)
 		if(strpos($ia,'[position]') != false && $ia_param !== false)
 		{
 			$req_pos = "select pos_x, pos_y from positions where pos_cod = $ia_param";
-			$db2->query($req_pos);
-			$db2->next_record();
-			$ia .= " (".$db2->f("pos_x").",".$db2->f("pos_y").")";
+			$stmt2 = $pdo->query($req_pos);
+			$result2 = $stmt2->fetch()();
+			$ia .= " (".$result2['pos_x'].",".$result2['pos_y'].")";
 		}
 		if(strpos($ia,'[cible]')  != false && $ia_param !== false)
 		{
 			$req_pos = "select perso_nom from perso where perso_cod = $ia_param";
-			$db2->query($req_pos);
-			$db2->next_record();
-			$ia .= " (".$db2->f("perso_nom").")";
+			$stmt2 = $pdo->query($req_pos);
+			$result2 = $stmt2->fetch()();
+			$ia .= " (".$result2['perso_nom'].")";
 		}
 		$image = ($n == 1) ? '<img src="' . G_IMAGES . 'commandant.png" title="Commandant" />' : '';
-		$checkbox = ($commandant_cod == $perso_cod) ? '<input type="checkbox" name="subalterne_cod[]" value="' . $db->f("perso_subalterne_cod") . '">' : '';
+		$checkbox = ($commandant_cod == $perso_cod) ? '<input type="checkbox" name="subalterne_cod[]" value="' . $result['perso_subalterne_cod'] . '">' : '';
 	?>
 			<tr><td <?php  echo $cl;?>>
-				<?php  echo "$image $checkbox";?> <a href="visu_evt_perso.php?visu=<?php  echo $db->f("perso_subalterne_cod"); ?>"><?php  echo $db->f("perso_nom");?></a>
-					<a href="../validation_login_monstre.php?numero=<?php  echo $db->f("perso_subalterne_cod"); ?>&compt_cod=<?php echo  $compt_cod; ?>">(jouer)</a>
+				<?php  echo "$image $checkbox";?> <a href="visu_evt_perso.php?visu=<?php  echo $result['perso_subalterne_cod']; ?>"><?php  echo $result['perso_nom'];?></a>
+					<a href="../validation_login_monstre.php?numero=<?php  echo $result['perso_subalterne_cod']; ?>&compt_cod=<?php echo  $compt_cod; ?>">(jouer)</a>
 				</td><td <?php  echo $cl;?>>
-				(<?php  echo $db->f("pos_x");?>,<?php  echo $db->f("pos_y");?>)
+				(<?php  echo $result['pos_x'];?>,<?php  echo $result['pos_y'];?>)
 				</td><td <?php  echo $cl;?>>
 	<?php 
-		if ($db->f("dlt_passee") == 1)
+		if ($result['dlt_passee'] == 1)
 		{
 			echo("<strong>");
 		}
-		echo $db->f("dlt");
-		if ($db->f("dlt_passee") == 1)
+		echo $result['dlt'];
+		if ($result['dlt_passee'] == 1)
 		{
 			echo("</strong>");
 		}?>
 				</td><td <?php  echo $cl;?>>
-					<?php echo $db->f("perso_pa");?> / 12
+					<?php echo $result['perso_pa'];?> / 12
 				</td><td <?php  echo $cl;?>>
-					(<?php echo $db->f("perso_pv");?> / <?php echo $db->f("perso_pv_max");?> PV)
+					(<?php echo $result['perso_pv'];?> / <?php echo $result['perso_pv_max'];?> PV)
 				</td><td <?php  echo $cl;?>>
 	<?php 
 		if ($monstre_ia == 'N')
@@ -403,7 +403,7 @@ if (!$erreur)
 	?>
 				</td>
 				<td <?php  echo $cl;?>>
-					<?php echo $db->f("perso_sta_combat");?> / <?php echo $db->f("perso_sta_hors_combat");?>
+					<?php echo $result['perso_sta_combat'];?> / <?php echo $result['perso_sta_hors_combat'];?>
 				</td>
 				<td <?php  echo $cl;?>>
 	<?php 
@@ -412,10 +412,10 @@ if (!$erreur)
 			where lock_cible = $cod_monstre
 			union all select lock_cible as lock from lock_combat
 			where lock_attaquant = $cod_monstre) as t2 on perso.perso_cod = t2.lock group by perso_nom";
-		$db2->query($req);
-		while ($db2->next_record())
+		$stmt2 = $pdo->query($req);
+		while ($result2 = $stmt2->fetch()())
 		{
-			echo $db2->f("perso_nom") . "<br>";
+			echo $result2['perso_nom'] . "<br>";
 		}
 	?>
 				</td>
@@ -424,7 +424,7 @@ if (!$erreur)
 				</td>
 			</tr>
 			<tr><td <?php  echo $cl;?> colspan="9">
-				<p style="font-size:7pt;"><?php echo $db->f("perso_description");?></p></td></tr>
+				<p style="font-size:7pt;"><?php echo $result['perso_description'];?></p></td></tr>
 
 	<?php 	}
 	echo '</table>';
@@ -443,10 +443,10 @@ if (!$erreur)
 	<?php 
 		$array_ia = array();
 		$req = "select ia_type,ia_nom from type_ia order by ia_type desc ";
-		$db->query($req);
-		while($db->next_record())
+		$stmt = $pdo->query($req);
+		while($result = $stmt->fetch())
 		{
-			$array_ia[$db->f("ia_type")] = $db->f("ia_nom");
+			$array_ia[$result['ia_type']] = $result['ia_nom'];
 		}
 	?>
 		<!-- IA CLASSIQUE -->
@@ -500,13 +500,13 @@ if (!$erreur)
 		$req_vue_joueur = $req_vue_joueur . "and perso_actif = 'O' ";
 		$req_vue_joueur = $req_vue_joueur . "and perso_race_cod = race_cod ";
 		$req_vue_joueur = $req_vue_joueur . "order by perso_cod desc ";
-		$db->query($req_vue_joueur);
+		$stmt = $pdo->query($req_vue_joueur);
 	?>
 		<select name="cible_cod">
 	<?php 
-		while($db->next_record()){
+		while($result = $stmt->fetch()){
 	?>
-			<option value="<?php  echo $db->f("perso_cod") ?>"> <?php echo $db->f("perso_nom") ?></option>
+			<option value="<?php  echo $result['perso_cod'] ?>"> <?php echo $result['perso_nom'] ?></option>
 	<?php 
 		}
 	?>
@@ -523,9 +523,9 @@ if (!$erreur)
 		if($nb_subalternes < $valeur_comp ){
 			// On recherche les monstres en vue
 			$req_race = "select perso_race_cod from perso where perso_cod = $commandant_cod ";
-			$db->query($req_race);
-			$db->next_record();
-			$race_cod_commandant = $db->f('perso_race_cod');
+			$stmt = $pdo->query($req_race);
+			$result = $stmt->fetch();
+			$race_cod_commandant = $result['perso_race_cod'];
 
 			// On recherche les monstres en vue
 			$req_vue_joueur = "select perso_nom, perso_cod, perso_race_cod, pos_x, pos_y, perso_pa, coalesce(compt_nom, '') as compte_nom "
@@ -544,7 +544,7 @@ if (!$erreur)
 						. "(select 1 from perso_commandement "
 						. "where perso_subalterne_cod = perso_cod)"
 				 . "order by perso_nom ";
-			$db->query($req_vue_joueur);
+			$stmt = $pdo->query($req_vue_joueur);
 	?>
 
 	Vous pouvez engager les troupes suivantes :<br>
@@ -552,14 +552,14 @@ if (!$erreur)
 		<input type="hidden" name="methode" value="ajouter_subalterne">
 		<select name="nouv_perso_cod">
 	<?php 
-		while($db->next_record())
+		while($result = $stmt->fetch())
 		{
-			$monstre_x = $db->f("pos_x");
-			$monstre_y = $db->f("pos_y");
-			$monstre_nom = $db->f("perso_nom");
-			$monstre_cod = $db->f("perso_cod");
-			$monstre_pa = $db->f("perso_pa");
-			$monstre_compte = ($db->f("compte_nom") != '') ? '(' . $db->f("compte_nom") . ')' : '';
+			$monstre_x = $result['pos_x'];
+			$monstre_y = $result['pos_y'];
+			$monstre_nom = $result['perso_nom'];
+			$monstre_cod = $result['perso_cod'];
+			$monstre_pa = $result['perso_pa'];
+			$monstre_compte = ($result['compte_nom'] != '') ? '(' . $result['compte_nom'] . ')' : '';
 			echo "<option value='$monstre_cod'>$monstre_nom ($monstre_x, $monstre_y) $monstre_pa PA $monstre_compte</option>";
 		}
 	?>

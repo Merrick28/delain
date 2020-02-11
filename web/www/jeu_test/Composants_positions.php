@@ -33,16 +33,16 @@ switch ($methode)
 				<td>Etage </td>
 				<td><select name="etage">';
         $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-        $db->query($req);
-        while ($db->next_record())
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
         {
             $sel = "";
-            if ($db->f("etage_numero") == 6)
+            if ($result['etage_numero'] == 6)
             {
                 $sel = "selected";
             }
-            $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-            $contenu_page .= '<option value="' . $db->f("etage_numero") . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $db->f("etage_libelle") . '</option>';
+            $reference = ($result['etage_numero'] == $result['etage_reference']);
+            $contenu_page .= '<option value="' . $result['etage_numero'] . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $result['etage_libelle'] . '</option>';
         }
         $contenu_page .= '</td>
 			</tr>
@@ -62,11 +62,11 @@ switch ($methode)
         $req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';
-        $db->query($req);
+        $stmt = $pdo->query($req);
         $contenu_page .= '<tr><td><strong>Composant concerné : </strong></td><td><select name="composant">';
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $contenu_page .= '<option value="' . $db->f("gobj_cod") . '"> ' . $db->f("gobj_nom") . '</option>';
+            $contenu_page .= '<option value="' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
         }
         $contenu_page .= '</select><br></td></tr>';
         $contenu_page .= '</table>
@@ -81,16 +81,16 @@ switch ($methode)
 				<td>Etage </td>
 				<td><select name="etage">';
         $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-        $db->query($req);
-        while ($db->next_record())
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
         {
             $sel = "";
-            if ($db->f("etage_numero") == 6)
+            if ($result['etage_numero'] == 6)
             {
                 $sel = "selected";
             }
-            $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-            $contenu_page .= '<option value="' . $db->f("etage_numero") . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $db->f("etage_libelle") . '</option>';
+            $reference = ($result['etage_numero'] == $result['etage_reference']);
+            $contenu_page .= '<option value="' . $result['etage_numero'] . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $result['etage_libelle'] . '</option>';
         }
         $contenu_page .= '</td>
 												</tr>
@@ -110,15 +110,15 @@ switch ($methode)
         $req = 'select gobj_nom,gobj_cod from objet_generique
 											where gobj_tobj_cod = 22
 											order by gobj_nom';
-        $db->query($req);
+        $stmt = $pdo->query($req);
         $contenu_page .= '<td><strong>Composants concernés : </strong><td><tr>';
         $nbs = 1;
-        while ($db->next_record())
+        while ($result = $stmt->fetch())
         {
-            $s_cod = $db->f("gobj_cod");
+            $s_cod = $result['gobj_cod'];
             $contenu_page .= '<TD>
-														<INPUT type="checkbox" class="vide" name="composant[' . $db->f("gobj_cod") . ']" value="' . $db->f("gobj_cod") . '" > ' . $db->f("gobj_nom");
-            /*$contenu_page .= '<input type="hidden" name="" value="'. $db->f("gobj_cod") .'">';*/
+														<INPUT type="checkbox" class="vide" name="composant[' . $result['gobj_cod'] . ']" value="' . $result['gobj_cod'] . '" > ' . $result['gobj_nom'];
+            /*$contenu_page .= '<input type="hidden" name="" value="'. $result['gobj_cod'] .'">';*/
             $contenu_page .= '</TD>';
 
             if ($nbs % 4 == 0)
@@ -138,16 +138,16 @@ switch ($methode)
 													<tr><td>Etage à effacer</td>
 												<td><select name="etage">';
         $req = "select etage_numero,etage_libelle,etage_reference from etage order by etage_reference desc, etage_numero asc ";
-        $db->query($req);
-        while ($db->next_record())
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
         {
             $sel = "";
-            if ($db->f("etage_numero") == 6)
+            if ($result['etage_numero'] == 6)
             {
                 $sel = "selected";
             }
-            $reference = ($db->f("etage_numero") == $db->f("etage_reference"));
-            $contenu_page .= '<option value="' . $db->f("etage_numero") . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $db->f("etage_libelle") . '</option>';
+            $reference = ($result['etage_numero'] == $result['etage_reference']);
+            $contenu_page .= '<option value="' . $result['etage_numero'] . '" ' . $sel . '>' . ($reference ? '' : ' |-- ') . $result['etage_libelle'] . '</option>';
         }
         $contenu_page .= '</td></tr>
 												</table>
@@ -158,12 +158,12 @@ switch ($methode)
     case "recup_positions":
         $contenu_page .= '<table border="1">';
         $req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = " . $etage . " and pos_etage = etage_numero order by random() limit 1";
-        $db->query($req_position);
-        $db->next_record();
-        $position_x = $db->f("x");
-        $position_y = $db->f("y");
-        $position = $db->f("pos_cod");
-        $etage2 = $db->f("etage_libelle");
+        $stmt = $pdo->query($req_position);
+        $result = $stmt->fetch();
+        $position_x = $result['x'];
+        $position_y = $result['y'];
+        $position = $result['pos_cod'];
+        $etage2 = $result['etage_libelle'];
         $requete_sql .= '';
         $increment = '';
         $increment .= '<tr><td>pos cod : ' . $position . ' / pos X : ' . $position_x . ' / pos Y ' . $position_y . '</td></tr>';
@@ -178,13 +178,13 @@ switch ($methode)
 													 pos_etage = $etage
 													 and pos_x = $position_x + $x
 													 and pos_y = $position_y - $y";
-                    $db->query($req_position);
-                    if ($db->nf() != 0)
+                    $stmt = $pdo->query($req_position);
+                    if ($stmt->rowCount() != 0)
                     {
-                        $db->next_record();
-                        $position2 = $db->f("pos_cod");
-                        $position_x2 = $db->f("pos_x");
-                        $position_y2 = $db->f("pos_y");
+                        $result = $stmt->fetch();
+                        $position2 = $result['pos_cod'];
+                        $position_x2 = $result['pos_x'];
+                        $position_y2 = $result['pos_y'];
                         $increment .= '<tr><td>pos cod : ' . $position2 . ' / pos X : ' . $position_x2 . ' / pos Y ' . $position_y2;
                         $db2 = new base_delain;
                         $requete_sql2 = '';
@@ -204,13 +204,13 @@ switch ($methode)
                         $req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea,gobj_nom from ingredient_position,objet_generique where
 																 ingrpos_pos_cod = " . $position2 . "
 																 and gobj_cod = ingrpos_gobj_cod";
-                        $db2->query($req_ingredient);
-                        if ($db2->nf() != 0)
+                        $stmt2 = $pdo->query($req_ingredient);
+                        if ($stmt2->rowCount()() != 0)
                         {
-                            while ($db2->next_record())
+                            while ($result2 = $stmt2->fetch()())
                             {
-                                $increment .= ' / présence de ' . $db2->f("gobj_nom");
-                                if ($db2->f("ingrpos_gobj_cod") == $composant)
+                                $increment .= ' / présence de ' . $result2['gobj_nom'];
+                                if ($result2['ingrpos_gobj_cod'] == $composant)
                                 {
                                     $requete_sql2 = '';
                                 }
@@ -220,19 +220,19 @@ switch ($methode)
                         $requete_sql .= $requete_sql2;
                         $req_murs = "select mur_creusable from murs where mur_pos_cod = $position2";
                         $db3 = new base_delain;
-                        $db3->query($req_murs);
-                        $db3->next_record();
+                        $stmt3 = $pdo->query($req_murs);
+                        $result3 = $stmt3->fetch()();
                         $color = "#FFFFFF";
-                        if ($db3->f("mur_creusable") == 'O')
+                        if ($result3['mur_creusable'] == 'O')
                         {
                             $color = "#696969";
                         }
-                        if ($db3->f("mur_creusable") == 'N')
+                        if ($result3['mur_creusable'] == 'N')
                         {
                             $color = "#000000";
                             $requete_sql2 = '';
                         }
-                        $contenu_page .= '<td width="20" height="20" ><div id="pos_' . $db->f("pos_cod") . '" style="width:25px;height:25px;background:' . $color . ';"> ' . $image . '</div>
+                        $contenu_page .= '<td width="20" height="20" ><div id="pos_' . $result['pos_cod'] . '" style="width:25px;height:25px;background:' . $color . ';"> ' . $image . '</div>
 																</td>';
 
                     }
@@ -255,12 +255,12 @@ switch ($methode)
         foreach ($composant as $i => $valeur)
         {
             $req_position = "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = " . $etage . " and pos_etage = etage_numero order by random() limit 1";
-            $db->query($req_position);
-            $db->next_record();
-            $position_x = $db->f("x");
-            $position_y = $db->f("y");
-            $position = $db->f("pos_cod");
-            $etage2 = $db->f("etage_libelle");
+            $stmt = $pdo->query($req_position);
+            $result = $stmt->fetch();
+            $position_x = $result['x'];
+            $position_y = $result['y'];
+            $position = $result['pos_cod'];
+            $etage2 = $result['etage_libelle'];
             $composant2 = $valeur;
             /* $requete_sql .= '<strong>composant : '.$composant2.' / '.$composant[$i] .'</strong><br>'; */
             for ($y = -4; $y < 6; $y++)
@@ -274,13 +274,13 @@ switch ($methode)
 															 pos_etage = $etage
 															 and pos_x = $position_x + $x
 															 and pos_y = $position_y - $y";
-                        $db->query($req_position);
-                        if ($db->nf() != 0)
+                        $stmt = $pdo->query($req_position);
+                        if ($stmt->rowCount() != 0)
                         {
-                            $db->next_record();
-                            $position2 = $db->f("pos_cod");
-                            $position_x2 = $db->f("pos_x");
-                            $position_y2 = $db->f("pos_y");
+                            $result = $stmt->fetch();
+                            $position2 = $result['pos_cod'];
+                            $position_x2 = $result['pos_x'];
+                            $position_y2 = $result['pos_y'];
                             /*$increment .= '<tr><td>pos cod : '. $position2 .' / pos X : '. $position_x2 .' / pos Y '. $position_y2;*/
                             $db2 = new base_delain;
                             $requete_sql2 = '';
@@ -300,12 +300,12 @@ switch ($methode)
                             $req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea,gobj_nom from ingredient_position,objet_generique where
 																		 ingrpos_pos_cod = " . $position2 . "
 																		 and gobj_cod = ingrpos_gobj_cod";
-                            $db2->query($req_ingredient);
-                            if ($db2->nf() != 0)
+                            $stmt2 = $pdo->query($req_ingredient);
+                            if ($stmt2->rowCount()() != 0)
                             {
-                                while ($db2->next_record())
+                                while ($result2 = $stmt2->fetch()())
                                 {
-                                    if ($db2->f("ingrpos_gobj_cod") == $composant2)
+                                    if ($result2['ingrpos_gobj_cod'] == $composant2)
                                     {
                                         $requete_sql2 = '';
                                     }
@@ -313,14 +313,14 @@ switch ($methode)
                             }
                             $req_murs = "select mur_creusable from murs where mur_pos_cod = " . $position2;
                             $db3 = new base_delain;
-                            $db3->query($req_murs);
-                            $db3->next_record();
+                            $stmt3 = $pdo->query($req_murs);
+                            $result3 = $stmt3->fetch()();
                             $color = "#FFFFFF";
-                            if ($db3->f("mur_creusable") == 'O')
+                            if ($result3['mur_creusable'] == 'O')
                             {
                                 $color = "#696969";
                             }
-                            if ($db3->f("mur_creusable") == 'N')
+                            if ($result3['mur_creusable'] == 'N')
                             {
                                 $color = "#000000";
                                 $requete_sql2 = '';
@@ -340,12 +340,12 @@ switch ($methode)
     case "effacer":
         $req_efface = "delete from ingredient_position where
 															ingrpos_pos_cod in (select pos_cod from positions,etage where pos_etage = $etage and pos_etage = etage_numero)";
-        $db->query($req_efface);
-        $db->next_record();
+        $stmt = $pdo->query($req_efface);
+        $result = $stmt->fetch();
         $req_position = "select etage_libelle from etage where etage_numero = " . $etage;
-        $db->query($req_position);
-        $db->next_record();
-        $etage2 = $db->f("etage_libelle");
+        $stmt = $pdo->query($req_position);
+        $result = $stmt->fetch();
+        $etage2 = $result['etage_libelle'];
         $contenu_page .= 'l\'étage ' . $etage2 . ' a été complètement vidé de ses composants';
         break;
 }
