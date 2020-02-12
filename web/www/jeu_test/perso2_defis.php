@@ -800,6 +800,7 @@ $contenu_page .= '</td></tr></table>';
 function afficherDefisPasses($req_defis, $is_lanceur)
 {
 
+    $pdo          = new bddpdo;
     $stmt         = $pdo->query($req_defis);
     $resultat     = '';
     $existe_defis = ($stmt->rowCount() > 0);
