@@ -27,5 +27,4 @@ if ($compte->compt_hibernation == 'O')
     die();
 }
 
-page_close();
 $nom_template = 'general';
