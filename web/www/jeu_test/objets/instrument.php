@@ -5,7 +5,7 @@ include "../verif_connexion.php";
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$db        = new base_delain;
+
 $req_matos = "select perobj_obj_cod
 	from perso_objets
 	inner join objets on obj_cod = perobj_obj_cod
@@ -13,19 +13,19 @@ $req_matos = "select perobj_obj_cod
 	where perobj_perso_cod = $perso_cod
 		and gobj_tobj_cod = 15
 		and perobj_equipe = 'O'";
-$db->query($req_matos);
-if (!($db->next_record()))
+$stmt = $pdo->query($req_matos);
+if (!($result = $stmt->fetch()))
 {
 	// PAS D'OBJET.
 	$contenu_page .= "<p>Hélas... Vous n’avez équippé aucun instrument !</p>";
 } else {
-    $num_obj = $db->f("perobj_obj_cod");
+    $num_obj = $result['perobj_obj_cod'];
   // TRAITEMENT DES ACTIONS.
 	if(isset($_POST['methode'])){
 		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $db->query($req_pa);
-        $db->next_record();
-        if ($db->f("perso_pa") < 2)
+        $stmt = $pdo->query($req_pa);
+        $result = $stmt->fetch();
+        if ($result['perso_pa'] < 2)
 		{
 			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
@@ -33,7 +33,7 @@ if (!($db->next_record()))
 		{
 			// ON ENLEVE LES PAs
 			$req_enl_pa = "update perso set perso_pa = perso_pa - 2 where perso_cod = $perso_cod";
-            $db->query($req_enl_pa);
+            $stmt = $pdo->query($req_enl_pa);
 			
 			$code_evt = 0;
 			$texte_evt = '';
@@ -69,11 +69,11 @@ if (!($db->next_record()))
 			{
 				// On regarde où le chant a été réalisé.
 				$req_pos = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod";
-                $db->query($req_pos);
-                $db->next_record();
-                $position  = $db->f('ppos_pos_cod');
+                $stmt = $pdo->query($req_pos);
+                $result = $stmt->fetch();
+                $position  = $result['ppos_pos_cod'];
 				$req_chant = "select insere_evenement($perso_cod, $perso_cod, $code_evt, '$texte_evt', 'O', '[pos_cod]=$position')";
-                $db->query($req_chant);
+                $stmt = $pdo->query($req_chant);
 			}
 			$contenu_page .= '<p><strong>Une interprétation émouvante, mais encore quelques progrès à faire avant de collectioner les fans.</strong></p>';
 		}

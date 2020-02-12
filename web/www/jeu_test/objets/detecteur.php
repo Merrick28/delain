@@ -5,24 +5,24 @@ include "../verif_connexion.php";
 
 $contenu_page = '';
 
-$db        = new base_delain;
+
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 237 ";
-$db->query($req_matos);
-if ($db->next_record())
+$stmt = $pdo->query($req_matos);
+if($result = $stmt->fetch())
 {
 	if(isset($_POST['methode'])){
 		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $db->query($req_pa);
-        $db->next_record();
-        if ($db->f("perso_pa") < 4)
+        $stmt = $pdo->query($req_pa);
+        $result = $stmt->fetch();
+        if ($result['perso_pa'] < 4)
 		{
 			$contenu_page .= "Vous n’avez pas assez de PA !";
 		}
 		else
 		{
 			$req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-            $db->query($req_enl_pa);
+            $stmt = $pdo->query($req_enl_pa);
 			$contenu_page .= '<p>Le cadran du détecteur affiche :</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
 				
@@ -31,11 +31,11 @@ if ($db->next_record())
 			."from perso_position,positions "
 			."where ppos_perso_cod = $perso_cod"
 			."and ppos_pos_cod = pos_cod ";
-            $db->query($req_matos);
-            $db->next_record();
-            $perso_pos_x     = $db->f("pos_x");
-            $perso_pos_y     = $db->f("pos_y");
-            $perso_pos_etage = $db->f("pos_etage");
+            $stmt = $pdo->query($req_matos);
+            $result = $stmt->fetch();
+            $perso_pos_x     = $result['pos_x'];
+            $perso_pos_y     = $result['pos_y'];
+            $perso_pos_etage = $result['pos_etage'];
 			//echo "POSJ = $perso_pos_x ; $perso_pos_y ; $perso_pos_etage <br>";
 			$boulesArray = array();
 			// POSITION DES BOULES DANS LES INVENTAIRES
@@ -45,13 +45,13 @@ if ($db->next_record())
 			."and ppos_perso_cod = perobj_perso_cod "
 			."and ppos_pos_cod = pos_cod "
 			."and obj_gobj_cod IN (228,229,230,231,232,233,234,235) ";
-            $db->query($req_matos);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_matos);
+            while ($result = $stmt->fetch())
             {
-                //echo "POS=".$db->f("pos_x").";".$db->f("pos_y").";".$db->f("pos_etage")."<br>";
-                if ($db->f("pos_etage") == $perso_pos_etage)
+                //echo "POS=".$result['pos_x'].";".$result['pos_y'].";".$result['pos_etage']."<br>";
+                if ($result['pos_etage'] == $perso_pos_etage)
                 {
-                    $key = $db->f("pos_x") . "X" . $db->f("pos_y");
+                    $key = $result['pos_x'] . "X" . $result['pos_y'];
 					if(isset($boulesArray[$key])){
 						$boulesArray[$key]++;	
 					} else {
@@ -65,13 +65,13 @@ if ($db->next_record())
 			."where pobj_obj_cod = obj_cod "
 			."and pobj_pos_cod = pos_cod "
 			."and obj_gobj_cod IN (228,229,230,231,232,233,234,235) ";
-            $db->query($req_matos);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_matos);
+            while ($result = $stmt->fetch())
             {
-                //echo "POS=".$db->f("pos_x").";".$db->f("pos_y").";".$db->f("pos_etage")."<br>";
-                if ($db->f("pos_etage") == $perso_pos_etage)
+                //echo "POS=".$result['pos_x'].";".$result['pos_y'].";".$result['pos_etage']."<br>";
+                if ($result['pos_etage'] == $perso_pos_etage)
                 {
-                    $key = $db->f("pos_x") . "X" . $db->f("pos_y");
+                    $key = $result['pos_x'] . "X" . $result['pos_y'];
 					if(isset($boulesArray[$key])){
 						$boulesArray[$key]++;	
 					} else {

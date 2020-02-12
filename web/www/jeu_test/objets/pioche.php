@@ -5,12 +5,12 @@ include "../verif_connexion.php";
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$db = new base_delain;
+
 
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod in ( 332, 369, 858, 1091, 1101, 1105, 1106, 1107) and perobj_equipe='O' order by perobj_obj_cod";
-$db->query($req_matos);
-if (!($db->next_record()))
+$stmt = $pdo->query($req_matos);
+if (!($result = $stmt->fetch()))
 {
   // PAS D'OBJET.
  	$contenu_page .= "<p>Vous n'avez pas de pioche équipée</p>";
@@ -36,12 +36,12 @@ else
 	."from perso_position,positions "
 	."where ppos_perso_cod = $perso_cod"
 	."and ppos_pos_cod = pos_cod ";
-    $db->query($req_matos);
-    $db->next_record();
-    $perso_pos_x     = $db->f("pos_x");
-    $perso_pos_y     = $db->f("pos_y");
-    $perso_pos_etage = $db->f("pos_etage");
-    $perso_pos_cod   = $db->f("pos_cod");
+    $stmt = $pdo->query($req_matos);
+    $result = $stmt->fetch();
+    $perso_pos_x     = $result['pos_x'];
+    $perso_pos_y     = $result['pos_y'];
+    $perso_pos_etage = $result['pos_etage'];
+    $perso_pos_cod   = $result['pos_cod'];
 
 
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -51,12 +51,12 @@ else
 	." and pos_y = $perso_pos_y+1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_no = $db->f("pos_cod");
+            $pos_no = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -66,12 +66,12 @@ else
 	." and pos_y = $perso_pos_y+1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_nord = $db->f("pos_cod");
+            $pos_nord = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -81,12 +81,12 @@ else
 	." and pos_y = $perso_pos_y+1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_ne = $db->f("pos_cod");
+            $pos_ne = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -96,12 +96,12 @@ else
 	." and pos_y = $perso_pos_y-1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_so = $db->f("pos_cod");
+            $pos_so = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -111,12 +111,12 @@ else
 	." and pos_y = $perso_pos_y-1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_sud = $db->f("pos_cod");
+            $pos_sud = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -126,12 +126,12 @@ else
 	." and pos_y = $perso_pos_y-1"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_se = $db->f("pos_cod");
+            $pos_se = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -141,12 +141,12 @@ else
 	." and pos_y = $perso_pos_y"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_ouest = $db->f("pos_cod");
+            $pos_ouest = $result['pos_cod'];
 		}
 	}
 	$req_murs = "select pos_cod, pos_x,pos_y,mur_creusable,mur_usure from positions "
@@ -156,12 +156,12 @@ else
 	." and pos_y = $perso_pos_y"
 	." and pos_etage = $perso_pos_etage"
 	." order by pos_y desc,pos_x asc";
-    $db->query($req_murs);
-    if ($db->next_record())
+    $stmt = $pdo->query($req_murs);
+    if($result = $stmt->fetch())
     {
-        if ($db->f("mur_creusable") == 'O')
+        if ($result['mur_creusable'] == 'O')
         {
-            $pos_est = $db->f("pos_cod");
+            $pos_est = $result['pos_cod'];
 		}
 	}
 	$contenu_page .= '<p align="center">Une pioche ? Bah c’est fait pour creuser !</p><hr /><table>

@@ -6,11 +6,11 @@ $param = new parametres();
 $contenu_page = '';
 
 // ON VERIFIE SI L’OBJET EST BIEN DANS L’INVENTAIRE.
-$db        = new base_delain;
+
 $req_matos = "select perobj_obj_cod from perso_objets,objets 
 	where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 327 order by perobj_obj_cod";
-$db->query($req_matos);
-if (!($db->next_record()))
+$stmt = $pdo->query($req_matos);
+if (!($result = $stmt->fetch()))
 {
   // PAS D'OBJET.
  	$contenu_page .= "<p>Vous avez beau chercher, il n’y a aucun cadeau dans votre sac</p>";
@@ -29,9 +29,9 @@ else
 		where perso_gmon_cod = 345
 			and ppos_pos_cod = 
 				(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod)";
-    $db->query($req);
-    $db->next_record();
-    $nombre = $db->f('nb');
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    $nombre = $result['nb'];
 	if($nombre > 0)
 	{
 		$cout_pa = $param->getparm(99);

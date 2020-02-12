@@ -4,28 +4,28 @@ include "../verif_connexion.php";
 
 $contenu_page = '';
 
-$db        = new base_delain;
+
 $req_matos = "select perobj_obj_cod from perso_objets,objets
 												where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 559";
-$db->query($req_matos);
-if ($db->next_record())
+$stmt = $pdo->query($req_matos);
+if($result = $stmt->fetch())
 {
-    $baguette = $db->f("perobj_obj_cod");
+    $baguette = $result['perobj_obj_cod'];
 	if(isset($_POST['methode']))
 	{
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $db->query($req_pa);
-        $db->next_record();
-        if ($db->f("perso_pa") < 4)
+        $stmt = $pdo->query($req_pa);
+        $result = $stmt->fetch();
+        if ($result['perso_pa'] < 4)
 		{
 				$contenu_page .= "Vous n’avez pas assez de PA !";
 		}
 		else
 		{
 				$req_use = "select use_artefact($baguette)";
-            $db->query($req_use);
+            $stmt = $pdo->query($req_use);
 				$req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-            $db->query($req_enl_pa);
+            $stmt = $pdo->query($req_enl_pa);
 				
 				$contenu_page .= '<p>Votre baguette vous permet de déterminer la présence de bâtiments cachés !</p>
 					<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
@@ -35,11 +35,11 @@ if ($db->next_record())
 												from perso_position,positions
 												where ppos_perso_cod = $perso_cod
 												and ppos_pos_cod = pos_cod ";
-            $db->query($req_position);
-            $db->next_record();
-            $perso_pos_x     = $db->f("pos_x");
-            $perso_pos_y     = $db->f("pos_y");
-            $perso_pos_etage = $db->f("pos_etage");
+            $stmt = $pdo->query($req_position);
+            $result = $stmt->fetch();
+            $perso_pos_x     = $result['pos_x'];
+            $perso_pos_y     = $result['pos_y'];
+            $perso_pos_etage = $result['pos_etage'];
 			//echo "POSJ = $perso_pos_x ; $perso_pos_y ; $perso_pos_etage <br>";
 			$cachetteArray = array();
 			// POSITION DES MURS
@@ -50,11 +50,11 @@ if ($db->next_record())
 															and lieu_cod = lpos_lieu_cod
 															and tlieu_cod = lieu_tlieu_cod";
 
-            $db->query($req_cachette);
-            while ($db->next_record())
+            $stmt = $pdo->query($req_cachette);
+            while ($result = $stmt->fetch())
 			{
-                //echo "POS=".$db->f("pos_x").";".$db->f("pos_y").";".$db->f("pos_etage")."<br>";
-                $key = $db->f("pos_x") . "X" . $db->f("pos_y");
+                //echo "POS=".$result['pos_x'].";".$result['pos_y'].";".$result['pos_etage']."<br>";
+                $key = $result['pos_x'] . "X" . $result['pos_y'];
 					if(isset($cachetteArray[$key]))
 					{
 						$cachetteArray[$key]++;	
@@ -63,7 +63,7 @@ if ($db->next_record())
 					{
 						$cachetteArray[$key] = 1;
 					}
-                $lieu[$key] = $db->f("tlieu_libelle");
+                $lieu[$key] = $result['tlieu_libelle'];
 			};
 			
 			for ($i=-5; $i<6; $i++)
