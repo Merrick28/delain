@@ -2993,6 +2993,76 @@ class perso
     }
 
     /**
+     * Pour garder la compatibilité avec l'ancien appel
+     * dans phplib
+     * @return mixed
+     */
+    function get_lieu_ancien()
+    {
+        $pdo = new bddpdo;
+        // Lieu standard
+        $tab_lieu['nom']         = "";
+        $tab_lieu['description'] = "";
+        $tab_lieu['url']         = "";
+        $tab_lieu['libelle']     = "";
+        $tab_lieu['type_lieu']   = "";
+        $tab_lieu['position']    = "";
+        $tab_lieu['lieu_cod']    = "";
+        $tab_lieu['pos_cod']     = "";
+        $tab_lieu['lieu_refuge'] = "";
+        $tab_lieu['lieu_prelev'] = "";
+        $tab_lieu['evo_niveau']  = "";
+
+        $req_lieu =
+            'select lieu_nom,lieu_description,lieu_url,tlieu_libelle,tlieu_cod,ppos_pos_cod,lieu_cod,lpos_pos_cod,lieu_refuge,lieu_prelev,lieu_levo_niveau ';
+        $req_lieu = $req_lieu . 'from lieu,lieu_type,lieu_position,perso_position ';
+        $req_lieu = $req_lieu . 'where ppos_perso_cod = ' . $this->perso_cod;
+        $req_lieu = $req_lieu . 'and ppos_pos_cod = lpos_pos_cod ';
+        $req_lieu = $req_lieu . 'and lpos_lieu_cod = lieu_cod ';
+        $req_lieu = $req_lieu . 'and lieu_tlieu_cod = tlieu_cod ';
+        $stmt     = $pdo->query($req_lieu);
+        if ($result = $stmt->fetch())
+        {
+            $tab_lieu['nom']         = $result['lieu_nom'];
+            $tab_lieu['description'] = $result['lieu_description'];
+            $tab_lieu['url']         = $result['lieu_url'];
+            $tab_lieu['libelle']     = $result['tlieu_libelle'];
+            $tab_lieu['type_lieu']   = $result['tlieu_cod'];
+            $tab_lieu['position']    = $result['ppos_pos_cod'];
+            $tab_lieu['lieu_cod']    = $result['lieu_cod'];
+            $tab_lieu['pos_cod']     = $result['lpos_pos_cod'];
+            $tab_lieu['lieu_refuge'] = $result['lieu_refuge'];
+            $tab_lieu['lieu_prelev'] = $result['lieu_prelev'];
+            $tab_lieu['evo_niveau']  = $result['lieu_levo_niveau'];
+            // Lieu avancé
+            if (!empty($tab_lieu['type_lieu']))
+            {
+                $req_evo_lieu = 'SELECT levo_libelle, levo_url, levo_override 
+					FROM lieu_evolution WHERE levo_tlieu_cod=' . $tab_lieu['type_lieu'] . ' 
+						AND levo_niveau=' . $tab_lieu['evo_niveau'];
+                $stmt         = $pdo->query($req_evo_lieu);
+                if ($result = $stmt->fetch())
+                {
+                    $tab_lieu['evo_override'] = $result['levo_override'];
+                    if ($tab_lieu['evo_override'] == 'O')
+                    {
+                        $tab_lieu['ini_libelle'] = $tab_lieu['libelle'];
+                        $tab_lieu['ini_url']     = $tab_lieu['url'];
+                        $tab_lieu['libelle']     = $result['levo_libelle'];
+                        $tab_lieu['url']         = $result['levo_url'];
+                    } else
+                    {
+                        $tab_lieu['evo_libelle'] = $result['levo_libelle'];
+                        $tab_lieu['evo_url']     = $result['levo_url'];
+                    }
+                }
+            }
+        }
+        // Retour
+        return $tab_lieu;
+    }
+
+    /**
      * @param $field : champ au format perso.champ
      * @return string
      */

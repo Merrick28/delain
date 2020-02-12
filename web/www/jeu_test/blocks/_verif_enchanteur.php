@@ -25,7 +25,8 @@ if ($stmt->rowCount() != 0)
     $comp_enchantement = $result['pcomp_pcomp_cod'];
     $comp_enchantement_percent = $result['pcomp_modificateur'];
 }
-
+$perso = new perso;
+$perso->charge($perso_cod);
 
 switch ($type_appel)
 {
@@ -37,7 +38,7 @@ switch ($type_appel)
         break;
 
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ
-        $tab_quete = $db->get_perso_quete($perso_cod);
+        $tab_quete = $perso->get_perso_quete();
         foreach ($tab_quete as $key => $val)
         {
             if ($val == 'enchanteur.php')

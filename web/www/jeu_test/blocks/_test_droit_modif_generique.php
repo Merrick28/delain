@@ -19,7 +19,7 @@ if ($stmt->rowCount() == 0)
 } else
 {
     $result = $stmt->fetch();
-    if ($db->f($droit_modif) != 'O')
+    if ($result[$droit_modif] != 'O')
     {
         $erreur = 1;
     }

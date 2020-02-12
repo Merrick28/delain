@@ -100,7 +100,6 @@ if ($erreur == 0)
     $result       = $stmt->fetch();
     $nb_mort      = $result['perso_nb_mort'];
     $tab_position = $perso->get_position();
-    $db->get_pos();
     $num_etage = $tab_position['etage']->etage_reference;
     if ($num_etage < 0)
     {

@@ -5,8 +5,12 @@
  * Date: 19/12/18
  * Time: 20:37
  */
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
 $erreur = 0;
-if (!$db->is_lieu($perso_cod))
+if (!$perso->is_lieu())
 {
     $erreur = 1;
     if ($use_contenu_page)
@@ -20,7 +24,7 @@ if (!$db->is_lieu($perso_cod))
 }
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
+    $tab_lieu = $perso->get_lieu_ancien();
     // 20190127 - Marlyza: $type_lieu peut-être un tableau si plusieurs lieu propose le service!
     if ((is_array($type_lieu) && !in_array($tab_lieu['type_lieu'], $type_lieu)) || (!is_array($type_lieu) && ($tab_lieu['type_lieu'] != $type_lieu)))
     {
