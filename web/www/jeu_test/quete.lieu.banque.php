@@ -6,6 +6,9 @@ if(!defined("APPEL"))
 if(!isset($methode2))
 	$methode2 = "debut";
 
+$perso        = new perso;
+$perso->charge($perso_cod);
+
 switch($methode2)
 {
 	case "debut":
@@ -25,7 +28,7 @@ switch($methode2)
 			$obj_quete = $result['perobj_obj_cod'];
 			if ($obj_gen_quete == 380)
 			{
-				$nb_caisses = $db->compte_objet($perso_cod, 380);
+                $nb_caisses = $perso->compte_objet(380);
 			?>
 				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 					<p><em>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?

@@ -1,17 +1,24 @@
 <?php
 include "blocks/_header_page_jeu.php";
-if (!$db->is_admin($compt_cod)) {
+$compte = new compte;
+$compte->charge($compt_cod);
+if (!$compte->is_admin())
+{
     $contenu_page .= 'Vous n\'avez pas accès à cette page !';
-} else {
+} else
+{
     if (!isset($methode))
         $methode = 'global';
-    switch ($methode) {
+    switch ($methode)
+    {
         case "detail":
-            $req = 'select hlog_id,to_char(hlog_date,\'YYYY/MM/DD hh24:mi:ss\') as hlog_date,hlog_ip from histo_log where hlog_compte = ' . $compte . ' order by hlog_date desc';
+            $req  =
+                'select hlog_id,to_char(hlog_date,\'YYYY/MM/DD hh24:mi:ss\') as hlog_date,hlog_ip from histo_log where hlog_compte = ' . $compte . ' order by hlog_date desc';
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
                 $contenu_page .= '<p>Aucune connexion enregistrée.';
-            else {
+            else
+            {
                 $contenu_page .= '<table>
 					<tr><td class="soustitre2"><strong>ID</strong></td><td class="soustitre2"><strong>Date</strong></td><td class="soustitre2"><strong>IP</strong></td>';
                 while ($result = $stmt->fetch())
@@ -21,11 +28,13 @@ if (!$db->is_admin($compt_cod)) {
             $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=global&compte=' . $compte . '">Voir le global</a>';
             break;
         case "global";
-            $req = 'select hlog_id,count(hlog_cod) as nombre,to_char(min(hlog_date),\'YYYY/MM/DD\') as date_min,to_char(max(hlog_date),\'YYYY/MM/DD\') as date_max from histo_log where hlog_compte = ' . $compte . ' group by hlog_id order by date_max DESC, date_min ASC';
+            $req  =
+                'select hlog_id,count(hlog_cod) as nombre,to_char(min(hlog_date),\'YYYY/MM/DD\') as date_min,to_char(max(hlog_date),\'YYYY/MM/DD\') as date_max from histo_log where hlog_compte = ' . $compte . ' group by hlog_id order by date_max DESC, date_min ASC';
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
                 $contenu_page .= '<p>Aucune connexion enregistrée.';
-            else {
+            else
+            {
                 $contenu_page .= '<table>
 					<tr><td class="soustitre2"><strong>ID</strong></td>
 					<td class="soustitre2"><strong>Nombre</strong></td>

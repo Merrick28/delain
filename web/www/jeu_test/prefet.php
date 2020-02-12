@@ -2,28 +2,38 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-if ($db->is_milice($perso_cod) == 0) {
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if ($perso->is_milice() == 0)
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-$req = "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 0 ";
-$stmt = $pdo->query($req);
-if ($stmt->rowCount() == 0) {
+$req                =
+    "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 0 ";
+$stmt               = $pdo->query($req);
+if ($stmt->rowCount() == 0)
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0) {
-    if (!isset($methode)) {
+if ($erreur == 0)
+{
+    if (!isset($methode))
+    {
         $methode = "debut";
     }
-    switch ($methode) {
+    switch ($methode)
+    {
         case "debut":
             echo "<p><a href=\"", $PHP_SELF, "?methode=solde\">Gérer les soldes ?</a><br>";
             break;
         case "solde":
             $req = "select rguilde_libelle_rang,rguilde_rang_cod,rguilde_cod,rguilde_solde from guilde_rang ";
-            $req = $req . "where rguilde_guilde_cod = 49 order by rguilde_rang_cod ";
-            $stmt = $pdo->query($req);
+            $req    = $req . "where rguilde_guilde_cod = 49 order by rguilde_rang_cod ";
+            $stmt   = $pdo->query($req);
             ?>
             <table>
                 <tr>
@@ -32,7 +42,8 @@ if ($erreur == 0) {
                     <td></td>
                 </tr>
                 <?php
-                while ($result = $stmt->fetch()) {
+                while ($result = $stmt->fetch())
+                {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><strong>", $result['rguilde_libelle_rang'], "</strong></td>";
                     echo "<td>", $result['rguilde_solde'], " brouzoufs</td>";
@@ -45,7 +56,7 @@ if ($erreur == 0) {
             break;
         case "solde2":
             $req = "select rguilde_solde,rguilde_libelle_rang from guilde_rang where rguilde_cod = $rang ";
-            $stmt = $pdo->query($req);
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             ?>
             <form action="<?php echo $PHP_SELF; ?>" method="post">
@@ -59,7 +70,8 @@ if ($erreur == 0) {
             break;
         case "solde3";
             $req = "update guilde_rang set rguilde_solde = $solde where rguilde_cod = $rang ";
-            if ($stmt = $pdo->query($req)) {
+            if ($stmt = $pdo->query($req))
+            {
                 echo "<p>Le solde est enregistré !";
             }
             break;

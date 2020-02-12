@@ -1,23 +1,27 @@
 <?php
 
 $type_lieu = 2;
-$nom_lieu = 'un dispensaire';
+$nom_lieu  = 'un dispensaire';
 
 include "blocks/_test_lieu.php";
 
+$perso = new perso;
+$perso->charge($perso_cod);
+
 if ($erreur == 0)
 {
-    $tab_temple = $db->get_lieu($perso_cod);
-    $nom_lieu = $tab_temple['nom'];
-    $type_lieu = $tab_temple['libelle'];
+    $tab_temple = $perso->get_lieu();
+
+    $nom_lieu  = $tab_lieu['lieu']->lieu_nom;
+    $type_lieu = $tab_temple['lieu_type']->tlieu_libelle;
     ?>
     <p><img alt="Dispensaire" src="../images/disp2a.png"><br/><strong><?php echo("$nom_lieu</strong> - $type_lieu"); ?>
 
     <?php
-    $req = "select perso_sex from perso where perso_cod = $perso_cod";
-    $stmt = $pdo->query($req);
+    $req    = "select perso_sex from perso where perso_cod = $perso_cod";
+    $stmt   = $pdo->query($req);
     $result = $stmt->fetch();
-    $sexe = $result['perso_sex'];
+    $sexe   = $result['perso_sex'];
     ?>
     <?php if ($sexe == 'F')
 {
@@ -91,12 +95,13 @@ if ($erreur == 0)
     <?php
 }
 
-    $req_mort = "select perso_nb_mort from perso where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req_mort);
-    $result = $stmt->fetch();
-    $nb_mort = $result['perso_nb_mort'];
-    $tab_position = $db->get_pos($perso_cod);
-    $num_etage = $tab_position['etage_reference'];
+    $req_mort     = "select perso_nb_mort from perso where perso_cod = $perso_cod ";
+    $stmt         = $pdo->query($req_mort);
+    $result       = $stmt->fetch();
+    $nb_mort      = $result['perso_nb_mort'];
+    $tab_position = $perso->get_position();
+    $db->get_pos();
+    $num_etage = $tab_position['etage']->etage_reference;
     if ($num_etage < 0)
     {
         $etage = abs($num_etage) + 1;

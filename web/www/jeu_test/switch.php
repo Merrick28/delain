@@ -70,17 +70,21 @@ $votesRefusee = $votes['votesRefusee'];
     </script>
 <?php
 $admin = 'N';
-if ($db->is_admin_monstre($compt_cod))
+
+$compte = new compte;
+$compte->charge($compt_cod);
+
+if ($compte->is_admin_monstre())
 {
     $admin  = 'O';
     $chemin = '.';
     include "switch_monstre.php";
 }
-if ($db->is_admin($compt_cod))
+if ($compte->is_admin())
 {
     include "switch_admin.php";
 }
-if ((!$db->is_admin($compt_cod)) && (!$db->is_admin_monstre($compt_cod)))
+if ((!$compte->is_admin()) && (!$compte->is_admin_monstre()))
 {
     $req_perso =
         "select autorise_4e_perso(compt_quatre_perso, compt_dcreat) as autorise, compte_nombre_perso(compt_cod) as nb, compt_quete ";

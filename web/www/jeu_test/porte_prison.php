@@ -4,15 +4,17 @@ include "blocks/_tests_appels_page_externe.php";
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
-if (!$db->is_lieu($perso_cod))
+$perso  = new perso;
+$perso->charge($perso_cod);
+if (!$perso->is_lieu())
 {
     echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
     $erreur = 1;
 }
 if ($erreur == 0)
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['lieu_cod'] != 2139)
+    $tab_lieu = $perso->get_lieu();
+    if ($tab_lieu['lieu']->lieu_tlieu_cod != 2139)
     {
         $erreur = 1;
         echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
@@ -20,19 +22,19 @@ if ($erreur == 0)
 }
 
 // on cherche le lieu cod
-$req = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  ";
-$req = $req . "(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
-$stmt = $pdo->query($req);
+$req    = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  ";
+$req    = $req . "(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
+$stmt   = $pdo->query($req);
 $result = $stmt->fetch();
-$lieu = $result['lpos_lieu_cod'];
+$lieu   = $result['lpos_lieu_cod'];
 
 // on active pour le retour
-$req = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
-$req = $req . "and pge_lieu_cod = $lieu ";
+$req  = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
+$req  = $req . "and pge_lieu_cod = $lieu ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
-    $erreur = 1;
+    $erreur         = 1;
     if (!isset($methode))
     {
         $methode = "debut";
@@ -57,9 +59,9 @@ if ($stmt->rowCount() == 0)
         case "appel2":
             // numéro du message
             $req_msg_cod = "select nextval('seq_msg_cod') as numero";
-            $stmt = $pdo->query($req_msg_cod);
-            $result = $stmt->fetch();
-            $num_mes = $result['numero'];
+            $stmt        = $pdo->query($req_msg_cod);
+            $result      = $stmt->fetch();
+            $num_mes     = $result['numero'];
             // encodage du texte
             $corps = htmlspecialchars($corps);
             $corps = nl2br($corps);
@@ -68,28 +70,28 @@ if ($stmt->rowCount() == 0)
             // message
             $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) ";
             $req_ins_mes = $req_ins_mes . "values ($num_mes,now(),now(),'$titre','$corps') ";
-            $stmt = $pdo->query($req_ins_mes);
+            $stmt        = $pdo->query($req_ins_mes);
             // expéditeur
             $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
             $req_ins_exp = $req_ins_exp . "values (nextval('seq_emsg_cod'),$num_mes,$perso_cod,'N')";
-            $stmt = $pdo->query($req_ins_exp);
+            $stmt        = $pdo->query($req_ins_exp);
             // destinataires
-            $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) ";
-            $req = $req . "select $num_mes, perso_cod, 'N', 'N' ";
-            $req = $req . "from perso,guilde_perso ";
-            $req = $req . "where perso_actif = 'O' ";
-            $req = $req . "and pguilde_perso_cod = perso_cod ";
-            $req = $req . "and pguilde_guilde_cod = 49 ";
-            $req = $req . "and pguilde_valide = 'O' ";
-            $req = $req . "and pguilde_rang_cod = 16 ";
+            $req  = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) ";
+            $req  = $req . "select $num_mes, perso_cod, 'N', 'N' ";
+            $req  = $req . "from perso,guilde_perso ";
+            $req  = $req . "where perso_actif = 'O' ";
+            $req  = $req . "and pguilde_perso_cod = perso_cod ";
+            $req  = $req . "and pguilde_guilde_cod = 49 ";
+            $req  = $req . "and pguilde_valide = 'O' ";
+            $req  = $req . "and pguilde_rang_cod = 16 ";
             $stmt = $pdo->query($req);
             echo "<p>Votre message a bien été envoyé. Le geolier en prendra connaissance dès que possible.";
             break;
         case "corrompre":
             $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
-            $or = $result['perso_po'];
+            $or     = $result['perso_po'];
             ?>
             <p>Vous vous apprêtez à donner au geolier quelques brouzoufs afin de le corrompre.<br>
             <p>Vous avez actuellement <strong><?php echo $or; ?></strong> brouzoufs disponibles.
@@ -102,8 +104,8 @@ if ($stmt->rowCount() == 0)
             <?php
             break;
         case "corrompre2":
-            $req = "select corrompre($perso_cod,$or) as resultat ";
-            $stmt = $pdo->query($req);
+            $req    = "select corrompre($perso_cod,$or) as resultat ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<p>", $result['resultat'];
             break;
@@ -111,10 +113,8 @@ if ($stmt->rowCount() == 0)
 
 } else
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $nom_lieu = $tab_lieu['nom'];
-    $desc_lieu = $tab_lieu['description'];
+    $nom_lieu  = $tab_lieu['lieu']->lieu_nom;
+    $desc_lieu = $tab_lieu['lieu']->lieu_description;
     echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
     echo("<p><a href=\"valide_porte_prison.php\">Sortir de cette prison ? (4 PA)</a></p>");
 }

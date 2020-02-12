@@ -6,6 +6,9 @@ include "blocks/_tests_appels_page_externe.php";
 if (!isset($methode2))
     $methode2 = "debut";
 
+$perso = new perso;
+$perso->charge($perso_cod);
+
 $comp_enlumineur = 0;
 
 //Changer les compétences nécessaires
@@ -88,8 +91,8 @@ switch ($methode2)
 						votre âme noire et récupéré les objets nécessaires.</em> »';
                     // On vérifie que la position de la quête est au même étage.
                     // Sinon on permet au perso d’en reprendre une.
-                    $tab = $db->get_pos($perso_cod);
-                    $pos_cod = $tab['pos_cod'];
+                    $tab          = $perso->get_position();
+                    $pos_cod      = $tab['pos']->pos_cod;
                     $req_position = "select etage_numero from etage, positions
 						where pos_cod = $pos_cod
 							and pos_etage = etage_numero
@@ -97,7 +100,7 @@ switch ($methode2)
 								(select etage_numero from etage, positions
 								where pos_cod = cast($position_quete as integer)
 								and pos_etage = etage_numero)";
-                    $stmt = $pdo->query($req_position);
+                    $stmt         = $pdo->query($req_position);
                     if ($stmt->rowCount() == 0)
                     {
                         $sortie_quete .= '<br />Je vois que malheuseument, vous n’êtes plus à l’étage

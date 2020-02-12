@@ -65,8 +65,8 @@ if ($erreur == 0)
 			$contenu_page4 .= "Voilà $brouzoufs Brouzoufs pour votre peine. N'hésitez pas à me ramener d'autres pièces... Il ne m'en manque plus que $manquants !<br />";
 
 			// Compteur de pièces par joueur.
-			
-			$db2->query("insert into log_1_avr (nom, nombre) values ($perso_cod, $nombre_vendus)");
+
+            $pdo->query("insert into log_1_avr (nom, nombre) values ($perso_cod, $nombre_vendus)");
 			if ( $nombre_recoltes >= 30 )
 			{
 				// Retirer les pièces de l'inventaire, Créer un dragonnet.
@@ -75,10 +75,10 @@ if ($erreur == 0)
 					$req = "select f_del_objet(" . $result['perobj_obj_cod'] . ")";
 					$stmt2 = $pdo->query($req);
 				}
-				$db2->query("
+                $pdo->query("
 						select cree_monstre_invasion(571, $etage) as dragonnet");
 				$result2 = $stmt2->fetch();
-				$db2->query("update perso_position set ppos_pos_cod = $position
+                $pdo->query("update perso_position set ppos_pos_cod = $position
 							where ppos_perso_cod = " . $result2['dragonnet']);
 				$contenu_page4 .= 'Un nuage de chocolat en poudre apparaît, puis retzombe lentement laissant entrevoir un dragonnet... Visiblement peu coopératif. Vous feriez mieux de ne pas vous éterniser dans les parages...<br />';
 			}

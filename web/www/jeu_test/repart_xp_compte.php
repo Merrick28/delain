@@ -37,7 +37,7 @@ Libre à vous de répartir ces points entre vos personnages (hors 4ème et famil
 
 function crediterPX($perso, $montant)
 {
-    global $db;
+    global $pdo;
 
     $montant = (empty($montant)) ? '0' : (string)$montant;
     if ($perso) {

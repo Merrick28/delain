@@ -10,6 +10,10 @@ $contenu_page = '';
 //
 if (!isset($type_appel))
     $type_appel = 0;
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
 //
 // en fonction du type d'appel, on vérifie, soit le lieu, soit la compétence.
 //
@@ -27,8 +31,8 @@ switch ($type_appel)
 
         break;
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ et qu'il ne s'agit pas d'un familier
-        $erreur = 1;
-        $tab_quete = $db->get_perso_quete($perso_cod);
+        $erreur    = 1;
+        $tab_quete = $perso->get_perso_quete();
         foreach ($tab_quete as $key => $val)
         {
             if ($val == 'quete_alchimiste.php')
@@ -41,7 +45,7 @@ switch ($type_appel)
             $contenu_page .= "Aucun alchimiste n'a pu être détecté dans le coin";
             $erreur = 1;
         }
-        if ($db->is_fam($perso_cod))
+        if ($perso->is_fam())
         {
             $contenu_page .= "Un familier ne peut pas contacter un alchimiste directement";
             $erreur = 1;

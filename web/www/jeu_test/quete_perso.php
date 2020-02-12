@@ -2,6 +2,10 @@
 include "blocks/_header_page_jeu.php";
 
 define("APPEL",1);
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
 $erreur = 0;
 //On vérifie qu'il s'agit bien d'un perso permettant cette quête sur cette case
 if ($perso->is_perso_quete())
@@ -40,11 +44,11 @@ if ($erreur == 0)
     }
 
     // Les quêtes standards
-    $is_perso_quete = $db->is_perso_quete($perso_cod);
+    $is_perso_quete = $perso->is_perso_quete();
     if ($is_perso_quete)
     {
         $type_appel = 2;
-        $tab_quete = $db->get_perso_quete($perso_cod);
+        $tab_quete  = $perso->get_perso_quete();
         foreach($tab_quete as $key=>$val)
         {
             $contenu_page .= "<!-- début $key => $val -->";

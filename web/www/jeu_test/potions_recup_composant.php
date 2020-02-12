@@ -157,10 +157,14 @@ $contenu_page .= '<table width="70%">
 //
 if (!isset($methode))
 	$methode = "debut";
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
 switch($methode)
 {
 	case "debut":
-		$lock = $db->is_locked($perso_cod);
+        $lock = $perso->is_locked();
 		if ($lock == true)
 		{
 			$contenu_page .= '<br><br><strong>Vous ne pouvez pas réaliser de cueillette, étant donné que vous êtes locké en combat</strong><br>';
@@ -187,8 +191,8 @@ switch($methode)
 
 	case "recup":
 		/*vérif si pas de lock de combat*/
-		$lock = $db->is_locked($perso_cod);
-		$phase = CalcPhase();
+        $lock   = $perso->is_locked();
+		$phase  = CalcPhase();
         $erreur = 0;
 
 		if ($lock == true)
@@ -197,9 +201,9 @@ switch($methode)
 			$erreur = 1;
 		}
 		/*Controle pour la compétence alchimie*/
-		$alchimiste = $db->existe_competence($perso_cod,97);
-		$alchimiste1 = $db->existe_competence($perso_cod,100);
-		$alchimiste2 = $db->existe_competence($perso_cod,101);
+        $alchimiste  = $perso->existe_competence(97);
+        $alchimiste1 = $perso->existe_competence(100);
+        $alchimiste2 = $perso->existe_competence(101);
 		if ($alchimiste != true and $alchimiste1 != true and $alchimiste2 != true)
 		{
 			$contenu_page .= '<br>Vous ne pouvez pas réaliser de cueillette, <strong>car vous n’êtes pas alchimiste !</strong>
@@ -225,11 +229,11 @@ switch($methode)
 		}
 		if ($erreur != 1)
 		{
-				$position = $db->get_pos($perso_cod);
-				$pos_cod = $position['pos_cod'];
-				$req = 'select potions.recup_composant('. $perso_cod .','. $pos_cod .','. $phase .') as resultat';
-				$stmt = $pdo->query($req);
-				$result = $stmt->fetch();
+            $position         = $perso->get_position();
+            $pos_cod          = $position['pos']->pos_cod;
+				$req          = 'select potions.recup_composant('. $perso_cod .','. $pos_cod .','. $phase .') as resultat';
+				$stmt         = $pdo->query($req);
+				$result       = $stmt->fetch();
 				$contenu_page .= $result['resultat'];
 		}
 	break;

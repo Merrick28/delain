@@ -3,10 +3,12 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $erreur = 0;
-if (!isset($vperso)) {
+if (!isset($vperso))
+{
     $vperso = $_POST['vperso'];
 }
-if (!isset($num_guilde)) {
+if (!isset($num_guilde))
+{
     $num_guilde = $_POST['num_guilde'];
 }
 $req = "select rguilde_admin from guilde_perso,guilde_rang
@@ -14,28 +16,35 @@ $req = "select rguilde_admin from guilde_perso,guilde_rang
 								and pguilde_guilde_cod = rguilde_guilde_cod
 								and pguilde_rang_cod = rguilde_rang_cod ";
 
-$stmt = $pdo->query($req);
+$stmt   = $pdo->query($req);
 $result = $stmt->fetch();
-if ($result['rguilde_admin'] == 'O') {
+if ($result['rguilde_admin'] == 'O')
+{
     echo "<p>Erreur ! Vous ne pouvez pas renvoyer un admin !";
 
     die('</div>');
 }
-if ($db->is_revolution($num_guilde)) {
+
+$guilde = new guilde;
+$guilde->charge($_REQUEST['num_guilde']);
+
+$revguilde = new guilde_revolution();
+if ($revguilde->getByGuilde($guilde->guilde_cod))
+{
     echo "<p>Vous ne pouvez pas intervenir dans la gestion de la guilde pendant une révolution !";
 
     die('</div>');
 }
-$req1 = "select guilde_nom from guilde where guilde_cod = $num_guilde";
-$stmt = $pdo->query($req1);
-$result = $stmt->fetch();
-$ancienne_guilde = $result['guilde_nom'];
+
+$ancienne_guilde = $guilde->guilde_nom;
 $ancienne_guilde = "[Ancien membre de la guilde " . pg_escape_string($ancienne_guilde) . "]";
 
-if (!isset($methode)) {
+if (!isset($methode))
+{
     $methode = 'debut';
 }
-switch ($methode) {
+switch ($methode)
+{
     case 'debut':
         echo "Etes-vous sûr de vouloir virer ce membre de votre guilde ?
 				<br><a href=\"" . $PHP_SELF . "?methode=validation&vperso=" . $vperso . "&num_guilde=" . $num_guilde . "\">Oui !</a>
@@ -43,38 +52,30 @@ switch ($methode) {
         break;
     case 'validation':
         $req = "insert into perso_titre values(default,$vperso,e'$ancienne_guilde',now(),'2')";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $req = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
-        $res = pg_exec($dbconnect, $req);
-        if (!$res) {
-            echo("<p>Une erreur est survenue !");
-        } else {
-            $texte = "Vous avez été renvoyé de votre guilde par l\'administrateur de celle-ci.<br />";
-            $titre = "Renvoi de guilde.";
-            $req_num_mes = "select nextval('seq_msg_cod')";
-            $res_num_mes = pg_exec($dbconnect, $req_num_mes);
-            $tab_num_mes = pg_fetch_array($res_num_mes, 0);
-            $num_mes = $tab_num_mes[0];
-            $req_mes = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
-            $req_mes = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
-            $res_mes = pg_exec($dbconnect, $req_mes);
-            // on renseigne l'expéditeur
-            $req2 = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-            $req2 = $req2 . "values ($num_mes,1,'N') ";
-            $res2 = pg_exec($dbconnect, $req2);
-            $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$vperso,'N','N') ";
-            $res_dest = pg_exec($dbconnect, $req_dest);
-            ?>
-            <p>Le personnage a été supprimé de votre guilde.
-            <p><a href="admin_guilde.php">Retourner à l'administration de la guilde</a></p>
-            <?php
-        }
+        $stmt    = $pdo->query($req);
+        $result  = $stmt->fetch();
+        $req     = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
+        $stmt    = $pdo->query($req);
+
+
+        $texte = "Vous avez été renvoyé de votre guilde par l\'administrateur de celle-ci.<br />";
+        $titre = "Renvoi de guilde.";
+
+        $message             = new message();
+        $message->sujet      = $titre;
+        $message->corps      = $texte;
+        $message->expediteur = 1;
+        $message->ajouteDestinataire($vperso);
+        $message->envoieMessage();
+
+
+        ?>
+        <p>Le personnage a été supprimé de votre guilde.
+        <p><a href="admin_guilde.php">Retourner à l'administration de la guilde</a></p>
+        <?php
+
         break;
 }
-
-
-$close = pg_close($dbconnect);
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

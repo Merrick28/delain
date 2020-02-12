@@ -883,6 +883,26 @@ class perso
         return false;
     }
 
+    function get_perso_quete()
+    {
+        $pdo       = new bddpdo;
+        $req_quete = "select perso_quete,perso_cod from perso,perso_position
+			where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = :perso)
+				and perso_quete in ('quete_ratier.php','enchanteur.php','quete_alchimiste.php','quete_chasseur.php','quete_dispensaire.php',
+				'quete_dame_cygne.php','quete_forgeron.php','quete_groquik.php')
+				and perso_cod = ppos_perso_cod
+			order by perso_quete";
+        $stmt      = $pdo->prepare($req_quete);
+        $stmt      = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+        $tab_quete = array();
+        while ($result = $stmt->fetch())
+        {
+            $perso             = $result['perso_cod'];
+            $tab_quete[$perso] = $result['perso_quete'];
+        }
+        return $tab_quete;
+    }
+
     public function get_arme_equipee()
     {
         $pdo      = new bddpdo;
@@ -2399,6 +2419,20 @@ class perso
                                     ":objet" => $objet), $stmt);
         $result = $stmt->fetch();
         return $result['resultat'];
+    }
+
+    function is_identifie_objet($v_objet)
+    {
+        $pdo      = new bddpdo();
+        $req_comp =
+            'select pio_perso_cod as test from perso_identifie_objet where pio_perso_cod = :perso and pio_obj_cod = :objet limit 1';
+        $stmt     = $pdo->prepare($req_comp);
+        $stmt     = $pdo->execute(array(
+                                      ":perso" => $this->perso_cod,
+                                      ":objet" => $v_objet), $stmt);
+
+        return $stmt->rowCount() > 0;
+
     }
 
     public function magasin_identifie($lieu, $objet)

@@ -6,10 +6,11 @@ ob_start();
 <script type="text/javascript" src="../scripts/pop-in.js" ></script>
 <div id='informations_case' class='bordiv' style='width:150px; padding:5px; display:none; position:absolute;'></div>
 
-<?php 
+<?php
+$compte = new compte;
+$compte->charge($compt_cod);
 
-
-if ($db->is_admin_monstre($compt_cod))
+if ($compte->is_admin_monstre())
 {
 	echo("<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bgcolor=\"#FFFFFF\">");
 
@@ -26,7 +27,7 @@ if ($db->is_admin_monstre($compt_cod))
 	$stmt = $pdo->query($req_y);
 ?>
 <script type="text/javascript">
-	var carte = new Array();
+    var carte = [];
 <?php 	$i = 0;
 	$depart = 0;
 
@@ -52,7 +53,7 @@ if ($db->is_admin_monstre($compt_cod))
 	var texte;
 	var style;
 	var action;
-	var comments = new Array();
+    var comments = [];
 	var tr_en_cours;
 
 <?php  echo("	img_path='" . str_replace(chr(92),chr(92) . chr(92),G_IMAGES) ."';\n"); ?>
@@ -117,7 +118,7 @@ if ($db->is_admin_monstre($compt_cod))
 		comments[carte[i][0]] = comment;
 		texte = texte + '<div onClick="changeInfo_tableau(document.getElementById(\'informations_case\'), comments, ' + [carte[i][0]] + ');" class="caseVue">';
 		texte = texte + '<div id="cell' + carte[i][0] + '" class="pasvu caseVue" style="background:url(\'' + img_path + 'c1.gif\')" >';
-		texte = texte + '<img src="' + img_path + 'del.gif" width="27" height="25" alt="' + comment_light + '" title="' + comment_light + '" />'
+        texte = texte + '<img src="' + img_path + 'del.gif" width="27" height="25" alt="' + comment_light + '" title="' + comment_light + '" />';
 		texte = texte + '</div>';
 		texte = texte + '</div>'; 
 		if (carte[i][13] != 0)

@@ -8,12 +8,15 @@ $nom_lieu = 'un dispensaire';
 
 include "blocks/_test_lieu.php";
 
+$perso = new perso;
+$perso->charge($perso_cod);
+
 if ($erreur == 0)
 {
 	$erreur_soins = 0;
-	$tab_temple = $db->get_lieu($perso_cod);
-	$nom_lieu = $tab_temple['nom'];
-	$type_lieu = $tab_temple['libelle'];
+    $tab_temple   = $perso->get_lieu();
+    $nom_lieu     = $tab_lieu['lieu']->lieu_nom;
+    $type_lieu    = $tab_temple['lieu_type']->tlieu_libelle;
 	echo("<p><img src=\"../images/temple.gif\"><strong>$nom_lieu</strong> - $type_lieu");
 	$pv[1] = 5;
 	$pv[2] = 10;

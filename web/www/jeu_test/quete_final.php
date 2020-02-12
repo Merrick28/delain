@@ -1,4 +1,5 @@
-<?php /*	include "verif_connexion.php";*/
+<?php
+/*	include "verif_connexion.php";*/
 /*******************************************************/
 /* Modifs by Merrick le 09/06/2006                     */
 /* gestion du buffer pour éviter une sortie classique  */
@@ -13,7 +14,10 @@ ob_start();
 //
 // on regarde si le joueur est bien sur un dispensaire
 $erreur = 0;
-if (!$db->is_lieu($perso_cod))
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if (!$perso->is_lieu())
 {
 	echo("<p>Erreur ! Vous n'êtes pas sur un lieu !!!");
 	$erreur = 1;
@@ -21,12 +25,15 @@ if (!$db->is_lieu($perso_cod))
 	if ($erreur == 0)
 	// On commence alors réellement l'include, permettant d'intégrer des quêtes aux bâtiments
 	{
-	$tab_lieu = $db->get_lieu($perso_cod);
+	$tab_lieu = $perso->get_lieu();
 /*************************** Début du traitement des dispensaires ******************************/	
-				if ($tab_lieu['type_lieu'] == 2)
+				if ($tab_lieu['lieu']->lieu_tlieu_cod == 2)
 				{
 						if(!isset($methode2))
-						$methode2 = "debut";
+						    {
+						        $methode2 = "debut";
+						    }
+
 						switch($methode2)
 						{
 								case "debut":	
@@ -74,7 +81,7 @@ if (!$db->is_lieu($perso_cod))
 													}
 												}
 												// cas particulier des écailles
-												$nb_ecailles = $db2->compte_objet($perso_cod,182);
+												$nb_ecailles = $perso->compte_objet(182);
 												if ($nb_ecailles >= 10)
 													// Quête des écailles de basilic contre des parchemins. Cette quête permet d'échanger 10 écailles de basilic contre deux parchemins
 													// Particularité : posséder 10 écailles minimum, et arriver avant le 16 du mois
@@ -262,7 +269,7 @@ if (!$db->is_lieu($perso_cod))
 													($obj_gen_quete == 380)
 													//Quête du forgeron Trelmar Mogresh ayant perdu ses caisses de minerais volées par des brigands
 													{
-													$nb_caisses = $db->compte_objet($perso_cod,380);	
+													$nb_caisses = $perso->compte_objet(380);
 													?>
 													<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
 													<p><em>Vous voilà bien chargé cher Monsieur. Souhaitez vous faire un dépôt ?

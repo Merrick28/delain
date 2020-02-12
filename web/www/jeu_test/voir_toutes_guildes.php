@@ -2,7 +2,11 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
-$is_guilde = $db->is_in_guilde($perso_cod);
+$perso = new perso;
+$perso->charge($perso_cod);
+
+
+$is_guilde = $perso->get_guilde();
 
 $req_guilde = "select guilde_cod,guilde_nom,guilde_description,count(pguilde_perso_cod) as nb_perso,
 		sum(perso_nb_joueur_tue) as tot_perso_tue,sum(perso_nb_monstre_tue) as tot_monstre_tue,

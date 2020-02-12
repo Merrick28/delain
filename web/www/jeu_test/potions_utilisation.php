@@ -73,7 +73,7 @@ switch ($methode) {
 // Effectue effectivement l’action
 function boire_potion($laPotion)
 {
-    global $db, $perso_cod;
+    global $pdo, $perso_cod;
     $resultat = '';
     $req = 'select fpot_fonction from potions.fonction_potion where fpot_gobj_cod = ' . $laPotion;
     $stmt = $pdo->query($req);

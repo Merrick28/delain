@@ -1,23 +1,24 @@
 <?php 
 if(!defined("APPEL"))
 	die("Erreur d'appel de page !");
-if(!isset($db))
+
 	include_once "verif_connexion.php";
 
-
+$perso = new perso;
+$perso->charge($perso_cod);
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 
-if (!$db->is_lieu($perso_cod))
+if (!$perso->is_lieu())
 {
 	echo("<p>Erreur ! Vous n'êtes pas sur un poste d'entrée !!!");
 	$erreur = 1;
 }
 if ($erreur == 0)
 {
-	$tab_lieu = $db->get_lieu($perso_cod);
-	if ($tab_lieu['type_lieu'] != 23 and $tab_lieu['type_lieu'] != 27)
+    $tab_lieu = $perso->get_lieu($perso_cod);
+    if ($tab_lieu['lieu']->lieu_tlieu_cod != 23 and $tab_lieu['lieu']->lieu_tlieu_cod != 27)
 	{
 		$erreur = 1;
 		echo("<p>Erreur ! Vous n'êtes pas sur poste d'entrée !!!");

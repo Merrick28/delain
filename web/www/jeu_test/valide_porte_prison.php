@@ -2,15 +2,21 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
+
+$perso = new perso;
+$perso->charge($perso_cod);
+
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
-if (!$db->is_lieu($perso_cod)) {
+if (!$perso->is_lieu())
+{
     echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
     $erreur = 1;
 }
 if ($erreur == 0) {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    if ($tab_lieu['lieu_cod'] != 2139) {
+    $tab_lieu = $perso->get_lieu();
+    if ($tab_lieu['lieu']->lieu_tlieu_cod != 2139)
+    {
         $erreur = 1;
         echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");
     }
@@ -29,12 +35,7 @@ if ($erreur == 0) {
     } else {
 
 
-        $tab_lieu = $db->get_lieu($perso_cod);
-
-        $req_pa = "select perso_pa from perso where perso_cod = $perso_cod ";
-        $stmt = $pdo->query($req_pa);
-        $result = $stmt->fetch();
-        $pa_perso = $result['perso_pa'];
+        $pa_perso = $perso->perso_pa;
         if ($pa_perso < 4) {
             echo("<p>Vous n'avez pas assez de PA !!!!");
         } else {

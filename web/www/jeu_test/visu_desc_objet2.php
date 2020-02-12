@@ -18,10 +18,13 @@ if ($stmt->rowCount() != 0)
     $autorise = 1;
 // on regarde si l'objet est dans une échoppe sur laquelle on est
 
-if ($db->is_lieu($perso_cod))
+$perso = new perso;
+$perso->charge($perso_cod);
+
+if ($perso->is_lieu())
 {
-    $tab_lieu = $db->get_lieu($perso_cod);
-    $lieu_cod = $tab_lieu['lieu_cod'];
+    $tab_lieu = $perso->get_lieu();
+    $lieu_cod = $tab_lieu['lieu']->lieu_cod;
     $req      = "select mstock_obj_cod from stock_magasin,objets
 		where mstock_lieu_cod = $lieu_cod
 		and mstock_obj_cod = obj_cod

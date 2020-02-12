@@ -1,6 +1,8 @@
 <?php
 include "blocks/_tests_appels_page_externe.php";
 
+$perso = new perso;
+$perso->charge($perso_cod);
 ?>
 <!DOCTYPE html>
 <html>
@@ -23,28 +25,28 @@ include "blocks/_tests_appels_page_externe.php";
     define("COUT_VOL_PA", "4");
 
     $type_lieu = 6;
-    $nom_lieu = 'un lieu';
+    $nom_lieu  = 'un lieu';
 
     include "blocks/_test_lieu.php";
 
 
     if ($erreur == 0)
     {
-        $tab_temple = $db->get_lieu($perso_cod);
-        $nom_lieu = $tab_temple['nom'];
-        $type_lieu = $tab_temple['libelle'];
+        $tab_temple = $perso->get_lieu($perso_cod);
+        $nom_lieu   = $tab_temple['lieu']->lieu_nom;
+        $type_lieu  = $tab_temple['lieu_type']->tlieu_libelle;
 
         $valeur_comp_niv1 = 0;
         $valeur_comp_niv2 = 0;
         $valeur_comp_niv3 = 0;
 
-        
+
         $req_comp = "select pcomp_modificateur from perso_competences ";
         $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
         $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
         $req_comp = $req_comp . "and pcomp_pcomp_cod = " . VOL_NIV1_COD;
-        $stmt = $pdo->query($req_comp);
-        if($result = $stmt->fetch())
+        $stmt     = $pdo->query($req_comp);
+        if ($result = $stmt->fetch())
         {
             $valeur_comp_niv1 = $result['pcomp_modificateur'];
         } else
@@ -55,8 +57,8 @@ include "blocks/_tests_appels_page_externe.php";
         $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
         $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
         $req_comp = $req_comp . "and pcomp_pcomp_cod = " . VOL_NIV2_COD;
-        $stmt = $pdo->query($req_comp);
-        if($result = $stmt->fetch())
+        $stmt     = $pdo->query($req_comp);
+        if ($result = $stmt->fetch())
         {
             $valeur_comp_niv2 = $result['pcomp_modificateur'];
         } else
@@ -67,20 +69,18 @@ include "blocks/_tests_appels_page_externe.php";
         $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
         $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
         $req_comp = $req_comp . "and pcomp_pcomp_cod = " . VOL_NIV3_COD;
-        $stmt = $pdo->query($req_comp);
-        if($result = $stmt->fetch())
+        $stmt     = $pdo->query($req_comp);
+        if ($result = $stmt->fetch())
         {
             $valeur_comp_niv3 = $result['pcomp_modificateur'];
         } else
         {
             $valeur_comp_niv3 = 0;
         }
-        $req_perso = "select perso_po,perso_pa,perso_niveau from perso where perso_cod = $perso_cod ";
-        $stmt = $pdo->query($req_perso);
-        $result = $stmt->fetch();
-        $nb_or = $result['perso_po'];
-        $nb_pa = $result['perso_pa'];
-        $cout = COUT_VOL_BR * $result['perso_niveau'];
+
+        $nb_or  = $perso->perso_po;
+        $nb_pa  = $perso->perso_pa;
+        $cout   = COUT_VOL_BR * $result['perso_niveau'];
         $coutpa = COUT_VOL_PA;
         // TRAITEMENT DES ACTIONS
         if (isset($_POST['methode']))
@@ -103,11 +103,13 @@ include "blocks/_tests_appels_page_externe.php";
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa = "update perso set perso_po = perso_po - $cout,perso_pa = perso_pa - $coutpa  where perso_cod = $perso_cod ";
-                            $stmt = $pdo->query($req_or_pa);
-                            $req_comp = "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur) "
+                            $req_or_pa        =
+                                "update perso set perso_po = perso_po - $cout,perso_pa = perso_pa - $coutpa  where perso_cod = $perso_cod ";
+                            $stmt             = $pdo->query($req_or_pa);
+                            $req_comp         =
+                                "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur) "
                                 . "values($perso_cod," . VOL_NIV1_COD . ",25)";
-                            $stmt = $pdo->query($req_comp);
+                            $stmt             = $pdo->query($req_comp);
                             $valeur_comp_niv1 = 25;
                         }
                     } else
@@ -130,11 +132,12 @@ include "blocks/_tests_appels_page_externe.php";
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa = "update perso set perso_po = perso_po - (2*$cout),perso_pa = perso_pa - (2*$coutpa)  where perso_cod = $perso_cod ";
-                            $stmt = $pdo->query($req_or_pa);
-                            $req_comp = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV2_COD
-                                . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV1_COD;
-                            $stmt = $pdo->query($req_comp);
+                            $req_or_pa        =
+                                "update perso set perso_po = perso_po - (2*$cout),perso_pa = perso_pa - (2*$coutpa)  where perso_cod = $perso_cod ";
+                            $stmt             = $pdo->query($req_or_pa);
+                            $req_comp         = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV2_COD
+                                                . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV1_COD;
+                            $stmt             = $pdo->query($req_comp);
                             $valeur_comp_niv2 = $valeur_comp_niv1;
                             $valeur_comp_niv1 = 0;
                         }
@@ -158,11 +161,12 @@ include "blocks/_tests_appels_page_externe.php";
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa = "update perso set perso_po = perso_po - (3*$cout),perso_pa = perso_pa - (3*$coutpa)  where perso_cod = $perso_cod ";
-                            $stmt = $pdo->query($req_or_pa);
-                            $req_comp = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV3_COD
-                                . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV2_COD;
-                            $stmt = $pdo->query($req_comp);
+                            $req_or_pa        =
+                                "update perso set perso_po = perso_po - (3*$cout),perso_pa = perso_pa - (3*$coutpa)  where perso_cod = $perso_cod ";
+                            $stmt             = $pdo->query($req_or_pa);
+                            $req_comp         = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV3_COD
+                                                . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV2_COD;
+                            $stmt             = $pdo->query($req_comp);
                             $valeur_comp_niv3 = $valeur_comp_niv2;
                             $valeur_comp_niv2 = 0;
                         }
@@ -173,7 +177,7 @@ include "blocks/_tests_appels_page_externe.php";
                     break;
                 default:
                     $contenu_page .= "<p>Erreur sur le type d'appel !";
-                    $erreur = 1;
+                    $erreur       = 1;
                     break;
 
             }

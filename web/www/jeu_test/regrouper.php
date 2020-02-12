@@ -2,16 +2,17 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
+$perso = new perso;
+$perso->charge($perso_cod);
+
 $erreur = 0;
-if ($db->nb_or_sur_case($perso_cod) < 1)
+if ($perso->nb_or_case() < 1)
 {
 	echo "<p>Il n'y a pas de tas de brouzoufs à regrouper sur cette case !";
 	$erreur = 1;
 }
-$req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-$nb_pa = $result['perso_pa'];
+
+$nb_pa = $perso->perso_pa;
 if ($nb_pa < $param->getparm(38))
 {
 	echo "<p>Vous n'avez pas assez de PA pour regrouper les tas de brouzoufs sur cette case !";
