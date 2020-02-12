@@ -1,7 +1,6 @@
 <?php
 include "jeu_test/verif_connexion.php";
 
-require_once G_CHE . "/includes/base_delain.php";
 
 $perso_cible = $_REQUEST['perso'];
 $pdo         = new bddpdo();

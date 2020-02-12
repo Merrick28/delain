@@ -1,4 +1,4 @@
 php_value error_log /home/delain/delain/web/www/debug/php.log
-php_value include_path .:/home/delain/delain/web/phplib-7.4a/php:/home/delain/delain/web/www/includes:/usr/share/php
+php_value include_path .:/home/delain/delain/web/www/includes:/usr/share/php
 php_value auto_prepend_file  /home/delain/delain/web/www/includes/delain_header.php
 php_value auto_append_file /home/delain/delain/web/www/includes/delain_footer.php
