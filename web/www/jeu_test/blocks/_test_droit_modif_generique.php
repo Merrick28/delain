@@ -12,13 +12,13 @@
  */
 $erreur = 0;
 $req = "select * from compt_droit where dcompt_compt_cod = $compt_cod ";
-$db->query($req);
-if ($db->nf() == 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() == 0)
 {
     $erreur = 1;
 } else
 {
-    $db->next_record();
+    $result = $stmt->fetch();
     if ($db->f($droit_modif) != 'O')
     {
         $erreur = 1;

@@ -6,9 +6,9 @@
  * Time: 15:50
  */
 $req_nextval = "select nextval('concours_barde_cbar_cod_seq') as cbar_cod";
-$db->query($req_nextval);
-$db->next_record();
-$cbar_cod = $db->f('cbar_cod');
+$stmt = $pdo->query($req_nextval);
+$result = $stmt->fetch();
+$cbar_cod = $result['cbar_cod'];
 
 $db->query("INSERT INTO concours_barde (cbar_cod, cbar_saison, cbar_date_ouverture, cbar_date_teaser, cbar_fermeture, cbar_description) VALUES ($cbar_cod, $form_saison $form_date_ouverture $form_date_teaser $form_fermeture $form_description)");
 

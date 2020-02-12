@@ -15,9 +15,9 @@ if ($erreur == 0) {
     $req = $req . "where lpos_lieu_cod = $lieu ";
     $req = $req . "and lpos_pos_cod = pos_cod ";
     $req = $req . "and pos_etage = etage_numero ";
-    $db->query($req);
-    $db->next_record();
-    echo "<p class=\"titre\">Gestion de l'échoppe " . $db->f("pos_x") . ", " . $db->f("pos_y") . ", " . $db->f("etage_libelle") . "</p>";
+    $stmt = $pdo->query($req);
+    $result = $stmt->fetch();
+    echo "<p class=\"titre\">Gestion de l'échoppe " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</p>";
     switch ($methode) {
         case "ajout":
             echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant{$_admin_echoppe_type}.php\">";
@@ -48,19 +48,19 @@ if ($erreur == 0) {
             $req = $req . "and pguilde_valide = 'O' ";
             $req = $req . "and pguilde_perso_cod = perso_cod ";
             $req = $req . "order by perso_nom ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<select name=\"perso_cible\">";
-            while ($db->next_record()) {
-                echo "<option value=\"" . $db->f("perso_cod") . "\">" . $db->f("perso_nom") . "</option>";
+            while ($result = $stmt->fetch()) {
+                echo "<option value=\"" . $result['perso_cod'] . "\">" . $result['perso_nom'] . "</option>";
             }
             echo "</select>";
             echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
             break;
         case "modif":
             $req = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = $lieu ";
-            $db->query($req);
-            $db->next_record();
-            $actuel = $db->f("mger_perso_cod");
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            $actuel = $result['mger_perso_cod'];
             echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant{$_admin_echoppe_type}.php\">";
             echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"modif\">";
@@ -89,23 +89,23 @@ if ($erreur == 0) {
             $req = $req . "and pguilde_valide = 'O' ";
             $req = $req . "and pguilde_perso_cod = perso_cod ";
             $req = $req . "order by perso_nom ";
-            $db->query($req);
+            $stmt = $pdo->query($req);
             echo "<select name=\"perso_cible\">";
-            while ($db->next_record()) {
-                echo "<option value=\"" . $db->f("perso_cod") . "\"";
-                if ($db->f("perso_cod") == $actuel) {
+            while ($result = $stmt->fetch()) {
+                echo "<option value=\"" . $result['perso_cod'] . "\"";
+                if ($result['perso_cod'] == $actuel) {
                     echo " selected";
                 }
-                echo ">" . $db->f("perso_nom") . "</option>";
+                echo ">" . $result['perso_nom'] . "</option>";
             }
             echo "</select>";
             echo "<p><center><input type=\"submit\" value=\"Valider !\" class=\"test\"></center></form>";
             break;
         case "supprime":
             $req = "select mger_perso_cod,perso_nom from magasin_gerant,perso where mger_lieu_cod = $lieu and mger_perso_cod = perso_cod";
-            $db->query($req);
-            $db->next_record();
-            echo "<p>Voulez-vous rééllement enlever à " . $db->f("perso_nom") . " la gestion de ce magasin ?";
+            $stmt = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "<p>Voulez-vous rééllement enlever à " . $result['perso_nom'] . " la gestion de ce magasin ?";
             echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant_noir.php\">";
             echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"supprime\">";

@@ -18,12 +18,12 @@ $comp_enchantement = 0;
 $req = 'select pcomp_modificateur,pcomp_pcomp_cod from perso_competences
 			where pcomp_perso_cod = ' . $perso_cod . '
 			and pcomp_pcomp_cod in (88,102,103)';
-$db->query($req);
-if ($db->nf() != 0)
+$stmt = $pdo->query($req);
+if ($stmt->rowCount() != 0)
 {
-    $db->next_record();
-    $comp_enchantement = $db->f('pcomp_pcomp_cod');
-    $comp_enchantement_percent = $db->f('pcomp_modificateur');
+    $result = $stmt->fetch();
+    $comp_enchantement = $result['pcomp_pcomp_cod'];
+    $comp_enchantement_percent = $result['pcomp_modificateur'];
 }
 
 
