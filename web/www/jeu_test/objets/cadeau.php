@@ -6,11 +6,11 @@ $param = new parametres();
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$bd=new base_delain;
+$db        = new base_delain;
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 327 order by perobj_obj_cod";
-$bd->query($req_matos);
-if(!($bd->next_record()))
+$db->query($req_matos);
+if (!($db->next_record()))
 {
   // PAS D'OBJET.
  	$contenu_page .= "<p>Vous avez beau chercher, il n'y a aucun cadeau dans votre sac</p>";

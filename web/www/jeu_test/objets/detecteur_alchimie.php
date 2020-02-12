@@ -4,28 +4,28 @@ include '../verif_connexion.php';
 
 $contenu_page = '';
 
-$bd=new base_delain;
+$db        = new base_delain;
 $req_matos = "select perobj_obj_cod from perso_objets,objets
 												where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 726 ";
-$bd->query($req_matos);
-if($bd->next_record())
-{	
-	$baguette = $bd->f("perobj_obj_cod");
+$db->query($req_matos);
+if ($db->next_record())
+{
+    $baguette = $db->f("perobj_obj_cod");
 	if(isset($_POST['methode']))
 	{
 		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-		$bd->query($req_pa);
-		$bd->next_record();
-		if ($bd->f("perso_pa") < 1)
+        $db->query($req_pa);
+        $db->next_record();
+        if ($db->f("perso_pa") < 1)
 		{
 			$contenu_page .= 'Vous n\'avez pas assez de PA !';
 		}
 		else
 		{
 			$req_use = "select use_artefact($baguette)";
-			$bd->query($req_use);
+            $db->query($req_use);
 			$req_enl_pa = "update perso set perso_pa = perso_pa - 1 where perso_cod = $perso_cod";
-			$bd->query($req_enl_pa);		
+            $db->query($req_enl_pa);
 			$contenu_page .= '	<p>La baguette fait son office et affiche les champs de composants présents dans les environs
 				<br>Cela ne signifie pas que des composants seront réellement présents, notamment si quelqu\'un les a ramassé avant vous ...</p>
 				<center>';
@@ -67,11 +67,11 @@ if($bd->next_record())
 												from perso_position,positions
 												where ppos_perso_cod = $perso_cod
 												and ppos_pos_cod = pos_cod ";
-			$bd->query($req_position);
-			$bd->next_record();
-			$perso_pos_x = $bd->f("pos_x");
-			$perso_pos_y = $bd->f("pos_y");
-			$perso_pos_etage = $bd->f("pos_etage");
+            $db->query($req_position);
+            $db->next_record();
+            $perso_pos_x     = $db->f("pos_x");
+            $perso_pos_y     = $db->f("pos_y");
+            $perso_pos_etage = $db->f("pos_etage");
 			$piegeArray = array();
 			// POSITION DES composants
 			$req_position = "select pos_x,pos_y,pos_etage

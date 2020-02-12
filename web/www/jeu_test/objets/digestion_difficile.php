@@ -6,15 +6,16 @@ include "../verif_connexion.php";
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$bd=new base_delain;
+$db        = new base_delain;
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_obj_cod = $objet and perobj_perso_cod = $perso_cod and obj_gobj_cod in (640) order by perobj_obj_cod";
-$bd->query($req_matos);
-if(!($bd->next_record())){
+$db->query($req_matos);
+if (!($db->next_record()))
+{
   // PAS D'OBJET.
     $contenu_page .= "<p>Vous avez beau chercher, il n'y a aucune nourriture dans votre sac</p>";
 } else {
-  $num_obj =   $bd->f("perobj_obj_cod");
+    $num_obj = $db->f("perobj_obj_cod");
   //echo "OBJ=".$num_obj;
     // TRAITEMENT DES ACTIONS.
     //echo $objet;
@@ -22,9 +23,9 @@ if(!($bd->next_record())){
         $objet = isset($_POST['objet'])?$_POST['objet']: "-1";
     if(isset($_POST['methode'])){
         $req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";
-        $bd->query($req_pa);
-        $bd->next_record();
-        if ($bd->f("perso_pa") < 4)
+        $db->query($req_pa);
+        $db->next_record();
+        if ($db->f("perso_pa") < 4)
         {
             $contenu_page .= '<p><strong>Vous n\'avez pas assez de PA !</strong></p>';
         }
@@ -35,17 +36,17 @@ if(!($bd->next_record())){
                 perso_pa = perso_pa - 4,
                 perso_pv = min(perso_pv + 4, perso_pv_max)
                 where perso_cod = $perso_cod";
-            $bd->query($req_enl_pa);
+            $db->query($req_enl_pa);
             $contenu_page .= '<p><strong>Vous faites un festin et gagnez quelques points de vie... Attention à votre régime.</strong></p>';
-            $bd->query('select lancer_des(1,100) as reussite');
-            $bd->next_record();
-            $reussite = $bd->f('reussite');
+            $db->query('select lancer_des(1,100) as reussite');
+            $db->next_record();
+            $reussite = $db->f('reussite');
             if ($reussite >= 96)
             {
                 $contenu_page .= '<p><strong>Votre charisme vient d\'en prendre un coup... Il est temps de vous remettre au sport !</strong></p>';
                 // On rajoute une bouée disgrâcieuse.
                 $req_cree_bouee = "select cree_objet_perso_equipe(640, $perso_cod), f_del_objet($objet)";
-                $bd->query($req_cree_bouee);
+                $db->query($req_cree_bouee);
             }
         }
     }

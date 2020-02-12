@@ -17,4 +17,24 @@ class fonctions
         $result       = $stmt->fetch();
         return $result['distance'];
     }
+
+    static function format($chaine, $apostrophes = true, $nl2br = true, $bloque_html = true)
+    {
+        if ($apostrophes)
+        {
+            $chaine = str_replace('\'', '’', $chaine);
+        }
+        if ($bloque_html)
+        {
+            $chaine = htmlspecialchars($chaine);
+        }
+
+        if ($nl2br)
+        {
+            $chaine = nl2br($chaine);
+        }
+
+        $chaine = pg_escape_string($chaine);
+        return $chaine;
+    }
 }

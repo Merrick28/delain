@@ -5,21 +5,22 @@ include "../verif_connexion.php";
 $contenu_page = '';
 
 // ON VRERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$bd=new base_delain;
+$db        = new base_delain;
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 409 ";
-$bd->query($req_matos);
-if(!($bd->next_record())){
+$db->query($req_matos);
+if (!($db->next_record()))
+{
   // PAS D'OBJET.
  	$contenu_page .= "<p>Hélas... aucune choppe pleine ne se trouve dans votre inventaire !</p>";
 } else {
-  $num_obj =   $bd->f("perobj_obj_cod");
+    $num_obj = $db->f("perobj_obj_cod");
   // TRAITEMENT DES ACTIONS.
 	if(isset($_POST['methode'])){
 		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-		$bd->query($req_pa);
-		$bd->next_record();
-		if ($bd->f("perso_pa") < 1)
+        $db->query($req_pa);
+        $db->next_record();
+        if ($db->f("perso_pa") < 1)
 		{
 			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
@@ -27,23 +28,23 @@ if(!($bd->next_record())){
 		{
       // ON ENLEVE LES PAs
 			$req_enl_pa = "update perso set perso_pa = perso_pa - 1 where perso_cod = $perso_cod";
-			$bd->query($req_enl_pa);
+            $db->query($req_enl_pa);
 
 			// ON SUPPRIME L'OBJET.
 			$req_supr_obj = "select  f_del_objet($num_obj)";
-			$bd->query($req_supr_obj);
+            $db->query($req_supr_obj);
 			// ON CREE LA CHOPPE VIDE
 			$req_supr_obj = "select  cree_objet_perso(410,$perso_cod)";
-			$bd->query($req_supr_obj);
+            $db->query($req_supr_obj);
 
 			//INSERTION DU BONUS
 			$req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'ALC\',2, 0.2 + valeur_bonus(' . $perso_cod . ', \'ALC\'))';
-            $bd->query($req_bonus);
+            $db->query($req_bonus);
 
             // INSERTION DE L'EVENT
             $req_bonus = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)".
                         "values(69,now(),$perso_cod,'	[perso_cod1] a bu une chope de bière.','O','O')";
-            $bd->query($req_bonus);
+            $db->query($req_bonus);
 
 			$contenu_page .= '<p><strong>Vous descendez le verre d’un trait, quel délice !</strong></p>';
 		}

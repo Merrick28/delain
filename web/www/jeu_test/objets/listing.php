@@ -5,39 +5,40 @@ include "../verif_connexion.php";
 $contenu_page = '';
 
 // ON VERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
-$bd=new base_delain;
+$db        = new base_delain;
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
 . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 248 ";
-$bd->query($req_matos);
-if(!($bd->next_record())){
+$db->query($req_matos);
+if (!($db->next_record()))
+{
   // PAS D'OBJET.
  	$contenu_page .= "<p>Une liste ? où ça une liste ? Je n'ai pas vu de liste...</p>";
 } else {
-  $num_obj =   $bd->f("perobj_obj_cod");
+    $num_obj = $db->f("perobj_obj_cod");
   // TRAITEMENT DES ACTIONS.
 	if(isset($_POST['methode'])){
 		$req_pa = "select perso_pa,perso_int from perso where perso_cod = $perso_cod";
-		$bd->query($req_pa);
-		$bd->next_record();
+        $db->query($req_pa);
+        $db->next_record();
 
-		if ($bd->f("perso_pa") < 4)
+        if ($db->f("perso_pa") < 4)
 		{
 			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
 		}
 		else
 		{
-			$intel = $bd->f("perso_int");
+            $intel = $db->f("perso_int");
       // ON ENLEVE LES PAs
 			$req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-			$bd->query($req_enl_pa);
+            $db->query($req_enl_pa);
 
 			if($intel < 19){
 				//INSERTION DU MALUS de vue
                 $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'VUE\',2,-1)';
-				$bd->query($req_bonus);
+                $db->query($req_bonus);
       			//INSERTION DU MALUS de magie
                 $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'PAM\',2,1)';
-				$bd->query($req_malus);
+                $db->query($req_malus);
 				$contenu_page .= "<p>
 					  Votre Intelligence est de <strong>$intel</strong>.<br><br>
 					  C’est très insuffisant pour comprendre ce charabia, vous avez maintenant un très gros mal de crâne...

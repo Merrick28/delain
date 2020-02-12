@@ -1,5 +1,7 @@
 <?php // RECUPERATION DES INFORMATIONS POUR LE LOG
 
+$fonctions = new fonctions();
+
 if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
 {
     $req_mons = "select gmon_nom from monstre_generique where gmon_cod = $gmon_cod ";
@@ -313,10 +315,10 @@ switch ($methode)
 
     case "add_mon_fonction":
         // Modification des effets automatiques
-        $fonctions_supprimees = explode(',', trim(base_delain::format($_POST['fonctions_supprimees']), ','));
-        $fonctions_annulees   = explode(',', trim(base_delain::format($_POST['fonctions_annulees']), ','));
-        $fonctions_existantes = explode(',', trim(base_delain::format($_POST['fonctions_existantes']), ','));
-        $fonctions_ajoutees   = explode(',', trim(base_delain::format($_POST['fonctions_ajoutees']), ','));
+        $fonctions_supprimees = explode(',', trim(fonctions::format($_POST['fonctions_supprimees']), ','));
+        $fonctions_annulees   = explode(',', trim(fonctions::format($_POST['fonctions_annulees']), ','));
+        $fonctions_existantes = explode(',', trim(fonctions::format($_POST['fonctions_existantes']), ','));
+        $fonctions_ajoutees   = explode(',', trim(fonctions::format($_POST['fonctions_ajoutees']), ','));
 
         $message = '';
         // Ajout d’effet
@@ -326,25 +328,25 @@ switch ($methode)
             {
                 if (!in_array($numero, $fonctions_annulees))
                 {
-                    $fonc_type  = base_delain::format($_POST['declenchement_' . $numero]);
-                    $fonc_nom   = base_delain::format($_POST['fonction_type_' . $numero]);
+                    $fonc_type  = fonctions::format($_POST['declenchement_' . $numero]);
+                    $fonc_nom   = fonctions::format($_POST['fonction_type_' . $numero]);
                     $fonc_effet =
-                        !empty($_POST['fonc_effet' . $numero]) ? base_delain::format($_POST['fonc_effet' . $numero]) : '';
+                        !empty($_POST['fonc_effet' . $numero]) ? fonctions::format($_POST['fonc_effet' . $numero]) : '';
                     if (isset($_POST['fonc_cumulatif' . $numero])) $fonc_effet = $fonc_effet . '+';
                     $fonc_force        =
-                        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
+                        !empty($_POST['fonc_force' . $numero]) ? fonctions::format($_POST['fonc_force' . $numero]) : '';
                     $fonc_duree        =
-                        !empty($_POST['fonc_duree' . $numero]) ? base_delain::format($_POST['fonc_duree' . $numero]) : '0';
+                        !empty($_POST['fonc_duree' . $numero]) ? fonctions::format($_POST['fonc_duree' . $numero]) : '0';
                     $fonc_type_cible   =
-                        !empty($_POST['fonc_cible' . $numero]) ? base_delain::format($_POST['fonc_cible' . $numero]) : '';
+                        !empty($_POST['fonc_cible' . $numero]) ? fonctions::format($_POST['fonc_cible' . $numero]) : '';
                     $fonc_nombre_cible =
-                        !empty($_POST['fonc_nombre' . $numero]) ? base_delain::format($_POST['fonc_nombre' . $numero]) : '0';
+                        !empty($_POST['fonc_nombre' . $numero]) ? fonctions::format($_POST['fonc_nombre' . $numero]) : '0';
                     $fonc_portee       =
-                        !empty($_POST['fonc_portee' . $numero]) ? base_delain::format($_POST['fonc_portee' . $numero]) : '0';
+                        !empty($_POST['fonc_portee' . $numero]) ? fonctions::format($_POST['fonc_portee' . $numero]) : '0';
                     $fonc_proba        =
-                        !empty($_POST['fonc_proba' . $numero]) ? base_delain::format($_POST['fonc_proba' . $numero]) : '0';
+                        !empty($_POST['fonc_proba' . $numero]) ? fonctions::format($_POST['fonc_proba' . $numero]) : '0';
                     $fonc_message      =
-                        !empty($_POST['fonc_message' . $numero]) ? base_delain::format($_POST['fonc_message' . $numero]) : '';
+                        !empty($_POST['fonc_message' . $numero]) ? fonctions::format($_POST['fonc_message' . $numero]) : '';
 
                     $fonc_proba = str_replace(',', '.', $fonc_proba);
 
@@ -395,26 +397,26 @@ switch ($methode)
         {
             if (!empty($numero) || $numero === 0)
             {
-                $fonc_cod = base_delain::format($_POST['fonc_id' . $numero]);
+                $fonc_cod = fonctions::format($_POST['fonc_id' . $numero]);
                 if (!in_array($fonc_cod, $fonctions_supprimees))
                 {
                     $fonc_effet =
-                        !empty($_POST['fonc_effet' . $numero]) ? base_delain::format($_POST['fonc_effet' . $numero]) : '';
+                        !empty($_POST['fonc_effet' . $numero]) ? fonctions::format($_POST['fonc_effet' . $numero]) : '';
                     if (isset($_POST['fonc_cumulatif' . $numero])) $fonc_effet = $fonc_effet . '+';
                     $fonc_force        =
-                        !empty($_POST['fonc_force' . $numero]) ? base_delain::format($_POST['fonc_force' . $numero]) : '';
+                        !empty($_POST['fonc_force' . $numero]) ? fonctions::format($_POST['fonc_force' . $numero]) : '';
                     $fonc_duree        =
-                        !empty($_POST['fonc_duree' . $numero]) ? base_delain::format($_POST['fonc_duree' . $numero]) : '0';
+                        !empty($_POST['fonc_duree' . $numero]) ? fonctions::format($_POST['fonc_duree' . $numero]) : '0';
                     $fonc_type_cible   =
-                        !empty($_POST['fonc_cible' . $numero]) ? base_delain::format($_POST['fonc_cible' . $numero]) : '';
+                        !empty($_POST['fonc_cible' . $numero]) ? fonctions::format($_POST['fonc_cible' . $numero]) : '';
                     $fonc_nombre_cible =
-                        !empty($_POST['fonc_nombre' . $numero]) ? base_delain::format($_POST['fonc_nombre' . $numero]) : '0';
+                        !empty($_POST['fonc_nombre' . $numero]) ? fonctions::format($_POST['fonc_nombre' . $numero]) : '0';
                     $fonc_portee       =
-                        !empty($_POST['fonc_portee' . $numero]) ? base_delain::format($_POST['fonc_portee' . $numero]) : '0';
+                        !empty($_POST['fonc_portee' . $numero]) ? fonctions::format($_POST['fonc_portee' . $numero]) : '0';
                     $fonc_proba        =
-                        !empty($_POST['fonc_proba' . $numero]) ? base_delain::format($_POST['fonc_proba' . $numero]) : '0';
+                        !empty($_POST['fonc_proba' . $numero]) ? fonctions::format($_POST['fonc_proba' . $numero]) : '0';
                     $fonc_message      =
-                        !empty($_POST['fonc_message' . $numero]) ? base_delain::format($_POST['fonc_message' . $numero]) : '';
+                        !empty($_POST['fonc_message' . $numero]) ? fonctions::format($_POST['fonc_message' . $numero]) : '';
 
                     $fonc_proba = str_replace(',', '.', $fonc_proba);
 
