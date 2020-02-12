@@ -78,10 +78,10 @@ if($bd->next_record())
 															from perso_position,positions
 															where ppos_perso_cod = $perso_cod
 															and ppos_pos_cod = pos_cod ";
-			$db->query($req_position);
-			$db->next_record();
-			$position_x = $db->f("pos_x");
-			$position_y = $db->f("pos_y");
+			$stmt = $pdo->query($req_position);
+			$result = $stmt->fetch();
+			$position_x = $result['pos_x'];
+			$position_y = $result['pos_y'];
 			for ($y=-2; $y<4; $y++)
 			{  
 				$contenu_page .= '<TR>';
@@ -101,14 +101,14 @@ if($bd->next_record())
 												 pos_etage = $perso_pos_etage
 												 and pos_x = $position_x + $x
 												 and pos_y = $position_y - $y";
-						$db->query($req_position);
-						$db->next_record();
-						$position = $db->f("pos_cod");
-						$db2 = new base_delain;
+						$stmt = $pdo->query($req_position);
+						$result = $stmt->fetch();
+						$position = $result['pos_cod'];
+						
 						$req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea from ingredient_position where
 														 ingrpos_pos_cod = $position";
-						$db2->query($req_ingredient);
-						$nbCouleurs = $db2->nf();
+						$stmt2 = $pdo->query($req_ingredient);
+						$nbCouleurs = $stmt2->rowCount();
 						/*
 						#6600FF : bleu utilisé pour la sélection d'une case
 						#66FF00 : vert
@@ -147,23 +147,23 @@ if($bd->next_record())
 						if ($nbCouleurs == 0)
 						{
 							$req_murs = "select mur_creusable from murs where mur_pos_cod = $position";
-							$db3 = new base_delain;
-							$db3->query($req_murs);
+							
+							$stmt3 = $pdo->query($req_murs);
 							$color = "#FFFFFF";
-							if ($db3->next_record())
+							if ($result3 = $stmt3->fetch())
                             {
-                                $color = ($db3->f("mur_creusable") == 'O') ? "#696969" : "#000000";
+                                $color = ($result3['mur_creusable'] == 'O') ? "#696969" : "#000000";
                             }
-							$contenu_page .= '<td width="20" height="20" ><div id="pos_'. $db->f("pos_cod") .'" style="width:25px;height:25px;background:'. $color .';"> '. $image .'</div>
+							$contenu_page .= '<td width="20" height="20" ><div id="pos_'. $result['pos_cod'] .'" style="width:25px;height:25px;background:'. $color .';"> '. $image .'</div>
 							</td>';
 						}
 						else 
 						{	
 							$ingredientsArray = array();
 							$i = 0;
-							while ($db2->next_record())
+							while ($result2 = $stmt2->fetch())
 							{
-								$ingredientsArray[$i] = $db2->f("ingrpos_gobj_cod");
+								$ingredientsArray[$i] = $result2['ingrpos_gobj_cod'];
 								$i = ++$i;
 							}
 			

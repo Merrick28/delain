@@ -24,9 +24,9 @@ else
 		{
 			case "creuser":
 				$req = "select creuser($perso_cod,".$_POST['pos_cod'].") as resultat";
-				$db->query($req);
-				$db->next_record();
-				$contenu_page .= "<p>".$db->f("resultat")."</p><HR>";
+				$stmt = $pdo->query($req);
+				$result = $stmt->fetch();
+				$contenu_page .= "<p>".$result['resultat']."</p><HR>";
 				break;
 		}
 	}
