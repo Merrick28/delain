@@ -51,6 +51,7 @@
     
       gtag('config', 'UA-1534416-3');
     </script>
+    <script data-ad-client="ca-pub-6632318064183878" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
 </head>
 
@@ -229,7 +230,17 @@
                 </div>
                 {% if PUB.type == 'haut' %}
                 <div class="groupdiv" style="text-align: center;" id="pub">
-                    {{ PUB.code | raw }}
+                    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+                    <!-- Reponsive -->
+                    <ins class="adsbygoogle"
+                         style="display:block"
+                         data-ad-client="ca-pub-6632318064183878"
+                         data-ad-slot="8485409096"
+                         data-ad-format="auto"
+                         data-full-width-responsive="true"></ins>
+                    <script>
+                        (adsbygoogle = window.adsbygoogle || []).push({});
+                    </script>
                 </div>
                 {% endif %}
                 
@@ -313,10 +324,7 @@ Je sais à quel point la pub sur Internet peut être pénible, mais nous nous ef
 
 {%  endblock %}
 
- {% if PUB.type == 'bas' %}
-                    {{ PUB.code | raw }}
 
-                {% endif %}
 </body>
 
 </html>
