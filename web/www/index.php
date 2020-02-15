@@ -15,6 +15,7 @@ $nouvelle_version = 1;
 $verif_auth = false;
 include G_CHE . "ident.php";
 
+
 // parametres
 $param = new parametres;
 
