@@ -211,18 +211,18 @@ if(defined('USE_REDIS'))
         $redis = new myredis;
         foreach($_POST  as $key => $val)
         {
-            if(!$redis->get("vg_" . $key ."_" . basename(__FILE__, '.php')))
+            if(!$redis->get("vg#" . $key ."#" . $PHP_SELF))
             {
                 // on n'a rien trouvé
-                if(!$tgv->getByVarPage($key,basename(__FILE__, '.php')))
+                if(!$tgv->getByVarPage($key,$PHP_SELF))
                 {
-                    $tgv->tgv_page = basename(__FILE__, '.php');
+                    $tgv->tgv_page = $PHP_SELF;
                     $tgv->tgv_varname = $key;
                     $tgv->tvg_type = "POST";
                     $tgv->stocke(true);
                 }
                 // on remplit le redis
-                $redis->store("vg_" . $key ."_" . basename(__FILE__, '.php'),1);
+                $redis->store("vg#" . $key ."#" . $PHP_SELF,1);
             }
         }
         foreach($_GET  as $key => $val)
