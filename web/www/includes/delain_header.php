@@ -227,7 +227,7 @@ if(defined('USE_REDIS'))
         }
         foreach($_GET  as $key => $val)
         {
-            if(!$redis->get("vg_" . $key ."_" . $PHP_SELF))
+            if(!$redis->get("vg#" . $key ."#" . $PHP_SELF))
             {
                 // on n'a rien trouvé
                 if(!$tgv->getByVarPage($key,$PHP_SELF))
@@ -238,7 +238,7 @@ if(defined('USE_REDIS'))
                     $tgv->stocke(true);
                 }
                 // on remplit le redis
-                $redis->store("vg_" . $key ."_" . $PHP_SELF,1);
+                $redis->store("vg#" . $key ."#" . $PHP_SELF,1);
             }
         }
 
