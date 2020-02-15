@@ -146,9 +146,9 @@ if ($stmt->rowCount() == 0)
                 $pa = $result['perso_pa'];
                 $erreur = 0;
                 $total = 0;
-                if ($objet)
+                if ($_REQUEST['objet'])
                 {
-                    foreach ($objet as $key => $val)
+                    foreach ($_REQUEST['objet'] as $key => $val)
                     {
                         $total = $total + 1;
                     }
@@ -160,13 +160,13 @@ if ($stmt->rowCount() == 0)
                 }
                 if ($erreur == 0)
                 {
-                    if ($objet)
+                    if ($_REQUEST['objet'])
                     {
-                        foreach ($objet as $key => $val)
+                        foreach ($_REQUEST['objet'] as $key => $val)
                         {
                             $req_ramasser = "select ramasse_objet_cachette($perso_cod,$key) as resultat";
-                            $stmt = $pdo->query($req_ramasser);
-                            $result = $stmt->fetch();
+                            $stmt         = $pdo->query($req_ramasser);
+                            $result       = $stmt->fetch();
                             echo $result['resultat'];
                         }
                     }

@@ -30,12 +30,10 @@ switch ($methode)
                 if (nombreObjets > 1) {
                     document.getElementById('boutonH').value = 'Ramasser les ' + nombreObjets + ' objets cochés !';
                     document.getElementById('boutonB').value = 'Ramasser les ' + nombreObjets + ' objets cochés !';
-                }
-                else if (nombreObjets == 1) {
+                } else if (nombreObjets == 1) {
                     document.getElementById('boutonH').value = 'Ramasser l’objet coché !';
                     document.getElementById('boutonB').value = 'Ramasser l’objet coché !';
-                }
-                else {
+                } else {
                     document.getElementById('boutonH').value = 'Cochez les objets à ramasser.';
                     document.getElementById('boutonB').value = 'Cochez les objets à ramasser.';
                 }
@@ -146,16 +144,16 @@ switch ($methode)
         $pa     = $result['perso_pa'];
         $erreur = 0;
         $total  = 0;
-        if (isset($objet))
+        if (isset($_REQUEST['objet']))
         {
-            foreach ($objet as $key => $val)
+            foreach ($_REQUEST['objet'] as $key => $val)
             {
                 $total = $total + 1;
             }
         }
-        if (isset($br))
+        if (isset($_REQUEST['br']))
         {
-            foreach ($br as $key => $val)
+            foreach ($_REQUEST['br'] as $key => $val)
             {
                 $total = $total + 1;
             }
@@ -167,9 +165,9 @@ switch ($methode)
         }
         if ($erreur == 0)
         {
-            if (isset($objet))
+            if (isset($_REQUEST['objet']))
             {
-                foreach ($objet as $key => $val)
+                foreach ($_REQUEST['objet'] as $key => $val)
                 {
                     $req_ramasser = "select ramasse_objet($perso_cod,$key) as resultat";
                     $stmt         = $pdo->query($req_ramasser);
@@ -177,9 +175,9 @@ switch ($methode)
                     echo $result['resultat'];
                 }
             }
-            if (isset($br))
+            if (isset($_REQUEST['br']))
             {
-                foreach ($br as $key => $val)
+                foreach ($_REQUEST['br'] as $key => $val)
                 {
                     $req_ramasser = "select ramasse_or($perso_cod,$key) as resultat";
                     $stmt         = $pdo->query($req_ramasser);

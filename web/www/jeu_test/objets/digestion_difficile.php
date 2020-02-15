@@ -21,7 +21,10 @@ if (!($result = $stmt->fetch()))
     // TRAITEMENT DES ACTIONS.
     //echo $objet;
     if ($objet == null)
-        $objet = isset($_POST['objet']) ? $_POST['objet'] : "-1";
+    {
+        $objet = get_request_var('objet', -1);
+    }
+
     if (isset($_POST['methode']))
     {
         $req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";

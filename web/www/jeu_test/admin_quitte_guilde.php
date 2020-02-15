@@ -45,41 +45,28 @@ switch ($methode)
                 echo("<p>Vous ne pouvez pas quitter la guilde sans nommer un autre administrateur avant votre départ !");
             } else
             {
-                $req = "delete from guilde_perso 
+                $req  = "delete from guilde_perso 
 														where pguilde_guilde_cod = $num_guilde 
 														and pguilde_perso_cod = $perso_cod ";
                 $stmt = $pdo->query($req);
 
-                $texte = "L'administrateur $perso_nom a quitté la guilde dont vous êtes administrateur.<br />";
-                $titre = "Départ d'un admin de la guilde.";
-                $req_num_mes = "select nextval('seq_msg_cod') as numero";
-                $stmt = $pdo->query($req_num_mes);
-                $result = $stmt->fetch();
-                $num_mes = $result['numero'];
-                $req_mes = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2)
-																				values ($num_mes, now(), '$titre', '$texte', now()) ";
-                $stmt = $pdo->query($req_mes);
-                // on renseigne l'expéditeur
-                $req2 = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive)
-																				values ($num_mes,1,'N') ";
-                $pdo->query($req2);
-                $req_admin = "select pguilde_perso_cod
-																		from guilde_perso,guilde_rang
-																		where pguilde_guilde_cod = $guilde_cod
-																		and rguilde_guilde_cod = pguilde_guilde_cod
-																		and rguilde_admin = 'O' 
-																		and rguilde_rang_cod = pguilde_rang_cod";
-                $stmt = $pdo->query($req_admin);
+                $texte               =
+                    "L'administrateur $perso_nom a quitté la guilde dont vous êtes administrateur.<br />";
+                $titre               = "Départ d'un admin de la guilde.";
+                $message             = new message();
+                $message->sujet      = $titre;
+                $message->corps      = $texte;
+                $message->expediteur = 1;
+
                 while ($result = $stmt->fetch())
                 {
-                    $dest = $result['pguilde_perso_cod'];
-                    $req_dest = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) 
-																		values ($num_mes,$dest,'N','N') ";
-                    $pdo->query($req_dest);
+                    $message->ajouteDestinataire($result['pguilde_perso_cod']);
+
                 }
+                $message->envoieMessage();
                 //on note l'historique dans les titres
                 $ancienne_guilde = "[Ancien Administrateur de la guilde " . pg_escape_string($ancienne_guilde) . "]";
-                $req = "insert into perso_titre values(default,$perso_cod,e'$ancienne_guilde',now(),'2')";
+                $req             = "insert into perso_titre values(default,$perso_cod,e'$ancienne_guilde',now(),'2')";
                 $stmt = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo("<p>Votre départ de la guilde est enregistré. Les autres administrateurs ont été prévenus.");

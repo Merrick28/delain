@@ -55,6 +55,7 @@ if ($erreur == 0)
             echo "</table>";
             break;
         case "e1":
+            $objet = $_REQUEST['objet'];
             echo "<p><strong>Attention !</strong> Modifier le prix générique d'un objet aura un impact sur TOUTES les échoppes.<br>";
             echo "Si un gérant a fixé un prix spécial pour cet objet dans une échoppe, votre modification sera également appliquée à son tarif.<br>";
             echo "Exemple : un objet coute 100br, et un gérant l'a fixé à 80 chez lui. Vous changez le prix en 200 br, pour l'échoppe du gérant, cela passera à 160 (règle de 3).";
@@ -71,7 +72,9 @@ if ($erreur == 0)
             echo "<p style=\"text-align:center\"><a href=\"voir_tarif_echoppe.php\">Revenir au menu</a>";
             break;
         case "e2":
-            $erreur = 0;
+            $objet   = $_REQUEST['objet'];
+            $montant = $_REQUEST['montant'];
+            $erreur  = 0;
             if (!preg_match('/^[0-9]*$/i', $montant))
             {
                 echo "<p>Anomalie sur le motnant : il ne doit contenir que des chiffres !";

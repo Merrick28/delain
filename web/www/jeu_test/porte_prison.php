@@ -35,7 +35,7 @@ $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
     $erreur         = 1;
-    $methode          = get_request_var('methode', 'debut');
+    $methode        = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -55,33 +55,31 @@ if ($stmt->rowCount() == 0)
             break;
         case "appel2":
             // numéro du message
-            $req_msg_cod = "select nextval('seq_msg_cod') as numero";
-            $stmt        = $pdo->query($req_msg_cod);
-            $result      = $stmt->fetch();
-            $num_mes     = $result['numero'];
+            $message             = new message();
+            $message->sujet      = "[Appel de prisonnier]";
+            $message->corps      = $_REQUEST['corps'];
+            $message->expediteur = $perso_cod;
+            $req_msg_cod         = "select nextval('seq_msg_cod') as numero";
+            $stmt                = $pdo->query($req_msg_cod);
+            $result              = $stmt->fetch();
+            $num_mes             = $result['numero'];
             // encodage du texte
-            $corps = htmlspecialchars($corps);
-            $corps = nl2br($corps);
-            $titre = "[Appel de prisonnier]";
-            $corps = str_replace(";", chr(127), $corps);
-            // message
-            $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) ";
-            $req_ins_mes = $req_ins_mes . "values ($num_mes,now(),now(),'$titre','$corps') ";
-            $stmt        = $pdo->query($req_ins_mes);
-            // expéditeur
-            $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-            $req_ins_exp = $req_ins_exp . "values (nextval('seq_emsg_cod'),$num_mes,$perso_cod,'N')";
-            $stmt        = $pdo->query($req_ins_exp);
+
             // destinataires
-            $req  = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) ";
-            $req  = $req . "select $num_mes, perso_cod, 'N', 'N' ";
-            $req  = $req . "from perso,guilde_perso ";
-            $req  = $req . "where perso_actif = 'O' ";
-            $req  = $req . "and pguilde_perso_cod = perso_cod ";
-            $req  = $req . "and pguilde_guilde_cod = 49 ";
-            $req  = $req . "and pguilde_valide = 'O' ";
-            $req  = $req . "and pguilde_rang_cod = 16 ";
+
+            $req  = "select  perso_cod
+            from perso,guilde_perso 
+            where perso_actif = 'O' 
+            and pguilde_perso_cod = perso_cod 
+            and pguilde_guilde_cod = 49 
+            and pguilde_valide = 'O'
+            and pguilde_rang_cod = 16 ";
             $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
+            {
+                $message->ajouteDestinataire($result['perso_cod']);
+            }
+            $message->envoieMessage();
             echo "<p>Votre message a bien été envoyé. Le geolier en prendra connaissance dès que possible.";
             break;
         case "corrompre":

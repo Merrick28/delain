@@ -26,26 +26,30 @@ if (!($result = $stmt->fetch()))
 		$is_familier = true;
 	}
 	$has_familier = false;
-	$req_familier = "select pfam_familier_cod from perso_familier,perso where pfam_perso_cod = $perso_cod and pfam_familier_cod = perso_cod and perso_actif = 'O'";
-    $stmt = $pdo->query($req_familier);
-    if($result = $stmt->fetch())
+    $req_familier =
+        "select pfam_familier_cod from perso_familier,perso where pfam_perso_cod = $perso_cod and pfam_familier_cod = perso_cod and perso_actif = 'O'";
+    $stmt         = $pdo->query($req_familier);
+    if ($result = $stmt->fetch())
     {
-		$has_familier = true;
-	}
-	
-  	// TRAITEMENT DES ACTIONS.
-	//echo $objet;
-	if ($objet == null)
-		$objet = isset($_POST['objet'])?$_POST['objet']: "-1";
-	if(isset($_POST['methode'])){
-		$req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req_pa);
+        $has_familier = true;
+    }
+
+    // TRAITEMENT DES ACTIONS.
+    //echo $objet;
+    if ($objet == null)
+    {
+        $objet = get_request_var('objet', -1);
+    }
+
+    if (isset($_POST['methode']))
+    {
+        $req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";
+        $stmt   = $pdo->query($req_pa);
         $result = $stmt->fetch();
         if ($result['perso_pa'] < 4)
-		{
-			$contenu_page .= "<p><strong>Vous n’avez pas assez de PA !</strong></p>";
-		}
-		else
+        {
+            $contenu_page .= "<p><strong>Vous n’avez pas assez de PA !</strong></p>";
+        } else
 		{
             $perso_nom = $result['perso_nom'];
 			if($has_familier)

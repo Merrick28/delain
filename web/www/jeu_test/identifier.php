@@ -12,19 +12,19 @@ $stmt           = $pdo->execute(array(
                                     ":objet"     => $_REQUEST['objet']
                                 ), $stmt);
 
-if(!$result = $stmt->fetch())
+if (!$result = $stmt->fetch())
 {
     die('Erreur sur chargement fonction identification');
 }
 $resultat = $result['identifie'];
 
-$tab_res  = explode(";", $resultat);
+$tab_res = explode(";", $resultat);
 if ($tab_res[0] == -1)
 {
     echo("<p>Une erreur est survenue : $tab_res[1]");
-}
-else
+} else
 {
+    $objet = $_REQUEST['objet'];
     echo("<p>Vous avez utilisé la compétence $tab_res[2] ($tab_res[3] %)</p>");
     echo("<p>Votre lancer de dés est <strong>$tab_res[4]</strong>, ");
     if ($tab_res[5] == -1)
@@ -69,8 +69,7 @@ else
         if ($tab_res[9] == 0)
         {
             echo("<p>Vous n'avez pas réussi à améliorer cette compétence.");
-        }
-        else
+        } else
         {
             echo("<p>Vous avez réussi à améliorer cette compétence. Sa nouvelle valeur est de $tab_res[10].");
         }

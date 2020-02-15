@@ -1,6 +1,6 @@
 ﻿<?php
 
-$methode          = get_request_var('methode', '');
+$methode = get_request_var('methode', '');
 include_once "verif_connexion.php";
 ob_start();
 include "../includes/fonctions.php";
@@ -84,11 +84,13 @@ if (!isset($dgrisbi))
         }
     </STYLE>
 <?php //Réalisation des actions
+
 switch ($methode)
 {
     case "remettre":
         if ($pa >= 2)
         {
+            $perobj       = get_request_var('perobj');
             $req_remettre = "select remettre_objet($perso_cod,$perobj) as equipe";
             $stmt         = $pdo->query($req_remettre);
             $result       = $stmt->fetch();
@@ -123,7 +125,7 @@ switch ($methode)
         //    echo "<br><strong>Un familier ne peut pas équiper d’objet !</strong><br>";
         //    $erreur = 1;
         //}
-
+        $objet = get_request_var('objet');
         if ($erreur == 0)
         {
             $req_remettre = "select equipe_objet($perso_cod,$objet) as equipe";
@@ -154,8 +156,9 @@ switch ($methode)
 				<a href='inventaire.php?methode=abandonner&objet=$objet&validerabandon=1'>Abandonner quand même ! (1PA)</a></strong>";
         } else
         {
+
             $req      =
-                'select depose_objet(perso_cod,' . $objet . ') as resultat from perso where perso_cod = $perso_cod';
+                'select depose_objet(perso_cod,' . $_REQUEST['objet'] . ') as resultat from perso where perso_cod = $perso_cod';
             $stmt     = $pdo->query($req);
             $result   = $stmt->fetch();
             $resultat = $result['resultat'];

@@ -201,8 +201,7 @@ if ($erreur == 0)
                 /* Si elle est à 1 on force l’update, sinon      */
                 /* on affiche un message                         */
                 /*************************************************/
-                if (!isset($valide))
-                    $valide = 0;
+                $valide = get_request_var('valide', 0);
                 if ($valide != 1)
                 {
                     $result = $stmt->fetch();

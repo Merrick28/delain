@@ -11,7 +11,7 @@ if ($perso->is_milice() == 0)
 }
 if ($erreur == 0)
 {
-    $methode          = get_request_var('methode', 'debut');
+    $methode = get_request_var('methode', 'debut');
     if (!$perso->is_bernardo())
     {
         switch ($methode)
@@ -66,24 +66,12 @@ if ($erreur == 0)
                 // titre
                 $titre = "C\'est la milice qui vous parle !";
                 $titre = htmlspecialchars($titre);
-                // numéro du message
-                $req_msg_cod = "select nextval('seq_msg_cod') as numero";
-                $stmt        = $pdo->query($req_msg_cod);
-                $result      = $stmt->fetch();
-                $num_mes     = $result['numero'];
-                // encodage du texte
-                $corps = htmlspecialchars($corps);
-                $corps = nl2br($corps);
-                $corps = str_replace(";", chr(127), $corps);
-                $corps = pg_escape_string($corps);
-                // enregistrement du message
-                $req_ins_mes = "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) ";
-                $req_ins_mes = $req_ins_mes . "values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-                $stmt        = $pdo->query($req_ins_mes);
-                // enregistrement de l'expéditeur
-                $req_ins_exp = "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-                $req_ins_exp = $req_ins_exp . "values (nextval('seq_emsg_cod'),$num_mes,$perso_cod,'N')";
-                $stmt        = $pdo->query($req_ins_exp);
+
+                $message             = new message();
+                $message->sujet      = "C'est la milice qui vous parle !";
+                $message->corps      = $_REQUEST['corps'];
+                $message->expediteur = $perso_cod;
+
                 // enregistrement des destinataires
                 // recherche de la position
                 $req_pos      =
@@ -108,13 +96,10 @@ if ($erreur == 0)
 
                 while ($result = $stmt->fetch())
                 {
-                    $req_ins_dest  =
-                        "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) ";
-                    $req_ins_dest  =
-                        $req_ins_dest . "values (nextval('seq_dmsg_cod'),$num_mes, " . $result['perso_cod'] . ",'N','N')";
-                    $stmt2         = $pdo->query($req_ins_dest);
-                    $liste_expedie = $liste_expedie . $result['perso_nom'] . ",";
+                    $message->ajouteDestinataire($result['perso_cod']);
+
                 }
+                $message->envoieMessage();
                 echo "<p>Votre message a été envoyé à toutes les personnes présents à $volume de distance de vous.";
                 break;
         }

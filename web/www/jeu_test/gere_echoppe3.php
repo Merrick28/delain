@@ -164,7 +164,9 @@ if ($erreur == 0)
 }
 if ($erreur == 0)
 {
-    $methode = $_REQUEST['methode'];
+    $objet    = $_REQUEST['objet'];
+    $lieu_cod = $_RQEUEST['lieu_cod'];
+    $methode  = $_REQUEST['methode'];
     if ($methode == "visu")
     {
         $req_stock
@@ -172,8 +174,9 @@ if ($erreur == 0)
 				gobj_pa_eclair, gobj_distance, gobj_deposable, gobj_comp_cod, gobj_description, gobj_cod, gobj_nom,
 				gobj_valeur, gobj_echoppe_stock, gobj_echoppe_destock, mgstock_nombre, mgstock_vente_persos,
 				mgstock_vente_echoppes, comp_libelle
-			FROM (select * from objet_generique, type_objet where gobj_cod = $objet and gobj_tobj_cod = tobj_cod) t1
-			LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod) ";
+			FROM (select * from objet_generique, type_objet where gobj_cod = " . $_REQUEST['objet'] . " and gobj_tobj_cod = tobj_cod) t1
+			LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = " .
+              $_REQUEST['lieu_cod'] . ") ";
         if ($perso_cod == 451072 or $perso_cod == 185)
         {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
             $req_stock =

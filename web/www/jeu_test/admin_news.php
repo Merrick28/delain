@@ -116,17 +116,16 @@ if ($erreur == 0)
         case "lance":
 
             // on vérifie qu’on a rempli les champs correctement
-            if (isset($titre) && isset($auteur) && isset($texte))
+            if (isset($_REQUEST['titre']) && isset($_REQUEST['auteur']) && isset($_REQUEST['texte']))
             {
-                if ($titre != '' && $auteur != '' && $texte != '')
+                if ($_REQUEST['titre'] != '' && $_REQUEST['auteur'] != '' && $_REQUEST['texte'] != '')
                 {
-                    $titre  = pg_escape_string(str_replace('\'', '’', $titre));
-                    $auteur = pg_escape_string(str_replace('\'', '’', $auteur));
-                    $texte  = pg_escape_string(str_replace('\'', '’', $texte));
+                    $news              = new news;
+                    $news->news_texte  = $_REQUEST['texte'];
+                    $news->news_titre  = $_REQUEST['titre'];
+                    $news->news_auteur = $_REQUEST['auteur'];
+                    $news->stocke(true);
 
-                    $req  =
-                        "insert into news (news_titre, news_auteur, news_texte) values (e'$titre', e'$auteur', e'$texte')";
-                    $stmt = $pdo->query($req);
 
                     ?> News correctement lancée <?php
 
@@ -167,9 +166,9 @@ if ($erreur == 0)
             break;
 
         case "previsu":
-            $titre = str_replace('\'', '’', $titre);
-            $auteur = str_replace('\'', '’', $auteur);
-            $texte  = str_replace('\'', '’', $texte);
+            $titre = str_replace('\'', '’', $_REQUEST['titre']);
+            $auteur = str_replace('\'', '’', $_REQUEST['auteur']);
+            $texte  = str_replace('\'', '’', $_REQUEST['texte']);
             ?>
             <p><strong>Prévisualisation</strong></p>
             <div class="bordiv" style="margin:2px;text-align:center">

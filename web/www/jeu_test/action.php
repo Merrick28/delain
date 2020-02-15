@@ -14,7 +14,7 @@ $compte = new compte;
 $compte->charge($compt_cod);
 
 
-$methode = get_request_var('methode','');
+$methode = get_request_var('methode', '');
 
 function affiche_apres_deplacement($position)
 {
@@ -117,8 +117,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if (!isset($_REQUEST['type_at']))
             {
                 $type_at = 0;
-            }
-            else
+            } else
             {
                 $type_at = $_REQUEST['type_at'];
             }
@@ -733,10 +732,10 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= '<a href="index.php" class="centrer">Retour</a>';
             break;
         case 'depose_objet':
-            $contenu_page .= $perso->depose_objet($objet);
+            $contenu_page .= $perso->depose_objet($_REQUEST['objet']);
             break;
         case 'vente_bat':
-            $contenu_page .= $perso->vente_bat($objet);
+            $contenu_page .= $perso->vente_bat($_REQUEST['objet']);
             break;
         case 'nv_magasin_achat':
             $lieu = $_POST['lieu'];
@@ -818,9 +817,9 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $type_rep[2] = 'armure';
             $type_rep[4] = 'casque';
             $autorise    = 0;
-
-            $objet = new objets();
-            $objet->charge($_REQUEST['objet']);
+            $monobjet    = $_REQUEST['objet'];
+            $objet       = new objets();
+            $objet->charge($monobjet);
 
             $objet_generique = new objet_generique();
             $objet_generique->charge($objet->obj_gobj_cod);
@@ -1080,17 +1079,17 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     if ($result = $stmt->fetch())
                     {
                         /* Action */
-                        $req = 'update dieu set dieu_pouvoir = (dieu_pouvoir + 10) where dieu_cod = 2';
-                        $stmt = $pdo->query($req);
-                        $req =
+                        $req          = 'update dieu set dieu_pouvoir = (dieu_pouvoir + 10) where dieu_cod = 2';
+                        $stmt         = $pdo->query($req);
+                        $req          =
                             'update perso set perso_pa = (perso_pa - 6), perso_px = perso_px + 0.25 where perso_cod = :perso';
-                        $stmt      = $pdo->prepare($req_matos);
-                        $stmt      = $pdo->execute(array(":perso" => $perso_cod), $stmt);
-                        $req =
+                        $stmt         = $pdo->prepare($req_matos);
+                        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $req          =
                             'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
                             . 'values(nextval(\'seq_levt_cod\'),89,now(),1,:perso,\'[perso_cod1] a travaillé.\',\'O\',\'O\',:perso)';
-                        $stmt      = $pdo->prepare($req_matos);
-                        $stmt      = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $stmt         = $pdo->prepare($req_matos);
+                        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
                         $contenu_page .= 'La construction du bâtiment a progressé.<br>Votre dieu a gagné en puissance.<br>Vous gagnez 0.25px.';
                     } else
                     {

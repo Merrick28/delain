@@ -202,6 +202,7 @@ else
         <?php
         break;
     case "ajout2":
+        $titre = get_request_var('titre', '');
         if ((!isset($titre)) || ($titre == ''))
         {
             ?>
@@ -209,6 +210,7 @@ else
             <?php
             $erreur = 1;
         }
+        $contenu = get_request_var('contenu', '');
         if ((!isset($contenu)) || ($contenu == ''))
         {
             ?>
