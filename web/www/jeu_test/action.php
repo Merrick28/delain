@@ -116,9 +116,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $pa_at[18] = $pa_s;
             $pa_at[19] = $pa_s;
             $pa_at[20] = $pa_s;
-            if (!isset($type_at))
+            if (!isset($_REQUEST['type_at']))
             {
                 $type_at = 0;
+            }
+            else
+            {
+                $type_at = $_REQUEST['type_at'];
             }
 
             $req    = 'select attaque(:perso,:cible,:type_attaque) as resultat';

@@ -38,9 +38,13 @@ echo '<script type="text/javascript">
 	</script>
 	';
 
-if (!isset($methode))
+if (!isset($_REQUEST['methode']))
 {
     $methode = "debut";
+}
+else
+{
+    $methode =$_REQUEST['methode'];
 }
 $identifie['O'] = "";
 $identifie['N'] = "(non identifié)";
