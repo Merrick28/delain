@@ -124,7 +124,7 @@ $stmt        = $pdo->query($req_monstre);
 
 
 $contenu_page .= "
-<form name='fsort' method='post' action='$PHP_SELF'>
+<form name='fsort' method='post' action='$_SERVER['PHP_SELF']'>
 <input type='hidden' name='debut'>
 <input type='hidden' name='sort'>
 <input type='hidden' name='sens' value='$sens'>

@@ -109,7 +109,7 @@ if ($db->is_intangible($perso_cod))
 $niveau_dieu = 0;
 if ($erreur == 0) {
     $contenu_page .= '
-		<form name="vide_rec" method="post" action="' . $PHP_SELF . '" style="display:none;">
+		<form name="vide_rec" method="post" action="' . $_SERVER['PHP_SELF'] . '" style="display:none;">
 		<input type="hidden" name="numrec" value="0">
 		</form>
 		

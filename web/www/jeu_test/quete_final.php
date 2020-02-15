@@ -52,7 +52,7 @@ if (!$perso->is_lieu())
 													//Quête du collectionneur : cette quête a pour vocation de faire ramener un objet rare, droppé par les capitaines morbelins ou trouvé dans des cachettes
 													{
 													?>
-													<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
+													<form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 													<p>En arrivant dans le dispensaire, un guérisseur vous interpelle :
 														<br><em>Je crois que vous possédez un objet qui pourrait intéresser l'un des membres de notre communauté. 
 														Il s'agit d'une <?php  echo $obj_nom; ?> . 
@@ -92,7 +92,7 @@ if (!$perso->is_lieu())
 															{
 																// Pour la réutilisabilité : Formulaire à modifier en fonction de l'objet, notamment phrase à mettre en contexte	
 																			?>
-																			<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
+																			<form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 																			<p>Un soignant en chef du dispensaire s'approche de vous : 
 																			<br><em>Je vois que  vous êtes en possession d'écailles de basilic ! Celles-ci nous sont fort utile pour réaliser certaines de nos préparations. Pourriez vous nous les céder ? Nous vous en prendrons dix.</em>
 																			<input type="hidden" name="methode" value="cede_objet2">
@@ -266,7 +266,7 @@ if (!$perso->is_lieu())
 													{
 													$nb_caisses = $perso->compte_objet(380);
 													?>
-													<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
+													<form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF'];?>">
 													<p><em>Vous voilà bien chargé cher Monsieur. Souhaitez vous faire un dépôt ?
 													<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ? (Vous êtes en possession de <?php  echo $nb_caisses; ?> caisses)
 													<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire, qui vous remettra la récompense promise ...</em>
@@ -394,7 +394,7 @@ if (!$perso->is_lieu())
 															if ($stmt->rowCount() == 0)
 																	{	
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></strong>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu2_quete7">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe, et entendre les paroles de Balgur.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 
@@ -403,7 +403,7 @@ if (!$perso->is_lieu())
 															else if ($quete7 == 2)
 																	{
 																	?>	
-																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></strong>
+																	<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu2_quete7_2">une dévotion à Balgur.</a></strong>
 																	<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																	<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																	<?php 	
@@ -438,7 +438,7 @@ if (!$perso->is_lieu())
 															if ($stmt->rowCount() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></strong>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu4_quete8">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment être entré en contact avec Elian lors de leur transe.
 																		<br>Mais cela peut aussi comporter des risques. D'autres ont subit des séquelles...
 																		<?php 
@@ -447,7 +447,7 @@ if (!$perso->is_lieu())
 															else if ($quete8 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></strong>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu4_quete8_2">une dévotion à Elian.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -481,7 +481,7 @@ if (!$perso->is_lieu())
 															if ($stmt->rowCount() == 0)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></strong>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu1_quete10">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. L'Aveugle offre parfois des paroles à ceux qui atteignent l'état de transe.
 																		<br>Mais cela peut aussi comporter des risques. Certains ont subit des séquelles suite à cette expérience.
 																		<?php 
@@ -490,7 +490,7 @@ if (!$perso->is_lieu())
 															else if ($quete10 == 2)
 																		{
 																		?>	
-																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $PHP_SELF; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></strong>
+																		<p><br><br>Votre statut vous permet de réaliser <strong><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode2=dieu1_quete10_2">une dévotion à Io.</a></strong>
 																		<br>Cela vous en coutera un millier de brouzoufs pour les offrandes. Certains affirment avoir eu des visions en rentrant en transe.
 																		<br>Mais cela peut aussi comporter des risques.
 																		<?php 	
@@ -851,7 +851,7 @@ if (!$perso->is_lieu())
 																// Quête des Dieux : le mot de passe
 																// A partir d'un poème vu dans plusieurs cachettes, et d'un code obtenu dans un dispensaire les aventuriers doivent reconstituer un mot de passe
 																		?>
-																		<form name="cede" method="post" action="<?=$PHP_SELF;?>">
+																		<form name="cede" method="post" action="<?=$_SERVER['PHP_SELF'];?>">
 																		<p>L'endroit est totalement sordide. Vous pouvez en faire le tour rapidement, et observer deci delà des marques de construction d'un autre temps.
 																		<br>Les ouvrages ne sont pas terminés, et parfois, des morceaux d'instruments sont encore visibles au sol.
 																		<br>En fouillant un peu, ou en déplaçant des petits tas de poussière, vous apercevez des ossements. Pas d'arme, juste des instruments et des ossements ...

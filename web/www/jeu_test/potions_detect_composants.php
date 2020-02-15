@@ -27,23 +27,23 @@ if($result = $stmt->fetch())
 			$contenu_page .= '
 				<p align="center"><br>Vous avez la possibilité de détecter des composants. Plusieurs méthodes se présentent à vous :<br>
 				<br><strong><em>Attention, un seul composant par position vous sera présenté, mais en cherchant, vous pourrez parfois en trouver de plusieurs sortes</em></strong>
-				<form method="post" action="' . $PHP_SELF. '">
+				<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 				<br><p align="left" class="soustitre2"> <strong>Détection simple.</strong></p>
 				Elle ne vous permettra que de tenter de regarder la présence de composants sur votre propre position<br>
 				<input type="hidden" name="methode" value="detecter1">
 				<input type="hidden" name="tpot" value="' . $tpot . '">
 				<br><input type="submit" value="Rechercher (0 PA)"  class="test">
 				</form><br>
-				<form method="post" action="' . $PHP_SELF. '">
+				<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 				<br><p align="left" class="soustitre2"> <strong>Recherche avancée.</strong></p>
 				Cette recherche vous permettra de tenter de regarder la présence de composants à une case autour de vous.<br>
 				<input type="hidden" name="methode" value="detecter2">
 				<input type="hidden" name="tpot" value="' . $tpot . '">
-				<br><input type="submit" value="Rechercher ('. $pa .' PA)"  class="test">
+				<br><input type="submit" value="Rechercher (' . $pa . ' PA)"  class="test">
 				</form><br>';
 			if ($niveau == 101)
-			{
-				$contenu_page .= '<form method="post" action="' . $PHP_SELF. '">
+            {
+                $contenu_page .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<br><p align="left" class="soustitre2"> <strong>Recherche poussée.</strong></p>
 					Elle vous permettra de scruter une zone à deux positions ou moins autour de vous.<br>
 					<input type="hidden" name="methode" value="detecter3">
@@ -52,7 +52,7 @@ if($result = $stmt->fetch())
 					</form><br>
 					</p>
 					<br>';
-			}
+            }
 		break;
 
 		case "detecter1":
@@ -67,18 +67,16 @@ if($result = $stmt->fetch())
 			if($stmt->rowCount() == 0)
 			{
 				$contenu_page .= 'Votre position ne semble pas vraiment constituer un lieu idéal pour récolter des composants.<br>';
-				break;
-			}
-
-			else
-			{
-				while($result = $stmt->fetch())
-				{
-					$contenu_page .= '<br>Votre recherche pourrait s’avérer fructueuse ! Ce lieu est propice à la découverte de composants. Mais quelqu’un aura peut-être déjà fait sa propre récolte en ces lieux ...<br>';
-				}
-			}
-			$contenu_page .= '<br><p><a href="' .$PHP_SELF . '?tpot=' . $tpot . '">Retour à la détection</a>';
-		break;
+                break;
+            } else
+            {
+                while ($result = $stmt->fetch())
+                {
+                    $contenu_page .= '<br>Votre recherche pourrait s’avérer fructueuse ! Ce lieu est propice à la découverte de composants. Mais quelqu’un aura peut-être déjà fait sa propre récolte en ces lieux ...<br>';
+                }
+            }
+            $contenu_page .= '<br><p><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à la détection</a>';
+            break;
 
 		case "detecter2":
 			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";

@@ -165,7 +165,7 @@ switch ($methode)
         } else
         {
 
-            $contenu_page .= '<form name="recup_composant" method="post" action="' . $PHP_SELF . '">
+            $contenu_page .= '<form name="recup_composant" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 														<input type="hidden" name="methode" value="recup">
 														<input type="hidden" name="t" value="' . $t . '">
 														<table width="70%">

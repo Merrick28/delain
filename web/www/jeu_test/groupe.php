@@ -44,7 +44,7 @@ switch ($methode)
                 // pas dans un groupe
                 //
                 $contenu_page .= 'Vous ne faites partie d’aucune coterie.<br>
-					Voulez vous <a href="' . $PHP_SELF . '?methode=cree">en créer une ?</a>';
+					Voulez vous <a href="' . $_SERVER['PHP_SELF'] . '?methode=cree">en créer une ?</a>';
 
                 break;
 
@@ -53,12 +53,12 @@ switch ($methode)
                 // fait partie d’un groupe de combat
                 //
 
-                $num_groupe   = $result['groupe_cod'];
-                $contenu_page .= 'Vous faites partie de la coterie <strong>' . $result['groupe_nom'] . '</strong><br>
-					<a href="' . $PHP_SELF . '?methode=reglage">Gérer les valeurs affichées.</a><br>';
+                $num_groupe               = $result['groupe_cod'];
+                $contenu_page             .= 'Vous faites partie de la coterie <strong>' . $result['groupe_nom'] . '</strong><br>
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=reglage">Gérer les valeurs affichées.</a><br>';
                 if ($is_suspendu)
                 {
-                    $contenu_page .= '<a href="' . $PHP_SELF . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
+                    $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
                     $contenu_page .= '<br /> Vous êtes décédé et avez été écarté de votre coterie ! Avec un peu de ferveur, vos compagnons pourront vous y ramener...<br />';
                 } else
                 {
@@ -94,13 +94,13 @@ switch ($methode)
                     if ($is_chef)
                     {
                         $contenu_page .= '<hr>Vous êtes chef de groupe.<br>
-						<a href="' . $PHP_SELF . '?methode=invite">Inviter des participants ?</a><br>
-						<a href="' . $PHP_SELF . '?methode=delegue">Déléguer le role de chef ?</a><br>
-						<a href="' . $PHP_SELF . '?methode=lourdage">Se séparer d’un des participants ?</a><br>
-						<a href="' . $PHP_SELF . '?methode=detruire&confirme=N">Détruire cette coterie ?</a><br><hr>';
+						<a href="' . $_SERVER['PHP_SELF'] . '?methode=invite">Inviter des participants ?</a><br>
+						<a href="' . $_SERVER['PHP_SELF'] . '?methode=delegue">Déléguer le role de chef ?</a><br>
+						<a href="' . $_SERVER['PHP_SELF'] . '?methode=lourdage">Se séparer d’un des participants ?</a><br>
+						<a href="' . $_SERVER['PHP_SELF'] . '?methode=detruire&confirme=N">Détruire cette coterie ?</a><br><hr>';
                     } else
                     {
-                        $contenu_page .= '<a href="' . $PHP_SELF . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
+                        $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=quitte&confirme=N">Quitter cette coterie ?</a><br>';
                     }
 
                     if ($admin_monstre)
@@ -199,7 +199,7 @@ switch ($methode)
                         // on affiche les membres et les infos
                         //
                         $contenu_page .= '<table><td>Liste des membres de ce groupe de combat (<strong>' . $nbre_perso . '</strong> membres)</td>
-							<form method="post" action="' . $PHP_SELF . '">
+							<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 								<input type="hidden" name="methode" value="groupe_texte">
 								<input type="hidden" name="num_groupe" value="' . $num_groupe . '">
 								<td><textarea name="groupe_texte" cols="80" rows =5>' . $result2['groupe_texte'] . '</textarea></td><td><input type="submit" value="Validation" class="test">
@@ -294,7 +294,7 @@ switch ($methode)
                                 $contenu_page .= "</td><td>";
                                 $contenu_page .= $result['distance'];
                                 $contenu_page .= '</td></form>
-									<form method="post" action="' . $PHP_SELF . '">
+									<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 										<input type="hidden" name="methode" value="texte">
 										<input type="hidden" name="num_groupe" value="' . $num_groupe . '">
 										<td><textarea name="pgroupe_texte" rows=1 cols=40>' . $result['pgroupe_texte'] . '</textarea></td>
@@ -372,7 +372,7 @@ switch ($methode)
                             else if ($barre < 90) $alt = 'Rappel bien engagé...';
                             else $alt = 'Rappel imminent !';
                             $contenu_page .= '<tr><td>' . $result['perso_nom'] . '</td><td><img src="' . G_IMAGES . 'hp' . $barre . '.gif" alt="' . $alt . '" title="' . $alt . '"></td><td>';
-                            $contenu_page .= '<form method="post" action="' . $PHP_SELF . '">
+                            $contenu_page .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 								<input type="hidden" name="methode" value="rappel_mort" />
 								<input type="hidden" name="mort_perso_cod" value="' . $result['perso_cod'] . '" />';
                             if ($afficheBoutons)
@@ -396,7 +396,7 @@ switch ($methode)
 			and pgroupe_statut = 0';
         $stmt = $pdo->query($req);
         if ($stmt->rowCount() != 0)
-            $contenu_page .= '<hr>Vous avez des invitations en attente. <a href="' . $PHP_SELF . '?methode=vint">Les voir maintenant ?</a>';
+            $contenu_page .= '<hr>Vous avez des invitations en attente. <a href="' . $_SERVER['PHP_SELF'] . '?methode=vint">Les voir maintenant ?</a>';
         break;    // fin methode debut
 
     case "cree":
@@ -577,7 +577,7 @@ switch ($methode)
         if ($confirme == 'N')
         {
             $contenu_page .= 'Vous vous apprêtez à quitter cette coterie.<br>
-			<a href="' . $PHP_SELF . '?methode=quitte&confirme=O">Cliquez ici pour confirmer !</a>';
+			<a href="' . $_SERVER['PHP_SELF'] . '?methode=quitte&confirme=O">Cliquez ici pour confirmer !</a>';
         }
         if ($confirme == 'O')
         {
@@ -621,7 +621,7 @@ switch ($methode)
 			and perso_cod != ' . $perso_cod . '
 			order by minusc ';
         $stmt         = $pdo->query($req);
-        $contenu_page .= '<form method="post" action="' . $PHP_SELF . '">
+        $contenu_page .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="delegue2">
 			Choisissez l’aventurier auquel vous voulez déléguer : <br>
 			<select name="deleg">';
@@ -683,7 +683,7 @@ switch ($methode)
             if ($confirme == 'N')
             {
                 $contenu_page .= 'Vous vous apprêtez à détruire cette coterie.<br>
-				<a href="' . $PHP_SELF . '?methode=detruire&confirme=O">Cliquez ici pour confirmer !</a>';
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=detruire&confirme=O">Cliquez ici pour confirmer !</a>';
             }
             if ($confirme == 'O')
             {
@@ -699,7 +699,7 @@ switch ($methode)
                 $req          = 'delete from groupe where groupe_cod = ' . $groupe;
                 $stmt         = $pdo->query($req);
                 $contenu_page .= 'La coterie a bien été détruite.<br>
-					<a href="' . $PHP_SELF . '">retour au menu coterie</a>';
+					<a href="' . $_SERVER['PHP_SELF'] . '">retour au menu coterie</a>';
             }
         }
         break;        // fin methode détruire
@@ -722,7 +722,7 @@ switch ($methode)
 			and perso_cod != ' . $perso_cod . '
 			order by minusc ';
         $stmt         = $pdo->query($req);
-        $contenu_page .= '<form method="post" action="' . $PHP_SELF . '">
+        $contenu_page .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="lourde2">
 			Choisissez l’aventurier que vous souhaitez enlever de la coterie : <br>
 			<select name="deleg">';
@@ -803,6 +803,6 @@ switch ($methode)
         break;
 } // fin switch methode
 
-$contenu_page .= '<p style="text-align:center;"><a href="' . $PHP_SELF . '">Retour à la gestion de la coterie</a></p>';
+$contenu_page .= '<p style="text-align:center;"><a href="' . $_SERVER['PHP_SELF'] . '">Retour à la gestion de la coterie</a></p>';
 
 include "blocks/_footer_page_jeu.php";

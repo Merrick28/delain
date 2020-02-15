@@ -25,28 +25,28 @@ $contenu_page .= "<p>Vous avez amélioré la compétence « $nom_competence » d
 $prix = $nouvelle_valeur * $multiplicateur_prix;
 if ($nouvelle_valeur <= 25)
 {
-    $val_des = 4;
-    $pa = 1;
+    $val_des      = 4;
+    $pa           = 1;
     $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="' . $PHP_SELF . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA))</em>';
+				<br><a href="' . $_SERVER['PHP_SELF'] . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA))</em>';
 } else if ($nouvelle_valeur <= 50)
 {
-    $val_des = 3;
-    $pa = 1;
+    $val_des      = 3;
+    $pa           = 1;
     $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="' . $PHP_SELF . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
+				<br><a href="' . $_SERVER['PHP_SELF'] . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
 } else if ($nouvelle_valeur <= 75)
 {
-    $val_des = 2;
-    $pa = 2;
+    $val_des      = 2;
+    $pa           = 2;
     $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-		    	<br><a href="' . $PHP_SELF . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
+		    	<br><a href="' . $_SERVER['PHP_SELF'] . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
 } else if ($nouvelle_valeur < 85)
 {
-    $val_des = 1;
-    $pa = 3;
+    $val_des      = 1;
+    $pa           = 3;
     $contenu_page .= '<p>Vous pouvez poursuivre votre entrainement de cette compétence
-				<br><a href="' . $PHP_SELF . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
+				<br><a href="' . $_SERVER['PHP_SELF'] . '?comp_cod=' . $comp_cod . '">Vous entrainer à nouveau ?</a> <em>(Prix : ' . $prix . ' brouzoufs, ' . $pa . ' PA)</em>';
 } else
 {
     $val_des = 0;

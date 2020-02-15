@@ -103,7 +103,7 @@ while($result = $stmt->fetch())
 $contenu_page .= '<tr><td colspan="5"></td><td></td></tr>
 
 <tr>
-<td class="soustitre2"><a href="' . $PHP_SELF .'?sort=' . $n_sort[$sort] . '&m=' . $m . '">Trier par ' . $a_sort[$sort] . ' ?</a></td>
+<td class="soustitre2"><a href="' . $_SERVER['PHP_SELF'] . '?sort=' . $n_sort[$sort] . '&m=' . $m . '">Trier par ' . $a_sort[$sort] . ' ?</a></td>
 <td class="soustitre2" style="width:100px;"><a style="white-space:nowrap;" href="javascript:document.message.methode.value=\'select_non_lu\';document.message.submit();">Marquer comme non lus</a></td>
 
 <td class="soustitre2"><a href="action_message.php?m=' . $m . '&methode=tout_lu">Tout marquer comme lu</a></td>
@@ -125,9 +125,9 @@ for($cpt = 1; $cpt <= $nb_pages; $cpt++)
 		$contenu_page .= '<font class="soustitre2"><strong>' . $page_en_cours . '</strong></font> &nbsp;&nbsp;';
 	}
 	else
-	{
-		$contenu_page .= '<a href="' . $PHP_SELF . '?msg_start=' . $v_debut . '&m=' . $m . '&sort=' . $sort . '">' . $cpt . '</a> &nbsp;&nbsp;';
-	}
+    {
+        $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?msg_start=' . $v_debut . '&m=' . $m . '&sort=' . $sort . '">' . $cpt . '</a> &nbsp;&nbsp;';
+    }
 }
 
 $contenu_page .= '</td></tr>';

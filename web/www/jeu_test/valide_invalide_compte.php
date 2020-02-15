@@ -21,8 +21,8 @@ if ($compte->is_admin())
     }
 
 
-    $req  = "update perso set perso_type_perso = 2 where perso_cod in ";
-    $req  = $req . "(select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $vcompte) ";
+    $req  = "update perso set perso_type_perso = 2 where perso_cod in 
+    (select pcompt_perso_cod from perso_compte where pcompt_compt_cod = $vcompte) ";
     $stmt = $pdo->query($req);
 
     $req  = "delete from perso_compte where pcompt_compt_cod = $vcompte ";

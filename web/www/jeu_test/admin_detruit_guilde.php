@@ -35,7 +35,7 @@ if ($autorise)
             if (!isset($confirmation))
             {
                 $contenu_page .= '<p>Confirmez vous la destruction de la guilde ?
-					<p><a href="' . $PHP_SELF . '?confirmation=O">OUI !!!</a>
+					<p><a href="' . $_SERVER['PHP_SELF'] . '?confirmation=O">OUI !!!</a>
 					<p><a href="admin_guilde.php">NON !!!</a>
 					</form>';
             } else

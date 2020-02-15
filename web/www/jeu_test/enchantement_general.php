@@ -97,7 +97,7 @@ for ($cpt = 0; $cpt < $nb; $cpt++)
     } else
     {
         $style  = 'pas_onglet';
-        $lien   = '<a href="' . $PHP_SELF . '?t_ench=' . $cpt . '">';
+        $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?t_ench=' . $cpt . '">';
         $f_lien = '</a>';
     }
     $contenu_page .= '<td class="' . $style . '"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
@@ -123,7 +123,7 @@ switch ($t_ench)
 				</div>
 				<br>';
             include "enchantement_flux.php";
-            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=0">Retour à l\'onglet sélectionné</a>';
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?t_ench=0">Retour à l\'onglet sélectionné</a>';
         } else
         {
             $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
@@ -145,7 +145,7 @@ switch ($t_ench)
 				</div>
 				<br>';
             include "enchantement_composant.php";
-            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=1">Retour à l\'onglet sélectionné</a>';
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?t_ench=1">Retour à l\'onglet sélectionné</a>';
         } else
         {
             $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
@@ -172,7 +172,7 @@ switch ($t_ench)
 				</div>
 				<br>';
             include "enchantement_objet.php";
-            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
         } else
         {
             $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';
@@ -192,7 +192,7 @@ switch ($t_ench)
 				</div>
 				<br>';
             include "enchantement_objet_enchante.php";
-            $contenu_page .= '<br><br><a href="' . $PHP_SELF . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?t_ench=' . $t_ench . '">Retour à l\'onglet sélectionné</a>';
         } else
         {
             $contenu_page .= '<br />Vous n\'avez pas les compétences pour réaliser ces opérations';

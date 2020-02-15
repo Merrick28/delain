@@ -277,7 +277,7 @@ $stmt   = $pdo->query($req_id);
                     <td></td>
                     <td></td>
                 </tr>
-                <form name="remettre" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="remettre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="perobj">
                     <input type="hidden" name="methode" value="remettre">
                     <?php
@@ -405,7 +405,7 @@ $stmt   = $pdo->query($req_id);
                     echo("</td>");
                     echo("<td>");
 
-                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                    printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                     echo("</td>");
 
@@ -460,7 +460,8 @@ $stmt   = $pdo->query($req_id);
                 <td></td>
                 <td></td>
             </tr>
-            <form name="equiper" method="post" action="<?php echo $PHP_SELF; ?>"><input type="hidden" name="objet">
+            <form name="equiper" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>"><input type="hidden"
+                                                                                                   name="objet">
                 <?php
                 while ($result = $stmt->fetch())
                 {
@@ -491,7 +492,7 @@ $stmt   = $pdo->query($req_id);
 
                     if ($result['tobj_equipable'] == 1)
                     {
-                        printf("<a href=\"$PHP_SELF?methode=equiper&objet=%s\">Equiper (2PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=equiper&objet=%s\">Equiper (2PA)</a>", $result['obj_cod']);
                     }
 
                     if ($potion_buvable)
@@ -502,7 +503,7 @@ $stmt   = $pdo->query($req_id);
                     echo("</td>");
                     echo("<td class=\"soustitre2\">");
 
-                    printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                    printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                     echo("</td>");
                     echo "<td>";
@@ -611,7 +612,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -737,7 +738,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -884,7 +885,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -985,7 +986,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$PHP_SELF?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -1012,7 +1013,7 @@ $template     = $twig->load('template_jeu.twig');
 $options_twig = array(
 
     'PERSO'        => $perso,
-    'PHP_SELF'     => $PHP_SELF,
+    'PHP_SELF'     => $_SERVER['PHP_SELF'],
     'CONTENU_PAGE' => $contenu_page
 
 );

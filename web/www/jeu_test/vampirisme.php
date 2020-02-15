@@ -150,8 +150,8 @@ if ($lvl != 0)
             // on stocke les infos en base
             //
             $cible = $_REQUEST['cible'];
-            $req   = "insert into vampire_tran (tvamp_perso_pere,tvamp_perso_fils) ";
-            $req   = $req . "values ($perso_cod,$cible) ";
+            $req   = "insert into vampire_tran (tvamp_perso_pere,tvamp_perso_fils) 
+            values ($perso_cod,$cible) ";
             $stmt  = $pdo->query($req);
             //
             // on envoie le message kivabien

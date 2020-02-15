@@ -74,7 +74,7 @@ switch ($methode)
 
             if ($result = $stmt->fetch())
             {
-                $num_guilde = $resut['pguilde_guilde_cod'];
+                $num_guilde = $result['pguilde_guilde_cod'];
             } else
             {
                 $num_guilde = 0;
@@ -156,7 +156,7 @@ switch ($methode)
             if ($result = $stmt->fetch())
             {
                 $t_var             = $pref[$m] . 'msg_cod';
-                $precedent_suivant .= '<a href="' . $PHP_SELF . '?m=' . $m . '&mid=' . $result[$t_var] . '&methode='
+                $precedent_suivant .= '<a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&mid=' . $result[$t_var] . '&methode='
                                       . $methode . '">';
                 if ($result[$pref[$m] . 'lu'] == 'N')
                 {
@@ -179,7 +179,7 @@ switch ($methode)
             if ($result = $stmt->fetch())
             {
                 $t_var             = $pref[$m] . 'msg_cod';
-                $precedent_suivant .= '<div style="text-align:right;"><a href="' . $PHP_SELF . '?m=' . $m . '&mid=' .
+                $precedent_suivant .= '<div style="text-align:right;"><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&mid=' .
                                       $result[$t_var] . '&methode=' . $methode . '">';
                 if ($result[$pref[$m] . 'lu'] == 'N')
                 {

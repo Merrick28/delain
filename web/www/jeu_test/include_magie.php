@@ -1,3 +1,6 @@
+<?php
+$sort_cod = $_REQUEST['sort_cod'];
+?>
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
     <input type="hidden" name="sort_cod" value="<?php echo $sort_cod; ?>">
@@ -8,9 +11,9 @@
     include "../includes/constantes.php";
     require_once 'fonctions.php';
 
-    $req_sort = "select sort_distance from sorts where sort_cod = $sort_cod ";
-    $stmt = $pdo->query($req_sort);
-    $result = $stmt->fetch();
+    $req_sort  = "select sort_distance from sorts where sort_cod = $sort_cod ";
+    $stmt      = $pdo->query($req_sort);
+    $result    = $stmt->fetch();
     $dist_sort = $result['sort_distance'];
 
     // On cherche la coterie du perso
@@ -18,19 +21,19 @@
     $req_coterie           = "select pgroupe_groupe_cod
 	from groupe_perso
 	where pgroupe_perso_cod = $perso_cod and pgroupe_statut = 1";
-    $stmt = $pdo->query($req_coterie);
-    if($result = $stmt->fetch())
+    $stmt                  = $pdo->query($req_coterie);
+    if ($result = $stmt->fetch())
         $coterie_perso_lanceur = $result['pgroupe_groupe_cod'];
 
     // on cherche la position du perso
-    $req_pos = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_type_perso, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
+    $req_pos      = "select ppos_pos_cod, pos_etage, pos_x, pos_y, distance_vue($perso_cod) as distance_vue, perso_nom, perso_type_perso, perso_pv, perso_pv_max, dper_dieu_cod, perso_bonus(perso_cod), perso_pa, to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as perso_dlt, dlt_passee(perso_cod)::text as perso_dlt_passee 
 	from perso
 	inner join perso_position on ppos_perso_cod = perso_cod 
 	inner join positions on pos_cod = ppos_pos_cod 
 	left outer join dieu_perso on dper_perso_cod = perso_cod 
 	where perso_cod = $perso_cod";
-    $stmt = $pdo->query($req_pos);
-    $result = $stmt->fetch();
+    $stmt         = $pdo->query($req_pos);
+    $result       = $stmt->fetch();
     $position     = $result['ppos_pos_cod'];
     $etage        = $result['pos_etage'];
     $x            = $result['pos_x'];
@@ -68,16 +71,16 @@
                     &nbsp;&nbsp;<br><strong>Limiter aux:&nbsp;&nbsp;</strong>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="3" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Familiers <span
-                                id="ft-familier"></span></em>
+                            id="ft-familier"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="2" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Monstres <span
-                                id="ft-monstre"></span></em>
+                            id="ft-monstre"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="1" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Aventuriers <span
-                                id="ft-aventurier"></span></em>
+                            id="ft-aventurier"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="0" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Partisans <span
-                                id="ft-partisan"></span></em>
+                            id="ft-partisan"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="-1" type="radio" checked
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Sans limites</span></em>
                 </td>

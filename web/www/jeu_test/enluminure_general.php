@@ -100,10 +100,10 @@ for($cpt=0;$cpt<$nb;$cpt++)
 	}
 	else
 	{
-		$style = 'pas_onglet';
-		$lien = '<a href="' . $PHP_SELF . '?tenl=' . $cpt . '">';
-		$f_lien = '</a>';
-	}
+        $style  = 'pas_onglet';
+        $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?tenl=' . $cpt . '">';
+        $f_lien = '</a>';
+    }
 	$contenu_page .= '<td class="' . $style .'"><p style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</p></td>';
 }
 $contenu_page .= '</tr>
@@ -128,9 +128,9 @@ switch($tenl)
 					</p>
 			</div>
 			<br>';
-			include "enluminure_tannage.php";
-			$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?tenl=0">Retour à l’onglet sélectionné</a>';
-		}
+            include "enluminure_tannage.php";
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?tenl=0">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -138,10 +138,10 @@ switch($tenl)
 		break;	
 	case "1": //Peau en séchage
 		if($controle == 1)
-		{
-			include "enluminure_peau_sechage.php";
-			$contenu_page .= '<br><br><a href="' . $PHP_SELF . '?tenl=1">Retour à l’onglet sélectionné</a>';
-		}
+        {
+            include "enluminure_peau_sechage.php";
+            $contenu_page .= '<br><br><a href="' . $_SERVER['PHP_SELF'] . '?tenl=1">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';

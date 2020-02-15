@@ -266,13 +266,13 @@ if ($erreur == 0)
                         {
                             // insertion dun évènement
                             $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-                            $req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
-                            $req = $req . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-                            $stmt = $pdo->query($req);
+                            $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
+                            values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
+                            $stmt      = $pdo->query($req);
                             // effacement des locks
-                            $req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
+                            $req  = "delete from lock_combat where lock_cible = $mod_perso_cod ";
                             $stmt = $pdo->query($req);
-                            $req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
+                            $req  = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
                             $stmt = $pdo->query($req);
 
                             // Position de départ
@@ -375,7 +375,7 @@ if ($erreur == 0)
 
     echo '<hr>Section de recherche de persos liés:';
     echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br>';
-    echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;')) ;
+    echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;'));
     echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage($(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
@@ -384,7 +384,7 @@ if ($erreur == 0)
 
 }
 ?>
-    <p style="text-align:center;"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

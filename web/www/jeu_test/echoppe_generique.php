@@ -279,12 +279,12 @@ if ($erreur == 0)
 }
     if ($controle_gerant == 'OK')
     {
-        echo '<li><a href="' . $PHP_SELF . '?methode=mule">Récupérer <strong>un familier mûle</strong> dans votre échoppe ?</a>  <em>(Attention, ceci est une action définitive)</em>';
+        echo '<li><a href="' . $_SERVER['PHP_SELF'] . '?methode=mule">Récupérer <strong>un familier mûle</strong> dans votre échoppe ?</a>  <em>(Attention, ceci est une action définitive)</em>';
     }
     ?>
 
 
-    <form name="echoppe" method="post" action="<?php echo $PHP_SELF; ?>">
+    <form name="echoppe" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
         <input type="hidden" name="affichage">
     </form>
     <p>Voulez-vous :</p>

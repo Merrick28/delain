@@ -725,14 +725,14 @@ if ($erreur == 0) {
                     $erreur = 1;
                 }
                 if ($erreur == 0) {
-                    $req = "delete from magasin_tarif ";
-                    $req = $req . "where mtar_lieu_cod = $mag ";
-                    $req = $req . "and mtar_gobj_cod = $gobj ";
+                    $req  = "delete from magasin_tarif ";
+                    $req  = $req . "where mtar_lieu_cod = $mag ";
+                    $req  = $req . "and mtar_gobj_cod = $gobj ";
                     $stmt = $pdo->query($req);
-                    $req = "insert into magasin_tarif ";
-                    $req = $req . "(mtar_lieu_cod,mtar_gobj_cod,mtar_prix) ";
-                    $req = $req . "values ";
-                    $req = $req . "($mag,$gobj,$n_prix) ";
+                    $req  = "insert into magasin_tarif 
+                    (mtar_lieu_cod,mtar_gobj_cod,mtar_prix) 
+                    values 
+                    ($mag,$gobj,$n_prix) ";
                     $stmt = $pdo->query($req);
                     echo "<p>Le tarif a été changé !";
 

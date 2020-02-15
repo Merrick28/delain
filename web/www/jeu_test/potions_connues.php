@@ -38,9 +38,9 @@ if($result = $stmt->fetch())
 	{
 		case "debut":
 			$contenu_page .= '<br>
-				<form name="potions_connues" method="post" action="'. $PHP_SELF .'">
+				<form name="potions_connues" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<input type="hidden" name="methode" value="compo">
-					<input type="hidden" name="tpot" value="'. $tpot .'">
+					<input type="hidden" name="tpot" value="' . $tpot . '">
 					<table width="70%">
 						<tr><td colspan="3"><strong>Listes des compositions déjà connues</strong></td></tr>';
 			$req = 'select pfrm_frm_cod, gobj_nom, gobj_cod, frm_comp_cod from objet_generique, perso_formule, formule_produit, formule
@@ -110,10 +110,10 @@ if($result = $stmt->fetch())
 						$composants .=')';
 						$contenu_page .= '<tr>
 							<td>';
-						if ($niveau_ok)
-							$contenu_page .= '<strong><a href="'. $PHP_SELF .'?&tpot='. $tpot .'&methode=description&potion=' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] .'</strong></a> '. $composants .'</td>';
-						else
-							$contenu_page .= '<strong><em>Potion trop complexe</em></strong> '. $composants .'</td>';
+                        if ($niveau_ok)
+                            $contenu_page .= '<strong><a href="' . $_SERVER['PHP_SELF'] . '?&tpot=' . $tpot . '&methode=description&potion=' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] . '</strong></a> ' . $composants . '</td>';
+                        else
+                            $contenu_page .= '<strong><em>Potion trop complexe</em></strong> ' . $composants . '</td>';
 							
 						$contenu_page .= '<td><input type="radio" name="potion" value="' . $result['gobj_cod'] . '" '.$disabled.' /></td><td>Niveau ' . $niveau_frm . '</td></tr>';
 					}

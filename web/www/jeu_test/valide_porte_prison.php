@@ -22,17 +22,19 @@ if ($erreur == 0) {
     }
 }
 if ($erreur == 0) {
-    $req = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  ";
-    $req = $req . "(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
-    $stmt = $pdo->query($req);
+    $req    = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  
+    (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
+    $stmt   = $pdo->query($req);
     $result = $stmt->fetch();
-    $lieu = $result['lpos_lieu_cod'];
-    $req = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
-    $req = $req . "and pge_lieu_cod = $lieu ";
-    $stmt = $pdo->query($req);
-    if ($stmt->rowCount() == 0) {
+    $lieu   = $result['lpos_lieu_cod'];
+    $req    = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
+    $req    = $req . "and pge_lieu_cod = $lieu ";
+    $stmt   = $pdo->query($req);
+    if ($stmt->rowCount() == 0)
+    {
         echo "<p>Erreur ! Vous ne pouvez pas utiliser ce passage !";
-    } else {
+    } else
+    {
 
 
         $pa_perso = $perso->perso_pa;

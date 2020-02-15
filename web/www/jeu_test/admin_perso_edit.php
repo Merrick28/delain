@@ -428,9 +428,9 @@ if ($erreur == 0)
                         <OPTION value=""> --</OPTION>
                         <?php
                         // LISTE DES COMPETENCES NON APPRISES
-                        $req_comp_manquante = "select comp_cod,comp_libelle from competences where ";
-                        $req_comp_manquante .= "not exists (select 1 from perso_competences where pcomp_perso_cod = $mod_perso_cod and pcomp_pcomp_cod = comp_cod) ";
-                        $req_comp_manquante .= "order by comp_libelle ";
+                        $req_comp_manquante = "select comp_cod,comp_libelle from competences where 
+                        not exists (select 1 from perso_competences where pcomp_perso_cod = $mod_perso_cod and pcomp_pcomp_cod = comp_cod) 
+                        order by comp_libelle ";
 
                         echo $html->select_from_query($req_comp_manquante, 'comp_cod', 'comp_libelle');
                         ?>
@@ -1141,7 +1141,7 @@ if ($erreur == 0)
     }
 }
 ?>
-    <p style="text-align:center;"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

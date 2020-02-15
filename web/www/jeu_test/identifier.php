@@ -30,7 +30,7 @@ if ($tab_res[0] == -1)
     if ($tab_res[5] == -1)
     {
         echo("il s'agit donc d'un échec automatique.");
-        echo '<br /><a href="' . $PHP_SELF . '?objet=' . $objet . '">Réessayer ?<a/>';
+        echo '<br /><a href="' . $_SERVER['PHP_SELF'] . '?objet=' . $objet . '">Réessayer ?<a/>';
     }
     if ($tab_res[5] == 0)
     {
@@ -47,7 +47,7 @@ if ($tab_res[0] == -1)
                 echo("Vous avez réussi à améliorer cette compétence. Sa nouvelle valeur est <strong>$tab_res[8]%</strong>");
             }
         }
-        echo '<br /><a href="' . $PHP_SELF . '?objet=' . $objet . '">Réessayer ?<a/>';
+        echo '<br /><a href="' . $_SERVER['PHP_SELF'] . '?objet=' . $objet . '">Réessayer ?<a/>';
     }
     if ($tab_res[5] == 1)
     {

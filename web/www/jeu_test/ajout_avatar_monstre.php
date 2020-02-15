@@ -17,7 +17,7 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             ?>
             <p>Choisissez le compte à controler :
-            <form action="<?php echo $PHP_SELF; ?>" metod="post">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" metod="post">
                 <input type="hidden" name="methode" value="et2">
                 <select name="vmonstre">
                     <?php

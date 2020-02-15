@@ -20,7 +20,7 @@ if ($erreur == 0)
     {
         case "debut":
             ?>
-            <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="choix_perso">
                 <p>Entrez directement le numéro de perso sur lequel vous voulez intervenir : <input type="text"
                                                                                                     name="num_perso2">
@@ -29,7 +29,7 @@ if ($erreur == 0)
             <input type="button" class="test" value="Rechercher un perso !"
                    onClick="javascript:window.open('<?php echo $type_flux . G_URL; ?>rech_perso.php','rech','width=500,height=300');">
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=appel&met_appel=debut">Lancer un appel ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=appel&met_appel=debut">Lancer un appel ?</a><br>
 
             <?php
             break;
@@ -70,17 +70,17 @@ if ($erreur == 0)
                 }
                 echo "<p class=\"titre\">Actions possibles : </p>";
                 echo "<p>";
-                echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Déplacer le perso ?</a><br>";
-                echo "<a href=\"", $PHP_SELF, "?methode=dlt&num_perso2=", $num_perso2, "\">Initialiser sa DLT à l'heure actuelle ?</a><br>";
-                echo "<a href=\"", $PHP_SELF, "?methode=objet&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un nouvel objet de quête dans son inventaire ?</a><br>";
-                echo "<a href=\"", $PHP_SELF, "?methode=objet_ex&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un objet de quête (déjà existant) dans son inventaire ?</a><br>";
-                echo "<a href=\"", $PHP_SELF, "?methode=objet_nq&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un objet (hors quête) dans son inventaire ?</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Déplacer le perso ?</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=dlt&num_perso2=", $num_perso2, "\">Initialiser sa DLT à l'heure actuelle ?</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=objet&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un nouvel objet de quête dans son inventaire ?</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=objet_ex&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un objet de quête (déjà existant) dans son inventaire ?</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=objet_nq&met_obj=debut&num_perso2=", $num_perso2, "\">Créer un objet (hors quête) dans son inventaire ?</a><br>";
                 if ($tangible == 'O')
                 {
-                    echo "<a href=\"", $PHP_SELF, "?methode=palpable&t=N&num_perso2=", $num_perso2, "\">Rendre ce perso impalpable ?</a><br>";
+                    echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=palpable&t=N&num_perso2=", $num_perso2, "\">Rendre ce perso impalpable ?</a><br>";
                 } else
                 {
-                    echo "<a href=\"", $PHP_SELF, "?methode=palpable&t=O&num_perso2=", $num_perso2, "\">Rendre ce perso palpable ?</a><br>";
+                    echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=palpable&t=O&num_perso2=", $num_perso2, "\">Rendre ce perso palpable ?</a><br>";
                 }
 
 
@@ -96,7 +96,7 @@ if ($erreur == 0)
                         echo "<p><strong>Ce perso est locké en combat !</strong> Son déplacement va rompre tous les locks de combat.";
                     }
                     ?>
-                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <input type="hidden" name="methode" value="depl">
                         <input type="hidden" name="met_depl" value="dest">
                         <input type="hidden" name="num_perso2" value="<?php echo $num_perso2; ?>">
@@ -125,7 +125,7 @@ if ($erreur == 0)
                     if ($stmt->rowCount() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
-                        echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
+                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
                         $err_depl = 1;
                     }
                     $result  = $stmt->fetch();
@@ -135,7 +135,7 @@ if ($erreur == 0)
                     if ($stmt->rowCount() != 0)
                     {
                         echo "<p>impossible de déplacer le perso : un mur en destination.<br>";
-                        echo "<a href=\"", $PHP_SELF, "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
+                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=depl&met_depl=debut&num_perso2=", $num_perso2, "\">Retour au choix des coordonnées ?</a><br>";
                         $err_depl = 1;
                     }
                     if ($err_depl == 0)
@@ -179,9 +179,9 @@ if ($erreur == 0)
                         (première
                         apparition dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un objet déjà existant, <a
-                                href="<?php echo $PHP_SELF; ?>?methode=objet_ex&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
+                                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=objet_ex&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
                             de cliquer ici !</a>
-                        <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode" value="objet">
                             <input type="hidden" name="met_obj" value="etape2">
                             <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
@@ -241,9 +241,9 @@ if ($erreur == 0)
                         encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
-                            href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
+                                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
                             de cliquer ici !</a><br>
-                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <input type="hidden" name="methode" value="objet_ex">
                         <input type="hidden" name="met_obj" value="etape2">
                         <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
@@ -283,9 +283,9 @@ if ($erreur == 0)
                         encore
                         créés dans le jeu) dans l'inventaire d'un perso.<br>
                         Si vous souhaitez créer un nouvel objet, <a
-                            href="<?php echo $PHP_SELF; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
+                                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=objet&met_obj=debut&num_perso=<?php echo $num_perso2; ?>">merci
                             de cliquer ici !</a><br>
-                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <input type="hidden" name="methode" value="objet_ex">
                         <input type="hidden" name="met_obj" value="etape2">
                         <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
@@ -321,7 +321,7 @@ if ($erreur == 0)
             {
                 case "debut":
                     ?>
-                    <form name="login2" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <form name="login2" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <input type="hidden" name="methode" value="appel">
                         <input type="hidden" name="met_appel" value="dest">
                         <input type="hidden" name="num_perso" value="<?php echo $num_perso2; ?>">
@@ -391,7 +391,7 @@ if ($erreur == 0)
                     if ($stmt->rowCount() == 0)
                     {
                         echo "<p>Aucune position trouvée à ces coordonnées.<br>";
-                        echo "<a href=\"", $PHP_SELF, "?methode=appel&met_appel=debut\">Retour au choix des coordonnées ?</a><br>";
+                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=appel&met_appel=debut\">Retour au choix des coordonnées ?</a><br>";
                         $err_depl = 1;
                     }
                     if ($err_depl == 0)
@@ -464,7 +464,7 @@ if ($erreur == 0)
             break;
     }
 }
-echo "<a class=<\"centrer\" href=\"", $PHP_SELF, "\">Retour au début</a>";
+echo "<a class=<\"centrer\" href=\"", $_SERVER['PHP_SELF'], "\">Retour au début</a>";
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

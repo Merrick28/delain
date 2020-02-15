@@ -18,12 +18,12 @@ else
     }
     else
     {
-        $req_con = "insert into concentrations (concentration_cod,concentration_perso_cod,concentration_nb_tours) ";
-        $req_con = $req_con . "values (nextval('seq_concentration_cod'),$perso_cod,2)";
-        $stmt = $pdo->query($req_con);
+        $req_con = "insert into concentrations (concentration_cod,concentration_perso_cod,concentration_nb_tours) 
+        values (nextval('seq_concentration_cod'),$perso_cod,2)";
+        $stmt    = $pdo->query($req_con);
 
         $req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req_enl_pa);
+        $stmt       = $pdo->query($req_enl_pa);
 
         echo("<p>Vous êtes maintenant concentré pour 2 tours.</p>");
     }

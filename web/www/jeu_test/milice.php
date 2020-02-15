@@ -38,16 +38,16 @@ if ($erreur == 0) {
         case "debut":
 
 
-            $req = "select pguilde_mode_milice from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $req     = "select pguilde_mode_milice from guilde_perso where pguilde_perso_cod = $perso_cod ";
+            $stmt    = $pdo->query($req);
+            $result  = $stmt->fetch();
             $mode[1] = 'normal';
             $mode[2] = 'Application des peines';
             $mode[3] = 'CRS';
-            $vmode = $result['pguilde_mode_milice'];
+            $vmode   = $result['pguilde_mode_milice'];
             echo "<p>Vous êtes actuellement en mode <strong> $mode[$vmode]</strong><br>";
-            echo "<a href=\"", $PHP_SELF, "?methode=changem\">Changer le mode ?</a><br> ";
-            echo "<a href=\"", $PHP_SELF, "?methode=voir\">Voir les peines en attente d'éxécution</a><br> ";
+            echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=changem\">Changer le mode ?</a><br> ";
+            echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=voir\">Voir les peines en attente d'éxécution</a><br> ";
             echo "<a href=\"megaphone.php\">Utiliser son mégaphone ?</a> ";
             break;
         case "changem":
@@ -55,12 +55,13 @@ if ($erreur == 0) {
             $mode[2] = 'Application des peines';
             $mode[3] = 'CRS';
             ?>
-            <form name="changem" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="changem" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="changem2">
                 Choisissez le mode dans lequel vous souhaitez vous placer :<br>
                 <select name="mode">
                     <?php
-                    for ($cpt = 1; $cpt <= 3; $cpt++) {
+                    for ($cpt = 1; $cpt <= 3; $cpt++)
+                    {
                         echo "<option value=\"$cpt\">$mode[$cpt]</option>";
                     }
                     ?>

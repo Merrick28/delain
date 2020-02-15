@@ -41,8 +41,8 @@ if ($erreur == 0)
 			<br>Mais il n’y a plus guère que le vent qui se  laisse  saisir par sa vieille carcasse éthérée. Et pourtant, il demeure fidèle à  son poste, comme en attente d’une dernière âme à sauver...
 			<br>Dans un râle, il se tourne vers vous, et vous apostrophe :
 			<br><em>« Souhaitez vous bénéficier du service de rapatriement d’âme ? »</em>
-													<br><a href="' . $PHP_SELF . '?methode=oui"><strong>Oui</a></strong>
-													<br><a href="' . $PHP_SELF . '?methode=non"><strong>Non</a></strong>';
+													<br><a href="' . $_SERVER['PHP_SELF'] . '?methode=oui"><strong>Oui</a></strong>
+													<br><a href="' . $_SERVER['PHP_SELF'] . '?methode=non"><strong>Non</a></strong>';
             break;
         case "oui":
             $req           = 'select * from choix_lieu_vus(' . $perso_cod . ',2)';
@@ -64,7 +64,7 @@ if ($erreur == 0)
                     $contenu_page3 .= '<tr><td class="soustitre2">' . $result2['lieu_nom'] . '</td>
 						<td>' . $result2['pos_x'] . ', ' . $result2['pos_y'] . ', ' . $result2['etage_libelle'] . '</td>
 						<td class="soustitre2">';
-                    $contenu_page3 .= '<a href="' . $PHP_SELF . '?methode=dispensaire&pos=' . $result[0] . '">Faire de ce dispensaire celui qui recueillera votre âme ? (' . $prix . ' brouzoufs)</a>';
+                    $contenu_page3 .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=dispensaire&pos=' . $result[0] . '">Faire de ce dispensaire celui qui recueillera votre âme ? (' . $prix . ' brouzoufs)</a>';
                     $contenu_page3 .= '</td></tr>';
                 }
             }
@@ -93,8 +93,8 @@ if ($erreur == 0)
                 $stmt          = $pdo->query($req_or);
                 $req_temple1   = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
                 $stmt          = $pdo->query($req_temple1);
-                $req_temple2   = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values ";
-                $req_temple2   = $req_temple2 . "($perso_cod,$position,0)";
+                $req_temple2   = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values 
+                ($perso_cod,$position,0)";
                 $stmt          = $pdo->query($req_temple2);
                 $contenu_page3 .= '<p>D’un geste précis mille fois recommencé, l’ombre d’une écriture vive et précise note votre nom et votre race sur un grand livre prévu à cet effet. <br>Puis sans plus attendre, cherche une autre personne à questionner...';
             }

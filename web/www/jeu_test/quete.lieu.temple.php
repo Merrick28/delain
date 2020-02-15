@@ -49,16 +49,16 @@ switch($methode2)
 
 			if ($brouzoufs > 1001 && $dieu_perso == $dieu)
 			{
-				$code_methode = "dieu$dieu" . "_quete$quete_cod";
-				$url_methode_1 = $PHP_SELF . "?methode2=$code_methode";
-				$url_methode_2 = $PHP_SELF . "?methode2=$code_methode" . '_2';
+				$code_methode  = "dieu$dieu" . "_quete$quete_cod";
+				$url_methode_1 = $_SERVER['PHP_SELF'] . "?methode2=$code_methode";
+				$url_methode_2 = $_SERVER['PHP_SELF'] . "?methode2=$code_methode" . '_2';
 
 				// On regarde l’avancement du perso dans la quête
-				$req = "select pquete_nombre from quete_perso
+				$req  = "select pquete_nombre from quete_perso
 					where pquete_quete_cod = $quete_cod
 						and pquete_perso_cod = $perso_cod";
 				$stmt = $pdo->query($req);
-				
+
 				// Quête pas commencée
 				if ($stmt->rowCount() == 0)
 				{

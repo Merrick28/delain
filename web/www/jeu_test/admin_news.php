@@ -42,7 +42,7 @@ if ($erreur == 0)
     {
         case "debut":
             ?>
-            <form name="lanceNews" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="lanceNews" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="previsu"/>
                 <table>
                     <tr>
@@ -79,7 +79,7 @@ if ($erreur == 0)
                 </table>
             </form>
             <hr/>
-            <form name="lanceRumeur" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="lanceRumeur" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="lanceRumeur"/>
                 <table>
                     <tr>
@@ -184,7 +184,7 @@ if ($erreur == 0)
                 </div>
             </div>
             <hr/>
-            <form name="lanceNews" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="lanceNews" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="lance"/>
                 <table>
                     <tr>

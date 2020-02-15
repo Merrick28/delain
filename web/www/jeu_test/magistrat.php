@@ -23,9 +23,9 @@ if ($erreur == 0)
     switch ($methode)
     {
         case "debut":
-            echo "<p><a href=\"", $PHP_SELF, "?methode=voir\">Voir les peines en cours ?</a><br>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=voirf\">Voir les peines faites ?</a><br>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=ajout\">Ajouter une peine ?</a><br>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=voir\">Voir les peines en cours ?</a><br>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=voirf\">Voir les peines faites ?</a><br>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=ajout\">Ajouter une peine ?</a><br>";
             break;
         case "voir":
             echo "<p class=\"titre\">Peines existantes </p>";
@@ -69,7 +69,7 @@ if ($erreur == 0)
                         echo "<td class=\"soustitre2\"><a href=\"visu_desc_perso.php?visu=", $result['c_mag'], "\"><strong>", $result['n_mag'], "</strong></td>";
                         echo "<td>", $result['date_peine'], "</td>";
                         echo "<td>$etat[$v_faite]</td>";
-                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
+                        echo "<td><a href=\"", $_SERVER['PHP_SELF'], "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
                         echo "</tr>";
                     }
 
@@ -122,7 +122,7 @@ if ($erreur == 0)
                         echo "<td>", $result['date_peine'], "</td>";
                         echo "<td>$etat[$v_faite]</td>";
                         echo "<td>", $result['dexec'], "</td>";
-                        echo "<td><a href=\"", $PHP_SELF, "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
+                        echo "<td><a href=\"", $_SERVER['PHP_SELF'], "?methode=suppr&peine=", $result['peine_cod'], "&perso=", $result['c_acc'], "\">Retirer la peine ?</a></td>";
                         echo "</tr>";
                     }
 
@@ -134,7 +134,7 @@ if ($erreur == 0)
         case "ajout":
             ?>
             <p class="titre">Ajout d'une peine</p>
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="ajout2">
                 <p>Etape 1 : choisissez le nom de l'heureux élu :
                     <input type="text" name="nom">
@@ -165,7 +165,7 @@ if ($erreur == 0)
             {
                 ?>
                 <p class="titre">Ajout d'une peine </p>
-                <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="ajout3">
                     <input type="hidden" name="perso" value="<?php echo $perso; ?>">
                     <p>Etape 2 : choisissez un type de peine :
@@ -188,17 +188,17 @@ if ($erreur == 0)
             if (($type == 1) && ($duree == ""))
             {
                 echo "<p>Erreur ! Si vous choisissez un emprisonnement limité, vous devez mettre une durée !";
-                echo "<a href=\"", $PHP_SELF, "?methode=ajout2&perso=$perso\">Retour</a><br>";
+                echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=ajout2&perso=$perso\">Retour</a><br>";
                 $erreur = 1;
             }
             if ($erreur == 0)
             {
-                $req  = "insert into peine (peine_magistrat,peine_perso_cod,peine_type,peine_duree) ";
-                $req  = $req . "values ($perso_cod,$perso,$type,$duree) ";
+                $req  = "insert into peine (peine_magistrat,peine_perso_cod,peine_type,peine_duree) 
+                values ($perso_cod,$perso,$type,$duree) ";
                 $stmt = $pdo->query($req);
                 echo "<p>La peine a bien été enregistrée.";
-                $req         = "select peine_cod,peine_type,perso_nom from peine,perso where peine_perso_cod = $perso ";
-                $req         = $req . "and perso_cod = $perso_cod ";
+                $req         = "select peine_cod,peine_type,perso_nom from peine,perso where peine_perso_cod = $perso 
+                and perso_cod = $perso_cod ";
                 $stmt        = $pdo->query($req);
                 $result      = $stmt->fetch();
                 $peine[0]    = "Peine de mort";
@@ -216,12 +216,12 @@ if ($erreur == 0)
                 $stmt        = $pdo->query($req_num_mes);
                 $result      = $stmt->fetch();
                 $num_mes     = $result['num_mes'];
-                $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
-                $req_mes     = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
+                $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) 
+                values ($num_mes, now(), '$titre', '$texte', now()) ";
                 $stmt        = $pdo->query($req_mes);
                 // on renseigne l'expéditeur
-                $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-                $req      = $req . "values ($num_mes,$perso_cod,'N') ";
+                $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive)
+                values ($num_mes,$perso_cod,'N') ";
                 $stmt     = $pdo->query($req);
                 $req_dest =
                     "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
@@ -243,12 +243,12 @@ if ($erreur == 0)
             $stmt        = $pdo->query($req_num_mes);
             $result      = $stmt->fetch();
             $num_mes     = $result['num_mes'];
-            $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) ";
-            $req_mes     = $req_mes . "values ($num_mes, now(), '$titre', '$texte', now()) ";
+            $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2)
+            values ($num_mes, now(), '$titre', '$texte', now()) ";
             $stmt        = $pdo->query($req_mes);
             // on renseigne l'expéditeur
-            $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) ";
-            $req      = $req . "values ($num_mes,$perso_cod,'N') ";
+            $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) 
+            values ($num_mes,$perso_cod,'N') ";
             $stmt     = $pdo->query($req);
             $req_dest =
                 "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
@@ -257,7 +257,7 @@ if ($erreur == 0)
 
 
     }
-    echo "<hr><a href=\"", $PHP_SELF, "\">Retour à la gestion des peines</a><br>";
+    echo "<hr><a href=\"", $_SERVER['PHP_SELF'], "\">Retour à la gestion des peines</a><br>";
     echo "<a href=\"milice.php\">Retour à la page milice</a><br>";
 
 

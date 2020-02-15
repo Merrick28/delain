@@ -18,7 +18,7 @@ if ($erreur == 0)
         {
             case "debut":
                 ?>
-                <form name="nouveau_message" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="nouveau_message" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="envoi">
                     <table cellpadding="2" cellspacing="2">
 

@@ -329,22 +329,23 @@ switch($methode)
 	break;
 
 	case "choix":
-		$req_total = "select distinct pos_etage,etage_libelle,etage_numero,etage_reference from positions,etage where (pos_etage <= 0 ";
-		$req_total = $req_total . "or exists (select 1 from etage_visite ";
-		$req_total = $req_total . "where vet_perso_cod = $perso_cod ";
-		$req_total = $req_total . "and vet_etage = pos_etage)) ";
-		$req_total = $req_total . "and pos_etage = etage_numero ";
-		$req_total = $req_total . "order by etage_reference desc, pos_etage asc ";
-		$stmt = $pdo->query($req_total);
-		?>
-		<form name="automap" method="post" action="fr_dr.php" onsubmit="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&etage=' + document.getElementById('etage').value, 'vue_droite'); return false;">
-		<p>Voir l’automap de l’étage : <select name="etage" id="etage">
-		<?php 
-		$etages_fermes = 0;
-		while ($result = $stmt->fetch())
-		{
-			if ( $etages_fermes == 0 && $result['etage_reference'] == -100 )
-			{
+$req_total = "select distinct pos_etage,etage_libelle,etage_numero,etage_reference from positions,etage where (pos_etage <= 0 
+		or exists (select 1 from etage_visite 
+		where vet_perso_cod = $perso_cod 
+		and vet_etage = pos_etage)) 
+		and pos_etage = etage_numero 
+		order by etage_reference desc, pos_etage asc ";
+$stmt      = $pdo->query($req_total);
+?>
+<form name="automap" method="post" action="fr_dr.php"
+      onsubmit="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr; ?>&etage=' + document.getElementById('etage').value, 'vue_droite'); return false;">
+    <p>Voir l’automap de l’étage : <select name="etage" id="etage">
+            <?php
+            $etages_fermes = 0;
+            while ($result = $stmt->fetch())
+            {
+                if ($etages_fermes == 0 && $result['etage_reference'] == -100)
+                {
 				$etages_fermes = 1;
 				echo '<optgroup label="Étages d’animation actuellement fermés">';
 			}

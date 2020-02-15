@@ -31,7 +31,6 @@ $result        = $stmt->fetch();
 $pa            = $result['perso_pa'];
 $pa_n          = $perso->get_pa_attaque();
 
-
 // On recherche les autres joueurs en vue
 $req_vue_joueur = "select perso_crapaud, trajectoire_vue($pos_cod,pos_cod) as traj, pcompt_compt_cod, perso_tangible, perso_nom, pos_x, pos_y,
 				pos_etage, race_nom, distance(pos_cod,$pos_cod) as distance, perso_sex, perso_cod, perso_pv, perso_pv_max, perso_description,

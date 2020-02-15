@@ -34,11 +34,11 @@ if ($erreur == 0)
 	switch($_REQUEST['methode'])
 	{
 		case "ajout":
-			echo "<form name=\"gerant\" method=\"post\" action=\"$PHP_SELF\">";
+            echo "<form name=\"gerant\" method=\"post\" action=\"$_SERVER['PHP_SELF']\">";
 			echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"ajout2\">";
 			echo "<p>Ajout d'un responsable du temple :";
-			$req = "select perso_cod,perso_nom,dper_niveau,dniv_libelle
+			$req  = "select perso_cod,perso_nom,dper_niveau,dniv_libelle
 						from perso,dieu_perso,dieu_niveau
 						where perso_cod = dper_perso_cod
 						and dper_dieu_cod = $dieu_perso
@@ -68,15 +68,15 @@ if ($erreur == 0)
 			}
 			break;
 		case "modif":
-			$req = "select tfid_perso_cod from temple_fidele where tfid_lieu_cod = $lieu ";
-			$stmt = $pdo->query($req);
-			$result = $stmt->fetch();
-			$actuel = $result['tfid_perso_cod'];
-			echo "<form name=\"gerant\" method=\"post\" action=\"$PHP_SELF\">";
+            $req    = "select tfid_perso_cod from temple_fidele where tfid_lieu_cod = $lieu ";
+            $stmt   = $pdo->query($req);
+            $result = $stmt->fetch();
+            $actuel = $result['tfid_perso_cod'];
+            echo "<form name=\"gerant\" method=\"post\" action=\"$_SERVER['PHP_SELF']\">";
 			echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"modif2\">";
 			echo "<p>Modification d'un responsable de temple :";
-			$req = "select perso_cod,perso_nom,dper_niveau,dniv_libelle
+			$req  = "select perso_cod,perso_nom,dper_niveau,dniv_libelle
 						from perso,dieu_perso,dieu_niveau
 						where perso_cod = dper_perso_cod
 						and dper_dieu_cod = $dieu_perso
@@ -111,11 +111,12 @@ if ($erreur == 0)
 			}
 			break;
 		case "supprime":
-			$req = "select tfid_perso_cod,perso_nom from temple_fidele,perso where tfid_lieu_cod = $lieu and tfid_perso_cod = perso_cod";
-			$stmt = $pdo->query($req);
-			$result = $stmt->fetch();
-			echo "<p>Voulez-vous rééllement enlever à " . $result['perso_nom'] . " la gestion de ce temple ?";
-			echo "<form name=\"gerant\" method=\"post\" action=\"$PHP_SELF\">";
+            $req    =
+                "select tfid_perso_cod,perso_nom from temple_fidele,perso where tfid_lieu_cod = $lieu and tfid_perso_cod = perso_cod";
+            $stmt   = $pdo->query($req);
+            $result = $stmt->fetch();
+            echo "<p>Voulez-vous rééllement enlever à " . $result['perso_nom'] . " la gestion de ce temple ?";
+            echo "<form name=\"gerant\" method=\"post\" action=\"$_SERVER['PHP_SELF']\">";
 			echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
 			echo "<input type=\"hidden\" name=\"methode\" value=\"supprime2\">";
 			echo "<p><a href=\"javascript:document.gerant.submit();\">OUI ! je le veux ! </a><br>";

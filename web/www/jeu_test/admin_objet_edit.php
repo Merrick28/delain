@@ -17,11 +17,11 @@ if ($erreur == 0)
             ?>
             Pour éditer un objet :<br>
             - Entrez le numéro du perso qui possède l’objet :
-            <form method="post" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="perso"><input type="text" name="num_perso2">
                 <input type="submit" class="test" value="Valider"></form>
             - Ou entrez directement le numéro de l’objet s’il est connu :
-            <form method="post" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="objet"><input type="text" name="num_objet">
                 <input type="submit" class="test" value="Valider"></form>
             <?php
@@ -41,14 +41,14 @@ if ($erreur == 0)
                 echo 'Liste des objets modifiables : <br>';
                 foreach ($allobj as $result)
                 {
-                    echo '<a href="' . $PHP_SELF . '?methode=objet&num_objet=' . $result['obj_cod'] . '">' . $result['obj_nom'] . '</a><br>';
+                    echo '<a href="' . $_SERVER['PHP_SELF'] . '?methode=objet&num_objet=' . $result['obj_cod'] . '">' . $result['obj_nom'] . '</a><br>';
                 }
 
             }
             break;
         case 'objet':
             ?>
-            <form method="post" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <input type="hidden" name="methode" value="fin">
             <input type="hidden" name="num_objet" value="<?php echo $num_objet; ?>">
             <?php
@@ -406,7 +406,7 @@ if ($erreur == 0)
     }
 }
 ?>
-    <a href="<?php echo $PHP_SELF ?>" class="centrer">Retour au début</a>
+    <a href="<?php echo $_SERVER['PHP_SELF'] ?>" class="centrer">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

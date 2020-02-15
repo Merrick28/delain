@@ -158,6 +158,7 @@ switch ($methode)
         break;
 
     case "delete_mon_sort":
+        $sort_cod    = $_REQUEST['sort_cod'];
         $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();
@@ -170,6 +171,7 @@ switch ($methode)
         break;
 
     case "add_mon_sort":
+        $sort_cod    = $_REQUEST['sort_cod'];
         $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();
@@ -181,6 +183,7 @@ switch ($methode)
         break;
 
     case "delete_mon_immunite":
+        $sort_cod    = $_REQUEST['sort_cod'];
         $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();
@@ -193,6 +196,7 @@ switch ($methode)
         break;
 
     case "add_mon_immunite":
+        $sort_cod    = $_REQUEST['sort_cod'];
         $req_upd_mon = "select sort_nom from sorts where sort_cod = $sort_cod";
         $stmt        = $pdo->query($req_upd_mon);
         $result      = $stmt->fetch();

@@ -1,5 +1,5 @@
 <?php
-//$result = stripos($PHP_SELF,'sadsearch');
+//$result = stripos($_SERVER['PHP_SELF'],'sadsearch');
 //if(!$result)
 $sortie = ob_get_contents();
 // ob_end_flush();

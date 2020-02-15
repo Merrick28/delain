@@ -46,7 +46,7 @@ if ($erreur2 != 1)
     $contenu_page .= ob_get_contents();
     ob_end_clean();
 
-    $contenu_page .= '<table><form name="deplace_monstre" method="post" action="' . $PHP_SELF . '">
+    $contenu_page .= '<table><form name="deplace_monstre" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 		
 		<tr>
 			<td class="titre" colspan="2"><p class="titre">Déplacement de monstres en bloc</p></td>
@@ -178,7 +178,7 @@ if ($erreur2 != 1)
                 {
                     $contenu_page .= '<br><p><strong>*********** Position trouvée. Vérifiez bien monstres concernés et position avant de valider définitivement !*************</strong><br><br><hr>';
                 }
-                $contenu_page .= '<table><form name="deplace" method="post" action="' . $PHP_SELF . '">
+                $contenu_page .= '<table><form name="deplace" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<tr><td class="titre">Code</td><td class="titre">Nom</td><td class="titre">Type</td><td class="titre">Position de déplacement</td><td class="titre" colspan="2">Paramètres d’IA</td></tr>';
                 for ($cpt = 0; $cpt < $nb_monstre; $cpt++)
                 {

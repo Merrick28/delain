@@ -31,13 +31,14 @@ if ($erreur == 0)
 						<td><strong>Nom de la potion</strong></td><td><strong>Description</strong></td>';
                 while ($result = $stmt->fetch())
                 {
-                    echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=ajout&pot=' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</a></td>
+                    echo '<tr><td class="soustitre2"><br><a href="' . $_SERVER['PHP_SELF'] . '?methode=ajout&pot=' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</a></td>
 						<td class="soustitre2">' . $result['gobj_nom'] . '</td></tr>';
 
                 }
                 ?>
             </table>
-            <hr><a href="<?php echo $PHP_SELF; ?>?methode=ajout">Ou ajouter une nouvelle formule de potion</a>
+            <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=ajout">Ou ajouter une nouvelle formule de
+            potion</a>
             <?php
             $req  =
                 'select 	frmpr_frm_cod,frmpr_gobj_cod,frmpr_num,frm_cod,frm_type,frm_nom,frm_comp_cod from formule_produit,formule where frm_type = 2 and frm_cod = frmpr_frm_cod order by frm_nom ';
@@ -48,7 +49,7 @@ if ($erreur == 0)
             {
                 $cod_potion = $result['frm_cod'];
                 $comp       = $result['frm_comp_cod'];
-                echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&pot=' . $cod_potion . '">' . $result['frm_nom'] . '</a></td>';
+                echo '<tr><td class="soustitre2"><br><a href="' . $_SERVER['PHP_SELF'] . '?methode=modif&pot=' . $cod_potion . '">' . $result['frm_nom'] . '</a></td>';
                 if ($stmt->rowCount() != 0)
                 {
                     $req_composant = "select 	frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom from formule_composant,objet_generique	
@@ -84,7 +85,7 @@ if ($erreur == 0)
             }
             ?>
             <table>
-                <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="ajout2">
                     <tr>
                         <td class="soustitre2">Nom / Description de la formule de potion (conserver le nom de la potion
@@ -182,7 +183,8 @@ if ($erreur == 0)
             $stmt     = $pdo->query($req);
             echo "<p>La formule de base de la potion a bien été insérée !<br>
 				Pensez à inclure les composants nécessaires pour cette potion.<br>";
-            ?><a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $num_form; ?>">Modifier la liste des
+            ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&pot=<?php echo $num_form; ?>">Modifier la
+            liste des
             composants de la potion</a><br>
             <strong>Rappel des règles de création des formules :</strong>
             <br>Une potion de niveau 1 contient au moins 4 composants
@@ -212,11 +214,11 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $_SERVER['PHP_SELF'] . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
             }
             ?>
             <br>Ajouter un objet :
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="serie_obj">
                 <input type="hidden" name="action" value="ajout">
                 <input type="hidden" name="pot" value="<?php echo $pot; ?>">
@@ -246,10 +248,11 @@ if ($erreur == 0)
             $result   = $stmt->fetch();
             $cod_pot  = $result['frmpr_gobj_cod'];
             ?>
-            <a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste d'objets</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste
+                d'objets</a>
             <br>
             <table>
-                <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="modif2">
                     <input type="hidden" name="pot" value="<?php echo $pot; ?>">
                     <input type="hidden" name="nom" value="<?php echo $result['frm_nom']; ?>">
@@ -364,7 +367,8 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             echo "<p>La formule de base de la potion a bien été modifiée !<br>
 							Vous pouvez aussi en modifier les composants.<br>";
-            ?><a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste des
+            ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste
+            des
             composants de la potion</a><br>
             <?php
             break;
@@ -398,11 +402,11 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $_SERVER['PHP_SELF'] . '?methode=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
             }
             ?>
             <br>Ajouter un objet :
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="serie_obj">
                 <input type="hidden" name="action" value="ajout">
                 <input type="hidden" name="pot" value="<?php echo $pot; ?>">
@@ -429,7 +433,7 @@ if ($erreur == 0)
     }
 }
 ?>
-    <p style="text-align:center;"><a href="<?php $PHP_SELF ?>?methode=debut ">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php $_SERVER['PHP_SELF'] ?>?methode=debut ">Retour au début</a>
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();

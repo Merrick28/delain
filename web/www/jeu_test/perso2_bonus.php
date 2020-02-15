@@ -145,7 +145,7 @@ $template     = $twig->load('_perso2_bonus.twig');
 $options_twig = array(
 
     'PERSO'             => $perso,
-    'PHP_SELF'          => $PHP_SELF,
+    'PHP_SELF'          => $_SERVER['PHP_SELF'],
     'CONENTRATION'      => $concentration,
     'HAS_CONCENTRATION' => $has_concentration,
     'TAB_CARAC_ORIG'    => $tab_carac_orig,

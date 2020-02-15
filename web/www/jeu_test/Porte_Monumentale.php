@@ -103,7 +103,7 @@ include "../includes/constantes.php";
                 echo("</table>");
 
 
-                echo "<form name=\"ea\" method=\"post\" action=" . $PHP_SELF . ">";
+                echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_donjon\">";
                 echo "<select name=\"etage_num\">";
                 $req = "select etage_numero, etage_libelle from etage where etage_arene = 'O' and etage_type_arene = 2 ";

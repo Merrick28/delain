@@ -93,7 +93,7 @@ if ($autorise != 1)
     $options_twig = array(
 
         'PERSO'        => $perso,
-        'PHP_SELF'     => $PHP_SELF,
+        'PHP_SELF'     => $_SERVER['PHP_SELF'],
         'CONTENU_PAGE' => $contenu_page
 
     );

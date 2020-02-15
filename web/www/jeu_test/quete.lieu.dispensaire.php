@@ -33,7 +33,7 @@ switch ($methode2)
                 //Quête du collectionneur : cette quête a pour vocation de faire ramener un objet rare,
                 // droppé par les capitaines morbelins ou trouvé dans des cachettes
                 ?>
-                <form name="cede" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <p>En arrivant dans le dispensaire, un guérisseur vous interpelle :
                         <br><em>Je crois que vous possédez un objet qui pourrait intéresser l’un des membres de notre
                             communauté.
@@ -74,7 +74,7 @@ switch ($methode2)
             {
                 // Pour la réutilisabilité : formulaire à modifier en fonction de l’objet, notamment phrase à mettre en contexte
                 ?>
-                <form name="cede" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <p>Un soignant en chef du dispensaire s’approche de vous :
                         <br><em>Je vois que vous êtes en possession d’écailles de basilic !
                             Celles-ci nous sont fort utile pour réaliser certaines de nos préparations.

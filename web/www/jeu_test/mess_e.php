@@ -50,8 +50,8 @@ for($cpt=1;$cpt<=$nb_pages;$cpt++)
 	}
 	else
 	{
-		$contenu_page .= '<a href="' . $PHP_SELF . '?msg_start=' . $v_debut . '&m=' . $m . '">' . $cpt . '</a> &nbsp;&nbsp;';
-	}
+        $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?msg_start=' . $v_debut . '&m=' . $m . '">' . $cpt . '</a> &nbsp;&nbsp;';
+    }
 }
 
 

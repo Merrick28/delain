@@ -210,7 +210,7 @@ $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
     ?>
-    Monstre non attribué. <a href="<?php echo $PHP_SELF; ?>?methode=attrib">Se l’attribuer ?</a><br>
+    Monstre non attribué. <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=attrib">Se l’attribuer ?</a><br>
     <?php
 } else
 {
@@ -218,17 +218,18 @@ if ($stmt->rowCount() == 0)
     if ($result['pcompt_compt_cod'] == $compt_cod)
     {
         ?>
-        Ce monstre vous est attribué. <a href="<?php echo $PHP_SELF; ?>?methode=relache">Le relâcher ?</a><br>
+        Ce monstre vous est attribué. <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=relache">Le relâcher ?</a>
+        <br>
         <?php
     } else
     {
         ?>
         Ce monstre est attribué à <strong><?php echo $result['compt_nom']; ?></strong>. <a
-            href="<?php echo $PHP_SELF; ?>?methode=attrib">Le récupérer ?</a><br>
+        href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=attrib">Le récupérer ?</a><br>
         <?php
     }
 }
-echo "<p><a href=\"", $PHP_SELF, "?methode=visu_log\">Voir les logs de l’IA ?</a>";
+echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=visu_log\">Voir les logs de l’IA ?</a>";
 
 $contenu_page = ob_get_contents();
 ob_end_clean();

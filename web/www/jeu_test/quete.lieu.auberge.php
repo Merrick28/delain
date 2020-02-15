@@ -83,18 +83,19 @@ switch($methode2)
 				}
 				else
 				{
-				?>
-					<form name="tournee" method="post" action="<?php echo $PHP_SELF;?>">
-					<input type="hidden" name="methode2" value="tournee">
-					<table>
-					<tr>
-					<tr>
-					<td class="soustitre2"><p>Allez, buvons un coup ensemble ! C'est ma tournée !</td>
-					<td><input type="radio" class="vide" name="controle1" value="tournee_ok"></td>
-					</tr>
-					<tr>
-					<td class="soustitre2"><p>Je ne suis pas sûr de vous trouver de bonne compagnie.
-						Et cette inscription à visiter des auberges pour une beuverie n’était pas une bonne idée.</td>
+					?>
+					<form name="tournee" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+						<input type="hidden" name="methode2" value="tournee">
+						<table>
+							<tr>
+							<tr>
+								<td class="soustitre2"><p>Allez, buvons un coup ensemble ! C'est ma tournée !</td>
+								<td><input type="radio" class="vide" name="controle1" value="tournee_ok"></td>
+							</tr>
+							<tr>
+								<td class="soustitre2"><p>Je ne suis pas sûr de vous trouver de bonne compagnie.
+										Et cette inscription à visiter des auberges pour une beuverie n’était pas une
+										bonne idée.</td>
 					<td><input type="radio" class="vide" name="controle1" value="tournee_ko"></td>
 					</tr>
 					<tr>

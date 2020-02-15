@@ -31,7 +31,7 @@ if ($erreur == 0)
             $nb_queue_rat  = $perso->compte_objet(91);
             $nb_toile      = $perso->compte_objet(92);
             $nb_crochet    = $perso->compte_objet(94);
-            $contenu_page3 .= '<form name="vente" method="post" action="' . $PHP_SELF . '">
+            $contenu_page3 .= '<form name="vente" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 														<input type="hidden" name="methode" value="vente_perso">
 														<input type="hidden" name="objet">';
             $contenu_page3 .= 'Vos pas vous mènent à proximité d\'un individu bien singulier. 

@@ -20,7 +20,7 @@ $template     = $twig->load('vue.twig');
 $options_twig = array(
 
     'PERSO'        => $perso,
-    'PHP_SELF'     => $PHP_SELF,
+    'PHP_SELF'     => $_SERVER['PHP_SELF'],
     'VUE_GAUCHE'   => $vue_gauche,
     'VUE_DROITE'   => $vue_droite,
     'VUE_BAS'      => $vue_bas,

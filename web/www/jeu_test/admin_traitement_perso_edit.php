@@ -520,19 +520,19 @@ switch ($methode)
 		}
 		if ($err_depl == 0)
 		{
-			// insertion dun évènement
-			$texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-			$req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
-			$req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-			$stmt = $pdo->query($req);
-			// effacement des locks
-			$req = "delete from lock_combat where lock_cible = $mod_perso_cod ";
-			$stmt = $pdo->query($req);
-			$req = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
-			$stmt = $pdo->query($req);
-			
-			// Position de départ
-			$req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
+            // insertion dun évènement
+            $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
+            $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
+			values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
+            $stmt      = $pdo->query($req);
+            // effacement des locks
+            $req  = "delete from lock_combat where lock_cible = $mod_perso_cod ";
+            $stmt = $pdo->query($req);
+            $req  = "delete from lock_combat where lock_attaquant = $mod_perso_cod ";
+            $stmt = $pdo->query($req);
+
+            // Position de départ
+            $req_position = "select pos_cod, pos_x::text || ', ' || pos_y::text || ', ' || pos_etage::text || ' (' || etage_libelle || ')' as position,
 					etage_arene
 				from perso_position
 				inner join positions on pos_cod = ppos_pos_cod
@@ -585,30 +585,30 @@ switch ($methode)
 
 	case "add_new_object":
 		// recherche du num objet generique
-		$req = "select nextval('seq_gobj_cod') as gobj";
-		$stmt = $pdo->query($req);
-		$result = $stmt->fetch();
-		$gobj_cod = $result['gobj'];
-		$nom_objet = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet)));
-		$nom_objet_non_iden = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet_non_iden)));
-		$desc = pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $desc))));
-		// création dans les objets génériques
-		$req = "insert into objet_generique (gobj_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_poids,gobj_description,gobj_deposable,gobj_visible,gobj_echoppe) ";
-		$req = $req . "values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
-		$stmt = $pdo->query($req);
-		// insertion dun évènement
-		$texte_evt = "Un admin quête a créé un objet dans l’inventaire de [perso_cod1].";
-		$req = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) ";
-		$req = $req  . "values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-		$stmt = $pdo->query($req);
-		// création
-		$req = "select cree_objet_perso_nombre($gobj_cod,$mod_perso_cod,1)";
-		$stmt = $pdo->query($req);
-		
-		$log .= "Création d’un nouvel objet, $nom_objet, dans l’inventaire.";
-		writelog($log,'perso_edit');
-		echo "<div class='bordiv'><pre>$log</pre></div>";
-	break;
+        $req                = "select nextval('seq_gobj_cod') as gobj";
+        $stmt               = $pdo->query($req);
+        $result             = $stmt->fetch();
+        $gobj_cod           = $result['gobj'];
+        $nom_objet          = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet)));
+        $nom_objet_non_iden = pg_escape_string(htmlspecialchars(str_replace('’', '\'', $nom_objet_non_iden)));
+        $desc               = pg_escape_string(nl2br(htmlspecialchars(str_replace('\'', '’', $desc))));
+        // création dans les objets génériques
+        $req  = "insert into objet_generique (gobj_cod,gobj_nom,gobj_nom_generique,gobj_tobj_cod,gobj_valeur,gobj_poids,gobj_description,gobj_deposable,gobj_visible,gobj_echoppe) 
+		values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
+        $stmt = $pdo->query($req);
+        // insertion dun évènement
+        $texte_evt = "Un admin quête a créé un objet dans l’inventaire de [perso_cod1].";
+        $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
+		values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
+        $stmt      = $pdo->query($req);
+        // création
+        $req  = "select cree_objet_perso_nombre($gobj_cod,$mod_perso_cod,1)";
+        $stmt = $pdo->query($req);
+
+        $log .= "Création d’un nouvel objet, $nom_objet, dans l’inventaire.";
+        writelog($log, 'perso_edit');
+        echo "<div class='bordiv'><pre>$log</pre></div>";
+        break;
 
 	case "update_religion":
 		$req_upd_rel =  "update dieu_perso set dper_dieu_cod = $dper_dieu_cod,dper_niveau = $dper_niveau, dper_points= $dper_points where dper_perso_cod = $mod_perso_cod";

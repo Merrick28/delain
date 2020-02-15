@@ -35,7 +35,7 @@ switch($methode)
 				else
 				{
 					$contenu_page .= '<br>
-															<form name="potions" method="post" action="'. $PHP_SELF .'">
+															<form name="potions" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 															<input type="hidden" name="methode" value="potions">
 															<table width="70%">
 															<tr>

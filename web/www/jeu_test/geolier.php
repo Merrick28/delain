@@ -19,7 +19,7 @@ if ($erreur == 0) {
     $methode          = get_request_var('methode', 'debut');
     switch ($methode) {
         case "debut":
-            echo "<p><a href=\"", $PHP_SELF, "?methode=prison\">Voir les joueurs en prison</a><br>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=prison\">Voir les joueurs en prison</a><br>";
             break;
         case "prison":
             $req = "select perso_cod,perso_nom,lower(perso_nom) as minusc from perso,perso_position,positions ";
@@ -41,7 +41,7 @@ if ($erreur == 0) {
                 while ($result = $stmt->fetch()) {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><strong>", $result['perso_nom'], "</strong></td>";
-                    echo "<td><a href=\"", $PHP_SELF, "?methode=ouvrir&perso=", $result['perso_cod'], "\">Ouvrir la porte ?</a>";
+                    echo "<td><a href=\"", $_SERVER['PHP_SELF'], "?methode=ouvrir&perso=", $result['perso_cod'], "\">Ouvrir la porte ?</a>";
                     echo "</tr>";
                 }
                 echo "</table>";
@@ -56,7 +56,7 @@ if ($erreur == 0) {
             break;
 
     }
-    echo "<hr><a href=\"", $PHP_SELF, "\">Retour à la page principale du geolier.</a><br>";
+    echo "<hr><a href=\"", $_SERVER['PHP_SELF'], "\">Retour à la page principale du geolier.</a><br>";
     echo "<a href=\"milice.php\">Retour à la page milice</a><br>";
 
 

@@ -26,7 +26,7 @@ if (!$compte->is_admin())
                     $contenu_page .= '<tr><td class="soustitre2"><a href="detail_compte.php?compte=' . $result['hlog_compte'] . '">' . $result['compt_nom'] . '</a></td><td>' . $result['hlog_date'] . '</td><td class="soustitre2">' . $result['hlog_ip'] . '</td></tr>';
                 $contenu_page .= '</table>';
             }
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=global&id=' . $id . '">Voir le global</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=global&id=' . $id . '">Voir le global</a>';
             break;
         case "global":
             $req  = 'select compt_nom,hlog_compte,count(hlog_id) as nombre,to_char(min(hlog_date),\'YYYY/MM/DD\') as date_min,to_char(max(hlog_date),\'YYYY/MM/DD\') as date_max 
@@ -52,7 +52,7 @@ if (!$compte->is_admin())
 					<td>' . $result['date_max'] . '</td></tr>';
                 $contenu_page .= '</table>';
             }
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=detail&id=' . $id . '">Voir le détail</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=detail&id=' . $id . '">Voir le détail</a>';
             break;
 
 

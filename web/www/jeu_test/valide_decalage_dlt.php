@@ -25,7 +25,7 @@ if ($erreur == 0)
                                to_char(prochaine_dlt($perso_cod) + '$temps_dlt minutes'::interval,'DD/MM/YYYY à hh24:mi:ss') as nxtdlt
 					from perso
 					where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             $nvdlt  = $result['nvdlt'];
             $nxtdlt = $result['nxtdlt'];
@@ -34,7 +34,7 @@ if ($erreur == 0)
             Votre prochaine dlt commencera le <strong><?php echo $nvdlt; ?></strong> <em>(la suivante le
             <strong><?php echo $nxtdlt; ?></strong>)</em>
             <br><strong><a
-                    href="<?php echo $PHP_SELF; ?>?methode=validation&temps_dlt=<?php echo $temps_dlt; ?>">Oui</a>
+                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=validation&temps_dlt=<?php echo $temps_dlt; ?>">Oui</a>
             <br><br><a href="perso2.php">Non</a></strong>
             <?php
             break;

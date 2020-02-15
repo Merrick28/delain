@@ -4,22 +4,22 @@ ob_start();
 
 include "blocks/_test_droit_modif_etage.php";
 
-$methode           = get_request_var('methode', 'debut');
+$methode     = get_request_var('methode', 'debut');
 $admin_etage = $_REQUEST['etage'];
 
-if(!isset($admin_etage) && $methode == 'debut')
+if (!isset($admin_etage) && $methode == 'debut')
 {
-	$admin_etage = 0;
+    $admin_etage = 0;
 }
 
 ?>
 
 <?php echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
-	<form method='post' action='$PHP_SELF'>
+	<form method='post' action='$_SERVER['PHP_SELF']'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
-	$html->etage_select($admin_etage) .
-	"</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
+                         $html->etage_select($admin_etage) .
+                         "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
 	<p><strong>Autres outils</strong><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />
@@ -83,23 +83,24 @@ switch($methode)
 			<em>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Il n’est pas possible de supprimer un fond.</em><br />
 		</div>
 
-		<div id="vueEtage"></div>
+        <div id="vueEtage"></div>
 
-		<script type='text/javascript'>
-			Pinceau.dessineRadar ();
-			Pinceau.dessineListe (Fonds, document.getElementById('pinceauFonds'));
-			Pinceau.dessineListe (Decors, document.getElementById('pinceauDecors'));
-			Pinceau.dessineListe (DecorsDessus, document.getElementById('pinceauDecorsDessus'));
-			Pinceau.dessineListe (Murs, document.getElementById('pinceauMurs'));
-			Etage.Dessine();
-		</script>
-		<form name="plateau" method="POST" action="<?php  echo $PHP_SELF; ?>" onsubmit="Etage.ecrireModifs();">
-			<input type="hidden" name="etage" value="<?php  echo $admin_etage; ?>" />
-			<input type="hidden" name="methode" value="valide" />
-			<input type="hidden" name="modifs" value="" />
-			<center><input type="submit" class="test" value="Modifier !"></center>
-		</form>
-	<?php 	break;
+        <script type='text/javascript'>
+            Pinceau.dessineRadar();
+            Pinceau.dessineListe(Fonds, document.getElementById('pinceauFonds'));
+            Pinceau.dessineListe(Decors, document.getElementById('pinceauDecors'));
+            Pinceau.dessineListe(DecorsDessus, document.getElementById('pinceauDecorsDessus'));
+            Pinceau.dessineListe(Murs, document.getElementById('pinceauMurs'));
+            Etage.Dessine();
+        </script>
+        <form name="plateau" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>"
+              onsubmit="Etage.ecrireModifs();">
+            <input type="hidden" name="etage" value="<?php echo $admin_etage; ?>"/>
+            <input type="hidden" name="methode" value="valide"/>
+            <input type="hidden" name="modifs" value=""/>
+            <center><input type="submit" class="test" value="Modifier !"></center>
+        </form>
+        <?php break;
 
 	case "valide":
         $modifs = $_REQUEST['modifs'];

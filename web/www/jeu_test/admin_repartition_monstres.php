@@ -166,7 +166,7 @@ Ajouter un nouveau monstre :
 <?php }
 }
 ?>
-<p style="text-align:center;"><a href="<?php echo$PHP_SELF ?>">Retour au début</a>
+	<p style="text-align:center;"><a href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 <?php $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";

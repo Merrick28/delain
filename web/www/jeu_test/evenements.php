@@ -78,7 +78,7 @@ $stmt    = $pdo->query($req_evt);
                             {
                                 $style = 'pas_onglet';
                             }
-                            echo '<td class="' . $style . '" style="text-align:center"><a href="' . $PHP_SELF . '?type=' . $cpt . '">' . $aff[$cpt] . '</a></td>';
+                            echo '<td class="' . $style . '" style="text-align:center"><a href="' . $_SERVER['PHP_SELF'] . '?type=' . $cpt . '">' . $aff[$cpt] . '</a></td>';
                         }
                         ?>
                     </table>
@@ -125,14 +125,14 @@ $stmt    = $pdo->query($req_evt);
             if ($evt_start != 0)
             {
                 $start = $evt_start - 20;
-                echo "<div align=\"left\"><a href=\"", $PHP_SELF, "?evt_start=", $start, "&type=", $type, "\"><== Précédent</a></div>";
+                echo "<div align=\"left\"><a href=\"", $_SERVER['PHP_SELF'], "?evt_start=", $start, "&type=", $type, "\"><== Précédent</a></div>";
             }
             ?>
         </td>
         <td>
             <?php
             $start = $evt_start + 20;
-            echo "<div align=\"right\"><a href=\"", $PHP_SELF, "?evt_start=", $start, "&type=", $type, "\">Suivant ==></a></div>";
+            echo "<div align=\"right\"><a href=\"", $_SERVER['PHP_SELF'], "?evt_start=", $start, "&type=", $type, "\">Suivant ==></a></div>";
             ?>
         </td>
     </tr>

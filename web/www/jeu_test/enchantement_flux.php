@@ -30,25 +30,25 @@ if($result = $stmt->fetch())
 		case "debut":
 			$contenu_page .= '
 				<p align="center"><br>Vous avez la possibilité de tester la puissance des vents magiques. Plusieurs méthodes peuvent se présenter à vous :<br>
-				<form method="post" action="' . $PHP_SELF. '">
+				<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 				<br><p align="center" class="soustitre2"><strong>Analyse locale</strong></p> 
 				Cette recherche vous permettra de tenter de sonder les vents magiques proches de vous.<br>
 				<input type="hidden" name="methode" value="detecter2">
 				<input type="hidden" name="t_ench" value="' . $t_ench . '">
-				<br><input type="submit" value="Rechercher ('. $pa .' PA)"  class="test">
+				<br><input type="submit" value="Rechercher (' . $pa . ' PA)"  class="test">
 				</form><br>';
 			if ($niveau == 102 or $niveau == 103)
-			{
-				$contenu_page .= '<form method="post" action="' . $PHP_SELF. '">
+            {
+                $contenu_page .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<br><p align="left" class="soustitre2"> <strong>Recherche poussée.</strong></p>
 					Elle vous permettra de scruter une zone à quatre positions ou moins autour de vous.<br>	
 					<input type="hidden" name="methode" value="detecter3">
 					<input type="hidden" name="t_ench" value="' . $t_ench . '">
-					<br><input type="submit" value="Rechercher ('. $pa2 .'PA)"  class="test">
+					<br><input type="submit" value="Rechercher (' . $pa2 . 'PA)"  class="test">
 					</form><br>
 					</p>
 					<br>';
-			}
+            }
 		break;
 
 		case "detecter2":

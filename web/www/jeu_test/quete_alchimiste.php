@@ -157,8 +157,8 @@ if ($erreur == 0)
 					Avant que vous ayez eu l’occasion d’en placer une, l’étrange bonne femme se met à nouveau à parler :
 					<br /><br />
 					- « <em>Au cas où vous ne l’auriez pas compris, je suis alchimiste. Une grande alchimiste. Je parcours les souterrains à la recherche de produits spéciaux afin d’améliorer mes recettes. C’est un travail fastidieux mais le résultat est à la hauteur, croyez moi ! Ah, ça vous impressionne hein de vous trouvez confronté à une savante telle que moi ? </em>» 
-					<br /><br /><br /><a href="' . $PHP_SELF . '?methode=non"><strong> Si ça m’impressionne ? Non pas du tout, vous m’avez tout l’air d’une vieille cinglée ! </a></strong>
-					<br /><br /><br /><a href="' . $PHP_SELF . '?methode=oui"><strong> Je suis totalement estomaqué ! Vous êtes assurément quelqu’un de très impressionnant, m’enseigneriez vous les rudiments de l’alchimie ? </a></strong>
+					<br /><br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=non"><strong> Si ça m’impressionne ? Non pas du tout, vous m’avez tout l’air d’une vieille cinglée ! </a></strong>
+					<br /><br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=oui"><strong> Je suis totalement estomaqué ! Vous êtes assurément quelqu’un de très impressionnant, m’enseigneriez vous les rudiments de l’alchimie ? </a></strong>
 					<br /><br />';
             } else /*On est dans le cas où le perso est un alchimiste. Il faudra traiter le cas des passages de niveau d'alchimie*/
             {
@@ -167,18 +167,18 @@ if ($erreur == 0)
 					<br><br>Et l’alchimiste part dans un discours de plusieurs minutes sans écouter ni voir vos baillements.
 					<br /><br />
 					Après quelques minutes, le voilà qui s’interrompt et qui vous regarde de nouveau :
-					<br>« <em>Puis-je vous être d’une aide quelconque ? Souhaitez-vous acheter des flacons vides ? <a href="' . $PHP_SELF . '?methode=acheter"><strong>OUI !</strong></a>
+					<br>« <em>Puis-je vous être d’une aide quelconque ? Souhaitez-vous acheter des flacons vides ? <a href="' . $_SERVER['PHP_SELF'] . '?methode=acheter"><strong>OUI !</strong></a>
 					<br>Si vous acceptez, il vous en coutera <strong>1000 brouzoufs</strong> le flacon »</em><br><br>';
                 if ($comp_alchimie == '97' && $pourcent_alchimie >= '90')
                 {
                     $contenu_page .= '<br>« <em>Dites-moi donc, je vois que vous êtes maintenant plus qu’un simple alchimiste. Vous avez la capacité de suivre mon enseignement pour atteindre une nouvelle étape dans votre connaissance !
-						<br>Souhaitez vous acquérir cette nouvelle connaissance ? <a href="' . $PHP_SELF . '?methode=niv1"><strong>OUI !</strong></a>
+						<br>Souhaitez vous acquérir cette nouvelle connaissance ? <a href="' . $_SERVER['PHP_SELF'] . '?methode=niv1"><strong>OUI !</strong></a>
 						<br>Pour conclure notre transaction, vous devez posséder un ambre, une émeraude, un rubis, une améthyste, une apophyllite diatropique, deux Brazilianites épimystiques et 10000 brouzoufs. »</em>
 						<br>Vous devrez aussi posséder 6 PA correspondants au temps de votre enseignement.<br><br>';
                 } else if ($comp_alchimie == '100' && $pourcent_alchimie >= '100')
                 {
                     $contenu_page .= '<br>« <em>Dites-moi donc, je vois que vous êtes un alchmiste confirmé. Vous avez la capacité de suivre mon enseignement pour atteindre une nouvelle étape dans votre connaissance ! Vous serez alors un alchimiste de talent, expert dans son domaine.
-						<br>Souhaitez vous acquérir cette nouvelle connaissance ? <a href="' . $PHP_SELF . '?methode=niv2"><strong>OUI !</strong></a>
+						<br>Souhaitez vous acquérir cette nouvelle connaissance ? <a href="' . $_SERVER['PHP_SELF'] . '?methode=niv2"><strong>OUI !</strong></a>
 						<br>Pour conclure notre transaction, vous devez me donner deux diamants, une cryptonite hémicaustique, un jade, deux topazes, une dolomite hyporhombique, une obsidienne, un ambre, une émeraude, un saphir, ainsi que 20000 brouzoufs. »</em>
 						<br>Vous devrez aussi posséder 10 PA correspondants au temps de votre enseignement.<br><br>';
                 }
@@ -190,8 +190,8 @@ if ($erreur == 0)
         case "oui":
             $contenu_page .= 'La femme cligne des yeux, se gratte le sommet du crâne et plonge son regard perçant dans le vôtre. Après quelques secondes qu’elle passe à vous scruter intensément, l’alchimiste répond à votre question :
 				- «<em> Dans l’absolu, je ne suis pas opposée à l’idée d’enseigner ma science. Cependant, cette dernière dote la personne qui la pratique d’un grand pouvoir. Déontologiquement, je me refuse à donner ce pouvoir au premier venu. J’ai besoin d’avoir la certitude que j’ai affaire à une personne qui d’une certaine envergure. L’alchimie n’est pas une science pour les faibles.</em>»
-				<br /><br /><br /><a href="' . $PHP_SELF . '?methode=non2"><strong>Faible ? Ce n’est pas moi qui souffle comme un vieux chameau arthritique parce que j’ai un sac à transporter. Vous n’êtes qu’une vieille taupe ! </a></strong>
-				<br /><br /><br /><a href="' . $PHP_SELF . '?methode=oui2"><strong>J’ai toujours rêvé de connaître les secrets de votre Haute Science, je suis prêt à tout pour que vous acceptiez de m’en en enseigner les bases ! </a></strong>
+				<br /><br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=non2"><strong>Faible ? Ce n’est pas moi qui souffle comme un vieux chameau arthritique parce que j’ai un sac à transporter. Vous n’êtes qu’une vieille taupe ! </a></strong>
+				<br /><br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=oui2"><strong>J’ai toujours rêvé de connaître les secrets de votre Haute Science, je suis prêt à tout pour que vous acceptiez de m’en en enseigner les bases ! </a></strong>
 				<br /><br />';
 
             break;
@@ -221,10 +221,10 @@ if ($erreur == 0)
 				d’un Traqueur ou de regagner un Bâtiment administratif. L’un comme l’autre vous permettront
 				probablement de décrocher un contrat de chasse. Remplissez en les conditions, allez quérir votre
 				récompense et, après seulement, revenez me voir, nous discuterons de la suite des opérations ! </em>»
-				<br /><br /><a href="' . $PHP_SELF . '?methode=non3"><strong>Je ne vois pas en quoi la chasse aux monstres
+				<br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=non3"><strong>Je ne vois pas en quoi la chasse aux monstres
 				a un rapport avec l’alchimie, vous n’êtes qu’un charlatan, j’ai tout intérêt à retourner à mes
 				occupations habituelles. Au revoir, ou pas !</a></strong>
-				<br /><br /><br /><a href="' . $PHP_SELF . '?methode=oui3"><strong>Oui ! Je me plierai à votre volonté. Je pars de ce pas ! </a></strong>
+				<br /><br /><br /><a href="' . $_SERVER['PHP_SELF'] . '?methode=oui3"><strong>Oui ! Je me plierai à votre volonté. Je pars de ce pas ! </a></strong>
 				<br /><br />';
             break;
 
@@ -256,13 +256,13 @@ if ($erreur == 0)
             }
 
             $contenu_page .= 'Voici un flacon pour vous ! Prenez en soin, et tachez d’en faire bon usage
-				<br>Souhaitez vous en acheter un autre pour 1000 autres brouzoufs ? <a href="' . $PHP_SELF . '?methode=acheter"><strong>OUI !</strong></a><br><br>';
-            $req_quete = "select cree_objet_perso(412,$perso_cod)";
-            $stmt = $pdo->query($req_quete);
-            $result = $stmt->fetch();
-            $req_quete = "update perso set perso_po = perso_po - 1000 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
-            $result = $stmt->fetch();
+				<br>Souhaitez vous en acheter un autre pour 1000 autres brouzoufs ? <a href="' . $_SERVER['PHP_SELF'] . '?methode=acheter"><strong>OUI !</strong></a><br><br>';
+            $req_quete    = "select cree_objet_perso(412,$perso_cod)";
+            $stmt         = $pdo->query($req_quete);
+            $result       = $stmt->fetch();
+            $req_quete    = "update perso set perso_po = perso_po - 1000 where perso_cod = $perso_cod";
+            $stmt         = $pdo->query($req_quete);
+            $result       = $stmt->fetch();
             break;
 
         case "niv1":

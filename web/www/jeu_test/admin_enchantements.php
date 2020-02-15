@@ -34,7 +34,7 @@ if ($erreur == 0)
                         while ($result = $stmt->fetch())
                         {
                             $cod_enchantement = $result['enc_cod'];
-                            echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode=modif&enc=' . $cod_enchantement . '">' . $result['enc_nom'] . '</a></td>';
+                            echo '<tr><td class="soustitre2"><br><a href="' . $_SERVER['PHP_SELF'] . '?methode=modif&enc=' . $cod_enchantement . '">' . $result['enc_nom'] . '</a></td>';
 
 
                             $stmt2 = $pdo->execute(array(":cod" => $cod_enchantement), $stmt2);
@@ -48,7 +48,7 @@ if ($erreur == 0)
                         }
                         ?>
             </table>
-            <hr><a href="<?php echo $PHP_SELF; ?>?methode=ajout">Ou ajouter un nouvel enchantement</a>
+            <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=ajout">Ou ajouter un nouvel enchantement</a>
             </td>
             <td><?php
                 require 'admin_enchantement_composant.php';
@@ -58,7 +58,7 @@ if ($erreur == 0)
         case "ajout":
             ?>
             <table>
-                <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="ajout2">
                     <tr>
                         <td class="soustitre2">Nom de l'enchantement</td>
@@ -198,12 +198,14 @@ if ($erreur == 0)
             $stmt   = $pdo->execute(array(":enc" => $enc), $stmt);
             $result = $stmt->fetch();
             ?>
-            <a href="<?php echo $PHP_SELF; ?>?methode=serie_obj&enc=<?php echo $enc; ?>">Modifier la liste d'objets</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&enc=<?php echo $enc; ?>">Modifier la liste
+                d'objets</a>
             <br>
-            <a href="<?php echo $PHP_SELF; ?>?methode=compat&enc=<?php echo $enc; ?>">Modifier les compatibilités</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=compat&enc=<?php echo $enc; ?>">Modifier les
+                compatibilités</a>
             <br>
             <table>
-                <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                     <input type="hidden" name="methode" value="modif2">
                     <input type="hidden" name="enc" value="<?php echo $enc; ?>">
                     <tr>
@@ -348,11 +350,11 @@ if ($erreur == 0)
             $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
             while ($result = $stmt->fetch())
             {
-                echo '<br>' . $result['gobj_nom'] . ' (' . $result['oenc_nombre'] . ') - <a href="' . $PHP_SELF . '?methode=serie_obj&action=suppr&oenc=' . $result['oenc_cod'] . '&enc=' . $enc . '">Supprimer ?</a>';
+                echo '<br>' . $result['gobj_nom'] . ' (' . $result['oenc_nombre'] . ') - <a href="' . $_SERVER['PHP_SELF'] . '?methode=serie_obj&action=suppr&oenc=' . $result['oenc_cod'] . '&enc=' . $enc . '">Supprimer ?</a>';
             }
             ?>
             <hr>Ajouter un objet :
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="serie_obj">
                 <input type="hidden" name="action" value="ajout">
                 <input type="hidden" name="enc" value="<?php echo $enc; ?>">
@@ -379,7 +381,7 @@ if ($erreur == 0)
                 $stmt = $pdo->execute(array(":enc" => $enc), $stmt);
             }
             ?>
-            <form method="post" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="enc" value="<?php echo $enc; ?>">
                 <input type="hidden" name="methode" value="compat2">
                 Entrez les types d'objets pour lequel cet enchantement sera disponible (1 = disponible, 0 = non
@@ -437,7 +439,7 @@ if ($erreur == 0)
     }
 }
 ?>
-    <p class="centrer"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <p class="centrer"><a href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();

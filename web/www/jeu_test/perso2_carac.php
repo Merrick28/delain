@@ -100,7 +100,7 @@ $template     = $twig->load('_perso2_carac.twig');
 $options_twig = array(
 
     'PERSO'            => $perso,
-    'PHP_SELF'         => $PHP_SELF,
+    'PHP_SELF'         => $_SERVER['PHP_SELF'],
     'RACE'             => $race,
     'NIVEAU_BLESSURES' => $niveau_blessures,
     'BM_CARACS'        => $bm_caracs,

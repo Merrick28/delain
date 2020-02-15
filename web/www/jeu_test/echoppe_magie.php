@@ -26,7 +26,7 @@ if ($erreur == 0)
         case "entree":
             echo "<p>Bonjour aventurier.";
             ?>
-        <form name="echoppe" method="post" action="<?php echo $PHP_SELF; ?>">
+        <form name="echoppe" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode">
                 <p>Voulez-vous :
                 <ul>

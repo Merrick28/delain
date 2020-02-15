@@ -158,7 +158,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if ($attaquable == 1)
             {
                 $contenu_page .= '<input type="hidden" name="cible" value="' . $cible . '">';
-                $contenu_page .= '<p style="text-align:center;"><a href="' . $PHP_SELF . '?methode=' . $methode . '&type_at=' . $type_at . '&cible=' . $cible . '">';
+                $contenu_page .= '<p style="text-align:center;"><a href="' . $_SERVER['PHP_SELF'] . '?methode=' . $methode . '&type_at=' . $type_at . '&cible=' . $cible . '">';
                 $contenu_page .= $tex_at[$type_at] . 'de nouveau (' . $pa_at[$type_at] . ' PA)</a>';
                 $contenu_page .= '</form>';
             }
@@ -1014,7 +1014,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'abtemp':
             $contenu_page .= 'En continuant, vous abandonnerez le dispensaire qui vous ramenait en cas de mort.<br />
-			<a href="' . $PHP_SELF . '?methode=abtemp2">Cliquez ici pour continuer</a>';
+			<a href="' . $_SERVER['PHP_SELF'] . '?methode=abtemp2">Cliquez ici pour continuer</a>';
             break;
         case 'abtemp2':
             $ptemple = new perso_temple();

@@ -21,7 +21,7 @@ switch ($methode)
         $contenu_page .= '
 			<p>Récupérer une liste de positions autour d\'une case, en excluant les murs non creusables, pour ensuite insérer des composants</p>
 			<br> On devra aussi vérifier sur chaque case si il n\'y pas déjà des composants sur cette case
-			<form name="position_composant" method="post" action="' . $PHP_SELF . '">
+			<form name="position_composant" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="recup_positions">
 			<table width="70%">
 			<tr>
@@ -69,7 +69,7 @@ switch ($methode)
 			</form>';
 
 
-        $contenu_page .= '<hr><form name="position_composant2" method="post" action="' . $PHP_SELF . '">
+        $contenu_page .= '<hr><form name="position_composant2" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="recup_positions2">
 			<table width="70%">
 			<tr>
@@ -127,7 +127,7 @@ switch ($methode)
 												<input type="submit" name="positionnement2" value="Récupérer les valeurs" class="test">
 												</form>
 												<hr>Effacer tous les composants d\'un étage :
-												<form name="position_composant2" method="post" action="' . $PHP_SELF . '">
+												<form name="position_composant2" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 													<input type="hidden" name="methode" value="effacer">
 													<table width="70%">
 													<tr><td>Etage à effacer</td>

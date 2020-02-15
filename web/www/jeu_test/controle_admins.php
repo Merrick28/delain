@@ -11,11 +11,12 @@ if ($erreur == 0)
     switch ($methode)
     {
         case "debut":
-            $req = "select compt_cod,compt_nom from compte where (compt_admin = 'O' or compt_monstre = 'O') and compt_actif = 'O' order by compt_nom";
+            $req =
+                "select compt_cod,compt_nom from compte where (compt_admin = 'O' or compt_monstre = 'O') and compt_actif = 'O' order by compt_nom";
             $stmt = $pdo->query($req);
             ?>
             <p>Choisissez le compte à controler :
-            <form action="<?php echo $PHP_SELF; ?>" metod="post">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" metod="post">
                 <input type="hidden" name="methode" value="et2">
                 <select name="vcompte">
                     <?php
@@ -42,7 +43,7 @@ if ($erreur == 0)
             }
 
             ?>
-            <form method="post" name="controle" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" name="controle" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="evt_start">
                 <input type="hidden" name="methode" value="et2">
                 <input type="hidden" name="vcompte" value="<?php echo $vcompte; ?>">

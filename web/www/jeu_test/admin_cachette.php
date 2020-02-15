@@ -30,13 +30,15 @@ if ($erreur == 0)
         case "debut":
             ?>
             <p>Choisissez votre méthode :</p>
-            <a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’une cachette ?</a> / <a
-                href="<?php echo $PHP_SELF; ?>?methode=mod">Modification d’une cachette existante</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’une cachette ?</a> / <a
+            href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’une cachette existante</a><br>
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=update_cache_vide">Liste des cachettes vides</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=update_cache_vide">Liste des cachettes vides</a><br>
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Création d’une liste d’objets pour cachette</a> / <a
-                href="<?php echo $PHP_SELF; ?>?methode=liste_mod">Modification d’une liste d’objets existante</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Création d’une liste d’objets pour
+                cachette</a> / <a
+            href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_mod">Modification d’une liste d’objets existante</a>
+            <br>
             <hr><br><br>
             <?php
             $included = true;
@@ -45,7 +47,7 @@ if ($erreur == 0)
 
         case "liste_cre": // création d’une liste d’objet pour cachettes
             ?>
-            <form name="liste_modif" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="liste_modif" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="liste_cre1">
                 <table>
                     <tr>
@@ -79,7 +81,8 @@ if ($erreur == 0)
                     </tr>
                 </table>
             </form>
-            <a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Retour Création d’une liste d’objets pour cachette</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Retour Création d’une liste d’objets pour
+                cachette</a>
             <?php
             break;
 
@@ -89,7 +92,8 @@ if ($erreur == 0)
             if ($nom_liste == 'à remplir !' or $nom_liste == '')
             {
                 echo 'Vous n’avez pas saisi de nom de liste viable !'; ?>
-                <br><a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Retour Création d’une liste d’objets pour
+                <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Retour Création d’une liste d’objets
+                pour
                 cachette</a>
                 <?php
                 break;
@@ -137,15 +141,18 @@ if ($erreur == 0)
                     }
                 }
                 ?>
-                <br><a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Retour Création d’une liste d’objets pour
+                <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Retour Création d’une liste d’objets
+                pour
                 cachette</a>
-                <br><a href="<?php echo $PHP_SELF; ?>?methode=liste_mod">Modification d’une liste d’objets pour
+                <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_mod">Modification d’une liste d’objets
+                pour
                 cachette</a>
                 <?php
             } else
             {
                 echo 'Vous n’avez pas saisi de nom de liste viable ! Il est déjà utilisé'; ?>
-                <br><a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Retour Création d’une liste d’objets pour
+                <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Retour Création d’une liste d’objets
+                pour
                 cachette</a>
                 <?php
             }
@@ -154,7 +161,7 @@ if ($erreur == 0)
         case "liste_mod": // Modification d’une liste d’objets pour cachettes
             if (!isset($liste_num)) $liste_num = -1;
             ?>
-            <form name="liste_modif_choix" method="get" action="<?php echo $PHP_SELF; ?>">
+            <form name="liste_modif_choix" method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="liste_mod"/>
                 <select name="liste_num">
                     <option value="-1">Choisir la liste à modifier</option>
@@ -170,7 +177,7 @@ if ($erreur == 0)
             <?php if ($liste_num > 0)
         {
             ?>
-            <form name="liste_modif" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="liste_modif" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="liste_mod1"/>
                 <input type="hidden" name="liste_num" value="<?php echo $liste_num; ?>"/>
                 <h1>Éléments à supprimer de la liste</h1>
@@ -231,7 +238,8 @@ if ($erreur == 0)
             </form>
         <?php }
             ?>
-            <hr><a href="<?php echo $PHP_SELF; ?>?methode=liste_cre">Création d’une liste d’objets pour cachette</a>
+            <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Création d’une liste d’objets pour
+            cachette</a>
             <?php
             break;
 
@@ -294,14 +302,15 @@ if ($erreur == 0)
                 }
             }
             ?>
-            <br><a href="<?php echo $PHP_SELF; ?>?methode=liste_mod">Modification d’une liste d’objets existante</a><br>
+            <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_mod">Modification d’une liste d’objets
+            existante</a><br>
             <hr><br><br>
             <?php
             break;
 
         case "cre": // création d'une nouvelle cachette
             ?>
-            <form name="cre" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <br> <strong>Première étape :</strong> pour créer une cachette, remplir les champs nécessaires
                 <br> Cela va créer la cachette en tant que telle, avec son descriptif. Si certains champs ne doivent pas
                 être remplis, laissez les vides
@@ -390,7 +399,7 @@ if ($erreur == 0)
                 /* Il n’existe pas de position ! */
                 /*********************************/
                 echo 'Aucune position trouvée !<br>
-					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
                 break;
             } else
             {
@@ -410,8 +419,8 @@ if ($erreur == 0)
 
                 $cache_cod = $result['cache_cod'];
                 echo 'Il y a une cachette existante sur cette position !<br>
-					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
-					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
                 break;
             } else
             {
@@ -435,8 +444,8 @@ if ($erreur == 0)
                 /* Il y a une autre fonction ! */
                 /*******************************/
                 echo 'Il y a déjà une autre fonction sur cette case !<br> Fonction : ' . $fonction_cod . ' <br>
-					<a href="' . $PHP_SELF . '?methode=update_fonction">Remplacer la fonction présente par une cachette ?</a><br> Attention, cette opération supprimera la précédente fonction !<br>
-					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=update_fonction">Remplacer la fonction présente par une cachette ?</a><br> Attention, cette opération supprimera la précédente fonction !<br>
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
             } else
                 //on intègre la nouvelle cachette
             {
@@ -470,7 +479,7 @@ if ($erreur == 0)
                 $result    = $stmt->fetch();
                 $cache_cod = $result['cache_cod'];
                 echo '<p>L’insertion de cette nouvelle cachette s’est bien déroulée en ' . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'] . '<br>
-					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>';
             }
             break;
 
@@ -485,15 +494,15 @@ if ($erreur == 0)
                                             ":pos_cod"  => $pos_cod), $stmt);
 
             echo 'Mise à jour réalisée <br>
-				<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
-				<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
+				<a href="' . $_SERVER['PHP_SELF'] . '?cache_cod=' . $cache_cod . '&methode=update_cache">Changer son contenu ?</a><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
             break;
 
         case "mod":
             ?>
             <p>Liste de l’ensemble des cachettes du jeu<br>
             <?php
-            echo '<hr><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a><hr>';
+            echo '<hr><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a><hr>';
             $req  = 'select cache_cod,cache_nom,cache_desc,cache_image,pos_x,pos_y,pos_etage,etage_libelle
 				from cachettes,positions,etage
 				where cache_pos_cod = pos_cod
@@ -506,7 +515,7 @@ if ($erreur == 0)
                 $cache_cod = $result['cache_cod'];
                 echo '<br><strong>Cachette numéro </strong>' . $result['cache_cod'] . '<br><strong>Nom : </strong>' . $result['cache_nom'] . '<br><strong>Description : </strong>' . $result['cache_desc'] .
                      '<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
-					<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
             }
             break;
 
@@ -519,7 +528,7 @@ if ($erreur == 0)
             ?>
             <p>Liste des cachettes vides du jeu<br>
             <?php
-            echo '<hr><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a><hr>';
+            echo '<hr><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a><hr>';
             $req = 'select cache_cod,cache_nom,cache_desc,cache_image,pos_x,pos_y,pos_etage,etage_libelle
 				from cachettes,positions,etage
 				where not exists
@@ -534,7 +543,7 @@ if ($erreur == 0)
                 $cache_cod = $result['cache_cod'];
                 echo '<br><strong>Cachette numéro </strong>' . $result['cache_cod'] . '<br><strong>Nom : </strong>' . $result['cache_nom'] . '<br><strong>Description : </strong>' . $result['cache_desc'] .
                      '<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
-				<a href="' . $PHP_SELF . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
+				<a href="' . $_SERVER['PHP_SELF'] . '?cache_cod=' . $cache_cod . '&methode=update_cache">Modifier le contenu de cette cachette ?</a><hr>';
             }
             break;
 
@@ -588,7 +597,7 @@ if ($erreur == 0)
 
             </SCRIPT>
 
-            <form method="post" name="formCache" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" name="formCache" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="update_cache2">
                 <input type="hidden" name="cache_cod" value="<?php echo $cache_cod ?>">
                 <TABLE width="80%" class="centrer">
@@ -667,7 +676,7 @@ if ($erreur == 0)
 
             echo 'num cachette : ' . $_REQUEST['cache_cod'] . '<br>';
             ?>
-            <form name="update_nom" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="update_nom" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 
                 <input type="hidden" name="methode" value="update_cache_nom">
                 <input type="hidden" name="cache_cod" value="<?php echo $cache_cod ?>">
@@ -717,7 +726,7 @@ if ($erreur == 0)
             </form>
 
             <?php
-            echo '<hr><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a>';
+            echo '<hr><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a>';
             break;
 
         // MAJ des objets contenus dans la cachette
@@ -828,11 +837,11 @@ if ($erreur == 0)
             }
             echo "MAJ cachette";
             ?>
-            <a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’une cachette ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’une cachette ?</a><br>
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=mod">Modification d’une cachette existante ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’une cachette existante ?</a><br>
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=update_cache_vide">Liste des cachettes vides</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=update_cache_vide">Liste des cachettes vides</a><br>
             <hr>
             <?php
             break;
@@ -846,20 +855,20 @@ if ($erreur == 0)
                      cache_max_respawn = :cache_max_respawn, 
                 cache_chance_respawn = :cache_chance_respawn 
                 where cache_cod = :cache_cod';
-            $stmt      = $pdo->prepare($req);
-            $stmt      = $pdo->execute(array(":nom"                  => $_REQUEST['nom'],
-                                             ":desc"                 => $_REQUEST['desc'],
-                                             ":image"                => $_REQUEST['image'],
-                                             ":cache_liste_respawn"  => $_REQUEST['cache_liste_respawn'],
-                                             ":cache_max_respawn"    => $_REQUEST['cache_max_respawn'],
-                                             ":cache_chance_respawn" => $_REQUEST['cache_chance_respawn'],
-                                             ":cache_cod"            => $_REQUEST['cache_cod']),
-                                       $stmt);
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":nom"                  => $_REQUEST['nom'],
+                                        ":desc"                 => $_REQUEST['desc'],
+                                        ":image"                => $_REQUEST['image'],
+                                        ":cache_liste_respawn"  => $_REQUEST['cache_liste_respawn'],
+                                        ":cache_max_respawn"    => $_REQUEST['cache_max_respawn'],
+                                        ":cache_chance_respawn" => $_REQUEST['cache_chance_respawn'],
+                                        ":cache_cod"            => $_REQUEST['cache_cod']),
+                                  $stmt);
             echo "MAJ cachette";
             ?>
-            <br><a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’une cachette ?</a><br>
+            <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’une cachette ?</a><br>
             <hr>
-            <a href="<?php echo $PHP_SELF; ?>?methode=mod">Modification d’une cachette existante ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’une cachette existante ?</a><br>
             <hr>
             <?php
             break;

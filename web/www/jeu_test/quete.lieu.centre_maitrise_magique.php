@@ -75,7 +75,7 @@ switch ($methode2)
                         $sortie_quete .= '« <em><br>Voilà qui est parfait, vous me ramenez donc tous les éléments
 							pour faire de vous un grand enlumineur !</em>»
 							<br><br>Encore ce dernier pas à réaliser avant d’être un bon enlumineur :
-							<a href="' . $PHP_SELF . '?methode2=niv1_conf"><strong>Allez, je me lance !</strong></a><br><br>
+							<a href="' . $_SERVER['PHP_SELF'] . '?methode2=niv1_conf"><strong>Allez, je me lance !</strong></a><br><br>
 							Il vous en coûtera <strong>12 PA</strong>';
                     } else //Pas le bon nombre d’objet
                     {
@@ -123,7 +123,7 @@ switch ($methode2)
 					c’est qu’il doit y avoir une bonne raison et que vous êtes intéressé par les arts magiques.
 					<br><strong>Je peux faire de vous un magicien important, versé dans l’art de l’enluminure !</strong></em> »
 					<br><br>Hum, voilà quelque chose de tentant !
-					<a href="' . $PHP_SELF . '?methode2=niv1"><strong>Allez, je me lance !</strong></a><br><br>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode2=niv1"><strong>Allez, je me lance !</strong></a><br><br>';
             }
         } //Fin d’un perso sans enluminure
         else if ($comp_enlumineur == 91) // Le perso est au premier niveau d’enluminure
@@ -144,7 +144,7 @@ switch ($methode2)
 					vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
 					<br>Donnez moi <strong>10 000 brouzoufs</strong>, et je ferais de vous un enlumineur accompli !</em> »
 					<br><br>Hum, voilà quelque chose de tentant !
-					<a href="' . $PHP_SELF . '?methode2=niv2"><strong>Allez, je me lance !</strong></a><br><br>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode2=niv2"><strong>Allez, je me lance !</strong></a><br><br>';
             }
         } else if ($comp_enlumineur == 92) // Le perso est au deuxième niveau d’enluminure
         {
@@ -164,7 +164,7 @@ switch ($methode2)
 					quelques brouzoufs pour que puisse acheter des composants.
 					<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enlumineur expérimenté !</em> »
 					<br><br>Hum, voilà quelque chose de tentant !
-					<a href="' . $PHP_SELF . '?methode2=niv3"><strong>Allez, je me lance !</strong></a><br><br>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode2=niv3"><strong>Allez, je me lance !</strong></a><br><br>';
             }
         } else if ($comp_enlumineur == 93) // Le perso est au troisième niveau d’enluminure
         {

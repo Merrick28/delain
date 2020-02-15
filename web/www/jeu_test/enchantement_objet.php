@@ -72,8 +72,8 @@ switch ($methode) {
                 }
                 $contenu_page .= '<tr><td class="soustitre2">' . $result3['obj_nom'] . ' <em>(' . $result3['obj_nom_generique'] . ')</em></td>
 										<td class="soustitre2" style="text-align:center"><strong>' . $chance_indic . '</strong></td>
-										<td class="soustitre2"><a href="' . $PHP_SELF . '?methode=enc&obj=' . $result3['obj_cod'] . '&t_ench=2"><em>Procéder au forgeamage de cet objet</em></a></td></tr>';
-                $compt = $compt + 1;
+										<td class="soustitre2"><a href="' . $_SERVER['PHP_SELF'] . '?methode=enc&obj=' . $result3['obj_cod'] . '&t_ench=2"><em>Procéder au forgeamage de cet objet</em></a></td></tr>';
+                $compt        = $compt + 1;
             }
         }
         $contenu_page .= '</table></p>';

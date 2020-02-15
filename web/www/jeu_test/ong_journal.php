@@ -93,7 +93,7 @@ else
             break;
         }
         echo("<tr>");
-        //					echo '<td><p><a href=\"' . $PHP_SELF , "?journal_cod=" , $result['journal_cod'] , "&t=" , $t , "&methode=voir\">" , $result['journal_titre'] , "</a> (", $result['jdate'] , ")</td>";
+        //					echo '<td><p><a href=\"' . $_SERVER['PHP_SELF'] , "?journal_cod=" , $result['journal_cod'] , "&t=" , $t , "&methode=voir\">" , $result['journal_titre'] , "</a> (", $result['jdate'] , ")</td>";
         echo '<td><a href="javascript:void(0);" onclick="getdata(\'' . $type_flux . G_URL . 'jeu_test/fr_dr.php?methode=voir&t_frdr=3&journal_cod=' . $result['journal_cod'] . '\',\'vue_droite\')">' . $result['journal_titre'] . '</a></td>';
         echo("</tr>");
     }
@@ -104,7 +104,7 @@ else
     break;
     case "voir":
         ?>
-        <form name="inter_journal" method="post" action="<?php echo $PHP_SELF; ?>">
+        <form name="inter_journal" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <input type="hidden" name="t" value="<?php echo $t_frdr; ?>">
             <input type="hidden" name="methode" value="rien">
             <input type="hidden" name="journal_cod" value="<?php echo("$journal_cod") ?>">
@@ -194,7 +194,8 @@ else
                     </tr>
                     <tr>
                         <td colspan="2"><input type="button" value="Valider" class="test centrer" accesskey="s"
-                                               onClick="voirList(this,'<?php echo $PHP_SELF; ?>','vue_droite');"></td>
+                                               onClick="voirList(this,'<?php echo $_SERVER['PHP_SELF']; ?>','vue_droite');">
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -276,7 +277,7 @@ else
                     <td>
 
                         <input type="button" value="Valider" class="test centrer" accesskey="s"
-                               onClick="voirList(this,'<?php echo $PHP_SELF; ?>','vue_droite');">
+                               onClick="voirList(this,'<?php echo $_SERVER['PHP_SELF']; ?>','vue_droite');">
                     </td>
                 </tr>
             </table>
@@ -297,9 +298,9 @@ else
             $contenu = htmlspecialchars($contenu);
             $contenu = str_replace(";", chr(127), $contenu);
             $contenu = pg_escape_string($contenu);
-            $req_upd = "update journal set journal_date = now(), ";
-            $req_upd = $req_upd . "journal_texte = e'$contenu' ";
-            $req_upd = $req_upd . "where journal_cod = $journal_cod ";
+            $req_upd = "update journal set journal_date = now(), 
+            journal_texte = e'$contenu' 
+            where journal_cod = $journal_cod ";
             $stmt    = $pdo->query($req_upd);
             ?>
             <p><strong>La modification est enregistrée !</strong></p>

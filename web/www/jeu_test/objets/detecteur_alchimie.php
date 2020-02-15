@@ -196,7 +196,7 @@ if($result = $stmt->fetch())
 		}
 	}
 	$contenu_page .= '<p align="center">La baguette fonctionne, Appuyer sur le bouton ?<br><br>
-		<form method="post" action="'.$PHP_SELF.'">
+		<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 		<input type="hidden" name="methode" value="detecter">
 		<input type="submit" value="Appuyer (1PA)"  class="test">
 		</form>

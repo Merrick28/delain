@@ -419,7 +419,7 @@ if (!$erreur)
 	?>
 				</td>
 				<td <?php  echo $cl;?>>
-					<p><a href="<?php echo  $PHP_SELF; ?>?methode=lancer_ia&cod_monstre=<?php echo $cod_monstre;?>">Lancer l’IA du <?php echo $cod_monstre;?>
+					<p><a href="<?php echo  $_SERVER['PHP_SELF']; ?>?methode=lancer_ia&cod_monstre=<?php echo $cod_monstre;?>">Lancer l’IA du <?php echo $cod_monstre;?>
 				</td>
 			</tr>
 			<tr><td <?php  echo $cl;?> colspan="9">

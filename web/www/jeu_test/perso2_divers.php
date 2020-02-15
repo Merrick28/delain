@@ -78,7 +78,7 @@ else
 	$util = $result['perso_nom'] . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
 	$ch_util = 1;
 }
-$contenu_page .= '<p class="titre">Utilisation des PA restants</p><p>' . $util . ' <a href="' . $PHP_SELF . '?m=6&ch_util=' . $ch_util . '">Changer ?</a></p>';
+$contenu_page .= '<p class="titre">Utilisation des PA restants</p><p>' . $util . ' <a href="' . $_SERVER['PHP_SELF'] . '?m=6&ch_util=' . $ch_util . '">Changer ?</a></p>';
 
 //
 // Fin utilisation PA restants

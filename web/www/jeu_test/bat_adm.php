@@ -115,7 +115,7 @@ if ($erreur == 0)
             echo("</table>");
 
 
-            echo "<form name=\"ea\" method=\"post\" action=" . $PHP_SELF . ">";
+            echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_arene\">";
             echo "<select name=\"etage_num\">";
             $req = "select etage_numero, etage_libelle from etage
@@ -145,7 +145,7 @@ if ($erreur == 0)
             $result = $stmt->fetch();
             if ($result['est_inscrit'] > 0)
             {
-                echo "<form name=\"ea\" method=\"post\" action=" . $PHP_SELF . ">";
+                echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_registre\">";
                 echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaité, retourner directement dans l'arène au bureau d'inscription.<br>";
                 echo "Même pas peur: <input class=\"test\" type=\"submit\" value=\"J'y retourne !\" /><br><br>";
@@ -166,7 +166,7 @@ if ($erreur == 0)
                     if ($result['pguilde_solde'] > 0)
                     {
                         echo "Vous avez ", $result['pguilde_solde'], " brouzoufs de solde que vous pouvez retirer.<br>";
-                        echo "<a href=\"", $PHP_SELF, "?methode=solde\">La retirer maintenant ?</a>";
+                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=solde\">La retirer maintenant ?</a>";
                     } else
                     {
                         echo "Vous n'avez pas de salaire à retirer à ce jour.";
@@ -293,7 +293,7 @@ if ($erreur == 0)
                 $result = $stmt->fetch();
             } else
             {
-                echo '<hr><p>Désirez vous <a href="' . $PHP_SELF . '?nbre_visite=' . $nbre_visite . '&methode=tournee">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?';
+                echo '<hr><p>Désirez vous <a href="' . $_SERVER['PHP_SELF'] . '?nbre_visite=' . $nbre_visite . '&methode=tournee">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?';
             }
             /*Intégration du positionnement des alchimistes et des enchanteurs*/
             $req    = "select pos_x,pos_y,pos_etage,etage_libelle,perso_quete from perso,perso_position,positions,etage 

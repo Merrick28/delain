@@ -46,7 +46,7 @@ if ($erreur == 0)
                 $contenu_page .= '« <em>Vous possédez peut être un objet sur lequel je puisse lancer un enchantement, voyons voir.... <br>
 				Voici les objets sur lesquels je peux intervenir : </em>»<br>';
                 while ($result = $stmt->fetch())
-                    $contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $result['obj_cod'] . '&type_appel=' . $type_appel . '">' . $result['obj_nom'] . '</a></strong>';
+                    $contenu_page .= '<br><strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=enc&obj=' . $result['obj_cod'] . '&type_appel=' . $type_appel . '">' . $result['obj_nom'] . '</a></strong>';
             }
             $contenu_page .= '<br><br>';
             if ($comp_enchantement == 0)
@@ -60,14 +60,14 @@ if ($erreur == 0)
                 {
                     $contenu_page .= '« <em>Mais j\'y pense, vous voulez peut-être devenir vous-même un enchanteur de renom ?
 														<br>Si c\'est le cas, dites le moi, et je vous proposerais une énigme à résoudre pour passer ce premier cap, celui d\'apprenti.</em>»
-														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv1&comp=88"><strong>Allez je me lance !</strong></a><br><br>';
+														<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $_SERVER['PHP_SELF'] . '?methode=niv1&comp=88"><strong>Allez je me lance !</strong></a><br><br>';
                 } else
                 {
                     $contenu_page .= '« <em>Vous voilà de nouveau ? Vous avez donc bien cogité sur mon problème ?
 														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
 														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
 														<br>Vous devez le proposer en <strong>majuscule</strong>, et cela vous coutera <strong>12PA</strong> en cas de code correct, <strong>6PA</strong> si le code est faux.
-														 <form method="post" action="' . $PHP_SELF . '">
+														 <form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 														<input type="hidden" name="methode" value="code">
 														<input type="text" name="code">
 														<input type="submit" value="Valider 12 PA" class="test">';
@@ -89,7 +89,7 @@ if ($erreur == 0)
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
 													<br>Donnez moi <strong>10000 brouzoufs</strong>, et je ferais de vous un enchanteur accompli !
 													</em>»
-													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv2&comp=102"><strong>Allez je me lance !</strong></a><br><br>';
+													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $_SERVER['PHP_SELF'] . '?methode=niv2&comp=102"><strong>Allez je me lance !</strong></a><br><br>';
                 }
             } else if ($comp_enchantement == 102)
             {
@@ -108,7 +108,7 @@ if ($erreur == 0)
 													<br>Bon, malheureusement, je manque un peu de moyen en ce moment, et il faudra que vous me fournissiez quelques brouzoufs pour que puisse acheter des composants.
 													<br>Donnez moi <strong>20000 brouzoufs</strong>, et je ferais de vous un enchanteur expérimenté !
 													</em>»
-													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $PHP_SELF . '?methode=niv3&comp=103"><strong>Allez je me lance !</strong></a><br><br>';
+													<br><br>Hum, voilà quelque chose de tentant ! <a href="' . $_SERVER['PHP_SELF'] . '?methode=niv3&comp=103"><strong>Allez je me lance !</strong></a><br><br>';
                 }
 
             } else if ($comp_enchantement == 103)
@@ -146,7 +146,7 @@ if ($erreur == 0)
 														<br>Quelle est la solution que vous me proposez ?</em>»<br><br>
 														Notez le code dans le cadre ci-dessous (<em>Rappel : le code correspond à la première lettre des réponses, une seule lettre par question</em>).
 														<br>Vous devez le proposer en <strong>majuscule</strong>, et cela vous coutera <strong>12PA</strong> en cas de code correct, <strong>6PA</strong> si le code est faux.
-														 <form method="post" action="' . $PHP_SELF . '">
+														 <form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 														<input type="hidden" name="methode" value="code">
 														<input type="text" name="code">
 														<input type="submit" value="Valider 12 PA" class="test">';

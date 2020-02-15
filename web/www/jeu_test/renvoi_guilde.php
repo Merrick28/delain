@@ -44,7 +44,7 @@ switch ($methode)
 {
     case 'debut':
         echo "Etes-vous sûr de vouloir virer ce membre de votre guilde ?
-				<br><a href=\"" . $PHP_SELF . "?methode=validation&vperso=" . $vperso . "&num_guilde=" . $num_guilde . "\">Oui !</a>
+				<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=validation&vperso=" . $vperso . "&num_guilde=" . $num_guilde . "\">Oui !</a>
 				<br><br><a href=\"admin_guilde.php\">Non, retourner à l'administration de la guilde</a>";
         break;
     case 'validation':

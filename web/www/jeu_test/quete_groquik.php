@@ -31,7 +31,7 @@ if ($erreur == 0)
 	Il lève les yeux vers vous et dit : <br />
 	« Bonjour aventurier, vous venez me vendre des pièces en chocolat ?
 	Je vous les achète un bon prix »";
-			$contenu_page4 .= "<p><a href=\"$PHP_SELF?methode3=vendre\">Vendre vos pièces en chocolat (300 Brouzoufs chacune) ...</a></p>";
+            $contenu_page4 .= "<p><a href=\"$_SERVER['PHP_SELF']?methode3=vendre\">Vendre vos pièces en chocolat (300 Brouzoufs chacune) ...</a></p>";
 
 		break;
 		case "vendre":

@@ -121,7 +121,7 @@ if ($reste_xp > 0) {
 		}
 	}
 	</script>
-	<form name="repartxp" method="post" action="' . $PHP_SELF . '" onsubmit="javascript:return validok;">';
+	<form name="repartxp" method="post" action="' . $_SERVER['PHP_SELF'] . '" onsubmit="javascript:return validok;">';
 
     // Les 3 perso principaux
     if ($nb_perso > 0) {

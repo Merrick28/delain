@@ -22,13 +22,14 @@ switch ($methode2)
 						<td><strong>Nom du composant</strong></td><td><strong>Type d\'objet</strong></td>';
             while ($result = $stmt->fetch())
             {
-                echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode2=ajout&pot=' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</a></td>
+                echo '<tr><td class="soustitre2"><br><a href="' . $_SERVER['PHP_SELF'] . '?methode2=ajout&pot=' . $result['gobj_cod'] . '">' . $result['gobj_nom'] . '</a></td>
 						<td class="soustitre2">' . $result['tobj_libelle'] . '</td></tr>';
 
             }
             ?>
         </table>
-        <hr><a href="<?php echo $PHP_SELF; ?>?methode2=ajout">Ou ajouter une nouvelle formule permettant d'obtenir un
+        <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=ajout">Ou ajouter une nouvelle formule permettant
+        d'obtenir un
         composant d'enchantement</a>
         <?php
         $req  =
@@ -56,7 +57,7 @@ switch ($methode2)
         {
             $cod_enchantement = $result['frm_cod'];
             $comp             = $result['frm_comp_cod'];
-            echo '<tr><td class="soustitre2"><br><a href="' . $PHP_SELF . '?methode2=modif&pot=' . $cod_enchantement . '">' . $result['frm_nom'] . '</a></td>';
+            echo '<tr><td class="soustitre2"><br><a href="' . $_SERVER['PHP_SELF'] . '?methode2=modif&pot=' . $cod_enchantement . '">' . $result['frm_nom'] . '</a></td>';
 
             $stmt2 = $pdo->execute(array(":cod_enchantement" => $cod_enchantement), $stmt2);
             echo "<td>";
@@ -89,7 +90,7 @@ switch ($methode2)
         $result = $stmt->fetch();
         ?>
         <table>
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode2" value="ajout2">
                 <tr>
                     <td class="soustitre2">Nom / Description de la formule du composant (conserver le nom du composant
@@ -185,7 +186,8 @@ switch ($methode2)
                                  ), $stmt);
         echo "<p>La formule de base du composant d'enchantement a bien été insérée !<br>
 				Pensez à inclure la pierre précieuse nécessaire pour ce composant. Autrement, il ne pourra jamais être produit<br>";
-        ?><a href="<?php echo $PHP_SELF; ?>?methode2=serie_obj&pot=<?php echo $num_form; ?>">Modifier la pierre
+        ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=serie_obj&pot=<?php echo $num_form; ?>">Modifier la
+        pierre
         précieuse associée à ce composant</a><br>
         <strong>Règle pour un composant d'enchantement :</strong>
         <br>Un composant est produit à partir d'une seule pierre précieuse. Pas d'autre règle pour les objets. L'énergie nécessaire est déterminée à partir de la formule de base (écran précédent)
@@ -202,9 +204,10 @@ switch ($methode2)
         $result  = $stmt->fetch();
         $cod_pot = $result['frmpr_gobj_cod'];
         ?>
-        <a href="<?php echo $PHP_SELF; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste d'objets</a><br>
+        <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste
+            d'objets</a><br>
         <table>
-            <form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode2" value="modif2">
                 <input type="hidden" name="pot" value="<?php echo $pot; ?>">
                 <input type="hidden" name="nom" value="<?php echo $result['frm_nom']; ?>">
@@ -330,7 +333,8 @@ switch ($methode2)
 
         echo "<p>La formule de base du composant d'enchantement a bien été modifiée !<br>
 							Vous pouvez aussi modifier la pierre précieuse associée.<br>";
-        ?><a href="<?php echo $PHP_SELF; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la pierre précieuse
+        ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la pierre
+        précieuse
         associée</a><br>
         <?php
         break;
@@ -347,7 +351,7 @@ switch ($methode2)
         break;
 }
 ?>
-    <p style="text-align:center;"><a href="<?php $PHP_SELF ?>?methode2=debut ">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php $_SERVER['PHP_SELF'] ?>?methode2=debut ">Retour au début</a>
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();

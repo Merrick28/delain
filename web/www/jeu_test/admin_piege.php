@@ -20,8 +20,8 @@ if ($erreur == 0)
         case "debut":
             ?>
             <p>Choisissez votre méthode :</p>
-            <a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’un nouveau piège ?</a><br>
-            <a href="<?php echo $PHP_SELF; ?>?methode=liste">Liste des pièges existants et possibilités de
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’un nouveau piège ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste">Liste des pièges existants et possibilités de
                 modification</a><br><br>
             <hr>
             <?php
@@ -29,9 +29,9 @@ if ($erreur == 0)
             include "modif_etage6.php";
             break;
         case "cre": // création d’un nouveau piège
-            echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
+            echo '<strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a></strong><br>';
             ?>
-            <form name="cre" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <br> Pour créer un piège, il suffit d’indiquer les valeurs nécessaires à sa création.
                 <br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
                 <br> Si il y a indiqué "positif", cela signifie que la valeur à rentrer doit être positive, et si
@@ -133,7 +133,7 @@ if ($erreur == 0)
                 /* Il n'existe pas de position ! */
                 /*********************************/
                 echo 'Aucune position trouvée !<br>
-					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
+					<a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Retour au début</a>';
                 break;
             } else
             {
@@ -188,7 +188,7 @@ if ($erreur == 0)
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 				<br> (si vide, texte standard)";
                 ?>
-                <br><strong><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a></strong><br>
+                <br><strong><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a></strong><br>
                 <?php
             } else
             {
@@ -205,7 +205,7 @@ if ($erreur == 0)
                 if ($valide != 1)
                 {
                     $result = $stmt->fetch();
-                    echo '<form method="post" name="piege" action="' . $PHP_SELF . '">';
+                    echo '<form method="post" name="piege" action="' . $_SERVER['PHP_SELF'] . '">';
                     //
                     // on remet les variables post qui vont bien
                     //
@@ -216,7 +216,7 @@ if ($erreur == 0)
                     echo '</form>';
                     echo "<p> Cette case contient déjà un élément <br><strong>" . $pos_fonction_arrive;
                     echo "</strong><br> Souhaitez vous quand même effectuer la mise à jour ? <br><em>ATTENTION : cette mise à jour ne doit se réaliser que si il s’agit d’un autre piège, et pas pour une autre fonction !</em>";
-                    echo '<br><a href="' . $PHP_SELF . '"?methode=cre">Non ?</a>';
+                    echo '<br><a href="' . $_SERVER['PHP_SELF'] . '"?methode=cre">Non ?</a>';
                     echo '<br><a href="javascript:document.piege.submit();">Oui ?</a>';
                 } else
                     // Rien de bloquant, on met à jour
@@ -262,7 +262,7 @@ if ($erreur == 0)
 
         //Liste de l’ensemble des pièges existants
         case "liste":
-            echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
+            echo '<strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=debut">Retour au début</a></strong><br>';
             $req  = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle 
 				from positions,etage 
 				where pos_etage = etage_numero 
@@ -274,8 +274,8 @@ if ($erreur == 0)
                 $pos_cod = $result['pos_cod'];
                 echo '<br><strong>Piège :</strong>' . $result['pos_fonction_arrivee'] . '
 				<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
-				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=mod">Modifier la définition de ce piège ?</a><br><br>
-				<a href="' . $PHP_SELF . '?pos_cod=' . $pos_cod . '&methode=sup">Supprimer ce piège ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
+				<a href="' . $_SERVER['PHP_SELF'] . '?pos_cod=' . $pos_cod . '&methode=mod">Modifier la définition de ce piège ?</a><br><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?pos_cod=' . $pos_cod . '&methode=sup">Supprimer ce piège ? <strong><em>(ATTENTION, action définitive !)</em></strong></a><hr>';
             }
             break;
 
@@ -292,9 +292,9 @@ if ($erreur == 0)
             $fonction  = str_replace(array(')', '\''), '', $fonction);
             $fac_piege = explode(",", $fonction);
 
-            echo "<br><strong><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></strong>";
+            echo "<br><strong><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a></strong>";
             ?>
-        <form name="mod" method="post" action="<?php echo $PHP_SELF; ?>">
+        <form name="mod" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <br> Pour modifier un piège, il suffit de corriger les valeurs présentes.
             <br>Un piège ne peut pas être déplacé, il faut le supprimer et le recréer ailleurs.
             <br> Dans le cas où une valeur serait manquante, un 0 sera automatiquement intégré.
@@ -398,14 +398,14 @@ if ($erreur == 0)
             echo "<p>Le piège a bien été modifié
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 				<br><em> (si vide, texte standard)</em>
-				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
+				<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a>";
             break;
 
         case "sup": //Suppression d’un piège existant
             $req  = "update positions set pos_fonction_arrivee = '' where pos_cod = " . $pos_cod;
             $stmt = $pdo->query($req);
             echo "Piège supprimé
-				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
+				<br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=debut\">Retour au début</a>";
             break;
     }
 }

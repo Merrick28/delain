@@ -98,9 +98,9 @@ if ($erreur == 0) {
 
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
     $row_id = "obj-generique-";
-    echo '<form name="selection-objet" action="' . $PHP_SELF . '" method="post">';
+    echo '<form name="selection-objet" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
     echo '<br><strong>Sélection d’un objet générique</strong><br>Code de l\'objet générique :
-                    <input data-entry="val" name="objelem_gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'objet_generique\', $(\'#'.$row_id.'misc_cod\').val());">
+                    <input data-entry="val" name="objelem_gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
                     &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'misc","objet_generique","Rechercher un objet générique");\'>
                     &nbsp;<input type="submit" value="Voir/Modifier les conditions d\'équipement de cet objet" class="test"></form>';

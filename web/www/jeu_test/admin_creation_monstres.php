@@ -322,15 +322,15 @@ if ($erreur == 0)
                                                                                                     id="perso_sta_combat_<?php echo $i; ?>"/>
                 -
                 <label for="perso_sta_hors_combat_<?php echo $i; ?>">Statique hors combat ? </label><input
-                        type="checkbox" name="perso_sta_hors_combat_<?php echo $i; ?>"
-                        id="perso_sta_hors_combat_<?php echo $i; ?>"/><br/>
+                    type="checkbox" name="perso_sta_hors_combat_<?php echo $i; ?>"
+                    id="perso_sta_hors_combat_<?php echo $i; ?>"/><br/>
             </div>
         <?php }
         ?>
         <input type="submit" value="Déposer" class='test'/>
     </form>
     <hr/>
-    <p style="text-align:center;"><a href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <p style="text-align:center;"><a href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 <?php }
 
 $contenu_page = ob_get_contents();

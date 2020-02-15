@@ -34,21 +34,21 @@ if ($erreur == 0)
     {
 
         echo "<table width='100%' class='bordiv'><tr><td><p><strong>DUPLICATION D’ETAGE :</strong></p>
-        <form method='post' action='$PHP_SELF'>
+        <form method='post' action='$_SERVER['PHP_SELF']'>
         <input type='hidden' value='dupliquer' name='dupliquer' />
-        Choisir l'étage à dupliquer : <select name='etage'>" . $html->etage_select($admin_etage) ."</select>";
-        echo"<br><br><u><strong>Options:</strong></u><br>
+        Choisir l'étage à dupliquer : <select name='etage'>" . $html->etage_select($admin_etage) . "</select>";
+        echo "<br><br><u><strong>Options:</strong></u><br>
             Nom du nouvel étage : <input type='text' name='etage_libelle' size='55'><br>
             Dupliquer aussi les lieux: <input type='checkbox' name='dupliquer_lieux'><br>
             <br><input type='submit' value=\"Dupliquer l'étage\" class='test'/>
             </form></td><td></table>";
 
         echo "<br><table width='100%' class='bordiv'><tr><td><p><strong>SUPPRESSION D'ETAGE :</strong></p>
-        <form method='post' action='$PHP_SELF'>
+        <form method='post' action='$_SERVER['PHP_SELF']'>
         <input type='hidden' value='supprimer' name='supprimer' />
-        Choisir l'étage à supprimer : <select name='etage'>" . $html->etage_select($admin_etage) ."</select>";
+        Choisir l'étage à supprimer : <select name='etage'>" . $html->etage_select($admin_etage) . "</select>";
         echo "<br><br> <u>Nota</u>: La suppression n'est pas possible s'il reste des persos à cet étage.<br> Seront supprimés:<br> - L'étage ses caracs, ses positions et murs.<br> - Tous les objets et l'or, qu'il contient<br> - Tous les monstres et PNJ aussi<br> - Tous les lieux de l'étage<br>";
-        echo"<br><br><input type='submit' value=\"Supprimer l'étage\" class='test'/>
+        echo "<br><br><input type='submit' value=\"Supprimer l'étage\" class='test'/>
             </form></td><td></table>";
 
     }
@@ -128,11 +128,11 @@ if ($erreur == 0)
             }
 
             echo "<br><strong>Voulez-vous vraiment supprimer cet étage?</strong><br><br>
-                <form method='post' action='{$PHP_SELF}'>
+                <form method='post' action='{$_SERVER['PHP_SELF']}'>
                 <input type='hidden' value='do_supprimer' name='do_supprimer' />
                 <input type='hidden' value='{$_POST['etage']}' name='etage' />
                 <input type='submit' value=\"Supprimer l'étage\" class='test'/>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"{$PHP_SELF}\"><input type='button' value=\"NON!!!\" class='test'/></a></form>";
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=\"{$_SERVER['PHP_SELF']}\"><input type='button' value=\"NON!!!\" class='test'/></a></form>";
 
         }
         echo "</td><td></table>";

@@ -110,10 +110,10 @@ for ($cpt = 1; $cpt < $nb; $cpt++)
 	}
 	else
 	{
-		$style = 'pas_onglet';
-		$lien = '<a href="' . $PHP_SELF . '?tpot=' . $cpt . '">';
-		$f_lien = '</a>';
-	}
+        $style  = 'pas_onglet';
+        $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $cpt . '">';
+        $f_lien = '</a>';
+    }
 	$contenu_page .= '<td class="' . $style .'"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
 }
 $contenu_page .= '
@@ -148,9 +148,9 @@ switch($tpot)
 					</ul> </p>
 				</div>
 				<br>';
-			include "potions_detect_composants.php";
-			$contenu_page .= '<br><a href="' . $PHP_SELF . '?tpot='. $tpot .'"><br>Retour à l’onglet sélectionné</a>';
-		}
+            include "potions_detect_composants.php";
+            $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '"><br>Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -172,9 +172,9 @@ switch($tpot)
 					</p>
 				</div>
 				<br>';
-			include "potions_recup_composant.php";
-			$contenu_page .= '<br><a href="' . $PHP_SELF . '?tpot='. $tpot .'">Retour à l’onglet sélectionné</a>';
-		}
+            include "potions_recup_composant.php";
+            $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -205,9 +205,9 @@ switch($tpot)
 				</div>
 				<br>';
 
-			include "potions_composition.php";
-			$contenu_page .= '<br><a href="' . $PHP_SELF . '?tpot='. $tpot .'">Retour à l’onglet sélectionné</a>';
-		}
+            include "potions_composition.php";
+            $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
@@ -215,8 +215,8 @@ switch($tpot)
 	break;
 	case "4": // Potions connues
 		if($controle == 1)
-		{
-			$contenu_page .= '<span align="center"><strong>Je connais la formule !</strong></span>
+        {
+            $contenu_page .= '<span align="center"><strong>Je connais la formule !</strong></span>
 				(<a href="javascript:blocking(\'aide5\');">Aide</a>)<br><br>
 				<div id="aide5" class="tableau2"  style="display:none;">
 				<p><strong>Que faire si je connais la formule ?</strong>
@@ -224,9 +224,9 @@ switch($tpot)
 				</p>
 				</div>
 				<br>';
-			include "potions_connues.php";
-			$contenu_page .= '<br><a href="' . $PHP_SELF . '?tpot='. $tpot .'">Retour à l’onglet sélectionné</a>';
-		}
+            include "potions_connues.php";
+            $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        }
 		else
 		{
 			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';

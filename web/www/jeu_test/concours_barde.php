@@ -161,9 +161,9 @@ function voirTexte(code)
 if(!isset($ordre))
 	$ordre = 'date';
 if($ordre == 'date')
-	echo '<a href="' . $PHP_SELF . '?ordre=note">Trier par note</a>';
+	echo '<a href="' . $_SERVER['PHP_SELF'] . '?ordre=note">Trier par note</a>';
 else
-	echo '<a href="' . $PHP_SELF . '?ordre=date">Trier par ordre d’arrivée</a>';
+	echo '<a href="' . $_SERVER['PHP_SELF'] . '?ordre=date">Trier par ordre d’arrivée</a>';
 ?>
 	</td>
 </tr>

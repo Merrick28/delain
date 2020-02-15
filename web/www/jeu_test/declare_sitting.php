@@ -7,7 +7,7 @@ switch ($methode)
 {
     case "debut":
         ?>
-        <form name="sitting" method="post" action="<?php echo $PHP_SELF; ?>">
+        <form name="sitting" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
             <input type="hidden" name="methode" value="sitting">
             <table>
                 <tr>
@@ -40,11 +40,14 @@ switch ($methode)
             </table>
         </form>
         <br>
-        <hr><a href="<?php echo $PHP_SELF; ?>?methode=liste">Liste des sittings en cours ou prévus pour votre compte</a>
-        <br><br><a href="<?php echo $PHP_SELF; ?>?methode=ancien">Anciens sittings</a><br><br>
-        <hr><a href="<?php echo $PHP_SELF; ?>?methode=liste_sitteur">Liste des sittings qui vous ont été demandés et non
+        <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste">Liste des sittings en cours ou prévus pour votre
+        compte</a>
+        <br><br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=ancien">Anciens sittings</a><br><br>
+        <hr><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_sitteur">Liste des sittings qui vous ont été
+        demandés et non
         échus</a>
-        <br><br><a href="<?php echo $PHP_SELF; ?>?methode=ancien_sitteur">Anciens sittings que vous avez réalisé</a><br>
+        <br><br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=ancien_sitteur">Anciens sittings que vous avez
+        réalisé</a><br>
         <br>
         <?php
         break;
@@ -234,7 +237,7 @@ switch ($methode)
                 echo "<br>Nombre d'heures du sitting : <strong>" . $duree_heure . " heures</strong>";
                 echo "<br>Début du sitting : <strong>" . $date_deb . "</strong>";
                 ?>
-                <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+                <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
                 <hr>
                 <?php
                 $req           =
@@ -294,7 +297,7 @@ switch ($methode)
     case 'liste':
         ?>
         <br>La liste ci-dessous donne les sittings que vous avez déclarés et qui se réaliseront<br>
-        <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+        <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
         <hr>
         <table>
             <tr>
@@ -353,7 +356,7 @@ switch ($methode)
                     <td class="soustitre2"><?php echo $date_deb; ?></td>
                     <td class="soustitre2"><?php echo $date_fin; ?></td>
                     <td class="soustitre2"><a
-                                href="<?php echo $PHP_SELF; ?>?sit=<?php echo $csit_cod; ?>&sit2=<?php echo $compte_sitteur; ?>&sit3=<?php echo $compte_sitte; ?>&methode=annulation"><em>Annulation
+                            href="<?php echo $_SERVER['PHP_SELF']; ?>?sit=<?php echo $csit_cod; ?>&sit2=<?php echo $compte_sitteur; ?>&sit3=<?php echo $compte_sitte; ?>&methode=annulation"><em>Annulation
                                 de ce sitting</em></a></td>
                 </tr>
                 <?php
@@ -375,7 +378,7 @@ switch ($methode)
             ?>
             <br>La demande de sitting antérieure a bien été annulée
             <br>Un message a été adressé au compte que vous deviez sitter.
-            <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+            <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
             <hr>
             <?php
             //Envoi d'un message
@@ -416,7 +419,7 @@ switch ($methode)
     case 'ancien':
         ?>
         <br>La liste ci-dessous donne les sittings échus, qui ont été réalisés dans les 3 derniers mois<br>
-        <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+        <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
         <hr>
         <table>
             <tr>
@@ -461,7 +464,7 @@ switch ($methode)
         ?>
         <br>La liste ci-dessous donne les sittings que vous avez en cours sur un autre compte, ou qui vous ont été demandés
         <br>
-        <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+        <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
         <hr>
         <table>
             <tr>
@@ -520,7 +523,7 @@ switch ($methode)
                     <td class="soustitre2"><?php echo $date_deb; ?></td>
                     <td class="soustitre2"><?php echo $date_fin; ?></td>
                     <td class="soustitre2"><a
-                                href="<?php echo $PHP_SELF; ?>?sit=<?php echo $csit_cod; ?>&sit2=<?php echo $compte_sitte; ?>&sit3=<?php echo $compte_sitteur; ?>&methode=annulation_sitteur"><em>Annulation
+                            href="<?php echo $_SERVER['PHP_SELF']; ?>?sit=<?php echo $csit_cod; ?>&sit2=<?php echo $compte_sitte; ?>&sit3=<?php echo $compte_sitteur; ?>&methode=annulation_sitteur"><em>Annulation
                                 de ce sitting</em></a></td>
                 </tr>
                 <?php
@@ -541,7 +544,7 @@ switch ($methode)
             $result = $stmt->fetch();
             ?>
             <br>La demande de sitting antérieure a bien été annulée. Un message a été envoyé au compte sitteur.
-            <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+            <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
             <hr>
             <?php
             //Envoi d'un message
@@ -581,7 +584,7 @@ switch ($methode)
     case 'ancien_sitteur':
         ?>
         <br>La liste ci-dessous donne les sittings que vous avez réalisés dans les 3 derniers mois et qui sont échus<br>
-        <br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+        <br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
         <hr>
         <table>
             <tr>

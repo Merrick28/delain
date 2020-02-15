@@ -101,7 +101,7 @@ if ($erreur == 0)
             } else
             {
                 ?>
-                <p><a href="<?php echo $PHP_SELF; ?>?methode=prie1">- Je voudrais me recueillir pour
+                <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=prie1">- Je voudrais me recueillir pour
                         prier <?php echo $dieu_nom; ?></a> (<?php echo $param->getparm(48); ?> PA)</p>
                 <?php
             }

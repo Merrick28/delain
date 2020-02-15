@@ -41,7 +41,7 @@ $template        = $twig->load('_mode_combat.twig');
 $options_twig    = array(
 
     'PERSO'              => $perso,
-    'PHP_SELF'           => $PHP_SELF,
+    'PHP_SELF'           => $_SERVER['PHP_SELF'],
     'MODE_COMBAT'        => $mode_combat,
     'IS_DEPASSE'         => $is_depasse,
     'IS_DATE_CREATION'   => $is_date_creation,

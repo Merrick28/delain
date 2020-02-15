@@ -53,11 +53,11 @@ if ($erreur == 0)
             echo "<p><a href=\"admin_echoppe_tarif.php\">Modifier les prix génériques</a>";
             echo "<p><a href=\"admin_echoppe_guilde.php\">Modifier les remises de guilde</a>";
             echo "<p><a href=\"admin_echoppe_stats.php\">Voir les stats de vente des magasins</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=guilde&met_guilde=debut\">Gérer les meta-guilde</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=voir_meta\">Voir les meta guildés</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=stats_biere\">Voir les stats sur les futs de bière</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=stats_paq\">Voir les stats sur les paquets bruns</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=mag_aut\">Gestion des autorisations de ventes des objets par échoppe</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=guilde&met_guilde=debut\">Gérer les meta-guilde</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=voir_meta\">Voir les meta guildés</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=stats_biere\">Voir les stats sur les futs de bière</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=stats_paq\">Voir les stats sur les paquets bruns</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=mag_aut\">Gestion des autorisations de ventes des objets par échoppe</a>";
             break;
         case "guilde":
             // champ générique pour ren=prendre sur les autres pages
@@ -98,7 +98,7 @@ if ($erreur == 0)
             echo '<br>En cliquant sur le nom du magasin, toute la colonne sera sélectionnée (si un objet était déjà sélectionné, cela va le supprimer
 			<br>En cliquant sur un objet, on le rendra disponible en approvisionnement dans tous les magasins (sauf si il était déjà sélectionné et dans ce cas, il deviendra non disponible pour ce magasin)
 			<br><br>methode : ' . $methode . ' Lieu = ' . $var_lieu . ' / ' . $lieu . ' / ' . $lieu_cod . '<br>
-			<form name="action_aut" method="post" action="' . $PHP_SELF . '">
+			<form name="action_aut" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 						<input type="hidden" name="methode" value="modif_aut">
 						<input type="hidden" name="aut_add" value="">
 						<input type="hidden" name="aut_sup" value="">
@@ -129,7 +129,7 @@ if ($erreur == 0)
             }
 
             //A revoir pour le onchange ...
-            echo '<br><select name="lieu" onChange="window.location.href=\'' . $PHP_SELF . '?methode=mag_aut&lieu_cod=\'+this.value;"> 
+            echo '<br><select name="lieu" onChange="window.location.href=\'' . $_SERVER['PHP_SELF'] . '?methode=mag_aut&lieu_cod=\'+this.value;"> 
 			<option value="">---------------</option>
 			<option value=""><strong>Tous les magasins</strong></option>';
             echo $ch;
@@ -215,7 +215,7 @@ if ($erreur == 0)
                 }
             }
             echo "<br>modifications bien réalisées<br>
-				<br><a href=\"", $PHP_SELF, "?methode=mag_aut\"><strong>Retour</strong></a>";
+				<br><a href=\"", $_SERVER['PHP_SELF'], "?methode=mag_aut\"><strong>Retour</strong></a>";
             break;
     }
 }

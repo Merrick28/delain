@@ -35,17 +35,18 @@ ob_start();
 include "blocks/_test_droit_modif_etage.php";
 
 
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 
-if (!isset($etage)) {
+if (!isset($etage))
+{
     $etage = 0;
 }
 
 $menus = "<p>Choisissez l’étage à modifier :</p>
-	<form method='post' action='$PHP_SELF'>
+	<form method='post' action='$_SERVER['PHP_SELF']'>
 	<select name='etage'>" .
-    $html->etage_select($etage) .
-    "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form>
+                         $html->etage_select($etage) .
+                         "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form>
 
 	<p><strong>Pour l’étage sélectionné :</strong></p>
 	<p>

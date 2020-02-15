@@ -215,7 +215,7 @@ if ($erreur == 0)
 
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
     $row_id = "obj-generique-";
-    echo '<form name="selection-objet" action="' . $PHP_SELF . '" method="post">';
+    echo '<form name="selection-objet" action="' . $_SERVER['PHP_SELF'] . '" method="post">';
     echo '<br><strong>Sélection d’un objet générique</strong><br>Code de l\'objet générique :
                     <input data-entry="val" name="objbm_gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
@@ -239,7 +239,7 @@ if ($erreur == 0)
 
         echo "<strong>Ajouter/Modifier un sort sur l'objet</strong> :";
         $row_id = "sort-0-";
-        echo '<form name="mod-objet-sort" action="' . $PHP_SELF . '" method="post">
+        echo '<form name="mod-objet-sort" action="' . $_SERVER['PHP_SELF'] . '" method="post">
              <input type="hidden" name="methode" value="sauve">
              <input type="hidden" id="objbm_cod" name="objbm_cod" value="0">
              <input type="hidden" id="objbm_gobj_cod" name="objbm_gobj_cod" value="' . $objbm_gobj_cod . '">

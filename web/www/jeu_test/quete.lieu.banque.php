@@ -27,19 +27,21 @@ switch($methode2)
 			$obj_quete = $result['perobj_obj_cod'];
 			if ($obj_gen_quete == 380)
 			{
-                $nb_caisses = $perso->compte_objet(380);
-			?>
-				<form name="cede" method="post" action="<?php echo $PHP_SELF;?>">
+				$nb_caisses = $perso->compte_objet(380);
+				?>
+				<form name="cede" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 					<p><em>Vous voilà bien chargé. Souhaitez vous faire un dépôt ?
-					<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ?
-					(Vous êtes en possession de <?php  echo $nb_caisses; ?> caisses)
-					<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur propriétaire.
-					<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</em>
-					<input type="hidden" name="methode2" value="cede_objet1">
-					<table>
-						<tr>
-							<td class="soustitre2"><p>Poser les caisses à la banque</p></td>
-							<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
+							<br>Ou alors peut-être souhaiteriez vous vous délester de ces lourdes caisses ?
+							(Vous êtes en possession de <?php echo $nb_caisses; ?> caisses)
+							<br>Dans ce cas, posez donc ces caisses dans ce coin, nous transmettrons cet échange à leur
+							propriétaire.
+							<br>Il nous a chargé de vous remettre quelques babioles en récompense de votre effort.</em>
+						<input type="hidden" name="methode2" value="cede_objet1">
+						<table>
+							<tr>
+								<td class="soustitre2">
+					<p>Poser les caisses à la banque</p></td>
+					<td><input type="radio" class="vide" name="controle1" value="cede_objet1"></td>
 						</tr>
 						<tr>
 							<td class="soustitre2"><p>Non, finalement, je vais les garder.

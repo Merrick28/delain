@@ -419,7 +419,7 @@ else
             if (!$result = $stmt->fetch())
             {
                 echo "Aucun droit particulier pour le compte « $compt_modif ».<br>
-				<a href='$PHP_SELF?compte=$compte&methode=cree'>Créer des droits ?</a>";
+				<a href='$_SERVER['PHP_SELF']?compte=$compte&methode=cree'>Créer des droits ?</a>";
             } else
             {
                 echo "<p>Modification des droits pour le compte « $compt_modif ».</p>";
@@ -564,12 +564,13 @@ else
         $stmt = $pdo->query($req);
         ?>
         <p>Les droits ont bien été créés !<br>
-            <a href="<?php echo $PHP_SELF; ?>?methode=et3&compte=<?php echo $compte; ?>">Régler ces droits ?</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=et3&compte=<?php echo $compte; ?>">Régler ces droits
+                ?</a>
             <?php
             break;
             }
             ?>
-        <p class="centrer"><a href="<?php echo $PHP_SELF; ?>">Retour au début</a>
+        <p class="centrer"><a href="<?php echo $_SERVER['PHP_SELF']; ?>">Retour au début</a>
 
 <?php }
 // on va maintenant charger toutes les variables liées au menu

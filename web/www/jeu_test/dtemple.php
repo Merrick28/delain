@@ -178,7 +178,7 @@ if ($erreur == 0)
                                 $req    = $req . "where dniv_dieu_cod = $dieu_cod and dniv_niveau = 1 ";
                                 $stmt   = $pdo->query($req);
                                 $result = $stmt->fetch();
-                                echo "<p>Vous pouvez choisir de <a href=\"", $PHP_SELF, "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
+                                echo "<p>Vous pouvez choisir de <a href=\"", $_SERVER['PHP_SELF'], "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
                             }
                             break;
                         case 1:
@@ -188,7 +188,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 2 ";
                                 $stmt   = $pdo->query($req);
                                 $result = $stmt->fetch();
-                                echo "<p>Vous pouvez choisir de <a href=\"", $PHP_SELF, "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
+                                echo "<p>Vous pouvez choisir de <a href=\"", $_SERVER['PHP_SELF'], "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
                             }
                             break;
                         case 2:
@@ -198,7 +198,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 3 ";
                                 $stmt   = $pdo->query($req);
                                 $result = $stmt->fetch();
-                                echo "<p>Vous pouvez choisir de <a href=\"", $PHP_SELF, "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
+                                echo "<p>Vous pouvez choisir de <a href=\"", $_SERVER['PHP_SELF'], "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
                             }
                             break;
                         case 3:
@@ -208,7 +208,7 @@ if ($erreur == 0)
 									where dniv_dieu_cod = $dieu_cod and dniv_niveau = 4 ";
                                 $stmt   = $pdo->query($req);
                                 $result = $stmt->fetch();
-                                echo "<p>Vous pouvez choisir de <a href=\"", $PHP_SELF, "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
+                                echo "<p>Vous pouvez choisir de <a href=\"", $_SERVER['PHP_SELF'], "?methode=grade\">passer <strong>", $result['dniv_libelle'], "</strong></a> ($cout_pa PA).</p><br>";
                             }
                             break;
                     }
@@ -234,16 +234,16 @@ if ($erreur == 0)
         else
         {
             ?>
-            <form method="post" name="dieu_desc" action="<?php echo $PHP_SELF; ?>">
+            <form method="post" name="dieu_desc" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" class="vide" name="dieu_desc" value="<?php echo $dieu_cod; ?>">
 
-                <p><a href="<?php echo $PHP_SELF; ?>?methode=prie1">- Je voudrais me recueillir pour
+                <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=prie1">- Je voudrais me recueillir pour
                         prier <?php echo $dieu_nom; ?>
                     </a> (<?php echo $param->getparm(48); ?> PA)
-                <p><a href="<?php echo $PHP_SELF; ?>?methode=ceremonie">- J’aimerais organiser
+                <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=ceremonie">- J’aimerais organiser
                         une <?php echo $dieu_ceremonie; ?> en l’honneur de <?php echo $dieu_nom; ?>
                     </a> (<?php echo $param->getparm(49), " PA, ", $param->getparm(50), " brouzoufs )"; ?>
-                <p><a href="<?php echo $PHP_SELF; ?>?methode=infos&javascript:document.dieu_desc.submit();">-
+                <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=infos&javascript:document.dieu_desc.submit();">-
                         Pouvez-vous m’en dire plus sur <?php echo $dieu_nom; ?> ?</a>
                 <p><a href="expl_dieu.php">- Pouvez-vous m’apprendre ce que vous savez sur les dieux ?</a>
             </form>
@@ -273,7 +273,7 @@ if ($erreur == 0)
         if ($count_familier_mort > 0)
         {
             ?>
-            <p><a href="<?php echo $PHP_SELF; ?>?methode=resu">- Ressusciter un esprit
+            <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=resu">- Ressusciter un esprit
             de <?php echo $dieu_nom; ?></a> (<?php echo $param->getparm(100); ?> PA, <?php echo $cout_or; ?> brouzoufs)
             <br><em>Ceci rapellera du plan des morts le familier de <?php echo $dieu_nom; ?> qui agira sous votre
             contrôle comme cela l'était avant sa mort.
@@ -283,7 +283,7 @@ if ($erreur == 0)
         }
 
             ?>
-            <p><a href="<?php echo $PHP_SELF; ?>?methode=invoc">- Invoquer un esprit
+            <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=invoc">- Invoquer un esprit
             de <?php echo $dieu_nom; ?></a> (<?php echo $param->getparm(100); ?> PA, <?php echo $cout_or; ?> brouzoufs)
             <br><em>Ceci invoque un familier de <?php echo $dieu_nom; ?> qui ne pourra agir que de manière temporaire
             sous votre contrôle.
@@ -295,7 +295,7 @@ if ($erreur == 0)
         if ($dieu_perso == $dieu_cod and $niveau_actu >= 3)
         {
             ?>
-            <p><a href="<?php echo $PHP_SELF; ?>?methode=tel1">Se téléporter vers un autre temple
+            <p><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=tel1">Se téléporter vers un autre temple
             ?</a> (<?php echo $param->getparm(100); ?> PA)
         <?php
         }
@@ -652,7 +652,7 @@ if ($erreur == 0)
             $result     = $stmt->fetch();
             $dieu_descr = $result['dieu_description'];
             echo "<br><em>", $dieu_descr, "</em><br><br>";
-            echo '<a href="' . $PHP_SELF . '?methode=entree"">Retour</a><br>';
+            echo '<a href="' . $_SERVER['PHP_SELF'] . '?methode=entree"">Retour</a><br>';
             break;
 
         case 'grade':

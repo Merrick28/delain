@@ -18,6 +18,12 @@ $perso->charge($perso_cod);
 
 if ($type_lance == 0) // runes
 {
+    $fam_1    = $_REQUEST['fam_1'];
+    $fam_2    = $_REQUEST['fam_2'];
+    $fam_3    = $_REQUEST['fam_3'];
+    $fam_4    = $_REQUEST['fam_4'];
+    $fam_5    = $_REQUEST['fam_5'];
+    $fam_6    = $_REQUEST['fam_6'];
     $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
     $req_sort = "select sort_cod from sorts where sort_combinaison = '$resultat' ";
 

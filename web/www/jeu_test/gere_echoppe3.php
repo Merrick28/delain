@@ -981,7 +981,7 @@ where mstock_lieu_cod = $lieu_cod
             {
                 while ($result = $stmt->fetch())
                 {
-                    echo '<a href="' . $PHP_SELF . '?methode=visu2&objet=' . $result['obj_cod'] . '&mag=' . $mag . '">' . $result['obj_nom'] . '</a><BR />';
+                    echo '<a href="' . $_SERVER['PHP_SELF'] . '?methode=visu2&objet=' . $result['obj_cod'] . '&mag=' . $mag . '">' . $result['obj_nom'] . '</a><BR />';
                 }
             }
             ?>
@@ -1063,7 +1063,7 @@ where mstock_lieu_cod = $lieu_cod
                         $checked_v_ech = "";
                     }
                     $comp_libelle = $result['comp_libelle'];
-                    echo "<tr><td><a href=\"" . $PHP_SELF . "?methode=visu&objet=" . $result['gobj_cod'] . "&mag=$mag\">",
+                    echo "<tr><td><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=visu&objet=" . $result['gobj_cod'] . "&mag=$mag\">",
                     $result['gobj_nom'], '</a> ', ($comp_libelle != NULL ? '(' . $comp_libelle . ')' : ''),
                     "</td><td>",
                     $result['gobj_valeur'],
@@ -1549,7 +1549,7 @@ order by  lieu_nom
                     echo " - " . $result2['gobj_nom'] . " (x" . $result2['frmpr_num'] . ")<br/>";
                 }
                 ?>
-                <form name="realise" method="post" action="<?php echo $PHP_SELF ?>">
+                <form name="realise" method="post" action="<?php echo $_SERVER['PHP_SELF'] ?>">
                     <input type="text" name="nombre">
                     <input type="hidden" name="methode" value="realiser_formule">
                     <input type="hidden" name="mag" value="<?php echo $lieu_cod ?>">

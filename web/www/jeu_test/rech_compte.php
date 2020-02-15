@@ -21,9 +21,11 @@ switch ($methode2)
 {
     case "entree":
         ?>
-        <p>Visualisation des temps cumulés de <a href="<?php echo $PHP_SELF; ?>?methode2=sit">déclarations de sitting
+        <p>Visualisation des temps cumulés de <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=sit">déclarations de
+                sitting
                 sur 15 jours</a>
-        <p>Visualisation des temps cumulés des <a href="<?php echo $PHP_SELF; ?>?methode2=sitteur">sitteurs sur 15
+        <p>Visualisation des temps cumulés des <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=sitteur">sitteurs
+        sur 15
         jours</a>
         <?php
         break;
@@ -240,7 +242,7 @@ switch ($methode2)
         ?>
         <p>Visualisation des temps cumulés de <a href="rech_compte.php?methode2=sit">déclarations de sitting sur 15
                 jours</a>
-            <br><br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+            <br><br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
             <br>
         <hr><br>Liste des sittings déclarés par <strong><?php echo $sit_nom ?></strong>, présent et futurs<br>
         <table>
@@ -250,7 +252,7 @@ switch ($methode2)
                 <td><strong>Date de fin</strong></td>
             </tr>
             <?php
-            $req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
+            $req  = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitteur from compte_sitting
 										where csit_compte_sitte = $sit
 										and csit_dfin > (now() - '15 days'::interval)";
             $stmt = $pdo->query($req);
@@ -282,7 +284,7 @@ switch ($methode2)
     case "detail_sitteur":
         ?>
         <p>Visualisation des temps cumulés <a href="rech_compte.php?methode2=sit">des sitteurs sur 15 jours</a>
-            <br><br><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a><br>
+            <br><br><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=debut">Retour</a><br>
             <br>
         <hr><br>Liste des sittings réalisés par <strong><?php echo $sit_nom ?></strong>, présent et futurs<br>
         <table>
@@ -292,7 +294,7 @@ switch ($methode2)
                 <td><strong>Date de fin</strong></td>
             </tr>
             <?php
-            $req = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitte from compte_sitting
+            $req  = "select to_char(csit_ddeb,'DD-MM-YYYY / HH24:mi') as date_debut,to_char(csit_dfin,'DD-MM-YYYY / HH24:mi') as date_fin,csit_compte_sitte from compte_sitting
 										where csit_compte_sitteur = $sitteur
 										and csit_dfin > (now() - '15 days'::interval)";
             $stmt = $pdo->query($req);

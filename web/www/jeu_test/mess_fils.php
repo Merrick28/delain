@@ -96,8 +96,8 @@ switch($detail)
 			}
 			else
 			{
-				$contenu_page .= '<a href="' . $PHP_SELF . '?msg_start=' . $v_debut . '&m=' . $m . '&sort=' . $sort . '">' . $cpt . '</a> &nbsp;&nbsp;';
-			}
+                $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?msg_start=' . $v_debut . '&m=' . $m . '&sort=' . $sort . '">' . $cpt . '</a> &nbsp;&nbsp;';
+            }
 		}
 
 

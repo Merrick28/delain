@@ -10,10 +10,10 @@ if ($stmt->rowCount() == 0)
     $contenu_page .= '<p>Liste existantes : ';
     while ($result = $stmt->fetch())
     {
-        $contenu_page .= '<p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=aliste&liste=' . $result['cliste_cod'] . '">' . $result['cliste_nom'] . '</a>';
+        $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=aliste&liste=' . $result['cliste_cod'] . '">' . $result['cliste_nom'] . '</a>';
     }
 }
-$contenu_page .= '<br><hr><p style="text-align:center;"><a href="' . $PHP_SELF . '?m=' . $m . '&methode=cree_liste">Créer une liste !</a><br>';
+$contenu_page .= '<br><hr><p style="text-align:center;"><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=cree_liste">Créer une liste !</a><br>';
 
 $methode = get_request_var('methode', 'debut');// Pas utilisé ci-dessous ; c’est normal.
 
@@ -21,7 +21,7 @@ switch ($methode)
 {
     case "cree_liste":
         $contenu_page .= '
-		<form name="liste" method="post" action="' . $PHP_SELF . '">
+		<form name="liste" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 		<input type="hidden" name="methode" value="cree_liste2">
 		<input type="hidden" name="m" value="' . $m . '">
 		<p>Nom de la liste à créer (max 25 caractères) : <input type="text" name="nom" size="25"><br>
@@ -30,11 +30,11 @@ switch ($methode)
         break;
 
     case "cree_liste2":
-        $req          = "insert into contact_liste (cliste_perso_cod,cliste_nom) ";
-        $req          = $req . "values ($perso_cod,'$nom') ";
+        $req          = "insert into contact_liste (cliste_perso_cod,cliste_nom) 
+        values ($perso_cod,'$nom') ";
         $stmt         = $pdo->query($req);
         $contenu_page .= '<p>La liste a bien été créée !';
-        $contenu_page .= '<p style="text-align:center"><a href="' . $PHP_SELF . '?m=' . $m . '">Retour !</a>';
+        $contenu_page .= '<p style="text-align:center"><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '">Retour !</a>';
         break;
 
     case "aliste":
@@ -64,20 +64,20 @@ switch ($methode)
             {
                 $contenu_page .= "<tr>";
                 $contenu_page .= "<td class=\"soustitre2\"><p>" . $result['perso_nom'] . "</td>";
-                $contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
+                $contenu_page .= '<td><p><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
             }
             $contenu_page .= "</table>";
         }
         if ($stmt->rowCount() < 20)
         {
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
         }
-        $contenu_page .= '<a href="' . $PHP_SELF . '?methode=dliste&liste=' . $liste . '&m=' . $m . '"><p>Détruire cette liste ? </a>(opération définitive !)';
+        $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=dliste&liste=' . $liste . '&m=' . $m . '"><p>Détruire cette liste ? </a>(opération définitive !)';
         break;
 
     case "aliste_a":
         $contenu_page .= '
-		<form name="nouveau_message" method="post" action="' . $PHP_SELF . '">
+		<form name="nouveau_message" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 		<input type="hidden" name="methode" value="aliste_a3">
 		<input type="hidden" name="liste" value="' . $liste . '">
 		<input type="hidden" name="m" value="' . $m . '">
@@ -163,15 +163,15 @@ switch ($methode)
                         $contenu_page .= "<p>Le perso " . $valeur . " <strong> est déjà dans cette liste !</strong><br>";
                     } else
                     {
-                        $req          = "insert into contact (contact_cliste_cod,contact_perso_cod) ";
-                        $req          = $req . "values ($liste,$num_contact) ";
+                        $req          = "insert into contact (contact_cliste_cod,contact_perso_cod) 
+                        values ($liste,$num_contact) ";
                         $stmt         = $pdo->query($req);
                         $contenu_page .= "<p>Le perso " . $valeur . " a été rajouté à votre liste.<br>";
                     }
                 }
             }
         }
-        $contenu_page .= '<p style="text-align:center"><a href="' . $PHP_SELF . '?m=' . $m . '&methode=aliste_a&liste=' . $liste . '">Retour !</a>';
+        $contenu_page .= '<p style="text-align:center"><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=aliste_a&liste=' . $liste . '">Retour !</a>';
         break;
 
     case "dliste":
@@ -186,8 +186,8 @@ switch ($methode)
         $nom          = $result['cliste_nom'];
         $contenu_page .= '
 		<p>Voulez vous vraiment détruire la liste <strong>' . $nom . '</strong> ?<br>
-		<a href="' . $PHP_SELF . '?m=' . $m . '&methode=dliste2&liste=' . $liste . '">Oui je le veux !</a><br>
-		<a href="' . $PHP_SELF . '?m=' . $m . '">Non, je souhaite la garder !</a>';
+		<a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=dliste2&liste=' . $liste . '">Oui je le veux !</a><br>
+		<a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '">Non, je souhaite la garder !</a>';
         break;
 
     case "dliste2":
@@ -202,7 +202,7 @@ switch ($methode)
         $stmt = $pdo->query($req);
 
         $contenu_page .= "<p>La liste a bien été détruite !";
-        $contenu_page .= '<p style="text-align:center"><a href="' . $PHP_SELF . '?m=' . $m . '">Retour !</a>';
+        $contenu_page .= '<p style="text-align:center"><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '">Retour !</a>';
         break;
 
     case "dcontact":
@@ -235,15 +235,15 @@ switch ($methode)
             {
                 $contenu_page .= "<tr>";
                 $contenu_page .= "<td class=\"soustitre2\"><p>" . $result['perso_nom'] . "</td>";
-                $contenu_page .= '<td><p><a href="' . $PHP_SELF . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
+                $contenu_page .= '<td><p><a href="' . $_SERVER['PHP_SELF'] . '?m=' . $m . '&methode=dcontact&contact=' . $result['contact_perso_cod'] . "&liste=" . $liste . "\">Retirer !</A>";
             }
             $contenu_page .= "</table>";
         }
         if ($stmt->rowCount() < 20)
         {
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=aliste_a&liste=' . $liste . '&m=' . $m . '">Ajouter un contact ?</a>';
         }
-        $contenu_page .= '<a href="' . $PHP_SELF . '?methode=dliste&liste=' . $liste . '&m=' . $m . '"><p>Détruire cette liste ? </a>(opération définitive !)';
+        $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=dliste&liste=' . $liste . '&m=' . $m . '"><p>Détruire cette liste ? </a>(opération définitive !)';
 
         break;
 }

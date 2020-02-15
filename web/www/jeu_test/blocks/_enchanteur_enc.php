@@ -71,7 +71,7 @@ else
         while ($result2 = $stmt2->fetch())
             $contenu_page .= $result2['oenc_nombre'] . ' ' . $result2['gobj_nom'] . '<br>';
         $contenu_page .= '</td></tr>';
-        //$contenu_page .= '<br><a href="' . $PHP_SELF . '?methode=enc2&enc=' . $result['enc_cod'] . '&obj=' . $obj . '">' . $result['enc_nom'] . '</a>';
+        //$contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?methode=enc2&enc=' . $result['enc_cod'] . '&obj=' . $obj . '">' . $result['enc_nom'] . '</a>';
     }
     $contenu_page .= '</table>';
 }

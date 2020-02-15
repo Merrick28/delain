@@ -92,7 +92,7 @@ if ($erreur == 0)
             <TABLE width="80%" align="center">
                 <TR>
                     <TD>
-                        <form name="edit" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <form name="edit" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="edit">
                             Selectionner un monstre générique
@@ -115,7 +115,7 @@ if ($erreur == 0)
                 </TR>
                 <TR>
                     <TD>
-                        <form name="new" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <form name="new" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="new">
                             <input type="submit" value="Créer un nouveau monstre générique">
@@ -124,7 +124,7 @@ if ($erreur == 0)
                 </TR>
                 <TR>
                     <TD>
-                        <form name="new_form" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <form name="new_form" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode2" value="edit">
                             <input type="hidden" name="sel_method" value="new_from">
                             <input type="submit" value="Créer un nouveau monstre générique a partir du type : ">
@@ -144,7 +144,7 @@ if ($erreur == 0)
                 </TR>
                 <TR>
                     <TD>
-                        <form name="liste" method="post" action="<?php echo $PHP_SELF; ?>">
+                        <form name="liste" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                             <input type="hidden" name="methode2" value="liste_monstre">
                             <input type="submit" value="Voir les monstres existants">
                         </form>
@@ -1347,7 +1347,7 @@ if ($erreur == 0)
 
 ?>
 
-    <a class="centrer" href="<?php echo $PHP_SELF ?>">Retour au début</a>
+    <a class="centrer" href="<?php echo $_SERVER['PHP_SELF'] ?>">Retour au début</a>
 
 <?php //include"../logs/monstre_edit.log";
 $contenu_page = ob_get_contents();

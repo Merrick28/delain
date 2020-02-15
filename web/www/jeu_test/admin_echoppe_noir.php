@@ -20,10 +20,10 @@ if ($erreur == 0)
             echo "<p><a href=\"gerant_echoppe_noir.php\">Affecter les gérances des échoppes</a>";
             echo "<p><a href=\"admin_echoppe_guilde_noir.php\">Modifier les remises de guilde</a>";
             echo "<p><a href=\"admin_echoppe_stats_noir.php\">Voir les stats de vente des magasins</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=passe\">Voir/changer le mot de passe d'accès</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=guilde&met_guilde=debut\">Gérer les meta guildes</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=voir_meta\">Voir les meta guildés</a>";
-            echo "<p><a href=\"", $PHP_SELF, "?methode=stats_paq\">Voir les stats sur les paquets bruns</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=passe\">Voir/changer le mot de passe d'accès</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=guilde&met_guilde=debut\">Gérer les meta guildes</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=voir_meta\">Voir les meta guildés</a>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=stats_paq\">Voir les stats sur les paquets bruns</a>";
             break;
         case "passe":
             if (!isset($met_pass))
@@ -49,14 +49,14 @@ if ($erreur == 0)
                         $result = $stmt->fetch();
                         echo "<img src=\"" . G_IMAGES . "rune_" . $cpt . "_" . $result['gobj_rune_position'] . ".gif\">";
                     }
-                    echo "<p class=\"centrer\"><a href=\"", $PHP_SELF, "?methode=passe&met_pass=change\">Changer le mot de passe ?</a>";
+                    echo "<p class=\"centrer\"><a href=\"", $_SERVER['PHP_SELF'], "?methode=passe&met_pass=change\">Changer le mot de passe ?</a>";
                     break;
                 case "change":
                     ?>
                     <p>Choisissez la combinaison que vous voulez en mot de passe :
                     <div class="centrer">
                     <table>
-                    <form name="magie" method="post" action="<?php echo $PHP_SELF; ?>">
+                    <form name="magie" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                         <input type="hidden" name="methode" value="passe">
                         <input type="hidden" name="met_pass" value="valide_change">
                         <?php
@@ -94,6 +94,12 @@ if ($erreur == 0)
                     <?php
                     break;
                 case "valide_change":
+                    $fam_1    = $_REQUEST['fam_1'];
+                    $fam_2    = $_REQUEST['fam_2'];
+                    $fam_3    = $_REQUEST['fam_3'];
+                    $fam_4    = $_REQUEST['fam_4'];
+                    $fam_5    = $_REQUEST['fam_5'];
+                    $fam_6    = $_REQUEST['fam_6'];
                     $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
 
                     $param->charge(71);

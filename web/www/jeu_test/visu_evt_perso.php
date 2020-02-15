@@ -99,7 +99,7 @@ $options_twig = array(
 
     'VISU_PERSO' => $visu_perso,
     'COMPTE'     => $compte,
-    'PHP_SELF'   => $PHP_SELF,
+    'PHP_SELF'   => $_SERVER['PHP_SELF'],
     'RACE'       => $race,
     'MEMEPERSO'  => $memeperso,
     'EVTS'       => $tab_evt,

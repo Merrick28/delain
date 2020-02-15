@@ -8,9 +8,9 @@ $req_eff = "delete from guilde_perso where pguilde_perso_cod = $perso_cod ";
 $stmt = $pdo->query($req_eff);
 
 // on inscrit dans la guilde
-$req_ins = "insert into guilde_perso (pguilde_guilde_cod,pguilde_perso_cod,pguilde_rang_cod,pguilde_valide,pguilde_message) ";
-$req_ins = $req_ins . "values($num_guilde,$perso_cod,1,'N','O')";
-$stmt = $pdo->query($req_ins);
+$req_ins = "insert into guilde_perso (pguilde_guilde_cod,pguilde_perso_cod,pguilde_rang_cod,pguilde_valide,pguilde_message) 
+values($num_guilde,$perso_cod,1,'N','O')";
+$stmt    = $pdo->query($req_ins);
 
 // on envoie un message à l'admin de guilde
 // on prépare le texte du message

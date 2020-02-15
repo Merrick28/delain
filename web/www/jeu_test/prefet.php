@@ -25,7 +25,7 @@ if ($erreur == 0)
     switch ($methode)
     {
         case "debut":
-            echo "<p><a href=\"", $PHP_SELF, "?methode=solde\">Gérer les soldes ?</a><br>";
+            echo "<p><a href=\"", $_SERVER['PHP_SELF'], "?methode=solde\">Gérer les soldes ?</a><br>";
             break;
         case "solde":
             $req = "select rguilde_libelle_rang,rguilde_rang_cod,rguilde_cod,rguilde_solde from guilde_rang ";
@@ -44,7 +44,7 @@ if ($erreur == 0)
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><strong>", $result['rguilde_libelle_rang'], "</strong></td>";
                     echo "<td>", $result['rguilde_solde'], " brouzoufs</td>";
-                    echo "<td><a href=\"", $PHP_SELF, "?methode=solde2&rang=", $result['rguilde_cod'], "\">Modifier ?</a></td>";
+                    echo "<td><a href=\"", $_SERVER['PHP_SELF'], "?methode=solde2&rang=", $result['rguilde_cod'], "\">Modifier ?</a></td>";
                     echo "</tr>";
                 }
                 ?>
@@ -56,7 +56,7 @@ if ($erreur == 0)
             $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             ?>
-            <form action="<?php echo $PHP_SELF; ?>" method="post">
+            <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
                 <input type="hidden" name="methode" value="solde3">
                 <input type="hidden" name="rang" value="<?php echo $rang; ?>">
                 Entrez la valeur de la solde mensuelle pour le grade
@@ -74,7 +74,7 @@ if ($erreur == 0)
             break;
 
     }
-    echo "<hr><a href=\"", $PHP_SELF, "\">Retour à la page principale du préfet.</a><br>";
+    echo "<hr><a href=\"", $_SERVER['PHP_SELF'], "\">Retour à la page principale du préfet.</a><br>";
     echo "<a href=\"milice.php\">Retour à la page milice</a><br>";
 
 

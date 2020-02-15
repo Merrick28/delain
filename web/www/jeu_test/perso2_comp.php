@@ -23,7 +23,7 @@ $template     = $twig->load('_perso2_comp.twig');
 $options_twig = array(
 
     'PERSO'       => $perso,
-    'PHP_SELF'    => $PHP_SELF,
+    'PHP_SELF'    => $_SERVER['PHP_SELF'],
     'ALLTYPECOMP' => $alltypecomp
 
 );

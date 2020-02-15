@@ -26,8 +26,8 @@ switch($methode)
 		else
 		{
 			$contenu_page .= 'Voici les objets sur lesquels vous pouvez intervenir : <br>';
-			while($result = $stmt->fetch())
-				$contenu_page .= '<br><strong><a href="' . $PHP_SELF . '?methode=enc&obj=' . $result['obj_cod'] . '&t_ench=3">' . $result['obj_nom'] . '</a></strong>';
+			while ($result = $stmt->fetch())
+                $contenu_page .= '<br><strong><a href="' . $_SERVER['PHP_SELF'] . '?methode=enc&obj=' . $result['obj_cod'] . '&t_ench=3">' . $result['obj_nom'] . '</a></strong>';
 		}
 		$contenu_page .= '<br><br>';
 	break;

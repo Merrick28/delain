@@ -30,13 +30,13 @@ if ($erreur == 0)
         case "debut":
             ?>
             <p>Choisissez votre méthode :</p>
-            <a href="<?php echo $PHP_SELF; ?>?methode=cre">Création d’un nouvel objet ?</a><br>
-            <a href="<?php echo $PHP_SELF; ?>?methode=mod">Modification d’un objet existant</a>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’un nouvel objet ?</a><br>
+            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’un objet existant</a>
             <?php
             break;
         case "cre": // création d'un nouvel objet
             ?>
-            <form name="cre" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="cre2">
                 <div class="centrer">
                     <table>
@@ -221,7 +221,7 @@ if ($erreur == 0)
             break;
         case "mod": // modification d'un objet existant
 
-            echo '<br><a href="' . $PHP_SELF . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br>
+            echo '<br><a href="' . $_SERVER['PHP_SELF'] . '?methode=cre">Création d’un nouvel objet ?</a>&nbsp;&nbsp;&nbsp;<br>
                     <a href="admin_objet_sort.php?">Rattachement de sorts aux objets?</a><br>
                     <a href="admin_objet_bm.php?">Rattachement de bonus/malus aux objets?</a><br>
                     <a href="admin_objet_equip.php?">Rattachement de conditions d\'équipement aux objets?</a><br>
@@ -250,7 +250,7 @@ if ($erreur == 0)
             }
             ?>
             </SCRIPT>
-            <form name="mod" action="<?php echo $PHP_SELF ;?>" method="post">
+            <form name="mod" action="<?php echo $_SERVER['PHP_SELF'] ;?>" method="post">
             <select id="tobj" style="width: 280px;" name="selecttype"><option value="">Tous types d’objets</option>
             <?php
             $req_tobj = "select distinct tobj_cod,tobj_libelle from type_objet order by tobj_libelle";
@@ -290,7 +290,7 @@ if ($erreur == 0)
 
             // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
             $row_id = "obj-generique-";
-            echo '<form name="mod" action="' . $PHP_SELF . '" method="post"><input type="hidden" name="methode" value="mod2">';
+            echo '<form name="mod" action="' . $_SERVER['PHP_SELF'] . '" method="post"><input type="hidden" name="methode" value="mod2">';
             echo '<br><hr><br><strong>Modification d’un objet existant</strong> (<em>recherche par nom<em>)<br>Code de l\'objet générique :
                     <input data-entry="val" name="gobj_cod" id="' . $row_id . 'misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\''.$row_id.'misc_nom\', \'objet_generique\', $(\'#'.$row_id.'misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'misc_nom"></span></em>
@@ -327,7 +327,7 @@ if ($erreur == 0)
                 $obcar_cod = 0;
             }
             ?>
-            <form name="cre" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="cre" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="mod3">
                 <input type="hidden" name="objet" value="<?php echo $gobj_cod; ?>">
                 <input type="hidden" name="objet_car" value="<?php echo $obcar_cod; ?>">
@@ -758,7 +758,7 @@ if ($erreur == 0)
                    "," . $_POST['gobj_aura_feu'] . "," . $_POST['gobj_bonus_vue'] . "," . $_POST['gobj_critique'] . "," . $_POST['gobj_bonus_armure'] . "," . $_POST['gobj_chance_drop'] . "," . $_POST['gobj_chance_drop_monstre'] .
                    "," . $_POST['gobj_chance_enchant'] . ",'$gobj_desequipable'," . $_POST['gobj_stabilite'] . ", " . $_POST['gobj_niveau_min'] . ") ";
             $stmt = $pdo->query($req);
-            echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $PHP_SELF . "?methode=mod\">Créer/Modifier d'autres objets</a>";
+            echo "<p>L'insertion s'est bien déroulée.<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a>";
             break;
         case "mod3":
             // détermination du obcar_cod
@@ -853,7 +853,7 @@ if ($erreur == 0)
 			obj_chance_drop = " . $_POST['gobj_chance_drop'] . ",obj_stabilite = " . $_POST['gobj_stabilite'] . ",obj_niveau_min = " . $_POST['gobj_niveau_min'] . "
 			where obj_gobj_cod = " . $_REQUEST['objet'] . " and obj_modifie = 0";
             $stmt = $pdo->query($req);
-            echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"" . $PHP_SELF . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
+            echo "<p><br>La mise à jour des anciens objets aussi<br><br><a href=\"" . $_SERVER['PHP_SELF'] . "?methode=mod\">Créer/Modifier d'autres objets</a><br><br>";
             break;
 
     }

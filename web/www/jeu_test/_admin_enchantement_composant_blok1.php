@@ -29,11 +29,11 @@ $stmt = $pdo->execute(array(
                       ), $stmt);
 while ($result = $stmt->fetch())
 {
-    echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $PHP_SELF . '?methode2=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
+    echo '<br>' . $result['gobj_nom'] . ' (' . $result['frmco_num'] . ') - <a href="' . $_SERVER['PHP_SELF'] . '?methode2=serie_obj&action=suppr&comp_pot=' . $result['frmco_gobj_cod'] . '&pot=' . $pot . '">Supprimer ?</a>';
 }
 ?>
 <br>Ajouter un objet :
-<form name="ajout" method="post" action="<?php echo $PHP_SELF; ?>">
+<form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <input type="hidden" name="methode2" value="serie_obj">
     <input type="hidden" name="action" value="ajout">
     <input type="hidden" name="pot" value="<?php echo $num_form; ?>">

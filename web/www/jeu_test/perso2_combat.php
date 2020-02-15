@@ -44,7 +44,7 @@ $template     = $twig->load('_perso2_combat.twig');
 $options_twig = array(
 
     'PERSO'             => $perso,
-    'PHP_SELF'          => $PHP_SELF,
+    'PHP_SELF'          => $_SERVER['PHP_SELF'],
     'OBJETS_POSSEDES'   => $objets_possedes,
     'CONTENU_INCLUDE'   => $contenu_include,
     'COUT_DES'          => $param->getparm(60),

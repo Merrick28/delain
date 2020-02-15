@@ -24,7 +24,7 @@ if (!$compte->is_admin())
                     $contenu_page .= '<tr><td class="soustitre2"><a href="trc_id.php?id=' . $result['hlog_id'] . '">' . $result['hlog_id'] . '</a></td><td>' . $result['hlog_date'] . '</td><td class="soustitre2">' . $result['hlog_ip'] . '</td></tr>';
                 $contenu_page .= '</table>';
             }
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=global&compte=' . $compte . '">Voir le global</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=global&compte=' . $compte . '">Voir le global</a>';
             break;
         case "global";
             $req  =
@@ -46,7 +46,7 @@ if (!$compte->is_admin())
 					<td>' . $result['date_max'] . '</td></tr>';
                 $contenu_page .= '</table>';
             }
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '?methode=detail&compte=' . $compte . '">Voir le détail</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '?methode=detail&compte=' . $compte . '">Voir le détail</a>';
 
 
     }

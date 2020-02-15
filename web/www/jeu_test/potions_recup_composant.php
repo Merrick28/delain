@@ -151,6 +151,7 @@ $methode = get_request_var('methode', 'debut');
 $perso = new perso;
 $perso->charge($perso_cod);
 $tpot = $_REQUEST['tpot'];
+
 switch ($methode)
 {
     case "debut":
@@ -169,7 +170,7 @@ switch ($methode)
                 Attention, ceci ne signifie pas forcément que des composants seront présents, mais qu’il y a au moins une chance qu’il y en ait.
                 Il est toujours possible que d’autres soient passés avant vous...<br><br></em>';
 
-            $contenu_page .= '<form name="recup_composant" method="post" action="' . $PHP_SELF . '">
+            $contenu_page .= '<form name="recup_composant" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 					<input type="hidden" name="methode" value="recup">
 					<input type="hidden" name="tpot" value="' . $tpot . '">
 					<table width="70%">

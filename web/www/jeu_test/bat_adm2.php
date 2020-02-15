@@ -38,7 +38,7 @@ if ($erreur == 0)
                     if ($result['pguilde_solde'] > 0)
                     {
                         echo "Vous avez ", $result['pguilde_solde'], " brouzoufs de solde que vous pouvez retirer.<br>";
-                        echo "<a href=\"", $PHP_SELF, "?methode=solde\">La retirer maintenant ?</a>";
+                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=solde\">La retirer maintenant ?</a>";
                     } else
                     {
                         echo "Vous n'avez pas de salaire à retirer à ce jour.";
@@ -118,7 +118,7 @@ if ($erreur == 0)
             } else
             {
                 echo "<hr>";
-                echo "<p>Désirez vous <a href=\"" . $PHP_SELF . "?methode=tournee\">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?";
+                echo "<p>Désirez vous <a href=\"" . $_SERVER['PHP_SELF'] . "?methode=tournee\">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?";
             }
             break;
 

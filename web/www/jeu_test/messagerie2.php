@@ -20,7 +20,7 @@ $m = get_request_var('m',0);
 $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 	<tr>';
 for ($cpt = 0; $cpt < $nb; $cpt++) {
-    $lien = '<a href="' . $PHP_SELF . '?m=' . $cpt . '">';
+    $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?m=' . $cpt . '">';
     $f_lien = '</a>';
     if ($cpt == $m) {
         $style = 'onglet';

@@ -138,7 +138,7 @@ switch($methode2)
 				$monstre_nom = $result['gmon_nom'];
 				$avatar = $result['gmon_avatar'];
 				srand ((double) microtime() * 10000000); // pour intialiser le random
-				$input = array (
+				$input         = array (
 					"Aventuriers, Aventurières, depuis un certain temps, nous notons la recrudescence d’agglomération de monstres dans
 						certains coins de ces souterrains, et plus particulièrement de $monstre_nom !
 						<br>Nous faisons donc appel à votre aide pour chasser cette vermine.",
@@ -153,7 +153,7 @@ switch($methode2)
 					"Qui ne rêve pas d’accrocher au dessus de sa cheminée une tête de $monstre_nom ? Montrez-nous votre plus bel empaillage
 						et vous gagnerez peut-être notre premier prix !"
 				);
-				$wanted = array_rand ($input, 1);
+				$wanted        = array_rand($input, 1);
 				$phrase_wanted = $input[$wanted];
 				echo $phrase_wanted;
 				if ($avatar != null) //Utilisation des avatars si il existe pour ce monstre.
@@ -162,8 +162,8 @@ switch($methode2)
 						Il ressemble à cela :<br><p\"><img src=\"../avatars/" . $avatar . "\"></p>";
 				}
 				echo "<br>Souhaitez vous répondre à cette annonce ? <em>(Attention, ce choix vous engage pour une certaine durée)</em>";
-			?>
-				<form name="mission" method="post" action="<?php echo $PHP_SELF;?>">
+				?>
+				<form name="mission" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
 					<input type="hidden" name="methode2" value="mission">
 					<table>
 						<tr>

@@ -275,11 +275,11 @@ switch($methode)
 						//
 							//Faire une liste avec le noms des groupes existants pour cette mission, et avec mise à cour en auto Ajax du nom des persos
 					   	$contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission.<br>
-																Voulez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a></strong><br>';
+																Voulez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=rejoindre&mission=' . $mission . '\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a></strong><br>';
 							if ($nombre_groupe_max == null or $nombre_groupe < $nombre_groupe_max)
 							{
-								$contenu_page .= '<br>nombre de groupe : '.$nombre_groupe.'<br>
-								Souhaitez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
+                                $contenu_page .= '<br>nombre de groupe : ' . $nombre_groupe . '<br>
+								Souhaitez vous <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=cree&mission=' . $mission . '\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
 							}
 							else
 							{
@@ -293,38 +293,37 @@ switch($methode)
 						//
 						// pas dans un groupe, mais invit?						//
 							//Faire une liste avec le noms des groupes existants pour cette mission, et avec mise ?our en auto Ajax du nom des persos
-					   	$contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission,<strong> mais vous avez reçu une invitation de la part du chef de groupe.<br>
-																Voulez vous <a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=rejoindre&mission='.$mission.'\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a><br></strong>';   	
-							if ($nombre_groupe_max == null or $nombre_groupe < $nombre_groupe_max)
-							{
-								$contenu_page .= 'Souhaitez vous néanmoins <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
-							}
-							else
-							{
-								$contenu_page .= '<br>Le nombre de groupes constitués pour cette mission est largement suffisant. Vous ne pouvez pas créer le votre<br>';
-							}
-					break;
+                        $contenu_page .= '<br>Vous ne faites partie d\'aucun groupe pour cette mission,<strong> mais vous avez reçu une invitation de la part du chef de groupe.<br>
+																Voulez vous <a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=rejoindre&mission=' . $mission . '\', 600, 250 , 50 ,500)">Rejoindre un groupe de mission existante ? </a><br></strong>';
+                        if ($nombre_groupe_max == null or $nombre_groupe < $nombre_groupe_max)
+                        {
+                            $contenu_page .= 'Souhaitez vous néanmoins <strong><a onclick="newProtoWindowUrl(1, \'Groupes de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=cree&mission=' . $mission . '\', 600, 250 , 50 ,500)">créer un autre groupe ?</a></strong><br>';
+                        } else
+                        {
+                            $contenu_page .= '<br>Le nombre de groupes constitués pour cette mission est largement suffisant. Vous ne pouvez pas créer le votre<br>';
+                        }
+                        break;
 								
 					case 'oui':
-						$contenu_page .= '<br>Vous appartenez au groupe de mission <strong>"'.$result['mgroupedef_nom'].'</strong>"';
-						if($is_chef == 'Oui')
-						{
-							$contenu_page .= '<br>En tant que chef de ce groupe de mission, vous pouvez inviter d\'autres membres.
-							<br><strong><a onclick="newProtoWindowUrl(1, \'Invitation à un groupe de mission\', this, \'' . $PHP_SELF . '?methode=cree&mission='.$mission.'&invite_chef=oui\', 600, 250 , 50 ,500)">Oui, je souhaite le faire</a></strong>
-							<br><strong><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $PHP_SELF . '?methode=delegue&groupe='.$result['mgroupe_groupe_cod'].'&mission='.$mission.'\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></strong>';
-						}
-						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Membres du groupe de mission\', this, \'' . $PHP_SELF . '?methode=details&mission='.$mission.'\', 600, 250 , 50 ,500)">voir les détails</a></strong> de ce groupe de mission (aventuriers engagés dedans) ?<br>';
-						$contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Quitter ce groupe de mission\', this, \'' . $PHP_SELF . '?methode=quitter&mission='.$mission.'\', 600, 250 , 50 ,500)">Quitter ce groupe ?</a></strong><br>';
+                        $contenu_page .= '<br>Vous appartenez au groupe de mission <strong>"' . $result['mgroupedef_nom'] . '</strong>"';
+                        if ($is_chef == 'Oui')
+                        {
+                            $contenu_page .= '<br>En tant que chef de ce groupe de mission, vous pouvez inviter d\'autres membres.
+							<br><strong><a onclick="newProtoWindowUrl(1, \'Invitation à un groupe de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=cree&mission=' . $mission . '&invite_chef=oui\', 600, 250 , 50 ,500)">Oui, je souhaite le faire</a></strong>
+							<br><strong><a onclick="newProtoWindowUrl(1, \'Déléguer le role de chef\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=delegue&groupe=' . $result['mgroupe_groupe_cod'] . '&mission=' . $mission . '\', 600, 250 , 50 ,500)">Déléguer le role de chef</a></strong>';
+                        }
+                        $contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Membres du groupe de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=details&mission=' . $mission . '\', 600, 250 , 50 ,500)">voir les détails</a></strong> de ce groupe de mission (aventuriers engagés dedans) ?<br>';
+                        $contenu_page .= '<br><strong><a onclick="newProtoWindowUrl(1, \'Quitter ce groupe de mission\', this, \'' . $_SERVER['PHP_SELF'] . '?methode=quitter&mission=' . $mission . '\', 600, 250 , 50 ,500)">Quitter ce groupe ?</a></strong><br>';
 
-						//On donne les indications de statut de la mission
-						$req_object = "select pos_x,pos_y,t1.perso_nom,t1.mgroupedef_nom,mobject_object_cod,mobject_param_text,mobject_date_deb,mobject_date_prise,mobject_perso_cod,mobject_desc,mobject_pos_cod,mobject_type_object,mobject_statut,mobject_temps,(mobject_date_prise + (mobject_temps::text||' hours')::interval) as date_confirm,now() as maintenant
+                        //On donne les indications de statut de la mission
+                        $req_object = "select pos_x,pos_y,t1.perso_nom,t1.mgroupedef_nom,mobject_object_cod,mobject_param_text,mobject_date_deb,mobject_date_prise,mobject_perso_cod,mobject_desc,mobject_pos_cod,mobject_type_object,mobject_statut,mobject_temps,(mobject_date_prise + (mobject_temps::text||' hours')::interval) as date_confirm,now() as maintenant
 															from quetes.mission_objectif
 															left outer join (select perso_nom,mgroupedef_nom,mgroupedef_mission_cod,mgroupe_perso_cod from quetes.mission_groupe,perso,quetes.mission_groupe_def 
 															where perso_cod = mgroupe_perso_cod
 															and mgroupedef_cod = mgroupe_groupe_cod and mgroupedef_statut = 'O') as t1
 															on (t1.mgroupedef_mission_cod = mobject_mission_cod and mgroupe_perso_cod = mobject_perso_cod )
 															left outer join positions on (pos_cod = mobject_pos_cod)
-															where mobject_mission_cod = ".$mission."
+															where mobject_mission_cod = " . $mission . "
 															and mobject_statut in ('O','N')
 															order by mobject_object_cod";
 						$stmt = $pdo->query($req_object);
@@ -521,9 +520,9 @@ switch($methode)
 	
 	case 'cree':
 		$contenu_page .= '<strong>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</strong><br><br>
-			<table><form method="post" action="'.$PHP_SELF.'">
+			<table><form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="cree_groupe">				
-			<input type="hidden" name="mission" value="'.$mission.'">';
+			<input type="hidden" name="mission" value="' . $mission . '">';
 		if($invite_chef !='oui')
 		{
 			$contenu_page .= '<strong>Attention, la création d\'un nouveau groupe supprimera toutes les invitations précédentes</strong><br><br>
@@ -595,22 +594,23 @@ switch($methode)
 				// on cherche le destinataire
 				if ($tab_dest[$cpt] != "")
 				{
-					$nom_dest = ltrim(rtrim($tab_dest[$cpt]));
-					$nom_dest = pg_escape_string($nom_dest);
-					$req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
-					$stmt = $pdo->query($req_dest);
-					$result = $stmt->fetch();
-					$tab_res_dest = $result['num_perso'];
-				}													
-			//on va envoyer une demande aux persos, qui devront valider
-				$req = 'select quetes.invite_mission(' .$perso_cod. ',' . $mission . ',' . $tab_res_dest  . ',e\''.$message_groupe.'\') as resultat ';
-				$stmt = $pdo->query($req);
-				$result = $stmt->fetch();
-				$contenu_page .= '<br><br>'.$result['resultat'];
-			}
-		}
-		$contenu_page .= '<p style="text-align:center;"><a href="'.$PHP_SELF.'">Retour à ca gestion des groupes de mission</a></p>';	
-	break;
+					$nom_dest     = ltrim(rtrim($tab_dest[$cpt]));
+					$nom_dest     = pg_escape_string($nom_dest);
+					$req_dest     = "select f_cherche_perso('$nom_dest') as num_perso";
+					$stmt         = $pdo->query($req_dest);
+                    $result       = $stmt->fetch();
+                    $tab_res_dest = $result['num_perso'];
+                }
+                //on va envoyer une demande aux persos, qui devront valider
+                $req          =
+                    'select quetes.invite_mission(' . $perso_cod . ',' . $mission . ',' . $tab_res_dest . ',e\'' . $message_groupe . '\') as resultat ';
+                $stmt         = $pdo->query($req);
+                $result       = $stmt->fetch();
+                $contenu_page .= '<br><br>' . $result['resultat'];
+            }
+        }
+        $contenu_page .= '<p style="text-align:center;"><a href="' . $_SERVER['PHP_SELF'] . '">Retour à ca gestion des groupes de mission</a></p>';
+        break;
 	case 'delegue':
 		if($cas == 'promote')
 		{
@@ -625,19 +625,20 @@ switch($methode)
 	   $stmt = $pdo->query($req);
 	   $contenu_page .= '<br><ul>';
 	   while($result = $stmt->fetch())
-	   {
-	   	$chef = '';
-	   	$promote = '<a href="'.$PHP_SELF.'?methode=delegue&cas=promote&perso='.$result['mgroupe_perso_cod'].'&groupe='.$result['mgroupe_groupe_cod'].'&mission='.$mission.'">Promotion !</a>';
-	    if ($result['mgroupe_statut']=='O')
-			{
-				$chef = '- (chef)';
-				$promote = '';
-	    }
-	    if ($result['mgroupe_statut']=='E')
-			{
-				$chef = '- (invitation non acceptée)';
-				$promote = '';
-	    }
+       {
+           $chef    = '';
+           $promote =
+               '<a href="' . $_SERVER['PHP_SELF'] . '?methode=delegue&cas=promote&perso=' . $result['mgroupe_perso_cod'] . '&groupe=' . $result['mgroupe_groupe_cod'] . '&mission=' . $mission . '">Promotion !</a>';
+           if ($result['mgroupe_statut'] == 'O')
+           {
+               $chef    = '- (chef)';
+               $promote = '';
+           }
+           if ($result['mgroupe_statut'] == 'E')
+           {
+               $chef    = '- (invitation non acceptée)';
+               $promote = '';
+           }
 	    $contenu_page .= '<li>'.$result['perso_nom'].''.$chef.' -------------> <strong>'.$promote.'</strong></li>';
 	   }
 	   $contenu_page .= '</ul></br>';
@@ -661,9 +662,9 @@ switch($methode)
 		<br>Si il l\'a déjà fait, alors le faire de rejoindre le groupe vous intégrera automatiquement
     <br>Si il n\'a pas encore cherché à vous intégrer, le fait de rejoindre le groupe de votre côté lui enverra un message avec votre demande. Il vous faudra à nouveau faire une demande pour rejoindre le groupe ensuite.
     <br><br>
-        <form method="post" action="'.$PHP_SELF.'">
+        <form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 				<input type="hidden" name="methode" value="rejoindre_groupe">
-				<input type="hidden" name="mission" value="'.$mission.'">
+				<input type="hidden" name="mission" value="' . $mission . '">
 				<select name="groupe" id="groupe" onchange="loadData2();">
 				<option name="-1"><--Sélectionnner un groupe de mission pour voir le détail--></option>';
 			while($result = $stmt->fetch())
@@ -724,9 +725,9 @@ switch($methode)
 
 	case 'quitter':
 		$contenu_page .= '<strong>Attention, quitter un groupe est définitif, et seule une nouvelle invitation d\'un chef du groupe vous permettra d\'y revenir.</strong><br><br>
-			<form method="post" action="'.$PHP_SELF.'">
+			<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="quitter_confirme">				
-			<input type="hidden" name="mission" value="'.$mission.'">';
+			<input type="hidden" name="mission" value="' . $mission . '">';
 		$contenu_page .= '<input type="submit" value="Je confirme !" class="test"></form>';
 	break;
 

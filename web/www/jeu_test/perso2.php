@@ -70,7 +70,7 @@ $template     = $twig->load('perso2.twig');
 $options_twig = array(
 
     'PERSO'        => $perso,
-    'PHP_SELF'     => $PHP_SELF,
+    'PHP_SELF'     => $_SERVER['PHP_SELF'],
     'MESS'         => $mess,
     'SIZE'         => $size,
     'M'            => $m,

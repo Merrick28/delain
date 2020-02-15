@@ -26,7 +26,7 @@ switch ($methode)
             }
             $contenu_page .= '</p><br><br><p align="center"><strong>Sur quelle pierre souhaitez vous réaliser le forgeamage ?</strong>
 					<br>
-					<form name="potions" method="post" action="' . $PHP_SELF . '">
+					<form name="potions" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 						<input type="hidden" name="methode" value="compo">
 						<input type="hidden" name="t_ench" value="' . $t_ench . '">
 						<table width="70%">

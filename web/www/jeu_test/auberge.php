@@ -37,7 +37,7 @@ if ($erreur == 0)
 				<p>Bienvenue dans mon humble auberge, aventurier.
 				<p>Voici les services que nous avons à proposer :';
             if ($nb_pa != 0)
-                $contenu_page .= '<a href="' . $PHP_SELF . '?methode=repos">';
+                $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=repos">';
             $contenu_page .= 'Se reposer ';
             if ($nb_pa != 0)
             {
@@ -48,16 +48,16 @@ if ($erreur == 0)
             }
 
             $contenu_page .= '<br>
-				<a href="' . $PHP_SELF . '?methode=boire">Boire un verre ? (10 brouzoufs - 4 PA)</a><br>
-				<a href="' . $PHP_SELF . '?methode=offre">Offrir un verre ? (10 brouzoufs - 4 PA)</a><br>
-				<a href="' . $PHP_SELF . '?methode=ecoute_rumeur">Payer le barman pour écouter une rumeur ? (20 brouzoufs)</a><br>
-				<a href="' . $PHP_SELF . '?methode=rumeur">Lancer une rumeur ?</a><br>';
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=boire">Boire un verre ? (10 brouzoufs - 4 PA)</a><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=offre">Offrir un verre ? (10 brouzoufs - 4 PA)</a><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=ecoute_rumeur">Payer le barman pour écouter une rumeur ? (20 brouzoufs)</a><br>
+				<a href="' . $_SERVER['PHP_SELF'] . '?methode=rumeur">Lancer une rumeur ?</a><br>';
 
             // Pour les fidèles de Tonto, les auberges sont comme des autels de prière
             if ($tonto)
             {
                 $priere_pa    = $param->getparm(48);
-                $contenu_page .= '<a href="' . $PHP_SELF . '?methode=prier">Prier votre dieu Tonto ? (' . $priere_pa . ' PA)</a><br>';
+                $contenu_page .= '<a href="' . $_SERVER['PHP_SELF'] . '?methode=prier">Prier votre dieu Tonto ? (' . $priere_pa . ' PA)</a><br>';
             }
 
             // Bière & opium
@@ -134,7 +134,7 @@ if ($erreur == 0)
                 $contenu_page .= '<p>Vous vous êtes bien reposé. Vous avez regagné <strong>' . $gain_pv . '</strong> PV';
 
             }
-            $contenu_page .= '<p><a href="' . $PHP_SELF . '">Retour</a>';
+            $contenu_page .= '<p><a href="' . $_SERVER['PHP_SELF'] . '">Retour</a>';
             break;
         case "boire":
             $erreur   = 0;
@@ -276,7 +276,7 @@ if ($erreur == 0)
             $contenu_page .= "<p>Vous disposez de <strong>" . $result['perso_po'] . "</strong> brouzoufs.";
             $contenu_page .= '
 			<table>
-			<form name="rumeur" method="post" action="' . $PHP_SELF . '">
+			<form name="rumeur" method="post" action="' . $_SERVER['PHP_SELF'] . '">
 			<input type="hidden" name="methode" value="rumeur2">
 			<tr>
 				<td class="soustitre2"><p>Texte :</td>
@@ -310,8 +310,8 @@ if ($erreur == 0)
             if ($erreur == 0)
             {
                 $poids        = $prix + 1;
-                $req          = "insert into rumeurs (rum_perso_cod,rum_texte,rum_poids) ";
-                $req          = $req . "values ($perso_cod,e'" . pg_escape_string($rumeur_txt) . "',$poids) ";
+                $req          = "insert into rumeurs (rum_perso_cod,rum_texte,rum_poids) 
+                values ($perso_cod,e'" . pg_escape_string($rumeur_txt) . "',$poids) ";
                 $stmt         = $pdo->query($req);
                 $contenu_page .= "<p>Votre rumeur a bien été enregistrée ";
                 $req          = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod ";

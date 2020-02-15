@@ -88,19 +88,22 @@ if ($autorise)
             <?php
             break;
         case "ajout2":
-            $req = "select max(rguilde_rang_cod) as resultat from guilde_rang where rguilde_guilde_cod = $num_guilde ";
-            $stmt = $pdo->query($req);
+            $req    =
+                "select max(rguilde_rang_cod) as resultat from guilde_rang where rguilde_guilde_cod = $num_guilde ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
-            $rang = $result['resultat'] + 1;
-            $nom = htmlspecialchars($nom);
-            $nom = str_replace(";", chr(127), $nom);
-            $nom = str_replace("\\", " ", $nom);
-            $nom = pg_escape_string($nom);
-            $req = "insert into guilde_rang (rguilde_rang_cod,rguilde_guilde_cod,rguilde_libelle_rang,rguilde_admin) ";
-            $req = $req . "values ($rang,$num_guilde,e'$nom','$fonction') ";
-            if ($stmt = $pdo->query($req)) {
+            $rang   = $result['resultat'] + 1;
+            $nom    = htmlspecialchars($nom);
+            $nom    = str_replace(";", chr(127), $nom);
+            $nom    = str_replace("\\", " ", $nom);
+            $nom    = pg_escape_string($nom);
+            $req    = "insert into guilde_rang (rguilde_rang_cod,rguilde_guilde_cod,rguilde_libelle_rang,rguilde_admin) 
+            values ($rang,$num_guilde,e'$nom','$fonction') ";
+            if ($stmt = $pdo->query($req))
+            {
                 echo "<p>Le nouveau rang a été inséré !";
-            } else {
+            } else
+            {
                 echo "<p>Une anomalie est survenue !";
             }
             echo "<a href=\"guilde_gere_rangs.php\" class='centrer'>Retour à la gestion des rangs</a>";

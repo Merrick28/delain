@@ -9,9 +9,9 @@ switch ($methode)
         ?>
         <br>Etes vous sûr de vouloir quitter votre guilde ? Vous êtes administrateur de cette guilde !
         <br><a
-            href="<?php echo $PHP_SELF; ?>?methode=quitte">Oui</a>, laissez-moi partir, ils se débrouilleront bien mieux sans moi !
+        href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=quitte">Oui</a>, laissez-moi partir, ils se débrouilleront bien mieux sans moi !
         <br><br><a
-            href="http://www.jdr-delain.net/jeu/guilde.php">Non</a>, c'était une erreur, je me sens bien dans cette guilde.
+        href="http://www.jdr-delain.net/jeu/guilde.php">Non</a>, c'était une erreur, je me sens bien dans cette guilde.
         <?php
         break;
     case "quitte":

@@ -22,15 +22,15 @@ if ($erreur == 0)
 }
 
 // on cherche le lieu cod
-$req    = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  ";
-$req    = $req . "(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
+$req    = "select lpos_lieu_cod from lieu_position where lpos_pos_cod =  
+(select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
 $stmt   = $pdo->query($req);
 $result = $stmt->fetch();
 $lieu   = $result['lpos_lieu_cod'];
 
 // on active pour le retour
-$req  = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod ";
-$req  = $req . "and pge_lieu_cod = $lieu ";
+$req  = "select pge_perso_cod from perso_grand_escalier where pge_perso_cod = $perso_cod 
+and pge_lieu_cod = $lieu ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
@@ -40,13 +40,13 @@ if ($stmt->rowCount() == 0)
     {
         case "debut":
             echo "<p>La porte vous est fermée pour le moment. Etant donné son épaisseur, et les nombreux systèmes de verouillages que vous y voyez, inutile d'essayer de la forcer.<br>";
-            echo "<p>Vous pouvez essayer <a href=\"", $PHP_SELF, "?methode=appeler\">d'appeler le geolier</a> ou bien <a href=\"", $PHP_SELF, "?methode=corrompre\">de corromopre celui-ci.</a>";
+            echo "<p>Vous pouvez essayer <a href=\"", $_SERVER['PHP_SELF'], "?methode=appeler\">d'appeler le geolier</a> ou bien <a href=\"", $_SERVER['PHP_SELF'], "?methode=corrompre\">de corromopre celui-ci.</a>";
             break;
         case "appeler":
             ?>
             <p>Vous vous apprêtez à héler le geolier au moment où celui-ci passe.<br>
             <p>Quel message souhaitez vous lui envoyer ?<br>
-            <form name="appeler" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="appeler" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="appel2">
                 <textarea name="corps" cols="40" rows="10"></textarea><br>
                 <input class="test centrer" type="submit" value="Envoyer !">
@@ -91,7 +91,7 @@ if ($stmt->rowCount() == 0)
             <p>Vous vous apprêtez à donner au geolier quelques brouzoufs afin de le corrompre.<br>
             <p>Vous avez actuellement <strong><?php echo $or; ?></strong> brouzoufs disponibles.
             <p>Quelle quantité souhaitez vous lui donner ?<br>
-            <form name="appeler" method="post" action="<?php echo $PHP_SELF; ?>">
+            <form name="appeler" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
                 <input type="hidden" name="methode" value="corrompre2">
                 <input type="text" name="or" value="0"><br>
                 <input class="test centrer" type="submit" value="Envoyer !">

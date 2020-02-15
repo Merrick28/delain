@@ -24,31 +24,30 @@ $x_actuel = $result['pos_x'];
 $y_actuel = $result['pos_y'];
 ?>
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php echo $etage_actuel ?>" title="essai">
-<script type="text/javascript">	
-	function vue_clic(pos_cod)
-	{
-		document.deplacement.position.value = pos_cod;
-		document.deplacement.submit();
-	}
+<script type="text/javascript">
+    function vue_clic(pos_cod) {
+        document.deplacement.position.value = pos_cod;
+        document.deplacement.submit();
+    }
 </script>
 <p>Cliquez sur la position sur laquelle vous voulez lancer le sort :<br>
 <form name="deplacement" method="post" action="action.php">
-	<input type="hidden" name="methode" value="magie_case">
-	<input type="hidden" name="position">
-	<input type="hidden" name="sort_cod" value="<?php  echo $sort_cod; ?>">
-    <input type="hidden" name="objsort_cod" value="<?php echo $objsort_cod; ?>">
-	<input type="hidden" name="type_lance" value="<?php  echo $type_lance ?>">
+    <input type="hidden" name="methode" value="magie_case">
+    <input type="hidden" name="position">
+    <input type="hidden" name="sort_cod" value="<?php echo $_REQUEST['sort_cod']; ?>">
+    <input type="hidden" name="objsort_cod" value="<?php echo $_REQUEST['objsort_cod']; ?>">
+    <input type="hidden" name="type_lance" value="<?php echo $_REQUEST['type_lance'] ?>">
 </form>
-<?php 
+<?php
 if (isset($etage_actuel))
 {
 
 ?>
 
 
-<table border="0" cellspacing="0" cellpadding="0" ID="tab_vue" bgcolor="#FFFFFF" >
+<table border="0" cellspacing="0" cellpadding="0" ID="tab_vue" bgcolor="#FFFFFF">
 
-<?php 
+    <?php
 	$req_x = "select distinct pos_x from positions where pos_x between ($x_actuel - $distance_vue) and ($x_actuel + $distance_vue) and pos_etage = $etage_actuel order by pos_x";
 	$stmt = $pdo->query($req_x);
 	$result = $stmt->fetch();

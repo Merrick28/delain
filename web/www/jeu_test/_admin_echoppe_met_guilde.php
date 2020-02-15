@@ -3,7 +3,7 @@ $req =
 $stmt = $pdo->query($req);
 
 ?>
-<form name="guilde" method="post" action="<?php echo $PHP_SELF; ?>">
+<form name="guilde" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <input type="hidden" name="methode" value="guilde">
     <input type="hidden" name="met_guilde" value="suite">
     <table>
