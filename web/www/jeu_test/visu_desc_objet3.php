@@ -2,13 +2,14 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $objet = $_GET['objet'];
-if (!preg_match('/^[0-9]*$/i', $objet)) {
+if (!preg_match('/^[0-9]*$/i', $objet))
+{
     echo "<p>Anomalie sur numéro objet !</p>";
     exit();
 }
 $autorise = 0;
 // on regarde si l'objet est dans l'inventaire et identifié
-$req = "select perobj_cod from perso_objets
+$req  = "select perobj_cod from perso_objets
 	where perobj_perso_cod = $perso_cod
 	and perobj_obj_cod = $objet
 	and perobj_identifie = 'O' ";
@@ -23,22 +24,23 @@ if ($perso->is_lieu($perso_cod))
 {
     $tab_lieu = $perso->get_lieu($perso_cod);
     $lieu_cod = $tab_lieu['lieu']->lieu_cod;
-    $req = "select mstock_obj_cod from stock_magasin
+    $req      = "select mstock_obj_cod from stock_magasin
 		where mstock_lieu_cod = $lieu_cod
 		and mstock_obj_cod = $objet";
-    $stmt = $pdo->query($req);
+    $stmt     = $pdo->query($req);
     if ($stmt->rowCount() != 0)
         $autorise = 1;
 }
-if ($autorise == 1) {
+if ($autorise == 1)
+{
     // on prend les valeurs de force et dex du perso pour la suite
-    $req = "select perso_for,perso_dex, perso_niveau from perso where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
-    $force = $result['perso_for'];
-    $dex = $result['perso_dex'];
+    $req          = "select perso_for,perso_dex, perso_niveau from perso where perso_cod = $perso_cod ";
+    $stmt         = $pdo->query($req);
+    $result       = $stmt->fetch();
+    $force        = $result['perso_for'];
+    $dex          = $result['perso_dex'];
     $niveau_perso = $result['perso_niveau'];
-    $req = "select obj_nom, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair, gobj_distance, gobj_deposable,
+    $req          = "select obj_nom, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair, gobj_distance, gobj_deposable,
 			gobj_comp_cod, obj_description, coalesce(obj_seuil_force, 0) as obj_seuil_force, obj_seuil_dex,
 			coalesce(obj_bonus_vue, 0) as obj_bonus_vue, coalesce(obj_critique, 0) as obj_critique, obj_armure,
 			coalesce(obj_vampire, 0) as obj_vampire, coalesce(obj_aura_feu, 0) as obj_aura_feu, obj_enchantable, obj_poison, obj_regen,
@@ -49,23 +51,24 @@ if ($autorise == 1) {
 		inner join type_objet on tobj_cod = gobj_tobj_cod
 		where obj_cod = $objet 
 			and (gobj_visible is null or gobj_visible != 'N') ";
-    $stmt = $pdo->query($req);
-    if ($stmt->rowCount() != 0) {
-        $result = $stmt->fetch();
-        $seuil_for = $result['obj_seuil_force'];
-        $seuil_dex = $result['obj_seuil_dex'];
-        $vampire = $result['obj_vampire'];
-        $aura_feu = $result['obj_aura_feu'];
-        $armure = $result['obj_armure'];
-        $regen = $result['obj_regen'];
-        $poison = $result['obj_poison'];
+    $stmt         = $pdo->query($req);
+    if ($stmt->rowCount() != 0)
+    {
+        $result      = $stmt->fetch();
+        $seuil_for   = $result['obj_seuil_force'];
+        $seuil_dex   = $result['obj_seuil_dex'];
+        $vampire     = $result['obj_vampire'];
+        $aura_feu    = $result['obj_aura_feu'];
+        $armure      = $result['obj_armure'];
+        $regen       = $result['obj_regen'];
+        $poison      = $result['obj_poison'];
         $enchantable = $result['obj_enchantable'];
-        $niveau_min = $result['obj_niveau_min'];
+        $niveau_min  = $result['obj_niveau_min'];
         $Recup_image = $result['gobj_image'];
-        $image = 'http://www.jdr-delain.net/images/' . $Recup_image;
-        $t_etat = 0;
-        $comp = $result['gobj_comp_cod'];
-        $desc = $result['obj_description'];
+        $image       = 'http://www.jdr-delain.net/images/' . $Recup_image;
+        $t_etat      = 0;
+        $comp        = $result['gobj_comp_cod'];
+        $desc        = $result['obj_description'];
         echo "<p class=\"titre\">" . $result['obj_nom'] . "</p>";
         echo "<center><table>";
 
@@ -76,7 +79,8 @@ if ($autorise == 1) {
         echo "</td></tr>";
         echo "<td class=\"soustitre2\">Type d’objet</td>";
         echo "<td>" . $result['tobj_libelle'];
-        if ($result['gobj_deposable'] == 'N') {
+        if ($result['gobj_deposable'] == 'N')
+        {
             echo " <strong>non déposable !</strong>";
         }
         echo "</td>";
@@ -87,25 +91,29 @@ if ($autorise == 1) {
         echo "<td>" . $result['obj_poids'] . "</td>";
         echo "</tr>";
 
-        if ($result['obj_bonus_vue'] != 0) {
+        if ($result['obj_bonus_vue'] != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Modificateur de vue</td>";
             echo "<td>" . $result['obj_bonus_vue'] . "</td>";
             echo "</tr>";
         }
-        if ($result['obj_critique'] != 0) {
+        if ($result['obj_critique'] != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Protection contre les critiques / spéciaux</td>";
             echo "<td>" . $result['obj_critique'] . " %</td>";
             echo "</tr>";
         }
-        if ($result['gobj_tobj_cod'] == 1) {
+        if ($result['gobj_tobj_cod'] == 1)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Coût en PA pour une attaque normale</td>";
             echo "<td>" . $result['gobj_pa_normal'] . "</td>";
             echo "</tr>";
 
-            if ($result['gobj_distance'] == 'N') {
+            if ($result['gobj_distance'] == 'N')
+            {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\">Coût en PA pour une attaque foudroyante</td>";
                 echo "<td>" . $result['gobj_pa_eclair'] . "</td>";
@@ -116,7 +124,8 @@ if ($autorise == 1) {
             echo "<td class=\"soustitre2\">Dégâts</td>";
             echo "<td>" . $result['obj_des_degats'] . "D" . $result['obj_val_des_degats'] . "+" . $result['obj_bonus_degats'] . "</td>";
             echo "</tr>";
-            if ($seuil_dex != 0) {
+            if ($seuil_dex != 0)
+            {
                 $cpl_class = '';
                 if ($dex < ($seuil_dex - 3))
                     $cpl_class = '_rouge';
@@ -129,7 +138,8 @@ if ($autorise == 1) {
                 echo "<td>" . $seuil_dex . "</td>";
                 echo "</tr>";
             }
-            if ($seuil_for != 0) {
+            if ($seuil_for != 0)
+            {
                 $cpl_class = '';
                 if ($force < ($seuil_for - 3))
                     $cpl_class = '_rouge';
@@ -142,7 +152,8 @@ if ($autorise == 1) {
                 echo "<td>" . $seuil_for . "</td>";
                 echo "</tr>";
             }
-            if ($niveau_min > 0) {
+            if ($niveau_min > 0)
+            {
                 $cpl_class = '';
                 if ($niveau_perso < $niveau_min)
                     $cpl_class = '_rouge';
@@ -154,7 +165,8 @@ if ($autorise == 1) {
                 echo "</tr>";
             }
 
-            if ($result['gobj_distance'] == 'O') {
+            if ($result['gobj_distance'] == 'O')
+            {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\">Portée </td>";
                 echo "<td>" . $result['obj_portee'] . "</td>";
@@ -166,50 +178,57 @@ if ($autorise == 1) {
                 echo "</tr>";
             }
 
-            $req = "select comp_libelle from competences where comp_cod = $comp ";
-            $stmt = $pdo->query($req);
+            $req    = "select comp_libelle from competences where comp_cod = $comp ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\">Compétence utilisée</td>";
             echo "<td>" . $result['comp_libelle'] . "</td>";
             echo "</tr>";
         }
-        if ($armure != 0) {
+        if ($armure != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Armure</td>";
             echo "<td>" . $armure . "</td>";
             echo "</tr>";
         }
-        if ($vampire != 0) {
+        if ($vampire != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Vampirisme</td>";
             echo "<td>" . $vampire * 100 . " %</td>";
             echo "</tr>";
         }
-        if ($aura_feu != 0) {
+        if ($aura_feu != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Aura de feu</td>";
             echo "<td>" . $aura_feu * 100 . " %</td>";
             echo "</tr>";
         }
-        if ($regen != 0) {
+        if ($regen != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Bonus à la régénération</td>";
             echo "<td>" . $regen . " à l’initialisation de DLT</td>";
             echo "</tr>";
         }
-        if ($poison != 0) {
+        if ($poison != 0)
+        {
             echo "<tr>";
             echo "<td class=\"soustitre2\">Dégâts infligés par poison</td>";
             echo "<td>" . $poison . " à l’initialisation de DLT de la victime</td>";
             echo "</tr>";
         }
-        if ($enchantable == 1) {
+        if ($enchantable == 1)
+        {
             echo "<tr>";
             echo "<td colspan=\"2\" class=\"soustitre2\"><strong>Objet enchantable !</strong></td>";
             echo "</tr>";
         }
-        if ($enchantable == 2) {
+        if ($enchantable == 2)
+        {
             echo "<tr>";
             echo "<td colspan=\"2\" class=\"soustitre2\"><strong>Objet enchanté !</strong></td>";
             echo "</tr>";
@@ -226,8 +245,8 @@ if ($autorise == 1) {
             echo "</tr>";
             foreach ($sorts_attaches as $objsort)
             {
-                echo "<tr><td class=\"soustitre2\">".($objsort->objsort_equip_requis ? "Equipé" : "Inventaire")."</td>";
-                echo "<td><strong>". $objsort->getNom()."</strong> <em>(". $objsort->getCout()." PA)</em></td>";
+                echo "<tr><td class=\"soustitre2\">" . ($objsort->objsort_equip_requis ? "Equipé" : "Inventaire") . "</td>";
+                echo "<td><strong>" . $objsort->getNom() . "</strong> <em>(" . $objsort->getCout() . " PA)</em></td>";
                 echo "<tr>";
             }
         }
@@ -241,18 +260,18 @@ if ($autorise == 1) {
             {
                 $tbonus = new bonus_type();
                 $tbonus->charge($objbm->objbm_tbonus_cod);
-                $typebm = (($tbonus->tbonus_gentil_positif=="t" && $objbm->objbm_bonus_valeur>0)||($tbonus->tbonus_gentil_positif!="t" && $objbm->objbm_bonus_valeur<0)) ? "Bonus" : "Malus" ;
-                if (is_file(__DIR__ . "/../images/interface/bonus/".$tbonus->tbonus_libc.".png"))
+                $typebm =
+                    (($tbonus->tbonus_gentil_positif == "t" && $objbm->objbm_bonus_valeur > 0) || ($tbonus->tbonus_gentil_positif != "t" && $objbm->objbm_bonus_valeur < 0)) ? "Bonus" : "Malus";
+                if (is_file(__DIR__ . "/../images/interface/bonus/" . $tbonus->tbonus_libc . ".png"))
                 {
-                    $img = '<img src="/../images/interface/bonus/'.$tbonus->tbonus_libc.'.png">';
-                }
-                else
+                    $img = '<img src="/../images/interface/bonus/' . $tbonus->tbonus_libc . '.png">';
+                } else
                 {
-                    $img = '<img src="/../images/interface/bonus/'.strtoupper($typebm).'.png">';
+                    $img = '<img src="/../images/interface/bonus/' . strtoupper($typebm) . '.png">';
                 }
 
-                echo "<tr><td class=\"soustitre2\">".($typebm=="Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>")."</td>";
-                echo "<td>".$img." <strong>".($objbm->objbm_bonus_valeur>0 ? "+" : "").$objbm->objbm_bonus_valeur."</strong> : ". $tbonus->tonbus_libelle."</td>";
+                echo "<tr><td class=\"soustitre2\">" . ($typebm == "Bonus" ? "<strong style='color:darkblue;'>Bonus</strong>" : "<strong style='color:#800000;'>Malus</strong>") . "</td>";
+                echo "<td>" . $img . " <strong>" . ($objbm->objbm_bonus_valeur > 0 ? "+" : "") . $objbm->objbm_bonus_valeur . "</strong> : " . $tbonus->tonbus_libelle . "</td>";
                 echo "<tr>";
             }
         }
@@ -266,7 +285,7 @@ if ($autorise == 1) {
             {
                 $carac = new aquete_type_carac();
                 $carac->charge($objelem->objelem_misc_cod);
-                $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU" ;
+                $conj = $objelem->objelem_param_num_1 == 0 ? "ET" : "OU";
 
                 $aff = $carac->element_language_humain($objelem);
 
@@ -274,10 +293,11 @@ if ($autorise == 1) {
                 echo "<td>{$aff}</td>";
                 echo "<tr>";
             }
-            if ($obj->est_equipable($perso_cod)) {
+            if ($obj->est_equipable($perso_cod))
+            {
                 echo "<tr><td colspan=\"2\" class=\"soustitre2\">Vous remplissez les conditions pour équiper cet objet</td></tr>";
-            }
-            else{
+            } else
+            {
                 echo "<tr><td colspan=\"2\" class=\"soustitre2\"><strong>Vous ne pouvez pas équiper cet objet</strong></td></tr>";
             }
         }
@@ -288,9 +308,10 @@ if ($autorise == 1) {
         echo "<td>" . $desc . "</td>";
         echo "</tr>";
 
-        if (isset($bon)) {
-            $req = "select obon_libelle from bonus_objets where obon_cod = $bon ";
-            $stmt = $pdo->query($req);
+        if (isset($bon))
+        {
+            $req    = "select obon_libelle from bonus_objets where obon_cod = $bon ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<tr>";
             echo "<td class=\"soustitre2\">Bonus</td>";
@@ -299,17 +320,22 @@ if ($autorise == 1) {
         }
 
         echo "</table></center>";
-    } else {
+    } else
+    {
         echo "Aucun objet trouvé !";
     }
-} else {
+} else
+{
     echo "Vous n’avez pas accès au détail de cet objet !";
 }
-$retour = "inventaire.php";
-if ($origine == 'e') {
+$retour  = "inventaire.php";
+$origine = $_REQUEST['origine'];
+if ($origine == 'e')
+{
     $retour = "lieu.php?methode=acheter";
 }
-if ($origine == 'a') {
+if ($origine == 'a')
+{
     $retour = "admin_echoppe_tarif.php";
 }
 echo "<p style=\"text-align:center;\"><a href=\"$retour\">Retour !</a></p>";

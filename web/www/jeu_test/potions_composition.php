@@ -48,8 +48,13 @@ if ($result = $stmt->fetch())
     {
         $methode = "fabrication";
     }
+    if (isset($_REQUEST['methode']))
+    {
+        $methode = $_REQUEST['methode'];
+    }
     if (!isset($methode))
         $methode = "debut";
+    $tpot = $_REQUEST['tpot'];
     switch ($methode)
     {
         case "debut":

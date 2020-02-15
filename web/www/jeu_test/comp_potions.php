@@ -86,10 +86,12 @@ $ong[3] = 'Fabrication de potions';
 $ong[4] = 'Potions connues';
 $ong[5] = 'Mélange de potions';
 
-if(isset($_POST['tpot']) && !isset($tpot))
+/*if(isset($_POST['tpot']) && !isset($tpot))
 	$tpot = $_POST['tpot'];
 if(!isset($tpot))
-	$tpot = 1;
+	$tpot = 1;*/
+$tpot = get_request_var('tpot', 1);
+
 $nb = count($ong);
 
 
@@ -97,7 +99,7 @@ $contenu_page .= '
 	<table cellspacing="0" cellpadding="0" width="100%">
 	<tr>';
 
-for($cpt = 1; $cpt < $nb; $cpt++)
+for ($cpt = 1; $cpt < $nb; $cpt++)
 {
 	if($cpt == $tpot)
 	{

@@ -191,7 +191,8 @@ if ($autorise == 1)
 {
     echo "Vous n'avez pas accès au détail de cet objet !";
 }
-$retour = "inventaire.php";
+$retour  = "inventaire.php";
+$origine = $_REQUEST['origine'];
 if ($origine == 'e')
 {
     $retour = "lieu.php?methode=acheter";
