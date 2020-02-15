@@ -11,7 +11,7 @@ $req_concours = 'select cbar_cod, cbar_saison, cbar_date_ouverture, cbar_date_te
 					case when CURRENT_DATE < cbar_date_teaser then 1 else 0 end as futur,
 					case when CURRENT_DATE > cbar_fermeture then 1 else 0 end as ferme
 				from concours_barde order by cbar_saison';
-$stmt = $pdo->query($req_concours);
+$stmt         = $pdo->query($req_concours);
 
 echo '<table>
 	<tr>
@@ -23,18 +23,20 @@ echo '<table>
 
 $toutesPassees = true;
 
-while ($result = $stmt->fetch()) {
+while ($result = $stmt->fetch())
+{
     // Au passage, pendant le parcours, on enregistre les valeurs de celle qu’on va afficher.
-    if ($cbar_cod == $result['cbar_cod']) {
-        $cbar_saison = $result['cbar_saison'];
+    if ($cbar_cod == $result['cbar_cod'])
+    {
+        $cbar_saison         = $result['cbar_saison'];
         $cbar_date_ouverture = $result['cbar_date_ouverture'];
-        $cbar_date_teaser = $result['cbar_date_teaser'];
-        $cbar_fermeture = $result['cbar_fermeture'];
-        $cbar_description = $result['cbar_description'];
-        $introduction = ($result['introduction'] == 1);
-        $ouvert = ($result['ouvert'] == 1);
-        $futur = ($result['futur'] == 1);
-        $ferme = ($result['ferme'] == 1);
+        $cbar_date_teaser    = $result['cbar_date_teaser'];
+        $cbar_fermeture      = $result['cbar_fermeture'];
+        $cbar_description    = $result['cbar_description'];
+        $introduction        = ($result['introduction'] == 1);
+        $ouvert              = ($result['ouvert'] == 1);
+        $futur               = ($result['futur'] == 1);
+        $ferme               = ($result['ferme'] == 1);
     }
     $texte_etat = '';
     if ($result['ferme'] != 1)
@@ -56,7 +58,8 @@ while ($result = $stmt->fetch()) {
 }
 echo "</td>";
 
-switch ($methode) {
+switch ($methode)
+{
     case 'debut':        // Affichage initial vide
         echo '<td></td>';
         break;
@@ -68,7 +71,7 @@ switch ($methode) {
 						left outer join perso on perso_cod = jbar_perso_cod
 						where jbar_cbar_cod = $cbar_cod
 						order by jbar_cod";
-        $stmt = $pdo->query($req_jury);
+        $stmt     = $pdo->query($req_jury);
         echo '<td>';
         echo '<form name="modification" method="POST" action="#">
 			<input type="hidden" name="methode" value="barde_modif" />
@@ -90,14 +93,16 @@ switch ($methode) {
         echo '<tr><td class="soustitre2">Date de fermeture (aaaa-mm-jj, jour exclus)</td><td><input type="text" name="form_fermeture" value="' . $cbar_fermeture . '" /></td><td>La date à laquelle plus aucun texte n’est accepté.</td></tr>';
         echo '<tr><td class="soustitre2" colspan="2"><p>Descriptif (html)</p><textarea rows="10" cols="50" name="form_description">' . $cbar_description . '</textarea></td><td>Le texte qui apparaîtra en en-tête de la page du concours.</td></tr>';
         $i = 1;
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             echo "<tr><td class='soustitre2'>Jury $i</td><td><input type='text' name='form_jury$i' value='" . $result['jbar_perso_cod'] . "' />
 				<input type='hidden' name='form_jury_cod$i' value='" . $result['jbar_cod'] . "' />
 				</td><td>(" . $result['perso_nom'] . ")</td></tr>";
             $i++;
         }
         // On complète à $nbJury
-        while ($i <= $nbJury) {
+        while ($i <= $nbJury)
+        {
             echo "<tr><td class='soustitre2'>Jury $i</td><td><input type='text' name='form_jury$i' value='' /></td></td><td></tr>";
             $i++;
         }
@@ -147,7 +152,8 @@ switch ($methode) {
                         <td>Le texte qui apparaîtra en en-tête de la page du concours.</td>
                     </tr>
                     <?php
-                    for ($i = 1; $i <= $nbJury; $i++) {
+                    for ($i = 1; $i <= $nbJury; $i++)
+                    {
                         echo "<tr><td class='soustitre2'>Jury $i</td><td><input type='text' name='form_jury$i' value='' /></td><td></td></tr>";
                     }
                     ?>

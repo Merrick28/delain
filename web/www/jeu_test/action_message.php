@@ -546,10 +546,8 @@ switch ($methode)
 
             $msg = new message();
 
-            if (!isset($msg_init))
-            {
-                $msg_init = 0;
-            }
+            $msg_init = get_request_var('msg_init', 0);
+
             $msg->enReponseA = $msg_init;
 
             // Crapaud ?

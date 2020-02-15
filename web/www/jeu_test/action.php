@@ -977,7 +977,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'invite_groupe':
             $erreur       = 0;
-            $tab_dest     = explode(";", $dest);
+            $tab_dest     = explode(";", $_REQUEST['dest']);
             $nb_dest      = count($tab_dest);
             $nb_vrai_dest = 0;
             for ($cpt = 0; $cpt < $nb_dest; $cpt++)

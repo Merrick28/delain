@@ -14,14 +14,9 @@ if (!$compte->is_admin()
 
     if (!$perso->is_bernardo())
     {
-        if (!isset($n_dest))
-        {
-            $n_dest = "";
-        } else
-        {
-            $n_dest = str_replace("''", "'", $n_dest);
-        }
-        $n_message = '';
+        $n_dest           = get_request_var('n_dest', '');
+        $n_dest           = str_replace("''", "'", $n_dest);
+        $n_message        = '';
         if (isset($_REQUEST['msg_init']))
         {
             //On récupère le label du message précédent
@@ -77,13 +72,7 @@ if (!$compte->is_admin()
             }
         }
         // remplissage de contenu
-        if (!isset($_REQUEST['msg_init']))
-        {
-            $msg_init = 0;
-        } else
-        {
-            $msg_init = $_REQUEST['msg_init'];
-        }
+        $msg_init     = get_request_var('msg_init', 0);
         $contenu_page .= '
 		<form name="nouveau_message" method="post" action="action_message.php">
 		<input type="hidden" name="msg_init" value="' . $msg_init . '">
