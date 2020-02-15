@@ -2,16 +2,22 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 // choix d'affichage
-if (!isset($type))
+if (!isset($_REQUEST['type']))
+{
     $type = 0;
+} else
+{
+    $type = $_REQUEST['type'];
+}
 $aff[0] = 'Tous les évènements';
 $aff[1] = 'Attaques portées';
 $aff[2] = 'Attaques reçues';
 $aff[3] = 'Sorts';
 $aff[4] = 'Améliorations et PX';
 $aff[5] = 'Autres';
-$nb_af = count($aff);
-switch ($type) {
+$nb_af  = count($aff);
+switch ($type)
+{
     case 0:
         $restr = '';
         break;
@@ -31,10 +37,12 @@ switch ($type) {
         $restr = " and levt_tevt_cod not in (8, 9, 10, 11, 12, 14, 18, 28, 48, 63) ";
         break;
 }
-if (!isset($evt_start)) {
+if (!isset($evt_start))
+{
     $evt_start = 0;
 }
-if ($evt_start < 0) {
+if ($evt_start < 0)
+{
     $evt_start = 0;
 }
 $req_evt = "select levt_cod,to_char(levt_date,'DD/MM/YYYY hh24:mi:ss') as evt_date,tevt_libelle,levt_texte,levt_perso_cod1,levt_attaquant,levt_cible, 
@@ -49,7 +57,7 @@ att.perso_nom as attaquant, def.perso_nom as cible, soi.perso_nom as soimeme
 	order by levt_cod desc
 	limit 20
 	offset $evt_start ";
-$stmt = $pdo->query($req_evt);
+$stmt    = $pdo->query($req_evt);
 ?>
     <form name="visu_evt" method="post" action="visu_evt_perso.php">
         <input type="hidden" name="visu">
@@ -61,10 +69,13 @@ $stmt = $pdo->query($req_evt);
                 <td colspan="3">
                     <table cellspacing="0" cellpadding="0" width="100%">
                         <?php
-                        for ($cpt = 0; $cpt < $nb_af; $cpt++) {
-                            if ($cpt == $type) {
+                        for ($cpt = 0; $cpt < $nb_af; $cpt++)
+                        {
+                            if ($cpt == $type)
+                            {
                                 $style = 'onglet';
-                            } else {
+                            } else
+                            {
                                 $style = 'pas_onglet';
                             }
                             echo '<td class="' . $style . '" style="text-align:center"><a href="' . $PHP_SELF . '?type=' . $cpt . '">' . $aff[$cpt] . '</a></td>';
@@ -79,17 +90,23 @@ $stmt = $pdo->query($req_evt);
 
 
                         <?php
-                        while ($result = $stmt->fetch()) {
+                        while ($result = $stmt->fetch())
+                        {
                             echo("<tr>");
                             printf("<td class=\"soustitre3\" style=\"white-space:nowrap;\">%s</td>", $result['evt_date']);
                             printf("<td class=\"soustitre3\"><strong>%s</strong></td>", $result['tevt_libelle']);
 
-                            $texte_evt = str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $result['soimeme'] . "</a></strong>", $result['levt_texte']);
-                            if ($result['levt_attaquant'] != '') {
-                                $texte_evt = str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $result['attaquant'] . "</a></strong>", $texte_evt);
+                            $texte_evt =
+                                str_replace('[perso_cod1]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_perso_cod1'] . ";document.visu_evt.submit();\">" . $result['soimeme'] . "</a></strong>", $result['levt_texte']);
+                            if ($result['levt_attaquant'] != '')
+                            {
+                                $texte_evt =
+                                    str_replace('[attaquant]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_attaquant'] . ";document.visu_evt.submit();\">" . $result['attaquant'] . "</a></strong>", $texte_evt);
                             }
-                            if ($result['levt_cible'] != '') {
-                                $texte_evt = str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_cible'] . ";document.visu_evt.submit();\">" . $result['cible'] . "</a></strong>", $texte_evt);
+                            if ($result['levt_cible'] != '')
+                            {
+                                $texte_evt =
+                                    str_replace('[cible]', "<strong><a href=\"javascript:document.visu_evt.visu.value=" . $result['levt_cible'] . ";document.visu_evt.submit();\">" . $result['cible'] . "</a></strong>", $texte_evt);
                             }
 
                             echo("<td>$texte_evt</td>");
@@ -105,7 +122,8 @@ $stmt = $pdo->query($req_evt);
     <tr>
         <td colspan="2">
             <?php
-            if ($evt_start != 0) {
+            if ($evt_start != 0)
+            {
                 $start = $evt_start - 20;
                 echo "<div align=\"left\"><a href=\"", $PHP_SELF, "?evt_start=", $start, "&type=", $type, "\"><== Précédent</a></div>";
             }
@@ -123,7 +141,6 @@ $stmt = $pdo->query($req_evt);
 <?php
 $contenu_page = ob_get_contents();
 ob_end_clean();
-
 
 
 include "blocks/_footer_page_jeu.php";

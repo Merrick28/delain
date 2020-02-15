@@ -105,6 +105,8 @@ switch($methode)
 	<?php 	break;
 
 	case "valide":
+        $modifs = $_REQUEST['modifs'];
+        $admin_etage = $_REQUEST['admin_etage'];
 		$erreur = false;
 		if (!isset($admin_etage) || $admin_etage === '')
 		{

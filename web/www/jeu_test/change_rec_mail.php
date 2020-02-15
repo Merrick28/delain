@@ -1,9 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
 $contenu_page = '<p class="titre">Réception des événements par courriel</p>';
-if ($type == 'e')
+if ($_REQUEST['type'] == 'e')
 {
-    if ($met == 'n')
+    if ($_REQUEST['met'] == 'n')
     {
         $req = "update compte set compt_envoi_mail = 0 where compt_cod = $compt_cod ";
         $stmt = $pdo->query($req);
@@ -15,9 +15,9 @@ if ($type == 'e')
         $contenu_page .= 'Vous recevrez les comptes rendus d’événements par courriel<br>';
     }
 }
-if ($type == 'm')
+if ($_REQUEST['type'] == 'm')
 {
-    if ($met == 'n')
+    if ($_REQUEST['met'] == 'n')
     {
         $req = "update compte set compt_envoi_mail_message = 0 where compt_cod = $compt_cod ";
         $stmt = $pdo->query($req);

@@ -47,7 +47,7 @@ use PHPMailer\PHPMailer\Exception;
         case "fin":
             $compte = new compte;
             $ok     = true;
-            if ($type == "nom")
+            if ($_REQUEST['type'] == "nom")
             {
                 if (!$result = $compte->getBy_compt_nom($nom))
                 {
@@ -55,7 +55,7 @@ use PHPMailer\PHPMailer\Exception;
                     $ok = false;
                 }
             }
-            if ($type == "mail")
+            if ($_REQUEST['type'] == "mail")
             {
                 if (!$result = $compte->getBy_compt_mail(strtolower($mail)))
                 {

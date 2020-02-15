@@ -54,6 +54,15 @@ function writelog($textline, $filename = 'undefined', $verbose = true)
     }
 }
 
+function get_request_var($var,$default = '')
+{
+    if(!isset($_REQUEST[$var]))
+    {
+        return $default;
+    }
+    return $_REQUEST[$var];
+}
+
 /**
  * Récupérer la véritable adresse IP d'un visiteur
  */
