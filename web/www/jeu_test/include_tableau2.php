@@ -1,8 +1,8 @@
 <?php include_once "verif_connexion.php";
 include "../includes/constantes.php";
-if(!isset($db))
-	$db = new base_delain;
-$db_refuge = new base_delain;
+if (!isset($db))
+    $db = new base_delain;
+$db_refuge  = new base_delain;
 $is_attaque = 1;
 //
 /* position du joueur et autres données */
@@ -19,44 +19,50 @@ $requete = "select pos_x, pos_y, pos_etage, ppos_pos_cod, distance_vue($perso_co
 $db->query($requete);
 $db->next_record();
 
-$portee = ($db->f("distance_vue") > $db->f("portee")) ? $db->f("portee") : $db->f("distance_vue");
-$type_arme = ($db->f("type_arme") == 2) ? 2 : 1;
+$portee         = ($db->f("distance_vue") > $db->f("portee")) ? $db->f("portee") : $db->f("distance_vue");
+$type_arme      = ($db->f("type_arme") == 2) ? 2 : 1;
 $desorientation = ($db->f("desorientation") == 0);
 
-$pos_cod = $db->f("ppos_pos_cod");
-$x = $db->f("pos_x");
-$y = $db->f("pos_y");
-$etage = $db->f("pos_etage");
-$lib_etage = $db->f("etage_libelle");
+$pos_cod      = $db->f("ppos_pos_cod");
+$x            = $db->f("pos_x");
+$y            = $db->f("pos_y");
+$etage        = $db->f("pos_etage");
+$lib_etage    = $db->f("etage_libelle");
 $distance_vue = $db->f("distance_vue");
-$coterie = $db->f("pgroupe_groupe_cod");
+$coterie      = $db->f("pgroupe_groupe_cod");
 
 $db2 = new base_delain;
-if (!isset($tab_vue)) $tab_vue = -1;
-switch($tab_vue)
+if (!isset($db_refuge['tab_vue']))
 {
-	case "0":
-		include "incl_vue_joueur.php";
-		break;
-	case "1":
-		include "incl_vue_partisan.php";
-		break;
-	case "2":
-		include "incl_vue_monstre.php";
-		break;
-	case "4":
-		include "incl_vue_lieu.php";
-		break;
-	case "3":
-		include "incl_vue_objet.php";
-		break;
-	case "5":
-		include "incl_vue_joueur.php";
-		include "incl_vue_partisan.php";
-		include "incl_vue_monstre.php";
-		include "incl_vue_objet.php";
-		include "incl_vue_lieu.php";
-		break;
+    $tab_vue = -1;
+} else
+{
+    $tab_vue = $_REQUEST['tab_vue'];
+}
+switch ($tab_vue)
+{
+    case "0":
+        include "incl_vue_joueur.php";
+        break;
+    case "1":
+        include "incl_vue_partisan.php";
+        break;
+    case "2":
+        include "incl_vue_monstre.php";
+        break;
+    case "4":
+        include "incl_vue_lieu.php";
+        break;
+    case "3":
+        include "incl_vue_objet.php";
+        break;
+    case "5":
+        include "incl_vue_joueur.php";
+        include "incl_vue_partisan.php";
+        include "incl_vue_monstre.php";
+        include "incl_vue_objet.php";
+        include "incl_vue_lieu.php";
+        break;
     default:
         break;
 }

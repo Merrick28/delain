@@ -11,20 +11,28 @@ $mess[2] = 'Nouveau message';
 $mess[3] = 'Boite d’envoi';
 $mess[4] = 'Listes de diffusion';
 $mess[5] = 'Fils de discussion';
-$nb = count($mess);
+$nb      = count($mess);
 //
 // Si pas de parametres passés
 //
-if (!isset($m))
+if (!isset($_REQUEST['m']))
+{
     $m = 0;
+} else
+{
+    $m = $_REQUEST['m'];
+}
 $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 	<tr>';
-for ($cpt = 0; $cpt < $nb; $cpt++) {
-    $lien = '<a href="' . $PHP_SELF . '?m=' . $cpt . '">';
+for ($cpt = 0; $cpt < $nb; $cpt++)
+{
+    $lien   = '<a href="' . $PHP_SELF . '?m=' . $cpt . '">';
     $f_lien = '</a>';
-    if ($cpt == $m) {
+    if ($cpt == $m)
+    {
         $style = 'onglet';
-    } else {
+    } else
+    {
         $style = 'pas_onglet';
 
     }
@@ -35,10 +43,13 @@ $contenu_page .= '</tr><tr>';
 $contenu_page .= '<td colspan="' . $nb . '" class="reste_onglet"><center>';
 if (($m == 0) || ($m == 1))    // Des messages à afficher
     include "mess_l.php";
-else if ($m == 2) {                // Nouveau message
-    if (isset($_GET['mavtest']) && $_GET['mavtest'] == 1) {
+else if ($m == 2)
+{                // Nouveau message
+    if (isset($_GET['mavtest']) && $_GET['mavtest'] == 1)
+    {
         include "mess_n2.php";
-    } else {
+    } else
+    {
         include "mess_n.php";
     }
 } else if ($m == 3)                    // Boite d'envoi
