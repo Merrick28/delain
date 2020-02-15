@@ -2535,9 +2535,11 @@ class perso
 
     function is_bernardo()
     {
-        $pdo    = new bddpdo;
-        $req    = "select valeur_bonus(perso_cod , 'BER') as nombre from perso where perco_cod = :perso";
-        $stmt   = $pdo->query($req);
+        $pdo  = new bddpdo;
+        $req  = "select valeur_bonus(perso_cod , 'BER') as nombre from perso where perso_cod = :perso";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
+
         $result = $stmt->fetch();
 
         return $result['nombre'] != 0;
