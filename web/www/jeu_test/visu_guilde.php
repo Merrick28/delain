@@ -2,6 +2,7 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 
+$num_guilde = $_REQUEST['num_guilde'];
 // on vérifie qu'on soit dans la guilde visitée 
 $req_guilde = "select pguilde_meta_caravane, pguilde_meta_noir, guilde_cod, guilde_nom, rguilde_libelle_rang, pguilde_rang_cod, rguilde_admin, pguilde_message
     from guilde

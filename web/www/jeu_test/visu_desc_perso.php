@@ -1,9 +1,27 @@
 <?php
 include "blocks/_header_page_jeu.php";
-if (!isset($visu) || $visu == '' || !preg_match('/^[0-9]*$/i', $visu)) {
+$erreur = false;
+if (isset($_REQUEST['visu']))
+{
+    if (empty($_REQUEST['visu']))
+    {
+        $erreur = true;
+    }
+    if (!filter_var($_REQUEST['visu'], FILTER_VALIDATE_INT))
+    {
+        $erreur = true;
+    }
+
+} else
+{
+    $erreur = true;
+}
+if ($erreur)
+{
     echo "<p>Anomalie sur numéro perso !";
     exit();
 }
+$visu = $_REQUEST['visu'];
 include "perso2_description.php";
 
 $contenu_page .= '

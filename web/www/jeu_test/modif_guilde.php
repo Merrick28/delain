@@ -6,6 +6,7 @@ if (isset($_POST['methode']))
     switch ($methode)
     {
         case "valide_modif":
+            $num_guilde = $_REQUEST['num_guilde'];
             //echo "modification de la description";
             
             $req_guilde = "select pguilde_rang_cod,rguilde_admin from guilde_perso,guilde_rang

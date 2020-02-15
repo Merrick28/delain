@@ -1,6 +1,8 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+$num_guilde = $_REQUEST['num_guilde'];
+
 // on efface si autre guilde
 $req_eff = "delete from guilde_perso where pguilde_perso_cod = $perso_cod ";
 $stmt = $pdo->query($req_eff);

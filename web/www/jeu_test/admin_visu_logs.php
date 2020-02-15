@@ -29,8 +29,8 @@ if ($erreur != 0)
         "quêtes" => array("quete_auto.log", "Modification des Quête auto."),
         "hacking" => array("hacking.log", "Tentative de hack du site."),
     );
-    $visu = (isset($visu)) ? $visu : "début";
-    $mode = (isset($mode)) ? $mode : "web";
+    $visu = (isset($_REQUEST['visu'])) ? $_REQUEST['visu'] : "début";
+    $mode = (isset($_REQUEST['mode'])) ? $_REQUEST['mode'] : "web";
 
     if (isset($liste_logs[$visu]) && $mode == "web")
     {
