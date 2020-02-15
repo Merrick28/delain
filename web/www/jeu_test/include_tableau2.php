@@ -32,7 +32,7 @@ $distance_vue = $db->f("distance_vue");
 $coterie      = $db->f("pgroupe_groupe_cod");
 
 $db2 = new base_delain;
-if (!isset($db_refuge['tab_vue']))
+if (!isset($db2['tab_vue']))
 {
     $tab_vue = -1;
 } else
