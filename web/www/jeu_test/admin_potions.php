@@ -194,8 +194,7 @@ if ($erreur == 0)
             <br>
             <hr>
             <?php
-            if (!isset($action))
-                $action = '';
+            $action = get_request_var('action','');
             if ($action == 'ajout')
             {
                 $req  =
@@ -381,8 +380,7 @@ if ($erreur == 0)
             <br>
             <hr>
             <?php
-            if (!isset($action))
-                $action = '';
+            $action = get_request_var('action','');
             if ($action == 'ajout')
             {
                 $req  =

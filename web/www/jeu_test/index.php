@@ -25,14 +25,16 @@ if(!$verif_auth)
 	die();
 }
 
-
-
+/**
+ * TODO code inutile, à supprimer ?
+ */
+/*
 if(isset($nom_perso) && $nom_perso == "admin")
 {
     $stmt      = $pdo->query("select perso_nom from perso where perso_cod = " . $num_perso);
 	$result    = $stmt->fetch();
 	$nom_perso =$result['perso_nom'];
-}
+}*/
 
 if (!isset($perso_cod))
 {

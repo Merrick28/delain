@@ -330,8 +330,7 @@ if ($erreur == 0)
 				pensez à inclure les objets nécessaires pour cet enchantement.<br>";
             break;
         case "serie_obj":
-            if (!isset($action))
-                $action = '';
+            $action = get_request_var('action','');
             if ($action == 'ajout')
             {
                 $req  = " insert into enc_objets (oenc_enc_cod,oenc_gobj_cod,oenc_nombre) 

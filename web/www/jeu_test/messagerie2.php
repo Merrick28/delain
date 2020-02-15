@@ -15,8 +15,8 @@ $nb = count($mess);
 //
 // Si pas de parametres passés
 //
-if (!isset($m))
-    $m = 0;
+
+$m = get_request_var('m',0);
 $contenu_page .= '<table cellspacing="0" cellpadding="0" width="100%">
 	<tr>';
 for ($cpt = 0; $cpt < $nb; $cpt++) {

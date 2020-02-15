@@ -13,10 +13,8 @@ if (!$perso->charge($perso_cod))
 $compte = new compte;
 $compte->charge($compt_cod);
 
-if (!isset($methode))
-{
-    $methode = '';
-}
+
+$methode = get_request_var('methode','');
 
 function affiche_apres_deplacement($position)
 {

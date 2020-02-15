@@ -197,8 +197,7 @@ switch ($methode2)
         <br>
         <hr>
         <?php
-        if (!isset($action))
-            $action = '';
+        $action = get_request_var('action', '');
         require "_admin_enchantement_composant_blok1.php";
         break;
     case "modif":
@@ -347,8 +346,8 @@ switch ($methode2)
         <br>
         <hr>
         <?php
-        if (!isset($action))
-            $action = '';
+
+        $action = get_request_var('action', '');
         require "_admin_enchantement_composant_blok1.php";
         break;
 }

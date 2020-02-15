@@ -31,6 +31,7 @@ if($result = $stmt->fetch())
         switch ($methode)
         {
             case "voler":
+                $cible_cod = get_request_var('cible_cod',-1);
                 if ($cible_cod == -1)
                 {
                     ?><p><strong>Vous devez choisir une cible !</strong></p><?php
@@ -47,6 +48,7 @@ if($result = $stmt->fetch())
                 }
                 break;
             case "voler_objet":
+                $cible_cod = get_request_var('cible_cod',-1);
                 if ($cible_cod == -1)
                 {
                     ?><p><strong>Vous devez choisir une cible !</strong></p><?php
