@@ -1,10 +1,8 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
-    $methode = "entree";
-}
-$req = "select perso_niveau_vampire,race_nom from perso,race where perso_cod = $perso_cod ";
+$methode = get_request_var('methode', 'entree');
+$req     = "select perso_niveau_vampire,race_nom from perso,race where perso_cod = $perso_cod ";
 $req = $req . "and perso_race_cod = race_cod ";
 $stmt = $pdo->query($req);
 $result = $stmt->fetch();

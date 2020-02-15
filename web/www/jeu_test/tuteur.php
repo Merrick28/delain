@@ -5,8 +5,7 @@ include "blocks/_header_page_jeu.php";
 //Contenu de la div de droite
 //
 $contenu_page = '';
-if (!isset($methode))
-    $methode = 'debut';
+$methode      = get_request_var('methode', 'debut');
 switch ($methode) {
     case 'debut':
         $req = 'select perso_niveau,perso_tuteur 

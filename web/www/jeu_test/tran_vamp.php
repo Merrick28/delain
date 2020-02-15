@@ -4,14 +4,12 @@ $niveau[80] = "Grand Ancien";
 $niveau[60] = "Maitre Vampire";
 include "blocks/_header_page_jeu.php";
 ob_start();
-$erreur = 0;
-if (!isset($methode)) {
-    $methode = "entree";
-}
-$req = "select tvamp_cod,perso_nom,perso_cod from vampire_tran,perso ";
-$req = $req . "where tvamp_perso_fils = $perso_cod ";
-$req = $req . "and tvamp_perso_pere = perso_cod ";
-$stmt = $pdo->query($req);
+$erreur  = 0;
+$methode = get_request_var('methode', 'entree');
+$req     = "select tvamp_cod,perso_nom,perso_cod from vampire_tran,perso ";
+$req     = $req . "where tvamp_perso_fils = $perso_cod ";
+$req     = $req . "and tvamp_perso_pere = perso_cod ";
+$stmt    = $pdo->query($req);
 if ($stmt->rowCount() == 0) {
     $erreur = 1;
     echo "<p>Vous n'avez pas accès à cette page !";

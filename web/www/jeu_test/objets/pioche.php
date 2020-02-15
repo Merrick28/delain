@@ -20,16 +20,16 @@ else
 	$erreur = 0;
 	
 	if(isset($_POST['methode'])){
-		switch ($methode)
-		{
-			case "creuser":
-				$req = "select creuser($perso_cod,".$_POST['pos_cod'].") as resultat";
-				$stmt = $pdo->query($req);
-				$result = $stmt->fetch();
-				$contenu_page .= "<p>".$result['resultat']."</p><HR>";
-				break;
-		}
-	}
+        switch ($_POST['methode'])
+        {
+            case "creuser":
+                $req          = "select creuser($perso_cod," . $_POST['pos_cod'] . ") as resultat";
+                $stmt         = $pdo->query($req);
+                $result       = $stmt->fetch();
+                $contenu_page .= "<p>" . $result['resultat'] . "</p><HR>";
+                break;
+        }
+    }
 
 	// POSITION DU JOUEUR
 	$req_matos = "select pos_x,pos_y,pos_etage,pos_cod "

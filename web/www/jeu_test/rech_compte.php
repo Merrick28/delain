@@ -16,9 +16,7 @@ if ($erreur != 0)
     <p><a href="rech_ip.php">Recherche sur IP</a>
     <p><a href="rech_nom.php">Recherche sur nom</a>
 <?php
-if (!isset($methode2))
-
-    $methode2 = "entree";
+$methode2 = get_request_var('methode2', 'entree');
 switch ($methode2)
 {
     case "entree":

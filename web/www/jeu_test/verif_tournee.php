@@ -1,9 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
-    $methode = "debut";
-}
+$methode = get_request_var('methode', 'entree');
 switch ($methode) {
     case "debut":
         $req = "select perso_cod,perso_nom ";

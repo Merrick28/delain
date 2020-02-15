@@ -22,11 +22,13 @@ if ($result['nombre'] == 0 or $stmt->rowCount() == 0) {
 $req_quete = "select pquete_quete_cod,pquete_perso_cod,pquete_date_debut,pquete_termine,pquete_param from quete_perso 
 							where pquete_perso_cod = " . $perso_cod . " and pquete_quete_cod = 19";
 $stmt = $pdo->query($req_quete);
-if ($stmt->rowCount() == 0 and !isset($methode3)) {
+if ($stmt->rowCount() == 0 and !isset($_REQUEST['methode3']))
+{
     $methode3 = 'E';
-} else if ($methode3 != 'suite') {
-    $result = $stmt->fetch();
-    $methode3 = $result['pquete_termine']; /*E pas commencé, on lance - N en cours - O quête déjà réalisée*/
+} else if ($_REQUEST['methode3'] != 'suite')
+{
+    $result          = $stmt->fetch();
+    $methode3        = $result['pquete_termine']; /*E pas commencé, on lance - N en cours - O quête déjà réalisée*/
     $arme_reparation = $result['pquete_param'];
 }
 

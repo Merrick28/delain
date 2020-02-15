@@ -1,9 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
-    $methode = "entree";
-}
+$methode = get_request_var('methode', 'entree');
 switch ($methode) {
     case "entree":
         echo "<form name=\"rech\" method=\"post\" action=\"rech_ip.php\">";

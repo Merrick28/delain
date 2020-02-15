@@ -60,11 +60,8 @@
     }
 </style>
 <?php
-if (!isset($methode))
-{
-    $methode = "entree";
-}
-$compte = new compte;
+$methode = get_request_var('methode', 'entree');
+$compte  = new compte;
 $compte->charge($compt_cod);
 if (!$compte->is_admin())
 {

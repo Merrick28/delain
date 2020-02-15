@@ -39,10 +39,7 @@ if ($revguilde->getByGuilde($guilde->guilde_cod))
 $ancienne_guilde = $guilde->guilde_nom;
 $ancienne_guilde = "[Ancien membre de la guilde " . pg_escape_string($ancienne_guilde) . "]";
 
-if (!isset($methode))
-{
-    $methode = 'debut';
-}
+$methode = get_request_var('methode', 'debut');
 switch ($methode)
 {
     case 'debut':

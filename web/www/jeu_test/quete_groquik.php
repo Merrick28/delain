@@ -16,10 +16,7 @@ if($stmt->rowCount() == 0)
 	$erreur = 1;
 	$contenu_page4 .= 'Vous n\'avez pas accès à cette page !';
 }
-if (!isset($methode3))
-{
-	$methode3 = 'debut';
-}
+$methode3 = get_request_var('methode3', 'debut');
 if ($erreur == 0)
 {
 	$result = $stmt->fetch();

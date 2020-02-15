@@ -1,15 +1,12 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$erreur = 0;
-$corps = htmlspecialchars($corps);
-$corps = str_replace(";",chr(127),$corps);
-$corps = str_replace("\\"," ",$corps);
-$corps = pg_escape_string($corps);
-	if (!isset($methode))
-	{
-		$methode = 'desc';
-	}
+$erreur  = 0;
+$corps   = htmlspecialchars($corps);
+$corps   = str_replace(";",chr(127),$corps);
+$corps   = str_replace("\\"," ",$corps);
+$corps   = pg_escape_string($corps);
+$methode = get_request_var('methode', 'desc');
 	// 
 	// phrase à modifier par la suite en fonction des alignements
 	//

@@ -12,10 +12,7 @@ if($result = $stmt->fetch())
 	$niveau = $result['pcomp_pcomp_cod'];
 	$pa = $param->getparm(117);
 
-	if(!isset($methode))
-	{
-	$methode = "debut";
-	}
+    $methode = get_request_var('methode', 'debut');
 	switch($methode)
 	{
 		case "debut":

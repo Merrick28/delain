@@ -8,7 +8,7 @@ $compte->charge($compt_cod);
 
 if ($compte->is_admin())
 {
-    switch ($methode)
+    switch ($_REQUEST['methode'])
     {
         case "comment":
             $req    = "select compt_nom from compte where compt_cod = $compt_cod ";

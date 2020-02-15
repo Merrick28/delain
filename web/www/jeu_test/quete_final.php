@@ -29,10 +29,7 @@ if (!$perso->is_lieu())
 /*************************** Début du traitement des dispensaires ******************************/	
 				if ($tab_lieu['lieu']->lieu_tlieu_cod == 2)
 				{
-						if(!isset($methode2))
-						    {
-						        $methode2 = "debut";
-						    }
+						$methode2          = get_request_var('methode2', 'debut');
 
 						switch($methode2)
 						{
@@ -203,8 +200,7 @@ if (!$perso->is_lieu())
 /*************************** Début du traitement des auberges ******************************/	
 				if ($tab_lieu['type_lieu'] == 4)
 				{
-						if(!isset($methode2))
-						$methode2 = "debut";
+						$methode2          = get_request_var('methode2', 'debut');
 						switch($methode2)
 						{
 								case "debut":
@@ -252,8 +248,7 @@ if (!$perso->is_lieu())
 /*************************** Début du traitement des banques ******************************/					
 				if ($tab_lieu['type_lieu'] == 1)
 				{
-						if(!isset($methode2))
-						$methode2 = "debut";
+						$methode2          = get_request_var('methode2', 'debut');
 						switch($methode2)
 						{
 								case "debut":	
@@ -359,10 +354,7 @@ if (!$perso->is_lieu())
 				if ($tab_lieu['type_lieu'] == 17)
 				{
 					
-						if(!isset($methode2))
-						{
-						$methode2 = "debut";
-						}
+						$methode2          = get_request_var('methode2', 'debut');
 						switch($methode2)
 						{
 								case "debut":	

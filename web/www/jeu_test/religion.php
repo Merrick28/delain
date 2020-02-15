@@ -2,10 +2,7 @@
 $param = new parametres();
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode))
-{
-	$methode = 'entree';
-}
+$methode = get_request_var('methode', 'entree');
 //
 // on regarde si le joueur a bien le droit de venir ici
 //

@@ -17,10 +17,7 @@ else
 	$erreur = 1;
 	$contenu_page .= 'Vous n’avez pas accès à cette page !';
 }
-if (!isset($methode))
-{
-	$methode = 'debut';
-}
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     // Page de démarrage des quetes autos

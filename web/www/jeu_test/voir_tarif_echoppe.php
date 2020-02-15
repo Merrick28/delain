@@ -10,10 +10,7 @@ if ($compte->is_admin())
     echo "<p>Erreur1 ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if (!isset($methode))
-{
-    $methode = "entree";
-}
+$methode = get_request_var('methode', 'entree');
 if ($erreur == 0)
 {
     switch ($methode)

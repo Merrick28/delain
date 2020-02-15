@@ -18,7 +18,8 @@ if ($erreur == 0) {
     $stmt = $pdo->query($req);
     $result = $stmt->fetch();
     echo "<p class=\"titre\">Gestion de l'échoppe " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</p>";
-    switch ($methode) {
+    switch ($_REQUEST['methode'])
+    {
         case "ajout":
             echo "<form name=\"gerant\" method=\"post\" action=\"valide_gerant{$_admin_echoppe_type}.php\">";
             echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";

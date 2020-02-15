@@ -22,10 +22,7 @@ if ($result['nombre'] == 0)
     $erreur        = 1;
     $contenu_page3 .= 'Vous n\'avez pas accès à cette page !';
 }
-if (!isset($methode))
-{
-    $methode = 'debut';
-}
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)

@@ -7,8 +7,7 @@ if (!$compte->is_admin())
     $contenu_page .= 'Vous n\'avez pas accès à cette page !';
 } else
 {
-    if (!isset($methode))
-        $methode = 'global';
+    $methode = get_request_var('methode', 'global');
     switch ($methode)
     {
         case "detail":

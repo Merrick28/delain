@@ -5,11 +5,8 @@ include_once "verif_connexion.php";
 //
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
-$erreur = 0;
-if (!isset($methode))
-{
-    $methode = 'entree';
-}
+$erreur  = 0;
+$methode = get_request_var('methode', 'entree');
 
 $perso = new perso;
 $perso->charge($perso_cod);

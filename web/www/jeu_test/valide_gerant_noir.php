@@ -23,12 +23,15 @@ if ($erreur == 0) {
     $stmt = $pdo->query($req);
     $result = $stmt->fetch();
     echo "<p class=\"titre\">Gestion de l'échoppe " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</p>";
-    switch ($methode) {
+    switch ($_REQUEST['methode'])
+    {
         case "ajout":
             $req = "insert into magasin_gerant (mger_perso_cod,mger_lieu_cod) values ($perso_cible,$lieu) ";
-            if ($stmt = $pdo->query($req)) {
+            if ($stmt = $pdo->query($req))
+            {
                 echo "<p>Modif effectuée !";
-            } else {
+            } else
+            {
                 echo "<p>Anomalie sur la requête !";
             }
             break;

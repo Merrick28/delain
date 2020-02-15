@@ -86,7 +86,7 @@ $perso->charge($perso_cod);
         if (isset($_POST['methode']))
         {
             //
-            switch ($methode)
+            switch ($_POST['methode'])
             {
                 case 'insert_comp_lvl_1':
                     if (($valeur_comp_niv1 == 0) && ($valeur_comp_niv2 == 0) && ($valeur_comp_niv3 == 0))
