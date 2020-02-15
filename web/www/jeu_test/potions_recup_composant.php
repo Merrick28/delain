@@ -155,8 +155,7 @@ $contenu_page .= '<table width="70%">
 //
 // Tests sur les possibilités de cueillettes
 //
-if (!isset($methode))
-	$methode = "debut";
+$methode          = get_request_var('methode', 'debut');
 
 $perso = new perso;
 $perso->charge($perso_cod);

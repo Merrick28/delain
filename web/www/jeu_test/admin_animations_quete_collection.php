@@ -26,7 +26,7 @@ echo '<script type="text/javascript">
 $nbJury = 10;
 
 // Validations de formulaire
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'collection_modif':    // Modification d’un concours existant

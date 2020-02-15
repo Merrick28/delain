@@ -11,15 +11,9 @@ include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
 {
-    if (!isset($mode))
-    {
-        $mode = "normal";
-    }
 
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $mode             = get_request_var('mode', 'normal');
+    $methode          = get_request_var('methode', 'debut');
 
     switch ($methode)
     {
@@ -127,12 +121,12 @@ if ($erreur == 0)
         case "cre1":
             // vérification de la présence d’une position
             $erreur = 0;
-            $req = 'select pos_cod,pos_fonction_arrivee
+            $req      = 'select pos_cod,pos_fonction_arrivee
 				from positions
 				where pos_x = ' . $_POST['pos_x'] . '
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
-            $stmt = $pdo->query($req);
+            $stmt     = $pdo->query($req);
             if (!$result = $stmt->fetch())
             {
                 /*********************************/
@@ -148,7 +142,7 @@ if ($erreur == 0)
                 /* pos_fonction_arrivee          */
                 /*********************************/
 
-                $pos_cod = $result['pos_cod'];
+                $pos_cod             = $result['pos_cod'];
                 $pos_fonction_arrive = $result['pos_fonction_arrivee'];
             }
 
@@ -182,10 +176,11 @@ if ($erreur == 0)
                 $texte_event = str_replace("'", "%", $texte_event);
                 $texte_event = str_replace(",", "#", $texte_event);
                 // modif de la table positions pour intégrer la fonction d’arrivée
-                $piege = "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
+                $piege =
+                    "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
                     $_POST['mal_blessure'] . "," . $_POST['declenchement'] . ",''" . $texte_event . "'')";
                 echo($piege);
-                $req = "update positions 
+                $req  = "update positions 
 					set pos_fonction_arrivee = '$piege' 
 					where pos_cod = " . $pos_cod;
                 $stmt = $pdo->query($req);
@@ -251,10 +246,11 @@ if ($erreur == 0)
                     $texte_event = str_replace("'", "%", $texte_event);
                     $texte_event = str_replace(",", "#", $texte_event);
                     // modif de la table positions pour intégrer la fonction d’arrivée
-                    $piege = "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
+                    $piege =
+                        "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
                         $_POST['mal_blessure'] . "," . $_POST['declenchement'] . ",\'" . $texte_event . "\')";
                     echo($piege);
-                    $req = "update positions 
+                    $req  = "update positions 
 						set pos_fonction_arrivee = '$piege' 
 						where pos_cod = " . $pos_cod;
                     $stmt = $pdo->query($req);
@@ -268,7 +264,7 @@ if ($erreur == 0)
         //Liste de l’ensemble des pièges existants
         case "liste":
             echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
-            $req = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle 
+            $req  = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle 
 				from positions,etage 
 				where pos_etage = etage_numero 
 				AND SUBSTR(pos_fonction_arrivee,1,5) = 'piege'
@@ -289,12 +285,12 @@ if ($erreur == 0)
             $req = "select pos_fonction_arrivee 
 				from positions 
 				where pos_cod = " . $pos_cod;
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt     = $pdo->query($req);
+            $result   = $stmt->fetch();
             $fonction = $result['pos_fonction_arrivee'];
             $fonction = str_replace('\\', '', $fonction);
             echo "Fonction d’origine : " . $fonction;
-            $fonction = str_replace(array(')', '\''), '', $fonction);
+            $fonction  = str_replace(array(')', '\''), '', $fonction);
             $fac_piege = explode(",", $fonction);
 
             echo "<br><strong><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a></strong>";
@@ -394,10 +390,11 @@ if ($erreur == 0)
             $texte_event = str_replace("'", "%", $texte_event);
             $texte_event = str_replace(",", "#", $texte_event);
             // modif de la table positions pour intégrer la fonction d’arrivée
-            $piege = "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
+            $piege =
+                "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
                 $_POST['mal_blessure'] . "," . $_POST['declenchement'] . ",\'" . $texte_event . "\')";
             echo($piege);
-            $req = "update positions set pos_fonction_arrivee = '$piege' where pos_cod = " . $pos_cod;
+            $req  = "update positions set pos_fonction_arrivee = '$piege' where pos_cod = " . $pos_cod;
             $stmt = $pdo->query($req);
             echo "<p>Le piège a bien été modifié
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
@@ -406,7 +403,7 @@ if ($erreur == 0)
             break;
 
         case "sup": //Suppression d’un piège existant
-            $req = "update positions set pos_fonction_arrivee = '' where pos_cod = " . $pos_cod;
+            $req  = "update positions set pos_fonction_arrivee = '' where pos_cod = " . $pos_cod;
             $stmt = $pdo->query($req);
             echo "Piège supprimé
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";

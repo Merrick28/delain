@@ -9,6 +9,7 @@ $erreur = false;
 $message_erreur = '';
 $parm_cod = 134 ; // Id du parametre global
 $num_perso = 1*$num_perso;
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'mess_add':    // Modifie un paramètre global (ajout d'un element dans la liste)

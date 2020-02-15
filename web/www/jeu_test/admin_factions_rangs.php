@@ -26,7 +26,7 @@ else
 	$fac_nom = $result['fac_nom'];
 	echo "<div class='barrTitle'>Les rangs définis pour la faction « $fac_nom »</div><br />";
 }
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'debut': break;

@@ -2,7 +2,7 @@
 include "blocks/_header_page_jeu.php";
 include_once '../includes/tools.php';
 
-if (!isset($methode)) $methode = "";
+$methode          = get_request_var('methode', '');
 define("APPEL", 1);
 
 // Détection des droits admin, pour ajouter de l'info suplémentaire dans l'écran

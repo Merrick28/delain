@@ -130,9 +130,7 @@ if ($erreur == 0) {
     if (isset($_POST['pane'])) {
         $select_pane = $pane;
     }
-    if (!isset($methode)) {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     if (isset($_POST['methode'])) {
         switch ($methode) {
             case "nom";

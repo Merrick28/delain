@@ -4,10 +4,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $erreur = 0;
-if (!isset($methode))
-{
-    $methode = "debut";
-}
+$methode           = get_request_var('methode', 'debut');
 $perso = new perso;
 $perso->charge($perso_cod);
 if ($perso->perso_admin_echoppe_noir != 'O')

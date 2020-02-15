@@ -3,13 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $erreur = 0;
-if (!isset($_REQUEST['methode']))
-{
-    $methode = "debut";
-} else
-{
-    $methode = $_REQUEST['methode'];
-}
+$methode           = get_request_var('methode', 'debut');
 include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {

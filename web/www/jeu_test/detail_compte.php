@@ -83,6 +83,7 @@ include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0 && $vcompte != -1)
 {
+    $methode2 = $_REQUEST['methode2'];
     switch ($methode2)
     {
         case 'mise_a_jour'://MAJ du compte lié associé à un compte

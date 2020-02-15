@@ -26,10 +26,7 @@ $compte                  = $_REQUEST['compte'];
 
 if ($erreur == 0)
 {
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     ?>
     <div>
         <strong>Recherche d’un compte</strong>

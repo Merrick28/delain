@@ -64,8 +64,7 @@ if ($erreur)
     // Afficher introduction de la faction
     echo "<div><strong>Faction « $faction_nom »</strong><br /><em>$faction_desc</em></div>";
 
-    if (!isset($methode))
-        $methode = 'Début';
+    $methode          = get_request_var('methode', 'Début');
 
     switch ($methode)
     {

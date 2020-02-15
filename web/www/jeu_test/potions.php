@@ -5,10 +5,7 @@ if(!defined("APPEL"))
 //
 // On regarde s'il n'y a pas un probleme de toxicite quelconque
 //
-if (!isset($methode))
-{
-	$methode = "debut";
-}
+$methode          = get_request_var('methode', 'debut');
 switch($methode)
 {		
 		case "debut":

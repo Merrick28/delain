@@ -22,8 +22,7 @@ if ($perso->is_fam())
 //
 // fin des controles principaux
 //
-if (!isset($methode))
-    $methode = 'debut';
+$methode          = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)

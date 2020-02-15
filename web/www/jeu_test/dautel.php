@@ -10,10 +10,7 @@ $contenu_page = '';
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
 $erreur = 0;
-if (!isset($methode))
-{
-    $methode = 'entree';
-}
+$methode          = get_request_var('methode', 'entree');
 
 $type_lieu = 33;
 $nom_lieu = 'un autel de prière';

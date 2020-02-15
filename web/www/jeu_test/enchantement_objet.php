@@ -3,9 +3,7 @@
 
 $param = new parametres();
 //Interface pour rendre un objet enchantable. Risque de détruire l'objet
-if (!isset($methode)) {
-    $methode = "debut";
-}
+$methode          = get_request_var('methode', 'debut');
 switch ($methode) {
     case "debut":
 //On regarde les objets enchantables du perso en fonction de leur type, ainsi que si ils sont identifiés

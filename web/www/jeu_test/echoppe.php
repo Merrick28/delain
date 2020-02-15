@@ -37,10 +37,7 @@ $req = "select mod_vente($perso_cod,$lieu) as modificateur ";
 $stmt = $pdo->query($req);
 $result = $stmt->fetch();
 $modif = $result['modificateur'];
-if (!isset($methode))
-{
-    $methode = 'entree';
-}
+$methode          = get_request_var('methode', 'debut');
 //
 // phrase à modifier par la suite en fonction des alignements
 //

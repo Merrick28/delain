@@ -23,13 +23,7 @@ if (!isset($_REQUEST['m']))
     $m = $_REQUEST['m'];
 }
 
-if (!isset($_REQUEST['methode']))
-{
-    $methode = 'debut';
-} else
-{
-    $methode = $_REQUEST['methode'];
-}
+$methode = get_request_var('methode','debut');
 
 $contenu_page .= '
 	<table cellspacing="0" cellpadding="0" width="100%">

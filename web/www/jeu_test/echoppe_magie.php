@@ -17,10 +17,7 @@ if ($erreur == 0)
     $stmt     = $pdo->query($req);
     $result   = $stmt->fetch();
     $modif    = $result['modificateur'];
-    if (!isset($methode))
-    {
-        $methode = 'entree';
-    }
+    $methode  = get_request_var('methode', 'debut');
     //
     // phrase à modifier par la suite en fonction des alignements
     //
@@ -44,13 +41,13 @@ if ($erreur == 0)
             echo $sortie_quete;
             break;
         case "acheter":
-            
+
             echo "<p class=\"titre\">Achat d’équipement</p>";
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $po = $result['perso_po'];
+            $po       = $result['perso_po'];
             $lieu_cod = $tab_lieu['lieu_cod'];
             //
             // Changement le 17/02/2011 par Merrick : la fonction f_prix_obj_perso_a dans la requête la ralentit trop, on va essayer de la passer dans la boucle suivante
@@ -107,14 +104,14 @@ if ($erreur == 0)
                 {
                     if ($result['obon_libelle'] != '')
                     {
-                        $bonus = " (" . $result['obon_libelle'] . ")";
+                        $bonus    = " (" . $result['obon_libelle'] . ")";
                         $prix_bon = $result['obon_prix'];
-                        $url_bon = "&bon=" . $result['obon_cod'];
+                        $url_bon  = "&bon=" . $result['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $valeur_achat = $result['valeur'] + $prix_bon;
 
@@ -129,7 +126,7 @@ if ($erreur == 0)
 
                     echo "<td><p>", $result['nombre'], "</p></td>";
                     echo "<td><p>";
-                    echo "<input type=\"text\" name=\"gobj[", $result['gobj_cod'], "-", $result['obon_cod'], ($result['type_stock']!="" ? "-generique" : ""), "]\" value=\"0\">";
+                    echo "<input type=\"text\" name=\"gobj[", $result['gobj_cod'], "-", $result['obon_cod'], ($result['type_stock'] != "" ? "-generique" : ""), "]\" value=\"0\">";
                     echo "</p></td>";
                     echo "</tr>\n";
                 }
@@ -139,11 +136,11 @@ if ($erreur == 0)
             }
             break;
         case "vendre":
-            
+
             $taux_rachat = $param->getparm(47);
-            $lieu_cod = $tab_lieu['lieu_cod'];
+            $lieu_cod    = $tab_lieu['lieu_cod'];
             echo "<p class=\"titre\">Vente d’équipement</p>";
-            $req = "select obj_cod, obj_etat, gobj_nom as nom, tobj_libelle,
+            $req  = "select obj_cod, obj_etat, gobj_nom as nom, tobj_libelle,
                     f_prix_obj_perso_v($perso_cod, $lieu_cod, obj_cod) as valeur,
                     coalesce(obon_cod, -1) as obon_cod, coalesce(obon_libelle, '') as obon_libelle, coalesce(obon_prix, -1) as obon_prix 
                 from perso_objets 
@@ -186,14 +183,14 @@ if ($erreur == 0)
                 {
                     if ($result['obon_cod'] != -1)
                     {
-                        $bonus = " (" . $result['obon_libelle'] . ")";
+                        $bonus    = " (" . $result['obon_libelle'] . ")";
                         $prix_bon = $result['obon_prix'];
-                        $url_bon = "&bon=" . $result['obon_cod'];
+                        $url_bon  = "&bon=" . $result['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $prix = $result['valeur'] + $prix_bon;
                     echo "<tr>";
@@ -201,7 +198,7 @@ if ($erreur == 0)
                     echo "<td class=\"soustitre2\"><p>" . $result['tobj_libelle'] . "</td>";
                     echo "<td class=\"soustitre2\"><p>" . $result['valeur'] . " brouzoufs</td>";
                     echo "<td><p><input type=\"checkbox\" name=\"obj[", $result['obj_cod'], "]\"></td>";
-                    if ($bonus=="")
+                    if ($bonus == "")
                     {
                         // Pour le magasin runique, sauf cas particulier d'un objet avec bonus, on vend pour mettre dans les stocks de générique
                         echo "<td><p><input type=\"hidden\" name=\"stock[", $result['obj_cod'], "]\" value=\"1\"></td>";

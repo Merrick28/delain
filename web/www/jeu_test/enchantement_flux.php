@@ -23,10 +23,7 @@ if($result = $stmt->fetch())
 	{
 		$pa = $param->getparm(116);
 	}
-	if(!isset($methode))
-	{
-		$methode = "debut";
-	}
+    $methode          = get_request_var('methode', 'debut');
 
 	switch($methode)
 	{

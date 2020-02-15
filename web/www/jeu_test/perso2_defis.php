@@ -37,8 +37,7 @@ $defi_regles = "
 	2) La demande est transmise au protagoniste B. Il peut choisir d’accompagner A dans sa requête, ou de refuser.<br />
 	3) Si B et A abandonnent de conserve, le match est déclaré nul.<hr /></div>";
 
-if (!isset($methode))
-    $methode = 'aucune';
+$methode          = get_request_var('methode', 'aucune');
 
 switch ($methode)
 {

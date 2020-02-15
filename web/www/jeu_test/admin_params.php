@@ -13,17 +13,18 @@ $droit_modif = 'dcompt_gere_droits';
 include "blocks/_test_droit_modif_generique.php";
 
 
-if ($erreur == 0) {
+if ($erreur == 0)
+{
     $log = '';
     // initialisation de la méthode
-    if (!isset($methode))
-        $methode = 'debut';
-    else {
-        $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
+    $methode = get_request_var('methode', 'debut');
+    if ($methode != 'debut')
+    {
+        $req       = "select compt_nom from compte where compt_cod = $compt_cod";
+        $stmt      = $pdo->query($req);
+        $result    = $stmt->fetch();
         $compt_nom = $result['compt_nom'];
-        $log = date("d/m/y - H:i") . " Compte $compt_nom (n°$compt_cod) modifie les paramètres.\n";
+        $log       = date("d/m/y - H:i") . " Compte $compt_nom (n°$compt_cod) modifie les paramètres.\n";
     }
     define("APPEL", 1);
 
@@ -33,11 +34,11 @@ if ($erreur == 0) {
             'mess_add',
             'mess_del'
         ),
-        'globaux' => array(
+        'globaux'    => array(
             'glob_modif',
             'glob_creation'
         ),
-        'renommee' => array(
+        'renommee'   => array(
             'ren_g_creation',
             'ren_g_modif',
             'ren_g_supp',
@@ -61,19 +62,20 @@ if ($erreur == 0) {
     if ($onglet == 'aucun' && isset($_GET['onglet']))
         $onglet = $_GET['onglet'];
 
-    switch ($onglet) {
+    switch ($onglet)
+    {
         case 'globaux':    // Modifs des paramètres globaux
             $page_include = 'admin_params.globaux.php';
-            $style_glob = 'style="font-weight:bold;"';
+            $style_glob   = 'style="font-weight:bold;"';
             break;
 
         case 'renommee':   // Modifs de renommées
             $page_include = 'admin_params.renommee.php';
-            $style_renom = 'style="font-weight:bold;"';
+            $style_renom  = 'style="font-weight:bold;"';
             break;
 
         case 'messagerie':   // Modifs de renommées
-            $page_include = 'admin_params.messagerie.php';
+            $page_include     = 'admin_params.messagerie.php';
             $style_messagerie = 'style="font-weight:bold;"';
             break;
     }

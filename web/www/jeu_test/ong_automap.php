@@ -26,10 +26,7 @@ if (!isset($etage))
 	$etage = $etage_actuel;
 }
 
-if(!isset($methode))
-{
-	$methode = "normal";
-}
+$methode          = get_request_var('methode', 'normal');
 switch($methode)
 {
 	case "normal":

@@ -35,10 +35,7 @@ $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
     $erreur         = 1;
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":

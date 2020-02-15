@@ -4,10 +4,7 @@ ob_start();
 
 include "blocks/_test_droit_modif_etage.php";
 
-if (!isset($methode))
-{
-	$methode = 'debut';
-}
+$methode           = get_request_var('methode', 'debut');
 $admin_etage = $_REQUEST['etage'];
 
 if(!isset($admin_etage) && $methode == 'debut')

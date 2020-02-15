@@ -41,10 +41,7 @@ if ($stmt->rowCount() == 0)
         echo 'Vous cherchez à accéder à une page qui n\'existe pas !';
     } else
     {
-        if (!isset($methode))
-        {
-            $methode = "debut";
-        }
+        $methode          = get_request_var('methode', 'debut');
         //début 2nd tableau
 
         switch ($methode)

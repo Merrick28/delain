@@ -11,10 +11,7 @@ if ($perso->is_milice() == 0)
 }
 if ($erreur == 0)
 {
-    if (!isset($methode))
-    {
-        $methode = 'debut';
-    }
+    $methode          = get_request_var('methode', 'debut');
     if (!$perso->is_bernardo())
     {
         switch ($methode)

@@ -2,13 +2,8 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 include "blocks/_test_admin_echoppe.php";
-if (!isset($_REQUEST['methode']))
-{
-    $methode = "entree";
-} else
-{
-    $methode = $_REQUEST['methode'];
-}
+
+$methode           = get_request_var('methode', 'entree');
 if ($erreur == 0)
 {
     switch ($methode)

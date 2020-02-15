@@ -15,10 +15,7 @@ if ($result['compt_quete'] != 'O')
 }
 if ($erreur == 0)
 {
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":

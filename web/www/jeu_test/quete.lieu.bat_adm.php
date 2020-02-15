@@ -5,8 +5,7 @@ if(!defined("APPEL"))
 	die("Erreur d’appel de page !");
 
 echo "<hr><br>";
-if(!isset($methode2))
-	$methode2 = "debut";
+$methode2          = get_request_var('methode2', 'debut');
 
 switch($methode2)
 {

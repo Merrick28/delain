@@ -15,23 +15,23 @@ $req_comp = "select pcomp_modificateur from perso_competences ";
 $req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
 $req_comp = $req_comp . "and pcomp_modificateur != 0 ";
 $req_comp = $req_comp . "and pcomp_pcomp_cod = 80";
-$stmt = $pdo->query($req_comp);
+$stmt     = $pdo->query($req_comp);
 
 $erreur = true;
-if($result = $stmt->fetch())
+if ($result = $stmt->fetch())
 {
-    $valeur_comp = $result['pcomp_modificateur'];
+    $valeur_comp    = $result['pcomp_modificateur'];
     $commandant_cod = $perso_cod;
-    $erreur = false;
+    $erreur         = false;
 } else
 {
     $req_comp = "select perso_superieur_cod from perso_commandement where $perso_cod = perso_subalterne_cod";
-    $stmt = $pdo->query($req_comp);
-    if($result = $stmt->fetch())
+    $stmt     = $pdo->query($req_comp);
+    if ($result = $stmt->fetch())
     {
-        $valeur_comp = 0;
+        $valeur_comp    = 0;
         $commandant_cod = $result['perso_superieur_cod'];
-        $erreur = false;
+        $erreur         = false;
     }
 }
 
@@ -54,8 +54,7 @@ if (!$erreur)
 	$perso_nom = $result['perso_nom'];
 	$req_troupe = "delete from perso_commandement where not exists(select 1 from perso where perso_actif = 'O' and perso_cod = perso_subalterne_cod)";
 	$stmt = $pdo->query($req_troupe);
-	$methode = (isset($_POST['methode'])) ? $_POST['methode'] : ((isset($_GET['methode'])) ? $_GET['methode'] : false);
-
+    $methode          = get_request_var('methode', false);
 	// TRAITEMENT DE FORMULAIRE
 	switch ($methode)
 	{

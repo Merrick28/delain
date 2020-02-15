@@ -16,9 +16,7 @@ if ($stmt->rowCount() == 0) {
     $erreur = 1;
 }
 if ($erreur == 0) {
-    if (!isset($methode)) {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode) {
         case "debut":
             echo "<p><a href=\"", $PHP_SELF, "?methode=prison\">Voir les joueurs en prison</a><br>";

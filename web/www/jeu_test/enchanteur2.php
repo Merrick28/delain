@@ -15,8 +15,7 @@ include "blocks/_verif_enchanteur.php";
 //
 // fin des controles principaux
 //
-if (!isset($methode))
-    $methode = 'debut';
+$methode          = get_request_var('methode', 'debut');
 
 if ($erreur == 0)
 {

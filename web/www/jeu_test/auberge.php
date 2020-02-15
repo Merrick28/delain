@@ -13,10 +13,7 @@ $perso->charge($perso_cod);
 
 include "blocks/_test_lieu.php";
 
-if (!isset($methode))
-{
-    $methode = 'debut';
-}
+$methode          = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     // Fidèle de Tonto (id=9) ?

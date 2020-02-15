@@ -40,8 +40,7 @@ include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0) {
     define("APPEL", 1);
 
-    if (!isset($methode))
-        $methode = 'debut';
+    $methode           = get_request_var('methode', 'debut');
 
     // Choix de l’onglet
     $script = '';

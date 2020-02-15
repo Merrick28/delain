@@ -10,8 +10,7 @@ include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0)
 {
     include "admin_edition_header.php";
-    if (!isset($methode))
-        $methode = 'debut';
+    $methode = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case 'debut':
@@ -316,7 +315,7 @@ if ($erreur == 0)
             {
                 if ($_POST[$fields[$i]] != $result[$fields[$i]])
                 {
-                    $log     .= "Modification du champ " . $fields[$i] . " : " .  $result[$fields[$i]] . " => " . $_POST[$fields[$i]] . "\n";
+                    $log     .= "Modification du champ " . $fields[$i] . " : " . $result[$fields[$i]] . " => " . $_POST[$fields[$i]] . "\n";
                     $modifie = 1;
                 }
             }

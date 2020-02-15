@@ -8,7 +8,7 @@ $pdo = new bddpdo();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Pochettes surprises</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'pochette_suppression':    // Suppression des pochettes existantes

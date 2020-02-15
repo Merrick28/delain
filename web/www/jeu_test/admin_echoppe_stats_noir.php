@@ -5,13 +5,7 @@ ob_start();
     <script language="javascript" src="javascripts/changestyles.js"></script>
 <?php
 $erreur = 0;
-if (!isset($_REQUEST['methode']))
-{
-    $methode = "debut";
-} else
-{
-    $methode = $_REQUEST['methode'];
-}
+$methode           = get_request_var('methode', 'debut');
 $perso = new perso;
 $perso->charge($perso_cod);
 if ($perso->perso_admin_echoppe != 'O')

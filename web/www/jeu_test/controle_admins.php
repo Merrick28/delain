@@ -1,10 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode))
-{
-    $methode = "debut";
-}
+$methode          = get_request_var('methode', 'debut');
 
 $droit_modif = 'dcompt_controle_admin';
 include "blocks/_test_droit_modif_generique.php";

@@ -4,9 +4,7 @@ $perso->charge($perso_cod);
 $is_enlumineur = $perso->is_enlumineur();
 
 if ($is_enlumineur) {
-    if (!isset($methode)) {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode) {
         case "debut":
             $req_comp = "select foi_obj_cod,to_char(foi_date_crea,'DD-MM-YYYY / hh24:mi') as date_deb,foi_gobj_cod as gobj_cod_fini,gobj_nom as gobj_nom_fini,obj_nom,foi_formule_cod,frm_nom,frm_temps_travail

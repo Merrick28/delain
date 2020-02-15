@@ -52,7 +52,7 @@ if ($erreur == 0)
 
     // TRAITEMENT DES ACTIONS
     $resultat = "";
-    if (isset($methode))
+    if (isset($_REQUEST['methode']))
     {
         switch ($methode)
         {

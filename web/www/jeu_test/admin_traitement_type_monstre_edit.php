@@ -43,7 +43,7 @@ if (($_POST["type-img-avatar"] == "upload") && ($_FILES["avatar_file"]["tmp_name
         $gmon_avatar          = $filename;
     }
 }
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case "create_mon":
@@ -420,7 +420,7 @@ switch ($methode)
 
                     $fonc_proba = str_replace(',', '.', $fonc_proba);
 
-                    $req = "UPDATE fonction_specifique
+                    $req       = "UPDATE fonction_specifique
 						SET fonc_effet = '$fonc_effet',
 							fonc_force = '$fonc_force',
 							fonc_duree = $fonc_duree,
@@ -431,8 +431,8 @@ switch ($methode)
 							fonc_message = '$fonc_message'
 						WHERE fonc_cod = $fonc_cod
 						RETURNING fonc_nom, fonc_type";
-                    $stmt = $pdo->query($req);
-                    $result = $stmt->fetch();
+                    $stmt      = $pdo->query($req);
+                    $result    = $stmt->fetch();
                     $fonc_nom  = $result['fonc_nom'];
                     $fonc_type = $result['fonc_type'];
 
@@ -479,14 +479,14 @@ switch ($methode)
         {
             if (!empty($id) || $id === 0)
             {
-                $req = "SELECT fonc_nom, fonc_type FROM fonction_specifique WHERE fonc_cod = $id";
+                $req  = "SELECT fonc_nom, fonc_type FROM fonction_specifique WHERE fonc_cod = $id";
                 $stmt = $pdo->query($req);
                 if ($result = $stmt->fetch())
                 {
                     $fonc_type = $result['fonc_type'];
                     $fonc_nom  = $result['fonc_nom'];
                     $req       = "DELETE FROM fonction_specifique WHERE fonc_cod = $id";
-                    $stmt = $pdo->query($req);
+                    $stmt      = $pdo->query($req);
                 }
 
                 $texteDeclenchement = '';

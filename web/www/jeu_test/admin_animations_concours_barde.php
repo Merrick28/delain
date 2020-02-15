@@ -11,7 +11,7 @@ echo '<div class="barrTitle">Concours de barde</div><br />';
 $nbJury = 10;
 
 // Validations de formulaire
-
+$methode = $_REQUEST['methode'];
 switch ($methode) {
     case 'barde_modif':    // Modification d’un concours existant
         $form_cod = pg_escape_string($_POST['form_cod']);

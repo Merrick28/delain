@@ -4,8 +4,7 @@
 if (!defined("APPEL"))
     die("Erreur d’appel de page !");
 
-if (!isset($methode2))
-    $methode2 = "debut";
+$methode2          = get_request_var('methode2', 'debut');
 
 
 $perso        = new perso;

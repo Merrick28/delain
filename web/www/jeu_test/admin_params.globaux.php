@@ -7,6 +7,7 @@ echo '<div class="barrTitle">Paramètres globaux</div><br />';
 
 $erreur = false;
 $message_erreur = '';
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'glob_modif':    // Modifie un paramètre global

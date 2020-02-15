@@ -21,9 +21,7 @@ include "../includes/constantes.php";
 
     include "blocks/_test_lieu.php";
 
-    if (!isset($methode)) {
-        $methode = 'debut';
-    }
+    $methode          = get_request_var('methode', 'debut');
     if ($erreur == 0) {
         $req = "select perso_pnj from perso where perso_cod = $perso_cod";
         $stmt = $pdo->query($req);

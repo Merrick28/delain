@@ -8,7 +8,7 @@ $pdo = new bddpdo();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Quête des Médaillons</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'medaillon_redistribution':    // Redonne le médaillon à un monstre aléatoire de son antre

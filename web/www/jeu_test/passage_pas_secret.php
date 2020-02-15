@@ -17,10 +17,7 @@ if ($erreur == 0)
     $nom_lieu = $tab_lieu['lieu']->lieu_nom;
     $desc_lieu = $tab_lieu['lieu']->lieu_description;
     echo("<p><strong>$nom_lieu</strong><br>$desc_lieu ");
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":

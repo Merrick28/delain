@@ -1,7 +1,6 @@
 ﻿<?php
 
-if (!isset($methode))
-    $methode = '';
+$methode          = get_request_var('methode', '');
 include_once "verif_connexion.php";
 ob_start();
 include "../includes/fonctions.php";

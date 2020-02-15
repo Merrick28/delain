@@ -35,7 +35,7 @@ if($result = $stmt->fetch()){
 	}
 }
 $log = date("d/m/y - H:i")." $perso_nom (compte $compt_cod / $compt_nom) modifie le ".$perso_mod_type." ".$perso_mod_nom.", numero : $mod_perso_cod\n";
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case "update_perso":

@@ -8,7 +8,7 @@ if (!defined("APPEL"))
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; ">';
 echo '<div class="barrTitle">Invasion de monstre</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'cree_invasion':    // Crée une invasion de monstre

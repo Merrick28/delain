@@ -17,9 +17,8 @@ if ($erreur == 0)
 {
     $log = '';
     // initialisation de la méthode
-    if (!isset($methode))
-        $methode = 'debut';
-    else
+    $methode = get_request_var('methode', 'debut');
+    if ($methode != 'debut')
     {
         $compte = new compte;
         $compte->charge($compt_cod);
@@ -207,8 +206,8 @@ if ($erreur == 0)
     $req_info_comp = 'select distinct frm_temps_travail, frm_comp_cod, comp_libelle from formule
 		inner join competences on comp_cod = frm_comp_cod
 		where frm_type=4 order by frm_comp_cod';
-    $stmt = $pdo->query($req);
-    while($result = $stmt->fetch())
+    $stmt          = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $duree_comp_cod = $result['frm_comp_cod'];
         $duree_comp_nom = $result['comp_libelle'];
@@ -225,8 +224,8 @@ if ($erreur == 0)
 		<tr>';
     $req_comp = 'select comp_libelle from competences 
 		where comp_cod in (91, 92, 93) order by comp_cod';
-    $stmt = $pdo->query($req);
-    while($result = $stmt->fetch())
+    $stmt     = $pdo->query($req);
+    while ($result = $stmt->fetch())
     {
         $nom_comp = $result['comp_libelle'];
         echo "<td class='titre'>$nom_comp</td>";
@@ -236,10 +235,10 @@ if ($erreur == 0)
     $req_info_peau = 'select gobj_cod, gobj_nom, gobj_niv_peau from objet_generique 
 		where gobj_tobj_cod = 24 
 		order by gobj_nom';
-    $stmt = $pdo->query($req_info_peau);
+    $stmt          = $pdo->query($req_info_peau);
 
 
-    $req_info_parcho    = "select frm_cod, frm_nom, gobj_niv_parchemin, frm_comp_cod, frmco_usure
+    $req_info_parcho = "select frm_cod, frm_nom, gobj_niv_parchemin, frm_comp_cod, frmco_usure
 				from formule_composant
 				inner join formule on frm_cod = frmco_frm_cod
 				inner join formule_produit on frmpr_frm_cod = frm_cod
@@ -248,12 +247,11 @@ if ($erreur == 0)
 					and frm_type = 4
 					and frm_comp_cod = :icomp
 				order by gobj_niv_parchemin";
-    $stmt2 = $pdo->prepare($req_info_parcho);
-
+    $stmt2           = $pdo->prepare($req_info_parcho);
 
 
     $comp = array(91, 92, 93);
-    while($result = $stmt->fetch())
+    while ($result = $stmt->fetch())
     {
         $peau_qualite = $result['gobj_niv_peau'];
         $peau_nom     = $result['gobj_nom'];
@@ -263,10 +261,10 @@ if ($erreur == 0)
         {
             echo '<td class="soustitre2" valign="top">';
             $formules_utilisees = array();
-            $stmt2 = $pdo->execute(array(":peau" => $peau_cod,
-                                       ":icomp" => $icomp),$stmt2);
-            $nombre_parcho = 0;
-            while($result2 = $stmt2->fetch())
+            $stmt2              = $pdo->execute(array(":peau"  => $peau_cod,
+                                                      ":icomp" => $icomp), $stmt2);
+            $nombre_parcho      = 0;
+            while ($result2 = $stmt2->fetch())
             {
                 $frm_cod                      = $result2['frm_cod'];
                 $parcho                       = $result2['frm_nom'];

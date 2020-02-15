@@ -13,11 +13,7 @@ include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
 {
-    if (!isset($_POST['methode']))
-        $methode = 'debut';
-    else
-        $methode = $_POST['methode'];
-
+    $methode = get_request_var('methode','debut');
     $resultat = '';
 
     switch ($methode)

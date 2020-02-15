@@ -6,7 +6,7 @@ echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Modification / création d’un type de mission</div><br />';
 
 $resultat = '';
-
+$methode  = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'debut':

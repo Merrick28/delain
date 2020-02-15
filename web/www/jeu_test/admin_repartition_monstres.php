@@ -8,7 +8,7 @@ include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0)
 {
 	include "admin_edition_header.php";
-
+    $methode = $_REQUEST['methode'];
 	// TRAITEMENT DE FORMULAIRE
 	if(isset($_POST['methode']))
 	{

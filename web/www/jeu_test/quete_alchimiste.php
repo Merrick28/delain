@@ -125,8 +125,7 @@ if ($quete_partie == 2)
     }
 }
 
-if (!isset($methode))
-    $methode = 'debut';
+$methode          = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)

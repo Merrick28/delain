@@ -31,9 +31,8 @@ if($result = $stmt->fetch())
 	$result = $stmt->fetch();
 	$pa = $pa + $result['nombre'];
 	if ($pa < 2) $pa = 2;
-	
-	if (!isset($methode))
-		$methode = "debut";
+
+    $methode          = get_request_var('methode', 'debut');
 	switch($methode)
 	{
 		case "debut":

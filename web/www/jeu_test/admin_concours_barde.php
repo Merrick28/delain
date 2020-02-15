@@ -13,7 +13,7 @@ echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);" id="cadr
 $nbJury = 10;
 
 // Validations de formulaire
-
+$methode = $_REQUEST['methode'];
 switch ($methode) {
     case 'barde_modif':    // Modification d’un concours existant
         $form_cod = pg_escape_string($_POST['form_cod']);

@@ -13,13 +13,8 @@ include "includes/classes.php";
 <body>
 <div class="bordiv">
     <?php
-    if (!isset($_REQUEST['methode']))
-    {
-        $methode = 'debut';
-    } else
-    {
-        $methode = $_REQUEST['methode'];
-    }
+
+    $methode = get_request_var('methode','debut');
     switch ($methode)
     {
         case 'debut':

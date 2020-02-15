@@ -30,7 +30,8 @@ if ($erreur == 0)
 	$stmt = $pdo->query($req);
 	$result = $stmt->fetch();
 	echo "<p class=\"titre\">Gestion du temple " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</p>";
-	switch($methode)
+
+	switch($_REQUEST['methode'])
 	{
 		case "ajout":
 			echo "<form name=\"gerant\" method=\"post\" action=\"$PHP_SELF\">";

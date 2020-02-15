@@ -3,8 +3,7 @@
 include "blocks/_tests_appels_page_externe.php";
 
 
-if (!isset($methode2))
-    $methode2 = "debut";
+$methode2          = get_request_var('methode2', 'debut');
 
 $perso = new perso;
 $perso->charge($perso_cod);

@@ -8,8 +8,7 @@ ob_start();
 
             if (confirmation) {
                 document.lanceNews.submit();
-            }
-            else {
+            } else {
                 document.lanceNews.methode.value = 'debut';
             }
         }
@@ -19,8 +18,7 @@ ob_start();
 
             if (confirmation) {
                 document.lanceRumeur.submit();
-            }
-            else {
+            } else {
                 document.lanceRumeur.methode.value = 'debut';
             }
         }
@@ -39,10 +37,7 @@ include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
 {
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode        = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -125,11 +120,12 @@ if ($erreur == 0)
             {
                 if ($titre != '' && $auteur != '' && $texte != '')
                 {
-                    $titre = pg_escape_string(str_replace('\'', '’', $titre));
+                    $titre  = pg_escape_string(str_replace('\'', '’', $titre));
                     $auteur = pg_escape_string(str_replace('\'', '’', $auteur));
-                    $texte = pg_escape_string(str_replace('\'', '’', $texte));
+                    $texte  = pg_escape_string(str_replace('\'', '’', $texte));
 
-                    $req = "insert into news (news_titre, news_auteur, news_texte) values (e'$titre', e'$auteur', e'$texte')";
+                    $req  =
+                        "insert into news (news_titre, news_auteur, news_texte) values (e'$titre', e'$auteur', e'$texte')";
                     $stmt = $pdo->query($req);
 
                     ?> News correctement lancée <?php
@@ -154,8 +150,9 @@ if ($erreur == 0)
                 {
                     $texte = pg_escape_string(str_replace('\'', '’', $texte));
                     $poids = pg_escape_string(str_replace('\'', '’', $poids));
-                    $req = "insert into rumeurs (rum_perso_cod, rum_texte, rum_poids) values ($perso_cod, e'$texte', $poids)";
-                    $stmt = $pdo->query($req);
+                    $req   =
+                        "insert into rumeurs (rum_perso_cod, rum_texte, rum_poids) values ($perso_cod, e'$texte', $poids)";
+                    $stmt  = $pdo->query($req);
 
                     ?> Rumeur correctement lancée <?php
 
@@ -172,7 +169,7 @@ if ($erreur == 0)
         case "previsu":
             $titre = str_replace('\'', '’', $titre);
             $auteur = str_replace('\'', '’', $auteur);
-            $texte = str_replace('\'', '’', $texte);
+            $texte  = str_replace('\'', '’', $texte);
             ?>
             <p><strong>Prévisualisation</strong></p>
             <div class="bordiv" style="margin:2px;text-align:center">

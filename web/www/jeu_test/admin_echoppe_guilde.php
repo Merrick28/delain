@@ -1,10 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode))
-{
-    $methode = "debut";
-}
+$methode           = get_request_var('methode', 'debut');
 include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {

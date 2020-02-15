@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-$methode = (isset($_GET['methode'])) ? $_GET['methode'] : '';
+$methode          = get_request_var('methode', '');
 $resultat = '<div><strong>Les paramètres de votre quatrième personnage ont été mis à jour.</strong></div>';
 switch ($methode)
 {

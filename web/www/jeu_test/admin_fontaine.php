@@ -10,12 +10,13 @@ $erreur = 0;
 $droit_modif = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
 
-if($erreur == 0) {
-    if (!isset($mode))
-        $mode = "normal";
-    if (!isset($methode))
-        $methode = "debut";
-    switch ($methode) {
+if ($erreur == 0)
+{
+    $mode             = get_request_var('mode', "normal");
+    $methode          = get_request_var('methode', 'debut');
+
+    switch ($methode)
+    {
         case "debut":
             ?>
             <p>Choisissez votre méthode :</p>
@@ -84,29 +85,32 @@ if($erreur == 0) {
         case "cre1":
             // vérification de la présence d’une position
             $erreur = 0;
-            $req = 'select pos_cod,pos_fonction_arrivee
+            $req      = 'select pos_cod,pos_fonction_arrivee
 				from positions
 				where pos_x = ' . $_POST['pos_x'] . '
 				AND pos_y = ' . $_POST['pos_y'] . '
 				AND pos_etage = ' . $_POST['pos_etage'];
-            $stmt = $pdo->query($req);
-            if (!$result = $stmt->fetch()) {
+            $stmt     = $pdo->query($req);
+            if (!$result = $stmt->fetch())
+            {
                 /*********************************/
                 /* Il n’existe pas de position ! */
                 /*********************************/
                 echo 'Aucune position trouvée !<br>
 					<a href="' . $PHP_SELF . '?methode=cre">Retour au début</a>';
                 break;
-            } else {
+            } else
+            {
                 /*********************************/
                 /* on stocke le pos_cod et le    */
                 /* pos_fonction_arrivee          */
                 /*********************************/
-                $pos_cod = $result['pos_cod'];
+                $pos_cod             = $result['pos_cod'];
                 $pos_fonction_arrive = $result['pos_fonction_arrivee'];
             }
 
-            if ($pos_fonction_arrive == '') {
+            if ($pos_fonction_arrive == '')
+            {
                 /**************************************************/
                 /* Il n’existe pas de fonction sur cette position */
                 /**************************************************/
@@ -117,14 +121,16 @@ if($erreur == 0) {
                     'gain_regen',
                     'gain_regen_nbre_dlt',
                 );
-                foreach ($fields as $i => $value) {
+                foreach ($fields as $i => $value)
+                {
                     if ($_POST[$fields[$i]] == '')
                         $_POST[$fields[$i]] = 0;
                 }
                 // modif de la table positions pour intégrer la fonction d’arrivée
-                $piege = "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . ")";
+                $piege =
+                    "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . ")";
                 echo($piege);
-                $req = "update positions
+                $req  = "update positions
 					set pos_fonction_arrivee = '$piege'
 					,pos_decor = 101
 					where pos_cod = " . $pos_cod;
@@ -133,7 +139,8 @@ if($erreur == 0) {
                 ?>
                 <br><strong><a href="<?php echo $PHP_SELF; ?>?methode=debut">Retour</a></strong><br>
                 <?php
-            } else {
+            } else
+            {
                 /******************************************/
                 /* Il existe une fonction sur la position */
                 /******************************************/
@@ -145,7 +152,8 @@ if($erreur == 0) {
                 /*************************************************/
                 if (!isset($valide))
                     $valide = 0;
-                if ($valide != 1) {
+                if ($valide != 1)
+                {
                     $result = $stmt->fetch();
                     echo '<form method="post" name="piege" action="' . $PHP_SELF . '">';
                     //
@@ -168,14 +176,16 @@ if($erreur == 0) {
                         'gain_regen',
                         'gain_regen_nbre_dlt',
                     );
-                    foreach ($fields as $i => $value) {
+                    foreach ($fields as $i => $value)
+                    {
                         if ($_POST[$fields[$i]] == '')
                             $_POST[$fields[$i]] = 0;
                     }
                     // modif de la table positions pour intégrer la fonction d'arrivée
-                    $piege = "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
+                    $piege =
+                        "deplace_fontaine([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
                     echo($piege);
-                    $req = "update positions
+                    $req  = "update positions
 						set pos_fonction_arrivee = '$piege'
 						,pos_decor = 101
 						where pos_cod = " . $pos_cod;
@@ -185,16 +195,17 @@ if($erreur == 0) {
             }
             break;//Fin du process de création
 
-//Liste de l’ensemble des fontaines existantes
+        //Liste de l’ensemble des fontaines existantes
         case "liste":
             echo '<strong><a href="' . $PHP_SELF . '?methode=debut">Retour au début</a></strong><br>';
-            $req = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle
+            $req  = "select pos_cod,pos_x,pos_y,pos_etage,pos_fonction_arrivee,etage_libelle
 				from positions,etage
 				where pos_etage = etage_numero
 					AND SUBSTR(pos_fonction_arrivee,1,16) = 'deplace_fontaine'
 				order by pos_etage,pos_x,pos_y";
             $stmt = $pdo->query($req);
-            while ($result = $stmt->fetch()) {
+            while ($result = $stmt->fetch())
+            {
                 $pos_cod = $result['pos_cod'];
                 echo '<br><strong>Fontaine :</strong>' . $result['pos_fonction_arrivee'] . '
 				<br><strong>X : ' . $result['pos_x'] . ' / Y : ' . $result['pos_y'] . ' / Étage : </strong>' . $result['etage_libelle'] . '<br>
@@ -203,13 +214,13 @@ if($erreur == 0) {
             }
             break;
 
-// Modification d’une fontaine existante
+        // Modification d’une fontaine existante
         case "mod":
             $req = "select pos_fonction_arrivee
 				from positions
 				where pos_cod = " . $pos_cod;
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt     = $pdo->query($req);
+            $result   = $stmt->fetch();
             $fonction = $result['pos_fonction_arrivee'];
             echo "Fonction d’origine : " . $fonction;
             $fac_piege = explode(",", $fonction);
@@ -257,21 +268,23 @@ if($erreur == 0) {
                 'gain_regen',
                 'gain_regen_nbre_dlt',
             );
-            foreach ($fields as $i => $value) {
+            foreach ($fields as $i => $value)
+            {
                 if ($_POST[$fields[$i]] == '')
                     $_POST[$fields[$i]] = 0;
             }
             // modif de la table positions pour intégrer la fonction d’arrivée
-            $piege = "piege_param([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
+            $piege =
+                "piege_param([perso]," . $_POST['gain_pv_nbre_des'] . "," . $_POST['gain_pv_des'] . "," . $_POST['gain_regen'] . "," . $_POST['gain_regen_nbre_dlt'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . ")";
             echo($piege);
-            $req = "update positions set pos_fonction_arrivee = '$piege',pos_decor = 101 where pos_cod = " . $pos_cod;
+            $req  = "update positions set pos_fonction_arrivee = '$piege',pos_decor = 101 where pos_cod = " . $pos_cod;
             $stmt = $pdo->query($req);
             echo "<p>La fontaine a bien été modifiée
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";
             break;
 
         case "sup": //Suppression d’une fontaine existante
-            $req = "update positions set pos_fonction_arrivee = '',pos_decor = 101 where pos_cod = " . $pos_cod;
+            $req  = "update positions set pos_fonction_arrivee = '',pos_decor = 101 where pos_cod = " . $pos_cod;
             $stmt = $pdo->query($req);
             echo "Fontaine supprimée
 				<br><a href=\"" . $PHP_SELF . "?methode=debut\">Retour au début</a>";

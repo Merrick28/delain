@@ -7,7 +7,7 @@ $pdo = new bddpdo();
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px;">';
 echo '<div class="barrTitle">Distributions générales</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'distribution_creation':    // Crée une distribution d’objets

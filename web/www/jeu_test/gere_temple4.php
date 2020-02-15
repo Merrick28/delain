@@ -46,9 +46,7 @@ $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modif
 
 
 if ($erreur == 0) {
-    if (!isset($methode)) {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     echo "<p class=\"titre\">Gestion de : ", $lieu_nom, " - (", $pos_x, ", ", $pos_y, ", ", $etage_libelle, ")</p>";
     switch ($methode) {
         case "debut":

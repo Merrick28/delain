@@ -1,9 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-if (!isset($methode)) {
-    $methode = 'debut';
-}
+$methode          = get_request_var('methode', 'debut');
 $perso = new perso;
 $perso->charge($perso_cod);
 $autorise = false;

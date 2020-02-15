@@ -16,16 +16,15 @@ include 'sadmin.php'; // Pour intégration XML
 // Page de création ou modification d’une cachette
 //************************************************
 
-$erreur                = 0;
-$droit_modif           = 'dcompt_modif_perso';
+$erreur      = 0;
+$droit_modif = 'dcompt_modif_perso';
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
 {
-    if (!isset($methode))
-        $methode = "debut";
-    if (!isset($mode))
-        $mode = "normal";
+    $methode           = get_request_var('methode', 'debut');
+    $mode              = get_request_var('mode', 'normal');
+
     switch ($methode)
     {
         case "debut":

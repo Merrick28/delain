@@ -34,10 +34,7 @@ if ($erreur == 0)
 }
 if ($erreur == 0)
 {
-    if (!isset($methode))
-    {
-        $methode = "debut";
-    }
+    $methode          = get_request_var('methode', 'debut');
     echo "<p class=\"titre\">Gestion de : ", $result['lieu_nom'], " - (", $result['pos_x'], ", ", $result['pos_y'], ", ", $result['etage_libelle'], ")</p>";
     switch ($methode)
     {

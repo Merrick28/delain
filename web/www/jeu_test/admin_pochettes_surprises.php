@@ -4,7 +4,7 @@ if(!defined("APPEL"))
 
 echo '<div class="bordiv" style="padding:0; margin-left: 205px; max-height:20px; overflow:hidden;" id="cadre_pochettes">';
 echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);">Pochettes surprises</div><br />';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'pochette_suppression':	// Suppression des pochettes existantes

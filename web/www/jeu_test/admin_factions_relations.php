@@ -35,6 +35,7 @@ while ($result = $stmt->fetch())
     $factions[$result['fac_cod']] = $result['fac_nom'];
 
 // Traitements
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'debut':

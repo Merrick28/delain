@@ -11,10 +11,7 @@ if (!$compte->is_admin_monstre())
     echo "<p>Erreur ! Vous n’êtes pas admin monstre !";
     $erreur = 1;
 }
-if (!isset($methode))
-{
-    $methode = "entree";
-}
+$methode          = get_request_var('methode', 'entree');
 switch ($methode)
 {
     case "entree":

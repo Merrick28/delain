@@ -26,7 +26,7 @@ if (!isset($fac_cod))
     $fac_nom = $result['fac_nom'];
     echo "<div class='barrTitle'>Les missions accessibles à la faction « $fac_nom »</div><br />";
 }
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'debut':

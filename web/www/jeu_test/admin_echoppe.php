@@ -42,13 +42,7 @@ ob_start();
         }
     </script>
 <?php
-if (!isset($_REQUEST['methode']))
-{
-    $methode = "debut";
-} else
-{
-    $methode = $_REQUEST['methode'];
-}
+$methode           = get_request_var('methode', 'debut');
 include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {

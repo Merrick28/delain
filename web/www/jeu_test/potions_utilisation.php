@@ -2,9 +2,8 @@
 include "blocks/_header_page_jeu.php";
 
 
-if (!isset($methode)) {
-    $methode = "debut";
-}
+
+$methode          = get_request_var('methode', 'debut');
 switch ($methode) {
     case "debut":
         $req = 'select * from potions.perso_toxic

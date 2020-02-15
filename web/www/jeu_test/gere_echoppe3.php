@@ -39,21 +39,24 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 
-
-
 function startPane($tab, $index, $active_index)
 {
-    if ($active_index == $index) {
+    if ($active_index == $index)
+    {
         echo "<div class='centrer' id=\"pane$index\">";
-    } else {
+    } else
+    {
         echo "<div class='centrer' id=\"pane$index\" style=\"display:none;\">";
     }
     echo "<table class=\"tableauPane\">";
     echo "<tr>";
-    foreach ($tab as $i => $vali) {
-        if ($i == $index) {
+    foreach ($tab as $i => $vali)
+    {
+        if ($i == $index)
+        {
             echo "<td class=\"activePane\"><strong>$vali</strong></td>";
-        } else {
+        } else
+        {
             echo "<td class=\"inactivePane\"><a href=\"javascript:switchPane('pane$i');\">$vali</a></td>";
         }
     }
@@ -77,74 +80,93 @@ echo '	<link rel="stylesheet" type="text/css" href="../styles/onglets.css" title
 ';
 
 $erreur = 0;
-if (!isset($mag)) {
+if (!isset($mag))
+{
     echo "<p>Erreur sur la transmission du lieu_cod ";
     $erreur = 1;
 }
-if ($erreur == 0) {
-    $req = "select perso_admin_echoppe_noir,perso_admin_echoppe from perso where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
+if ($erreur == 0)
+{
+    $req                      =
+        "select perso_admin_echoppe_noir,perso_admin_echoppe from perso where perso_cod = $perso_cod ";
+    $stmt                     = $pdo->query($req);
+    $result                   = $stmt->fetch();
     $perso_admin_echoppe_noir = $result['perso_admin_echoppe_noir'];
-    $perso_admin_echoppe = $result['perso_admin_echoppe'];
-    $req = "select lieu_cod,lieu_tlieu_cod,lieu_nom,pos_cod,pos_x,pos_y,etage_libelle,lieu_alignement,lieu_compte,mger_perso_cod ";
-    $req = $req . "from lieu,lieu_position,positions,etage ";
-    $req = $req . "left outer join magasin_gerant on mger_lieu_cod = $mag ";
-    $req = $req . "where lieu_cod = lpos_lieu_cod ";
-    $req = $req . "and lieu_tlieu_cod in (11,14,21) ";
-    $req = $req . "and lpos_pos_cod = pos_cod ";
-    $req = $req . "and pos_etage = etage_numero ";
+    $perso_admin_echoppe      = $result['perso_admin_echoppe'];
+    $req                      =
+        "select lieu_cod,lieu_tlieu_cod,lieu_nom,pos_cod,pos_x,pos_y,etage_libelle,lieu_alignement,lieu_compte,mger_perso_cod ";
+    $req                      = $req . "from lieu,lieu_position,positions,etage ";
+    $req                      = $req . "left outer join magasin_gerant on mger_lieu_cod = $mag ";
+    $req                      = $req . "where lieu_cod = lpos_lieu_cod ";
+    $req                      = $req . "and lieu_tlieu_cod in (11,14,21) ";
+    $req                      = $req . "and lpos_pos_cod = pos_cod ";
+    $req                      = $req . "and pos_etage = etage_numero ";
     //$req = $req . "and mger_lieu_cod = lieu_cod ";
     //$req = $req . "and mger_perso_cod = $perso_cod ";
-    $req = $req . "and lieu_cod = $mag ";
+    $req  = $req . "and lieu_cod = $mag ";
     $stmt = $pdo->query($req);
-    if ($stmt->rowCount() == 0) {
+    if ($stmt->rowCount() == 0)
+    {
         echo "<p>Erreur, vous n'êtes pas en gérance de ce magasin !";
         $erreur = 1;
-    } else {
-        $acces_ok = 0;
-        $result = $stmt->fetch();
+    } else
+    {
+        $acces_ok  = 0;
+        $result    = $stmt->fetch();
         $type_lieu = $result['lieu_tlieu_cod'];
-        if ($type_lieu == 21 && $perso_admin_echoppe_noir == 'O') {
+        if ($type_lieu == 21 && $perso_admin_echoppe_noir == 'O')
+        {
             $acces_ok = 1;
         }
-        if ($type_lieu == 11 && $perso_admin_echoppe == 'O') {
+        if ($type_lieu == 11 && $perso_admin_echoppe == 'O')
+        {
             $acces_ok = 1;
         }
-        if ($type_lieu == 14 && $perso_admin_echoppe == 'O') {
+        if ($type_lieu == 14 && $perso_admin_echoppe == 'O')
+        {
             $acces_ok = 1;
         }
-        if ($perso_cod == $result['mger_perso_cod']) {
+        if ($perso_cod == $result['mger_perso_cod'])
+        {
             $acces_ok = 1;
         }
-        if ($acces_ok == 0) {
+        if ($acces_ok == 0)
+        {
             echo "<p>Erreur, vous n'êtes pas en gérance de ce magasin !</p>";
             $erreur = 1;
         }
 
-        $pos_actuelle = $result['pos_cod'];
-        $lieu_cod = $result['lieu_cod'];
-        $lieu_nom = $result['lieu_nom'];
-        $pos_x = $result['pos_x'];
-        $pos_y = $result['pos_y'];
+        $pos_actuelle  = $result['pos_cod'];
+        $lieu_cod      = $result['lieu_cod'];
+        $lieu_nom      = $result['lieu_nom'];
+        $pos_x         = $result['pos_x'];
+        $pos_y         = $result['pos_y'];
         $etage_libelle = $result['etage_libelle'];
-        $lieu_compte = $result['lieu_compte'];
+        $lieu_compte   = $result['lieu_compte'];
 
-        if ($type_lieu == 14) {
+        if ($type_lieu == 14)
+        {
             define("TYPE_ECHOPPE", "MAGIE");
-        } else {
-            if ($type_lieu == 21) {
+        } else
+        {
+            if ($type_lieu == 21)
+            {
                 define("TYPE_ECHOPPE", "MARCHE_NOIR");
-            } else {
-                if ($type_lieu == 11) {
+            } else
+            {
+                if ($type_lieu == 11)
+                {
                     define("TYPE_ECHOPPE", "ECHOPPE_ROYALE");
                 }
             }
         }
     }
 }
-if ($erreur == 0) {
-    if ($methode == "visu") {
+if ($erreur == 0)
+{
+    $methode = $_REQUEST['methode'];
+    if ($methode == "visu")
+    {
         $req_stock
             = "select gobj_seuil_dex, gobj_seuil_force, gobj_tobj_cod, tobj_libelle, gobj_poids, gobj_pa_normal,
 				gobj_pa_eclair, gobj_distance, gobj_deposable, gobj_comp_cod, gobj_description, gobj_cod, gobj_nom,
@@ -152,33 +174,42 @@ if ($erreur == 0) {
 				mgstock_vente_echoppes, comp_libelle
 			FROM (select * from objet_generique, type_objet where gobj_cod = $objet and gobj_tobj_cod = tobj_cod) t1
 			LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod) ";
-        if ($perso_cod == 451072 or $perso_cod == 185) {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
-            $req_stock = $req_stock . "LEFT outer JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where (gobj_echoppe_vente = 'O' or mgstock_nombre > 0)";
-        } else {
-            if (TYPE_ECHOPPE == "MAGIE") {
-                $req_stock = $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod) where (gobj_tobj_cod = 5 or mgstock_nombre > 0) ";
-            } else {
-                $req_stock = $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where gobj_echoppe_stock = 'O' or mgstock_nombre > 0 and gobj_tobj_cod in (1,9) ";
+        if ($perso_cod == 451072 or $perso_cod == 185)
+        {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
+            $req_stock =
+                $req_stock . "LEFT outer JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where (gobj_echoppe_vente = 'O' or mgstock_nombre > 0)";
+        } else
+        {
+            if (TYPE_ECHOPPE == "MAGIE")
+            {
+                $req_stock =
+                    $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod) where (gobj_tobj_cod = 5 or mgstock_nombre > 0) ";
+            } else
+            {
+                $req_stock =
+                    $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where gobj_echoppe_stock = 'O' or mgstock_nombre > 0 and gobj_tobj_cod in (1,9) ";
             }
         }
         $req_stock = $req_stock . " order by gobj_tobj_cod,gobj_nom";
-        $stmt = $pdo->query($req_stock);
-        if ($stmt->rowCount() != 0) {
-            $result = $stmt->fetch();
-            $t_etat = 0;
-            $comp = $result['gobj_comp_cod'];
-            $desc = $result['gobj_description'];
-            $distance = $result['gobj_distance'];
-            $type_objet = $result['gobj_tobj_cod'];
+        $stmt      = $pdo->query($req_stock);
+        if ($stmt->rowCount() != 0)
+        {
+            $result      = $stmt->fetch();
+            $t_etat      = 0;
+            $comp        = $result['gobj_comp_cod'];
+            $desc        = $result['gobj_description'];
+            $distance    = $result['gobj_distance'];
+            $type_objet  = $result['gobj_tobj_cod'];
             $seuil_force = $result['gobj_seuil_force'];
-            $seuil_dex = $result['gobj_seuil_dex'];
+            $seuil_dex   = $result['gobj_seuil_dex'];
             echo "<p class=\"titre\">" . $result['gobj_nom'] . "</p>";
             echo "<div class='centrer'><table>";
 
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Type d’objet :</td>";
             echo "<td><p>" . $result['tobj_libelle'];
-            if ($result['gobj_deposable'] == 'N') {
+            if ($result['gobj_deposable'] == 'N')
+            {
                 echo " <strong>non déposable !</strong>";
             }
             echo "</td>";
@@ -189,13 +220,15 @@ if ($erreur == 0) {
             echo "<td><p>" . $result['gobj_poids'] . "</td>";
             echo "</tr>";
 
-            if ($type_objet == 1) {
+            if ($type_objet == 1)
+            {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque normale :</td>";
                 echo "<td><p>" . $result['gobj_pa_normal'] . "</td>";
                 echo "</tr>";
 
-                if ($result['gobj_distance'] == 'N') {
+                if ($result['gobj_distance'] == 'N')
+                {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque foudroyante :</td>";
                     echo "<td><p>" . $result['gobj_pa_eclair'] . "</td>";
@@ -206,8 +239,8 @@ if ($erreur == 0) {
                 $req = $req . "from objets_caracs,objet_generique ";
                 $req = $req . "where gobj_cod = $objet ";
                 //$req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt = $pdo->query($req);
+                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Dégats</td>";
@@ -215,8 +248,8 @@ if ($erreur == 0) {
                 echo "</tr>";
 
 
-                $req = "select comp_libelle from competences where comp_cod = $comp ";
-                $stmt = $pdo->query($req);
+                $req    = "select comp_libelle from competences where comp_cod = $comp ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Compétence utilisée</td>";
@@ -231,26 +264,28 @@ if ($erreur == 0) {
                 echo "<td><p>" . $seuil_dex . "</td>";
                 echo "</tr>";
             }
-            if ($type_objet == 2) {
-                $req = "select obcar_armure ";
-                $req = $req . "from objets_caracs,objet_generique,objets ";
-                $req = $req . "where gobj_cod = $objet ";
-                $req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt = $pdo->query($req);
+            if ($type_objet == 2)
+            {
+                $req    = "select obcar_armure ";
+                $req    = $req . "from objets_caracs,objet_generique,objets ";
+                $req    = $req . "where gobj_cod = $objet ";
+                $req    = $req . "and obj_gobj_cod = gobj_cod ";
+                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Armure</td>";
                 echo "<td><p>" . $result['obcar_armure'] . "</td>";
                 echo "</tr>";
             }
-            if ($type_objet == 1 and $distance == 'O') {
-                $req = "select obcar_chute ";
-                $req = $req . "from objets_caracs,objet_generique,objets ";
-                $req = $req . "where gobj_cod = $objet ";
-                $req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt = $pdo->query($req);
+            if ($type_objet == 1 and $distance == 'O')
+            {
+                $req    = "select obcar_chute ";
+                $req    = $req . "from objets_caracs,objet_generique,objets ";
+                $req    = $req . "where gobj_cod = $objet ";
+                $req    = $req . "and obj_gobj_cod = gobj_cod ";
+                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Chute</td>";
@@ -262,9 +297,10 @@ if ($erreur == 0) {
             echo "<td><p>" . $desc . "</td>";
             echo "</tr>";
 
-            if (isset($bon)) {
-                $req = "select obon_libelle from bonus_objets where obon_cod = $bon ";
-                $stmt = $pdo->query($req);
+            if (isset($bon))
+            {
+                $req    = "select obon_libelle from bonus_objets where obon_cod = $bon ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Bonus</td>";
@@ -273,15 +309,17 @@ if ($erreur == 0) {
             }
 
             echo "</table></div>";
-        } else {
+        } else
+        {
             echo "Vous n'avez pas le droit d'accéder à la description de cet objet</br>";
         }
 
     }
 
-    if ($methode == "visu2") {
+    if ($methode == "visu2")
+    {
         $req_stock
-            = "select obj_seuil_dex, obj_seuil_force, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair,
+              = "select obj_seuil_dex, obj_seuil_force, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair,
 				obj_distance, obj_deposable, gobj_comp_cod, obj_description, obj_des_degats, obj_val_des_degats, obj_bonus_degats,
 				obj_armure, obj_gobj_cod, obj_nom, obj_valeur, gobj_echoppe_stock, gobj_echoppe_destock, comp_libelle 
 			FROM (select * from objets, objet_generique, type_objet where obj_cod = $objet and gobj_tobj_cod = tobj_cod and obj_gobj_cod = gobj_cod) t1
@@ -289,20 +327,21 @@ if ($erreur == 0) {
 			LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9))
 			ORDER BY gobj_tobj_cod, obj_nom";
         $stmt = $pdo->query($req_stock);
-        if ($stmt->rowCount() != 0) {
-            $result = $stmt->fetch();
-            $t_etat = 0;
-            $comp = $result['gobj_comp_cod'];
-            $desc = $result['obj_description'];
-            $distance = $result['obj_distance'];
-            $type_objet = $result['gobj_tobj_cod'];
-            $seuil_force = $result['obj_seuil_force'];
-            $seuil_dex = $result['obj_seuil_dex'];
-            $armure = $result['obj_armure'];
-            $chute = $result['obj_seuil_dex'];
-            $des_degats = $result['obj_des_degats'];
+        if ($stmt->rowCount() != 0)
+        {
+            $result         = $stmt->fetch();
+            $t_etat         = 0;
+            $comp           = $result['gobj_comp_cod'];
+            $desc           = $result['obj_description'];
+            $distance       = $result['obj_distance'];
+            $type_objet     = $result['gobj_tobj_cod'];
+            $seuil_force    = $result['obj_seuil_force'];
+            $seuil_dex      = $result['obj_seuil_dex'];
+            $armure         = $result['obj_armure'];
+            $chute          = $result['obj_seuil_dex'];
+            $des_degats     = $result['obj_des_degats'];
             $val_des_degats = $result['obj_val_des_degats'];
-            $bonus_degats = $result['obj_bonus_degats'];
+            $bonus_degats   = $result['obj_bonus_degats'];
 
             echo "<p class=\"titre\">" . $result['obj_nom'] . "</p>";
             echo "<div class='centrer'><table>";
@@ -310,7 +349,8 @@ if ($erreur == 0) {
             echo "<tr>";
             echo "<td class=\"soustitre2\"><p>Type d'objet :</td>";
             echo "<td><p>" . $result['tobj_libelle'];
-            if ($result['obj_deposable'] == 'N') {
+            if ($result['obj_deposable'] == 'N')
+            {
                 echo " <strong>non déposable !</strong>";
             }
             echo "</td>";
@@ -321,12 +361,14 @@ if ($erreur == 0) {
             echo "<td><p>" . $result['obj_poids'] . "</td>";
             echo "</tr>";
 
-            if ($type_objet == 1) {
+            if ($type_objet == 1)
+            {
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque normale :</td>";
                 echo "<td><p>" . $result['gobj_pa_normal'] . "</td>";
                 echo "</tr>";
-                if ($result['obj_distance'] == 'N') {
+                if ($result['obj_distance'] == 'N')
+                {
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque foudroyante :</td>";
                     echo "<td><p>" . $result['gobj_pa_eclair'] . "</td>";
@@ -339,8 +381,8 @@ if ($erreur == 0) {
                 echo "</tr>";
 
 
-                $req = "select comp_libelle from competences where comp_cod = $comp ";
-                $stmt = $pdo->query($req);
+                $req    = "select comp_libelle from competences where comp_cod = $comp ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Compétence utilisée</td>";
@@ -355,26 +397,28 @@ if ($erreur == 0) {
                 echo "<td><p>" . $seuil_dex . "</td>";
                 echo "</tr>";
             }
-            if ($type_objet == 2) {
-                $req = "select obcar_armure ";
-                $req = $req . "from objets_caracs,objet_generique,objets ";
-                $req = $req . "where gobj_cod = $objet ";
-                $req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt = $pdo->query($req);
+            if ($type_objet == 2)
+            {
+                $req    = "select obcar_armure ";
+                $req    = $req . "from objets_caracs,objet_generique,objets ";
+                $req    = $req . "where gobj_cod = $objet ";
+                $req    = $req . "and obj_gobj_cod = gobj_cod ";
+                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Armure</td>";
                 echo "<td><p>" . $result['obcar_armure'] . "</td>";
                 echo "</tr>";
             }
-            if ($type_objet == 1 and $distance == 'O') {
-                $req = "select obcar_chute ";
-                $req = $req . "from objets_caracs,objet_generique,objets ";
-                $req = $req . "where gobj_cod = $objet ";
-                $req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt = $pdo->query($req);
+            if ($type_objet == 1 and $distance == 'O')
+            {
+                $req    = "select obcar_chute ";
+                $req    = $req . "from objets_caracs,objet_generique,objets ";
+                $req    = $req . "where gobj_cod = $objet ";
+                $req    = $req . "and obj_gobj_cod = gobj_cod ";
+                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Chute</td>";
@@ -386,9 +430,10 @@ if ($erreur == 0) {
             echo "<td><p>" . $desc . "</td>";
             echo "</tr>";
 
-            if (isset($bon)) {
-                $req = "select obon_libelle from bonus_objets where obon_cod = $bon ";
-                $stmt = $pdo->query($req);
+            if (isset($bon))
+            {
+                $req    = "select obon_libelle from bonus_objets where obon_cod = $bon ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<tr>";
                 echo "<td class=\"soustitre2\"><p>Bonus</td>";
@@ -397,51 +442,62 @@ if ($erreur == 0) {
             }
 
             echo "</table></div>";
-        } else {
+        } else
+        {
             echo "Vous n’avez pas le droit d’accéder à la description de cet objet</br>";
         }
 
     }
 
     $select_pane = 0;
-    if (isset($_POST['pane'])) {
+    if (isset($_POST['pane']))
+    {
         $select_pane = $pane;
     }
 
-    if (!isset($methode)) {
+    if (!isset($methode))
+    {
         $methode = "debut";
     }
-    if (isset($_POST['methode'])) {
-        switch ($methode) {
+    if (isset($_POST['methode']))
+    {
+        switch ($methode)
+        {
             case "create_mag_tran":
                 echo "Nouvelle transaction</br>";
                 $erreur = 0;
                 $req_verif
-                    = "SELECT gobj_valeur * $tran_quantite as prix_mini, mgstock_nombre as qte_dispo
+                        = "SELECT gobj_valeur * $tran_quantite as prix_mini, mgstock_nombre as qte_dispo
 					FROM objet_generique, stock_magasin_generique
 					WHERE gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod
 						AND gobj_cod = $article_cod";
-                $stmt = $pdo->query($req_verif);
-                if (!$result = $stmt->fetch()) {
+                $stmt   = $pdo->query($req_verif);
+                if (!$result = $stmt->fetch())
+                {
                     echo "Erreur: Quantité insuffisante";
                     $erreur = 1;
-                } else {
-                    if ($result['qte_dispo'] < $tran_quantite) {
+                } else
+                {
+                    if ($result['qte_dispo'] < $tran_quantite)
+                    {
                         echo "Erreur : Quantité insuffisante";
                         $erreur = 1;
                     }
-                    if ($result['prix_mini'] > $tran_prix) {
+                    if ($result['prix_mini'] > $tran_prix)
+                    {
                         echo "Erreur : Le prix minimal de cette transaction est de " . $result['prix_mini'] . ".";
                         $erreur = 1;
                     }
                 }
-                if ($dest_lieu_cod == "-") {
+                if ($dest_lieu_cod == "-")
+                {
                     echo "Erreur : Sélectionner un client dans le magasin !";
                     $erreur = 1;
                 }
-                if ($erreur == 0) {
+                if ($erreur == 0)
+                {
                     $req
-                        = "insert into transaction_echoppe
+                          = "insert into transaction_echoppe
 							(tran_gobj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie, tran_quantite, tran_type)
 						values ($article_cod, $lieu_cod, $dest_lieu_cod, 3, $tran_prix, 'O', $tran_quantite, 'MM')";
                     $stmt = $pdo->query($req);
@@ -452,38 +508,47 @@ if ($erreur == 0) {
             case "create_tran":
                 echo "Nouvelle transaction</br>";
                 $erreur = 0;
-                if (isset($_POST['article_cod']) && $article_cod) {
+                if (isset($_POST['article_cod']) && $article_cod)
+                {
                     // ARTICLE NORMAL
                     $req_verif
-                        = "select gobj_valeur*$tran_quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
+                          = "select gobj_valeur*$tran_quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
 						where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod
 							and gobj_cod = $article_cod";
                     $stmt = $pdo->query($req_verif);
-                    if (!$result = $stmt->fetch()) {
+                    if (!$result = $stmt->fetch())
+                    {
                         echo "Erreur: Quantité insuffisante";
                         $erreur = 1;
-                    } else {
-                        if ($result['qte_dispo'] < $tran_quantite) {
+                    } else
+                    {
+                        if ($result['qte_dispo'] < $tran_quantite)
+                        {
                             echo "Erreur: Quantité insuffisante";
                             $erreur = 1;
                         }
-                        if ($result['prix_mini'] > $tran_prix) {
+                        if ($result['prix_mini'] > $tran_prix)
+                        {
                             echo "Erreur: Le prix minimal de cette transaction est de " . $result['prix_mini'] . ".";
                             $erreur = 1;
                         }
                     }
 
-                    if ($dest_perso_cod == "-") {
+                    if ($dest_perso_cod == "-")
+                    {
                         echo "Erreur: Sélectionner un client dans le magasin !";
                         $erreur = 1;
                     }
-                    if ($erreur == 0) {
-                        $req = "insert into transaction_echoppe (	tran_gobj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie,	tran_quantite,tran_type) "
+                    if ($erreur == 0)
+                    {
+                        $req  =
+                            "insert into transaction_echoppe (	tran_gobj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie,	tran_quantite,tran_type) "
                             . " values ($article_cod,$lieu_cod,$dest_perso_cod,3,$tran_prix,'O',$tran_quantite,'M1')";
                         $stmt = $pdo->query($req);
                         echo "OK : transaction créée.";
                     }
-                } else {
+                } else
+                {
                     // ARTICLE SPECIAL
                     $req_verif
                         = "select obj_cod,obj_nom,gobj_cod,obj_valeur
@@ -494,20 +559,25 @@ if ($erreur == 0) {
 							and obj_cod = $article_special_cod";
                     //echo  $req_verif;
                     $stmt = $pdo->query($req_verif);
-                    if (!$result = $stmt->fetch()) {
+                    if (!$result = $stmt->fetch())
+                    {
                         echo "Erreur: Objet non disponible";
                         $erreur = 1;
                     }
-                    if ($result['obj_valeur'] > $tran_prix) {
+                    if ($result['obj_valeur'] > $tran_prix)
+                    {
                         echo "Erreur: Le prix minimal de cette transaction est de " . $result['obj_valeur'] . ".";
                         $erreur = 1;
                     }
-                    if ($dest_perso_cod == "-") {
+                    if ($dest_perso_cod == "-")
+                    {
                         echo "Erreur: Sélectionner un client dans le magasin !";
                         $erreur = 1;
                     }
-                    if ($erreur == 0) {
-                        $req = "insert into transaction_echoppe (	tran_gobj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie,	tran_quantite,tran_type) "
+                    if ($erreur == 0)
+                    {
+                        $req  =
+                            "insert into transaction_echoppe (	tran_gobj_cod,tran_vendeur,tran_acheteur,tran_nb_tours,tran_prix,tran_identifie,	tran_quantite,tran_type) "
                             . " values ($article_special_cod,$lieu_cod,$dest_perso_cod,3,$tran_prix,'O',1,'M2')";
                         $stmt = $pdo->query($req);
                         echo "OK: transaction créée.";
@@ -517,88 +587,103 @@ if ($erreur == 0) {
 
             case "delete_tran":
                 echo "Transaction supprimée.";
-                $req = "delete from transaction_echoppe where tran_cod = $transaction_cod";
+                $req  = "delete from transaction_echoppe where tran_cod = $transaction_cod";
                 $stmt = $pdo->query($req);
                 break;
 
             case "accepter_tran":
                 echo "Transaction acceptée.";
-                $req = "select tran_gobj_cod,tran_vendeur,tran_acheteur,tran_prix,tran_quantite,tran_type from transaction_echoppe where tran_cod = $transaction_cod";
+                $req  =
+                    "select tran_gobj_cod,tran_vendeur,tran_acheteur,tran_prix,tran_quantite,tran_type from transaction_echoppe where tran_cod = $transaction_cod";
                 $stmt = $pdo->query($req);
-                if (!$result = $stmt->fetch()) {
+                if (!$result = $stmt->fetch())
+                {
                     $resultat .= "Erreur: La transaction n'existe pas.";
-                } else {
-                    $objet_cod = $result['tran_gobj_cod'];
-                    $vendeur = $result['tran_vendeur'];
-                    $acheteur = $result['tran_acheteur'];
-                    $prix = $result['tran_prix'];
-                    $quantite = $result['tran_quantite'];
-                    $tran_type = $result['tran_type'];
+                } else
+                {
+                    $objet_cod    = $result['tran_gobj_cod'];
+                    $vendeur      = $result['tran_vendeur'];
+                    $acheteur     = $result['tran_acheteur'];
+                    $prix         = $result['tran_prix'];
+                    $quantite     = $result['tran_quantite'];
+                    $tran_type    = $result['tran_type'];
                     $obj_gobj_cod = $result['tran_gobj_cod'];
                     // VERIFICATIONS
                     $req_verif
-                        = "select gobj_valeur*$quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
+                          = "select gobj_valeur*$quantite as prix_mini,mgstock_nombre  as qte_dispo from objet_generique,stock_magasin_generique
 						where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $vendeur
 							and gobj_cod = $objet_cod";
                     $stmt = $pdo->query($req_verif);
-                    if (!$result = $stmt->fetch()) {
+                    if (!$result = $stmt->fetch())
+                    {
                         echo "Erreur: Quantité insuffisante";
                         $erreur = 1;
-                    } else {
-                        if ($result['qte_dispo'] < $quantite) {
+                    } else
+                    {
+                        if ($result['qte_dispo'] < $quantite)
+                        {
                             echo "Erreur: Quantité insuffisante";
                             $erreur = 1;
                         }
-                        if ($result['prix_mini'] > $prix) {
+                        if ($result['prix_mini'] > $prix)
+                        {
                             echo "Erreur: Le prix minimal de cette transaction est de " . $result['prix_mini'] . ".";
                             $erreur = 1;
                         }
                     }
                     // caisse de l'acheteur
-                    if ($lieu_compte < $prix * 1.1) {
+                    if ($lieu_compte < $prix * 1.1)
+                    {
                         echo "Erreur: Pas assez de Br en caisse !";
                         $erreur = 1;
                     }
-                    if ($erreur == 0) {
+                    if ($erreur == 0)
+                    {
                         // On retire les Br à la caisse de l'acheteur
-                        $req_tran = "update lieu set lieu_compte = lieu_compte - ($prix*1.1) where lieu_cod = $acheteur";
-                        $stmt = $pdo->query($req_tran);
+                        $req_tran =
+                            "update lieu set lieu_compte = lieu_compte - ($prix*1.1) where lieu_cod = $acheteur";
+                        $stmt     = $pdo->query($req_tran);
                         // On les ajoute à la caisse du vendeur
                         $req_tran = "update lieu set lieu_compte = lieu_compte + $prix where lieu_cod = $vendeur";
-                        $stmt = $pdo->query($req_tran);
+                        $stmt     = $pdo->query($req_tran);
                         // On retire l'objet du stock du vendeur
-                        $req_tran = "update stock_magasin_generique set mgstock_nombre = mgstock_nombre - $quantite where mgstock_lieu_cod = $vendeur "
+                        $req_tran =
+                            "update stock_magasin_generique set mgstock_nombre = mgstock_nombre - $quantite where mgstock_lieu_cod = $vendeur "
                             . "and mgstock_gobj_cod = $objet_cod";
-                        $stmt = $pdo->query($req_tran);
+                        $stmt     = $pdo->query($req_tran);
                         // On ajoute l'objet au stock de l'acheteur
-                        $req_tran = "select mgstock_nombre from stock_magasin_generique where mgstock_lieu_cod = $acheteur "
+                        $req_tran =
+                            "select mgstock_nombre from stock_magasin_generique where mgstock_lieu_cod = $acheteur "
                             . "and mgstock_gobj_cod = $objet_cod";
-                        $stmt = $pdo->query($req_tran);
-                        if($result = $stmt->fetch()) {
-                            $req_tran = "update stock_magasin_generique set mgstock_nombre = mgstock_nombre + $quantite where mgstock_lieu_cod = $acheteur "
+                        $stmt     = $pdo->query($req_tran);
+                        if ($result = $stmt->fetch())
+                        {
+                            $req_tran =
+                                "update stock_magasin_generique set mgstock_nombre = mgstock_nombre + $quantite where mgstock_lieu_cod = $acheteur "
                                 . "and mgstock_gobj_cod = $objet_cod";
-                            $stmt = $pdo->query($req_tran);
-                        } else {
+                            $stmt     = $pdo->query($req_tran);
+                        } else
+                        {
                             $req_tran
-                                = "insert into stock_magasin_generique (mgstock_nombre,mgstock_lieu_cod,mgstock_gobj_cod)
+                                  = "insert into stock_magasin_generique (mgstock_nombre,mgstock_lieu_cod,mgstock_gobj_cod)
 								values( $quantite,$acheteur,$objet_cod)";
                             $stmt = $pdo->query($req_tran);
                         }
                         // Supression de la transaction
                         $req_tran = "delete from transaction_echoppe where tran_gobj_cod = $objet_cod";
-                        $stmt = $pdo->query($req_tran);
+                        $stmt     = $pdo->query($req_tran);
                         // Ajout de la ligne de Log
-                        $req_tran =  "insert into mag_tran_generique
+                        $req_tran = "insert into mag_tran_generique
                         (mgtra_lieu_cod,mgtra_perso_cod,mgtra_gobj_cod,mgtra_sens,mgtra_montant,mgtra_nombre)
                         values
                         ($vendeur,$perso_cod,$obj_gobj_cod,6,$prix,$quantite)";
-                        $stmt = $pdo->query($req_tran);
+                        $stmt     = $pdo->query($req_tran);
 
-                        $req_tran =  "insert into mag_tran_generique
+                        $req_tran = "insert into mag_tran_generique
                         (mgtra_lieu_cod,mgtra_perso_cod,mgtra_gobj_cod,mgtra_sens,mgtra_montant,mgtra_nombre)
                         values
                         ($acheteur,$perso_cod,$obj_gobj_cod,5,$prix,$quantite)";
-                        $stmt = $pdo->query($req_tran);
+                        $stmt     = $pdo->query($req_tran);
 
                     }
                 }
@@ -606,18 +691,20 @@ if ($erreur == 0) {
 
             case "refuser_tran":
                 echo "Transaction refusée.";
-                $req = "delete from transaction_echoppe where tran_cod = $transaction_cod";
+                $req  = "delete from transaction_echoppe where tran_cod = $transaction_cod";
                 $stmt = $pdo->query($req);
                 break;
 
             case "stocker":
                 echo "Stockage";
-                foreach ($_POST as $i => $value) {
-                    if ($value != null && substr($i, 0, 5) == "STOCK") {
+                foreach ($_POST as $i => $value)
+                {
+                    if ($value != null && substr($i, 0, 5) == "STOCK")
+                    {
                         $gobj_cod = substr($i, 5);
                         //echo "HA obj=".$gobj_cod." NB=".$value;
-                        $req = "select magasin_stocker($perso_cod,$lieu_cod,$gobj_cod,$value) as resultat";
-                        $stmt = $pdo->query($req);
+                        $req    = "select magasin_stocker($perso_cod,$lieu_cod,$gobj_cod,$value) as resultat";
+                        $stmt   = $pdo->query($req);
                         $result = $stmt->fetch();
                         echo "<p>", $result['resultat'], "</p>";
                     }
@@ -626,12 +713,14 @@ if ($erreur == 0) {
 
             case "destocker":
                 echo "Destockage";
-                foreach ($_POST as $i => $value) {
-                    if ($value != null && substr($i, 0, 7) == "DESTOCK") {
+                foreach ($_POST as $i => $value)
+                {
+                    if ($value != null && substr($i, 0, 7) == "DESTOCK")
+                    {
                         $gobj_cod = substr($i, 7);
                         //echo "HA obj=".$gobj_cod." NB=".$value;
-                        $req = "select magasin_destocker($perso_cod,$lieu_cod,$gobj_cod,$value) as resultat";
-                        $stmt = $pdo->query($req);
+                        $req    = "select magasin_destocker($perso_cod,$lieu_cod,$gobj_cod,$value) as resultat";
+                        $stmt   = $pdo->query($req);
                         $result = $stmt->fetch();
                         echo "<p>", $result['resultat'], "</p>";
                     }
@@ -640,19 +729,23 @@ if ($erreur == 0) {
 
             case "autorisations":
                 echo "Autorisations";
-                foreach ($_POST as $i => $value) {
-                    if (substr($i, 0, 18) == "DISPO_PUBLIC_ACTU_") {
+                foreach ($_POST as $i => $value)
+                {
+                    if (substr($i, 0, 18) == "DISPO_PUBLIC_ACTU_")
+                    {
                         $gobj_cod = substr($i, 18);
                         //echo "HA obj=".$gobj_cod." NB=".$value;
                         $public_nouv = $_POST["DISPO_PUBLIC_" . $gobj_cod];
-                        $ech_actu = $_POST["DISPO_PRO_ACTU_" . $gobj_cod];
-                        $ech_nouv = $_POST["DISPO_PRO_" . $gobj_cod];
+                        $ech_actu    = $_POST["DISPO_PRO_ACTU_" . $gobj_cod];
+                        $ech_nouv    = $_POST["DISPO_PRO_" . $gobj_cod];
 
-                        if ($value != $public_nouv || $ech_actu != $ech_nouv) {
-                            $req = "update stock_magasin_generique set mgstock_vente_persos = '$public_nouv', mgstock_vente_echoppes = '$ech_nouv' "
+                        if ($value != $public_nouv || $ech_actu != $ech_nouv)
+                        {
+                            $req    =
+                                "update stock_magasin_generique set mgstock_vente_persos = '$public_nouv', mgstock_vente_echoppes = '$ech_nouv' "
                                 . "where mgstock_lieu_cod = $lieu_cod "
                                 . "and mgstock_gobj_cod = $gobj_cod";
-                            $stmt = $pdo->query($req);
+                            $stmt   = $pdo->query($req);
                             $result = $stmt->fetch();
                         }
                         //echo "<p>Mise à jour des autorisations</p>";
@@ -664,14 +757,16 @@ if ($erreur == 0) {
                 echo "Atelier";
                 $req = "select magasin_realiser_formule($perso_cod,$lieu_cod,$frm_cod) as resultat";
                 //echo $req;
-                $stmt = $pdo->query($req);
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 echo "<p>", $result['resultat'], "</p>";
-                if ($nombre != '') {
+                if ($nombre != '')
+                {
                     $compt = 0;
-                    while ($compt != $nombre - 1) {
-                        $req = "select magasin_realiser_formule($perso_cod,$lieu_cod,$frm_cod) as resultat";
-                        $stmt = $pdo->query($req);
+                    while ($compt != $nombre - 1)
+                    {
+                        $req    = "select magasin_realiser_formule($perso_cod,$lieu_cod,$frm_cod) as resultat";
+                        $stmt   = $pdo->query($req);
                         $result = $stmt->fetch();
                         echo "<p>", $result['resultat'], "</p>";
                         $compt = $compt + 1;
@@ -684,9 +779,9 @@ if ($erreur == 0) {
                 echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe2.php\">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"nom2\">";
                 echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-                $req = "SELECT lieu_nom,lieu_description FROM lieu ";
-                $req = $req . "where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
+                $req    = "SELECT lieu_nom,lieu_description FROM lieu ";
+                $req    = $req . "where lieu_cod = $mag ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
 
                 echo "<table>";
@@ -713,7 +808,8 @@ if ($erreur == 0) {
             case "nom2":
                 echo "<p><strong>Aperçu : " . $desc;
                 $desc = str_replace(";", chr(127), $desc);
-                $req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
+                $req  =
+                    "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
                 $stmt = $pdo->query($req);
                 echo "<p>Les changements sont validés !";
                 break;
@@ -749,15 +845,16 @@ if ($erreur == 0) {
             <?php
             $liste_clients = "";
             $req_vue
-                = "select lower(perso_cod) as minusc, perso_cod, perso_nom
+                           = "select lower(perso_cod) as minusc, perso_cod, perso_nom
 		from perso, perso_position
 		where ppos_pos_cod = $pos_actuelle
 			and ppos_perso_cod = perso_cod
 			and perso_type_perso in (1,2,3)
 			and perso_actif = 'O'
 		order by perso_type_perso,minusc";
-            $stmt = $pdo->query($req_vue);
-            while ($result = $stmt->fetch()) {
+            $stmt          = $pdo->query($req_vue);
+            while ($result = $stmt->fetch())
+            {
                 $liste_clients .= $result['perso_nom'] . ";";
                 echo $result['perso_nom'] . ", ";
             }
@@ -784,24 +881,28 @@ if ($erreur == 0) {
                 <input type="hidden" name="methode" value="statut2">
 
                 <?php
-                $req = "select lieu_prelev,lieu_marge ";
-                $req = $req . "from lieu ";
-                $req = $req . "where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
+                $req    = "select lieu_prelev,lieu_marge ";
+                $req    = $req . "from lieu ";
+                $req    = $req . "where lieu_cod = $mag ";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
-                if ($result['lieu_prelev'] == 15) {
+                if ($result['lieu_prelev'] == 15)
+                {
                     echo "<p>Votre magasin n'est pas un refuge. Si vous souhaitez le transformer en refuge, les prélèvements de l'administration passeront automatiquement à 30%.<br>";
-                    if ($result['lieu_marge'] < 30) {
+                    if ($result['lieu_marge'] < 30)
+                    {
                         echo "Votre marge est insuffisante pour accomplir cette action.";
-                    } else {
+                    } else
+                    {
                         ?>
                         <input type="hidden" name="ref" value="o">
                         <p style=text-align:left><strong><a href="javascript:document.refuge.submit();">Passer en mode
-                                refuge <em>(Cette
-                                    fonctionnalité sera dorénavant controlée)</em></a></strong>
+                            refuge <em>(Cette
+                                fonctionnalité sera dorénavant controlée)</em></a></strong>
                         <?php
                     }
-                } else {
+                } else
+                {
                     ?>
                     <input type="hidden" name="ref" value="n">
                     <p>Votre magasin est un refuge. Si vous souhaitez abandonner cette fonctionnalité, les prélèvements
@@ -832,10 +933,10 @@ if ($erreur == 0) {
         ?>
         <p>
             <?php
-            if (TYPE_ECHOPPE=="MAGIE")
+            if (TYPE_ECHOPPE == "MAGIE")
             {
                 $req_stock
-                    = "select string_agg(count||' '||obj_nom, ', ') stock from (
+                      = "select string_agg(count||' '||obj_nom, ', ') stock from (
                         select count(*) count, obj_nom, gobj_cod
                         from objets,objet_generique,stock_magasin
                         where mstock_lieu_cod ={$mag}
@@ -844,25 +945,25 @@ if ($erreur == 0) {
                         group by obj_nom, gobj_cod
                         order by gobj_cod
                     ) g";
-                    $stmt = $pdo->query($req_stock);
-                    if ($stmt->rowCount() > 0)
+                $stmt = $pdo->query($req_stock);
+                if ($stmt->rowCount() > 0)
+                {
+                    $result = $stmt->fetch();
+                    if ($result['stock'] != "")
                     {
-                        $result = $stmt->fetch();
-                        if ($result['stock']!="")
-                        {
-                            // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
-                            // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
-                            // Pour l'instant les gérants ne peuvent pas y toucher, mais les joueurs peuvent l'acheter.
-                            echo "<strong>Stock Autonome</strong></trong>:<br> " . $result['stock'] . ".<BR/><BR/>";
-                        }
+                        // le stock autonome est le stock approvisionné par les joueurs avant l'ouverture des magasins runique a des gérants
+                        // il s'agit du matériel en stock d'objet réels (objets instanciés) qu'il faudrait convertir en génériques
+                        // Pour l'instant les gérants ne peuvent pas y toucher, mais les joueurs peuvent l'acheter.
+                        echo "<strong>Stock Autonome</strong></trong>:<br> " . $result['stock'] . ".<BR/><BR/>";
                     }
+                }
             }
             ?>
 
             <strong>Objets Uniques en vitrine:</strong><BR/>
             <?php
             $req_stock
-                = "select obj_cod,obj_nom,gobj_cod
+                  = "select obj_cod,obj_nom,gobj_cod
 from objets,objet_generique,stock_magasin
 where mstock_lieu_cod = $lieu_cod
 				and mstock_obj_cod = obj_cod
@@ -870,10 +971,13 @@ where mstock_lieu_cod = $lieu_cod
                 and obj_nom != gobj_nom
 				order by obj_nom";
             $stmt = $pdo->query($req_stock);
-            if ($stmt->rowCount() == 0) {
+            if ($stmt->rowCount() == 0)
+            {
                 echo "Aucun objet remarquable !<BR/>";
-            } else {
-                while ($result = $stmt->fetch()) {
+            } else
+            {
+                while ($result = $stmt->fetch())
+                {
                     echo '<a href="' . $PHP_SELF . '?methode=visu2&objet=' . $result['obj_cod'] . '&mag=' . $mag . '">' . $result['obj_nom'] . '</a><BR />';
                 }
             }
@@ -886,17 +990,24 @@ where mstock_lieu_cod = $lieu_cod
                     from objet_generique
                     LEFT OUTER JOIN stock_magasin_autorisations ON (gobj_cod = mgaut_gobj_cod and mgaut_lieu_cod = $lieu_cod)
                     LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod) ";
-            if ($perso_cod == 451072 or $perso_cod == 185) {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
-                $req_stock = $req_stock . "LEFT outer JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where (gobj_echoppe_vente = 'O' or mgstock_nombre > 0)";
-            } else {
-                if (TYPE_ECHOPPE == "MAGIE") {
-                    $req_stock = $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod) where (gobj_tobj_cod = 5 or mgstock_nombre > 0) ";
-                } else {
-                    $req_stock = $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where gobj_echoppe_stock = 'O' or mgstock_nombre > 0 ";
+            if ($perso_cod == 451072 or $perso_cod == 185)
+            {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
+                $req_stock =
+                    $req_stock . "LEFT outer JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where (gobj_echoppe_vente = 'O' or mgstock_nombre > 0)";
+            } else
+            {
+                if (TYPE_ECHOPPE == "MAGIE")
+                {
+                    $req_stock =
+                        $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod) where (gobj_tobj_cod = 5 or mgstock_nombre > 0) ";
+                } else
+                {
+                    $req_stock =
+                        $req_stock . "LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9)) where gobj_echoppe_stock = 'O' or mgstock_nombre > 0 ";
                 }
             }
             $req_stock = $req_stock . " order by gobj_tobj_cod,gobj_nom";
-            $stmt = $pdo->query($req_stock);
+            $stmt      = $pdo->query($req_stock);
             ?>
             <script language="javascript">
                 function valideStock() {
@@ -932,15 +1043,20 @@ where mstock_lieu_cod = $lieu_cod
                     <td colspan="1"><a href="javascript:valideAutorisations();">Valider les autorisations</a></td>
                 </tr>
                 <?php
-                while ($result = $stmt->fetch()) {
-                    if ($result['mgstock_vente_persos'] == 'O') {
+                while ($result = $stmt->fetch())
+                {
+                    if ($result['mgstock_vente_persos'] == 'O')
+                    {
                         $checked_v_perso = "checked";
-                    } else {
+                    } else
+                    {
                         $checked_v_perso = "";
                     }
-                    if ($result['mgstock_vente_echoppes'] == 'O') {
+                    if ($result['mgstock_vente_echoppes'] == 'O')
+                    {
                         $checked_v_ech = "checked";
-                    } else {
+                    } else
+                    {
                         $checked_v_ech = "";
                     }
                     $comp_libelle = $result['comp_libelle'];
@@ -951,20 +1067,24 @@ where mstock_lieu_cod = $lieu_cod
                     "</td><td>",
                     $result['mgstock_nombre'],
                     "</td>";
-                    if (($result['gobj_echoppe_stock'] == 'O' and $result['mgaut_gobj_cod'] != NULL) || $perso_cod == 451072 || (TYPE_ECHOPPE=="MAGIE")) {
+                    if (($result['gobj_echoppe_stock'] == 'O' and $result['mgaut_gobj_cod'] != NULL) || $perso_cod == 451072 || (TYPE_ECHOPPE == "MAGIE"))
+                    {
                         echo "<td><input type=\"text\" name=\"STOCK", $result['gobj_cod'], "\" size=\"4\"></td>";
-                    } else {
+                    } else
+                    {
                         echo "<td>&nbsp;</td>";
                     }
                     echo "<td><input type=\"text\" name=\"DESTOCK", $result['gobj_cod'], "\" size=\"4\">",
                     "</td><td>";
-                    if ($result['mgstock_nombre'] != null) {
+                    if ($result['mgstock_nombre'] != null)
+                    {
                         echo "<input type=\"hidden\" name=\"DISPO_PUBLIC_ACTU_", $result['gobj_cod'], "\" value=\"", $result['mgstock_vente_persos'], "\" $checked_v_perso >",
                         "<input type=\"checkbox\" name=\"DISPO_PUBLIC_", $result['gobj_cod'], "\" value=\"O\" $checked_v_perso >",
                         "</td><td>",
                         "<input type=\"hidden\" name=\"DISPO_PRO_ACTU_", $result['gobj_cod'], "\" value=\"", $result['mgstock_vente_echoppes'], "\" $checked_v_perso >",
                         "<input type=\"checkbox\" name=\"DISPO_PRO_", $result['gobj_cod'], "\" value=\"O\" $checked_v_ech >";
-                    } else {
+                    } else
+                    {
                         echo "X</td><td>X";
                     }
                     echo "</td></tr>\n";
@@ -985,86 +1105,90 @@ where mstock_lieu_cod = $lieu_cod
     ?><p>B</p><?php
     endPane();
     startPane($liste_panels, 2, $select_pane);
-// TRANSACTIONS
+    // TRANSACTIONS
     if (TYPE_ECHOPPE == "MAGIE")
     {
         echo '<div width="100%" align="left">Non disponible pour les Magasin runiques<div>';
-    }
-    else
+    } else
     {
 
-    ?>
-    <div width="100%" align="left">
+        ?>
+        <div width="100%" align="left">
 
 
-        <form method="post" name="begintransaction">
-            <input type="hidden" name="methode" value="create_tran">
-            <input type="hidden" name="pane" value="2">
-            Client :<select name="dest_perso_cod">
-                <option value="-">- Choisir un client présent dans le magasin -</option>
-                <?php
-                $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod  and perso_type_perso in (1,2,3) and perso_actif = 'O' order by perso_type_perso,minusc";
-                $stmt = $pdo->query($req_vue);
-                while ($result = $stmt->fetch()) {
-                    echo "<option value=\"" . $result['perso_cod'] . "\">" . $result['perso_nom'] . "</option>";
-                }
-                ?>
-            </select><br><br>
+            <form method="post" name="begintransaction">
+                <input type="hidden" name="methode" value="create_tran">
+                <input type="hidden" name="pane" value="2">
+                Client :<select name="dest_perso_cod">
+                    <option value="-">- Choisir un client présent dans le magasin -</option>
+                    <?php
+                    $req_vue =
+                        "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod  and perso_type_perso in (1,2,3) and perso_actif = 'O' order by perso_type_perso,minusc";
+                    $stmt    = $pdo->query($req_vue);
+                    while ($result = $stmt->fetch())
+                    {
+                        echo "<option value=\"" . $result['perso_cod'] . "\">" . $result['perso_nom'] . "</option>";
+                    }
+                    ?>
+                </select><br><br>
 
-            Article :<select name="article_cod"
-                             onChange="document.begintransaction.article_special_cod.selectedIndex = 0;">
-                <option value="">Choisir un objet</option>
-                <?php
-                $req_stock = "select gobj_cod,gobj_nom,gobj_valeur,mgstock_nombre from objet_generique,stock_magasin_generique "
-                    . " where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod"
-                    . " and mgstock_nombre > 0"
-                    . " order by gobj_tobj_cod,gobj_nom";
-                $stmt = $pdo->query($req_stock);
-                while ($result = $stmt->fetch()) {
-                    echo "<option value=\"" . $result['gobj_cod'] . "\">" . $result['gobj_nom'] . " (" . $result['mgstock_nombre'] . " / prix : " . $result['gobj_valeur'] . ")" . "</option>";
-                }
-                ?>
-            </select><br><br>
-            Article Special:<select name="article_special_cod"
-                                    onChange="document.begintransaction.article_cod.selectedIndex = 0;">
-                <option value="">Choisir un objet</option>
-                <?php
-                $req_stock
-                    = "select obj_cod,obj_nom,obj_valeur,gobj_cod
+                Article :<select name="article_cod"
+                                 onChange="document.begintransaction.article_special_cod.selectedIndex = 0;">
+                    <option value="">Choisir un objet</option>
+                    <?php
+                    $req_stock =
+                        "select gobj_cod,gobj_nom,gobj_valeur,mgstock_nombre from objet_generique,stock_magasin_generique "
+                        . " where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod"
+                        . " and mgstock_nombre > 0"
+                        . " order by gobj_tobj_cod,gobj_nom";
+                    $stmt      = $pdo->query($req_stock);
+                    while ($result = $stmt->fetch())
+                    {
+                        echo "<option value=\"" . $result['gobj_cod'] . "\">" . $result['gobj_nom'] . " (" . $result['mgstock_nombre'] . " / prix : " . $result['gobj_valeur'] . ")" . "</option>";
+                    }
+                    ?>
+                </select><br><br>
+                Article Special:<select name="article_special_cod"
+                                        onChange="document.begintransaction.article_cod.selectedIndex = 0;">
+                    <option value="">Choisir un objet</option>
+                    <?php
+                    $req_stock
+                          = "select obj_cod,obj_nom,obj_valeur,gobj_cod
 from objets,objet_generique,stock_magasin
 where mstock_lieu_cod = $lieu_cod
 				and mstock_obj_cod = obj_cod
 				and obj_gobj_cod = gobj_cod
 				order by obj_nom";
-                $stmt = $pdo->query($req_stock);
-                while ($result = $stmt->fetch()) {
-                    echo "<option value=\"" . $result['obj_cod'] . "\">" . $result['obj_nom'] . "(prix : " . $result['obj_valeur'] . ")</option>";
-                }
-                ?>
-            </select><br><br>
+                    $stmt = $pdo->query($req_stock);
+                    while ($result = $stmt->fetch())
+                    {
+                        echo "<option value=\"" . $result['obj_cod'] . "\">" . $result['obj_nom'] . "(prix : " . $result['obj_valeur'] . ")</option>";
+                    }
+                    ?>
+                </select><br><br>
 
-            Quantité :<input type="text" name="tran_quantite" value="1"><br><br>
-            Prix total Proposé :<input type="text" name="tran_prix" value="0"><br><br>
-            <input type="submit" value="Valider la transaction !">
-        </form>
+                Quantité :<input type="text" name="tran_quantite" value="1"><br><br>
+                Prix total Proposé :<input type="text" name="tran_prix" value="0"><br><br>
+                <input type="submit" value="Valider la transaction !">
+            </form>
 
-        Transactions en cours:
-        <form name="cancel_tran" method="post">
-            <input type="hidden" name="pane" value="2">
-            <input type="hidden" name="methode" value="delete_tran">
-            <input type="hidden" name="transaction_cod" value="">
-        </form>
-        <table width="100%">
-            <tr>
-                <td>Client</td>
-                <td>Objet</td>
-                <td>Quantité</td>
-                <td>Prix</td>
-                <td>Annuler</td>
-            </tr>
-            <?php
-            $req_stock
-                = "select perso_nom,tran_cod,obj_nom,tran_quantite,tran_prix
+            Transactions en cours:
+            <form name="cancel_tran" method="post">
+                <input type="hidden" name="pane" value="2">
+                <input type="hidden" name="methode" value="delete_tran">
+                <input type="hidden" name="transaction_cod" value="">
+            </form>
+            <table width="100%">
+                <tr>
+                    <td>Client</td>
+                    <td>Objet</td>
+                    <td>Quantité</td>
+                    <td>Prix</td>
+                    <td>Annuler</td>
+                </tr>
+                <?php
+                $req_stock
+                      = "select perso_nom,tran_cod,obj_nom,tran_quantite,tran_prix
   from transaction_echoppe,perso,objets
 where
 tran_acheteur = perso_cod
@@ -1073,23 +1197,24 @@ and tran_vendeur = $lieu_cod
 and obj_cod = tran_gobj_cod
 order by  perso_nom
 ";
-            $stmt = $pdo->query($req_stock);
-            while ($result = $stmt->fetch()) { ?>
-                <tr>
-                    <td><?php echo $result['perso_nom'] ?></td>
-                    <td><?php echo $result['obj_nom'] ?></td>
-                    <td><?php echo $result['tran_quantite'] ?></td>
-                    <td><?php echo $result['tran_prix'] ?></td>
-                    <td>
-                        <a href="javascript:document.cancel_tran.transaction_cod.value=<?php echo $result['tran_cod']; ?>;document.cancel_tran.submit();">Annuler</a>
-                    </td>
-                </tr>
+                $stmt = $pdo->query($req_stock);
+                while ($result = $stmt->fetch())
+                { ?>
+                    <tr>
+                        <td><?php echo $result['perso_nom'] ?></td>
+                        <td><?php echo $result['obj_nom'] ?></td>
+                        <td><?php echo $result['tran_quantite'] ?></td>
+                        <td><?php echo $result['tran_prix'] ?></td>
+                        <td>
+                            <a href="javascript:document.cancel_tran.transaction_cod.value=<?php echo $result['tran_cod']; ?>;document.cancel_tran.submit();">Annuler</a>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
                 <?php
-            }
-            ?>
-            <?php
-            $req_stock
-                = "select perso_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
+                $req_stock
+                      = "select perso_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
   from transaction_echoppe,perso,objet_generique
 where
 tran_acheteur = perso_cod
@@ -1098,32 +1223,33 @@ and tran_vendeur = $lieu_cod
 and gobj_cod = tran_gobj_cod
 order by  perso_nom
 ";
-            $stmt = $pdo->query($req_stock);
-            while ($result = $stmt->fetch()) { ?>
-                <tr>
-                    <td><?php echo $result['perso_nom'] ?></td>
-                    <td><?php echo $result['gobj_nom'] ?></td>
-                    <td><?php echo $result['tran_quantite'] ?></td>
-                    <td><?php echo $result['tran_prix'] ?></td>
-                    <td>
-                        <a href="javascript:document.cancel_tran.transaction_cod.value=<?php echo $result['tran_cod'] ?>;document.cancel_tran.submit();">Annuler</a>
-                    </td>
-                </tr>
-                <?php
-            }
-            ?>
+                $stmt = $pdo->query($req_stock);
+                while ($result = $stmt->fetch())
+                { ?>
+                    <tr>
+                        <td><?php echo $result['perso_nom'] ?></td>
+                        <td><?php echo $result['gobj_nom'] ?></td>
+                        <td><?php echo $result['tran_quantite'] ?></td>
+                        <td><?php echo $result['tran_prix'] ?></td>
+                        <td>
+                            <a href="javascript:document.cancel_tran.transaction_cod.value=<?php echo $result['tran_cod'] ?>;document.cancel_tran.submit();">Annuler</a>
+                        </td>
+                    </tr>
+                    <?php
+                }
+                ?>
 
-        </table>
-    </div>
-    <?php
+            </table>
+        </div>
+        <?php
     } // fin Transaction!
 
     endPane();
     startPane($liste_panels, 3, $select_pane);
     //CONTRATS
     ?><p>
-        Transactions avec d'autres échoppes
-    </p>
+    Transactions avec d'autres échoppes
+</p>
     <div width="100%" align="left">
 
 
@@ -1133,9 +1259,11 @@ order by  perso_nom
             Client :<select name="dest_lieu_cod">
                 <option value="-">- Choisir une autre échoppe -</option>
                 <?php
-                $req = "select lieu_cod,lieu_nom from lieu where lieu_tlieu_cod in (".(TYPE_ECHOPPE=="MAGIE" ? "14" : "11,21").") and lieu_cod != $lieu_cod";
+                $req  =
+                    "select lieu_cod,lieu_nom from lieu where lieu_tlieu_cod in (" . (TYPE_ECHOPPE == "MAGIE" ? "14" : "11,21") . ") and lieu_cod != $lieu_cod";
                 $stmt = $pdo->query($req);
-                while ($result = $stmt->fetch()) {
+                while ($result = $stmt->fetch())
+                {
                     echo "<option value=\"" . $result['lieu_cod'] . "\">" . $result['lieu_nom'] . "</option>";
                 }
                 ?>
@@ -1144,12 +1272,14 @@ order by  perso_nom
                              onChange="document.begintransaction.article_special_cod.selectedIndex = 0;">
                 <option value="">Choisir un objet</option>
                 <?php
-                $req_stock = "select gobj_cod,gobj_nom,gobj_valeur,mgstock_nombre from objet_generique,stock_magasin_generique "
+                $req_stock =
+                    "select gobj_cod,gobj_nom,gobj_valeur,mgstock_nombre from objet_generique,stock_magasin_generique "
                     . " where gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = $lieu_cod"
                     . " and mgstock_nombre > 0"
                     . " order by gobj_tobj_cod,gobj_nom";
-                $stmt = $pdo->query($req_stock);
-                while ($result = $stmt->fetch()) {
+                $stmt      = $pdo->query($req_stock);
+                while ($result = $stmt->fetch())
+                {
                     echo "<option value=\"" . $result['gobj_cod'] . "\">" . $result['gobj_nom'] . " (" . $result['mgstock_nombre'] . " / prix : " . $result['gobj_valeur'] . ")</option>";
                 }
                 ?>
@@ -1177,7 +1307,7 @@ order by  perso_nom
             </tr>
             <?php
             $req_stock
-                = "select lieu_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
+                  = "select lieu_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
   from transaction_echoppe,lieu,objet_generique
 where
 tran_acheteur = lieu_cod
@@ -1187,7 +1317,8 @@ and gobj_cod = tran_gobj_cod
 order by  lieu_nom
 ";
             $stmt = $pdo->query($req_stock);
-            while ($result = $stmt->fetch()) { ?>
+            while ($result = $stmt->fetch())
+            { ?>
                 <tr>
                     <td><?php echo $result['lieu_nom'] ?></td>
                     <td><?php echo $result['gobj_nom'] ?></td>
@@ -1226,7 +1357,7 @@ order by  lieu_nom
             </tr>
             <?php
             $req_stock
-                = "select lieu_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
+                  = "select lieu_nom,tran_cod,gobj_nom,tran_quantite,tran_prix
   from transaction_echoppe,lieu,objet_generique
 where
 tran_acheteur = $lieu_cod
@@ -1236,7 +1367,8 @@ and gobj_cod = tran_gobj_cod
 order by  lieu_nom
 ";
             $stmt = $pdo->query($req_stock);
-            while ($result = $stmt->fetch()) { ?>
+            while ($result = $stmt->fetch())
+            { ?>
                 <tr>
                     <td><?php echo $result['lieu_nom'] ?></td>
                     <td><?php echo $result['gobj_nom'] ?></td>
@@ -1261,15 +1393,20 @@ order by  lieu_nom
         <?php
         endPane();
         startPane($liste_panels, 4, $select_pane);
-        $label_type = array("Achat (Av -> Ech)", "Vente (Ech -> Av)", "Stockage (Adm -> Ech)", "Destockage (Ech -> Adm)", "Transaction (Ech -> Av)", "Contrat (Ext -> Ech)", "Contrat (Ech -> Ext)");
-        if (isset($_POST['tran_type'])) {
+        $label_type =
+            array("Achat (Av -> Ech)", "Vente (Ech -> Av)", "Stockage (Adm -> Ech)", "Destockage (Ech -> Adm)", "Transaction (Ech -> Av)", "Contrat (Ext -> Ech)", "Contrat (Ech -> Ext)");
+        if (isset($_POST['tran_type']))
+        {
             $t_type = $_POST['tran_type'];
-        } else {
+        } else
+        {
             $t_type = -1;
         }
-        if (isset($_POST['tran_mois'])) {
+        if (isset($_POST['tran_mois']))
+        {
             $t_mois = $_POST['tran_mois'];
-        } else {
+        } else
+        {
             $t_mois = 0;
         }
         ?><p>Livre de comptes
@@ -1282,7 +1419,8 @@ order by  lieu_nom
             <a href="javascript:document.refresh_comptes.tran_mois.value=<?php echo $t_mois - 1 ?>;document.refresh_comptes.submit();">
                 &lt;&lt; Mois précédent</a>
             <?php
-            if ($t_mois < 0) {
+            if ($t_mois < 0)
+            {
                 ?>
                 <a href="javascript:document.refresh_comptes.tran_mois.value=<?php echo $t_mois + 1 ?>;document.refresh_comptes.submit();">Mois
                     suivant &gt;&gt;</a>
@@ -1296,7 +1434,8 @@ order by  lieu_nom
             <select name="tran_type">
                 <option value="-1">Tous</option>
                 <?php
-                foreach ($label_type as $i => $vali) {
+                foreach ($label_type as $i => $vali)
+                {
                     $selected = ($t_type == $i) ? "selected" : "";
                     echo "<option value=\"$i\" $selected >$vali</option>";
                 }
@@ -1329,14 +1468,16 @@ order by  lieu_nom
                   ) u  where mgtra_nombre>0 
                         ";
 
-            if ($t_type >= 0) {
+            if ($t_type >= 0)
+            {
                 $req = $req . " and mgtra_sens = $t_type";
             }
-            $req = $req . " and mgtra_date >= to_date('" . date('d/m/Y', $date_deb) . "','DD/MM/YYYY')";
-            $req = $req . " and mgtra_date <= to_date('" . date('d/m/Y', $date_fin) . "','DD/MM/YYYY')";
-            $req = $req . " order by mgtra_date";
+            $req  = $req . " and mgtra_date >= to_date('" . date('d/m/Y', $date_deb) . "','DD/MM/YYYY')";
+            $req  = $req . " and mgtra_date <= to_date('" . date('d/m/Y', $date_fin) . "','DD/MM/YYYY')";
+            $req  = $req . " order by mgtra_date";
             $stmt = $pdo->query($req);
-            while ($result = $stmt->fetch()) { ?>
+            while ($result = $stmt->fetch())
+            { ?>
                 <tr>
                     <td><?php echo $result['date_tran'] ?></td>
                     <td><?php echo $result['perso_nom'] ?></td>
@@ -1355,12 +1496,12 @@ order by  lieu_nom
         if (TYPE_ECHOPPE == "MAGIE")
         {
             echo '<div width="100%" align="left">Non disponible pour les Magasin runiques<div>';
-        }
-        else
+        } else
         {
-            $req_stock = "SELECT frm_cod,	frm_type,	frm_nom,	frm_temps_travail,	frm_cout,	frm_resultat,	frm_comp_cod FROM formule WHERE frm_type = 1"
+            $req_stock =
+                "SELECT frm_cod,	frm_type,	frm_nom,	frm_temps_travail,	frm_cout,	frm_resultat,	frm_comp_cod FROM formule WHERE frm_type = 1"
                 . " ORDER BY frm_nom";
-            $stmt = $pdo->query($req_stock);
+            $stmt      = $pdo->query($req_stock);
             ?><p>Travaux disponibles:</p>
             <form name="realiser_formule" method="post">
                 <input type="hidden" name="pane" value="5">
@@ -1373,48 +1514,51 @@ order by  lieu_nom
                     document.realiser_formule.submit();
                 }
             </script>
-            <?php
-            while ($result = $stmt->fetch()) {
-                ?>
-                <div class="tableau">
-                    <strong><?php echo $result['frm_nom'] ?></strong> Temps nécéssaire:
-                    <strong><?php echo $result['frm_temps_travail'] ?></strong> h <br/>
-                    Composants: <strong><?php echo $result['frm_cout'] ?></strong> Br<br/>
-                    <?php
-                    $req_comp
-                        = "SELECT gobj_nom,frmco_num,mgstock_nombre FROM objet_generique,formule_composant 
+        <?php
+        while ($result = $stmt->fetch())
+        {
+        ?>
+            <div class="tableau">
+                <strong><?php echo $result['frm_nom'] ?></strong> Temps nécéssaire:
+                <strong><?php echo $result['frm_temps_travail'] ?></strong> h <br/>
+                Composants: <strong><?php echo $result['frm_cout'] ?></strong> Br<br/>
+                <?php
+                $req_comp
+                       = "SELECT gobj_nom,frmco_num,mgstock_nombre FROM objet_generique,formule_composant 
             LEFT JOIN stock_magasin_generique ON (mgstock_gobj_cod = frmco_gobj_cod AND mgstock_lieu_cod = " . $lieu_cod . ")
             WHERE frmco_gobj_cod = gobj_cod AND frmco_frm_cod = " . $result['frm_cod'] . "
             ORDER BY gobj_nom";
-                    $stmt2 = $pdo->query($req_comp);
-                    while ($result2 = $stmt2->fetch()) {
-                        echo " - " . $result2['gobj_nom'] . " (x" . $result2['frmco_num'] . ") / Stock : " . $result2['mgstock_nombre'] . "<br/>";
-                    }
-                    ?>
-                    <br/>
-                    Produits: <strong><?php echo $result['frm_resultat'] ?></strong> Br<br/>
-                    <?php
-                    $req_comp = "SELECT gobj_nom,	frmpr_num FROM  	formule_produit,objet_generique"
-                        . " WHERE frmpr_gobj_cod = gobj_cod AND frmpr_frm_cod = " . $result['frm_cod']
-                        . " ORDER BY gobj_nom";
-                    $stmt2 = $pdo->query($req_comp);
-                    while ($result2 = $stmt2->fetch()) {
-                        echo " - " . $result2['gobj_nom'] . " (x" . $result2['frmpr_num'] . ")<br/>";
-                    }
-                    ?>
-                    <form name="realise" method="post" action="<?php echo $PHP_SELF ?>">
-                        <input type="text" name="nombre">
-                        <input type="hidden" name="methode" value="realiser_formule">
-                        <input type="hidden" name="mag" value="<?php echo $lieu_cod ?>">
-                        <input type="hidden" name="pane" value="5">
-                        <input type="hidden" name="frm_cod" value="<?php echo $result['frm_cod'] ?>">
-                        <input type="submit" class="test" value="Realiser !">
-                        <!--<a href="javascript:real_form(<?php echo $result['frm_cod'] ?>);">Realiser</a>-->
-                    </form>
-                    <br/><br/>
-                </div>
+                $stmt2 = $pdo->query($req_comp);
+                while ($result2 = $stmt2->fetch())
+                {
+                    echo " - " . $result2['gobj_nom'] . " (x" . $result2['frmco_num'] . ") / Stock : " . $result2['mgstock_nombre'] . "<br/>";
+                }
+                ?>
+                <br/>
+                Produits: <strong><?php echo $result['frm_resultat'] ?></strong> Br<br/>
                 <?php
-            }
+                $req_comp = "SELECT gobj_nom,	frmpr_num FROM  	formule_produit,objet_generique"
+                            . " WHERE frmpr_gobj_cod = gobj_cod AND frmpr_frm_cod = " . $result['frm_cod']
+                            . " ORDER BY gobj_nom";
+                $stmt2    = $pdo->query($req_comp);
+                while ($result2 = $stmt2->fetch())
+                {
+                    echo " - " . $result2['gobj_nom'] . " (x" . $result2['frmpr_num'] . ")<br/>";
+                }
+                ?>
+                <form name="realise" method="post" action="<?php echo $PHP_SELF ?>">
+                    <input type="text" name="nombre">
+                    <input type="hidden" name="methode" value="realiser_formule">
+                    <input type="hidden" name="mag" value="<?php echo $lieu_cod ?>">
+                    <input type="hidden" name="pane" value="5">
+                    <input type="hidden" name="frm_cod" value="<?php echo $result['frm_cod'] ?>">
+                    <input type="submit" class="test" value="Realiser !">
+                    <!--<a href="javascript:real_form(<?php echo $result['frm_cod'] ?>);">Realiser</a>-->
+                </form>
+                <br/><br/>
+            </div>
+            <?php
+        }
         }
         endPane();
         ?>

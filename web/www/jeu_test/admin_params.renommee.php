@@ -56,6 +56,7 @@ $typeRenommee = '';
 
 // Ce bloc peut sûrement être remplacé par une expression rationnelle ou un simple substring, pour déterminer le type...
 // J’ai la flemme de le changer. Et je préfère le déterminisme ^^
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'ren_g_creation': case 'ren_g_modif': case 'ren_g_supp':

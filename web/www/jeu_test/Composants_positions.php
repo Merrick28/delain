@@ -14,10 +14,7 @@ function toutCocher2(formulaire,nom){
     }
 }
 </script>';
-if (!isset($methode))
-{
-    $methode = "debut";
-}
+$methode          = get_request_var('methode', 'debut');
 switch ($methode)
 {
     case "debut":

@@ -8,15 +8,14 @@ ob_start();
 //
 // verif droits
 
-$droit_modif          = 'dcompt_potions';
+$droit_modif = 'dcompt_potions';
 include "blocks/_test_droit_modif_generique.php";
 
 
 if ($erreur == 0)
 {
     // initialisation de la méthode
-    if (!isset($methode))
-        $methode = 'debut';
+    $methode          = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -55,7 +54,7 @@ if ($erreur == 0)
                     $req_composant = "select 	frmco_frm_cod,frmco_gobj_cod,frmco_num,gobj_nom from formule_composant,objet_generique	
 														where frmco_frm_cod = $cod_potion 
 														and frmco_gobj_cod = gobj_cod";
-                    $stmt2 = $pdo->query($req_composant);
+                    $stmt2         = $pdo->query($req_composant);
                     echo "<td>";
                     while ($result2 = $stmt2->fetch())
                     {
@@ -194,7 +193,7 @@ if ($erreur == 0)
             <br>
             <hr>
             <?php
-            $action = get_request_var('action','');
+            $action = get_request_var('action', '');
             if ($action == 'ajout')
             {
                 $req  =
@@ -380,7 +379,7 @@ if ($erreur == 0)
             <br>
             <hr>
             <?php
-            $action = get_request_var('action','');
+            $action = get_request_var('action', '');
             if ($action == 'ajout')
             {
                 $req  =

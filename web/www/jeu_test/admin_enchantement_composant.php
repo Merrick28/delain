@@ -2,13 +2,8 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 // initialisation de la méthode
-if (!isset($_REQUEST['methode2']))
-{
-    $methode2 = "entree";
-} else
-{
-    $methode2 = $_REQUEST['methode2'];
-}
+
+$methode2        = get_request_var('methode2', 'entree');
 switch ($methode2)
 {
     case "debut":
@@ -165,29 +160,29 @@ switch ($methode2)
         break;
     case "ajout2":
         $req_form_cod = "select nextval('seq_frm_cod') as numero";
-        $stmt = $pdo->query($req_form_cod);
-        $result = $stmt->fetch();
-        $req = 'insert into formule
+        $stmt    = $pdo->query($req_form_cod);
+        $result  = $stmt->fetch();
+        $req     = 'insert into formule
 								(frm_cod,frm_type,frm_nom,frm_temps_travail,frm_cout,frm_resultat,frm_comp_cod)
 								values(:num_form,3,:nom,:temps,:cout,:resultat,:competence)';
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
-                                  ":num_form"   => $_REQUEST['num_form'],
-                                  ":nom"        => $_REQUEST['nom'],
-                                  ":temps"      => $_POST['temps'],
-                                  ":cout"       => $_POST['pot_cout'],
-                                  ":resultat"   => $_POST['resultat'],
-                                  ":competence" => $_POST['competence']
-                              ), $stmt);
-        $req = 'insert into formule_produit
+        $stmt    = $pdo->prepare($req);
+        $stmt    = $pdo->execute(array(
+                                     ":num_form"   => $_REQUEST['num_form'],
+                                     ":nom"        => $_REQUEST['nom'],
+                                     ":temps"      => $_POST['temps'],
+                                     ":cout"       => $_POST['pot_cout'],
+                                     ":resultat"   => $_POST['resultat'],
+                                     ":competence" => $_POST['competence']
+                                 ), $stmt);
+        $req     = 'insert into formule_produit
 								(frmpr_frm_cod,frmpr_gobj_cod,frmpr_num)
 								values(:num_form,:composant,:nombre)';
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
-                                  ":num_form"  => $_REQUEST['num_form'],
-                                  ":composant" => $_REQUEST['composant'],
-                                  ":nombre"    => $_POST['nombre']
-                              ), $stmt);
+        $stmt    = $pdo->prepare($req);
+        $stmt    = $pdo->execute(array(
+                                     ":num_form"  => $_REQUEST['num_form'],
+                                     ":composant" => $_REQUEST['composant'],
+                                     ":nombre"    => $_POST['nombre']
+                                 ), $stmt);
         echo "<p>La formule de base du composant d'enchantement a bien été insérée !<br>
 				Pensez à inclure la pierre précieuse nécessaire pour ce composant. Autrement, il ne pourra jamais être produit<br>";
         ?><a href="<?php echo $PHP_SELF; ?>?methode2=serie_obj&pot=<?php echo $num_form; ?>">Modifier la pierre
@@ -202,9 +197,9 @@ switch ($methode2)
         break;
     case "modif":
         $req = 'select * from formule,formule_produit where frm_cod = :pot and frm_cod = frmpr_frm_cod';
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":pot" => $pot), $stmt);
-        $result = $stmt->fetch();
+        $stmt    = $pdo->prepare($req);
+        $stmt    = $pdo->execute(array(":pot" => $pot), $stmt);
+        $result  = $stmt->fetch();
         $cod_pot = $result['frmpr_gobj_cod'];
         ?>
         <a href="<?php echo $PHP_SELF; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste d'objets</a><br>
@@ -303,25 +298,25 @@ switch ($methode2)
 								frm_resultat = :resultat,
 								frm_comp_cod = :competence
 								where frm_cod = :pot';
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
-                                  ":nom"        => $_POST['nom'],
-                                  ":temps"      => $_POST['temps'],
-                                  ":cout"       => $_POST['pot_cout'],
-                                  ":resultat"   => $_POST['resultat'],
-                                  ":competence" => $_POST['competence'],
-                                  ":pot"        => $pot
-                              ), $stmt);
-        $req = 'update formule_produit
+        $stmt    = $pdo->prepare($req);
+        $stmt    = $pdo->execute(array(
+                                     ":nom"        => $_POST['nom'],
+                                     ":temps"      => $_POST['temps'],
+                                     ":cout"       => $_POST['pot_cout'],
+                                     ":resultat"   => $_POST['resultat'],
+                                     ":competence" => $_POST['competence'],
+                                     ":pot"        => $pot
+                                 ), $stmt);
+        $req     = 'update formule_produit
 									set frmpr_gobj_cod = :potion,
 									frmpr_num = :nombre
 									where frmpr_frm_cod = :pot';
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(
-                                  ":potion" => $_POST['potion'],
-                                  ":nombre" => $_POST['nombre'],
-                                  ":pot"    => $pot
-                              ), $stmt);
+        $stmt    = $pdo->prepare($req);
+        $stmt    = $pdo->execute(array(
+                                     ":potion" => $_POST['potion'],
+                                     ":nombre" => $_POST['nombre'],
+                                     ":pot"    => $pot
+                                 ), $stmt);
         if ($_POST['competence'] == '88')
         {
             $comp = 1;

@@ -12,7 +12,7 @@ echo '<script type="text/javascript">
 	</script>';
 
 $resultat = '';
-
+$methode = $_REQUEST['methode'];
 switch ($methode)
 {
 	case 'debut': break;

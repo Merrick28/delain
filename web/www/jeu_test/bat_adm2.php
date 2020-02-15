@@ -15,10 +15,7 @@ $nom_lieu  = 'un bâtiment administratif';
 
 include "blocks/_test_lieu.php";
 
-if (!isset($methode))
-{
-    $methode = 'debut';
-}
+$methode          = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)
