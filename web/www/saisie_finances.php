@@ -1,15 +1,21 @@
 ﻿<?php
-include_once "jeu_test/verif_connexion.php";
-if ($compte->compt_cod != 4) {
+$verif_connexion = new verif_connexion();
+$tempconn        = $verif_connexion->verif();
+$perso_cod       = $tempconn['perso_cod'];
+$compt_cod       = $tempconn['compt_cod'];
+if ($compte->compt_cod != 4)
+{
     die("Accès réservé");
 }
 
 $finances = new finances;
 
 // est-ce qu'on a un formulaire qui arrive ?
-if (isset($_POST['methode'])) {
-    if ($_POST['methode'] == "nouveau") {
-        $finances->fin_desc = $_POST['desc'];
+if (isset($_POST['methode']))
+{
+    if ($_POST['methode'] == "nouveau")
+    {
+        $finances->fin_desc    = $_POST['desc'];
         $finances->fin_date = $_POST['date'];
         $finances->fin_montant = $_POST['montant'];
         $finances->stocke(true);

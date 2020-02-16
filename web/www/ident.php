@@ -3,42 +3,7 @@
 session_start();
 $verif_auth = false;
 
-//
-// fonction d'affichage du formulaire de login si pas authentifié
-//
-function montre_formulaire_connexion($isAuthOk)
-{
-    $resultat = "";
-
-    /* if ($erreur !== "")
-      {
-      $resultat .= '<strong>Erreur !</strong> ' . $erreur . '<br />';
-      } */
-
-    if (!$isAuthOk)
-    {
-        $resultat .= '<strong><a href="formu_cree_compte.php" style="font-size:1.1em">Créer un compte</a></strong><br /><br />Se connecter :<br />';
-        $resultat .= '<form method="post" action="' . $_SERVER['PHP_SELF'] . '">
-				Login<br />
-				<input type="text" name="username" size="15"><br />
-				Password<br />
-				<input type="password" name="password" size="15"><br /><br />
-				<input type="submit" class="test" value="Valider !"><br /><br />
-				<a href="renvoi_mdp.php" target="droite">Mot de passe oublié ? </a>
-			</form>';
-    }
-    else
-    {
-        global $compt_nom;
-        $resultat .= '<strong>' . $compt_nom . '</strong><div style="margin:5px">
-			<strong><img src="http://www.jdr-delain.net/images/attaquer.gif" title="Jouer" />&nbsp;<a href="validation_login2.php">Jouer</a></strong><hr style="margin-left:5px;margin-right:5px"/>
-			<img src="http://www.jdr-delain.net/images/deconnection.gif" title="Se déconnecter" />&nbsp;<a href="logout.php" target="_top">Se déconnecter</a></div>';
-    }
-    return $resultat;
-}
-
 $pdo = new bddpdo;
-
 $compte = new compte;
 $perso  = new perso;
 
@@ -176,7 +141,7 @@ else
 
 
 
-montre_formulaire_connexion($verif_auth);
+//montre_formulaire_connexion($verif_auth);
 
 // on met la variable ISAUTH dans options_tiwg_defaut
 // ca permettra de la passer automatiquement au template
