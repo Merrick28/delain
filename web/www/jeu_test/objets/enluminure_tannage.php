@@ -1,6 +1,6 @@
 <?php 
-include 'sjoueur.php';
-$param = new parametres();
+include G_CHE . 'jeu_test/sjoueur.php';
+$param       = new parametres();
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences 
 										where pcomp_perso_cod = $perso_cod 
 										and pcomp_pcomp_cod in (91,92,93)";

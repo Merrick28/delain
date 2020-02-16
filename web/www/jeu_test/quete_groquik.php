@@ -31,9 +31,10 @@ if ($erreur == 0)
 	Il lève les yeux vers vous et dit : <br />
 	« Bonjour aventurier, vous venez me vendre des pièces en chocolat ?
 	Je vous les achète un bon prix »";
-            $contenu_page4 .= "<p><a href=\"$_SERVER['PHP_SELF']?methode3=vendre\">Vendre vos pièces en chocolat (300 Brouzoufs chacune) ...</a></p>";
+            $contenu_page4 .= "<p><a href=\"" . $_SERVER['PHP_SELF'] . "?methode3=vendre\">Vendre vos pièces en chocolat 
+            (300 Brouzoufs chacune) ...</a></p>";
 
-		break;
+            break;
 		case "vendre":
 			$req = "select perobj_obj_cod from perso_objets, objets 
 					where perobj_obj_cod = obj_cod and obj_gobj_cod = 861

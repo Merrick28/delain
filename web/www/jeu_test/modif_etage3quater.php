@@ -32,9 +32,9 @@ if ($erreur == 0)
 
     if ((!isset($_POST["dupliquer"])) && (!isset($_POST["supprimer"])) && (!isset($_POST["do_supprimer"])))
     {
-
+        $phpself = $_SERVER['PHP_SELF'];
         echo "<table width='100%' class='bordiv'><tr><td><p><strong>DUPLICATION D’ETAGE :</strong></p>
-        <form method='post' action='$_SERVER['PHP_SELF']'>
+        <form method='post' action='$phpself'>
         <input type='hidden' value='dupliquer' name='dupliquer' />
         Choisir l'étage à dupliquer : <select name='etage'>" . $html->etage_select($admin_etage) . "</select>";
         echo "<br><br><u><strong>Options:</strong></u><br>
@@ -44,7 +44,7 @@ if ($erreur == 0)
             </form></td><td></table>";
 
         echo "<br><table width='100%' class='bordiv'><tr><td><p><strong>SUPPRESSION D'ETAGE :</strong></p>
-        <form method='post' action='$_SERVER['PHP_SELF']'>
+        <form method='post' action='$phpself'>
         <input type='hidden' value='supprimer' name='supprimer' />
         Choisir l'étage à supprimer : <select name='etage'>" . $html->etage_select($admin_etage) . "</select>";
         echo "<br><br> <u>Nota</u>: La suppression n'est pas possible s'il reste des persos à cet étage.<br> Seront supprimés:<br> - L'étage ses caracs, ses positions et murs.<br> - Tous les objets et l'or, qu'il contient<br> - Tous les monstres et PNJ aussi<br> - Tous les lieux de l'étage<br>";

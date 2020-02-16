@@ -40,7 +40,7 @@ $req_cases = "select pos_decor, pos_cod, pos_x, pos_y, pos_type_aff, coalesce(mu
 	left outer join murs on mur_pos_cod = pos_cod
 	where pos_etage = $num_etage 
 	order by pos_y desc, pos_x";
-$pdo->query(req_cases);
+$pdo->query($req_cases);
 $i = 0;
 while($result = $stmt->fetch())
 {

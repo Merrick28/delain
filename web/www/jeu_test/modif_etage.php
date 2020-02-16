@@ -42,11 +42,11 @@ if (!isset($etage))
     $etage = 0;
 }
 
-$menus = "<p>Choisissez l’étage à modifier :</p>
-	<form method='post' action='$_SERVER['PHP_SELF']'>
-	<select name='etage'>" .
-                         $html->etage_select($etage) .
-                         "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form>
+$menus = '<p>Choisissez l’étage à modifier :</p>
+	<form method="post" action="' . $_SERVER['PHP_SELF'] . '" >
+	<select name="etage">' .
+         $html->etage_select($etage) .
+         "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form>
 
 	<p><strong>Pour l’étage sélectionné :</strong></p>
 	<p>

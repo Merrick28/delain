@@ -113,7 +113,7 @@ if ((!$compte->is_admin()) && (!$compte->is_admin_monstre()))
         echo '<div class="container-fluid">';
         $benchmark = $profiler->start('Debut tab switch');
         include "../tab_switch.php";
-        $benchmark->stop($benchmark);
+        $benchmark->stop();
         echo '</div>';
         echo '</form>';
 

@@ -55,7 +55,6 @@ if (file_exists($filename) && $_SERVER["REMOTE_ADDR"] != '195.37.61.152') {
 	include G_CHE . 'stop_jeu';
 	die();
 }
-require 'prepend.php';
 // chemins du jeu
 if(isset($_SERVER["HTTPS"]) && ($_SERVER["HTTPS"] = 'on'))
 	$type_flux = 'https://';

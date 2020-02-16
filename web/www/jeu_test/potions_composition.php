@@ -124,7 +124,7 @@ if ($result = $stmt->fetch())
                 while ($result = $stmt->fetch())
                 {
                     $obj_cod      = $result['obj_cod'];
-                    $choix_flacon .= "<input type='radio' name='flacon' value='$obj_cod' id='$obj_cod'> <label for='$obj_cod'><a href='$_SERVER['PHP_SELF']?&tpot=$tpot&methode=detail&fiole=$obj_cod'>" . $result['obj_nom'] . '</a> (' . $result['nombre'] . ' composants)</label><br />';
+                    $choix_flacon .= "<input type='radio' name='flacon' value='$obj_cod' id='$obj_cod'> <label for='$obj_cod'><a href='" . $_SERVER['PHP_SELF'] . "?&tpot=$tpot&methode=detail&fiole=$obj_cod'>" . $result['obj_nom'] . '</a> (' . $result['nombre'] . ' composants)</label><br />';
                 }
             }
             $texte_bouton_ajout = '<input type="submit" name="ajout" value="Ajouter un composant (0PA)" class="test">';

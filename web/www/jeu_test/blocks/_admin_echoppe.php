@@ -6,7 +6,7 @@
  * Time: 16:24
  */
 
-include "blocks/_test_admin_echoppe.php";
+include G_CHE . "jeu_test/blocks/_test_admin_echoppe.php";
 
 if ($erreur == 0) {
     // pour vérif, on récupère les coordonnées du magasin

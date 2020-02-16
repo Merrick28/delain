@@ -392,7 +392,7 @@ if ($methode == "")
 
                 foreach ($journal_pages as $k => $jpages)
                 {
-                    $contenu_page .= $jpages->aqpersoj_texte . "<br><br>";;
+                    $contenu_page .= $jpages->aqpersoj_texte . "<br><br>";
                 }
             }
         }

@@ -692,9 +692,9 @@ if ($erreur == 0)
 
                     case 'element':
 
-                        $aquete_etape = new aquete_etape ;
-                        $aquete_etape->charge( $element->aqelem_misc_cod ); ;
-                        $aqelem_misc_nom = $aquete_etape->aqetape_nom ;
+                        $aquete_etape = new aquete_etape;
+                        $aquete_etape->charge($element->aqelem_misc_cod);
+                        $aqelem_misc_nom = $aquete_etape->aqetape_nom;
 
                         echo   '<td>Element : 
                                 <input data-entry="val" id="'.$row_id.'aqelem_cod" name="aqelem_cod['.$param_id.'][]" type="hidden" value="'.($element->aqelem_type=='element' ? $element->aqelem_cod : '').'"> 

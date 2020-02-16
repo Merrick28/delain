@@ -5,7 +5,7 @@ header("Expires: 0");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/xml");
-include "classes.php";
+require_once G_CHE . "includes/classes.php";
 
 if (!empty($_REQUEST["foo"]))
 {
@@ -39,4 +39,3 @@ if (!empty($_REQUEST["foo"]))
 
     echo utf8_encode($xml);
 }
-?>

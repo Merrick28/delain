@@ -122,7 +122,10 @@ if ($erreur == 0) {
 		<td width='17%'><a href='?onglet=distribution' $style_distribution>Distribution générale</a></td></tr></table></div><br />";
 
     if ($page_include != '')
+    {
         include_once $page_include;
+    }
+
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();

@@ -53,15 +53,14 @@ if ($result = $stmt->fetch())
 			{
                 //echo "POS=".$result['pos_x'].";".$result['pos_y'].";".$result['pos_etage']."<br>";
                 $key = $result['pos_x'] . "X" . $result['pos_y'];
-				if(isset($cachetteArray[$key]))
-				{
-					$cachetteArray[$key]++;	
-				} 
-				else 
-				{
-					$cachetteArray[$key] = 1;
-				}
-			};
+                if (isset($cachetteArray[$key]))
+                {
+                    $cachetteArray[$key]++;
+                } else
+                {
+                    $cachetteArray[$key] = 1;
+                }
+            }
 			
 			for ($i=-6; $i<7; $i++)
 			{  

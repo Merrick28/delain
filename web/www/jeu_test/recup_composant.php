@@ -28,8 +28,7 @@ function ImgPhase($phase)
     {
         $NumImage = 1;
     }
-    $ImagePhase = 'http://www.jdr-delain.net/images/lune_' . $NumImage . '.png';
-    return $ImagePhase;
+    return 'http://www.jdr-delain.net/images/lune_' . $NumImage . '.png';
 }
 
 function PartEntier($phase)
@@ -89,20 +88,17 @@ function NommerPhase($phase)
 
 function JoursAvantNL($phase) //calcule le nombre de jours avant la nouvelle Lune
 {
-    $val = round((1 - $phase / 100) * SYNODIC, 2);
-    return $val;
+    return round((1 - $phase / 100) * SYNODIC, 2);
 }
 
 function JoursAvantPL($phase) //calcule le nombre de jours avant la pleine Lune
 {
     if ($phase < 50)
     {
-        $val = round((0.5 - $phase / 100) * SYNODIC, 2);
-        return $val;
+        return round((0.5 - $phase / 100) * SYNODIC, 2);
     } else
     {
-        $val = round((1.5 - $phase / 100) * SYNODIC, 2);
-        return $val;
+        return round((1.5 - $phase / 100) * SYNODIC, 2);
     }
 }
 

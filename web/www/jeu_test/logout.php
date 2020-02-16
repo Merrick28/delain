@@ -1,6 +1,6 @@
 <?php 
 include G_CHE . 'ident.php';
-include 'classes.php';
+require_once G_CHE . "includes/classes.php";
 
 $myAuth = new myauth;
 $myAuth->start();

@@ -1,6 +1,6 @@
 <?php
 include "../includes/constantes.php";
-require_once "foncions.php";
+require_once G_CHE . "includes/fonctions.php";
 
 
 // position

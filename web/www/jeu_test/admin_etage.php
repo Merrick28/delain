@@ -15,11 +15,11 @@ if (!isset($admin_etage) && $methode == 'debut')
 ?>
 
 <?php echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
-	<form method='post' action='$_SERVER['PHP_SELF']'>
+	<form method='post' action='" . $_SERVER['PHP_SELF'] . "'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
-                         $html->etage_select($admin_etage) .
-                         "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
+           $html->etage_select($admin_etage) .
+           "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
 	<p><strong>Autres outils</strong><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
 	<a href='modif_etage3bis.php'>Créer / modifier les lieux</a><br />

@@ -352,4 +352,4 @@ $var_twig_defaut = array(
     'IS_REFUGE'           => $is_refuge,
     'PERSO_ANIMATION'     => $animation
 );
-$benchmark->stop($benchmark);
+$benchmark->stop();

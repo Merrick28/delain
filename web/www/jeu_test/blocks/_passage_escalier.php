@@ -18,9 +18,6 @@ if(!isset($desc_passage))
     $desc_passage = 'cet escalier';
 }
 
-$perso = new perso;
-$perso = $verif_connexion->perso;
-
 if ($erreur == 0)
 {
 

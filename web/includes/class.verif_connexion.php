@@ -5,8 +5,14 @@ class verif_connexion
     var $verif_auth = false;
     var $perso_cod;
     var $compt_cod;
-    var $compte     = false;
-    var $perso      = false;
+    /**
+     * @var compte Compte du perso
+     */
+    var $compte = false;
+    /**
+     * @var perso Objet perso courant
+     */
+    var $perso = false;
 
     function verif()
     {

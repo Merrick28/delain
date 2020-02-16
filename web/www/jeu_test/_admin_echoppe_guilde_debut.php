@@ -3,7 +3,7 @@
     une
     remise, un positif un surplus.<br>
     Les modificateurs doivent être compris entre -20 et 20.
-<form name="guilde" method="post" action="<? echo PHP_SELF; ?>">
+<form name="guilde" method="post" action="<? echo $_SERVER['PHP_SELF']; ?>">
     <div class="centrer">
         <table>
             <input type="hidden" name="methode" value="suite">

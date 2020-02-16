@@ -6,8 +6,6 @@
  * Time: 20:37
  */
 
-$perso = new perso;
-$perso = $verif_connexion->perso;
 
 $erreur = 0;
 if (!$perso->is_lieu())

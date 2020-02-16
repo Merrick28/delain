@@ -529,4 +529,3 @@ if ($erreur != 0)
     $template = $twig->load('lieu_relais_poste.twig');
     echo $template->render(array_merge($options_twig_defaut, $options_twig_colis, $options_twig));
 }
-?>

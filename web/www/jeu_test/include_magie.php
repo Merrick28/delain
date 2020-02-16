@@ -9,7 +9,7 @@ $sort_cod = $_REQUEST['sort_cod'];
     <input type="hidden" name="type_lance" value="<?php echo $type_lance ?>">
     <?php
     include "../includes/constantes.php";
-    require_once 'fonctions.php';
+    require_once G_CHE . "includes/fonctions.php";
 
     $req_sort  = "select sort_distance from sorts where sort_cod = $sort_cod ";
     $stmt      = $pdo->query($req_sort);

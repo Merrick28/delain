@@ -1,20 +1,6 @@
 ﻿﻿<?php
 include "blocks/_header_page_jeu.php";
 
-$pdo = new bddpdo();
-
-$perso = new perso;
-if (!$perso->charge($perso_cod))
-{
-    die('Erreur sur chargement de perso !');
-}
-
-
-$compte = new compte;
-$compte = $verif_connexion->compte;
-
-
-$methode = get_request_var('methode', '');
 
 function affiche_apres_deplacement($position)
 {
@@ -38,7 +24,8 @@ function affiche_apres_deplacement($position)
     return $retour;
 }
 
-
+$compte           = $verif_connexion->compte;
+$methode          = get_request_var('methode', '');
 $menu_deplacement = isset($_POST['menu_deplacement']) ? $_POST['menu_deplacement'] : '';
 $inc_vue          = ($methode == 'deplacement') && (!$menu_deplacement);
 

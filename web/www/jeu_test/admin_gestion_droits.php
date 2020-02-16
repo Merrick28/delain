@@ -419,7 +419,7 @@ else
             if (!$result = $stmt->fetch())
             {
                 echo "Aucun droit particulier pour le compte « $compt_modif ».<br>
-				<a href='$_SERVER['PHP_SELF']?compte=$compte&methode=cree'>Créer des droits ?</a>";
+				<a href='" . $_SERVER['PHP_SELF'] . "?compte=$compte&methode=cree'>Créer des droits ?</a>";
             } else
             {
                 echo "<p>Modification des droits pour le compte « $compt_modif ».</p>";

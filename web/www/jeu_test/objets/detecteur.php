@@ -55,13 +55,15 @@ if ($result = $stmt->fetch())
                 if ($result['pos_etage'] == $perso_pos_etage)
                 {
                     $key = $result['pos_x'] . "X" . $result['pos_y'];
-					if(isset($boulesArray[$key])){
-						$boulesArray[$key]++;	
-					} else {
-						$boulesArray[$key] = 1;
-					}
-				}
-			};
+                    if (isset($boulesArray[$key]))
+                    {
+                        $boulesArray[$key]++;
+                    } else
+                    {
+                        $boulesArray[$key] = 1;
+                    }
+                }
+            }
 			// POSITION DES BOULES A TERRE
 			$req_matos = "select pos_x,pos_y,pos_etage "
 			."from objets,objet_position,positions "
@@ -75,13 +77,15 @@ if ($result = $stmt->fetch())
                 if ($result['pos_etage'] == $perso_pos_etage)
                 {
                     $key = $result['pos_x'] . "X" . $result['pos_y'];
-					if(isset($boulesArray[$key])){
-						$boulesArray[$key]++;	
-					} else {
-						$boulesArray[$key] = 1;
-					}
-				}
-			};
+                    if (isset($boulesArray[$key]))
+                    {
+                        $boulesArray[$key]++;
+                    } else
+                    {
+                        $boulesArray[$key] = 1;
+                    }
+                }
+            }
 
 			for ($i=-12; $i<13; $i++)
 			{  

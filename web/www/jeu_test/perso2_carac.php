@@ -1,12 +1,8 @@
 <?php
 include "../includes/constantes.php";
-require_once 'fonctions.php';
+require_once G_CHE . "includes/fonctions.php";
 
-$perso = new perso;
-if (!$perso->charge($perso_cod))
-{
-    die('Erreur sur le chargement de perso');
-}
+
 $pdo = new bddpdo();
 
 // Cacul des bonus de caracs == pour affichage dans la feuille

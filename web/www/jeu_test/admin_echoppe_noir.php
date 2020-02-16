@@ -45,7 +45,7 @@ if ($erreur == 0)
                     {
                         $rang   = substr($seq, $cpt - 1, 1);
                         $stmt   = $pdo->execute(array(":cpt"  => $cpt,
-                                                      ":rang" => rang), $stmt);
+                                                      ":rang" => $rang), $stmt);
                         $result = $stmt->fetch();
                         echo "<img src=\"" . G_IMAGES . "rune_" . $cpt . "_" . $result['gobj_rune_position'] . ".gif\">";
                     }

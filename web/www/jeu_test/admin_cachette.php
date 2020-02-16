@@ -463,17 +463,17 @@ if ($erreur == 0)
                                       ), $stmt);
 
 
-                $cachette  = 'decouvre_cachette([perso],' . $_POST[coef_dex] . ',' . $_POST[coef_int] . ')';
-                $req3      = "update positions set pos_fonction_arrivee = :cachette where pos_cod = :pos_cod";
-                $stmt      = $pdo->prepare($req3);
-                $stmt      = $pdo->execute(array(":cachette" => $cachette,
+                $cachette = 'decouvre_cachette([perso],' . $_POST['coef_dex'] . ',' . $_POST['coef_int'] . ')';
+                $req3     = "update positions set pos_fonction_arrivee = :cachette where pos_cod = :pos_cod";
+                $stmt     = $pdo->prepare($req3);
+                $stmt     = $pdo->execute(array(":cachette" => $cachette,
                                                  ":pos_cod"  => $pos_cod
                                            ), $stmt);
-                $result    = $stmt->fetch();
-                $req2      = 'select cache_cod from cachettes 
+                $result   = $stmt->fetch();
+                $req2     = 'select cache_cod from cachettes 
                     where cache_pos_cod = :pos_cod';
-                $stmt      = $pdo->prepare($req2);
-                $stmt      = $pdo->execute(array(
+                $stmt     = $pdo->prepare($req2);
+                $stmt     = $pdo->execute(array(
                                                ":pos_cod" => $pos_cod
                                            ), $stmt);
                 $result    = $stmt->fetch();
@@ -485,7 +485,7 @@ if ($erreur == 0)
 
         //Cas du remplacement d’une fonction présente,, par une cachette
         case "update_fonction":
-            $cachette = 'decouvre_cachette([perso],' . $_POST[coef_dex] . ',' . $_POST[coef_int] . ')';
+            $cachette = 'decouvre_cachette([perso],' . $_POST['coef_dex'] . ',' . $_POST['coef_int'] . ')';
             $req3     = "update positions 
                 set pos_fonction_arrivee = :cachette
                 where pos_cod = :pos_cod";

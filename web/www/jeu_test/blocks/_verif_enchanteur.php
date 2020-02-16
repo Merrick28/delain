@@ -21,8 +21,6 @@ if ($stmt->rowCount() != 0)
     $comp_enchantement         = $result['pcomp_pcomp_cod'];
     $comp_enchantement_percent = $result['pcomp_modificateur'];
 }
-$perso = new perso;
-$perso = $verif_connexion->perso;
 
 switch ($type_appel)
 {
@@ -30,7 +28,7 @@ switch ($type_appel)
         $type_lieu = 26;
         $nom_lieu  = 'une boutique de l\'enchanteur';
 
-        include "blocks/_test_lieu.php";
+        include G_CHE . "/jeu_test/blocks/_test_lieu.php";
         break;
 
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ

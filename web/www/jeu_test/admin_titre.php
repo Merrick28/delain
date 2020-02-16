@@ -494,7 +494,7 @@ if ($erreur == 0)
             {
                 if ((int)$gobj_cod>0)
                 {
-                    $chance = (float)$_REQUEST[aqelem_param_num_1][1][$k];
+                    $chance = (float)$_REQUEST['aqelem_param_num_1'][1][$k];
                     if ($chance==0) $chance=100; else if ($chance>100) $chance=100;
                     $list_obj[] = array("chance" => $chance, "ordre" => 0, "gobj_cod" => $gobj_cod) ;
                 }
@@ -701,7 +701,7 @@ if ($erreur == 0)
             {
                 if ((int)$gobj_cod>0)
                 {
-                    $nb_obj = (int)$_REQUEST[aqelem_param_num_1][2][$o];
+                    $nb_obj = (int)$_REQUEST['aqelem_param_num_1'][2][$o];
                     if ($nb_obj == 0) $nb_obj = 1;       // Si pas de quantité renseigné on met 1 par défaut
                     while ($nb_obj > 0) {
                         $nb_obj--;     // Un objet de moins à distribuer

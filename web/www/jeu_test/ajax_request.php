@@ -5,7 +5,7 @@
  * Ces requêtes ajax servent à faire des échanges entre le FRONT (browser) et le BACK(database)
  * Il ne peut-y avoir d'interaction avec l'utilisateur ici (ni saisie de formulaire, ni affichage)
  */
-include_once 'classes.php';
+include_once G_CHE . '/includes/classes.php';
 
 //---------------------------------------------------------------------------------------------------
 // S'il n'ya pas de demande, c'est pas la peine d'aller plus loin
@@ -784,4 +784,3 @@ function verif_admin($pdo, $compt_cod, $droit="")
 
     if ( $count<=0 ) die('{"resultat":-1, "message":"Vous devez disposer de droit admin pour ça!"}');
 }
-?>

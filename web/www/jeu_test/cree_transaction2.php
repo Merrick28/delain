@@ -106,7 +106,7 @@ switch ($methode)
 				and tran_obj_cod IS NULL
 			order by gobj_tobj_cod, obj_nom";
 
-        $req_objets_gros = "select gobj_nom, gobj_cod, count(*) as nombre
+        $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
 			from perso_objets
 			inner join objets on obj_cod = perobj_obj_cod
 			inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -117,7 +117,7 @@ switch ($methode)
 				and perobj_equipe = 'N'
 				and obj_deposable != 'N'
 				and tran_obj_cod IS NULL
-			group by gobj_nom, gobj_cod
+			group by gobj_nom, gobj_cod, gobj_tobj_cod
 			order by gobj_tobj_cod, gobj_nom";
 
         // Affichage des objets en vente à l’unité
@@ -345,7 +345,7 @@ switch ($methode)
             
 
             // Récupération globale des infos
-            $req_objets_gros = "select gobj_nom, gobj_cod, count(*) as nombre
+            $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
 				from perso_objets
 				inner join objets on obj_cod = perobj_obj_cod
 				inner join objet_generique on gobj_cod = obj_gobj_cod
@@ -356,7 +356,7 @@ switch ($methode)
 					and perobj_equipe = 'N'
 					and obj_deposable != 'N'
 					and tran_obj_cod IS NULL
-				group by gobj_nom, gobj_cod
+				group by gobj_nom, gobj_cod, gobj_tobj_cod
 				order by gobj_tobj_cod";
             $stmt = $pdo->query($req_objets_gros);
 

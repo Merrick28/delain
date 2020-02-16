@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-include "constantes.php";
+include G_CHE . "/includes/constantes.php";
 
 
 $erreur = 0;

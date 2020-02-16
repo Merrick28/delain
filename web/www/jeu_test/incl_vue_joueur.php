@@ -2,7 +2,7 @@
     var affichePersosCoterie = true;
 </script>
 <?php
-require_once "fonctions.php";
+require_once G_CHE . "includes/fonctions.php";
 $pdo                      = new bddpdo;
 $compte                   = new compte;
 $compte                   = $verif_connexion->compte;

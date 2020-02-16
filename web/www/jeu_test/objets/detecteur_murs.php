@@ -55,16 +55,15 @@ if ($result = $stmt->fetch())
 			{
                 //echo "POS=".$result['pos_x'].";".$result['pos_y'].";".$result['pos_etage']."<br>";
                 $key = $result['pos_x'] . " x " . $result['pos_y'];
-					if(isset($murArray[$key]))
-					{
-						$murArray[$key]++;	
-					} 
-					else 
-					{
-						$murArray[$key] = 1;
-					}
+                if (isset($murArray[$key]))
+                {
+                    $murArray[$key]++;
+                } else
+                {
+                    $murArray[$key] = 1;
+                }
                 $richesse[$key] = $result['mur_richesse'];
-			};
+            }
 			
 			for ($i=-5; $i<6; $i++)
 			{  

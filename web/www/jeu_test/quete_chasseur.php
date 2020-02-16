@@ -55,7 +55,7 @@ if ($erreur == 0)
                 $contenu_page4 .= "<br /><em>«  Je vois que vous avez déjà rencontré un de mes collègues, et qu'il vous a jugé apte à être un \"" . $titre . "\" !
 													<br />C'est un honneur immense.  » </em><br>";
             }
-            $contenu_page4 .= "<a href=\"$_SERVER['PHP_SELF']?methode3=suite\">suite ...</a><br /><br />";
+            $contenu_page4 .= "<a href=\"" . $_SERVER['PHP_SELF'] . "?methode3=suite\">suite ...</a><br /><br />";
 
             break;
         case "suite":
@@ -255,7 +255,8 @@ if ($erreur == 0)
                         }
                         $contenu_page4 .= "<br><em>Alors, tope là ? »</em><br /><br /> <strong>(Attention, ce choix vous engage pour une certaine durée)</strong>";
 
-                        $contenu_page4 .= "<form name=\"mission\" method=\"post\" action=\"$_SERVER['PHP_SELF']\">
+                        $contenu_page4 .= "<form name=\"mission\" method=\"post\" action=\"" . $_SERVER['PHP_SELF'] .
+                                          "\">
 										<input type=\"hidden\" name=\"methode3\" value=\"mission\">
 											<table>
 											<tr>

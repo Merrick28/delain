@@ -1,6 +1,6 @@
 <?php 
 include "../includes/constantes.php";
-require_once "fonctions.php";
+require_once G_CHE . "includes/fonctions.php";
 
 $req_portee = "select portee_attaque($perso_cod) as portee,ppos_pos_cod,pos_etage,type_arme($perso_cod) as type_arme,distance_vue($perso_cod) as distance_vue,pos_x,pos_y ";
 $req_portee = $req_portee . "from perso_position,positions ";

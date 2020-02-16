@@ -4,8 +4,8 @@
  *
  * @return integer $perso_cod Numero de perso
  */
-include_once 'classes.php';
-include_once "constantes.php";
+require_once G_CHE . "includes/classes.php";
+require_once G_CHE . "includes/constantes.php";
 include_once G_CHE . 'ident.php';
 if (!$verif_auth)
 {

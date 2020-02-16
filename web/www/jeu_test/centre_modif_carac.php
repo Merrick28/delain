@@ -782,5 +782,3 @@ if ($contenu_page == '')
 
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";
-
-?>
