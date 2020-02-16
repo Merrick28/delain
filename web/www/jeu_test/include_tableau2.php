@@ -5,7 +5,9 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 
 include "../includes/constantes.php";
-
+if(!isset($db))
+	$db = new base_delain;
+$db_refuge = new base_delain;
 $is_attaque = 1;
 //
 /* position du joueur et autres données */
@@ -37,7 +39,13 @@ $distance_vue = $result['distance_vue'];
 $coterie      = $result['pgroupe_groupe_cod'];
 
 
-if (!isset($tab_vue)) $tab_vue = -1;
+if (!isset($_REQUEST['tab_vue']))
+{
+    $tab_vue = -1;
+} else
+{
+    $tab_vue = $_REQUEST['tab_vue'];
+}
 switch ($tab_vue)
 {
     case "0":

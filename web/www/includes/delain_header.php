@@ -206,6 +206,57 @@ function my_autoloader($class)
 
 spl_autoload_register('my_autoloader');
 
+/**
+ * Code temporaire pour tracker les variables globales
+ * N'utiliser qu'avec REDIS !
+ * Sinon on va faire des appels de malade à la base de données
+ */
+if(defined('USE_REDIS'))
+{
+    if(USE_REDIS)
+    {
+        $tgv = new trackvg();
+        $redis = new myredis;
+        foreach($_POST  as $key => $val)
+        {
+            if(!$redis->get("vg#" . $key ."#" . $PHP_SELF))
+            {
+                // on n'a rien trouvé
+                if(!$tgv->getByVarPage($key,$PHP_SELF))
+                {
+                    $tgv->tgv_page = $PHP_SELF;
+                    $tgv->tgv_varname = $key;
+                    $tgv->tvg_type = "POST";
+                    $tgv->stocke(true);
+                }
+                // on remplit le redis
+                $redis->store("vg#" . $key ."#" . $PHP_SELF,1);
+            }
+        }
+        foreach($_GET  as $key => $val)
+        {
+            if(!$redis->get("vg#" . $key ."#" . $PHP_SELF))
+            {
+                // on n'a rien trouvé
+                if(!$tgv->getByVarPage($key,$PHP_SELF))
+                {
+                    $tgv->tgv_page = $PHP_SELF;
+                    $tgv->tgv_varname = $key;
+                    $tgv->tvg_type = "GET";
+                    $tgv->stocke(true);
+                }
+                // on remplit le redis
+                $redis->store("vg#" . $key ."#" . $PHP_SELF,1);
+            }
+        }
+
+
+    }
+}
+
+
+
+
 // on prépare ce qu'il faut pour twig
 $loader =  new \Twig\Loader\FilesystemLoader(CHEMIN . '/../templates');
 if (defined('TWIG_CACHE')) {

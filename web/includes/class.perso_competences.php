@@ -113,10 +113,10 @@ class perso_competences
     {
         $return = array();
         $pdo    = new bddpdo;
-        $req    = "select pcomp_cod from perso_competences,competences
+        $req    = "select pcomp_cod, competences from perso_competences,competences
             where pcomp_perso_cod = ? 
             and pcomp_pcomp_cod = comp_cod
-            and comp_typc_cod = ?";
+            and comp_typc_cod = ? order by competences ";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso, $typecomp), $stmt);
 

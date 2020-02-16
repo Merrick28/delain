@@ -843,7 +843,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 {
                     $contenu_page .= 'Vous ne pouvez pas réparer un objet non identifié';
                 }
-                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4))
+                if (($perobj->perobj_equipe == 'N') && ($type == 2 || $type == 4 || $type == 40 || $type == 41))
                 {
                     $autorise = 1;
                 }
@@ -857,6 +857,9 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             if ($autorise == 1)
             {
                 $contenu_page .= $perso->repare_objet($type_rep[$type], $objet->obj_cod);
+            } else
+            {
+                $contenu_page .= 'Vous ne savez pas réparer ce type d\'objet.<br>';
             }
             $contenu_page .= '<a class="centrer" href="inventaire.php">Retour à l’inventaire</a>';
             break;
@@ -1086,6 +1089,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                         $stmt         = $pdo->prepare($req_matos);
                         $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
                         $req          =
+
                             'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
                             . 'values(nextval(\'seq_levt_cod\'),89,now(),1,:perso,\'[perso_cod1] a travaillé.\',\'O\',\'O\',:perso)';
                         $stmt         = $pdo->prepare($req_matos);

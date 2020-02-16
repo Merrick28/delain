@@ -33,6 +33,7 @@ ob_start();
     </script>
 <?php
 
+
 require "_block_valide_autorise_joue_perso.php";
 if ($autorise == 1)
 {
@@ -41,7 +42,7 @@ if ($autorise == 1)
     $myAuth->perso_cod = $num_perso;
     $tableau_numeros   = array();
     $tableau_noms      = array();
-    if (isset($activeTout) && $activeTout == 1)
+    if (isset($_REQUEST['activeTout']) && $_REQUEST['activeTout'] == 1)
     {
         $pcompt = new perso_compte();
         // on prend tous les perso_compte du compte
