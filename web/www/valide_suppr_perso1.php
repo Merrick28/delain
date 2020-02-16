@@ -1,6 +1,8 @@
 <?php
 include "includes/classes.php";
-include "ident.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 
 // ces deux lignes sont temporaires
 // sans ça, le variable_menu ne fonctionne pas

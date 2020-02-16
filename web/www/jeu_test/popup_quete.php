@@ -1,17 +1,19 @@
 <div id="liste_objets" class="liste_objets">
 
-	<?php 		/* Les includes */
-		include "verif_connexion.php";
-		include "../includes/fonctions.php";
-		
-		define(G_IMAGES,"./images/");
-		
-		
-		
-		/*Valeur de dex et de force */
-		// on prend les valeurs de forece et dex du perso pour la suite
-		
-		$req = "select perso_pa, perso_for,perso_dex from perso where perso_cod = ".$perso_cod." ";
+    <?php /* Les includes */
+    $verif_connexion = new verif_connexion();
+    $verif_connexion->verif();
+    $perso_cod = $verif_connexion->perso_cod;
+    $compt_cod = $verif_connexion->compt_cod;
+    include "../includes/fonctions.php";
+
+    define(G_IMAGES, "./images/");
+
+
+    /*Valeur de dex et de force */
+    // on prend les valeurs de forece et dex du perso pour la suite
+
+    $req               = "select perso_pa, perso_for,perso_dex from perso where perso_cod = " . $perso_cod . " ";
 		$stmt_objets = $pdo->query($req);
 		$result_objets = $stmt_objets->fetch();
 		$force = $result_objets['perso_for'];

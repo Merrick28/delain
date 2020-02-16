@@ -1,5 +1,8 @@
-<?php $start = time();
-include_once "verif_connexion.php";
+<?php $start     = time();
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 include "../includes/constantes.php";
 
 

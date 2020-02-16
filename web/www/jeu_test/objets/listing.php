@@ -1,5 +1,8 @@
-<?php 
-include "../verif_connexion.php";
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 
 $contenu_page = '';
@@ -7,8 +10,8 @@ $contenu_page = '';
 // ON VERIFIE SI L'OBJET EST BIEN DANS L'INVENTAIRE.
 
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
-. "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 248 ";
-$stmt = $pdo->query($req_matos);
+             . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 248 ";
+$stmt      = $pdo->query($req_matos);
 if (!($result = $stmt->fetch()))
 {
   // PAS D'OBJET.

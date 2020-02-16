@@ -1,21 +1,24 @@
-<?php 
+<?php
 $offset = 3600; // on remet à jour la feuille de style une fois par heure.
 $expire = "Expires: " . gmdate("D, d M Y H:i:s", time() + $offset) . " GMT";
 header($expire);
 header("Content-type: text/css");
 
 
-include "verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/images_delain.php';
 
 if (!isset($num_etage) || $num_etage === '')
 {
-	$req_etage = "select etage_affichage, etage_numero from perso_position,positions,etage ";
-	$req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
-	$req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
-	$req_etage = $req_etage . "and pos_etage = etage_numero ";
-	$stmt = $pdo->query($req_etage);
-	$result = $stmt->fetch();
+    $req_etage = "select etage_affichage, etage_numero from perso_position,positions,etage ";
+    $req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";
+    $req_etage = $req_etage . "and ppos_pos_cod = pos_cod ";
+    $req_etage = $req_etage . "and pos_etage = etage_numero ";
+    $stmt      = $pdo->query($req_etage);
+    $result    = $stmt->fetch();
 	$etage = $result['etage_affichage'];
 	$num_etage = $result['etage_numero'];
 }

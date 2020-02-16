@@ -1,15 +1,18 @@
-<?php 
+<?php
 
-include "../verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 
 $contenu_page = '';
 
 
 $req_matos = "select perobj_obj_cod from perso_objets,objets "
-. "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 237 ";
-$stmt = $pdo->query($req_matos);
-if($result = $stmt->fetch())
+             . "where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 237 ";
+$stmt      = $pdo->query($req_matos);
+if ($result = $stmt->fetch())
 {
 	if(isset($_POST['methode'])){
 		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";

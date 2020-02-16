@@ -1,5 +1,7 @@
 <?php
-include "ident.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 // on appelle l'api de création de perso
 $api = new callapi();
 

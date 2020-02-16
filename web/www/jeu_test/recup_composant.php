@@ -119,7 +119,10 @@ if ($heure < 6 || $heure > 18)
 
 
 /*if(!isset($db))
-	include "verif_connexion.php";
+	$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 include "../includes/template.inc";
 // definition des variables de template

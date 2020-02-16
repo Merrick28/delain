@@ -1,8 +1,9 @@
 <?php
 
-$verif_auth = false;
-include G_CHE . "ident.php";
 
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 include "classes.php";
 $pdo = new bddpdo();
 
@@ -124,7 +125,7 @@ $stmt        = $pdo->query($req_monstre);
 
 
 $contenu_page .= "
-<form name='fsort' method='post' action='$_SERVER['PHP_SELF']'>
+<form name='fsort' method='post' action='" . $_SERVER['PHP_SELF'] . "'>
 <input type='hidden' name='debut'>
 <input type='hidden' name='sort'>
 <input type='hidden' name='sens' value='$sens'>

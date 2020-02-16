@@ -1,7 +1,9 @@
 <?php
 include "includes/classes.php";
-include "ident.php";
-$pdo = new bddpdo();
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+$pdo        = new bddpdo();
 
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 ?>

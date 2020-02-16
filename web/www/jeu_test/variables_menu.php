@@ -7,8 +7,11 @@
  */
 $__VERSION = "20201223";    // A changer aussi dans constante.php
 
-$benchmark = $profiler->start('Variables menu');
-include_once "verif_connexion.php";
+$benchmark       = $profiler->start('Variables menu');
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 $param = new parametres();
 
