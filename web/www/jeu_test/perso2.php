@@ -15,7 +15,7 @@ $nb      = count($mess);
 $size    = round(100 / $nb);
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 //
 // Si pas de parametres passés

@@ -62,7 +62,7 @@
 <?php
 $methode = get_request_var('methode', 'entree');
 $compte  = new compte;
-$compte->charge($compt_cod);
+$compte  = $verif_connexion->compte;
 if (!$compte->is_admin())
 {
     echo "<p>Erreur ! Vous n'êtes pas admin !";

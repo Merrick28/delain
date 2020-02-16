@@ -16,10 +16,10 @@ $compt_cod = $verif_connexion->compt_cod;
 $param = new parametres();
 
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 
 // variables du perso

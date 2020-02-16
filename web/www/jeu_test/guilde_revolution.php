@@ -19,9 +19,9 @@ if ($stmt->rowCount() == 0)
 $result     = $stmt->fetch();
 $num_guilde = $result['guilde_cod'];
 $perso      = new perso;
-$perso->charge($perso_cod);
-$autorise = false;
-$pguilde  = new guilde_perso();
+$perso      = $verif_connexion->perso;
+$autorise   = false;
+$pguilde    = new guilde_perso();
 if ($pguilde->get_by_perso($perso_cod))
 {
     $guilde_cod = $pguilde->pguilde_guilde_cod;

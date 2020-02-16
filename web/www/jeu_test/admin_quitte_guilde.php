@@ -15,10 +15,10 @@ switch ($methode)
         <?php
         break;
     case "quitte":
-        $perso = new perso;
-        $perso->charge($perso_cod);
+        $perso           = new perso;
+        $perso           = $verif_connexion->perso;
         $is_admin_guilde = false;
-        $pguilde  = new guilde_perso();
+        $pguilde         = new guilde_perso();
         if ($pguilde->get_by_perso($perso_cod))
         {
             $rguilde = new guilde_rang();

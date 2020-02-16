@@ -1,13 +1,17 @@
 <?php
 
 include_once "includes/classes.php";
-include_once "ident.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
 
 $is_log = 0;
-if ($verif_auth) {
-    if ($compt_cod == '') {
+if ($verif_auth)
+{
+    if ($compt_cod == '')
+    {
         //
         // on recherche le type perso
         // ?>
@@ -35,7 +39,7 @@ if ($verif_auth) {
             $compte_json   = json_decode($callapi->content, true);
             $compt_cod     = $compte_json['compte']['compt_cod'];
             $compte        = new compte;
-            $compte->charge($compt_cod);
+            $compte        = $verif_connexion->compte;
         } else {
             die('Erreur sur le chargement du compte : ' . $callapi->content);
         }

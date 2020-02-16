@@ -1,8 +1,8 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso    = new perso;
+$perso    = $verif_connexion->perso;
 $tab_lieu = $perso->get_lieu();
 ob_start();
 $erreur              = 0;

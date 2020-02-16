@@ -3,10 +3,10 @@ include "blocks/_header_page_jeu.php";
 
 ob_start();
 
-$erreur = 0;
-$methode           = get_request_var('methode', 'debut');
-$perso = new perso;
-$perso->charge($perso_cod);
+$erreur  = 0;
+$methode = get_request_var('methode', 'debut');
+$perso   = new perso;
+$perso   = $verif_connexion->perso;
 if ($perso->perso_admin_echoppe_noir != 'O')
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";

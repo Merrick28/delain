@@ -8,6 +8,7 @@ if (!isset($is_log))
 // affichage d'un bloc perso
 function affiche_perso($perso_cod)
 {
+
     global $type_flux;
     global $is_log;
     global $twig;
@@ -164,7 +165,7 @@ function affiche_case_monstre_vide()
 /***************************************************************/
 $callapi = new callapi();
 $compte  = new compte;
-$compte->charge($compt_cod);
+$compte  = $verif_connexion->compte;
 
 
 $nb_perso_max   = $compte->compt_ligne_perso * 3;

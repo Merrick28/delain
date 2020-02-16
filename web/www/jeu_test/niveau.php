@@ -2,7 +2,7 @@
 include "blocks/_header_page_jeu.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 ob_start();
 $erreur = 0;
 $req_niveau = "select floor(perso_px) as perso_px,limite_niveau($perso_cod) as limite,perso_niveau from perso where perso_cod = $perso_cod";

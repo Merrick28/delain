@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$compte = new compte;
-$compte->charge($compt_cod);
+$compte        = new compte;
+$compte        = $verif_connexion->compte;
 $admin_monstre = $compte->is_admin_monstre();
 $classmessage  = new message;
 //

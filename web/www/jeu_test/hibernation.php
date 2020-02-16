@@ -1,9 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-$methode          = get_request_var('methode', 'debut');
-$compte = new compte;
-$compte->charge($compt_cod);
+$methode = get_request_var('methode', 'debut');
+$compte  = new compte;
+$compte  = $verif_connexion->compte;
 if (!$compte->is_admin())
 {
     switch ($methode) {

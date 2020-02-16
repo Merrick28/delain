@@ -24,8 +24,8 @@ include "blocks/_tests_appels_page_externe.php";
 
     if ($erreur == 0)
     {
-        $perso = new perso;
-        $perso->charge($perso_cod);
+        $perso    = new perso;
+        $perso    = $verif_connexion->perso;
         $tab_lieu = $perso->get_lieu();
         echo "<p><strong>" . $tab_lieu['lieu']->lieu_nom . "</strong>  - " . $tab_lieu['lieu']->lieu_description;
         echo("<p>Vous voyez un escalier qui descend vers le niveau inférieur, mais son accès est bloqué par une barrière magique infranchissable.<br />");

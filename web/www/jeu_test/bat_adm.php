@@ -4,7 +4,7 @@ include "blocks/_tests_appels_page_externe.php";
 include_once "../includes/constantes.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 $param = new parametres();
 
 $type_lieu = 9;

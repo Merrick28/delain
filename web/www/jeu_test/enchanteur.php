@@ -12,7 +12,7 @@ $contenu_page = '';
 include "blocks/_verif_enchanteur.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($perso->is_fam())
 {

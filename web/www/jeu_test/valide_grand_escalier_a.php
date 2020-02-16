@@ -8,7 +8,7 @@ $nom_lieu  = 'un escalier';
 include "blocks/_test_lieu.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 
 $req      = "select perso_type_perso, perso_pa from perso where perso_cod = $perso_cod ";

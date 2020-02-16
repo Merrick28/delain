@@ -152,8 +152,8 @@ $contenu_page .= '<table width="70%">
 $methode = get_request_var('methode', 'debut');
 
 $perso = new perso;
-$perso->charge($perso_cod);
-$tpot = $_REQUEST['tpot'];
+$perso = $verif_connexion->perso;
+$tpot  = $_REQUEST['tpot'];
 
 switch ($methode)
 {

@@ -7,8 +7,8 @@ if (!defined("APPEL"))
 $methode2          = get_request_var('methode2', 'debut');
 
 
-$perso        = new perso;
-$perso->charge($perso_cod);
+$perso = new perso;
+$perso = $verif_connexion->perso;
 
 switch ($methode2)
 {

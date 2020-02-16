@@ -1,7 +1,9 @@
 <?php
 
-$verif_auth = false;
-include G_CHE . "ident.php";
+$verif_auth      = false;
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 
 $pdo = new bddpdo();
 

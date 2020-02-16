@@ -6,7 +6,7 @@ $methode = get_request_var('methode', 'debut');
 //début 2nd tableau
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 
 switch ($methode)

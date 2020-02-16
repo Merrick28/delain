@@ -63,8 +63,8 @@ if (!$result = $stmt->fetch())
     $monstre->stocke();
 
     // on met la bonne info dans le compte
-    $compte = new compte;
-    $compte->charge($compt_cod);
+    $compte                      = new compte;
+    $compte                      = $verif_connexion->compte;
     $compte->compt_der_perso_cod = $monstre->perso_cod;
     $compte->stocke();
 

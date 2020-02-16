@@ -5,7 +5,7 @@ ob_start();
 define("APPEL", 1);
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 if ($perso->is_lieu())
 {
     $tab_lieu = $perso->get_lieu();

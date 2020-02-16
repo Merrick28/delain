@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 if ($compte->is_admin())
 {

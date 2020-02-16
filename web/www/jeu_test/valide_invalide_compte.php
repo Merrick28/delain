@@ -5,7 +5,7 @@ ob_start();
 $vcompte = $_REQUEST['compte'];
 
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 if ($compte->is_admin())
 {

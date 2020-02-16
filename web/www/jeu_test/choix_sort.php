@@ -14,7 +14,7 @@ if (!isset($type_lance))
 }
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($type_lance == 0) // runes
 {

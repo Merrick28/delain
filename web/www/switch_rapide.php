@@ -7,7 +7,9 @@ if (isset($_REQUEST['perso']))
     $change_perso = $_REQUEST['perso'];         // -> pour ident.php
 }
 
-include_once "ident.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 include_once "includes/classes.php";
 if (!$verif_auth)
 {

@@ -8,8 +8,8 @@ $param = new parametres();
 //
 
 ob_start();
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso    = new perso;
+$perso    = $verif_connexion->perso;
 $autorise = false;
 $pguilde  = new guilde_perso();
 if ($pguilde->get_by_perso($perso_cod))

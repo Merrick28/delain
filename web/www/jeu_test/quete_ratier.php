@@ -8,7 +8,7 @@ $contenu_page3 = '';
 $erreur        = 0;
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 //On vérifie qu'il s'agit bien d'un perso permettant cette quête sur cette case
 $req_comp = "select count(perso_cod) as nombre from perso,perso_position 

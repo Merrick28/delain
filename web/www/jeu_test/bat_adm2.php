@@ -3,7 +3,7 @@ include "blocks/_tests_appels_page_externe.php";
 
 include "../includes/constantes.php";
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 include "blocks/_header_page_jeu.php";
 
 $param = new parametres();

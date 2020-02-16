@@ -6,12 +6,12 @@ if (!isset($mag)) {
     echo "<p>Erreur sur la transmission du lieu_cod ";
     $erreur = 1;
 }
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso         = new perso;
+$perso         = $verif_connexion->perso;
 $tab_lieu      = $perso->get_lieu();
-$req = "select perso_nom,perso_admin_echoppe,perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
+$req           = "select perso_nom,perso_admin_echoppe,perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
+$stmt          = $pdo->query($req);
+$result        = $stmt->fetch();
 $admin_echoppe = $result['perso_admin_echoppe'];
 
 if ($erreur == 0) {

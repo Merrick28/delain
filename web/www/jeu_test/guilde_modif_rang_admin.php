@@ -2,9 +2,9 @@
 
 include "blocks/_header_page_jeu.php";
 ob_start();
-$methode          = get_request_var('methode', 'debut');
-$perso = new perso;
-$perso->charge($perso_cod);
+$methode  = get_request_var('methode', 'debut');
+$perso    = new perso;
+$perso    = $verif_connexion->perso;
 $autorise = false;
 $pguilde  = new guilde_perso();
 if ($pguilde->get_by_perso($perso_cod))

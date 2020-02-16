@@ -4,7 +4,7 @@ ob_start();
 
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;

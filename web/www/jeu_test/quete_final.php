@@ -18,7 +18,7 @@ ob_start();
 // on regarde si le joueur est bien sur un dispensaire
 $erreur = 0;
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso      = $verif_connexion->perso;
 
 if (!$perso->is_lieu())
 {

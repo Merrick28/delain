@@ -6,7 +6,7 @@ include "blocks/_tests_appels_page_externe.php";
 $methode2          = get_request_var('methode2', 'debut');
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 $comp_enlumineur = 0;
 

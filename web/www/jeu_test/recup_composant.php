@@ -4,7 +4,7 @@ define("SYNODIC", 29.53058867); //constante pour la période synodique
 define("MSPARJOUR", 24 * 60 * 60 * 1000); //constante pour le nombre de millisecondes par jour
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 function CalcPhase()
 {

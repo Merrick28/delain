@@ -8,7 +8,7 @@ $nom_lieu  = 'un escalier';
 include "blocks/_test_lieu.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($erreur == 0)
 {

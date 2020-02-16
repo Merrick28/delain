@@ -9,7 +9,7 @@ $param        = new parametres();
 $type_lieu = 4;
 $nom_lieu  = 'une auberge';
 $perso     = new perso;
-$perso->charge($perso_cod);
+$perso     = $verif_connexion->perso;
 
 include "blocks/_test_lieu.php";
 

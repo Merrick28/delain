@@ -4,10 +4,10 @@ if (!defined("APPEL"))
 
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
-$perso_cod = $verif_connexion->perso_cod;
-$compt_cod = $verif_connexion->compt_cod;
-$perso     = new perso;
-$perso->charge($perso_cod);
+$perso_cod  = $verif_connexion->perso_cod;
+$compt_cod  = $verif_connexion->compt_cod;
+$perso      = new perso;
+$perso      = $verif_connexion->perso;
 $tab_temple = $perso->get_lieu();
 echo("<p><strong>" . $tab_temple['lieu']->lieu_nom . "</strong>");
 ?>

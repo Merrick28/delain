@@ -1,6 +1,6 @@
 <?php
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso         = new perso;
+$perso         = $verif_connexion->perso;
 $is_enlumineur = $perso->is_enlumineur();
 
 if ($is_enlumineur) {

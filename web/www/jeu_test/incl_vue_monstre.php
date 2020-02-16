@@ -5,11 +5,11 @@
 <table width="100%" cellspacing="2" cellapdding="2" id="tableMonstres">
 
     <?php
-    $parm   = new parametres();
-    $compte = new compte;
-    $compte->charge($compt_cod);
-    $perso = new perso;
-    $perso->charge($perso_cod);
+    $parm                     = new parametres();
+    $compte                   = new compte;
+    $compte                   = $verif_connexion->compte;
+    $perso                    = new perso;
+    $perso                    = $verif_connexion->perso;
     $marquerQuatriemes        = $compte->is_admin_monstre();
     $req_malus_desorientation =
         " select valeur_bonus(perso_cod, 'DES') as desorientation from perso where perso_cod = $perso_cod";

@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 ?>
     <script language="javascript" src="../scripts/cocheCase.js"></script>
 

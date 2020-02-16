@@ -6,7 +6,7 @@
  * Time: 18:39
  */
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 if ($perso->compte_objet(86) != 0)
 {
     echo "<p>Vous ne pouvez pas prendre un esaclier avec un médaillon. Merci de reposer tous les médaillons avant de continuer.";

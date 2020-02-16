@@ -8,8 +8,8 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 $param     = new parametres();
 // on regarde si le joueur est bien sur une passage
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso     = new perso;
+$perso     = $verif_connexion->perso;
 $type_lieu = 10;
 $nom_lieu  = 'un passage';
 

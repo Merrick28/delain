@@ -3,6 +3,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+
 include "../includes/constantes.php";
 
 $is_attaque = 1;
@@ -18,7 +19,9 @@ $requete = "select pos_x, pos_y, pos_etage, ppos_pos_cod, distance_vue($perso_co
 				INNER JOIN etage ON etage_numero = pos_etage
 				LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 				where perso_cod = $perso_cod ";
+
 $stmt    = $pdo->query($requete);
+
 $result  = $stmt->fetch();
 
 $portee         = ($result['distance_vue'] > $result['portee']) ? $result['portee'] : $result['distance_vue'];

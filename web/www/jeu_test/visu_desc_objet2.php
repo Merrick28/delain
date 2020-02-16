@@ -19,7 +19,7 @@ if ($stmt->rowCount() != 0)
 // on regarde si l'objet est dans une échoppe sur laquelle on est
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($perso->is_lieu())
 {

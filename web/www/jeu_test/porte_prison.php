@@ -5,7 +5,7 @@ include "blocks/_tests_appels_page_externe.php";
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
 $perso  = new perso;
-$perso->charge($perso_cod);
+$perso  = $verif_connexion->perso;
 if (!$perso->is_lieu())
 {
     echo("<p>Erreur ! Vous n'êtes pas sur un escalier !!!");

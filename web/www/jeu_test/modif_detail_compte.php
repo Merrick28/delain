@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 //
 //Contenu de la div de droite
 //

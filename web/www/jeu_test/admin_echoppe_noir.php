@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($perso->perso_admin_echoppe_noir != 'O')
 {

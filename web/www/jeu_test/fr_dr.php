@@ -4,7 +4,7 @@ $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 $perso     = new perso;
-$perso->charge($perso_cod);
+$perso     = $verif_connexion->perso;
 
 ob_start();
 

@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
     // Recherche du type de perso en cours de création
     $compte = new compte();
-    $compte->charge($compt_cod);
+    $compte = $verif_connexion->compte;
 
     $nb_perso           = $compte->compte_nombre_perso();
     $possede_4e         = $compte->possede_4e_perso();

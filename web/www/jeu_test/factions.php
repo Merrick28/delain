@@ -1,8 +1,8 @@
 <?php ob_start();
 include "blocks/_header_page_jeu.php";
 
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso   = new perso;
+$perso   = $verif_connexion->perso;
 $is_lieu = $perso->is_lieu();
 
 $erreur = !$is_lieu || !isset($faction);

@@ -3,7 +3,7 @@ $colonne          = 0;
 $debut            = true;
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 // Liste des factions que le perso a contactées
 $req_factions = "SELECT pfac_fac_cod, pfac_points, pfac_date_mission, fac_nom

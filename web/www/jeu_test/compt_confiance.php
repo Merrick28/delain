@@ -32,7 +32,7 @@ if (!isset($_GET['etat']))
     $etat = $_GET['etat'];
 }
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 if ($compte->is_admin())
 {
     $req = "select compt_nom from compte where compt_cod = $compte ";

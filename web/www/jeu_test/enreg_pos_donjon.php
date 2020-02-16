@@ -14,8 +14,8 @@ include "blocks/_test_lieu.php";
 if ($erreur == 0)
 {
 
-    $perso = new perso;
-    $perso->charge($perso_cod);
+    $perso     = new perso;
+    $perso     = $verif_connexion->perso;
     $tab_lieu  = $perso->get_lieu();
     $nom_lieu  = $tab_lieu['lieu']->lieu_nom;
     $desc_lieu = $tab_lieu['lieu']->lieu_description;

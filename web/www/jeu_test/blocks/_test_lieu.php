@@ -7,7 +7,7 @@
  */
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 $erreur = 0;
 if (!$perso->is_lieu())

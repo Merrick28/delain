@@ -31,9 +31,9 @@ function valide_form2() {
 $contenu_page = "";
 
 $compte = new compte;
-$compte->charge($compt_cod);
-$perso = new perso;
-$perso->charge($perso_cod);
+$compte = $verif_connexion->compte;
+$perso  = new perso;
+$perso  = $verif_connexion->perso;
 
 if (!$compte->is_admin())
 {

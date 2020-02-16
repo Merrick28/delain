@@ -1,7 +1,9 @@
 <?php
 include_once "includes/classes.php";
-$verif_auth = false;
-include G_CHE . "ident.php";
+$verif_auth      = false;
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";

@@ -12,7 +12,7 @@ $erreur  = 0;
 $methode = get_request_var('methode', 'entree');
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 if (!$perso->is_lieu())
 {
     echo("<p>Erreur ! Vous n'êtes pas sur un lieu !!!");

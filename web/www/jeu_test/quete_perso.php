@@ -4,7 +4,7 @@ include "blocks/_header_page_jeu.php";
 define("APPEL",1);
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 $erreur = 0;
 //On vérifie qu'il s'agit bien d'un perso permettant cette quête sur cette case

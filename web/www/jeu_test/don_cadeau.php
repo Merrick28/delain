@@ -32,7 +32,7 @@ function valide_form2() {
 // contenu de la page
 $contenu_page = "";
 $compte       = new compte;
-$compte->charge($compt_cod);
+$compte       = $verif_connexion->compte;
 if (!$compte->is_admin())
 {
     $req = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";

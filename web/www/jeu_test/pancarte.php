@@ -9,7 +9,7 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 $tab_lieu = $perso->get_lieu();
 echo "<p>Vous voyez une pancarte qui indique : ";

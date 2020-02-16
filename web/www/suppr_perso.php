@@ -12,7 +12,7 @@ $t = new template;
 include(G_CHE . '/jeu_test/variables_menu.php');
 //page_open(array("sess" => "My_Session", "auth" => "My_Auth"));
 $compte = new compte();
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 
 if (count($compte->getPersosActifs()) != 0)

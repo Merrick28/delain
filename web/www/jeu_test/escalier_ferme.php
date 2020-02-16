@@ -35,7 +35,7 @@ include "blocks/_tests_appels_page_externe.php";
             $nb_depose = $nb_depose + 1;
         } else {
             $perso = new perso;
-            $perso->charge($perso_cod);
+            $perso = $verif_connexion->perso;
             if ($perso->compte_objet(86) != 0)
             {
                 echo "<p>Vous possédez le médaillon du Loup. ";

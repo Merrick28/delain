@@ -136,8 +136,8 @@ if ($erreur == 0)
 {
     $pdo = new bddpdo;
 
-    $perso=new perso();
-    $perso->charge($perso_cod);
+    $perso = new perso();
+    $perso = $verif_connexion->perso;
 
     $param = new parametres();  // Pour récupérer  le sparamètre de change
     $obj_rituel = $param->getparm(135);     // obj_cod des objets à rammener (initialement des osselets)

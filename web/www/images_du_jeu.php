@@ -7,8 +7,10 @@ $pdo = new bddpdo();
 // identification
 //
 ob_start();
-include G_CHE . "ident.php";
-$ident = montre_formulaire_connexion($verif_auth);
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+$ident      = montre_formulaire_connexion($verif_auth);
 ob_end_clean();
 
 //

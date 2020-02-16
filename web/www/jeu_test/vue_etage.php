@@ -20,7 +20,7 @@ $compt_cod = $verif_connexion->compt_cod;
 $action = "action.php";
 
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 /* Deb AJOUT GoodWin */
 $bool_admin_monstre = $compte->is_admin_monstre();

@@ -19,7 +19,7 @@ if(!isset($desc_passage))
 }
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 if ($erreur == 0)
 {

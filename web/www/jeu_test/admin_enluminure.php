@@ -21,7 +21,7 @@ if ($erreur == 0)
     if ($methode != 'debut')
     {
         $compte = new compte;
-        $compte->charge($compt_cod);
+        $compte = $verif_connexion->compte;
 
         $log = date("d/m/y - H:i") . " Compte $compte->compt_nom (n°$compt_cod) modifie le tannage.\n";
     }

@@ -5,7 +5,7 @@ include "blocks/_header_page_jeu.php";
 //Contenu de la div de droite
 //
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 
 $resultat_deplacement = '';

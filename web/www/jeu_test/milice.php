@@ -2,8 +2,8 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso  = new perso;
+$perso  = $verif_connexion->perso;
 if ($perso->is_milice() == 0) {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;

@@ -11,7 +11,7 @@ if (!$perso->charge($perso_cod))
 
 
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 
 $methode = get_request_var('methode', '');
@@ -139,7 +139,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $attaquable   = 1;
 
             // on recharhe le perso
-            $perso->charge($perso_cod);
+            $perso = $verif_connexion->perso;
 
             //on regarde pour le nombre de PA
             if ($perso->perso_pa < $pa_at[$type_at])
@@ -482,7 +482,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $result['resultat'];
 
             // on recharge le perso
-            $perso->charge($perso_cod);
+            $perso = $verif_connexion->perso;
 
             // on regarde combien de sorts ont été lancé
             $pnbs = new perso_nb_sorts();
@@ -603,7 +603,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             $contenu_page .= $result['resultat'];
 
             // on recharge le perso
-            $perso->charge($perso_cod);
+            $perso = $verif_connexion->perso;
 
             // on regarde combien de sorts ont été lancé
             $pnbs = new perso_nb_sorts();
@@ -1050,7 +1050,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                         $perso->stocke();
 
                         unset($perso);
-                        $perso->charge($perso_cod);
+                        $perso = $verif_connexion->perso;
 
                         $contenu_page .= 'Bon retour dans les souterrains !';
                     }

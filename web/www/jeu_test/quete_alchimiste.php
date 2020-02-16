@@ -12,7 +12,7 @@ if (!isset($type_appel))
     $type_appel = 0;
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 //
 // en fonction du type d'appel, on vérifie, soit le lieu, soit la compétence.

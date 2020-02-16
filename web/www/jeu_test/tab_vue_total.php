@@ -8,7 +8,7 @@ ob_start();
 
 <?php
 $compte = new compte;
-$compte->charge($compt_cod);
+$compte = $verif_connexion->compte;
 
 if ($compte->is_admin_monstre())
 {

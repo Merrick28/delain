@@ -10,7 +10,7 @@ include "blocks/_test_lieu.php";
 
 include "blocks/_test_passage_medaillon.php";
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 if ($erreur == 0)
 {
     $tab_lieu  = $perso->get_lieu();

@@ -22,7 +22,7 @@ if ($stmt->rowCount() != 0)
     $comp_enchantement_percent = $result['pcomp_modificateur'];
 }
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 switch ($type_appel)
 {

@@ -2,7 +2,7 @@
 include "blocks/_tests_appels_page_externe.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 ?>
 <!DOCTYPE html>
 <html>

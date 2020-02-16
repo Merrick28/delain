@@ -2,10 +2,10 @@
     var affichePersosCoterie = true;
 </script>
 <?php
-$compte = new compte;
-$compte->charge($compt_cod);
-$perso = new perso;
-$perso->charge($perso_cod);
+$compte                   = new compte;
+$compte                   = $verif_connexion->compte;
+$perso                    = new perso;
+$perso                    = $verif_connexion->perso;
 $marquerQuatriemes        = $compte->is_admin_monstre();
 $param                    = new parametres();
 $req_malus_desorientation =

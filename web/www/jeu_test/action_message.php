@@ -83,7 +83,7 @@ switch ($methode)
             // On marque le message comme lu
             //
             $compte = new compte;
-            $compte->charge($compt_cod);
+            $compte = $verif_connexion->compte;
             if (!$compte->is_admin())
             {
                 $dmsg   = new messages_dest();

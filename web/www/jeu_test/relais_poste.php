@@ -33,7 +33,7 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 
 //$perso = new perso;
-//$perso->charge($perso_cod);
+//$perso      = $verif_connexion->perso;
 //echo "<pre>"; print_r($perso); echo "</pre>";
 //$perso->perso_tuteur = false;
 //$perso->stocke();
@@ -50,8 +50,8 @@ include "blocks/_test_lieu.php";
 
 //===========================================================================================
 // details du perso
-$perso = new perso;
-$perso->charge($perso_cod);
+$perso         = new perso;
+$perso         = $verif_connexion->perso;
 $perso_pos_cod = $perso->get_position()['pos']->pos_cod;
 
 //===========================================================================================

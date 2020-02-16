@@ -5,12 +5,17 @@ class verif_connexion
     var $verif_auth = false;
     var $perso_cod;
     var $compt_cod;
-    var $compte;
+    var $compte     = false;
+    var $perso      = false;
 
     function verif()
     {
         global $auth;
         global $type_flux;
+        /**
+         * Permet de setter la variable pdo qui va servir pour les autres pages
+         */
+        global $pdo;
         $this->ident();
         if (!$this->verif_auth)
         {
@@ -37,6 +42,10 @@ class verif_connexion
             header('Location:' . $type_flux . G_URL . 'jeu_test/fin_session2.php?motif=' . $phrase);
             die();
         }
+        if (!isset($pdo))
+        {
+            $pdo = new bddpdo();
+        }
 
     }
 
@@ -44,6 +53,10 @@ class verif_connexion
     {
         // on récupère les options twig pour les compléter
         global $options_twig_defaut;
+        /**
+         * Permet de setter la variable pdo qui va servir pour les autres pages
+         */
+        global $pdo;
 
         session_start();
         $verif_auth = false;
@@ -177,6 +190,11 @@ class verif_connexion
         $this->perso_cod  = $perso->perso_cod;
         $this->compt_cod  = $compte->compt_cod;
         $this->compte     = $compte;
+        $this->perso      = $perso;
+        if (!isset($pdo))
+        {
+            $pdo = new bddpdo();
+        }
 
     }
 

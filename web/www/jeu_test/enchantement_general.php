@@ -3,7 +3,7 @@ define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 // scripts JS
 $contenu_page .= '
 <script language="javascript" src="javascripts/modif_etage.js"></script>';

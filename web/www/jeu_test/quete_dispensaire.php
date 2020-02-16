@@ -6,7 +6,7 @@
 $param = new parametres();
 
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 
 $contenu_page3 = '';
 $erreur        = 0;

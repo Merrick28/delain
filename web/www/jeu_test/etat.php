@@ -58,7 +58,7 @@ if ($result['perso_utl_pa_rest'] == 1) {
     </tr>
 <?php
 $perso = new perso;
-$perso->charge($perso_cod);
+$perso = $verif_connexion->perso;
 if ($perso->is_locked())
 {
     $combat = "Vous êtes actuellement engagé en combat.";
