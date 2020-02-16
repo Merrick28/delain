@@ -1,8 +1,11 @@
-<?php 
-include_once "verif_connexion.php";
+<?php
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 
 $type_lieu = 6;
-$nom_lieu = 'un centre d\'entraînement';
+$nom_lieu  = 'un centre d\'entraînement';
 
 include "blocks/_test_lieu.php";
 

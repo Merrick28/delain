@@ -1,6 +1,8 @@
 <?php
-include_once "verif_connexion.php";
-$pdo = new bddpdo();
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$compt_cod = $verif_connexion->compt_cod;
+$pdo       = new bddpdo();
 
 if ($compt_cod != null)
 {

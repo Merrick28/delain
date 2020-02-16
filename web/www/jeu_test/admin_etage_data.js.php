@@ -1,15 +1,19 @@
 <?php header("Content-type: text/javascript");
 
-include "verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/images_delain.php';
 
 if (!isset($num_etage) || $num_etage === '')
 {
-	die ('alert("Erreur ! Aucun étage déclaré !")');
+    die ('alert("Erreur ! Aucun étage déclaré !")');
 }
 
 // Données générales de l’étage
-$req_etage = "SELECT MIN(pos_x) as minx, MIN(pos_y) as miny, MAX(pos_x) as maxx, MAX(pos_y) as maxy from positions where pos_etage = $num_etage";
+$req_etage =
+    "SELECT MIN(pos_x) as minx, MIN(pos_y) as miny, MAX(pos_x) as maxx, MAX(pos_y) as maxy from positions where pos_etage = $num_etage";
 $pdo->query($req_etage);
 if (!$result = $stmt->fetch())
 	die ('alert("Erreur ! Étage inconnu !")');

@@ -14,17 +14,21 @@
     }
 
 
-        include_once "verif_connexion.php";
+    $verif_connexion = new verif_connexion();
+    $verif_connexion->verif();
+    $perso_cod = $verif_connexion->perso_cod;
+    $compt_cod = $verif_connexion->compt_cod;
 
 
     if ((!isset($position)) || ($position == ''))
     {
-        $sql = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
-        $stmt = $pdo->query($sql);
-        $result = $stmt->fetch();
+        $sql      = "select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod ";
+        $stmt     = $pdo->query($sql);
+        $result   = $stmt->fetch();
         $position = $result['ppos_pos_cod'];
     }
-    $req = "select ppos_pos_cod,distance_vue($perso_cod) as dist from perso_position where ppos_perso_cod = $perso_cod ";
+    $req      =
+        "select ppos_pos_cod,distance_vue($perso_cod) as dist from perso_position where ppos_perso_cod = $perso_cod ";
     $stmt = $pdo->query($req);
     $result = $stmt->fetch();
     $pos_actu = $result['ppos_pos_cod'];

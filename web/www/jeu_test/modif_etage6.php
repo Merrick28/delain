@@ -1,7 +1,11 @@
 <?php
-include_once "verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/template.inc';
-if (!isset($included) || !$included) {
+if (!isset($included) || !$included)
+{
     include "blocks/_header_page_jeu.php";
     ob_start();
 }

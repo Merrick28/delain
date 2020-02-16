@@ -1,5 +1,7 @@
 <?php
-include "jeu_test/verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$compt_cod = $verif_connexion->compt_cod;
 
 
 $perso_cible = $_REQUEST['perso'];

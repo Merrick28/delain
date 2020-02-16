@@ -1,9 +1,8 @@
 ﻿<?php
 $verif_connexion = new verif_connexion();
-$tempconn        = $verif_connexion->verif();
-$perso_cod       = $tempconn['perso_cod'];
-$compt_cod       = $tempconn['compt_cod'];
-if ($compte->compt_cod != 4)
+$verif_connexion->verif();
+$compt_cod = $verif_connexion->compt_cod;
+if ($compt_cod != 4)
 {
     die("Accès réservé");
 }

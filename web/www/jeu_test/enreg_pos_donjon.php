@@ -1,6 +1,9 @@
 ﻿<?php
 //if(!isset($db))
-include_once "verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
 // on regarde si le joueur est bien sur un point de passage
 
 $type_lieu = 38;

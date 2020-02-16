@@ -1,6 +1,9 @@
 <?php
-include_once "verif_connexion.php";
-$perso = new perso;
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+$perso     = new perso;
 $perso->charge($perso_cod);
 
 ob_start();

@@ -1,7 +1,11 @@
 ﻿<?php
 
-$methode = get_request_var('methode', '');
-include_once "verif_connexion.php";
+
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+$methode   = get_request_var('methode', '');
 ob_start();
 include "../includes/fonctions.php";
 $parm = new parametres();
@@ -405,7 +409,8 @@ $stmt   = $pdo->query($req_id);
                     echo("</td>");
                     echo("<td>");
 
-                    printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                    printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>",
+                           $result['obj_cod']);
 
                     echo("</td>");
 
@@ -492,7 +497,8 @@ $stmt   = $pdo->query($req_id);
 
                     if ($result['tobj_equipable'] == 1)
                     {
-                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=equiper&objet=%s\">Equiper (2PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=equiper&objet=%s\">Equiper (2PA)</a>",
+                               $result['obj_cod']);
                     }
 
                     if ($potion_buvable)
@@ -503,7 +509,8 @@ $stmt   = $pdo->query($req_id);
                     echo("</td>");
                     echo("<td class=\"soustitre2\">");
 
-                    printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                    printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>",
+                           $result['obj_cod']);
 
                     echo("</td>");
                     echo "<td>";
@@ -612,7 +619,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -738,7 +745,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -885,7 +892,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
@@ -986,7 +993,7 @@ $stmt   = $pdo->query($req_id);
                         echo("</td>");
                         echo("<td>");
 
-                        printf("<a href=\"$_SERVER['PHP_SELF']?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
+                        printf("<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=abandonner&objet=%s\">Abandonner (1PA)</a>", $result['obj_cod']);
 
                         echo("</td>");
                         echo("</tr>");
