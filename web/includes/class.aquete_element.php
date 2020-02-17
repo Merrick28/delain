@@ -219,8 +219,8 @@ class aquete_element
 
     /**
      * supprime tous les éléments d'une étapes qui ne sont pas dans la liste des elements
+     * @return bool|array => false pas réussi a supprimer
      * @global bdd_mysql $pdo
-     * @return boolean => false pas réussi a supprimer
      */
     function clean($aqetape_cod, $element_list)
     {
@@ -275,7 +275,7 @@ class aquete_element
     /**
      * recherche les éléments (pour un emodele) d'une étapes par son n° et le n° de paramètre
      * @global bdd_mysql $pdo
-     * @return boolean => false pas trouvé
+     * @return bool|array => false pas trouvé
      */
     function getBy_etape_param_id($aqetape_cod, $param_id)
     {

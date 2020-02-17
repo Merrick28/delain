@@ -4,19 +4,21 @@ $target = '  target="_top"';
 // changement de perso
 if (isset($_REQUEST['perso']))
 {
-    $change_perso = $_REQUEST['perso'];         // -> pour ident.php
+    $change_perso = $_REQUEST['perso'];
 }
 
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
+$compte     = $verif_connexion->compte;
+$perso_cod  = $verif_connexion->perso_cod;
+$perso      = $verif_connexion->perso;
 include_once "includes/classes.php";
 if (!$verif_auth)
 {
     header('Location:' . $type_flux . G_URL . 'inter.php');
     die();
 }
-// normalement, les objets $compte et $perso sont déjà chargés par la page ident.php
 
 $frameless        = ($compte->compt_frameless == 'O');
 $autorise_monstre = ($compte->autorise_4e_monstre() == 't');
@@ -31,8 +33,6 @@ $requete
 $stmt         = $pdo->prepare($requete);
 $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
 
-
-$perso = new perso;
 if($perso->charge($perso_cod))
 {
     $perso_dlt_passee = $perso->dlt_passee();

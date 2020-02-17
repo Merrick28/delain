@@ -187,8 +187,8 @@ class objet_element
 
     /**
      * supprime tous les éléments d'un objet generique qui ne sont pas dans la liste des elements
+     * @return bool|array => false pas réussi a supprimer
      * @global bdd_mysql $pdo
-     * @return boolean => false pas réussi a supprimer
      */
     function clean($objelem_gobj_cod, $element_list)
     {

@@ -1,6 +1,8 @@
 <?php
 include_once 'classes.php';
-include_once G_CHE . 'ident.php';
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 include_once 'fonctions.php';
 
 $pdo = new bddpdo;

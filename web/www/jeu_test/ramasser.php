@@ -12,7 +12,7 @@ $perso = $verif_connexion->perso;
 switch ($methode)
 {
     case "debut":
-        if ($perso->nb_or_case($perso_cod) > 2)
+        if ($perso->nb_or_case() > 2)
         {
             ?>
             <a href="regrouper.php">Regrouper les brouzoufs (2PA)</a><br>

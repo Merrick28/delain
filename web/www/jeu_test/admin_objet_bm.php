@@ -116,7 +116,7 @@ if ($erreur == 0)
                 $nb_obj = 0;
                 $perobj = new perso_objets();
                 $list   = $perobj->getByObjetGenerique($objbm->objbm_gobj_cod);
-                if (count($list))
+                if (count($list) != 0)
                 {
                     $pdo = new bddpdo;
 
@@ -161,7 +161,7 @@ if ($erreur == 0)
                     $nb_obj = 0;
                     $perobj = new perso_objets();
                     $list   = $perobj->getByObjetGenerique($objbm->objbm_gobj_cod);
-                    if (count($list))
+                    if (count($list) != 0)
                     {
                         $pdo = new bddpdo;
 

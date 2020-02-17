@@ -22,7 +22,7 @@ echo '<table>
 		<td class="soustitre2">';
 
 $toutesPassees = true;
-
+$cbar_cod      = $_REQUEST['cbar_cod'];
 while ($result = $stmt->fetch())
 {
     // Au passage, pendant le parcours, on enregistre les valeurs de celle qu’on va afficher.

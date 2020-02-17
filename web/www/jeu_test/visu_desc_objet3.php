@@ -20,9 +20,9 @@ if ($stmt->rowCount() != 0)
 
 $perso = new perso;
 $perso = $verif_connexion->perso;
-if ($perso->is_lieu($perso_cod))
+if ($perso->is_lieu())
 {
-    $tab_lieu = $perso->get_lieu($perso_cod);
+    $tab_lieu = $perso->get_lieu();
     $lieu_cod = $tab_lieu['lieu']->lieu_cod;
     $req      = "select mstock_obj_cod from stock_magasin
 		where mstock_lieu_cod = $lieu_cod

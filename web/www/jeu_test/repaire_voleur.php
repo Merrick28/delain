@@ -32,7 +32,7 @@ $perso = $verif_connexion->perso;
 
     if ($erreur == 0)
     {
-        $tab_temple = $perso->get_lieu($perso_cod);
+        $tab_temple = $perso->get_lieu();
         $nom_lieu   = $tab_temple['lieu']->lieu_nom;
         $type_lieu  = $tab_temple['lieu_type']->tlieu_libelle;
 

@@ -17,7 +17,7 @@ if (!$perso->is_lieu())
 }
 if ($erreur == 0)
 {
-    $tab_lieu = $perso->get_lieu($perso_cod);
+    $tab_lieu = $perso->get_lieu();
     if ($tab_lieu['lieu']->lieu_tlieu_cod != 29 and $tab_lieu['lieu']->lieu_tlieu_cod != 30)
     {
         $erreur = 1;

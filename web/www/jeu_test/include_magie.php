@@ -1,6 +1,3 @@
-<?php
-$sort_cod = $_REQUEST['sort_cod'];
-?>
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
     <input type="hidden" name="sort_cod" value="<?php echo $sort_cod; ?>">

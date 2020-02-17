@@ -97,7 +97,7 @@ if ($erreur == 0)
                             $req_armes =
                                 "select 	gobj_cod,gobj_nom from objet_generique where gobj_tobj_cod IN (1,2) order by gobj_nom";
                             $stmt2     = $pdo->query($req_armes);
-                            while ($result2 = $stmt2->fetch)
+                            while ($result2 = $stmt2->fetch())
                             {
                                 $arme_cod = $result2['gobj_cod'];
                                 echo "<OPTION value=\"$arme_cod\">" . $result2['gobj_nom'] . "</OPTION>\n";

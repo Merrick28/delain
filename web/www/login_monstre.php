@@ -1,7 +1,9 @@
 <?php
 //die('Fichier non utilisé, à supprimer ?');
 //@2019-01-01: le fichier sert pour le login monstre sur un étage dédié
-require G_CHE . "ident.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
 include G_CHE . "/includes/classes_monstre.php";
 require_once "fonctions.php";
 

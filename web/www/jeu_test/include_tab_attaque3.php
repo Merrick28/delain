@@ -104,14 +104,11 @@ if (count($tab_vue) != 0)
 
 
     // on regarde si la cible ne subit pas un malus de désorientation (sort Morsure du soleil) pour message de prévention !!!
-    if ($perso->get_valeur_bonus('DES') > 0)
+    /*if ($perso->get_valeur_bonus('DES') > 0)
     {
         //echo "<strong>ATTENTION, vous subissez une désorientation, le choix de votre cible n'est pas assuré!</strong><br>";
-    }
+    }*/
 
-} else
-{
-    //echo("Pas de cible en vue !");
 }
 
 

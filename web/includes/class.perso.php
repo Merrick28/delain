@@ -1543,7 +1543,7 @@ class perso
         return false;
     }
 
-    function missions_du_perso($perso_cod, $fac_cod = -1, $inclure_anciennes = FALSE, $tri = 'statut')
+    function missions_du_perso($fac_cod = -1, $inclure_anciennes = FALSE, $tri = 'statut')
     {
         $pdo         = new bddpdo;
         $resultat    = array();
@@ -2777,25 +2777,6 @@ class perso
 
         $compte       = new compte;
         $perso_compte = new perso_compte();
-
-        /*
-         * Pour les monstres joué par un compte admin, le compte n'est pas forcément rattaché au perso_cod
-         if ($this->perso_type_perso != 3)
-        {
-            if (!$perso_compte->get_by_perso($this->perso_cod))
-            {
-                die('Erreur d appel de compte');
-            }
-
-        } else
-        {
-            if (!$perso_compte->get_by_perso_fam($this->perso_cod))
-            {
-                die('Erreur d appel de compte');
-            }
-        }
-        */
-
 
         $compte->charge($perso_compte->pcompt_compt_cod);
 

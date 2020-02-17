@@ -19,9 +19,9 @@ function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
         else
             $sql = "\n\t\tRequête : $sql\n";
 
-        $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
+        $req       = "select compt_nom from compte where compt_cod = $compt_cod";
+        $stmt      = $pdo->query($req);
+        $result    = $stmt->fetch();
         $compt_nom = $result['compt_nom'];
 
         $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
@@ -36,25 +36,25 @@ function creer_lieu($_LIEU)
 {
     GLOBAL $pdo;
 
-    $lieu_cod = $_LIEU["lieu_cod"];
-    $tlieu_cod = $_LIEU["tlieu_cod"];
-    $pos_x = $_LIEU["pos_x"];
-    $pos_y = $_LIEU["pos_y"];
-    $pos_etage = $_LIEU["pos_etage"];
-    $nom = $_LIEU["nom"];
+    $lieu_cod    = $_LIEU["lieu_cod"];
+    $tlieu_cod   = $_LIEU["tlieu_cod"];
+    $pos_x       = $_LIEU["pos_x"];
+    $pos_y       = $_LIEU["pos_y"];
+    $pos_etage   = $_LIEU["pos_etage"];
+    $nom         = $_LIEU["nom"];
     $description = $_LIEU["description"];
-    $erreur = 0;
+    $erreur      = 0;
 
-    $req = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
+    $req  = "select pos_cod from positions where pos_x = $pos_x and pos_y = $pos_y and pos_etage = $pos_etage";
     $stmt = $pdo->query($req);
     if ($stmt->rowCount() == 0)
     {
         $resultat = "<p>Aucune position trouvée à ces coordonnées.</p>";
-        $erreur = 1;
+        $erreur   = 1;
     } else
     {
-        $result = $stmt->fetch();
-        $lieu_pos_cod = $result['pos_cod'];
+        $result            = $stmt->fetch();
+        $lieu_pos_cod      = $result['pos_cod'];
         $lieu_dest_pos_cod = 'null';
         /* LAG: lieux avec des destinations de sont pas gérés ici
         if($_LIEU['dest_pos_x'] != NULL && $_LIEU['dest_pos_y'] != NULL  && $_LIEU['dest_pos_etage'] != NULL )
@@ -67,17 +67,17 @@ function creer_lieu($_LIEU)
                 $lieu_dest_pos_cod = $result['pos_cod'];
             }
         }*/
-        $req = "select nextval('seq_lieu_cod') as lieu_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
+        $req      = "select nextval('seq_lieu_cod') as lieu_cod";
+        $stmt     = $pdo->query($req);
+        $result   = $stmt->fetch();
         $lieu_cod = $result['lieu_cod'];
 
-        $nom = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
+        $nom         = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $nom)));
         $description = pg_escape_string(str_replace("'", '’', str_replace("''", '’', $description)));
 
         // Récupération lieu_url
         $req_url = "select coalesce(tlieu_url, '') as tlieu_url from lieu_type where tlieu_cod = $tlieu_cod";
-        $url = $pdo->get_value($req_url, 'tlieu_url');
+        $url     = $pdo->get_value($req_url, 'tlieu_url');
 
         if ($tlieu_cod == 29 || $tlieu_cod == 30)
         {
@@ -86,24 +86,24 @@ function creer_lieu($_LIEU)
         {
             $cout_pa = 30; /*correspond au prélèvement des magasins*/
         }
-        $req = "insert into lieu (lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
+        $req  = "insert into lieu (lieu_cod, lieu_tlieu_cod, lieu_nom, lieu_description, lieu_refuge, lieu_url,
 					lieu_dest, lieu_alignement, lieu_dfin, lieu_compte, lieu_marge, lieu_prelev,
 					lieu_mobile, lieu_date_bouge, lieu_date_refill, lieu_port_dfin, lieu_dieu_cod) values "
-            . "($lieu_cod, $tlieu_cod, e'$nom', e'$description', e'" . pg_escape_string($_LIEU['refuge']) . "', '" . pg_escape_string($url) . "', " .
-            "$lieu_dest_pos_cod, 0, null, null, 50, $cout_pa, 
+                . "($lieu_cod, $tlieu_cod, e'$nom', e'$description', e'" . pg_escape_string($_LIEU['refuge']) . "', '" . pg_escape_string($url) . "', " .
+                "$lieu_dest_pos_cod, 0, null, null, 50, $cout_pa, 
 				'" . $_LIEU['mobile'] . "', now(), null, null, " . $_LIEU['dieu'] . ")";
         $stmt = $pdo->query($req);
 
-        $req = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values "
-            . "($lieu_pos_cod, $lieu_cod)";
+        $req  = "insert into lieu_position (lpos_pos_cod,lpos_lieu_cod) values "
+                . "($lieu_pos_cod, $lieu_cod)";
         $stmt = $pdo->query($req);
 
-        $req = "select init_automap_pos(" . $lieu_pos_cod . ")";
+        $req  = "select init_automap_pos(" . $lieu_pos_cod . ")";
         $stmt = $pdo->query($req);
 
-        $req = "select tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
+        $req      = "select tlieu_libelle from lieu_type where tlieu_cod = $tlieu_cod";
+        $stmt     = $pdo->query($req);
+        $result   = $stmt->fetch();
         $type_nom = $result['tlieu_libelle'];
 
         $resultat = "Lieu $nom n°$lieu_cod ($type_nom) créé en $lieu_pos_cod ($pos_x, $pos_y, $pos_etage)";
@@ -125,13 +125,13 @@ function creer_lieu($_LIEU)
 $contenu_page = '';
 ob_start();
 $contenu = '';
-$erreur = 0;
+$erreur  = 0;
 include "blocks/_test_droit_modif_etage.php";
 
 
 $pdo = new bddpdo;
 
-$log = '';
+$log      = '';
 $resultat = '';
 
 //---------------------------------------------------------------------------------------------------------------------------
@@ -149,15 +149,15 @@ if ($erreur == 0)
     {
 
         //caraterisqtiques des nouveaux lieux a créer
-        $_LIEU = array(
-            "pos_etage" => $_POST["pos_etage"],
-            "tlieu_cod" => $_POST["tlieu_cod"],
-            "nom" => $_POST["nom"],
+        $_LIEU    = array(
+            "pos_etage"   => $_POST["pos_etage"],
+            "tlieu_cod"   => $_POST["tlieu_cod"],
+            "nom"         => $_POST["nom"],
             "description" => $_POST["description"],
-            "dieu" => $_POST['dieu'],
-            "mobile" => $_POST['mobile'],
-            "refuge" => $_POST['refuge'],
-            "cout_pa" => $_POST['cout_pa']
+            "dieu"        => $_POST['dieu'],
+            "mobile"      => $_POST['mobile'],
+            "refuge"      => $_POST['refuge'],
+            "cout_pa"     => $_POST['cout_pa']
         );
 
         // boucle sur toutes les positions demandées:
@@ -181,8 +181,9 @@ if ($erreur == 0)
     {
 
         // Liste des niveaux principaux
-        $req = "select distinct ABS(etage_reference) sort, etage_reference from etage order by ABS(etage_reference); ";
-        $stmt = $pdo->query($req);
+        $req       =
+            "select distinct ABS(etage_reference) sort, etage_reference from etage order by ABS(etage_reference); ";
+        $stmt      = $pdo->query($req);
         $etage_ref = array();
         while ($resultat = $stmt->fetch())
         {
@@ -246,7 +247,7 @@ if ($erreur == 0)
     } else if ($action == "creer_lieux")
     {
         $etage_type = $_POST["etage_type"];
-        $step = 1 * $_POST["step"];
+        $step       = 1 * $_POST["step"];
         if ((isset($_POST["next"])) || (isset($_POST["save"])))
         {
             $step++;
@@ -272,45 +273,46 @@ if ($erreur == 0)
         }
 
         //recupérer les données envoyées:
-        $def_tlieu_cod = $_POST["tlieu_cod"];
-        $def_nom = $_POST["nom"];
+        $def_tlieu_cod   = $_POST["tlieu_cod"];
+        $def_nom         = $_POST["nom"];
         $def_description = $_POST["description"];
-        $def_dieu = $_POST["dieu"];
-        $def_refuge = $_POST["refuge"];
-        $def_mobile = $_POST["mobile"];
-        $def_cout_pa = $_POST["cout_pa"];
-        $def_etage_type = $_POST["etage_type"];
-        $densite = 1 * $_POST["densite"];
-        $densite_desc = ($densite == 3 ? 'clairsemé' : ($densite == 2 ? 'dense' : 'très dense'));
+        $def_dieu        = $_POST["dieu"];
+        $def_refuge      = $_POST["refuge"];
+        $def_mobile      = $_POST["mobile"];
+        $def_cout_pa     = $_POST["cout_pa"];
+        $def_etage_type  = $_POST["etage_type"];
+        $densite         = 1 * $_POST["densite"];
+        $densite_desc    = ($densite == 3 ? 'clairsemé' : ($densite == 2 ? 'dense' : 'très dense'));
 
         // Récupérer le nom du type de lieu à ajouter
-        $req = "select tlieu_libelle from lieu_type where tlieu_cod = :tlieu_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":tlieu_cod" => $def_tlieu_cod), $stmt);
-        $lieu_desc = $stmt->fetch();
+        $req           = "select tlieu_libelle from lieu_type where tlieu_cod = :tlieu_cod";
+        $stmt          = $pdo->prepare($req);
+        $stmt          = $pdo->execute(array(":tlieu_cod" => $def_tlieu_cod), $stmt);
+        $lieu_desc     = $stmt->fetch();
         $tlieu_libelle = $lieu_desc["tlieu_libelle"];
 
         // Récupérer le nom du dieu à ajouter
-        $req = "select dieu_nom from dieu where  dieu_cod= :dieu_cod";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":dieu_cod" => ($def_dieu == "null") ? 0 : $def_dieu), $stmt);
+        $req       = "select dieu_nom from dieu where  dieu_cod= :dieu_cod";
+        $stmt      = $pdo->prepare($req);
+        $stmt      = $pdo->execute(array(":dieu_cod" => ($def_dieu == "null") ? 0 : $def_dieu), $stmt);
         $dieu_desc = $stmt->fetch();
-        $dieu_nom = $dieu_desc["dieu_nom"];
+        $dieu_nom  = $dieu_desc["dieu_nom"];
 
-        $req = "select etage_cod,case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle, etage_numero from etage {$where} order by etage_reference desc, etage_numero LIMIT 1 OFFSET :step";
+        $req  =
+            "select etage_cod,case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle, etage_numero from etage {$where} order by etage_reference desc, etage_numero LIMIT 1 OFFSET :step";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":step" => $step), $stmt);
         if ($stmt->rowCount() > 0)
         {
             $fin_creation = false;
-            $etage_desc = $stmt->fetch();
-            $pos_etage = $etage_desc["etage_numero"];
-            $nom_etage = $etage_desc["etage_libelle"];
+            $etage_desc   = $stmt->fetch();
+            $pos_etage    = $etage_desc["etage_numero"];
+            $nom_etage    = $etage_desc["etage_libelle"];
         } else
         {
             $fin_creation = true;
-            $pos_etage = "";    // On a finit, plus d'étage a passer en revue
-            $nom_etage = "Fin de traitement!";
+            $pos_etage    = "";    // On a finit, plus d'étage a passer en revue
+            $nom_etage    = "Fin de traitement!";
         }
 
         echo '
@@ -353,7 +355,7 @@ if ($erreur == 0)
         if (!$fin_creation)
         {
             // limites de la carte
-            $req = "SELECT MIN(pos_x) as minx, MIN(pos_y) as miny, MAX(pos_x) as maxx, MAX(pos_y) as maxy,
+            $req           = "SELECT MIN(pos_x) as minx, MIN(pos_y) as miny, MAX(pos_x) as maxx, MAX(pos_y) as maxy,
 							COUNT(*) as nb_case,
 							SUM(case when dauto_valeur=0 then 1 else 0 end) as cases_free,
 							SUM(case when tlieu_cod=:tlieu_cod then 1 else 0 end) as cases_lieu
@@ -363,22 +365,22 @@ if ($erreur == 0)
 							left join lieu on lieu_cod = lpos_lieu_cod
 							left join lieu_type on lieu_tlieu_cod = tlieu_cod
 							where pos_etage = :pos_etage";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":pos_etage" => $pos_etage, ":tlieu_cod" => $def_tlieu_cod), $stmt);
+            $stmt          = $pdo->prepare($req);
+            $stmt          = $pdo->execute(array(":pos_etage" => $pos_etage, ":tlieu_cod" => $def_tlieu_cod), $stmt);
             $etage_limites = $stmt->fetch();
-            $minx = $etage_limites["minx"];
-            $miny = $etage_limites["miny"];
-            $maxx = $etage_limites["maxx"];
-            $maxy = $etage_limites["maxy"];
-            $nb_case = $etage_limites["nb_case"];
-            $cases_free = $etage_limites["cases_free"];
-            $cases_lieu = $etage_limites["cases_lieu"];
-            $taux = $nb_case > 0 ? ROUND(100 * $cases_free / $nb_case, 0) : 0;
-            $nb_sug = ROUND($nb_case / (30 * 30 * $densite), 0);
+            $minx          = $etage_limites["minx"];
+            $miny          = $etage_limites["miny"];
+            $maxx          = $etage_limites["maxx"];
+            $maxy          = $etage_limites["maxy"];
+            $nb_case       = $etage_limites["nb_case"];
+            $cases_free    = $etage_limites["cases_free"];
+            $cases_lieu    = $etage_limites["cases_lieu"];
+            $taux          = $nb_case > 0 ? ROUND(100 * $cases_free / $nb_case, 0) : 0;
+            $nb_sug        = ROUND($nb_case / (30 * 30 * $densite), 0);
 
             //echo "<pre>"; print_r($_POST); echo "<pre>";
 
-            $req = "SELECT pos_cod, pos_x, pos_y, dauto_valeur, lieu_tlieu_cod, lieu_nom
+            $req  = "SELECT pos_cod, pos_x, pos_y, dauto_valeur, lieu_tlieu_cod, lieu_nom
 							from positions 
 							inner join donnees_automap on pos_cod = dauto_pos_cod
 							left join lieu_position on  lpos_pos_cod = pos_cod
@@ -392,7 +394,8 @@ if ($erreur == 0)
             $map = array();
             while ($data = $stmt->fetch())
             {
-                $map[$data["pos_x"]][$data["pos_y"]] = array("pos_cod" => $data["pos_cod"], "valeur" => $data["dauto_valeur"], "type_lieu" => $data["lieu_tlieu_cod"], "lieu_nom" => $data["lieu_nom"]);
+                $map[$data["pos_x"]][$data["pos_y"]] =
+                    array("pos_cod" => $data["pos_cod"], "valeur" => $data["dauto_valeur"], "type_lieu" => $data["lieu_tlieu_cod"], "lieu_nom" => $data["lieu_nom"]);
             }
 
             //echo "<pre>"; print_r($map); echo "<pre>";
@@ -427,10 +430,10 @@ if ($erreur == 0)
                 echo '<tr>';
                 for ($x = $minx; $x <= $maxx; $x++)
                 {
-                    $pos_cod = $map[$x][$y]["pos_cod"];
-                    $dessus = $map[$x][$y]["valeur"];
+                    $pos_cod   = $map[$x][$y]["pos_cod"];
+                    $dessus    = $map[$x][$y]["valeur"];
                     $type_lieu = $map[$x][$y]["type_lieu"];
-                    $comment = $map[$x][$y]["lieu_nom"];
+                    $comment   = $map[$x][$y]["lieu_nom"];
 
                     //On donne une nouvelle valeur au $dessus pour faire apparaître des couleurs différentes en fonction des bâtiments
                     if (($dessus == 2) || ($dessus == 4) || ($dessus == 5) || ($dessus == 6) || ($dessus == 7))
@@ -471,7 +474,8 @@ if ($erreur == 0)
                     $onClick = "";
                     if ($dessus == 0)
                     {
-                        $onClick = 'id="pos-' . $pos_cod . '" data-posx="' . $x . '" data-posy="' . $y . '" onclick="add_lieu(' . $pos_cod . ');"';
+                        $onClick =
+                            'id="pos-' . $pos_cod . '" data-posx="' . $x . '" data-posy="' . $y . '" onclick="add_lieu(' . $pos_cod . ');"';
                     }
                     echo '<td ' . $onClick . '><img src="' . G_IMAGES . 'automap_1_' . $dessus . '.gif" title=" ' . $comment . ' (X ' . $x . ',Y ' . $y . ')"></td>';
                 }
@@ -479,10 +483,6 @@ if ($erreur == 0)
             }
             echo '</table><center>';
             echo '</td></tr></table></div>';
-        } else
-        {
-            // tous les étages ont été passés en revue
-
         }
 
     }

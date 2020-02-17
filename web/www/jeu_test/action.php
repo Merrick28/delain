@@ -1,7 +1,11 @@
 ﻿﻿<?php
 include "blocks/_header_page_jeu.php";
+/** @var integer $perso_cod défini par _header_page_jeu */
 
-
+/**
+ * @param $position
+ * @return string
+ */
 function affiche_apres_deplacement($position)
 {
     $is_phrase = rand(1, 100);
@@ -767,7 +771,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'nv_magasin_vente':
             $lieu = $_POST['lieu'];
-            foreach ($obj as $key => $val)
+            foreach ($_REQUEST['obj'] as $key => $val)
             {
                 if ($_POST['stock'][$key] != "")
                 {
@@ -785,13 +789,13 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case 'nv_magasin_identifie':
             $lieu = $_POST['lieu'];
-            foreach ($obj as $key => $val)
+            foreach ($_REQUEST['obj'] as $key => $val)
             {
                 $contenu_page .= $perso->magasin_identifie($_POST['lieu'], $key);
             }
             break;
         case 'nv_magasin_repare':
-            foreach ($obj as $key => $val)
+            foreach ($_REQUEST['obj'] as $key => $val)
             {
                 $contenu_page .= $perso->magasin_repare($_POST['lieu'], $key);
             }
@@ -1027,7 +1031,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     } else
                     {
                         $ppp = new perso_plan_parallele();
-                        $ppp->$charge($perso_cod);
+                        $ppp->charge($perso_cod);
 
                         $perso_pos = new perso_position();
                         $perso_pos->getByPerso($perso_cod);

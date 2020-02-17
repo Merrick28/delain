@@ -175,7 +175,7 @@ switch ($methode)
 
     case "recup":
         /*vérif si pas de lock de combat*/
-        $lock  = $perso->is_locked($perso_cod);
+        $lock  = $perso->is_locked();
         $phase = CalcPhase();
         if ($lock == true)
         {

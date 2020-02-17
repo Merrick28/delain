@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+/** @var integer $perso_cod défini par _header_page_jeu */
 include "../includes/binettes.php";
 //
 // initialisation tableau
@@ -223,7 +224,7 @@ switch ($methode)
                 $liste_dest = '';
             } else
             {
-                $liste_dest = ($is_expediteur) ? $exp . ';' : '';
+                $liste_dest = ($_REQUEST['is_expediteur']) ? $exp . ';' : '';
             }
 
             //

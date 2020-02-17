@@ -11,19 +11,19 @@
 class aquete
 {
     var $aquete_cod;
-    var $aquete_nom = '';
-    var $aquete_description = '';
-    var $aquete_etape_cod = 0;
-    var $aquete_actif = 'O';
+    var $aquete_nom                = '';
+    var $aquete_description        = '';
+    var $aquete_etape_cod          = 0;
+    var $aquete_actif              = 'O';
     var $aquete_date_debut;
     var $aquete_date_fin;
-    var $aquete_nb_max_instance = 1;
+    var $aquete_nb_max_instance    = 1;
     var $aquete_nb_max_participant = 1;
-    var $aquete_nb_max_rejouable = 1;
+    var $aquete_nb_max_rejouable   = 1;
     var $aquete_nb_max_quete;
     var $aquete_max_delai;
-    var $aquete_nom_alias ='' ;
-    var $aquete_journal_archive = 'O';
+    var $aquete_nom_alias          = '';
+    var $aquete_journal_archive    = 'O';
 
     function __construct()
     {
@@ -32,48 +32,48 @@ class aquete
 
     /**
      * Charge dans la classe un enregistrement de aquete
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
-        $pdo = new bddpdo;
-        $req = "select * from quetes.aquete where aquete_cod = ?";
+        $pdo  = new bddpdo;
+        $req  = "select * from quetes.aquete where aquete_cod = ?";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($code),$stmt);
-        if(!$result = $stmt->fetch())
+        $stmt = $pdo->execute(array($code), $stmt);
+        if (!$result = $stmt->fetch())
         {
             return false;
         }
-        $this->aquete_cod = $result['aquete_cod'];
-        $this->aquete_nom_alias = $result['aquete_nom_alias'];
-        $this->aquete_nom = $result['aquete_nom'];
-        $this->aquete_description = $result['aquete_description'];
-        $this->aquete_etape_cod = $result['aquete_etape_cod'];
-        $this->aquete_actif = $result['aquete_actif'];
-        $this->aquete_journal_archive = $result['aquete_journal_archive'];
-        $this->aquete_date_debut = $result['aquete_date_debut'];
-        $this->aquete_date_fin = $result['aquete_date_fin'];
-        $this->aquete_nb_max_instance = $result['aquete_nb_max_instance'];
+        $this->aquete_cod                = $result['aquete_cod'];
+        $this->aquete_nom_alias          = $result['aquete_nom_alias'];
+        $this->aquete_nom                = $result['aquete_nom'];
+        $this->aquete_description        = $result['aquete_description'];
+        $this->aquete_etape_cod          = $result['aquete_etape_cod'];
+        $this->aquete_actif              = $result['aquete_actif'];
+        $this->aquete_journal_archive    = $result['aquete_journal_archive'];
+        $this->aquete_date_debut         = $result['aquete_date_debut'];
+        $this->aquete_date_fin           = $result['aquete_date_fin'];
+        $this->aquete_nb_max_instance    = $result['aquete_nb_max_instance'];
         $this->aquete_nb_max_participant = $result['aquete_nb_max_participant'];
-        $this->aquete_nb_max_rejouable = $result['aquete_nb_max_rejouable'];
-        $this->aquete_nb_max_quete = $result['aquete_nb_max_quete'];
-        $this->aquete_max_delai = $result['aquete_max_delai'];
+        $this->aquete_nb_max_rejouable   = $result['aquete_nb_max_rejouable'];
+        $this->aquete_nb_max_quete       = $result['aquete_nb_max_quete'];
+        $this->aquete_max_delai          = $result['aquete_max_delai'];
         return true;
     }
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if($new)
+        if ($new)
         {
-            $req = "insert into quetes.aquete 
+            $req  = "insert into quetes.aquete 
                     (
                         aquete_nom_alias,
                         aquete_nom,
@@ -108,25 +108,24 @@ class aquete
                     returning aquete_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                    ":aquete_nom_alias" => $this->aquete_nom_alias,
-                    ":aquete_nom" => $this->aquete_nom,
-                    ":aquete_description" => $this->aquete_description,
-                    ":aquete_etape_cod" => $this->aquete_etape_cod,
-                    ":aquete_actif" => $this->aquete_actif,
-                    ":aquete_journal_archive" => $this->aquete_journal_archive,
-                    ":aquete_date_debut" => $this->aquete_date_debut,
-                    ":aquete_date_fin" => $this->aquete_date_fin,
-                    ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
-                    ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
-                    ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                    ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
-                    ":aquete_max_delai" => $this->aquete_max_delai
-            ),$stmt);
+                                      ":aquete_nom_alias"          => $this->aquete_nom_alias,
+                                      ":aquete_nom"                => $this->aquete_nom,
+                                      ":aquete_description"        => $this->aquete_description,
+                                      ":aquete_etape_cod"          => $this->aquete_etape_cod,
+                                      ":aquete_actif"              => $this->aquete_actif,
+                                      ":aquete_journal_archive"    => $this->aquete_journal_archive,
+                                      ":aquete_date_debut"         => $this->aquete_date_debut,
+                                      ":aquete_date_fin"           => $this->aquete_date_fin,
+                                      ":aquete_nb_max_instance"    => $this->aquete_nb_max_instance,
+                                      ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
+                                      ":aquete_nb_max_rejouable"   => $this->aquete_nb_max_rejouable,
+                                      ":aquete_nb_max_quete"       => $this->aquete_nb_max_quete,
+                                      ":aquete_max_delai"          => $this->aquete_max_delai
+                                  ), $stmt);
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req = "update quetes.aquete
                     set
@@ -147,78 +146,82 @@ class aquete
 
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":aquete_cod" => $this->aquete_cod,
-                ":aquete_nom_alias" => $this->aquete_nom_alias,
-                ":aquete_nom" => $this->aquete_nom,
-                ":aquete_description" => $this->aquete_description,
-                ":aquete_etape_cod" => $this->aquete_etape_cod,
-                ":aquete_actif" => $this->aquete_actif,
-                ":aquete_journal_archive" => $this->aquete_journal_archive,
-                ":aquete_date_debut" => $this->aquete_date_debut,
-                ":aquete_date_fin" => $this->aquete_date_fin,
-                ":aquete_nb_max_instance" => $this->aquete_nb_max_instance,
-                ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
-                ":aquete_nb_max_rejouable" => $this->aquete_nb_max_rejouable,
-                ":aquete_nb_max_quete" => $this->aquete_nb_max_quete,
-                ":aquete_max_delai" => $this->aquete_max_delai
-            ),$stmt);
+                                      ":aquete_cod"                => $this->aquete_cod,
+                                      ":aquete_nom_alias"          => $this->aquete_nom_alias,
+                                      ":aquete_nom"                => $this->aquete_nom,
+                                      ":aquete_description"        => $this->aquete_description,
+                                      ":aquete_etape_cod"          => $this->aquete_etape_cod,
+                                      ":aquete_actif"              => $this->aquete_actif,
+                                      ":aquete_journal_archive"    => $this->aquete_journal_archive,
+                                      ":aquete_date_debut"         => $this->aquete_date_debut,
+                                      ":aquete_date_fin"           => $this->aquete_date_fin,
+                                      ":aquete_nb_max_instance"    => $this->aquete_nb_max_instance,
+                                      ":aquete_nb_max_participant" => $this->aquete_nb_max_participant,
+                                      ":aquete_nb_max_rejouable"   => $this->aquete_nb_max_rejouable,
+                                      ":aquete_nb_max_quete"       => $this->aquete_nb_max_quete,
+                                      ":aquete_max_delai"          => $this->aquete_max_delai
+                                  ), $stmt);
         }
     }
 
     //Comptage tous persos confondus
     function get_nb_total()
     {
-        $pdo = new bddpdo;
-        $req = "select sum(aqperso_nb_realisation) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
+        $pdo    = new bddpdo;
+        $req    = "select sum(aqperso_nb_realisation) as count from quetes.aquete_perso where aqperso_aquete_cod=?  ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($this->aquete_cod), $stmt);
         $result = $stmt->fetch();
-        return 1*$result['count'];
+        return 1 * $result['count'];
     }
 
 
     //Comptage tous persos confondus, si une étape est passé en paramètre on compte le nombre de persos à cette étape
-    function get_nb_en_cours($aqetape_cod=0)
+    function get_nb_en_cours($aqetape_cod = 0)
     {
         $pdo = new bddpdo;
-        if ($aqetape_cod==0)
+        if ($aqetape_cod == 0)
         {
-            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
+            $req  =
+                "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_actif='O' ";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($this->aquete_cod),$stmt);
-        }
-        else
+            $stmt = $pdo->execute(array($this->aquete_cod), $stmt);
+        } else
         {
-            $req = "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_etape_cod = ? and aqperso_actif='O' ";
+            $req  =
+                "select count(*) as count from quetes.aquete_perso where aqperso_aquete_cod=? and aqperso_etape_cod = ? and aqperso_actif='O' ";
             $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array($this->aquete_cod, $aqetape_cod),$stmt);
+            $stmt = $pdo->execute(array($this->aquete_cod, $aqetape_cod), $stmt);
         }
         $result = $stmt->fetch();
-        return 1*$result['count'];
+        return 1 * $result['count'];
     }
 
     //Recherche de la liste des etapes de la quete
+
+    /**
+     * @return bool|array
+     */
     function get_etapes()
     {
         $etape = new aquete_etape;
-        $etapes = $etape->get_quete_etapes($this->aquete_cod);        // toutes les etapes de la quete dans l'ordre chronologique !
-        return $etapes;
+        return $etape->get_quete_etapes($this->aquete_cod);        // toutes les etapes de la quete dans l'ordre chronologique !
     }
 
     //Recherche de la dernière étape de la quete
     function get_derniere_etape()
     {
         $etapes = $this->get_etapes();
-        if (sizeof($etapes)<=0)
+        if (sizeof($etapes) <= 0)
             return false;
         else
-            return $etapes[sizeof($etapes)-1]; // Retourner la dernière
+            return $etapes[sizeof($etapes) - 1]; // Retourner la dernière
     }
 
     //Liste des quetes qu'un perso à la possibilité de démarrer en fonction de sa position (sur une lieu, un pnj etc...)
     function get_debut_quete($perso_cod)
     {
-        $quetes = array();
+        $quetes   = array();
         $triggers = array();
 
         $pdo = new bddpdo;
@@ -266,34 +269,34 @@ class aquete
                 ";
 
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array($perso_cod),$stmt);
-        while($result = $stmt->fetch())
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        while ($result = $stmt->fetch())
         {
             $temp = new aquete;
             $temp->charge($result["aquete_cod"]);
 
             // Pour chaque quête trouvée, on vérifie si le perso ne l'a pas déjà prise ou en cours par un autre
             // A FAIRE !!!
-            $quetes[] = $temp;
+            $quetes[]   = $temp;
             $triggers[] = $result;
 
             unset($temp);
         }
-        return array("quetes"=>$quetes, "triggers"=>$triggers);
+        return array("quetes" => $quetes, "triggers" => $triggers);
     }
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \aquete
+     * @global bdd_mysql $pdo
      */
-    function  getAll()
+    function getAll()
     {
         $retour = array();
-        $pdo = new bddpdo;
-        $req = "select aquete_cod from quetes.aquete order by aquete_cod";
-        $stmt = $pdo->query($req);
-        while($result = $stmt->fetch())
+        $pdo    = new bddpdo;
+        $req    = "select aquete_cod from quetes.aquete order by aquete_cod";
+        $stmt   = $pdo->query($req);
+        while ($result = $stmt->fetch())
         {
             $temp = new aquete;
             $temp->charge($result["aquete_cod"]);
@@ -303,30 +306,32 @@ class aquete
         return $retour;
     }
 
-    public function __call($name, $arguments){
-        switch(substr($name, 0, 6)){
+    public function __call($name, $arguments)
+    {
+        switch (substr($name, 0, 6))
+        {
             case 'getBy_':
-                if(property_exists($this, substr($name, 6)))
+                if (property_exists($this, substr($name, 6)))
                 {
                     $retour = array();
-                    $pdo = new bddpdo;
-                    $req = "select aquete_cod from quetes.aquete where " . substr($name, 6) . " = ? order by aquete_cod";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array($arguments[0]),$stmt);
-                    while($result = $stmt->fetch())
+                    $pdo    = new bddpdo;
+                    $req    =
+                        "select aquete_cod from quetes.aquete where " . substr($name, 6) . " = ? order by aquete_cod";
+                    $stmt   = $pdo->prepare($req);
+                    $stmt   = $pdo->execute(array($arguments[0]), $stmt);
+                    while ($result = $stmt->fetch())
                     {
                         $temp = new aquete;
                         $temp->charge($result["aquete_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if(count($retour) == 0)
+                    if (count($retour) == 0)
                     {
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
                     die('Unknown variable ' . substr($name, 6) . ' in table aquete');
                 }

@@ -1,20 +1,21 @@
-<?php 
-if(isset($idsessadm))
+<?php
+if (isset($idsessadm))
 {
-	$change_perso = $num_perso;
+    $change_perso = $num_perso;
 }
 require G_CHE . 'includes/classes.php';
-require G_CHE . "ident.php";
-if($verif_auth)
+$verif_connexion = new verif_connexion();
+$verif_connexion->ident();
+$verif_auth = $verif_connexion->verif_auth;
+if ($verif_auth)
 {
-	$test_auth = true;	
-	//echo "Debug true <br>";
-}
-else
+    $test_auth = true;
+    //echo "Debug true <br>";
+} else
 {
-	echo "Debug false";
-	echo "etape 1";
-	//header('Location:' . G_URL . 'inter.php');
+    echo "Debug false";
+    echo "etape 1";
+    //header('Location:' . G_URL . 'inter.php');
 	die();
 }
 

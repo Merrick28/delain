@@ -18,7 +18,6 @@ if (!$verif_auth)
     header('Location:' . $type_flux . G_URL . 'inter.php');
     die();
 }
-// normalement, les objets $compte et $perso sont déjà chargés par la page ident.php
 
 $frameless        = ($compte->compt_frameless == 'O');
 $autorise_monstre = ($compte->autorise_4e_monstre() == 't');

@@ -95,14 +95,12 @@ switch ($methode)
 		$stmt_perso   = $pdo->query($req_sel_perso);
         $result_perso = $stmt_perso->fetch();
 		foreach ($fields as $i => $value) {
-			if($_POST[$fields[$i]] == $result_perso[$fields[$i]]){
-				//echo $fields[$i]." = ".$_POST[$fields[$i]]." = ".$db_perso->f($fields[$i])." EGAL <br>\n";
-			} else {
-				//echo $fields[$i]." = ".$_POST[$fields[$i]]." = ".$db_perso->f($fields[$i])." DIFF <br>\n";
-				$log = $log."Modification du champ ".$fields[$i]." : ".$result_perso[$fields[$i]] ." => "
-                                                                                                     .$_POST[$fields[$i]]."\n";
-			}
-		}
+            if (!($_POST[$fields[$i]] == $result_perso[$fields[$i]]))
+            {
+                $log = $log . "Modification du champ " . $fields[$i] . " : " . $result_perso[$fields[$i]] . " => "
+                       . $_POST[$fields[$i]] . "\n";
+            }
+        }
 		// CAS SPÉCIFIQUE POUR LE NOM
 		if($_POST['mod_perso_nom'] != $result_perso['perso_nom']){
 			$log = $log."Modification du champ Nom : ".$result_perso['perso_nom']." => ".$_POST['mod_perso_nom']."\n";

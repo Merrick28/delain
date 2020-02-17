@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
 <?php
-include 'jeu/verif_connexion.php';
-
-$compte = new compte;
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso_cod = $verif_connexion->perso_cod;
+$compt_cod = $verif_connexion->compt_cod;
+$compte    = $verif_connexion->compte;
 
 ?>
 <link rel="stylesheet" type="text/css" href="style.css" title="essai">

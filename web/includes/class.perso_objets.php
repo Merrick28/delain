@@ -74,7 +74,7 @@ class perso_objets
     /***
      * @param $perso
      * @param $objet_generique
-     * @return bool
+     * @return bool|array
      * @throws Exception
      */
     function getByPersoObjetGenerique($perso, $objet_generique)
@@ -149,7 +149,7 @@ class perso_objets
 
     /***
      * @param $objet_generique
-     * @return bool
+     * @return bool|array
      * @throws Exception
      */
     function getByObjetGenerique($objet_generique)

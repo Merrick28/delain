@@ -1,14 +1,19 @@
 <?php
 $tmpperso = new perso;
+/** @var integer $mon_cod défini par l'appelant */
 $tmpperso->charge($mon_cod);
+/** @var integer $perso_sta_combat défini par l'appelant */
 $tmpperso->perso_sta_combat      = $perso_sta_combat;
+/** @var integer $perso_sta_hors_combat défini par l'appelant */
 $tmpperso->perso_sta_hors_combat = $perso_sta_hors_combat;
+/** @var integer $mcom_cod défini par l'appelant */
 $tmpperso->perso_mcom_cod        = $mcom_cod;
 $tmpperso->stocke();
-
+/** @var integer $compt_admin défini par l'appelant */
 if ($compt_admin != -1)
 {
 
+    /** @var integer $perso_dirige_admin défini par l'appelant */
     $tmpperso->perso_dirige_admin = $perso_dirige_admin;
     $tmpperso->stocke();
     echo "ADMIN : $compt_admin";

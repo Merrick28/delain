@@ -30,8 +30,8 @@ if ($autorise)
     $meta_noir           = $guilde->guilde_meta_noir;
     $meta_caravane       = $guilde->guilde_meta_caravane;
     $num_guilde          = $guilde->guilde_cod;
-    $perso_meta_noir     = $guilde->pguilde_meta_noir;
-    $perso_meta_caravane = $guilde->pguilde_meta_caravane;
+    $perso_meta_noir     = $pguilde->pguilde_meta_noir;
+    $perso_meta_caravane = $pguilde->pguilde_meta_caravane;
 
     printf("<table><tr><td class=\"titre\"><p class=\"titre\">Administration de la guilde %s</td></tr></table>", $result['guilde_nom']);
     if ($param->getparm(74) == 1)

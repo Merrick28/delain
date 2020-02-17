@@ -337,7 +337,7 @@ case 'collection_visu':        // Affichage des données d’une session
     if ($ccol_tranche_niveau > 0)
     {
         // Détermination du niveau maximal
-        $req = "select max(perso_niveau) as niveau
+        $req             = "select max(perso_niveau) as niveau
 				from perso
 				inner join perso_position on ppos_perso_cod = perso_cod
 				inner join positions on pos_cod = ppos_pos_cod
@@ -345,8 +345,8 @@ case 'collection_visu':        // Affichage des données d’une session
 				where etage_reference <> -100
 					AND perso_actif <> 'N'
 					AND perso_type_perso = 1";
-        $stmt      = $pdo->query($req);
-       $result = $stmt->fetch();
+        $stmt            = $pdo->query($req);
+        $result          = $stmt->fetch();
         $tranche_min     = 1;
         $max_tranche_min = $result['niveau'];
 
@@ -417,12 +417,12 @@ case 'collection_visu':        // Affichage des données d’une session
     $debut_table .= '<tr><th class="titre">Aventurier</th><th class="titre">Nombre d’objets</th></tr>';
     $fin_table   = '</table>';
 
-    $req = "select coalesce(perso_nom, 'Aventurier disparu') as perso_nom, ccolres_nombre, ccolres_division from concours_collections_resultats
+    $req  = "select coalesce(perso_nom, 'Aventurier disparu') as perso_nom, ccolres_nombre, ccolres_division from concours_collections_resultats
 			left outer join perso on perso_cod = ccolres_perso_cod
 			where ccolres_ccol_cod = :ccol_cod
 			order by case when ccolres_division like 'Tous%' then 0 else 1 end, ccolres_division, ccolres_nombre desc";
     $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array(":ccol_cod" => $ccol_cod),$stmt);
+    $stmt = $pdo->execute(array(":ccol_cod" => $ccol_cod), $stmt);
 
     $division_en_cours = -1;
 
@@ -465,11 +465,11 @@ case 'collection_nouvelle':    // Formulaire vierge
                 <td>Dénomination du concours (typiquement, « Collections de citrouilles, 2010 »).</td>
             </tr>
             <?php echo '<tr><td class="soustitre2">Objet de collection</td><td><select name="form_tobj_objet" onchange="filtrer_gobj(this.value, -1, \'form_objet\', tableauObjetsCollection);"><option value="-1">Choisissez un type d’objet...</option>';
-            $req =
+            $req         =
                 'select distinct tobj_cod, tobj_libelle from type_objet inner join objet_generique on gobj_tobj_cod = tobj_cod order by tobj_libelle';
-            $stmt = $pdo->query($req);
+            $stmt        = $pdo->query($req);
             $script_tobj = 'var tableauObjetsCollection = new Array();';
-            while($result = $stmt->fetch())
+            while ($result = $stmt->fetch())
             {
                 $clef        = $result['tobj_cod'];
                 $valeur      = $result['tobj_libelle'];
@@ -477,10 +477,11 @@ case 'collection_nouvelle':    // Formulaire vierge
                 echo "<option value='$clef'>$valeur</option>";
             }
             echo '</select><br /><select name="form_objet" id="form_objet">';
-            $req = 'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
-            $stmt = $pdo->query($req);
+            $req         =
+                'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
+            $stmt        = $pdo->query($req);
             $script_gobj = '';
-            while($result = $stmt->fetch())
+            while ($result = $stmt->fetch())
             {
                 $clef        = $result['gobj_cod'];
                 $clef_tobj   = $result['gobj_tobj_cod'];

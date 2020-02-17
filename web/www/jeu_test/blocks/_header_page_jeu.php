@@ -4,9 +4,7 @@
  * User: pypg670
  * Date: 18/12/2018
  * Time: 16:26
- * @include G_CHE . "/jeu_test/verif_connexion.php"
  */
-//include_once G_CHE . "/jeu_test/verif_connexion.php";
 
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();

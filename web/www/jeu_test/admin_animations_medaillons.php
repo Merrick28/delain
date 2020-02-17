@@ -37,7 +37,7 @@ switch ($methode)
         $stmt              = $pdo->execute(array(":antre" => $antre), $stmt);
         $result            = $stmt->fetch();
         $monstre_cod       = $result['perso_cod'];
-
+        $obj_cod           = $_REQUEST['obj_cod'];
         if ($monstre_cod > 0 && $antre > 0)
         {
             $req_enleve = "delete from perso_objets where perobj_obj_cod = :objet";
