@@ -5,6 +5,7 @@
  * Date: 19/12/2018
  * Time: 15:54
  */
+$verif_connexion::verif_appel();
 $req_concours = 'select cbar_cod, cbar_saison, cbar_date_ouverture, cbar_date_teaser, cbar_fermeture, cbar_description,
 					case when CURRENT_DATE between cbar_date_teaser and cbar_date_ouverture then 1 else 0 end as introduction,
 					case when CURRENT_DATE between cbar_date_ouverture and cbar_fermeture then 1 else 0 end as ouvert,

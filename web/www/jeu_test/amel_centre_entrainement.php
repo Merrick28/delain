@@ -4,6 +4,7 @@ include "blocks/_header_page_jeu.php";
 $type_lieu = 6;
 $nom_lieu = 'un centre d\'entraînement';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

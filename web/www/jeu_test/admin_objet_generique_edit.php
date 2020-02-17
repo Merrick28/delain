@@ -8,6 +8,7 @@ ob_start();
 <?php
 $erreur          = 0;
 $droit_modif     = 'dcompt_objet';
+define('APPEL',1);
 include "blocks/_test_droit_modif_generique.php";
 $methode = $_REQUEST['methode'];
 if ($erreur == 0)

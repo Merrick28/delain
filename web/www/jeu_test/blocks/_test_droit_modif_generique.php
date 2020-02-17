@@ -10,6 +10,7 @@
  *   0 ok
  *   1 pas ok
  */
+$verif_connexion::verif_appel();
 $erreur = 0;
 $req = "select * from compt_droit where dcompt_compt_cod = $compt_cod ";
 $stmt = $pdo->query($req);

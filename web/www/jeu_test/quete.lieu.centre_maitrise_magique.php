@@ -1,7 +1,5 @@
 <?php // gestion des quêtes sur les centres de maîtrise magique.
 
-include "blocks/_tests_appels_page_externe.php";
-
 
 $methode2          = get_request_var('methode2', 'debut');
 

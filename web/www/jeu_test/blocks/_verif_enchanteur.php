@@ -5,6 +5,7 @@
  * Date: 20/12/18
  * Time: 13:13
  */
+$verif_connexion::verif_appel();
 $type_appel = get_request_var('type_appel', 0);
 
 //

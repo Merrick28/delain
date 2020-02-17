@@ -4,6 +4,7 @@ ob_start();
 $methode          = get_request_var('methode', 'debut');
 
 $droit_modif = 'dcompt_controle_admin';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)

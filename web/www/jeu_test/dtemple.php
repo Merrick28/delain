@@ -14,6 +14,7 @@ $methode = get_request_var('methode', 'debut');
 $type_lieu = 17;
 $nom_lieu  = 'un temple';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso_fam = false;

@@ -4,6 +4,7 @@ $erreur = 0;
 $erreur2 = 0;
 
 $droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 

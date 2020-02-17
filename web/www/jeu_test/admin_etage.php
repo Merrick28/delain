@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-
+define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 $methode     = get_request_var('methode', 'debut');

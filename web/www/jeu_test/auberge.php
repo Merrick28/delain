@@ -11,6 +11,7 @@ $nom_lieu  = 'une auberge';
 $perso     = new perso;
 $perso     = $verif_connexion->perso;
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $methode          = get_request_var('methode', 'debut');

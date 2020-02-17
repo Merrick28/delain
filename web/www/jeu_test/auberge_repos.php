@@ -5,6 +5,7 @@ ob_start();
 $type_lieu = 4;
 $nom_lieu = 'une auberge';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

@@ -3,6 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $droit_modif = 'dcompt_controle';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur != 0)

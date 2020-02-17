@@ -356,6 +356,7 @@ ob_start();
 <?php
 
 $droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 echo '<SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>';
 

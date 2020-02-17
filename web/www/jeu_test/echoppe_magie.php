@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 $param = new parametres();
 
@@ -7,6 +6,8 @@ $type_lieu = 14;
 $nom_lieu  = 'un magasin magique';
 $perso     = new perso;
 $perso     = $verif_connexion->perso;
+
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

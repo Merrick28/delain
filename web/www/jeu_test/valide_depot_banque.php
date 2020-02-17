@@ -4,7 +4,7 @@ ob_start();
 
 $type_lieu = 1;
 $nom_lieu = 'une banque';
-
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 

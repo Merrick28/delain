@@ -5,7 +5,7 @@
  * Date: 18/12/2018
  * Time: 16:24
  */
-
+$verif_connexion::verif_appel();
 include G_CHE . "jeu_test/blocks/_test_admin_echoppe.php";
 
 if ($erreur == 0) {

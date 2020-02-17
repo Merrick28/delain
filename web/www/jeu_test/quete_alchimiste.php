@@ -22,12 +22,8 @@ switch ($type_appel)
     case 0:
         $type_lieu = 99;
         $nom_lieu = 'une boutique d\'alchimiste';
-
+        define('APPEL', 1);
         include "blocks/_test_lieu.php";
-
-
-        include "blocks/_tests_appels_page_externe.php";
-
 
         break;
     case 2: //Cette fois, on vérifie qu'un perso sur la case est un enchanteur PNJ et qu'il ne s'agit pas d'un familier

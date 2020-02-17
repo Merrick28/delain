@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 $sens[1] = "vente (magasin vers aventurier) ";
 $sens[2] = "achat (aventurier vers magasin) ";
 $req     =

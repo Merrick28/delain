@@ -1,11 +1,10 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
-
 $param = new parametres();
 
 $type_lieu = 22;
 $nom_lieu  = 'un escalier';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 include "blocks/_test_passage_medaillon.php";

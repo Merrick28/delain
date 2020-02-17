@@ -9,6 +9,7 @@ $contenu_page = '';
 // on vérifie que le type d'appel soit bien passé
 // s'il n'est pas passé, on considère qu'on est sur un lieu
 //
+define('APPEL', 1);
 include "blocks/_verif_enchanteur.php";
 
 $perso = new perso;
@@ -126,6 +127,7 @@ if ($erreur == 0)
             //
             // on regarde si l'objet est bien enchantable, et quels enchantements on peut lui associer
             //
+
             include "blocks/_enchanteur_enc.php";
             break;
         case "niv1": // Code aléatoire

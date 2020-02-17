@@ -5,6 +5,7 @@ ob_start();
 $type_lieu = 3;
 $nom_lieu  = 'un escalier';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso = new perso;

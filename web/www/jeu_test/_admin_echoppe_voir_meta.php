@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 echo "<p><strong>Liste des personnes méta guildées :</strong><br>";
 $req                = "select perso_nom,perso_cod from perso,guilde_perso 
                       where pguilde_valide = 'O' 

@@ -32,6 +32,7 @@ ob_start();
 
     </script>
 <?php
+define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 

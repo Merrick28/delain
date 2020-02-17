@@ -5,6 +5,8 @@
  * Date: 19/12/2018
  * Time: 15:50
  */
+$verif_connexion::verif_appel();
+
 $req_nextval = "select nextval('concours_barde_cbar_cod_seq') as cbar_cod";
 $stmt = $pdo->query($req_nextval);
 $result = $stmt->fetch();

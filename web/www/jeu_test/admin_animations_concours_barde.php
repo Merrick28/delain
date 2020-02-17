@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 if (!isset($cbar_cod))
     $cbar_cod = -1;
@@ -12,6 +11,7 @@ $nbJury = 10;
 
 // Validations de formulaire
 $methode = $_REQUEST['methode'];
+define('APPEL', 1);
 switch ($methode) {
     case 'barde_modif':    // Modification d’un concours existant
         $form_cod = pg_escape_string($_POST['form_cod']);
@@ -20,7 +20,6 @@ switch ($methode) {
         $form_date_teaser = "cbar_date_teaser='" . pg_escape_string($_POST['form_date_teaser']) . "'::timestamp,";
         $form_fermeture = "cbar_fermeture='" . pg_escape_string($_POST['form_fermeture']) . "'::timestamp,";
         $form_description = "cbar_description='" . pg_escape_string(htmlspecialchars(str_replace('\'', '’', $_POST['form_description']))) . "'";
-
         include 'blocks/_admin_concours_barde.php';
 
         $log = date("d/m/y - H:i") . "\tCompte $compt_cod modifie le concours de bardes $form_saison (id = $form_cod).\n";

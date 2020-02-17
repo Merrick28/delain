@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 $tmpperso = new perso;
 /** @var integer $mon_cod défini par l'appelant */
 $tmpperso->charge($mon_cod);

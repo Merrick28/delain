@@ -13,6 +13,7 @@ $erreur = 0;
 
 
 $droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
@@ -55,7 +56,6 @@ if ($erreur == 0)
 
     if (isset($_POST['methode']))
     {
-        define('APPEL', 1);
         include "admin_traitement_perso_edit.php";
     }
 
@@ -662,7 +662,7 @@ if ($erreur == 0)
             l’équipement</a><br>
         <!-- INITIALISATION DES VALEURS DES CONTROLS -->
         <SCRIPT language="javascript">
-            var listeBase = new Array();
+            var listeBase = [];
             <?php // LISTE DES OBJETS POSSIBLES
             $nb_tobj = 0;
             $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
@@ -684,7 +684,7 @@ if ($erreur == 0)
             }
             ?>
 
-            var listeCurrent = new Array();
+            var listeCurrent = [];
 
             <?php
             // LISTE DES OBJETS DANS L’INVENTAIRE

@@ -9,6 +9,7 @@ $compt_cod = $verif_connexion->compt_cod;
 $type_lieu = 38;
 $nom_lieu  = 'un point de passage';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

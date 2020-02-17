@@ -8,6 +8,7 @@ ob_start();
 $erreur = 0;
 
 $droit_modif = 'dcompt_creer_monstre';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)

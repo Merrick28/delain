@@ -1,6 +1,4 @@
 ﻿<?php
-include "blocks/_tests_appels_page_externe.php";
-
 include "../includes/constantes.php";
 ?>
 <!DOCTYPE html>
@@ -18,7 +16,7 @@ include "../includes/constantes.php";
 
     $type_lieu = 36;
     $nom_lieu = 'une porte monumentale';
-
+    define('APPEL', 1);
     include "blocks/_test_lieu.php";
 
     $methode          = get_request_var('methode', 'debut');

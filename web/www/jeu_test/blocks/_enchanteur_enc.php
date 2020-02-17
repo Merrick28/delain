@@ -5,6 +5,7 @@
  * Date: 20/12/18
  * Time: 13:17
  */
+$verif_connexion::verif_appel();
 //
 // on regarde si l'objet est bien enchantable, et quels enchantements on peut lui associer
 //

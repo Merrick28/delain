@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 
 $param = new parametres();
@@ -17,6 +16,7 @@ $param = new parametres();
 $type_lieu = 11;
 $nom_lieu = 'un magasin';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

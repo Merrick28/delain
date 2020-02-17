@@ -5,6 +5,7 @@ ob_start();
     <script language="javascript" src="javascripts/modif_etage.js"></script>
 
 <?php $erreur = 0;
+define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 
@@ -65,6 +66,7 @@ if ($erreur == 0) {
                         $stmt = $pdo->query($req);
                     }
                 }
+                break;
             case "modif_passage":
                 $list = explode(";", $_POST['pos_codes']);
                 for ($i = 0; $i < count($list); $i++) {

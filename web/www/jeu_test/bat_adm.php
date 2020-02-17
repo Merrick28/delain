@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 include_once "../includes/constantes.php";
 
@@ -10,6 +9,7 @@ $param = new parametres();
 $type_lieu = 9;
 $nom_lieu  = 'un bâtiment administratif';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $methode          = get_request_var('methode', 'debut');

@@ -5,6 +5,7 @@
  * Date: 20/12/18
  * Time: 13:24
  */
+$verif_connexion::verif_appel();
 /* on lance les dés */
 $req_des = "select lancer_des(1, $val_des) as des";
 $stmt = $pdo->query($req_des);

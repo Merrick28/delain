@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 if ($action == 'ajout')
 {
     $req  =

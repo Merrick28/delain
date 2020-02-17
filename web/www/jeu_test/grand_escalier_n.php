@@ -3,6 +3,7 @@
 $type_lieu = 16;
 $nom_lieu = 'un escalier';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 include "blocks/_test_passage_medaillon.php";
 

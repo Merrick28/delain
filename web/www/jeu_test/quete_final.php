@@ -122,7 +122,7 @@ if (!$perso->is_lieu())
 															echo 'Un guérisseur du dispensaire vous interpelle : <br><em>Je vois que vous possédez des écailles de basilic ! Ceci nous sert parfois pour faire nos préparations pour soigner nos patient. Mais actuellement, nous n\'en avons pas besoin. Revenez un autre jour, nous pourrons surement faire affaire !</em>';
 															}
 														}
-							
+							    break;
 								// Résultat des quêtes
 								// Quête du collectionneur
 								case "cede_objet1":

@@ -79,6 +79,7 @@ if (!isset($vcompte))
 }
 
 $droit_modif = 'dcompt_controle';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0 && $vcompte != -1)

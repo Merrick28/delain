@@ -2,7 +2,7 @@
 
 $type_lieu = 2;
 $nom_lieu  = 'un dispensaire';
-
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso = new perso;

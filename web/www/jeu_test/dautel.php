@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 $param = new parametres();
 //
@@ -15,6 +14,7 @@ $methode          = get_request_var('methode', 'entree');
 $type_lieu = 33;
 $nom_lieu = 'un autel de prière';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $req = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;

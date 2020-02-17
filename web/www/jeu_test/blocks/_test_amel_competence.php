@@ -5,6 +5,7 @@
  * Date: 20/12/18
  * Time: 13:21
  */
+$verif_connexion::verif_appel();
 /* on cherche la valeur actuelle */
 $req_comp = "select pcomp_modificateur, comp_libelle, comp_typc_cod
         from perso_competences

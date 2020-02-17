@@ -5,6 +5,7 @@ include "blocks/_header_page_jeu.php";
 <?php
 
 $droit_modif = 'dcompt_modif_gmon';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)

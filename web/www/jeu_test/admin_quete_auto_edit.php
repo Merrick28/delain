@@ -32,6 +32,7 @@ echo '<script>//# sourceURL=admin_quete_auto_edit.js
 $contenu_page = '';
 
 $droit_modif = 'dcompt_animations';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0)
@@ -46,7 +47,6 @@ if ($erreur == 0)
     if(isset($_REQUEST['methode']))
     {
         // Traitement des actions
-        define("APPEL",1);
         include ("admin_traitement_quete_auto_edit.php");
     }
     //print_r($_REQUEST);

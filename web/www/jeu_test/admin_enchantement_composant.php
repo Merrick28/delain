@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
+define('APPEL', 1);
 // initialisation de la méthode
 
 $methode2        = get_request_var('methode2', 'entree');

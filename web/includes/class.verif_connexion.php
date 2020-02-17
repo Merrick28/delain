@@ -204,4 +204,16 @@ class verif_connexion
 
     }
 
+    /**
+     * Fonction pour vérifier qu'un bloc a le droit
+     * d'être appelé par une page
+     */
+    public static function verif_appel()
+    {
+        if (!defined("APPEL"))
+        {
+            die("Erreur d'appel de page !");
+        }
+    }
+
 }

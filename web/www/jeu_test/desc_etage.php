@@ -14,6 +14,7 @@ $contenu_page .= "<p><em>" . $result['etage_description'] . "</em>";
 $contenu_page .= "<p style=\"text-align:center;\"><a href=\"frame_vue.php\">Retour à la vue !</a></p>";
 
 $droit_modif = 'dcompt_modif_perso';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 

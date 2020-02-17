@@ -5,8 +5,7 @@
  * Date: 19/12/18
  * Time: 18:37
  */
-
-include G_CHE . "/jeu_test/blocks/_tests_appels_page_externe.php";
+$verif_connexion::verif_appel();
 
 $param = new parametres();
 // on regarde si le joueur est bien sur une banque

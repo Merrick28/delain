@@ -1,6 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
-
 $perso = new perso;
 $perso = $verif_connexion->perso;
 ?>
@@ -26,7 +24,7 @@ $perso = $verif_connexion->perso;
 
     $type_lieu = 6;
     $nom_lieu  = 'un lieu';
-
+    define('APPEL', 1);
     include "blocks/_test_lieu.php";
 
 

@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+define('APPEL', 1);
 ob_start();
 ?>
     <script language="javascript" src="javascripts/changestyles.js"></script>

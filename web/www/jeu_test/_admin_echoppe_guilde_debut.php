@@ -1,3 +1,6 @@
+<?php
+$verif_connexion::verif_appel();
+?>
 <p>Les montants ci dessous sont des modificateurs à l'achat pour les guildes. Un modificateur négatif
     signifie
     une

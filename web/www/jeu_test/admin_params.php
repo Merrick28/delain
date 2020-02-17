@@ -10,6 +10,7 @@ $erreur = false;
 //
 
 $droit_modif = 'dcompt_gere_droits';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 
@@ -26,7 +27,6 @@ if ($erreur == 0)
         $compt_nom = $result['compt_nom'];
         $log       = date("d/m/y - H:i") . " Compte $compt_nom (n°$compt_cod) modifie les paramètres.\n";
     }
-    define("APPEL", 1);
 
     // Choix de l’onglet
     $lesMethodes = array(

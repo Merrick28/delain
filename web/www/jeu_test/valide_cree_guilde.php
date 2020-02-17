@@ -4,7 +4,7 @@ ob_start();
 
 $type_lieu = 9;
 $nom_lieu = 'un bâtiment administratif';
-
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0) {

@@ -4,6 +4,7 @@ ob_start();
 
 $erreur = 0;
 $methode           = get_request_var('methode', 'debut');
+define('APPEL', 1);
 include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {

@@ -5,7 +5,7 @@
  * Date: 18/12/2018
  * Time: 16:23
  */
-
+$verif_connexion::verif_appel();
 
 $erreur = 0;
 $req = "select perso_admin_echoppe from perso where perso_cod = $perso_cod ";

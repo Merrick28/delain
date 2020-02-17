@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 
 
 if (!isset($cbar_cod))
@@ -11,7 +10,7 @@ echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);" id="cadr
 
 // Nombre maximal de membres du jury
 $nbJury = 10;
-
+define('APPEL', 1);
 // Validations de formulaire
 $methode = $_REQUEST['methode'];
 switch ($methode) {
@@ -22,7 +21,6 @@ switch ($methode) {
         $form_date_teaser = "cbar_date_teaser='" . pg_escape_string($_POST['form_date_teaser']) . "'::timestamp,";
         $form_fermeture = "cbar_fermeture='" . pg_escape_string($_POST['form_fermeture']) . "'::timestamp,";
         $form_description = "cbar_description='" . pg_escape_string($_POST['form_description']) . "'";
-
         include 'blocks/_admin_concours_barde.php';
         break;
     case 'barde_creation':    // Création d’un concours

@@ -1,6 +1,5 @@
 <?php
 
-include "blocks/_tests_appels_page_externe.php";
 //
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
@@ -11,6 +10,7 @@ $contenu_page = '';
 // on vérifie que le type d'appel soit bien passé
 // s'il n'est pas passé, on considère qu'on est sur un lieu
 //
+define('APPEL', 1);
 include "blocks/_verif_enchanteur.php";
 //
 // fin des controles principaux

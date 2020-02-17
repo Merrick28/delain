@@ -24,8 +24,6 @@
  */
 
 
-include "blocks/_tests_appels_page_externe.php";
-
 include_once "../includes/constantes.php";
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
@@ -45,6 +43,7 @@ $compt_cod = $verif_connexion->compt_cod;
 $type_lieu = 39;
 $nom_lieu = 'un relais de poste';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 

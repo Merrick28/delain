@@ -4,6 +4,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 $contenu = '';
 $erreur = 0;
+define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 if ($erreur == 0) {
 

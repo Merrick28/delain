@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 //
 // en premier on liste les magasins et leur gérant éventuel
 //

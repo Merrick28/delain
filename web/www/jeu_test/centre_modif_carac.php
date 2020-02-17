@@ -5,6 +5,7 @@ ob_start();
 $type_lieu = array(6, 13);      // 6=centre d'entrainement 13=centre d'entrainement magie
 $nom_lieu = 'arrrière boutique du centre d\'entraînement';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 include "../includes/tools.php";
 

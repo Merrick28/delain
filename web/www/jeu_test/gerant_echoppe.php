@@ -6,6 +6,7 @@ ob_start();
 
 <?php
 include "blocks/_test_admin_echoppe.php";
+define('APPEL', 1);
 if ($erreur == 0) {
     //
     // en premier on liste les magasins et leur gérant éventuel

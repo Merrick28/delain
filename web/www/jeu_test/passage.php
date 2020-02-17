@@ -1,5 +1,4 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
 $param = new parametres();
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;

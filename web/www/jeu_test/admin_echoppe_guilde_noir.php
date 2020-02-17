@@ -2,7 +2,7 @@
 include "blocks/_header_page_jeu.php";
 
 ob_start();
-
+define('APPEL', 1);
 $erreur  = 0;
 $methode = get_request_var('methode', 'debut');
 $perso   = new perso;

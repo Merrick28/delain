@@ -7,6 +7,7 @@ $compt_cod = $verif_connexion->compt_cod;
 $type_lieu = 6;
 $nom_lieu  = 'un centre d\'entraînement';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 // on regarde si le joueur est bien sur un centre d'entrainement

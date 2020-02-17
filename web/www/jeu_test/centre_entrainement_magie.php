@@ -10,6 +10,7 @@ $compt_cod = $verif_connexion->compt_cod;
 $type_lieu = 13;
 $nom_lieu  = 'un centre d\'entraînement';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 //Contenu de la div de droite

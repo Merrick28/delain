@@ -3,6 +3,7 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 
 $erreur = 0;
+define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
 

@@ -1,12 +1,8 @@
 <?php
-include "blocks/_tests_appels_page_externe.php";
-
-
-
-
 $type_lieu = 24;
 $nom_lieu = 'une dalle magique';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 

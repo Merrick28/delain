@@ -9,6 +9,7 @@ ob_start();
 // verif droits
 
 $droit_modif = 'dcompt_potions';
+define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 

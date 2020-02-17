@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-
+define('APPEL', 1);
 $perso = new perso;
 $perso = $verif_connexion->perso;
 
@@ -12,7 +12,7 @@ if ($perso->perso_admin_echoppe_noir != 'O')
 }
 if ($erreur == 0)
 {
-    $methode           = get_request_var('methode', 'debut');
+    $methode = get_request_var('methode', 'debut');
 
     switch ($methode)
     {

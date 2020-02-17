@@ -13,6 +13,7 @@ $perso     = $verif_connexion->perso;
 $type_lieu = 10;
 $nom_lieu  = 'un passage';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 if ($erreur == 0)

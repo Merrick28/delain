@@ -2,7 +2,7 @@
 
 $type_lieu = 31;
 $nom_lieu  = 'une sortie d\'arène';
-
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 $perso = new perso;
 $perso = $verif_connexion->perso;

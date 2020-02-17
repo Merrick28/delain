@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 $req      =
     "select pos_cod from positions where pos_x = :x and pos_y = :y and pos_etage = :etage ";
 $stmt     = $pdo->prepare($req);

@@ -6,6 +6,7 @@ include "blocks/_header_page_jeu.php";
 //
 $contenu_page = '';
 ob_start();
+define('APPEL', 1);
 include "blocks/_test_admin_echoppe.php";
 if ($erreur == 0)
 {

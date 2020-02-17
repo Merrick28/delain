@@ -1,5 +1,8 @@
-$req =
-"select lower(guilde_nom) as minusc,guilde_nom,guilde_cod," . $champ . " from guilde order by minusc ";
+<?php
+$verif_connexion::verif_appel();
+
+$req  =
+    "select lower(guilde_nom) as minusc,guilde_nom,guilde_cod," . $champ . " from guilde order by minusc ";
 $stmt = $pdo->query($req);
 
 ?>

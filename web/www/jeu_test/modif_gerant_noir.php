@@ -14,6 +14,7 @@ if ($result['perso_admin_echoppe_noir'] != 'O')
 }
 
 $_admin_echoppe_type = "_noir";     // Admin spécifique (noir)
+define('APPEL', 1);
 include "blocks/_admin_echoppe.php";
 include "blocks/_footer_page_jeu.php";
 

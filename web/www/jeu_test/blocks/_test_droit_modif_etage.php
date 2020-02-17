@@ -5,6 +5,7 @@
  * Date: 20/12/18
  * Time: 17:24
  */
+$verif_connexion::verif_appel();
 $req = "select dcompt_modif_carte from compt_droit where dcompt_compt_cod = $compt_cod ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0) {

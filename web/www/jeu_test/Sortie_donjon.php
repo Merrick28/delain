@@ -1,10 +1,9 @@
 ﻿<?php
-include "blocks/_tests_appels_page_externe.php";
-
 
 $type_lieu = 37;
 $nom_lieu  = 'une sortie de donjon';
 
+define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso = new perso;

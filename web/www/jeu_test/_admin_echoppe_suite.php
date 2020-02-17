@@ -1,5 +1,5 @@
 <?php
-
+$verif_connexion::verif_appel();
 // preparation des requêtes
 $req  =
     "select pguilde_perso_cod,perso_nom from guilde_perso,perso

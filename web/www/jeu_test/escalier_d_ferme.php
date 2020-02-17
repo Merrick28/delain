@@ -1,7 +1,3 @@
-<?php
-include "blocks/_tests_appels_page_externe.php";
-
-?>
 <!DOCTYPE html>
 <html>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -19,6 +15,7 @@ include "blocks/_tests_appels_page_externe.php";
     $type_lieu = 3;
     $nom_lieu  = 'un escalier';
 
+    define('APPEL', 1);
     include "blocks/_test_lieu.php";
 
 

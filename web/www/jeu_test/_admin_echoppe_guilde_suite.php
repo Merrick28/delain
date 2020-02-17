@@ -1,4 +1,5 @@
 <?php
+$verif_connexion::verif_appel();
 foreach ($_REQUEST['modif'] as $key => $val)
 {
     $guilde = new guilde;
