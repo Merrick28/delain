@@ -1,5 +1,6 @@
 ﻿﻿<?php
 include "blocks/_header_page_jeu.php";
+define('APPEL', 1);
 /** @var integer $perso_cod défini par _header_page_jeu */
 
 /**
@@ -274,20 +275,14 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
         case "passage":
             /* On se déplace */
 
+
             if ($perso->perso_type_perso == 3)
             {
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !';
                 break;
             }
-            $req_deplace  = 'select passage(:perso_cod) as deplace';
-            $stmt         = $pdo->prepare($req_deplace);
-            $stmt         = $pdo->execute(array(
-                                              ':perso_cod' => intval($perso_cod)
-                                          ), $stmt);
-            $retour       = $stmt->fetch();
-            $result       = explode('#', $result['deplace']);
-            $contenu_page .= $result[0];
-            $contenu_page .= '<br />';
+            require "blocks/_action_deplace.php";
+
             if ($result[1] == 0)
             {
                 $contenu_page .= affiche_apres_deplacement($position);
@@ -296,37 +291,22 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             break;
         case "sortie_arene":
 
-            $req_deplace  = 'select sortir_arene(:perso_cod) as res';
-            $stmt         = $pdo->prepare($req_deplace);
-            $stmt         = $pdo->execute(array(
-                                              ':perso_cod' => intval($perso_cod)
-                                          ), $stmt);
-            $retour       = $stmt->fetch();
-            $result       = explode(';', $retour['res']);
+            $req_deplace = 'select sortir_arene(:perso_cod) as res';
+            require "blocks/_action_donjon.php";
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
             break;
         case "sortir_donjon":
-            $req_deplace  = 'select sortir_donjon(:perso_cod) as res';
-            $stmt         = $pdo->prepare($req_deplace);
-            $stmt         = $pdo->execute(array(
-                                              ':perso_cod' => intval($perso_cod)
-                                          ), $stmt);
-            $retour       = $stmt->fetch();
-            $result       = explode(';', $retour['res']);
+            $req_deplace = 'select sortir_donjon(:perso_cod) as res';
+            require "blocks/_action_donjon.php";
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
             break;
         case "enreg_pos_donjon":
-            $req_deplace  = 'select enregistre_avancee_donjon(:perso_cod) as res';
-            $stmt         = $pdo->prepare($req_deplace);
-            $stmt         = $pdo->execute(array(
-                                              ':perso_cod' => intval($perso_cod)
-                                          ), $stmt);
-            $retour       = $stmt->fetch();
-            $result       = explode(';', $retour['res']);
+            $req_deplace = 'select enregistre_avancee_donjon(:perso_cod) as res';
+            require "blocks/_action_donjon.php";
             $contenu_page .= $result[1];
             $contenu_page .= '<br /><br />';
             $contenu_page .= '<a href="frame_vue.php">Retour !</a></p>';
@@ -339,15 +319,8 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 $contenu_page .= '<p>Erreur ! Un familier ne peut pas se déplacer seul !';
                 break;
             }
-            $req_deplace  = 'select passage(:perso_cod) as deplace';
-            $stmt         = $pdo->prepare($req_deplace);
-            $stmt         = $pdo->execute(array(
-                                              ':perso_cod' => intval($perso_cod)
-                                          ), $stmt);
-            $retour       = $stmt->fetch();
-            $result       = explode('#', $result['deplace']);
-            $contenu_page .= $result[0];
-            $contenu_page .= '<br />';
+            require "blocks/_action_deplace.php";
+
             if ($result[1] == 0)
             {
                 $is_phrase = rand(1, 100);
@@ -450,20 +423,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
             {
                 $prefixe = 'dv_';
             }
-            if ($type_lance == 5)
-            {   // sort lancé avec un objet, on indique l'objet utilisé (on vérifiera que le sort lancé est bien celui de l'objet)
-                $req  = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
-                $stmt = $pdo->prepare($req);
-                $pdo->execute(
-                    array(':perso_cod'   => $perso_cod,
-                          ':objsort_cod' => $_REQUEST["objsort_cod"],
-                          ':sort_cod'    => $sort_cod), $stmt
-                );
-            }
-
-            $req          =
-                'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
-            $stmt         = $pdo->prepare($req);
+            require "blocks/_action_sort_objet.php";
             $stmt         = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
                       ':cible'      => $perso_cible->perso_cod,
@@ -571,20 +531,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                 break;
             }
 
-            if ($type_lance == 5)
-            {   // sort lancé avec un objet, on indique l'objet utilisé (on vérifiera que le sort lancé est bien celui de l'objet)
-                $req  = 'select prepare_objets_sorts(:perso_cod,:objsort_cod,:sort_cod) as resultat; ';
-                $stmt = $pdo->prepare($req);
-                $pdo->execute(
-                    array(':perso_cod'   => $perso_cod,
-                          ':objsort_cod' => $_REQUEST["objsort_cod"],
-                          ':sort_cod'    => $sort_cod), $stmt
-                );
-            }
-
-            $req          =
-                'select ' . $prefixe . $sort->sort_fonction . '(:perso_cod,:cible,:type_lance) as resultat ';
-            $stmt         = $pdo->prepare($req);
+            require "blocks/_action_sort_objet.php";
             $stmt         = $pdo->execute(
                 array(':perso_cod'  => $perso_cod,
                       ':cible'      => $pos->pos_cod,

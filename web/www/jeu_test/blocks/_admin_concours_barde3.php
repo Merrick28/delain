@@ -29,15 +29,7 @@ while ($result = $stmt->fetch())
     // Au passage, pendant le parcours, on enregistre les valeurs de celle qu’on va afficher.
     if ($cbar_cod == $result['cbar_cod'])
     {
-        $cbar_saison         = $result['cbar_saison'];
-        $cbar_date_ouverture = $result['cbar_date_ouverture'];
-        $cbar_date_teaser    = $result['cbar_date_teaser'];
-        $cbar_fermeture      = $result['cbar_fermeture'];
-        $cbar_description    = $result['cbar_description'];
-        $introduction        = ($result['introduction'] == 1);
-        $ouvert              = ($result['ouvert'] == 1);
-        $futur               = ($result['futur'] == 1);
-        $ferme               = ($result['ferme'] == 1);
+        require "_cbarde_vars.php";
     }
     $texte_etat = '';
     if ($result['ferme'] != 1)
@@ -77,7 +69,7 @@ switch ($methode)
         echo '<form name="modification" method="POST" action="#">
 			<input type="hidden" name="methode" value="barde_modif" />
 			<input type="hidden" name="form_cod" value="' . $cbar_cod . '" />';
-        echo '<table><tr><td colspan="3" class="titre">Saison ' . $cbar_saison . '</td></tr>';
+        echo '<table><tr><td colspan="3" class="titre">Saison ' . $saison . '</td></tr>';
         echo '<tr><td colspan="3" class="soustitre2">';
         if ($ouvert)
             echo 'Cette session du concours de barde est <strong>ouverte</strong>';
@@ -88,11 +80,11 @@ switch ($methode)
         if ($ferme)
             echo 'Cette session du concours de barde est <strong>fermée</strong>';
         echo '</td></tr>';
-        echo '<tr><td class="soustitre2">Saison</td><td><input type="text" name="form_saison" value="' . $cbar_saison . '" /></td><td>Dénomination de la saison (typiquement, l’année).</td></tr>';
-        echo '<tr><td class="soustitre2">Date d’annonce (aaaa-mm-jj, jour inclus)</td><td><input type="text" name="form_date_teaser" value="' . $cbar_date_teaser . '" /></td><td>La date à laquelle la page du concours devient accessible.</td></tr>';
-        echo '<tr><td class="soustitre2">Date d’ouverture (aaaa-mm-jj, jour inclus)</td><td><input type="text" name="form_date_ouverture" value="' . $cbar_date_ouverture . '" /></td><td>La date à laquelle on peut commencer à proposer des textes.</td></tr>';
-        echo '<tr><td class="soustitre2">Date de fermeture (aaaa-mm-jj, jour exclus)</td><td><input type="text" name="form_fermeture" value="' . $cbar_fermeture . '" /></td><td>La date à laquelle plus aucun texte n’est accepté.</td></tr>';
-        echo '<tr><td class="soustitre2" colspan="2"><p>Descriptif (html)</p><textarea rows="10" cols="50" name="form_description">' . $cbar_description . '</textarea></td><td>Le texte qui apparaîtra en en-tête de la page du concours.</td></tr>';
+        echo '<tr><td class="soustitre2">Saison</td><td><input type="text" name="form_saison" value="' . $saison . '" /></td><td>Dénomination de la saison (typiquement, l’année).</td></tr>';
+        echo '<tr><td class="soustitre2">Date d’annonce (aaaa-mm-jj, jour inclus)</td><td><input type="text" name="form_date_teaser" value="' . $date_teaser . '" /></td><td>La date à laquelle la page du concours devient accessible.</td></tr>';
+        echo '<tr><td class="soustitre2">Date d’ouverture (aaaa-mm-jj, jour inclus)</td><td><input type="text" name="form_date_ouverture" value="' . $date_ouverture . '" /></td><td>La date à laquelle on peut commencer à proposer des textes.</td></tr>';
+        echo '<tr><td class="soustitre2">Date de fermeture (aaaa-mm-jj, jour exclus)</td><td><input type="text" name="form_fermeture" value="' . $fermeture . '" /></td><td>La date à laquelle plus aucun texte n’est accepté.</td></tr>';
+        echo '<tr><td class="soustitre2" colspan="2"><p>Descriptif (html)</p><textarea rows="10" cols="50" name="form_description">' . $description . '</textarea></td><td>Le texte qui apparaîtra en en-tête de la page du concours.</td></tr>';
         $i = 1;
         while ($result = $stmt->fetch())
         {

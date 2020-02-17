@@ -41,27 +41,7 @@ if($perso->charge($perso_cod))
     $perso_dlt_passee = 0;
 }
 require"_block_valide_autorise_joue_perso.php";
-if ($autorise != 1)
-    //
-    // on va quand même vérifier que le compte n'est pas sitté
-    //
-{
-    if ($type_perso == 1)
-    {
-        $cs = new compte_sitting();
-        if ($cs->isSittingValide($compte->compt_cod, $perso->perso_cod))
-        {
-            $autorise = 1;
-        }
-    } elseif ($type_perso == 3)
-    {
-        $cs = new compte_sitting();
-        if ($cs->isSittingFamilierValide($compte->compt_cod, $perso->perso_cod))
-        {
-            $autorise = 1;
-        }
-    }
-}
+
 
 if ($autorise != 1)
 {

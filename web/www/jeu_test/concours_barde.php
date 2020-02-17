@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 ob_start();
-
+define('APPEL',1);
 
 // SAISON
 if(isset($_POST['saison_concours']))
@@ -27,15 +27,7 @@ $req_concours = "SELECT cbar_saison, to_char(cbar_date_ouverture,'DD/MM/YYYY à 
 				FROM concours_barde WHERE cbar_cod = $saison_concours";
 $stmt = $pdo->query($req_concours);
 $result = $stmt->fetch();
-$saison = $result['cbar_saison'];
-$date_ouverture = $result['cbar_date_ouverture'];
-$date_teaser = $result['cbar_date_teaser'];
-$fermeture = $result['cbar_fermeture'];
-$description = $result['cbar_description'];
-$introduction = ($result['introduction'] == 1);
-$ouvert = ($result['ouvert'] == 1);
-$futur = ($result['futur'] == 1);
-$ferme = ($result['ferme'] == 1);
+ require "blocks/_cbarde_vars.php";
 
 echo "<div class='barrTitle'>Concours de barde, saison $saison.</div>";
 

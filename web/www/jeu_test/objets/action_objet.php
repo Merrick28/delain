@@ -133,30 +133,7 @@ if ($boule)
                     $stmt = $pdo->query($req_monstre);
                 } else
                 {
-                    $typefam      = mt_rand(0, 1) + 192;    // 192 combat, 193 distance
-                    $contenu_page .= "<p><strong>Un familier sort de l’œuf, il a l’air de vous apprécier et de vous suivre. </strong><br></p>";
-                    $req_monstre  = "select cree_monstre_pos($typefam, $perso_position) as num";
-                    $stmt = $pdo->query($req_monstre);
-                    $result = $stmt->fetch();
-                    $num_fam     = $result['num'];
-                    $nom2        = 'Familier de ' . pg_escape_string($perso_nom);
-                    $req_monstre =
-                        "update perso set perso_nom = e'$nom2', perso_lower_perso_nom = lower(e'$nom2'), perso_type_perso = 3 "
-                        . "where perso_cod = $num_fam";
-                    $stmt = $pdo->query($req_monstre);
-                    $req_etat =
-                        "insert into perso_familier (pfam_perso_cod,pfam_familier_cod) values ($perso_cod,$num_fam)";
-                    $stmt = $pdo->query($req_etat);
-                    // Ajout à la coterie du maître
-                    $req_coterie =
-                        "select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod=$perso_cod and pgroupe_statut = 1";
-                    $stmt = $pdo->query($req_coterie);
-                    if($result = $stmt->fetch())
-                    {
-                        $num_coterie = $result['pgroupe_groupe_cod'];
-                        $req_ajout   = "insert into groupe_perso (pgroupe_groupe_cod, pgroupe_perso_cod, pgroupe_statut, pgroupe_messages, pgroupe_message_mort)
-					values ($num_coterie, $num_fam, 1, 0, 0)";
-                    }
+                    require "../blocks/_objet_cree_fam.php";
                 }
                 break;
             case 640:
@@ -171,16 +148,7 @@ if ($boule)
         switch ($tobj)
         {
             case 269:
-                if ($etat_objet < 20)
-                    $contenu_page .= "<p>L’œuf est craquellé de toutes parts, quelques morceaux de la coquille se détachent... Il est sur le point d’éclore !</p>";
-                else if ($etat_objet < 40)
-                    $contenu_page .= "<p>L’œuf bouge de plus en plus les craquelures sont plus nettes et plus nombreuses.</p>";
-                else if ($etat_objet < 60)
-                    $contenu_page .= "<p>Les mouvements à l’intérieur de l’œuf sont plus nombreux, quelques craquelures apparaissent par endroits.</p>";
-                else if ($etat_objet < 80)
-                    $contenu_page .= "<p>On sent quelques légers mouvements à l’intérieur de l’œuf, la coquille se fendille légèrement.</p>";
-                else
-                    $contenu_page .= "<p>L’œuf est intact et inerte, rien à signaler.</p>";
+                require "../blocks/_objet_cree_oeuf2.php";
                 break;
             case 640:
                 $contenu_page .= "<p>Vous transpirez et vous sentez mieux ... mais encore un effort pour retrouver la forme !</p>";

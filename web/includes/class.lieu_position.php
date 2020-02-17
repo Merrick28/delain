@@ -85,8 +85,8 @@ class lieu_position
 
     function getByPos($pos_cod)
     {
-        $pdo = new bddpdo;
-        $req = "select lpos_cod from lieu_position where lpos_pos_cod = ?";
+        $pdo  = new bddpdo;
+        $req  = "select lpos_cod from lieu_position where lpos_pos_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($pos_cod), $stmt);
         if (!$result = $stmt->fetch())
@@ -96,10 +96,23 @@ class lieu_position
         return $this->charge($result['lpos_cod']);
     }
 
+    function getByLieu($lieu_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "select lpos_cod from lieu_position where lpos_lieu_cod = ?";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($lieu_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['lpos_cod']);
+    }
+
     /**
      * Retourne un tableau de tous les enregistrements
+     * @return lieu_position
      * @global bdd_mysql $pdo
-     * @return \lieu_position
      */
     function getAll()
     {

@@ -12,17 +12,14 @@ if ($result['perso_admin_echoppe_noir'] != 'O') {
 if ($erreur == 0) {
     // Conversion en numeric pour minimiser l'injection sql
     $perso_cible = 1 * (int)$perso_cible;
-    $lieu = 1 * (int)$lieu;
+    $lieu        = 1 * (int)$lieu;
 
     // pour vérif, on récupère les coordonnées du magasin
-    $req = "select pos_x,pos_y,etage_libelle ";
-    $req = $req . "from lieu_position,positions,etage ";
-    $req = $req . "where lpos_lieu_cod = $lieu ";
-    $req = $req . "and lpos_pos_cod = pos_cod ";
-    $req = $req . "and pos_etage = etage_numero ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
-    echo "<p class=\"titre\">Gestion de l'échoppe " . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['etage_libelle'] . "</p>";
+    $tmplieu = new lieu;
+    $tmplieu->charge($lieu);
+    $pos = $tmplieu->getPos();
+    echo "<p class=\"titre\">Gestion de l'échoppe " . $tmplieu['pos']->pos_x . ", " . $tmplieu['pos']->pos_y . ", " .
+         $tmplieu['etage']->etage_libelle . "</p>";
     switch ($_REQUEST['methode'])
     {
         case "ajout":
