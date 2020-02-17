@@ -1,0 +1,14 @@
+{% extends 'template_jeu.twig' %}
+
+ {% block contenu_droite %}
+     {% if ISREV %}
+         <p>Vous ne pouvez pas intervenir dans la gestion de la guilde pendant une révolution !</p>
+     {% else %}
+         {% if OK %}
+             <p>Le joueur a été rajouté à votre guilde.</p>
+             <p><a href="admin_guilde.php">Retourner à l’administration de la guilde</a></p>
+         {% else %}
+             Une erreur est survenue sur le numéro de guilde
+         {% endif %}
+     {% endif %}
+ {% endblock %}

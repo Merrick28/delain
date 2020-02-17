@@ -8,8 +8,6 @@
 include(G_CHE . '/jeu_test/variables_menu.php');
 
 
-
-
 $template     = $twig->load('template_jeu.twig');
 $options_twig = array(
 
