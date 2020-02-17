@@ -55,7 +55,7 @@ class verif_connexion
 
     }
 
-    function ident()
+    function ident($change_perso = false)
     {
         // on récupère les options twig pour les compléter
         global $options_twig_defaut;
@@ -92,7 +92,7 @@ class verif_connexion
                     setcookie("api_token", $api_token, time() + 36000, "/", G_URL);
 
                     // est-ce qu'on change de perso ?
-                    if (isset($change_perso))
+                    if ($change_perso !== false)
                     {
                         if ($compte->autoriseJouePerso($change_perso))
                         {

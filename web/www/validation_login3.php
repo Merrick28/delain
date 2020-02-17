@@ -2,13 +2,14 @@
 $target = '  target="_top"';
 
 // changement de perso
+$change_perso = false;
 if (isset($_REQUEST['perso']))
 {
     $change_perso = $_REQUEST['perso'];
 }
 
 $verif_connexion = new verif_connexion();
-$verif_connexion->ident();
+$verif_connexion->ident($change_perso);
 $verif_auth = $verif_connexion->verif_auth;
 $compte     = $verif_connexion->compte;
 $perso      = $verif_connexion->perso;
