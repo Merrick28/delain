@@ -1,4 +1,5 @@
 <?php
+define('APPEL', 1);
 include "blocks/_header_page_jeu.php";
 $param = new parametres();
 
@@ -143,35 +144,7 @@ if ($autorise)
             echo("</td>");
             if ($is_guilde)
             {
-                $req   = "select dieu_nom,dniv_libelle from dieu,dieu_perso,dieu_niveau
-												where dper_perso_cod = " . $result['perso_cod'] . "
-												and dper_dieu_cod = dieu_cod
-												and dper_niveau = dniv_niveau
-												and dniv_dieu_cod = dieu_cod
-												and dniv_niveau >= 1";
-                $stmt2 = $pdo->query($req);
-                if ($result2 = $stmt2->fetch())
-                {
-                    $religion = " </strong>(" . $result2['dniv_libelle'] . " de " . $result2['dieu_nom'] . ")<strong> ";
-                    echo "<td>$religion</td>";
-                } else
-                {
-                    echo "<td></td>";
-                }
-                $requete   = "select etage_cod,etage_libelle
-													from perso_position,positions,etage
-													where ppos_perso_cod = " . $result['perso_cod'] . "
-													and ppos_pos_cod = pos_cod
-													and etage_numero = pos_etage ";
-                $stmt2     = $pdo->query($req);
-                $result2   = $stmt2->fetch();
-                $lib_etage = $result2['etage_libelle'];
-                $etage_cod = $result2['etage_cod'];
-                if ($etage_cod == 10 or $etage_cod == 14)
-                {
-                    $lib_etage = "Localisation indéterminée";
-                }
-                echo "<td>", $lib_etage, "</td>";
+                require "blocks/_detail_visu_guilde.php";
             } else
             {
                 echo "<td></td><td></td>";
@@ -183,7 +156,7 @@ if ($autorise)
         $req_compte_guilde =
             "select gbank_cod,gbank_nom,gbank_or from guilde_banque where gbank_guilde_cod = $num_guilde";
         $stmt              = $pdo->query($req_compte_guilde);
-        if ($result    = $stmt->fetch())
+        if ($result = $stmt->fetch())
         {
             $gbank_cod = $result['gbank_cod'];
             $solde     = $result['gbank_or'];

@@ -1,7 +1,9 @@
 <?php
+define('APPEL', 1);
 include "blocks/_header_page_jeu.php";
 ob_start();
-$req_guilde = "select guilde_cod,guilde_nom,guilde_description,count(pguilde_perso_cod) as nb_perso,sum(perso_nb_joueur_tue) as nb_joueur_tue,sum(perso_nb_monstre_tue) as nb_monstre_tue,sum(perso_nb_mort) as nb_mort ";
+$req_guilde =
+    "select guilde_cod,guilde_nom,guilde_description,count(pguilde_perso_cod) as nb_perso,sum(perso_nb_joueur_tue) as nb_joueur_tue,sum(perso_nb_monstre_tue) as nb_monstre_tue,sum(perso_nb_mort) as nb_mort ";
 $req_guilde = $req_guilde . "from guilde,guilde_perso,perso ";
 $req_guilde = $req_guilde . "where pguilde_valide = 'O' ";
 $req_guilde = $req_guilde . "and pguilde_guilde_cod = guilde_cod ";
@@ -11,68 +13,91 @@ $req_guilde = $req_guilde . "and perso_type_perso = 1";
 $req_guilde = $req_guilde . "group by guilde_cod,guilde_nom,guilde_description ";
 
 
-if (!isset($sort)) {
-    $sort = 'code';
-    $sens = 'asc';
+if (!isset($sort))
+{
+    $sort    = 'code';
+    $sens    = 'asc';
     $nv_sens = 'asc';
 }
-if (!isset($sens)) {
+if (!isset($sens))
+{
     $sens = 'desc';
 }
-if ($sort == 'code') {
+if ($sort == 'code')
+{
     $req_guilde = $req_guilde . "order by guilde_cod $sens";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 }
-if ($sort == 'nom') {
+if ($sort == 'nom')
+{
     $req_guilde = $req_guilde . "order by guilde_nom $sens";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 }
-if ($sort == 'nbre') {
+if ($sort == 'nbre')
+{
     $req_guilde = $req_guilde . "order by count(pguilde_perso_cod) $sens ";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 }
-if ($sort == 'rep') {
+if ($sort == 'rep')
+{
     $req_guilde = $req_guilde . "order by get_reputation_guilde_n(guilde_cod) $sens";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 }
-if ($sort == 'monstre') {
+if ($sort == 'monstre')
+{
     $req_guilde = $req_guilde . "order by sum(perso_nb_monstre_tue) $sens";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 
 }
-if ($sort == 'joueur') {
+if ($sort == 'joueur')
+{
     $req_guilde = $req_guilde . "order by sum(perso_nb_joueur_tue)  $sens";
-    if ($sens = 'desc') {
+    if ($sens = 'desc')
+    {
         $sens == 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 }
-if ($sort == 'mort') {
+if ($sort == 'mort')
+{
     $req_guilde = $req_guilde . "order by sum(perso_nb_mort)  $sens";
-    if ($sens == 'desc') {
+    if ($sens == 'desc')
+    {
         $sens = 'asc';
-    } else {
+    } else
+    {
         $sens = 'desc';
     }
 
@@ -97,7 +122,8 @@ $stmt = $pdo->query($req_guilde);
                     <?php
                     }
                     echo("Nom");
-                    if ($sort == 'nom') {
+                    if ($sort == 'nom')
+                    {
                     ?>
                 </strong>
             <?php
@@ -105,48 +131,21 @@ $stmt = $pdo->query($req_guilde);
             echo("</a></td>");
             echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='nbre';document.fsort.sens.value='$sens';document.fsort.submit();\">");
 
-            if ($sort == 'nbre') {
+            if ($sort == 'nbre')
+            {
                 echo("<strong>");
             }
             echo("Nombre d'inscrits");
-            if ($sort == 'nbre') {
+            if ($sort == 'nbre')
+            {
                 echo("</strong>");
             }
-            echo("</a></td>");
-            echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='monstre';document.fsort.sens.value='$sens';document.fsort.submit();\">");
-
-            if ($sort == 'monstre') {
-                echo("<strong>");
-            }
-            echo("Nombre de monstres tués");
-            if ($sort == 'monstre') {
-                echo("</strong>");
-            }
-            echo("</a></td>");
-            echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='joueur';document.fsort.sens.value='$sens';document.fsort.submit();\">");
-
-            if ($sort == 'joueur') {
-                echo("<strong>");
-            }
-            echo("Nombre de joueurs tués");
-            if ($sort == 'joueur') {
-                echo("</strong>");
-            }
-            echo("</a></td>");
-            echo("<td class=\"soustitre2\"><p><a href=\"javascript:document.fsort.sort.value='mort';document.fsort.sens.value='$sens';document.fsort.submit();\">");
-
-            if ($sort == 'mort') {
-                echo("<strong>");
-            }
-            echo("Nombre de morts");
-            if ($sort == 'mort') {
-                echo("</strong>");
-            }
-            echo("</a></td>");
+            require "blocks/_detail_guilde.php";
             echo("<td></td>");
             echo("</tr>");
 
-            while ($result = $stmt->fetch()) {
+            while ($result = $stmt->fetch())
+            {
                 //$tab_guilde = pg_fetch_array($res_guilde,$cpt);
                 echo("<tr>");
                 printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.fsort.action='visu_guilde.php';document.fsort.num_guilde.value=%s;document.fsort.submit();\">%s</a></strong></p></td>", $result['guilde_cod'], $result['guilde_nom']);

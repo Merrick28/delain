@@ -1,17 +1,10 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+define('APPEL', 1);
 
 ob_start();
 // on cherche la guilde dans laquelle est le joueur
-$req_guilde =
-    "select guilde_cod,guilde_nom,rguilde_libelle_rang,pguilde_rang_cod,rguilde_admin,pguilde_message from guilde,guilde_perso,guilde_rang ";
-$req_guilde = $req_guilde . "where pguilde_perso_cod = $perso_cod ";
-$req_guilde = $req_guilde . "and pguilde_guilde_cod = guilde_cod ";
-$req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod ";
-$req_guilde = $req_guilde . "and rguilde_rang_cod = pguilde_rang_cod ";
-$req_guilde = $req_guilde . "and pguilde_valide = 'O' ";
-$stmt       = $pdo->query($req_guilde);
+require "blocks/_req_guilde_joueur.php";
 if ($stmt->rowCount() == 0)
 {
     echo "<p>Erreur ! Vous n'êtes affilié à aucune guilde !";
