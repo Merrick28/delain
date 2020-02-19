@@ -1,5 +1,5 @@
 <?php
-
+$verif_connexion::verif_appel();
 if ($stmt->rowCount() != 0)
 {
     $result      = $stmt->fetch();
@@ -11,6 +11,8 @@ if ($stmt->rowCount() != 0)
     $seuil_force = $result['gobj_seuil_force'];
     $seuil_dex   = $result['gobj_seuil_dex'];
     $niveau_min  = $result['gobj_niveau_min'];
+    $type_objet  = $result['gobj_tobj_cod'];
+    $armure      = $result['obj_armure'];
     echo "<p class=\"titre\">" . $result['gobj_nom'] . "</p>";
     echo "<div class='centrer'><table>";
     echo "<tr>";
@@ -41,11 +43,10 @@ if ($stmt->rowCount() != 0)
             echo "</tr>";
         }
 
-        $req = "select obcar_des_degats,obcar_val_des_degats,obcar_bonus_degats ";
-        $req = $req . "from objets_caracs,objet_generique ";
-        $req = $req . "where gobj_cod = $objet ";
-        //$req = $req . "and obj_gobj_cod = gobj_cod ";
-        $req    = $req . "and gobj_obcar_cod = obcar_cod ";
+        $req    = "select obcar_des_degats,obcar_val_des_degats,obcar_bonus_degats 
+        from objets_caracs,objet_generique 
+        where gobj_cod = $objet 
+        and gobj_obcar_cod = obcar_cod ";
         $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         echo "<tr>";

@@ -12,18 +12,8 @@ $methode = $_REQUEST['methode'];
 switch ($methode)
 {
     case 'cree_invasion':    // Crée une invasion de monstre
-        $code_monstre  = $_POST['code_monstre'];
-        $code_etage    = $_POST['etage'];
-        $adapterNiveau = (isset($_POST['adapter'])) ? 'true' : 'false';
-        $antres        = (isset($_POST['antres']));
-        $eparpillement = $_POST['eparpillement'];
-        $where         = '';
-        $req_invasion  = "select gmon_nom from monstre_generique where gmon_cod = $code_monstre";
-        $stmt          = $pdo->prepare($req_invasion);
-        $stmt          = $pdo->execute(array(":montre" => $code_monstre), $stmt);
-        $result        = $stmt->fetch();
-        $nom_monstre   = $result['gmon_nom'];
-        $texte         = "Invasion de $nom_monstre, à raison d’un monstre pour $eparpillement cases, ";
+        require "blocks/_admin_invasion.php";
+        $texte = "Invasion de $nom_monstre, à raison d’un monstre pour $eparpillement cases, ";
         if ($code_etage == 'tous' && $antres)
         {
             $where = 'WHERE etage_reference != -100';

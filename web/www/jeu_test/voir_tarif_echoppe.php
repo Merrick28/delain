@@ -28,22 +28,7 @@ if ($erreur == 0)
             $req = $req . "and gobj_tobj_cod not in (12,7,9,10,6,8,13,11) ";
             $req = $req . "order by tobj_libelle,gobj_nom ";
             echo "<!-- $req -->";
-            $stmt = $pdo->query($req);
-            echo "<table>";
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Type d'objet</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Persos/monstres</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Au sol</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Stock échoppes</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Total</strong></td>";
-            echo "<td></td>";
-            while ($result = $stmt->fetch())
-            {
-                require "blocks/_ligne_echoppe_1.php";
-            }
-            echo "</table>";
+            require "blocks/_tab_ligne_echoppe.php";
             break;
         case "e1":
             $objet = $_REQUEST['objet'];

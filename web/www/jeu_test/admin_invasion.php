@@ -7,28 +7,17 @@ echo '<div class="barrTitle" onclick="permutte_cadre(this.parentNode);">Invasion
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
-	case 'cree_invasion':	// Crée une invasion de monstre
-		$code_monstre = $_POST['code_monstre'];
-		$code_etage = $_POST['etage'];
-		$adapterNiveau = (isset($_POST['adapter'])) ? 'true' : 'false';
-		$antres = (isset($_POST['antres']));
-		$eparpillement = $_POST['eparpillement'];
-		$where = '';
-		
-		$req_invasion = "select gmon_nom from monstre_generique where gmon_cod = $code_monstre";
-		$stmt = $pdo->query($req_invasion);
-		$result = $stmt->fetch();
-		$nom_monstre = $result['gmon_nom'];
-		
-		
-		$texte = "Invasion de $nom_monstre ";
-		if ($code_etage == 'tous' && $antres)
-		{
-			$where = 'WHERE etage_reference != -100';
-			$texte .= "dans tous les étages !";
-		}
-		else if ($code_etage == 'tous' && !$antres)
-		{
+	case 'cree_invasion':    // Crée une invasion de monstre
+        require "blocks/_admin_invasion.php";
+
+
+        $texte = "Invasion de $nom_monstre ";
+        if ($code_etage == 'tous' && $antres)
+        {
+            $where = 'WHERE etage_reference != -100';
+            $texte .= "dans tous les étages !";
+        } else if ($code_etage == 'tous' && !$antres)
+        {
 			$where = 'WHERE etage_reference != -100 AND etage_numero = etage_reference';
 			$texte .= "dans tous les étages principaux !";
 		}
@@ -119,13 +108,6 @@ echo '<td class="soustitre2">
 echo '</table></form>';
 echo "<p><strong>Historique des invasions :</strong> (les distributions sont enregistrées depuis fin 2012)</p><ul>";
 
-$req = 'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
-$stmt = $pdo->query($req);
-$derniere_distrib = -1;
-while ($result = $stmt->fetch())
-{
-	echo '<li>' . $result['date'] . ' : ' . $result['anim_texte'] . '</li>';
-	$derniere_distrib = $result['duree'];
-}
-echo '</ul>';
-echo '</div>';
+$req =
+    'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'invasion\' ORDER BY anim_date';
+require "blocks/_admin_distrib_invasion.php";

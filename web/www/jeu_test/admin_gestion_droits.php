@@ -23,11 +23,11 @@ define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 
-$compte                  = $_REQUEST['compte'];
+$compte = $_REQUEST['compte'];
 
 if ($erreur == 0)
 {
-    $methode          = get_request_var('methode', 'debut');
+    $methode         = get_request_var('methode', 'debut');
     ?>
     <div>
         <strong>Recherche d’un compte</strong>
@@ -61,8 +61,7 @@ if ($erreur == 0)
                 if (nouveauContenu !== contenu) {
                     // On a enlevé le truc, donc on agit en conséquence.
                     ManipCss.enleveClasse(option, "etage_choisi");
-                }
-                else {
+                } else {
                     // Ah ah ! C’était un cas d’ajout, en fait...
                     ManipCss.ajouteClasse(option, "etage_choisi");
                     nouveauContenu += (nouveauContenu === '') ? etage_choisi : ',' + etage_choisi;
@@ -245,29 +244,11 @@ if ($erreur == 0)
     case "nouveau_valide":
         // Vérification du nom de compte
         $erreur = false;
-        $erreur_msg      = "";
-        $nom             = $_REQUEST['nom'];
-        $mdp             = $_REQUEST['mdp'];
-        $type_compte     = $_REQUEST['type_compte'];
-        $modif_perso     = $_REQUEST['modif_perso'];
-        $creer_monstre   = $_REQUEST['creer_monstre'];
-        $modif_gmon      = $_REQUEST['modif_gmon'];
-        $controle        = $_REQUEST['controle'];
-        $acces_log       = $_REQUEST['acces_log'];
-        $automap_monstre = $_REQUEST['automap_monstre'];
-        $etage           = $_REQUEST['etage'];
-        $gere_droits     = $_REQUEST['gere_droits'];
-        $modif_carte     = $_REQUEST['modif_carte'];
-        $carte_monstre   = $_REQUEST['carte_monstre'];
-        $logs_admin      = $_REQUEST['logs_admin'];
-        $objet           = $_REQUEST['objet'];
-        $enchantements   = $_REQUEST['enchantements'];
-        $potions         = $_REQUEST['potions'];
-        $sondage         = $_REQUEST['sondage'];
-        $news            = $_REQUEST['news'];
-        $anims           = $_REQUEST['anims'];
-        $magie           = $_REQUEST['magie'];
-        $factions        = $_REQUEST['factions'];
+        $erreur_msg  = "";
+        $nom         = $_REQUEST['nom'];
+        $mdp         = $_REQUEST['mdp'];
+        $type_compte = $_REQUEST['type_compte'];
+        require "blocks/_admin_gestion_droits.php";
 
         if ($nom == "")
         {
@@ -322,8 +303,8 @@ if ($erreur == 0)
 					(compt_nom, compt_password, compt_mail, compt_monstre, compt_admin, compt_validation, compt_actif, compt_dcreat, compt_acc_charte, compt_type_quatrieme)
 					values ('$nom', '$mdp', '', '$compt_monstre', '$compt_admin', 0, 'O', now(), 'O', 2)
 					RETURNING compt_cod";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt      = $pdo->query($req);
+            $result    = $stmt->fetch();
             $vcompte   = $result['compt_cod'];
 
             $insertion = "insert into compt_droit
@@ -379,9 +360,9 @@ if ($erreur == 0)
 
 case "et2":
     echo '<div>';
-    $nom  = strtolower($nom);
-    $req  = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
-    $stmt = $pdo->query($req);
+    $nom       = strtolower($nom);
+    $req       = "select compt_nom,compt_cod from compte where lower(compt_nom) like '$nom' ";
+    $stmt      = $pdo->query($req);
     $allcompte = $stmt->fetchAll();
 if (count($allcompte) == 0)
 {
@@ -472,26 +453,8 @@ else
             break;
 
         case "et4":
-            $modif_perso     = $_REQUEST['modif_perso'];
-            $creer_monstre   = $_REQUEST['creer_monstre'];
-            $modif_gmon      = $_REQUEST['modif_gmon'];
-            $controle        = $_REQUEST['controle'];
-            $acces_log       = $_REQUEST['acces_log'];
-            $automap_monstre = $_REQUEST['automap_monstre'];
-            $etage           = $_REQUEST['etage'];
-            $gere_droits     = $_REQUEST['gere_droits'];
-            $modif_carte     = $_REQUEST['modif_carte'];
-            $carte_monstre   = $_REQUEST['carte_monstre'];
-            $logs_admin      = $_REQUEST['logs_admin'];
-            $objet           = $_REQUEST['objet'];
-            $enchantements   = $_REQUEST['enchantements'];
-            $potions         = $_REQUEST['potions'];
-            $sondage         = $_REQUEST['sondage'];
-            $news            = $_REQUEST['news'];
-            $anims           = $_REQUEST['anims'];
-            $magie           = $_REQUEST['magie'];
-            $factions        = $_REQUEST['factions'];
-            $vcompte         = $_REQUEST['vcompte'];
+            require "blocks/_admin_gestion_droits.php";
+            $vcompte = $_REQUEST['vcompte'];
 
             $req_pers = "select compt_nom from compte where compt_cod = $vcompte ";
             $stmt     = $pdo->query($req_pers);

@@ -109,13 +109,7 @@ if ($erreur == 0)
             $result = $stmt->fetch();
             if ($result['perso_pa'] >= 4)
             {
-                $fam_1    = $_REQUEST['fam_1'];
-                $fam_2    = $_REQUEST['fam_2'];
-                $fam_3    = $_REQUEST['fam_3'];
-                $fam_4    = $_REQUEST['fam_4'];
-                $fam_5    = $_REQUEST['fam_5'];
-                $fam_6    = $_REQUEST['fam_6'];
-                $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
+                require "blocks/_get_rune_combi.php";
                 if ($resultat == $param->getparm(71))
                 {
                     $req    = "select perso_type_perso from perso where perso_cod = $perso_cod ";

@@ -1,4 +1,5 @@
 <?php
+define('APPEL', 1);
 /*
 FORMULE
 FRM_COD
@@ -220,119 +221,8 @@ if ($erreur == 0)
         $stmt = $pdo->query($req_stock);
         if ($stmt->rowCount() != 0)
         {
-            $result         = $stmt->fetch();
-            $t_etat         = 0;
-            $comp           = $result['gobj_comp_cod'];
-            $desc           = $result['obj_description'];
-            $distance       = $result['obj_distance'];
-            $type_objet     = $result['gobj_tobj_cod'];
-            $seuil_force    = $result['obj_seuil_force'];
-            $seuil_dex      = $result['obj_seuil_dex'];
-            $armure         = $result['obj_armure'];
-            $chute          = $result['obj_seuil_dex'];
-            $des_degats     = $result['obj_des_degats'];
-            $val_des_degats = $result['obj_val_des_degats'];
-            $bonus_degats   = $result['obj_bonus_degats'];
-
-            echo "<p class=\"titre\">" . $result['obj_nom'] . "</p>";
-            echo "<div class='centrer'><table>";
-
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p>Type d'objet :</td>";
-            echo "<td><p>" . $result['tobj_libelle'];
-            if ($result['obj_deposable'] == 'N')
-            {
-                echo " <strong>non déposable !</strong>";
-            }
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p>Poids :</td>";
-            echo "<td><p>" . $result['obj_poids'] . "</td>";
-            echo "</tr>";
-
-            if ($type_objet == 1)
-            {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque normale :</td>";
-                echo "<td><p>" . $result['gobj_pa_normal'] . "</td>";
-                echo "</tr>";
-                if ($result['obj_distance'] == 'N')
-                {
-                    echo "<tr>";
-                    echo "<td class=\"soustitre2\"><p>Coût en PA pour une attaque foudroyante :</td>";
-                    echo "<td><p>" . $result['gobj_pa_eclair'] . "</td>";
-                    echo "</tr>";
-                }
-                echo "<tr>";
-                $des_degats = $result['obj_des_degats'];
-                echo "<td class=\"soustitre2\"><p>Dégâts</td>";
-                echo "<td><p>" . $des_degats . "D" . $val_des_degats . "+" . $bonus_degats . "</td>";
-                echo "</tr>";
-
-
-                $req    = "select comp_libelle from competences where comp_cod = $comp ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Compétence utilisée</td>";
-                echo "<td><p>" . $result['comp_libelle'] . "</td>";
-                echo "</tr>";
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Seuil de force</td>";
-                echo "<td><p>" . $seuil_force . "</td>";
-                echo "</tr>";
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Seuil de dextérité</td>";
-                echo "<td><p>" . $seuil_dex . "</td>";
-                echo "</tr>";
-            }
-            if ($type_objet == 2)
-            {
-                $req    = "select obcar_armure ";
-                $req    = $req . "from objets_caracs,objet_generique,objets ";
-                $req    = $req . "where gobj_cod = $objet ";
-                $req    = $req . "and obj_gobj_cod = gobj_cod ";
-                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Armure</td>";
-                echo "<td><p>" . $result['obcar_armure'] . "</td>";
-                echo "</tr>";
-            }
-            if ($type_objet == 1 and $distance == 'O')
-            {
-                $req    = "select obcar_chute ";
-                $req    = $req . "from objets_caracs,objet_generique,objets ";
-                $req    = $req . "where gobj_cod = $objet ";
-                $req    = $req . "and obj_gobj_cod = gobj_cod ";
-                $req    = $req . "and gobj_obcar_cod = obcar_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Chute</td>";
-                echo "<td><p>" . $result['obcar_chute'] . "</td>";
-                echo "</tr>";
-            }
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p>Description</td>";
-            echo "<td><p>" . $desc . "</td>";
-            echo "</tr>";
-
-            if (isset($bon))
-            {
-                $req    = "select obon_libelle from bonus_objets where obon_cod = $bon ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Bonus</td>";
-                echo "<td><p>" . $result['obon_libelle'] . "</td>";
-                echo "</tr>";
-            }
-
-            echo "</table></div>";
+            $affichage_plus = false;
+            require "blocks/_visu_desc_objet.php";
         } else
         {
             echo "Vous n’avez pas le droit d’accéder à la description de cet objet</br>";

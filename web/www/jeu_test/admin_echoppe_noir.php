@@ -94,13 +94,7 @@ if ($erreur == 0)
                     <?php
                     break;
                 case "valide_change":
-                    $fam_1    = $_REQUEST['fam_1'];
-                    $fam_2    = $_REQUEST['fam_2'];
-                    $fam_3    = $_REQUEST['fam_3'];
-                    $fam_4    = $_REQUEST['fam_4'];
-                    $fam_5    = $_REQUEST['fam_5'];
-                    $fam_6    = $_REQUEST['fam_6'];
-                    $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
+                    require "blocks/_get_rune_combi.php";
 
                     $param->charge(71);
                     $param->parm_valeur_texte = $resultat;

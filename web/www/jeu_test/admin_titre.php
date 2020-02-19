@@ -9,8 +9,7 @@ include_once '../includes/tools.php';
     <script>//# sourceURL=admin_titre.js
 
         function select_onglet(onglet) {
-            if (onglet=='titre')
-            {
+            if (onglet == 'titre') {
                 $("#td-onglet-butin").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-recompense").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-titre").removeClass("pas_onglet").addClass("onglet");
@@ -20,9 +19,7 @@ include_once '../includes/tools.php';
                 $("#section-recherche-objet").css("display", "none");
                 $("#bouton-objet-butin").css("display", "none");
                 $("#bouton-objet-recompense").css("display", "none");
-            }
-            else if (onglet=='recompense')
-            {
+            } else if (onglet == 'recompense') {
                 $("#td-onglet-titre").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-butin").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-recompense").removeClass("pas_onglet").addClass("onglet");
@@ -32,9 +29,7 @@ include_once '../includes/tools.php';
                 $("#section-recherche-objet").css("display", "block");
                 $("#bouton-objet-butin").css("display", "none");
                 $("#bouton-objet-recompense").css("display", "block");
-            }
-            else
-            {
+            } else {
                 $("#td-onglet-titre").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-recompense").removeClass("onglet").addClass("pas_onglet");
                 $("#td-onglet-butin").removeClass("pas_onglet").addClass("onglet");
@@ -48,9 +43,8 @@ include_once '../includes/tools.php';
         }
 
 
-        function updatePersoCount()
-        {
-            $('#nb-perso').text("("+countTitrageList()+" persos)");
+        function updatePersoCount() {
+            $('#nb-perso').text("(" + countTitrageList() + " persos)");
         }
 
         function setNomAndPosPerso(divname, cod) {
@@ -60,16 +54,15 @@ include_once '../includes/tools.php';
                 if ((d.resultat == 0) && (d.data) && (d.data.perso_nom)) {
                     if (s_option == "monstre" && d.data.perso_type_perso != 2) {
                         $("#" + divname).html('Vous n\'avez pas les droits pour titrer/récompenser ce perso.');
-                        $("#" + divname+"_compte").val(0);
+                        $("#" + divname + "_compte").val(0);
                     } else {
                         $("#" + divname).html(d.data.perso_nom + ' <em style="font-size:10px;"> (X=' + d.data.pos_x + ' X=' + d.data.pos_y + ' ' + d.data.etage_libelle + ')</em>');
-                        $("#" + divname+"_compte").val(d.data.compt_cod);
+                        $("#" + divname + "_compte").val(d.data.compt_cod);
                     }
                 }
             });
             updatePersoCount();
         }
-
 
 
         function listCoterie(cod) {
@@ -218,20 +211,23 @@ include_once '../includes/tools.php';
 
         function listPersoEtage(type_perso, etage_numero) {
             $("#liste-ajout-rapide").html("");
-            runAsync({request: "get_table_info", data: {info: "perso_etage_pos", type_perso: type_perso, etage_numero: etage_numero}}, function (d) {
+            runAsync({
+                request: "get_table_info",
+                data: {info: "perso_etage_pos", type_perso: type_perso, etage_numero: etage_numero}
+            }, function (d) {
                 var content = "";
                 var nb_perso = 0;
                 var nb_monstre = 0;
                 if ((d.resultat == 0) && (d.data) && (d.data.length > 0)) {
                     for (k in d.data) {
                         var data = d.data[k];
-                        if (!isInTitrageList(data.perso_cod) && isAuthorized(data.perso_type_perso) && (nb_perso<200))     // si pas déjà dans la list et autorisé
+                        if (!isInTitrageList(data.perso_cod) && isAuthorized(data.perso_type_perso) && (nb_perso < 200))     // si pas déjà dans la list et autorisé
                         {
                             if (data.perso_type_perso == 2) nb_monstre++; else nb_perso++;
                             content += '<div id="s-list-' + k + '" data-perso_cod="' + data.perso_cod + '" data-type_perso="' + data.perso_type_perso + '"><span title="ajouter dans la liste des persos à téléporter"><a href=#><img height="16px" src="/images/up-24.png" onclick="addFromSearchList(' + k + ')"></a>&nbsp;</span>' + data.perso_nom + ' <em style="font-size:10px;"> (X=' + data.pos_x + ' X=' + data.pos_y + ' ' + data.etage_libelle + ')</em></div>';
                         }
                     }
-                    if (nb_perso==300) content += "<br>L'affichage a été limité aux 300 premiers persos.";
+                    if (nb_perso == 300) content += "<br>L'affichage a été limité aux 300 premiers persos.";
                     if (content != "") content += '<br><input type="button" class="test" value="ajouter tout" onclick="addFromSearchListAll(0)">';
                     if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les persos" onclick="addFromSearchListAll(1)">';
                     if (nb_perso > 0 && nb_monstre > 0) content += '&nbsp;&nbsp;<input type="button" class="test" value="tous les monstres" onclick="addFromSearchListAll(2)">';
@@ -242,14 +238,12 @@ include_once '../includes/tools.php';
         }
 
 
-        function addRecompenseFromSearchList(list)
-        {
+        function addRecompenseFromSearchList(list) {
             var chance = $("#chance-objet-recompense").val();
-            $('#'+list+' option').each(function () {
+            $('#' + list + ' option').each(function () {
                 // calcul du nombre d'objet
                 var num = $(this).text().substring($(this).text().indexOf('(') + 1, $(this).text().indexOf(')'));
-                for (i=0; i<num; i++)
-                {   // ajouter autant
+                for (i = 0; i < num; i++) {   // ajouter autant
                     $("#add-button-recompense").trigger("click");  // simuler le click sur le bouton ajouter un objet
                     var id = $('tr[id^="row-1-"]:last').attr("id");
                     $('#' + id + 'aqelem_param_num_1').val(chance);
@@ -257,12 +251,11 @@ include_once '../includes/tools.php';
                     $('#' + id + 'aqelem_misc_cod').trigger("change");
                 }
             });
-            $('#'+list).find('option').remove();
+            $('#' + list).find('option').remove();
         }
 
-        function addButinFromSearchList(list)
-        {
-            $('#'+list+' option').each(function () {
+        function addButinFromSearchList(list) {
+            $('#' + list + ' option').each(function () {
                 // calcul du nombre d'objet
                 var num = $(this).text().substring($(this).text().indexOf('(') + 1, $(this).text().indexOf(')'));
                 $("#add-button-butin").trigger("click");  // simuler le click sur le bouton ajouter un objet
@@ -271,7 +264,7 @@ include_once '../includes/tools.php';
                 $('#' + id + 'aqelem_misc_cod').val($(this).val());
                 $('#' + id + 'aqelem_misc_cod').trigger("change");
             });
-            $('#'+list).find('option').remove();
+            $('#' + list).find('option').remove();
         }
 
 
@@ -292,20 +285,20 @@ include_once '../includes/tools.php';
         }
 
         function reduceTripletteTitrageList() {
-            var compteList = [] ;
+            var compteList = [];
             $('tr[id^="row-0-"]').each(function () {
                 var compte = $('#' + this.id + 'aqelem_misc_nom_compte').val();
-                if (compte!="")
-                {
+                if (compte != "") {
                     if (compteList[compte]) {
                         delQueteAutoParamRow($(this), 1);
                     } else {
-                        compteList[compte] = true ;
+                        compteList[compte] = true;
                     }
                 }
             });
             updatePersoCount();
         }
+
         function isInTitrageList(cod) {
             var isInList = false;
             $('tr[id^="row-0-"]').each(function () {
@@ -327,9 +320,8 @@ include_once '../includes/tools.php';
         }
 
         function checkForm() {
-            if (($("#action").val() == "add-titre") || ($("#action").val() == "del-titre"))
-            {
-                if ($("#titre").val() == "")  {
+            if (($("#action").val() == "add-titre") || ($("#action").val() == "del-titre")) {
+                if ($("#titre").val() == "") {
                     alert("Vous devez saisir un titre à attribuer ou supprimer aux persos!");
                     return false;
                 }
@@ -364,7 +356,8 @@ if ($erreur == 0)
 {
     $pdo = new bddpdo;
 
-    $s_option = ($droit['modif_perso'] == 'N') ? "monstre" : "";                               // droit de tp de monstre uniquement
+    $s_option =
+        ($droit['modif_perso'] == 'N') ? "monstre" : "";                               // droit de tp de monstre uniquement
     echo "<script> var s_option='{$s_option}'; </script>"; // Injection javascript
 
     //=======================================================================================
@@ -378,7 +371,8 @@ if ($erreur == 0)
         {
             //echo "<pre>"; print_r($_REQUEST); echo "</pre>"; die();
             $titre = $_REQUEST['titre'];
-            $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) Ajout de titre en masse : $titre\n";
+            $log   =
+                date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) Ajout de titre en masse : $titre\n";
 
             // Récupération du code traitement_perso_admin (dev mode flash : on réfléchi pas on reprend ce qui marche ailleurs) !!!
             foreach ($_REQUEST["aqelem_misc_cod"][0] as $k => $mod_perso_cod)
@@ -386,13 +380,13 @@ if ($erreur == 0)
                 if ($mod_perso_cod > 0)
                 {
                     // Caracs du perso concerné
-                    $req = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
+                    $req  = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
                     $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":perso_cod"=>$mod_perso_cod),$stmt);
+                    $stmt = $pdo->execute(array(":perso_cod" => $mod_perso_cod), $stmt);
 
-                    if($result = $stmt->fetch())
+                    if ($result = $stmt->fetch())
                     {
-                        $mod_perso_nom = $result['perso_nom'];
+                        $mod_perso_nom        = $result['perso_nom'];
                         $mod_perso_type_perso = $result['perso_type_perso'];
 
                         if ($mod_perso_type_perso != 2 && $s_option == "monstre")
@@ -403,26 +397,26 @@ if ($erreur == 0)
                         {
                             // empecher le double titrage (le même jour)
 
-                            $req = "select count(*) as count from perso_titre where ptitre_perso_cod=:ptitre_perso_cod and ptitre_titre ilike :ptitre_titre and ptitre_date::date=now()::date ";
+                            $req  =
+                                "select count(*) as count from perso_titre where ptitre_perso_cod=:ptitre_perso_cod and ptitre_titre ilike :ptitre_titre and ptitre_date::date=now()::date ";
                             $stmt = $pdo->prepare($req);
-                            $pdo->execute(array(":ptitre_perso_cod"=>$mod_perso_cod, ":ptitre_titre" => $titre),$stmt);
+                            $pdo->execute(array(":ptitre_perso_cod" => $mod_perso_cod, ":ptitre_titre" => $titre), $stmt);
                             $result = $stmt->fetch();
 
                             // titrage
-                            if ((int)$result["count"]==0)
+                            if ((int)$result["count"] == 0)
                             {
-                                $req = "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date) values (:ptitre_perso_cod,:ptitre_titre,now()) ";
+                                $req  =
+                                    "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date) values (:ptitre_perso_cod,:ptitre_titre,now()) ";
                                 $stmt = $pdo->prepare($req);
-                                $pdo->execute(array(":ptitre_perso_cod"=>$mod_perso_cod, ":ptitre_titre" => $titre),$stmt);
+                                $pdo->execute(array(":ptitre_perso_cod" => $mod_perso_cod, ":ptitre_titre" => $titre), $stmt);
                                 $log .= "Titrage du perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
-                            }
-                            else
+                            } else
                             {
                                 $log .= "Perso {$mod_perso_nom} ({$mod_perso_cod}) : Non titré, il a déjà reçu le titre aujourd'hui!\n";
                             }
                         }
-                    }
-                    else
+                    } else
                     {
                         $log .= "Perso #{$mod_perso_cod} : Non trouvé!\n";
                     }
@@ -430,12 +424,12 @@ if ($erreur == 0)
             }
             writelog($log, 'perso_edit');
             echo "<div class='bordiv'><pre>$log</pre></div>";
-        }
-        else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "del-titre"))
+        } else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "del-titre"))
         {
             //echo "<pre>"; print_r($_REQUEST); echo "</pre>"; die();
             $titre = $_REQUEST['titre'];
-            $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) Suppression de titre en masse : $titre\n";
+            $log   =
+                date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) Suppression de titre en masse : $titre\n";
 
             // Récupération du code traitement_perso_admin (dev mode flash : on réfléchi pas on reprend ce qui marche ailleurs) !!!
             foreach ($_REQUEST["aqelem_misc_cod"][0] as $k => $mod_perso_cod)
@@ -443,13 +437,13 @@ if ($erreur == 0)
                 if ($mod_perso_cod > 0)
                 {
                     // Caracs du perso concerné
-                    $req = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
+                    $req  = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
                     $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":perso_cod"=>$mod_perso_cod),$stmt);
+                    $stmt = $pdo->execute(array(":perso_cod" => $mod_perso_cod), $stmt);
 
-                    if($result = $stmt->fetch())
+                    if ($result = $stmt->fetch())
                     {
-                        $mod_perso_nom = $result['perso_nom'];
+                        $mod_perso_nom        = $result['perso_nom'];
                         $mod_perso_type_perso = $result['perso_type_perso'];
 
                         if ($mod_perso_type_perso != 2 && $s_option == "monstre")
@@ -459,21 +453,21 @@ if ($erreur == 0)
                         } else
                         {
                             // dé-titrage
-                            $req = "delete from perso_titre where ptitre_perso_cod=:ptitre_perso_cod and ptitre_titre ilike :ptitre_titre ";
+                            $req  =
+                                "delete from perso_titre where ptitre_perso_cod=:ptitre_perso_cod and ptitre_titre ilike :ptitre_titre ";
                             $stmt = $pdo->prepare($req);
-                            $stmt = $pdo->execute(array(":ptitre_perso_cod"=>$mod_perso_cod, ":ptitre_titre" => $titre),$stmt);
+                            $stmt =
+                                $pdo->execute(array(":ptitre_perso_cod" => $mod_perso_cod, ":ptitre_titre" => $titre), $stmt);
 
-                            if( $stmt->rowCount()>0)
+                            if ($stmt->rowCount() > 0)
                             {
                                 $log .= "Suppression du titre sur le perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
-                            }
-                            else
+                            } else
                             {
                                 $log .= "Perso {$mod_perso_nom} ({$mod_perso_cod}) : Titre non trouvé!\n";
                             }
                         }
-                    }
-                    else
+                    } else
                     {
                         $log .= "Perso #{$mod_perso_cod} : Non trouvé!\n";
                     }
@@ -481,27 +475,26 @@ if ($erreur == 0)
             }
             writelog($log, 'perso_edit');
             echo "<div class='bordiv'><pre>$log</pre></div>";
-        }
-        else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "objets-et-bzf"))
+        } else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "objets-et-bzf"))
         {
             //echo "<pre>"; print_r($_REQUEST);echo "</pre>";
             $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) Don de récompense en masse \n";
-            
+
             // Préparation de la liste des objets pour distribution-----
-            $list_obj = array();
-            $nb_obj_min = 1*(int)$_REQUEST["don-obj-min"];
-            $nb_obj_max = 1*(int)$_REQUEST["don-obj-max"];
+            $list_obj   = array();
+            $nb_obj_min = 1 * (int)$_REQUEST["don-obj-min"];
+            $nb_obj_max = 1 * (int)$_REQUEST["don-obj-max"];
             foreach ($_REQUEST["aqelem_misc_cod"][1] as $k => $gobj_cod)
             {
-                if ((int)$gobj_cod>0)
+                if ((int)$gobj_cod > 0)
                 {
                     $chance = (float)$_REQUEST['aqelem_param_num_1'][1][$k];
-                    if ($chance==0) $chance=100; else if ($chance>100) $chance=100;
-                    $list_obj[] = array("chance" => $chance, "ordre" => 0, "gobj_cod" => $gobj_cod) ;
+                    if ($chance == 0) $chance = 100; else if ($chance > 100) $chance = 100;
+                    $list_obj[] = array("chance" => $chance, "ordre" => 0, "gobj_cod" => $gobj_cod);
                 }
             }
             $nb_obj = sizeof($list_obj);
-            if ($nb_obj_max==0) $nb_obj_max = $nb_obj ;     // S'il n'y a pas pas de max, on met tous les objets
+            if ($nb_obj_max == 0) $nb_obj_max = $nb_obj;     // S'il n'y a pas pas de max, on met tous les objets
 
             // On distribue à tous les persos
             foreach ($_REQUEST["aqelem_misc_cod"][0] as $k => $mod_perso_cod)
@@ -509,13 +502,13 @@ if ($erreur == 0)
                 if ($mod_perso_cod > 0)
                 {
                     // Caracs du perso concerné
-                    $req = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
+                    $req  = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
                     $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":perso_cod"=>$mod_perso_cod),$stmt);
+                    $stmt = $pdo->execute(array(":perso_cod" => $mod_perso_cod), $stmt);
 
-                    if($result = $stmt->fetch())
+                    if ($result = $stmt->fetch())
                     {
-                        $mod_perso_nom = $result['perso_nom'];
+                        $mod_perso_nom        = $result['perso_nom'];
                         $mod_perso_type_perso = $result['perso_type_perso'];
 
                         if ($mod_perso_type_perso != 2 && $s_option == "monstre")
@@ -525,74 +518,78 @@ if ($erreur == 0)
                         } else
                         {
                             // D'abord on s'occupe des Bzf-----------------------------
-                            if (1*(int)$_REQUEST["don-bzf-max"]==0)
+                            if (1 * (int)$_REQUEST["don-bzf-max"] == 0)
                             {
-                                $don_bzf = 1*(int)$_REQUEST["don-bzf-min"];
-                            }
-                            else
+                                $don_bzf = 1 * (int)$_REQUEST["don-bzf-min"];
+                            } else
                             {
-                                $don_bzf = random_int(1*(int)$_REQUEST["don-bzf-min"], 1*(int)$_REQUEST["don-bzf-max"]);
+                                $don_bzf =
+                                    random_int(1 * (int)$_REQUEST["don-bzf-min"], 1 * (int)$_REQUEST["don-bzf-max"]);
                             }
 
-                            if ($don_bzf>0)
+                            if ($don_bzf > 0)
                             {
-                                $req = "update perso set perso_po = perso_po + :don_bzf where perso_cod = :perso_cod ";
+                                $req  = "update perso set perso_po = perso_po + :don_bzf where perso_cod = :perso_cod ";
                                 $stmt = $pdo->prepare($req);
-                                $stmt = $pdo->execute(array(":don_bzf"=>$don_bzf, ":perso_cod"=>$mod_perso_cod),$stmt);
+                                $stmt =
+                                    $pdo->execute(array(":don_bzf" => $don_bzf, ":perso_cod" => $mod_perso_cod), $stmt);
 
-                                $texte_evt = "[cible] a reçu {$don_bzf} brouzoufs." ;
-                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                $texte_evt = "[cible] a reçu {$don_bzf} brouzoufs.";
+                                $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
                                          values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                $stmt   = $pdo->prepare($req);
-                                $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
+                                $stmt      = $pdo->prepare($req);
+                                $stmt      =
+                                    $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
                                 $log .= "\nDon de {$don_bzf} brouzoufs au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
 
                             // Ensuite du don de PX -----------------------------
-                            if (1*(int)$_REQUEST["don-px-max"]==0)
+                            if (1 * (int)$_REQUEST["don-px-max"] == 0)
                             {
-                                $don_px = 1*(int)$_REQUEST["don-px-min"];
-                            }
-                            else
+                                $don_px = 1 * (int)$_REQUEST["don-px-min"];
+                            } else
                             {
-                                $don_px = random_int(1*(int)$_REQUEST["don-px-min"], 1*(int)$_REQUEST["don-px-max"]);
+                                $don_px =
+                                    random_int(1 * (int)$_REQUEST["don-px-min"], 1 * (int)$_REQUEST["don-px-max"]);
                             }
 
-                            if ($don_px>0)
+                            if ($don_px > 0)
                             {
-                                $req = "update perso set perso_px = perso_px + :don_px where perso_cod = :perso_cod ";
+                                $req  = "update perso set perso_px = perso_px + :don_px where perso_cod = :perso_cod ";
                                 $stmt = $pdo->prepare($req);
-                                $stmt = $pdo->execute(array(":don_px"=>$don_px, ":perso_cod"=>$mod_perso_cod),$stmt);
+                                $stmt =
+                                    $pdo->execute(array(":don_px" => $don_px, ":perso_cod" => $mod_perso_cod), $stmt);
 
-                                $texte_evt = "[cible] a reçu {$don_px} PX." ;
-                                $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                $texte_evt = "[cible] a reçu {$don_px} PX.";
+                                $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
                                          values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                $stmt   = $pdo->prepare($req);
-                                $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
+                                $stmt      = $pdo->prepare($req);
+                                $stmt      =
+                                    $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
                                 $log .= "\nDon de {$don_px} PX au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
 
                             // Enfin le don d'objets -----------------------------
 
-                            if ($nb_obj>0)
+                            if ($nb_obj > 0)
                             {
                                 $log .= "\nDon d'objet(s) au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
 
                                 // Pour ne pas distribuer la même chose à tout le monde on ajoute un peu de random
-                                for ($o=0; $o<$nb_obj ; $o++)
+                                for ($o = 0; $o < $nb_obj; $o++)
                                 {
-                                    $list_obj[$o]["ordre"] = mt_rand(1,10000) ;
+                                    $list_obj[$o]["ordre"] = mt_rand(1, 10000);
                                 }
                                 // Tri selon les critères de chances
-                                array_multisort(array_column($list_obj, 'chance'), SORT_ASC, array_column($list_obj, 'ordre'), SORT_ASC, $list_obj );
+                                array_multisort(array_column($list_obj, 'chance'), SORT_ASC, array_column($list_obj, 'ordre'), SORT_ASC, $list_obj);
 
 
-                                $don_obj = array();
-                                $nb_obj_don = 0 ;
+                                $don_obj    = array();
+                                $nb_obj_don = 0;
                                 // Première passe suivant les critères de chance
-                                for ($o=0; ($o<$nb_obj && $nb_obj_don<$nb_obj_max); $o++)
+                                for ($o = 0; ($o < $nb_obj && $nb_obj_don < $nb_obj_max); $o++)
                                 {
                                     $objet_generique = new objet_generique();
                                     $objet_generique->charge($list_obj[$o]["gobj_cod"]);
@@ -601,56 +598,57 @@ if ($erreur == 0)
                                     if ($chance <= $list_obj[$o]["chance"])
                                     {
                                         //-- la chance est bonne, on donne l'objet
-                                        $don_obj[$nb_obj_don++] = $list_obj[$o]["gobj_cod"] ;
-                                        $log .= "Tirage Réussi pour objet {$objet_generique->gobj_nom} : {$chance} sur {$list_obj[$o]["chance"]}%\n"  ;
-                                    }
-                                    else
+                                        $don_obj[$nb_obj_don++] = $list_obj[$o]["gobj_cod"];
+                                        $log                    .= "Tirage Réussi pour objet {$objet_generique->gobj_nom} : {$chance} sur {$list_obj[$o]["chance"]}%\n";
+                                    } else
                                     {
-                                        $log .= "Tirage Raté pour objet {$objet_generique->gobj_nom} : {$chance} sur {$list_obj[$o]["chance"]}%\n"  ;
+                                        $log .= "Tirage Raté pour objet {$objet_generique->gobj_nom} : {$chance} sur {$list_obj[$o]["chance"]}%\n";
                                     }
                                 }
 
                                 // Seconde passe pour les plus malchanceux qui n'ont pas reçu le nombre d'objet minimum
-                                if ($nb_obj_don<$nb_obj_min)
+                                if ($nb_obj_don < $nb_obj_min)
                                 {
                                     // En commençant par les objets les plus facile
-                                    for ($o=$nb_obj-1; ($o>0 && $nb_obj_don<$nb_obj_min); $o--)
+                                    for ($o = $nb_obj - 1; ($o > 0 && $nb_obj_don < $nb_obj_min); $o--)
                                     {
-                                        $don_obj[$nb_obj_don++] = $list_obj[$o]["gobj_cod"] ;
+                                        $don_obj[$nb_obj_don++] = $list_obj[$o]["gobj_cod"];
 
                                         $objet_generique = new objet_generique();
                                         $objet_generique->charge($list_obj[$o]["gobj_cod"]);
-                                        $log .= "Chance forcée pour objet {$objet_generique->gobj_nom} : pour respect du minimum de {$nb_obj_min} objet(s)\n"  ;
+                                        $log .= "Chance forcée pour objet {$objet_generique->gobj_nom} : pour respect du minimum de {$nb_obj_min} objet(s)\n";
                                     }
                                 }
 
-                                if ($nb_obj_don>0)
+                                if ($nb_obj_don > 0)
                                 {
                                     foreach ($don_obj as $gobj_cod)
                                     {
-                                        $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
-                                        $stmt   = $pdo->prepare($req);
-                                        $stmt   = $pdo->execute(array(":gobj_cod" => $gobj_cod, ":perso_cod" => $mod_perso_cod ), $stmt);
+                                        $req  = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                                        $stmt = $pdo->prepare($req);
+                                        $stmt =
+                                            $pdo->execute(array(":gobj_cod" => $gobj_cod, ":perso_cod" => $mod_perso_cod), $stmt);
 
                                         if ($result = $stmt->fetch())
                                         {
                                             $objet = new objets();
-                                            $objet->charge(1*$result["obj_cod"]);
+                                            $objet->charge(1 * $result["obj_cod"]);
 
-                                            $texte_evt = '[cible] a reçu un objet <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                                            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                                            $texte_evt =
+                                                '[cible] a reçu un objet <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                                            $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
                                              values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                            $stmt   = $pdo->prepare($req);
-                                            $stmt   = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod , ":texte_evt"=> $texte_evt, ":levt_attaquant" => $mod_perso_cod , ":levt_cible" => $mod_perso_cod  ), $stmt);
+                                            $stmt      = $pdo->prepare($req);
+                                            $stmt      =
+                                                $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
-                                            $log .= "Don de l'objet #". $objet->obj_cod ." (". $objet->get_type_libelle() ." / ". $objet->obj_nom .")  au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
+                                            $log .= "Don de l'objet #" . $objet->obj_cod . " (" . $objet->get_type_libelle() . " / " . $objet->obj_nom . ")  au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                                         }
                                     }
                                 }
                             }
                         }
-                    }
-                    else
+                    } else
                     {
                         $log .= "Perso #{$mod_perso_cod} : Non trouvé!\n";
                     }
@@ -658,8 +656,7 @@ if ($erreur == 0)
             }
             writelog($log, 'perso_edit');
             echo "<div class='bordiv'><pre>$log</pre></div>";
-        }
-        else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "butin"))
+        } else if (($_REQUEST['methode'] == "recompense") && ($_REQUEST['action'] == "butin"))
         {
             //echo "<pre>"; print_r($_REQUEST);echo "</pre>";
             $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) partage de butin \n";
@@ -671,24 +668,24 @@ if ($erreur == 0)
                 if ($mod_perso_cod > 0)
                 {
                     // Caracs du perso concerné
-                    $req = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
+                    $req  = "select perso_nom, perso_type_perso from perso where perso_cod = :perso_cod ";
                     $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(":perso_cod"=>$mod_perso_cod),$stmt);
+                    $stmt = $pdo->execute(array(":perso_cod" => $mod_perso_cod), $stmt);
 
-                    if($result = $stmt->fetch())
+                    if ($result = $stmt->fetch())
                     {
-                        $mod_perso_nom = $result['perso_nom'];
+                        $mod_perso_nom        = $result['perso_nom'];
                         $mod_perso_type_perso = $result['perso_type_perso'];
 
                         if ($mod_perso_type_perso != 2 && $s_option == "monstre")
                         {
                             // Un admin monstre qui force le passage pour ajouter un perso!!!
                             $log .= "vous n'avez pas les droits suffisants pour ce perso!";
-                        }
-                        else
+                        } else
                         {
                             // Mettre le perso dans la liste
-                            $list_perso[] = array("ordre" =>  0 , "perso_cod" => $mod_perso_cod, "perso_nom" => $mod_perso_nom) ;
+                            $list_perso[] =
+                                array("ordre" => 0, "perso_cod" => $mod_perso_cod, "perso_nom" => $mod_perso_nom);
                         }
                     }
                 }
@@ -697,20 +694,23 @@ if ($erreur == 0)
 
 
             // Cette fois-ci on parse les objets
-            $p = $nb_perso ;    // Index du perso pour la distribution
+            $p = $nb_perso;    // Index du perso pour la distribution
             foreach ($_REQUEST["aqelem_misc_cod"][2] as $o => $gobj_cod)
             {
-                if ((int)$gobj_cod>0)
+                if ((int)$gobj_cod > 0)
                 {
                     $nb_obj = (int)$_REQUEST['aqelem_param_num_1'][2][$o];
                     if ($nb_obj == 0) $nb_obj = 1;       // Si pas de quantité renseigné on met 1 par défaut
-                    while ($nb_obj > 0) {
+                    while ($nb_obj > 0)
+                    {
                         $nb_obj--;     // Un objet de moins à distribuer
 
                         // Tri selon les critères de chances - on mélange la liste de perso à chaque fois que tout le monde a été servi
-                        if ($p >= $nb_perso) {
+                        if ($p >= $nb_perso)
+                        {
                             // Pour ne pas distribuer la même chose à tout le monde on ajoute un peu d'aléatoire
-                            for ($p = 0; $p < $nb_perso; $p++) {
+                            for ($p = 0; $p < $nb_perso; $p++)
+                            {
                                 $list_perso[$p]["ordre"] = mt_rand(1, 10000);
                             }
 
@@ -722,19 +722,22 @@ if ($erreur == 0)
                         $mod_perso_nom = $list_perso[$p]["perso_nom"];    // récupe de son nom
                         $p++;   // passage au perso suivant
 
-                        $req = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
+                        $req  = "select cree_objet_perso_nombre(:gobj_cod,:perso_cod,1) as obj_cod ";
                         $stmt = $pdo->prepare($req);
                         $stmt = $pdo->execute(array(":gobj_cod" => $gobj_cod, ":perso_cod" => $mod_perso_cod), $stmt);
 
-                        if ($result = $stmt->fetch()) {
+                        if ($result = $stmt->fetch())
+                        {
                             $objet = new objets();
                             $objet->charge(1 * $result["obj_cod"]);
 
-                            $texte_evt = '[cible] a reçu une part du butin <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                            $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
+                            $texte_evt =
+                                '[cible] a reçu une part du butin <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
+                            $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
                                                  values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                            $stmt = $pdo->prepare($req);
-                            $stmt = $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
+                            $stmt      = $pdo->prepare($req);
+                            $stmt      =
+                                $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
                             $log .= "Partage du butin, objet #" . $objet->obj_cod . " (" . $objet->get_type_libelle() . " / " . $objet->obj_nom . ") au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                         }
@@ -755,7 +758,8 @@ if ($erreur == 0)
     // == Constantes quete_auto
     //=======================================================================================
     //$request_select_etage_ref = "SELECT null etage_cod, 'Aucune restriction' etage_libelle, null etage_numero UNION SELECT etage_cod, etage_libelle, etage_numero from etage where etage_reference = etage_numero order by etage_numero desc" ;
-    $request_select_etage = "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
+    $request_select_etage =
+        "SELECT etage_numero, case when etage_reference <> etage_numero then ' |- ' else '' end || etage_libelle as etage_libelle from etage order by etage_reference desc, etage_numero";
 
     echo '<strong>Liste des persos à titrer/récompenser:</strong>&nbsp;<span id="nb-perso">(0 persos)</span><br><br>';
 
@@ -764,10 +768,10 @@ if ($erreur == 0)
     echo '<table width="95%" align="center">';
 
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-    $style_tr = "display: block;";
-    $param_id = 0;
-    $row = 0;
-    $row_id = "row-$param_id-$row-";
+    $style_tr        = "display: block;";
+    $param_id        = 0;
+    $row             = 0;
+    $row_id          = "row-$param_id-$row-";
     $aqelem_misc_nom = "";
     echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
     echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1); updatePersoCount();"></td>';
@@ -823,24 +827,23 @@ if ($erreur == 0)
 
     echo '<table width="95%" align="center">';
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-    $style_tr = "display: block;";
-    $param_id = 1;
-    $row = 0;
-    $row_id = "row-$param_id-$row-";
+    $style_tr        = "display: block;";
+    $param_id        = 1;
+    $row             = 0;
+    $row_id          = "row-$param_id-$row-";
     $aqelem_misc_nom = "";
     echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
     echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
-    echo '<td> Chance de  <input data-entry="val" id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value="">&nbsp;%
+    echo '<td> Chance de  <input data-entry="val" id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1[' . $param_id . '][]" type="text" size="2" value="">&nbsp;%
              d\'obtenir l\'objet générique :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
-                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
                     </td>';
     echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-recompense" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
-
 
 
     echo '<input class="test" type="submit" value="Distribuer les récompenses" onclick="$(\'#action\').val(\'objets-et-bzf\')">';
@@ -863,20 +866,20 @@ if ($erreur == 0)
 
     echo '<table width="95%" align="center">';
     // Pour copier le modele quete-auto (pour un dev flash, on reprend de l'existant)
-    $style_tr = "display: block;";
-    $param_id = 2;
-    $row = 0;
-    $row_id = "row-$param_id-$row-";
+    $style_tr        = "display: block;";
+    $param_id        = 2;
+    $row             = 0;
+    $row_id          = "row-$param_id-$row-";
     $aqelem_misc_nom = "";
     echo '<tr id="' . $row_id . '" style="' . $style_tr . '">';
     echo '<td><input type="button" class="test" value="Retirer" onClick="delQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\'), 1);"></td>';
-    echo '<td> <input data-entry="val"  id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1['.$param_id.'][]" type="text" size="2" value=""> exemplaire(s)
+    echo '<td> <input data-entry="val"  id="' . $row_id . 'aqelem_param_num_1" name="aqelem_param_num_1[' . $param_id . '][]" type="text" size="2" value=""> exemplaire(s)
              de l\'objet générique :
                     <input data-entry="val" id="' . $row_id . 'aqelem_cod" name="aqelem_cod[' . $param_id . '][]" type="hidden" value="">
                     <input name="aqelem_type[' . $param_id . '][]" type="hidden" value="">
-                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#'.$row_id.'aqelem_misc_cod\').val());">
+                    <input data-entry="val" name="aqelem_misc_cod[' . $param_id . '][]" id="' . $row_id . 'aqelem_misc_cod" type="text" size="5" value="" onChange="setNomByTableCod(\'' . $row_id . 'aqelem_misc_nom\', \'objet_generique\', $(\'#' . $row_id . 'aqelem_misc_cod\').val());">
                     &nbsp;<em><span data-entry="text" id="' . $row_id . 'aqelem_misc_nom">' . $aqelem_misc_nom . '</span></em>
-                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("'.$row_id.'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
+                    &nbsp;<input type="button" class="test" value="rechercher" onClick=\'getTableCod("' . $row_id . 'aqelem_misc","objet_generique","Rechercher un objet générique");\'> 
                     </td>';
     echo '<tr id="add-' . $row_id . '" style="' . $style_tr . '"><td> <input id="add-button-butin" type="button" class="test" value="ajouter" onClick="addQueteAutoParamRow($(this).parent(\'td\').parent(\'tr\').prev(),0);"> </td></tr>';
     echo '</table>';
@@ -898,17 +901,16 @@ if ($erreur == 0)
     //=============================== SECTION RECHERCHE DE PERSO ===================================
     echo "</form><br><br><div class=\"titre\" style=\"padding:5px;\"><center><strong>Section de recherche de persos</strong></center></div><br><br>";
     //echo '<hr><strong>Section de recherche de persos</strong>:';
-    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br>';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ')"><br>';
     echo 'N° de Monstre <input id="perso_px" style="margin-top: 5px;" type=""text" size="5">&nbsp;:&nbsp;chercher les persos qui ont participé à sa mort&nbsp;<input type="button" class="" value="chercher par gain de px" onClick="listPersoPX($(\'#perso_px\').val());"><br>';
     echo 'Titre <input id="perso_titre" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par titre" onClick="listPersoTitre($(\'#perso_titre\').val());"><br>';
     echo 'Liste <input id="perso_liste" style="margin-top: 5px;" type=""text" size="50">&nbsp;:&nbsp;<input type="button" class="" value="chercher par liste de noms" onClick="listPersoListe($(\'#perso_liste\').val());"> <em style="font-size: x-small">(liste de nom séparés par des ; comme pour la messagerie)</em><br>';
-    echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;')) ;
+    echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;'));
     echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage(1, $(\'#perso_etage\').val());">&nbsp;&nbsp;<input type="button" class="" value="tous les familiers de l\'étage" onClick="listPersoEtage(3, $(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
 
-    echo "<script> listControleur({$perso_cod}); </script>"; // Injection javascript => perso par défaut.
-
+    echo "<script> listControleur({$perso_cod}) </script>"; // Injection javascript => perso par défaut.
 
 
     //=============================== SECTION RECHERCHE D'OBJET ===================================
@@ -916,61 +918,20 @@ if ($erreur == 0)
     echo '<div id="section-recherche-objet">';
     echo "<br><br><div class=\"titre\" style=\"padding:5px;\"><center><strong>Section de recherche d'objet</strong></center></div><br><br>";
     echo '<SCRIPT language="javascript">
-            var listeBase = new Array();';
-        
-            $nb_tobj = 0;
-            $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
-			inner join type_objet on tobj_cod = gobj_tobj_cod
-			order by tobj_libelle, gobj_nom";
-            $stmt = $pdo->query($req_tobj);
-            while ($result = $stmt->fetch())
-            {
-                $gobj_nom = $result['gobj_nom'];
-                $gobj_nom = str_replace("\"", "", $gobj_nom);
-                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
-                $gobj_valeur = $result['gobj_valeur'];
-                echo("listeBase[$nb_tobj] = new Array(0); \n");
-                echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
-                echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
-                echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
-                echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
-                $nb_tobj++;
-            }
+            var listeBase = [];';
 
-    echo '  var listeCurrent = new Array(); 
-        </SCRIPT>
-        <form method="post" name="formInventaire" action="#">
-            <input type="hidden" name="methode" value="update_inventaire">
-            <input type="hidden" name="mod_perso_cod" value="<?php echo $mod_perso_cod ?>">
-            <TABLE width="80%" align="center">
-                <TR>
-                    <TD>
-                        <select multiple name="select1" id="select1" size="10" style="width:280px;">
-                        </select>
-                    </TD>
-                    <TD>
-                        <input type="button" value="<- 1 "
-                               onClick="addToOptions(document.formInventaire.select2,document.formInventaire.select1,1,document.formInventaire.compiledInv);">
-                        <br><input type="button" value="<- 5 "
-                                   onClick="addToOptions(document.formInventaire.select2,document.formInventaire.select1,5,document.formInventaire.compiledInv);">
-                        <br><input type="button" value="-> 1 "
-                                   onClick="substractToOptions(document.formInventaire.select1,1,document.formInventaire.compiledInv);">
-                        <br><input type="button" value="-> 5 "
-                                   onClick="substractToOptions(document.formInventaire.select1,5,document.formInventaire.compiledInv);">
-                    </TD>
-                    <TD>
-                        <select style="width: 280px;" name="selecttype"
-                                onchange=\'cleanOption(document.formInventaire.select2); addOptionArray(document.formInventaire.select2, listeBase, this.value, document.formInventaire.selectvaleur.value);\'>
-                            <option value=\'\'>Tous types d’objets</option>';
-                                
-                     
-                            $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
-                            $stmt = $pdo->query($req_tobj);
-                            while ($result = $stmt->fetch())
-                            {
-                                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
-                                echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
-                            }
+    require "blocks/_admin_perso_et_titre.php";
+
+    echo '>Tous; types; d;’objets</option>';
+
+
+    $req_tobj = "select distinct tobj_libelle from type_objet order by tobj_libelle";
+    $stmt     = $pdo->query($req_tobj);
+    while ($result = $stmt->fetch())
+    {
+        $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
+        echo "<option value='$tobj_libelle'>$tobj_libelle</option>";
+    }
     echo '
                         </select><br/>
                         <select style="width: 280px;" name="selectvaleur"

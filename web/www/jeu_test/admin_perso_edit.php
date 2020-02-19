@@ -626,7 +626,7 @@ if ($erreur == 0)
 
                             // Écriture du JS qui dit si on a un bonus ou un malus
                             $stmt = $pdo->query($req_bm);
-                            echo "</select><script type='text/javascript'>var arr_bonmal = new Array();\n";
+                            echo "</select><script type='text/javascript'>var arr_bonmal = [];\n";
                             while ($result = $stmt->fetch())
                             {
                                 $clef   = $result['tbonus_libc'];
@@ -664,24 +664,7 @@ if ($erreur == 0)
         <SCRIPT language="javascript">
             var listeBase = [];
             <?php // LISTE DES OBJETS POSSIBLES
-            $nb_tobj = 0;
-            $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
-			inner join type_objet on tobj_cod = gobj_tobj_cod
-			order by tobj_libelle, gobj_nom";
-            $stmt = $pdo->query($req_tobj);
-            while ($result = $stmt->fetch())
-            {
-                $gobj_nom     = $result['gobj_nom'];
-                $gobj_nom     = str_replace("\"", "", $gobj_nom);
-                $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
-                $gobj_valeur  = $result['gobj_valeur'];
-                echo("listeBase[$nb_tobj] = new Array(0); \n");
-                echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
-                echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
-                echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
-                echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
-                $nb_tobj++;
-            }
+            require "blocks/_admin_perso_et_titre.php";
             ?>
 
             var listeCurrent = [];
@@ -856,7 +839,7 @@ if ($erreur == 0)
                 $fonc_proba        = $result['fonc_proba'];
                 $fonc_message      = $result['fonc_message'];
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true;)</script>";
             }
 
             $req  = "select fonc_cod, fonc_nom, fonc_type, substr(fonc_effet, 1, 3) as fonc_effet, CASE WHEN length(fonc_effet)>3 THEN 'O' ELSE 'N' END as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
@@ -879,7 +862,7 @@ if ($erreur == 0)
                 $fonc_message      = $result['fonc_message'];
                 $fonc_validite     = $result['validite'];
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false;)</script>";
             }
             ?>
             <div style='clear: both'>
@@ -1056,12 +1039,12 @@ if ($erreur == 0)
         <TABLE width="80%" align="center">
 
             <?php // POSITION DU PERSONNAGE
-            $pdo = new bddpdo;
-            $req_pos   = " select pos_x,pos_y,pos_etage from positions,perso_position
+            $pdo     = new bddpdo;
+            $req_pos = " select pos_x,pos_y,pos_etage from positions,perso_position
                 where ppos_pos_cod = pos_cod and ppos_perso_cod = :perso ";
 
-            $stmt      = $pdo->prepare($req_pos);
-            $stmt = $pdo->execute(array(":perso" =>$mod_perso_cod ),$stmt);
+            $stmt = $pdo->prepare($req_pos);
+            $stmt = $pdo->execute(array(":perso" => $mod_perso_cod), $stmt);
 
             $pos_x     = 0;
             $pos_y     = 0;

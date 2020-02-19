@@ -1,4 +1,5 @@
 <?php
+define('APPEL', 1);
 include "blocks/_header_page_jeu.php";
 ob_start();
 $objet = $_GET['objet'];

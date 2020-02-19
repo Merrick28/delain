@@ -37,7 +37,7 @@ if ($erreur == 0)
             echo "<p style=\"text-align:center;\"><strong><a href=\"admin_echoppe_tarif.php?methode=detail\">Afficher le détail complet (long !)</A></strong>";
             break;
         case "detail":
-            $req  = "select tobj_libelle,gobj_nom,gobj_valeur,gobj_cod,
+            $req = "select tobj_libelle,gobj_nom,gobj_valeur,gobj_cod,
 			f_num_obj_perso(gobj_cod) as persos, 
 			f_num_obj_sol(gobj_cod) as sol, 
 			f_num_obj_echoppe(gobj_cod) as echoppe 
@@ -47,22 +47,7 @@ if ($erreur == 0)
 			and gobj_deposable = 'O' 
 			and gobj_tobj_cod in (1,2,4,15,17,18,19,22)
 			order by tobj_libelle,gobj_nom ";
-            $stmt = $pdo->query($req);
-            echo "<table>";
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Type d'objet</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Persos/monstres</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Au sol</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Stock échoppes</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Total</strong></td>";
-            echo "<td></td>";
-            while ($result = $stmt->fetch())
-            {
-                require "blocks/_ligne_echoppe_1.php";
-            }
-            echo "</table>";
+            require "blocks/_tab_ligne_echoppe.php";
             break;
         case "e1":
             echo "<p><strong>Attention !</strong> Modifier le prix générique d'un objet aura un impact sur TOUTES les échoppes.<br>";

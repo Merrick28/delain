@@ -348,12 +348,4 @@ echo "<p><strong>Historique des distributions :</strong> (les distributions sont
 
 $req =
     'SELECT to_char(anim_date,\'DD/MM/YYYY\') as date, anim_texte, (now()::date - anim_date) as duree FROM historique_animations WHERE anim_type=\'distribution\' ORDER BY anim_date';
-$stmt = $pdo->query($req);
-$derniere_distrib = -1;
-while ($result = $stmt->fetch())
-{
-    echo '<li>' . $result['date'] . ' : ' . $result['anim_texte'] . '</li>';
-    $derniere_distrib = $result['duree'];
-}
-echo '</ul>';
-echo '</div>';
+require "blocks/_admin_distrib_invasion.php";
