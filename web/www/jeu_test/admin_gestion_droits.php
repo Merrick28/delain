@@ -23,7 +23,7 @@ define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
 
-$compte = $_REQUEST['compte'];
+$compte = get_request_var('compte');
 
 if ($erreur == 0)
 {
@@ -426,7 +426,11 @@ else
                                 <select name="choix_etage" id='choix_etage' onchange='PermutteEtage();'>
                                     <option value="--" selected='selected'>Choisissez un étage</option>
                                     <option value="A">Tous les étages</option>
-                                    <?php echo $html->etage_select(); ?>
+                                    <?php
+                                    require_once G_CHE . "/includes/html.php";
+                                    $html = new html;
+                                    echo $html->etage_select();
+                                    ?>
                                 </select><br><em>A = tous les étages, sinon séparer les étages par des virgules.<br>
                                     Ex : -1,-2,0,-3</em></td>
                         </tr>

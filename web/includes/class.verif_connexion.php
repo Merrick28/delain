@@ -64,7 +64,9 @@ class verif_connexion
          */
         global $pdo;
 
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+        }
         $verif_auth = false;
         $compte     = new compte;
         $perso      = new perso;

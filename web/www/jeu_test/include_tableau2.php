@@ -5,9 +5,7 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 
 include "../includes/constantes.php";
-if(!isset($db))
-	$db = new base_delain;
-$db_refuge = new base_delain;
+
 $is_attaque = 1;
 //
 /* position du joueur et autres données */
@@ -16,8 +14,8 @@ $is_attaque = 1;
 $requete = "select pos_x, pos_y, pos_etage, ppos_pos_cod, distance_vue($perso_cod) as distance_vue, etage_libelle, pgroupe_groupe_cod,
 				type_arme($perso_cod) as type_arme, portee_attaque($perso_cod) as portee, valeur_bonus($perso_cod, 'DES') as desorientation
 				FROM perso
-				INNER JOIN perso_position ON ppos_perso_cod = perso_cod 
-				INNER JOIN positions ON ppos_pos_cod = pos_cod 
+				INNER JOIN perso_position ON ppos_perso_cod = perso_cod
+				INNER JOIN positions ON ppos_pos_cod = pos_cod
 				INNER JOIN etage ON etage_numero = pos_etage
 				LEFT OUTER JOIN groupe_perso ON pgroupe_perso_cod = perso_cod AND pgroupe_statut = 1
 				where perso_cod = $perso_cod ";

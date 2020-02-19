@@ -28,6 +28,7 @@
             switch_menu(event);
         });
         $("button[class^='button-switch']").click(function () {
+            console.log('Switch sur ' + this.id)
             switch_perso(this.id);
         });
 

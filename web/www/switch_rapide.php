@@ -8,7 +8,7 @@ if (isset($_REQUEST['perso']))
 }
 
 $verif_connexion = new verif_connexion();
-$verif_connexion->ident();
+$verif_connexion->ident($change_perso);
 $verif_auth = $verif_connexion->verif_auth;
 $compte     = $verif_connexion->compte;
 $perso_cod  = $verif_connexion->perso_cod;
@@ -27,7 +27,7 @@ $autorise_monstre = ($compte->autorise_4e_monstre() == 't');
 $num_resultat = 0;
 $pdo          = new bddpdo();
 $requete
-              = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel, 
+              = "SELECT perso_cod, perso_nom, coalesce(perso_mortel, 'N') AS perso_mortel,
 			perso_dlt, dlt_passee(perso_cod) dlt_passee
 		FROM perso WHERE perso_cod = :perso";
 $stmt         = $pdo->prepare($requete);
@@ -40,7 +40,7 @@ if($perso->charge($perso_cod))
 {
     $perso_dlt_passee = 0;
 }
-require"_block_valide_autorise_joue_perso.php";
+require "_block_valide_autorise_joue_perso.php";
 
 
 if ($autorise != 1)
