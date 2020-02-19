@@ -147,7 +147,7 @@ class verif_connexion
                 $normal_auth = true;
                 $compt_nom   = $compte->compt_nom;
                 // est-ce qu'on change de perso ?
-                if (isset($change_perso))
+               if ($change_perso !== false)
                 {
                     if ($compte->autoriseJouePerso($change_perso))
                     {
