@@ -6,7 +6,7 @@ COPY ./docker/apache2.conf /etc/apache2/apache2.conf
 COPY ./docker/000-default.conf /etc/apache2/sites-available
 
 RUN chown -R delain: /etc/apache2/sites-available && \
-mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" && \
 mkdir -p /usr/share/man/man1 && \
 mkdir -p /usr/share/man/man7 && \
 apt-get update && \
