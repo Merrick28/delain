@@ -166,22 +166,14 @@ if ($erreur == 0) {
 
     while ($result = $stmt->fetch()) {
         // Récupération des données
-        $sort_cod = $result['sort_cod'];
-        $sort_nom = $result['sort_nom'];
-        $dieux_nom = $result['dieux_nom'];
-        $sort_niveau = $result['sort_niveau'];
+        $sort_cod      = $result['sort_cod'];
+        $sort_nom      = $result['sort_nom'];
+        $dieux_nom     = $result['dieux_nom'];
+        $sort_niveau   = $result['sort_niveau'];
         $sort_comp_cod = $result['sort_comp_cod'];
-        $sort_cout = $result['sort_cout'];
+        $sort_cout     = $result['sort_cout'];
         $sort_distance = $result['sort_distance'];
-        $sort_soi_meme = $result['sort_soi_meme'];
-        $sort_monstre = $result['sort_monstre'];
-        $sort_joueur = $result['sort_joueur'];
-        $sort_case = $result['sort_case'];
-        $sort_aggressif = $result['sort_aggressif'];
-        $sort_soutien = $result['sort_soutien'];
-        $sort_bloquable = $result['sort_bloquable'];
-        $sort_temps_recharge = $result['sort_temps_recharge'];
-        $sort_description = $result['sort_description'];
+        require "blocks/_admin_magie.php";
 
         echo "<tr><form action='#' method='POST'>
 			<td class='soustitre2'><input type='text' value='$sort_nom' name='sort_nom' size='20' />

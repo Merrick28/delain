@@ -1,4 +1,5 @@
 <?php
+define('APPEL', 1);
 include "blocks/_header_page_jeu.php";
 ob_start();
 include G_CHE . "/includes/constantes.php";
@@ -18,13 +19,7 @@ $perso = $verif_connexion->perso;
 
 if ($type_lance == 0) // runes
 {
-    $fam_1    = $_REQUEST['fam_1'];
-    $fam_2    = $_REQUEST['fam_2'];
-    $fam_3    = $_REQUEST['fam_3'];
-    $fam_4    = $_REQUEST['fam_4'];
-    $fam_5    = $_REQUEST['fam_5'];
-    $fam_6    = $_REQUEST['fam_6'];
-    $resultat = $fam_1 . $fam_2 . $fam_3 . $fam_4 . $fam_5 . $fam_6;
+    require "blocks/_get_rune_combi.php";
     $req_sort = "select sort_cod from sorts where sort_combinaison = '$resultat' ";
 
     $stmt     = $pdo->query($req_sort);

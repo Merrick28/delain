@@ -4,7 +4,17 @@ $nb_tobj  = 0;
 $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
 			inner join type_objet on tobj_cod = gobj_tobj_cod
 			order by tobj_libelle, gobj_nom";
-$stmt     = $pdo->query($req_tobj);
+if (isset($autre_requete))
+{
+    if ($autre_requete)
+    {
+        $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
+                    inner join type_objet on tobj_cod = gobj_tobj_cod where gobj_tobj_cod not in (3,5,9,10) 
+                    order by tobj_libelle, gobj_nom";
+    }
+}
+
+$stmt = $pdo->query($req_tobj);
 while ($result = $stmt->fetch())
 {
     $gobj_nom     = $result['gobj_nom'];

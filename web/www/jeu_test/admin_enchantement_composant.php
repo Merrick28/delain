@@ -91,74 +91,53 @@ switch ($methode2)
         $result = $stmt->fetch();
         ?>
         <table>
-            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                <input type="hidden" name="methode2" value="ajout2">
-                <tr>
-                    <td class="soustitre2">Nom / Description de la formule du composant (conserver le nom du composant
-                        dedans)
-                    </td>
-                    <td><textarea cols="50" rows="10" name="nom"><?php echo $result['gobj_nom'] ?></textarea></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Energie nécessaire <em>(Le coût en énergie sera celui qui fera diminuer la
-                            jauge d'énergie)</em></td>
-                    <td><input type="text" name="temps" value="40"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Cout en brouzoufs <em>non utilisé</em></td>
-                    <td><input type="text" name="pot_cout" value="0"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
-                    <td><input type="text" name="resultat" value="0"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Compétence</em></td>
-                    <td>
-                        <select name="competence">
-                            <option value="88">Forgeamage Niveau 1</option>
-                            ';
-                            <option value="102">Forgeamage Niveau 2</option>
-                            ';
-                            <option value="103">Forgeamage Niveau 3</option>
-                            ';
-                        </select>
-                        <em> <br>Cela correspond au niveau de forgeamage nécessaire.
-                            <br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences
-                            différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
+        <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+        <input type="hidden" name="methode2" value="ajout2">
+        <tr>
+            <td class="soustitre2">Nom / Description de la formule du composant (conserver le nom du composant
+                dedans)
+            </td>
+            <td><textarea cols="50" rows="10" name="nom"><?php echo $result['gobj_nom'] ?></textarea></td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Energie nécessaire <em>(Le coût en énergie sera celui qui fera diminuer la
+                    jauge d'énergie)</em></td>
+            <td><input type="text" name="temps" value="40"></td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Cout en brouzoufs <em>non utilisé</em></td>
+            <td><input type="text" name="pot_cout" value="0"></td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
+            <td><input type="text" name="resultat" value="0"></td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Compétence</em></td>
+            <td>
+                <select name="competence">
+                    <option value="88">Forgeamage Niveau 1</option>
+                    ';
+                    <option value="102">Forgeamage Niveau 2</option>
+                    ';
+                    <option value="103">Forgeamage Niveau 3</option>
+                    ';
+                </select>
+                <em> <br>Cela correspond au niveau de forgeamage nécessaire.
+                    <br>Mais on peut imaginer plusieurs formules pour un même composant, avec des compétences
+                    différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
 
-                    </td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Composant d'enchantement concerné</em></td>
-                    <td>
-                        <select name="composant">
-                            <?php
-                            $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
-											where gobj_cod in (select oenc_gobj_cod from enc_objets)';
-                            if ($pot != null)
-                            {
-                                $req .= 'and gobj_cod = ' . $pot;
-                            }
-                            $req  .= 'order by gobj_nom';
-                            $stmt = $pdo->query($req);
-                            while ($result = $stmt->fetch())
-                            {
-                                echo '<option value="' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
-                            }
-                            echo '</select><br>'; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
-                    <td><input type="text" name="nombre" value="1"></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" class="test" value="Valider"></td>
-                </tr>
-            </form>
-        </table>
+            </td>
+        </tr>
+        <tr>
+        <td class="soustitre2">Composant d'enchantement concerné</em></td>
+        <td>
+        <select name="composant">
         <?php
+        $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
+											where gobj_cod in (select oenc_gobj_cod from enc_objets)';
+        require "blocks/_admin_enchantement_potions.php";
+
         break;
     case "ajout2":
         $req_form_cod = "select nextval('seq_frm_cod') as numero";

@@ -145,30 +145,9 @@ if ($erreur == 0)
                                 <?php
                                 $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
 											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)';
-                                if ($pot != null)
-                                {
-                                    $req .= 'and gobj_cod = ' . $pot;
-                                }
-                                $req  .= 'order by gobj_nom';
-                                $stmt = $pdo->query($req);
-                                while ($result = $stmt->fetch())
-                                {
-                                    echo '<option value="' . $result['gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
-                                }
-                                echo '</select><br>'; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Nombre de potions produites</td>
-                        <td><input type="text" name="nombre" value="1"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><input type="submit" class="test" value="Valider"></td>
-                    </tr>
-                </form>
-            </table>
-            <?php
-            break;
+                                require "blocks/_admin_enchantement_potions.php";
+
+                                break;
         case "ajout2":
             $req_form_cod = "select nextval('seq_frm_cod') as numero";
             $stmt     = $pdo->query($req_form_cod);
