@@ -4,7 +4,7 @@ ob_start();
 define('APPEL', 1);
 // initialisation de la méthode
 
-$methode2        = get_request_var('methode2', 'entree');
+$methode2     = get_request_var('methode2', 'entree');
 switch ($methode2)
 {
     case "debut":
@@ -141,29 +141,29 @@ switch ($methode2)
         break;
     case "ajout2":
         $req_form_cod = "select nextval('seq_frm_cod') as numero";
-        $stmt    = $pdo->query($req_form_cod);
-        $result  = $stmt->fetch();
-        $req     = 'insert into formule
+        $stmt = $pdo->query($req_form_cod);
+        $result = $stmt->fetch();
+        $req = 'insert into formule
 								(frm_cod,frm_type,frm_nom,frm_temps_travail,frm_cout,frm_resultat,frm_comp_cod)
 								values(:num_form,3,:nom,:temps,:cout,:resultat,:competence)';
-        $stmt    = $pdo->prepare($req);
-        $stmt    = $pdo->execute(array(
-                                     ":num_form"   => $_REQUEST['num_form'],
-                                     ":nom"        => $_REQUEST['nom'],
-                                     ":temps"      => $_POST['temps'],
-                                     ":cout"       => $_POST['pot_cout'],
-                                     ":resultat"   => $_POST['resultat'],
-                                     ":competence" => $_POST['competence']
-                                 ), $stmt);
-        $req     = 'insert into formule_produit
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":num_form"   => $_REQUEST['num_form'],
+                                  ":nom"        => $_REQUEST['nom'],
+                                  ":temps"      => $_POST['temps'],
+                                  ":cout"       => $_POST['pot_cout'],
+                                  ":resultat"   => $_POST['resultat'],
+                                  ":competence" => $_POST['competence']
+                              ), $stmt);
+        $req = 'insert into formule_produit
 								(frmpr_frm_cod,frmpr_gobj_cod,frmpr_num)
 								values(:num_form,:composant,:nombre)';
-        $stmt    = $pdo->prepare($req);
-        $stmt    = $pdo->execute(array(
-                                     ":num_form"  => $_REQUEST['num_form'],
-                                     ":composant" => $_REQUEST['composant'],
-                                     ":nombre"    => $_POST['nombre']
-                                 ), $stmt);
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":num_form"  => $_REQUEST['num_form'],
+                                  ":composant" => $_REQUEST['composant'],
+                                  ":nombre"    => $_POST['nombre']
+                              ), $stmt);
         echo "<p>La formule de base du composant d'enchantement a bien été insérée !<br>
 				Pensez à inclure la pierre précieuse nécessaire pour ce composant. Autrement, il ne pourra jamais être produit<br>";
         ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=serie_obj&pot=<?php echo $num_form; ?>">Modifier la
@@ -178,98 +178,59 @@ switch ($methode2)
         require "_admin_enchantement_composant_blok1.php";
         break;
     case "modif":
-        $req = 'select * from formule,formule_produit where frm_cod = :pot and frm_cod = frmpr_frm_cod';
-        $stmt    = $pdo->prepare($req);
-        $stmt    = $pdo->execute(array(":pot" => $pot), $stmt);
-        $result  = $stmt->fetch();
-        $cod_pot = $result['frmpr_gobj_cod'];
+        require "blocks/_admin_enchantement_pot_comp_2.php";
+        if ($s == '88')
+        {
+            $s1 = 'selected';
+        } else if ($s == '102')
+        {
+            $s2 = 'selected';
+        } else if ($s == '103')
+        {
+            $s3 = 'selected';
+        }
         ?>
-        <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode2=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste
-            d'objets</a><br>
-        <table>
-            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                <input type="hidden" name="methode2" value="modif2">
-                <input type="hidden" name="pot" value="<?php echo $pot; ?>">
-                <input type="hidden" name="nom" value="<?php echo $result['frm_nom']; ?>">
-
-                <tr>
-                    <td class="soustitre2">Nom / Description de la formule du composant d'enchantement (conserver le nom
-                        du composant dedans)
-                    </td>
-                    <td><textarea cols="50" rows="10" name="nom"><?php echo $result['frm_nom']; ?></textarea></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Energie nécessaire <em></em></td>
-                    <td><input type="text" name="temps" value="<?php echo $result['frm_temps_travail']; ?>"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Cout en brouzoufs <em>(Non utilisé pour l'instant)</em></td>
-                    <td><input type="text" name="pot_cout" value="<?php echo $result['frm_cout']; ?>"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
-                    <td><input type="text" name="resultat" value="<?php echo $result['frm_resultat']; ?>"></td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Compétence</em></td>
-                    <td>
-                        <select name="competence">
-                            <?php $s = $result['frm_comp_cod'];
-                            $s1      = '';
-                            $s2      = '';
-                            $s3      = '';
-                            if ($s == '88')
-                            {
-                                $s1 = 'selected';
-                            } else if ($s == '102')
-                            {
-                                $s2 = 'selected';
-                            } else if ($s == '103')
-                            {
-                                $s3 = 'selected';
-                            }
-                            ?>
-                            <option value="88" <?php echo $s1 ?> >Forgeamage Niveau 1</option>
-                            ';
-                            <option value="102" <?php echo $s2 ?> >Forgeamage Niveau 2</option>
-                            ';
-                            <option value="103" <?php echo $s3 ?> >Forgeamage Niveau 3</option>
-                            ';
-                        </select>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Composant d'enchantement concerné</em></td>
-                    <td>
-                        <select name="potion">
-                            <?php
-                            $req_pot = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
+        <option value="88" <?php echo $s1 ?> >Forgeamage Niveau 1</option>
+        ';
+        <option value="102" <?php echo $s2 ?> >Forgeamage Niveau 2</option>
+        ';
+        <option value="103" <?php echo $s3 ?> >Forgeamage Niveau 3</option>
+        ';
+        </select>
+        </td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Composant d'enchantement concerné</em></td>
+            <td>
+                <select name="potion">
+                    <?php
+                    $req_pot = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
 											where gobj_cod in (select oenc_gobj_cod from enc_objets)
 											order by gobj_nom';
-                            $stmt    = $pdo->query($req);
-                            while ($result = $stmt->fetch())
-                            {
-                                $sel    = '';
-                                $potion = $result2['gobj_cod'];
-                                if ($potion == $cod_pot)
-                                {
-                                    $sel = "selected";
-                                }
-                                echo '<option value="' . $result2['gobj_cod'] . '" ' . $sel . '> ' . $result2['gobj_nom'] . '</option>';
-                            }
-                            echo '</select><br>'; ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
-                    <td><input type="text" name="nombre" value="<?php echo $result['frmpr_num']; ?>"></td>
-                </tr>
-                <tr>
-                    <td colspan="2"><input type="submit" class="test" value="Valider"></td>
-                </tr>
+                    $stmt    = $pdo->query($req);
+                    while ($result = $stmt->fetch())
+                    {
+                        $sel    = '';
+                        $potion = $result2['gobj_cod'];
+                        if ($potion == $cod_pot)
+                        {
+                            $sel = "selected";
+                        }
+                        echo '<option value="' . $result2['gobj_cod'] . '" ' . $sel . '> ' . $result2['gobj_nom'] . '</option>';
+                    }
+                    echo '</select><br>'; ?>
+            </td>
+        </tr>
+        <tr>
+            <td class="soustitre2">Nombre de composants produits <em>(Non utilisé pour l'instant)</em></td>
+            <td><input type="text" name="nombre" value="<?php echo $result['frmpr_num']; ?>"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" class="test" value="Valider"></td>
+        </tr>
 
 
-            </form>
+        </form>
         </table>
         <?php
         break;
@@ -281,25 +242,25 @@ switch ($methode2)
 								frm_resultat = :resultat,
 								frm_comp_cod = :competence
 								where frm_cod = :pot';
-        $stmt    = $pdo->prepare($req);
-        $stmt    = $pdo->execute(array(
-                                     ":nom"        => $_POST['nom'],
-                                     ":temps"      => $_POST['temps'],
-                                     ":cout"       => $_POST['pot_cout'],
-                                     ":resultat"   => $_POST['resultat'],
-                                     ":competence" => $_POST['competence'],
-                                     ":pot"        => $pot
-                                 ), $stmt);
-        $req     = 'update formule_produit
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":nom"        => $_POST['nom'],
+                                  ":temps"      => $_POST['temps'],
+                                  ":cout"       => $_POST['pot_cout'],
+                                  ":resultat"   => $_POST['resultat'],
+                                  ":competence" => $_POST['competence'],
+                                  ":pot"        => $pot
+                              ), $stmt);
+        $req  = 'update formule_produit
 									set frmpr_gobj_cod = :potion,
 									frmpr_num = :nombre
 									where frmpr_frm_cod = :pot';
-        $stmt    = $pdo->prepare($req);
-        $stmt    = $pdo->execute(array(
-                                     ":potion" => $_POST['potion'],
-                                     ":nombre" => $_POST['nombre'],
-                                     ":pot"    => $pot
-                                 ), $stmt);
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(
+                                  ":potion" => $_POST['potion'],
+                                  ":nombre" => $_POST['nombre'],
+                                  ":pot"    => $pot
+                              ), $stmt);
         if ($_POST['competence'] == '88')
         {
             $comp = 1;

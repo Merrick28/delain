@@ -16,7 +16,7 @@ include "blocks/_test_droit_modif_generique.php";
 if ($erreur == 0)
 {
     // initialisation de la méthode
-    $methode          = get_request_var('methode', 'debut');
+    $methode      = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -86,81 +86,81 @@ if ($erreur == 0)
             }
             ?>
             <table>
-                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                    <input type="hidden" name="methode" value="ajout2">
-                    <tr>
-                        <td class="soustitre2">Nom / Description de la formule de potion (conserver le nom de la potion
-                            dedans)
-                        </td>
-                        <td><textarea cols="50" rows="10" name="nom">Rentrer une description</textarea></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="temps" value="0"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Cout en brouzoufs</td>
-                        <td><input type="text" name="pot_cout" value="0"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="resultat" value="0"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Compétence</em></td>
-                        <td>
-                            <select name="competence">
-                                <?php
-                                $s1 = '';
-                                $s2 = '';
-                                $s3 = '';
-                                if ($comp == '1')
-                                {
-                                    $s1 = 'selected';
-                                } else if ($comp == '2')
-                                {
-                                    $s2 = 'selected';
-                                } else if ($comp == '3')
-                                {
-                                    $s3 = 'selected';
-                                }
-                                ?>
-                                <option value="97" <?php echo $s1 ?> >Alchimie Niveau 1</option>
-                                ';
-                                <option value="100" <?php echo $s2 ?> >Alchimie Niveau 2</option>
-                                ';
-                                <option value="101" <?php echo $s3 ?> >Alchimie Niveau 3</option>
-                                ';
-                            </select>
-                            <em> <br>Par défaut, cela correspond au niveau de la potion.
-                                <br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences
-                                différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
+            <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <input type="hidden" name="methode" value="ajout2">
+            <tr>
+                <td class="soustitre2">Nom / Description de la formule de potion (conserver le nom de la potion
+                    dedans)
+                </td>
+                <td><textarea cols="50" rows="10" name="nom">Rentrer une description</textarea></td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
+                <td><input type="text" name="temps" value="0"></td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Cout en brouzoufs</td>
+                <td><input type="text" name="pot_cout" value="0"></td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
+                <td><input type="text" name="resultat" value="0"></td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Compétence</em></td>
+                <td>
+                    <select name="competence">
+                        <?php
+                        $s1 = '';
+                        $s2 = '';
+                        $s3 = '';
+                        if ($comp == '1')
+                        {
+                            $s1 = 'selected';
+                        } else if ($comp == '2')
+                        {
+                            $s2 = 'selected';
+                        } else if ($comp == '3')
+                        {
+                            $s3 = 'selected';
+                        }
+                        ?>
+                        <option value="97" <?php echo $s1 ?> >Alchimie Niveau 1</option>
+                        ';
+                        <option value="100" <?php echo $s2 ?> >Alchimie Niveau 2</option>
+                        ';
+                        <option value="101" <?php echo $s3 ?> >Alchimie Niveau 3</option>
+                        ';
+                    </select>
+                    <em> <br>Par défaut, cela correspond au niveau de la potion.
+                        <br>Mais on peut imaginer plusieurs formules pour une même potion, avec des compétences
+                        différentes / <br><strong> Pas sûr que cela marche pour l'instant !</strong></em>
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Potion concernée</em></td>
-                        <td>
-                            <select name="potion">
-                                <?php
-                                $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
+                </td>
+            </tr>
+            <tr>
+            <td class="soustitre2">Potion concernée</em></td>
+            <td>
+            <select name="potion">
+            <?php
+            $req = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
 											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39)';
-                                require "blocks/_admin_enchantement_potions.php";
+            require "blocks/_admin_enchantement_potions.php";
 
-                                break;
+            break;
         case "ajout2":
             $req_form_cod = "select nextval('seq_frm_cod') as numero";
-            $stmt     = $pdo->query($req_form_cod);
-            $result   = $stmt->fetch();
+            $stmt = $pdo->query($req_form_cod);
+            $result = $stmt->fetch();
             $num_form = $result['numero'];
-            $req      = 'insert into formule
+            $req = 'insert into formule
 								(frm_cod,frm_type,frm_nom,frm_temps_travail,frm_cout,frm_resultat,frm_comp_cod)
 								values(' . $num_form . ',2,e\'' . pg_escape_string($_POST['nom']) . '\',' . $_POST['temps'] . ',' . $_POST['pot_cout'] . ',' . $_POST['resultat'] . ',' . $_POST['competence'] . ')';
-            $stmt     = $pdo->query($req);
-            $req      = 'insert into formule_produit
+            $stmt = $pdo->query($req);
+            $req = 'insert into formule_produit
 								(frmpr_frm_cod,frmpr_gobj_cod,frmpr_num)
 								values(' . $num_form . ',' . $_POST['potion'] . ',' . $_POST['nombre'] . ')';
-            $stmt     = $pdo->query($req);
+            $stmt = $pdo->query($req);
             echo "<p>La formule de base de la potion a bien été insérée !<br>
 				Pensez à inclure les composants nécessaires pour cette potion.<br>";
             ?><a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&pot=<?php echo $num_form; ?>">Modifier la
@@ -219,102 +219,63 @@ if ($erreur == 0)
                             </select></td>
                         <td><input type="text" name="nombre" value="1"></td>
                 </table>
-                <input type="submit" value="Ajouter"></form>
+            <input type="submit" value="Ajouter"></form>
             <?php
             break;
         case "modif":
-            $req = 'select * from formule,formule_produit where frm_cod = ' . $pot . ' and frm_cod = frmpr_frm_cod';
-            $stmt     = $pdo->query($req);
-            $result   = $stmt->fetch();
-            $cod_pot  = $result['frmpr_gobj_cod'];
+            require "blocks/_admin_enchantement_pot_comp_2.php";
+            if ($s == '97')
+            {
+                $s1 = 'selected';
+            } else if ($s == '100')
+            {
+                $s2 = 'selected';
+            } else if ($s == '101')
+            {
+                $s3 = 'selected';
+            }
             ?>
-            <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=serie_obj&pot=<?php echo $pot; ?>">Modifier la liste
-                d'objets</a>
-            <br>
-            <table>
-                <form name="ajout" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-                    <input type="hidden" name="methode" value="modif2">
-                    <input type="hidden" name="pot" value="<?php echo $pot; ?>">
-                    <input type="hidden" name="nom" value="<?php echo $result['frm_nom']; ?>">
-
-                    <tr>
-                        <td class="soustitre2">Nom / Description de la formule de potion (conserver le nom de la potion
-                            dedans)
-                        </td>
-                        <td><textarea cols="50" rows="10" name="nom"><?php echo $result['frm_nom']; ?></textarea></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Temps Travail <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="temps" value="<?php echo $result['frm_temps_travail']; ?>"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Cout en brouzoufs</td>
-                        <td><input type="text" name="pot_cout" value="<?php echo $result['frm_cout']; ?>"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Résultat <em>(Non utilisé pour l'instant)</em></td>
-                        <td><input type="text" name="resultat" value="<?php echo $result['frm_resultat']; ?>"></td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Compétence</em></td>
-                        <td>
-                            <select name="competence">
-                                <?php $s = $result['frm_comp_cod'];
-                                $s1      = '';
-                                $s2      = '';
-                                $s3      = '';
-                                if ($s == '97')
-                                {
-                                    $s1 = 'selected';
-                                } else if ($s == '100')
-                                {
-                                    $s2 = 'selected';
-                                } else if ($s == '101')
-                                {
-                                    $s3 = 'selected';
-                                }
-                                ?>
-                                <option value="97" <?php echo $s1 ?> >Alchimie Niveau 1</option>
-                                ';
-                                <option value="100" <?php echo $s2 ?> >Alchimie Niveau 2</option>
-                                ';
-                                <option value="101" <?php echo $s3 ?> >Alchimie Niveau 3</option>
-                                ';
-                            </select>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Potion concernée</em></td>
-                        <td>
-                            <select name="potion">
-                                <?php
-                                $req_pot = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
+            <option value="97" <?php echo $s1 ?> >Alchimie Niveau 1</option>
+            ';
+            <option value="100" <?php echo $s2 ?> >Alchimie Niveau 2</option>
+            ';
+            <option value="101" <?php echo $s3 ?> >Alchimie Niveau 3</option>
+            ';
+            </select>
+            </td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Potion concernée</em></td>
+                <td>
+                    <select name="potion">
+                        <?php
+                        $req_pot = 'select gobj_cod,gobj_nom,gobj_description from objet_generique 
 											where (gobj_tobj_cod = 21 or gobj_tobj_cod = 24 or gobj_tobj_cod = 32 or gobj_tobj_cod = 33 or gobj_tobj_cod = 35 or gobj_tobj_cod = 37 or gobj_tobj_cod = 39) 
 											order by gobj_nom';
-                                $stmt    = $pdo->query($req_pot);
-                                while ($result = $stmt->fetch())
-                                {
-                                    $sel    = '';
-                                    $potion = $result['gobj_cod'];
-                                    if ($potion == $cod_pot)
-                                    {
-                                        $sel = "selected";
-                                    }
-                                    echo '<option value="' . $result['gobj_cod'] . '" ' . $sel . '> ' . $result['gobj_nom'] . '</option>';
-                                }
-                                echo '</select><br>'; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="soustitre2">Nombre de potions produites</em></td>
-                        <td><input type="text" name="nombre" value="<?php echo $result['frmpr_num']; ?>"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2"><input type="submit" class="test" value="Valider"></td>
-                    </tr>
+                        $stmt    = $pdo->query($req_pot);
+                        while ($result = $stmt->fetch())
+                        {
+                            $sel    = '';
+                            $potion = $result['gobj_cod'];
+                            if ($potion == $cod_pot)
+                            {
+                                $sel = "selected";
+                            }
+                            echo '<option value="' . $result['gobj_cod'] . '" ' . $sel . '> ' . $result['gobj_nom'] . '</option>';
+                        }
+                        echo '</select><br>'; ?>
+                </td>
+            </tr>
+            <tr>
+                <td class="soustitre2">Nombre de potions produites</em></td>
+                <td><input type="text" name="nombre" value="<?php echo $result['frmpr_num']; ?>"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" class="test" value="Valider"></td>
+            </tr>
 
 
-                </form>
+            </form>
             </table>
             <?php
             break;
@@ -326,12 +287,12 @@ if ($erreur == 0)
 								frm_resultat = ' . $_POST['resultat'] . ',
 								frm_comp_cod = ' . $_POST['competence'] . '
 								where frm_cod = ' . $pot;
-            $stmt     = $pdo->query($req);
-            $req      = 'update formule_produit
+            $stmt = $pdo->query($req);
+            $req  = 'update formule_produit
 									set frmpr_gobj_cod = ' . $_POST['potion'] . ',
 									frmpr_num = ' . $_POST['nombre'] . '
 									where frmpr_frm_cod = ' . $pot;
-            $stmt     = $pdo->query($req);
+            $stmt = $pdo->query($req);
             if ($_POST['competence'] == '97')
             {
                 $comp = 1;

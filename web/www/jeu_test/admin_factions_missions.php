@@ -55,7 +55,8 @@ switch ($methode)
         break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 $req = 'SELECT miss_cod, miss_nom, miss_libelle, 
 miss_fonction_init, miss_fonction_valide, coalesce(fmiss_nb, 0) as fmiss_nb

@@ -4,31 +4,6 @@
 include "blocks/_header_page_jeu.php";
 
 
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-    global $pdo, $compt_cod;
-
-    if ($texte)
-    {
-        $log_sql = false;    // Mettre à true pour le debug des requêtes
-
-        if (!$log_sql || $sql == '')
-            $sql = "\n";
-        else
-            $sql = "\n\t\tRequête : $sql\n";
-
-        $req       = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt      = $pdo->query($req);
-        $result    = $stmt->fetch();
-        $compt_nom = $result['compt_nom'];
-
-        $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-        echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-        if ($loguer)
-            writelog($en_tete . $texte . $sql, 'lieux_etages');
-    }
-}
-
 //
 //Contenu de la div de droite
 //
@@ -267,7 +242,8 @@ if ($erreur == 0)
     <br/>
     <?php if ($resultat != '')
 {
-    ecrireResultatEtLoguer($resultat, $erreur == 0);
+    $fonctions = new fonctions();
+    $fonctions->ecrireResultatEtLoguerLoguer($resultat, $erreur == 0);
 }
     ?>
     Choix de l’étage où créer / modifier un lieu

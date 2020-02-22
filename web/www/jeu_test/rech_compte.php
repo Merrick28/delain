@@ -37,59 +37,7 @@ switch ($methode2)
 										where csit_compte_sitte = compt_cod 
 										and csit_dfin > (now() - '15 days'::interval)
 										group by csit_compte_sitte,compt_nom";
-        if (!isset($sort))
-        {
-            $sort = 'duree';
-            $sens = 'desc';
-            $nv_sens = 'asc';
-        }
-        if (!isset($sens))
-        {
-            $sens = 'desc';
-        }
-        $autresens = $_POST['autresens'];
-        if (!isset($autresens))
-        {
-            $autresens = 'desc';
-        }
-        if (($sens != 'desc') && ($sens != 'asc'))
-        {
-            echo "<p>Anomalie sur sens !";
-            exit();
-        }
-        if (($sort != 'compteur') && ($sort != 'duree'))
-        {
-            echo "<p>Anomalie sur tri !";
-            exit();
-        }
-        if ($sort == 'compteur')
-        {
-            $req = $req . " order by compteur $sens";
-            if ($sens == 'desc')
-            {
-                $sens = 'asc';
-                $autresens = 'desc';
-            } else
-            {
-                $sens = 'desc';
-                $autresens = 'asc';
-            }
-        }
-        if ($sort == 'duree')
-        {
-            $req = $req . " order by temps_cumule $sens";
-            if ($sens == 'desc')
-            {
-                $sens = 'asc';
-                $autresens = 'desc';
-            } else
-            {
-                $sens = 'desc';
-                $autresens = 'asc';
-            }
-        }
-
-        $stmt = $pdo->query($req);
+        require "blocks/_rech_compte.php";
         echo '
 					<form name="fsort" method="post" action="rech_compte.php?methode2=sit">
 					<input type="hidden" name="sort">
@@ -142,59 +90,7 @@ switch ($methode2)
 										where csit_compte_sitteur = compt_cod 
 										and csit_dfin > (now() - '15 days'::interval)
 										group by csit_compte_sitteur,compt_nom";
-        if (!isset($sort))
-        {
-            $sort = 'duree';
-            $sens = 'desc';
-            $nv_sens = 'asc';
-        }
-        if (!isset($sens))
-        {
-            $sens = 'desc';
-        }
-        $autresens = $_POST['autresens'];
-        if (!isset($autresens))
-        {
-            $autresens = 'desc';
-        }
-        if (($sens != 'desc') && ($sens != 'asc'))
-        {
-            echo "<p>Anomalie sur sens !";
-            exit();
-        }
-        if (($sort != 'compteur') && ($sort != 'duree'))
-        {
-            echo "<p>Anomalie sur tri !";
-            exit();
-        }
-        if ($sort == 'compteur')
-        {
-            $req = $req . " order by compteur $sens";
-            if ($sens == 'desc')
-            {
-                $sens = 'asc';
-                $autresens = 'desc';
-            } else
-            {
-                $sens = 'desc';
-                $autresens = 'asc';
-            }
-        }
-        if ($sort == 'duree')
-        {
-            $req = $req . " order by temps_cumule $sens";
-            if ($sens == 'desc')
-            {
-                $sens = 'asc';
-                $autresens = 'desc';
-            } else
-            {
-                $sens = 'desc';
-                $autresens = 'asc';
-            }
-        }
-
-        $stmt = $pdo->query($req);
+        require "blocks/_rech_compte.php";
         echo '
 					<form name="fsort" method="post" action="rech_compte.php?methode2=sitteur">
 					<input type="hidden" name="sort">

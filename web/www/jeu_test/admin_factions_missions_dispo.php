@@ -112,7 +112,8 @@ switch ($methode)
         break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 echo '<div style="padding:10px;"><p>Sélectionnez la faction sur laquelle vous souhaitez travailler.</p>
 	<form method="GET" action="#"><select name="fac_cod">';

@@ -206,7 +206,7 @@ case 'collection_visu':        // Affichage des données d’une session
         $debut_table .= '<tr><th class="titre">Aventurier</th><th class="titre">Nombre d’objets</th></tr>';
         $fin_table   = '</table>';
 
-        $req = "select p.perso_nom || '(' || p.perso_cod::text || ')' as perso_nom, count(*) as nombre
+        $req       = "select p.perso_nom || '(' || p.perso_cod::text || ')' as perso_nom, count(*) as nombre
 				from objets
 				inner join perso_objets on perobj_obj_cod = obj_cod
 				inner join perso p on p.perso_cod = perobj_perso_cod
@@ -227,16 +227,7 @@ case 'collection_visu':        // Affichage des données d’une session
         $stmt      = $pdo->execute(array(":gobj_cod" => $ccol_gobj_cod), $stmt);
         $txt_table = str_replace('#id#', 'Hors quatrièmes', $debut_table);
         $txt_table = str_replace('#g1#Hors quatrièmes#g2#', '<strong>Hors quatrièmes</strong>', $txt_table);
-        $txt_table = str_replace('#g1#', '', $txt_table);
-        $txt_table = str_replace('#g2#', '', $txt_table);
-        echo $txt_table;
-        while ($result = $stmt->fetch())
-        {
-            $nom    = $result['perso_nom'];
-            $nombre = $result['nombre'];
-            echo "\n<tr><td class='soustitre2'>$nom</td><td>$nombre</td></tr>";
-        }
-        echo $fin_table;
+        require "blocks/_admin_anomation_quete_collection_aff_tab.php";
     }
 
     // Cas des concours distinguant des tranches de niveau

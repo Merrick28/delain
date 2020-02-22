@@ -6,30 +6,6 @@ include "blocks/_header_page_jeu.php";
 echo '<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>';                            //Facilité le developpement avec du jquery
 echo '<script src="../scripts/admin_etage_modif3.js"></script>';     // Scripts des traitements des clics dans la map
 
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-    global $pdo, $compt_cod;
-
-    if ($texte)
-    {
-        $log_sql = false;    // Mettre à true pour le debug des requêtes
-
-        if (!$log_sql || $sql == '')
-            $sql = "\n";
-        else
-            $sql = "\n\t\tRequête : $sql\n";
-
-        $req       = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt      = $pdo->query($req);
-        $result    = $stmt->fetch();
-        $compt_nom = $result['compt_nom'];
-
-        $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-        if ($log_sql) echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-        if ($loguer)
-            writelog($en_tete . $texte . $sql, 'lieux_etages');
-    }
-}
 
 // Function récupérée/adaptée de modif_etage3bis.php (c'est pas avec du pdo, mais ça va plus vite à DEV car c'est déjà fait)
 function creer_lieu($_LIEU)
@@ -114,7 +90,8 @@ function creer_lieu($_LIEU)
 
     }
 
-    ecrireResultatEtLoguer($resultat, $erreur == 0);
+    $fonctions = new fonctions();
+    $fonctions->ecrireResultatEtLoguerLoguer($resultat, $erreur == 0);
 
     return $resultat;
 }

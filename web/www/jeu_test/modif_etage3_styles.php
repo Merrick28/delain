@@ -3,30 +3,7 @@
 include "blocks/_header_page_jeu.php";
 
 
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-    global $pdo, $compt_cod;
 
-    if ($texte)
-    {
-        $log_sql = false;	// Mettre à true pour le debug des requêtes
-
-        if (!$log_sql || $sql == '')
-            $sql = "\n";
-        else
-            $sql = "\n\t\tRequête : $sql\n";
-
-        $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $compt_nom = $result['compt_nom'];
-
-        $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-        echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-        if ($loguer)
-            writelog($en_tete . $texte . $sql,'lieux_etages');
-    }
-}
 
 //
 //Contenu de la div de droite
@@ -173,11 +150,12 @@ if ($erreur == 0)
                 {
                     if ($correspondances['affichage']==$style)
                     {
-                        $fond_id = $correspondances['type'] ;
-                        $filename = "f_{$style}_{$fond_id}.png" ;
+                        $fond_id  = $correspondances['type'];
+                        $filename = "f_{$style}_{$fond_id}.png";
                         //echo "Supression du fond id=<strong>{$fond_id}</strong> (<em>fichier {$filename}</em>)<br>";
-                        unlink ( $chemin.$filename );
-                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
+                        unlink($chemin . $filename);
+                        $fonctions = new fonctions();
+                        $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
                         //supprimer pour l'affichage
                         $js_tab_fonds .= "\ndelete tab_fonds['" . $style . "'][" . $fond_id . "] ;";
                     }
@@ -188,11 +166,12 @@ if ($erreur == 0)
                 {
                     if ($correspondances['affichage']==$style)
                     {
-                        $mur_id = $correspondances['type'] ;
-                        $filename = "t_{$style}_mur_{$mur_id}.png" ;
+                        $mur_id   = $correspondances['type'];
+                        $filename = "t_{$style}_mur_{$mur_id}.png";
                         //echo "Supression du mur id=<strong>{$mur_id}</strong> (<em>fichier {$filename}</em>)<br>";
-                        unlink ( $chemin.$filename );
-                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
+                        unlink($chemin . $filename);
+                        $fonctions = new fonctions();
+                        $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
                         //supprimer pour l'affichage
                         $js_tab_murs .= "\ndelete tab_murs['" . $style . "'][" . $mur_id . "] ;";
                     }
@@ -203,11 +182,12 @@ if ($erreur == 0)
                 {
                     if ($correspondances['affichage']==$style)
                     {
-                        $fig_id = $correspondances['type'] ;
-                        $filename = "t_{$style}_{$fig_id}.png" ;
+                        $fig_id   = $correspondances['type'];
+                        $filename = "t_{$style}_{$fig_id}.png";
                         //echo "Supression de la figurine id=<strong>{$fig_id}</strong> (<em>fichier {$filename}</em>)<br>";
-                        unlink ( $chemin.$filename );
-                        ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style pour le type $fig_id", true);
+                        unlink($chemin . $filename);
+                        $fonctions = new fonctions();
+                        $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le style $style pour le type $fig_id", true);
                         //ajouter les pour l'affichage
                         $js_tab_figs .= "\ndelete tab_figs['" . $style . "']['" . $fig_id . "'] = '" . $fig_id . "';";
                     }
@@ -242,8 +222,9 @@ if ($erreur == 0)
             }
             else
             {
-                unlink ( $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
+                unlink($chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$fond_id", true);
                 //supprimer pour l'affichage
                 $js_tab_fonds .= "\ndelete tab_fonds['" . $style . "'][" . $fond_id . "] ;";
             }
@@ -280,8 +261,9 @@ if ($erreur == 0)
             }
             else
             {
-                move_uploaded_file ( $_FILES["fond_file"]["tmp_name"] , $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été ajoutée pour le style $style avec l'id #$fond_id", true);
+                move_uploaded_file($_FILES["fond_file"]["tmp_name"], $chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été ajoutée pour le style $style avec l'id #$fond_id", true);
                 //ajouter les pour l'affichage
                 $js_tab_fonds .= "\ntab_fonds['" . $style . "'][" . $fond_id . "] = " . $fond_id . ";";
             }
@@ -313,8 +295,9 @@ if ($erreur == 0)
             }
             else
             {
-                unlink ( $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
+                unlink($chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le style $style avec l'id #$mur_id", true);
                 //supprimer pour l'affichage
                 $js_tab_murs .= "\ndelete tab_murs['" . $style . "'][" . $mur_id . "] ;";
             }
@@ -351,8 +334,9 @@ if ($erreur == 0)
             }
             else
             {
-                move_uploaded_file ( $_FILES["mur_file"]["tmp_name"] , $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été ajoutée pour le style $style avec l'id #$mur_id", true);
+                move_uploaded_file($_FILES["mur_file"]["tmp_name"], $chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été ajoutée pour le style $style avec l'id #$mur_id", true);
                 //ajouter les pour l'affichage
                 $js_tab_murs .= "\ntab_murs['" . $style . "'][" . $mur_id . "] = " . $mur_id . ";";
             }
@@ -398,8 +382,9 @@ if ($erreur == 0)
             }
             else
             {
-                move_uploaded_file ( $_FILES["fig_file"]["tmp_name"] , $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été ajoutée pour le style $style pour le type $fig_id", true);
+                move_uploaded_file($_FILES["fig_file"]["tmp_name"], $chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été ajoutée pour le style $style pour le type $fig_id", true);
                 //ajouter les pour l'affichage
                 $js_tab_figs .= "\ntab_figs['" . $style . "']['" . $fig_id . "'] = '" . $fig_id . "';";
             }

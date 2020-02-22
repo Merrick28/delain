@@ -76,21 +76,21 @@ switch ($methode)
 	case 'faction_restaure':
 		if (isset($_POST['fac_cod']))
 		{
-			$fac_cod = $_POST['fac_cod'];
-			$req = "SELECT fac_nom FROM factions WHERE fac_cod = $fac_cod";
-			$stmt = $pdo->query($req);
-			$result = $stmt->fetch();
-			$fac_nom = $result['fac_nom'];
-			$req = "UPDATE factions SET fac_active = 'O' where fac_cod = $fac_cod";
-			$stmt = $pdo->query($req);
-			$resultat = "Faction $fac_nom ($fac_cod) restaurée !";
-		}
-		else
-			$resultat = "Erreur de paramètres";
-	break;
+			$fac_cod  = $_POST['fac_cod'];
+			$req      = "SELECT fac_nom FROM factions WHERE fac_cod = $fac_cod";
+			$stmt     = $pdo->query($req);
+			$result   = $stmt->fetch();
+            $fac_nom  = $result['fac_nom'];
+            $req      = "UPDATE factions SET fac_active = 'O' where fac_cod = $fac_cod";
+            $stmt     = $pdo->query($req);
+            $resultat = "Faction $fac_nom ($fac_cod) restaurée !";
+        } else
+            $resultat = "Erreur de paramètres";
+        break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 $req = 'SELECT fac_cod, fac_nom, fac_description, fac_introduction, fac_active, coalesce(fmiss_nb, 0) as fmiss_nb, coalesce(rfac_nb, 0) as rfac_nb, coalesce(lfac_nb, 0) as lfac_nb
 	FROM factions

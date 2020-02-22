@@ -81,7 +81,8 @@ switch ($methode)
         break;
 }
 
-ecrireResultatEtLoguer($resultat);
+$fonctions = new fonctions();
+$fonctions->ecrireResultatEtLoguer($resultat);
 
 echo "<form action='#' method='POST'>
 	<input name='methode' type='hidden' value='faction_relations_modif' />";

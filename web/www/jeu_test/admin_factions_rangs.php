@@ -74,17 +74,17 @@ switch ($methode)
 		if (isset($_POST['rfac_seuil_prec']) && $fac_cod >= 0)
 		{
 			$rfac_seuil = $_POST['rfac_seuil_prec'];
-			$req = "DELETE FROM faction_rangs WHERE rfac_fac_cod = $fac_cod AND rfac_seuil = $rfac_seuil";
-			$stmt = $pdo->query($req);
+            $req        = "DELETE FROM faction_rangs WHERE rfac_fac_cod = $fac_cod AND rfac_seuil = $rfac_seuil";
+            $stmt       = $pdo->query($req);
 
-			$resultat = "Rang seuillé à $rfac_seuil supprimé pour la faction « $fac_nom » !";
-		}
-		else
-			$resultat = "Erreur de paramètres";
-	break;
+            $resultat = "Rang seuillé à $rfac_seuil supprimé pour la faction « $fac_nom » !";
+        } else
+            $resultat = "Erreur de paramètres";
+        break;
 }
 
-ecrireResultatEtLoguer($resultat, $req);
+$fonctions = new fonctions;
+$fonctions->ecrireResultatEtLoguer($resultat, $req);
 
 echo '<div style="padding:10px;"><p>Sélectionnez la faction sur laquelle vous souhaitez travailler.</p>
 	<form method="GET" action="#"><select name="fac_cod">';

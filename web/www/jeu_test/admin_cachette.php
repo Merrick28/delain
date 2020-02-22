@@ -32,13 +32,14 @@ if ($erreur == 0)
             ?>
             <p>Choisissez votre méthode :</p>
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=cre">Création d’une cachette ?</a> / <a
-            href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’une cachette existante</a><br>
+                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=mod">Modification d’une cachette existante</a><br>
             <hr>
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=update_cache_vide">Liste des cachettes vides</a><br>
             <hr>
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_cre">Création d’une liste d’objets pour
                 cachette</a> / <a
-            href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_mod">Modification d’une liste d’objets existante</a>
+                href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=liste_mod">Modification d’une liste d’objets
+            existante</a>
             <br>
             <hr><br><br>
             <?php
@@ -464,17 +465,17 @@ if ($erreur == 0)
                                       ), $stmt);
 
 
-                $cachette = 'decouvre_cachette([perso],' . $_POST['coef_dex'] . ',' . $_POST['coef_int'] . ')';
-                $req3     = "update positions set pos_fonction_arrivee = :cachette where pos_cod = :pos_cod";
-                $stmt     = $pdo->prepare($req3);
-                $stmt     = $pdo->execute(array(":cachette" => $cachette,
+                $cachette  = 'decouvre_cachette([perso],' . $_POST['coef_dex'] . ',' . $_POST['coef_int'] . ')';
+                $req3      = "update positions set pos_fonction_arrivee = :cachette where pos_cod = :pos_cod";
+                $stmt      = $pdo->prepare($req3);
+                $stmt      = $pdo->execute(array(":cachette" => $cachette,
                                                  ":pos_cod"  => $pos_cod
                                            ), $stmt);
-                $result   = $stmt->fetch();
-                $req2     = 'select cache_cod from cachettes 
+                $result    = $stmt->fetch();
+                $req2      = 'select cache_cod from cachettes 
                     where cache_pos_cod = :pos_cod';
-                $stmt     = $pdo->prepare($req2);
-                $stmt     = $pdo->execute(array(
+                $stmt      = $pdo->prepare($req2);
+                $stmt      = $pdo->execute(array(
                                                ":pos_cod" => $pos_cod
                                            ), $stmt);
                 $result    = $stmt->fetch();
@@ -553,25 +554,7 @@ if ($erreur == 0)
             <SCRIPT language="javascript">
                 var listeBase = new Array();
                 <?php            // LISTE DES OBJETS POSSIBLES
-                $nb_tobj = 0;
-                $req_tobj = "select gobj_cod, gobj_nom, tobj_libelle, gobj_valeur from objet_generique
-					inner join type_objet on tobj_cod = gobj_tobj_cod
-					order by tobj_libelle, gobj_nom";
-
-                $stmt = $pdo->query($req_tobj);
-                while ($result = $stmt->fetch())
-                {
-                    $gobj_nom     = $result['gobj_nom'];
-                    $gobj_nom     = str_replace("\"", "", $gobj_nom);
-                    $tobj_libelle = str_replace("\"", "", $result['tobj_libelle']);
-                    $gobj_valeur  = $result['gobj_valeur'];
-                    echo("listeBase[$nb_tobj] = new Array(0); \n");
-                    echo("listeBase[$nb_tobj][0] = \"" . $result['gobj_cod'] . "\"; \n");
-                    echo("listeBase[$nb_tobj][1] = \"" . $gobj_nom . "\"; \n");
-                    echo("listeBase[$nb_tobj][2] = \"" . $tobj_libelle . "\"; \n");
-                    echo("listeBase[$nb_tobj][3] = \"" . $gobj_valeur . "\"; \n");
-                    $nb_tobj++;
-                }
+                require "blocks/_admin_perso_et_titre.php";
                 ?>
                 var listeCurrent = new Array();
                 <?php            // LISTE DES OBJETS DANS LA CACHETTE

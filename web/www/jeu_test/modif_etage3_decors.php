@@ -3,30 +3,7 @@
 include "blocks/_header_page_jeu.php";
 
 
-function ecrireResultatEtLoguer($texte, $loguer, $sql = '')
-{
-    global $pdo, $compt_cod;
 
-    if ($texte)
-    {
-        $log_sql = false;	// Mettre à true pour le debug des requêtes
-
-        if (!$log_sql || $sql == '')
-            $sql = "\n";
-        else
-            $sql = "\n\t\tRequête : $sql\n";
-
-        $req = "select compt_nom from compte where compt_cod = $compt_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $compt_nom = $result['compt_nom'];
-
-        $en_tete = date("d/m/y - H:i") . "\tCompte $compt_nom ($compt_cod)\t";
-        echo "<div style='padding:10px;'>$texte<pre>$sql</pre></div><hr />";
-        if ($loguer)
-            writelog($en_tete . $texte . $sql,'lieux_etages');
-    }
-}
 
 //
 //Contenu de la div de droite
@@ -89,8 +66,9 @@ if ($erreur == 0)
             }
             else
             {
-                unlink ( $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été supprimée pour le décor id #$decor_id", true);
+                unlink($chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été supprimée pour le décor id #$decor_id", true);
                 //supprimer pour l'affichage
                 $js_tab_decors .= "\ndelete tab_decors[" . $decor_id . "] ;";
             }
@@ -127,8 +105,9 @@ if ($erreur == 0)
             }
             else
             {
-                move_uploaded_file ( $_FILES["decor_file"]["tmp_name"] , $chemin.$filename );
-                ecrireResultatEtLoguer(" l'image $filename a été ajoutée pour le décor id #$decor_id", true);
+                move_uploaded_file($_FILES["decor_file"]["tmp_name"], $chemin . $filename);
+                $fonctions = new fonctions();
+                $fonctions->ecrireResultatEtLoguerLoguer(" l'image $filename a été ajoutée pour le décor id #$decor_id", true);
                 //ajouter les pour l'affichage
                 $js_tab_decors .= "\ntab_decors[" . $decor_id . "] = " . $decor_id . ";";
             }
