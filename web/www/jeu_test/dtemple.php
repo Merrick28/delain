@@ -4,6 +4,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 $param     = new parametres();
 //
 // on regarde si le joueur est bien sur le lieu qu'on attend
@@ -18,10 +19,7 @@ define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso_fam = false;
-$req       = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-$stmt      = $pdo->query($req);
-$result    = $stmt->fetch();
-if ($result['perso_type_perso'] == 3)
+if ($perso->perso_type_perso == 3)
 {
     $erreur    = 1;
     $perso_fam = true;
@@ -332,8 +330,7 @@ if ($erreur == 0)
                     if (longue.style.display == 'none') {
                         longue.style.display = 'block';
                         courte.style.display = 'none';
-                    }
-                    else {
+                    } else {
                         courte.style.display = 'block';
                         longue.style.display = 'none';
                     }
@@ -802,11 +799,7 @@ if ($erreur == 0)
                 //
                 // on contrôle les PA
                 //
-                $req    = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                $pa     = $result['perso_pa'];
-                if ($pa < $param->getparm(110))
+                if ($perso->perso_pa < $param->getparm(110))
                 {
                     echo "<p>Vous n’avez pas assez de PA pour cette action.";
                     break;

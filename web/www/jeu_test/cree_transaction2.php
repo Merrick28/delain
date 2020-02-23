@@ -1,6 +1,7 @@
 ﻿<?php
 include "blocks/_header_page_jeu.php";
 include "../includes/fonctions.php";
+$perso = $verif_connexion->perso;
 $param = new parametres();
 ob_start();
 
@@ -246,8 +247,9 @@ switch ($methode)
         {
             if ($result['perso_type_perso'] == 3)
             {
-                $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cod and pfam_perso_cod = pcompt_perso_cod";
-                $stmt = $pdo->query($req);
+                $req    =
+                    "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cod and pfam_perso_cod = pcompt_perso_cod";
+                $stmt   = $pdo->query($req);
                 $result = $stmt->fetch();
                 $compt1 = $result['pcompt_compt_cod'];
             } else
@@ -255,20 +257,19 @@ switch ($methode)
                 $compt1 = '';
             }
         }
-        $req = "select perso_type_perso from perso where perso_cod = " . $_REQUEST['perso'];
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        if ($result['perso_type_perso'] == 1)
+
+        if ($perso->perso_type_perso == 1)
         {
-            $req = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = " . $_REQUEST['perso'];
-            $stmt = $pdo->query($req);
+            $req    = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = " . $_REQUEST['perso'];
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             $compt2 = $result['pcompt_compt_cod'];
         } else
         {
             if ($result['perso_type_perso'] == 3)
             {
-                $req = "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = " . $_REQUEST['perso'] . " and pfam_perso_cod = pcompt_perso_cod";
+                $req    =
+                    "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = " . $_REQUEST['perso'] . " and pfam_perso_cod = pcompt_perso_cod";
                 $stmt = $pdo->query($req);
                 $result = $stmt->fetch();
                 $compt2 = $result['pcompt_compt_cod'];

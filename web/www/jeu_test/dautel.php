@@ -1,5 +1,5 @@
 <?php
-
+$perso = $verif_connexion->perso;
 $param = new parametres();
 //
 //Contenu de la div de droite
@@ -17,10 +17,7 @@ $nom_lieu  = 'un autel de prière';
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
-$req    = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-$stmt   = $pdo->query($req);
-$result = $stmt->fetch();
-if ($result['perso_type_perso'] == 3)
+if ($perso->perso_type_perso == 3)
 {
     $erreur = 1;
     echo("<p>Les familiers ne font pas bon usage d'un autel de prière.");

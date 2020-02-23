@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+
 define('APPEL', 1);
 
 ob_start();
@@ -99,10 +100,10 @@ if ($erreur == 0 && $vcompte != -1)
             $vcompte_lie = $result['compt_compte_lie'];
             break;
     }
-    $req = "select perso_nom from perso where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
-    $result = $stmt->fetch();
-    $nom_pers = $result['perso_nom'];
+    $req      = "select perso_nom from perso where perso_cod = $perso_cod ";
+    $stmt     = $pdo->query($req);
+    $result   = $stmt->fetch();
+    $nom_pers = $perso->perso_nom;
 
     // Détails du compte
     $req = "select compt_admin, compt_nom, compt_password, compt_nom, compt_mail, to_char(compt_dcreat, 'DD/MM/YYYY hh24:mi:ss') as creation,

@@ -1,15 +1,16 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
 // comment
 //Premier test : vérification si le joueur a bien vu la cachette
-$req = "select persocache_cache_cod
+$req    = "select persocache_cache_cod
 					from cachettes_perso,cachettes,perso_position
 					where ppos_perso_cod = $perso_cod
 					and ppos_perso_cod = persocache_perso_cod
 					and persocache_cache_cod = cache_cod	
 					and cache_pos_cod = ppos_pos_cod";
-$stmt = $pdo->query($req);
+$stmt   = $pdo->query($req);
 $result = $stmt->fetch();
 if ($stmt->rowCount() == 0)
 {
@@ -23,25 +24,25 @@ if ($stmt->rowCount() == 0)
 														where perso_cod = $perso_cod
 														and ppos_perso_cod = perso_cod
 														and ppos_pos_cod = pos_cod";
-    $stmt = $pdo->query($req_info_joueur);
-    $result = $stmt->fetch();
-    $position = $result['pos_cod'];
+    $stmt            = $pdo->query($req_info_joueur);
+    $result          = $stmt->fetch();
+    $position        = $result['pos_cod'];
     // On récupère les infos générique pour les afficher
     $req_cache = "select cache_nom,cache_desc,cache_image,cache_cod,cache_fonction from cachettes
 																	where cache_pos_cod = $position";
-    $stmt = $pdo->query($req_cache);
-    $result = $stmt->fetch();
-    $nom = $result['cache_nom'];
-    $desc = $result['cache_desc'];
-    $image = $result['cache_image'];
-    $cache = $result['cache_cod'];
-    $fonction = $result['cache_fonction'];
+    $stmt      = $pdo->query($req_cache);
+    $result    = $stmt->fetch();
+    $nom       = $result['cache_nom'];
+    $desc      = $result['cache_desc'];
+    $image     = $result['cache_image'];
+    $cache     = $result['cache_cod'];
+    $fonction  = $result['cache_fonction'];
     if ($stmt->rowCount() == 0)
     {
         echo 'Vous cherchez à accéder à une page qui n\'existe pas !';
     } else
     {
-        $methode          = get_request_var('methode', 'debut');
+        $methode = get_request_var('methode', 'debut');
         //début 2nd tableau
 
         switch ($methode)
@@ -69,9 +70,9 @@ if ($stmt->rowCount() == 0)
                             <?php if ($fonction != '')
                             {
                                 $fonction = str_replace('[perso]', $perso_cod, $fonction);
-                                $req = "select $fonction as resultat";
-                                $stmt = $pdo->query($req);
-                                $result = $stmt->fetch();
+                                $req      = "select $fonction as resultat";
+                                $stmt     = $pdo->query($req);
+                                $result   = $stmt->fetch();
                                 echo '<br>' . $result['resultat'];
                             }
                             if ($desc != '')
@@ -140,12 +141,9 @@ if ($stmt->rowCount() == 0)
                 break;
 
             case "suite":
-                $req = "select perso_pa from perso where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
-                $pa = $result['perso_pa'];
+                $pa     = $perso->perso_pa;
                 $erreur = 0;
-                $total = 0;
+                $total  = 0;
                 if ($_REQUEST['objet'])
                 {
                     foreach ($_REQUEST['objet'] as $key => $val)

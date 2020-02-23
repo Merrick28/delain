@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 /** @var integer $perso_cod défini par _header_page_jeu */
 include "../includes/binettes.php";
 //
@@ -552,12 +553,9 @@ switch ($methode)
             $msg->enReponseA = $msg_init;
 
             // Crapaud ?
-            $req    = "select perso_crapaud from perso where perso_cod = :perso ";
-            $stmt   = $pdo->prepare($req);
-            $stmt   = $pdo->execute(array(":perso" => $perso_cod), $stmt);
-            $result = $stmt->fetch();
 
-            if ($result['perso_crapaud'] == 1)
+
+            if ($perso->perso_crapaud == 1)
             {
                 $titre = "Crôôa ?!!??? ";
                 $corps = "Croa, crôoâa, crôâ, CROOOAAAAA !

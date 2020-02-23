@@ -14,7 +14,7 @@ $perso     = $verif_connexion->perso;
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     // Fidèle de Tonto (id=9) ?
@@ -27,10 +27,7 @@ if ($erreur == 0)
     switch ($methode)
     {
         case "debut":
-            $req_pa       = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-            $stmt         = $pdo->query($req_pa);
-            $result       = $stmt->fetch();
-            $nb_pa        = $result['perso_pa'];
+            $nb_pa        = $perso->perso_pa;
             $prix         = $nb_pa * 2;
             $tab_temple   = $perso->get_lieu();
             $contenu_page .= '<p><img src="../images/auberge.png"><br />
@@ -146,12 +143,10 @@ if ($erreur == 0)
             $result   = $stmt->fetch();
             $lieu_cod = $result['lpos_lieu_cod'];
 
-            $req_pa = 'select perso_po,perso_sex,perso_pa from perso where perso_cod = ' . $perso_cod;
-            $stmt   = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            $nb_po  = $result['perso_po'];
-            $prix   = 10;
-            $sexe   = $result['perso_sex'];
+
+            $nb_po = $perso->perso_po;
+            $prix  = 10;
+            $sexe  = $perso->perso_sex;
 
             if ($result['perso_po'] < $prix)
             {
@@ -271,10 +266,8 @@ if ($erreur == 0)
             $contenu_page .= '<p>Vous pouvez ici lancer une rumeur. Cette rumeur existera pendant ' . $param->getparm(44) . ' jours.<br>
 			Pendant ce temps, les personnes qui viennent prendre un verre à l\'auberge auront une chance de l\'entendre. Toutefois, ils n\'auront aucun moyen de savoir qui l\'a lancée.<br>
 			Afin d\'augmenter les chances que l\'on connaisse votre rumeur, vous pouvez soudoyer le barman. Plus vous lui donnez d\'argent, plus votre rumeur à des chances d\'être connue.<br>';
-            $req          = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt         = $pdo->query($req);
-            $result       = $stmt->fetch();
-            $contenu_page .= "<p>Vous disposez de <strong>" . $result['perso_po'] . "</strong> brouzoufs.";
+
+            $contenu_page .= "<p>Vous disposez de <strong>" . $perso->perso_po . "</strong> brouzoufs.";
             $contenu_page .= '
 			<table>
 			<form name="rumeur" method="post" action="' . $_SERVER['PHP_SELF'] . '">
@@ -295,10 +288,8 @@ if ($erreur == 0)
             break;
         case "rumeur2":
             $erreur = 0;
-            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            if ($result['perso_po'] < $prix)
+
+            if ($perso->perso_po < $prix)
             {
                 $erreur       = 1;
                 $contenu_page .= "<p>Il semble que vous n'ayez pas assez de brouzoufs pour payer le barman....";
@@ -318,10 +309,8 @@ if ($erreur == 0)
                 $req          = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod ";
                 $stmt         = $pdo->query($req);
             }
-            $req          = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt         = $pdo->query($req);
-            $result       = $stmt->fetch();
-            $contenu_page .= "<p>Vous disposez de <strong>" . $result['perso_po'] . "</strong> brouzoufs.";
+
+            $contenu_page .= "<p>Vous disposez de <strong>" . $perso->perso_po . "</strong> brouzoufs.";
             break;
     }
 }

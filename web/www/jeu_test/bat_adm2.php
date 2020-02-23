@@ -1,10 +1,9 @@
 <?php
 
 include "../includes/constantes.php";
-$perso = new perso;
-$perso = $verif_connexion->perso;
-include "blocks/_header_page_jeu.php";
 
+include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 $param = new parametres();
 ob_start();
 
@@ -15,7 +14,7 @@ $nom_lieu  = 'un bâtiment administratif';
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)
@@ -130,19 +129,17 @@ if ($erreur == 0)
             $stmt     = $pdo->query($req);
             $result   = $stmt->fetch();
             $lieu_cod = $result['lpos_lieu_cod'];
-            $req_pa   = "select perso_pa,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-            $stmt     = $pdo->query($req_pa);
-            $result   = $stmt->fetch();
-            $nb_po    = $result['perso_po'];
-            $prix     = 50;
-            $sexe     = $result['perso_sex'];
 
-            if ($result['perso_po'] < $prix)
+            $nb_po = $perso->perso_po;
+            $prix  = 50;
+            $sexe  = $perso->perso_sex;
+
+            if ($perso->perso_po < $prix)
             {
                 echo("<p>Vous savez, $nom_sexe[$sexe], nous ne vous inscrirons pas si vous n'avez pas de quoi payer la somme de 50 brouzoufs !<br />");
                 $erreur = 1;
             }
-            if ($result['perso_pa'] < 6)
+            if ($perso->perso_pa < 6)
             {
                 echo("<p>pas assez de PA....<br />");
                 $erreur = 1;
@@ -155,14 +152,13 @@ if ($erreur == 0)
                 $stmt = $pdo->query($req);
                 if ($stmt->rowCount() == 0)
                 {
-                    $req    = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
+                    $req             = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
 				values ($perso_cod,6,now()); ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    $req    =
-                        "update perso set perso_po = perso_po - 50,perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
+                    $stmt            = $pdo->query($req);
+                    $result          = $stmt->fetch();
+                    $perso->perso_po = $perso->perso_po - 50;
+                    $perso->perso_pa = $perso->perso_pa - 1;
+                    $perso->stocke();
                     echo "<p>Vous êtes bien enregistré !";
                 } else
                 {
@@ -171,14 +167,15 @@ if ($erreur == 0)
             }
             break;
         case "solde":
-            $req    = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $solde  = $result['pguilde_solde'];
-            $req    = "update perso set perso_po = perso_po + $solde where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $req    = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
+            $req             = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
+            $stmt            = $pdo->query($req);
+            $result          = $stmt->fetch();
+            $solde           = $result['pguilde_solde'];
+            $perso->perso_po = $perso->perso_po + $solde;
+            $perso->stocke();
+
+            $req  = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
+            $stmt = $pdo->query($req);
             echo "<p>Vous venez de retirer votre solde.";
             break;
     }

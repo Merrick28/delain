@@ -1,13 +1,11 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
-$req_or = "select perso_po from perso where perso_cod = $perso_cod ";
-$stmt   = $pdo->query($req_or);
-$result = $stmt->fetch();
 ?>
     <form name="deposer_or" method="post" action="valide_deposer_or.php">
         <?php
-        printf("<p>Vous avez %s brouzoufs.</p>", $result['perso_po']);
+        echo "<p>Vous avez " . $perso->perso_po . " brouzoufs.</p>";
         ?>
         <p>Je veux déposer <input type="text" name="quantite"> brouzoufs !</p>
         <input type="submit" class="test centrer" value="Valider">

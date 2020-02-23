@@ -1,6 +1,7 @@
 <?php
 define('APPEL', 1);
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
 include G_CHE . "/includes/constantes.php";
 
@@ -103,11 +104,8 @@ if ($erreur == 0)
     /*************************/
     /* R E C E P T A C L E S */
     /*************************/
-    $req        = "select perso_nb_receptacle, perso_pa from perso where perso_cod = $perso_cod ";
-    $stmt       = $pdo->query($req);
-    $result     = $stmt->fetch();
-    $nb_rec     = $result['perso_nb_receptacle'];
-    $nb_pa      = $result['perso_pa'];
+    $nb_rec     = $perso->perso_nb_receptacle;
+    $nb_pa      = $perso->perso_pa;
     $req        = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = $perso_cod ";
     $stmt       = $pdo->query($req);
     $result     = $stmt->fetch();

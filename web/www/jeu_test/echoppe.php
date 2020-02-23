@@ -1,16 +1,8 @@
 <?php
 
-
+include "blocks/_header_page_jeu.php";
 $param = new parametres();
-?>
-<!DOCTYPE html>
-<html>
-<link rel="stylesheet" type="text/css" href="../style.css" title="essai">
-<head>
-    <title>Echoppe</title>
-</head>
-<body background="../images/fond5.gif">
-<?php
+ob_start();
 // on regarde si le joueur est bien sur une échoppe
 
 $type_lieu = 11;
@@ -18,63 +10,67 @@ $nom_lieu  = 'un magasin';
 
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
+$perso = $verif_connexion->perso;
 
 if ($erreur == 0)
 {
-echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
-$desc = str_replace(chr(127), ";", $tab_lieu['description']);
-echo "<em>" . $desc . "</em>";
-$controle_gerant = '';
-$req             = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
-$stmt            = $pdo->query($req);
-$result          = $stmt->fetch();
-if ($result['mger_perso_cod'] == $perso_cod)
-{
-    $controle_gerant = 'OK';
-}
-$lieu    = $tab_lieu['lieu_cod'];
-$req     = "select mod_vente($perso_cod,$lieu) as modificateur ";
-$stmt    = $pdo->query($req);
-$result  = $stmt->fetch();
-$modif   = $result['modificateur'];
-$methode = get_request_var('methode', 'debut');
-//
-// phrase à modifier par la suite en fonction des alignements
-//
-switch ($methode)
-{
-case "entree":
-echo "<p>Bonjour aventurier.";
-?>
-<form name="echoppe" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-    <input type="hidden" name="methode">
-    <p>Voulez-vous :
-    <ul>
-        <li><a href="javascript:document.echoppe.methode.value='acheter';document.echoppe.submit()">Acheter de
-                l'équipement ?</a>
-        <li><a href="javascript:document.echoppe.methode.value='vendre';document.echoppe.submit()">Vendre de
-                l'équipement ?</a>
-        <li><a href="javascript:document.echoppe.methode.value='identifier';document.echoppe.submit()">Faire identifier
-                de l'équipement ?</a>
-        <li><a href="javascript:document.echoppe.methode.value='repare';document.echoppe.submit()">Faire réparer de
-                l'équipement ?</a>
-    </ul>
-    <?php
-    if ($controle_gerant == 'OK')
+    echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
+    $desc = str_replace(chr(127), ";", $tab_lieu['description']);
+    echo "<em>" . $desc . "</em>";
+    $controle_gerant = '';
+    $req             = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
+    $stmt            = $pdo->query($req);
+    $result          = $stmt->fetch();
+    if ($result['mger_perso_cod'] == $perso_cod)
     {
-    ?>
-    <li><a href="javascript:document.echoppe.methode.value='mule';document.echoppe.submit()">Récupérer un familier mûle
-            dans votre échoppe ?</a> <em>(Attention, ceci est une action définitive)</em>
-        <?php
-        }
-        break;
+        $controle_gerant = 'OK';
+    }
+    $lieu    = $tab_lieu['lieu_cod'];
+    $req     = "select mod_vente($perso_cod,$lieu) as modificateur ";
+    $stmt    = $pdo->query($req);
+    $result  = $stmt->fetch();
+    $modif   = $result['modificateur'];
+    $methode = get_request_var('methode', 'debut');
+    //
+    // phrase à modifier par la suite en fonction des alignements
+    //
+    switch ($methode)
+    {
+        case "entree":
+            echo "<p>Bonjour aventurier.";
+            ?>
+        <form name="echoppe" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
+            <input type="hidden" name="methode">
+            <p>Voulez-vous :
+            <ul>
+                <li><a href="javascript:document.echoppe.methode.value='acheter';document.echoppe.submit()">Acheter de
+                        l'équipement ?</a>
+                <li><a href="javascript:document.echoppe.methode.value='vendre';document.echoppe.submit()">Vendre de
+                        l'équipement ?</a>
+                <li><a href="javascript:document.echoppe.methode.value='identifier';document.echoppe.submit()">Faire
+                        identifier
+                        de l'équipement ?</a>
+                <li><a href="javascript:document.echoppe.methode.value='repare';document.echoppe.submit()">Faire réparer
+                        de
+                        l'équipement ?</a>
+            </ul>
+            <?php
+            if ($controle_gerant == 'OK')
+            {
+                ?>
+                <li><a href="javascript:document.echoppe.methode.value='mule';document.echoppe.submit()">Récupérer un
+                        familier mûle
+                        dans votre échoppe ?</a> <em>(Attention, ceci est une action définitive)</em>
+                </li>
+                </form>
+                <?php
+            }
+            break;
         case "acheter":
             echo "<p class=\"titre\">Achat d'équipement</p>";
-            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $po       = $result['perso_po'];
+
+            echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
+            $po       = $perso->perso_po;
             $lieu_cod = $tab_lieu['lieu_cod'];
             $req      = "select 0 as type,0 as a,obj_nom,tobj_libelle,gobj_cod,f_prix_obj_perso_a($perso_cod,$lieu_cod,obj_cod) as valeur_achat,coalesce(obj_obon_cod, 0) as obj_obon_cod,count(*) as nombre,comp_libelle
 				from objets,objet_generique,stock_magasin,type_objet,competences
@@ -218,10 +214,10 @@ echo "<p>Bonjour aventurier.";
         default:
             echo "<p>Anomalie : aucune methode passée !";
             break;
-        }
-        }
+    }
+}
 
-        echo "</form>";
-        ?>
-</body>
-</html>
+
+$contenu_page = ob_get_contents();
+ob_end_clean();
+include "blocks/_footer_page_jeu.php";

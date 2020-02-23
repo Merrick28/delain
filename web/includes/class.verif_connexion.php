@@ -10,7 +10,7 @@ class verif_connexion
      */
     var $compte = false;
     /**
-     * @var perso Objet perso courant
+     * @var bool|perso Objet perso courant
      */
     var $perso = false;
 
