@@ -177,77 +177,8 @@ echo "<p>Bonjour aventurier.";
             }
             break;
         case "vendre":
-            $taux_rachat = $param->getparm(46);
-            $lieu_cod    = $tab_lieu['lieu_cod'];
-            echo "<p class=\"titre\">Vente d'équipement</p>";
-            $req = "select obj_cod,obj_etat,obj_nom as nom,f_prix_obj_perso_v($perso_cod,$lieu_cod,obj_cod) as valeur,tobj_libelle
-								from objet_generique,objets,perso_objets,type_objet
-								where perobj_perso_cod = $perso_cod
-								and perobj_obj_cod = obj_cod
-								and perobj_identifie = 'O'
-								and perobj_equipe != 'O'
-								and obj_gobj_cod = gobj_cod
-								and obj_deposable = 'O'
-								and gobj_tobj_cod = tobj_cod
-								and tobj_cod in (1,2,4,25)
-								union all
-								select obj_cod,obj_etat,obj_nom as nom,f_prix_obj_perso_v($perso_cod,$lieu_cod,obj_cod) as valeur,tobj_libelle
-								from objet_generique,objets,perso_objets,type_objet
-								where perobj_perso_cod = $perso_cod
-								and perobj_obj_cod = obj_cod
-								and perobj_equipe != 'O'
-								and obj_gobj_cod = gobj_cod
-								and obj_deposable = 'O'
-								and gobj_echoppe_vente = 'O'
-								and gobj_tobj_cod = tobj_cod
-								and tobj_cod = 11 ";
-            $stmt = $pdo->query($req);
-            if ($stmt->rowCount() == 0)
-            {
-                echo "<p>Vous n'avez aucun équipement à  vendre pour l'instant.";
-            } else
-            {
-
-
-                echo "<form name=\"vente\" action=\"action.php\" method=\"post\">";
-                echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_vente\">";
-                echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
-                echo "<input type=\"hidden\" name=\"objet\">";
-                echo "<div class='centrer'><table>";
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-                echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-                echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
-                echo "<td></td>";
-                while ($result = $stmt->fetch())
-                {
-                    $req   = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
-                    $req   = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
-                    $stmt2 = $pdo->query($req);
-                    if ($stmt2->rowCount() != 0)
-                    {
-                        $result2  = $stmt2->fetch();
-                        $bonus    = " (" . $result2['obon_libelle'] . ")";
-                        $prix_bon = $result2['obon_prix'];
-                        $url_bon  = "&bon=" . $result2['obon_cod'];
-                    } else
-                    {
-                        $bonus    = "";
-                        $prix_bon = 0;
-                        $url_bon  = "";
-                    }
-                    $prix = $result['valeur'] + $prix_bon;
-                    echo "<tr>";
-                    echo "<td class=\"soustitre2\"><p><strong>" . $result['nom'] . "</strong></td>";
-                    echo "<td class=\"soustitre2\"><p>" . $result['tobj_libelle'] . "</td>";
-                    echo "<td class=\"soustitre2\"><p>" . $result['valeur'] . " brouzoufs</td>";
-                    echo "<td><p><input type=\"checkbox\" name=\"obj[", $result['obj_cod'], "]\"></td>";
-
-                }
-                echo "</table></div>";
-                echo "<input type=\"submit\" class=\"test centrer\" value=\"Vendre les objets sélectionnées !\">";
-                echo "</form>";
-            }
+            $generique = false;
+            require "blocks/_echoppe_vendre.php";
             break;
         case "identifier":
             require "blocks/_echoppe_identifie.php";

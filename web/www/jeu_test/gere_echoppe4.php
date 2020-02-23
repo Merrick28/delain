@@ -120,59 +120,7 @@ if ($erreur == 0) {
             echo "</form>";
             break;
         case "banque2":
-            $req = "select lieu_compte,perso_po ";
-            $req = $req . "from lieu,perso ";
-            $req = $req . "where lieu_cod = $mag ";
-            $req = $req . "and perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $banque = $result['lieu_compte'];
-            $erreur = 0;
-            if (!isset($qte)) {
-                echo "<p>Erreur ! Quantité non définie !";
-                $erreur = 1;
-            }
-            if ($qte < 0) {
-                echo "<p>Erreur ! Quantité négative !";
-                $erreur = 1;
-            }
-            if ($qte > $banque) {
-                echo "<p>Erreur ! Pas assez de brouzoufs à retirer !";
-                $erreur = 1;
-            }
-            if ($erreur == 0) {
-                // message
-                $req = "select perso_nom,nextval('seq_msg_cod') as message from perso where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
-                $nom = str_replace("'", "\'", $result['perso_nom']);
-                $message = $result['message'];
-                $req = "insert into messages (msg_cod,msg_corps,msg_titre,msg_date,msg_date2) values ($message,'$nom a effectué un retrait de $qte brouzoufs','Retrait',now(),now()) ";
-                $stmt = $pdo->query($req);
-                $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
-                $stmt = $pdo->query($req);
-                if ($tab_lieu['lieu']->type_lieu == 11)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
-                }
-                if ($tab_lieu['lieu']->type_lieu == 9)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O' ";
-                }
-                if ($tab_lieu['lieu']->type_lieu == 21)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' ";
-                }
-                $stmt = $pdo->query($req);
-
-
-                $req = "update lieu set lieu_compte = lieu_compte - $qte where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
-                $req = "update perso set perso_po = perso_po + $qte where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
-                echo "<p>La transaction a été effectuée.";
-
-            }
+            require "blocks/_gere_echoppe_banque2.php";
             break;
         case "depot":
             $req = "select lieu_compte,perso_po ";
@@ -190,87 +138,22 @@ if ($erreur == 0) {
             echo "</form>";
             break;
         case "depot2":
-            $req = "select lieu_compte,perso_po ";
-            $req = $req . "from lieu,perso ";
-            $req = $req . "where lieu_cod = $mag ";
-            $req = $req . "and perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $banque = $result['perso_po'];
-            $erreur = 0;
-            if (!isset($qte)) {
-                echo "<p>Erreur ! Quantité non définie !";
-                $erreur = 1;
-            }
-            if ($qte < 0) {
-                echo "<p>Erreur ! Quantité négative !";
-                $erreur = 1;
-            }
-            if ($qte > $banque) {
-                echo "<p>Erreur ! Pas assez de brouzoufs à déposer !";
-                $erreur = 1;
-            }
-            if ($erreur == 0) {
-                // message
-                $req = "select perso_nom,nextval('seq_msg_cod') as message from perso where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
-                $nom = str_replace("'", "\'", $result['perso_nom']);
-                $message = $result['message'];
-                $req = "insert into messages (msg_cod,msg_corps,msg_titre,msg_date,msg_date2) values ($message,'$nom a effectué un dépot de $qte brouzoufs','Dépot',now(),now()) ";
-                $stmt = $pdo->query($req);
-                $req = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
-                $stmt = $pdo->query($req);
-                if ($tab_lieu['lieu']->type_lieu == 11)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
-                }
-                if ($tab_lieu['lieu']->type_lieu == 9)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
-                }
-                if ($tab_lieu['lieu']->type_lieu == 21)
-                {
-                    $req = "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' and perso_cod != 605745 ";
-                }
-                $stmt = $pdo->query($req);
-
-                $req = "update lieu set lieu_compte = lieu_compte + $qte where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
-                $req = "update perso set perso_po = perso_po - $qte where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
-                echo "<p>La transaction a été effectuée.";
-
-            }
+            require "blocks/_echoppe_depot2.php";
             break;
         case "marge":
-            $req = "select lieu_marge,lieu_prelev ";
-            $req = $req . "from lieu ";
-            $req = $req . "where lieu_cod = $mag ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $ancienne_marge = $result['lieu_marge'];
-            echo "<p>La marge actuelle est de " . $result['lieu_marge'] . " %.";
-            echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4.php\">";
-            echo "<input type=\"hidden\" name=\"methode\" value=\"marge2\">";
-            echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-            echo "<input type=\"hidden\" name=\"ancienne_marge\" value=\"$ancienne_marge\">";
-            echo "<p>Mettre la marge à  <input type=\"text\" name=\"qte\" value=\"" . $result['lieu_marge'] . "\"> % ?";
-            echo "<p><em>nb : vous ne pouvez pas descendre la marge en dessous de " . $result['lieu_prelev'] . " %.</em>";
-
-            echo "<input type=\"submit\" class=\"test centrer\" value=\"Valider le changement ?\">";
-            echo "</form>";
-
+            $v_ancienne_marge = true;
+            require "blocks/_gere_echoppe_marge.php";
             break;
         case "marge2":
-            $req = "select lieu_prelev ";
-            $req = $req . "from lieu ";
-            $req = $req . "where lieu_cod = $mag ";
-            $stmt = $pdo->query($req);
+            $req    = "select lieu_prelev ";
+            $req    = $req . "from lieu ";
+            $req    = $req . "where lieu_cod = $mag ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             $prelev = $result['lieu_prelev'];
             $erreur = 0;
-            if (!isset($qte)) {
+            if (!isset($qte))
+            {
                 echo "<p>Erreur ! marge non définie !";
                 $erreur = 1;
             }
@@ -361,229 +244,19 @@ if ($erreur == 0) {
             echo "<p>Les changements sont validés !";
             break;
         case "vente_adm":
-            echo "<p class=\"titre\">Vendre du matériel à l'administration</p>";
-            echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4\">";
-            echo "<input type=\"hidden\" name=\"methode\" value=\"vente_adm2\">";
-            echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-            $req = "select gobj_nom,gobj_cod,gobj_valeur,tobj_libelle,count(obj_cod) as qte ";
-            $req = $req . "from objets,objet_generique,stock_magasin,type_objet ";
-            $req = $req . "where mstock_lieu_cod = $mag ";
-            $req = $req . "and mstock_obj_cod = obj_cod ";
-            $req = $req . "and obj_gobj_cod = gobj_cod ";
-            $req = $req . "and gobj_tobj_cod = tobj_cod ";
-            $req = $req . "group by gobj_nom,gobj_cod,gobj_valeur,tobj_libelle ";
-            $req = $req . "order by tobj_libelle,gobj_nom ";
-            $stmt = $pdo->query($req);
-            echo "<div class='centrer'><table>";
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Prix de vente</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Qte à vendre ?</strong></td>";
-            echo "</tr>";
-            while ($result = $stmt->fetch()) {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>" . $result['gobj_nom'] . "</td>";
-                echo "<td><p>" . $result['tobj_libelle'] . "</td>";
-                echo "<td class=\"soustitre2\"><p>" . $result['qte'] . "</td>";
-                echo "<td><p>" . $result['gobj_valeur'] . "</td>";
-                echo "<td><input type=\"text\" name=\"obj[" . $result['gobj_cod'] . "]\" value=\"0\"></td>";
-                echo "</tr>";
-            }
-            echo "<tr>";
-            echo "<td colspan=\"5\"><input type=\"submit\" class=\"test centrer\" value=\"Vendre !\"></td>";
-            echo "</tr>";
-            echo "</table></div>";
-            echo "</form>";
-
+            require "blocks/_echoppe_vente_adm.php";
             break;
         case "vente_adm2":
-            $erreur = 0;
-            foreach ($obj as $key => $val) {
-                $req = "select gobj_nom,count(obj_cod) as nombre ";
-                $req = $req . "from objets,objet_generique,stock_magasin ";
-                $req = $req . "where gobj_cod = $key ";
-                $req = $req . "and obj_gobj_cod = gobj_cod ";
-                $req = $req . "and mstock_obj_cod = obj_cod ";
-                $req = $req . "and mstock_lieu_cod = $mag ";
-                $req = $req . "group by gobj_nom ";
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
-                if ($val > $result['nombre']) {
-                    echo "<p>Erreur ! Vous essayez de vendre l'objet <strong>" . $result['gobj_nom'] . "</strong> en trop grande quantité !";
-                    $erreur = 1;
-                }
-            }
-            if ($erreur == 0) {
-                $gagne = 0;
-                foreach ($obj as $key => $val) {
-                    for ($cpt = 0; $cpt < $val; $cpt++) {
-                        // on enlève du magasin
-                        $req = "select obj_cod ";
-                        $req = $req . "from objets,objet_generique,stock_magasin ";
-                        $req = $req . "where gobj_cod = $key ";
-                        $req = $req . "and obj_gobj_cod = gobj_cod ";
-                        $req = $req . "and mstock_obj_cod = obj_cod ";
-                        $req = $req . "and mstock_lieu_cod = $mag ";
-                        $req = $req . "limit 1";
-                        $stmt = $pdo->query($req);
-                        $result = $stmt->fetch();
-                        $objet = $result['obj_cod'];
-                        $req = "delete from stock_magasin where mstock_obj_cod = $objet ";
-                        $stmt = $pdo->query($req);
-                        $req = "select f_del_objet($objet) ";
-                        $stmt = $pdo->query($req);
-                        // on ajoute les sous
-                        $req = "select gobj_valeur from objet_generique where gobj_cod = $key ";
-                        $stmt = $pdo->query($req);
-                        $result = $stmt->fetch();
-                        $gagne = $gagne + $result['gobj_valeur'];
-                    }
-
-                }
-                $req = "update lieu set lieu_compte = lieu_compte + $gagne where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
-                echo "<p>Transacstion effectuée pour $gagne brouzoufs. ";
-            }
+            require "blocks/_echoppe_vente_adm2.php";
             break;
         case "achat_adm":
-            echo "<p class=\"titre\">Achat de matériel à l'administration</p>";
-            $req = "select lieu_compte from lieu where lieu_cod = $mag ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "<p>Vous diposez de <strong>" . $result['lieu_compte'] . "</strong> pour acheter des objets à l'administration.";
-            $req = "select gobj_cod,tobj_libelle,gobj_nom,gobj_valeur, ";
-            $req = $req . "(select count(obj_cod) ";
-            $req = $req . "from objets,stock_magasin ";
-            $req = $req . "where obj_gobj_cod = gobj_cod ";
-            $req = $req . "and mstock_obj_cod = obj_cod ";
-            $req = $req . "and mstock_lieu_cod = $mag) as stock ";
-            $req = $req . "from objet_generique,type_objet ";
-            $req = $req . "where gobj_echoppe_stock = 'O' ";
-            //$req = $req . "and gobj_deposable = 'O' ";
-            //$req = $req . "and gobj_visible = 'O' ";
-            $req = $req . "and gobj_tobj_cod = tobj_cod ";
-            //$req = $req . "and tobj_cod in (1,2,4) ";
-            $req = $req . "order by tobj_cod,gobj_nom ";
-            $stmt = $pdo->query($req);
-            echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4\">";
-            echo "<input type=\"hidden\" name=\"methode\" value=\"achat_adm2\">";
-            echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-            echo "<div class='centrer'><table>";
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Valeur</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Stock</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Quantité</strong></td>";
-            while ($result = $stmt->fetch()) {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>" . $result['gobj_nom'] . "</td>";
-                echo "<td><p>" . $result['tobj_libelle'] . "</td>";
-                echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['gobj_valeur'] . "</td>";
-                echo "<td><p style=\"text-align:right;\">" . $result['stock'] . "</td>";
-                echo "<td class=\"soustitre2\"><p><input type=\"text\" name=\"obj[" . $result['gobj_cod'] . "]\" value=\"0\"></td>";
-                echo "</tr>";
-            }
-            echo "<tr>";
-            echo "<td colspan=\"5\"><input type=\"submit\" value=\"Valider les achats !\" class=\"test centrer\"></td>";
-            echo "</tr>";
-
-            echo "</table></div>";
-
-
-            echo "</form>";
+            require "blocks/_echoppe_achat_adm.php";
             break;
         case "achat_adm2":
-            $erreur = 0;
-            $total = 0;
-            foreach ($obj as $key => $val) {
-                if ($val < 0) {
-                    echo "<p>Erreur ! Quantité négative !";
-                    $erreur = 1;
-                }
-                if ($val > 0) {
-                    $req = "select gobj_valeur ";
-                    $req = $req . "from objet_generique ";
-                    $req = $req . "where gobj_cod = $key ";
-                    $stmt = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    $total = $total + ($result['gobj_valeur'] * $val);
-                }
-            }
-            $req = "select lieu_compte from lieu where lieu_cod = $mag ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            if ($total > $result['lieu_compte']) {
-                echo "<p>Vous n'avez pas assez de brouzoufs pour acheter ce matériel !";
-                $erreur = 1;
-            }
-            if ($erreur == 0) {
-                foreach ($obj as $key => $val) {
-                    if ($val > 0) {
-                        for ($cpt = 0; $cpt < $val; $cpt++) {
-                            // on crée l'objet
-                            $req = "select nextval('seq_obj_cod') as num_objet ";
-                            $stmt = $pdo->query($req);
-                            $result = $stmt->fetch();
-                            $num_obj = $result['num_objet'];
-                            $req = "insert into objets (obj_cod,obj_gobj_cod) values ($num_obj,$key)";
-                            $stmt = $pdo->query($req);
-                            $req = "insert into stock_magasin (mstock_obj_cod,mstock_lieu_cod) values ($num_obj,$mag) ";
-                            $stmt = $pdo->query($req);
-                        }
-                    }
-                }
-                $req = "update lieu set lieu_compte = lieu_compte - $total where lieu_cod = $mag ";
-                $stmt = $pdo->query($req);
-                echo "<p>Achat effectué pour un total de ", $total, " brouzoufs.";
-
-            }
+            require "blocks/_echoppe_achat_adm2.php";
             break;
         case "fix_prix":
-            echo "<p class=\"titre\">Fixer les tarifs</p>";
-            $req = "select gobj_cod,tobj_libelle,gobj_nom,gobj_valeur, ";
-            $req = $req . "(select count(obj_cod) ";
-            $req = $req . "from objets,stock_magasin ";
-            $req = $req . "where obj_gobj_cod = gobj_cod ";
-            $req = $req . "and mstock_obj_cod = obj_cod ";
-            $req = $req . "and mstock_lieu_cod = $mag) as stock, ";
-            $req = $req . "f_prix_gobj($mag,gobj_cod) as valeur_actu ";
-            $req = $req . "from objet_generique,type_objet ";
-            $req = $req . "where gobj_echoppe = 'O' ";
-            $req = $req . "and gobj_deposable = 'O' ";
-            $req = $req . "and gobj_visible = 'O' ";
-            $req = $req . "and gobj_tobj_cod = tobj_cod ";
-            $req = $req . "and tobj_cod in (1,2) ";
-            $req = $req . "order by tobj_cod,gobj_nom ";
-            $stmt = $pdo->query($req);
-            echo "<form name=\"echoppe\" method=\"post\" action=\"gere_echoppe4\">";
-            echo "<input type=\"hidden\" name=\"methode\" value=\"achat_adm2\">";
-            echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-            echo "<div class='centrer'><table>";
-            echo "<tr>";
-            echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Stock</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Valeur officielle</strong></td>";
-            echo "<td class=\"soustitre2\"><p><strong>Valeur actuelle</strong></td>";
-            echo "<td></td>";
-            while ($result = $stmt->fetch()) {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>" . $result['gobj_nom'] . "</td>";
-                echo "<td><p>" . $result['tobj_libelle'] . "</td>";
-                echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['stock'] . "</td>";
-                echo "<td><p style=\"text-align:right;\">" . $result['gobj_valeur'] . "</td>";
-                echo "<td class=\"soustitre2\"><p style=\"text-align:right;\">" . $result['valeur_actu'] . "</td>";
-                echo "<td><a href=\"gere_echoppe4.php?mag=$mag&methode=fix_prix2&gobj=" . $result['gobj_cod'] . "\">Modifier !</a></td>";
-                echo "</tr>";
-            }
-            echo "<tr>";
-            echo "<td colspan=\"5\"><input type=\"submit\" value=\"Valider les achats !\" class=\"test centrer\"></td>";
-            echo "</tr>";
-
-            echo "</table></div>";
+            require "blocks/_echoppe_fix_prix.php";
             break;
         case "fix_prix2":
             $req = "select gobj_nom,gobj_valeur,f_prix_gobj($mag,gobj_cod) from objet_generique ";
