@@ -64,47 +64,11 @@ if ($nb_monstre == 0) {
     echo("<p>pas de monstre</p>");
 } else {
     echo("<table>");
-    while ($result = $stmt->fetch()) {
-        if ($result['perso_dirige_admin'] == 'O') {
-            $ia = "<strong>Hors IA</strong>";
-        } else if ($result['perso_pnj'] == 1) {
-            $ia = "<strong>PNJ</strong>";
-        } else {
-            $ia = "IA";
-        }
-        echo("<tr>");
-        echo "<td class=\"soustitre2\"><p><a href=\"../validation_login_monstre.php?numero=" . $result['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $result['perso_nom'] . "</a></td>";
-        echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
-        echo "<td class=\"soustitre2\"><p>", $result['perso_pa'], "</td>";
-        echo "<td class=\"soustitre2\"><p>", $result['perso_pv'], " PV sur ", $result['perso_pv_max'];
-        if ($result['etat'] != "indemne") {
-            echo " - (<strong>", $result['etat'], "</strong>)";
-        }
-        echo "</td>";
-        echo "<td class=\"soustitre2\"><p>";
-        if ($result['messages'] != 0) {
-            echo "<strong>";
-        }
-        echo $result['messages'] . " msg non lus.";
-        if ($result['messages'] != 0) {
-            echo "</strong>";
-        }
-        echo "</td>";
-        echo "<td class=\"soustitre2\"><p>";
-        if ($result['dlt_passee'] == 1) {
-            echo("<strong>");
-        }
-        echo $result['dlt'];
-        if ($result['dlt_passee'] == 1) {
-            echo("</strong>");
-        }
-        echo "</td>";
-        echo "<td class=\"soustitre2\"><p>X=", $result['pos_x'], ", Y=", $result['pos_y'], ", E=", $result['pos_etage'], "</td>";
-        if ($result['compt_nom'] != '') {
-            echo "<td class=\"soustitre2\">Joué par <strong>", $result['compt_nom'], "</strong></td>";
-        } else
-            echo "<td></td>";
-        echo("</tr>");
+    $fonctions = new fonctions();
+    while ($result = $stmt->fetch())
+    {
+        $fonctions->ligne_login_monstre($result);
+
     }
 
     echo("</table>");
