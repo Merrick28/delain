@@ -14,7 +14,7 @@ $param = new parametres();
 // on regarde si le joueur est bien sur une échoppe
 
 $type_lieu = 11;
-$nom_lieu = 'un magasin';
+$nom_lieu  = 'un magasin';
 
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
@@ -25,19 +25,19 @@ echo "<p><strong>" . $tab_lieu['nom'] . "<strong><br>";
 $desc = str_replace(chr(127), ";", $tab_lieu['description']);
 echo "<em>" . $desc . "</em>";
 $controle_gerant = '';
-$req = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
+$req             = "select mger_perso_cod from magasin_gerant where mger_lieu_cod = " . $lieu;
+$stmt            = $pdo->query($req);
+$result          = $stmt->fetch();
 if ($result['mger_perso_cod'] == $perso_cod)
 {
     $controle_gerant = 'OK';
 }
-$lieu = $tab_lieu['lieu_cod'];
-$req = "select mod_vente($perso_cod,$lieu) as modificateur ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-$modif = $result['modificateur'];
-$methode          = get_request_var('methode', 'debut');
+$lieu    = $tab_lieu['lieu_cod'];
+$req     = "select mod_vente($perso_cod,$lieu) as modificateur ";
+$stmt    = $pdo->query($req);
+$result  = $stmt->fetch();
+$modif   = $result['modificateur'];
+$methode = get_request_var('methode', 'debut');
 //
 // phrase à modifier par la suite en fonction des alignements
 //
@@ -70,13 +70,13 @@ echo "<p>Bonjour aventurier.";
         break;
         case "acheter":
             echo "<p class=\"titre\">Achat d'équipement</p>";
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $po = $result['perso_po'];
+            $po       = $result['perso_po'];
             $lieu_cod = $tab_lieu['lieu_cod'];
-            $req = "select 0 as type,0 as a,obj_nom,tobj_libelle,gobj_cod,f_prix_obj_perso_a($perso_cod,$lieu_cod,obj_cod) as valeur_achat,coalesce(obj_obon_cod, 0) as obj_obon_cod,count(*) as nombre,comp_libelle
+            $req      = "select 0 as type,0 as a,obj_nom,tobj_libelle,gobj_cod,f_prix_obj_perso_a($perso_cod,$lieu_cod,obj_cod) as valeur_achat,coalesce(obj_obon_cod, 0) as obj_obon_cod,count(*) as nombre,comp_libelle
 				from objets,objet_generique,stock_magasin,type_objet,competences
 				where mstock_lieu_cod = $lieu_cod
 				and mstock_obj_cod = obj_cod
@@ -118,33 +118,33 @@ echo "<p>Bonjour aventurier.";
                 echo "<td></td>";
                 while ($result = $stmt->fetch())
                 {
-                    $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets ";
-                    $req = $req . "where obon_cod = " . $result['obj_obon_cod'];
+                    $req   = "select obon_cod,obon_libelle,obon_prix from bonus_objets ";
+                    $req   = $req . "where obon_cod = " . $result['obj_obon_cod'];
                     $stmt2 = $pdo->query($req);
                     if ($stmt2->rowCount() != 0)
                     {
-                        $result2 = $stmt2->fetch();
-                        $bonus = " (" . $result2['obon_libelle'] . ")";
+                        $result2  = $stmt2->fetch();
+                        $bonus    = " (" . $result2['obon_libelle'] . ")";
                         $prix_bon = $result2['obon_prix'];
-                        $url_bon = "&bon=" . $result2['obon_cod'];
+                        $url_bon  = "&bon=" . $result2['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $prix = $result['gobj_valeur'] + $prix_bon;
                     echo "<tr>";
                     echo "<td class=\"soustitre2\"><p><strong>";
                     if ($result['type'] == 0)
                     {
-                        
-                        $req = "select obj_cod from objets,	stock_magasin
+
+                        $req     = "select obj_cod from objets,	stock_magasin
 							where obj_gobj_cod = " . $result['gobj_cod'] . "
 							and obj_cod = mstock_obj_cod
 							and mstock_lieu_cod = $lieu_cod
 							limit 1";
-                        $stmt2 = $pdo->query($req);
+                        $stmt2   = $pdo->query($req);
                         $result2 = $stmt2->fetch();
                         echo "<a href=\"visu_desc_objet3.php?objet=" . $result2['obj_cod'] . "&origine=e", $url_bon, "\">";
                     } else
@@ -178,7 +178,7 @@ echo "<p>Bonjour aventurier.";
             break;
         case "vendre":
             $taux_rachat = $param->getparm(46);
-            $lieu_cod = $tab_lieu['lieu_cod'];
+            $lieu_cod    = $tab_lieu['lieu_cod'];
             echo "<p class=\"titre\">Vente d'équipement</p>";
             $req = "select obj_cod,obj_etat,obj_nom as nom,f_prix_obj_perso_v($perso_cod,$lieu_cod,obj_cod) as valeur,tobj_libelle
 								from objet_generique,objets,perso_objets,type_objet
@@ -221,20 +221,20 @@ echo "<p>Bonjour aventurier.";
                 echo "<td></td>";
                 while ($result = $stmt->fetch())
                 {
-                    $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
-                    $req = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
+                    $req   = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
+                    $req   = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
                     $stmt2 = $pdo->query($req);
                     if ($stmt2->rowCount() != 0)
                     {
-                        $result2 = $stmt2->fetch();
-                        $bonus = " (" . $result2['obon_libelle'] . ")";
+                        $result2  = $stmt2->fetch();
+                        $bonus    = " (" . $result2['obon_libelle'] . ")";
                         $prix_bon = $result2['obon_prix'];
-                        $url_bon = "&bon=" . $result2['obon_cod'];
+                        $url_bon  = "&bon=" . $result2['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $prix = $result['valeur'] + $prix_bon;
                     echo "<tr>";
@@ -250,72 +250,25 @@ echo "<p>Bonjour aventurier.";
             }
             break;
         case "identifier":
-            $lieu_cod = $tab_lieu['lieu_cod'];
-            echo "<p class=\"titre\">Identification d'équipement</p>";
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $req = "select lieu_marge from lieu where lieu_cod = $lieu_cod ";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $prix = $result['lieu_marge'] + 100;
-            $req = "select obj_cod,gobj_nom_generique,tobj_libelle ";
-            $req = $req . "from objet_generique,objets,perso_objets,type_objet ";
-            $req = $req . "where perobj_perso_cod = $perso_cod ";
-            $req = $req . "and perobj_obj_cod = obj_cod ";
-            $req = $req . "and perobj_identifie != 'O' ";
-            $req = $req . "and obj_gobj_cod = gobj_cod ";
-            $req = $req . "and gobj_tobj_cod = tobj_cod ";
-            $stmt = $pdo->query($req);
-            if ($stmt->rowCount() == 0)
-            {
-                echo "<p>Vous n'avez aucun équipement à faire identifier pour l'instant.";
-            } else
-            {
-                echo "<form name=\"identifie\" action=\"action.php\" method=\"post\">";
-                echo "<input type=\"hidden\" name=\"methode\" value=\"nv_magasin_identifie\">";
-                echo "<input type=\"hidden\" name=\"lieu\" value=\"$lieu\">";
-                echo "<input type=\"hidden\" name=\"objet\">";
-
-                echo "<div class='centrer'><table>";
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p><strong>Nom</strong></td>";
-                echo "<td class=\"soustitre2\"><p><strong>Type</strong></td>";
-                echo "<td class=\"soustitre2\"><p><strong>Prix</strong></td>";
-                echo "<td></td>";
-                while ($result = $stmt->fetch())
-                {
-
-                    echo "<tr>";
-                    echo "<td class=\"soustitre2\"><p><strong>" . $result['gobj_nom_generique'] . "</strong></td>";
-                    echo "<td class=\"soustitre2\"><p>" . $result['tobj_libelle'] . "</td>";
-                    echo "<td class=\"soustitre2\"><p>" . $prix . " brouzoufs</td>";
-                    echo "<td><p><input type=\"checkbox\" name=\"obj[", $result['obj_cod'], "]\"></td>";
-                }
-                echo "</table></div>";
-                echo "<input type=\"submit\" class=\"test centrer\" value=\"Identifier les objets sélectionnées !\">";
-                echo "</form>";
-
-            }
+            require "blocks/_echoppe_identifie.php";
             break;
         case "repare":
             $lieu_cod = $tab_lieu['lieu_cod'];
             echo "<p class=\"titre\">Réparation d'équipement</p>";
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
             echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $req = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle ";
-            $req = $req . "from objet_generique,objets,perso_objets,type_objet ";
-            $req = $req . "where perobj_perso_cod = $perso_cod ";
-            $req = $req . "and perobj_obj_cod = obj_cod ";
-            $req = $req . "and perobj_identifie = 'O' ";
-            $req = $req . "and obj_gobj_cod = gobj_cod ";
-            $req = $req . "and gobj_deposable = 'O' ";
-            $req = $req . "and gobj_tobj_cod = tobj_cod ";
-            $req = $req . "and tobj_cod in (1,2,4) ";
-            $req = $req . "and obj_etat < 100 ";
+            $req  = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle ";
+            $req  = $req . "from objet_generique,objets,perso_objets,type_objet ";
+            $req  = $req . "where perobj_perso_cod = $perso_cod ";
+            $req  = $req . "and perobj_obj_cod = obj_cod ";
+            $req  = $req . "and perobj_identifie = 'O' ";
+            $req  = $req . "and obj_gobj_cod = gobj_cod ";
+            $req  = $req . "and gobj_deposable = 'O' ";
+            $req  = $req . "and gobj_tobj_cod = tobj_cod ";
+            $req  = $req . "and tobj_cod in (1,2,4) ";
+            $req  = $req . "and obj_etat < 100 ";
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
             {
@@ -334,20 +287,20 @@ echo "<p>Bonjour aventurier.";
                 echo "<td></td>";
                 while ($result = $stmt->fetch())
                 {
-                    $req = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
-                    $req = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
+                    $req   = "select obon_cod,obon_libelle,obon_prix from bonus_objets,objets ";
+                    $req   = $req . "where obj_cod = " . $result['obj_cod'] . " and obj_obon_cod = obon_cod ";
                     $stmt2 = $pdo->query($req);
                     if ($stmt2->rowCount() != 0)
                     {
-                        $result2 = $stmt2->fetch();
-                        $bonus = " (" . $result2['obon_libelle'] . ")";
+                        $result2  = $stmt2->fetch();
+                        $bonus    = " (" . $result2['obon_libelle'] . ")";
                         $prix_bon = $result2['obon_prix'];
-                        $url_bon = "&bon=" . $result2['obon_cod'];
+                        $url_bon  = "&bon=" . $result2['obon_cod'];
                     } else
                     {
-                        $bonus = "";
+                        $bonus    = "";
                         $prix_bon = 0;
-                        $url_bon = "";
+                        $url_bon  = "";
                     }
                     $etat = $result['obj_etat'];
                     echo "<tr>";
@@ -369,7 +322,7 @@ echo "<p>Bonjour aventurier.";
             break;
         case "mule":
             /* on regarde s'il n'y a pas déjà un familier*/
-            $req = "select pfam_familier_cod from perso_familier,perso
+            $req   = "select pfam_familier_cod from perso_familier,perso
 								where pfam_perso_cod = cible
 								and pfam_familier_cod = " . $perso_cod . "
 								and perso_actif = 'O'";
@@ -380,18 +333,20 @@ echo "<p>Bonjour aventurier.";
                 break;
             }
             /* on créé le familier*/
-            $req = "select ppos_pos_cod,perso_nom from perso_position,perso where ppos_perso_cod = perso_cod and ppos_perso_cod = " . $perso_cod;
-            $stmt2 = $pdo->query($req);
-            $result2 = $stmt2->fetch();
+            $req      =
+                "select ppos_pos_cod,perso_nom from perso_position,perso where ppos_perso_cod = perso_cod and ppos_perso_cod = " . $perso_cod;
+            $stmt2    = $pdo->query($req);
+            $result2  = $stmt2->fetch();
             $position = $result2['ppos_pos_cod'];
-            $nom = $result2['perso_nom'];
-            $req = "select cree_monstre_pos(193," . $position . ") as familier_num";
-            $stmt2 = $pdo->query($req);
-            $result2 = $stmt2->fetch();
-            $num_fam = $result2['familier_num'];
-            $req = "update perso set perso_nom = 'Familier de " . $nom . "',perso_lower_perso_nom = 'familier de " . strtolower($nom) . ",perso_type_perso = 3,perso_kharma=0 where perso_cod = " . $num_fam;
+            $nom      = $result2['perso_nom'];
+            $req      = "select cree_monstre_pos(193," . $position . ") as familier_num";
+            $stmt2    = $pdo->query($req);
+            $result2  = $stmt2->fetch();
+            $num_fam  = $result2['familier_num'];
+            $req      =
+                "update perso set perso_nom = 'Familier de " . $nom . "',perso_lower_perso_nom = 'familier de " . strtolower($nom) . ",perso_type_perso = 3,perso_kharma=0 where perso_cod = " . $num_fam;
             /* on le rattache au perso*/
-            $req = "insert into perso_familier (pfam_perso_cod,pfam_familier_cod) values ($perso_cod, $num_fam)";
+            $req   = "insert into perso_familier (pfam_perso_cod,pfam_familier_cod) values ($perso_cod, $num_fam)";
             $stmt2 = $pdo->query($req);
             break;
         default:

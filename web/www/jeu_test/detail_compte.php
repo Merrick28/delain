@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+define('APPEL', 1);
 
 ob_start();
 ?>
@@ -79,7 +80,7 @@ if (!isset($vcompte))
 }
 
 $droit_modif = 'dcompt_controle';
-define('APPEL', 1);
+
 include "blocks/_test_droit_modif_generique.php";
 
 if ($erreur == 0 && $vcompte != -1)
@@ -167,22 +168,8 @@ if ($erreur == 0 && $vcompte != -1)
     echo "<tr><td colspan=\"6\"><p class=\"titre\">Persos de ce compte : </p></td></tr>";
     while ($result = $stmt->fetch())
     {
-        $type_perso = tag_perso($result['perso_pnj'], $result['perso_type_perso'], $result['perso_actif']);
-
-        echo "<tr>";
-        echo "<form name=\"login\" method=\"post\" action=\"index.php\">";
-        echo "<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">";
-        echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $result['perso_cod'] . "\">";
-        echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
-        echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-        echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong> (n° " . $result['perso_cod'] . ")</p></td>";
-        echo "<td class=\"soustitre2\"><p>" . $result['perso_px'] . " PX</p></td>";
-        echo "<td class=\"soustitre2\"><p>Niveau " . $result['perso_niveau'] . "</p></td>";
-        echo "<td class=\"soustitre2\"><p>" . $result['pos_x'] . ", " . $result['pos_y'] . ", " . $result['pos_etage'] . " (" . $result['etage_libelle'] . ")</p></td>";
-        echo "<td class=\"soustitre2\"><p>Créé le " . $result['crea'] . "</p></td>";
-        echo "<td class=\"soustitre2\"><input type=\"submit\" value=\"Voir !\" class=\"test\"></td>";
-        echo "</form>";
-        echo "</tr>";
+        $visu_pos = true;
+        require "blocks/_detail_compte.php";
     }
     echo "</table>";
 
@@ -203,21 +190,8 @@ if ($erreur == 0 && $vcompte != -1)
         echo "<tr><td colspan=\"6\"><p class=\"titre\">Familiers de ce compte : </p></td></tr>";
         while ($result = $stmt->fetch())
         {
-            $type_perso = tag_perso($result['perso_pnj'], $result['perso_type_perso'], $result['perso_actif']);
-
-            echo "<tr>";
-            echo "<form name=\"login\" method=\"post\" action=\"index.php\">";
-            echo "<input type=\"hidden\" name=\"compt_cod\" value=\"$compt_cod\">";
-            echo "<input type=\"hidden\" name=\"num_perso\" value=\"" . $result['perso_cod'] . "\">";
-            echo '<input type="hidden" name="idsessadm" value="$compt_cod">';
-            echo "<td class=\"soustitre2\"><p>$type_perso</p></td>";
-            echo "<td class=\"soustitre2\"><p><strong>" . $result['perso_nom'] . "</strong> (n° " . $result['perso_cod'] . ")</p></td>";
-            echo "<td class=\"soustitre2\"><p>" . $result['perso_px'] . " PX</p></td>";
-            echo "<td class=\"soustitre2\"><p>Niveau " . $result['perso_niveau'] . "</p></td>";
-            echo "<td class=\"soustitre2\"><p>Créé le " . $result['crea'] . "</p></td>";
-            echo "<td class=\"soustitre2\"><input type=\"submit\" value=\"Voir !\" class=\"test\"></td>";
-            echo "</form>";
-            echo "</tr>";
+            $visu_pos = false;
+            require "blocks/_detail_compte.php";
         }
         echo "</table>";
     }
