@@ -1,7 +1,6 @@
 <?php
 define('APPEL', 1);
 $param = new parametres();
-$perso = new perso;
 $perso = $verif_connexion->perso;
 // test sur le type de lieu
 $erreur = 0;
@@ -50,7 +49,7 @@ if ($erreur == 0)
 
 
     // TRAITEMENT DES ACTIONS
-    $resultat         = "";
+    $resultat = "";
     if (isset($_REQUEST['methode']))
     {
         switch ($methode)
@@ -194,20 +193,14 @@ if ($erreur == 0)
                         echo "Erreur: Erreur sur le lieu de vente !";
                         $erreur = 1;
                     }
-                    $req_verif = "select perso_po from perso where perso_cod = $perso_cod";
-                    $stmt      = $pdo->query($req_verif);
-                    if (!$result = $stmt->fetch())
+
+
+                    if ($perso->perso_po < $prix)
                     {
-                        echo "Erreur: Acheteur non trouvé";
+                        echo "Erreur: Pas assez de Brouzoufs en bourse !";
                         $erreur = 1;
-                    } else
-                    {
-                        if ($result['perso_po'] < $prix)
-                        {
-                            echo "Erreur: Pas assez de Brouzoufs en bourse !";
-                            $erreur = 1;
-                        }
                     }
+
 
                     if ($erreur == 0)
                     {
@@ -336,13 +329,9 @@ if ($erreur == 0)
             echo "<em>" . $desc . "</em>";
             break;
         case "acheter":
-
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt     = $pdo->query($req);
-            $result   = $stmt->fetch();
             ?>
             <HR/><p class="titre">Achat d'équipement</p>
-            <p>Vous avez actuellement <strong><?php echo $result['perso_po'] ?></strong> brouzoufs.
+            <p>Vous avez actuellement <strong><?php echo $perso->perso_po ?></strong> brouzoufs.
 
                 <form name="achat" method="post">
                     <input type="hidden" name="methode" value="nv_magasin_achat">
@@ -532,12 +521,9 @@ where mstock_lieu_cod = $lieu_cod
             <?php
             break;
         case "view_tran":
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt     = $pdo->query($req);
-            $result   = $stmt->fetch();
             ?>
             <HR/><p class="titre">Transactions</p> <BR/>
-            <p>Vous avez actuellement <strong><?php echo $result['perso_po'] ?></strong> brouzoufs.
+            <p>Vous avez actuellement <strong><?php echo $perso->perso_po ?></strong> brouzoufs.
             <p><?php echo $resultat ?></p>
             Transactions en cours:
             <form name="cancel_tran" method="post">

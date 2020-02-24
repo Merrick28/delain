@@ -1,7 +1,7 @@
 <?php ob_start();
 include "blocks/_header_page_jeu.php";
 
-$perso   = new perso;
+
 $perso   = $verif_connexion->perso;
 $is_lieu = $perso->is_lieu();
 
@@ -143,15 +143,10 @@ if ($erreur)
             break;
 
         case 'amende_honorable':    // Démission validée
-            $req_brouzoufs = "select perso_po from perso where perso_cod = $perso_cod";
-            $stmt          = $pdo->query($req_brouzoufs);
-            $result        = $stmt->fetch();
-            if ($result['perso_po'] >= $cout_amende_honorable)
+            if ($perso->perso_po >= $cout_amende_honorable)
             {
-                $req_brouzoufs =
-                    "update perso set perso_po = perso_po - $cout_amende_honorable where perso_cod = $perso_cod";
-                $stmt          = $pdo->query($req_brouzoufs);
-
+                $perso->perso_po = $perso->perso_po - $cout_amende_honorable;
+                $perso->stocke();
                 $req_faction =
                     "update faction_perso set pfac_points = 0, pfac_statut = 0 where pfac_fac_cod = $faction and pfac_perso_cod = $perso_cod";
                 $stmt        = $pdo->query($req_faction);

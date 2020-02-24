@@ -14,7 +14,6 @@ $mess[6] = 'Divers';
 $nb      = count($mess);
 $size    = round(100 / $nb);
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 
 //
@@ -77,4 +76,4 @@ $options_twig = array(
     'CONTENU_PAGE' => $contenu_page
 
 );
-echo $template->render(array_merge($var_twig_defaut,$options_twig_defaut, $options_twig));
+echo $template->render(array_merge($var_twig_defaut, $options_twig_defaut, $options_twig));

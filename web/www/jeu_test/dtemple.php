@@ -395,10 +395,7 @@ if ($erreur == 0)
                 $erreur = 1;
             }
 
-            $req_verif = "select perso_pa from perso where perso_cod = $perso_cod";
-            $stmt      = $pdo->query($req_verif);
-            $result    = $stmt->fetch();
-            if ($result['perso_pa'] < 6)
+            if ($perso->perso_pa < 6)
             {
                 echo "<p>$dieu_nom regarde cet énergumène essoufflé, vociférer en agitant une breloque... Non, mais soyez une sérieux, une cérémonie se fait avec 6 PA, pas moins !</p>";
                 $erreur = 1;

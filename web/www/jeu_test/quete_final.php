@@ -209,39 +209,37 @@ if (!$perso->is_lieu())
 								case "debut":
 								//Cas de l'introduction de la quête7 pour les persos à haut niveau de Points de prestige
 								// Ce passage permet de donner à certains persos l'emplacement des cachettes
-								$req = "select perso_prestige,perso_nom from perso where perso_cod = $perso_cod";
-								$stmt = $pdo->query($req);
-								$result = $stmt->fetch();
-								$prestige = $result['perso_prestige'];
-								$nom = $result['perso_nom'];
+
+								$prestige = $perso->perso_prestige;
+								$nom = $perso->perso_nom;
 								if ($prestige >= 10 and $prestige <= 20)
 								{
-								srand ((double) microtime() * 10000000); // pour intialiser le random
-								$input = array (
-								"<br>Alors que vous rentrez dans cette auberge, une sorte d'ivrogne s'approche de vous :
-								<br><em> Et dîtes, ch'vous connais vous ! vous n'seriez pas <? $nom ?> ? Ou alors Graspork ?
-								<br>pfff, encore un de ces espèces de %#$£^ù qui cherche la gloire à tous les étages !
-								<br>En plus, j'suis sûr que vous n'connaissez même pas les bons coins	qui font la gloire !
-								<br>allez, si vous m'payez un coup à boire, j'vous diraisz un secret. Il parait qu'il y a une drole de grotte ",
-								"<br>Et vous là, vous avez une tête qui m'revient. A moins que ce ne soit sur une affiche de la Milice que je vous ai vu ...",
-								"<br>Vous surprenez une conversation, plongé dans votre verre :
-								<br><em>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j'suis tombé sur une cachette !
-								<br>J'me souviens plus bien où c'était mais franchement, y'avait un max à se faire !</em>",
-								"",
-								"",
-								""
-								);
-								// Rajouter la position de cachettes réelles pour donner les indications
-								$cachette = array_rand ($input, 1);
-								$phrase = $input[$cachette];	
+                                    srand ((double) microtime() * 10000000); // pour intialiser le random
+                                    $input = array (
+                                    "<br>Alors que vous rentrez dans cette auberge, une sorte d'ivrogne s'approche de vous :
+                                    <br><em> Et dîtes, ch'vous connais vous ! vous n'seriez pas <? $nom ?> ? Ou alors Graspork ?
+                                    <br>pfff, encore un de ces espèces de %#$£^ù qui cherche la gloire à tous les étages !
+                                    <br>En plus, j'suis sûr que vous n'connaissez même pas les bons coins	qui font la gloire !
+                                    <br>allez, si vous m'payez un coup à boire, j'vous diraisz un secret. Il parait qu'il y a une drole de grotte ",
+                                    "<br>Et vous là, vous avez une tête qui m'revient. A moins que ce ne soit sur une affiche de la Milice que je vous ai vu ...",
+                                    "<br>Vous surprenez une conversation, plongé dans votre verre :
+                                    <br><em>Un jour, en cherchant un morceau de ferraille pour le forgeron du coin, j'suis tombé sur une cachette !
+                                    <br>J'me souviens plus bien où c'était mais franchement, y'avait un max à se faire !</em>",
+                                    "",
+                                    "",
+                                    ""
+                                    );
+                                    // Rajouter la position de cachettes réelles pour donner les indications
+                                    $cachette = array_rand ($input, 1);
+                                    $phrase = $input[$cachette];
 								}
 								else if ($prestige > 20)
 								{
-								?>
-								<hr><br>Un homme s'approche de vous, et vous interpelle :
-								<br><em>" Il me semble vous reconnaître ! Ne seriez vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
-								<br>Vos exploits sont contés deci delà, et nul ne les ignore maintenant. Je m'en vais diffuser la nouvelle de votre venue en cet endroit !
-								<?php 
+                                    ?>
+                                    <hr><br>Un homme s'approche de vous, et vous interpelle :
+                                    <br><em>" Il me semble vous reconnaître ! Ne seriez vous pas <?php  echo $nom; ?> ? Je ne pense pas me tromper.
+                                    <br>Vos exploits sont contés deci delà, et nul ne les ignore maintenant. Je m'en vais diffuser la nouvelle de votre venue en cet endroit !
+                                    <?php
 								}
 								break;
 						}

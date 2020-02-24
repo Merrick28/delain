@@ -2,7 +2,6 @@
 
 // on regarde si le joueur est bien sur une banque
 $erreur = 0;
-$perso  = new perso;
 $perso  = $verif_connexion->perso;
 if (!$perso->is_lieu())
 {
@@ -32,8 +31,8 @@ and pge_lieu_cod = $lieu ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
-    $erreur         = 1;
-    $methode        = get_request_var('methode', 'debut');
+    $erreur  = 1;
+    $methode = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -81,10 +80,8 @@ if ($stmt->rowCount() == 0)
             echo "<p>Votre message a bien été envoyé. Le geolier en prendra connaissance dès que possible.";
             break;
         case "corrompre":
-            $req = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $or     = $result['perso_po'];
+
+            $or = $perso->perso_po;
             ?>
             <p>Vous vous apprêtez à donner au geolier quelques brouzoufs afin de le corrompre.<br>
             <p>Vous avez actuellement <strong><?php echo $or; ?></strong> brouzoufs disponibles.

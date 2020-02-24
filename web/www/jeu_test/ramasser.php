@@ -138,10 +138,7 @@ switch ($methode)
         <?php
         break;
     case "suite":
-        $req    = "select perso_pa from perso where perso_cod = $perso_cod ";
-        $stmt   = $pdo->query($req);
-        $result = $stmt->fetch();
-        $pa     = $result['perso_pa'];
+        $pa     = $perso->perso_pa;
         $erreur = 0;
         $total  = 0;
         if (isset($_REQUEST['objet']))

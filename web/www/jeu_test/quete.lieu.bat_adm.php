@@ -182,30 +182,28 @@ switch($methode2)
 			<?php 			}
 			else //Le perso n’obtiendra pas de quête aujourd’hui
 			{
-			?>
-				<br>Un papier vole au vent. On peut y lire le texte d’un ancien contrat, dont la date est passée depuis fort longtemps.
-				<br>Vous regardez autour de vous ... Et personne.
-				<br>Ce n’est certainement pas aujourd’hui que l’on vous proposera un contrat de chasse.
-				<br>Mais comme il est dit, demain est un autre jour ...
-			<?php 			}
-		}
+                ?>
+                <br>Un papier vole au vent. On peut y lire le texte d’un ancien contrat, dont la date est passée depuis fort longtemps.
+                <br>Vous regardez autour de vous ... Et personne.
+                <br>Ce n’est certainement pas aujourd’hui que l’on vous proposera un contrat de chasse.
+                <br>Mais comme il est dit, demain est un autre jour ...
+            <?php }
+        }
 
-		//Traitement des pochettes surprises (début)
-		// Type de perso
-		$req = "select perso_type_perso  from perso where perso_cod = $perso_cod";
-		$stmt = $pdo->query($req);
-		$result = $stmt->fetch();
-		$type_perso_ok = ($result['perso_type_perso'] == 1);
+        //Traitement des pochettes surprises (début)
+        // Type de perso
 
-		// Possession de pochette surprise
-		$req = "select obj_gobj_cod, perobj_obj_cod, obj_nom
+        $type_perso_ok = ($perso->perso_type_perso == 1);
+
+        // Possession de pochette surprise
+        $req              = "select obj_gobj_cod, perobj_obj_cod, obj_nom
 			from objets, perso_objets
 			where perobj_obj_cod = obj_cod
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod = 642";
-		$stmt = $pdo->query($req);
-		$possede_pochette = ($stmt->rowCount() != 0);
+        $stmt             = $pdo->query($req);
+        $possede_pochette = ($stmt->rowCount() != 0);
 
 		// Pochette déjà échangée ?
 		$req = "select ppoch_perso_cod, ppoch_valeur from perso_pochette where ppoch_perso_cod = $perso_cod";
@@ -267,22 +265,20 @@ switch($methode2)
 		}
 	break;
 
-	case "pochette":
-		// Type de perso
-		$req = "select perso_type_perso  from perso where perso_cod = $perso_cod";
-		$stmt = $pdo->query($req);
-		$result = $stmt->fetch();
-		$type_perso_ok = ($result['perso_type_perso'] == 1);
+    case "pochette":
+        // Type de perso
 
-		// Possession de pochette surprise
-		$req = "select obj_gobj_cod, perobj_obj_cod, obj_nom
+        $type_perso_ok = ($perso->perso_type_perso == 1);
+
+        // Possession de pochette surprise
+        $req              = "select obj_gobj_cod, perobj_obj_cod, obj_nom
 			from objets, perso_objets
 			where perobj_obj_cod = obj_cod
 				and perobj_perso_cod = $perso_cod
 				and perobj_identifie = 'O'
 				and obj_gobj_cod = 642";
-		$stmt = $pdo->query($req);
-		$possede_pochette = ($stmt->rowCount() != 0);
+        $stmt             = $pdo->query($req);
+        $possede_pochette = ($stmt->rowCount() != 0);
 		if ($possede_pochette)
 		{
 			$result = $stmt->fetch();

@@ -60,23 +60,20 @@ if($result['perso_niveau'] >= 15)
 //
 if (isset($ch_util))
 {
-	$req = "update perso set perso_utl_pa_rest = $ch_util where perso_cod = $perso_cod ";
-	$stmt = $pdo->query($req);
+    $perso->perso_utl_pa_rest = $ch_util;
+    $perso->stocke();
 }
 
-$req = "select perso_nom,perso_utl_pa_rest from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
 
-if ($result['perso_utl_pa_rest'] == 1)
+if ($perso->perso_utl_pa_rest == 1)
 {
-	$util = $result['perso_nom'] . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
-	$ch_util = 0;
-}
-else
+    $util    = $perso->perso_nom . " <strong>utilise</strong> ses PA restants pour réduire le temps de tour suivant. ";
+    $ch_util = 0;
+} else
 {
-	$util = $result['perso_nom'] . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
-	$ch_util = 1;
+    $util    =
+        $perso->perso_nom . " <strong>n’utilise pas</strong> ses PA restants pour réduire le temps de tour suivant. ";
+    $ch_util = 1;
 }
 $contenu_page .= '<p class="titre">Utilisation des PA restants</p><p>' . $util . ' <a href="' . $_SERVER['PHP_SELF'] . '?m=6&ch_util=' . $ch_util . '">Changer ?</a></p>';
 
@@ -173,11 +170,9 @@ else
 //
 // Début impalpabilité
 //
-$req = 'select perso_tangible,perso_nb_tour_intangible from perso where perso_cod = ' . $perso_cod;
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-if ($result['perso_tangible'] == 'N')
-	$contenu_page .= '<p>Vous êtes impalpable pour ' . $result['perso_nb_tour_intangible'] . ' tours.</p>';
+
+if ($perso->perso_tangible == 'N')
+    $contenu_page .= '<p>Vous êtes impalpable pour ' . $perso->perso_nb_tour_intangible . ' tours.</p>';
 
 //
 // Fin impalpabilité
@@ -186,7 +181,7 @@ if ($result['perso_tangible'] == 'N')
 //
 // Début Grands escaliers
 //
-$req = "select pge_lieu_cod,pos_x,pos_y,etage_libelle,lieu_dest
+$req  = "select pge_lieu_cod,pos_x,pos_y,etage_libelle,lieu_dest
 	from perso_grand_escalier,positions,lieu_position,etage,lieu
 	where pge_perso_cod = $perso_cod
 	and pge_lieu_cod = lpos_lieu_cod

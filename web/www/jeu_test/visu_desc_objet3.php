@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
 $objet = $_GET['objet'];
 if (!preg_match('/^[0-9]*$/i', $objet))
@@ -34,12 +35,9 @@ if ($perso->is_lieu())
 if ($autorise == 1)
 {
     // on prend les valeurs de force et dex du perso pour la suite
-    $req          = "select perso_for,perso_dex, perso_niveau from perso where perso_cod = $perso_cod ";
-    $stmt         = $pdo->query($req);
-    $result       = $stmt->fetch();
-    $force        = $result['perso_for'];
-    $dex          = $result['perso_dex'];
-    $niveau_perso = $result['perso_niveau'];
+    $force        = $perso->perso_for;
+    $dex          = $perso->perso_dex;
+    $niveau_perso = $perso->perso_niveau;
     $req          = "select obj_nom, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair, gobj_distance, gobj_deposable,
 			gobj_comp_cod, obj_description, coalesce(obj_seuil_force, 0) as obj_seuil_force, obj_seuil_dex,
 			coalesce(obj_bonus_vue, 0) as obj_bonus_vue, coalesce(obj_critique, 0) as obj_critique, obj_armure,

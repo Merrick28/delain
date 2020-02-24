@@ -8,19 +8,16 @@ $methode2          = get_request_var('methode2', 'debut');
 switch($methode2)
 {
 	case "debut":
-		//Utilisation des points de prestige pour donner un peu de contenu.
-		$req = "select perso_prestige,perso_nom,perso_sex,perso_po from perso where perso_cod = $perso_cod";
-		$stmt = $pdo->query($req);
-		$result = $stmt->fetch();
-		$prestige = $result['perso_prestige'];
-		$nom = $result['perso_nom'];
-		$sexe = $result['perso_sex'];
-		$brouzoufs = $result['perso_po'];
-		if ($prestige >= 10 and $prestige <= 20)
-		{
-			srand ((double) microtime() * 10000000); // pour intialiser le random
-			$input = array (
-				"<br>Alors que vous rentrez dans cette auberge, une sorte d’ivrogne s’approche de vous, sentant la bière à plein nez :
+//Utilisation des points de prestige pour donner un peu de contenu.
+$prestige  = $perso->perso_prestige;
+$nom       = $perso->perso_nom;
+$sexe      = $perso->perso_sex;
+$brouzoufs = $perso->perso_po;
+if ($prestige >= 10 and $prestige <= 20)
+{
+    srand((double)microtime() * 10000000); // pour intialiser le random
+    $input = array(
+        "<br>Alors que vous rentrez dans cette auberge, une sorte d’ivrogne s’approche de vous, sentant la bière à plein nez :
 				<br><em> Et dîtes, ch’vous connais vous ! vous n’seriez pas $nom ? Ou alors Graspork ?
 				<br>Pfff, encore un de ces espèces de %#*£^ù qui cherche la gloire à tous les étages !
 				<br>En plus, j’suis sûr que vous n’connaissez même pas les bons coins qui font la gloire !

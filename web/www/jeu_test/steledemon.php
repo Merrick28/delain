@@ -4,6 +4,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 
 //
 // on regarde si le joueur est bien sur le lieu qu'on attend
@@ -27,10 +28,7 @@ if ($erreur == 0)
         $erreur = 1;
         echo("<p>Erreur ! Vous n’êtes pas proche d'une stèle !!!</p>");
     }
-    $req    = 'select perso_type_perso from perso where perso_cod = ' . $perso_cod;
-    $stmt   = $pdo->query($req);
-    $result = $stmt->fetch();
-    if ($result['perso_type_perso'] == 3)
+    if ($perso->perso_type_perso == 3)
     {
         $erreur    = 1;
         $perso_fam = true;

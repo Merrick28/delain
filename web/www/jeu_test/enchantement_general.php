@@ -2,7 +2,6 @@
 define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 // scripts JS
 $contenu_page .= '

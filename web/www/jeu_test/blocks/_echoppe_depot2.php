@@ -26,32 +26,45 @@ if ($qte > $banque)
 if ($erreur == 0)
 {
     // message
-    $req     = "select perso_nom,nextval('seq_msg_cod') as message from perso where perso_cod = $perso_cod ";
-    $stmt    = $pdo->query($req);
-    $result  = $stmt->fetch();
-    $nom     = str_replace("'", "\'", $result['perso_nom']);
-    $message = $result['message'];
-    $req     =
-        "insert into messages (msg_cod,msg_corps,msg_titre,msg_date,msg_date2) values ($message,'$nom a effectué un dépot de $qte brouzoufs','Dépot',now(),now()) ";
-    $stmt    = $pdo->query($req);
-    $req     = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod) values ($message,$perso_cod) ";
-    $stmt    = $pdo->query($req);
+
+    $message             = new message;
+    $message->sujet      = 'Dépot';
+    $message->corps      = $perso->perso_nom . ' a effectué un dépot de ' . $qte . ' brouzoufs';
+    $message->expediteur = $perso_cod;
+
+
     if ($tab_lieu['lieu']->type_lieu == 11)
     {
-        $req =
-            "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
+        $req  =
+            " select perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $message->ajouteDestinataire($result['perso_cod']);
+        }
+
     }
     if ($tab_lieu['lieu']->type_lieu == 9)
     {
-        $req =
-            "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
+        $req  =
+            " select perso_cod from perso where perso_admin_echoppe = 'O'  and perso_cod != 605745 ";
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $message->ajouteDestinataire($result['perso_cod']);
+        }
     }
     if ($tab_lieu['lieu']->type_lieu == 21)
     {
-        $req =
-            "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod) select $message,perso_cod from perso where perso_admin_echoppe_noir = 'O' and perso_cod != 605745 ";
+        $req  =
+            " select perso_cod from perso where perso_admin_echoppe_noir = 'O'  and perso_cod != 605745 ";
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch())
+        {
+            $message->ajouteDestinataire($result['perso_cod']);
+        }
     }
-    $stmt = $pdo->query($req);
+    $message->envoieMessage();
 
     $req  = "update lieu set lieu_compte = lieu_compte + $qte where lieu_cod = $mag ";
     $stmt = $pdo->query($req);

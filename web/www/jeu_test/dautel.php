@@ -157,11 +157,7 @@ if ($erreur == 0)
                 //
                 // on contrôle les PA
                 //
-                $req    = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                $pa     = $result['perso_pa'];
-                if ($pa < $param->getparm(110))
+                if ($perso->perso_pa < $param->getparm(110))
                 {
                     echo "<p>Vous n'avez pas assez de PA pour cette action.";
                     break;

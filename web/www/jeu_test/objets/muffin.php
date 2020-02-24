@@ -3,7 +3,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
-
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
@@ -23,20 +23,20 @@ if (!($result = $stmt->fetch()))
     if (isset($_POST['methode']))
     {
         $req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req_pa);
+        $stmt   = $pdo->query($req_pa);
         $result = $stmt->fetch();
-        if ($result['perso_pa'] < 4)
+        if ($perso->perso_pa < 4)
         {
             $contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
         } else
         {
             // ON ENLEVE LES PAs
-            $req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_enl_pa);
+            $perso->perso_pa = $perso_pa - 4;
+            $perso->stocke();
 
             // ON SUPPRIME L'OBJET.
             $req_supr_obj = "select  f_del_objet($num_obj)";
-            $stmt = $pdo->query($req_supr_obj);
+            $stmt         = $pdo->query($req_supr_obj);
             // EFFETS 1 BONUS + 1 MALUS
             $codes         = array("ATT", "ARM", "PAA", "TOU", "DEG", "ESQ", "REG", "DEP");
             $modificateurs = array(1, 1, -1, 5, 1, 5, 1, -1);
@@ -56,11 +56,11 @@ if (!($result = $stmt->fetch()))
             //INSERTION DU BONUS
             $req_bonus =
                 'select ajoute_bonus(' . $perso_cod . ',' . $codes[$bonus_num] . ',' . $bonus_tours . ',' . $bonus_val . ')';
-            $stmt = $pdo->query($req_bonus);
+            $stmt      = $pdo->query($req_bonus);
             //INSERTION DU MALUS
             $req_bonus =
                 'select ajoute_bonus(' . $perso_cod . ',' . $codes[$malus_num] . ',' . $malus_tours . ',' . $malus_val . ')';
-            $stmt = $pdo->query($req_malus);
+            $stmt      = $pdo->query($req_malus);
 
             $contenu_page .= '<p><strong>Vous mangez le muffin. Vous vous sentez très bizarre...</strong></p>';
         }

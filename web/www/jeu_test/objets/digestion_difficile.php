@@ -4,7 +4,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
-
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
@@ -30,20 +30,18 @@ if (!($result = $stmt->fetch()))
 
     if (isset($_POST['methode']))
     {
-        $req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";
-        $stmt   = $pdo->query($req_pa);
-        $result = $stmt->fetch();
-        if ($result['perso_pa'] < 4)
+
+        if ($perso->perso_pa < 4)
         {
             $contenu_page .= '<p><strong>Vous n\'avez pas assez de PA !</strong></p>';
         } else
         {
             // ON ENLEVE LES PAs
-            $req_enl_pa   = "update perso set
-                perso_pa = perso_pa - 4,
-                perso_pv = min(perso_pv + 4, perso_pv_max)
-                where perso_cod = $perso_cod";
-            $stmt         = $pdo->query($req_enl_pa);
+            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pv = min($perso->perso_pv + 4, $perso->perso_pv_max);
+            $perso->stocke();
+
+
             $contenu_page .= '<p><strong>Vous faites un festin et gagnez quelques points de vie... Attention à votre régime.</strong></p>';
             $stmt         = $pdo->query('select lancer_des(1,100) as reussite');
             $result       = $stmt->fetch();

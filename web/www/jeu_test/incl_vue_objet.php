@@ -8,13 +8,10 @@
 		<td class="soustitre2"><p style="text-align:center;"><strong>Y</strong></p></td>
 		<td></td>
 	</tr>
-<?php 
+<?php
 
-$req = "select perso_pa from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-$pa = $result['perso_pa'];
-$req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_generique, tobj_libelle, pos_x, pos_y, pos_etage,
+$pa               = $perso->perso_pa;
+$req_vue_joueur   = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_generique, tobj_libelle, pos_x, pos_y, pos_etage,
 							distance(pos_cod,$pos_cod) as distance, obj_cod as objet, obj_nom, pos_cod, COALESCE(pio_nb_tours, -1) as identifie,
 							COALESCE(obon_libelle, '') as obon_libelle
 						from positions
@@ -28,7 +25,7 @@ $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, obj_nom_gen
 							and pos_y between ($y-$distance_vue) and ($y+$distance_vue) 
 							and pos_etage = $etage
 						order by distance, tobj_libelle, pos_x, pos_y";
-$stmt = $pdo->query($req_vue_joueur);
+$stmt             = $pdo->query($req_vue_joueur);
 $nb_joueur_en_vue = $stmt->rowCount();
 if ($nb_joueur_en_vue != 0)
 {

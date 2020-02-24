@@ -1,5 +1,8 @@
 <?php
 define('APPEL', 1);
+
+$perso = $verif_connexion->perso;
+
 /*
 FORMULE
 FRM_COD
@@ -88,12 +91,9 @@ if (!isset($mag))
 }
 if ($erreur == 0)
 {
-    $req                      =
-        "select perso_admin_echoppe_noir,perso_admin_echoppe from perso where perso_cod = $perso_cod ";
-    $stmt                     = $pdo->query($req);
-    $result                   = $stmt->fetch();
-    $perso_admin_echoppe_noir = $result['perso_admin_echoppe_noir'];
-    $perso_admin_echoppe      = $result['perso_admin_echoppe'];
+
+    $perso_admin_echoppe_noir = $perso->perso_admin_echoppe_noir;
+    $perso_admin_echoppe      = $perso->perso_admin_echoppe;
     $req                      =
         "select lieu_cod,lieu_tlieu_cod,lieu_nom,pos_cod,pos_x,pos_y,etage_libelle,lieu_alignement,lieu_compte,mger_perso_cod ";
     $req                      = $req . "from lieu,lieu_position,positions,etage ";

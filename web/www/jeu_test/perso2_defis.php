@@ -1,11 +1,8 @@
 <?php
 $param     = new parametres();
-$perso     = new perso;
+$perso     = $verif_connexion->perso;
 $fonctions = new fonctions();
-if (!$perso->charge($perso_cod))
-{
-    die('Erreur sur le chargement de perso');
-}
+
 
 $dialogue               = '';
 $erreur                 = false;
@@ -37,7 +34,7 @@ $defi_regles = "
 	2) La demande est transmise au protagoniste B. Il peut choisir d’accompagner A dans sa requête, ou de refuser.<br />
 	3) Si B et A abandonnent de conserve, le match est déclaré nul.<hr /></div>";
 
-$methode          = get_request_var('methode', 'aucune');
+$methode     = get_request_var('methode', 'aucune');
 
 switch ($methode)
 {
@@ -92,9 +89,7 @@ switch ($methode)
             break;
         }
         $defi_numero_cible = fonctions::format($defi_numero_cible, false);
-        $req_nom           = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom               = $pdo->get_value($req_nom, 'perso_nom');
-        $defi_titre        = "$nom vous lance un défi !";
+        $defi_titre        = "$perso->perso_nom vous lance un défi !";
         if ($defi_message == '')
             $defi_message = 'Grand timide, votre adversaire n’a pas daigné agrémenter son geste de paroles.';
         else
@@ -201,10 +196,8 @@ switch ($methode)
             break;
         }
 
-        $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom     = $pdo->get_value($req_nom, 'perso_nom');
 
-        $defi_titre = "$nom relève votre défi !";
+        $defi_titre = "$perso->perso_nom relève votre défi !";
         if ($defi_message == '')
             $defi_message = 'Grand timide, votre adversaire n’a pas daigné agrémenter son geste de paroles.';
         else
@@ -421,9 +414,8 @@ switch ($methode)
             $message_erreur .= 'Il n’est plus possible d’abandonner ce défi !';
             break;
         }
-        $role    = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
-        $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom     = $pdo->get_value($req_nom, 'perso_nom');
+        $role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
+
 
         if ($defi_statut == 0) // Défi pas encore commencé
         {
@@ -434,7 +426,7 @@ switch ($methode)
                 break;
             }
         }
-        $defi_titre = "$nom abandonne le défi.";
+        $defi_titre = "$perso->perso_nom abandonne le défi.";
         if ($defi_message == '')
             $defi_message = 'Grand timide, votre adversaire n’a pas daigné agrémenter son geste de paroles.';
         else
@@ -538,11 +530,10 @@ switch ($methode)
             $message_erreur .= 'Il n’est pas ou plus possible de déclarer ce défi match nul !';
             break;
         }
-        $role    = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
-        $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom     = $pdo->get_value($req_nom, 'perso_nom');
+        $role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 
-        $defi_titre = "$nom demande le match nul pour votre défi.";
+
+        $defi_titre = "$perso->perso_nom demande le match nul pour votre défi.";
         $adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
         if ($defi_message == '')
             $defi_message = 'Grand timide, votre adversaire n’a pas daigné agrémenter son geste de paroles.';
@@ -595,8 +586,7 @@ switch ($methode)
             break;
         }
         $role    = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
-        $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom     = $pdo->get_value($req_nom, 'perso_nom');
+        $nom = $perso->perso_nom;
 
         $defi_titre = "Le défi est déclaré match nul.";
         $adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
@@ -643,11 +633,10 @@ switch ($methode)
             $message_erreur .= 'Il n’est pas ou plus possible de refuser le match nul !';
             break;
         }
-        $role    = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
-        $req_nom = "select perso_nom from perso where perso_cod = $perso_cod";
-        $nom     = $pdo->get_value($req_nom, 'perso_nom');
+        $role = ($defi_cible_cod == $perso_cod) ? 'C' : 'L';  // Cible ou lanceur du défi
 
-        $defi_titre = "$nom refuse le match nul !";
+
+        $defi_titre = "$perso->perso_nom refuse le match nul !";
         $adversaire = ($role == 'C') ? $lanceur_cod : $defi_cible_cod;  // Cible ou lanceur du défi
 
         $defi_message = "Votre adversaire, $nom, a refusé de déclarer comme nul le défi qui vous oppose !

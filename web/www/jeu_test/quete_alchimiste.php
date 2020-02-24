@@ -21,7 +21,7 @@ switch ($type_appel)
 {
     case 0:
         $type_lieu = 99;
-        $nom_lieu = 'une boutique d\'alchimiste';
+        $nom_lieu  = 'une boutique d\'alchimiste';
         define('APPEL', 1);
         include "blocks/_test_lieu.php";
 
@@ -39,12 +39,12 @@ switch ($type_appel)
         if ($erreur != 0)
         {
             $contenu_page .= "Aucun alchimiste n'a pu être détecté dans le coin";
-            $erreur = 1;
+            $erreur       = 1;
         }
         if ($perso->is_fam())
         {
             $contenu_page .= "Un familier ne peut pas contacter un alchimiste directement";
-            $erreur = 1;
+            $erreur       = 1;
         }
         break;
     //
@@ -52,20 +52,20 @@ switch ($type_appel)
     //
     default:
         $contenu_page .= "<p>Erreur sur le type d'appel !";
-        $erreur = 1;
+        $erreur       = 1;
         break;
 }
 $req_comp = "select pcomp_modificateur,pcomp_pcomp_cod from perso_competences 
 	where pcomp_perso_cod = $perso_cod 
 		and pcomp_pcomp_cod in (97,100,101);";
-$stmt = $pdo->query($req_comp);
+$stmt     = $pdo->query($req_comp);
 if ($stmt->rowCount() == 0)
 {
     $comp_alchimie = 0;
 } else
 {
-    $result = $stmt->fetch();
-    $comp_alchimie = $result['pcomp_pcomp_cod'];
+    $result            = $stmt->fetch();
+    $comp_alchimie     = $result['pcomp_pcomp_cod'];
     $pourcent_alchimie = $result['pcomp_modificateur'];
 }
 //
@@ -74,15 +74,15 @@ if ($stmt->rowCount() == 0)
 $req_quete = "select pquete_nombre,pquete_date_debut from quete_perso
 	where pquete_perso_cod = $perso_cod 
 		and pquete_quete_cod = 14;";
-$stmt = $pdo->query($req_quete);
-if($result = $stmt->fetch())
+$stmt      = $pdo->query($req_quete);
+if ($result = $stmt->fetch())
 {
     $quete_partie = $result['pquete_nombre'];
-    $date_debut = $result['pquete_date_debut'];
+    $date_debut   = $result['pquete_date_debut'];
 } else
 {
     $quete_partie = 0;
-    $date_debut = '';
+    $date_debut   = '';
 }
 
 if ($quete_partie == 2)
@@ -98,20 +98,21 @@ if ($quete_partie == 2)
 			and pquete_perso_cod = $perso_cod 
 			and pquete_termine = 'O'
 			and pquete_date_debut > '$date_debut'";
-    $stmt = $pdo->query($req_chasse);
+    $stmt       = $pdo->query($req_chasse);
     if ($stmt->rowCount() != 0 && $quete_partie == 1)
     {
         $controle = 'OK_quete_chasse';
         /*On met à jour la compétence Alchimiste du perso*/
-        $req_comp = "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur) values ($perso_cod,97,20)";
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
+        $req_comp =
+            "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur) values ($perso_cod,97,20)";
+        $stmt     = $pdo->query($req_comp);
+        $result   = $stmt->fetch();
         /*On met à jour l'étape de la quête, pour éviter de retomber sur l'accord pour devenir alchimiste*/
         $req_quete = "update quete_perso set pquete_nombre = 2 
 			where pquete_perso_cod = $perso_cod 
 				and pquete_quete_cod = 14;";
-        $stmt = $pdo->query($req_quete);
-        $result = $stmt->fetch();
+        $stmt      = $pdo->query($req_quete);
+        $result    = $stmt->fetch();
         /*Message spécial d'introduction dans la communauté des alchimistes*/
         $contenu_page .= '<strong>Un bruit étrange et inhabituel vous invite à vous retourner. C’est alors que, sous vos yeux ébahis, se dégage une silhouette intrigante. La femme qui se tient devant vous se tient légèrement vouté bien qu’elle ne paraisse pas particulièrement vieille.</strong><br>';
         $contenu_page .= '<br><em>Enfin, voilà quelqu’un qui est apte à devenir alchimiste. Je vais vous enseigner quelques rudiments de cet art.<br>
@@ -121,7 +122,7 @@ if ($quete_partie == 2)
     }
 }
 
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)
@@ -240,10 +241,8 @@ if ($erreur == 0)
             break;
 
         case "acheter":
-            $req_quete = "select perso_po from perso where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
-            $result = $stmt->fetch();
-            $po = $result['perso_po'];
+
+            $po = $perso->perso_po;
             if ($po < 1000)
             {
                 $contenu_page .= '- «<em> N’essayez donc pas de m’arnarquer ! Assumez votre pauvreté et remplissez votre bourse avant de venir me voir !</em>»
@@ -267,25 +266,22 @@ if ($erreur == 0)
                 $contenu_page .= 'Vous n’avez rien à faire ici !<br><br>';
                 break;
             }
-            $req_quete = "select perso_po,perso_pa from perso where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
-            $result = $stmt->fetch();
-            $po = $result['perso_po']; // Controle des brouzoufs
+            $po = $perso->perso_po; // Controle des brouzoufs
             if ($po < 10000)
             {
                 $contenu_page .= '- «<em> N’essayez donc pas de m’arnarquer ! Assumez votre pauvreté et remplissez votre bourse avant de venir me voir !</em>»
 					<br /><br />';
                 break;
             }
-            $pa = $result['perso_pa'];
+            $pa = $perso->perso_pa;
             if ($pa < 6)
             {
                 $contenu_page .= 'Vous n’avez pas suffisamment de PA pour réaliser cette action
 					<br /><br />';
                 break;
             }
-            $pierres = array();
-            $pluriel = array();
+            $pierres      = array();
+            $pluriel      = array();
             $contenu_page .= '- «<em> ';
             //On Contrôle la présence de pierres précieuses et du nombre de chaque, avec celle rentrant dans le deal
             $req_quete = "select gobj_cod, coalesce(nombre, 0) as nombre
@@ -302,7 +298,7 @@ if ($erreur == 0)
             $stmt = $pdo->query($req_quete);
             while ($result = $stmt->fetch())
             {
-                $objet = $result['gobj_cod'];
+                $objet           = $result['gobj_cod'];
                 $pierres[$objet] = $result['nombre'];
                 $pluriel[$objet] = ($pierres[$objet] > 1) ? 's' : '';
             }
@@ -335,15 +331,17 @@ if ($erreur == 0)
 				f_del_objet_generique(352,$perso_cod),
 				f_del_objet_generique(353,$perso_cod),
 				f_del_objet_generique(353,$perso_cod)";
-            $stmt = $pdo->query($req_quete);
+            $stmt      = $pdo->query($req_quete);
             //On supprime les brouzoufs et les PA
-            $req_quete = "update perso set perso_po = perso_po - 10000, perso_pa = perso_pa - 6 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
+            $req_quete =
+                "update perso set perso_po = perso_po - 10000, perso_pa = perso_pa - 6 where perso_cod = $perso_cod";
+            $stmt      = $pdo->query($req_quete);
             //On insère la nouvelle compétence, on supprime l'ancienne
-            $req_comp = "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','100')";
-            $stmt = $pdo->query($req_comp);
+            $req_comp =
+                "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','100')";
+            $stmt     = $pdo->query($req_comp);
             $req_comp = "delete from perso_competences where pcomp_pcomp_cod = 97 and pcomp_perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_comp);
+            $stmt     = $pdo->query($req_comp);
             break;
 
         case "niv2":
@@ -352,25 +350,22 @@ if ($erreur == 0)
                 $contenu_page .= 'Vous n’avez rien à faire ici !<br><br>';
                 break;
             }
-            $req_quete = "select perso_po,perso_pa from perso where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
-            $result = $stmt->fetch();
-            $po = $result['perso_po']; // Controle des brouzoufs
+            $po = $perso->perso_po; // Controle des brouzoufs
             if ($po < 20000)
             {
                 $contenu_page .= '- «<em> N’essayez donc pas de m’arnarquer ! Assumez votre pauvreté et remplissez votre bourse avant de venir me voir !</em>»
 					<br /><br />';
                 break;
             }
-            $pa = $result['perso_pa']; // Controle des PA
+            $pa = $perso->perso_pa; // Controle des PA
             if ($pa < 10)
             {
                 $contenu_page .= 'Vous n’avez pas suffisamment de PA pour réaliser cette action
 					<br /><br />';
                 break;
             }
-            $pierres = array();
-            $pluriel = array();
+            $pierres      = array();
+            $pluriel      = array();
             $contenu_page .= '- «<em> ';
             //On Contrôle la présence de pierres précieuses et du nombre de chaque, avec celle rentrant dans le deal
             $req_quete = "select gobj_cod, coalesce(nombre, 0) as nombre
@@ -387,7 +382,7 @@ if ($erreur == 0)
             $stmt = $pdo->query($req_quete);
             while ($result = $stmt->fetch())
             {
-                $objet = $result['gobj_cod'];
+                $objet           = $result['gobj_cod'];
                 $pierres[$objet] = $result['nombre'];
                 $pluriel[$objet] = ($pierres[$objet] > 1) ? 's' : '';
             }
@@ -425,15 +420,17 @@ if ($erreur == 0)
 				f_del_objet_generique(337,$perso_cod),
 				f_del_objet_generique(354,$perso_cod),
 				f_del_objet_generique(360,$perso_cod)";
-            $stmt = $pdo->query($req_quete);
+            $stmt      = $pdo->query($req_quete);
             //On supprime les brouzoufs et les PA
-            $req_quete = "update perso set perso_po = perso_po - 20000,perso_pa = perso_pa - 10 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_quete);
+            $req_quete =
+                "update perso set perso_po = perso_po - 20000,perso_pa = perso_pa - 10 where perso_cod = $perso_cod";
+            $stmt      = $pdo->query($req_quete);
             //On insère la nouvelle compétence, on supprime l'ancienne
-            $req_comp = "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','101')";
-            $stmt = $pdo->query($req_comp);
+            $req_comp =
+                "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','101')";
+            $stmt     = $pdo->query($req_comp);
             $req_comp = "delete from perso_competences where pcomp_pcomp_cod = 100 and pcomp_perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_comp);
+            $stmt     = $pdo->query($req_comp);
             break;
     }
 }

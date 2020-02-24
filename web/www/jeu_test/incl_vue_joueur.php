@@ -4,9 +4,7 @@
 <?php
 require_once G_CHE . "includes/fonctions.php";
 $pdo                      = new bddpdo;
-$compte                   = new compte;
 $compte                   = $verif_connexion->compte;
-$perso                    = new perso;
 $perso                    = $verif_connexion->perso;
 $marquerQuatriemes        = $compte->is_admin_monstre();
 $param                    = new parametres();
@@ -25,10 +23,7 @@ if ($result['desorientation'] == 0)
     $desorientation = true;
 }
 $combat_groupe = $param->getparm(56);
-$req           = "select perso_pa from perso where perso_cod = $perso_cod ";
-$stmt          = $pdo->query($req);
-$result        = $stmt->fetch();
-$pa            = $result['perso_pa'];
+$pa            = $perso->perso_pa;
 $pa_n          = $perso->get_pa_attaque();
 
 // On recherche les autres joueurs en vue

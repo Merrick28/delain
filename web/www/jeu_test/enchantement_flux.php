@@ -52,20 +52,16 @@ if($result = $stmt->fetch())
 		break;
 
 		case "detecter2":
-			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req_pa);
-			$result = $stmt->fetch();
-			if ($result['perso_pa'] < $pa)
-			{
-				$contenu_page .= 'Vous n’avez pas assez de PA !';
-				break;
-			}
-			else
-			{
-				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req_enl_pa);
-			}
-			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
+            if ($perso->perso_pa < $pa)
+            {
+                $contenu_page .= 'Vous n’avez pas assez de PA !';
+                break;
+            } else
+            {
+                $perso->perso_pa = $perso->perso_pa - $pa;
+                $perso->stocke();
+            }
+            $contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
 				<table background="../../images/fond5.gif" border="0" cellspacing="0" cellpadding="0" style="margin:15px;">';
 			// POSITION DU JOUEUR
 			$req_position = "select pos_x, pos_y, pos_etage
@@ -110,20 +106,16 @@ if($result = $stmt->fetch())
 			$contenu_page .= afficheLegende();
 		break;
 
-		case "detecter3":
-			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req_pa);
-			$result = $stmt->fetch();
-			if ($result['perso_pa'] < $pa2)
-			{
-				$contenu_page .= 'Vous n’avez pas assez de PA !';
-				break;
-			}
-			else
-			{
-				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa2 where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req_enl_pa);
-			}
+        case "detecter3":
+            if ($perso->perso_pa < $pa2)
+            {
+                $contenu_page .= 'Vous n’avez pas assez de PA !';
+                break;
+            } else
+            {
+                $perso->perso_pa = $perso->perso_pa - $pa2;
+                $perso->stocke();
+            }
 
 			$contenu_page .= '<p><strong>Vous levez le nez, et observez les vents magiques autour de vous.</strong></p>
 				<table background="../../images/fond5.gif" border="0" cellspacing="0" cellpadding="0" style="margin:15px;">';

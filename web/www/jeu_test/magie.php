@@ -1,26 +1,27 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+$perso = $verif_connexion->perso;
 // Vider un réceptacle
 $mess_viderec = '';
 if (isset($_SESSION['redir_viderec']) && $_SESSION['redir_viderec']) {
     $mess_viderec = '<p><em>Le réceptacle a été vidé avec succès.</em></p>';
     $_SESSION['redir_viderec'] = false;
 }
-if (isset($_POST['numrec']) && (int)$_POST['numrec'] > 0) {
+if (isset($_POST['numrec']) && (int)$_POST['numrec'] > 0)
+{
     // Il reste au moins 1 PA
-    $req_restepa = 'select perso_pa from perso where perso_cod=' . $perso_cod;
-    $stmt = $pdo->query($req_restepa);
-    $result = $stmt->fetch();
-    if ($result['perso_pa'] > 0) {
+
+    if ($perso->perso_pa > 0)
+    {
         // Vérif si le réceptacle appartient au personnage
         $req_verifrec = 'select * from recsort 
 			where recsort_perso_cod=' . $perso_cod . ' 
 				and recsort_sort_cod=' . $_POST['numrec'] . '
 			order by recsort_cod asc limit 1';
-        $stmt = $pdo->query($req_verifrec);
-        $result = $stmt->fetch();
-        if ($stmt->rowCount() != 0) {
+        $stmt         = $pdo->query($req_verifrec);
+        $result       = $stmt->fetch();
+        if ($stmt->rowCount() != 0)
+        {
             // Mise à jour des données
             $recsort_cod = $result['recsort_cod'];
             $vre_texte = '[perso_cod1] a libéré un réceptacle.';
@@ -182,16 +183,13 @@ if ($erreur == 0) {
     // -------------------------
     // réceptacles
     // -------------------------
-    $req_r = 'select perso_nb_receptacle from perso where perso_cod= ' . $perso_cod;
-    $stmt = $pdo->query($req_r);
-    $result = $stmt->fetch();
-    $nb_recep = $result['perso_nb_receptacle'];
-    $req = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
+    $nb_recep = $perso->perso_nb_receptacle;
+    $req      = 'select sort_cod,sort_nom,sort_cout,sort_niveau,
                 cout_pa_magie(' . $perso_cod . ',sort_cod,2) as cout from sorts,recsort
                 where recsort_perso_cod = ' . $perso_cod . '
                 and recsort_sort_cod = sort_cod
                 order by sort_niveau,sort_nom';
-    $stmt = $pdo->query($req);
+    $stmt     = $pdo->query($req);
 
     if ($stmt->rowCount() != 0) {
         $contenu_page .= '

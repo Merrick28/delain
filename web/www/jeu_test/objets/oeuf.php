@@ -3,7 +3,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
-
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
@@ -18,17 +18,14 @@ if (!($result = $stmt->fetch()))
     $contenu_page .= "<p>Vous avez beau chercher, il n’y a aucun œuf dans votre sac</p>";
 } else
 {
-    $eclosion     = false;
-    $num_obj      = $result['perobj_obj_cod'];
-    $etat_objet   = $result['obj_etat'];
-    $type_oeuf    = $result['obj_gobj_cod'];
-    $is_familier  = false;
-    $req_familier = "select 1 from perso where perso_cod = $perso_cod and perso_type_perso = 3";
-    $stmt         = $pdo->query($req_familier);
-    if ($result = $stmt->fetch())
-    {
-        $is_familier = true;
-    }
+    $eclosion   = false;
+    $num_obj    = $result['perobj_obj_cod'];
+    $etat_objet = $result['obj_etat'];
+    $type_oeuf  = $result['obj_gobj_cod'];
+
+
+    $is_familier = $perso->is_fam();
+
     $has_familier = false;
     $req_familier =
         "select pfam_familier_cod from perso_familier,perso where pfam_perso_cod = $perso_cod and pfam_familier_cod = perso_cod and perso_actif = 'O'";
@@ -47,15 +44,13 @@ if (!($result = $stmt->fetch()))
 
     if (isset($_POST['methode']))
     {
-        $req_pa = "select perso_pa,perso_nom from perso where perso_cod = $perso_cod";
-        $stmt   = $pdo->query($req_pa);
-        $result = $stmt->fetch();
-        if ($result['perso_pa'] < 4)
+
+        if ($perso->perso_pa < 4)
         {
             $contenu_page .= "<p><strong>Vous n’avez pas assez de PA !</strong></p>";
         } else
         {
-            $perso_nom = $result['perso_nom'];
+            $perso_nom = $perso->perso_nom;
             if ($has_familier)
                 $contenu_page .= "<p>Votre familier vous fait clairement comprendre qu’il n’est pas prêt à vous laisser vous occuper de cet œuf.<br />
 					Peut-être faudrait-il laisser cet objet à quelqu’un qui n’a pas d’animal jaloux ?</p>";

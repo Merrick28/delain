@@ -5,6 +5,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 $methode   = get_request_var('methode', '');
 ob_start();
 include "../includes/fonctions.php";
@@ -174,16 +175,12 @@ switch ($methode)
         if ($is_golem_brz && $pa > 5)
         {
             $px     = 20;
-            $req    =
-                "select perso_px, max(perso_px::integer, min(perso_px::integer + $px, perso_po / 5)) as nv_px from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            if ($result['perso_px'] + 1 <= $result['nv_px'])
+            if ($perso->perso_px + 1 <= max($perso->perso_px + $px, $perso->perso_po))
             {
-                $nv_px  = $result['nv_px'];
-                $req    = "update perso set perso_pa = perso_pa - 6, perso_px = $nv_px where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
+                $nv_px           = intval(max($perso->perso_px + $px, $perso->perso_po));
+                $perso->perso_pa = $perso->perso_pa - 6;
+                $perso->perso_px = $perso->perso_px + $nv_px;
+                $perso->stocke();
                 echo "<br><strong>Miam scrountch miom !</strong> Cette action vous a redonné des PX, en fonction de la quantité de brouzoufs possédée...<br>";
             } else
             {

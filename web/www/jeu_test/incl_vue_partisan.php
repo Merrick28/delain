@@ -21,10 +21,7 @@ else
     $desorientation = true;
 }
 $combat_groupe = $param->getparm(56);
-$req           = "select perso_pa from perso where perso_cod = $perso_cod ";
-$stmt          = $pdo->query($req);
-$result        = $stmt->fetch();
-$pa            = $result['perso_pa'];
+$pa            = $perso->perso_pa;
 $pa_n          = $perso->get_pa_attaque();
 
 $coterie = 1*$coterie;  // Convertion en entier et mise à zero sir vide!

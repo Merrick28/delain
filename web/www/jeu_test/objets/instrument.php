@@ -3,7 +3,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
-
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
@@ -24,29 +24,27 @@ if (!($result = $stmt->fetch()))
 } else {
     $num_obj = $result['perobj_obj_cod'];
   // TRAITEMENT DES ACTIONS.
-	if(isset($_POST['methode'])){
-		$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req_pa);
-        $result = $stmt->fetch();
-        if ($result['perso_pa'] < 2)
-		{
-			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
-		}
-		else
-		{
-			// ON ENLEVE LES PAs
-			$req_enl_pa = "update perso set perso_pa = perso_pa - 2 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_enl_pa);
-			
-			$code_evt = 0;
-			$texte_evt = '';
-			switch ($_POST['style'])
-			{
-				case 'complainte':
-					$code_evt = 70;
-					$texte_evt = '[perso_cod1] a chantonné une complainte romantique.';
-				break;
-				case 'valse':
+	if(isset($_POST['methode']))
+    {
+
+        if ($perso->perso_pa < 2)
+        {
+            $contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
+        } else
+        {
+            // ON ENLEVE LES PAs
+            $perso->perso_pa = $perso_pa - 2;
+            $perso->stocke();
+
+            $code_evt  = 0;
+            $texte_evt = '';
+            switch ($_POST['style'])
+            {
+                case 'complainte':
+                    $code_evt  = 70;
+                    $texte_evt = '[perso_cod1] a chantonné une complainte romantique.';
+                    break;
+                case 'valse':
 					$code_evt = 71;
 					$texte_evt = '[perso_cod1] a interprété une valse classique.';
 				break;

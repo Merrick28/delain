@@ -8,7 +8,6 @@ define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 include "blocks/_test_passage_medaillon.php";
-$perso = new perso;
 $perso = $verif_connexion->perso;
 if ($erreur == 0)
 {
@@ -23,19 +22,11 @@ if ($erreur == 0)
 
             $erreur = 0;
             echo "<p>Merci de rentrer ce mot de passe pour continuer (4PA pour prendre le passage si le mot de passe est correct, 1 PA sinon).";
-            $req    = "select perso_pa from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            if ($result['perso_pa'] < 4)
+            if ($perso->perso_pa < 4)
             {
                 echo "<p>Vous n'avez pas assez de Pa pour tenter !";
                 $erreur = 1;
             }
-            $req    = "select is_noir($perso_cod) as noir ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            //if ($result['noir'] == 1)
-            //{
             $seq = $param->getparm(71);
             //echo "<hr><p style=\"text-align:center;\">Le mot de passe actuel est : <br>";
             echo "<hr><p class='centrer'>Apparement quelqu'un a griffonné le code juste à coté de la porte. : <br>";
@@ -56,10 +47,7 @@ if ($erreur == 0)
             //}
             if ($erreur == 0)
             {
-                $req    = "select perso_pa from perso where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                if ($result['perso_pa'] >= 4)
+                if ($perso->perso_pa >= 4)
                 {
                     ?>
                     <div class="centrer">
@@ -104,18 +92,12 @@ if ($erreur == 0)
             }
             break;
         case "passe":
-            $req    = "select perso_pa from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            if ($result['perso_pa'] >= 4)
+            if ($perso->perso_pa >= 4)
             {
                 require "blocks/_get_rune_combi.php";
                 if ($resultat == $param->getparm(71))
                 {
-                    $req    = "select perso_type_perso from perso where perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    if ($result['perso_type_perso'] == 3)
+                    if ($perso->perso_type_perso == 3)
                     {
                         echo "<p>Erreur ! Un familier ne peut pas se déplacer seul !";
                         break;

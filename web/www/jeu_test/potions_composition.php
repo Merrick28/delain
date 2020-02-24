@@ -204,17 +204,14 @@ if ($result = $stmt->fetch())
                 break;
             }
             //Vérification des Pa et des pxs
-            $req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-            $stmt   = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            if ($result['perso_pa'] < $pa)
+            if ($perso->perso_pa < $pa)
             {
                 $contenu_page .= 'Vous n’avez pas assez de PA !<br />';
                 break;
             } else
             {
-                $req  = 'update perso set perso_pa = perso_pa - ' . $pa . ' where perso_cod = ' . $perso_cod;
-                $stmt = $pdo->query($req);
+                $perso->perso_pa = $perso->perso_pa - $pa;
+                $perso->stocke();
             }
             /*On va chercher  si une potion correspond à la composition de la fiole en question*/
             $query    =

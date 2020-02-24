@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
 
 $erreur = 0;
@@ -36,13 +37,10 @@ $req = "select compt_nom from compte where compt_cod = $compt_cod";
 $stmt = $pdo->query($req);
 $result = $stmt->fetch();
 $compt_nom = $result['compt_nom'];
-$req_pers = "select perso_nom from perso where perso_cod = $perso_cod ";
 
-$stmt_pers = $pdo->query($req_pers);
-if ($result_pers = $stmt_pers->fetch()) {
-    $perso_mod_nom = $result_pers['perso_nom'];
-}
-$log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modifie les statuts du temple $lieu_nom (code : $cod_lieu), X: $pos_x / Y: $pos_y / $etage_libelle\n";
+$perso_mod_nom = $perso->perso_nom;
+$log           =
+    date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modifie les statuts du temple $lieu_nom (code : $cod_lieu), X: $pos_x / Y: $pos_y / $etage_libelle\n";
 
 
 if ($erreur == 0) {

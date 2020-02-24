@@ -60,17 +60,19 @@ switch($methode)
 9	2	Batiment administratif
 */
 		?>
-		<a class="centrer" href="javascript:void(0);" onclick=";getdata('fr_dr.php?t_frdr=<?php echo $t_frdr;?>&methode=choix', 'vue_droite');">Changer d’étage</a>
-<table style="border-spacing : 0;">
-	<td>
-			<table style="border-spacing : 1px;" background="../images/fond5.gif" border="0" cellspacing="1"
+    <a class="centrer" href="javascript:void(0);"
+       onclick="getdata('fr_dr.php?t_frdr=<?php echo $t_frdr; ?>&methode=choix', 'vue_droite');">Changer d’étage</a>
+    <table style="border-spacing : 0;">
+        <td>
+            <table style="border-spacing : 1px;" background="../images/fond5.gif" border="0" cellspacing="1"
                    cellpadding="0">
-	<?php 
-		$req = "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
-		$stmt = $pdo->query($req);
-		if ($stmt->rowCount() == 0)
-		{
-			$droit['modif_perso'] = 'N';
+                <?php
+                $req  =
+                    "select dcompt_modif_perso,dcompt_modif_gmon,dcompt_controle,dcompt_monstre_automap from compt_droit where dcompt_compt_cod = $compt_cod ";
+                $stmt = $pdo->query($req);
+                if ($stmt->rowCount() == 0)
+                {
+                    $droit['modif_perso'] = 'N';
 			$droit['modif_gmon'] = 'N';
 			$droit['controle'] = 'N';
 			$droit['monstre_automap'] = 'N';
@@ -283,12 +285,9 @@ switch($methode)
 				}
 			}
 			else
-			{
-				$req_nom = "select perso_nom from perso where perso_cod=$perso_cod";
-				$stmt = $pdo->query($req_nom);
-				$result = $stmt->fetch();
-				echo '<div style="width:300px;"><p>Qui suis-je&nbsp;? Où vais-je&nbsp;?<br />Dans quelle étagère&nbsp;?<br /><br /> Malgré tous ses efforts, ' . $result['perso_nom'] . ' est incapable de se souvenir d’où il a mis ses pieds...</p></div>';
-			}
+            {
+                echo '<div style="width:300px;"><p>Qui suis-je&nbsp;? Où vais-je&nbsp;?<br />Dans quelle étagère&nbsp;?<br /><br /> Malgré tous ses efforts, ' . $perso->perso_nom . ' est incapable de se souvenir d’où il a mis ses pieds...</p></div>';
+            }
 		}
 ?>
 	</table>

@@ -12,9 +12,6 @@ $perso = new perso;
 $perso = $verif_connexion->perso;
 
 
-$req      = "select perso_type_perso, perso_pa from perso where perso_cod = $perso_cod ";
-$stmt     = $pdo->query($req);
-$result   = $stmt->fetch();
 $pa_perso = $perso->perso_pa;
 if ($perso->perso_type_perso == 3)
 {
@@ -64,8 +61,8 @@ if ($perso->is_locked())
 
 if ($erreur == 0)
 {
-    $pa   = "update perso set perso_pa = max(perso_pa - " . $param->getparm(43) . ",0) where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($pa);
+    $perso->perso_pa = max($perso->perso_pa - $param->getparm(43), 0);
+    $perso->stocke();
 
     $req_pos = "select ppos_pos_cod,pos_x,pos_y,pos_etage 
 		from perso_position,positions 

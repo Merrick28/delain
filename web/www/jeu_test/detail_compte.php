@@ -100,9 +100,6 @@ if ($erreur == 0 && $vcompte != -1)
             $vcompte_lie = $result['compt_compte_lie'];
             break;
     }
-    $req      = "select perso_nom from perso where perso_cod = $perso_cod ";
-    $stmt     = $pdo->query($req);
-    $result   = $stmt->fetch();
     $nom_pers = $perso->perso_nom;
 
     // Détails du compte

@@ -3,6 +3,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 
 
 $contenu_page = '';
@@ -19,30 +20,29 @@ if (!($result = $stmt->fetch()))
 } else {
     $num_obj = $result['perobj_obj_cod'];
   // TRAITEMENT DES ACTIONS.
-	if(isset($_POST['methode'])){
-		$req_pa = "select perso_pa,perso_int from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req_pa);
-        $result = $stmt->fetch();
+	if(isset($_POST['methode']))
+    {
 
-        if ($result['perso_pa'] < 4)
-		{
-			$contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
-		}
-		else
-		{
-            $intel = $result['perso_int'];
-      // ON ENLEVE LES PAs
-			$req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req_enl_pa);
 
-			if($intel < 19){
-				//INSERTION DU MALUS de vue
+        if ($perso->perso_pa < 4)
+        {
+            $contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
+        } else
+        {
+            $intel = $perso->perso_int;
+            // ON ENLEVE LES PAs
+            $perso->perso_pa = $perso_pa - 4;
+            $perso->stocke();
+
+            if ($intel < 19)
+            {
+                //INSERTION DU MALUS de vue
                 $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'VUE\',2,-1)';
-                $stmt = $pdo->query($req_bonus);
-      			//INSERTION DU MALUS de magie
-                $req_bonus = 'select ajoute_bonus(' . $perso_cod . ',\'PAM\',2,1)';
-                $stmt = $pdo->query($req_malus);
-				$contenu_page .= "<p>
+                $stmt      = $pdo->query($req_bonus);
+                //INSERTION DU MALUS de magie
+                $req_bonus    = 'select ajoute_bonus(' . $perso_cod . ',\'PAM\',2,1)';
+                $stmt         = $pdo->query($req_malus);
+                $contenu_page .= "<p>
 					  Votre Intelligence est de <strong>$intel</strong>.<br><br>
 					  C’est très insuffisant pour comprendre ce charabia, vous avez maintenant un très gros mal de crâne...
 					  </p>";

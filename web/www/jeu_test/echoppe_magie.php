@@ -44,11 +44,9 @@ if ($erreur == 0)
         case "acheter":
 
             echo "<p class=\"titre\">Achat d’équipement</p>";
-            $req    = "select perso_po from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
-            $po       = $result['perso_po'];
+
+            echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
+            $po       = $perso->perso_po;
             $lieu_cod = $tab_lieu['lieu_cod'];
             //
             // Changement le 17/02/2011 par Merrick : la fonction f_prix_obj_perso_a dans la requête la ralentit trop, on va essayer de la passer dans la boucle suivante

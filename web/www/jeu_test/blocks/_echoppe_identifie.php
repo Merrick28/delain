@@ -2,10 +2,7 @@
 $verif_connexion::verif_appel();
 $lieu_cod = $tab_lieu['lieu_cod'];
 echo "<p class=\"titre\">Identification d'équipement</p>";
-$req    = "select perso_po from perso where perso_cod = $perso_cod ";
-$stmt   = $pdo->query($req);
-$result = $stmt->fetch();
-echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
+echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
 $req    = "select lieu_marge from lieu where lieu_cod = $lieu_cod ";
 $stmt   = $pdo->query($req);
 $result = $stmt->fetch();

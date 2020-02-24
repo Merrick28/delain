@@ -2,16 +2,15 @@
 include "blocks/_header_page_jeu.php";
 ob_start();
 $erreur = 0;
-$perso  = new perso;
 $perso  = $verif_connexion->perso;
 if ($perso->is_milice() == 0)
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-$req                =
+$req  =
     "select pguilde_rang_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_rang_cod = 3 ";
-$stmt               = $pdo->query($req);
+$stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
@@ -19,7 +18,7 @@ if ($stmt->rowCount() == 0)
 }
 if ($erreur == 0)
 {
-    $methode          = get_request_var('methode', 'debut');
+    $methode = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -197,62 +196,46 @@ if ($erreur == 0)
                 values ($perso_cod,$perso,$type,$duree) ";
                 $stmt = $pdo->query($req);
                 echo "<p>La peine a bien été enregistrée.";
-                $req         = "select peine_cod,peine_type,perso_nom from peine,perso where peine_perso_cod = $perso 
+                $req      = "select peine_cod,peine_type,perso_nom from peine,perso where peine_perso_cod = $perso 
                 and perso_cod = $perso_cod ";
-                $stmt        = $pdo->query($req);
-                $result      = $stmt->fetch();
-                $peine[0]    = "Peine de mort";
-                $peine[1]    = "Emprisonnement limité";
-                $peine[2]    = "Emprisonnement à pertpétuité";
-                $titre       = "Condamnation.";
-                $v_peine     = $result['peine_type'];
-                $v_faite     = $result['peine_faite'];
-                $texte       =
-                    "Le joueur " . $result['perso_nom'] . ", en tant que Magistrat de la Milice d'Hormandre III, a émis une condamnation contre vous.<br />";
-                $texte       =
-                    $texte . "La condamnation est : <strong>" . $peine[$v_peine] . "</strong> et est enrgistrée sous le dossier <strong>" . $result['peine_cod'] . "</strong>.";
-                $texte       = str_replace("'", "\'", $texte);
-                $req_num_mes = "select nextval('seq_msg_cod') as num_mes";
-                $stmt        = $pdo->query($req_num_mes);
-                $result      = $stmt->fetch();
-                $num_mes     = $result['num_mes'];
-                $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2) 
-                values ($num_mes, now(), '$titre', '$texte', now()) ";
-                $stmt        = $pdo->query($req_mes);
-                // on renseigne l'expéditeur
-                $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive)
-                values ($num_mes,$perso_cod,'N') ";
                 $stmt     = $pdo->query($req);
-                $req_dest =
-                    "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
-                $stmt     = $pdo->query($req_dest);
+                $result   = $stmt->fetch();
+                $peine[0] = "Peine de mort";
+                $peine[1] = "Emprisonnement limité";
+                $peine[2] = "Emprisonnement à pertpétuité";
+
+                $v_peine = $result['peine_type'];
+                $v_faite = $result['peine_faite'];
+
+                $texte =
+                    "Le joueur " . $result['perso_nom'] . ", en tant que Magistrat de la Milice d'Hormandre III, a émis une condamnation contre vous.<br />";
+                $texte =
+                    $texte . "La condamnation est : <strong>" . $peine[$v_peine] . "</strong> et est enrgistrée sous le dossier <strong>" . $result['peine_cod'] . "</strong>.";
+
+                $message             = new message;
+                $message->sujet      = "Condamnation.";
+                $message->corps      = $texte;
+                $message->expediteur = $perso_cod;
+                $message->ajouteDestinataire($perso);
+                $message->envoieMessage();
+                unset($message);
             }
             break;
         case "suppr":
             $req  = "delete from peine where peine_cod = $peine ";
             $stmt = $pdo->query($req);
             echo "<p>La peine a été retirée.";
-            $titre       = "Suppression de peine.";
-            $req         = "select perso_nom from perso where perso_cod = $perso_cod ";
-            $stmt        = $pdo->query($req);
-            $result      = $stmt->fetch();
-            $texte       =
-                "Le joueur " . $result['perso_nom'] . ", en tant que Magistrat de la Milice d'Hormandre III, a levé la peine qui était émise contre vous.<br />";
-            $texte       = str_replace("'", "\'", $texte);
-            $req_num_mes = "select nextval('seq_msg_cod') as num_mes";
-            $stmt        = $pdo->query($req_num_mes);
-            $result      = $stmt->fetch();
-            $num_mes     = $result['num_mes'];
-            $req_mes     = "insert into messages (msg_cod,msg_date,msg_titre,msg_corps,msg_date2)
-            values ($num_mes, now(), '$titre', '$texte', now()) ";
-            $stmt        = $pdo->query($req_mes);
-            // on renseigne l'expéditeur
-            $req      = "insert into messages_exp (emsg_msg_cod,emsg_perso_cod,emsg_archive) 
-            values ($num_mes,$perso_cod,'N') ";
-            $stmt     = $pdo->query($req);
-            $req_dest =
-                "insert into messages_dest (dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values ($num_mes,$perso,'N','N') ";
-            $stmt     = $pdo->query($req_dest);
+
+            $message             = new message;
+            $message->sujet      = "Suppression de peine.";
+            $message->corps      =
+                "Le joueur " . $perso->perso_nom . ", en tant que Magistrat de la Milice d'Hormandre III, a levé la peine qui était émise contre vous.<br />";
+            $message->expediteur = $perso_cod;
+            $message->ajouteDestinataire($perso);
+            $message->envoieMessage();
+            unset($message);
+
+
             break;
 
 

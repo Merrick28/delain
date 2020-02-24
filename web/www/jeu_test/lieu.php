@@ -4,7 +4,6 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 define("APPEL", 1);
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 if ($perso->is_lieu())
 {

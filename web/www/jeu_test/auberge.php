@@ -8,7 +8,6 @@ $param        = new parametres();
 
 $type_lieu = 4;
 $nom_lieu  = 'une auberge';
-$perso     = new perso;
 $perso     = $verif_connexion->perso;
 
 define('APPEL', 1);
@@ -101,15 +100,12 @@ if ($erreur == 0)
 
 
         case "repos":
-            $req_pa =
-                'select perso_pa,perso_pv,perso_pv_max,perso_po,perso_sex from perso where perso_cod = ' . $perso_cod;
-            $stmt   = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            $nb_pa  = $result['perso_pa'];
-            $prix   = $nb_pa * 2;
-            $sexe   = $result['perso_sex'];
 
-            if ($result['perso_po'] < $prix)
+            $nb_pa = $perso->perso_pa;
+            $prix  = $nb_pa * 2;
+            $sexe  = $perso->perso_sex;
+
+            if ($perso->perso_po < $prix)
             {
                 $contenu_page .= '<p>Vous savez, ' . $nom_sexe[$sexe] . ', nous n\'apprécions pas vraiment le genre de personnes qui n\'ont pas de quoi payer ce qu\'elles demandent.<br />
 					Revenez quand vous poches seront plus pleines, ou bien allez dormir dehors, au milieu des monstres.';
@@ -118,17 +114,15 @@ if ($erreur == 0)
             {
                 $gain_pv = $nb_pa * 1.5;
                 $gain_pv = round($gain_pv);
-                $diff_pv = $result['perso_pv_max'] - $result['perso_pv'];
+                $diff_pv = $perso->perso_pv_max - $perso->perso_pv;
                 if ($gain_pv > $diff_pv)
                 {
                     $gain_pv = $diff_pv;
                 }
-                $req_repos    = 'update perso
-					set perso_pv = perso_pv + ' . $gain_pv . ',
-					perso_pa = 0,
-					perso_po = perso_po - ' . $prix . '
-					where perso_cod = ' . $perso_cod;
-                $stmt         = $pdo->query($req_repos);
+                $perso->perso_pv = $perso->perso_pv + $gain_pv;
+                $perso->perso_pa = 0;
+                $perso->perso_po = $perso->perso_po - $prix;
+                $perso->stocke();
                 $contenu_page .= '<p>Vous vous êtes bien reposé. Vous avez regagné <strong>' . $gain_pv . '</strong> PV';
 
             }
@@ -238,14 +232,10 @@ if ($erreur == 0)
         case "ecoute_rumeur":
             $erreur = 0;
 
-            $req_pa = 'select perso_po,perso_sex from perso where perso_cod = ' . $perso_cod;
-            $stmt   = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            $nb_po  = $result['perso_po'];
-            $prix   = 20;
-            $sexe   = $result['perso_sex'];
+            $prix = 20;
+            $sexe = $perso->perso_sex;
 
-            if ($result['perso_po'] < $prix)
+            if ($perso->perso_po < $prix)
             {
                 $contenu_page .= '<p>Vous savez, ' . $nom_sexe[$sexe] . ', nous n\'apprécions pas vraiment le genre de personnes qui n\'ont pas de quoi payer ce qu\'elles demandent.<br />
 				Revenez quand vous poches seront plus pleines, ou bien allez boire ailleurs.';
@@ -253,8 +243,9 @@ if ($erreur == 0)
             }
             if ($erreur == 0)
             {
-                $req  = "update perso set perso_po = perso_po - 20 where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
+                $perso->perso_po = $perso->perso_po - 20;
+                $perso->stocke();
+
 
                 $req          = "select choix_rumeur() as rumeur ";
                 $stmt         = $pdo->query($req);

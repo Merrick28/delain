@@ -124,17 +124,15 @@ if($result = $stmt->fetch())
 
 		case "compo":
             $erreur = 0;
-			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req_pa);
-			$result = $stmt->fetch();
-			if ($result['perso_pa'] < $pa)
-			{
-				$contenu_page .= 'Vous n’avez pas assez de PA !<br>';
-				break;
-			}
-			$potion = (int)$_POST['potion'];
-			$req = 'select pfrm_frm_cod,gobj_nom,gobj_cod, frm_comp_cod from objet_generique,perso_formule,formule_produit, formule
-				where pfrm_perso_cod = '. $perso_cod .'
+
+            if ($perso->perso_pa < $pa)
+            {
+                $contenu_page .= 'Vous n’avez pas assez de PA !<br>';
+                break;
+            }
+            $potion = (int)$_POST['potion'];
+            $req    = 'select pfrm_frm_cod,gobj_nom,gobj_cod, frm_comp_cod from objet_generique,perso_formule,formule_produit, formule
+				where pfrm_perso_cod = ' . $perso_cod . '
 					and gobj_cod = frmpr_gobj_cod
 					and frmpr_frm_cod	= pfrm_frm_cod
 					and frm_cod = pfrm_frm_cod
@@ -155,17 +153,17 @@ if($result = $stmt->fetch())
 			/*L'ensemble des controles est réalisé dans la fonction*/
 
 			if ($erreur != 1)
-			{
-				$req = 'update perso set perso_pa = perso_pa - '. $pa .' where perso_cod = '. $perso_cod;
-				$stmt = $pdo->query($req);
+            {
+                $perso->perso_pa = $perso->perso_pa - $pa;
+                $perso->stocke();
 
-				$contenu_page .= '<img src="http://www.jdr-delain.net/images/pos1.gif"><br>Vous êtes en train de préparer la potion !<br>';
-				$req = 'select potions.compo_potion_connue('. $perso_cod .','. $potion .') as resultat';
-				$stmt = $pdo->query($req);
-				$result = $stmt->fetch();
-				$result = explode(';',$result['resultat']);
-				$contenu_page .= '<br>'. $result[1] . '<br>';
-			}
+                $contenu_page .= '<img src="http://www.jdr-delain.net/images/pos1.gif"><br>Vous êtes en train de préparer la potion !<br>';
+                $req          = 'select potions.compo_potion_connue(' . $perso_cod . ',' . $potion . ') as resultat';
+                $stmt         = $pdo->query($req);
+                $result       = $stmt->fetch();
+                $result       = explode(';', $result['resultat']);
+                $contenu_page .= '<br>' . $result[1] . '<br>';
+            }
 		break;
 
 		case "description":

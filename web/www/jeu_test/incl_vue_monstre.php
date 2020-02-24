@@ -20,10 +20,7 @@
     else
         $desorientation = true;
     $combat_groupe = $parm->getparm(56);
-    $req           = "select perso_pa from perso where perso_cod = $perso_cod ";
-    $stmt          = $pdo->query($req);
-    $result        = $stmt->fetch();
-    $pa            = $result['perso_pa'];
+    $pa            = $perso->perso_pa;
     $pa_n          = $perso->get_pa_attaque();
 
     $req_vue_joueur = "select trajectoire_vue($pos_cod,pos_cod) as traj, perso_tangible, perso_description, perso_desc_long, perso_nom,

@@ -1,7 +1,6 @@
 <?php // on regarde si le joueur est bien sur un lieu
 $erreur = 0;
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 
 if (!$perso->is_lieu())

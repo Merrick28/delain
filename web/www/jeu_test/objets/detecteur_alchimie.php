@@ -3,36 +3,34 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
-
+$perso     = $verif_connexion->perso;
 
 $contenu_page = '';
 
 
-$req_matos    = "select perobj_obj_cod from perso_objets,objets
+$req_matos = "select perobj_obj_cod from perso_objets,objets
 												where perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod and obj_gobj_cod = 726 ";
-$stmt         = $pdo->query($req_matos);
+$stmt      = $pdo->query($req_matos);
 if ($result = $stmt->fetch())
 {
     $baguette = $result['perobj_obj_cod'];
     if (isset($_POST['methode']))
     {
-        $req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $stmt   = $pdo->query($req_pa);
-        $result = $stmt->fetch();
-        if ($result['perso_pa'] < 1)
+
+        if ($perso->perso_pa < 1)
         {
             $contenu_page .= 'Vous n\'avez pas assez de PA !';
         } else
         {
-            $req_use      = "select use_artefact($baguette)";
-            $stmt         = $pdo->query($req_use);
-            $req_enl_pa   = "update perso set perso_pa = perso_pa - 1 where perso_cod = $perso_cod";
-            $stmt         = $pdo->query($req_enl_pa);
+            $req_use         = "select use_artefact($baguette)";
+            $stmt            = $pdo->query($req_use);
+            $perso->perso_pa = $perso_pa - 1;
+            $perso->stocke();
             $contenu_page .= '	<p>La baguette fait son office et affiche les champs de composants présents dans les environs
 				<br>Cela ne signifie pas que des composants seront réellement présents, notamment si quelqu\'un les a ramassé avant vous ...</p>
 				<center>';
             // POSITION DU JOUEUR
-            $contenu_page    .= '<br><br>Table de description des composants présents :<br>
+            $contenu_page .= '<br><br>Table de description des composants présents :<br>
 									<table border="1">
 									<tr>
 										<td width="20" height="20"><div style="width:25px;height:25px;background:#FFFF99"></div></td><td>Pomme</td>

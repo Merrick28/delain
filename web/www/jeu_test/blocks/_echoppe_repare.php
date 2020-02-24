@@ -2,10 +2,7 @@
 $verif_connexion::verif_appel();
 $lieu_cod = $tab_lieu['lieu_cod'];
 echo "<p class=\"titre\">Réparation d'équipement</p>";
-$req    = "select perso_po from perso where perso_cod = $perso_cod ";
-$stmt   = $pdo->query($req);
-$result = $stmt->fetch();
-echo "<p>Vous avez actuellement <strong>" . $result['perso_po'] . "</strong> brouzoufs. ";
+echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
 $req  = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle ";
 $req  = $req . "from objet_generique,objets,perso_objets,type_objet ";
 $req  = $req . "where perobj_perso_cod = $perso_cod ";

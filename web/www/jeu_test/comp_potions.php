@@ -1,6 +1,7 @@
-<?php 
-define("APPEL",1);
+<?php
+define("APPEL", 1);
 include "blocks/_header_page_jeu.php";
+$perso        = $verif_connexion->perso;
 $contenu_page .= '
 <script language="javascript" src="javascripts/modif_etage.js"></script>';
 // contenu de la page
@@ -101,39 +102,38 @@ $contenu_page .= '
 
 for ($cpt = 1; $cpt < $nb; $cpt++)
 {
-	if($cpt == $tpot)
-	{
-		$style = 'onglet';
-		$lien = '';
-		$f_lien = '';
-		
-	}
-	else
-	{
+    if ($cpt == $tpot)
+    {
+        $style  = 'onglet';
+        $lien   = '';
+        $f_lien = '';
+
+    } else
+    {
         $style  = 'pas_onglet';
         $lien   = '<a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $cpt . '">';
         $f_lien = '</a>';
     }
-	$contenu_page .= '<td class="' . $style .'"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
+    $contenu_page .= '<td class="' . $style . '"><div style="text-align:center">' . $lien . $ong[$cpt] . $f_lien . '</div></td>';
 }
 $contenu_page .= '
 	</tr>
 	<tr>
-	<td colspan="' . $nb. '" class="reste_onglet">';
-$req_comp = "select pcomp_modificateur from perso_competences 
+	<td colspan="' . $nb . '" class="reste_onglet">';
+$req_comp     = "select pcomp_modificateur from perso_competences 
 			where pcomp_perso_cod = $perso_cod 
 				and pcomp_pcomp_cod in (97,100,101);";
-$stmt = $pdo->query($req_comp);
-if($stmt->rowCount() != 0)
+$stmt         = $pdo->query($req_comp);
+if ($stmt->rowCount() != 0)
 {
-	$controle = 1;
+    $controle = 1;
 }
-switch($tpot)
+switch ($tpot)
 {
-	case "1": // Recherche d’ingrédients
-		if($controle == 1)
-		{
-			$contenu_page .= '<span align="center"><strong>Les composants</strong></span>
+    case "1": // Recherche d’ingrédients
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Les composants</strong></span>
 				(<a href="javascript:blocking(\'aide2\');">Aide</a>)<br><br>
 				<div id="aide2" class="tableau2"  style="display:none;">
 				<p><strong>Recherche de composants :</strong>
@@ -150,16 +150,15 @@ switch($tpot)
 				<br>';
             include "potions_detect_composants.php";
             $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '"><br>Retour à l’onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
         }
-		else
-		{
-			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
-		}
-	break;
-	case "2": // Cueillette des composants
-		if($controle == 1)
-		{
-			$contenu_page .= '<span align="center"><strong>Cueillir des composants ?</strong></span>
+        break;
+    case "2": // Cueillette des composants
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Cueillir des composants ?</strong></span>
 			(<a href="javascript:blocking(\'aide3\');">Aide</a>)<br><br>
 				<div id="aide3" class="tableau2"  style="display:none;">
 				<p><strong>Après les detecter, il faut les cueillir :</strong>
@@ -174,16 +173,15 @@ switch($tpot)
 				<br>';
             include "potions_recup_composant.php";
             $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
         }
-		else
-		{
-			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
-		}
-	break;
-	case "3": // Fabrication de potions
-		if($controle == 1)
-		{
-			$contenu_page .= '<span align="center"><strong>Fabriquer une potion</strong></span>
+        break;
+    case "3": // Fabrication de potions
+        if ($controle == 1)
+        {
+            $contenu_page .= '<span align="center"><strong>Fabriquer une potion</strong></span>
 			(<a href="javascript:blocking(\'aide4\');">Aide</a>)<br><br>
 				<div id="aide4" class="tableau2"  style="display:none;">
 				<p><strong>Et que faire de tous ces composants ??</strong>
@@ -207,14 +205,13 @@ switch($tpot)
 
             include "potions_composition.php";
             $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
         }
-		else
-		{
-			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
-		}
-	break;
-	case "4": // Potions connues
-		if($controle == 1)
+        break;
+    case "4": // Potions connues
+        if ($controle == 1)
         {
             $contenu_page .= '<span align="center"><strong>Je connais la formule !</strong></span>
 				(<a href="javascript:blocking(\'aide5\');">Aide</a>)<br><br>
@@ -226,15 +223,14 @@ switch($tpot)
 				<br>';
             include "potions_connues.php";
             $contenu_page .= '<br><a href="' . $_SERVER['PHP_SELF'] . '?tpot=' . $tpot . '">Retour à l’onglet sélectionné</a>';
+        } else
+        {
+            $contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
         }
-		else
-		{
-			$contenu_page .= '<br />Vous n’avez pas les compétences pour réaliser ces opérations';
-		}
-	break;
-	case "5": // Mélange de potions
-		$contenu_page .= '<br />À venir';
-	break;
+        break;
+    case "5": // Mélange de potions
+        $contenu_page .= '<br />À venir';
+        break;
 }
 $contenu_page .= '</td></tr></table>';
 //

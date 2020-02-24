@@ -18,23 +18,23 @@ include "../includes/constantes.php";
     $nom_lieu = 'une porte monumentale';
     define('APPEL', 1);
     include "blocks/_test_lieu.php";
+    $perso = $verif_connexion->perso;
 
     $methode          = get_request_var('methode', 'debut');
-    if ($erreur == 0) {
-        $req = "select perso_pnj from perso where perso_cod = $perso_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $quatrieme = $result['perso_pnj'] == 2;
+    if ($erreur == 0)
+    {
 
-        $req = "select lpos_lieu_cod,pos_etage, pos_cod from lieu_position,perso_position,positions
+        $quatrieme = $perso->perso_pnj == 2;
+
+        $req          = "select lpos_lieu_cod,pos_etage, pos_cod from lieu_position,perso_position,positions
 		where ppos_perso_cod = $perso_cod 
 			and ppos_pos_cod = lpos_pos_cod 
 			and ppos_pos_cod = pos_cod";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
-        $lieu_cod = $result['lpos_lieu_cod'];
+        $stmt         = $pdo->query($req);
+        $result       = $stmt->fetch();
+        $lieu_cod     = $result['lpos_lieu_cod'];
         $etage_numero = $result['pos_etage'];
-        $pos_cod = $result['pos_cod'];
+        $pos_cod      = $result['pos_cod'];
         switch ($methode) {
             case "entrer_donjon":
 

@@ -1,24 +1,26 @@
 <?php
 include "blocks/_header_page_jeu.php";
+
+$perso = $verif_connexion->perso;
+
 ob_start();
 ?>
     <script language="javascript" src="javascripts/changestyles.js"></script>
 <?php
 $erreur = 0;
-$req = "select perso_admin_echoppe_noir from perso where perso_cod = $perso_cod ";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-if ($result['perso_admin_echoppe_noir'] != 'O') {
+if ($perso->perso_admin_echoppe_noir != 'O')
+{
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
-if ($erreur == 0) {
+if ($erreur == 0)
+{
     //
     // en premier on liste les magasins et leur gérant éventuel
     //
     // on commence par les magasins avec gérants
     echo "<p class=\"titre\">Magasins avec gérants</p>";
-    $req = "select lieu_cod,lieu_nom,lieu_marge,lieu_prelev,lieu_compte,pos_x,pos_y,etage_libelle,perso_nom ";
+    $req  = "select lieu_cod,lieu_nom,lieu_marge,lieu_prelev,lieu_compte,pos_x,pos_y,etage_libelle,perso_nom ";
     $req = $req . "from lieu,lieu_position,positions,etage,perso,magasin_gerant ";
     $req = $req . "where lieu_cod = lpos_lieu_cod ";
     $req = $req . "and lieu_tlieu_cod in (21,11,14) ";

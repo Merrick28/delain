@@ -1,7 +1,9 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
-$erreur = 0;
+$erreur    = 0;
+$temps_dlt = $_REQUEST['temps_dlt'];
 if (!isset($temps_dlt))
 {
     echo("<p>Vous devez saisir une valeur de temps !!");
@@ -42,13 +44,12 @@ if ($erreur == 0)
             $temps_dlt = round($temps_dlt);
             $req       =
                 "update perso set perso_dlt = perso_dlt + '$temps_dlt minutes'::interval where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
+            $stmt      = $pdo->query($req);
+            $perso->charge($perso_cod);
 
             echo("<p>Votre DLT a bien été repoussée de $temps_dlt minutes. ");
-            $req2 = "select to_char(perso_dlt,'dd/mm/yyyy hh24:mi:ss') as dlt from perso where perso_cod = $perso_cod";
-            $stmt = $pdo->query($req2);
-            $result = $stmt->fetch();
-            printf("<p>Votre nouvelle DLT est à <strong>%s</strong>.", $result['dlt']);
+
+            echo "<p>Votre nouvelle DLT est à <strong>" . format_date($perso->perso_dlt) . "</strong>.";
             break;
     }
 }

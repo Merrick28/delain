@@ -2,7 +2,6 @@
 
 include_once "../includes/constantes.php";
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 $param = new parametres();
 
@@ -324,19 +323,16 @@ if ($erreur == 0)
 
         case "tournee":
             $erreur = 0;
-            $req_pa = "select perso_pa,perso_po,perso_sex from perso where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req_pa);
-            $result = $stmt->fetch();
-            $nb_po  = $result['perso_po'];
+            $nb_po  = $perso->perso_po;
             $prix   = 50;
-            $sexe   = $result['perso_sex'];
+            $sexe   = $perso->perso_sex;
 
-            if ($result['perso_po'] < $prix)
+            if ($perso->perso_po < $prix)
             {
                 echo("<p>Vous savez, $nom_sexe[$sexe], nous ne vous inscrirons pas si vous n'avez pas de quoi payer la somme de 50 brouzoufs !<br />");
                 $erreur = 1;
             }
-            if ($result['perso_pa'] < 1)
+            if ($perso->perso_pa < 1)
             {
                 echo("<p>pas assez de PA....<br />");
                 $erreur = 1;

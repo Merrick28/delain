@@ -80,19 +80,16 @@ switch ($methode)
         $req_comp = "select count(*),gobj_nom,obj_gobj_cod from objets,objet_generique,perso_objets 
 									where gobj_cod = $pierre
 									 and gobj_cod = obj_gobj_cod and perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod group by obj_gobj_cod,gobj_nom";
-        $stmt = $pdo->query($req_comp);
+        $stmt     = $pdo->query($req_comp);
         if ($stmt->rowCount() == 0)
         {
             $contenu_page .= '<strong>Vous ne possédez pas la pierre en question !</strong><br>';
             break;
         }
 
-        $req_comp = "select perso_energie,perso_pa from perso 
-										where perso_cod = " . $perso_cod;
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
-        $perso_energie = $result['perso_energie'];
-        $pa = $result['perso_pa'];
+
+        $perso_energie = $perso->perso_energie;
+        $pa            = $perso->perso_pa;
 
         //On vérifie les pa
         if ($pa < $param->getparm(113))
@@ -102,7 +99,7 @@ switch ($methode)
         }
 
         //On regarde l'énergie de la case : niveau minimum nécessaire, et risque si le niveau est trop élevé. 1000 est un niveau mini
-        $req_comp = "select pos_magie,pos_cod from positions,perso_position 
+        $req_comp       = "select pos_magie,pos_cod from positions,perso_position 
 									where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod";
         $stmt = $pdo->query($req_comp);
         $result = $stmt->fetch();
@@ -255,37 +252,34 @@ switch ($methode)
         // Temporaire : vents infinis pour le marché de Léno 2013
         if ($position != 152794)    // == -6 / -7 dans la Halle Merveilleuse
         {
-            $req = 'update positions set pos_magie = pos_magie - 500 where pos_cod = ' . $position;
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $req          = 'update positions set pos_magie = pos_magie - 500 where pos_cod = ' . $position;
+            $stmt         = $pdo->query($req);
+            $result       = $stmt->fetch();
             $contenu_page .= '<br><br>La puissance magique de ce lieu a fortement diminué.';
         }
 
-        $req_comp = "select perso_pa from perso where perso_cod = " . $perso_cod;
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
-        $pa = $result['perso_pa'];
 
-        if ($perte_pa > $pa)
+        if ($perte_pa > $perso->perso_pa)
         {
-            $req = 'update perso set perso_energie = perso_energie - ' . $energie_necessaire . ',perso_pa = 0,perso_px = perso_px + ' . $px_gagne . ', perso_renommee_artisanat = perso_renommee_artisanat + (' . $gain_renommee . ') where perso_cod = ' . $perso_cod;
-        }
-        else
+            $perso->perso_pa = 0;
+        } else
         {
-            $req = 'update perso set perso_energie = perso_energie - ' . $energie_necessaire . ',perso_pa = perso_pa - ' . $perte_pa . ',perso_px = perso_px + ' . $px_gagne . ', perso_renommee_artisanat = perso_renommee_artisanat + (' . $gain_renommee . ')  where perso_cod = ' . $perso_cod;
+            $perso->perso_pa = $perso->perso_pa - $perte_pa;
         }
+        $perso->perso_energie            = $perso->perso_energie - $energie_necessaire;
+        $perso->perso_px                 = $perso->perso_px + $px_gagne;
+        $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat + $gain_renommee;
+        $perso->stocke();
 
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
         $contenu_page .= '<br>Vous vous sentez assez épuisé, il va vous falloir récupérer un peu d’énergie avant de pouvoir espérer créer un autre composant d’enchantement.';
         //On supprime la pierre précieuse
-        $req = 'select f_del_objet_generique(' . $pierre . ',' . $perso_cod . ') as resultat';
-        $stmt = $pdo->query($req);
+        $req    = 'select f_del_objet_generique(' . $pierre . ',' . $perso_cod . ') as resultat';
+        $stmt   = $pdo->query($req);
         $result = $stmt->fetch();
         if ($puissance_case > 5000)
         {
             $contenu_page .= '<br><br>Malheureusement, la puissance a cet endroit était trop importante. Vous en subissez quelques ratées<br>';
-            $req = 'select enchantement_rate(' . $perso_cod . ') as resultat';
+            $req          = 'select enchantement_rate(' . $perso_cod . ') as resultat';
             $stmt = $pdo->query($req);
             $result = $stmt->fetch();
             $contenu_page .= $result['resultat'];

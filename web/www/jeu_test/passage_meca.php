@@ -6,6 +6,7 @@ $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
+$perso     = $verif_connexion->perso;
 $param     = new parametres();
 // on regarde si le joueur est bien sur une passage
 $perso     = new perso;
@@ -93,27 +94,21 @@ if ($erreur == 0)
                     $erreur = 1;
                 }
                 // CONTROLE: FAMILIER
-                $req    = "select perso_type_perso from perso where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                if ($result['perso_type_perso'] == 3)
+
+                if ($perso->perso_type_perso == 3)
                 {
                     echo "<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>";
                     $erreur = 1;
                 }
                 // CONTROLE: ARGENT DISPONIBLE
-                $req_or = "select perso_po,perso_pa from perso where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req_or);
-                $result = $stmt->fetch();
-                $nb_or  = $result['perso_po'];
-                if ($nb_or < $cout)
+
+                if ($perso->perso_po < $cout)
                 {
                     $erreur = 1;
                     echo "<p>Vous n'avez pas assez d'argent dans votre bourse</p>";
                 }
                 // CONTROLE: PA DISPONIBLE
-                $nb_pa = $result['perso_pa'];
-                if ($nb_pa < $cout_pa)
+                if ($perso->perso_pa < $cout_pa)
                 {
                     $erreur = 1;
                     echo "<p>Vous n'avez pas assez de pa pour réaliser ce déplacement.</p>";
@@ -122,8 +117,8 @@ if ($erreur == 0)
                 if ($erreur == 0)
                 {
                     // RETRAIT DE LA SOMME
-                    $req_or = "update perso set perso_po = perso_po - $cout where perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req_or);
+                    $perso->perso_po = $perso->perso_po - $cout;
+                    $perso->stocke();
                     echo "<p>Vous payez $cout Br pour passer.</p>";
                     require "blocks/_passage_meca.php";
                 }
@@ -137,10 +132,7 @@ if ($erreur == 0)
                     $erreur = 1;
                 }
                 /* On se déplace */
-                $req    = "select perso_type_perso from perso where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                if ($result['perso_type_perso'] == 3)
+                if ($perso->perso_type_perso == 3)
                 {
                     echo "<p>Erreur ! Un familier ne peut pas se déplacer seul !</p>";
                     $erreur = 1;

@@ -207,10 +207,7 @@ if ($erreur == 0)
                 $depot_guilde = floor((1.0 - $numero / 100.0) * $quantite);
 
                 // CONTROLE: ARGENT DISPONIBLE
-                $req_or = "select perso_po from perso where perso_cod = $perso_cod ";
-                $stmt   = $pdo->query($req_or);
-                $result = $stmt->fetch();
-                $nb_or  = $result['perso_po'];
+                $nb_or = $perso->perso_po;
                 if ($nb_or < $quantite)
                 {
                     $erreur = 1;
@@ -229,8 +226,8 @@ if ($erreur == 0)
                 if ($erreur == 0)
                 {
                     // RETRAIT DE LA SOMME
-                    $req_or = "update perso set perso_po = perso_po - $quantite where perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req_or);
+                    $perso->perso_po = $perso->perso_po - $quantite;
+                    $perso->stocke();
                     // AJOUT AU COMPTE
                     $req_compte =
                         "update guilde_banque set gbank_or  = gbank_or + $depot_guilde where gbank_cod = $depot_compt_cod";

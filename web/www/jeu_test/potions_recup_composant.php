@@ -108,21 +108,14 @@ switch ($methode)
             $erreur       = 1;
         }
         /*Controle sur les Pas*/
-        $req  = 'select perso_pa from perso where perso_cod = ' . $perso_cod;
-        $stmt = $pdo->query($req);
-        if ($stmt->rowCount() == 0)
+
+
+        if ($perso->perso_pa < 4)
         {
-            $contenu_page .= '<td><br />Erreur sur le perso concerné<br /><br /></td>';
+            $contenu_page .= '<br>Vous n’avez pas suffisamment de PA pour réaliser cette action.<br>';
             $erreur       = 1;
-        } else
-        {
-            $result = $stmt->fetch();
-            if ($result['perso_pa'] < 4)
-            {
-                $contenu_page .= '<br>Vous n’avez pas suffisamment de PA pour réaliser cette action.<br>';
-                $erreur       = 1;
-            }
         }
+
         if ($erreur != 1)
         {
             $position     = $perso->get_position();

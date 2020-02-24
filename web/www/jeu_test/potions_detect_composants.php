@@ -79,20 +79,17 @@ if($result = $stmt->fetch())
             break;
 
 		case "detecter2":
-			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req_pa);
-			$result = $stmt->fetch();
-			if ($result['perso_pa'] < $pa)
-			{
-				$contenu_page .= 'Vous n’avez pas assez de PA !';
-				break;
-			}
-			else
-			{
-				$req_enl_pa = "update perso set perso_pa = perso_pa - $pa,
-					perso_renommee_artisanat = perso_renommee_artisanat + 0.1 where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req_enl_pa);
-			}
+            if ($perso->perso_pa < $pa)
+            {
+                $contenu_page .= 'Vous n’avez pas assez de PA !';
+                break;
+            } else
+            {
+                $perso->perso_pa                 = $perso->perso_pa - $pa;
+                $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat + 0.1;
+                $perso->stocke();
+
+            }
 			$contenu_page .= '<p>Vous observez ce qui pourrait se cacher dans les alentours</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
 			// POSITION DU JOUEUR
@@ -285,21 +282,18 @@ if($result = $stmt->fetch())
 			</table>';
 		break;
 
-		case "detecter3":
-			$req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req_pa);
-			$result = $stmt->fetch();
-			if ($result['perso_pa'] < 8)
-			{
-					$contenu_page .= 'Vous n’avez pas assez de PA !';
-					break;
-			}
-			else
-			{
-				$req_enl_pa = "update perso set perso_pa = perso_pa - 8,
-				perso_renommee_artisanat = perso_renommee_artisanat + 0.1 where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req_enl_pa);		
-			}
+        case "detecter3":
+
+            if ($perso->perso_pa < 8)
+            {
+                $contenu_page .= 'Vous n’avez pas assez de PA !';
+                break;
+            } else
+            {
+                $perso->perso_pa                 = $perso->perso_pa - 8;
+                $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat + 0.1;
+                $perso->stocke();
+            }
 			$contenu_page .= '<p>Vous observez ce qui pourrait se cacher dans les alentours</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
 			// POSITION DU JOUEUR
