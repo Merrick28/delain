@@ -287,11 +287,14 @@ if ($negatif == 0) {
     }
 }
 
+// on va avoir besoin du html un peu partout
+$html = new html;
+
 $options_twig_defaut = array(
-    'URL'              => G_URL,
-    'URL_IMAGES'       => G_IMAGES,
-    'HTTPS'            => $type_flux,
-    'DEBUG'            => $debug_mode,
+    'URL' => G_URL,
+    'URL_IMAGES' => G_IMAGES,
+    'HTTPS' => $type_flux,
+    'DEBUG' => $debug_mode,
     'PERCENT_FINANCES' => $percent_finances,
 );
 

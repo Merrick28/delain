@@ -119,6 +119,7 @@ echo '<div style="padding:10px;"><p>Sélectionnez la faction sur laquelle vous s
 	<form method="GET" action="#"><select name="fac_cod">';
 
 $req = 'SELECT fac_cod, fac_nom FROM factions WHERE fac_active=\'O\' ORDER BY fac_nom';
+
 echo $html->select_from_query($req, 'fac_cod', 'fac_nom', $fac_cod);
 
 echo '</select><input type="submit" class="test" value="Modifier" /><input type="hidden" value="' . $onglet . '" name="onglet" />

@@ -31,10 +31,6 @@ if (isset($ip_bad))
 // Gère l’accès à la base de données.
 
 
-// Gère l’affichage standardisé d’éléments HTML.
-require_once dirname(__FILE__) . '/html.php';
-$html = new html;
-
 // Gère l’envoi de messages dans le jeu.
 require_once dirname(__FILE__) . '/message.php';
 

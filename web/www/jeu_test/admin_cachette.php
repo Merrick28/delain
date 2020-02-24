@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+$html = new html;
 //
 //Contenu de la div de droite
 //

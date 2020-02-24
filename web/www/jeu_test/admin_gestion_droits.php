@@ -427,7 +427,7 @@ else
                                     <option value="--" selected='selected'>Choisissez un étage</option>
                                     <option value="A">Tous les étages</option>
                                     <?php
-                                    require_once G_CHE . "/includes/html.php";
+
                                     $html = new html;
                                     echo $html->etage_select();
                                     ?>
