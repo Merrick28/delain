@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$perso = $verif_connexion->perso;
+$perso  = $verif_connexion->perso;
+$compte = $verif_connexion->compte;
 define('APPEL', 1);
 $erreur = 0;
 ob_start();
@@ -43,12 +44,9 @@ if ($erreur == 0)
 }
 
 // RECUPERATION DES INFORMATIONS POUR LE LOG
-$req       = "select compt_nom from compte where compt_cod = $compt_cod";
-$stmt      = $pdo->query($req);
-$result    = $stmt->fetch();
-$compt_nom = $result['compt_nom'];
-
+$compt_nom     = $compte->compt_nom;
 $perso_mod_nom = $perso->perso_nom;
+
 $log           =
     date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modifie les statuts (marge ou refuge) du magasin $lieu_nom (code : $cod_lieu), X: $pos_x / Y: $pos_y / $etage_libelle\n";
 

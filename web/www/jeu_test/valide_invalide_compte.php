@@ -29,7 +29,7 @@ if ($compte->is_admin())
     $stmt = $pdo->query($req);
 
     $req  =
-        "update compte set compt_password = 'jkdhfqldshfqldkh', compt_validation = 1231, compt_actif = 'N' where compt_cod = $vcompte ";
+        "update compte set compt_password = 'jkdhfqldshfqldkh', compt_passwd_hash = 'abc', compt_validation = 1231, compt_actif = 'N' where compt_cod = $vcompte ";
     $stmt = $pdo->query($req);
     echo "<p>Le compte a été désactivé.";
 } else

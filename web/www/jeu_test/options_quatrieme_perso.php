@@ -1,17 +1,17 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
-$methode          = get_request_var('methode', '');
+$compte   = $verif_connexion->compte;
+$methode  = get_request_var('methode', '');
 $resultat = '<div><strong>Les paramètres de votre quatrième personnage ont été mis à jour.</strong></div>';
 switch ($methode)
 {
 	case 'modif':
-		$nouveau_type = $_GET['nouveau_type'];
-		if ($nouveau_type != 2)
-			$nouveau_type = 1;
-		$requete = "update compte set compt_type_quatrieme = $nouveau_type where compt_cod = $compt_cod";
-		$stmt = $pdo->query($requete);
-	break;
+        $nouveau_type = $_GET['nouveau_type'];
+        if ($nouveau_type != 2)
+            $nouveau_type = 1;
+        $compte->compt_type_quatrieme = $nouveau_type;
+        $compte->stocke();
+        break;
 
 	case 'transforme':
 		$requete = "update perso set perso_pnj = 0, perso_mortel = NULL

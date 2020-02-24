@@ -11,18 +11,12 @@ if ($compte->is_admin())
     switch ($_REQUEST['methode'])
     {
         case "comment":
-            $req    = "select compt_nom from compte where compt_cod = $compt_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $nom    = $result['compt_nom'];
 
-            $req    = "select to_char(now(),'DD/MM/YYYY hh24:mi:ss') as maint ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $maint  = $result['maint'];
+            $nom   = $compte->compt_nom;
+            $maint = date('Y-m-d H:i:s');
 
 
-            $comment = nl2br($comment);
+            $comment = nl2br($_REQUEST['comment']);
             $req     =
                 "update compte set compt_commentaire = '<br><strong>$maint par $nom </strong><br>$comment'||coalesce(compt_commentaire,' ') ";
             $req     = $req . "where compt_cod = $vcompte ";

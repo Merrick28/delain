@@ -1,15 +1,18 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$perso = $verif_connexion->perso;
+$perso  = $verif_connexion->perso;
+$compte = $verif_connexion->compte;
 ob_start();
 
 $erreur = 0;
-if (!isset($mag)) {
+if (!isset($mag))
+{
     echo "<p>Erreur sur la transmission du lieu_cod ";
     $erreur = 1;
 }
-if ($erreur == 0) {
-    $req = "select lieu_cod,lieu_nom,pos_x,pos_y,etage_libelle
+if ($erreur == 0)
+{
+    $req  = "select lieu_cod,lieu_nom,pos_x,pos_y,etage_libelle
 							from lieu,lieu_position,positions,etage,temple_fidele
 							where lieu_cod = lpos_lieu_cod 
 							and lieu_tlieu_cod = 17 
@@ -19,34 +22,35 @@ if ($erreur == 0) {
 							and tfid_perso_cod = $perso_cod 
 							and lieu_cod = $mag";
     $stmt = $pdo->query($req);
-    if ($stmt->rowCount() == 0) {
+    if ($stmt->rowCount() == 0)
+    {
         echo "<p>Erreur, vous n'êtes pas en le disciple responsable de ce temple !";
         $erreur = 1;
-    } else {
-        $result = $stmt->fetch();
-        $cod_lieu = $result['lieu_cod'];
-        $lieu_nom = $result['lieu_nom'];
-        $pos_x = $result['pos_x'];
-        $pos_y = $result['pos_y'];
+    } else
+    {
+        $result        = $stmt->fetch();
+        $cod_lieu      = $result['lieu_cod'];
+        $lieu_nom      = $result['lieu_nom'];
+        $pos_x         = $result['pos_x'];
+        $pos_y         = $result['pos_y'];
         $etage_libelle = $result['etage_libelle'];
     }
 }
 
 // RECUPERATION DES INFORMATIONS POUR LE LOG
-$req = "select compt_nom from compte where compt_cod = $compt_cod";
-$stmt = $pdo->query($req);
-$result = $stmt->fetch();
-$compt_nom = $result['compt_nom'];
 
+$compt_nom     = $compte->compt_nom;
 $perso_mod_nom = $perso->perso_nom;
 $log           =
     date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) modifie les statuts du temple $lieu_nom (code : $cod_lieu), X: $pos_x / Y: $pos_y / $etage_libelle\n";
 
 
-if ($erreur == 0) {
-    $methode          = get_request_var('methode', 'debut');
+if ($erreur == 0)
+{
+    $methode = get_request_var('methode', 'debut');
     echo "<p class=\"titre\">Gestion de : ", $lieu_nom, " - (", $pos_x, ", ", $pos_y, ", ", $etage_libelle, ")</p>";
-    switch ($methode) {
+    switch ($methode)
+    {
         case "debut":
             break;
         case "statut";
@@ -78,9 +82,9 @@ if ($erreur == 0) {
             echo "<form name=\"echoppe\" method=\"post\" action=\"gere_temple4.php\">";
             echo "<input type=\"hidden\" name=\"methode\" value=\"nom2\">";
             echo "<input type=\"hidden\" name=\"mag\" value=\"$mag\">";
-            $req = "select lieu_nom,lieu_description from lieu ";
-            $req = $req . "where lieu_cod = $mag ";
-            $stmt = $pdo->query($req);
+            $req    = "select lieu_nom,lieu_description from lieu ";
+            $req    = $req . "where lieu_cod = $mag ";
+            $stmt   = $pdo->query($req);
             $result = $stmt->fetch();
 
             echo "<table>";
@@ -107,7 +111,8 @@ if ($erreur == 0) {
         case "nom2":
             echo "<p><strong>Aperçu : " . $desc;
             $desc = str_replace(";", chr(127), $desc);
-            $req = "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
+            $req  =
+                "update lieu set lieu_nom = e'" . pg_escape_string($nom) . "', lieu_description = e'" . pg_escape_string($desc) . "' where lieu_cod = $mag ";
             $stmt = $pdo->query($req);
             echo "<p>Les changements sont validés !";
             break;

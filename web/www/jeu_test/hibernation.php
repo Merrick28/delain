@@ -39,6 +39,7 @@ if (!$compte->is_admin())
                 // on met le compte en hibernation
                 $req = "update compte set compt_ddeb_hiber = now() + '2 day'::interval where compt_cod = $compt_cod ";
                 $stmt = $pdo->query($req);
+
                 // on cherche le compte
                 $req = "select insere_evenement(pcompt_perso_cod, pcompt_perso_cod, 24, '[perso_cod1] a été mis en hibernation', 'O', null) from perso_compte where pcompt_compt_cod = $compt_cod ";
                 $stmt = $pdo->query($req);
