@@ -9,8 +9,11 @@ $nb_tours = $niveau_actu * $niveau_actu;
 $req  = "update dieu set dieu_pouvoir = dieu_pouvoir - " . $points_ben . " where dieu_cod = " . $dieu_cod;
 $stmt = $pdo->query($req);
 // on enlève les PA
-$req  = 'update perso set perso_pa = perso_pa - getparm_n(110) where perso_cod = ' . $perso_cod;
-$stmt = $pdo->query($req);
+
+$param           = new parametres();
+$perso->perso_pa = $perso->perso_pa - $param->getparm(110);
+$perso->stocke();
+
 // et maintenant, on va switcher par rapport à la divinité.
 switch ($dieu_cod)
 {
@@ -41,8 +44,10 @@ switch ($dieu_cod)
         $tot_pv = $v_pv + $pv_gagne;
         if ($tot_pv > $v_pv_max)
             $tot_pv = $v_pv_max;
-        $req   = "update perso set perso_pv = " . $tot_pv . " where perso_cod = " . $perso_cod;
-        $stmt  = $pdo->query($req);
+
+        $perso->perso_pv = $tot_pv;
+        $perso->stocke();
+
         $texte = "Balgur soigne vos blessures... ";
         break;
     case 3: // Galthée => reconstruction intense

@@ -290,8 +290,8 @@ if ($erreur == 0)
 
 
                         // AJOUT DANS LA BOURSE
-                        $req_or = "update perso set perso_po = perso_po + $quantite where perso_cod = $perso_cod ";
-                        $stmt   = $pdo->query($req_or);
+                        $perso->perso_po = $perso->perso_po + $quantite;
+                        $perso->stocke();
 
                         // LIGNE DE TRANSACTION
                         $req_compte =

@@ -112,8 +112,9 @@ if ($erreur == 0)
                 } else
                 {
                     echo "<p>Désolé, le mot de passe n'est pas le bon. Vous restez face au passage sans arriver à entrer.";
-                    $req  = "update perso set perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
-                    $stmt = $pdo->query($req);
+
+                    $perso->perso_pa = $perso->perso_pa - 1;
+                    $perso->stocke();
                 }
             } else
             {

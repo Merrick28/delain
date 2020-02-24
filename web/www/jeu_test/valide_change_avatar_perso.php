@@ -43,9 +43,10 @@ if ($suppr == 0)
         }
         if ($erreur == 0)
         {
-            $req_maj_avatar =
-                "update perso set perso_avatar = '" . $perso_cod . "." . $extension . "', perso_avatar_version = perso_avatar_version + 1 where perso_cod = $perso_cod ";
-            $stmt           = $pdo->query($req_maj_avatar);
+            $perso->perso_avatar         = $perso_cod . "." . $extension;
+            $perso->perso_avatar_version = $perso->perso_avatar_version + 1;
+            $perso->stocke();
+
             echo "<p>Votre avatar est enregistré !";
         }
     } else
@@ -55,8 +56,9 @@ if ($suppr == 0)
     }
 } else
 {
-    $req_ava = "update perso set perso_avatar = null where perso_cod = $perso_cod ";
-    $stmt    = $pdo->query($req_ava);
+
+    $perso->perso_avatar = null;
+    $perso->stocke();
     echo("<p>Votre avatar a bien été effacé !");
 
 }

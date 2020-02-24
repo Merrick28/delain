@@ -64,7 +64,7 @@ if ($erreur)
     // Afficher introduction de la faction
     echo "<div><strong>Faction « $faction_nom »</strong><br /><em>$faction_desc</em></div>";
 
-    $methode          = get_request_var('methode', 'Début');
+    $methode = get_request_var('methode', 'Début');
 
     switch ($methode)
     {
@@ -312,9 +312,10 @@ if ($erreur)
                 $req_promo   = "update faction_perso set pfac_rang_numero = $nouveau_rang
 					WHERE pfac_fac_cod = $faction AND pfac_perso_cod = $perso_cod";
                 $stmt        = $pdo->query($req_promo);
-                $req_promo   = "update perso set perso_po = perso_po + $brouzoufs, perso_px = perso_px + $pxs
-					WHERE perso_cod = $perso_cod";
-                $stmt        = $pdo->query($req_promo);
+
+                $perso->perso_po = $perso->perso_po + $brouzoufs;
+                $perso->perso_px = $perso->perso_px + $pxs;
+                $perso->stocke();
             }
         }
 

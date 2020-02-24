@@ -87,10 +87,12 @@ if ($erreur == 0)
                 $contenu_page3 .= 'Vous ne connaissez pas l’existence de ce dispensaire. D’ailleurs, existe-t-il ?';
             } else
             {
-                $result2       = $stmt2->fetch();
-                $position      = $result2['pos_cod'];
-                $req_or        = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
-                $stmt          = $pdo->query($req_or);
+                $result2  = $stmt2->fetch();
+                $position = $result2['pos_cod'];
+
+                $perso->perso_po = $perso->perso_po - $prix;
+                $perso->stocke();
+
                 $req_temple1   = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
                 $stmt          = $pdo->query($req_temple1);
                 $req_temple2   = "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values 

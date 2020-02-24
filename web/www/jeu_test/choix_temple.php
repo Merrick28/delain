@@ -28,8 +28,8 @@ if ($or < $prix)
     echo "<p>Désolé $nom_sexe[$sexe], mais il semble que vous n'ayez pas assez de brouzoufs pour vous payer ce service.";
 } else
 {
-    $req_or      = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
-    $stmt        = $pdo->query($req_or);
+    $perso->perso_po = $perso->perso_po - $prix;
+    $perso->stocke();
     $req_temple1 = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
     $stmt        = $pdo->query($req_temple1);
     $req_temple2 =

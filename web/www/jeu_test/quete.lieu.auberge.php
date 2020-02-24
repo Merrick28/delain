@@ -166,22 +166,22 @@ if ($prestige >= 10 and $prestige <= 20)
 				<br>La fille à qui je pense
 				<br>La fille à qui je pense
 				<br>Est plus belle que toi"
-			);
-			$phrase = array_rand ($input, 1);
-			$phrase_boire = $input[$phrase];
-			echo "<em>Un chant est alors entonné gaillardement :</em><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
+            );
+            $phrase = array_rand($input, 1);
+            $phrase_boire = $input[$phrase];
+            echo "<em>Un chant est alors entonné gaillardement :</em><br>$phrase_boire<br><br>";//Aub :". $aub_visite ."/". $lieu_cod ."/". $perso_cod ."<br>";
 
-			$req = "update perso set perso_po  = perso_po - 50 where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req);
-			$result = $stmt->fetch();
-			if ($aub_visite == null)
-			{
-				$req = "insert into perso_auberge (paub_perso_cod, paub_lieu_cod, paub_nombre, paub_visite)
+
+            $perso->perso_po = $perso->perso_po - 50;
+            $perso->stocke();
+
+            if ($aub_visite == null)
+            {
+                $req = "insert into perso_auberge (paub_perso_cod, paub_lieu_cod, paub_nombre, paub_visite)
 					values ($perso_cod, $lieu_cod, '1', 'O')";
-			}
-			else
-			{
-				$req = "update perso_auberge set paub_visite = 'O'
+            } else
+            {
+                $req = "update perso_auberge set paub_visite = 'O'
 					where paub_lieu_cod = $lieu_cod
 						and paub_perso_cod = $perso_cod";
 			}

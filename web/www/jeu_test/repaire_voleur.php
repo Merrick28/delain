@@ -101,9 +101,10 @@ $perso = $verif_connexion->perso;
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa        =
-                                "update perso set perso_po = perso_po - $cout,perso_pa = perso_pa - $coutpa  where perso_cod = $perso_cod ";
-                            $stmt             = $pdo->query($req_or_pa);
+
+                            $perso->perso_po = $perso->perso_po - $cout;
+                            $perso->perso_pa = $perso->perso_pa - $coutpa;
+                            $perso->stocke();
                             $req_comp         =
                                 "insert into perso_competences (pcomp_perso_cod,pcomp_pcomp_cod,pcomp_modificateur) "
                                 . "values($perso_cod," . VOL_NIV1_COD . ",25)";
@@ -130,9 +131,10 @@ $perso = $verif_connexion->perso;
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa        =
-                                "update perso set perso_po = perso_po - (2*$cout),perso_pa = perso_pa - (2*$coutpa)  where perso_cod = $perso_cod ";
-                            $stmt             = $pdo->query($req_or_pa);
+                            $perso->perso_po = $perso->perso_po - (2 * $cout);
+                            $perso->perso_pa = $perso->perso_pa - (2 * $coutpa);
+                            $perso->stocke();
+
                             $req_comp         = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV2_COD
                                                 . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV1_COD;
                             $stmt             = $pdo->query($req_comp);
@@ -159,9 +161,11 @@ $perso = $verif_connexion->perso;
                         }
                         if ($erreur == 0)
                         {
-                            $req_or_pa        =
-                                "update perso set perso_po = perso_po - (3*$cout),perso_pa = perso_pa - (3*$coutpa)  where perso_cod = $perso_cod ";
-                            $stmt             = $pdo->query($req_or_pa);
+
+                            $perso->perso_po = $perso->perso_po - (3 * $cout);
+                            $perso->perso_pa = $perso->perso_pa - (3 * $coutpa);
+                            $perso->stocke();
+
                             $req_comp         = "update perso_competences set pcomp_pcomp_cod = " . VOL_NIV3_COD
                                                 . " WHERE pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod = " . VOL_NIV2_COD;
                             $stmt             = $pdo->query($req_comp);

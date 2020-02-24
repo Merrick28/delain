@@ -113,53 +113,63 @@ if ($erreur == 0)
                     {
                         $contenu_page4 .= "<br /><br /> Vous recevez 7500 brouzoufs, 15 points d'expérience et 2 points de renommée.
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em>Traqueur</em> vous est officiellement décerné. ";
-                        $req           = "update perso set perso_po = perso_po + 7500,perso_px = perso_px + 15,perso_prestige = perso_prestige + 2
-										where perso_cod = $perso_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+
+
+                        $perso->perso_po       = $perso->perso_po + 7500;
+                        $perso->perso_px       = $perso->perso_px + 15;
+                        $perso->perso_prestige = $perso->perso_prestige + 2;
+                        $perso->stocke();
+                        $req  = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "delete from perso_titre where ptitre_perso_cod = $perso_cod and ptitre_type = 5";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Traqueur',now(),5)";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "update quete_perso set pquete_nombre = 2 where pquete_quete_cod = 13 and pquete_perso_cod = $perso_cod";
-                        $stmt          = $pdo->query($req);
+                        $stmt = $pdo->query($req);
                     } else if ($quete_avancement == 2)
                     {
                         $contenu_page4 .= "<br /><br /> Vous recevez 10000 brouzoufs, 20 points d'expérience et 3 points de renommée.
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre de <em> Traqueur aguerri</em> vous est officiellement décerné. ";
-                        $req           = "update perso set perso_po = perso_po + 10000,perso_px = perso_px + 20,perso_prestige = perso_prestige + 3
-										where perso_cod = $perso_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+
+                        $perso->perso_po       = $perso->perso_po + 10000;
+                        $perso->perso_px       = $perso->perso_px + 20;
+                        $perso->perso_prestige = $perso->perso_prestige + 3;
+                        $perso->stocke();
+
+                        $req  = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "delete from perso_titre where ptitre_perso_cod = $perso_cod and ptitre_type = 5";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Traqueur aguerri',now(),5)";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "update quete_perso set pquete_nombre = 3 where pquete_quete_cod = 13 and pquete_perso_cod = $perso_cod";
-                        $stmt          = $pdo->query($req);
+                        $stmt = $pdo->query($req);
                     } else
                     {
                         $contenu_page4 .= "<br /><br /> Vous recevez 5000 brouzoufs, 10 points d'expérience et 1 point de renommée.
 															<br /><br /> Votre réputation auprès de la guilde des Traqueurs a augmenté, le titre d'<em>Apprenti traqueur</em> vous est officiellement décerné. ";
-                        $req           = "update perso set perso_po = perso_po + 5000,perso_px = perso_px + 10,perso_prestige = perso_prestige + 1
-										where perso_cod = $perso_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-                        $stmt          = $pdo->query($req);
-                        $req           =
+
+
+                        $perso->perso_po       = $perso->perso_po + 5000;
+                        $perso->perso_px       = $perso->perso_px + 10;
+                        $perso->perso_prestige = $perso->perso_prestige + 1;
+                        $perso->stocke();
+
+                        $req  = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
+                        $stmt = $pdo->query($req);
+                        $req  =
                             "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'Apprenti traqueur',now(),5)";
-                        $stmt          = $pdo->query($req);
-                        $req           = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut)
+                        $stmt = $pdo->query($req);
+                        $req  = "insert into quete_perso (pquete_quete_cod,pquete_perso_cod,pquete_nombre,pquete_date_debut)
 																		values ('13','$perso_cod',1,now())";
-                        $stmt          = $pdo->query($req);
+                        $stmt = $pdo->query($req);
                     }
                 }
             } else /*le perso n'a pas de quête de ce type engagée, on teste si on lui en donne une

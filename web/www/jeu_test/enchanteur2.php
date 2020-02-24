@@ -179,11 +179,10 @@ if ($erreur == 0)
 																		Vous bénéficiez maintenant d\'une nouvelle compétence. Bonne découverte !';
             } else
             {
-                $contenu_page .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
+                $contenu_page    .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
 														<br>Prenez un peu de temps pour réfléchir un peu plus ...</em>»<br><br>';
-                $req2 = "update perso set perso_pa = perso_pa - 6 where perso_cod = " . $perso_cod;
-                $stmt2 = $pdo->query($req2);
-                $result2 = $stmt2->fetch();
+                $perso->perso_pa = $perso->perso_pa - 6;
+                $perso->stocke();
             }
             break;
     }

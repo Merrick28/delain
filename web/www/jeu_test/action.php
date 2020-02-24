@@ -1,7 +1,7 @@
 ﻿﻿<?php
 include "blocks/_header_page_jeu.php";
 define('APPEL', 1);
-/** @var integer $perso_cod défini par _header_page_jeu */
+$perso = $verif_connexion->perso;
 
 /**
  * @param $position
@@ -969,18 +969,24 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     if ($result = $stmt->fetch())
                     {
                         /* Action */
-                        $req          = 'update dieu set dieu_pouvoir = (dieu_pouvoir + 10) where dieu_cod = 2';
-                        $stmt         = $pdo->query($req);
-                        $req          =
-                            'update perso set perso_pa = (perso_pa - 6), perso_px = perso_px + 0.25 where perso_cod = :perso';
-                        $stmt         = $pdo->prepare($req_matos);
-                        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
-                        $req          =
+                        $dieu = new dieu;
+                        $dieu->charge(2);
+                        $dieu->dieu_pouvoir = $dieu->dieu_pouvoir + 10;
+                        $dieu->stocke();
 
-                            'insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant)'
-                            . 'values(nextval(\'seq_levt_cod\'),89,now(),1,:perso,\'[perso_cod1] a travaillé.\',\'O\',\'O\',:perso)';
-                        $stmt         = $pdo->prepare($req_matos);
-                        $stmt         = $pdo->execute(array(":perso" => $perso_cod), $stmt);
+                        $perso->perso_pa = $perso->perso_pa - 6;
+                        $perso->perso_px = $perso->perso_px + 0.25;
+                        $perso->stocke();
+
+                        $levt                  = new ligne_evt();
+                        $levt->levt_tevt_cod   = 89;
+                        $levt->levt_type_per1  = 1;
+                        $levt->levt_perso_cod1 = $perso_cod;
+                        $levt->levt_texte      = '[perso_cod1] a travaillé.';
+                        $levt->levt_lu         = 'O';
+                        $levt->levt_visible    = 'O';
+                        $levt->levt_attaquant  = $perso_cod;
+                        $levt->stocke(true);
                         $contenu_page .= 'La construction du bâtiment a progressé.<br>Votre dieu a gagné en puissance.<br>Vous gagnez 0.25px.';
                     } else
                     {

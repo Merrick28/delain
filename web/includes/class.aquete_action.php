@@ -644,27 +644,35 @@ class aquete_action
     function recevoir_po_px(aquete_perso $aqperso)
     {
         $element = new aquete_element();
-        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, 'valeur')) return false ;      // Problème lecture des paramètres
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, 'valeur')) return false ;      // Problème lecture des paramètres
-        $p3 = $element->get_aqperso_element( $aqperso, 3, 'perso');                           // Ce paramètre est facultatif
+        if (!$p1 =
+            $element->get_aqperso_element($aqperso, 1, 'valeur')) return false;      // Problème lecture des paramètres
+        if (!$p2 =
+            $element->get_aqperso_element($aqperso, 2, 'valeur')) return false;      // Problème lecture des paramètres
+        $p3 =
+            $element->get_aqperso_element($aqperso, 3, 'perso');                           // Ce paramètre est facultatif
 
-        $px = min(   200, $p1->aqelem_param_num_1);        // On donne avec un max de 200PX (au cas ou celui qui a definit la quete a fait une bourde
+        $px =
+            min(200, $p1->aqelem_param_num_1);        // On donne avec un max de 200PX (au cas ou celui qui a definit la quete a fait une bourde
         $po = min(100000, $p2->aqelem_param_num_1);        // et max 100000 Bz
 
         $pdo = new bddpdo;
-        $req = "update perso set perso_px = perso_px + :px, perso_po = perso_po + :po where perso_cod = :perso_cod ";
-        $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(    ":px"               => $px,
-                                        ":po"               => $po,
-                                        ":perso_cod"        => $aqperso->aqperso_perso_cod), $stmt);
+
+        $perso = new perso;
+        $perso->charge($aqperso->aqperso_perso_cod);
+        $perso->perso_px = $perso->perso_px + $px;
+        $perso->perso_po = $perso->perso_po + $po;
+        $perso->stocke();
+        unset($perso);
+
+
         // Ajout des evenements pour le perso !!!
 
         $quete = new aquete();
         $quete->charge($aqperso->aqperso_aquete_cod);
-        if ($p3->aqelem_misc_cod>0)
+        if ($p3->aqelem_misc_cod > 0)
         {
             // la récompense est donnée par un perso on personalise l'evenement
-            if ($px>0)
+            if ($px > 0)
             {
                 $texte_evt = "[attaquant] a donné {$px} PX à [cible]." ;
                 $req = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)

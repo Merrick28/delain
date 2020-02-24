@@ -4,11 +4,11 @@
 if (!defined("APPEL"))
     die("Erreur d’appel de page !");
 
-$methode2          = get_request_var('methode2', 'debut');
+$methode2 = get_request_var('methode2', 'debut');
 
 
-$perso = new perso;
-$perso = $verif_connexion->perso;
+$perso        = new perso;
+$perso        = $verif_connexion->perso;
 
 switch ($methode2)
 {
@@ -122,8 +122,11 @@ switch ($methode2)
             <br>Pour votre peine, je vais puiser dans mes richesses et vous donner 3000 brouzoufs.
             <?php $req = "select f_del_objet($obj_quete)";
             $stmt      = $pdo->query($req);
-            $req2      = 'update perso set perso_po = perso_po + 3000 where perso_cod = ' . $perso_cod;
-            $stmt      = $pdo->query($req2);
+
+            $perso->perso_po = $perso->perso_po + 3000;
+            $perso->stocke();
+
+
         } else if ($cede_objet == 'non')
         {
             echo '<br>Ceci est particulièrement dommage. Vous auriez pu en retirer tant d’avantages...';

@@ -208,8 +208,8 @@ if ($erreur == 0)
                         {
                             echo "Test valider tran !";
                             // On retire les Br
-                            $req_tran = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod";
-                            $stmt     = $pdo->query($req_tran);
+                            $perso->perso_po = $perso->perso_po - $prix;
+                            $perso->stocke();
                             // On les ajoute à la caisse
                             $req_tran = "update lieu set lieu_compte = lieu_compte + $prix where lieu_cod = $lieu";
                             $stmt     = $pdo->query($req_tran);

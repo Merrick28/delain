@@ -175,10 +175,10 @@ switch ($methode)
             $contenu_page .= 'Vous échouez dans le forgeamage de cet objet !
 													<br>Vous perdez votre énergie accumulée, gachée dans cette action sans résultat<br>';
 
-            $req    =
-                'update perso set perso_energie = 0, perso_renommee_artisanat = perso_renommee_artisanat - 0.5 where perso_cod = ' . $perso_cod;
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
+            $perso->perso_energie            = 0;
+            $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat - 0.5;
+            $perso->stocke();
+
             break;
         }
 

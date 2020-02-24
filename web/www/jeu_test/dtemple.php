@@ -437,8 +437,8 @@ if ($erreur == 0)
                 $stmt = $pdo->query($req);
 
                 // Suppression de 2 PA (4 déjà enlevés par la prière)
-                $req  = "update perso set perso_pa = perso_pa - 2 where perso_cod = $perso_cod ";
-                $stmt = $pdo->query($req);
+                $perso->perso_pa = $perso->perso_pa - 2;
+                $perso->stocke();
             }
             echo '<hr /><a href="lieu.php">Retour au temple</a>';
             break;
@@ -505,9 +505,9 @@ if ($erreur == 0)
                 break;
             } else
             {
-                $req  = "update perso set perso_pa = perso_pa - " . $cout_pa . ",perso_po = perso_po -  " . $cout_or . "
-						where perso_cod = " . $perso_cod;
-                $stmt = $pdo->query($req);
+                $perso->perso_pa = $perso->perso_pa - $cout_pa;
+                $perso->perso_po = $perso->perso_po - $cout_or;
+                $perso->stocke();
             }
             /* on ressucite le familier*/
             $req      = "select ressuscite_familier_divin($perso_cod) as resultat";
@@ -571,9 +571,10 @@ if ($erreur == 0)
                 break;
             } else
             {
-                $req  = "update perso set perso_pa = perso_pa - " . $cout_pa . ",perso_po = perso_po -  " . $cout_or . "
-						where perso_cod = " . $perso_cod;
-                $stmt = $pdo->query($req);
+                $perso->perso_pa = $perso->perso_pa - $cout_pa;
+                $perso->perso_po = $perso->perso_po - $cout_or;
+                $perso->stocke();
+
             }
             /* on créé le familier*/
             $req      = "select ajoute_familier(441, $perso_cod) as resultat";

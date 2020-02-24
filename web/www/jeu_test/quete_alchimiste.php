@@ -250,14 +250,13 @@ if ($erreur == 0)
                 break;
             }
 
-            $contenu_page .= 'Voici un flacon pour vous ! Prenez en soin, et tachez d’en faire bon usage
+            $contenu_page    .= 'Voici un flacon pour vous ! Prenez en soin, et tachez d’en faire bon usage
 				<br>Souhaitez vous en acheter un autre pour 1000 autres brouzoufs ? <a href="' . $_SERVER['PHP_SELF'] . '?methode=acheter"><strong>OUI !</strong></a><br><br>';
-            $req_quete    = "select cree_objet_perso(412,$perso_cod)";
-            $stmt         = $pdo->query($req_quete);
-            $result       = $stmt->fetch();
-            $req_quete    = "update perso set perso_po = perso_po - 1000 where perso_cod = $perso_cod";
-            $stmt         = $pdo->query($req_quete);
-            $result       = $stmt->fetch();
+            $req_quete       = "select cree_objet_perso(412,$perso_cod)";
+            $stmt            = $pdo->query($req_quete);
+            $result          = $stmt->fetch();
+            $perso->perso_po = $perso->perso_po - 1000;
+            $perso->stocke();
             break;
 
         case "niv1":
@@ -333,9 +332,9 @@ if ($erreur == 0)
 				f_del_objet_generique(353,$perso_cod)";
             $stmt      = $pdo->query($req_quete);
             //On supprime les brouzoufs et les PA
-            $req_quete =
-                "update perso set perso_po = perso_po - 10000, perso_pa = perso_pa - 6 where perso_cod = $perso_cod";
-            $stmt      = $pdo->query($req_quete);
+            $perso->perso_po = $perso->perso_po - 10000;
+            $perso->perso_pa = $perso->perso_pa - 6;
+            $perso->stocke();
             //On insère la nouvelle compétence, on supprime l'ancienne
             $req_comp =
                 "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','100')";
@@ -422,9 +421,9 @@ if ($erreur == 0)
 				f_del_objet_generique(360,$perso_cod)";
             $stmt      = $pdo->query($req_quete);
             //On supprime les brouzoufs et les PA
-            $req_quete =
-                "update perso set perso_po = perso_po - 20000,perso_pa = perso_pa - 10 where perso_cod = $perso_cod";
-            $stmt      = $pdo->query($req_quete);
+            $perso->perso_po = $perso->perso_po - 2000;
+            $perso->perso_pa = $perso->perso_pa - 10;
+            $perso->stocke();
             //On insère la nouvelle compétence, on supprime l'ancienne
             $req_comp =
                 "insert into perso_competences (pcomp_modificateur,pcomp_perso_cod,pcomp_pcomp_cod) values('$pourcent_alchimie','$perso_cod','101')";

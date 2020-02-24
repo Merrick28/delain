@@ -350,10 +350,12 @@ if ($result = $stmt->fetch())
                     $stmt3             = $pdo->query($requete_existence);
                     if ($stmt3->rowCount() == 0)    // Formule inconnue, on réalise l’ajout
                     {
-                        $req          =
-                            'update perso set perso_px = perso_px + 5, perso_renommee_artisanat = perso_renommee_artisanat + 6 where perso_cod = ' . $perso_cod;
-                        $stmt         = $pdo->query($req);
-                        $result       = $stmt->fetch();
+
+
+                        $perso->perso_px                 = $perso->perso_px + 5;
+                        $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat + 6;
+                        $perso->stocke();
+
                         $req          =
                             'insert into perso_formule (pfrm_frm_cod,pfrm_perso_cod) values (' . $formule . ', ' . $perso_cod . ')';
                         $stmt         = $pdo->query($req);
@@ -361,10 +363,10 @@ if ($result = $stmt->fetch())
                         $contenu_page .= '<br>Vous gagnez 5 px pour cette action. Vous connaissez maintenant une nouvelle formule de potion qu’il vous sera facile de reproduire.';
                     } else    // Formule déjà connue, on ne donne pas tous les PXs...
                     {
-                        $req          =
-                            'update perso set perso_px = perso_px + 1.5, perso_renommee_artisanat = perso_renommee_artisanat + 2 where perso_cod = ' . $perso_cod;
-                        $stmt         = $pdo->query($req);
-                        $result       = $stmt->fetch();
+
+                        $perso->perso_px                 = $perso->perso_px + 1.5;
+                        $perso->perso_renommee_artisanat = $perso->perso_renommee_artisanat + 2;
+                        $perso->stocke();
                         $contenu_page .= '<p>Vous connaissiez déjà cette potion.</p><p>Vous gagnez 1,5 px pour cette action.</p>';
                     }
                     $texte_evt = "[perso_cod1] a fini sa potion ! C’est une $nom.";

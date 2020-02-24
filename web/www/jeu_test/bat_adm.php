@@ -11,7 +11,7 @@ $nom_lieu  = 'un bâtiment administratif';
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
 
@@ -273,10 +273,10 @@ if ($erreur == 0)
                 echo "<hr>Félicitations ! Vous avez terminé le marathon des auberges, vous êtes donc un vrai soiffard qui ferait palir un nain au comptoir !
 			<br>Dorénavant, tout le monde vous reconnaitra, au moins sur ce point là !
 			<br> Nous vous avons aussi offert un ustensile qui pourra vous être très utile dans vos explorations de taverne !";
-                $req    = "update perso set perso_px = perso_px + 10,perso_prestige = perso_prestige + 2
-				where perso_cod = $perso_cod";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
+                $perso->perso_px       = $perso->perso_px + 10;
+                $perso->perso_prestige = $perso->perso_prestige + 2;
+                $perso->stocke();
+
                 $req    =
                     "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'[Tournée des auberges]Membre de la confrérie des soiffards',now(),'4')";
                 $stmt   = $pdo->query($req);
@@ -345,14 +345,13 @@ if ($erreur == 0)
                 $stmt = $pdo->query($req);
                 if ($stmt->rowCount() == 0)
                 {
-                    $req    = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
+                    $req             = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
 				values ($perso_cod,6,now()); ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    $req    =
-                        "update perso set perso_po = perso_po - 50,perso_pa = perso_pa - 1 where perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
+                    $stmt            = $pdo->query($req);
+                    $result          = $stmt->fetch();
+                    $perso->perso_po = $perso->perso_po - 50;
+                    $perso->perso_pa = $perso->perso_pa - 1;
+                    $perso->stocke();
                     echo "<p>Vous êtes bien enregistré !<br>Vous allez devoir visiter au moins huit auberges différentes pour faire partie de l'élite. Activez vous pour mériter la suprême récompense.
 					<br>Une fois que vous aurez réussi cette épreuve, vous pourrez revenir dans un batiment administratif pour les dernières formalités.
 					<br>Pour vous aider, nous vous conseillons d'utiliser <a href=\"http://www.jdr-delain.net/forum/ftopic7599.php\">le Guide des Tavernes de Pépé Génépy</a>";
@@ -374,14 +373,14 @@ if ($erreur == 0)
         //Fin nouvelle version
 
         case "solde":
-            $req    = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $solde  = $result['pguilde_solde'];
-            $req    = "update perso set perso_po = perso_po + $solde where perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
-            $req    = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
-            $stmt   = $pdo->query($req);
+            $req             = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
+            $stmt            = $pdo->query($req);
+            $result          = $stmt->fetch();
+            $solde           = $result['pguilde_solde'];
+            $perso->perso_po = $perso->perso_po + $solde;
+            $perso->stocke();
+            $req  = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
+            $stmt = $pdo->query($req);
             echo "<p>Vous venez de retirer votre solde.";
             break;
     }

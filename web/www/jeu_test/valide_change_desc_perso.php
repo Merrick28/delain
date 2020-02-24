@@ -20,8 +20,8 @@ switch ($methode)
         }
         if ($erreur == 0)
         {
-            $req_desc = "update perso set perso_description = e'$corps' where perso_cod = $perso_cod ";
-            $stmt     = $pdo->query($req_desc);
+            $perso->perso_description = $corps;
+            $perso->stocke();
             echo("<p>La description de votre personnage est enregistrée !");
         }
         echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");
@@ -34,8 +34,8 @@ switch ($methode)
         }
         if ($erreur == 0)
         {
-            $req_desc = "update perso set perso_desc_long = e'$corps' where perso_cod = $perso_cod ";
-            $stmt     = $pdo->query($req_desc);
+            $perso->perso_desc_long = $corps;
+            $perso->stocke();
             echo("<p>La description longue de votre personnage est enregistrée !");
         }
         echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");

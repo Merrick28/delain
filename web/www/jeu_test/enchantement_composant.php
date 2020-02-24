@@ -1,28 +1,27 @@
 <?php
 $param = new parametres();
 //On sélectionne les pierres précieuses qui peuvent être travaillées
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 switch ($methode)
 {
     case "debut":
         $nombre_pa = $param->getparm(113);
-        $req_comp = "select count(*),gobj_nom,obj_gobj_cod from objets,objet_generique,perso_objets 
+        $req_comp  = "select count(*),gobj_nom,obj_gobj_cod from objets,objet_generique,perso_objets 
 				where gobj_cod in (338,339,340,341,353,354,357,358,361,438)
 			 and gobj_cod = obj_gobj_cod and perobj_obj_cod = obj_cod and perobj_perso_cod = $perso_cod group by obj_gobj_cod,gobj_nom";
-        $stmt = $pdo->query($req_comp);
+        $stmt      = $pdo->query($req_comp);
 
         if ($stmt->rowCount() == 0)
         {
             $contenu_page .= 'Vous ne possédez aucune pierre permettant de réaliser des composants d’enchantement<br><br>';
-        }
-        else
+        } else
         {
             $contenu_page .= '<p align="left"><strong>Vous êtes en possession de :</strong>';
-            $liste = '<option value="vide"><-- Sélectionner --></option>';
+            $liste        = '<option value="vide"><-- Sélectionner --></option>';
             while ($result = $stmt->fetch())
             {
                 $contenu_page .= '<br>' . $result['gobj_nom'];
-                $liste .= '<option value="' . $result['obj_gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
+                $liste        .= '<option value="' . $result['obj_gobj_cod'] . '"> ' . $result['gobj_nom'] . '</option>';
             }
             $contenu_page .= '</p><br><br><p align="center"><strong>Sur quelle pierre souhaitez vous réaliser le forgeamage ?</strong>
 					<br>
@@ -67,7 +66,7 @@ switch ($methode)
         }
         break;
     case "compo": // Création d'un composant d'un enchantement à partir d'une pierre précieuse
-        $pierre = $_POST['composant'];
+        $pierre        = $_POST['composant'];
         $gain_renommee = 1;
         //Controle sur la sélection d'une pierre précieuse
         if ($pierre == 'vide')
@@ -101,9 +100,9 @@ switch ($methode)
         //On regarde l'énergie de la case : niveau minimum nécessaire, et risque si le niveau est trop élevé. 1000 est un niveau mini
         $req_comp       = "select pos_magie,pos_cod from positions,perso_position 
 									where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod";
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
-        $position = $result['pos_cod'];
+        $stmt           = $pdo->query($req_comp);
+        $result         = $stmt->fetch();
+        $position       = $result['pos_cod'];
         $puissance_case = $result['pos_magie'];
         if ($puissance_case < $param->getparm(114))
         {
@@ -113,101 +112,100 @@ switch ($methode)
         }
 
         //On calcule si il y a transformation
-        $req_comp = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences
+        $req_comp            = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences
 									where pcomp_perso_cod = $perso_cod and pcomp_pcomp_cod in (88,102,103)";
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
-        $forgeamage = $result['pcomp_pcomp_cod'];
+        $stmt                = $pdo->query($req_comp);
+        $result              = $stmt->fetch();
+        $forgeamage          = $result['pcomp_pcomp_cod'];
         $forgeamage_pourcent = $result['pcomp_modificateur'];
-        $req_comp = "select frm_cod, frm_type, frm_nom, frm_temps_travail, frm_comp_cod, gobj_nom, frmpr_gobj_cod,
+        $req_comp            = "select frm_cod, frm_type, frm_nom, frm_temps_travail, frm_comp_cod, gobj_nom, frmpr_gobj_cod,
 					case when frm_temps_travail <= $perso_energie then 0
 					else 1 end as dispo
 				from formule, formule_composant, formule_produit, objet_generique
 				where frmco_frm_cod = frm_cod and frm_type = 3 and frm_comp_cod <= $forgeamage and frmco_gobj_cod = $pierre 
 					and frmpr_frm_cod = frm_cod and frmpr_gobj_cod = gobj_cod
 				order by dispo, random() limit 1";
-        $stmt = $pdo->query($req_comp);
-        $result = $stmt->fetch();
-        $energie_necessaire = $result['frm_temps_travail'];
-        $nom = $result['gobj_nom'];
-        $composant_cod = $result['frmpr_gobj_cod'];
-        $frm_cod = $result['frm_cod'];
-        $perte_pa = $param->getparm(113);
+        $stmt                = $pdo->query($req_comp);
+        $result              = $stmt->fetch();
+        $energie_necessaire  = $result['frm_temps_travail'];
+        $nom                 = $result['gobj_nom'];
+        $composant_cod       = $result['frmpr_gobj_cod'];
+        $frm_cod             = $result['frm_cod'];
+        $perte_pa            = $param->getparm(113);
 
         //On va regarder si l'énergie du perso est compatible avec celle de la pierre
         if ($energie_necessaire > $perso_energie)
         {
-            $contenu_page .= 'Vous échouez dans la réalisation du composant. Vous n’aviez pas suffisamment d’énergie !
+            $contenu_page         .= 'Vous échouez dans la réalisation du composant. Vous n’aviez pas suffisamment d’énergie !
 					<br>Vous perdez votre énergie accumulée, gachée dans cette action sans résultat<br>';
-            $req = 'update perso set perso_energie = 0 where perso_cod = ' . $perso_cod;
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $perso->perso_energie = 0;
+            $perso->stocke();
+
             break;
         }
         //On regarde si il y a concentration
         $concentration = 0;
-        $req = 'select concentration_perso_cod from concentrations where concentration_perso_cod = ' . $perso_cod;
-        $stmt = $pdo->query($req);
+        $req           =
+            'select concentration_perso_cod from concentrations where concentration_perso_cod = ' . $perso_cod;
+        $stmt          = $pdo->query($req);
         if ($stmt->rowCount() != 0)
         {
-            $contenu_page .= '<strong>Vous vous êtes concentré avant cette action</strong><br>';
+            $contenu_page  .= '<strong>Vous vous êtes concentré avant cette action</strong><br>';
             $concentration = 20;
-            $req = 'delete from concentrations where concentration_perso_cod = ' . $perso_cod;
-            $stmt = $pdo->query($req);
+            $req           = 'delete from concentrations where concentration_perso_cod = ' . $perso_cod;
+            $stmt          = $pdo->query($req);
         }
 
         //On teste si le perso arrive à créer l’enchantement en utilisant sa compétence en enchantement
-        $px_gagne = 0;
-        $de = rand(1, 100);
-        $limite_comp = $param->getparm(1);
-        $chance = $forgeamage_pourcent - ($energie_necessaire / 4) + $concentration;
+        $px_gagne     = 0;
+        $de           = rand(1, 100);
+        $limite_comp  = $param->getparm(1);
+        $chance       = $forgeamage_pourcent - ($energie_necessaire / 4) + $concentration;
         $contenu_page .= 'Votre compétence initiale en forgeamage est de <strong>' . $forgeamage_pourcent . '</strong>
 												<br>Vos chances de réussite modifiées sont de <strong>' . $chance . '</strong>, tenant compte de la difficulté de ce composant. Votre lancer de dé est de <strong>' . $de . '</strong><br>';
         if ($de <= 5)
         {
-            $reussite = 1;
-            $contenu_page .= 'Vous avez donc fait une réussite critique !';
-            $perte_pa = $perte_pa - 2;
+            $reussite      = 1;
+            $contenu_page  .= 'Vous avez donc fait une réussite critique !';
+            $perte_pa      = $perte_pa - 2;
             $gain_renommee = 1.5;
-        }
-        else
+        } else
         {
             if ($de <= $chance)
             {
                 $reussite = 1;    //Si transformation, composant d’enchantement disponible
-            }
-            else
+            } else
             {
                 $contenu_page .= '<strong>Vous échouez dans la création de votre composant d’enchantement.</strong>
 					<br>Malheureusement, comme vous ne parvenez pas au bout de cette opération, vous ne savez pas non plus ce que vous auriez pu produire !';
                 if ($forgeamage_pourcent <= $limite_comp) //Amélioration si < 40%
                 {
-                    $req = 'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
-                    $stmt = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    $jet_ameliore = explode(';', $result['resultat'], 3);
-                    $jet = $jet_ameliore[0];
-                    $ameliore = $jet_ameliore[1];
+                    $req             =
+                        'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
+                    $stmt            = $pdo->query($req);
+                    $result          = $stmt->fetch();
+                    $jet_ameliore    = explode(';', $result['resultat'], 3);
+                    $jet             = $jet_ameliore[0];
+                    $ameliore        = $jet_ameliore[1];
                     $nouvelle_valeur = $jet_ameliore[2];
-                    $contenu_page .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
+                    $contenu_page    .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
                     if ($ameliore == '1')
                     {
                         $contenu_page .= 'Vous avez donc <strong>amélioré</strong> cette compétence. <br>';
                         $contenu_page .= 'Sa nouvelle valeur est ' . $nouvelle_valeur . '<br><br>';
-                        $px_gagne = $px_gagne + 1;
-                    }
-                    else
+                        $px_gagne     = $px_gagne + 1;
+                    } else
                     {
                         $contenu_page .= 'Vous n’avez pas amélioré cette compétence.<br><br> ';
                     }
                 }
                 $gain_renommee = -0.2;
                 // Sinon, conséquences négatives (PV, dégradation de l'objet, déflagration, Vue, ...)
-                $req = 'select enchantement_rate(' . $perso_cod . ') as resultat';
-                $stmt = $pdo->query($req);
-                $result = $stmt->fetch();
+                $req          = 'select enchantement_rate(' . $perso_cod . ') as resultat';
+                $stmt         = $pdo->query($req);
+                $result       = $stmt->fetch();
                 $contenu_page .= $result['resultat'];
-                $reussite = 0;
+                $reussite     = 0;
             }
         }
         if ($reussite == 1)
@@ -215,35 +213,36 @@ switch ($methode)
             $contenu_page .= '<strong>Vous parvenez à créer un composant d’enchantement. Il s’agit d’un "' . $nom . '</strong>"
 					<br>Vous devez maintenant regarder si vous pouvez l’associer à d’autres composants pour réaliser un enchantement<br>';
             //On crée le composant
-            $req = 'select cree_objet_perso_nombre(' . $composant_cod . ',' . $perso_cod . ',1) as resultat';
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $req = 'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
-            $jet_ameliore = explode(';', $result['resultat'], 3);
-            $jet = $jet_ameliore[0];
-            $ameliore = $jet_ameliore[1];
+            $req             =
+                'select cree_objet_perso_nombre(' . $composant_cod . ',' . $perso_cod . ',1) as resultat';
+            $stmt            = $pdo->query($req);
+            $result          = $stmt->fetch();
+            $req             =
+                'select ameliore_competence_px(' . $perso_cod . ',' . $forgeamage . ',' . $forgeamage_pourcent . ') as resultat';
+            $stmt            = $pdo->query($req);
+            $result          = $stmt->fetch();
+            $jet_ameliore    = explode(';', $result['resultat'], 3);
+            $jet             = $jet_ameliore[0];
+            $ameliore        = $jet_ameliore[1];
             $nouvelle_valeur = $jet_ameliore[2];
-            $contenu_page .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
+            $contenu_page    .= '<br>Votre jet d’amélioration est de ' . $jet . '<br>'; // pos 7 8 9 10
             if ($ameliore == '1')
             {
                 $contenu_page .= 'vous avez donc <strong>amélioré</strong> cette compétence. <br>';
                 $contenu_page .= 'Sa nouvelle valeur est ' . $nouvelle_valeur . '<br><br>';
-                $px_gagne = $px_gagne + 1;
-            }
-            else
+                $px_gagne     = $px_gagne + 1;
+            } else
             {
                 $contenu_page .= 'vous n’avez pas amélioré cette compétence.<br><br> ';
             }
             $px_gagne = $px_gagne + 4;
 
             // On ajoute la formule aux formules connues
-            $req = "select * from perso_formule where pfrm_perso_cod = $perso_cod and pfrm_frm_cod = $frm_cod";
+            $req  = "select * from perso_formule where pfrm_perso_cod = $perso_cod and pfrm_frm_cod = $frm_cod";
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
             {
-                $req = "insert into perso_formule (pfrm_perso_cod, pfrm_frm_cod) values ($perso_cod, $frm_cod)";
+                $req  = "insert into perso_formule (pfrm_perso_cod, pfrm_frm_cod) values ($perso_cod, $frm_cod)";
                 $stmt = $pdo->query($req);
             }
         }
@@ -280,8 +279,8 @@ switch ($methode)
         {
             $contenu_page .= '<br><br>Malheureusement, la puissance a cet endroit était trop importante. Vous en subissez quelques ratées<br>';
             $req          = 'select enchantement_rate(' . $perso_cod . ') as resultat';
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt         = $pdo->query($req);
+            $result       = $stmt->fetch();
             $contenu_page .= $result['resultat'];
         }
         break;

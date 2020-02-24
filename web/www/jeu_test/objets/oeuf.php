@@ -59,8 +59,8 @@ if (!($result = $stmt->fetch()))
             else
             {
                 // ON ENLEVE LES PAs
-                $req_enl_pa   = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-                $stmt         = $pdo->query($req_enl_pa);
+                $perso->perso_pa = $perso->perso_pa - 4;
+                $perso->stocke();
                 $contenu_page .= "<p><strong>Vous réchauffez l’œuf quelques minutes...</strong></p>";
 
                 // ON DIMINUE 'ETAT

@@ -41,18 +41,20 @@ if ($erreur == 0) {
         if ($pa_perso < 4) {
             echo("<p>Vous n'avez pas assez de PA !!!!");
         } else {
-            $pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod ";
-            $stmt = $pdo->query($pa);
 
-            $req_pos = "select ppos_pos_cod,pos_x,pos_y,pos_etage from perso_position,positions where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-            $stmt = $pdo->query($req_pos);
-            $result = $stmt->fetch();
+            $perso->perso_pa = $perso->perso_pa - 4;
+            $perso->stocke();
+
+            $req_pos =
+                "select ppos_pos_cod,pos_x,pos_y,pos_etage from perso_position,positions where ppos_perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
+            $stmt    = $pdo->query($req_pos);
+            $result  = $stmt->fetch();
 
             $pos_actuelle = $result['ppos_pos_cod'];
 
-            $req = "select lieu_dest from lieu,lieu_position ";
-            $req = $req . "where lpos_pos_cod = $pos_actuelle ";
-            $req = $req . "and lpos_lieu_cod = lieu_cod ";
+            $req    = "select lieu_dest from lieu,lieu_position ";
+            $req    = $req . "where lpos_pos_cod = $pos_actuelle ";
+            $req    = $req . "and lpos_lieu_cod = lieu_cod ";
             $stmt = $pdo->query($req);
             $result = $stmt->fetch();
             $n_pos = $result['lieu_dest'];

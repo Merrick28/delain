@@ -11,19 +11,18 @@ $contenu_page = '';
 //
 define('APPEL', 1);
 include "blocks/_verif_enchanteur.php";
-
 $perso = new perso;
 $perso = $verif_connexion->perso;
 
 if ($perso->is_fam())
 {
     $contenu_page .= "Désolé mais les familiers ne sont pas les bienvenus ici.";
-    $erreur = 1;
+    $erreur       = 1;
 }
 //
 // fin des controles principaux
 //
-$methode          = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     switch ($methode)
@@ -138,9 +137,9 @@ if ($erreur == 0)
             $stmt = $pdo->query($req);
             if ($stmt->rowCount() == 0)
             {
-                $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-                $stmt2 = $pdo->query($req);
-                $result2 = $stmt2->fetch();
+                $req          = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
+                $stmt2        = $pdo->query($req);
+                $result2      = $stmt2->fetch();
                 $contenu_page .= $result2['resultat'];
             } else
             {
@@ -156,26 +155,26 @@ if ($erreur == 0)
 
             break;
         case "niv2": // 10000 brouzoufs et limite comp
-            $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $req          = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
+            $stmt         = $pdo->query($req);
+            $result       = $stmt->fetch();
             $contenu_page .= $result['resultat'];
             break;
         case "niv3": // 20000 brouzoufs et limite comp
-            $req = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $req          = "select enchanteur(" . $perso_cod . "," . $comp . ") as resultat";
+            $stmt         = $pdo->query($req);
+            $result       = $stmt->fetch();
             $contenu_page .= $result['resultat'];
             break;
         case "code":
-            $code = $_POST['code'];
-            $req = "select pquete_param_texte,perso_pa from quete_perso,perso
+            $code       = $_POST['code'];
+            $req        = "select pquete_param_texte,perso_pa from quete_perso,perso
 											where pquete_quete_cod = 15
 											and pquete_perso_cod = " . $perso_cod . "
 											and perso_cod = pquete_perso_cod
 											and pquete_nombre = 1";
-            $stmt = $pdo->query($req);
-            $result = $stmt->fetch();
+            $stmt       = $pdo->query($req);
+            $result     = $stmt->fetch();
             $code_array = explode(";", $result['pquete_param_texte']);
             if ($stmt->rowCount() == 0)
             {
@@ -188,23 +187,22 @@ if ($erreur == 0)
             } else if ($code == $code_array[0])
             {
                 //Mise à jour de la comp enchanteur
-                $req2 = "select enchanteur(" . $perso_cod . ",88) as resultat";
-                $stmt2 = $pdo->query($req2);
-                $result2 = $stmt2->fetch();
+                $req2         = "select enchanteur(" . $perso_cod . ",88) as resultat";
+                $stmt2        = $pdo->query($req2);
+                $result2      = $stmt2->fetch();
                 $contenu_page .= '« <em>' . $result2['resultat'] . '</em>»<br><br>
 																		<strong>Vous bénéficiez maintenant d\'une nouvelle compétence. Bonne découverte !</strong>';
             } else
             {
-                $contenu_page .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
+                $contenu_page    .= '« <em>Hum, je crois qu\'il y a méprise, vous n\'y êtes pas du tout !
 														<br>Prenez un peu de temps pour réfléchir un peu plus ...</em>»<br><br>';
-                $req2 = "update perso set perso_pa = perso_pa - 6 where perso_cod = " . $perso_cod;
-                $stmt2 = $pdo->query($req2);
-                $result2 = $stmt2->fetch();
+                $perso->perso_pa = $perso->perso_pa - 6;
+                $perso->stocke();
             }
             break;
         default:
             $contenu_page .= "<p>Erreur sur le type d'appel !";
-            $erreur = 1;
+            $erreur       = 1;
             break;
 
     }

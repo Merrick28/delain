@@ -36,29 +36,28 @@ if ($erreur == 0)
 
             break;
 		case "vendre":
-			$req = "select perobj_obj_cod from perso_objets, objets 
+			$req           = "select perobj_obj_cod from perso_objets, objets 
 					where perobj_obj_cod = obj_cod and obj_gobj_cod = 861
 					and perobj_perso_cod = $perso_cod";
-			$stmt = $pdo->query($req);
-			$nombre_vendus = $stmt->rowCount();
-			$req = "update perso_objets set perobj_perso_cod = $groquik 
+            $stmt          = $pdo->query($req);
+            $nombre_vendus = $stmt->rowCount();
+            $req           = "update perso_objets set perobj_perso_cod = $groquik 
 					where perobj_perso_cod = $perso_cod 
 					and perobj_obj_cod in ($req)";
-			$stmt = $pdo->query($req);
-			$req = "update perso 
-					set perso_po = perso_po + 300 * $nombre_vendus 
-					where perso_cod = $perso_cod";
-			$stmt = $pdo->query($req);
-				
-			
-			$req = "select perobj_obj_cod from perso_objets, objets 
+            $stmt          = $pdo->query($req);
+
+            $perso->perso_po = $perso->perso_po + 300 * $nombre_vendus;
+            $perso->stocke();
+
+
+            $req             = "select perobj_obj_cod from perso_objets, objets 
 					where perobj_obj_cod = obj_cod and obj_gobj_cod = 861
 					and perobj_perso_cod = $groquik
 					limit 30";
-			$stmt = $pdo->query($req);
-			$nombre_recoltes = $stmt->rowCount();
-			$brouzoufs = 300 * $nombre_vendus;
-			$manquants = 30 - $nombre_recoltes;
+            $stmt            = $pdo->query($req);
+            $nombre_recoltes = $stmt->rowCount();
+            $brouzoufs       = 300 * $nombre_vendus;
+            $manquants       = 30 - $nombre_recoltes;
 
 			$contenu_page4 .= "Voilà $brouzoufs Brouzoufs pour votre peine. N'hésitez pas à me ramener d'autres pièces... Il ne m'en manque plus que $manquants !<br />";
 

@@ -62,18 +62,19 @@ switch($methode2)
 			}
 			else
 			{
-				echo "Félicitations ! vous avez réalisé avec valeur votre mission.
+                echo "Félicitations ! vous avez réalisé avec valeur votre mission.
 							<br>Comme convenu, nous vous offrons votre récompense.
 							<br>Voici une bourse qui vous permettra d’aller loin !";
-				$req = "update perso set
-						perso_po = perso_po + 5000,
-						perso_px = perso_px + 10,
-						perso_prestige = perso_prestige + 1
-					where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req);
-				$req = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
-				$stmt = $pdo->query($req);
-			}
+
+
+                $perso->perso_po       = $perso->perso_po + 5000;
+                $perso->perso_px       = $perso->perso_px + 10;
+                $perso->perso_prestige = $perso->perso_prestige + 1;
+                $perso->stocke();
+
+                $req  = "update quete_perso set pquete_termine = 'O' where pquete_cod = $quete_cod";
+                $stmt = $pdo->query($req);
+            }
 		}
 		else /*le perso n’a pas de quête de ce type engagée, on teste si on lui en donne une
 		Pour l’instant, test sur son num de perso et la date. On pourrait aussi imaginer de ne faire ça que tous les 10 premiers jours
@@ -310,12 +311,14 @@ switch($methode2)
 			// 2) Cadeau aléatoire
 			$random = rand (1, 6);
 			if ($random == 1) // Entre 5000 et 9000 brouzoufs
-			{
-				$brouzoufs = ((rand (1, 5) * 1000) + 4000);
-				$req = "update perso set perso_po = perso_po + $brouzoufs where perso_cod = $perso_cod";
-				$stmt = $pdo->query($req);
-				$texte = "une petite somme d’or, de <strong>$brouzoufs brouzoufs et une rune</strong>.";
-			}
+            {
+                $brouzoufs = ((rand(1, 5) * 1000) + 4000);
+
+                $perso->perso_po = $perso->perso_po + $brouzoufs;
+                $perso->stocke();
+
+                $texte = "une petite somme d’or, de <strong>$brouzoufs brouzoufs et une rune</strong>.";
+            }
 			else if ($random == 2) // deux potions (différentes)
 			{
 				$req = "select gobj_cod, lancer_des(1, 1000) as num from objet_generique

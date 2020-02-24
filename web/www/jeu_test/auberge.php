@@ -155,9 +155,9 @@ if ($erreur == 0)
             }
             if ($erreur == 0)
             {
-                $req  =
-                    'update perso set perso_po = perso_po - 10,perso_pa = perso_pa - 4 where perso_cod = ' . $perso_cod;
-                $stmt = $pdo->query($req);
+                $perso->perso_po = $perso->perso_po - 10;
+                $perso->perso_pa = $perso->perso_pa - 4;
+                $perso->stocke();
 
                 $req  = 'select paub_perso_cod from perso_auberge where paub_perso_cod = ' . $perso_cod . '
 					and paub_lieu_cod = ' . $lieu_cod;

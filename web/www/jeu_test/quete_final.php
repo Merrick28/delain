@@ -135,8 +135,10 @@ if (!$perso->is_lieu())
 											<?php 
 											$req = "select f_del_objet($obj_quete)";
 											$stmt = $pdo->query($req);
-											$req2 = 'update perso set perso_po = perso_po + 3000 where perso_cod = ' . $perso_cod;
-											$stmt = $pdo->query($req2);
+
+											$perso->perso_po = $perso->perso_po + 3000;
+                                            $perso->stocke();
+
 									}
 									else if($cede_objet == 'non')
 									{
@@ -309,8 +311,10 @@ if (!$perso->is_lieu())
 											$req = "select vente_caisses($perso_cod,$obj_gen_quete)"; 
 											$stmt = $pdo->query($req);
 											$result = $stmt->fetch();
-											$req5 = "update perso set perso_prestige = perso_prestige + 1 where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req5);
+
+											$perso->perso_prestige = $perso->perso_prestige +1;
+                                            $perso->stocke();
+
 											$req = "select nextval('seq_msg_cod') as numero";
 											$stmt = $pdo->query($req);
 											$result = $stmt->fetch();
@@ -514,10 +518,8 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -561,10 +563,8 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -616,10 +616,8 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -662,10 +660,8 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -714,10 +710,9 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -742,10 +737,9 @@ if (!$perso->is_lieu())
 											$result = $stmt->fetch();				
 											}
 								//Mise à jour des brouzoufs
-								$req = "update perso set perso_po = perso_po - 1000 
-												where perso_cod = $perso_cod";
-								$stmt = $pdo->query($req);
-								$result = $stmt->fetch();	
+
+								$perso->perso_po = $perso->perso_po - 1000;
+                                            $perso->stocke();
 								break; // Fin du traitement de Io Etape 1
 /***********************************************************************************************************/										
 								case "dieu1_quete10_2": // Io deuxièmes dévotions
@@ -757,10 +751,9 @@ if (!$perso->is_lieu())
 											<br>Vous n'êtes pas capable de canaliser cette puissance, et la douleur en arrive à devenir physique.
 											<br>Vous vous écroulez, du sang coulant de vos narines.
 											<?php 
-											$req = "update perso set perso_pv = perso_pv - 5 
-																		where perso_cod = $perso_cod";
-											$stmt = $pdo->query($req);
-											$result = $stmt->fetch();	
+
+											$perso->perso_pv = $perso->perso_pv - 5;
+                                            $perso->stocke();
 											}
 								else
 											{
@@ -798,10 +791,9 @@ if (!$perso->is_lieu())
 													
 											}
 								//Mise à jour des brouzoufs
-								$req = "update perso set perso_po = perso_po - 1000 
-												where perso_cod = $perso_cod";
-								$stmt = $pdo->query($req);
-								$result = $stmt->fetch();	
+
+								$perso->perso_po = $perso->perso_po - 1000;
+                                $perso->stocke();
 								break; // Fin du traitement de Io Etape
 								// Fin global du traitement de Io
 /***********************************************************************************************************/																						

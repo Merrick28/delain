@@ -77,8 +77,8 @@ if ($boule)
 if ($boule)
 {
     // ON ENLEVE LES PAs
-    $req_enl_pa = "update perso set perso_pa = perso_pa - 4 where perso_cod = $perso_cod";
-    $stmt       = $pdo->query($req_enl_pa);
+    $perso->perso_pa = $perso->perso_pa - 4;
+    $perso->stocke();
 
     // ON DIMINUE 'ETAT
     $diff_etat  = mt_rand(0, 25) + 1;

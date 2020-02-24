@@ -68,8 +68,9 @@ if ($erreur == 0)
 
     $req  = "update lieu set lieu_compte = lieu_compte + $qte where lieu_cod = $mag ";
     $stmt = $pdo->query($req);
-    $req  = "update perso set perso_po = perso_po - $qte where perso_cod = $perso_cod ";
-    $stmt = $pdo->query($req);
+
+    $perso->perso_po = $perso->perso_po - $qte;
+    $perso->stocke();
     echo "<p>La transaction a été effectuée.";
 
 }

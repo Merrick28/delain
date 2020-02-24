@@ -44,9 +44,6 @@ if (!$test_objet)
     if (isset($_POST['methode']))
     {
         $erreur = 0;
-        $req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $stmt   = $pdo->query($req_pa);
-        $result = $stmt->fetch();
         if ($perso->perso_pa < 1)
         {
             $contenu_page .= '<p><strong>Vous n’avez pas assez de PA !</strong></p>';
