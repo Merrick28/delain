@@ -236,6 +236,7 @@ if ($erreur == 0)
         Y : <input type="text" name="pos_y" maxlength="5" size="5" value="<?php echo $pos_y ?>"> -
         Étage : <select name="etage">
             <?php
+            $html = new html;
             echo $html->etage_select($etage);
             ?>
         </select><br>

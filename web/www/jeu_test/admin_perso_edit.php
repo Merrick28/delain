@@ -267,6 +267,7 @@ if ($erreur == 0)
                         <SELECT name="perso_race_cod">
                             <?php // LISTE DES RACES
                             $req_races = "select race_cod,race_nom from race order by race_nom";
+                            $html = new html;
                             echo $html->select_from_query($req_races, 'race_cod', 'race_nom', $perso_race_cod);
                             ?>
 

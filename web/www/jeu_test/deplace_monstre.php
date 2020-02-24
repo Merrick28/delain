@@ -62,7 +62,7 @@ if ($erreur2 != 1)
 				<p><strong>Position X : </strong><input type="text" name="recup_x" size="5" />
 				<strong>Position Y : </strong><input type="text" name="recup_y" size="5" /><br />
 				<strong>Étage : </strong><select name="recup_etage">';
-
+    $html = new html;
     $contenu_page .= $html->etage_select();
 
     $contenu_page

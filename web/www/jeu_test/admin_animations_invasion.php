@@ -109,7 +109,7 @@ echo '<td class="soustitre2">
 		<select name="etage">
 			<option value="tous">Tous les étages !</option>
 	';
-
+$html = new html;
 echo $html->etage_select();
 
 echo '</select></td>';

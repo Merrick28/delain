@@ -133,15 +133,7 @@ class bddpdo
 
     public function query($sql)
     {
-        /*if (strpos(strtoupper($sql), "SELECT") == 0)
-        {
-            return $this->pdo->query($sql);
 
-        } else
-        {
-            return $this->pdo->exec($sql);
-
-        }*/
         return $this->pdo->query($sql);
     }
 

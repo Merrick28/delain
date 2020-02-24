@@ -232,29 +232,26 @@ if ($erreur == 0)
     $unite = ($typeObjet >= 0) ? '&nbsp;%' : '&nbsp;br';
 
     // Récupération des données
-    $stmt = $pdo->query($req);
-    while ($result = $stmt->fetch())
-    {
-        if (!isset($lesEtages[$result['mon_etage']]))
-        {
-            $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
-            $donnees[$result['mon_etage']] = array();
+    if ($req != '') {
+        $stmt = $pdo->query($req);
+        while ($result = $stmt->fetch()) {
+            if (!isset($lesEtages[$result['mon_etage']])) {
+                $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
+                $donnees[$result['mon_etage']] = array();
+            }
+            if (!isset($lesObjets[$result['gobj_cod']])) {
+                $lesObjets[$result['gobj_cod']] = $result['gobj_nom'];
+                $objetsTousEtages[$result['gobj_cod']] = 0;
+            }
+            $donnees[$result['mon_etage']][$result['gobj_cod']] = $result['chance_drop'] / 100;
+            $objetsTousEtages[$result['gobj_cod']] += $result['chance_drop'] / 100;
         }
-        if (!isset($lesObjets[$result['gobj_cod']]))
-        {
-            $lesObjets[$result['gobj_cod']] = $result['gobj_nom'];
-            $objetsTousEtages[$result['gobj_cod']] = 0;
-        }
-        $donnees[$result['mon_etage']][$result['gobj_cod']] = $result['chance_drop'] / 100;
-        $objetsTousEtages[$result['gobj_cod']] += $result['chance_drop'] / 100;
     }
-    if (isset($req_equip))
-    {
+
+    if (isset($req_equip)) {
         $stmt = $pdo->query($req_equip);
-        while ($result = $stmt->fetch())
-        {
-            if (!isset($lesEtages[$result['mon_etage']]))
-            {
+        while ($result = $stmt->fetch()) {
+            if (!isset($lesEtages[$result['mon_etage']])) {
                 $lesEtages[$result['mon_etage']] = $result['etage_libelle'];
                 $donnees[$result['mon_etage']] = array();
             }
