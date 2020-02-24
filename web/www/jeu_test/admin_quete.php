@@ -1,21 +1,31 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$compte = $verif_connexion->compte;
 
 $num_perso2 = $_REQUEST['num_perso2'];
 
+function insert_evt($num_perso2, $texte_evt)
+{
+    $levt                  = new ligne_evt();
+    $levt->levt_tevt_cod   = 43;
+    $levt->levt_perso_cod1 = $num_perso2;
+    $levt->levt_texte      = $texte_evt;
+    $levt->levt_lu         = 'N';
+    $levt->levt_visible    = 'N';
+    $levt->stocke(true);
+    unset($levt);
+}
+
 ob_start();
 $erreur = 0;
-$req    = "select compt_quete from compte where compt_cod = $compt_cod ";
-$stmt   = $pdo->query($req);
-$result = $stmt->fetch();
-if ($result['compt_quete'] != 'O')
+if ($compt->compt_quete != 'O')
 {
     echo "<p>Erreur ! Vous n'avez pas accès à cette page !";
     $erreur = 1;
 }
 if ($erreur == 0)
 {
-    $methode     = get_request_var('methode', 'debut');
+    $methode                            = get_request_var('methode', 'debut');
     switch ($methode)
     {
         case "debut":
@@ -27,7 +37,7 @@ if ($erreur == 0)
                     <input type="submit" value="Suite" class="test">
             </form>
             <input type="button" class="test" value="Rechercher un perso !"
-                   onClick="javascript:window.open('<?php echo $type_flux . G_URL; ?>rech_perso.php','rech','width=500,height=300');">
+                   onClick="window.open('<?php echo $type_flux . G_URL; ?>rech_perso.php','rech','width=500,height=300');">
             <hr>
             <a href="<?php echo $_SERVER['PHP_SELF']; ?>?methode=appel&met_appel=debut">Lancer un appel ?</a><br>
 
@@ -142,10 +152,8 @@ if ($erreur == 0)
                     {
                         // insertion dun évènement
                         $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-                        $req
-                                   = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)  
-                          values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                        $stmt      = $pdo->query($req);
+                        insert_evt($num_perso2, $texte_evt);
+
                         // effacement des locks
                         $req  = "delete from lock_combat where lock_cible = $num_perso2 ";
                         $stmt = $pdo->query($req);
@@ -161,13 +169,15 @@ if ($erreur == 0)
             break;
         case "dlt":
             // insertion dun évènement
-            $texte_evt = "La DLT de [perso_cod1] a été actualisée par un admin quête.";
-            $req
-                       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-			  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-            $stmt      = $pdo->query($req);
-            $req       = "update perso set perso_dlt = now() where perso_cod = $num_perso2 ";
-            $stmt      = $pdo->query($req);
+            $texte_evt             = "La DLT de [perso_cod1] a été actualisée par un admin quête.";
+            $levt                  = new ligne_evt();
+            $levt->levt_tevt_cod   = 43;
+            $levt->levt_perso_cod1 = $num_perso2;
+            $levt->levt_texte      = $texte_evt;
+            $levt->levt_lu         = 'N';
+            $levt->levt_visible    = 'N';
+            $req                   = "update perso set perso_dlt = now() where perso_cod = $num_perso2 ";
+            $stmt                  = $pdo->query($req);
             echo "<p>La dlt de ce joueur est prête à être activée.";
             break;
         case "objet":
@@ -221,10 +231,7 @@ if ($erreur == 0)
                     $stmt = $pdo->query($req);
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
-                    $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $stmt      = $pdo->query($req);
+                    insert_evt($num_perso2, $texte_evt);
                     // création
                     $req  = "select cree_objet_perso_nombre($gobj_cod,$num_perso2,1) ";
                     $stmt = $pdo->query($req);
@@ -263,10 +270,7 @@ if ($erreur == 0)
                 case "etape2":
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
-                    $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-                          values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $stmt      = $pdo->query($req);
+                    insert_evt($num_perso2, $texte_evt);
                     // création
                     $req  = "select cree_objet_perso_nombre($gobj,$num_perso2,1) ";
                     $stmt = $pdo->query($req);
@@ -305,10 +309,7 @@ if ($erreur == 0)
                 case "etape2":
                     // insertion dun évènement
                     $texte_evt = "Un admin quête a créé un objet dans l\'inventaire de [perso_cod1].";
-                    $req
-                               = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-					  values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-                    $stmt      = $pdo->query($req);
+                    insert_evt($num_perso2, $texte_evt);
                     // création
                     $req  = "select cree_objet_perso_nombre($gobj,$num_perso2,1) ";
                     $stmt = $pdo->query($req);
@@ -458,9 +459,8 @@ if ($erreur == 0)
             }
             echo "<p>Opération effectuée !";
             $stmt = $pdo->query($req);
-            $req = "INSERT INTO ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-              values(43,now(),$num_perso2,'$texte_evt','N','N') ";
-            $stmt = $pdo->query($req);
+
+            insert_evt($num_perso2, $texte_evt);
             break;
     }
 }

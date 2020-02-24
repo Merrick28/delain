@@ -57,13 +57,26 @@ if ($erreur == 0) {
             echo "<p>", $result['resultat'];
             break;
         case "non":
-            $texte_evt = "[cible] a refusé d'être transformé an vampire par [attaquant]";
-            $req       = "insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible) 
-            values(nextval('seq_levt_cod'),27,now(),1,$pere,e'" . pg_escape_string($texte_evt) . "','N','N',$pere,$perso_cod)";
-            $stmt      = $pdo->query($req);
-            $req       = "insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible,levt_attaquant,levt_cible) 
-            values(nextval('seq_levt_cod'),27,now(),1,$perso_cod,e'" . pg_escape_string($texte_evt) . "','O','N',$pere,$perso_cod)";
-            $stmt      = $pdo->query($req);
+            $texte_evt             = "[cible] a refusé d'être transformé an vampire par [attaquant]";
+            $levt                  = new ligne_evt();
+            $levt->levt_tevt_cod   = 27;
+            $levt->levt_perso_cod1 = $pere;
+            $levt->levt_texte      = $texte_evt;
+            $levt->levt_attaquant  = $pere;
+            $levt->levt_cible      = $perso_cod;
+            $levt->levt_lu         = 'N';
+            $levt->levt_visible    = 'N';
+            $levt->stocke(true);
+
+            $levt->levt_perso_cod1 = $perso_cod;
+            $levt->levt_lu         = 'O';
+            $levt->stocke(true);
+
+            unset($levt);
+
+
+            unset($levt);
+
             echo "<p>La proposition a bien été refusée";
             break;
     }

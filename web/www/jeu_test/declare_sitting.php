@@ -2,7 +2,7 @@
 include "blocks/_header_page_jeu.php";
 
 ob_start();
-$methode          = get_request_var('methode', 'debut');
+$methode                = get_request_var('methode', 'debut');
 switch ($methode)
 {
     case "debut":
@@ -54,8 +54,8 @@ switch ($methode)
 
     case "sitting":
         $req = "select compt_cod from compte where compt_nom = '$compte_sitteur'";
-        $stmt = $pdo->query($req);
-        $result = $stmt->fetch();
+        $stmt           = $pdo->query($req);
+        $result         = $stmt->fetch();
         $compte_sitteur = $result['compt_cod'];
         if ($duree_heure == null or $heure_debut == null or $compte_sitteur == null)
         {
@@ -250,10 +250,6 @@ switch ($methode)
                 $stmt          = $pdo->query($req);
                 $result        = $stmt->fetch();
                 $perso_sitteur = $result['pcompt_perso_cod'];
-                $req           = "select nextval('seq_msg_cod') as numero";
-                $stmt          = $pdo->query($req);
-                $result        = $stmt->fetch();
-                $num_mes       = $result['numero'];
                 //
                 $corps  = "Le compte $compte_sitte_nom a demandé à être sitté par le compte $compte_sitteur_nom.
                                     <br>Vous pouvez annuler cette demande de sitting si elle n'a pas démarrée.
@@ -262,10 +258,10 @@ switch ($methode)
                                     <br>Compte sitteur : <strong>$compte_sitteur_nom</strong>
                                     <br>Nombre d'heures du sitting : <strong>$duree_heure heures</strong>
                                     <br>Début du sitting : <strong>$date_deb";
-                $corps  = pg_escape_string($corps);
                 $titre  = "Déclaration de sitting $compte_sitte_nom / $compte_sitteur_nom";
-                $titre  = pg_escape_string($titre);
                 $length = 50;
+
+                $message = new message;
                 // On vérifie que le titre loge dans la bdd.
                 while (strlen($titre) > $length && $length > 0)
                 {
@@ -278,18 +274,13 @@ switch ($methode)
                         $length--;
                     }
                 }
-                $req_ins_mes =
-                    "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-                $stmt        = $pdo->query($req_ins_mes);
-                /******************************/
-                /* On enregistre l'expéditeur */
-                /******************************/
-                $req_ins_exp  =
-                    "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sit,'N')";
-                $stmt         = $pdo->query($req_ins_exp);
-                $req_ins_dest =
-                    "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sitteur,'N','N')";
-                $stmt         = $pdo->query($req_ins_dest);
+                $message->sujet      = $titre;
+                $message->corps      = $corps;
+                $message->expediteur = $perso_sit;
+                $message->ajouteDestinataire($perso_sitteur);
+                $message->envoieMessage();
+
+
             }
         }
         break;
@@ -392,27 +383,14 @@ switch ($methode)
             $stmt          = $pdo->query($req);
             $result        = $stmt->fetch();
             $perso_sitteur = $result['pcompt_perso_cod'];
-            $req           = "select nextval('seq_msg_cod') as numero";
-            $stmt          = $pdo->query($req);
-            $result        = $stmt->fetch();
-            $num_mes       = $result['numero'];
-            //
-            $corps       =
+
+            $message             = new message;
+            $message->sujet      = "Annulation de sitting par le sitté";
+            $message->corps      =
                 "La précédente demande de sitting a été annulée par le demandeur (sitté). L'annulation prend effet immédiatement";
-            $corps       = pg_escape_string($corps);
-            $titre       = "Annulation de sitting par le sitté";
-            $req_ins_mes =
-                "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-            $stmt        = $pdo->query($req_ins_mes);
-            /******************************/
-            /* On enregistre l'expéditeur */
-            /******************************/
-            $req_ins_exp  =
-                "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sit,'N')";
-            $stmt         = $pdo->query($req_ins_exp);
-            $req_ins_dest =
-                "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sitteur,'N','N')";
-            $stmt         = $pdo->query($req_ins_dest);
+            $message->expediteur = $perso_sit;
+            $message->ajouteDestinataire($perso_sitteur);
+            $message->envoieMessage();
         }
         break;
 
@@ -558,26 +536,14 @@ switch ($methode)
             $stmt          = $pdo->query($req);
             $result        = $stmt->fetch();
             $perso_sitte   = $result['pcompt_perso_cod'];
-            $req           = "select nextval('seq_msg_cod') as numero";
-            $stmt          = $pdo->query($req);
-            $result        = $stmt->fetch();
-            $num_mes       = $result['numero'];
-            //
-            $corps       = "La précédente demande de sitting a été annulée par votre sitteur.";
-            $corps       = pg_escape_string($corps);
-            $titre       = "Annulation de sitting par le sitteur";
-            $req_ins_mes =
-                "insert into messages (msg_cod,msg_date2,msg_date,msg_titre,msg_corps) values ($num_mes,now(),now(),e'$titre',e'$corps') ";
-            $stmt        = $pdo->query($req_ins_mes);
-            /******************************/
-            /* On enregistre l'expéditeur */
-            /******************************/
-            $req_ins_exp  =
-                "insert into messages_exp (emsg_cod,emsg_msg_cod,emsg_perso_cod,emsg_archive) values (nextval('seq_emsg_cod'),$num_mes,$perso_sitteur,'N')";
-            $stmt         = $pdo->query($req_ins_exp);
-            $req_ins_dest =
-                "insert into messages_dest (dmsg_cod,dmsg_msg_cod,dmsg_perso_cod,dmsg_lu,dmsg_archive) values (nextval('seq_dmsg_cod'),$num_mes,$perso_sit,'N','N')";
-            $stmt         = $pdo->query($req_ins_dest);
+
+            $message             = new message;
+            $message->sujet      = "Annulation de sitting par le sitteur";
+            $message->corps      = "La précédente demande de sitting a été annulée par votre sitteur.";
+            $message->expediteur = $perso_sitteur;
+            $message->ajouteDestinataire($perso_sitte);
+            $message->envoieMessage();
+
         }
         break;
 

@@ -45,10 +45,13 @@ if (!($result = $stmt->fetch()))
             $stmt      = $pdo->query($req_bonus);
 
             // INSERTION DE L'EVENT
-            $req_bonus =
-                "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible)" .
-                "values(69,now(),$perso_cod,'	[perso_cod1] a bu une chope de bière.','O','O')";
-            $stmt      = $pdo->query($req_bonus);
+            $levt                  = new ligne_evt();
+            $levt->levt_tevt_cod   = 69;
+            $levt->levt_perso_cod1 = $perso_cod;
+            $levt->levt_texte      = '[perso_cod1] a bu une chope de bière';
+            $levt->levt_lu         = 'O';
+            $levt->levt_visible    = 'O';
+            $levt->stocke(true);
 
             $contenu_page .= '<p><strong>Vous descendez le verre d’un trait, quel délice !</strong></p>';
         }

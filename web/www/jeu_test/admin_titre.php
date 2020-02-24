@@ -4,6 +4,19 @@ include "blocks/_header_page_jeu.php";
 
 include_once '../includes/tools.php';
 
+function insert_evt($mod_perso_cod, $texte_evt, $levt_visible = 'N', $levt_lu = 'N')
+{
+    $levt                  = new ligne_evt();
+    $levt->levt_tevt_cod   = 43;
+    $levt->levt_perso_cod1 = $mod_perso_cod;
+    $levt->levt_texte      = $texte_evt;
+    $levt->levt_attaquant  = $mod_perso_cod;
+    $levt->levt_cible      = $mod_perso_cod;
+    $levt->levt_lu         = $levt_lu;
+    $levt->levt_visible    = $levt_visible;
+    $levt->stocke(true);
+    unset($levt);
+}
 
 ?>
     <script>//# sourceURL=admin_titre.js
@@ -535,12 +548,7 @@ if ($erreur == 0)
                                     $pdo->execute(array(":don_bzf" => $don_bzf, ":perso_cod" => $mod_perso_cod), $stmt);
 
                                 $texte_evt = "[cible] a reçu {$don_bzf} brouzoufs.";
-                                $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-                                         values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                $stmt      = $pdo->prepare($req);
-                                $stmt      =
-                                    $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
-
+                                insert_evt($mod_perso_cod, $texte_evt, 'O', 'N');
                                 $log .= "\nDon de {$don_bzf} brouzoufs au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
 
@@ -562,11 +570,7 @@ if ($erreur == 0)
                                     $pdo->execute(array(":don_px" => $don_px, ":perso_cod" => $mod_perso_cod), $stmt);
 
                                 $texte_evt = "[cible] a reçu {$don_px} PX.";
-                                $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-                                         values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                $stmt      = $pdo->prepare($req);
-                                $stmt      =
-                                    $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
+                                insert_evt($mod_perso_cod, $texte_evt, 'O', 'N');
 
                                 $log .= "\nDon de {$don_px} PX au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                             }
@@ -636,11 +640,7 @@ if ($erreur == 0)
 
                                             $texte_evt =
                                                 '[cible] a reçu un objet <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                                            $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-                                             values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                                            $stmt      = $pdo->prepare($req);
-                                            $stmt      =
-                                                $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
+                                            insert_evt($mod_perso_cod, $texte_evt, 'N', 'N');
 
                                             $log .= "Don de l'objet #" . $objet->obj_cod . " (" . $objet->get_type_libelle() . " / " . $objet->obj_nom . ")  au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                                         }
@@ -733,12 +733,8 @@ if ($erreur == 0)
 
                             $texte_evt =
                                 '[cible] a reçu une part du butin <em>(' . $objet->obj_cod . ' / ' . $objet->get_type_libelle() . ' / ' . $objet->obj_nom . ')</em>';
-                            $req       = "insert into ligne_evt(levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu, levt_visible, levt_attaquant, levt_cible)
-                                                 values(43, now(), 1, :levt_perso_cod1, :texte_evt, 'N', 'O', :levt_attaquant, :levt_cible); ";
-                            $stmt      = $pdo->prepare($req);
-                            $stmt      =
-                                $pdo->execute(array(":levt_perso_cod1" => $mod_perso_cod, ":texte_evt" => $texte_evt, ":levt_attaquant" => $mod_perso_cod, ":levt_cible" => $mod_perso_cod), $stmt);
 
+                            insert_evt($mod_perso_cod, $texte_evt, 'N', 'N');
                             $log .= "Partage du butin, objet #" . $objet->obj_cod . " (" . $objet->get_type_libelle() . " / " . $objet->obj_nom . ") au perso : {$mod_perso_nom} ({$mod_perso_cod}) \n";
                         }
                     }

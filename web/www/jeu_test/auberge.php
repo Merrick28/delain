@@ -171,19 +171,23 @@ if ($erreur == 0)
                     $req = 'update perso_auberge set paub_nombre = paub_nombre + 1
 						where paub_perso_cod = ' . $perso_cod . ' and paub_lieu_cod = ' . $lieu_cod;
                 }
-                $stmt         = $pdo->query($req);
-                $req          = "select choix_rumeur() as rumeur ";
-                $stmt         = $pdo->query($req);
-                $result       = $stmt->fetch();
-                $contenu_page .= '<p>Vous vous asseyez à une table, et sirotez une bière bien fraiche.<br>
+                $stmt                  = $pdo->query($req);
+                $req                   = "select choix_rumeur() as rumeur ";
+                $stmt                  = $pdo->query($req);
+                $result                = $stmt->fetch();
+                $contenu_page          .= '<p>Vous vous asseyez à une table, et sirotez une bière bien fraiche.<br>
 					<p><em>Rumeur :</em> ' . $result['rumeur'];
-                $texte_evt    = "'[attaquant] siroté une petite bière tout seul'";
-                $req          = "insert into ligne_evt
-							(levt_tevt_cod,levt_perso_cod1,levt_attaquant,levt_cible,levt_lu,levt_visible,levt_texte)
-							values
-							(82,$perso_cod,$perso_cod,$perso_cod,'O','O',$texte_evt)";
-                $stmt         = $pdo->query($req);
-                $result       = $stmt->fetch();
+                $texte_evt             = "'[attaquant] siroté une petite bière tout seul'";
+                $levt                  = new ligne_evt();
+                $levt->levt_tevt_cod   = 82;
+                $levt->levt_perso_cod1 = $perso_cod;
+                $levt->levt_texte      = $texte_evt;
+                $levt->levt_attaquant  = $perso_cod;
+                $levt->levt_cible      = $perso_cod;
+                $levt->levt_lu         = 'O';
+                $levt->levt_visible    = 'O';
+                $levt->stocke(true);
+                unset($levt);
                 //
                 // on recherche les auberges déjà visitées
                 //

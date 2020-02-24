@@ -518,10 +518,17 @@ switch ($methode)
 		if ($err_depl == 0)
 		{
             // insertion dun évènement
-            $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-            $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-			values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-            $stmt      = $pdo->query($req);
+            $texte_evt             = "[perso_cod1] a été déplacé par un admin quête.";
+            $levt                  = new ligne_evt();
+            $levt->levt_tevt_cod   = 43;
+            $levt->levt_perso_cod1 = $mod_perso_cod;
+            $levt->levt_texte      = $texte_evt;
+            $levt->levt_attaquant  = $mod_perso_cod;
+            $levt->levt_cible      = $mod_perso_cod;
+            $levt->levt_lu         = 'N';
+            $levt->levt_visible    = 'N';
+            $levt->stocke(true);
+            unset($levt);
             // effacement des locks
             $req  = "delete from lock_combat where lock_cible = $mod_perso_cod ";
             $stmt = $pdo->query($req);
@@ -594,10 +601,17 @@ switch ($methode)
 		values ($gobj_cod,'$nom_objet','$nom_objet_non_iden',11,0,$poids_objet,'$desc','O','O','N')";
         $stmt = $pdo->query($req);
         // insertion dun évènement
-        $texte_evt = "Un admin quête a créé un objet dans l’inventaire de [perso_cod1].";
-        $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-		values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-        $stmt      = $pdo->query($req);
+        $texte_evt             = "Un admin quête a créé un objet dans l’inventaire de [perso_cod1].";
+        $levt                  = new ligne_evt();
+        $levt->levt_tevt_cod   = 43;
+        $levt->levt_perso_cod1 = $mod_perso_cod;
+        $levt->levt_texte      = $texte_evt;
+        $levt->levt_attaquant  = $mod_perso_cod;
+        $levt->levt_cible      = $mod_perso_cod;
+        $levt->levt_lu         = 'N';
+        $levt->levt_visible    = 'N';
+        $levt->stocke(true);
+        unset($levt);
         // création
         $req  = "select cree_objet_perso_nombre($gobj_cod,$mod_perso_cod,1)";
         $stmt = $pdo->query($req);

@@ -56,10 +56,7 @@ if ($stmt->rowCount() == 0)
             $message->sujet      = "[Appel de prisonnier]";
             $message->corps      = $_REQUEST['corps'];
             $message->expediteur = $perso_cod;
-            $req_msg_cod         = "select nextval('seq_msg_cod') as numero";
-            $stmt                = $pdo->query($req_msg_cod);
-            $result              = $stmt->fetch();
-            $num_mes             = $result['numero'];
+
             // encodage du texte
 
             // destinataires

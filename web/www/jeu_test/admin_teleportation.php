@@ -266,10 +266,15 @@ if ($erreur == 0)
                         } else
                         {
                             // insertion dun évènement
-                            $texte_evt = "[perso_cod1] a été déplacé par un admin quête.";
-                            $req       = "insert into ligne_evt(levt_tevt_cod,levt_date,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-                            values(43,now(),$mod_perso_cod,'$texte_evt','N','N') ";
-                            $stmt      = $pdo->query($req);
+                            $texte_evt             = "[perso_cod1] a été déplacé par un admin quête.";
+                            $levt                  = new ligne_evt();
+                            $levt->levt_tevt_cod   = 43;
+                            $levt->levt_perso_cod1 = $mod_perso_cod;
+                            $levt->levt_texte      = $texte_evt;
+                            $levt->levt_lu         = 'N';
+                            $levt->levt_visible    = 'N';
+                            $levt->stocke(true);
+                            unset($levt);
                             // effacement des locks
                             $req  = "delete from lock_combat where lock_cible = $mod_perso_cod ";
                             $stmt = $pdo->query($req);
@@ -375,13 +380,13 @@ if ($erreur == 0)
     echo '</form>';
 
     echo '<hr>Section de recherche de persos liés:';
-    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ');"><br>';
+    echo '&nbsp;&nbsp;<input type="button" class="" value="chercher mes persos" onClick="listControleur(' . $perso_cod . ')"><br>';
     echo create_selectbox_from_req("perso_etage", $request_select_etage, 0, array('id' => "perso_etage", 'style' => 'style="margin:5px; width: 350px;'));
     echo '&nbsp;&nbsp;<input type="button" class="" value="tous les persos de l\'étage" onClick="listPersoEtage($(\'#perso_etage\').val());"><br>';
     echo '<div id="liste-ajout-rapide"></div>';
     echo '<hr>';
 
-    echo "<script> listControleur({$perso_cod}); </script>"; // Injection javascript => perso par défaut.
+    echo "<script> listControleur({$perso_cod}) </script>"; // Injection javascript => perso par défaut.
 
 }
 ?>

@@ -111,7 +111,7 @@ $pdo         = new bddpdo();
         $stmt   = $pdo->execute(array(":perso" => $perso_cible), $stmt);
         $req1   = "select pfam_familier_cod from perso_familier where pfam_perso_cod = :perso ";
         $stmt   = $pdo->prepare($req1);
-        $stmt   = $pdo->execute(array(":perso" => $perso_cible), $stmt);
+        $stmt = $pdo->execute(array(":perso" => $perso_cible), $stmt);
         $allfam = $stmt->fetchAll();
         if (count($allfam) != 0)
         {
@@ -121,11 +121,13 @@ $pdo         = new bddpdo();
             $stmt = $pdo->execute(array(":perso" => $perso_cible), $stmt);
         }
 
-        $req      =
-            "insert into ligne_evt (levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible) 
-            values (23,now(),1,:perso,'Le personnage a été supprimé !','O','O') ";
-        $stmt     = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":perso" => $perso_cible), $stmt);
+        $levt                  = new ligne_evt();
+        $levt->levt_tevt_cod   = 23;
+        $levt->levt_perso_cod1 = $perso_cible;
+        $levt->levt_texte      = 'Le personnage a été supprimé !';
+        $levt->levt_lu         = 'O';
+        $levt->levt_visible    = 'O';
+        $levt->stocke(true);
 
 
         echo("<p>Votre perso a été supprimé !");
