@@ -9,25 +9,22 @@ $perso = $verif_connexion->perso;
 if ($erreur == 0)
 {
     // INFOS GUILDE
-    $req_guilde = "select guilde_nom,guilde_cod,rguilde_admin from guilde,guilde_perso,guilde_rang ";
-    $req_guilde =
-        $req_guilde . "where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' and pguilde_guilde_cod = guilde_cod ";
-    $req_guilde = $req_guilde . "and rguilde_guilde_cod = guilde_cod and rguilde_rang_cod = pguilde_rang_cod ";
-    $stmt       = $pdo->query($req_guilde);
-    $nb_guilde  = $stmt->rowCount();
-    if ($nb_guilde > 0)
+
+    $gp = new guilde_perso();
+    if ($gp->get_by_perso($perso_cod))
     {
-        $result     = $stmt->fetch();
-        $adm        = $result['rguilde_admin'];
-        $guilde_cod = $result['guilde_cod'];
-        $guilde_nom = $result['guilde_nom'];
+        $guilde = new guilde();
+        $guilde->charge($gp->pguilde_guilde_cod);
+        $gr = new guilde_rang();
+        $gr->get_by_guilde_rang($guilde->guilde_cod, $gp->pguilde_rang_cod);
+        $adm        = $gr->rguilde_admin;
+        $guilde_cod = $guilde->guilde_cod;
+        $guilde_nom = $guilde->guilde_nom;
     }
+
     // INFOS ETAGE
-    $req_pos                  = " select pos_etage from positions,perso_position"
-                                . " where ppos_pos_cod = pos_cod and ppos_perso_cod = $perso_cod";
-    $stmt                     = $pdo->query($req_pos);
-    $result                   = $stmt->fetch();
-    $numero                   = -1 * $result['pos_etage'];
+    $pos    = $perso->get_position();
+    $numero = -1 * $pos['pos']->pos_etage;
     if ($numero < 0)
     {
         $numero = 5;

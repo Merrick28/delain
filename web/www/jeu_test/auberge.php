@@ -17,11 +17,14 @@ $methode = get_request_var('methode', 'debut');
 if ($erreur == 0)
 {
     // Fidèle de Tonto (id=9) ?
-    $tonto    = 0;
-    $req_dieu = 'select * from dieu_perso where dper_dieu_cod=9 and dper_perso_cod=' . $perso_cod;
-    $stmt     = $pdo->query($req_dieu);
-    if ($stmt->rowCount())
+    $tonto = 0;
+
+    $dp = new dieu_perso();
+    if ($dp->getByPersoCod($perso_cod))
+    {
         $tonto = 1;
+    }
+
 
     switch ($methode)
     {
@@ -131,9 +134,10 @@ if ($erreur == 0)
         case "boire":
             $erreur   = 0;
             $req      = 'select lpos_lieu_cod from lieu_position,perso_position
-				where ppos_perso_cod = ' . $perso_cod . '
+				where ppos_perso_cod = :perso_cod
 				and ppos_pos_cod = lpos_pos_cod';
-            $stmt     = $pdo->query($req);
+            $stmt     = $pdo->prepare($req);
+            $stmt     = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             $result   = $stmt->fetch();
             $lieu_cod = $result['lpos_lieu_cod'];
 
@@ -142,13 +146,13 @@ if ($erreur == 0)
             $prix  = 10;
             $sexe  = $perso->perso_sex;
 
-            if ($result['perso_po'] < $prix)
+            if ($perso->perso_po < $prix)
             {
                 $contenu_page .= '<p>Vous savez, ' . $nom_sexe[$sexe] . ', nous n\'apprécions pas vraiment le genre de personnes qui n\'ont pas de quoi payer ce qu\'elles demandent.<br />
 				Revenez quand vous poches seront plus pleines, ou bien allez boire ailleurs.';
                 $erreur       = 1;
             }
-            if ($result['perso_pa'] < 4)
+            if ($perso->perso_pa < 4)
             {
                 $contenu_page .= '<p>pas assez de PA....<br />';
                 $erreur       = 1;
@@ -162,22 +166,28 @@ if ($erreur == 0)
                 $req  = 'select paub_perso_cod from perso_auberge where paub_perso_cod = ' . $perso_cod . '
 					and paub_lieu_cod = ' . $lieu_cod;
                 $stmt = $pdo->query($req);
+                $pab  = new perso_auberge();
                 if ($stmt->rowCount() == 0)
                 {
-                    $req = 'insert into perso_auberge (paub_perso_cod,paub_lieu_cod,paub_nombre)
-						values (' . $perso_cod . ',' . $lieu_cod . ',1)';
+                    $pab->paub_nombre    = 1;
+                    $pab->paub_perso_cod = $perso_cod;
+                    $pab->paub_lieu_cod  = $lieu_cod;
+                    $pab->stocke(true);
                 } else
                 {
-                    $req = 'update perso_auberge set paub_nombre = paub_nombre + 1
-						where paub_perso_cod = ' . $perso_cod . ' and paub_lieu_cod = ' . $lieu_cod;
+                    $pab->paub_nombre++;
+                    $pab->paub_perso_cod = $perso_cod;
+                    $pab->paub_lieu_cod  = $lieu_cod;
+                    $pab->stocke();
                 }
-                $stmt                  = $pdo->query($req);
+
+
                 $req                   = "select choix_rumeur() as rumeur ";
                 $stmt                  = $pdo->query($req);
                 $result                = $stmt->fetch();
                 $contenu_page          .= '<p>Vous vous asseyez à une table, et sirotez une bière bien fraiche.<br>
 					<p><em>Rumeur :</em> ' . $result['rumeur'];
-                $texte_evt             = "'[attaquant] siroté une petite bière tout seul'";
+                $texte_evt             = "[attaquant] siroté une petite bière tout seul";
                 $levt                  = new ligne_evt();
                 $levt->levt_tevt_cod   = 82;
                 $levt->levt_perso_cod1 = $perso_cod;
@@ -193,12 +203,13 @@ if ($erreur == 0)
                 //
                 $req          = 'select lieu_nom,pos_x,pos_y,etage_libelle
 					from perso_auberge,lieu,lieu_position,etage,positions
-					where paub_perso_cod = ' . $perso_cod . '
+					where paub_perso_cod = :perso_cod
 					and paub_lieu_cod = lieu_cod
 					and lpos_lieu_cod = lieu_cod
 					and lpos_pos_cod = pos_cod
 					and pos_etage = etage_numero';
-                $stmt         = $pdo->query($req);
+                $stmt         = $pdo->prepare($req);
+                $stmt         = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
                 $contenu_page .= '<p>Voici les tavernes dans lesquelles vous avez déjà étanché votre soif : ';
                 while ($result = $stmt->fetch())
                 {
@@ -207,21 +218,23 @@ if ($erreur == 0)
             }
             break;
         case "offre":
-            $req    = 'select ppos_pos_cod from perso_position where ppos_perso_cod = ' . $perso_cod;
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $pos    = $result['ppos_pos_cod'];
-            $req    = 'select perso_cod,perso_nom,lower(perso_nom) as minusc
+            $ppos = new perso_position();
+            $ppos->getByPerso($perso_cod);
+            $pos  = $ppos->ppos_pos_cod;
+            $req  = "select perso_cod,perso_nom,lower(perso_nom) as minusc
 				from perso,perso_position
-				where ppos_pos_cod = ' . $pos . '
+				where ppos_pos_cod = :pos
 				and ppos_perso_cod = perso_cod
-				and perso_actif = \'O\'
-				and perso_cod != ' . $perso_cod . '
-				order by minusc';
-            $stmt   = $pdo->query($req);
+				and perso_actif = 'O'
+				and perso_cod != :perso_cod
+				order by minusc";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                        ":pos"       => $pos), $stmt);
             if ($stmt->rowCount() == 0)
+            {
                 $contenu_page .= 'Il n\'y a personne ici à qui vous puissiez offrir un verre.';
-            else
+            } else
             {
                 $contenu_page .= 'Voici les personnes présentes à qui vous pouvez offrir un verre :
 				<table>';
@@ -282,8 +295,8 @@ if ($erreur == 0)
 			</table>';
             break;
         case "rumeur2":
-            $erreur = 0;
-
+            $erreur     = 0;
+            $rumeur_txt = get_request_var('rumeur_txt');
             if ($perso->perso_po < $prix)
             {
                 $erreur       = 1;
@@ -296,13 +309,17 @@ if ($erreur == 0)
             }
             if ($erreur == 0)
             {
-                $poids        = $prix + 1;
-                $req          = "insert into rumeurs (rum_perso_cod,rum_texte,rum_poids) 
-                values ($perso_cod,e'" . pg_escape_string($rumeur_txt) . "',$poids) ";
-                $stmt         = $pdo->query($req);
+                $poids                 = $prix + 1;
+                $rumeur                = new rumeurs();
+                $rumeur->rum_perso_cod = $perso_cod;
+                $rumeur->rum_texte     = $rumeur_txt;
+                $rumeur->rum_poids     = $poids;
+                $rumeur->stocke(true);
+
                 $contenu_page .= "<p>Votre rumeur a bien été enregistrée ";
-                $req          = "update perso set perso_po = perso_po - $prix where perso_cod = $perso_cod ";
-                $stmt         = $pdo->query($req);
+
+                $perso->perso_po = $perso->perso_po - $prix;
+                $perso->stocke();
             }
 
             $contenu_page .= "<p>Vous disposez de <strong>" . $perso->perso_po . "</strong> brouzoufs.";
