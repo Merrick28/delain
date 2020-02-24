@@ -179,12 +179,12 @@
             {{ PERSO_ANIMATION|raw }}
             <div id="passageniveau">
                 {% if PERSO.perso_px >= PERSO.px_limite %}
-                    <hr/><a href="niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>
+                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/niveau.php"><strong>Passer au niveau supérieur ! </strong>(6 PA)</a>
                 {% endif %}
             </div>
             <div id="quete">
                 {% if PERSO.is_perso_quete %}
-                    <hr/><a href="quete_perso.php"><strong>Quête</strong></a>
+                    <hr/><a href="{{ TYPE_FLUX }}{{ G_URL }}jeu_test/quete_perso.php"><strong>Quête</strong></a>
                 {% endif %}
             </div>
             <div id="lieu">
