@@ -1,9 +1,8 @@
 <?php
 $verif_connexion::verif_appel();
 
-$req  =
-    "select lower(guilde_nom) as minusc,guilde_nom,guilde_cod," . $champ . " from guilde order by minusc ";
-$stmt = $pdo->query($req);
+$guilde    = new guilde;
+$allguilde = $guilde->getAll();
 
 ?>
 <form name="guilde" method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
@@ -16,12 +15,12 @@ $stmt = $pdo->query($req);
             <td class="soustitre2"><strong>Refusée</strong></td>
         </tr>
         <?php
-        while ($result = $stmt->fetch())
+        foreach ($allguilde as $detailguilde)
         {
             echo "<tr>";
-            echo "<td class=\"soustitre2\"><strong>", $result['guilde_nom'], "</strong></td>";
+            echo "<td class=\"soustitre2\"><strong>", $detailguilde['guilde_nom'], "</strong></td>";
 
-            if ($result[$champ] == 'O')
+            if ($detailguilde[$champ] == 'O')
             {
                 $coche  = " checked";
                 $ncoche = "";
@@ -31,10 +30,10 @@ $stmt = $pdo->query($req);
                 $ncoche = " checked";
             }
             echo "<td>";
-            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $result['guilde_cod'] . "]\" value=\"O\"", $coche, ">";
+            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde['guilde_cod'] . "]\" value=\"O\"", $coche, ">";
             echo "</td>";
             echo "<td>";
-            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $result['guilde_cod'] . "]\" value=\"N\"", $ncoche, ">";
+            echo "<input type=\"radio\" class=\"vide\" name=\"guilde[" . $detailguilde['guilde_cod'] . "]\" value=\"N\"", $ncoche, ">";
             echo "</td>";
             echo "</tr>";
         }

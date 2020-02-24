@@ -49,7 +49,7 @@ switch ($methode)
         $stmt         = $pdo->query($req_etage);
         $req_invasion =
             "select 'admin_longue_requete', invasion(:code_monstre, :etage_numero, :eparpillement, :adapterNiveau) as invasion";
-        $stmt2        = $pdo->query($req_invasion);
+        $stmt2        = $pdo->prepare($req_invasion);
         echo '<p>Invasion réalisée !</p>';
         while ($result = $stmt->fetch())
         {

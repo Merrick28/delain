@@ -218,10 +218,10 @@ switch ($methode)
             }
         }
 
-        $req   =
+        $req  =
             "INSERT INTO historique_animations(anim_date, anim_texte, anim_type) values (now()::date,:texte, 'distribution')";
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":texte" => $texte),$stmt);
+        $stmt = $pdo->execute(array(":texte" => $texte), $stmt);
 
         $log = date("d/m/y - H:i") . "\tCompte $compt_cod a généré une $texte\n";
         writelog($log, 'animation_distributions');
@@ -256,7 +256,7 @@ $script_tobj .= "tableauObjetsDistribution[-1] = new Array();\n";
 $script_gobj = "tableauObjetsDistribution[-1][-2] = \"Brouzoufs\";\n";
 $script_gobj .= "tableauObjetsDistribution[-1][-1] = \"PXs\";\n";
 
-$req =
+$req  =
     'select distinct tobj_cod, tobj_libelle from type_objet inner join objet_generique on gobj_tobj_cod = tobj_cod order by tobj_libelle';
 $stmt = $pdo->query($req);
 while ($result = $stmt->fetch())
@@ -267,15 +267,19 @@ while ($result = $stmt->fetch())
     echo "<option value='$clef'>$valeur</option>";
 }
 echo '</select><br /><select name="form_objet" id="distrib_form_objet">';
-$req = 'select gobj_cod, gobj_tobj_cod, gobj_nom from objet_generique order by gobj_tobj_cod, gobj_nom';
-$stmt = $pdo->query($req);
-while ($result = $stmt->fetch())
+
+$gobj    = new objet_generique();
+$allgobj = $gobj->getAll();
+
+foreach ($allgobj as $result)
 {
     $clef        = $result['gobj_cod'];
     $clef_tobj   = $result['gobj_tobj_cod'];
     $valeur      = $result['gobj_nom'];
     $script_gobj .= "tableauObjetsDistribution[$clef_tobj][$clef] = \"" . str_replace('"', '', $valeur) . "\";\n";
+
 }
+
 
 echo '</select></td>';
 
@@ -290,56 +294,58 @@ echo $html->etage_select();
 // Cible
 ?>
 
-</select><br/>
-<input type="checkbox" name="antres" id="distrib_antres" checked="checked"/><label for="distrib_antres">Inclure les
+    </select><br/>
+    <input type="checkbox" name="antres" id="distrib_antres" checked="checked"/><label for="distrib_antres">Inclure les
     antres reliées à l’étage ?</label></td>
 
-<td class="soustitre2">
-    Distribution... <select name="distrib_localisation">
-        <option value='inv'>En inventaire</option>
-        <option value='sol'>Au sol</option>
-    </select><br/>
-    <input type='checkbox' name="distrib_type_1" id='distrib_type_1' value='1'/><label
-            for="distrib_type_1">Aventuriers</label><br/>
-    <input type='checkbox' name="distrib_type_2" id='distrib_type_2' value='2'/><label
-            for="distrib_type_2">Monstres</label><br/>
-    <input type='checkbox' name="distrib_type_3" id='distrib_type_3' value='3'/><label
-            for="distrib_type_3">Familiers</label><br/>
-    <select name="code_race">
-        <option value="tous">Race indifférente</option>
-        <?php
-        // Races
+    <td class="soustitre2">
+        Distribution... <select name="distrib_localisation">
+            <option value='inv'>En inventaire</option>
+            <option value='sol'>Au sol</option>
+        </select><br/>
+        <input type='checkbox' name="distrib_type_1" id='distrib_type_1' value='1'/><label
+                for="distrib_type_1">Aventuriers</label><br/>
+        <input type='checkbox' name="distrib_type_2" id='distrib_type_2' value='2'/><label
+                for="distrib_type_2">Monstres</label><br/>
+        <input type='checkbox' name="distrib_type_3" id='distrib_type_3' value='3'/><label
+                for="distrib_type_3">Familiers</label><br/>
+        <select name="code_race">
+            <option value="tous">Race indifférente</option>
+            <?php
+            // Races
 
-        $req = 'select race_cod, race_nom from race order by race_cod IN (1, 2, 3) desc, race_nom';
-        $stmt = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
-            echo '<option value="' . $result['race_cod'] . '">' . $result['race_nom'] . '</option>';
-        }
-        echo '</select><br /><select name="code_monstre"><option value="tous">Monstre indifférent</option>';
+            $req  = 'select race_cod, race_nom from race order by race_cod IN (1, 2, 3) desc, race_nom';
+            $stmt = $pdo->query($req);
+            while ($result = $stmt->fetch())
+            {
+                echo '<option value="' . $result['race_cod'] . '">' . $result['race_nom'] . '</option>';
+            }
+            echo '</select><br /><select name="code_monstre"><option value="tous">Monstre indifférent</option>';
 
-        // Monstres
-        $req = 'select gmon_cod, gmon_nom, gmon_niveau from monstre_generique order by gmon_nom';
-        $stmt = $pdo->query($req);
-        while ($result = $stmt->fetch())
-        {
-            echo '<option value="' . $result['gmon_cod'] . '">' . $result['gmon_nom'] . ' (Niv. ' . $result['gmon_niveau'] . ' )</option>';
-        }
-        ?>
-    </select></td>
-<td class="soustitre2">
-    <label for="distrib_quantite">Quantité : </label><input type="text" name="distrib_quantite" id="distrib_quantite"
-                                                            value="" style="width:20px;"/><br/>
-    <label for="distrib_eparpillement">Éparpillement : 1 objet pour </label><input type="text"
-                                                                                   name="distrib_eparpillement"
-                                                                                   id="distrib_eparpillement" value=""
-                                                                                   style="width:20px;"/><label
-            for="distrib_eparpillement"> cases.</label>
-</td>
-<td class="soustitre2">
-    <input type="submit" value="Lancer la distribution !" class="test"/>
-</td></tr>
-</table></form>
+            // Monstres
+            $gmon    = new monstre_generique();
+            $allgmon = $gmon->getAll();
+            foreach ($allgmon as $result)
+            {
+                echo '<option value="' . $result['gmon_cod'] . '">' . $result['gmon_nom'] . ' (Niv. ' . $result['gmon_niveau'] . ' )</option>';
+            }
+            ?>
+        </select></td>
+    <td class="soustitre2">
+        <label for="distrib_quantite">Quantité : </label><input type="text" name="distrib_quantite"
+                                                                id="distrib_quantite"
+                                                                value="" style="width:20px;"/><br/>
+        <label for="distrib_eparpillement">Éparpillement : 1 objet pour </label><input type="text"
+                                                                                       name="distrib_eparpillement"
+                                                                                       id="distrib_eparpillement"
+                                                                                       value=""
+                                                                                       style="width:20px;"/><label
+                for="distrib_eparpillement"> cases.</label>
+    </td>
+    <td class="soustitre2">
+        <input type="submit" value="Lancer la distribution !" class="test"/>
+    </td></tr>
+    </table></form>
 <?php echo "<script type='text/javascript'>
 		$script_tobj
 		$script_gobj

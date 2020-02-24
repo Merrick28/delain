@@ -71,8 +71,8 @@ switch ($methode)
                                                           ccol_tranche_niveau, 
                                                           ccol_description)
                         VALUES (
-                                $form_titre $form_date_ouverture $form_objet $form_date_fermeture $form_differencier_4e $form_tranche_niveau $form_description)");
-        $stmt = $pdo->execute(array(":cool_cod" => $form_cod), $stmt);
+                                $form_titre,$form_date_ouverture,$form_objet,$form_date_fermeture,$form_differencier_4e, $form_tranche_niveau, $form_description)");
+
         echo '<p>Création effectuée</p>';
         $methode = 'debut';
 
