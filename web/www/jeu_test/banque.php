@@ -1,8 +1,11 @@
 <?php
 $type_lieu = 1;
 $nom_lieu  = 'une banque';
+if (!defined('APPEL'))
+{
+    define('APPEL', 1);
+}
 
-define('APPEL', 1);
 include "blocks/_test_lieu.php";
 $perso     = $verif_connexion->perso;
 $perso_cod = $verif_connexion->perso_cod;
@@ -113,7 +116,7 @@ if ($erreur == 0)
                 $req_depot = "select depot_banque(:perso_cod,:quantite) as depot";
                 $stmt      = $pdo->prepare($req_depot);
                 $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
-                                                 ":quantite" => $quantite), $stmt);
+                                                 ":quantite"  => $quantite), $stmt);
                 $result    = $stmt->fetch();
                 //$tab_depot = pg_fetch_array($res_depot,0);
                 if ($result['depot'] == 0)
