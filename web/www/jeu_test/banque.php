@@ -23,8 +23,8 @@ if ($erreur == 0)
     }
 
     // INFOS ETAGE
-    $pos    = $perso->get_position();
-    $numero = -1 * $pos['pos']->pos_etage;
+    $pos                         = $perso->get_position();
+    $numero                      = -1 * $pos['pos']->pos_etage;
     if ($numero < 0)
     {
         $numero = 5;
@@ -109,7 +109,9 @@ if ($erreur == 0)
                 }
                 // TRAITEMENT: UN PERSONNAGE FAIT UN DEPOT SUR SON COMPTE PERSONNEL
                 $req_depot = "select depot_banque($perso_cod,$quantite) as depot";
-                $stmt      = $pdo->query($req_depot);
+                $stmt      = $pdo->prepare($req_depot);
+                $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                                 ":quantite"  => $quantite), $stmt);
                 $result    = $stmt->fetch();
                 //$tab_depot = pg_fetch_array($res_depot,0);
                 if ($result['depot'] == 0)
@@ -132,7 +134,9 @@ if ($erreur == 0)
                 if ($erreur == 0)
                 {
                     $req_depot = "select retrait_banque($perso_cod,$quantite) as retrait";
-                    $stmt      = $pdo->query($req_depot);
+                    $stmt      = $pdo->prepare($req_depot);
+                    $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                                     ":quantite"  => $quantite), $stmt);
                     $result    = $stmt->fetch();
                     $tab_depot = $result['retrait'];
                     if ($tab_depot == 0)
@@ -153,10 +157,10 @@ if ($erreur == 0)
                 // TRAITEMENT: UN ADMIN CREE UN COMPTE POUR SA GUILDE
                 if (($nb_guilde > 0) and ($adm == "O"))
                 {
+                    $gbank      = new guilde_banque();
+                    $guilde_cod = get_request_var('guilde_cod');
                     // CONTROLE: COMPTE NON EXISTANT
-                    $req_compte_guilde = "select gbank_cod from guilde_banque where gbank_guilde_cod = $guilde_cod";
-                    $stmt              = $pdo->query($req_compte_guilde);
-                    if ($stmt->rowCount() > 0)
+                    if ($gbank->getByGuilde($guilde_cod))
                     {
                         $erreur = 1;
                         $info   = "Votre guilde dispose déjà d'un compte";
@@ -173,14 +177,14 @@ if ($erreur == 0)
                         // RETRAIT DE LA SOMME
                         $perso->perso_po = $perso->perso_po - 5000;
                         $perso->stocke();
-
                         // CREATION DU COMPTE
-                        $compte_nom = str_replace("''", "\'", $compte_nom);
-                        $compte_nom = pg_escape_string($compte_nom);
 
-                        $req_cre_compte =
-                            "insert into guilde_banque (gbank_guilde_cod,gbank_nom,gbank_or,gbank_date_creation) values ($guilde_cod,e'$compte_nom',0,now())";
-                        $stmt           = $pdo->query($req_cre_compte);
+                        $gbank->gbank_nom           = $_REQUEST['compte_nom'];
+                        $gbank->gbank_or            = 0;
+                        $gbank->gbank_date_creation = date('Y-m-d H:i:s');
+                        $gbank->gbank_guilde_cod    = $guilde_cod;
+                        $gbank->stocke(true);
+
                         ?>
                         <p>Le compte a bien été créé</p>
                         <?php
@@ -200,9 +204,9 @@ if ($erreur == 0)
                 break;
             case "depot_compte_guilde":
                 // TRAITEMENT: UN PERSONNAGE FAIT UN DEPOT SUR LE COMPTE D'UNE GUILDE
-                $quantite = intval($quantite);
-                $depot_guilde = floor((1.0 - $numero / 100.0) * $quantite);
-
+                $quantite = intval(get_request_var('quantite', 0));
+                $depot_guilde    = floor((1.0 - $numero / 100.0) * $quantite);
+                $depot_compt_cod = get_request_var('depot_compt_cod');
                 // CONTROLE: ARGENT DISPONIBLE
                 $nb_or = $perso->perso_po;
                 if ($nb_or < $quantite)
@@ -226,21 +230,26 @@ if ($erreur == 0)
                     $perso->perso_po = $perso->perso_po - $quantite;
                     $perso->stocke();
                     // AJOUT AU COMPTE
-                    $req_compte =
-                        "update guilde_banque set gbank_or  = gbank_or + $depot_guilde where gbank_cod = $depot_compt_cod";
-                    $stmt       = $pdo->query($req_compte);
+                    $gbank = new guilde_banque();
+                    $gbank->charge($depot_compt_cod);
+                    $gbank->gbank_or += $depot_guilde;
+                    $gbank->stocke();
                     // LIGNE DE TRANSACTION
-                    $req_compte =
-                        "insert into guilde_banque_transactions (gbank_tran_gbank_cod,gbank_tran_perso_cod,gbank_tran_montant,gbank_tran_debit_credit,gbank_tran_date) values ($depot_compt_cod,$perso_cod,$depot_guilde,'C',now())";
-                    $stmt       = $pdo->query($req_compte);
+                    $gbanktran                          = new guilde_banque_transactions();
+                    $gbanktran->gbank_tran_gbank_cod    = $depot_compt_cod;
+                    $gbanktran->gbank_tran_perso_cod    = $perso_cod;
+                    $gbanktran->gbank_tran_montant      = $depot_guilde;
+                    $gbanktran->gbank_tran_debit_credit = 'C';
+                    $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');;
+                    $gbanktran->stocke(true);
 
-                    $req_or =
-                        "select gbank_nom,guilde_nom from guilde,guilde_banque where gbank_cod = $depot_compt_cod and gbank_guilde_cod = guilde_cod";
-                    $stmt   = $pdo->query($req_or);
+                    $guilde = new guilde;
+                    $guilde->charge($gbank->gbank_guilde_cod);
+
                     $result = $stmt->fetch();
                     ?>
-                    <p>Vous avez versé <?php echo $depot_guilde; ?> Br sur le compte <?php echo $result['gbank_nom'] ?>
-                        (<?php echo $result['guilde_nom'] ?>), <BR\>
+                    <p>Vous avez versé <?php echo $depot_guilde; ?> Br sur le compte <?php echo $gbank->gbank_nom ?>
+                        (<?php echo $guilde->guilde_nom ?>), <BR\>
                         <?php echo $quantite ?> Br ont été retirés de votre bourse.
                     </p>
                     <?php
