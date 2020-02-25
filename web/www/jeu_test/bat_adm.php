@@ -17,21 +17,23 @@ if ($erreur == 0)
 
     $quatrieme = $perso->perso_pnj == 2;
 
-    $req       = "select lpos_lieu_cod,pos_etage, pos_cod from lieu_position,perso_position,positions
-		where ppos_perso_cod = $perso_cod 
-			and ppos_pos_cod = lpos_pos_cod 
-			and ppos_pos_cod = pos_cod";
-    $stmt      = $pdo->query($req);
-    $result    = $stmt->fetch();
-    $lieu_cod  = $result['lpos_lieu_cod'];
-    $etage_cod = $result['pos_etage'];
-    $pos_cod   = $result['pos_cod'];
+    $pos  = $perso->get_position();
+    $lpos = new lieu_position();
+    $lpos->getByPos($pos['pos']->pos_cod);
+
+    $lieu_cod  = $lpos->lpos_lieu_cod;
+    $etage_cod = $pos['pos']->pos_etage;
+    $pos_cod   = $pos['pos']->pos_cod;
+    $tab_lieu  = $perso->get_lieu_ancien(); // pour la compat ancien code
     switch ($methode)
     {
         case "entrer_arene":
 
-            $req    = "select entrer_arene(" . $perso_cod . "," . $etage_num . "," . $pos_cod . ") as res";
-            $stmt   = $pdo->query($req);
+            $req    = "select entrer_arene(:perso_cod,:etage_num,:pos_cod) as res";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                          ":etage_num" => $_REQUEST['etage_num'],
+                                          ":pos_cod"   => $pos_cod), $stmt);
             $result = $stmt->fetch();
 
             $res     = $result['res'];
@@ -43,8 +45,9 @@ if ($erreur == 0)
 
         case "entrer_registre":
 
-            $req    = "select entrer_registre(" . $perso_cod . ") as res";
-            $stmt   = $pdo->query($req);
+            $req    = "select entrer_registre(:perso_cod) as res";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             $result = $stmt->fetch();
 
             $res     = $result['res'];
@@ -73,21 +76,18 @@ if ($erreur == 0)
 			<td class=\"soustitre2\"><p>Niveau maximum</td>
 			</tr>");
             $req =
-                "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min, ";
-            $req =
-                $req . "(select count(*) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1 ";
-            $req = $req . "where pos_etage = etage_numero) as joueur, ";
-            $req =
-                $req . "(select sum(perso_niveau) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1 ";
-            $req = $req . "where pos_etage = etage_numero) as jnv, ";
-            $req = $req . "filtre_entree_arene.nb_entree as nb_entree_arene ";
-            $req = $req . "from etage, carac_arene, ";
-            $req =
-                $req . "(select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene ";
-            $req = $req . "where etage_arene = 'O' ";
-            $req = $req . "and etage_numero = carene_etage_numero ";
-            $req = $req . "and carene_ouverte = 'O' ";
-            $req = $req . "and filtre_entree_arene.pos_etage= carene_etage_numero ";
+                "select etage_libelle, coalesce(carene_level_max,0) carene_level_max, coalesce(carene_level_min,0) carene_level_min,
+                (select count(*) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1 
+                where pos_etage = etage_numero) as joueur,
+                (select sum(perso_niveau) from positions join perso_position on ppos_pos_cod=pos_cod join perso on perso_cod=ppos_perso_cod and perso_actif='O' and perso_type_perso=1
+                where pos_etage = etage_numero) as jnv, 
+                filtre_entree_arene.nb_entree as nb_entree_arene 
+                from etage, carac_arene,
+                (select pos_etage, count(*) nb_entree from positions where pos_entree_arene='O' group by pos_etage) filtre_entree_arene 
+                where etage_arene = 'O' 
+                and etage_numero = carene_etage_numero 
+                and carene_ouverte = 'O' 
+                and filtre_entree_arene.pos_etage= carene_etage_numero ";
             if ($quatrieme)
                 $req = $req . "and etage_quatrieme_perso = 'O' ";
             //else
@@ -95,24 +95,7 @@ if ($erreur == 0)
             $req  = $req . "order by etage_libelle ";
             $stmt = $pdo->query($req);
 
-            while ($result = $stmt->fetch())
-            {
-                echo "<tr><td class=\"soustitre2\"><p>" . $result['etage_libelle'] . "</p></td>
-				<td><p>" . $result['joueur'] . "</td>
-				<td><p>" . ($result['joueur'] != 0 ?
-                        round($result['jnv'] / $result['joueur'], 0) :
-                        0) . "</td>
-				<td><p>" . ($result['carene_level_min'] != 0 ?
-                        $result['carene_level_min'] : 'Tous niveaux') . "</td>
-				<td><p>" . ($result['carene_level_max'] != 0 ?
-                        $result['carene_level_max'] : 'Tous niveaux') . "</td></tr>";
-
-            }
-
-            echo("</table>");
-
-
-            echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
+            require "blocks/_bat_adm_porte_mnumentale.php";
             echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_arene\">";
             echo "<select name=\"etage_num\">";
             $req = "select etage_numero, etage_libelle from etage
@@ -137,14 +120,15 @@ if ($erreur == 0)
             echo "<hr>";
 
             // Recherche d'une inscription dans les registres pour retour rapide en arene
-            $req    = "select count(*) est_inscrit from perso_registre where preg_perso_cod=$perso_cod ";
-            $stmt   = $pdo->query($req);
+            $req    = "select count(*) est_inscrit from perso_registre where preg_perso_cod = :perso_cod ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             $result = $stmt->fetch();
             if ($result['est_inscrit'] > 0)
             {
                 echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_registre\">";
-                echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaité, retourner directement dans l'arène au bureau d'inscription.<br>";
+                echo "Vous êtes inscrit(e) dans nos registres, vous pouvez si vous le souhaitez, retourner directement dans l'arène au bureau d'inscription.<br>";
                 echo "Même pas peur: <input class=\"test\" type=\"submit\" value=\"J'y retourne !\" /><br><br>";
                 echo "</form>";
                 echo "<hr>";
@@ -156,14 +140,12 @@ if ($erreur == 0)
 
                 if ($perso->is_milice())
                 {
-
-                    $req    = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-                    $stmt   = $pdo->query($req);
-                    $result = $stmt->fetch();
-                    if ($result['pguilde_solde'] > 0)
+                    $gp = new guilde_perso;
+                    $gp->get_by_perso($perso_cod);
+                    if ($gp->pguilde_solde > 0)
                     {
-                        echo "Vous avez ", $result['pguilde_solde'], " brouzoufs de solde que vous pouvez retirer.<br>";
-                        echo "<a href=\"", $_SERVER['PHP_SELF'], "?methode=solde\">La retirer maintenant ?</a>";
+                        echo "Vous avez " . $gp->pguilde_solde . " brouzoufs de solde que vous pouvez retirer.<br>";
+                        echo "<a href=\"" . $_SERVER['PHP_SELF'] . "?methode=solde\">La retirer maintenant ?</a>";
                     } else
                     {
                         echo "Vous n'avez pas de salaire à retirer à ce jour.";
@@ -177,10 +159,7 @@ if ($erreur == 0)
             $isguilde = false;
             if ($pguilde->get_by_perso($perso->perso_cod))
             {
-                if ($pguilde->pguilde_valide == 'O')
-                {
-                    $isguilde = true;
-                }
+                $isguilde = true;
             }
             if ($isguilde)
             {
@@ -260,14 +239,15 @@ if ($erreur == 0)
 
             //La tournée des auberges Nouvelle version
             $req         = "select count(paub_visite) as nbre_visite from perso_auberge,quete_perso
- 			where paub_perso_cod = $perso_cod
+ 			where paub_perso_cod = :perso_cod
  				and paub_visite = 'O'
-				and pquete_perso_cod = $perso_cod 
+				and pquete_perso_cod = :perso_cod 
 				and pquete_termine = 'N'
 				and pquete_quete_cod = '6'";
-            $stmt        = $pdo->query($req);
+            $stmt        = $pdo->prepare($req);
+            $stmt        = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             $result      = $stmt->fetch();
-            $nbre_visite = $result['nbre_visite'];
+            $nbre_visite = $perso->get_nb_auberge();
             if ($nbre_visite >= 8)
             {
                 echo "<hr>Félicitations ! Vous avez terminé le marathon des auberges, vous êtes donc un vrai soiffard qui ferait palir un nain au comptoir !
@@ -277,17 +257,19 @@ if ($erreur == 0)
                 $perso->perso_prestige = $perso->perso_prestige + 2;
                 $perso->stocke();
 
-                $req    =
-                    "insert into perso_titre (ptitre_perso_cod,ptitre_titre,ptitre_date,ptitre_type) values ($perso_cod,'[Tournée des auberges]Membre de la confrérie des soiffards',now(),'4')";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                $req    =
-                    "update quete_perso set pquete_termine = 'O',pquete_date_fin = now() where pquete_perso_cod = $perso_cod and pquete_quete_cod = '6'";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
-                $req    = "select cree_objet_perso('410',$perso_cod)";
-                $stmt   = $pdo->query($req);
-                $result = $stmt->fetch();
+                $perso_titre                   = new perso_titre();
+                $perso_titre->ptitre_perso_cod = $perso_cod;
+                $perso_titre->ptitre_titre     = '[Tournée des auberges]Membre de la confrérie des soiffards';
+                $perso_titre->ptitre_type      = 4;
+                $perso_titre->stocke(true);
+
+                $qp = new quete_perso();
+                $qp->getByPersoQuete($perso_cod, 6);
+                $qp->pquete_termine  = 'O';
+                $qp->pquete_date_fin = date('Y-m-d H:i:s');
+                $qp->stocke();
+
+                $perso->cree_objet(410);
             } else
             {
                 echo '<hr><p>Désirez vous <a href="' . $_SERVER['PHP_SELF'] . '?nbre_visite=' . $nbre_visite . '&methode=tournee">vous inscrire (50 brouzoufs - 1 PA)</a> pour la tournée des bars ?';
@@ -339,16 +321,14 @@ if ($erreur == 0)
             }
             if ($erreur == 0)
             {
-                $req  = "select pquete_cod,pquete_termine from quete_perso 
-				where pquete_perso_cod = $perso_cod;
-					and pquete_quete_cod = 6 ";
-                $stmt = $pdo->query($req);
-                if ($stmt->rowCount() == 0)
+                $qp = new quete_perso();
+
+                if (!$qp->getByPersoQuete($perso_cod, 6))
                 {
-                    $req             = "insert into quete_perso (pquete_perso_cod,pquete_quete_cod,pquete_date_debut);
-				values ($perso_cod,6,now()); ";
-                    $stmt            = $pdo->query($req);
-                    $result          = $stmt->fetch();
+                    $qp->pquete_perso_cod = $perso_cod;
+                    $qp->pquete_quete_cod = 6;
+                    $qp->stocke(true);
+
                     $perso->perso_po = $perso->perso_po - 50;
                     $perso->perso_pa = $perso->perso_pa - 1;
                     $perso->stocke();
@@ -357,15 +337,15 @@ if ($erreur == 0)
 					<br>Pour vous aider, nous vous conseillons d'utiliser <a href=\"http://www.jdr-delain.net/forum/ftopic7599.php\">le Guide des Tavernes de Pépé Génépy</a>";
                 } else
                 {
-                    $result        = $stmt->fetch();
-                    $quete_termine = $result['pquete_termine'];
-                    if ($quete_termine == 'O')
+
+                    if ($qp->pquete_termine == 'O')
                     {
                         echo "Vous avez déjà réalisé avec succès cette quête !";
                     } else
                     {
                         echo "<p>Vous êtes déjà inscrit à cette tournée !<br>
-						Vous n’avez visité que $nbre_visite auberges : c’est moins que votre contrat initial ! Poursuivez donc vos efforts !";
+						Vous n’avez visité que " . $perso->get_nb_auberge() . " auberges : c’est moins que votre contrat 
+                        initial ! Poursuivez donc vos efforts !";
                     }
                 }
             }
@@ -373,15 +353,19 @@ if ($erreur == 0)
         //Fin nouvelle version
 
         case "solde":
-            $req             = "select pguilde_solde from guilde_perso where pguilde_perso_cod = $perso_cod ";
-            $stmt            = $pdo->query($req);
-            $result          = $stmt->fetch();
-            $solde           = $result['pguilde_solde'];
-            $perso->perso_po = $perso->perso_po + $solde;
-            $perso->stocke();
-            $req  = "update guilde_perso set pguilde_solde = 0 where pguilde_perso_cod = $perso_cod ";
-            $stmt = $pdo->query($req);
-            echo "<p>Vous venez de retirer votre solde.";
+            $gp = new guilde_perso();
+            if ($gp->get_by_perso($perso_cod))
+            {
+                $perso->perso_po = $perso->perso_po + $gp->pguilde_solde;
+                $perso->stocke();
+                $gp->pguilde_solde = 0;
+                $gp->stocke();
+                echo "<p>Vous venez de retirer votre solde.";
+            } else
+            {
+                echo "Erreur sur le chargement des données";
+            }
+
             break;
     }
     if ($perso->is_milice())

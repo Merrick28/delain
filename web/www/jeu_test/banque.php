@@ -110,7 +110,7 @@ if ($erreur == 0)
                     break;
                 }
                 // TRAITEMENT: UN PERSONNAGE FAIT UN DEPOT SUR SON COMPTE PERSONNEL
-                $req_depot = "select depot_banque($perso_cod,$quantite) as depot";
+                $req_depot = "select depot_banque(:perso_cod,:quantite) as depot";
                 $stmt      = $pdo->prepare($req_depot);
                 $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
                                                  ":quantite" => $quantite), $stmt);
@@ -135,7 +135,7 @@ if ($erreur == 0)
                 }
                 if ($erreur == 0)
                 {
-                    $req_depot = "select retrait_banque($perso_cod,$quantite) as retrait";
+                    $req_depot = "select retrait_banque(:perso_cod,:quantite) as retrait";
                     $stmt      = $pdo->prepare($req_depot);
                     $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
                                                      ":quantite"  => $quantite), $stmt);
@@ -242,7 +242,7 @@ if ($erreur == 0)
                     $gbanktran->gbank_tran_perso_cod    = $perso_cod;
                     $gbanktran->gbank_tran_montant      = $depot_guilde;
                     $gbanktran->gbank_tran_debit_credit = 'C';
-                    $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');;
+                    $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');
                     $gbanktran->stocke(true);
 
                     $myguilde = new guilde;
@@ -305,7 +305,7 @@ if ($erreur == 0)
                         $gbanktran->gbank_tran_perso_cod    = $perso_cod;
                         $gbanktran->gbank_tran_montant      = $quantite;
                         $gbanktran->gbank_tran_debit_credit = 'D';
-                        $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');;
+                        $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');
                         $gbanktran->stocke(true);
 
                         $myguilde = new guilde;

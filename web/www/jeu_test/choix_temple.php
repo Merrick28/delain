@@ -30,11 +30,15 @@ if ($or < $prix)
 {
     $perso->perso_po = $perso->perso_po - $prix;
     $perso->stocke();
-    $req_temple1 = "delete from perso_temple where ptemple_perso_cod = $perso_cod ";
-    $stmt        = $pdo->query($req_temple1);
-    $req_temple2 =
-        "insert into perso_temple(ptemple_perso_cod,ptemple_pos_cod,ptemple_nombre) values ($perso_cod,$pos_temple,0)";
-    $stmt        = $pdo->query($req_temple2);
+    $ptemple = new perso_temple();
+    $ptemple->getByPerso($perso_cod);
+    $ptemple->efface();
+
+    $ptemple->ptemple_perso_cod = $perso_cod;
+    $ptemple->ptemple_pos_cod   = $pos_temple;
+    $ptemple->ptemple_nombre    = 0;
+    $ptemple->stocke(true);
+
     echo "<p>La guérisseuse note d'une écriture vive et précise votre nom et votre race sur un grand livre prévu à cet effet.";
 
 }

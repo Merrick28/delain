@@ -6,11 +6,12 @@ ob_start();
 //Premier test : vérification si le joueur a bien vu la cachette
 $req    = "select persocache_cache_cod
 					from cachettes_perso,cachettes,perso_position
-					where ppos_perso_cod = $perso_cod
+					where ppos_perso_cod = :perso_cod
 					and ppos_perso_cod = persocache_perso_cod
 					and persocache_cache_cod = cache_cod	
 					and cache_pos_cod = ppos_pos_cod";
-$stmt   = $pdo->query($req);
+$stmt   = $pdo->prepare($req);
+$stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
 $result = $stmt->fetch();
 if ($stmt->rowCount() == 0)
 {
@@ -20,13 +21,8 @@ if ($stmt->rowCount() == 0)
 {
     //Deuxième test : vérification de la position
     // On recherche la position du perso pour voir si correspondance avec une cachette
-    $req_info_joueur = "select pos_cod from perso,perso_position,positions
-														where perso_cod = $perso_cod
-														and ppos_perso_cod = perso_cod
-														and ppos_pos_cod = pos_cod";
-    $stmt            = $pdo->query($req_info_joueur);
-    $result          = $stmt->fetch();
-    $position        = $result['pos_cod'];
+    $pos      = $perso->get_position();
+    $position = $pos['pos']->pos_cod;
     // On récupère les infos générique pour les afficher
     $req_cache = "select cache_nom,cache_desc,cache_image,cache_cod,cache_fonction from cachettes
 																	where cache_pos_cod = $position";
@@ -162,8 +158,9 @@ if ($stmt->rowCount() == 0)
                     {
                         foreach ($_REQUEST['objet'] as $key => $val)
                         {
-                            $req_ramasser = "select ramasse_objet_cachette($perso_cod,$key) as resultat";
-                            $stmt         = $pdo->query($req_ramasser);
+                            $req_ramasser = "select ramasse_objet_cachette(:perso_cod,:key) as resultat";
+                            $stmt         = $pdo->prepare($req_ramasser);
+                            $stmt         = $pdo->execute(array(":perso_cod" => $perso_cod, ":key" => $key), $stmt);
                             $result       = $stmt->fetch();
                             echo $result['resultat'];
                         }

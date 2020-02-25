@@ -18,6 +18,15 @@ class fonctions
         return $result['distance'];
     }
 
+    function get_rumeur()
+    {
+        $pdo    = new bddpdo;
+        $req    = "select choix_rumeur() as rumeur ";
+        $stmt   = $pdo->query($req);
+        $result = $stmt->fetch();
+        return $result['rumeur'];
+    }
+
     static function format($chaine, $apostrophes = true, $nl2br = true, $bloque_html = true)
     {
         if ($apostrophes)

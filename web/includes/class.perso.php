@@ -805,7 +805,7 @@ class perso
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @return \perso
+     * @return perso
      * @global bdd_mysql $pdo
      */
     public function getAll()
@@ -1008,6 +1008,31 @@ class perso
         $stmt     = $pdo->execute(array(":perso" => $this->perso_cod), $stmt);
         $result   = $stmt->fetch();
         return $result['f_vue_renommee'];
+    }
+
+    function cree_objet($objet)
+    {
+        $pdo    = new bddpdo();
+        $req    = "select cree_objet_perso(:objet,:perso_cod) as resultat";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":objet" => $objet, ":perso_cod" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['resultat'];
+    }
+
+    function get_nb_auberge()
+    {
+        $pdo    = new bddpdo();
+        $req    = "select count(paub_visite) as nbre_visite from perso_auberge,quete_perso
+ 			where paub_perso_cod = :perso_cod
+ 				and paub_visite = 'O'
+				and pquete_perso_cod = :perso_cod 
+				and pquete_termine = 'N'
+				and pquete_quete_cod = '6'";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":perso_cod" => $this->perso_cod), $stmt);
+        $result = $stmt->fetch();
+        return $result['nbre_visite'];
     }
 
     public function get_renommee()

@@ -85,23 +85,7 @@ include "../includes/constantes.php";
                     $req = $req . "and etage_quatrieme_perso = 'N' ";
                 $stmt = $pdo->query($req);
 
-                while ($result = $stmt->fetch()) {
-                    echo "<tr><td class=\"soustitre2\"><p>" . $result['etage_libelle'] . "</p></td>
-				<td><p>" . $result['joueur'] . "</td>
-				<td><p>" . ($result['joueur'] != 0 ?
-                            round($result['jnv'] / $result['joueur'], 0) :
-                            0) . "</td>
-				<td><p>" . ($result['carene_level_min'] != 0 ?
-                            $result['carene_level_min'] : 'Tous niveaux') . "</td>
-				<td><p>" . ($result['carene_level_max'] != 0 ?
-                            $result['carene_level_max'] : 'Tous niveaux') . "</td></tr>";
-
-                }
-
-                echo("</table>");
-
-
-                echo "<form name=\"ea\" method=\"post\" action=" . $_SERVER['PHP_SELF'] . ">";
+                require "blocks/_bat_adm_porte_mnumentale.php";
                 echo "<input type=\"hidden\" name=\"methode\" value=\"entrer_donjon\">";
                 echo "<select name=\"etage_num\">";
                 $req = "select etage_numero, etage_libelle from etage where etage_arene = 'O' and etage_type_arene = 2 ";

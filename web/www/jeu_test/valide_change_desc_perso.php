@@ -24,7 +24,7 @@ switch ($methode)
             $perso->stocke();
             echo("<p>La description de votre personnage est enregistrée !");
         }
-        echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");
+        echo("<p><a href=\"change_desc_perso.php\">Retour !</a>");
         break;
     case "desc_long";
         if (strlen($corps) >= 10000)
@@ -38,7 +38,7 @@ switch ($methode)
             $perso->stocke();
             echo("<p>La description longue de votre personnage est enregistrée !");
         }
-        echo("<p><a href=\"change_profil_perso.php\">Retour !</a>");
+        echo("<p><a href=\"change_desc_perso.php\">Retour !</a>");
         break;
 }
 $contenu_page = ob_get_contents();

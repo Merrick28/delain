@@ -21,10 +21,7 @@ if ($result[1] == 0)
             echo("<p><em>$phrase[$idx_phrase]</em><br /><br /></p>");
         } else
         {
-            $req    = "select choix_rumeur() as rumeur ";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            echo "<p><em>Rumeur :</em> ", $result['rumeur'], "<br></p>";
+            echo "<p><em>Rumeur :</em> " . $fonctions->get_rumeur() . "<br></p>";
         }
     }
 }

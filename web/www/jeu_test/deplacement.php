@@ -43,10 +43,7 @@ if (isset($_POST['methode']) && $_POST['methode'] == 'deplacement')
             $is_phrase = rand(1, 100);
             if ($is_phrase < 34)
             {
-                $req                  = 'select choix_rumeur() as rumeur ';
-                $stmt                 = $pdo->query($req);
-                $result               = $stmt->fetch();
-                $resultat_deplacement .= '<hr /><p><em>Rumeur :</em> ' . $result['rumeur'] . '</p>';
+                $resultat_deplacement .= '<hr /><p><em>Rumeur :</em> ' . $fonctions->get_rumeur() . '</p>';
             } else if ($is_phrase < 67)
             {
                 include 'phrase.php';

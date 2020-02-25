@@ -163,9 +163,10 @@ if ($erreur == 0)
                 $perso->perso_pa = $perso->perso_pa - 4;
                 $perso->stocke();
 
-                $req  = 'select paub_perso_cod from perso_auberge where paub_perso_cod = ' . $perso_cod . '
-					and paub_lieu_cod = ' . $lieu_cod;
-                $stmt = $pdo->query($req);
+                $req  = 'select paub_perso_cod from perso_auberge where paub_perso_cod =  :perso_cod . 
+					and paub_lieu_cod = :lieu_cod';
+                $stmt = $pdo->prepare($req);
+                $stmt = $pdo->execute(array(":perso_cod" => $perso_cod, ":lieu_cod" => $lieu_cod), $stmt);
                 $pab  = new perso_auberge();
                 if ($stmt->rowCount() == 0)
                 {
@@ -181,12 +182,8 @@ if ($erreur == 0)
                     $pab->stocke();
                 }
 
-
-                $req                   = "select choix_rumeur() as rumeur ";
-                $stmt                  = $pdo->query($req);
-                $result                = $stmt->fetch();
                 $contenu_page          .= '<p>Vous vous asseyez à une table, et sirotez une bière bien fraiche.<br>
-					<p><em>Rumeur :</em> ' . $result['rumeur'];
+					<p><em>Rumeur :</em> ' . $fonctions->get_rumeur();
                 $texte_evt             = "[attaquant] siroté une petite bière tout seul";
                 $levt                  = new ligne_evt();
                 $levt->levt_tevt_cod   = 82;
@@ -263,11 +260,7 @@ if ($erreur == 0)
                 $perso->perso_po = $perso->perso_po - 20;
                 $perso->stocke();
 
-
-                $req          = "select choix_rumeur() as rumeur ";
-                $stmt         = $pdo->query($req);
-                $result       = $stmt->fetch();
-                $contenu_page .= "<p><em>Rumeur :</em> " . $result['rumeur'];
+                $contenu_page .= "<p><em>Rumeur :</em> " . $fonctions->get_rumeur();
             }
             break;
         case "rumeur":
