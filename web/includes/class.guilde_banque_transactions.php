@@ -16,6 +16,10 @@ class guilde_banque_transactions
     var $gbank_tran_montant;
     var $gbank_tran_debit_credit;
     var $gbank_tran_date;
+    /**
+     * @var perso Perso qui a fait la transaction
+     */
+    var $perso;
 
     function __construct()
     {
@@ -119,6 +123,28 @@ class guilde_banque_transactions
             $temp = new guilde_banque_transactions;
             $temp->charge($result["gbank_tran_cod"]);
             $retour[] = $temp;
+            unset($temp);
+        }
+        return $retour;
+    }
+
+    function getByCompte($compte_banque)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    =
+            "select gbank_tran_cod  from guilde_banque_transactions where gbank_tran_gbank_cod = :compte order by gbank_tran_cod";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array(":compte" => $compte_banque), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new guilde_banque_transactions;
+            $temp->charge($result["gbank_tran_cod"]);
+            $retour[] = $temp;
+            $ptemp    = new perso;
+            $temp->charge($temp->gbank_tran_perso_cod);
+            $temp->perso = $ptemp;
+            unset($ptemp);
             unset($temp);
         }
         return $retour;

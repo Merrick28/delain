@@ -398,11 +398,11 @@ if ($erreur == 0)
                         </TR>
                         <?php
                         // RELEVE DE COMPTES
-                        $req_compte_guilde =
-                            "select perso_nom,gbank_tran_montant,gbank_tran_debit_credit,to_char(gbank_tran_date,'DD/MM/YYYY hh24:mi:ss') as date from guilde_banque_transactions,perso where gbank_tran_gbank_cod = $gbank_cod and gbank_tran_perso_cod = perso_cod order by gbank_tran_date";
-                        $stmt              = $pdo->query($req_compte_guilde);
-                        $i                 = 0;
-                        while ($result = $stmt->fetch())
+                        $gbanktran = new guilde_banque_transactions();
+                        $alltran   = $gbanktran->getByCompte($gbank->gbank_cod);
+
+                        $i = 0;
+                        foreach ($alltran as $result)
                         {
                             if (($i % 2) == 0)
                             {
@@ -412,8 +412,8 @@ if ($erreur == 0)
                                 $style = "";
                             }
                             $i++;
-                            echo "<TR><TD $style>", $result['perso_nom'], "</TD>";
-                            echo "<TD $style>", $result['date'], "</TD>";
+                            echo "<TR><TD $style>", $result->perso['perso_nom'], "</TD>";
+                            echo "<TD $style>", format_date($result['gbank_tran_date']), "</TD>";
                             if ($result['gbank_tran_debit_credit'] == 'D')
                             {
                                 echo "<TD $style>", $result['gbank_tran_montant'], "</TD><TD $style></TD>";
@@ -453,7 +453,7 @@ if ($erreur == 0)
 
         } else
         {
-            echo "Vous n'êtes pas administrateur de la guilde: ", $guilde_nom;
+            echo "Vous n'êtes pas administrateur de la guilde: ", $guilde->guilde_nom;
         }
     }
     // FAIRE UN DEPOT SUR UN COMPTE DE GUILDE
