@@ -4,7 +4,8 @@ $nom_lieu  = 'une banque';
 
 define('APPEL', 1);
 include "blocks/_test_lieu.php";
-$perso = $verif_connexion->perso;
+$perso     = $verif_connexion->perso;
+$perso_cod = $verif_connexion->perso_cod;
 
 if ($erreur == 0)
 {
@@ -102,6 +103,7 @@ if ($erreur == 0)
                 <?php
                 break;
             case "valider_depot":
+                $quantite = get_request_var('quantite');
                 if ($quantite < 0)
                 {
                     echo("<p>Bien tenté ...");
@@ -111,7 +113,7 @@ if ($erreur == 0)
                 $req_depot = "select depot_banque($perso_cod,$quantite) as depot";
                 $stmt      = $pdo->prepare($req_depot);
                 $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod,
-                                                 ":quantite"  => $quantite), $stmt);
+                                                 ":quantite" => $quantite), $stmt);
                 $result    = $stmt->fetch();
                 //$tab_depot = pg_fetch_array($res_depot,0);
                 if ($result['depot'] == 0)
@@ -243,13 +245,13 @@ if ($erreur == 0)
                     $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');;
                     $gbanktran->stocke(true);
 
-                    $guilde = new guilde;
-                    $guilde->charge($gbank->gbank_guilde_cod);
+                    $myguilde = new guilde;
+                    $myguilde->charge($gbank->gbank_guilde_cod);
 
                     $result = $stmt->fetch();
                     ?>
                     <p>Vous avez versé <?php echo $depot_guilde; ?> Br sur le compte <?php echo $gbank->gbank_nom ?>
-                        (<?php echo $guilde->guilde_nom ?>), <BR\>
+                        (<?php echo $myguilde->guilde_nom ?>), <BR\>
                         <?php echo $quantite ?> Br ont été retirés de votre bourse.
                     </p>
                     <?php
@@ -264,20 +266,19 @@ if ($erreur == 0)
                 // TRAITEMENT: UN ADMIN FAIT UN RETRAIT SUR LE COMPTE DE SA GUILDE
                 if (($nb_guilde > 0) and ($adm == "O"))
                 {
+                    $quantite = get_request_var('quantite');
                     if ($quantite <= 0)
                     {
                         $erreur = 1;
                         $info   = "Vous ne pouvez pas retirer une somme inférieure ou égale à 0 !";
                     }
                     // CONTROLE: ARGENT DISPONIBLE
-                    $req_or = "select gbank_cod,gbank_or from guilde_banque where gbank_guilde_cod = $guilde_cod ";
-                    $stmt   = $pdo->query($req_or);
-                    if ($stmt->rowCount() > 0)
+                    $gbank = new guilde_banque();
+                    $gbank->getByGuilde($_REQUEST['guilde_cod']);
+
+                    if ($gbank->getByGuilde($_REQUEST['guilde_cod']))
                     {
-                        $result            = $stmt->fetch();
-                        $nb_or             = $result['gbank_or'];
-                        $gbank_cod_retrait = $result['gbank_cod'];
-                        if ($nb_or < $quantite)
+                        if ($gbank->gbank_or < $quantite)
                         {
                             $erreur = 1;
                             $info   = "Vous n'avez pas assez d'argent sur le compte de votre guilde";
@@ -290,9 +291,8 @@ if ($erreur == 0)
                     if ($erreur == 0)
                     {
                         // RETRAIT SUR LE COMPTE
-                        $req_compte =
-                            "update guilde_banque set gbank_or  = gbank_or - $quantite where gbank_cod = $gbank_cod_retrait";
-                        $stmt       = $pdo->query($req_compte);
+                        $gbank->gbank_or -= $quantite;
+                        $gbank->stocke();
 
 
                         // AJOUT DANS LA BOURSE
@@ -300,17 +300,20 @@ if ($erreur == 0)
                         $perso->stocke();
 
                         // LIGNE DE TRANSACTION
-                        $req_compte =
-                            "insert into guilde_banque_transactions (gbank_tran_gbank_cod,gbank_tran_perso_cod,gbank_tran_montant,gbank_tran_debit_credit,gbank_tran_date) values ($gbank_cod_retrait,$perso_cod,$quantite,'D',now())";
-                        $stmt       = $pdo->query($req_compte);
+                        $gbanktran                          = new guilde_banque_transactions();
+                        $gbanktran->gbank_tran_gbank_cod    = $gbank->gbank_cod;
+                        $gbanktran->gbank_tran_perso_cod    = $perso_cod;
+                        $gbanktran->gbank_tran_montant      = $quantite;
+                        $gbanktran->gbank_tran_debit_credit = 'D';
+                        $gbanktran->gbank_tran_date         = date('Y-m-d H:i:s');;
+                        $gbanktran->stocke(true);
 
-                        $req_or =
-                            "select gbank_nom,guilde_nom from guilde,guilde_banque where gbank_cod = $gbank_cod_retrait and gbank_guilde_cod = guilde_cod";
-                        $stmt   = $pdo->query($req_or);
-                        $result = $stmt->fetch();
+                        $myguilde = new guilde;
+                        $myguilde->charge($gbank->gbank_guilde_cod);
+
                         ?>
                         <p>Vous venez de retirer <?php echo $quantite; ?> Br à partir du
-                            compte <?php echo $result['gbank_nom'] ?> (<?php echo $result['guilde_nom'] ?>).
+                            compte <?php echo $gbank->gbank_nom ?> (<?php echo $myguilde->guilde_nom ?>).
                         </p>
                         <?php
 
@@ -329,59 +332,53 @@ if ($erreur == 0)
     ?>
     <?php
     // on recherche l'or en banque
-    $req_or = "select pbank_or from perso_banque where pbank_perso_cod = $perso_cod ";
-    $stmt   = $pdo->query($req_or);
-    $nb_or  = $stmt->rowCount();
-    if ($nb_or == 0)
+    $pbank  = new perso_banque();
+    $qte_or = 0;
+    if ($pbank->getByPerso($perso_cod))
     {
-        $qte_or = 0;
-    } else
-    {
-        $result = $stmt->fetch();
-        $qte_or = $result['pbank_or'];
+        $qte_or = $pbank->pbank_or;
     }
+
+
     ?>
     <p>Vous avez <?php echo $qte_or; ?> brouzoufs sur votre compte.</p>
 
     <hr/>
 
-    <p>
+    <br/>
     <form name="depot" method="post" action="lieu.php">
         <input type="hidden" name="methode" value="depot">
         <input type="submit" value="Déposer des brouzoufs !" class="test">
     </form>
-    </p>
     <?php if ($qte_or != 0)
 {
     ?>
-    <p>
+    <br/>
     <form name="retrait" method="post" action="lieu.php">
         <input type="hidden" name="methode" value="retrait">
         <input type="submit" value="Faire un retrait !" class="test">
     </form>
-    </p>
+
 <?php }
     ?>
-    <HR/>
+    <hr/>
     <?php
     // PARTIE COMPTE BANCAIRE DE GUILDE
     // ON VERIFIE SI LE PERSO FAIT PARTIE D'UNE GUILDE
 
-    if ($nb_guilde > 0)
+    if (isset($guilde))
     {
         if ($adm == "O")
         {
-            echo "Vous êtes administrateur de la guilde: ", $guilde_nom;
-            $req_compte_guilde =
-                "select gbank_cod,gbank_nom,gbank_or from guilde_banque where gbank_guilde_cod = $guilde_cod";
-            $stmt              = $pdo->query($req_compte_guilde);
-            if ($stmt->rowCount() > 0)
+            echo "Vous êtes administrateur de la guilde: ", $guilde->guilde_nom;
+            $gbank = new guilde_banque();
+            if ($gbank->getByGuilde($guilde->guilde_cod))
             {
-                $result    = $stmt->fetch();
-                $gbank_cod = $result['gbank_cod'];
-                $solde     = $result['gbank_or'];
+
+                $gbank_cod = $gbank->gbank_cod;
+                $solde     = $gbank->gbank_or;
                 ?>
-                <p>Votre guilde dispose d'un compte: <strong><?php echo $result['gbank_nom']; ?></strong> Solde actuel:
+                <p>Votre guilde dispose d'un compte: <strong><?php echo $gbank->gbank_nom; ?></strong> Solde actuel:
                     <strong><?php echo $solde; ?> Br</strong> <BR/>
                 <p>
                 <form name="retrait_guilde" method="post" action="lieu.php">
