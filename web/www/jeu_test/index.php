@@ -5,9 +5,10 @@ if (isset($idsessadm))
 }
 require G_CHE . 'includes/classes.php';
 $verif_connexion = new verif_connexion();
-$verif_connexion->ident();
+$verif_connexion->ident($num_perso);
 $verif_auth = $verif_connexion->verif_auth;
 $compte     = $verif_connexion->compte;
+$perso_cod = $verif_connexion->perso_cod;
 if ($verif_auth)
 {
     $test_auth = true;
@@ -29,7 +30,9 @@ if (!$verif_auth)
 
 if (!isset($perso_cod))
 {
-    $auth->logout();
+    $myAuth = new myauth;
+$myAuth->start();
+$myAuth->logout();
     //$auth->auth_loginform();
     echo "etape 3";
     //header('Location:' . G_URL . 'inter.php');
