@@ -1,20 +1,18 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-$req_concentration = "select concentration_nb_tours from concentrations where concentration_perso_cod = $perso_cod";
-$stmt = $pdo->query($req_concentration);
-$nb_concentration = $stmt->rowCount();
-
-if ($nb_concentration == 0)
+$c            = new concentrations();
+$is_concentre = false;
+if ($c->getByPerso($perso_cod))
 {
     echo("<p>Vous n'avez effectué aucune concentration.</p>");
 } else
 {
-    $result = $stmt->fetch();
-    printf("<p>Vous êtes concentré(e) pendant %s tours.", $result['concentration_nb_tours']);
+    $is_concentre = true;
+    echo "<p>Vous êtes concentré(e) pendant " . $c->concentration_nb_tours . " tours.";
 }
 echo("<p><div align=\"center\"><a href=\"valide_concentration.php\">Se concentrer ! (4 PA)</a></div></p>");
-if ($nb_concentration != 0)
+if ($is_concentre != 0)
 {
     echo("<p><em>Attention !! Les concentrations ne se cumulent pas. Si vous vous concentrez de nouveau, la concentration précédente sera annulée !</em></p>");
 }
