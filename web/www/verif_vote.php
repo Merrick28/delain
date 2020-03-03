@@ -133,7 +133,7 @@ if (!$result = $stmt->fetch())
     // on commence par mettre a jour (#LAG pour eviter une multiple distribution)
     $repUpdateVoteList = " INSERT INTO public.vote_list(vote_list_date) VALUES (:date)";
     $stmt              = $pdo->prepare($repUpdateVoteList);
-    $stmt              = $pdo->execute(array(":date" => $dateDuMois), $stmt);
+    $stmt              = $pdo->execute(array(":date" => $dateDuJour), $stmt);
     // puis on récupere tous les personnes qui ont voté ce mois ci et on fonction du nombre de vote on donne les xp correspondants.
     $requGetCompteVote = "select compte_vote_compte_cod FROM public.compte_vote";
     $stmt              = $pdo->query($requGetCompteVote);
