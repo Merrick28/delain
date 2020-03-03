@@ -413,6 +413,7 @@ switch ($methode)
         // pour ne par le confondre avec un autre perso
         //$dest = preg_replace("(&#[0-9]+);","\\1", $dest);
         //fin modif
+        $pdo       = new bddpdo;
 
         $tab_dest = explode(";", $dest);
         $nb_dest = count($tab_dest);
@@ -425,19 +426,209 @@ switch ($methode)
             $contenu_page .= '<br><br><strong>********* Vous êtes sous l’effet d’un Bernardo, vous ne pouvez pas envoyer de message ! *********</strong><br><br>';
             $erreur = 1;
         }
+
+
+        $req_pos = "select ppos_pos_cod, distance_vue($perso_cod) as dist, pos_etage, pos_x, pos_y from perso_position, perso, positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
+        $stmt = $pdo->prepare($req_pos);
+        $stmt->execute() ;
+        $rows = $stmt->fetch();
+        $pos_actuelle = (int)$rows["ppos_pos_cod"];
+        $v_x = (int)$rows["pos_x"];
+        $v_y = (int)$rows["pos_y"];
+        $etage = (int)$rows["pos_etage"];
+        $vue = (int)$rows["dist"];
+
+        $req_guilde = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' ";
+        $stmt = $pdo->prepare($req_guilde);
+        $stmt->execute() ;
+        if ($rows = $stmt->fetch()) $num_guilde = (int)$rows["pguilde_guilde_cod"]; else $num_guilde = 0 ;
+
+
+        $req_coterie = 'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 ';
+        $stmt = $pdo->prepare($req_coterie) ;
+        $stmt->execute() ;
+        if ($rows = $stmt->fetch()) $num_coterie = (int)$rows["pgroupe_groupe_cod"]; else $num_coterie = 0 ;
+
+        // == Préparation des variable
+        $msg_guilde = 0 ;
+        $nb_expedie = 0;
+        $nb_non_expedie = 0;
+        $liste_non_expedie = "";
+        $liste_expedie = "";
+
+        // Recherche de des perso_cod et injection des listes
+        $tab_dest_cod = array();
+        $tab_dest_cod_1ppj = array();
+        $filtre_1_ppj = false ;   // filtre à 1 perso par joueurs
         for ($cpt = 0; $cpt < $nb_dest; $cpt++)
         {
             if ($tab_dest[$cpt] != "")
             {
-                $nb_vrai_dest = $nb_vrai_dest + 1;
+
+
+                if (!strcasecmp($tab_dest[$cpt], 'guilde'))
+                {
+                    $msg_guilde = $num_guilde ;     // pour ajout cas particulier de message guilde
+                    $request = 'select pcompt_compt_cod, perso_cod from perso,guilde_perso, perso_compte
+                                        where  pcompt_perso_cod=perso_cod 
+                                        and pguilde_guilde_cod = ' . $num_guilde . '
+                                        and pguilde_perso_cod != ' . $perso_cod . '
+                                        and pguilde_perso_cod = perso_cod
+                                        and pguilde_valide = \'O\' and pguilde_message = \'O\' ';
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+
+                }
+                else if (substr($tab_dest[$cpt], 0, 10) == 'liste_dif_')
+                {
+                    $liste = substr($tab_dest[$cpt], 10);
+                    // on vérfie que cette liste soit bien au bon perso
+                    $request = "select cliste_cod
+                                from contact_liste
+							    where (cliste_cod = $liste and cliste_perso_cod = $perso_cod)
+								or exists (select 1 from contact,perso where contact_cliste_cod = $liste and contact_perso_cod = $perso_cod) ";
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+
+                    if (!$rows = $stmt->fetch())
+                    {
+                        $request = "";
+                        $contenu_page .= "Vous ne pouvez pas écrire à cette liste: #{$tab_dest[$cpt]} !";
+                    }
+                    else
+                    {
+                        $request = "select pcompt_compt_cod, contact_perso_cod as perso_cod 
+                                    from contact, perso, perso_compte 
+                                    where   pcompt_perso_cod=perso_cod 
+                                        and contact_cliste_cod = $liste 
+                                        and contact_perso_cod = perso_cod ";
+                        $stmt = $pdo->prepare($request);
+                        $stmt->execute() ;
+                    }
+                }
+                else if ($tab_dest[$cpt] == "_tous_joueurs_vue_")
+                {
+                    $request = 'select pcompt_compt_cod, min(perso_cod) as perso_cod 
+                                    from perso, perso_position, positions, perso_compte
+                                    where pcompt_perso_cod=perso_cod 
+                                        and pos_x >= (' . $v_x . ' - ' . $vue . ') and pos_x <= (' . $v_x . ' + ' . $vue . ')
+                                        and pos_y >= (' . $v_y . ' - ' . $vue . ') and pos_y <= (' . $v_y . ' + ' . $vue . ')
+                                        and ppos_perso_cod = perso_cod
+                                        and perso_cod != ' . $perso_cod . '
+                                        and perso_type_perso = 1
+                                        and perso_actif = \'O\'
+                                        and ppos_pos_cod = pos_cod
+                                        and pos_etage = ' . $etage .' 
+                                    group by pcompt_compt_cod ';
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+                }
+                else if ($tab_dest[$cpt] == "_tous_joueurs_coterie_")
+                {
+                    $request = 'select pcompt_compt_cod, min(perso_cod) as perso_cod 
+                                    from perso,groupe_perso, perso_compte
+                                    where pcompt_perso_cod=perso_cod
+                                        and pgroupe_groupe_cod = ' . $num_coterie . '
+                                        and pgroupe_perso_cod != ' . $perso_cod . '
+                                        and pgroupe_perso_cod = perso_cod
+                                        and pgroupe_statut > 0  
+                                    group by pcompt_compt_cod ';
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+
+                }
+                else if ($tab_dest[$cpt] == "_tous_joueurs_guilde_")
+                {
+                    $request = 'select pcompt_compt_cod, min(perso_cod) as perso_cod 
+                                    from perso,guilde_perso, perso_compte
+                                    where pcompt_perso_cod=perso_cod 
+                                        and pguilde_guilde_cod = ' . $num_guilde . '
+                                        and pguilde_perso_cod != ' . $perso_cod . '
+                                        and pguilde_perso_cod = perso_cod
+                                        and pguilde_valide = \'O\' and pguilde_message = \'O\' 
+                                    group by pcompt_compt_cod ';
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+                }
+                else if ($tab_dest[$cpt] == "_tous_joueurs_carte_")
+                {
+                    $request = 'select pcompt_compt_cod, min(perso_cod) as perso_cod 
+                                    from perso, perso_position, positions, perso_compte
+                                    where pcompt_perso_cod=perso_cod 
+                                        and ppos_perso_cod = perso_cod
+                                        and perso_cod != ' . $perso_cod . '
+                                        and perso_type_perso = 1
+                                        and perso_actif = \'O\'
+                                        and ppos_pos_cod = pos_cod
+                                        and pos_etage = ' . $etage . '
+                                    group by pcompt_compt_cod ';
+                    $stmt = $pdo->prepare($request);
+                    $stmt->execute() ;
+                }
+                else if ($tab_dest[$cpt] == "_filtre_1_ppj_")
+                {
+                    $filtre_1_ppj = true ;
+                    $request = "" ;
+                }
+                else
+                {
+                    // rechercher le code du perso
+                    $request = "select f_cherche_perso(?) as perso_cod ;";
+                    $stmt = $pdo->prepare($request);
+                    $stmt = $pdo->execute(array( ltrim(rtrim($tab_dest[$cpt])) ), $stmt);
+                    if (!$rows = $stmt->fetch())
+                    {
+                        $nb_non_expedie ++ ;
+                        $liste_non_expedie = ltrim(rtrim($tab_dest[$cpt])).", ";
+                    }
+                    else
+                    {
+                        $request = "select perso_cod,perso_nom, pcompt_compt_cod from perso join perso_compte on pcompt_perso_cod=perso_cod where perso_cod=?;";
+                        $stmt = $pdo->prepare($request);
+                        $stmt = $pdo->execute(array($rows["perso_cod"]), $stmt);
+                    }
+                }
+
+                if ($request!="")
+                {
+                    //$contenu_page .=$request;
+                    while ( $rows = $stmt->fetch() )
+                    {
+                        if ( (int)$rows["perso_cod"] > 0 )
+                        {
+                            $tab_dest_cod[] = (int)$rows["perso_cod"] ;
+                            if ( isset($tab_dest_cod_1ppj[$rows["pcompt_compt_cod"]]) )
+                            {
+                                $tab_dest_cod_1ppj[$rows["pcompt_compt_cod"]] = min((int)$rows["perso_cod"], $tab_dest_cod_1ppj[$rows["pcompt_compt_cod"]]) ;
+                            }
+                            else
+                            {
+                                $tab_dest_cod_1ppj[$rows["pcompt_compt_cod"]] = (int)$rows["perso_cod"] ;
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        if ($filtre_1_ppj)
+        {
+            $tab_dest_msg = $tab_dest_cod_1ppj ;
+        }
+        else
+        {
+            $tab_dest_msg = $tab_dest_cod ;
+        }
+
+        //$contenu_page .= "<pre>".print_r($tab_dest_msg, true). "</pre>";
+        $nb_dest = count($tab_dest_msg) ;
+
         if ($nb_dest > 100)
         {
             $contenu_page .= '<br><br><strong>********* Vous ne pouvez pas envoyer un message à plus de 100 destinataires ! *********</strong><br><br>';
             $erreur = 1;
         }
-        if ($nb_vrai_dest == 0)
+        if ($nb_dest == 0)
         {
             $contenu_page .= '<br><br><strong>********* Vous devez renseigner au moins un destinataire ! *********</strong><br><br>';
             $erreur = 1;
@@ -518,6 +709,7 @@ switch ($methode)
 				" . $corps;
             }
 
+            if ($msg_guilde>0) $msg->guilde = $msg_guilde ;
             $msg->corps = $corps;
             $msg->sujet = $titre;
             $msg->expediteur = $perso_cod;
@@ -525,119 +717,26 @@ switch ($methode)
             /**********************************/
             /* On boucle sur les destintaires */
             /**********************************/
-            $nb_expedie = 0;
-            $nb_non_expedie = 0;
-            $liste_non_expedie = "";
-            $liste_expedie = "";
-            for ($cpt = 0; $cpt < $nb_dest; $cpt++)
+            foreach ($tab_dest_msg as $msg_perso_cod)
             {
-                $special = 0;
-                // on cherche le destinataire
-                if ($tab_dest[$cpt] != "")
+                $request = "select perso_nom from perso where perso_cod = ? ;";
+                $stmt = $pdo->prepare($request);
+                $stmt = $pdo->execute(array( $msg_perso_cod ), $stmt);
+                if (!$rows = $stmt->fetch())
                 {
-                    if ($tab_dest[$cpt] == 'tous_joueurs_admin')
-                    {
-                        $special = 1;
-                        $req_pos = "select ppos_pos_cod, distance_vue($perso_cod) as dist, pos_etage, pos_x, pos_y from perso_position, perso, positions where ppos_perso_cod = $perso_cod and perso_cod = $perso_cod and ppos_pos_cod = pos_cod ";
-                        $db->query($req_pos);
-                        $db->next_record();
-                        $pos_actuelle = $db->f("ppos_pos_cod");
-                        $v_x = $db->f("pos_x");
-                        $v_y = $db->f("pos_y");
-                        $etage = $db->f("pos_etage");
-                        $vue = $db->f("dist");
-                        $req_vue = 'select perso_cod, perso_nom, distance(ppos_pos_cod,' . $pos_actuelle . ') from perso, perso_position, positions
-							where pos_x >= (' . $v_x . ' - ' . $vue . ') and pos_x <= (' . $v_x . ' + ' . $vue . ')
-    							and pos_y >= (' . $v_y . ' - ' . $vue . ') and pos_y <= (' . $v_y . ' + ' . $vue . ')
-    							and ppos_perso_cod = perso_cod
-    							and perso_cod != ' . $perso_cod . '
-    							and perso_type_perso = 1
-    							and perso_actif = \'O\'
-    							and ppos_pos_cod = pos_cod
-    							and pos_etage = ' . $etage;
-                        $db->query($req_vue);
-                        while ($db->next_record())
-                        {
-                            $msg->ajouteDestinataire($db->f("perso_cod"));
-                            $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
-                            $nb_expedie++;
-                        }
-                    }
-                    if (!strcasecmp($tab_dest[$cpt], 'guilde'))
-                    {
-                        $special = 1;
-                        $guilde = 'O';
-                        $dest = '';
-                        $req_guilde = "select pguilde_guilde_cod from guilde_perso
-							where pguilde_perso_cod = $perso_cod
-							and pguilde_valide = 'O' ";
-                        $db->query($req_guilde);
-                        $db->next_record();
-                        $num_guilde = $db->f("pguilde_guilde_cod");
-
-                        $msg->guilde = $num_guilde;
-
-                        $req_membre = 'select perso_cod,perso_nom from perso,guilde_perso
-							where pguilde_guilde_cod = ' . $num_guilde . '
-							and pguilde_perso_cod != ' . $perso_cod . '
-							and pguilde_perso_cod = perso_cod
-							and pguilde_valide = \'O\' and pguilde_message = \'O\' ';
-                        $db->query($req_membre);
-
-                        while ($db->next_record())
-                        {
-                            $msg->ajouteDestinataire($db->f("perso_cod"));
-                            $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
-                            $nb_expedie++;
-                        }
-                    }
-                    if (substr($tab_dest[$cpt], 0, 10) == 'liste_dif_')
-                    {
-                        $special = 1;
-                        $liste = substr($tab_dest[$cpt], 10);
-                        // on vérfie que cette liste soit bien au bon perso
-                        $req = "select cliste_cod from contact_liste
-							where (cliste_cod = $liste and cliste_perso_cod = $perso_cod)
-								or exists (select 1 from contact,perso where contact_cliste_cod = $liste and contact_perso_cod = $perso_cod) ";
-                        $db->query($req);
-                        if ($db->nf() == 0)
-                        {
-                            $contenu_page .= "Vous ne pouvez pas écrire à cette liste !";
-                        }
-                        else
-                        {
-                            $req = "select contact_perso_cod,perso_nom from contact,perso where contact_cliste_cod = $liste and contact_perso_cod = perso_cod ";
-                            $db->query($req);
-                            while ($db->next_record())
-                            {
-                                $msg->ajouteDestinataire($db->f("contact_perso_cod"));
-                                $liste_expedie = $liste_expedie . $db->f("perso_nom") . ", ";
-                                $nb_expedie++;
-                            }
-                        }
-                    }
-                    if ($special == 0)
-                    {
-                        $nom_dest = ltrim(rtrim($tab_dest[$cpt]));
-                        $nom_dest = pg_escape_string($nom_dest);
-                        $req_dest = "select f_cherche_perso('$nom_dest') as num_perso";
-                        $db->query($req_dest);
-                        $db->next_record();
-                        $tab_res_dest = $db->f("num_perso");
-                        if ($tab_res_dest == -1)
-                        {
-                            $nb_non_expedie++;
-                            $liste_non_expedie = $liste_non_expedie . $tab_dest[$cpt] . ",";
-                        }
-                        else
-                        {
-                            $msg->ajouteDestinataire($db->f("num_perso"));
-                            $nb_expedie++;
-                            $liste_expedie = $liste_expedie . $tab_dest[$cpt] . ", ";
-                        }
-                    }
+                    $nb_non_expedie ++ ;
+                    $liste_non_expedie = $liste_non_expedie . '#' . $msg_perso_cod . ", ";
                 }
+                else
+                {
+                    $msg->ajouteDestinataire( $msg_perso_cod );
+                    $liste_expedie = $liste_expedie . $rows["perso_nom"] . ", ";
+                    $nb_expedie++;
+                }
+
             }
+
+
             if ($nb_non_expedie != 0)
             {
                 $contenu_page .= "Le message n’a pas été expédié à $liste_non_expedie : aventurier(s) inexistant(s).";

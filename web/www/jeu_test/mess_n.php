@@ -106,24 +106,29 @@ if (!$db->is_admin($compt_cod)
 		<select name="joueur" onChange="changeDestinataire(0);">
 		<option value="">---------------</option>';
 
-		$req_guilde = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' ";
-		$db->query($req_guilde);
-		if ($db->nf() != 0)
+        $req = "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' ";
+		$db->query($req);
+		if ($db->nf() != 0) $has_guilde=true; else  $has_guilde=false;
+        $req = 'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 ';
+        $db->query($req);
+        if ($db->nf() != 0) $has_coterie=true; else  $has_coterie=false;
+
+        if ($has_guilde)
 		{
 			// remplissage de contenu
 			$contenu_page .= '<optgroup label="Guilde">
 			<option value="guilde;">Message à toute la guilde</option>
 			</optgroup>';
 		}
-		if ($db->is_admin_monstre($compt_cod))
-		{
-			// remplissage de contenu
-			$contenu_page .= '
-			<optgroup label="Tous joueurs">
-			<option value="tous_joueurs_admin;">Message à tous les joueurs en vue</option>
-			</optgroup>';
-		}
-		$dist_init = -1;
+        $contenu_page .= ' <optgroup label="Les joueurs (=1 perso par triplette)">';
+		$contenu_page .= ' <option value="_tous_joueurs_vue_;">Tous les joueurs en vue</option>';
+        if ($has_coterie) $contenu_page .= ' <option value="_tous_joueurs_coterie_;">Tous les joueurs de la coterie</option>';
+        if ($has_guilde) $contenu_page .= ' <option value="_tous_joueurs_guilde_;">Tous les joueurs de la guilde</option>';
+        if ($db->is_admin_monstre($compt_cod)) $contenu_page .= '<option value="_tous_joueurs_carte_;">Message à tous les joueurs de la carte</option>';
+        $contenu_page .= ' <option value="_filtre_1_ppj_;">Filtrer les destinataires à 1 perso par joueur </option>';
+
+        $contenu_page .= '</optgroup>';
+        $dist_init = -1;
 		$req_vue = "select perso_nom,distance(ppos_pos_cod,$pos_actuelle) as dist,trajectoire_vue($pos_actuelle,pos_cod) as traj from perso, perso_position, positions
 												where pos_x >= ($v_x - $vue) and pos_x <= ($v_x + $vue)
 												and pos_y >= ($v_y - $vue) and pos_y <= ($v_y + $vue)
