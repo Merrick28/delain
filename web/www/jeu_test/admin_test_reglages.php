@@ -14,6 +14,23 @@ if ($erreur == 0)
         //TRAITEMENT DU FORMULAIRE
         switch ($methode)
         {
+            case "create_new_race":
+                if (isset($_POST['race']) && $_POST['race']!="" && isset($_POST['race_description']) && $_POST['race_description']!="")
+                {
+                    $pdo       = new bddpdo;
+
+                    $req = "INSERT INTO public.race( race_nom, race_description)  VALUES (?, ?); ";
+                    $stmt = $pdo->prepare($req);
+                    $stmt->execute(array($_POST['race'], $_POST['race_description'])) ;
+
+                    echo "<p>La race <strong>{$_POST['race']}</strong> a bien été créée!</p>";
+                }
+                else
+                {
+                    echo "<p><strong>Veuillez définir un nom de race et une description!</strong></p>";
+                }
+                break;
+
             case "update_liste_nom":
                 $req = "delete from race_nom_monstre "
                     . "where rac_nom_race_cod = $rac_nom_race_cod and rac_nom_type = '$rac_nom_type' and rac_nom_genre = '$rac_nom_genre'";
@@ -38,8 +55,18 @@ if ($erreur == 0)
     }
     include "admin_edition_header.php"; ?>
 
-    <p>Noms des monstres</p>
-    SELECTIONNER UNE RACE:
+    <p><u>AJOUTER UNE NOUVELLE RACE</u>:</p>
+    <form method="post"><input type="hidden" name="methode" value="create_new_race">
+        <table>
+            <tr><td>NOM de la Race :</td><td><input name="race"></td></tr>
+            <tr><td>Description de cette race :</td><td><textarea name="race_description"></textarea></td></tr>
+            <tr><td></td><td><input type="submit" value="Ajouter une nouvelle race"></td></tr>
+        <table>
+
+    </form>
+
+    <br><p><u>DEFINIR DES NOMS DE MONSTRES</u></p><br>
+    Sélectionner une race:
     <form method="post">
 
         <select name="race_cod">
