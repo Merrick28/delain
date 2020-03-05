@@ -25,8 +25,9 @@ if ($stmt->rowCount() == 0)
     $position = $pos['pos']->pos_cod;
     // On récupère les infos générique pour les afficher
     $req_cache = "select cache_nom,cache_desc,cache_image,cache_cod,cache_fonction from cachettes
-																	where cache_pos_cod = $position";
-    $stmt      = $pdo->query($req_cache);
+																	where cache_pos_cod = :position";
+    $stmt      = $pdo->prepare($req_cache);
+    $stmt      = $pdo->execute(array(":position" => $position), $stmt);
     $result    = $stmt->fetch();
     $nom       = $result['cache_nom'];
     $desc      = $result['cache_desc'];
@@ -91,15 +92,16 @@ if ($stmt->rowCount() == 0)
                             //            O B J E T S                 **
                             //******************************************
                             // On recherche les objets dans la cachette
-                            $req = "select obj_nom_generique,tobj_libelle,obj_cod,obj_nom,objcache_cod_cache_cod,objcache_obj_cod 
+                            $req  = "select obj_nom_generique,tobj_libelle,obj_cod,obj_nom,objcache_cod_cache_cod,objcache_obj_cod 
 															from objet_generique,type_objet,objets,cachettes_objets,cachettes
-															where cache_pos_cod = $position
+															where cache_pos_cod = :position
 															and cache_cod = objcache_cod_cache_cod
 															and obj_cod = objcache_obj_cod
 															and obj_gobj_cod = gobj_cod
 															and gobj_tobj_cod = tobj_cod
 															order by tobj_libelle";
-                            $stmt = $pdo->query($req);
+                            $stmt = $pdo->prepare($req_cache);
+                            $stmt = $pdo->execute(array(":position" => $position), $stmt);
 
 
                             // on affiche la ligne d'en tête objets

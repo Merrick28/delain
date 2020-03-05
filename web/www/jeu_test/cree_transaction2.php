@@ -240,17 +240,18 @@ switch ($methode)
         // Acceptation automatique des transactions entre persos d’un même compte
         if ($tmpperso1->perso_type_perso == 1)
         {
-            $req    = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = $perso_cod";
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $compt1 = $result['pcompt_compt_cod'];
+            $pc1 = new perso_compte;
+            $pc1->get_by_perso($perso_cod);
+            $compt1 = $pc1->pcompt_compt_cod;
         } else
         {
             if ($result['perso_type_perso'] == 3)
             {
                 $req    =
-                    "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = $perso_cod and pfam_perso_cod = pcompt_perso_cod";
-                $stmt   = $pdo->query($req);
+                    "select pcompt_compt_cod from perso_familier,perso_compte 
+                    where pfam_familier_cod = :perso_cod and pfam_perso_cod = pcompt_perso_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
                 $result = $stmt->fetch();
                 $compt1 = $result['pcompt_compt_cod'];
             } else
@@ -261,17 +262,19 @@ switch ($methode)
 
         if ($perso->perso_type_perso == 1)
         {
-            $req    = "select pcompt_compt_cod from perso_compte where pcompt_perso_cod = " . $_REQUEST['perso'];
-            $stmt   = $pdo->query($req);
-            $result = $stmt->fetch();
-            $compt2 = $result['pcompt_compt_cod'];
+            $pc2 = new perso_compte;
+            $pc2->get_by_perso($_REQUEST['perso']);
+            $compt2 = $pc2->pcompt_compt_cod;
         } else
         {
             if ($result['perso_type_perso'] == 3)
             {
                 $req    =
-                    "select pcompt_compt_cod from perso_familier,perso_compte where pfam_familier_cod = " . $_REQUEST['perso'] . " and pfam_perso_cod = pcompt_perso_cod";
-                $stmt   = $pdo->query($req);
+                    "select pcompt_compt_cod from perso_familier,perso_compte 
+                        where pfam_familier_cod = :perso_cod 
+                          and pfam_perso_cod = pcompt_perso_cod";
+                $stmt   = $pdo->prepare($req);
+                $stmt   = $pdo->execute(array(":perso_cod" => $_REQUEST['perso']), $stmt);
                 $result = $stmt->fetch();
                 $compt2 = $result['pcompt_compt_cod'];
             } else
@@ -283,11 +286,17 @@ switch ($methode)
         // traitement des ventes au détail
         if (isset($obj) && !$erreur_globale)
         {
+            $req_ident = "select perobj_identifie from perso_objets where perobj_obj_cod = :key ";
+            $stmtobj   = $pdo->query($req_ident);
+            //
+            $req_exist  = "select tran_cod from transaction where tran_obj_cod = :key ";
+            $stmtexists = $pdo->prepare($req_exist);
+            //
             foreach ($obj as $key => $val)
             {
-                $req_ident    = "select perobj_identifie from perso_objets where perobj_obj_cod = $key ";
-                $stmt         = $pdo->query($req_ident);
-                $result       = $stmt->fetch();
+
+                $stmtobj      = $pdo->execute(array(":key" => $key), $stmtobj);
+                $result       = $stmtobj->fetch();
                 $si_identifie = $result['perobj_identifie'];
                 $erreur       = 0;
                 $prix_obj     = $prix[$key];
@@ -301,21 +310,25 @@ switch ($methode)
                     echo "Erreur ! Le prix doit être fixé !";
                     $erreur = 1;
                 }
-                $req_exist = "select tran_cod from transaction where tran_obj_cod = $key ";
-                $stmt      = $pdo->query($req_exist);
-                if ($stmt->rowCount() > 0)
+
+                $stmtexists = $pdo->execute(array(":key" => $key), $stmtexists);
+                if ($stmtexists->rowCount() > 0)
                 {
                     echo "Erreur ! Une transaction existe déjà sur l’objet $key. Ceci peut arriver en cas de double-clic sur le bouton de validation précédent.";
                     $erreur = 1;
                 }
                 if ($erreur == 0)
                 {
-                    $req_ins  = "insert into transaction (tran_obj_cod, tran_vendeur, tran_acheteur, tran_nb_tours, tran_prix, tran_identifie)
-						values ($key, $perso_cod, " . $_REQUEST['perso'] . ", " . $param->getparm(7) . ", $prix_obj, '$si_identifie')
-						RETURNING tran_cod";
-                    $stmt     = $pdo->query($req_ins);
-                    $result   = $stmt->fetch();
-                    $num_tran = $result['tran_cod'];
+                    $transaction                 = new transaction();
+                    $transaction->tran_obj_cod   = $key;
+                    $transaction->tran_vendeur   = $perso_cod;
+                    $transaction->tran_acheteur  = $_REQUEST['perso'];
+                    $transaction->tran_nb_tours  = $param->getparm(7);
+                    $transaction->tran_prix      = $prix_obj;
+                    $transaction->tran_identifie = $si_identifie;
+                    $transaction->stocke(true);
+
+                    $num_tran = $transaction->tran_cod;
 
                     if ($compt1 == $compt2 and $prix_obj == 0)
                     {

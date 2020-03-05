@@ -99,12 +99,14 @@ if ($erreur == 0)
     /*************************/
     /* R E C E P T A C L E S */
     /*************************/
-    $nb_rec     = $perso->perso_nb_receptacle;
-    $nb_pa      = $perso->perso_pa;
+    $nb_rec = $perso->perso_nb_receptacle;
+    $nb_pa  = $perso->perso_pa;
 
-    $req        = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = $perso_cod ";
-    $stmt       = $pdo->query($req);
-    $result     = $stmt->fetch();
+    $req    = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = :perso_cod ";
+    $stmt   = $pdo->prepare($req);
+    $stmt   = $pdo->execute(array(":perso_cod", $perso_cod), $stmt);
+    $result = $stmt->fetch();
+
     $nb_rec_utl = $result['nombre'];
 
     if ($nb_rec_utl < $nb_rec)
