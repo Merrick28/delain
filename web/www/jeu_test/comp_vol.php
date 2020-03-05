@@ -9,20 +9,23 @@ ob_start();
 /*********************/
 // contenu de la page
 $contenu_page = "";
-$req_comp = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences ";
-$req_comp = $req_comp . "where pcomp_perso_cod = $perso_cod ";
-$req_comp = $req_comp . "and pcomp_modificateur != 0 ";
-$req_comp = $req_comp . "and pcomp_pcomp_cod IN (84,85,86)";
-$stmt = $pdo->query($req_comp);
-if($result = $stmt->fetch())
+$req_comp     = "select pcomp_pcomp_cod,pcomp_modificateur from perso_competences ";
+$req_comp     = $req_comp . "where pcomp_perso_cod = :perso_cod ";
+$req_comp     = $req_comp . "and pcomp_modificateur != 0 ";
+$req_comp     = $req_comp . "and pcomp_pcomp_cod IN (84,85,86)";
+$stmt         = $pdo->prepare($req_comp);
+$stmt         = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+
+if ($result = $stmt->fetch())
 {
-    $num_comp = $result['pcomp_pcomp_cod'];
+    $num_comp    = $result['pcomp_pcomp_cod'];
     $valeur_comp = $result['pcomp_modificateur'];
-    $req_vue = "select ppos_pos_cod "
-        . "from perso_position where ppos_perso_cod = $perso_cod";
-    $stmt = $pdo->query($req_vue);
-    $result = $stmt->fetch();
-    $position = $result['ppos_pos_cod'];
+    $req_vue     = "select ppos_pos_cod "
+                   . "from perso_position where ppos_perso_cod = :perso_cod";
+    $stmt        = $pdo->prepare($req_vue);
+    $stmt        = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+    $result      = $stmt->fetch();
+    $position    = $result['ppos_pos_cod'];
 
 
     // TRAITEMENT DE FORMULAIRE
@@ -31,15 +34,17 @@ if($result = $stmt->fetch())
         switch ($methode)
         {
             case "voler":
-                $cible_cod = get_request_var('cible_cod',-1);
+                $cible_cod = get_request_var('cible_cod', -1);
                 if ($cible_cod == -1)
                 {
                     ?><p><strong>Vous devez choisir une cible !</strong></p><?php
                 } else
                 {
-                    $req_vol = "select vol($perso_cod,$cible_cod) as resultat";
-                    $stmt = $pdo->query($req_vol);
-                    $result = $stmt->fetch();
+                    $req_vol = "select vol(:perso_cod,:cible_cod) as resultat";
+                    $stmt    = $pdo->prepare($req_vol);
+                    $stmt    = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                                   ":cible_cod" => $cible_cod), $stmt);
+                    $result  = $stmt->fetch();
                     ?>
                     <p>Vol !</p>
                     <p><?php echo $result['resultat']; ?></p>
@@ -48,15 +53,17 @@ if($result = $stmt->fetch())
                 }
                 break;
             case "voler_objet":
-                $cible_cod = get_request_var('cible_cod',-1);
+                $cible_cod = get_request_var('cible_cod', -1);
                 if ($cible_cod == -1)
                 {
                     ?><p><strong>Vous devez choisir une cible !</strong></p><?php
                 } else
                 {
                     $req_vol = "select vol_objet($perso_cod,$cible_cod) as resultat";
-                    $stmt = $pdo->query($req_vol);
-                    $result = $stmt->fetch();
+                    $stmt    = $pdo->prepare($req_vol);
+                    $stmt    = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                                   ":cible_cod" => $cible_cod), $stmt);
+                    $result  = $stmt->fetch();
                     ?>
                     <p>Vol !</p>
                     <p><?php echo $result['resultat']; ?></p>
@@ -75,24 +82,26 @@ if($result = $stmt->fetch())
         <select name="cible_cod">
             <option value="-1">&lt;Choisir une victime&gt;</option>
             <?php
-            $req_cibles = "select perso_nom,race_nom,perso_cod,perso_type_perso "
-                . "from perso,perso_position,race "
-                . "where ppos_pos_cod = $position "
-                . "and ppos_perso_cod = perso_cod "
-                . "and perso_cod != $perso_cod "
-                . "and perso_actif = 'O' "
-                . "and perso_tangible = 'O' "
-                . "and perso_race_cod = race_cod "
-                . "and not exists "
-                . "(select 1 from lieu,lieu_position "
-                . "where lpos_pos_cod = ppos_pos_cod "
-                . "and lpos_lieu_cod = lieu_cod "
-                . "and lieu_refuge = 'O') "
-                . "and not exists "
-                . "(select 1 from perso_familier "
-                . "where pfam_perso_cod = $perso_cod "
-                . "and pfam_familier_cod = perso_cod) ";
-            $stmt = $pdo->query($req_cibles);
+            $req_cibles = "select perso_nom,race_nom,perso_cod,perso_type_perso 
+            from perso,perso_position,race 
+            where ppos_pos_cod = :position 
+            and ppos_perso_cod = perso_cod 
+            and perso_cod != :perso_cod
+            and perso_actif = 'O'
+            and perso_tangible = 'O'
+            and perso_race_cod = race_cod 
+            and not exists 
+                (select 1 from lieu,lieu_position
+                where lpos_pos_cod = ppos_pos_cod
+                and lpos_lieu_cod = lieu_cod
+                and lieu_refuge = 'O')
+            and not exists 
+                (select 1 from perso_familier
+                where pfam_perso_cod = :perso_cod 
+                and pfam_familier_cod = perso_cod) ";
+            $stmt       = $pdo->prepare($req_cibles);
+            $stmt       = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                              ":position"  => $position), $stmt);
             while ($result = $stmt->fetch())
             {
                 ?>

@@ -30,10 +30,15 @@ if ($perso->perso_type_perso == 3)
 if ($erreur == 0)
 {
     $req  = 'select dper_dieu_cod,dniv_libelle,dieu_nom,dper_niveau,dper_points
-				from dieu_perso,dieu_niveau,dieu where dper_perso_cod = ' . $perso_cod . '
-				and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau
+				from dieu_perso,dieu_niveau,dieu 
+                where dper_perso_cod = :perso_cod 
+				and dniv_dieu_cod = dper_dieu_cod 
+                and dniv_niveau = dper_niveau
 				and dieu_cod = dper_dieu_cod ';
-    $stmt = $pdo->query($req);
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+
+
     if ($stmt->rowCount() != 0)
     {
         $result      = $stmt->fetch();
@@ -42,9 +47,10 @@ if ($erreur == 0)
     }
     $lieu           = $tab_lieu['lieu_cod'];
     $req            =
-        "select dieu_cod,dieu_nom,dieu_description,lieu_description,dieu_ceremonie,dieu_pouvoir from dieu,lieu ";
-    $req            = $req . "where lieu_cod = " . $tab_lieu['lieu_cod'] . " and lieu_dieu_cod = dieu_cod ";
-    $stmt           = $pdo->query($req);
+        "select dieu_cod,dieu_nom,dieu_description,lieu_description,dieu_ceremonie,dieu_pouvoir from dieu,lieu 
+        where lieu_cod = :lieu_cod and lieu_dieu_cod = dieu_cod ";
+    $stmt           = $pdo->prepare($req);
+    $stmt           = $pdo->execute(array(":lieu_cod" => $tab_lieu['lieu_cod']), $stmt);
     $result         = $stmt->fetch();
     $dieu_cod       = $result['dieu_cod'];
     $dieu_nom       = $result['dieu_nom'];
@@ -62,10 +68,11 @@ if ($erreur == 0)
 
             // on regarde s'il existe un lien avec le perso
             $req  = 'select dper_dieu_cod,dniv_libelle,dieu_nom,dper_niveau,dper_points
-				from dieu_perso,dieu_niveau,dieu where dper_perso_cod = ' . $perso_cod . '
+				from dieu_perso,dieu_niveau,dieu where dper_perso_cod = :perso_cod
 				and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau
 				and dieu_cod = dper_dieu_cod ';
-            $stmt = $pdo->query($req);
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             if ($stmt->rowCount() == 0)
             {
                 // aucun rattachement
@@ -91,8 +98,10 @@ if ($erreur == 0)
             }
             // on regarde si on n'est pas rénégat, quand même.
             $req  =
-                "select dren_cod from dieu_renegat where dren_dieu_cod = $dieu_cod and dren_perso_cod = $perso_cod and dren_datfin > now()";
-            $stmt = $pdo->query($req);
+                "select dren_cod from dieu_renegat where dren_dieu_cod = :dieu_cod and dren_perso_cod = :perso_cod and dren_datfin > now()";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod,
+                                        ":dieu_cod"  => $dieu_cod), $stmt);
             if ($stmt->rowCount() != 0)
             {
                 // RENEGAT !!!
@@ -109,9 +118,10 @@ if ($erreur == 0)
         case 'prie1':
             $attention = 0;
             $req    =
-                "select dper_dieu_cod,dniv_libelle from dieu_perso,dieu_niveau where dper_perso_cod = $perso_cod ";
-            $req    = $req . "and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau ";
-            $stmt   = $pdo->query($req);
+                "select dper_dieu_cod,dniv_libelle from dieu_perso,dieu_niveau where dper_perso_cod = :perso_cod 
+                and dniv_dieu_cod = dper_dieu_cod and dniv_niveau = dper_niveau ";
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
             if ($stmt->rowCount() != 0)
             {
                 $result = $stmt->fetch();

@@ -125,8 +125,10 @@ switch ($methode)
     "recup_positions":
         $contenu_page .= '<table border="1">';
         $req_position =
-            "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = " . $etage . " and pos_etage = etage_numero order by random() limit 1";
-        $stmt         = $pdo->query($req_position);
+            "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = :etage  and
+                pos_etage = etage_numero order by random() limit 1";
+        $stmt         = $pdo->prepare($req_position);
+        $stmt         = $pdo->execute(array(":etage" => $etage), $stmt);
         $result       = $stmt->fetch();
         $position_x   = $result['x'];
         $position_y   = $result['y'];
@@ -138,18 +140,23 @@ switch ($methode)
         for ($y = -4; $y < 6; $y++)
         {
             $contenu_page .= '<TR>';
+            $req_position = "select pos_cod,pos_x,pos_y from positions where
+													 pos_etage = :etage
+													 and pos_x = :position_x + :x
+													 and pos_y = :position_y - :y";
+            $stmt_pos     = $pdo->prepare($req_position);
             for ($x = -4; $x < 6; $x++)
             {
                 if (($y * $y + $x * $x) < $variation)
                 {
-                    $req_position = "select pos_cod,pos_x,pos_y from positions where
-													 pos_etage = $etage
-													 and pos_x = $position_x + $x
-													 and pos_y = $position_y - $y";
-                    $stmt         = $pdo->query($req_position);
-                    if ($stmt->rowCount() != 0)
+
+                    $stmt_pos = $pdo->execute(array(":x"        => $x,
+                                                    ":y"        => $y,
+                                                    ":etage"    => $etage,
+                                                    ":position" => $position), $stmt_pos);
+                    if ($stmt_pos->rowCount() != 0)
                     {
-                        $result      = $stmt->fetch();
+                        $result      = $stmt_pos->fetch();
                         $position2   = $result['pos_cod'];
                         $position_x2 = $result['pos_x'];
                         $position_y2 = $result['pos_y'];
@@ -178,10 +185,6 @@ switch ($methode)
 
 
                         /*On regarde si il y a déjà des composants sur une position*/
-                        $req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea,gobj_nom from ingredient_position,objet_generique where
-																 ingrpos_pos_cod = " . $position2 . "
-																 and gobj_cod = ingrpos_gobj_cod";
-                        $stmt2          = $pdo->query($req_ingredient);
                         if ($allig = $ig->getByPos($position2))
                         {
                             foreach ($allig as $result2)
@@ -195,16 +198,16 @@ switch ($methode)
                         }
                         $increment   .= '</td></tr>';
                         $requete_sql .= $requete_sql2;
-                        $req_murs    = "select mur_creusable from murs where mur_pos_cod = $position2";
 
-                        $stmt3   = $pdo->query($req_murs);
-                        $result3 = $stmt3->fetch();
-                        $color   = "#FFFFFF";
-                        if ($result3['mur_creusable'] == 'O')
+                        $murs = new murs;
+                        $murs->getByPos($position2);
+
+                        $color = "#FFFFFF";
+                        if ($murs->mur_creusable == 'O')
                         {
                             $color = "#696969";
                         }
-                        if ($result3['mur_creusable'] == 'N')
+                        if ($murs->mur_creusable == 'N')
                         {
                             $color        = "#000000";
                             $requete_sql2 = '';
@@ -232,8 +235,10 @@ switch ($methode)
         foreach ($composant as $i => $valeur)
         {
             $req_position =
-                "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = " . $etage . " and pos_etage = etage_numero order by random() limit 1";
-            $stmt         = $pdo->query($req_position);
+                "select pos_cod,pos_x as x,pos_y as y,etage_libelle from positions,etage where pos_etage = :etage 
+            and pos_etage = etage_numero order by random() limit 1";
+            $stmt         = $pdo->prepare($req_position);
+            $stmt         = $pdo->execute(array(":etage" => $etage), $stmt);
             $result       = $stmt->fetch();
             $position_x   = $result['x'];
             $position_y   = $result['y'];
@@ -244,18 +249,23 @@ switch ($methode)
             for ($y = -4; $y < 6; $y++)
             {
                 $contenu_page .= '<TR>';
+                $req_position = "select pos_cod,pos_x,pos_y from positions where
+													 pos_etage = :etage
+													 and pos_x = :position_x + :x
+													 and pos_y = :position_y - :y";
+                $stmt_pos     = $pdo->prepare($req_position);
                 for ($x = -4; $x < 6; $x++)
                 {
                     if (($y * $y + $x * $x) < $variation)
                     {
-                        $req_position = "select pos_cod,pos_x,pos_y from positions where
-															 pos_etage = $etage
-															 and pos_x = $position_x + $x
-															 and pos_y = $position_y - $y";
-                        $stmt         = $pdo->query($req_position);
-                        if ($stmt->rowCount() != 0)
+
+                        $stmt_pos = $pdo->execute(array(":x"        => $x,
+                                                        ":y"        => $y,
+                                                        ":etage"    => $etage,
+                                                        ":position" => $position), $stmt_pos);
+                        if ($stmt_pos->rowCount() != 0)
                         {
-                            $result      = $stmt->fetch();
+                            $result      = $stmt_pos->fetch();
                             $position2   = $result['pos_cod'];
                             $position_x2 = $result['pos_x'];
                             $position_y2 = $result['pos_y'];
@@ -276,9 +286,10 @@ switch ($methode)
 
                             /*On regarde si il y a déjà des composants sur une position*/
                             $req_ingredient = "select ingrpos_gobj_cod,ingrpos_max,ingrpos_chance_crea,gobj_nom from ingredient_position,objet_generique where
-																		 ingrpos_pos_cod = " . $position2 . "
+																		 ingrpos_pos_cod =  :position2
 																		 and gobj_cod = ingrpos_gobj_cod";
-                            $stmt2          = $pdo->query($req_ingredient);
+                            $stmt2          = $pdo->prepare($req_ingredient);
+                            $stmt2          = $pdo->execute(array(":position2" => $position2), $stmt2);
                             if ($stmt2->rowCount() != 0)
                             {
                                 while ($result2 = $stmt2->fetch())
@@ -289,16 +300,14 @@ switch ($methode)
                                     }
                                 }
                             }
-                            $req_murs = "select mur_creusable from murs where mur_pos_cod = " . $position2;
-
-                            $stmt3   = $pdo->query($req_murs);
-                            $result3 = $stmt3->fetch();
-                            $color   = "#FFFFFF";
-                            if ($result3['mur_creusable'] == 'O')
+                            $murs = new murs();
+                            $murs->getByPos($position2);
+                            $color = "#FFFFFF";
+                            if ($murs->mur_creusable == 'O')
                             {
                                 $color = "#696969";
                             }
-                            if ($result3['mur_creusable'] == 'N')
+                            if ($murs->mur_creusable == 'N')
                             {
                                 $color        = "#000000";
                                 $requete_sql2 = '';
@@ -317,11 +326,13 @@ switch ($methode)
 
     case "effacer":
         $req_efface   = "delete from ingredient_position where
-															ingrpos_pos_cod in (select pos_cod from positions,etage where pos_etage = $etage and pos_etage = etage_numero)";
-        $stmt         = $pdo->query($req_efface);
+															ingrpos_pos_cod in (select pos_cod from positions,etage where pos_etage = :etage and pos_etage = etage_numero)";
+        $stmt         = $pdo->prepare($req_efface);
+        $stmt         = $pdo->execute(array(":etage" => $etage), $stmt);
         $result       = $stmt->fetch();
-        $req_position = "select etage_libelle from etage where etage_numero = " . $etage;
-        $stmt         = $pdo->query($req_position);
+        $req_position = "select etage_libelle from etage where etage_numero = :etage";
+        $stmt         = $pdo->prepare($req_position);
+        $stmt         = $pdo->execute(array(":etage" => $etage), $stmt);
         $result       = $stmt->fetch();
         $etage2       = $result['etage_libelle'];
         $contenu_page .= 'l\'étage ' . $etage2 . ' a été complètement vidé de ses composants';

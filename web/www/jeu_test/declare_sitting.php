@@ -53,8 +53,13 @@ switch ($methode)
         break;
 
     case "sitting":
-        $req = "select compt_cod from compte where compt_nom = '$compte_sitteur'";
-        $stmt           = $pdo->query($req);
+        $duree_heure = get_request_var('duree_heure');
+        $heure_debut    = get_request_var('heure_debut');
+        $compte_sitteur = get_request_var('compte_sitteur');
+
+        $req            = "select compt_cod from compte where compt_nom = :compte_sitteur";
+        $stmt           = $pdo->prepare($req);
+        $stmt           = $pdo->execute(array(":compte_sitteur" => $compte_sitteur), $stmt);
         $result         = $stmt->fetch();
         $compte_sitteur = $result['compt_cod'];
         if ($duree_heure == null or $heure_debut == null or $compte_sitteur == null)
@@ -84,11 +89,12 @@ switch ($methode)
             // On s'assure que le sitting est autorisé:
             // - Pas plus de 5 sittings sur les 15 derniers jours
             //   (Compté depuis le début du sitting prévu, en remontant)
-            $req       = 'select count(1) as nsittings from compte_sitting'
-                         . ' where csit_compte_sitte = ' . $compt_cod
-                         . ' and csit_ddeb >= (now() + \'' . $heure_debut
+            $req       = 'select count(1) as nsittings from compte_sitting
+             where csit_compte_sitte = :compt_cod
+             and csit_ddeb >= (now() + \'' . $heure_debut
                          . ' hours\'::interval - \'15 days\'::interval)';
-            $stmt      = $pdo->query($req);
+            $stmt      = $pdo->prepare($req);
+            $stmt      = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
             $result    = $stmt->fetch();
             $nSittings = $result['nsittings'];
             // - Pas plus de 5 jours sittés sur les 15 derniers jours
@@ -98,9 +104,10 @@ switch ($methode)
             $req           = 'select \'5 days\'::interval - sum(csit_dfin - max(csit_ddeb , '
                              . $periode_debut . ')) as dsittings'
                              . ' from compte_sitting'
-                             . ' where csit_compte_sitte = ' . $compt_cod
-                             . ' and csit_dfin >= ' . $periode_debut;
-            $stmt          = $pdo->query($req);
+                             . ' where csit_compte_sitte = :compt_cod
+                             and csit_dfin >= ' . $periode_debut;
+            $stmt          = $pdo->prepare($req);
+            $stmt          = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
             $result        = $stmt->fetch();
             $dSittings     = $result['dsittings'];
             // - Pas d'accumulation de sitting pour le sitteur.
@@ -111,18 +118,20 @@ switch ($methode)
             //   (Cas précédent, appliqué au sitté.)
             // - Pas de chaînes de sitting
             //   (Cas précédents, en échangeant sitteur et sitté.)
-            $req    = 'select count(1) as bcumul from compte_sitting'
-                      . ' where (csit_compte_sitte = ' . $compt_cod
-                      . ' or csit_compte_sitte = ' . $compte_sitteur
-                      . ' or csit_compte_sitteur = ' . $compt_cod
-                      . ' or csit_compte_sitteur = ' . $compte_sitteur . ')'
-                      . ' and ((now() + \'' . $heure_debut . ' hours\'::interval)'
-                      . ' between csit_ddeb and csit_dfin'
-                      . ' or csit_ddeb between'
-                      . ' (now() + \'' . $heure_debut . ' hours\'::interval)'
-                      . ' and (now() + \'' . ($heure_debut + $duree_heure)
+            $req    = 'select count(1) as bcumul from compte_sitting
+            where (csit_compte_sitte = :compt_cod
+                    or csit_compte_sitte = :compte_sitteur
+                    or csit_compte_sitteur = :compt_cod
+                    or csit_compte_sitteur = :compte_sitteur)
+                    and ((now() + \'' . $heure_debut . ' hours\'::interval)
+                    between csit_ddeb and csit_dfin
+                    or csit_ddeb between
+                    (now() + \'' . $heure_debut . ' hours\'::interval)
+                    and (now() + \'' . ($heure_debut + $duree_heure)
                       . ' hours\'::interval))';
-            $stmt   = $pdo->query($req);
+            $stmt   = $pdo->prepare($req);
+            $stmt   = $pdo->execute(array(":compt_cod"      => $compt_cod,
+                                          ":compte_sitteur" => $compte_sitteur), $stmt);
             $result = $stmt->fetch();
             $bCumul = $result['bcumul'];
             // - Pas de sitteur venant d'un compte lié.

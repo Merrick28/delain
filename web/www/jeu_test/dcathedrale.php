@@ -6,16 +6,18 @@
 $param = new parametres();
 
 /* Seul les fidèles du dieu peuvent se rendre à l'intérieur (map réservée) */
-$req  = '	SELECT dper_dieu_cod FROM dieu_perso WHERE dper_perso_cod = ' . $perso_cod;
-$stmt = $pdo->query($req);
+$req  = '	SELECT dper_dieu_cod FROM dieu_perso WHERE dper_perso_cod = :perso_cod';
+$stmt = $pdo->prepare($req);
+$stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
 if ($stmt->rowCount() != 0)
 {
     $result     = $stmt->fetch();
     $dieu_perso = $result['dper_dieu_cod'];
 }
 $req      =
-    '	SELECT dieu_cod, dieu_nom FROM dieu, lieu WHERE lieu_cod=' . $tab_lieu['lieu_cod'] . ' AND lieu_dieu_cod=dieu_cod ';
-$stmt     = $pdo->query($req);
+    '	SELECT dieu_cod, dieu_nom FROM dieu, lieu WHERE lieu_cod= :lieu_cod  AND lieu_dieu_cod=dieu_cod ';
+$stmt     = $pdo->prepare($req);
+$stmt     = $pdo->execute(array(":lieu_cod" => $tab_lieu['lieu_cod']), $stmt);
 $result   = $stmt->fetch();
 $dieu_cod = $result['dieu_cod'];
 $dieu_nom = $result['dieu_nom'];
