@@ -328,14 +328,9 @@ switch ($methode)
                     $transaction->tran_identifie = $si_identifie;
                     $transaction->stocke(true);
 
-                    $num_tran = $transaction->tran_cod;
-
                     if ($compt1 == $compt2 and $prix_obj == 0)
                     {
-                        $req_acc_tran  = "select accepte_transaction($num_tran) as resultat";
-                        $stmt          = $pdo->query($req_acc_tran);
-                        $result        = $stmt->fetch();
-                        $resultat_temp = $result['resultat'];
+                        $resultat_temp = $transaction->accepte_transaction();
                         $tab_res       = explode(";", $resultat_temp);
                         if ($tab_res[0] == -1)
                         {

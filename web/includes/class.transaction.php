@@ -18,7 +18,7 @@ class transaction
     var $tran_prix;
     var $tran_identifie;
     var $tran_quantite = 0;
-    var $tran_type = 'PP';
+    var $tran_type     = 'PP';
 
     function __construct()
     {
@@ -26,8 +26,8 @@ class transaction
 
     /**
      * Stocke l'enregistrement courant dans la BDD
-     * @global bdd_mysql $pdo
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)
+     * @global bdd_mysql $pdo
      */
     function stocke($new = false)
     {
@@ -56,21 +56,20 @@ class transaction
     returning tran_cod as id";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":tran_obj_cod" => $this->tran_obj_cod,
-                ":tran_vendeur" => $this->tran_vendeur,
-                ":tran_acheteur" => $this->tran_acheteur,
-                ":tran_nb_tours" => $this->tran_nb_tours,
-                ":tran_prix" => $this->tran_prix,
-                ":tran_identifie" => $this->tran_identifie,
-                ":tran_quantite" => $this->tran_quantite,
-                ":tran_type" => $this->tran_type,
-            ), $stmt);
+                                      ":tran_obj_cod"   => $this->tran_obj_cod,
+                                      ":tran_vendeur"   => $this->tran_vendeur,
+                                      ":tran_acheteur"  => $this->tran_acheteur,
+                                      ":tran_nb_tours"  => $this->tran_nb_tours,
+                                      ":tran_prix"      => $this->tran_prix,
+                                      ":tran_identifie" => $this->tran_identifie,
+                                      ":tran_quantite"  => $this->tran_quantite,
+                                      ":tran_type"      => $this->tran_type,
+                                  ), $stmt);
 
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        }
-        else
+        } else
         {
             $req  = "update transaction
                     set
@@ -84,24 +83,24 @@ class transaction
             tran_type = :tran_type                        where tran_cod = :tran_cod ";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array(
-                ":tran_cod" => $this->tran_cod,
-                ":tran_obj_cod" => $this->tran_obj_cod,
-                ":tran_vendeur" => $this->tran_vendeur,
-                ":tran_acheteur" => $this->tran_acheteur,
-                ":tran_nb_tours" => $this->tran_nb_tours,
-                ":tran_prix" => $this->tran_prix,
-                ":tran_identifie" => $this->tran_identifie,
-                ":tran_quantite" => $this->tran_quantite,
-                ":tran_type" => $this->tran_type,
-            ), $stmt);
+                                      ":tran_cod"       => $this->tran_cod,
+                                      ":tran_obj_cod"   => $this->tran_obj_cod,
+                                      ":tran_vendeur"   => $this->tran_vendeur,
+                                      ":tran_acheteur"  => $this->tran_acheteur,
+                                      ":tran_nb_tours"  => $this->tran_nb_tours,
+                                      ":tran_prix"      => $this->tran_prix,
+                                      ":tran_identifie" => $this->tran_identifie,
+                                      ":tran_quantite"  => $this->tran_quantite,
+                                      ":tran_type"      => $this->tran_type,
+                                  ), $stmt);
         }
     }
 
     /**
      * Charge dans la classe un enregistrement de transaction
-     * @global bdd_mysql $pdo
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @global bdd_mysql $pdo
      */
     function charge($code)
     {
@@ -127,8 +126,8 @@ class transaction
 
     /**
      * Retourne un tableau de tous les enregistrements
-     * @global bdd_mysql $pdo
      * @return \transaction
+     * @global bdd_mysql $pdo
      */
     function getAll()
     {
@@ -144,6 +143,15 @@ class transaction
             unset($temp);
         }
         return $retour;
+    }
+
+    function accepte_transaction()
+    {
+        $pdo          = new bddpdo;
+        $req_acc_tran = "select accepte_transaction(:num_tran) as resultat";
+        $stmt         = $pdo->prepare($req_acc_tran);
+        $stmt         = $pdo->execute(array(":num_tran" => $this->tran_cod), $stmt);
+        return $stmt->fetch();
     }
 
     public function __call($name, $arguments)
@@ -170,10 +178,9 @@ class transaction
                         return false;
                     }
                     return $retour;
-                }
-                else
+                } else
                 {
-                    die('Unknown variable ' . substr($name,6));
+                    die('Unknown variable ' . substr($name, 6));
                 }
                 break;
 
