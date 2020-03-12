@@ -55,17 +55,17 @@ declare
     v_resultat  f_resultat;        -- resultat de f_carac_ameliore()
 begin
     -- On rend la fonction atomique, pour éviter les problèmes de double clic.
-    perform guard('f_modif_carac'); -- Ne pas oublier le perform release à chaque branche de sortie de fonction !
+    perform guard('f_modif_carac', personnage);
+    -- Ne pas oublier le perform release à chaque branche de sortie de fonction !
 
 
-  -- Un minimum de vérification !!!
+    -- Un minimum de vérification !!!
     select into v_pa,
-                v_niveau_actu,
-                v_limite_niveau,
-                v_px,
-                pv_max_actuel,
-                v_con
-            perso_pa,
+        v_niveau_actu,
+        v_limite_niveau,
+        v_px,
+        pv_max_actuel,
+        v_con perso_pa,
             perso_niveau,
             limite_niveau(perso_cod),
             perso_px,
@@ -76,12 +76,12 @@ begin
         and perso_actif = 'O';
     if not found then
         code_retour := '<p>Erreur ! Perso non trouvé !';
-        perform release('f_modif_carac');
+        perform release('f_modif_carac', personnage);
         return code_retour;
     end if;
     if v_px < v_limite_niveau then
         code_retour := '<p>Erreur ! Pas assez de PX pour monter de niveau !';
-        perform release('f_modif_carac');
+        perform release('f_modif_carac', personnage);
         return code_retour;
     end if;
     if v_pa < getparm_n(8) then
@@ -95,9 +95,9 @@ begin
     --------------------------------------------------
     v_resultat := f_carac_ameliore(personnage, amel);
     if v_resultat.etat != 0 then
-      -- il y a eu un problème lors de l'amelioration de caract
-      perform release('f_modif_carac');
-      return v_resultat.code_retour;
+        -- il y a eu un problème lors de l'amelioration de caract
+        perform release('f_modif_carac', personnage);
+        return v_resultat.code_retour;
     end if;
 
     --------------------------------------------------
@@ -126,17 +126,19 @@ begin
     end if;
     --------------------------------------------------
     -- Tout c'est bien passé, on met le texte de passage de niveau et les events!
-    code_retour := '<p>Vous êtes maintenant niveau <b>'||trim(to_char(v_niveau_actu,'999999'))||'</b>.<br>';
-    code_retour := code_retour||'Vous gagnez <b>'||trim(to_char(gain_pv,'999999'))||'</b> points de vie.<br>';
-    texte_evt := '[perso_cod1] s''est entrainé, est passé au niveau '||trim(to_char(v_niveau_actu,'999'));
-    texte_evt := texte_evt||' et a gagné '||trim(to_char(gain_pv,'999'))||' points de vie.';
-    insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-            values(nextval('seq_levt_cod'),11,now(),1,personnage,texte_evt,'O','N');
-    texte_evt := 'Passage de niveau, option choisie : '||trim(to_char(amel,'999999'));
-    insert into ligne_evt(levt_cod,levt_tevt_cod,levt_date,levt_type_per1,levt_perso_cod1,levt_texte,levt_lu,levt_visible)
-            values(nextval('seq_levt_cod'),-1,now(),1,personnage,texte_evt,'O','N');
+    code_retour := '<p>Vous êtes maintenant niveau <b>' || trim(to_char(v_niveau_actu, '999999')) || '</b>.<br>';
+    code_retour := code_retour || 'Vous gagnez <b>' || trim(to_char(gain_pv, '999999')) || '</b> points de vie.<br>';
+    texte_evt := '[perso_cod1] s''est entrainé, est passé au niveau ' || trim(to_char(v_niveau_actu, '999'));
+    texte_evt := texte_evt || ' et a gagné ' || trim(to_char(gain_pv, '999')) || ' points de vie.';
+    insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
+                          levt_visible)
+    values (nextval('seq_levt_cod'), 11, now(), 1, personnage, texte_evt, 'O', 'N');
+    texte_evt := 'Passage de niveau, option choisie : ' || trim(to_char(amel, '999999'));
+    insert into ligne_evt(levt_cod, levt_tevt_cod, levt_date, levt_type_per1, levt_perso_cod1, levt_texte, levt_lu,
+                          levt_visible)
+    values (nextval('seq_levt_cod'), -1, now(), 1, personnage, texte_evt, 'O', 'N');
 
-    perform release('f_modif_carac');
+    perform release('f_modif_carac', personnage);
     return code_retour;
 end;$_$;
 
