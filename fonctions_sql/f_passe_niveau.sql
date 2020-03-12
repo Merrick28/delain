@@ -4,7 +4,8 @@
 
 CREATE OR REPLACE FUNCTION f_passe_niveau(integer, integer) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/********************************************************/
+AS
+$_$/********************************************************/
 /* fonction f_passe_niveau: effectue toutes les actions */
 /*   liées au passage de niveau et retourne une chaine  */
 /*   exploitable en html                                */
@@ -39,20 +40,20 @@ CREATE OR REPLACE FUNCTION f_passe_niveau(integer, integer) RETURNS text
 /*       30 -> intelligence                             */
 /********************************************************/
 declare
-    code_retour text;               -- chaine de retour
-    personnage alias for $1;        -- perso_cod
-    amel alias for $2;              -- type amélioration
-    v_pa integer;                       -- nombre de PA du perso
-    v_niveau_actu integer;          -- niveau actuel du perso
-    v_limite_niveau integer;        -- PX nécessaires pour monter de niveau
-    v_px numeric;                       -- PX du perso
-    v_con integer;
-    gain_pv integer;                    -- gain en PV du perso
-    pv_max_actuel integer;          -- PV max du perso
-    pv_max_theorique integer;          -- PV max theorique du perso
-    temp integer;                       -- vraible passe partout
-    texte_evt text;                 -- texte pour évènements
-    v_resultat  f_resultat;        -- resultat de f_carac_ameliore()
+    code_retour      text; -- chaine de retour
+    personnage alias for $1; -- perso_cod
+    amel alias for $2; -- type amélioration
+    v_pa             integer; -- nombre de PA du perso
+    v_niveau_actu    integer; -- niveau actuel du perso
+    v_limite_niveau  integer; -- PX nécessaires pour monter de niveau
+    v_px             numeric; -- PX du perso
+    v_con            integer;
+    gain_pv          integer; -- gain en PV du perso
+    pv_max_actuel    integer; -- PV max du perso
+    pv_max_theorique integer; -- PV max theorique du perso
+    temp             integer; -- vraible passe partout
+    texte_evt        text; -- texte pour évènements
+    v_resultat       f_resultat; -- resultat de f_carac_ameliore()
 begin
     -- On rend la fonction atomique, pour éviter les problèmes de double clic.
     perform guard('f_modif_carac', personnage);
@@ -66,14 +67,14 @@ begin
         v_px,
         pv_max_actuel,
         v_con perso_pa,
-            perso_niveau,
-            limite_niveau(perso_cod),
-            perso_px,
-            perso_pv_max,
-            f_carac_base(perso_cod,'CON') as  perso_con
-        from perso
-        where perso_cod = personnage
-        and perso_actif = 'O';
+              perso_niveau,
+              limite_niveau(perso_cod),
+              perso_px,
+              perso_pv_max,
+              f_carac_base(perso_cod, 'CON') as perso_con
+    from perso
+    where perso_cod = personnage
+      and perso_actif = 'O';
     if not found then
         code_retour := '<p>Erreur ! Perso non trouvé !';
         perform release('f_modif_carac', personnage);
@@ -86,7 +87,7 @@ begin
     end if;
     if v_pa < getparm_n(8) then
         code_retour := '<p>Erreur ! Pas assez de PA pour monter de niveau !';
-        perform release('f_carac_ameliore');
+        perform release('f_modif_carac', personnage);
         return code_retour;
     end if;
 
@@ -105,19 +106,21 @@ begin
     -- Reste la gestion des PX/Niveau/PA
     --------------------------------------------------
     -- On recharge les pv_max, ils ont pû être déjà mis à jour si amélioration de la constit
-    select into pv_max_actuel perso_pv_max from perso where perso_cod = personnage ;
+    select into pv_max_actuel perso_pv_max from perso where perso_cod = personnage;
     -- On maximalise si le perso est trop loin des standards
-    temp := round(floor(v_con/4));
-    gain_pv := lancer_des(1,temp);
+    temp := round(floor(v_con / 4));
+    gain_pv := lancer_des(1, temp);
     gain_pv := gain_pv + 1;
     pv_max_theorique := cast((2 * v_con + (v_niveau_actu - 1) * (v_con + 12) / 8) as integer);
     if pv_max_actuel + temp + 1 < pv_max_theorique then
-        gain_pv := max( gain_pv, temp );
+        gain_pv := max(gain_pv, temp);
     end if;
 
     update perso
-        set perso_pa = perso_pa - getparm_n(8), perso_niveau = perso_niveau + 1, perso_pv_max = pv_max_actuel + gain_pv
-        where perso_cod = personnage;
+    set perso_pa     = perso_pa - getparm_n(8),
+        perso_niveau = perso_niveau + 1,
+        perso_pv_max = pv_max_actuel + gain_pv
+    where perso_cod = personnage;
     v_niveau_actu := v_niveau_actu + 1;
 
     -- si le joueur à fait une amélioration de CONSTIT, il a aussi eu un gain de 3PV (voir f_carac_ameliore), pour l'affichage et les events on les ajoutes
@@ -140,7 +143,8 @@ begin
 
     perform release('f_modif_carac', personnage);
     return code_retour;
-end;$_$;
+end;
+$_$;
 
 
 ALTER FUNCTION public.f_passe_niveau(integer, integer) OWNER TO delain;
