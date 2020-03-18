@@ -461,7 +461,7 @@ begin
       v_dgm_int := floor(v_dgm);
       update perso set perso_pv = LEAST(perso_pv_max, perso_pv - v_dgm)
       where perso_cod = personnage;
-      code_retour := code_retour || '<br>Vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie. Sortez de ce garde-manger.<br> ';
+      code_retour := code_retour || '<br>Vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie. Liberez-vous de cette étreinte.<br> ';
       select into pv_actuel perso_pv from perso
       where perso_cod = personnage;
       if pv_actuel <= 0 then
