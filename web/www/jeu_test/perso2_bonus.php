@@ -66,7 +66,7 @@ for ($loop = 0; $loop < 2; $loop++) {
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $detail_bonus['tbonus_libc'] . ".png")) {
                 $img = '/../images/interface/bonus/' . $detail_bonus['tbonus_libc'] . '.png';
             } else {
-                $img = '/../images/interface/bonus/MALUS.png';
+                $img = '/../images/interface/bonus/BONUS.png';
             }
             $tab_bonus[$loop][$key]['img'] = $img;
         }
@@ -95,7 +95,7 @@ for ($loop = 0; $loop < 2; $loop++) {
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png")) {
                 $img = '/../images/interface/bonus/' . $carac . '.png';
             } else {
-                $img = "/../images/interface/bonus/MALUS.png";
+                $img = "/../images/interface/bonus/BONUS.png";
             }
             $bonus_carac[$loop][$key]['img'] = $img;
         }
