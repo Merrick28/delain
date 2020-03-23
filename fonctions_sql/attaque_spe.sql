@@ -95,6 +95,7 @@ declare
   decalage_dlt integer;          --Variable contenant le décalage de temps pour le balayage                                                                                                                                tempo integer;--integer pour le calcul de la fonction min du garde manger
   compt integer;                 --fourre tout
   num_comp_spe integer;          --code de la compétence pour vérifier que l'attaquant la possède
+  v_type_de_monstre integer ;    -- pour la compétence multi-tête, les cthulhu ont des tentacules
 
 begin
   code_retour := '';
@@ -118,9 +119,9 @@ begin
 
   /********************************************************************************/
   -- Récupération des données de l’arme de l’attaquant
-  select into comp_attaque, nb_des_attaque, valeur_des_attaque, bonus_attaque, nom_arme
-    pcomp_modificateur, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_nom_generique
-  from perso_competences, perso_objets, objets, objet_generique, objets_caracs
+  select into comp_attaque, nb_des_attaque, valeur_des_attaque, bonus_attaque, nom_arme, v_type_de_monstre
+    pcomp_modificateur, obj_des_degats, obj_val_des_degats, obj_bonus_degats, obj_nom_generique, case when perso_nom ilike '%cthulhu%' then 1 else 0 end
+  from perso, perso_competences, perso_objets, objets, objet_generique, objets_caracs
   where perobj_perso_cod = v_attaquant
         and perobj_equipe = 'O'
         and perobj_obj_cod = obj_cod
@@ -128,7 +129,8 @@ begin
         and gobj_tobj_cod = 1
         and gobj_obcar_cod = obcar_cod
         and gobj_comp_cod = pcomp_pcomp_cod
-        and pcomp_perso_cod = v_attaquant;
+        and pcomp_perso_cod = v_attaquant
+        and perso_cod = v_attaquant;
 
   if bonus_attaque is null then
     bonus_attaque := 0;
@@ -559,38 +561,44 @@ begin
           comp_attaque := 10;
         end if;
 
+        -- select perso_nom from perso where perso_nom ilike '%cthulhu%'
+        -- pour les monstres cthulhu, on change la tête par un tentacule !
+
+
         /* on détermine les variables des têtes, pour les textes, et pour les effets*/
-        tete := ''; --initialisation de variable
+        tete := CASE WHEN v_type_de_monstre=1 THEN 'Le ' ELSE 'La ' END ; --initialisation de variable
         effet := '';
         texte_evt := '';
         if compteur = 0 then
-          tete := 'La première ';
+          tete := tete || CASE WHEN v_type_de_monstre=1 THEN 'premier ' ELSE 'première ' END ;
         elsif compteur = 1 then
-          tete := 'La seconde ';
+          tete := tete || CASE WHEN v_type_de_monstre=1 THEN 'second ' ELSE 'seconde ' END ;
           effet := 'POI';
         elsif compteur = 2 then
-          tete := 'La troisième ';
+          tete := tete || 'troisième ';
         elsif compteur = 3 then
-          tete := 'La quatrième ';
+          tete := tete || 'quatrième ';
         elsif compteur = 4 then
-          tete := 'La cinquième ';
+          tete := tete || 'cinquième ';
           effet := 'ARME';
         elsif compteur = 5 then
-          tete := 'La sixième ';
+          tete := tete || 'sixième ';
           effet := 'ROUILLE';
         elsif compteur = 6 then
-          tete := 'La septième ';
+          tete := tete || 'septième ';
           effet := 'RECUL';
         elsif compteur = 7 then
-          tete := 'La huitième ';
+          tete := tete || 'huitième ';
           effet := 'POI';
         elsif compteur = 8 then
-          tete := 'La neuvième ';
+          tete := tete || 'neuvième ';
           effet := 'ARME';
         end if;
 
+        tete := tete || CASE WHEN v_type_de_monstre=1 THEN 'tentacule ' ELSE 'tête' END ; --initialisation de variable
+
         -- on commence à générer un code retour
-        code_retour := code_retour || tete || 'tête a attaqué ';
+        code_retour := code_retour || tete || ' a attaqué ';
 
         if ligne.perso_type_perso = 1 then
           code_retour := code_retour || 'l’aventurier ';
@@ -611,7 +619,7 @@ begin
         /* FIN   : attaque ratée sur échec critique               */
         elsif des < comp_attaque then
           /* DEBUT : attaque réussie, on va résoudre l’ensemble     */
-          code_retour := code_retour || 'Il n’a pas pu esquiver votre attaque, et la tête a plongé sur lui.<br>';
+          code_retour := code_retour || 'Il n’a pas pu esquiver votre attaque, et ' || (CASE WHEN  v_type_de_monstre=1 THEN 'le tentacule' ELSE 'la tête' END) || '  a plongé sur lui.<br>';
 
           /* DEBUT : aura de feu      */
           if v_type_arme != 2 then
@@ -668,7 +676,7 @@ begin
           /* FIN   : coup porté : cible morte      */
           else -- cible pas tuée
             /* DEBUT : coup porté : cible pas morte  */
-            texte_evt := tete || ' tête de [attaquant] a attaqué [cible], infligeant ' || trim(to_char(degats_portes, '9999')) || ' points de dégâts.';
+            texte_evt := tete || ' de [attaquant] a attaqué [cible], infligeant ' || trim(to_char(degats_portes, '9999')) || ' points de dégâts.';
 
             /*MAJ des PV */
             update perso set perso_pv = nouveau_pv_cible
