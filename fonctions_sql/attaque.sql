@@ -1599,7 +1599,10 @@ begin
     insert into action (act_tact_cod, act_perso1, act_perso2, act_donnee)
     values (1, v_attaquant, nv_cible, degats_effectues);
   end if;
-  if coalesce(v_vampire, 0) > 0 then
+
+  -- 2020-02-20 - Marlyza - Ajout d'un bonus de vapirisme on maximise aussi à 100% (=1) on ne peut pas gagner plus que ce que l'on prend.
+  v_vampire :=  LEAST( 1, coalesce(v_vampire, 0) + ( valeur_bonus(v_attaquant, 'VMP')::numeric / 100) );
+  if v_vampire > 0 then
     regen_vampire := floor(degats_effectues*v_vampire);
     diff_pv := pv_max_attaquant - pv_attaquant;
     if regen_vampire > diff_pv then

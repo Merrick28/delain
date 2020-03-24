@@ -459,20 +459,22 @@ begin
     if valeur_bonus(personnage, 'DGM') != 0 then
       v_dgm := valeur_bonus(personnage, 'DGM');
       v_dgm_int := floor(v_dgm);
-      update perso set perso_pv = perso_pv - v_dgm
+      update perso set perso_pv = LEAST(perso_pv_max, perso_pv - v_dgm)
       where perso_cod = personnage;
-      code_retour := code_retour || '<br>Vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie. Sortez de ce garde-manger.<br> ';
+      code_retour := code_retour || '<br>Vous êtes asphixié, vous perdez <b>' || trim(to_char(v_dgm_int,'99999')) || '</b> points de vie. ';
       select into pv_actuel perso_pv from perso
       where perso_cod = personnage;
       if pv_actuel <= 0 then
         perform ajoute_bonus(personnage, 'DGM', 0, v_dgm);
         temp_tue := tue_perso_final(personnage,personnage);
-        code_retour := code_retour || 'Vous êtes <b>mort !</b><br><br>';
-      else
+        code_retour := code_retour || '<br>Vous êtes <b>mort !</b><br>';
+      elsif v_niveau = 90 then  -- 90 c'est l'étage du garde-manger, si on est asphixié dans le garde-manger le malus s'agrave de DLT en DLT
         v_dgm := v_dgm + 10;
         perform ajoute_bonus(personnage, 'DGM', 2, v_dgm);
-        code_retour := code_retour || '<br>';
+        code_retour := code_retour || 'Sortez de ce garde-manger.<br>';
       end if;
+
+      code_retour := code_retour || '<br>';
     end if;
 
     /* poison- brûlure */
