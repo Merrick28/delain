@@ -120,11 +120,10 @@ $contenu_page .= '
 	</tr>
 	<tr>
 	<td colspan="' . $nb . '" class="reste_onglet">';
-$req_comp     = "select pcomp_modificateur from perso_competences 
-			where pcomp_perso_cod = $perso_cod 
-				and pcomp_pcomp_cod in (97,100,101);";
-$stmt         = $pdo->query($req_comp);
-if ($stmt->rowCount() != 0)
+
+
+$total_comp = ($perso->has_competence(97) || $perso->has_competence(100) || $perso->has_competence(101));
+if ($total_comp)
 {
     $controle = 1;
 }
