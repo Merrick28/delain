@@ -66,7 +66,7 @@ if ($erreur == 0)
 
 $template     = $twig->load('combat.twig');
 $options_twig = array(
-    'INCL_TAB_ATTAQUE' => $incl_tab_attaque,
+    //'INCL_TAB_ATTAQUE' => $incl_tab_attaque,
     'ARME_UTILISEE'    => $obj_nom,
     'COMP_COMBAT'      => $resultat_inc_competence_combat,
     'MODE'             => $mode,

@@ -169,8 +169,11 @@ if ($verif_auth)
         } // Si joueur
         else
         {
+            $allevt_oldmonstre = array();
+            $perso_monstre     = 0;
+            $tabnews           = array();
             if ($callapi->call(
-                API_URL . '/news?start_news=' . $start_news,
+                API_URL . '/news',
                 'GET'
             ))
             {
@@ -181,12 +184,13 @@ if ($verif_auth)
             }
             $news_cod = $tabNews['news'][0]['news_cod'];
             // Récupération du numéro du monstre actuel, s'il existe.
-            $pdo  = new bddpdo();
-            $req  = "select perso_cod from perso inner join perso_compte on pcompt_perso_cod = perso_cod
+            $pdo         = new bddpdo();
+            $req         = "select perso_cod from perso inner join perso_compte on pcompt_perso_cod = perso_cod
 				where pcompt_compt_cod = :compte and perso_type_perso = 2
 				order by pcompt_date_attachement desc limit 1";
-            $stmt = $pdo->prepare($req);
-            $stmt = $pdo->execute(array(":compte" => $compte_json['compt_cod']), $stmt);
+            $stmt        = $pdo->prepare($req);
+            $stmt        = $pdo->execute(array($compt_cod), $stmt);
+            $monstre_cod = 0;
             if ($result = $stmt->fetch())
             {
                 $monstre_cod = $result['perso_cod'];

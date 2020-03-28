@@ -104,7 +104,7 @@ if ($erreur == 0)
 
     $req    = "select count(recsort_cod) as nombre from recsort where recsort_perso_cod = :perso_cod ";
     $stmt   = $pdo->prepare($req);
-    $stmt   = $pdo->execute(array(":perso_cod", $perso_cod), $stmt);
+    $stmt   = $pdo->execute(array(":perso_cod" => $perso->perso_cod), $stmt);
     $result = $stmt->fetch();
 
     $nb_rec_utl = $result['nombre'];

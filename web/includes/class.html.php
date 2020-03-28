@@ -10,7 +10,7 @@ class html
     var $pdo;
     var $cache = array();
 
-    function html()
+    function __construct()
     {
         $this->pdo = new bddpdo();
     }

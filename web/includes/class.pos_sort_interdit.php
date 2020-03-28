@@ -82,7 +82,7 @@ class pos_sort_interdit
         }
     }
 
-    function is_sort_interdit($sort, $pos)
+    function is_sort_interdit($sort, $pos_cod)
     {
         $pdo  = new bddpdo;
         $req  = 'select sinterd_pos_cod, 
@@ -91,8 +91,8 @@ class pos_sort_interdit
           where sinterd_sort_cod = :sort and sinterd_pos_cod = :pos_cod';
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":sort"    => $sort,
-            ":pos_cod" => $pos->pos_cod
+                                  ":sort"    => $sort,
+                                  ":pos_cod" => $pos_cod
         ), $stmt);
         if($stmt->fetch())
         {

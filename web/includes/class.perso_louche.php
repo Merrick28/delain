@@ -102,7 +102,7 @@ class perso_louche
         $pdo    = new bddpdo;
         $req    = "select plouche_perso_cod  from perso_louche where plouche_perso_cod = :perso";
         $stmt   = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":perso" => $perso),$stmt);
+        $stmt   = $pdo->execute(array(":perso" => $perso_cod), $stmt);
         if (!$result = $stmt->fetch())
         {
             return false;

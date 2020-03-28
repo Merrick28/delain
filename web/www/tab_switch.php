@@ -59,6 +59,7 @@ function affiche_perso($perso_cod)
     // récupération énergie divine pour les familiers divins
     $barre_divine   = -1;
     $energie_divine = -1;
+    $dieu_perso     = array();
     if ($perso->perso_gmon_cod == 441)
     {
         $dieu_perso = new dieu_perso();

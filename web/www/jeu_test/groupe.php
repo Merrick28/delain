@@ -3,7 +3,8 @@ include "blocks/_header_page_jeu.php";
 $compte        = new compte;
 $compte        = $verif_connexion->compte;
 $admin_monstre = $compte->is_admin_monstre();
-$classmessage  = new message;
+include G_CHE . 'includes/message.php';
+$classmessage = new message;
 //
 //Contenu de la div de droite
 //

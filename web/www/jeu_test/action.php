@@ -1,6 +1,10 @@
 ﻿﻿<?php
 include "blocks/_header_page_jeu.php";
-define('APPEL', 1);
+if (!defined('APPEL'))
+{
+    define('APPEL', 1);
+}
+
 $perso = $verif_connexion->perso;
 
 /**
@@ -165,7 +169,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
 
             // Méthode de combat
             $inc_attaque_courante = $type_at;
-            $inc_verif_pa         = $pa;
+            $inc_verif_pa         = $perso->perso_pa;
 
             include('inc_competence_combat.php');
 

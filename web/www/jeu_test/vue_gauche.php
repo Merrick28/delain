@@ -1,6 +1,9 @@
 <?php
 ob_start();
-define("APPEL", 1);
+if (!defined('APPEL'))
+{
+    define('APPEL', 1);
+}
 // on cherche la position
 $req_etage = "select pos_etage,pos_cod,pos_x,pos_y,etage_affichage from perso_position,positions,etage ";
 $req_etage = $req_etage . "where ppos_perso_cod = $perso_cod ";

@@ -14,9 +14,9 @@ $req_bm_carac = "select corig_type_carac,
 	join bonus_type on tbonus_libc=corig_type_carac 
     where corig_perso_cod = :perso
 	group by corig_type_carac ";
-$stmt = $pdo->prepare($req_bm_carac);
-$stmt = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
-
+$stmt         = $pdo->prepare($req_bm_carac);
+$stmt         = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
+$bm_caracs    = array();
 while ($result = $stmt->fetch())
 {
     $bm_caracs[$result['corig_type_carac']] = [

@@ -9,7 +9,7 @@ class message
     public $enReponseA;
     public $guilde;
 
-    public function message()
+    public function __construct()
     {
         $this->corps         = '';
         $this->sujet         = '';

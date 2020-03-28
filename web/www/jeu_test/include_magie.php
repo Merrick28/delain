@@ -1,3 +1,7 @@
+<?php
+$sort_cod    = isset($sort_cod) ? $sort_cod : 0;
+$objsort_cod = isset($objsort_cod) ? $objsort_cod : 0;
+?>
 <form name="valide_sort" method="post" action="action.php">
     <input type="hidden" name="methode" value="magie">
     <input type="hidden" name="sort_cod" value="<?php echo $sort_cod; ?>">
@@ -68,16 +72,16 @@
                     &nbsp;&nbsp;<br><strong>Limiter aux:&nbsp;&nbsp;</strong>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="3" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Familiers <span
-                            id="ft-familier"></span></em>
+                                id="ft-familier"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="2" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Monstres <span
-                            id="ft-monstre"></span></em>
+                                id="ft-monstre"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="1" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Aventuriers <span
-                            id="ft-aventurier"></span></em>
+                                id="ft-aventurier"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="0" type="radio"
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Partisans <span
-                            id="ft-partisan"></span></em>
+                                id="ft-partisan"></span></em>
                     &nbsp;&nbsp;<input name="choix-sort-filtre-type" value="-1" type="radio" checked
                                        onChange="filtre_table_search('choix-sort');">&nbsp;<em>Sans limites</span></em>
                 </td>
