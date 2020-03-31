@@ -234,7 +234,12 @@ $stmt   = $pdo->query($req_id);
                             href="deposer_or.php">Déposer des brouzoufs (1 PA)</a>.
                 </td>
             </tr>
-            <?php if ($is_golem)
+            <?php if ($perso_type_perso!=2)
+            {
+            echo '<tr><td>Bilan des runes, composants, objets de quête, etc... &nbsp;: <a href="inventaire_persos.php">pour tous mes persos</a>. </td></tr>';
+
+            }
+            if ($is_golem)
             {
                 echo '<tr><td><a href="?methode=manger">Digérer tout ça ! (6 PA)</a></td></tr>';
             }
