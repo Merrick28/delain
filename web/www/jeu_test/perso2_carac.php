@@ -20,7 +20,7 @@ $bm_caracs    = array();
 while ($result = $stmt->fetch())
 {
     $bm_caracs[$result['corig_type_carac']] = [
-        "base"  => $$result['valeur_orig'],
+        "base"  => $result['valeur_orig'],
         "texte" => " : base " . $result['valeur_orig'] . ($result['corig_valeur'] > 0 ? " + bonus " : " - malus ")
                    . abs($result['corig_valeur'])
     ];
