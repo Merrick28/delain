@@ -48,7 +48,7 @@ begin
                 end loop;
 
         end loop;
-    if compt < 50
+    if compt > 50
     then
         return 'encore ' || trim(to_char(compt, 99999999));
     else
