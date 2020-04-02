@@ -11,6 +11,7 @@ for i in $(cat ./liste_etage); do
 select remplissage_table_distance_etage_offset($i,$START);
 EOF
     )
+    echo "Etage = " $i
     echo "Resultat = " $TEMPRESULT
     echo "Start = " $START
     START=$((START + 100))
