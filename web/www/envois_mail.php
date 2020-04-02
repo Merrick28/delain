@@ -97,9 +97,9 @@ Vous pouvez à tout moment choisir de ne plus recevoir ces courriels, ou d’en 
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":val" => $val), $stmt);
 
-        $req = 'update compte set compt_envoi_mail_dernier = now() where compt_cod = :val';
+        $req  = 'update compte set compt_envoi_mail_dernier = now() where compt_cod = :val';
         $stmt = $pdo->prepare($req);
-        $stmt = $pdo->execute(array(":val" => $val),stmt);
+        $stmt = $pdo->execute(array(":val" => $val), $stmt);
     }
     catch (Exception $e)
     {
