@@ -140,7 +140,7 @@ foreach ($result as $r){
     $perso_monnaies[$r["perso_cod"]][$r["obj_nom"]]["poids"] = $r["poids"] ;
 }
 
-$req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
+$req   = "SELECT tobj_libelle, perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids, count(*) as count 
             FROM perso_objets,objets,objet_generique,type_objet 
             WHERE  perobj_perso_cod in ($perso_cod_list)
                 AND perobj_identifie = 'O' 
@@ -148,16 +148,20 @@ $req   = "SELECT perobj_perso_cod as perso_cod, obj_nom, sum(obj_poids) as poids
                 AND obj_gobj_cod = gobj_cod 
                 AND gobj_tobj_cod = tobj_cod 
                 AND gobj_tobj_cod in (17, 18, 19, 20, 21, 22, 24, 39) 
-            GROUP BY obj_nom, perobj_perso_cod
-            ORDER BY obj_nom, perobj_perso_cod ";
+            GROUP BY tobj_libelle, obj_nom, perobj_perso_cod
+            ORDER BY tobj_libelle, obj_nom, perobj_perso_cod ";
 $stmt  = $pdo->prepare($req);
 $stmt  = $pdo->execute(array(), $stmt);
 $result  = $stmt->fetchAll();
 $divers = array() ;
+$divers_type = array() ;
 $perso_divers = array() ;
 $last = "" ;
 foreach ($result as $r){
-    if ($r["obj_nom"]!=$last) $divers[] = $r["obj_nom"] ;
+    if ($r["obj_nom"]!=$last) {
+        $divers[] = $r["obj_nom"] ;
+        $divers_type[$r["obj_nom"]] = $r["tobj_libelle"] ;
+    }
     $last = $r["obj_nom"] ;
     if (! isset($perso_divers[$r["perso_cod"]])) $perso_divers[$r["perso_cod"]] = array();
     $perso_divers[$r["perso_cod"]][$r["obj_nom"]]["count"] = $r["count"] ;
@@ -177,6 +181,7 @@ $options_twig = array(
     'COMPOS'         => $compos,
     'PERSO_COMPOS'   => $perso_compos,
     'DIVERS'         => $divers,
+    'DIVERS_TYPE'    => $divers_type,
     'PERSO_DIVERS'   => $perso_divers,
     'MONNAIES'       => $monnaies,
     'PERSO_MONNAIES' => $perso_monnaies,
