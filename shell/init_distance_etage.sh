@@ -4,7 +4,6 @@ source $(dirname $0)/env
 #IFS=$'\n'
 START=0
 for i in $(cat ./liste_etage); do
-  echo $i
   while [[ $TEMPRESULT != "termine" ]]; do
     TEMPRESULT=$(
       $psql -A -q -t -d delain -U ${USERNAME} <<EOF
@@ -14,7 +13,7 @@ EOF
     echo "Etage = " $i
     echo "Resultat = " $TEMPRESULT
     echo "Start = " $START
-    START=$((START + 100))
+    START=$((START + 500))
   done
   TEMPRESULT=encore
   START=0

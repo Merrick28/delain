@@ -12,8 +12,6 @@ declare
     compt           integer;
 
 begin
-    RAISE NOTICE 'Osset %', myoffset;
-
     perform create_partition_distance(etage);
     compt := 0;
     for ligne_position in select distinct(pos_cod) as pos_cod
