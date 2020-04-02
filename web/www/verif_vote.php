@@ -181,41 +181,63 @@ if (!$result = $stmt->fetch())
         $GainXp  = 1 * $result3['vote_xp_gain_xp'];
         echo 'gain: ' . $GainXp;
         // pour chacun des perso du comptes, on rajoute  l'xp gagné
-
-        $stmt4 = $pdo->execute(array(":compte" => $compteCod), $stmt4);
-        while ($result4 = $stmt4->fetch())
+        if ($GainXp > 0)
         {
-            echo " Perso={$result4['pcompt_perso_cod']} ";
 
-            $codPerso  = $result4['pcompt_perso_cod'];
-            $tempperso = new perso;
-            $tempperso->charge($codPerso);
-            $tempperso->perso_px = $tempperso->perso_px + $GainXp;
-            $tempperso->stocke();
-            unset($tempperso);
-
-
-            // et on cherche s'il y a un fafa rattaché, si oui, on ajoute aussi de l'xp! Parce qu'on est sympas ^^
-            $stmt5 = $pdo->execute(array(":perso" => $codPerso), $stmt5);
-
-
-            if ($result5 = $stmt5->fetch())
+            $stmt4 = $pdo->execute(array(":compte" => $compteCod), $stmt4);
+            while ($result4 = $stmt4->fetch())
             {
-                echo " Familier={$result5['pfam_familier_cod']} ";
+                echo " Perso={$result4['pcompt_perso_cod']} ";
+
+                $codPerso  = $result4['pcompt_perso_cod'];
                 $tempperso = new perso;
-                $tempperso->charge($result5['pfam_familier_cod']);
+                $tempperso->charge($codPerso);
                 $tempperso->perso_px = $tempperso->perso_px + $GainXp;
                 $tempperso->stocke();
                 unset($tempperso);
 
+                $ligne_evt = new ligne_evt;
+                $ligne_evt->levt_tevt_cod = 18 ;
+                $ligne_evt->levt_lu = 'N';
+                $ligne_evt->levt_visible = 'O';
+                $ligne_evt->levt_perso_cod1 = $codPerso   ;
+                $ligne_evt->levt_cible = $codPerso ;
+                $ligne_evt->levt_texte = "Grace à ses contributions pour l'essor de Delain, [perso_cod1] a reçu {$GainXp} px bien mérité(s).";
+                $ligne_evt->stocke(true);		// Nouvel évènement
+
+
+                // et on cherche s'il y a un fafa rattaché, si oui, on ajoute aussi de l'xp! Parce qu'on est sympas ^^
+                $stmt5 = $pdo->execute(array(":perso" => $codPerso), $stmt5);
+
+
+                if ($result5 = $stmt5->fetch())
+                {
+                    echo " Familier={$result5['pfam_familier_cod']} ";
+                    $tempperso = new perso;
+                    $tempperso->charge($result5['pfam_familier_cod']);
+                    $tempperso->perso_px = $tempperso->perso_px + $GainXp;
+                    $tempperso->stocke();
+                    unset($tempperso);
+
+                    $ligne_evt = new ligne_evt;
+                    $ligne_evt->levt_tevt_cod = 18 ;
+                    $ligne_evt->levt_lu = 'N';
+                    $ligne_evt->levt_visible = 'O';
+                    $ligne_evt->levt_perso_cod1 = $result5['pfam_familier_cod']   ;
+                    $ligne_evt->levt_cible = $result5['pfam_familier_cod'] ;
+                    $ligne_evt->levt_texte = "Grace à ses contributions pour l'essor de Delain, [perso_cod1] a reçu {$GainXp} px bien mérité(s).";
+                    $ligne_evt->stocke(true);		// Nouvel évènement
+                }
+
+
             }
 
+            // une fois la mise a jour faite, on met a jour compte_vote
+            $stmt6 = $pdo->execute(array(":gain"   => $GainXp,
+                ":compte" => $compteCod), $stmt6);
 
         }
 
-        // une fois la mise a jour faite, on met a jour compte_vote
-        $stmt6 = $pdo->execute(array(":gain"   => $GainXp,
-                                     ":compte" => $compteCod), $stmt6);
     }
 
 }
