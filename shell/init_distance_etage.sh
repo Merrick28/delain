@@ -17,5 +17,6 @@ EOF
     START=$((START + 200))
   done
   TEMPRESULT=encore
+  START=0
 
 done
