@@ -14,7 +14,7 @@ EOF
     echo "Etage = " $i
     echo "Resultat = " $TEMPRESULT
     echo "Start = " $START
-    START=$((START + 100))
+    START=$((START + 200))
   done
   TEMPRESULT=encore
 

@@ -12,6 +12,7 @@ declare
     compt           integer;
 
 begin
+    RAISE NOTICE 'Osset %', myoffset;
 
     perform create_partition_distance(etage);
     compt := 0;
@@ -19,7 +20,7 @@ begin
                           from positions
                           where pos_etage = etage
                           order by pos_cod
-                          limit 100
+                          limit 200
                           offset
                           myoffset
         loop
@@ -49,7 +50,7 @@ begin
         end loop;
     if compt < 50
     then
-        return 'encore';
+        return 'encore ' || trim(to_char(compt, 99999999));
     else
         return 'termine';
     end if;
