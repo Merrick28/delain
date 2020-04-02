@@ -51,7 +51,7 @@ foreach ($compte as $key => $val)
             inner join perso on perso_cod = menv_perso_cod
             where menv_compt_cod = :val order by menv_perso_cod, menv_date';
     $stmt         = $pdo->prepare($req);
-    $stmt         = $pdo - execute(array(":val" => $val), $stmt);
+    $stmt         = $pdo->execute(array(":val" => $val), $stmt);
 
 
     while ($result = $stmt->fetch())
