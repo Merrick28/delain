@@ -150,7 +150,8 @@ if (!$result = $stmt->fetch())
 
     $ReqSelectFafaCod = "select pfam_familier_cod from public.perso 
                                     inner join public.perso_familier ON public.perso_familier.pfam_perso_cod = public.perso.perso_cod
-                                    where public.perso_familier.pfam_perso_cod = :perso";
+                                    inner join public.perso fam ON fam.perso_cod = public.perso_familier.pfam_familier_cod
+                                    where public.perso_familier.pfam_perso_cod = :perso and fam.perso_actif='O' ";
     $stmt5            = $pdo->prepare($ReqSelectFafaCod);
 
     $ReqUpdateCompteVote = "UPDATE public.compte_vote
@@ -165,13 +166,14 @@ if (!$result = $stmt->fetch())
 
         $moisAnnee = date('Y-m', mktime(12, 0, 0, date("m") - 1, 1, date("Y")));
         // il faut récuperer dans compte_vote_ip pour le nombre de vote
-
+        echo "<br>Check : $moisAnnee * $compteCod ";
         $stmt2   = $pdo->execute(array(
                                      ":mois"   => $moisAnnee,
                                      ":compte" => $compteCod
                                  ), $stmt2);
         $result2 = $stmt2->fetch();
         $nbrVote = $result2['nbrvote'];
+        echo "Nbr de Vote : $nbrVote ";
 
         // il n'y a plus qu'a récuperer l'xp a faire gagner par perso et les perso puis ajouter l'xp gagné
         $stmt3   = $pdo->execute(array(":vote" => $nbrVote), $stmt3);
@@ -183,6 +185,8 @@ if (!$result = $stmt->fetch())
         $stmt4 = $pdo->execute(array(":compte" => $compteCod), $stmt4);
         while ($result4 = $stmt4->fetch())
         {
+            echo " Perso={$result4['pcompt_perso_cod']} ";
+
             $codPerso  = $result4['pcompt_perso_cod'];
             $tempperso = new perso;
             $tempperso->charge($codPerso);
@@ -195,8 +199,9 @@ if (!$result = $stmt->fetch())
             $stmt5 = $pdo->execute(array(":perso" => $codPerso), $stmt5);
 
 
-            if ($result5 = $stmt->fetch())
+            if ($result5 = $stmt5->fetch())
             {
+                echo " Familier={$result5['pfam_familier_cod']} ";
                 $tempperso = new perso;
                 $tempperso->charge($result5['pfam_familier_cod']);
                 $tempperso->perso_px = $tempperso->perso_px + $GainXp;

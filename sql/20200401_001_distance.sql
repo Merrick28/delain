@@ -6,7 +6,7 @@ create table distance
     distance_etage    integer,
     distance_distance integer
 )
-    partition by RANGE (distance_etage);
+    partition by list (distance_etage);
 
 comment on table distance is 'Distance entre deux positions (table partitionnée)';
 
