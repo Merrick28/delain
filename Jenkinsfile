@@ -77,6 +77,9 @@ pipeline {
             sh 'if docker ps |grep webtu > /dev/null; then docker rm -f webtu; fi'
             sh 'if docker ps |grep delain_dbtu > /dev/null; then docker rm -f delain_dbtu; fi'
             sh 'docker system prune -f'
+            slackSend channel: '#general',
+               color: 'green',
+               message: "Livraison de ${currentBuild.fullDisplayName} termine."
         }
         failure {
                      mail to: 'stephane.dewitte@gmail.com',
