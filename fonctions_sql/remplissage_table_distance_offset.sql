@@ -1,5 +1,4 @@
-create or replace procedure remplissage_table_distance_etage(integer)
-    RETURNS text
+create function remplissage_table_distance_etage(integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
 $_$
@@ -9,15 +8,22 @@ declare
     ligne_position2 record;
     temp            integer;
     etage alias for $1;
+    myoffset alias for $2;
+    compt           integer;
 
 begin
 
     perform create_partition_distance(etage);
-    commit;
+    compt := 0;
     for ligne_position in select distinct(pos_cod) as pos_cod
                           from positions
                           where pos_etage = etage
+                          order by pos_cod
+                          limit 100
+                          offset
+                          myoffset
         loop
+            compt := compt + 1;
             for ligne_position2 in
                 select distinct(pos_cod) as pos_cod
                 from positions
@@ -42,8 +48,13 @@ begin
             commit;
 
         end loop;
+    if compt < 50
+    then
+        return 'encore';
+    else
+        return 'termine';
+    end if;
 
-    return 'termine';
 end;
 
 
