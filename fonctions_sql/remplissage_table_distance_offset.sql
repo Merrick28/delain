@@ -20,7 +20,7 @@ begin
                           from positions
                           where pos_etage = etage
                           order by pos_cod
-                          limit 200
+                          limit 100
                           offset
                           myoffset
         loop
