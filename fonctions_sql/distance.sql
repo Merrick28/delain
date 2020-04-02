@@ -3,6 +3,7 @@
 --
 
 CREATE or replace FUNCTION public.distance(integer, integer) RETURNS integer
+    IMMUTABLE
     LANGUAGE plpgsql
 AS
 $_$/*****************************************************************/
@@ -43,14 +44,6 @@ begin
         return 99999;
     end if;
 
-    select into temp_distance distance_distance
-    from distance
-    where distance_etage = e1
-      and distance_pos1 = position1
-      and distance_pos2 = position2;
-    if found then
-        return temp_distance;
-    end if;
 
     select into x2,y2,e2 pos_x, pos_y, pos_etage
     from positions
@@ -71,15 +64,7 @@ begin
         end if; -- if distance_x >= distance_y
     end if;
     -- if e1 != e2;
-    /*perform create_partition_distance(e1);
-    insert into distance
-    (distance_pos1, distance_pos2, distance_etage, distance_distance)
-    values
-    (position1,position2,e1,code_retour);
-    insert into distance
-    (distance_pos1, distance_pos2, distance_etage, distance_distance)
-    values
-    (position2,position1,e1,code_retour);*/
+
 
     return code_retour;
 end ;
