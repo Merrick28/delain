@@ -12,6 +12,7 @@ select remplissage_table_distance_etage_offset($i,$START);
 EOF
     )
     echo "Resultat = " $TEMPRESULT
+    echo "Start = " $START
     START=$((START + 100))
   done
   TEMPRESULT=encore
