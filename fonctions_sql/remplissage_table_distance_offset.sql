@@ -18,7 +18,7 @@ begin
                           from positions
                           where pos_etage = etage
                           order by pos_cod
-                          limit 100
+                          limit 50
                           offset
                           myoffset
         loop
@@ -46,7 +46,7 @@ begin
                 end loop;
 
         end loop;
-    if compt < 50
+    if compt < 40
     then
         return 'termine';
     else
