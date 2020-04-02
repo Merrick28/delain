@@ -1,4 +1,4 @@
-create function remplissage_table_distance_etage(integer, integer) RETURNS text
+create or replace function remplissage_table_distance_etage_offset(integer, integer) RETURNS text
     LANGUAGE plpgsql
 AS
 $_$
@@ -45,7 +45,6 @@ begin
                     end if;
 
                 end loop;
-            commit;
 
         end loop;
     if compt < 50
@@ -61,4 +60,4 @@ end;
 $_$;
 
 
-ALTER FUNCTION public.remplissage_table_distance_etage(integer) OWNER TO delain;
+ALTER FUNCTION public.remplissage_table_distance_etage_offset(integer,integer) OWNER TO delain;
