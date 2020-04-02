@@ -187,11 +187,14 @@
      {% if DIVERS|length > 0 %}
      <tr>
          <td colspan="{{ NBCOL }}" class="titre">
-             <div class="titre">Parchos, Peaux, Potions, Pierres, Plantes, Minerai</div>
+             <div class="titre">Parchos, Peaux, Potions, Pierres, Plantes, Minerais</div>
          </td>
      </tr>
 
+     {%  set type_obj = "" %}
      {% for r in DIVERS  %}
+         {% if type_obj != DIVERS_TYPE[r] %}<tr> <td colspan="{{ NBCOL }}"><strong style="font-size: 10px;">{{ DIVERS_TYPE[r] }}</strong></td></tr>{% endif %}
+         {%  set type_obj =  DIVERS_TYPE[r] %}
          <tr>
              <td class="soustitre2">{{ r }}</td>
              {%  set total = 0 %}
