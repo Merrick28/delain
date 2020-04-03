@@ -62,12 +62,12 @@ function prepare_envoi($req, $texte_comp)
 
     while ($result = $stmt->fetch())
     {
-        $req2 = 'select compt_mail,compt_cod
+        $req2  = 'select compt_mail,compt_cod
 			from compte,perso_compte
 			where pcompt_perso_cod = :perso
 			and pcompt_compt_cod = compt_cod ';
         $stmt2 = $pdo->prepare($req2);
-        $stmt2 = $pdo->execute(array(":perso" => $result['perso_cod']),$stmt);
+        $stmt2 = $pdo->execute(array(":perso" => $result['perso_cod']), $stmt2);
 
 
         if (!$result2 = $stmt2->fetch())
