@@ -1,0 +1,240 @@
+{% extends 'template_jeu.twig' %}
+
+{% block contenu_droite %}
+
+<script src="/scripts/filtres.js?v{{ __VERSION }}" type="text/javascript"></script>
+
+{% set NBCOL=4 %}
+{% set ROW=0 %}
+
+ <table width="100%" cellspacing="2" cellpadding="2">
+     <tr>
+     <td class="titre" style="width:{{ 200/8 }}%;">Objets</td>
+     <td class="titre" style="width:{{ 50/8 }}%;">TOTAL</td>
+     <td class="titre" style="width:{{ 50/8 }}%;">Poids</td>
+     <td class="titre" style="width:{{ 500/8 }}%; text-align:left;">Persos <em style="font-size: 9px;">(cliquer sur la ligne pour montrer/cacher les détails)</em></td>
+     </tr>
+
+     <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+
+
+
+     {#============================ RUNES ==================================#}
+     {% if RUNES|length > 0 %}
+     <tr>
+         <td colspan="{{ NBCOL }}" class="titre">
+             <div class="titre">Runes</div>
+         </td>
+     </tr>
+
+     {% for r in RUNES  %}
+     {% set ROW=ROW + 1 %}
+     <tr id="row-{{ ROW }}" onclick="toggle_details(event, 'detail-{{ ROW }}');">
+         <td class="soustitre2">{{ r }}</td>
+         {%  set perso_liste = "" %}
+         {%  set nb_perso = 0 %}
+         {%  set total = 0 %}
+         {%  set total_poids = 0 %}
+         {%  set total4 = 0 %}
+         {%  set total4_poids = 0 %}
+         {% for p in PERSOS  %}
+             {% if  PERSO_RUNES[p.perso_cod][r].count >0 %}
+                 {%  set nb_perso = nb_perso + 1 %}
+                 {%  set perso_liste = perso_liste ~  PERSO_RUNES[p.perso_cod][r].count ~ " - " ~ p.perso_nom ~ "<br>" %}
+                 {%  set total = total + PERSO_RUNES[p.perso_cod][r].count  %}
+                 {%  set total_poids = total_poids + PERSO_RUNES[p.perso_cod][r].poids  %}
+             {% endif %}
+         {% endfor %}
+
+         <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong></td>
+         <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
+         <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
+     </tr>
+
+     <tr id="detail-{{ ROW }}" style="display:none">
+         <td colspan="3"></td>
+         <td class="soustitre2">{{ perso_liste|raw }}</td>
+     </tr>
+
+     {% endfor %}
+
+     <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+     {% endif %}
+
+     {#============================ QUETES ==================================#}
+     {% if QUETES|length > 0 %}
+     <tr>
+         <td colspan="{{ NBCOL }}" class="titre">
+             <div class="titre">Objets de quête</div>
+         </td>
+     </tr>
+
+     {% for r in QUETES  %}
+         {% set ROW=ROW + 1 %}
+         <tr id="row-{{ ROW }}" onclick="toggle_details(event, 'detail-{{ ROW }}');">
+             <td class="soustitre2">{{ r }}</td>
+             {%  set perso_liste = "" %}
+             {%  set nb_perso = 0 %}
+             {%  set total = 0 %}
+             {%  set total_poids = 0 %}
+             {%  set total4 = 0 %}
+             {%  set total4_poids = 0 %}
+             {% for p in PERSOS  %}
+                 {% if  PERSO_QUETES[p.perso_cod][r].count >0 %}
+                     {%  set nb_perso = nb_perso + 1 %}
+                     {%  set perso_liste = perso_liste ~  PERSO_QUETES[p.perso_cod][r].count ~ " - " ~ p.perso_nom ~ "<br>" %}
+                     {%  set total = total + PERSO_QUETES[p.perso_cod][r].count  %}
+                     {%  set total_poids = total_poids + PERSO_QUETES[p.perso_cod][r].poids  %}
+                 {% endif %}
+             {% endfor %}
+
+             <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong></td>
+             <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
+             <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
+         </tr>
+
+         <tr id="detail-{{ ROW }}" style="display:none">
+             <td colspan="3"></td>
+             <td class="soustitre2">{{ perso_liste|raw }}</td>
+         </tr>
+
+     {% endfor %}
+
+         <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+     {% endif %}
+
+     {#============================ COMPOS ==================================#}
+     {% if COMPOS|length > 0 %}
+     <tr>
+         <td colspan="{{ NBCOL }}" class="titre">
+             <div class="titre">Composants d'alchimie</div>
+         </td>
+     </tr>
+
+     {% for r in COMPOS  %}
+         {% set ROW=ROW + 1 %}
+         <tr id="row-{{ ROW }}" onclick="toggle_details(event, 'detail-{{ ROW }}');">
+             <td class="soustitre2">{{ r }}</td>
+             {%  set perso_liste = "" %}
+             {%  set nb_perso = 0 %}
+             {%  set total = 0 %}
+             {%  set total_poids = 0 %}
+             {%  set total4 = 0 %}
+             {%  set total4_poids = 0 %}
+             {% for p in PERSOS  %}
+                 {% if  PERSO_COMPOS[p.perso_cod][r].count >0 %}
+                     {%  set nb_perso = nb_perso + 1 %}
+                     {%  set perso_liste = perso_liste ~  PERSO_COMPOS[p.perso_cod][r].count ~ " - " ~ p.perso_nom ~ "<br>" %}
+                     {%  set total = total + PERSO_COMPOS[p.perso_cod][r].count  %}
+                     {%  set total_poids = total_poids + PERSO_COMPOS[p.perso_cod][r].poids  %}
+                 {% endif %}
+             {% endfor %}
+
+             <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong></td>
+             <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
+             <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
+         </tr>
+
+         <tr id="detail-{{ ROW }}" style="display:none">
+             <td colspan="3"></td>
+             <td class="soustitre2">{{ perso_liste|raw }}</td>
+         </tr>
+
+     {% endfor %}
+
+         <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+     {% endif %}
+
+     {#============================ Divers ==================================#}
+     {% if DIVERS|length > 0 %}
+     <tr>
+         <td colspan="{{ NBCOL }}" class="titre">
+             <div class="titre">Parchos, Peaux, Potions, Pierres, Plantes, Minerais</div>
+         </td>
+     </tr>
+
+     {%  set type_obj = "" %}
+     {% for r in DIVERS  %}
+         {% if type_obj != DIVERS_TYPE[r] %}<tr> <td colspan="{{ NBCOL }}"><strong style="font-size: 10px;">{{ DIVERS_TYPE[r] }}</strong></td></tr>{% endif %}
+         {%  set type_obj =  DIVERS_TYPE[r] %}
+         {% set ROW=ROW + 1 %}
+         <tr id="row-{{ ROW }}" onclick="toggle_details(event, 'detail-{{ ROW }}');">
+             <td class="soustitre2">{{ r }}</td>
+             {%  set perso_liste = "" %}
+             {%  set nb_perso = 0 %}
+             {%  set total = 0 %}
+             {%  set total_poids = 0 %}
+             {%  set total4 = 0 %}
+             {%  set total4_poids = 0 %}
+             {% for p in PERSOS  %}
+                 {% if  PERSO_DIVERS[p.perso_cod][r].count >0 %}
+                     {%  set nb_perso = nb_perso + 1 %}
+                     {%  set perso_liste = perso_liste ~  PERSO_DIVERS[p.perso_cod][r].count ~ " - " ~ p.perso_nom ~ "<br>" %}
+                     {%  set total = total + PERSO_DIVERS[p.perso_cod][r].count  %}
+                     {%  set total_poids = total_poids + PERSO_DIVERS[p.perso_cod][r].poids  %}
+                 {% endif %}
+             {% endfor %}
+
+             <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong></td>
+             <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
+             <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
+         </tr>
+
+         <tr id="detail-{{ ROW }}" style="display:none">
+             <td colspan="3"></td>
+             <td class="soustitre2">{{ perso_liste|raw }}</td>
+         </tr>
+
+     {% endfor %}
+
+         <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+     {% endif %}
+
+     {#============================ Echange ==================================#}
+     {% if MONNAIES|length > 0 %}
+     <tr>
+         <td colspan="{{ NBCOL }}" class="titre">
+             <div class="titre">Monnaie d'échange</div>
+         </td>
+     </tr>
+
+     {% for r in MONNAIES  %}
+         {% set ROW=ROW + 1 %}
+         <tr id="row-{{ ROW }}" onclick="toggle_details(event, 'detail-{{ ROW }}');">
+             <td class="soustitre2">{{ r }}</td>
+             {%  set perso_liste = "" %}
+             {%  set nb_perso = 0 %}
+             {%  set total = 0 %}
+             {%  set total_poids = 0 %}
+             {%  set total4 = 0 %}
+             {%  set total4_poids = 0 %}
+             {% for p in PERSOS  %}
+                 {% if  PERSO_MONNAIES[p.perso_cod][r].count >0 %}
+                     {%  set nb_perso = nb_perso + 1 %}
+                     {%  set perso_liste = perso_liste ~  PERSO_MONNAIES[p.perso_cod][r].count ~ " - " ~ p.perso_nom ~ "<br>" %}
+                     {%  set total = total + PERSO_MONNAIES[p.perso_cod][r].count  %}
+                     {%  set total_poids = total_poids + PERSO_MONNAIES[p.perso_cod][r].poids  %}
+                 {% endif %}
+             {% endfor %}
+
+             <td class="soustitre2" style="text-align:right;"><strong>{{ total }}</strong></td>
+             <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
+             <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
+         </tr>
+
+         <tr id="detail-{{ ROW }}" style="display:none">
+             <td colspan="3"></td>
+             <td class="soustitre2">{{ perso_liste|raw }}</td>
+         </tr>
+
+     {% endfor %}
+
+         <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
+     {% endif %}
+
+ </table>
+
+
+
+
+{% endblock %}

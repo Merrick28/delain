@@ -56,7 +56,7 @@
 
     ?>
 
-    <script src="/scripts/filtres.js?v20190416" type="text/javascript"></script>
+    <script src="/scripts/filtres.js?v<?php echo $__VERSION; ?>" type="text/javascript"></script>
 
     <p>Choisissez la cible du sort :<br>
         <table id="choix-sort">

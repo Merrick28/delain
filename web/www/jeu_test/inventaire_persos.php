@@ -3,10 +3,9 @@ include "blocks/_header_page_jeu.php";
 
 include_once "verif_connexion.php";
 ob_start();
-include "../includes/fonctions.php";
-$parm = new parametres();
+
 //
-//log_debug('Debut de page inventaire');
+//log_debug('Debut de page inventaire persos');
 //
 
 $pdo   = new bddpdo;
@@ -30,7 +29,7 @@ $req   = "SELECT perso_cod, perso_type_perso, perso_pnj, ordre, perso_nom, perso
                     join perso pp on pp.perso_cod=pfam_perso_cod 
                     where pf.perso_actif='O' 
           
-                ) as p LEFT JOIN perso_banque ON pbank_perso_cod=perso_cod ORDER BY perso_pnj, perso_type_perso, ordre, perso_type_perso ";
+                ) as p LEFT JOIN perso_banque ON pbank_perso_cod=perso_cod ORDER BY perso_pnj, perso_type_perso, ordre ";
 $stmt  = $pdo->prepare($req);
 $stmt  = $pdo->execute(array(":compt_cod" => $compt_cod), $stmt);
 $persos  = $stmt->fetchAll();
