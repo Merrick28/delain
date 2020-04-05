@@ -6,13 +6,19 @@ ob_start();
 
 $pdo = new bddpdo;
 
-$req = 'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut > 0 and pgroupe_statut > 0 AND pgroupe_montre_matos = 1 ';
+$req = 'select pgroupe_groupe_cod, is_visible_groupe(pgroupe_perso_cod,:perso_cod) as is_visible from groupe_perso where pgroupe_perso_cod = :perso_cod and pgroupe_statut > 0 and pgroupe_statut > 0 AND pgroupe_montre_matos = 1 ';
 $stmt = $pdo->prepare($req);
 $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
 
 if (!$result = $stmt->fetch()) {
 
     $contenu_page = 'Vous n’appartenez à aucune coterie ou vous ne montrez pas votre matériel.';
+    $contenu_page .= '<hr /><p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
+    include "blocks/_footer_page_jeu.php";
+
+} else if ($result["is_visible"] != "1") {
+
+    $contenu_page = 'Vous êtes trop éloigné du chef de groupe pour avoir les informations.';
     $contenu_page .= '<hr /><p style="text-align:center;"><a href="groupe.php">Retour à la gestion de la coterie</a></p>';
     include "blocks/_footer_page_jeu.php";
 
