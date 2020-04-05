@@ -45,8 +45,13 @@ switch ($methode) {
         $req = "insert into perso_titre values(default,$vperso,e'$ancienne_guilde',now(),'2')";
         $db->query($req);
         $db->next_record();
-        $req = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $vperso ";
-        $res = pg_exec($dbconnect, $req);
+
+        $pdo   = new bddpdo;
+        $req = "delete from guilde_perso where pguilde_guilde_cod =:pguilde_guilde_cod and pguilde_perso_cod =:pguilde_perso_cod ";
+        //$res = pg_exec($dbconnect, $req);
+        $stmt  = $pdo->prepare($req);
+        $res  = $pdo->execute(array(":pguilde_guilde_cod" => $num_guilde, ":pguilde_perso_cod" => $vperso), $stmt);
+
         if (!$res) {
             echo("<p>Une erreur est survenue !");
         } else {
