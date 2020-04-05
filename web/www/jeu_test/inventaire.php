@@ -288,7 +288,7 @@ $stmt   = $pdo->query($req_id);
 
                     while ($result = $stmt->fetch())
                     {
-                        $poid_catégorie+= $result["obj_poids"]>0 ? $db->f("obj_poids") : 0 ;
+                        $poid_catégorie += $result["obj_poids"] > 0 ? $result["obj_poids"] : 0;
 
                         $examiner = "";
                         if ($result['gobj_url'] != null)
@@ -403,7 +403,7 @@ $stmt   = $pdo->query($req_id);
                 <?php
                 while ($result = $stmt->fetch())
                 {
-                    $poid_catégorie+= $result['obj_poids']>0 ? $db->f("obj_poids") : 0 ;
+                    $poid_catégorie += $result['obj_poids'] > 0 ? $result["obj_poids"] : 0;
 
                     //$tab_matos = pg_fetch_array($res_matos,$cpt);
                     echo("<tr>");
@@ -487,7 +487,7 @@ $stmt   = $pdo->query($req_id);
                     $potion_buvable =
                         ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
                     if ($result['obon_cod'] >= 0)
-                    $poid_catégorie+= $result['obj_poids']>0 ? $result['obj_poids'<) : 0 ;
+                        $poid_catégorie += $result['obj_poids'] > 0 ? $result['obj_poids'] < 0 : 0;
 
 
                     if ($result['obon_cod'] >= 0)
