@@ -12,7 +12,7 @@
      <td class="titre" style="width:{{ 200/8 }}%;">Objets</td>
      <td class="titre" style="width:{{ 50/8 }}%;">TOTAL</td>
      <td class="titre" style="width:{{ 50/8 }}%;">Poids</td>
-     <td class="titre" style="width:{{ 500/8 }}%; text-align:left;">Persos <em style="font-size: 9px;">(cliquer sur la ligne pour montrer/cacher les détails)</em></td>
+     <td class="titre" style="width:{{ 500/8 }}%; text-align:left;">Persos {#<em style="font-size: 9px;">(cliquer sur la ligne pour montrer/cacher les détails)</em>#}</td>
      </tr>
 
      <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
@@ -50,11 +50,12 @@
          <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
          <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
      </tr>
-
+{#
      <tr id="detail-{{ ROW }}" style="display:none">
          <td colspan="3"></td>
          <td class="soustitre2">{{ perso_liste|raw }}</td>
      </tr>
+ #}
 
      {% endfor %}
 
@@ -92,12 +93,12 @@
              <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
              <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
          </tr>
-
+{#
          <tr id="detail-{{ ROW }}" style="display:none">
              <td colspan="3"></td>
              <td class="soustitre2">{{ perso_liste|raw }}</td>
          </tr>
-
+#}
      {% endfor %}
 
          <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
@@ -134,12 +135,12 @@
              <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
              <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
          </tr>
-
+{#
          <tr id="detail-{{ ROW }}" style="display:none">
              <td colspan="3"></td>
              <td class="soustitre2">{{ perso_liste|raw }}</td>
          </tr>
-
+#}
      {% endfor %}
 
          <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
@@ -179,12 +180,12 @@
              <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
              <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
          </tr>
-
+{#
          <tr id="detail-{{ ROW }}" style="display:none">
              <td colspan="3"></td>
              <td class="soustitre2">{{ perso_liste|raw }}</td>
          </tr>
-
+#}
      {% endfor %}
 
          <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
@@ -221,12 +222,12 @@
              <td class="soustitre2" style="text-align:right;">{{ total_poids }} kg</td>
              <td class="soustitre2" style="text-align:left;">{{ nb_perso }} perso(s)</td>
          </tr>
-
+{#
          <tr id="detail-{{ ROW }}" style="display:none">
              <td colspan="3"></td>
              <td class="soustitre2">{{ perso_liste|raw }}</td>
          </tr>
-
+#}
      {% endfor %}
 
          <tr><td colspan="{{ NBCOL }}" style="height:5px;"></td></tr>
