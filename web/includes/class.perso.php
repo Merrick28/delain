@@ -2097,10 +2097,10 @@ class perso
         return $result['resultat'];
     }
 
-    public function regle_groupe($pa, $pv, $dlt, $bonus, $messages, $messagemort, $champions)
+    public function regle_groupe($pa, $pv, $dlt, $bonus, $matos, $messages, $messagemort, $champions)
     {
         $pdo    = new bddpdo();
-        $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:messages,:messagemort,:champions) as resultat";
+        $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:matos,:messages,:messagemort,:champions) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
                                     ":perso"       => $this->perso_cod,
@@ -2108,6 +2108,7 @@ class perso
                                     ":pv"          => $pv,
                                     ":dlt"         => $dlt,
                                     ":bonus"       => $bonus,
+                                    ":matos"       => $matos,
                                     ":messages"    => $messages,
                                     ":messagemort" => $messagemort,
                                     ":champions"   => $champions), $stmt);

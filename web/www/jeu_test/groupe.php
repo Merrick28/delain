@@ -110,6 +110,8 @@ switch ($methode)
                     if ($participe_champions)
                         $contenu_page .= '<a href="groupe_champions.php">Voir les champions !</a><br>';
 
+                    $contenu_page .= '<a href="groupe_inventaire.php">Voir le matériel de la coterie.</a><br>';
+
                     $contenu_page .= '<hr>';
                     if (!$is_visible)
                         $contenu_page .= 'Vous êtes trop éloigné du chef de groupe pour avoir les informations.<br>';
@@ -417,8 +419,8 @@ switch ($methode)
         // se contente d’afficher le formulaire qui va bien
         // le traitement de ce formulaire se fait dans la page action.php
         //
-        $req  = 'select pgroupe_montre_pa, pgroupe_montre_dlt, pgroupe_montre_pv, 
-				pgroupe_montre_bonus, pgroupe_messages, pgroupe_message_mort, pgroupe_champions
+        $req = 'select pgroupe_montre_pa, pgroupe_montre_dlt, pgroupe_montre_pv, 
+				pgroupe_montre_bonus, pgroupe_montre_matos, pgroupe_messages, pgroupe_message_mort, pgroupe_champions
 			from groupe_perso
 			where pgroupe_perso_cod = ' . $perso_cod . '
 			and pgroupe_statut = 1';
@@ -450,6 +452,12 @@ switch ($methode)
 					<td class="soustitre2">Montrer ses bonus ?</td>
 					<td><select name="bonus">';
             $contenu_page .= $html->oui_non_select($result['pgroupe_montre_bonus'], false);
+            $contenu_page .= '</select></td>
+				</tr>
+				<tr>
+					<td class="soustitre2">Montrer son matériel ?</td>
+					<td><select name="matos">';
+            $contenu_page .= $html->oui_non_select($db->f('pgroupe_montre_matos'), false);
             $contenu_page .= '</select></td>
 				</tr>
 				<tr>

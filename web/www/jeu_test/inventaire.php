@@ -259,16 +259,14 @@ $stmt   = $pdo->query($req_id);
         $req_equipe = $req_equipe . "order by tobj_libelle";
         $stmt       = $pdo->query($req_equipe);
         $nb_equipe  = $stmt->rowCount();
+        $poid_catégorie = 0;
+
         //
         //log_debug('Fin requête équipé');
         //
         ?>
         <table width="100%" cellspacing="2" cellpadding="2">
-            <tr>
-                <td colspan="7" class="titre">
-                    <div class="titre">Matériel équipé</div>
-                </td>
-            </tr>
+
             <?php
             if ($nb_equipe != 0)
             {
@@ -290,6 +288,8 @@ $stmt   = $pdo->query($req_id);
 
                     while ($result = $stmt->fetch())
                     {
+                        $poid_catégorie+= $result["obj_poids"]>0 ? $db->f("obj_poids") : 0 ;
+
                         $examiner = "";
                         if ($result['gobj_url'] != null)
                         {
@@ -352,6 +352,13 @@ $stmt   = $pdo->query($req_id);
                 <?php
             }
             ?>
+            <thead>
+            <tr>
+                <td colspan="7" class="titre">
+                    <div class="titre">Matériel équipé <em style="font-size: 9px;">(<?php echo $poid_catégorie; ?> Kg)</em></div>
+                </td>
+            </tr>
+            </thead>
         </table>
         <?php
         /*********************************************/
@@ -367,16 +374,14 @@ $stmt   = $pdo->query($req_id);
         $req_matos = $req_matos . "order by tobj_libelle";
         $stmt      = $pdo->query($req_matos);
         $nb_matos  = $stmt->rowCount();
+
+        $poid_catégorie = 0;
         //
         //log_debug('Fin non esquipe non identifie');
         //
         ?>
         <table width="100%" cellspacing="2" cellpadding="2">
-            <tr>
-                <td colspan="6" class="titre">
-                    <div class="titre">Matériel non identifié</div>
-                </td>
-            </tr>
+
             <?php
             if ($nb_matos == 0)
             {
@@ -398,6 +403,8 @@ $stmt   = $pdo->query($req_id);
                 <?php
                 while ($result = $stmt->fetch())
                 {
+                    $poid_catégorie+= $result['obj_poids']>0 ? $db->f("obj_poids") : 0 ;
+
                     //$tab_matos = pg_fetch_array($res_matos,$cpt);
                     echo("<tr>");
                     printf("<td class=\"soustitre2\">%s</td>", $result['tobj_libelle']);
@@ -421,6 +428,13 @@ $stmt   = $pdo->query($req_id);
                 echo("</form>");
                 }
                 ?>
+                <thead>
+                <tr>
+                    <td colspan="6" class="titre">
+                        <div class="titre">Matériel non identifié <em style="font-size: 9px;">(<?php echo $poid_catégorie; ?> Kg)</em></div>
+                    </td>
+                </tr>
+                </thead>
         </table>
         <?php
 
@@ -429,28 +443,25 @@ $stmt   = $pdo->query($req_id);
         /*****************************************/
 
         $req_matos = "select obj_etat, tobj_cod, gobj_cod, tobj_libelle, obj_nom, obj_cod, obj_poids, gobj_tobj_cod, gobj_pa_normal, tobj_equipable, gobj_url, COALESCE(obon_cod, -1) as obon_cod, obon_libelle
-	from perso_objets
-	INNER JOIN objets ON obj_cod = perobj_obj_cod
-	INNER JOIN objet_generique ON gobj_cod = obj_gobj_cod
-	INNER JOIN type_objet ON tobj_cod = gobj_tobj_cod
-	LEFT OUTER JOIN bonus_objets ON obon_cod = obj_obon_cod
-	WHERE perobj_perso_cod = " . $perso_cod . "
-		and perobj_identifie = 'O'
-		and perobj_equipe = 'N'
-		and gobj_tobj_cod not in (5,11,12,14,22,28,30,34,42)
-	order by tobj_libelle,gobj_nom ";
+                        from perso_objets
+                        INNER JOIN objets ON obj_cod = perobj_obj_cod
+                        INNER JOIN objet_generique ON gobj_cod = obj_gobj_cod
+                        INNER JOIN type_objet ON tobj_cod = gobj_tobj_cod
+                        LEFT OUTER JOIN bonus_objets ON obon_cod = obj_obon_cod
+                        WHERE perobj_perso_cod = " . $perso_cod . "
+                            and perobj_identifie = 'O'
+                            and perobj_equipe = 'N'
+                            and gobj_tobj_cod not in (5,11,12,14,22,28,30,34,42)
+                        order by tobj_libelle,gobj_nom ";
         $stmt      = $pdo->query($req_matos);
         $nb_matos  = $stmt->rowCount();
+        $poid_catégorie = 0;
         //
         //log_debug('Fin non equipe, identifie');
         //
         ?>
         <table width="100%" cellspacing="2" cellpadding="2">
-            <tr>
-                <td colspan="8" class="titre">
-                    <div class="titre">Matériel identifié</div>
-                </td>
-            </tr>
+
             <?php
             if ($nb_matos != 0)
             {
@@ -472,8 +483,13 @@ $stmt   = $pdo->query($req_id);
                 <?php
                 while ($result = $stmt->fetch())
                 {
+
                     $potion_buvable =
                         ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
+                    if ($result['obon_cod'] >= 0)
+                    $poid_catégorie+= $result['obj_poids']>0 ? $result['obj_poids'<) : 0 ;
+
+
                     if ($result['obon_cod'] >= 0)
                     {
                         $bonus   = " (" . $result['obon_libelle'] . ")";
@@ -527,12 +543,23 @@ $stmt   = $pdo->query($req_id);
                     echo("<tr><td colspan=\"8\">Aucun matériel identifié</td></tr>");
                 }
                 ?>
+                <thead>
+                <tr>
+                    <td colspan="8" class="titre">
+                        <div class="titre">Matériel identifié <em style="font-size: 9px;">(<?php echo $poid_catégorie; ?> Kg)</em></div>
+                    </td>
+                </tr>
+                </thead>
         </table>
         <table width="100%" cellspacing="2" cellpadding="2">
             <?php
             /*****************************************/
             /* Etape 5 : Runes */
             /*****************************************/
+            $req = "select sum(obj_poids) as poids from perso_objets,objets,objet_generique  where gobj_tobj_cod = 5 and perobj_perso_cod = :perso_cod and perobj_identifie = 'O'  and perobj_obj_cod = obj_cod and obj_gobj_cod = gobj_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+            $poid_catégorie = $stmt->fetch();
             if ($dr == 0)
             {
                 $req_matos = "select obj_nom,sum(obj_poids) as poids,obj_frune_cod,obj_famille_rune as frune_desc,count(*) as nombre from perso_objets,objets,objet_generique
@@ -548,7 +575,7 @@ $stmt   = $pdo->query($req_id);
                 $nb_matos  = $stmt->rowCount();
                 //log_debug($req_matos);
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=1&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -593,7 +620,7 @@ $stmt   = $pdo->query($req_id);
                 $stmt      = $pdo->query($req_matos);
                 $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Runes <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=0&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -637,6 +664,11 @@ $stmt   = $pdo->query($req_id);
             /*****************************************/
             /* Etape 6 : quete */
             /*****************************************/
+            $req = "select sum(obj_poids) as poids from perso_objets,objets,objet_generique  where gobj_tobj_cod in (11,12) and perobj_perso_cod = :perso_cod and perobj_identifie = 'O'  and perobj_obj_cod = obj_cod and obj_gobj_cod = gobj_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+            $poid_catégorie = $stmt->fetch();
+
             if ($dq == 0)
             {
                 $req_matos = "select A.obj_cod, A.obj_nom, A.poids, A.nombre, A.gobj_url ";
@@ -669,7 +701,7 @@ $stmt   = $pdo->query($req_id);
                 $stmt     = $pdo->query($req_matos);
                 $nb_matos = $stmt->rowCount();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=1&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -720,7 +752,7 @@ $stmt   = $pdo->query($req_id);
                 $stmt      = $pdo->query($req_matos);
                 $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Objets de quête <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=0&dr=$dr&dcompo=$dcompo&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -804,6 +836,10 @@ $stmt   = $pdo->query($req_id);
             /*****************************************/
             /* Etape 9 : Les composants de potion		 */
             /*****************************************/
+            $req = "select sum(obj_poids) as poids from perso_objets,objets,objet_generique  where gobj_tobj_cod in (22, 28, 30,34) and perobj_perso_cod = :perso_cod and perobj_identifie = 'O'  and perobj_obj_cod = obj_cod and obj_gobj_cod = gobj_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+            $poid_catégorie = $stmt->fetch();
             if ($dcompo == 0)
             {
                 $req_matos =
@@ -822,7 +858,7 @@ $stmt   = $pdo->query($req_id);
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
-                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie<a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=1&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
+                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=1&dgrisbi=$dgrisbi\">(montrer le détail)</A></div></td>");
                     echo("</tr>");
 
                     ?>
@@ -869,7 +905,7 @@ $stmt   = $pdo->query($req_id);
                 $stmt      = $pdo->query($req_matos);
                 $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Composants d'alchimie <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=0&dgrisbi=$dgrisbi\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {
@@ -907,6 +943,10 @@ $stmt   = $pdo->query($req_id);
             /*****************************************/
             /* Etape 10 : Le grisbi                  */
             /*****************************************/
+            $req = "select sum(obj_poids) as poids from perso_objets,objets,objet_generique  where gobj_tobj_cod =42 and perobj_perso_cod = :perso_cod and perobj_identifie = 'O'  and perobj_obj_cod = obj_cod and obj_gobj_cod = gobj_cod " ;
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+            $poid_catégorie = $stmt->fetch();
             if ($dgrisbi == 0)
             {
                 $req_matos =
@@ -924,7 +964,7 @@ $stmt   = $pdo->query($req_id);
                 if ($nb_matos != 0)
                 {
                     echo("<tr>");
-                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=1\">(montrer le détail)</A></div></td>");
+                    echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=1\">(montrer le détail)</A></div></td>");
                     echo("</tr>");
 
                     ?>
@@ -970,7 +1010,7 @@ $stmt   = $pdo->query($req_id);
                 $stmt      = $pdo->query($req_matos);
                 $nb_matos  = $stmt->rowCount();
                 echo("<tr>");
-                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=0\">(cacher le détail)</A></div></td>");
+                echo("<td colspan=\"6\" class=\"titre\"><div class=\"titre\">Monnaie d'échange <em style=\"font-size: 9px;\">(".(1*$poid_catégorie["poids"])." Kg)</em> <a class=\"titre\" href=\"inventaire.php?dq=$dq&dr=$dr&dcompo=$dcompo&dgrisbi=0\">(cacher le détail)</A></div></td>");
                 echo("</tr>");
                 if ($nb_matos != 0)
                 {

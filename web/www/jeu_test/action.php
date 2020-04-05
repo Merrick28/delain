@@ -863,6 +863,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                                                   $_REQUEST['pv'],
                                                   $_REQUEST['dlt'],
                                                   $_REQUEST['bonus'],
+                                                  $_REQUEST['matos'],
                                                   $_REQUEST['messages'],
                                                   $_REQUEST['messagemort'],
                                                   $_REQUEST['champions']);
