@@ -449,7 +449,6 @@ switch ($methode)
         $contenu_page .= 'Le message a été marqué comme non lu.';
         break;
     case "nouveau_message":
-        $db2 = new base_delain;
         $guilde = 'N';
         $erreur = 0;
 
