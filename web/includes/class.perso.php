@@ -1823,21 +1823,27 @@ class perso
         }
         $niveau_xp = ($this->perso_px - $limite_actu);
         $div_xp    = ($limite - $limite_actu);
-
-        $barre_xp = round(100 * $niveau_xp / $div_xp);
-        if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
-        {
-            $barre_xp = 98;
-        } elseif (($barre_xp <= 2) && ($niveau_xp > 0))
-        {
-            $barre_xp = 2;
-        } elseif ($barre_xp < 0)
-        {
-            $barre_xp = 0;
-        } elseif ($barre_xp >= 100)
+        if ($div_xp == 0)
         {
             $barre_xp = 100;
+        } else
+        {
+            $barre_xp = round(100 * $niveau_xp / $div_xp);
+            if (($barre_xp >= 98) && ($niveau_xp < $div_xp))
+            {
+                $barre_xp = 98;
+            } elseif (($barre_xp <= 2) && ($niveau_xp > 0))
+            {
+                $barre_xp = 2;
+            } elseif ($barre_xp < 0)
+            {
+                $barre_xp = 0;
+            } elseif ($barre_xp >= 100)
+            {
+                $barre_xp = 100;
+            }
         }
+
         return $barre_xp;
     }
 
@@ -2100,7 +2106,8 @@ class perso
     public function regle_groupe($pa, $pv, $dlt, $bonus, $matos, $messages, $messagemort, $champions)
     {
         $pdo    = new bddpdo();
-        $req    = "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:matos,:messages,:messagemort,:champions) as resultat";
+        $req    =
+            "select regle_groupe(:perso,:pa,:pv,:dlt,:bonus,:matos,:messages,:messagemort,:champions) as resultat";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(
                                     ":perso"       => $this->perso_cod,
