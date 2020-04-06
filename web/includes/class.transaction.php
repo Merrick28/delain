@@ -151,7 +151,8 @@ class transaction
         $req_acc_tran = "select accepte_transaction(:num_tran) as resultat";
         $stmt         = $pdo->prepare($req_acc_tran);
         $stmt         = $pdo->execute(array(":num_tran" => $this->tran_cod), $stmt);
-        return $stmt->fetch();
+        $result       = $stmt->fetch();
+        return $result['resultat'];
     }
 
     public function __call($name, $arguments)
