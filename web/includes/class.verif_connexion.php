@@ -157,7 +157,7 @@ class verif_connexion
                         $compte->stocke();
                     } else
                     {
-                        die('Accès interdit à ce perso');
+                        die('Accès interdit à ce perso (debug ' . $change_perso . ')');
                     }
                 }
 
