@@ -1,6 +1,6 @@
 <?php
 $verif_connexion::verif_appel();
-$lieu_cod = $tab_lieu['lieu_cod'];
+$lieu_cod = $tab_lieu['lieu']->lieu_cod;
 echo "<p class=\"titre\">Identification d'équipement</p>";
 echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
 $req    = "select lieu_marge from lieu where lieu_cod = $lieu_cod ";
