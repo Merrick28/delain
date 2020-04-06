@@ -9,7 +9,7 @@ ob_start();
 // TODO A Supprimer :
 if (isset($_REQUEST['perso']))
 {
-    $perso = $_REQUEST['perso'];
+    $persoencours = $_REQUEST['perso'];
 }
 
 
@@ -95,7 +95,7 @@ switch ($methode)
         echo "<div class=\"titre\">Sélection des objets à vendre</div>";
         echo "<form name=\"tran\" method=\"post\" action=\"\">";
         echo "<input type=\"hidden\" name=\"methode\" value=\"e3\">";
-        echo "<input type=\"hidden\" name=\"perso\" value=\"$perso\">";
+        echo "<input type=\"hidden\" name=\"perso\" value=\"$persoencours\">";
 
         $req_objets_unitaires = "select obj_etat, gobj_tobj_cod, obj_cod, obj_nom, obj_nom_generique, tobj_libelle, perobj_identifie
 			from perso_objets
@@ -237,7 +237,7 @@ switch ($methode)
             $erreur_globale = true;
             echo "Vous ne pouvez pas faire de transaction sur des positions différentes !";
         }
-        if ($is_lieu and $lieu_protege == 'O')
+        if ($perso->is_lieu() and $lieu_protege == 'O')
         {
             $erreur_globale = true;
             echo "Vous ne pouvez pas faire de transaction sur un lieu protégé !";
