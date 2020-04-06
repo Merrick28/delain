@@ -1,18 +1,18 @@
 <?php
 $verif_connexion::verif_appel();
-$lieu_cod = $tab_lieu['lieu_cod'];
+$lieu_cod = $tab_lieu['lieu']->lieu_cod;
 echo "<p class=\"titre\">Réparation d'équipement</p>";
 echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
-$req  = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle ";
-$req  = $req . "from objet_generique,objets,perso_objets,type_objet ";
-$req  = $req . "where perobj_perso_cod = $perso_cod ";
-$req  = $req . "and perobj_obj_cod = obj_cod ";
-$req  = $req . "and perobj_identifie = 'O' ";
-$req  = $req . "and obj_gobj_cod = gobj_cod ";
-$req  = $req . "and gobj_deposable = 'O' ";
-$req  = $req . "and gobj_tobj_cod = tobj_cod ";
-$req  = $req . "and tobj_cod in (1,2,4) ";
-$req  = $req . "and obj_etat < 100 ";
+$req  = "select obj_cod,obj_etat,gobj_nom as nom,f_prix_objet($lieu_cod,obj_cod) as valeur,tobj_libelle 
+from objet_generique,objets,perso_objets,type_objet 
+        where perobj_perso_cod = $perso_cod 
+        and perobj_obj_cod = obj_cod 
+        and perobj_identifie = 'O' 
+        and obj_gobj_cod = gobj_cod 
+        and gobj_deposable = 'O' 
+        and gobj_tobj_cod = tobj_cod 
+        and tobj_cod in (1,2,4) 
+        and obj_etat < 100 ";
 $stmt = $pdo->query($req);
 if ($stmt->rowCount() == 0)
 {
