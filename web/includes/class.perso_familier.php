@@ -56,6 +56,22 @@ class perso_familier
         return true;
     }
 
+    function getByFamilier($perso_cod)
+    {
+        $pdo  = new bddpdo;
+        $req  = "SELECT * FROM perso_familier WHERE pfam_familier_cod = ? ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso_cod), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        $this->pfam_perso_cod    = $result['pfam_perso_cod'];
+        $this->pfam_familier_cod = $result['pfam_familier_cod'];
+        $this->pfam_duree_vie    = $result['pfam_duree_vie'];
+        return true;
+    }
+
     /**
      * Stocke l'enregistrement courant dans la BDD
      * @param boolean $new => true si new enregistrement (insert), false si existant (update)

@@ -4,6 +4,7 @@ $verif_auth      = false;
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
+$compte     = $verif_connexion->compte;
 
 include_once "includes/constantes.php";
 include_once "includes/fonctions.php";
@@ -164,7 +165,8 @@ if ($verif_auth)
                 foreach ($liste_evt as $detail_evt)
                 {
                     require "_block_nouveaux_evts.php";
-                    $evt_monstre[] = $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
+                    $evt_monstre[] =
+                        $date_evt->format('d/m/Y H:i:s') . " : " . $texte_evt . " (" . $detail_evt->tevt->tevt_libelle . ")<br />";
                 }
                 // On relâche le monstre du compte du joueur
                 $ancien_monstre->relache_monstre_4e_perso();
@@ -257,5 +259,5 @@ $options_twig = array(
     'PREMIER_PERSO'            => $premier_perso,
 
 );
-echo $template->render(array_merge($options_twig_defaut,$options_twig));
+echo $template->render(array_merge($options_twig_defaut, $options_twig));
 
