@@ -47,7 +47,7 @@ if ($erreur == 0)
 
             echo "<p>Vous avez actuellement <strong>" . $perso->perso_po . "</strong> brouzoufs. ";
             $po       = $perso->perso_po;
-            $lieu_cod = $tab_lieu['lieu_cod'];
+            $lieu_cod = $tab_lieu['lieu']->lieu_cod;
             //
             // Changement le 17/02/2011 par Merrick : la fonction f_prix_obj_perso_a dans la requête la ralentit trop, on va essayer de la passer dans la boucle suivante
             // Cette manip n'est possible que sur les magasins runiques où tous les objets génériques ont la même valeur...
@@ -137,7 +137,7 @@ if ($erreur == 0)
         case "vendre":
 
             $taux_rachat = $param->getparm(47);
-            $lieu_cod    = $tab_lieu['lieu_cod'];
+            $lieu_cod    = $tab_lieu['lieu']->lieu_cod;
             echo "<p class=\"titre\">Vente d’équipement</p>";
             $req  = "select obj_cod, obj_etat, gobj_nom as nom, tobj_libelle,
                     f_prix_obj_perso_v($perso_cod, $lieu_cod, obj_cod) as valeur,
