@@ -300,7 +300,7 @@ switch ($methode)
             }
             $corps = binettes($corps);
 
-            $contenu_page .= '<td colspan="2" class="soustitre2">' . $corps . '</td>
+            $contenu_page .= '<td colspan="2" class="soustitre2">' . nl2br($corps) . '</td>
 				</tr>
 				</table>
 				<hr>';
@@ -695,11 +695,11 @@ switch ($methode)
         if ($erreur == 1)
         {
             $contenu_page .= '<!-- Titre original: [' . $titre . '] -->';
-            //$titre        = htmlspecialchars($titre);
+            $titre        = htmlspecialchars($titre);
             //$titre        = str_replace(";", chr(127), $titre);
 
             $contenu_page .= '<!-- Titre final: [' . $titre . '] -->';
-            //$corps        = htmlspecialchars($corps);
+            $corps        = htmlspecialchars($corps);
             //$corps        = str_replace(";", chr(127), $corps);
 
             $contenu_page .= '<form name="nouveau_message" method="post" action="action_message.php">
