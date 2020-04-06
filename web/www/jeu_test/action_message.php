@@ -187,7 +187,7 @@ switch ($methode)
                     $precedent_suivant .= '<strong>';
                 }
                 $precedent_suivant .= 'Message plus récent ==> ';
-                if ($$result[$pref[$m] . 'lu'] == 'N')
+                if ($result[$pref[$m] . 'lu'] == 'N')
                 {
                     $precedent_suivant .= '</strong>';
                 }
@@ -305,7 +305,7 @@ switch ($methode)
 				</table>
 				<hr>';
             $contenu_page .= $precedent_suivant;
-
+            $liste_dest   .= $exp . ';';
             $contenu_page .= '<table cellspacing="2" width="100%">
 				<tr>
 				<form name="message" method="post" action="messagerie2.php">
