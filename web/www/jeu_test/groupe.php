@@ -457,7 +457,7 @@ switch ($methode)
 				<tr>
 					<td class="soustitre2">Montrer son matériel ?</td>
 					<td><select name="matos">';
-            $contenu_page .= $html->oui_non_select($db->f('pgroupe_montre_matos'), false);
+            $contenu_page .= $html->oui_non_select($result['pgroupe_montre_matos'], false);
             $contenu_page .= '</select></td>
 				</tr>
 				<tr>
