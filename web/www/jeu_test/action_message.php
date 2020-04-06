@@ -738,7 +738,7 @@ switch ($methode)
             /************************************/
             /* d’abord on enregistre le message */
             /************************************/
-
+            include_once G_CHE . "includes/message.php";
             $msg = new message();
 
             $msg_init = get_request_var('msg_init', 0);
