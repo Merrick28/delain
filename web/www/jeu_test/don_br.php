@@ -10,11 +10,11 @@ ob_start();
                 <td>Choisissez le perso qui doit recevoir votre don :</td>
                 <td><select name="dest">
                         <?php
-                        $req  = "select perso_cod,perso_nom,perso_type_perso,lower(perso_nom) as minusc from perso,perso_position ";
-                        $req  = $req . "where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod) ";
-                        $req  = $req . "and ppos_perso_cod = perso_cod ";
-                        $req  = $req . "and perso_cod != $perso_cod and perso_actif = 'O' ";
-                        $req  = $req . "order by perso_type_perso,minusc ";
+                        $req  = "select perso_cod,perso_nom,perso_type_perso,lower(perso_nom) as minusc from perso,perso_position 
+                        where ppos_pos_cod = (select ppos_pos_cod from perso_position where ppos_perso_cod = $perso_cod)
+                        and ppos_perso_cod = perso_cod 
+                        and perso_cod != $perso_cod and perso_actif = 'O'
+                        order by perso_type_perso,minusc ";
                         $stmt = $pdo->query($req);
                         while ($result = $stmt->fetch())
                         {
@@ -25,7 +25,7 @@ ob_start();
                 </td>
             </tr>
             <tr>
-                <td>Ainsi que la somme à donner (max <?php $perso->perso_po; ?> brouzoufs)
+                <td>Ainsi que la somme à donner (max <?php echo $perso->perso_po; ?> brouzoufs)
                     :
                 </td>
                 <td><input type="text" name="qte" value="0"></td>
