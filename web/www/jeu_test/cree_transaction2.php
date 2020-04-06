@@ -1,8 +1,9 @@
 ﻿<?php
 include "blocks/_header_page_jeu.php";
 include "../includes/fonctions.php";
-$perso = $verif_connexion->perso;
-$param = new parametres();
+$perso     = $verif_connexion->perso;
+$perso_cod = $verif_connexion->perso_cod;
+$param     = new parametres();
 ob_start();
 
 // TODO A Supprimer :
@@ -73,8 +74,9 @@ switch ($methode)
         $pos_actuelle = $pos['pos']->ppos_pos_cod;
 
         $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position 
-                where ppos_pos_cod = $pos_actuelle and ppos_perso_cod = perso_cod 
-                and perso_cod != $perso_cod  and perso_type_perso in (1,2,3) and perso_actif = 'O' order by perso_type_perso,perso_nom,minusc";
+                where ppos_pos_cod = " . $pos_actuelle . " and ppos_perso_cod = perso_cod 
+                and perso_cod != " . $perso_cod . " and perso_type_perso in (1,2,3) and perso_actif = 'O' order by 
+        perso_type_perso,perso_nom,minusc";
 
         $liste_vue = $html->select_from_query($req_vue, "perso_cod", "perso_nom");
 
