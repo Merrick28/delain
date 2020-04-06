@@ -254,7 +254,7 @@ switch ($methode)
             if ($tmpperso1->perso_type_perso == 3)
             {
                 $pfam = new perso_familier();
-                $pfam->getByPerso($perso_cod);
+                $pfam->getByFamilier($perso_cod);
                 $pc1 = new perso_compte;
                 $pc1->get_by_perso($pfam->pfam_perso_cod);
                 $compt1 = $pc1->pcompt_compt_cod;
