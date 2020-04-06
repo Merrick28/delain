@@ -24,9 +24,9 @@ if ($type_lance == 0) // runes
 {
     require "blocks/_get_rune_combi.php";
 
-    if (!$sort->getByCombinaison($resultat) === false)
+    if (!$sort->getByCombinaison($resultat))
     {
-        //echo "debug " . $resultat;
+        echo "debug " . $resultat;
         echo "<p>Vous ne vous sentez pas capable d'associer ces runes pour lancer un sort.";
         $erreur = 1;
     } else
