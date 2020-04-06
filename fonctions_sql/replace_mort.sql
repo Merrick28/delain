@@ -46,36 +46,41 @@ begin
     -- si arène, on revient au point d’entrée
     -- en effaçant les traces de présence dans perso_arene
     if v_arene = 'O' then
-        raise notice 'Replace mort en arène';
+
         select into nouvelle_position parene_pos_cod
         from perso_arene
         where parene_perso_cod = v_cible;
-
-        select into v_familier pfam_familier_cod
-        from perso_familier
-                 inner join perso on perso_cod = pfam_familier_cod
-        where perso_actif = 'O';
         if found then
+            select into v_familier pfam_familier_cod
+            from perso_familier,
+                 perso
+            where pfam_perso_cod = v_cible
+              and pfam_familier_cod = perso_cod
+              and perso_actif = 'O';
+            if found then
+                update perso_position
+                set ppos_pos_cod = nouvelle_position
+                where ppos_perso_cod = v_familier;
+            end if;
+
             update perso_position
             set ppos_pos_cod = nouvelle_position
-            where ppos_perso_cod = v_familier;
+            where ppos_perso_cod = v_cible;
+
+            -- si on est dans un donjon on ne supprime pas la trace dans perso_arene
+            if v_type_arene <> 2 then
+                delete
+                from perso_arene
+                where parene_perso_cod = v_cible;
+            end if;
+
+            code_retour := 'OK';
+            code_retour := to_char(nouvelle_position, '99999999');
+
+            return code_retour;
+        else
+            raise notice 'Repalcement en arene sans données dans perso_arene pour le perso %', v_cible;
         end if;
-
-        update perso_position
-        set ppos_pos_cod = nouvelle_position
-        where ppos_perso_cod = v_cible;
-
-        -- si on est dans un donjon on ne supprime pas la trace dans perso_arene
-        if v_type_arene <> 2 then
-            delete
-            from perso_arene
-            where parene_perso_cod = v_cible;
-        end if;
-
-        code_retour := 'OK';
-        code_retour := to_char(nouvelle_position, '99999999');
-
-        return code_retour;
     end if;
 
 
