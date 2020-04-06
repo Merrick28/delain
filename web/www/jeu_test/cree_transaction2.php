@@ -112,8 +112,9 @@ switch ($methode)
 
 
         // Affichage des objets en vente à l’unité
-        $stmt = $pdo->prepare($req_objets_unitaires);
-        $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+        $stmt      = $pdo->prepare($req_objets_unitaires);
+        $stmt      = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+        $nb_objets = 0;
         if ($stmt->rowCount() > 0)
         {
             $etat = '';
@@ -146,6 +147,7 @@ switch ($methode)
             echo '<tr><td colspan="3"><a style="font-size:9pt;" href="javascript:toutCocher(document.tran, \'obj\');">cocher/décocher/inverser</a></td></tr>';
 
             echo "</table></center>";
+            $nb_objets++;
         }
 
         $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
@@ -162,8 +164,9 @@ switch ($methode)
 			group by gobj_nom, gobj_cod, gobj_tobj_cod
 			order by gobj_tobj_cod, gobj_nom";
         // Affichage des objets en vente en gros
-        $stmt = $pdo->prepare($req_objets_gros);
-        $stmt = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+        $stmt           = $pdo->prepare($req_objets_gros);
+        $stmt           = $pdo->execute(array(":perso_cod" => $perso_cod), $stmt);
+        $nb_objets_gros = 0;
         if ($stmt->rowCount() > 0)
         {
             echo "<div style=\"text-align:center;\" id='vente_detail'>Vente en gros : cliquez sur les objets que vous souhaitez vendre, indiquez-en le nombre puis leurs prix de vente. Les autres objets se vendent <a href='#vente_detail'>au détail, et sont listés plus haut</a>.</div>";
@@ -190,6 +193,7 @@ switch ($methode)
             }
 
             echo "</table></center>";
+            $nb_objets_gros++;
         }
 
         if ($nb_objets + $nb_objets_gros > 0)
