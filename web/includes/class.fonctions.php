@@ -159,4 +159,10 @@ class fonctions
 
         echo("</tr>");
     }
+
+    function format_date($input)
+    {
+        $date = new DateTime($input);
+        return $date->format('d/m/Y H:i:s');
+    }
 }

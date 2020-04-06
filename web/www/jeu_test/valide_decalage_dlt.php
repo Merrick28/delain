@@ -1,6 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
-$perso = $verif_connexion->perso;
+$fonctions = new fonctions();
+$perso     = $verif_connexion->perso;
 ob_start();
 $erreur    = 0;
 $temps_dlt = $_REQUEST['temps_dlt'];
@@ -49,7 +50,7 @@ if ($erreur == 0)
 
             echo("<p>Votre DLT a bien été repoussée de $temps_dlt minutes. ");
 
-            echo "<p>Votre nouvelle DLT est à <strong>" . format_date($perso->perso_dlt) . "</strong>.";
+            echo "<p>Votre nouvelle DLT est à <strong>" . $fonctions->format_date($perso->perso_dlt) . "</strong>.";
             break;
     }
 }
