@@ -432,7 +432,7 @@ switch ($methode)
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
         $requete =
-            'update messages_exp set emsg_archive = \'O\' where emsg_msg_cod = :msg and emsg_perso_cod = ' . $perso_cod;
+            'update messages_exp set emsg_archive = \'O\' where emsg_msg_cod = :msg and emsg_perso_cod = :perso';
         $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
                             ":msg"   => $msg[$cpt]), $stmt);
