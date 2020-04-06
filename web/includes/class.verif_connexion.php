@@ -151,14 +151,18 @@ class verif_connexion
                 // est-ce qu'on change de perso ?
                if ($change_perso !== false)
                 {
-                    if ($compte->autoriseJouePerso($change_perso))
+                    if (!empty($change_perso))
                     {
-                        $compte->compt_der_perso_cod = $change_perso;
-                        $compte->stocke();
-                    } else
-                    {
-                        die('Accès interdit à ce perso (debug ' . $change_perso . ')');
+                        if ($compte->autoriseJouePerso($change_perso))
+                        {
+                            $compte->compt_der_perso_cod = $change_perso;
+                            $compte->stocke();
+                        } else
+                        {
+                            die('Accès interdit à ce perso (debug ' . $change_perso . ')');
+                        }
                     }
+
                 }
 
                 //-----------------------------------------------------------------------------------//
