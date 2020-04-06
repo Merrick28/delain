@@ -23,6 +23,7 @@ $sort = new sorts();
 if ($type_lance == 0) // runes
 {
     require "blocks/_get_rune_combi.php";
+    echo "debug " . $resultat;
     if (!$sort->getByCombinaison($resultat) == 0)
     {
         echo "<p>Vous ne vous sentez pas capable d'associer ces runes pour lancer un sort.";
