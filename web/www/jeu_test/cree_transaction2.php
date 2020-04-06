@@ -71,7 +71,7 @@ switch ($methode)
         echo "<input type=\"hidden\" name=\"methode\" value=\"e1\">";
 
         $pos          = $perso->get_position();
-        $pos_actuelle = $pos['pos']->ppos_pos_cod;
+        $pos_actuelle = $pos['pos']->pos_cod;
 
         $req_vue = "select lower(perso_cod) as minusc,perso_cod,perso_nom from perso, perso_position 
                 where ppos_pos_cod = " . $pos_actuelle . " and ppos_perso_cod = perso_cod 
