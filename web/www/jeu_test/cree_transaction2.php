@@ -275,7 +275,9 @@ switch ($methode)
             if ($tmpperso2->perso_type_perso == 3)
             {
                 $pfam = new perso_familier();
-                $pfam->getByPerso($_REQUEST['perso']);
+                $pfam->getByFamilier($_REQUEST['perso']);
+                //print_r($pfam);
+                //die('');
                 $pc2 = new perso_compte;
                 $pc2->get_by_perso($pfam->pfam_perso_cod);
                 $compt2 = $pc2->pcompt_compt_cod;
@@ -285,10 +287,13 @@ switch ($methode)
                 $compt2 = '';
             }
         }
-
+        //die($compt1 . '*' . $compt2);
         // traitement des ventes au détail
-        if (isset($obj) && !$erreur_globale)
+
+        if (isset($_REQUEST['obj']) && !$erreur_globale)
         {
+            //print_r($_REQUEST);
+            //die('');
             // préparation des requêtes qui vont être lancées dans le while
             $req_ident = "select perobj_identifie from perso_objets where perobj_obj_cod = :key ";
             $stmtobj   = $pdo->prepare($req_ident);
@@ -296,7 +301,7 @@ switch ($methode)
             $req_exist  = "select tran_cod from transaction where tran_obj_cod = :key ";
             $stmtexists = $pdo->prepare($req_exist);
             //
-            foreach ($obj as $key => $val)
+            foreach ($_REQUEST['obj'] as $key => $val)
             {
 
                 $stmtobj      = $pdo->execute(array(":key" => $key), $stmtobj);
@@ -323,6 +328,7 @@ switch ($methode)
                 }
                 if ($erreur == 0)
                 {
+
                     $transaction                 = new transaction();
                     $transaction->tran_obj_cod   = $key;
                     $transaction->tran_vendeur   = $perso_cod;
@@ -349,11 +355,12 @@ switch ($methode)
                         $compteur_accept++;
                     }
                 }
+
             }//Fin du foreach
         }
 
         // traitement des ventes en gros
-        if (isset($gobj) && !$erreur_globale)
+        if (isset($_REQUEST['gobj']) && !$erreur_globale)
         {
             // Récupération globale des infos
             $req_objets_gros = "select gobj_nom, gobj_cod, gobj_tobj_cod, count(*) as nombre
@@ -376,8 +383,10 @@ switch ($methode)
                 $gobj_cod   = $result['gobj_cod'];
                 $gobj_nom   = $result['gobj_nom'];
                 $nombre_max = $result['nombre'];
-                if (isset($gobj[$gobj_cod]))
+                if (isset($_REQUEST['gobj'][$gobj_cod]))
                 {
+
+
                     $prix_obj = $_REQUEST['prixgros'][$gobj_cod];
                     $qte_obj  = $_REQUEST['qtegros'][$gobj_cod];
                     $erreur   = 0;
@@ -401,6 +410,7 @@ switch ($methode)
 
                     if ($erreur == 0)
                     {
+
                         $req_objets = "select obj_cod
 							from perso_objets
 							inner join objets on obj_cod = perobj_obj_cod
@@ -413,12 +423,14 @@ switch ($methode)
 								and obj_deposable != 'N'
 								and tran_obj_cod IS NULL
 							limit $qte_obj";
+
                         $stmt2      = $pdo->prepare($req_objets);
                         $stmt2      = $pdo->execute(array(":perso_cod" => $perso_cod,
                                                           ":gobj_cod"  => $gobj_cod), $stmt2);
 
                         while ($result2 = $stmt2->fetch())
                         {
+
                             $obj_cod = $result2['obj_cod'];
 
                             $transaction                 = new transaction();
