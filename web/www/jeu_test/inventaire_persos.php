@@ -1,7 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-include_once "verif_connexion.php";
 ob_start();
 
 //
