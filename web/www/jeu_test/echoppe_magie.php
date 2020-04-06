@@ -18,7 +18,7 @@ if ($erreur == 0)
     $stmt     = $pdo->query($req);
     $result   = $stmt->fetch();
     $modif    = $result['modificateur'];
-    $methode  = get_request_var('methode', 'debut');
+    $methode  = get_request_var('methode', 'entree');
     //
     // phrase à modifier par la suite en fonction des alignements
     //
