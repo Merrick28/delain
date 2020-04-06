@@ -350,7 +350,7 @@ if ($erreur == 0)
             </tr>
             <?php
             $po       = $result['perso_po'];
-            $lieu_cod = $tab_lieu['lieu_cod'];
+            $lieu_cod = $tab_lieu['lieu']->lieu_cod;
 
             $req
                 = "select gobj_cod,gobj_nom,gobj_bonus_cod,tobj_libelle,gobj_tobj_cod,gobj_valeur,mgstock_nombre,f_prix_obj_perso_a_generique($perso_cod,$lieu_cod,gobj_cod) as valeur_achat,comp_libelle
@@ -363,8 +363,6 @@ if ($erreur == 0)
 						      order by gobj_tobj_cod,gobj_comp_cod,valeur_achat,gobj_nom";
 
             $stmt = $pdo->query($req);
-
-
             if ($stmt->rowCount() == 0)
             {
                 ?>
