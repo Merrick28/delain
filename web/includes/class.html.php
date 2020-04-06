@@ -35,6 +35,7 @@ class html
 
     function select_from_query($req, $champ_code, $champ_texte, $selected = '', $optgroup = '')
     {
+        $pdo = new bddpdo();
         if (isset($_REQUEST['etage'])) {
             $etage = $_REQUEST['etage'];
         }
@@ -55,9 +56,9 @@ class html
         } else {
             // On n’a rien de correspondant en cache. On construit le select.
             $inclure_optgroupe = $optgroup != '';
-            $stmt = $this->pdo->query($req);
-            $optgroup_courant = '';
-            $optgroup_ouvert = false;
+            $stmt              = $pdo->query($req);
+            $optgroup_courant  = '';
+            $optgroup_ouvert   = false;
             while ($result = $stmt->fetch()) {
                 if ($inclure_optgroupe && $result[$optgroup] != $optgroup_courant) {
                     $fermeture = ($optgroup_courant != '') ? '</optgroup>' : '';
