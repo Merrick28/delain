@@ -163,7 +163,8 @@ switch ($methode)
         {
 
             $req      =
-                'select depose_objet(perso_cod,' . $_REQUEST['objet'] . ') as resultat from perso where perso_cod = $perso_cod';
+                'select depose_objet(perso_cod,' . $_REQUEST['objet'] . ') as resultat from perso where perso_cod = '
+                . $perso_cod;
             $stmt     = $pdo->query($req);
             $result   = $stmt->fetch();
             $resultat = $result['resultat'];
