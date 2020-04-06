@@ -50,7 +50,7 @@ if ($erreur == 0)
     while ($result = $stmt->fetch())
     {
         echo "<tr><td colspan=\"5\" class=\"titre\"><p class=\"titre\">" . $result['typc_libelle'] . "</td></tr>";
-        $stmt = $pdo->execute(array(":perso_cod" => $perso_cod, ":typc_cod" => $result['typc_cod']), $stmt);
+        $stmt_comp = $pdo->execute(array(":perso_cod" => $perso_cod, ":typc_cod" => $result['typc_cod']), $stmt_comp);
         while ($result_comp = $stmt_comp->fetch())
         {
             echo "<tr>";

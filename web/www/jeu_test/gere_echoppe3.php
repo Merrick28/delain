@@ -166,7 +166,7 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
     $objet    = $_REQUEST['objet'];
-    $lieu_cod = $_RQEUEST['lieu_cod'];
+    $lieu_cod = $_REQUEST['lieu_cod'];
     $methode  = $_REQUEST['methode'];
     if ($methode == "visu")
     {
@@ -210,15 +210,16 @@ if ($erreur == 0)
 
     if ($methode == "visu2")
     {
+        $lieu_cod = $_REQUEST['lieu_cod'];
         $req_stock
-              = "select obj_seuil_dex, obj_seuil_force, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair,
+                  = "select obj_seuil_dex, obj_seuil_force, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair,
 				obj_distance, obj_deposable, gobj_comp_cod, obj_description, obj_des_degats, obj_val_des_degats, obj_bonus_degats,
 				obj_armure, obj_gobj_cod, obj_nom, obj_valeur, gobj_echoppe_stock, gobj_echoppe_destock, comp_libelle 
 			FROM (select * from objets, objet_generique, type_objet where obj_cod = $objet and gobj_tobj_cod = tobj_cod and obj_gobj_cod = gobj_cod) t1
 			LEFT OUTER JOIN stock_magasin ON (obj_cod = mstock_obj_cod and mstock_lieu_cod = $lieu_cod)
 			LEFT OUTER JOIN competences ON (gobj_comp_cod = comp_cod and gobj_tobj_cod in (1,9))
 			ORDER BY gobj_tobj_cod, obj_nom";
-        $stmt = $pdo->query($req_stock);
+        $stmt     = $pdo->query($req_stock);
         if ($stmt->rowCount() != 0)
         {
             $affichage_plus = false;
@@ -242,10 +243,12 @@ if ($erreur == 0)
     }
     if (isset($_POST['methode']))
     {
+        $lieu_cod = $_REQUEST['lieu_cod'];
         switch ($methode)
         {
             case "create_mag_tran":
-                echo "Nouvelle transaction</br>";
+
+            echo "Nouvelle transaction</br>";
                 $erreur = 0;
                 $req_verif
                         = "SELECT gobj_valeur * $tran_quantite as prix_mini, mgstock_nombre as qte_dispo

@@ -1,5 +1,5 @@
 <?php
-include "../includes/classes.php";
+$pdo = new bddpdo();
 
 $req  = "UPDATE hits_voix SET counter=counter + 1 WHERE page = :page";
 $stmt = $pdo->prepare($req);
