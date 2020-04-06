@@ -1,5 +1,5 @@
 <?php
-define('NO_DEBUG',true);
+define('NO_DEBUG', true);
 header("Pragma: no-cache");
 header("Expires: 0");
 header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
@@ -7,11 +7,13 @@ header("Cache-Control: no-cache, must-revalidate");
 header("Content-type: application/xml");
 require_once G_CHE . "includes/classes.php";
 
+$pdo = new bddpdo();
+
 if (!empty($_REQUEST["foo"]))
 {
-    $foo = 1 * $_REQUEST["foo"];              // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
+    $foo   = 1 * $_REQUEST["foo"];              // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
     $perso = 1 * $_REQUEST["perso_cod"];      // Marlyza - pour eviter l'injection sql (on s'assure d'avoir un nombre)
-    $req = "select frm_nom,frm_temps_travail,frmco_gobj_cod,frmpr_gobj_cod,frmpr_num,frm_comp_cod 
+    $req   = "select frm_nom,frm_temps_travail,frmco_gobj_cod,frmpr_gobj_cod,frmpr_num,frm_comp_cod 
      		from formule_produit,formule_composant,formule,perso_competences
 								where frmpr_frm_cod = frm_cod 
 								and frmco_gobj_cod = " . $foo . "
