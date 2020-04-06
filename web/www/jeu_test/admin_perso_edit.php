@@ -65,15 +65,15 @@ if ($erreur == 0)
 
         // affichage des attributs principaux
         $req_perso =
-            "select perso_nom,perso_for,perso_dex,perso_int,perso_con,perso_sex,perso_race_cod,perso_pv,perso_pv_max"
-            . ",perso_amelioration_degats,perso_amel_deg_dex,perso_amelioration_armure,perso_amelioration_vue"
-            . ",to_char(perso_dcreat,'DD/MM/YYYY hh24:mi:ss') as date_creation,to_char(perso_der_connex,'DD/MM/YYYY hh24:mi:ss') as date_derniere_connexion,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt"
-            . ",perso_temps_tour,perso_pa,perso_vue,	perso_des_regen,perso_valeur_regen,perso_po,perso_nb_esquive,perso_niveau,perso_type_perso,perso_px"
-            . ",perso_tangible,perso_nb_tour_intangible,perso_enc_max,perso_amelioration_nb_sort,perso_capa_repar,coalesce(perso_nb_amel_repar,0) as perso_nb_amel_repar,perso_nb_receptacle,perso_nb_amel_chance_memo"
-            . ",perso_nb_mort,perso_nb_monstre_tue,perso_nb_joueur_tue,perso_renommee_magie,perso_kharma,perso_renommee, perso_taille"
-            . ",perso_nb_des_degats, perso_val_des_degats, perso_nb_amel_comp, perso_actif, coalesce(perso_prestige, 0) as perso_prestige, perso_pnj, perso_effets_auto"
-            . ",perso_voie_magique"
-            . " from perso where perso_cod = $mod_perso_cod";
+            "select perso_nom,perso_for,perso_dex,perso_int,perso_con,perso_sex,perso_race_cod,perso_pv,perso_pv_max
+            ,perso_amelioration_degats,perso_amel_deg_dex,perso_amelioration_armure,perso_amelioration_vue
+            ,to_char(perso_dcreat,'DD/MM/YYYY hh24:mi:ss') as date_creation,to_char(perso_der_connex,'DD/MM/YYYY hh24:mi:ss') as date_derniere_connexion,to_char(perso_dlt,'DD/MM/YYYY hh24:mi:ss') as dlt
+            ,perso_temps_tour,perso_pa,perso_vue,	perso_des_regen,perso_valeur_regen,perso_po,perso_nb_esquive,perso_niveau,perso_type_perso,perso_px
+            ,perso_tangible,perso_nb_tour_intangible,perso_enc_max,perso_amelioration_nb_sort,perso_capa_repar,coalesce(perso_nb_amel_repar,0) as perso_nb_amel_repar,perso_nb_receptacle,perso_nb_amel_chance_memo
+            ,perso_nb_mort,perso_nb_monstre_tue,perso_nb_joueur_tue,perso_renommee_magie,perso_kharma,perso_renommee, perso_taille
+            ,perso_nb_des_degats, perso_val_des_degats, perso_nb_amel_comp, perso_actif, coalesce(perso_prestige, 0) as perso_prestige, perso_pnj, perso_effets_auto
+            ,perso_voie_magique
+            from perso where perso_cod = " . $_REQUEST['mod_perso_cod'];
 
         //echo "QUERY = ".$req_perso;
 
@@ -983,8 +983,8 @@ if ($erreur == 0)
                     $alldieu = $dieu->getAll();
                     foreach ($alldieu as $detaildieu)
                     {
-                        $nom_dieu = $db_dieu->f("dieu_nom");
-                        $cod_dieu = $db_dieu->f("dieu_cod");
+                        $nom_dieu = $alldieu->dieu_nom;
+                        $cod_dieu = $alldieu->dieu_cod;
                         echo "<option value=\"$cod_dieu\">$nom_dieu</option>\n";
                     }
                     ?>
