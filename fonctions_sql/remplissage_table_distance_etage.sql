@@ -1,4 +1,4 @@
-create or replace procedure remplissage_table_distance_etage(integer)
+create or replace function remplissage_table_distance_etage(integer)
     RETURNS text
     LANGUAGE plpgsql
 AS
