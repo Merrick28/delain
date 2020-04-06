@@ -3,7 +3,7 @@ include "blocks/_header_page_jeu.php";
 
 $c            = new concentrations();
 $is_concentre = false;
-if ($c->getByPerso($perso_cod))
+if (!$c->getByPerso($perso_cod))
 {
     echo("<p>Vous n'avez effectué aucune concentration.</p>");
 } else
