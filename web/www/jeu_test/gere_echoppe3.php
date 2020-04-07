@@ -166,7 +166,7 @@ if ($erreur == 0)
 if ($erreur == 0)
 {
     $objet    = $_REQUEST['objet'];
-    $lieu_cod = $_REQUEST['lieu_cod'];
+    //$lieu_cod = $_REQUEST['lieu_cod'];
     $methode  = $_REQUEST['methode'];
     if ($methode == "visu")
     {
