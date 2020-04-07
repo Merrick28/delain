@@ -25,7 +25,7 @@ if ($result = $stmt->fetch())
         {
             $req_use         = "select use_artefact($baguette)";
             $stmt            = $pdo->query($req_use);
-            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pa = $perso->perso_pa - 4;
             $perso->stocke();
             $contenu_page .= '<p>Votre baguette vous permet de déterminer la présence de filons miniers dans les parages !</p>
 			<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';
