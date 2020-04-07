@@ -6,8 +6,8 @@
 
 {# CONCENTRATONS #}
 <div class="titre">Concentration</div>
-{% if not CONENTRATION == false %}
-    Vous êtes concentré(e) pendant {{ CONENTRATION.concentration_nb_tours }} tours.
+{% if HAS_CONCENTRATION %}
+    Vous êtes concentré(e) pendant {{ CONCENTRATION.concentration_nb_tours }} tours.
 {% else %}
     Vous n’avez effectué aucune concentration.
 {% endif %}
