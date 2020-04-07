@@ -7,7 +7,6 @@ $compt_cod = $verif_connexion->compt_cod;
 $type_lieu = 6;
 $nom_lieu  = 'un centre d\'entraînement';
 
-define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 // on regarde si le joueur est bien sur un centre d'entrainement
@@ -46,7 +45,7 @@ if ($erreur == 0)
     while ($result = $stmt->fetch())
     {
         echo "<tr><td colspan=\"5\" class=\"titre\"><p class=\"titre\">" . $result['typc_libelle'] . "</td></tr>";
-        $stmt = $pdo->execute(array(":perso_cod" => $perso_cod, ":typc_cod" => $result['typc_cod']), $stmt_comp);
+        $stmt_comp = $pdo->execute(array(":perso_cod" => $perso_cod, ":typc_cod" => $result['typc_cod']), $stmt_comp);
         while ($result_comp = $stmt_comp->fetch())
         {
             echo "<tr>";
