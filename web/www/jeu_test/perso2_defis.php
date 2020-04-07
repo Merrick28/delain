@@ -3,7 +3,7 @@ $param     = new parametres();
 $perso     = $verif_connexion->perso;
 $fonctions = new fonctions();
 
-
+require_once G_CHE . 'includes/message.php';
 $dialogue               = '';
 $erreur                 = false;
 $message_erreur         = '<strong>Une erreur est survenue !</strong><br />';

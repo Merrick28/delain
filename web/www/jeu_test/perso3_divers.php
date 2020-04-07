@@ -167,18 +167,18 @@ if ($stmt->rowCount() != 0)
 
 while ($colonne != 0)
 {
-	$contenu_page .= gereColonnes($colonne, $debut);
-	$colonne = ($colonne + 1) % $colonneMax;
-	$debut = false;
+    $contenu_page .= gereColonnes($colonne, $debut);
+    $colonne      = ($colonne + 1) % $colonneMax;
+    $debut        = false;
 }
 $contenu_page .= '</td></tr></table><br /><br />';
 
-require_once('perso2_factions.php');
-require_once('perso2_defis.php');
+require_once G_CHE . 'jeu_test/perso2_factions.php';
+require_once G_CHE . 'jeu_test/perso2_defis.php';
 
 $contenu_page .= '<p class="titre">Contrats de chasse</p>';
 //Contrats terminés
-$req = "select pquete_quete_cod,pquete_date_fin,pquete_date_debut,pquete_termine,pquete_nombre,pquete_param,gmon_nom from quete_perso,monstre_generique
+$req  = "select pquete_quete_cod,pquete_date_fin,pquete_date_debut,pquete_termine,pquete_nombre,pquete_param,gmon_nom from quete_perso,monstre_generique
 					where pquete_param = gmon_cod
 					and pquete_perso_cod = $perso_cod
 					and pquete_quete_cod in (11,12,13)
