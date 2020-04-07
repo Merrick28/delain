@@ -1,5 +1,7 @@
 <?php if (!defined("APPEL"))
     die("Erreur d'appel de page !");
+
+
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
@@ -10,12 +12,11 @@ $param     = new parametres();
 // on regarde si le joueur est bien sur le lieu qu'on attend
 //
 $erreur  = 0;
-$methode = get_request_var('methode', 'debut');
+$methode = get_request_var('methode', 'entree');
 
 $type_lieu = 17;
 $nom_lieu  = 'un temple';
 
-define('APPEL', 1);
 include "blocks/_test_lieu.php";
 
 $perso_fam = false;
