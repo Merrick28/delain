@@ -91,7 +91,7 @@ $ong[5] = 'Mélange de potions';
 	$tpot = $_POST['tpot'];
 if(!isset($tpot))
 	$tpot = 1;*/
-$tpot = get_request_var('tpot', 1);
+$tpot = get_request_var('tpot', '1');
 
 $nb = count($ong);
 
