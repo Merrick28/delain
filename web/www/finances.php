@@ -5,6 +5,7 @@ $verif_auth      = false;
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
+$compte     = $verif_connexion->compte;
 
 $finances = new finances;
 
