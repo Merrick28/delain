@@ -40,7 +40,10 @@ if ($result = $stmt->fetch())
     $result = $stmt->fetch();
     $pa     = $pa + $result['nombre'];
     if ($pa < 2) $pa = 2;
-
+    if (isset($_REQUEST['methode']))
+    {
+        $methode = $_REQUEST['methode'];
+    }
     if (isset($_POST['ajout']))
     {
         $methode = "compo";
@@ -48,10 +51,7 @@ if ($result = $stmt->fetch())
     {
         $methode = "fabrication";
     }
-    if (isset($_REQUEST['methode']))
-    {
-        $methode = $_REQUEST['methode'];
-    }
+
     if (!isset($methode))
         $methode = "debut";
     $tpot = $_REQUEST['tpot'];
