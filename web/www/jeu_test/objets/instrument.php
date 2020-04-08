@@ -33,7 +33,7 @@ if (!($result = $stmt->fetch()))
         } else
         {
             // ON ENLEVE LES PAs
-            $perso->perso_pa = $perso_pa - 2;
+            $perso->perso_pa = $perso->perso_pa - 2;
             $perso->stocke();
 
             $code_evt  = 0;
