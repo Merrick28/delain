@@ -11,6 +11,8 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/images_delain.php';
 
+$num_etage = get_request_var('num_etage', '');
+
 if (!isset($num_etage) || $num_etage === '')
 {
     $req_etage = "select etage_affichage, etage_numero from perso_position,positions,etage ";
@@ -19,7 +21,7 @@ if (!isset($num_etage) || $num_etage === '')
     $req_etage = $req_etage . "and pos_etage = etage_numero ";
     $stmt      = $pdo->query($req_etage);
     $result    = $stmt->fetch();
-	$etage = $result['etage_affichage'];
+    $etage     = $result['etage_affichage'];
 	$num_etage = $result['etage_numero'];
 }
 else
