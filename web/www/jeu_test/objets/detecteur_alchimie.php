@@ -24,7 +24,7 @@ if ($result = $stmt->fetch())
         {
             $req_use         = "select use_artefact($baguette)";
             $stmt            = $pdo->query($req_use);
-            $perso->perso_pa = $perso_pa - 1;
+            $perso->perso_pa = $perso->perso_pa - 1;
             $perso->stocke();
             $contenu_page .= '	<p>La baguette fait son office et affiche les champs de composants présents dans les environs
 				<br>Cela ne signifie pas que des composants seront réellement présents, notamment si quelqu\'un les a ramassé avant vous ...</p>

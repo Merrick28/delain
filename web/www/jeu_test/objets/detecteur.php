@@ -22,7 +22,7 @@ if ($result = $stmt->fetch())
             $contenu_page .= "Vous n’avez pas assez de PA !";
         } else
         {
-            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pa = $perso->perso_pa - 4;
             $perso->stocke();
             $contenu_page .= '<p>Le cadran du détecteur affiche :</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';

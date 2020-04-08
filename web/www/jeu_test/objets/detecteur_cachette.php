@@ -17,9 +17,6 @@ if ($result = $stmt->fetch())
     $baguette = $result['perobj_obj_cod'];
     if (isset($_POST['methode']))
     {
-        $req_pa = "select perso_pa from perso where perso_cod = $perso_cod";
-        $stmt   = $pdo->query($req_pa);
-        $result = $stmt->fetch();
         if ($perso->perso_pa < 4)
         {
             $contenu_page .= "Vous n'avez pas assez de PA !";
@@ -27,7 +24,7 @@ if ($result = $stmt->fetch())
         {
             $req_use         = "select use_artefact($baguette)";
             $stmt            = $pdo->query($req_use);
-            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pa = $perso->perso_pa - 4;
             $perso->stocke();
             $contenu_page .= '<p>Le cadran du détecteur affiche :</p>
 				<center><table background="../../images/fond5.gif" border="0" cellspacing="1" cellpadding="0">';

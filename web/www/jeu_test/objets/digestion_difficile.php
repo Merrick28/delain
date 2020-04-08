@@ -37,7 +37,7 @@ if (!($result = $stmt->fetch()))
         } else
         {
             // ON ENLEVE LES PAs
-            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pa = $perso->perso_pa - 4;
             $perso->perso_pv = min($perso->perso_pv + 4, $perso->perso_pv_max);
             $perso->stocke();
 

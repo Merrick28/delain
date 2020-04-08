@@ -61,7 +61,7 @@ if (!$test_objet)
         {
             $num_obj_chope = $result['perobj_obj_cod'];
             // ON ENLEVE LES PAs
-            $perso->perso_pa = $perso_pa - 1;
+            $perso->perso_pa = $perso->perso_pa - 1;
             $perso->stocke();
 
             // ON SUPPRIME L'OBJET.

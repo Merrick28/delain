@@ -24,7 +24,7 @@ if ($result = $stmt->fetch())
         {
             $req_use         = "select use_artefact($baguette)";
             $stmt            = $pdo->query($req_use);
-            $perso->perso_pa = $perso_pa - 4;
+            $perso->perso_pa = $perso->perso_pa - 4;
             $perso->stocke();
 
             $contenu_page .= '<p>Votre baguette vous permet de déterminer la présence de bâtiments cachés !</p>

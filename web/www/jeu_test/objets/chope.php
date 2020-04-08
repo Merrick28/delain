@@ -29,7 +29,7 @@ if (!($result = $stmt->fetch()))
         } else
         {
             // ON ENLEVE LES PAs
-            $perso->perso_pa = $perso_pa - 1;
+            $perso->perso_pa = $perso->perso_pa - 1;
             $perso->stocke();
 
             // ON SUPPRIME L'OBJET.
