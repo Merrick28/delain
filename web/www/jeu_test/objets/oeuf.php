@@ -1,4 +1,5 @@
 <?php
+define('APPEL', 1);
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $perso_cod = $verif_connexion->perso_cod;
