@@ -42,7 +42,27 @@ if (defined('DEBUG_MODE'))
         $debug_mode = true;
     }
 }
+function myErrorHandler($errno, $errstr, $errfile, $errline)
+{
+    if (!(error_reporting() & $errno))
+    {
+        // Ce code d'erreur n'est pas inclus dans error_reporting(), donc il continue
+        // jusqu'au gestionaire d'erreur standard de PHP
+        return;
+    }
 
+    $msg = '###############' . "\n";
+    $msg = 'Erreur  [' . $errno . ']  ' . $errstr . "\n";
+    $msg = "Erreur sur la ligne $errline dans le fichier $errfile, appelée par " . $_SERVER['HTTP_REFERER'];
+    $msg .= print_r(debug_backtrace(), true);
+    error_log($msg);
+
+
+    /* Ne pas exécuter le gestionnaire interne de PHP */
+    return true;
+}
+
+$old_error_handler = set_error_handler("myErrorHandler");
 //
 // Fonction de hashage salé
 //
