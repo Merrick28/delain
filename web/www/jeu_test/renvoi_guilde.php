@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+include_once G_CHE . 'includes/message.php';
 ob_start();
 
 $erreur = 0;
