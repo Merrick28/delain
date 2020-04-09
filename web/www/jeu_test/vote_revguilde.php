@@ -14,7 +14,7 @@ $result     = $stmt->fetch();
 $num_guilde = $result['guilde_cod'];
 // on regarde les détails de la révolution
 $guilde = new guilde;
-$guilde->charge($_REQUEST['num_guilde']);
+$guilde->charge($num_guilde);
 
 $revguilde = new guilde_revolution();
 if (!$revguilde->getByGuilde($guilde->guilde_cod))
