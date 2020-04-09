@@ -3,20 +3,22 @@ include "blocks/_header_page_jeu.php";
 ob_start();
 echo "<table cellspacing=\"1\" cellpadding=\"1\">";
 $req = "select cherche_multi(5) as resultat ";
-$stmt = $pdo->query($req);
+
+$stmt   = $pdo->query($req);
 $result = $stmt->fetch();
 $chaine = $result['resultat'];
+echo "**" . $chaine . '**';
 $longueur = strlen($chaine);
-$erreur = 0;
+$erreur   = 0;
 if ($longueur == 0)
 {
-	echo "<p>Aucun enregistrement !";
-	$erreur = 1;
+    echo "<p>Aucun enregistrement !";
+    $erreur = 1;
 }
 if ($erreur == 0)
 {
-	$chaine = substr($chaine,0,($longueur - 1));
-	$tab1 = explode("#",$chaine);
+    $chaine = substr($chaine, 0, ($longueur - 1));
+    $tab1   = explode("#", $chaine);
 	$nb1 = count($tab1);
 	for ($cpt=0;$cpt<$nb1;$cpt++)
 	{

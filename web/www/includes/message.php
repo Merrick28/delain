@@ -117,7 +117,7 @@ class message
     function mess_all_coterie($titre, $corps, $coterie)
     {
         $pdo    = new bddpdo;
-        $req    = 'select groupe_chef from groupe where groupe_cod = ' . $coterie;
+        $req    = 'select groupe_chef from groupe where groupe_cod = :coterie';
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array(":coterie" => $coterie), $stmt);
         $result = $stmt->fetch();

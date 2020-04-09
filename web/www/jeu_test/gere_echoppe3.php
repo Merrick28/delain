@@ -177,7 +177,7 @@ if ($erreur == 0)
 				mgstock_vente_echoppes, comp_libelle
 			FROM (select * from objet_generique, type_objet where gobj_cod = " . $_REQUEST['objet'] . " and gobj_tobj_cod = tobj_cod) t1
 			LEFT OUTER JOIN stock_magasin_generique ON (gobj_cod = mgstock_gobj_cod and mgstock_lieu_cod = " .
-              $_REQUEST['lieu_cod'] . ") ";
+              $lieu_cod . ") ";
         if ($perso_cod == 451072 or $perso_cod == 185)
         {     /* Test bizarre ... La requête ne peut pas marcher avec ça ...*/
             $req_stock =

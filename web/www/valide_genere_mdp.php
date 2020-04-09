@@ -16,7 +16,7 @@ if ($compte->compt_validation != $_POST['token'])
 }
 
 
-$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
+//$loader = new Twig_Loader_Filesystem(CHEMIN . '/../templates');
 
 // on efface le password "normal", au cas où
 $compte->compt_password = '';
