@@ -305,7 +305,11 @@ switch ($methode)
 				</table>
 				<hr>';
             $contenu_page .= $precedent_suivant;
-            $liste_dest   .= $exp . ';';
+            if ($perso->perso_nom != $exp)
+            {
+                $liste_dest .= $exp . ';';
+            }
+
             $contenu_page .= '<table cellspacing="2" width="100%">
 				<tr>
 				<form name="message" method="post" action="messagerie2.php">
