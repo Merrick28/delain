@@ -16,12 +16,12 @@ define('SERVER_DBNAME','delain');
 define('URL_API','http://localhost/api/');
 
 // SMTP
-define('SMTP_HOST','smtp.free.fr');    // The smtp server host/ip
-define('SMTP_PORT',25);
-define('STMP_USER','');
-define('STMP_PASSWORD','');
+define('SMTP_HOST', 'smtp.free.fr');    // The smtp server host/ip
+define('SMTP_PORT', 25);
+define('STMP_USER', '');
+define('STMP_PASSWORD', '');
 
 define('API_URL', 'http://web/api/v2');
 
-define('DEBUG_TOKEN','a');
-define('DEBUG_MODE',true);
+define('DEBUG_TOKEN', 'a');
+define('DEBUG_MODE', false);
