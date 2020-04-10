@@ -127,7 +127,8 @@ echo("<form name=\"guilde\" method=\"post\">");
 echo("<input type=\"hidden\" name=\"num_guilde\">");
 while ($result = $stmt->fetch()) {
     echo("<tr>");
-    printf("<td class=\"soustitre2\"><p><strong><a href=\"javascript:document.guilde.action='visu_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">%s</a></strong></p></td>", $result['guilde_cod'], $result['guilde_nom']);
+    echo "<td class=\"soustitre2\"><p><strong><a href=\"visu_guilde.php?num_guilde=" . $result['guilde_cod'] . "\">" .
+         $result['guilde_nom'] . "</a></strong></p></td>";
     printf("<td><p>%s</td>", $result['nb_perso']);
     printf("<td><p>%s</td>", $result['renommee']);
     printf("<td><p>%s</td>", $result['karma']);
@@ -135,8 +136,9 @@ while ($result = $stmt->fetch()) {
     printf("<td><p>%s</td>", $result['tot_perso_tue']);
     printf("<td><p>%s</td>", $result['tot_nb_mort']);
 
-    if ($is_guilde === false) {
-        printf("<td><a href=\"javascript:document.guilde.action='valide_join_guilde.php';document.guilde.num_guilde.value=%s;document.guilde.submit();\">S’inscrire !</a></td>", $result['guilde_cod']);
+    if ($is_guilde === false)
+    {
+        echo "<td><a href=\"valide_join_guilde.php?num_guilde=" . $result['guilde_cod'] . "\">S’inscrire  !</a></td>";
     }
 
     echo("</tr>");
