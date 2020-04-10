@@ -210,7 +210,7 @@ if ($erreur == 0)
 
     if ($methode == "visu2")
     {
-        $lieu_cod = $_REQUEST['lieu_cod'];
+        //$lieu_cod = $_REQUEST['lieu_cod'];
         $req_stock
                   = "select obj_seuil_dex, obj_seuil_force, gobj_tobj_cod, tobj_libelle, obj_poids, gobj_pa_normal, gobj_pa_eclair,
 				obj_distance, obj_deposable, gobj_comp_cod, obj_description, obj_des_degats, obj_val_des_degats, obj_bonus_degats,
@@ -243,7 +243,7 @@ if ($erreur == 0)
     }
     if (isset($_POST['methode']))
     {
-        $lieu_cod = $_REQUEST['lieu_cod'];
+        //$lieu_cod = $_REQUEST['lieu_cod'];
         switch ($methode)
         {
             case "create_mag_tran":
