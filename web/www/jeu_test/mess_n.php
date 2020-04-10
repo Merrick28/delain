@@ -1,23 +1,24 @@
 <?php
 $contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
-
-$compte = new compte;
-$compte = $verif_connexion->compte;
-$perso  = new perso;
-$perso  = $verif_connexion->perso;
-
-
+$perso        = $verif_connexion->perso;
+$compte       = $verif_connexion->compte;
+$perso_cod    = $perso->perso_cod;
 if (!$compte->is_admin()
     || ($compte->is_admin_monstre()
-        && ($perso->is_monstre() || $perso->is_pnj())))
+        && ($compte->is_monstre() || $compte->is_pnj())))
 {
 
     if (!$perso->is_bernardo())
     {
-        $n_dest           = get_request_var('n_dest', '');
-        $n_dest           = str_replace("''", "'", $n_dest);
-        $n_message        = '';
-        if (isset($_REQUEST['msg_init']))
+        if (!isset($n_dest))
+        {
+            $n_dest = "";
+        } else
+        {
+            $n_dest = str_replace("''", "'", $n_dest);
+        }
+        $n_message = '';
+        if (isset($msg_init))
         {
             //On récupère le label du message précédent
             /* Modif par Maverick le 27/05/11
@@ -27,9 +28,8 @@ if (!$compte->is_admin()
 												from messages
 												left join messages_exp on emsg_msg_cod=msg_cod
 												left join perso on perso_cod=emsg_perso_cod
-												where msg_cod= :num_message";
-            $stmt     = $pdo->prepare($req_msg);
-            $stmt     = $pdo->execute(array(":num_message" => $_REQUEST['num_message']), $stmt);
+												where msg_cod=" . $num_message;
+            $stmt     = $pdo->query($req_msg);
             $result   = $stmt->fetch();
             $mess_old = str_replace(chr(127), ';', $result['msg_corps']);
 
@@ -48,31 +48,39 @@ if (!$compte->is_admin()
                 $n_message =
                     $mess_olds[1] . "\n__[" . $result['perso_nom'] . "]__\n" . trim($mess_old) . "\n________________\n";
             }
-
+            /* // Ancienne version
+            $req_msg = "select msg_corps from messages where msg_cod = " . $num_message;
+            $stmt = $pdo->query($req_msg);
+            $result = $stmt->fetch();
+            $n_message = str_replace(chr(127),';',$result['msg_corps']);
+            $n_message = str_replace("<br />",'',$n_message);
+            $n_message = '[Message précédemment reçu : '.$n_message.']';
+            */
         }
-        if (!isset($_REQUEST['n_titre']))
+        if (!isset($n_titre))
         {
             $n_titre = "";
         } else
         {
-            if (preg_match('/^Re:(.*)$/i', $_REQUEST['n_titre'], $m))
+            if (preg_match('/^Re:(.*)$/i', $n_titre, $m))
             {
                 $n_titre = 'Re[2]:' . $m[1];
-            } elseif (substr($_REQUEST['n_titre'], 0, 3) == 'Re[')
+            } elseif (substr($n_titre, 0, 3) == 'Re[')
             {
-                $index_cr = strpos($_REQUEST['n_titre'], "]");
+                $index_cr = strpos($n_titre, "]");
                 $lg       = $index_cr - 3;
-                $index    = substr($_REQUEST['n_titre'], 3, $lg);
+                $index    = substr($n_titre, 3, $lg);
                 $index++;
-                $corps   = substr($_REQUEST['n_titre'], $index_cr + 2);
+                $corps   = substr($n_titre, $index_cr + 2);
                 $n_titre = 'Re[' . $index . ']:' . $corps;
             } else
             {
-                $n_titre = 'Re: ' . $_REQUEST['n_titre'];
+                $n_titre = 'Re: ' . $n_titre;
             }
         }
         // remplissage de contenu
-        $msg_init     = get_request_var('msg_init', 0);
+        if (!isset($msg_init))
+            $msg_init = 0;
         $contenu_page .= '
 		<form name="nouveau_message" method="post" action="action_message.php">
 		<input type="hidden" name="msg_init" value="' . $msg_init . '">
@@ -100,26 +108,32 @@ if (!$compte->is_admin()
 		<select name="joueur" onChange="changeDestinataire(0);">
 		<option value="">---------------</option>';
 
-        $req_guilde =
+        $req  =
             "select pguilde_guilde_cod from guilde_perso where pguilde_perso_cod = $perso_cod and pguilde_valide = 'O' ";
-        $stmt       = $pdo->query($req_guilde);
-        if ($stmt->rowCount() != 0)
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) $has_guilde = true; else  $has_guilde = false;
+        $req  =
+            'select pgroupe_groupe_cod from groupe_perso where pgroupe_perso_cod = ' . $perso_cod . ' and pgroupe_statut > 0 ';
+        $stmt = $pdo->query($req);
+        if ($stmt->rowCount() != 0) $has_coterie = true; else  $has_coterie = false;
+
+        if ($has_guilde)
         {
             // remplissage de contenu
             $contenu_page .= '<optgroup label="Guilde">
 			<option value="guilde;">Message à toute la guilde</option>
 			</optgroup>';
         }
-        if ($compte->is_admin_monstre())
-        {
-            // remplissage de contenu
-            $contenu_page .= '
-			<optgroup label="Tous joueurs">
-			<option value="tous_joueurs_admin;">Message à tous les joueurs en vue</option>
-			</optgroup>';
-        }
-        $dist_init = -1;
-        $req_vue   = "select perso_nom,distance(ppos_pos_cod,$pos_actuelle) as dist,trajectoire_vue($pos_actuelle,pos_cod) as traj from perso, perso_position, positions
+        $contenu_page .= ' <optgroup label="Les joueurs (=1 perso par triplette)">';
+        $contenu_page .= ' <option value="_tous_joueurs_vue_;">Tous les joueurs en vue</option>';
+        if ($has_coterie) $contenu_page .= ' <option value="_tous_joueurs_coterie_;">Tous les joueurs de la coterie</option>';
+        if ($has_guilde) $contenu_page .= ' <option value="_tous_joueurs_guilde_;">Tous les joueurs de la guilde</option>';
+        if ($compte->is_admin_monstre()) $contenu_page .= '<option value="_tous_joueurs_carte_;">Message à tous les joueurs de la carte</option>';
+        $contenu_page .= ' <option value="_filtre_1_ppj_;">Filtrer les destinataires à 1 perso par joueur </option>';
+
+        $contenu_page .= '</optgroup>';
+        $dist_init    = -1;
+        $req_vue      = "select perso_nom,distance(ppos_pos_cod,$pos_actuelle) as dist,trajectoire_vue($pos_actuelle,pos_cod) as traj from perso, perso_position, positions
 												where pos_x >= ($v_x - $vue) and pos_x <= ($v_x + $vue)
 												and pos_y >= ($v_y - $vue) and pos_y <= ($v_y + $vue)
 												and ppos_perso_cod = perso_cod
@@ -129,8 +143,8 @@ if (!$compte->is_admin()
 												and ppos_pos_cod = pos_cod
 												and pos_etage = $etage
 												order by dist,perso_type_perso,perso_nom ";
-        $stmt      = $pdo->query($req_vue);
-        $ch        = '';
+        $stmt         = $pdo->query($req_vue);
+        $ch           = '';
         while ($result = $stmt->fetch())
         {
             if ($result['traj'] == 1)

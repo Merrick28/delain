@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+require_once G_CHE . 'includes/message.php';
 ob_start();
 $num_guilde = $_REQUEST['num_guilde'];
 

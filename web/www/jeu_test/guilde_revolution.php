@@ -27,8 +27,8 @@ if ($pguilde->get_by_perso($perso_cod))
     $guilde_cod = $pguilde->pguilde_guilde_cod;
     $guilde     = new guilde;
     $guilde->charge($guilde_cod);
-
 }
+
 // on regarde les détails de la révolution
 $grev = new guilde_revolution();
 if (!$grev->getByGuilde($guilde->guilde_cod))

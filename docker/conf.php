@@ -24,4 +24,4 @@ define('STMP_PASSWORD', '');
 define('API_URL', 'http://web/api/v2');
 
 define('DEBUG_TOKEN', 'a');
-define('DEBUG_MODE', false);
+define('DEBUG_MODE', true);
