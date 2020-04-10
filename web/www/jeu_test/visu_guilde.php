@@ -19,8 +19,18 @@ $req_guilde = "select pguilde_meta_caravane, pguilde_meta_noir, guilde_cod, guil
         and guilde_cod = $num_guilde";
 
 $stmt = $pdo->query($req_guilde);
+if ($stmt === false)
+{
+    error_log("[Erreur] sur chargement guilde_cod\n");
+    error_log("Referer = " . $_SERVER['HTTP_REFERER']);
+    $test = print_r(debug_backtrace(), true);
+    error_log($test);
+    die('Erreur sur chargement de guilde');
+} else
+{
+    $is_guilde = ($stmt->rowCount() != 0);
+}
 
-$is_guilde = ($stmt->rowCount() != 0);
 
 if ($is_guilde)
 {
