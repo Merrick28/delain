@@ -513,8 +513,6 @@ switch ($methode)
         {
             if ($tab_dest[$cpt] != "")
             {
-
-
                 if (!strcasecmp($tab_dest[$cpt], 'guilde'))
                 {
                     $msg_guilde = $num_guilde ;     // pour ajout cas particulier de message guilde
