@@ -411,12 +411,12 @@ switch ($methode)
         $contenu_page .= 'Le message a bien été effacé.';
         break;
     case "archive__vue generale_msg":
-        $msg = $_REQUEST['msg'];
+        $msg     = $_REQUEST['mid'];
         $requete =
             'update messages_dest set dmsg_archive = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
         $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
-                            ":msg"   => $msg[$cpt]), $stmt);
+                            ":msg"   => $msg), $stmt);
         $contenu_page .= 'Le message a été archivé.';
         break;
     case "efface_vue generale_msg":
@@ -429,17 +429,17 @@ switch ($methode)
         $contenu_page .= 'Le message a bien été effacé. Message : ' . $mid . ' perso : ' . $perso_cod;
         break;
     case "archive_msg":
-        $msg = $_REQUEST['msg'];
+        $msg     = $_REQUEST['mid'];
         $requete =
             'update messages_dest set dmsg_archive = \'O\' where dmsg_msg_cod = :msg and dmsg_perso_cod = :perso';
         $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
-                            ":msg"   => $msg[$cpt]), $stmt);
+                            ":msg"   => $msg), $stmt);
         $requete =
             'update messages_exp set emsg_archive = \'O\' where emsg_msg_cod = :msg and emsg_perso_cod = :perso';
         $stmt    = $pdo->prepare($requete);
         $pdo->execute(array(":perso" => $perso_cod,
-                            ":msg"   => $msg[$cpt]), $stmt);
+                            ":msg"   => $msg), $stmt);
         $contenu_page .= 'Le message a été archivé.';
         break;
     case "non_lu_msg":
