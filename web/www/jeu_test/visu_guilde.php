@@ -2,7 +2,12 @@
 include "blocks/_header_page_jeu.php";
 define('APPEL', 1);
 ob_start();
-
+if (!isset($_REQUEST['num_guilde']))
+{
+    error_log("[Erreur] sur chargement guilde_cod\n");
+    error_log("Referer = " . $_SERVER['HTTP_REFERER']);
+    error_log(print_r(debug_backtrace(), true));
+}
 $num_guilde = $_REQUEST['num_guilde'];
 // on vérifie qu'on soit dans la guilde visitée 
 $req_guilde = "select pguilde_meta_caravane, pguilde_meta_noir, guilde_cod, guilde_nom, rguilde_libelle_rang, pguilde_rang_cod, rguilde_admin, pguilde_message
