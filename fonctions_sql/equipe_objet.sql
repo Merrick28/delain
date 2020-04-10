@@ -45,6 +45,8 @@ declare
 	v_perso_niveau integer; -- Le niveau du perso
 	v_objet_niveau integer; -- Le niveau min de l’objet
 	v_est_equipable integer; -- 0 pas équipable, -1 pas equipable pour les familiers et 1 équipable
+	v_perso_nb_mains integer; -- nombre de mains occupé
+	v_objet_nb_mains integer; -- nombre de mains nécéssaire pour l'objet
 begin
 	code_retour := '0'; -- par défaut, tout est OK
 /********************************************/
@@ -80,7 +82,7 @@ begin
 /***********************************************************/
 /* Etape 3 : on vérifie que l objet est dans l inventaire  */
 /***********************************************************/
-	select into code_perobj,tobjet,tobjet_libelle,max_obj perobj_cod,gobj_tobj_cod,tobj_libelle,tobj_max_equip
+	select into code_perobj,tobjet,tobjet_libelle,max_obj,v_objet_nb_mains perobj_cod,gobj_tobj_cod,tobj_libelle,tobj_max_equip, gobj_nb_mains
 			from perso_objets,objets,objet_generique,type_objet
 			where perobj_perso_cod = personnage
 			and perobj_obj_cod = num_objet
@@ -119,7 +121,7 @@ begin
 		return code_retour;
 	end if;
 /**************************************************************/
-/* Etape 7 : on vérifie le nombre d objets de ce type equipés */
+/* Etape 7a : on vérifie le nombre d objets de ce type equipés */
 /**************************************************************/
 	select into compt count(obj_cod)
 		from perso_objets,objets,objet_generique
@@ -135,12 +137,28 @@ begin
 	end if;
 
 /****************************************************************************/
+/* Etape 7b : on vérifie q'on dispose d'assez de mains libres                 */
+/****************************************************************************/
+select into v_perso_nb_mains coalesce(sum(gobj_nb_mains),0)
+			from perso_objets,objets,objet_generique
+			where perobj_perso_cod = personnage
+			and obj_cod = perobj_obj_cod
+			and gobj_cod= obj_gobj_cod
+			and perobj_equipe='O' ;
+
+if (v_perso_nb_mains + v_objet_nb_mains) > 2 then
+  code_retour := '-1;Vous n''avez pas de main libre pour équiper cet objet !' ;
+  return code_retour;
+end if;
+
+/****************************************************************************/
 /* Etape 8 : on vérifie que l’objet et le perso ont des niveaux compatibles */
 /****************************************************************************/
 	if v_perso_niveau < v_objet_niveau then
 		code_retour := '-1;Vous ne pouvez pas équiper cet objet avant d’avoir atteint le niveau ' || v_objet_niveau::text;
 		return code_retour;
 	end if;
+
 
 /****************************************/
 /* Etape 9 : tout est vérifié, on passe */
