@@ -99,9 +99,9 @@ switch ($methode)
             //
             // On prend les infos du message
             //
-
+            $fonctions      = new fonctions;
             $corps          = $message->msg_corps;
-            $date           = $message->msg_date;
+            $date           = $fonctions->format_date($message->msg_date2);
             $titre          = $message->msg_titre;
             $msg_init       = $message->msg_init;
             $msg_guilde_cod = $message->msg_guilde_cod;
