@@ -1,4 +1,5 @@
 <?php
+require G_CHE . 'includes/message.php';
 include "blocks/_header_page_jeu.php";
 $perso  = $verif_connexion->perso;
 $compte = $verif_connexion->compte;
