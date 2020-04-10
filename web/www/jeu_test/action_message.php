@@ -360,20 +360,21 @@ switch ($methode)
         $contenu_page .= $nb . ' messages ont été supprimés de votre boite de réception.';
         break;
     case "select_archive":
-        $nb = 0;
+        $nb  = 0;
         $msg = array();
         if (isset($_REQUEST['msg']))
         {
             $msg = $_REQUEST['msg'];
         }
+        $requete =
+            'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
+        $stmt    = $pdo->prepare($requete);
         for ($cpt = 0; $cpt < 20; $cpt++)
         {
             if (isset($msg[$cpt]))
             {
-                $nb      = $nb + 1;
-                $requete =
-                    'update messages_dest set dmsg_archive = \'O\',dmsg_lu = \'O\' where dmsg_cod = :msg and dmsg_perso_cod = :perso';
-                $stmt    = $pdo->prepare($requete);
+                $nb = $nb + 1;
+
                 $pdo->execute(array(":perso" => $perso_cod,
                                     ":msg"   => $msg[$cpt]), $stmt);
             }
