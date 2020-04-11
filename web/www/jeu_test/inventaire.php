@@ -487,8 +487,8 @@ $stmt   = $pdo->query($req_id);
 
                     $potion_buvable =
                         ($result['tobj_cod'] == 21 && $result['gobj_cod'] != 412 && $result['gobj_cod'] != 561);
-                    if ($result['obon_cod'] >= 0)
-                        $poid_catégorie += $result['obj_poids'] > 0 ? $result['obj_poids'] < 0 : 0;
+                    //if ($result['obon_cod'] >= 0)
+                    $poid_catégorie += $result['obj_poids'] > 0 ? $result['obj_poids'] < 0 : 0;
 
 
                     if ($result['obon_cod'] >= 0)
