@@ -4,14 +4,7 @@ if ($result['t_decor'] != 0)
 {
     echo '<div class="caseVue decor' . $result['t_decor'] . '">';
 }
-if ($aff_lock)
-{
-    if ($result['t_nb_lock'] != 0)
-    {
-        $detail = 1;
-        echo '<div class="lock">';
-    }
-}
+
 
 if ($result['t_nb_perso'] != 0)
 {
@@ -72,9 +65,24 @@ if ($result['t_decor_dessus'] != 0)
 {
     echo '<div class="caseVue decor' . $result['t_decor_dessus'] . '">';
 }
+if ($aff_lock)
+{
+    if ($result['t_nb_lock'] != 0)
+    {
+        $detail = 1;
+        echo '<div class="lock">';
+    }
+}
 echo '<div id="cell' . $result['t_pos_cod'] . '" class="pasvu caseVue" title="' . $titre . '">';
 echo '<img src="' . G_IMAGES . 'del.gif" width="28" height="28" alt="' . $comment . '" />';
 echo '</div>';
+if ($aff_lock)
+{
+    if ($result['t_nb_lock'] != 0)
+    {
+        echo '</div>';
+    }
+}
 if ($result['t_decor_dessus'] != 0)
 {
     echo '</div>';
@@ -114,13 +122,7 @@ if ($result['t_nb_perso'] != 0)
 {
     echo '</div>';
 }
-if ($aff_lock)
-{
-    if ($result['t_nb_lock'] != 0)
-    {
-        echo '</div>';
-    }
-}
+
 
 if ($result['t_decor'] != 0)
 {
