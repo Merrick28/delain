@@ -106,17 +106,8 @@ if (isset($etage_actuel))
         }
         $style = 'caseVue v' . $result['t_type_case'];
         echo '<td class="' . $style . '">';
-        if ($result['t_nb_lock'] != 0)
-        {
-            $detail = 1;
-            echo '<div class="lock">';
-        }
+        $aff_lock = true;
         require "blocks/_detail_vue_1.php";
-
-        if ($result['t_nb_lock'] != 0)
-        {
-            echo '</div>';
-        }
 
 
         echo '</td>';

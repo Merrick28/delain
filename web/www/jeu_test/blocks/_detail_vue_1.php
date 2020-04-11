@@ -4,6 +4,15 @@ if ($result['t_decor'] != 0)
 {
     echo '<div class="caseVue decor' . $result['t_decor'] . '">';
 }
+if ($aff_lock)
+{
+    if ($result['t_nb_lock'] != 0)
+    {
+        $detail = 1;
+        echo '<div class="lock">';
+    }
+}
+
 if ($result['t_nb_perso'] != 0)
 {
     $comment .= $result['t_nb_perso'] . ' aventurier(s), ';
@@ -105,6 +114,14 @@ if ($result['t_nb_perso'] != 0)
 {
     echo '</div>';
 }
+if ($aff_lock)
+{
+    if ($result['t_nb_lock'] != 0)
+    {
+        echo '</div>';
+    }
+}
+
 if ($result['t_decor'] != 0)
 {
     echo '</div>';

@@ -68,6 +68,7 @@ if (isset($etage_actuel))
         }
         $style = 'caseVue v' . $result['t_type_case'];
         echo '<td class="' . $style . '">';
+        $aff_lock = false;
         require "blocks/_detail_vue_1.php";
         echo '</td>';
 
