@@ -4,9 +4,7 @@ define('APPEL', 1);
 ob_start();
 if (!isset($_REQUEST['num_guilde']))
 {
-    error_log("[Erreur] sur chargement guilde_cod\n");
-    error_log("Referer = " . $_SERVER['HTTP_REFERER']);
-    error_log(print_r(debug_backtrace(), true));
+    die('Erreur sur chargement de guilde');
 }
 $num_guilde = $_REQUEST['num_guilde'];
 // on vérifie qu'on soit dans la guilde visitée 
@@ -25,7 +23,7 @@ if ($stmt === false)
     error_log("Referer = " . $_SERVER['HTTP_REFERER']);
     $test = print_r(debug_backtrace(), true);
     error_log($test);
-    die('Erreur sur chargement de guilde');
+
 } else
 {
     $is_guilde = ($stmt->rowCount() != 0);
