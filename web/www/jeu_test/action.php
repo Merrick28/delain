@@ -892,6 +892,7 @@ if (!$compte->is_admin() || ($compte->is_admin_monstre() && $perso->perso_type_p
                     {
                         if ($invite = $perso->f_cherche_perso($tab_dest[$cpt]))
                         {
+                            $groupe       = $_REQUEST['groupe'];
                             $contenu_page .= '<br><br>' . $perso->invite_groupe($groupe, $invite->perso_cod);
                         }
                     }
