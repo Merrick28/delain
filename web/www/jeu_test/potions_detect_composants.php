@@ -20,7 +20,6 @@ if($result = $stmt->fetch())
 	{
 			$methode = "debut";
 	}
-    $tpot = $_REQUEST['tpot'];
 	switch($methode)
 	{
 		case "debut":
