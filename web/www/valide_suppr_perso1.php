@@ -16,7 +16,7 @@ $perso_cible = 1 * $_REQUEST['perso'];
 $class_perso_cible = new perso;
 $class_perso_cible->charge($perso_cible);
 
-$compte = new compte();
+
 $compte = $verif_connexion->compte;
 
 //$logger->debug('Perso_cible ' . $class_perso_cible);

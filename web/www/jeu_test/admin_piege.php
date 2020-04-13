@@ -154,38 +154,7 @@ if ($erreur == 0)
                 /* Il n’existe pas de fonction sur cette position */
                 /**************************************************/
                 // mise à 0 des valeurs vides pour les malus
-                $fields = array(
-                    'malus_dlt',
-                    'mal_poison',
-                    'mal_deplacement',
-                    'mal_esquive',
-                    'mal_deg',
-                    'mal_vue',
-                    'mal_touche',
-                    'mal_son',
-                    'mal_attaque',
-                    'mal_blessure',
-                    'declenchement',
-                );
-                foreach ($fields as $i => $value)
-                {
-                    if ($_POST[$fields[$i]] == '')
-                        $_POST[$fields[$i]] = 0;
-                }
-                $texte_event = htmlspecialchars($_POST['texte_event']);
-                $texte_event = str_replace(";", chr(127), $texte_event);
-                $texte_event = str_replace("\\", " ", $texte_event);
-                $texte_event = str_replace("'", "%", $texte_event);
-                $texte_event = str_replace(",", "#", $texte_event);
-                // modif de la table positions pour intégrer la fonction d’arrivée
-                $piege =
-                    "piege_param([perso]," . $_POST['malus_dlt'] . "," . $_POST['mal_poison'] . "," . $_POST['mal_deplacement'] . "," . $_POST['mal_esquive'] . "," . $_POST['mal_deg'] . "," . $_POST['mal_vue'] . "," . $_POST['mal_touche'] . "," . $_POST['mal_son'] . "," . $_POST['mal_attaque'] . "," .
-                    $_POST['mal_blessure'] . "," . $_POST['declenchement'] . ",''" . $texte_event . "'')";
-                echo($piege);
-                $req  = "update positions 
-					set pos_fonction_arrivee = '$piege' 
-					where pos_cod = " . $pos_cod;
-                $stmt = $pdo->query($req);
+                require_once "blocks/_admin_piege.php";
                 echo "<p>L’insertion du piège s’est bien déroulée en " . $_POST['pos_x'] . "," . $_POST['pos_y'] . " au " . $_POST['pos_etage'] . " 
 				<br>Le texte affiché sera : " . $_POST['texte_event'] . "
 				<br> (si vide, texte standard)";

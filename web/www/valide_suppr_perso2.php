@@ -2,6 +2,7 @@
 $verif_connexion = new verif_connexion();
 $verif_connexion->verif();
 $compt_cod = $verif_connexion->compt_cod;
+$compte    = $verif_connexion->compte;
 
 
 $perso_cible = $_REQUEST['perso'];
@@ -26,7 +27,7 @@ $pdo         = new bddpdo();
         die('erreur sur le chargement de perso');
     }
 
-    $perso_dcreat = new DateTime($perso->perso_dcreat);
+    $perso_dcreat = new DateTime($perso_a_effacer->perso_dcreat);
     date_add($perso_dcreat, date_interval_create_from_date_string('1 days'));
     $now = date_create();
     if ($perso_dcreat > $now)
@@ -52,21 +53,20 @@ $pdo         = new bddpdo();
     }
 
 
-    $req  =
+    $req        =
         "select pcompt_perso_cod, perso_type_perso 
             from perso_compte, perso 
             where pcompt_perso_cod = :perso_cible
               and pcompt_compt_cod = :compt_cod
               and pcompt_perso_cod = perso_cod";
-    $stmt = $pdo->prepare($req);
-    $stmt = $pdo->execute(array(":perso_cible" => $perso_cible,
-                                ":compt_cod"   => $compt_cod), $stmt);
-    if ($result = $stmt->fetch() and $type_perso != 3) // Non rattaché au compte, pas un familier.
+    $stmt       = $pdo->prepare($req);
+    $stmt       = $pdo->execute(array(":perso_cible" => $perso_cible,
+                                      ":compt_cod"   => $compt_cod), $stmt);
+
+    //if ($result = $stmt->fetch() and $type_perso != 3) // Non rattaché au compte, pas un familier.
+    if (!$compte->autoriseJouePerso($perso_cible))
     {
         echo "Vous êtes en train de tenter de supprimer un personnage qui n’est pas rattaché à votre compte !";
-    } else if ($type_perso == 3 and $compt_cod != $compt_fam) // Un familier, mais rattaché à un perso d’un autre compte
-    {
-        echo "Vous êtes en train de tenter de supprimer un familier qui n’est pas rattaché à l’un de vos persos !";
     } else if ($erreur == 1)  // Mois de 24 heures depuis la création du perso
     {
         echo 'Allons allons...  Cet aventurier a moins de 24 heures d’existence, ',
@@ -111,7 +111,7 @@ $pdo         = new bddpdo();
         $stmt   = $pdo->execute(array(":perso" => $perso_cible), $stmt);
         $req1   = "select pfam_familier_cod from perso_familier where pfam_perso_cod = :perso ";
         $stmt   = $pdo->prepare($req1);
-        $stmt = $pdo->execute(array(":perso" => $perso_cible), $stmt);
+        $stmt   = $pdo->execute(array(":perso" => $perso_cible), $stmt);
         $allfam = $stmt->fetchAll();
         if (count($allfam) != 0)
         {
