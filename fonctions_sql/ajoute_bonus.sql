@@ -152,7 +152,7 @@ begin
   where bonus_perso_cod = v_perso
         and bonus_tbonus_libc = v_type
         and bonus_valeur = v_valeur
-        and bonus_cumulatif = 'S';
+        and bonus_mode = 'S';
 
   return v_retour;
 end;$_$;
