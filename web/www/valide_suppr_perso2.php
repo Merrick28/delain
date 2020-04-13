@@ -64,7 +64,7 @@ $pdo         = new bddpdo();
                                       ":compt_cod"   => $compt_cod), $stmt);
 
     //if ($result = $stmt->fetch() and $type_perso != 3) // Non rattaché au compte, pas un familier.
-    if (!$compte->autoriseJouePerso($perso_cible))
+    if (!$compte->autoriseJouePerso($perso_cible, false))
     {
         echo "Vous êtes en train de tenter de supprimer un personnage qui n’est pas rattaché à votre compte !";
     } else if ($erreur == 1)  // Mois de 24 heures depuis la création du perso
