@@ -338,18 +338,18 @@ switch ($methode)
                 if (!in_array($numero, $fonctions_annulees))
                 {
                     require "blocks/_block_admin_traitement_type_monstre_edit.php";
-
-
-                    $req  = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message)
+                    $fonc_type = $_POST['declenchement_' . $numero];
+                    $fonc_nom  = $_POST['fonction_type_' . $numero];
+                    $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message)
 						values (:fonc_nom, :gmon_cod, :fonc_type, :fonc_effet, '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, $fonc_proba, '$fonc_message')";
-                    $stmt = $pdo->prepare($req);
-                    $stmt = $pdo->execute(array(
-                                              ":fonc_nom"   => $_REQUEST['fonc_nom'],
-                                              ":gmon_cod"   => $gmon_cod,
-                                              ":fonc_type"  => $_REQUEST['fonc_type'],
-                                              ":fonc_effet" => $_REQUEST['fonc_effet']
+                    $stmt      = $pdo->prepare($req);
+                    $stmt      = $pdo->execute(array(
+                                                   ":fonc_nom"   => $fonc_nom,
+                                                   ":gmon_cod"   => $gmon_cod,
+                                                   ":fonc_type"  => $fonc_type,
+                                                   ":fonc_effet" => $fonc_effet
 
-                                          ), $stmt);
+                                               ), $stmt);
 
                     $texteDeclenchement = '';
                     switch ($fonc_type)
