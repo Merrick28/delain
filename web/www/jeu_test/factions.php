@@ -178,7 +178,7 @@ if ($erreur)
     if ($pfac_statut == 0)    // Le gars n’est pas démissionnaire
     {
         // -> Résolution des missions en cours
-        $tableauMission      = $perso->missions_du_perso();
+        $tableauMission      = $perso->missions_du_perso($faction);
         $missionEnCours      = false;
         $missionEnRetard     = false;
         $resultat_validation = "";
@@ -202,9 +202,13 @@ if ($erreur)
 					WHERE pfac_fac_cod = $faction AND pfac_perso_cod = $perso_cod";
                 $stmt           = $pdo->query($req_rang_perso);
                 if ($result = $stmt->fetch())
+                {
                     $pfac_nv_points = $result['pfac_points'];
-                else
+                } else
+                {
                     $pfac_nv_points = 0;
+                }
+
             }
             if ($uneMission['EnCours'])
             {
