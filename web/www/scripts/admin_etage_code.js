@@ -161,7 +161,7 @@ Etage.Dessine = function() {
 	console.log('debut dessine etage');
 	var lignesVisibles = 50;
 	var colonnesVisibles = 50;
-
+	console.log('Max X =' + Etage.maxX);
 	var imagesParLigne = Etage.maxX - Etage.minX + 1;
 	var nombreDeLignes = Etage.maxY - Etage.minY + 1;
 	var largeurPX = (imagesParLigne * 28);
@@ -183,19 +183,22 @@ Etage.Dessine = function() {
 	var divConteneur = document.createElement("div");
 	divConteneur.style.width = largeurPX.toString() + "px";
 	divConteneur.style.heigth = hauteurPX.toString() + "px";
-	divConteneur.onmouseout = function () { Etage.deselectionne(); };
-
+	divConteneur.onmouseout = function () {
+		Etage.deselectionne();
+	};
+	console.log("max cases " + Etage.Cases.length);
 	for (var i = 0; i < Etage.Cases.length; i++) {
+		console.log("i courant =" + i);
 		var debutLigne = (i % imagesParLigne == 0);
 		var idObj = Etage.Cases[i].id;
 
-		Etage.Cases[i].divFond = Etage.getCoucheSuperposee (Fonds, Etage.Cases[i].id, Etage.Cases[i].fond);
+		Etage.Cases[i].divFond = Etage.getCoucheSuperposee(Fonds, Etage.Cases[i].id, Etage.Cases[i].fond);
 		if (debutLigne) Etage.Cases[i].divFond.style.clear = "left";
 
-		Etage.Cases[i].divDecor = Etage.getCoucheSuperposee (Decors, Etage.Cases[i].id, Etage.Cases[i].decor);
-		Etage.Cases[i].divMur = Etage.getCoucheSuperposee (Murs, Etage.Cases[i].id, Etage.Cases[i].mur);
-		Etage.Cases[i].divDecorDessus = Etage.getCoucheSuperposee (DecorsDessus, Etage.Cases[i].id, Etage.Cases[i].decor_dessus);
-		Etage.Cases[i].divSpecial = Etage.getCoucheAction (i);
+		Etage.Cases[i].divDecor = Etage.getCoucheSuperposee(Decors, Etage.Cases[i].id, Etage.Cases[i].decor);
+		Etage.Cases[i].divMur = Etage.getCoucheSuperposee(Murs, Etage.Cases[i].id, Etage.Cases[i].mur);
+		Etage.Cases[i].divDecorDessus = Etage.getCoucheSuperposee(DecorsDessus, Etage.Cases[i].id, Etage.Cases[i].decor_dessus);
+		Etage.Cases[i].divSpecial = Etage.getCoucheAction(i);
 
 		divConteneur.appendChild(Etage.Cases[i].divFond);
 		var divEnCours = Etage.Cases[i].divFond;

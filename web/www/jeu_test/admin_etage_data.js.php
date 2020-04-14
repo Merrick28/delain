@@ -6,7 +6,8 @@ $perso_cod = $verif_connexion->perso_cod;
 $compt_cod = $verif_connexion->compt_cod;
 include_once '../includes/images_delain.php';
 
-if (!isset($num_etage) || $num_etage === '')
+$num_etage = get_request_var('num_etage', '');
+if ($num_etage === '')
 {
     die ('alert("Erreur ! Aucun étage déclaré !")');
 }
@@ -40,7 +41,7 @@ $req_cases = "select pos_decor, pos_cod, pos_x, pos_y, pos_type_aff, coalesce(mu
 	left outer join murs on mur_pos_cod = pos_cod
 	where pos_etage = $num_etage 
 	order by pos_y desc, pos_x";
-$pdo->query($req_cases);
+$stmt = $pdo->query($req_cases);
 $i = 0;
 while ($result = $stmt->fetch())
 {
