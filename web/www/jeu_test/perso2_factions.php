@@ -16,7 +16,7 @@ $stmt         = $pdo->query($req_factions);
 if ($stmt->rowCount() > 0)
 {
     $contenu_page .= '<p class="titre">Factions</p><p></p>';
-    $methode          = $_REQUEST['mission'];
+    $methode      = $_REQUEST['methode'];
     if (isset($methode) && $methode == 'valide_mission')
     {
         $req_mission = "select missions_verifie($perso_cod) as resultat";
@@ -26,6 +26,7 @@ if ($stmt->rowCount() > 0)
         {
             $contenu_page .= "<div class='bordiv' style='margin:10px;'>Résultats de validation :<br />" . $result2['resultat'] . "</div>";
         }
+
     }
     $contenu_page .= '<table><tr><td valign="top">';
     while ($result = $stmt->fetch())
