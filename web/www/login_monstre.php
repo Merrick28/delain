@@ -4,6 +4,7 @@
 $verif_connexion = new verif_connexion();
 $verif_connexion->ident();
 $verif_auth = $verif_connexion->verif_auth;
+$compt_cod  = $verif_connexion->compt_cod;
 include G_CHE . "/includes/classes_monstre.php";
 require_once "fonctions.php";
 
@@ -55,7 +56,7 @@ $pdo = new bddpdo();
             echo("<table>");
             foreach ($allMonstre as $monstre)
             {
-               ligne_login_monstre($monstre);
+                ligne_login_monstre($monstre, $compt_cod);
             }
 
             echo("</table>");

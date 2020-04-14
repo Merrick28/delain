@@ -26,45 +26,50 @@
 	}
 	if ($droit['etage'] == 'A')
 	{
-		$restrict = '';
-		$restrict2 = '';
-	}
-	else
-	{
-		$restrict = 'where etage_numero in (' . $droit['etage'] . ') ';
-		$restrict2 = 'and pos_etage in (' . $droit['etage'] . ') ';
-	}
+        $restrict  = '';
+        $restrict2 = '';
+    } else
+    {
+        $restrict  = 'where etage_numero in (' . $droit['etage'] . ') ';
+        $restrict2 = 'and pos_etage in (' . $droit['etage'] . ') ';
+    }
 
     echo '<p><strong>Trouver un monstre</strong></p>';
-	if ($perso_cod > 0)
-	{
-		$req = "select ppos_pos_cod, pos_etage from perso_position
+    if (isset($perso_cod))
+    {
+        $req            = "select ppos_pos_cod, pos_etage from perso_position
 			inner join positions on pos_cod = ppos_pos_cod
 			where ppos_perso_cod = $perso_cod ";
-		$stmt = $pdo->query($req);
-		$result = $stmt->fetch();
-		$pos_actu = $result['ppos_pos_cod'];
-		$pos_actu_etage = $result['pos_etage'];
-		echo " - <a href=\"$chemin/login_monstre_case.php?position=" , $pos_actu , "\">Monstres sur la même case</a>";
-	}
+        $stmt           = $pdo->query($req);
+        $result         = $stmt->fetch();
+        $pos_actu       = $result['ppos_pos_cod'];
+        $pos_actu_etage = $result['pos_etage'];
+        echo " - <a href=\"$chemin/login_monstre_case.php?position=", $pos_actu, "\">Monstres sur la même case</a>";
+    }
     echo "<br /><form action='$chemin/../validation_login_monstre.php' method='GET'>
             - Trouver un monstre par son numéro :
             <input type='text' value='' name='numero' />
             <input type='hidden' value='$compt_cod' name='compt_cod' />
             <input type='submit' value='Connexion' />
         </form>";
-	?>
-	<form name="edit" method="post" action="login_monstre.php">
-	 - Choisissez un étage pour en consulter les monstres
-	<select name="etage">
-	<?php 		echo $html->etage_select($pos_actu_etage, $restrict);
-	?>
-	</select>
-	<input type="submit" value="Sélectionner cet étage">
-	</form>
-	<?php 
-	echo "<hr>";
-	$req = "select perso_nom, perso_cod, perso_actif, pos_x, pos_y, etage_libelle, count(dmsg_cod) as mess, coalesce(compt_nom, '') as compt_nom
+    ?>
+        <form name="edit" method="post" action="login_monstre.php">
+            - Choisissez un étage pour en consulter les monstres
+            <select name="etage">
+
+                <?php
+                if (!isset($pos_actu_etage))
+                {
+                    $pos_actu_etage = 0;
+                }
+                echo $html->etage_select($pos_actu_etage, $restrict);
+                ?>
+            </select>
+            <input type="submit" value="Sélectionner cet étage">
+        </form>
+        <?php
+        echo "<hr>";
+        $req = "select perso_nom, perso_cod, perso_actif, pos_x, pos_y, etage_libelle, count(dmsg_cod) as mess, coalesce(compt_nom, '') as compt_nom
 		from perso
 		inner join messages_dest on dmsg_perso_cod = perso_cod
 		inner join perso_position on ppos_perso_cod = perso_cod

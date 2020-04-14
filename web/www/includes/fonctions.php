@@ -251,9 +251,9 @@ function niveau_blessures($pv, $pv_max)
 // pour éviter les doublons
 
 
-function ligne_login_monstre($monstre)
+function ligne_login_monstre($monstre, $compt_cod)
 {
     $fonctions = new fonctions;
-    $fonctions->ligne_login_monstre($monstre);
+    $fonctions->ligne_login_monstre($monstre, $compt_cod);
 
 }

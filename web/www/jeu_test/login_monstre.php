@@ -67,7 +67,7 @@ if ($nb_monstre == 0) {
     $fonctions = new fonctions();
     while ($result = $stmt->fetch())
     {
-        $fonctions->ligne_login_monstre($result);
+        $fonctions->ligne_login_monstre($result, $compt_cod);
 
     }
 

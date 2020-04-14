@@ -97,7 +97,7 @@ class fonctions
         }
     }
 
-    function ligne_login_monstre($monstre)
+    function ligne_login_monstre($monstre, $compt_cod)
     {
         $pdo = new bddpdo();
         if ($monstre['perso_dirige_admin'] == 'O')
