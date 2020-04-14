@@ -1,6 +1,7 @@
 <?php
 
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 
 
 //	Préparer la liste des images d'avatar déjà présete sur le serveur.
@@ -211,6 +212,11 @@ if ($erreur == 0)
                 'serie_armure' => 'gmon_serie_armure_cod',
                 'type_IA'      => 'ia_nom'
             );
+            foreach ($tableau_sort as $key => $val)
+            {
+                $gras[$key]    = '';
+                $fingras[$key] = '';
+            }
             if (!isset($tableau_sort[$sort]))
             {
                 echo "<p>Anomalie sur tri !";
@@ -280,24 +286,24 @@ if ($erreur == 0)
                 {
                     $comments .= $result2['sort_nom'] . ",";
                 }
-                echo "<TR><TD><a href=\"admin_type_monstre_edit.php?methode2=edit&sel_method=edit&gmon_cod=$gen_mon_cod\">", $result_gmon['gmon_nom'], "</a>
-					</TD><TD>", $result_gmon['gmon_niveau'],
-                "</TD><TD>", $result_gmon['ia_nom'],
-                "</TD><TD>", $result_gmon['gmon_for'],
-                "</TD><TD>", $result_gmon['gmon_dex'],
-                "</TD><TD>", $result_gmon['gmon_int'],
-                "</TD><TD>", $result_gmon['gmon_con'],
-                "</TD><TD>", $result_gmon['gmon_nb_des_degats'], "D", $result_gmon['gmon_val_des_degats'], "(+", $result_gmon['gmon_amelioration_degats'], ")",
-                "</TD><TD>", $result_gmon['gmon_des_regen'], "D", $result_gmon['gmon_valeur_regen'], "(+", $result_gmon['gmon_amelioration_regen'], ")",
-                "</TD><TD>", $result_gmon['gmon_vue'],
-                "</TD><TD>", $result_gmon['gmon_temps_tour'],
-                "</TD><TD>", $result_gmon['obcar_armure'] * 1, "(+", $result_gmon['gmon_amelioration_armure'], ")",
+                echo "<TR><TD><a href=\"admin_type_monstre_edit.php?methode2=edit&sel_method=edit&gmon_cod=$gen_mon_cod\">", $result['gmon_nom'], "</a>
+					</TD><TD>", $result['gmon_niveau'],
+                "</TD><TD>", $result['ia_nom'],
+                "</TD><TD>", $result['gmon_for'],
+                "</TD><TD>", $result['gmon_dex'],
+                "</TD><TD>", $result['gmon_int'],
+                "</TD><TD>", $result['gmon_con'],
+                "</TD><TD>", $result['gmon_nb_des_degats'], "D", $result['gmon_val_des_degats'], "(+", $result²['gmon_amelioration_degats'], ")",
+                "</TD><TD>", $result['gmon_des_regen'], "D", $result['gmon_valeur_regen'], "(+", $result['gmon_amelioration_regen'], ")",
+                "</TD><TD>", $result['gmon_vue'],
+                "</TD><TD>", $result['gmon_temps_tour'],
+                "</TD><TD>", $result['obcar_armure'] * 1, "(+", $result['gmon_amelioration_armure'], ")",
                 "</TD><TD>", $arme,
                 "</TD><TD>", $armure, "
-					</TD><TD>", $result_gmon['gmon_nb_receptacle'],
+					</TD><TD>", $result['gmon_nb_receptacle'],
                 "</TD><TD> ($comments)",
-                "</TD><TD>", $result_gmon['gmon_or'], " br",
-                "</TD><TD>", $result_gmon['gmon_quete'],
+                "</TD><TD>", $result['gmon_or'], " br",
+                "</TD><TD>", $result['gmon_quete'],
                 "</TD></TR>";
             }
             echo "</table>";

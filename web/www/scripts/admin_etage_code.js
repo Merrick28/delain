@@ -158,6 +158,7 @@ Etage.getCasesVoisines = function (idx) {
 
 // Dessine l’étage.
 Etage.Dessine = function() {
+	console.log('debut dessine etage');
 	var lignesVisibles = 50;
 	var colonnesVisibles = 50;
 
@@ -214,6 +215,7 @@ Etage.Dessine = function() {
 	}
 	divViewPort.appendChild(divConteneur);
 	document.getElementById("vueEtage").appendChild(divViewPort);
+	console.log("fin etage dessine");
 };
 
 // Insère une div quelque part entre DivFond et DivAction, qui sont toujours présentes, dans l’ordre Fond > Décor > Mur > DécorDessus > Action.

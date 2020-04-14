@@ -1,5 +1,9 @@
 <?php // RECUPERATION DES INFORMATIONS POUR LE LOG
-define('APPEL', 1);
+if (!defined('APPEL'))
+{
+    define('APPEL', 1);
+}
+
 $fonctions = new fonctions();
 
 if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
@@ -16,7 +20,8 @@ if (isset($_POST['gmon_cod']) and $methode != 'create_mon')
     }
 }
 $log =
-    date("d/m/y - H:i") . "$perso_nom (compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: $gmon_cod\n";
+    date("d/m/y - H:i") . $perso->perso_nom . " compte $compt_cod) modifie le type de monstre $pmons_mod_nom, numero: 
+$gmon_cod\n";
 
 // On traite d'abord un eventuel upload de fichier (avatar du monstre) identique pour creation/modification
 if (($_POST["type-img-avatar"] == "upload") && ($_FILES["avatar_file"]["tmp_name"] != ""))
@@ -334,9 +339,17 @@ switch ($methode)
                 {
                     require "blocks/_block_admin_traitement_type_monstre_edit.php";
 
-                    $req = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message)
-						values ('$fonc_nom', $gmon_cod, '$fonc_type', '$fonc_effet', '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, $fonc_proba, '$fonc_message')";
-                    $pdo->query($req);
+
+                    $req  = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message)
+						values (:fonc_nom, :gmon_cod, :fonc_type, :fonc_effet, '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, $fonc_proba, '$fonc_message')";
+                    $stmt = $pdo->prepare($req);
+                    $stmt = $pdo->execute(array(
+                                              ":fonc_nom"   => $_REQUEST['fonc_nom'],
+                                              ":gmon_cod"   => $gmon_cod,
+                                              ":fonc_type"  => $_REQUEST['fonc_type'],
+                                              ":fonc_effet" => $_REQUEST['fonc_effet']
+
+                                          ), $stmt);
 
                     $texteDeclenchement = '';
                     switch ($fonc_type)

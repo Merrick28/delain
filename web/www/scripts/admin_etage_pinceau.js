@@ -1,11 +1,21 @@
+console.log('chargement admin_etage_pinceau');
+
 var defautImageUrl = "http://www.jdr-delain.net/images/del.gif";
 var cheminImages = "http://www.jdr-delain.net/images/";
 var Fonds = {};
 Fonds.donnees = new Array();
-Fonds.isDefaut = function (id) { return false; };
-Fonds.getUrl = function (id) { return cheminImages + 'f_' + Etage.style + '_' + id + '.png';};
-Fonds.getClass = function (id) { return 'v' + id;};
-Fonds.getId = function (id) { return 'fond' + id;};
+Fonds.isDefaut = function (id) {
+	return false;
+};
+Fonds.getUrl = function (id) {
+	return cheminImages + 'f_' + Etage.style + '_' + id + '.png';
+};
+Fonds.getClass = function (id) {
+	return 'v' + id;
+};
+Fonds.getId = function (id) {
+	return 'fond' + id;
+};
 Fonds.type = "Fond";
 Fonds.enlevable = false;
 Fonds.getSousType = function (id) { return true; }
@@ -87,27 +97,27 @@ Pinceau.miseAJour = function(type, idObj) {
 			spanType.innerHTML = "Fond";
 			imgPinceau.src = Fonds.getUrl(Pinceau.element);
 			Etage.ModeVisu.EnleveSpeciaux ();
-		break;
+			break;
 		case Decors.type:
 			spanType.innerHTML = "Décor standard";
 			imgPinceau.src = Decors.getUrl(Pinceau.element);
 			Etage.ModeVisu.EnleveSpeciaux ();
-		break;
+			break;
 		case DecorsDessus.type:
 			spanType.innerHTML = "Décor superposé";
 			imgPinceau.src = DecorsDessus.getUrl(Pinceau.element);
 			Etage.ModeVisu.EnleveSpeciaux ();
-		break;
+			break;
 		case Murs.type:
 			spanType.innerHTML = "Mur";
 			imgPinceau.src = Murs.getUrl(Pinceau.element);
 			Etage.ModeVisu.EnleveSpeciaux ();
-		break;
+			break;
 		case Speciaux.type:
 			spanType.innerHTML = Speciaux.getNom(Pinceau.element);
 			imgPinceau.src = Speciaux.getUrl(Pinceau.element);
 			Etage.ModeVisu.AfficheSpeciaux ();
-		break;
+			break;
 	}
 }
 
@@ -131,8 +141,7 @@ Pinceau.appliqueCase = function (idx) {
 		var caseModif = Etage.CasesModifiees[idxModif];
 		nvlleCase = { idx: idx, id: ancienneCase.id, mur: caseModif.mur, decor: caseModif.decor, decor_dessus: caseModif.decor_dessus, fond: caseModif.fond, passage: caseModif.passage, pvp: caseModif.pvp, creusable: caseModif.creusable, tangible: caseModif.tangible, entree_arene: caseModif.entree_arene };
 		Etage.CasesModifiees.splice(idxModif, 1);
-	}
-	else			// Case pas encore modifiée
+	} else			// Case pas encore modifiée
 		nvlleCase = { idx: idx, id: ancienneCase.id, mur: ancienneCase.mur, decor: ancienneCase.decor, decor_dessus: ancienneCase.decor_dessus, fond: ancienneCase.fond, passage: ancienneCase.passage, pvp: ancienneCase.pvp, creusable: ancienneCase.creusable, tangible: ancienneCase.tangible, entree_arene: ancienneCase.entree_arene };
 
 	// récupération et mise à jour des données
@@ -140,19 +149,19 @@ Pinceau.appliqueCase = function (idx) {
 		case Fonds.type:
 			Etage.changeCase (Fonds, idx, Pinceau.element);
 			nvlleCase.fond = Pinceau.element;
-		break;
+			break;
 		case Decors.type:
 			Etage.changeCase (Decors, idx, Pinceau.element);
 			nvlleCase.decor = Pinceau.element;
-		break;
+			break;
 		case DecorsDessus.type:
 			Etage.changeCase (DecorsDessus, idx, Pinceau.element);
 			nvlleCase.decor_dessus = Pinceau.element;
-		break;
+			break;
 		case Murs.type:
 			Etage.changeCase (Murs, idx, Pinceau.element);
 			nvlleCase.mur = Pinceau.element;
-		break;
+			break;
 		case Speciaux.type:
 			Etage.changeCase (Speciaux, idx, Pinceau.element);
 			var pinceauSpecial = Speciaux.donnees[Speciaux.getIdxFromId(Pinceau.element)];
@@ -163,7 +172,7 @@ Pinceau.appliqueCase = function (idx) {
 				case 'tangible': nvlleCase.tangible = pinceauSpecial.valeur; break;
 				case 'entree_arene': nvlleCase.entree_arene = pinceauSpecial.valeur; break;
 			}
-		break;
+			break;
 	}
 
 	Etage.CasesModifiees.push(nvlleCase);
@@ -254,28 +263,29 @@ Pinceau.dessineListe = function (objet, parent) {
 };
 
 Pinceau.dessineRadar = function () {
+	console.log('debug dessine radar');
 	var divConteneur = document.getElementById("visuPinceau");
 	for (var j = -Pinceau.maxY; j <= Pinceau.maxY; j++) {
 		for (var i = -Pinceau.maxX; i <= Pinceau.maxX; i++) {
 			var div = document.createElement("div");
 			div.id = "radar-" + i + "-" + j;
-			
+
 			div.className = "radarVierge ";
 			if (i == 0 && j == 0) div.className += "radarSelectionne ";
 			if (i == -Pinceau.maxX) div.className += "radarDebutLigne radarGauche ";
 			if (i == Pinceau.maxX) div.className += "radarDroite ";
 			if (j == -Pinceau.maxY) div.className += "radarHaut ";
 			if (j == Pinceau.maxY) div.className += "radarBas ";
-			
+
 			div.x = Math.abs(i);
 			div.y = Math.abs(j);
 			var txtI = (div.x == Pinceau.maxX) ? "Tout" : div.x;
 			var txtJ = (div.y == Pinceau.maxY) ? "Tout" : div.y;
 			div.title = "Rayon du pinceau : x = " + txtI + " | y = " + txtJ;
-			
+
 			if (i == 0 && j !== 0) div.innerHTML = (div.y == Pinceau.maxY) ? "&infin;" : div.y;
 			else if (j == 0) div.innerHTML = (div.x == Pinceau.maxX) ? "&infin;" : div.x;
-			
+
 			div.onclick = function () {
 				Pinceau.selectionne(this.x, this.y);
 			};
@@ -286,7 +296,7 @@ Pinceau.dessineRadar = function () {
 		}
 	}
 };
-	
+
 Pinceau.selectionne = function (x, y) {
 	for (var i = -Pinceau.maxX; i <= Pinceau.maxX; i++) {
 		for (var j = -Pinceau.maxY; j <= Pinceau.maxY; j++) {

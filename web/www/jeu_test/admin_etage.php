@@ -4,8 +4,8 @@ ob_start();
 define('APPEL', 1);
 include "blocks/_test_droit_modif_etage.php";
 
-$methode = get_request_var('methode', 'debut');
-$admin_etage = $_REQUEST['etage'];
+$methode     = get_request_var('methode', 'debut');
+$admin_etage = get_request_var('etage', 0);
 
 if (!isset($admin_etage) && $methode == 'debut') {
     $admin_etage = 0;
@@ -32,10 +32,7 @@ switch ($methode) {
         ?>
         <link rel="stylesheet" type="text/css"
               href="style_vue.php?num_etage=<?php echo $admin_etage; ?>&source=fichiers" title="essai">
-        <script type="text/javascript" src="../scripts/admin_etage_code.js"></script>
-        <script type="text/javascript" src="../scripts/admin_etage_pinceau.js"></script>
-        <script type="text/javascript" src="../scripts/manip_css.js"></script>
-        <script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php echo $admin_etage; ?>"></script>
+
         <div class="bordiv">
             <table>
                 <tr>
@@ -121,14 +118,29 @@ switch ($methode) {
         </div>
 
         <div id="vueEtage"></div>
+        <script type="text/javascript" src="../scripts/admin_etage_code.js"></script>
+        <script type="text/javascript" src="../scripts/admin_etage_pinceau.js"></script>
+        <script type="text/javascript" src="../scripts/manip_css.js"></script>
+        <script type="text/javascript" src="admin_etage_data.js.php?num_etage=<?php echo $admin_etage; ?>"></script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                console.log("Lancement des JS");
+                Pinceau.dessineRadar();
+                console.log("dessine radar ok");
+                Pinceau.dessineListe(Fonds, document.getElementById('pinceauFonds'));
+                console.log("dessine liste 1");
+                Pinceau.dessineListe(Decors, document.getElementById('pinceauDecors'));
+                console.log("dessine liste 2");
+                Pinceau.dessineListe(DecorsDessus, document.getElementById('pinceauDecorsDessus'));
+                console.log("dessine liste 3");
+                Pinceau.dessineListe(Murs, document.getElementById('pinceauMurs'));
+                console.log("dessine liste 4");
+                Etage.Dessine();
+                console.log("etage dessine");
 
-        <script type='text/javascript'>
-            Pinceau.dessineRadar();
-            Pinceau.dessineListe(Fonds, document.getElementById('pinceauFonds'));
-            Pinceau.dessineListe(Decors, document.getElementById('pinceauDecors'));
-            Pinceau.dessineListe(DecorsDessus, document.getElementById('pinceauDecorsDessus'));
-            Pinceau.dessineListe(Murs, document.getElementById('pinceauMurs'));
-            Etage.Dessine();
+            });
+
+
         </script>
         <form name="plateau" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>"
               onsubmit="Etage.ecrireModifs();">
