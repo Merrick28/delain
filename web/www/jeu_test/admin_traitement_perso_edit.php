@@ -857,10 +857,12 @@ switch ($methode)
 
                     $req = "INSERT INTO fonction_specifique (fonc_nom, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee,
 							fonc_proba, fonc_message, fonc_date_limite)
-						values ('$fonc_nom', $mod_perso_cod, '$fonc_type', '$fonc_effet', '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, 
+						values (:fonc_nom, $mod_perso_cod, '$fonc_type', '$fonc_effet', '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, 
 							$fonc_proba, '$fonc_message', $fonc_validite_sql)";
 
-                    $stmt_add_fun = $pdo->query($req);
+                    $stmt_add_fun = $pdo->prepare($req);
+                    $stmt_add_fun = $pdo->execute(array(":fonc_nom" => $fonc_nom),
+                                                  $stmt_add_fun);
 
                     $texteDeclenchement = '';
                     switch ($fonc_type)

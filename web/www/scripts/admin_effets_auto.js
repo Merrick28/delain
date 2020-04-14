@@ -403,6 +403,7 @@ EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 }
 
 EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, validite, heritage) {
+	console.log('debut function EffetAuto.EcritEffetAutoExistant');
 	EffetAuto.num_courant += 1;
 	EffetAuto.Champs[EffetAuto.num_courant] = [];
 
