@@ -229,7 +229,7 @@ if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && ('https' == $_SERVER['HTTP_X_FO
 {
     $type_flux = 'https://';
 }
-
+define('CHEMIN_COMPLET', $type_flux . G_URL);
 // on force tout en https
 //$type_flux = 'https://';
 

@@ -111,7 +111,8 @@ class fonctions
             $ia = "IA";
         }
         echo("<tr>");
-        echo "<td class=\"soustitre2\"><p><a href=\"validation_login_monstre.php?numero=" . $monstre['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $monstre['perso_nom'] . "</a></td>";
+        echo "<td class=\"soustitre2\"><p><a href=\"" . CHEMIN_COMPLET . "/validation_login_monstre.php?numero=" .
+             $monstre['perso_cod'] . "&compt_cod=" . $compt_cod . "\">" . $monstre['perso_nom'] . "</a></td>";
         echo "<td class=\"soustitre2\"><p>" . $ia . "</td>";
         echo "<td class=\"soustitre2\"><p>", $monstre['perso_pa'], "</td>";
         echo "<td class=\"soustitre2\"><p>", $monstre['perso_pv'], " PV sur ", $monstre['perso_pv_max'];
