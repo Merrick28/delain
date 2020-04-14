@@ -93,6 +93,7 @@ if ($nb_monstre == 0)
     echo("</table>");
 }
 
+
 $contenu_page = ob_get_contents();
 ob_end_clean();
 include "blocks/_footer_page_jeu.php";
