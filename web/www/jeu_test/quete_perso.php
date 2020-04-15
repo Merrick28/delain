@@ -3,7 +3,6 @@ include "blocks/_header_page_jeu.php";
 
 define("APPEL",1);
 
-$perso = new perso;
 $perso = $verif_connexion->perso;
 
 $erreur = 0;

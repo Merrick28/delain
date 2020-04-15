@@ -6,7 +6,7 @@
  * Time: 13:13
  */
 $verif_connexion::verif_appel();
-$type_appel = get_request_var('type_appel', 0);
+//$type_appel = get_request_var('type_appel', 0);
 
 //
 // en fonction du type d'appel, on vérifie, soit le lieu, soit la compétence.
@@ -26,6 +26,9 @@ if ($stmt->rowCount() != 0)
 switch ($type_appel)
 {
     case 0:
+
+        $tab_pos = $perso->get_position();
+
         $type_lieu = 26;
         $nom_lieu  = 'une boutique de l\'enchanteur';
 

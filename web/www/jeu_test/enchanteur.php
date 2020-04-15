@@ -10,6 +10,7 @@ $contenu_page = '';
 // s'il n'est pas passé, on considère qu'on est sur un lieu
 //
 define('APPEL', 1);
+
 include "blocks/_verif_enchanteur.php";
 $perso = new perso;
 $perso = $verif_connexion->perso;

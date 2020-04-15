@@ -17,7 +17,7 @@ class myredis
 
     }
 
-    function store($key,$val)
+    function store($key, $val)
     {
         $this->redis->set($key, $val);
     }
@@ -26,12 +26,17 @@ class myredis
     {
         return $this->redis->get($key);
     }
+
+    function delete($key)
+    {
+        return $this->redis->del($key);
+    }
+
     function listallkeys()
     {
         $arList = $this->redis->keys("*");
         return $arList;
     }
-
 
 
 }
