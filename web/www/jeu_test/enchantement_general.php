@@ -74,10 +74,9 @@ $ong[1] = 'Créer un composant pour Enchanter';
 $ong[2] = 'Créer un objet qui pourra être enchanté';
 $ong[3] = 'Enchanter un objet';
 
-if (isset($_POST['t_ench']) && !isset($t_ench))
-    $t_ench = $_POST['t_ench'];
-if (!isset($t_ench))
-    $t_ench = 0;
+
+$t_ench = get_request_var('t_ench', 0);
+
 $nb = count($ong);
 
 //

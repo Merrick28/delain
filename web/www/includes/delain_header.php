@@ -254,7 +254,7 @@ spl_autoload_register('my_autoloader');
  * N'utiliser qu'avec REDIS !
  * Sinon on va faire des appels de malade à la base de données
  */
-if (defined('USE_REDIS'))
+/*if (defined('USE_REDIS'))
 {
     if (USE_REDIS)
     {
@@ -295,7 +295,7 @@ if (defined('USE_REDIS'))
 
 
     }
-}
+}*/
 
 
 // on prépare ce qu'il faut pour twig
