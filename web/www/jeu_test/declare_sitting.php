@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+require_once G_CHE . 'includes/message.php';
 ob_start();
 $methode                = get_request_var('methode', 'debut');
 switch ($methode)
