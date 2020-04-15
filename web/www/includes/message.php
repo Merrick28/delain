@@ -45,8 +45,12 @@ class message
             return false;
         }
 
-        $sujet      = $this->sujet;
-        $corps      = htmlspecialchars($this->corps);
+        $sujet = $this->sujet;
+        if ($bloque_html)
+        {
+            $corps = htmlspecialchars($this->corps);
+        }
+
         $expediteur = $this->expediteur;
         $reponseA   = $this->enReponseA;
 

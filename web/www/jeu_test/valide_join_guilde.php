@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 require_once G_CHE . 'includes/message.php';
 ob_start();
 $num_guilde = $_REQUEST['num_guilde'];
@@ -15,7 +16,7 @@ $stmt    = $pdo->query($req_ins);
 
 // on envoie un message à l'admin de guilde
 // on prépare le texte du message
-$texte = "$perso_nom a demandé à faire partie de la guilde que vous administrez.<br />";
+$texte = $perso->perso_nom . " a demandé à faire partie de la guilde que vous administrez.<br />";
 $texte = $texte . "Vous pouvez aller <a href=\"admin_guilde.php\">valider ou refuser</a> son inscription.";
 
 $msg = new message;
@@ -34,7 +35,7 @@ while ($result = $stmt->fetch()) {
     $msg->ajouteDestinataire($result['pguilde_perso_cod']);
 }
 
-$msg->envoieMessage();
+$msg->envoieMessage(false);
 
 echo "<p>Un message a été envoyé au gestionnaire de guilde afin de valider ou non votre demande." ;
 $contenu_page = ob_get_contents();
