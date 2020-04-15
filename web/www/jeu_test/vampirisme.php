@@ -160,7 +160,7 @@ if ($lvl != 0)
             $mymessage = nl2br($_REQUEST['message']);
             $corps     =
                 "Un vampire vient de vous proposer de faire partie de sa descendance. Vous trouverez les instructions pour accepter ou refuser à la fin de ce message.<br>";
-            $corps     = $corps . "-------------<br>" . $mymessage . "<br>-------------<br>";
+            $corps     = $corps . "-------------\n" . $mymessage . "-------------\n";
             $corps     =
                 $corps . "Pour voir les conséquences, accepter ou refuser cette proposition, <a href=\"tran_vamp.php\">cliquez-ici</a>";
 

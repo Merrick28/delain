@@ -287,7 +287,7 @@ switch ($methode)
                 $message->corps      = $corps;
                 $message->expediteur = $perso_sit;
                 $message->ajouteDestinataire($perso_sitteur);
-                $message->envoieMessage();
+                $message->envoieMessage(false);
 
 
             }

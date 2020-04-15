@@ -1,6 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
-
+$perso = $verif_connexion->perso;
 ob_start();
 
 
@@ -26,9 +26,9 @@ switch ($methode) {
         $req = "delete from guilde_perso where pguilde_guilde_cod = $num_guilde and pguilde_perso_cod = $perso_cod ";
         $stmt = $pdo->query($req);
 
-        $msg = new message;
-        $msg->corps = "$perso_nom a quitté la guilde dont vous êtes administrateur.";
-        $msg->sujet = "Départ d’un membre de la guilde.";
+        $msg             = new message;
+        $msg->corps      = $perso->perso_nom . "a quitté la guilde dont vous êtes administrateur.";
+        $msg->sujet      = "Départ d’un membre de la guilde.";
         $msg->expediteur = $perso_cod;
 
         // On recherche les admins / destinataires.

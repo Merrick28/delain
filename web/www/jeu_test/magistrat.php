@@ -217,7 +217,7 @@ if ($erreur == 0)
                 $message->corps      = $texte;
                 $message->expediteur = $perso_cod;
                 $message->ajouteDestinataire($perso);
-                $message->envoieMessage();
+                $message->envoieMessage(false);
                 unset($message);
             }
             break;

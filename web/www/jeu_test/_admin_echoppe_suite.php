@@ -36,7 +36,7 @@ foreach ($guilde as $key => $val)
                     $message->ajouteDestinataire($result['perso_cod']);
                     echo "<p>Le joueur <strong>", $result['perso_nom'], "</strong> a été supprimé du méta guildage.";
                 }
-                $message->envoieMessage();
+                $message->envoieMessage(false);
             }
 
 

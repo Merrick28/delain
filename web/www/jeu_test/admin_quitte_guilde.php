@@ -1,5 +1,6 @@
 <?php
 include "blocks/_header_page_jeu.php";
+$perso = $verif_connexion->perso;
 ob_start();
 define('APPEL', 1);
 
@@ -37,7 +38,8 @@ switch ($methode)
                 $stmt = $pdo->query($req);
 
                 $texte               =
-                    "L'administrateur $perso_nom a quitté la guilde dont vous êtes administrateur.<br />";
+                    "L'administrateur " . $perso->$perso_cod . " a quitté la guilde dont vous êtes administrateur.<br 
+                                                                                                                  />";
                 $titre               = "Départ d'un admin de la guilde.";
                 $message             = new message();
                 $message->sujet      = $titre;
