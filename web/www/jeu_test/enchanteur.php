@@ -208,4 +208,4 @@ if ($erreur == 0)
 
     }
 }
-echo $contenu_page;
+//echo $contenu_page;
