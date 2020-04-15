@@ -5,7 +5,7 @@ $compte       = $verif_connexion->compte;
 $perso_cod    = $perso->perso_cod;
 if (!$compte->is_admin()
     || ($compte->is_admin_monstre()
-        && ($compte->is_monstre() || $compte->is_pnj())))
+        && ($perso->is_monstre() || $perso->is_pnj())))
 {
 
     if (!$perso->is_bernardo())
