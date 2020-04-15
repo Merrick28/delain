@@ -224,6 +224,10 @@ class aquete_etape_modele
                 break;
 
             default:
+                ob_start();
+                debug_print_backtrace();
+                $out = ob_get_contents();
+                error_log($out);
                 die('Unknown method.');
         }
     }
