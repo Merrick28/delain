@@ -66,8 +66,11 @@ switch ($methode)
         $new   = true;
         if ($_REQUEST["aqetape_cod"] * 1 != 0)
         {
-            $new = false;
-            $etape->charge($_REQUEST["aqetape_cod"]);
+            // il se peut qu'on arrive pas à charger l'étape si un autre l'a supprimé, dans ce cas on en sauvegarde une nouvelle
+            if ( $etape->charge($_REQUEST["aqetape_cod"]) )
+            {
+                $new = false;
+            }
         }
         $clone_e = clone $etape;     /// pour le log
 
