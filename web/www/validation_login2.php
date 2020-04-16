@@ -215,6 +215,7 @@ if ($verif_auth)
                             // on récupère les événements du monstre pour les afficher.
                             $levt              = new ligne_evt();
                             $allevt_oldmonstre = $levt->getByPersoNonLu($monstre_cod);
+                            $allevt_oldmonstre = $levt->mise_en_page_evt($allevt_oldmonstre);
 
 
                             // On relâche le monstre du compte du joueur
