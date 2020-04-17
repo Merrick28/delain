@@ -85,7 +85,7 @@ $pdo         = new bddpdo();
         }
 
         {
-            $req1   = "select relache_monstre_4e_perso($perso_cible, 2::smallint) as resultat";
+            $req1   = "select relache_monstre_4e_perso(:cible, 2::smallint) as resultat";
             $stmt   = $pdo->prepare($req1);
             $stmt   = $pdo->execute(array(":cible" => $perso_cible), $stmt);
             $result = $stmt->fetch();
