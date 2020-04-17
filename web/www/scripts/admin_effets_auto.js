@@ -13,7 +13,7 @@ EffetAuto.Types = [
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
 			{ nom: 'effet', type: 'BM', label: 'Effet', description: 'Le bonus/malus qui doit être appliqué.' },
-			{ nom: 'cumulatif', type: 'checkbox', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n\'est pas [cumulable].' },
+			{ nom: 'cumulatif', type: 'cumulatif', label: 'Cumulatif', description: 'Sera ignoré si le bonus/malus n\'est pas [cumulable].' },
 			{ nom: 'force', type: 'texte', longueur: 5, label: 'Valeur', description: 'La force du bonus / malus appliqué : valeur fixe ou de la forme 1d6+2', validation: Validation.Types.Roliste },
 			{ nom: 'duree', type: 'entier', label: 'Durée', description: 'La durée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'cible', type: 'cible', label: 'Ciblage', description: 'Le type de cible sur lesquelles l’effet peut s’appliquer.' },
@@ -332,6 +332,18 @@ EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampCumulatif = function (parametre, numero, valeur) {
+	if (!valeur) valeur = 'N';
+
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="checkbox" '+ (valeur!='N' ? 'checked' : '') +' name="fonc_' + parametre.nom + numero.toString() + '">';
+
+	if (valeur!='N' && valeur!='O') {
+		html += '&nbsp; Progressivité: '+ valeur ;
+	}
+	html += '</label><br />';
+	return html;
+}
+
 EffetAuto.Supprime = function (id, numero) {
 	if (confirm('Êtes-vous sûr de vouloir supprimer cette fonction ?')) {
 		if (id != -1) {
@@ -374,6 +386,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;
+			break;
+		case 'cumulatif':
+			html = pd + EffetAuto.ChampCumulatif(parametre, numero, valeur) + pf;
 			break;
 		case 'monstre':
 			html = pd + EffetAuto.ChampMonstre(parametre, numero, valeur) + pf;

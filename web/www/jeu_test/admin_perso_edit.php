@@ -16,6 +16,24 @@ $droit_modif = 'dcompt_modif_perso';
 define('APPEL', 1);
 include "blocks/_test_droit_modif_generique.php";
 
+function bm_progressivite($fonc_effet, $fonc_force)
+{
+    $pdo = new bddpdo;
+
+    $req = "select bonus_progressivite(:bm, :force) as progressivite";
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
+    if ($progres = $stmt->fetch())
+    {
+        return $progres["progressivite"];
+    }
+    else
+    {
+        return 'O' ;
+    }
+}
+
+
 if ($erreur == 0)
 {
     include "admin_edition_header.php";
@@ -840,6 +858,10 @@ if ($erreur == 0)
                 $fonc_portee       = $result['fonc_portee'];
                 $fonc_proba        = $result['fonc_proba'];
                 $fonc_message      = $result['fonc_message'];
+
+                // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
+                if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
+
                 echo "
 		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true;)</script>";
             }
@@ -863,6 +885,10 @@ if ($erreur == 0)
                 $fonc_proba        = $result['fonc_proba'];
                 $fonc_message      = $result['fonc_message'];
                 $fonc_validite     = $result['validite'];
+
+                // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
+                if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
+
                 echo "
 		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
             }

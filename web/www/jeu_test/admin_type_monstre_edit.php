@@ -23,6 +23,23 @@ while (false !== ($filename = readdir($rep)))
     }
 }
 
+function bm_progressivite($fonc_effet, $fonc_force)
+{
+    $pdo = new bddpdo;
+
+    $req = "select bonus_progressivite(:bm, :force) as progressivite";
+    $stmt = $pdo->prepare($req);
+    $stmt = $pdo->execute(array( ":bm" => $fonc_effet, ":force" => $fonc_force ), $stmt);
+    if ($progres = $stmt->fetch())
+    {
+        return $progres["progressivite"];
+    }
+    else
+    {
+        return 'O' ;
+    }
+}
+
 //
 //Contenu de la div de droite
 //
@@ -1040,6 +1057,10 @@ if ($erreur == 0)
                         $fonc_portee       = $result['fonc_portee'];
                         $fonc_proba        = $result['fonc_proba'];
                         $fonc_message      = $result['fonc_message'];
+                        
+                        // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
+                        if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
+
                         echo "
 					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible');</script>";
                     }
