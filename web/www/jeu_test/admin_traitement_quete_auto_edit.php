@@ -11,6 +11,27 @@ $log = date("d/m/y - H:i") . " $perso_nom (compte $compt_cod / $compt_nom) ";
 $methode = $_REQUEST['methode'];
 switch ($methode)
 {
+    case "delete_quete":
+        //récupérer les paramètres
+        $quete = new aquete;
+        $new   = true;
+        if ($_REQUEST["aquete_cod"] * 1 != 0)
+        {
+            $quete->charge($_REQUEST["aquete_cod"]);
+            $quete->supprime();
+
+            // Logger les infos pour suivi admin
+            $log .= "supprime la quête auto #" . $quete->aquete_cod . "\n" . obj_diff($quete, new aquete);
+            writelog($log, 'quete_auto');
+            echo "<div class='bordiv'><pre>$log</pre></div>";
+
+        }
+
+        unset($_REQUEST['methode']);        // => Après supression une nouvelle quete doit être edité
+        unset($_REQUEST['aquete_cod']);
+        $aquete_cod = 0;
+        break;
+
     case "sauve_quete":
         //récupérer les paramètres
         $quete = new aquete;
@@ -49,6 +70,24 @@ switch ($methode)
         echo "<div class='bordiv'><pre>$log</pre></div>";
 
         $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde retour à l'édition de la quete
+        break;
+
+
+    case "duplique_etape":
+
+        $etape = new aquete_etape;
+        if ( $etape->charge($_REQUEST["aqetape_cod"]) )
+        {
+            $etape->duplique();
+
+            // Logger les infos pour suivi admin
+            $log .= "duplique l'étape #" . $etape->aqetape_cod . " de la quete auto #" . $etape->aqetape_aquete_cod . "\n" . obj_diff(new aquete_etape, $etape);
+
+            writelog($log, 'quete_auto');
+            echo "<div class='bordiv'><pre>$log</pre></div>";
+        }
+
+        $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
         break;
 
     case "sauve_etape":
@@ -214,10 +253,26 @@ switch ($methode)
         writelog($log, 'quete_auto');
         echo "<div class='bordiv'><pre>$log</pre></div>";
 
-        $aquete_cod          = $quete->aquete_cod;  // rerendre l'id (pour le cas de la création)
+        $aquete_cod          = $quete->aquete_cod;  // reprendre l'id (pour le cas de la création)
         $_REQUEST['methode'] = 'edite_quete';        // => Après sauvegarde d'une etape, retour à l'édition de la quete
         break;
 
+    case "skip_etape":
+        // forcer le passage d'une étape pour les perso qui sont en cours de réalisation.
+        $etape = new aquete_etape;
+        if ( $etape->charge($_REQUEST["aqetape_cod"]) )
+        {
+            $perso_liste = $etape->skip_perso_en_cours();
+
+            // Logger les infos pour suivi admin
+            $log .= "force le passage à l'étape suivante pour persos en cours sur l'étape #" . $etape->aqetape_cod . " de la quete auto #" . $etape->aqetape_aquete_cod . "\nListe des persos concernés: " . $perso_liste;
+
+            writelog($log, 'quete_auto');
+            echo "<div class='bordiv'><pre>$log</pre></div>";
+        }
+
+        $_REQUEST['methode'] = 'edite_quete';        // => Après suppression retour à l'édition de la quete
+        break;
 
     case "supprime_etape":
 

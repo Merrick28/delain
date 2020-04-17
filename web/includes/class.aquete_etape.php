@@ -117,6 +117,95 @@ class aquete_etape
      * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
      * @return boolean => false pas réussi a supprimer
      */
+    function duplique($aqetape_cod=null)
+    {
+        $pdo    = new bddpdo;
+        if ($aqetape_cod==null)
+        {
+            $aqetape_cod = $this->aqetape_cod;
+        }
+
+        $etape = new aquete_etape();
+        $etape->charge($aqetape_cod);   // l'étape à dupliquer
+        $this->charge($aqetape_cod);    // Nouvelle étape
+        //$this->aqetape_nom = $this->aqetape_nom . " (copie)";    // Nouvelle étape
+        $this->stocke(true);      // on commence par dupliquer l'étape (pour avoir la nouvelle)!
+
+        if ($this->aqetape_cod == $aqetape_cod) return false;   // la dupication de l'étape a échoué
+
+        $etape->aqetape_etape_cod = $this->aqetape_cod ;    // la nouvelle étape est insérée après celle qui a été dupliquée (
+        $etape->stocke();
+
+        // Maintenant on s'attaque à la duplication des éléments.
+        $element = new aquete_element;
+
+        // On récupère tous les élément de l'étape dà dupliquer
+        if ($elements = $element->getBy_aqelem_aqetape_cod($aqetape_cod) )
+        {
+            //echo "<pre>"; print_r($elements); echo "</pre>"; die();
+
+            foreach ($elements as $elem)
+            {
+                if ((int)$elem->aqelem_aqperso_cod == 0)  // seulement les éléments de la quete de base, pas ceux instanciés pour les persos.
+                {
+                    // On réaffecte à l'étape nouvellement dupliquée
+                    $elem->aqelem_aqetape_cod = $this->aqetape_cod ;
+                    $elem->stocke( true );      // on suvegarde ce nouvel element
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    /**
+     * supprime l'enregistrement
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
+     * @return liste des persos qui ont skipés l'étape!
+     */
+    function skip_perso_en_cours($aqetape_cod=null)
+    {
+        $pdo    = new bddpdo;
+        if ($aqetape_cod==null)
+        {
+            $aqetape_cod = $this->aqetape_cod;
+        }
+        else
+        {
+            $this->charge($aqetape_cod);
+        }
+
+        // liste des perso en cours sur l'étape!
+        $req  = "select aqperso_cod from quetes.aquete_perso where aqperso_etape_cod = :aqperso_etape_cod and aqperso_actif='O' ";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array(":aqperso_etape_cod" => $aqetape_cod), $stmt);
+
+        if (!$result = $stmt->fetchAll()) return "** aucun persos trouvés **";
+
+        $perso_list = "" ;
+        foreach ($result as $aqp)
+        {
+            $p = new perso();
+            $aqperso = new aquete_perso();
+            $aqperso->charge( $aqp["aqperso_cod"] );    // Charge la quete pour le perso
+            $p->charge( $aqperso->aqperso_perso_cod );    // Charge la quete pour le perso
+            $aqperso->skip_en_cours( );
+            $perso_list.= ", ".$p->perso_nom ."(#".$p->perso_cod.")";
+        }
+
+        if ($perso_list == "") return "*** aucun persos trouvés ***";
+
+        return substr($perso_list,2);
+    }
+
+    /**
+     * supprime l'enregistrement
+     * @global bdd_mysql $pdo
+     * @param integer $code => PK (si non fournie alors suppression de l'ojet chargé)
+     * @return boolean => false pas réussi a supprimer
+     */
     function supprime($code="")
     {
         $pdo    = new bddpdo;

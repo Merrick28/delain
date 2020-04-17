@@ -164,6 +164,38 @@ class aquete
         }
     }
 
+    //supprime une quete
+    function supprime($aquete_cod=null)
+    {
+        $pdo    = new bddpdo;
+        if ($aquete_cod==null) $aquete_cod = $this->aquete_cod;
+
+        // supprimer les étapes de cette quete
+        $req    = "select aqetape_cod from quetes.aquete_etape where aqetape_aquete_cod=:aqetape_aquete_cod  ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array("aqetape_aquete_cod" => $aquete_cod), $stmt);
+        if ($result = $stmt->fetchAll())
+        {
+            $etape = new aquete_etape;
+            foreach ($result as $aqetape)
+            {
+                $etape->supprime( $aqetape["aqetape_cod"] );
+            }
+
+        }
+
+        // supprimer la quete elle même
+        $req    = "delete from quetes.aquete where aquete_cod=:aquete_cod  ";
+        $stmt   = $pdo->prepare($req);
+        $pdo->execute(array("aquete_cod" => $aquete_cod), $stmt);
+        if ($stmt->rowCount()==0)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     //Comptage tous persos confondus
     function get_nb_total()
     {
