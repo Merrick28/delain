@@ -225,7 +225,7 @@
         <img src="{{ G_IMAGES }}evenements.gif" alt=""> <a href="/jeu_test/evenements.php">Événements</a><br>
         {% if PERSO.perso_nb_auto_quete.nb_total > 0 %}
             <img src="{{ G_IMAGES }}calice.png"> <a
-                href="/jeu_test/quete_auto.php"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}
+                href="/jeu_test/quete_auto.php?onglet=apercu"> {% if PERSO.perso_nb_auto_quete.journal_nb_news > 0 %}
             <strong>{% endif %}Mes quêtes
                 {% if PERSO.perso_nb_auto_quete.nb_encours > 0 %}
                     ({{ PERSO.perso_nb_auto_quete.nb_encours }})
