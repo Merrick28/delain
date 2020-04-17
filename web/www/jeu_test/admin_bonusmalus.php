@@ -112,7 +112,7 @@ if ($erreur == 0)
 			<th class="titre">Nettoyable ?</th>
 			<th class="titre">Valeur positive<br />pour un effet<br />bénéfique ?</th>
 			<th class="titre">Cumulable ?</th>
-			<th class="titre">Dégressivité/Limite ?<br> (entre 0% et 100%)</th>
+			<th class="titre">Progressivité/Limite ?<br> (entre 0% et 100%)</th>
 			<th class="titre">Action</th>
 		</tr>';
 
@@ -135,7 +135,7 @@ if ($erreur == 0)
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_nettoyable_' . $tbonus_cod, 'tbonus_nettoyable', $tbonus_nettoyable) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_gentil_positif_' . $tbonus_cod, 'tbonus_gentil_positif', $tbonus_gentil_positif) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable) . "</td>	
-			<td class='soustitre2'><input type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' /></td>					
+			<td class='soustitre2'><input type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />".(in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : "")."</td>					
 			<td class='soustitre2'><input type='hidden' value='$tbonus_cod' name='tbonus_cod' />
 				<input type='hidden' value='modif' name='methode' />
 				<input type='submit' class='test' value='Modifier' />
