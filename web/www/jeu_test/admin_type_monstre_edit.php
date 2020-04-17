@@ -1057,7 +1057,7 @@ if ($erreur == 0)
                         $fonc_portee       = $result['fonc_portee'];
                         $fonc_proba        = $result['fonc_proba'];
                         $fonc_message      = $result['fonc_message'];
-                        
+
                         // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
                         if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
