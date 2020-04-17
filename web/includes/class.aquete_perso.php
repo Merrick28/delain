@@ -499,6 +499,52 @@ class aquete_perso
         return $element_texte;
     }
 
+
+    // force le passage à l'étape suivante pour la quete d'un perso.
+    function skip_en_cours()
+    {
+        if ($this->aqperso_etape_cod == 0) return 0;    // on a déjà fini la quete, il reste au joueur à la valider.
+
+        $perso_journal = new aquete_perso_journal();
+        $perso_journal->chargeDernierePage($this->aqperso_cod, $this->aqperso_nb_realisation);
+
+        // On indique dans le journal le forçage du passage
+        $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
+        $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
+        $perso_journal->aqpersoj_texte = "**** Un administrateur vous a forcé le passage à l'étape suivante **** <br> ";
+        $perso_journal->aqpersoj_lu = "N" ;
+        $perso_journal->stocke(true);
+
+        // On charge l'étape en cours (pour récupérer l'étape suivante)
+        $this->etape->charge($this->aqperso_etape_cod);
+
+        $this->aqperso_etape_cod = $this->etape->aqetape_etape_cod;     // forcer à l'étape suivante
+        $this->aqperso_quete_step++;
+        $this->aqperso_date_debut_etape = date('Y-m-d H:i:s');  // Début de la nouvelle étape !
+
+        // Recharge la nouvelle étape !!!
+        $this->etape->charge($this->aqperso_etape_cod);
+        $this->etape_modele->charge($this->etape->aqetape_aqetapmodel_cod);
+
+        // On instancie les éléements de cette nouvelle étape
+        $element = new aquete_element;
+        $element->setInstance_perso_step($this);
+
+        // sauf cas particuler, on le note dans le journal
+        if (($this->etape->aqetape_texte != "") && (!in_array($this->etape_modele->aqetapmodel_tag, array("#CHOIX"))))
+        {
+            $perso_journal->aqpersoj_date = date("Y-m-d H:i:s");
+            $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
+            $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
+            $perso_journal->aqpersoj_texte = $this->hydrate();
+            $perso_journal->aqpersoj_lu = "N" ;
+            $perso_journal->stocke(true);       // Nouvelle page !
+        }
+
+        $this->stocke();
+
+    }
+
     // On reprend à partir de l'étape en cours, on regarde si elle est terminée et ainsi de suite
     // retourne le nombre d'étape qui ont été réalisées (0 si pas d'évolution de la quête)
     function run()

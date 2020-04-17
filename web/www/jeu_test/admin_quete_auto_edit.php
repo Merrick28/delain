@@ -91,7 +91,16 @@ if ($erreur == 0)
         $quete->charge($aquete_cod);
 
         echo '  <br>
-                <form  method="post"><input type="hidden" name="methode" value="sauve_quete" />
+                <script>
+                function confirm_delete_quete() {
+                    var ok = confirm(\'Êtes-vous sûr de vouloir supprimer entièrement la quête?\') ;
+                    if (!ok) return false;
+                    $(\'#quete-methode\').val(\'delete_quete\');
+                    return true;                    
+                }
+                </script>
+  
+                <form  method="post"><input id="quete-methode" type="hidden" name="methode" value="sauve_quete" />
                 <input type="hidden" name="aquete_cod" value="'.$aquete_cod.'" />
                 <table width="80%" align="center">';
 
@@ -124,7 +133,12 @@ if ($erreur == 0)
             $liste_etape = array();
             $liste_etape[0]="Tout à la fin";
             $filter = (!$etapes || sizeof($etapes)==0) ? "where aqetapmodel_tag='#START'" : "where aqetapmodel_tag<>'#START'" ;
-            echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" /></td></tr>';
+            echo '<tr><td colspan="2"><input class="test" type="submit" value="sauvegarder la quête" />';
+            if ($nb_quete_en_cours==0)
+                echo '&nbsp;&nbsp;&nbsp;<input class="test" onclick="return confirm_delete_quete();"; type="submit" value="Supprimer la quête" />';
+            else
+                echo '&nbsp;&nbsp;&nbsp;<em>Suppression de la quête impossible, car il y a des réalisations en cours.</em>';
+            echo '</td></tr>';
             //if ($nb_quete_en_cours>0)  echo '<tr><td colspan="2"><u><strong>ATTENTION</strong></u>: il y a déjà <strong>'.$nb_quete_en_cours.'</strong> perso(s) en cours de réalisation de cette quête.</td></tr>';
             echo '</table>';
             echo '</form>';
@@ -159,16 +173,30 @@ if ($erreur == 0)
                     echo '<input class="test" type="submit" name="edite_etape" value="Editer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'edite_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;';
                     // LE bouton "supprimer" nsur la première etape 'est possible que s'il n'y a qu'une etape.
                     $nb_encours_etape = $quete->get_nb_en_cours($etape->aqetape_cod);
+
+                    // On ne peut pas dupliquer la 1ere étape
+                    if ($k!=0)
+                    {
+                        echo '<input class="test" type="submit" name="duplique_etape" value="Dupliquer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'duplique_etape\');">&nbsp;&nbsp;&nbsp;&nbsp;' ;
+                    }
                     if (($k!=0 || sizeof($etapes)==1) && ($nb_encours_etape==0))
                     {
                         $nb_quete_en_cours = $quete->get_nb_en_cours($etape->aqetape_cod);
                         if ($nb_quete_en_cours>0)
-                            echo 'Il y a <strong>'.$nb_quete_en_cours.'</strong> persos en cours à cette étape (<em style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
-                        else
+                        {
+                            echo 'Il y a <strong>' . $nb_quete_en_cours . '</strong> persos en cours à cette étape (<em style="font-size:9px;">les persos à cette étape ne subiront pas les modifications faites par l\'édition</em>)';
+                        } else
+                        {
                             echo '<input class="test" type="submit" name="supprime_etape" value="Supprimer l\'étape" onclick="$(\'#etape-methode-'.$k.'\').val(\'supprime_etape\');">';
+                        }
                     }
                     else if ($nb_encours_etape>0)
                     {
+                        // sauf sur la dernière étape on propose le menu pour forcer le passage
+                        if ($k<(sizeof($etapes) -1))
+                        {
+                            echo '<input class="test" type="submit" name="skip_etape" value="Forcer le passage" onclick="$(\'#etape-methode-' . $k . '\').val(\'skip_etape\');">';
+                        }
                         echo '&nbsp;&nbsp;&nbsp;<span style="color:#800000"><u><strong>ATTENTION</strong></u>: il y a <strong>'.$nb_encours_etape.'</strong> quête en cours de réalisation à cette etape. (<em style="font-size: 10px;">les modifications n\'impacteront que les futures réalisations</em>)</span>';
                     }
                     echo '</form>';
