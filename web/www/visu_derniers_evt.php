@@ -34,12 +34,8 @@ $pdo = new bddpdo();
         echo "<p>Erreur ! Vous ne pouvez pas consulter les événements de ce perso !</p>";
         $erreur = 1;
 
-    } elseif (isset($compt_cod) && $compt_cod != '' && $voir_tous == 1)
-    {
-    } else
-    {    // Missing info
-        $erreur = 1;
     }
+
 
     if ($erreur == 0)
     {
