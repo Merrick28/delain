@@ -35,7 +35,7 @@ if (!$guilderev->getBy_revguilde_guilde_cod($guilde->guilde_cod))
     $isrev = true;
 }
 
-$template     = $twig->load('acc_transaction.twig');
+$template     = $twig->load('accepte_guilde.twig');
 $options_twig = array(
 
     'ISREV' => $isrev,
