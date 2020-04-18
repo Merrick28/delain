@@ -463,8 +463,8 @@ L’elfe cesse subitement de parler et vous dévisage d’un air surpris, en vou
 « - Dis donc, vous ne seriez pas en train de nous écouter, vous ? Vous venez d’arriver, ça se voit. Comment vous appelez-vous ? »<br>
 <hr />
 HRP: Bonjour et bienvenue dans le jeu!<br>
-Si vous découvrez le jeu, nous vous conseillons de commencer par une petite quete de découverte. Elle est accessible depuis le poste d'entrée, où vous arrivez. Dans le menu de gauche, un menu quete est visible. (Et mettre un lien sur le mot quete qui mène à la page de quete <a href=\"https://www.jdr-delain.net/jeu_test/quete_perso.php\">https://www.jdr-delain.net/jeu_test/quete_perso.php</a>)<br>
-N'hésitez pas à vous rendre sur le forum si vous avez des questions. Vous pouvez également y trouver des aides pour débuter. (mettre ce lien sur aides pour débuter: viewtopic.php?f=48&t=18234)<br>
+Si vous découvrez le jeu, nous vous conseillons de commencer par une petite quete de découverte. Elle est accessible depuis le poste d'entrée, où vous arrivez. Dans le menu de gauche, un menu <a href=\"https://www.jdr-delain.net/jeu_test/quete_perso.php\">quete </a> est visible. <br>
+N'hésitez pas à vous rendre sur le <a href='https://forum.jdr-delain.net/viewtopic.php?f=48&t=18234'>forum</a> si vous avez des questions. Vous pouvez également y trouver des aides pour débuter. <br>
 Bon jeu,<br>
 L'équipe<br>
 ";
