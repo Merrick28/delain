@@ -76,7 +76,7 @@ if ($autorise)
             echo("<p>Vous n'avez aucune inscription à valider");
         } else
         {
-            echo("<p>Vous avez <strong>count($all_non_valide)</strong> inscription(s) à valider");
+            echo "<p>Vous avez <strong>" . count($all_non_valide) . "</strong> inscription(s) à valider";
             echo("<table>");
             echo("<form name=\"valide\" method=\"post\">");
             echo("<input type=\"hidden\" name=\"vperso\">");
