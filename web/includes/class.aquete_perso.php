@@ -509,11 +509,11 @@ class aquete_perso
         $perso_journal->chargeDernierePage($this->aqperso_cod, $this->aqperso_nb_realisation);
 
         // On indique dans le journal le forçage du passage
-        $perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
-        $perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
-        $perso_journal->aqpersoj_texte = "**** Un administrateur vous a forcé le passage à l'étape suivante **** <br> ";
+        //$perso_journal->aqpersoj_etape_cod = $this->aqperso_etape_cod;
+        //$perso_journal->aqpersoj_quete_step = $this->aqperso_quete_step;
+        $perso_journal->aqpersoj_texte .= "<br>**** Un administrateur vous a forcé le passage à l'étape suivante **** <br> ";
         $perso_journal->aqpersoj_lu = "N" ;
-        $perso_journal->stocke(true);
+        $perso_journal->stocke();
 
         // On charge l'étape en cours (pour récupérer l'étape suivante)
         $this->etape->charge($this->aqperso_etape_cod);
