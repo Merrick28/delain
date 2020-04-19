@@ -199,7 +199,7 @@ class aquete_action
         if ( !$result = $stmt->fetch() ) return $p5->aqelem_misc_cod ;        // echec classique
 
         $reussite = $result["reussite"];
-        
+
         if ($reussite>96) {
             $etape = $p6->aqelem_misc_cod  ;        // Echec critique
         }else if ($reussite>$competence) {
