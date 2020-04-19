@@ -65,20 +65,7 @@ if ($stmt->rowCount() != 0)
 
         if ($affichage_plus)
         {
-            if ($seuil_force > 0)
-            {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Seuil de force</p></td>";
-                echo "<td><p>" . $seuil_force . "</p></td>";
-                echo "</tr>";
-            }
-            if ($seuil_dex > 0)
-            {
-                echo "<tr>";
-                echo "<td class=\"soustitre2\"><p>Seuil de dextérité</p></td>";
-                echo "<td><p>" . $seuil_dex . "</p></td>";
-                echo "</tr>";
-            }
+
             if ($niveau_min > 0)
             {
                 echo "<tr>";
