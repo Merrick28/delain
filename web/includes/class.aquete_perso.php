@@ -692,6 +692,25 @@ class aquete_perso
 
                     $status_etape = 1;      // 1 => ok etape suivante,
                     break;
+                case "#SAUT #CONDITION #COMPETENCE":
+                    // cette etape sert à faire un saut vers une autre, le saut est conditionel mais est toujours réussie.
+                    $etape_cod = $this->action->saut_condition_competence($this);
+
+                    if ($etape_cod < 0)
+                    {
+                        $this->aqperso_actif = ($etape_cod == -2) ? 'S' : 'E';  // Etape terminée avec Succes ou sur une Echec.
+                        $next_etape_cod = 0;                                   // Fin de quête!
+                    } else if ($etape_cod == 0)
+                    {
+                        // Stupide, on a mit un saut d'étape pour sauter à l'étape suivante ! (peut-être une étape automatiquement réussi en cas de délai trop long :-) )
+                        $next_etape_cod = 1 * $this->etape->aqetape_etape_cod;     // saut à l'étape suivante comme etape du type TEXTE
+                    } else
+                    {
+                        $next_etape_cod = $etape_cod;
+                    }
+
+                    $status_etape = 1;      // 1 => ok etape suivante,
+                    break;
 
                 case "#SAUT #CONDITION #ETAPE":
                     // cette etape sert à faire un saut vers une autre, le saut est conditionel mais est toujours réussie.
