@@ -202,11 +202,11 @@ if ($erreur == 0)
                     echo '</form>';
                     echo '</div></div>';
 
-                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #INTERACTION")))
+                    if (in_array($etape_modele->aqetapmodel_tag, array("#CHOIX", "#START", "#SAUT","#SAUT #CONDITION #ETAPE","#SAUT #CONDITION #DIALOGUE","#SAUT #CONDITION #INTERACTION","#SAUT #CONDITION #ALEATOIRE")))
                     {
                         $type_saut = $etape_modele->aqetapmodel_tag=="#SAUT" ? "inconditionnel" : "conditionnel" ;
                         $element = new aquete_element;
-                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #INTERACTION")))
+                        if (in_array($etape_modele->aqetapmodel_tag, array("#START", "#SAUT #CONDITION #ETAPE", "#SAUT #CONDITION #DIALOGUE", "#SAUT #CONDITION #INTERACTION", "#SAUT #CONDITION #ALEATOIRE")))
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 2) ;
                             if (($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #ETAPE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #DIALOGUE")||($etape_modele->aqetapmodel_tag == "#SAUT #CONDITION #INTERACTION"))
