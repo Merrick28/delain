@@ -23,12 +23,14 @@ if ($stmt->rowCount())
 <link rel="stylesheet" type="text/css" href="style_vue.php?num_etage=<?php echo $etage_actuel ?>" title="essai">
 <script type="text/javascript">    //# sourceURL=vue_gauche.js
     function vue_clic(pos_cod, distance) {
+
         document.getElementsByName('position').value = pos_cod;
         document.forms['destdroite'].dist.value = distance;
         if (distance == 1 || document.forms['destdroite'].action.value != 'action.php') // En cas de déplacement, on vérifie la distance
         {
 
             if (document.forms['destdroite'].action.value == 'action.php') {
+                event.preventDefault();
                 $.ajax({
                     method: "POST",
                     url: '<?php echo $type_flux . G_URL; ?>jeu_test/action.php',
