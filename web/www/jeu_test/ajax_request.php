@@ -395,6 +395,31 @@ switch($_REQUEST["request"])
             $stmt = $pdo->execute($search_string, $stmt);
             break;
 
+        case 'competence':
+            $words = explode(" ", $recherche);
+            $search_string = array();
+
+            $filter = "";
+            foreach ($words as $k => $w)
+            {
+                if ($k>0)  $filter.= "AND ";
+                $filter.= "(comp_libelle||' ('||typc_libelle||')' ilike :search$k) ";
+                $search_string[":search$k"] = "%{$w}%" ;
+            }
+
+            // requete de comptage
+            $req = "select count(*) from competences join type_competences on comp_typc_cod=typc_cod where {$filter} ";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            $row = $stmt->fetch();
+            $count = $row['count'];
+
+            // requete de recherche
+            $req = "select comp_cod cod, comp_libelle||' ('||typc_libelle||')' nom from competences join type_competences on comp_typc_cod=typc_cod where {$filter} ORDER BY comp_libelle LIMIT 10";
+            $stmt = $pdo->prepare($req);
+            $stmt = $pdo->execute($search_string, $stmt);
+            break;
+
         case 'lieu_type':
             $filter = "";
 
