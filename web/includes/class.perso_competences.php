@@ -104,6 +104,62 @@ class perso_competences
     }
 
     /**
+     * Reccherche la compétence d'un perso indépendement du niveau de celle-ci par exemple
+     * Si Forgeamage (niv. 2) est la compétence recherchée,
+     * => un perso qui possède Forgeamage (niv. 3) aura le niveau
+     * => avec seulement Forgeamage cela sera insuffisant
+     * @param $perso
+     * @param $comp
+     * @return bool
+     * @throws Exception
+     */
+    function getByPersoCompetenceNiveau($perso, $comp)
+    {
+
+        // Attaque foudroyante : 25, 61, 62
+        // Coup de grâce : 66, 67, 68
+        // Bout portant : 72, 73, 74
+        // Tir précis : 75,76,77
+        // Vol : 84, 85, 86
+        // Enluminure : 91, 92, 93
+        // Alchimie : 97, 100, 101
+        // Forgemage : 88, 102, 103
+        // Pour la compétence de plus haut niveau, il faut la posseder donc revient à une compétence de base
+        $comp_level = [
+            25 => "25, 61, 62",     // Attaque foudroyante : 25, 61, 62
+            61 => "61, 62",
+            66 => "66, 67, 68",     // Coup de grâce : 66, 67, 68
+            67 => "67, 68",
+            72 => "72, 73, 74",     // Bout portant : 72, 73, 74
+            73 => "73, 74",
+            75 => "75, 76, 77",     // Tir précis : 75,76,77
+            76 => "76, 77",
+            84 => "84, 85, 86",     // Vol : 84, 85, 86
+            85 => "85, 86",
+            91 => "91, 92, 93",     // Enluminure : 91, 92, 93
+            92 => "92, 93",
+            97 => "97, 100, 101",    // Alchimie : 97, 100, 101
+            100=> "100, 101",
+            88 => "88, 102, 103",   // Forgemage : 88, 102, 103
+            102=> "102, 103"
+        ];
+        //vérifions qu'il s'agit d'un compétence à niveau, sinon on charge la compétence de base.
+        if (! isset($comp_level[$comp])) return getByPersoComp($perso, $comp);
+
+        $competences = $comp_level[$comp] ;
+
+        $pdo  = new bddpdo;
+        $req  = "select pcomp_cod from perso_competences where pcomp_perso_cod = ? and pcomp_pcomp_cod in ({$competences}) order by pcomp_pcomp_cod desc limit 1";
+        $stmt = $pdo->prepare($req);
+        $stmt = $pdo->execute(array($perso), $stmt);
+        if (!$result = $stmt->fetch())
+        {
+            return false;
+        }
+        return $this->charge($result['pcomp_cod']);
+    }
+
+    /**
      * @param $perso
      * @param $typecomp
      * @return perso_competences[]
