@@ -34,7 +34,7 @@ if ($erreur == 0)
     if ($nb_depose == 3)
     {
         //
-        $pdo->Begin();
+        //$pdo->Begin();
         $req  =
             "delete from perso_objets where perobj_obj_cod in (select obj_cod from objets where obj_gobj_cod in (86,87,88)) ";
         $stmt = $pdo->query($req);
