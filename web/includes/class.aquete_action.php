@@ -2184,12 +2184,12 @@ class aquete_action
                 from positions pos_ref
                 join positions pos_cible on pos_cible.pos_etage=pos_ref.pos_etage and pos_cible.pos_x between pos_ref.pos_x-:proximite and pos_ref.pos_x+:proximite and pos_cible.pos_y between pos_ref.pos_y-:proximite and pos_ref.pos_y+:proximite
                 join perso_position on ppos_pos_cod=pos_cible.pos_cod
-                join perso on perso_cod=ppos_perso_cod and perso_type_perso=1 and perso_pnj=0
+                join perso on perso_cod=ppos_perso_cod and ((perso_type_perso=1 and perso_pnj=0) or perso_cod=:perso_cod)
                 join perso_compte on pcompt_perso_cod=perso_cod
                 left join groupe_perso on pgroupe_perso_cod = perso_cod and pgroupe_statut = 1 and perso_actif='O'
                 where pos_ref.pos_cod=:pos_cod";
         $stmt   = $pdo->prepare($req);
-        $stmt   = $pdo->execute(array(":proximite" => $p4->aqelem_param_num_1, ":pos_cod" => $depart_pos), $stmt);
+        $stmt   = $pdo->execute(array(":proximite" => $p4->aqelem_param_num_1, ":pos_cod" => $depart_pos, ":perso_cod" => $aqperso->aqperso_perso_cod), $stmt);
 
         while ($result = $stmt->fetch())
         {
