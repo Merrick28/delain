@@ -66,7 +66,7 @@ if ($erreur == 0)
 
         echo "<p>Vous avez ouvert les escaliers vers le -5. Ceux ci resteront ouverts pendant 48 heures avant de se refermer.<br>";
         echo "Vous gagnez 20 PX pour cette action !<br><br>";
-        $pdo->Commit();
+        //$pdo->Commit();
 
 
     } else
