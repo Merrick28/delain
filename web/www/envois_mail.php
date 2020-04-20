@@ -17,7 +17,8 @@ $req  = 'select distinct menv_compt_cod, compt_monstre, compt_admin, compt_mail 
 $stmt = $pdo->query($req);
 
 
-$i = 0;
+$i      = 0;
+$compte = array();
 while ($result = $stmt->fetch())
 {
     $compte[$i]        = $result['menv_compt_cod'];
