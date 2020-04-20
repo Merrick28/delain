@@ -219,6 +219,8 @@ if ($erreur == 0)
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 4));
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 5));
                             $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 6));
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 7));
+                            $elements = array_merge($elements, $element->getBy_etape_param_id($etape->aqetape_cod, 8));
                         } else
                         {
                             $elements = $element->getBy_etape_param_id($etape->aqetape_cod, 1) ;

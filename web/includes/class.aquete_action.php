@@ -167,47 +167,57 @@ class aquete_action
 
     //==================================================================================================================
     /**
-     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:competence|1%1],[2:valeur|1%1],[3:etape|1%1],[4:etape|1%1],[5:etape|1%1],[6:etape|1%1]'
+     * On recherche le n° d'étape suivant en fonction des condition =>  '[1:competence|1%1],[2:valeur|1%1],[3:valeur|1%1],[4:etape|1%1],[5:etape|1%1],[6:etape|1%1],[7:etape|1%1],[8:etape|1%1]'
      * @param aquete_perso $aqperso
      * @return integer (etape)
      */
     function saut_condition_competence(aquete_perso $aqperso)
     {
         $element = new aquete_element();
-        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "competence", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
-        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
-        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
-        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
-        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
-        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape", 1)) return 0 ;              // Problème lecture passage à l'etape suivante
+        if (!$p1 = $element->get_aqperso_element( $aqperso, 1, "competence", 1)) return 0 ;         // Problème lecture passage à l'etape suivante
+        if (!$p2 = $element->get_aqperso_element( $aqperso, 2, "valeur", 1)) return 0 ;             // (mini) Problème lecture passage à l'etape suivante
+        if (!$p3 = $element->get_aqperso_element( $aqperso, 3, "valeur", 1)) return 0 ;             // (dificulté) Problème lecture passage à l'etape suivante
+        if (!$p4 = $element->get_aqperso_element( $aqperso, 4, "etape", 1)) return 0 ;              // (reussite critique) Problème lecture passage à l'etape suivante
+        if (!$p5 = $element->get_aqperso_element( $aqperso, 5, "etape", 1)) return 0 ;              // (reussite speciale) Problème lecture passage à l'etape suivante
+        if (!$p6 = $element->get_aqperso_element( $aqperso, 6, "etape", 1)) return 0 ;              // (reussite) Problème lecture passage à l'etape suivante
+        if (!$p7 = $element->get_aqperso_element( $aqperso, 7, "etape", 1)) return 0 ;              // (echec) Problème lecture passage à l'etape suivante
+        if (!$p8 = $element->get_aqperso_element( $aqperso, 8, "etape", 1)) return 0 ;              // (echec critqiue) Problème lecture passage à l'etape suivante
 
         $perso = new perso();
-        if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p5->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
+        if (!$perso->charge($aqperso->aqperso_perso_cod)) return $p7->aqelem_misc_cod ;         // Erreur de chargemetn du perso => echec classique
 
         $perso_competence = new perso_competences();
-        if (!$perso_competence->getByPersoComp($perso->perso_cod, $p1->aqelem_misc_cod))return $p5->aqelem_misc_cod ;        // echec classique
-        $competence = $perso_competence->pcomp_modificateur ;
+        if (!$perso_competence->getByPersoCompetenceNiveau($perso->perso_cod, $p1->aqelem_misc_cod)) return 0 ;         // etape suivante: pas la compétence
 
-        // Lancé du jet de dé 1D100 en tenant compte des malédiction/bénédiction et de la difficulté
+        // Si le perso n'a pas le niveau requis
+        if ( $perso_competence->pcomp_modificateur <= $p2->aqelem_param_num_1 ) return 0 ;                              // etape suivante: pas le niveau
+
+        // On ajoute la difficulté au niveau de compétence du perso
+        $competence = $perso_competence->pcomp_modificateur + $p3->aqelem_param_num_1;
+
+        // Si la difficulté est supérieure au niveau du perso
+        if ($competence <= 0 ) return 0 ;                                                                               // etape suivante: trop dificille
+
+        // Lancé du jet de dé 1D100 en tenant compte des malédiction/bénédiction pour retourner les chances de réussite
         $pdo = new bddpdo;
-        $req = "select lancer_des3(1,100, (:difficulte + valeur_bonus(:perso_cod, 'BEN') + valeur_bonus(:perso_cod, 'MAU'))::integer) as reussite";
+        $req = "select lancer_des3(1,100, (valeur_bonus(:perso_cod, 'BEN') + valeur_bonus(:perso_cod, 'MAU'))::integer) as reussite";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(
-            ":perso_cod" => $aqperso->aqperso_perso_cod,
-            ":difficulte" => $p2->aqelem_param_num_1,
+            ":perso_cod" => $aqperso->aqperso_perso_cod
         ), $stmt);
-        if ( !$result = $stmt->fetch() ) return $p5->aqelem_misc_cod ;        // echec classique
-
+        if ( !$result = $stmt->fetch() ) return $p7->aqelem_misc_cod ;        // echec classique
         $reussite = $result["reussite"];
 
         if ($reussite>96) {
-            $etape = $p6->aqelem_misc_cod  ;        // Echec critique
-        }else if ($reussite>$competence) {
-            $etape = $p5->aqelem_misc_cod  ;        // echec classique
-        } else if ($result["reussite"]<=5) {
-            $etape = $p3->aqelem_misc_cod  ;        // Réussite critique
+            $etape = $p8->aqelem_misc_cod  ;        // Echec critique
+        } else if ($reussite>$competence) {
+            $etape = $p7->aqelem_misc_cod  ;        // echec classique
+        } else if ($result["reussite"] <= ( 5*$competence/100) ) {
+            $etape = $p4->aqelem_misc_cod  ;        // Réussite critique à 5% de la compétence
+        } else if ($result["reussite"] <= ( 10*$competence/100) ) {
+            $etape = $p5->aqelem_misc_cod  ;        // Réussite spéciale à 10% de la compétence
         } else {
-            $etape = $p4->aqelem_misc_cod  ;        // Réussite standard
+            $etape = $p6->aqelem_misc_cod  ;        // Réussite standard
         }
 
         // retourner l'étape !
