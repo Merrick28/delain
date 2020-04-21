@@ -215,7 +215,12 @@ function getTableCod_update() { // fonction de mise à jour de la liste (voir je
             for (i in data) {
                 content += '<a id="spop-tablecod-select-'+i+'" data-spop-cod="'+data[i].cod+'"  data-spop-nom="'+data[i].nom+'" data-spop-num1="'+(data[i].num1 ? data[i].num1 : '' )+'" href="#">'+data[i].nom+'</a> ('+data[i].cod+')'+(data[i].info ? ' <i style="font-size: 9px;">'+data[i].info+'</em>' : '' )+'<br>';
             }
-            if (data.length<d.data.count) content+='<br><i style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</em>';
+            if (data.length<d.data.count) {
+                content+='<br><em style="font-size:7pt;">Il y a encore '+(d.data.count-i)+' autres éléments.</em>';
+                if ($.inArray(d.data.table, ["element", "etape", "position", "perso"])<0) {
+                    content+='&nbsp; <a href="/jeu_test/admin_table_list.php?table='+d.data.table+'" target="_blank"><i style="font-size:7pt;">Voir la table complète</em></a>';
+                }
+            }
             $("#spop-serchlist").html(content);
         }
     });
