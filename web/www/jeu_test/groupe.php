@@ -140,7 +140,8 @@ switch ($methode)
 								case when pgroupe_montre_bonus = 1 then perso_bonus(perso_cod) else \'cache\' end as perso_bonus,
 								perso_pv_max,pgroupe_chef, pgroupe_messages,pgroupe_texte,to_char(pgroupe_texte_maj,\'DD/MM/YYYY hh24:mi:ss\') as date_texte_perso
 							from perso,groupe_perso
-							where pgroupe_groupe_cod = ' . $num_groupe . '
+							where perso_actif=\'O\' 
+							    and pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
 								and pgroupe_perso_cod = perso_cod
 								and is_visible_groupe(' . $num_groupe . ',perso_cod) = 1';
