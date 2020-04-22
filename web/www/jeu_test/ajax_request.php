@@ -198,6 +198,7 @@ switch($_REQUEST["request"])
         $recherche = $_REQUEST["recherche"];
         $table = $_REQUEST["table"];
         $params = $_REQUEST["params"];
+        $limit = isset($_REQUEST["limit"]) ? (int)$_REQUEST["limit"] : 10 ;
 
         switch ($table) {
         case 'perso':
@@ -228,7 +229,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select perso_cod cod, perso_nom nom from perso where perso_actif='O' {$filter} ORDER BY perso_nom LIMIT 10";
+            $req = "select perso_cod cod, perso_nom nom from perso where perso_actif='O' {$filter} ORDER BY perso_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -263,7 +264,7 @@ switch($_REQUEST["request"])
                     inner join positions on pos_cod=lpos_pos_cod
                     inner join etage on etage_numero=pos_etage
                     where {$filter}
-                    ORDER BY lieu_nom, etage_libelle LIMIT 10";
+                    ORDER BY lieu_nom, etage_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -303,7 +304,7 @@ switch($_REQUEST["request"])
                     left join lieu_position on lpos_pos_cod=pos_cod 
                     left join lieu on lpos_lieu_cod=lieu_cod 
                     where {$filter}
-                    ORDER BY lieu_nom, etage_libelle LIMIT 10";
+                    ORDER BY lieu_nom, etage_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -328,7 +329,7 @@ switch($_REQUEST["request"])
                 $count = $row['count'];
 
                 // requete de recherche
-                $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT 10";
+                $req = "select gmon_cod cod, gmon_nom nom from monstre_generique where {$filter} ORDER BY gmon_nom LIMIT {$limit}";
                 $stmt = $pdo->prepare($req);
                 $stmt = $pdo->execute($search_string, $stmt);
                 break;
@@ -365,7 +366,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select gobj_cod cod, gobj_nom || ' (' || tobj_libelle || ')' nom from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ORDER BY gobj_nom LIMIT 10";
+            $req = "select gobj_cod cod, gobj_nom || ' (' || tobj_libelle || ')' nom from objet_generique join type_objet on tobj_cod=gobj_tobj_cod where {$filter} ORDER BY gobj_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -390,7 +391,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select race_cod cod, race_nom nom from race where {$filter} ORDER BY race_nom LIMIT 10";
+            $req = "select race_cod cod, race_nom nom from race where {$filter} ORDER BY race_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -415,7 +416,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select comp_cod cod, comp_libelle||' ('||typc_libelle||')' nom from competences join type_competences on comp_typc_cod=typc_cod where {$filter} ORDER BY comp_libelle LIMIT 10";
+            $req = "select comp_cod cod, comp_libelle||' ('||typc_libelle||')' nom from competences join type_competences on comp_typc_cod=typc_cod where {$filter} ORDER BY comp_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -431,7 +432,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT 10";
+            $req = "select tlieu_cod cod, tlieu_libelle nom from lieu_type where tlieu_libelle ilike ?  {$filter} ORDER BY tlieu_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
@@ -447,7 +448,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select tbonus_cod cod, tonbus_libelle nom from bonus_type where tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT 10";
+            $req = "select tbonus_cod cod, tonbus_libelle nom from bonus_type where tonbus_libelle ilike ?  {$filter} ORDER BY tonbus_libelle LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute(array("%{$recherche}%"), $stmt);
             break;
@@ -472,7 +473,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select sort_cod cod, sort_nom||' ('||sort_cout::text||'PA)' nom from sorts where {$filter} ORDER BY sort_nom LIMIT 10";
+            $req = "select sort_cod cod, sort_nom||' ('||sort_cout::text||'PA)' nom from sorts where {$filter} ORDER BY sort_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -498,7 +499,7 @@ switch($_REQUEST["request"])
             $count = $row['count'];
 
             // requete de recherche
-            $req = "select aqetape_cod cod, aqetape_nom||' ['||aquete_nom||']' nom from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter} ORDER BY aqetape_nom LIMIT 10";
+            $req = "select aqetape_cod cod, aqetape_nom||' ['||aquete_nom||']' nom from quetes.aquete_etape join quetes.aquete on aquete_cod=aqetape_aquete_cod where {$filter} ORDER BY aqetape_nom LIMIT {$limit}";
             $stmt = $pdo->prepare($req);
             $stmt = $pdo->execute($search_string, $stmt);
             break;
@@ -548,7 +549,7 @@ switch($_REQUEST["request"])
         }
 
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC); // fetchall
-        $resultat = array("count" => $count, "data" => $result, "filter" =>$params);
+        $resultat = array("count" => $count, "table" => $table, "data" => $result, "filter" =>$params);
         break;
 
     //==============================================================================
