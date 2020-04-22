@@ -95,6 +95,18 @@
         </td>
     </tr>
 
+
+    <tr>
+
+        <td class="soustitre2">Encombrement</td>
+        <td>{{ PERSO.get_poids }}/{{ PERSO.perso_enc_max }}</td>
+
+        <td class="soustitre2">Malus lié au poids transporté</td>
+        <td>{{ (PERSO.allonge_temps_poids_temps/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids_temps%60 }} m</td>
+
+    </tr>
+
+
     <tr>
         <td class="soustitre2">Temps normal de tour</td>
 
@@ -107,22 +119,18 @@
     <tr>
         <td class="soustitre2">Temps du tour actuel</td>
         <td>{{ (CARAC.temps_tour/60)|round(O,'floor') }} h {{ CARAC.temps_tour%60 }} m</td>
-        <td class="soustitre2">Malus lié au poids transporté</td>
-        <td>{{ (PERSO.allonge_temps_poids_temps/60)|round(0,'floor') }} h {{ PERSO.allonge_temps_poids_temps%60 }} m</td>
-    </tr>
 
-    <tr>
-
-        <td class="soustitre2">Encombrement</td>
-        <td>{{ PERSO.get_poids }}/{{ PERSO.perso_enc_max }}</td>
         <td class="soustitre2">Bonus liés aux PA restant <em>(à cet instant précis !)</em></td>
-
         <td>{% if PERSO.perso_utl_pa_rest == 1 %}
                 {{ (BONUS_TEMPS_PA/60)|round(O,'floor') }} h {{ BONUS_TEMPS_PA%60 }} m
             {% else %}0h 0m
             {% endif %}
         </td>
+
     </tr>
+
+    
+
     <tr>
         <td height="3" colspan="4">
             <hr/>
