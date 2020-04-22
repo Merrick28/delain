@@ -152,6 +152,32 @@ class bonus
         return $retour;
     }
 
+    /**
+     * recherche les bonus (non-equipement) du perso
+     * @param $perso_cod
+     */
+    function get_perso_bonus_temporaire($perso_cod)
+    {
+        $retour = array();
+        $pdo    = new bddpdo;
+        $req    = "select bonus_cod from bonus where bonus_perso_cod = ? and bonus_mode!='E' order by bonus_cod ";
+        $stmt   = $pdo->prepare($req);
+        $stmt   = $pdo->execute(array($perso_cod), $stmt);
+        while ($result = $stmt->fetch())
+        {
+            $temp = new bonus;
+            $temp->charge($result["bonus_cod"]);
+            $retour[] = $temp;
+            unset($temp);
+        }
+        if (count($retour) == 0)
+        {
+            return false;
+        }
+        return $retour;
+    }
+
+
     public function __call($name, $arguments)
     {
         switch (substr($name, 0, 6))

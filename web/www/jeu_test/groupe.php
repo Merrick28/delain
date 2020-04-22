@@ -119,7 +119,8 @@ switch ($methode)
                     {
                         $req        = 'select count(perso_cod) as nbre_perso
 							from perso,groupe_perso
-							where pgroupe_groupe_cod = ' . $num_groupe . '
+							where perso_actif=\'O\' 
+							    and pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
 								and pgroupe_perso_cod = perso_cod';
                         $stmt       = $pdo->query($req);
@@ -314,7 +315,8 @@ switch ($methode)
                         $req  =
                             'select perso_cod,perso_nom,lower(perso_nom) as minusc,is_visible_groupe(' . $num_groupe . ',perso_cod) as is_visible,pgroupe_messages
 							from perso,groupe_perso
-							where pgroupe_groupe_cod = ' . $num_groupe . '
+							where perso_actif=\'O\'
+							    and pgroupe_groupe_cod = ' . $num_groupe . '
 								and pgroupe_statut = 1
 								and pgroupe_perso_cod = perso_cod
 								and is_visible_groupe(' . $num_groupe . ',perso_cod) = 0
