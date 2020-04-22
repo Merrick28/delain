@@ -25,6 +25,9 @@ class ligne_evt
     public $levt_nombre;
     public $levt_parametres;
 
+    public $perso_attaquant;
+    public $perso_cible;
+
     public function __construct()
     {
         $this->levt_date = date('Y-m-d H:i:s');
