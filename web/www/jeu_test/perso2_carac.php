@@ -26,6 +26,13 @@ while ($result = $stmt->fetch())
     ];
 }
 
+/* Calcul des carac modifié par l'équipement, les bonues, amélioration */
+$req_carac = "select f_armure_perso(:perso) as armure, distance_vue(:perso) as vue, f_regen_perso(:perso) as regen, f_temps_tour_perso(:perso) as temps_tour ";
+$stmt     = $pdo->prepare($req_carac);
+$stmt     = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
+$carac_final  = $stmt->fetch();
+
+
 $race = new race;
 $race->charge($perso->perso_race_cod);
 
@@ -59,11 +66,11 @@ if ($result['nombre'] == 0)
     $bonus   = $result['obj_bonus_degats'];
 }
 
-
-if ($perso->perso_niveau_vampire == 0)
-{
-    $bonus_pv_reg = min(25, floor($perso->perso_des_regen * $perso->perso_pv_max / 100));
-}
+// ne sert plus calculé par => f_regen_perso(:perso)
+//if ($perso->perso_niveau_vampire == 0)
+//{
+//    $bonus_pv_reg = min(25, floor($perso->perso_des_regen * $perso->perso_pv_max / 100));
+//}
 
 if ($perso->perso_utl_pa_rest == 1)
 {
@@ -97,13 +104,14 @@ $options_twig = array(
 
     'PERSO'            => $perso,
     'PHP_SELF'         => $_SERVER['PHP_SELF'],
+    'CARAC'            => $carac_final,
     'RACE'             => $race,
     'NIVEAU_BLESSURES' => $niveau_blessures,
     'BM_CARACS'        => $bm_caracs,
     'NB_DES'           => $nb_des,
     'VAL_DES'          => $val_des,
     'BONUS'            => $bonus,
-    'BONUS_PV_REG'     => $bonus_pv_reg,
+//    'BONUS_PV_REG'     => $bonus_pv_reg,
     'BONUS_TEMPS_PA'   => $bonus_temps_pa,
     'IS_FORGEAMAGE'    => $is_forgeamage,
     'DIEU_PERSO'       => $dieu_perso
