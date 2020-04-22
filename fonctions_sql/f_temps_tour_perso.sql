@@ -44,7 +44,7 @@ begin
       v_temps_tour := temps_tour ;
 
       /* on calcule du temps liés aux blessure (sauf si potion PDL)  */
-      if valeur_bonus(v_personnage, 'PDL') != 0 then
+      if valeur_bonus(v_personnage, 'PDL') = 0 then
         v_temps_tour := v_temps_tour + round( (temps_tour*(pv_max-pv_actuel)/pv_max) / 4 );
       end if;
 
