@@ -25,7 +25,7 @@ if (!isset($_REQUEST['m']))
     $m = 0;
 
     $bonus = new bonus();
-    if ($bonus->getBy_bonus_perso_cod($perso_cod) !== false)
+    if ($bonus->get_perso_bonus_temporaire($perso_cod) !== false)
     {
         $m = 2;
     }
