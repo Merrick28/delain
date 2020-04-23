@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION public.f_temps_tour_perso(
     COST 100
     VOLATILE 
 AS $BODY$/*****************************************************************/
-/* function f_temps_tour_perso : retourne la valeur de l armure du   */
+/* function f_temps_tour_perso : retourne la valeur de le temps du prochain tour du   */
 /*   perso passé en $1                                           */
 /* Le code sortie est un entier                                  */
 /*****************************************************************/

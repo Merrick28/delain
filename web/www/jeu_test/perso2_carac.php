@@ -27,7 +27,16 @@ while ($result = $stmt->fetch())
 }
 
 /* Calcul des carac modifié par l'équipement, les bonues, amélioration */
-$req_carac = "select f_armure_perso(:perso) as armure, distance_vue(:perso) as vue, f_regen_perso(:perso) as regen, f_temps_tour_perso(:perso) as temps_tour, valeur_bonus(:perso, 'DEG') as bonus_degats";
+$req_carac = "select    
+                f_armure_perso(:perso) as armure, 
+                distance_vue(:perso) as vue, 
+                f_regen_perso(:perso) as regen, 
+                f_temps_tour_perso(:perso) as temps_tour,
+                 valeur_bonus(:perso, 'DEG') as bonus_degats,
+                 f_perso_protec_critique(:perso) as perso_protec_critique,
+                 f_perso_vampirisme(:perso) as perso_vampirisme,
+                 f_perso_aura_feu(:perso) as perso_aura_feu
+             ";
 $stmt     = $pdo->prepare($req_carac);
 $stmt     = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
 $carac_final  = $stmt->fetch();
