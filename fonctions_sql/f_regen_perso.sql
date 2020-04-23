@@ -10,7 +10,7 @@ CREATE OR REPLACE FUNCTION public.f_regen_perso(
     COST 100
     VOLATILE 
 AS $BODY$/*****************************************************************/
-/* function f_regen_perso : retourne la valeur de l armure du   */
+/* function f_regen_perso : retourne la valeur de bonus de reg du   */
 /*   perso passé en $1                                           */
 /* Le code sortie est un entier                                  */
 /*****************************************************************/

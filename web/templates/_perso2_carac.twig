@@ -137,36 +137,6 @@
         </td>
     </tr>
 
-    <!-- tr>
-        <td class="soustitre2">Equipement Protection contre les critiques</td>
-        <td>
-            XX
-        </td>
-
-        <td class="soustitre2">Equipement Aura de feu</td>
-        <td>
-            XX
-        </td>
-    </tr>
-
-    <tr>
-        <td class="soustitre2">Equipement régénération</td>
-        <td>
-            XX
-        </td>
-
-        <td class="soustitre2">Equipement Vampirisme</td>
-        <td>
-            XX
-        </td>
-    </tr>
-    <tr>
-        <td height="3" colspan="4">
-            <hr/>
-        </td>
-    </tr-->
-
-
     <tr>
         <td class="soustitre2">Amélioration Dégâts</td>
         <td>
@@ -233,7 +203,35 @@
     </tr>
 
 
+    {% if CARAC.perso_protec_critique!=0 or CARAC.perso_vampirisme!=0 or CARAC.perso_aura_feu!=0  %}
 
+        {% if CARAC.perso_protec_critique!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Protection contre les critiques</td>
+                <td colspan="2">{{ CARAC.perso_protec_critique }}%</td>
+            </tr>
+        {% endif %}
+
+        {% if CARAC.perso_aura_feu!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Aura de feu de l'équipement</td>
+                <td colspan="2">{{ CARAC.perso_aura_feu }}</td>
+            </tr>
+        {% endif %}
+
+        {% if CARAC.perso_vampirisme!=0 %}
+            <tr>
+                <td class="soustitre2" colspan="2">Vamprisime de l'équipement</td>
+                <td colspan="2">{{ CARAC.perso_vampirisme }}</td>
+            </tr>
+        {% endif %}
+
+        <tr>
+            <td height="3" colspan="4">
+                <hr/>
+            </td>
+        </tr>
+    {% endif %}
 
 
     <tr>
