@@ -28,6 +28,7 @@ while ($result = $stmt->fetch())
 
 /* Calcul des carac modifié par l'équipement, les bonues, amélioration */
 $req_carac = "select    
+                type_arme(:perso) as type_arme,
                 f_armure_perso(:perso) as armure, 
                 distance_vue(:perso) as vue, 
                 f_regen_perso(:perso) as regen, 
