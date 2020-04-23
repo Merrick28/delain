@@ -67,7 +67,7 @@
     <tr>
         <td class="soustitre2">Dégâts</td>
         <td>
-            {{ NB_DES }}D{{ VAL_DES }}+{% if CARAC.type_arme == 1 %}{{ BONUS + CARAC.bonus_degats + PERSO.perso_amelioration_degats}}{% else %}{{ BONUS + CARAC.bonus_degats + PERSO.perso_amel_deg_dex }}{% endif %}
+            {{ NB_DES }}D{{ VAL_DES }}+{% if CARAC.type_arme == 1 %}{{ BONUS + CARAC.bonus_degats + CARAC.bonus_degats_melee + PERSO.perso_amelioration_degats}}{% else %}{{ BONUS + CARAC.bonus_degats + PERSO.perso_amel_deg_dex }}{% endif %}
         </td>
         {% if PERSO.perso_niveau_vampire == 0 %}
             <td class="soustitre2">Régénération
