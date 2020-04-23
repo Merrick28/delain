@@ -208,14 +208,14 @@
         {% if CARAC.perso_protec_critique!=0 %}
             <tr>
                 <td class="soustitre2" colspan="2">Protection contre les critiques</td>
-                <td colspan="2">{{ CARAC.perso_protec_critique }}%</td>
+                <td colspan="2">{{ min(100, CARAC.perso_protec_critique) |round(0, 'floor') }}%</td>
             </tr>
         {% endif %}
 
         {% if CARAC.perso_aura_feu!=0 %}
             <tr>
                 <td class="soustitre2" colspan="2">Aura de feu de l'équipement</td>
-                <td colspan="2">{{ CARAC.perso_aura_feu }}</td>
+                <td colspan="2">{{ min(100, CARAC.perso_aura_feu * 100) |round(0, 'floor') }}%</td>
             </tr>
         {% endif %}
 

@@ -12,7 +12,7 @@ declare
 
   personnage alias for $1;
   code_retour numeric;
-  v_aura_feu integer;
+  v_aura_feu numeric;
 
 begin
   code_retour := 0;
