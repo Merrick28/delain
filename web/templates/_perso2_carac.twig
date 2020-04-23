@@ -67,7 +67,7 @@
     <tr>
         <td class="soustitre2">Dégâts</td>
         <td>
-            {{ NB_DES }}D{{ VAL_DES }}+{{ BONUS }}
+            {{ NB_DES }}D{{ VAL_DES }}+{{ BONUS + CARAC.bonus_degats }}
         </td>
         {% if PERSO.perso_niveau_vampire == 0 %}
             <td class="soustitre2">Régénération
@@ -129,7 +129,7 @@
 
     </tr>
 
-    
+
 
     <tr>
         <td height="3" colspan="4">
@@ -185,7 +185,7 @@
 
         {% else %}
             <td class="soustitre2">Amélioration Vampirisme</td>
-            <td>{{ PERSO.perso_vampirisme }}'</td>
+            <td>{{ 10 * PERSO.perso_vampirisme }}</td>
 
         {% endif %}
     </tr>
@@ -200,15 +200,15 @@
         </td>
     </tr>
 
-    <!--tr>
-        <td class="soustitre2">Amélioration Temps normal de tour</td>
+    <tr>
+        <td class="soustitre2">Amélioration Temps au tour</td>
         <td>
-            {{ PERSO.perso_amelioration_nb_sort }}
+            {{ DLT_AMELIORATION }}
         </td>
 
         <td class="soustitre2">Amélioration Capacité de réparation</td>
         <td>
-           xx
+            {{ PERSO.perso_nb_amel_repar }}
         </td>
 
     </tr>
@@ -221,9 +221,9 @@
 
         <td class="soustitre2">Amélioration Chances de mémorisation </td>
         <td>
-           xx
+            {{ PERSO.perso_nb_amel_chance_memo }}
         </td>
-    </tr-->
+    </tr>
 
 
     <tr>

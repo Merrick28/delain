@@ -27,7 +27,7 @@ while ($result = $stmt->fetch())
 }
 
 /* Calcul des carac modifié par l'équipement, les bonues, amélioration */
-$req_carac = "select f_armure_perso(:perso) as armure, distance_vue(:perso) as vue, f_regen_perso(:perso) as regen, f_temps_tour_perso(:perso) as temps_tour ";
+$req_carac = "select f_armure_perso(:perso) as armure, distance_vue(:perso) as vue, f_regen_perso(:perso) as regen, f_temps_tour_perso(:perso) as temps_tour, valeur_bonus(:perso, 'DEG') as bonus_degats";
 $stmt     = $pdo->prepare($req_carac);
 $stmt     = $pdo->execute(array(":perso" => $perso->perso_cod), $stmt);
 $carac_final  = $stmt->fetch();
@@ -99,6 +99,9 @@ if ($perso->is_fam())
     }
 }
 
+$dlt_tab_amelioration = [ 720	=> 0 , 690	=> 1 , 660	=> 2 , 635	=> 3 , 610	=> 4 , 585	=> 5 , 565	=> 6 , 545	=> 7 , 525	=> 8 , 510	=> 9 , 495	=> 10, 480	=> 11, 470	=> 12, 460	=> 13, 450	=> 14, 445	=> 15, 440	=> 16, 435	=> 17, 430	=> 18, 425	=> 19, 420	=> 20, 415	=> 21, 410	=> 22, 405	=> 23, 400	=> 24, 395	=> 25, 390	=> 26, 385	=> 27, 380	=> 28, 375	=> 29, 370	=> 30, 365	=> 31, 360	=> 32];
+$dlt_amelioration = isset( $dlt_tab_amelioration[$perso->perso_temps_tour]) ? $dlt_tab_amelioration[$perso->perso_temps_tour] : 0 ;
+
 $template     = $twig->load('_perso2_carac.twig');
 $options_twig = array(
 
@@ -114,6 +117,7 @@ $options_twig = array(
 //    'BONUS_PV_REG'     => $bonus_pv_reg,
     'BONUS_TEMPS_PA'   => $bonus_temps_pa,
     'IS_FORGEAMAGE'    => $is_forgeamage,
-    'DIEU_PERSO'       => $dieu_perso
+    'DIEU_PERSO'       => $dieu_perso,
+    'DLT_AMELIORATION' => $dlt_amelioration
 );
 $contenu_page .= $template->render(array_merge($options_twig_defaut, $options_twig));
