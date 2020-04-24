@@ -7,7 +7,13 @@ include "blocks/_test_droit_modif_etage.php";
 $methode     = get_request_var('methode', 'debut');
 $admin_etage = get_request_var('etage', 0);
 
-if (!isset($admin_etage) && $methode == 'debut') {
+if (isset($_REQUEST['admin_etage']))
+{
+    $admin_etage = get_request_var('admin_etage', 0);
+}
+
+if (!isset($admin_etage) && $methode == 'debut')
+{
     $admin_etage = 0;
 }
 $html = new html;
@@ -15,7 +21,7 @@ echo "<table><tr><td><p><strong>Choisissez l’étage à modifier :</strong></p>
 	<form method='post' action='" . $_SERVER['PHP_SELF'] . "'>
 	<input type='hidden' value='dessine' name='methode' />
 	<select name='etage'>" .
-    $html->etage_select($admin_etage) .
+     $html->etage_select($admin_etage) .
     "</select>&nbsp;<input type='submit' value='Valider' class='test'/></form></td><td>
 	<p><strong>Autres outils</strong><br />
 	<a href='modif_etage3.php'>Créer / modifier un étage (caractéristiques générales)</a><br />
