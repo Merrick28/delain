@@ -462,6 +462,7 @@ if ($erreur == 0)
 	<div style='width:600px; overflow:auto' class='bordiv' id='visu_murs'></div>
 	<script type='text/javascript'>changeStyle('<?php echo  $etage_affichage; ?>');</script>
 <?php 	}
+	echo "<center><a href=\"admin_etage.php\">Retour au menu d'aminstration des étages<a></center>";
 }
 $contenu_page = ob_get_contents();
 ob_end_clean();
