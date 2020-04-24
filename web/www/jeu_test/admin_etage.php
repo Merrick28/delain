@@ -155,11 +155,13 @@ switch ($methode) {
         $modifs = $_REQUEST['modifs'];
         $admin_etage = $_REQUEST['admin_etage'];
         $erreur = false;
-        if (!isset($admin_etage) || $admin_etage === '') {
+        if (!isset($admin_etage) || $admin_etage == '')
+        {
             echo "<p>Erreur ! Étage non défini.</p>";
             $erreur = true;
         }
-        if (empty($modifs)) {
+        if (empty($modifs))
+        {
             echo "<p>Aucune modification enregistrée</p>";
             $erreur = true;
         }
