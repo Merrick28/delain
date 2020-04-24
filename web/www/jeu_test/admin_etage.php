@@ -152,9 +152,9 @@ switch ($methode) {
         <?php break;
 
     case "valide":
-        $modifs = $_REQUEST['modifs'];
-        $admin_etage = $_REQUEST['admin_etage'];
-        $erreur = false;
+        $modifs      = $_REQUEST['modifs'];
+        $admin_etage = get_request_var('admin_etage', '');
+        $erreur      = false;
         if (!isset($admin_etage) || $admin_etage == '')
         {
             echo "<p>Erreur ! Étage non défini.</p>";
