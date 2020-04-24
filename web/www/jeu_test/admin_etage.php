@@ -144,7 +144,7 @@ switch ($methode) {
         </script>
         <form name="plateau" method="POST" action="<?php echo $_SERVER['PHP_SELF']; ?>"
               onsubmit="Etage.ecrireModifs();">
-            <input type="hidden" name="etage" value="<?php echo $admin_etage; ?>"/>
+            <input type="hidden" name="admin_etage" value="<?php echo $admin_etage; ?>"/>
             <input type="hidden" name="methode" value="valide"/>
             <input type="hidden" name="modifs" value=""/>
             <center><input type="submit" class="test" value="Modifier !"></center>
