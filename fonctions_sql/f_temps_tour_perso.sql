@@ -54,7 +54,7 @@ begin
       end if;
 
       -- distortion temporelle acceleration
-      v_temps_tour := v_temps_tour +  round(valeur_bonus(v_personnage, 'DIT'));
+      v_temps_tour := v_temps_tour -  round(valeur_bonus(v_personnage, 'DIT'));
 
       -- distortion temporelle ralentissement
       v_temps_tour := v_temps_tour +  round(valeur_bonus(v_personnage, 'DIS'));
