@@ -153,12 +153,14 @@ switch ($methode) {
             <input type="hidden" name="admin_etage" value="<?php echo $admin_etage; ?>"/>
             <input type="hidden" name="methode" value="valide"/>
             <input type="hidden" name="modifs" value=""/>
-            <center><input type="submit" class="test" value="Modifier !"></center>
+            <center><input type="button" class="test" value="Modifier !" onclick="Etage.ecrireModifs()"></center>
         </form>
         <?php break;
 
     case "valide":
         $modifs      = $_REQUEST['modifs'];
+
+
         $admin_etage = get_request_var('admin_etage', '');
         $erreur      = false;
         if (!isset($admin_etage) || $admin_etage == '')

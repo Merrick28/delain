@@ -158,10 +158,8 @@ Etage.getCasesVoisines = function (idx) {
 
 // Dessine l’étage.
 Etage.Dessine = function() {
-	console.log('debut dessine etage');
 	var lignesVisibles = 50;
 	var colonnesVisibles = 50;
-	console.log('Max X =' + Etage.maxX);
 	var imagesParLigne = Etage.maxX - Etage.minX + 1;
 	var nombreDeLignes = Etage.maxY - Etage.minY + 1;
 	var largeurPX = (imagesParLigne * 28);
@@ -186,9 +184,7 @@ Etage.Dessine = function() {
 	divConteneur.onmouseout = function () {
 		Etage.deselectionne();
 	};
-	console.log("max cases " + Etage.Cases.length);
 	for (var i = 0; i < Etage.Cases.length; i++) {
-		console.log("i courant =" + i);
 		var debutLigne = (i % imagesParLigne == 0);
 		var idObj = Etage.Cases[i].id;
 
@@ -218,7 +214,6 @@ Etage.Dessine = function() {
 	}
 	divViewPort.appendChild(divConteneur);
 	document.getElementById("vueEtage").appendChild(divViewPort);
-	console.log("fin etage dessine");
 };
 
 // Insère une div quelque part entre DivFond et DivAction, qui sont toujours présentes, dans l’ordre Fond > Décor > Mur > DécorDessus > Action.
