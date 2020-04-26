@@ -176,23 +176,11 @@
             {{ DLT_AMELIORATION }}
         </td>
 
-        <td class="soustitre2">Amélioration Capacité de réparation</td>
-        <td>
-            {{ PERSO.perso_nb_amel_repar }}
-        </td>
-
-    </tr>
-
-    <tr>
         <td class="soustitre2">Amélioration Sorts mémorisables</td>
         <td>
             {{ PERSO.perso_amelioration_nb_sort }}
         </td>
 
-        <td class="soustitre2">Amélioration Chances de mémorisation </td>
-        <td>
-            {{ PERSO.perso_nb_amel_chance_memo }}
-        </td>
     </tr>
 
 
@@ -221,7 +209,7 @@
 
         {% if CARAC.perso_vampirisme!=0 %}
             <tr>
-                <td class="soustitre2" colspan="2">Vamprisime de l'équipement</td>
+                <td class="soustitre2" colspan="2">Vampirisme de l'équipement</td>
                 <td colspan="2">{{ min(100, CARAC.perso_vampirisme) |round(0, 'floor') }} %</td>
             </tr>
         {% endif %}

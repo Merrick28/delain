@@ -173,12 +173,27 @@ switch ($methode) {
             echo "<p>Aucune modification enregistrée</p>";
             $erreur = true;
         }
-        // validation des modifs, de la forme 1234|d=1,f=2,m=0;1235|d=0,m=999;
-        $schema = "/(\d+\|([dmsfpvct]=\d+,)+;)*/i";
-        if (!preg_match($schema, $modifs)) {
-            echo "<p>Erreur ! Modifications non valides <br />-- debug --$modifs</p>";
-            $erreur = true;
+
+        // validation des modifs Version 2: preg_match ne supporte qu'un taille limité pour la chaine d'entrée
+        $split=explode(";",$modifs);
+        $schema = "/^\d+\|([dmsfpvct]=\d+,)/i";
+        foreach ($split as $s) {
+            if ($s!=""){
+                if (!preg_match($schema, $s)) {
+                    echo "<p>Erreur ! Modifications non valides <br />-- debug --$modifs</p>";
+                    $erreur = true;
+                    break;
+                }
+            }
         }
+
+
+        // validation des modifs, de la forme 1234|d=1,f=2,m=0;1235|d=0,m=999;
+        //$schema = "/(\d+\|([dmsfpvct]=\d+,)+;)*/i";
+        //if (!preg_match($schema, $modifs)) {
+        //    echo "<p>Erreur ! Modifications non valides <br />-- debug --$modifs</p>";
+        //    $erreur = true;
+        //}
         if (!$erreur) {
             $tab_modifs = explode(';', $modifs);
             $cpt_fond = 0;

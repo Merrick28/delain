@@ -1,0 +1,1 @@
+insert into potions.fonction_potion(fpot_gobj_cod, fpot_fonction, fpot_niveau) values (1391, 'pot_penicilline', 4);
