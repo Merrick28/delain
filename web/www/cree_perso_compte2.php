@@ -8,6 +8,7 @@ $api = new callapi();
 $callapi     = new callapi();
 $array_perso = array(
     "nom"   => $_REQUEST['nom'],
+    "sexe" => $_REQUEST['sexe'],
     "force" => $_REQUEST['force'],
     "con"   => $_REQUEST['con'],
     "dex"   => $_REQUEST['dex'],
