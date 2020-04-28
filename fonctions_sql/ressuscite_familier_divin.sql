@@ -69,7 +69,7 @@ begin
     etage_duree_imp_f
   from etage where etage_numero = cible_etage;
 
-   ---- trouver le dernier fam divin  à recussiter (il doit avoir encore de la foi et la même foi que le maitre)
+   ---- trouver le dernier fam divin  à recussiter (il doit avoir encore de la même foi que le maitre)
    select into
     familier_perso_cod, familier_perso_nom, px_perdus
     perso_cod, perso_nom, taux_perte_xp * perso_px  FROM perso_familier
@@ -81,7 +81,7 @@ begin
       INNER JOIN dieu_perso dieu_fam on dieu_fam.dper_perso_cod=pfam_familier_cod
       INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
       INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
-      WHERE pfam_perso_cod = cible AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod
+      WHERE pfam_perso_cod = cible AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod
     ) dernier_familier ON dernier_familier.perso_dcreat = perso.perso_dcreat
     WHERE pfam_perso_cod = cible;
   if not found then
@@ -99,6 +99,9 @@ begin
 
  -- le positionner à coté de son maitre
  update perso_position set ppos_pos_cod = pos_actuelle where ppos_perso_cod = familier_perso_cod ;
+
+ -- pour un familier divin qui aurait été tué par manque de foi, on remet sa barre à 20%
+  update dieu_perso dieu_fam set dper_points=40 where dper_perso_cod=familier_perso_cod and dper_points<40;
 
   code_retour := code_retour||'<br>Votre dieu vous exauce et ramène <b>' || familier_perso_nom || '</b> du plan des morts.<br>';
 
