@@ -269,7 +269,7 @@ if ($erreur == 0)
                             INNER JOIN dieu_perso dieu_fam on dieu_fam.dper_perso_cod=pfam_familier_cod
                             INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
                             INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
-                            WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
+                            WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
             $stmt                = $pdo->query($req);
             $result              = $stmt->fetch();
             $count_familier_mort = $result['count'];
@@ -477,7 +477,7 @@ if ($erreur == 0)
                     INNER JOIN dieu_perso dieu_fam on dieu_fam.dper_perso_cod=pfam_familier_cod
                     INNER JOIN perso maitre on maitre.perso_cod=pfam_perso_cod
                     INNER JOIN dieu_perso dieu_maitre on dieu_maitre.dper_perso_cod=pfam_perso_cod
-                    WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_fam.dper_points>0 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
+                    WHERE pfam_perso_cod = {$perso_cod} AND fam.perso_actif='N' AND fam.perso_gmon_cod=441 AND dieu_maitre.dper_dieu_cod=dieu_fam.dper_dieu_cod ";
             $stmt                = $pdo->query($req);
             $result              = $stmt->fetch();
             $count_familier_mort = $result['count'];
