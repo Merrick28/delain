@@ -2,20 +2,21 @@
 include "counter.php";
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n°1 - Juillet 2005</title>
-<link href="CSS/voix001.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n°1 - Juillet 2005</title>
+    <link href="CSS/voix001.css" rel="stylesheet" type="text/css">
 </head>
 
-<body><div class="fond">
-<div class="titre" id="Titre">
-  <a class="blanc" href="index.html">
-    <img src="Titres/Titre2.jpg" class="titre_img">
-  </a>
-</div>
+<body>
+<div class="fond">
+    <div class="titre" id="Titre">
+        <a class="blanc" href="index.html">
+            <img src="Titres/Titre2.jpg" class="titre_img">
+        </a>
+    </div>
 
 <div class="zone3" id="Zone3">
 </div>

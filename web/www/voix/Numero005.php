@@ -3,17 +3,17 @@ include "counter.php";
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n&deg;5 - Octobre 2005</title>
-<link href="CSS/voix005.css" rel="stylesheet" type="text/css">
-<script type="text/javascript">
-<!--
-//=======================================================
-     //detect browser settings for showing and hiding DIVs
-     isNS4 = (document.layers) ? true : false;
-     isIE4 = (document.all && !document.getElementById) ? true : false;
-     isIE5 = (document.all && document.getElementById) ? true : false;
-     isNS6 = (!document.all && document.getElementById) ? true : false;
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n&deg;5 - Octobre 2005</title>
+    <link href="CSS/voix005.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        <!--
+        //=======================================================
+        //detect browser settings for showing and hiding DIVs
+        isNS4 = (document.layers) ? true : false;
+        isIE4 = (document.all && !document.getElementById) ? true : false;
+        isIE5 = (document.all && document.getElementById) ? true : false;
+        isNS6 = (!document.all && document.getElementById) ? true : false;
 //=======================================================
 
 function switchDiv(strDivName,bolVisible){

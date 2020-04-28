@@ -1,8 +1,8 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n&deg;6 - Novembre 2005</title>
-<link href="CSS/voix006.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n&deg;6 - Novembre 2005</title>
+    <link href="CSS/voix006.css" rel="stylesheet" type="text/css">
 <?php 
   if ($_GET['css'] == 'journal')
   {

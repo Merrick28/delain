@@ -3,9 +3,9 @@ include "counter.php";
 ?>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - n&deg;7 - Janvier 2006</title>
-<link href="CSS/voix007.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - n&deg;7 - Janvier 2006</title>
+    <link href="CSS/voix007.css" rel="stylesheet" type="text/css">
 <?php 
   if ($_GET['skin'] == 'journal')
   {

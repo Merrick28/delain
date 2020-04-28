@@ -2,20 +2,20 @@
 include "counter.php";
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+        "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La Voix des Souterrains - Kiosque</title>
-<link href="CSS/voix.css" rel="stylesheet" type="text/css">
-<link href="CSS/archives_delain.css" rel="stylesheet" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>La Voix des Souterrains - Kiosque</title>
+    <link href="CSS/voix.css" rel="stylesheet" type="text/css">
+    <link href="CSS/archives_delain.css" rel="stylesheet" type="text/css">
 </head>
 <body class="fond1">
 <div class="titre" id="Titre">
-<center>
- <table class="fond2" width="800" border="0" cellpadding="0" cellspacing="0">
- <tr>
-  <td class="coin_hg"><img src="img_archives/del.gif" height="8" width="10"></td>
+    <center>
+        <table class="fond2" width="800" border="0" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="coin_hg"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="ligne_haut"><img src="img_archives/del.gif" height="8" width="10"></td>
   <td class="coin_hd"><img src="img_archives/del.gif" height="8" width="10"></td>
  </tr>
