@@ -7,7 +7,7 @@ include "includes/classes.php";
 <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link href="css/delain.less" rel="stylesheet/less" type="text/css"/>
+<link href="css/delain.css" rel="stylesheet">
 <head>
     <title>Renvoi de mot de passe</title>
 </head>
@@ -120,5 +120,4 @@ use PHPMailer\PHPMailer\Exception;
     ?>
 </div>
 </body>
-<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
 </html>
