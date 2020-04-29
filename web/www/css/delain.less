@@ -1,66 +1,90 @@
+@imagefond: url("https://www.jdr-delain.net/images/fond5.gif");
+@fondparchemin: url('../../images/fondparchemin.gif');
+@imagebouton: url('../../images/bouton.jpg');
+@imageboutonclair: url(../images/bouton.gif);
+@delain-font: verdana, helvetica, sans-serif;
+@delain-font-size: 9pt;
+@noborder: 0;
+@souligne: underline;
+
+// couleurs
+@couleur_lien: #4D0505;
+@couleur-bordure: #800000;
+
+// default radius
+@default-radius: 10px;
+
 body {
-  background-image: url('../../images/fond5.gif');
-  font-family: verdana, helvetica, sans-serif;
-  font-size: 9pt;
+  background-image: @imagefond;
+  font-family: @delain-font;
+  font-size: @delain-font-size;
+}
+
+// Liens classiques
+a {
+  color: @couleur_lien;
+  text-decoration: @souligne;
+
+  &:hover {
+    color: @couleur_lien;
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: @couleur_lien;
+    text-decoration: none;
+  }
+}
+
+// Liens de navigation
+.navbar-default .navbar-nav > li > a {
+  color: @couleur_lien;
+  text-decoration: @souligne;
+
+  &:hover {
+    color: @couleur_lien;
+    text-decoration: none;
+  }
+
+  &:visited {
+    color: @couleur_lien;
+    text-decoration: none;
+  }
 }
 
 .navbar {
-  border: 0;
+  border: @noborder;
+
 }
 
 .navbar-default {
-  background-image: url('../../images/fond5.gif');
+  background-color: unset;
 }
 
-.navbar-default li a:link {
-  text-decoration: underline;
-  color: #4D0505;
-
-}
-
-.navbar-default li a:visited {
-  text-decoration: underline;
-  color: #4D0505;
-
-}
-
-.navbar-default li a:hover {
-  text-decoration: none;
-  color: #4D0505;
-
-}
-
-a:link {
-  text-decoration: underline;
-  color: #4D0505;
-
-}
-
-a:visited {
-  text-decoration: underline;
-  color: #4D0505;
-
-}
-
-a:hover {
-  text-decoration: none;
-  color: #4D0505;
-
-}
 
 .groupdiv {
-  background-image: url('../../images/fondparchemin.gif');
-  border-color: #800000;
+  background-image: @fondparchemin;
+  border-color: @couleur-bordure;
   border-style: solid;
-  border-radius: 10px;
+  border-radius: @default-radius;
   height: auto;
-  overflow: auto;
   margin-bottom: 10px;
-  padding-bottom: 10px;
   margin-top: 10px;
   margin-right: 10px;
   padding: 10px;
   overflow: hidden;
+}
+
+.bordiv {
+  &:extend(.groupdiv);
+}
+
+.navbar-header {
+  &:extend(.groupdiv);
+  //margin: 0;
+  padding: 0;
+  overflow: auto;
+  color: #4D0505;
 }
 
 .groupdiv_gauche {
@@ -70,36 +94,34 @@ a:hover {
 }
 
 .groupdiv .titre {
-  background-color: #800000;
-  color: #FFF;
+  background-color: @couleur-bordure;
+  color: white;
   font-weight: bold;
   text-align: center;
-  padding: 3px 0px;
+  padding: 3px 0;
+}
+
+.groupdiv .soustitre {
+  color: #FFFFFF;
+  text-align: center;
+  font-weight: bold;
+  padding-right: 5px;
+  padding-left: 5px;
+  background-color: #660033;
 }
 
 .groupdiv .persotitre {
-  background-color: #800000;
-  color: #FFF;
-  font-weight: bold;
-  text-align: center;
-  padding: 0px;
+  &:extend(.groupdiv .titre );
+  padding: 0;
 }
 
 .groupdiv_nopadding {
-  background-image: url('../../images/fondparchemin.gif');
-  border-color: #800000;
-  border-style: solid;
-  border-radius: 10px;
-  height: auto;
-  overflow: auto;
-  margin-bottom: 1px;
-  padding-bottom: 1px;
-  margin-top: 1px;
+  &:extend(.groupdiv);
   overflow: hidden;
-  margin-right: -15px;
-  margin-left: -15px;
-  padding: 0px;
+  margin: 1px -15px;
+  padding: 0;
 }
+
 
 /* make sidebar nav vertical */
 @media (min-width: 768px) {
@@ -123,8 +145,8 @@ a:hover {
   }
 
   .sidebar-nav .navbar li a {
-    padding-top: 0px;
-    padding-bottom: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .blockAuthTop ul {
@@ -159,26 +181,6 @@ a:hover {
   }
 }
 
-.groupdiv .soustitre {
-  color: #FFFFFF;
-  font-size: 9pt;
-  text-align: center;
-  font-weight: bold;
-  padding-right: 5px;
-  padding-left: 5px;
-  background-color: #660033;
-}
-
-.navbar-collapse {
-  padding-right: 15px;
-  padding-left: 15px;
-  overflow-x: visible;
-  -webkit-overflow-scrolling: touch;
-  border-top: 1px solid transparent;
-  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
-}
-
 @media (min-width: 992px) {
   .navbar-collapse {
     width: auto;
@@ -186,6 +188,17 @@ a:hover {
     -webkit-box-shadow: none;
     box-shadow: none;
   }
+
+  .navbar-collapse {
+    padding-right: 15px;
+    padding-left: 15px;
+    overflow-x: visible;
+    -webkit-overflow-scrolling: touch;
+    border-top: 1px solid transparent;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1);
+  }
+
 
   .navbar-collapse.collapse {
     display: block !important;
@@ -211,15 +224,6 @@ a:hover {
   padding-bottom: 0px;
 }
 
-.navbar-header {
-  background-image: url('../../images/fondparchemin.gif');
-  border-color: #800000;
-  border-style: solid;
-  border-radius: 10px;
-  height: auto;
-  overflow: auto;
-  color: #4D0505;
-}
 
 .navbar-default .navbar-brand {
   color: #4D0505;
@@ -243,12 +247,26 @@ hr {
 }
 
 .btn-delain {
-  background: url('../../images/bouton.jpg');
+  background: @imagebouton;
   color: #FFE081;
   font-size: 13px;
   height: 21px;
-  padding-top: 0px;
-  padding-bottom: 0px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+input.bouton {
+  color: #FFFFFF;
+  font-size: 9px;
+  font-family: Verdana, Helvetica, sans-serif;
+  border-color: #B5955A #9F7F47 #9F7F47 #B5955A;
+  background: @imageboutonclair;
+  border-width: 2px;
+  padding-right: 0;
+  padding-left: 0;
+  margin-left: 0;
+  margin-right: 0;
+  text-indent: 0;
 }
 
 .form-group-delain {
@@ -274,12 +292,15 @@ hr {
 div.centrer {
   width: 100%;
 }
+
 submit.centrer {
   display: block;
 }
+
 button.centrer {
   display: block;
 }
+
 .centrer {
   text-align: center;
   margin-left: auto;
@@ -345,7 +366,6 @@ button.centrer {
 }
 
 img.imgFit {
-  max-width: 100%;
   height: auto;
   max-width: 200px;
 }
@@ -356,14 +376,6 @@ img.imgFit {
 
 .rouge {
   color: red;
-}
-
-.bordiv {
-  border-color: #800000;
-  border-style: solid;
-  border-radius: 10px;
-  background-image: url('../images/fondparchemin.gif');
-  padding: 10px;
 }
 
 
@@ -378,7 +390,7 @@ td {
 td.titre {
   padding-right: 10px;
   padding-left: 10px;
-  background-color: #800000;
+  background-color: @couleur-bordure;
 }
 
 td.soustitre2 {
@@ -405,11 +417,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/hp0.gif');
 }
+
 .barre-hp {
   height: 10px;
   background-image: url('../images/hp01.png');
   background-repeat: repeat-x;
 }
+
 .container-xp {
   display: inline-block;
   width: 80px;
@@ -418,11 +432,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/xp0.gif');
 }
+
 .barre-xp {
   height: 10px;
   background-image: url('../images/xp01.png');
   background-repeat: repeat-x;
 }
+
 .container-nrj {
   display: inline-block;
   width: 80px;
@@ -431,11 +447,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/nrj0.png');
 }
+
 .barre-nrj {
   height: 10px;
   background-image: url('../images/nrj01.png');
   background-repeat: repeat-x;
 }
+
 .container-div {
   display: inline-block;
   width: 80px;
@@ -444,6 +462,7 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/div0.png');
 }
+
 .barre-div {
   height: 10px;
   background-image: url('../images/div01.png');
@@ -454,6 +473,7 @@ td.soustitre2 {
 .mob-barre-inline {
   display: inline-block;
 }
+
 .mob-container-hp {
   display: inline-block;
   width: 90px;
@@ -462,11 +482,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/hp0.gif');
 }
+
 .mob-barre-hp {
   height: 10px;
   background-image: url('../images/hp01.png');
   background-repeat: repeat-x;
 }
+
 .mob-container-xp {
   display: inline-block;
   width: 90px;
@@ -475,11 +497,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/xp0.gif');
 }
+
 .mob-barre-xp {
   height: 10px;
   background-image: url('../images/xp01.png');
   background-repeat: repeat-x;
 }
+
 .mob-container-nrj {
   display: inline-block;
   width: 90px;
@@ -488,11 +512,13 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/nrj0.png');
 }
+
 .mob-barre-nrj {
   height: 10px;
   background-image: url('../images/nrj01.png');
   background-repeat: repeat-x;
 }
+
 .mob-container-div {
   display: inline-block;
   width: 90px;
@@ -501,6 +527,7 @@ td.soustitre2 {
   padding-right: 5px;
   background-image: url('../images/div0.png');
 }
+
 .mob-barre-div {
   height: 10px;
   background-image: url('../images/div01.png');
@@ -522,16 +549,3 @@ table {
   font-variant: normal;
 }
 
-input.bouton {
-  color: #FFFFFF;
-  font-size: 9px;
-  font-family: Verdana, Helvetica, sans-serif;
-  border-color: #B5955A #9F7F47 #9F7F47 #B5955A;
-  background: url(../images/bouton.gif);
-  border-width: 2px;
-  padding-right: 0pt;
-  padding-left: 0pt;
-  margin-left: 0pt;
-  margin-right: 0pt;
-  text-indent: 0pt;
-}
