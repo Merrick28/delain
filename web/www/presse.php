@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="style.php">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="shortcut icon" href="http://www.jdr-delain.net/drake_head_red.gif" type="image/gif">
     <title>Ils en ont parlé</title>
 </head>

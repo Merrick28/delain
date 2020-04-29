@@ -33,6 +33,7 @@ $nb = count($ong);
             document.forms['destdroite'].action.value = dest_action;
             document.forms['destdroite'].destcadre.value = dest_cadre;
             document.getElementById('onglet_frdr' + onglet).className = 'onglet';
+            //$(location).attr('href', 'fr_dr.php?aj=1&t_frdr=' + onglet)
             getdata('fr_dr.php?aj=1&t_frdr=' + onglet, 'frdr_contenu');
         }
     </script>
