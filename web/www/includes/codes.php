@@ -16,20 +16,20 @@
 ////////////////////////////////////////////////
 ?>
 <head><title>[Liste des Smileys actifs !]</title>
-<link rel="stylesheet" type="text/css" href="../style.css" title="essai">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<link href="../css/delain.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../style.css" title="essai">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="../css/delain.less" rel="stylesheet/less" type="text/css"/>
 
-<script language="javascript" type="text/javascript">
-    <!--
-    function emoticon(text) {
-        text = ' ' + text + ' ';
-        if (opener.document.forms['nouveau_message'].corps.createTextRange && opener.document.forms['nouveau_message'].corps.caretPos) {
-            var caretPos = opener.document.forms['nouveau_message'].corps.caretPos;
-            caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
-            opener.document.forms['nouveau_message'].corps.focus();
-        } else {
+    <script language="javascript" type="text/javascript">
+        <!--
+        function emoticon(text) {
+            text = ' ' + text + ' ';
+            if (opener.document.forms['nouveau_message'].corps.createTextRange && opener.document.forms['nouveau_message'].corps.caretPos) {
+                var caretPos = opener.document.forms['nouveau_message'].corps.caretPos;
+                caretPos.text = caretPos.text.charAt(caretPos.text.length - 1) == ' ' ? text + ' ' : text;
+                opener.document.forms['nouveau_message'].corps.focus();
+            } else {
             opener.document.forms['nouveau_message'].corps.value += text;
             opener.document.forms['nouveau_message'].corps.focus();
         }
@@ -99,3 +99,4 @@ function smiley2($smiley1)
     <br>
     <div class="centrer"><input type="button" onClick="javascript:window.close()" class="test" value="Fermer"></div>
 </div>
+<script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js"></script>
