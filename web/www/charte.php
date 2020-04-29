@@ -1,24 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title></title>
-    <link rel="stylesheet" type="text/css" href="style.css">
+<title></title>
+<link rel="stylesheet" type="text/css" href="style.php">
 </head>
 <body>
 
 <div class="blockTexte">
-    <div class="barrL">
-        <div class="barrR"><p class="barrC">&nbsp;</p></div>
-    </div>
-    <div class="barrLbord">
-        <div class="barrRbord"><p class="barrTitle">Charte d'Admission au Jeu : Les souterrains de Delain</p></div>
-    </div>
-    <!--<div class="barrL"><div class="barrR"><p class="barrC">&nbsp;</p></div></div>-->
-    <div class="barrLbord">
-        <div class="barrRbord">
-            <p class="texteNorm">
+<div class="barrL"><div class="barrR"><p class="barrC">&nbsp;</p></div></div>
+<div class="barrLbord"><div class="barrRbord"><p class="barrTitle">Charte d'Admission au Jeu : Les souterrains de Delain</p></div></div>
+<!--<div class="barrL"><div class="barrR"><p class="barrC">&nbsp;</p></div></div>-->
+<div class="barrLbord"><div class="barrRbord">
+<p class="texteNorm">
 
-                <br><br>
+<br><br>
 Les souterrains de  Delain est un  jeu gratuit mis  à votre disposition  par ses
 créateurs. La  présente charte  a pour  but d'établir  quelques règles  de bonne
 conduite pour permettre à tous  les participants de s'amuser pleinement.  Il est
