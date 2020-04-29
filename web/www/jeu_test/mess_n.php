@@ -1,5 +1,5 @@
 <?php
-$contenu_page .= '<script language="javascript" src="' . CHEMIN_COMPLET . '/scripts/messEnvoi.js"></SCRIPT>';
+$contenu_page .= '<script language="javascript" src="../scripts/messEnvoi.js"></SCRIPT>';
 $perso        = $verif_connexion->perso;
 $compte       = $verif_connexion->compte;
 $perso_cod    = $perso->perso_cod;
