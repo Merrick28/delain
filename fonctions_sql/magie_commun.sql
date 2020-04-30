@@ -141,10 +141,10 @@ begin
 
 	-- sort distortion temporelle
 	if num_sort = 146 then
-		if valeur_bonus(lanceur, 'DIT') > 0 or
-				valeur_bonus(lanceur, 'DIS') >0 or
-				valeur_bonus(cible, 'DIT') >0 or
-				valeur_bonus(cible, 'DIS') >0 then
+		if valeur_bonus_hors_equip(lanceur, 'DIT') > 0 or
+				valeur_bonus_hors_equip(lanceur, 'DIS') >0 or
+				valeur_bonus_hors_equip(cible, 'DIT') >0 or
+				valeur_bonus_hors_equip(cible, 'DIS') >0 then
 			code_retour := code_retour||'0;<p>Erreur : vous ne pouvez pas lancer ce sort pour cause de distorsion temporelle lente ou rapide affectant déjà votre cible ou vous même.</p>';
 			return code_retour;
 		end if;
