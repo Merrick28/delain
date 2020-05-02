@@ -164,22 +164,24 @@ class carac_orig
         return $retour;
     }
 
-    public function getByPersoCumul($perso_cod, $equipement = false)
+    public function getByPersoEquipement($perso_cod, $equipement = false)
     {
         $retour = array();
         $pdo    = new bddpdo;
         $req    = "select corig_type_carac,
+            coalesce(tbonus_description, tonbus_libelle) as tbonus_description,
             sum(corig_valeur) as bonus_carac,
             to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss') as corig_dfin,
             coalesce(corig_nb_tours, 0) as corig_nb_tours,
             case when corig_mode='E' then 'Equipement' else corig_nb_tours::text end as corig_mode
-        from carac_orig
+        from carac_orig inner join bonus_type on tbonus_libc = corig_type_carac 
         where corig_perso_cod = :perso_cod
         and corig_mode " . ($equipement ? "=" : "!=") . " 'E'
         group by corig_type_carac,
             to_char(corig_dfin,'dd/mm/yyyy hh24:mi:ss'),
             corig_nb_tours,
-            corig_mode
+            corig_mode,
+            coalesce(tbonus_description, tonbus_libelle)
         order by corig_type_carac";
 
 
