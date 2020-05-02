@@ -31,13 +31,15 @@ if ($erreur == 0)
                 $tbonus_libc           = str_replace('\'', '’', $_POST['tbonus_libc']);
                 $tbonus_cumulable      = (isset($_POST['tbonus_cumulable'])) ? 'O' : 'N';
                 $tbonus_degressivite   = (int)($_POST['tbonus_degressivite']);
+                $tbonus_description   = str_replace('\'', '’', $_POST['tbonus_description']);
 
                 $req      = "UPDATE bonus_type SET
 						tonbus_libelle = :tbonus_libelle,
 						tbonus_nettoyable = :tbonus_nettoyable,
 						tbonus_gentil_positif = :tbonus_gentil_positif,
 						tbonus_cumulable = :tbonus_cumulable,
-						tbonus_degressivite = :tbonus_degressivite
+						tbonus_degressivite = :tbonus_degressivite,
+						tbonus_description = :tbonus_description
 					WHERE tbonus_cod = :tbonus_cod RETURNING tbonus_libc";
                 $stmt     = $pdo->prepare($req);
                 $stmt     = $pdo->execute(array(":tbonus_cod"            => $tbonus_cod,
@@ -45,7 +47,8 @@ if ($erreur == 0)
                                                 ":tbonus_nettoyable"     => $tbonus_nettoyable,
                                                 ":tbonus_gentil_positif" => $tbonus_gentil_positif,
                                                 ":tbonus_cumulable"      => $tbonus_cumulable,
-                                                ":tbonus_degressivite"   => $tbonus_degressivite), $stmt);
+                                                ":tbonus_degressivite"   => $tbonus_degressivite,
+                                                ":tbonus_description"   => $tbonus_description), $stmt);
                 $resultat = "<p>Bonus $tonbus_libelle ($tbonus_cod) mis à jour !</p><p>Requête : <pre>$req</pre></p>";
 
                 if ($result = $stmt->fetch())
@@ -96,7 +99,7 @@ if ($erreur == 0)
     }
 
     $req = 'SELECT
-			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite
+			tbonus_cod, tonbus_libelle, tbonus_libc, tbonus_nettoyable, tbonus_gentil_positif, tbonus_cumulable, tbonus_degressivite, tbonus_description
 		FROM bonus_type
 		ORDER BY tbonus_libc';
 
@@ -113,6 +116,7 @@ if ($erreur == 0)
 			<th class="titre">Valeur positive<br />pour un effet<br />bénéfique ?</th>
 			<th class="titre">Cumulable ?</th>
 			<th class="titre">Progressivité/Limite ?<br> (entre 0% et 100%)</th>
+			<th class="titre">Description</th>
 			<th class="titre">Action</th>
 		</tr>';
 
@@ -128,6 +132,7 @@ if ($erreur == 0)
         $tbonus_libc           = $result['tbonus_libc'];
         $tbonus_cumulable      = $result['tbonus_cumulable'];
         $tbonus_degressivite   = $result['tbonus_degressivite'];
+        $tbonus_description   = $result['tbonus_description'];
 
         echo "<form action='#' method='POST'><tr>
 			<td class='soustitre2'>$tbonus_libc</td>
@@ -136,6 +141,7 @@ if ($erreur == 0)
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_gentil_positif_' . $tbonus_cod, 'tbonus_gentil_positif', $tbonus_gentil_positif) . "</td>
 			<td class='soustitre2'>" . ecrire_checkbox('', 'tbonus_cumulable' . $tbonus_cod, 'tbonus_cumulable', $tbonus_cumulable) . "</td>	
 			<td class='soustitre2'><input type='text' value='$tbonus_degressivite' name='tbonus_degressivite' size='3' />".(in_array($tbonus_libc, ['DEX', 'FOR', 'INT', 'CON']) ? " Limite de cacac" : "")."</td>					
+			<td class='soustitre2'><textarea name='tbonus_description'/>$tbonus_description</textarea></td>					
 			<td class='soustitre2'><input type='hidden' value='$tbonus_cod' name='tbonus_cod' />
 				<input type='hidden' value='modif' name='methode' />
 				<input type='submit' class='test' value='Modifier' />

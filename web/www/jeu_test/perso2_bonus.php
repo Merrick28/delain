@@ -33,16 +33,17 @@ for ($loop = 0; $loop < 2; $loop++)
 
 
     $carac_orig            = new carac_orig;
-    $tab_carac_orig[$loop] = $carac_orig->getByPersoCumul($perso->perso_cod, $equipement);
+    $tab_carac_orig[$loop] = $carac_orig->getByPersoEquipement($perso->perso_cod, $equipement);
 
     $bonus_carac[$loop] = array();
     $malus_carac[$loop] = array();
     $record             = 0;
     foreach ($tab_carac_orig[$loop] as $detail_carac_orig)
     {
-        $carac      = $detail_carac_orig['corig_type_carac'];
-        $bm         = $detail_carac_orig['bonus_carac'];
-        $corig_mode = $detail_carac_orig['corig_mode'];
+        $carac                  = $detail_carac_orig['corig_type_carac'];
+        $bm                     = $detail_carac_orig['bonus_carac'];
+        $corig_mode             = $detail_carac_orig['corig_mode'];
+        $tbonus_description     = $detail_carac_orig['tbonus_description'];
         if ($detail_carac_orig['corig_mode'] == 'E')
         {
             $duree = "Equipement";
@@ -58,6 +59,7 @@ for ($loop = 0; $loop < 2; $loop++)
             $bonus_carac[$loop][$record][1] = $duree;
             $bonus_carac[$loop][$record][2] = $carac;
             $bonus_carac[$loop][$record][3] = $corig_mode;
+            $bonus_carac[$loop][$record][4] = $tbonus_description;
         } else
         {
             $malus_carac[$loop][$record]    = array();
@@ -65,6 +67,7 @@ for ($loop = 0; $loop < 2; $loop++)
             $malus_carac[$loop][$record][1] = $duree;
             $malus_carac[$loop][$record][2] = $carac;
             $malus_carac[$loop][$record][3] = $corig_mode;
+            $malus_carac[$loop][$record][4] = $tbonus_description;
         }
         $record++;
     }
@@ -86,12 +89,13 @@ for ($loop = 0; $loop < 2; $loop++)
         }
         foreach ($bonus_carac[$loop] as $key => $bonus)
         {
-            $valeur     = $bonus[0];
-            $duree      = $bonus[1];
-            $carac      = $bonus[2];
-            $corig_mode = $bonus[3];
-            $signe      = ($valeur >= 0) ? '+' : '';
-            $lib_carac  = '';
+            $valeur             = $bonus[0];
+            $duree              = $bonus[1];
+            $carac              = $bonus[2];
+            $corig_mode         = $bonus[3];
+            $tbonus_description = $bonus[4];
+            $signe              = ($valeur >= 0) ? '+' : '';
+            $lib_carac          = '';
             switch ($carac)
             {
                 case 'FOR':
@@ -108,6 +112,7 @@ for ($loop = 0; $loop < 2; $loop++)
                     break;
             }
             $bonus_carac[$loop][$key]['lib_carac'] = $lib_carac;
+            $bonus_carac[$loop][$key]['tbonus_description'] = $tbonus_description;
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $carac . '.png';
@@ -134,9 +139,11 @@ for ($loop = 0; $loop < 2; $loop++)
         }
         foreach ($malus_carac[$loop] as $key => $malus)
         {
-            $valeur    = $malus[0];
-            $duree     = $malus[1];
-            $carac     = $malus[2];
+            $valeur             = $malus[0];
+            $duree              = $malus[1];
+            $carac              = $malus[2];
+            $corig_mode         = $bonus[3];
+            $tbonus_description = $bonus[4];
             $signe     = ($valeur >= 0) ? '+' : '';
             $lib_carac = '';
             switch ($carac)
@@ -155,6 +162,7 @@ for ($loop = 0; $loop < 2; $loop++)
                     break;
             }
             $malus_carac[$loop][$key]['lib_carac'] = $lib_carac;
+            $malus_carac[$loop][$key]['tbonus_description'] = $tbonus_description;
             if (is_file(__DIR__ . "/../images/interface/bonus/" . $carac . ".png"))
             {
                 $img = '/../images/interface/bonus/' . $carac . '.png';
