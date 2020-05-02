@@ -4,10 +4,10 @@ ob_start();
 $pdo = new bddpdo;
 ?>
     <title>ÉDITION D’UN PERSO / MONSTRE</title>
-    <SCRIPT language="javascript" src="../scripts/controlUtils.js"></SCRIPT>
-    <script language="javascript" src="../scripts/validation.js"></script>
-    <script language="javascript" src="../scripts/manip_css.js"></script>
-    <script language="javascript" src="../scripts/admin_effets_auto.js?20191130"></script>
+    <SCRIPT language="javascript" src="<?php echo CHEMIN_COMPLET; ?>/scripts/controlUtils.js"></SCRIPT>
+    <script language="javascript" src="<?php echo CHEMIN_COMPLET; ?>/scripts/validation.js"></script>
+    <script language="javascript" src="<?php echo CHEMIN_COMPLET; ?>/scripts/manip_css.js"></script>
+    <script language="javascript" src="<?php echo CHEMIN_COMPLET; ?>/scripts/admin_effets_auto.js?20191130"></script>
 <?php
 $erreur = 0;
 
