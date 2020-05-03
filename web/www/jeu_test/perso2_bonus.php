@@ -142,8 +142,8 @@ for ($loop = 0; $loop < 2; $loop++)
             $valeur             = $malus[0];
             $duree              = $malus[1];
             $carac              = $malus[2];
-            $corig_mode         = $bonus[3];
-            $tbonus_description = $bonus[4];
+            $corig_mode         = $malus[3];
+            $tbonus_description = $malus[4];
             $signe     = ($valeur >= 0) ? '+' : '';
             $lib_carac = '';
             switch ($carac)
