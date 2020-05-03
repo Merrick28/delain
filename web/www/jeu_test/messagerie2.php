@@ -1,7 +1,7 @@
 <?php
 include "blocks/_header_page_jeu.php";
 
-$contenu_page .= '<script language="javascript" src="' . CHEMIN_COMPLET . '/scripts/cocheCase.js"></SCRIPT>';
+$contenu_page .= '<script language="javascript" src="../scripts/cocheCase.js"></SCRIPT>';
 //
 // initialisation tableau
 //

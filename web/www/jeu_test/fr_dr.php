@@ -33,7 +33,14 @@ $nb = count($ong);
             document.forms['destdroite'].action.value = dest_action;
             document.forms['destdroite'].destcadre.value = dest_cadre;
             document.getElementById('onglet_frdr' + onglet).className = 'onglet';
-            getdata('fr_dr.php?aj=1&t_frdr=' + onglet, 'frdr_contenu');
+            //getdata('fr_dr.php?aj=1&t_frdr=' + onglet, 'frdr_contenu');
+
+            $.ajax({
+                url: 'fr_dr.php?aj=1&t_frdr=' + onglet,
+                context: document.body
+            }).done(function (data) {
+                $("#frdr_contenu").html(data);
+            });
         }
     </script>
 <table cellspacing="0" cellpadding="0" width="100%">
