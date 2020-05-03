@@ -2,9 +2,10 @@
 -- Name: nv_magie_distortion(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.nv_magie_distortion(integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.nv_magie_distortion(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/*****************************************************************/
+AS
+$_$/*****************************************************************/
 /* function lancement : Distorsion                               */
 /*  temporelle                                                   */
 /* On passe en paramètres                                        */
