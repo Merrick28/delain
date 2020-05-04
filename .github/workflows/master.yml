@@ -45,6 +45,7 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
   notif_fin:
     runs-on: rp
+    # test
     steps:
       - name: Slack notification
         env:
