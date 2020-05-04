@@ -29,7 +29,7 @@ jobs:
           echo "Wait for postgres to be up"
           docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
-          ${GITHUB_WORKSPACE}web/tests/phpunit_docker-tu.sh
+          ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
 
 
 
