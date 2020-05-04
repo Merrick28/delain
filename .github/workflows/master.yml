@@ -42,6 +42,19 @@ jobs:
           docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
+  notif_fin:
+    steps:
+      - name: Slack notification
+          env:
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
+            SLACK_CHANNEL: general # Optional. (defaults to webhook)
+            SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
+          uses: Ilshidur/action-slack@master
+          with:
+            args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
+
+
 
   #livraison:
   #  runs-on: backenddelain
@@ -56,16 +69,3 @@ jobs:
   #      run: /home/delain/delain/shell/livraisons.sh
   #    - name: Generation des docs api
   #      run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
-
-
-  notif_fin:
-    steps:
-      - name: Slack notification
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
-            SLACK_CHANNEL: general # Optional. (defaults to webhook)
-            SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
-          uses: Ilshidur/action-slack@master
-          with:
-            args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
