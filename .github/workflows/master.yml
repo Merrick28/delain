@@ -12,7 +12,6 @@ on:
 jobs:
   notif_debut:
     steps:
-
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -61,8 +60,12 @@ jobs:
 
   notif_fin:
     steps:
-      - name: Slack Notification
-          uses: rtCamp/action-slack-notify@v2.0.0
+      - name: Slack notification
           env:
             SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            SLACK_MESSAGE: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
+            SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
+            SLACK_CHANNEL: general # Optional. (defaults to webhook)
+            SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
+          uses: Ilshidur/action-slack@master
+          with:
+            args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
