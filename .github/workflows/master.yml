@@ -5,9 +5,18 @@ name: CI
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  notif_debut:
+    steps:
+      - name: Slack Notification
+          uses: rtCamp/action-slack-notify@v2.0.0
+          env:
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            SLACK_MESSAGE: "Début d'une livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
   # This workflow contains a single job called "build"
   test_unitaires:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -30,5 +39,25 @@ jobs:
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
 
+  #livraison:
+  #  runs-on: backenddelain
+  #  steps:
+  #    - name: git pull
+  #      run : |
+  #        cd /home/delain/delain
+  #        git pull
+  #    - name: empty cache
+  #      run: 'rm -rf /home/delain/delain/cache/*'
+  #    - name: Livraisons sql
+  #      run: /home/delain/delain/shell/livraisons.sh
+  #    - name: Generation des docs api
+  #      run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
 
 
+  notif_fin:
+    steps:
+      - name: Slack Notification
+          uses: rtCamp/action-slack-notify@v2.0.0
+          env:
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            SLACK_MESSAGE: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
