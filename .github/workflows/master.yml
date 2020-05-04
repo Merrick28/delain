@@ -22,6 +22,6 @@ jobs:
 
     # Runs a single command using the runners shell
     - name: Run a one-line script
-      run: echo "Hello, world!" > /home/steph/log_github_ci >> livraison_prod.log
+      run: echo "Hello, world!" >> /home/steph/log_github_ci/livraison_prod.log
 
 
