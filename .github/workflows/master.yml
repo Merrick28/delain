@@ -13,15 +13,12 @@ jobs:
   notif_debut:
     runs-on: rp
     steps:
+      - uses: actions/checkout@v2
       - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
-          SLACK_CHANNEL: general # Optional. (defaults to webhook)
-          SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
-        uses: Ilshidur/action-slack@master
-        with:
-          args: "Début d'une livraison (auteur ${{GITHUB_ACTOR}} déclenché par ${{GITHUB_EVENT_NAME}})" # Optional
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        SLACK_MESSAGE: "Début de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
+
   # This workflow contains a single job called "build"
   test_unitaires:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -55,7 +52,7 @@ jobs:
           SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
         uses: Ilshidur/action-slack@master
         with:
-          args: "Fin de livraison (auteur ${{GITHUB_ACTOR}} déclenché par ${{GITHUB_EVENT_NAME}})" # Optional
+          args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
 
 
 
