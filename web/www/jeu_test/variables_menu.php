@@ -5,7 +5,7 @@
  * le moteur de template de phplib
  *
  */
-$__VERSION = "20200421";    // A changer aussi dans constante.php
+$__VERSION = "20200421";    // A changer aussi dans constante.php (Marlyza)
 
 $benchmark       = $profiler->start('Variables menu');
 $verif_connexion = new verif_connexion();
