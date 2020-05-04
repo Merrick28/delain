@@ -11,6 +11,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   notif_debut:
+    runs-on: rp
     steps:
       - name: Slack notification
         env:
@@ -43,6 +44,7 @@ jobs:
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
   notif_fin:
+    runs-on: rp
     steps:
       - name: Slack notification
         env:
