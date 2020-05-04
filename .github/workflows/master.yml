@@ -11,17 +11,26 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  test_unitaires:
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
     runs-on: self-hosted
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo "Hello, world!" >> /home/steph/log_github_ci/livraison_prod.log
+      - name: Run a one-line script
+        run: |
+          echo "Lancement des tests unitaires"
+          echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
+
+      - name: lance les tests unitaires
+        run: |
+          cd ${GITHUB_WORKSPACE}/
+          docker-compose -f docker-compose-tu.yml pull
+          docker-compose -f docker-compose-tu.yml up -d
+          echo "Wait for postgres to be up"
+          docker exec webtu ${GITHUB_WORKSPACE}/web/tests/wait.sh
+          echo 'PHP Unit tests'
+          ${GITHUB_WORKSPACE}web/tests/phpunit_docker-tu.sh
 
 
