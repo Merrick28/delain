@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Run a one-line script
+      - name: Resume des infos
         run: |
           echo "Lancement des tests unitaires"
           echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
@@ -27,8 +27,9 @@ jobs:
           docker-compose -f docker-compose-tu.yml pull
           docker-compose -f docker-compose-tu.yml up -d
           echo "Wait for postgres to be up"
-          docker exec webtu ${GITHUB_WORKSPACE}/web/tests/wait.sh
+          docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}web/tests/phpunit_docker-tu.sh
+  livraison:
 
 
