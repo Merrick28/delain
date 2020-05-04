@@ -18,7 +18,7 @@ jobs:
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_MESSAGE: "Début de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
-        uses: actions/checkout@v2
+        uses: rtCamp/action-slack-notify@v2.0.0
 
   # This workflow contains a single job called "build"
   test_unitaires:
