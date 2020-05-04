@@ -21,7 +21,7 @@ jobs:
           SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
         uses: Ilshidur/action-slack@master
         with:
-          args: "Début d'une livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
+          args: "Début d'une livraison (auteur ${{GITHUB_ACTOR}} déclenché par ${{GITHUB_EVENT_NAME}})" # Optional
   # This workflow contains a single job called "build"
   test_unitaires:
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -55,7 +55,7 @@ jobs:
           SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
         uses: Ilshidur/action-slack@master
         with:
-          args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
+          args: "Fin de livraison (auteur ${{GITHUB_ACTOR}} déclenché par ${{GITHUB_EVENT_NAME}})" # Optional
 
 
 
