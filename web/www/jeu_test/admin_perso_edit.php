@@ -486,7 +486,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES BONUS Standards
-                            $req_bon = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_bon = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
                                         from bonus
                                         inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                                         where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -546,7 +546,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES MALUS Standards
-                            $req_mal = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_mal = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 		from bonus
 		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 		where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -638,7 +638,7 @@ if ($erreur == 0)
                             <option value=""> --</option>
                             <?php
                             // LISTE DES Bonus
-                            $req_bm = "select tbonus_libc, tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
+                            $req_bm = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
 		from bonus_type
 		order by tonbus_libelle ";
 
