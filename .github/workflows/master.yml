@@ -54,7 +54,7 @@ jobs:
       - name: Generation des docs api
         run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
   notif_fin:
-    runs on: rp
+    runs-on: rp
     needs: livraison
     steps:
       - name: Slack notification
