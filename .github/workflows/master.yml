@@ -39,25 +39,25 @@ jobs:
   livraison:
     runs-on: backenddelain
     needs: prelivraison
-      steps:
-        - name: Git pull
-          run: |
-            cd /home/delain/delain
-            git pull
-        - name: Vider le cache
-          run: 'rm -rf /home/delain/delain/cache/*'
-        - name: Livraisons sql
-          run: /home/delain/delain/shell/livraisons.sh
-        - name: Generation des docs api
-          run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
+    steps:
+      - name: Git pull
+        run: |
+          cd /home/delain/delain
+          git pull
+      - name: Vider le cache
+        run: 'rm -rf /home/delain/delain/cache/*'
+      - name: Livraisons sql
+        run: /home/delain/delain/shell/livraisons.sh
+      - name: Generation des docs api
+        run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
   notif_fin:
     runs on: rp
     needs: livraison
-      steps:
-        - name: Slack notification
-          env:
-            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-            SLACK_MESSAGE: "Fin de livraison"
-          uses: rtCamp/action-slack-notify@v2.0.0
+    steps:
+      - name: Slack notification
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_MESSAGE: "Fin de livraison"
+        uses: rtCamp/action-slack-notify@v2.0.0
 
 
