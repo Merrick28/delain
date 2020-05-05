@@ -1,20 +1,16 @@
 name: CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
 
   livraison:
     runs-on: rp
     steps:
-      - uses: actions/checkout@v2
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
         env:
@@ -31,6 +27,7 @@ jobs:
 
       - name: lance les tests unitaires
         if: "!contains(github.event.head_commit.message, 'ci skip')"
+        uses: actions/checkout@v2
         run: |
           cd ${GITHUB_WORKSPACE}/
           docker-compose -f docker-compose-tu.yml pull
@@ -39,6 +36,20 @@ jobs:
           docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
+      - name: Git pull
+        runs-on: backenddelain
+        run: |
+          cd /home/delain/delain
+          git pull
+      - name: Vider le cache
+        runs-on: backenddelain
+        run: 'rm -rf /home/delain/delain/cache/*'
+      - name: Livraisons sql
+        runs-on: backenddelain
+        run: /home/delain/delain/shell/livraisons.sh
+      - name: Generation des docs api
+        runs-on: backenddelain
+        run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
@@ -46,19 +57,3 @@ jobs:
         uses: rtCamp/action-slack-notify@v2.0.0
 
 
-
-
-  #livraison:
-  #  needs: notif_debut
-  #  runs-on: backenddelain
-  #  steps:
-  #    - name: git pull
-  #      run : |
-  #        cd /home/delain/delain
-  #        git pull
-  #    - name: empty cache
-  #      run: 'rm -rf /home/delain/delain/cache/*'
-  #    - name: Livraisons sql
-  #      run: /home/delain/delain/shell/livraisons.sh
-  #    - name: Generation des docs api
-  #      run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
