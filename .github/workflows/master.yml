@@ -10,29 +10,28 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  notif_debut:
-    runs-on: rp
-    steps:
 
-      - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Début de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})"
-        uses: rtCamp/action-slack-notify@v2.0.0
+  livraison:
+    needs: notif_debut
 
-  # This workflow contains a single job called "build"
-  test_unitaires:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
     runs-on: rp
     steps:
       - uses: actions/checkout@v2
+      - name: Slack notification
+          env:
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            SLACK_MESSAGE: "Début de livraison"
+          uses: rtCamp/action-slack-notify@v2.0.0
+
 
       - name: Resume des infos
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
           echo "Lancement des tests unitaires"
           echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
 
       - name: lance les tests unitaires
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
           cd ${GITHUB_WORKSPACE}/
           docker-compose -f docker-compose-tu.yml pull
@@ -41,23 +40,17 @@ jobs:
           docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
-  notif_fin:
-    runs-on: rp
-    # test
-    steps:
       - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_USERNAME: ThisIsMyUsername # Optional. (defaults to webhook app)
-          SLACK_CHANNEL: general # Optional. (defaults to webhook)
-          SLACK_AVATAR: repository # Optional. can be (repository, sender, an URL) (defaults to webhook app avatar)
-        uses: Ilshidur/action-slack@master
-        with:
-          args: "Fin de livraison (auteur ${GITHUB_ACTOR} déclenché par ${GITHUB_EVENT_NAME})" # Optional
+          env:
+            SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+            SLACK_MESSAGE: "Fin de livraison"
+          uses: rtCamp/action-slack-notify@v2.0.0
+
 
 
 
   #livraison:
+  #  needs: notif_debut
   #  runs-on: backenddelain
   #  steps:
   #    - name: git pull
