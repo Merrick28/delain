@@ -15,10 +15,7 @@ jobs:
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Début de livraison"
-        uses: rtCamp/action-slack-notify@v2.0.0
+        run: /home/steph/actions/notif_slack.sh "Début de livraison" ${{ secrets.SLACK_WEBHOOK }}
 
 
       - name: Resume des infos
@@ -58,9 +55,6 @@ jobs:
     needs: livraison
     steps:
       - name: Slack notification
-        env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-          SLACK_MESSAGE: "Fin de livraison"
-        uses: rtCamp/action-slack-notify@v2.0.0
+        run: /home/steph/actions/notif_slack.sh "Fin de livraison" ${{ secrets.SLACK_WEBHOOK }}
 
 
