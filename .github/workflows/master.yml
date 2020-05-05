@@ -10,7 +10,7 @@ jobs:
 
   prelivraison:
     runs-on: rp
-      - uses: actions/checkout@v2
+
 
     steps:
       # todo : transformer l'appel à slack qui est un peu long
@@ -27,7 +27,9 @@ jobs:
           echo "Lancement des tests unitaires"
           echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
 
+      - uses: actions/checkout@v2
       - name: lance les tests unitaires
+
         if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
           cd ${GITHUB_WORKSPACE}/
