@@ -15,6 +15,7 @@ jobs:
     runs-on: rp
     steps:
       - uses: actions/checkout@v2
+      # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
