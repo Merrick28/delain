@@ -12,8 +12,6 @@ on:
 jobs:
 
   livraison:
-    needs: notif_debut
-
     runs-on: rp
     steps:
       - uses: actions/checkout@v2
