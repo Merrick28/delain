@@ -9,8 +9,9 @@ on:
 jobs:
 
   prelivraison:
-    uses: actions/checkout@v2
     runs-on: rp
+      - uses: actions/checkout@v2
+
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
