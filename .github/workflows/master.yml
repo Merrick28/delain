@@ -12,7 +12,7 @@ jobs:
     steps:
       # todo : transformer l'appel à slack qui est un peu long
       - name: Slack notification
-        run: /home/github/actions/notif_slack.sh "Début de livraison (${GITHUB_ACTOR})" ${{ secrets.SLACK_WEBHOOK }}
+        run: /home/github/actions/notif_slack.sh "Début de livraison (${GITHUB_ACTOR})"
 
       - name: Resume des infos
         if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -52,6 +52,6 @@ jobs:
     steps:
       - name: Slack notification
         run: |
-          /home/github/actions/notif_slack.sh "Fin de livraison" ${{ secrets.SLACK_WEBHOOK }}
-          /home/github/actions/notif_slack.sh "-----------------" ${{ secrets.SLACK_WEBHOOK }}
+          /home/github/actions/notif_slack.sh "Fin de livraison"
+          /home/github/actions/notif_slack.sh "-----------------"
 
