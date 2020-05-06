@@ -486,7 +486,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES BONUS Standards
-                            $req_bon = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_bon = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
                                         from bonus
                                         inner join bonus_type on tbonus_libc = bonus_tbonus_libc
                                         where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -546,7 +546,7 @@ if ($erreur == 0)
                     <td width='50%'>
                         <table>
                             <?php // LISTE DES MALUS Standards
-                            $req_mal = "select tonbus_libelle || CASE WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
+                            $req_mal = "select tonbus_libelle || CASE WHEN tbonus_compteur='O' THEN ' - [compteur] ' WHEN bonus_mode='C' THEN ' - [cumulatif]'  ELSE '' END as tonbus_libelle, bonus_cod, bonus_tbonus_libc, bonus_valeur, bonus_nb_tours
 		from bonus
 		inner join bonus_type on tbonus_libc = bonus_tbonus_libc
 		where bonus_perso_cod = $mod_perso_cod and  bonus_mode!='E'
@@ -638,7 +638,7 @@ if ($erreur == 0)
                             <option value=""> --</option>
                             <?php
                             // LISTE DES Bonus
-                            $req_bm = "select tbonus_libc, tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
+                            $req_bm = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] ' ELSE '' END || tonbus_libelle || CASE WHEN tbonus_cumulable='O' THEN ' - [cumulable]' ELSE '' END as tonbus_libelle, tbonus_gentil_positif
 		from bonus_type
 		order by tonbus_libelle ";
 
@@ -824,7 +824,7 @@ if ($erreur == 0)
         echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
 
         // Liste des Bonus-malus
-        $req = "select tbonus_libc, tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
+        $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_cumulable = 'O' then ' [cumulable]' else '' end || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
 		from bonus_type
 		order by tonbus_libelle ";
         echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
@@ -839,58 +839,60 @@ if ($erreur == 0)
             <div id="liste_fonctions"></div>
             <script>EffetAuto.MontreValidite = true;</script>
             <?php // D’abord en lecture seule les effets liés au type de monstre du perso
-            $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+            $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param
 				from fonction_specifique
 				inner join perso on perso_gmon_cod = fonc_gmon_cod
 				where perso_cod = $mod_perso_cod AND fonc_gmon_cod IS NOT NULL";
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                $fonc_id           = $result['fonc_cod'];
-                $fonc_type         = $result['fonc_type'];
-                $fonc_nom          = $result['fonc_nom'];
-                $fonc_effet        = $result['fonc_effet'];
-                $fonc_cumulatif    = $result['fonc_cumulatif'];
-                $fonc_force        = $result['fonc_force'];
-                $fonc_duree        = $result['fonc_duree'];
-                $fonc_type_cible   = $result['fonc_type_cible'];
-                $fonc_nombre_cible = $result['fonc_nombre_cible'];
-                $fonc_portee       = $result['fonc_portee'];
-                $fonc_proba        = $result['fonc_proba'];
-                $fonc_message      = $result['fonc_message'];
+                $fonc_id                = $result['fonc_cod'];
+                $fonc_type              = $result['fonc_type'];
+                $fonc_nom               = $result['fonc_nom'];
+                $fonc_effet             = $result['fonc_effet'];
+                $fonc_cumulatif         = $result['fonc_cumulatif'];
+                $fonc_force             = $result['fonc_force'];
+                $fonc_duree             = $result['fonc_duree'];
+                $fonc_type_cible        = $result['fonc_type_cible'];
+                $fonc_nombre_cible      = $result['fonc_nombre_cible'];
+                $fonc_portee            = $result['fonc_portee'];
+                $fonc_proba             = $result['fonc_proba'];
+                $fonc_message           = $result['fonc_message'];
+                $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
 
                 // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
                 if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '0', true;)</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', $fonc_trigger_param, '0', true);</script>";
             }
 
-            $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,
+            $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message,fonc_trigger_param,
 					coalesce(EXTRACT(EPOCH FROM (fonc_date_limite - now())::INTERVAL) / 60, 0)::integer as validite
 				from fonction_specifique where fonc_perso_cod = $mod_perso_cod";
             $stmt = $pdo->query($req);
             while ($result = $stmt->fetch())
             {
-                $fonc_id           = $result['fonc_cod'];
-                $fonc_type         = $result['fonc_type'];
-                $fonc_nom          = $result['fonc_nom'];
-                $fonc_effet        = $result['fonc_effet'];
-                $fonc_cumulatif    = $result['fonc_cumulatif'];
-                $fonc_force        = $result['fonc_force'];
-                $fonc_duree        = $result['fonc_duree'];
-                $fonc_type_cible   = $result['fonc_type_cible'];
-                $fonc_nombre_cible = $result['fonc_nombre_cible'];
-                $fonc_portee       = $result['fonc_portee'];
-                $fonc_proba        = $result['fonc_proba'];
-                $fonc_message      = $result['fonc_message'];
-                $fonc_validite     = $result['validite'];
+                $fonc_id                = $result['fonc_cod'];
+                $fonc_type              = $result['fonc_type'];
+                $fonc_nom               = $result['fonc_nom'];
+                $fonc_effet             = $result['fonc_effet'];
+                $fonc_cumulatif         = $result['fonc_cumulatif'];
+                $fonc_force             = $result['fonc_force'];
+                $fonc_duree             = $result['fonc_duree'];
+                $fonc_type_cible        = $result['fonc_type_cible'];
+                $fonc_nombre_cible      = $result['fonc_nombre_cible'];
+                $fonc_portee            = $result['fonc_portee'];
+                $fonc_proba             = $result['fonc_proba'];
+                $fonc_message           = $result['fonc_message'];
+                $fonc_validite          = $result['validite'];
+                $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
 
                 // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
                 if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
                 echo "
-		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', '$fonc_validite', false);</script>";
+		<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', $fonc_trigger_param, '$fonc_validite', false);</script>";
             }
             ?>
             <div style='clear: both'>

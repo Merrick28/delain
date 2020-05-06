@@ -830,39 +830,39 @@ switch ($methode)
             {
                 if (!in_array($numero, $fonctions_annulees))
                 {
-                    $fonc_type         = fonctions::format($_POST['declenchement_' . $numero]);
-                    $fonc_nom          = fonctions::format($_POST['fonction_type_' . $numero]);
-                    $fonc_effet        =
-                        !empty($_POST['fonc_effet' . $numero]) ? fonctions::format($_POST['fonc_effet' . $numero]) : '';
-                    $fonc_force        =
-                        !empty($_POST['fonc_force' . $numero]) ? fonctions::format($_POST['fonc_force' . $numero]) : '';
-                    $fonc_duree        =
-                        !empty($_POST['fonc_duree' . $numero]) ? fonctions::format($_POST['fonc_duree' . $numero]) : '0';
-                    $fonc_type_cible   =
-                        !empty($_POST['fonc_cible' . $numero]) ? fonctions::format($_POST['fonc_cible' . $numero]) : '';
-                    $fonc_nombre_cible =
-                        !empty($_POST['fonc_nombre' . $numero]) ? fonctions::format($_POST['fonc_nombre' . $numero]) : '0';
-                    $fonc_portee       =
-                        !empty($_POST['fonc_portee' . $numero]) ? fonctions::format($_POST['fonc_portee' . $numero]) : '0';
-                    $fonc_proba        =
-                        !empty($_POST['fonc_proba' . $numero]) ? fonctions::format($_POST['fonc_proba' . $numero]) : '0';
-                    $fonc_message      =
-                        !empty($_POST['fonc_message' . $numero]) ? fonctions::format($_POST['fonc_message' . $numero]) : '';
-                    $fonc_unite_valid  = $_POST['fonc_validite_unite' . $numero];
-                    $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
-                    $fonc_validite_sql = ($fonc_validite === 0) ? 'NULL' : "now() + '$fonc_validite minutes'::interval";
+                    $fonc_type         = $_POST['declenchement_' . $numero];
+                    $fonc_nom          = $_POST['fonction_type_' . $numero];
+                    $fonc_effet        = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
 
-                    $fonc_proba = str_replace(',', '.', $fonc_proba);
+                    $fonc_unite_valid  = 1 * $_POST['fonc_validite_unite' . $numero];
+                    $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
+                    $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
 
-                    $req = "INSERT INTO fonction_specifique (fonc_nom, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee,
-							fonc_proba, fonc_message, fonc_date_limite)
-						values (:fonc_nom, $mod_perso_cod, '$fonc_type', '$fonc_effet', '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, 
-							$fonc_proba, '$fonc_message', $fonc_validite_sql)";
+                    $fonc_trigger_param = array() ;
+                    foreach($_POST as $key => $val){
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        }
+                    }
 
-                    $stmt_add_fun = $pdo->prepare($req);
-                    $stmt_add_fun = $pdo->execute(array(":fonc_nom" => $fonc_nom),
-                                                  $stmt_add_fun);
+                    $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_perso_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param, fonc_date_limite)
+						VALUES (:fonc_nom, :fonc_perso_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param, {$fonc_validite_sql})";
+                    $stmt      = $pdo->prepare($req);
+                    $stmt      = $pdo->execute(array(
+                        ":fonc_nom"              => $fonc_nom,
+                        ":fonc_perso_cod"        => $mod_perso_cod,
+                        ":fonc_type"             => $fonc_type,
+                        ":fonc_effet"            => $fonc_effet,
+                        ":fonc_force"            => $_POST['fonc_force' . $numero],
+                        ":fonc_duree"            => $_POST['fonc_duree' . $numero],
+                        ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
+                        ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
+                        ":fonc_portee"           => $_POST['fonc_portee' . $numero],
+                        ":fonc_proba"            => $_POST['fonc_proba' . $numero],
+                        ":fonc_message"          => $_POST['fonc_message' . $numero],
+                        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
+                    ), $stmt);
 
                     $texteDeclenchement = '';
                     switch ($fonc_type)
@@ -910,30 +910,51 @@ switch ($methode)
                 $fonc_cod = fonctions::format($_POST['fonc_id' . $numero]);
                 if (!in_array($fonc_cod, $fonctions_supprimees))
                 {
-                    require "blocks/_block_admin_traitement_type_monstre_edit.php";
-                    $fonc_unite_valid  = $_POST['fonc_validite_unite' . $numero];
-                    $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
-                    $fonc_validite_sql = ($fonc_validite === 0) ? 'NULL' : "now() + '$fonc_validite minutes'::interval";
+                    //require "blocks/_block_admin_traitement_type_monstre_edit.php";
+                    $fonc_effet  = $_POST['fonc_effet' . $numero];
                     if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
 
-                    $fonc_proba = str_replace(',', '.', $fonc_proba);
+                    $fonc_unite_valid  = $_POST['fonc_validite_unite' . $numero];
+                    $fonc_validite     = $fonc_unite_valid * $_POST['fonc_validite' . $numero];
+                    $fonc_validite_sql = ($fonc_validite === 0) ? "NULL" : "now() + '$fonc_validite minutes'::interval";
+                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
 
-                    $req            = "UPDATE fonction_specifique
-						SET fonc_effet = '$fonc_effet',
-							fonc_force = '$fonc_force',
-							fonc_duree = $fonc_duree,
-							fonc_type_cible = '$fonc_type_cible',
-							fonc_nombre_cible = '$fonc_nombre_cible',
-							fonc_portee = $fonc_portee,
-							fonc_proba = $fonc_proba,
-							fonc_message = '$fonc_message',
-							fonc_date_limite = $fonc_validite_sql
-						WHERE fonc_cod = $fonc_cod
+                    $fonc_trigger_param = array() ;
+                    foreach($_POST as $key => $val){
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        }
+                    }
+
+                    $req       = "UPDATE fonction_specifique
+						SET fonc_effet = :fonc_effet,
+							fonc_force = :fonc_force,
+							fonc_duree = :fonc_duree,
+							fonc_type_cible = :fonc_type_cible,
+							fonc_nombre_cible = :fonc_nombre_cible,
+							fonc_portee =:fonc_portee,
+							fonc_proba = :fonc_proba,
+							fonc_message = :fonc_message,
+							fonc_trigger_param = :fonc_trigger_param, 
+							fonc_date_limite = {$fonc_validite_sql}
+						WHERE fonc_cod = :fonc_cod
 						RETURNING fonc_nom, fonc_type";
-                    $stmt_add_fun   = $pdo->query($req);
-                    $result_add_fun = $stmt_add_fun->fetch();
-                    $fonc_nom       = $result_add_fun['fonc_nom'];
-                    $fonc_type      = $result_add_fun['fonc_type'];
+                    $stmt      = $pdo->prepare($req);
+                    $stmt      = $pdo->execute(array(
+                        ":fonc_cod"              => $fonc_cod,
+                        ":fonc_effet"            => $fonc_effet,
+                        ":fonc_force"            => $_POST['fonc_force' . $numero],
+                        ":fonc_duree"            => $_POST['fonc_duree' . $numero],
+                        ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
+                        ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
+                        ":fonc_portee"           => $_POST['fonc_portee' . $numero],
+                        ":fonc_proba"            => $_POST['fonc_proba' . $numero],
+                        ":fonc_message"          => $_POST['fonc_message' . $numero],
+                        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
+                    ), $stmt);
+                    $result    = $stmt->fetch();
+                    $fonc_nom  = $result['fonc_nom'];
+                    $fonc_type = $result['fonc_type'];
 
                     $texteDeclenchement = '';
                     switch ($fonc_type)

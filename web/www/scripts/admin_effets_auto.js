@@ -2,6 +2,27 @@ var EffetAuto = {num_courant: 0};
 EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
 
+EffetAuto.Triggers = {
+	"D":   {description: "À l’activation de sa DLT."},
+	"M":   {description: "À sa mort."},
+	"T":   {description: "lorsqu’il tue sa cible."},
+	"A":   {description: "lorsqu’il attaque sa cible."},
+	"AE":  {description: "lorsqu’il attaque sa cible qui esquive."},
+	"AT":  {description: "lorsqu’il attaque et touche sa cible."},
+	"AC":  {description: "lorsqu’il est attaqué."},
+	"ACE": {description: "lorsqu’il esquive."},
+	"ACT": {description: "lorsqu’il est touché."},
+	"BMC": {description: "lorsque le Bonus/Malus change.",
+			parametres: [
+				{ nom: 'trig_compteur', type: 'BM', label: 'Décencheur', description: 'Le compteur.' },
+				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
+				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.' },
+				{ nom: 'trig_abattement', type: 'texte', longueur: 5, label: 'Abattement si déclenché', description: 'Valeur a retirer/ajouter au Bonus/Malus après le déclenchement accepte un nombre ou un % (exemple: 100% pour remise à 0)'},
+				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser le tag [nom] pour le nom de base)'},
+			]
+	},
+}
+
 EffetAuto.Types = [
 	{	nom: 'deb_tour_generique',
 		debut: true,
@@ -9,6 +30,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Bonus / Malus standard',
 		description: 'Applique un Bonus / Malus standard, à une ou plusieurs cibles.',
 		parametres: [
@@ -20,7 +42,7 @@ EffetAuto.Types = [
 			{ nom: 'portee', type: 'entier', label: 'Portée', description: 'La portée de l’effet.', validation: Validation.Types.Entier },
 			{ nom: 'nombre',type: 'texte', longueur: 5, label: 'Nombre de cibles', description: 'Le nombre maximal de cibles. Valeur fixe ou de la forme 1d6+2.', validation: Validation.Types.Roliste },
 			{ nom: 'proba', type: 'numerique', label: 'Probabilité', description: 'La probabilité, de 0 à 1, de voir l’effet se déclencher (pour l’ensemble des cibles).', validation: Validation.Types.Numerique },
-			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de l’attaquant, [cible] celui de la cible.' }
+			{ nom: 'message', type: 'texte', longueur: 40, label: 'Message', description: 'Le message apparaissant dans les événements privés (en public, on aura « X a subi un effet de Y »). [attaquant] représente le nom de le perso déclenchant l\'EA, [cible] est la cible de l\'EA.' }
 		],
 	},
 	{	nom: 'titre',
@@ -29,6 +51,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: false,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Attribution d’un titre',
 		description: 'Donne un titre à l’adversaire du monstre (tueur ou tué).',
 		parametres: [
@@ -41,6 +64,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Crapaud',
 		description: 'Transforme une cible en crapaud. Image changée, messages agrémentés de CROAAAAs. Antidote : se faire embrasser.',
 		parametres: [
@@ -57,6 +81,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Dégâts (ou soins)',
 		description: 'Inflige des dégâts aux cibles données (pour une valeur positive ; ou des soins pour une valeur négative).',
 		parametres: [
@@ -69,11 +94,12 @@ EffetAuto.Types = [
 		],
 	},
 	{	nom: 'deb_tour_esprit_damne',
-		debut: true,
-		tueur: true,
-		mort: true,
+		debut: false,
+		tueur: false,
+		mort: false,
 		attaque: false,
-		modifiable: true,
+		modifiable: false,
+		bm_compteur: false,
 		affichage: 'Esprit Damné (Obsolète)',
 		description: 'Applique des Malus standard de -25 de chances au toucher, -3 dégâts, +2 PA/attaque (proba 50% par cible), +3 PA/déplacements (proba 12% par cible).',
 		parametres: [
@@ -89,6 +115,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Invocation de monstre',
 		description: 'Invoque un monstre d’un type donné.',
 		parametres: [
@@ -104,6 +131,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Invocations multiples',
 		description: 'Invoque plusieurs monstres du type donné. Typiquement, les gelées lors de leur mort.',
 		parametres: [
@@ -118,6 +146,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Invocation sur l’étage',
 		description: 'Invoque plusieurs monstres du type donné, quelque part sur le même étage. Typiquement, les golems lors de leur mort.',
 		parametres: [
@@ -133,6 +162,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: false,
+		bm_compteur: false,
 		affichage: 'Mélange voies magiques',
 		description: 'Modifie de façon permanente la voie magique des cibles (animation halloween).',
 		parametres: [
@@ -149,6 +179,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Nécromancie',
 		description: 'Crée un mort-vivant. Les probabilités sont les suivantes : \n5% Chasseur éternel, \n15% Zombie, \n10% Spectre de L’effroi, \n20% Squelette, \n10% Guerrier squelette, \n5% Poltergeist, \n30% Archer Squelette, \n5% Tourmenteur.',
 		parametres: [],
@@ -159,6 +190,7 @@ EffetAuto.Types = [
 		mort: false,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Nécromancie (tueur)',
 		description: 'Crée un mort-vivant lorsqu’une cible est tuée, ou un clone de la victime (15% de chances).',
 		parametres: [],
@@ -169,6 +201,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: false,
 		modifiable: false,
+		bm_compteur: true,
 		affichage: 'Quête de l’Avatar',
 		description: 'Valide ou infirme la quête liée à la mort de l’Avatar.',
 		parametres: [],
@@ -179,6 +212,7 @@ EffetAuto.Types = [
 		mort: true,
 		attaque: true,
 		modifiable: true,
+		bm_compteur: true,
 		affichage: 'Usure d’objets',
 		description: 'Use un objet équipé par un aventurier ou un familier.',
 		parametres: [
@@ -201,15 +235,19 @@ EffetAuto.videListe = function (numero) {
 EffetAuto.remplirListe = function (type, numero) {
 	EffetAuto.videListe (numero);
 	var liste = document.getElementById('fonction_type_' + numero);
+	var defaut = '' ;
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
-		if (fct.modifiable && (fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
+			if (defaut == '') defaut = fct.nom ;
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
 			liste.options[liste.options.length - 1].title = fct.description;
 		}
 	}
+
+	document.getElementById('formulaire_declenchement_' + numero).innerHTML = EffetAuto.EcritNouveauDeclencheurAuto(type, numero);
 }
 
 EffetAuto.CopieListe = function (listeid, selection) {
@@ -290,6 +328,15 @@ EffetAuto.ChampChoixRouille = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampChoixBMCsens = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += '<option value="1" ' + ((valeur == 1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus dépasse le seuil</option>';
+	html += '<option value="-1" ' + ((valeur == -1) ? 'selected="selected"' : '' ) + '>Le Bonus/Malus retombe en dessous du seuil</option></select></label>';
+	return html;
+}
+
 EffetAuto.ChampCible = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 0;
@@ -324,6 +371,8 @@ EffetAuto.ChampBM = function (parametre, numero, valeur) {
 	html += "(-) Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong>";
 	return html;
 }
+
+
 EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 'N';
@@ -384,6 +433,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'BM':
 			html = pd + EffetAuto.ChampBM(parametre, numero, valeur) + pf;
 			break;
+		case 'BMCsens':
+			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
+			break;
 		case 'checkbox':
 			html = pd + EffetAuto.ChampCheckBox(parametre, numero, valeur) + pf;
 			break;
@@ -417,7 +469,7 @@ EffetAuto.EcritBoutonSupprimer = function (id, numero) {
 	return '<a onclick="EffetAuto.Supprime(' + id.toString() + ', ' + numero.toString() + '); return false;">' + texte + '</a>';
 }
 
-EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, validite, heritage) {
+EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, duree, message, effet, cumulatif, proba, cible, portee, nombre, trigger_param, validite, heritage) {
 	console.log('debut function EffetAuto.EcritEffetAutoExistant');
 	EffetAuto.num_courant += 1;
 	EffetAuto.Champs[EffetAuto.num_courant] = [];
@@ -442,13 +494,20 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 		case 'AC': donnees.declenchement = 'lorsqu’il est attaqué.'; break;
 		case 'ACE': donnees.declenchement = 'lorsqu’il esquive.'; break;
 		case 'ACT': donnees.declenchement = 'lorsqu’il est touché.'; break;
+		case 'BMC': donnees.declenchement = 'lorsque le Bonus/Malus change.'; break;
 	}
 	var html = '';
 	if (heritage)
 		html += EffetAuto.EcritLigneFormulaire({ label: 'Hérité de son type de monstre', type: 'lecture', valeur: '', description: '' }, EffetAuto.num_courant);
 	html += EffetAuto.EcritLigneFormulaire({ label: 'Déclenchement', type: 'lecture', valeur: donnees.declenchement, description: '' }, EffetAuto.num_courant);
-	html += EffetAuto.EcritLigneFormulaire({ label: 'EffetAuto', type: 'lecture', valeur: donnees.affichage, description: donnees.description }, EffetAuto.num_courant);
-	html += EffetAuto.EcritLigneFormulaire({ nom: 'id', type: 'hidden', description: '' }, EffetAuto.num_courant, id);
+
+	// Paramètre du déclencheur
+	var trig = EffetAuto.Triggers[declenchement];
+	if ( trig.parametres ) {
+		for (var i = 0; i < trig.parametres.length; i++) {
+			html += EffetAuto.EcritLigneFormulaire(trig.parametres[i], EffetAuto.num_courant, trigger_param["fonc_"+trig.parametres[i].nom], !heritage);
+		}
+	}
 
 	if (EffetAuto.MontreValidite && !heritage) {
 		var desc = 'Durée pendant laquelle cet effet automatique peut être déclenché. 0 si aucune limite.';
@@ -456,6 +515,10 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 		var obj_validite = { nom: 'validite', label: 'Validité', type: 'validite', valeur: texte, validation: Validation.Types.Entier, description: desc };
 		html += EffetAuto.EcritLigneFormulaire(obj_validite, EffetAuto.num_courant, validite, donnees.modifiable);
 	}
+	html += "<hr>";
+
+    html += EffetAuto.EcritLigneFormulaire({ label: 'EffetAuto', type: 'lecture', valeur: donnees.affichage, description: donnees.description }, EffetAuto.num_courant);
+    html += EffetAuto.EcritLigneFormulaire({ nom: 'id', type: 'hidden', description: '' }, EffetAuto.num_courant, id);
 
 	for (var i = 0; i < donnees.parametres.length; i++) {
 		var valeur;
@@ -483,10 +546,6 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 EffetAuto.EcritNouvelEffetAuto = function (type, numero) {
 	var donnees = EffetAuto.getDonnees(type);
 	var html = '';
-	var desc = 'Durée pendant laquelle cet effet automatique peut être déclenché. 0 si aucune limite.';
-	var texte = 'illimitée';
-	var obj_validite = { nom: 'validite', label: 'Validité', type: 'validite', valeur: texte, validation: Validation.Types.Entier, description: desc };
-	html += EffetAuto.EcritLigneFormulaire(obj_validite, numero);
 
 	for (var i = 0; i < donnees.parametres.length; i++) {
 		html += EffetAuto.EcritLigneFormulaire(donnees.parametres[i], numero);
@@ -494,6 +553,28 @@ EffetAuto.EcritNouvelEffetAuto = function (type, numero) {
 	html += EffetAuto.EcritBoutonSupprimer(-1, numero);
 	return html;
 }
+
+
+EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
+	var donnees = EffetAuto.Triggers[type];
+	var html = '';
+	var desc = 'Durée pendant laquelle cet effet automatique peut être déclenché. 0 si aucune limite.';
+	var texte = 'illimitée';
+	var obj_validite = { nom: 'validite', label: 'Validité', type: 'validite', valeur: texte, validation: Validation.Types.Entier, description: desc };
+	html += EffetAuto.EcritLigneFormulaire(obj_validite, numero);
+
+	if ( donnees.parametres ) {
+		for (var i = 0; i < donnees.parametres.length; i++) {
+			html += EffetAuto.EcritLigneFormulaire(donnees.parametres[i], numero);
+		}
+	}
+
+	html += '<hr>'
+	return html;
+}
+
+
+
 
 EffetAuto.ChangeEffetAuto = function (type, numero) {
 	EffetAuto.EnleveValidation(numero);
@@ -522,11 +603,23 @@ EffetAuto.NouvelEffetAuto = function () {
 
 	document.getElementById('fonctions_ajoutees').value += ',' + numero.toString();
 	var html = '';
-	var declenchement = '<select name="declenchement_' + numero + '" onchange="EffetAuto.remplirListe(this.value, ' + numero + ');"><option value="D">Active sa DLT</option><option value="M">Meurt</option><option value="T">Tue sa cible</option><option value="A">Attaque sa cible</option><option value="AE">Attaque sa cible qui esquive</option><option value="AT">Attaque et touche sa cible</option><option value="AC">Est attaqué</option><option value="ACE">Esquive une attaque</option><option value="ACT">Est touché par une attaque</option></select>';
+	var declenchement = '<select name="declenchement_' + numero + '" onchange="EffetAuto.remplirListe(this.value, ' + numero + ');">' +
+							'<option value="D">Active sa DLT</option>' +
+							'<option value="M">Meurt</option>' +
+							'<option value="T">Tue sa cible</option>' +
+							'<option value="A">Attaque sa cible</option>' +
+							'<option value="AE">Attaque sa cible qui esquive</option>' +
+							'<option value="AT">Attaque et touche sa cible</option>' +
+							'<option value="AC">Est attaqué</option>' +
+							'<option value="ACE">Esquive une attaque</option>' +
+							'<option value="ACT">Est touché par une attaque</option>' +
+							'<option value="BMC">Subit un changement de Bonus/Malus</option>' +
+							'</select>';
 	var liste = '<select name="fonction_type_' + numero + '" id="fonction_type_' + numero + '" onchange="EffetAuto.ChangeEffetAuto(this.value, ' + numero + ');"></select>';
-	html += 'Se déclenche lorsque le monstre... ' + declenchement + liste;
+	html += 'Se déclenche lorsque le perso... ' + declenchement ;
+	html += '<div id="formulaire_declenchement_' + numero + '"></div>'  + liste;
 	html += '<div id="formulaire_fonction_' + numero + '"></div>';
-	
+
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
 	
