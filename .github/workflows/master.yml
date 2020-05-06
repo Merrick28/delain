@@ -26,7 +26,7 @@ jobs:
         run: |
           env
           cd ${GITHUB_WORKSPACE}
-          /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
+          /usr/local/bin/docker-compose2 -f docker-compose-tu.yml pull
           /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
           echo "Wait for postgres to be up"
           /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
