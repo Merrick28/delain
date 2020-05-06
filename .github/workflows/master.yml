@@ -31,6 +31,8 @@ jobs:
           /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
+          cd ${GITHUB_WORKSPACE}
+          /usr/local/bin/docker-compose down
       - name: Gestion d'erreur
         if: ${{ failure() }}
         run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
@@ -57,6 +59,7 @@ jobs:
     runs-on: rp
     needs: livraison
     steps:
+
       - name: Slack notification
         run: |
           /home/github/actions/notif_slack.sh "Fin de livraison"
