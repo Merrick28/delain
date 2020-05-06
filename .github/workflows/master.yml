@@ -6,7 +6,6 @@ on:
     branches: [ master ]
 
 jobs:
-
   prelivraison:
     runs-on: rp
     steps:
