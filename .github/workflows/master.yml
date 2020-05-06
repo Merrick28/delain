@@ -35,6 +35,7 @@ jobs:
       - name: Gestion d'erreur
         if: ${{ failure() }}
         run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
+
   livraison:
     runs-on: backenddelain
     needs: prelivraison
