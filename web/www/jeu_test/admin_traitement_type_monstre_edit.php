@@ -337,18 +337,35 @@ switch ($methode)
             {
                 if (!in_array($numero, $fonctions_annulees))
                 {
-                    require "blocks/_block_admin_traitement_type_monstre_edit.php";
-                    $fonc_type = $_POST['declenchement_' . $numero];
-                    $fonc_nom  = $_POST['fonction_type_' . $numero];
-                    $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message)
-						values (:fonc_nom, :gmon_cod, :fonc_type, :fonc_effet, '$fonc_force', $fonc_duree, '$fonc_type_cible', '$fonc_nombre_cible', $fonc_portee, $fonc_proba, '$fonc_message')";
+                    //require "blocks/_block_admin_traitement_type_monstre_edit.php";
+                    $fonc_type   = $_POST['declenchement_' . $numero];
+                    $fonc_nom    = $_POST['fonction_type_' . $numero];
+                    $fonc_effet  = $_POST['fonc_effet' . $numero];
+                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
+
+                    $fonc_trigger_param = array() ;
+                    foreach($_POST as $key => $val){
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        }
+                    }
+
+                    $req       = "INSERT INTO fonction_specifique (fonc_nom, fonc_gmon_cod, fonc_type, fonc_effet, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param)
+						VALUES (:fonc_nom, :gmon_cod, :fonc_type, :fonc_effet, :fonc_force, :fonc_duree, :fonc_type_cible, :fonc_nombre_cible, :fonc_portee, :fonc_proba, :fonc_message, :fonc_trigger_param)";
                     $stmt      = $pdo->prepare($req);
                     $stmt      = $pdo->execute(array(
-                                                   ":fonc_nom"   => $fonc_nom,
-                                                   ":gmon_cod"   => $gmon_cod,
-                                                   ":fonc_type"  => $fonc_type,
-                                                   ":fonc_effet" => $fonc_effet
-
+                                                   ":fonc_nom"              => $fonc_nom,
+                                                   ":gmon_cod"              => $gmon_cod,
+                                                   ":fonc_type"             => $fonc_type,
+                                                   ":fonc_effet"            => $fonc_effet,
+                                                   ":fonc_force"            => $_POST['fonc_force' . $numero],
+                                                   ":fonc_duree"            => $_POST['fonc_duree' . $numero],
+                                                   ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
+                                                   ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
+                                                   ":fonc_portee"           => $_POST['fonc_portee' . $numero],
+                                                   ":fonc_proba"            => $_POST['fonc_proba' . $numero],
+                                                   ":fonc_message"          => $_POST['fonc_message' . $numero],
+                                                   ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
                                                ), $stmt);
 
                     $texteDeclenchement = '';
@@ -381,6 +398,9 @@ switch ($methode)
                         case 'ACT':
                             $texteDeclenchement = 'une attaque subie qui touche.';
                             break;
+                        case 'BMC':
+                            $texteDeclenchement = 'un Bonus/Mlaus change.';
+                            break;
                     }
                     if (!empty($message))
                         $message .= "			";
@@ -395,21 +415,45 @@ switch ($methode)
             if (!empty($numero) || $numero === 0)
             {
                 $fonc_cod = fonctions::format($_POST['fonc_id' . $numero]);
+
                 if (!in_array($fonc_cod, $fonctions_supprimees))
                 {
-                    require "blocks/_block_admin_traitement_type_monstre_edit.php";
+                    //require "blocks/_block_admin_traitement_type_monstre_edit.php";
+                    $fonc_effet  = $_POST['fonc_effet' . $numero];
+                    if (!empty($_POST['fonc_cumulatif' . $numero]) && ($_POST['fonc_cumulatif' . $numero] == "on")) $fonc_effet .= "+";
+
+                    $fonc_trigger_param = array() ;
+                    foreach($_POST as $key => $val){
+                        if ((substr($key, 0, 10)=="fonc_trig_") && (substr($key, -strlen("{$numero}"))==$numero)) {
+                            $fonc_trigger_param[substr($key, 0, -strlen("{$numero}"))]= $val ;
+                        }
+                    }
+
                     $req       = "UPDATE fonction_specifique
-						SET fonc_effet = '$fonc_effet',
-							fonc_force = '$fonc_force',
-							fonc_duree = $fonc_duree,
-							fonc_type_cible = '$fonc_type_cible',
-							fonc_nombre_cible = '$fonc_nombre_cible',
-							fonc_portee = $fonc_portee,
-							fonc_proba = $fonc_proba,
-							fonc_message = '$fonc_message'
-						WHERE fonc_cod = $fonc_cod
+						SET fonc_effet = :fonc_effet,
+							fonc_force = :fonc_force,
+							fonc_duree = :fonc_duree,
+							fonc_type_cible = :fonc_type_cible,
+							fonc_nombre_cible = :fonc_nombre_cible,
+							fonc_portee =:fonc_portee,
+							fonc_proba = :fonc_proba,
+							fonc_message = :fonc_message,
+							fonc_trigger_param = :fonc_trigger_param
+						WHERE fonc_cod = :fonc_cod
 						RETURNING fonc_nom, fonc_type";
-                    $stmt      = $pdo->query($req);
+                    $stmt      = $pdo->prepare($req);
+                    $stmt      = $pdo->execute(array(
+                        ":fonc_cod"              => $fonc_cod,
+                        ":fonc_effet"            => $fonc_effet,
+                        ":fonc_force"            => $_POST['fonc_force' . $numero],
+                        ":fonc_duree"            => $_POST['fonc_duree' . $numero],
+                        ":fonc_type_cible"       => $_POST['fonc_cible' . $numero],
+                        ":fonc_nombre_cible"     => $_POST['fonc_nombre' . $numero],
+                        ":fonc_portee"           => $_POST['fonc_portee' . $numero],
+                        ":fonc_proba"            => $_POST['fonc_proba' . $numero],
+                        ":fonc_message"          => $_POST['fonc_message' . $numero],
+                        ":fonc_trigger_param"    => json_encode($fonc_trigger_param)
+                    ), $stmt);
                     $result    = $stmt->fetch();
                     $fonc_nom  = $result['fonc_nom'];
                     $fonc_type = $result['fonc_type'];
@@ -443,6 +487,9 @@ switch ($methode)
                             break;
                         case 'ACT':
                             $texteDeclenchement = 'une attaque subie qui touche.';
+                            break;
+                        case 'BMC':
+                            $texteDeclenchement = 'un Bonus/Mlaus change.';
                             break;
                     }
                     if (!empty($message))
@@ -496,6 +543,9 @@ switch ($methode)
                         break;
                     case 'ACT':
                         $texteDeclenchement = 'une attaque subie qui touche.';
+                        break;
+                    case 'BMC':
+                        $texteDeclenchement = 'un Bonus/Mlaus change.';
                         break;
                 }
                 if (!empty($message))

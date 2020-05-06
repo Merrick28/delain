@@ -1025,10 +1025,11 @@ if ($erreur == 0)
                 echo '<select id="liste_monstre_modele" style="display:none;">' . $html->select_from_query($req, 'gmon_cod', 'gmon_nom') . '</select>';
 
                 // Liste des Bonus-malus
-                $req = "select tbonus_libc, tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
+                $req = "select tbonus_libc, CASE WHEN tbonus_compteur='O' THEN '[compteur] - ' ELSE '' END || tonbus_libelle || case when tbonus_gentil_positif then ' (+)' else ' (-)' end as tonbus_libelle
 						from bonus_type
 						order by tonbus_libelle ";
                 echo '<select id="liste_bm_modele" style="display:none;">' . $html->select_from_query($req, 'tbonus_libc', 'tonbus_libelle') . '</select>';
+
                 ?>
                 <form method="post" onsubmit="return Validation.Valide ();">
                     <input type="hidden" name="methode2" value="edit">
@@ -1040,29 +1041,30 @@ if ($erreur == 0)
                     <input type='hidden' name='fonctions_annulees' id='fonctions_annulees' value=''/>
                     <input type='hidden' name='fonctions_existantes' id='fonctions_existantes' value=''/>
                     <div id="liste_fonctions"></div>
-                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message
+                    <?php $req = "select fonc_cod, fonc_nom, fonc_type, case when fonc_nom='deb_tour_generique' then substr(fonc_effet,1,3) else fonc_effet end as fonc_effet, case when fonc_nom='deb_tour_generique' and substr(fonc_effet,4,1)='+' then 'O' else 'N' end as fonc_cumulatif, fonc_force, fonc_duree, fonc_type_cible, fonc_nombre_cible, fonc_portee, fonc_proba, fonc_message, fonc_trigger_param
 						from fonction_specifique where fonc_gmon_cod = $gmon_cod";
                     $stmt      = $pdo->query($req);
                     while ($result = $stmt->fetch())
                     {
-                        $fonc_id           = $result['fonc_cod'];
-                        $fonc_type         = $result['fonc_type'];
-                        $fonc_nom          = $result['fonc_nom'];
-                        $fonc_effet        = $result['fonc_effet'];
-                        $fonc_cumulatif    = $result['fonc_cumulatif'];
-                        $fonc_force        = $result['fonc_force'];
-                        $fonc_duree        = $result['fonc_duree'];
-                        $fonc_type_cible   = $result['fonc_type_cible'];
-                        $fonc_nombre_cible = $result['fonc_nombre_cible'];
-                        $fonc_portee       = $result['fonc_portee'];
-                        $fonc_proba        = $result['fonc_proba'];
-                        $fonc_message      = $result['fonc_message'];
+                        $fonc_id                = $result['fonc_cod'];
+                        $fonc_type              = $result['fonc_type'];
+                        $fonc_nom               = $result['fonc_nom'];
+                        $fonc_effet             = $result['fonc_effet'];
+                        $fonc_cumulatif         = $result['fonc_cumulatif'];
+                        $fonc_force             = $result['fonc_force'];
+                        $fonc_duree             = $result['fonc_duree'];
+                        $fonc_type_cible        = $result['fonc_type_cible'];
+                        $fonc_nombre_cible      = $result['fonc_nombre_cible'];
+                        $fonc_portee            = $result['fonc_portee'];
+                        $fonc_proba             = $result['fonc_proba'];
+                        $fonc_message           = $result['fonc_message'];
+                        $fonc_trigger_param     = $result['fonc_trigger_param'] == "" ? "{}" : $result['fonc_trigger_param'];
 
                         // on va enjoliver le champs cumulatif à l'affichage pour afficher les valeurs de progressivité.
                         if ($fonc_cumulatif=='O') $fonc_cumulatif = bm_progressivite($fonc_effet, $fonc_force);
 
                         echo "
-					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible');</script>";
+					<script>EffetAuto.EcritEffetAutoExistant('$fonc_type', '$fonc_nom', $fonc_id, '$fonc_force', '$fonc_duree', '$fonc_message', '$fonc_effet', '$fonc_cumulatif', '$fonc_proba', '$fonc_type_cible', '$fonc_portee', '$fonc_nombre_cible', $fonc_trigger_param);</script>";
                     }
                     ?>
                     <div style='clear: both;'>
