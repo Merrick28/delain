@@ -34,7 +34,7 @@ jobs:
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraion) !!!"
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraion) !!!"
   livraison:
     runs-on: backenddelain
     needs: prelivraison
@@ -53,7 +53,7 @@ jobs:
         run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
       - name: Gestion d'erreur
         if: ${{ failure() }}
-        run: home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraion) !!!"
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraion) !!!"
   notif_fin:
     runs-on: rp
     needs: livraison
