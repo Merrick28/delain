@@ -1,0 +1,125 @@
+--
+-- Name: execute_fonction_specifique(integer, integer, character varying(3)); Type: FUNCTION; Schema: public; Owner: delain
+--
+
+CREATE OR REPLACE FUNCTION execute_fonction_specifique(integer, integer, integer) RETURNS text
+    LANGUAGE plpgsql
+    AS $_$/*************************************************************/
+/* fonction execute_fonction_specifique                                */
+/*   Exécute les fonctions spécifiques liées à un monstre    */
+/*    et/ou un personnage                                    */
+/*   on passe en paramètres :                                */
+/*   $1 = perso_cod : le perso_cod de la source              */
+/*   $2 = cible_cod : si nécessaire, le numéro de la cible   */
+/*   $3 = fonc_cod : la fonction specifique                  */
+/*************************************************************/
+declare
+	v_perso_cod alias for $1;  -- Le code de la source
+	v_cible_cod alias for $2;  -- Le numéro de la cible
+	v_fonc_cod alias for $3;   -- LA fonction qui c'est déclenchée!
+
+	code_retour text;          -- Le retour de la fonction
+	retour_fonction text;      -- Le résultat de l’exécution d’une fonction
+	ligne_fonction record;     -- Les données de la fonction
+	code_fonction text;        -- Le code SQL lançant la fonction
+  v_pos integer;             -- Le code de la position où se déroule l'effet
+
+begin
+
+  -- paramètre necessaire pour certaine fonction
+  select into v_pos ppos_pos_cod from perso_position where ppos_perso_cod = v_cible_cod;
+
+  -- code de retour par defaut
+	code_retour := '';
+
+  select * into ligne_fonction from fonction_specifique where fonc_cod=v_fonc_cod ;
+  if found then
+
+    code_fonction := ligne_fonction.fonc_nom;
+    retour_fonction := '';
+
+
+    if code_fonction = 'deb_tour_generique' then
+      select into retour_fonction deb_tour_generique(v_perso_cod,
+        ligne_fonction.fonc_effet,
+        ligne_fonction.fonc_force,
+        ligne_fonction.fonc_portee,
+        ligne_fonction.fonc_type_cible,
+        ligne_fonction.fonc_nombre_cible,
+        ligne_fonction.fonc_proba/100,
+        ligne_fonction.fonc_duree,
+        ligne_fonction.fonc_message,
+        v_cible_cod
+      );
+
+    elsif code_fonction = 'deb_tour_degats' then
+      select into retour_fonction deb_tour_degats(v_perso_cod,
+        ligne_fonction.fonc_force,
+        ligne_fonction.fonc_portee,
+        ligne_fonction.fonc_type_cible,
+        ligne_fonction.fonc_nombre_cible,
+        ligne_fonction.fonc_proba/100,
+        ligne_fonction.fonc_message,
+        v_cible_cod
+      );
+
+    elsif code_fonction = 'titre' then
+      select into retour_fonction effet_auto_ajout_titre(v_cible_cod, ligne_fonction.fonc_message, v_perso_cod);
+
+    elsif code_fonction = 'necromancie' then
+      select into retour_fonction necromancie(v_perso_cod, v_cible_cod);
+
+    elsif code_fonction = 'deb_tour_rouille' then
+      select into retour_fonction deb_tour_rouille(v_perso_cod, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_effet::integer);
+
+    elsif code_fonction = 'deb_tour_invocation' then
+      if v_pos is not null then
+        select into retour_fonction deb_tour_invocation(v_perso_cod, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message, v_pos);
+      end if;
+
+    elsif code_fonction = 'poison_araignee' then
+      select into retour_fonction poison_araignee(v_perso_cod);
+
+    elsif code_fonction = 'deb_tour_degats_case' then
+      select into retour_fonction deb_tour_degats_case(v_perso_cod, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message);
+
+    elsif code_fonction = 'deb_tour_esprit_damne' then
+      select into retour_fonction deb_tour_esprit_damne(v_perso_cod);
+
+    elsif code_fonction = 'trans_crap' then
+      select into retour_fonction trans_crap(v_perso_cod);
+
+    elsif code_fonction = 'deb_tour_necromancie' then
+      select into retour_fonction deb_tour_necromancie(v_perso_cod, coalesce(nullif(ligne_fonction.fonc_force,''),'1')::numeric, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'deb_tour_haloween' then
+      select into retour_fonction deb_tour_haloween(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_proba::integer);
+
+    elsif code_fonction = 'valide_quete_avatar' then
+      select into retour_fonction valide_quete_avatar(v_perso_cod, v_cible_cod);
+
+    elsif code_fonction = 'invoque_rejetons' then
+      select into retour_fonction invoque_rejetons(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer);
+
+    elsif code_fonction = 'resurrection_monstre' then
+      select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
+    end if;
+
+    if coalesce(retour_fonction, '') != '' then
+      -- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
+      code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+    end if;
+
+  end if;
+
+	return code_retour;
+end;$_$;
+
+
+ALTER FUNCTION public.execute_fonction_specifique(integer, integer, integer) OWNER TO delain;
+
+--
+-- Name: FUNCTION execute_fonction_specifique(integer, integer, integer); Type: COMMENT; Schema: public; Owner: delain
+--
+
+COMMENT ON FUNCTION execute_fonction_specifique(integer, integer, integer) IS 'Exécute une fonction spécifique';
