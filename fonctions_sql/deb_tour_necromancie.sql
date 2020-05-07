@@ -2,7 +2,7 @@
 -- Name: deb_tour_necromancie(integer, numeric, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_necromancie(integer, numeric, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.deb_tour_necromancie(integer, numeric, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/************************************************/
 /* Nécromancie                                  */

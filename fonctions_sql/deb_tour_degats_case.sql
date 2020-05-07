@@ -2,7 +2,7 @@
 -- Name: deb_tour_degats_case(integer, integer, integer, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_degats_case(integer, integer, integer, text) RETURNS text
+CREATE OR REPLACE FUNCTION public.deb_tour_degats_case(integer, integer, integer, text) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************************/
 /* function deb_tour_degats_case : dégâts sur une case en début de tour   */

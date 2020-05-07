@@ -2,7 +2,7 @@
 -- Name: resurrection_monstre(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.resurrection_monstre(integer, integer, integer, integer) RETURNS text
+CREATE OR REPLACE  FUNCTION public.resurrection_monstre(integer, integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*************************************************************/
 /* fonction resurrection_monstre                             */

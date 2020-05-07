@@ -2,7 +2,7 @@
 -- Name: deb_tour_haloween(integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_haloween(integer, integer, integer) RETURNS text
+CREATE OR REPLACE  FUNCTION public.deb_tour_haloween(integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/*****************************************************************/
 /* fonction deb_tour_haloween: bazard dans les voies magiques    */
