@@ -47,7 +47,7 @@ jobs:
       - name: Vider le cache twig
         run: 'rm -rf /home/delain/delain/cache/*'
       - name: Vider le cache modspeed
-        run: 'curl "http://localhost/pagespeed_admin/cache?purge=path/file.ext"'
+        run: 'curl "http://localhost/pagespeed_admin/cache?purge=*"'
       - name: Livraisons sql
         run: /home/delain/delain/shell/livraisons.sh
       - name: Generation des docs api
