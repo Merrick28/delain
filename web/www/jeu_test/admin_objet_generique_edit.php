@@ -295,7 +295,7 @@ if ($erreur == 0)
             {
 
                 $stmt2 = $pdo->execute(array(":gobj_obcar_cod" => $result['gobj_obcar_cod']),$stmt2);
-                if ($result2 = $stmt->fetch())
+                if ($result2 = $stmt2->fetch())
                 {
                     $obcar_cod = $result2['obcar_cod'];
                     $obcar = new objets_caracs();
