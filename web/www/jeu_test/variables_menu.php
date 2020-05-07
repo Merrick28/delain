@@ -5,7 +5,7 @@
  * le moteur de template de phplib
  *
  */
-$__VERSION = "20200506";    // A changer aussi dans constante.php
+$__VERSION = "20200507";    // A changer aussi dans constante.php
 
 $benchmark       = $profiler->start('Variables menu');
 $verif_connexion = new verif_connexion();
