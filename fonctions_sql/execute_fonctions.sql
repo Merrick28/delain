@@ -27,24 +27,23 @@ declare
 	ligne_fonction record;     -- Les données de la fonction
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
-v_pos integer;    -- Le code de la position où se déroule l'effet
 
 begin
 
+  -- préparation des paramètres commun
   if v_cible_cod is null and v_evenement != 'D' then
-		v_cible_cod := v_perso_cod;
-	--Marlyza - 2019-03-04 ? deb_tour_invocation n'est jamais déclenché à cause du manque de cible, BUG ?, Je rajoute le cas !
+		v_cible_cod := v_perso_cod;     --Marlyza - 2019-03-04 ? deb_tour_invocation n'est jamais déclenché à cause du manque de cible, BUG ?, Je rajoute le cas !
   elsif v_cible_cod is null then
     select into v_cible_cod COALESCE(perso_cible, perso_cod) from perso where perso_cod = v_perso_cod;
 	end if;
 
-  select into v_pos ppos_pos_cod
-		from perso_position where ppos_perso_cod = v_cible_cod;
-
-
-	code_retour := '';
+  -- eventuellement les fonction du monstre générique
 	select into v_gmon_cod perso_gmon_cod from perso where perso_cod = v_perso_cod;
 
+  -- code de retour
+	code_retour := '';
+
+  -- boucle sur toutes les fonctions specifiques sur l'évenement
 	for ligne_fonction in (
 		select * from fonction_specifique
 		where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod))
@@ -53,73 +52,8 @@ begin
 		)
 	loop
 		code_fonction := ligne_fonction.fonc_nom;
-		retour_fonction := '';
+		retour_fonction := execute_fonction_specifique(v_perso_cod, v_cible_cod, ligne_fonction.fonc_cod) ;
 
-		if code_fonction = 'deb_tour_generique' then
-			select into retour_fonction deb_tour_generique(v_perso_cod,
-				ligne_fonction.fonc_effet,
-				ligne_fonction.fonc_force,
-				ligne_fonction.fonc_portee,
-				ligne_fonction.fonc_type_cible,
-				ligne_fonction.fonc_nombre_cible,
-				ligne_fonction.fonc_proba,
-				ligne_fonction.fonc_duree,
-				ligne_fonction.fonc_message,
-				v_cible_cod
-			);
-
-		elsif code_fonction = 'deb_tour_degats' then
-			select into retour_fonction deb_tour_degats(v_perso_cod,
-				ligne_fonction.fonc_force,
-				ligne_fonction.fonc_portee,
-				ligne_fonction.fonc_type_cible,
-				ligne_fonction.fonc_nombre_cible,
-				ligne_fonction.fonc_proba,
-				ligne_fonction.fonc_message,
-				v_cible_cod
-			);
-
-		elsif code_fonction = 'titre' then
-			select into retour_fonction effet_auto_ajout_titre(v_cible_cod, ligne_fonction.fonc_message, v_perso_cod);
-
-		elsif code_fonction = 'necromancie' then
-			select into retour_fonction necromancie(v_perso_cod, v_cible_cod);
-
-		elsif code_fonction = 'deb_tour_rouille' then
-			select into retour_fonction deb_tour_rouille(v_perso_cod, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_effet::integer);
-
-		elsif code_fonction = 'deb_tour_invocation' then
-			if v_pos is not null then
-        select into retour_fonction deb_tour_invocation(v_perso_cod, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message, v_pos);
-      end if;
-
-		elsif code_fonction = 'poison_araignee' then
-			select into retour_fonction poison_araignee(v_perso_cod);
-
-		elsif code_fonction = 'deb_tour_degats_case' then
-			select into retour_fonction deb_tour_degats_case(v_perso_cod, ligne_fonction.fonc_force::integer, ligne_fonction.fonc_proba::integer, ligne_fonction.fonc_message);
-
-		elsif code_fonction = 'deb_tour_esprit_damne' then
-			select into retour_fonction deb_tour_esprit_damne(v_perso_cod);
-
-		elsif code_fonction = 'trans_crap' then
-			select into retour_fonction trans_crap(v_perso_cod);
-
-		elsif code_fonction = 'deb_tour_necromancie' then
-			select into retour_fonction deb_tour_necromancie(v_perso_cod, coalesce(nullif(ligne_fonction.fonc_force,''),'1')::numeric, ligne_fonction.fonc_proba::integer);
-
-		elsif code_fonction = 'deb_tour_haloween' then
-			select into retour_fonction deb_tour_haloween(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_proba::integer);
-
-		elsif code_fonction = 'valide_quete_avatar' then
-			select into retour_fonction valide_quete_avatar(v_perso_cod, v_cible_cod);
-
-		elsif code_fonction = 'invoque_rejetons' then
-			select into retour_fonction invoque_rejetons(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer);
-
-		elsif code_fonction = 'resurrection_monstre' then
-			select into retour_fonction resurrection_monstre(v_perso_cod, ligne_fonction.fonc_nombre_cible::integer, ligne_fonction.fonc_effet::integer, ligne_fonction.fonc_proba::integer);
-		end if;
 
 		if coalesce(retour_fonction, '') != '' then
 			-- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
