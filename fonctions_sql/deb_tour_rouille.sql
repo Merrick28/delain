@@ -2,7 +2,7 @@
 -- Name: deb_tour_rouille(integer, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_rouille(integer, integer, integer, integer) RETURNS text
+CREATE OR REPLACE FUNCTION public.deb_tour_rouille(integer, integer, integer, integer) RETURNS text
     LANGUAGE plpgsql
     AS $_$/************************************************/
 /* deb_tour_rouille : agit sur l'usure de       */
