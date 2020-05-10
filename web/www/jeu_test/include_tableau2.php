@@ -26,7 +26,7 @@ $result  = $stmt->fetch();
 
 $portee         = ($result['distance_vue'] > $result['portee']) ? $result['portee'] : $result['distance_vue'];
 $type_arme      = ($result['type_arme'] == 2) ? 2 : 1;
-$desorientation = ($result['desorientation'] == 0);
+$desorientation = ($result['desorientation'] <= 0);
 
 $pos_cod      = $result['ppos_pos_cod'];
 $x            = $result['pos_x'];
