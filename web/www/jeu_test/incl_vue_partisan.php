@@ -12,7 +12,7 @@ $req_malus_desorientation =
     " select valeur_bonus(perso_cod, 'DES') as desorientation from perso where perso_cod = $perso_cod";
 $stmt                     = $pdo->query($req_malus_desorientation);
 $result                   = $stmt->fetch();
-if ($result['desorientation'] == 0)
+if ($result['desorientation'] <= 0)
 {
     $desorientation = false;
 }
