@@ -13,11 +13,12 @@ EffetAuto.Triggers = {
 	"ACE": {description: "lorsqu’il esquive."},
 	"ACT": {description: "lorsqu’il est touché."},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
+			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de protagoniste pour ce déclencheur.",
 			parametres: [
 				{ nom: 'trig_compteur', type: 'BM', label: 'Décencheur', description: 'Le compteur.' },
 				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
-				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.' },
-				{ nom: 'trig_abattement', type: 'texte', longueur: 5, label: 'Abattement si déclenché', description: 'Valeur a retirer/ajouter au Bonus/Malus après le déclenchement accepte un nombre ou un % (exemple: 100% pour remise à 0)'},
+				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', validation: Validation.Types.Entier },
+				{ nom: 'trig_raz', type: 'checkbox', label: 'Remise à zéro du BM après déclenchement', description: 'Cocher pour remettre le BM à 0 après déclenchement'},
 				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser le tag [nom] pour le nom de base)'},
 			]
 	},
@@ -248,6 +249,7 @@ EffetAuto.remplirListe = function (type, numero) {
 	}
 
 	document.getElementById('formulaire_declenchement_' + numero).innerHTML = EffetAuto.EcritNouveauDeclencheurAuto(type, numero);
+	Validation.Valide ();
 }
 
 EffetAuto.CopieListe = function (listeid, selection) {
@@ -376,8 +378,10 @@ EffetAuto.ChampBM = function (parametre, numero, valeur) {
 EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	if (!valeur)
 		valeur = 'N';
-	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<input type="checkbox" '+ (valeur=='O' ? 'checked' : '') +' name="fonc_' + parametre.nom + numero.toString() + '">';
-	html += '</label><br />';
+	var html = 	'<label><strong>' + parametre.label + '</strong>&nbsp;' +
+		       	'<input type="hidden" valeur="'+valeur+'" name="checkbox_fonc_' + parametre.nom + numero.toString() + '">' +
+		       	'<input type="checkbox" '+ (valeur=='O' ? 'checked' : '') +' name="fonc_' + parametre.nom + numero.toString() + '">' +
+				'</label><br />';
 	return html;
 }
 
@@ -508,6 +512,9 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 			html += EffetAuto.EcritLigneFormulaire(trig.parametres[i], EffetAuto.num_courant, trigger_param["fonc_"+trig.parametres[i].nom], !heritage);
 		}
 	}
+	if ( trig.remarque ) {
+		html += trig.remarque ;
+	}
 
 	if (EffetAuto.MontreValidite && !heritage) {
 		var desc = 'Durée pendant laquelle cet effet automatique peut être déclenché. 0 si aucune limite.';
@@ -567,6 +574,9 @@ EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
 		for (var i = 0; i < donnees.parametres.length; i++) {
 			html += EffetAuto.EcritLigneFormulaire(donnees.parametres[i], numero);
 		}
+	}
+	if ( donnees.remarque ) {
+		html += donnees.remarque ;
 	}
 
 	html += '<hr>'

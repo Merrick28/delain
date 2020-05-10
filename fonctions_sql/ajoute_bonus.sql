@@ -27,6 +27,8 @@ declare
   v_nb integer;  -- pour la dégressivité
   v_i integer;  -- pour les boucles
 	temp integer;	-- variable fourre tout
+	v_valeur_avant integer;	-- BM avant l'ajout
+	v_valeur_apres integer;	-- BM après l'ajout
   code_retour text;
 begin
   v_retour := 1;    -- par defaut on considère avoir appliqué un bonus
@@ -38,6 +40,9 @@ begin
   else
     v_cumulatif := 'S';
   end if;
+
+  -- Pour déclenchement d'EA sur changement de BM, on mémorise la valeur avant modification.
+  v_valeur_avant := valeur_bonus(v_perso, v_type);
 
   -- 08/11/2019 - Marlyza - Ajout de bonus de carac (FOR/INT/DEX/CON) à l'aide de f_modif_carac_base
   IF v_type in ('DEX', 'INT', 'FOR', 'CON')  THEN
@@ -118,6 +123,12 @@ begin
     end if;
 
   END IF;
+
+  -- On vérifie s'il y a un changement de BM, si oui on verifie le déclenchement des EA
+  v_valeur_apres := valeur_bonus(v_perso, v_type);
+  if v_valeur_apres != v_valeur_avant then
+      perform execute_effet_auto_bmc(v_perso, v_type, v_valeur_avant, v_valeur_apres);
+  end if;
 
   return v_retour;
 end;$_$;

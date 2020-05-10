@@ -19,8 +19,13 @@ declare
   v_valeur alias for $5;
 
 	temp integer;	-- variable fourre tout
+	v_valeur_avant integer;	-- BM avant l'ajout
+	v_valeur_apres integer;	-- BM après l'ajout
   code_retour text;
 begin
+
+  -- Pour déclenchement d'EA sur changement de BM, on mémorise la valeur avant modification.
+  v_valeur_avant := valeur_bonus(v_perso, v_type);
 
   -- 08/11/2019 - Marlyza - Ajout de bonus de carac (FOR/INT/DEX/CON) à l'aide de f_modif_carac
   if v_type in ('DEX', 'INT', 'FOR', 'CON')  then
@@ -40,6 +45,12 @@ begin
     -- cas des bonus standards en mode équipement !--
     insert into bonus (bonus_perso_cod, bonus_tbonus_libc, bonus_valeur, bonus_mode, bonus_obj_cod, bonus_objbm_cod)  values (v_perso, v_type, v_valeur, 'E', v_obj_cod, v_objbm_cod);
 
+  end if;
+
+  -- On vérifie s'il y a un changement de BM, si oui on verifie le déclenchement des EA
+  v_valeur_apres := valeur_bonus(v_perso, v_type);
+  if v_valeur_apres != v_valeur_avant then
+      perform execute_effet_auto_bmc(v_perso, v_type, v_valeur_avant, v_valeur_apres);
   end if;
 
   return 1;
