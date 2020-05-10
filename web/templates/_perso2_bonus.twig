@@ -38,7 +38,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class=""></td>
                         {% for detail_bonus in TAB_BONUS.0 %}
 
-                    <tr class="tooltip" title="{{  detail_bonus.tbonus_description }}">
+                    <tr class="tooltip" title="{{  detail_bonus.tbonus_description|raw }}">
                         <td class="soustitre2"><strong>{{ detail_bonus.tonbus_libelle }}
                                 {% if detail_bonus.bonus_mode == "C" %} (cumulatif){% endif %}</strong>
                         </td>
@@ -55,7 +55,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                     </tr>
                     {% endfor %}
                     {% for  bonus in BONUS_CARAC.0 %}
-                        <tr class="tooltip" title="{{ bonus.tbonus_description }}">
+                        <tr class="tooltip" title="{{ bonus.tbonus_description|raw }}">
                             <td class='soustitre2'><strong>{{ bonus.lib_carac }}</strong></td>
                             <td>
                                 <div style='text-align:center;'>{% if bonus.0 >= 0 %}+{% endif %}{{ bonus.0 }}</div>
@@ -87,7 +87,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class=""></td>
                     </tr>
                     {% for detail_malus in TAB_MALUS.0 %}
-                        <tr class="tooltip" title="{{ detail_malus.tbonus_description }}">
+                        <tr class="tooltip" title="{{ detail_malus.tbonus_description|raw }}">
                             <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
                                     {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
 
@@ -107,7 +107,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                     {% endfor %}
 
                     {% for malus in MALUS_CARAC.0 %}
-                        <tr class="tooltip" title="{{  malus.tbonus_description }}">
+                        <tr class="tooltip" title="{{  malus.tbonus_description|raw }}">
                             <td class='soustitre2'><strong>{{ malus.lib_carac }}</strong></td>
                             <td>
                                 <div style='text-align:center;'>{% if malus.0 >= 0 %}+{% endif %}{{ malus.0 }}</div>
@@ -143,7 +143,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class=""></td>
                         {% for detail_bonus in TAB_BONUS.1 %}
 
-                    <tr class="tooltip" title="{{  detail_bonus.tbonus_description }}">
+                    <tr class="tooltip" title="{{  detail_bonus.tbonus_description|raw }}">
                         <td class="soustitre2"><strong>{{ detail_bonus.tonbus_libelle }}
                                 {% if detail_bonus.bonus_mode == "C" %} (cumulatif){% endif %}</strong>
                         </td>
@@ -160,7 +160,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                     </tr>
                     {% endfor %}
                     {% for  bonus in BONUS_CARAC.1 %}
-                        <tr class="tooltip" title="{{  bonus.tbonus_description }}">
+                        <tr class="tooltip" title="{{  bonus.tbonus_description|raw }}">
                             <td class='soustitre2'><strong>{{ bonus.lib_carac }}</strong></td>
                             <td>
                                 <div style='text-align:center;'>{% if bonus.0 >= 0 %}+{% endif %}{{ bonus.0 }}</div>
@@ -192,7 +192,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                         <td class=""></td>
                     </tr>
                     {% for detail_malus in TAB_MALUS.1 %}
-                        <tr class="tooltip" title="{{  detail_malus.tbonus_description }}">
+                        <tr class="tooltip" title="{{  detail_malus.tbonus_description|raw }}">
                             <td class="soustitre2"><strong>{{ detail_malus.tonbus_libelle }}
                                     {% if detail_malus.bonus_mode == "C" %} (cumulatif){% endif %}</strong></td>
 
@@ -210,7 +210,7 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
                     {% endfor %}
 
                     {% for malus in MALUS_CARAC.1 %}
-                        <tr class="tooltip" title="{{  malus.tbonus_description }}">
+                        <tr class="tooltip" title="{{  malus.tbonus_description|raw }}">
                             <td class='soustitre2'><strong>{{ malus.lib_carac }}</strong></td>
                             <td>
                                 <div style='text-align:center;'>{% if malus.0 >= 0 %}+{% endif %}{{ malus.0 }}</div>
@@ -232,6 +232,9 @@ Bonus aux dégâts en corps-à-corps : <strong>{{ PERSO.bonus_degats_melee }} d�
 </table>
 <script>//# sourceURL=_perso2_bonus_twig.js
     $(document).ready(function () {
-        $(".tooltip").tooltip();
+        $(".tooltip").tooltip({
+            content: function () {
+                return $(this).prop('title');
+            }});
     });
 </script>

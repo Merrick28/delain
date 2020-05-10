@@ -330,6 +330,7 @@ begin
   /* 2018-09-06 - Marlyza - on réalise ici un eventuel changement de cible */
   texte_desorientation := '' ;    -- pour un affichage ultérieur quand on aura des infos sur la cible
   v_desorientation := LEAST(100, valeur_bonus(v_attaquant, 'DES')) ; -- récupération du malus de désorientation
+
   if v_desorientation > 0 then
 
     /* Convertion de la valeur en %

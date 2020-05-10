@@ -120,6 +120,8 @@ declare
   v_mds integer;                  -- Maladie du sang
   v_venin integer;                -- venin dans le sang
   v_brulure integer;              -- Brulure profonde
+  v_corruption integer;           -- malus de corruption
+  v_irradiance integer;           -- malus d'irradiance
   v_bonus_regen integer;          -- Bonus cumulé (BRU/MDS/VEN)
   v_pv_actuel integer;            -- points de vie actuels
   v_memo_pv integer;              -- memorisation des pvs
@@ -489,16 +491,38 @@ begin
       artefact_regen := 0;
     end if;
     v_brulure := valeur_bonus(personnage, 'BRU');
+    v_corruption := valeur_bonus(personnage, 'COR');
+    v_irradiance := valeur_bonus(personnage, 'IRR');
     v_mds := valeur_bonus(personnage, 'MDS');
-    v_venin := valeur_bonus(personnage, 'VEN');
-    bonus_regen := v_brulure + v_mds + v_venin + valeur_bonus(personnage, 'POI') + artefact_regen;
+    v_venin := valeur_bonus(personnage, 'VEN') + valeur_bonus(personnage, 'POI');
+    bonus_regen := v_brulure + v_corruption + v_irradiance + v_mds + v_venin  + artefact_regen;
 
 
     if bonus_regen > 0 then -- POISON !!!!
       update perso set perso_pv = perso_pv - bonus_regen
       where perso_cod = personnage;
 
-      code_retour := code_retour || '<br>Vous perdez <b>' || trim(to_char(bonus_regen,'99999')) || '</b> points de vie à cause du poison ou de vos brûlures.<br> ';
+      code_retour2 := '' ;
+      if v_mds>0 then
+        code_retour2 := code_retour2 || ' de la maladie du sang,';
+      end if;
+      if v_brulure>0 then
+        code_retour2 := code_retour2 || ' des brulûres,';
+      end if;
+      if v_venin>0 then
+        code_retour2 := code_retour2 || ' du poison,';
+      end if;
+      if v_corruption>0 then
+        code_retour2 := code_retour2 || ' de la corruption,';
+      end if;
+      if v_irradiance>0 then
+        code_retour2 := code_retour2 || ' de l''iradiance,';
+      end if;
+      if char_length(code_retour2) >0 then
+        code_retour2 := substring(code_retour2, 1, char_length(code_retour2)-1);
+      end if;
+      code_retour := code_retour || '<br>Vous perdez <b>' || trim(to_char(bonus_regen,'99999')) || '</b> points de vie à cause: ' || code_retour2 || '.<br> ';
+
 
       select into pv_actuel perso_pv from perso
       where perso_cod = personnage;

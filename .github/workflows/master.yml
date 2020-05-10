@@ -1,34 +1,67 @@
 name: CI
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-
 on:
   push:
     branches: [ master ]
+#  pull_request:
+#    branches: [ master ]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  test_unitaires:
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
+  prelivraison:
     runs-on: rp
     steps:
-      - uses: actions/checkout@v2
+      # todo : transformer l'appel à slack qui est un peu long
+      - name: Slack notification
+        run: /home/github/actions/notif_slack.sh "Début de livraison (${GITHUB_ACTOR})"
 
       - name: Resume des infos
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
           echo "Lancement des tests unitaires"
           echo "Répertoire de travail : ${GITHUB_WORKSPACE}"
 
+      - uses: actions/checkout@v2
       - name: lance les tests unitaires
+        if: "!contains(github.event.head_commit.message, 'ci skip')"
         run: |
-          cd ${GITHUB_WORKSPACE}/
-          docker-compose -f docker-compose-tu.yml pull
-          docker-compose -f docker-compose-tu.yml up -d
+          cd ${GITHUB_WORKSPACE}
+          /usr/local/bin/docker-compose -f docker-compose-tu.yml pull
+          /usr/local/bin/docker-compose -f docker-compose-tu.yml up -d
           echo "Wait for postgres to be up"
-          docker exec webtu /home/delain/delain/web/tests/wait.sh
+          /usr/bin/docker exec webtu /home/delain/delain/web/tests/wait.sh
           echo 'PHP Unit tests'
           ${GITHUB_WORKSPACE}/web/tests/phpunit_docker-tu.sh
+          cd ${GITHUB_WORKSPACE}
+          /usr/local/bin/docker-compose -f docker-compose-tu.yml down
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job prelivraison) !!!"
 
+  livraison:
+    runs-on: backenddelain
+    needs: prelivraison
+    steps:
+      - name: Git pull
+        run: |
+          cd /home/delain/delain
+          git pull
+      - name: Vider le cache twig
+        run: 'rm -rf /home/delain/delain/cache/*'
+      - name: Vider le cache modspeed
+        run: 'curl "http://localhost/pagespeed_admin/cache?purge=*"'
+      - name: Livraisons sql
+        run: /home/delain/delain/shell/livraisons.sh
+      - name: Generation des docs api
+        run: /usr/bin/apidoc -i /home/delain/delain/web/www/api/v2 -o /home/delain/delain/web/www/api/doc
+      - name: Gestion d'erreur
+        if: ${{ failure() }}
+        run: /home/github/actions/notif_slack.sh "!!! Anomalie sur la livraison (job livraison) !!!"
+  notif_fin:
+    runs-on: rp
+    needs: livraison
+    steps:
 
+      - name: Slack notification
+        run: |
+          /home/github/actions/notif_slack.sh "Fin de livraison"
+          /home/github/actions/notif_slack.sh "-----------------"
 
