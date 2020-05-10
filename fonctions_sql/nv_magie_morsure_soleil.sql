@@ -107,7 +107,7 @@ begin
         -- Marlyza - 2018-09-10 : depuis l'ouverture du marais la valeur est modulée 0: pas d'effet, 1:33% de raté, 2: 66% de raté et 3+: 100% de raté
         -- Pour ne pas modifier le comportement de la morsure, le malus est mis à la valeur 100, soit toujours 100% de raté.
         -- Marlyza - 2020-05-10 : avec l'arrivé des bonus d'équipement, la désorientation passe en procentage, ici 100 pour 100% de raté
-        perform ajoute_bonus(cible, 'DES', 100, 3);
+        perform ajoute_bonus(cible, 'DES', 3, 100);
 
 	code_retour := code_retour||'<br>'||nom_cible||' a un malus à la vue de '||trim(to_char(v_bonus_toucher,'99'))||' pendant 4 tours.';
 	code_retour := code_retour||'<br>Vous gagnez '||px_gagne||' PX pour cette action.<br>';
