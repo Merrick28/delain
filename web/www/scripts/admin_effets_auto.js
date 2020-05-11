@@ -3,18 +3,55 @@ EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
 
 EffetAuto.Triggers = {
-	"D":   {description: "À l’activation de sa DLT."},
-	"M":   {description: "À sa mort."},
-	"T":   {description: "lorsqu’il tue sa cible."},
-	"A":   {description: "lorsqu’il attaque sa cible."},
-	"AE":  {description: "lorsqu’il attaque sa cible qui esquive."},
-	"AT":  {description: "lorsqu’il attaque et touche sa cible."},
-	"AC":  {description: "lorsqu’il est attaqué."},
-	"ACE": {description: "lorsqu’il esquive."},
-	"ACT": {description: "lorsqu’il est touché."},
+	"D":   {description: "À l’activation de sa DLT.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"M":   {description: "À sa mort.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"T":   {description: "lorsqu’il tue sa cible.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"A":   {description: "lorsqu’il attaque sa cible.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"AE":  {description: "lorsqu’il attaque sa cible qui esquive.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"AT":  {description: "lorsqu’il attaque et touche sa cible.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"AC":  {description: "lorsqu’il est attaqué.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"ACE": {description: "lorsqu’il esquive.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
+	"ACT": {description: "lorsqu’il est touché.",
+		parametres: [
+			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+		]
+	},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
-			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de protagoniste pour ce déclencheur.",
+			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
 				{ nom: 'trig_compteur', type: 'BM', label: 'Décencheur', description: 'Le compteur.' },
 				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
 				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', validation: Validation.Types.Entier },
