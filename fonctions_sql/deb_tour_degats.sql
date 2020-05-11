@@ -52,9 +52,10 @@ COMMENT ON FUNCTION public.deb_tour_degats(integer) IS '(OBSOLÈTE)';
 -- Name: deb_tour_degats(integer, text, integer, character, text, numeric, text); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text) RETURNS text
+CREATE or replace FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/**************************************************/
+AS
+$_$/**************************************************/
 /* deb_tour_degats                                */
 /* Applique des dégâts (ou soins)                 */
 /* On passe en paramètres:                        */
@@ -276,9 +277,10 @@ COMMENT ON FUNCTION public.deb_tour_degats(integer, text, integer, character, te
 -- Name: deb_tour_degats(integer, text, integer, character, text, numeric, text, integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer) RETURNS text
+CREATE or replace FUNCTION public.deb_tour_degats(integer, text, integer, character, text, numeric, text, integer) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/**************************************************/
+AS
+$_$/**************************************************/
 /* deb_tour_degats                                */
 /* Applique des dégâts (ou soins)                 */
 /* On passe en paramètres:                        */
