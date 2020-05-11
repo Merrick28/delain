@@ -29,14 +29,14 @@ declare
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
 	v_gmon_nom text;           -- Le nom du monstre générique
-	-- v_abattement text;         -- L'abatement à réaliser.
+	v_raz text;                -- Raz du compteur à réaliser?.
 
 begin
-  -- code de retour
-	code_retour := '';
-  -- v_abattement := '':
 
-  -- eventuellement les fonction du monstre générique
+	code_retour := '';    -- code de retour
+  v_raz := 'N';         -- pas de RAZ du compteur par défaut
+
+  -- Eventuellement les fonction du monstre générique
 	select into v_gmon_cod, v_gmon_nom perso_gmon_cod, gmon_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
 	if not found then
       v_gmon_cod:= null ;
@@ -45,7 +45,7 @@ begin
 
   -- boucle sur toutes les fonctions specifiques de l'évenement pour le perso et le bonus qui vérifie le passage du seuil
 	for ligne_fonction in (
-      select fonc_cod, fonc_nom, trim(fonc_trigger_param->>'trig_raz'::text) as fonc_trig_abattement, fonc_trigger_param->>'fonc_trig_nom'::text as fonc_trig_nom
+      select fonc_cod, fonc_nom, trim(fonc_trigger_param->>'fonc_trig_raz'::text) as fonc_trig_raz, fonc_trigger_param->>'fonc_trig_nom'::text as fonc_trig_nom
       from fonction_specifique
       where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod))
             and (fonc_type='BMC')
@@ -67,9 +67,9 @@ begin
 		    update perso set perso_nom = replace(ligne_fonction.fonc_trig_nom,'[nom]',v_gmon_nom) ||' (n° '||trim(to_char(perso_cod,'99999999'))||')' where perso_cod=v_perso_cod;
 		end if;
 
-    -- if ligne_fonction.trig_raz != '' and ligne_fonction.fonc_trig_abattement != '0' then
-    --     v_abattement := ligne_fonction.fonc_trig_abattement ;
-    -- end if;
+    if ligne_fonction.fonc_trig_raz = 'O' then
+        v_raz := 'O' ;
+    end if;
 
 		if coalesce(retour_fonction, '') != '' then
 			-- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
@@ -77,21 +77,14 @@ begin
 		end if;
 	end loop;
 
-  -- -- traitement de l'abatement (s'il y en a un seulement pour les compteur)
-  -- if  v_abattement != '' then
-  --     -- seulement pour les bonus du type compteur (
-  --     select tbonus_compteur from bonus_type where tbonus_libc = v_bonus and tbonus_compteur='O'
-  --     if found then
-  --
-  --         if substr(v_abattement, char_length(v_abattement)-1, 1)= '%' then
-  --             -- abattement par pourcentage
-  --             v_abattement := substr(v_abattement, 1, char_length(v_abattement)-1) ;
-  --             update
-  --         else
-  --
-  --         end if;
-  --     end if;
-  -- end if;
+  -- traitement du raz (s'il y en a et seulement pour les compteurs)
+  if  v_raz = 'O' then
+      -- seulement pour les bonus du type compteur (et pas les bonus equipement)
+      select tbonus_compteur into v_raz from bonus_type where tbonus_libc = v_bonus and tbonus_compteur='O' ;
+      if  v_raz = 'O' then
+          delete from bonus where bonus_perso_cod = v_perso_cod and  bonus_mode != 'E' and  bonus_tbonus_libc = v_bonus ;
+      end if;
+  end if;
 
 
 	if code_retour != '' then
