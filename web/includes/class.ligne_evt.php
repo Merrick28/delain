@@ -25,8 +25,9 @@ class ligne_evt
     public $levt_nombre;
     public $levt_parametres;
 
-    public $perso_attaquant;
-    public $perso_cible;
+    public $perso_attaquant = array();
+    public $perso_cible     = array();
+
 
     public function __construct()
     {
@@ -37,6 +38,7 @@ class ligne_evt
      * Charge dans la classe un enregistrement de ligne_evt
      * @param integer $code => PK
      * @return boolean => false si non trouvé
+     * @throws Exception
      * @global bdd_mysql $pdo
      */
     public function charge($code)
@@ -45,7 +47,8 @@ class ligne_evt
         $req  = "SELECT * FROM ligne_evt WHERE levt_cod = ?";
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array($code), $stmt);
-        if (!$result = $stmt->fetch()) {
+        if (!$result = $stmt->fetch())
+        {
             return false;
         }
         $this->levt_cod        = $result['levt_cod'];
@@ -73,7 +76,8 @@ class ligne_evt
     public function stocke($new = false)
     {
         $pdo = new bddpdo;
-        if ($new) {
+        if ($new)
+        {
             $req
                   = "INSERT INTO ligne_evt (
             levt_tevt_cod,
@@ -125,7 +129,8 @@ class ligne_evt
 
             $temp = $stmt->fetch();
             $this->charge($temp['id']);
-        } else {
+        } else
+        {
             $req
                   = "UPDATE ligne_evt
                     SET
@@ -173,7 +178,8 @@ class ligne_evt
         $pdo    = new bddpdo;
         $req    = "SELECT levt_cod  FROM ligne_evt ORDER BY levt_cod";
         $stmt   = $pdo->query($req);
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new ligne_evt;
             $temp->charge($result["levt_cod"]);
             $retour[] = $temp;
@@ -197,27 +203,34 @@ class ligne_evt
           ORDER BY levt_cod DESC";
         $stmt   = $pdo->prepare($req);
         $stmt   = $pdo->execute(array($perso_cod), $stmt);
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new ligne_evt;
             $temp->charge($result["levt_cod"]);
             $tevt = new type_evt();
             $tevt->charge($temp->levt_tevt_cod);
             $temp->tevt = $tevt;
             // on prend les evts liés
-            if (!is_null(trim($this->levt_attaquant))) {
+            if (!is_null(trim($this->levt_attaquant)))
+            {
                 $perso_attaquant = new perso;
-                if ($perso_attaquant->charge($this->levt_attaquant)) {
+                if ($perso_attaquant->charge($this->levt_attaquant))
+                {
                     $temp->perso_attaquant = $perso_attaquant;
-                } else {
+                } else
+                {
                     $temp->perso_attaquant = "erreur";
                 }
                 unset($perso_attaquant);
             }
-            if (!is_null(trim($this->levt_cible))) {
+            if (!is_null(trim($this->levt_cible)))
+            {
                 $perso_cible = new perso;
-                if ($perso_cible->charge($this->levt_cible)) {
+                if ($perso_cible->charge($this->levt_cible))
+                {
                     $temp->perso_cible = $perso_cible;
-                } else {
+                } else
+                {
                     $temp->perso_cible = "erreur";
                 }
                 unset($perso_cible);
@@ -233,13 +246,15 @@ class ligne_evt
     {
         $retour = array();
         $pdo    = new bddpdo;
-        if ($withvisible) {
+        if ($withvisible)
+        {
             $req
                 = "SELECT levt_cod  FROM ligne_evt
           WHERE levt_perso_cod1 = :perso
           ORDER BY levt_cod DESC
           limit $limit offset $offset";
-        } else {
+        } else
+        {
             $req
                 = "SELECT levt_cod  FROM ligne_evt
           WHERE levt_perso_cod1 = :perso
@@ -252,7 +267,8 @@ class ligne_evt
         $stmt = $pdo->prepare($req);
         $stmt = $pdo->execute(array(":perso" => $perso_cod), $stmt);
 
-        while ($result = $stmt->fetch()) {
+        while ($result = $stmt->fetch())
+        {
             $temp = new ligne_evt;
             $temp->charge($result["levt_cod"]);
             $tevt = new type_evt();
@@ -298,18 +314,22 @@ class ligne_evt
     {
         $strong_avant = '';
         $strong_apres = '';
-        if ($strong) {
+        if ($strong)
+        {
             $strong_avant = '<strong>';
             $strong_apres = '</strong>';
         }
-        foreach ($tab_evt as $key => $val) {
+        foreach ($tab_evt as $key => $val)
+        {
             $lien_avant = '';
             $lien_apres = '';
 
             $perso = new perso;
             $perso->charge($val->levt_perso_cod1);
-            if ($isauth) {
-                if ($lien) {
+            if ($isauth)
+            {
+                if ($lien)
+                {
                     $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' . $perso->perso_cod . '>';
                     $lien_apres = '</a>';
                 }
@@ -318,11 +338,13 @@ class ligne_evt
                     str_replace(
                         '[perso_cod1]',
                         $strong_avant . $lien_avant . $perso->perso_nom . $lien_apres .
-                                                $strong_apres,
+                        $strong_apres,
                         $val->levt_texte
                     );
-            } else {
-                if ($lien) {
+            } else
+            {
+                if ($lien)
+                {
                     $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' . $perso->perso_cod . '>';
                     $lien_apres = '</a>';
                 }
@@ -331,13 +353,14 @@ class ligne_evt
                     str_replace(
                         '[perso_cod1]',
                         $strong_avant . $lien_avant . $perso->perso_nom . $lien_apres .
-                                                $strong_apres,
+                        $strong_apres,
                         $val->tevt->tevt_texte
                     );
             }
             $perso_attaquant = new perso;
             $perso_attaquant->charge($val->levt_attaquant);
-            if ($lien) {
+            if ($lien)
+            {
                 $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' .
                               $perso_attaquant->perso_cod . '>';
 
@@ -349,16 +372,17 @@ class ligne_evt
             unset($perso_attaquant);
             $perso_cible = new perso;
             $perso_cible->charge($val->levt_attaquant);
-            if ($lien) {
+            if ($lien)
+            {
                 $lien_avant = '<a href="' . G_URL . 'jeu/visu_desc_perso.php?visu="' .
                               $perso_cible->perso_cod . '>';
                 $lien_apres = '</a>';
             }
-            $texte           =
+            $texte =
                 str_replace(
                     '[cible]',
                     $strong_avant . $lien_avant . $perso_cible->perso_nom . $lien_apres .
-                                       $strong_apres,
+                    $strong_apres,
                     $texte
                 );
             unset($perso_cible);
@@ -377,8 +401,10 @@ class ligne_evt
             unset($val->levt_parametres);
             unset($val->perso_cod_attaquant);
             unset($val->perso_cod_cible);
-            if (!$isauth) {
-                if ($val->levt_visible == 'N') {
+            if (!$isauth)
+            {
+                if ($val->levt_visible == 'N')
+                {
                     unset($val);
                 }
             }
@@ -397,25 +423,30 @@ class ligne_evt
 
     public function __call($name, $arguments)
     {
-        switch (substr($name, 0, 6)) {
+        switch (substr($name, 0, 6))
+        {
             case 'getBy_':
-                if (property_exists($this, substr($name, 6))) {
+                if (property_exists($this, substr($name, 6)))
+                {
                     $retour = array();
                     $pdo    = new bddpdo;
                     $req    = "SELECT levt_cod  FROM ligne_evt WHERE " . substr($name, 6) . " = ? ORDER BY levt_cod";
                     $stmt   = $pdo->prepare($req);
                     $stmt   = $pdo->execute(array($arguments[0]), $stmt);
-                    while ($result = $stmt->fetch()) {
+                    while ($result = $stmt->fetch())
+                    {
                         $temp = new ligne_evt;
                         $temp->charge($result["levt_cod"]);
                         $retour[] = $temp;
                         unset($temp);
                     }
-                    if (count($retour) == 0) {
+                    if (count($retour) == 0)
+                    {
                         return false;
                     }
                     return $retour;
-                } else {
+                } else
+                {
                     die('Unknown variable ' . substr($name, 6) . ' in table ligne_evt');
                 }
                 break;
