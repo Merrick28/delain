@@ -1479,7 +1479,7 @@ begin
     temp_change_cible := change_cible_attaque(nv_cible, v_attaquant);
   end if;
   --
-  code_retour := code_retour || 'Vous portez une attaque de <b>' || trim(to_char(degats_portes, '9999')) || '</b> '; -- pos 11
+  code_retour := code_retour || 'Vous portez une attaque de <b>' || trim(to_char(GREATEST(0,degats_portes), '9999')) || '</b> '; -- pos 11
   /************************************/
   /* DEBUT : esquive de la cible      */
   /************************************/
