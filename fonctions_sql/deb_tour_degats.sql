@@ -2,17 +2,18 @@
 -- Name: deb_tour_degats(integer); Type: FUNCTION; Schema: public; Owner: delain
 --
 
-CREATE FUNCTION public.deb_tour_degats(integer) RETURNS text
+CREATE or replace FUNCTION public.deb_tour_degats(integer) RETURNS text
     LANGUAGE plpgsql
-    AS $_$/************************************************/
+AS
+$_$/************************************************/
 /* deb_tour_degats augmentant leds dégâts de 4  */
 /************************************************/
 declare
-	code_retour text;
-	personnage alias for $1;
-	v_pos integer;
-	ligne record;
-	has_bloque integer;
+    code_retour      text;
+    personnage alias for $1;
+    v_pos            integer;
+    ligne            record;
+    has_bloque       integer;
 	v_bloque_magie integer;
 	v_pa_attaque integer;
 	v_malus_degats integer;
