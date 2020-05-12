@@ -1,6 +1,8 @@
 ﻿<?php
 //if(!isset($db))
-include_once "verif_connexion.php";
+$verif_connexion = new verif_connexion();
+$verif_connexion->verif();
+$perso = $verif_connexion->perso;
 // on regarde si le joueur est bien sur un point de passage
 
 $type_lieu = 40;
@@ -11,9 +13,9 @@ include "blocks/_test_lieu.php";
 if ($erreur == 0)
 {
 
-    $tab_lieu  = $db->get_lieu($perso_cod);
-    $nom_lieu  = $tab_lieu['nom'];
-    $desc_lieu = $tab_lieu['description'];
+    $tab_lieu     = $perso->get_lieu();
+    $nom_lieu     = $tab_lieu['lieu']->lieu_nom;
+    $desc_lieu    = $tab_lieu['lieu']->lieu_description;
     $preg_pos_cod = "0";
     $ppos_pos_cod = "1";
 
@@ -32,17 +34,16 @@ if ($erreur == 0)
     if ($db->next_record())
     {
         $date_inscription = $db->f("preg_date_inscription");
-        $checkpoint = $db->f("checkpoint");
-        $preg_pos_cod = $db->f("preg_pos_cod");
-        $ppos_pos_cod = $db->f("ppos_pos_cod");
+        $checkpoint       = $db->f("checkpoint");
+        $preg_pos_cod     = $db->f("preg_pos_cod");
+        $ppos_pos_cod     = $db->f("ppos_pos_cod");
         if ($date_inscription != '')
         {
             echo "<br>Vous êtes bien inscrit(e) dans nos registres. <br>";
             if ($preg_pos_cod == $ppos_pos_cod)
             {
                 echo "Si vous mourrez, au batiment administratif vous bénéficiez d'un retour rapide pour revenir directement ici (<strong> {$checkpoint}</strong>)<br>";
-            }
-            else
+            } else
             {
                 echo "Si vous mourrez, au batiment administratif vous bénéficiez d'un retour rapide pour aller:<strong> {$checkpoint}</strong><br>";
                 echo "<br>Si vous préférez plutôt revenir ici, faites votre marque ici!<br>";
@@ -50,7 +51,7 @@ if ($erreur == 0)
         }
     }
 
-    if  ($preg_pos_cod != $ppos_pos_cod)
+    if ($preg_pos_cod != $ppos_pos_cod)
     {
         echo("<br><p><a href=\"action.php?methode=enreg_pos_donjon\">Graver une croix sur la pancarte?</a></p>");
     }
