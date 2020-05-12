@@ -5,7 +5,7 @@
                 <table>
                     <tr>
                         <td colspan="3" class="titre">
-                            <div class="titre">Fiche de {{ VISU_PERSO.perso_nom }}</div>
+                            <div class="titre">Fiche de {{ VISU_PERSO.perso_nom|raw }}</div>
                         </td>
                     </tr>
                     {% if VISU_PERSO.perso_description != '' %}
@@ -23,7 +23,7 @@
                     {% endif %}
                     <tr>
                         <td rowspan="12">
-                            <img src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom }}">
+                            <img src="{{ AVATAR }}" alt="Avatar de {{ VISU_PERSO.perso_nom|raw }}">
                             {% if MEMEPERSO %}
                                 {% if VISU_PERSO.perso_crapaud == 0 %}
                                     <br>

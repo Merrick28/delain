@@ -2,65 +2,87 @@ var EffetAuto = {num_courant: 0};
 EffetAuto.Champs = [];
 EffetAuto.MontreValidite = false;
 
+/*=============================== Definition des DECLENCHEURS et de leurs paramètres ===============================*/
 EffetAuto.Triggers = {
 	"D":   {description: "À l’activation de sa DLT.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Active sa DLT',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"M":   {description: "À sa mort.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Meurt',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"T":   {description: "lorsqu’il tue sa cible.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Tue sa cible',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"A":   {description: "lorsqu’il attaque sa cible.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Attaque sa cible',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"AE":  {description: "lorsqu’il attaque sa cible qui esquive.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Attaque sa cible qui esquive',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"AT":  {description: "lorsqu’il attaque et touche sa cible.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Attaque et touche sa cible',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"AC":  {description: "lorsqu’il est attaqué.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Est attaqué',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"ACE": {description: "lorsqu’il esquive.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Esquive une attaque',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"ACT": {description: "lorsqu’il est touché.",
-		parametres: [
-			{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-		]
+			default:'deb_tour_generique',
+			declencheur:'Est touché par une attaque',
+			parametres: [
+				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
+			]
 	},
 	"BMC": {description: "lorsque le Bonus/Malus change.",
+			default:'deb_tour_generique',
+			declencheur:'Subit un changement de Bonus/Malus',
 			remarque: "<br><strong><u>ATTENTION</u></strong>: Il n'y a pas de ciblage sur  <u>le protagoniste</u> pour ce déclencheur.",
 			parametres: [
 				{ nom: 'trig_deda', type: 'entier', label: 'Délai entre 2 déclenchements', description: 'C\'est le temps minimum (en minutes) entre 2 déclenchements d\'actions.' },
-				{ nom: 'trig_compteur', type: 'BM', label: 'Décencheur', description: 'Le compteur.' },
+				{ nom: 'trig_compteur', type: 'BMCompteur', label: 'Décencheur', description: 'Le compteur.' },
 				{ nom: 'trig_sens', type: 'BMCsens', label: 'Sens de déclemement', description: 'Dépassement lorsque le Bonus/Malus dépasse le seuil ou lorsqu\'il retombe en dessous.' },
 				{ nom: 'trig_seuil', type: 'entier', label: 'Seuil du Bonus/Malus', description: 'Valeur de déclenement du Bonus.', validation: Validation.Types.Entier },
 				{ nom: 'trig_raz', type: 'checkbox', label: 'Remise à zéro du BM après déclenchement', description: 'Cocher pour remettre le BM à 0 après déclenchement'},
-				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser le tag [nom] pour le nom de base)'},
+				{ nom: 'trig_nom', type: 'texte', longueur: 30, label: 'Changement du nom', description: 'Nouveau nom du monstre en cas de basculement de seuil, laisser vide pour ne faire aucun changement. (utiliser les tags [nom] pour le nom actuel du monstre ou [nom_generique] pour son nom de base)'},
 			]
 	},
 }
 
+/*=============================== Definition des EFFETS et de leurs paramètres ===============================*/
 EffetAuto.Types = [
 	{	nom: 'deb_tour_generique',
 		debut: true,
@@ -263,6 +285,7 @@ EffetAuto.Types = [
 		],
 	},
 ];
+/*=============================== fin de défintion des EA ===============================*/
 
 EffetAuto.videListe = function (numero) {
 	var liste = document.getElementById('fonction_type_' + numero);
@@ -273,11 +296,9 @@ EffetAuto.videListe = function (numero) {
 EffetAuto.remplirListe = function (type, numero) {
 	EffetAuto.videListe (numero);
 	var liste = document.getElementById('fonction_type_' + numero);
-	var defaut = '' ;
 	for (var i = 0; i < EffetAuto.Types.length; i++) {
 		var fct = EffetAuto.Types[i];
 		if (fct.modifiable && (fct.bm_compteur && type == 'BMC' || fct.debut && type == 'D' || fct.tueur && type == 'T' || fct.mort && type == 'M' || fct.attaque && type == 'A' || fct.attaque && type == 'AE' || fct.attaque && (type == 'AT' || type == 'AC' || type == 'ACE' || type == 'ACT'))) {
-			if (defaut == '') defaut = fct.nom ;
 			liste.options[liste.options.length] = new Option();
 			liste.options[liste.options.length - 1].text = fct.affichage;
 			liste.options[liste.options.length - 1].value = fct.nom;
@@ -286,6 +307,10 @@ EffetAuto.remplirListe = function (type, numero) {
 	}
 
 	document.getElementById('formulaire_declenchement_' + numero).innerHTML = EffetAuto.EcritNouveauDeclencheurAuto(type, numero);
+
+	// on a potentiellement changé le déclencheur, il faur remettre un effet par défaut
+	EffetAuto.ChangeEffetAuto(EffetAuto.Triggers[type].default, numero);
+
 	Validation.Valide ();
 }
 
@@ -411,6 +436,17 @@ EffetAuto.ChampBM = function (parametre, numero, valeur) {
 	return html;
 }
 
+EffetAuto.ChampBMCompteur = function (parametre, numero, valeur) {
+	if (!valeur)
+		valeur = 0;
+	var html = '<label><strong>' + parametre.label + '</strong>&nbsp;<select name="fonc_' + parametre.nom + numero.toString() + '">';
+	html += EffetAuto.CopieListe ('liste_bmc_modele', valeur);
+	html += '</select></label><br />';
+	html += "(+) Une valeur <strong>positive</strong> est <strong>bénéfique</strong>, et une valeur <strong>négative</strong> est <strong>délétère</strong><br />";
+	html += "(-) Une valeur <strong>positive</strong> est <strong>délétère</strong>, et une valeur <strong>négative</strong> est <strong>bénéfique</strong>";
+	return html;
+}
+
 
 EffetAuto.ChampCheckBox = function (parametre, numero, valeur) {
 	if (!valeur)
@@ -474,6 +510,9 @@ EffetAuto.EcritLigneFormulaire = function (parametre, numero, valeur, modifiable
 		case 'BM':
 			html = pd + EffetAuto.ChampBM(parametre, numero, valeur) + pf;
 			break;
+		case 'BMCompteur':
+			html = pd + EffetAuto.ChampBMCompteur(parametre, numero, valeur) + pf;
+			break;
 		case 'BMCsens':
 			html = pd + EffetAuto.ChampChoixBMCsens (parametre, numero, valeur) + pf;
 			break;
@@ -524,19 +563,8 @@ EffetAuto.EcritEffetAutoExistant = function (declenchement, type, id, force, dur
 	divEA.style.overflow = 'auto';
 
 	var donnees = EffetAuto.getDonnees(type);
-	donnees.declenchement = '';
-	switch (declenchement) {
-		case 'D': donnees.declenchement = 'À l’activation de sa DLT.'; break;
-		case 'M': donnees.declenchement = 'À sa mort.'; break;
-		case 'T': donnees.declenchement = 'lorsqu’il tue sa cible.'; break;
-		case 'A': donnees.declenchement = 'lorsqu’il attaque sa cible.'; break;
-		case 'AE': donnees.declenchement = 'lorsqu’il attaque sa cible qui esquive.'; break;
-		case 'AT': donnees.declenchement = 'lorsqu’il attaque et touche sa cible.'; break;
-		case 'AC': donnees.declenchement = 'lorsqu’il est attaqué.'; break;
-		case 'ACE': donnees.declenchement = 'lorsqu’il esquive.'; break;
-		case 'ACT': donnees.declenchement = 'lorsqu’il est touché.'; break;
-		case 'BMC': donnees.declenchement = 'lorsque le Bonus/Malus change.'; break;
-	}
+	donnees.declenchement = EffetAuto.Triggers[declenchement] ?  EffetAuto.Triggers[declenchement].description : 'Déclenchement inconnu...';
+
 	var html = '';
 	if (heritage)
 		html += EffetAuto.EcritLigneFormulaire({ label: 'Hérité de son type de monstre', type: 'lecture', valeur: '', description: '' }, EffetAuto.num_courant);
@@ -621,8 +649,6 @@ EffetAuto.EcritNouveauDeclencheurAuto = function (type, numero) {
 }
 
 
-
-
 EffetAuto.ChangeEffetAuto = function (type, numero) {
 	EffetAuto.EnleveValidation(numero);
 	document.getElementById('formulaire_fonction_' + numero).innerHTML = EffetAuto.EcritNouvelEffetAuto(type, numero);
@@ -650,18 +676,13 @@ EffetAuto.NouvelEffetAuto = function () {
 
 	document.getElementById('fonctions_ajoutees').value += ',' + numero.toString();
 	var html = '';
-	var declenchement = '<select name="declenchement_' + numero + '" onchange="EffetAuto.remplirListe(this.value, ' + numero + ');">' +
-							'<option value="D">Active sa DLT</option>' +
-							'<option value="M">Meurt</option>' +
-							'<option value="T">Tue sa cible</option>' +
-							'<option value="A">Attaque sa cible</option>' +
-							'<option value="AE">Attaque sa cible qui esquive</option>' +
-							'<option value="AT">Attaque et touche sa cible</option>' +
-							'<option value="AC">Est attaqué</option>' +
-							'<option value="ACE">Esquive une attaque</option>' +
-							'<option value="ACT">Est touché par une attaque</option>' +
-							'<option value="BMC">Subit un changement de Bonus/Malus</option>' +
-							'</select>';
+
+	var declenchement = '<select name="declenchement_' + numero + '" onchange="EffetAuto.remplirListe(this.value, ' + numero + ');">';
+	$.each(EffetAuto.Triggers, function( d ) {
+		declenchement += '<option value="'+d+'">'+EffetAuto.Triggers[d].declencheur+'</option>' ;
+	});
+	declenchement += '</select>';
+
 	var liste = '<select name="fonction_type_' + numero + '" id="fonction_type_' + numero + '" onchange="EffetAuto.ChangeEffetAuto(this.value, ' + numero + ');"></select>';
 	html += 'Se déclenche lorsque le perso... ' + declenchement ;
 	html += '<div id="formulaire_declenchement_' + numero + '"></div>'  + liste;
@@ -669,7 +690,8 @@ EffetAuto.NouvelEffetAuto = function () {
 
 	divEA.innerHTML = html;
 	conteneur.appendChild (divEA);
-	
-	EffetAuto.remplirListe('D', numero);
+
+	// récupérer le premier élément de la liste des triggers par défaut (sur nouvel EA)
+	EffetAuto.remplirListe(Object.keys(EffetAuto.Triggers)[0], numero);
 	EffetAuto.ChangeEffetAuto('deb_tour_generique', numero);
 }

@@ -29,6 +29,8 @@ declare
 	code_fonction text;        -- Le code SQL lançant la fonction
 	v_gmon_cod integer;        -- Le code du monstre générique
 	v_gmon_nom text;           -- Le nom du monstre générique
+	v_perso_nom text;          -- Nom du perso avan modification
+	v_nom text;                -- Racine du nom du monstre (ie sans le N°)
 	v_raz text;                -- Raz du compteur à réaliser?.
 
 begin
@@ -37,7 +39,7 @@ begin
   v_raz := 'N';         -- pas de RAZ du compteur par défaut
 
   -- Eventuellement les fonction du monstre générique
-	select into v_gmon_cod, v_gmon_nom perso_gmon_cod, gmon_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
+	select into v_gmon_cod, v_gmon_nom, v_perso_nom perso_gmon_cod, gmon_nom, perso_nom from perso inner join monstre_generique on gmon_cod=perso_gmon_cod where perso_cod = v_perso_cod;
 	if not found then
       v_gmon_cod:= null ;
       v_gmon_nom:= null ;
@@ -47,7 +49,7 @@ begin
 	for ligne_fonction in (
       select fonc_cod, fonc_nom, trim(fonc_trigger_param->>'fonc_trig_raz'::text) as fonc_trig_raz, fonc_trigger_param->>'fonc_trig_nom'::text as fonc_trig_nom
       from fonction_specifique
-      where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod))
+      where (fonc_gmon_cod = coalesce(v_gmon_cod, -1) OR (fonc_perso_cod = v_perso_cod) OR (fonc_gmon_cod is null and fonc_perso_cod is null))
             and (fonc_type='BMC')
             and (fonc_trigger_param->>'fonc_trig_compteur'::text = v_bonus)
             and (
@@ -59,22 +61,24 @@ begin
       order by (fonc_trigger_param->>'fonc_trig_seuil'::text)::numeric, fonc_cod desc
 		)
 	loop
-		code_fonction := ligne_fonction.fonc_nom;
-		retour_fonction := execute_fonction_specifique(v_perso_cod, v_perso_cod, ligne_fonction.fonc_cod) ;
+      -- changement de nom du perso (si monstre generique)
+      if (coalesce(ligne_fonction.fonc_trig_nom, '') != '') and (v_gmon_nom is not null) then
 
-		-- changement de nom du perso (si monstre generique)
-		if (coalesce(ligne_fonction.fonc_trig_nom, '') != '') and (v_gmon_nom is not null) then
-		    update perso set perso_nom = replace(ligne_fonction.fonc_trig_nom,'[nom]',v_gmon_nom) ||' (n° '||trim(to_char(perso_cod,'99999999'))||')' where perso_cod=v_perso_cod;
-		end if;
+          v_nom:= substr(v_perso_nom, 1, COALESCE(NULLIF(strpos(v_perso_nom, ' (n°')-1,-1), char_length(v_perso_nom))) ;
+          update perso set perso_nom = replace(replace(ligne_fonction.fonc_trig_nom,'[nom_generique]',v_gmon_nom), '[nom]', v_nom) ||' (n° '||trim(to_char(perso_cod,'99999999'))||')' where perso_cod=v_perso_cod;
+      end if;
 
-    if ligne_fonction.fonc_trig_raz = 'O' then
-        v_raz := 'O' ;
-    end if;
+      if ligne_fonction.fonc_trig_raz = 'O' then
+          v_raz := 'O' ;
+      end if;
 
-		if coalesce(retour_fonction, '') != '' then
-			-- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
-			code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
-		end if;
+      code_fonction := ligne_fonction.fonc_nom;
+      retour_fonction := execute_fonction_specifique(v_perso_cod, v_perso_cod, ligne_fonction.fonc_cod) ;
+
+      if coalesce(retour_fonction, '') != '' then
+        -- code_retour := code_retour || code_fonction || ' : ' || coalesce(retour_fonction, '') || '<br />';
+        code_retour := code_retour || coalesce(retour_fonction, '') || '<br />';
+      end if;
 	end loop;
 
   -- traitement du raz (s'il y en a et seulement pour les compteurs)
@@ -88,7 +92,7 @@ begin
 
 
 	if code_retour != '' then
-		code_retour := replace('<br /><b>Effets automatiques :</b><br />' || code_retour, '<br /><br />', '<br />') || '<br />';
+		  code_retour := replace('<br /><b>Effets automatiques :</b><br />' || code_retour, '<br /><br />', '<br />') || '<br />';
 	end if;
 
 	return code_retour;
